@@ -6,7 +6,7 @@
 ## What is CodeCharta?
 
 CodeCharta visualizes multiple code metrics using 3D tree maps. It consists of two parts:
- 1. [vizualization](/visualization/README.md): GUI for visualising data
+ 1. [visualization](/visualization/README.md): GUI for visualising data
  2. [analysis](/analysis/README.md): Tools for generating visualisation data
 
 ## Visualisation data format (cc.json)
