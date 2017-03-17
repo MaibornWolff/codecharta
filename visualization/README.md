@@ -1,5 +1,5 @@
 # CodeCharta 
-[![Build Status](https://secure.travis-ci.org/some-name/CodeCharta.png?branch=master)](http://travis-ci.org/some-name/CodeCharta)
+[![Build Status](https://travis-ci.org/MaibornWolff/codecharta.svg?branch=master)](https://travis-ci.org/MaibornWolff/codecharta)
 
 > MaibornWolff CodeCharta
 
@@ -60,6 +60,6 @@ Once you have installed the project, you can use all grunt tasks described in th
 ## JSON structure
 [[Back To Top]](#jump-to-section)
 
-[Example Data]("/app/codeCharta/sample.json")
+[Example Data](/visualization/app/codeCharta/sample.json)
 
-[JSON Schema]("/app/codeCharta/core/data/schema.json")
+[JSON Schema](/visualization/app/codeCharta/core/data/schema.json)
