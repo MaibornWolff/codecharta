@@ -60,6 +60,6 @@ Once you have installed the project, you can use all grunt tasks described in th
 ## JSON structure
 [[Back To Top]](#jump-to-section)
 
-[Example Data]("/visualization/app/codeCharta/sample.json")
+[Example Data](/visualization/app/codeCharta/sample.json)
 
-[JSON Schema]("/visualization/app/codeCharta/core/data/schema.json")
+[JSON Schema](/visualization/app/codeCharta/core/data/schema.json)
