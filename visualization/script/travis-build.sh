@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-node --version
-npm --version
-grunt --version
-
+cd visualization
 npm install
-grunt build
-grunt test
+npm test
+npm doc
+npm package

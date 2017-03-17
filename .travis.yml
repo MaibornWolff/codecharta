@@ -1,0 +1,18 @@
+os:
+  - linux
+
+language: node_js
+
+node_js:
+  - '6'
+  
+sudo: required
+dist: trusty
+
+script: ./visualization/script/travis-build.sh
+
+cache:
+  directories:
+    - visualization/node_modules
+    - visualization/dist/app/node_modules
+    - visualization/.cache
