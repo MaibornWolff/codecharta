@@ -1,0 +1,10 @@
+<div ng-if="ctrl.revisions.length>1" id="revisionButton">
+    <a class="waves-effect waves-light btn" >revisions</a>
+</div>
+
+<div ng-if="ctrl.revisions.length>1" id="revisionChooser">
+    Available Revisions:
+    <span ng-repeat="(key, value) in ctrl.revisions">
+        <a href="#" ng-click="ctrl.loadRevision(key)">{{key}}</a> -
+     </span>
+</div>

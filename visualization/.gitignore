@@ -1,0 +1,16 @@
+.tmp
+bower_components
+dist
+node_modules
+*.iml
+build
+.idea
+.gradle
+.DS_Store
+.project
+.sass-cache
+npm-debug.log
+test-output/
+doc
+coverage
+.cache

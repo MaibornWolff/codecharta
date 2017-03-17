@@ -1,0 +1,7 @@
+include 'model'
+include 'import:SonarImporter'
+
+include 'tools:ValidationTool'
+
+rootProject.name = 'codecharta'
+

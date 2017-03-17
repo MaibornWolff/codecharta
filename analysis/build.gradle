@@ -1,0 +1,64 @@
+plugins {
+  id 'org.sonarqube' version '2.2.1'
+  id 'distribution'
+  id 'maven'
+}
+
+group 'de.maibornwolff.codecharta'
+version '1.0.0'
+
+repositories {
+  maven {
+    credentials{}
+    url "${nexusUrl}/content/groups/public"
+  }
+  mavenCentral()
+}
+
+allprojects {
+    group 'de.maibornwolff.codecharta'
+    version '1.0.0'
+
+    repositories.addAll(rootProject.getBuildscript().getRepositories())
+
+    apply plugin: 'jacoco'
+    apply plugin: 'maven'
+
+    jacoco {
+        toolVersion = "0.7.8"
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository(url: "${nexusUrl}/content/repositories/releases")
+                snapshotRepository(url: "${nexusUrl}/content/repositories/snapshots")
+            }
+        }
+    }
+}
+
+distributions {
+    main {
+        contents {
+            from { 'README.md' }
+            from { 'dist' }
+            subprojects {
+                from tasks.withType(Tar)
+            }
+        }
+   }
+}
+
+sonarqube {
+    properties {
+        property 'sonar.coverage.exclusions', '**/model/**, **/*Main*'
+    }
+}
+task integrationTest(type: Exec) {
+    executable 'sh'
+    workingDir('test')
+    args '-c', "./golden_test.sh $version"
+}
+
+integrationTest.dependsOn build

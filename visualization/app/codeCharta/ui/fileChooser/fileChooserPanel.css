@@ -1,0 +1,15 @@
+#fileChooserPanel table {
+    width: 100%;
+    z-index: 9999;
+}
+
+#fileChooserPanel table > td:first-child, td:last-child {
+    width: 25%;
+    z-index: 10000;
+}
+
+#fileChooserPanel table > td:nth-child(2) {
+    text-align: right;
+    padding-right: 2em;
+    z-index: 10000;
+}

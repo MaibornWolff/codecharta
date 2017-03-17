@@ -1,0 +1,147 @@
+{
+  "revisions": [
+
+    {
+      "name": "root",
+      "attributes": {},
+      "children": [
+        {
+          "name": "big leaf",
+          "attributes": {"Statements": 100, "Functions": 10, "Average Complexity*": 1},
+          "link": "http://www.google.de"
+        },
+        {
+          "name": "Parent Leaf",
+          "attributes": {},
+          "children": [
+            {
+              "name": "small leaf",
+              "attributes": {"Statements": 30, "Functions": 100, "Average Complexity*": 100},
+              "children": []
+            },
+            {
+              "name": "other small leaf",
+              "attributes": {"Statements": 70, "Functions": 1000, "Average Complexity*": 10},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "root",
+      "attributes": {},
+      "children": [
+        {
+          "name": "big leaf",
+          "attributes": {"Statements": 90, "Functions": 11, "Average Complexity*": 1},
+          "link": "http://www.google.de"
+        },
+        {
+          "name": "Parent Leaf",
+          "attributes": {},
+          "children": [
+            {
+              "name": "small leaf",
+              "attributes": {"Statements": 30, "Functions": 100, "Average Complexity*": 100},
+              "children": []
+            },
+            {
+              "name": "other small leaf",
+              "attributes": {"Statements": 70, "Functions": 1000, "Average Complexity*": 10},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "root",
+      "attributes": {},
+      "children": [
+        {
+          "name": "big leaf",
+          "attributes": {"Statements": 105, "Functions": 50, "Average Complexity*": 4},
+          "link": "http://www.google.de"
+        },
+        {
+          "name": "Parent Leaf",
+          "attributes": {},
+          "children": [
+            {
+              "name": "small leaf",
+              "attributes": {"Statements": 40, "Functions": 80, "Average Complexity*": 90},
+              "children": []
+            },
+            {
+              "name": "other small leaf",
+              "attributes": {"Statements": 70, "Functions": 800, "Average Complexity*": 9},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "root",
+      "attributes": {},
+      "children": [
+        {
+          "name": "big leaf",
+          "attributes": {"Statements": 105, "Functions": 50, "Average Complexity*": 4},
+          "link": "http://www.google.de"
+        },
+        {
+          "name": "Parent Leaf",
+          "attributes": {},
+          "children": [
+            {
+              "name": "small leaf",
+              "attributes": {"Statements": 40, "Functions": 10, "Average Complexity*": 90},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "root",
+      "attributes": {},
+      "children": [
+        {
+          "name": "big leaf",
+          "attributes": {"Statements": 105, "Functions": 50, "Average Complexity*": 4},
+          "link": "http://www.google.de"
+        },
+        {
+          "name": "Parent Leaf",
+          "attributes": {},
+          "children": [
+            {
+              "name": "small leaf",
+              "attributes": {"Statements": 40, "Functions": 80, "Average Complexity*": 90},
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "Parent Leaf 2",
+          "attributes": {},
+          "children": [
+            {
+              "name": "small leaf 2",
+              "attributes": {"Statements": 40, "Functions": 80, "Average Complexity*": 90},
+              "children": []
+            },
+            {
+              "name": "big leaf2",
+              "attributes": {"Statements": 105, "Functions": 50, "Average Complexity*": 4},
+              "link": "http://www.google.de"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
