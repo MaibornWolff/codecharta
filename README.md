@@ -1,10 +1,13 @@
-# CodeCharta
+# CodeCharta 
+[![Build Status](https://travis-ci.org/MaibornWolff/codecharta.svg?branch=master)](https://travis-ci.org/MaibornWolff/codecharta)
+
+> MaibornWolff CodeCharta
 
 ## What is CodeCharta?
 
 CodeCharta visualizes multiple code metrics using 3D tree maps. It consists of two parts:
- 1. visualization: GUI for visualising data
- 2. analysis: Tools for generating visualisation data
+ 1. [vizualization](/visualization/README.md): GUI for visualising data
+ 2. [analysis](/analysis/README.md): Tools for generating visualisation data
 
 ## Visualisation data format (cc.json)
 
