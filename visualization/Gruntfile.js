@@ -19,7 +19,7 @@ module.exports = function (grunt) {
             options: {
                 platforms: ['win','osx64', 'linux'],
                 buildDir: './dist/packages/',
-                buildType: 'versioned',
+                buildType: 'default',
                 cacheDir: '.cache'
             },
             src: ['./dist/app/**/*', './package.json', './LICENSE.md']
@@ -193,6 +193,49 @@ module.exports = function (grunt) {
                     "dist/app/libs/bundle.js": ["dist/app/libs/bundle.js"]
                 },
             }
+        },
+
+        compress: {
+            linux32: {
+                options: {
+                    archive: './dist/packages/codecharta-visualization-linux32.zip'
+                },
+                files: [
+                    {expand: true, cwd:"./dist/packages/CodeCharta/linux32/", src: ['**/*'], dest: '.'}
+                ]
+            },
+            linux64: {
+                options: {
+                    archive: './dist/packages/codecharta-visualization-linux64.zip'
+                },
+                files: [
+                    {expand: true, cwd:"./dist/packages/CodeCharta/linux64/", src: ['**/*'], dest: '.'}
+                ]
+            },
+            osx64: {
+                options: {
+                    archive: './dist/packages/codecharta-visualization-osx64.zip'
+                },
+                files: [
+                    {expand: true, cwd:"./dist/packages/CodeCharta/osx64/", src: ['**/*'], dest: '.'}
+                ]
+            },
+            win32: {
+                options: {
+                    archive: './dist/packages/codecharta-visualization-win32.zip'
+                },
+                files: [
+                    {expand: true, cwd:"./dist/packages/CodeCharta/win32/", src: ['**/*'], dest: '.'}
+                ]
+            },
+            win64: {
+                options: {
+                    archive: './dist/packages/codecharta-visualization-win64.zip'
+                },
+                files: [
+                    {expand: true, cwd:"./dist/packages/CodeCharta/win64/", src: ['**/*'], dest: '.'}
+                ]
+            }
         }
 
     });
@@ -203,7 +246,8 @@ module.exports = function (grunt) {
     grunt.registerTask("build", ["clean:app", "jshint", "browserify", "ngAnnotate:app", "htmlmin", "copy:style", "concat:css", "clean:style", "copy:materialize", "copy:json", "copy:hammer", "copy:fontawesome", "copy:angular", "copy:images", "copy:jquery", "copy:license"]);
     grunt.registerTask("test", ["clean:coverage", "exec:test"]);
     grunt.registerTask("doc", ["clean:doc", "exec:esdoc"]);
-    grunt.registerTask("package", ["clean:package", "nwjs"]);
+    grunt.registerTask("package", ["clean:package", "nwjs", "compress"]);
     grunt.registerTask("quick", ["jshint", "browserify", "ngAnnotate:app", "htmlmin", "copy:style", "concat:css","copy:json", "clean:style", "copy:images"]);
+
 
 };
