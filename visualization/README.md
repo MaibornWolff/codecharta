@@ -1,5 +1,5 @@
 # CodeCharta 
-[![Build Status](https://secure.travis-ci.org/some-name/CodeCharta.png?branch=master)](http://travis-ci.org/some-name/CodeCharta)
+[![Build Status](https://travis-ci.org/MaibornWolff/codecharta.svg?branch=master)](https://travis-ci.org/MaibornWolff/codecharta)
 
 > MaibornWolff CodeCharta
 
