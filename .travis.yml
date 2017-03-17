@@ -11,6 +11,9 @@ jdk:
 env:
   - TRAVIS_NODE_VERSION="6"
 
+before_install:
+ - chmod +x ./analysis/gradlew
+
 install:
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
 
@@ -18,11 +21,17 @@ script:
   - ./visualization/script/travis-build.sh
   - ./analysis/script/travis-build.sh
 
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
 cache:
   directories:
     - visualization/node_modules
     - visualization/dist/app/node_modules
     - visualization/.cache
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
 
 deploy:
   provider: releases
