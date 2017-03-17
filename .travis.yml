@@ -16,3 +16,13 @@ cache:
     - visualization/node_modules
     - visualization/dist/app/node_modules
     - visualization/.cache
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "fh7gNNCY10ovb+fN1sAlqqTUkTfP1+W0nqCbEtBnDTxNlfvwu0j6+39Gutl1Sc2OSXiwLSBIqM5Sr+2jRSkzdG8hFsFjMXd7+6+LySlDl61QdhiucNzI9nf9+lQj8DkCq8ewzRJXFn5Mx/creSEHPmkFioWEKBIcBNG6TlcgO9zsgz+lXDgv2IKgxS3SbzSJgX6CUyWFE3qOBDnrAfQnAz6ODscgXPQt6Ifya878GdGb4uKzyILBugEBtRnuZQaMSX8PkYZ18U+O1YTuVaMIKGyvHqoZ2DAcME/V/Wbf07FATXKoF5vhdtLQpDwosAbMiWJUldzjS46F6NHuPcKjtyHcGWmgjpcHby02vR1391mPyqk0vefopbXUHX5wyTxM4suqGMEBZq2GehimPMw7JhaQ5CBpHvr2hKaIduEba05G/BltL08q5F5rXu/G5Un8vy/6E5jzW9sbvSToT9QjDYhoNW7u6ZpGINWRHqHh9WWLvdVYPcCajMRsp3NFcQQx5K6tMa4F4Eo3js5iHaSBk2r0zqUDrVMJmluauO0P7Mjaa43adnXuguE4ubzGwnl7Qnw9VMWmvoWiiHrB+6f9cHw2Ylfr6BXG6uTdVln1MPNOuRWtSQSR/yVC7oJqJqrG59/krVRTuG97qJSjObDUg/mAixgdb1Y2AHbT9z6Fgf8="
+  file_glob: true
+  file: "visualization/dist/*"
+  skip_cleanup: true
+  on:
+    tags: true
