@@ -2,6 +2,6 @@
 
 cd visualization
 npm install
-npm test
-npm doc
-npm package
+npm run test
+npm run doc
+npm run package
