@@ -3,4 +3,4 @@
 cd analysis
 ./gradlew :distTar
 ./gradlew :test
-./gradlew :integrationTest
+# ./gradlew :integrationTest
