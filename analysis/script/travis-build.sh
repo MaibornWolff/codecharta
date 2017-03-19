@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
 cd analysis
-./gradlew :distTar
-./gradlew :test
+./gradlew build
 # ./gradlew :integrationTest
