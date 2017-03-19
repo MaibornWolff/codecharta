@@ -92,14 +92,14 @@ public class Project {
         Project project = (Project) o;
 
         if (projectName != null ? !projectName.equals(project.projectName) : project.projectName != null) return false;
-        if (apiVersion != null ? !apiVersion.equals(project.apiVersion) : project.apiVersion != null) return false;
+        if (!apiVersion.equals(project.apiVersion)) return false;
         return nodes != null ? nodes.equals(project.nodes) : project.nodes == null;
     }
 
     @Override
     public int hashCode() {
         int result = projectName != null ? projectName.hashCode() : 0;
-        result = 31 * result + (apiVersion != null ? apiVersion.hashCode() : 0);
+        result = 31 * result + apiVersion.hashCode();
         result = 31 * result + (nodes != null ? nodes.hashCode() : 0);
         return result;
     }

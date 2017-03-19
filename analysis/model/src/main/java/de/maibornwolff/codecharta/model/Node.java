@@ -123,10 +123,8 @@ public class Node {
     public List<Path> getPathsToLeafs() {
         List<Path> result = new ArrayList<>();
         for (Node child : getChildren()) {
-            if (child.getChildren().isEmpty()) {
-                result.add(new FileSystemPath(child.getName()));
-            }
-            result.addAll(child.getPathsToLeafs().stream().map(path -> new FileSystemPath(child.getName() + "/" + path.toString())).collect(Collectors.toList()));
+            if (child.getChildren().size() == 0) result.add(new FileSystemPath(child.getName()));
+            result.addAll(child.getPathsToLeafs().stream().map((path) -> new FileSystemPath(child.getName() + "/" + path.toString())).collect(Collectors.toList()));
         }
 
         return result;

@@ -43,6 +43,10 @@ import java.util.Optional;
  * A path in this tree is represented by the ordered list of names of nodes.
  */
 public final class NodeInserter {
+    private NodeInserter() {
+        // Utility Class
+    }
+
     private static final Path TRIVIAL_PATH = new Path() {
 
         @Override
@@ -65,10 +69,6 @@ public final class NodeInserter {
             return null;
         }
     };
-
-    private NodeInserter() {
-        // Utility Class
-    }
 
     /**
      * Traverses the node tree and inserts the node as child of the element at the specified position in the tree.

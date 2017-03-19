@@ -50,7 +50,7 @@ public class FileSystemPath implements Path<String> {
         if (path == null) {
             throw new IllegalArgumentException("Path should be non-null and non-empty.");
         }
-        edgeStream = Arrays.stream(path.split(Character.toString(PATH_SEPARATOR))).filter(s -> !s.isEmpty()).collect(Collectors.toList());
+        edgeStream = Arrays.stream(path.split("" + PATH_SEPARATOR)).filter(s -> !s.isEmpty()).collect(Collectors.toList());
     }
 
     @Override
@@ -60,7 +60,7 @@ public class FileSystemPath implements Path<String> {
 
     @Override
     public boolean isTrivial() {
-        return edgeStream.isEmpty();
+        return edgeStream.size() == 0;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class FileSystemPath implements Path<String> {
 
     @Override
     public String toString() {
-        return edgeStream.stream().collect(Collectors.joining(Character.toString(PATH_SEPARATOR)));
+        return edgeStream.stream().collect(Collectors.joining("" + PATH_SEPARATOR));
     }
 
     @Override

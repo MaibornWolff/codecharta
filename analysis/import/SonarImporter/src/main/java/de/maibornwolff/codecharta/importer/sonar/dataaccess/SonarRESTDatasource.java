@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
 public class SonarRESTDatasource {
 
     private static final String METRICS = "/api/metrics/search";
-    private static final String RESOURCE = "%s/api/resources?resource=%s&depth=-1&metrics=%s";
+    private static final String RESOURCE = "/api/resources?resource=%s&depth=-1&metrics=%s";
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
@@ -112,7 +112,7 @@ public class SonarRESTDatasource {
                 .map(Object::toString)
                 .collect(Collectors.joining(","));
         try {
-            return new URL(String.format(RESOURCE, baseUrl, projectKey, metricString));
+            return new URL(String.format(baseUrl + RESOURCE, projectKey, metricString));
         } catch (MalformedURLException e) {
             throw new SonarImporterException(e);
         }

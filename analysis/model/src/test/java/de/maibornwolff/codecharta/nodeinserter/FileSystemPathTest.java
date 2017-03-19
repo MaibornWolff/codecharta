@@ -40,11 +40,6 @@ import static org.junit.Assert.assertThat;
 
 public class FileSystemPathTest {
 
-    @Test(expected = IllegalArgumentException.class)
-    public void should_throw_exception_if_path_null(){
-        new FileSystemPath(null);
-    }
-
     @Test
     public void empty_dir_should_valid_path() {
         Path path = new FileSystemPath("");

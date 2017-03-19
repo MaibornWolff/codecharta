@@ -30,5 +30,5 @@
 package de.maibornwolff.codecharta.model;
 
 public enum NodeType {
-    File, Module, Folder
+    File, Folder
 }
