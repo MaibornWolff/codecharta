@@ -9,7 +9,6 @@ auth.txt
 .gradle
 /build/
 gradle-app.setting
-!gradle-wrapper.jar
 .gradletasknamecache
 
 
@@ -125,6 +124,7 @@ fabric.properties
 
 # Package Files #
 *.jar
+!gradle-wrapper.jar
 *.war
 *.ear
 *.zip
