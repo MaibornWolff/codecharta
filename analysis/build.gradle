@@ -8,10 +8,6 @@ group 'de.maibornwolff.codecharta'
 version '1.0.0'
 
 repositories {
-  maven {
-    credentials{}
-    url "${nexusUrl}/content/groups/public"
-  }
   mavenCentral()
 }
 
@@ -26,15 +22,6 @@ allprojects {
 
     jacoco {
         toolVersion = "0.7.8"
-    }
-
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                repository(url: "${nexusUrl}/content/repositories/releases")
-                snapshotRepository(url: "${nexusUrl}/content/repositories/snapshots")
-            }
-        }
     }
 }
 
