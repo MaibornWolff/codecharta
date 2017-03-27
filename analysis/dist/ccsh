@@ -4,16 +4,13 @@ set -e
 CCSH_PATH=$(readlink -f "$0")
 CC_INSTALL_DIR=$(dirname "${CCSH_PATH}")
 
+CC_VERSION="1.1.0"
+
 CC_CMD=(
     "install"
     "check"
     "sonarimport"
     "sourcemonitorimport")
-CC_CMD_VERSION=(
-    ""
-    "1.0.0"
-    "1.0.0"
-    "1.0.0")
 CC_CMD_DESCRIPTION=(
     "installs submodules"
     "checks if json is valid"
@@ -21,9 +18,9 @@ CC_CMD_DESCRIPTION=(
     "imports data from sourcemonitor")
 CC_CMD_BIN=(
     "install"
-    "${CC_INSTALL_DIR}/codecharta-check-1.0.0/bin/codecharta-check"
-    "${CC_INSTALL_DIR}/codecharta-sonarimport-1.0.0/bin/codecharta-sonarimport"
-    "${CC_INSTALL_DIR}/codecharta-sourcemonitorimport-1.0.0/bin/codecharta-sourcemonitorimport")
+    "${CC_INSTALL_DIR}/codecharta-check-${CC_VERSION}/bin/codecharta-check"
+    "${CC_INSTALL_DIR}/codecharta-sonarimport-${CC_VERSION}/bin/codecharta-sonarimport"
+    "${CC_INSTALL_DIR}/codecharta-sourcemonitorimport-${CC_VERSION}/bin/codecharta-sourcemonitorimport")
 
 exit_with_error() {
   echo Error: $1 1>&2
@@ -42,7 +39,7 @@ get_key_for_cc_cmd() {
 }
 
 usage() {
-  echo "CodeCharta CLI"
+  echo "CodeCharta CLI version ${CC_VERSION}"
   echo "Usage: ccsh <cmd> [...]"
   echo
   echo "  <cmd> name of the command"
@@ -75,7 +72,7 @@ list() {
   for i in "${CC_CMD[@]}"
   do
       get_key_for_cc_cmd $i
-      echo -e "${CC_CMD[key]} \t | ${CC_CMD_DESCRIPTION[key]} \t | ${CC_CMD_VERSION[key]}"
+      echo -e "${CC_CMD[key]} \t | ${CC_CMD_DESCRIPTION[key]}"
   done
 }
 

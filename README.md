@@ -15,7 +15,7 @@ The visualisation data of CodeCharta is given as json files. [cc.json](cc.json) 
 
 ## Bug tracker
 
-Have a bug or a feature request? [Please open a new issue](https://github.com/orgs/MaibornWolff/projects/2).
+Have a bug or a feature request? [Please open a new issue](https://github.com/MaibornWolff/codecharta/issues).
 Before opening any issue, please search for existing issues.
 
 ## License
