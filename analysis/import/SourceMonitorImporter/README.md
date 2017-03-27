@@ -1,6 +1,6 @@
 # SourceMonitorImporter
 
-Generates visualisation data from SourceMonitor through SourceMonitor's CSV-Export.
+Generates visualisation data from [SourceMonitor](http://www.campwoodsw.com/sourcemonitor.html) through SourceMonitor's CSV-Export.
 
 ## Usage
 
@@ -16,7 +16,7 @@ Currently, SourceMonitorImporter does not support metrics for methods in csv fil
 
 ### Wrapper Script sourcemonImport.bat
 
-If SourceMonitor is installed in 'C:\Program Files (x86)\SourceMonitor' you may use the wrapper script sourcemonImport.bat to generates and imports metrics from SourceMonitor in one step:
+If SourceMonitor v3.5 is installed in 'C:\Program Files (x86)\SourceMonitor' you may use the wrapper script sourcemonImport.bat to generates and imports metrics from SourceMonitor in one step:
 
 > sourcemonImport.bat \<project name> \<source code path> \<language>
 
