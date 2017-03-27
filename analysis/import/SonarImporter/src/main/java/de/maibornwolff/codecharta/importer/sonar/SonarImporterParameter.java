@@ -52,6 +52,12 @@ class SonarImporterParameter {
     @Parameter(names = {"-u", "--user"}, description = "User Token for connecting to remote sonar instance")
     private String user = "";
 
+    @Parameter(names = {"--old-api"}, description = "Old SonarQube-Api")
+    private boolean oldApi = false;
+
+    @Parameter(names = {"-l", "--local"}, description = "Local run")
+    private boolean local = false;
+
     public SonarImporterParameter(String[] args) {
         this.jc = new JCommander(this, args);
     }
@@ -74,6 +80,14 @@ class SonarImporterParameter {
 
     public String getUser() {
         return user;
+    }
+
+    public boolean isOldApi() {
+        return oldApi;
+    }
+
+    public boolean isLocal() {
+        return local;
     }
 
     public void printUsage() {

@@ -27,44 +27,42 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.importer.sonar;
+package de.maibornwolff.codecharta.importer.sonar.dataaccess;
 
-import de.maibornwolff.codecharta.importer.sonar.model.SonarResource;
-import de.maibornwolff.codecharta.model.Project;
-import de.maibornwolff.codecharta.serialization.ProjectSerializer;
+import de.maibornwolff.codecharta.importer.sonar.model.MetricObject;
+import de.maibornwolff.codecharta.importer.sonar.model.Metrics;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
+import java.net.URL;
 import java.util.List;
 
-public class SonarXMLImport {
-    private final Reader in;
+/**
+ * Requests Data from Sonar Instance through REST-API
+ */
+public class SonarMetricsAPIDatasource {
 
-    private final Writer out;
+    private static final String METRICS = "/api/metrics/search";
 
-    private final String baseUrlForLink;
+    private final String user;
 
-    public SonarXMLImport(Reader in, Writer out, String baseUrlForLink) {
-        this.in = in;
-        this.out = out;
-        this.baseUrlForLink = baseUrlForLink;
+    private final URL baseUrl;
+
+    SonarMetricsAPIDatasource(URL baseUrl) {
+        this("", baseUrl);
     }
 
-    Project readProject() throws SonarImporterException {
-        SonarResourceReader sonarResourceReader = new SonarResourceReader(in);
-        List<SonarResource> sonarResources = sonarResourceReader.readSonarResources();
-
-        SonarResourceToProjectConverter projectConverter = new SonarResourceToProjectConverter(sonarResources, baseUrlForLink);
-        return projectConverter.convert();
+    public SonarMetricsAPIDatasource(String user, URL baseUrl) {
+        this.user = user;
+        this.baseUrl = baseUrl;
     }
 
-    void writeProject(Project project) throws IOException {
-        ProjectSerializer.serializeProject(project, out);
-    }
-
-    public void doImport() throws SonarImporterException, IOException {
-        Project project = readProject();
-        writeProject(project);
+    public List<MetricObject> getAvailableMetrics() {
+        Invocation.Builder request = ClientBuilder.newClient().register(GsonProvider.class).target(baseUrl + METRICS).request();
+        if (!user.isEmpty()) {
+            request.header("Authorization", "Basic " + AuthentificationHandler.createAuthTxtBase64Encoded(user));
+        }
+        Metrics metric = request.get(Metrics.class);
+        return metric.getMetrics();
     }
 }

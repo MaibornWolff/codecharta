@@ -2,6 +2,8 @@
 
 Generates visualisation data from SonarQube data through a xml file or an API call to a SonarQube server.
 
+The importer is limited to projects with less than 500 components.
+
 ## Usage
 
 ### Remote call to SonarQube server
