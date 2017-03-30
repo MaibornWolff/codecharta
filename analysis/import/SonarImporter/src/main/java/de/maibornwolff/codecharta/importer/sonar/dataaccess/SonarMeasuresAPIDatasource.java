@@ -59,7 +59,8 @@ public class SonarMeasuresAPIDatasource {
     }
 
     public Measures getMeasures(List<String> metrics, int pageNumber) {
-        Invocation.Builder request = ClientBuilder.newClient().register(GsonProvider.class).target(createMeasureAPIRequestURI(metrics, pageNumber)).request();
+        URI measureAPIRequestURI = createMeasureAPIRequestURI(metrics, pageNumber);
+        Invocation.Builder request = ClientBuilder.newClient().register(GsonProvider.class).target(measureAPIRequestURI).request();
         if (!user.isEmpty()) {
             request.header("Authorization", "Basic " + AuthentificationHandler.createAuthTxtBase64Encoded(user));
         }

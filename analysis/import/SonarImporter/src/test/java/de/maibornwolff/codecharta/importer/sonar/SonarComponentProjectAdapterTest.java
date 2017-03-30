@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
 
 public class SonarComponentProjectAdapterTest {
     @Test
-    public void should_insert_a_node_from_measure() {
+    public void should_insert_a_node_from_file_component() {
         // given
         String metric = "metric";
         String value = "50.0";
@@ -38,5 +38,53 @@ public class SonarComponentProjectAdapterTest {
         assertThat(actualNode.getAttributes(), hasEntry(metric, Double.valueOf(value)));
         assertThat(actualNode.getChildren(), hasSize(0));
         assertThat(actualNode.getLink(), is(""));
+    }
+
+    @Test
+    public void should_ignore_string_measures() {
+        // given
+        String metric = "metric";
+        String value = "bla";
+        Measure measure = new Measure(metric, value);
+        Component component = new Component("id", "key", "name", "path", "java", Qualifier.FIL, ImmutableList.of(measure));
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
+
+        // when
+        project.addComponentAsNode(component);
+
+        // then
+        assertThat(project.getRootNode().getChildren(), hasSize(1));
+        Node actualNode = project.getRootNode().getChildren().get(0);
+        assertThat(actualNode.getAttributes().keySet(), hasSize(0));
+    }
+
+    @Test
+    public void should_insert_a_file_node_from_uts_component() {
+        // given
+        Component component = new Component("id", "key", "name", "path", "java", Qualifier.UTS, ImmutableList.of());
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
+
+        // when
+        project.addComponentAsNode(component);
+
+        // then
+        assertThat(project.getRootNode().getChildren(), hasSize(1));
+        Node actualNode = project.getRootNode().getChildren().get(0);
+        assertThat(actualNode.getType(), is(NodeType.File));
+    }
+
+    @Test
+    public void should_insert_a_folder_node_from_dir_component() {
+        // given
+        Component component = new Component("id", "key", "name", "path", "java", Qualifier.DIR, ImmutableList.of());
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
+
+        // when
+        project.addComponentAsNode(component);
+
+        // then
+        assertThat(project.getRootNode().getChildren(), hasSize(1));
+        Node actualNode = project.getRootNode().getChildren().get(0);
+        assertThat(actualNode.getType(), is(NodeType.Folder));
     }
 }

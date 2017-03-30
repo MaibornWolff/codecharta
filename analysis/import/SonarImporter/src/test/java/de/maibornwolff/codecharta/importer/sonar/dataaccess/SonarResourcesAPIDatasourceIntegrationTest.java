@@ -70,58 +70,69 @@ public class SonarResourcesAPIDatasourceIntegrationTest {
     }
 
     @Test
-    public void getMetricValues() throws Exception {
+    public void getResourcesAsString() throws Exception {
+        // given
         String urlPath = "/api/resources?resource=" + PROJECT_KEY + "&depth=-1&metrics=metric1,metric2";
-
         String responseString = createResponseString();
         stubFor(get(urlEqualTo(urlPath))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withBody(responseString)));
 
+        // when
         SonarResourcesAPIDatasource ds = new SonarResourcesAPIDatasource(createBaseUrl(), PROJECT_KEY);
         String response = ds.getResourcesAsString(ImmutableList.of("metric1", "metric2"));
 
+        // then
         assertThat(response, is(responseString));
     }
 
     @Test
-    public void getMetricValuesIfAuthorized() throws Exception {
+    public void getResourcesAsString_if_authenticated() throws Exception {
+        // given
         String urlPath = "/api/resources?resource=" + PROJECT_KEY + "&depth=-1&metrics=metric1,metric2";
-
         String responseString = createResponseString();
         stubFor(get(urlEqualTo(urlPath)).withBasicAuth(USERNAME, "")
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withBody(responseString)));
 
+        // when
         SonarResourcesAPIDatasource ds = new SonarResourcesAPIDatasource(USERNAME, createBaseUrl(), PROJECT_KEY);
         String response = ds.getResourcesAsString(ImmutableList.of("metric1", "metric2"));
 
+        // then
         assertThat(response, is(responseString));
     }
 
     @Test(expected = NotAuthorizedException.class)
-    public void getMetricValuesShouldThrowExceptionIfUnauthorized() throws Exception {
+    public void getResourcesAsString_should_throw_exception_if_unauthorized() throws Exception {
+        // given
         String urlPath = "/api/resources?resource=" + PROJECT_KEY + "&depth=-1&metrics=metric1,metric2";
-
         stubFor(get(urlEqualTo(urlPath))
                 .willReturn(aResponse()
                         .withStatus(401)));
 
+        // when
         SonarResourcesAPIDatasource ds = new SonarResourcesAPIDatasource(createBaseUrl(), PROJECT_KEY);
         ds.getResourcesAsString(ImmutableList.of("metric1", "metric2"));
+
+        // then throw
     }
 
     @Test(expected = ServerErrorException.class)
-    public void getResources_should_throw_exception_if_return_code_not_ok() throws Exception {
+    public void getResourcesAsString_should_throw_exception_if_return_code_not_ok() throws Exception {
+        // given
         String urlPath = "/api/resources?resource=" + PROJECT_KEY + "&depth=-1&metrics=metric1,metric2";
         stubFor(get(urlEqualTo(urlPath))
                 .willReturn(aResponse()
                         .withStatus(501)));
 
+        // when
         SonarResourcesAPIDatasource ds = new SonarResourcesAPIDatasource(createBaseUrl(), PROJECT_KEY);
         ds.getResourcesAsString(ImmutableList.of("metric1", "metric2"));
+
+        // then throw
     }
 
 }

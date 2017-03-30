@@ -76,49 +76,63 @@ public class SonarMetricsAPIDatasourceIntegrationTest {
 
     @Test
     public void getAvailableMetrics() throws Exception {
+        // given
         stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
                         .withBody(createMetricResponseAsJsonString())));
 
+        // when
         SonarMetricsAPIDatasource ds = new SonarMetricsAPIDatasource(createBaseUrl());
         List<String> metricsList = ds.getAvailableMetrics().stream().map(MetricObject::getKey).collect(Collectors.toList());
 
+        // then
         assertThat(metricsList, is(Arrays.asList(METRIC_ARRAY)));
     }
 
     @Test
-    public void getAvailableMetricsIfAuth() throws Exception {
+    public void getAvailableMetrics_if_authenticated() throws Exception {
+        // given
         stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH)).withBasicAuth(USERNAME, "")
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
                         .withBody(createMetricResponseAsJsonString())));
 
+        // when
         SonarMetricsAPIDatasource ds = new SonarMetricsAPIDatasource(USERNAME, createBaseUrl());
         List<String> metricsList = ds.getAvailableMetrics().stream().map(MetricObject::getKey).collect(Collectors.toList());
 
+        // then
         assertThat(metricsList, is(Arrays.asList(METRIC_ARRAY)));
     }
 
     @Test(expected = NotAuthorizedException.class)
-    public void getAvailableMetricsshouldThrowExceptionIfUnauthorized() throws Exception {
+    public void getAvailableMetrics_should_throw_exception_if_unauthorized() throws Exception {
+        // given
         stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH))
                 .willReturn(aResponse()
                         .withStatus(401)));
 
+        // when
         SonarMetricsAPIDatasource ds = new SonarMetricsAPIDatasource(createBaseUrl());
         ds.getAvailableMetrics();
+
+        // then throw
     }
 
     @Test(expected = ServerErrorException.class)
-    public void getAvailableMetricsshouldThrowExceptionIfReturnCodeNotOK() throws Exception {
+    public void getAvailableMetrics_should_throw_exception_if_return_code_not_oK() throws Exception {
+        // given
         stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH))
                 .willReturn(aResponse()
                         .withStatus(501)));
 
+        // when
         SonarMetricsAPIDatasource ds = new SonarMetricsAPIDatasource(createBaseUrl());
         ds.getAvailableMetrics();
+
+        // then throw
     }
 }
