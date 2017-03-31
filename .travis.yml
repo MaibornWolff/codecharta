@@ -33,6 +33,9 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
+before_deploy:
+  - .script/build_gh_pages.sh
+
 deploy:
   - provider: releases
     api_key: $GITHUB_TOKEN
@@ -47,6 +50,6 @@ deploy:
   - provider: pages
     github_token: $GITHUB_TOKEN
     skip_cleanup: true
-    local_dir: "visualization/dist/"
+    local_dir: "gh_pages"
     on:
       branch: master

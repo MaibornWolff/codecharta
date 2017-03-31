@@ -160,7 +160,7 @@ module.exports = function (grunt) {
         },
 
         exec: {
-            esdoc: {
+            doc: {
                 command: path.resolve("node_modules", ".bin", "esdoc") + " -c esdoc.json",
                 stdout: true
             }
@@ -244,7 +244,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask("build", ["clean:app", "jshint", "browserify", "ngAnnotate:app", "htmlmin", "copy:style", "concat:css", "clean:style", "copy:materialize", "copy:json", "copy:hammer", "copy:fontawesome", "copy:angular", "copy:images", "copy:jquery", "copy:license"]);
     grunt.registerTask("test", ["clean:coverage", "mocha_istanbul"]);
-    grunt.registerTask("doc", ["clean:doc", "exec:esdoc"]);
+    grunt.registerTask("doc", ["clean:doc", "exec:doc"]);
     grunt.registerTask("package", ["clean:package", "nwjs", "compress"]);
     grunt.registerTask("quick", ["jshint", "browserify", "ngAnnotate:app", "htmlmin", "copy:style", "concat:css","copy:json", "clean:style", "copy:images"]);
 
