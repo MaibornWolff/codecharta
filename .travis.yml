@@ -33,6 +33,10 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
+before_deploy:
+  - rm .gitignore
+  - git add -A
+
 deploy:
   - provider: releases
     api_key: $GITHUB_TOKEN
@@ -46,9 +50,6 @@ deploy:
 
   - provider: pages
     github_token: $GITHUB_TOKEN
-    file_glob: true
-    file:
-      - "visualization/dist/*"
     skip_cleanup: true
     on:
       branch: master
