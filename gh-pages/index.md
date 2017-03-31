@@ -1,8 +1,10 @@
 # Codecharta quickstart Tutorial
 
-### given: two .zip/.tar packages, one for the visualisation, one for the analysis
+### given: two .zip/.tar packages, one for the visualization, one for the analysis
 
 ## Installation
+ - Download the [latest release](https://github.com/MaibornWolff/codecharta/releases/latest)
+ - you should now have the analysis and visualization package 
  - unpack both packages
  - enter the analysis directory with your favorite console
 
@@ -36,10 +38,15 @@ The easiest example:
  
 An output file has been created.
 
-## Use the visualisation
-Open the visualisation directory and run the executable. 
+## Use the visualization
+
+[Browser Demo](visualization/app/)
+[Coverage](visualization/coverage/)
+[Reference](visualization/doc/)
+
+Open the visualization directory and run the executable
 A new window should open now. 
-![Image](https://github.com/felixherbst/test/blob/master/screenshot_visu.PNG?raw=true)
+![Image](images/screenshot_visu.PNG)
 
 - In the right lower corner, click on the folder icon. 
 - Choose the generated .json file from the previous step
@@ -54,7 +61,7 @@ Tip: If your device has a touch display, you can quickly navigate with your fing
 
 Change the visualized content:
 - click on the second button for the settings
-![Image](https://github.com/felixherbst/test/blob/master/screenshot_visu2.PNG?raw=true)
+![Image](images/screenshot_visu2.PNG)
 
 **Metrics:**
 
