@@ -41,7 +41,9 @@ An output file has been created.
 ## Use the visualization
 
 [Browser Demo](visualization/app/)
-[Coverage](visualization/coverage/)
+
+[Coverage](visualization/coverage/lcov-report)
+
 [Reference](visualization/doc/)
 
 Open the visualization directory and run the executable
