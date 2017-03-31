@@ -35,6 +35,7 @@ cache:
 
 before_deploy:
   - rm .gitignore
+  - rm visualization/.gitignore
   - git add -A
 
 deploy:
