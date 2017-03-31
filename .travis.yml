@@ -47,7 +47,8 @@ deploy:
   - provider: pages
     github_token: $GITHUB_TOKEN
     file_glob: true
-    file: "doc/*"
+    file:
+      - "visualization/dist/*"
     skip_cleanup: true
     on:
       branch: master
