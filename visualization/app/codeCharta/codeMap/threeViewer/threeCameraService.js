@@ -28,7 +28,7 @@ class ThreeCameraService {
         var cameraDistance = 1000;
         var VIEW_ANGLE = 45;
         var ASPECT = containerWidth / containerHeight;
-        var NEAR = 0.1;
+        var NEAR = 100;
         var FAR = 20000;
 
         this.camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
