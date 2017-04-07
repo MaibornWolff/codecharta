@@ -53,14 +53,17 @@ public class SonarResourcesAPIDatasource {
 
     private final String projectKey;
 
-    SonarResourcesAPIDatasource(URL baseUrl, String projectKey) {
-        this("", baseUrl, projectKey);
-    }
+    private SonarMetricsAPIDatasource sonarMetricsAPIDatasource;
 
     public SonarResourcesAPIDatasource(String user, URL baseUrl, String projectKey) {
+        this(user, baseUrl, projectKey, new SonarMetricsAPIDatasource(user, baseUrl));
+    }
+
+    SonarResourcesAPIDatasource(String user, URL baseUrl, String projectKey, SonarMetricsAPIDatasource sonarMetricsAPIDatasource) {
         this.user = user;
         this.baseUrl = baseUrl;
         this.projectKey = projectKey;
+        this.sonarMetricsAPIDatasource = sonarMetricsAPIDatasource;
     }
 
     /**
@@ -78,16 +81,22 @@ public class SonarResourcesAPIDatasource {
     }
 
     private URI createProjectMetricValuesRequestUrl(List<String> metricList) throws SonarImporterException {
-        if (metricList.isEmpty()) {
-            new SonarMetricsAPIDatasource(user, baseUrl).getAvailableMetrics().stream().forEach(m -> metricList.add(m.getKey()));
-        }
-        String metricString = metricList.stream()
-                .map(Object::toString)
-                .collect(Collectors.joining(","));
+        String metricString = createMetricString(metricList);
         try {
             return new URI(String.format(RESOURCE, baseUrl, projectKey, metricString));
         } catch (URISyntaxException e) {
             throw new SonarImporterException(e);
         }
+    }
+
+    String createMetricString(List<String> metricList) {
+        if (metricList.isEmpty()) {
+            sonarMetricsAPIDatasource
+                    .getAvailableMetrics()
+                    .forEach(m -> metricList.add(m.getKey()));
+        }
+        return metricList.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(","));
     }
 }

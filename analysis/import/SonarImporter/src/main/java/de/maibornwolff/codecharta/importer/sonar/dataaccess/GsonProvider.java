@@ -45,11 +45,8 @@ public class GsonProvider<T> implements MessageBodyReader<T> {
                       MediaType mediaType, MultivaluedMap<String, String> httpHeaders,
                       InputStream entityStream) throws IOException, WebApplicationException {
 
-        InputStreamReader reader = new InputStreamReader(entityStream, "UTF-8");
-        try {
+        try (InputStreamReader reader = new InputStreamReader(entityStream, "UTF-8")) {
             return gson.fromJson(reader, type);
-        } finally {
-            reader.close();
         }
     }
 }

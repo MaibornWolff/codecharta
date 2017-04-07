@@ -2,15 +2,22 @@ package de.maibornwolff.codecharta.importer.sonar.model;
 
 import java.util.List;
 
-/**
- * Created by DominikU on 24.03.2017.
- */
 public class Measures {
     private PagingInfo paging;
 
     private Component baseComponent;
 
     private List<Component> components;
+
+    public Measures() {
+        super();
+    }
+
+    public Measures(PagingInfo paging, Component baseComponent, List<Component> components) {
+        this.paging = paging;
+        this.baseComponent = baseComponent;
+        this.components = components;
+    }
 
     public PagingInfo getPaging() {
         return paging;
