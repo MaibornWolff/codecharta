@@ -1,8 +1,5 @@
 package de.maibornwolff.codecharta.importer.sonar.model;
 
-/**
- * Created by DominikU on 24.03.2017.
- */
 public class Measure {
     private String metric;
 

@@ -29,6 +29,7 @@
 
 package de.maibornwolff.codecharta.importer.sonar.dataaccess;
 
+import de.maibornwolff.codecharta.importer.sonar.SonarImporterException;
 import de.maibornwolff.codecharta.importer.sonar.model.Measures;
 import de.maibornwolff.codecharta.importer.sonar.model.PagingInfo;
 
@@ -58,7 +59,7 @@ public class SonarMeasuresAPIDatasource {
         this.projectKey = projectKey;
     }
 
-    public Measures getMeasures(List<String> metrics, int pageNumber) {
+    public Measures getMeasures(List<String> metrics, int pageNumber) throws SonarImporterException {
         URI measureAPIRequestURI = createMeasureAPIRequestURI(metrics, pageNumber);
         Invocation.Builder request = ClientBuilder.newClient().register(GsonProvider.class).target(measureAPIRequestURI).request();
         if (!user.isEmpty()) {
@@ -67,20 +68,24 @@ public class SonarMeasuresAPIDatasource {
         return request.get(Measures.class);
     }
 
-    URI createMeasureAPIRequestURI(List<String> metrics, int pageNumber) {
+    URI createMeasureAPIRequestURI(List<String> metrics, int pageNumber) throws SonarImporterException {
+        if (metrics.isEmpty()) {
+            throw new IllegalArgumentException("Empty list of metrics is not supported.");
+        }
+
         String metricString = metrics.stream()
                 .map(Object::toString)
                 .collect(Collectors.joining(","));
         try {
             return new URI(String.format(MEASURES_URL_PATTERN, baseUrl, projectKey, metricString, pageNumber));
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            throw new SonarImporterException(e);
         }
     }
 
-    public int getNumberOfPages(List<String> metrics) {
+    public int getNumberOfPages(List<String> metrics) throws SonarImporterException {
         PagingInfo pagingInfo = getMeasures(metrics, 1).getPaging();
         int total = pagingInfo.getTotal();
-        return total % PAGE_SIZE + 1;
+        return (total / PAGE_SIZE) + 1;
     }
 }

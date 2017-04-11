@@ -28,7 +28,7 @@ public class SonarComponentProjectAdapter extends Project {
     private Map<String, Object> createAttributes(List<Measure> measures) {
         return measures.stream()
                 .filter(this::isMeasureConvertible)
-                .collect(Collectors.toMap(measure -> measure.getMetric(), this::convertMetricValue));
+                .collect(Collectors.toMap(Measure::getMetric, this::convertMetricValue));
     }
 
     private Object convertMetricValue(Measure measure) {
@@ -41,6 +41,7 @@ public class SonarComponentProjectAdapter extends Project {
                 Double.parseDouble(measure.getValue());
                 return true;
             } catch (NumberFormatException nfe) {
+                return false;
             }
         }
 

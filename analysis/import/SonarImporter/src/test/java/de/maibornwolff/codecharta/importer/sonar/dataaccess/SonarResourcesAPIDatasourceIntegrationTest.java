@@ -33,8 +33,10 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.CharStreams;
+import de.maibornwolff.codecharta.importer.sonar.SonarImporterException;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.ServerErrorException;
@@ -46,6 +48,7 @@ import java.net.URL;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
 
 public class SonarResourcesAPIDatasourceIntegrationTest {
 
@@ -80,7 +83,7 @@ public class SonarResourcesAPIDatasourceIntegrationTest {
                         .withBody(responseString)));
 
         // when
-        SonarResourcesAPIDatasource ds = new SonarResourcesAPIDatasource(createBaseUrl(), PROJECT_KEY);
+        SonarResourcesAPIDatasource ds = new SonarResourcesAPIDatasource("", createBaseUrl(), PROJECT_KEY);
         String response = ds.getResourcesAsString(ImmutableList.of("metric1", "metric2"));
 
         // then
@@ -114,7 +117,7 @@ public class SonarResourcesAPIDatasourceIntegrationTest {
                         .withStatus(401)));
 
         // when
-        SonarResourcesAPIDatasource ds = new SonarResourcesAPIDatasource(createBaseUrl(), PROJECT_KEY);
+        SonarResourcesAPIDatasource ds = new SonarResourcesAPIDatasource("", createBaseUrl(), PROJECT_KEY);
         ds.getResourcesAsString(ImmutableList.of("metric1", "metric2"));
 
         // then throw
@@ -129,10 +132,32 @@ public class SonarResourcesAPIDatasourceIntegrationTest {
                         .withStatus(501)));
 
         // when
-        SonarResourcesAPIDatasource ds = new SonarResourcesAPIDatasource(createBaseUrl(), PROJECT_KEY);
+        SonarResourcesAPIDatasource ds = new SonarResourcesAPIDatasource("", createBaseUrl(), PROJECT_KEY);
         ds.getResourcesAsString(ImmutableList.of("metric1", "metric2"));
 
         // then throw
+    }
+
+    @Test(expected = SonarImporterException.class)
+    public void getResourcesAsString_illegal_character_in_project_name_should_throw_exception() throws SonarImporterException {
+        // when
+        SonarResourcesAPIDatasource ds = new SonarResourcesAPIDatasource("", createBaseUrl(), "invalid project id");
+        ds.getResourcesAsString(ImmutableList.of("metric1"));
+
+        // then throw
+    }
+
+    @Test
+    public void createMetricList_should_trigger_retreaving_available_metrics_if_none_given() throws SonarImporterException {
+        // given
+        SonarMetricsAPIDatasource sonarMetricsAPIDatasource = mock(SonarMetricsAPIDatasource.class);
+
+        // when
+        SonarResourcesAPIDatasource ds = new SonarResourcesAPIDatasource("", createBaseUrl(), PROJECT_KEY, sonarMetricsAPIDatasource);
+        ds.createMetricString(ImmutableList.of());
+
+        // then
+        Mockito.verify(sonarMetricsAPIDatasource).getAvailableMetrics();
     }
 
 }
