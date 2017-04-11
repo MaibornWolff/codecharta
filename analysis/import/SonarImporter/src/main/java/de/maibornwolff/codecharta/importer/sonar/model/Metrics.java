@@ -36,7 +36,7 @@ import java.util.List;
  * see https://github.com/SonarSource/sonarqube/tree/master/sonar-plugin-api
  */
 public class Metrics {
-    private List<MetricObject> metrics = new ArrayList<>();
+    private List<MetricObject> metrics;
 
     public List<MetricObject> getMetrics() {
         return metrics;
