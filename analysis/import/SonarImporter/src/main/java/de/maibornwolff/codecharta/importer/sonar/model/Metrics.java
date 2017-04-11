@@ -29,13 +29,14 @@
 
 package de.maibornwolff.codecharta.importer.sonar.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * see https://github.com/SonarSource/sonarqube/tree/master/sonar-plugin-api
  */
 public class Metrics {
-    private List<MetricObject> metrics;
+    private List<MetricObject> metrics = new ArrayList<>();
 
     public List<MetricObject> getMetrics() {
         return metrics;
