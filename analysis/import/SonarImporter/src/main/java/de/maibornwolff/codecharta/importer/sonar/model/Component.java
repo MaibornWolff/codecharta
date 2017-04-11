@@ -2,9 +2,6 @@ package de.maibornwolff.codecharta.importer.sonar.model;
 
 import java.util.List;
 
-/**
- * Created by DominikU on 24.03.2017.
- */
 public class Component {
     private String id;
 

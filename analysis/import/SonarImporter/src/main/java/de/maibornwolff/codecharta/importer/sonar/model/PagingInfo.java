@@ -1,12 +1,19 @@
 package de.maibornwolff.codecharta.importer.sonar.model;
 
-/**
- * Created by DominikU on 24.03.2017.
- */
 public class PagingInfo {
     private int pageIndex;
     private int pageSize;
     private int total;
+
+    public PagingInfo() {
+        super();
+    }
+
+    public PagingInfo(int pageIndex, int pageSize, int total) {
+        this.pageIndex = pageIndex;
+        this.pageSize = pageSize;
+        this.total = total;
+    }
 
     public int getPageIndex() {
         return pageIndex;

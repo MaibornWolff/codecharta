@@ -22,7 +22,7 @@ public class SonarImporter {
         this.measuresDS = measuresDS;
     }
 
-    public Project getProjectFromMeasureAPI(String name, List<String> metrics) {
+    public Project getProjectFromMeasureAPI(String name, List<String> metrics) throws SonarImporterException {
         List<String> metricsList = getMetricList(metrics);
         SonarComponentProjectAdapter project = new SonarComponentProjectAdapter(name);
 
@@ -35,7 +35,7 @@ public class SonarImporter {
                 .filter(m -> m.getComponents() != null)
                 .flatMap(m -> Flowable.fromIterable(m.getComponents()))
                 .filter(c -> c.getQualifier() == Qualifier.FIL || c.getQualifier() == Qualifier.UTS)
-                .blockingForEach(component -> project.addComponentAsNode(component));
+                .blockingForEach(project::addComponentAsNode);
 
         return project;
     }
@@ -43,7 +43,7 @@ public class SonarImporter {
     private List<String> getMetricList(List<String> metrics) {
         if (metrics.isEmpty()) {
             return metricsDS.getAvailableMetrics().stream()
-                    .filter(m -> m.isFloatType())
+                    .filter(MetricObject::isFloatType)
                     .map(MetricObject::getKey)
                     .collect(Collectors.toList());
         }
