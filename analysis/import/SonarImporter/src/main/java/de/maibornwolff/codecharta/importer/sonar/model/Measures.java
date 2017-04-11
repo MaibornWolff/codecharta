@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.sonar.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ public class Measures {
 
     private Component baseComponent;
 
-    private List<Component> components;
+    private List<Component> components = new ArrayList<>();
 
     public PagingInfo getPaging() {
         return paging;
