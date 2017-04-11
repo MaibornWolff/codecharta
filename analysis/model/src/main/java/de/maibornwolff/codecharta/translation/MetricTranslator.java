@@ -29,28 +29,25 @@
 
 package de.maibornwolff.codecharta.translation;
 
-import com.google.common.collect.Lists;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import de.maibornwolff.codecharta.model.Node;
-import de.maibornwolff.codecharta.model.NodeType;
 import de.maibornwolff.codecharta.model.Project;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * This class provides static methods and functions to translate metric names to commonly used metric names
+ * This class provides static methods and functions to translate metric names. This enables normalization of metric names.
  */
 public final class MetricTranslator {
 
+    /**
+     * Translates metric names in a given project. The result is a translated project instance. A String -> String map
+     * is used for translations. The key is the metric name that gets translated to the corresponding value.
+     * @param sourceProject the project to be translated
+     * @param translations a translation map
+     * @return translated project
+     * @throws IllegalArgumentException when translation map is invalid (has duplicate values)
+     */
     public static Project translateMetrics(Project sourceProject,  Map<String, String> translations) throws IllegalArgumentException{
 
         // validate map
