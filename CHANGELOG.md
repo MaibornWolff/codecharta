@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
+- Default metrics are RLOC, MCC, MCC. If they do not exist in the current map, the first three metrics are chosen.
 
 ### Removed
 
