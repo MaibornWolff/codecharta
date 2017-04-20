@@ -7,7 +7,7 @@
       "children": [
         {
           "name": "big leaf",
-          "attributes": {"Statements": 100, "Functions": 10, "Average Complexity*": 1},
+          "attributes": {"Statements": 100, "Functions": 10, "Average Complexity*": 1, "RLOC": 1000, "MCC": 12},
           "link": "http://www.google.de"
         },
         {
@@ -16,12 +16,12 @@
           "children": [
             {
               "name": "small leaf",
-              "attributes": {"Statements": 30, "Functions": 100, "Average Complexity*": 100},
+              "attributes": {"Statements": 30, "Functions": 100, "Average Complexity*": 100, "RLOC": 1000, "MCC": 12},
               "children": []
             },
             {
               "name": "other small leaf",
-              "attributes": {"Statements": 70, "Functions": 1000, "Average Complexity*": 10},
+              "attributes": {"Statements": 70, "Functions": 1000, "Average Complexity*": 10, "RLOC": 1120, "MCC": 122},
               "children": []
             }
           ]
@@ -35,7 +35,7 @@
       "children": [
         {
           "name": "big leaf",
-          "attributes": {"Statements": 90, "Functions": 11, "Average Complexity*": 1},
+          "attributes": {"Statements": 90, "Functions": 11, "Average Complexity*": 1, "RLOC": 1000, "MCC": 12},
           "link": "http://www.google.de"
         },
         {
@@ -44,12 +44,12 @@
           "children": [
             {
               "name": "small leaf",
-              "attributes": {"Statements": 30, "Functions": 100, "Average Complexity*": 100},
+              "attributes": {"Statements": 30, "Functions": 100, "Average Complexity*": 100, "RLOC": 10300, "MCC": 112},
               "children": []
             },
             {
               "name": "other small leaf",
-              "attributes": {"Statements": 70, "Functions": 1000, "Average Complexity*": 10},
+              "attributes": {"Statements": 70, "Functions": 1000, "Average Complexity*": 10, "RLOC": 100, "MCC": 2},
               "children": []
             }
           ]
@@ -62,7 +62,7 @@
       "children": [
         {
           "name": "big leaf",
-          "attributes": {"Statements": 105, "Functions": 50, "Average Complexity*": 4},
+          "attributes": {"Statements": 105, "Functions": 50, "Average Complexity*": 4, "RLOC": 102, "MCC": 30},
           "link": "http://www.google.de"
         },
         {
@@ -71,12 +71,12 @@
           "children": [
             {
               "name": "small leaf",
-              "attributes": {"Statements": 40, "Functions": 80, "Average Complexity*": 90},
+              "attributes": {"Statements": 40, "Functions": 80, "Average Complexity*": 90, "RLOC": 2000, "MCC": 42},
               "children": []
             },
             {
               "name": "other small leaf",
-              "attributes": {"Statements": 70, "Functions": 800, "Average Complexity*": 9},
+              "attributes": {"Statements": 70, "Functions": 800, "Average Complexity*": 9, "RLOC": 100, "MCC": 82},
               "children": []
             }
           ]
@@ -89,7 +89,7 @@
       "children": [
         {
           "name": "big leaf",
-          "attributes": {"Statements": 105, "Functions": 50, "Average Complexity*": 4},
+          "attributes": {"Statements": 105, "Functions": 50, "Average Complexity*": 4, "RLOC": 100, "MCC": 12},
           "link": "http://www.google.de"
         },
         {
@@ -98,7 +98,7 @@
           "children": [
             {
               "name": "small leaf",
-              "attributes": {"Statements": 40, "Functions": 10, "Average Complexity*": 90},
+              "attributes": {"Statements": 40, "Functions": 10, "Average Complexity*": 90, "RLOC": 100, "MCC": 120},
               "children": []
             }
           ]
@@ -111,7 +111,7 @@
       "children": [
         {
           "name": "big leaf",
-          "attributes": {"Statements": 105, "Functions": 50, "Average Complexity*": 4},
+          "attributes": {"Statements": 105, "Functions": 50, "Average Complexity*": 4, "RLOC": 100, "MCC": 123},
           "link": "http://www.google.de"
         },
         {
@@ -120,7 +120,7 @@
           "children": [
             {
               "name": "small leaf",
-              "attributes": {"Statements": 40, "Functions": 80, "Average Complexity*": 90},
+              "attributes": {"Statements": 40, "Functions": 80, "Average Complexity*": 90, "RLOC": 100, "MCC": 129},
               "children": []
             }
           ]
@@ -131,12 +131,12 @@
           "children": [
             {
               "name": "small leaf 2",
-              "attributes": {"Statements": 40, "Functions": 80, "Average Complexity*": 90},
+              "attributes": {"Statements": 40, "Functions": 80, "Average Complexity*": 90, "RLOC": 2000, "MCC": 12},
               "children": []
             },
             {
               "name": "big leaf2",
-              "attributes": {"Statements": 105, "Functions": 50, "Average Complexity*": 4},
+              "attributes": {"Statements": 105, "Functions": 50, "Average Complexity*": 4, "RLOC": 3000, "MCC": 24},
               "link": "http://www.google.de"
             }
           ]
