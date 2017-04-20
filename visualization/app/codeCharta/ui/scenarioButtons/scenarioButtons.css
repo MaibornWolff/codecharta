@@ -1,0 +1,19 @@
+#actionButtons > .btn-floating {
+    margin-left: 0.5em;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+}
+
+#actionButtons > i.fa-folder-open {
+    margin: 4px 0 0 2px;
+}
+
+#actionButtons > i.fa-bars {
+    margin-top: 4px;
+}
+
+#actionButtons > * {
+    margin-left: 4px;
+    margin-right: 4px;
+}

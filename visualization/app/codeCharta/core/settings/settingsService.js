@@ -124,6 +124,16 @@ class SettingsService {
 
     }
 
+    /**
+     * TODO Tests
+     * Applies given settings
+     * @param {Settings} settings
+     */
+    applySettings(settings) {
+        this.settings = settings;
+        this.onSettingsChanged();
+    }
+
 }
 
 export {SettingsService};
