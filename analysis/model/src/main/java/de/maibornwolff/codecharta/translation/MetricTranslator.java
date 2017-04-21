@@ -44,7 +44,7 @@ public final class MetricTranslator {
      * Translates metric names in a given project. The result is a translated project instance. A String -> String map
      * is used for translations. The key is the metric name that gets translated to the corresponding value.
      * @param sourceProject the project to be translated
-     * @param translations a translation map
+     * @param translations a translation map with unique values
      * @return translated project
      * @throws IllegalArgumentException when translation map is invalid (has duplicate values)
      */
