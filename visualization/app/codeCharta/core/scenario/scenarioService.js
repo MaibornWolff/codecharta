@@ -55,7 +55,7 @@ class ScenarioService {
      * @returns {Scenario[]} all scenarios
      */
     getScenarios() {
-        return [this.getDefaultScenario(), this.getDefaultScenario(), this.getDefaultScenario()];
+        return [this.getDefaultScenario()];
     }
 
     /**
@@ -66,11 +66,9 @@ class ScenarioService {
      */
     getDefaultScenario() {
         let defaultRange = new Range(2,4,false);
-        let defaultSettings = new Settings(this.settingsService.settings.map, defaultRange, "Statements", "Average Complexity*", "Average Complexity*", false, false);
+        let defaultSettings = new Settings(this.settingsService.settings.map, defaultRange, "RLOC", "MCC", "MCC", false, false);
         return new Scenario("Default", defaultSettings);
     }
-
-
 
 }
 
