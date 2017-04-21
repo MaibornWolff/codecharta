@@ -12,17 +12,7 @@ class ScenarioButtonsController {
          */
         this.scenarioService = scenarioService;
 
-        /**
-         *
-         * @type {string}
-         */
-        this.controllerAs = "ctrl";
-
-        /**
-         *
-         * @type {boolean}
-         */
-        this.bindToController = true;
+        this.scenarios = scenarioService.getScenarios();
 
     }
 

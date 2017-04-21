@@ -35,6 +35,18 @@ class ScenarioButtonsDirective{
          * @type {ScenarioButtonsController}
          */
         this.controller = ScenarioButtonsController;
+
+        /**
+         *
+         * @type {string}
+         */
+        this.controllerAs = "ctrl";
+
+        /**
+         *
+         * @type {boolean}
+         */
+        this.bindToController = true;
     }
 
 }
