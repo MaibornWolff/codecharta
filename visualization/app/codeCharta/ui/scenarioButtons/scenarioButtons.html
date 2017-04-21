@@ -1,3 +1,6 @@
-<div id="scenarioButtons">
-HALLO
+
+{{ctrl}}
+
+<div id="scenarioButtons" ng-repeat="(key, value) in ctrl.scenarioService.getScenarios()">
+    <a class="waves-effect waves-light btn">{{key}}</a>
 </div>
