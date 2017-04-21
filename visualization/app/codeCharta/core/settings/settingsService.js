@@ -130,10 +130,43 @@ class SettingsService {
      * @param {Settings} settings
      */
     applySettings(settings) {
-        this.settings.importSettingValues(settings);
+        this.settings.importSettingValues(this.correctSettings(settings));
         this.onSettingsChanged();
+       
     }
-
+    /**
+     * corrects settings, if the chosen metric is not available in the current map, the first three metrics are chosen as a default.
+     * @param {Settings} settings
+     */
+    correctSettings(settings){
+        var result = settings;
+        result.areaMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.areaMetric,this.dataService.data.metrics[0] );
+        result.heightMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.heightMetric, this.dataService.data.metrics[1]);
+        result.colorMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.colorMetric, this.dataService.data.metrics[2]);
+        
+        return result;
+    }
+    /**
+          * Checks if the given metricName is in the metricsArray. If it is in there, we return it, else we return the defaultValue.
+          * @param {String[]} metricsArray an array of metric names
+          * @param {String} metricName a metric name to look for
+          * @param {String} defaultValue a default name in case metricName was not found
+          */
+    getMetricOrDefault(metricsArray, metricName, defaultValue) {
+            var result = defaultValue;
+            metricsArray.forEach((metric) => {
+                    if(metric === metricName){
+                            result = metric;
+                        }
+                });
+            if(result === defaultValue){
+                console.log(metricName + " could not be found in the chosen Map. " + defaultValue + " has been chosen instead.");
+            }
+            else{
+                
+            }
+            return result;
+        }
 }
 
 export {SettingsService};
