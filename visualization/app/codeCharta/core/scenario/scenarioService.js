@@ -44,6 +44,7 @@ class ScenarioService {
      * @param {Scenario} scenario
      */
     applyScenario(scenario) {
+        console.log("button clicked");
         this.settingsService.applySettings(scenario.settings);
     }
 

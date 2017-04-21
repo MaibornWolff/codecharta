@@ -13,9 +13,11 @@ class ScenarioButtonsController {
         this.scenarioService = scenarioService;
 
         this.scenarios = scenarioService.getScenarios();
-
+        
     }
-
+    onclick(value){
+        this.scenarioService.applyScenario(value);
+    }
 }
 
 export {ScenarioButtonsController};

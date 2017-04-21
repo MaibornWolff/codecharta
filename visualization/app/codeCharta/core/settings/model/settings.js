@@ -58,5 +58,14 @@ export class Settings {
         this.grid = grid;
 
     }
+    importSettingValues(settings){
+        this.map = settings.map;
+        this.neutralColorRange = settings.neutralColorRange;
+        this.areaMetric = settings.areaMetric;
+        this.heightMetric = settings.heightMetric;
+        this.colorMetric = settings.colorMetric;
+        this.deltas = settings.deltas;
+        this.grid = settings.grid;
+    }
 
 }

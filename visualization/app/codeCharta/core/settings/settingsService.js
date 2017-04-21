@@ -130,7 +130,7 @@ class SettingsService {
      * @param {Settings} settings
      */
     applySettings(settings) {
-        this.settings = settings;
+        this.settings.importSettingValues(settings);
         this.onSettingsChanged();
     }
 
