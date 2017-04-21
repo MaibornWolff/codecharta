@@ -1,9 +1,11 @@
 "use strict";
 
+import {ScenarioButtonsController} from "./scenarioButtonsController.js";
+
 /**
- * Renders the floating action button bar
+ * Renders the scenario buttons
  */
-class FabBarDirective{
+class ScenarioButtonsDirective{
 
     /**
      * @constructor
@@ -14,7 +16,7 @@ class FabBarDirective{
          *
          * @type {string}
          */
-        this.templateUrl = "./fabBar.html";
+        this.templateUrl = "./scenarioButtons.html";
 
         /**
          *
@@ -27,8 +29,14 @@ class FabBarDirective{
          * @type {Scope}
          */
         this.scope = {};
+
+        /**
+         *
+         * @type {ScenarioButtonsController}
+         */
+        this.controller = ScenarioButtonsController;
     }
 
 }
 
-export {FabBarDirective};
+export {ScenarioButtonsDirective};
