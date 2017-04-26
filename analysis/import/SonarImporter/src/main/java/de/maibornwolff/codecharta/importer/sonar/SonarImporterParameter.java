@@ -93,4 +93,5 @@ class SonarImporterParameter {
     public void printUsage() {
         jc.usage();
     }
+
 }

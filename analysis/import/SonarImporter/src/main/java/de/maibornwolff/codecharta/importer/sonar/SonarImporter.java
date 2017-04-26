@@ -40,7 +40,7 @@ public class SonarImporter {
         return project;
     }
 
-    private List<String> getMetricList(List<String> metrics) {
+    public List<String> getMetricList(List<String> metrics) {
         if (metrics.isEmpty()) {
             return metricsDS.getAvailableMetrics().stream()
                     .filter(MetricObject::isFloatType)
