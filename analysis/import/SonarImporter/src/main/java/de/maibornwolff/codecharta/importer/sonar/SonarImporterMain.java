@@ -80,7 +80,7 @@ public class SonarImporterMain {
         String projectKey = callParameter.getFiles().get(1);
         SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(callParameter.getUser(), createBaseUrlFrom(callParameter), projectKey);
         SonarMetricsAPIDatasource metricsDS = new SonarMetricsAPIDatasource(callParameter.getUser(), createBaseUrlFrom(callParameter));
-        SonarMeasuresImporter importer = new SonarMeasuresImporter(metricsDS, ds);
+        SonarImporter importer = new SonarImporter(metricsDS, ds);
         Project project = importer.getProjectFromMeasureAPI(projectKey, callParameter.getMetrics());
         ProjectSerializer.serializeProject(project, createWriterFrom(callParameter));
     }
