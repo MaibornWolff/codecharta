@@ -125,7 +125,6 @@ class SettingsService {
     }
 
     /**
-     * TODO Tests
      * Applies given settings
      * @param {Settings} settings
      */

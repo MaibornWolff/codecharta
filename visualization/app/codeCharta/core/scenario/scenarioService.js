@@ -39,18 +39,14 @@ class ScenarioService {
     }
 
     /**
-     * TODO Test
      * Applies a given scenario to the current codecharta session.
      * @param {Scenario} scenario
      */
     applyScenario(scenario) {
-        console.log("button clicked");
         this.settingsService.applySettings(scenario.settings);
     }
 
     /**
-     * TODO Tests
-     * TODO default scenario only one time
      * Returns an array of all scenarios.
      * @returns {Scenario[]} all scenarios
      */
@@ -59,15 +55,13 @@ class ScenarioService {
     }
 
     /**
-     * TODO Tests
-     *
      * Returns the default scenario.
      * @returns {Scenario} the scenario
      */
     getDefaultScenario() {
         let defaultRange = new Range(2,4,false);
         let defaultSettings = new Settings(this.settingsService.settings.map, defaultRange, "RLOC", "MCC", "MCC", false, false);
-        return new Scenario("Default", defaultSettings);
+        return new Scenario("RLOC/MCC/MCC(2,4)", defaultSettings);
     }
 
 }
