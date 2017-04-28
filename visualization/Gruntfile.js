@@ -196,14 +196,13 @@ module.exports = function (grunt) {
         'string-replace': {
             inline: {
                 files: {
-                    'dist/app/codeCharta/': 'codeCharta.html',
+                    "dist/app/codeCharta.html": ["dist/app/codeCharta.html"]
                 },
                 options: {
                     replacements: [
-                        // place files inline example 
                         {
-                            pattern: '<span>Version</span>',
-                            replacement: '<span>'+grunt.file.readJSON('package.json').version+'</span>'
+                            pattern: '!!Version!!',
+                            replacement: grunt.file.readJSON('package.json').version
                         }
                     ]
                 }
