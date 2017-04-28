@@ -39,35 +39,35 @@ module.exports = function (grunt) {
         },
 
         browserify: {
-          dist: {
-            options: {
-              transform: ["babelify", "es6-arrow-function"],
-              presets: ["es2015"],
-              browserifyOptions: {
-                  debug:true
-              }
-            },
-            files: {
-              "dist/app/libs/bundle.js": "app/app.js"
+            dist: {
+                options: {
+                    transform: ["babelify", "es6-arrow-function"],
+                    presets: ["es2015"],
+                    browserifyOptions: {
+                        debug:true
+                    }
+                },
+                files: {
+                    "dist/app/libs/bundle.js": "app/app.js"
+                }
             }
-          }
         },
 
         htmlmin: {
-          dist: {
-            options: {
-              removeComments: true,
-              collapseWhitespace: true
-            },
-            files: [{
-              "expand": true,
-              "cwd": "app/",
-              "src": ["**/*.html"],
-              "dest": "dist/app/",
-              "ext": ".html",
-              "flatten": true
-            }]
-          }
+            dist: {
+                options: {
+                    removeComments: true,
+                    collapseWhitespace: true
+                },
+                files: [{
+                    "expand": true,
+                    "cwd": "app/",
+                    "src": ["**/*.html"],
+                    "dest": "dist/app/",
+                    "ext": ".html",
+                    "flatten": true
+                }]
+            }
         },
 
         jshint: {
@@ -105,40 +105,40 @@ module.exports = function (grunt) {
                     {expand: false, src: ["LICENSE.md"], dest: "dist/app/LICENSE.md"}
                 ]
             },
-          jquery: {
-            files: [
-              {expand: false, src: ["node_modules/jquery/dist/jquery.min.js"], dest: "dist/app/libs/jquery.min.js"}
-            ]
-          },
-          angular: {
-            files: [
-              {expand: false, src: ["node_modules/angular/angular.min.js"], dest: "dist/app/libs/angular.min.js"}
-            ]
-          },
-          hammer: {
-            files: [
-              {expand: false, src: ["node_modules/hammerjs/hammer.min.js"], dest: "dist/app/libs/hammer.min.js"}
-            ]
-          },
-          materialize: {
-            files: [
-              {expand: false, src: ["node_modules/materialize-css/dist/js/materialize.min.js"], dest: "dist/app/libs/materialize.min.js"},
-              {expand: false, src: ["node_modules/materialize-css/dist/css/materialize.min.css"], dest: "dist/app/css/materialize.min.css"},
-              {expand: false, src: ["node_modules/materialize-css/extras/noUiSlider/nouislider.css"], dest: "dist/app/css/nouislider.css"},
-              {expand: true, src: ["node_modules/materialize-css/dist/fonts/roboto/*"], dest: "dist/app/fonts/roboto/", flatten: true}
-            ]
-          },
-          fontawesome: {
-            files: [
-              {expand: false, src: ["node_modules/font-awesome/css/font-awesome.min.css"], dest: "dist/app/css/font-awesome.min.css"},
-              {expand: true, src: ["node_modules/font-awesome/fonts/*"], dest: "dist/app/fonts/", flatten: true}
-            ]
-          },
+            jquery: {
+                files: [
+                    {expand: false, src: ["node_modules/jquery/dist/jquery.min.js"], dest: "dist/app/libs/jquery.min.js"}
+                ]
+            },
+            angular: {
+                files: [
+                    {expand: false, src: ["node_modules/angular/angular.min.js"], dest: "dist/app/libs/angular.min.js"}
+                ]
+            },
+            hammer: {
+                files: [
+                    {expand: false, src: ["node_modules/hammerjs/hammer.min.js"], dest: "dist/app/libs/hammer.min.js"}
+                ]
+            },
+            materialize: {
+                files: [
+                    {expand: false, src: ["node_modules/materialize-css/dist/js/materialize.min.js"], dest: "dist/app/libs/materialize.min.js"},
+                    {expand: false, src: ["node_modules/materialize-css/dist/css/materialize.min.css"], dest: "dist/app/css/materialize.min.css"},
+                    {expand: false, src: ["node_modules/materialize-css/extras/noUiSlider/nouislider.css"], dest: "dist/app/css/nouislider.css"},
+                    {expand: true, src: ["node_modules/materialize-css/dist/fonts/roboto/*"], dest: "dist/app/fonts/roboto/", flatten: true}
+                ]
+            },
+            fontawesome: {
+                files: [
+                    {expand: false, src: ["node_modules/font-awesome/css/font-awesome.min.css"], dest: "dist/app/css/font-awesome.min.css"},
+                    {expand: true, src: ["node_modules/font-awesome/fonts/*"], dest: "dist/app/fonts/", flatten: true}
+                ]
+            },
             images: {
-            files: [
-              {"expand": true, "cwd": "app/img/", "src": ["*"], "dest": "dist/app/img", "flatten": true}
-            ]
-          },
+                files: [
+                    {"expand": true, "cwd": "app/img/", "src": ["*"], "dest": "dist/app/img", "flatten": true}
+                ]
+            },
             json: {
                 files: [
                     {"expand": true, "cwd": "app/", "src": ["**/*.json"], "dest": "dist/app/", "flatten": true}
@@ -193,7 +193,22 @@ module.exports = function (grunt) {
                 },
             }
         },
-
+        'string-replace': {
+            inline: {
+                files: {
+                    'app/codecharta/': 'codecharta.html',
+                },
+                options: {
+                    replacements: [
+                        // place files inline example 
+                        {
+                            pattern: '<span>Version</span>',
+                            replacement: '<span>'+pkg.version+'</span>'
+                        }
+                    ]
+                }
+            }
+        },
         compress: {
             linux32: {
                 options: {
