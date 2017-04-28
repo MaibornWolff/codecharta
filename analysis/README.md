@@ -1,6 +1,6 @@
 # CodeCharta analysis
 
-[![Build Status 1.0.0](https://secure.travis-ci.org/)](https://travis-ci.org/)
+[![Build Status](https://secure.travis-ci.org/)](https://travis-ci.org/)
 
 ## CodeCharta analysis tools
 
@@ -10,9 +10,10 @@ CodeCharta analysis tools generally follow the pipes and filters architecture pr
 
 Components that import data from an external source, e.g. SonarQube, and generate visualisation data.
 
-| Source    | Projekt                                         |
-| ---       | ---                                             |
-| SonarQube | [SonarImporter](import/SonarImporter/README.md) |
+| Source        | Projekt                                                 |
+| ---           | ---                                                     |
+| SonarQube     | [SonarImporter](import/SonarImporter/README.md)         |
+| SourceMonitor | [SonarImporter](import/SourceMonitorImporter/README.md) |
 
 ### Filter
 

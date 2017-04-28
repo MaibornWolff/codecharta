@@ -2,4 +2,3 @@
 
 cd analysis
 ./gradlew build
-# ./gradlew :integrationTest

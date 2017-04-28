@@ -40,4 +40,17 @@ describe("app.codeCharta.codeMap.threeViewer.threeCameraService", function() {
 
     }));
 
+    /**
+     * @test {ThreeCameraService#init}
+     */
+    it("the near plane of the viewing frustum should be at least 100 to prevent flickering of planes", angular.mock.inject(function(threeCameraService){
+
+        //action
+        threeCameraService.init();
+
+        //expectations
+        expect(threeCameraService.camera.near).to.be.greaterThan(99);
+
+    }));
+
 });

@@ -15,6 +15,19 @@ module.exports = function (grunt) {
 
         pkg: grunt.file.readJSON('package.json'),
 
+        mocha_istanbul: {
+            coverage: {
+                src: ["test/unit-helper.js", "app/**/*.spec.js"],
+                options: {
+                    mask: '**/*.js',
+                    require: ['test/mocha-babel'],
+                    coverageFolder: 'dist/coverage',
+                    mochaOptions: ['--compilers', 'js:babel-core/register'],
+                    istanbulOptions: ['--handle-sigint']
+                }
+            }
+        },
+
         nwjs: {
             options: {
                 platforms: ['win','osx64', 'linux'],
@@ -147,21 +160,7 @@ module.exports = function (grunt) {
         },
 
         exec: {
-            test : {
-              command: 
-				path.resolve("node_modules", ".bin", "istanbul") + 
-				" cover " + 
-				path.resolve("node_modules", ".bin", "_mocha") + 
-				" -- " + 
-				path.resolve("test", "helper", "unit-helper.js") +
-				" $(find app -name '*.spec.js') --compilers js:babel-core/register" +
-				" && mv " +
-				path.resolve("coverage") + 
-				" " +
-				path.resolve("dist", "coverage"),
-              stdout: true
-            },
-            esdoc: {
+            doc: {
                 command: path.resolve("node_modules", ".bin", "esdoc") + " -c esdoc.json",
                 stdout: true
             }
@@ -212,14 +211,6 @@ module.exports = function (grunt) {
                     {expand: true, cwd:"./dist/packages/CodeCharta/linux64/", src: ['**/*'], dest: '.'}
                 ]
             },
-            osx64: {
-                options: {
-                    archive: './dist/packages/codecharta-visualization-osx64.zip'
-                },
-                files: [
-                    {expand: true, cwd:"./dist/packages/CodeCharta/osx64/", src: ['**/*'], dest: '.'}
-                ]
-            },
             win32: {
                 options: {
                     archive: './dist/packages/codecharta-visualization-win32.zip'
@@ -244,8 +235,8 @@ module.exports = function (grunt) {
     grunt.registerTask("default", ["build"]);
 
     grunt.registerTask("build", ["clean:app", "jshint", "browserify", "ngAnnotate:app", "htmlmin", "copy:style", "concat:css", "clean:style", "copy:materialize", "copy:json", "copy:hammer", "copy:fontawesome", "copy:angular", "copy:images", "copy:jquery", "copy:license"]);
-    grunt.registerTask("test", ["clean:coverage", "exec:test"]);
-    grunt.registerTask("doc", ["clean:doc", "exec:esdoc"]);
+    grunt.registerTask("test", ["clean:coverage", "mocha_istanbul"]);
+    grunt.registerTask("doc", ["clean:doc", "exec:doc"]);
     grunt.registerTask("package", ["clean:package", "nwjs", "compress"]);
     grunt.registerTask("quick", ["jshint", "browserify", "ngAnnotate:app", "htmlmin", "copy:style", "concat:css","copy:json", "clean:style", "copy:images"]);
 

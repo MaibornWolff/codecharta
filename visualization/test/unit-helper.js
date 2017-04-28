@@ -1,6 +1,5 @@
 /*jshint esversion: 6 */
 "use strict";
-
 var jsdom = require('jsdom').jsdom;
 
 global.document = jsdom('<html><head><script></script></head><body></body></html>');
