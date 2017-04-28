@@ -1,5 +1,10 @@
 # What is CodeCharta ?
 
+CodeCharta visualizes multiple code metrics using 3D tree maps. It consists of two parts:
+
+visualization: GUI for visualising data
+analysis: Tools for generating visualisation data
+
 # Quickstart
 
 ## How to install CodeCharta
