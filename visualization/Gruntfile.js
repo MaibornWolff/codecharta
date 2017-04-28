@@ -211,6 +211,14 @@ module.exports = function (grunt) {
                     {expand: true, cwd:"./dist/packages/CodeCharta/linux64/", src: ['**/*'], dest: '.'}
                 ]
             },
+            osx64: {
+                options: {
+                    archive: './dist/packages/codecharta-visualization-osx64.zip'
+                },
+                files: [
+                    {expand: true, cwd:"./dist/packages/CodeCharta/osx64/", src: ['**/*'], dest: '.'}
+                ]
+            },
             win32: {
                 options: {
                     archive: './dist/packages/codecharta-visualization-win32.zip'

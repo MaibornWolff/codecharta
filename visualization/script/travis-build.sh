@@ -4,4 +4,4 @@ cd visualization
 npm install
 npm run test
 npm run doc
-npm run package
+npm run package --force
