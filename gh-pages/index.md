@@ -1,19 +1,21 @@
-# Codecharta quickstart Tutorial
+# What is CodeCharta ?
 
-### given: two .zip/.tar packages, one for the visualization, one for the analysis
+# Quickstart
 
-## Installation
- - Download the [latest release](https://github.com/MaibornWolff/codecharta/releases/latest)
- - you should now have the analysis and visualization package 
- - unpack both packages
- - enter the analysis directory with your favorite console
+## How to install CodeCharta
 
-  **linux only:** make extracted ccsh runnable (`chmod u+x ccsh`)
-  
-  - > ./ccsh install
-  - > ./ccsh -h
- 
-## Analyse a project 
+- Download the [latest release](https://github.com/MaibornWolff/codecharta/releases/latest)
+- you should now have the analysis and visualization package 
+- unpack both packages
+- enter the analysis directory with your favorite console
+
+**linux only:** make extracted ccsh runnable (`chmod u+x ccsh`)
+
+- > ./ccsh install
+- > ./ccsh -h
+
+## Analyze a sonarqube project
+
 Choose a sonar analysed project of your choice and enter the file, url and project-id. If necessary, generate a User Token in the sonar remote instance and include it in the following command:
   - >./ccsh sonarimport [options] [[file]|[url] [project-id]]
 
@@ -38,13 +40,7 @@ The easiest example:
  
 An output file has been created.
 
-## Use the visualization
-
-[Browser Demo](visualization/app/)
-
-[Coverage](visualization/coverage/lcov-report)
-
-[Reference](visualization/doc/)
+## Visualize the analyzed project
 
 Open the visualization directory and run the executable
 A new window should open now. 
@@ -85,4 +81,34 @@ Example: Your color-metric is test-coverage, which has a range from 0 to 100 and
 If you want to colorize everything that has values under 20% red, and higher then 70% green, set "Neutral color start" to 20 and "Neutral color end" to 70. 
 Use the "Invert Color" option, to declare a high value to be better then a low value. (A low test-coverage should be red, a low complexity should be green)
 
+# Demo
 
+[Browser Demo](visualization/app/)
+
+# Further information
+
+## Visualization
+
+[Readme](https://github.com/MaibornWolff/codecharta/tree/master/visualization)
+
+[Browser Demo](visualization/app/)
+
+[Coverage](visualization/coverage/lcov-report)
+
+[Reference](visualization/doc/)
+
+## Analysis
+
+[Readme](https://github.com/MaibornWolff/codecharta/tree/master/analysis)
+
+# Contributing
+
+[Contributing](https://github.com/MaibornWolff/codecharta/blob/master/CONTRIBUTE.md)
+
+[Code of Conduct](https://github.com/MaibornWolff/codecharta/blob/master/CODE_OF_CONDUCT.md)
+
+# Releases and Changelog
+
+[Releases](https://github.com/MaibornWolff/codecharta/releases)
+
+[Changelog](https://github.com/MaibornWolff/codecharta/blob/master/CHANGELOG.md)
