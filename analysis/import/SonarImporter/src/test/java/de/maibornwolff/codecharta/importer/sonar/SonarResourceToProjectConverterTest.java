@@ -38,7 +38,6 @@ import de.maibornwolff.codecharta.model.Node;
 import de.maibornwolff.codecharta.model.Project;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -46,51 +45,41 @@ public class SonarResourceToProjectConverterTest {
     private static final String PROJECT_NAME = "test project";
 
     private static SonarResource createEmptyProjectResource() {
-        return new SonarResource(ImmutableList.of(), PROJECT_NAME, PROJECT_NAME, Scope.PRJ, Qualifier.TRK, PROJECT_NAME);
+        return new SonarResource(ImmutableList.of(), "", PROJECT_NAME, Scope.PRJ, Qualifier.TRK, "");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void should_throw_exception_when_converting_resources_without_project_resource() {
-        // given
+    public void shouldNotConvertResourcesWithoutProjectResource() {
         SonarResource resource = new SonarResource(ImmutableList.of(), "", "", Scope.DIR, Qualifier.TRK, "");
-
-        // when
         SonarResourceToProjectConverter converter = new SonarResourceToProjectConverter(ImmutableList.of(resource), "");
         converter.convert();
-
-        // then throw
     }
 
     @Test
-    public void should_convert_simple_sonar_project() {
-        // given
+    public void shouldConvertSimpleSonarProject() throws Exception {
         SonarResource resource = createEmptyProjectResource();
-
-        // when
         SonarResourceToProjectConverter converter = new SonarResourceToProjectConverter(ImmutableList.of(resource), "");
         Project project = converter.convert();
 
-        // then
         assertThat(project.getProjectName(), is(PROJECT_NAME));
         assertThat(project.getNodes().size(), is(0));
     }
 
     @Test
-    public void should_convert_sonar_project_with_nodes() {
-        // given
+    public void shouldConvertSonarProjectWithNodes() throws Exception {
         SonarResource resource = createEmptyProjectResource();
 
         String urlString = "http://someurl.com";
         String keyString = "someKey";
         String nodeName = "testNode";
-        SonarResource node = new SonarResource(ImmutableList.of(), keyString, nodeName, Scope.DIR, Qualifier.DIR, nodeName);
+        SonarResource node = new SonarResource(ImmutableList.of(), keyString, "", Scope.DIR, Qualifier.DIR, nodeName);
 
-        // when
+
         SonarResourceToProjectConverter converter = new SonarResourceToProjectConverter(ImmutableList.of(resource, node), urlString);
         Project project = converter.convert();
 
-        // then
-        Node rootNode = project.getRootNode();
+        assertThat(project.getNodes().size(), is(1));
+        Node rootNode = project.getNodes().get(0);
         assertThat(rootNode.getName(), is("root"));
 
         // should have testNode
@@ -100,34 +89,28 @@ public class SonarResourceToProjectConverterTest {
     }
 
     @Test
-    public void should_convert_sonar_project_with_nodes_and_attributes() {
-        // given
+    public void shouldIgnoreNodesWithoutLname() throws Exception {
+        SonarResource resource = createEmptyProjectResource();
+        SonarResource node = new SonarResource(ImmutableList.of(), "", "", Scope.DIR, Qualifier.DIR, "");
+
+        SonarResourceToProjectConverter converter = new SonarResourceToProjectConverter(ImmutableList.of(resource, node), "");
+        Project project = converter.convert();
+        assertThat(project.getNodes().size(), is(0));
+    }
+
+    @Test
+    public void shouldConvertSonarProjectWithNodesAndAttributes() throws Exception {
         SonarResource resource = createEmptyProjectResource();
         String keyString = "theKey";
         double value = 99.0;
         SonarResource node = new SonarResource(ImmutableList.of(new SonarAttribute(keyString, value)), keyString, "", Scope.DIR, Qualifier.DIR, "testNode");
 
-        // when
         SonarResourceToProjectConverter converter = new SonarResourceToProjectConverter(ImmutableList.of(resource, node), "");
         Project project = converter.convert();
 
-        // then
-        Node testNode = project.getRootNode().getChildren().get(0);
+        Node testNode = project.getNodes().get(0).getChildren().get(0);
+        System.out.println(testNode.getAttributes());
         assertThat(testNode.getAttributes().get(keyString), is(value));
     }
 
-    @Test
-    public void should_ignore_nodes_without_lname() {
-        // given
-        SonarResource resource = createEmptyProjectResource();
-        SonarResource namelessNode = new SonarResource(ImmutableList.of(), "", "", Scope.DIR, Qualifier.DIR, "");
-        SonarResource node = new SonarResource(ImmutableList.of(), "", "", Scope.DIR, Qualifier.DIR, "somename");
-
-        // when
-        SonarResourceToProjectConverter converter = new SonarResourceToProjectConverter(ImmutableList.of(resource, node, namelessNode), "");
-        Project project = converter.convert();
-
-        // then
-        assertThat(project.getRootNode().getChildren(), hasSize(1));
-    }
 }
