@@ -203,14 +203,6 @@ module.exports = function (grunt) {
                     {expand: true, cwd:"./dist/packages/CodeCharta/linux32/", src: ['**/*'], dest: '.'}
                 ]
             },
-            osx64: {
-                options: {
-                    archive: './dist/packages/codecharta-visualization-osx64.zip'
-                },
-                files: [
-                    {expand: true, cwd:"./dist/packages/CodeCharta/osx64/", src: ['**/*'], dest: '.'}
-                ]
-            },
             linux64: {
                 options: {
                     archive: './dist/packages/codecharta-visualization-linux64.zip'
