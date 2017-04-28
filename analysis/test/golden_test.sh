@@ -42,10 +42,28 @@ validate() {
   fi
 }
 
+check_sonar() {
+  echo " -- expect SonarImporter gives valid cc.json"
+  ACTUAL_SONAR_JSON="${INSTALL_DIR}/actual_sonarimport.json"
+  "${CCSH}" sonarimport data/codecharta/sonar.xml -o "${ACTUAL_SONAR_JSON}"
+  validate "${ACTUAL_SONAR_JSON}"
+}
+
+check_sourcemonitor() {
+  echo " -- expect SourceMonitorImporter gives valid cc.json"
+  ACTUAL_SOURCEMON_JSON="${INSTALL_DIR}/actual_sourcemonitorimporter.json"
+  echo "${CCSH}" sourcemonitorimport data/codecharta/sourcemonitor.csv > "${ACTUAL_SOURCEMON_JSON}"
+  "${CCSH}" sourcemonitorimport data/codecharta/sourcemonitor.csv > "${ACTUAL_SOURCEMON_JSON}"
+  validate "${ACTUAL_SOURCEMON_JSON}"
+}
+
 run_tests() {
   echo
   echo "Running Tests..."
   echo
+
+  check_sonar
+  check_sourcemonitor
 
   echo
   echo "... Testing finished."

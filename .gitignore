@@ -3,6 +3,9 @@ codecharta-analyse.sonargraph
 auth.txt
 .cache
 
+#gh-pages
+gh-pages/visualization
+
 # Created by https://www.gitignore.io/api/intellij,jetbrains,java,code-java,macos,windows,linux,node,angular,grun...
 
 # Gradle

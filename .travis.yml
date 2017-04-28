@@ -33,12 +33,26 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
+# runs the script which copies all needed ressources into the gh-pages directory
+before_deploy:
+  - ./script/build_gh_pages.sh
+
 deploy:
-  provider: releases
-  api_key:
-    secure: "a5mf/SX52zseYblJRqZBOV0sCf0D8LfLNsij6N7+feRxzKoAC5u6ptXMnjBuWMwN/8jsN7VY6S9GvvUuuOjqGY+a40D1mMGrsjHF0UF4Q4pkVRMJp47Bv+TdHra2SCK0P1xPOrv5Y+yQLwFpwKUId8SLbeYhHIeMzfT09vBQOA+ydQ/CziFFWo2UYtR+D6+tHNOk5J/eReMoZq8B0paq1bHTLsb6IRiibyejkEbKTdklw5j0XTOBQ0u2vs63+ZZQp/joASxMOFJP78bJnveYr9IfcOMNadokBLSxDWYAygL2RlVv5F4o2P9q2R7LhGBwBJ3trzb8NpAsrIvMWWpDttSgmuGn+zZV5lp621DamKRdNLlGu3Ct5hKp80neSX8aFhwOKiRvmHZ+WFC1MSY2kp5lqaEi1TODldCZT3ByPgTvfkC7oFVdxXOve01K1K8yiIjnR7R2pW8hLHhcBDg3FdlZ5zUAu172+WGo1tKIDGmR9L5uEcRjE/d6uJUh640J8gFpA2A4vyoM9TmOhVxzlDUvPpgNoT/0SBaV0Cm6Rytzj54LCuLRdss2zeginIGOZK/aOkeF2wTN2YmTLJ/FUGxZpkL7YMfRG5RAH5Zw4h42fsnFy+2wvmLGU1R+J4+rhx/9jE0ZeWdHlpbUQLXUVE2d5tyqI4XK8lddNXlbQyc="
-  file_glob: true
-  file: "visualization/dist/packages/*.zip"
-  skip_cleanup: true
-  on:
-    tags: true
+  # releases the built packages on github when a commit is tagged
+  - provider: releases
+    api_key: $GITHUB_TOKEN
+    file_glob: true
+    file:
+      - "visualization/dist/packages/*.zip"
+      - "analysis/build/distributions/*.tar"
+    skip_cleanup: true
+    on:
+      tags: true
+
+  # commits the gh-pages directory to the gh-pages branch. Does not ignore built ressources
+  - provider: pages
+    github_token: $GITHUB_TOKEN
+    skip_cleanup: true
+    local_dir: "gh-pages"
+    on:
+      branch: master
