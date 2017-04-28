@@ -6,12 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
-- Translation API for Metrics
+
 ### Changed
 
 ### Removed
 
 ### Fixed
+
+## [1.1.2] - 2017-04-28
+### Added
+- Translation API for Metrics
 
 ## [1.1.1] - 2017-04-07
 ### Fixed

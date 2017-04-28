@@ -14,7 +14,7 @@ esac
 
 CC_INSTALL_DIR=$(dirname "${CCSH_PATH}")
 
-CC_VERSION="1.1.1"
+CC_VERSION="1.1.2"
 
 CC_CMD=(
     "install"
