@@ -20,6 +20,34 @@ describe("app.codeCharta.ui.settingsPanel.settingsPanelController", function() {
     /**
      * @test {SettingsPanelController#constructor}
      */
+    it("should sort array alphabetically on start", angular.mock.inject(($controller)=>{
+
+        settingsService.settings.map = {name:"aMap"};
+
+        dataService.data.metrics[0] = "z";
+        dataService.data.metrics[1] = "g";
+        dataService.data.metrics[2] = "a";
+
+        settingsPanelController = $controller("settingsPanelController", {$scope: scope, settingsService: settingsService, dataService: dataService, codeMapService: codeMapService});
+
+        expect(settingsPanelController.metrics[0]).to.equal("a");
+        expect(settingsPanelController.metrics[1]).to.equal("g");
+        expect(settingsPanelController.metrics[2]).to.equal("z");
+
+    }));
+
+    /**
+     * @test {SettingsPanelController#sortStringArrayAlphabetically}
+     */
+    it("should sort array alphabetically", ()=>{
+        var arr = ["b", "g", "a", "z", "y"];
+        var result = settingsPanelController.sortStringArrayAlphabetically(arr);
+        expect(result).to.eql(["a", "b", "g", "y", "z"]);
+    });
+
+    /**
+     * @test {SettingsPanelController#constructor}
+     */
     it("should have correct values in scope", ()=>{
 
         settingsService.settings.map = {name:"specialMap"};

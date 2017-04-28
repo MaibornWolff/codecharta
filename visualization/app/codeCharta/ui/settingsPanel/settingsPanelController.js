@@ -26,7 +26,7 @@ class SettingsPanelController {
          *
          * @type {string[]}
          */
-        this.metrics = dataService.data.metrics;
+        this.metrics = this.sortStringArrayAlphabetically(dataService.data.metrics);
 
         /**
          *
@@ -61,7 +61,7 @@ class SettingsPanelController {
      * @param {DataModel} data
      */
     onDataChanged(data) {
-        this.metrics = data.metrics;
+        this.metrics = this.sortStringArrayAlphabetically(data.metrics);
     }
 
     /**
@@ -76,6 +76,15 @@ class SettingsPanelController {
      */
     scalingChanged(){
         this.codeMapService.scaleTo(this.scaling.x, this.scaling.y, this.scaling.z);
+    }
+
+    /**
+     * Sorts a simple string array in alphabetic order.
+     * @param {string[]} arr
+     * @returns {string[]} sortedArr
+     */
+    sortStringArrayAlphabetically(arr) {
+        return arr.sort();
     }
 
 }
