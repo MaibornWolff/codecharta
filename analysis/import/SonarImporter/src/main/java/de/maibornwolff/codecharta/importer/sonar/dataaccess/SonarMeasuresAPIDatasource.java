@@ -63,8 +63,6 @@ public class SonarMeasuresAPIDatasource {
 
     public Measures getMeasures(List<String> metrics, int pageNumber) throws SonarImporterException {
         URI measureAPIRequestURI = createMeasureAPIRequestURI(metrics, pageNumber);
-        System.out.println(measureAPIRequestURI.toString());
-
 
         Client client = ClientBuilder.newClient();
         client.register(ErrorResponseFilter.class);
