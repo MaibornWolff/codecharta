@@ -196,14 +196,14 @@ module.exports = function (grunt) {
         'string-replace': {
             inline: {
                 files: {
-                    'app/codecharta/': 'codecharta.html',
+                    'dist/app/codeCharta/': 'codeCharta.html',
                 },
                 options: {
                     replacements: [
                         // place files inline example 
                         {
                             pattern: '<span>Version</span>',
-                            replacement: '<span>'+pkg.version+'</span>'
+                            replacement: '<span>'+grunt.file.readJSON('package.json').version+'</span>'
                         }
                     ]
                 }
@@ -249,11 +249,11 @@ module.exports = function (grunt) {
     // tasks
     grunt.registerTask("default", ["build"]);
 
-    grunt.registerTask("build", ["clean:app", "jshint", "browserify", "ngAnnotate:app", "htmlmin", "copy:style", "concat:css", "clean:style", "copy:materialize", "copy:json", "copy:hammer", "copy:fontawesome", "copy:angular", "copy:images", "copy:jquery", "copy:license"]);
+    grunt.registerTask("build", ["clean:app", "jshint", "browserify", "ngAnnotate:app", "htmlmin", "copy:style", "concat:css", "clean:style", "copy:materialize", "copy:json", "copy:hammer", "copy:fontawesome", "copy:angular", "copy:images", "copy:jquery", "copy:license", "string-replace"]);
     grunt.registerTask("test", ["clean:coverage", "mocha_istanbul"]);
     grunt.registerTask("doc", ["clean:doc", "exec:doc"]);
     grunt.registerTask("package", ["clean:package", "nwjs", "compress"]);
-    grunt.registerTask("quick", ["jshint", "browserify", "ngAnnotate:app", "htmlmin", "copy:style", "concat:css","copy:json", "clean:style", "copy:images"]);
+    grunt.registerTask("quick", ["jshint", "browserify", "ngAnnotate:app", "htmlmin", "copy:style", "concat:css","copy:json", "clean:style", "copy:images", "string-replace"]);
 
 
 };
