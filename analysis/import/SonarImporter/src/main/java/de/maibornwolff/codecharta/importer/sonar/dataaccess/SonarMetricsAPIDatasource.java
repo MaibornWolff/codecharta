@@ -29,9 +29,11 @@
 
 package de.maibornwolff.codecharta.importer.sonar.dataaccess;
 
+import de.maibornwolff.codecharta.importer.sonar.filter.ErrorResponseFilter;
 import de.maibornwolff.codecharta.importer.sonar.model.MetricObject;
 import de.maibornwolff.codecharta.importer.sonar.model.Metrics;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
 import java.net.URL;
@@ -58,7 +60,12 @@ public class SonarMetricsAPIDatasource {
     }
 
     public List<MetricObject> getAvailableMetrics() {
-        Invocation.Builder request = ClientBuilder.newClient().register(GsonProvider.class).target(baseUrl + METRICS).request();
+
+        Client client = ClientBuilder.newClient();
+        client.register(ErrorResponseFilter.class);
+        client.register(GsonProvider.class);
+
+        Invocation.Builder request = client.target(baseUrl + METRICS).request();
         if (!user.isEmpty()) {
             request.header("Authorization", "Basic " + AuthentificationHandler.createAuthTxtBase64Encoded(user));
         }

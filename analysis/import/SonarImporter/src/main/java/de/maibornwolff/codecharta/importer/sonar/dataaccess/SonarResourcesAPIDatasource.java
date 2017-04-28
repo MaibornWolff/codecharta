@@ -30,7 +30,9 @@
 package de.maibornwolff.codecharta.importer.sonar.dataaccess;
 
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException;
+import de.maibornwolff.codecharta.importer.sonar.filter.ErrorResponseFilter;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
@@ -73,7 +75,12 @@ public class SonarResourcesAPIDatasource {
      * @return server's response in XML
      */
     public String getResourcesAsString(List<String> metricList) throws SonarImporterException {
-        Invocation.Builder request = ClientBuilder.newClient().register(GsonProvider.class).target(createProjectMetricValuesRequestUrl(metricList)).request();
+
+        Client client = ClientBuilder.newClient();
+        client.register(ErrorResponseFilter.class);
+        client.register(GsonProvider.class);
+
+        Invocation.Builder request = client.target(createProjectMetricValuesRequestUrl(metricList)).request();
         if (!user.isEmpty()) {
             request.header("Authorization", "Basic " + AuthentificationHandler.createAuthTxtBase64Encoded(user));
         }

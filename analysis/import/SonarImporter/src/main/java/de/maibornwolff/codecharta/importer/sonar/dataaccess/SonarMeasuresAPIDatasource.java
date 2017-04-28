@@ -30,9 +30,11 @@
 package de.maibornwolff.codecharta.importer.sonar.dataaccess;
 
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException;
+import de.maibornwolff.codecharta.importer.sonar.filter.ErrorResponseFilter;
 import de.maibornwolff.codecharta.importer.sonar.model.Measures;
 import de.maibornwolff.codecharta.importer.sonar.model.PagingInfo;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
 import java.net.URI;
@@ -61,11 +63,21 @@ public class SonarMeasuresAPIDatasource {
 
     public Measures getMeasures(List<String> metrics, int pageNumber) throws SonarImporterException {
         URI measureAPIRequestURI = createMeasureAPIRequestURI(metrics, pageNumber);
-        Invocation.Builder request = ClientBuilder.newClient().register(GsonProvider.class).target(measureAPIRequestURI).request();
+        System.out.println(measureAPIRequestURI.toString());
+
+
+        Client client = ClientBuilder.newClient();
+        client.register(ErrorResponseFilter.class);
+        client.register(GsonProvider.class);
+
+        Invocation.Builder request = client.register(GsonProvider.class).target(measureAPIRequestURI).request();
+
         if (!user.isEmpty()) {
             request.header("Authorization", "Basic " + AuthentificationHandler.createAuthTxtBase64Encoded(user));
         }
+
         return request.get(Measures.class);
+
     }
 
     URI createMeasureAPIRequestURI(List<String> metrics, int pageNumber) throws SonarImporterException {
