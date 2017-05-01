@@ -37,7 +37,7 @@ import java.util.List;
  * see https://github.com/SonarSource/sonarqube/tree/master/sonar-plugin-api
  */
 public class MetricObject {
-    private static final List<String> FLOAT_TYPES = ImmutableList.of("INT", "FLOAT", "PERCENT", "MILLISEC", "WORK_DUR");
+    private static final List<String> FLOAT_TYPES = ImmutableList.of("INT", "FLOAT", "PERCENT", "MILLISEC");
 
     private final int id;
     private final String key;

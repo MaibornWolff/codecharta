@@ -1,24 +1,23 @@
 package de.maibornwolff.codecharta.importer.sonar;
 
+import com.google.common.collect.ImmutableList;
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource;
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource;
-import de.maibornwolff.codecharta.importer.sonar.model.MetricObject;
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier;
 import de.maibornwolff.codecharta.model.Project;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SonarImporter {
 
-    private SonarMetricsAPIDatasource metricsDS;
+    public static final List STANDARD_SONAR_METRICS = ImmutableList.of(
+            "complexity", "ncloc", "functions", "duplicated_lines", "classes", "blocker_violations", "generated_lines", "bugs", "commented_out_code_lines", "lines", "violations", "comment_lines", "duplicated_blocks");
 
     private SonarMeasuresAPIDatasource measuresDS;
 
-    public SonarImporter(SonarMetricsAPIDatasource metricsDS, SonarMeasuresAPIDatasource measuresDS) {
-        this.metricsDS = metricsDS;
+    public SonarImporter(SonarMeasuresAPIDatasource measuresDS) {
         this.measuresDS = measuresDS;
     }
 
@@ -42,10 +41,7 @@ public class SonarImporter {
 
     public List<String> getMetricList(List<String> metrics) {
         if (metrics.isEmpty()) {
-            return metricsDS.getAvailableMetrics().stream()
-                    .filter(MetricObject::isFloatType)
-                    .map(MetricObject::getKey)
-                    .collect(Collectors.toList());
+            return STANDARD_SONAR_METRICS;
         }
         return metrics;
     }

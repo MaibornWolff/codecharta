@@ -17,10 +17,6 @@ public class ErrorResponse {
         return errors;
     }
 
-    public void setErrors(ErrorEntity[] errors) {
-        this.errors = errors;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
