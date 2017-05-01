@@ -30,7 +30,10 @@
 package de.maibornwolff.codecharta.importer.sonar;
 
 
-import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarRESTDatasource;
+import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource;
+import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarResourcesAPIDatasource;
+import de.maibornwolff.codecharta.model.Project;
+import de.maibornwolff.codecharta.serialization.ProjectSerializer;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -43,9 +46,6 @@ import static java.lang.System.*;
  * Main Class: Parses command line input and delegates to SonarXMLImport for processing
  */
 public class SonarImporterMain {
-    private static final String LOCAL_USAGE_STRING = "To use locally, use 'SonarImporterMain.jar [-o <pathToOutput>] <pathToXML>'";
-    private static final String REMOTE_USAGE_STRING = "To use remotely, use 'SonarImporterMain.jar [-o <pathToOutput>] [-u <User token>] <SonarBaseUrl> <nameOfTheSonarProject> [<Metric1>,<Metric2>,...]'";
-
     private SonarImporterMain() {
         // Main class - no instantiation
     }
@@ -54,30 +54,40 @@ public class SonarImporterMain {
         SonarImporterParameter callParameter = new SonarImporterParameter(args);
 
         if (callParameter.isHelp()) {
-            doHelp(callParameter);
+            printHelp(callParameter);
+        } else if (callParameter.isOldApi()) {
+            try {
+                doOldImport(callParameter);
+            } catch (SonarImporterException | IOException e) {
+                showErrorMessageAndTerminate("unable to import", e);
+            }
         } else {
             try {
-                doNotHelp(callParameter);
+                doImport(callParameter);
             } catch (SonarImporterException | IOException e) {
                 showErrorMessageAndTerminate("unable to import", e);
             }
         }
     }
 
-    private static void doHelp(SonarImporterParameter callParameter) {
-        switch (callParameter.getFiles().size()) {
-            case 1:
-                out.println(LOCAL_USAGE_STRING);
-                break;
-            case 2:
-                out.println(REMOTE_USAGE_STRING);
-                break;
-            default:
-                callParameter.printUsage();
+    private static void doImport(SonarImporterParameter callParameter) throws SonarImporterException, IOException {
+        if (callParameter.getFiles().size() != 2) {
+            callParameter.printUsage();
+            throw new SonarImporterException("Url and project key missing.");
         }
+
+        String projectKey = callParameter.getFiles().get(1);
+        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(callParameter.getUser(), createBaseUrlFrom(callParameter), projectKey);
+        SonarImporter importer = new SonarImporter(ds);
+        Project project = importer.getProjectFromMeasureAPI(projectKey, callParameter.getMetrics());
+        ProjectSerializer.serializeProject(project, createWriterFrom(callParameter));
     }
 
-    private static void doNotHelp(SonarImporterParameter callParameter) throws SonarImporterException, IOException {
+    private static void printHelp(SonarImporterParameter callParameter) {
+        callParameter.printUsage();
+    }
+
+    private static void doOldImport(SonarImporterParameter callParameter) throws SonarImporterException, IOException {
         Reader reader = createReaderFrom(callParameter);
         URL baseUrl = createBaseUrlFrom(callParameter);
         String baseUrlForLink = baseUrl == null ? "" : baseUrl.toString();
@@ -88,21 +98,12 @@ public class SonarImporterMain {
     }
 
     private static Reader createReaderFrom(SonarImporterParameter callParameter) throws SonarImporterException {
-        Reader reader;
-        switch (callParameter.getFiles().size()) {
-            case 0:
-                reader = new InputStreamReader(in);
-                break;
-            case 1:
-                reader = createFileReader(callParameter.getFiles().get(0));
-                break;
-            case 2:
-                reader = createStringReaderFromSonarDatasource(callParameter);
-                break;
-            default:
-                throw new SonarImporterException("Only <file> or <baseUrl> <project> is supported, given was " + callParameter.getFiles());
+        if (callParameter.isLocal() && callParameter.getFiles().size() == 1) {
+            return createFileReader(callParameter.getFiles().get(0));
+        } else if (callParameter.getFiles().size() == 2) {
+            return createStringReaderFromSonarDatasource(callParameter);
         }
-        return reader;
+        throw new SonarImporterException("Only <file> or <baseUrl> <project> is supported, given was " + callParameter.getFiles());
     }
 
     private static Reader createStringReaderFromSonarDatasource(SonarImporterParameter callParameter) throws SonarImporterException {
@@ -110,8 +111,8 @@ public class SonarImporterMain {
         String user = callParameter.getUser();
         String projectKey = callParameter.getFiles().get(1);
         List<String> metrics = callParameter.getMetrics();
-        SonarRESTDatasource datasource = new SonarRESTDatasource(user, createBaseUrlFrom(callParameter), projectKey);
-        reader = new StringReader(datasource.getMetricValues(metrics));
+        SonarResourcesAPIDatasource datasource = new SonarResourcesAPIDatasource(user, createBaseUrlFrom(callParameter), projectKey);
+        reader = new StringReader(datasource.getResourcesAsString(metrics));
         return reader;
     }
 

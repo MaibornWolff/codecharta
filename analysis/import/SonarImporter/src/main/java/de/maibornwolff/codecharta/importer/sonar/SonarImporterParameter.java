@@ -46,11 +46,17 @@ class SonarImporterParameter {
     @Parameter(names = {"-o", "--outputFile"}, description = "Output File (or empty for stdout)")
     private String outputFile = "";
 
-    @Parameter(names = {"-m", "--metrics"}, description = "Comma-separated list of metrics to import (defaults to all)")
+    @Parameter(names = {"-m", "--metrics"}, description = "Comma-separated list of metrics to import (defaults to \"our special list\"))")
     private List<String> metrics = new ArrayList<>();
 
     @Parameter(names = {"-u", "--user"}, description = "User Token for connecting to remote sonar instance")
     private String user = "";
+
+    @Parameter(names = {"--old-api"}, description = "Old SonarQube-Api")
+    private boolean oldApi = false;
+
+    @Parameter(names = {"-l", "--local"}, description = "Local run")
+    private boolean local = false;
 
     public SonarImporterParameter(String[] args) {
         this.jc = new JCommander(this, args);
@@ -76,7 +82,16 @@ class SonarImporterParameter {
         return user;
     }
 
+    public boolean isOldApi() {
+        return oldApi;
+    }
+
+    public boolean isLocal() {
+        return local;
+    }
+
     public void printUsage() {
         jc.usage();
     }
+
 }

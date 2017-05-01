@@ -29,6 +29,7 @@
 
 package de.maibornwolff.codecharta.importer.sonar;
 
+import de.maibornwolff.codecharta.importer.sonar.model.Scope;
 import de.maibornwolff.codecharta.importer.sonar.model.SonarResource;
 import de.maibornwolff.codecharta.model.Node;
 import de.maibornwolff.codecharta.model.NodeType;
@@ -36,8 +37,11 @@ import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.nodeinserter.FileSystemPath;
 import de.maibornwolff.codecharta.nodeinserter.NodeInserter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SonarResourceToProjectConverter {
 
@@ -45,23 +49,37 @@ public class SonarResourceToProjectConverter {
 
     private final String baseUrlForLink;
 
+    private final Map<String, String> modules = new HashMap<>();
+
     SonarResourceToProjectConverter(List<SonarResource> sonarResources, String baseUrlForLink) {
         this.sonarResources = sonarResources;
         this.baseUrlForLink = baseUrlForLink;
     }
 
-
-    public Project convert() throws IllegalArgumentException {
+    public Project convert() {
         Project project;
-        Optional<SonarResource> firstProjectResource = sonarResources.stream().filter(SonarResource::isProject).findFirst();
-        if (firstProjectResource.isPresent()) {
-            project = new Project(firstProjectResource.get().getName());
+
+        List<SonarResource> sonarResourceModules = sonarResources.stream().filter(res -> res.getScope().equals(Scope.PRJ)).collect(Collectors.toList());
+        project = createProject(sonarResourceModules);
+        createModuleStructureOfProject(sonarResourceModules);
+        createNodeStructureOfProject(project);
+
+        return project;
+    }
+
+    private void createModuleStructureOfProject(List<SonarResource> sonarResourceModules) {
+        sonarResourceModules.forEach(res -> modules.put(res.getKey(), res.getName()));
+    }
+
+    private Project createProject(List<SonarResource> sonarResourceModules) {
+        Project project;
+        Optional<SonarResource> projectResource = sonarResourceModules.stream().filter(SonarResource::isProject).findFirst();
+
+        if (projectResource.isPresent()) {
+            project = new Project(projectResource.get().getName());
         } else {
             throw new IllegalArgumentException("The project could not be created! No resource with Scope 'PRJ' and Qualifier 'TRK' found.");
         }
-
-        createNodeStructureOfProject(project);
-
         return project;
     }
 
@@ -72,38 +90,36 @@ public class SonarResourceToProjectConverter {
                 .forEach(res -> addNodeToProject(project, res));
     }
 
+    private NodeType getNodeTypeFromScope(Scope scope) {
+        switch (scope) {
+            case PRJ:
+                return NodeType.Folder;
+            case DIR:
+                return NodeType.Folder;
+            case FIL:
+                return NodeType.File;
+            default:
+                System.err.println("Scope " + scope + " not known");
+                return NodeType.Folder;
+        }
+    }
 
     private void addNodeToProject(Project project, SonarResource resource) {
-        String name = getNodeName(resource.getLname());
-        Node node;
+        if (resource.getScope().equals(Scope.PRJ)) return;
 
-        switch (resource.getScope()) {
-            case DIR:
-                node = new Node(name, NodeType.Folder, resource.getMsrAsMap());
-                break;
-            case FIL:
-                node = new Node(name, NodeType.File, resource.getMsrAsMap());
-                break;
-            default:
-                System.err.println("Type " + resource.getQualifier() + " not known for key " + resource.getKey());
-                return;
-        }
+        Node node = new Node(getNodeName(resource.getLname()), getNodeTypeFromScope(resource.getScope()), resource.getMsrAsMap());
 
         if (!baseUrlForLink.isEmpty()) {
-            node.setLink(getSonarCodeLink(resource));
+            node.setLink(baseUrlForLink + "/code/index?id=" + resource.getKey());
         }
-        NodeInserter.insertByPath(project, new FileSystemPath(getParentPath(resource.getLname())), node);
+        NodeInserter.insertByPath(project, getParentPath(resource.getLname()), node);
     }
 
     private static String getNodeName(String path) {
         return path.substring(path.lastIndexOf('/') + 1);
     }
 
-    private static String getParentPath(String path) {
-        return path.substring(0, path.lastIndexOf('/') + 1);
-    }
-
-    private String getSonarCodeLink(SonarResource resource) {
-        return baseUrlForLink + "/code/index?id=" + resource.getKey();
+    private FileSystemPath getParentPath(String lname) {
+        return new FileSystemPath(lname.substring(0, lname.lastIndexOf('/') + 1));
     }
 }

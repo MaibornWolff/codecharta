@@ -44,7 +44,7 @@ import java.io.Reader;
 import java.util.*;
 
 
-class SonarReader {
+class SonarResourceReader {
 
     // names of tags in sonar xml
     public static final String RESOURCE_TAG = "resource";
@@ -59,7 +59,7 @@ class SonarReader {
     private final List<SonarResource> parsedSonarResources = new ArrayList<>();
     private final XMLEventReader eventReader;
 
-    public SonarReader(Reader reader) throws SonarImporterException {
+    public SonarResourceReader(Reader reader) throws SonarImporterException {
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
             eventReader = factory.createXMLEventReader(reader);
