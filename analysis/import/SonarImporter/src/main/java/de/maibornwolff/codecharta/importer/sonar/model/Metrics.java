@@ -29,7 +29,6 @@
 
 package de.maibornwolff.codecharta.importer.sonar.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -31,7 +31,6 @@ package de.maibornwolff.codecharta.importer.sonar;
 
 
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource;
-import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource;
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarResourcesAPIDatasource;
 import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.serialization.ProjectSerializer;
@@ -79,8 +78,7 @@ public class SonarImporterMain {
 
         String projectKey = callParameter.getFiles().get(1);
         SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(callParameter.getUser(), createBaseUrlFrom(callParameter), projectKey);
-        SonarMetricsAPIDatasource metricsDS = new SonarMetricsAPIDatasource(callParameter.getUser(), createBaseUrlFrom(callParameter));
-        SonarImporter importer = new SonarImporter(metricsDS, ds);
+        SonarImporter importer = new SonarImporter(ds);
         Project project = importer.getProjectFromMeasureAPI(projectKey, callParameter.getMetrics());
         ProjectSerializer.serializeProject(project, createWriterFrom(callParameter));
     }

@@ -15,10 +15,6 @@ public class ErrorEntity {
         return msg;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

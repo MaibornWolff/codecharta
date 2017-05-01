@@ -46,7 +46,7 @@ class SonarImporterParameter {
     @Parameter(names = {"-o", "--outputFile"}, description = "Output File (or empty for stdout)")
     private String outputFile = "";
 
-    @Parameter(names = {"-m", "--metrics"}, description = "Comma-separated list of metrics to import (defaults to all)")
+    @Parameter(names = {"-m", "--metrics"}, description = "Comma-separated list of metrics to import (defaults to \"our special list\"))")
     private List<String> metrics = new ArrayList<>();
 
     @Parameter(names = {"-u", "--user"}, description = "User Token for connecting to remote sonar instance")

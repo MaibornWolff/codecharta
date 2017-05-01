@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [Unreleased]
 ### Added
 - Translation API for Metrics
+- Support for SonarQube Measures-API
 - Error logging for sonarqube errors
+
 ### Changed
+- Standard Sonar metric
 
 ### Removed
 

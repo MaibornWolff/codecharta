@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.sonar.dataaccess;
 
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
@@ -7,17 +8,21 @@ import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException;
+import de.maibornwolff.codecharta.importer.sonar.model.ErrorEntity;
+import de.maibornwolff.codecharta.importer.sonar.model.ErrorResponse;
 import de.maibornwolff.codecharta.importer.sonar.model.Measures;
 import de.maibornwolff.codecharta.importer.sonar.model.PagingInfo;
 import org.junit.Rule;
 import org.junit.Test;
 
+import javax.ws.rs.WebApplicationException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
+import static com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder.jsonResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -83,6 +88,20 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // then
         assertThat(measures, is(createExpectedMeasures()));
+    }
+
+    @Test(expected = WebApplicationException.class)
+    public void getMeasures_throws_exception_if_bad_request() throws Exception {
+        // given
+        ErrorEntity error = new ErrorEntity("some Error");
+        ErrorResponse errorResponse = new ErrorResponse(new ErrorEntity[]{error});
+        stubFor(get(urlEqualTo(URL_PATH)).withBasicAuth(USERNAME, "")
+                .willReturn(ResponseDefinitionBuilder.like(
+                        jsonResponse(errorResponse, 400))));
+
+        // when
+        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(USERNAME, createBaseUrl(), PROJECT_KEY);
+        ds.getMeasures(ImmutableList.of("coverage"), 1);
     }
 
     @Test

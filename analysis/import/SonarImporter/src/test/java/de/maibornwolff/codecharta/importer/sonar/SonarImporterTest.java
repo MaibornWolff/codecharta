@@ -30,129 +30,109 @@
 package de.maibornwolff.codecharta.importer.sonar;
 
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource;
-import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource;
-import de.maibornwolff.codecharta.importer.sonar.model.*;
+import de.maibornwolff.codecharta.importer.sonar.model.Component;
+import de.maibornwolff.codecharta.importer.sonar.model.Measure;
+import de.maibornwolff.codecharta.importer.sonar.model.Measures;
+import de.maibornwolff.codecharta.importer.sonar.model.Qualifier;
 import de.maibornwolff.codecharta.model.Project;
-
-import java.util.List;
-
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class SonarImporterTest {
 
-    private final String name="ExampleName";
+    private final String name = "ExampleName";
     private final List<String> metrics = Arrays.asList("MetricOne", "MetricTwo", "MetricThree");
-
-    private SonarMetricsAPIDatasource metricsDS;
 
     private SonarMeasuresAPIDatasource measuresDS;
 
     private SonarImporter sonar;
 
     @Test
-    public void shouldGetProjectWithGivenComponents(){
+    public void shouldGetProjectWithGivenComponents() throws SonarImporterException {
         //given
-        Measures measures= new Measures();
+        Measures measures = new Measures();
         List<Measure> measureList = new ArrayList<>();
         Component component = new Component("id", "key", "name", "path", "language", Qualifier.FIL, measureList);
         measures.getComponents().add(component);
-        metricsDS= mock(SonarMetricsAPIDatasource.class);
-        measuresDS= mock(SonarMeasuresAPIDatasource.class);
+        measuresDS = mock(SonarMeasuresAPIDatasource.class);
 
-        try {
+        when(measuresDS.getNumberOfPages(metrics)).thenReturn(1);
+        when(measuresDS.getMeasures(metrics, 1)).thenReturn(measures);
+        sonar = new SonarImporter(measuresDS);
 
-            when(measuresDS.getNumberOfPages(metrics)).thenReturn(1);
-            when(measuresDS.getMeasures(metrics,1)).thenReturn(measures);
-            sonar = new SonarImporter( metricsDS, measuresDS);
-            // when
-            Project project = sonar.getProjectFromMeasureAPI(name, metrics);
-            // then
+        // when
+        Project project = sonar.getProjectFromMeasureAPI(name, metrics);
 
-            assertThat(project.getRootNode().getChildren(),hasSize(1));
-
-        } catch (SonarImporterException e) {
-            fail(e.getMessage());
-        }
-
+        // then
+        assertThat(project.getRootNode().getChildren(), hasSize(1));
     }
 
     @Test
-    public void shouldRejectComponentsWithoutProperQualifier(){
+    public void shouldRejectComponentsWithoutProperQualifier() throws SonarImporterException {
         //given
-        Measures measures= new Measures();
+        Measures measures = new Measures();
         List<Measure> measureList = new ArrayList<>();
         Component component = new Component("id", "key", "name", "path", "language", Qualifier.DIR, measureList);
         measures.getComponents().add(component);
-        measuresDS= mock(SonarMeasuresAPIDatasource.class);
-        try {
-            when(measuresDS.getNumberOfPages(metrics)).thenReturn(1);
-            when(measuresDS.getMeasures(metrics,1)).thenReturn(measures);
-            sonar = new SonarImporter( metricsDS, measuresDS);
-            //when
-            Project project = sonar.getProjectFromMeasureAPI(name, metrics);
-            //then
-            assertThat(project.getRootNode().getChildren(),hasSize(0));
-        } catch (SonarImporterException e) {
-            fail(e.getMessage());
-        }
+        measuresDS = mock(SonarMeasuresAPIDatasource.class);
 
+        when(measuresDS.getNumberOfPages(metrics)).thenReturn(1);
+        when(measuresDS.getMeasures(metrics, 1)).thenReturn(measures);
+        sonar = new SonarImporter(measuresDS);
+
+        //when
+        Project project = sonar.getProjectFromMeasureAPI(name, metrics);
+
+        //then
+        assertThat(project.getRootNode().getChildren(), hasSize(0));
     }
 
     @Test
-    public void shouldReturnEmptyProjectWhenNoMeasuresGiven(){
+    public void shouldReturnEmptyProjectWhenNoMeasuresGiven() throws SonarImporterException {
         //given
-        Measures measures= new Measures();
-        List<Measure> measureList = new ArrayList<>();
-        measuresDS= mock(SonarMeasuresAPIDatasource.class);
-        try {
-            when(measuresDS.getNumberOfPages(metrics)).thenReturn(1);
-            when(measuresDS.getMeasures(metrics,1)).thenReturn(measures);
-            sonar = new SonarImporter( metricsDS, measuresDS);
-            //when
-            Project project = sonar.getProjectFromMeasureAPI(name, metrics);
-            //then
-            assertThat(project.getRootNode().getChildren(),hasSize(0));
-        } catch (SonarImporterException e) {
-            fail(e.getMessage());
-        }
+        Measures measures = new Measures();
+        measuresDS = mock(SonarMeasuresAPIDatasource.class);
 
+        when(measuresDS.getNumberOfPages(metrics)).thenReturn(1);
+        when(measuresDS.getMeasures(metrics, 1)).thenReturn(measures);
+        sonar = new SonarImporter(measuresDS);
+
+        //when
+        Project project = sonar.getProjectFromMeasureAPI(name, metrics);
+
+        //then
+        assertThat(project.getRootNode().getChildren(), hasSize(0));
     }
 
 
     @Test
-    public void shouldGetMetricsWhenMetricsGiven(){
-        metricsDS= mock(SonarMetricsAPIDatasource.class);
-        measuresDS= mock(SonarMeasuresAPIDatasource.class);
-        sonar = new SonarImporter( metricsDS, measuresDS);
-        assertThat(sonar.getMetricList(metrics),hasSize(3));
+    public void shouldGetMetricsWhenMetricsGiven() {
+        measuresDS = mock(SonarMeasuresAPIDatasource.class);
+        sonar = new SonarImporter(measuresDS);
+        assertThat(sonar.getMetricList(metrics), hasSize(3));
     }
 
     @Test
-    public void shouldReturnStandardMetricsWhenNoMetricGiven(){
-        List<String> emptyMetrics= new ArrayList<>();
-        metricsDS= mock(SonarMetricsAPIDatasource.class);
-        measuresDS= mock(SonarMeasuresAPIDatasource.class);
-        List<MetricObject> metric= new ArrayList<>();
-        MetricObject metricObject= new MetricObject(1,"key1", "INT","name","description",
-                "domain",0,true, true,true);
-            metric.add(metricObject);
-        when(metricsDS.getAvailableMetrics()).thenReturn(metric);
-        sonar = new SonarImporter( metricsDS, measuresDS);
-        assertThat(sonar.getMetricList(emptyMetrics),hasSize(1));
-        assertEquals(sonar.getMetricList(emptyMetrics).get(0), "key1");
+    public void shouldReturnStandardMetricsWhenNoMetricGiven() {
+        // given
+        List<String> emptyMetrics = new ArrayList<>();
+        measuresDS = mock(SonarMeasuresAPIDatasource.class);
+        sonar = new SonarImporter(measuresDS);
+
+        // when
+        List<String> metricList = sonar.getMetricList(emptyMetrics);
+
+        // then
+        assertThat(metricList, is(SonarImporter.STANDARD_SONAR_METRICS));
     }
 
 }
