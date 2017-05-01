@@ -19,6 +19,24 @@ class SettingsService {
     constructor(urlService, dataService, $rootScope) {
 
         /**
+         * Preset area metric name
+         * @type {String}
+         */
+        this.presetAreaMetric = "RLOC";
+
+        /**
+         * Preset color metric name
+         * @type {String}
+         */
+        this.presetColorMetric = "MCC";
+
+        /**
+         * Preset height metric name
+         * @type {String}
+         */
+        this.presetHeightMetric = "MCC";
+
+        /**
          * @type {UrlService}
          */
         this.urlService = urlService;
@@ -39,9 +57,9 @@ class SettingsService {
         this.settings = new Settings(
             dataService.data.currentmap,
             new Range(10,20,false),
-            dataService.data.metrics[0],
-            dataService.data.metrics[1],
-            dataService.data.metrics[2],
+            this.getMetricOrDefault(dataService.data.metrics, this.presetAreaMetric, dataService.data.metrics[0]),
+            this.getMetricOrDefault(dataService.data.metrics, this.presetHeightMetric, dataService.data.metrics[1]),
+            this.getMetricOrDefault(dataService.data.metrics, this.presetColorMetric, dataService.data.metrics[2]),
             true,
             false
         );
@@ -52,6 +70,22 @@ class SettingsService {
            ctx.onDataChanged(data);
         });
 
+    }
+
+    /**
+     * Checks if the given metricName is in the metricsArray. If it is in there, we return it, else we return the defaultValue.
+     * @param {String[]} metricsArray an array of metric names
+     * @param {String} metricName a metric name to look for
+     * @param {String} defaultValue a default name in case metricName was not found
+     */
+    getMetricOrDefault(metricsArray, metricName, defaultValue) {
+        var result = defaultValue;
+        metricsArray.forEach((metric) => {
+            if(metric === metricName){
+                result = metric;
+            }
+        });
+        return result;
     }
 
     /**
@@ -67,17 +101,17 @@ class SettingsService {
 
             if(data.metrics.indexOf(this.settings.areaMetric) === -1){
                 //area metric is not set or not in the new metrics and needs to be chosen
-                this.settings.areaMetric = data.metrics[0];
+                this.settings.areaMetric = this.getMetricOrDefault(data.metrics, this.presetAreaMetric, data.metrics[0]);
             }
 
             if(data.metrics.indexOf(this.settings.heightMetric) === -1){
                 //height metric is not set or not in the new metrics and needs to be chosen
-                this.settings.heightMetric = data.metrics[1];
+                this.settings.heightMetric = this.getMetricOrDefault(data.metrics, this.presetHeightMetric, data.metrics[1]);
             }
 
             if(data.metrics.indexOf(this.settings.colorMetric) === -1){
                 //color metric is not set or not in the new metrics and needs to be chosen
-                this.settings.colorMetric = data.metrics[2];
+                this.settings.colorMetric = this.getMetricOrDefault(data.metrics, this.presetColorMetric, data.metrics[2]);
             }
 
         }
@@ -119,7 +153,6 @@ class SettingsService {
         }
 
         //TODO map some special keys like neutralColorRange
-
         this.onSettingsChanged();
 
     }
