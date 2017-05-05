@@ -42,18 +42,18 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class SonarReaderTest {
+public class SonarResourceReaderTest {
     private static final String EXAMPLE_FILE = "example.xml";
     private static final String EXAMPLE_WRONG_DATE_FORMAT = "example_wrong_dateformat.xml";
 
-    private SonarReader sonarReader;
+    private SonarResourceReader sonarResourceReader;
 
     @Test
     public void shouldReadSonarObjects() throws Exception {
         Reader reader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(EXAMPLE_FILE));
 
-        sonarReader = new SonarReader(reader);
-        List<SonarResource> sonarResources = sonarReader.readSonarResources();
+        sonarResourceReader = new SonarResourceReader(reader);
+        List<SonarResource> sonarResources = sonarResourceReader.readSonarResources();
 
         assertThat(sonarResources, hasSize(9));
         SonarAttribute metric = sonarResources.get(0).getMsr().get(0);
@@ -65,16 +65,16 @@ public class SonarReaderTest {
     public void shouldThrowExceptionOnWrongXMLFormat() throws Exception {
         String invalidXML = "< bla  <bale";
 
-        sonarReader = new SonarReader(new StringReader(invalidXML));
-        sonarReader.readSonarResources();
+        sonarResourceReader = new SonarResourceReader(new StringReader(invalidXML));
+        sonarResourceReader.readSonarResources();
     }
 
     @Test(expected = SonarImporterException.class)
     public void shouldThrowExceptionOnMissingResourceEndTag() throws Exception {
         String invalidXML = "<resources><resource></resources>";
 
-        sonarReader = new SonarReader(new StringReader(invalidXML));
-        sonarReader.readSonarResources();
+        sonarResourceReader = new SonarResourceReader(new StringReader(invalidXML));
+        sonarResourceReader.readSonarResources();
     }
 
     private String wrapInSonarResourceXML(String attribString) {
@@ -92,8 +92,8 @@ public class SonarReaderTest {
     public void shouldReadCorrectMsr() throws Exception {
         String invalidXML = wrapInSonarResourceXML("<msr><key>someKey</key><val>0</val></msr>");
 
-        sonarReader = new SonarReader(new StringReader(invalidXML));
-        List<SonarResource> sonarResources = sonarReader.readSonarResources();
+        sonarResourceReader = new SonarResourceReader(new StringReader(invalidXML));
+        List<SonarResource> sonarResources = sonarResourceReader.readSonarResources();
 
         assertThat(sonarResources, hasSize(1));
         assertThat(sonarResources.get(0).getMsr(), hasSize(1));
@@ -103,8 +103,8 @@ public class SonarReaderTest {
     public void shouldIgnoreStrangeAttributes() throws Exception {
         String invalidXML = wrapInSonarResourceXML("<someattr><bla></bla></someattr>");
 
-        sonarReader = new SonarReader(new StringReader(invalidXML));
-        List<SonarResource> sonarResources = sonarReader.readSonarResources();
+        sonarResourceReader = new SonarResourceReader(new StringReader(invalidXML));
+        List<SonarResource> sonarResources = sonarResourceReader.readSonarResources();
 
         assertThat(sonarResources, hasSize(1));
         assertThat(sonarResources.get(0).getMsr(), hasSize(0));
@@ -114,16 +114,16 @@ public class SonarReaderTest {
     public void shouldThrowExceptionOnMissingMsrEndTag() throws Exception {
         String invalidXML = wrapInSonarResourceXML("<msr>");
 
-        sonarReader = new SonarReader(new StringReader(invalidXML));
-        List<SonarResource> sonarResources = sonarReader.readSonarResources();
+        sonarResourceReader = new SonarResourceReader(new StringReader(invalidXML));
+        List<SonarResource> sonarResources = sonarResourceReader.readSonarResources();
     }
 
     @Test
     public void shouldIgnoreMsrWithoutValue() throws Exception {
         String invalidXML = wrapInSonarResourceXML("<msr><key>bla</key></msr>");
 
-        sonarReader = new SonarReader(new StringReader(invalidXML));
-        List<SonarResource> sonarResources = sonarReader.readSonarResources();
+        sonarResourceReader = new SonarResourceReader(new StringReader(invalidXML));
+        List<SonarResource> sonarResources = sonarResourceReader.readSonarResources();
 
         assertThat(sonarResources, hasSize(1));
         assertThat(sonarResources.get(0).getMsr(), hasSize(0));
@@ -134,8 +134,8 @@ public class SonarReaderTest {
     public void shouldIgnoreMsrWithoutKey() throws Exception {
         String invalidXML = wrapInSonarResourceXML("<msr></msr>");
 
-        sonarReader = new SonarReader(new StringReader(invalidXML));
-        List<SonarResource> sonarResources = sonarReader.readSonarResources();
+        sonarResourceReader = new SonarResourceReader(new StringReader(invalidXML));
+        List<SonarResource> sonarResources = sonarResourceReader.readSonarResources();
 
         assertThat(sonarResources, hasSize(1));
         assertThat(sonarResources.get(0).getMsr(), hasSize(0));
@@ -145,8 +145,8 @@ public class SonarReaderTest {
     public void shouldIgnoreAttributesWithoutValue() throws Exception {
         String invalidXML = wrapInSonarResourceXML("<bla/>");
 
-        sonarReader = new SonarReader(new StringReader(invalidXML));
-        List<SonarResource> sonarResources = sonarReader.readSonarResources();
+        sonarResourceReader = new SonarResourceReader(new StringReader(invalidXML));
+        List<SonarResource> sonarResources = sonarResourceReader.readSonarResources();
 
         assertThat(sonarResources, hasSize(1));
     }
@@ -155,8 +155,8 @@ public class SonarReaderTest {
     public void shouldIgnoreWrongDateFormat() throws Exception {
         Reader reader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(EXAMPLE_WRONG_DATE_FORMAT));
 
-        sonarReader = new SonarReader(reader);
-        List<SonarResource> sonarResources = sonarReader.readSonarResources();
+        sonarResourceReader = new SonarResourceReader(reader);
+        List<SonarResource> sonarResources = sonarResourceReader.readSonarResources();
 
         assertThat(sonarResources, hasSize(1));
     }

@@ -9,5 +9,6 @@ Some things that will increase the chance that your pull request is accepted:
 Write clean code.
 Write tests.
 Write a good commit message.
+Code for Analysis sub-project only in Java and Kotlin languages.
 
 We will *NOT* accept any pull requests that don't follow the Contributor Covenant [code of conduct](CODE_OF_CONDUCT.md).
