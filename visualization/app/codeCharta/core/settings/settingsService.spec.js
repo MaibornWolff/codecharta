@@ -42,5 +42,51 @@ describe("app.codeCharta.core.settings.settingsService", function() {
         expect(settingsService.onSettingsChanged.calledOnce);
 
     }));
+    /**
+          * @test {SettingsService#getMetricOrDefault}
+          */
+    it("should return defaultValue when metric is not in array", angular.mock.inject(function(settingsService, $rootScope){
+        
+        var arr = ["a", "b", "c"];
+        var name = "lookingForThis";
+        var defaultValue = "default";
+        
+        var result = settingsService.getMetricOrDefault(arr, name, defaultValue);
+        
+        expect(result).to.equal(defaultValue);
+        
+    }));
     
+    /**
+     * @test {SettingsService#getMetricOrDefault}
+     */
+    it("should return the searched value when metric is in array", angular.mock.inject(function(settingsService, $rootScope){
+                
+        var arr = ["a", "b", "lookingForThis"];
+        var name = "lookingForThis";
+        var defaultValue = "default";
+                
+        var result = settingsService.getMetricOrDefault(arr, name, defaultValue);
+                
+        expect(result).to.equal(name);
+                
+    }));
+    /**
+     * @test {SettingsService#correctSettings}
+     */
+    it("should replace metric with default if metric is not available", angular.mock.inject(function(settingsService, dataService, $rootScope){
+        dataService.data.metrics = ["a", "f", "g", "h"];
+        var settings = {areaMetric:"a", heightMetric:"b", colorMetric:"c"};
+        var expected = {areaMetric: "a", heightMetric:"f", colorMetric:"g"};
+        var result = settingsService.correctSettings(settings);
+        expect(result).to.deep.equal(expected);
+    }));
+    /**
+     * @test {SettingsService#correctSettings}
+     */
+    it("should return input if metrics are available", angular.mock.inject(function(settingsService, $rootScope){
+        var settings = {areaMetric:"a", heightMetric:"b", colorMetric:"c"};
+        var result = settingsService.correctSettings(settings);
+        expect(result).to.deep.equal(settings);
+    }));
 });

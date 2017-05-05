@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
+- Scenarios and default scenario
+- Translation API for Metrics
 
 ### Changed
 

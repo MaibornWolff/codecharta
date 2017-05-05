@@ -13,9 +13,10 @@ class CodeChartaController {
      * @param {DataService} dataService
      * @param {SettingsService} settingsService
      */
-    constructor(dataService, urlService, settingsService) {
+    constructor(dataService, urlService, settingsService, scenarioService) {
         this.initHandlers();
         this.loadFileOrSample(urlService, dataService, settingsService);
+        this.scenarioService = scenarioService;
     }
 
     /**
@@ -37,7 +38,10 @@ class CodeChartaController {
 
                 // set loaded data
                 dataService.setFileData(data).then(
-                    () => {settingsService.updateSettingsFromUrl();},
+                    () => {
+                        settingsService.updateSettingsFromUrl();
+                        ctx.loadingFinished();
+                    },
                     (r) => {ctx.printErrors(r);}
                 );
 
@@ -54,7 +58,9 @@ class CodeChartaController {
 
                         // set loaded data
                         dataService.setFileData(data).then(
-                            () => {},
+                            () => {
+                                ctx.loadingFinished();
+                            },
                             (r) => {ctx.printErrors(r);}
                         );
 
@@ -71,6 +77,13 @@ class CodeChartaController {
 
         );
 
+    }
+
+    /**
+     * called after map loading finished. Applies the default scenario.
+     */
+    loadingFinished() {
+        this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
     }
 
     /**
