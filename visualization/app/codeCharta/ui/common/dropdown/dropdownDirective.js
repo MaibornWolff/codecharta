@@ -1,4 +1,5 @@
 "use strict";
+import {DropdownController} from "./dropdownController.js";
 
 /**
  * Renders a dropdown menu.
@@ -24,8 +25,27 @@ class DropdownDirective{
             label: "@",
             values: "=",
             model: "=",
-            change:"&"
+            change: "&"
         };
+
+        /**
+         *
+         * @type {DropdownController}
+         */
+        this.controller = DropdownController;
+
+        /**
+         *
+         * @type {string}
+         */
+        this.controllerAs = "ctrl";
+
+        /**
+         *
+         * @type {boolean}
+         */
+        this.bindToController = true;
+
     }
 
     /**
@@ -34,8 +54,8 @@ class DropdownDirective{
      */
     link(scope){
         scope.$watch(
-            ()=>{return scope.model;},
-            ()=>{scope.change();}
+            ()=>{return scope.ctrl.model;},
+            ()=>{scope.ctrl.change();}
         );
     }
 
