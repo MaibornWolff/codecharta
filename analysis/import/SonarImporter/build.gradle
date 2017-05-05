@@ -3,6 +3,8 @@ apply plugin: 'application'
 
 dependencies {
     compile project(':model')
+    compile 'io.reactivex.rxjava2:rxjava:2.0.7'
+    compile 'org.glassfish.jersey.core:jersey-client:2.25.1'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.8.0'
     compile 'com.beust:jcommander:1.58'
     testCompile group: 'org.hamcrest', name: 'hamcrest-core', version: '1.3'
