@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 - Scenarios and default scenario
 - Translation API for Metrics
+- Metric tooltips in dropdown
 
 ### Changed
 
