@@ -10,7 +10,7 @@ describe("app.codeCharta.core.scenarioService", function() {
 
     var scenarioService, $scope, sandbox, settingsService;
 
-    beforeEach(angular.mock.module("app.codeCharta.codeMap"));
+    beforeEach(angular.mock.module("app.codeCharta.core.scenario"));
 
     beforeEach(angular.mock.inject((_scenarioService_, _settingsService_, _$rootScope_)=>{
         scenarioService = _scenarioService_;
@@ -39,7 +39,7 @@ describe("app.codeCharta.core.scenarioService", function() {
 
         scenarioService.applyScenario(scenario);
 
-        expect(settingsService.applySettings.calledOnce);
+        sinon.assert.calledWith(settingsService.applySettings, sinon.match.same(settings));
     });
 
     /**

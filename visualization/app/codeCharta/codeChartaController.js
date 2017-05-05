@@ -79,6 +79,9 @@ class CodeChartaController {
 
     }
 
+    /**
+     * called after map loading finished. Applies the default scenario.
+     */
     loadingFinished() {
         this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
     }
