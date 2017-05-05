@@ -131,8 +131,8 @@ class SettingsService {
     applySettings(settings) {
         this.settings.importSettingValues(this.correctSettings(settings));
         this.onSettingsChanged();
-       
     }
+
     /**
      * corrects settings, if the chosen metric is not available in the current map, the first three metrics are chosen as a default.
      * @param {Settings} settings
@@ -142,9 +142,9 @@ class SettingsService {
         result.areaMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.areaMetric,this.dataService.data.metrics[0] );
         result.heightMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.heightMetric, this.dataService.data.metrics[1]);
         result.colorMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.colorMetric, this.dataService.data.metrics[2]);
-        
         return result;
     }
+
     /**
           * Checks if the given metricName is in the metricsArray. If it is in there, we return it, else we return the defaultValue.
           * @param {String[]} metricsArray an array of metric names

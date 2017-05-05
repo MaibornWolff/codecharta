@@ -58,6 +58,11 @@ export class Settings {
         this.grid = grid;
 
     }
+
+    /**
+     * Imports the given settings values without replacing this object with the given one.
+     * @param settings given settings
+     */
     importSettingValues(settings){
         this.map = settings.map;
         this.neutralColorRange = settings.neutralColorRange;

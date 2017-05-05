@@ -15,9 +15,8 @@ class ScenarioService {
      * @constructor 
      * @param {SettingsService} settingsService
      * @param {DataService} dataService
-     * @param {Scope} $rootScope
      */
-    constructor(settingsService, dataService, $rootScope) {
+    constructor(settingsService, dataService) {
 
         /**
          * @type {SettingsService}
@@ -28,13 +27,6 @@ class ScenarioService {
          * @type {DataService}
          */
         this.dataService = dataService;
-
-        /**
-         * @type {Scope}
-         */
-        this.rootScope = $rootScope;
-
-        let ctx = this;
 
     }
 
