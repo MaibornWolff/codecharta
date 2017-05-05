@@ -1,3 +1,6 @@
+/**
+ * Represents a tooltip object
+ */
 export class Tooltip {
 
     /**
@@ -7,11 +10,13 @@ export class Tooltip {
     constructor(name, tooltip) {
 
         /**
+         * identifier of the tooltip
          * @type {String}
          */
         this.name = name;
 
         /**
+         * description of the tooltip
          * @type {String}
          */
         this.tooltip = tooltip;
@@ -20,7 +25,7 @@ export class Tooltip {
 
     /**
      *
-     * @returns {String}
+     * @returns {String} identifier
      */
     getName() {
         return this.name;
@@ -28,7 +33,7 @@ export class Tooltip {
 
     /**
      *
-     * @returns {String}
+     * @returns {String} desctiption
      */
     getTooltip() {
         return this.tooltip;
