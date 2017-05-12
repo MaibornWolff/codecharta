@@ -94,6 +94,7 @@ class CodeMapService {
      * @param {string} heightKey
      * @param {string} colorKey
      * @param {ColorRange} colorConfig
+     * @param {number} amountOfTopLabels number of highest buildings with labels
      */
     drawFromData(map, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels) {
         this.drawMap(map, 500, 1, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels);
@@ -108,6 +109,7 @@ class CodeMapService {
      * @param {string} heightKey
      * @param {string} colorKey
      * @param {ColorRange} colorConfig
+     * @param {number} amountOfTopLabels number of highest buildings with labels
      */
     drawMap(map, s, p, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels) {
 
@@ -251,6 +253,7 @@ class CodeMapService {
      * adds a node to the scene
      * @param {object} node
      * @param {string} heightKey
+     * @param {boolean} showLabel true if the building should get a label
      */
     addNode(node, heightKey, showLabel) {
         //we need to keep in mind that d3 originally is in 2D, so we need to relabel the axis to match Three.js 3D space
@@ -297,6 +300,8 @@ class CodeMapService {
      * @param {number} z z position
      * @param {number} heightDelta
      * @param {object} node the transformed d3 node
+     * @param {string} heightKey the height metric
+     * @param {boolean} showLabel true if the building should get a label
      */
     addBuilding(w, h, l, x, y, z, heightDelta, node, heightKey, showLabel) {
         if (heightDelta > 0) {
@@ -338,6 +343,17 @@ class CodeMapService {
 
     }
 
+    /**
+    * adds a label at the given position
+    * @param {number} x x position
+    * @param {number} y y position
+    * @param {number} z z position
+    * @param {number} w width
+    * @param {number} h height
+    * @param {number} l length
+    * @param {object} node the transformed d3 node
+    * @param {string} heightKey the height metric
+    */
     addLabel(x, y, z, w, h, l, node, heightKey) {
 
         if(node.attributes && node.attributes[heightKey]){
@@ -364,6 +380,12 @@ class CodeMapService {
 
     }
 
+    /**
+     * Returns a text sprite
+     * @param {string} message
+     * @param {number} fontsize
+     * @returns {THREE.Sprite}
+     */
     makeText(message, fontsize) {
         var ctx, texture, sprite, spriteMaterial,
             canvas = document.createElement("canvas");
