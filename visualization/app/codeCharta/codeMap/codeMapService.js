@@ -343,7 +343,7 @@ class CodeMapService {
         if(node.attributes && node.attributes[heightKey]){
 
             var sprite = this.makeText(heightKey + ": " + node.attributes[heightKey], 50);
-            sprite.position.set(x+w/2,y+60+h,z+l/2);
+            sprite.position.set(x+w/2,y+60+h + sprite.heightValue/2,z+l/2);
             this.root.add(sprite);
 
             // Line
@@ -398,6 +398,7 @@ class CodeMapService {
         spriteMaterial = new THREE.SpriteMaterial({map : texture});
         sprite = new THREE.Sprite(spriteMaterial);
         sprite.scale.set(canvas.width,canvas.height,1);
+        sprite.heightValue = canvas.height;
         return sprite;
     }
 
