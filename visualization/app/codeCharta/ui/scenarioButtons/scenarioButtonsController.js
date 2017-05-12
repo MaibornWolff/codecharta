@@ -3,7 +3,7 @@
 class ScenarioButtonsController {
 
     /* @ngInject */
-    constructor(scenarioService) {
+    constructor(scenarioService, tooltipService) {
 
 
         /**
@@ -13,8 +13,15 @@ class ScenarioButtonsController {
         this.scenarioService = scenarioService;
 
         this.scenarios = scenarioService.getScenarios();
+
+        this.tooltipService = tooltipService;
         
     }
+
+    getScenarioTooltipTextByKey(key){
+        return this.tooltipService.getScenarioTooltipTextByKey(key);
+    }
+
     onclick(value){
         this.scenarioService.applyScenario(value);
     }

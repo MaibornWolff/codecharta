@@ -23,6 +23,11 @@ class TooltipService {
             MCC: new Tooltip("MCC", "MacCabe Complexity or cyclomatic complexity"),
         };
 
+        this.scenarioTooltips = {
+            Name1: new Tooltip("Name1", "Whatever description"),
+            Name2: new Tooltip("Name2", "description2")
+        };
+
     }
 
     /**
@@ -32,6 +37,15 @@ class TooltipService {
      */
     getTooltipTextByKey(key) {
         return this.tooltips[key] ? this.tooltips[key].getTooltip() : "no description";
+    }
+
+    /**
+     * returns the scenario description related to the given key
+     * @param key
+     * @returns {string}
+     */
+    getScenarioTooltipTextByKey(key) {
+        return this.scenarioTooltips[key] ? this.scenarioTooltips[key].getTooltip() : "no description";
     }
     
 }
