@@ -3,7 +3,7 @@
 class ScenarioButtonsController {
 
     /* @ngInject */
-    constructor(scenarioService, tooltipService) {
+    constructor(scenarioService, tooltipService, $rootScope, $scope) {
 
 
         /**
@@ -15,11 +15,17 @@ class ScenarioButtonsController {
         this.scenarios = scenarioService.getScenarios();
 
         this.tooltipService = tooltipService;
+
+        let ctx = this;
+
+        $rootScope.$on("tooltips-changed", (event,data) => {
+            $scope.$apply();
+        });
         
     }
 
     getScenarioTooltipTextByKey(key){
-        return this.tooltipService.getScenarioTooltipTextByKey(key);
+        return this.tooltipService.getTooltipTextByKey(key);
     }
 
     onclick(value){

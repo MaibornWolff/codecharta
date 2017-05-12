@@ -1,5 +1,4 @@
 "use strict";
-import {Tooltip} from "./model/tooltip.js";
 
 /**
  * Return tooltips containing descriptions
@@ -11,21 +10,24 @@ class TooltipService {
     /**
      * @constructor
      */
-    constructor(){
+    constructor($rootScope, urlService){
 
-        /**
-         * All available tooltips.
-         * @type {{Statements: Tooltip, RLOC: Tooltip, MCC: Tooltip}}
-         */
-        this.tooltips = {
-            Statements: new Tooltip("Statements", "Number of Statements"),
-            RLOC: new Tooltip("RLOC", "Real Lines of Code"),
-            MCC: new Tooltip("MCC", "MacCabe Complexity or cyclomatic complexity"),
-        };
+        this.tooltips = [];
+        var ctx = this;
 
-        this.scenarioTooltips = {
-            Default: new Tooltip("Default", "RLOC/MCC/MCC with color range (2,4)")
-        };
+        urlService.getFileDataFromFile("tooltips.json").then(
+
+            //resolve
+            (data) => {
+                ctx.tooltips = data;
+                $rootScope.$broadcast("tooltips-changed", this.tooltips);
+            },
+            //reject
+            () => {
+                window.alert("error loading tooltips.json");
+            }
+
+        );
 
     }
 
@@ -35,17 +37,28 @@ class TooltipService {
      * @returns {string} description
      */
     getTooltipTextByKey(key) {
-        return this.tooltips[key] ? this.tooltips[key].getTooltip() : "no description";
+
+        var patt = new RegExp(/_\S*_/);
+
+        if(this.tooltips[key]){
+
+            var res = this.tooltips[key];
+
+            while (patt.test(res)) {
+                res = res.replace(/_(.*?)_/, this.replaceString.bind(this));
+            }
+
+            return res;
+
+        } else {
+            return "no description";
+        }
+
     }
 
-    /**
-     * returns the scenario description related to the given key
-     * @param key
-     * @returns {string}
-     */
-    getScenarioTooltipTextByKey(key) {
-        console.log(key, this.scenarioTooltips[key]);
-        return this.scenarioTooltips[key] ? this.scenarioTooltips[key].getTooltip() : "no description";
+    replaceString(a, b) {
+        var rep = this.getTooltipTextByKey(b);
+        return rep;
     }
     
 }

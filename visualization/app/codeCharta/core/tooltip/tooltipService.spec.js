@@ -1,5 +1,4 @@
 require("./tooltip.js");
-import {Tooltip} from "./model/tooltip.js";
 
 /**
  * @test {TooltipService}
@@ -14,8 +13,8 @@ describe("app.codeCharta.core.tooltip.tooltipService", function() {
         tooltipService = _tooltipService_;
 
         tooltipService.tooltips = {
-            a: new Tooltip("a", "a description"),
-            b: new Tooltip("b", "b description")
+            a: "a description",
+            b: "b description"
         };
 
     }));
