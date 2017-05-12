@@ -1,6 +1,7 @@
 "use strict";
 
 import * as THREE from "three";
+import {SpriteText2D, textAlign} from "three-text2d";
 
 /**
  * Main service to manage the state of the rendered code map
@@ -50,7 +51,9 @@ class CodeMapService {
 
         let ctx = this;
 
-        $rootScope.$on("settings-changed", (e, s)=>{ctx.applySettings(s);});
+        $rootScope.$on("settings-changed", (e, s)=> {
+            ctx.applySettings(s);
+        });
 
         this.addLightsToScene();
 
@@ -62,8 +65,8 @@ class CodeMapService {
      * @param {number} y
      * @param {number} z
      */
-    scaleTo(x, y, z){
-        if(this.root && this.root.scale) {
+    scaleTo(x, y, z) {
+        if (this.root && this.root.scale) {
             this.root.scale.set(x, y, z);
         }
     }
@@ -79,8 +82,8 @@ class CodeMapService {
         var color = s.colorMetric;
         var map = s.map;
         var range = s.neutralColorRange;
-        if(area && height && color && map && range) {
-            this.drawFromData(map, area, height, color, s.neutralColorRange);
+        if (area && height && color && map && range) {
+            this.drawFromData(map, area, height, color, s.neutralColorRange, s.amountOfTopLabels);
         }
     }
 
@@ -92,8 +95,8 @@ class CodeMapService {
      * @param {string} colorKey
      * @param {ColorRange} colorConfig
      */
-    drawFromData(map, areaKey, heightKey, colorKey, colorConfig) {
-        this.drawMap(map, 500, 1, areaKey, heightKey, colorKey, colorConfig);
+    drawFromData(map, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels) {
+        this.drawMap(map, 500, 1, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels);
     }
 
     /**
@@ -106,21 +109,25 @@ class CodeMapService {
      * @param {string} colorKey
      * @param {ColorRange} colorConfig
      */
-    drawMap(map, s, p, areaKey, heightKey, colorKey, colorConfig) {
+    drawMap(map, s, p, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels) {
 
         this.clearScene();
 
         this.addRoot();
 
-        if(this.settingsService.settings.grid){
+        if (this.settingsService.settings.grid) {
             this.addGrid(s, 50);
         }
 
         let nodes = this.treemapService.createTreemapNodes(map, s, s, p, areaKey, heightKey);
 
-        nodes.forEach((node)=>this.addNode(node, heightKey));
+        let sorted = nodes.sort((a,b)=>{return b.height - a.height;});
 
-        this.centerMap(s,s);
+        sorted.forEach((node,i)=>{
+            this.addNode(node, heightKey, i<amountOfTopLabels);
+        });
+
+        this.centerMap(s, s);
 
         this.drawScene();
 
@@ -133,20 +140,20 @@ class CodeMapService {
      * @param {number} mapSize
      * @param {number} divisions
      */
-    addGrid(mapSize, divisions){
+    addGrid(mapSize, divisions) {
 
         let xz = new THREE.GridHelper(mapSize, divisions);
 
         let xy = new THREE.GridHelper(mapSize, divisions);
         xy.translateY(mapSize);
         xy.translateX(mapSize);
-        xy.rotation.z =  Math.PI / 2 ;
+        xy.rotation.z = Math.PI / 2;
 
         let zy = new THREE.GridHelper(mapSize, divisions);
         zy.translateY(mapSize);
         zy.translateZ(mapSize);
-        zy.rotation.y =  Math.PI / 2 ;
-        zy.rotation.x =  Math.PI / 2 ;
+        zy.rotation.y = Math.PI / 2;
+        zy.rotation.x = Math.PI / 2;
 
         let group = new THREE.Object3D();
         group.add(xz);
@@ -162,15 +169,15 @@ class CodeMapService {
      * @param {string} colorKey
      * @param {ColorRange} neutralColorRange
      */
-    colorMap(colorKey, neutralColorRange){
-        this.root.traverse((o)=>{
+    colorMap(colorKey, neutralColorRange) {
+        this.root.traverse((o)=> {
 
-            if(o.node && o.node.isLeaf) {
+            if (o.node && o.node.isLeaf) {
 
                 this.colorBase(o, colorKey, neutralColorRange);
                 this.colorDelta(o);
 
-            } else if(o.node && !o.node.isLeaf) {
+            } else if (o.node && !o.node.isLeaf) {
 
                 o.originalMaterial = o.material.clone();
                 o.selectedMaterial = this.assetService.selected();
@@ -187,18 +194,18 @@ class CodeMapService {
      * @param {string} colorKey
      * @param {ColorRange} neutralColorRange
      */
-    colorBase(o, colorKey, neutralColorRange){
+    colorBase(o, colorKey, neutralColorRange) {
 
         let base = o.children.filter((c)=>!c.isDelta)[0];
 
-        if(!base){
+        if (!base) {
             return;
         }
 
         var val = base.node.attributes[colorKey];
-        if(val < neutralColorRange.from){
+        if (val < neutralColorRange.from) {
             base.originalMaterial = neutralColorRange.flipped ? this.assetService.negative() : this.assetService.positive();
-        } else if(val > neutralColorRange.to){
+        } else if (val > neutralColorRange.to) {
             base.originalMaterial = neutralColorRange.flipped ? this.assetService.positive() : this.assetService.negative();
         } else {
             base.originalMaterial = this.assetService.neutral();
@@ -215,11 +222,11 @@ class CodeMapService {
      * colors the delta block of o
      * @param {Object3D} o building with delta
      */
-    colorDelta(o){
+    colorDelta(o) {
 
         let delta = o.children.filter((c)=>c.isDelta)[0];
 
-        if(!delta){
+        if (!delta) {
             return;
         }
 
@@ -235,9 +242,9 @@ class CodeMapService {
      * @param {number} w width
      * @param {number} l length
      */
-    centerMap(w,l){
-        this.root.translateX(-w/2);
-        this.root.translateZ(-l/2);
+    centerMap(w, l) {
+        this.root.translateX(-w / 2);
+        this.root.translateZ(-l / 2);
     }
 
     /**
@@ -245,12 +252,12 @@ class CodeMapService {
      * @param {object} node
      * @param {string} heightKey
      */
-    addNode(node, heightKey){
+    addNode(node, heightKey, showLabel) {
         //we need to keep in mind that d3 originally is in 2D, so we need to relabel the axis to match Three.js 3D space
-        if(!node.isLeaf){
+        if (!node.isLeaf) {
             this.addFloor(node.width, node.height, node.length, node.x0, node.z0, node.y0, node.depth, node);
         } else {
-            this.addBuilding(node.width, node.height, node.length, node.x0, node.z0, node.y0, node.deltas && this.settingsService.settings.deltas ? node.deltas[heightKey] : 0, node);
+            this.addBuilding(node.width, node.height, node.length, node.x0, node.z0, node.y0, node.deltas && this.settingsService.settings.deltas ? node.deltas[heightKey] : 0, node, heightKey, showLabel);
         }
     }
 
@@ -274,7 +281,7 @@ class CodeMapService {
      */
     addFloor(w, h, l, x, y, z, depth, node) {
         let mat = depth % 2 ? this.assetService.odd() : this.assetService.even();
-        let floor = this.getTransformedMesh(w,h,l,x + w/2,y + h/2,z + l/2, mat, node);
+        let floor = this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, mat, node);
         let group = new THREE.Object3D();
         group.add(floor);
         this.root.add(group);
@@ -291,26 +298,26 @@ class CodeMapService {
      * @param {number} heightDelta
      * @param {object} node the transformed d3 node
      */
-    addBuilding(w, h, l, x, y, z, heightDelta, node) {
-        if(heightDelta > 0) {
-            if(heightDelta > h){
+    addBuilding(w, h, l, x, y, z, heightDelta, node, heightKey, showLabel) {
+        if (heightDelta > 0) {
+            if (heightDelta > h) {
                 heightDelta = 1; //scale it for the looks, should not happen though
             }
-            let cube = this.getTransformedMesh(w, h-heightDelta, l, x + w/2, y + (h-heightDelta)/2, z + l/2, this.assetService.default(), node);
-            let cubeD = this.getTransformedMesh(w, heightDelta, l, x + w/2, y + (heightDelta)/2 + (h-heightDelta), z + l/2, this.assetService.positiveDelta(), node);
+            let cube = this.getTransformedMesh(w, h - heightDelta, l, x + w / 2, y + (h - heightDelta) / 2, z + l / 2, this.assetService.default(), node);
+            let cubeD = this.getTransformedMesh(w, heightDelta, l, x + w / 2, y + (heightDelta) / 2 + (h - heightDelta), z + l / 2, this.assetService.positiveDelta(), node);
             let building = new THREE.Object3D();
             cubeD.isDelta = true;
             building.add(cube);
             building.add(cubeD);
             building.node = node;
             this.root.add(building);
-        } else if(heightDelta < 0) {
-            if(-heightDelta > h){
+        } else if (heightDelta < 0) {
+            if (-heightDelta > h) {
                 heightDelta = -1; //scale it for the looks, should not happen though
             }
 
-            let cube = this.getTransformedMesh(w, h, l, x + w/2, y + h/2, z + l/2, this.assetService.default(), node);
-            let cubeD = this.getTransformedMesh(w, -heightDelta, l, x + w/2, y + (-heightDelta)/2 + h, z + l/2, this.assetService.negativeDelta(), node);
+            let cube = this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, this.assetService.default(), node);
+            let cubeD = this.getTransformedMesh(w, -heightDelta, l, x + w / 2, y + (-heightDelta) / 2 + h, z + l / 2, this.assetService.negativeDelta(), node);
             let building = new THREE.Object3D();
             cubeD.isDelta = true;
             building.add(cube);
@@ -318,12 +325,80 @@ class CodeMapService {
             building.node = node;
             this.root.add(building);
         } else {
-            let cube = this.getTransformedMesh(w, h, l, x + w/2, y + h/2, z + l/2, this.assetService.default(), node);
+            let cube = this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, this.assetService.default(), node);
             let building = new THREE.Object3D();
             building.add(cube);
             building.node = node;
             this.root.add(building);
         }
+
+        if(showLabel) {
+            this.addLabel(x, y, z, w, h, l, node, heightKey);
+        }
+
+    }
+
+    addLabel(x, y, z, w, h, l, node, heightKey) {
+
+        if(node.attributes && node.attributes[heightKey]){
+
+            var sprite = this.makeText(heightKey + ": " + node.attributes[heightKey], 50);
+            sprite.position.set(x+w/2,y+60+h,z+l/2);
+            this.root.add(sprite);
+
+            // Line
+            var material = new THREE.LineBasicMaterial({
+                color: 0x0000ff
+            });
+
+            var geometry = new THREE.Geometry();
+            geometry.vertices.push(
+                new THREE.Vector3(x + w / 2, y + h, z + l / 2),
+                new THREE.Vector3(x + w / 2, y + h + 60, z + l / 2)
+            );
+
+            var line = new THREE.Line(geometry, material);
+            this.root.add(line);
+
+        }
+
+    }
+
+    makeText(message, fontsize) {
+        var ctx, texture, sprite, spriteMaterial,
+            canvas = document.createElement("canvas");
+        ctx = canvas.getContext("2d");
+        ctx.font = fontsize + "px Arial";
+
+        var margin = 10;
+
+        // setting canvas width/height before ctx draw, else canvas is empty
+        var w = ctx.measureText(message).width;
+        var h = fontsize;
+        canvas.width = w + margin;
+        canvas.height = h + margin; // fontsize * 1.5
+
+        //bg
+        ctx.fillStyle = "rgba(255,255,255,1)";
+        ctx.strokeStyle = "rgba(0,0,255,1)";
+        ctx.fillRect(0,0,canvas.width, canvas.height);
+        ctx.strokeRect(0,0,canvas.width, canvas.height);
+
+        // after setting the canvas width/height we have to re-set font to apply!?! looks like ctx reset
+        ctx.font = h + "px Arial";
+        ctx.fillStyle = "rgba(0,0,0,1)";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(message, canvas.width / 2, canvas.height / 2);
+
+        texture = new THREE.Texture(canvas);
+        texture.minFilter = THREE.LinearFilter; // NearestFilter;
+        texture.needsUpdate = true;
+
+        spriteMaterial = new THREE.SpriteMaterial({map : texture});
+        sprite = new THREE.Sprite(spriteMaterial);
+        sprite.scale.set(canvas.width,canvas.height,1);
+        return sprite;
     }
 
     /**
@@ -381,7 +456,7 @@ class CodeMapService {
      * @return {Mesh}
      */
     getTransformedMesh(scaleX, scaleY, scaleZ, translateX, translateY, translateZ, mat, node) {
-        let geo =  this.assetService.getCubeGeo();
+        let geo = this.assetService.getCubeGeo();
         let mesh = new THREE.Mesh(geo, mat);
         mesh.scale.x = scaleX;
         mesh.scale.y = scaleY;
