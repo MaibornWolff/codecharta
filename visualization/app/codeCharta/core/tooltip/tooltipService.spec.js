@@ -14,7 +14,9 @@ describe("app.codeCharta.core.tooltip.tooltipService", function() {
 
         tooltipService.tooltips = {
             a: "a description",
-            b: "b description"
+            b: "b description",
+            c: "c description _a_",
+            d: "d description _as_"
         };
 
     }));
@@ -51,6 +53,20 @@ describe("app.codeCharta.core.tooltip.tooltipService", function() {
 
     });
 
+    /**
+     * @test{should return nested answer by keys in keys sorrounded by _}
+     */
+    it("should return nested answer by keys in keys sorrounded by _", () =>{
+        var answer = tooltipService.getTooltipTextByKey("c");
+        expect(answer).to.equal("c description a description");
+    });
 
+    /**
+     * @test{should return nested answer by keys in keys sorrounded by _}
+     */
+    it("should return nested no description by unknown keys in keys sorrounded by _", () =>{
+        var answer = tooltipService.getTooltipTextByKey("d");
+        expect(answer).to.equal("d description no description");
+    });
 
 });
