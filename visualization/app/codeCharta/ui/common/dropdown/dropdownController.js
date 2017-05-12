@@ -9,8 +9,13 @@ class DropdownController{
      *
      * @param {TooltipService} tooltipService
      */
-    constructor(tooltipService) {
+    constructor(tooltipService, $rootScope, $scope) {
         this.tooltipService = tooltipService;
+
+        $rootScope.$on("tooltips-changed", (event,data) => {
+            $scope.$apply();
+        });
+
     }
 
     /**
