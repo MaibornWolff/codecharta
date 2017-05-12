@@ -24,8 +24,7 @@ class TooltipService {
         };
 
         this.scenarioTooltips = {
-            Name1: new Tooltip("Name1", "Whatever description"),
-            Name2: new Tooltip("Name2", "description2")
+            Default: new Tooltip("Default", "RLOC/MCC/MCC with color range (2,4)")
         };
 
     }
@@ -45,6 +44,7 @@ class TooltipService {
      * @returns {string}
      */
     getScenarioTooltipTextByKey(key) {
+        console.log(key, this.scenarioTooltips[key]);
         return this.scenarioTooltips[key] ? this.scenarioTooltips[key].getTooltip() : "no description";
     }
     
