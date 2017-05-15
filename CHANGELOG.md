@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- GitHub Issue: Sonarimporter crashes with null pointer exception when there is a component without path. #13
 
 ## [1.1.3] - 2017-05-01
 ### Added
