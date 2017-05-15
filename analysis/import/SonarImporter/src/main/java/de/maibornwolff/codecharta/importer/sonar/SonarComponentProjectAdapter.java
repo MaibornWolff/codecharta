@@ -87,7 +87,7 @@ public class SonarComponentProjectAdapter extends Project {
         if (component.getPath() != null) {
             return new FileSystemPath(component.getPath().substring(0, component.getPath().lastIndexOf('/') + 1));
         } else {
-            return new FileSystemPath("/");
+            return new FileSystemPath("");
         }
     }
 }
