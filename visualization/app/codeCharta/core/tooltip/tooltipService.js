@@ -34,7 +34,7 @@ class TooltipService {
     /**
      * returns the tooltip description related to the given key
      * @param {String} key
-     * @returns {string} description
+     * @returns {string} the description related to the given key
      */
     getTooltipTextByKey(key) {
 
@@ -44,10 +44,10 @@ class TooltipService {
 
             var res = this.tooltips[key];
 
+
             while (patt.test(res)) {
                 res = res.replace(/_(.*?)_/, this.replaceString.bind(this));
             }
-
             return res;
 
         } else {
@@ -56,6 +56,12 @@ class TooltipService {
 
     }
 
+    /**
+     * Function used for recursiveness with getTooltipTexByKey
+     * @param a
+     * @param {String} b given key
+     * @returns {string}
+     */
     replaceString(a, b) {
         var rep = this.getTooltipTextByKey(b);
         return rep;
