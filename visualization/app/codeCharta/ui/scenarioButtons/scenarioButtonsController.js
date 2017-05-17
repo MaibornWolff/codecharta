@@ -24,6 +24,11 @@ class ScenarioButtonsController {
         
     }
 
+    /**
+     * returns the tooltip description related to the given key
+     * @param key
+     * @returns {string|*}
+     */
     getScenarioTooltipTextByKey(key){
         return this.tooltipService.getTooltipTextByKey(key);
     }
