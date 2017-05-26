@@ -2,7 +2,7 @@
   "author": "MaibornWolff GmbH <dist_intern_codecharta@maibornwolff.de>",
   "homepage": "http://git.maibornwolff.de/codecharta-sw-landkarten/visualisierung",
   "name": "CodeCharta",
-  "version": "1.1.2",
+  "version": "1.1.4",
   "description": "MaibornWolff CodeCharta",
   "main": "dist/app/index.html",
   "window": {
