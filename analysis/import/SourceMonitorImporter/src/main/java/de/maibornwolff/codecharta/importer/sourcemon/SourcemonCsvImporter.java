@@ -1,7 +1,9 @@
 package de.maibornwolff.codecharta.importer.sourcemon;
 
 import com.google.common.collect.ImmutableList;
+import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.serialization.ProjectSerializer;
+import de.maibornwolff.codecharta.translation.MetricTranslator;
 
 import java.io.*;
 import java.util.Arrays;
@@ -9,14 +11,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SourcemonCsvImporter {
+
     public static void main(String... args) throws IOException {
         if (args.length == 0) {
             System.out.println("Usage: sourceMonitorImporter <sourcemon-1.csv> <sourcemon-2.csv> ... <sourcemon-n.csv>");
             System.exit(0);
         }
-
         SourceMonitorProjectAdapter project = new SourceMonitorProjectAdapter("test");
         getInputStreamsFromArgs(args).forEach(project::addSourceMonitorProjectFromCsv);
+        Project translated = MetricTranslator.translateMetrics(project, TranslationFactory.buildTranslationMap());
+        project.setNodes(translated.getNodes());
         ProjectSerializer.serializeProject(project, new OutputStreamWriter(System.out));
     }
 
@@ -32,5 +36,6 @@ public class SourcemonCsvImporter {
             throw new RuntimeException("File " + path + " not found.");
         }
     }
+
 }
 
