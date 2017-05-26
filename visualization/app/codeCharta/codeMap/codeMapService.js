@@ -358,7 +358,7 @@ class CodeMapService {
 
         if(node.attributes && node.attributes[heightKey]){
 
-            var sprite = this.makeText(heightKey + ": " + node.attributes[heightKey], 50);
+            var sprite = this.makeText(node.name + ": " + node.attributes[heightKey], 30);
             sprite.position.set(x+w/2,y+60+h + sprite.heightValue/2,z+l/2);
             this.root.add(sprite);
 
