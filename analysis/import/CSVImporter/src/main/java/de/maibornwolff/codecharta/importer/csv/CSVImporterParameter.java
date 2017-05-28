@@ -6,30 +6,35 @@ import java.util.regex.Pattern;
  * Created by DominikU on 28.05.2017.
  */
 public class CSVImporterParameter {
-
+    private final Pattern FLOAT_PATTERN = Pattern.compile("\\d+[,.]?\\d*");
+    private final char PATH_SEPERATOR = '\\';
     private final char CSV_DELIMITER = ',';
-    private int PATH_COLUMN = 3;
-    private int METRIC_COLUMN_START = 4;
-    private Pattern FLOAT_PATTERN = Pattern.compile("\\d+[,.]?\\d*");
-    private char PATH_SEPARATOR = '\\';
 
-    public char getCsvDelimiter() {
+    private int pathColumn = 3;
+    private int metricColumnStart = 4;
+
+    public CSVImporterParameter(int pathColumn, int metricColumnStart) {
+        this.pathColumn = pathColumn;
+        this.metricColumnStart = metricColumnStart;
+    }
+
+    public char getCSV_DELIMITER() {
         return CSV_DELIMITER;
     }
 
     public int getPathColumn() {
-        return PATH_COLUMN;
+        return pathColumn;
     }
 
     public int getMetricColumnStart() {
-        return METRIC_COLUMN_START;
+        return metricColumnStart;
     }
 
     public Pattern getFloatPattern() {
         return FLOAT_PATTERN;
     }
 
-    public char getPathSeparator() {
-        return PATH_SEPARATOR;
+    public char getPATH_SEPERATOR() {
+        return PATH_SEPERATOR;
     }
 }

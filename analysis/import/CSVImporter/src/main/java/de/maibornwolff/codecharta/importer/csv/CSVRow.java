@@ -25,12 +25,12 @@ public class CSVRow {
 
     public String getFileName() {
         String path = getPath();
-        return path.substring(path.lastIndexOf(callParameter.getPathSeparator()) + 1);
+        return path.substring(path.lastIndexOf(callParameter.getPATH_SEPERATOR()) + 1);
     }
 
     public String getFolderWithFile() {
         String path = getPath();
-        return path.substring(0, path.lastIndexOf(callParameter.getPathSeparator()) + 1);
+        return path.substring(0, path.lastIndexOf(callParameter.getPATH_SEPERATOR()) + 1);
     }
 
 

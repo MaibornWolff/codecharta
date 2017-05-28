@@ -15,14 +15,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
 public class CSVProjectAdapterTest {
-    private final CSVProjectAdapter project = new CSVProjectAdapter("test", new CSVImporterParameter());
+    private final CSVProjectAdapter project = new CSVProjectAdapter("test", new CSVImporterParameter(3,4));
 
     private static InputStream toInputStream(String content) {
         return new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
     }
 
     @Test
-    public void should_ignore_wrong_row_content() throws UnsupportedEncodingException {
+    public void should_ignore_row_if_no_path_column_present() throws UnsupportedEncodingException {
         // when
         project.addProjectFromCsv(toInputStream("head\nnoValidContent\n"));
 
@@ -31,7 +31,7 @@ public class CSVProjectAdapterTest {
     }
 
     @Test
-    public void should_read_node_name_from_fourth_column() throws UnsupportedEncodingException {
+    public void should_read_node_name_from_specified_path_column() throws UnsupportedEncodingException {
         String name = "someName";
         // when
         project.addProjectFromCsv(toInputStream("someContent\nprojectName,blubb2,blubb3," + name));
@@ -69,7 +69,7 @@ public class CSVProjectAdapterTest {
     }
 
     @Test
-    public void should_read_node_attributes_from_fifth_column() throws UnsupportedEncodingException {
+    public void should_read_node_attributes_from_metric_column() throws UnsupportedEncodingException {
         // given
         String attribName = "attname";
         String attribVal = "\"0,1\"";
