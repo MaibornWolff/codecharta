@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
+- Adding Labels and UI
 
 ### Changed
 
@@ -18,7 +19,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Scenarios and default scenario
 - Translation API for Metrics
 - Metric tooltips in dropdown
-- Adding Labels and UI
 
 ### Changed
 
