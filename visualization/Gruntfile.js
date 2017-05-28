@@ -225,6 +225,7 @@ module.exports = function (grunt) {
                     {expand: true, cwd:"./dist/packages/CodeCharta/linux64/", src: ['**/*'], dest: '.'}
                 ]
             },
+
             win32: {
                 options: {
                     archive: './dist/packages/codecharta-visualization-win32.zip'
@@ -251,7 +252,7 @@ module.exports = function (grunt) {
     grunt.registerTask("build", ["clean:app", "jshint", "browserify", "ngAnnotate:app", "htmlmin", "copy:style", "concat:css", "clean:style", "copy:materialize", "copy:json", "copy:hammer", "copy:fontawesome", "copy:angular", "copy:images", "copy:jquery", "copy:license", "string-replace"]);
     grunt.registerTask("test", ["clean:coverage", "mocha_istanbul"]);
     grunt.registerTask("doc", ["clean:doc", "exec:doc"]);
-    grunt.registerTask("package", ["clean:package", "nwjs", "compress"]);
+    grunt.registerTask("package", ["clean:package", "nwjs", "force:compress"]);
     grunt.registerTask("quick", ["jshint", "browserify", "ngAnnotate:app", "htmlmin", "copy:style", "concat:css","copy:json", "clean:style", "copy:images", "string-replace"]);
 
 

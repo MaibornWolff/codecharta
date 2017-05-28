@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.1.4] - 2017-05-26
+### Added
 - Scenarios and default scenario
 - Translation API for Metrics
 - Metric tooltips in dropdown
@@ -16,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- GitHub Issue: Sonarimporter crashes with null pointer exception when there is a component without path. #13
 
 ## [1.1.3] - 2017-05-01
 ### Added
