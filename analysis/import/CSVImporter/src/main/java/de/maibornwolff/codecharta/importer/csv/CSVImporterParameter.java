@@ -1,40 +1,46 @@
 package de.maibornwolff.codecharta.importer.csv;
 
-import java.util.regex.Pattern;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 
-/**
- * Created by DominikU on 28.05.2017.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class CSVImporterParameter {
-    private final Pattern FLOAT_PATTERN = Pattern.compile("\\d+[,.]?\\d*");
-    private final char PATH_SEPERATOR = '\\';
-    private final char CSV_DELIMITER = ',';
+    private final JCommander jc;
 
-    private int pathColumn = 3;
-    private int metricColumnStart = 4;
+    private final char pathSeparator = '\\';
 
-    public CSVImporterParameter(int pathColumn, int metricColumnStart) {
-        this.pathColumn = pathColumn;
-        this.metricColumnStart = metricColumnStart;
+    @Parameter(names = {"--csvDelimiter"})
+    private char csvDelimiter = ',';
+
+    @Parameter(description = "[file]")
+    private List<String> files = new ArrayList<>();
+
+    @Parameter(names = {"-h", "--help"}, description = "This help text", help = true)
+    private boolean help = false;
+
+    public CSVImporterParameter(String[] args) {
+        this.jc = new JCommander(this, args);
     }
 
-    public char getCSV_DELIMITER() {
-        return CSV_DELIMITER;
+    public char getPathSeparator() {
+        return pathSeparator;
     }
 
-    public int getPathColumn() {
-        return pathColumn;
+    public char getCsvDelimiter() {
+        return csvDelimiter;
     }
 
-    public int getMetricColumnStart() {
-        return metricColumnStart;
+    public List<String> getFiles() {
+        return files;
     }
 
-    public Pattern getFloatPattern() {
-        return FLOAT_PATTERN;
+    public boolean isHelp() {
+        return help;
     }
 
-    public char getPATH_SEPERATOR() {
-        return PATH_SEPERATOR;
+    public void printUsage() {
+        jc.usage();
     }
 }

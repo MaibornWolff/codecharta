@@ -15,7 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
 public class CSVProjectAdapterTest {
-    private final CSVProjectAdapter project = new CSVProjectAdapter("test", new CSVImporterParameter(3,4));
+    private final CSVProjectAdapter project = new CSVProjectAdapter("test", '\\', ',');
 
     private static InputStream toInputStream(String content) {
         return new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));

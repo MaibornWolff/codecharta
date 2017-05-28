@@ -13,20 +13,22 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 public class CSVProjectAdapter extends Project {
-    public static final char PATH_SEPARATOR = '\\';
-    private final CSVImporterParameter callParameter;
+    public static final String ROOT = "root";
+    private final char pathSeparator;
+    private final char csvDelimiter;
 
-    private String[] header;
+    private CSVHeader header;
 
-    public CSVProjectAdapter(String projectName, CSVImporterParameter callParameter) {
+    public CSVProjectAdapter(String projectName, char pathSeparator, char csvDelimiter) {
         super(projectName);
-        this.callParameter = callParameter;
-        this.getNodes().add(new Node("root", NodeType.Folder));
+        this.pathSeparator = pathSeparator;
+        this.csvDelimiter = csvDelimiter;
+        this.getNodes().add(new Node(ROOT, NodeType.Folder));
     }
 
     public void addProjectFromCsv(InputStream inStream) {
         CsvParser parser = createParser(inStream);
-        header = parser.parseNext();
+        header = new CSVHeader(parser.parseNext());
         parseContent(parser);
         parser.stopParsing();
     }
@@ -40,7 +42,7 @@ public class CSVProjectAdapter extends Project {
 
     private CsvParser createParser(InputStream inStream) {
         CsvParserSettings parserSettings = new CsvParserSettings();
-        parserSettings.getFormat().setDelimiter(callParameter.getCSV_DELIMITER());
+        parserSettings.getFormat().setDelimiter(csvDelimiter);
 
         CsvParser parser = new CsvParser(parserSettings);
         parser.beginParsing(new InputStreamReader(inStream, StandardCharsets.UTF_8));
@@ -49,9 +51,9 @@ public class CSVProjectAdapter extends Project {
 
     private void insertNodeForRow(String[] rawRow) {
         try {
-            CSVRow row = new CSVRow(rawRow, header, callParameter);
+            CSVRow row = new CSVRow(rawRow, header, pathSeparator);
             Node node = new Node(row.getFileName(), NodeType.File, row.getAttributes());
-            NodeInserter.insertByPath(this, new FileSystemPath(row.getFolderWithFile().replace(PATH_SEPARATOR, '/')), node);
+            NodeInserter.insertByPath(this, new FileSystemPath(row.getFolderWithFile().replace(pathSeparator, '/')), node);
         } catch (IllegalArgumentException e) {
             System.err.println("Ignoring " + e.getMessage());
         }
