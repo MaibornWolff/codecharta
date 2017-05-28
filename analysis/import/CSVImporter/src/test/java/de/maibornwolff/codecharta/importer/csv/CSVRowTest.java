@@ -11,10 +11,10 @@ import static org.hamcrest.Matchers.hasSize;
 
 public class CSVRowTest {
 
-    private CSVImporterParameter callParameter = new CSVImporterParameter();
+    private CSVImporterParameter callParameter = new CSVImporterParameter(3,4);
 
     @Test
-    public void getPath_should_return_path_from_fourth_column() {
+    public void getPath_should_return_path_from_specified_path_column() {
         // given
         String name = "someNodeName";
         String[] csvRow = new String[]{"projectName", "blubb2", "blubb3", name};
@@ -27,7 +27,7 @@ public class CSVRowTest {
     }
 
     @Test
-    public void getFileName_should_return_filename_from_fourth_column() {
+    public void getFileName_should_return_filename_from_specified_path_column() {
         // given
         Map nameExpectedFilenameMap = ImmutableMap.of(
                 "someNodeName", "someNodeName",
@@ -43,7 +43,7 @@ public class CSVRowTest {
     }
 
     @Test
-    public void getFolderWithFile_should_return_folderWithFile_from_fourth_column() throws Exception {
+    public void getFolderWithFile_should_return_folderWithFile_from_specified_path_column() throws Exception {
         // given
         Map nameExpectedFolderWithFileMap = ImmutableMap.of(
                 "someNodeName", "",
@@ -59,7 +59,7 @@ public class CSVRowTest {
     }
 
     @Test
-    public void getAttributes_should_read_float_from_fifth_column() throws Exception {
+    public void getAttributes_should_read_float_from_metric_column() throws Exception {
         // given
         String[] head = new String[]{"head1", "head2", "head3", "head4", "attrib"};
         String[] rawRow = new String[]{"projectName", "blubb2", "blubb3", "name", "3,2"};
@@ -73,7 +73,7 @@ public class CSVRowTest {
     }
 
     @Test
-    public void getAttributes_should_ignore_string() throws Exception {
+    public void getAttributes_should_ignore_string_in_metric_column() throws Exception {
         // given
         String[] head = new String[]{"head1", "head2", "head3", "head4", "attrib"};
         String[] rawRow = new String[]{"projectName", "blubb2", "blubb3", "name", "3bla"};
@@ -86,7 +86,7 @@ public class CSVRowTest {
     }
 
     @Test
-    public void getAttributes_should_ignore_line_if_no_attributeName_in_head() throws Exception {
+    public void getAttributes_should_ignore_column_if_no_attributeName_in_head() throws Exception {
         // given
         String[] head = new String[]{"head1", "head2", "head3", "head4"};
         String[] rawRow = new String[]{"projectName", "blubb2", "blubb3", "name", "3,0"};
@@ -99,7 +99,7 @@ public class CSVRowTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void should_throw_exception_if_less_than_3_columns() {
+    public void should_throw_exception_if_no_path_column_present() {
         // when
         new CSVRow(new String[]{"", ""}, null, callParameter);
 

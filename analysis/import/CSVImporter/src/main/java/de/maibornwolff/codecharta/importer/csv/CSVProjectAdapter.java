@@ -40,7 +40,7 @@ public class CSVProjectAdapter extends Project {
 
     private CsvParser createParser(InputStream inStream) {
         CsvParserSettings parserSettings = new CsvParserSettings();
-        parserSettings.getFormat().setDelimiter(callParameter.getCsvDelimiter());
+        parserSettings.getFormat().setDelimiter(callParameter.getCSV_DELIMITER());
 
         CsvParser parser = new CsvParser(parserSettings);
         parser.beginParsing(new InputStreamReader(inStream, StandardCharsets.UTF_8));

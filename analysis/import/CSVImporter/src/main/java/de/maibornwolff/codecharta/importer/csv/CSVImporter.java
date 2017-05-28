@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class CSVImporter {
     public static void main(String... args) throws IOException {
-        CSVImporterParameter callParameter = new CSVImporterParameter();
+        CSVImporterParameter callParameter = new CSVImporterParameter(3,4);
 
         CSVProjectAdapter project = new CSVProjectAdapter("test", callParameter);
         getInputStreamsFromArgs(args).forEach(project::addProjectFromCsv);
