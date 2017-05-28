@@ -10,12 +10,9 @@ import java.util.stream.Collectors;
 
 public class CSVImporter {
     public static void main(String... args) throws IOException {
-        if (args.length == 0) {
-            System.out.println("Usage: csvImporter <csv-1.csv> <csv-2.csv> ... <csv-n.csv>");
-            System.exit(0);
-        }
+        CSVImporterParameter callParameter = new CSVImporterParameter();
 
-        CSVProjectAdapter project = new CSVProjectAdapter("test");
+        CSVProjectAdapter project = new CSVProjectAdapter("test", callParameter);
         getInputStreamsFromArgs(args).forEach(project::addProjectFromCsv);
         ProjectSerializer.serializeProject(project, new OutputStreamWriter(System.out));
     }

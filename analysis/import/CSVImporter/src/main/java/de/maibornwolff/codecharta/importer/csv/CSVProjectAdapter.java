@@ -13,10 +13,14 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 public class CSVProjectAdapter extends Project {
+    public static final char PATH_SEPARATOR = '\\';
+    private final CSVImporterParameter callParameter;
+
     private String[] header;
 
-    public CSVProjectAdapter(String name) {
-        super(name);
+    public CSVProjectAdapter(String projectName, CSVImporterParameter callParameter) {
+        super(projectName);
+        this.callParameter = callParameter;
         this.getNodes().add(new Node("root", NodeType.Folder));
     }
 
@@ -36,7 +40,7 @@ public class CSVProjectAdapter extends Project {
 
     private CsvParser createParser(InputStream inStream) {
         CsvParserSettings parserSettings = new CsvParserSettings();
-        parserSettings.getFormat().setDelimiter(',');
+        parserSettings.getFormat().setDelimiter(callParameter.getCsvDelimiter());
 
         CsvParser parser = new CsvParser(parserSettings);
         parser.beginParsing(new InputStreamReader(inStream, StandardCharsets.UTF_8));
@@ -45,9 +49,9 @@ public class CSVProjectAdapter extends Project {
 
     private void insertNodeForRow(String[] rawRow) {
         try {
-            CSVRow row = new CSVRow(rawRow, header);
+            CSVRow row = new CSVRow(rawRow, header, callParameter);
             Node node = new Node(row.getFileName(), NodeType.File, row.getAttributes());
-            NodeInserter.insertByPath(this, new FileSystemPath(row.getFolderWithFile().replace('\\', '/')), node);
+            NodeInserter.insertByPath(this, new FileSystemPath(row.getFolderWithFile().replace(PATH_SEPARATOR, '/')), node);
         } catch (IllegalArgumentException e) {
             System.err.println("Ignoring " + e.getMessage());
         }

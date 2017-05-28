@@ -11,6 +11,8 @@ import static org.hamcrest.Matchers.hasSize;
 
 public class CSVRowTest {
 
+    private CSVImporterParameter callParameter = new CSVImporterParameter();
+
     @Test
     public void getPath_should_return_path_from_fourth_column() {
         // given
@@ -18,7 +20,7 @@ public class CSVRowTest {
         String[] csvRow = new String[]{"projectName", "blubb2", "blubb3", name};
 
         // when
-        CSVRow row = new CSVRow(csvRow, null);
+        CSVRow row = new CSVRow(csvRow, null, callParameter);
 
         // then
         assertThat(row.getPath(), is(name));
@@ -34,7 +36,7 @@ public class CSVRowTest {
 
         for (Object name : nameExpectedFilenameMap.keySet()) {
             // when
-            CSVRow row = new CSVRow(new String[]{"projectName", "blubb2", "blubb3", (String) name}, null);
+            CSVRow row = new CSVRow(new String[]{"projectName", "blubb2", "blubb3", (String) name}, null, callParameter);
             // then
             assertThat(row.getFileName(), is(nameExpectedFilenameMap.get(name)));
         }
@@ -50,7 +52,7 @@ public class CSVRowTest {
 
         for (Object name : nameExpectedFolderWithFileMap.keySet()) {
             // when
-            CSVRow row = new CSVRow(new String[]{"projectName", "blubb2", "blubb3", (String) name}, null);
+            CSVRow row = new CSVRow(new String[]{"projectName", "blubb2", "blubb3", (String) name}, null, callParameter);
             // then
             assertThat(row.getFolderWithFile(), is(nameExpectedFolderWithFileMap.get(name)));
         }
@@ -63,7 +65,7 @@ public class CSVRowTest {
         String[] rawRow = new String[]{"projectName", "blubb2", "blubb3", "name", "3,2"};
 
         // when
-        CSVRow row = new CSVRow(rawRow, head);
+        CSVRow row = new CSVRow(rawRow, head, callParameter);
 
         // then
         assertThat(row.getAttributes().keySet(), hasSize(1));
@@ -77,7 +79,7 @@ public class CSVRowTest {
         String[] rawRow = new String[]{"projectName", "blubb2", "blubb3", "name", "3bla"};
 
         // when
-        CSVRow row = new CSVRow(rawRow, head);
+        CSVRow row = new CSVRow(rawRow, head, callParameter);
 
         // then
         assertThat(row.getAttributes().keySet(), hasSize(0));
@@ -90,7 +92,7 @@ public class CSVRowTest {
         String[] rawRow = new String[]{"projectName", "blubb2", "blubb3", "name", "3,0"};
 
         // when
-        CSVRow row = new CSVRow(rawRow, head);
+        CSVRow row = new CSVRow(rawRow, head, callParameter);
 
         // then
         assertThat(row.getAttributes().keySet(), hasSize(0));
@@ -99,7 +101,7 @@ public class CSVRowTest {
     @Test(expected = IllegalArgumentException.class)
     public void should_throw_exception_if_less_than_3_columns() {
         // when
-        new CSVRow(new String[]{"", ""}, null);
+        new CSVRow(new String[]{"", ""}, null, callParameter);
 
         // then throw
     }
