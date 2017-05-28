@@ -8,7 +8,7 @@ Generates visualisation data from [SourceMonitor](http://www.campwoodsw.com/sour
 
 If you have analized your project with SourceMonitor and exported the metric data (for classes only) to a csv-file, you may call the command
 
-> ccsh sourcemonitorimport \<path to sourcemonitor csv file>
+> ccsh csvimport \<path to sourcemonitor csv file>
 
 which prints the visualisation data to stdout.
 

@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.sourcemon;
+package de.maibornwolff.codecharta.importer.csv;
 
 import com.google.common.collect.ImmutableList;
 import de.maibornwolff.codecharta.serialization.ProjectSerializer;
@@ -8,20 +8,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SourcemonCsvImporter {
+public class CSVImporter {
     public static void main(String... args) throws IOException {
         if (args.length == 0) {
-            System.out.println("Usage: sourceMonitorImporter <sourcemon-1.csv> <sourcemon-2.csv> ... <sourcemon-n.csv>");
+            System.out.println("Usage: csvImporter <csv-1.csv> <csv-2.csv> ... <csv-n.csv>");
             System.exit(0);
         }
 
-        SourceMonitorProjectAdapter project = new SourceMonitorProjectAdapter("test");
-        getInputStreamsFromArgs(args).forEach(project::addSourceMonitorProjectFromCsv);
+        CSVProjectAdapter project = new CSVProjectAdapter("test");
+        getInputStreamsFromArgs(args).forEach(project::addProjectFromCsv);
         ProjectSerializer.serializeProject(project, new OutputStreamWriter(System.out));
     }
 
     private static List<InputStream> getInputStreamsFromArgs(String[] args) {
-        List<InputStream> fileList = Arrays.stream(args).map(SourcemonCsvImporter::createFileInputStream).collect(Collectors.toList());
+        List<InputStream> fileList = Arrays.stream(args).map(CSVImporter::createFileInputStream).collect(Collectors.toList());
         return fileList.isEmpty() ? ImmutableList.of(System.in) : fileList;
     }
 

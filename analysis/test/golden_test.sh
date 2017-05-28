@@ -52,8 +52,8 @@ check_sonar() {
 check_sourcemonitor() {
   echo " -- expect SourceMonitorImporter gives valid cc.json"
   ACTUAL_SOURCEMON_JSON="${INSTALL_DIR}/actual_sourcemonitorimporter.json"
-  echo "${CCSH}" sourcemonitorimport data/codecharta/sourcemonitor.csv > "${ACTUAL_SOURCEMON_JSON}"
-  "${CCSH}" sourcemonitorimport data/codecharta/sourcemonitor.csv > "${ACTUAL_SOURCEMON_JSON}"
+  echo "${CCSH}" csvimport data/codecharta/sourcemonitor.csv > "${ACTUAL_SOURCEMON_JSON}"
+  "${CCSH}" csvimport data/codecharta/sourcemonitor.csv > "${ACTUAL_SOURCEMON_JSON}"
   validate "${ACTUAL_SOURCEMON_JSON}"
 }
 

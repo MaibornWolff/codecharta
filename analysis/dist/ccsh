@@ -14,23 +14,23 @@ esac
 
 CC_INSTALL_DIR=$(dirname "${CCSH_PATH}")
 
-CC_VERSION="1.1.3"
+CC_VERSION="1.1.4"
 
 CC_CMD=(
     "install"
     "check"
-    "sonarimport"
-    "sourcemonitorimport")
+    "csvimport"
+    "sonarimport")
 CC_CMD_DESCRIPTION=(
     "installs submodules"
     "checks if json is valid"
-    "imports data from sonar"
-    "imports data from sourcemonitor")
+    "imports data from csv files (e.g. sourcemonitor)"
+    "imports data from sonar")
 CC_CMD_BIN=(
     "install"
     "${CC_INSTALL_DIR}/codecharta-check-${CC_VERSION}/bin/codecharta-check"
-    "${CC_INSTALL_DIR}/codecharta-sonarimport-${CC_VERSION}/bin/codecharta-sonarimport"
-    "${CC_INSTALL_DIR}/codecharta-sourcemonitorimport-${CC_VERSION}/bin/codecharta-sourcemonitorimport")
+    "${CC_INSTALL_DIR}/codecharta-csvimport-${CC_VERSION}/bin/codecharta-csvimport"
+    "${CC_INSTALL_DIR}/codecharta-sonarimport-${CC_VERSION}/bin/codecharta-sonarimport")
 
 exit_with_error() {
   echo Error: $1 1>&2

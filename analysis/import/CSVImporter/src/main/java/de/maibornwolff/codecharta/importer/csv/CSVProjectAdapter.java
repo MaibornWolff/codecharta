@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.sourcemon;
+package de.maibornwolff.codecharta.importer.csv;
 
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
@@ -12,15 +12,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
-public class SourceMonitorProjectAdapter extends Project {
+public class CSVProjectAdapter extends Project {
     private String[] header;
 
-    public SourceMonitorProjectAdapter(String name) {
+    public CSVProjectAdapter(String name) {
         super(name);
         this.getNodes().add(new Node("root", NodeType.Folder));
     }
 
-    public void addSourceMonitorProjectFromCsv(InputStream inStream) {
+    public void addProjectFromCsv(InputStream inStream) {
         CsvParser parser = createParser(inStream);
         header = parser.parseNext();
         parseContent(parser);
@@ -45,7 +45,7 @@ public class SourceMonitorProjectAdapter extends Project {
 
     private void insertNodeForRow(String[] rawRow) {
         try {
-            SourceMonitorCSVRow row = new SourceMonitorCSVRow(rawRow, header);
+            CSVRow row = new CSVRow(rawRow, header);
             Node node = new Node(row.getFileName(), NodeType.File, row.getAttributes());
             NodeInserter.insertByPath(this, new FileSystemPath(row.getFolderWithFile().replace('\\', '/')), node);
         } catch (IllegalArgumentException e) {

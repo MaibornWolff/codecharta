@@ -11,8 +11,8 @@ dependencies {
     testCompile 'org.hamcrest:hamcrest-library:1.3'
 }
 
-mainClassName = "de.maibornwolff.codecharta.importer.sourcemon.SourcemonCsvImporter"
-applicationName = 'codecharta-sourcemonitorimport'
+mainClassName = "de.maibornwolff.codecharta.importer.csv.CSVImporter"
+applicationName = 'codecharta-csvimport'
 
 jar {
     baseName = "${applicationName}"
