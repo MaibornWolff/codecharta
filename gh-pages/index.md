@@ -24,7 +24,7 @@ analysis: Tools for generating visualisation data
 Choose a sonar analysed project of your choice and enter the file, url and project-id. If necessary, generate a User Token in the sonar remote instance and include it in the following command:
   - >./ccsh sonarimport [options] [[file]|[url] [project-id]]
 
-Due to a recent sonar-server update, codecharta analysis only supports projects with up to 500 ressources and servers between V2.10 and V6.2. Don't worry, we're already working on this issue.
+Due to a recent sonar-server update, CodeCharta analysis only supports projects with up to 500 ressources and servers between V2.10 and V6.2. Don't worry, we're already working on this issue.
 
   
 ```markdown
@@ -37,8 +37,8 @@ Options:
       User Token for connecting to remote sonar instance
 ```
 
-Codecharta may ask for a user authentification, depending on the configuration of the projects sonar-server. Log in to your server, navigate to the project and create a user token. This string can be easily added as seen in the command description above.  
-If you don't have any own projects yet, you can test codecharta with any opensource project you can find on the sonarqube website.
+CodeCharta may ask for a user authentification, depending on the configuration of the projects sonar-server. Log in to your server, navigate to the project and create a user token. This string can be easily added as seen in the command description above.  
+If you don't have any own projects yet, you can test CodeCharta with any opensource project you can find on the sonarqube website.
 
 The easiest example:
   - >./ccsh sonarimport [sonar-server-url] [project-id]
