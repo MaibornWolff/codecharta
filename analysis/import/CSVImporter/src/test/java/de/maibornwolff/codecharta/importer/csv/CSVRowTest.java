@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.sourcemon;
+package de.maibornwolff.codecharta.importer.csv;
 
 import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
@@ -9,7 +9,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
-public class SourceMonitorCSVRowTest {
+public class CSVRowTest {
 
     @Test
     public void getPath_should_return_path_from_fourth_column() {
@@ -18,7 +18,7 @@ public class SourceMonitorCSVRowTest {
         String[] csvRow = new String[]{"projectName", "blubb2", "blubb3", name};
 
         // when
-        SourceMonitorCSVRow row = new SourceMonitorCSVRow(csvRow, null);
+        CSVRow row = new CSVRow(csvRow, null);
 
         // then
         assertThat(row.getPath(), is(name));
@@ -34,7 +34,7 @@ public class SourceMonitorCSVRowTest {
 
         for (Object name : nameExpectedFilenameMap.keySet()) {
             // when
-            SourceMonitorCSVRow row = new SourceMonitorCSVRow(new String[]{"projectName", "blubb2", "blubb3", (String) name}, null);
+            CSVRow row = new CSVRow(new String[]{"projectName", "blubb2", "blubb3", (String) name}, null);
             // then
             assertThat(row.getFileName(), is(nameExpectedFilenameMap.get(name)));
         }
@@ -50,7 +50,7 @@ public class SourceMonitorCSVRowTest {
 
         for (Object name : nameExpectedFolderWithFileMap.keySet()) {
             // when
-            SourceMonitorCSVRow row = new SourceMonitorCSVRow(new String[]{"projectName", "blubb2", "blubb3", (String) name}, null);
+            CSVRow row = new CSVRow(new String[]{"projectName", "blubb2", "blubb3", (String) name}, null);
             // then
             assertThat(row.getFolderWithFile(), is(nameExpectedFolderWithFileMap.get(name)));
         }
@@ -63,7 +63,7 @@ public class SourceMonitorCSVRowTest {
         String[] rawRow = new String[]{"projectName", "blubb2", "blubb3", "name", "3,2"};
 
         // when
-        SourceMonitorCSVRow row = new SourceMonitorCSVRow(rawRow, head);
+        CSVRow row = new CSVRow(rawRow, head);
 
         // then
         assertThat(row.getAttributes().keySet(), hasSize(1));
@@ -77,7 +77,7 @@ public class SourceMonitorCSVRowTest {
         String[] rawRow = new String[]{"projectName", "blubb2", "blubb3", "name", "3bla"};
 
         // when
-        SourceMonitorCSVRow row = new SourceMonitorCSVRow(rawRow, head);
+        CSVRow row = new CSVRow(rawRow, head);
 
         // then
         assertThat(row.getAttributes().keySet(), hasSize(0));
@@ -90,7 +90,7 @@ public class SourceMonitorCSVRowTest {
         String[] rawRow = new String[]{"projectName", "blubb2", "blubb3", "name", "3,0"};
 
         // when
-        SourceMonitorCSVRow row = new SourceMonitorCSVRow(rawRow, head);
+        CSVRow row = new CSVRow(rawRow, head);
 
         // then
         assertThat(row.getAttributes().keySet(), hasSize(0));
@@ -99,7 +99,7 @@ public class SourceMonitorCSVRowTest {
     @Test(expected = IllegalArgumentException.class)
     public void should_throw_exception_if_less_than_3_columns() {
         // when
-        new SourceMonitorCSVRow(new String[]{"", ""}, null);
+        new CSVRow(new String[]{"", ""}, null);
 
         // then throw
     }
