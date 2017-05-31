@@ -14,8 +14,8 @@ if [[ -z $1 ]]; then
 fi
 
 CC_VERSION=$1
-CC_TAR_NAME="codecharta-${CC_VERSION}.tar"
-CCSH="${INSTALL_DIR}/codecharta-${CC_VERSION}/ccsh"
+CC_TAR_NAME="codecharta-analysis-${CC_VERSION}.tar"
+CCSH="${INSTALL_DIR}/codecharta-analysis-${CC_VERSION}/ccsh"
 
 install_codecharta() {
     echo
