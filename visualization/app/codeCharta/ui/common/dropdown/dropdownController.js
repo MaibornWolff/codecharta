@@ -8,6 +8,8 @@ class DropdownController{
     /**
      *
      * @param {TooltipService} tooltipService
+     * @param {Scope} $rootScope
+     * @param {Scope} $scope
      */
     constructor(tooltipService, $rootScope, $scope) {
         this.tooltipService = tooltipService;

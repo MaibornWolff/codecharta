@@ -9,10 +9,17 @@ class TooltipService {
 
     /**
      * @constructor
+     * @param {UrlService} urlService
+     * @param {Scope} $rootScope
      */
     constructor($rootScope, urlService){
 
+        /**
+         *
+         * @type {}
+         */
         this.tooltips = [];
+
         var ctx = this;
 
         urlService.getFileDataFromFile("tooltips.json").then(
@@ -38,14 +45,22 @@ class TooltipService {
      */
     getTooltipTextByKey(key) {
 
-        var patt = new RegExp(/_\S*_/);
+        /**
+         * This RegExp describes any set of zero or more
+         * non-whitespace symbols between "_"
+         * @type {RegExp}
+         */
+        const patt = new RegExp(/_\S*_/);
 
-        if(this.tooltips[key]){
+        if( this.tooltips[key] ){
 
             var res = this.tooltips[key];
 
 
-            while (patt.test(res)) {
+            /**
+             * Any value between "_" Symbols is substituted by its description
+             */
+            while ( patt.test(res) ) {
                 res = res.replace(/_(.*?)_/, this.replaceString.bind(this));
             }
             return res;
@@ -63,8 +78,7 @@ class TooltipService {
      * @returns {string}
      */
     replaceString(a, b) {
-        var rep = this.getTooltipTextByKey(b);
-        return rep;
+        return this.getTooltipTextByKey(b);
     }
     
 }

@@ -3,6 +3,13 @@
 class ScenarioButtonsController {
 
     /* @ngInject */
+    /**
+     *
+     * @param {} scenarioService
+     * @param {} tooltipService
+     * @param {Scope} $rootScope
+     * @param {Scope} $scope
+     */
     constructor(scenarioService, tooltipService, $rootScope, $scope) {
 
 
@@ -12,8 +19,16 @@ class ScenarioButtonsController {
          */
         this.scenarioService = scenarioService;
 
+        /**
+         *
+         * @type {Scenario[]}
+         */
         this.scenarios = scenarioService.getScenarios();
 
+        /**
+         *
+         * @type {}
+         */
         this.tooltipService = tooltipService;
 
         let ctx = this;
@@ -26,8 +41,8 @@ class ScenarioButtonsController {
 
     /**
      * returns the tooltip description related to the given key
-     * @param key
-     * @returns {string|*}
+     * @param {} key
+     * @returns {string}
      */
     getScenarioTooltipTextByKey(key){
         return this.tooltipService.getTooltipTextByKey(key);
