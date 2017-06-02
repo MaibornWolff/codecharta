@@ -16,7 +16,7 @@ class TooltipService {
 
         /**
          *
-         * @type {}
+         * @type {Object}
          */
         this.tooltips = [];
 
@@ -41,7 +41,7 @@ class TooltipService {
     /**
      * returns the tooltip description related to the given key
      * @param {String} key
-     * @returns {string} the description related to the given key
+     * @returns {String} the description related to the given key
      */
     getTooltipTextByKey(key) {
 
@@ -73,14 +73,14 @@ class TooltipService {
 
     /**
      * Function used for recursiveness with getTooltipTexByKey
-     * @param a
-     * @param {String} b given key
-     * @returns {string}
+     * @param {String} match matched string
+     * @param {String} p1 first regex group
+     * @returns {String}
      */
-    replaceString(a, b) {
-        return this.getTooltipTextByKey(b);
+    replaceString(match, p1) {
+        return this.getTooltipTextByKey(p1);
     }
-    
+
 }
 
 export {TooltipService};

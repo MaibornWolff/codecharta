@@ -23,7 +23,7 @@ class DropdownController{
     /**
      * returns the tooltip description related to the given key
      * @param {String} key
-     * @returns {string} description
+     * @returns {String} description
      */
     getTooltipTextByKey(key) {
         return this.tooltipService.getTooltipTextByKey(key);
