@@ -9,10 +9,13 @@ import java.util.List;
 public class CSVImporterParameter {
     private final JCommander jc;
 
-    private final char pathSeparator = '\\';
+    private final char csvDelimiter = ',';
 
-    @Parameter(names = {"--csvDelimiter"})
-    private char csvDelimiter = ',';
+    @Parameter(names = {"-p", "--projectName"}, description = "Project name")
+    private String projectName = "testProject";
+
+    @Parameter(names = {"--backslash"}, description = "Backslash is used as path separator")
+    private boolean backslashPathSeparator = false;
 
     @Parameter(description = "[file]")
     private List<String> files = new ArrayList<>();
@@ -25,7 +28,7 @@ public class CSVImporterParameter {
     }
 
     public char getPathSeparator() {
-        return pathSeparator;
+        return backslashPathSeparator ? '\\' : '/';
     }
 
     public char getCsvDelimiter() {
@@ -42,5 +45,9 @@ public class CSVImporterParameter {
 
     public void printUsage() {
         jc.usage();
+    }
+
+    public String getProjectName() {
+        return projectName;
     }
 }
