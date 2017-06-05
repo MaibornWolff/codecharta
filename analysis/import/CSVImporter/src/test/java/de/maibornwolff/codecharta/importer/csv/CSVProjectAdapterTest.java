@@ -24,7 +24,7 @@ public class CSVProjectAdapterTest {
     @Test
     public void should_ignore_row_if_no_path_column_present() throws UnsupportedEncodingException {
         // when
-        project.addProjectFromCsv(toInputStream("head\nnoValidContent\n"));
+        project.addProjectFromCsv(toInputStream("head,path\nnoValidContent\n"));
 
         // then
         assertThat(project.getRootNode().getChildren(), hasSize(0));
@@ -34,7 +34,7 @@ public class CSVProjectAdapterTest {
     public void should_read_node_name_from_specified_path_column() throws UnsupportedEncodingException {
         String name = "someName";
         // when
-        project.addProjectFromCsv(toInputStream("someContent\nprojectName,blubb2,blubb3," + name));
+        project.addProjectFromCsv(toInputStream("someContent,,path\nprojectName,blubb2," + name));
 
         // then
         List<Node> rootNode = project.getRootNode().getChildren();
@@ -46,8 +46,8 @@ public class CSVProjectAdapterTest {
     public void should_read_node_with_name_only_once() throws UnsupportedEncodingException {
         String name = "someName";
         // when
-        project.addProjectFromCsv(toInputStream("someContent\nprojectName,blubb2,blubb3," + name));
-        project.addProjectFromCsv(toInputStream("someContent\nprojectName,blubb2,blubb3," + name));
+        project.addProjectFromCsv(toInputStream("someContent\n" + name));
+        project.addProjectFromCsv(toInputStream("someContent\n" + name));
 
         // then
         assertThat(project.getRootNode().getChildren().size(), is(1));
@@ -59,7 +59,7 @@ public class CSVProjectAdapterTest {
         String directoryName = "someNodeName";
 
         // when
-        project.addProjectFromCsv(toInputStream("someContent\nprojectName,blubb2,blubb3," + directoryName + "\\someFile"));
+        project.addProjectFromCsv(toInputStream("someContent\n" + directoryName + "\\someFile"));
 
         // then
         assertThat(project.getRootNode().getChildren().size(), is(1));
@@ -69,18 +69,18 @@ public class CSVProjectAdapterTest {
     }
 
     @Test
-    public void should_read_node_attributes_from_metric_column() throws UnsupportedEncodingException {
+    public void should_read_node_attributes_if_metric_values() throws UnsupportedEncodingException {
         // given
         String attribName = "attname";
         String attribVal = "\"0,1\"";
         float attValFloat = 0.1F;
 
         // when
-        project.addProjectFromCsv(toInputStream("head1,head2,head3,head4," + attribName + "\nprojectName,blubb2,blubb3,blubb4," + attribVal + "\n"));
+        project.addProjectFromCsv(toInputStream("head1,path,head3,head4," + attribName + "\nprojectName,\"9900,01\",\"blubb\",1.0," + attribVal + "\n"));
 
         // then
         Map<String, Object> nodeAttributes = project.getRootNode().getChildren().iterator().next().getAttributes();
-        assertThat(nodeAttributes.size(), is(1));
+        assertThat(nodeAttributes.size(), is(3));
         assertThat(nodeAttributes.get(attribName), is(attValFloat));
     }
 }

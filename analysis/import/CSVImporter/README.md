@@ -1,10 +1,10 @@
 # SourceMonitorImporter
 
-Generates visualisation data from [SourceMonitor](http://www.campwoodsw.com/sourcemonitor.html) through SourceMonitor's CSV-Export.
+Generates visualisation data from CSV data with header, especially from [SourceMonitor](http://www.campwoodsw.com/sourcemonitor.html) through SourceMonitor's CSV export functionality.
 
 ## Usage
 
-### CSV-Import
+### CSV Import for SourceMonitor
 
 If you have analized your project with SourceMonitor and exported the metric data (for classes only) to a csv-file, you may call the command
 
@@ -21,3 +21,7 @@ If SourceMonitor v3.5 is installed in 'C:\Program Files (x86)\SourceMonitor' you
 > sourcemonImport.bat \<project name> \<source code path> \<language>
 
 If SourceMonitor is installed in a different directory the script must be changed accordingly.
+
+### General CSV Import
+
+The column denoted with "path" will be used as path information for the visualisation data. If no "path" column is present the first column will be used.

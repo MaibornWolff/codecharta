@@ -1,9 +1,10 @@
 package de.maibornwolff.codecharta.importer.csv;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class CSVRow {
     private static final Pattern FLOAT_PATTERN = Pattern.compile("\\d+[,.]?\\d*");
@@ -14,7 +15,8 @@ public class CSVRow {
 
     public CSVRow(String[] row, CSVHeader header, char pathSeparator) {
         if (row.length <= header.getPathColumn()) {
-            throw new IllegalArgumentException("Row " + Arrays.toString(row) + " has no column containing the file path. Should be in " + header.getPathColumn() + "th column.");
+            throw new IllegalArgumentException(
+                    "Row " + Arrays.toString(row) + " has no column containing the file path. Should be in " + header.getPathColumn() + "th column.");
         }
 
         this.pathSeparator = pathSeparator;
@@ -36,14 +38,22 @@ public class CSVRow {
         return path.substring(0, path.lastIndexOf(pathSeparator) + 1);
     }
 
+    private boolean validAttributeOfRow(int i) {
+        return row[i] != null && FLOAT_PATTERN.matcher(row[i]).matches();
+    }
 
     public Map<String, Object> getAttributes() {
-        Map<String, Object> metrics = new HashMap<>();
-        for (int i = 0; i < row.length && i < header.length(); ++i) {
-            if (row[i] != null && FLOAT_PATTERN.matcher(row[i]).matches()) {
-                metrics.put(header.getColumnName(i), Float.parseFloat(row[i].replace(',', '.')));
-            }
-        }
-        return metrics;
+        Function<Integer, String> attributeNameLambda = i -> header.getColumnName(i);
+        Function<Integer, Object> attributeValueLambda = i -> Float.parseFloat(row[i].replace(',', '.'));
+
+        return header.getColumnNumbers()
+                .stream()
+                .filter(this::validAttributeOfRow)
+                .collect(
+                        Collectors.toMap(
+                                attributeNameLambda,
+                                attributeValueLambda
+                        )
+                );
     }
 }

@@ -1,28 +1,46 @@
 package de.maibornwolff.codecharta.importer.csv;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-/**
- * Created by DominikU on 28.05.2017.
- */
 public class CSVHeader {
-    private List<String> header;
+    public static final String PATH_COLUMN_NAME = "path";
+    private final Map<Integer, String> headerMap;
 
     public CSVHeader(String[] header) {
-        this.header = Arrays.asList(header);
+        headerMap = new HashMap<>();
+        for (int i = 0; i < header.length; i++) {
+            if (header[i] == null || header[i].isEmpty()) {
+                System.err.println("Ignoring column number " + i + " (counting from 0) as it has no column name.");
+            } else if (headerMap.containsValue(header[i])) {
+                System.err.println("Ignoring column number " + i + " (counting from 0) with column name " + header[i] + " as it duplicates a previous column.");
+            } else {
+                headerMap.put(i, header[i]);
+            }
+        }
+
+        if (headerMap.isEmpty()) {
+            throw new IllegalArgumentException("Header is empty.");
+        }
     }
 
-    public int length() {
-        return header.size();
+    public Set<Integer> getColumnNumbers() {
+        return headerMap.keySet();
     }
 
     public String getColumnName(int i) {
-        return header.get(i);
+        String columnName = headerMap.get(i);
+        if (columnName == null) {
+            throw new IllegalArgumentException("No " + i + "th column present.");
+        }
+        return columnName;
     }
 
     public int getPathColumn() {
-        //return header.indexOf("File Name");
-        return 3;
+        return headerMap.keySet().stream()
+                .filter(i -> headerMap.get(i).equalsIgnoreCase(PATH_COLUMN_NAME))
+                .findFirst()
+                .orElse(headerMap.keySet().stream().findFirst().get());
     }
 }
