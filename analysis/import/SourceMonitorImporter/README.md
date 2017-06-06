@@ -12,7 +12,7 @@ If you have analized your project with SourceMonitor and exported the metric dat
 
 which prints the visualisation data to stdout.
 
-Currently, SourceMonitorImporter does not support metrics for methods in csv files from SourceMonitor.
+Currently, SourceMonitorImporter does not support metrics for methods in csv filenames from SourceMonitor.
 
 ### Wrapper Script sourcemonImport.bat
 
