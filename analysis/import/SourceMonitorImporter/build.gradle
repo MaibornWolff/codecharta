@@ -1,0 +1,19 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+dependencies {
+    compile project(':model')
+    compile project(':import:CSVImporter')
+}
+
+mainClassName = "de.maibornwolff.codecharta.importer.sourcemonitor.SourceMonitorImporter"
+applicationName = 'codecharta-sourcemonitorimport'
+
+jar {
+    baseName = "${applicationName}"
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}

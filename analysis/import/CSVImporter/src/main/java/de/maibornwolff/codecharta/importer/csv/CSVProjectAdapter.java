@@ -11,6 +11,7 @@ import de.maibornwolff.codecharta.nodeinserter.NodeInserter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class CSVProjectAdapter extends Project {
     public static final String ROOT = "root";
@@ -27,8 +28,13 @@ public class CSVProjectAdapter extends Project {
     }
 
     public void addProjectFromCsv(InputStream inStream) {
+        addProjectFromCsv(inStream, StringReplacer.TRIVIAL);
+    }
+
+    public void addProjectFromCsv(InputStream inStream, StringReplacer stringReplacer) {
         CsvParser parser = createParser(inStream);
-        header = new CSVHeader(parser.parseNext());
+        String[] oldHeader = parser.parseNext();
+        header = new CSVHeader(stringReplacer.replace(oldHeader));
         parseContent(parser);
         parser.stopParsing();
     }
