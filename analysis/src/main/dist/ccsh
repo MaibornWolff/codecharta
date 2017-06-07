@@ -33,7 +33,7 @@ CC_CMD_BIN=(
     "${CC_INSTALL_DIR}/codecharta-check-${CC_VERSION}/bin/codecharta-check"
     "${CC_INSTALL_DIR}/codecharta-csvimport-${CC_VERSION}/bin/codecharta-csvimport"
     "${CC_INSTALL_DIR}/codecharta-sonarimport-${CC_VERSION}/bin/codecharta-sonarimport"
-    "${CC_INSTALL_DIR}/codecharta-csvimport-${CC_VERSION}/bin/codecharta-sourcemonitorimport")
+    "${CC_INSTALL_DIR}/codecharta-sourcemonitorimport-${CC_VERSION}/bin/codecharta-sourcemonitorimport")
 
 exit_with_error() {
   echo Error: $1 1>&2

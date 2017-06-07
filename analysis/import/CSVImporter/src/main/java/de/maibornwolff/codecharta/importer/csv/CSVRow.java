@@ -39,7 +39,7 @@ public class CSVRow {
     }
 
     private boolean validAttributeOfRow(int i) {
-        return row[i] != null && FLOAT_PATTERN.matcher(row[i]).matches();
+        return i < row.length && row[i] != null && FLOAT_PATTERN.matcher(row[i]).matches();
     }
 
     public Map<String, Object> getAttributes() {

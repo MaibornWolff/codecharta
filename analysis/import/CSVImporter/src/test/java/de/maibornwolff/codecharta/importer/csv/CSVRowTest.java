@@ -100,6 +100,19 @@ public class CSVRowTest {
         assertThat(row.getAttributes().keySet(), hasSize(0));
     }
 
+    @Test
+    public void getAttributes_should_ignore_column_if_not_present_in_row() throws Exception {
+        // given
+        CSVHeader header = new CSVHeader(new String[]{"path", "head2", "head3", "missingValueColumn"});
+        String[] rawRow = new String[]{"somePath", "1,2", "1.3"};
+
+        // when
+        CSVRow row = new CSVRow(rawRow, header, PATH_SEPARATOR);
+
+        // then
+        assertThat(row.getAttributes().keySet(), hasSize(2));
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void should_throw_exception_if_no_path_column_present() {
         // given
