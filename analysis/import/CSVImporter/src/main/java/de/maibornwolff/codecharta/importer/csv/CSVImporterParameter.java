@@ -9,7 +9,8 @@ import java.util.List;
 public class CSVImporterParameter {
     private final JCommander jc;
 
-    private final char csvDelimiter = ',';
+    @Parameter(names = {"-d", "--delimeter"}, description = "delimeter in csv file")
+    private String csvDelimiter = ",";
 
     @Parameter(names = {"-p", "--projectName"}, description = "Project name")
     private String projectName = "testProject";
@@ -32,7 +33,7 @@ public class CSVImporterParameter {
     }
 
     public char getCsvDelimiter() {
-        return csvDelimiter;
+        return csvDelimiter.charAt(0);
     }
 
     public List<String> getFiles() {
