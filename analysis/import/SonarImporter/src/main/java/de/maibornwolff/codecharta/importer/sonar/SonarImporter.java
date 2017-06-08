@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.importer.sonar;
 
 import com.google.common.collect.ImmutableList;
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource;
-import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource;
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier;
 import de.maibornwolff.codecharta.model.Project;
 import io.reactivex.Flowable;
@@ -13,17 +12,19 @@ import java.util.List;
 public class SonarImporter {
 
     public static final List STANDARD_SONAR_METRICS = ImmutableList.of(
-            "complexity", "ncloc", "functions", "duplicated_lines", "classes", "blocker_violations", "generated_lines", "bugs", "commented_out_code_lines", "lines", "violations", "comment_lines", "duplicated_blocks");
+            "complexity", "ncloc", "functions", "duplicated_lines", "classes", "coverage", "generated_lines", "bugs", "commented_out_code_lines", "lines", "violations", "comment_lines", "duplicated_blocks");
 
     private SonarMeasuresAPIDatasource measuresDS;
+    private SonarCodeURLLinker sonarCodeURLLinker;
 
-    public SonarImporter(SonarMeasuresAPIDatasource measuresDS) {
+    public SonarImporter(SonarMeasuresAPIDatasource measuresDS, SonarCodeURLLinker sonarCodeURLLinker) {
+        this.sonarCodeURLLinker = sonarCodeURLLinker;
         this.measuresDS = measuresDS;
     }
 
     public Project getProjectFromMeasureAPI(String name, List<String> metrics) throws SonarImporterException {
         List<String> metricsList = getMetricList(metrics);
-        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter(name);
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter(name, sonarCodeURLLinker);
 
         int noPages = measuresDS.getNumberOfPages(metricsList);
 
