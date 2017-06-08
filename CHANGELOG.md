@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [Unreleased]
 ### Added
 - Adding Labels and UI
+- Support for links to source page of SonarQube in sonarimporter
 
 ### Changed
 
