@@ -27,8 +27,8 @@ class DataService {
 
     /**
      *
-     * @param map has form of schema.json
-     * @param revision
+     * @param {CodeMap} map has form of schema.json
+     * @param {number} revision
      */
     setMap(map, revision) {
         this.data.revisions[revision] = map.root;
