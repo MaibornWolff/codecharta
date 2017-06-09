@@ -12,8 +12,9 @@ Components that import data from an external source, e.g. SonarQube, and generat
 
 | Source        | Projekt                                                 |
 | ---           | ---                                                     |
+| generic CSV   | [CSVImporter](import/CSVImporter/README.md)             |
 | SonarQube     | [SonarImporter](import/SonarImporter/README.md)         |
-| SourceMonitor | [SonarImporter](import/SourceMonitorImporter/README.md) |
+| SourceMonitor | [SourceMonitorImporter](import/SourceMonitorImporter/README.md) |
 
 ### Filter
 
