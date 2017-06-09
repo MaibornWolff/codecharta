@@ -1,0 +1,38 @@
+{
+
+  "name": "Sample Map",
+
+  "timestamp": "200",
+
+  "root": {
+    "name": "root",
+    "id":20,
+    "attributes": {},
+    "children": [
+      {
+        "name": "big leaf renamed",
+        "id":0,
+        "attributes": {"RLOC": 120, "Functions": 10, "MCC": 1},
+        "link": "http://www.google.de"
+      },
+      {
+        "name": "Parent Leaf",
+        "id":1,
+        "attributes": {},
+        "children": [
+          {
+            "name": "small leaf",
+            "id":2,
+            "attributes": {"RLOC": 30, "Functions": 101, "MCC": 100}
+          },
+          {
+            "name": "other small leaf with another id",
+            "id":54,
+            "attributes": {"RLOC": 70, "Functions": 10, "MCC": 10}
+          }
+        ]
+      }
+    ]
+  }
+
+}

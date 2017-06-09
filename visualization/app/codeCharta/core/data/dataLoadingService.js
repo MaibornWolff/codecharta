@@ -39,16 +39,6 @@ class DataLoadingService {
 
                 (validResult)=>{
 
-
-                    if (fileContent.nodes && fileContent.nodes[0]) {
-                        fileContent = fileContent.nodes[0];
-                    } else if (fileContent.children) {
-                        fileContent = fileContent;
-                    } else {
-                        window.alert("Incompatible data imported, expected fields were unavailable.");
-                        reject();
-                    }
-
                     this.storage.setMap(fileContent, revision);
 
                     resolve(fileContent, validResult);
