@@ -122,7 +122,6 @@ class DataValidatorService {
                         var ajv = Ajv.default();
                         var compare = ajv.compile(response.data);
                         var valid = compare(data);
-                        valid &= ctx.uniqueName(data);
 
                         if (valid) {
                             resolve({valid: true, errors: []});

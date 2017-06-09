@@ -13,10 +13,11 @@ class CodeChartaController {
      * @param {DataLoadingService} dataLoadingService
      * @param {SettingsService} settingsService
      */
-    constructor(dataLoadingService, urlService, settingsService, scenarioService) {
+    constructor(dataLoadingService, urlService, settingsService, scenarioService, dataService) {
         this.initHandlers();
         this.loadFileOrSample(urlService, dataLoadingService, settingsService);
         this.scenarioService = scenarioService;
+        this.dataService = dataService;
     }
 
     /**
@@ -41,8 +42,9 @@ class CodeChartaController {
                     () => {
                         settingsService.updateSettingsFromUrl();
                         ctx.loadingFinished();
+                        ctx.dataService.setCurrentMapFromRevisions(0);
                     },
-                    (r) => {ctx.printErrors(r);}
+                    console.log
                 );
 
             },
@@ -51,17 +53,41 @@ class CodeChartaController {
             () => {
 
                 //try to load sample data
-                urlService.getFileDataFromFile("sample.json").then(
+                urlService.getFileDataFromFile("sample1.json").then(
 
                     //success
                     (data) => {
 
                         // set loaded data
-                        dataLoadingService.loadMapFromFileContent(data).then(
+                        dataLoadingService.loadMapFromFileContent(data,0).then(
+                            () => {
+                                ctx.loadingFinished();
+                                ctx.dataService.setCurrentMapFromRevisions(0);
+                            },
+                            console.log
+                        );
+
+                    },
+
+                    //fail
+                    () => {
+                        window.alert("failed loading sample data");
+                    }
+
+                );
+
+                //try to load sample data
+                urlService.getFileDataFromFile("sample2.json").then(
+
+                    //success
+                    (data) => {
+
+                        // set loaded data
+                        dataLoadingService.loadMapFromFileContent(data,1).then(
                             () => {
                                 ctx.loadingFinished();
                             },
-                            (r) => {ctx.printErrors(r);}
+                            console.log
                         );
 
                     },
