@@ -3,15 +3,10 @@ apply plugin: 'application'
 
 dependencies {
     compile project(':model')
-    compile 'com.univocity:univocity-parsers:2.2.0'
-    compile 'io.fastjson:boon:0.33'
-
-    testCompile 'org.hamcrest:hamcrest-core:1.3'
-    testCompile 'junit:junit-dep:4.11'
-    testCompile 'org.hamcrest:hamcrest-library:1.3'
+    compile project(':import:CSVImporter')
 }
 
-mainClassName = "de.maibornwolff.codecharta.importer.sourcemon.SourcemonCsvImporter"
+mainClassName = "de.maibornwolff.codecharta.importer.sourcemonitor.SourceMonitorImporter"
 applicationName = 'codecharta-sourcemonitorimport'
 
 jar {

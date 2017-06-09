@@ -19,16 +19,19 @@ CC_VERSION="@cc_version@"
 CC_CMD=(
     "install"
     "check"
+    "csvimport"
     "sonarimport"
     "sourcemonitorimport")
 CC_CMD_DESCRIPTION=(
     "installs submodules"
     "checks if json is valid"
+    "imports data from csv files (e.g. sourcemonitor)"
     "imports data from sonar"
     "imports data from sourcemonitor")
 CC_CMD_BIN=(
     "install"
     "${CC_INSTALL_DIR}/codecharta-check-${CC_VERSION}/bin/codecharta-check"
+    "${CC_INSTALL_DIR}/codecharta-csvimport-${CC_VERSION}/bin/codecharta-csvimport"
     "${CC_INSTALL_DIR}/codecharta-sonarimport-${CC_VERSION}/bin/codecharta-sonarimport"
     "${CC_INSTALL_DIR}/codecharta-sourcemonitorimport-${CC_VERSION}/bin/codecharta-sourcemonitorimport")
 
