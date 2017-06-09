@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- GitHub Issue: legend is wrong #21
 
 
 ## [1.1.5] - 2017-05-31
