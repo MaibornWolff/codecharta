@@ -25,7 +25,7 @@ public class SonarComponentProjectAdapterTest {
         String path = null;
         String language = "java";
         Qualifier qualifier = Qualifier.FIL;
-        Component component = new Component(id, key, name, path, language, qualifier, ImmutableList.of(measure));
+        Component component = new Component(id, key, name, null, language, qualifier, ImmutableList.of(measure));
         SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
 
         // when
@@ -49,11 +49,9 @@ public class SonarComponentProjectAdapterTest {
         Measure measure = new Measure(metric, value);
         String id = "id";
         String key = "key";
-        String name = null;
-        String path = null;
         String language = "java";
         Qualifier qualifier = Qualifier.FIL;
-        Component component = new Component(id, key, name, path, language, qualifier, ImmutableList.of(measure));
+        Component component = new Component(id, key, null, null, language, qualifier, ImmutableList.of(measure));
         SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
 
         // when

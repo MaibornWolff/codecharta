@@ -43,7 +43,7 @@ public class CSVRow {
     }
 
     public Map<String, Object> getAttributes() {
-        Function<Integer, String> attributeNameLambda = i -> header.getColumnName(i);
+        Function<Integer, String> attributeNameLambda = header::getColumnName;
         Function<Integer, Object> attributeValueLambda = i -> Float.parseFloat(row[i].replace(',', '.'));
 
         return header.getColumnNumbers()
