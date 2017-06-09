@@ -10,9 +10,9 @@ class FileChooserController {
     /**
      * @constructor
      * @param {Scope} $scope
-     * @param {DataService} dataService
+     * @param {DataLoadingService} dataLoadingService
      */
-    constructor($scope, dataService){
+    constructor($scope, dataLoadingService){
 
         /**
          *
@@ -22,9 +22,9 @@ class FileChooserController {
 
         /**
          *
-         * @type {DataService}
+         * @type {DataLoadingService}
          */
-        this.service = dataService;
+        this.service = dataLoadingService;
     }
 
     /**
@@ -68,7 +68,7 @@ class FileChooserController {
      */
     setNewData(parsedData){
         let ctx = this;
-        this.service.setFileData(parsedData).then(
+        this.service.loadMapFromFileContent(parsedData).then(
             () => {
                 if(!ctx.$scope.$$phase || !ctx.$scope.$root.$$phase) {
                     ctx.$scope.$digest();

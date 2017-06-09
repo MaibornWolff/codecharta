@@ -10,22 +10,22 @@ class CodeChartaController {
     /**
      * @constructor
      * @param {UrlService} urlService
-     * @param {DataService} dataService
+     * @param {DataLoadingService} dataLoadingService
      * @param {SettingsService} settingsService
      */
-    constructor(dataService, urlService, settingsService, scenarioService) {
+    constructor(dataLoadingService, urlService, settingsService, scenarioService) {
         this.initHandlers();
-        this.loadFileOrSample(urlService, dataService, settingsService);
+        this.loadFileOrSample(urlService, dataLoadingService, settingsService);
         this.scenarioService = scenarioService;
     }
 
     /**
      * Tries to load the file specified in the given url. Loads sample data if it fails.
      * @param {UrlService} urlService
-     * @param {DataService} dataService
+     * @param {DataLoadingService} dataLoadingService
      * @param {SettingsService} settingsService
      */
-    loadFileOrSample(urlService, dataService, settingsService) {
+    loadFileOrSample(urlService, dataLoadingService, settingsService) {
 
         let ctx = this;
 
@@ -37,7 +37,7 @@ class CodeChartaController {
             (data) => {
 
                 // set loaded data
-                dataService.setFileData(data).then(
+                dataLoadingService.loadMapFromFileContent(data).then(
                     () => {
                         settingsService.updateSettingsFromUrl();
                         ctx.loadingFinished();
@@ -57,7 +57,7 @@ class CodeChartaController {
                     (data) => {
 
                         // set loaded data
-                        dataService.setFileData(data).then(
+                        dataLoadingService.loadMapFromFileContent(data).then(
                             () => {
                                 ctx.loadingFinished();
                             },
