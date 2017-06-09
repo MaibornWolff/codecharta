@@ -25,8 +25,8 @@ class DataService {
 
     }
 
-    setMap(map) {
-        this.data.revisions[0] = map;
+    setMap(map, revision) {
+        this.data.revisions[revision] = map;
         this.setCurrentMapFromRevisions(0);
     }
 

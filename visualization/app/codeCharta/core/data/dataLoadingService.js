@@ -27,7 +27,11 @@ class DataLoadingService {
 
     }
 
-    loadMapFromFileContent(fileContent) {
+    loadMapFromFileContent(fileContent, revision) {
+
+        if (!revision) {
+            revision = 0;
+        }
 
         return new Promise((resolve, reject) => {
 
@@ -35,25 +39,19 @@ class DataLoadingService {
 
                 (validResult)=>{
 
-                    if (fileContent.revisions) {
-                        //revisioned data
-                        this.storage.setMap(this.calculateDeltas(fileContent.revisions[0]));
-                    } else {
-                        //unrevisioned data
-                        if (fileContent.nodes && fileContent.nodes[0]) {
-                            fileContent = fileContent.nodes[0];
-                        } else if (fileContent.children) {
-                            fileContent = fileContent;
-                        } else {
-                            window.alert("Incompatible data imported, expected fields were unavailable.");
-                            reject();
-                        }
 
-                        this.storage.setMap(fileContent);
+                    if (fileContent.nodes && fileContent.nodes[0]) {
+                        fileContent = fileContent.nodes[0];
+                    } else if (fileContent.children) {
+                        fileContent = fileContent;
+                    } else {
+                        window.alert("Incompatible data imported, expected fields were unavailable.");
+                        reject();
                     }
 
-                    resolve(fileContent, validResult);
+                    this.storage.setMap(fileContent, revision);
 
+                    resolve(fileContent, validResult);
 
                 }, (invalidResult) => {
                     reject(fileContent, invalidResult);
