@@ -33,11 +33,12 @@ class FileChooserController {
      */
     fileChanged(element) {
         let ctx = this;
+        console.log("loading revision " + ctx.$scope.ctrl.revision);
         this.$scope.$apply(function() {
             var file = element.files[0];
             var reader = new FileReader();
             reader.onload = function(e) {
-                ctx.onNewFileLoaded(e.target.result);
+                ctx.onNewFileLoaded(e.target.result, ctx.$scope.ctrl.revision);
             };
             reader.readAsText(file, "UTF-8");
         });
@@ -47,7 +48,7 @@ class FileChooserController {
      * called when the new file was loaded
      * @param {object} data fileData
      */
-    onNewFileLoaded(data){
+    onNewFileLoaded(data, revision){
         $("#fileChooserPanel").modal("close");
 
         try {
@@ -58,7 +59,7 @@ class FileChooserController {
             return;
         }
 
-        this.setNewData(data);
+        this.setNewData(data, revision);
 
     }
 
@@ -66,9 +67,9 @@ class FileChooserController {
      * Sets the new data in dataService
      * @param {object} parsedData
      */
-    setNewData(parsedData){
+    setNewData(parsedData, revision){
         let ctx = this;
-        this.service.loadMapFromFileContent(parsedData).then(
+        this.service.loadMapFromFileContent(parsedData, revision).then(
             () => {
                 if(!ctx.$scope.$$phase || !ctx.$scope.$root.$$phase) {
                     ctx.$scope.$digest();
