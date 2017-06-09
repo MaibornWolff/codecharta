@@ -59,7 +59,6 @@
     "grunt-contrib-watch": "1.0.0",
     "grunt-exec": "1.0.1",
     "grunt-extract-sourcemap": "^0.1.19",
-    "grunt-force-task": "^2.0.0",
     "grunt-jsdoc": "^2.1.0",
     "grunt-mocha-istanbul": "^5.0.2",
     "grunt-ng-annotate": "^3.0.0",
@@ -83,5 +82,8 @@
     "three-orbit-controls": "^82.1.0",
     "three-text2d": "^0.3.4",
     "time-grunt": "^1.4.0"
+  },
+  "devDependencies": {
+    "grunt-force-task": "^2.0.0"
   }
 }

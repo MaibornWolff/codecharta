@@ -87,10 +87,7 @@ class FileChooserController {
      * @param {object} result
      */
     printErrors(result){
-        window.alert("Wrong format. See console logs for details.");
-        result.errors.forEach((e)=>{
-            console.log(e.message + " @ " + e.dataPath);
-        });
+        console.log(result);
     }
     
 }
