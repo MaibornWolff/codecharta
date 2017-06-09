@@ -1,6 +1,7 @@
 "use strict";
 
 import * as d3 from "d3";
+import {CodeMap} from "./model/codeMap.js";
 
 class DataLoadingService {
 
@@ -37,14 +38,15 @@ class DataLoadingService {
 
             this.validator.validate(fileContent).then(
 
-                (validResult)=>{
+                ()=>{
 
-                    this.storage.setMap(fileContent, revision);
+                    const map = new CodeMap(fileContent);
+                    this.storage.setMap(map, revision);
 
-                    resolve(fileContent, validResult);
+                    resolve(map);
 
-                }, (invalidResult) => {
-                    reject(fileContent, invalidResult);
+                }, (errors) => {
+                    reject(errors);
                 }
 
             );
@@ -53,58 +55,7 @@ class DataLoadingService {
 
     }
 
-    /**
-     * Calculates delta values in revisions. Stores deltas in <leaf>.data.deltas.
-     * @param {CodeMap[]} revisions
-     * @returns {CodeMap[]} revisions with delta data attached in leaves
-     */
-    calculateDeltas(revisions) {
 
-        let lastRevision = revisions[0];
-
-        for(var i=1;i<revisions.length;i++){
-            let currentRevision = revisions[i];
-            let currentRoot = d3.hierarchy(currentRevision);
-            let currentLeaves = currentRoot.leaves();
-            let lastRoot = d3.hierarchy(lastRevision);
-            let lastLeaves = lastRoot.leaves();
-
-            for(var j=0;j<currentLeaves.length;j++){
-                for(var k=0;k<lastLeaves.length;k++){
-                    if(currentLeaves[j].data.name === lastLeaves[k].data.name){
-                        //calculate delta for those nodes attributes and push it to the second leave
-                        let deltas = this.calculateAttributeListDelta(lastLeaves[k].data.attributes,currentLeaves[j].data.attributes);
-                        currentLeaves[j].data.deltas = deltas;
-                    }
-                }
-            }
-
-            lastRevision = currentRevision;
-
-        }
-
-        return revisions;
-
-    }
-
-    /**
-     * Calculates deltas between two attribute lists
-     * @param {Object[]} first attributes list
-     * @param {Object[]} second attributes list
-     * @returns {Object[]} delta between first and second
-     */
-    calculateAttributeListDelta(first, second){
-        let deltas = {};
-        for (var key in second) {
-            if(key) {
-                let firstValue = first[key] ? first[key] : 0; //assume zero if no value in first
-                let secondValue = second[key];
-                let delta = secondValue - firstValue;
-                deltas[key] = delta;
-            }
-        }
-        return deltas;
-    }
     
 }
 
