@@ -42,6 +42,10 @@ class SettingsPanelController {
 
         let ctx = this;
 
+        this.sliderOptions = {
+            ceil: 1000
+        };
+
         /**
          *
          * @type {{x: number, y: number, z: number}}

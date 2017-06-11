@@ -6,8 +6,8 @@
 
         <collapsible-element-directive label="Color Settings" icon-class="fa-paint-brush">
             <rzslider rz-slider-model="ctrl.settings.neutralColorRange.from"
-                      rz-slider-high="10000"
-                      ></rzslider>
+                      rz-slider-high="ctrl.settings.neutralColorRange.to"
+                      rz-slider-options="ctrl.sliderOptions"></rzslider>
             <number-field-directive label="Neutral color start" min="0" model="ctrl.settings.neutralColorRange.from" change="ctrl.notify()"></number-field-directive>
             <number-field-directive label="Neutral color end" min="0" model="ctrl.settings.neutralColorRange.to" change="ctrl.notify()"></number-field-directive>
             <checkbox-directive model="ctrl.settings.neutralColorRange.flipped" label="Invert Colors" change="ctrl.notify()"></checkbox-directive>
