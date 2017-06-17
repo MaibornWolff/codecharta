@@ -14,14 +14,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SonarComponentProjectAdapter extends Project {
+    private final SonarCodeURLLinker sonarCodeURLLinker;
 
-    public SonarComponentProjectAdapter(String name) {
+    public SonarComponentProjectAdapter(String name, SonarCodeURLLinker sonarCodeURLLinker) {
         super(name);
+        this.sonarCodeURLLinker = sonarCodeURLLinker;
         this.getNodes().add(new Node("root", NodeType.Folder));
     }
 
     public void addComponentAsNode(Component component) {
-        Node node = new Node(createNodeName(component), createNodeTypeFromQualifier(component.getQualifier()), createAttributes(component.getMeasures()));
+        Node node = new Node(createNodeName(component), createNodeTypeFromQualifier(component.getQualifier()), createAttributes(component.getMeasures()), createLink(component));
         NodeInserter.insertByPath(this, createParentPath(component), node);
     }
 
@@ -29,6 +31,10 @@ public class SonarComponentProjectAdapter extends Project {
         return measures.stream()
                 .filter(this::isMeasureConvertible)
                 .collect(Collectors.toMap(Measure::getMetric, this::convertMetricValue));
+    }
+
+    private String createLink(Component component) {
+        return sonarCodeURLLinker.createUrlString(component);
     }
 
     private Object convertMetricValue(Measure measure) {
