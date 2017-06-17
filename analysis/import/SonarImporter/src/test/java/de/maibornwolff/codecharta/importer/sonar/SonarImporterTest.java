@@ -67,7 +67,7 @@ public class SonarImporterTest {
 
         when(measuresDS.getNumberOfPages(metrics)).thenReturn(1);
         when(measuresDS.getMeasures(metrics, 1)).thenReturn(measures);
-        sonar = new SonarImporter(measuresDS);
+        sonar = new SonarImporter(measuresDS, SonarCodeURLLinker.NULL);
 
         // when
         Project project = sonar.getProjectFromMeasureAPI(name, metrics);
@@ -87,7 +87,7 @@ public class SonarImporterTest {
 
         when(measuresDS.getNumberOfPages(metrics)).thenReturn(1);
         when(measuresDS.getMeasures(metrics, 1)).thenReturn(measures);
-        sonar = new SonarImporter(measuresDS);
+        sonar = new SonarImporter(measuresDS, SonarCodeURLLinker.NULL);
 
         //when
         Project project = sonar.getProjectFromMeasureAPI(name, metrics);
@@ -104,7 +104,7 @@ public class SonarImporterTest {
 
         when(measuresDS.getNumberOfPages(metrics)).thenReturn(1);
         when(measuresDS.getMeasures(metrics, 1)).thenReturn(measures);
-        sonar = new SonarImporter(measuresDS);
+        sonar = new SonarImporter(measuresDS, SonarCodeURLLinker.NULL);
 
         //when
         Project project = sonar.getProjectFromMeasureAPI(name, metrics);
@@ -117,7 +117,7 @@ public class SonarImporterTest {
     @Test
     public void shouldGetMetricsWhenMetricsGiven() {
         measuresDS = mock(SonarMeasuresAPIDatasource.class);
-        sonar = new SonarImporter(measuresDS);
+        sonar = new SonarImporter(measuresDS, SonarCodeURLLinker.NULL);
         assertThat(sonar.getMetricList(metrics), hasSize(3));
     }
 
@@ -126,7 +126,7 @@ public class SonarImporterTest {
         // given
         List<String> emptyMetrics = new ArrayList<>();
         measuresDS = mock(SonarMeasuresAPIDatasource.class);
-        sonar = new SonarImporter(measuresDS);
+        sonar = new SonarImporter(measuresDS, SonarCodeURLLinker.NULL);
 
         // when
         List<String> metricList = sonar.getMetricList(emptyMetrics);

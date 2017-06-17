@@ -26,7 +26,7 @@ public class SonarComponentProjectAdapterTest {
         String language = "java";
         Qualifier qualifier = Qualifier.FIL;
         Component component = new Component(id, key, name, path, language, qualifier, ImmutableList.of(measure));
-        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project", SonarCodeURLLinker.NULL);
 
         // when
         project.addComponentAsNode(component);
@@ -54,7 +54,7 @@ public class SonarComponentProjectAdapterTest {
         String language = "java";
         Qualifier qualifier = Qualifier.FIL;
         Component component = new Component(id, key, name, path, language, qualifier, ImmutableList.of(measure));
-        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project", SonarCodeURLLinker.NULL);
 
         // when
         project.addComponentAsNode(component);
@@ -83,7 +83,7 @@ public class SonarComponentProjectAdapterTest {
         String language = "java";
         Qualifier qualifier = Qualifier.FIL;
         Component component = new Component(id, key, name, path, language, qualifier, ImmutableList.of(measure));
-        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project", SonarCodeURLLinker.NULL);
 
         // when
         project.addComponentAsNode(component);
@@ -105,7 +105,7 @@ public class SonarComponentProjectAdapterTest {
         String value = "bla";
         Measure measure = new Measure(metric, value);
         Component component = new Component("id", "key", "name", "path", "java", Qualifier.FIL, ImmutableList.of(measure));
-        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project", SonarCodeURLLinker.NULL);
 
         // when
         project.addComponentAsNode(component);
@@ -120,7 +120,7 @@ public class SonarComponentProjectAdapterTest {
     public void should_insert_a_file_node_from_uts_component() {
         // given
         Component component = new Component("id", "key", "name", "path", "java", Qualifier.UTS, ImmutableList.of());
-        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project", SonarCodeURLLinker.NULL);
 
         // when
         project.addComponentAsNode(component);
@@ -135,7 +135,7 @@ public class SonarComponentProjectAdapterTest {
     public void should_insert_a_folder_node_from_dir_component() {
         // given
         Component component = new Component("id", "key", "name", "path", "java", Qualifier.DIR, ImmutableList.of());
-        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project", SonarCodeURLLinker.NULL);
 
         // when
         project.addComponentAsNode(component);
