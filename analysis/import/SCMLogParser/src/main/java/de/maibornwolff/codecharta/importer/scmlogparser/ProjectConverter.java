@@ -7,13 +7,16 @@ import de.maibornwolff.codecharta.model.input.VersionControlledFile;
 import de.maibornwolff.codecharta.nodeinserter.FileSystemPath;
 import de.maibornwolff.codecharta.nodeinserter.NodeInserter;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class ProjectConverter{
+public final class ProjectConverter {
 
-    private ProjectConverter(){}
+    private ProjectConverter() {
+        // utility class
+    }
 
     public static Project convert(String projectName, List<VersionControlledFile> versionControlledFiles) {
         Project project = new Project(projectName);
@@ -22,13 +25,13 @@ public class ProjectConverter{
     }
 
     private static void addVersionControlledFile(Project project, VersionControlledFile versionControlledFile) {
-        HashMap attributes = extractAttributes(versionControlledFile);
-        Node newNode = new Node(extractFilenamePart(versionControlledFile), NodeType.File, attributes, "", Arrays.asList());
-        NodeInserter.insertByPath(project, new FileSystemPath(extractPathPart(versionControlledFile)), newNode );
+        Map<String, Object> attributes = extractAttributes(versionControlledFile);
+        Node newNode = new Node(extractFilenamePart(versionControlledFile), NodeType.File, attributes, "", Collections.emptyList());
+        NodeInserter.insertByPath(project, new FileSystemPath(extractPathPart(versionControlledFile)), newNode);
     }
 
-    private static HashMap<String, Object> extractAttributes(VersionControlledFile versionControlledFile){
-        HashMap attributes = new HashMap();
+    private static Map<String, Object> extractAttributes(VersionControlledFile versionControlledFile) {
+        HashMap<String, Object> attributes = new HashMap<>();
         attributes.put("number_of_commits", versionControlledFile.getNumberOfOccurrencesInCommits());
         attributes.put("weeks_with_commits", versionControlledFile.getNumberOfWeeksWithCommits());
         attributes.put("authors", versionControlledFile.getAuthors());
@@ -43,6 +46,6 @@ public class ProjectConverter{
 
     private static String extractPathPart(VersionControlledFile versionControlledFile) {
         String path = versionControlledFile.getFilename();
-        return path.substring(0,path.lastIndexOf('/') + 1);
+        return path.substring(0, path.lastIndexOf('/') + 1);
     }
 }

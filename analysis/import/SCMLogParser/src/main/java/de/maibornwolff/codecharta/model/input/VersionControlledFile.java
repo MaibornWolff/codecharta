@@ -7,13 +7,13 @@ import java.util.Set;
 
 public class VersionControlledFile {
 
-    private String filename;
+    private final String filename;
 
     private int numberOfOccurrencesInCommits;
 
-    private Set<CalendarWeek> weeksWithCommits;
+    private final Set<CalendarWeek> weeksWithCommits;
 
-    private Set<String> authors;
+    private final Set<String> authors;
 
     public VersionControlledFile(String filename) {
         this.filename = filename;
@@ -40,7 +40,7 @@ public class VersionControlledFile {
         return authors;
     }
 
-    public int getNumberOfAuthors(){
+    public int getNumberOfAuthors() {
         return this.authors.size();
     }
 
@@ -55,7 +55,7 @@ public class VersionControlledFile {
     }
 
 
-    static class CalendarWeek  {
+    static class CalendarWeek {
         final int week;
         final int year;
 
@@ -72,9 +72,9 @@ public class VersionControlledFile {
         }
 
         private static int modifyYear(LocalDateTime dateTime, int cwWeek, int cwYear) {
-            if(dayIsOneOfTheLastSevenDaysInYear(dateTime) && isFirstOrSecondWeek(cwWeek))
+            if (dayIsOneOfTheLastSevenDaysInYear(dateTime) && isFirstOrSecondWeek(cwWeek))
                 cwYear++;
-            else if(dayIsOneOfTheFirstSevenDaysOfTheYear(dateTime) && !isFirstOrSecondWeek(cwWeek))
+            else if (dayIsOneOfTheFirstSevenDaysOfTheYear(dateTime) && !isFirstOrSecondWeek(cwWeek))
                 cwYear--;
             return cwYear;
         }

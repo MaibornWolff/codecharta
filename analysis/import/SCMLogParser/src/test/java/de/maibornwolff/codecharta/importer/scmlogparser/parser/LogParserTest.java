@@ -4,13 +4,14 @@ import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.model.input.Commit;
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer;
 import de.maibornwolff.codecharta.serialization.ProjectSerializer;
-import org.assertj.core.util.Lists;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -23,29 +24,46 @@ import static org.mockito.Mockito.when;
 
 public class LogParserTest {
 
-    private static final String PATH_EXPECTED_CC_JSON = "./src/test/resources/ExpectedJSON.cc.json";
+    private static final String EXPECTED_SVN_CC_JSON = "expected_svn.json";
 
-    private static final String PATH_SVN_LOG = "./src/test/resources/SVNTestLog.txt";
+    private static final String SVN_LOG = "example_svn.log";
 
+    private static final String EXPECTED_GIT_CC_JSON = "expected_git.json";
 
-    @Before
-    public void setup() throws FileNotFoundException {
-
-    }
+    private static final String GIT_LOG = "example_git.log";
 
     @Test
     public void logParserSVNGoldenMasterTest() throws Exception {
         // given
         LogParser svnLogParser = new LogParser(new SVNLogParserStrategy());
-        Project expectedProject = ProjectDeserializer.deserializeProject(PATH_EXPECTED_CC_JSON);
+        InputStreamReader ccjsonReader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(EXPECTED_SVN_CC_JSON));
+        Project expectedProject = ProjectDeserializer.deserializeProject(ccjsonReader);
 
         // when
-        Project svnProject = svnLogParser.parse(PATH_SVN_LOG);
+        Stream logStream = Files.lines(Paths.get(this.getClass().getClassLoader().getResource(SVN_LOG).toURI()));
+        Project svnProject = svnLogParser.parse(logStream);
         // This step is necessary because the comparison of the attribute map in Node fails if the project is used directly;
         Project svnProjectForComparison = serializeAndDeserializeProject(svnProject);
 
         // then
         assertThat(svnProjectForComparison).isEqualTo(expectedProject);
+    }
+
+    @Test
+    public void logParserGitGoldenMasterTest() throws Exception {
+        // given
+        LogParser gitLogParser = new LogParser(new GitLogParserStrategy());
+        InputStreamReader ccjsonReader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(EXPECTED_GIT_CC_JSON));
+        Project expectedProject = ProjectDeserializer.deserializeProject(ccjsonReader);
+
+        // when
+        Stream logStream = Files.lines(Paths.get(this.getClass().getClassLoader().getResource(GIT_LOG).toURI()));
+        Project gitProject = gitLogParser.parse(logStream);
+        // This step is necessary because the comparison of the attribute map in Node fails if the project is used directly;
+        Project gitProjectForComparison = serializeAndDeserializeProject(gitProject);
+
+        // then
+        assertThat(gitProjectForComparison).isEqualTo(expectedProject);
     }
 
     private Project serializeAndDeserializeProject(Project svnProject) throws IOException {
@@ -56,23 +74,16 @@ public class LogParserTest {
     }
 
     @Test
-    public void parseLines() {
-        LogParser svnLogParser = new LogParser(new SVNLogParserStrategy());
-        Stream<String> lines = svnLogParser.readLinesFromLogFile(PATH_SVN_LOG);
-        assertThat(lines).hasSize(33);
-    }
-
-    @Test
     public void parseCommitRaisesExceptionWhenAuthorIsMissing() {
         // given
         LogParserStrategy parserStrategy = mock(LogParserStrategy.class);
         when(parserStrategy.parseAuthor(any())).thenReturn(Optional.empty());
         when(parserStrategy.parseDate(any())).thenReturn(Optional.of(LocalDateTime.now()));
-        when(parserStrategy.parseFilenames(any())).thenReturn(Arrays.asList());
+        when(parserStrategy.parseFilenames(any())).thenReturn(Collections.emptyList());
         LogParser logParser = new LogParser(parserStrategy);
 
         // when & then
-        assertThatThrownBy(() -> logParser.parseCommit(Lists.newArrayList())).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> logParser.parseCommit(Collections.emptyList())).isInstanceOf(RuntimeException.class);
     }
 
     @Test
@@ -81,11 +92,11 @@ public class LogParserTest {
         LogParserStrategy parserStrategy = mock(LogParserStrategy.class);
         when(parserStrategy.parseAuthor(any())).thenReturn(Optional.of("An Author"));
         when(parserStrategy.parseDate(any())).thenReturn(Optional.empty());
-        when(parserStrategy.parseFilenames(any())).thenReturn(Arrays.asList());
+        when(parserStrategy.parseFilenames(any())).thenReturn(Collections.emptyList());
         LogParser logParser = new LogParser(parserStrategy);
 
         // when & then
-        assertThatThrownBy(() -> logParser.parseCommit(Lists.newArrayList())).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> logParser.parseCommit(Collections.emptyList())).isInstanceOf(RuntimeException.class);
     }
 
     @Test
@@ -95,7 +106,7 @@ public class LogParserTest {
         String author = "An Author";
         LocalDateTime commitDate = LocalDateTime.now();
         List<String> filenames = Arrays.asList("src/Main.java", "src/Util.java");
-        List<String> input = Arrays.asList();
+        List<String> input = Collections.emptyList();
         when(parserStrategy.parseAuthor(input)).thenReturn(Optional.of(author));
         when(parserStrategy.parseDate(input)).thenReturn(Optional.of(commitDate));
         when(parserStrategy.parseFilenames(input)).thenReturn(filenames);

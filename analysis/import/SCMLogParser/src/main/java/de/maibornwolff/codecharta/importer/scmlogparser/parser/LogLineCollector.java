@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 class LogLineCollector {
 
-    private Predicate<String> isCommitSeparator;
+    private final Predicate<String> isCommitSeparator;
 
     private LogLineCollector(Predicate<String> isCommitSeparator) {
         this.isCommitSeparator = isCommitSeparator;

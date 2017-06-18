@@ -5,34 +5,21 @@ import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.model.input.Commit;
 import de.maibornwolff.codecharta.model.input.VersionControlledFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class LogParser {
 
-    private LogParserStrategy parserStrategy;
+    private final LogParserStrategy parserStrategy;
 
     public LogParser(LogParserStrategy parserStrategy) {
         this.parserStrategy = parserStrategy;
     }
 
-    public Project parse(String pathToLog) {
-        Stream<String> lines = readLinesFromLogFile(pathToLog);
+    public Project parse(Stream<String> lines) {
         List<VersionControlledFile> versionControlledFiles = parseLoglines(lines);
         return convertToProject(versionControlledFiles);
-    }
-
-    Stream<String> readLinesFromLogFile(String pathToLog) {
-        try {
-            return Files.lines(Paths.get(pathToLog));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return Stream.empty();
-        }
     }
 
     List<VersionControlledFile> parseLoglines(Stream<String> logLines) {
@@ -41,7 +28,7 @@ public class LogParser {
                 .collect(CommitCollector.create());
     }
 
-    Project convertToProject(List<VersionControlledFile> versionControlledFiles) {
+    private Project convertToProject(List<VersionControlledFile> versionControlledFiles) {
         return ProjectConverter.convert("SCMLogParser", versionControlledFiles);
     }
 

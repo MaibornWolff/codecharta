@@ -17,7 +17,7 @@ public class SVNLogParserStrategy implements LogParserStrategy {
 
     private static final String[] DEFAULT_REPOSITORY_FOLDER_PREFIXES = new String[]{"/branches/", "/tags/", "/trunk/"};
 
-    static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
             .append(DateTimeFormatter.ISO_LOCAL_DATE)
             .appendLiteral(' ')
@@ -62,7 +62,7 @@ public class SVNLogParserStrategy implements LogParserStrategy {
                 .findFirst();
     }
 
-    boolean isMetadataLine(String commitLine) {
+    private boolean isMetadataLine(String commitLine) {
         return commitLine.contains(Character.toString(METADATA_SEPARATOR));
     }
 
@@ -79,7 +79,7 @@ public class SVNLogParserStrategy implements LogParserStrategy {
                 .collect(Collectors.toList());
     }
 
-    boolean isFileLine(String commitLine) {
+    private boolean isFileLine(String commitLine) {
         String commitLineWithoutWhitespacePrefix = stripWhitespacePrefix(commitLine);
         if (commitLineWithoutWhitespacePrefix.length() < 2) {
             return false;

@@ -1,19 +1,12 @@
 apply plugin: 'application'
 apply plugin: 'java'
 
-repositories {
-    mavenCentral()
-}
-
-
 dependencies {
     compile project(':model')
-    compile 'com.google.code.gson:gson:2.6.2'
     compile 'org.apache.commons:commons-lang3:3.4'
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:3.5.2'
     testCompile 'org.mockito:mockito-all:1.9.5'
-    testCompile 'org.apache.commons:commons-collections4:4.1'
 }
 
 mainClassName = "de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser"
@@ -26,10 +19,4 @@ jar {
     }
 
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-}
-
-run {
-    if (project.hasProperty("appArgs")) {
-        args Eval.me(appArgs)
-    }
 }

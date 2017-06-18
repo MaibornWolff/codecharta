@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.importer.scmlogparser.parser;
 
 import de.maibornwolff.codecharta.model.input.Commit;
 import de.maibornwolff.codecharta.model.input.VersionControlledFile;
-import org.apache.commons.collections4.ListUtils;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
@@ -70,7 +69,7 @@ public abstract class ParserStrategyContractTest {
 
     @Test
     public void accumulatesCommitFiles() {
-        Stream<String> logLines = ListUtils.union(getFullCommit(), getFullCommit()).stream();
+        Stream<String> logLines = Stream.concat(getFullCommit().stream(), getFullCommit().stream());
         List<VersionControlledFile> files = new LogParser(getLogParserStrategy()).parseLoglines(logLines);
         assertThat(files)
                 .extracting(VersionControlledFile::getFilename, VersionControlledFile::getNumberOfOccurrencesInCommits, VersionControlledFile::getAuthors)
