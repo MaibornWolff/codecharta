@@ -21,6 +21,6 @@ The generated logs must be in UTF-8 encoding.
 
 ### Executing the SCMLogParser
 
-> `ccsh scmlogparser <log file> [-git|-svn] [<output file>]`
+> `ccsh scmlogparser <log file> [--git|--svn] [<output file>]`
 
 The result is written as JSON to standard out or into the specified output file.
