@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser;
 import de.maibornwolff.codecharta.model.Project;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,7 +15,7 @@ public class ProjectConverterTest {
         String projectname = "Projectname";
 
         // when
-        Project project = ProjectConverter.convert(projectname, Arrays.asList());
+        Project project = ProjectConverter.convert(projectname, Collections.emptyList());
 
         //then
         assertThat(project.getNodes()).hasSize(0);

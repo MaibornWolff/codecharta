@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,7 +33,7 @@ public class VersionControlledFileTest {
         VersionControlledFile versionControlledFile = new VersionControlledFile(filename);
 
         // when
-        versionControlledFile.registerCommit(new Commit(author, Arrays.asList(filename), LocalDateTime.now()));
+        versionControlledFile.registerCommit(new Commit(author, Collections.singletonList(filename), LocalDateTime.now()));
 
         // then
         assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
@@ -50,9 +51,9 @@ public class VersionControlledFileTest {
         VersionControlledFile versionControlledFile = new VersionControlledFile(filename);
 
         // when
-        versionControlledFile.registerCommit(new Commit(author1, Arrays.asList(filename), LocalDateTime.now()));
-        versionControlledFile.registerCommit(new Commit(author2, Arrays.asList(filename), LocalDateTime.now()));
-        versionControlledFile.registerCommit(new Commit(author1, Arrays.asList(filename), LocalDateTime.now()));
+        versionControlledFile.registerCommit(new Commit(author1, Collections.singletonList(filename), LocalDateTime.now()));
+        versionControlledFile.registerCommit(new Commit(author2, Collections.singletonList(filename), LocalDateTime.now()));
+        versionControlledFile.registerCommit(new Commit(author1, Collections.singletonList(filename), LocalDateTime.now()));
 
         // then
         assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
@@ -74,9 +75,9 @@ public class VersionControlledFileTest {
         VersionControlledFile versionControlledFile = new VersionControlledFile(filename);
 
         // when
-        versionControlledFile.registerCommit(new Commit(author1, Arrays.asList(filename), commitDate1));
-        versionControlledFile.registerCommit(new Commit(author2, Arrays.asList(filename), commitDate2));
-        versionControlledFile.registerCommit(new Commit(author1, Arrays.asList(filename), commitDate3));
+        versionControlledFile.registerCommit(new Commit(author1, Collections.singletonList(filename), commitDate1));
+        versionControlledFile.registerCommit(new Commit(author2, Collections.singletonList(filename), commitDate2));
+        versionControlledFile.registerCommit(new Commit(author1, Collections.singletonList(filename), commitDate3));
 
         // then
         assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
@@ -89,7 +90,7 @@ public class VersionControlledFileTest {
     @Test
     public void canCreateCalendarWeekFromADateTime(){
         // given
-        LocalDateTime commitDateTime = LocalDateTime.of(2016, 4, 2, 12, 00);
+        LocalDateTime commitDateTime = LocalDateTime.of(2016, 4, 2, 12, 0);
 
         // when
         VersionControlledFile.CalendarWeek kw = VersionControlledFile.CalendarWeek.forDateTime(commitDateTime);
@@ -101,7 +102,7 @@ public class VersionControlledFileTest {
     @Test
     public void kalenderwoche_wird_mit_tagimjahr_richtig_berechnet_wenn_tag_am_anfang_des_jahres_und_kw_im_vorjahr(){
         // given
-        LocalDateTime commitDateTime = LocalDateTime.of(2016, 1, 3, 12, 00);
+        LocalDateTime commitDateTime = LocalDateTime.of(2016, 1, 3, 12, 0);
 
         // when
         VersionControlledFile.CalendarWeek kw = VersionControlledFile.CalendarWeek.forDateTime(commitDateTime);
@@ -113,7 +114,7 @@ public class VersionControlledFileTest {
     @Test
     public void kalenderwoche_wird_mit_tagimjahr_richtig_berechnet_wenn_tag_am_ende_des_jahres_und_kw_im_folgejahr(){
         // given
-        LocalDateTime commitDateTime = LocalDateTime.of(2018, 12, 31, 12, 00);
+        LocalDateTime commitDateTime = LocalDateTime.of(2018, 12, 31, 12, 0);
 
         // when
         VersionControlledFile.CalendarWeek kw = VersionControlledFile.CalendarWeek.forDateTime(commitDateTime);

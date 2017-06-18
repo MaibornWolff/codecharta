@@ -26,7 +26,7 @@ public class GitLogParserStrategy implements LogParserStrategy {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("EEE MMM d HH:mm:ss yyyy ZZZ", Locale.US);
 
-    boolean isFileLine(String commitLine) {
+    private boolean isFileLine(String commitLine) {
         if (commitLine.length() < 2) {
             return false;
         }
