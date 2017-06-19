@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer;
 import org.junit.Test;
 
 import java.io.*;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -38,9 +39,10 @@ public class LogParserTest {
         LogParser svnLogParser = new LogParser(new SVNLogParserStrategy());
         InputStreamReader ccjsonReader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(EXPECTED_SVN_CC_JSON));
         Project expectedProject = ProjectDeserializer.deserializeProject(ccjsonReader);
+        URL resource = this.getClass().getClassLoader().getResource(SVN_LOG);
+        Stream logStream = Files.lines(Paths.get(resource.toURI()));
 
         // when
-        Stream logStream = Files.lines(Paths.get(this.getClass().getClassLoader().getResource(SVN_LOG).toURI()));
         Project svnProject = svnLogParser.parse(logStream);
         // This step is necessary because the comparison of the attribute map in Node fails if the project is used directly;
         Project svnProjectForComparison = serializeAndDeserializeProject(svnProject);
@@ -55,9 +57,10 @@ public class LogParserTest {
         LogParser gitLogParser = new LogParser(new GitLogParserStrategy());
         InputStreamReader ccjsonReader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(EXPECTED_GIT_CC_JSON));
         Project expectedProject = ProjectDeserializer.deserializeProject(ccjsonReader);
+        URL resource = this.getClass().getClassLoader().getResource(GIT_LOG);
+        Stream logStream = Files.lines(Paths.get(resource.toURI()));
 
         // when
-        Stream logStream = Files.lines(Paths.get(this.getClass().getClassLoader().getResource(GIT_LOG).toURI()));
         Project gitProject = gitLogParser.parse(logStream);
         // This step is necessary because the comparison of the attribute map in Node fails if the project is used directly;
         Project gitProjectForComparison = serializeAndDeserializeProject(gitProject);
