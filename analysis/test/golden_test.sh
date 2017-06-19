@@ -57,6 +57,14 @@ check_sourcemonitor() {
   validate "${ACTUAL_SOURCEMON_JSON}"
 }
 
+check_scmlog() {
+  echo " -- expect SCMLogParser gives valid cc.json"
+  ACTUAL_SCMLOG_JSON="${INSTALL_DIR}/actual_scmlog.json"
+  echo "${CCSH}" scmlogparser data/codecharta/SVNTestLog.txt --svn > "${ACTUAL_SCMLOG_JSON}"
+  "${CCSH}" scmlogparser data/codecharta/SVNTestLog.txt --svn > "${ACTUAL_SCMLOG_JSON}"
+  validate "${ACTUAL_SCMLOG_JSON}"
+}
+
 run_tests() {
   echo
   echo "Running Tests..."
@@ -64,6 +72,7 @@ run_tests() {
 
   check_sonar
   check_sourcemonitor
+  check_scmlog
 
   echo
   echo "... Testing finished."
