@@ -15,7 +15,7 @@
 
 #### Install application for desktop usage
 
-* Download or build latest version for your system. 
+* Download or build [latest version](https://github.com/MaibornWolff/codecharta/releases/latest) for your system. 
 * Doubleclick the system specific Runnable. You may be required to give it executable rights. 
 
 #### Install project for development
