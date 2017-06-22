@@ -3,6 +3,7 @@
 import {DataService} from "./dataService.js";
 import {DataValidatorService} from "./dataValidatorService.js";
 import {DataLoadingService} from "./dataLoadingService.js";
+import {DeltaCalculatorService} from "./deltaCalculatorService.js";
 
 angular.module("app.codeCharta.core.data",[]);
 
@@ -17,4 +18,8 @@ angular.module("app.codeCharta.core.data").service(
 
 angular.module("app.codeCharta.core.data").service(
     "dataValidatorService", DataValidatorService
+);
+
+angular.module("app.codeCharta.core.data").service(
+    "deltaCalculatorService", DeltaCalculatorService
 );
