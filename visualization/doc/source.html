@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="">
+  <title data-ice="title">Source | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeChartaController.js~CodeChartaController.html">CodeChartaController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeChartaDirective.js~CodeChartaDirective.html">CodeChartaDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/codeMap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapAssetService.js~CodeMapAssetService.html">CodeMapAssetService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapController.js~CodeMapController.html">CodeMapController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapDirective.js~CodeMapDirective.html">CodeMapDirective</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html">CodeMapService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CodeMapMaterialPack">CodeMapMaterialPack</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=box#Reference/Geometries/BoxGeometry">BoxGeometry</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=rayca#Reference/Core/Raycaster">Raycaster</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=mesh#Reference/Objects/Mesh">Mesh</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/codeMap/threeViewer</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeCameraService.js~ThreeCameraService.html">ThreeCameraService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeOrbitControlsService.js~ThreeOrbitControlsService.html">ThreeOrbitControlsService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeRendererService.js~ThreeRendererService.html">ThreeRendererService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeSceneService.js~ThreeSceneService.html">ThreeSceneService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeUpdateCycleService.js~ThreeUpdateCycleService.html">ThreeUpdateCycleService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeViewerService.js~ThreeViewerService.html">ThreeViewerService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ThreeOrbitControls">ThreeOrbitControls</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/#Reference/Cameras/PerspectiveCamera">PerspectiveCamera</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/api/renderers/WebGLRenderer.html">WebGLRenderer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=scene#Reference/Scenes/Scene">Scene</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/data</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/data/dataService.js~DataService.html">DataService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html">DataValidatorService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ng/type/$rootScope.Scope">Scope</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ng/service/$http">$http</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://github.com/d3/d3-hierarchy/blob/master/README.md#hierarchy">d3#hierarchy</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/data/model</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/data/model/dataModel.js~DataModel.html">DataModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CodeMap">CodeMap</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/scenario</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/scenario/scenarioService.js~ScenarioService.html">ScenarioService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/scenario/model</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/scenario/model/scenario.js~Scenario.html">Scenario</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/settings</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/settings/settingsService.js~SettingsService.html">SettingsService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/settings/model</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/settings/model/range.js~Range.html">Range</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/settings/model/settings.js~Settings.html">Settings</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/tooltip</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/tooltip/tooltipService.js~TooltipService.html">TooltipService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/treemap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/treemap/treeMapService.js~TreeMapService.html">TreeMapService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://github.com/d3/d3-hierarchy/blob/master/README.md#treemap">d3#treemap</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/url</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/url/urlService.js~UrlService.html">UrlService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ng/service/$location">$location</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/checkbox</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/checkbox/checkboxDirective.js~CheckboxDirective.html">CheckboxDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/collapsible</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/collapsible/collapsibleDirective.js~CollapsibleDirective.html">CollapsibleDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/collapsibleElement</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/collapsibleElement/collapsibleElementDirective.js~CollapsibleElementDirective.html">CollapsibleElementDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/dropdown</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/dropdown/dropdownController.js~DropdownController.html">DropdownController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/dropdown/dropdownDirective.js~DropdownDirective.html">DropdownDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/fab</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/fab/fabDirective.js~FabDirective.html">FabDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/numberField</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/numberField/numberFieldDirective.js~NumberFieldDirective.html">NumberFieldDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/slider</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/slider/sliderDirective.js~SliderDirective.html">SliderDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/detailPanel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html">DetailPanelController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelDirective.js~DetailPanelDirective.html">DetailPanelDirective</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CommonDetails">CommonDetails</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Details">Details</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-SpecificDetails">SpecificDetails</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ngMock/service/$timeout">Timeout</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/fabBar</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fabBar/fabBarDirective.js~FabBarDirective.html">FabBarDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/fileChooser</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserController.js~FileChooserController.html">FileChooserController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserDirective.js~FileChooserDirective.html">FileChooserDirective</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserPanelDirective.js~FileChooserPanelDirective.html">FileChooserPanelDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/legendPanel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/legendPanel/legendPanelController.js~LegendPanelController.html">LegendPanelController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/legendPanel/legendPanelDirective.js~LegendPanelDirective.html">LegendPanelDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/revisionChooser</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserController.js~RevisionChooserController.html">RevisionChooserController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserDirective.js~RevisionChooserDirective.html">RevisionChooserDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/scenarioButtons</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/scenarioButtons/scenarioButtonsController.js~ScenarioButtonsController.html">ScenarioButtonsController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/scenarioButtons/scenarioButtonsDirective.js~ScenarioButtonsDirective.html">ScenarioButtonsDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/settingsPanel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelController.js~SettingsPanelController.html">SettingsPanelController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelDirective.js~SettingsPanelDirective.html">SettingsPanelDirective</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">341/378</span></h1>
+
+<table class="files-summary" data-ice="files" data-use-coverage="true">
+  <thead>
+    <tr>
+      <td>File</td>
+      <td>Identifier</td>
+      <td class="coverage">Document</td>
+      <td style="display: none;">Size</td>
+      <td style="display: none;">Lines</td>
+      <td style="display: none;">Updated</td>
+    </tr>
+  </thead>
+  <tbody>
+    
+  <tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/app.js.html">app/app.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">80 byte</td>
+      <td style="display: none;" data-ice="lines">2</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeCharta.js.html">app/codeCharta/codeCharta.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">553 byte</td>
+      <td style="display: none;" data-ice="lines">26</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeCharta.spec.js.html">app/codeCharta/codeCharta.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">223 byte</td>
+      <td style="display: none;" data-ice="lines">12</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeChartaController.js.html#errorLines=19">app/codeCharta/codeChartaController.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/codeChartaController.js~CodeChartaController.html">CodeChartaController</a></span></td>
+      <td class="coverage"><span data-ice="coverage">85 %</span><span data-ice="coverageCount" class="coverage-count">6/7</span></td>
+      <td style="display: none;" data-ice="size">3012 byte</td>
+      <td style="display: none;" data-ice="lines">121</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeChartaController.spec.js.html">app/codeCharta/codeChartaController.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">4961 byte</td>
+      <td style="display: none;" data-ice="lines">157</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeChartaDirective.js.html#errorLines=10,11,12,13,14,15,16">app/codeCharta/codeChartaDirective.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/codeChartaDirective.js~CodeChartaDirective.html">CodeChartaDirective</a></span></td>
+      <td class="coverage"><span data-ice="coverage">12 %</span><span data-ice="coverageCount" class="coverage-count">1/8</span></td>
+      <td style="display: none;" data-ice="size">466 byte</td>
+      <td style="display: none;" data-ice="lines">22</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeMap/codeMap.js.html">app/codeCharta/codeMap/codeMap.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">2092 byte</td>
+      <td style="display: none;" data-ice="lines">49</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeMap/codeMapAssetService.js.html">app/codeCharta/codeMap/codeMapAssetService.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/codeMap/codeMapAssetService.js~CodeMapAssetService.html">CodeMapAssetService</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">14/14</span></td>
+      <td style="display: none;" data-ice="size">3131 byte</td>
+      <td style="display: none;" data-ice="lines">120</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeMap/codeMapController.js.html">app/codeCharta/codeMap/codeMapController.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/codeMap/codeMapController.js~CodeMapController.html">CodeMapController</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">20/20</span></td>
+      <td style="display: none;" data-ice="size">7280 byte</td>
+      <td style="display: none;" data-ice="lines">279</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeMap/codeMapDirective.js.html">app/codeCharta/codeMap/codeMapDirective.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/codeMap/codeMapDirective.js~CodeMapDirective.html">CodeMapDirective</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">11/11</span></td>
+      <td style="display: none;" data-ice="size">1370 byte</td>
+      <td style="display: none;" data-ice="lines">69</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeMap/codeMapService.js.html">app/codeCharta/codeMap/codeMapService.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html">CodeMapService</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">25/25</span></td>
+      <td style="display: none;" data-ice="size">15675 byte</td>
+      <td style="display: none;" data-ice="lines">499</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html">app/codeCharta/codeMap/codeMapService.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">16077 byte</td>
+      <td style="display: none;" data-ice="lines">511</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeCameraService.js.html">app/codeCharta/codeMap/threeViewer/threeCameraService.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeCameraService.js~ThreeCameraService.html">ThreeCameraService</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">3/3</span></td>
+      <td style="display: none;" data-ice="size">991 byte</td>
+      <td style="display: none;" data-ice="lines">44</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeCameraService.spec.js.html">app/codeCharta/codeMap/threeViewer/threeCameraService.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">1435 byte</td>
+      <td style="display: none;" data-ice="lines">55</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeOrbitControlsService.js.html">app/codeCharta/codeMap/threeViewer/threeOrbitControlsService.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeOrbitControlsService.js~ThreeOrbitControlsService.html">ThreeOrbitControlsService</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">5/5</span></td>
+      <td style="display: none;" data-ice="size">1008 byte</td>
+      <td style="display: none;" data-ice="lines">44</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeOrbitControlsService.spec.js.html">app/codeCharta/codeMap/threeViewer/threeOrbitControlsService.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">434 byte</td>
+      <td style="display: none;" data-ice="lines">13</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeRendererService.js.html">app/codeCharta/codeMap/threeViewer/threeRendererService.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeRendererService.js~ThreeRendererService.html">ThreeRendererService</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">3/3</span></td>
+      <td style="display: none;" data-ice="size">843 byte</td>
+      <td style="display: none;" data-ice="lines">35</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeSceneService.js.html">app/codeCharta/codeMap/threeViewer/threeSceneService.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeSceneService.js~ThreeSceneService.html">ThreeSceneService</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">2/2</span></td>
+      <td style="display: none;" data-ice="size">395 byte</td>
+      <td style="display: none;" data-ice="lines">22</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeSceneService.spec.js.html">app/codeCharta/codeMap/threeViewer/threeSceneService.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">781 byte</td>
+      <td style="display: none;" data-ice="lines">33</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeUpdateCycleService.js.html">app/codeCharta/codeMap/threeViewer/threeUpdateCycleService.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeUpdateCycleService.js~ThreeUpdateCycleService.html">ThreeUpdateCycleService</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">4/4</span></td>
+      <td style="display: none;" data-ice="size">590 byte</td>
+      <td style="display: none;" data-ice="lines">37</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeUpdateCycleService.spec.js.html">app/codeCharta/codeMap/threeViewer/threeUpdateCycleService.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">1023 byte</td>
+      <td style="display: none;" data-ice="lines">33</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeViewer.js.html">app/codeCharta/codeMap/threeViewer/threeViewer.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">988 byte</td>
+      <td style="display: none;" data-ice="lines">44</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeViewerService.js.html">app/codeCharta/codeMap/threeViewer/threeViewerService.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeViewerService.js~ThreeViewerService.html">ThreeViewerService</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">10/10</span></td>
+      <td style="display: none;" data-ice="size">2752 byte</td>
+      <td style="display: none;" data-ice="lines">90</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeViewerService.spec.js.html">app/codeCharta/codeMap/threeViewer/threeViewerService.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">1176 byte</td>
+      <td style="display: none;" data-ice="lines">33</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/core.js.html">app/codeCharta/core/core.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">478 byte</td>
+      <td style="display: none;" data-ice="lines">20</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/data/data.js.html">app/codeCharta/core/data/data.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">365 byte</td>
+      <td style="display: none;" data-ice="lines">14</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/data/dataService.js.html">app/codeCharta/core/data/dataService.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/core/data/dataService.js~DataService.html">DataService</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">9/9</span></td>
+      <td style="display: none;" data-ice="size">5366 byte</td>
+      <td style="display: none;" data-ice="lines">168</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/data/dataService.spec.js.html">app/codeCharta/core/data/dataService.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">5682 byte</td>
+      <td style="display: none;" data-ice="lines">189</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/data/dataValidatorService.js.html">app/codeCharta/core/data/dataValidatorService.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html">DataValidatorService</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">5/5</span></td>
+      <td style="display: none;" data-ice="size">4899 byte</td>
+      <td style="display: none;" data-ice="lines">153</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/data/dataValidatorService.spec.js.html">app/codeCharta/core/data/dataValidatorService.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">27118 byte</td>
+      <td style="display: none;" data-ice="lines">750</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/data/model/dataModel.js.html#errorLines=1">app/codeCharta/core/data/model/dataModel.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/core/data/model/dataModel.js~DataModel.html">DataModel</a></span></td>
+      <td class="coverage"><span data-ice="coverage">80 %</span><span data-ice="coverageCount" class="coverage-count">4/5</span></td>
+      <td style="display: none;" data-ice="size">910 byte</td>
+      <td style="display: none;" data-ice="lines">38</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/scenario/model/scenario.js.html">app/codeCharta/core/scenario/model/scenario.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/core/scenario/model/scenario.js~Scenario.html">Scenario</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">4/4</span></td>
+      <td style="display: none;" data-ice="size">510 byte</td>
+      <td style="display: none;" data-ice="lines">27</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/scenario/scenario.js.html">app/codeCharta/core/scenario/scenario.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">351 byte</td>
+      <td style="display: none;" data-ice="lines">16</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/scenario/scenarioService.js.html">app/codeCharta/core/scenario/scenarioService.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/core/scenario/scenarioService.js~ScenarioService.html">ScenarioService</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">7/7</span></td>
+      <td style="display: none;" data-ice="size">1433 byte</td>
+      <td style="display: none;" data-ice="lines">60</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/scenario/scenarioService.spec.js.html">app/codeCharta/core/scenario/scenarioService.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">1973 byte</td>
+      <td style="display: none;" data-ice="lines">64</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/settings/model/range.js.html">app/codeCharta/core/settings/model/range.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/core/settings/model/range.js~Range.html">Range</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">5/5</span></td>
+      <td style="display: none;" data-ice="size">960 byte</td>
+      <td style="display: none;" data-ice="lines">35</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/settings/model/settings.js.html#errorLines=61">app/codeCharta/core/settings/model/settings.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/core/settings/model/settings.js~Settings.html">Settings</a></span></td>
+      <td class="coverage"><span data-ice="coverage">90 %</span><span data-ice="coverageCount" class="coverage-count">10/11</span></td>
+      <td style="display: none;" data-ice="size">2122 byte</td>
+      <td style="display: none;" data-ice="lines">80</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/settings/settings.js.html">app/codeCharta/core/settings/settings.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">336 byte</td>
+      <td style="display: none;" data-ice="lines">16</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/settings/settingsService.js.html">app/codeCharta/core/settings/settingsService.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/core/settings/settingsService.js~SettingsService.html">SettingsService</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">12/12</span></td>
+      <td style="display: none;" data-ice="size">5307 byte</td>
+      <td style="display: none;" data-ice="lines">171</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/settings/settingsService.spec.js.html">app/codeCharta/core/settings/settingsService.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">3626 byte</td>
+      <td style="display: none;" data-ice="lines">91</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/tooltip/tooltip.js.html">app/codeCharta/core/tooltip/tooltip.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">265 byte</td>
+      <td style="display: none;" data-ice="lines">12</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/tooltip/tooltipService.js.html">app/codeCharta/core/tooltip/tooltipService.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/core/tooltip/tooltipService.js~TooltipService.html">TooltipService</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">5/5</span></td>
+      <td style="display: none;" data-ice="size">1867 byte</td>
+      <td style="display: none;" data-ice="lines">86</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/tooltip/tooltipService.spec.js.html">app/codeCharta/core/tooltip/tooltipService.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">2745 byte</td>
+      <td style="display: none;" data-ice="lines">81</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html">app/codeCharta/core/treemap/TreeMapService.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">8160 byte</td>
+      <td style="display: none;" data-ice="lines">276</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/treemap/treeMapService.js.html">app/codeCharta/core/treemap/treeMapService.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/core/treemap/treeMapService.js~TreeMapService.html">TreeMapService</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">6/6</span></td>
+      <td style="display: none;" data-ice="size">4120 byte</td>
+      <td style="display: none;" data-ice="lines">127</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/treemap/treemap.js.html">app/codeCharta/core/treemap/treemap.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">261 byte</td>
+      <td style="display: none;" data-ice="lines">8</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/url/url.js.html">app/codeCharta/core/url/url.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">183 byte</td>
+      <td style="display: none;" data-ice="lines">6</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/url/urlService.js.html">app/codeCharta/core/url/urlService.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/core/url/urlService.js~UrlService.html">UrlService</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">8/8</span></td>
+      <td style="display: none;" data-ice="size">2608 byte</td>
+      <td style="display: none;" data-ice="lines">105</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/core/url/urlService.spec.js.html">app/codeCharta/core/url/urlService.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">3094 byte</td>
+      <td style="display: none;" data-ice="lines">107</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/checkbox/checkbox.js.html">app/codeCharta/ui/common/checkbox/checkbox.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">256 byte</td>
+      <td style="display: none;" data-ice="lines">10</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/checkbox/checkboxDirective.js.html">app/codeCharta/ui/common/checkbox/checkboxDirective.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/common/checkbox/checkboxDirective.js~CheckboxDirective.html">CheckboxDirective</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">6/6</span></td>
+      <td style="display: none;" data-ice="size">944 byte</td>
+      <td style="display: none;" data-ice="lines">48</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/checkbox/checkboxDirective.spec.js.html">app/codeCharta/ui/common/checkbox/checkboxDirective.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">1074 byte</td>
+      <td style="display: none;" data-ice="lines">42</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/collapsible/collapsible.js.html">app/codeCharta/ui/common/collapsible/collapsible.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">274 byte</td>
+      <td style="display: none;" data-ice="lines">10</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/collapsible/collapsibleDirective.js.html">app/codeCharta/ui/common/collapsible/collapsibleDirective.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/common/collapsible/collapsibleDirective.js~CollapsibleDirective.html">CollapsibleDirective</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">7/7</span></td>
+      <td style="display: none;" data-ice="size">641 byte</td>
+      <td style="display: none;" data-ice="lines">25</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/collapsible/collapsibleDirective.spec.js.html">app/codeCharta/ui/common/collapsible/collapsibleDirective.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">945 byte</td>
+      <td style="display: none;" data-ice="lines">38</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/collapsibleElement/collapsibleElement.js.html">app/codeCharta/ui/common/collapsibleElement/collapsibleElement.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">316 byte</td>
+      <td style="display: none;" data-ice="lines">10</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/collapsibleElement/collapsibleElementDirective.js.html">app/codeCharta/ui/common/collapsibleElement/collapsibleElementDirective.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/common/collapsibleElement/collapsibleElementDirective.js~CollapsibleElementDirective.html">CollapsibleElementDirective</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">8/8</span></td>
+      <td style="display: none;" data-ice="size">1094 byte</td>
+      <td style="display: none;" data-ice="lines">48</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/common.js.html">app/codeCharta/ui/common/common.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">578 byte</td>
+      <td style="display: none;" data-ice="lines">11</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/dropdown/dropdown.js.html">app/codeCharta/ui/common/dropdown/dropdown.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">505 byte</td>
+      <td style="display: none;" data-ice="lines">17</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/dropdown/dropdownController.js.html#errorLines=15">app/codeCharta/ui/common/dropdown/dropdownController.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/common/dropdown/dropdownController.js~DropdownController.html">DropdownController</a></span></td>
+      <td class="coverage"><span data-ice="coverage">75 %</span><span data-ice="coverageCount" class="coverage-count">3/4</span></td>
+      <td style="display: none;" data-ice="size">728 byte</td>
+      <td style="display: none;" data-ice="lines">36</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/dropdown/dropdownController.spec.js.html">app/codeCharta/ui/common/dropdown/dropdownController.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">1139 byte</td>
+      <td style="display: none;" data-ice="lines">39</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/dropdown/dropdownDirective.js.html">app/codeCharta/ui/common/dropdown/dropdownDirective.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/common/dropdown/dropdownDirective.js~DropdownDirective.html">DropdownDirective</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">9/9</span></td>
+      <td style="display: none;" data-ice="size">1259 byte</td>
+      <td style="display: none;" data-ice="lines">64</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/fab/fab.js.html">app/codeCharta/ui/common/fab/fab.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">226 byte</td>
+      <td style="display: none;" data-ice="lines">10</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/fab/fabDirective.js.html">app/codeCharta/ui/common/fab/fabDirective.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/common/fab/fabDirective.js~FabDirective.html">FabDirective</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">6/6</span></td>
+      <td style="display: none;" data-ice="size">829 byte</td>
+      <td style="display: none;" data-ice="lines">44</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/numberField/numberField.js.html">app/codeCharta/ui/common/numberField/numberField.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">274 byte</td>
+      <td style="display: none;" data-ice="lines">10</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/numberField/numberFieldDirective.js.html#errorLines=8">app/codeCharta/ui/common/numberField/numberFieldDirective.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/common/numberField/numberFieldDirective.js~NumberFieldDirective.html">NumberFieldDirective</a></span></td>
+      <td class="coverage"><span data-ice="coverage">83 %</span><span data-ice="coverageCount" class="coverage-count">5/6</span></td>
+      <td style="display: none;" data-ice="size">772 byte</td>
+      <td style="display: none;" data-ice="lines">41</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/slider/slider.js.html">app/codeCharta/ui/common/slider/slider.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">244 byte</td>
+      <td style="display: none;" data-ice="lines">10</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/common/slider/sliderDirective.js.html">app/codeCharta/ui/common/slider/sliderDirective.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/common/slider/sliderDirective.js~SliderDirective.html">SliderDirective</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">6/6</span></td>
+      <td style="display: none;" data-ice="size">857 byte</td>
+      <td style="display: none;" data-ice="lines">49</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/detailPanel/detailPanel.js.html">app/codeCharta/ui/detailPanel/detailPanel.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">574 byte</td>
+      <td style="display: none;" data-ice="lines">22</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelController.js.html#errorLines=3">app/codeCharta/ui/detailPanel/detailPanelController.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html">DetailPanelController</a></span></td>
+      <td class="coverage"><span data-ice="coverage">93 %</span><span data-ice="coverageCount" class="coverage-count">15/16</span></td>
+      <td style="display: none;" data-ice="size">8560 byte</td>
+      <td style="display: none;" data-ice="lines">277</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelController.spec.js.html">app/codeCharta/ui/detailPanel/detailPanelController.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">7801 byte</td>
+      <td style="display: none;" data-ice="lines">223</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelDirective.js.html">app/codeCharta/ui/detailPanel/detailPanelDirective.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelDirective.js~DetailPanelDirective.html">DetailPanelDirective</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">8/8</span></td>
+      <td style="display: none;" data-ice="size">854 byte</td>
+      <td style="display: none;" data-ice="lines">54</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelDirective.spec.js.html">app/codeCharta/ui/detailPanel/detailPanelDirective.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">1659 byte</td>
+      <td style="display: none;" data-ice="lines">58</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/fabBar/fabBar.js.html">app/codeCharta/ui/fabBar/fabBar.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">291 byte</td>
+      <td style="display: none;" data-ice="lines">11</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/fabBar/fabBarDirective.js.html">app/codeCharta/ui/fabBar/fabBarDirective.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/fabBar/fabBarDirective.js~FabBarDirective.html">FabBarDirective</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">5/5</span></td>
+      <td style="display: none;" data-ice="size">464 byte</td>
+      <td style="display: none;" data-ice="lines">34</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/fileChooser/fileChooser.js.html">app/codeCharta/ui/fileChooser/fileChooser.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">710 byte</td>
+      <td style="display: none;" data-ice="lines">22</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/fileChooser/fileChooserController.js.html">app/codeCharta/ui/fileChooser/fileChooserController.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserController.js~FileChooserController.html">FileChooserController</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">8/8</span></td>
+      <td style="display: none;" data-ice="size">2047 byte</td>
+      <td style="display: none;" data-ice="lines">99</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/fileChooser/fileChooserController.spec.js.html">app/codeCharta/ui/fileChooser/fileChooserController.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">2466 byte</td>
+      <td style="display: none;" data-ice="lines">84</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/fileChooser/fileChooserDirective.js.html">app/codeCharta/ui/fileChooser/fileChooserDirective.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserDirective.js~FileChooserDirective.html">FileChooserDirective</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">9/9</span></td>
+      <td style="display: none;" data-ice="size">1076 byte</td>
+      <td style="display: none;" data-ice="lines">62</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/fileChooser/fileChooserPanelDirective.js.html">app/codeCharta/ui/fileChooser/fileChooserPanelDirective.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserPanelDirective.js~FileChooserPanelDirective.html">FileChooserPanelDirective</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">6/6</span></td>
+      <td style="display: none;" data-ice="size">656 byte</td>
+      <td style="display: none;" data-ice="lines">41</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/legendPanel/legendPanel.js.html">app/codeCharta/ui/legendPanel/legendPanel.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">563 byte</td>
+      <td style="display: none;" data-ice="lines">18</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/legendPanel/legendPanelController.js.html#errorLines=19,21,22,23,29,3,30,31,32,33,35,36,37,38,39,48,54,6,63,67,77,8,9">app/codeCharta/ui/legendPanel/legendPanelController.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/legendPanel/legendPanelController.js~LegendPanelController.html">LegendPanelController</a></span></td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/23</span></td>
+      <td style="display: none;" data-ice="size">2951 byte</td>
+      <td style="display: none;" data-ice="lines">86</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/legendPanel/legendPanelController.spec.js.html">app/codeCharta/ui/legendPanel/legendPanelController.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">3456 byte</td>
+      <td style="display: none;" data-ice="lines">68</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/legendPanel/legendPanelDirective.js.html">app/codeCharta/ui/legendPanel/legendPanelDirective.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/legendPanel/legendPanelDirective.js~LegendPanelDirective.html">LegendPanelDirective</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">11/11</span></td>
+      <td style="display: none;" data-ice="size">1486 byte</td>
+      <td style="display: none;" data-ice="lines">82</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/revisionChooser/revisionChooser.js.html">app/codeCharta/ui/revisionChooser/revisionChooser.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">546 byte</td>
+      <td style="display: none;" data-ice="lines">18</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/revisionChooser/revisionChooserController.js.html">app/codeCharta/ui/revisionChooser/revisionChooserController.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserController.js~RevisionChooserController.html">RevisionChooserController</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">6/6</span></td>
+      <td style="display: none;" data-ice="size">983 byte</td>
+      <td style="display: none;" data-ice="lines">55</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/revisionChooser/revisionChooserController.spec.js.html">app/codeCharta/ui/revisionChooser/revisionChooserController.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">1530 byte</td>
+      <td style="display: none;" data-ice="lines">49</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/revisionChooser/revisionChooserDirective.js.html">app/codeCharta/ui/revisionChooser/revisionChooserDirective.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserDirective.js~RevisionChooserDirective.html">RevisionChooserDirective</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">11/11</span></td>
+      <td style="display: none;" data-ice="size">1564 byte</td>
+      <td style="display: none;" data-ice="lines">86</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/revisionChooser/revisionChooserDirective.spec.js.html">app/codeCharta/ui/revisionChooser/revisionChooserDirective.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">519 byte</td>
+      <td style="display: none;" data-ice="lines">23</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/scenarioButtons/scenarioButtons.js.html">app/codeCharta/ui/scenarioButtons/scenarioButtons.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">590 byte</td>
+      <td style="display: none;" data-ice="lines">17</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/scenarioButtons/scenarioButtonsController.js.html#errorLines=3">app/codeCharta/ui/scenarioButtons/scenarioButtonsController.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/scenarioButtons/scenarioButtonsController.js~ScenarioButtonsController.html">ScenarioButtonsController</a></span></td>
+      <td class="coverage"><span data-ice="coverage">85 %</span><span data-ice="coverageCount" class="coverage-count">6/7</span></td>
+      <td style="display: none;" data-ice="size">1304 byte</td>
+      <td style="display: none;" data-ice="lines">62</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/scenarioButtons/scenarioButtonsController.spec.js.html">app/codeCharta/ui/scenarioButtons/scenarioButtonsController.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">1165 byte</td>
+      <td style="display: none;" data-ice="lines">29</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/scenarioButtons/scenarioButtonsDirective.js.html">app/codeCharta/ui/scenarioButtons/scenarioButtonsDirective.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/scenarioButtons/scenarioButtonsDirective.js~ScenarioButtonsDirective.html">ScenarioButtonsDirective</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">8/8</span></td>
+      <td style="display: none;" data-ice="size">889 byte</td>
+      <td style="display: none;" data-ice="lines">54</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/settingsPanel/settingsPanel.js.html">app/codeCharta/ui/settingsPanel/settingsPanel.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">638 byte</td>
+      <td style="display: none;" data-ice="lines">24</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/settingsPanel/settingsPanelController.js.html">app/codeCharta/ui/settingsPanel/settingsPanelController.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelController.js~SettingsPanelController.html">SettingsPanelController</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">11/11</span></td>
+      <td style="display: none;" data-ice="size">1940 byte</td>
+      <td style="display: none;" data-ice="lines">94</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/settingsPanel/settingsPanelController.spec.js.html">app/codeCharta/ui/settingsPanel/settingsPanelController.spec.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">3695 byte</td>
+      <td style="display: none;" data-ice="lines">102</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/settingsPanel/settingsPanelDirective.js.html">app/codeCharta/ui/settingsPanel/settingsPanelDirective.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelDirective.js~SettingsPanelDirective.html">SettingsPanelDirective</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">8/8</span></td>
+      <td style="display: none;" data-ice="size">876 byte</td>
+      <td style="display: none;" data-ice="lines">53</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/app/codeCharta/ui/ui.js.html">app/codeCharta/ui/ui.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">632 byte</td>
+      <td style="display: none;" data-ice="lines">13</td>
+      <td style="display: none;" data-ice="updated">2017-06-05 10:33:39 (UTC)</td>
+    </tr>
+</tbody>
+</table>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

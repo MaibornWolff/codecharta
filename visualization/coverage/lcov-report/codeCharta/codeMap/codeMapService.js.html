@@ -1,0 +1,1562 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for codeCharta/codeMap/codeMapService.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">All files</a> / <a href="index.html">codeCharta/codeMap</a> codeMapService.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">67.91% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>127/187</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">58.18% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>32/55</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">85.71% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>6/7</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">67.93% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>125/184</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">35x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
+&nbsp;
+import * as THREE from "three";
+import {SpriteText2D, textAlign} from "three-text2d";
+&nbsp;
+/**
+ * Main service to manage the state of the rendered code map
+ */
+class CodeMapService {
+&nbsp;
+    /* @ngInject */
+&nbsp;
+    /**
+     * @external {Object3D} https://threejs.org/docs/?q=Object3#Reference/Core/Object3D
+     * @external {Mesh} https://threejs.org/docs/?q=mesh#Reference/Objects/Mesh
+     * @constructor
+     * @param {Scope} $rootScope
+     * @param {ThreeSceneService} threeSceneService
+     * @param {TreeMapService} treeMapService
+     * @param {TreeMapService} codeMapAssetService
+     * @param {TreeMapService} settingsService
+     */
+    constructor($rootScope, threeSceneService, treeMapService, codeMapAssetService, settingsService) {
+&nbsp;
+        /**
+         *
+         * @type {TreeMapService}
+         */
+        this.assetService = codeMapAssetService;
+        /**
+         *
+         * @type {Scene}
+         */
+        this.scene = threeSceneService.scene;
+        /**
+         *
+         * @type {TreeMapService}
+         */
+        this.treemapService = treeMapService;
+        /**
+         *
+         * @type {TreeMapService}
+         */
+        this.settingsService = settingsService;
+&nbsp;
+        /**
+         * the root of the scene graph
+         * @type {Object3D}
+         */
+        this.root = {};
+&nbsp;
+        let ctx = this;
+&nbsp;
+        $rootScope.$on("settings-changed", (e, s)=&gt; {
+            ctx.applySettings(s);
+        });
+&nbsp;
+        this.addLightsToScene();
+&nbsp;
+    }
+&nbsp;
+    /**
+     * scales the scene by the given values
+     * @param {number} x
+     * @param {number} y
+     * @param {number} z
+     */
+    scaleTo(x, y, z) {
+        if (this.root &amp;&amp; this.root.scale) {
+            this.root.scale.set(x, y, z);
+        }
+    }
+&nbsp;
+    /**
+     * Applies the given settings and redraws the scene
+     * @param {Settings} s
+     * @listens {settings-changed}
+     */
+    applySettings(s) {
+        var area = s.areaMetric;
+        var height = s.heightMetric;
+        var color = s.colorMetric;
+        var map = s.map;
+        var range = s.neutralColorRange;
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (area &amp;&amp; height &amp;&amp; color &amp;&amp; map &amp;&amp; range) {
+<span class="cstat-no" title="statement not covered" >            this.drawFromData(map, area, height, color, s.neutralColorRange, s.amountOfTopLabels);</span>
+        }
+    }
+&nbsp;
+    /**
+     * Draws the map from the given (dataService) data.
+     * @param {CodeMap} map
+     * @param {string} areaKey
+     * @param {string} heightKey
+     * @param {string} colorKey
+     * @param {ColorRange} colorConfig
+     * @param {number} amountOfTopLabels number of highest buildings with labels
+     */
+    drawFromData(map, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels) {
+<span class="cstat-no" title="statement not covered" >        this.drawMap(map, 500, 1, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels);</span>
+    }
+&nbsp;
+    /**
+     * Draws the map
+     * @param {CodeMap} map
+     * @param {number} s size
+     * @param {number} p padding
+     * @param {string} areaKey
+     * @param {string} heightKey
+     * @param {string} colorKey
+     * @param {ColorRange} colorConfig
+     * @param {number} amountOfTopLabels number of highest buildings with labels
+     */
+    drawMap(map, s, p, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels) {
+&nbsp;
+        this.clearScene();
+&nbsp;
+        this.addRoot();
+&nbsp;
+        if (this.settingsService.settings.grid) {
+            this.addGrid(s, 50);
+        }
+&nbsp;
+        let nodes = this.treemapService.createTreemapNodes(map, s, s, p, areaKey, heightKey);
+&nbsp;
+        let sorted = nodes.sort((a,b)=&gt;{return b.height - a.height;});
+&nbsp;
+        sorted.forEach((node,i)=&gt;{
+            this.addNode(node, heightKey, i&lt;amountOfTopLabels);
+        });
+&nbsp;
+        this.centerMap(s, s);
+&nbsp;
+        this.drawScene();
+&nbsp;
+        this.colorMap(colorKey, colorConfig);
+&nbsp;
+    }
+&nbsp;
+    /**
+     * Adds a grid to the scene
+     * @param {number} mapSize
+     * @param {number} divisions
+     */
+    addGrid(mapSize, divisions) {
+&nbsp;
+        let xz = new THREE.GridHelper(mapSize, divisions);
+&nbsp;
+        let xy = new THREE.GridHelper(mapSize, divisions);
+        xy.translateY(mapSize);
+        xy.translateX(mapSize);
+        xy.rotation.z = Math.PI / 2;
+&nbsp;
+        let zy = new THREE.GridHelper(mapSize, divisions);
+        zy.translateY(mapSize);
+        zy.translateZ(mapSize);
+        zy.rotation.y = Math.PI / 2;
+        zy.rotation.x = Math.PI / 2;
+&nbsp;
+        let group = new THREE.Object3D();
+        group.add(xz);
+        group.add(xy);
+        group.add(zy);
+&nbsp;
+        this.root.add(group);
+&nbsp;
+    }
+&nbsp;
+    /**
+     * Colors the cubes depending on their node data and the given values.
+     * @param {string} colorKey
+     * @param {ColorRange} neutralColorRange
+     */
+    colorMap(colorKey, neutralColorRange) {
+        this.root.traverse((o)=&gt; {
+&nbsp;
+            <span class="missing-if-branch" title="if path not taken" >I</span>i</span>f (o.node &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >o.node.isLeaf) {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.colorBase(o, colorKey, neutralColorRange);</span>
+<span class="cstat-no" title="statement not covered" >                this.colorDelta(o);</span>
+&nbsp;
+            } else <span class="missing-if-branch" title="if path not taken" >I</span>i</span>f (o.node &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >!o.node.isLeaf) {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                o.originalMaterial = o.material.clone();</span>
+<span class="cstat-no" title="statement not covered" >                o.selectedMaterial = this.assetService.selected();</span>
+<span class="cstat-no" title="statement not covered" >                o.hoveredMaterial = this.assetService.hovered();</span>
+&nbsp;
+            } // else: object is propably a Grouping Object with no node data
+&nbsp;
+        });
+    }
+&nbsp;
+    /**
+     * Colors the 'folders'
+     * @param {object} o folder
+     * @param {string} colorKey
+     * @param {ColorRange} neutralColorRange
+     */
+    colorBase(o, colorKey, neutralColorRange) {
+&nbsp;
+        l</span>et base = <span class="cstat-no" title="statement not covered" >o.children.filter(<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(</span>c)=&gt;!c.isDelta)[0];</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        if (!base) {</span>
+<span class="cstat-no" title="statement not covered" >            return;</span>
+        }
+&nbsp;
+        v</span>ar val = <span class="cstat-no" title="statement not covered" >base.node.attributes[colorKey];
+<span class="cstat-no" title="statement not covered" >        if (val &lt; neutralColorRange.from) {</span>
+<span class="cstat-no" title="statement not covered" >            base.originalMaterial = neutralColorRange.flipped ? this.assetService.negative() : this.assetService.positive();</span>
+        } else <span class="cstat-no" title="statement not covered" >if (val &gt; neutralColorRange.to) {</span>
+<span class="cstat-no" title="statement not covered" >            base.originalMaterial = neutralColorRange.flipped ? this.assetService.positive() : this.assetService.negative();</span>
+        } else {
+<span class="cstat-no" title="statement not covered" >            base.originalMaterial = this.assetService.neutral();</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        base.selectedMaterial = this.assetService.selected();</span>
+<span class="cstat-no" title="statement not covered" >        base.hoveredMaterial = this.assetService.hovered();</span>
+<span class="cstat-no" title="statement not covered" >        base.material = base.originalMaterial.clone();</span>
+&nbsp;
+&nbsp;
+    }
+&nbsp;
+    /**
+     * colors the delta block of o
+     * @param {Object3D} o building with delta
+     */
+    colorDelta(o) {
+&nbsp;
+        let delta = o.children.filter((c)=&gt;c.isDelta)[0];
+&nbsp;
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (!delta) {
+<span class="cstat-no" title="statement not covered" >            return;</span>
+        }
+&nbsp;
+        //only the selected, original and hover mat for delta part. It already has its delta mesh
+        delta.originalMaterial = delta.material.clone();
+        delta.selectedMaterial = this.assetService.selected();
+        delta.hoveredMaterial = this.assetService.hovered();
+&nbsp;
+    }
+&nbsp;
+    /**
+     * centers the map at point (w,l)
+     * @param {number} w width
+     * @param {number} l length
+     */
+    centerMap(w, l) {
+        this.root.translateX(-w / 2);
+        this.root.translateZ(-l / 2);
+    }
+&nbsp;
+    /**
+     * adds a node to the scene
+     * @param {object} node
+     * @param {string} heightKey
+     * @param {boolean} showLabel true if the building should get a label
+     */
+    addNode(node, heightKey, showLabel) {
+        //we need to keep in mind that d3 originally is in 2D, so we need to relabel the axis to match Three.js 3D space
+        if (!node.isLeaf) {
+            this.addFloor(node.width, node.height, node.length, node.x0, node.z0, node.y0, node.depth, node);
+        } else {
+            this.addBuilding(node.width, node.height, node.length, node.x0, node.z0, node.y0, n</span></span>ode.deltas &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >this.settingsService.settings.deltas ? <span class="branch-0 cbranch-no" title="branch not covered" >node.deltas[heightKey] : 0, node, heightKey, showLabel);
+        }
+    }
+&nbsp;
+    /**
+     * Adds a root node to the scene
+     */
+    addRoot() {
+        this.root = new THREE.Object3D();
+    }
+&nbsp;
+    /**
+     * Adds a floor to the scene
+     * @param {number} w width
+     * @param {number} h height
+     * @param {number} l length
+     * @param {number} x x position
+     * @param {number} y y position
+     * @param {number} z z position
+     * @param {number} depth hierarchical depth
+     * @param {object} node the transformed d3 node
+     */
+    addFloor(w, h, l, x, y, z, depth, node) {
+        l</span>et mat = <span class="cstat-no" title="statement not covered" >depth % 2 ? this.assetService.odd() : this.assetService.even();
+        l</span>et floor = <span class="cstat-no" title="statement not covered" >this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, mat, node);
+        l</span>et group = <span class="cstat-no" title="statement not covered" >new THREE.Object3D();
+<span class="cstat-no" title="statement not covered" >        group.add(floor);</span>
+<span class="cstat-no" title="statement not covered" >        this.root.add(group);</span>
+    }
+&nbsp;
+    /**
+     * Adds a building to the scene root. A building is an Object3D with 1 or 2 children cubes. The amount depends on the delta value of the cube.
+     * @param {number} w width
+     * @param {number} h height
+     * @param {number} l length
+     * @param {number} x x position
+     * @param {number} y y position
+     * @param {number} z z position
+     * @param {number} heightDelta
+     * @param {object} node the transformed d3 node
+     * @param {string} heightKey the height metric
+     * @param {boolean} showLabel true if the building should get a label
+     */
+    addBuilding(w, h, l, x, y, z, heightDelta, node, heightKey, showLabel) {
+        if (heightDelta &gt; 0) {
+            if (heightDelta &gt; h) {
+                heightDelta = 1; //scale it for the looks, should not happen though
+            }
+            let cube = this.getTransformedMesh(w, h - heightDelta, l, x + w / 2, y + (h - heightDelta) / 2, z + l / 2, this.assetService.default(), node);
+            let cubeD = this.getTransformedMesh(w, heightDelta, l, x + w / 2, y + (heightDelta) / 2 + (h - heightDelta), z + l / 2, this.assetService.positiveDelta(), node);
+            let building = new THREE.Object3D();
+            cubeD.isDelta = true;
+            building.add(cube);
+            building.add(cubeD);
+            building.node = node;
+            this.root.add(building);
+        } else if (heightDelta &lt; 0) {
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (-heightDelta &gt; h) {
+                heightDelta = -1; //scale it for the looks, should not happen though
+            }
+&nbsp;
+            let cube = this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, this.assetService.default(), node);
+            let cubeD = this.getTransformedMesh(w, -heightDelta, l, x + w / 2, y + (-heightDelta) / 2 + h, z + l / 2, this.assetService.negativeDelta(), node);
+            let building = new THREE.Object3D();
+            cubeD.isDelta = true;
+            building.add(cube);
+            building.add(cubeD);
+            building.node = node;
+            this.root.add(building);
+        } else {
+            let cube = this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, this.assetService.default(), node);
+            let building = new THREE.Object3D();
+            building.add(cube);
+            building.node = node;
+            this.root.add(building);
+        }
+&nbsp;
+        <span class="missing-if-branch" title="if path not taken" >I</span>if(showLabel) {
+<span class="cstat-no" title="statement not covered" >            this.addLabel(x, y, z, w, h, l, node, heightKey);</span>
+        }
+&nbsp;
+    }
+&nbsp;
+    /**
+    * adds a label at the given position
+    * @param {number} x x position
+    * @param {number} y y position
+    * @param {number} z z position
+    * @param {number} w width
+    * @param {number} h height
+    * @param {number} l length
+    * @param {object} node the transformed d3 node
+    * @param {string} heightKey the height metric
+    */
+    addLabel(x, y, z, w, h, l, node, heightKey) {
+&nbsp;
+        <span class="missing-if-branch" title="if path not taken" >I</span>if(node.attributes &amp;&amp; node.attributes[heightKey]){
+&nbsp;
+            v</span>ar sprite = <span class="cstat-no" title="statement not covered" >this.makeText(node.name + ": " + node.attributes[heightKey], 30);
+<span class="cstat-no" title="statement not covered" >            sprite.position.set(x+w/2,y+60+h + sprite.heightValue/2,z+l/2);</span>
+<span class="cstat-no" title="statement not covered" >            this.root.add(sprite);</span>
+&nbsp;
+            // Line
+            v</span>ar material = <span class="cstat-no" title="statement not covered" >new THREE.LineBasicMaterial({
+                color: 0x0000ff
+            });
+&nbsp;
+            v</span>ar geometry = <span class="cstat-no" title="statement not covered" >new THREE.Geometry();
+<span class="cstat-no" title="statement not covered" >            geometry.vertices.push(</span>
+                new THREE.Vector3(x + w / 2, y + h, z + l / 2),
+                new THREE.Vector3(x + w / 2, y + h + 60, z + l / 2)
+            );
+&nbsp;
+            v</span>ar line = <span class="cstat-no" title="statement not covered" >new THREE.Line(geometry, material);
+<span class="cstat-no" title="statement not covered" >            this.root.add(line);</span>
+&nbsp;
+        }
+&nbsp;
+    }
+&nbsp;
+    /**
+     * Returns a text sprite
+     * @param {string} message
+     * @param {number} fontsize
+     * @returns {THREE.Sprite}
+     */
+    makeText(message, fontsize) {
+        var ctx, texture, sprite, spriteMaterial,
+            canvas = <span class="cstat-no" title="statement not covered" >document.createElement("canvas");</span>
+<span class="cstat-no" title="statement not covered" >        ctx = canvas.getContext("2d");</span>
+<span class="cstat-no" title="statement not covered" >        ctx.font = fontsize + "px Arial";</span>
+&nbsp;
+        v</span>ar margin = <span class="cstat-no" title="statement not covered" >10;
+&nbsp;
+        // setting canvas width/height before ctx draw, else canvas is empty
+        v</span>ar w = <span class="cstat-no" title="statement not covered" >ctx.measureText(message).width;
+        v</span>ar h = <span class="cstat-no" title="statement not covered" >fontsize;
+<span class="cstat-no" title="statement not covered" >        canvas.width = w + margin;</span>
+<span class="cstat-no" title="statement not covered" >        canvas.height = h + margin; // fontsize * 1.5</span>
+&nbsp;
+        //bg
+<span class="cstat-no" title="statement not covered" >        ctx.fillStyle = "rgba(255,255,255,1)";</span>
+<span class="cstat-no" title="statement not covered" >        ctx.strokeStyle = "rgba(0,0,255,1)";</span>
+<span class="cstat-no" title="statement not covered" >        ctx.fillRect(0,0,canvas.width, canvas.height);</span>
+<span class="cstat-no" title="statement not covered" >        ctx.strokeRect(0,0,canvas.width, canvas.height);</span>
+&nbsp;
+        // after setting the canvas width/height we have to re-set font to apply!?! looks like ctx reset
+<span class="cstat-no" title="statement not covered" >        ctx.font = h + "px Arial";</span>
+<span class="cstat-no" title="statement not covered" >        ctx.fillStyle = "rgba(0,0,0,1)";</span>
+<span class="cstat-no" title="statement not covered" >        ctx.textAlign = "center";</span>
+<span class="cstat-no" title="statement not covered" >        ctx.textBaseline = "middle";</span>
+<span class="cstat-no" title="statement not covered" >        ctx.fillText(message, canvas.width / 2, canvas.height / 2);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        texture = new THREE.Texture(canvas);</span>
+<span class="cstat-no" title="statement not covered" >        texture.minFilter = THREE.LinearFilter; // NearestFilter;</span>
+<span class="cstat-no" title="statement not covered" >        texture.needsUpdate = true;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        spriteMaterial = new THREE.SpriteMaterial({map : texture});</span>
+<span class="cstat-no" title="statement not covered" >        sprite = new THREE.Sprite(spriteMaterial);</span>
+<span class="cstat-no" title="statement not covered" >        sprite.scale.set(canvas.width,canvas.height,1);</span>
+<span class="cstat-no" title="statement not covered" >        sprite.heightValue = canvas.height;</span>
+<span class="cstat-no" title="statement not covered" >        return sprite;</span>
+    }
+&nbsp;
+    /**
+     * Add scene lighting
+     */
+    addLightsToScene() {
+        var ambilight = new THREE.AmbientLight(0x707070); // soft white light
+        var light1 = new THREE.DirectionalLight(0xe0e0e0, 1);
+        light1.position.set(50, 10, 8).normalize();
+        light1.castShadow = false;
+        light1.shadow.camera.right = 5;
+        light1.shadow.camera.left = -5;
+        light1.shadow.camera.top = 5;
+        light1.shadow.camera.bottom = -5;
+        light1.shadow.camera.near = 2;
+        light1.shadow.camera.far = 100;
+        var light2 = new THREE.DirectionalLight(0xe0e0e0, 1);
+        light2.position.set(-50, 10, -8).normalize();
+        light2.castShadow = false;
+        light2.shadow.camera.right = 5;
+        light2.shadow.camera.left = -5;
+        light2.shadow.camera.top = 5;
+        light2.shadow.camera.bottom = -5;
+        light2.shadow.camera.near = 2;
+        light2.shadow.camera.far = 100;
+        this.scene.add(ambilight);
+        this.scene.add(light1);
+        this.scene.add(light2);
+    }
+&nbsp;
+    /**
+     * draws the current scene
+     */
+    drawScene() {
+        this.scene.add(this.root);
+    }
+&nbsp;
+    /**
+     * clears the current scene. Lights remain in the scene
+     */
+    clearScene() {
+        this.scene.remove(this.root);
+    }
+&nbsp;
+    /**
+     * Efficiently creates a new mesh.
+     * @param {number} scaleX
+     * @param {number} scaleY
+     * @param {number} scaleZ
+     * @param {number} translateX
+     * @param {number} translateY
+     * @param {number} translateZ
+     * @param {LambertMeshMaterial} mat
+     * @param {object} node
+     * @return {Mesh}
+     */
+    getTransformedMesh(scaleX, scaleY, scaleZ, translateX, translateY, translateZ, mat, node) {
+        let geo = this.assetService.getCubeGeo();
+        let mesh = new THREE.Mesh(geo, mat);
+        mesh.scale.x = scaleX;
+        mesh.scale.y = scaleY;
+        mesh.scale.z = scaleZ;
+        mesh.translateX(translateX);
+        mesh.translateY(translateY);
+        mesh.translateZ(translateZ);
+        mesh.node = node;
+        return mesh;
+    }
+&nbsp;
+}
+&nbsp;
+export {CodeMapService};
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Thu Jun 22 2017 10:35:16 GMT+0000 (UTC)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

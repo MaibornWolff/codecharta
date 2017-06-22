@@ -1,0 +1,55 @@
+{
+    "oneOf":[
+        {
+            "type": "object",
+            "required" : ["revisions"],
+            "properties": {
+                "revisions": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/node"
+                    }
+                }
+            }
+        },
+        {
+            "nodes": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                    "$ref": "#/definitions/node"
+                }
+            }
+        }
+    ],
+    "definitions": {
+        "node":{
+            "type": "object",
+                "required":["name"],
+                "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "children": {
+                    "type": "array",
+                        "minItems": 1,
+                        "items": {
+                        "$ref": "#/definitions/node"
+                    }
+                },
+                "attributes": {
+                    "$ref": "#/definitions/attributeList"
+                }
+            }
+        },
+        "attributeList":{
+            "type":"object",
+                "patternProperties": {
+                "^.*$":{
+                    "type": "number"
+                }
+            }
+        }
+    }
+}

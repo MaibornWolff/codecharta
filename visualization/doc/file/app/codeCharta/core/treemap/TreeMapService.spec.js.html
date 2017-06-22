@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../../">
+  <title data-ice="title">app/codeCharta/core/treemap/TreeMapService.spec.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeChartaController.js~CodeChartaController.html">CodeChartaController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeChartaDirective.js~CodeChartaDirective.html">CodeChartaDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/codeMap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapAssetService.js~CodeMapAssetService.html">CodeMapAssetService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapController.js~CodeMapController.html">CodeMapController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapDirective.js~CodeMapDirective.html">CodeMapDirective</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html">CodeMapService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CodeMapMaterialPack">CodeMapMaterialPack</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=box#Reference/Geometries/BoxGeometry">BoxGeometry</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=rayca#Reference/Core/Raycaster">Raycaster</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=mesh#Reference/Objects/Mesh">Mesh</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/codeMap/threeViewer</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeCameraService.js~ThreeCameraService.html">ThreeCameraService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeOrbitControlsService.js~ThreeOrbitControlsService.html">ThreeOrbitControlsService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeRendererService.js~ThreeRendererService.html">ThreeRendererService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeSceneService.js~ThreeSceneService.html">ThreeSceneService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeUpdateCycleService.js~ThreeUpdateCycleService.html">ThreeUpdateCycleService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeViewerService.js~ThreeViewerService.html">ThreeViewerService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ThreeOrbitControls">ThreeOrbitControls</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/#Reference/Cameras/PerspectiveCamera">PerspectiveCamera</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/api/renderers/WebGLRenderer.html">WebGLRenderer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=scene#Reference/Scenes/Scene">Scene</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/data</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/data/dataService.js~DataService.html">DataService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html">DataValidatorService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ng/type/$rootScope.Scope">Scope</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ng/service/$http">$http</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://github.com/d3/d3-hierarchy/blob/master/README.md#hierarchy">d3#hierarchy</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/data/model</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/data/model/dataModel.js~DataModel.html">DataModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CodeMap">CodeMap</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/scenario</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/scenario/scenarioService.js~ScenarioService.html">ScenarioService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/scenario/model</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/scenario/model/scenario.js~Scenario.html">Scenario</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/settings</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/settings/settingsService.js~SettingsService.html">SettingsService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/settings/model</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/settings/model/range.js~Range.html">Range</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/settings/model/settings.js~Settings.html">Settings</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/tooltip</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/tooltip/tooltipService.js~TooltipService.html">TooltipService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/treemap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/treemap/treeMapService.js~TreeMapService.html">TreeMapService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://github.com/d3/d3-hierarchy/blob/master/README.md#treemap">d3#treemap</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/url</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/url/urlService.js~UrlService.html">UrlService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ng/service/$location">$location</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/checkbox</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/checkbox/checkboxDirective.js~CheckboxDirective.html">CheckboxDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/collapsible</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/collapsible/collapsibleDirective.js~CollapsibleDirective.html">CollapsibleDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/collapsibleElement</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/collapsibleElement/collapsibleElementDirective.js~CollapsibleElementDirective.html">CollapsibleElementDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/dropdown</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/dropdown/dropdownController.js~DropdownController.html">DropdownController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/dropdown/dropdownDirective.js~DropdownDirective.html">DropdownDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/fab</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/fab/fabDirective.js~FabDirective.html">FabDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/numberField</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/numberField/numberFieldDirective.js~NumberFieldDirective.html">NumberFieldDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/slider</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/slider/sliderDirective.js~SliderDirective.html">SliderDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/detailPanel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html">DetailPanelController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelDirective.js~DetailPanelDirective.html">DetailPanelDirective</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CommonDetails">CommonDetails</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Details">Details</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-SpecificDetails">SpecificDetails</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ngMock/service/$timeout">Timeout</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/fabBar</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fabBar/fabBarDirective.js~FabBarDirective.html">FabBarDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/fileChooser</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserController.js~FileChooserController.html">FileChooserController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserDirective.js~FileChooserDirective.html">FileChooserDirective</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserPanelDirective.js~FileChooserPanelDirective.html">FileChooserPanelDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/legendPanel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/legendPanel/legendPanelController.js~LegendPanelController.html">LegendPanelController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/legendPanel/legendPanelDirective.js~LegendPanelDirective.html">LegendPanelDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/revisionChooser</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserController.js~RevisionChooserController.html">RevisionChooserController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserDirective.js~RevisionChooserDirective.html">RevisionChooserDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/scenarioButtons</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/scenarioButtons/scenarioButtonsController.js~ScenarioButtonsController.html">ScenarioButtonsController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/scenarioButtons/scenarioButtonsDirective.js~ScenarioButtonsDirective.html">ScenarioButtonsDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/settingsPanel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelController.js~SettingsPanelController.html">SettingsPanelController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelDirective.js~SettingsPanelDirective.html">SettingsPanelDirective</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">app/codeCharta/core/treemap/TreeMapService.spec.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">require(&quot;./treemap.js&quot;);
+
+const createData = function(){
+    const data = {
+        &quot;t&quot;: &quot;root&quot;,
+        &quot;color&quot;: &quot;transparent&quot;,
+        &quot;children&quot;: [
+            {
+                &quot;t&quot;: &quot;big leaf&quot;,
+                &quot;stuff&quot;: 10,
+                &quot;color&quot;: &quot;red&quot;,
+            },
+            {
+                &quot;t&quot;: &quot;01&quot;,
+                &quot;color&quot;: &quot;transparent&quot;,
+                &quot;children&quot;: [
+                    {
+                        &quot;t&quot;: &quot;small leaf&quot;,
+                        &quot;color&quot;: &quot;blue&quot;,
+                        &quot;stuff&quot;: 5
+                    },
+                    {
+                        &quot;t&quot;: &quot;other small leaf&quot;,
+                        &quot;color&quot;: &quot;purple&quot;,
+                        &quot;stuff&quot;: 5
+                    }
+                ]
+            }
+        ]
+    };
+    return data;
+};
+
+/**
+ * @test {TreeMapService}
+ */
+describe(&quot;app.codeCharta.core.treemap.treemapService&quot;, function() {
+
+    var treeMapService, data;
+
+    beforeEach(angular.mock.module(&quot;app.codeCharta.core.treemap&quot;));
+    beforeEach(()=&gt;{data = createData();});
+    beforeEach(angular.mock.inject(function (_treeMapService_) {treeMapService = _treeMapService_;}));
+
+    /**
+     * @test {TreeMapService#constructor}
+     */
+    it(&quot;should retrieve instance&quot;, ()=&gt;{
+        expect(treeMapService).to.not.equal(undefined);
+    });
+
+    /**
+     * @test {TreeMapService#createTreemapNodes}
+     */
+    describe(&quot;#createTreemapNodes(data, w, l, p, areaKey, heightKey)&quot;, function() {
+
+        it(&quot;TBD: filter invisible nodes&quot;, ()=&gt; {
+            //TODO
+        });
+
+        it(&quot;TBD: mark leaf notes with isLeaf = true&quot;, ()=&gt; {
+            var data = {
+                name:&quot;root&quot;,
+                children: [
+                    {
+                        name:&quot;leaf1&quot;,
+                        children: [],
+                        attributes: {&quot;Statements&quot;: 30, &quot;Functions&quot;: 100, &quot;Average Complexity*&quot;: 100}
+                    },
+                    {
+                        name:&quot;leaf2&quot;,
+                        children: [],
+                        attributes: {&quot;Statements&quot;: 30, &quot;Functions&quot;: 100, &quot;Average Complexity*&quot;: 100}
+                    },
+                    {
+                        name:&quot;parent&quot;,
+                        children: [
+                            {
+                                name:&quot;leaf3&quot;,
+                                children: [],
+                                attributes: {&quot;Statements&quot;: 30, &quot;Functions&quot;: 100, &quot;Average Complexity*&quot;: 100}
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            var result = treeMapService.createTreemapNodes(data, 100, 100, 1, &quot;Functions&quot;, &quot;Statements&quot;);
+
+            result.forEach((node)=&gt;{
+
+                switch(node.name) {
+                    case &quot;parent&quot;:
+                    case &quot;root&quot;:
+                        expect(node.isLeaf).to.be.false;
+                        break;
+                    default:
+                        expect(node.isLeaf).to.be.true;
+                }
+
+            });
+
+        });
+
+        it(&quot;TBD: empty data&quot;, ()=&gt; {
+            //TODO
+        });
+
+        it(&quot;TBD: test data&quot;, ()=&gt; {
+            //TODO
+        });
+
+    });
+
+    /**
+     * @test {TreeMapService#getArea}
+     */
+    describe(&quot;#getArea(node, areaKey)&quot;, function() {
+
+        it(&quot;extract area by areaKey from node: node with no attributes&quot;, ()=&gt; {
+            let node = {};
+            let area = treeMapService.getArea(node, &quot;some key&quot;);
+            expect(area).to.equal(0);
+        });
+
+        it(&quot;node with empty attributes&quot;, ()=&gt; {
+            let node = {attributes: {}};
+            let area = treeMapService.getArea(node, &quot;some key&quot;);
+            expect(area).to.equal(0);
+        });
+
+        it(&quot;node with some/empty attributes and empty children array&quot;, ()=&gt; {
+            let node = {attributes: {}, children:[]};
+            let area = treeMapService.getArea(node, &quot;some key&quot;);
+            expect(area).to.equal(0);
+        });
+
+        it(&quot;node with matching attribute and empty children array&quot;, ()=&gt; {
+            let node = {attributes: {&quot;somekey&quot;:&quot;somevalue&quot;}, children:[]};
+            let area = treeMapService.getArea(node, &quot;somekey&quot;);
+            expect(area).to.equal(&quot;somevalue&quot;);
+        });
+
+        it(&quot;node with matching attribute, other attributes and empty children array&quot;, ()=&gt; {
+            let node = {attributes: {&quot;somekey&quot;:&quot;somevalue&quot;, &quot;somekey2&quot;:&quot;somevalue2&quot;}, children:[]};
+            let area = treeMapService.getArea(node, &quot;somekey&quot;);
+            expect(area).to.equal(&quot;somevalue&quot;);
+        });
+
+        it(&quot;node with matching attribute and no children array&quot;, ()=&gt; {
+            let node = {attributes: {&quot;somekey&quot;:&quot;somevalue&quot;}};
+            let area = treeMapService.getArea(node, &quot;somekey&quot;);
+            expect(area).to.equal(&quot;somevalue&quot;);
+        });
+
+    });
+
+    /**
+     * @test {TreeMapService#transformNode}
+     */
+    describe(&quot;#transformNode(node, heightKey, p)&quot;, function() {
+
+        it(&quot;valid heightKey, is leaf node, p positive&quot;, ()=&gt; {
+
+            let node = {
+                data: {
+                    name: &quot;some name&quot;,
+                    attributes: {&quot;somekey&quot;:20},
+                    deltas: {&quot;somedeltakey&quot;: -2},
+                    link: &quot;www.some-page.something&quot;
+                },
+                x1: 10,
+                x0: 5,
+                y1: 15,
+                y0: 5,
+                isLeaf: true,
+                depth: 2
+            };
+
+            let heightScale = 0.5;
+
+            treeMapService.transformNode(node, &quot;somekey&quot;, 15, heightScale);
+
+            // expect measures
+            expect(node.width).to.equal(5);
+            expect(node.height).to.equal(10);
+            expect(node.length).to.equal(10);
+
+            // expect new z values
+            expect(node.z0).to.equal(30);
+            expect(node.z1).to.equal(40);
+
+            // expect node.data properties to be pushed to node
+            expect(node.attributes[&quot;somekey&quot;]).to.equal(20);
+            expect(node.name).to.equal(&quot;some name&quot;);
+            expect(node.deltas[&quot;somedeltakey&quot;]).to.equal(-2);
+            expect(node.link).to.equal(&quot;www.some-page.something&quot;);
+
+            // expect node.data to be deleted
+            expect(node.data).to.be.undefined;
+            //TODO
+        });
+
+        it(&quot;TBD: valid heightKey, is leaf node, p negative&quot;, ()=&gt; {
+
+            let node = {
+                data: {
+                    name: &quot;some name&quot;,
+                    attributes: {&quot;somekey&quot;:20},
+                    deltas: {&quot;somedeltakey&quot;: -42},
+                    link: &quot;www.some-page.something&quot;
+                },
+                x1: 10,
+                x0: 5,
+                y1: 15,
+                y0: 5,
+                isLeaf: true,
+                depth: 2
+            };
+
+            treeMapService.transformNode(node, &quot;someinvalidkey&quot;, -15, 1);
+
+            //TODO what should really happen ?
+
+        });
+
+        it(&quot;valid heightKey, is not a leaf node, p positive&quot;, ()=&gt; {
+
+            let node = {
+                data: {
+                    name: &quot;some name&quot;,
+                    attributes: {&quot;somekey&quot;:20},
+                    deltas: {&quot;somedeltakey&quot;: -42},
+                    link: &quot;www.some-page.something&quot;
+                },
+                x1: 10,
+                x0: 5,
+                y1: 15,
+                y0: 5,
+                isLeaf: false,
+                depth: 2
+            };
+
+            treeMapService.transformNode(node, &quot;somekey&quot;, 15, 1);
+
+            expect(node.height).to.equal(15)
+
+        });
+
+        it(&quot;TBD: invalid heightKey, is leaf node, p positive&quot;, ()=&gt; {
+
+            let node = {
+                data: {
+                    name: &quot;some name&quot;,
+                    attributes: {&quot;somekey&quot;:20},
+                    deltas: {&quot;somedeltakey&quot;: -42},
+                    link: &quot;www.some-page.something&quot;
+                },
+                x1: 10,
+                x0: 5,
+                y1: 15,
+                y0: 5,
+                isLeaf: true,
+                depth: 2
+            };
+
+            treeMapService.transformNode(node, &quot;someinvalidkey&quot;, 15, 1);
+
+            //TODO what should really happen ?
+
+        });
+
+    });
+
+});
+
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

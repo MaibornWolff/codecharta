@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="">
+  <title data-ice="title">Test | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeChartaController.js~CodeChartaController.html">CodeChartaController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeChartaDirective.js~CodeChartaDirective.html">CodeChartaDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/codeMap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapAssetService.js~CodeMapAssetService.html">CodeMapAssetService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapController.js~CodeMapController.html">CodeMapController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapDirective.js~CodeMapDirective.html">CodeMapDirective</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html">CodeMapService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CodeMapMaterialPack">CodeMapMaterialPack</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=box#Reference/Geometries/BoxGeometry">BoxGeometry</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=rayca#Reference/Core/Raycaster">Raycaster</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=mesh#Reference/Objects/Mesh">Mesh</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/codeMap/threeViewer</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeCameraService.js~ThreeCameraService.html">ThreeCameraService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeOrbitControlsService.js~ThreeOrbitControlsService.html">ThreeOrbitControlsService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeRendererService.js~ThreeRendererService.html">ThreeRendererService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeSceneService.js~ThreeSceneService.html">ThreeSceneService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeUpdateCycleService.js~ThreeUpdateCycleService.html">ThreeUpdateCycleService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeViewerService.js~ThreeViewerService.html">ThreeViewerService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ThreeOrbitControls">ThreeOrbitControls</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/#Reference/Cameras/PerspectiveCamera">PerspectiveCamera</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/api/renderers/WebGLRenderer.html">WebGLRenderer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=scene#Reference/Scenes/Scene">Scene</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/data</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/data/dataService.js~DataService.html">DataService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html">DataValidatorService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ng/type/$rootScope.Scope">Scope</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ng/service/$http">$http</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://github.com/d3/d3-hierarchy/blob/master/README.md#hierarchy">d3#hierarchy</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/data/model</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/data/model/dataModel.js~DataModel.html">DataModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CodeMap">CodeMap</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/scenario</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/scenario/scenarioService.js~ScenarioService.html">ScenarioService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/scenario/model</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/scenario/model/scenario.js~Scenario.html">Scenario</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/settings</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/settings/settingsService.js~SettingsService.html">SettingsService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/settings/model</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/settings/model/range.js~Range.html">Range</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/settings/model/settings.js~Settings.html">Settings</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/tooltip</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/tooltip/tooltipService.js~TooltipService.html">TooltipService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/treemap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/treemap/treeMapService.js~TreeMapService.html">TreeMapService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://github.com/d3/d3-hierarchy/blob/master/README.md#treemap">d3#treemap</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/url</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/url/urlService.js~UrlService.html">UrlService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ng/service/$location">$location</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/checkbox</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/checkbox/checkboxDirective.js~CheckboxDirective.html">CheckboxDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/collapsible</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/collapsible/collapsibleDirective.js~CollapsibleDirective.html">CollapsibleDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/collapsibleElement</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/collapsibleElement/collapsibleElementDirective.js~CollapsibleElementDirective.html">CollapsibleElementDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/dropdown</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/dropdown/dropdownController.js~DropdownController.html">DropdownController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/dropdown/dropdownDirective.js~DropdownDirective.html">DropdownDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/fab</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/fab/fabDirective.js~FabDirective.html">FabDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/numberField</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/numberField/numberFieldDirective.js~NumberFieldDirective.html">NumberFieldDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/slider</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/slider/sliderDirective.js~SliderDirective.html">SliderDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/detailPanel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html">DetailPanelController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelDirective.js~DetailPanelDirective.html">DetailPanelDirective</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CommonDetails">CommonDetails</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Details">Details</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-SpecificDetails">SpecificDetails</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ngMock/service/$timeout">Timeout</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/fabBar</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fabBar/fabBarDirective.js~FabBarDirective.html">FabBarDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/fileChooser</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserController.js~FileChooserController.html">FileChooserController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserDirective.js~FileChooserDirective.html">FileChooserDirective</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserPanelDirective.js~FileChooserPanelDirective.html">FileChooserPanelDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/legendPanel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/legendPanel/legendPanelController.js~LegendPanelController.html">LegendPanelController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/legendPanel/legendPanelDirective.js~LegendPanelDirective.html">LegendPanelDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/revisionChooser</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserController.js~RevisionChooserController.html">RevisionChooserController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserDirective.js~RevisionChooserDirective.html">RevisionChooserDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/scenarioButtons</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/scenarioButtons/scenarioButtonsController.js~ScenarioButtonsController.html">ScenarioButtonsController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/scenarioButtons/scenarioButtonsDirective.js~ScenarioButtonsDirective.html">ScenarioButtonsDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/settingsPanel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelController.js~SettingsPanelController.html">SettingsPanelController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelDirective.js~SettingsPanelDirective.html">SettingsPanelDirective</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1>Test</h1>
+<table class="test-summary">
+  <thead>
+    <tr>
+      <td class="test-description">Description</td>
+      <td class="test-target">Identifier</td>
+      <td class="test-count">Count</td>
+    </tr>
+  </thead>
+
+  <tbody data-ice="tests">
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/codeCharta.spec.js.html#lineNumber3"><p>app.codeCharta</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td data-ice="testCount">1</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeCharta.spec.js.html#lineNumber7"><p>should be able to mock app.codeCharta module</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/codeChartaController.spec.js.html#lineNumber6"><p>app.codeCharta.codeChartaController</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeChartaController.js~CodeChartaController.html">CodeChartaController</a></span></td>
+  <td data-ice="testCount">6</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeChartaController.spec.js.html#lineNumber24"><p>should reload page on key 18 and key 116</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeChartaController.js~CodeChartaController.html#instance-method-initHandlers">CodeChartaController#initHandlers</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeChartaController.spec.js.html#lineNumber53"><p>should load file from existing url file param</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeChartaController.js~CodeChartaController.html#instance-method-loadFileOrSample">CodeChartaController#loadFileOrSample</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeChartaController.spec.js.html#lineNumber72"><p>should load sample data from file if no param specified</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeChartaController.js~CodeChartaController.html#instance-method-loadFileOrSample">CodeChartaController#loadFileOrSample</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeChartaController.spec.js.html#lineNumber89"><p>should update settings from url params if file was loaded from url param</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeChartaController.js~CodeChartaController.html#instance-method-loadFileOrSample">CodeChartaController#loadFileOrSample</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeChartaController.spec.js.html#lineNumber109"><p>should alert if no file can be loaded initially</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeChartaController.js~CodeChartaController.html#instance-method-loadFileOrSample">CodeChartaController#loadFileOrSample</a></span>
+<span><a href="class/app/codeCharta/codeChartaController.js~CodeChartaController.html#instance-method-printErrors">CodeChartaController#printErrors</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeChartaController.spec.js.html#lineNumber136"><p>should print errors when data is not loaded correctly</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeChartaController.js~CodeChartaController.html#instance-method-loadFileOrSample">CodeChartaController#loadFileOrSample</a></span>
+<span><a href="class/app/codeCharta/codeChartaController.js~CodeChartaController.html#instance-method-printErrors">CodeChartaController#printErrors</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber6"><p>app.codeCharta.codeMap.codeMapService</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html">CodeMapService</a></span></td>
+  <td data-ice="testCount">34</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber32"><p>drawMap should showLabels for the highest building</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-drawMap">CodeMapService#drawMap</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber92"><p>should addLabel to root if node has height attribute</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addLabel">CodeMapService#addLabel</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber101"><p>should not addLabel to root if node has no height attribute</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addLabel">CodeMapService#addLabel</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber111"><p>should call addLabel when showLabel is true</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addLabel">CodeMapService#addLabel</a></span>
+<span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addNode">CodeMapService#addNode</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber121"><p>should not call addLabel when showLabel is false</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addLabel">CodeMapService#addLabel</a></span>
+<span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addNode">CodeMapService#addNode</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber130"><p>should not addLabel to root if node has no attributes</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addLabel">CodeMapService#addLabel</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber139"><p>should not try to scale when no root with a scale method exists</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-scaleTo">CodeMapService#scaleTo</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber152"><p>draw map should clear the scene, add a root, call the treemap service, call addNode for every node, center the map, draw the scene and color the map, grid is deactivated</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-drawMap">CodeMapService#drawMap</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber180"><p>draw map should clear the scene, add a root, call the treemap service, call addNode for every node, center the map, draw the scene and color the map, grid is activated</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-drawMap">CodeMapService#drawMap</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber208"><p>applySettings should call drawFromData when all variables are set</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-applySettings">CodeMapService#applySettings</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber229"><p>should add something to scene when addLightsToScene is called</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addLightsToScene">CodeMapService#addLightsToScene</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber238"><p>should add something to scene when addLightsToScene is called</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addLightsToScene">CodeMapService#addLightsToScene</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber247"><p>getTransformedMesh should create correct mesh</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-getTransformedMesh">CodeMapService#getTransformedMesh</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber256"><p>applySettings should not call drawFromData when variables are missing</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-applySettings">CodeMapService#applySettings</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber277"><p>addBuilding should add a group to the root when heightDelta is &gt;0</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addBuilding">CodeMapService#addBuilding</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber286"><p>addBuilding should add a group to the root when heightDelta is &lt;0</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addBuilding">CodeMapService#addBuilding</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber295"><p>addBuilding should add a group to the root when heightDelta is =0</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addBuilding">CodeMapService#addBuilding</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber304"><p>addBuilding should add a group to the root when heightDelta &lt; h and heightDelta &gt; 0</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addBuilding">CodeMapService#addBuilding</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber313"><p>addBuilding should add a group to the root when -heightDelta &gt; h and heightDelta &lt; 0</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addBuilding">CodeMapService#addBuilding</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber322"><p>addBuilding with heightDelta &gt; 0 should request two meshes (delta and building)</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addBuilding">CodeMapService#addBuilding</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber331"><p>addBuilding with heightDelta &lt; 0 should request two meshes (delta and building)</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addBuilding">CodeMapService#addBuilding</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber340"><p>addBuilding with heightDelta = 0 should request one meshes (only building)</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addBuilding">CodeMapService#addBuilding</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber346"><p>should retrieve the angular service instance</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber353"><p>should call applySettings on settings-changed event</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-applySettings">CodeMapService#applySettings</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber362"><p>scaleTo should scale root if available</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-scaleTo">CodeMapService#scaleTo</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber375"><p>addNode should call addFloor if node is no leaf</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addNode">CodeMapService#addNode</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber384"><p>addNode should call addBuilding if node is leaf</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addNode">CodeMapService#addNode</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber393"><p>centerMap</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-centerMap">CodeMapService#centerMap</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber404"><p>scaleTo should not scale root if not available</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-scaleTo">CodeMapService#scaleTo</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber411"><p>applySettings should redraw scene if there is enough data</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-applySettings">CodeMapService#applySettings</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber432"><p>applySettings should not redraw scene if there is not enough data</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-applySettings">CodeMapService#applySettings</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber452"><p>adding a helper grid to the scene should add a group of 3 Meshes to the scene</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-addGrid">CodeMapService#addGrid</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber465"><p>colorDelta should color the first delta node in a group (since buildings only have one delta node)</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-colorDelta">CodeMapService#colorDelta</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/codeMapService.spec.js.html#lineNumber504"><p>center map should translate root in xz plane at some point</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html#instance-method-centerMap">CodeMapService#centerMap</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/codeMap/threeViewer/threeCameraService.spec.js.html#lineNumber6"><p>app.codeCharta.codeMap.threeViewer.threeCameraService</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeCameraService.js~ThreeCameraService.html">ThreeCameraService</a></span></td>
+  <td data-ice="testCount">4</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeCameraService.spec.js.html#lineNumber10"><p>should retrieve the angular service instance</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeCameraService.spec.js.html#lineNumber17"><p>init should create a new PerspectiveCamera</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeCameraService.js~ThreeCameraService.html#instance-method-init">ThreeCameraService#init</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeCameraService.spec.js.html#lineNumber33"><p>init should set the camera position</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeCameraService.js~ThreeCameraService.html#instance-method-init">ThreeCameraService#init</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeCameraService.spec.js.html#lineNumber46"><p>the near plane of the viewing frustum should be at least 100 to prevent flickering of planes</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeCameraService.js~ThreeCameraService.html#instance-method-init">ThreeCameraService#init</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/codeMap/threeViewer/threeOrbitControlsService.spec.js.html#lineNumber6"><p>app.codeCharta.codeMap.threeViewer.threeOrbitControlsService</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeOrbitControlsService.js~ThreeOrbitControlsService.html">ThreeOrbitControlsService</a></span></td>
+  <td data-ice="testCount">1</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeOrbitControlsService.spec.js.html#lineNumber10"><p>should retrieve the angular service instance</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/codeMap/threeViewer/threeSceneService.spec.js.html#lineNumber6"><p>app.codeCharta.codeMap.threeViewer.threeSceneService</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeSceneService.js~ThreeSceneService.html">ThreeSceneService</a></span></td>
+  <td data-ice="testCount">2</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeSceneService.spec.js.html#lineNumber10"><p>should retrieve the angular service instance</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeSceneService.spec.js.html#lineNumber17"><p>constructor should create a new Scene</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>ThreeSceneService#constructor</span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/codeMap/threeViewer/threeUpdateCycleService.spec.js.html#lineNumber6"><p>app.codeCharta.codeMap.threeViewer.threeUpdateCycleService</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeUpdateCycleService.js~ThreeUpdateCycleService.html">ThreeUpdateCycleService</a></span></td>
+  <td data-ice="testCount">2</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeUpdateCycleService.spec.js.html#lineNumber13"><p>should retrieve the angular service instance with no updatable references</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeUpdateCycleService.js~ThreeUpdateCycleService.html#instance-constructor-constructor">ThreeUpdateCycleService#constructor</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeUpdateCycleService.spec.js.html#lineNumber21"><p>added updatable references should be updated on update call</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeUpdateCycleService.js~ThreeUpdateCycleService.html#instance-method-update">ThreeUpdateCycleService#update</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/codeMap/threeViewer/threeViewerService.spec.js.html#lineNumber6"><p>app.codeCharta.codeMap.threeViewer.threeViewerService</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeViewerService.js~ThreeViewerService.html">ThreeViewerService</a></span></td>
+  <td data-ice="testCount">2</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeViewerService.spec.js.html#lineNumber10"><p>should retrieve the angular service instance</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/codeMap/threeViewer/threeViewerService.spec.js.html#lineNumber17"><p>camera and renderer should be adjusted when the window gets resized</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeViewerService.js~ThreeViewerService.html#instance-method-onWindowResize">ThreeViewerService#onWindowResize</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/core/data/dataService.spec.js.html#lineNumber6"><p>app.codeCharta.core.data.dataService</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/data/dataService.js~DataService.html">DataService</a></span></td>
+  <td data-ice="testCount">3</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/data/dataService.spec.js.html#lineNumber95"><p>metrics should be empty when no file is loaded</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>DataService#constructor</span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/data/dataService.spec.js.html#lineNumber145"><p>checking delta calculation between two attribute lists</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/data/dataService.js~DataService.html#instance-method-calculateAttributeListDelta">DataService#calculateAttributeListDelta</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/data/dataService.spec.js.html#lineNumber183"><p>should retrieve instance</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/core/data/dataValidatorService.spec.js.html#lineNumber6"><p>app.codeCharta.core.data.dataValidatorService</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html">DataValidatorService</a></span></td>
+  <td data-ice="testCount">10</td>
+</tr>
+
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/core/data/dataValidatorService.spec.js.html#lineNumber25"><p>map with revisions</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-validate">DataValidatorService#validate</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueName">DataValidatorService#uniqueName</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueArray">DataValidatorService#uniqueArray</a></span></td>
+  
+</tr>
+
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/core/data/dataValidatorService.spec.js.html#lineNumber66"><p>map without revisions</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-validate">DataValidatorService#validate</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueName">DataValidatorService#uniqueName</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueArray">DataValidatorService#uniqueArray</a></span></td>
+  <td data-ice="testCount">1</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/data/dataValidatorService.spec.js.html#lineNumber73"><p>has an array of &apos;nodes&apos;</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-validate">DataValidatorService#validate</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueName">DataValidatorService#uniqueName</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueArray">DataValidatorService#uniqueArray</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/core/data/dataValidatorService.spec.js.html#lineNumber102"><p>node definition</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-validate">DataValidatorService#validate</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueName">DataValidatorService#uniqueName</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueArray">DataValidatorService#uniqueArray</a></span></td>
+  <td data-ice="testCount">3</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/data/dataValidatorService.spec.js.html#lineNumber109"><p>has name property</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-validate">DataValidatorService#validate</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueName">DataValidatorService#uniqueName</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueArray">DataValidatorService#uniqueArray</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/data/dataValidatorService.spec.js.html#lineNumber140"><p>optional &apos;children&apos; array property made of nodes</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-validate">DataValidatorService#validate</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueName">DataValidatorService#uniqueName</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueArray">DataValidatorService#uniqueArray</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/data/dataValidatorService.spec.js.html#lineNumber181"><p>optional &apos;attributes&apos; property is an &apos;attributeList&apos; object made of patternProperties &apos;^.*$&apos;:string</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-validate">DataValidatorService#validate</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueName">DataValidatorService#uniqueName</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueArray">DataValidatorService#uniqueArray</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/core/data/dataValidatorService.spec.js.html#lineNumber238"><p>avoid nodes with same parent and same name: </p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-validate">DataValidatorService#validate</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueName">DataValidatorService#uniqueName</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueArray">DataValidatorService#uniqueArray</a></span></td>
+  <td data-ice="testCount">6</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/data/dataValidatorService.spec.js.html#lineNumber245"><p>nodes with same parent should not have the same name</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-validate">DataValidatorService#validate</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueName">DataValidatorService#uniqueName</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueArray">DataValidatorService#uniqueArray</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/data/dataValidatorService.spec.js.html#lineNumber318"><p>nodes in different level should be allow to have the same name</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-validate">DataValidatorService#validate</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueName">DataValidatorService#uniqueName</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueArray">DataValidatorService#uniqueArray</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/data/dataValidatorService.spec.js.html#lineNumber426"><p>nodes in the same level with different parents should be allow to have the same name</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-validate">DataValidatorService#validate</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueName">DataValidatorService#uniqueName</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueArray">DataValidatorService#uniqueArray</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/data/dataValidatorService.spec.js.html#lineNumber537"><p>Parent and child should be allow to have the same name</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-validate">DataValidatorService#validate</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueName">DataValidatorService#uniqueName</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueArray">DataValidatorService#uniqueArray</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/data/dataValidatorService.spec.js.html#lineNumber592"><p>nodes, which have childrens, with the same parent should not have the same name</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-validate">DataValidatorService#validate</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueName">DataValidatorService#uniqueName</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueArray">DataValidatorService#uniqueArray</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/data/dataValidatorService.spec.js.html#lineNumber703"><p>the first level in trees with revisions should be allow to have the same name</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-validate">DataValidatorService#validate</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueName">DataValidatorService#uniqueName</a></span>
+<span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html#instance-method-uniqueArray">DataValidatorService#uniqueArray</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/core/scenario/scenarioService.spec.js.html#lineNumber9"><p>app.codeCharta.core.scenarioService</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>ScenatioService</span></td>
+  <td data-ice="testCount">3</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/scenario/scenarioService.spec.js.html#lineNumber32"><p>should apply the settings from a given scenario</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/scenario/scenarioService.js~ScenarioService.html#instance-method-applyScenario">ScenarioService#applyScenario</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/scenario/scenarioService.spec.js.html#lineNumber48"><p>should return an array of scenarios</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/scenario/scenarioService.js~ScenarioService.html#instance-method-getScenarios">ScenarioService#getScenarios</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/scenario/scenarioService.spec.js.html#lineNumber58"><p>default scenario should be rloc/mcc/mcc</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/scenario/scenarioService.js~ScenarioService.html#instance-method-getDefaultScenario">ScenarioService#getDefaultScenario</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/core/settings/settingsService.spec.js.html#lineNumber6"><p>app.codeCharta.core.settings.settingsService</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/settings/settingsService.js~SettingsService.html">SettingsService</a></span></td>
+  <td data-ice="testCount">6</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/settings/settingsService.spec.js.html#lineNumber13"><p>should retrieve the angular service instance with enabled delta cubes and no details selected</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/settings/settingsService.js~SettingsService.html#instance-constructor-constructor">SettingsService#constructor</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/settings/settingsService.spec.js.html#lineNumber22"><p>should react to data-changed events</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/settings/settingsService.js~SettingsService.html#instance-method-onSettingsChanged">SettingsService#onSettingsChanged</a></span>
+<span><a href="class/app/codeCharta/core/settings/settingsService.js~SettingsService.html#instance-constructor-constructor">SettingsService#constructor</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/settings/settingsService.spec.js.html#lineNumber48"><p>should return defaultValue when metric is not in array</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/settings/settingsService.js~SettingsService.html#instance-method-getMetricOrDefault">SettingsService#getMetricOrDefault</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/settings/settingsService.spec.js.html#lineNumber63"><p>should return the searched value when metric is in array</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/settings/settingsService.js~SettingsService.html#instance-method-getMetricOrDefault">SettingsService#getMetricOrDefault</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/settings/settingsService.spec.js.html#lineNumber77"><p>should replace metric with default if metric is not available</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/settings/settingsService.js~SettingsService.html#instance-method-correctSettings">SettingsService#correctSettings</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/settings/settingsService.spec.js.html#lineNumber87"><p>should return input if metrics are available</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/settings/settingsService.js~SettingsService.html#instance-method-correctSettings">SettingsService#correctSettings</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/core/tooltip/tooltipService.spec.js.html#lineNumber6"><p>app.codeCharta.core.tooltip.tooltipService</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/tooltip/tooltipService.js~TooltipService.html">TooltipService</a></span></td>
+  <td data-ice="testCount">5</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/tooltip/tooltipService.spec.js.html#lineNumber28"><p>Should return the correct description of the given metric</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/tooltip/tooltipService.js~TooltipService.html#instance-method-getTooltipTextByKey">TooltipService#getTooltipTextByKey</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/tooltip/tooltipService.spec.js.html#lineNumber38"><p>Should return no description when the key is not a correct already known key</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/tooltip/tooltipService.js~TooltipService.html#instance-method-getTooltipTextByKey">TooltipService#getTooltipTextByKey</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/tooltip/tooltipService.spec.js.html#lineNumber60"><p>@test{should return nested answer by keys in keys sorrounded by _}</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/tooltip/tooltipService.spec.js.html#lineNumber68"><p>@test{should return nested \&quot;no description\&quot; by unknown keys in keys sorrounded by _}</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/tooltip/tooltipService.spec.js.html#lineNumber76"><p>@test{should return nested into nested descriptions}</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber37"><p>app.codeCharta.core.treemap.treemapService</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/treemap/treeMapService.js~TreeMapService.html">TreeMapService</a></span></td>
+  <td data-ice="testCount">15</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber48"><p>should retrieve instance</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/treemap/treeMapService.js~TreeMapService.html#instance-constructor-constructor">TreeMapService#constructor</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber55"><p>#createTreemapNodes(data, w, l, p, areaKey, heightKey)</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>TreeMapService#createTreemapNodes</span></td>
+  <td data-ice="testCount">4</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber57"><p>TBD: filter invisible nodes</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber61"><p>TBD: mark leaf notes with isLeaf = true</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber105"><p>TBD: empty data</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber109"><p>TBD: test data</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber118"><p>#getArea(node, areaKey)</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/treemap/treeMapService.js~TreeMapService.html#instance-method-getArea">TreeMapService#getArea</a></span></td>
+  <td data-ice="testCount">6</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber120"><p>extract area by areaKey from node: node with no attributes</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber126"><p>node with empty attributes</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber132"><p>node with some/empty attributes and empty children array</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber138"><p>node with matching attribute and empty children array</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber144"><p>node with matching attribute, other attributes and empty children array</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber150"><p>node with matching attribute and no children array</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber161"><p>#transformNode(node, heightKey, p)</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/treemap/treeMapService.js~TreeMapService.html#instance-method-transformNode">TreeMapService#transformNode</a></span></td>
+  <td data-ice="testCount">4</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber163"><p>valid heightKey, is leaf node, p positive</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber204"><p>TBD: valid heightKey, is leaf node, p negative</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber227"><p>valid heightKey, is not a leaf node, p positive</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/core/treemap/TreeMapService.spec.js.html#lineNumber250"><p>TBD: invalid heightKey, is leaf node, p positive</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/core/url/urlService.spec.js.html#lineNumber6"><p>app.codeCharta.core.url.urlService</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/url/urlService.js~UrlService.html">UrlService</a></span></td>
+  <td data-ice="testCount">4</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/url/urlService.spec.js.html#lineNumber20"><p>url should be location&apos;s url</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/url/urlService.js~UrlService.html#instance-method-getUrl">UrlService#getUrl</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/url/urlService.spec.js.html#lineNumber28"><p>query parameter(s) should be recognized from static url and location mock</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/core/url/urlService.js~UrlService.html#instance-method-getParameterByName">UrlService#getParameterByName</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/url/urlService.spec.js.html#lineNumber58"><p>getFileDataFromQueryParam should allow URL&apos;s</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/core/url/urlService.spec.js.html#lineNumber82"><p>file parameter should correctly resolve to a file</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/ui/common/checkbox/checkboxDirective.spec.js.html#lineNumber6"><p>app.codeCharta.ui.common.checkbox</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>CheckBoxDirective</span></td>
+  
+</tr>
+
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/ui/common/collapsible/collapsibleDirective.spec.js.html#lineNumber6"><p>app.codeCharta.ui.common.collabsible</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/common/collapsible/collapsibleDirective.js~CollapsibleDirective.html">CollapsibleDirective</a></span></td>
+  <td data-ice="testCount">1</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/common/collapsible/collapsibleDirective.spec.js.html#lineNumber33"><p>should transclude</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/common/collapsible/collapsibleDirective.js~CollapsibleDirective.html">CollapsibleDirective</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/ui/common/dropdown/dropdownController.spec.js.html#lineNumber5"><p>app.codeCharta.ui.common.dropdown.dropdownController</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/common/dropdown/dropdownController.js~DropdownController.html">DropdownController</a></span></td>
+  <td data-ice="testCount">1</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/common/dropdown/dropdownController.spec.js.html#lineNumber33"><p>expect tooltipService#getTooltipTextByKey called with the given key</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/common/dropdown/dropdownController.js~DropdownController.html#instance-method-getTooltipTextByKey">DropdownController#getTooltipTextByKey</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelController.spec.js.html#lineNumber5"><p>app.codeCharta.ui.detailPanel.detailPanelController</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html">DetailPanelController</a></span></td>
+  <td data-ice="testCount">11</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelController.spec.js.html#lineNumber83"><p>should set common attributes when settings change</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html#instance-method-onSettingsChanged">DetailPanelController#onSettingsChanged</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelController.spec.js.html#lineNumber98"><p>should setSelectedDetails when valid node is selected</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html#instance-method-onSelect">DetailPanelController#onSelect</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelController.spec.js.html#lineNumber112"><p>should clearSelectedDetails when invalid or no node is selected</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html#instance-method-onSelect">DetailPanelController#onSelect</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelController.spec.js.html#lineNumber140"><p>should setHoveredDetails when valid node is hovered</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html#instance-method-onHover">DetailPanelController#onHover</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelController.spec.js.html#lineNumber154"><p>should clearHoveredDetails when invalid or no node is hovered</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html#instance-method-onHover">DetailPanelController#onHover</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelController.spec.js.html#lineNumber43"><p>should react to events on its scope</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html">DetailPanelController</a></span></td>
+  <td data-ice="testCount">3</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelController.spec.js.html#lineNumber48"><p>building hovered</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html#instance-method-onHover">DetailPanelController#onHover</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelController.spec.js.html#lineNumber59"><p>building selected</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html#instance-method-onSelect">DetailPanelController#onSelect</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelController.spec.js.html#lineNumber70"><p>settings changed</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html#instance-method-onSettingsChanged">DetailPanelController#onSettingsChanged</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelController.spec.js.html#lineNumber180"><p>isHovered and isSelected should evaluate the respective nodes name to determine the result</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html">DetailPanelController</a></span></td>
+  <td data-ice="testCount">3</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelController.spec.js.html#lineNumber186"><p>empty details should result in false</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html#instance-method-isHovered">DetailPanelController#isHovered</a></span>
+<span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html#instance-method-isSelected">DetailPanelController#isSelected</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelController.spec.js.html#lineNumber196"><p>empty nodes should result in false</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html#instance-method-isHovered">DetailPanelController#isHovered</a></span>
+<span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html#instance-method-isSelected">DetailPanelController#isSelected</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="2">
+  <td data-ice="testDescription" style="padding-left: 30px"><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelController.spec.js.html#lineNumber209"><p>named nodes should result in true</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html#instance-method-isHovered">DetailPanelController#isHovered</a></span>
+<span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html#instance-method-isSelected">DetailPanelController#isSelected</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/ui/detailPanel/detailPanelDirective.spec.js.html#lineNumber5"><p>app.codeCharta.ui.detailPanel</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelDirective.js~DetailPanelDirective.html">DetailPanelDirective</a></span></td>
+  
+</tr>
+
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/ui/fileChooser/fileChooserController.spec.js.html#lineNumber6"><p>app.codeCharta.ui.fileChooser.fileChooserController</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserController.js~FileChooserController.html">FileChooserController</a></span></td>
+  <td data-ice="testCount">4</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/fileChooser/fileChooserController.spec.js.html#lineNumber45"><p>should close modal, parse valid data and set it after onNewFileLoaded</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/fileChooser/fileChooserController.spec.js.html#lineNumber49"><p>should close modal and alert on invalid data after onNewFileLoaded</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/fileChooser/fileChooserController.spec.js.html#lineNumber53"><p>should digest after data is set</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/fileChooser/fileChooserController.spec.js.html#lineNumber73"><p>printing errors should call console.log</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserController.js~FileChooserController.html#instance-method-printErrors">FileChooserController#printErrors</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/ui/legendPanel/legendPanelController.spec.js.html#lineNumber3"><p>app.codeCharta.ui.legendPanel.legendPanelController</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td data-ice="testCount">6</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/legendPanel/legendPanelController.spec.js.html#lineNumber39"><p>should have correct values in scope</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/legendPanel/legendPanelController.spec.js.html#lineNumber43"><p>generate pixel in base64</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/legendPanel/legendPanelController.spec.js.html#lineNumber47"><p>html -&gt; base64</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/legendPanel/legendPanelController.spec.js.html#lineNumber51"><p>encode hex to rgb</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/legendPanel/legendPanelController.spec.js.html#lineNumber57"><p>encode rgb to base64 color value</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/legendPanel/legendPanelController.spec.js.html#lineNumber63"><p>encode triplet to base64 color value</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/ui/revisionChooser/revisionChooserController.spec.js.html#lineNumber6"><p>app.codeCharta.ui.revisionChooser.revisionChooserController</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserController.js~RevisionChooserController.html">RevisionChooserController</a></span></td>
+  <td data-ice="testCount">3</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/revisionChooser/revisionChooserController.spec.js.html#lineNumber22"><p>should have correct values in scope</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserController.js~RevisionChooserController.html#instance-constructor-constructor">RevisionChooserController#constructor</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/revisionChooser/revisionChooserController.spec.js.html#lineNumber31"><p>should refresh revisions from data-changed event</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserController.js~RevisionChooserController.html#instance-constructor-constructor">RevisionChooserController#constructor</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/revisionChooser/revisionChooserController.spec.js.html#lineNumber42"><p>should notify dataService when loadRevision is called</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserController.js~RevisionChooserController.html#instance-method-loadRevision">RevisionChooserController#loadRevision</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/ui/revisionChooser/revisionChooserDirective.spec.js.html#lineNumber6"><p>app.codeCharta.ui.revisionChooser.revisionChooserDirective</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserDirective.js~RevisionChooserDirective.html">RevisionChooserDirective</a></span></td>
+  <td data-ice="testCount">1</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/revisionChooser/revisionChooserDirective.spec.js.html#lineNumber17"><p>should toggle visibility</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserDirective.js~RevisionChooserDirective.html#instance-method-toggle">RevisionChooserDirective#toggle</a></span></td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/ui/scenarioButtons/scenarioButtonsController.spec.js.html#lineNumber6"><p>app.codeCharta.ui.scenarioButtons.scenarioButtonsController</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span>*</span></td>
+  <td data-ice="testCount">1</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/scenarioButtons/scenarioButtonsController.spec.js.html#lineNumber23"><p>@test{should notify tooltip when getScenarioTooltipTextByKey is called}</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target">-</td>
+  <td></td>
+</tr>
+
+
+<tr class="test-describe" data-ice="testDescribe" style="display: none;" data-test-depth="0">
+  <td data-ice="testDescription" style="padding-left: 10px"><span class="toggle closed"></span><span><a href="file/app/codeCharta/ui/settingsPanel/settingsPanelController.spec.js.html#lineNumber6"><p>app.codeCharta.ui.settingsPanel.settingsPanelController</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelController.js~SettingsPanelController.html">SettingsPanelController</a></span></td>
+  <td data-ice="testCount">6</td>
+</tr>
+
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/settingsPanel/settingsPanelController.spec.js.html#lineNumber23"><p>should sort array alphabetically on start</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelController.js~SettingsPanelController.html#instance-constructor-constructor">SettingsPanelController#constructor</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/settingsPanel/settingsPanelController.spec.js.html#lineNumber42"><p>should sort array alphabetically</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelController.js~SettingsPanelController.html#instance-method-sortStringArrayAlphabetically">SettingsPanelController#sortStringArrayAlphabetically</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/settingsPanel/settingsPanelController.spec.js.html#lineNumber51"><p>should have correct values in scope</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelController.js~SettingsPanelController.html#instance-constructor-constructor">SettingsPanelController#constructor</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/settingsPanel/settingsPanelController.spec.js.html#lineNumber69"><p>should refresh metrics from data-changed event</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelController.js~SettingsPanelController.html#instance-constructor-constructor">SettingsPanelController#constructor</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/settingsPanel/settingsPanelController.spec.js.html#lineNumber84"><p>should notify settingsService when notify() is called</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelController.js~SettingsPanelController.html#instance-method-notify">SettingsPanelController#notify</a></span></td>
+  <td></td>
+</tr>
+<tr data-ice="testIt" style="display: none;" data-test-depth="1">
+  <td data-ice="testDescription" style="padding-left: 20px"><span><a href="file/app/codeCharta/ui/settingsPanel/settingsPanelController.spec.js.html#lineNumber95"><p>should call codeMapService#scaleTo when scalingChanged is called</p>
+</a></span></td>
+  <td data-ice="testTarget" class="test-target"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelController.js~SettingsPanelController.html#instance-method-scalingChanged">SettingsPanelController#scalingChanged</a></span></td>
+  <td></td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

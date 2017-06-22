@@ -1,0 +1,158 @@
+*, *:before, *:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html, body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-size: 1em;
+    cursor: default;
+    color: #5A585A;
+    font-family: Roboto, sans-serif;
+    font-weight: 300;
+}
+
+#title {
+    position: fixed;
+    z-index: 10;
+    width: 100%;
+}
+
+#title > a, img {
+    width: 4em;
+    margin: 0.5em 0 0 1.5em;
+}
+
+#title > h1 {
+    text-transform: uppercase;
+    font-size: 0.9em;
+    line-height: 1.4em;
+    float: right;
+    margin: 0.5em 1.6em 0 0;
+    color: #5A585A;
+    font-family: Roboto, sans-serif;
+    font-weight: 300;
+}
+
+#title > h1:first-child {
+    font-size: 1.82em;
+}
+
+#title > h1:last-child {
+    font-size: 1.5em;
+}
+
+#codeMap {
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#actionButtons {
+    position: fixed;
+    bottom: 2em;
+    right: 2em;
+    z-index: 1000;
+}
+
+#settingsPanel {
+    position: fixed;
+    right: 0;
+    width: 0px;
+    height: 100%;
+    background: #fff;
+    z-index: 1000;
+    box-shadow: 0 0 10px #000;
+}
+
+#detailWindow {
+    position: fixed;
+    z-index: 999;
+    bottom: 0.5em;
+    left: 0.5em;
+    color:#5A585A;
+    font-size: 0.8em;
+}
+
+#legendButton {
+    position: absolute;
+    top: 11.5em;
+    left: -2.9em;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+#legendPanel {
+    position: fixed;
+    top: 9em;
+    left: -500px;
+}
+
+#revisionButton {
+    position: absolute;
+    top: 21em;
+    left: -3.5em;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+#revisionChooser {
+    position: fixed;
+    top: 18.5em;
+    left: -400px;
+}
+#actionButtons > .btn-floating {
+    margin-left: 0.5em;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+}
+
+#actionButtons > i.fa-folder-open {
+    margin: 4px 0 0 2px;
+}
+
+#actionButtons > i.fa-bars {
+    margin-top: 4px;
+}
+
+#actionButtons > * {
+    margin-left: 4px;
+    margin-right: 4px;
+}
+#fileChooserPanel table {
+    width: 100%;
+    z-index: 9999;
+}
+
+#fileChooserPanel table > td:first-child, td:last-child {
+    width: 25%;
+    z-index: 10000;
+}
+
+#fileChooserPanel table > td:nth-child(2) {
+    text-align: right;
+    padding-right: 2em;
+    z-index: 10000;
+}
+#scenarioButtons > a {
+    margin-top:10px;
+}

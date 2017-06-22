@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for codeCharta/core/data/dataService.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">All files</a> / <a href="index.html">codeCharta/core/data</a> dataService.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25.93% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>14/54</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">18.75% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/16</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">14.29% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>1/7</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">27.45% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>14/51</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">98x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">98x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">98x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">98x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
+&nbsp;
+import * as d3 from "d3";
+import {DataModel} from "./model/dataModel";
+&nbsp;
+/**
+ * This service loads, stores and sets the current revisions, map, metrics and deltas.
+ */
+class DataService {
+&nbsp;
+    /* @ngInject */
+&nbsp;
+    /**
+     * @constructor
+     * @external {Scope} https://docs.angularjs.org/api/ng/type/$rootScope.Scope
+     * @param {Scope} $rootScope angular rootScope
+     * @param {DataValidatorService} dataValidatorService
+     */
+    constructor($rootScope, dataValidatorService){
+&nbsp;
+        /**
+         * current data
+         * @type {DataModel}
+         */
+        this.data = new DataModel([],[],{});
+&nbsp;
+        /**
+         * Angular rootScope
+         * @type {Scope}
+         */
+        this.$rootScope = $rootScope;
+&nbsp;
+        /**
+         * Reference to a dataValidatorService
+         * @type {DataValidatorService}
+         */
+        this.validator = dataValidatorService;
+&nbsp;
+    }
+    
+    /**
+     * Called when a new file is loaded. This method validates the data with {@link DataValidatorService#validate}, processes it and sets the member fields.
+     * Selects the first revision in revisions as the currently selected map. Alerts the user if something goes wrong.
+     * @param {Object} fileData data from file
+     * @returns {Promise} promise with resolve and reject functions
+     */
+    setFileData(fileData) <span class="cstat-no" title="statement not covered" >{</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        return new Promise(<span class="fstat-no" title="function not covered" >(</span>resolve, reject) =&gt; {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.validator.validate(fileData).then(</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >                (</span>validResult)=&gt;{
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    if (fileData.revisions) {</span>
+                        //revisioned data
+<span class="cstat-no" title="statement not covered" >                        this.data.revisions = this.calculateDeltas(fileData.revisions);</span>
+                    } else {
+                        //unrevisioned data
+<span class="cstat-no" title="statement not covered" >                        if (fileData.nodes &amp;&amp; fileData.nodes[0]) {</span>
+<span class="cstat-no" title="statement not covered" >                            fileData = fileData.nodes[0];</span>
+                        } else <span class="cstat-no" title="statement not covered" >if (fileData.children) {</span>
+<span class="cstat-no" title="statement not covered" >                            fileData = fileData;</span>
+                        } else {
+<span class="cstat-no" title="statement not covered" >                            window.alert("Incompatible data imported, expected fields were unavailable.");</span>
+<span class="cstat-no" title="statement not covered" >                            reject();</span>
+                        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                        this.data.revisions = [</span>
+                            fileData
+                        ];
+                    }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    resolve(fileData, validResult);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    this.setCurrentMapFromRevisions(0);</span>
+&nbsp;
+                }, <span class="fstat-no" title="function not covered" >(</span>invalidResult) =&gt; {
+<span class="cstat-no" title="statement not covered" >                    reject(fileData, invalidResult);</span>
+                }
+&nbsp;
+            );
+&nbsp;
+        });
+&nbsp;
+    }
+&nbsp;
+    /**
+     * Sets metrics from a revision by id.
+     * @param {number} index id
+     */
+    setMetrics(index) {
+        l</span>et root = <span class="cstat-no" title="statement not covered" >d3.hierarchy(this.data.revisions[index]);
+        l</span>et leaves = <span class="cstat-no" title="statement not covered" >root.leaves();
+        l</span>et attributeList = <span class="cstat-no" title="statement not covered" >leaves.map(<span class="fstat-no" title="function not covered" >function(</span>d) { <span class="cstat-no" title="statement not covered" >return d.data.attributes ? Object.keys(d.data.attributes) : []; });</span>
+        l</span>et attributes = <span class="cstat-no" title="statement not covered" >attributeList.reduce(<span class="fstat-no" title="function not covered" >function(</span>left, right) {<span class="cstat-no" title="statement not covered" >return left.concat(right.filter(<span class="fstat-no" title="function not covered" >function(</span>el){<span class="cstat-no" title="statement not covered" >return left.indexOf(el) === -1;})); });</span></span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        this.data.metrics = attributes;</span>
+&nbsp;
+    }
+&nbsp;
+    /**
+     * Loads current map from revisions by id
+     * @param {number} index id
+     * @emits {data-changed} on $rootScope after setting the metrics and map.
+     */
+    setCurrentMapFromRevisions(index){
+<span class="cstat-no" title="statement not covered" >        this.setMetrics(index);</span>
+<span class="cstat-no" title="statement not covered" >        this.data.currentmap = this.data.revisions[index];</span>
+<span class="cstat-no" title="statement not covered" >        this.$rootScope.$broadcast("data-changed", this.data);</span>
+    }
+&nbsp;
+    /**
+     * Calculates delta values in revisions. Stores deltas in &lt;leaf&gt;.data.deltas.
+     * @param {CodeMap[]} revisions
+     * @returns {CodeMap[]} revisions with delta data attached in leaves
+     */
+    calculateDeltas(revisions) {
+&nbsp;
+        l</span>et lastRevision = <span class="cstat-no" title="statement not covered" >revisions[0];
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        for(var i=1;i&lt;revisions.length;i++){</span>
+            l</span>et currentRevision = <span class="cstat-no" title="statement not covered" >revisions[i];
+            l</span>et currentRoot = <span class="cstat-no" title="statement not covered" >d3.hierarchy(currentRevision);
+            l</span>et currentLeaves = <span class="cstat-no" title="statement not covered" >currentRoot.leaves();
+            l</span>et lastRoot = <span class="cstat-no" title="statement not covered" >d3.hierarchy(lastRevision);
+            l</span>et lastLeaves = <span class="cstat-no" title="statement not covered" >lastRoot.leaves();
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            for(var j=0;j&lt;currentLeaves.length;j++){</span>
+<span class="cstat-no" title="statement not covered" >                for(var k=0;k&lt;lastLeaves.length;k++){</span>
+<span class="cstat-no" title="statement not covered" >                    if(currentLeaves[j].data.name === lastLeaves[k].data.name){</span>
+                        //calculate delta for those nodes attributes and push it to the second leave
+                        l</span>et deltas = <span class="cstat-no" title="statement not covered" >this.calculateAttributeListDelta(lastLeaves[k].data.attributes,currentLeaves[j].data.attributes);
+<span class="cstat-no" title="statement not covered" >                        currentLeaves[j].data.deltas = deltas;</span>
+                    }
+                }
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            lastRevision = currentRevision;</span>
+&nbsp;
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        return revisions;</span>
+&nbsp;
+    }
+&nbsp;
+    /**
+     * Calculates deltas between two attribute lists
+     * @param {Object[]} first attributes list
+     * @param {Object[]} second attributes list
+     * @returns {Object[]} delta between first and second
+     */
+    calculateAttributeListDelta(first, second){
+        let deltas = {};
+        for (var key in second) {
+            <span class="missing-if-branch" title="else path not taken" >E</span>if(key) {
+                let firstValue = first[key] ? first[key] : 0; //assume zero if no value in first
+                let secondValue = second[key];
+                let delta = secondValue - firstValue;
+                deltas[key] = delta;
+            }
+        }
+        return deltas;
+    }
+    
+}
+&nbsp;
+export {DataService};
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Thu Jun 22 2017 10:35:16 GMT+0000 (UTC)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

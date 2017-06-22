@@ -1,0 +1,147 @@
+{
+  "revisions": [
+
+    {
+      "name": "root",
+      "attributes": {},
+      "children": [
+        {
+          "name": "big leaf",
+          "attributes": {"RLOC": 100, "Functions": 10, "MCC": 1},
+          "link": "http://www.google.de"
+        },
+        {
+          "name": "Parent Leaf",
+          "attributes": {},
+          "children": [
+            {
+              "name": "small leaf",
+              "attributes": {"RLOC": 30, "Functions": 100, "MCC": 100},
+              "children": []
+            },
+            {
+              "name": "other small leaf",
+              "attributes": {"RLOC": 70, "Functions": 1000, "MCC": 10},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "root",
+      "attributes": {},
+      "children": [
+        {
+          "name": "big leaf",
+          "attributes": {"RLOC": 90, "Functions": 11, "MCC": 1},
+          "link": "http://www.google.de"
+        },
+        {
+          "name": "Parent Leaf",
+          "attributes": {},
+          "children": [
+            {
+              "name": "small leaf",
+              "attributes": {"RLOC": 30, "Functions": 100, "MCC": 100},
+              "children": []
+            },
+            {
+              "name": "other small leaf",
+              "attributes": {"RLOC": 70, "Functions": 1000, "MCC": 10},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "root",
+      "attributes": {},
+      "children": [
+        {
+          "name": "big leaf",
+          "attributes": {"RLOC": 105, "Functions": 50, "MCC": 4},
+          "link": "http://www.google.de"
+        },
+        {
+          "name": "Parent Leaf",
+          "attributes": {},
+          "children": [
+            {
+              "name": "small leaf",
+              "attributes": {"RLOC": 40, "Functions": 80, "MCC": 90},
+              "children": []
+            },
+            {
+              "name": "other small leaf",
+              "attributes": {"RLOC": 70, "Functions": 800, "MCC": 9},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "root",
+      "attributes": {},
+      "children": [
+        {
+          "name": "big leaf",
+          "attributes": {"RLOC": 105, "Functions": 50, "MCC": 4},
+          "link": "http://www.google.de"
+        },
+        {
+          "name": "Parent Leaf",
+          "attributes": {},
+          "children": [
+            {
+              "name": "small leaf",
+              "attributes": {"RLOC": 40, "Functions": 10, "MCC": 90},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "root",
+      "attributes": {},
+      "children": [
+        {
+          "name": "big leaf",
+          "attributes": {"RLOC": 105, "Functions": 50, "MCC": 4},
+          "link": "http://www.google.de"
+        },
+        {
+          "name": "Parent Leaf",
+          "attributes": {},
+          "children": [
+            {
+              "name": "small leaf",
+              "attributes": {"RLOC": 40, "Functions": 80, "MCC": 90},
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "Parent Leaf 2",
+          "attributes": {},
+          "children": [
+            {
+              "name": "small leaf 2",
+              "attributes": {"RLOC": 40, "Functions": 80, "MCC": 90},
+              "children": []
+            },
+            {
+              "name": "big leaf2",
+              "attributes": {"RLOC": 105, "Functions": 50, "MCC": 4},
+              "link": "http://www.google.de"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

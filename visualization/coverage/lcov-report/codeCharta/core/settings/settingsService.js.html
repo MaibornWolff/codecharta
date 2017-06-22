@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for codeCharta/core/settings/settingsService.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">All files</a> / <a href="index.html">codeCharta/core/settings</a> settingsService.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">77.5% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>31/40</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">45% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>9/20</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>3/3</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">77.5% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>31/40</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">73x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">73x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">73x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">73x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">73x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">73x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">73x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
+&nbsp;
+import {Settings} from "./model/settings";
+import {Range} from "./model/range";
+&nbsp;
+/**
+ * Stores and manipulates the current settings
+ */ 
+class SettingsService {
+&nbsp;
+    /* ngInject */
+&nbsp;
+    /**
+     * @constructor 
+     * @param {UrlService} urlService 
+     * @param {DataService} dataService
+     * @param {Scope} $rootScope 
+     */
+    constructor(urlService, dataService, $rootScope) {
+&nbsp;
+        /**
+         * @type {UrlService}
+         */
+        this.urlService = urlService;
+&nbsp;
+        /**
+         * @type {DataService}
+         */
+        this.dataService = dataService;
+&nbsp;
+        /**
+         * @type {Scope}
+         */
+        this.rootScope = $rootScope;
+&nbsp;
+       /**
+        * @type {Settings}
+        */
+        this.settings = new Settings(
+            dataService.data.currentmap,
+            new Range(10,20,false),
+            dataService.data.metrics[0],
+            dataService.data.metrics[1],
+            dataService.data.metrics[2],
+            true,
+            false,
+            1
+        );
+&nbsp;
+        let ctx = this;
+&nbsp;
+        $rootScope.$on("data-changed", (event,data) =&gt; {
+           ctx.onDataChanged(data);
+        });
+&nbsp;
+    }
+&nbsp;
+    /**
+     * if the parameters property metrics is longer than 2 elements then change the map and metric settings according to the parameter. 
+     * @listens {data-changed} called on data-changed
+     * @emits {settings-changed} transitively on call
+     * @param {DataModel} data
+     */
+    onDataChanged(data) {
+&nbsp;
+        if(data.metrics.length &gt;= 3){
+            this.settings.map = data.currentmap;
+&nbsp;
+            <span class="missing-if-branch" title="else path not taken" >E</span>if(data.metrics.indexOf(this.settings.areaMetric) === -1){
+                //area metric is not set or not in the new metrics and needs to be chosen
+                this.settings.areaMetric = data.metrics[0];
+            }
+&nbsp;
+            <span class="missing-if-branch" title="else path not taken" >E</span>if(data.metrics.indexOf(this.settings.heightMetric) === -1){
+                //height metric is not set or not in the new metrics and needs to be chosen
+                this.settings.heightMetric = data.metrics[1];
+            }
+&nbsp;
+            <span class="missing-if-branch" title="else path not taken" >E</span>if(data.metrics.indexOf(this.settings.colorMetric) === -1){
+                //color metric is not set or not in the new metrics and needs to be chosen
+                this.settings.colorMetric = data.metrics[2];
+            }
+&nbsp;
+        }
+&nbsp;
+        this.onSettingsChanged();
+&nbsp;
+    }
+&nbsp;
+    /**
+     * Broadcasts a settings-changed event with the new {Settings} object as a payload
+     * @emits {settings-changed} on call
+     */
+    onSettingsChanged() {
+<span class="cstat-no" title="statement not covered" >        this.rootScope.$broadcast("settings-changed", this.settings);</span>
+&nbsp;
+    }
+&nbsp;
+    /**
+     * updates the settings object according to url parameters.
+     * @emits {settings-changed} transitively on call
+     */
+    updateSettingsFromUrl() {
+&nbsp;
+        //for every property in settings...
+<span class="cstat-no" title="statement not covered" >        for (var property in this.settings) {</span>
+&nbsp;
+            //...that is not inherited from object...
+<span class="cstat-no" title="statement not covered" >            if (this.settings.hasOwnProperty(property) &amp;&amp; property !== "map") {</span>
+&nbsp;
+                //...get the query param value for the property...
+                v</span>ar val = <span class="cstat-no" title="statement not covered" >this.urlService.getParam(property);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                if (val &amp;&amp; val.length &gt; 0) {</span>
+&nbsp;
+                    //if it exists, set ist the settings value
+<span class="cstat-no" title="statement not covered" >                    this.settings[property] = val;</span>
+                }
+            }
+        }
+&nbsp;
+        //TODO map some special keys like neutralColorRange
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        this.onSettingsChanged();</span>
+&nbsp;
+    }
+&nbsp;
+    /**
+     * Applies given settings
+     * @param {Settings} settings
+     */
+    applySettings(settings) {
+<span class="cstat-no" title="statement not covered" >        this.settings.importSettingValues(this.correctSettings(settings));</span>
+<span class="cstat-no" title="statement not covered" >        this.onSettingsChanged();</span>
+    }
+&nbsp;
+    /**
+     * corrects settings, if the chosen metric is not available in the current map, the first three metrics are chosen as a default.
+     * @param {Settings} settings
+     */
+    correctSettings(settings){
+        var result = settings;
+        result.areaMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.areaMetric,this.dataService.data.metrics[0] );
+        result.heightMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.heightMetric, this.dataService.data.metrics[1]);
+        result.colorMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.colorMetric, this.dataService.data.metrics[2]);
+        return result;
+    }
+&nbsp;
+    /**
+          * Checks if the given metricName is in the metricsArray. If it is in there, we return it, else we return the defaultValue.
+          * @param {String[]} metricsArray an array of metric names
+          * @param {String} metricName a metric name to look for
+          * @param {String} defaultValue a default name in case metricName was not found
+          */
+    getMetricOrDefault(metricsArray, metricName, defaultValue) {
+            var result = defaultValue;
+            metricsArray.forEach((metric) =&gt; {
+                    if(metric === metricName){
+                            result = metric;
+                        }
+                });
+            if(result === defaultValue){
+                console.log(metricName + " could not be found in the chosen Map. " + defaultValue + " has been chosen instead.");
+            }
+            else{
+                
+            }
+            return result;
+        }
+}
+&nbsp;
+export {SettingsService};</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Thu Jun 22 2017 10:35:16 GMT+0000 (UTC)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

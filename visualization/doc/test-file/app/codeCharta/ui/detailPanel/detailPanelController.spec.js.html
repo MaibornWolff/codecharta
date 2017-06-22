@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../../">
+  <title data-ice="title">app/codeCharta/ui/detailPanel/detailPanelController.spec.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeChartaController.js~CodeChartaController.html">CodeChartaController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeChartaDirective.js~CodeChartaDirective.html">CodeChartaDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/codeMap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapAssetService.js~CodeMapAssetService.html">CodeMapAssetService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapController.js~CodeMapController.html">CodeMapController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapDirective.js~CodeMapDirective.html">CodeMapDirective</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html">CodeMapService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CodeMapMaterialPack">CodeMapMaterialPack</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=box#Reference/Geometries/BoxGeometry">BoxGeometry</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=rayca#Reference/Core/Raycaster">Raycaster</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=mesh#Reference/Objects/Mesh">Mesh</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/codeMap/threeViewer</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeCameraService.js~ThreeCameraService.html">ThreeCameraService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeOrbitControlsService.js~ThreeOrbitControlsService.html">ThreeOrbitControlsService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeRendererService.js~ThreeRendererService.html">ThreeRendererService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeSceneService.js~ThreeSceneService.html">ThreeSceneService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeUpdateCycleService.js~ThreeUpdateCycleService.html">ThreeUpdateCycleService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeViewerService.js~ThreeViewerService.html">ThreeViewerService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ThreeOrbitControls">ThreeOrbitControls</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/#Reference/Cameras/PerspectiveCamera">PerspectiveCamera</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/api/renderers/WebGLRenderer.html">WebGLRenderer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=scene#Reference/Scenes/Scene">Scene</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/data</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/data/dataService.js~DataService.html">DataService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html">DataValidatorService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ng/type/$rootScope.Scope">Scope</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ng/service/$http">$http</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://github.com/d3/d3-hierarchy/blob/master/README.md#hierarchy">d3#hierarchy</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/data/model</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/data/model/dataModel.js~DataModel.html">DataModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CodeMap">CodeMap</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/scenario</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/scenario/scenarioService.js~ScenarioService.html">ScenarioService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/scenario/model</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/scenario/model/scenario.js~Scenario.html">Scenario</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/settings</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/settings/settingsService.js~SettingsService.html">SettingsService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/settings/model</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/settings/model/range.js~Range.html">Range</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/settings/model/settings.js~Settings.html">Settings</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/tooltip</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/tooltip/tooltipService.js~TooltipService.html">TooltipService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/treemap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/treemap/treeMapService.js~TreeMapService.html">TreeMapService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://github.com/d3/d3-hierarchy/blob/master/README.md#treemap">d3#treemap</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/url</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/url/urlService.js~UrlService.html">UrlService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ng/service/$location">$location</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/checkbox</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/checkbox/checkboxDirective.js~CheckboxDirective.html">CheckboxDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/collapsible</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/collapsible/collapsibleDirective.js~CollapsibleDirective.html">CollapsibleDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/collapsibleElement</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/collapsibleElement/collapsibleElementDirective.js~CollapsibleElementDirective.html">CollapsibleElementDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/dropdown</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/dropdown/dropdownController.js~DropdownController.html">DropdownController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/dropdown/dropdownDirective.js~DropdownDirective.html">DropdownDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/fab</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/fab/fabDirective.js~FabDirective.html">FabDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/numberField</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/numberField/numberFieldDirective.js~NumberFieldDirective.html">NumberFieldDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/slider</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/slider/sliderDirective.js~SliderDirective.html">SliderDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/detailPanel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html">DetailPanelController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelDirective.js~DetailPanelDirective.html">DetailPanelDirective</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CommonDetails">CommonDetails</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Details">Details</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-SpecificDetails">SpecificDetails</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ngMock/service/$timeout">Timeout</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/fabBar</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fabBar/fabBarDirective.js~FabBarDirective.html">FabBarDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/fileChooser</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserController.js~FileChooserController.html">FileChooserController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserDirective.js~FileChooserDirective.html">FileChooserDirective</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserPanelDirective.js~FileChooserPanelDirective.html">FileChooserPanelDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/legendPanel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/legendPanel/legendPanelController.js~LegendPanelController.html">LegendPanelController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/legendPanel/legendPanelDirective.js~LegendPanelDirective.html">LegendPanelDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/revisionChooser</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserController.js~RevisionChooserController.html">RevisionChooserController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserDirective.js~RevisionChooserDirective.html">RevisionChooserDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/scenarioButtons</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/scenarioButtons/scenarioButtonsController.js~ScenarioButtonsController.html">ScenarioButtonsController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/scenarioButtons/scenarioButtonsDirective.js~ScenarioButtonsDirective.html">ScenarioButtonsDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/settingsPanel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelController.js~SettingsPanelController.html">SettingsPanelController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelDirective.js~SettingsPanelDirective.html">SettingsPanelDirective</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">app/codeCharta/ui/detailPanel/detailPanelController.spec.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">require(&quot;./detailPanel.js&quot;);
+/**
+ * @test {DetailPanelController}
+ */
+describe(&quot;app.codeCharta.ui.detailPanel.detailPanelController&quot;, function() {
+
+    var detailPanelController, scope, codeMapMaterialFactory, timeout, settingsService;
+
+    beforeEach(angular.mock.module(&quot;app.codeCharta.ui.detailPanel&quot;));
+
+    beforeEach(()=&gt;{
+
+        angular.mock.module(&quot;app.codeCharta.codeMap&quot;);
+
+        angular.module(&quot;app.codeCharta.codeMap&quot;).factory(&quot;codeMapMaterialFactory&quot;, () =&gt; {
+            return {
+                positive: () =&gt; {return new THREE.MeshLambertMaterial({color: 0x000000});},
+                neutral: () =&gt; {return new THREE.MeshLambertMaterial({color: 0x111111});},
+                negative: () =&gt; {return new THREE.MeshLambertMaterial({color: 0x222222});},
+                odd: () =&gt; {return new THREE.MeshLambertMaterial({color: 0x333333});},
+                even: () =&gt; {return new THREE.MeshLambertMaterial({color: 0x444444});},
+                selected: () =&gt; {return new THREE.MeshLambertMaterial({color: 0x555555});},
+                hovered: () =&gt; {return new THREE.MeshLambertMaterial({ color: 0x666666, emissive: 0x111111});},
+                default: () =&gt; {return new THREE.MeshLambertMaterial({color: 0x777777});},
+                positiveDelta: () =&gt; {return new THREE.MeshLambertMaterial({color: 0x888888});},
+                negativeDelta: () =&gt; {return new THREE.MeshLambertMaterial({color: 0x999999});}
+            }
+        });
+
+    });
+
+    beforeEach(angular.mock.inject((_codeMapMaterialFactory_,_$timeout_, _settingsService_, _$rootScope_, $controller)=&gt;{
+        scope = _$rootScope_;
+        codeMapMaterialFactory = _codeMapMaterialFactory_;
+        settingsService = _settingsService_;
+        timeout = _$timeout_;
+        detailPanelController = $controller(&quot;detailPanelController&quot;, {$scope: scope, $rootScope: scope, codeMapMaterialFactory: codeMapMaterialFactory, settingsService:settingsService, $timeout: timeout});
+    }));
+
+    /**
+     * @test {DetailPanelController}
+     */
+    describe(&quot;should react to events on its scope&quot;, ()=&gt;{
+
+        /**
+         * @test {DetailPanelController#onHover}
+         */
+        it(&quot;building hovered&quot;,(done)=&gt;{
+            detailPanelController.onHover = (payload)=&gt;{
+                expect(payload).to.equal(&quot;payload&quot;);
+                done();
+            };
+            scope.$broadcast(&quot;building-hovered&quot;, &quot;payload&quot;);
+        });
+
+        /**
+         * @test {DetailPanelController#onSelect}
+         */
+        it(&quot;building selected&quot;,(done)=&gt;{
+            detailPanelController.onSelect = (payload)=&gt;{
+                expect(payload).to.equal(&quot;payload&quot;);
+                done();
+            };
+            scope.$broadcast(&quot;building-selected&quot;, &quot;payload&quot;);
+        });
+
+        /**
+         * @test {DetailPanelController#onSettingsChanged}
+         */
+        it(&quot;settings changed&quot;,(done)=&gt;{
+            detailPanelController.onSettingsChanged = (payload)=&gt;{
+                expect(payload).to.equal(&quot;payload&quot;);
+                done();
+            };
+            scope.$broadcast(&quot;settings-changed&quot;, &quot;payload&quot;);
+        });
+
+    });
+
+    /**
+     * @test {DetailPanelController#onSettingsChanged}
+     */
+    it(&quot;should set common attributes when settings change&quot;,() =&gt; {
+        var settings = {
+            &quot;areaMetric&quot;:&quot;a&quot;,
+            &quot;colorMetric&quot;:&quot;b&quot;,
+            &quot;heightMetric&quot;:&quot;c&quot;
+        };
+        detailPanelController.onSettingsChanged(settings);
+        expect(detailPanelController.details.common.areaAttributeName).to.equal(&quot;a&quot;);
+        expect(detailPanelController.details.common.colorAttributeName).to.equal(&quot;b&quot;);
+        expect(detailPanelController.details.common.heightAttributeName).to.equal(&quot;c&quot;);
+    });
+
+    /**
+     * @test {DetailPanelController#onSelect}
+     */
+    it(&quot;should setSelectedDetails when valid node is selected&quot;,() =&gt; {
+        var data = {
+            &quot;to&quot;: {
+                &quot;node&quot;: &quot;somenode&quot;
+            }
+        };
+        detailPanelController.setSelectedDetails = sinon.spy();
+        detailPanelController.onSelect(data);
+        expect(detailPanelController.setSelectedDetails.calledWithExactly(&quot;somenode&quot;));
+    });
+
+    /**
+     * @test {DetailPanelController#onSelect}
+     */
+    it(&quot;should clearSelectedDetails when invalid or no node is selected&quot;,() =&gt; {
+
+        var data = {
+            &quot;to&quot;: {
+                &quot;notanode&quot;: &quot;somenode&quot;
+            }
+        };
+        detailPanelController.clearSelectedDetails = sinon.spy();
+        detailPanelController.onSelect(data);
+        expect(detailPanelController.clearSelectedDetails.calledWithExactly());
+
+        data = {
+            &quot;notato&quot;: {
+                &quot;node&quot;: &quot;somenode&quot;
+            }
+        };
+        detailPanelController.onSelect(data);
+        expect(detailPanelController.clearSelectedDetails.calledWithExactly());
+
+        data = {};
+        detailPanelController.onSelect(data);
+        expect(detailPanelController.clearSelectedDetails.calledWithExactly());
+
+    });
+
+    /**
+     * @test {DetailPanelController#onHover}
+     */
+    it(&quot;should setHoveredDetails when valid node is hovered&quot;,() =&gt; {
+        var data = {
+            &quot;to&quot;: {
+                &quot;node&quot;: &quot;somenode&quot;
+            }
+        };
+        detailPanelController.setHoveredDetails = sinon.spy();
+        detailPanelController.onHover(data);
+        expect(detailPanelController.setHoveredDetails.calledWithExactly(&quot;somenode&quot;));
+    });
+
+    /**
+     * @test {DetailPanelController#onHover}
+     */
+    it(&quot;should clearHoveredDetails when invalid or no node is hovered&quot;,() =&gt; {
+        var data = {
+            &quot;to&quot;: {
+                &quot;notanode&quot;: &quot;somenode&quot;
+            }
+        };
+        detailPanelController.clearHoveredDetails = sinon.spy();
+        detailPanelController.onHover(data);
+        expect(detailPanelController.clearHoveredDetails.calledWithExactly());
+
+        data = {
+            &quot;notato&quot;: {
+                &quot;node&quot;: &quot;somenode&quot;
+            }
+        };
+        detailPanelController.onHover(data);
+        expect(detailPanelController.clearHoveredDetails.calledWithExactly());
+
+        data = {};
+        detailPanelController.onHover(data);
+        expect(detailPanelController.clearHoveredDetails.calledWithExactly());
+    });
+
+    /**
+     * @test {DetailPanelController}
+     */
+    describe(&quot;isHovered and isSelected should evaluate the respective nodes name to determine the result&quot;, ()=&gt;{
+
+        /**
+         * @test {DetailPanelController#isHovered}
+         * @test {DetailPanelController#isSelected}
+         */
+        it(&quot;empty details should result in false&quot;,()=&gt;{
+            detailPanelController.details = {};
+            expect(detailPanelController.isHovered()).to.be.false;
+            expect(detailPanelController.isSelected()).to.be.false;
+        });
+
+        /**
+         * @test {DetailPanelController#isHovered}
+         * @test {DetailPanelController#isSelected}
+         */
+        it(&quot;empty nodes should result in false&quot;,()=&gt;{
+            detailPanelController.details = {
+                hovered: null,
+                selected: null
+            };
+            expect(detailPanelController.isHovered()).to.be.false;
+            expect(detailPanelController.isSelected()).to.be.false;
+        });
+
+        /**
+         * @test {DetailPanelController#isHovered}
+         * @test {DetailPanelController#isSelected}
+         */
+        it(&quot;named nodes should result in true&quot;,()=&gt;{
+            detailPanelController.details = {
+                hovered: {
+                    name: &quot;some name&quot;
+                },
+                selected: {
+                    name: &quot;some name&quot;
+                }
+            };
+            expect(detailPanelController.isHovered()).to.be.true;
+            expect(detailPanelController.isSelected()).to.be.true;
+        });
+
+    });
+
+});</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

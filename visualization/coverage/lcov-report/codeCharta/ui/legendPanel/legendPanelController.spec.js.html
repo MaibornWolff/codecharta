@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for codeCharta/ui/legendPanel/legendPanelController.spec.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">All files</a> / <a href="index.html">codeCharta/ui/legendPanel</a> legendPanelController.spec.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>42/42</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>20/20</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>42/42</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">require("./legendPanel.js");
+&nbsp;
+describe("app.codeCharta.ui.legendPanel.legendPanelController", function() {
+&nbsp;
+    var legendPanelController, dataService, scope, codeMapMaterialFactory, timeout, settingsService;
+&nbsp;
+    beforeEach(angular.mock.module("app.codeCharta.ui.legendPanel"));
+&nbsp;
+    beforeEach(()=&gt;{
+&nbsp;
+        angular.mock.module("app.codeCharta.codeMap");
+&nbsp;
+        angular.module("app.codeCharta.codeMap").factory("codeMapMaterialFactory", () =&gt; {
+            return {
+                positive: () =&gt; {return new THREE.MeshLambertMaterial({color: 0x000000});},
+                neutral: () =&gt; {return new THREE.MeshLambertMaterial({color: 0x111111});},
+                negative: () =&gt; {return new THREE.MeshLambertMaterial({color: 0x222222});},
+                odd: () =&gt; {return new THREE.MeshLambertMaterial({color: 0x333333});},
+                even: () =&gt; {return new THREE.MeshLambertMaterial({color: 0x444444});},
+                selected: () =&gt; {return new THREE.MeshLambertMaterial({color: 0x555555});},
+                hovered: () =&gt; {return new THREE.MeshLambertMaterial({ color: 0x666666, emissive: 0x111111});},
+                default: () =&gt; {return new THREE.MeshLambertMaterial({color: 0x777777});},
+                positiveDelta: () =&gt; {return new THREE.MeshLambertMaterial({color: 0x888888});},
+                negativeDelta: () =&gt; {return new THREE.MeshLambertMaterial({color: 0x999999});}
+            }
+        });
+&nbsp;
+    });
+&nbsp;
+    beforeEach(angular.mock.inject((_codeMapMaterialFactory_,_$timeout_, _settingsService_, _dataService_, _$rootScope_, $controller)=&gt;{
+        dataService = _dataService_;
+        scope = _$rootScope_;
+        codeMapMaterialFactory = _codeMapMaterialFactory_;
+        settingsService = _settingsService_;
+        timeout = _$timeout_;
+        legendPanelController = $controller("legendPanelController", {$scope: scope, dataService: dataService, codeMapMaterialFactory: codeMapMaterialFactory, settingsService:settingsService, $timeout: timeout});
+    }));
+&nbsp;
+    it("should have correct values in scope", ()=&gt;{
+        expect(legendPanelController.mats).to.equal(codeMapMaterialFactory);
+    });
+&nbsp;
+    it("generate pixel in base64",()=&gt;{
+        expect(legendPanelController.generatePixel("some color value")).to.equal("data:image/gif;base64,R0lGODlhAQABAPAAsome color value/yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==");
+    });
+&nbsp;
+    it("html -&gt; base64",()=&gt;{
+        expect(legendPanelController.getImageDataUri("000000")).to.equal("data:image/gif;base64,R0lGODlhAQABAPAAAAAAAP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==");
+    });
+&nbsp;
+    it("encode hex to rgb",()=&gt;{
+        expect(legendPanelController.encodeHex("#000000")).to.equal("AAAAAP//");
+        expect(legendPanelController.encodeHex("#ff0000")).to.equal("AP8AAP//");
+        expect(legendPanelController.encodeHex("#0000ff")).to.equal("AAAA////");
+    });
+&nbsp;
+    it("encode rgb to base64 color value",()=&gt;{
+        expect(legendPanelController.encodeRGB(0,0,0)).to.equal("AAAAAP//");
+        expect(legendPanelController.encodeRGB(255,255,255)).to.equal("AP//////");
+        expect(legendPanelController.encodeRGB(123,3,111)).to.equal("AHsDb///");
+    });
+&nbsp;
+    it("encode triplet to base64 color value",()=&gt;{
+        expect(legendPanelController.encodeTriplet(0,0,0)).to.equal("AAAA");
+        expect(legendPanelController.encodeTriplet(255,255,255)).to.equal("////");
+        expect(legendPanelController.encodeTriplet(123,3,111)).to.equal("ewNv");
+    });
+&nbsp;
+});</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Thu Jun 22 2017 10:35:16 GMT+0000 (UTC)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

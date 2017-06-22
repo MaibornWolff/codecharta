@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for codeCharta/core/treemap/treeMapService.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">All files</a> / <a href="index.html">codeCharta/core/treemap</a> treeMapService.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">90.24% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>37/41</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">84.21% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>16/19</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">75% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>6/8</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">89.74% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>35/39</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">55x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">55x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
+&nbsp;
+import * as d3 from "d3";
+&nbsp;
+/**
+ * This service transforms valid file data to a custom treemap. Our custom treemap has a 3rd axis added to the nodes. 
+ */
+class TreeMapService {
+&nbsp;
+    /* @ngInject */
+&nbsp;
+     /**
+     * @constructor 
+     * @param {DataService}
+     */
+    constructor(dataService) {
+        /** @type {DataService} */
+        this.dataService = dataService;
+    }
+&nbsp;
+    /**
+     * creates an array of fully transformed/customized and visible {d3#treemap} nodes.
+     * @external {d3#treemap} https://github.com/d3/d3-hierarchy/blob/master/README.md#treemap
+     * @param {Object} data valid data
+     * @param {number} w treemap width for calculation
+     * @param {number} l treemap length for calculation
+     * @param {number} p padding between treemap squares
+     * @param {string} areaKey area metric name
+     * @param {string} heightKey height metric name
+     */
+    createTreemapNodes(data, w, l, p, areaKey, heightKey){
+&nbsp;
+        let treeMap = d3.treemap()
+            .size([w,l])
+            .padding(p || <span class="branch-1 cbranch-no" title="branch not covered" >1);</span>
+        let root = d3.hierarchy(data);
+&nbsp;
+        root.descendants().forEach((l)=&gt;{
+            l.isLeaf = false;
+        });
+&nbsp;
+        root.leaves().forEach((l)=&gt;{
+            l.isLeaf = true;
+        });
+&nbsp;
+        let nodes = treeMap(root.sum((node)=&gt;this.getArea(node, areaKey))).descendants();
+&nbsp;
+        let maxHeight = this.getMaxNodeHeightInAllRevisions(heightKey);
+        let heightScale = w / maxHeight;
+&nbsp;
+        nodes.forEach((node)=&gt;{
+            this.transformNode(node, heightKey, p, heightScale);
+        });
+&nbsp;
+        return nodes.filter(function(el){return el.value &gt; 0 &amp;&amp; el.width &gt; 0 &amp;&amp; el.height &gt; 0 &amp;&amp; el.length &gt; 0; }); //dont draw invisble nodes (for the current metrics)
+    }
+&nbsp;
+    /**
+     * Transforms a d3 node to our specific representation. Our specification requires a third axis z.
+     * -add z0 and z1 depending on treedepth and padding
+     * -add w,l,h depending on data.type and x, y
+     * -all we also write all important stuff into the node itself so we do not need node.data anymore (there could be obsolete data from old cc.jsons)
+     * -the height of the new z axis needs to be scaled to the w/l of the {d3#treemap}
+     *
+     * @param {Object} node d3 node
+     * @param {string} heightKey name of the height metric
+     * @param {number} p padding for minimal height, padding and folder height
+     * @param {number} heightScale scaling factor
+     */
+    transformNode(node, heightKey, p, heightScale) {
+&nbsp;
+        node.width = node.x1-node.x0;
+        node.length = node.y1-node.y0;
+        node.height = node.isLeaf ? heightScale * node.data.attributes[heightKey]  : p;
+        node.z0 = p * node.depth;
+        node.z1 = p* node.depth + node.height;
+        node.attributes = node.data.attributes;
+        node.name = node.data.name;
+        if (node.data.deltas){
+            node.deltas = node.data.deltas;
+        }
+        node.link = node.data.link;
+&nbsp;
+        node.data = {};
+        delete node.data;
+&nbsp;
+    }
+&nbsp;
+    /**
+     * Gets the height of the heighest building in all revisions in order to get a common scaling factor.
+     * @param {string} heightKey name of the height metric
+     * @returns {number} max height
+     */
+    getMaxNodeHeightInAllRevisions(heightKey) {
+        var maxHeight=0;
+&nbsp;
+        this.dataService.data.revisions.forEach(<span class="fstat-no" title="function not covered" >(</span>rev)=&gt;{
+            v</span>ar nodes = <span class="cstat-no" title="statement not covered" >d3.hierarchy(rev).leaves();
+<span class="cstat-no" title="statement not covered" >            nodes.forEach(<span class="fstat-no" title="function not covered" >(</span>node)=&gt;{</span>
+<span class="cstat-no" title="statement not covered" >                if(node.data.attributes[heightKey]&gt;maxHeight){</span>
+<span class="cstat-no" title="statement not covered" >                    maxHeight = node.data.attributes[heightKey];</span>
+                }
+            });
+        });
+&nbsp;
+        return maxHeight;
+    }
+&nbsp;
+    /**
+     * Extracts the area by areakey from the node.
+     *
+     * @param {Object} node d3 node
+     * @param {string} areaKey name of the area attribute key
+     * @returns {number} area value else 0
+     */
+    getArea(node, areaKey) {
+        let result = 0;
+        if(node.attributes &amp;&amp; (!node.children || node.children.length === 0)){
+            result = node.attributes[areaKey] || 0;
+        }
+        return result;
+    }
+    
+}
+&nbsp;
+export {TreeMapService};
+&nbsp;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Thu Jun 22 2017 10:35:16 GMT+0000 (UTC)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

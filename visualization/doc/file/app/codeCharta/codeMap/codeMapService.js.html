@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">app/codeCharta/codeMap/codeMapService.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeChartaController.js~CodeChartaController.html">CodeChartaController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeChartaDirective.js~CodeChartaDirective.html">CodeChartaDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/codeMap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapAssetService.js~CodeMapAssetService.html">CodeMapAssetService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapController.js~CodeMapController.html">CodeMapController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapDirective.js~CodeMapDirective.html">CodeMapDirective</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html">CodeMapService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CodeMapMaterialPack">CodeMapMaterialPack</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=box#Reference/Geometries/BoxGeometry">BoxGeometry</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=rayca#Reference/Core/Raycaster">Raycaster</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=mesh#Reference/Objects/Mesh">Mesh</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/codeMap/threeViewer</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeCameraService.js~ThreeCameraService.html">ThreeCameraService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeOrbitControlsService.js~ThreeOrbitControlsService.html">ThreeOrbitControlsService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeRendererService.js~ThreeRendererService.html">ThreeRendererService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeSceneService.js~ThreeSceneService.html">ThreeSceneService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeUpdateCycleService.js~ThreeUpdateCycleService.html">ThreeUpdateCycleService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeViewerService.js~ThreeViewerService.html">ThreeViewerService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ThreeOrbitControls">ThreeOrbitControls</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/#Reference/Cameras/PerspectiveCamera">PerspectiveCamera</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/api/renderers/WebGLRenderer.html">WebGLRenderer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=scene#Reference/Scenes/Scene">Scene</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/data</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/data/dataService.js~DataService.html">DataService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html">DataValidatorService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ng/type/$rootScope.Scope">Scope</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ng/service/$http">$http</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://github.com/d3/d3-hierarchy/blob/master/README.md#hierarchy">d3#hierarchy</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/data/model</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/data/model/dataModel.js~DataModel.html">DataModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CodeMap">CodeMap</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/scenario</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/scenario/scenarioService.js~ScenarioService.html">ScenarioService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/scenario/model</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/scenario/model/scenario.js~Scenario.html">Scenario</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/settings</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/settings/settingsService.js~SettingsService.html">SettingsService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/settings/model</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/settings/model/range.js~Range.html">Range</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/settings/model/settings.js~Settings.html">Settings</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/tooltip</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/tooltip/tooltipService.js~TooltipService.html">TooltipService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/treemap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/treemap/treeMapService.js~TreeMapService.html">TreeMapService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://github.com/d3/d3-hierarchy/blob/master/README.md#treemap">d3#treemap</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/url</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/url/urlService.js~UrlService.html">UrlService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ng/service/$location">$location</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/checkbox</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/checkbox/checkboxDirective.js~CheckboxDirective.html">CheckboxDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/collapsible</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/collapsible/collapsibleDirective.js~CollapsibleDirective.html">CollapsibleDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/collapsibleElement</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/collapsibleElement/collapsibleElementDirective.js~CollapsibleElementDirective.html">CollapsibleElementDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/dropdown</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/dropdown/dropdownController.js~DropdownController.html">DropdownController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/dropdown/dropdownDirective.js~DropdownDirective.html">DropdownDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/fab</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/fab/fabDirective.js~FabDirective.html">FabDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/numberField</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/numberField/numberFieldDirective.js~NumberFieldDirective.html">NumberFieldDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/slider</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/slider/sliderDirective.js~SliderDirective.html">SliderDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/detailPanel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html">DetailPanelController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelDirective.js~DetailPanelDirective.html">DetailPanelDirective</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CommonDetails">CommonDetails</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Details">Details</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-SpecificDetails">SpecificDetails</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ngMock/service/$timeout">Timeout</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/fabBar</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fabBar/fabBarDirective.js~FabBarDirective.html">FabBarDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/fileChooser</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserController.js~FileChooserController.html">FileChooserController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserDirective.js~FileChooserDirective.html">FileChooserDirective</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserPanelDirective.js~FileChooserPanelDirective.html">FileChooserPanelDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/legendPanel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/legendPanel/legendPanelController.js~LegendPanelController.html">LegendPanelController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/legendPanel/legendPanelDirective.js~LegendPanelDirective.html">LegendPanelDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/revisionChooser</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserController.js~RevisionChooserController.html">RevisionChooserController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserDirective.js~RevisionChooserDirective.html">RevisionChooserDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/scenarioButtons</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/scenarioButtons/scenarioButtonsController.js~ScenarioButtonsController.html">ScenarioButtonsController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/scenarioButtons/scenarioButtonsDirective.js~ScenarioButtonsDirective.html">ScenarioButtonsDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/settingsPanel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelController.js~SettingsPanelController.html">SettingsPanelController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelDirective.js~SettingsPanelDirective.html">SettingsPanelDirective</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">app/codeCharta/codeMap/codeMapService.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&quot;use strict&quot;;
+
+import * as THREE from &quot;three&quot;;
+import {SpriteText2D, textAlign} from &quot;three-text2d&quot;;
+
+/**
+ * Main service to manage the state of the rendered code map
+ */
+class CodeMapService {
+
+    /* @ngInject */
+
+    /**
+     * @external {Object3D} https://threejs.org/docs/?q=Object3#Reference/Core/Object3D
+     * @external {Mesh} https://threejs.org/docs/?q=mesh#Reference/Objects/Mesh
+     * @constructor
+     * @param {Scope} $rootScope
+     * @param {ThreeSceneService} threeSceneService
+     * @param {TreeMapService} treeMapService
+     * @param {TreeMapService} codeMapAssetService
+     * @param {TreeMapService} settingsService
+     */
+    constructor($rootScope, threeSceneService, treeMapService, codeMapAssetService, settingsService) {
+
+        /**
+         *
+         * @type {TreeMapService}
+         */
+        this.assetService = codeMapAssetService;
+        /**
+         *
+         * @type {Scene}
+         */
+        this.scene = threeSceneService.scene;
+        /**
+         *
+         * @type {TreeMapService}
+         */
+        this.treemapService = treeMapService;
+        /**
+         *
+         * @type {TreeMapService}
+         */
+        this.settingsService = settingsService;
+
+        /**
+         * the root of the scene graph
+         * @type {Object3D}
+         */
+        this.root = {};
+
+        let ctx = this;
+
+        $rootScope.$on(&quot;settings-changed&quot;, (e, s)=&gt; {
+            ctx.applySettings(s);
+        });
+
+        this.addLightsToScene();
+
+    }
+
+    /**
+     * scales the scene by the given values
+     * @param {number} x
+     * @param {number} y
+     * @param {number} z
+     */
+    scaleTo(x, y, z) {
+        if (this.root &amp;&amp; this.root.scale) {
+            this.root.scale.set(x, y, z);
+        }
+    }
+
+    /**
+     * Applies the given settings and redraws the scene
+     * @param {Settings} s
+     * @listens {settings-changed}
+     */
+    applySettings(s) {
+        var area = s.areaMetric;
+        var height = s.heightMetric;
+        var color = s.colorMetric;
+        var map = s.map;
+        var range = s.neutralColorRange;
+        if (area &amp;&amp; height &amp;&amp; color &amp;&amp; map &amp;&amp; range) {
+            this.drawFromData(map, area, height, color, s.neutralColorRange, s.amountOfTopLabels);
+        }
+    }
+
+    /**
+     * Draws the map from the given (dataService) data.
+     * @param {CodeMap} map
+     * @param {string} areaKey
+     * @param {string} heightKey
+     * @param {string} colorKey
+     * @param {ColorRange} colorConfig
+     * @param {number} amountOfTopLabels number of highest buildings with labels
+     */
+    drawFromData(map, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels) {
+        this.drawMap(map, 500, 1, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels);
+    }
+
+    /**
+     * Draws the map
+     * @param {CodeMap} map
+     * @param {number} s size
+     * @param {number} p padding
+     * @param {string} areaKey
+     * @param {string} heightKey
+     * @param {string} colorKey
+     * @param {ColorRange} colorConfig
+     * @param {number} amountOfTopLabels number of highest buildings with labels
+     */
+    drawMap(map, s, p, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels) {
+
+        this.clearScene();
+
+        this.addRoot();
+
+        if (this.settingsService.settings.grid) {
+            this.addGrid(s, 50);
+        }
+
+        let nodes = this.treemapService.createTreemapNodes(map, s, s, p, areaKey, heightKey);
+
+        let sorted = nodes.sort((a,b)=&gt;{return b.height - a.height;});
+
+        sorted.forEach((node,i)=&gt;{
+            this.addNode(node, heightKey, i&lt;amountOfTopLabels);
+        });
+
+        this.centerMap(s, s);
+
+        this.drawScene();
+
+        this.colorMap(colorKey, colorConfig);
+
+    }
+
+    /**
+     * Adds a grid to the scene
+     * @param {number} mapSize
+     * @param {number} divisions
+     */
+    addGrid(mapSize, divisions) {
+
+        let xz = new THREE.GridHelper(mapSize, divisions);
+
+        let xy = new THREE.GridHelper(mapSize, divisions);
+        xy.translateY(mapSize);
+        xy.translateX(mapSize);
+        xy.rotation.z = Math.PI / 2;
+
+        let zy = new THREE.GridHelper(mapSize, divisions);
+        zy.translateY(mapSize);
+        zy.translateZ(mapSize);
+        zy.rotation.y = Math.PI / 2;
+        zy.rotation.x = Math.PI / 2;
+
+        let group = new THREE.Object3D();
+        group.add(xz);
+        group.add(xy);
+        group.add(zy);
+
+        this.root.add(group);
+
+    }
+
+    /**
+     * Colors the cubes depending on their node data and the given values.
+     * @param {string} colorKey
+     * @param {ColorRange} neutralColorRange
+     */
+    colorMap(colorKey, neutralColorRange) {
+        this.root.traverse((o)=&gt; {
+
+            if (o.node &amp;&amp; o.node.isLeaf) {
+
+                this.colorBase(o, colorKey, neutralColorRange);
+                this.colorDelta(o);
+
+            } else if (o.node &amp;&amp; !o.node.isLeaf) {
+
+                o.originalMaterial = o.material.clone();
+                o.selectedMaterial = this.assetService.selected();
+                o.hoveredMaterial = this.assetService.hovered();
+
+            } // else: object is propably a Grouping Object with no node data
+
+        });
+    }
+
+    /**
+     * Colors the &apos;folders&apos;
+     * @param {object} o folder
+     * @param {string} colorKey
+     * @param {ColorRange} neutralColorRange
+     */
+    colorBase(o, colorKey, neutralColorRange) {
+
+        let base = o.children.filter((c)=&gt;!c.isDelta)[0];
+
+        if (!base) {
+            return;
+        }
+
+        var val = base.node.attributes[colorKey];
+        if (val &lt; neutralColorRange.from) {
+            base.originalMaterial = neutralColorRange.flipped ? this.assetService.negative() : this.assetService.positive();
+        } else if (val &gt; neutralColorRange.to) {
+            base.originalMaterial = neutralColorRange.flipped ? this.assetService.positive() : this.assetService.negative();
+        } else {
+            base.originalMaterial = this.assetService.neutral();
+        }
+
+        base.selectedMaterial = this.assetService.selected();
+        base.hoveredMaterial = this.assetService.hovered();
+        base.material = base.originalMaterial.clone();
+
+
+    }
+
+    /**
+     * colors the delta block of o
+     * @param {Object3D} o building with delta
+     */
+    colorDelta(o) {
+
+        let delta = o.children.filter((c)=&gt;c.isDelta)[0];
+
+        if (!delta) {
+            return;
+        }
+
+        //only the selected, original and hover mat for delta part. It already has its delta mesh
+        delta.originalMaterial = delta.material.clone();
+        delta.selectedMaterial = this.assetService.selected();
+        delta.hoveredMaterial = this.assetService.hovered();
+
+    }
+
+    /**
+     * centers the map at point (w,l)
+     * @param {number} w width
+     * @param {number} l length
+     */
+    centerMap(w, l) {
+        this.root.translateX(-w / 2);
+        this.root.translateZ(-l / 2);
+    }
+
+    /**
+     * adds a node to the scene
+     * @param {object} node
+     * @param {string} heightKey
+     * @param {boolean} showLabel true if the building should get a label
+     */
+    addNode(node, heightKey, showLabel) {
+        //we need to keep in mind that d3 originally is in 2D, so we need to relabel the axis to match Three.js 3D space
+        if (!node.isLeaf) {
+            this.addFloor(node.width, node.height, node.length, node.x0, node.z0, node.y0, node.depth, node);
+        } else {
+            this.addBuilding(node.width, node.height, node.length, node.x0, node.z0, node.y0, node.deltas &amp;&amp; this.settingsService.settings.deltas ? node.deltas[heightKey] : 0, node, heightKey, showLabel);
+        }
+    }
+
+    /**
+     * Adds a root node to the scene
+     */
+    addRoot() {
+        this.root = new THREE.Object3D();
+    }
+
+    /**
+     * Adds a floor to the scene
+     * @param {number} w width
+     * @param {number} h height
+     * @param {number} l length
+     * @param {number} x x position
+     * @param {number} y y position
+     * @param {number} z z position
+     * @param {number} depth hierarchical depth
+     * @param {object} node the transformed d3 node
+     */
+    addFloor(w, h, l, x, y, z, depth, node) {
+        let mat = depth % 2 ? this.assetService.odd() : this.assetService.even();
+        let floor = this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, mat, node);
+        let group = new THREE.Object3D();
+        group.add(floor);
+        this.root.add(group);
+    }
+
+    /**
+     * Adds a building to the scene root. A building is an Object3D with 1 or 2 children cubes. The amount depends on the delta value of the cube.
+     * @param {number} w width
+     * @param {number} h height
+     * @param {number} l length
+     * @param {number} x x position
+     * @param {number} y y position
+     * @param {number} z z position
+     * @param {number} heightDelta
+     * @param {object} node the transformed d3 node
+     * @param {string} heightKey the height metric
+     * @param {boolean} showLabel true if the building should get a label
+     */
+    addBuilding(w, h, l, x, y, z, heightDelta, node, heightKey, showLabel) {
+        if (heightDelta &gt; 0) {
+            if (heightDelta &gt; h) {
+                heightDelta = 1; //scale it for the looks, should not happen though
+            }
+            let cube = this.getTransformedMesh(w, h - heightDelta, l, x + w / 2, y + (h - heightDelta) / 2, z + l / 2, this.assetService.default(), node);
+            let cubeD = this.getTransformedMesh(w, heightDelta, l, x + w / 2, y + (heightDelta) / 2 + (h - heightDelta), z + l / 2, this.assetService.positiveDelta(), node);
+            let building = new THREE.Object3D();
+            cubeD.isDelta = true;
+            building.add(cube);
+            building.add(cubeD);
+            building.node = node;
+            this.root.add(building);
+        } else if (heightDelta &lt; 0) {
+            if (-heightDelta &gt; h) {
+                heightDelta = -1; //scale it for the looks, should not happen though
+            }
+
+            let cube = this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, this.assetService.default(), node);
+            let cubeD = this.getTransformedMesh(w, -heightDelta, l, x + w / 2, y + (-heightDelta) / 2 + h, z + l / 2, this.assetService.negativeDelta(), node);
+            let building = new THREE.Object3D();
+            cubeD.isDelta = true;
+            building.add(cube);
+            building.add(cubeD);
+            building.node = node;
+            this.root.add(building);
+        } else {
+            let cube = this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, this.assetService.default(), node);
+            let building = new THREE.Object3D();
+            building.add(cube);
+            building.node = node;
+            this.root.add(building);
+        }
+
+        if(showLabel) {
+            this.addLabel(x, y, z, w, h, l, node, heightKey);
+        }
+
+    }
+
+    /**
+    * adds a label at the given position
+    * @param {number} x x position
+    * @param {number} y y position
+    * @param {number} z z position
+    * @param {number} w width
+    * @param {number} h height
+    * @param {number} l length
+    * @param {object} node the transformed d3 node
+    * @param {string} heightKey the height metric
+    */
+    addLabel(x, y, z, w, h, l, node, heightKey) {
+
+        if(node.attributes &amp;&amp; node.attributes[heightKey]){
+
+            var sprite = this.makeText(node.name + &quot;: &quot; + node.attributes[heightKey], 30);
+            sprite.position.set(x+w/2,y+60+h + sprite.heightValue/2,z+l/2);
+            this.root.add(sprite);
+
+            // Line
+            var material = new THREE.LineBasicMaterial({
+                color: 0x0000ff
+            });
+
+            var geometry = new THREE.Geometry();
+            geometry.vertices.push(
+                new THREE.Vector3(x + w / 2, y + h, z + l / 2),
+                new THREE.Vector3(x + w / 2, y + h + 60, z + l / 2)
+            );
+
+            var line = new THREE.Line(geometry, material);
+            this.root.add(line);
+
+        }
+
+    }
+
+    /**
+     * Returns a text sprite
+     * @param {string} message
+     * @param {number} fontsize
+     * @returns {THREE.Sprite}
+     */
+    makeText(message, fontsize) {
+        var ctx, texture, sprite, spriteMaterial,
+            canvas = document.createElement(&quot;canvas&quot;);
+        ctx = canvas.getContext(&quot;2d&quot;);
+        ctx.font = fontsize + &quot;px Arial&quot;;
+
+        var margin = 10;
+
+        // setting canvas width/height before ctx draw, else canvas is empty
+        var w = ctx.measureText(message).width;
+        var h = fontsize;
+        canvas.width = w + margin;
+        canvas.height = h + margin; // fontsize * 1.5
+
+        //bg
+        ctx.fillStyle = &quot;rgba(255,255,255,1)&quot;;
+        ctx.strokeStyle = &quot;rgba(0,0,255,1)&quot;;
+        ctx.fillRect(0,0,canvas.width, canvas.height);
+        ctx.strokeRect(0,0,canvas.width, canvas.height);
+
+        // after setting the canvas width/height we have to re-set font to apply!?! looks like ctx reset
+        ctx.font = h + &quot;px Arial&quot;;
+        ctx.fillStyle = &quot;rgba(0,0,0,1)&quot;;
+        ctx.textAlign = &quot;center&quot;;
+        ctx.textBaseline = &quot;middle&quot;;
+        ctx.fillText(message, canvas.width / 2, canvas.height / 2);
+
+        texture = new THREE.Texture(canvas);
+        texture.minFilter = THREE.LinearFilter; // NearestFilter;
+        texture.needsUpdate = true;
+
+        spriteMaterial = new THREE.SpriteMaterial({map : texture});
+        sprite = new THREE.Sprite(spriteMaterial);
+        sprite.scale.set(canvas.width,canvas.height,1);
+        sprite.heightValue = canvas.height;
+        return sprite;
+    }
+
+    /**
+     * Add scene lighting
+     */
+    addLightsToScene() {
+        var ambilight = new THREE.AmbientLight(0x707070); // soft white light
+        var light1 = new THREE.DirectionalLight(0xe0e0e0, 1);
+        light1.position.set(50, 10, 8).normalize();
+        light1.castShadow = false;
+        light1.shadow.camera.right = 5;
+        light1.shadow.camera.left = -5;
+        light1.shadow.camera.top = 5;
+        light1.shadow.camera.bottom = -5;
+        light1.shadow.camera.near = 2;
+        light1.shadow.camera.far = 100;
+        var light2 = new THREE.DirectionalLight(0xe0e0e0, 1);
+        light2.position.set(-50, 10, -8).normalize();
+        light2.castShadow = false;
+        light2.shadow.camera.right = 5;
+        light2.shadow.camera.left = -5;
+        light2.shadow.camera.top = 5;
+        light2.shadow.camera.bottom = -5;
+        light2.shadow.camera.near = 2;
+        light2.shadow.camera.far = 100;
+        this.scene.add(ambilight);
+        this.scene.add(light1);
+        this.scene.add(light2);
+    }
+
+    /**
+     * draws the current scene
+     */
+    drawScene() {
+        this.scene.add(this.root);
+    }
+
+    /**
+     * clears the current scene. Lights remain in the scene
+     */
+    clearScene() {
+        this.scene.remove(this.root);
+    }
+
+    /**
+     * Efficiently creates a new mesh.
+     * @param {number} scaleX
+     * @param {number} scaleY
+     * @param {number} scaleZ
+     * @param {number} translateX
+     * @param {number} translateY
+     * @param {number} translateZ
+     * @param {LambertMeshMaterial} mat
+     * @param {object} node
+     * @return {Mesh}
+     */
+    getTransformedMesh(scaleX, scaleY, scaleZ, translateX, translateY, translateZ, mat, node) {
+        let geo = this.assetService.getCubeGeo();
+        let mesh = new THREE.Mesh(geo, mat);
+        mesh.scale.x = scaleX;
+        mesh.scale.y = scaleY;
+        mesh.scale.z = scaleZ;
+        mesh.translateX(translateX);
+        mesh.translateY(translateY);
+        mesh.translateZ(translateZ);
+        mesh.node = node;
+        return mesh;
+    }
+
+}
+
+export {CodeMapService};
+
+
+
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

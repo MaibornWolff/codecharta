@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for codeCharta/ui/fileChooser/fileChooserController.spec.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">All files</a> / <a href="index.html">codeCharta/ui/fileChooser</a> fileChooserController.spec.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">65.63% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>21/32</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">66.67% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>6/9</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">65.63% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>21/32</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">require("./fileChooser.js");
+&nbsp;
+/**
+ * @test {FileChooserController}
+ */
+describe("app.codeCharta.ui.fileChooser.fileChooserController", function() {
+&nbsp;
+    var dataService, fileChooserController, $controller, $httpBackend, $rootScope, originalReader;
+&nbsp;
+    beforeEach(angular.mock.module("app.codeCharta.ui.fileChooser"));
+&nbsp;
+    beforeEach(angular.mock.inject((_$controller_, _dataService_, _$httpBackend_, _$rootScope_)=&gt;{
+        dataService = _dataService_;
+        $rootScope = _$rootScope_;
+        $controller = _$controller_;
+        $httpBackend = _$httpBackend_;
+&nbsp;
+        //bind filereader
+        global.FileReader = FileReader;
+&nbsp;
+    }));
+&nbsp;
+    /**
+     * @test {FileChooserController#fileChanged}
+     */
+    xit("should read file on file changed and call onNewFileLoaded", <span class="fstat-no" title="function not covered" >()=&gt;</span>{
+&nbsp;
+        v</span>ar element = <span class="cstat-no" title="statement not covered" >{
+            files:[
+                "some file"
+            ]
+        };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        fileChooserController = $controller("fileChooserController", {$scope: $rootScope, dataService: dataService});</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        fileChooserController.onNewFileLoaded = sinon.spy();</span>
+&nbsp;
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        fileChooserController.fileChanged(element);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        expect(fileChooserController.onNewFileLoaded.calledOnce);</span>
+&nbsp;
+    });
+&nbsp;
+    it("should close modal, parse valid data and set it after onNewFileLoaded", ()=&gt;{
+&nbsp;
+    });
+&nbsp;
+    it("should close modal and alert on invalid data after onNewFileLoaded", ()=&gt;{
+&nbsp;
+    });
+&nbsp;
+    it("should digest after data is set", ()=&gt;{
+&nbsp;
+    });
+&nbsp;
+    /**
+     * @test {FileChooserController#setNewData}
+     */
+    xit("should print errors when setting filedata fails", <span class="fstat-no" title="function not covered" >()=&gt;</span>{
+<span class="cstat-no" title="statement not covered" >        dataService.setFileData = {</span>
+            then:<span class="fstat-no" title="function not covered" >(</span>resolve, reject)=&gt;{<span class="cstat-no" title="statement not covered" >reject({errors:[{message:"a", dataPath:"b"}]});}</span>
+        };
+<span class="cstat-no" title="statement not covered" >        fileChooserController = $controller("fileChooserController", {$scope: $rootScope, dataService: dataService});</span>
+<span class="cstat-no" title="statement not covered" >        fileChooserController.printErrors = sinon.spy();</span>
+<span class="cstat-no" title="statement not covered" >        fileChooserController.setNewData("some");</span>
+<span class="cstat-no" title="statement not covered" >        expect(fileChooserController.printErrors.calledOnce);</span>
+    });
+&nbsp;
+    /**
+     * @test {FileChooserController#printErrors}
+     */
+    it("printing errors should call console.log", ()=&gt;{
+        var o = console.log;
+        console.log = sinon.spy();
+&nbsp;
+        fileChooserController = $controller("fileChooserController", {$scope: $rootScope, dataService: dataService});
+        fileChooserController.printErrors({errors:[{message:"a", dataPath:"b"}]});
+&nbsp;
+        expect(console.log.calledOnce);
+        console.log = o;
+&nbsp;
+    });
+&nbsp;
+});</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Thu Jun 22 2017 10:35:16 GMT+0000 (UTC)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

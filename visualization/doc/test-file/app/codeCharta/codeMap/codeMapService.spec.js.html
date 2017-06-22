@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">app/codeCharta/codeMap/codeMapService.spec.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeChartaController.js~CodeChartaController.html">CodeChartaController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeChartaDirective.js~CodeChartaDirective.html">CodeChartaDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/codeMap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapAssetService.js~CodeMapAssetService.html">CodeMapAssetService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapController.js~CodeMapController.html">CodeMapController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapDirective.js~CodeMapDirective.html">CodeMapDirective</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/codeMapService.js~CodeMapService.html">CodeMapService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CodeMapMaterialPack">CodeMapMaterialPack</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=box#Reference/Geometries/BoxGeometry">BoxGeometry</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=rayca#Reference/Core/Raycaster">Raycaster</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=mesh#Reference/Objects/Mesh">Mesh</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/codeMap/threeViewer</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeCameraService.js~ThreeCameraService.html">ThreeCameraService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeOrbitControlsService.js~ThreeOrbitControlsService.html">ThreeOrbitControlsService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeRendererService.js~ThreeRendererService.html">ThreeRendererService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeSceneService.js~ThreeSceneService.html">ThreeSceneService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeUpdateCycleService.js~ThreeUpdateCycleService.html">ThreeUpdateCycleService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/codeMap/threeViewer/threeViewerService.js~ThreeViewerService.html">ThreeViewerService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ThreeOrbitControls">ThreeOrbitControls</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/#Reference/Cameras/PerspectiveCamera">PerspectiveCamera</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/api/renderers/WebGLRenderer.html">WebGLRenderer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://threejs.org/docs/?q=scene#Reference/Scenes/Scene">Scene</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/data</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/data/dataService.js~DataService.html">DataService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/data/dataValidatorService.js~DataValidatorService.html">DataValidatorService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ng/type/$rootScope.Scope">Scope</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ng/service/$http">$http</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://github.com/d3/d3-hierarchy/blob/master/README.md#hierarchy">d3#hierarchy</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/data/model</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/data/model/dataModel.js~DataModel.html">DataModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CodeMap">CodeMap</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/scenario</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/scenario/scenarioService.js~ScenarioService.html">ScenarioService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/scenario/model</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/scenario/model/scenario.js~Scenario.html">Scenario</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/settings</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/settings/settingsService.js~SettingsService.html">SettingsService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/settings/model</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/settings/model/range.js~Range.html">Range</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/settings/model/settings.js~Settings.html">Settings</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/tooltip</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/tooltip/tooltipService.js~TooltipService.html">TooltipService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/treemap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/treemap/treeMapService.js~TreeMapService.html">TreeMapService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://github.com/d3/d3-hierarchy/blob/master/README.md#treemap">d3#treemap</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/core/url</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/core/url/urlService.js~UrlService.html">UrlService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ng/service/$location">$location</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/checkbox</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/checkbox/checkboxDirective.js~CheckboxDirective.html">CheckboxDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/collapsible</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/collapsible/collapsibleDirective.js~CollapsibleDirective.html">CollapsibleDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/collapsibleElement</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/collapsibleElement/collapsibleElementDirective.js~CollapsibleElementDirective.html">CollapsibleElementDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/dropdown</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/dropdown/dropdownController.js~DropdownController.html">DropdownController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/dropdown/dropdownDirective.js~DropdownDirective.html">DropdownDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/fab</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/fab/fabDirective.js~FabDirective.html">FabDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/numberField</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/numberField/numberFieldDirective.js~NumberFieldDirective.html">NumberFieldDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/common/slider</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/common/slider/sliderDirective.js~SliderDirective.html">SliderDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/detailPanel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelController.js~DetailPanelController.html">DetailPanelController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/detailPanel/detailPanelDirective.js~DetailPanelDirective.html">DetailPanelDirective</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CommonDetails">CommonDetails</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Details">Details</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-SpecificDetails">SpecificDetails</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://docs.angularjs.org/api/ngMock/service/$timeout">Timeout</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/fabBar</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fabBar/fabBarDirective.js~FabBarDirective.html">FabBarDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/fileChooser</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserController.js~FileChooserController.html">FileChooserController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserDirective.js~FileChooserDirective.html">FileChooserDirective</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/fileChooser/fileChooserPanelDirective.js~FileChooserPanelDirective.html">FileChooserPanelDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/legendPanel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/legendPanel/legendPanelController.js~LegendPanelController.html">LegendPanelController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/legendPanel/legendPanelDirective.js~LegendPanelDirective.html">LegendPanelDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/revisionChooser</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserController.js~RevisionChooserController.html">RevisionChooserController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/revisionChooser/revisionChooserDirective.js~RevisionChooserDirective.html">RevisionChooserDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/scenarioButtons</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/scenarioButtons/scenarioButtonsController.js~ScenarioButtonsController.html">ScenarioButtonsController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/scenarioButtons/scenarioButtonsDirective.js~ScenarioButtonsDirective.html">ScenarioButtonsDirective</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">codeCharta/ui/settingsPanel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelController.js~SettingsPanelController.html">SettingsPanelController</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/app/codeCharta/ui/settingsPanel/settingsPanelDirective.js~SettingsPanelDirective.html">SettingsPanelDirective</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">app/codeCharta/codeMap/codeMapService.spec.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">require(&quot;./codeMap.js&quot;);
+
+/**
+ * @test {CodeMapService}
+ */
+describe(&quot;app.codeCharta.codeMap.codeMapService&quot;, function() {
+
+    var codeMapService, $scope, sandbox, mesh;
+
+    beforeEach(angular.mock.module(&quot;app.codeCharta.codeMap&quot;));
+
+    beforeEach(angular.mock.inject((_codeMapService_, _$rootScope_)=&gt;{
+        codeMapService = _codeMapService_;
+        $scope = _$rootScope_;
+        var geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
+        var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+        mesh = new THREE.Mesh( geometry, material );
+        codeMapService.addRoot();
+    }));
+
+    beforeEach(()=&gt;{
+        sandbox = sinon.sandbox.create();
+    });
+
+    afterEach(()=&gt;{
+        sandbox.restore();
+    });
+
+    /**
+     * @test {CodeMapService#drawMap}
+     */
+    it(&quot;drawMap should showLabels for the highest building&quot;, ()=&gt;{
+
+         var data = {
+          &quot;name&quot;: &quot;root&quot;,
+          &quot;attributes&quot;: {},
+          &quot;children&quot;: [
+            {
+              &quot;name&quot;: &quot;big leaf&quot;,
+              &quot;attributes&quot;: {&quot;RLOC&quot;: 100, &quot;Functions&quot;: 10, &quot;MCC&quot;: 1},
+              &quot;link&quot;: &quot;http://www.google.de&quot;
+            },
+            {
+              &quot;name&quot;: &quot;Parent Leaf&quot;,
+              &quot;attributes&quot;: {},
+              &quot;children&quot;: [
+                {
+                  &quot;name&quot;: &quot;small leaf&quot;,
+                  &quot;attributes&quot;: {&quot;RLOC&quot;: 30, &quot;Functions&quot;: 100, &quot;MCC&quot;: 100},
+                  &quot;children&quot;: []
+                },
+                {
+                  &quot;name&quot;: &quot;other small leaf&quot;,
+                  &quot;attributes&quot;: {&quot;RLOC&quot;: 70, &quot;Functions&quot;: 1000, &quot;MCC&quot;: 10},
+                  &quot;children&quot;: []
+                }
+              ]
+            }
+          ]
+        };
+
+        var tmp = codeMapService.addNode;
+
+        var smallSpy = sinon.spy();
+        var otherSpy = sinon.spy();
+        var elseSpy = sinon.spy();
+
+        codeMapService.addNode = (node, heightKey, showLabel) =&gt; {
+            if(node.name === &quot;small leaf&quot;){
+                expect(showLabel);
+                smallSpy();
+            } else if(node.name === &quot;other small leaf&quot;){
+               expect(!showLabel);
+               otherSpy();
+           } else {
+               expect(!showLabel);
+               elseSpy();
+           }
+        };
+
+        codeMapService.drawMap(data, 2, 2, &quot;RLOC&quot;, &quot;MCC&quot;, &quot;MCC&quot;, &quot;colorConfig&quot;, 1);
+
+        expect(smallSpy.calledOnce);
+        expect(otherSpy.calledOnce);
+        expect(elseSpy.called);
+
+    });
+
+    /**
+     * @test {CodeMapService#addLabel}
+     */
+    it(&quot;should addLabel to root if node has height attribute&quot;, ()=&gt;{
+        codeMapService.root.add = sinon.spy();
+        codeMapService.addLabel(0,0,0,0,0,0,{attributes:{heightKey:0}},&quot;heightKey&quot;);
+        expect(codeMapService.root.add.called);
+    });
+
+    /**
+     * @test {CodeMapService#addLabel}
+     */
+    it(&quot;should not addLabel to root if node has no height attribute&quot;, ()=&gt;{
+        codeMapService.root.add = sinon.spy();
+        codeMapService.addLabel(0,0,0,0,0,0,{attributes:{heightKey:0}},&quot;heightKeyZZZZZ&quot;);
+        expect(!codeMapService.root.add.called);
+    });
+
+    /**
+     * @test {CodeMapService#addLabel}
+     * @test {CodeMapService#addNode}
+     */
+    it(&quot;should call addLabel when showLabel is true&quot;, ()=&gt;{
+        codeMapService.addLabel = sinon.spy();
+        codeMapService.addBuilding(1,1,1,1,1,1,2,{ isDelta:true}, true);
+        expect(codeMapService.addLabel);
+    });
+
+    /**
+     * @test {CodeMapService#addLabel}
+     * @test {CodeMapService#addNode}
+     */
+    it(&quot;should not call addLabel when showLabel is false&quot;, ()=&gt;{
+        codeMapService.addLabel = sinon.spy();
+        codeMapService.addBuilding(1,1,1,1,1,1,2,{ isDelta:true}, false);
+        expect(!codeMapService.addLabel);
+    });
+
+    /**
+     * @test {CodeMapService#addLabel}
+     */
+    it(&quot;should not addLabel to root if node has no attributes&quot;, ()=&gt;{
+        codeMapService.root.add = sinon.spy();
+        codeMapService.addLabel(0,0,0,0,0,0,{},&quot;heightKey&quot;);
+        expect(!codeMapService.root.add.called);
+    });
+
+    /**
+     * @test {CodeMapService#scaleTo}
+     */
+    it(&quot;should not try to scale when no root with a scale method exists&quot;, ()=&gt;{
+        codeMapService.root = &quot;something&quot;;
+        codeMapService.scaleTo(1,1,1);
+        expect(codeMapService.root).to.equal(&quot;something&quot;);
+
+        codeMapService.root = undefined;
+        codeMapService.scaleTo(1,1,1);
+        expect(codeMapService.root).to.equal(undefined);
+    });
+
+    /**
+     * @test {CodeMapService#drawMap}
+     */
+    it(&quot;draw map should clear the scene, add a root, call the treemap service, call addNode for every node, center the map, draw the scene and color the map, grid is deactivated&quot;, ()=&gt;{
+
+        codeMapService.clearScene = sandbox.spy();
+        codeMapService.addRoot = sandbox.spy();
+        codeMapService.addGrid = sandbox.spy();
+        codeMapService.treemapService.createTreemapNodes = sandbox.stub().returns([{},{},{}]);
+        codeMapService.addNode = sandbox.spy();
+        codeMapService.centerMap = sandbox.spy();
+        codeMapService.drawScene = sandbox.spy();
+        codeMapService.colorMap = sandbox.spy();
+        codeMapService.settingsService.settings.grid = false;
+
+        codeMapService.drawMap(&quot;map&quot;, &quot;s&quot;, &quot;p&quot;, &quot;areaKey&quot;, &quot;heightKey&quot;, &quot;colorKey&quot;, &quot;colorConfig&quot;);
+
+        expect(codeMapService.clearScene.calledOnce);
+        expect(codeMapService.addRoot.calledOnce);
+        expect(!codeMapService.addGrid.called);
+        expect(codeMapService.treemapService.createTreemapNodes.calledOnce);
+        expect(codeMapService.addNode.calledThrice);
+        expect(codeMapService.centerMap.calledOnce);
+        expect(codeMapService.drawScene.calledOnce);
+        expect(codeMapService.colorMap.calledOnce);
+
+    });
+
+    /**
+     * @test {CodeMapService#drawMap}
+     */
+    it(&quot;draw map should clear the scene, add a root, call the treemap service, call addNode for every node, center the map, draw the scene and color the map, grid is activated&quot;, ()=&gt;{
+
+        codeMapService.clearScene = sandbox.spy();
+        codeMapService.addRoot = sandbox.spy();
+        codeMapService.addGrid = sandbox.spy();
+        codeMapService.treemapService.createTreemapNodes = sandbox.stub().returns([{},{},{}]);
+        codeMapService.addNode = sandbox.spy();
+        codeMapService.centerMap = sandbox.spy();
+        codeMapService.drawScene = sandbox.spy();
+        codeMapService.colorMap = sandbox.spy();
+        codeMapService.settingsService.settings.grid = true;
+
+        codeMapService.drawMap(&quot;map&quot;, &quot;s&quot;, &quot;p&quot;, &quot;areaKey&quot;, &quot;heightKey&quot;, &quot;colorKey&quot;, &quot;colorConfig&quot;);
+
+        expect(codeMapService.clearScene.calledOnce);
+        expect(codeMapService.addRoot.calledOnce);
+        expect(codeMapService.addGrid.calledOnce);
+        expect(codeMapService.treemapService.createTreemapNodes.calledOnce);
+        expect(codeMapService.addNode.calledThrice);
+        expect(codeMapService.centerMap.calledOnce);
+        expect(codeMapService.drawScene.calledOnce);
+        expect(codeMapService.colorMap.calledOnce);
+
+    });
+
+    /**
+     * @test {CodeMapService#applySettings}
+     */
+    it(&quot;applySettings should call drawFromData when all variables are set&quot;, ()=&gt;{
+
+        codeMapService.drawFromData = sandbox.spy();
+
+        var s = {
+            areaMetric:1,
+            heightMetric:1,
+            colorMetric:1,
+            map: {},
+            range: {}
+        };
+
+        codeMapService.applySettings(s);
+
+        expect(codeMapService.drawFromData.calledOnce);
+
+    });
+
+    /**
+     * @test {CodeMapService#addLightsToScene}
+     */
+    it(&quot;should add something to scene when addLightsToScene is called&quot;, () =&gt; {
+        codeMapService.scene.add = sandbox.spy();
+        codeMapService.addLightsToScene();
+        expect(codeMapService.scene.add.called);
+    });
+
+    /**
+     * @test {CodeMapService#addLightsToScene}
+     */
+    it(&quot;should add something to scene when addLightsToScene is called&quot;, () =&gt; {
+        codeMapService.scene.add = sandbox.spy();
+        codeMapService.addLightsToScene();
+        expect(codeMapService.scene.add.called);
+    });
+
+    /**
+     * @test {CodeMapService#getTransformedMesh}
+     */
+    it(&quot;getTransformedMesh should create correct mesh&quot;, ()=&gt;{
+        var mesh = codeMapService.getTransformedMesh(1,1,1,0,0,0,new THREE.MeshLambertMaterial({color: 0x69AE40}), &quot;something&quot;);
+        expect(mesh.node).to.equal(&quot;something&quot;);
+        expect(mesh.scale.x).to.equal(1);
+    });
+
+    /**
+     * @test {CodeMapService#applySettings}
+     */
+    it(&quot;applySettings should not call drawFromData when variables are missing&quot;, ()=&gt;{
+
+        codeMapService.drawFromData = sandbox.spy();
+
+        var s = {
+            areaMetric:1,
+            heightMetric:1,
+            colorMetric:1,
+            map: {}
+            //no range
+        };
+
+        codeMapService.applySettings(s);
+
+        expect(!codeMapService.drawFromData.called);
+
+    });
+
+    /**
+     * @test {CodeMapService#addBuilding}
+     */
+    it(&quot;addBuilding should add a group to the root when heightDelta is &gt;0&quot;, () =&gt; {
+        codeMapService.root.add = sandbox.spy();
+        codeMapService.addBuilding(1,1,1,1,1,1,2,{ isDelta:true});
+        expect(codeMapService.root.add.calledOnce);
+    });
+
+    /**
+     * @test {CodeMapService#addBuilding}
+     */
+    it(&quot;addBuilding should add a group to the root when heightDelta is &lt;0&quot;, () =&gt; {
+        codeMapService.root.add = sandbox.spy();
+        codeMapService.addBuilding(1,1,1,1,1,1,-2,{});
+        expect(codeMapService.root.add.calledOnce);
+    });
+
+    /**
+     * @test {CodeMapService#addBuilding}
+     */
+    it(&quot;addBuilding should add a group to the root when heightDelta is =0&quot;, () =&gt; {
+        codeMapService.root.add = sandbox.spy();
+        codeMapService.addBuilding(1,1,1,1,1,1,0,{});
+        expect(codeMapService.root.add.calledOnce);
+    });
+
+    /**
+     * @test {CodeMapService#addBuilding}
+     */
+    it(&quot;addBuilding should add a group to the root when heightDelta &lt; h and heightDelta &gt; 0&quot;, () =&gt; {
+        codeMapService.root.add = sandbox.spy();
+        codeMapService.addBuilding(1,3,1,1,1,1,2,{});
+        expect(codeMapService.root.add.calledOnce);
+    });
+
+    /**
+     * @test {CodeMapService#addBuilding}
+     */
+    it(&quot;addBuilding should add a group to the root when -heightDelta &gt; h and heightDelta &lt; 0&quot;, () =&gt; {
+        codeMapService.root.add = sandbox.spy();
+        codeMapService.addBuilding(1,3,1,1,1,1,-4,{});
+        expect(codeMapService.root.add.calledOnce);
+    });
+
+    /**
+     * @test {CodeMapService#addBuilding}
+     */
+    it(&quot;addBuilding with heightDelta &gt; 0 should request two meshes (delta and building)&quot;, () =&gt; {
+        codeMapService.getTransformedMesh = sandbox.stub().returns(mesh);
+        codeMapService.addBuilding(1,3,1,1,1,1,4,{});
+        expect(codeMapService.getTransformedMesh.calledTwice);
+    });
+
+    /**
+     * @test {CodeMapService#addBuilding}
+     */
+    it(&quot;addBuilding with heightDelta &lt; 0 should request two meshes (delta and building)&quot;, () =&gt; {
+        codeMapService.getTransformedMesh = sandbox.stub().returns(mesh);
+        codeMapService.addBuilding(1,3,1,1,1,1,-4,{});
+        expect(codeMapService.getTransformedMesh.calledTwice);
+    });
+
+    /**
+     * @test {CodeMapService#addBuilding}
+     */
+    it(&quot;addBuilding with heightDelta = 0 should request one meshes (only building)&quot;, () =&gt; {
+        codeMapService.getTransformedMesh = sandbox.stub().returns(mesh);
+        codeMapService.addBuilding(1,3,1,1,1,1,0,{});
+        expect(codeMapService.getTransformedMesh.calledOnce);
+    });
+
+    it(&quot;should retrieve the angular service instance&quot;, ()=&gt;{
+        expect(codeMapService).to.not.equal(undefined);
+    });
+
+    /**
+     * @test {CodeMapService#applySettings}
+     */
+    it(&quot;should call applySettings on settings-changed event&quot;, ()=&gt;{
+        codeMapService.applySettings = sandbox.spy();
+        $scope.$broadcast(&quot;settings-changed&quot;);
+        expect(codeMapService.applySettings.calledOnce);
+    });
+
+    /**
+     * @test {CodeMapService#scaleTo}
+     */
+    it(&quot;scaleTo should scale root if available&quot;, ()=&gt;{
+        codeMapService.root = {
+            scale: {
+                set: sandbox.spy()
+            }
+        };
+        codeMapService.scaleTo(1,2,3);
+        expect(codeMapService.root.scale.set.calledOnce);
+    });
+
+    /**
+     * @test {CodeMapService#addNode}
+     */
+    it(&quot;addNode should call addFloor if node is no leaf&quot;, ()=&gt;{
+        codeMapService.addFloor = sandbox.spy();
+        codeMapService.addNode({isLeaf: false}, &quot;heightKey&quot;);
+        expect(codeMapService.addFloor.calledOnce);
+    });
+
+    /**
+     * @test {CodeMapService#addNode}
+     */
+    it(&quot;addNode should call addBuilding if node is leaf&quot;, ()=&gt;{
+        codeMapService.addBuilding = sandbox.spy();
+        codeMapService.addNode({isLeaf: true}, &quot;heightKey&quot;);
+        expect(codeMapService.addBuilding.calledOnce);
+    });
+
+    /**
+     * @test {CodeMapService#centerMap}
+     */
+    it(&quot;centerMap&quot;, ()=&gt;{
+        codeMapService.root.translateX = sandbox.spy();
+        codeMapService.root.translateZ = sandbox.spy();
+        codeMapService.centerMap(500,400);
+        expect(codeMapService.root.translateX.calledWithExactly(250));
+        expect(codeMapService.root.translateX.calledWithExactly(200));
+    });
+
+    /**
+     * @test {CodeMapService#scaleTo}
+     */
+    it(&quot;scaleTo should not scale root if not available&quot;, ()=&gt;{
+        codeMapService.scaleTo(1,2,3);
+    });
+
+    /**
+     * @test {CodeMapService#applySettings}
+     */
+    it(&quot;applySettings should redraw scene if there is enough data&quot;, ()=&gt;{
+
+        codeMapService.drawFromData = sandbox.spy();
+
+        var min = {
+            areaMetric: &quot;area&quot;,
+            heightMetric: &quot;height&quot;,
+            colorMetric: &quot;color&quot;,
+            map: {},
+            range: {}
+        };
+
+        codeMapService.applySettings(min);
+
+        expect(codeMapService.drawFromData.calledOnce);
+
+    });
+
+    /**
+     * @test {CodeMapService#applySettings}
+     */
+    it(&quot;applySettings should not redraw scene if there is not enough data&quot;, ()=&gt;{
+
+        codeMapService.drawFromData = sandbox.spy();
+
+        var min = {
+            areaMetric: &quot;area&quot;,
+            colorMetric: &quot;color&quot;,
+            map: {},
+            range: {}
+        };
+
+        codeMapService.applySettings(min);
+
+        expect(codeMapService.drawFromData.called).to.equal(false);
+
+    });
+
+    /**
+     * @test {CodeMapService#addGrid}
+     */
+    it(&quot;adding a helper grid to the scene should add a group of 3 Meshes to the scene&quot;, ()=&gt;{
+
+        codeMapService.root.add = (mesh) =&gt; {
+            expect(mesh.children.length).to.equal(3);
+        };
+
+        codeMapService.addGrid(500, 10);
+
+    });
+
+    /**
+     * @test {CodeMapService#colorDelta}
+     */
+    it(&quot;colorDelta should color the first delta node in a group (since buildings only have one delta node)&quot;, ()=&gt;{
+
+        //stub a group and children
+        let a = {
+            isDelta: false,
+            material: new THREE.MeshLambertMaterial({color: 0x012345})
+        };
+
+        let b = {
+            isDelta: true,
+            material: new THREE.MeshLambertMaterial({color: 0x123456})
+        };
+
+        let c = {
+            isDelta: true,
+            material: new THREE.MeshLambertMaterial({color: 0x234567})
+        };
+
+        let group = {
+            children: [a, b, c]
+        };
+
+        codeMapService.colorDelta(group);
+
+        var foundDelta = false;
+
+        group.children.forEach((c)=&gt;{
+            if(c.isDelta &amp;&amp; c.originalMaterial &amp;&amp; c.selectedMaterial &amp;&amp; c.hoveredMaterial){ // a set originalMaterial indicates a colored cube
+                foundDelta = true;
+            }
+        });
+
+        expect(foundDelta).to.equal(true);
+
+    });
+
+    /**
+     * @test {CodeMapService#centerMap}
+     */
+    it(&quot;center map should translate root in xz plane at some point&quot;, ()=&gt;{
+        var x = codeMapService.root.translateX = sandbox.spy();
+        var z = codeMapService.root.translateZ = sandbox.spy();
+        codeMapService.centerMap(0,0);
+        expect(x.calledOnce);
+        expect(z.calledOnce);
+    });
+
+});</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

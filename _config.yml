@@ -1,0 +1,7 @@
+theme: jekyll-theme-architect
+show_downloads: false
+project_title: "CodeCharta"
+zip_url: "https://github.com/MaibornWolff/codecharta/releases/latest"
+tar_url: "https://github.com/MaibornWolff/codecharta/releases/latest"
+releases_url: "https://github.com/MaibornWolff/codecharta/releases"
+issues_url: "https://github.com/MaibornWolff/codecharta/issues"

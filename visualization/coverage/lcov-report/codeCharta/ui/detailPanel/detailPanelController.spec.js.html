@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for codeCharta/ui/detailPanel/detailPanelController.spec.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">All files</a> / <a href="index.html">codeCharta/ui/detailPanel</a> detailPanelController.spec.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">88.89% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>80/90</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">66.67% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>20/30</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">88.89% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>80/90</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">require("./detailPanel.js");
+/**
+ * @test {DetailPanelController}
+ */
+describe("app.codeCharta.ui.detailPanel.detailPanelController", function() {
+&nbsp;
+    var detailPanelController, scope, codeMapMaterialFactory, timeout, settingsService;
+&nbsp;
+    beforeEach(angular.mock.module("app.codeCharta.ui.detailPanel"));
+&nbsp;
+    beforeEach(()=&gt;{
+&nbsp;
+        angular.mock.module("app.codeCharta.codeMap");
+&nbsp;
+        angular.module("app.codeCharta.codeMap").factory("codeMapMaterialFactory", () =&gt; {
+            return {
+                positive: <span class="fstat-no" title="function not covered" >() =&gt; </span>{<span class="cstat-no" title="statement not covered" >return new THREE.MeshLambertMaterial({color: 0x000000});},</span>
+                neutral: <span class="fstat-no" title="function not covered" >() =&gt; </span>{<span class="cstat-no" title="statement not covered" >return new THREE.MeshLambertMaterial({color: 0x111111});},</span>
+                negative: <span class="fstat-no" title="function not covered" >() =&gt; </span>{<span class="cstat-no" title="statement not covered" >return new THREE.MeshLambertMaterial({color: 0x222222});},</span>
+                odd: <span class="fstat-no" title="function not covered" >() =&gt; </span>{<span class="cstat-no" title="statement not covered" >return new THREE.MeshLambertMaterial({color: 0x333333});},</span>
+                even: <span class="fstat-no" title="function not covered" >() =&gt; </span>{<span class="cstat-no" title="statement not covered" >return new THREE.MeshLambertMaterial({color: 0x444444});},</span>
+                selected: <span class="fstat-no" title="function not covered" >() =&gt; </span>{<span class="cstat-no" title="statement not covered" >return new THREE.MeshLambertMaterial({color: 0x555555});},</span>
+                hovered: <span class="fstat-no" title="function not covered" >() =&gt; </span>{<span class="cstat-no" title="statement not covered" >return new THREE.MeshLambertMaterial({ color: 0x666666, emissive: 0x111111});},</span>
+                default: <span class="fstat-no" title="function not covered" >() =&gt; </span>{<span class="cstat-no" title="statement not covered" >return new THREE.MeshLambertMaterial({color: 0x777777});},</span>
+                positiveDelta: <span class="fstat-no" title="function not covered" >() =&gt; </span>{<span class="cstat-no" title="statement not covered" >return new THREE.MeshLambertMaterial({color: 0x888888});},</span>
+                negativeDelta: <span class="fstat-no" title="function not covered" >() =&gt; </span>{<span class="cstat-no" title="statement not covered" >return new THREE.MeshLambertMaterial({color: 0x999999});}</span>
+            }
+        });
+&nbsp;
+    });
+&nbsp;
+    beforeEach(angular.mock.inject((_codeMapMaterialFactory_,_$timeout_, _settingsService_, _$rootScope_, $controller)=&gt;{
+        scope = _$rootScope_;
+        codeMapMaterialFactory = _codeMapMaterialFactory_;
+        settingsService = _settingsService_;
+        timeout = _$timeout_;
+        detailPanelController = $controller("detailPanelController", {$scope: scope, $rootScope: scope, codeMapMaterialFactory: codeMapMaterialFactory, settingsService:settingsService, $timeout: timeout});
+    }));
+&nbsp;
+    /**
+     * @test {DetailPanelController}
+     */
+    describe("should react to events on its scope", ()=&gt;{
+&nbsp;
+        /**
+         * @test {DetailPanelController#onHover}
+         */
+        it("building hovered",(done)=&gt;{
+            detailPanelController.onHover = (payload)=&gt;{
+                expect(payload).to.equal("payload");
+                done();
+            };
+            scope.$broadcast("building-hovered", "payload");
+        });
+&nbsp;
+        /**
+         * @test {DetailPanelController#onSelect}
+         */
+        it("building selected",(done)=&gt;{
+            detailPanelController.onSelect = (payload)=&gt;{
+                expect(payload).to.equal("payload");
+                done();
+            };
+            scope.$broadcast("building-selected", "payload");
+        });
+&nbsp;
+        /**
+         * @test {DetailPanelController#onSettingsChanged}
+         */
+        it("settings changed",(done)=&gt;{
+            detailPanelController.onSettingsChanged = (payload)=&gt;{
+                expect(payload).to.equal("payload");
+                done();
+            };
+            scope.$broadcast("settings-changed", "payload");
+        });
+&nbsp;
+    });
+&nbsp;
+    /**
+     * @test {DetailPanelController#onSettingsChanged}
+     */
+    it("should set common attributes when settings change",() =&gt; {
+        var settings = {
+            "areaMetric":"a",
+            "colorMetric":"b",
+            "heightMetric":"c"
+        };
+        detailPanelController.onSettingsChanged(settings);
+        expect(detailPanelController.details.common.areaAttributeName).to.equal("a");
+        expect(detailPanelController.details.common.colorAttributeName).to.equal("b");
+        expect(detailPanelController.details.common.heightAttributeName).to.equal("c");
+    });
+&nbsp;
+    /**
+     * @test {DetailPanelController#onSelect}
+     */
+    it("should setSelectedDetails when valid node is selected",() =&gt; {
+        var data = {
+            "to": {
+                "node": "somenode"
+            }
+        };
+        detailPanelController.setSelectedDetails = sinon.spy();
+        detailPanelController.onSelect(data);
+        expect(detailPanelController.setSelectedDetails.calledWithExactly("somenode"));
+    });
+&nbsp;
+    /**
+     * @test {DetailPanelController#onSelect}
+     */
+    it("should clearSelectedDetails when invalid or no node is selected",() =&gt; {
+&nbsp;
+        var data = {
+            "to": {
+                "notanode": "somenode"
+            }
+        };
+        detailPanelController.clearSelectedDetails = sinon.spy();
+        detailPanelController.onSelect(data);
+        expect(detailPanelController.clearSelectedDetails.calledWithExactly());
+&nbsp;
+        data = {
+            "notato": {
+                "node": "somenode"
+            }
+        };
+        detailPanelController.onSelect(data);
+        expect(detailPanelController.clearSelectedDetails.calledWithExactly());
+&nbsp;
+        data = {};
+        detailPanelController.onSelect(data);
+        expect(detailPanelController.clearSelectedDetails.calledWithExactly());
+&nbsp;
+    });
+&nbsp;
+    /**
+     * @test {DetailPanelController#onHover}
+     */
+    it("should setHoveredDetails when valid node is hovered",() =&gt; {
+        var data = {
+            "to": {
+                "node": "somenode"
+            }
+        };
+        detailPanelController.setHoveredDetails = sinon.spy();
+        detailPanelController.onHover(data);
+        expect(detailPanelController.setHoveredDetails.calledWithExactly("somenode"));
+    });
+&nbsp;
+    /**
+     * @test {DetailPanelController#onHover}
+     */
+    it("should clearHoveredDetails when invalid or no node is hovered",() =&gt; {
+        var data = {
+            "to": {
+                "notanode": "somenode"
+            }
+        };
+        detailPanelController.clearHoveredDetails = sinon.spy();
+        detailPanelController.onHover(data);
+        expect(detailPanelController.clearHoveredDetails.calledWithExactly());
+&nbsp;
+        data = {
+            "notato": {
+                "node": "somenode"
+            }
+        };
+        detailPanelController.onHover(data);
+        expect(detailPanelController.clearHoveredDetails.calledWithExactly());
+&nbsp;
+        data = {};
+        detailPanelController.onHover(data);
+        expect(detailPanelController.clearHoveredDetails.calledWithExactly());
+    });
+&nbsp;
+    /**
+     * @test {DetailPanelController}
+     */
+    describe("isHovered and isSelected should evaluate the respective nodes name to determine the result", ()=&gt;{
+&nbsp;
+        /**
+         * @test {DetailPanelController#isHovered}
+         * @test {DetailPanelController#isSelected}
+         */
+        it("empty details should result in false",()=&gt;{
+            detailPanelController.details = {};
+            expect(detailPanelController.isHovered()).to.be.false;
+            expect(detailPanelController.isSelected()).to.be.false;
+        });
+&nbsp;
+        /**
+         * @test {DetailPanelController#isHovered}
+         * @test {DetailPanelController#isSelected}
+         */
+        it("empty nodes should result in false",()=&gt;{
+            detailPanelController.details = {
+                hovered: null,
+                selected: null
+            };
+            expect(detailPanelController.isHovered()).to.be.false;
+            expect(detailPanelController.isSelected()).to.be.false;
+        });
+&nbsp;
+        /**
+         * @test {DetailPanelController#isHovered}
+         * @test {DetailPanelController#isSelected}
+         */
+        it("named nodes should result in true",()=&gt;{
+            detailPanelController.details = {
+                hovered: {
+                    name: "some name"
+                },
+                selected: {
+                    name: "some name"
+                }
+            };
+            expect(detailPanelController.isHovered()).to.be.true;
+            expect(detailPanelController.isSelected()).to.be.true;
+        });
+&nbsp;
+    });
+&nbsp;
+});</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Thu Jun 22 2017 10:35:16 GMT+0000 (UTC)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>
