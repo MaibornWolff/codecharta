@@ -5,16 +5,17 @@ require("./codeCharta.js");
  */
 describe("app.codeCharta.codeChartaController", function() {
 
-    var dataService, urlService, settingsService, codeChartaController, $controller, $httpBackend;
+    var dataService, urlService, settingsService, codeChartaController, $controller, $httpBackend , scenarioService;
 
     beforeEach(angular.mock.module("app.codeCharta"));
 
-    beforeEach(angular.mock.inject((_$controller_, _dataService_, _settingsService_, _urlService_, _$httpBackend_)=>{
+    beforeEach(angular.mock.inject((_$controller_, _dataService_, _settingsService_, _urlService_, _$httpBackend_, _scenarioService_)=>{
         dataService = _dataService_;
         settingsService = _settingsService_;
         urlService = _urlService_;
         $controller = _$controller_;
         $httpBackend = _$httpBackend_;
+        scenarioService = _scenarioService_;
     }));
 
     /**
@@ -24,7 +25,7 @@ describe("app.codeCharta.codeChartaController", function() {
 
         window.location.reload = sinon.spy();
 
-        codeChartaController = $controller("codeChartaController", {dataService: dataService, urlService: urlService, settingsService:settingsService});
+        codeChartaController = $controller("codeChartaController", {dataService: dataService, urlService: urlService, settingsService:settingsService, scenarioService:scenarioService});
 
         var event18c = $.Event( "keypress" );
         event18c.which = 18;
@@ -59,7 +60,7 @@ describe("app.codeCharta.codeChartaController", function() {
 
         dataService.setFileData = sinon.spy();
 
-        codeChartaController = $controller("codeChartaController", {dataService: dataService, urlService: urlService, settingsService:settingsService});
+        codeChartaController = $controller("codeChartaController", {dataService: dataService, urlService: urlService, settingsService:settingsService, scenarioService:scenarioService});
 
         expect(dataService.setFileData.calledOnce);
 
@@ -77,7 +78,7 @@ describe("app.codeCharta.codeChartaController", function() {
             .respond(200, "someData");
 
         dataService.setFileData = sinon.spy();
-        codeChartaController = $controller("codeChartaController", {dataService: dataService, urlService: urlService, settingsService:settingsService});
+        codeChartaController = $controller("codeChartaController", {dataService: dataService, urlService: urlService, settingsService:settingsService, scenarioService:scenarioService});
         expect(dataService.setFileData.calledWithExactly("someData"));
 
     });
@@ -95,7 +96,7 @@ describe("app.codeCharta.codeChartaController", function() {
 
         settingsService.onSettingsChanged = sinon.spy();
 
-        codeChartaController = $controller("codeChartaController", {dataService: dataService, urlService: urlService, settingsService:settingsService});
+        codeChartaController = $controller("codeChartaController", {dataService: dataService, urlService: urlService, settingsService:settingsService, scenarioService:scenarioService});
 
         expect(settingsService.onSettingsChanged.calledOnce);
 
@@ -120,7 +121,7 @@ describe("app.codeCharta.codeChartaController", function() {
         var a = window.alert;
         window.alert = sinon.spy();
 
-        codeChartaController = $controller("codeChartaController", {dataService: dataService, urlService: urlService, settingsService:settingsService});
+        codeChartaController = $controller("codeChartaController", {dataService: dataService, urlService: urlService, settingsService:settingsService, scenarioService:scenarioService});
 
         expect(window.alert.calledWithExactly("failed loading sample data"));
 
@@ -147,7 +148,7 @@ describe("app.codeCharta.codeChartaController", function() {
         var o = console.log;
         console.log = sinon.spy();
 
-        codeChartaController = $controller("codeChartaController", {dataService: dataService, urlService: urlService, settingsService:settingsService});
+        codeChartaController = $controller("codeChartaController", {dataService: dataService, urlService: urlService, settingsService:settingsService, scenarioService:scenarioService});
 
         expect(console.log.calledOnce);
 

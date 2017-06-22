@@ -1,5 +1,4 @@
 require("./tooltip.js");
-import {Tooltip} from "./model/tooltip.js";
 
 /**
  * @test {TooltipService}
@@ -14,8 +13,11 @@ describe("app.codeCharta.core.tooltip.tooltipService", function() {
         tooltipService = _tooltipService_;
 
         tooltipService.tooltips = {
-            a: new Tooltip("a", "a description"),
-            b: new Tooltip("b", "b description")
+            a: "a description",
+            b: "b description",
+            c: "c description _a_",
+            d: "d description _as_",
+            e: "nested descriptions _c_",
         };
 
     }));
@@ -52,6 +54,29 @@ describe("app.codeCharta.core.tooltip.tooltipService", function() {
 
     });
 
+    /**
+     * @test{should return nested answer by keys in keys sorrounded by _}
+     */
+    it("should return nested answer by keys in keys sorrounded by _", () =>{
+        var answer = tooltipService.getTooltipTextByKey("c");
+        expect(answer).to.equal("c description a description");
+    });
+
+    /**
+     * @test{should return nested \"no description\" by unknown keys in keys sorrounded by _}
+     */
+    it("should return nested \"no description\" by unknown keys in keys sorrounded by _", () =>{
+        var answer = tooltipService.getTooltipTextByKey("d");
+        expect(answer).to.equal("d description no description");
+    });
+
+    /**
+     * @test{should return nested into nested descriptions}
+     */
+    it("should return nested into nested descriptions", () =>{
+        var answer = tooltipService.getTooltipTextByKey("e");
+        expect(answer).to.equal("nested descriptions c description a description");
+    });
 
 
 });
