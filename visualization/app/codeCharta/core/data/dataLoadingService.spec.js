@@ -5,7 +5,6 @@ require("./data.js");
  */
 describe("app.codeCharta.core.data.dataLoadingService", function() {
 
-    var rootNode;
     var firstFile;
     var secondFile;
     var dataLoadingService;
@@ -15,25 +14,41 @@ describe("app.codeCharta.core.data.dataLoadingService", function() {
 
     beforeEach(function(){
 
-        rootNode = {
-            children: [],
-            attributes: {}
-        };
-
         firstFile = {
-            children: [],
-            attributes: {anAttribute: "value"}
+            name: "name",
+            timestamp: "0",
+            root:{
+                name: "myRoot",
+                id: "anId",
+                attributes: {anAttribute: 12}
+            }
         };
 
         secondFile = {
-            children: [],
-            attributes: {anAttribute: "secondValue"}
-
+            name: "name",
+            root:{
+                name: "myRoot",
+                id: "anId",
+                attributes: {anAttribute: 12}
+            }
         };
+
     });
 
-    it("")
+    xit("should resolve firstFile",()=>{
+        return dataLoadingService.loadMapFromFileContent(firstFile);
+    });
 
+    xit("should reject secondFile",(done)=>{
+        dataLoadingService.loadMapFromFileContent(secondFile).then(
+            ()=>{
+                done("should reject");
+            },
+            ()=>{
+                done();
+            }
+        );
+    });
 
 });
 
