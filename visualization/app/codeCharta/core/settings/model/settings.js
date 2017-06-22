@@ -12,8 +12,9 @@ export class Settings {
      * @param {string} colorMetric
      * @param {boolean} deltas
      * @param {boolean} grid
+     * @param {Number} amountOfTopLabels
      */
-    constructor(map, neutralColorRange, areaMetric, heightMetric, colorMetric, deltas, grid) {
+    constructor(map, neutralColorRange, areaMetric, heightMetric, colorMetric, deltas, grid, amountOfTopLabels) {
 
         /**
          * currently selected map
@@ -57,6 +58,8 @@ export class Settings {
          */
         this.grid = grid;
 
+        this.amountOfTopLabels = amountOfTopLabels;
+
     }
 
     /**
@@ -71,6 +74,7 @@ export class Settings {
         this.colorMetric = settings.colorMetric;
         this.deltas = settings.deltas;
         this.grid = settings.grid;
+        this.amountOfTopLabels = settings.amountOfTopLabels;
     }
 
 }

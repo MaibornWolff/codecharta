@@ -1,0 +1,69 @@
+{
+    "projectName": "SCMLogParser",
+    "apiVersion": "1.0",
+    "nodes": [
+        {
+            "name": "root",
+            "type": "Folder",
+            "link": "",
+            "attributes": {},
+            "children": [
+                {
+                    "name": "src",
+                    "type": "Folder",
+                    "link": "",
+                    "attributes": {},
+                    "children": [
+                        {
+                            "name": "innerFolder",
+                            "type": "Folder",
+                            "link": "",
+                            "attributes": {},
+                            "children": [
+                                {
+                                    "name": "BestClassEver.java",
+                                    "type": "File",
+                                    "link": "",
+                                    "attributes": {
+                                        "number_of_commits": 3,
+                                        "weeks_with_commits": 1,
+                                        "authors": [
+                                            "MartinSc"
+                                        ],
+                                        "number_of_authors": 1
+                                    }
+                                },
+                                {
+                                    "name": "Main.java",
+                                    "type": "File",
+                                    "link": "",
+                                    "attributes": {
+                                        "number_of_commits": 2,
+                                        "weeks_with_commits": 1,
+                                        "authors": [
+                                            "MartinSc"
+                                        ],
+                                        "number_of_authors": 1
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "srcFolderTest.txt",
+                            "type": "File",
+                            "link": "",
+                            "attributes": {
+                                "number_of_commits": 2,
+                                "weeks_with_commits": 1,
+                                "authors": [
+                                    "MartinSc"
+                                ],
+                                "number_of_authors": 1
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

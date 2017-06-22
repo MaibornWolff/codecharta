@@ -43,7 +43,8 @@ class SettingsService {
             dataService.data.metrics[1],
             dataService.data.metrics[2],
             true,
-            false
+            false,
+            1
         );
 
         let ctx = this;

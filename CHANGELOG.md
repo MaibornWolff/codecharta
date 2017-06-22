@@ -6,15 +6,39 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
-- Scenarios and default scenario
-- Translation API for Metrics
-- Metric tooltips in dropdown
 
 ### Changed
 
 ### Removed
 
 ### Fixed
+
+## [1.2.0] - 2017-06-19
+### Added
+- Adding Labels and UI
+- Support for links to source page of SonarQube in sonarimporter
+- Added SCMLogParser
+
+### Changed
+
+### Removed
+
+### Fixed
+- GitHub Issue: legend is wrong #21
+
+
+## [1.1.5] - 2017-05-31
+### Fixed
+- Wrong version numbers in analysis part
+
+## [1.1.4] - 2017-05-26
+### Added
+- Scenarios and default scenario
+- Translation API for Metrics
+- Metric tooltips in dropdown
+
+### Fixed
+- GitHub Issue: Sonarimporter crashes with null pointer exception when there is a component without path. #13
 
 ## [1.1.3] - 2017-05-01
 ### Added
@@ -23,10 +47,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 - Standard Sonar metric is now complexity,ncloc,functions,duplicated_lines,classes,blocker_violations,generated_lines,bugs,commented_out_code_lines,lines,violations,comment_lines,duplicated_blocks
-
-### Removed
-
-### Fixed
 
 ## [1.1.2] - 2017-04-28
 ### Added

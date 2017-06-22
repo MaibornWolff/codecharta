@@ -14,21 +14,27 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SonarComponentProjectAdapter extends Project {
+    private final SonarCodeURLLinker sonarCodeURLLinker;
 
-    public SonarComponentProjectAdapter(String name) {
+    public SonarComponentProjectAdapter(String name, SonarCodeURLLinker sonarCodeURLLinker) {
         super(name);
+        this.sonarCodeURLLinker = sonarCodeURLLinker;
         this.getNodes().add(new Node("root", NodeType.Folder));
     }
 
     public void addComponentAsNode(Component component) {
-        Node node = new Node(createNodeName(component.getPath()), createNodeTypeFromQualifier(component.getQualifier()), createAttributes(component.getMeasures()));
-        NodeInserter.insertByPath(this, createParentPath(component.getPath()), node);
+        Node node = new Node(createNodeName(component), createNodeTypeFromQualifier(component.getQualifier()), createAttributes(component.getMeasures()), createLink(component));
+        NodeInserter.insertByPath(this, createParentPath(component), node);
     }
 
     private Map<String, Object> createAttributes(List<Measure> measures) {
         return measures.stream()
                 .filter(this::isMeasureConvertible)
                 .collect(Collectors.toMap(Measure::getMetric, this::convertMetricValue));
+    }
+
+    private String createLink(Component component) {
+        return sonarCodeURLLinker.createUrlString(component);
     }
 
     private Object convertMetricValue(Measure measure) {
@@ -59,11 +65,35 @@ public class SonarComponentProjectAdapter extends Project {
         }
     }
 
-    private static String createNodeName(String path) {
-        return path.substring(path.lastIndexOf('/') + 1);
+    /**
+     * creates a node name from the component. Tries the create it from the path, the name or id (in this priority order).
+     *
+     * @param component the given component
+     * @return node name for this component
+     */
+    private static String createNodeName(Component component) {
+        if (component.getPath() != null) {
+            return component.getPath().substring(component.getPath().lastIndexOf('/') + 1);
+        } else if (component.getName() != null) {
+            return component.getName();
+        } else {
+            return component.getId();
+        }
+
     }
 
-    private FileSystemPath createParentPath(String lname) {
-        return new FileSystemPath(lname.substring(0, lname.lastIndexOf('/') + 1));
+    /**
+     * creates a parent path for the given node. If a path exists then a correct parent path will be created. If there
+     * is no parent path this function assumes it at FS root for the sake of initialized values.
+     *
+     * @param component given component
+     * @return fs path of components parent
+     */
+    private FileSystemPath createParentPath(Component component) {
+        if (component.getPath() != null) {
+            return new FileSystemPath(component.getPath().substring(0, component.getPath().lastIndexOf('/') + 1));
+        } else {
+            return new FileSystemPath("");
+        }
     }
 }
