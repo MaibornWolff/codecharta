@@ -47,34 +47,6 @@ class RevisionChooserDirective {
          */
         this.bindToController = true;
 
-        /**
-         * visibility flag
-         * @type {boolean}
-         */
-        this.visible = false;
-    }
-
-    /**
-     * Binds {@link RevisionChooserDirective#toggle} as click handler.
-     * @param {Scope} scope
-     * @param {object} element
-     */
-    link(scope, element) {
-        element.bind("click", this.toggle);
-    }
-
-    /**
-     * Toggles the Directives visibility.
-     */
-    toggle() {
-        if (this.visible) {
-            $("#revisionChooser").animate({left: -400 + "px"});
-            this.visible = false;
-        }
-        else {
-            $("#revisionChooser").animate({left: 2.8+"em"});
-            this.visible = true;
-        }
     }
     
 }

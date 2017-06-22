@@ -10,7 +10,7 @@
     "attributes": {},
     "children": [
       {
-        "name": "big leaf renamed",
+        "name": "big leaf",
         "id":0,
         "attributes": {"RLOC": 120, "Functions": 10, "MCC": 1},
         "link": "http://www.google.de"
@@ -26,8 +26,8 @@
             "attributes": {"RLOC": 30, "Functions": 101, "MCC": 100}
           },
           {
-            "name": "other small leaf with another id",
-            "id":54,
+            "name": "other small leaf",
+            "id":3,
             "attributes": {"RLOC": 70, "Functions": 10, "MCC": 10}
           }
         ]

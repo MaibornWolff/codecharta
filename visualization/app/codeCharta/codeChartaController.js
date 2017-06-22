@@ -42,7 +42,6 @@ class CodeChartaController {
                     () => {
                         settingsService.updateSettingsFromUrl();
                         ctx.loadingFinished();
-                        ctx.dataService.setCurrentMapFromRevisions(0);
                     },
                     console.log
                 );
@@ -62,7 +61,6 @@ class CodeChartaController {
                         dataLoadingService.loadMapFromFileContent(data,0).then(
                             () => {
                                 ctx.loadingFinished();
-                                ctx.dataService.setCurrentMapFromRevisions(0);
                             },
                             console.log
                         );
@@ -110,6 +108,8 @@ class CodeChartaController {
      */
     loadingFinished() {
         this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
+        this.dataService.setFirstMapFromRevisions(0);
+        this.dataService.setSecondMapFromRevisions(0);
     }
 
     /**

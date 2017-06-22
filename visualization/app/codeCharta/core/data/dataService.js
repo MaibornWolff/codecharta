@@ -48,49 +48,52 @@ class DataService {
 
     }
 
-    /**
-     * Loads current map from revisions by id
-     * @param {number} index id
-     * @emits {data-changed} on $rootScope after setting the metrics and map.
-     */
-    setCurrentMapFromRevisions(index){
-        this.setMetrics(index);
-        this.data.secondMap = this.data.revisions[index];
-        if(index>0) {
-            this.data.firstMap = this.data.revisions[index - 1];
-        } else {
-            this.data.firstMap = this.data.revisions[index];
-        }
+    setFirstMapFromRevisions(index){
 
-        //TODO check it
+        //TODO unify metrics from both maps
+        this.setMetrics(index);
+        this.data.firstMap = this.data.revisions[index];
         this.calculateAndStoreDeltas(this.data.firstMap, this.data.secondMap);
 
-        //TODO for debug
-        console.log(this.data.firstMap, this.data.secondMap);
-
+        console.log("setting data", this.data);
         this.$rootScope.$broadcast("data-changed", this.data);
+
     }
 
-    //TODO eigener Service für DeltaKalkulation
-    /**
-     * Calculates delta values in revisions. Stores deltas in <leaf>.data.deltas.
-     * @returns {CodeMap[]} revisions with delta data attached in leaves
-     */
+    setSecondMapFromRevisions(index){
+        this.setMetrics(index);
+        this.data.secondMap = this.data.revisions[index];
+        this.calculateAndStoreDeltas(this.data.firstMap, this.data.secondMap);
+        console.log("setting data", this.data);
+        this.$rootScope.$broadcast("data-changed", this.data);
+
+    }
+
+    //TODO speichere delta 2 minus 1 in 2 und 1 minus 2 in 1
     calculateAndStoreDeltas(firstRevision, secondRevision) {
 
-        let firstRoot = d3.hierarchy(firstRevision);
-        let firstLeaves = firstRoot.leaves();
-        let secondRoot = d3.hierarchy(secondRevision);
-        let secondLeaves = secondRoot.leaves();
+        if(firstRevision.root && secondRevision.root) {
+            let firstRoot = d3.hierarchy(firstRevision.root);
+            let firstLeaves = firstRoot.leaves();
+            let secondRoot = d3.hierarchy(secondRevision.root);
+            let secondLeaves = secondRoot.leaves();
 
-        for(var j=0;j<firstLeaves.length;j++){
-            for(var k=0;k<secondLeaves.length;k++){
-                if(firstLeaves[j].data.name === secondLeaves[k].data.name){
-                    //calculate delta for those nodes attributes and push it to the second leave
-                    let deltas = this.calculateAttributeListDelta(secondLeaves[k].data.attributes,firstLeaves[j].data.attributes);
-                    firstLeaves[j].data.deltas = deltas;
+            for (var j = 0; j < firstLeaves.length; j++) {
+                for (var k = 0; k < secondLeaves.length; k++) {
+                    if (firstLeaves[j].data.name === secondLeaves[k].data.name) {
+                        //calculate delta for those nodes attributes and push it to the second leave
+                        let firstDeltas = this.calculateAttributeListDelta(secondLeaves[k].data.attributes, firstLeaves[j].data.attributes);
+                        let secondDeltas = this.calculateAttributeListDelta(firstLeaves[j].data.attributes, secondLeaves[k].data.attributes);
+
+                        firstLeaves[j].data.deltas = firstDeltas;
+                        secondLeaves[k].data.deltas = secondDeltas;
+
+                    }
                 }
             }
+
+        } else {
+            console.log("cant calculate deltas with 1 or less root");
         }
 
     }
