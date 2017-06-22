@@ -95,7 +95,7 @@ class TreeMapService {
         var maxHeight=0;
 
         this.dataService.data.revisions.forEach((rev)=>{
-            var nodes = d3.hierarchy(rev).leaves();
+            var nodes = d3.hierarchy(rev.root).leaves();
             nodes.forEach((node)=>{
                 if(node.data.attributes[heightKey]>maxHeight){
                     maxHeight = node.data.attributes[heightKey];

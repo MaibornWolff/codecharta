@@ -5,6 +5,6 @@
 <div ng-if="ctrl.revisions.length>1" id="revisionChooser">
     Available Revisions:
     <span ng-repeat="(key, value) in ctrl.revisions">
-        <a href="#" ng-click="ctrl.loadRevision(key)">{{key}}</a> -
+        <a href="#" ng-click="ctrl.loadRevision(key)">{{value.name}} @ {{value.timestamp}}</a> -
      </span>
 </div>
