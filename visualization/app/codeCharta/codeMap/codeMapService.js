@@ -82,7 +82,7 @@ class CodeMapService {
         var color = s.colorMetric;
         var map = s.map;
         var range = s.neutralColorRange;
-        if (area && height && color && map && range) {
+        if (area && height && color && map && map.root && range) {
             this.drawFromData(map, area, height, color, s.neutralColorRange, s.amountOfTopLabels);
         }
     }
