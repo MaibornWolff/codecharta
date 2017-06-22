@@ -25,7 +25,7 @@ class RevisionChooserController {
          *
          * @type {CodeMap[]}
          */
-        this.revisions = dataService.revisions;
+        this.revisions = dataService.data.revisions;
 
         let ctx = this;
 
@@ -40,12 +40,12 @@ class RevisionChooserController {
         this.revisions = data.revisions;
     }
 
-    /**
-     * loads a specific revision by id
-     * @param {number} key id
-     */
-    loadRevision(key) {
-        this.dataService.setCurrentMapFromRevisions(key);
+    loadFirstRevision(key) {
+        this.dataService.setFirstMapFromRevisions(key);
+    }
+
+    loadSecondRevision(key) {
+        this.dataService.setSecondMapFromRevisions(key);
     }
 
 }

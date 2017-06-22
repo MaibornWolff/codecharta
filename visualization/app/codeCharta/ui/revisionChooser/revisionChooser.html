@@ -1,10 +1,15 @@
-<div ng-if="ctrl.revisions.length>1" id="revisionButton">
-    <a class="waves-effect waves-light btn" >revisions</a>
-</div>
-
-<div ng-if="ctrl.revisions.length>1" id="revisionChooser">
-    Available Revisions:
+<div id="revisionChooser">
+    Selected Revisions: <br/>
+    First (Deltamap): {{ctrl.dataService.data.firstMap.name}} @ {{ctrl.dataService.data.firstMap.timestamp}}<br/>
+    Second (Main): {{ctrl.dataService.data.secondMap.name}} @ {{ctrl.dataService.data.secondMap.timestamp}}<br/>
+    <br/>
+    First Revision:
     <span ng-repeat="(key, value) in ctrl.revisions">
-        <a href="#" ng-click="ctrl.loadRevision(key)">{{value.name}} @ {{value.timestamp}}</a> -
+        <a href="#" ng-click="ctrl.loadFirstRevision(key)">{{value.name}} @ {{value.timestamp}}</a> -
+     </span>
+    <br/>
+    Second Revision:
+    <span ng-repeat="(key, value) in ctrl.revisions">
+        <a href="#" ng-click="ctrl.loadSecondRevision(key)">{{value.name}} @ {{value.timestamp}}</a> -
      </span>
 </div>
