@@ -121,7 +121,7 @@ class CodeMapService {
             this.addGrid(s, 50);
         }
 
-        let nodes = this.treemapService.createTreemapNodes(map, s, s, p, areaKey, heightKey);
+        let nodes = this.treemapService.createTreemapNodes(map.root, s, s, p, areaKey, heightKey);
 
         let sorted = nodes.sort((a,b)=>{return b.height - a.height;});
 

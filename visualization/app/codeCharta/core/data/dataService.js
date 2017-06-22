@@ -31,7 +31,7 @@ class DataService {
      * @param {number} revision
      */
     setMap(map, revision) {
-        this.data.revisions[revision] = map.root;
+        this.data.revisions[revision] = map;
     }
 
     /**
@@ -39,14 +39,12 @@ class DataService {
      * @param {number} index id
      */
     setMetrics(index) {
-        let root = d3.hierarchy(this.data.revisions[index]);
+        let root = d3.hierarchy(this.data.revisions[index].root);
         let leaves = root.leaves();
         let attributeList = leaves.map(function(d) { return d.data.attributes ? Object.keys(d.data.attributes) : []; });
         let attributes = attributeList.reduce(function(left, right) {return left.concat(right.filter(function(el){return left.indexOf(el) === -1;})); });
 
         this.data.metrics = attributes;
-
-        console.log(this.data.revisions[index], root, leaves, attributeList);
 
     }
 
