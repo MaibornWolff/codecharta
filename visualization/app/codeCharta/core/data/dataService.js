@@ -55,7 +55,7 @@ class DataService {
      */
     setCurrentMapFromRevisions(index){
         this.setMetrics(index);
-        this.data.currentmap = this.data.revisions[index];
+        this.data.secondMap = this.data.revisions[index];
         if(index>0) {
             this.data.firstMap = this.data.revisions[index - 1];
         } else {
@@ -63,10 +63,10 @@ class DataService {
         }
 
         //TODO check it
-        this.calculateAndStoreDeltas(this.data.firstMap, this.data.currentmap);
+        this.calculateAndStoreDeltas(this.data.firstMap, this.data.secondMap);
 
         //TODO for debug
-        console.log(this.data.firstMap, this.data.currentmap);
+        console.log(this.data.firstMap, this.data.secondMap);
 
         this.$rootScope.$broadcast("data-changed", this.data);
     }
