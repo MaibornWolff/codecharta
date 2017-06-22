@@ -9,10 +9,10 @@ analysis: Tools for generating visualisation data
 
 ## How to install CodeCharta
 
-- Download the [latest release](https://github.com/MaibornWolff/codecharta/releases/latest)
+- Download the [latest release](https://github.com/MaibornWolff/codecharta/releases/latest) of CodeCharta (codecharta-analysis and codecharta-visualization)
 - you should now have the analysis and visualization package 
 - unpack both packages
-- enter the analysis directory with your favorite console
+- enter the codecharta-analysis directory with your favorite console
 
 **linux only:** make extracted ccsh runnable (`chmod u+x ccsh`)
 
@@ -24,9 +24,6 @@ analysis: Tools for generating visualisation data
 Choose a sonar analysed project of your choice and enter the file, url and project-id. If necessary, generate a User Token in the sonar remote instance and include it in the following command:
   - >./ccsh sonarimport [options] [[file]|[url] [project-id]]
 
-Due to a recent sonar-server update, codecharta analysis only supports projects with up to 500 ressources and servers between V2.10 and V6.2. Don't worry, we're already working on this issue.
-
-  
 ```markdown
 Options:
 -m, --metrics
@@ -37,8 +34,8 @@ Options:
       User Token for connecting to remote sonar instance
 ```
 
-Codecharta may ask for a user authentification, depending on the configuration of the projects sonar-server. Log in to your server, navigate to the project and create a user token. This string can be easily added as seen in the command description above.  
-If you don't have any own projects yet, you can test codecharta with any opensource project you can find on the sonarqube website.
+CodeCharta may ask for a user authentification, depending on the configuration of the projects SonarQube server. Log in to your server, navigate to the project and create a user token. This string can be easily added as seen in the command description above.  
+If you don't have any own projects yet, you can test CodeCharta with any opensource project you can find on the sonarqube website.
 
 The easiest example:
   - >./ccsh sonarimport [sonar-server-url] [project-id]

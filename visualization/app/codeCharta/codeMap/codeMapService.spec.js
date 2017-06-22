@@ -27,6 +27,113 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
     });
 
     /**
+     * @test {CodeMapService#drawMap}
+     */
+    it("drawMap should showLabels for the highest building", ()=>{
+
+         var data = {
+          "name": "root",
+          "attributes": {},
+          "children": [
+            {
+              "name": "big leaf",
+              "attributes": {"RLOC": 100, "Functions": 10, "MCC": 1},
+              "link": "http://www.google.de"
+            },
+            {
+              "name": "Parent Leaf",
+              "attributes": {},
+              "children": [
+                {
+                  "name": "small leaf",
+                  "attributes": {"RLOC": 30, "Functions": 100, "MCC": 100},
+                  "children": []
+                },
+                {
+                  "name": "other small leaf",
+                  "attributes": {"RLOC": 70, "Functions": 1000, "MCC": 10},
+                  "children": []
+                }
+              ]
+            }
+          ]
+        };
+
+        var tmp = codeMapService.addNode;
+
+        var smallSpy = sinon.spy();
+        var otherSpy = sinon.spy();
+        var elseSpy = sinon.spy();
+
+        codeMapService.addNode = (node, heightKey, showLabel) => {
+            if(node.name === "small leaf"){
+                expect(showLabel);
+                smallSpy();
+            } else if(node.name === "other small leaf"){
+               expect(!showLabel);
+               otherSpy();
+           } else {
+               expect(!showLabel);
+               elseSpy();
+           }
+        };
+
+        codeMapService.drawMap(data, 2, 2, "RLOC", "MCC", "MCC", "colorConfig", 1);
+
+        expect(smallSpy.calledOnce);
+        expect(otherSpy.calledOnce);
+        expect(elseSpy.called);
+
+    });
+
+    /**
+     * @test {CodeMapService#addLabel}
+     */
+    it("should addLabel to root if node has height attribute", ()=>{
+        codeMapService.root.add = sinon.spy();
+        codeMapService.addLabel(0,0,0,0,0,0,{attributes:{heightKey:0}},"heightKey");
+        expect(codeMapService.root.add.called);
+    });
+
+    /**
+     * @test {CodeMapService#addLabel}
+     */
+    it("should not addLabel to root if node has no height attribute", ()=>{
+        codeMapService.root.add = sinon.spy();
+        codeMapService.addLabel(0,0,0,0,0,0,{attributes:{heightKey:0}},"heightKeyZZZZZ");
+        expect(!codeMapService.root.add.called);
+    });
+
+    /**
+     * @test {CodeMapService#addLabel}
+     * @test {CodeMapService#addNode}
+     */
+    it("should call addLabel when showLabel is true", ()=>{
+        codeMapService.addLabel = sinon.spy();
+        codeMapService.addBuilding(1,1,1,1,1,1,2,{ isDelta:true}, true);
+        expect(codeMapService.addLabel);
+    });
+
+    /**
+     * @test {CodeMapService#addLabel}
+     * @test {CodeMapService#addNode}
+     */
+    it("should not call addLabel when showLabel is false", ()=>{
+        codeMapService.addLabel = sinon.spy();
+        codeMapService.addBuilding(1,1,1,1,1,1,2,{ isDelta:true}, false);
+        expect(!codeMapService.addLabel);
+    });
+
+    /**
+     * @test {CodeMapService#addLabel}
+     */
+    it("should not addLabel to root if node has no attributes", ()=>{
+        codeMapService.root.add = sinon.spy();
+        codeMapService.addLabel(0,0,0,0,0,0,{},"heightKey");
+        expect(!codeMapService.root.add.called);
+    });
+
+    /**
      * @test {CodeMapService#scaleTo}
      */
     it("should not try to scale when no root with a scale method exists", ()=>{
