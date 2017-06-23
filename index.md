@@ -105,7 +105,7 @@ Use the "Invert Color" option, to declare a high value to be better then a low v
 
 # Contributing
 
-[Contributing](https://github.com/MaibornWolff/codecharta/blob/master/CONTRIBUTE.md)
+[Contributing](https://github.com/MaibornWolff/codecharta/blob/master/CONTRIBUTING.md)
 
 [Code of Conduct](https://github.com/MaibornWolff/codecharta/blob/master/CODE_OF_CONDUCT.md)
 
