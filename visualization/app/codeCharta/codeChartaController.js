@@ -108,8 +108,8 @@ class CodeChartaController {
      */
     loadingFinished() {
         this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
-        this.dataService.setFirstMapFromRevisions(0);
-        this.dataService.setSecondMapFromRevisions(0);
+        this.dataService.setComparisonMap(0);
+        this.dataService.setReferenceMap(0);
     }
 
     /**

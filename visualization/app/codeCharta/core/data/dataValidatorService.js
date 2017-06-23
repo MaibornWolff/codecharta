@@ -23,7 +23,7 @@ export class DataValidatorService {
     //TODO node datatype somewhere ?
 
     /**
-     * Checks if a nodes children are unique in name and id
+     * Checks if a nodes children are unique in name
      * @param {Object} node
      * @returns {boolean} true if the node has unique children
      */
@@ -32,14 +32,12 @@ export class DataValidatorService {
         if(node.children && node.children.length > 0) {
 
             var names = {};
-            var ids = {};
 
             for(var i=0; i<node.children.length; i++){
-                ids[node.children[i].id] = true;
                 names[node.children[i].name] = true;
             }
 
-            if(Object.keys(names).length !== node.children.length || Object.keys(ids).length !== node.children.length){
+            if(Object.keys(names).length !== node.children.length){
                 return false;
             } else {
                 var valid = true;
@@ -73,7 +71,8 @@ export class DataValidatorService {
                         var compare = ajv.compile(response.data);
                         var valid = compare(data);
 
-                        if(!this.hasUniqueChildren(data.root)){
+                        // TODO data.nodes[0] must be the root
+                        if(!this.hasUniqueChildren(data.nodes[0])){
                             reject([{
                                 "message":"names or ids are not unique",
                                 "dataPath": "uniqueness"

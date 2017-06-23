@@ -20,7 +20,7 @@ class TooltipService {
         this.tooltips = {
             Statements: new Tooltip("Statements", "Number of Statements"),
             RLOC: new Tooltip("RLOC", "Real Lines of Code"),
-            MCC: new Tooltip("MCC", "MacCabe Complexity or cyclomatic complexity"),
+            MCC: new Tooltip("MCC", "MacCabe Complexity or cyclomatic complexity")
         };
 
     }

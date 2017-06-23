@@ -1,10 +1,7 @@
 {
 
-  "name": "Sample Map",
-
-  "timestamp": "200",
-
-  "root": {
+  "projectName": "Sample Project",
+  "nodes": [{
     "name": "root",
     "id":20,
     "attributes": {},
@@ -33,6 +30,6 @@
         ]
       }
     ]
-  }
+  }]
 
 }
