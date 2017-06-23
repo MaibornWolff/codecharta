@@ -37,7 +37,7 @@ class SettingsService {
         * @type {Settings}
         */
         this.settings = new Settings(
-            dataService.data.secondMap,
+            dataService.data.referenceMap,
             new Range(10,20,false),
             dataService.data.metrics[0],
             dataService.data.metrics[1],
@@ -64,7 +64,7 @@ class SettingsService {
     onDataChanged(data) {
 
         if(data.metrics.length >= 3){
-            this.settings.map = data.secondMap;
+            this.settings.map = data.referenceMap;
 
             if(data.metrics.indexOf(this.settings.areaMetric) === -1){
                 //area metric is not set or not in the new metrics and needs to be chosen

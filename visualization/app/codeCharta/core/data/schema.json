@@ -2,30 +2,28 @@
 
     "type": "object",
 
-    "required":["name", "timestamp", "root"],
+    "required":["projectName", "nodes"],
 
     "properties": {
-        "name": {
+        "projectName": {
             "type": "string"
         },
-        "timestamp": {
-            "type": "string"
-        },
-        "root": {
-            "$ref": "#/definitions/node"
+        "nodes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/definitions/node"
+            }
         }
     },
 
     "definitions": {
         "node":{
             "type": "object",
-            "required":["name", "id"],
+            "required":["name"],
             "properties": {
                 "name": {
                     "type": "string"
-                },
-                "id": {
-                    "type": "number"
                 },
                 "children": {
                     "type": "array",
