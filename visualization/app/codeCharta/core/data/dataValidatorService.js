@@ -1,11 +1,10 @@
 "use strict";
 
 import * as Ajv from "ajv";
-import * as d3 from "d3";
 /**
  * This service validates the given data against the schema and other validation steps
  */
-class DataValidatorService {
+export class DataValidatorService {
 
     /* @ngInject */
 
@@ -21,6 +20,13 @@ class DataValidatorService {
         this.http = $http;
     }
 
+    //TODO node datatype somewhere ?
+
+    /**
+     * Checks if a nodes children are unique in name and id
+     * @param {Object} node
+     * @returns {boolean} true if the node has unique children
+     */
     hasUniqueChildren(node) {
 
         if(node.children && node.children.length > 0) {
@@ -52,9 +58,8 @@ class DataValidatorService {
 
     /**
      * validates the given file data against the schema file and checks for unique names in a parents direct children.
-     * 
-     * @param {Object} data data from loaded file
-     * @returns {Promise} with a resolve and reject function
+     * @param {Object} well formed fileContent (schema.json)
+     * @returns {Promise} which resolves when the filecontent is valid, rejects with errors otherwise
      */
     validate(data) {
 
@@ -100,5 +105,3 @@ class DataValidatorService {
     }
 
 }
-
-export {DataValidatorService};

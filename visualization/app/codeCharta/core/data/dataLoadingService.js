@@ -32,7 +32,7 @@ class DataLoadingService {
 
     /**
      * Validates and loads a map from the given file content into the dataService
-     * @param {String} fileContent well formed (schema.json) fileContent
+     * @param {Object} fileContent well formed (schema.json) fileContent
      * @param {Number} revision the revision id
      * @returns {Promise} which resolves when the filecontent is valid and stored in dataService.
      * The Promise rejects when errors happen. The errors are provided as parameters of the rejection function
