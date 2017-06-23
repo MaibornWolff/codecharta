@@ -1,5 +1,14 @@
+/**
+ * Defines the current DataModel of the core/data package.
+ */
 export class DataModel {
 
+    /**
+     * @param {CodeMap[]} revisions current revisions
+     * @param {string[]} metrics current metrics
+     * @param {CodeMap} firstMap current first map
+     * @param {CodeMap} secondMap current second map
+     */
     constructor(revisions, metrics, firstMap, secondMap) {
 
         /**
@@ -28,7 +37,6 @@ export class DataModel {
          * @type {CodeMap}
          */
         this.firstMap = firstMap;
-
 
         //TODO Indizes statt ganze Maps in currentmap und firstMap
 
