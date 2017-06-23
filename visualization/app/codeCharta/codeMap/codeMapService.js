@@ -83,7 +83,7 @@ class CodeMapService {
         var map = s.map;
         var range = s.neutralColorRange;
         if (area && height && color && map && map.root && range) {
-            this.drawFromData(map, area, height, color, s.neutralColorRange, s.amountOfTopLabels);
+            this.drawFromData(map, area, height, color, s.neutralColorRange, s.amountOfTopLabels, s.deltas);
         }
     }
 
@@ -95,9 +95,10 @@ class CodeMapService {
      * @param {string} colorKey
      * @param {ColorRange} colorConfig
      * @param {number} amountOfTopLabels number of highest buildings with labels
+     * @param {boolean} deltas deltas enabled
      */
-    drawFromData(map, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels) {
-        this.drawMap(map, 500, 1, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels);
+    drawFromData(map, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels, deltas) {
+        this.drawMap(map, 500, 1, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels, deltas);
     }
 
     /**
@@ -110,8 +111,9 @@ class CodeMapService {
      * @param {string} colorKey
      * @param {ColorRange} colorConfig
      * @param {number} amountOfTopLabels number of highest buildings with labels
+     * @param {boolean} deltas deltas enabled
      */
-    drawMap(map, s, p, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels) {
+    drawMap(map, s, p, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels, deltas) {
 
         this.clearScene();
 
@@ -133,7 +135,7 @@ class CodeMapService {
 
         this.drawScene();
 
-        this.colorMap(colorKey, colorConfig);
+        this.colorMap(colorKey, colorConfig, deltas);
 
     }
 
@@ -170,13 +172,14 @@ class CodeMapService {
      * Colors the cubes depending on their node data and the given values.
      * @param {string} colorKey
      * @param {ColorRange} neutralColorRange
+     * @param {boolean} deltas deltas enabled
      */
-    colorMap(colorKey, neutralColorRange) {
+    colorMap(colorKey, neutralColorRange, deltas) {
         this.root.traverse((o)=> {
 
             if (o.node && o.node.isLeaf) {
 
-                this.colorBase(o, colorKey, neutralColorRange);
+                this.colorBase(o, colorKey, neutralColorRange, deltas);
                 this.colorDelta(o);
 
             } else if (o.node && !o.node.isLeaf) {
@@ -195,8 +198,9 @@ class CodeMapService {
      * @param {object} o folder
      * @param {string} colorKey
      * @param {ColorRange} neutralColorRange
+     * @param {boolean} deltas deltas enabled
      */
-    colorBase(o, colorKey, neutralColorRange) {
+    colorBase(o, colorKey, neutralColorRange, deltas) {
 
         let base = o.children.filter((c)=>!c.isDelta)[0];
 
@@ -204,13 +208,18 @@ class CodeMapService {
             return;
         }
 
-        var val = base.node.attributes[colorKey];
-        if (val < neutralColorRange.from) {
-            base.originalMaterial = neutralColorRange.flipped ? this.assetService.negative() : this.assetService.positive();
-        } else if (val > neutralColorRange.to) {
-            base.originalMaterial = neutralColorRange.flipped ? this.assetService.positive() : this.assetService.negative();
+        //use grey base when deltas are active
+        if(deltas){
+            base.originalMaterial = this.assetService.base();
         } else {
-            base.originalMaterial = this.assetService.neutral();
+            var val = base.node.attributes[colorKey];
+            if (val < neutralColorRange.from) {
+                base.originalMaterial = neutralColorRange.flipped ? this.assetService.negative() : this.assetService.positive();
+            } else if (val > neutralColorRange.to) {
+                base.originalMaterial = neutralColorRange.flipped ? this.assetService.positive() : this.assetService.negative();
+            } else {
+                base.originalMaterial = this.assetService.neutral();
+            }
         }
 
         base.selectedMaterial = this.assetService.selected();
