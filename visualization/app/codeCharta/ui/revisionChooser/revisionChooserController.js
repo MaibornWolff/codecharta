@@ -40,10 +40,18 @@ class RevisionChooserController {
         this.revisions = data.revisions;
     }
 
+    /**
+     * loads a specific revision as first map by id
+     * @param {number} key id
+     */
     loadFirstRevision(key) {
         this.dataService.setFirstMapFromRevisions(key);
     }
 
+    /**
+     * loads a specific revision as second map by id
+     * @param {number} key id
+     */
     loadSecondRevision(key) {
         this.dataService.setSecondMapFromRevisions(key);
     }
