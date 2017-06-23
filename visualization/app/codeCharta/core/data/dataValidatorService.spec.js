@@ -93,6 +93,12 @@ describe("app.codeCharta.core.data.dataValidatorService", function() {
     });
 
     //TODO more tests
-
+    it("should accept when everything is ok", (done)=>{
+        dataValidatorService.validate(file).then(
+            ()=>{done()},
+            ()=>{done("should reject");}
+        );
+        $httpBackend.flush();
+    });
 });
 
