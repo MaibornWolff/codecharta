@@ -147,11 +147,11 @@ class SettingsService {
     }
 
     /**
-          * Checks if the given metricName is in the metricsArray. If it is in there, we return it, else we return the defaultValue.
-          * @param {String[]} metricsArray an array of metric names
-          * @param {String} metricName a metric name to look for
-          * @param {String} defaultValue a default name in case metricName was not found
-          */
+     * Checks if the given metricName is in the metricsArray. If it is in there, we return it, else we return the defaultValue.
+     * @param {String[]} metricsArray an array of metric names
+     * @param {String} metricName a metric name to look for
+     * @param {String} defaultValue a default name in case metricName was not found
+     */
     getMetricOrDefault(metricsArray, metricName, defaultValue) {
             var result = defaultValue;
             metricsArray.forEach((metric) => {
