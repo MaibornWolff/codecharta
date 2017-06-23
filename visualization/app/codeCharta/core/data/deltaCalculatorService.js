@@ -2,13 +2,21 @@
 
 import * as d3 from "d3";
 
-class DeltaCalculatorService {
+/**
+ * Calculates the deltas between given maps and modifies the data structure
+ */
+export class DeltaCalculatorService {
 
     /* @ngInject */
     constructor(){
 
     }
 
+    /**
+     * Calculates the deltas between given maps and adds delta arrays to the given maps
+     * @param {CodeMap} firstRevision first map
+     * @param {CodeMap} secondRevision second map
+     */
     decorateRevisionsWithDeltas(firstRevision, secondRevision) {
 
         if(firstRevision.root && secondRevision.root) {
@@ -57,5 +65,3 @@ class DeltaCalculatorService {
     }
 
 }
-
-export {DeltaCalculatorService};
