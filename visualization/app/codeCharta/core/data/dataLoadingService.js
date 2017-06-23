@@ -1,8 +1,10 @@
 "use strict";
 
-import * as d3 from "d3";
 import {CodeMap} from "./model/codeMap.js";
 
+/**
+ * This service loads maps into the DataService
+ */
 class DataLoadingService {
 
     /* @ngInject */
@@ -21,13 +23,20 @@ class DataLoadingService {
         this.validator = dataValidatorService;
 
         /**
-         * Reference to the storage service
+         * Reference to the data service
          * @type {DataService}
          */
         this.storage = dataService;
 
     }
 
+    /**
+     * Validates and loads a map from the given file content into the dataService
+     * @param {String} fileContent well formed (schema.json) fileContent
+     * @param {Number} revision the revision id
+     * @returns {Promise} which resolves when the filecontent is valid and stored in dataService.
+     * The Promise rejects when errors happen. The errors are provided as parameters of the rejection function
+     */
     loadMapFromFileContent(fileContent, revision) {
 
         if (!revision) {
