@@ -33,6 +33,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import de.maibornwolff.codecharta.importer.sonar.model.MetricObject;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -47,6 +48,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource.PAGE_SIZE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -56,7 +58,10 @@ public class SonarMetricsAPIDatasourceIntegrationTest {
 
     private static final int PORT = 8089;
     private static final String USERNAME = "somename";
-    private static final String METRIC_LIST_URL_PATH = "/api/metrics/search";
+
+    private static final String METRIC_LIST_URL_PATH(int page) {
+        return "/api/metrics/search?p=" + page + "&ps=" + PAGE_SIZE;
+    }
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(PORT);
@@ -77,7 +82,7 @@ public class SonarMetricsAPIDatasourceIntegrationTest {
     @Test
     public void getAvailableMetrics() throws Exception {
         // given
-        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH))
+        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
@@ -85,7 +90,29 @@ public class SonarMetricsAPIDatasourceIntegrationTest {
 
         // when
         SonarMetricsAPIDatasource ds = new SonarMetricsAPIDatasource(createBaseUrl());
-        List<String> metricsList = ds.getAvailableMetrics().stream().map(MetricObject::getKey).collect(Collectors.toList());
+        List<String> metricsList = ds.getAvailableMetrics(1).getMetrics().stream().map(MetricObject::getKey).collect(Collectors.toList());
+
+        // then
+        assertThat(metricsList, is(Arrays.asList(METRIC_ARRAY)));
+    }
+
+    @Test
+    public void getAvailableMetricsList() throws Exception {
+        // given
+        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(createMetricResponseAsJsonString())));
+        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(2)))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(createMetricResponseAsJsonString())));
+
+        // when
+        SonarMetricsAPIDatasource ds = new SonarMetricsAPIDatasource(createBaseUrl());
+        List<String> metricsList = ds.getAvailableMetricsList();
 
         // then
         assertThat(metricsList, is(Arrays.asList(METRIC_ARRAY)));
@@ -94,7 +121,7 @@ public class SonarMetricsAPIDatasourceIntegrationTest {
     @Test
     public void getAvailableMetrics_if_authenticated() throws Exception {
         // given
-        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH)).withBasicAuth(USERNAME, "")
+        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1))).withBasicAuth(USERNAME, "")
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
@@ -102,7 +129,7 @@ public class SonarMetricsAPIDatasourceIntegrationTest {
 
         // when
         SonarMetricsAPIDatasource ds = new SonarMetricsAPIDatasource(USERNAME, createBaseUrl());
-        List<String> metricsList = ds.getAvailableMetrics().stream().map(MetricObject::getKey).collect(Collectors.toList());
+        List<String> metricsList = ds.getAvailableMetrics(1).getMetrics().stream().map(MetricObject::getKey).collect(Collectors.toList());
 
         // then
         assertThat(metricsList, is(Arrays.asList(METRIC_ARRAY)));
@@ -111,13 +138,13 @@ public class SonarMetricsAPIDatasourceIntegrationTest {
     @Test(expected = NotAuthorizedException.class)
     public void getAvailableMetrics_should_throw_exception_if_unauthorized() throws Exception {
         // given
-        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH))
+        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
                 .willReturn(aResponse()
                         .withStatus(401)));
 
         // when
         SonarMetricsAPIDatasource ds = new SonarMetricsAPIDatasource(createBaseUrl());
-        ds.getAvailableMetrics();
+        ds.getAvailableMetrics(1);
 
         // then throw
     }
@@ -125,14 +152,32 @@ public class SonarMetricsAPIDatasourceIntegrationTest {
     @Test(expected = ServerErrorException.class)
     public void getAvailableMetrics_should_throw_exception_if_return_code_not_oK() throws Exception {
         // given
-        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH))
+        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
                 .willReturn(aResponse()
                         .withStatus(501)));
 
         // when
         SonarMetricsAPIDatasource ds = new SonarMetricsAPIDatasource(createBaseUrl());
-        ds.getAvailableMetrics();
+        ds.getAvailableMetrics(1);
 
         // then throw
+    }
+
+
+    @Test
+    public void getNumberOfPages_from_server() throws Exception {
+        // given
+        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1))).withBasicAuth(USERNAME, "")
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(createMetricResponseAsJsonString())));
+
+        // when
+        SonarMetricsAPIDatasource ds = new SonarMetricsAPIDatasource(USERNAME, createBaseUrl());
+        int numberOfPages = ds.getNumberOfPages();
+
+        // then
+        Assert.assertThat(numberOfPages, is(2));
     }
 }
