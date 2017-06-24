@@ -8,10 +8,7 @@ import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException;
-import de.maibornwolff.codecharta.importer.sonar.model.ErrorEntity;
-import de.maibornwolff.codecharta.importer.sonar.model.ErrorResponse;
-import de.maibornwolff.codecharta.importer.sonar.model.Measures;
-import de.maibornwolff.codecharta.importer.sonar.model.PagingInfo;
+import de.maibornwolff.codecharta.importer.sonar.model.*;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -67,7 +64,7 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // when
         SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource("", createBaseUrl(), PROJECT_KEY);
-        Measures measures = ds.getMeasures(ImmutableList.of("coverage"), 1);
+        Measures measures = ds.getMeasuresFromDS(ImmutableList.of("coverage"), 1);
 
         // then
         assertThat(measures, is(createExpectedMeasures()));
@@ -84,7 +81,7 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // when
         SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(USERNAME, createBaseUrl(), PROJECT_KEY);
-        Measures measures = ds.getMeasures(ImmutableList.of("coverage"), 1);
+        Measures measures = ds.getMeasuresFromDS(ImmutableList.of("coverage"), 1);
 
         // then
         assertThat(measures, is(createExpectedMeasures()));
@@ -101,7 +98,7 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // when
         SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(USERNAME, createBaseUrl(), PROJECT_KEY);
-        ds.getMeasures(ImmutableList.of("coverage"), 1);
+        ds.getMeasuresFromDS(ImmutableList.of("coverage"), 1);
     }
 
     @Test
@@ -119,7 +116,7 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // when
         SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(USERNAME, createBaseUrl(), PROJECT_KEY);
-        int numberOfPages = ds.getNumberOfPages(ImmutableList.of("coverage"));
+        int numberOfPages = ds.getNumberOfPagesFromDS(ImmutableList.of("coverage"));
 
         // then
         assertThat(numberOfPages, is(10));
@@ -157,4 +154,23 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // then throw
     }
+
+    @Test
+    public void getComponents_from_server_if_no_authentication_needed() throws Exception {
+        // given
+        stubFor(get(urlEqualTo(URL_PATH))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(200)
+                        .withBody(createResponseString())));
+
+        // when
+        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource("", createBaseUrl(), PROJECT_KEY);
+        ComponentMap components = ds.getComponentMapFromDS(ImmutableList.of("coverage"));
+
+        // then
+        assertThat(components.getComponentStream().count(), is(34L));
+    }
+
+
 }
