@@ -6,7 +6,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
-- Adding Labels and UI
 - Added CSVImporter
 
 ### Changed
@@ -14,6 +13,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+
+## [1.2.0] - 2017-06-19
+### Added
+- Adding Labels and UI
+- Support for links to source page of SonarQube in sonarimporter
+- Added SCMLogParser
+
+### Changed
+
+### Removed
+
+### Fixed
+- GitHub Issue: legend is wrong #21
 
 
 ## [1.1.5] - 2017-05-31

@@ -1,0 +1,6 @@
+{
+  "Statements": "Number of Statements",
+  "RLOC": "Real Lines of Code",
+  "MCC": "MacCabe Complexity or cyclomatic complexity",
+  "Default": "RLOC/MCC/MCC with color range (2,4) \n RLOC: _RLOC_ \n MCC: _MCC_"
+}

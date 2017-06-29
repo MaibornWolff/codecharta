@@ -10,9 +10,10 @@ CodeCharta analysis tools generally follow the pipes and filters architecture pr
 
 Components that import data from an external source, e.g. SonarQube, and generate visualisation data.
 
-| Source        | Projekt                                                 |
+| Source        | Project                                                 |
 | ---           | ---                                                     |
 | generic CSV   | [CSVImporter](import/CSVImporter/README.md)             |
+| SCM log       | [SCMLogParser](import/SCMLogParser/README.md)            |
 | SonarQube     | [SonarImporter](import/SonarImporter/README.md)         |
 | SourceMonitor | [SourceMonitorImporter](import/SourceMonitorImporter/README.md) |
 
@@ -55,5 +56,3 @@ Via gradle:
 - Integration tests:
 
 > ./gradlew integrationTest
-
-gestartet werden.
