@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 /**
  * Created by fernandog on 11.04.17.
  */
-public class SonarImporterParameterTest {
+public class SonarMeasuresAPIImporterParameterTest {
 
     public String[] importerLocal = {"-l"};
     public String[] importerHelp = {"-h"};

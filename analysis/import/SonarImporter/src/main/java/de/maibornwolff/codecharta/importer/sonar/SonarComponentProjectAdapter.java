@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.sonar;
 
 import de.maibornwolff.codecharta.importer.sonar.model.Component;
+import de.maibornwolff.codecharta.importer.sonar.model.ComponentMap;
 import de.maibornwolff.codecharta.importer.sonar.model.Measure;
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier;
 import de.maibornwolff.codecharta.model.Node;
@@ -10,6 +11,7 @@ import de.maibornwolff.codecharta.nodeinserter.FileSystemPath;
 import de.maibornwolff.codecharta.nodeinserter.NodeInserter;
 import de.maibornwolff.codecharta.translator.MetricNameTranslator;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,8 +32,16 @@ public class SonarComponentProjectAdapter extends Project {
         this.translator = translator;
     }
 
+    public void addComponentMapsAsNodes(ComponentMap components) {
+        components.getComponentStream()
+                .sorted(Comparator.comparing(Component::getPath))
+                .forEach(this::addComponentAsNode);
+    }
+
     public void addComponentAsNode(Component component) {
-        Node node = new Node(createNodeName(component), createNodeTypeFromQualifier(component.getQualifier()), createAttributes(component.getMeasures()), createLink(component));
+        Node node = new Node(
+                createNodeName(component),
+                createNodeTypeFromQualifier(component.getQualifier()), createAttributes(component.getMeasures()), createLink(component));
         NodeInserter.insertByPath(this, createParentPath(component), node);
     }
 
