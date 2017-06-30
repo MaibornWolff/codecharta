@@ -9,8 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Adding simple merge functionality for multiple json files
 - Added CSVImporter
 - Added Translation for SonarQube metrics
+- Added descriptions for metrics
 
 ### Changed
+- Changed uppercase metrics, e.g. RLOC, to lowercase metrics
 
 ### Removed
 
