@@ -68,15 +68,15 @@ public class SonarMeasuresAPIDatasource {
         this.projectKey = projectKey;
     }
 
-    public ComponentMap getComponentMapFromDS(List<String> metricsList) {
+    public ComponentMap getComponentMap(List<String> metricsList) {
         ComponentMap componentMap = new ComponentMap();
         for (List<String> sublist : Lists.partition(metricsList, MAX_METRICS_IN_ONE_SONARCALL)) {
-            int noPages = getNumberOfPagesFromDS(sublist);
+            int noPages = getNumberOfPages(sublist);
 
             Flowable.range(1, noPages)
                     .flatMap(p -> Flowable.just(p)
                             .subscribeOn(Schedulers.io())
-                            .map(page -> getMeasuresFromDS(sublist, page)))
+                            .map(page -> getMeasures(sublist, page)))
                     .filter(m -> m.getComponents() != null)
                     .flatMap(m -> Flowable.fromIterable(m.getComponents()))
                     .filter(c -> c.getQualifier() == Qualifier.FIL || c.getQualifier() == Qualifier.UTS)
@@ -86,7 +86,7 @@ public class SonarMeasuresAPIDatasource {
     }
 
 
-    public Measures getMeasuresFromDS(List<String> metrics, int pageNumber) {
+    public Measures getMeasures(List<String> metrics, int pageNumber) {
         URI measureAPIRequestURI = createMeasureAPIRequestURI(metrics, pageNumber);
 
         Client client = ClientBuilder.newClient();
@@ -118,8 +118,8 @@ public class SonarMeasuresAPIDatasource {
         }
     }
 
-    public int getNumberOfPagesFromDS(List<String> metrics) {
-        PagingInfo pagingInfo = getMeasuresFromDS(metrics, 1).getPaging();
+    public int getNumberOfPages(List<String> metrics) {
+        PagingInfo pagingInfo = getMeasures(metrics, 1).getPaging();
         int total = pagingInfo.getTotal();
         return (total / PAGE_SIZE) + 1;
     }

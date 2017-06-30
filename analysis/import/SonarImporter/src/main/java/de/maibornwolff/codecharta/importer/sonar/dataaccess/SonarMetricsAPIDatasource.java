@@ -63,7 +63,7 @@ public class SonarMetricsAPIDatasource {
         this.baseUrl = baseUrl;
     }
 
-    public List<String> getAvailableMetricsList() {
+    public List<String> getAvailableMetricKeys() {
         int noPages = getNumberOfPages();
 
         return Flowable.range(1, noPages)

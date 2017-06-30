@@ -28,7 +28,7 @@ public class SonarMeasuresAPIImporter {
 
     public Project getProjectFromMeasureAPI(String name, List<String> metrics) {
         List<String> metricsList = getMetricList(metrics);
-        ComponentMap componentMap = measuresDS.getComponentMapFromDS(metricsList);
+        ComponentMap componentMap = measuresDS.getComponentMap(metricsList);
 
         SonarComponentProjectAdapter project = new SonarComponentProjectAdapter(name, sonarCodeURLLinker, translator);
         project.addComponentMapsAsNodes(componentMap);
@@ -38,7 +38,7 @@ public class SonarMeasuresAPIImporter {
 
     public List<String> getMetricList(List<String> metrics) {
         if (metrics.isEmpty()) {
-            return metricsDS.getAvailableMetricsList();
+            return metricsDS.getAvailableMetricKeys();
         }
         return metrics;
     }
