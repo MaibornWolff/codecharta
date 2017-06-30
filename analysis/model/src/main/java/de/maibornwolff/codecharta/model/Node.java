@@ -61,6 +61,10 @@ public class Node {
         this(name, type, attributes, "", new ArrayList<>());
     }
 
+    public Node(String name, NodeType type, Map<String, Object> attributes, String link) {
+        this(name, type, attributes, link, new ArrayList<>());
+    }
+
     public String getName() {
         return name;
     }
