@@ -51,9 +51,9 @@ class ScenarioService {
      * @returns {Scenario} the scenario
      */
     getDefaultScenario() {
-        let defaultRange = new Range(2,4,false);
-        let defaultSettings = new Settings(this.settingsService.settings.map, defaultRange, "RLOC", "MCC", "MCC", false, false,1);
-        return new Scenario("RLOC/MCC/MCC(2,4)", defaultSettings);
+        let defaultRange = new Range(20,40,false);
+        let defaultSettings = new Settings(this.settingsService.settings.map, defaultRange, "rloc", "mcc", "mcc", false, false,1);
+        return new Scenario("rloc/mcc/mcc(20,40)", defaultSettings);
     }
 
 }
