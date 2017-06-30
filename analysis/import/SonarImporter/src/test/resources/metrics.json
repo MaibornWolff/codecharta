@@ -9,7 +9,7 @@
       "domain": "Size",
       "direction": -1,
       "qualitative": false,
-      "hidden": true,
+      "hidden": false,
       "custom": false
     },
     {

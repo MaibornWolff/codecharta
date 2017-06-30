@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.importer.sonar;
 
 import com.google.common.collect.ImmutableList;
 import de.maibornwolff.codecharta.importer.sonar.model.Component;
+import de.maibornwolff.codecharta.importer.sonar.model.ComponentMap;
 import de.maibornwolff.codecharta.importer.sonar.model.Measure;
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier;
 import de.maibornwolff.codecharta.model.Node;
@@ -142,5 +143,20 @@ public class SonarComponentProjectAdapterTest {
         assertThat(project.getRootNode().getChildren(), hasSize(1));
         Node actualNode = project.getRootNode().getChildren().get(0);
         assertThat(actualNode.getType(), is(NodeType.Folder));
+    }
+
+    @Test
+    public void should_insert_component_from_component_map() {
+        // given
+        Component component = new Component("id", "key", "name", "path", "java", Qualifier.FIL, ImmutableList.of());
+        ComponentMap components = new ComponentMap();
+        components.updateComponent(component);
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
+
+        // when
+        project.addComponentMapsAsNodes(components);
+
+        // then
+        assertThat(project.getRootNode().getChildren(), hasSize(1));
     }
 }
