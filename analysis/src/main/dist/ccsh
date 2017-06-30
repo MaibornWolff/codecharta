@@ -22,21 +22,24 @@ CC_CMD=(
     "csvimport"
     "sonarimport"
     "sourcemonitorimport"
-    "scmlogparser")
+    "scmlogparser"
+    "merge")
 CC_CMD_DESCRIPTION=(
     "installs submodules"
     "checks if json is valid"
     "imports data from csv files (e.g. sourcemonitor)"
     "imports data from sonar"
     "imports data from sourcemonitor"
-    "imports data from scmlog")
+    "imports data from scmlog"
+    "merges multiple json files")
 CC_CMD_BIN=(
     "install"
     "${CC_INSTALL_DIR}/codecharta-check-${CC_VERSION}/bin/codecharta-check"
     "${CC_INSTALL_DIR}/codecharta-csvimport-${CC_VERSION}/bin/codecharta-csvimport"
     "${CC_INSTALL_DIR}/codecharta-sonarimport-${CC_VERSION}/bin/codecharta-sonarimport"
     "${CC_INSTALL_DIR}/codecharta-sourcemonitorimport-${CC_VERSION}/bin/codecharta-sourcemonitorimport"
-    "${CC_INSTALL_DIR}/codecharta-scmlogparser-${CC_VERSION}/bin/codecharta-scmlogparser")
+    "${CC_INSTALL_DIR}/codecharta-scmlogparser-${CC_VERSION}/bin/codecharta-scmlogparser"
+    "${CC_INSTALL_DIR}/codecharta-merge-${CC_VERSION}/bin/codecharta-merge")
 
 exit_with_error() {
   echo Error: $1 1>&2
