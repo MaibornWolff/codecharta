@@ -3,8 +3,8 @@ package de.maibornwolff.codecharta.importer.sourcemonitor;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import de.maibornwolff.codecharta.importer.csv.CSVProjectAdapter;
-import de.maibornwolff.codecharta.importer.csv.StringReplacer;
 import de.maibornwolff.codecharta.serialization.ProjectSerializer;
+import de.maibornwolff.codecharta.translator.MetricNameTranslator;
 
 import java.io.*;
 import java.util.HashMap;
@@ -16,7 +16,8 @@ public class SourceMonitorImporter {
     public static final char CSV_DELIMITER = ',';
     public static final char PATH_SEPARATOR = '\\';
 
-    public static StringReplacer getSourceMonitorReplacement() {
+    public static MetricNameTranslator getSourceMonitorReplacement() {
+        String prefix = "sm_";
         Map replacementMap = new HashMap<String, String>();
         replacementMap.put("Project Name", ""); // should be ignored
         replacementMap.put("Checkpoint Name", ""); // should be ignored
@@ -24,9 +25,6 @@ public class SourceMonitorImporter {
         replacementMap.put("File Name", "path");
         replacementMap.put("Lines", "loc");
         replacementMap.put("Statements", "statements");
-        replacementMap.put("Percent Branch Statements", "sm_percent_branch_statements");
-        replacementMap.put("Method Call Statements", "sm_method_call_statements");
-        replacementMap.put("Percent Lines with Comments", "sm_percent_lines_with_comments");
         replacementMap.put("Classes and Interfaces", "classes");
         replacementMap.put("Methods per Class", "functions_per_classs");
         replacementMap.put("Average Statements per Method", "average_statements_per_function");
@@ -42,7 +40,7 @@ public class SourceMonitorImporter {
             replacementMap.put("Statements at block level " + i, "statements_at_level_" + i);
         }
 
-        return new StringReplacer(ImmutableMap.copyOf(replacementMap));
+        return new MetricNameTranslator(ImmutableMap.copyOf(replacementMap), prefix);
     }
 
     public static void main(String... args) throws IOException {
