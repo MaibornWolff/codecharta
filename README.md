@@ -22,7 +22,7 @@ You can find a quickstart guide [here](https://maibornwolff.github.io/codecharta
 ## Feature request / Bug / Feedback
 
 Have a bug or a feature request? [Please open a new issue](https://github.com/MaibornWolff/codecharta/issues).
-If you have feedback or further questions, just send an email to [Dominik Ufer](dominik.ufer@maibornwolff.de).
+If you have feedback or further questions, just send an email to [Dominik Ufer](mailto:dominik.ufer@maibornwolff.de).
 
 ## License
 
