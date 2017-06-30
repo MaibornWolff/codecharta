@@ -3,11 +3,13 @@ package de.maibornwolff.codecharta.filter.mergefilter
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import java.io.*
+import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
-    if (args.size <= 1) {
+    if (args.isEmpty()) {
         print("Wrong number of parameters " + args.size)
         printUsage()
+        exitProcess(1)
     }
     val inputStream = getInputFromArgs(args)
     val projects = inputStream.map { p -> ProjectDeserializer.deserializeProject(InputStreamReader(p)) }
@@ -16,14 +18,13 @@ fun main(args: Array<String>) {
 }
 
 fun printUsage() {
-    print("Usage: MergeFilter.exe <json> <json> ")
+    print("Usage: ccsh merge <json> <json> ")
 }
 
 @Throws(FileNotFoundException::class)
 private fun getInputFromArgs(args: Array<String>): List<InputStream> {
-    return when (args.size) {
-        0 -> throw UnsupportedOperationException("At least two inputs must be provided.")
-        else -> args.map { a -> FileInputStream(File(a).absoluteFile) }
+    return args.map { a ->
+        FileInputStream(File(a).absoluteFile)
     }
 }
 
