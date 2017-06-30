@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
+- Adding simple merge functionality for multiple json files
+- Added CSVImporter
+- Added Translation for SonarQube metrics
 
 ### Changed
 

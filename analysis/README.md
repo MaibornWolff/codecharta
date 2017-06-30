@@ -12,13 +12,18 @@ Components that import data from an external source, e.g. SonarQube, and generat
 
 | Source        | Project                                                 |
 | ---           | ---                                                     |
+| generic CSV   | [CSVImporter](import/CSVImporter/README.md)             |
 | SCM log       | [SCMLogParser](import/SCMLogParser/README.md)            |
 | SonarQube     | [SonarImporter](import/SonarImporter/README.md)         |
 | SourceMonitor | [SourceMonitorImporter](import/SourceMonitorImporter/README.md) |
 
 ### Filter
 
-Components that take visualisation data and modifies them, e.g. merge multiple data for one project.
+Components that take visualisation data and modifies them.
+
+| Name                                        | Description                 |
+| ---                                         | ---                         |
+| [MergeFilter](filter/MergeFilter/README.md) | merges multiple json files  |
 
 ### Additional Tools
 

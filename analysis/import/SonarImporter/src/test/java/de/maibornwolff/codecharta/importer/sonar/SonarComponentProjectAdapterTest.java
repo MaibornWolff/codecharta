@@ -27,7 +27,7 @@ public class SonarComponentProjectAdapterTest {
         String language = "java";
         Qualifier qualifier = Qualifier.FIL;
         Component component = new Component(id, key, name, path, language, qualifier, ImmutableList.of(measure));
-        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project", SonarCodeURLLinker.NULL);
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
 
         // when
         project.addComponentAsNode(component);
@@ -50,12 +50,10 @@ public class SonarComponentProjectAdapterTest {
         Measure measure = new Measure(metric, value);
         String id = "id";
         String key = "key";
-        String name = null;
-        String path = null;
         String language = "java";
         Qualifier qualifier = Qualifier.FIL;
-        Component component = new Component(id, key, name, path, language, qualifier, ImmutableList.of(measure));
-        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project", SonarCodeURLLinker.NULL);
+        Component component = new Component(id, key, null, null, language, qualifier, ImmutableList.of(measure));
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
 
         // when
         project.addComponentAsNode(component);
@@ -84,7 +82,7 @@ public class SonarComponentProjectAdapterTest {
         String language = "java";
         Qualifier qualifier = Qualifier.FIL;
         Component component = new Component(id, key, name, path, language, qualifier, ImmutableList.of(measure));
-        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project", SonarCodeURLLinker.NULL);
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
 
         // when
         project.addComponentAsNode(component);
@@ -106,7 +104,7 @@ public class SonarComponentProjectAdapterTest {
         String value = "bla";
         Measure measure = new Measure(metric, value);
         Component component = new Component("id", "key", "name", "path", "java", Qualifier.FIL, ImmutableList.of(measure));
-        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project", SonarCodeURLLinker.NULL);
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
 
         // when
         project.addComponentAsNode(component);
@@ -121,7 +119,7 @@ public class SonarComponentProjectAdapterTest {
     public void should_insert_a_file_node_from_uts_component() {
         // given
         Component component = new Component("id", "key", "name", "path", "java", Qualifier.UTS, ImmutableList.of());
-        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project", SonarCodeURLLinker.NULL);
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
 
         // when
         project.addComponentAsNode(component);
@@ -136,7 +134,7 @@ public class SonarComponentProjectAdapterTest {
     public void should_insert_a_folder_node_from_dir_component() {
         // given
         Component component = new Component("id", "key", "name", "path", "java", Qualifier.DIR, ImmutableList.of());
-        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project", SonarCodeURLLinker.NULL);
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
 
         // when
         project.addComponentAsNode(component);
@@ -153,7 +151,7 @@ public class SonarComponentProjectAdapterTest {
         Component component = new Component("id", "key", "name", "path", "java", Qualifier.FIL, ImmutableList.of());
         ComponentMap components = new ComponentMap();
         components.updateComponent(component);
-        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project", SonarCodeURLLinker.NULL);
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
 
         // when
         project.addComponentMapsAsNodes(components);
