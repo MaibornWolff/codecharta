@@ -77,7 +77,7 @@ public class SonarMeasuresAPIImporterTest {
         // given
         List<String> emptyMetrics = new ArrayList<>();
         metricsDS = mock(SonarMetricsAPIDatasource.class);
-        when(metricsDS.getAvailableMetricsList()).thenReturn(Arrays.asList("metricKey"));
+        when(metricsDS.getAvailableMetricKeys()).thenReturn(Arrays.asList("metricKey"));
         sonar = new SonarMeasuresAPIImporter(measuresDS, metricsDS);
 
         // when
@@ -95,7 +95,7 @@ public class SonarMeasuresAPIImporterTest {
         ComponentMap components = new ComponentMap();
         List<Measure> measures = Arrays.asList(new Measure("metric", "1.2"));
         components.updateComponent(new Component("id", "key", "name", "path", "lang", Qualifier.FIL, measures));
-        when(measuresDS.getComponentMapFromDS(metrics)).thenReturn(components);
+        when(measuresDS.getComponentMap(metrics)).thenReturn(components);
 
         // when
         Project project = sonar.getProjectFromMeasureAPI("test", metrics);

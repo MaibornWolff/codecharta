@@ -64,7 +64,7 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // when
         SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource("", createBaseUrl(), PROJECT_KEY);
-        Measures measures = ds.getMeasuresFromDS(ImmutableList.of("coverage"), 1);
+        Measures measures = ds.getMeasures(ImmutableList.of("coverage"), 1);
 
         // then
         assertThat(measures, is(createExpectedMeasures()));
@@ -81,7 +81,7 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // when
         SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(USERNAME, createBaseUrl(), PROJECT_KEY);
-        Measures measures = ds.getMeasuresFromDS(ImmutableList.of("coverage"), 1);
+        Measures measures = ds.getMeasures(ImmutableList.of("coverage"), 1);
 
         // then
         assertThat(measures, is(createExpectedMeasures()));
@@ -98,7 +98,7 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // when
         SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(USERNAME, createBaseUrl(), PROJECT_KEY);
-        ds.getMeasuresFromDS(ImmutableList.of("coverage"), 1);
+        ds.getMeasures(ImmutableList.of("coverage"), 1);
     }
 
     @Test
@@ -116,7 +116,7 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // when
         SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(USERNAME, createBaseUrl(), PROJECT_KEY);
-        int numberOfPages = ds.getNumberOfPagesFromDS(ImmutableList.of("coverage"));
+        int numberOfPages = ds.getNumberOfPages(ImmutableList.of("coverage"));
 
         // then
         assertThat(numberOfPages, is(10));
@@ -166,7 +166,7 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // when
         SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource("", createBaseUrl(), PROJECT_KEY);
-        ComponentMap components = ds.getComponentMapFromDS(ImmutableList.of("coverage"));
+        ComponentMap components = ds.getComponentMap(ImmutableList.of("coverage"));
 
         // then
         assertThat(components.getComponentStream().count(), is(34L));

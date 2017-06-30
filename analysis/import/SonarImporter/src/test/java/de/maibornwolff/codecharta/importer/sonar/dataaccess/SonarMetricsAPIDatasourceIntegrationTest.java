@@ -112,7 +112,7 @@ public class SonarMetricsAPIDatasourceIntegrationTest {
 
         // when
         SonarMetricsAPIDatasource ds = new SonarMetricsAPIDatasource(createBaseUrl());
-        List<String> metricsList = ds.getAvailableMetricsList();
+        List<String> metricsList = ds.getAvailableMetricKeys();
 
         // then
         assertThat(metricsList, is(Arrays.asList(METRIC_ARRAY)));
