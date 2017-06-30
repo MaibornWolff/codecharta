@@ -1,13 +1,10 @@
-package de.maibornwolff.codecharta.importer.sourcemon;
+package de.maibornwolff.codecharta.importer.csv;
 
 import de.maibornwolff.codecharta.model.Node;
-import de.maibornwolff.codecharta.model.Project;
-import de.maibornwolff.codecharta.serialization.ProjectDeserializer;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -17,27 +14,27 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
-public class SourceMonitorProjectAdapterTest {
-    private final SourceMonitorProjectAdapter project = new SourceMonitorProjectAdapter("test");
+public class CSVProjectAdapterTest {
+    private final CSVProjectAdapter project = new CSVProjectAdapter("test", '\\', ',');
 
     private static InputStream toInputStream(String content) {
         return new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
     }
 
     @Test
-    public void should_ignore_wrong_row_content() throws UnsupportedEncodingException {
+    public void should_ignore_row_if_no_path_column_present() throws UnsupportedEncodingException {
         // when
-        project.addSourceMonitorProjectFromCsv(toInputStream("head\nnoValidContent\n"));
+        project.addProjectFromCsv(toInputStream("head,path\nnoValidContent\n"));
 
         // then
         assertThat(project.getRootNode().getChildren(), hasSize(0));
     }
 
     @Test
-    public void should_read_node_name_from_fourth_column() throws UnsupportedEncodingException {
+    public void should_read_node_name_from_specified_path_column() throws UnsupportedEncodingException {
         String name = "someName";
         // when
-        project.addSourceMonitorProjectFromCsv(toInputStream("someContent\nprojectName,blubb2,blubb3," + name));
+        project.addProjectFromCsv(toInputStream("someContent,,path\nprojectName,blubb2," + name));
 
         // then
         List<Node> rootNode = project.getRootNode().getChildren();
@@ -49,8 +46,8 @@ public class SourceMonitorProjectAdapterTest {
     public void should_read_node_with_name_only_once() throws UnsupportedEncodingException {
         String name = "someName";
         // when
-        project.addSourceMonitorProjectFromCsv(toInputStream("someContent\nprojectName,blubb2,blubb3," + name));
-        project.addSourceMonitorProjectFromCsv(toInputStream("someContent\nprojectName,blubb2,blubb3," + name));
+        project.addProjectFromCsv(toInputStream("someContent\n" + name));
+        project.addProjectFromCsv(toInputStream("someContent\n" + name));
 
         // then
         assertThat(project.getRootNode().getChildren().size(), is(1));
@@ -62,7 +59,7 @@ public class SourceMonitorProjectAdapterTest {
         String directoryName = "someNodeName";
 
         // when
-        project.addSourceMonitorProjectFromCsv(toInputStream("someContent\nprojectName,blubb2,blubb3," + directoryName + "\\someFile"));
+        project.addProjectFromCsv(toInputStream("someContent\n" + directoryName + "\\someFile"));
 
         // then
         assertThat(project.getRootNode().getChildren().size(), is(1));
@@ -72,18 +69,18 @@ public class SourceMonitorProjectAdapterTest {
     }
 
     @Test
-    public void should_read_node_attributes_from_fifth_column() throws UnsupportedEncodingException {
+    public void should_read_node_attributes_if_metric_values() throws UnsupportedEncodingException {
         // given
         String attribName = "attname";
         String attribVal = "\"0,1\"";
         float attValFloat = 0.1F;
 
         // when
-        project.addSourceMonitorProjectFromCsv(toInputStream("head1,head2,head3,head4," + attribName + "\nprojectName,blubb2,blubb3,blubb4," + attribVal + "\n"));
+        project.addProjectFromCsv(toInputStream("head1,path,head3,head4," + attribName + "\nprojectName,\"9900,01\",\"blubb\",1.0," + attribVal + "\n"));
 
         // then
         Map<String, Object> nodeAttributes = project.getRootNode().getChildren().iterator().next().getAttributes();
-        assertThat(nodeAttributes.size(), is(1));
+        assertThat(nodeAttributes.size(), is(3));
         assertThat(nodeAttributes.get(attribName), is(attValFloat));
     }
 }
