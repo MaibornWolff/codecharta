@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource;
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier;
 import de.maibornwolff.codecharta.model.Project;
+import de.maibornwolff.codecharta.translator.MetricNameTranslator;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -24,7 +25,8 @@ public class SonarImporter {
 
     public Project getProjectFromMeasureAPI(String name, List<String> metrics) throws SonarImporterException {
         List<String> metricsList = getMetricList(metrics);
-        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter(name, sonarCodeURLLinker);
+        MetricNameTranslator translator = SonarMetricTranslatorFactory.createMetricTranslator();
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter(name, sonarCodeURLLinker, translator);
 
         int noPages = measuresDS.getNumberOfPages(metricsList);
 

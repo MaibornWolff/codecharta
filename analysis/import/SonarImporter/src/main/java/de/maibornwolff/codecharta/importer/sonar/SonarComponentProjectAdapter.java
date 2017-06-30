@@ -8,18 +8,26 @@ import de.maibornwolff.codecharta.model.NodeType;
 import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.nodeinserter.FileSystemPath;
 import de.maibornwolff.codecharta.nodeinserter.NodeInserter;
+import de.maibornwolff.codecharta.translator.MetricNameTranslator;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SonarComponentProjectAdapter extends Project {
+    private final MetricNameTranslator translator;
+
+    public SonarComponentProjectAdapter(String name) {
+        this(name, SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL);
+    }
+
     private final SonarCodeURLLinker sonarCodeURLLinker;
 
-    public SonarComponentProjectAdapter(String name, SonarCodeURLLinker sonarCodeURLLinker) {
+    public SonarComponentProjectAdapter(String name, SonarCodeURLLinker sonarCodeURLLinker, MetricNameTranslator translator) {
         super(name);
         this.sonarCodeURLLinker = sonarCodeURLLinker;
         this.getNodes().add(new Node("root", NodeType.Folder));
+        this.translator = translator;
     }
 
     public void addComponentAsNode(Component component) {
@@ -30,7 +38,11 @@ public class SonarComponentProjectAdapter extends Project {
     private Map<String, Object> createAttributes(List<Measure> measures) {
         return measures.stream()
                 .filter(this::isMeasureConvertible)
-                .collect(Collectors.toMap(Measure::getMetric, this::convertMetricValue));
+                .collect(Collectors.toMap(this::convertMetricName, this::convertMetricValue));
+    }
+
+    private String convertMetricName(Measure measure) {
+        return translator.translate(measure.getMetric());
     }
 
     private String createLink(Component component) {

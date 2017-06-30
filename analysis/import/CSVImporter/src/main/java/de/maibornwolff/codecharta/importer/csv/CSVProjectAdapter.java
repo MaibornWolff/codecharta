@@ -7,11 +7,11 @@ import de.maibornwolff.codecharta.model.NodeType;
 import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.nodeinserter.FileSystemPath;
 import de.maibornwolff.codecharta.nodeinserter.NodeInserter;
+import de.maibornwolff.codecharta.translator.MetricNameTranslator;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class CSVProjectAdapter extends Project {
     public static final String ROOT = "root";
@@ -28,13 +28,13 @@ public class CSVProjectAdapter extends Project {
     }
 
     public void addProjectFromCsv(InputStream inStream) {
-        addProjectFromCsv(inStream, StringReplacer.TRIVIAL);
+        addProjectFromCsv(inStream, MetricNameTranslator.TRIVIAL);
     }
 
-    public void addProjectFromCsv(InputStream inStream, StringReplacer stringReplacer) {
+    public void addProjectFromCsv(InputStream inStream, MetricNameTranslator metricNameTranslator) {
         CsvParser parser = createParser(inStream);
         String[] oldHeader = parser.parseNext();
-        header = new CSVHeader(stringReplacer.replace(oldHeader));
+        header = new CSVHeader(metricNameTranslator.translate(oldHeader));
         parseContent(parser);
         parser.stopParsing();
     }
