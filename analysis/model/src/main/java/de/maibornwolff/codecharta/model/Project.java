@@ -37,9 +37,9 @@ public class Project {
 
     public static final String API_VERSION = "1.0";
 
-    private final String projectName;
-    private final String apiVersion;
-    private final List<Node> nodes;
+    private String projectName;
+    private String apiVersion;
+    private List<Node> nodes;
 
     public Project(String name) {
         this(name, new ArrayList<>(), API_VERSION);
@@ -73,6 +73,18 @@ public class Project {
 
     public boolean hasRootNode() {
         return nodes.size() == 1;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public void setApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
+    }
+
+    public void setNodes(List<Node> nodes) {
+        this.nodes = nodes;
     }
 
     @Override

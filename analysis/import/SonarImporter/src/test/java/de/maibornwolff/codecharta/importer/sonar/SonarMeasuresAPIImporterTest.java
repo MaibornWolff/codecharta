@@ -63,7 +63,7 @@ public class SonarMeasuresAPIImporterTest {
     @Test
     public void shouldGetMetricsWhenMetricsGiven() {
         // given
-        sonar = new SonarMeasuresAPIImporter(measuresDS, metricsDS, SonarCodeURLLinker.NULL);
+        sonar = new SonarMeasuresAPIImporter(measuresDS, metricsDS);
 
         // when
         List<String> metricList = sonar.getMetricList(metrics);
@@ -78,7 +78,7 @@ public class SonarMeasuresAPIImporterTest {
         List<String> emptyMetrics = new ArrayList<>();
         metricsDS = mock(SonarMetricsAPIDatasource.class);
         when(metricsDS.getAvailableMetricsList()).thenReturn(Arrays.asList("metricKey"));
-        sonar = new SonarMeasuresAPIImporter(measuresDS, metricsDS, SonarCodeURLLinker.NULL);
+        sonar = new SonarMeasuresAPIImporter(measuresDS, metricsDS);
 
         // when
         List<String> metricList = sonar.getMetricList(emptyMetrics);
@@ -91,7 +91,7 @@ public class SonarMeasuresAPIImporterTest {
     public void shouldReturnProjectWithNodeFromGetProjectFromMeasureAPI() {
         // given
         measuresDS = mock(SonarMeasuresAPIDatasource.class);
-        sonar = new SonarMeasuresAPIImporter(measuresDS, metricsDS, SonarCodeURLLinker.NULL);
+        sonar = new SonarMeasuresAPIImporter(measuresDS, metricsDS);
         ComponentMap components = new ComponentMap();
         List<Measure> measures = Arrays.asList(new Measure("metric", "1.2"));
         components.updateComponent(new Component("id", "key", "name", "path", "lang", Qualifier.FIL, measures));

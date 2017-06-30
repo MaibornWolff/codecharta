@@ -35,6 +35,7 @@ import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatas
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarResourcesAPIDatasource;
 import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.serialization.ProjectSerializer;
+import de.maibornwolff.codecharta.translator.MetricNameTranslator;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -81,8 +82,9 @@ public class SonarImporterMain {
         SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(callParameter.getUser(), createBaseUrlFrom(callParameter), projectKey);
         SonarMetricsAPIDatasource metricsDS = new SonarMetricsAPIDatasource(callParameter.getUser(), createBaseUrlFrom(callParameter));
         SonarCodeURLLinker sonarCodeURLLinker = new SonarCodeURLLinker(createBaseUrlFrom(callParameter));
+        MetricNameTranslator translator = SonarMetricTranslatorFactory.createMetricTranslator();
 
-        SonarMeasuresAPIImporter importer = new SonarMeasuresAPIImporter(ds, metricsDS, sonarCodeURLLinker);
+        SonarMeasuresAPIImporter importer = new SonarMeasuresAPIImporter(ds, metricsDS, sonarCodeURLLinker, translator);
         Project project = importer.getProjectFromMeasureAPI(projectKey, callParameter.getMetrics());
 
         ProjectSerializer.serializeProject(project, createWriterFrom(callParameter));
