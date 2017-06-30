@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.sourcemon;
+package de.maibornwolff.codecharta.importer.csv;
 
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
@@ -11,18 +11,30 @@ import de.maibornwolff.codecharta.nodeinserter.NodeInserter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
-public class SourceMonitorProjectAdapter extends Project {
-    private String[] header;
+public class CSVProjectAdapter extends Project {
+    public static final String ROOT = "root";
+    private final char pathSeparator;
+    private final char csvDelimiter;
 
-    public SourceMonitorProjectAdapter(String name) {
-        super(name);
-        this.getNodes().add(new Node("root", NodeType.Folder));
+    private CSVHeader header;
+
+    public CSVProjectAdapter(String projectName, char pathSeparator, char csvDelimiter) {
+        super(projectName);
+        this.pathSeparator = pathSeparator;
+        this.csvDelimiter = csvDelimiter;
+        this.getNodes().add(new Node(ROOT, NodeType.Folder));
     }
 
-    public void addSourceMonitorProjectFromCsv(InputStream inStream) {
+    public void addProjectFromCsv(InputStream inStream) {
+        addProjectFromCsv(inStream, StringReplacer.TRIVIAL);
+    }
+
+    public void addProjectFromCsv(InputStream inStream, StringReplacer stringReplacer) {
         CsvParser parser = createParser(inStream);
-        header = parser.parseNext();
+        String[] oldHeader = parser.parseNext();
+        header = new CSVHeader(stringReplacer.replace(oldHeader));
         parseContent(parser);
         parser.stopParsing();
     }
@@ -36,7 +48,7 @@ public class SourceMonitorProjectAdapter extends Project {
 
     private CsvParser createParser(InputStream inStream) {
         CsvParserSettings parserSettings = new CsvParserSettings();
-        parserSettings.getFormat().setDelimiter(',');
+        parserSettings.getFormat().setDelimiter(csvDelimiter);
 
         CsvParser parser = new CsvParser(parserSettings);
         parser.beginParsing(new InputStreamReader(inStream, StandardCharsets.UTF_8));
@@ -45,9 +57,9 @@ public class SourceMonitorProjectAdapter extends Project {
 
     private void insertNodeForRow(String[] rawRow) {
         try {
-            SourceMonitorCSVRow row = new SourceMonitorCSVRow(rawRow, header);
+            CSVRow row = new CSVRow(rawRow, header, pathSeparator);
             Node node = new Node(row.getFileName(), NodeType.File, row.getAttributes());
-            NodeInserter.insertByPath(this, new FileSystemPath(row.getFolderWithFile().replace('\\', '/')), node);
+            NodeInserter.insertByPath(this, new FileSystemPath(row.getFolderWithFile().replace(pathSeparator, '/')), node);
         } catch (IllegalArgumentException e) {
             System.err.println("Ignoring " + e.getMessage());
         }
