@@ -147,17 +147,4 @@ public class SonarResourcesAPIDatasourceIntegrationTest {
         // then throw
     }
 
-    @Test
-    public void createMetricList_should_trigger_retreaving_available_metrics_if_none_given() throws SonarImporterException {
-        // given
-        SonarMetricsAPIDatasource sonarMetricsAPIDatasource = mock(SonarMetricsAPIDatasource.class);
-
-        // when
-        SonarResourcesAPIDatasource ds = new SonarResourcesAPIDatasource("", createBaseUrl(), PROJECT_KEY, sonarMetricsAPIDatasource);
-        ds.createMetricString(ImmutableList.of());
-
-        // then
-        Mockito.verify(sonarMetricsAPIDatasource).getAvailableMetrics();
-    }
-
 }
