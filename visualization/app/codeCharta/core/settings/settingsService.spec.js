@@ -42,16 +42,17 @@ describe("app.codeCharta.core.settings.settingsService", function() {
         expect(settingsService.onSettingsChanged.calledOnce);
 
     }));
+
     /**
-          * @test {SettingsService#getMetricOrDefault}
-          */
-    it("should return defaultValue when metric is not in array", angular.mock.inject(function(settingsService, $rootScope){
+      * @test {SettingsService#getMetricOrDefault}
+      */
+    it("should return defaultValue when metric is not in array", angular.mock.inject(function(settingsService){
         
-        var arr = ["a", "b", "c"];
-        var name = "lookingForThis";
-        var defaultValue = "default";
+        const arr = ["a", "b", "c"];
+        const name = "lookingForThis";
+        const defaultValue = "default";
         
-        var result = settingsService.getMetricOrDefault(arr, name, defaultValue);
+        const result = settingsService.getMetricOrDefault(arr, name, defaultValue);
         
         expect(result).to.equal(defaultValue);
         
@@ -60,13 +61,13 @@ describe("app.codeCharta.core.settings.settingsService", function() {
     /**
      * @test {SettingsService#getMetricOrDefault}
      */
-    it("should return the searched value when metric is in array", angular.mock.inject(function(settingsService, $rootScope){
+    it("should return the searched value when metric is in array", angular.mock.inject(function(settingsService){
                 
-        var arr = ["a", "b", "lookingForThis"];
-        var name = "lookingForThis";
-        var defaultValue = "default";
+        const arr = ["a", "b", "lookingForThis"];
+        const name = "lookingForThis";
+        const defaultValue = "default";
                 
-        var result = settingsService.getMetricOrDefault(arr, name, defaultValue);
+        const result = settingsService.getMetricOrDefault(arr, name, defaultValue);
                 
         expect(result).to.equal(name);
                 
@@ -74,19 +75,19 @@ describe("app.codeCharta.core.settings.settingsService", function() {
     /**
      * @test {SettingsService#correctSettings}
      */
-    it("should replace metric with default if metric is not available", angular.mock.inject(function(settingsService, dataService, $rootScope){
+    it("should replace metric with default if metric is not available", angular.mock.inject(function(settingsService, dataService){
         dataService.data.metrics = ["a", "f", "g", "h"];
-        var settings = {areaMetric:"a", heightMetric:"b", colorMetric:"c"};
-        var expected = {areaMetric: "a", heightMetric:"f", colorMetric:"g"};
-        var result = settingsService.correctSettings(settings);
+        const settings = {areaMetric:"a", heightMetric:"b", colorMetric:"c"};
+        const expected = {areaMetric: "a", heightMetric:"f", colorMetric:"g"};
+        const result = settingsService.correctSettings(settings);
         expect(result).to.deep.equal(expected);
     }));
     /**
      * @test {SettingsService#correctSettings}
      */
-    it("should return input if metrics are available", angular.mock.inject(function(settingsService, $rootScope){
-        var settings = {areaMetric:"a", heightMetric:"b", colorMetric:"c"};
-        var result = settingsService.correctSettings(settings);
+    it("should return input if metrics are available", angular.mock.inject(function(settingsService){
+        const settings = {areaMetric:"a", heightMetric:"b", colorMetric:"c"};
+        const result = settingsService.correctSettings(settings);
         expect(result).to.deep.equal(settings);
     }));
 });
