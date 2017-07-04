@@ -151,7 +151,7 @@ class SettingsService {
      * @param {Settings} settings
      */
     correctSettings(settings){
-        var result = settings;
+        let result = settings;
         result.areaMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.areaMetric,this.getMetricByIdOrLast(0, this.dataService.data.metrics));
         result.heightMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.heightMetric, this.getMetricByIdOrLast(1, this.dataService.data.metrics));
         result.colorMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.colorMetric, this.getMetricByIdOrLast(2, this.dataService.data.metrics));
@@ -165,18 +165,14 @@ class SettingsService {
       * @param {String} defaultValue a default name in case metricName was not found
       */
     getMetricOrDefault(metricsArray, metricName, defaultValue) {
-        var result = defaultValue;
-        metricsArray.forEach((metric) => {
-                if(metric == metricName){
-                        result = metric;
-                    }
-            });
-        if(result == defaultValue){
-            console.log(metricName + " could not be found in the chosen Map. " + defaultValue + " has been chosen instead.");
-        }
-        else{
 
-        }
+        let result = defaultValue;
+        metricsArray.forEach((metric) => {
+            if(metric + "" === metricName + ""){
+                    result = metric;
+                }
+        });
+
         return result;
     }
 }
