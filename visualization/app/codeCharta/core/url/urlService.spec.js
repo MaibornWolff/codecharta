@@ -55,7 +55,7 @@ describe("app.codeCharta.core.url.urlService", function() {
 
     });
 
-    xit("getFileDataFromQueryParam should allow URL's", (done) => {
+    it("getFileDataFromQueryParam should allow URL's", (done) => {
 
         // mocks + values
         let url = "http://testurl.de/?file=http://someurl.com/some.json";
@@ -75,9 +75,11 @@ describe("app.codeCharta.core.url.urlService", function() {
             }
         );
 
+        $httpBackend.flush();
+
     });
 
-    xit("file parameter should correctly resolve to a file", (done) => {
+    it("file parameter should correctly resolve to a file", (done) => {
 
         // mocks + values
         let url = "http://testurl?file=valid.json";
@@ -96,6 +98,8 @@ describe("app.codeCharta.core.url.urlService", function() {
                 done("should succeed");
             }
         );
+
+        $httpBackend.flush();
 
     });
 

@@ -59,7 +59,7 @@ class SonarResourceReader {
     private final List<SonarResource> parsedSonarResources = new ArrayList<>();
     private final XMLEventReader eventReader;
 
-    public SonarResourceReader(Reader reader) throws SonarImporterException {
+    public SonarResourceReader(Reader reader) {
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
             eventReader = factory.createXMLEventReader(reader);
@@ -68,7 +68,7 @@ class SonarResourceReader {
         }
     }
 
-    public List<SonarResource> readSonarResources() throws SonarImporterException {
+    public List<SonarResource> readSonarResources() {
         while (eventReader.hasNext()) {
             XMLEvent event = getNextEventOrThrowException();
             if (isResourceStartTag(event)) {
@@ -82,7 +82,7 @@ class SonarResourceReader {
         return event.isStartElement() && event.asStartElement().getName().getLocalPart().equals(RESOURCE_TAG);
     }
 
-    private XMLEvent getNextEventOrThrowException() throws SonarImporterException {
+    private XMLEvent getNextEventOrThrowException() {
         try {
             return eventReader.nextEvent();
         } catch (XMLStreamException e) {
@@ -90,7 +90,7 @@ class SonarResourceReader {
         }
     }
 
-    private Optional<SonarResource> parseResource() throws SonarImporterException {
+    private Optional<SonarResource> parseResource() {
         Map<String, String> attributes = new HashMap<>();
         List<SonarAttribute> metrics = new ArrayList<>();
         while (eventReader.hasNext()) {
@@ -115,7 +115,7 @@ class SonarResourceReader {
     }
 
 
-    private Optional<SonarAttribute> parseMetric() throws SonarImporterException {
+    private Optional<SonarAttribute> parseMetric() {
         Map<String, String> attributes = new HashMap<>();
         while (eventReader.hasNext()) {
             XMLEvent event = getNextEventOrThrowException();
@@ -133,7 +133,7 @@ class SonarResourceReader {
     }
 
 
-    private Map<String, String> parseAttribute(StartElement startElement) throws SonarImporterException {
+    private Map<String, String> parseAttribute(StartElement startElement) {
         String name = startElement.getName().getLocalPart();
         String value = null;
 

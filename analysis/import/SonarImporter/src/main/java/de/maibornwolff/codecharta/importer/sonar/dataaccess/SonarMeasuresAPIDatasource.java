@@ -29,10 +29,15 @@
 
 package de.maibornwolff.codecharta.importer.sonar.dataaccess;
 
+import com.google.common.collect.Lists;
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException;
 import de.maibornwolff.codecharta.importer.sonar.filter.ErrorResponseFilter;
+import de.maibornwolff.codecharta.importer.sonar.model.ComponentMap;
 import de.maibornwolff.codecharta.importer.sonar.model.Measures;
 import de.maibornwolff.codecharta.importer.sonar.model.PagingInfo;
+import de.maibornwolff.codecharta.importer.sonar.model.Qualifier;
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -46,6 +51,8 @@ import java.util.stream.Collectors;
 public class SonarMeasuresAPIDatasource {
 
     private static final int PAGE_SIZE = 100;
+
+    private static final int MAX_METRICS_IN_ONE_SONARCALL = 15;
 
     private static final String MEASURES_URL_PATTERN = "%s/api/measures/component_tree?baseComponentKey=%s&qualifiers=FIL,UTS&metricKeys=%s&p=%s&ps=" + PAGE_SIZE;
 
@@ -61,7 +68,25 @@ public class SonarMeasuresAPIDatasource {
         this.projectKey = projectKey;
     }
 
-    public Measures getMeasures(List<String> metrics, int pageNumber) throws SonarImporterException {
+    public ComponentMap getComponentMap(List<String> metricsList) {
+        ComponentMap componentMap = new ComponentMap();
+        for (List<String> sublist : Lists.partition(metricsList, MAX_METRICS_IN_ONE_SONARCALL)) {
+            int noPages = getNumberOfPages(sublist);
+
+            Flowable.range(1, noPages)
+                    .flatMap(p -> Flowable.just(p)
+                            .subscribeOn(Schedulers.io())
+                            .map(page -> getMeasures(sublist, page)))
+                    .filter(m -> m.getComponents() != null)
+                    .flatMap(m -> Flowable.fromIterable(m.getComponents()))
+                    .filter(c -> c.getQualifier() == Qualifier.FIL || c.getQualifier() == Qualifier.UTS)
+                    .blockingForEach(componentMap::updateComponent);
+        }
+        return componentMap;
+    }
+
+
+    public Measures getMeasures(List<String> metrics, int pageNumber) {
         URI measureAPIRequestURI = createMeasureAPIRequestURI(metrics, pageNumber);
 
         Client client = ClientBuilder.newClient();
@@ -78,7 +103,7 @@ public class SonarMeasuresAPIDatasource {
 
     }
 
-    URI createMeasureAPIRequestURI(List<String> metrics, int pageNumber) throws SonarImporterException {
+    URI createMeasureAPIRequestURI(List<String> metrics, int pageNumber) {
         if (metrics.isEmpty()) {
             throw new IllegalArgumentException("Empty list of metrics is not supported.");
         }
@@ -93,7 +118,7 @@ public class SonarMeasuresAPIDatasource {
         }
     }
 
-    public int getNumberOfPages(List<String> metrics) throws SonarImporterException {
+    public int getNumberOfPages(List<String> metrics) {
         PagingInfo pagingInfo = getMeasures(metrics, 1).getPaging();
         int total = pagingInfo.getTotal();
         return (total / PAGE_SIZE) + 1;

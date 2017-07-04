@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import de.maibornwolff.codecharta.importer.sonar.model.ErrorEntity;
 import de.maibornwolff.codecharta.importer.sonar.model.ErrorResponse;
 
-import javax.ws.rs.*;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
