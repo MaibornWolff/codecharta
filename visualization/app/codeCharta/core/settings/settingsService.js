@@ -67,8 +67,6 @@ class SettingsService {
 
         this.settings.map = data.currentmap;
 
-        console.log(data.metrics, this.getMetricByIdOrLast(1, data.metrics));
-
         if(data.metrics.indexOf(this.settings.areaMetric) === -1){
             //area metric is not set or not in the new metrics and needs to be chosen
             this.settings.areaMetric = this.getMetricByIdOrLast(0, data.metrics);
@@ -151,7 +149,7 @@ class SettingsService {
      * @param {Settings} settings
      */
     correctSettings(settings){
-        let result = settings;
+        const result = settings;
         result.areaMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.areaMetric,this.getMetricByIdOrLast(0, this.dataService.data.metrics));
         result.heightMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.heightMetric, this.getMetricByIdOrLast(1, this.dataService.data.metrics));
         result.colorMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.colorMetric, this.getMetricByIdOrLast(2, this.dataService.data.metrics));
