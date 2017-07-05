@@ -6,8 +6,8 @@ import de.maibornwolff.codecharta.importer.sonar.model.Measure;
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier;
 import de.maibornwolff.codecharta.model.Node;
 import de.maibornwolff.codecharta.model.NodeType;
+import de.maibornwolff.codecharta.model.Path;
 import de.maibornwolff.codecharta.model.Project;
-import de.maibornwolff.codecharta.nodeinserter.FileSystemPath;
 import de.maibornwolff.codecharta.nodeinserter.NodeInserter;
 import de.maibornwolff.codecharta.translator.MetricNameTranslator;
 
@@ -111,11 +111,7 @@ public class SonarComponentProjectAdapter extends Project {
      * @param component given component
      * @return fs path of components parent
      */
-    private FileSystemPath createParentPath(Component component) {
-        if (component.getPath() != null) {
-            return new FileSystemPath(component.getPath().substring(0, component.getPath().lastIndexOf('/') + 1));
-        } else {
-            return new FileSystemPath("");
-        }
+    private Path<String> createParentPath(Component component) {
+        return new ComponentPath(component);
     }
 }
