@@ -13,6 +13,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+## [1.3.1] - 2017-07-05
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+- Prevented override of URL-parameters by default scenario
+
 ## [1.3.0] - 2017-07-05
 ### Added
 - Adding simple merge functionality for multiple json files
