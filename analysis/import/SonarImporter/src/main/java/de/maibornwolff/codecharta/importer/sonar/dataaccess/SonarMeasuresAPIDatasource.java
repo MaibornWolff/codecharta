@@ -60,22 +60,15 @@ public class SonarMeasuresAPIDatasource {
 
     private final URL baseUrl;
 
-    private final String projectKey;
-
-    public SonarMeasuresAPIDatasource(String user, URL baseUrl, String projectKey) {
+    public SonarMeasuresAPIDatasource(String user, URL baseUrl) {
         this.user = user;
         this.baseUrl = baseUrl;
-        this.projectKey = projectKey;
-    }
-
-    public ComponentMap getComponentMap(List<String> metricsList) {
-        return getComponentMap(projectKey, metricsList);
     }
 
     public ComponentMap getComponentMap(String componentKey, List<String> metricsList) {
         ComponentMap componentMap = new ComponentMap();
         for (List<String> sublist : Lists.partition(metricsList, MAX_METRICS_IN_ONE_SONARCALL)) {
-            int noPages = getNumberOfPages(sublist);
+            int noPages = getNumberOfPages(componentKey, sublist);
 
             Flowable.range(1, noPages)
                     .flatMap(p -> Flowable.just(p)
@@ -89,10 +82,6 @@ public class SonarMeasuresAPIDatasource {
         return componentMap;
     }
 
-
-    public Measures getMeasures(List<String> metrics, int pageNumber) {
-        return getMeasures(projectKey, metrics, pageNumber);
-    }
 
     public Measures getMeasures(String componentKey, List<String> metrics, int pageNumber) {
         URI measureAPIRequestURI = createMeasureAPIRequestURI(componentKey, metrics, pageNumber);
@@ -111,10 +100,6 @@ public class SonarMeasuresAPIDatasource {
 
     }
 
-    URI createMeasureAPIRequestURI(List<String> metrics, int pageNumber) {
-        return createMeasureAPIRequestURI(projectKey, metrics, pageNumber);
-    }
-
     URI createMeasureAPIRequestURI(String componentKey, List<String> metrics, int pageNumber) {
         if (metrics.isEmpty()) {
             throw new IllegalArgumentException("Empty list of metrics is not supported.");
@@ -128,10 +113,6 @@ public class SonarMeasuresAPIDatasource {
         } catch (URISyntaxException e) {
             throw new SonarImporterException(e);
         }
-    }
-
-    public int getNumberOfPages(List<String> metrics) {
-        return getNumberOfPages(projectKey, metrics);
     }
 
     public int getNumberOfPages(String componentKey, List<String> metrics) {
