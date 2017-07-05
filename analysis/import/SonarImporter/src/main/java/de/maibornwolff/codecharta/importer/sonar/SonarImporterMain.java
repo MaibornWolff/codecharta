@@ -72,20 +72,25 @@ public class SonarImporterMain {
         }
     }
 
-    private static void doImport(SonarImporterParameter callParameter) throws IOException {
+    private static SonarMeasuresAPIImporter createMesauresAPIImporter(SonarImporterParameter callParameter) {
         if (callParameter.getFiles().size() != 2) {
             callParameter.printUsage();
             throw new SonarImporterException("Url and project key missing.");
         }
 
-        String projectKey = callParameter.getFiles().get(1);
-        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(callParameter.getUser(), createBaseUrlFrom(callParameter), projectKey);
+        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(callParameter.getUser(), createBaseUrlFrom(callParameter));
         SonarMetricsAPIDatasource metricsDS = new SonarMetricsAPIDatasource(callParameter.getUser(), createBaseUrlFrom(callParameter));
         SonarCodeURLLinker sonarCodeURLLinker = new SonarCodeURLLinker(createBaseUrlFrom(callParameter));
         MetricNameTranslator translator = SonarMetricTranslatorFactory.createMetricTranslator();
 
-        SonarMeasuresAPIImporter importer = new SonarMeasuresAPIImporter(ds, metricsDS, sonarCodeURLLinker, translator);
-        Project project = importer.getProjectFromMeasureAPI(projectKey, callParameter.getMetrics());
+        return new SonarMeasuresAPIImporter(ds, metricsDS, sonarCodeURLLinker, translator);
+    }
+
+    private static void doImport(SonarImporterParameter callParameter) throws IOException {
+        String projectKey = callParameter.getFiles().get(1);
+
+        SonarMeasuresAPIImporter importer = createMesauresAPIImporter(callParameter);
+        Project project = importer.getProjectFromMeasureAPI(projectKey, projectKey, callParameter.getMetrics());
 
         ProjectSerializer.serializeProject(project, createWriterFrom(callParameter));
     }

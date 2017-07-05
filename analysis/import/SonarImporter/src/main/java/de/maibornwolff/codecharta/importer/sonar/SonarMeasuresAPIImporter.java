@@ -15,7 +15,7 @@ public class SonarMeasuresAPIImporter {
     private final SonarCodeURLLinker sonarCodeURLLinker;
     private final MetricNameTranslator translator;
 
-    public SonarMeasuresAPIImporter(SonarMeasuresAPIDatasource measuresDS, SonarMetricsAPIDatasource metricsDS){
+    public SonarMeasuresAPIImporter(SonarMeasuresAPIDatasource measuresDS, SonarMetricsAPIDatasource metricsDS) {
         this(measuresDS, metricsDS, SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL);
     }
 
@@ -26,11 +26,11 @@ public class SonarMeasuresAPIImporter {
         this.translator = translator;
     }
 
-    public Project getProjectFromMeasureAPI(String name, List<String> metrics) {
+    public Project getProjectFromMeasureAPI(String projectKey, String projectName, List<String> metrics) {
         List<String> metricsList = getMetricList(metrics);
-        ComponentMap componentMap = measuresDS.getComponentMap(metricsList);
+        ComponentMap componentMap = measuresDS.getComponentMap(projectKey, metricsList);
 
-        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter(name, sonarCodeURLLinker, translator);
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter(projectName, sonarCodeURLLinker, translator);
         project.addComponentMapsAsNodes(componentMap);
 
         return project;
