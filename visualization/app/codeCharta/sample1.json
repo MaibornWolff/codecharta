@@ -1,38 +1,30 @@
 {
-
-  "name": "Sample Map",
-
-  "timestamp": "0",
-
-  "root": {
+  "projectName": "Sample Project",
+  "nodes": [{
     "name": "root",
-    "id":20,
     "attributes": {},
     "children": [
       {
         "name": "big leaf",
-        "id":0,
-        "attributes": {"RLOC": 100, "Functions": 10, "MCC": 1},
+        "attributes": {"rloc": 100, "functions": 10, "mcc": 1},
         "link": "http://www.google.de"
       },
       {
         "name": "Parent Leaf",
-        "id":1,
         "attributes": {},
         "children": [
           {
             "name": "small leaf",
-            "id":2,
-            "attributes": {"RLOC": 30, "Functions": 100, "MCC": 100}
+            "attributes": {"rloc": 30, "functions": 100, "mcc": 100}
           },
           {
             "name": "other small leaf",
-            "id":3,
-            "attributes": {"RLOC": 70, "Functions": 1000, "MCC": 10}
+            "attributes": {"rloc": 70, "functions": 1000, "mcc": 10}
           }
         ]
       }
     ]
   }
+    ]
 
 }

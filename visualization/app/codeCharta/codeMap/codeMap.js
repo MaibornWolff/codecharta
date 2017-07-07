@@ -44,7 +44,8 @@ angular.module("app.codeCharta.codeMap").factory(
                     hovered: () => {return new THREE.MeshLambertMaterial({ color: 0xEB8319, emissive: 0x111111});},
                     default: () => {return new THREE.MeshLambertMaterial({color: 0x89ACB4});},
                     positiveDelta: () => {return new THREE.MeshLambertMaterial({color: 0x69ff40});}, //building grew -> positive delta, the change may be negative for specific metrics
-                    negativeDelta: () => {return new THREE.MeshLambertMaterial({color: 0xff0E0E});}
+                    negativeDelta: () => {return new THREE.MeshLambertMaterial({color: 0xff0E0E});},
+                    base: () => {return new THREE.MeshLambertMaterial({color: 0x333333});}
             };}
 
 );

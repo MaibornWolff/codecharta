@@ -99,7 +99,7 @@ public class SonarResourcesAPIDatasource {
     String createMetricString(List<String> metricList) {
         if (metricList.isEmpty()) {
             sonarMetricsAPIDatasource
-                    .getAvailableMetrics()
+                    .getAvailableMetrics(0).getMetrics()
                     .forEach(m -> metricList.add(m.getKey()));
         }
         return metricList.stream()

@@ -8,10 +8,7 @@ import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException;
-import de.maibornwolff.codecharta.importer.sonar.model.ErrorEntity;
-import de.maibornwolff.codecharta.importer.sonar.model.ErrorResponse;
-import de.maibornwolff.codecharta.importer.sonar.model.Measures;
-import de.maibornwolff.codecharta.importer.sonar.model.PagingInfo;
+import de.maibornwolff.codecharta.importer.sonar.model.*;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -157,4 +154,23 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // then throw
     }
+
+    @Test
+    public void getComponents_from_server_if_no_authentication_needed() throws Exception {
+        // given
+        stubFor(get(urlEqualTo(URL_PATH))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(200)
+                        .withBody(createResponseString())));
+
+        // when
+        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource("", createBaseUrl(), PROJECT_KEY);
+        ComponentMap components = ds.getComponentMap(ImmutableList.of("coverage"));
+
+        // then
+        assertThat(components.getComponentStream().count(), is(34L));
+    }
+
+
 }

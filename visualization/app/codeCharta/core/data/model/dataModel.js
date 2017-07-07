@@ -6,10 +6,10 @@ export class DataModel {
     /**
      * @param {CodeMap[]} revisions current revisions
      * @param {string[]} metrics current metrics
-     * @param {CodeMap} firstMap current first map
-     * @param {CodeMap} secondMap current second map
+     * @param {CodeMap} comparisonMap current first map
+     * @param {CodeMap} referenceMap current second map
      */
-    constructor(revisions, metrics, firstMap, secondMap) {
+    constructor(revisions, metrics, comparisonMap, referenceMap) {
 
         /**
          * currently loaded revisions
@@ -30,15 +30,15 @@ export class DataModel {
          * currently selected map/revision
          * @type {CodeMap}
          */
-        this.secondMap = secondMap;
+        this.referenceMap = referenceMap;
 
         /**
          * map to which the delta is calculated
          * @type {CodeMap}
          */
-        this.firstMap = firstMap;
+        this.comparisonMap = comparisonMap;
 
-        //TODO Indizes statt ganze Maps in currentmap und firstMap
+        //TODO Indizes statt ganze Maps in currentmap und comparisonMap
 
     }
 

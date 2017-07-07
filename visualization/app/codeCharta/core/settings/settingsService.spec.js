@@ -24,7 +24,7 @@ describe("app.codeCharta.core.settings.settingsService", function() {
         settingsService.onSettingsChanged = sinon.spy();
 
         //enough metrics
-        $rootScope.$broadcast("data-changed", {secondMap: {"name":"some map"}, metrics: ["a","b","c"]});
+        $rootScope.$broadcast("data-changed", {referenceMap: {"name":"some map"}, metrics: ["a","b","c"]});
 
         expect(settingsService.settings.map.name).to.equal("some map");
         expect(settingsService.settings.areaMetric).to.equal("a");
@@ -32,7 +32,7 @@ describe("app.codeCharta.core.settings.settingsService", function() {
         expect(settingsService.settings.colorMetric).to.equal("c");
 
         //not enough metrics
-        $rootScope.$broadcast("data-changed", {secondMap: {"name":"another map"}, metrics: ["a"]});
+        $rootScope.$broadcast("data-changed", {referenceMap: {"name":"another map"}, metrics: ["a"]});
 
         expect(settingsService.settings.map.name).to.equal("some map");
         expect(settingsService.settings.areaMetric).to.equal("a");

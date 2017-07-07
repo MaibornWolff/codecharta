@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Deprecated
 public class SonarResourceToProjectConverter {
 
     private final List<SonarResource> sonarResources;
