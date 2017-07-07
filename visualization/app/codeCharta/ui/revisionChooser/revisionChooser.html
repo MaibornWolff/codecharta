@@ -1,15 +1,19 @@
 <div id="revisionChooser">
-    Selected Revisions: <br/>
-    First (Deltamap): {{ctrl.dataService.data.firstMap.name}} @ {{ctrl.dataService.data.firstMap.timestamp}}<br/>
-    Second (Main): {{ctrl.dataService.data.secondMap.name}} @ {{ctrl.dataService.data.secondMap.timestamp}}<br/>
-    <br/>
-    First Revision:
+
+    Current <span ng-if="ctrl.settingsService.settings.deltas">Reference </span>Map: {{ctrl.dataService.data.referenceMap.fileName}}<br/>
+    Select <span ng-if="ctrl.settingsService.settings.deltas">Reference </span>Map:
     <span ng-repeat="(key, value) in ctrl.revisions">
-        <a href="#" ng-click="ctrl.loadFirstRevision(key)">{{value.name}} @ {{value.timestamp}}</a> -
+        <a href="#" ng-click="ctrl.loadReferenceMap(key)">{{value.fileName}}</a> -
      </span>
-    <br/>
-    Second Revision:
-    <span ng-repeat="(key, value) in ctrl.revisions">
-        <a href="#" ng-click="ctrl.loadSecondRevision(key)">{{value.name}} @ {{value.timestamp}}</a> -
-     </span>
+
+    <br><br>
+
+    <span ng-if="ctrl.settingsService.settings.deltas">
+        Current Comparison Map: {{ctrl.dataService.data.comparisonMap.fileName}}<br/>
+        Select Comparison Map:
+        <span ng-repeat="(key, value) in ctrl.revisions">
+            <a href="#" ng-click="ctrl.loadComparisonMap(key)">{{value.fileName}}</a> -
+        </span>
+    </span>
+
 </div>

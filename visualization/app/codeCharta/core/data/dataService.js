@@ -54,11 +54,10 @@ export class DataService {
      * Selects and sets the first map to compare.
      * @param {number} index the maps index in the revisions array
      */
-    setFirstMapFromRevisions(index){
-        //TODO unify metrics from both maps, fill missing attributes with 0 or some other solution TBD
+    setComparisonMap(index){
         this.setMetrics(index);
-        this.data.firstMap = this.data.revisions[index];
-        this.deltaCalculator.decorateRevisionsWithDeltas(this.data.firstMap, this.data.secondMap);
+        this.data.comparisonMap = this.data.revisions[index];
+        this.deltaCalculator.decorateMapsWithDeltas(this.data.comparisonMap, this.data.referenceMap);
         //TODO the goal is to get rid of this untyped event system, observer ?
         this.$rootScope.$broadcast("data-changed", this.data);
     }
@@ -67,10 +66,10 @@ export class DataService {
      * Selects and sets the second map to compare.
      * @param {number} index the maps index in the revisions array
      */
-    setSecondMapFromRevisions(index){
+    setReferenceMap(index){
         this.setMetrics(index);
-        this.data.secondMap = this.data.revisions[index];
-        this.deltaCalculator.decorateRevisionsWithDeltas(this.data.firstMap, this.data.secondMap);
+        this.data.referenceMap = this.data.revisions[index];
+        this.deltaCalculator.decorateMapsWithDeltas(this.data.comparisonMap, this.data.referenceMap);
         this.$rootScope.$broadcast("data-changed", this.data);
     }
 

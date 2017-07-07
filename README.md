@@ -1,22 +1,28 @@
 # CodeCharta 
 [![Build Status](https://travis-ci.org/MaibornWolff/codecharta.svg?branch=master)](https://travis-ci.org/MaibornWolff/codecharta)
 
-> MaibornWolff CodeCharta
-
 ## What is CodeCharta?
 
-CodeCharta visualizes multiple code metrics using 3D tree maps. It consists of two parts:
- 1. [visualization](/visualization/README.md): GUI for visualising data
- 2. [analysis](/analysis/README.md): Tools for generating visualisation data
+CodeCharta is a beautiful tool for visualizing code as cities (3D tree maps).
 
-## Visualisation data format (cc.json)
+![Screenshot of visualization](screenshot.png)
 
-The visualisation data of CodeCharta is given as json files. [cc.json](cc.json) is the current specification via [json-schema v4](https://tools.ietf.org/html/draft-zyp-json-schema-04).
+The [visualization](/visualization/README.md) displays code metrics given in json files, specified by [cc.json](cc.json) using [json-schema v4](https://tools.ietf.org/html/draft-zyp-json-schema-04).
 
-## Bug tracker
+You may create your own importer / analyzer or use one of our pre-defined importers from [analysis](/analysis/README.md).
+
+## Download
+
+You can get the latest version of the analyzer and visualization [here](https://github.com/MaibornWolff/codecharta/releases) or try the [online demo](https://maibornwolff.github.io/codecharta/visualization/app/) of the visualization.
+
+## Quickstart Guide
+
+You can find a quickstart guide [here](https://maibornwolff.github.io/codecharta/). 
+
+## Feature request / Bug / Feedback
 
 Have a bug or a feature request? [Please open a new issue](https://github.com/MaibornWolff/codecharta/issues).
-Before opening any issue, please search for existing issues.
+If you have feedback or further questions, just send an email to [Dominik Ufer](mailto:dominik.ufer@maibornwolff.de).
 
 ## License
 

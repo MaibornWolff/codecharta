@@ -57,9 +57,9 @@ describe("app.codeCharta.core.scenarioService", function() {
      */
     it("default scenario should be rloc/mcc/mcc", ()=>{
         var scenario = scenarioService.getDefaultScenario();
-        expect(scenario.settings.areaMetric).to.be.equal("RLOC");
-        expect(scenario.settings.heightMetric).to.be.equal("MCC");
-        expect(scenario.settings.colorMetric).to.be.equal("MCC");
+        expect(scenario.settings.areaMetric).to.be.equal("rloc");
+        expect(scenario.settings.heightMetric).to.be.equal("mcc");
+        expect(scenario.settings.colorMetric).to.be.equal("mcc");
     });
 
 });

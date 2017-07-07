@@ -30,6 +30,7 @@ class CodeMapAssetService {
          * @property {MeshLambertMaterial} default
          * @property {MeshLambertMaterial} positiveDelta
          * @property {MeshLambertMaterial} negativeDelta
+         * @property {MeshLambertMaterial} base
          */
 
         /**
@@ -45,7 +46,8 @@ class CodeMapAssetService {
             hovered: codeMapMaterialFactory.hovered(),
             default: codeMapMaterialFactory.default(),
             positiveDelta: codeMapMaterialFactory.positiveDelta(),
-            negativeDelta: codeMapMaterialFactory.negativeDelta()
+            negativeDelta: codeMapMaterialFactory.negativeDelta(),
+            base: codeMapMaterialFactory.base()
         };
 
         /**
@@ -111,6 +113,11 @@ class CodeMapAssetService {
      * @return {MeshLambertMaterial}
      */
     negativeDelta() { return this.materials.negativeDelta; }
+
+    /**
+     * @return {MeshLambertMaterial}
+     */
+    base() { return this.materials.base; }
 
 }
 

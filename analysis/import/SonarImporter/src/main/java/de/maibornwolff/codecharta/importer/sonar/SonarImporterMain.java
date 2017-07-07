@@ -31,9 +31,11 @@ package de.maibornwolff.codecharta.importer.sonar;
 
 
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource;
+import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource;
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarResourcesAPIDatasource;
 import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.serialization.ProjectSerializer;
+import de.maibornwolff.codecharta.translator.MetricNameTranslator;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -70,7 +72,7 @@ public class SonarImporterMain {
         }
     }
 
-    private static void doImport(SonarImporterParameter callParameter) throws SonarImporterException, IOException {
+    private static void doImport(SonarImporterParameter callParameter) throws IOException {
         if (callParameter.getFiles().size() != 2) {
             callParameter.printUsage();
             throw new SonarImporterException("Url and project key missing.");
@@ -78,8 +80,13 @@ public class SonarImporterMain {
 
         String projectKey = callParameter.getFiles().get(1);
         SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(callParameter.getUser(), createBaseUrlFrom(callParameter), projectKey);
-        SonarImporter importer = new SonarImporter(ds);
+        SonarMetricsAPIDatasource metricsDS = new SonarMetricsAPIDatasource(callParameter.getUser(), createBaseUrlFrom(callParameter));
+        SonarCodeURLLinker sonarCodeURLLinker = new SonarCodeURLLinker(createBaseUrlFrom(callParameter));
+        MetricNameTranslator translator = SonarMetricTranslatorFactory.createMetricTranslator();
+
+        SonarMeasuresAPIImporter importer = new SonarMeasuresAPIImporter(ds, metricsDS, sonarCodeURLLinker, translator);
         Project project = importer.getProjectFromMeasureAPI(projectKey, callParameter.getMetrics());
+
         ProjectSerializer.serializeProject(project, createWriterFrom(callParameter));
     }
 
@@ -87,7 +94,7 @@ public class SonarImporterMain {
         callParameter.printUsage();
     }
 
-    private static void doOldImport(SonarImporterParameter callParameter) throws SonarImporterException, IOException {
+    private static void doOldImport(SonarImporterParameter callParameter) throws IOException {
         Reader reader = createReaderFrom(callParameter);
         URL baseUrl = createBaseUrlFrom(callParameter);
         String baseUrlForLink = baseUrl == null ? "" : baseUrl.toString();
@@ -97,7 +104,7 @@ public class SonarImporterMain {
         }
     }
 
-    private static Reader createReaderFrom(SonarImporterParameter callParameter) throws SonarImporterException {
+    private static Reader createReaderFrom(SonarImporterParameter callParameter) {
         if (callParameter.isLocal() && callParameter.getFiles().size() == 1) {
             return createFileReader(callParameter.getFiles().get(0));
         } else if (callParameter.getFiles().size() == 2) {
@@ -106,7 +113,7 @@ public class SonarImporterMain {
         throw new SonarImporterException("Only <file> or <baseUrl> <project> is supported, given was " + callParameter.getFiles());
     }
 
-    private static Reader createStringReaderFromSonarDatasource(SonarImporterParameter callParameter) throws SonarImporterException {
+    private static Reader createStringReaderFromSonarDatasource(SonarImporterParameter callParameter) {
         Reader reader;
         String user = callParameter.getUser();
         String projectKey = callParameter.getFiles().get(1);
@@ -116,7 +123,7 @@ public class SonarImporterMain {
         return reader;
     }
 
-    private static URL createBaseUrlFrom(SonarImporterParameter callParameter) throws SonarImporterException {
+    private static URL createBaseUrlFrom(SonarImporterParameter callParameter) {
         if (callParameter.getFiles().size() == 2) {
             String urlString = callParameter.getFiles().get(0);
             try {
@@ -136,7 +143,7 @@ public class SonarImporterMain {
         }
     }
 
-    private static Reader createFileReader(String file) throws SonarImporterException {
+    private static Reader createFileReader(String file) {
         try {
             return new FileReader(file);
         } catch (FileNotFoundException e) {

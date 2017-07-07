@@ -29,7 +29,7 @@
 
 package de.maibornwolff.codecharta.importer.sonar;
 
-public class SonarImporterException extends Exception {
+public class SonarImporterException extends RuntimeException {
     public SonarImporterException(Exception e) {
         super(e);
     }

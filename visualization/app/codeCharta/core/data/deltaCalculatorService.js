@@ -12,17 +12,12 @@ export class DeltaCalculatorService {
 
     }
 
-    /**
-     * Calculates the deltas between given maps and adds delta arrays to the given maps
-     * @param {CodeMap} firstRevision first map
-     * @param {CodeMap} secondRevision second map
-     */
-    decorateRevisionsWithDeltas(firstRevision, secondRevision) {
+    decorateMapsWithDeltas(firstMap, secondMap) {
 
-        if(firstRevision.root && secondRevision.root) {
-            let firstRoot = d3.hierarchy(firstRevision.root);
+        if(firstMap.root && secondMap.root) {
+            let firstRoot = d3.hierarchy(firstMap.root);
             let firstLeaves = firstRoot.leaves();
-            let secondRoot = d3.hierarchy(secondRevision.root);
+            let secondRoot = d3.hierarchy(secondMap.root);
             let secondLeaves = secondRoot.leaves();
 
             for (var j = 0; j < firstLeaves.length; j++) {
