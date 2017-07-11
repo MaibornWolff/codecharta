@@ -99,7 +99,7 @@ public class SonarMeasuresAPIImporterTest {
         when(measuresDS.getComponentMap(projectKey, metrics)).thenReturn(components);
 
         // when
-        Project project = sonar.getProjectFromMeasureAPI(projectKey, "test", metrics);
+        Project project = sonar.getProjectFromMeasureAPI(projectKey, "componentShouldBeInsertedAccordingToComponentPath", metrics);
 
         // then
         assertThat(project, not(nullValue()));

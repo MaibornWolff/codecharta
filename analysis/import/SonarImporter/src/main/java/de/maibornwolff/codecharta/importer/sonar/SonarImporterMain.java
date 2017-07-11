@@ -83,7 +83,7 @@ public class SonarImporterMain {
         SonarCodeURLLinker sonarCodeURLLinker = new SonarCodeURLLinker(createBaseUrlFrom(callParameter));
         MetricNameTranslator translator = SonarMetricTranslatorFactory.createMetricTranslator();
 
-        return new SonarMeasuresAPIImporter(ds, metricsDS, sonarCodeURLLinker, translator);
+        return new SonarMeasuresAPIImporter(ds, metricsDS, sonarCodeURLLinker, translator, callParameter.isUsePath());
     }
 
     private static void doImport(SonarImporterParameter callParameter) throws IOException {
