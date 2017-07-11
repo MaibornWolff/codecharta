@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Added CSVImporter
 - Added Translation for SonarQube metrics
 - Added descriptions for metrics
+- Added additional structuring in SonarImporter for multi-module projects
 
 ### Changed
 - Changed uppercase metrics, e.g. RLOC, to lowercase metrics
