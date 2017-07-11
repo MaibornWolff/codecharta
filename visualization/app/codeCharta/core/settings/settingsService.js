@@ -33,21 +33,23 @@ class SettingsService {
          */
         this.rootScope = $rootScope;
 
+        let ctx = this;
+
        /**
         * @type {Settings}
         */
         this.settings = new Settings(
             dataService.data.currentmap,
             new Range(10,20,false),
-            dataService.data.metrics[0],
-            dataService.data.metrics[1],
-            dataService.data.metrics[2],
+            ctx.getMetricByIdOrLast(0, dataService.data.metrics),
+            ctx.getMetricByIdOrLast(1, dataService.data.metrics),
+            ctx.getMetricByIdOrLast(2, dataService.data.metrics),
             true,
             false,
             1
         );
 
-        let ctx = this;
+
 
         $rootScope.$on("data-changed", (event,data) => {
            ctx.onDataChanged(data);
@@ -56,31 +58,29 @@ class SettingsService {
     }
 
     /**
-     * if the parameters property metrics is longer than 2 elements then change the map and metric settings according to the parameter. 
+     * change the map and metric settings according to the parameter.
      * @listens {data-changed} called on data-changed
      * @emits {settings-changed} transitively on call
      * @param {DataModel} data
      */
     onDataChanged(data) {
 
-        if(data.metrics.length >= 3){
-            this.settings.map = data.currentmap;
+        this.settings.map = data.currentmap;
 
-            if(data.metrics.indexOf(this.settings.areaMetric) === -1){
-                //area metric is not set or not in the new metrics and needs to be chosen
-                this.settings.areaMetric = data.metrics[0];
-            }
+        if(data.metrics.indexOf(this.settings.areaMetric) === -1){
+            //area metric is not set or not in the new metrics and needs to be chosen
+            this.settings.areaMetric = this.getMetricByIdOrLast(0, data.metrics);
 
-            if(data.metrics.indexOf(this.settings.heightMetric) === -1){
-                //height metric is not set or not in the new metrics and needs to be chosen
-                this.settings.heightMetric = data.metrics[1];
-            }
+        }
 
-            if(data.metrics.indexOf(this.settings.colorMetric) === -1){
-                //color metric is not set or not in the new metrics and needs to be chosen
-                this.settings.colorMetric = data.metrics[2];
-            }
+        if(data.metrics.indexOf(this.settings.heightMetric) === -1){
+            //height metric is not set or not in the new metrics and needs to be chosen
+            this.settings.heightMetric = this.getMetricByIdOrLast(1, data.metrics);
+        }
 
+        if(data.metrics.indexOf(this.settings.colorMetric) === -1){
+            //color metric is not set or not in the new metrics and needs to be chosen
+            this.settings.colorMetric = this.getMetricByIdOrLast(2, data.metrics);
         }
 
         this.onSettingsChanged();
@@ -135,38 +135,44 @@ class SettingsService {
     }
 
     /**
+     * Returns a metric from the metrics object. If it is not found the last possible metric will be returned.
+     * @param id id
+     * @param {object} metrics metrics object
+     * @returns {string} metric
+     */
+    getMetricByIdOrLast (id, metrics) {
+        return metrics[Math.min(id, metrics.length-1)];
+    }
+
+    /**
      * corrects settings, if the chosen metric is not available in the current map, the first three metrics are chosen as a default.
      * @param {Settings} settings
      */
     correctSettings(settings){
-        var result = settings;
-        result.areaMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.areaMetric,this.dataService.data.metrics[0] );
-        result.heightMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.heightMetric, this.dataService.data.metrics[1]);
-        result.colorMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.colorMetric, this.dataService.data.metrics[2]);
+        const result = settings;
+        result.areaMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.areaMetric,this.getMetricByIdOrLast(0, this.dataService.data.metrics));
+        result.heightMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.heightMetric, this.getMetricByIdOrLast(1, this.dataService.data.metrics));
+        result.colorMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.colorMetric, this.getMetricByIdOrLast(2, this.dataService.data.metrics));
         return result;
     }
 
     /**
-          * Checks if the given metricName is in the metricsArray. If it is in there, we return it, else we return the defaultValue.
-          * @param {String[]} metricsArray an array of metric names
-          * @param {String} metricName a metric name to look for
-          * @param {String} defaultValue a default name in case metricName was not found
-          */
+      * Checks if the given metricName is in the metricsArray. If it is in there, we return it, else we return the defaultValue.
+      * @param {String[]} metricsArray an array of metric names
+      * @param {String} metricName a metric name to look for
+      * @param {String} defaultValue a default name in case metricName was not found
+      */
     getMetricOrDefault(metricsArray, metricName, defaultValue) {
-            var result = defaultValue;
-            metricsArray.forEach((metric) => {
-                    if(metric === metricName){
-                            result = metric;
-                        }
-                });
-            if(result === defaultValue){
-                console.log(metricName + " could not be found in the chosen Map. " + defaultValue + " has been chosen instead.");
-            }
-            else{
-                
-            }
-            return result;
-        }
+
+        let result = defaultValue;
+        metricsArray.forEach((metric) => {
+            if(metric + "" === metricName + ""){
+                    result = metric;
+                }
+        });
+
+        return result;
+    }
 }
 
 export {SettingsService};
