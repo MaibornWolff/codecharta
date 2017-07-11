@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- Simple cc.json does not display anything #17
 
 ## [1.2.0] - 2017-06-19
 ### Added
