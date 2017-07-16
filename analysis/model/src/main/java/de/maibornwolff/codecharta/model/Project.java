@@ -75,18 +75,6 @@ public class Project {
         return nodes.size() == 1;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
-
-    public void setApiVersion(String apiVersion) {
-        this.apiVersion = apiVersion;
-    }
-
-    public void setNodes(List<Node> nodes) {
-        this.nodes = nodes;
-    }
-
     @Override
     public String toString() {
         return "Project{" +
