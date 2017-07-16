@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Node {
 
@@ -141,5 +142,9 @@ public class Node {
         }
         return path.isSingleElement() ? node : node.getNodeBy(path.tail());
 
+    }
+
+    public Stream<Node> getLeafs(){
+        return children == null || children.size() == 0 ? Stream.of(this) : children.stream().flatMap(n -> n.getLeafs());
     }
 }
