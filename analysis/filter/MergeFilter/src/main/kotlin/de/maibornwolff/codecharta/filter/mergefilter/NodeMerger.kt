@@ -32,8 +32,8 @@ class NodeMerger {
     private fun  mergeLink(link1: String?, link2: String?): String? {
         return when {
             link1 == link2 -> link1
-            link1 == null -> link2
-            link2 == null -> link1
+            link1 == null || link1.isEmpty() -> link2
+            link2 == null || link2.isEmpty() -> link1
             else -> null
         }
     }
