@@ -23,7 +23,6 @@ describe("app.codeCharta.core.settings.settingsService", function() {
 
         settingsService.onSettingsChanged = sinon.spy();
 
-        //enough metrics
         $rootScope.$broadcast("data-changed", {currentmap: {"name":"some map"}, metrics: ["a","b","c"]});
 
         expect(settingsService.settings.map.name).to.equal("some map");
@@ -31,15 +30,58 @@ describe("app.codeCharta.core.settings.settingsService", function() {
         expect(settingsService.settings.heightMetric).to.equal("b");
         expect(settingsService.settings.colorMetric).to.equal("c");
 
-        //not enough metrics
         $rootScope.$broadcast("data-changed", {currentmap: {"name":"another map"}, metrics: ["a"]});
 
-        expect(settingsService.settings.map.name).to.equal("some map");
+        expect(settingsService.settings.map.name).to.equal("another map");
+        expect(settingsService.settings.areaMetric).to.equal("a");
+        expect(settingsService.settings.heightMetric).to.equal("a");
+        expect(settingsService.settings.colorMetric).to.equal("a");
+
+        expect(settingsService.onSettingsChanged.calledTwice);
+
+    }));
+
+    /**
+     * @test {SettingsService#onSettingsChanged}
+     * @test {SettingsService#constructor}
+     */
+    it("should react to data-changed events and set metrics correctly", angular.mock.inject(function(settingsService, $rootScope){
+
+        settingsService.onSettingsChanged = sinon.spy();
+
+        $rootScope.$broadcast("data-changed", {currentmap: {"name":"yet another map"}, metrics: ["a", "b"]});
+
+        expect(settingsService.settings.map.name).to.equal("yet another map");
         expect(settingsService.settings.areaMetric).to.equal("a");
         expect(settingsService.settings.heightMetric).to.equal("b");
-        expect(settingsService.settings.colorMetric).to.equal("c");
+        expect(settingsService.settings.colorMetric).to.equal("b");
 
         expect(settingsService.onSettingsChanged.calledOnce);
+
+    }));
+
+    /**
+     * @test {SettingsService#getMetricByIdOrLast}
+     */
+    it("should return last value when id is bigger than or equal to metrics length", angular.mock.inject(function(settingsService, $rootScope){
+
+        var arr = ["a", "b", "c"];
+        var result = settingsService.getMetricByIdOrLast(32, arr);
+        expect(result).to.equal("c");
+
+        result = settingsService.getMetricByIdOrLast(3, arr);
+        expect(result).to.equal("c");
+
+    }));
+
+    /**
+     * @test {SettingsService#getMetricByIdOrLast}
+     */
+    it("should return correct value when id is smaller than metrics length", angular.mock.inject(function(settingsService, $rootScope){
+
+        var arr = ["a", "b", "c"];
+        var result = settingsService.getMetricByIdOrLast(1, arr);
+        expect(result).to.equal("b");
 
     }));
 

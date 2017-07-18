@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.3.1] - 2017-07-05
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+- Prevented override of URL-parameters by default scenario
+
+## [1.3.0] - 2017-07-05
+### Added
 - Adding simple merge functionality for multiple json files
 - Added CSVImporter
 - Added Translation for SonarQube metrics
@@ -17,6 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- Simple cc.json does not display anything #17
 
 ## [1.2.0] - 2017-06-19
 ### Added
