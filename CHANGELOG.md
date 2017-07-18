@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- changing display or color settings resets scaling #18
 
 ## [1.3.1] - 2017-07-05
 ### Added
