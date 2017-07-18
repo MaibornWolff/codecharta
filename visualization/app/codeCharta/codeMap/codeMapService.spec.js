@@ -5,15 +5,15 @@ require("./codeMap.js");
  */
 describe("app.codeCharta.codeMap.codeMapService", function() {
 
-    var codeMapService, $scope, sandbox, mesh;
+    let codeMapService, $scope, sandbox, mesh;
 
     beforeEach(angular.mock.module("app.codeCharta.codeMap"));
 
     beforeEach(angular.mock.inject((_codeMapService_, _$rootScope_)=>{
         codeMapService = _codeMapService_;
         $scope = _$rootScope_;
-        var geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
-        var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+        const geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
+        const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
         mesh = new THREE.Mesh( geometry, material );
         codeMapService.addRoot();
     }));
@@ -31,7 +31,7 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
      */
     it("drawMap should showLabels for the highest building", ()=>{
 
-         var data = {
+         const data = {
           "name": "root",
           "attributes": {},
           "children": [
@@ -59,11 +59,9 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
           ]
         };
 
-        var tmp = codeMapService.addNode;
-
-        var smallSpy = sinon.spy();
-        var otherSpy = sinon.spy();
-        var elseSpy = sinon.spy();
+        const smallSpy = sinon.spy();
+        const otherSpy = sinon.spy();
+        const elseSpy = sinon.spy();
 
         codeMapService.addNode = (node, heightKey, showLabel) => {
             if(node.name === "small leaf"){
@@ -205,21 +203,24 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
     /**
      * @test {CodeMapService#applySettings}
      */
-    it("applySettings should call drawFromData when all variables are set", ()=>{
+    it("applySettings should call drawFromData and scaleTo when all variables are set", ()=>{
 
         codeMapService.drawFromData = sandbox.spy();
+        codeMapService.scaleTo = sandbox.spy();
 
-        var s = {
+        const s = {
             areaMetric:1,
             heightMetric:1,
             colorMetric:1,
             map: {},
-            range: {}
+            range: {},
+            scale: {x:1,y:1,z:1}
         };
 
         codeMapService.applySettings(s);
 
         expect(codeMapService.drawFromData.calledOnce);
+        expect(codeMapService.scaleTo.calledOnce);
 
     });
 
@@ -245,7 +246,7 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
      * @test {CodeMapService#getTransformedMesh}
      */
     it("getTransformedMesh should create correct mesh", ()=>{
-        var mesh = codeMapService.getTransformedMesh(1,1,1,0,0,0,new THREE.MeshLambertMaterial({color: 0x69AE40}), "something");
+        const mesh = codeMapService.getTransformedMesh(1,1,1,0,0,0,new THREE.MeshLambertMaterial({color: 0x69AE40}), "something");
         expect(mesh.node).to.equal("something");
         expect(mesh.scale.x).to.equal(1);
     });
@@ -257,7 +258,7 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
 
         codeMapService.drawFromData = sandbox.spy();
 
-        var s = {
+        const s = {
             areaMetric:1,
             heightMetric:1,
             colorMetric:1,
@@ -412,7 +413,7 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
 
         codeMapService.drawFromData = sandbox.spy();
 
-        var min = {
+        const min = {
             areaMetric: "area",
             heightMetric: "height",
             colorMetric: "color",
@@ -433,7 +434,7 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
 
         codeMapService.drawFromData = sandbox.spy();
 
-        var min = {
+        const min = {
             areaMetric: "area",
             colorMetric: "color",
             map: {},
@@ -486,7 +487,7 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
 
         codeMapService.colorDelta(group);
 
-        var foundDelta = false;
+        let foundDelta = false;
 
         group.children.forEach((c)=>{
             if(c.isDelta && c.originalMaterial && c.selectedMaterial && c.hoveredMaterial){ // a set originalMaterial indicates a colored cube
@@ -502,8 +503,8 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
      * @test {CodeMapService#centerMap}
      */
     it("center map should translate root in xz plane at some point", ()=>{
-        var x = codeMapService.root.translateX = sandbox.spy();
-        var z = codeMapService.root.translateZ = sandbox.spy();
+        const x = codeMapService.root.translateX = sandbox.spy();
+        const z = codeMapService.root.translateZ = sandbox.spy();
         codeMapService.centerMap(0,0);
         expect(x.calledOnce);
         expect(z.calledOnce);

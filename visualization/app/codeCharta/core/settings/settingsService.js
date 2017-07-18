@@ -1,6 +1,7 @@
 "use strict";
 
 import {Settings} from "./model/settings";
+import {Scale} from "./model/scale";
 import {Range} from "./model/range";
 
 /**
@@ -46,7 +47,8 @@ class SettingsService {
             ctx.getMetricByIdOrLast(2, dataService.data.metrics),
             true,
             false,
-            1
+            1,
+            new Scale(1,1,1)
         );
 
 
@@ -103,13 +105,13 @@ class SettingsService {
     updateSettingsFromUrl() {
 
         //for every property in settings...
-        for (var property in this.settings) {
+        for (const property in this.settings) {
 
             //...that is not inherited from object...
             if (this.settings.hasOwnProperty(property) && property !== "map") {
 
                 //...get the query param value for the property...
-                var val = this.urlService.getParam(property);
+                const val = this.urlService.getParam(property);
 
                 if (val && val.length > 0) {
 
@@ -163,7 +165,6 @@ class SettingsService {
       * @param {String} defaultValue a default name in case metricName was not found
       */
     getMetricOrDefault(metricsArray, metricName, defaultValue) {
-
         let result = defaultValue;
         metricsArray.forEach((metric) => {
             if(metric + "" === metricName + ""){
