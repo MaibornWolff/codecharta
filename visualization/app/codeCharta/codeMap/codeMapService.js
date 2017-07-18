@@ -1,7 +1,6 @@
 "use strict";
 
 import * as THREE from "three";
-import {SpriteText2D, textAlign} from "three-text2d";
 
 /**
  * Main service to manage the state of the rendered code map
@@ -77,14 +76,17 @@ class CodeMapService {
      * @listens {settings-changed}
      */
     applySettings(s) {
-        var area = s.areaMetric;
-        var height = s.heightMetric;
-        var color = s.colorMetric;
-        var map = s.map;
-        var range = s.neutralColorRange;
-        if (area && height && color && map && range) {
-            this.drawFromData(map, area, height, color, s.neutralColorRange, s.amountOfTopLabels);
+
+        //draw
+        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.neutralColorRange) {
+            this.drawFromData(s.map, s.areaMetric, s.heightMetric, s.colorMetric, s.neutralColorRange, s.amountOfTopLabels);
         }
+
+        //scale
+        if(s.scaling && s.scaling.x && s.scaling.y &&s.scaling.z) {
+            this.scaleTo(s.scaling.x, s.scaling.y, s.scaling.z);
+        }
+
     }
 
     /**
@@ -93,7 +95,7 @@ class CodeMapService {
      * @param {string} areaKey
      * @param {string} heightKey
      * @param {string} colorKey
-     * @param {ColorRange} colorConfig
+     * @param {Range} colorConfig
      * @param {number} amountOfTopLabels number of highest buildings with labels
      */
     drawFromData(map, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels) {
@@ -108,7 +110,7 @@ class CodeMapService {
      * @param {string} areaKey
      * @param {string} heightKey
      * @param {string} colorKey
-     * @param {ColorRange} colorConfig
+     * @param {Range} colorConfig
      * @param {number} amountOfTopLabels number of highest buildings with labels
      */
     drawMap(map, s, p, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels) {
@@ -169,7 +171,7 @@ class CodeMapService {
     /**
      * Colors the cubes depending on their node data and the given values.
      * @param {string} colorKey
-     * @param {ColorRange} neutralColorRange
+     * @param {Range} neutralColorRange
      */
     colorMap(colorKey, neutralColorRange) {
         this.root.traverse((o)=> {
@@ -194,7 +196,7 @@ class CodeMapService {
      * Colors the 'folders'
      * @param {object} o folder
      * @param {string} colorKey
-     * @param {ColorRange} neutralColorRange
+     * @param {Range} neutralColorRange
      */
     colorBase(o, colorKey, neutralColorRange) {
 
@@ -204,7 +206,7 @@ class CodeMapService {
             return;
         }
 
-        var val = base.node.attributes[colorKey];
+        const val = base.node.attributes[colorKey];
         if (val < neutralColorRange.from) {
             base.originalMaterial = neutralColorRange.flipped ? this.assetService.negative() : this.assetService.positive();
         } else if (val > neutralColorRange.to) {
@@ -358,22 +360,22 @@ class CodeMapService {
 
         if(node.attributes && node.attributes[heightKey]){
 
-            var sprite = this.makeText(node.name + ": " + node.attributes[heightKey], 30);
+            const sprite = this.makeText(node.name + ": " + node.attributes[heightKey], 30);
             sprite.position.set(x+w/2,y+60+h + sprite.heightValue/2,z+l/2);
             this.root.add(sprite);
 
             // Line
-            var material = new THREE.LineBasicMaterial({
+            const material = new THREE.LineBasicMaterial({
                 color: 0x0000ff
             });
 
-            var geometry = new THREE.Geometry();
+            const geometry = new THREE.Geometry();
             geometry.vertices.push(
                 new THREE.Vector3(x + w / 2, y + h, z + l / 2),
                 new THREE.Vector3(x + w / 2, y + h + 60, z + l / 2)
             );
 
-            var line = new THREE.Line(geometry, material);
+            const line = new THREE.Line(geometry, material);
             this.root.add(line);
 
         }
@@ -386,17 +388,16 @@ class CodeMapService {
      * @param {number} fontsize
      * @returns {THREE.Sprite}
      */
-    makeText(message, fontsize) {
-        var ctx, texture, sprite, spriteMaterial,
-            canvas = document.createElement("canvas");
-        ctx = canvas.getContext("2d");
+     makeText(message, fontsize) {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
         ctx.font = fontsize + "px Arial";
 
-        var margin = 10;
+        const margin = 10;
 
         // setting canvas width/height before ctx draw, else canvas is empty
-        var w = ctx.measureText(message).width;
-        var h = fontsize;
+        const w = ctx.measureText(message).width;
+        const h = fontsize;
         canvas.width = w + margin;
         canvas.height = h + margin; // fontsize * 1.5
 
@@ -413,12 +414,12 @@ class CodeMapService {
         ctx.textBaseline = "middle";
         ctx.fillText(message, canvas.width / 2, canvas.height / 2);
 
-        texture = new THREE.Texture(canvas);
+        const texture = new THREE.Texture(canvas);
         texture.minFilter = THREE.LinearFilter; // NearestFilter;
         texture.needsUpdate = true;
 
-        spriteMaterial = new THREE.SpriteMaterial({map : texture});
-        sprite = new THREE.Sprite(spriteMaterial);
+        const spriteMaterial = new THREE.SpriteMaterial({map : texture});
+        const sprite = new THREE.Sprite(spriteMaterial);
         sprite.scale.set(canvas.width,canvas.height,1);
         sprite.heightValue = canvas.height;
         return sprite;
@@ -428,8 +429,8 @@ class CodeMapService {
      * Add scene lighting
      */
     addLightsToScene() {
-        var ambilight = new THREE.AmbientLight(0x707070); // soft white light
-        var light1 = new THREE.DirectionalLight(0xe0e0e0, 1);
+        const ambilight = new THREE.AmbientLight(0x707070); // soft white light
+        const light1 = new THREE.DirectionalLight(0xe0e0e0, 1);
         light1.position.set(50, 10, 8).normalize();
         light1.castShadow = false;
         light1.shadow.camera.right = 5;
@@ -438,7 +439,7 @@ class CodeMapService {
         light1.shadow.camera.bottom = -5;
         light1.shadow.camera.near = 2;
         light1.shadow.camera.far = 100;
-        var light2 = new THREE.DirectionalLight(0xe0e0e0, 1);
+        const light2 = new THREE.DirectionalLight(0xe0e0e0, 1);
         light2.position.set(-50, 10, -8).normalize();
         light2.castShadow = false;
         light2.shadow.camera.right = 5;
