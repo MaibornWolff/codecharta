@@ -32,7 +32,7 @@ describe("app.codeCharta.core.scenarioService", function() {
     it("should apply the settings from a given scenario", ()=>{
 
         var range = new Range(1,2,false);
-        var settings = new Settings("map", range, "areaMetric", "heightMetric", "colorMetric", false, false);
+        var settings = new Settings("map", range, "areaMetric", "heightMetric", "colorMetric", false, false, 1);
         var scenario = new Scenario("SomeName", settings);
 
         settingsService.applySettings = sinon.spy();

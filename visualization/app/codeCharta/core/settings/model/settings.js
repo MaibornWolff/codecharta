@@ -14,8 +14,9 @@ export class Settings {
      * @param {boolean} grid
      * @param {Number} amountOfTopLabels
      * @param {Scale} scaling
+     * @param {Number} margin
      */
-    constructor(map, neutralColorRange, areaMetric, heightMetric, colorMetric, deltas, grid, amountOfTopLabels, scaling) {
+    constructor(map, neutralColorRange, areaMetric, heightMetric, colorMetric, deltas, grid, amountOfTopLabels, scaling, margin) {
 
         /**
          * currently selected map
@@ -71,6 +72,12 @@ export class Settings {
          */
         this.scaling = scaling;
 
+        /**
+         * margin between buildings
+         * @type {number}
+         */
+        this.margin = margin;
+
     }
 
     /**
@@ -87,6 +94,7 @@ export class Settings {
         this.grid = settings.grid;
         this.amountOfTopLabels = settings.amountOfTopLabels;
         this.scaling = settings.scaling;
+        this.margin = settings.margin;
     }
 
 }
