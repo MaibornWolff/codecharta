@@ -14,7 +14,7 @@ class SettingsPanelController {
      * @param {CodeMapService} codeMapService
      * @param {Scope} $scope
      */
-    constructor(settingsService, dataService, codeMapService, $scope) {
+    constructor(settingsService, dataService, codeMapService, $scope, treeMapService) {
 
         /**
          *
@@ -22,11 +22,9 @@ class SettingsPanelController {
          */
         this.settings = settingsService.settings;
 
-        /**
-         *
-         * @type {string[]}
-         */
-        this.metrics = this.sortStringArrayAlphabetically(dataService.data.metrics);
+        this.$scope = $scope;
+
+        this.treeMapService = treeMapService;
 
         /**
          *
@@ -42,10 +40,6 @@ class SettingsPanelController {
 
         let ctx = this;
 
-        this.sliderOptions = {
-            ceil: 1000
-        };
-
         /**
          *
          * @type {{x: number, y: number, z: number}}
@@ -56,8 +50,25 @@ class SettingsPanelController {
             z:1
         };
 
-        $scope.$on("data-changed", (e,d)=>{ctx.onDataChanged(d);});
+        this.sliderOptions = {
+            ceil: treeMapService.getMaxNodeHeightInAllRevisions(settingsService.settings.heightMetric),
+            pushRange: true,
+            onChange: ctx.notify.bind(ctx)
+        };
 
+        this.metrics = this.sortStringArrayAlphabetically(dataService.data.metrics);
+
+        $scope.$on("data-changed", (e,d)=>{ctx.onDataChanged(d);});
+        $scope.$on("settings-changed", (e,s)=>{ctx.onSettingsChanged(s);});
+
+    }
+
+    /**
+     * called on settings change.
+     * @param {Settings} settings
+     */
+    onSettingsChanged(settings) {
+        this.sliderOptions.ceil= this.treeMapService.getMaxNodeHeightInAllRevisions(settings.heightMetric);
     }
 
     /**
