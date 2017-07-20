@@ -51,7 +51,7 @@ public class SonarXMLImport {
         this.baseUrlForLink = baseUrlForLink;
     }
 
-    Project readProject() throws SonarImporterException {
+    Project readProject() {
         SonarResourceReader sonarResourceReader = new SonarResourceReader(in);
         List<SonarResource> sonarResources = sonarResourceReader.readSonarResources();
 
@@ -63,7 +63,7 @@ public class SonarXMLImport {
         ProjectSerializer.serializeProject(project, out);
     }
 
-    public void doImport() throws SonarImporterException, IOException {
+    public void doImport() throws IOException {
         Project project = readProject();
         writeProject(project);
     }

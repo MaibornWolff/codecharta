@@ -32,6 +32,8 @@ package de.maibornwolff.codecharta.importer.sonar.dataaccess;
 import de.maibornwolff.codecharta.importer.sonar.filter.ErrorResponseFilter;
 import de.maibornwolff.codecharta.importer.sonar.model.MetricObject;
 import de.maibornwolff.codecharta.importer.sonar.model.Metrics;
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -44,7 +46,9 @@ import java.util.List;
  */
 public class SonarMetricsAPIDatasource {
 
-    private static final String METRICS = "/api/metrics/search";
+    static final int PAGE_SIZE = 100;
+
+    private static final String METRICS_URL_PATTERN = "%s/api/metrics/search?p=%s&ps=" + PAGE_SIZE;
 
     private final String user;
 
@@ -59,17 +63,36 @@ public class SonarMetricsAPIDatasource {
         this.baseUrl = baseUrl;
     }
 
-    public List<MetricObject> getAvailableMetrics() {
+    public List<String> getAvailableMetricKeys() {
+        int noPages = getNumberOfPages();
+
+        return Flowable.range(1, noPages)
+                .flatMap(p -> Flowable.just(p)
+                        .subscribeOn(Schedulers.io())
+                        .map(this::getAvailableMetrics))
+                .filter(m -> m.getMetrics() != null)
+                .flatMap(m -> Flowable.fromIterable(m.getMetrics()))
+                .filter(m -> !m.isHidden() && m.isFloatType())
+                .map(MetricObject::getKey).distinct().toSortedList().blockingGet();
+    }
+
+    public Metrics getAvailableMetrics(int page) {
 
         Client client = ClientBuilder.newClient();
         client.register(ErrorResponseFilter.class);
         client.register(GsonProvider.class);
 
-        Invocation.Builder request = client.target(baseUrl + METRICS).request();
+        String url = String.format(METRICS_URL_PATTERN, baseUrl, page);
+        Invocation.Builder request = client.target(url).request();
         if (!user.isEmpty()) {
             request.header("Authorization", "Basic " + AuthentificationHandler.createAuthTxtBase64Encoded(user));
         }
-        Metrics metric = request.get(Metrics.class);
-        return metric.getMetrics();
+        return request.get(Metrics.class);
+    }
+
+
+    public int getNumberOfPages() {
+        Metrics response = getAvailableMetrics(1);
+        return (response.getTotal() / PAGE_SIZE) + 1;
     }
 }

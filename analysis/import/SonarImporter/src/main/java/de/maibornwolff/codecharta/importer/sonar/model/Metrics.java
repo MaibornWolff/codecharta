@@ -37,7 +37,15 @@ import java.util.List;
 public class Metrics {
     private List<MetricObject> metrics;
 
+    private int total;
+
     public List<MetricObject> getMetrics() {
         return metrics;
     }
+
+    public int getTotal() {
+        return total;
+    }
+
+
 }
