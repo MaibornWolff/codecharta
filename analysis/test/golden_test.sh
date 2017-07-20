@@ -57,6 +57,22 @@ check_sourcemonitor() {
   validate "${ACTUAL_SOURCEMON_JSON}"
 }
 
+check_scmlog() {
+  echo " -- expect SCMLogParser gives valid cc.json"
+  ACTUAL_SCMLOG_JSON="${INSTALL_DIR}/actual_scmlog.json"
+  echo "${CCSH}" scmlogparser data/codecharta/SVNTestLog.txt --svn > "${ACTUAL_SCMLOG_JSON}"
+  "${CCSH}" scmlogparser data/codecharta/SVNTestLog.txt --svn > "${ACTUAL_SCMLOG_JSON}"
+  validate "${ACTUAL_SCMLOG_JSON}"
+}
+
+check_merge() {
+  echo " -- expect MergeFilter gives valid cc.json"
+  ACTUAL_MERGE_JSON="${INSTALL_DIR}/actual_merge.json"
+  echo "${CCSH}" merge data/codecharta/tomerge.json data/codecharta/tomerge2.json > "${ACTUAL_MERGE_JSON}"
+  "${CCSH}" merge data/codecharta/tomerge.json data/codecharta/tomerge2.json > "${ACTUAL_MERGE_JSON}"
+  validate "${ACTUAL_MERGE_JSON}"
+}
+
 run_tests() {
   echo
   echo "Running Tests..."
@@ -64,6 +80,8 @@ run_tests() {
 
   check_sonar
   check_sourcemonitor
+  check_scmlog
+  check_merge
 
   echo
   echo "... Testing finished."

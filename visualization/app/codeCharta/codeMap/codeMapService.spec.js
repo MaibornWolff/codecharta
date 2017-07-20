@@ -37,7 +37,7 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
           "children": [
             {
               "name": "big leaf",
-              "attributes": {"RLOC": 100, "Functions": 10, "MCC": 1},
+              "attributes": {"rloc": 100, "functions": 10, "mcc": 1},
               "link": "http://www.google.de"
             },
             {
@@ -46,12 +46,12 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
               "children": [
                 {
                   "name": "small leaf",
-                  "attributes": {"RLOC": 30, "Functions": 100, "MCC": 100},
+                  "attributes": {"rloc": 30, "functions": 100, "mcc": 100},
                   "children": []
                 },
                 {
                   "name": "other small leaf",
-                  "attributes": {"RLOC": 70, "Functions": 1000, "MCC": 10},
+                  "attributes": {"rloc": 70, "functions": 1000, "mcc": 10},
                   "children": []
                 }
               ]
@@ -78,7 +78,7 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
            }
         };
 
-        codeMapService.drawMap(data, 2, 2, "RLOC", "MCC", "MCC", "colorConfig", 1);
+        codeMapService.drawMap(data, 2, 2, "rloc", "mcc", "mcc", "colorConfig", 1);
 
         expect(smallSpy.calledOnce);
         expect(otherSpy.calledOnce);
