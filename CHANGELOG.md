@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
-
+- margin slider: make it easier to find out to which package/folder a class belongs #20
 ### Changed
 
 ### Removed
