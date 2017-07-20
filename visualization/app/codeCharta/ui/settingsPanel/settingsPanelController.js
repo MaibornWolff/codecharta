@@ -11,10 +11,9 @@ class SettingsPanelController {
      * @constructor
      * @param {SettingsService} settingsService
      * @param {DataService} dataService
-     * @param {CodeMapService} codeMapService
      * @param {Scope} $scope
      */
-    constructor(settingsService, dataService, codeMapService, $scope, treeMapService) {
+    constructor(settingsService, dataService, $scope, treeMapService) {
 
         /**
          *
@@ -32,23 +31,7 @@ class SettingsPanelController {
          */
         this.settingsService = settingsService;
 
-        /**
-         *
-         * @type {CodeMapService}
-         */
-        this.codeMapService = codeMapService;
-
         let ctx = this;
-
-        /**
-         *
-         * @type {{x: number, y: number, z: number}}
-         */
-        this.scaling = {
-            x:1,
-            y:1,
-            z:1
-        };
 
         this.sliderOptions = {
             ceil: treeMapService.getMaxNodeHeightInAllRevisions(settingsService.settings.heightMetric),
@@ -84,13 +67,6 @@ class SettingsPanelController {
      */
     notify(){
         this.settingsService.onSettingsChanged();
-    }
-
-    /**
-     * Tells the codeMapService that scaling changed
-     */
-    scalingChanged(){
-        this.codeMapService.scaleTo(this.scaling.x, this.scaling.y, this.scaling.z);
     }
 
     /**

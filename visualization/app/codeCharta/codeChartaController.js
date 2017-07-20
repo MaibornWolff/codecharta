@@ -40,7 +40,6 @@ class CodeChartaController {
                 dataService.setFileData(data).then(
                     () => {
                         settingsService.updateSettingsFromUrl();
-                        ctx.loadingFinished();
                     },
                     (r) => {ctx.printErrors(r);}
                 );
