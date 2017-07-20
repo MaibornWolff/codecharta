@@ -16,13 +16,18 @@ class SettingsPanelController {
     constructor(settingsService, dataService, $scope, treeMapService) {
 
         /**
-         *
          * @type {Settings}
          */
         this.settings = settingsService.settings;
 
+        /**
+         * @type {Scope}
+         */
         this.$scope = $scope;
 
+        /**
+         * @type {TreeMapService}
+         */
         this.treeMapService = treeMapService;
 
         /**
@@ -31,14 +36,22 @@ class SettingsPanelController {
          */
         this.settingsService = settingsService;
 
-        let ctx = this;
+        const ctx = this;
 
+        /**
+         * Options for the rz color slider
+         * @type {Object}
+         */
         this.sliderOptions = {
             ceil: treeMapService.getMaxNodeHeightInAllRevisions(settingsService.settings.heightMetric),
             pushRange: true,
             onChange: ctx.notify.bind(ctx)
         };
 
+        /**
+         * metrics array
+         * @type {string[]}
+         */
         this.metrics = this.sortStringArrayAlphabetically(dataService.data.metrics);
 
         $scope.$on("data-changed", (e,d)=>{ctx.onDataChanged(d);});
