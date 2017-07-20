@@ -214,6 +214,14 @@ module.exports = function (grunt) {
             }
         },
         compress: {
+            web: {
+                options: {
+                    archive: './dist/packages/codecharta-web.zip'
+                },
+                files: [
+                    {expand: true, cwd:"./dist/app/", src: ['**/*'], dest: '.'}
+                ]
+            },
             linux32: {
                 options: {
                     archive: './dist/packages/codecharta-visualization-linux32.zip'

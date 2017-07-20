@@ -23,7 +23,6 @@ describe("app.codeCharta.core.settings.settingsService", function() {
 
         settingsService.onSettingsChanged = sinon.spy();
 
-        //enough metrics
         $rootScope.$broadcast("data-changed", {currentmap: {"name":"some map"}, metrics: ["a","b","c"]});
 
         expect(settingsService.settings.map.name).to.equal("some map");
@@ -31,27 +30,71 @@ describe("app.codeCharta.core.settings.settingsService", function() {
         expect(settingsService.settings.heightMetric).to.equal("b");
         expect(settingsService.settings.colorMetric).to.equal("c");
 
-        //not enough metrics
         $rootScope.$broadcast("data-changed", {currentmap: {"name":"another map"}, metrics: ["a"]});
 
-        expect(settingsService.settings.map.name).to.equal("some map");
+        expect(settingsService.settings.map.name).to.equal("another map");
+        expect(settingsService.settings.areaMetric).to.equal("a");
+        expect(settingsService.settings.heightMetric).to.equal("a");
+        expect(settingsService.settings.colorMetric).to.equal("a");
+
+        expect(settingsService.onSettingsChanged.calledTwice);
+
+    }));
+
+    /**
+     * @test {SettingsService#onSettingsChanged}
+     * @test {SettingsService#constructor}
+     */
+    it("should react to data-changed events and set metrics correctly", angular.mock.inject(function(settingsService, $rootScope){
+
+        settingsService.onSettingsChanged = sinon.spy();
+
+        $rootScope.$broadcast("data-changed", {currentmap: {"name":"yet another map"}, metrics: ["a", "b"]});
+
+        expect(settingsService.settings.map.name).to.equal("yet another map");
         expect(settingsService.settings.areaMetric).to.equal("a");
         expect(settingsService.settings.heightMetric).to.equal("b");
-        expect(settingsService.settings.colorMetric).to.equal("c");
+        expect(settingsService.settings.colorMetric).to.equal("b");
 
         expect(settingsService.onSettingsChanged.calledOnce);
 
     }));
+
     /**
-          * @test {SettingsService#getMetricOrDefault}
-          */
-    it("should return defaultValue when metric is not in array", angular.mock.inject(function(settingsService, $rootScope){
-        
+     * @test {SettingsService#getMetricByIdOrLast}
+     */
+    it("should return last value when id is bigger than or equal to metrics length", angular.mock.inject(function(settingsService, $rootScope){
+
         var arr = ["a", "b", "c"];
-        var name = "lookingForThis";
-        var defaultValue = "default";
+        var result = settingsService.getMetricByIdOrLast(32, arr);
+        expect(result).to.equal("c");
+
+        result = settingsService.getMetricByIdOrLast(3, arr);
+        expect(result).to.equal("c");
+
+    }));
+
+    /**
+     * @test {SettingsService#getMetricByIdOrLast}
+     */
+    it("should return correct value when id is smaller than metrics length", angular.mock.inject(function(settingsService, $rootScope){
+
+        var arr = ["a", "b", "c"];
+        var result = settingsService.getMetricByIdOrLast(1, arr);
+        expect(result).to.equal("b");
+
+    }));
+
+    /**
+      * @test {SettingsService#getMetricOrDefault}
+      */
+    it("should return defaultValue when metric is not in array", angular.mock.inject(function(settingsService){
         
-        var result = settingsService.getMetricOrDefault(arr, name, defaultValue);
+        const arr = ["a", "b", "c"];
+        const name = "lookingForThis";
+        const defaultValue = "default";
+        
+        const result = settingsService.getMetricOrDefault(arr, name, defaultValue);
         
         expect(result).to.equal(defaultValue);
         
@@ -60,13 +103,13 @@ describe("app.codeCharta.core.settings.settingsService", function() {
     /**
      * @test {SettingsService#getMetricOrDefault}
      */
-    it("should return the searched value when metric is in array", angular.mock.inject(function(settingsService, $rootScope){
+    it("should return the searched value when metric is in array", angular.mock.inject(function(settingsService){
                 
-        var arr = ["a", "b", "lookingForThis"];
-        var name = "lookingForThis";
-        var defaultValue = "default";
+        const arr = ["a", "b", "lookingForThis"];
+        const name = "lookingForThis";
+        const defaultValue = "default";
                 
-        var result = settingsService.getMetricOrDefault(arr, name, defaultValue);
+        const result = settingsService.getMetricOrDefault(arr, name, defaultValue);
                 
         expect(result).to.equal(name);
                 
@@ -74,19 +117,19 @@ describe("app.codeCharta.core.settings.settingsService", function() {
     /**
      * @test {SettingsService#correctSettings}
      */
-    it("should replace metric with default if metric is not available", angular.mock.inject(function(settingsService, dataService, $rootScope){
+    it("should replace metric with default if metric is not available", angular.mock.inject(function(settingsService, dataService){
         dataService.data.metrics = ["a", "f", "g", "h"];
-        var settings = {areaMetric:"a", heightMetric:"b", colorMetric:"c"};
-        var expected = {areaMetric: "a", heightMetric:"f", colorMetric:"g"};
-        var result = settingsService.correctSettings(settings);
+        const settings = {areaMetric:"a", heightMetric:"b", colorMetric:"c"};
+        const expected = {areaMetric: "a", heightMetric:"f", colorMetric:"g"};
+        const result = settingsService.correctSettings(settings);
         expect(result).to.deep.equal(expected);
     }));
     /**
      * @test {SettingsService#correctSettings}
      */
-    it("should return input if metrics are available", angular.mock.inject(function(settingsService, $rootScope){
-        var settings = {areaMetric:"a", heightMetric:"b", colorMetric:"c"};
-        var result = settingsService.correctSettings(settings);
+    it("should return input if metrics are available", angular.mock.inject(function(settingsService){
+        const settings = {areaMetric:"a", heightMetric:"b", colorMetric:"c"};
+        const result = settingsService.correctSettings(settings);
         expect(result).to.deep.equal(settings);
     }));
 });
