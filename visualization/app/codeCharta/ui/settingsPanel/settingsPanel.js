@@ -10,7 +10,7 @@ import {SettingsPanelController} from "./settingsPanelController.js";
 
 angular.module(
     "app.codeCharta.ui.settingsPanel",
-    ["app.codeCharta.ui", "app.codeCharta.core"]
+    ["app.codeCharta.ui", "app.codeCharta.core", "rzModule"]
 );
 
 angular.module("app.codeCharta.ui.settingsPanel").directive(
