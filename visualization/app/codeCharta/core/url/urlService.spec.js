@@ -23,6 +23,17 @@ describe("app.codeCharta.core.url.urlService", function() {
     });
 
     /**
+     * @test {UrlService#setUrlParamString}
+     */
+    it("url params should be placed correctly", ()=>{
+        $location.url("somePath.html?someParam=0");
+        urlService.setUrlParam("test", 0);
+        expect(urlService.getUrl()).to.equal("http://server/#!/somePath.html?someParam=0&test=0");
+        urlService.setUrlParam("someParam", 1);
+        expect(urlService.getUrl()).to.equal("http://server/#!/somePath.html?someParam=1&test=0");
+    });
+
+    /**
      * @test {UrlService#getParameterByName}
      */
     it("query parameter(s) should be recognized from static url and location mock", () => {
