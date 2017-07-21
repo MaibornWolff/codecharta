@@ -100,7 +100,7 @@ class SettingsService {
         this.rootScope.$broadcast("settings-changed", this.settings);
         //this should only be called once to prevent overwriting by following setting changes
         if(this.urlUpdateDone) {
-            console.log(this.getQueryParamStringFromSettings());
+            this.getQueryParamStringFromSettings();
         }
     }
 
@@ -116,8 +116,6 @@ class SettingsService {
             for(var i in obj) {
                 if(obj.hasOwnProperty(i) && i !== "map" && i !== 0 && i){
 
-                    console.log(i);
-
                     if (typeof obj[i] === "string" || obj[i] instanceof String) {
                         //do not iterate over strings
                     } else {
@@ -132,8 +130,7 @@ class SettingsService {
                         val = res;
                     }
 
-                    if (val) {
-                        console.log(val);
+                    if (val === 0 || val) {
                         obj[i] = val;
                     }
 
@@ -154,7 +151,6 @@ class SettingsService {
      */
     getQueryParamStringFromSettings() {
 
-        var result = "";
         let ctx = this;
 
         var iterateProperties = function(obj,prefix) {
@@ -170,7 +166,6 @@ class SettingsService {
                     if(typeof obj[i] === "object" || obj[i] instanceof Object) {
                         //do not print objects in string
                     } else {
-                        result += "&" + prefix+ i + "=" + obj[i];
                         ctx.urlService.setUrlParam(prefix+i, obj[i]);
                     }
 
@@ -182,7 +177,6 @@ class SettingsService {
 
         iterateProperties(this.settings, "");
 
-        return result;
 
     }
 
