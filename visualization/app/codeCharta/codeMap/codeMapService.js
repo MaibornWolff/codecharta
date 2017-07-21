@@ -78,8 +78,8 @@ class CodeMapService {
     applySettings(s) {
 
         //draw
-        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.neutralColorRange) {
-            this.drawFromData(s.map, s.areaMetric, s.heightMetric, s.colorMetric, s.neutralColorRange, s.amountOfTopLabels);
+        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.neutralColorRange && s.margin) {
+            this.drawFromData(s.map, s.areaMetric, s.heightMetric, s.colorMetric, s.neutralColorRange, s.amountOfTopLabels, s.margin);
         }
 
         //scale
@@ -98,8 +98,8 @@ class CodeMapService {
      * @param {Range} colorConfig
      * @param {number} amountOfTopLabels number of highest buildings with labels
      */
-    drawFromData(map, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels) {
-        this.drawMap(map, 500, 1, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels);
+    drawFromData(map, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels, margin) {
+        this.drawMap(map, 500, margin, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels);
     }
 
     /**

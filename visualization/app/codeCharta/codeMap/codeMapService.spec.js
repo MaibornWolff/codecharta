@@ -418,7 +418,8 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
             heightMetric: "height",
             colorMetric: "color",
             map: {},
-            range: {}
+            range: {},
+            margin: 1
         };
 
         codeMapService.applySettings(min);

@@ -48,7 +48,8 @@ class SettingsService {
             true,
             false,
             1,
-            new Scale(1,1,1)
+            new Scale(1,1,1),
+            1
         );
 
 
