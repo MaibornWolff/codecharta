@@ -11,11 +11,10 @@ export class Settings {
      * @param {string} heightMetric
      * @param {string} colorMetric
      * @param {boolean} deltas
-     * @param {boolean} grid
      * @param {Number} amountOfTopLabels
      * @param {Scale} scaling
      */
-    constructor(map, neutralColorRange, areaMetric, heightMetric, colorMetric, deltas, grid, amountOfTopLabels, scaling) {
+    constructor(map, neutralColorRange, areaMetric, heightMetric, colorMetric, deltas, amountOfTopLabels, scaling) {
 
         /**
          * currently selected map
@@ -54,12 +53,6 @@ export class Settings {
         this.deltas = deltas;
 
         /**
-         * grid flag
-         * @type {boolean}
-         */
-        this.grid = grid;
-
-        /**
          * number of highest buildings with labels
          * @type {Number}
          */
@@ -84,7 +77,6 @@ export class Settings {
         this.heightMetric = settings.heightMetric;
         this.colorMetric = settings.colorMetric;
         this.deltas = settings.deltas;
-        this.grid = settings.grid;
         this.amountOfTopLabels = settings.amountOfTopLabels;
         this.scaling = settings.scaling;
     }

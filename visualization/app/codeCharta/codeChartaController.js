@@ -59,6 +59,7 @@ class CodeChartaController {
                         dataService.setFileData(data).then(
                             () => {
                                 ctx.loadingFinished();
+                                settingsService.updateSettingsFromUrl();
                             },
                             (r) => {ctx.printErrors(r);}
                         );

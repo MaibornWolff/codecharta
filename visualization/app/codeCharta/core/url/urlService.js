@@ -61,6 +61,15 @@ class UrlService {
     }
 
     /**
+     * Sets a query param key to a specified value
+     * @param key
+     * @param value
+     */
+    setUrlParam(key, value){
+        this.location.search(key, value);
+    }
+
+    /**
      * returns the files content specified in the 'file' url parameter
      * @returns {Promise} which returns the files content on resolution
      */

@@ -16,6 +16,27 @@ describe("app.codeCharta.core.settings.settingsService", function() {
     }));
 
     /**
+     * @test {SettingsService#updateSettingsFromUrl}
+     */
+    it("should update settings from url", angular.mock.inject(function(settingsService, $location){
+        $location.url("http://something.de?scaling.x=42&areaMetric=myMetric&scaling.y=0.32");
+        settingsService.updateSettingsFromUrl();
+        expect(settingsService.settings.scaling.x).to.equal(42);
+        expect(settingsService.settings.scaling.y).to.equal(0.32);
+        expect(settingsService.settings.areaMetric).to.equal("myMetric");
+    }));
+
+    /**
+     * @test {SettingsService#updateSettingsFromUrl}
+     */
+    it("should not update settings.map from url", angular.mock.inject(function(settingsService, $location){
+        $location.url("http://something.de?map=aHugeMap");
+        settingsService.settings.map="correctMap";
+        settingsService.updateSettingsFromUrl();
+        expect(settingsService.settings.map).to.equal("correctMap");
+    }));
+
+    /**
      * @test {SettingsService#onSettingsChanged}
      * @test {SettingsService#constructor}
      */
