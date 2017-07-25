@@ -13,8 +13,9 @@ export class Settings {
      * @param {boolean} deltas
      * @param {Number} amountOfTopLabels
      * @param {Scale} scaling
+     * @param {Scale} camera
      */
-    constructor(map, neutralColorRange, areaMetric, heightMetric, colorMetric, deltas, amountOfTopLabels, scaling) {
+    constructor(map, neutralColorRange, areaMetric, heightMetric, colorMetric, deltas, amountOfTopLabels, scaling, camera) {
 
         /**
          * currently selected map
@@ -64,6 +65,12 @@ export class Settings {
          */
         this.scaling = scaling;
 
+        /**
+         * camera position
+         * @type {Scale}
+         */
+        this.camera = camera;
+
     }
 
     /**
@@ -79,6 +86,7 @@ export class Settings {
         this.deltas = settings.deltas;
         this.amountOfTopLabels = settings.amountOfTopLabels;
         this.scaling = settings.scaling;
+        this.camera = settings.camera;
     }
 
 }
