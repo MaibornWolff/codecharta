@@ -12,13 +12,15 @@ class UrlService {
      * @param {$location} $location
      * @param {$http} $http
      */
-    constructor($location, $http) {
+    constructor($location, $http, $timeout) {
 
         /** @type {$location} */
         this.location = $location;
 
         /** @type {$http} */
         this.http = $http;
+
+        this.$timeout = $timeout;
     }
 
     /**
@@ -58,15 +60,6 @@ class UrlService {
      */
     getUrl() {
         return this.location.absUrl();
-    }
-
-    /**
-     * Sets a query param key to a specified value
-     * @param key
-     * @param value
-     */
-    setUrlParam(key, value){
-        this.location.search(key, value);
     }
 
     /**
