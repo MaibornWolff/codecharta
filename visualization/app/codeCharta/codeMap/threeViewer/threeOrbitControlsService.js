@@ -18,12 +18,14 @@ class ThreeOrbitControlsService {
     /**
      * @constructor
      * @param {ThreeCameraService} threeCameraService
+     * @param {Scope} rootScope
      */
     constructor(threeCameraService, $rootScope) {
         /** @type {ThreeCameraService} **/
         this.cameraService = threeCameraService;
         /** @type {ThreeOrbitControls} **/
         this.controls = {};
+        /** @type {Scope} **/
         this.rootScope = $rootScope;
     }
 
@@ -32,7 +34,7 @@ class ThreeOrbitControlsService {
      * @param domElement Element with the canvas on it
      */
     init(domElement){
-        var ResolvedOrbitControls = Toc.default(THREE);
+        let ResolvedOrbitControls = Toc.default(THREE);
         this.controls = new ResolvedOrbitControls(this.cameraService.camera, domElement);
         let ctx= this;
         this.controls.addEventListener( "change", function () {
@@ -40,6 +42,10 @@ class ThreeOrbitControlsService {
         });
     }
 
+    /**
+     * Called when the orbit controls receive an user input
+     * @param {Camera} camera
+     */
     onInput(camera) {
         this.rootScope.$broadcast("camera-changed", camera);
     }
