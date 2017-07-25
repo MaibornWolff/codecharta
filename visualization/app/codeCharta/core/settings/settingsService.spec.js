@@ -16,6 +16,17 @@ describe("app.codeCharta.core.settings.settingsService", function() {
     }));
 
     /**
+     * @test {SettingsService#getQueryParamString}
+     */
+    it("should retrieve the correct query param strings", angular.mock.inject(function(settingsService){
+        settingsService.settings.areaMetric = "areaStuff";
+        settingsService.settings.camera.x = "2";
+        expect(settingsService.getQueryParamString()).to.include("areaMetric=areaStuff");
+        expect(settingsService.getQueryParamString()).to.include("camera.x=2");
+        expect(settingsService.getQueryParamString()).to.include("neutralColorRange.from=10");
+    }));
+
+    /**
      * @test {SettingsService#updateSettingsFromUrl}
      */
     it("should update settings from url", angular.mock.inject(function(settingsService, $location){
@@ -61,6 +72,31 @@ describe("app.codeCharta.core.settings.settingsService", function() {
         expect(settingsService.onSettingsChanged.calledTwice);
 
     }));
+
+    /**
+     * @test {SettingsService#onCameraChanged}
+     * @test {SettingsService#constructor}
+     */
+    it("should react to camera-changed events", angular.mock.inject(function(settingsService, $rootScope){
+
+        settingsService.onCameraChanged = sinon.spy();
+
+        $rootScope.$broadcast("camera-changed", {});
+
+        expect(settingsService.onCameraChanged.calledOnce);
+
+    }));
+
+    /**
+     * @test {SettingsService#onCameraChanged}
+     */
+    it("onCameraChanged should update settings object but not call onSettingsChanged to ensure performance", angular.mock.inject(function(settingsService){
+        settingsService.onSettingsChanged = sinon.spy();
+        settingsService.onCameraChanged({position: {x:0, y:0, z: 42}});
+        expect(!settingsService.onSettingsChanged.called);
+        expect(settingsService.settings.camera.z).to.equal(42);
+    }));
+
 
     /**
      * @test {SettingsService#onSettingsChanged}

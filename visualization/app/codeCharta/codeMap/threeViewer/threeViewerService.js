@@ -71,8 +71,6 @@ class ThreeViewerService {
         window.addEventListener("resize", this.onWindowResize.bind(this), false);
     }
 
-    //TODO use camera position and target as camera settings for settings
-
     /**
      * Applies transformations on window resize.
      */

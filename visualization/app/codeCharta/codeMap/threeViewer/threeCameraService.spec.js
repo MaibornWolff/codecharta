@@ -30,7 +30,7 @@ describe("app.codeCharta.codeMap.threeViewer.threeCameraService", function() {
     /**
      * @test {ThreeCameraService#init}
      */
-    it("init should set the camera position", angular.mock.inject(function(threeCameraService){
+    it("init should set the camera position", angular.mock.inject(function(threeCameraService, settingsService){
 
         //action
         threeCameraService.init();
@@ -39,6 +39,8 @@ describe("app.codeCharta.codeMap.threeViewer.threeCameraService", function() {
         expect(threeCameraService.camera.position).to.not.equal(undefined);
 
     }));
+
+
 
     /**
      * @test {ThreeCameraService#init}

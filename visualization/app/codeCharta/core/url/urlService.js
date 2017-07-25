@@ -12,7 +12,7 @@ class UrlService {
      * @param {$location} $location
      * @param {$http} $http
      */
-    constructor($location, $http, $timeout) {
+    constructor($location, $http) {
 
         /** @type {$location} */
         this.location = $location;
@@ -20,7 +20,6 @@ class UrlService {
         /** @type {$http} */
         this.http = $http;
 
-        this.$timeout = $timeout;
     }
 
     /**
