@@ -19,11 +19,12 @@ class ThreeOrbitControlsService {
      * @constructor
      * @param {ThreeCameraService} threeCameraService
      */
-    constructor(threeCameraService) {
+    constructor(threeCameraService, $rootScope) {
         /** @type {ThreeCameraService} **/
         this.cameraService = threeCameraService;
         /** @type {ThreeOrbitControls} **/
         this.controls = {};
+        this.rootScope = $rootScope;
     }
 
     /**
@@ -33,6 +34,14 @@ class ThreeOrbitControlsService {
     init(domElement){
         var ResolvedOrbitControls = Toc.default(THREE);
         this.controls = new ResolvedOrbitControls(this.cameraService.camera, domElement);
+        let ctx= this;
+        this.controls.addEventListener( "change", function () {
+            ctx.onInput(ctx.cameraService.camera);
+        });
+    }
+
+    onInput(camera) {
+        this.rootScope.$broadcast("camera-changed", camera);
     }
 
 }

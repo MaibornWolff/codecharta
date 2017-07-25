@@ -34,12 +34,6 @@ class SettingsService {
          */
         this.rootScope = $rootScope;
 
-        /**
-         * A flag which determines if the settings were already updated with url values
-         * @type {boolean} true if the url params were already updated
-         */
-        this.urlUpdateDone = false;
-
         let ctx = this;
 
        /**
@@ -58,7 +52,11 @@ class SettingsService {
         );
 
         $rootScope.$on("data-changed", (event,data) => {
-           ctx.onDataChanged(data);
+            ctx.onDataChanged(data);
+        });
+
+        $rootScope.$on("camera-changed", (event,data) => {
+            ctx.onCameraChanged(data);
         });
 
     }
@@ -93,16 +91,27 @@ class SettingsService {
 
     }
 
+    onCameraChanged(camera) {
+        if(
+            this.settings.camera.x !== camera.position.x ||
+            this.settings.camera.y !== camera.position.y ||
+            this.settings.camera.z !== camera.position.z
+        ) {
+            this.settings.camera.x = camera.position.x;
+            this.settings.camera.y = camera.position.y;
+            this.settings.camera.z = camera.position.z;
+            // There is no component in CC which needs live updates when camera changes. Broadcasting an
+            // onSettingsChanged Event would cause big performance issues
+            // this.onSettingsChanged();
+        }
+    }
+
     /**
      * Broadcasts a settings-changed event with the new {Settings} object as a payload
      * @emits {settings-changed} on call
      */
     onSettingsChanged() {
         this.rootScope.$broadcast("settings-changed", this.settings);
-        //this should only be called once to prevent overwriting by following setting changes
-        if(this.urlUpdateDone) {
-            this.getQueryParamStringFromSettings();
-        }
     }
 
     /**
@@ -150,9 +159,11 @@ class SettingsService {
     /**
      * Updates query params to current settings
      */
-    getQueryParamStringFromSettings() {
+    getQueryParamString() {
 
         let ctx = this;
+
+        let result = "";
 
         var iterateProperties = function(obj,prefix) {
             for(var i in obj) {
@@ -167,7 +178,7 @@ class SettingsService {
                     if(typeof obj[i] === "object" || obj[i] instanceof Object) {
                         //do not print objects in string
                     } else {
-                        ctx.urlService.setUrlParam(prefix+i, obj[i]);
+                        result += "&" + prefix + i + "=" + obj[i];
                     }
 
                 }
@@ -176,8 +187,9 @@ class SettingsService {
 
         };
 
-        iterateProperties(this.settings, "");
+        iterateProperties(this.settings, "", 0);
 
+        return "?" + result.substring(1);
 
     }
 
