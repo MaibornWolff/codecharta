@@ -23,16 +23,14 @@ class ThreeCameraService {
      * @param containerWidth initial width
      * @param containerHeight initial height
      */
-    init(containerWidth, containerHeight) {
-        var cameraHeight = 300;
-        var cameraDistance = 1000;
+    init(containerWidth, containerHeight, x, y, z) {
         var VIEW_ANGLE = 45;
         var ASPECT = containerWidth / containerHeight;
         var NEAR = 100;
         var FAR = 20000;
 
         this.camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-        this.camera.position.set(0, cameraHeight, cameraDistance);
+        this.camera.position.set(x,y,z);
     }
 
 }

@@ -53,7 +53,8 @@ class SettingsService {
             ctx.getMetricByIdOrLast(2, dataService.data.metrics),
             true,
             1,
-            new Scale(1,1,1)
+            new Scale(1,1,1),
+            new Scale(0,300,1000)
         );
 
         $rootScope.$on("data-changed", (event,data) => {
