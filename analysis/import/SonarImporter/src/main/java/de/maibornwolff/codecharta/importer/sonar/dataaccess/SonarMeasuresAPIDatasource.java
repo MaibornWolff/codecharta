@@ -60,23 +60,20 @@ public class SonarMeasuresAPIDatasource {
 
     private final URL baseUrl;
 
-    private final String projectKey;
-
-    public SonarMeasuresAPIDatasource(String user, URL baseUrl, String projectKey) {
+    public SonarMeasuresAPIDatasource(String user, URL baseUrl) {
         this.user = user;
         this.baseUrl = baseUrl;
-        this.projectKey = projectKey;
     }
 
-    public ComponentMap getComponentMap(List<String> metricsList) {
+    public ComponentMap getComponentMap(String componentKey, List<String> metricsList) {
         ComponentMap componentMap = new ComponentMap();
         for (List<String> sublist : Lists.partition(metricsList, MAX_METRICS_IN_ONE_SONARCALL)) {
-            int noPages = getNumberOfPages(sublist);
+            int noPages = getNumberOfPages(componentKey, sublist);
 
             Flowable.range(1, noPages)
                     .flatMap(p -> Flowable.just(p)
                             .subscribeOn(Schedulers.io())
-                            .map(page -> getMeasures(sublist, page)))
+                            .map(page -> getMeasures(componentKey, sublist, page)))
                     .filter(m -> m.getComponents() != null)
                     .flatMap(m -> Flowable.fromIterable(m.getComponents()))
                     .filter(c -> c.getQualifier() == Qualifier.FIL || c.getQualifier() == Qualifier.UTS)
@@ -86,8 +83,8 @@ public class SonarMeasuresAPIDatasource {
     }
 
 
-    public Measures getMeasures(List<String> metrics, int pageNumber) {
-        URI measureAPIRequestURI = createMeasureAPIRequestURI(metrics, pageNumber);
+    public Measures getMeasures(String componentKey, List<String> metrics, int pageNumber) {
+        URI measureAPIRequestURI = createMeasureAPIRequestURI(componentKey, metrics, pageNumber);
 
         Client client = ClientBuilder.newClient();
         client.register(ErrorResponseFilter.class);
@@ -103,7 +100,7 @@ public class SonarMeasuresAPIDatasource {
 
     }
 
-    URI createMeasureAPIRequestURI(List<String> metrics, int pageNumber) {
+    URI createMeasureAPIRequestURI(String componentKey, List<String> metrics, int pageNumber) {
         if (metrics.isEmpty()) {
             throw new IllegalArgumentException("Empty list of metrics is not supported.");
         }
@@ -112,14 +109,14 @@ public class SonarMeasuresAPIDatasource {
                 .map(Object::toString)
                 .collect(Collectors.joining(","));
         try {
-            return new URI(String.format(MEASURES_URL_PATTERN, baseUrl, projectKey, metricString, pageNumber));
+            return new URI(String.format(MEASURES_URL_PATTERN, baseUrl, componentKey, metricString, pageNumber));
         } catch (URISyntaxException e) {
             throw new SonarImporterException(e);
         }
     }
 
-    public int getNumberOfPages(List<String> metrics) {
-        PagingInfo pagingInfo = getMeasures(metrics, 1).getPaging();
+    public int getNumberOfPages(String componentKey, List<String> metrics) {
+        PagingInfo pagingInfo = getMeasures(componentKey, metrics, 1).getPaging();
         int total = pagingInfo.getTotal();
         return (total / PAGE_SIZE) + 1;
     }

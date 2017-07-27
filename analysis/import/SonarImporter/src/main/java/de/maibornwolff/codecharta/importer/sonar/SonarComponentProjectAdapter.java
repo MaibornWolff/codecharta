@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.importer.sonar.model.Measure;
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier;
 import de.maibornwolff.codecharta.model.Node;
 import de.maibornwolff.codecharta.model.NodeType;
+import de.maibornwolff.codecharta.model.Path;
 import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.nodeinserter.FileSystemPath;
 import de.maibornwolff.codecharta.nodeinserter.NodeInserter;
@@ -20,14 +21,16 @@ public class SonarComponentProjectAdapter extends Project {
     private final MetricNameTranslator translator;
 
     public SonarComponentProjectAdapter(String name) {
-        this(name, SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL);
+        this(name, SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL, false);
     }
 
     private final SonarCodeURLLinker sonarCodeURLLinker;
+    private final boolean usePath;
 
-    public SonarComponentProjectAdapter(String name, SonarCodeURLLinker sonarCodeURLLinker, MetricNameTranslator translator) {
+    public SonarComponentProjectAdapter(String name, SonarCodeURLLinker sonarCodeURLLinker, MetricNameTranslator translator, boolean usePath) {
         super(name);
         this.sonarCodeURLLinker = sonarCodeURLLinker;
+        this.usePath = usePath;
         this.getNodes().add(new Node("root", NodeType.Folder));
         this.translator = translator;
     }
@@ -93,8 +96,10 @@ public class SonarComponentProjectAdapter extends Project {
      * @param component the given component
      * @return node name for this component
      */
-    private static String createNodeName(Component component) {
-        if (component.getPath() != null) {
+    private String createNodeName(Component component) {
+        if (!usePath && component.getKey() != null) {
+            return component.getKey().substring(component.getKey().lastIndexOf('/') + 1);
+        } else if (usePath && component.getPath() != null) {
             return component.getPath().substring(component.getPath().lastIndexOf('/') + 1);
         } else if (component.getName() != null) {
             return component.getName();
@@ -111,9 +116,13 @@ public class SonarComponentProjectAdapter extends Project {
      * @param component given component
      * @return fs path of components parent
      */
-    private FileSystemPath createParentPath(Component component) {
-        if (component.getPath() != null) {
-            return new FileSystemPath(component.getPath().substring(0, component.getPath().lastIndexOf('/') + 1));
+    private Path<String> createParentPath(Component component) {
+        if (!usePath && component.getKey() != null) {
+            String extendedPath = component.getKey().replace(':', '/');
+            return new FileSystemPath(extendedPath.substring(0, extendedPath.lastIndexOf('/') + 1));
+        } else if (usePath && component.getPath() != null) {
+                String path = component.getPath();
+                return new FileSystemPath(path.substring(0, path.lastIndexOf('/') + 1));
         } else {
             return new FileSystemPath("");
         }
