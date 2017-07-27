@@ -90,15 +90,16 @@ public class SonarMeasuresAPIImporterTest {
     @Test
     public void shouldReturnProjectWithNodeFromGetProjectFromMeasureAPI() {
         // given
+        String projectKey = "testProject";
         measuresDS = mock(SonarMeasuresAPIDatasource.class);
         sonar = new SonarMeasuresAPIImporter(measuresDS, metricsDS);
         ComponentMap components = new ComponentMap();
         List<Measure> measures = Arrays.asList(new Measure("metric", "1.2"));
         components.updateComponent(new Component("id", "key", "name", "path", "lang", Qualifier.FIL, measures));
-        when(measuresDS.getComponentMap(metrics)).thenReturn(components);
+        when(measuresDS.getComponentMap(projectKey, metrics)).thenReturn(components);
 
         // when
-        Project project = sonar.getProjectFromMeasureAPI("test", metrics);
+        Project project = sonar.getProjectFromMeasureAPI(projectKey, "componentShouldBeInsertedAccordingToComponentPath", metrics);
 
         // then
         assertThat(project, not(nullValue()));
