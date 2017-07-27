@@ -8,10 +8,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 - add slider controls for color thresholds #19
 - Added additional structuring in SonarImporter for multi-module projects
+- button to generate current url parameters
+- camera position is now a setting (e.g. in scenarios or url parameters)
 
 ### Changed
+- better url parameter resolution (nested parameters are handled correctly)
 
 ### Removed
+- obsolete helper grid
 
 ### Fixed
 - changing display or color settings resets scaling #18
