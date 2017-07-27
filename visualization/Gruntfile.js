@@ -134,6 +134,11 @@ module.exports = function (grunt) {
                     {expand: true, src: ["node_modules/font-awesome/fonts/*"], dest: "dist/app/fonts/", flatten: true}
                 ]
             },
+            sliderDirective: {
+                files: [
+                    {expand: false, src: ["node_modules/angularjs-slider/dist/rzslider.min.css"], dest: "dist/app/css/rzslider.min.css"}
+                ]
+            },
             images: {
                 files: [
                     {"expand": true, "cwd": "app/img/", "src": ["*"], "dest": "dist/app/img", "flatten": true}
@@ -257,7 +262,7 @@ module.exports = function (grunt) {
     // tasks
     grunt.registerTask("default", ["build"]);
 
-    grunt.registerTask("build", ["clean:app", "jshint", "browserify", "ngAnnotate:app", "htmlmin", "copy:style", "concat:css", "clean:style", "copy:materialize", "copy:json", "copy:hammer", "copy:fontawesome", "copy:angular", "copy:images", "copy:jquery", "copy:license", "string-replace"]);
+    grunt.registerTask("build", ["clean:app", "jshint", "browserify", "ngAnnotate:app", "htmlmin", "copy:style", "concat:css", "clean:style", "copy:materialize", "copy:sliderDirective", "copy:json", "copy:hammer", "copy:fontawesome", "copy:angular", "copy:images", "copy:jquery", "copy:license", "string-replace"]);
     grunt.registerTask("test", ["clean:coverage", "mocha_istanbul"]);
     grunt.registerTask("doc", ["clean:doc", "exec:doc"]);
     grunt.registerTask("package", ["clean:package", "nwjs", "force:compress"]);

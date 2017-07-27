@@ -3,3 +3,7 @@
     display: block;
     width: 70%;
 }
+
+#colorSliderLabel {
+    font-size: 1rem !important;
+}
