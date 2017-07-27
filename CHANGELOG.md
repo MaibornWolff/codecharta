@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
+- add slider controls for color thresholds #19
 - Added additional structuring in SonarImporter for multi-module projects
 
 ### Changed

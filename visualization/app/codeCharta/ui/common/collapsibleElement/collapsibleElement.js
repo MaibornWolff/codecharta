@@ -6,5 +6,5 @@ angular.module("app.codeCharta.ui.common.collapsibleElement",[]);
 
 angular.module("app.codeCharta.ui.common.collapsibleElement").directive(
     "collapsibleElementDirective",
-    () => new CollapsibleElementDirective()
+    ["$rootScope", "$timeout", (a,b) => new CollapsibleElementDirective(a,b)]
 );
