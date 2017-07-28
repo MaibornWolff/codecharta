@@ -50,7 +50,7 @@ class DataLoadingService {
                 ()=>{
                     //TODO get Filename
                     //This is the part were the validated JSON file is put into a data structure
-                    const map = new CodeMap("Filename_TBD", fileContent.projectName, fileContent.nodes[0]); //TODO check it
+                    const map = new CodeMap("File_"+Math.random(), fileContent.projectName, fileContent.nodes[0]); //TODO check it
                     this.storage.setMap(map, revision);
 
                     resolve(map);
