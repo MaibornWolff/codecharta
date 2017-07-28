@@ -9,7 +9,7 @@ import {DataModel} from "./model/dataModel";
 export class DataService {
 
     /* @ngInject */
-    constructor($rootScope, deltaCalculatorService){
+    constructor($rootScope, deltaCalculatorService, dataDecoratorService){
 
         /**
          * Current data
@@ -27,11 +27,16 @@ export class DataService {
          */
         this.deltaCalculator = deltaCalculatorService;
 
+        /**
+         * @type {DataDecoratorService}
+         */
+        this.dataDecorator = dataDecoratorService;
+
     }
 
     /**
      * Puts a CodeMap into a given revision slot
-     * @param {CodeMap} A well formed code map
+     * @param {CodeMap} map A well formed code map
      * @param {number} revision the maps position in the revisions array
      */
     setMap(map, revision) {
@@ -57,6 +62,8 @@ export class DataService {
     setComparisonMap(index){
         this.setMetrics(index);
         this.data.comparisonMap = this.data.revisions[index];
+        this.dataDecorator.decorateMapWithUnaryMetric(this.data.comparisonMap);
+        this.dataDecorator.decorateMapWithUnaryMetric(this.data.referenceMap);
         this.deltaCalculator.decorateMapsWithDeltas(this.data.comparisonMap, this.data.referenceMap);
         //TODO the goal is to get rid of this untyped event system, observer ?
         this.$rootScope.$broadcast("data-changed", this.data);
@@ -69,6 +76,8 @@ export class DataService {
     setReferenceMap(index){
         this.setMetrics(index);
         this.data.referenceMap = this.data.revisions[index];
+        this.dataDecorator.decorateMapWithUnaryMetric(this.data.comparisonMap);
+        this.dataDecorator.decorateMapWithUnaryMetric(this.data.referenceMap);
         this.deltaCalculator.decorateMapsWithDeltas(this.data.comparisonMap, this.data.referenceMap);
         this.$rootScope.$broadcast("data-changed", this.data);
     }
