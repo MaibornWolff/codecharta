@@ -42,7 +42,6 @@ class CodeMapAssetService {
             odd: codeMapMaterialFactory.odd(),
             even: codeMapMaterialFactory.even(),
             selected: codeMapMaterialFactory.selected(),
-            hovered: codeMapMaterialFactory.hovered(),
             default: codeMapMaterialFactory.default(),
             positiveDelta: codeMapMaterialFactory.positiveDelta(),
             negativeDelta: codeMapMaterialFactory.negativeDelta()
@@ -91,11 +90,6 @@ class CodeMapAssetService {
      * @return {MeshLambertMaterial}
      */
     selected() { return this.materials.selected; }
-
-    /**
-     * @return {MeshLambertMaterial}
-     */
-    hovered() { return this.materials.hovered; }
 
     /**
      * @return {MeshLambertMaterial}

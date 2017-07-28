@@ -490,7 +490,7 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
         let foundDelta = false;
 
         group.children.forEach((c)=>{
-            if(c.isDelta && c.originalMaterial && c.selectedMaterial && c.hoveredMaterial){ // a set originalMaterial indicates a colored cube
+            if(c.isDelta && c.originalMaterial && c.selectedMaterial){ // a set originalMaterial indicates a colored cube
                 foundDelta = true;
             }
         });

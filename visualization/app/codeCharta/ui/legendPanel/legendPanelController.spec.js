@@ -18,7 +18,6 @@ describe("app.codeCharta.ui.legendPanel.legendPanelController", function() {
                 odd: () => {return new THREE.MeshLambertMaterial({color: 0x333333});},
                 even: () => {return new THREE.MeshLambertMaterial({color: 0x444444});},
                 selected: () => {return new THREE.MeshLambertMaterial({color: 0x555555});},
-                hovered: () => {return new THREE.MeshLambertMaterial({ color: 0x666666, emissive: 0x111111});},
                 default: () => {return new THREE.MeshLambertMaterial({color: 0x777777});},
                 positiveDelta: () => {return new THREE.MeshLambertMaterial({color: 0x888888});},
                 negativeDelta: () => {return new THREE.MeshLambertMaterial({color: 0x999999});}
