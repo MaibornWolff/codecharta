@@ -63,8 +63,8 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
                         .withBody(createResponseString())));
 
         // when
-        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource("", createBaseUrl(), PROJECT_KEY);
-        Measures measures = ds.getMeasures(ImmutableList.of("coverage"), 1);
+        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource("", createBaseUrl());
+        Measures measures = ds.getMeasures(PROJECT_KEY, ImmutableList.of("coverage"), 1);
 
         // then
         assertThat(measures, is(createExpectedMeasures()));
@@ -80,8 +80,8 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
                         .withBody(createResponseString())));
 
         // when
-        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(USERNAME, createBaseUrl(), PROJECT_KEY);
-        Measures measures = ds.getMeasures(ImmutableList.of("coverage"), 1);
+        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(USERNAME, createBaseUrl());
+        Measures measures = ds.getMeasures(PROJECT_KEY, ImmutableList.of("coverage"), 1);
 
         // then
         assertThat(measures, is(createExpectedMeasures()));
@@ -97,8 +97,8 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
                         jsonResponse(errorResponse, 400))));
 
         // when
-        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(USERNAME, createBaseUrl(), PROJECT_KEY);
-        ds.getMeasures(ImmutableList.of("coverage"), 1);
+        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(USERNAME, createBaseUrl());
+        ds.getMeasures(PROJECT_KEY, ImmutableList.of("coverage"), 1);
     }
 
     @Test
@@ -115,8 +115,8 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
                         .withBody(GSON.toJson(measures))));
 
         // when
-        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(USERNAME, createBaseUrl(), PROJECT_KEY);
-        int numberOfPages = ds.getNumberOfPages(ImmutableList.of("coverage"));
+        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(USERNAME, createBaseUrl());
+        int numberOfPages = ds.getNumberOfPages(PROJECT_KEY, ImmutableList.of("coverage"));
 
         // then
         assertThat(numberOfPages, is(10));
@@ -128,8 +128,8 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
         URI expectedMeasuresAPIRequestURI = new URI(createBaseUrl() + "/api/measures/component_tree?baseComponentKey=&qualifiers=FIL,UTS&metricKeys=coverage&p=0&ps=100");
 
         // when
-        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource("", createBaseUrl(), "");
-        URI measureAPIRequestURI = ds.createMeasureAPIRequestURI(ImmutableList.of("coverage"), 0);
+        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource("", createBaseUrl());
+        URI measureAPIRequestURI = ds.createMeasureAPIRequestURI("", ImmutableList.of("coverage"), 0);
 
         // then
         assertThat(measureAPIRequestURI, is(expectedMeasuresAPIRequestURI));
@@ -139,8 +139,8 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
     public void createMeasureAPIRequestURI_without_metrics_throws_exception() throws Exception {
         // given
         // when
-        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource("", createBaseUrl(), "");
-        ds.createMeasureAPIRequestURI(ImmutableList.of(), 0);
+        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource("", createBaseUrl());
+        ds.createMeasureAPIRequestURI("", ImmutableList.of(), 0);
 
         // then throw
     }
@@ -149,8 +149,8 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
     public void createMeasureAPIRequestURI_illegal_character_in_metrics_should_throw_exception() throws Exception {
         // given
         // when
-        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource("", createBaseUrl(), "");
-        ds.createMeasureAPIRequestURI(ImmutableList.of(" "), 0);
+        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource("", createBaseUrl());
+        ds.createMeasureAPIRequestURI("", ImmutableList.of(" "), 0);
 
         // then throw
     }
@@ -165,8 +165,8 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
                         .withBody(createResponseString())));
 
         // when
-        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource("", createBaseUrl(), PROJECT_KEY);
-        ComponentMap components = ds.getComponentMap(ImmutableList.of("coverage"));
+        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource("", createBaseUrl());
+        ComponentMap components = ds.getComponentMap(PROJECT_KEY, ImmutableList.of("coverage"));
 
         // then
         assertThat(components.getComponentStream().count(), is(34L));

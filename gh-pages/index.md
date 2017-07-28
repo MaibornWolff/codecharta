@@ -89,6 +89,8 @@ Use the "Invert Color" option, to declare a high value to be better then a low v
 
 # Further information
 
+[Integrating CodeCharte into a Jenkins 2 and Sonarqube pipeline](ci.md)
+
 ## Visualization
 
 [Readme](https://github.com/MaibornWolff/codecharta/tree/master/visualization)

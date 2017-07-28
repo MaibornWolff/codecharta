@@ -13,8 +13,9 @@ export class Settings {
      * @param {boolean} deltas
      * @param {boolean} grid
      * @param {Number} amountOfTopLabels
+     * @param {Scale} scaling
      */
-    constructor(map, neutralColorRange, areaMetric, heightMetric, colorMetric, deltas, grid, amountOfTopLabels) {
+    constructor(map, neutralColorRange, areaMetric, heightMetric, colorMetric, deltas, grid, amountOfTopLabels, scaling) {
 
         /**
          * currently selected map
@@ -58,13 +59,23 @@ export class Settings {
          */
         this.grid = grid;
 
+        /**
+         * number of highest buildings with labels
+         * @type {Number}
+         */
         this.amountOfTopLabels = amountOfTopLabels;
+
+        /**
+         * scaling settings
+         * @type {Scale}
+         */
+        this.scaling = scaling;
 
     }
 
     /**
      * Imports the given settings values without replacing this object with the given one.
-     * @param settings given settings
+     * @param {Settings} settings given settings
      */
     importSettingValues(settings){
         this.map = settings.map;
@@ -75,6 +86,7 @@ export class Settings {
         this.deltas = settings.deltas;
         this.grid = settings.grid;
         this.amountOfTopLabels = settings.amountOfTopLabels;
+        this.scaling = settings.scaling;
     }
 
 }

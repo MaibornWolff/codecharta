@@ -41,7 +41,6 @@ class CodeChartaController {
                 dataLoadingService.loadMapFromFileContent(data).then(
                     () => {
                         settingsService.updateSettingsFromUrl();
-                        ctx.loadingFinished();
                     },
                     console.log
                 );
