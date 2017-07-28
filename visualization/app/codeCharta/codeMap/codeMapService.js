@@ -185,7 +185,6 @@ class CodeMapService {
 
                 o.originalMaterial = o.material.clone();
                 o.selectedMaterial = this.assetService.selected();
-                o.hoveredMaterial = this.assetService.hovered();
 
             } // else: object is propably a Grouping Object with no node data
 
@@ -216,7 +215,6 @@ class CodeMapService {
         }
 
         base.selectedMaterial = this.assetService.selected();
-        base.hoveredMaterial = this.assetService.hovered();
         base.material = base.originalMaterial.clone();
 
 
@@ -234,10 +232,9 @@ class CodeMapService {
             return;
         }
 
-        //only the selected, original and hover mat for delta part. It already has its delta mesh
+        //only the selected, original for delta part. It already has its delta mesh
         delta.originalMaterial = delta.material.clone();
         delta.selectedMaterial = this.assetService.selected();
-        delta.hoveredMaterial = this.assetService.hovered();
 
     }
 
@@ -285,7 +282,7 @@ class CodeMapService {
      * @param {object} node the transformed d3 node
      */
     addFloor(w, h, l, x, y, z, depth, node) {
-        let mat = depth % 2 ? this.assetService.odd() : this.assetService.even();
+        let mat = depth % 2 ? this.assetService.odd().clone() : this.assetService.even().clone();
         let floor = this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, mat, node);
         let group = new THREE.Object3D();
         group.add(floor);

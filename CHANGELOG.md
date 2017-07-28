@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Added additional structuring in SonarImporter for multi-module projects
 
 ### Changed
+- changed hover color. Allows better distinction between hover and select
 
 ### Removed
 
