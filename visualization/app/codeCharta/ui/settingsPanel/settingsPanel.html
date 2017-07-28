@@ -5,8 +5,10 @@
     <collapsible-directive>
 
         <collapsible-element-directive label="Color Settings" icon-class="fa-paint-brush">
-            <number-field-directive label="Neutral color start" min="0" model="ctrl.settings.neutralColorRange.from" change="ctrl.notify()"></number-field-directive>
-            <number-field-directive label="Neutral color end" min="0" model="ctrl.settings.neutralColorRange.to" change="ctrl.notify()"></number-field-directive>
+            <label id="colorSliderLabel" for="colorSlider">Neutral Color Range</label>
+            <rzslider id="colorSlider" rz-slider-model="ctrl.settings.neutralColorRange.from"
+                      rz-slider-high="ctrl.settings.neutralColorRange.to"
+                      rz-slider-options="ctrl.sliderOptions"></rzslider>
             <checkbox-directive model="ctrl.settings.neutralColorRange.flipped" label="Invert Colors" change="ctrl.notify()"></checkbox-directive>
         </collapsible-element-directive>
 
@@ -17,9 +19,9 @@
         </collapsible-element-directive>
 
         <collapsible-element-directive label="Scaling" icon-class="fa-cube">
-            <slider-directive step="0.001"  label="x" min="0.01" max="5" model="ctrl.scaling.x" change="ctrl.scalingChanged()"></slider-directive>
-            <slider-directive step="0.001"  label="y" min="0.01" max="5" model="ctrl.scaling.y" change="ctrl.scalingChanged()"></slider-directive>
-            <slider-directive step="0.001"  label="z" min="0.01" max="5" model="ctrl.scaling.z" change="ctrl.scalingChanged()"></slider-directive>
+            <slider-directive step="0.001"  label="x" min="0.01" max="5" model="ctrl.settings.scaling.x" change="ctrl.notify()"></slider-directive>
+            <slider-directive step="0.001"  label="y" min="0.01" max="5" model="ctrl.settings.scaling.y" change="ctrl.notify()"></slider-directive>
+            <slider-directive step="0.001"  label="z" min="0.01" max="5" model="ctrl.settings.scaling.z" change="ctrl.notify()"></slider-directive>
         </collapsible-element-directive>
 
         <collapsible-element-directive label="Metrics" icon-class="fa-line-chart">

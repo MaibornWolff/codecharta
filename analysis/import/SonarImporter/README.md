@@ -12,6 +12,8 @@ The command
 
 prints the visualisation data to stdout (or a file if option `-o <filename>` is given).
 
+SonarImporter ignores the multi-module structure of sonar projects if the toggle `--merge-modules` is set.   
+
 ### Manual import
 
 You can download an xml file containing SonarQube data from a server using the script `get_sonar` and call

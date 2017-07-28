@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.filter.mergefilter
+package de.maibornwolff.codecharta.filter.util
 
 import de.maibornwolff.codecharta.util.NullableMapMerger
 import org.hamcrest.CoreMatchers.equalTo

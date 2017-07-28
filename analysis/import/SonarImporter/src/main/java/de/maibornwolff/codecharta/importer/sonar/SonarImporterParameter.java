@@ -55,6 +55,9 @@ class SonarImporterParameter {
     @Parameter(names = {"--old-api"}, description = "Old SonarQube-Api")
     private boolean oldApi = false;
 
+    @Parameter(names = {"--merge-modules"}, description = "merges modules in multi-module projects")
+    private boolean usePath = false;
+
     @Parameter(names = {"-l", "--local"}, description = "Local run")
     private boolean local = false;
 
@@ -90,8 +93,11 @@ class SonarImporterParameter {
         return local;
     }
 
+    public boolean isUsePath() {
+        return usePath;
+    }
+
     public void printUsage() {
         jc.usage();
     }
-
 }
