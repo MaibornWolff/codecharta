@@ -35,13 +35,11 @@ class LegendPanelController {
         this.positive = this.getImageDataUri(this.mats.positive().color.getHex());
         this.neutral = this.getImageDataUri(this.mats.neutral().color.getHex());
         this.negative = this.getImageDataUri(this.mats.negative().color.getHex());
-        this.hover = this.getImageDataUri(this.mats.hovered().color.getHex());
         this.select = this.getImageDataUri(this.mats.selected().color.getHex());
 
         $("#green").attr("src", this.positive);
         $("#yellow").attr("src", this.neutral);
         $("#red").attr("src", this.negative);
-        $("#hover").attr("src", this.hover);
         $("#select").attr("src", this.select);
     }
 
