@@ -48,6 +48,30 @@ class CodeMapService {
          */
         this.root = {};
 
+        /**
+         * the root of the buildings
+         * @type {Object3D}
+         */
+        this.buildings = {};
+
+        /**
+         * the root of the labels
+         * @type {Object3D}
+         */
+        this.labels = {};
+
+        /**
+         * the root of the floors
+         * @type {Object3D}
+         */
+        this.floors = {};
+
+        /**
+         * the root of the building-label-connectors
+         * @type {Object3D}
+         */
+        this.buildingLabelConnectors = {};
+
         let ctx = this;
 
         $rootScope.$on("settings-changed", (e, s)=> {
@@ -264,10 +288,18 @@ class CodeMapService {
     }
 
     /**
-     * Adds a root node to the scene
+     * Adds all root nodes to the scene
      */
     addRoot() {
         this.root = new THREE.Object3D();
+        this.buildings = new THREE.Object3D();
+        this.labels = new THREE.Object3D();
+        this.buildingLabelConnectors = new THREE.Object3D();
+        this.floors = new THREE.Object3D();
+        this.root.add(this.floors);
+        this.root.add(this.buildings);
+        this.root.add(this.labels);
+        this.root.add(this.buildingLabelConnectors);
     }
 
     /**
@@ -286,7 +318,7 @@ class CodeMapService {
         let floor = this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, mat, node);
         let group = new THREE.Object3D();
         group.add(floor);
-        this.root.add(group);
+        this.floors.add(group);
     }
 
     /**
@@ -314,7 +346,7 @@ class CodeMapService {
             building.add(cube);
             building.add(cubeD);
             building.node = node;
-            this.root.add(building);
+            this.buildings.add(building);
         } else if (heightDelta < 0) {
             if (-heightDelta > h) {
                 heightDelta = -1; //scale it for the looks, should not happen though
@@ -327,13 +359,13 @@ class CodeMapService {
             building.add(cube);
             building.add(cubeD);
             building.node = node;
-            this.root.add(building);
+            this.buildings.add(building);
         } else {
             let cube = this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, this.assetService.default().clone(), node);
             let building = new THREE.Object3D();
             building.add(cube);
             building.node = node;
-            this.root.add(building);
+            this.buildings.add(building);
         }
 
         if(showLabel) {
@@ -359,7 +391,7 @@ class CodeMapService {
 
             const sprite = this.makeText(node.name + ": " + node.attributes[heightKey], 30);
             sprite.position.set(x+w/2,y+60+h + sprite.heightValue/2,z+l/2);
-            this.root.add(sprite);
+            this.labels.add(sprite);
 
             // Line
             const material = new THREE.LineBasicMaterial({
@@ -373,7 +405,7 @@ class CodeMapService {
             );
 
             const line = new THREE.Line(geometry, material);
-            this.root.add(line);
+            this.buildingLabelConnectors.add(line);
 
         }
 
