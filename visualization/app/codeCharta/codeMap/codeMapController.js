@@ -173,8 +173,8 @@ class CodeMapController {
             // buildings are grouped in parent meshes, therefore we should look only at these
 
             mesh.parent.children.forEach((c)=> {
-                if (c && c.originalMaterial && ctx.selected !== c && !ctx.meshIsInMeshesWithoutCurrent(mesh.parent.children, this.selected, c)) { //TODO unhover still unhovers children if selected is in children without current element
-                    c.material = c.originalMaterial.clone();
+                if (c && c.material){
+                    c.material.emissive.setHex(0x000000);
                 }
             });
 
@@ -207,8 +207,8 @@ class CodeMapController {
         if(mesh && mesh.parent){
             // buildings are grouped in parent meshes, therefore we should look only at these
             mesh.parent.children.forEach((c)=>{
-                if (c && c.hoveredMaterial) {
-                    c.material = c.hoveredMaterial.clone();
+                if (c && c.material) {
+                    c.material.emissive.setHex(0x666666);
                 }
             });
 
