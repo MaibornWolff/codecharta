@@ -67,6 +67,12 @@ class CodeMapService {
         this.floors = {};
 
         /**
+         * the root of floors and buildings
+         * @type {Object3D}
+         */
+        this.labels = {};
+
+        /**
          * the root of the building-label-connectors
          * @type {Object3D}
          */
@@ -89,8 +95,11 @@ class CodeMapService {
      * @param {number} z
      */
     scaleTo(x, y, z) {
-        if (this.root && this.root.scale) {
-            this.root.scale.set(x, y, z);
+        if (this.buildings && this.buildings.scale && this.floors && this.floors.scale) {
+            this.floorsAndBuildings.add(this.buildings);
+            this.floorsAndBuildings.add(this.floors);
+            this.floorsAndBuildings.scale.set(x, y, z);
+            this.repositionLabelsAndConnectors(x,y,z);
         }
     }
 
@@ -295,11 +304,13 @@ class CodeMapService {
         this.buildings = new THREE.Object3D();
         this.labels = new THREE.Object3D();
         this.buildingLabelConnectors = new THREE.Object3D();
+        this.floorsAndBuildings = new THREE.Object3D();
         this.floors = new THREE.Object3D();
-        this.root.add(this.floors);
-        this.root.add(this.buildings);
-        this.root.add(this.labels);
+        this.floorsAndBuildings.add(this.floors);
+        this.floorsAndBuildings.add(this.buildings);
+        this.root.add(this.floorsAndBuildings);
         this.root.add(this.buildingLabelConnectors);
+        this.root.add(this.labels);
     }
 
     /**
@@ -335,13 +346,15 @@ class CodeMapService {
      * @param {boolean} showLabel true if the building should get a label
      */
     addBuilding(w, h, l, x, y, z, heightDelta, node, heightKey, showLabel) {
+
+        let building = new THREE.Object3D();
+
         if (heightDelta > 0) {
             if (heightDelta > h) {
                 heightDelta = 1; //scale it for the looks, should not happen though
             }
             let cube = this.getTransformedMesh(w, h - heightDelta, l, x + w / 2, y + (h - heightDelta) / 2, z + l / 2, this.assetService.default().clone(), node);
             let cubeD = this.getTransformedMesh(w, heightDelta, l, x + w / 2, y + (heightDelta) / 2 + (h - heightDelta), z + l / 2, this.assetService.positiveDelta().clone(), node);
-            let building = new THREE.Object3D();
             cubeD.isDelta = true;
             building.add(cube);
             building.add(cubeD);
@@ -354,7 +367,6 @@ class CodeMapService {
 
             let cube = this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, this.assetService.default().clone(), node);
             let cubeD = this.getTransformedMesh(w, -heightDelta, l, x + w / 2, y + (-heightDelta) / 2 + h, z + l / 2, this.assetService.negativeDelta().clone(), node);
-            let building = new THREE.Object3D();
             cubeD.isDelta = true;
             building.add(cube);
             building.add(cubeD);
@@ -362,14 +374,13 @@ class CodeMapService {
             this.buildings.add(building);
         } else {
             let cube = this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, this.assetService.default().clone(), node);
-            let building = new THREE.Object3D();
             building.add(cube);
             building.node = node;
             this.buildings.add(building);
         }
 
         if(showLabel) {
-            this.addLabel(x, y, z, w, h, l, node, heightKey);
+            this.addLabel(x, y, z, w, h, l, node, heightKey, building);
         }
 
     }
@@ -384,13 +395,16 @@ class CodeMapService {
     * @param {number} l length
     * @param {object} node the transformed d3 node
     * @param {string} heightKey the height metric
+    * @param {Object3D} building the building
     */
-    addLabel(x, y, z, w, h, l, node, heightKey) {
+    addLabel(x, y, z, w, h, l, node, heightKey, building) {
 
         if(node.attributes && node.attributes[heightKey]){
 
             const sprite = this.makeText(node.name + ": " + node.attributes[heightKey], 30);
             sprite.position.set(x+w/2,y+60+h + sprite.heightValue/2,z+l/2);
+            sprite.building = building;
+            building.label = sprite;
             this.labels.add(sprite);
 
             // Line
@@ -405,10 +419,38 @@ class CodeMapService {
             );
 
             const line = new THREE.Line(geometry, material);
+            line.label = sprite;
+            line.building = building;
+            building.labelBuildingConnector = line;
+            sprite.labelBuildingConnector = line;
             this.buildingLabelConnectors.add(line);
 
         }
 
+    }
+
+    /**
+     * Repositions labels and connectors according to building and floor scale
+     * @param {number} x scaling x
+     * @param {number} y scaling y
+     * @param {number} z scaling z
+     */
+    repositionLabelsAndConnectors(x, y, z) {
+        this.labels.children.forEach((label)=>{
+
+            label.position.x *= x;
+            label.position.y *= y;
+            label.position.z *= z;
+
+            label.labelBuildingConnector.geometry.vertices[0].x *= x;
+            label.labelBuildingConnector.geometry.vertices[0].y *= y;
+            label.labelBuildingConnector.geometry.vertices[0].z *= z;
+
+            label.labelBuildingConnector.geometry.vertices[1].x *= x;
+            label.labelBuildingConnector.geometry.vertices[1].y *= y;
+            label.labelBuildingConnector.geometry.vertices[1].z *= z;
+
+        });
     }
 
     /**
