@@ -84,4 +84,17 @@ describe("app.codeCharta.ui.settingsPanel.settingsPanelController", function() {
 
     });
 
+    /**
+     * @test {SettingsPanelController#showUrlParams}
+     */
+    it("should prompt the user when showUrlParams() is called", ()=>{
+
+        const tmp = window.prompt;
+        window.prompt = sinon.spy();
+        settingsPanelController.showUrlParams();
+        expect(window.prompt.calledOnce);
+        window.prompt = tmp;
+
+    });
+
 });

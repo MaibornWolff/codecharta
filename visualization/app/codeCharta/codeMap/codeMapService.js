@@ -119,10 +119,6 @@ class CodeMapService {
 
         this.addRoot();
 
-        if (this.settingsService.settings.grid) {
-            this.addGrid(s, 50);
-        }
-
         let nodes = this.treemapService.createTreemapNodes(map, s, s, p, areaKey, heightKey);
 
         let sorted = nodes.sort((a,b)=>{return b.height - a.height;});
@@ -136,35 +132,6 @@ class CodeMapService {
         this.drawScene();
 
         this.colorMap(colorKey, colorConfig);
-
-    }
-
-    /**
-     * Adds a grid to the scene
-     * @param {number} mapSize
-     * @param {number} divisions
-     */
-    addGrid(mapSize, divisions) {
-
-        let xz = new THREE.GridHelper(mapSize, divisions);
-
-        let xy = new THREE.GridHelper(mapSize, divisions);
-        xy.translateY(mapSize);
-        xy.translateX(mapSize);
-        xy.rotation.z = Math.PI / 2;
-
-        let zy = new THREE.GridHelper(mapSize, divisions);
-        zy.translateY(mapSize);
-        zy.translateZ(mapSize);
-        zy.rotation.y = Math.PI / 2;
-        zy.rotation.x = Math.PI / 2;
-
-        let group = new THREE.Object3D();
-        group.add(xz);
-        group.add(xy);
-        group.add(zy);
-
-        this.root.add(group);
 
     }
 

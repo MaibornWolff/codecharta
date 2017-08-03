@@ -59,6 +59,10 @@ class SettingsPanelController {
 
     }
 
+    showUrlParams() {
+        window.prompt("Copy to clipboard: Ctrl+C", this.settingsService.getQueryParamString());
+    }
+
     /**
      * called on settings change.
      * @param {Settings} settings
