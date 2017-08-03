@@ -173,7 +173,7 @@ class CodeMapController {
             // buildings are grouped in parent meshes, therefore we should look only at these
 
             mesh.parent.children.forEach((c)=> {
-                if (c && c.material){
+                if (c && c.material && c.material.emissive){
                     c.material.emissive.setHex(0x000000);
                 }
             });
@@ -207,7 +207,7 @@ class CodeMapController {
         if(mesh && mesh.parent){
             // buildings are grouped in parent meshes, therefore we should look only at these
             mesh.parent.children.forEach((c)=>{
-                if (c && c.material) {
+                if (c && c.material && c.material.emissive) {
                     c.material.emissive.setHex(0x666666);
                 }
             });
