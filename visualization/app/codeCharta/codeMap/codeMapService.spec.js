@@ -147,23 +147,20 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
     /**
      * @test {CodeMapService#drawMap}
      */
-    it("draw map should clear the scene, add a root, call the treemap service, call addNode for every node, center the map, draw the scene and color the map, grid is deactivated", ()=>{
+    it("draw map should clear the scene, add a root, call the treemap service, call addNode for every node, center the map, draw the scene and color the map", ()=>{
 
         codeMapService.clearScene = sandbox.spy();
         codeMapService.addRoot = sandbox.spy();
-        codeMapService.addGrid = sandbox.spy();
         codeMapService.treemapService.createTreemapNodes = sandbox.stub().returns([{},{},{}]);
         codeMapService.addNode = sandbox.spy();
         codeMapService.centerMap = sandbox.spy();
         codeMapService.drawScene = sandbox.spy();
         codeMapService.colorMap = sandbox.spy();
-        codeMapService.settingsService.settings.grid = false;
 
         codeMapService.drawMap("map", "s", "p", "areaKey", "heightKey", "colorKey", "colorConfig");
 
         expect(codeMapService.clearScene.calledOnce);
         expect(codeMapService.addRoot.calledOnce);
-        expect(!codeMapService.addGrid.called);
         expect(codeMapService.treemapService.createTreemapNodes.calledOnce);
         expect(codeMapService.addNode.calledThrice);
         expect(codeMapService.centerMap.calledOnce);
@@ -175,23 +172,20 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
     /**
      * @test {CodeMapService#drawMap}
      */
-    it("draw map should clear the scene, add a root, call the treemap service, call addNode for every node, center the map, draw the scene and color the map, grid is activated", ()=>{
+    it("draw map should clear the scene, add a root, call the treemap service, call addNode for every node, center the map, draw the scene and color the map", ()=>{
 
         codeMapService.clearScene = sandbox.spy();
         codeMapService.addRoot = sandbox.spy();
-        codeMapService.addGrid = sandbox.spy();
         codeMapService.treemapService.createTreemapNodes = sandbox.stub().returns([{},{},{}]);
         codeMapService.addNode = sandbox.spy();
         codeMapService.centerMap = sandbox.spy();
         codeMapService.drawScene = sandbox.spy();
         codeMapService.colorMap = sandbox.spy();
-        codeMapService.settingsService.settings.grid = true;
 
         codeMapService.drawMap("map", "s", "p", "areaKey", "heightKey", "colorKey", "colorConfig");
 
         expect(codeMapService.clearScene.calledOnce);
         expect(codeMapService.addRoot.calledOnce);
-        expect(codeMapService.addGrid.calledOnce);
         expect(codeMapService.treemapService.createTreemapNodes.calledOnce);
         expect(codeMapService.addNode.calledThrice);
         expect(codeMapService.centerMap.calledOnce);
@@ -444,19 +438,6 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
         codeMapService.applySettings(min);
 
         expect(codeMapService.drawFromData.called).to.equal(false);
-
-    });
-
-    /**
-     * @test {CodeMapService#addGrid}
-     */
-    it("adding a helper grid to the scene should add a group of 3 Meshes to the scene", ()=>{
-
-        codeMapService.root.add = (mesh) => {
-            expect(mesh.children.length).to.equal(3);
-        };
-
-        codeMapService.addGrid(500, 10);
 
     });
 

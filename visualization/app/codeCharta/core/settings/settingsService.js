@@ -46,15 +46,17 @@ class SettingsService {
             ctx.getMetricByIdOrLast(1, dataService.data.metrics),
             ctx.getMetricByIdOrLast(2, dataService.data.metrics),
             true,
-            false,
             1,
-            new Scale(1,1,1)
+            new Scale(1,1,1),
+            new Scale(0,300,1000)
         );
 
-
-
         $rootScope.$on("data-changed", (event,data) => {
-           ctx.onDataChanged(data);
+            ctx.onDataChanged(data);
+        });
+
+        $rootScope.$on("camera-changed", (event,data) => {
+            ctx.onCameraChanged(data);
         });
 
     }
@@ -89,41 +91,105 @@ class SettingsService {
 
     }
 
+    onCameraChanged(camera) {
+        if(
+            this.settings.camera.x !== camera.position.x ||
+            this.settings.camera.y !== camera.position.y ||
+            this.settings.camera.z !== camera.position.z
+        ) {
+            this.settings.camera.x = camera.position.x;
+            this.settings.camera.y = camera.position.y;
+            this.settings.camera.z = camera.position.z;
+            // There is no component in CC which needs live updates when camera changes. Broadcasting an
+            // onSettingsChanged Event would cause big performance issues
+            // this.onSettingsChanged();
+        }
+    }
+
     /**
      * Broadcasts a settings-changed event with the new {Settings} object as a payload
      * @emits {settings-changed} on call
      */
     onSettingsChanged() {
         this.rootScope.$broadcast("settings-changed", this.settings);
-
     }
 
     /**
-     * updates the settings object according to url parameters.
+     * updates the settings object according to url parameters. url parameters are named like the accessors of the Settings object. E.g. scale.x or areaMetric
      * @emits {settings-changed} transitively on call
      */
     updateSettingsFromUrl() {
 
-        //for every property in settings...
-        for (const property in this.settings) {
+        let ctx = this;
 
-            //...that is not inherited from object...
-            if (this.settings.hasOwnProperty(property) && property !== "map") {
+        var iterateProperties = function(obj,prefix) {
+            for(var i in obj) {
+                if(obj.hasOwnProperty(i) && i !== "map" && i !== 0 && i){
 
-                //...get the query param value for the property...
-                const val = this.urlService.getParam(property);
+                    if (typeof obj[i] === "string" || obj[i] instanceof String) {
+                        //do not iterate over strings
+                    } else {
+                        iterateProperties(obj[i], i + ".");
+                    }
 
-                if (val && val.length > 0) {
+                    const res = ctx.urlService.getParam(prefix+i);
 
-                    //if it exists, set ist the settings value
-                    this.settings[property] = val;
+                    let val = parseFloat(res);
+
+                    if(isNaN(val)){
+                        val = res;
+                    }
+
+                    if (val === 0 || val) {
+                        obj[i] = val;
+                    }
+
                 }
             }
-        }
+        };
 
-        //TODO map some special keys like neutralColorRange
+        iterateProperties(this.settings, "");
+
+        this.urlUpdateDone = true;
 
         this.onSettingsChanged();
+
+    }
+
+    /**
+     * Updates query params to current settings
+     */
+    getQueryParamString() {
+
+        let ctx = this;
+
+        let result = "";
+
+        var iterateProperties = function(obj,prefix) {
+            for(var i in obj) {
+                if(obj.hasOwnProperty(i) && i !== "map" && i !== 0 && i){
+
+                    if (typeof obj[i] === "string" || obj[i] instanceof String) {
+                        //do not iterate over strings
+                    } else {
+                        iterateProperties(obj[i], i + ".");
+                    }
+
+                    if(typeof obj[i] === "object" || obj[i] instanceof Object) {
+                        //do not print objects in string
+                    } else {
+                        result += "&" + prefix + i + "=" + obj[i];
+                    }
+
+                }
+
+            }
+
+        };
+
+        iterateProperties(this.settings, "", 0);
+
+        return "?" + result.substring(1);
 
     }
 

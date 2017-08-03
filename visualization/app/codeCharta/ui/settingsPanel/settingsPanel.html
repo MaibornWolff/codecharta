@@ -15,7 +15,6 @@
         <collapsible-element-directive label="Display" icon-class="fa-television">
             <number-field-directive label="Amount of labeled buildings" min="0" model="ctrl.settings.amountOfTopLabels" change="ctrl.notify()"></number-field-directive>
             <checkbox-directive model="ctrl.settings.deltas" label="Delta cubes" change="ctrl.notify()"></checkbox-directive>
-            <!--<checkbox-directive model="ctrl.settings.grid" label="Helper grid" change="ctrl.notify()"></checkbox-directive>-->
         </collapsible-element-directive>
 
         <collapsible-element-directive label="Scaling" icon-class="fa-cube">
@@ -35,5 +34,7 @@
         </collapsible-element-directive>
 
     </collapsible-directive>
+
+    <a class="waves-effect waves-light btn settings-panel-btn" title="Show Url Parameters" ng-click="ctrl.showUrlParams()">Show Url Parameters</a>
 
 </div>

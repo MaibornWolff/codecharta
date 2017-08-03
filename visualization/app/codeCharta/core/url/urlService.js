@@ -19,6 +19,7 @@ class UrlService {
 
         /** @type {$http} */
         this.http = $http;
+
     }
 
     /**
