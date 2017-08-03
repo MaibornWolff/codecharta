@@ -151,8 +151,7 @@ class CodeMapService {
             } else if (o.node && !o.node.isLeaf) {
 
                 o.originalMaterial = o.material.clone();
-                o.selectedMaterial = this.assetService.selected();
-                o.hoveredMaterial = this.assetService.hovered();
+                o.selectedMaterial = this.assetService.selected().clone();
 
             } // else: object is propably a Grouping Object with no node data
 
@@ -175,15 +174,14 @@ class CodeMapService {
 
         const val = base.node.attributes[colorKey];
         if (val < neutralColorRange.from) {
-            base.originalMaterial = neutralColorRange.flipped ? this.assetService.negative() : this.assetService.positive();
+            base.originalMaterial = neutralColorRange.flipped ? this.assetService.negative().clone() : this.assetService.positive().clone();
         } else if (val > neutralColorRange.to) {
-            base.originalMaterial = neutralColorRange.flipped ? this.assetService.positive() : this.assetService.negative();
+            base.originalMaterial = neutralColorRange.flipped ? this.assetService.positive().clone() : this.assetService.negative().clone();
         } else {
-            base.originalMaterial = this.assetService.neutral();
+            base.originalMaterial = this.assetService.neutral().clone();
         }
 
-        base.selectedMaterial = this.assetService.selected();
-        base.hoveredMaterial = this.assetService.hovered();
+        base.selectedMaterial = this.assetService.selected().clone();
         base.material = base.originalMaterial.clone();
 
 
@@ -201,10 +199,9 @@ class CodeMapService {
             return;
         }
 
-        //only the selected, original and hover mat for delta part. It already has its delta mesh
+        //only the selected, original for delta part. It already has its delta mesh
         delta.originalMaterial = delta.material.clone();
-        delta.selectedMaterial = this.assetService.selected();
-        delta.hoveredMaterial = this.assetService.hovered();
+        delta.selectedMaterial = this.assetService.selected().clone();
 
     }
 
@@ -252,7 +249,7 @@ class CodeMapService {
      * @param {object} node the transformed d3 node
      */
     addFloor(w, h, l, x, y, z, depth, node) {
-        let mat = depth % 2 ? this.assetService.odd() : this.assetService.even();
+        let mat = depth % 2 ? this.assetService.odd().clone() : this.assetService.even().clone();
         let floor = this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, mat, node);
         let group = new THREE.Object3D();
         group.add(floor);
@@ -277,8 +274,8 @@ class CodeMapService {
             if (heightDelta > h) {
                 heightDelta = 1; //scale it for the looks, should not happen though
             }
-            let cube = this.getTransformedMesh(w, h - heightDelta, l, x + w / 2, y + (h - heightDelta) / 2, z + l / 2, this.assetService.default(), node);
-            let cubeD = this.getTransformedMesh(w, heightDelta, l, x + w / 2, y + (heightDelta) / 2 + (h - heightDelta), z + l / 2, this.assetService.positiveDelta(), node);
+            let cube = this.getTransformedMesh(w, h - heightDelta, l, x + w / 2, y + (h - heightDelta) / 2, z + l / 2, this.assetService.default().clone(), node);
+            let cubeD = this.getTransformedMesh(w, heightDelta, l, x + w / 2, y + (heightDelta) / 2 + (h - heightDelta), z + l / 2, this.assetService.positiveDelta().clone(), node);
             let building = new THREE.Object3D();
             cubeD.isDelta = true;
             building.add(cube);
@@ -290,8 +287,8 @@ class CodeMapService {
                 heightDelta = -1; //scale it for the looks, should not happen though
             }
 
-            let cube = this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, this.assetService.default(), node);
-            let cubeD = this.getTransformedMesh(w, -heightDelta, l, x + w / 2, y + (-heightDelta) / 2 + h, z + l / 2, this.assetService.negativeDelta(), node);
+            let cube = this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, this.assetService.default().clone(), node);
+            let cubeD = this.getTransformedMesh(w, -heightDelta, l, x + w / 2, y + (-heightDelta) / 2 + h, z + l / 2, this.assetService.negativeDelta().clone(), node);
             let building = new THREE.Object3D();
             cubeD.isDelta = true;
             building.add(cube);
@@ -299,7 +296,7 @@ class CodeMapService {
             building.node = node;
             this.root.add(building);
         } else {
-            let cube = this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, this.assetService.default(), node);
+            let cube = this.getTransformedMesh(w, h, l, x + w / 2, y + h / 2, z + l / 2, this.assetService.default().clone(), node);
             let building = new THREE.Object3D();
             building.add(cube);
             building.node = node;

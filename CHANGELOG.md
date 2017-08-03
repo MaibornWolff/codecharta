@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 - better url parameter resolution (nested parameters are handled correctly)
+- changed hover color. Allows better distinction between hover and select
 
 ### Removed
 - obsolete helper grid
