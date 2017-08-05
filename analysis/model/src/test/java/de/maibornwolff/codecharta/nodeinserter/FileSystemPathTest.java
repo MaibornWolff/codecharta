@@ -43,7 +43,7 @@ public class FileSystemPathTest {
     @Test
     public void empty_dir_should_valid_path() {
         Path path = new FileSystemPath("");
-        assertThat(path.isSingleElement(), is(true));
+        assertThat(path.isSingle(), is(true));
         assertThat(path.head(), is(""));
     }
 
@@ -66,12 +66,12 @@ public class FileSystemPathTest {
 
     @Test
     public void no_subdirs_should_be_leafs() {
-        assertThat(new FileSystemPath("somename").isSingleElement(), is(true));
+        assertThat(new FileSystemPath("somename").isSingle(), is(true));
     }
 
     @Test
     public void subdirs_should_not_be_leafs() {
-        assertThat(new FileSystemPath("subdir/somename").isSingleElement(), is(false));
+        assertThat(new FileSystemPath("subdir/somename").isSingle(), is(false));
     }
 
     @Test

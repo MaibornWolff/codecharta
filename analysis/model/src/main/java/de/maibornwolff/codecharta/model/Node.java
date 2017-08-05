@@ -29,16 +29,9 @@
 
 package de.maibornwolff.codecharta.model;
 
-import de.maibornwolff.codecharta.nodeinserter.FileSystemPath;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-public class Node {
+public class Node extends Tree<String, Node> {
 
     private final String name;
     private final NodeType type;
@@ -82,6 +75,7 @@ public class Node {
         return type;
     }
 
+    @Override
     public List<Node> getChildren() {
         return children;
     }
@@ -125,26 +119,21 @@ public class Node {
         return result;
     }
 
-    public List<Path> getPathsToLeafs() {
-        List<Path> result = new ArrayList<>();
-        for (Node child : getChildren()) {
-            if (child.getChildren().size() == 0) result.add(new FileSystemPath(child.getName()));
-            result.addAll(child.getPathsToLeafs().stream().map((path) -> new FileSystemPath(child.getName() + "/" + path.toString())).collect(Collectors.toList()));
+    @Override
+    public Path<String> getPathOfChild(final Tree<String, Node> child) {
+        if (!getChildren().contains(child)) {
+            throw new NoSuchElementException("Child " + child + " not contained in Node.");
         }
+        return new Path<String>() {
+            @Override
+            public String head() {
+                return ((Node) child).getName();
+            }
 
-        return result;
-    }
-
-    public Node getNodeBy(Path path) {
-        Node node = getChildren().stream().filter(c -> c.getName().equals(path.head())).findFirst().orElse(null);
-        if (node == null) {
-            return null;
-        }
-        return path.isSingleElement() ? node : node.getNodeBy(path.tail());
-
-    }
-
-    public Stream<Node> getLeafs(){
-        return children == null || children.size() == 0 ? Stream.of(this) : children.stream().flatMap(n -> n.getLeafs());
+            @Override
+            public Path<String> tail() {
+                return Path.trivialPath();
+            }
+        };
     }
 }

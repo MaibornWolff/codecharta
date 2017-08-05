@@ -57,7 +57,7 @@ public class MetricNameTranslator {
     }
 
     public String[] translate(String[] oldMetricName) {
-        return Arrays.stream(oldMetricName).map(s -> translate(s)).collect(Collectors.toList()).toArray(new String[0]);
+        return Arrays.stream(oldMetricName).map(this::translate).collect(Collectors.toList()).toArray(new String[0]);
     }
 
     private void validate() {

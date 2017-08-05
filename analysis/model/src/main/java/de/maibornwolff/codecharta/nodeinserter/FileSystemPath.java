@@ -35,9 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FileSystemPath implements Path<String> {
-    private static final FileSystemPath NULL = new FileSystemPath("");
-
+public class FileSystemPath extends Path<String> {
     private static final char PATH_SEPARATOR = '/';
     private final List<String> edgeStream;
 
@@ -54,7 +52,7 @@ public class FileSystemPath implements Path<String> {
     }
 
     @Override
-    public boolean isSingleElement() {
+    public boolean isSingle() {
         return edgeStream.size() <= 1;
     }
 
@@ -69,9 +67,9 @@ public class FileSystemPath implements Path<String> {
     }
 
     @Override
-    public Path tail() {
-        if (isSingleElement()) {
-            return NULL;
+    public Path<String> tail() {
+        if (isSingle()) {
+            return Path.trivialPath();
         }
         return new FileSystemPath(edgeStream.stream().skip(1).collect(Collectors.toList()));
     }
