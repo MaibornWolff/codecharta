@@ -57,14 +57,14 @@ public class NodeInserterTest {
 
             @Override
             public boolean matches(final Object item) {
-                nodeAtPath = root.getNodeBy(new FileSystemPath(path));
+                nodeAtPath = (Node) root.getNodeBy(new FileSystemPath(path));
                 return nodeAtPath == null ? item == null : nodeAtPath.equals(node);
             }
 
             @Override
             public void describeMismatch(final Object item, final Description description) {
                 description.appendText("but was ").appendValue(nodeAtPath);
-                description.appendText(", where paths to leaves were ").appendValue(((Node) item).getPathsToLeafs());
+                description.appendText(", where paths to leaves were ").appendValue(((Node) item).getPathsToLeaves());
             }
         };
     }
@@ -79,7 +79,7 @@ public class NodeInserterTest {
 
         // then
         assertThat(root.getChildren(), hasSize(1));
-        assertThat(root.getPathsToLeafs(), hasSize(1));
+        assertThat(root.getPathsToLeaves().count(), is(1L));
         assertThat(root, hasNodeAtPath(nodeForInsertion, "insertedNode"));
     }
 
@@ -95,7 +95,7 @@ public class NodeInserterTest {
 
         // then
         assertThat(root.getChildren(), hasSize(1));
-        assertThat(root.getPathsToLeafs(), hasSize(1));
+        assertThat(root.getPathsToLeaves().count(), is(1L));
         assertThat(root, hasNodeAtPath(nodeForInsertion, "insertedNode"));
     }
 
@@ -113,7 +113,7 @@ public class NodeInserterTest {
         System.out.println(root);
         assertThat(root.getChildren(), hasSize(1));
         assertThat(root.getChildren(), hasItem(intermediateNode));
-        assertThat(root.getPathsToLeafs(), hasSize(1));
+        assertThat(root.getPathsToLeaves().count(), is(1L));
         assertThat(root, hasNodeAtPath(nodeForInsertion, "folder/insertedNode"));
     }
 
@@ -142,7 +142,7 @@ public class NodeInserterTest {
 
         // then
         assertThat(root.getChildren(), hasSize(1));
-        assertThat(root.getPathsToLeafs(), hasSize(1));
+        assertThat(root.getPathsToLeaves().count(), is(1L));
         assertThat(root, hasNodeAtPath(nodeForInsertion, "folder/subfolder/insertedNode"));
     }
 
@@ -157,7 +157,7 @@ public class NodeInserterTest {
 
         // then
         assertThat(root.getChildren(), hasSize(1));
-        assertThat(root.getPathsToLeafs(), hasSize(1));
+        assertThat(root.getPathsToLeaves().count(), is(1L));
         assertThat(root, hasNodeAtPath(nodeForInsertion, "folder/subfolder/insertedNode"));
     }
 

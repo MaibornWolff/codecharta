@@ -31,16 +31,90 @@ package de.maibornwolff.codecharta.model;
 
 /**
  * Represents a path in a tree of T objects
+ * may be seen as multiple edges in the tree of nodes
  */
-public interface Path<T> {
-    boolean isSingleElement();
-
-    boolean isTrivial();
-
-    T head();
+public abstract class Path<T> {
+    /**
+     * @return first edge in path to node
+     */
+    public abstract T head();
 
     /**
-     * @return tail if not leaf, trivial element if leaf
+     * @return tail, i.e. the remaining path when the head is removed, if not leaf, trivial element if leaf
      */
-    Path tail();
+    public abstract Path<T> tail();
+
+    /**
+     * @return true, if there are no edges in the path
+     */
+    public boolean isTrivial() {
+        return this == Path.TRIVIAL;
+    }
+
+    /**
+     * @return true, if path consists of one or less edges
+     */
+    public boolean isSingle() {
+        return isTrivial() || tail().isTrivial();
+    }
+
+    /**
+     * @param path for comparison
+     * @return are paths semantically equivalent
+     */
+    public boolean equalsTo(Path<T> path) {
+        boolean headsEqual = path.head() == head() || (path.head() != null && path.head().equals(head()));
+        boolean tailsEqual = (path.isTrivial() && isTrivial()) || path.tail().equalsTo(tail());
+        return headsEqual && tailsEqual;
+    }
+
+    /**
+     * @param path that will be added after the present path
+     * @return concatinated path
+     */
+    public Path<T> concat(final Path<T> path) {
+        final Path<T> thisPath = this;
+        if (thisPath.isTrivial()) {
+            return path;
+        } else if (path.isTrivial()) {
+            return thisPath;
+        }
+        return new Path<T>() {
+            @Override
+            public T head() {
+                return thisPath.head();
+            }
+
+            @Override
+            public Path<T> tail() {
+                return thisPath.tail().concat(path);
+            }
+
+            @Override
+            public String toString() {
+                return thisPath.toString() + " -> " + path.toString();
+            }
+        };
+    }
+
+    public static final <S> Path<S> trivialPath(){
+        return (Path<S>) TRIVIAL;
+    }
+
+    public static final Path TRIVIAL = new Path() {
+        @Override
+        public Object head() {
+            return null;
+        }
+
+        @Override
+        public Path tail() {
+            return TRIVIAL;
+        }
+
+        @Override
+        public String toString() {
+            return "emptyPath ->";
+        }
+    };
 }
