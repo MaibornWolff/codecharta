@@ -57,7 +57,7 @@ public class NodeInserterTest {
 
             @Override
             public boolean matches(final Object item) {
-                nodeAtPath = (Node) root.getNodeBy(new FileSystemPath(path));
+                nodeAtPath = (Node) root.getNodeBy(new FileSystemPath(path)).get();
                 return nodeAtPath == null ? item == null : nodeAtPath.equals(node);
             }
 

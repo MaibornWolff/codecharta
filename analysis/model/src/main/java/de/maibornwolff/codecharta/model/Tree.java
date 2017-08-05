@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.model;
 
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -75,15 +75,14 @@ public abstract class Tree<S, T extends Tree> {
      * @param path path in tree
      * @return subtree under this path
      */
-    public Tree<S, T> getNodeBy(Path<S> path) {
+    public Optional<? extends Tree<S, T>> getNodeBy(Path<S> path) {
         if (path.isTrivial()) {
-            return this;
+            return Optional.of(this);
         }
         if (path.isSingle()) {
             return getChildren().stream()
                     .filter(child -> path.equalsTo(getPathOfChild(child)))
-                    .findFirst()
-                    .orElseThrow(() -> new NoSuchElementException("There is no element of Node " + this + " with path " + path + "."));
+                    .findFirst();
         }
         Path<S> pathToDirectChild = new Path<S>() {
             @Override
@@ -96,6 +95,6 @@ public abstract class Tree<S, T extends Tree> {
                 return Path.trivialPath();
             }
         };
-        return this.getNodeBy(pathToDirectChild).getNodeBy(path.tail());
+        return this.getNodeBy(pathToDirectChild).get().getNodeBy(path.tail());
     }
 }

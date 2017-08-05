@@ -7,49 +7,20 @@ import org.hamcrest.Matchers.hasSize
 import org.junit.Assert.assertThat
 import org.junit.Test
 
-class DeepNodeMergerTest {
-    var merger = NodeMerger()
+class RecursiveNodeMergerTest {
+    private val merger = RecursiveNodeMergerStrategy { n1, n2 -> n1.name == n2.name }
 
     @Test
-    fun merging_nodes_should_prevail_name() {
+    fun should_merge_nodes_with_same_name() {
         // given
-        val name = "Name"
-        val node1 = Node(name, NodeType.Folder, mapOf(), "node1")
-        val node2 = Node(name, NodeType.Folder)
+        val node1 = Node("Name", NodeType.File)
+        val node2 = Node("Name", NodeType.Folder)
 
         // when
-        val newNode = merger.merge(node1, node2)
+        val nodeList = merger.mergeNodeLists(listOf(listOf(node1), listOf(node2)))
 
         // then
-        assertThat(newNode.name, `is`(name))
-    }
-
-    @Test
-    fun merging_nodes_should_prevail_type() {
-        // given
-        val type = NodeType.File
-        val node1 = Node("Name", type, mapOf(), "node1")
-        val node2 = Node("Name", type)
-
-        // when
-        val newNode = merger.merge(node1, node2)
-
-        // then
-        assertThat(newNode.type, `is`(type))
-    }
-
-    @Test
-    fun merging_nodes_should_prevail_link() {
-        // given
-        val link = "node1"
-        val node1 = Node("Name", NodeType.File, mapOf(), link)
-        val node2 = Node("Name", NodeType.File)
-
-        // when
-        val newNode = merger.merge(node1, node2)
-
-        // then
-        assertThat(newNode.link, `is`(link))
+        assertThat(nodeList, hasSize(1))
     }
 
     @Test
@@ -62,7 +33,7 @@ class DeepNodeMergerTest {
         val node2 = Node("Name", NodeType.File, mapOf(), "", listOf(child1, child2))
 
         // when
-        val newNode = merger.merge(node1, node2)
+        val newNode = merger.mergeNodeLists(listOf(listOf(node1), listOf(node2))).get(0)
 
         // then
         assertThat(newNode.children, hasSize(2))
@@ -73,7 +44,7 @@ class DeepNodeMergerTest {
     }
 
     @Test
-    fun merging_empty_nodes_should_return_empty_nodelist(){
+    fun merging_empty_nodes_should_return_empty_nodelist() {
         // given
         val emptyNodeList = listOf<List<Node>>()
 
@@ -85,7 +56,7 @@ class DeepNodeMergerTest {
     }
 
     @Test
-    fun merging_single_nodeList_should_return_same_nodelist(){
+    fun merging_single_nodeList_should_return_same_nodelist() {
         // given
         val nodeList = listOf(Node("node", NodeType.File, mapOf()))
 
@@ -95,4 +66,19 @@ class DeepNodeMergerTest {
         // then
         assertThat(actualNodeList, `is`(nodeList))
     }
+
+    @Test
+    fun merging_nodeList_with_two_root_nodes_should_return_two_root_nodes() {
+        // given
+        val node11 = Node("Name1", NodeType.File)
+        val node12 = Node("Name2", NodeType.File)
+        val node2 = Node("Name1", NodeType.Folder)
+
+        // when
+        val nodeList = merger.mergeNodeLists(listOf(listOf(node11, node12), listOf(node2)))
+
+        // then
+        assertThat(nodeList, hasSize(2))
+    }
+
 }

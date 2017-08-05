@@ -14,7 +14,7 @@ public class TreeTest {
     public void getNodeBy_trivial_should_return_same_tree() {
         Tree tree = createTree(createPath("bla"), createTree());
 
-        assertThat(tree.getNodeBy(Path.TRIVIAL), is(tree));
+        assertThat(tree.getNodeBy(Path.TRIVIAL).get(), is(tree));
     }
 
     @Test
