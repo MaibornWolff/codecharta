@@ -8,6 +8,12 @@ Reads the specified files, merges visualisation data and prints to stdout.
 
 Given the specified json files with visualisation data, that has the same API version and the same project name.
 
+When invoked with `-h` MergeFilter prints its usage:
+
+   Options:
+        -h
+        -s, --strategy STRATEGY 
+
  ### Example
  
  > `ccsh merge ..\..\src\test\resources\SourceMonitorImporter.json ..\..\src\test\resources\SourceMonitorImporter2.json > test.json`

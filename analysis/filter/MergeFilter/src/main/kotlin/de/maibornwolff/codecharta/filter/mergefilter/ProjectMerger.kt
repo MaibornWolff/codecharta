@@ -5,6 +5,8 @@ import de.maibornwolff.codecharta.model.Project
 
 class ProjectMerger(val projects: List<Project>) {
 
+    private val nodeMerger = RecursiveNodeMergerStrategy { n1, n2 -> n1.name == n2.name }
+
     fun extractProjectName(): String {
         val projectNames = projects.map { p -> p.projectName }.toSortedSet()
         when (projectNames.size) {
@@ -30,10 +32,9 @@ class ProjectMerger(val projects: List<Project>) {
         return Project(name, mergeProjectNodes())
     }
 
-    private fun mergeProjectNodes(): List<Node>? {
-        return NodeMerger().mergeNodeLists(projects.map { p -> p.nodes!! })
+    private fun mergeProjectNodes(): List<Node> {
+        return nodeMerger.mergeNodeLists(projects.map { p -> p.nodes!! })
     }
-
 
 }
 
