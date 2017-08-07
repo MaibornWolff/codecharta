@@ -66,10 +66,6 @@ class DataLoadingService {
 
     }
 
-    onDataChanged(fileContent) {
-
-        console.log(fileContent);
-    }
 
 
     
