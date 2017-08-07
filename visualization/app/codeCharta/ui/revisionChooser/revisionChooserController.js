@@ -21,6 +21,8 @@ class RevisionChooserController {
          */
         this.dataService = dataService;
 
+        this.settingsService = settingsService;
+
         /**
          *
          * @type {CodeMap[]}
