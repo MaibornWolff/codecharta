@@ -30,7 +30,6 @@ class RevisionChooserController {
         let ctx = this;
 
         $scope.$on("data-changed", (event, data)=>{ctx.onDataChanged(data);});
-
     }
 
     /**
