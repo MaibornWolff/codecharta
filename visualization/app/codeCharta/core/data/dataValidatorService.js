@@ -20,6 +20,7 @@ export class DataValidatorService {
         this.http = $http;
     }
 
+    //TODO validate timestamp -> Unix timestamp
     //TODO node datatype somewhere ?
 
     /**
