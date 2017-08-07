@@ -116,8 +116,8 @@ html, body {
 
 #revisionChooser {
     position: fixed;
-    top: 18.5em;
-    left: 10px;
+    top: 35em;
+    left: 15em;
 }
 
 .rzslider .rz-pointer, .rzslider .rz-selection {
