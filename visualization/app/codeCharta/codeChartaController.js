@@ -60,6 +60,7 @@ class CodeChartaController {
                         dataLoadingService.loadMapFromFileContent("sample1.json",data,0).then(
                             () => {
                                 ctx.loadingFinished();
+                                settingsService.updateSettingsFromUrl();
                             },
                             console.log
                         );
