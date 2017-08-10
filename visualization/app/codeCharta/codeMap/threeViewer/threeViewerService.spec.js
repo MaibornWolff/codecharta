@@ -5,7 +5,7 @@ require("./threeViewer.js");
  */
 describe("app.codeCharta.codeMap.threeViewer.threeViewerService", function() {
 
-    beforeEach(angular.mock.module("app.codeCharta.codeMap.threeViewer"));
+    beforeEach(angular.mock.module("app.codeCharta"));
 
     it("should retrieve the angular service instance", angular.mock.inject(function(threeViewerService){
         expect(threeViewerService).to.not.equal(undefined);

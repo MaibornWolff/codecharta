@@ -14,8 +14,9 @@ class ThreeViewerService {
      * @param {ThreeOrbitControlsService} threeOrbitControlsService
      * @param {ThreeRendererService} threeRendererService
      * @param {ThreeUpdateCycleService} threeUpdateCycleService
+     * @param {SettingsService} settingsService
      */
-    constructor(threeSceneService, threeCameraService, threeOrbitControlsService, threeRendererService, threeUpdateCycleService) {
+    constructor(threeSceneService, threeCameraService, threeOrbitControlsService, threeRendererService, threeUpdateCycleService, settingsService) {
         /**
          * @type {ThreeSceneService}
          */
@@ -40,6 +41,11 @@ class ThreeViewerService {
          * @type {ThreeUpdateCycleService}
          */
         this.UpdateCycleService = threeUpdateCycleService;
+
+        /**
+         * @type {SettingsService}
+         */
+        this.settingsService = settingsService;
     }
 
     /**
@@ -47,7 +53,7 @@ class ThreeViewerService {
      * @param {Object} element DOM Element which should be the canvas
      */
     init(element) {
-        this.CameraService.init(window.innerWidth, window.innerHeight);
+        this.CameraService.init(window.innerWidth, window.innerHeight, this.settingsService.settings.camera.x, this.settingsService.settings.camera.y, this.settingsService.settings.camera.z);
 
         this.CameraService.camera.lookAt(this.SceneService.scene.position);
         this.SceneService.scene.add(this.CameraService.camera);
