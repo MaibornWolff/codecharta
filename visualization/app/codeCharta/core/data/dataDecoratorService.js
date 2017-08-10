@@ -9,7 +9,6 @@ export class DataDecoratorService {
 
     /* @ngInject */
     constructor(){
-
     }
 
     /**
@@ -18,18 +17,25 @@ export class DataDecoratorService {
      */
     decorateMapWithUnaryMetric(map) {
 
-        if(map.root) {
+        let ctx = this;
 
-            let root = d3.hierarchy(map.root);
-            let leaves = root.leaves();
+        return new Promise(
+            (resolve, reject)=>{
+                if(map.root) {
 
-            for (var j = 0; j < leaves.length; j++) {
-                leaves[j].data.attributes.unary = 1;
+                    let root = d3.hierarchy(map.root);
+                    let leaves = root.leaves();
+
+                    for (var j = 0; j < leaves.length; j++) {
+                        leaves[j].data.attributes.unary = 1;
+                    }
+                    resolve();
+                } else {
+                    console.log("map needs a root");
+                    reject();
+                }
             }
-
-        } else {
-            console.log("map needs a root");
-        }
+        );
 
     }
 
