@@ -24,9 +24,7 @@ class FileChooserDirective{
          */
         this.restrict = "E";
 
-        this.scope = {
-            revision:"@",
-        };
+        this.scope = {};
 
         /**
          *

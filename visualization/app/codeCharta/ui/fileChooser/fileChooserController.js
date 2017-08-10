@@ -1,5 +1,11 @@
 "use strict";
 
+/* We need to override this jshint suggestion because we need to attach a callback function to an object with values
+only available in the loop. We cannot use a named function with parameters because the filereader object wont call it
+with the additional ones */
+
+/*jshint loopfunc:true */
+
 /**
  * Controls the FileChooser
  */
@@ -33,22 +39,30 @@ class FileChooserController {
      */
     fileChanged(element) {
         let ctx = this;
-        console.log("loading revision " + ctx.$scope.ctrl.revision);
         this.$scope.$apply(function() {
-            var file = element.files[0];
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                ctx.onNewFileLoaded(e.target.result, ctx.$scope.ctrl.revision);
-            };
-            reader.readAsText(file, "UTF-8");
+
+            for (let i = 0; i < element.files.length; i++) {
+                (function(file, i) {
+                    var name = file.name;
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        ctx.onNewFileLoaded(e.target.result, i, name);
+                    };
+                    reader.readAsText(file, "UTF-8");
+                })(element.files[i], i);
+            }
+
         });
     }
 
     /**
      * called when the new file was loaded
-     * @param {object} data fileData
+     *
+     * @param {object} data map data
+     * @param {number} revision the revision number
+     * @param {string} name the filename
      */
-    onNewFileLoaded(data, revision){
+    onNewFileLoaded(data, revision, name){
         $("#fileChooserPanel").modal("close");
 
         try {
@@ -59,17 +73,19 @@ class FileChooserController {
             return;
         }
 
-        this.setNewData(data, revision);
+        this.setNewData(name, data, revision);
 
     }
 
     /**
      * Sets the new data in dataService
+     * @param {string} name the filename
      * @param {object} parsedData
+     * @param {number} revision the revision number
      */
-    setNewData(parsedData, revision){
+    setNewData(name, parsedData, revision){
         let ctx = this;
-        this.service.loadMapFromFileContent(parsedData, revision).then(
+        this.service.loadMapFromFileContent(name, parsedData, revision).then(
             () => {
                 if(!ctx.$scope.$$phase || !ctx.$scope.$root.$$phase) {
                     ctx.$scope.$digest();

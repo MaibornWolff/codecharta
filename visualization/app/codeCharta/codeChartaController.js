@@ -38,7 +38,7 @@ class CodeChartaController {
             (data) => {
 
                 // set loaded data
-                dataLoadingService.loadMapFromFileContent(data).then(
+                dataLoadingService.loadMapFromFileContent(urlService.getParam("file"), data, 0).then(
                     () => {
                         settingsService.updateSettingsFromUrl();
                     },
@@ -57,7 +57,7 @@ class CodeChartaController {
                     (data) => {
 
                         // set loaded data
-                        dataLoadingService.loadMapFromFileContent(data,0).then(
+                        dataLoadingService.loadMapFromFileContent("sample1.json",data,0).then(
                             () => {
                                 ctx.loadingFinished();
                             },
@@ -80,7 +80,7 @@ class CodeChartaController {
                     (data) => {
 
                         // set loaded data
-                        dataLoadingService.loadMapFromFileContent(data,1).then(
+                        dataLoadingService.loadMapFromFileContent("sample2.json", data,1).then(
                             () => {
                                 ctx.loadingFinished();
                             },

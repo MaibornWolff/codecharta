@@ -37,7 +37,7 @@ class DataLoadingService {
      * @returns {Promise} which resolves when the filecontent is valid and stored in dataService.
      * The Promise rejects when errors happen. The errors are provided as parameters of the rejection function
      */
-    loadMapFromFileContent(fileContent, revision) {
+    loadMapFromFileContent(fileName, fileContent, revision) {
 
         if (!revision) {
             revision = 0;
@@ -48,9 +48,7 @@ class DataLoadingService {
             this.validator.validate(fileContent).then(
 
                 ()=>{
-                    //TODO get Filename
-                    //This is the part were the validated JSON file is put into a data structure
-                    const map = new CodeMap("File_"+Math.random(), fileContent.projectName, fileContent.nodes[0]); //TODO check it
+                    const map = new CodeMap(fileName, fileContent.projectName, fileContent.nodes[0]);
                     this.storage.setMap(map, revision);
 
                     resolve(map);
