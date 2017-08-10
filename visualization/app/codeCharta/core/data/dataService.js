@@ -62,20 +62,11 @@ export class DataService {
     setComparisonMap(index){
         this.setMetrics(index);
         this.data.comparisonMap = this.data.revisions[index];
-
-        let ctx = this;
-
-        Promise.all([
-            ctx.dataDecorator.decorateMapWithUnaryMetric(ctx.data.comparisonMap),
-            ctx.dataDecorator.decorateMapWithUnaryMetric(ctx.data.referenceMap),
-            ctx.deltaCalculator.decorateMapsWithDeltas(ctx.data.comparisonMap, ctx.data.referenceMap)
-        ]).then(
-            () => {
-                ctx.$rootScope.$broadcast("data-changed", ctx.data);
-            },
-            () => {}
-        );
-
+        this.dataDecorator.decorateMapWithUnaryMetric(this.data.comparisonMap);
+        this.dataDecorator.decorateMapWithUnaryMetric(this.data.referenceMap);
+        this.deltaCalculator.decorateMapsWithDeltas(this.data.comparisonMap, this.data.referenceMap);
+        //TODO the goal is to get rid of this untyped event system, observer ?
+        this.$rootScope.$broadcast("data-changed", this.data);
     }
 
     /**
@@ -83,23 +74,12 @@ export class DataService {
      * @param {number} index the maps index in the revisions array
      */
     setReferenceMap(index){
-
         this.setMetrics(index);
         this.data.referenceMap = this.data.revisions[index];
-
-        let ctx = this;
-
-        Promise.all([
-            ctx.dataDecorator.decorateMapWithUnaryMetric(ctx.data.comparisonMap),
-            ctx.dataDecorator.decorateMapWithUnaryMetric(ctx.data.referenceMap),
-            ctx.deltaCalculator.decorateMapsWithDeltas(ctx.data.comparisonMap, ctx.data.referenceMap)
-        ]).then(
-            () => {
-                ctx.$rootScope.$broadcast("data-changed", ctx.data);
-            },
-            () => {}
-        );
-
+        this.dataDecorator.decorateMapWithUnaryMetric(this.data.comparisonMap);
+        this.dataDecorator.decorateMapWithUnaryMetric(this.data.referenceMap);
+        this.deltaCalculator.decorateMapsWithDeltas(this.data.comparisonMap, this.data.referenceMap);
+        this.$rootScope.$broadcast("data-changed", this.data);
     }
 
 }
