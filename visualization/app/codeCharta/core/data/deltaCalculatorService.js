@@ -9,43 +9,34 @@ export class DeltaCalculatorService {
 
     /* @ngInject */
     constructor(){
+
     }
 
     decorateMapsWithDeltas(firstMap, secondMap) {
 
-        let ctx = this;
+        if(firstMap.root && secondMap.root) {
+            let firstRoot = d3.hierarchy(firstMap.root);
+            let firstLeaves = firstRoot.leaves();
+            let secondRoot = d3.hierarchy(secondMap.root);
+            let secondLeaves = secondRoot.leaves();
 
-        return new Promise(
-            (resolve, reject)=>{
+            for (var j = 0; j < firstLeaves.length; j++) {
+                for (var k = 0; k < secondLeaves.length; k++) {
+                    if (firstLeaves[j].data.name === secondLeaves[k].data.name) {
+                        //calculate delta for those nodes attributes and push it to the second leave
+                        let firstDeltas = this.calculateAttributeListDelta(secondLeaves[k].data.attributes, firstLeaves[j].data.attributes);
+                        let secondDeltas = this.calculateAttributeListDelta(firstLeaves[j].data.attributes, secondLeaves[k].data.attributes);
 
-                if(firstMap.root && secondMap.root) {
-                    let firstRoot = d3.hierarchy(firstMap.root);
-                    let firstLeaves = firstRoot.leaves();
-                    let secondRoot = d3.hierarchy(secondMap.root);
-                    let secondLeaves = secondRoot.leaves();
+                        firstLeaves[j].data.deltas = firstDeltas;
+                        secondLeaves[k].data.deltas = secondDeltas;
 
-                    for (var j = 0; j < firstLeaves.length; j++) {
-                        for (var k = 0; k < secondLeaves.length; k++) {
-                            if (firstLeaves[j].data.name === secondLeaves[k].data.name) {
-                                //calculate delta for those nodes attributes and push it to the second leave
-                                let firstDeltas = ctx.calculateAttributeListDelta(secondLeaves[k].data.attributes, firstLeaves[j].data.attributes);
-                                let secondDeltas = ctx.calculateAttributeListDelta(firstLeaves[j].data.attributes, secondLeaves[k].data.attributes);
-
-                                firstLeaves[j].data.deltas = firstDeltas;
-                                secondLeaves[k].data.deltas = secondDeltas;
-
-                            }
-                        }
                     }
-                    resolve();
-                } else {
-                    console.log("cant calculate deltas with 1 or less root");
-                    reject();
                 }
-
-
             }
-        );
+
+        } else {
+            console.log("cant calculate deltas with 1 or less root");
+        }
 
     }
 
