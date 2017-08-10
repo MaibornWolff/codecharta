@@ -40,6 +40,7 @@ class RevisionChooserController {
      */
     onDataChanged(data) {
         this.revisions = data.revisions;
+        this.single = this.dataService.data.referenceMap.fileName === this.dataService.data.comparisonMap.fileName ? "Single" : "Multiple";
     }
 
 

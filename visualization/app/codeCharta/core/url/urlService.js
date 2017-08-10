@@ -85,6 +85,7 @@ class UrlService {
                 this.http.get(file).then(
                     function (response) {
                         if (response.status === 200) {
+                            response.data.fileName= file;
                             resolve(response.data);
                         } else {
                             reject();
