@@ -2,10 +2,10 @@ package de.maibornwolff.codecharta.importer.csv;
 
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
+import de.maibornwolff.codecharta.model.PathFactory;
 import de.maibornwolff.codecharta.model.Node;
 import de.maibornwolff.codecharta.model.NodeType;
 import de.maibornwolff.codecharta.model.Project;
-import de.maibornwolff.codecharta.nodeinserter.FileSystemPath;
 import de.maibornwolff.codecharta.nodeinserter.NodeInserter;
 import de.maibornwolff.codecharta.translator.MetricNameTranslator;
 
@@ -59,7 +59,7 @@ public class CSVProjectAdapter extends Project {
         try {
             CSVRow row = new CSVRow(rawRow, header, pathSeparator);
             Node node = new Node(row.getFileName(), NodeType.File, row.getAttributes());
-            NodeInserter.insertByPath(this, new FileSystemPath(row.getFolderWithFile().replace(pathSeparator, '/')), node);
+            NodeInserter.insertByPath(this, PathFactory.fromFileSystemPath(row.getFolderWithFile().replace(pathSeparator, '/')), node);
         } catch (IllegalArgumentException e) {
             System.err.println("Ignoring " + e.getMessage());
         }

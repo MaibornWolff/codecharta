@@ -78,7 +78,7 @@ public final class NodeInserter {
             }
             root.getChildren().add(node);
         } else {
-            String name = path.head().toString();
+            String name = path.head();
             Node folderNode = getFolderNode(root, name).orElseGet(() -> createFolderNodeAndInsertAtRoot(root, name));
             insertByPath(folderNode, path.tail(), node);
         }

@@ -27,70 +27,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.nodeinserter;
-
-import de.maibornwolff.codecharta.model.Path;
+package de.maibornwolff.codecharta.model;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
-public class FileSystemPath extends Path<String> {
+public class PathFactory extends Path {
     private static final char PATH_SEPARATOR = '/';
-    private final List<String> edgeStream;
 
-
-    private FileSystemPath(List<String> edges) {
-        edgeStream = edges;
-    }
-
-    public FileSystemPath(String path) {
-        if (path == null) {
-            throw new IllegalArgumentException("Path should be non-null and non-empty.");
-        }
-        edgeStream = Arrays.stream(path.split("" + PATH_SEPARATOR)).filter(s -> !s.isEmpty()).collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean isSingle() {
-        return edgeStream.size() <= 1;
-    }
-
-    @Override
-    public boolean isTrivial() {
-        return edgeStream.size() == 0;
-    }
-
-    @Override
-    public String head() {
-        return edgeStream.stream().findFirst().orElse("");
-    }
-
-    @Override
-    public Path<String> tail() {
-        if (isSingle()) {
-            return Path.trivialPath();
-        }
-        return new FileSystemPath(edgeStream.stream().skip(1).collect(Collectors.toList()));
-    }
-
-    @Override
-    public String toString() {
-        return edgeStream.stream().collect(Collectors.joining("" + PATH_SEPARATOR));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        FileSystemPath that = (FileSystemPath) o;
-
-        return edgeStream != null ? edgeStream.equals(that.edgeStream) : that.edgeStream == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return edgeStream != null ? edgeStream.hashCode() : 0;
+    public static Path fromFileSystemPath(String path) {
+        return new Path(Arrays.stream(path.split("" + PATH_SEPARATOR)).filter(s -> !s.isEmpty()).collect(Collectors.toList()));
     }
 }

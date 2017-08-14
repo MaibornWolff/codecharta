@@ -5,8 +5,10 @@ import de.maibornwolff.codecharta.model.NodeType
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matchers.hasSize
 import org.junit.Assert.assertThat
+import org.junit.Ignore
 import org.junit.Test
 
+@Ignore
 class LeafNodeMergerTest {
     private val merger = LeafNodeMergerStrategy { n1, n2 -> n1.name == n2.name }
 

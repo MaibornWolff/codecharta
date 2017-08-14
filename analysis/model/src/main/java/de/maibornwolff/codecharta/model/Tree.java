@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.model;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,11 +12,11 @@ import java.util.stream.Stream;
  *
  * @param <T> must satisfy T = Tree<T>
  */
-public abstract class Tree<S, T extends Tree> {
+public abstract class Tree<T extends Tree> {
     /**
      * @return children of the present tree
      */
-    public abstract List<? extends Tree<S, T>> getChildren();
+    public abstract List<? extends Tree<T>> getChildren();
 
     /**
      * get's the path of a given child, i.e. defines the edge to the child.
@@ -23,37 +24,37 @@ public abstract class Tree<S, T extends Tree> {
      * @param child to be found
      * @return path of child in this object
      */
-    public abstract Path<S> getPathOfChild(Tree<S, T> child);
+    public abstract Path getPathOfChild(Tree<T> child);
 
     public final boolean isLeaf() {
-        List<? extends Tree<S, T>> children = getChildren();
+        List<? extends Tree<T>> children = getChildren();
         return children == null || children.isEmpty();
     }
 
-    private static final class TreeNode<U, V> {
-        TreeNode(Path<U> path, V node) {
+    private static final class TreeNode<V> {
+        TreeNode(Path path, V node) {
             this.path = path;
             this.node = node;
         }
 
-        final Path<U> path;
+        final Path path;
         final V node;
     }
 
-    protected Stream<TreeNode<S, T>> getTreeNodes() {
+    protected Stream<TreeNode<T>> getTreeNodes() {
         return
-                Stream.concat(Stream.of(new TreeNode<S, T>(Path.trivialPath(), (T) this)),
+                Stream.concat(Stream.of(new TreeNode<>(Path.trivialPath(), (T) this)),
                         getChildren().stream()
                                 .flatMap(child -> child.getTreeNodes()
                                         .map(entry -> new TreeNode<>(getPathOfChild(child).concat(entry.path), entry.node))
                                 ));
     }
 
-    public Map<Path<S>, T> getNodes() {
+    public Map<Path, T> getNodes() {
         return getTreeNodes().collect(Collectors.toMap(n -> n.path, n -> n.node));
     }
 
-    public Map<Path<S>, T> getLeaves() {
+    public Map<Path, T> getLeaves() {
         return getTreeNodes().filter(n -> n.node.isLeaf()).collect(Collectors.toMap(n -> n.path, n -> n.node));
     }
 
@@ -67,7 +68,7 @@ public abstract class Tree<S, T extends Tree> {
     /**
      * @return all paths to leafs of object
      */
-    public Stream<Path<S>> getPathsToLeaves() {
+    public Stream<Path> getPathsToLeaves() {
         return getTreeNodes().filter(n -> n.node.isLeaf()).map(n -> n.path);
     }
 
@@ -75,26 +76,16 @@ public abstract class Tree<S, T extends Tree> {
      * @param path path in tree
      * @return subtree under this path
      */
-    public Optional<? extends Tree<S, T>> getNodeBy(Path<S> path) {
+    public Optional<? extends Tree<T>> getNodeBy(Path path) {
         if (path.isTrivial()) {
             return Optional.of(this);
         }
         if (path.isSingle()) {
             return getChildren().stream()
-                    .filter(child -> path.equalsTo(getPathOfChild(child)))
+                    .filter(child -> path.equals(getPathOfChild(child)))
                     .findFirst();
         }
-        Path<S> pathToDirectChild = new Path<S>() {
-            @Override
-            public S head() {
-                return path.head();
-            }
-
-            @Override
-            public Path<S> tail() {
-                return Path.trivialPath();
-            }
-        };
+        Path pathToDirectChild = new Path(Collections.singletonList(path.head()));
         return this.getNodeBy(pathToDirectChild).get().getNodeBy(path.tail());
     }
 }

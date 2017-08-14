@@ -19,7 +19,7 @@ public class PathMatcher {
             @Override
             public boolean matches(final Object item) {
                 final Path path = (Path) item;
-                return path.equalsTo(expectedPath);
+                return path.equals(expectedPath);
             }
         };
     }
@@ -36,7 +36,7 @@ public class PathMatcher {
             public boolean matches(final Object item) {
                 final List<Path> paths = (List<Path>) item;
                 for(Path path: paths){
-                    if(path.equalsTo(expectedPath)) {
+                    if(path.equals(expectedPath)) {
                         return true;
                     }
                 }

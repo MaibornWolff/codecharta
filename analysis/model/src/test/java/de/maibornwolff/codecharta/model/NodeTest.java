@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.model;
 
 import com.google.common.collect.ImmutableMap;
-import de.maibornwolff.codecharta.nodeinserter.FileSystemPath;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -70,7 +69,7 @@ public class NodeTest {
     public void getPathsToLeafs_of_simple_tree() {
         // given
         Node node1 = new Node("node1", NodeType.Folder);
-        Path pathToNode1 = new FileSystemPath("node1");
+        Path pathToNode1 = new Path("node1");
         Node root = new Node("root", NodeType.Folder, ImmutableMap.of(), "", Arrays.asList(node1));
 
         // when
@@ -85,13 +84,13 @@ public class NodeTest {
     public void getPathsToLeafs() {
         // given
         Node node11 = new Node("node11", NodeType.File);
-        Path pathToNode11 = new FileSystemPath("node1/node11");
+        Path pathToNode11 = new Path("node1", "node11");
         Node node12 = new Node("node12", NodeType.File);
-        Path pathToNode12 = new FileSystemPath("node1/node12");
+        Path pathToNode12 = new Path("node1", "node12");
         List<Node> node1Children = Arrays.asList(node11, node12);
         Node node1 = new Node("node1", NodeType.Folder, ImmutableMap.of(), "", node1Children);
         Node node21 = new Node("node21", NodeType.Folder);
-        Path pathToNode21 = new FileSystemPath("node2/node21");
+        Path pathToNode21 = new Path("node2", "node21");
         List<Node> node2Children = Arrays.asList(node21);
         Node node2 = new Node("node2", NodeType.Folder, ImmutableMap.of(), "", node2Children);
         Node root = new Node("root", NodeType.Folder, ImmutableMap.of(), "", Arrays.asList(node1, node2));

@@ -4,11 +4,7 @@ import de.maibornwolff.codecharta.importer.sonar.model.Component;
 import de.maibornwolff.codecharta.importer.sonar.model.ComponentMap;
 import de.maibornwolff.codecharta.importer.sonar.model.Measure;
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier;
-import de.maibornwolff.codecharta.model.Node;
-import de.maibornwolff.codecharta.model.NodeType;
-import de.maibornwolff.codecharta.model.Path;
-import de.maibornwolff.codecharta.model.Project;
-import de.maibornwolff.codecharta.nodeinserter.FileSystemPath;
+import de.maibornwolff.codecharta.model.*;
 import de.maibornwolff.codecharta.nodeinserter.NodeInserter;
 import de.maibornwolff.codecharta.translator.MetricNameTranslator;
 
@@ -116,15 +112,15 @@ public class SonarComponentProjectAdapter extends Project {
      * @param component given component
      * @return fs path of components parent
      */
-    private Path<String> createParentPath(Component component) {
+    private Path createParentPath(Component component) {
         if (!usePath && component.getKey() != null) {
             String extendedPath = component.getKey().replace(':', '/');
-            return new FileSystemPath(extendedPath.substring(0, extendedPath.lastIndexOf('/') + 1));
+            return PathFactory.fromFileSystemPath(extendedPath.substring(0, extendedPath.lastIndexOf('/') + 1));
         } else if (usePath && component.getPath() != null) {
-                String path = component.getPath();
-                return new FileSystemPath(path.substring(0, path.lastIndexOf('/') + 1));
+            String path = component.getPath();
+            return PathFactory.fromFileSystemPath(path.substring(0, path.lastIndexOf('/') + 1));
         } else {
-            return new FileSystemPath("");
+            return Path.trivialPath();
         }
     }
 }
