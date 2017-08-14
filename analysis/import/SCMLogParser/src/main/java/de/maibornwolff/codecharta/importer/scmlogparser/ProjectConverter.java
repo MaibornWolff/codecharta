@@ -1,10 +1,10 @@
 package de.maibornwolff.codecharta.importer.scmlogparser;
 
+import de.maibornwolff.codecharta.model.PathFactory;
 import de.maibornwolff.codecharta.model.Node;
 import de.maibornwolff.codecharta.model.NodeType;
 import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.model.input.VersionControlledFile;
-import de.maibornwolff.codecharta.nodeinserter.FileSystemPath;
 import de.maibornwolff.codecharta.nodeinserter.NodeInserter;
 
 import java.util.Collections;
@@ -27,7 +27,7 @@ public final class ProjectConverter {
     private static void addVersionControlledFile(Project project, VersionControlledFile versionControlledFile) {
         Map<String, Object> attributes = extractAttributes(versionControlledFile);
         Node newNode = new Node(extractFilenamePart(versionControlledFile), NodeType.File, attributes, "", Collections.emptyList());
-        NodeInserter.insertByPath(project, new FileSystemPath(extractPathPart(versionControlledFile)), newNode);
+        NodeInserter.insertByPath(project, PathFactory.fromFileSystemPath(extractPathPart(versionControlledFile)), newNode);
     }
 
     private static Map<String, Object> extractAttributes(VersionControlledFile versionControlledFile) {

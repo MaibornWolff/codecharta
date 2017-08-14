@@ -3,8 +3,8 @@ package de.maibornwolff.codecharta.model;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import static de.maibornwolff.codecharta.model.PathCreator.createPath;
-import static de.maibornwolff.codecharta.model.PathCreator.createPath;
+import java.util.Arrays;
+
 import static de.maibornwolff.codecharta.model.PathMatcher.matchesPath;
 import static junit.framework.TestCase.assertFalse;
 import static org.hamcrest.CoreMatchers.not;
@@ -18,15 +18,15 @@ public class PathTest {
 
     @Test
     public void nonTrivial_path_should_not_be_equalTo_nonTrivial_path() {
-        Path nonTrivialPath = PathCreator.createPath("bla");
+        Path nonTrivialPath = new Path(Arrays.asList("bla"));
         assertThat(Path.TRIVIAL, not(matchesPath(nonTrivialPath)));
         assertThat(nonTrivialPath, not(matchesPath(Path.TRIVIAL)));
     }
 
     @Test
     public void simple_path_should_be_equalTo_simple_path_iff_head_equal() {
-        Path nonTrivialPath = PathCreator.createPath("bla");
-        Path anotherNonTrivialPath = PathCreator.createPath("blubb");
+        Path nonTrivialPath = new Path(Arrays.asList("bla"));
+        Path anotherNonTrivialPath = new Path(Arrays.asList("blubb"));
         assertThat(nonTrivialPath, matchesPath(nonTrivialPath));
         assertThat(nonTrivialPath, not(matchesPath(anotherNonTrivialPath)));
         assertThat(anotherNonTrivialPath, not(matchesPath(nonTrivialPath)));
@@ -34,7 +34,7 @@ public class PathTest {
 
     @Test
     public void concat_with_trivial_path_should_return_concatinated_path() {
-        Path nonTrivialPath = PathCreator.createPath("bla");
+        Path nonTrivialPath = new Path(Arrays.asList("bla"));
         assertThat(Path.TRIVIAL.concat(Path.TRIVIAL), matchesPath(Path.TRIVIAL));
         assertThat(nonTrivialPath.concat(Path.TRIVIAL), matchesPath(nonTrivialPath));
         assertThat(Path.TRIVIAL.concat(nonTrivialPath), matchesPath(nonTrivialPath));
@@ -42,8 +42,8 @@ public class PathTest {
 
     @Test
     public void complex_path_should_equal_itself() {
-        Path firstPath = PathCreator.createPath("first");
-        Path<String> expectedPath = createPath(firstPath, "second");
+        Path firstPath = new Path(Arrays.asList("first"));
+        Path expectedPath = new Path(Arrays.asList("second", firstPath.head()));
 
         assertThat(expectedPath, matchesPath(expectedPath));
     }
@@ -51,14 +51,14 @@ public class PathTest {
     @Test
     public void concat_with_two_simple_paths_should_return_concatinated_path() {
         // given
-        Path firstPath = PathCreator.createPath("first");
-        Path secondPath = PathCreator.createPath("second");
+        Path firstPath = new Path(Arrays.asList("first"));
+        Path secondPath = new Path(Arrays.asList("second"));
 
         // when
         Path concatinatedPath = firstPath.concat(secondPath);
 
         // then
-        Path<String> expectedPath = createPath(secondPath, "first");
+        Path expectedPath = new Path(Arrays.asList("first", secondPath.head()));
         assertThat(concatinatedPath, not(matchesPath(firstPath)));
         assertThat(concatinatedPath, not(matchesPath(secondPath)));
         assertFalse(concatinatedPath.isSingle());

@@ -29,92 +29,92 @@
 
 package de.maibornwolff.codecharta.model;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
- * Represents a path in a tree of T objects
+ * Represents a path in a tree
  * may be seen as multiple edges in the tree of nodes
  */
-public abstract class Path<T> {
+public class Path {
+    private final List<String> edgesList;
+
+    public Path(List<String> edges) {
+        edgesList = edges;
+    }
+
+    public Path(String... edges) {
+        edgesList = Arrays.asList(edges);
+    }
+
     /**
      * @return first edge in path to node
      */
-    public abstract T head();
+    public String head() {
+        return edgesList.stream().findFirst().orElse("");
+    }
 
     /**
      * @return tail, i.e. the remaining path when the head is removed, if not leaf, trivial element if leaf
      */
-    public abstract Path<T> tail();
+    public Path tail() {
+        if (isSingle()) {
+            return Path.trivialPath();
+        }
+        return new Path(edgesList.stream().skip(1).collect(Collectors.toList()));
+    }
 
     /**
      * @return true, if there are no edges in the path
      */
     public boolean isTrivial() {
-        return this == Path.TRIVIAL;
+        return edgesList.isEmpty();
     }
 
     /**
      * @return true, if path consists of one or less edges
      */
     public boolean isSingle() {
-        return isTrivial() || tail().isTrivial();
-    }
-
-    /**
-     * @param path for comparison
-     * @return are paths semantically equivalent
-     */
-    public boolean equalsTo(Path<T> path) {
-        boolean headsEqual = path.head() == head() || (path.head() != null && path.head().equals(head()));
-        boolean tailsEqual = (path.isTrivial() && isTrivial()) || path.tail().equalsTo(tail());
-        return headsEqual && tailsEqual;
+        return edgesList.size() <= 1;
     }
 
     /**
      * @param path that will be added after the present path
      * @return concatinated path
      */
-    public Path<T> concat(final Path<T> path) {
-        final Path<T> thisPath = this;
+    public Path concat(final Path path) {
+        final Path thisPath = this;
         if (thisPath.isTrivial()) {
             return path;
         } else if (path.isTrivial()) {
             return thisPath;
         }
-        return new Path<T>() {
-            @Override
-            public T head() {
-                return thisPath.head();
-            }
-
-            @Override
-            public Path<T> tail() {
-                return thisPath.tail().concat(path);
-            }
-
-            @Override
-            public String toString() {
-                return thisPath.toString() + " -> " + path.toString();
-            }
-        };
+        return new Path(Stream.concat(thisPath.edgesList.stream(), path.edgesList.stream()).collect(Collectors.toList()));
     }
 
-    public static final <S> Path<S> trivialPath(){
-        return (Path<S>) TRIVIAL;
+    public String toString() {
+        return edgesList.stream().collect(Collectors.joining(" -> "));
     }
 
-    public static final Path TRIVIAL = new Path() {
-        @Override
-        public Object head() {
-            return null;
-        }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        @Override
-        public Path tail() {
-            return TRIVIAL;
-        }
+        Path that = (Path) o;
 
-        @Override
-        public String toString() {
-            return "emptyPath ->";
-        }
-    };
+        return edgesList != null ? edgesList.equals(that.edgesList) : that.edgesList == null;
+    }
+
+    public int hashCode() {
+        return edgesList != null ? edgesList.hashCode() : 0;
+    }
+
+    public static Path trivialPath() {
+        return TRIVIAL;
+    }
+
+    public static final Path TRIVIAL = new Path(Collections.emptyList());
 }

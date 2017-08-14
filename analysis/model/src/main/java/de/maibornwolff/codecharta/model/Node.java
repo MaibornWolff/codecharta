@@ -31,7 +31,7 @@ package de.maibornwolff.codecharta.model;
 
 import java.util.*;
 
-public class Node extends Tree<String, Node> {
+public class Node extends Tree<Node> {
 
     private final String name;
     private final NodeType type;
@@ -120,20 +120,10 @@ public class Node extends Tree<String, Node> {
     }
 
     @Override
-    public Path<String> getPathOfChild(final Tree<String, Node> child) {
+    public Path getPathOfChild(final Tree<Node> child) {
         if (!getChildren().contains(child)) {
             throw new NoSuchElementException("Child " + child + " not contained in Node.");
         }
-        return new Path<String>() {
-            @Override
-            public String head() {
-                return ((Node) child).getName();
-            }
-
-            @Override
-            public Path<String> tail() {
-                return Path.trivialPath();
-            }
-        };
+        return new Path(Collections.singletonList(((Node) child).getName()));
     }
 }

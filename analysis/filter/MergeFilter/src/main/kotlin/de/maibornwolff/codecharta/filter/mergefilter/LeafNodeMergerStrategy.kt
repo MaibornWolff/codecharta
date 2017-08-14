@@ -31,7 +31,7 @@ class LeafNodeMergerStrategy(override val mergeConditionSatisfied: (Node, Node) 
         return listOf(root)
     }
 
-    private fun temp(path: Path<String>, vararg nodes: Node): Array<Node> {
+    private fun temp(path: Path, vararg nodes: Node): Array<Node> {
         println("" + path.head() + " " + nodes)
         return nodes.map { n -> n.getNodeBy(path).orElse(null) }.filterNotNull().map { it as Node }.toTypedArray()
     }
