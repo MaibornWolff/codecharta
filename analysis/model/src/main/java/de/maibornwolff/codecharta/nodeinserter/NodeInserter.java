@@ -84,7 +84,6 @@ public final class NodeInserter {
         }
     }
 
-
     private static Node createFolderNodeAndInsertAtRoot(Node root, String name) {
         Node folderNode;
         folderNode = createFolderNode(name);

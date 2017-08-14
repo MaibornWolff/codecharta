@@ -6,9 +6,10 @@ import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matchers.hasSize
 import org.junit.Assert.assertThat
 import org.junit.Test
+import kotlin.test.assertEquals
 
-class FlatNodeMergerTest {
-    var merger = FlatNodeMerger()
+class NodeMergerTest {
+    var merger = NodeMerger()
 
     @Test
     fun merging_nodes_should_prevail_name() {
@@ -64,6 +65,7 @@ class FlatNodeMergerTest {
         val newNode = merger.merge(node1, node2)
 
         // then
+        assertThat(newNode.attributes.count(), `is`(1))
     }
 
     @Test

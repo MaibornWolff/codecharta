@@ -10,13 +10,16 @@ import java.io.InputStreamReader
 val DEFAULT_API_VERSION = "1.0"
 
 class ProjectMergerTest {
+    val nodeMergerStrategy = RecursiveNodeMergerStrategy()
+
+
     @Test(expected = MergeException::class)
     fun should_throw_exception_if_APIVersion_NotSupported() {
         // given
         val project = Project("project", listOf(), "unsupported Version")
 
         // when
-        ProjectMerger(listOf(project)).merge()
+        ProjectMerger(listOf(project), nodeMergerStrategy).merge()
 
         // then throw exception
     }
@@ -27,7 +30,7 @@ class ProjectMergerTest {
         val projects = listOf(Project("test1", listOf(), DEFAULT_API_VERSION), Project("test2", listOf(), DEFAULT_API_VERSION))
 
         // when
-        ProjectMerger(projects).extractProjectName()
+        ProjectMerger(projects, nodeMergerStrategy).extractProjectName()
 
         // then throw exception
     }
@@ -39,7 +42,7 @@ class ProjectMergerTest {
         val projects = listOf(Project(projectName, listOf(), DEFAULT_API_VERSION), Project(projectName, listOf(), DEFAULT_API_VERSION))
 
         // when
-        val name = ProjectMerger(projects).extractProjectName()
+        val name = ProjectMerger(projects, nodeMergerStrategy).extractProjectName()
 
         // then
         Assert.assertThat(name, CoreMatchers.`is`(projectName))
@@ -52,7 +55,7 @@ class ProjectMergerTest {
         val projects = listOf(Project(projectName, listOf(), "1.0"), Project(projectName, listOf(), "2.0"))
 
         // when
-        ProjectMerger(projects).merge()
+        ProjectMerger(projects, nodeMergerStrategy).merge()
 
         // then throw exception
     }
@@ -68,7 +71,7 @@ class ProjectMergerTest {
         val projectList = listOf(originalProject, originalProject)
 
         // when
-        val project = ProjectMerger(projectList).merge()
+        val project = ProjectMerger(projectList, nodeMergerStrategy).merge()
 
         // then
         Assert.assertThat(project, CoreMatchers.`is`(originalProject))
@@ -82,7 +85,7 @@ class ProjectMergerTest {
         val projectList = listOf(originalProject1, originalProject2)
 
         // when
-        val project = ProjectMerger(projectList).merge()
+        val project = ProjectMerger(projectList, nodeMergerStrategy).merge()
 
         // then
         Assert.assertThat(project == originalProject1, CoreMatchers.`is`(false))

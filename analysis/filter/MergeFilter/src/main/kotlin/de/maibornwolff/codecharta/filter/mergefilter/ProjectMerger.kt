@@ -3,9 +3,7 @@ package de.maibornwolff.codecharta.filter.mergefilter
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
 
-class ProjectMerger(val projects: List<Project>) {
-
-    private val nodeMerger = RecursiveNodeMergerStrategy { n1, n2 -> n1.name == n2.name }
+class ProjectMerger(val projects: List<Project>, val nodeMerger: NodeMergerStrategy) {
 
     fun extractProjectName(): String {
         val projectNames = projects.map { p -> p.projectName }.toSortedSet()

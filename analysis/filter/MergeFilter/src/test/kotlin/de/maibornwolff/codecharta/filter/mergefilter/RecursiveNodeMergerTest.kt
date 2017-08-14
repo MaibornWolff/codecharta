@@ -8,7 +8,7 @@ import org.junit.Assert.assertThat
 import org.junit.Test
 
 class RecursiveNodeMergerTest {
-    private val merger = RecursiveNodeMergerStrategy { n1, n2 -> n1.name == n2.name }
+    private val merger = RecursiveNodeMergerStrategy()
 
     @Test
     fun should_merge_nodes_with_same_name() {
@@ -33,7 +33,7 @@ class RecursiveNodeMergerTest {
         val node2 = Node("Name", NodeType.File, mapOf(), "", listOf(child1, child2))
 
         // when
-        val newNode = merger.mergeNodeLists(listOf(listOf(node1), listOf(node2))).get(0)
+        val newNode = merger.mergeNodeLists(listOf(listOf(node1), listOf(node2)))[0]
 
         // then
         assertThat(newNode.children, hasSize(2))

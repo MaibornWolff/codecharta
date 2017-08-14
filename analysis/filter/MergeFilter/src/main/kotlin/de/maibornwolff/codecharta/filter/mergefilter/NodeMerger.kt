@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.model.Node
 
-class FlatNodeMerger {
+class NodeMerger {
     /**
      * merge nodes, ignoring children
      */

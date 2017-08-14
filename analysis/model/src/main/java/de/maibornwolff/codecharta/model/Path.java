@@ -67,6 +67,14 @@ public class Path {
         return new Path(edgesList.stream().skip(1).collect(Collectors.toList()));
     }
 
+    public List<String> getEdgesList() {
+        return edgesList;
+    }
+
+    public String last() {
+        return edgesList.get(edgesList.size() - 1);
+    }
+
     /**
      * @return true, if there are no edges in the path
      */
