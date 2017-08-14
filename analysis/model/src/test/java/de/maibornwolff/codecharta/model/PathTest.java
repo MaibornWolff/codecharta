@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 import static de.maibornwolff.codecharta.model.PathMatcher.matchesPath;
 import static junit.framework.TestCase.assertFalse;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -69,4 +70,16 @@ public class PathTest {
     }
 
 
+    @Test
+    public void last_should_return_last_edged() {
+        //given
+        String lastEdge = "lastEdge";
+        Path path = new Path(Arrays.asList("a", "b", lastEdge));
+
+        // when
+        String edge = path.last();
+
+        // then
+        assertThat(edge, is(lastEdge));
+    }
 }

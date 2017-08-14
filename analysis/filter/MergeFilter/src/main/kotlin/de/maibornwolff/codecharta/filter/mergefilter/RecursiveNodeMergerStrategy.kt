@@ -2,8 +2,13 @@ package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.model.Node
 
-class RecursiveNodeMergerStrategy(override val mergeConditionSatisfied: (Node, Node) -> Boolean) : NodeMergerStrategy {
-    private val flatNodeMerger = FlatNodeMerger()
+/**
+ * merges nodes recursively if their paths coincide
+ */
+class RecursiveNodeMergerStrategy : NodeMergerStrategy {
+    private val flatNodeMerger = NodeMerger()
+
+    private val mergeConditionSatisfied = { n1: Node, n2: Node -> n1.name == n2.name }
 
     override fun mergeNodeLists(lists: List<List<Node>>?): List<Node> {
         return lists!!.fold(listOf(), { nodes, actual -> reduceNodeList(nodes, actual) })
