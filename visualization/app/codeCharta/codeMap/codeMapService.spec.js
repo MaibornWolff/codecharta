@@ -1,4 +1,5 @@
 require("./codeMap.js");
+import {CodeMap} from "../core/data/model/codeMap";
 
 /**
  * @test {CodeMapService}
@@ -16,7 +17,7 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
         const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
         mesh = new THREE.Mesh( geometry, material );
         codeMapService.addRoot();
-        data = data = {
+        data = new CodeMap("file", "project", {
             "name": "root",
             "attributes": {},
             "children": [
@@ -42,7 +43,7 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
                     ]
                 }
             ]
-        };
+        });
     }));
 
     beforeEach(()=>{
@@ -75,7 +76,7 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
            }
         };
 
-        codeMapService.drawMap(data, 2, 2, "rloc", "mcc", "mcc", "colorConfig", 1);
+        codeMapService.drawMap(data, 2, 2, "rloc", "mcc", "mcc", "colorConfig", 1, false);
 
         expect(smallSpy.calledOnce);
         expect(otherSpy.calledOnce);
