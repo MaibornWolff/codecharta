@@ -14,7 +14,6 @@
 
         <collapsible-element-directive label="Display" icon-class="fa-television">
             <number-field-directive label="Amount of labeled buildings" min="0" model="$ctrl.settings.amountOfTopLabels" change="$ctrl.notify()"></number-field-directive>
-            <checkbox-directive model="$ctrl.settings.deltas" label="Delta cubes" change="$ctrl.notify()"></checkbox-directive>
         </collapsible-element-directive>
 
         <collapsible-element-directive label="Scaling" icon-class="fa-cube">
@@ -31,6 +30,10 @@
 
         <collapsible-element-directive label="Scenarios" icon-class="fa-line-chart">
             <scenario-buttons-directive></scenario-buttons-directive>
+        </collapsible-element-directive>
+
+        <collapsible-element-directive label="Experimental" icon-class="fa-flask">
+            <checkbox-directive model="$ctrl.settings.deltas" label="Deltas" change="$ctrl.notify()"></checkbox-directive>
         </collapsible-element-directive>
 
     </collapsible-directive>
