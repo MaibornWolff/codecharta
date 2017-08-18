@@ -1,10 +1,17 @@
+<div ng-show="ctrl.settingsService.settings.deltas" id="revisionButton">
+    <a class="waves-effect waves-light btn ">revisions</a>
+</div>
+
+<div ng-show="!ctrl.settingsService.settings.deltas" id="mapButton">
+    <a class="waves-effect waves-light btn ">maps</a>
+</div>
+
 <div id="revisionChooser">
 
-    This is a <b>{{ctrl.single}}</b> map<br/>
     Current <span ng-if="ctrl.settingsService.settings.deltas">Reference </span>Map: {{ctrl.dataService.data.referenceMap.fileName}}<br/>
     Select <span ng-if="ctrl.settingsService.settings.deltas">Reference </span>Map:
     <span ng-repeat="(key, value) in ctrl.revisions">
-        <a href="#" ng-click="ctrl.loadReferenceMap(key)">{{value.fileName}}</a> -
+        <a href="#" ng-click="ctrl.loadReferenceMap(key)">{{value.fileName}} - </a>
      </span>
 
     <br><br>
@@ -13,7 +20,7 @@
         Current Comparison Map: {{ctrl.dataService.data.comparisonMap.fileName}}<br/>
         Select Comparison Map:
         <span ng-repeat="(key, value) in ctrl.revisions">
-            <a href="#" ng-click="ctrl.loadComparisonMap(key)">{{value.fileName}}</a> -
+            <a href="#" ng-click="ctrl.loadComparisonMap(key)">{{value.fileName}} - </a>
         </span>
     </span>
 
