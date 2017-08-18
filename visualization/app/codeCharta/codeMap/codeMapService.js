@@ -111,7 +111,7 @@ class CodeMapService {
     applySettings(s) {
 
         //draw
-        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.root && s.neutralColorRange && s.deltas) {
+        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.root && s.neutralColorRange && s.deltas !== null) {
             this.drawFromData(s.map, s.areaMetric, s.heightMetric, s.colorMetric, s.neutralColorRange, s.amountOfTopLabels, s.deltas);
         }
 
