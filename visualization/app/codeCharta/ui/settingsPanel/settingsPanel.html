@@ -6,27 +6,27 @@
 
         <collapsible-element-directive label="Color Settings" icon-class="fa-paint-brush">
             <label id="colorSliderLabel" for="colorSlider">Neutral Color Range</label>
-            <rzslider id="colorSlider" rz-slider-model="ctrl.settings.neutralColorRange.from"
-                      rz-slider-high="ctrl.settings.neutralColorRange.to"
-                      rz-slider-options="ctrl.sliderOptions"></rzslider>
-            <checkbox-directive model="ctrl.settings.neutralColorRange.flipped" label="Invert Colors" change="ctrl.notify()"></checkbox-directive>
+            <rzslider id="colorSlider" rz-slider-model="$ctrl.settings.neutralColorRange.from"
+                      rz-slider-high="$ctrl.settings.neutralColorRange.to"
+                      rz-slider-options="$ctrl.sliderOptions"></rzslider>
+            <checkbox-directive model="$ctrl.settings.neutralColorRange.flipped" label="Invert Colors" change="$ctrl.notify()"></checkbox-directive>
         </collapsible-element-directive>
 
         <collapsible-element-directive label="Display" icon-class="fa-television">
-            <number-field-directive label="Amount of labeled buildings" min="0" model="ctrl.settings.amountOfTopLabels" change="ctrl.notify()"></number-field-directive>
-            <checkbox-directive model="ctrl.settings.deltas" label="Delta cubes" change="ctrl.notify()"></checkbox-directive>
+            <number-field-directive label="Amount of labeled buildings" min="0" model="$ctrl.settings.amountOfTopLabels" change="$ctrl.notify()"></number-field-directive>
+            <checkbox-directive model="$ctrl.settings.deltas" label="Delta cubes" change="$ctrl.notify()"></checkbox-directive>
         </collapsible-element-directive>
 
         <collapsible-element-directive label="Scaling" icon-class="fa-cube">
-            <slider-directive step="0.001"  label="x" min="0.01" max="5" model="ctrl.settings.scaling.x" change="ctrl.notify()"></slider-directive>
-            <slider-directive step="0.001"  label="y" min="0.01" max="5" model="ctrl.settings.scaling.y" change="ctrl.notify()"></slider-directive>
-            <slider-directive step="0.001"  label="z" min="0.01" max="5" model="ctrl.settings.scaling.z" change="ctrl.notify()"></slider-directive>
+            <slider-directive step="0.001"  label="x" min="0.01" max="5" model="$ctrl.settings.scaling.x" change="$ctrl.notify()"></slider-directive>
+            <slider-directive step="0.001"  label="y" min="0.01" max="5" model="$ctrl.settings.scaling.y" change="$ctrl.notify()"></slider-directive>
+            <slider-directive step="0.001"  label="z" min="0.01" max="5" model="$ctrl.settings.scaling.z" change="$ctrl.notify()"></slider-directive>
         </collapsible-element-directive>
 
         <collapsible-element-directive label="Metrics" icon-class="fa-line-chart">
-            <dropdown-directive label="Area" values="ctrl.metrics" model="ctrl.settings.areaMetric" change="ctrl.notify()"></dropdown-directive>
-            <dropdown-directive label="Height" values="ctrl.metrics" model="ctrl.settings.heightMetric" change="ctrl.notify()"></dropdown-directive>
-            <dropdown-directive label="Color" values="ctrl.metrics" model="ctrl.settings.colorMetric" change="ctrl.notify()"></dropdown-directive>
+            <dropdown-directive label="Area" values="$ctrl.metrics" model="$ctrl.settings.areaMetric" change="$ctrl.notify()"></dropdown-directive>
+            <dropdown-directive label="Height" values="$ctrl.metrics" model="$ctrl.settings.heightMetric" change="$ctrl.notify()"></dropdown-directive>
+            <dropdown-directive label="Color" values="$ctrl.metrics" model="$ctrl.settings.colorMetric" change="$ctrl.notify()"></dropdown-directive>
         </collapsible-element-directive>
 
         <collapsible-element-directive label="Scenarios" icon-class="fa-line-chart">
@@ -35,6 +35,6 @@
 
     </collapsible-directive>
 
-    <a class="waves-effect waves-light btn settings-panel-btn" title="Show Url Parameters" ng-click="ctrl.showUrlParams()">Show Url Parameters</a>
+    <a class="waves-effect waves-light btn settings-panel-btn" title="Show Url Parameters" ng-click="$ctrl.showUrlParams()">Show Url Parameters</a>
 
 </div>
