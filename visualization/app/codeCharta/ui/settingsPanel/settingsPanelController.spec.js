@@ -1,4 +1,4 @@
-require("./settingsPanel.js");
+import {SettingsPanelController} from "./settingsPanel";
 
 /**
  * @test {SettingsPanelController}
@@ -7,7 +7,19 @@ describe("app.codeCharta.ui.settingsPanel.settingsPanelController", function() {
 
     let settingsPanelController, settingsService, dataService, scope;
 
-    beforeEach(angular.mock.module("app.codeCharta.ui.settingsPanel"));
+    beforeEach(()=>{
+
+        //mock module under test
+        angular.mock.module("app.codeCharta.ui.settingsPanel");
+
+        //build a module dependent on the module under test and the specific controller under test
+        angular.module("sut", ["app.codeCharta.ui.settingsPanel"])
+            .controller("settingsPanelController", SettingsPanelController);
+
+        //mock it
+        angular.mock.module("sut");
+
+    });
 
     beforeEach(angular.mock.inject((_settingsService_, _dataService_, _$rootScope_, $controller)=>{
         settingsService = _settingsService_;
