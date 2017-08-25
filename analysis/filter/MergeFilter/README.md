@@ -4,15 +4,16 @@ Reads the specified files, merges visualisation data and prints to stdout.
 
 ## Usage
 
- > `ccsh merge <json file> <json file>`
+ > `ccsh merge <reference json file> <json files>`
 
-Given the specified json files with visualisation data, that has the same API version and the same project name.
+The first file with visualisation data is used as reference for the merging strategy. The visualisation data in the additional
+json files, given they have the same API version and same project name, are fitted into this reference structure according to a
+specific strategy. Currently there are two main strategies:
+- recursive (`--recursive`) (default): leave structure of additional files
+- leaf (`--leaf`) (beta):  fit leaf nodes into reference structure according to their name (and tail of their path), 
+either adding missing leaves (`--add-missing`) or ignoring them (default)
 
-When invoked with `-h` MergeFilter prints its usage:
-
-   Options:
-        -h
-        -s, --strategy STRATEGY 
+When invoked with `-h` or `--help` MergeFilter prints its usage:
 
  ### Example
  
