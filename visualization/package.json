@@ -87,7 +87,10 @@
     "time-grunt": "^1.4.0"
   },
   "devDependencies": {
+    "css-loader": "^0.28.5",
+    "file-loader": "^0.11.2",
     "grunt-webpack": "^3.0.2",
+    "style-loader": "^0.18.2",
     "webpack": "^3.5.5"
   }
 }
