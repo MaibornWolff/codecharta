@@ -114,13 +114,13 @@ describe("app.codeCharta.core.url.urlService", function() {
 
         $httpBackend
             .when("GET", "valid.json")
-            .respond(200, validdata);
+            .respond(200, validdata+"");
 
         $location.url(url);
 
         urlService.getFileDataFromQueryParam().then(
             (data) => {
-                expect(data).to.equal(validdata);
+                expect(data).to.equal(validdata+"");
                 done();
             },() => {
                 done("should succeed");
