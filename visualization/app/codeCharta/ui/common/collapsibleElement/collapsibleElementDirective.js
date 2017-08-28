@@ -32,7 +32,7 @@ class CollapsibleElementDirective{
         this.transclude = true;
 
         /** @type {string} */
-        this.templateUrl = "./collapsibleElement.html";
+        this.template = require("./collapsibleElement.html");
     }
 
     /**

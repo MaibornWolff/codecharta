@@ -16,7 +16,7 @@ class LegendPanelDirective{
          *
          * @type {string}
          */
-        this.templateUrl = "./legendPanel.html";
+        this.template = require("./legendPanel.html");
 
         /**
          *
