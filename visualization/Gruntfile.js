@@ -15,6 +15,14 @@ module.exports = function (grunt) {
 
         pkg: grunt.file.readJSON('package.json'),
 
+        webpack: {
+            options: {
+                stats: !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
+            },
+            prod: require("./conf/webpack.config.js"),
+            dev: Object.assign({ watch: true }, require("./conf/webpack.config.js"))
+        },
+
         mocha_istanbul: {
             coverage: {
                 src: ["test/unit-helper.js", "app/**/*.spec.js"],
@@ -157,6 +165,7 @@ module.exports = function (grunt) {
         },
 
         clean: {
+            dist: ["dist"],
             app: ["dist/app"],
             style: ["dist/app/style/"],
             coverage: ["dist/coverage/", "coverage/"],
@@ -261,7 +270,7 @@ module.exports = function (grunt) {
 
     // tasks
     grunt.registerTask("default", ["build"]);
-
+    grunt.registerTask("wp", ["clean:dist", "webpack:prod"]);
     grunt.registerTask("build", ["clean:app", "jshint", "browserify", "ngAnnotate:app", "htmlmin", "copy:style", "concat:css", "clean:style", "copy:materialize", "copy:sliderDirective", "copy:json", "copy:hammer", "copy:fontawesome", "copy:angular", "copy:images", "copy:jquery", "copy:license", "string-replace"]);
     grunt.registerTask("test", ["clean:coverage", "mocha_istanbul"]);
     grunt.registerTask("doc", ["clean:doc", "exec:doc"]);
