@@ -15,7 +15,7 @@ class DetailPanelDirective {
          *
          * @type {string}
          */
-        this.templateUrl = "./detailPanel.html";
+        this.template = require("./detailPanel.html");
 
         /**
          *

@@ -1,8 +1,11 @@
 "use strict";
 
 import angular from "angular";
+import 'jquery';
 
 import "./codeCharta/codeCharta.js";
+
+import "materialize-css/dist/js/materialize.js";
 
 import "materialize-css/dist/css/materialize.css";
 import "angularjs-slider/dist/rzslider.css";

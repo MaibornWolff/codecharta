@@ -16,7 +16,7 @@ class ScenarioButtonsDirective{
          *
          * @type {string}
          */
-        this.templateUrl = "./scenarioButtons.html";
+        this.template = require("./scenarioButtons.html");
 
         /**
          *

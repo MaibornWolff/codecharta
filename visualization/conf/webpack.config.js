@@ -1,6 +1,6 @@
 const path = require('path');
+const webpack = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-
 
 const src = './app/';
 const dist = path.resolve(__dirname, '../dist/webpack');
@@ -13,6 +13,12 @@ module.exports = {
     },
     module: {
         rules: [
+            {
+                test: /\.html$/,
+                loaders: [
+                    'html-loader'
+                ]
+            },
             {
                 test: /\.css$/,
                 use: [
@@ -36,6 +42,12 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: src + 'index.html'
+        }),
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            'window.$': 'jquery',
+            'window.jQuery': 'jquery',
         })
     ],
 };
