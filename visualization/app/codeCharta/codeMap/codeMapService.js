@@ -131,9 +131,11 @@ class CodeMapService {
      * @param {Range} colorConfig
      * @param {number} amountOfTopLabels number of highest buildings with labels
      * @param {boolean} deltas deltas enabled
+     * @param {margin} margin between buildings
      */
     drawFromData(map, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels, deltas, margin) {
-        this.drawMap(map, 500, 1, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels, deltas, margin);
+        console.log(margin);
+        this.drawMap(map, 500, margin, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels, deltas);
     }
 
     /**
