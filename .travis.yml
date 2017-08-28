@@ -56,3 +56,15 @@ deploy:
     local_dir: "gh-pages"
     on:
       branch: master
+
+  # beta release on beta branch
+  - provider: releases
+    api_key: $GITHUB_TOKEN
+    prerelease: true
+    file_glob: true
+    file:
+      - "visualization/dist/packages/*.zip"
+      - "analysis/build/distributions/*.tar"
+    skip_cleanup: true
+    on:
+      branch: beta
