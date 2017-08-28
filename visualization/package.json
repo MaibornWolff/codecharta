@@ -21,6 +21,7 @@
     "package": "grunt package",
     "watch:app": "grunt watch:app",
     "watch:unit": "grunt watch:unit",
+    "wp": "grunt wp",
     "serve": "grunt connect:server:keepalive"
   },
   "bin": {
@@ -84,5 +85,9 @@
     "three-orbit-controls": "^82.1.0",
     "three-text2d": "^0.3.4",
     "time-grunt": "^1.4.0"
+  },
+  "devDependencies": {
+    "grunt-webpack": "^3.0.2",
+    "webpack": "^3.5.5"
   }
 }
