@@ -27,10 +27,7 @@ export class DataDecoratorService {
                 leaves[j].data.attributes.unary = 1;
             }
 
-        } else {
-            console.log("map needs a root");
         }
-
     }
 
 }

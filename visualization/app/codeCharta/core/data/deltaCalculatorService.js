@@ -34,8 +34,6 @@ export class DeltaCalculatorService {
                 }
             }
 
-        } else {
-            console.log("cant calculate deltas with 1 or less root");
         }
 
     }
