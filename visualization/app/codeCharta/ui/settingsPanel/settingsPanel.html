@@ -34,6 +34,7 @@
 
         <collapsible-element-directive label="Experimental" icon-class="fa-flask">
             <checkbox-directive model="$ctrl.settings.deltas" label="Deltas" change="$ctrl.notify()"></checkbox-directive>
+            <slider-directive step="1"  label="Margin between buildings" min="1" max="100" model="ctrl.settings.margin" change="ctrl.notify()"></slider-directive>
         </collapsible-element-directive>
 
     </collapsible-directive>
