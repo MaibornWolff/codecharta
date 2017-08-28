@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
+- experimental delta functionality
+- loading multiple maps
+- experimental margin slider
 
 ### Changed
 
