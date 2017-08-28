@@ -134,7 +134,6 @@ class CodeMapService {
      * @param {margin} margin between buildings
      */
     drawFromData(map, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels, deltas, margin) {
-        console.log(margin);
         this.drawMap(map, 500, margin, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels, deltas);
     }
 
