@@ -1,5 +1,7 @@
 "use strict";
 
+import angular from "angular";
+
 import "./codeCharta/codeCharta.js";
 
 import "materialize-css/dist/css/materialize.css";
