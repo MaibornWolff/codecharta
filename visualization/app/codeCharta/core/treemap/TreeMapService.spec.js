@@ -179,7 +179,7 @@ describe("app.codeCharta.core.treemap.treemapService", function() {
 
             let heightScale = 0.5;
 
-            treeMapService.transformNode(node, "somekey", 15, heightScale);
+            treeMapService.transformNode(node, "somekey", 15, heightScale, 2);
 
             // expect measures
             expect(node.width).to.equal(5);
@@ -218,7 +218,7 @@ describe("app.codeCharta.core.treemap.treemapService", function() {
                 depth: 2
             };
 
-            treeMapService.transformNode(node, "someinvalidkey", -15, 1);
+            treeMapService.transformNode(node, "someinvalidkey", -15, 1, 2);
 
             //TODO what should really happen ?
 
@@ -241,7 +241,7 @@ describe("app.codeCharta.core.treemap.treemapService", function() {
                 depth: 2
             };
 
-            treeMapService.transformNode(node, "somekey", 15, 1);
+            treeMapService.transformNode(node, "somekey", 15, 1, 2);
 
             expect(node.height).to.equal(15)
 
@@ -264,7 +264,7 @@ describe("app.codeCharta.core.treemap.treemapService", function() {
                 depth: 2
             };
 
-            treeMapService.transformNode(node, "someinvalidkey", 15, 1);
+            treeMapService.transformNode(node, "someinvalidkey", 15, 1, 2);
 
             //TODO what should really happen ?
 

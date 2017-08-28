@@ -49,7 +49,7 @@ class TreeMapService {
         let heightScale = w / maxHeight;
 
         nodes.forEach((node)=>{
-            this.transformNode(node, heightKey, p, heightScale);
+            this.transformNode(node, heightKey, p, heightScale, 2);
         });
 
         return nodes.filter(function(el){return el.value > 0 && el.width > 0 && el.height > 0 && el.length > 0; }); //dont draw invisble nodes (for the current metrics)
@@ -66,12 +66,13 @@ class TreeMapService {
      * @param {string} heightKey name of the height metric
      * @param {number} p padding for minimal height, padding and folder height
      * @param {number} heightScale scaling factor
+     * @param {number} folderHeight height of folder
      */
-    transformNode(node, heightKey, p, heightScale) {
+    transformNode(node, heightKey, p, heightScale, folderHeight) {
 
         node.width = node.x1-node.x0;
         node.length = node.y1-node.y0;
-        node.height = node.isLeaf ? heightScale * node.data.attributes[heightKey]  : p;
+        node.height = node.isLeaf ? heightScale * node.data.attributes[heightKey]  : folderHeight;
         node.z0 = p * node.depth;
         node.z1 = p* node.depth + node.height;
         node.attributes = node.data.attributes;
