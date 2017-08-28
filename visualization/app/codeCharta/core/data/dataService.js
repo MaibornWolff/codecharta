@@ -41,6 +41,7 @@ export class DataService {
      */
     setMap(map, revision) {
         this.data.revisions[revision] = map;
+        this.setComparisonMap(revision);
     }
 
     /**

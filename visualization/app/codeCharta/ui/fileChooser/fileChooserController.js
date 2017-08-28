@@ -18,7 +18,7 @@ class FileChooserController {
      * @param {Scope} $scope
      * @param {DataLoadingService} dataLoadingService
      */
-    constructor($scope, dataLoadingService){
+    constructor($scope, dataLoadingService, scenarioService, dataService){
 
         /**
          *
@@ -31,6 +31,9 @@ class FileChooserController {
          * @type {DataLoadingService}
          */
         this.service = dataLoadingService;
+
+        this.scenarioService = scenarioService;
+        this.dataService = dataService;
     }
 
     /**
@@ -87,6 +90,11 @@ class FileChooserController {
         let ctx = this;
         this.service.loadMapFromFileContent(name, parsedData, revision).then(
             () => {
+
+                ctx.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
+                ctx.dataService.setComparisonMap(revision);
+                ctx.dataService.setReferenceMap(revision);
+
                 if(!ctx.$scope.$$phase || !ctx.$scope.$root.$$phase) {
                     ctx.$scope.$digest();
                 }
