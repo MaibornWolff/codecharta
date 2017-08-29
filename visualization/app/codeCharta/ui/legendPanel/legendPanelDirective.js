@@ -61,7 +61,7 @@ class LegendPanelDirective{
      * @param {object} element dom element
      */
     link(scope, element) {
-        element.find("#legendButton").bind("click", this.toggle);
+        element.bind("click", this.toggle);
     }
 
     /**

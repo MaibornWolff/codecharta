@@ -9,32 +9,17 @@ class TooltipService {
 
     /**
      * @constructor
-     * @param {UrlService} urlService
      * @param {Scope} $rootScope
      */
-    constructor($rootScope, urlService){
+    constructor($rootScope) {
 
         /**
          *
          * @type {Object}
          */
-        this.tooltips = [];
+        this.tooltips = require("./tooltips.json");
 
-        var ctx = this;
-
-        urlService.getFileDataFromFile("tooltips.json").then(
-
-            //resolve
-            (data) => {
-                ctx.tooltips = data;
-                $rootScope.$broadcast("tooltips-changed", this.tooltips);
-            },
-            //reject
-            () => {
-                window.alert("error loading tooltips.json");
-            }
-
-        );
+        $rootScope.$broadcast("tooltips-changed", this.tooltips);
 
     }
 
@@ -52,7 +37,7 @@ class TooltipService {
          */
         const patt = new RegExp(/_\S*_/);
 
-        if( this.tooltips[key] ){
+        if (this.tooltips[key]) {
 
             var res = this.tooltips[key];
 
@@ -60,7 +45,7 @@ class TooltipService {
             /**
              * Any value between "_" Symbols is substituted by its description
              */
-            while ( patt.test(res) ) {
+            while (patt.test(res)) {
                 res = res.replace(/_(.*?)_/, this.replaceString.bind(this));
             }
             return res;
