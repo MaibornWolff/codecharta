@@ -4,7 +4,7 @@
   "name": "CodeCharta",
   "version": "1.3.2",
   "description": "MaibornWolff CodeCharta",
-  "main": "dist/app/index.html",
+  "main": "dist/webpack/index.html",
   "window": {
     "icon": "app/img/icon.png",
     "toolbar": true,
@@ -19,10 +19,7 @@
     "test": "grunt test",
     "doc": "grunt doc",
     "package": "grunt package",
-    "watch:app": "grunt watch:app",
-    "watch:unit": "grunt watch:unit",
-    "wp": "grunt wp",
-    "serve": "grunt connect:server:keepalive"
+    "serve": "grunt serve"
   },
   "bin": {
     "codecharta": "./script/npm-start.sh"
@@ -88,12 +85,14 @@
   },
   "devDependencies": {
     "ajv": "^5.2.2",
+    "browser-sync-webpack-plugin": "^1.2.0",
     "css-loader": "^0.28.5",
     "file-loader": "^0.11.2",
     "grunt-webpack": "^3.0.2",
     "html-loader": "^0.5.1",
     "html-webpack-plugin": "^2.30.1",
     "json-loader": "^0.5.7",
+    "karma-webpack": "^2.0.4",
     "script-loader": "^0.7.0",
     "style-loader": "^0.18.2",
     "webpack": "^3.5.5"

@@ -1,11 +1,12 @@
 const path = require('path');
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
 const src = './app/';
 const dist = path.resolve(__dirname, '../dist/webpack');
 
-function resolve (dir) {
+function resolve(dir) {
     return path.join(__dirname, '..', dir)
 }
 
@@ -32,13 +33,13 @@ module.exports = {
             },
             {
                 test: /\.(png|svg|jpg|gif)$/, use: [
-                    'file-loader'
-                ]
+                'file-loader'
+            ]
             },
             {
                 test: /\.(json)$/, use: [
-                    'json-loader'
-                ]
+                'json-loader'
+            ]
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
@@ -48,22 +49,14 @@ module.exports = {
             }
         ]
     },
-    /*resolve: {
-        extensions: ['.js'],
-        alias: {
-            'jquery': resolve('node_modules/jquery/dist/jquery'),
-            'jQuery': resolve('node_modules/jquery/dist/jquery')
-        }
-    },*/
     plugins: [
         new HtmlWebpackPlugin({
             template: src + 'index.html'
-        })/*,
-        new webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery',
-            'window.$': 'jquery',
-            'window.jQuery': 'jquery',
-        })*/
+        }),
+        new BrowserSyncPlugin({
+            host: 'localhost',
+            port: 3000,
+            server: {baseDir: [dist]}
+        })
     ],
 };
