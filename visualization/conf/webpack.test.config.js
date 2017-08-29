@@ -1,10 +1,14 @@
 const path = require('path');
 const webpack = require("webpack");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
 const src = './app/';
 const dist = path.resolve(__dirname, '../dist/webpack');
+
+process.env.NODE_ENV = 'test'; //reason: see .babelrc
+
+function resolve(dir) {
+    return path.join(__dirname, '..', dir)
+}
 
 module.exports = {
     entry: src + 'app.js',
@@ -54,15 +58,16 @@ module.exports = {
         ]
     },
     plugins: [
-        new HtmlWebpackPlugin({
-            template: src + 'index.html'
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            'window.$': 'jquery',
+            'window.jQuery': 'jquery'
         }),
-        new BrowserSyncPlugin({
-            host: 'localhost',
-            port: 3000,
-            server: {baseDir: [dist]}
+        new webpack.LoaderOptionsPlugin({
+            options: {},
+            debug: true
         })
     ],
     devtool: 'source-map'
-
 };
