@@ -58,7 +58,7 @@ module.exports = function (grunt) {
 
         exec: {
             doc: {
-                command: path.resolve("node_modules", ".bin", "esdoc") + " -c esdoc.json",
+                command: path.resolve("node_modules", ".bin", "esdoc") + " -c conf/esdoc.json",
                 stdout: true
             },
             karmaSingle: {
@@ -112,23 +112,16 @@ module.exports = function (grunt) {
                 files: [
                     {expand: true, cwd:"./dist/packages/CodeCharta/win64/", src: ['**/*'], dest: '.'}
                 ]
-            },
-            osx64: {
-                options: {
-                    archive: './dist/packages/codecharta-visualization-osx64.zip'
-                },
-                files: [
-                    {expand: true, cwd:"./dist/packages/CodeCharta/osx64/", src: ['**/*'], dest: '.'}
-                ]
             }
+
         }
 
     });
 
     // tasks
     grunt.registerTask("default", ["build"]);
-    grunt.registerTask("build", ["clean:dist", "webpack:prod"]);
-    grunt.registerTask("serve", ["clean:dist", "webpack:dev"]);
+    grunt.registerTask("build", ["clean:webpack", "webpack:prod"]);
+    grunt.registerTask("serve", ["clean:webpack", "webpack:dev"]);
     grunt.registerTask("package", ["clean:package", "nwjs", "force:compress", "clean:packageTmp"]);
     grunt.registerTask("doc", ["clean:doc", "exec:doc"]);
     grunt.registerTask("test", ["clean:coverage", "clean:reports", "exec:karmaSingle"]);
