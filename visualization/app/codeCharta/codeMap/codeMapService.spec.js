@@ -355,7 +355,8 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
      * @test {CodeMapService#scaleTo}
      */
     it("scaleTo should scale buildings if available", ()=>{
-        codeMapService.drawMap(data, 2, 2, "rloc", "mcc", "mcc", "colorConfig", 1);
+        codeMapService.drawMap(data, 2, 2, "rloc", "mcc", "mcc", "colorConfig", 0, false);
+        codeMapService.addLabel = sandbox.spy();
 
         codeMapService.buildings = {
             scale: {
@@ -370,7 +371,8 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
      * @test {CodeMapService#scaleTo}
      */
     it("scaleTo should scale floors if available", ()=>{
-        codeMapService.drawMap(data, 2, 2, "rloc", "mcc", "mcc", "colorConfig", 1);
+        codeMapService.drawMap(data, 2, 2, "rloc", "mcc", "mcc", "colorConfig", 0, false);
+        codeMapService.addLabel = sandbox.spy();
 
         codeMapService.floors = {
             scale: {
@@ -475,7 +477,8 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
             heightMetric: "height",
             colorMetric: "color",
             map: {},
-            range: {}
+            range: {},
+            margin: 1
         };
 
         codeMapService.applySettings(min);

@@ -1,9 +1,43 @@
 require("./settings.js");
 
+import {CodeMap} from "../../core/data/model/codeMap";
+
 /**
  * @test {SettingsService}
  */
 describe("app.codeCharta.core.settings.settingsService", function() {
+
+    var validData;
+
+    beforeEach(()=>{
+        validData = new CodeMap("file", "project", {
+            "name": "root",
+            "attributes": {},
+            "children": [
+                {
+                    "name": "big leaf",
+                    "attributes": {"rloc": 100, "functions": 10, "mcc": 1},
+                    "link": "http://www.google.de"
+                },
+                {
+                    "name": "Parent Leaf",
+                    "attributes": {},
+                    "children": [
+                        {
+                            "name": "small leaf",
+                            "attributes": {"rloc": 30, "functions": 100, "mcc": 100},
+                            "children": []
+                        },
+                        {
+                            "name": "other small leaf",
+                            "attributes": {"rloc": 70, "functions": 1000, "mcc": 10},
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        });
+    });
 
     beforeEach(angular.mock.module("app.codeCharta.core.settings"));
     
@@ -56,17 +90,18 @@ describe("app.codeCharta.core.settings.settingsService", function() {
         settingsService.onSettingsChanged = sinon.spy();
 
         //enough metrics
-        $rootScope.$broadcast("data-changed", {referenceMap: {"name":"some map"}, metrics: ["a","b","c"]});
+        $rootScope.$broadcast("data-changed", {referenceMap: validData, metrics: ["a","b","c"]});
 
-        expect(settingsService.settings.map.name).to.equal("some map");
+        expect(settingsService.settings.map.fileName).to.equal("file");
         expect(settingsService.settings.areaMetric).to.equal("a");
         expect(settingsService.settings.heightMetric).to.equal("b");
         expect(settingsService.settings.colorMetric).to.equal("c");
 
         //not enough metrics
-        $rootScope.$broadcast("data-changed", {referenceMap: {"name":"another map"}, metrics: ["a"]});
+        validData.fileName = "file2";
+        $rootScope.$broadcast("data-changed", {referenceMap: validData, metrics: ["a"]});
 
-        expect(settingsService.settings.map.name).to.equal("another map");
+        expect(settingsService.settings.map.fileName).to.equal("file2");
         expect(settingsService.settings.areaMetric).to.equal("a");
         expect(settingsService.settings.heightMetric).to.equal("a");
         expect(settingsService.settings.colorMetric).to.equal("a");
@@ -108,9 +143,9 @@ describe("app.codeCharta.core.settings.settingsService", function() {
 
         settingsService.onSettingsChanged = sinon.spy();
 
-        $rootScope.$broadcast("data-changed", {currentmap: {"name":"yet another map"}, metrics: ["a", "b"]});
+        $rootScope.$broadcast("data-changed", {referenceMap: validData, metrics: ["a", "b"]});
 
-        expect(settingsService.settings.map.name).to.equal("yet another map");
+        expect(settingsService.settings.map.fileName).to.equal("file");
         expect(settingsService.settings.areaMetric).to.equal("a");
         expect(settingsService.settings.heightMetric).to.equal("b");
         expect(settingsService.settings.colorMetric).to.equal("b");
