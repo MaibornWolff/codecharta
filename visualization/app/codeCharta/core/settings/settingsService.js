@@ -48,7 +48,8 @@ class SettingsService {
             true,
             1,
             new Scale(1,1,1),
-            new Scale(0,300,1000)
+            new Scale(0,300,1000),
+            1
         );
 
         $rootScope.$on("data-changed", (event,data) => {

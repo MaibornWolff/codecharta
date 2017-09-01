@@ -111,8 +111,8 @@ class CodeMapService {
     applySettings(s) {
 
         //draw
-        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.root && s.neutralColorRange && s.deltas !== null) {
-            this.drawFromData(s.map, s.areaMetric, s.heightMetric, s.colorMetric, s.neutralColorRange, s.amountOfTopLabels, s.deltas);
+        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.root && s.neutralColorRange && s.deltas !== null && s.margin) {
+            this.drawFromData(s.map, s.areaMetric, s.heightMetric, s.colorMetric, s.neutralColorRange, s.amountOfTopLabels, s.deltas, s.margin);
         }
 
         //scale
@@ -131,9 +131,10 @@ class CodeMapService {
      * @param {Range} colorConfig
      * @param {number} amountOfTopLabels number of highest buildings with labels
      * @param {boolean} deltas deltas enabled
+     * @param {margin} margin between buildings
      */
-    drawFromData(map, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels, deltas) {
-        this.drawMap(map, 500, 1, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels, deltas);
+    drawFromData(map, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels, deltas, margin) {
+        this.drawMap(map, 500, margin, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels, deltas);
     }
 
     /**

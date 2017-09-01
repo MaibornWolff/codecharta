@@ -6,10 +6,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
+- experimental delta functionality
+- loading multiple maps
+- experimental margin slider
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.3.2] - 2017-08-18
+### Added
 - add slider controls for color thresholds #19
 - Added additional structuring in SonarImporter for multi-module projects
 - button to generate current url parameters
 - camera position is now a setting (e.g. in scenarios or url parameters)
+- margin slider: make it easier to find out to which package/folder a class belongs #20
 
 ### Changed
 - better url parameter resolution (nested parameters are handled correctly)
