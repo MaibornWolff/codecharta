@@ -40,7 +40,7 @@
         "attributeList":{
             "type":"object",
             "patternProperties": {
-                "^.*$":{
+                "^[A-Za-z0-9_]+$":{
                     "type": "number"
                 }
             }
