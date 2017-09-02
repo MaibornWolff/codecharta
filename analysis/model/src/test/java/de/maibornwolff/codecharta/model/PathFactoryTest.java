@@ -27,30 +27,32 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.nodeinserter;
+package de.maibornwolff.codecharta.model;
 
 import com.google.common.collect.ImmutableList;
+import de.maibornwolff.codecharta.model.PathFactory;
 import de.maibornwolff.codecharta.model.Path;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class FileSystemPathTest {
+public class PathFactoryTest {
 
     @Test
     public void empty_dir_should_valid_path() {
-        Path path = new FileSystemPath("");
-        assertThat(path.isSingleElement(), is(true));
+        Path path = PathFactory.fromFileSystemPath("");
+        assertThat(path.isSingle(), is(true));
         assertThat(path.head(), is(""));
     }
 
     @Test
     public void empty_dir_should_be_trivial() {
-        assertThat(new FileSystemPath("").isTrivial(), is(true));
-        assertThat(new FileSystemPath("/").isTrivial(), is(true));
+        assertThat(PathFactory.fromFileSystemPath("").isTrivial(), is(true));
+        assertThat(PathFactory.fromFileSystemPath("/").isTrivial(), is(true));
     }
 
     @Test
@@ -60,42 +62,42 @@ public class FileSystemPathTest {
         );
 
         for (String path : pathsWithoutSlash) {
-            assertThat(new FileSystemPath(path), is(new FileSystemPath("/" + path)));
+            assertThat(PathFactory.fromFileSystemPath(path), is(PathFactory.fromFileSystemPath("/" + path)));
         }
     }
 
     @Test
     public void no_subdirs_should_be_leafs() {
-        assertThat(new FileSystemPath("somename").isSingleElement(), is(true));
+        assertThat(PathFactory.fromFileSystemPath("somename").isSingle(), is(true));
     }
 
     @Test
     public void subdirs_should_not_be_leafs() {
-        assertThat(new FileSystemPath("subdir/somename").isSingleElement(), is(false));
+        assertThat(PathFactory.fromFileSystemPath("subdir/somename").isSingle(), is(false));
     }
 
     @Test
     public void descendants_should_be_same_as_path_descendant() {
-        assertThat(new FileSystemPath("subdir/somename").tail(), is(new FileSystemPath("somename")));
-        assertThat(new FileSystemPath("subdir/anothersubdir/somename").tail(), is(new FileSystemPath("anothersubdir/somename")));
+        assertThat(PathFactory.fromFileSystemPath("subdir/somename").tail(), is(new Path(Arrays.asList("somename"))));
+        assertThat(PathFactory.fromFileSystemPath("subdir/anothersubdir/somename").tail(), is(new Path(Arrays.asList("anothersubdir", "somename"))));
     }
 
     @Test
     public void root_should_be_name_of_leading_path() {
-        assertThat(new FileSystemPath("leadingpath/somename").head(), is("leadingpath"));
-        assertThat(new FileSystemPath("leadingpath/intermediatepath/somename").head(), is("leadingpath"));
+        assertThat(PathFactory.fromFileSystemPath("leadingpath/somename").head(), is("leadingpath"));
+        assertThat(PathFactory.fromFileSystemPath("leadingpath/intermediatepath/somename").head(), is("leadingpath"));
     }
 
     @Test
     public void getRoot_should_return_leaf_if_already_leaf() {
-        FileSystemPath leaf = new FileSystemPath("leaf");
+        Path leaf = PathFactory.fromFileSystemPath("leaf");
         String actual = leaf.head();
         assertThat(actual, is("leaf"));
     }
 
     @Test
     public void tail_should_return_trivial_element_if_leaf() {
-        Path trivialElement = new FileSystemPath("leaf").tail();
+        Path trivialElement = PathFactory.fromFileSystemPath("leaf").tail();
         assertThat(trivialElement.isTrivial(), is(true));
     }
 }

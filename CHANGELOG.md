@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
+- added advanced merging strategy "leaf" in MergeFilter
+- advanced merging with restructuring
 
 ### Changed
 

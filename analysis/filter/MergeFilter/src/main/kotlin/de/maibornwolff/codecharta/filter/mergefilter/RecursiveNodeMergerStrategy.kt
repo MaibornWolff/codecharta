@@ -30,39 +30,31 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.model.Node
-import de.maibornwolff.codecharta.model.Project
 
-class ProjectMerger(val projects: List<Project>, val nodeMerger: NodeMergerStrategy) {
+/**
+ * merges nodes recursively if their paths coincide
+ */
+class RecursiveNodeMergerStrategy : NodeMergerStrategy {
+    private val flatNodeMerger = NodeMerger()
 
-    fun extractProjectName(): String {
-        val projectNames = projects.map { p -> p.projectName }.toSortedSet()
-        when (projectNames.size) {
-            1 -> return projectNames.first()
-            else -> throw MergeException("Projects contain several project names : " + projectNames)
-        }
+    private val mergeConditionSatisfied = { n1: Node, n2: Node -> n1.name == n2.name }
+
+    override fun mergeNodeLists(lists: List<List<Node>>?): List<Node> {
+        return lists!!.fold(listOf(), { nodes, actual -> reduceNodeList(nodes, actual) })
     }
 
-    fun extractApiVersion(): String {
-        val apiVersion = projects.map { p -> p.apiVersion }.toSortedSet()
-        when (apiVersion.size) {
-            1 -> return apiVersion.first()
-            else -> throw MergeException("Projects use multiple Api-Versions of CodeCharta : " + apiVersion)
-        }
+    private fun reduceNodeList(total: List<Node>, actual: List<Node>): List<Node> {
+        return actual.fold(total, {
+            t: List<Node>, a: Node ->
+            t.map { if (mergeConditionSatisfied(it, a)) merge(it, a) else listOf(it) }
+            when {
+                t.filter { mergeConditionSatisfied(it, a) }.count() > 0 -> t.map { if (mergeConditionSatisfied(it, a)) merge(it, a) else it }
+                else -> t + a
+            }
+        })
     }
 
-    fun merge(): Project {
-        val apiVersion = extractApiVersion()
-        val name = extractProjectName()
-        if (apiVersion != Project.API_VERSION) {
-            throw MergeException("API-Version $apiVersion of project is not supported.")
-        }
-        return Project(name, mergeProjectNodes())
+    private fun merge(vararg nodes: Node): Node {
+        return flatNodeMerger.merge(this, *nodes)
     }
-
-    private fun mergeProjectNodes(): List<Node> {
-        return nodeMerger.mergeNodeLists(projects.map { p -> p.nodes!! })
-    }
-
 }
-
-
