@@ -5,7 +5,7 @@ require("./codeMap.js");
  */
 describe("app.codeCharta.codeMap.codeMapService", function() {
 
-    let codeMapService, $scope, sandbox, mesh;
+    let codeMapService, $scope, sandbox, mesh, data;
 
     beforeEach(angular.mock.module("app.codeCharta.codeMap"));
 
@@ -16,6 +16,33 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
         const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
         mesh = new THREE.Mesh( geometry, material );
         codeMapService.addRoot();
+        data = data = {
+            "name": "root",
+            "attributes": {},
+            "children": [
+                {
+                    "name": "big leaf",
+                    "attributes": {"rloc": 100, "functions": 10, "mcc": 1},
+                    "link": "http://www.google.de"
+                },
+                {
+                    "name": "Parent Leaf",
+                    "attributes": {},
+                    "children": [
+                        {
+                            "name": "small leaf",
+                            "attributes": {"rloc": 30, "functions": 100, "mcc": 100},
+                            "children": []
+                        },
+                        {
+                            "name": "other small leaf",
+                            "attributes": {"rloc": 70, "functions": 1000, "mcc": 10},
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        };
     }));
 
     beforeEach(()=>{
@@ -30,34 +57,6 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
      * @test {CodeMapService#drawMap}
      */
     it("drawMap should showLabels for the highest building", ()=>{
-
-         const data = {
-          "name": "root",
-          "attributes": {},
-          "children": [
-            {
-              "name": "big leaf",
-              "attributes": {"rloc": 100, "functions": 10, "mcc": 1},
-              "link": "http://www.google.de"
-            },
-            {
-              "name": "Parent Leaf",
-              "attributes": {},
-              "children": [
-                {
-                  "name": "small leaf",
-                  "attributes": {"rloc": 30, "functions": 100, "mcc": 100},
-                  "children": []
-                },
-                {
-                  "name": "other small leaf",
-                  "attributes": {"rloc": 70, "functions": 1000, "mcc": 10},
-                  "children": []
-                }
-              ]
-            }
-          ]
-        };
 
         const smallSpy = sinon.spy();
         const otherSpy = sinon.spy();
@@ -354,14 +353,31 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
     /**
      * @test {CodeMapService#scaleTo}
      */
-    it("scaleTo should scale root if available", ()=>{
-        codeMapService.root = {
+    it("scaleTo should scale buildings if available", ()=>{
+        codeMapService.drawMap(data, 2, 2, "rloc", "mcc", "mcc", "colorConfig", 1);
+
+        codeMapService.buildings = {
             scale: {
                 set: sandbox.spy()
             }
         };
         codeMapService.scaleTo(1,2,3);
-        expect(codeMapService.root.scale.set.calledOnce);
+        expect(codeMapService.buildings.scale.set.calledOnce);
+    });
+
+    /**
+     * @test {CodeMapService#scaleTo}
+     */
+    it("scaleTo should scale floors if available", ()=>{
+        codeMapService.drawMap(data, 2, 2, "rloc", "mcc", "mcc", "colorConfig", 1);
+
+        codeMapService.floors = {
+            scale: {
+                set: sandbox.spy()
+            }
+        };
+        codeMapService.scaleTo(1,2,3);
+        expect(codeMapService.floors.scale.set.calledOnce);
     });
 
     /**
@@ -380,6 +396,52 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
         codeMapService.addBuilding = sandbox.spy();
         codeMapService.addNode({isLeaf: true}, "heightKey");
         expect(codeMapService.addBuilding.calledOnce);
+    });
+
+    /**
+     * @test {CodeMapService#repositionLabelsAndConnectors}
+     */
+    it("should change values correctly", ()=>{
+
+        codeMapService.labels.children = [
+            {
+                position: {
+                    x:2,
+                    y:3,
+                    z:4
+                },
+                labelBuildingConnector: {
+                    geometry: {
+                        vertices: [
+                            {
+                                x:5,
+                                y:6,
+                                z:7
+                            },
+                            {
+                                x:8,
+                                y:9,
+                                z:10
+                            }
+                        ]
+                    }
+                }
+            }
+        ];
+
+        codeMapService.repositionLabelsAndConnectors(2,3,4);
+        expect(codeMapService.labels.children[0].position.x).to.be.equal(4);
+        expect(codeMapService.labels.children[0].position.y).to.be.equal(9);
+        expect(codeMapService.labels.children[0].position.z).to.be.equal(16);
+
+        expect(codeMapService.labels.children[0].labelBuildingConnector.geometry.vertices[0].x).to.be.equal(10);
+        expect(codeMapService.labels.children[0].labelBuildingConnector.geometry.vertices[0].y).to.be.equal(18);
+        expect(codeMapService.labels.children[0].labelBuildingConnector.geometry.vertices[0].z).to.be.equal(28);
+
+        expect(codeMapService.labels.children[0].labelBuildingConnector.geometry.vertices[1].x).to.be.equal(16);
+        expect(codeMapService.labels.children[0].labelBuildingConnector.geometry.vertices[1].y).to.be.equal(27);
+        expect(codeMapService.labels.children[0].labelBuildingConnector.geometry.vertices[1].z).to.be.equal(40);
+
     });
 
     /**
