@@ -62,7 +62,7 @@ class LeafNodeMergerStrategy(val addMisfittingNodes: Boolean) : NodeMergerStrate
     private fun merge(vararg nodes: Node): List<Node> {
         val root = flatNodeMerger.merge(*nodes)
         val reference = nodes.first().nodes
-        nodes.toList()
+        nodes.drop(1).toList()
                 .fold(reference, { acc, node -> mergeInto(acc, node.nodes) })
                 .forEach { NodeInserter.insertByPath(root, Path(it.key.edgesList.dropLast(1)), it.value) }
         return listOf(root)

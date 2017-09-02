@@ -31,6 +31,7 @@ package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
+import de.maibornwolff.codecharta.model.Path
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matchers.hasSize
 import org.junit.Assert.assertThat
@@ -66,7 +67,6 @@ class LeafNodeMergerTest {
         // when
         val newNode = misfittingMerger.mergeNodeLists(listOf(listOf(node1), listOf(node2)))[0]
 
-        println(newNode)
         // then
         assertThat(newNode.children, hasSize(2))
         assertThat(newNode.children!![0].name, `is`(child1.name))
@@ -87,7 +87,6 @@ class LeafNodeMergerTest {
         // when
         val newNode = fittingMerger.mergeNodeLists(listOf(listOf(node2), listOf(node1)))[0]
 
-        println(newNode)
         // then
         assertThat(newNode.children, hasSize(2))
         assertThat(newNode.children!![0].name, `is`(child1.name))
@@ -109,7 +108,6 @@ class LeafNodeMergerTest {
         // when
         val newNode = fittingMerger.mergeNodeLists(listOf(listOf(node1), listOf(node2)))[0]
 
-        println(newNode)
         // then
         assertThat(newNode.children, hasSize(1))
         assertThat(newNode.children!![0].name, `is`(child1.name))
@@ -138,5 +136,25 @@ class LeafNodeMergerTest {
 
         // then
         assertThat(actualNodeList, `is`(nodeList))
+    }
+
+
+    @Test
+    fun merging_nodes_should_merge_children3(){
+        // given
+        val childA = Node("A", NodeType.File, mapOf("a" to 0))
+        val childB = Node("B", NodeType.Folder, mapOf(), "", listOf(Node("A", NodeType.File)))
+        val root1 = Node("root", NodeType.Folder, mapOf(), "", listOf(childA, childB))
+
+        val childA2 = Node("A", NodeType.File)
+        val childB2 = Node("B", NodeType.Folder, mapOf(), "", listOf(Node("A", NodeType.File)))
+        val root2 = Node("root", NodeType.Folder, mapOf(), "", listOf(childA2, childB2))
+
+        // when
+        val newRoot = fittingMerger.mergeNodeLists(listOf(listOf(root1), listOf(root2)))[0]
+
+        // then
+        assertThat(newRoot.children, hasSize(2))
+        assertThat((newRoot.getNodeBy(Path(listOf("B", "A"))).get() as Node).attributes.size, `is`(0))
     }
 }
