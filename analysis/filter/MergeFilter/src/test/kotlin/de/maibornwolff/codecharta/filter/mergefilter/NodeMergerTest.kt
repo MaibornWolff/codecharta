@@ -81,11 +81,10 @@ class NodeMergerTest {
         assertThat(newNode.link, `is`(link))
     }
 
-
     @Test
     fun merging_nodes_should_merge_attibutes() {
         // given
-        val attrib1 = mapOf <String, Any>("attrib11" to 1.0)
+        val attrib1 = mapOf("attrib11" to 1.0)
         val node1 = Node("Name", NodeType.File, attrib1)
         val node2 = Node("Name", NodeType.File, null)
 
@@ -94,6 +93,7 @@ class NodeMergerTest {
 
         // then
         assertThat(newNode.attributes.count(), `is`(1))
+        assertThat(newNode.attributes.get("attrib11"), `is`(1.0 as Any))
     }
 
     @Test
