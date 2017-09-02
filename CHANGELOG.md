@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.3.2] - 2017-08-18
+### Added
 - add slider controls for color thresholds #19
 - Added additional structuring in SonarImporter for multi-module projects
 - button to generate current url parameters
@@ -23,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed
 - changing display or color settings resets scaling #18
 - scenario description #32
+- Scaling should not scale the labels #35
 
 ## [1.3.1] - 2017-07-05
 ### Added
