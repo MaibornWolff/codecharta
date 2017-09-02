@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
+- added advanced merging strategy "leaf" in MergeFilter
+- advanced merging with restructuring
 
 ### Changed
 
@@ -19,8 +21,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Added additional structuring in SonarImporter for multi-module projects
 - button to generate current url parameters
 - camera position is now a setting (e.g. in scenarios or url parameters)
-- advanced merging with restructuring
-- added advanced merging strategy "leaf" in MergeFilter
 
 ### Changed
 - better url parameter resolution (nested parameters are handled correctly)
