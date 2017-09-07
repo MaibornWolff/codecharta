@@ -71,7 +71,7 @@ class TreeMapService {
 
         node.width = node.x1-node.x0;
         node.length = node.y1-node.y0;
-        node.height = node.isLeaf ? heightScale * node.data.attributes[heightKey]  : p;
+        node.height = node.isLeaf && node.data.attributes && node.data.attributes[heightKey]? heightScale * node.data.attributes[heightKey]  : p;
         node.z0 = p * node.depth;
         node.z1 = p* node.depth + node.height;
         node.attributes = node.data.attributes;
