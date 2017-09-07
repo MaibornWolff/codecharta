@@ -179,7 +179,9 @@ describe("app.codeCharta.core.settings.settingsService", function() {
         const settings = {areaMetric:"a", heightMetric:"b", colorMetric:"c"};
         const expected = {areaMetric: "a", heightMetric:"f", colorMetric:"g"};
         const result = settingsService.correctSettings(settings);
-        expect(result).to.deep.equal(expected);
+        expect(result.areaMetric).to.equal(expected.areaMetric);
+        expect(result.heightMetric).to.equal(expected.heightMetric);
+        expect(result.colorMetric).to.equal(expected.colorMetric);
     }));
     /**
      * @test {SettingsService#correctSettings}
