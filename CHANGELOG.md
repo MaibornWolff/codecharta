@@ -6,8 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
+- Typescript support
+- Browsersync
 
 ### Changed
+- Browserify replaced with Webpack
+- Better debugging
+- Karma instead of Mocha
 
 ### Removed
 
