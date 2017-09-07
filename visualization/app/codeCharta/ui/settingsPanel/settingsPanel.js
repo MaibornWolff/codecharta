@@ -87,7 +87,7 @@ export class SettingsPanelController {
 
 export const settingsPanelComponent = {
     selector: "settingsPanelComponent",
-    templateUrl: "./settingsPanel.html",
+    template: require("./settingsPanel.html"),
     controller: SettingsPanelController
 };
 

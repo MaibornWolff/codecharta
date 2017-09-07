@@ -17,6 +17,7 @@ class CodeChartaController {
         this.initHandlers();
         this.loadFileOrSample(urlService, dataService, settingsService);
         this.scenarioService = scenarioService;
+        this.pkg = require("../../package.json");
     }
 
     /**
@@ -30,7 +31,6 @@ class CodeChartaController {
         let ctx = this;
 
         urlService.getFileDataFromQueryParam().then(
-
             //try loading from url param
 
             //successfully loaded
@@ -41,7 +41,9 @@ class CodeChartaController {
                     () => {
                         settingsService.updateSettingsFromUrl();
                     },
-                    (r) => {ctx.printErrors(r);}
+                    (r) => {
+                        ctx.printErrors(r);
+                    }
                 );
 
             },
@@ -50,31 +52,19 @@ class CodeChartaController {
             () => {
 
                 //try to load sample data
-                urlService.getFileDataFromFile("sample.json").then(
 
-                    //success
-                    (data) => {
-
-                        // set loaded data
-                        dataService.setFileData(data).then(
-                            () => {
-                                ctx.loadingFinished();
-                                settingsService.updateSettingsFromUrl();
-                            },
-                            (r) => {ctx.printErrors(r);}
-                        );
-
-                    },
-
-                    //fail
+                dataService.setFileData(require("./sample.json")).then(
                     () => {
-                        window.alert("failed loading sample data");
+                        ctx.loadingFinished();
+                        settingsService.updateSettingsFromUrl();
+                    },
+                    (r) => {
+                        ctx.printErrors(r);
                     }
-
                 );
 
-            }
 
+            }
         );
 
     }
@@ -91,13 +81,13 @@ class CodeChartaController {
      */
     initHandlers() {
 
-        $(window).keyup(function(event){
+        $(window).keyup(function (event) {
             if (event.which === 116) {
                 window.location.reload();
             }
         });
 
-        $(window).keypress(function(event){
+        $(window).keypress(function (event) {
             if (event.which === 18 && (event.ctrlKey || event.metaKey)) {
                 window.location.reload();
             }
@@ -109,11 +99,11 @@ class CodeChartaController {
      * Prints errors to the browser console and alerts the user
      * @param {Object} errors an errors object
      */
-    printErrors(errors){
+    printErrors(errors) {
         window.alert("Wrong format. See console logs for details.");
         console.log(errors);
     }
-    
+
 }
 
 export {CodeChartaController};

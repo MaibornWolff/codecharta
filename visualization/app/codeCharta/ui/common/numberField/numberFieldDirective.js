@@ -7,7 +7,7 @@ class NumberFieldDirective {
 
     constructor() {
         /** @type {string} **/
-        this.templateUrl = "./numberField.html";
+        this.template = require("./numberField.html");
 
         /** @type {string} **/
         this.restrict = "E";
