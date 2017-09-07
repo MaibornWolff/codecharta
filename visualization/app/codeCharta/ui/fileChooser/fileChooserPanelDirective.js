@@ -20,7 +20,7 @@ class FileChooserPanelDirective{
          *
          * @type {string}
          */
-        this.templateUrl = "./fileChooserPanel.html";
+        this.template = require("./fileChooserPanel.html");
 
         /**
          *

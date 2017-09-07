@@ -8,7 +8,7 @@ import {CodeChartaController} from "./codeChartaController";
 class CodeChartaDirective {
 
     constructor() {
-        this.templateUrl = "./codeCharta.html";
+        this.template = require("./codeCharta.html");
         this.restrict = "E";
         this.scope = {};
         this.controller = CodeChartaController;
