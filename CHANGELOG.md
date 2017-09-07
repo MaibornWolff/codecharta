@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 - Typescript support
 - Browsersync
+- added advanced merging strategy "leaf" in MergeFilter
+- advanced merging with restructuring
 
 ### Changed
 - Browserify replaced with Webpack
