@@ -27,42 +27,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.filter.mergefilter
+package de.maibornwolff.codecharta.model;
 
-import de.maibornwolff.codecharta.model.Node
-import de.maibornwolff.codecharta.model.Project
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
-class ProjectMerger(val projects: List<Project>, val nodeMerger: NodeMergerStrategy) {
+public class PathFactory extends Path {
+    private static final char PATH_SEPARATOR = '/';
 
-    fun extractProjectName(): String {
-        val projectNames = projects.map { p -> p.projectName }.toSortedSet()
-        when (projectNames.size) {
-            1 -> return projectNames.first()
-            else -> throw MergeException("Projects contain several project names : " + projectNames)
-        }
+    public static Path fromFileSystemPath(String path) {
+        return new Path(Arrays.stream(path.split("" + PATH_SEPARATOR)).filter(s -> !s.isEmpty()).collect(Collectors.toList()));
     }
-
-    fun extractApiVersion(): String {
-        val apiVersion = projects.map { p -> p.apiVersion }.toSortedSet()
-        when (apiVersion.size) {
-            1 -> return apiVersion.first()
-            else -> throw MergeException("Projects use multiple Api-Versions of CodeCharta : " + apiVersion)
-        }
-    }
-
-    fun merge(): Project {
-        val apiVersion = extractApiVersion()
-        val name = extractProjectName()
-        if (apiVersion != Project.API_VERSION) {
-            throw MergeException("API-Version $apiVersion of project is not supported.")
-        }
-        return Project(name, mergeProjectNodes())
-    }
-
-    private fun mergeProjectNodes(): List<Node> {
-        return nodeMerger.mergeNodeLists(projects.map { p -> p.nodes!! })
-    }
-
 }
-
-

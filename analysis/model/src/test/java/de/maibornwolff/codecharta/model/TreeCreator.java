@@ -27,42 +27,33 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.filter.mergefilter
+package de.maibornwolff.codecharta.model;
 
-import de.maibornwolff.codecharta.model.Node
-import de.maibornwolff.codecharta.model.Project
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-class ProjectMerger(val projects: List<Project>, val nodeMerger: NodeMergerStrategy) {
-
-    fun extractProjectName(): String {
-        val projectNames = projects.map { p -> p.projectName }.toSortedSet()
-        when (projectNames.size) {
-            1 -> return projectNames.first()
-            else -> throw MergeException("Projects contain several project names : " + projectNames)
-        }
+public class TreeCreator {
+    public static Tree createTree() {
+        return createTree(Path.TRIVIAL, null);
     }
 
-    fun extractApiVersion(): String {
-        val apiVersion = projects.map { p -> p.apiVersion }.toSortedSet()
-        when (apiVersion.size) {
-            1 -> return apiVersion.first()
-            else -> throw MergeException("Projects use multiple Api-Versions of CodeCharta : " + apiVersion)
-        }
-    }
+    public static Tree createTree(final Path pathToInnerTree, final Tree innerTree) {
+        return new Tree() {
+            @Override
+            public List<? extends Tree> getChildren() {
+                return innerTree == null ? Collections.emptyList() : Arrays.asList(innerTree);
+            }
 
-    fun merge(): Project {
-        val apiVersion = extractApiVersion()
-        val name = extractProjectName()
-        if (apiVersion != Project.API_VERSION) {
-            throw MergeException("API-Version $apiVersion of project is not supported.")
-        }
-        return Project(name, mergeProjectNodes())
-    }
+            @Override
+            public Path getPathOfChild(Tree child) {
+                return pathToInnerTree;
+            }
 
-    private fun mergeProjectNodes(): List<Node> {
-        return nodeMerger.mergeNodeLists(projects.map { p -> p.nodes!! })
+            @Override
+            public String toString() {
+                return pathToInnerTree + " -> " + innerTree;
+            }
+        };
     }
-
 }
-
-

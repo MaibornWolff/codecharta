@@ -27,42 +27,50 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.filter.mergefilter
+package de.maibornwolff.codecharta.model;
 
-import de.maibornwolff.codecharta.model.Node
-import de.maibornwolff.codecharta.model.Project
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 
-class ProjectMerger(val projects: List<Project>, val nodeMerger: NodeMergerStrategy) {
+import java.util.List;
 
-    fun extractProjectName(): String {
-        val projectNames = projects.map { p -> p.projectName }.toSortedSet()
-        when (projectNames.size) {
-            1 -> return projectNames.first()
-            else -> throw MergeException("Projects contain several project names : " + projectNames)
-        }
+public class PathMatcher {
+
+    public static Matcher<Path> matchesPath(final Path expectedPath) {
+        return new BaseMatcher<Path>() {
+
+            @Override
+            public void describeTo(final Description description) {
+                description.appendText("should be ").appendValue(expectedPath);
+            }
+
+            @Override
+            public boolean matches(final Object item) {
+                final Path path = (Path) item;
+                return path.equals(expectedPath);
+            }
+        };
     }
 
-    fun extractApiVersion(): String {
-        val apiVersion = projects.map { p -> p.apiVersion }.toSortedSet()
-        when (apiVersion.size) {
-            1 -> return apiVersion.first()
-            else -> throw MergeException("Projects use multiple Api-Versions of CodeCharta : " + apiVersion)
-        }
-    }
+    public static Matcher<List<Path>> containsPath(final Path expectedPath) {
+        return new BaseMatcher<List<Path>>() {
 
-    fun merge(): Project {
-        val apiVersion = extractApiVersion()
-        val name = extractProjectName()
-        if (apiVersion != Project.API_VERSION) {
-            throw MergeException("API-Version $apiVersion of project is not supported.")
-        }
-        return Project(name, mergeProjectNodes())
-    }
+            @Override
+            public void describeTo(final Description description) {
+                description.appendText("does not contain ").appendValue(expectedPath);
+            }
 
-    private fun mergeProjectNodes(): List<Node> {
-        return nodeMerger.mergeNodeLists(projects.map { p -> p.nodes!! })
+            @Override
+            public boolean matches(final Object item) {
+                final List<Path> paths = (List<Path>) item;
+                for(Path path: paths){
+                    if(path.equals(expectedPath)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
     }
-
 }
-
-

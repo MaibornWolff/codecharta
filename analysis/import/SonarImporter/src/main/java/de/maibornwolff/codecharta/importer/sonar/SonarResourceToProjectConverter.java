@@ -31,10 +31,7 @@ package de.maibornwolff.codecharta.importer.sonar;
 
 import de.maibornwolff.codecharta.importer.sonar.model.Scope;
 import de.maibornwolff.codecharta.importer.sonar.model.SonarResource;
-import de.maibornwolff.codecharta.model.Node;
-import de.maibornwolff.codecharta.model.NodeType;
-import de.maibornwolff.codecharta.model.Project;
-import de.maibornwolff.codecharta.nodeinserter.FileSystemPath;
+import de.maibornwolff.codecharta.model.*;
 import de.maibornwolff.codecharta.nodeinserter.NodeInserter;
 
 import java.util.HashMap;
@@ -120,7 +117,7 @@ public class SonarResourceToProjectConverter {
         return path.substring(path.lastIndexOf('/') + 1);
     }
 
-    private FileSystemPath getParentPath(String lname) {
-        return new FileSystemPath(lname.substring(0, lname.lastIndexOf('/') + 1));
+    private Path getParentPath(String lname) {
+        return PathFactory.fromFileSystemPath(lname.substring(0, lname.lastIndexOf('/') + 1));
     }
 }
