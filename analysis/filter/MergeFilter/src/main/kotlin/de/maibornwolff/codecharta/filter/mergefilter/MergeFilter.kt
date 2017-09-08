@@ -1,30 +1,82 @@
+/*
+ * Copyright (c) 2017, MaibornWolff GmbH
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *  * Neither the name of  nor the names of its contributors may be used to
+ *    endorse or promote products derived from this software without specific
+ *    prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package de.maibornwolff.codecharta.filter.mergefilter
 
+import com.xenomachina.argparser.ArgParser
+import com.xenomachina.argparser.SystemExitException
+import com.xenomachina.argparser.default
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
-import java.io.*
-import kotlin.system.exitProcess
+import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
+import java.io.InputStreamReader
+
+enum class Mode {
+    RECURSIVE, LEAF
+}
+
+class MergeFilterArgs(parser: ArgParser) {
+    val sources by parser.positionalList("json files to merge", 1..Int.MAX_VALUE) { File(this) }
+    val strategy by parser.mapping(
+            "--leaf" to Mode.LEAF,
+            "--recursive" to Mode.RECURSIVE,
+            help = "merging strategy").default(Mode.RECURSIVE)
+    val addMissingNodes by parser.flagging("-a", "--add-missing", help = "enable adding missing nodes to reference")
+}
 
 fun main(args: Array<String>) {
-    if (args.isEmpty()) {
-        print("Wrong number of parameters " + args.size)
-        printUsage()
-        exitProcess(1)
+    val filterArgs = MergeFilterArgs(ArgParser(args))
+
+    try {
+        val inputStream = createInputStreams(filterArgs.sources)
+        val projects = inputStream.map { p -> ProjectDeserializer.deserializeProject(InputStreamReader(p)) }
+
+        val nodeMergerStrategy = createNodeMergerStrategy(filterArgs.strategy, filterArgs.addMissingNodes)
+        val project = ProjectMerger(projects, nodeMergerStrategy).merge()
+
+        System.out.writer().use { ProjectSerializer.serializeProject(project, it) }
+
+    } catch (e: SystemExitException) {
+        System.err.writer().use { e.printUserMessage(it, "merge", 80) }
     }
-    val inputStream = getInputFromArgs(args)
-    val projects = inputStream.map { p -> ProjectDeserializer.deserializeProject(InputStreamReader(p)) }
-    val project = ProjectMerger(projects).merge()
-    ProjectSerializer.serializeProject(project, PrintWriter(System.out))
 }
 
-fun printUsage() {
-    print("Usage: ccsh merge <json> <json> ")
+fun createNodeMergerStrategy(mode: Mode, addMissingNodes: Boolean): NodeMergerStrategy {
+    return when (mode) {
+        Mode.LEAF -> LeafNodeMergerStrategy(addMissingNodes)
+        Mode.RECURSIVE -> RecursiveNodeMergerStrategy()
+    }
 }
 
-@Throws(FileNotFoundException::class)
-private fun getInputFromArgs(args: Array<String>): List<InputStream> {
-    return args.map { a ->
-        FileInputStream(File(a).absoluteFile)
-    }
+private fun createInputStreams(args: List<File>): List<InputStream> {
+    return args.map { FileInputStream(it.absoluteFile) }
 }
 

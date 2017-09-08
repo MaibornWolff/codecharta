@@ -16,7 +16,7 @@ class FileChooserDirective{
          *
          * @type {string}
          */
-        this.templateUrl = "./fileChooser.html";
+        this.template = require("./fileChooser.html");
 
         /**
          *

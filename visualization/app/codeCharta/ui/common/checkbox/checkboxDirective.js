@@ -11,7 +11,7 @@ class CheckboxDirective{
     constructor() {
 
         /** @type {string} */
-        this.templateUrl = "./checkbox.html";
+        this.template = require("./checkbox.html");
 
         /** @type {string} */
         this.restrict = "E";
