@@ -54,7 +54,7 @@ class CodeChartaController {
             () => {
 
                 //try to load sample data
-                dataService.setFileData(require("./sample1.json")).then(
+                dataLoadingService.loadMapFromFileContent("sample1.json", require("./sample1.json"), 0).then(
                     () => {
                         ctx.loadingFinished();
                         settingsService.updateSettingsFromUrl();
@@ -65,7 +65,7 @@ class CodeChartaController {
                 );
 
                 //try to load sample data
-                dataService.setFileData(require("./sample2.json")).then(
+                dataLoadingService.loadMapFromFileContent("sample2.json", require("./sample2.json"), 1).then(
                     () => {
                         ctx.loadingFinished();
                     },

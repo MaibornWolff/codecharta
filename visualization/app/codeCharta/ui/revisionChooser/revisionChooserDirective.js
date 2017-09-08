@@ -60,8 +60,8 @@ class RevisionChooserDirective {
      * @param {object} element dom element
      */
     link(scope, element) {
-        element.find("#revisionButton").bind("click", this.toggle);
-        element.find("#mapButton").bind("click", this.toggle);
+        $("#revisionButton").bind("click", this.toggle);
+        $("#mapButton").bind("click", this.toggle);
     }
 
     /**

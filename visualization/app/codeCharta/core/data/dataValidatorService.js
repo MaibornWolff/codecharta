@@ -63,7 +63,7 @@ export class DataValidatorService {
 
         return new Promise((resolve, reject) => {
 
-                var ajv = Ajv.default();
+                var ajv = require("ajv")();
                 var compare = ajv.compile(require("./schema.json"));
                 var valid = compare(data);
 
