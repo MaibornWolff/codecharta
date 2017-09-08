@@ -1,6 +1,6 @@
 "use strict";
 
-import * as Ajv from "ajv";
+import * as d3 from "d3";
 /**
  * This service validates the given data against the schema and other validation steps
  */
@@ -12,7 +12,7 @@ export class DataValidatorService {
      * @constructor
      * @external {$http} https://docs.angularjs.org/api/ng/service/$http
      */
-    constructor($http){
+    constructor($http) {
         /**
          * stores the $http instance
          * @type {$http}
@@ -63,41 +63,24 @@ export class DataValidatorService {
 
         return new Promise((resolve, reject) => {
 
-            this.http.get("schema.json").then(
-                (response) => {
+                var ajv = require("ajv")();
+                var compare = ajv.compile(require("./schema.json"));
+                var valid = compare(data);
 
-                    if(response.status === 200) {
-                        var ajv = Ajv.default();
-                        var compare = ajv.compile(response.data);
-                        var valid = compare(data);
-
-                        // TODO data.nodes[0] must be the root
-                        if(!this.hasUniqueChildren(data.nodes[0])){
-                            reject([{
-                                "message":"names or ids are not unique",
-                                "dataPath": "uniqueness"
-                            }]);
-                        }
-
-                        if (valid) {
-                            resolve();
-                        } else {
-                            reject(compare.errors);
-                        }
-                    } else {
-                        reject([{
-                            "message":response.status,
-                            "dataPath": "http"
-                        }]);
-                    }
-
-                }, (e)=>{
+                // TODO data.nodes[0] must be the root
+                if(!this.hasUniqueChildren(data.nodes[0])){
                     reject([{
-                        "message":e,
-                        "dataPath": "angular http"
+                        "message":"names or ids are not unique",
+                        "dataPath": "uniqueness"
                     }]);
                 }
-            );
+
+                if (valid) {
+                    resolve();
+                } else {
+                    reject(compare.errors);
+                }
+
 
         });
 

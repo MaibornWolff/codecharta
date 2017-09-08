@@ -15,6 +15,14 @@ module.exports = function (grunt) {
 
         pkg: grunt.file.readJSON('package.json'),
 
+        webpack: {
+            options: {
+                stats: !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
+            },
+            prod: require("./conf/webpack.config.js"),
+            dev: Object.assign({ watch: true }, require("./conf/webpack.config.js"))
+        },
+
         mocha_istanbul: {
             coverage: {
                 src: ["test/unit-helper.js", "app/**/*.spec.js"],
@@ -35,191 +43,41 @@ module.exports = function (grunt) {
                 buildType: 'default',
                 cacheDir: '.cache'
             },
-            src: ['./dist/app/**/*', './package.json', './LICENSE.md']
-        },
-
-        browserify: {
-            dist: {
-                options: {
-                    transform: ["babelify", "es6-arrow-function"],
-                    presets: ["es2015"],
-                    browserifyOptions: {
-                        debug:true
-                    }
-                },
-                files: {
-                    "dist/app/libs/bundle.js": "app/app.js"
-                }
-            }
-        },
-
-        htmlmin: {
-            dist: {
-                options: {
-                    removeComments: true,
-                    collapseWhitespace: true
-                },
-                files: [{
-                    "expand": true,
-                    "cwd": "app/",
-                    "src": ["**/*.html"],
-                    "dest": "dist/app/",
-                    "ext": ".html",
-                    "flatten": true
-                }]
-            }
-        },
-
-        jshint: {
-            options: {
-                jshintrc: ".jshintrc",
-                reporter: require("jshint-stylish")
-            },
-            all: {
-                src: [
-                    "app/**/*.js","!app/**/*.spec.js"
-                ]
-            }
-        },
-
-        concat: {
-            css: {
-                src: "dist/app/style/**/*.css",
-                dest: "dist/app/css/style.css"
-            }
-        },
-
-        connect: {
-            server: {
-                keepalive: true,
-                options: {
-                    port: 9000,
-                    base: ''
-                }
-            }
-        },
-
-        copy: {
-            license: {
-                files: [
-                    {expand: false, src: ["LICENSE.md"], dest: "dist/app/LICENSE.md"}
-                ]
-            },
-            jquery: {
-                files: [
-                    {expand: false, src: ["node_modules/jquery/dist/jquery.min.js"], dest: "dist/app/libs/jquery.min.js"}
-                ]
-            },
-            angular: {
-                files: [
-                    {expand: false, src: ["node_modules/angular/angular.min.js"], dest: "dist/app/libs/angular.min.js"}
-                ]
-            },
-            hammer: {
-                files: [
-                    {expand: false, src: ["node_modules/hammerjs/hammer.min.js"], dest: "dist/app/libs/hammer.min.js"}
-                ]
-            },
-            materialize: {
-                files: [
-                    {expand: false, src: ["node_modules/materialize-css/dist/js/materialize.min.js"], dest: "dist/app/libs/materialize.min.js"},
-                    {expand: false, src: ["node_modules/materialize-css/dist/css/materialize.min.css"], dest: "dist/app/css/materialize.min.css"},
-                    {expand: false, src: ["node_modules/materialize-css/extras/noUiSlider/nouislider.css"], dest: "dist/app/css/nouislider.css"},
-                    {expand: true, src: ["node_modules/materialize-css/dist/fonts/roboto/*"], dest: "dist/app/fonts/roboto/", flatten: true}
-                ]
-            },
-            fontawesome: {
-                files: [
-                    {expand: false, src: ["node_modules/font-awesome/css/font-awesome.min.css"], dest: "dist/app/css/font-awesome.min.css"},
-                    {expand: true, src: ["node_modules/font-awesome/fonts/*"], dest: "dist/app/fonts/", flatten: true}
-                ]
-            },
-            sliderDirective: {
-                files: [
-                    {expand: false, src: ["node_modules/angularjs-slider/dist/rzslider.min.css"], dest: "dist/app/css/rzslider.min.css"}
-                ]
-            },
-            images: {
-                files: [
-                    {"expand": true, "cwd": "app/img/", "src": ["*"], "dest": "dist/app/img", "flatten": true}
-                ]
-            },
-            json: {
-                files: [
-                    {"expand": true, "cwd": "app/", "src": ["**/*.json"], "dest": "dist/app/", "flatten": true}
-                ]
-            },
-            style: {
-                files: [
-                    {"expand": true, "cwd": "app/", "src": ["**/*.css"], "dest": "dist/app/style", "flatten": true}
-                ]
-            },
+            src: ['./dist/webpack/**/*', './package.json', './LICENSE.md']
         },
 
         clean: {
-            app: ["dist/app"],
-            style: ["dist/app/style/"],
-            coverage: ["dist/coverage/", "coverage/"],
+            dist: ["dist"],
+            webpack: ["dist/webpack"],
+            coverage: ["dist/coverage/"],
+            reports: ["dist/test-reports/"],
             doc: ["dist/doc/"],
+            packageTmp: ["dist/packages/CodeCharta"],
             package: ["dist/packages/"]
         },
 
         exec: {
             doc: {
-                command: path.resolve("node_modules", ".bin", "esdoc") + " -c esdoc.json",
+                command: path.resolve("node_modules", ".bin", "esdoc") + " -c conf/esdoc.json",
+                stdout: true
+            },
+            karmaSingle: {
+                command: path.resolve("node_modules", ".bin", "karma") + " start ./conf/karma.config.js",
+                stdout: true
+            },
+            karmaAuto: {
+                command: path.resolve("node_modules", ".bin", "karma") + " start ./conf/karma.auto.config.js",
                 stdout: true
             }
         },
 
-        watch: {
-            app: {
-                files: ["app/**/*.*"],
-                tasks: ["quick"],
-                options: {
-                    spawn: false,
-                },
-            },
-            unit: {
-                files: ["app/**/*.spec.js", "app/**/*.*"],
-                tasks: ["test"],
-                options: {
-                    spawn: false,
-                },
-            },
-        },
-
-        ngAnnotate: {
-            options: {
-                singleQuotes: true,
-            },
-            app: {
-                files: {
-                    "dist/app/libs/bundle.js": ["dist/app/libs/bundle.js"]
-                },
-            }
-        },
-        'string-replace': {
-            inline: {
-                files: {
-                    "dist/app/codeCharta.html": ["dist/app/codeCharta.html"]
-                },
-                options: {
-                    replacements: [
-                        {
-                            pattern: '!!Version!!',
-                            replacement: grunt.file.readJSON('package.json').version
-                        }
-                    ]
-                }
-            }
-        },
         compress: {
             web: {
                 options: {
                     archive: './dist/packages/codecharta-web.zip'
                 },
                 files: [
-                    {expand: true, cwd:"./dist/app/", src: ['**/*'], dest: '.'}
+                    {expand: true, cwd:"./dist/webpack/", src: ['**/*'], dest: '.'}
                 ]
             },
             linux32: {
@@ -255,18 +113,18 @@ module.exports = function (grunt) {
                     {expand: true, cwd:"./dist/packages/CodeCharta/win64/", src: ['**/*'], dest: '.'}
                 ]
             }
+
         }
 
     });
 
     // tasks
     grunt.registerTask("default", ["build"]);
-
-    grunt.registerTask("build", ["clean:app", "jshint", "browserify", "ngAnnotate:app", "htmlmin", "copy:style", "concat:css", "clean:style", "copy:materialize", "copy:sliderDirective", "copy:json", "copy:hammer", "copy:fontawesome", "copy:angular", "copy:images", "copy:jquery", "copy:license", "string-replace"]);
-    grunt.registerTask("test", ["clean:coverage", "mocha_istanbul"]);
+    grunt.registerTask("build", ["clean:webpack", "webpack:prod"]);
+    grunt.registerTask("serve", ["clean:webpack", "webpack:dev"]);
+    grunt.registerTask("package", ["clean:package", "nwjs", "force:compress", "clean:packageTmp"]);
     grunt.registerTask("doc", ["clean:doc", "exec:doc"]);
-    grunt.registerTask("package", ["clean:package", "nwjs", "force:compress"]);
-    grunt.registerTask("quick", ["jshint", "browserify", "ngAnnotate:app", "htmlmin", "copy:style", "concat:css","copy:json", "clean:style", "copy:images", "string-replace"]);
-
+    grunt.registerTask("test", ["clean:coverage", "clean:reports", "exec:karmaSingle"]);
+    grunt.registerTask("test:auto", ["clean:coverage", "clean:reports", "exec:karmaAuto"]);
 
 };

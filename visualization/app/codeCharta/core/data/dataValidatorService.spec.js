@@ -63,7 +63,7 @@ describe("app.codeCharta.core.data.dataValidatorService", function() {
             ()=>{done();},
             ()=>{done("should resolve");}
         );
-        $httpBackend.flush();
+        //$httpBackend.flush();
     });
 
     xit("should reject when no timestamp is given", (done)=>{
@@ -82,7 +82,7 @@ describe("app.codeCharta.core.data.dataValidatorService", function() {
             ()=>{done("should reject")},
             ()=>{done();}
         );
-        $httpBackend.flush();
+        //$httpBackend.flush();
     });
 
     xit("should reject when children are not unique in id ", (done)=>{
@@ -101,7 +101,7 @@ describe("app.codeCharta.core.data.dataValidatorService", function() {
             ()=>{done("should reject")},
             ()=>{done();}
         );
-        $httpBackend.flush();
+        //$httpBackend.flush();
     });
 
     xit("root should be node and therefore have name and id", (done)=>{

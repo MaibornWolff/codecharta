@@ -12,7 +12,7 @@ class DropdownDirective{
     constructor() {
 
         /** @type {string} */
-        this.templateUrl = "./dropdown.html";
+        this.template = require("./dropdown.html");
 
         /** @type {string} */
         this.restrict = "E";
