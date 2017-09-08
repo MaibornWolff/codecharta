@@ -43,7 +43,7 @@ describe("app.codeCharta.codeChartaController", function() {
 
         $(window).trigger("other");
 
-        expect(window.location.reload.calledThrice);
+        expect(!window.location.reload.calledThrice);
 
     });
 

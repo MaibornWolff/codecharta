@@ -1,5 +1,7 @@
 "use strict";
 
+
+
 /**
  * Collapsible element. Should be put inside a {@link CollapsibleDirective}.
  */
@@ -32,7 +34,7 @@ class CollapsibleElementDirective{
         this.transclude = true;
 
         /** @type {string} */
-        this.templateUrl = "./collapsibleElement.html";
+        this.template = require("./collapsibleElement.html");
     }
 
     /**

@@ -46,7 +46,7 @@ import static org.junit.Assert.assertThat;
 public class NodeInserterTest {
     private final Node root = new Node("root", NodeType.Folder);
 
-    private Matcher<Node> hasNodeAtPath(final Node node, final String path) {
+    private Matcher<Node> hasNodeAtPath(final Node node, final Path path) {
         return new BaseMatcher<Node>() {
             private Node nodeAtPath = null;
 
@@ -57,14 +57,14 @@ public class NodeInserterTest {
 
             @Override
             public boolean matches(final Object item) {
-                nodeAtPath = root.getNodeBy(new FileSystemPath(path));
+                nodeAtPath = (Node) root.getNodeBy(path).get();
                 return nodeAtPath == null ? item == null : nodeAtPath.equals(node);
             }
 
             @Override
             public void describeMismatch(final Object item, final Description description) {
                 description.appendText("but was ").appendValue(nodeAtPath);
-                description.appendText(", where paths to leaves were ").appendValue(((Node) item).getPathsToLeafs());
+                description.appendText(", where paths to leaves were ").appendValue(((Node) item).getPathsToLeaves());
             }
         };
     }
@@ -75,12 +75,12 @@ public class NodeInserterTest {
         Node nodeForInsertion = new Node("insertedNode", NodeType.File);
 
         // when
-        NodeInserter.insertByPath(root, new FileSystemPath(""), nodeForInsertion);
+        NodeInserter.insertByPath(root, Path.trivialPath(), nodeForInsertion);
 
         // then
         assertThat(root.getChildren(), hasSize(1));
-        assertThat(root.getPathsToLeafs(), hasSize(1));
-        assertThat(root, hasNodeAtPath(nodeForInsertion, "insertedNode"));
+        assertThat(root.getPathsToLeaves().count(), is(1L));
+        assertThat(root, hasNodeAtPath(nodeForInsertion, new Path("insertedNode")));
     }
 
     @Test
@@ -88,15 +88,15 @@ public class NodeInserterTest {
         // given
         Node nodeForInsertion = new Node("insertedNode", NodeType.File);
         Node secondNodeForInsertion = new Node("insertedNode", NodeType.Folder);
-        NodeInserter.insertByPath(root, new FileSystemPath(""), nodeForInsertion);
+        NodeInserter.insertByPath(root, Path.trivialPath(), nodeForInsertion);
 
         // when
-        NodeInserter.insertByPath(root, new FileSystemPath(""), secondNodeForInsertion);
+        NodeInserter.insertByPath(root, Path.trivialPath(), secondNodeForInsertion);
 
         // then
         assertThat(root.getChildren(), hasSize(1));
-        assertThat(root.getPathsToLeafs(), hasSize(1));
-        assertThat(root, hasNodeAtPath(nodeForInsertion, "insertedNode"));
+        assertThat(root.getPathsToLeaves().count(), is(1L));
+        assertThat(root, hasNodeAtPath(nodeForInsertion, new Path("insertedNode")));
     }
 
     @Test
@@ -107,21 +107,21 @@ public class NodeInserterTest {
         root.getChildren().add(intermediateNode);
 
         // when
-        NodeInserter.insertByPath(root, new FileSystemPath("folder/"), nodeForInsertion);
+        NodeInserter.insertByPath(root, new Path("folder"), nodeForInsertion);
 
         // then
         System.out.println(root);
         assertThat(root.getChildren(), hasSize(1));
         assertThat(root.getChildren(), hasItem(intermediateNode));
-        assertThat(root.getPathsToLeafs(), hasSize(1));
-        assertThat(root, hasNodeAtPath(nodeForInsertion, "folder/insertedNode"));
+        assertThat(root.getPathsToLeaves().count(), is(1L));
+        assertThat(root, hasNodeAtPath(nodeForInsertion, new Path("folder", "insertedNode")));
     }
 
     @Test
     public void should_insert_phantom_node_in_inner_position_if_no_intermediate_node_present() {
         // given
         Node nodeForInsertion = new Node("insertedNode", NodeType.File);
-        Path position = new FileSystemPath("folder/");
+        Path position = new Path("folder");
 
         // when
         NodeInserter.insertByPath(root, position, nodeForInsertion);
@@ -138,27 +138,27 @@ public class NodeInserterTest {
         Node nodeForInsertion = new Node("insertedNode", NodeType.File);
 
         // when
-        NodeInserter.insertByPath(root, new FileSystemPath("folder/subfolder/"), nodeForInsertion);
+        NodeInserter.insertByPath(root, new Path("folder", "subfolder"), nodeForInsertion);
 
         // then
         assertThat(root.getChildren(), hasSize(1));
-        assertThat(root.getPathsToLeafs(), hasSize(1));
-        assertThat(root, hasNodeAtPath(nodeForInsertion, "folder/subfolder/insertedNode"));
+        assertThat(root.getPathsToLeaves().count(), is(1L));
+        assertThat(root, hasNodeAtPath(nodeForInsertion, new Path("folder", "subfolder", "insertedNode")));
     }
 
     @Test
     public void should_insert_node_in_end_position_even_if_ending_slash_not_present() {
         // given
         Node nodeForInsertion = new Node("insertedNode", NodeType.File);
-        Path path = new FileSystemPath("folder/subfolder");
+        Path path = new Path("folder", "subfolder");
 
         // when
         NodeInserter.insertByPath(root, path, nodeForInsertion);
 
         // then
         assertThat(root.getChildren(), hasSize(1));
-        assertThat(root.getPathsToLeafs(), hasSize(1));
-        assertThat(root, hasNodeAtPath(nodeForInsertion, "folder/subfolder/insertedNode"));
+        assertThat(root.getPathsToLeaves().count(), is(1L));
+        assertThat(root, hasNodeAtPath(nodeForInsertion, new Path("folder", "subfolder", "insertedNode")));
     }
 
     @Test
@@ -168,7 +168,7 @@ public class NodeInserterTest {
         Node nodeForInsertion = new Node("someNode", NodeType.File);
 
         // when
-        insertByPath(project, new FileSystemPath(""), nodeForInsertion);
+        insertByPath(project, Path.trivialPath(), nodeForInsertion);
 
         // then
         assertThat(project.getNodes(), hasSize(1));
@@ -185,7 +185,7 @@ public class NodeInserterTest {
         Node nodeForInsertion = new Node("someNode", NodeType.File);
 
         // when
-        insertByPath(project, new FileSystemPath(""), nodeForInsertion);
+        insertByPath(project, Path.trivialPath(), nodeForInsertion);
 
         // then
         assertThat(project.getNodes(), hasSize(1));

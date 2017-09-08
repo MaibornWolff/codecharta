@@ -9,8 +9,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - experimental delta functionality
 - loading multiple maps
 - experimental margin slider
+- Typescript support
+- Browsersync
+- added advanced merging strategy "leaf" in MergeFilter
+- advanced merging with restructuring
 
 ### Changed
+- Browserify replaced with Webpack
+- Better debugging
+- Karma instead of Mocha
 
 ### Removed
 
