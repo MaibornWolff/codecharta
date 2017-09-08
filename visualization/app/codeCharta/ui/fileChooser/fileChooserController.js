@@ -43,7 +43,7 @@ class FileChooserController {
     fileChanged(element) {
         let ctx = this;
         this.$scope.$apply(function() {
-
+            ctx.dataService.resetMaps();
             for (let i = 0; i < element.files.length; i++) {
                 (function(file, i) {
                     var name = file.name;
