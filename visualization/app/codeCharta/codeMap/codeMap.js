@@ -43,7 +43,8 @@ angular.module("app.codeCharta.codeMap").factory(
                     selected: () => {return new THREE.MeshLambertMaterial({color: 0xEB8319});},
                     default: () => {return new THREE.MeshLambertMaterial({color: 0x89ACB4});},
                     positiveDelta: () => {return new THREE.MeshLambertMaterial({color: 0x69ff40});}, //building grew -> positive delta, the change may be negative for specific metrics
-                    negativeDelta: () => {return new THREE.MeshLambertMaterial({color: 0xff0E0E});}
+                    negativeDelta: () => {return new THREE.MeshLambertMaterial({color: 0xff0E0E});},
+                    base: () => {return new THREE.MeshLambertMaterial({color: 0x666666});}
             };}
 
 );

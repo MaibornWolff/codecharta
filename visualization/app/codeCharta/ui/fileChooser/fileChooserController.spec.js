@@ -5,11 +5,13 @@ require("./fileChooser.js");
  */
 describe("app.codeCharta.ui.fileChooser.fileChooserController", function() {
 
-    var dataService, fileChooserController, $controller, $httpBackend, $rootScope, originalReader;
+    var dataService, dataLoadingService, scenarioService, fileChooserController, $controller, $httpBackend, $rootScope, originalReader;
 
     beforeEach(angular.mock.module("app.codeCharta.ui.fileChooser"));
 
-    beforeEach(angular.mock.inject((_$controller_, _dataService_, _$httpBackend_, _$rootScope_)=>{
+    beforeEach(angular.mock.inject((_$controller_, _dataService_, _$httpBackend_, _$rootScope_, _dataLoadingService_, _scenarioService_)=>{
+        dataLoadingService = _dataLoadingService_;
+        scenarioService = _scenarioService_;
         dataService = _dataService_;
         $rootScope = _$rootScope_;
         $controller = _$controller_;
@@ -31,7 +33,7 @@ describe("app.codeCharta.ui.fileChooser.fileChooserController", function() {
             ]
         };
 
-        fileChooserController = $controller("fileChooserController", {$scope: $rootScope, dataService: dataService});
+        fileChooserController = $controller("fileChooserController", {$scope: $rootScope, dataLoadingService: dataLoadingService, scenarioService: scenarioService, dataService: dataService});
 
         fileChooserController.onNewFileLoaded = sinon.spy();
 
@@ -61,7 +63,7 @@ describe("app.codeCharta.ui.fileChooser.fileChooserController", function() {
         dataService.setFileData = {
             then:(resolve, reject)=>{reject({errors:[{message:"a", dataPath:"b"}]});}
         };
-        fileChooserController = $controller("fileChooserController", {$scope: $rootScope, dataService: dataService});
+        fileChooserController = $controller("fileChooserController", {$scope: $rootScope, dataLoadingService: dataLoadingService, scenarioService: scenarioService, dataService: dataService});
         fileChooserController.printErrors = sinon.spy();
         fileChooserController.setNewData("some");
         expect(fileChooserController.printErrors.calledOnce);
@@ -74,7 +76,7 @@ describe("app.codeCharta.ui.fileChooser.fileChooserController", function() {
         var o = console.log;
         console.log = sinon.spy();
 
-        fileChooserController = $controller("fileChooserController", {$scope: $rootScope, dataService: dataService});
+        fileChooserController = $controller("fileChooserController", {$scope: $rootScope, dataLoadingService: dataLoadingService, scenarioService: scenarioService, dataService: dataService});
         fileChooserController.printErrors({errors:[{message:"a", dataPath:"b"}]});
 
         expect(console.log.calledOnce);

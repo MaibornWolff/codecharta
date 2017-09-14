@@ -111,8 +111,8 @@ class CodeMapService {
     applySettings(s) {
 
         //draw
-        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.neutralColorRange) {
-            this.drawFromData(s.map, s.areaMetric, s.heightMetric, s.colorMetric, s.neutralColorRange, s.amountOfTopLabels);
+        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.root && s.neutralColorRange && s.deltas !== null && s.margin) {
+            this.drawFromData(s.map, s.areaMetric, s.heightMetric, s.colorMetric, s.neutralColorRange, s.amountOfTopLabels, s.deltas, s.margin);
         }
 
         //scale
@@ -130,9 +130,11 @@ class CodeMapService {
      * @param {string} colorKey
      * @param {Range} colorConfig
      * @param {number} amountOfTopLabels number of highest buildings with labels
+     * @param {boolean} deltas deltas enabled
+     * @param {margin} margin between buildings
      */
-    drawFromData(map, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels) {
-        this.drawMap(map, 500, 1, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels);
+    drawFromData(map, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels, deltas, margin) {
+        this.drawMap(map, 500, margin, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels, deltas);
     }
 
     /**
@@ -145,14 +147,15 @@ class CodeMapService {
      * @param {string} colorKey
      * @param {Range} colorConfig
      * @param {number} amountOfTopLabels number of highest buildings with labels
+     * @param {boolean} deltas deltas enabled
      */
-    drawMap(map, s, p, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels) {
+    drawMap(map, s, p, areaKey, heightKey, colorKey, colorConfig, amountOfTopLabels, deltas) {
 
         this.clearScene();
 
         this.addRoot();
 
-        let nodes = this.treemapService.createTreemapNodes(map, s, s, p, areaKey, heightKey);
+        let nodes = this.treemapService.createTreemapNodes(map.root, s, s, p, areaKey, heightKey);
 
         let sorted = nodes.sort((a,b)=>{return b.height - a.height;});
 
@@ -164,7 +167,7 @@ class CodeMapService {
 
         this.drawScene();
 
-        this.colorMap(colorKey, colorConfig);
+        this.colorMap(colorKey, colorConfig, deltas);
 
     }
 
@@ -172,13 +175,14 @@ class CodeMapService {
      * Colors the cubes depending on their node data and the given values.
      * @param {string} colorKey
      * @param {Range} neutralColorRange
+     * @param {boolean} deltas deltas enabled
      */
-    colorMap(colorKey, neutralColorRange) {
+    colorMap(colorKey, neutralColorRange, deltas) {
         this.root.traverse((o)=> {
 
             if (o.node && o.node.isLeaf) {
 
-                this.colorBase(o, colorKey, neutralColorRange);
+                this.colorBase(o, colorKey, neutralColorRange, deltas);
                 this.colorDelta(o);
 
             } else if (o.node && !o.node.isLeaf) {
@@ -196,8 +200,9 @@ class CodeMapService {
      * @param {object} o folder
      * @param {string} colorKey
      * @param {Range} neutralColorRange
+     * @param {boolean} deltas deltas enabled
      */
-    colorBase(o, colorKey, neutralColorRange) {
+    colorBase(o, colorKey, neutralColorRange, deltas) {
 
         let base = o.children.filter((c)=>!c.isDelta)[0];
 
@@ -205,13 +210,18 @@ class CodeMapService {
             return;
         }
 
-        const val = base.node.attributes[colorKey];
-        if (val < neutralColorRange.from) {
-            base.originalMaterial = neutralColorRange.flipped ? this.assetService.negative().clone() : this.assetService.positive().clone();
-        } else if (val > neutralColorRange.to) {
-            base.originalMaterial = neutralColorRange.flipped ? this.assetService.positive().clone() : this.assetService.negative().clone();
+        //use grey base when deltas are active
+        if(deltas){
+            base.originalMaterial = this.assetService.base().clone();
         } else {
-            base.originalMaterial = this.assetService.neutral().clone();
+            const val = base.node.attributes[colorKey];
+            if (val < neutralColorRange.from) {
+                base.originalMaterial = neutralColorRange.flipped ? this.assetService.negative().clone() : this.assetService.positive().clone();
+            } else if (val > neutralColorRange.to) {
+                base.originalMaterial = neutralColorRange.flipped ? this.assetService.positive().clone() : this.assetService.negative().clone();
+            } else {
+                base.originalMaterial = this.assetService.neutral().clone();
+            }
         }
 
         base.selectedMaterial = this.assetService.selected().clone();

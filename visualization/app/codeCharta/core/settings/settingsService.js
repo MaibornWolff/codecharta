@@ -40,7 +40,7 @@ class SettingsService {
         * @type {Settings}
         */
         this.settings = new Settings(
-            dataService.data.currentmap,
+            dataService.data.referenceMap,
             new Range(10,20,false),
             ctx.getMetricByIdOrLast(0, dataService.data.metrics),
             ctx.getMetricByIdOrLast(1, dataService.data.metrics),
@@ -48,7 +48,8 @@ class SettingsService {
             true,
             1,
             new Scale(1,1,1),
-            new Scale(0,300,1000)
+            new Scale(0,300,1000),
+            1
         );
 
         $rootScope.$on("data-changed", (event,data) => {
@@ -69,7 +70,7 @@ class SettingsService {
      */
     onDataChanged(data) {
 
-        this.settings.map = data.currentmap;
+        this.settings.map = data.referenceMap;
 
         if(data.metrics.indexOf(this.settings.areaMetric) === -1){
             //area metric is not set or not in the new metrics and needs to be chosen
