@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.4.0] - 2017-09-14
+### Added
 - Typescript support
 - Browsersync
 - added advanced merging strategy "leaf" in MergeFilter
