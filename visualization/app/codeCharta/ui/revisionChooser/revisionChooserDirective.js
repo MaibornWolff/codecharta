@@ -48,30 +48,30 @@ class RevisionChooserDirective {
         this.bindToController = true;
 
         /**
-         * visibility flag
+         * visibility
          * @type {boolean}
          */
         this.visible = false;
     }
 
     /**
-     * Binds {@link RevisionChooserDirective#toggle} as click handler.
+     * Links the click Handler
      * @param {Scope} scope
-     * @param {object} element
+     * @param {object} element dom element
      */
     link(scope, element) {
-        element.bind("click", this.toggle);
+        $("#revisionButton").bind("click", this.toggle);
+        $("#mapButton").bind("click", this.toggle);
     }
 
     /**
-     * Toggles the Directives visibility.
+     * Toggles the visibility
      */
-    toggle() {
+    toggle(){
         if (this.visible) {
-            $("#revisionChooser").animate({left: -400 + "px"});
+            $("#revisionChooser").animate({left: -500 + "px"});
             this.visible = false;
-        }
-        else {
+        } else {
             $("#revisionChooser").animate({left: 2.8+"em"});
             this.visible = true;
         }

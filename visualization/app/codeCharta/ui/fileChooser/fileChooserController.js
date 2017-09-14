@@ -1,5 +1,11 @@
 "use strict";
 
+/* We need to override this jshint suggestion because we need to attach a callback function to an object with values
+only available in the loop. We cannot use a named function with parameters because the filereader object wont call it
+with the additional ones */
+
+/*jshint loopfunc:true */
+
 /**
  * Controls the FileChooser
  */
@@ -10,9 +16,9 @@ class FileChooserController {
     /**
      * @constructor
      * @param {Scope} $scope
-     * @param {DataService} dataService
+     * @param {DataLoadingService} dataLoadingService
      */
-    constructor($scope, dataService){
+    constructor($scope, dataLoadingService, scenarioService, dataService){
 
         /**
          *
@@ -22,9 +28,12 @@ class FileChooserController {
 
         /**
          *
-         * @type {DataService}
+         * @type {DataLoadingService}
          */
-        this.service = dataService;
+        this.service = dataLoadingService;
+
+        this.scenarioService = scenarioService;
+        this.dataService = dataService;
     }
 
     /**
@@ -34,20 +43,29 @@ class FileChooserController {
     fileChanged(element) {
         let ctx = this;
         this.$scope.$apply(function() {
-            var file = element.files[0];
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                ctx.onNewFileLoaded(e.target.result);
-            };
-            reader.readAsText(file, "UTF-8");
+            ctx.dataService.resetMaps();
+            for (let i = 0; i < element.files.length; i++) {
+                (function(file, i) {
+                    var name = file.name;
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        ctx.onNewFileLoaded(e.target.result, i, name);
+                    };
+                    reader.readAsText(file, "UTF-8");
+                })(element.files[i], i);
+            }
+
         });
     }
 
     /**
      * called when the new file was loaded
-     * @param {object} data fileData
+     *
+     * @param {object} data map data
+     * @param {number} revision the revision number
+     * @param {string} name the filename
      */
-    onNewFileLoaded(data){
+    onNewFileLoaded(data, revision, name){
         $("#fileChooserPanel").modal("close");
 
         try {
@@ -58,18 +76,25 @@ class FileChooserController {
             return;
         }
 
-        this.setNewData(data);
+        this.setNewData(name, data, revision);
 
     }
 
     /**
      * Sets the new data in dataService
+     * @param {string} name the filename
      * @param {object} parsedData
+     * @param {number} revision the revision number
      */
-    setNewData(parsedData){
+    setNewData(name, parsedData, revision){
         let ctx = this;
-        this.service.setFileData(parsedData).then(
+        this.service.loadMapFromFileContent(name, parsedData, revision).then(
             () => {
+
+                ctx.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
+                ctx.dataService.setComparisonMap(revision);
+                ctx.dataService.setReferenceMap(revision);
+
                 if(!ctx.$scope.$$phase || !ctx.$scope.$root.$$phase) {
                     ctx.$scope.$digest();
                 }
@@ -86,10 +111,7 @@ class FileChooserController {
      * @param {object} result
      */
     printErrors(result){
-        window.alert("Wrong format. See console logs for details.");
-        result.errors.forEach((e)=>{
-            console.log(e.message + " @ " + e.dataPath);
-        });
+        console.log(result);
     }
     
 }

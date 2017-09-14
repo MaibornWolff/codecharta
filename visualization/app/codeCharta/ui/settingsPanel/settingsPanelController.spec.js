@@ -77,7 +77,7 @@ describe("app.codeCharta.ui.settingsPanel.settingsPanelController", function() {
 
         settingsService.onDataChanged = () => {};
 
-        scope.$broadcast("data-changed", {currentmap: {}, metrics: ["a","b","c"]});
+        scope.$broadcast("data-changed", {referenceMap: {}, metrics: ["a","b","c"]});
 
         expect(settingsPanelController.metrics[0]).to.equal("a");
         expect(settingsPanelController.metrics[1]).to.equal("b");

@@ -1,17 +1,45 @@
 require("./url.js");
+import {CodeMap} from "../../core/data/model/codeMap";
 
 /**
  * @test {UrlService}
  */
 describe("app.codeCharta.core.url.urlService", function() {
 
-    var urlService, $location, $httpBackend;
+    var urlService, $location, $httpBackend, validdata;
 
     beforeEach(angular.mock.module("app.codeCharta.core.url"));
     beforeEach(angular.mock.inject(function (_urlService_, _$location_, _$httpBackend_) {
         urlService = _urlService_;
         $location = _$location_;
         $httpBackend = _$httpBackend_;
+        validdata = new CodeMap("file", "project", {
+            "name": "root",
+            "attributes": {},
+            "children": [
+                {
+                    "name": "big leaf",
+                    "attributes": {"rloc": 100, "functions": 10, "mcc": 1},
+                    "link": "http://www.google.de"
+                },
+                {
+                    "name": "Parent Leaf",
+                    "attributes": {},
+                    "children": [
+                        {
+                            "name": "small leaf",
+                            "attributes": {"rloc": 30, "functions": 100, "mcc": 100},
+                            "children": []
+                        },
+                        {
+                            "name": "other small leaf",
+                            "attributes": {"rloc": 70, "functions": 1000, "mcc": 10},
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        });
     }));
 
     /**
@@ -62,13 +90,13 @@ describe("app.codeCharta.core.url.urlService", function() {
 
         $httpBackend
             .when("GET", "http://someurl.com/some.json")
-            .respond(200, "validData");
+            .respond(200, validdata);
 
         $location.url(url);
 
         urlService.getFileDataFromQueryParam().then(
             (data) => {
-                expect(data).to.equal("validData");
+                expect(data.fileName).to.equal("http://someurl.com/some.json");
                 done();
             },() => {
                 done("should succeed");
@@ -86,13 +114,13 @@ describe("app.codeCharta.core.url.urlService", function() {
 
         $httpBackend
             .when("GET", "valid.json")
-            .respond(200, "validData");
+            .respond(200, validdata);
 
         $location.url(url);
 
         urlService.getFileDataFromQueryParam().then(
             (data) => {
-                expect(data).to.equal("validData");
+                expect(data.fileName).to.equal("valid.json");
                 done();
             },() => {
                 done("should succeed");

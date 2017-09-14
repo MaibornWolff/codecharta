@@ -10,34 +10,36 @@ class CodeChartaController {
     /**
      * @constructor
      * @param {UrlService} urlService
-     * @param {DataService} dataService
+     * @param {DataLoadingService} dataLoadingService
      * @param {SettingsService} settingsService
      */
-    constructor(dataService, urlService, settingsService, scenarioService) {
+    constructor(dataLoadingService, urlService, settingsService, scenarioService, dataService) {
         this.initHandlers();
-        this.loadFileOrSample(urlService, dataService, settingsService);
+        this.loadFileOrSample(urlService, dataLoadingService, settingsService);
         this.scenarioService = scenarioService;
+        this.dataService = dataService;
         this.pkg = require("../../package.json");
     }
 
     /**
      * Tries to load the file specified in the given url. Loads sample data if it fails.
      * @param {UrlService} urlService
-     * @param {DataService} dataService
+     * @param {DataLoadingService} dataLoadingService
      * @param {SettingsService} settingsService
      */
-    loadFileOrSample(urlService, dataService, settingsService) {
+    loadFileOrSample(urlService, dataLoadingService, settingsService) {
 
         let ctx = this;
 
         urlService.getFileDataFromQueryParam().then(
+
             //try loading from url param
 
             //successfully loaded
             (data) => {
 
                 // set loaded data
-                dataService.setFileData(data).then(
+                dataLoadingService.loadMapFromFileContent(urlService.getParam("file"), data, 0).then(
                     () => {
                         settingsService.updateSettingsFromUrl();
                     },
@@ -52,8 +54,7 @@ class CodeChartaController {
             () => {
 
                 //try to load sample data
-
-                dataService.setFileData(require("./sample.json")).then(
+                dataLoadingService.loadMapFromFileContent("sample1.json", require("./sample1.json"), 0).then(
                     () => {
                         ctx.loadingFinished();
                         settingsService.updateSettingsFromUrl();
@@ -63,8 +64,19 @@ class CodeChartaController {
                     }
                 );
 
+                //try to load sample data
+                dataLoadingService.loadMapFromFileContent("sample2.json", require("./sample2.json"), 1).then(
+                    () => {
+                        ctx.loadingFinished();
+                    },
+                    (r) => {
+                        ctx.printErrors(r);
+                    }
+                );
+
 
             }
+
         );
 
     }
@@ -74,6 +86,8 @@ class CodeChartaController {
      */
     loadingFinished() {
         this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
+        this.dataService.setComparisonMap(0);
+        this.dataService.setReferenceMap(0);
     }
 
     /**

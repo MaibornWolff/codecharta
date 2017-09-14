@@ -13,7 +13,7 @@ class RevisionChooserController {
      * @param {DataService} dataService
      * @param {Scope} $scope
      */
-    constructor(dataService, $scope) {
+    constructor(dataService, $scope, settingsService) {
 
         /**
          *
@@ -21,11 +21,13 @@ class RevisionChooserController {
          */
         this.dataService = dataService;
 
+        this.settingsService = settingsService;
+
         /**
          *
          * @type {CodeMap[]}
          */
-        this.revisions = dataService.revisions;
+        this.revisions = dataService.data.revisions;
 
         let ctx = this;
 
@@ -40,12 +42,14 @@ class RevisionChooserController {
         this.revisions = data.revisions;
     }
 
-    /**
-     * loads a specific revision by id
-     * @param {number} key id
-     */
-    loadRevision(key) {
-        this.dataService.setCurrentMapFromRevisions(key);
+
+    loadComparisonMap(key) {
+        this.dataService.setComparisonMap(key);
+    }
+
+
+    loadReferenceMap(key) {
+        this.dataService.setReferenceMap(key);
     }
 
 }

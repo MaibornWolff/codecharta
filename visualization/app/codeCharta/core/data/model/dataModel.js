@@ -1,17 +1,15 @@
+/**
+ * Defines the current DataModel of the core/data package.
+ */
 export class DataModel {
 
     /**
-     * @typedef {object} CodeMap A Code map is a d3 hierarchy correctly transformed to the needs of this application
-     * TODO make a class
+     * @param {CodeMap[]} revisions current revisions
+     * @param {string[]} metrics current metrics
+     * @param {CodeMap} comparisonMap current first map
+     * @param {CodeMap} referenceMap current second map
      */
-
-    /**
-     *
-     * @param {CodeMap[]} revisions currently loaded revisions
-     * @param {string[]} metrics currently loaded metrics
-     * @param {CodeMap} currentmap currently selected map/revision
-     */
-    constructor(revisions, metrics, currentmap) {
+    constructor(revisions, metrics, comparisonMap, referenceMap) {
 
         /**
          * currently loaded revisions
@@ -32,7 +30,15 @@ export class DataModel {
          * currently selected map/revision
          * @type {CodeMap}
          */
-        this.currentmap = currentmap;
+        this.referenceMap = referenceMap;
+
+        /**
+         * map to which the delta is calculated
+         * @type {CodeMap}
+         */
+        this.comparisonMap = comparisonMap;
+
+        //TODO Indizes statt ganze Maps in currentmap und comparisonMap
 
     }
 
