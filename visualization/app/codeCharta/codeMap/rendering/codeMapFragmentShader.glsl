@@ -1,35 +1,63 @@
-varying vec3 oColor;
+varying vec3 vColor;
 varying vec3 viewDirection;
 varying vec3 worldNormal;
+varying vec3 vLightFront;
 varying highp float oSubGeomIdx;
 
-struct DirectionalLight {
-  vec3 direction;
-  vec3 color;
-};
-
-uniform DirectionalLight directionalLights[ NUM_DIR_LIGHTS ];
+uniform vec3 emissive;
+uniform vec3 ambientLightColor;
 
 uniform vec3 highlightColor;
 uniform highp float highlightColorIdx;
 
-void main()
-{
-    vec3 lightDirection = normalize(vec3(-1, -1, -1));
-    vec3 resultColor = vec3(oColor);
+uniform vec3 selectedColor;
+uniform highp float selectedColorIdx;
 
-    for (int i=0; i < NUM_DIR_LIGHTS; ++i)
-    {
-        float amount = max(dot(directionalLights[i].direction, worldNormal), 0.0);
-        resultColor += directionalLights[i].color * amount;
-    }
+#define RECIPROCAL_PI 0.31830988618
+#define PI 3.14159265359
+
+struct ReflectedLight {
+    vec3 directDiffuse;
+    vec3 directSpecular;
+    vec3 indirectDiffuse;
+    vec3 indirectSpecular;
+};
+
+vec3 getAmbientLightIrradiance( const in vec3 ambientLightColor ) {
+    vec3 irradiance = ambientLightColor;
+    irradiance *= PI;
+    return irradiance;
+}
+
+vec3 BRDF_Diffuse_Lambert (const in vec3 diffuseColor) {
+    return RECIPROCAL_PI * diffuseColor;
+}
+
+void main() {
+    vec4 diffuseColor = vec4(vColor, 1.0);
 
     float epsilon = 0.0001;
 
-    if (abs(oSubGeomIdx - highlightColorIdx) < epsilon)
+    if (abs(oSubGeomIdx - selectedColorIdx) < epsilon)
     {
-        resultColor = vec3(1, 0, 0);
+        diffuseColor.xyz = selectedColor;
     }
 
-    gl_FragColor = vec4(resultColor, 1);
+    ReflectedLight reflectedLight = ReflectedLight(vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0));
+    vec3 totalEmissiveRadiance = emissive;
+
+    if (abs(oSubGeomIdx - highlightColorIdx) < epsilon)
+    {
+        totalEmissiveRadiance = highlightColor;
+    }
+
+    reflectedLight.indirectDiffuse = getAmbientLightIrradiance(ambientLightColor);
+    reflectedLight.indirectDiffuse *= BRDF_Diffuse_Lambert(diffuseColor.rgb);
+
+    reflectedLight.directDiffuse = vLightFront;
+    reflectedLight.directDiffuse *= BRDF_Diffuse_Lambert(diffuseColor.rgb);
+
+    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + totalEmissiveRadiance;
+
+    gl_FragColor = vec4(outgoingLight, diffuseColor.a);
 }

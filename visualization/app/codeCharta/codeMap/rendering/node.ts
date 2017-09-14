@@ -1,3 +1,7 @@
+export interface nodeAttributes {
+    [key : string] : number;
+}
+
 export interface node {
     readonly name : string;
     readonly width : number;
@@ -9,5 +13,7 @@ export interface node {
     readonly y0 : number;
     readonly isLeaf : boolean;
     readonly deltas : any;
-    readonly attributes : any;
+    readonly attributes : nodeAttributes;
+    readonly children : node[];
+    readonly isDelta : boolean;
 }
