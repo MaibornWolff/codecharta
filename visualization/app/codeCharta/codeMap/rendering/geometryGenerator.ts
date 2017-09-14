@@ -2,6 +2,9 @@ import * as THREE from "three";
 import {node} from "./node";
 import {codeMapGeometricDescription} from "./codeMapGeometricDescription";
 import {codeMapBuilding} from "./codeMapBuilding"
+import {MapColors} from "./codeMapMesh"
+import {colorRange} from "./codeMapMesh"
+import {renderingUtil} from "./renderingUtil"
 
 class intermediateVertexData {
     public positions : THREE.Vector3[];
@@ -50,25 +53,13 @@ export interface buildResult {
     desc : codeMapGeometricDescription
 }
 
-enum MapColors {
-    positive = 0x69AE40,
-    neutral = 0xddcc00,
-    negative = 0x820E0E,
-    odd = 0x501A1C,
-    even = 0xD1A9A9,
-    selected = 0xEB8319,
-    defaultC = 0x89ACB4,
-    positiveDelta = 0x69ff40,
-    negativeDelta = 0xff0E0E
-}
-
 export class geometryGenerator {
     constructor() {};
 
-    build(nodes : node[], material : THREE.Material) : buildResult
+    public build(nodes : node[], material : THREE.Material, colorKey : string, range : colorRange, mapSize : number) : buildResult
     {
         let data : intermediateVertexData = new intermediateVertexData();
-        let desc : codeMapGeometricDescription = new codeMapGeometricDescription();
+        let desc : codeMapGeometricDescription = new codeMapGeometricDescription(mapSize);
 
         for (let i:number = 0; i < nodes.length; ++i)
         {
@@ -80,7 +71,7 @@ export class geometryGenerator {
             }
             else
             {
-                this.addBuilding(data, n, i, desc);
+                this.addBuilding(data, n, i, desc, colorKey, range);
             }
         }
 
@@ -90,7 +81,7 @@ export class geometryGenerator {
         };
     }
 
-    addBoxToVertexData(data : intermediateVertexData, measures : boxMeasures, color : number, subGeomIdx : number) : void
+    private addBoxToVertexData(data : intermediateVertexData, measures : boxMeasures, color : number, subGeomIdx : number) : void
     {
         let minPos : THREE.Vector3 = new THREE.Vector3(measures.x, measures.y, measures.z);
         let maxPos : THREE.Vector3 = new THREE.Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth);
@@ -198,17 +189,19 @@ export class geometryGenerator {
         };
     }
 
-    addFloor(data : intermediateVertexData, n : node, idx : number, desc : codeMapGeometricDescription)
+    private addFloor(data : intermediateVertexData, n : node, idx : number, desc : codeMapGeometricDescription)
     {
         let color : number = n.depth % 2 == 0 ? MapColors.even : MapColors.odd;
         let measures : boxMeasures = this.mapNodeToLocalBox(n);
 
         desc.add(
             new codeMapBuilding(
-                idx, new THREE.Box3(
+                idx,
+                new THREE.Box3(
                     new THREE.Vector3(measures.x, measures.y, measures.z),
                     new THREE.Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth)
-                )
+                ),
+                color
             )
         );
 
@@ -254,23 +247,51 @@ this.addBuilding(node.width, node.height, node.length, node.x0, node.z0, node.y0
 
 */
 
-    addBuilding(data : intermediateVertexData, n : node, idx : number, desc : codeMapGeometricDescription) : void
+    private addBuilding(data : intermediateVertexData, n : node, idx : number, desc : codeMapGeometricDescription, colorKey : string, range : colorRange) : void
     {
         let measures : boxMeasures = this.mapNodeToLocalBox(n);
+        let color : number = this.estimateColorForBuilding(n, colorKey, range);
 
         desc.add(
             new codeMapBuilding(
-                idx, new THREE.Box3(
+                idx,
+                    new THREE.Box3(
                     new THREE.Vector3(measures.x, measures.y, measures.z),
                     new THREE.Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth)
-                )
+                ),
+                color
             )
         );
 
-        this.addBoxToVertexData(data, measures, MapColors.defaultC, idx);
+        this.addBoxToVertexData(data, measures, color, idx);
     }
 
-    buildMeshFromIntermediateVertexData(data : intermediateVertexData, material : THREE.Material) : THREE.Mesh
+    private estimateColorForBuilding(n : node, colorKey : string, range : colorRange) : number
+    {
+        let color : number = MapColors.defaultC;
+        
+        if (!n.isDelta)
+        {
+            const val : number = n.attributes[colorKey];
+            
+            if (val < range.from)
+            {
+                color = range.flipped ? MapColors.negative : MapColors.positive;
+            }
+            else if(val > range.to)
+            {
+                color = range.flipped ? MapColors.positive : MapColors.negative;
+            }
+            else
+            {
+                color = MapColors.neutral;
+            }
+        }
+
+        return color;
+    }
+
+    private buildMeshFromIntermediateVertexData(data : intermediateVertexData, material : THREE.Material) : THREE.Mesh
     {
         let numVertices : number = data.positions.length;
         const dimension : number = 3;
@@ -286,9 +307,11 @@ this.addBuilding(node.width, node.height, node.length, node.x0, node.z0, node.y0
             positions[i * 3 + 1] = data.positions[i].y;
             positions[i * 3 + 2] = data.positions[i].z;
 
-            colors[i * 3 + 0] = ((data.colors[i]  >> 16) & 0xFF) / 255.0;
-            colors[i * 3 + 1] = ((data.colors[i] >> 8) & 0xFF) / 255.0;
-            colors[i * 3 + 2] = (data.colors[i] & 0xFF) / 255.0;
+            let color : THREE.Vector3 = renderingUtil.colorToVec3(data.colors[i]);
+
+            colors[i * 3 + 0] = color.x;
+            colors[i * 3 + 1] = color.y;
+            colors[i * 3 + 2] = color.z;
 
             normals[i * 3 + 0] = data.normals[i].x; 
             normals[i * 3 + 1] = data.normals[i].y;
@@ -313,51 +336,6 @@ this.addBuilding(node.width, node.height, node.length, node.x0, node.z0, node.y0
 
         geometry.setIndex(new THREE.BufferAttribute(indices, 1));
 
-        geometry.computeBoundingBox();
-
         return  new THREE.Mesh(geometry, material);
     }
-
-    /*
-    colorMap(colorKey : string, neutralColorRange : Range) {
-        this.root.traverse((o)=> {
-
-            if (o.node && o.node.isLeaf) {
-
-                this.colorBase(o, colorKey, neutralColorRange);
-                this.colorDelta(o);
-
-            } else if (o.node && !o.node.isLeaf) {
-
-                o.originalMaterial = o.material.clone();
-                o.selectedMaterial = this.assetService.selected().clone();
-
-            } // else: object is propably a Grouping Object with no node data
-
-        });
-    }
-
-    colorBase(o, colorKey, neutralColorRange) {
-
-        let base = o.children.filter((c)=>!c.isDelta)[0];
-
-        if (!base) {
-            return;
-        }
-
-        const val = base.node.attributes[colorKey];
-        if (val < neutralColorRange.from) {
-            base.originalMaterial = neutralColorRange.flipped ? this.assetService.negative().clone() : this.assetService.positive().clone();
-        } else if (val > neutralColorRange.to) {
-            base.originalMaterial = neutralColorRange.flipped ? this.assetService.positive().clone() : this.assetService.negative().clone();
-        } else {
-            base.originalMaterial = this.assetService.neutral().clone();
-        }
-
-        base.selectedMaterial = this.assetService.selected().clone();
-        base.material = base.originalMaterial.clone();
-
-
-    }
-    */
 }

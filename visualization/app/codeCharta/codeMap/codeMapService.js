@@ -70,11 +70,9 @@ class CodeMapService {
         let nodes = this.treemapService.createTreemapNodes(s.map, mapSize, mapSize, padding, s.areaMetric, s.heightMetric);
         let sorted = nodes.sort((a,b)=>{return b.height - a.height;});
  
-        this.mapMesh = new codeMapMesh(sorted);
+        this.mapMesh = new codeMapMesh(sorted, s.colorMetric, s.neutralColorRange, mapSize);
 
-        this.threeSceneService.setMapGeometry(
-            this.mapMesh.getThreeMesh(), mapSize
-        );
+        this.threeSceneService.setMapMesh(this.mapMesh, mapSize);
     }
 
      /**
@@ -91,6 +89,9 @@ class CodeMapService {
         this.threeSceneService.mapGeometry.position.x = -mapSize / 2.0 * x;
         this.threeSceneService.mapGeometry.position.y = 0.0;
         this.threeSceneService.mapGeometry.position.z = -mapSize / 2.0 * z;
+
+        if (this.threeSceneService.getMapMesh())
+            this.threeSceneService.getMapMesh().setScale(x, y, z);
     }
 }
 

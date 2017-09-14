@@ -1,6 +1,9 @@
 "use strict";
 
 import * as THREE from "three";
+import {intersectionResult} from "./rendering/codeMapGeometricDescription"
+import {codeMapMesh} from "./rendering/codeMapMesh"
+import {codeMapBuilding} from "./rendering/codeMapBuilding"
 
 /**
  * Controls the codeMapDirective
@@ -103,6 +106,20 @@ class CodeMapController {
             this.hovered = null;
             this.onBuildingHovered(from, null);
             this.lock = true;
+        }
+
+        if (this.sceneService.getMapMesh() != null)
+        {
+            let intersectionResult = this.sceneService.getMapMesh().checkMouseRayMeshIntersection(this.mouse, this.cameraService.camera);
+
+            if (intersectionResult.intersectionFound)
+            {
+                this.sceneService.getMapMesh().setHighlighted(intersectionResult.building);
+            }
+            else
+            {
+                this.sceneService.getMapMesh().clearHighlight();
+            }
         }
     }
 

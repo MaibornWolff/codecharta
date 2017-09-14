@@ -26,6 +26,11 @@ class ThreeSceneService {
 
         this.scene.add(this.mapGeometry);
         this.scene.add(this.lights);
+
+        /**
+         * @type {codeMapMesh}
+         */
+        this.mapMesh = null;
     }
 
     initLights()
@@ -55,21 +60,32 @@ class ThreeSceneService {
     }
 
     /**
-     * @param {THREE.Mesh}
+     * @param {codeMapMesh}
+     * @param {number}
      */
-    setMapGeometry(mesh, size)
+    setMapMesh(mesh, size)
     {
+        this.mapMesh = mesh;
+
         while(this.mapGeometry.children.length > 0){
             this.mapGeometry.remove(
                 this.mapGeometry.children[0]
             );
         }
 
-        this.mapGeometry.add(mesh);
+        this.mapGeometry.add(mesh.getThreeMesh());
 
         this.mapGeometry.position.x = -size / 2.0;
         this.mapGeometry.position.y = 0.0;
         this.mapGeometry.position.z = -size / 2.0;
+    }
+
+    /**
+     * @return {codeMapMesh}
+     */
+    getMapMesh()
+    {
+        return this.mapMesh;
     }
 }
 
