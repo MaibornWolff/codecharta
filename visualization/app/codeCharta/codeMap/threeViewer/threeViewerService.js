@@ -75,6 +75,8 @@ class ThreeViewerService {
      * Applies transformations on window resize.
      */
     onWindowResize() {
+        this.SceneService.scene.updateMatrixWorld();
+
         this.RendererService.renderer.setSize(window.innerWidth, window.innerHeight);
         this.CameraService.camera.aspect = window.innerWidth / window.innerHeight;
         this.CameraService.camera.updateProjectionMatrix();
