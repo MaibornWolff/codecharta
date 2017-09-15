@@ -124,6 +124,7 @@ void main() {
             diffuseColor.xyz = deltaColorNegative;
         }
         
+        /* comment in to enable rendering of +/- symbols on top
         if (isTop)
         {
             if ((vDelta > 0.0 && pixelInProceduralPlusArea(vUV)) || (vDelta < 0.0 && pixelInProceduralMinusArea(vUV)))
@@ -131,6 +132,7 @@ void main() {
                 diffuseColor.xyz = vec3(1, 1, 1);
             }
         }
+        */
     }
 
     ReflectedLight reflectedLight = ReflectedLight(vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0));

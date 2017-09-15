@@ -3,7 +3,6 @@ import {node} from "./node"
 
 interface internalLabel {
     sprite : THREE.Sprite,
-    building : THREE.Object3D | null,
     line : THREE.Line | null,
     heightValue : number
 }
@@ -14,6 +13,7 @@ export class labelManager {
 
     constructor(argParentObjectInScene : THREE.Object3D) {
         this.parentObjectInScene = argParentObjectInScene;
+        this.labels = new Array<internalLabel>();
     }
 
     /**
@@ -28,11 +28,19 @@ export class labelManager {
     * @param {string} heightKey the height metric
     * @param {Object3D} building the building
     */
-    addLabel(x : number, y : number, z : number, w : number, h : number, l : number, node : node, heightKey : number, building : THREE.Object3D) {
+    addLabel(node : node, heightKey : number, mapSize : number) : void {
         if(node.attributes && node.attributes[heightKey]){
+
+            let x : number = node.x0 - mapSize * 0.5;
+            let y : number = node.z0;
+            let z : number = node.y0 - mapSize * 0.5;
+
+            let w : number = node.width;
+            let h : number = node.height;
+            let l : number = node.length;
+
             let label : internalLabel = this.makeText(node.name + ": " + node.attributes[heightKey], 30);
             label.sprite.position.set(x+w/2,y+60+h + label.heightValue/2,z+l/2);
-            label.building = building;
 
             const material = new THREE.LineBasicMaterial({
                 color: 0x0000ff
@@ -46,6 +54,9 @@ export class labelManager {
         
             label.line = new THREE.Line(geometry, material);
 
+            this.parentObjectInScene.add(label.sprite);
+            this.parentObjectInScene.add(label.line);
+
             this.labels.push(label);
         }
     }
@@ -56,20 +67,19 @@ export class labelManager {
      * @param {number} y scaling y
      * @param {number} z scaling z
      */
-    update(x : number, y : number, z : number) {
+    scale(x : number, y : number, z : number) {
         for(let label of this.labels) {
             label.sprite.position.x *= x;
             label.sprite.position.y *= y;
             label.sprite.position.z *= z;
 
-            /*
-             label.labelBuildingConnector.geometry.vertices[0].x *= x;
-             label.labelBuildingConnector.geometry.vertices[0].y *= y;
-             label.labelBuildingConnector.geometry.vertices[0].z *= z;
-             label.labelBuildingConnector.geometry.vertices[1].x *= x;
-             label.labelBuildingConnector.geometry.vertices[1].y *= y;
-             label.labelBuildingConnector.geometry.vertices[1].z *= z;
-             */
+            label.line!.geometry.vertices[0].x *= x;
+            label.line!.geometry.vertices[0].y *= y;
+            label.line!.geometry.vertices[0].z *= z;
+
+            label.line!.geometry.vertices[1].x *= x;
+            label.line!.geometry.vertices[1].y *= y;
+            label.line!.geometry.vertices[1].z *= z;
         }
     }
         
@@ -116,7 +126,6 @@ export class labelManager {
         return {
             "sprite" : sprite,
             "heightValue" : canvas.height,
-            "building" : null,
             "line" : null
         };
     }
