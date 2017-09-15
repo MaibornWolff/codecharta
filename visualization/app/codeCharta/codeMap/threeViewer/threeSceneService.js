@@ -26,6 +26,7 @@ class ThreeSceneService {
 
         this.scene.add(this.mapGeometry);
         this.scene.add(this.lights);
+        this.scene.add(this.labels);
 
         /**
          * @type {codeMapMesh}
@@ -45,6 +46,7 @@ class ThreeSceneService {
         light1.shadow.camera.bottom = -5;
         light1.shadow.camera.near = 2;
         light1.shadow.camera.far = 100;
+
         const light2 = new THREE.DirectionalLight(0xe0e0e0, 1);
         light2.position.set(-50, 10, -8).normalize();
         light2.castShadow = false;
@@ -54,6 +56,7 @@ class ThreeSceneService {
         light2.shadow.camera.bottom = -5;
         light2.shadow.camera.near = 2;
         light2.shadow.camera.far = 100;
+        
         this.lights.add(ambilight);
         this.lights.add(light1);
         this.lights.add(light2);
@@ -78,6 +81,12 @@ class ThreeSceneService {
         this.mapGeometry.position.x = -size / 2.0;
         this.mapGeometry.position.y = 0.0;
         this.mapGeometry.position.z = -size / 2.0;
+    }
+
+    clearLabels()
+    {
+        while (this.labels.children.length > 0)
+            this.labels.children.pop();
     }
 
     /**

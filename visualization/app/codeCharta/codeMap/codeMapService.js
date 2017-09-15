@@ -3,6 +3,7 @@
 import * as THREE from "three";
 import {codeMapMesh} from "./rendering/codeMapMesh";
 import {renderSettings} from "./rendering/renderSettings"
+import {labelManager} from "./rendering/labelManager"
 
 const mapSize = 500.0;
 
@@ -43,6 +44,11 @@ class CodeMapService {
          */
         this.mapMesh = null;
 
+        /**
+         * @type {labelManager}
+         */
+        this.labelManager = null;
+
         let ctx = this;
 
         $rootScope.$on("settings-changed", (e, s)=> {
@@ -70,7 +76,19 @@ class CodeMapService {
 
         let nodes = this.treemapService.createTreemapNodes(s.map, mapSize, mapSize, padding, s.areaMetric, s.heightMetric);
         let sorted = nodes.sort((a,b)=>{return b.height - a.height;});
- 
+
+        this.threeSceneService.clearLabels();
+        this.labelManager = new labelManager(this.threeSceneService.labels);
+        
+        for (let i=0, numAdded = 0; i < sorted.length && numAdded < s.amountOfTopLabels; ++i)
+        {
+            if (sorted[i].isLeaf)
+            {
+                this.labelManager.addLabel(sorted[i], s.heightMetric, mapSize);
+                ++numAdded;
+            }
+        }
+
         this.mapMesh = new codeMapMesh(
             sorted,
             {
@@ -102,6 +120,9 @@ class CodeMapService {
 
         if (this.threeSceneService.getMapMesh())
             this.threeSceneService.getMapMesh().setScale(x, y, z);
+
+        if (this.labelManager)
+            this.labelManager.scale(x, y, z);
     }
 }
 
