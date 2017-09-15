@@ -3,8 +3,8 @@ import {node} from "./node"
 
 interface internalLabel {
     sprite : THREE.Sprite,
-    building : THREE.Object3D,
-    line : THREE.Line,
+    building : THREE.Object3D | null,
+    line : THREE.Line | null,
     heightValue : number
 }
 
@@ -82,28 +82,28 @@ export class labelManager {
     makeText(message : string, fontsize : number) : internalLabel {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
-        ctx.font = fontsize + "px Arial";
+        ctx!.font = fontsize + "px Arial";
     
         const margin = 10;
     
         // setting canvas width/height before ctx draw, else canvas is empty
-        const w = ctx.measureText(message).width;
+        const w = ctx!.measureText(message).width;
         const h = fontsize;
         canvas.width = w + margin;
         canvas.height = h + margin; // fontsize * 1.5
         
         //bg
-        ctx.fillStyle = "rgba(255,255,255,1)";
-        ctx.strokeStyle = "rgba(0,0,255,1)";
-        ctx.fillRect(0,0,canvas.width, canvas.height);
-        ctx.strokeRect(0,0,canvas.width, canvas.height);
+        ctx!.fillStyle = "rgba(255,255,255,1)";
+        ctx!.strokeStyle = "rgba(0,0,255,1)";
+        ctx!.fillRect(0,0,canvas.width, canvas.height);
+        ctx!.strokeRect(0,0,canvas.width, canvas.height);
         
         // after setting the canvas width/height we have to re-set font to apply!?! looks like ctx reset
-        ctx.font = h + "px Arial";
-        ctx.fillStyle = "rgba(0,0,0,1)";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(message, canvas.width / 2, canvas.height / 2);
+        ctx!.font = h + "px Arial";
+        ctx!.fillStyle = "rgba(0,0,0,1)";
+        ctx!.textAlign = "center";
+        ctx!.textBaseline = "middle";
+        ctx!.fillText(message, canvas.width / 2, canvas.height / 2);
         
         const texture = new THREE.Texture(canvas);
         texture.minFilter = THREE.LinearFilter; // NearestFilter;
@@ -116,8 +116,8 @@ export class labelManager {
         return {
             "sprite" : sprite,
             "heightValue" : canvas.height,
-            "building" : undefined,
-            "line" : undefined
+            "building" : null,
+            "line" : null
         };
     }
 }

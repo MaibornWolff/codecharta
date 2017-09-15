@@ -2,6 +2,7 @@
 
 import * as THREE from "three";
 import {codeMapMesh} from "./rendering/codeMapMesh";
+import {renderSettings} from "./rendering/renderSettings"
 
 const mapSize = 500.0;
 
@@ -70,7 +71,16 @@ class CodeMapService {
         let nodes = this.treemapService.createTreemapNodes(s.map, mapSize, mapSize, padding, s.areaMetric, s.heightMetric);
         let sorted = nodes.sort((a,b)=>{return b.height - a.height;});
  
-        this.mapMesh = new codeMapMesh(sorted, s.colorMetric, s.neutralColorRange, mapSize);
+        this.mapMesh = new codeMapMesh(
+            sorted,
+            {
+                heightKey : s.heightMetric,
+                colorKey : s.colorMetric,
+                renderDeltas : s.deltas,
+                colorRange : s.neutralColorRange,
+                mapSize : mapSize
+            }
+        );
 
         this.threeSceneService.setMapMesh(this.mapMesh, mapSize);
     }

@@ -3,12 +3,15 @@
 
 attribute vec3 color;
 attribute highp float subGeomIdx;
+attribute highp float delta;
 
 varying vec3 vColor;
 varying vec3 viewDirection;
 varying vec3 worldNormal;
 varying vec3 vLightFront;
 varying highp float oSubGeomIdx;
+varying highp float vDelta;
+varying vec2 vUV;
 
 struct GeometricContext {
     vec3 position;
@@ -48,7 +51,6 @@ void main()
 
 	vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
 	gl_Position = projectionMatrix * modelViewPosition;
-    vColor = color;
 
     worldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
     oSubGeomIdx = float(subGeomIdx);
@@ -61,6 +63,9 @@ void main()
     geometry.viewDir = normalize(-viewPosition.xyz);
 
     vLightFront = vec3(0.0);
+    vUV = uv;
+    vColor = color;
+    vDelta = delta;
 
     for (int i=0; i < 2; ++i)
     {

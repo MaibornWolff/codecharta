@@ -1,17 +1,26 @@
+#define MAX_NUM_HIGHLIGHTS_SELECTIONS 10
+
 varying vec3 vColor;
 varying vec3 viewDirection;
 varying vec3 worldNormal;
 varying vec3 vLightFront;
 varying highp float oSubGeomIdx;
+varying highp float vDelta;
+varying vec2 vUV;
 
 uniform vec3 emissive;
 uniform vec3 ambientLightColor;
 
-uniform vec3 highlightColor;
-uniform highp float highlightColorIdx;
+uniform highp float numHighlights;
+uniform highp float numSelections;
 
+uniform vec3 highlightColor;
 uniform vec3 selectedColor;
-uniform highp float selectedColorIdx;
+uniform highp float highlightedIndices[MAX_NUM_HIGHLIGHTS_SELECTIONS];
+uniform highp float selectedIndices[MAX_NUM_HIGHLIGHTS_SELECTIONS];
+
+uniform vec3 deltaColorPositive;
+uniform vec3 deltaColorNegative;
 
 #define RECIPROCAL_PI 0.31830988618
 #define PI 3.14159265359
@@ -33,22 +42,106 @@ vec3 BRDF_Diffuse_Lambert (const in vec3 diffuseColor) {
     return RECIPROCAL_PI * diffuseColor;
 }
 
+bool normalPointingUp(const in vec3 normal)
+{
+    return normal.y > 0.9;
+}
+
+struct Rect {
+    vec2 min;
+    vec2 max;
+};
+
+bool uvCoordInRectangle(const in vec2 uv, const in Rect r)
+{
+    return uv.x >= r.min.x && uv.x < r.max.x && uv.y >= r.min.y && uv.y < r.max.y;
+}
+
+bool pixelInProceduralMinusArea(const in vec2 uv)
+{
+    float height = 0.1;
+    float width = 0.35;
+
+    float hh = height * 0.5;
+    float hw = width * 0.5;
+
+    float xMin = (1.0 - width) * 0.5;
+    float xMax = xMin + width;
+
+    float yMin = (1.0 - height) * 0.5;
+    float yMax = yMin + height;
+
+    return uvCoordInRectangle(vUV, Rect(vec2(xMin, yMin), vec2(xMax, yMax)));
+}
+
+bool pixelInProceduralPlusArea(const in vec2 uv)
+{
+float height = 0.1;
+    float width = 0.35;
+
+    float hh = height * 0.5;
+    float hw = width * 0.5;
+
+    float xMin = (1.0 - width) * 0.5;
+    float xMax = xMin + width;
+
+    float yMin = (1.0 - height) * 0.5;
+    float yMax = yMin + height;
+
+    Rect r1 = Rect(vec2(xMin, yMin), vec2(xMax, yMax));
+    Rect r2 = Rect(vec2(yMin, xMin), vec2(yMax, xMax));
+
+    return uvCoordInRectangle(uv, r1) || uvCoordInRectangle(uv, r2);
+}
+
 void main() {
     vec4 diffuseColor = vec4(vColor, 1.0);
 
-    float epsilon = 0.0001;
+    const float epsilon = 0.1;
+    const float minDelta = 0.001;
 
-    if (abs(oSubGeomIdx - selectedColorIdx) < epsilon)
+    int highlights = int(numHighlights);
+    int selections = int(numSelections);
+
+    for (int i=0; i < MAX_NUM_HIGHLIGHTS_SELECTIONS; ++i)
     {
-        diffuseColor.xyz = selectedColor;
+        if (i < selections && abs(oSubGeomIdx - selectedIndices[i]) < epsilon)
+        {
+            diffuseColor.xyz = selectedColor;
+        }
+    }
+
+    bool isTop = normalPointingUp(worldNormal);
+
+    if (abs(vDelta) > minDelta && (vUV.y > 1.0 - abs(vDelta) || isTop))
+    {
+        if (vDelta > 0.0)
+        {
+            diffuseColor.xyz = deltaColorPositive;
+        }
+        else
+        {
+            diffuseColor.xyz = deltaColorNegative;
+        }
+        
+        if (isTop)
+        {
+            if ((vDelta > 0.0 && pixelInProceduralPlusArea(vUV)) || (vDelta < 0.0 && pixelInProceduralMinusArea(vUV)))
+            {
+                diffuseColor.xyz = vec3(1, 1, 1);
+            }
+        }
     }
 
     ReflectedLight reflectedLight = ReflectedLight(vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0));
     vec3 totalEmissiveRadiance = emissive;
 
-    if (abs(oSubGeomIdx - highlightColorIdx) < epsilon)
+    for (int i=0; i < MAX_NUM_HIGHLIGHTS_SELECTIONS; ++i)
     {
-        totalEmissiveRadiance = highlightColor;
+        if (i < highlights && abs(oSubGeomIdx - highlightedIndices[i]) < epsilon)
+        {
+            totalEmissiveRadiance = highlightColor;
+        }
     }
 
     reflectedLight.indirectDiffuse = getAmbientLightIrradiance(ambientLightColor);

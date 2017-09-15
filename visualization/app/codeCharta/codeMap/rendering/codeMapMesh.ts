@@ -8,40 +8,29 @@ import {codeMapBuilding} from "./codeMapBuilding";
 import {renderingUtil} from "./renderingUtil";
 import {node} from "./node";
 
+import {MapColors} from "./renderSettings"
+import {renderSettings} from "./renderSettings"
+
 interface threeUniform {
     type : string;
     value : any;
 }
 
 interface codeMapLightingParams {
+    numHighlights : threeUniform,
+    numSelections : threeUniform,
     highlightColor : threeUniform;
-    highlightColorIdx : threeUniform;
+    highlightedIndices : threeUniform;
     selectedColor : threeUniform;
-    selectedColorIdx : threeUniform;
+    selectedIndices : threeUniform;
     emissive : threeUniform;
+    deltaColorPositive : threeUniform;
+    deltaColorNegative : threeUniform;
 }
 
 interface mousePos {
     x : number,
     y : number
-}
-
-export interface colorRange {
-    from : number;
-    to : number;
-    flipped : boolean;
-}
-
-export enum MapColors {
-    positive = 0x69AE40,
-    neutral = 0xddcc00,
-    negative = 0x820E0E,
-    odd = 0x501A1C,
-    even = 0xD1A9A9,
-    selected = 0xEB8319,
-    defaultC = 0x89ACB4,
-    positiveDelta = 0x69ff40,
-    negativeDelta = 0xff0E0E
 }
 
 export class codeMapMesh {
@@ -52,28 +41,39 @@ export class codeMapMesh {
 
     private nodes : node[];
 
-    private currentlyHighlighted : codeMapBuilding;
-    private currentlySelected : codeMapBuilding;
+    private currentlyHighlighted : codeMapBuilding[] | null;
+    private currentlySelected : codeMapBuilding[] | null;
+
+    private settings : renderSettings;
 
     private lightingParams : codeMapLightingParams = {
+        numHighlights : {type : 'f', value : 0.0},
         highlightColor : {type : 'v3', value : renderingUtil.colorToVec3(0x666666)},
-        highlightColorIdx : {type : 'f', value : -1.0},
+        highlightedIndices : {type : 'fv1', value : []},
+
+        numSelections : {type : 'f', value : 0.0},
         selectedColor : {type : 'f', value : renderingUtil.colorToVec3(MapColors.selected)},
-        selectedColorIdx : {type : 'f', value : -1.0},
+        selectedIndices : {type : 'fv1', value : []},
+
+        deltaColorPositive : {type : 'v3', value : renderingUtil.colorToVec3(MapColors.positiveDelta)},
+        deltaColorNegative : {type : 'v3', value : renderingUtil.colorToVec3(MapColors.negativeDelta)},
+
         emissive : {type : 'v3', value : new THREE.Vector3(0.0, 0.0, 0.0)}
     };
 
-    constructor(nodes : node[], colorKey : string, neutralColorRange : colorRange, mapSize : number)
+    constructor(nodes : node[], settings : renderSettings)
     {
         this.nodes = nodes;
 
         this.initMaterial();
 
         this.geomGen = new geometryGenerator();
-        let buildRes : buildResult = this.geomGen.build(this.nodes, this.material, colorKey, neutralColorRange, mapSize);
+        let buildRes : buildResult = this.geomGen.build(this.nodes, this.material, settings);
 
         this.threeMesh = buildRes.mesh;
         this.mapGeomDesc = buildRes.desc;
+
+        this.settings = settings;
     }
 
     private initMaterial() : void
@@ -94,45 +94,47 @@ export class codeMapMesh {
         return this.threeMesh;
     }
 
-    public setHighlighted(building : codeMapBuilding, color? : number)
+    public setHighlighted(buildings : codeMapBuilding[], color? : number)
     {
-        this.material.uniforms.highlightColorIdx.value = building.id;
+        this.material.uniforms.highlightedIndices.value = buildings.map((b : codeMapBuilding) => {return b.id});
+        this.material.uniforms.numHighlights.value = buildings.length;
 
         if (color)
             this.lightingParams.highlightColor.value = renderingUtil.colorToVec3(color);
 
-        this.currentlyHighlighted = building;
+        this.currentlyHighlighted = buildings;
     }
 
-    public setSelected(building : codeMapBuilding, color? : number)
+    public setSelected(buildings : codeMapBuilding[], color? : number)
     {
-        this.lightingParams.selectedColorIdx.value = building.id;
+        this.material.uniforms.selectedIndices.value = buildings.map((b : codeMapBuilding) => {return b.id});
+        this.material.uniforms.numSelections.value  = buildings.length;
         
         if (color)
             this.lightingParams.selectedColor.value = renderingUtil.colorToVec3(color);
 
-            this.currentlySelected = building;
+        this.currentlySelected = buildings;
     }
 
-    public getCurrentlyHighlighted() : codeMapBuilding
+    public getCurrentlyHighlighted() : codeMapBuilding[] | null
     {
         return this.currentlyHighlighted;
     }
 
-    public getCurrentlySelected() : codeMapBuilding
+    public getCurrentlySelected() : codeMapBuilding[] | null
     {
         return this.currentlySelected;
     }
 
     public clearHighlight()
     {
-        this.lightingParams.highlightColorIdx.value = -1.0;
+        this.material.uniforms.numHighlights.value = 0.0;
         this.currentlyHighlighted = null;
     }
 
     public clearSelected()
     {
-        this.lightingParams.selectedColorIdx.value = -1.0;
+        this.material.uniforms.numSelections.value = 0.0;
         this.currentlySelected = null;
     }
 

@@ -1,5 +1,5 @@
 export interface nodeAttributes {
-    [key : string] : number;
+    readonly [key : string] : number;
 }
 
 export interface node {
@@ -12,7 +12,7 @@ export interface node {
     readonly z0 : number;
     readonly y0 : number;
     readonly isLeaf : boolean;
-    readonly deltas : any;
+    readonly deltas : nodeAttributes;
     readonly attributes : nodeAttributes;
     readonly children : node[];
     readonly isDelta : boolean;

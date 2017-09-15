@@ -29,7 +29,7 @@ export class codeMapGeometricDescription {
 
     intersect(ray : THREE.Ray) : intersectionResult
     {
-        let intersectedBuilding : codeMapBuilding = null;
+        let intersectedBuilding : codeMapBuilding | null = null;
         let leastIntersectedDistance : number = Infinity;
 
         let boxTranslation = new THREE.Vector3(-this.mapSize * this.scales.x * 0.5, 0.0, -this.mapSize * this.scales.z * 0.5);
