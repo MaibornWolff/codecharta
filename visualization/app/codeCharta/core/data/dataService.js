@@ -78,6 +78,17 @@ export class DataService {
     /////IM WERDEN////////////////////
 
     /**
+     * resets all maps (deletes them)
+     */
+    resetMaps() {
+        this.data.revisions = [];
+        this.data.metrics = [];
+        this.data.comparisonMap = {};
+        this.data.referenceMap = {};
+        this.$rootScope.$broadcast("data-changed", this.data);
+    }
+
+    /**
      * Selects and sets the first map to compare.
      * @param {number} index the maps index in the revisions array
      */

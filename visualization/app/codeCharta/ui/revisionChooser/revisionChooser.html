@@ -1,8 +1,8 @@
-<div ng-show="ctrl.settingsService.settings.deltas" id="revisionButton">
+<div ng-show="ctrl.settingsService.settings.deltas && ctrl.dataService.data.revisions.length != 1" id="revisionButton">
     <a class="waves-effect waves-light btn ">revisions</a>
 </div>
 
-<div ng-show="!ctrl.settingsService.settings.deltas" id="mapButton">
+<div ng-show="!ctrl.settingsService.settings.deltas && ctrl.dataService.data.revisions.length != 1" id="mapButton">
     <a class="waves-effect waves-light btn ">maps</a>
 </div>
 
