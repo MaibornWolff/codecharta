@@ -13,7 +13,8 @@ export enum MapColors {
     selected = 0xEB8319,
     defaultC = 0x89ACB4,
     positiveDelta = 0x69ff40,
-    negativeDelta = 0xff0E0E
+    negativeDelta = 0xff0E0E,
+    base = 0x666666
 }
 
 export interface renderSettings {
