@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import {node} from "./node"
+import {renderSettings} from "./renderSettings"
 
 interface internalLabel {
     sprite : THREE.Sprite,
@@ -16,30 +17,23 @@ export class labelManager {
         this.labels = new Array<internalLabel>();
     }
 
-    /**
-    * adds a label at the given position
-    * @param {number} x x position
-    * @param {number} y y position
-    * @param {number} z z position
-    * @param {number} w width
-    * @param {number} h height
-    * @param {number} l length
-    * @param {object} node the transformed d3 node
-    * @param {string} heightKey the height metric
-    * @param {Object3D} building the building
-    */
-    addLabel(node : node, heightKey : number, mapSize : number) : void {
-        if(node.attributes && node.attributes[heightKey]){
+    addLabel(node : node, settings : renderSettings) : void {
+        if(node.attributes && node.attributes[settings.heightKey]){
 
-            let x : number = node.x0 - mapSize * 0.5;
+            let x : number = node.x0 - settings.mapSize * 0.5;
             let y : number = node.z0;
-            let z : number = node.y0 - mapSize * 0.5;
+            let z : number = node.y0 - settings.mapSize * 0.5;
 
             let w : number = node.width;
             let h : number = node.height;
             let l : number = node.length;
 
-            let label : internalLabel = this.makeText(node.name + ": " + node.attributes[heightKey], 30);
+            if (settings.renderDeltas && node.deltas[settings.heightKey] > 0.0)
+            {
+                h += node.deltas[settings.heightKey];
+            }
+
+            let label : internalLabel = this.makeText(node.name + ": " + node.attributes[settings.heightKey], 30);
             label.sprite.position.set(x+w/2,y+60+h + label.heightValue/2,z+l/2);
 
             const material = new THREE.LineBasicMaterial({
@@ -61,27 +55,21 @@ export class labelManager {
         }
     }
         
-    /**
-     * Repositions labels and connectors according to building and floor scale
-     * @param {number} x scaling x
-     * @param {number} y scaling y
-     * @param {number} z scaling z
-     */
     scale(x : number, y : number, z : number) {
         for(let label of this.labels) {
             label.sprite.position.x *= x;
             label.sprite.position.y *= y;
             label.sprite.position.z *= z;
 
-            /*
-            label.line!.geometry.vertices[0].x *= x;
-            label.line!.geometry.vertices[0].y *= y;
-            label.line!.geometry.vertices[0].z *= z;
+            //cast is a workaround for the compiler. Attribute vertices does exist on geometry
+            //but it is missing in the mapping file for TypeScript.
+            (<any>label.line!.geometry).vertices[0].x *= x;
+            (<any>label.line!.geometry).vertices[0].y *= y;
+            (<any>label.line!.geometry).vertices[0].z *= z;
 
-            label.line!.geometry.vertices[1].x *= x;
-            label.line!.geometry.vertices[1].y *= y;
-            label.line!.geometry.vertices[1].z *= z;
-            */
+            (<any>label.line!.geometry).vertices[1].x = label.sprite.position.x;
+            (<any>label.line!.geometry).vertices[1].y = label.sprite.position.y;
+            (<any>label.line!.geometry).vertices[1].z = label.sprite.position.z;
         }
     }
         

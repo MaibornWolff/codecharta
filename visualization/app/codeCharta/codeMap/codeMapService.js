@@ -72,10 +72,16 @@ class CodeMapService {
     }
 
     updateMapGeometry(s) {
-        const padding = 1;
-
-        let nodes = this.treemapService.createTreemapNodes(s.map.root, mapSize, mapSize, padding, s.areaMetric, s.heightMetric);
+        let nodes = this.treemapService.createTreemapNodes(s.map.root, mapSize, mapSize, s.margin, s.areaMetric, s.heightMetric);
         let sorted = nodes.sort((a,b)=>{return b.height - a.height;});
+
+        let renderSettings  =  {
+            heightKey : s.heightMetric,
+            colorKey : s.colorMetric,
+            renderDeltas : s.deltas,
+            colorRange : s.neutralColorRange,
+            mapSize : mapSize
+        };
 
         this.threeSceneService.clearLabels();
         this.labelManager = new labelManager(this.threeSceneService.labels);
@@ -84,21 +90,12 @@ class CodeMapService {
         {
             if (sorted[i].isLeaf)
             {
-                this.labelManager.addLabel(sorted[i], s.heightMetric, mapSize);
+                this.labelManager.addLabel(sorted[i], renderSettings);
                 ++numAdded;
             }
         }
 
-        this.mapMesh = new codeMapMesh(
-            sorted,
-            {
-                heightKey : s.heightMetric,
-                colorKey : s.colorMetric,
-                renderDeltas : s.deltas,
-                colorRange : s.neutralColorRange,
-                mapSize : mapSize
-            }
-        );
+        this.mapMesh = new codeMapMesh(sorted, renderSettings);
 
         this.threeSceneService.setMapMesh(this.mapMesh, mapSize);
     }
