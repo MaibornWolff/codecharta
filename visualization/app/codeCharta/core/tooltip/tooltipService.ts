@@ -1,26 +1,34 @@
 "use strict";
 
+export interface Tooltips {
+    [key: string]: string;
+}
+
+export interface TooltipServiceSubscriber {
+    onTooltipsChanged(tooltips: Tooltips, event: Event)
+}
+
 /**
  * Return tooltips containing descriptions
  */
 class TooltipService {
 
+    private tooltips: Tooltips;
+
     /* @ngInject */
+    constructor(private $rootScope) {
+        this.setTooltips(require("./tooltips.json"));
+    }
 
-    /**
-     * @constructor
-     * @param {Scope} $rootScope
-     */
-    constructor($rootScope) {
+    public subscribe(subscriber: TooltipServiceSubscriber) {
+        this.$rootScope.$on("tooltips-changed", (event, data) => {
+            subscriber.onTooltipsChanged(data, event);
+        });
+    }
 
-        /**
-         *
-         * @type {Object}
-         */
-        this.tooltips = require("./tooltips.json");
-
-        $rootScope.$broadcast("tooltips-changed", this.tooltips);
-
+    public setTooltips(tooltips: Tooltips) {
+        this.tooltips = tooltips;
+        this.$rootScope.$broadcast("tooltips-changed", this.tooltips);
     }
 
     /**
@@ -28,7 +36,7 @@ class TooltipService {
      * @param {String} key
      * @returns {String} the description related to the given key
      */
-    getTooltipTextByKey(key) {
+    public getTooltipTextByKey(key: string) {
 
         /**
          * This RegExp describes any set of zero or more

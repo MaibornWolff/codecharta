@@ -6,7 +6,7 @@ import {ThreeCameraService} from "./threeCameraService.js";
 import {ThreeOrbitControlsService} from "./threeOrbitControlsService.js";
 import {ThreeRendererService} from "./threeRendererService.js";
 import {ThreeUpdateCycleService} from "./threeUpdateCycleService.js";
-import "../../core/settings/settings.js";
+import "../../core/settings/settings.ts";
 
 let id = "app.codeCharta.codeMap.threeViewer";
 

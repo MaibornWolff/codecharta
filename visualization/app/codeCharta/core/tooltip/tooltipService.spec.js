@@ -1,4 +1,4 @@
-require("./tooltip.js");
+require("./tooltip.ts");
 
 /**
  * @test {TooltipService}

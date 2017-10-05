@@ -13,9 +13,8 @@ class TreeMapService {
      * @constructor 
      * @param {DataService}
      */
-    constructor(dataService) {
-        /** @type {DataService} */
-        this.dataService = dataService;
+    constructor(private dataService) {
+
     }
 
     /**
@@ -28,18 +27,18 @@ class TreeMapService {
      * @param {string} areaKey area metric name
      * @param {string} heightKey height metric name
      */
-    createTreemapNodes(data, w, l, p, areaKey, heightKey){
+    createTreemapNodes(data: any, w, l, p, areaKey, heightKey){
 
         let treeMap = d3.treemap()
             .size([w,l])
             .padding(p || 1);
         let root = d3.hierarchy(data);
 
-        root.descendants().forEach((l)=>{
+        root.descendants().forEach((l: any)=>{
             l.isLeaf = false;
         });
 
-        root.leaves().forEach((l)=>{
+        root.leaves().forEach((l: any)=>{
             l.isLeaf = true;
         });
 
@@ -52,7 +51,7 @@ class TreeMapService {
             this.transformNode(node, heightKey, heightScale, 2);
         });
 
-        return nodes.filter(function(el){return el.value > 0 && el.width > 0 && el.height > 0 && el.length > 0; }); //dont draw invisble nodes (for the current metrics)
+        return nodes.filter(function(el: any){return el.value > 0 && el.width > 0 && el.height > 0 && el.length > 0; }); //dont draw invisble nodes (for the current metrics)
     }
 
     /**
@@ -96,7 +95,7 @@ class TreeMapService {
 
         this.dataService.data.revisions.forEach((rev)=>{
             var nodes = d3.hierarchy(rev.root).leaves();
-            nodes.forEach((node)=>{
+            nodes.forEach((node: any)=>{
                 if(node.data.attributes[heightKey]>maxHeight){
                     maxHeight = node.data.attributes[heightKey];
                 }

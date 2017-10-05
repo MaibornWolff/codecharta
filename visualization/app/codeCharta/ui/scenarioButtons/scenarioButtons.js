@@ -1,6 +1,6 @@
 "use strict";
 
-import "../../core/tooltip/tooltip.js";
+import "../../core/tooltip/tooltip.ts";
 import {ScenarioButtonsDirective} from "./scenarioButtonsDirective.js";
 import {ScenarioButtonsController} from "./scenarioButtonsController.js";
 

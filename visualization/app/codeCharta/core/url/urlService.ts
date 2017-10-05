@@ -3,7 +3,7 @@
 /**
  * This service offers an application specific url API.
  */
-class UrlService {
+export class UrlService {
 
     /* @ngInject */
 
@@ -12,13 +12,7 @@ class UrlService {
      * @param {$location} $location
      * @param {$http} $http
      */
-    constructor($location, $http) {
-
-        /** @type {$location} */
-        this.location = $location;
-
-        /** @type {$http} */
-        this.http = $http;
+    constructor(private $location, private $http) {
 
     }
 
@@ -27,7 +21,7 @@ class UrlService {
      * @param {string} key
      * @returns {string} url parameter value
      */
-    getParam(key) {
+    public getParam(key: string): string {
         return this.getParameterByName(key);
     }
 
@@ -37,7 +31,7 @@ class UrlService {
      * @param {string} [url=current location]
      * @returns {string} url parameter value
      */
-    getParameterByName(name, url) {
+    public getParameterByName(name: string, url?: string): string {
         if (!url) {
             url = this.getUrl();
         }
@@ -57,15 +51,15 @@ class UrlService {
      * returns the current locations url
      * @returns {string} url
      */
-    getUrl() {
-        return this.location.absUrl();
+    public getUrl() : string{
+        return this.$location.absUrl();
     }
 
     /**
      * returns the files content specified in the 'file' url parameter
      * @returns {Promise} which returns the files content on resolution
      */
-    getFileDataFromQueryParam() {
+    public getFileDataFromQueryParam(): Promise<any> {
 
         return new Promise((resolve, reject) => {
             var param = this.getParam("file");
@@ -78,12 +72,12 @@ class UrlService {
      * returns the files content specified in the 'file' parameter
      * @returns {Promise} which returns the files content on resolution
      */
-    getFileDataFromFile(file) {
+    public getFileDataFromFile(file: string): Promise<any> {
 
         return new Promise((resolve, reject) => {
 
             if(file && file.length > 0) {
-                this.http.get(file).then(
+                this.$http.get(file).then(
                     function (response) {
                         if (response.status === 200) {
                             response.data.fileName= file;
@@ -104,5 +98,3 @@ class UrlService {
     }
 
 }
-
-export {UrlService};

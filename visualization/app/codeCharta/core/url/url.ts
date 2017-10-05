@@ -1,6 +1,8 @@
 "use strict";
 
-import {UrlService} from "./urlService.js";
+import angular from "angular";
+
+import {UrlService} from "./urlService.ts";
 
 angular.module("app.codeCharta.core.url",[]);
 

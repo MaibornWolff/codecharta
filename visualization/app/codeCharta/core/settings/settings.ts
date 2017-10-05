@@ -1,9 +1,11 @@
 "use strict";
 
-import "../url/url.js";
-import "../data/data.js";
+import angular from "angular";
 
-import {SettingsService} from "./settingsService.js";
+import "../url/url.ts";
+import "../data/data.ts";
+
+import {SettingsService} from "./settingsService.ts";
 
 angular.module(
     "app.codeCharta.core.settings",

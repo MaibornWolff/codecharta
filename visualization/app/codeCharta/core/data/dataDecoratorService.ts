@@ -1,6 +1,7 @@
 "use strict";
 
 import * as d3 from "d3";
+import {CodeMap} from "./model/CodeMap";
 
 /**
  * Decorates the data structure with artificial metrics
@@ -16,7 +17,7 @@ export class DataDecoratorService {
      * Decorates the map with the unary metric. This metric is always 1 to allow the same area on all buildings.
      * @param {CodeMap} map
      */
-    decorateMapWithUnaryMetric(map) {
+    public decorateMapWithUnaryMetric(map: CodeMap) {
 
         if(map.root) {
 

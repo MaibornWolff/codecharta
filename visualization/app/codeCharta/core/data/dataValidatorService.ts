@@ -1,6 +1,5 @@
 "use strict";
 
-import * as d3 from "d3";
 /**
  * This service validates the given data against the schema and other validation steps
  */
@@ -10,17 +9,10 @@ export class DataValidatorService {
 
     /**
      * @constructor
-     * @external {$http} https://docs.angularjs.org/api/ng/service/$http
      */
-    constructor($http) {
-        /**
-         * stores the $http instance
-         * @type {$http}
-         */
-        this.http = $http;
-    }
+    constructor() {
 
-    //TODO node datatype somewhere ?
+    }
 
     /**
      * Checks if a nodes children are unique in name

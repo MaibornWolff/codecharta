@@ -1,11 +1,12 @@
 "use strict";
 
-import {DataService} from "./dataService.js";
-import {DataValidatorService} from "./dataValidatorService.js";
-import {DataLoadingService} from "./dataLoadingService.js";
-import {DeltaCalculatorService} from "./deltaCalculatorService.js";
-import {DataDecoratorService} from "./dataDecoratorService.js";
+import {DataService} from "./dataService.ts";
+import {DataValidatorService} from "./dataValidatorService.ts";
+import {DataLoadingService} from "./dataLoadingService.ts";
+import {DeltaCalculatorService} from "./deltaCalculatorService.ts";
+import {DataDecoratorService} from "./dataDecoratorService.ts";
 
+import angular from "angular";
 
 angular.module("app.codeCharta.core.data",[]);
 

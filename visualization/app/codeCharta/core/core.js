@@ -1,11 +1,11 @@
 "use strict";
 
-import "./data/data.js";
-import "./settings/settings.js";
-import "./url/url.js";
-import "./treemap/treemap.js";
-import "./scenario/scenario.js";
-import "./tooltip/tooltip.js";
+import "./data/data.ts";
+import "./settings/settings.ts";
+import "./url/url.ts";
+import "./treemap/treemap.ts";
+import "./scenario/scenario.ts";
+import "./tooltip/tooltip.ts";
 
 angular.module(
     "app.codeCharta.core",
