@@ -7,8 +7,8 @@ export interface DataModel {
 
     revisions: CodeMap[],
     metrics: string[],
-    referenceMap: CodeMap,
-    comparisonMap: CodeMap
+    referenceMap: CodeMap | Object,
+    comparisonMap: CodeMap | Object
 
 }
 
@@ -29,8 +29,8 @@ export class DataService {
         this._data = {
             revisions: [],
             metrics: [],
-            referenceMap: null,
-            comparisonMap: null
+            referenceMap: {},
+            comparisonMap: {}
         };
 
     }
@@ -77,8 +77,8 @@ export class DataService {
     public resetMaps() {
         this._data.revisions = [];
         this._data.metrics = [];
-        this._data.comparisonMap = null;
-        this._data.referenceMap = null;
+        this._data.comparisonMap = {};
+        this._data.referenceMap = {};
         this.notify();
     }
 
