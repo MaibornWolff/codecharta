@@ -1,4 +1,4 @@
-require("./data.js");
+require("./data.ts");
 
 /**
  * @test {DataValidatorService}

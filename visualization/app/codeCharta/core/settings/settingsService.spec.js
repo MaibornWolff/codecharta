@@ -1,6 +1,4 @@
-require("./settings.js");
-
-import {CodeMap} from "../../core/data/model/codeMap";
+require("./settings.ts");
 
 /**
  * @test {SettingsService}
@@ -10,7 +8,7 @@ describe("app.codeCharta.core.settings.settingsService", function() {
     var validData;
 
     beforeEach(()=>{
-        validData = new CodeMap("file", "project", {
+        validData = {fileName: "file", projectName: "project", root:{
             "name": "root",
             "attributes": {},
             "children": [
@@ -36,7 +34,7 @@ describe("app.codeCharta.core.settings.settingsService", function() {
                     ]
                 }
             ]
-        });
+        }};
     });
 
     beforeEach(angular.mock.module("app.codeCharta.core.settings"));

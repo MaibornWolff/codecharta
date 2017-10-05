@@ -1,5 +1,4 @@
-require("./url.js");
-import {CodeMap} from "../../core/data/model/codeMap";
+require("./url.ts");
 
 /**
  * @test {UrlService}
@@ -13,7 +12,7 @@ describe("app.codeCharta.core.url.urlService", function() {
         urlService = _urlService_;
         $location = _$location_;
         $httpBackend = _$httpBackend_;
-        validdata = new CodeMap("file", "project", {
+        validdata = {fileName: "file", projectName:"project", root:{
             "name": "root",
             "attributes": {},
             "children": [
@@ -39,7 +38,7 @@ describe("app.codeCharta.core.url.urlService", function() {
                     ]
                 }
             ]
-        });
+        }};
     }));
 
     /**

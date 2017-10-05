@@ -1,4 +1,4 @@
-require("./treemap.js");
+require("./treemap.ts");
 
 const createData = function(){
     const data = {

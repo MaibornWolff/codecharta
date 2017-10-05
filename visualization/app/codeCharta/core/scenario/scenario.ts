@@ -1,9 +1,11 @@
 "use strict";
 
-import "../settings/settings.js";
-import "../data/data.js";
+import angular from "angular";
 
-import {ScenarioService} from "./scenarioService.js";
+import "../settings/settings.ts";
+import "../data/data.ts";
+
+import {ScenarioService} from "./scenarioService.ts";
 
 angular.module(
     "app.codeCharta.core.scenario",

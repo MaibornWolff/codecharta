@@ -1,6 +1,7 @@
 "use strict";
 
 import * as d3 from "d3";
+import {CodeMap} from "./model/CodeMap";
 
 /**
  * Calculates the deltas between given maps and modifies the data structure
@@ -12,7 +13,7 @@ export class DeltaCalculatorService {
 
     }
 
-    decorateMapsWithDeltas(firstMap, secondMap) {
+    decorateMapsWithDeltas(firstMap: CodeMap, secondMap: CodeMap) {
 
         if(firstMap.root && secondMap.root) {
             let firstRoot = d3.hierarchy(firstMap.root);
