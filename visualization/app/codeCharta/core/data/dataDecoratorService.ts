@@ -19,7 +19,7 @@ export class DataDecoratorService {
      */
     public decorateMapWithUnaryMetric(map: CodeMap) {
 
-        if(map.root) {
+        if(map && map.root) {
 
             let root = d3.hierarchy(map.root);
             let leaves = root.leaves();

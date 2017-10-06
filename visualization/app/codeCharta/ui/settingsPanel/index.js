@@ -1,7 +1,7 @@
 "use strict";
 
 import "../../ui/ui.js";
-import "../../core/core.js";
+import "../../core/core.ts";
 import "../../codeMap/codeMap.js";
 import "angularjs-slider";
 

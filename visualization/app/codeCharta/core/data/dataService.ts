@@ -2,18 +2,21 @@
 
 import * as d3 from "d3";
 import {CodeMap} from "./model/CodeMap";
+import {IRootScopeService, IAngularEvent} from "angular";
+import {DeltaCalculatorService} from "./deltaCalculatorService";
+import {DataDecoratorService} from "./dataDecoratorService";
 
 export interface DataModel {
 
     revisions: CodeMap[],
     metrics: string[],
-    referenceMap: CodeMap | Object,
-    comparisonMap: CodeMap | Object
+    referenceMap: CodeMap,
+    comparisonMap: CodeMap
 
 }
 
 export interface DataServiceSubscriber {
-    onDataChanged(data: DataModel, event: Event)
+    onDataChanged(data: DataModel, event: IAngularEvent)
 }
 
 /**
@@ -24,13 +27,16 @@ export class DataService {
     private _data: DataModel;
 
     /* @ngInject */
-    constructor(private $rootScope, private deltaCalculatorService, private dataDecoratorService){
+    constructor(private $rootScope: IRootScopeService,
+                private deltaCalculatorService: DeltaCalculatorService,
+                private dataDecoratorService: DataDecoratorService
+    ) {
 
         this._data = {
             revisions: [],
             metrics: [],
-            referenceMap: {},
-            comparisonMap: {}
+            referenceMap: null,
+            comparisonMap: null
         };
 
     }
@@ -64,11 +70,19 @@ export class DataService {
      * @param {number} index id
      */
     public setMetrics(index: number) {
-        let root = d3.hierarchy(this._data.revisions[index].root);
-        let leaves = root.leaves();
-        let attributeList = leaves.map(function(d) { return d.data.attributes ? Object.keys(d.data.attributes) : []; });
-        let attributes = attributeList.reduce(function(left: any, right: any) {return left.concat(right.filter(function(el){return left.indexOf(el) === -1;})); });
-        this._data.metrics = attributes;
+        if (this._data.revisions[index] !== null) {
+            let root = d3.hierarchy(this._data.revisions[index].root);
+            let leaves = root.leaves();
+            let attributeList = leaves.map(function (d) {
+                return d.data.attributes ? Object.keys(d.data.attributes) : [];
+            });
+            let attributes = attributeList.reduce(function (left: any, right: any) {
+                return left.concat(right.filter(function (el) {
+                    return left.indexOf(el) === -1;
+                }));
+            });
+            this._data.metrics = attributes;
+        }
     }
 
     /**
@@ -77,8 +91,8 @@ export class DataService {
     public resetMaps() {
         this._data.revisions = [];
         this._data.metrics = [];
-        this._data.comparisonMap = {};
-        this._data.referenceMap = {};
+        this._data.comparisonMap = null;
+        this._data.referenceMap = null;
         this.notify();
     }
 
@@ -86,26 +100,30 @@ export class DataService {
      * Selects and sets the first map to compare.
      * @param {number} index the maps index in the revisions array
      */
-    public setComparisonMap(index: number){
-        this.setMetrics(index);
-        this._data.comparisonMap = this._data.revisions[index];
-        this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.comparisonMap);
-        this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.referenceMap);
-        this.deltaCalculatorService.decorateMapsWithDeltas(this._data.comparisonMap, this._data.referenceMap);
-        this.notify();
+    public setComparisonMap(index: number) {
+        if (this._data.revisions[index] !== null) {
+            this.setMetrics(index);
+            this._data.comparisonMap = this._data.revisions[index];
+            this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.comparisonMap);
+            this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.referenceMap);
+            this.deltaCalculatorService.decorateMapsWithDeltas(this._data.comparisonMap, this._data.referenceMap);
+            this.notify();
+        }
     }
 
     /**
      * Selects and sets the second map to compare.
      * @param {number} index the maps index in the revisions array
      */
-    public setReferenceMap(index: number){
-        this.setMetrics(index);
-        this._data.referenceMap = this._data.revisions[index];
-        this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.comparisonMap);
-        this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.referenceMap);
-        this.deltaCalculatorService.decorateMapsWithDeltas(this._data.comparisonMap, this._data.referenceMap);
-        this.notify();
+    public setReferenceMap(index: number) {
+        if (this._data.revisions[index] !== null) {
+            this.setMetrics(index);
+            this._data.referenceMap = this._data.revisions[index];
+            this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.comparisonMap);
+            this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.referenceMap);
+            this.deltaCalculatorService.decorateMapsWithDeltas(this._data.comparisonMap, this._data.referenceMap);
+            this.notify();
+        }
     }
 
 }

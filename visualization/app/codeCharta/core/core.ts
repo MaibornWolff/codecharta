@@ -7,6 +7,8 @@ import "./treemap/treemap.ts";
 import "./scenario/scenario.ts";
 import "./tooltip/tooltip.ts";
 
+import angular from "angular";
+
 angular.module(
     "app.codeCharta.core",
     [

@@ -3,7 +3,7 @@
 import * as THREE from "three";
 
 import "./threeViewer/threeViewer.js";
-import "../core/core.js";
+import "../core/core.ts";
 
 import {CodeMapDirective} from "./codeMapDirective.js";
 import {CodeMapService} from "./codeMapService.js";

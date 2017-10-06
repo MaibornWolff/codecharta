@@ -1,6 +1,6 @@
 "use strict";
 
-import "../../core/core.js";
+import "../../core/core.ts";
 import {RevisionChooserDirective} from "./revisionChooserDirective.js";
 import {RevisionChooserController} from "./revisionChooserController.js";
 
