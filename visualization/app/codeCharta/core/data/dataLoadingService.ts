@@ -1,5 +1,7 @@
 "use strict";
 import {CodeMap} from "./model/CodeMap";
+import {DataValidatorService} from "./dataValidatorService";
+import {DataService} from "./dataService";
 
 /**
  * This service loads maps into the DataService
@@ -7,7 +9,7 @@ import {CodeMap} from "./model/CodeMap";
 export class DataLoadingService {
 
     /* @ngInject */
-    constructor(private dataValidatorService, private dataService){
+    constructor(private dataValidatorService: DataValidatorService, private dataService: DataService){
 
     }
 

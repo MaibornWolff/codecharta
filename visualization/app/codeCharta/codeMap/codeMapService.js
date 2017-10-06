@@ -155,6 +155,8 @@ class CodeMapService {
 
         this.addRoot();
 
+        console.log(map.root);
+
         let nodes = this.treemapService.createTreemapNodes(map.root, s, s, p, areaKey, heightKey);
 
         let sorted = nodes.sort((a,b)=>{return b.height - a.height;});

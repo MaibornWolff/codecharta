@@ -1,6 +1,7 @@
 "use strict";
 
 import * as d3 from "d3";
+import {DataService} from "../data/dataService";
 
 /**
  * This service transforms valid file data to a custom treemap. Our custom treemap has a 3rd axis added to the nodes. 
@@ -8,12 +9,7 @@ import * as d3 from "d3";
 class TreeMapService {
 
     /* @ngInject */
-
-     /**
-     * @constructor 
-     * @param {DataService}
-     */
-    constructor(private dataService) {
+    constructor(private dataService: DataService) {
 
     }
 

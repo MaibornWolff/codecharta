@@ -1,4 +1,5 @@
 "use strict";
+import {ILocationService, IHttpService, IHttpResponse} from "angular";
 
 /**
  * This service offers an application specific url API.
@@ -6,13 +7,7 @@
 export class UrlService {
 
     /* @ngInject */
-
-    /**
-     * @external {$location} https://docs.angularjs.org/api/ng/service/$location
-     * @param {$location} $location
-     * @param {$http} $http
-     */
-    constructor(private $location, private $http) {
+    constructor(private $location: ILocationService, private $http: IHttpService) {
 
     }
 
@@ -59,7 +54,7 @@ export class UrlService {
      * returns the files content specified in the 'file' url parameter
      * @returns {Promise} which returns the files content on resolution
      */
-    public getFileDataFromQueryParam(): Promise<any> {
+    public getFileDataFromQueryParam(): Promise<Object> {
 
         return new Promise((resolve, reject) => {
             var param = this.getParam("file");
@@ -72,15 +67,15 @@ export class UrlService {
      * returns the files content specified in the 'file' parameter
      * @returns {Promise} which returns the files content on resolution
      */
-    public getFileDataFromFile(file: string): Promise<any> {
+    public getFileDataFromFile(file: string): Promise<Object> {
 
         return new Promise((resolve, reject) => {
 
             if(file && file.length > 0) {
                 this.$http.get(file).then(
-                    function (response) {
+                    function (response: IHttpResponse<Object>) {
                         if (response.status === 200) {
-                            response.data.fileName= file;
+                            Object.assign(response.data, {fileName: file});
                             resolve(response.data);
                         } else {
                             reject();

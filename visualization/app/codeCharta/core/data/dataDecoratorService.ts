@@ -1,7 +1,8 @@
 "use strict";
 
 import * as d3 from "d3";
-import {CodeMap} from "./model/CodeMap";
+import {CodeMap, CodeMapNode} from "./model/CodeMap";
+import {HierarchyNode} from "d3-hierarchy";
 
 /**
  * Decorates the data structure with artificial metrics
@@ -21,11 +22,11 @@ export class DataDecoratorService {
 
         if(map && map.root) {
 
-            let root = d3.hierarchy(map.root);
-            let leaves = root.leaves();
+            let root = d3.hierarchy<CodeMapNode>(map.root);
+            let leaves: HierarchyNode<CodeMapNode>[] = root.leaves();
 
             for (var j = 0; j < leaves.length; j++) {
-                leaves[j].data.attributes.unary = 1;
+                Object.assign(leaves[j].data.attributes, {unary: 1})
             }
 
         }

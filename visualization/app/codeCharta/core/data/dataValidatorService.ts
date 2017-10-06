@@ -1,4 +1,5 @@
 "use strict";
+import {CodeMapNode} from "./model/CodeMap";
 
 /**
  * This service validates the given data against the schema and other validation steps
@@ -19,7 +20,7 @@ export class DataValidatorService {
      * @param {Object} node
      * @returns {boolean} true if the node has unique children
      */
-    hasUniqueChildren(node) {
+    hasUniqueChildren(node: CodeMapNode) {
 
         if(node.children && node.children.length > 0) {
 
@@ -51,7 +52,7 @@ export class DataValidatorService {
      * @param {Object} well formed fileContent (schema.json)
      * @returns {Promise} which resolves when the filecontent is valid, rejects with errors otherwise
      */
-    validate(data) {
+    validate(data): Promise<void> {
 
         return new Promise((resolve, reject) => {
 
