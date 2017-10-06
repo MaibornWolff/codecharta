@@ -2,7 +2,7 @@
 
 import "./common/common.js";
 import "./fabBar/fabBar.js";
-import "./settingsPanel/index.js";
+import "./settingsPanel/index.ts";
 import "./revisionChooser/revisionChooser.js";
 import "./legendPanel/legendPanel.js";
 import "./fileChooser/fileChooser.js";

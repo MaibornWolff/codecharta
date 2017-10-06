@@ -1,49 +1,38 @@
 "use strict";
+import {SettingsService, Settings, SettingsServiceSubscriber} from "../../core/settings/settingsService";
+import {DataService, DataServiceSubscriber, DataModel} from "../../core/data/dataService";
+import {TreeMapService} from "../../core/treemap/treeMapService";
 
 /**
  * Controls the settingsPanel
  */
-export class SettingsPanelController {
+export class SettingsPanelController implements DataServiceSubscriber, SettingsServiceSubscriber{
+
+    public settings: Settings;
+    public sliderOptions: any;
+    public metrics: string[];
 
     /* @ngInject */
+    constructor(
+        private settingsService: SettingsService,
+        private dataService: DataService,
+        private treeMapService: TreeMapService
+    ) {
 
-    /**
-     * @listens {data-changed}
-     * @constructor
-     * @param {SettingsService} settingsService
-     * @param {DataService} dataService
-     * @param {Scope} $scope
-     * @param {TreeMapService} treeMapService
-     */
-    constructor(settingsService, dataService, $scope, treeMapService) {
-
-        Object.assign(this, {settingsService, dataService, $scope, treeMapService});
-
-        /**
-         * @type {Settings}
-         */
         this.settings = settingsService.settings;
 
         const ctx = this;
 
-        /**
-         * Options for the rz color slider
-         * @type {Object}
-         */
         this.sliderOptions = {
             ceil: treeMapService.getMaxNodeHeightInAllRevisions(settingsService.settings.colorMetric),
             pushRange: true,
             onChange: ctx.notify.bind(ctx)
         };
 
-        /**
-         * metrics array
-         * @type {string[]}
-         */
         this.metrics = this.sortStringArrayAlphabetically(dataService.data.metrics);
 
-        $scope.$on("data-changed", (e,d)=>{ctx.onDataChanged(d);});
-        $scope.$on("settings-changed", (e,s)=>{ctx.onSettingsChanged(s);});
+        this.dataService.subscribe(this);
+        this.settingsService.subscribe(this);
 
     }
 
@@ -55,7 +44,7 @@ export class SettingsPanelController {
      * called on settings change.
      * @param {Settings} settings
      */
-    onSettingsChanged(settings) {
+    onSettingsChanged(settings: Settings) {
         this.sliderOptions.ceil = this.treeMapService.getMaxNodeHeightInAllRevisions(settings.colorMetric);
     }
 
@@ -63,7 +52,7 @@ export class SettingsPanelController {
      * called on data change.
      * @param {DataModel} data
      */
-    onDataChanged(data) {
+    onDataChanged(data: DataModel) {
         this.metrics = this.sortStringArrayAlphabetically(data.metrics);
     }
 
@@ -79,7 +68,7 @@ export class SettingsPanelController {
      * @param {string[]} arr
      * @returns {string[]} sortedArr
      */
-    sortStringArrayAlphabetically(arr) {
+    sortStringArrayAlphabetically(arr: string[]): string[] {
         return arr.sort();
     }
 
