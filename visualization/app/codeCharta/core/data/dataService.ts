@@ -1,10 +1,11 @@
 "use strict";
 
 import * as d3 from "d3";
-import {CodeMap} from "./model/CodeMap";
+import {CodeMap, CodeMapNode} from "./model/CodeMap";
 import {IRootScopeService, IAngularEvent} from "angular";
 import {DeltaCalculatorService} from "./deltaCalculatorService";
 import {DataDecoratorService} from "./dataDecoratorService";
+import {HierarchyNode} from "d3-hierarchy";
 
 export interface DataModel {
 
@@ -29,8 +30,7 @@ export class DataService {
     /* @ngInject */
     constructor(private $rootScope: IRootScopeService,
                 private deltaCalculatorService: DeltaCalculatorService,
-                private dataDecoratorService: DataDecoratorService
-    ) {
+                private dataDecoratorService: DataDecoratorService) {
 
         this._data = {
             revisions: [],
@@ -71,13 +71,13 @@ export class DataService {
      */
     public setMetrics(index: number) {
         if (this._data.revisions[index] !== null) {
-            let root = d3.hierarchy(this._data.revisions[index].root);
-            let leaves = root.leaves();
-            let attributeList = leaves.map(function (d) {
+            let root = d3.hierarchy<CodeMapNode>(this._data.revisions[index].root);
+            let leaves: HierarchyNode<CodeMapNode>[] = root.leaves();
+            let attributeList = leaves.map(function (d: HierarchyNode<CodeMapNode>) {
                 return d.data.attributes ? Object.keys(d.data.attributes) : [];
             });
-            let attributes = attributeList.reduce(function (left: any, right: any) {
-                return left.concat(right.filter(function (el) {
+            let attributes: string[] = attributeList.reduce(function (left: string[], right: string[]) {
+                return left.concat(right.filter(function (el: string) {
                     return left.indexOf(el) === -1;
                 }));
             });
