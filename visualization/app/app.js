@@ -11,7 +11,7 @@ import "angularjs-slider/dist/rzslider.css";
 
 import "font-awesome/css/font-awesome.css";
 
-import "./codeCharta/codeCharta.js";
+import "./codeCharta/codeCharta.ts";
 
 angular.module("app", ["app.codeCharta"]);
 
