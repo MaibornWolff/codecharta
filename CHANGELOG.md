@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- using color metric instead of height metric for color range slider ceil
 
 ## [1.4.0] - 2017-09-14
 ### Added
