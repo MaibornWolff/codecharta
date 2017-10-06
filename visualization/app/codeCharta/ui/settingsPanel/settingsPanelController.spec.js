@@ -1,4 +1,4 @@
-import {SettingsPanelController} from "./settingsPanel";
+import {SettingsPanelController} from "./settingsPanel.ts";
 
 /**
  * @test {SettingsPanelController}

@@ -38,7 +38,7 @@ export class ScenarioService {
      * Returns the default scenario.
      * @returns {Scenario} the scenario
      */
-    private getDefaultScenario(): Scenario {
+    public getDefaultScenario(): Scenario {
         return {
             name: "rloc/mcc/mcc(20,40)",
             settings: this.getDefaultSettings()

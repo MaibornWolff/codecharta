@@ -1,21 +1,28 @@
 "use strict";
+import {DataLoadingService} from "./core/data/dataLoadingService";
+import {UrlService} from "./core/url/urlService";
+import {SettingsService} from "./core/settings/settingsService";
+import {ScenarioService} from "./core/scenario/scenarioService";
+import {DataService} from "./core/data/dataService";
+import $ from "jquery";
 
 /**
  * This is the main controller of the CodeCharta application
  */
-class CodeChartaController {
+export class CodeChartaController {
+
+    private pkg: Object;
 
     /* @ngInject */
-
-    /**
-     * @constructor
-     * @param {UrlService} urlService
-     * @param {DataLoadingService} dataLoadingService
-     * @param {SettingsService} settingsService
-     */
-    constructor(dataLoadingService, urlService, settingsService, scenarioService, dataService) {
+    constructor(
+        private dataLoadingService: DataLoadingService,
+        private urlService: UrlService,
+        private settingsService: SettingsService,
+        private scenarioService: ScenarioService,
+        private dataService: DataService
+    ) {
         this.initHandlers();
-        this.loadFileOrSample(urlService, dataLoadingService, settingsService);
+        this.loadFileOrSample();
         this.scenarioService = scenarioService;
         this.dataService = dataService;
         this.pkg = require("../../package.json");
@@ -23,15 +30,10 @@ class CodeChartaController {
 
     /**
      * Tries to load the file specified in the given url. Loads sample data if it fails.
-     * @param {UrlService} urlService
-     * @param {DataLoadingService} dataLoadingService
-     * @param {SettingsService} settingsService
      */
-    loadFileOrSample(urlService, dataLoadingService, settingsService) {
+    loadFileOrSample() {
 
-        let ctx = this;
-
-        urlService.getFileDataFromQueryParam().then(
+        this.urlService.getFileDataFromQueryParam().then(
 
             //try loading from url param
 
@@ -39,12 +41,12 @@ class CodeChartaController {
             (data) => {
 
                 // set loaded data
-                dataLoadingService.loadMapFromFileContent(urlService.getParam("file"), data, 0).then(
+                this.dataLoadingService.loadMapFromFileContent(this.urlService.getParam("file"), data, 0).then(
                     () => {
-                        settingsService.updateSettingsFromUrl();
+                        this.settingsService.updateSettingsFromUrl();
                     },
                     (r) => {
-                        ctx.printErrors(r);
+                        this.printErrors(r);
                     }
                 );
 
@@ -54,23 +56,23 @@ class CodeChartaController {
             () => {
 
                 //try to load sample data
-                dataLoadingService.loadMapFromFileContent("sample1.json", require("./sample1.json"), 0).then(
+                this.dataLoadingService.loadMapFromFileContent("sample1.json", require("./sample1.json"), 0).then(
                     () => {
-                        ctx.loadingFinished();
-                        settingsService.updateSettingsFromUrl();
+                        this.loadingFinished();
+                        this.settingsService.updateSettingsFromUrl();
                     },
                     (r) => {
-                        ctx.printErrors(r);
+                        this.printErrors(r);
                     }
                 );
 
                 //try to load sample data
-                dataLoadingService.loadMapFromFileContent("sample2.json", require("./sample2.json"), 1).then(
+                this.dataLoadingService.loadMapFromFileContent("sample2.json", require("./sample2.json"), 1).then(
                     () => {
-                        ctx.loadingFinished();
+                        this.loadingFinished();
                     },
                     (r) => {
-                        ctx.printErrors(r);
+                        this.printErrors(r);
                     }
                 );
 
@@ -113,13 +115,18 @@ class CodeChartaController {
      * Prints errors to the browser console and alerts the user
      * @param {Object} errors an errors object
      */
-    printErrors(errors) {
+    printErrors(errors: Object) {
         window.alert("Wrong format. See console logs for details.");
         console.log(errors);
     }
 
 }
 
-export {CodeChartaController};
+export const codeChartaComponent = {
+    selector: "codeChartaComponent",
+    template: require("./codeCharta.html"),
+    controller: CodeChartaController
+};
+
 
 
