@@ -1,7 +1,7 @@
 "use strict";
 
 import "./codeMap/codeMap.js";
-import "./core/core.js";
+import "./core/core.ts";
 import "./ui/ui.js";
 
 import {CodeChartaController} from "./codeChartaController.js";

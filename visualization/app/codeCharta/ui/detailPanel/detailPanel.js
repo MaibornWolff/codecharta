@@ -1,6 +1,6 @@
 "use strict";
 
-import "../../core/core.js";
+import "../../core/core.ts";
 import "../../codeMap/codeMap.js";
 
 import {DetailPanelController} from "./detailPanelController.js";

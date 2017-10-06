@@ -13,9 +13,9 @@ export class DeltaCalculatorService {
 
     }
 
-    decorateMapsWithDeltas(firstMap: CodeMap, secondMap: CodeMap) {
+    public decorateMapsWithDeltas(firstMap: CodeMap, secondMap: CodeMap) {
 
-        if(firstMap.root && secondMap.root) {
+        if(firstMap && secondMap && firstMap.root && secondMap.root) {
             let firstRoot = d3.hierarchy(firstMap.root);
             let firstLeaves = firstRoot.leaves();
             let secondRoot = d3.hierarchy(secondMap.root);
@@ -45,7 +45,7 @@ export class DeltaCalculatorService {
      * @param {Object[]} second attributes list
      * @returns {Object[]} delta between first and second
      */
-    calculateAttributeListDelta(first, second){
+    private calculateAttributeListDelta(first, second){
         let deltas = {};
         for (var key in second) {
             if(key) {

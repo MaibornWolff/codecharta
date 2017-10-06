@@ -27,6 +27,8 @@
   },
   "license": "BSD-3-Clause",
   "dependencies": {
+    "@types/angular": "^1.6.32",
+    "@types/sinon": "^2.3.5",
     "ajv": "^5.2.2",
     "angular": "^1.6.0",
     "angularjs-slider": "^6.2.2",
