@@ -1,11 +1,8 @@
-"use strict";
-
-import * as THREE from "three";
-import {intersectionResult} from "./rendering/codeMapGeometricDescription.ts"
-import {codeMapMesh} from "./rendering/codeMapMesh.ts"
 import {codeMapBuilding} from "./rendering/codeMapBuilding.ts"
 import {ThreeCameraService} from "./threeViewer/threeCameraService";
 import {IAngularEvent, IRootScopeService} from "angular";
+import {ThreeViewerService} from "./threeViewer/threeViewerService";
+import {CodeMapService} from "./codeMapService";
 
 interface Coordinates {
     x: number,
@@ -25,30 +22,22 @@ export interface CodeMapControllerSubscriber {
 /**
  * Controls the codeMapDirective
  */
-class CodeMapController {
+export class CodeMapController {
 
     private hovered;
     private selected;
     private mouse: Coordinates;
 
     /* @ngInject */
-
-    /**
-     * @external {Raycaster} https://threejs.org/docs/?q=rayca#Reference/Core/Raycaster
-     * @constructor
-     * @param {Scope} $rootScope
-     * @param {ThreeCameraService} threeCameraService
-     * @param {ThreeRendererService} threeRendererService
-     * @param {ThreeSceneService} threeSceneService
-     * @param {ThreeSceneService} threeUpdateCycleService
-     *
-     */
     constructor(
         private $rootScope,
         private threeCameraService: ThreeCameraService,
         private threeRendererService,
         private threeSceneService,
-        private threeUpdateCycleService
+        private threeUpdateCycleService,
+        private threeViewerService: ThreeViewerService,
+        private $element: Element,
+        private codeMapService: CodeMapService, //we need to call this service somewhere.
     ){
 
         /**
@@ -72,7 +61,12 @@ class CodeMapController {
         document.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
         document.addEventListener("click", this.onDocumentMouseDown.bind(this), false);
 
-        threeUpdateCycleService.updatables.push(this.update.bind(this));
+        threeUpdateCycleService.register(this.update.bind(this));
+    }
+
+    $postLink() {
+        this.threeViewerService.init(this.$element[0]);
+        this.threeViewerService.animate();
     }
 
     static subscribe($rootScope: IRootScopeService, subscriber: CodeMapControllerSubscriber) {
@@ -152,10 +146,10 @@ class CodeMapController {
      */
     onBuildingHovered(from: codeMapBuilding, to: codeMapBuilding){
         /*
-        if the hovered node does not have useful data, then we should look at its parent. If the parent has useful data
-        then this parent is a delta node which is made of two seperate, data-free nodes. This quick fix helps us to
-        handle delta objects, until there is a method for mergng their meshes and materials correctly.
-        See codeMapService.js
+         if the hovered node does not have useful data, then we should look at its parent. If the parent has useful data
+         then this parent is a delta node which is made of two seperate, data-free nodes. This quick fix helps us to
+         handle delta objects, until there is a method for mergng their meshes and materials correctly.
+         See codeMapService.js
          */
         if(to && !to.node){
             if(to.parent && to.parent.node){
@@ -194,10 +188,13 @@ class CodeMapController {
         }
     }
 
-}
+};
 
-export {CodeMapController};
-
+export const codeMapComponent = {
+    selector: "codeMapComponent",
+    template: "<div id='#codeMap'></div>",
+    controller: CodeMapController
+};
 
 
 

@@ -1,4 +1,4 @@
-require("./threeViewer.js");
+require("./threeViewer.ts");
 
 /**
  * @test {ThreeSceneService}

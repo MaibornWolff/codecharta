@@ -19,8 +19,8 @@ describe("app.codeCharta.ui.detailPanel", function() {
 
     });
 
-    beforeEach(angular.mock.inject((codeMapMaterialFactory, $timeout, settingsService, $rootScope, $controller)=>{
-        detailPanelController = $controller("detailPanelController", {$scope: $rootScope, $rootScope: $rootScope, codeMapMaterialFactory: codeMapMaterialFactory, settingsService:settingsService, $timeout: $timeout});
+    beforeEach(angular.mock.inject(($timeout, settingsService, $rootScope, $controller)=>{
+        detailPanelController = $controller("detailPanelController", {$scope: $rootScope, $rootScope: $rootScope, settingsService:settingsService, $timeout: $timeout});
     }));
 
     beforeEach(angular.mock.inject(($compile, $rootScope)=>{

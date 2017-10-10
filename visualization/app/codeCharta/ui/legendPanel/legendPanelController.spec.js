@@ -10,20 +10,6 @@ describe("app.codeCharta.ui.legendPanel.legendPanelController", function() {
 
         angular.mock.module("app.codeCharta.codeMap");
 
-        angular.module("app.codeCharta.codeMap").factory("codeMapMaterialFactory", () => {
-            return {
-                positive: () => {return new THREE.MeshLambertMaterial({color: 0x000000});},
-                neutral: () => {return new THREE.MeshLambertMaterial({color: 0x111111});},
-                negative: () => {return new THREE.MeshLambertMaterial({color: 0x222222});},
-                odd: () => {return new THREE.MeshLambertMaterial({color: 0x333333});},
-                even: () => {return new THREE.MeshLambertMaterial({color: 0x444444});},
-                selected: () => {return new THREE.MeshLambertMaterial({color: 0x555555});},
-                default: () => {return new THREE.MeshLambertMaterial({color: 0x777777});},
-                positiveDelta: () => {return new THREE.MeshLambertMaterial({color: 0x888888});},
-                negativeDelta: () => {return new THREE.MeshLambertMaterial({color: 0x999999});}
-            }
-        });
-
     });
 
     beforeEach(angular.mock.inject((_codeMapMaterialFactory_,_$timeout_, _settingsService_, _dataService_, _$rootScope_, $controller)=>{

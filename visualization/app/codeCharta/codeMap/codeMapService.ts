@@ -1,8 +1,8 @@
 "use strict";
 
-import {codeMapMesh} from "./rendering/codeMapMesh.ts";
+import {CodeMapMesh} from "./rendering/codeMapMesh.ts";
 import {renderSettings} from "./rendering/renderSettings.ts"
-import {labelManager} from "./rendering/labelManager.ts"
+import {LabelManager} from "./rendering/labelManager.ts"
 import {SettingsServiceSubscriber, Settings, SettingsService} from "../core/settings/settingsService.ts";
 
 const mapSize = 500.0;
@@ -10,30 +10,19 @@ const mapSize = 500.0;
 /**
  * Main service to manage the state of the rendered code map
  */
-class CodeMapService implements SettingsServiceSubscriber{
+export class CodeMapService implements SettingsServiceSubscriber{
 
-    private mapMesh: codeMapMesh = null;
-    private labelManager: labelManager = null;
+    public static SELECTOR = "codeMapService";
+
+    private mapMesh: CodeMapMesh = null;
+    private labelManager: LabelManager = null;
 
     /* @ngInject */
-
-    /**
-     * @external {Object3D} https://threejs.org/docs/?q=Object3#Reference/Core/Object3D
-     * @external {Mesh} https://threejs.org/docs/?q=mesh#Reference/Objects/Mesh
-     * @constructor
-     * @param {Scope} $rootScope
-     * @param {ThreeSceneService} threeSceneService
-     * @param {TreeMapService} treeMapService
-     * @param {TreeMapService} codeMapAssetService
-     * @param {TreeMapService} settingsService
-     */
     constructor(
         private threeSceneService,
         private treeMapService,
         private settingsService: SettingsService) {
-
         this.settingsService.subscribe(this);
-
     }
 
     onSettingsChanged(settings: Settings, event: Event) {
@@ -46,6 +35,7 @@ class CodeMapService implements SettingsServiceSubscriber{
      * @listens {settings-changed}
      */
     applySettings(s: Settings) {
+
         if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.root && s.neutralColorRange) {
             this.updateMapGeometry(s);
         }
@@ -68,7 +58,7 @@ class CodeMapService implements SettingsServiceSubscriber{
         };
 
         this.threeSceneService.clearLabels();
-        this.labelManager = new labelManager(this.threeSceneService.labels);
+        this.labelManager = new LabelManager(this.threeSceneService.labels);
         
         for (let i=0, numAdded = 0; i < sorted.length && numAdded < s.amountOfTopLabels; ++i)
         {
@@ -79,7 +69,7 @@ class CodeMapService implements SettingsServiceSubscriber{
             }
         }
 
-        this.mapMesh = new codeMapMesh(sorted, renderSettings);
+        this.mapMesh = new CodeMapMesh(sorted, renderSettings);
 
         this.threeSceneService.setMapMesh(this.mapMesh, mapSize);
     }
@@ -105,6 +95,4 @@ class CodeMapService implements SettingsServiceSubscriber{
         if (this.labelManager)
             this.labelManager.scale(x, y, z);
     }
-}
-
-export {CodeMapService};
+};

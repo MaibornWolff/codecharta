@@ -4,14 +4,16 @@ import * as THREE from "three";
 import {SettingsServiceSubscriber, Settings, SettingsService} from "../../core/settings/settingsService";
 import {PerspectiveCamera} from "three";
 
-const VIEW_ANGLE = 45;
-const NEAR = 1;
-const FAR = 20000;
-
 /**
  * Manages the three js camera in an angular way.
  */
 class ThreeCameraService implements SettingsServiceSubscriber {
+
+    public static SELECTOR = "threeCameraService";
+
+    public static VIEW_ANGLE = 45;
+    public static NEAR = 1;
+    public static FAR = 20000;
 
     public camera: PerspectiveCamera;
 
@@ -35,8 +37,8 @@ class ThreeCameraService implements SettingsServiceSubscriber {
      * @param {number} z camera position component z
      */
     init(settingsService: SettingsService, containerWidth: number, containerHeight: number, x: number, y: number, z: number) {
-        const ASPECT = containerWidth / containerHeight;
-        this.camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+        const aspect = containerWidth / containerHeight;
+        this.camera = new THREE.PerspectiveCamera(ThreeCameraService.VIEW_ANGLE, aspect, ThreeCameraService.NEAR, ThreeCameraService.FAR);
         this.setPosition(x, y, z);
         settingsService.subscribe(this);
     }

@@ -2,7 +2,7 @@
 
 import "../../ui/ui.js";
 import "../../core/core.ts";
-import "../../codeMap/codeMap.js";
+import "../../codeMap/codeMap.ts";
 import "angularjs-slider";
 
 import angular from "angular";

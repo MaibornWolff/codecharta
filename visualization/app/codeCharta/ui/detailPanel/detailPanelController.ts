@@ -3,34 +3,19 @@ import {SettingsService, Settings, SettingsServiceSubscriber} from "../../core/s
 import {
     CodeMapControllerSubscriber, CodeMapBuildingTransition,
     CodeMapController
-} from "../../codeMap/codeMapController.ts";
+} from "../../codeMap/codeMapComponent.ts";
 
 class DetailPanelController implements SettingsServiceSubscriber, CodeMapControllerSubscriber{
 
-    private mats: Object;
     private details;
     private settings: Settings;
 
     /* @ngInject */
-
-    /**
-     * @external {Timeout} https://docs.angularjs.org/api/ngMock/service/$timeout
-     * @constructor
-     * @param {Scope} $rootScope
-     * @param {Scope} $scope
-     * @param {SettingsService} settingsService
-     * @param {Timeout} $timeout
-     * @param {object} codeMapMaterialFactory
-     */
     constructor(
         private $rootScope,
-        private $scope,
         private settingsService: SettingsService,
-        private $timeout,
-        private codeMapMaterialFactory
+        private $timeout
     ){
-
-        this.mats = codeMapMaterialFactory;
 
         /**
          * @typedef {object} CommonDetails
@@ -148,8 +133,6 @@ class DetailPanelController implements SettingsServiceSubscriber, CodeMapControl
 
     /**
      * Called when settings change. Applies them to the common details.
-     * @listens {settings-changed}
-     * @param {Settings} settings
      */
     onSettingsChanged(settings: Settings){
         this.details.common.areaAttributeName = settings.areaMetric;
@@ -159,8 +142,6 @@ class DetailPanelController implements SettingsServiceSubscriber, CodeMapControl
 
     /**
      * called when a new/no building is selected.
-     * @listens {building-selected}
-     * @param {object} data
      */
     onSelect(data){
         if (data.to && data.to.node) {
@@ -172,8 +153,6 @@ class DetailPanelController implements SettingsServiceSubscriber, CodeMapControl
 
     /**
      * called when a new/no building is hovered.
-     * @listens {building-hovered}
-     * @param {object} data
      */
     onHover(data){
         if (data.to && data.to.node) {
@@ -185,7 +164,6 @@ class DetailPanelController implements SettingsServiceSubscriber, CodeMapControl
 
     /**
      * Checks whether a a building is hovered
-     * @return {boolean}
      */
     isHovered() {
         if(this.details && this.details.hovered) {
