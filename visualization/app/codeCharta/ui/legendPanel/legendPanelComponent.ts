@@ -1,11 +1,9 @@
-"use strict";
-
 import {DataServiceSubscriber, DataService} from "../../core/data/dataService.ts";
 import {SettingsServiceSubscriber, SettingsService} from "../../core/settings/settingsService.ts";
 import $ from "jquery";
 import {MapColors} from "../../codeMap/rendering/renderSettings.ts";
 
-class LegendPanelController implements DataServiceSubscriber, SettingsServiceSubscriber{
+export class LegendPanelController implements DataServiceSubscriber, SettingsServiceSubscriber{
 
     private deltas;
     private pd;
@@ -19,11 +17,14 @@ class LegendPanelController implements DataServiceSubscriber, SettingsServiceSub
     private negative;
     private select;
 
+    private visible: boolean = false;
+
     /* @ngInject */
     constructor(
         private $timeout,
         private settingsService: SettingsService,
-        private dataService: DataService
+        private dataService: DataService,
+        private $element: Element
     ) {
 
         let ctx = this;
@@ -32,6 +33,28 @@ class LegendPanelController implements DataServiceSubscriber, SettingsServiceSub
         this.settingsService.subscribe(this);
         this.dataService.subscribe(this);
 
+    }
+
+    /**
+     * Links the click Handler
+     * @param {Scope} scope
+     * @param {object} element dom element
+     */
+    $postLink() {
+        $(this.$element).bind("click", this.toggle.bind(this));
+    }
+
+    /**
+     * Toggles the visibility
+     */
+    toggle(){
+        if (this.visible) {
+            $("#legendPanel").animate({left: -500 + "px"});
+            this.visible = false;
+        } else {
+            $("#legendPanel").animate({left: 2.8+"em"});
+            this.visible = true;
+        }
     }
 
     onDataChanged(data) {
@@ -97,6 +120,12 @@ class LegendPanelController implements DataServiceSubscriber, SettingsServiceSub
 
 }
 
-export {LegendPanelController};
+export const legendPanelComponent = {
+    selector: "legendPanelComponent",
+    template: require("./legendPanel.html"),
+    controller: LegendPanelController
+};
+
+
 
 

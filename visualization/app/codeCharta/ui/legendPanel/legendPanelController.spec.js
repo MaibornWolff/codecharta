@@ -1,4 +1,4 @@
-require("./legendPanel.js");
+require("./legendPanel.ts");
 
 describe("app.codeCharta.ui.legendPanel.legendPanelController", function() {
 
