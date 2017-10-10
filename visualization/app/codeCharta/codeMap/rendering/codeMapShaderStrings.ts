@@ -1,4 +1,8 @@
 export class codeMapShaderStrings {
+
+    public vertexShaderCode;
+    public fragmentShaderCode;
+
     constructor()
     {
         /**

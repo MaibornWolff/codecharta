@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import {node} from "./node"
-import {renderSettings} from "./renderSettings"
+import {node} from "./node.ts"
+import {renderSettings} from "./renderSettings.ts"
 
 interface internalLabel {
     sprite : THREE.Sprite,

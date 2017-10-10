@@ -1,16 +1,19 @@
 "use strict";
 
-import * as THREE from "three";
-import {codeMapMesh} from "./rendering/codeMapMesh";
-import {renderSettings} from "./rendering/renderSettings"
-import {labelManager} from "./rendering/labelManager"
+import {codeMapMesh} from "./rendering/codeMapMesh.ts";
+import {renderSettings} from "./rendering/renderSettings.ts"
+import {labelManager} from "./rendering/labelManager.ts"
+import {SettingsServiceSubscriber, Settings, SettingsService} from "../core/settings/settingsService.ts";
 
 const mapSize = 500.0;
 
 /**
  * Main service to manage the state of the rendered code map
  */
-class CodeMapService {
+class CodeMapService implements SettingsServiceSubscriber{
+
+    private mapMesh: codeMapMesh = null;
+    private labelManager: labelManager = null;
 
     /* @ngInject */
 
@@ -24,36 +27,17 @@ class CodeMapService {
      * @param {TreeMapService} codeMapAssetService
      * @param {TreeMapService} settingsService
      */
-    constructor($rootScope, threeSceneService, treeMapService, codeMapAssetService, settingsService) {
-        /**
-         *
-         * @type {TreeMapService}
-         */
-        this.treemapService = treeMapService;
+    constructor(
+        private threeSceneService,
+        private treeMapService,
+        private settingsService: SettingsService) {
 
-        /**
-         *
-         * @type {ThreeSceneService}
-         */
-        this.threeSceneService = threeSceneService;
+        this.settingsService.subscribe(this);
 
-        /**
-         * 
-         * 
-         * @type {codeMapMesh}
-         */
-        this.mapMesh = null;
+    }
 
-        /**
-         * @type {labelManager}
-         */
-        this.labelManager = null;
-
-        let ctx = this;
-
-        $rootScope.$on("settings-changed", (e, s)=> {
-            ctx.applySettings(s);
-        });
+    onSettingsChanged(settings: Settings, event: Event) {
+        this.applySettings(settings);
     }
 
     /**
@@ -61,7 +45,7 @@ class CodeMapService {
      * @param {Settings} s
      * @listens {settings-changed}
      */
-    applySettings(s) {
+    applySettings(s: Settings) {
         if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.root && s.neutralColorRange) {
             this.updateMapGeometry(s);
         }
@@ -72,10 +56,10 @@ class CodeMapService {
     }
 
     updateMapGeometry(s) {
-        let nodes = this.treemapService.createTreemapNodes(s.map.root, mapSize, mapSize, s.margin, s.areaMetric, s.heightMetric);
+        let nodes = this.treeMapService.createTreemapNodes(s.map.root, mapSize, mapSize, s.margin, s.areaMetric, s.heightMetric);
         let sorted = nodes.sort((a,b)=>{return b.height - a.height;});
 
-        let renderSettings  =  {
+        let renderSettings: renderSettings  =  {
             heightKey : s.heightMetric,
             colorKey : s.colorMetric,
             renderDeltas : s.deltas,
