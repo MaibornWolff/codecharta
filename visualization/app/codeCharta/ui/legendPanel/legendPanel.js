@@ -1,7 +1,7 @@
 "use strict";
 
 import "../../core/core.ts";
-import "../../codeMap/codeMap.js";
+import "../../codeMap/codeMap.ts";
 
 import {LegendPanelDirective} from "./legendPanelDirective.js";
 import {LegendPanelController} from "./legendPanelController.ts";

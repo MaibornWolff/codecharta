@@ -1,7 +1,7 @@
 "use strict";
 
 import "../../core/core.ts";
-import "../../codeMap/codeMap.js";
+import "../../codeMap/codeMap.ts";
 
 import {DetailPanelController} from "./detailPanelController.ts";
 import {DetailPanelDirective} from "./detailPanelDirective.js";

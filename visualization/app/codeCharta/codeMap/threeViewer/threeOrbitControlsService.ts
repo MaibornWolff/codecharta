@@ -3,7 +3,7 @@ import {ThreeCameraService} from "./threeCameraService";
 import {IRootScopeService, IAngularEvent} from "angular";
 import {OrbitControls, PerspectiveCamera} from "three";
 
-export interface ThreeOrbitControlsServiceSubscriber {
+export interface CameraChangeSubscriber {
     onCameraChanged(camera: PerspectiveCamera, event: IAngularEvent)
 }
 
@@ -12,24 +12,19 @@ export interface ThreeOrbitControlsServiceSubscriber {
  */
 class ThreeOrbitControlsService {
 
-    private controls: OrbitControls;
+    public static SELECTOR = "threeOrbitControlsService";
+    public static CAMERA_CHANGED_EVENT_NAME = "camera-changed";
+
+    controls: OrbitControls;
 
     /* ngInject */
-
-    /**
-     * @constructor
-     * @param {ThreeCameraService} threeCameraService
-     * @param {Scope} rootScope
-     */
     constructor(
         private threeCameraService: ThreeCameraService,
         private $rootScope: IRootScopeService
-    ) {
+    ) {}
 
-    }
-
-    subscribe(subscriber: ThreeOrbitControlsServiceSubscriber) {
-        this.$rootScope.$on("camera-changed", (event, camera: PerspectiveCamera) => {
+    subscribe(subscriber: CameraChangeSubscriber) {
+        this.$rootScope.$on(ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME, (event: IAngularEvent, camera: PerspectiveCamera) => {
             subscriber.onCameraChanged(camera, event);
         });
     }
@@ -39,8 +34,7 @@ class ThreeOrbitControlsService {
      * @param domElement Element with the canvas on it
      */
     init(domElement){
-        const THREE = require('three');
-        const OrbitControls = require('three-orbit-controls')(THREE);
+        const OrbitControls = require('three-orbit-controls')(require("three"));
         this.controls = new OrbitControls(this.threeCameraService.camera, domElement);
         let ctx= this;
         this.controls.addEventListener( "change", function () {
@@ -53,7 +47,7 @@ class ThreeOrbitControlsService {
      * @param {Camera} camera
      */
     onInput(camera: PerspectiveCamera) {
-        this.$rootScope.$broadcast("camera-changed", camera);
+        this.$rootScope.$broadcast(ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME, camera);
     }
 
 }

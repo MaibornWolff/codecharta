@@ -8,7 +8,7 @@ interface internalLabel {
     heightValue : number
 }
 
-export class labelManager {
+export class LabelManager {
     private parentObjectInScene : THREE.Object3D;
     private labels : internalLabel[];
 

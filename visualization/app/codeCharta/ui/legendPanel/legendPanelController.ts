@@ -3,10 +3,10 @@
 import {DataServiceSubscriber, DataService} from "../../core/data/dataService";
 import {SettingsServiceSubscriber, SettingsService} from "../../core/settings/settingsService";
 import $ from "jquery";
+import {MapColors} from "../../codeMap/rendering/renderSettings";
 
 class LegendPanelController implements DataServiceSubscriber, SettingsServiceSubscriber{
 
-    private mats;
     private deltas;
     private pd;
     private nd;
@@ -21,14 +21,10 @@ class LegendPanelController implements DataServiceSubscriber, SettingsServiceSub
 
     /* @ngInject */
     constructor(
-        private codeMapMaterialFactory,
         private $timeout,
         private settingsService: SettingsService,
         private dataService: DataService
     ) {
-
-        this.mats = codeMapMaterialFactory;
-
 
         let ctx = this;
         $timeout(ctx.onDataChanged(dataService.data));
@@ -41,8 +37,8 @@ class LegendPanelController implements DataServiceSubscriber, SettingsServiceSub
     onDataChanged(data) {
         if(data && data.revisions && data.revisions.length > 1){
             this.deltas = true;
-            this.pd = this.getImageDataUri(this.mats.positiveDelta().color.getHex());
-            this.nd = this.getImageDataUri(this.mats.negativeDelta().color.getHex());
+            this.pd = this.getImageDataUri(MapColors.positiveDelta);
+            this.nd = this.getImageDataUri(MapColors.negativeDelta);
             this.$timeout(()=>$("#positiveDelta").attr("src", this.pd),200);
             this.$timeout(()=>$("#negativeDelta").attr("src", this.nd),200);
         }
@@ -54,10 +50,10 @@ class LegendPanelController implements DataServiceSubscriber, SettingsServiceSub
         this.heightMetric = s.heightMetric;
         this.colorMetric = s.colorMetric;
 
-        this.positive = this.getImageDataUri(this.mats.positive().color.getHex());
-        this.neutral = this.getImageDataUri(this.mats.neutral().color.getHex());
-        this.negative = this.getImageDataUri(this.mats.negative().color.getHex());
-        this.select = this.getImageDataUri(this.mats.selected().color.getHex());
+        this.positive = this.getImageDataUri(MapColors.positive);
+        this.neutral = this.getImageDataUri(MapColors.neutral);
+        this.negative = this.getImageDataUri(MapColors.negative);
+        this.select = this.getImageDataUri(MapColors.selected);
 
         $("#green").attr("src", this.positive);
         $("#yellow").attr("src", this.neutral);

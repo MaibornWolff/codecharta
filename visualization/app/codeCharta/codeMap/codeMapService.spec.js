@@ -1,4 +1,4 @@
-require("./codeMap.js");
+require("./codeMap.ts");
 
 /**
  * @test {CodeMapService}

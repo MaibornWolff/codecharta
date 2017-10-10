@@ -1,26 +1,32 @@
-"use strict";
-
 import * as THREE from "three";
-import {geometryGenerator} from "./../rendering/geometryGenerator.ts"
-import {labelManager} from "./../rendering/labelManager.ts"
+import {LabelManager} from "./../rendering/labelManager.ts"
+import {Scene} from "three";
+import {Group} from "three";
+import {CodeMapMesh} from "../rendering/codeMapMesh";
 
 /**
  * A service which manages the Three.js scene in an angular way.
  */
 class ThreeSceneService {
 
-    /**
-     * @external {Scene} https://threejs.org/docs/?q=scene#Reference/Scenes/Scene
-     * @constructor
-     */
+    public static SELECTOR = "threeSceneService";
+
+    scene: Scene;
+    private labelManager: LabelManager;
+    private lights: Group;
+    private labels: Group;
+    private mapGeometry: Group;
+    private mapMesh: CodeMapMesh;
+
     constructor() {
-        /** @type {Scene} **/
+
         this.scene = new THREE.Scene();
-        this.labelManager = new labelManager();
 
         this.mapGeometry = new THREE.Group();
         this.lights = new THREE.Group();
         this.labels = new THREE.Group();
+
+        this.labelManager = new LabelManager(this.labels);
 
         this.initLights();
 
@@ -28,14 +34,9 @@ class ThreeSceneService {
         this.scene.add(this.lights);
         this.scene.add(this.labels);
 
-        /**
-         * @type {codeMapMesh}
-         */
-        this.mapMesh = null;
     }
 
-    initLights()
-    {
+    initLights() {
         const ambilight = new THREE.AmbientLight(0x707070); // soft white light
         const light1 = new THREE.DirectionalLight(0xe0e0e0, 1);
         light1.position.set(50, 10, 8).normalize();
@@ -56,21 +57,16 @@ class ThreeSceneService {
         light2.shadow.camera.bottom = -5;
         light2.shadow.camera.near = 2;
         light2.shadow.camera.far = 100;
-        
+
         this.lights.add(ambilight);
         this.lights.add(light1);
         this.lights.add(light2);
     }
 
-    /**
-     * @param {codeMapMesh}
-     * @param {number}
-     */
-    setMapMesh(mesh, size)
-    {
+    setMapMesh(mesh: CodeMapMesh, size: number) {
         this.mapMesh = mesh;
 
-        while(this.mapGeometry.children.length > 0){
+        while (this.mapGeometry.children.length > 0) {
             this.mapGeometry.remove(
                 this.mapGeometry.children[0]
             );
@@ -83,17 +79,12 @@ class ThreeSceneService {
         this.mapGeometry.position.z = -size / 2.0;
     }
 
-    clearLabels()
-    {
+    clearLabels() {
         while (this.labels.children.length > 0)
             this.labels.children.pop();
     }
 
-    /**
-     * @return {codeMapMesh}
-     */
-    getMapMesh()
-    {
+    getMapMesh(): CodeMapMesh {
         return this.mapMesh;
     }
 }

@@ -2,7 +2,7 @@ import {Range} from "../../model/Range";
 import {Scale} from "../../model/Scale";
 import {DataService, DataServiceSubscriber, DataModel} from "../data/dataService";
 import {
-    ThreeOrbitControlsServiceSubscriber,
+    CameraChangeSubscriber,
     ThreeOrbitControlsService
 } from "../../codeMap/threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera} from "three";
@@ -26,7 +26,9 @@ export interface SettingsServiceSubscriber {
     onSettingsChanged(settings: Settings, event: Event)
 }
 
-export class SettingsService implements DataServiceSubscriber, ThreeOrbitControlsServiceSubscriber{
+export class SettingsService implements DataServiceSubscriber, CameraChangeSubscriber{
+
+    public static SELECTOR = "settingsService";
 
     private _settings: Settings;
     private urlUpdateDone: boolean;

@@ -1,6 +1,6 @@
 "use strict";
 
-import "./codeMap/codeMap.js";
+import "./codeMap/codeMap.ts";
 import "./core/core.ts";
 import "./ui/ui.js";
 
