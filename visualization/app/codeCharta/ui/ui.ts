@@ -6,7 +6,7 @@ import "./common/common.js";
 import "./fabBar/fabBar.js";
 import "./settingsPanel/index.ts";
 import "./revisionChooser/revisionChooser.ts";
-import "./legendPanel/legendPanel.js";
+import "./legendPanel/legendPanel.ts";
 import "./fileChooser/fileChooser.js";
 import "./detailPanel/detailPanel.js";
 import "./scenarioButtons/scenarioButtons.ts";
