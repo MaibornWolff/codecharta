@@ -3,10 +3,12 @@
 import {IScope} from "angular";
 import {TooltipService, TooltipServiceSubscriber, Tooltips} from "../../core/tooltip/tooltipService";
 import {ScenarioService, Scenario} from "../../core/scenario/scenarioService";
+import $ from "jquery";
 
-class ScenarioButtonsController implements TooltipServiceSubscriber{
+export class ScenarioButtonsController implements TooltipServiceSubscriber{
 
     private scenarios: Scenario[];
+    private visible: boolean = false;
 
     /* @ngInject */
     /**
@@ -23,6 +25,24 @@ class ScenarioButtonsController implements TooltipServiceSubscriber{
     ) {
         this.scenarios = scenarioService.getScenarios();
         this.tooltipService.subscribe(this);
+    }
+
+    $postLink(){
+        $("#revisionButton").bind("click", this.toggle);
+        $("#mapButton").bind("click", this.toggle);
+    }
+
+    /**
+     * Toggles the visibility
+     */
+    toggle(){
+        if (this.visible) {
+            $("#revisionChooser").animate({left: -500 + "px"});
+            this.visible = false;
+        } else {
+            $("#revisionChooser").animate({left: 2.8+"em"});
+            this.visible = true;
+        }
     }
 
     onTooltipsChanged(tooltips: Tooltips, event: Event) {
@@ -45,8 +65,13 @@ class ScenarioButtonsController implements TooltipServiceSubscriber{
     onclick(value){
         this.scenarioService.applyScenario(value);
     }
-}
+};
 
-export {ScenarioButtonsController};
+export const scenarioButtonsComponent = {
+    selector: "scenarioButtonsComponent",
+    template: require("./scenarioButtons.html"),
+    controller: ScenarioButtonsController
+};
+
 
 

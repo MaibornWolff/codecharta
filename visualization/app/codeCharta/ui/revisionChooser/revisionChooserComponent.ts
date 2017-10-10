@@ -1,14 +1,16 @@
-"use strict";
 import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/dataService";
 import {SettingsService} from "../../core/settings/settingsService";
 import {CodeMap} from "../../core/data/model/CodeMap";
 
+import $ from "jquery";
+
 /**
  * Controls the RevisionChooser
  */
-class RevisionChooserController implements DataServiceSubscriber{
+export class RevisionChooserController implements DataServiceSubscriber{
 
     private revisions: CodeMap[];
+    public visible: boolean = false;
 
     /* @ngInject */
 
@@ -22,10 +24,33 @@ class RevisionChooserController implements DataServiceSubscriber{
         private settingsService: SettingsService
     ) {
 
-
         this.revisions = dataService.data.revisions;
         dataService.subscribe(this);
 
+    }
+
+    /**
+     * Links the click Handler
+     * @param {Scope} scope
+     * @param {object} element dom element
+     */
+    $postLink() {
+        $("#revisionButton").bind("click", this.toggle.bind(this));
+        $("#mapButton").bind("click", this.toggle.bind(this));
+    }
+
+    /**
+     * Toggles the visibility
+     */
+    toggle(){
+        console.log("toggle");
+        if (this.visible) {
+            $("#revisionChooser").animate({left: -500 + "px"});
+            this.visible = false;
+        } else {
+            $("#revisionChooser").animate({left: 2.8+"em"});
+            this.visible = true;
+        }
     }
 
     /**
@@ -47,6 +72,12 @@ class RevisionChooserController implements DataServiceSubscriber{
 
 }
 
-export {RevisionChooserController};
+export const revisionChooserComponent = {
+    selector: "revisionChooserComponent",
+    template: require("./revisionChooser.html"),
+    controller: RevisionChooserController
+};
+
+
 
 

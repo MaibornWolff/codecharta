@@ -1,26 +1,26 @@
-<div ng-show="ctrl.settingsService.settings.deltas && ctrl.dataService.data.revisions.length != 1" id="revisionButton">
+<div ng-show="$ctrl.settingsService.settings.deltas && $ctrl.dataService.data.revisions.length != 1" id="revisionButton">
     <a class="waves-effect waves-light btn ">revisions</a>
 </div>
 
-<div ng-show="!ctrl.settingsService.settings.deltas && ctrl.dataService.data.revisions.length != 1" id="mapButton">
+<div ng-show="!$ctrl.settingsService.settings.deltas && $ctrl.dataService.data.revisions.length != 1" id="mapButton">
     <a class="waves-effect waves-light btn ">maps</a>
 </div>
 
 <div id="revisionChooser">
 
-    Current <span ng-if="ctrl.settingsService.settings.deltas">Reference </span>Map: {{ctrl.dataService.data.referenceMap.fileName}}<br/>
-    Select <span ng-if="ctrl.settingsService.settings.deltas">Reference </span>Map:
-    <span ng-repeat="(key, value) in ctrl.revisions">
-        <a href="#" ng-click="ctrl.loadReferenceMap(key)">{{value.fileName}} - </a>
+    Current <span ng-if="$ctrl.settingsService.settings.deltas">Reference </span>Map: {{$ctrl.dataService.data.referenceMap.fileName}}<br/>
+    Select <span ng-if="$ctrl.settingsService.settings.deltas">Reference </span>Map:
+    <span ng-repeat="(key, value) in $ctrl.revisions">
+        <a href="#" ng-click="$ctrl.loadReferenceMap(key)">{{value.fileName}} - </a>
      </span>
 
     <br><br>
 
-    <span ng-if="ctrl.settingsService.settings.deltas">
-        Current Comparison Map: {{ctrl.dataService.data.comparisonMap.fileName}}<br/>
+    <span ng-if="$ctrl.settingsService.settings.deltas">
+        Current Comparison Map: {{$ctrl.dataService.data.comparisonMap.fileName}}<br/>
         Select Comparison Map:
-        <span ng-repeat="(key, value) in ctrl.revisions">
-            <a href="#" ng-click="ctrl.loadComparisonMap(key)">{{value.fileName}} - </a>
+        <span ng-repeat="(key, value) in $ctrl.revisions">
+            <a href="#" ng-click="$ctrl.loadComparisonMap(key)">{{value.fileName}} - </a>
         </span>
     </span>
 

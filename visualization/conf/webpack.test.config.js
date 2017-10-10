@@ -11,7 +11,7 @@ function resolve(dir) {
 }
 
 module.exports = {
-    entry: src + 'app.js',
+    entry: src + 'app.ts',
     output: {
         filename: 'bundle.js',
         path: dist
