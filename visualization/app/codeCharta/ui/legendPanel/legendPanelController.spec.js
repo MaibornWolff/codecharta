@@ -12,18 +12,13 @@ describe("app.codeCharta.ui.legendPanel.legendPanelController", function() {
 
     });
 
-    beforeEach(angular.mock.inject((_codeMapMaterialFactory_,_$timeout_, _settingsService_, _dataService_, _$rootScope_, $controller)=>{
+    beforeEach(angular.mock.inject((_$timeout_, _settingsService_, _dataService_, _$rootScope_, $controller)=>{
         dataService = _dataService_;
         scope = _$rootScope_;
-        codeMapMaterialFactory = _codeMapMaterialFactory_;
         settingsService = _settingsService_;
         timeout = _$timeout_;
-        legendPanelController = $controller("legendPanelController", {$scope: scope, dataService: dataService, codeMapMaterialFactory: codeMapMaterialFactory, settingsService:settingsService, $timeout: timeout});
+        legendPanelController = $controller("legendPanelController", {$scope: scope, dataService: dataService, settingsService:settingsService, $timeout: timeout});
     }));
-
-    it("should have correct values in scope", ()=>{
-        expect(legendPanelController.mats).to.equal(codeMapMaterialFactory);
-    });
 
     it("generate pixel in base64",()=>{
         expect(legendPanelController.generatePixel("some color value")).to.equal("data:image/gif;base64,R0lGODlhAQABAPAAsome color value/yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==");
