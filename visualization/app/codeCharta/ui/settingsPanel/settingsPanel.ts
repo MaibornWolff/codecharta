@@ -24,7 +24,7 @@ export class SettingsPanelController implements DataServiceSubscriber, SettingsS
         const ctx = this;
 
         this.sliderOptions = {
-            ceil: treeMapService.getMaxNodeHeightInAllRevisions(settingsService.settings.colorMetric),
+            ceil: treeMapService.getMaxMetricInAllRevisions(settingsService.settings.colorMetric),
             pushRange: true,
             onChange: ctx.notify.bind(ctx)
         };
@@ -45,7 +45,7 @@ export class SettingsPanelController implements DataServiceSubscriber, SettingsS
      * @param {Settings} settings
      */
     onSettingsChanged(settings: Settings) {
-        this.sliderOptions.ceil = this.treeMapService.getMaxNodeHeightInAllRevisions(settings.colorMetric);
+        this.sliderOptions.ceil = this.treeMapService.getMaxMetricInAllRevisions(settings.colorMetric);
     }
 
     /**
