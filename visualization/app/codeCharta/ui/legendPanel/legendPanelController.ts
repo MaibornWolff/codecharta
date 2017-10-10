@@ -1,9 +1,9 @@
 "use strict";
 
-import {DataServiceSubscriber, DataService} from "../../core/data/dataService";
-import {SettingsServiceSubscriber, SettingsService} from "../../core/settings/settingsService";
+import {DataServiceSubscriber, DataService} from "../../core/data/dataService.ts";
+import {SettingsServiceSubscriber, SettingsService} from "../../core/settings/settingsService.ts";
 import $ from "jquery";
-import {MapColors} from "../../codeMap/rendering/renderSettings";
+import {MapColors} from "../../codeMap/rendering/renderSettings.ts";
 
 class LegendPanelController implements DataServiceSubscriber, SettingsServiceSubscriber{
 
