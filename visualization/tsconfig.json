@@ -18,6 +18,7 @@
         "preserveConstEnums": true,
         "sourceMap": true,
         "skipLibCheck": true,
-        "allowJs": true
+        "allowJs": true,
+        "strictNullChecks": true
     }
 }

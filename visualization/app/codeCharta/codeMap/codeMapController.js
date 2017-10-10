@@ -1,6 +1,9 @@
 "use strict";
 
 import * as THREE from "three";
+import {intersectionResult} from "./rendering/codeMapGeometricDescription"
+import {codeMapMesh} from "./rendering/codeMapMesh"
+import {codeMapBuilding} from "./rendering/codeMapBuilding"
 
 /**
  * Controls the codeMapDirective
@@ -58,12 +61,6 @@ class CodeMapController {
         this.$rootScope = $rootScope;
 
         /**
-         *
-         * @type {Raycaster}
-         */
-        this.raycaster = new THREE.Raycaster();
-
-        /**
          * current mouse position
          * @type {{x: number, y: number}}
          */
@@ -73,7 +70,6 @@ class CodeMapController {
         document.addEventListener("click", this.onDocumentMouseDown.bind(this), false);
 
         threeUpdateCycleService.updatables.push(this.update.bind(this));
-
     }
 
     /**
@@ -82,27 +78,27 @@ class CodeMapController {
     update() {
         this.cameraService.camera.updateMatrixWorld();
 
-        this.raycaster.setFromCamera(this.mouse, this.cameraService.camera);
+        if (this.sceneService.getMapMesh() != null)
+        {
+            let intersectionResult = this.sceneService.getMapMesh().checkMouseRayMeshIntersection(this.mouse, this.cameraService.camera);
 
-        var intersects = this.raycaster.intersectObjects(this.sceneService.scene.children, true);
+            let from = this.hovered;
+            let to = null;
 
-        var from = this.hovered;
-
-        if ( intersects.length > 0 ) {
-
-            if ( this.hovered !== intersects[ 0 ].object) {
-                this.hovered =intersects[ 0 ].object;
-                this.onBuildingHovered(from, this.hovered);
-                /**
-                 * a lock to prevent event spamming
-                 * @type {boolean}
-                 */
-                this.lock = false;
+            if (intersectionResult.intersectionFound == true)
+            {
+                to = intersectionResult.building;
             }
-        } else if(!this.lock){
-            this.hovered = null;
-            this.onBuildingHovered(from, null);
-            this.lock = true;
+            else
+            {
+                to = null;
+            }
+
+            if (from != to)
+            {
+                this.onBuildingHovered(from, to);
+                this.hovered = to;
+            }
         }
     }
 
@@ -119,7 +115,6 @@ class CodeMapController {
      * updates {CodeMapController} on mouse down
      */
     onDocumentMouseDown() {
-
         var from = this.selected;
 
         if (this.hovered) {
@@ -141,7 +136,6 @@ class CodeMapController {
      * @emits {building-hovered} on hover
      */
     onBuildingHovered(from, to){
-
         /*
         if the hovered node does not have useful data, then we should look at its parent. If the parent has useful data
         then this parent is a delta node which is made of two seperate, data-free nodes. This quick fix helps us to
@@ -156,103 +150,14 @@ class CodeMapController {
 
         this.$rootScope.$broadcast("building-hovered", {to: to, from: from});
 
-        this.unhoverGroup(from);
-        this.hoverGroup(to);
-
-    }
-
-    /**
-     * Unhovers a group
-     * @param {object} mesh
-     */
-    unhoverGroup(mesh) {
-
-        let ctx = this;
-
-        if(mesh && mesh.parent) {
-            // buildings are grouped in parent meshes, therefore we should look only at these
-
-            mesh.parent.children.forEach((c)=> {
-                if (c && c.material && c.material.emissive){
-                    c.material.emissive.setHex(0x000000);
-                }
-            });
-
+        if (to !== null)
+        {
+            this.sceneService.getMapMesh().setHighlighted([to]);
         }
-
-    }
-
-    /**
-     * Checks if the given mesh is in meshes array. Ignores itself in meshes array
-     * @param {object} meshes
-     * @param {object} mesh
-     * @param {object} current
-     * @return {boolean} true if found, false if not
-     */
-    meshIsInMeshesWithoutCurrent(meshes, mesh, current){
-        meshes.forEach((m)=>{
-            if (m===mesh && m!==current){
-                return true;
-            }
-        });
-        return false;
-    }
-
-    /**
-     * Hovers a group.
-     * @param {object} mesh
-     */
-    hoverGroup(mesh) {
-
-        if(mesh && mesh.parent){
-            // buildings are grouped in parent meshes, therefore we should look only at these
-            mesh.parent.children.forEach((c)=>{
-                if (c && c.material && c.material.emissive) {
-                    c.material.emissive.setHex(0x666666);
-                }
-            });
-
+        else
+        {
+            this.sceneService.getMapMesh().clearHighlight();
         }
-
-    }
-
-    /**
-     * unselects a group
-     * @param {object} mesh
-     */
-    unselectGroup(mesh) {
-
-        if (mesh && mesh.parent) {
-
-            // buildings are grouped in parent meshes, therefore we should look only at these
-            mesh.parent.children.forEach((c)=> {
-                if (c && c.originalMaterial) {
-                    c.material = c.originalMaterial.clone();
-                }
-            });
-
-        }
-
-    }
-
-    /**
-     * selects a group
-     * @param {object} mesh
-     */
-    selectGroup(mesh) {
-
-        // the floors parent is root and floors do not have deltacubes.
-        if(mesh && mesh.parent) {
-
-            // buildings are grouped in parent meshes, therefore we should look only at these
-            mesh.parent.children.forEach((c)=> {
-                if (c && c.selectedMaterial) {
-                    c.material = c.selectedMaterial.clone();
-                }
-            });
-
-        }
-
     }
 
     /**
@@ -262,12 +167,16 @@ class CodeMapController {
      * @emits {building-selected} when building is selected
      */
     onBuildingSelected(from, to){
-
         this.$rootScope.$broadcast("building-selected", {to: to, from:from});
 
-        this.unselectGroup(from);
-        this.selectGroup(to);
-
+        if (to !== null)
+        {
+            this.sceneService.getMapMesh().setSelected([to]);
+        }
+        else
+        {
+            this.sceneService.getMapMesh().clearSelected();
+        }
     }
 
 }
