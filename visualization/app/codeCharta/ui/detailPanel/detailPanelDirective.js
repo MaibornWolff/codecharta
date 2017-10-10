@@ -1,6 +1,6 @@
 "use strict";
 
-import {DetailPanelController} from "./detailPanelController";
+import {DetailPanelController} from "./detailPanelController.ts";
 
 /**
  * Renders the detailPanel

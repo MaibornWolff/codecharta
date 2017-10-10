@@ -1,6 +1,6 @@
 "use strict";
 
-import {ScenarioButtonsController} from "./scenarioButtonsController.js";
+import {ScenarioButtonsController} from "./scenarioButtonsController.ts";
 
 /**
  * Renders the scenario buttons

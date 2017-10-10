@@ -2,8 +2,8 @@
 
 import {ThreeViewerService} from "./threeViewerService.js";
 import {ThreeSceneService} from "./threeSceneService.js";
-import {ThreeCameraService} from "./threeCameraService.js";
-import {ThreeOrbitControlsService} from "./threeOrbitControlsService.js";
+import {ThreeCameraService} from "./threeCameraService.ts";
+import {ThreeOrbitControlsService} from "./threeOrbitControlsService.ts";
 import {ThreeRendererService} from "./threeRendererService.js";
 import {ThreeUpdateCycleService} from "./threeUpdateCycleService.js";
 import "../../core/settings/settings.ts";

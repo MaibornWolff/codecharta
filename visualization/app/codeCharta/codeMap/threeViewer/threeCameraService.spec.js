@@ -3,24 +3,24 @@ require("./threeViewer.js");
 /**
  * @test {ThreeCameraService}
  */
-describe("app.codeCharta.codeMap.threeViewer.threeCameraService", function() {
+describe("app.codeCharta.codeMap.threeViewer.threeCameraService", function () {
 
     beforeEach(angular.mock.module("app.codeCharta.codeMap.threeViewer"));
 
-    it("should retrieve the angular service instance", angular.mock.inject(function(threeCameraService){
+    it("should retrieve the angular service instance", angular.mock.inject(function (threeCameraService) {
         expect(threeCameraService).to.not.equal(undefined);
     }));
 
     /**
      * @test {ThreeCameraService#init}
      */
-    it("init should create a new PerspectiveCamera", angular.mock.inject(function(threeCameraService){
+    it("init should create a new PerspectiveCamera", angular.mock.inject(function (threeCameraService, settingsService) {
 
         //mocks
         let spy = sinon.spy(THREE, "PerspectiveCamera");
 
         //action
-        threeCameraService.init();
+        threeCameraService.init(settingsService);
 
         //expectations
         expect(spy.calledOnce);
@@ -30,10 +30,10 @@ describe("app.codeCharta.codeMap.threeViewer.threeCameraService", function() {
     /**
      * @test {ThreeCameraService#init}
      */
-    it("init should set the camera position", angular.mock.inject(function(threeCameraService, settingsService){
+    it("init should set the camera position", angular.mock.inject(function (threeCameraService, settingsService) {
 
         //action
-        threeCameraService.init();
+        threeCameraService.init(settingsService);
 
         //expectations
         expect(threeCameraService.camera.position).to.not.equal(undefined);
@@ -41,14 +41,13 @@ describe("app.codeCharta.codeMap.threeViewer.threeCameraService", function() {
     }));
 
 
-
     /**
      * @test {ThreeCameraService#init}
      */
-    xit("the near plane of the viewing frustum should be at least 100 to prevent flickering of planes", angular.mock.inject(function(threeCameraService){
+    xit("the near plane of the viewing frustum should be at least 100 to prevent flickering of planes", angular.mock.inject(function (threeCameraService, settingsService) {
 
         //action
-        threeCameraService.init();
+        threeCameraService.init(settingsService);
 
         //expectations
         expect(threeCameraService.camera.near).to.be.greaterThan(99);

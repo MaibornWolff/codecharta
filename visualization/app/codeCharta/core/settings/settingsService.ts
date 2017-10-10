@@ -1,6 +1,11 @@
 import {Range} from "../../model/Range";
 import {Scale} from "../../model/Scale";
 import {DataService, DataServiceSubscriber, DataModel} from "../data/dataService";
+import {
+    ThreeOrbitControlsServiceSubscriber,
+    ThreeOrbitControlsService
+} from "../../codeMap/threeViewer/threeOrbitControlsService";
+import {PerspectiveCamera} from "three";
 
 export interface Settings {
 
@@ -21,7 +26,7 @@ export interface SettingsServiceSubscriber {
     onSettingsChanged(settings: Settings, event: Event)
 }
 
-export class SettingsService implements DataServiceSubscriber{
+export class SettingsService implements DataServiceSubscriber, ThreeOrbitControlsServiceSubscriber{
 
     private _settings: Settings;
     private urlUpdateDone: boolean;
@@ -32,17 +37,14 @@ export class SettingsService implements DataServiceSubscriber{
     }
 
     /* ngInject */
-    constructor(private urlService, private dataService: DataService, private $rootScope) {
+    constructor(private urlService, private dataService: DataService, private $rootScope, private threeOrbitControlsService: ThreeOrbitControlsService) {
 
         let ctx = this;
 
         this._settings = this.getInitialSettings(dataService.data.referenceMap, dataService.data.metrics);
 
         dataService.subscribe(this);
-
-        $rootScope.$on("camera-changed", (event, data) => {
-            ctx.onCameraChanged(data);
-        });
+        threeOrbitControlsService.subscribe(this);
 
     }
 
@@ -113,7 +115,7 @@ export class SettingsService implements DataServiceSubscriber{
 
     }
 
-    private onCameraChanged(camera) {
+    onCameraChanged(camera: PerspectiveCamera) {
         if (
             this._settings.camera.x !== camera.position.x ||
             this._settings.camera.y !== camera.position.y ||

@@ -96,7 +96,9 @@ export class codeMapMesh {
 
     public setHighlighted(buildings : codeMapBuilding[], color? : number)
     {
+        //noinspection TypeScriptUnresolvedVariable
         this.material.uniforms.highlightedIndices.value = buildings.map((b : codeMapBuilding) => {return b.id});
+        //noinspection TypeScriptUnresolvedVariable
         this.material.uniforms.numHighlights.value = buildings.length;
 
         if (color)
@@ -107,7 +109,9 @@ export class codeMapMesh {
 
     public setSelected(buildings : codeMapBuilding[], color? : number)
     {
+        //noinspection TypeScriptUnresolvedVariable
         this.material.uniforms.selectedIndices.value = buildings.map((b : codeMapBuilding) => {return b.id});
+        //noinspection TypeScriptUnresolvedVariable
         this.material.uniforms.numSelections.value  = buildings.length;
         
         if (color)
@@ -128,12 +132,14 @@ export class codeMapMesh {
 
     public clearHighlight()
     {
+        //noinspection TypeScriptUnresolvedVariable
         this.material.uniforms.numHighlights.value = 0.0;
         this.currentlyHighlighted = null;
     }
 
     public clearSelected()
     {
+        //noinspection TypeScriptUnresolvedVariable
         this.material.uniforms.numSelections.value = 0.0;
         this.currentlySelected = null;
     }

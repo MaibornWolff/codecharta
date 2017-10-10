@@ -1,6 +1,6 @@
 "use strict";
 
-import {LegendPanelController} from "./legendPanelController";
+import {LegendPanelController} from "./legendPanelController.ts";
 
 /**
  * Renders the legend panel

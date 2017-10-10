@@ -1,18 +1,40 @@
 "use strict";
 
-class LegendPanelController {
+import {DataServiceSubscriber, DataService} from "../../core/data/dataService";
+import {SettingsServiceSubscriber, SettingsService} from "../../core/settings/settingsService";
+import $ from "jquery";
+
+class LegendPanelController implements DataServiceSubscriber, SettingsServiceSubscriber{
+
+    private mats;
+    private deltas;
+    private pd;
+    private nd;
+    private range;
+    private areaMetric;
+    private heightMetric;
+    private colorMetric;
+    private positive;
+    private neutral;
+    private negative;
+    private select;
 
     /* @ngInject */
-    constructor(codeMapMaterialFactory, $timeout, $scope, settingsService, dataService) {
+    constructor(
+        private codeMapMaterialFactory,
+        private $timeout,
+        private settingsService: SettingsService,
+        private dataService: DataService
+    ) {
 
         this.mats = codeMapMaterialFactory;
-        this.$timeout = $timeout;
+
 
         let ctx = this;
-        $timeout(ctx.onDataChanged(dataService.revisions));
+        $timeout(ctx.onDataChanged(dataService.data));
         $timeout(ctx.onSettingsChanged(settingsService.settings));
-        $scope.$on("data-changed", (e,d)=>{ctx.onDataChanged(d);});
-        $scope.$on("settings-changed", (e,s)=>{ctx.onSettingsChanged(s);});
+        this.settingsService.subscribe(this);
+        this.dataService.subscribe(this);
 
     }
 

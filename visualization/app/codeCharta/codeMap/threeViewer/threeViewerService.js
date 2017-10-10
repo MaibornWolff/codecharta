@@ -53,7 +53,7 @@ class ThreeViewerService {
      * @param {Object} element DOM Element which should be the canvas
      */
     init(element) {
-        this.CameraService.init(window.innerWidth, window.innerHeight, this.settingsService.settings.camera.x, this.settingsService.settings.camera.y, this.settingsService.settings.camera.z);
+        this.CameraService.init(this.settingsService, window.innerWidth, window.innerHeight, this.settingsService.settings.camera.x, this.settingsService.settings.camera.y, this.settingsService.settings.camera.z);
 
         this.CameraService.camera.lookAt(this.SceneService.scene.position);
         this.SceneService.scene.add(this.CameraService.camera);

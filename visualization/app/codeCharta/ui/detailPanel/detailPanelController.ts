@@ -1,6 +1,15 @@
 "use strict";
+import {SettingsService, Settings, SettingsServiceSubscriber} from "../../core/settings/settingsService.ts";
+import {
+    CodeMapControllerSubscriber, CodeMapBuildingTransition,
+    CodeMapController
+} from "../../codeMap/codeMapController.ts";
 
-class DetailPanelController{
+class DetailPanelController implements SettingsServiceSubscriber, CodeMapControllerSubscriber{
+
+    private mats: Object;
+    private details;
+    private settings: Settings;
 
     /* @ngInject */
 
@@ -13,12 +22,14 @@ class DetailPanelController{
      * @param {Timeout} $timeout
      * @param {object} codeMapMaterialFactory
      */
-    constructor($rootScope, $scope, settingsService, $timeout, codeMapMaterialFactory){
+    constructor(
+        private $rootScope,
+        private $scope,
+        private settingsService: SettingsService,
+        private $timeout,
+        private codeMapMaterialFactory
+    ){
 
-        /**
-         *
-         * @type {Object}
-         */
         this.mats = codeMapMaterialFactory;
 
         /**
@@ -99,27 +110,9 @@ class DetailPanelController{
 
         /**
          *
-         * @type {Scope}
-         */
-        this.$rootScope = $rootScope;
-
-        /**
-         *
-         * @type {Scope}
-         */
-        this.$scope = $scope;
-
-        /**
-         *
          * @type {Settings}
          */
         this.settings = settingsService.settings;
-
-        /**
-         *
-         * @type {Timeout}
-         */
-        this.$timeout = $timeout;
 
         let ctx = this;
 
@@ -139,8 +132,18 @@ class DetailPanelController{
 
         // we can use watches here again... we try to keep watches as shallow and small as possible
         this.onSettingsChanged(settingsService.settings);
-        $scope.$on("settings-changed", (e, s)=>{ctx.onSettingsChanged(s);});
 
+        this.settingsService.subscribe(this);
+        CodeMapController.subscribe($rootScope, this);
+
+    }
+
+    onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+        this.onHover(data);
+    }
+
+    onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+        this.onSelect(data);
     }
 
     /**
@@ -148,7 +151,7 @@ class DetailPanelController{
      * @listens {settings-changed}
      * @param {Settings} settings
      */
-    onSettingsChanged(settings){
+    onSettingsChanged(settings: Settings){
         this.details.common.areaAttributeName = settings.areaMetric;
         this.details.common.heightAttributeName = settings.heightMetric;
         this.details.common.colorAttributeName = settings.colorMetric;

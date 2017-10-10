@@ -1,6 +1,6 @@
 "use strict";
 
-import {RevisionChooserController} from "./revisionChooserController.js";
+import {RevisionChooserController} from "./revisionChooserController.ts";
 
 /**
  * Renders the RevisionChooser

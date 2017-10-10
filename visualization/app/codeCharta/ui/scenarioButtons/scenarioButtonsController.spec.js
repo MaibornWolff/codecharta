@@ -1,4 +1,4 @@
-require("./scenarioButtonsController.js");
+require("./scenarioButtonsController.ts");
 
 /**
  * @test

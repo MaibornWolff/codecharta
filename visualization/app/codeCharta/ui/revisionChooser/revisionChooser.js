@@ -2,7 +2,7 @@
 
 import "../../core/core.ts";
 import {RevisionChooserDirective} from "./revisionChooserDirective.js";
-import {RevisionChooserController} from "./revisionChooserController.js";
+import {RevisionChooserController} from "./revisionChooserController.ts";
 
 angular.module("app.codeCharta.ui.revisionChooser",["app.codeCharta.core"]);
 

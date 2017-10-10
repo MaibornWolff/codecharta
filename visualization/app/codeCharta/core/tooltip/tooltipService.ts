@@ -38,6 +38,7 @@ class TooltipService {
      */
     public getTooltipTextByKey(key: string) {
 
+        //noinspection TypeScriptUnresolvedFunction
         /**
          * This RegExp describes any set of zero or more
          * non-whitespace symbols between "_"

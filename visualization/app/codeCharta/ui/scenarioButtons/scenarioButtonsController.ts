@@ -1,6 +1,12 @@
 "use strict";
 
-class ScenarioButtonsController {
+import {IScope} from "angular";
+import {TooltipService, TooltipServiceSubscriber, Tooltips} from "../../core/tooltip/tooltipService";
+import {ScenarioService, Scenario} from "../../core/scenario/scenarioService";
+
+class ScenarioButtonsController implements TooltipServiceSubscriber{
+
+    private scenarios: Scenario[];
 
     /* @ngInject */
     /**
@@ -10,33 +16,17 @@ class ScenarioButtonsController {
      * @param {Scope} $rootScope
      * @param {Scope} $scope
      */
-    constructor(scenarioService, tooltipService, $rootScope, $scope) {
-
-
-        /**
-         *
-         * @type {ScenarioService}
-         */
-        this.scenarioService = scenarioService;
-
-        /**
-         *
-         * @type {Scenario[]}
-         */
+    constructor(
+        private scenarioService: ScenarioService,
+        private tooltipService: TooltipService,
+        private $scope: IScope
+    ) {
         this.scenarios = scenarioService.getScenarios();
+        this.tooltipService.subscribe(this);
+    }
 
-        /**
-         *
-         * @type {TooltipService}
-         */
-        this.tooltipService = tooltipService;
-
-        let ctx = this;
-
-        $rootScope.$on("tooltips-changed", (event,data) => {
-            $scope.$apply();
-        });
-        
+    onTooltipsChanged(tooltips: Tooltips, event: Event) {
+        this.$scope.$apply();
     }
 
     /**

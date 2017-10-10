@@ -2,7 +2,7 @@
 
 import "../../../core/tooltip/tooltip.ts";
 import {DropdownDirective} from "./dropdownDirective.js";
-import {DropdownController} from "./dropdownController.js";
+import {DropdownController} from "./dropdownController.ts";
 
 angular.module("app.codeCharta.ui.common.dropdown",["app.codeCharta.core.tooltip"]);
 
