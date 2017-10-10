@@ -1,15 +1,15 @@
 import * as THREE from "three";
 
-import {codeMapShaderStrings} from "./codeMapShaderStrings";
-import {geometryGenerator, buildResult} from "./geometryGenerator";
-import {codeMapGeometricDescription} from "./codeMapGeometricDescription";
-import {intersectionResult} from "./codeMapGeometricDescription";
-import {codeMapBuilding} from "./codeMapBuilding";
-import {renderingUtil} from "./renderingUtil";
-import {node} from "./node";
+import {codeMapShaderStrings} from "./codeMapShaderStrings.ts";
+import {geometryGenerator, buildResult} from "./geometryGenerator.ts";
+import {codeMapGeometricDescription} from "./codeMapGeometricDescription.ts";
+import {intersectionResult} from "./codeMapGeometricDescription.ts";
+import {codeMapBuilding} from "./codeMapBuilding.ts";
+import {renderingUtil} from "./renderingUtil.ts";
+import {node} from "./node.ts";
 
-import {MapColors} from "./renderSettings"
-import {renderSettings} from "./renderSettings"
+import {MapColors} from "./renderSettings.ts"
+import {renderSettings} from "./renderSettings.ts"
 
 interface threeUniform {
     type : string;

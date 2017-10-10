@@ -6,7 +6,7 @@ import "./threeViewer/threeViewer.js";
 import "../core/core.ts";
 
 import {CodeMapDirective} from "./codeMapDirective.js";
-import {CodeMapService} from "./codeMapService.js";
+import {CodeMapService} from "./codeMapService.ts";
 import {CodeMapAssetService} from "./codeMapAssetService.js";
 import {CodeMapController} from "./codeMapController";
 

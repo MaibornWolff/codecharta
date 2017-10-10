@@ -62,6 +62,10 @@ module.exports = {
                     'babel-loader', 'ts-loader'
                 ],
 
+            },
+            {
+                test: /\.glsl$/,
+                loaders: ['webpack-glsl-loader']
             }
         ]
     },

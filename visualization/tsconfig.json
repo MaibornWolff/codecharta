@@ -19,6 +19,6 @@
         "sourceMap": true,
         "skipLibCheck": true,
         "allowJs": true,
-        "strictNullChecks": true
+        "strictNullChecks": false
     }
 }
