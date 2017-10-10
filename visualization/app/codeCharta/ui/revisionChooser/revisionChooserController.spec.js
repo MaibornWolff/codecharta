@@ -1,4 +1,4 @@
-require("./revisionChooser.js");
+require("./revisionChooser.ts");
 
 /**
  * @test {RevisionChooserController}

@@ -7,7 +7,7 @@ const src = './app/';
 const dist = path.resolve(__dirname, '../dist/webpack');
 
 module.exports = {
-    entry: src + 'app.js',
+    entry: src + 'app.ts',
     output: {
         filename: 'bundle.js',
         path: dist

@@ -2,7 +2,7 @@
 
 import "./codeMap/codeMap.ts";
 import "./core/core.ts";
-import "./ui/ui.js";
+import "./ui/ui.ts";
 
 import {codeChartaComponent, CodeChartaController} from "./codeChartaComponent.ts";
 
