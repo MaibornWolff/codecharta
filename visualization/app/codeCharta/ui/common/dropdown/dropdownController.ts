@@ -1,23 +1,24 @@
 "use strict";
+import {TooltipService, TooltipServiceSubscriber, Tooltips} from "../../../core/tooltip/tooltipService.ts";
 /**
  * Controller for the DropdownDirective
  */
-class DropdownController{
+class DropdownController implements TooltipServiceSubscriber{
 
     /* @ngInject */
     /**
      *
      * @param {TooltipService} tooltipService
-     * @param {Scope} $rootScope
      * @param {Scope} $scope
      */
-    constructor(tooltipService, $rootScope, $scope) {
-        this.tooltipService = tooltipService;
+    constructor(
+        private tooltipService: TooltipService,
+        private $scope) {
 
-        $rootScope.$on("tooltips-changed", (event,data) => {
-            $scope.$apply();
-        });
+    }
 
+    onTooltipsChanged(tooltips: Tooltips, event: Event) {
+        this.$scope.$apply();
     }
 
     /**

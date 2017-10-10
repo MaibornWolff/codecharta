@@ -3,7 +3,7 @@
 import "../../core/core.ts";
 import "../../codeMap/codeMap.js";
 
-import {DetailPanelController} from "./detailPanelController.js";
+import {DetailPanelController} from "./detailPanelController.ts";
 import {DetailPanelDirective} from "./detailPanelDirective.js";
 
 angular.module(

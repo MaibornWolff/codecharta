@@ -2,7 +2,7 @@
 
 import "../../core/tooltip/tooltip.ts";
 import {ScenarioButtonsDirective} from "./scenarioButtonsDirective.js";
-import {ScenarioButtonsController} from "./scenarioButtonsController.js";
+import {ScenarioButtonsController} from "./scenarioButtonsController.ts";
 
 angular.module("app.codeCharta.ui.scenarioButtons",["app.codeCharta.core.scenario", "app.codeCharta.core.tooltip"]);
 

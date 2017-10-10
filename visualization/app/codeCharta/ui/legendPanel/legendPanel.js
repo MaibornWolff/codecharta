@@ -4,7 +4,7 @@ import "../../core/core.ts";
 import "../../codeMap/codeMap.js";
 
 import {LegendPanelDirective} from "./legendPanelDirective.js";
-import {LegendPanelController} from "./legendPanelController.js";
+import {LegendPanelController} from "./legendPanelController.ts";
 
 angular.module("app.codeCharta.ui.legendPanel",["app.codeCharta.core.settings", "app.codeCharta.codeMap"]);
 

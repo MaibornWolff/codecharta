@@ -4,11 +4,32 @@ import * as THREE from "three";
 import {intersectionResult} from "./rendering/codeMapGeometricDescription.ts"
 import {codeMapMesh} from "./rendering/codeMapMesh.ts"
 import {codeMapBuilding} from "./rendering/codeMapBuilding.ts"
+import {ThreeCameraService} from "./threeViewer/threeCameraService";
+import {IAngularEvent, IRootScopeService} from "angular";
+
+interface Coordinates {
+    x: number,
+    y: number
+}
+
+export interface CodeMapBuildingTransition {
+    from: codeMapBuilding,
+    to: codeMapBuilding
+}
+
+export interface CodeMapControllerSubscriber {
+    onBuildingHovered(data: CodeMapBuildingTransition, event: IAngularEvent),
+    onBuildingSelected(data: CodeMapBuildingTransition, event: IAngularEvent)
+}
 
 /**
  * Controls the codeMapDirective
  */
 class CodeMapController {
+
+    private hovered;
+    private selected;
+    private mouse: Coordinates;
 
     /* @ngInject */
 
@@ -22,7 +43,13 @@ class CodeMapController {
      * @param {ThreeSceneService} threeUpdateCycleService
      *
      */
-    constructor($rootScope, threeCameraService, threeRendererService, threeSceneService, threeUpdateCycleService){
+    constructor(
+        private $rootScope,
+        private threeCameraService: ThreeCameraService,
+        private threeRendererService,
+        private threeSceneService,
+        private threeUpdateCycleService
+    ){
 
         /**
          * hovered mesh
@@ -37,30 +64,6 @@ class CodeMapController {
         this.selected = null;
 
         /**
-         *
-         * @type {ThreeCameraService}
-         */
-        this.cameraService = threeCameraService;
-
-        /**
-         *
-         * @type {ThreeRendererService}
-         */
-        this.renderService = threeRendererService;
-
-        /**
-         *
-         * @type {ThreeSceneService}
-         */
-        this.sceneService = threeSceneService;
-
-        /**
-         *
-         * @type {Scope}
-         */
-        this.$rootScope = $rootScope;
-
-        /**
          * current mouse position
          * @type {{x: number, y: number}}
          */
@@ -72,15 +75,27 @@ class CodeMapController {
         threeUpdateCycleService.updatables.push(this.update.bind(this));
     }
 
+    static subscribe($rootScope: IRootScopeService, subscriber: CodeMapControllerSubscriber) {
+
+        $rootScope.$on("building-hovered", (e, data:CodeMapBuildingTransition) => {
+            subscriber.onBuildingHovered(data, e);
+        });
+
+        $rootScope.$on("building-selected", (e, data:CodeMapBuildingTransition) => {
+            subscriber.onBuildingSelected(data, e);
+        });
+
+    }
+
     /**
      * Update method which is bound to the {@link UpdateCycleService}
      */
     update() {
-        this.cameraService.camera.updateMatrixWorld();
+        this.threeCameraService.camera.updateMatrixWorld(false);
 
-        if (this.sceneService.getMapMesh() != null)
+        if (this.threeSceneService.getMapMesh() != null)
         {
-            let intersectionResult = this.sceneService.getMapMesh().checkMouseRayMeshIntersection(this.mouse, this.cameraService.camera);
+            let intersectionResult = this.threeSceneService.getMapMesh().checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera);
 
             let from = this.hovered;
             let to = null;
@@ -107,8 +122,8 @@ class CodeMapController {
      * @param {MouseEvent} event
      */
     onDocumentMouseMove (event) {
-        this.mouse.x = ( event.clientX / this.renderService.renderer.domElement.width ) * 2 - 1;
-        this.mouse.y = -( event.clientY / this.renderService.renderer.domElement.height ) * 2 + 1;
+        this.mouse.x = ( event.clientX / this.threeRendererService.renderer.domElement.width ) * 2 - 1;
+        this.mouse.y = -( event.clientY / this.threeRendererService.renderer.domElement.height ) * 2 + 1;
     }
 
     /**
@@ -135,7 +150,7 @@ class CodeMapController {
      * @param to new building
      * @emits {building-hovered} on hover
      */
-    onBuildingHovered(from, to){
+    onBuildingHovered(from: codeMapBuilding, to: codeMapBuilding){
         /*
         if the hovered node does not have useful data, then we should look at its parent. If the parent has useful data
         then this parent is a delta node which is made of two seperate, data-free nodes. This quick fix helps us to
@@ -152,11 +167,11 @@ class CodeMapController {
 
         if (to !== null)
         {
-            this.sceneService.getMapMesh().setHighlighted([to]);
+            this.threeSceneService.getMapMesh().setHighlighted([to]);
         }
         else
         {
-            this.sceneService.getMapMesh().clearHighlight();
+            this.threeSceneService.getMapMesh().clearHighlight();
         }
     }
 
@@ -166,16 +181,16 @@ class CodeMapController {
      * @param to currently selected building
      * @emits {building-selected} when building is selected
      */
-    onBuildingSelected(from, to){
+    onBuildingSelected(from: codeMapBuilding, to: codeMapBuilding){
         this.$rootScope.$broadcast("building-selected", {to: to, from:from});
 
         if (to !== null)
         {
-            this.sceneService.getMapMesh().setSelected([to]);
+            this.threeSceneService.getMapMesh().setSelected([to]);
         }
         else
         {
-            this.sceneService.getMapMesh().clearSelected();
+            this.threeSceneService.getMapMesh().clearSelected();
         }
     }
 

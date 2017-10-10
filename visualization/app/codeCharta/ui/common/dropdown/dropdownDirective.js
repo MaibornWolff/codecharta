@@ -1,5 +1,5 @@
 "use strict";
-import {DropdownController} from "./dropdownController.js";
+import {DropdownController} from "./dropdownController.ts";
 
 /**
  * Renders a dropdown menu.

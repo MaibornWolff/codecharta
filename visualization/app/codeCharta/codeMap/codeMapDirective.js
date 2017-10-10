@@ -1,6 +1,6 @@
 "use strict";
 
-import {CodeMapController} from "./codeMapController.js";
+import {CodeMapController} from "./codeMapController.ts";
 
 /**
  * Renders the codeMap canvas.
