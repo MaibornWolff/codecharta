@@ -40,7 +40,7 @@ class TreeMapService {
 
         let nodes = treeMap(root.sum((node)=>this.getArea(node, areaKey))).descendants();
 
-        let maxHeight = this.getMaxNodeHeightInAllRevisions(heightKey);
+        let maxHeight = this.getMaxMetricInAllRevisions(heightKey);
         let heightScale = w / maxHeight;
 
         nodes.forEach((node)=>{
@@ -82,23 +82,23 @@ class TreeMapService {
     }
 
     /**
-     * Gets the height of the heighest building in all revisions in order to get a common scaling factor.
-     * @param {string} heightKey name of the height metric
-     * @returns {number} max height
+     * Gets the biggest value of a metric in the current set of revisions
+     * @param {string} metric name of the metric
+     * @returns {number} max value
      */
-    getMaxNodeHeightInAllRevisions(heightKey) {
-        var maxHeight=0;
+    getMaxMetricInAllRevisions(metric: string) {
+        var maxValue=0;
 
         this.dataService.data.revisions.forEach((rev)=>{
             var nodes = d3.hierarchy(rev.root).leaves();
             nodes.forEach((node: any)=>{
-                if(node.data.attributes[heightKey]>maxHeight){
-                    maxHeight = node.data.attributes[heightKey];
+                if(node.data.attributes[metric]>maxValue){
+                    maxValue = node.data.attributes[metric];
                 }
             });
         });
 
-        return maxHeight;
+        return maxValue;
     }
 
     /**
