@@ -1,11 +1,10 @@
-"use strict";
 import {SettingsService, Settings, SettingsServiceSubscriber} from "../../core/settings/settingsService.ts";
 import {
     CodeMapControllerSubscriber, CodeMapBuildingTransition,
     CodeMapController
 } from "../../codeMap/codeMapComponent.ts";
 
-class DetailPanelController implements SettingsServiceSubscriber, CodeMapControllerSubscriber{
+export class DetailPanelController implements SettingsServiceSubscriber, CodeMapControllerSubscriber{
 
     private details;
     private settings: Settings;
@@ -253,6 +252,9 @@ class DetailPanelController implements SettingsServiceSubscriber, CodeMapControl
 
 }
 
-export {DetailPanelController};
-
+export const detailPanelComponent = {
+    selector: "detailPanelComponent",
+    template: require("./detailPanel.html"),
+    controller: DetailPanelController
+};
 
