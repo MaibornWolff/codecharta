@@ -1,4 +1,4 @@
-require("./detailPanel.js");
+require("./detailPanel.ts");
 /**
  * @test {DetailPanelController}
  */

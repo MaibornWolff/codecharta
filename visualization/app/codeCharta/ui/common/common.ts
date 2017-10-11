@@ -1,5 +1,4 @@
-"use strict";
-
+import angular from "angular";
 import "./dropdown/dropdown.js";
 import "./checkbox/checkbox.js";
 import "./fab/fab.js";
