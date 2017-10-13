@@ -1,4 +1,6 @@
 require("./detailPanel.ts");
+import {DetailPanelController} from "./detailPanelComponent.ts";
+
 /**
  * @test {DetailPanelController}
  */
@@ -6,11 +8,17 @@ describe("app.codeCharta.ui.detailPanel.detailPanelController", function() {
 
     var detailPanelController, scope, timeout, settingsService;
 
-    beforeEach(angular.mock.module("app.codeCharta.ui.detailPanel"));
-
     beforeEach(()=>{
 
-        angular.mock.module("app.codeCharta.codeMap");
+        //mock module under test
+        angular.mock.module("app.codeCharta.ui.detailPanel");
+
+        //build a module dependent on the module under test and the specific controller under test
+        angular.module("sut", ["app.codeCharta.ui.detailPanel"])
+            .controller("detailPanelController", DetailPanelController);
+
+        //mock it
+        angular.mock.module("sut");
 
     });
 
