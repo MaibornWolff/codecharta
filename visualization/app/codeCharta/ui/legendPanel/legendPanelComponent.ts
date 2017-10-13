@@ -49,9 +49,11 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
      */
     toggle(){
         if (this.visible) {
+            //noinspection TypeScriptUnresolvedFunction
             $("#legendPanel").animate({left: -500 + "px"});
             this.visible = false;
         } else {
+            //noinspection TypeScriptUnresolvedFunction
             $("#legendPanel").animate({left: 2.8+"em"});
             this.visible = true;
         }

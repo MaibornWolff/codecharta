@@ -1,23 +1,32 @@
 require("./legendPanel.ts");
 
+import {LegendPanelController} from "./legendPanelComponent.ts";
+
 describe("app.codeCharta.ui.legendPanel.legendPanelController", function() {
 
     var legendPanelController, dataService, scope, codeMapMaterialFactory, timeout, settingsService;
 
-    beforeEach(angular.mock.module("app.codeCharta.ui.legendPanel"));
-
     beforeEach(()=>{
 
-        angular.mock.module("app.codeCharta.codeMap");
+        //mock module under test
+        angular.mock.module("app.codeCharta.ui.legendPanel");
+
+        //build a module dependent on the module under test and the specific controller under test
+        angular.module("sut", ["app.codeCharta.ui.legendPanel"])
+            .controller("legendPanelController", LegendPanelController);
+
+        //mock it
+        angular.mock.module("sut");
 
     });
+
 
     beforeEach(angular.mock.inject((_$timeout_, _settingsService_, _dataService_, _$rootScope_, $controller)=>{
         dataService = _dataService_;
         scope = _$rootScope_;
         settingsService = _settingsService_;
         timeout = _$timeout_;
-        legendPanelController = $controller("legendPanelController", {$scope: scope, dataService: dataService, settingsService:settingsService, $timeout: timeout});
+        legendPanelController = $controller("legendPanelController", {$scope: scope, dataService: dataService, settingsService:settingsService, $timeout: timeout, $element: "<div></div>"});
     }));
 
     it("generate pixel in base64",()=>{

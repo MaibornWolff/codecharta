@@ -1,9 +1,9 @@
-require("./scenarioButtonsController.ts");
+require("./scenarioButtonsComponent.ts");
 
 /**
  * @test
  */
-describe("app.codeCharta.ui.scenarioButtons.scenarioButtonsController", function() {
+xdescribe("app.codeCharta.ui.scenarioButtons.scenarioButtonsController", function() {
 
     var scenarioButtonsController,scenarioService, tooltipService, $rootScope,$scope,$controller ;
 
