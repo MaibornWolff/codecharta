@@ -1,5 +1,8 @@
 "use strict";
 
+export const TOOLTIPS_CHANGED_EVENT_ID = "tooltips-changed";
+export const NO_DESCRIPTION = "no description";
+
 export interface Tooltips {
     [key: string]: string;
 }
@@ -13,22 +16,26 @@ export interface TooltipServiceSubscriber {
  */
 class TooltipService {
 
-    private tooltips: Tooltips;
+    private _tooltips: Tooltips;
 
     /* @ngInject */
     constructor(private $rootScope) {
-        this.setTooltips(require("./tooltips.json"));
+        this.tooltips = require("./tooltips.json");
     }
 
     public subscribe(subscriber: TooltipServiceSubscriber) {
-        this.$rootScope.$on("tooltips-changed", (event, data) => {
+        this.$rootScope.$on(TOOLTIPS_CHANGED_EVENT_ID, (event, data) => {
             subscriber.onTooltipsChanged(data, event);
         });
     }
 
-    public setTooltips(tooltips: Tooltips) {
-        this.tooltips = tooltips;
-        this.$rootScope.$broadcast("tooltips-changed", this.tooltips);
+    get tooltips(): Tooltips {
+        return this._tooltips;
+    }
+
+    set tooltips(value: Tooltips) {
+        this._tooltips = value;
+        this.$rootScope.$broadcast(TOOLTIPS_CHANGED_EVENT_ID, this._tooltips);
     }
 
     /**
@@ -46,9 +53,9 @@ class TooltipService {
          */
         const patt = new RegExp(/_\S*_/);
 
-        if (this.tooltips[key]) {
+        if (this._tooltips[key]) {
 
-            var res = this.tooltips[key];
+            var res = this._tooltips[key];
 
 
             /**
@@ -60,7 +67,7 @@ class TooltipService {
             return res;
 
         } else {
-            return "no description";
+            return NO_DESCRIPTION;
         }
 
     }
