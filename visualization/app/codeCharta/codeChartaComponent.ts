@@ -21,10 +21,12 @@ export class CodeChartaController {
         private scenarioService: ScenarioService,
         private dataService: DataService
     ) {
+        this.init();
+    }
+
+    init() {
         this.initHandlers();
         this.loadFileOrSample();
-        this.scenarioService = scenarioService;
-        this.dataService = dataService;
         this.pkg = require("../../package.json");
     }
 
