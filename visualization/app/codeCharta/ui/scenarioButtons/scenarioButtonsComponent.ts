@@ -37,9 +37,11 @@ export class ScenarioButtonsController implements TooltipServiceSubscriber{
      */
     toggle(){
         if (this.visible) {
+            //noinspection TypeScriptUnresolvedFunction
             $("#revisionChooser").animate({left: -500 + "px"});
             this.visible = false;
         } else {
+            //noinspection TypeScriptUnresolvedFunction
             $("#revisionChooser").animate({left: 2.8+"em"});
             this.visible = true;
         }
@@ -54,7 +56,7 @@ export class ScenarioButtonsController implements TooltipServiceSubscriber{
      * @param {String} key
      * @returns {String} tooltip
      */
-    getScenarioTooltipTextByKey(key){
+    getScenarioTooltipTextByKey(key: string){
         return this.tooltipService.getTooltipTextByKey(key);
     }
 
@@ -62,7 +64,7 @@ export class ScenarioButtonsController implements TooltipServiceSubscriber{
      * called when a scenario button is clicked, applies the linked scenario
      * @param {Scenario} value
      */
-    onclick(value){
+    onclick(value: Scenario){
         this.scenarioService.applyScenario(value);
     }
 };

@@ -1,36 +1,43 @@
-import {DataServiceSubscriber, DataService} from "../../core/data/dataService.ts";
-import {SettingsServiceSubscriber, SettingsService} from "../../core/settings/settingsService.ts";
+import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/dataService.ts";
+import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settingsService.ts";
 import $ from "jquery";
 import {MapColors} from "../../codeMap/rendering/renderSettings.ts";
+import {Range} from "../../model/Range";
+import {ITimeoutService} from "angular";
 
-export class LegendPanelController implements DataServiceSubscriber, SettingsServiceSubscriber{
+export class LegendPanelController implements DataServiceSubscriber, SettingsServiceSubscriber {
 
-    private deltas;
-    private pd;
-    private nd;
-    private range;
-    private areaMetric;
-    private heightMetric;
-    private colorMetric;
-    private positive;
-    private neutral;
-    private negative;
-    private select;
+    private deltas: boolean;
+    private pd: string;
+    private nd: string;
+    private range: Range;
+    private areaMetric: string;
+    private heightMetric: string;
+    private colorMetric: string;
+    private positive: string;
+    private neutral: string;
+    private negative: string;
+    private select: string;
 
     private visible: boolean = false;
 
     /* @ngInject */
-    constructor(
-        private $timeout,
-        private settingsService: SettingsService,
-        private dataService: DataService,
-        private $element: Element
-    ) {
+    constructor(private $timeout: ITimeoutService,
+                private settingsService: SettingsService,
+                private dataService: DataService,
+                private $element: Element) {
 
         let ctx = this;
-        $timeout(ctx.onDataChanged(dataService.data));
-        $timeout(ctx.onSettingsChanged(settingsService.settings));
+
+        $timeout(()=> {
+            ctx.onDataChanged(dataService.data)
+        });
+        $timeout(()=> {
+            ctx.onSettingsChanged(settingsService.settings)
+        });
+
         this.settingsService.subscribe(this);
+
         this.dataService.subscribe(this);
 
     }
@@ -47,30 +54,30 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     /**
      * Toggles the visibility
      */
-    toggle(){
+    toggle() {
         if (this.visible) {
             //noinspection TypeScriptUnresolvedFunction
             $("#legendPanel").animate({left: -500 + "px"});
             this.visible = false;
         } else {
             //noinspection TypeScriptUnresolvedFunction
-            $("#legendPanel").animate({left: 2.8+"em"});
+            $("#legendPanel").animate({left: 2.8 + "em"});
             this.visible = true;
         }
     }
 
-    onDataChanged(data) {
-        if(data && data.revisions && data.revisions.length > 1){
+    onDataChanged(data: DataModel) {
+        if (data && data.revisions && data.revisions.length > 1) {
             this.deltas = true;
             this.pd = this.getImageDataUri(MapColors.positiveDelta);
             this.nd = this.getImageDataUri(MapColors.negativeDelta);
-            this.$timeout(()=>$("#positiveDelta").attr("src", this.pd),200);
-            this.$timeout(()=>$("#negativeDelta").attr("src", this.nd),200);
+            this.$timeout(()=>$("#positiveDelta").attr("src", this.pd), 200);
+            this.$timeout(()=>$("#negativeDelta").attr("src", this.nd), 200);
         }
     }
 
-    onSettingsChanged(s) {
-        this.range =s.neutralColorRange;
+    onSettingsChanged(s: Settings) {
+        this.range = s.neutralColorRange;
         this.areaMetric = s.areaMetric;
         this.heightMetric = s.heightMetric;
         this.colorMetric = s.colorMetric;
@@ -86,13 +93,13 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         $("#select").attr("src", this.select);
     }
 
-    getImageDataUri(hex){
-        hex = "#"+hex.toString(16);
-        var color = this.encodeHex(hex);
+    getImageDataUri(hex: number): string {
+        let hexS: string = "#" + hex.toString(16);
+        var color: string = this.encodeHex(hexS);
         return this.generatePixel(color);
     }
 
-    encodeHex(s) {
+    encodeHex(s: string): string {
         s = s.substring(1, 7);
         if (s.length < 6) {
             s = s[0] + s[0] + s[1] + s[1] + s[2] + s[2];
@@ -101,11 +108,11 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
             parseInt(s[0] + s[1], 16), parseInt(s[2] + s[3], 16), parseInt(s[4] + s[5], 16));
     }
 
-    encodeRGB(r, g, b) {
+    encodeRGB(r: number, g: number, b: number): string {
         return this.encodeTriplet(0, r, g) + this.encodeTriplet(b, 255, 255);
     }
 
-    encodeTriplet(e1, e2, e3) {
+    encodeTriplet(e1: number, e2: number, e3: number): string {
         var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
         var enc1 = e1 >> 2;
         var enc2 = ((e1 & 3) << 4) | (e2 >> 4);
@@ -115,7 +122,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     }
 
 
-    generatePixel(color) {
+    generatePixel(color: string): string {
         return "data:image/gif;base64,R0lGODlhAQABAPAA" + color + "/yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
     }
 

@@ -45,9 +45,11 @@ export class RevisionChooserController implements DataServiceSubscriber{
     toggle(){
         console.log("toggle");
         if (this.visible) {
+            //noinspection TypeScriptUnresolvedFunction
             $("#revisionChooser").animate({left: -500 + "px"});
             this.visible = false;
         } else {
+            //noinspection TypeScriptUnresolvedFunction
             $("#revisionChooser").animate({left: 2.8+"em"});
             this.visible = true;
         }
@@ -61,12 +63,12 @@ export class RevisionChooserController implements DataServiceSubscriber{
         this.revisions = data.revisions;
     }
 
-    loadComparisonMap(key) {
+    loadComparisonMap(key: number) {
         this.dataService.setComparisonMap(key);
     }
 
 
-    loadReferenceMap(key) {
+    loadReferenceMap(key: number) {
         this.dataService.setReferenceMap(key);
     }
 
