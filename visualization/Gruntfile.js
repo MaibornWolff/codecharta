@@ -65,6 +65,10 @@ module.exports = function (grunt) {
                 command: path.resolve("node_modules", ".bin", "karma") + " start ./conf/karma.config.js",
                 stdout: true
             },
+            karmaTs: {
+                command: path.resolve("node_modules", ".bin", "karma") + " start ./conf/karma.ts.config.js",
+                stdout: true
+            },
             karmaAuto: {
                 command: path.resolve("node_modules", ".bin", "karma") + " start ./conf/karma.auto.config.js",
                 stdout: true
@@ -125,6 +129,7 @@ module.exports = function (grunt) {
     grunt.registerTask("package", ["clean:package", "nwjs", "force:compress", "clean:packageTmp"]);
     grunt.registerTask("doc", ["clean:doc", "exec:doc"]);
     grunt.registerTask("test", ["clean:coverage", "clean:reports", "exec:karmaSingle"]);
+    grunt.registerTask("testts", ["exec:karmaTs"]);
     grunt.registerTask("test:auto", ["clean:coverage", "clean:reports", "exec:karmaAuto"]);
 
 };

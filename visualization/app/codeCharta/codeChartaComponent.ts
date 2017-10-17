@@ -97,12 +97,14 @@ export class CodeChartaController {
      */
     initHandlers() {
 
+        //noinspection TypeScriptUnresolvedFunction
         $(window).keyup(function (event) {
             if (event.which === 116) {
                 window.location.reload();
             }
         });
 
+        //noinspection TypeScriptUnresolvedFunction
         $(window).keypress(function (event) {
             if (event.which === 18 && (event.ctrlKey || event.metaKey)) {
                 window.location.reload();

@@ -17,6 +17,7 @@
     "start": "nw",
     "build": "grunt build",
     "test": "grunt test",
+    "testts": "grunt testts",
     "test:auto": "grunt test:auto",
     "doc": "grunt doc",
     "package": "grunt package",
