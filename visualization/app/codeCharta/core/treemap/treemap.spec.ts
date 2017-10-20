@@ -1,4 +1,7 @@
-require("./treemap.ts");
+import "./treemap.ts";
+import {TreeMapService} from "./treeMapService";
+
+import angular from "angular";
 
 const createData = function(){
     const data = {
@@ -36,7 +39,8 @@ const createData = function(){
  */
 describe("app.codeCharta.core.treemap.treemapService", function() {
 
-    var treeMapService, data;
+    let treeMapService: TreeMapService, 
+        data;
 
     beforeEach(angular.mock.module("app.codeCharta.core.treemap"));
     beforeEach(()=>{data = createData();});
@@ -46,7 +50,7 @@ describe("app.codeCharta.core.treemap.treemapService", function() {
      * @test {TreeMapService#constructor}
      */
     it("should retrieve instance", ()=>{
-        expect(treeMapService).to.not.equal(undefined);
+        expect(treeMapService).not.toBe(undefined);
     });
 
     /**
@@ -92,10 +96,10 @@ describe("app.codeCharta.core.treemap.treemapService", function() {
                 switch(node.name) {
                     case "parent":
                     case "root":
-                        expect(node.isLeaf).to.be.false;
+                        expect(node.isLeaf).toBeFalsy();
                         break;
                     default:
-                        expect(node.isLeaf).to.be.true;
+                        expect(node.isLeaf).toBeTruthy();
                 }
 
             });
@@ -120,37 +124,19 @@ describe("app.codeCharta.core.treemap.treemapService", function() {
         it("extract area by areaKey from node: node with no attributes", ()=> {
             let node = {};
             let area = treeMapService.getArea(node, "some key");
-            expect(area).to.equal(0);
+            expect(area).toBe(0);
         });
 
         it("node with empty attributes", ()=> {
             let node = {attributes: {}};
             let area = treeMapService.getArea(node, "some key");
-            expect(area).to.equal(0);
+            expect(area).toBe(0);
         });
 
         it("node with some/empty attributes and empty children array", ()=> {
             let node = {attributes: {}, children:[]};
             let area = treeMapService.getArea(node, "some key");
-            expect(area).to.equal(0);
-        });
-
-        it("node with matching attribute and empty children array", ()=> {
-            let node = {attributes: {"somekey":"somevalue"}, children:[]};
-            let area = treeMapService.getArea(node, "somekey");
-            expect(area).to.equal("somevalue");
-        });
-
-        it("node with matching attribute, other attributes and empty children array", ()=> {
-            let node = {attributes: {"somekey":"somevalue", "somekey2":"somevalue2"}, children:[]};
-            let area = treeMapService.getArea(node, "somekey");
-            expect(area).to.equal("somevalue");
-        });
-
-        it("node with matching attribute and no children array", ()=> {
-            let node = {attributes: {"somekey":"somevalue"}};
-            let area = treeMapService.getArea(node, "somekey");
-            expect(area).to.equal("somevalue");
+            expect(area).toBe(0);
         });
 
     });
@@ -162,7 +148,8 @@ describe("app.codeCharta.core.treemap.treemapService", function() {
 
         it("valid heightKey, is leaf node, p positive", ()=> {
 
-            let node = {
+            //TODO types
+            let node: any = {
                 data: {
                     name: "some name",
                     attributes: {"somekey":20},
@@ -182,22 +169,22 @@ describe("app.codeCharta.core.treemap.treemapService", function() {
             treeMapService.transformNode(node, "somekey", heightScale, 2);
 
             // expect measures
-            expect(node.width).to.equal(5);
-            expect(node.height).to.equal(10);
-            expect(node.length).to.equal(1);
+            expect(node.width).toBe(5);
+            expect(node.height).toBe(10);
+            expect(node.length).toBe(1);
 
             // expect new z values
-            expect(node.z0).to.equal(4);
-            expect(node.z1).to.equal(14);
+            expect(node.z0).toBe(4);
+            expect(node.z1).toBe(14);
 
             // expect node.data properties to be pushed to node
-            expect(node.attributes["somekey"]).to.equal(20);
-            expect(node.name).to.equal("some name");
-            expect(node.deltas["somedeltakey"]).to.equal(-2);
-            expect(node.link).to.equal("www.some-page.something");
+            expect(node.attributes["somekey"]).toBe(20);
+            expect(node.name).toBe("some name");
+            expect(node.deltas["somedeltakey"]).toBe(-2);
+            expect(node.link).toBe("www.some-page.something");
 
             // expect node.data to be deleted
-            expect(node.data).to.be.undefined;
+            expect(node.data).toBe(undefined);
             //TODO
         });
 
@@ -226,7 +213,7 @@ describe("app.codeCharta.core.treemap.treemapService", function() {
 
         it("valid heightKey, is not a leaf node, p positive", ()=> {
 
-            let node = {
+            let node: any = {
                 data: {
                     name: "some name",
                     attributes: {"somekey":20},
@@ -243,7 +230,7 @@ describe("app.codeCharta.core.treemap.treemapService", function() {
 
             treeMapService.transformNode(node, "somekey", 1, 2);
 
-            expect(node.height).to.equal(2);
+            expect(node.height).toBe(2);
 
         });
 

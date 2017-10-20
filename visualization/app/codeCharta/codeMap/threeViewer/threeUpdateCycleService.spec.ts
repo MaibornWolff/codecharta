@@ -1,20 +1,26 @@
 require("./threeViewer.ts");
+import angular from "angular";
+import sinon from "sinon";
 
 /**
  * @test {ThreeUpdateCycleService}
  */
 describe("app.codeCharta.codeMap.threeViewer.threeUpdateCycleService", function() {
 
+
+    //noinspection TypeScriptUnresolvedVariable
     beforeEach(angular.mock.module("app.codeCharta.codeMap.threeViewer"));
 
+    //noinspection TypeScriptUnresolvedVariable
     /**
      * @test {ThreeUpdateCycleService#constructor}
      */
     it("should retrieve the angular service instance with no updatable references", angular.mock.inject(function(threeUpdateCycleService){
-        expect(threeUpdateCycleService).to.not.equal(undefined);
-        expect(threeUpdateCycleService.updatables.length).to.equal(0);
+        expect(threeUpdateCycleService).not.toBe(undefined);
+        expect(threeUpdateCycleService.updatables.length).toBe(0);
     }));
 
+    //noinspection TypeScriptUnresolvedVariable
     /**
      * @test {ThreeUpdateCycleService#update}
      */

@@ -1,15 +1,19 @@
-require("./data.ts");
+import "./data.ts";
+import angular from "angular";
 
 /**
  * @test {DataValidatorService}
  */
-describe("app.codeCharta.core.data.dataValidatorService", function() {
+describe("app.codeCharta.core.data.dataValidatorService", function () {
 
     var dataValidatorService;
     var file;
     var $httpBackend;
 
+    //noinspection TypeScriptUnresolvedVariable
     beforeEach(angular.mock.module("app.codeCharta.core.data"));
+
+    //noinspection TypeScriptUnresolvedVariable
     beforeEach(angular.mock.inject(function (_dataValidatorService_, _$httpBackend_) {
         dataValidatorService = _dataValidatorService_;
 
@@ -22,7 +26,7 @@ describe("app.codeCharta.core.data.dataValidatorService", function() {
 
     }));
 
-    beforeEach(()=>{
+    beforeEach(()=> {
 
         file = {
 
@@ -58,122 +62,170 @@ describe("app.codeCharta.core.data.dataValidatorService", function() {
 
     });
 
-    it("should resolve with sample file", (done)=>{
+    it("should resolve with sample file", (done)=> {
         dataValidatorService.validate(file).then(
-            ()=>{done();},
-            ()=>{done("should resolve");}
+            ()=> {
+                done();
+            },
+            ()=> {
+                done("should resolve");
+            }
         );
         //$httpBackend.flush();
     });
 
-    xit("should reject when no timestamp is given", (done)=>{
+    xit("should reject when no timestamp is given", (done)=> {
         file.timestamp = null;
         dataValidatorService.validate(file).then(
-            ()=>{done("should reject")},
-            ()=>{done();}
+            ()=> {
+                done("should reject")
+            },
+            ()=> {
+                done();
+            }
         );
         $httpBackend.flush();
     });
 
-    it("should reject when children are not unique in name ", (done)=>{
+    it("should reject when children are not unique in name ", (done)=> {
         file.nodes[0].children[0].name = "same";
         file.nodes[0].children[1].name = "same";
         dataValidatorService.validate(file).then(
-            ()=>{done("should reject")},
-            ()=>{done();}
+            ()=> {
+                done("should reject")
+            },
+            ()=> {
+                done();
+            }
         );
         //$httpBackend.flush();
     });
 
-    xit("should reject when children are not unique in id ", (done)=>{
+    xit("should reject when children are not unique in id ", (done)=> {
         file.root.children[0].id = 0;
         file.root.children[1].id = 0;
         dataValidatorService.validate(file).then(
-            ()=>{done("should reject")},
-            ()=>{done();}
+            ()=> {
+                done("should reject")
+            },
+            ()=> {
+                done();
+            }
         );
         $httpBackend.flush();
     });
 
-    it("should reject when children are empty", (done)=>{
+    it("should reject when children are empty", (done)=> {
         file.nodes[0].children = [];
         dataValidatorService.validate(file).then(
-            ()=>{done("should reject")},
-            ()=>{done();}
+            ()=> {
+                done("should reject")
+            },
+            ()=> {
+                done();
+            }
         );
         //$httpBackend.flush();
     });
 
-    xit("root should be node and therefore have name and id", (done)=>{
+    xit("root should be node and therefore have name and id", (done)=> {
         file.root = {
             name: "name",
             id: 0
         };
         dataValidatorService.validate(file).then(
-            ()=>{done();},
-            ()=>{done("should resolve");}
+            ()=> {
+                done();
+            },
+            ()=> {
+                done("should resolve");
+            }
         );
         $httpBackend.flush();
     });
 
-    xit("should reject if root is not a node and therefore has no name or id", (done)=>{
+    xit("should reject if root is not a node and therefore has no name or id", (done)=> {
         file.root = {
             name: "name"
         };
         dataValidatorService.validate(file).then(
-            ()=>{done("should reject");},
-            ()=>{done();}
+            ()=> {
+                done("should reject");
+            },
+            ()=> {
+                done();
+            }
         );
         $httpBackend.flush();
     });
 
-    xit("attributes should not allow whitespaces", (done)=>{
+    xit("attributes should not allow whitespaces", (done)=> {
         file.nodes[0].attributes = {
             "tes t1": 0
         };
         dataValidatorService.validate(file).then(
-            ()=>{done("should reject");},
-            ()=>{done();}
+            ()=> {
+                done("should reject");
+            },
+            ()=> {
+                done();
+            }
         );
         $httpBackend.flush();
     });
 
-    xit("attributes should not allow special characters", (done)=>{
+    xit("attributes should not allow special characters", (done)=> {
         file.nodes[0].attributes = {
             "tes)t1": 0
         };
         dataValidatorService.validate(file).then(
-            ()=>{done("should reject");},
-            ()=>{done();}
+            ()=> {
+                done("should reject");
+            },
+            ()=> {
+                done();
+            }
         );
         $httpBackend.flush();
     });
 
-    xit("id should not be a floating point number", (done)=>{
+    xit("id should not be a floating point number", (done)=> {
         file.root.children[1].id = 1.6;
         dataValidatorService.validate(file).then(
-            ()=>{done("should reject");},
-            ()=>{done();}
+            ()=> {
+                done("should reject");
+            },
+            ()=> {
+                done();
+            }
         );
         $httpBackend.flush();
     });
 
-    xit("id should not be negative", (done)=>{
+    xit("id should not be negative", (done)=> {
         file.root.children[1].id = -1;
         dataValidatorService.validate(file).then(
-            ()=>{done("should reject");},
-            ()=>{done();}
+            ()=> {
+                done("should reject");
+            },
+            ()=> {
+                done();
+            }
         );
         $httpBackend.flush();
     });
 
 
-    xit("id should be unique in whole map", (done)=>{
+    xit("id should be unique in whole map", (done)=> {
         file.root.children[1].id = 1;
         file.root.children[1].children[0].id = 1;
         dataValidatorService.validate(file).then(
-            ()=>{done("should reject");},
-            ()=>{done();}
+            ()=> {
+                done("should reject");
+            },
+            ()=> {
+                done();
+            }
         );
         $httpBackend.flush();
     });
