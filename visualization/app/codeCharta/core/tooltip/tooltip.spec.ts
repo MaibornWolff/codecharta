@@ -1,9 +1,9 @@
 import angular from "angular";
 import {IRootScopeService, IAngularEvent} from "angular";
-import "./tooltip.ts";
+import "./tooltip.module.ts";
 import {
     TooltipService, Tooltips, TooltipServiceSubscriber, TOOLTIPS_CHANGED_EVENT_ID, NO_DESCRIPTION
-} from "./tooltipService.ts";
+} from "./tooltip.service.ts";
 
 describe("tooltip", ()=> {
 

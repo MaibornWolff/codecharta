@@ -1,7 +1,9 @@
 import angular from "angular";
 import {IRootScopeService, ILocationService, IHttpBackendService} from "angular";
-import "./url.ts";
-import {UrlService} from "./urlService.ts";
+import "./url.module.ts";
+import {UrlService} from "./url.service.ts";
+import {VALID_TEST_DATA} from "./url.mocks.ts";
+import {CodeMap} from "../data/model/CodeMap";
 
 describe("tooltip", ()=> {
 
@@ -11,7 +13,7 @@ describe("tooltip", ()=> {
     let $location: ILocationService;
     let $httpBackend: IHttpBackendService;
 
-    let validdata: Object;
+    let data: CodeMap;
 
     //noinspection TypeScriptUnresolvedVariable
     beforeEach(angular.mock.module("app.codeCharta.core.url"));
@@ -25,53 +27,26 @@ describe("tooltip", ()=> {
     }));
 
     beforeEach(()=>{
-        validdata = {fileName: "file", projectName:"project", root:{
-            "name": "root",
-            "attributes": {},
-            "children": [
-                {
-                    "name": "big leaf",
-                    "attributes": {"rloc": 100, "functions": 10, "mcc": 1},
-                    "link": "http://www.google.de"
-                },
-                {
-                    "name": "Parent Leaf",
-                    "attributes": {},
-                    "children": [
-                        {
-                            "name": "small leaf",
-                            "attributes": {"rloc": 30, "functions": 100, "mcc": 100},
-                            "children": []
-                        },
-                        {
-                            "name": "other small leaf",
-                            "attributes": {"rloc": 70, "functions": 1000, "mcc": 10},
-                            "children": []
-                        }
-                    ]
-                }
-            ]
-        }};
+        data = VALID_TEST_DATA;
     });
 
-    it("file parameter should correctly resolve to a file", (done) => {
+    it("file parameter should correctly resolve to a file", (done: DoneFn) => {
 
         // mocks + values
         let url = "http://testurl?file=valid.json";
 
         $httpBackend
             .when("GET", "valid.json")
-            .respond(200, validdata);
+            .respond(200, data);
 
         $location.url(url);
 
         urlService.getFileDataFromQueryParam().then(
-            (data: any) => { //Todo type
-                //noinspection TypeScriptUnresolvedVariable TODO correct type
+            (data: CodeMap) => {
                 expect(data.fileName).toBe("valid.json");
                 done();
             },() => {
-                done("should succeed");
+                done.fail("should succeed");
             }
         );
 
@@ -79,24 +54,23 @@ describe("tooltip", ()=> {
 
     });
 
-    it("getFileDataFromQueryParam should allow URL's", (done) => {
+    it("getFileDataFromQueryParam should allow URL's", (done: DoneFn) => {
 
         // mocks + values
         let url = "http://testurl.de/?file=http://someurl.com/some.json";
 
         $httpBackend
             .when("GET", "http://someurl.com/some.json")
-            .respond(200, validdata);
+            .respond(200, data);
 
         $location.url(url);
 
         urlService.getFileDataFromQueryParam().then(
-            (data) => {
-                //noinspection TypeScriptUnresolvedVariable TODO correct type
+            (data: CodeMap) => {
                 expect(data.fileName).toBe("http://someurl.com/some.json");
                 done();
             },() => {
-                done("should succeed");
+                done.fail("should succeed");
             }
         );
 

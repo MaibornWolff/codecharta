@@ -1,5 +1,6 @@
 "use strict";
-import {TooltipService, TooltipServiceSubscriber, Tooltips} from "../../../core/tooltip/tooltipService.ts";
+import {TooltipService, TooltipServiceSubscriber, Tooltips} from "../../../core/tooltip/tooltip.service.ts";
+import {IScope} from "angular";
 /**
  * Controller for the DropdownDirective
  */
@@ -13,7 +14,9 @@ class DropdownController implements TooltipServiceSubscriber{
      */
     constructor(
         private tooltipService: TooltipService,
-        private $scope) {
+        private $scope: IScope) {
+
+        tooltipService.subscribe(this);
 
     }
 

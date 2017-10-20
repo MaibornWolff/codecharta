@@ -1,6 +1,6 @@
 import {Range} from "../../model/Range";
 import {Scale} from "../../model/Scale";
-import {DataService, DataServiceSubscriber, DataModel} from "../data/dataService";
+import {DataService, DataServiceSubscriber, DataModel} from "../data/data.service";
 import {
     CameraChangeSubscriber,
     ThreeOrbitControlsService

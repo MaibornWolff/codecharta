@@ -1,16 +1,17 @@
-"use strict";
-
 import * as d3 from "d3";
-import {DataService} from "../data/dataService";
+import {DataService} from "../data/data.service";
+import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
+import {HierarchyNode} from "d3-hierarchy";
 
 /**
- * This service transforms valid file data to a custom treemap. Our custom treemap has a 3rd axis added to the nodes. 
+ * This service transforms valid file data to a custom treemap. Our custom treemap has a 3rd axis added to the nodes.
  */
 class TreeMapService {
 
+    public static SELECTOR = "treeMapService";
+
     /* @ngInject */
     constructor(private dataService: DataService) {
-
     }
 
     /**
@@ -23,18 +24,26 @@ class TreeMapService {
      * @param {string} areaKey area metric name
      * @param {string} heightKey height metric name
      */
-    createTreemapNodes(data: any, w, l, p, areaKey, heightKey){
+    createTreemapNodes(
+        data: CodeMapNode,
+        w: number,
+        l: number,
+        p: number,
+        areaKey: string,
+        heightKey: string
+    ) {
 
         let treeMap = d3.treemap()
-            .size([w,l])
+            .size([w, l])
             .padding(p || 1);
+
         let root = d3.hierarchy(data);
 
-        root.descendants().forEach((l: any)=>{
+        root.descendants().forEach((l: any)=> {
             l.isLeaf = false;
         });
 
-        root.leaves().forEach((l: any)=>{
+        root.leaves().forEach((l: any)=> {
             l.isLeaf = true;
         });
 
@@ -43,11 +52,13 @@ class TreeMapService {
         let maxHeight = this.getMaxMetricInAllRevisions(heightKey);
         let heightScale = w / maxHeight;
 
-        nodes.forEach((node)=>{
+        nodes.forEach((node)=> {
             this.transformNode(node, heightKey, heightScale, 2);
         });
 
-        return nodes.filter(function(el: any){return el.value > 0 && el.width > 0 && el.height > 0 && el.length > 0; }); //dont draw invisble nodes (for the current metrics)
+        return nodes.filter(function (el: any) {
+            return el.value > 0 && el.width > 0 && el.height > 0 && el.length > 0;
+        }); //dont draw invisble nodes (for the current metrics)
     }
 
     /**
@@ -64,14 +75,14 @@ class TreeMapService {
      */
     transformNode(node, heightKey, heightScale, folderHeight) {
 
-        node.width = Math.max(node.x1-node.x0,1);
-        node.length = Math.max(node.y1-node.y0,1);
-        node.height = node.isLeaf ? heightScale * node.data.attributes[heightKey]  : folderHeight;
+        node.width = Math.max(node.x1 - node.x0, 1);
+        node.length = Math.max(node.y1 - node.y0, 1);
+        node.height = node.isLeaf ? heightScale * node.data.attributes[heightKey] : folderHeight;
         node.z0 = folderHeight * node.depth;
-        node.z1 = folderHeight* node.depth + node.height;
+        node.z1 = folderHeight * node.depth + node.height;
         node.attributes = node.data.attributes;
         node.name = node.data.name;
-        if (node.data.deltas){
+        if (node.data.deltas) {
             node.deltas = node.data.deltas;
         }
         node.link = node.data.link;
@@ -87,12 +98,12 @@ class TreeMapService {
      * @returns {number} max value
      */
     getMaxMetricInAllRevisions(metric: string) {
-        var maxValue=0;
+        var maxValue = 0;
 
-        this.dataService.data.revisions.forEach((rev)=>{
+        this.dataService.data.revisions.forEach((rev)=> {
             var nodes = d3.hierarchy(rev.root).leaves();
-            nodes.forEach((node: any)=>{
-                if(node.data.attributes[metric]>maxValue){
+            nodes.forEach((node: any)=> {
+                if (node.data.attributes[metric] > maxValue) {
                     maxValue = node.data.attributes[metric];
                 }
             });
@@ -110,12 +121,12 @@ class TreeMapService {
      */
     getArea(node, areaKey) {
         let result = 0;
-        if(node.attributes && (!node.children || node.children.length === 0)){
+        if (node.attributes && (!node.children || node.children.length === 0)) {
             result = node.attributes[areaKey] || 0;
         }
         return result;
     }
-    
+
 }
 
 export {TreeMapService};

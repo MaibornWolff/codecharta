@@ -1,7 +1,7 @@
 "use strict";
-import {SettingsService, Settings, SettingsServiceSubscriber} from "../../core/settings/settingsService";
-import {DataService, DataServiceSubscriber, DataModel} from "../../core/data/dataService";
-import {TreeMapService} from "../../core/treemap/treeMapService";
+import {SettingsService, Settings, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {DataService, DataServiceSubscriber, DataModel} from "../../core/data/data.service";
+import {TreeMapService} from "../../core/treemap/treemap.service";
 
 /**
  * Controls the settingsPanel

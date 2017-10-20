@@ -1,5 +1,5 @@
-import "./treemap.ts";
-import {TreeMapService} from "./treeMapService";
+import "./treemap.module.ts";
+import {TreeMapService} from "./treemap.service";
 
 import angular from "angular";
 
@@ -42,8 +42,10 @@ describe("app.codeCharta.core.treemap.treemapService", function() {
     let treeMapService: TreeMapService, 
         data;
 
+    //noinspection TypeScriptUnresolvedVariable
     beforeEach(angular.mock.module("app.codeCharta.core.treemap"));
     beforeEach(()=>{data = createData();});
+    //noinspection TypeScriptUnresolvedVariable
     beforeEach(angular.mock.inject(function (_treeMapService_) {treeMapService = _treeMapService_;}));
 
     /**
@@ -91,7 +93,8 @@ describe("app.codeCharta.core.treemap.treemapService", function() {
 
             var result = treeMapService.createTreemapNodes(data, 100, 100, 1, "Functions", "Statements");
 
-            result.forEach((node)=>{
+            //TODO correct types in d3
+            result.forEach((node:any)=>{
 
                 switch(node.name) {
                     case "parent":

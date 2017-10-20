@@ -1,5 +1,5 @@
-import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/dataService.ts";
-import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settingsService.ts";
+import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/data.service.ts";
+import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settings.service.ts";
 import $ from "jquery";
 import {MapColors} from "../../codeMap/rendering/renderSettings.ts";
 import {Range} from "../../model/Range";

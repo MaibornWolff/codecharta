@@ -2,10 +2,10 @@
 
 import angular from "angular";
 
-import "../settings/settings.ts";
-import "../data/data.ts";
+import "../settings/settings.module.ts";
+import "../data/data.module.ts";
 
-import {ScenarioService} from "./scenarioService.ts";
+import {ScenarioService} from "./scenario.service.ts";
 
 angular.module(
     "app.codeCharta.core.scenario",

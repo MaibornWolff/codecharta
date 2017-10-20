@@ -1,7 +1,7 @@
 import angular from "angular";
 
 import "./threeViewer/threeViewer.ts";
-import "../core/core.ts";
+import "../core/core.module.ts";
 
 import {CodeMapService} from "./codeMapService.ts";
 import {codeMapComponent} from "./codeMapComponent.ts";

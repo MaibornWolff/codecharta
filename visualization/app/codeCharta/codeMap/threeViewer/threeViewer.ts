@@ -4,7 +4,7 @@ import {ThreeCameraService} from "./threeCameraService.ts";
 import {ThreeOrbitControlsService} from "./threeOrbitControlsService.ts";
 import {ThreeRendererService} from "./threeRendererService.ts";
 import {ThreeUpdateCycleService} from "./threeUpdateCycleService.ts";
-import "../../core/settings/settings.ts";
+import "../../core/settings/settings.module.ts";
 
 import angular from "angular";
 

@@ -1,7 +1,7 @@
 "use strict";
 import {CodeMap} from "./model/CodeMap";
-import {DataValidatorService} from "./dataValidatorService";
-import {DataService} from "./dataService";
+import {DataValidatorService} from "./data.validator.service";
+import {DataService} from "./data.service";
 
 /**
  * This service loads maps into the DataService
