@@ -1,7 +1,7 @@
 "use strict";
 
 import * as d3 from "d3";
-import {CodeMap, CodeMapNode} from "./model/CodeMap";
+import {CodeMap, CodeMapNode} from "./model/CodeMap.ts";
 import {HierarchyNode} from "d3-hierarchy";
 
 interface KVObject {
@@ -48,7 +48,7 @@ export class DeltaCalculatorService {
 
     }
 
-    private calculateAttributeListDelta(first: KVObject, second: KVObject){
+    calculateAttributeListDelta(first: KVObject, second: KVObject){
         let deltas = {};
         for (var key in second) {
             if(key) {
