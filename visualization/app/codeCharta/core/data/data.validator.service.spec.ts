@@ -1,7 +1,7 @@
 import "./data.module.ts";
 import angular from "angular";
 import {DataValidatorService} from "./data.validator.service.ts";
-import {TEST_FILE_DATA} from "./data.validator.service.mocks.ts";
+import {TEST_FILE_DATA} from "./data.mocks.ts";
 import {CodeMap} from "./model/CodeMap";
 
 /**
