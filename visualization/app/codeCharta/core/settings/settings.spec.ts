@@ -1,4 +1,4 @@
-import "./settings.ts";
+import "./settings.module.ts";
 import angular from "angular";
 import sinon from "sinon";
 

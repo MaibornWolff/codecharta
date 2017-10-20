@@ -16,6 +16,8 @@ export interface TooltipServiceSubscriber {
  */
 class TooltipService {
 
+    public static SELECTOR = "tooltipService";
+
     private _tooltips: Tooltips;
 
     /* @ngInject */

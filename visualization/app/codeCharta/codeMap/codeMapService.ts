@@ -3,7 +3,7 @@
 import {CodeMapMesh} from "./rendering/codeMapMesh.ts";
 import {renderSettings} from "./rendering/renderSettings.ts"
 import {LabelManager} from "./rendering/labelManager.ts"
-import {SettingsServiceSubscriber, Settings, SettingsService} from "../core/settings/settingsService.ts";
+import {SettingsServiceSubscriber, Settings, SettingsService} from "../core/settings/settings.service.ts";
 
 const mapSize = 500.0;
 

@@ -6,9 +6,10 @@ import {ILocationService, IHttpService, IHttpResponse} from "angular";
  */
 export class UrlService {
 
+    public static SELECTOR = "urlService";
+
     /* @ngInject */
     constructor(private $location: ILocationService, private $http: IHttpService) {
-
     }
 
     /**
@@ -46,7 +47,7 @@ export class UrlService {
      * returns the current locations url
      * @returns {string} url
      */
-    public getUrl() : string{
+    public getUrl(): string {
         return this.$location.absUrl();
     }
 
@@ -71,7 +72,7 @@ export class UrlService {
 
         return new Promise((resolve, reject) => {
 
-            if(file && file.length > 0) {
+            if (file && file.length > 0) {
                 this.$http.get(file).then(
                     function (response: IHttpResponse<Object>) {
                         if (response.status === 200) {
@@ -80,7 +81,7 @@ export class UrlService {
                         } else {
                             reject();
                         }
-                    },function () {
+                    }, function () {
                         reject();
                     }
                 );

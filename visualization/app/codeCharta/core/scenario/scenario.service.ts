@@ -1,7 +1,7 @@
 "use strict";
 import {Range} from "../../model/Range.ts";
 import {Scale} from "../../model/Scale.ts";
-import {Settings} from "../settings/settingsService";
+import {Settings} from "../settings/settings.service";
 
 export interface Scenario {
     name: string,

@@ -1,4 +1,4 @@
-import "./scenario.ts";
+import "./scenario.module.ts";
 import angular from "angular";
 import sinon from "sinon";
 /**

@@ -1,6 +1,6 @@
 import angular from "angular";
 
-import "../../core/core.ts";
+import "../../core/core.module.ts";
 import "../../codeMap/codeMap.ts";
 
 import {detailPanelComponent} from "./detailPanelComponent.ts";

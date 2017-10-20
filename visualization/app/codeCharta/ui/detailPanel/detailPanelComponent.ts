@@ -1,4 +1,4 @@
-import {SettingsService, Settings, SettingsServiceSubscriber} from "../../core/settings/settingsService.ts";
+import {SettingsService, Settings, SettingsServiceSubscriber} from "../../core/settings/settings.service.ts";
 import {
     CodeMapControllerSubscriber, CodeMapBuildingTransition,
     CodeMapController

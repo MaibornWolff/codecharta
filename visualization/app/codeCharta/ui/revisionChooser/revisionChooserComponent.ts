@@ -1,5 +1,5 @@
-import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/dataService";
-import {SettingsService} from "../../core/settings/settingsService";
+import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/data.service";
+import {SettingsService} from "../../core/settings/settings.service";
 import {CodeMap} from "../../core/data/model/CodeMap";
 
 import $ from "jquery";

@@ -1,4 +1,4 @@
-import "./data.ts";
+import "./data.module.ts";
 import angular from "angular";
 
 /**

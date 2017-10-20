@@ -1,9 +1,9 @@
 "use strict";
-import {DataLoadingService} from "./core/data/dataLoadingService";
-import {UrlService} from "./core/url/urlService";
-import {SettingsService} from "./core/settings/settingsService";
-import {ScenarioService} from "./core/scenario/scenarioService";
-import {DataService} from "./core/data/dataService";
+import {DataLoadingService} from "./core/data/data.loading.service";
+import {UrlService} from "./core/url/url.service";
+import {SettingsService} from "./core/settings/settings.service";
+import {ScenarioService} from "./core/scenario/scenario.service";
+import {DataService} from "./core/data/data.service";
 import $ from "jquery";
 
 /**

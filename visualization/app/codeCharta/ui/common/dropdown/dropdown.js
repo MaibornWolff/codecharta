@@ -1,6 +1,6 @@
 "use strict";
 
-import "../../../core/tooltip/tooltip.ts";
+import "../../../core/tooltip/tooltip.module.ts";
 import {DropdownDirective} from "./dropdownDirective.js";
 import {DropdownController} from "./dropdownController.ts";
 

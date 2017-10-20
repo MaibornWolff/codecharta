@@ -1,8 +1,8 @@
 "use strict";
 
 import {IScope} from "angular";
-import {TooltipService, TooltipServiceSubscriber, Tooltips} from "../../core/tooltip/tooltipService";
-import {ScenarioService, Scenario} from "../../core/scenario/scenarioService";
+import {TooltipService, TooltipServiceSubscriber, Tooltips} from "../../core/tooltip/tooltip.service";
+import {ScenarioService, Scenario} from "../../core/scenario/scenario.service";
 import $ from "jquery";
 
 export class ScenarioButtonsController implements TooltipServiceSubscriber{
