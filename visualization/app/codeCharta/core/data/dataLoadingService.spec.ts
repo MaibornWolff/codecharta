@@ -1,4 +1,5 @@
-require("./data.ts");
+import "./data.ts";
+import angular from "angular";
 
 /**
  * @test {DataLoadingService}
@@ -10,7 +11,9 @@ describe("app.codeCharta.core.data.dataLoadingService", function() {
     var dataLoadingService;
     var $httpBackend;
 
+    //noinspection TypeScriptUnresolvedVariable
     beforeEach(angular.mock.module("app.codeCharta.core.data"));
+    //noinspection TypeScriptUnresolvedVariable
     beforeEach(angular.mock.inject(function (_dataLoadingService_, _$httpBackend_) {
         dataLoadingService = _dataLoadingService_;
         $httpBackend = _$httpBackend_;

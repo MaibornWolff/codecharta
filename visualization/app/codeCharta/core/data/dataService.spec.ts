@@ -1,4 +1,5 @@
-require("./data.ts");
+import "./data.ts";
+import angular from "angular";
 
 /**
  * @test {DataService}
@@ -10,7 +11,10 @@ describe("app.codeCharta.core.data.dataService", function() {
     var twoRevFile;
     var dataService;
 
+    //noinspection TypeScriptUnresolvedVariable
     beforeEach(angular.mock.module("app.codeCharta.core.data"));
+
+    //noinspection TypeScriptUnresolvedVariable
     beforeEach(angular.mock.inject(function (_dataService_) {dataService = _dataService_;}));
 
     beforeEach(function(){
@@ -98,7 +102,7 @@ describe("app.codeCharta.core.data.dataService", function() {
         let sut = dataService;
 
         // assertion
-        expect(sut.data.metrics.length).to.equal(0);
+        expect(sut.data.metrics.length).toBe(0);
 
     });
 
@@ -111,7 +115,7 @@ describe("app.codeCharta.core.data.dataService", function() {
         rootNode.children.push(firstFile);
         sut.setFileData(rootNode).then(
             ()=>{
-                expect(sut.data.metrics.length).to.equal(1);
+                expect(sut.data.metrics.length).toBe(1);
                 done();
             },
             ()=>{
@@ -132,7 +136,7 @@ describe("app.codeCharta.core.data.dataService", function() {
             done("should not happen");
         }, ()=>{
             //success
-            expect(sut.data.revisions.length).to.equal(2);
+            expect(sut.data.revisions.length).toBe(2);
 
             done();
         });
@@ -156,32 +160,32 @@ describe("app.codeCharta.core.data.dataService", function() {
 
         // assertion
         let ab = sut.calculateAttributeListDelta(a,b);
-        expect(ab.a).to.equal(b.a-a.a);
-        expect(ab.b).to.equal(b.b-a.b);
-        expect(ab.c).to.equal(b.c-a.c);
+        expect(ab.a).toBe(b.a-a.a);
+        expect(ab.b).toBe(b.b-a.b);
+        expect(ab.c).toBe(b.c-a.c);
 
         let ac = sut.calculateAttributeListDelta(a,c);
-        expect(ac.a).to.equal(c.a-a.a);
-        expect(ac.b).to.equal(c.b-a.b);
-        expect(ac.c).to.equal(c.c-a.c);
-        expect(ac.d).to.equal(c.d);
+        expect(ac.a).toBe(c.a-a.a);
+        expect(ac.b).toBe(c.b-a.b);
+        expect(ac.c).toBe(c.c-a.c);
+        expect(ac.d).toBe(c.d);
 
         let ad = sut.calculateAttributeListDelta(a,d);
-        expect(ad.a).to.equal(d.a-a.a);
-        expect(ad.b).to.equal(d.b-a.b);
-        expect(ad.c).to.equal(undefined);
+        expect(ad.a).toBe(d.a-a.a);
+        expect(ad.b).toBe(d.b-a.b);
+        expect(ad.c).toBe(undefined);
 
         let ae = sut.calculateAttributeListDelta(a,e);
-        expect(ae.a).to.equal(undefined);
-        expect(ae.b).to.equal(undefined);
-        expect(ae.c).to.equal(undefined);
-        expect(ae.d).to.equal(e.d);
-        expect(ae.e).to.equal(e.e);
+        expect(ae.a).toBe(undefined);
+        expect(ae.b).toBe(undefined);
+        expect(ae.c).toBe(undefined);
+        expect(ae.d).toBe(e.d);
+        expect(ae.e).toBe(e.e);
 
     });
 
     it("should retrieve instance", ()=>{
-        expect(dataService).to.not.equal(undefined);
+        expect(dataService).not.toBe(undefined);
     });
 
 

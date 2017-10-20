@@ -66,7 +66,7 @@ describe("tooltip", ()=> {
         $location.url(url);
 
         urlService.getFileDataFromQueryParam().then(
-            (data) => {
+            (data: any) => { //Todo type
                 //noinspection TypeScriptUnresolvedVariable TODO correct type
                 expect(data.fileName).toBe("valid.json");
                 done();

@@ -1,5 +1,6 @@
-require("./scenario.ts");
-
+import "./scenario.ts";
+import angular from "angular";
+import sinon from "sinon";
 /**
  * @test {ScenatioService}
  */
@@ -7,8 +8,10 @@ describe("app.codeCharta.core.scenarioService", function() {
 
     var scenarioService, $scope, sandbox, settingsService, scenario;
 
+    //noinspection TypeScriptUnresolvedVariable
     beforeEach(angular.mock.module("app.codeCharta.core.scenario"));
 
+    //noinspection TypeScriptUnresolvedVariable
     beforeEach(angular.mock.inject((_scenarioService_, _settingsService_, _$rootScope_)=>{
         scenarioService = _scenarioService_;
         settingsService = _settingsService_;
@@ -61,23 +64,13 @@ describe("app.codeCharta.core.scenarioService", function() {
     });
 
     /**
-     * @test {ScenarioService#getScenarios}
-     */
-    xit("should return an array of scenarios", ()=>{
-        var scenarios = scenarioService.getScenarios();
-        scenarios.forEach((s)=>{
-            expect(s.constructor == Scenario).to.be.true;
-        });
-    });
-
-    /**
      * @test {ScenarioService#getDefaultScenario}
      */
     it("default scenario should be rloc/mcc/mcc", ()=>{
         var scenario = scenarioService.getDefaultScenario();
-        expect(scenario.settings.areaMetric).to.be.equal("rloc");
-        expect(scenario.settings.heightMetric).to.be.equal("mcc");
-        expect(scenario.settings.colorMetric).to.be.equal("mcc");
+        expect(scenario.settings.areaMetric).toBe("rloc");
+        expect(scenario.settings.heightMetric).toBe("mcc");
+        expect(scenario.settings.colorMetric).toBe("mcc");
     });
 
 });
