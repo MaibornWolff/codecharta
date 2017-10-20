@@ -95,7 +95,7 @@ describe("app.codeCharta.core.data.dataLoadingService", function() {
                 done();
             },
             ()=>{
-                done("should succeed");
+                done.fail("should succeed");
             }
         );
         $httpBackend.flush();
@@ -104,7 +104,7 @@ describe("app.codeCharta.core.data.dataLoadingService", function() {
     xit("should reject secondFile",(done)=>{
         dataLoadingService.loadMapFromFileContent("file2.json", secondFile, 1).then(
             ()=>{
-                done("should reject");
+                done.fail("should reject");
             },
             ()=>{
                 done();
