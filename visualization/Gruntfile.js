@@ -63,7 +63,10 @@ module.exports = function (grunt) {
             },
             karmaSingle: {
                 command: path.resolve("node_modules", ".bin", "karma") + " start ./conf/karma.config.js",
-                stdout: true
+                stdout: true,
+                options: {
+                    maxBuffer: 40000 * 1024
+                }
             },
             karmaAuto: {
                 command: path.resolve("node_modules", ".bin", "karma") + " start ./conf/karma.auto.config.js",
