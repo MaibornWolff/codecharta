@@ -56,10 +56,10 @@ export class DataService {
         this.data.metrics = attributes;
         for(let value in leaves) {
             if (leaves[value]) {
-                console.log("leaves1 "+leaves[value]);
+                //console.log("leaves1 "+leaves[value]);
                 for (let value2 in leaves[value]) {
                     if (leaves[value][value2]) {
-                        console.log(" leaves2 " + leaves[value][value2]);
+                        //console.log(" leaves2 " + leaves[value][value2]);
 
                     }
                 }
