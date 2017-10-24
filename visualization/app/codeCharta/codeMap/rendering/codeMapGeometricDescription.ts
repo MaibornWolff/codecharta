@@ -1,4 +1,4 @@
-import {codeMapBuilding} from "./codeMapBuilding";
+import {codeMapBuilding} from "./codeMapBuilding.ts";
 import * as THREE from "three"
 
 export interface intersectionResult {

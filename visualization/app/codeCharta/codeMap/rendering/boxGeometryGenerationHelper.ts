@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import {intermediateVertexData} from "./intermediateVertexData"
-import {boxMeasures} from "./geometryGenerator"
+import {intermediateVertexData} from "./intermediateVertexData.ts"
+import {boxMeasures} from "./geometryGenerator.ts"
 
 enum sides {
     left = 0,

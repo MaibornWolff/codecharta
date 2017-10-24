@@ -4,7 +4,7 @@ import {CodeMap} from "../core/data/model/codeMap";
 /**
  * @test {CodeMapService}
  */
-describe("app.codeCharta.codeMap.codeMapService", function() {
+xdescribe("app.codeCharta.codeMap.codeMapService", function() {
 
     let codeMapService, $scope, sandbox, mesh, data;
 
