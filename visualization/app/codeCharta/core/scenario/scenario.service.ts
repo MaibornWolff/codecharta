@@ -1,7 +1,6 @@
 "use strict";
-import {Range} from "../../model/Range.ts";
-import {Scale} from "../../model/Scale.ts";
 import {Settings} from "../settings/settings.service";
+import {createDefaultScenario} from "./scenario.data.ts";
 
 export interface Scenario {
     name: string,
@@ -14,9 +13,7 @@ export interface Scenario {
 export class ScenarioService {
 
     /* ngInject */
-    constructor(private settingsService) {
-
-    }
+    constructor(private settingsService) {}
 
     /**
      * Applies a given scenario to the current codecharta session.
@@ -39,41 +36,7 @@ export class ScenarioService {
      * @returns {Scenario} the scenario
      */
     public getDefaultScenario(): Scenario {
-        return {
-            name: "rloc/mcc/mcc(20,40)",
-            settings: this.getDefaultSettings()
-        };
-    }
-
-    private getDefaultSettings(): Settings {
-
-        let r: Range = {
-            from: 20,
-            to: 40,
-            flipped: false
-        };
-
-        let s: Scale = {
-            x: 1, y: 1, z: 1
-        };
-
-        let c: Scale = {
-            x: 0, y: 300, z: 1000
-        };
-
-        return {
-            map: this.settingsService.settings.map,
-            neutralColorRange: r,
-            areaMetric: "rloc",
-            heightMetric: "mcc",
-            colorMetric: "mcc",
-            deltas: false,
-            amountOfTopLabels: 1,
-            scaling: s,
-            camera: c,
-            margin: 1
-        };
-
+        return createDefaultScenario(this.settingsService.settings.map);
     }
 
 }
