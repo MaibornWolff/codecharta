@@ -6,11 +6,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.5.0] - 2017-10-24
+### Added
 - experimental delta functionality
 - loading multiple maps
 - experimental margin slider
 
 ### Changed
+- faster rendering
 
 ### Removed
 
