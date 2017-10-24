@@ -1,5 +1,6 @@
 import "./data.module.ts";
-import angular from "angular";
+import * as angular from "angular";
+import "angular-mocks";
 import {DataLoadingService} from "./data.loading.service.ts";
 import {TEST_FILE_CONTENT} from "./data.mocks.ts";
 
