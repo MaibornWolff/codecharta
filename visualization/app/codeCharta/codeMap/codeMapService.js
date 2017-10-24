@@ -1,9 +1,8 @@
 "use strict";
 
-import * as THREE from "three";
-import {codeMapMesh} from "./rendering/codeMapMesh";
-import {renderSettings} from "./rendering/renderSettings"
-import {labelManager} from "./rendering/labelManager"
+import {codeMapMesh} from "./rendering/codeMapMesh.ts";
+
+import {labelManager} from "./rendering/labelManager.ts";
 
 const mapSize = 500.0;
 

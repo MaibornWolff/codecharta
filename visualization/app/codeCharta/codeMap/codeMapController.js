@@ -1,10 +1,5 @@
 "use strict";
 
-import * as THREE from "three";
-import {intersectionResult} from "./rendering/codeMapGeometricDescription"
-import {codeMapMesh} from "./rendering/codeMapMesh"
-import {codeMapBuilding} from "./rendering/codeMapBuilding"
-
 /**
  * Controls the codeMapDirective
  */
