@@ -122,7 +122,7 @@ module.exports = function (grunt) {
     grunt.registerTask("default", ["build"]);
     grunt.registerTask("build", ["clean:webpack", "webpack:prod"]);
     grunt.registerTask("serve", ["clean:webpack", "webpack:dev"]);
-    grunt.registerTask("package", ["clean:package", "nwjs", "force:compress", "clean:packageTmp"]);
+    grunt.registerTask("package", ["clean:package", /*"nwjs",*/ "compress:web", "clean:packageTmp"]);
     grunt.registerTask("doc", ["clean:doc", "exec:doc"]);
     grunt.registerTask("test", ["clean:coverage", "clean:reports", "exec:karmaSingle"]);
     grunt.registerTask("test:auto", ["clean:coverage", "clean:reports", "exec:karmaAuto"]);
