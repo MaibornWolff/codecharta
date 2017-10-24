@@ -1,20 +1,22 @@
-import angular from "angular";
+import {NGMock} from "../../../ng.mockhelper.ts";
+import DoneCallback = jest.DoneCallback;
 import {IRootScopeService, IAngularEvent} from "angular";
+
 import "./tooltip.module.ts";
 import {
-    TooltipService, Tooltips, TooltipServiceSubscriber, TOOLTIPS_CHANGED_EVENT_ID, NO_DESCRIPTION
+    TooltipService, Tooltips, TooltipServiceSubscriber, TOOLTIPS_CHANGMockED_EVENT_ID, NO_DESCRIPTION
 } from "./tooltip.service.ts";
 
-describe("tooltip", ()=> {
+describe("tooltip.service", ()=> {
 
     let tooltipService: TooltipService;
     let $rootScope: IRootScopeService;
 
     //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.module("app.codeCharta.core.tooltip"));
+    beforeEach(NGMock.mock.module("app.codeCharta.core.tooltip"));
 
     //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.inject((_tooltipService_, _$rootScope_)=> {
+    beforeEach(NGMock.mock.inject((_tooltipService_, _$rootScope_)=> {
         tooltipService = _tooltipService_;
         $rootScope = _$rootScope_;
     }));
@@ -26,7 +28,7 @@ describe("tooltip", ()=> {
             b: "b"
         };
 
-        $rootScope.$on(TOOLTIPS_CHANGED_EVENT_ID, (event: IAngularEvent, tooltips: Tooltips) => {
+        $rootScope.$on(TOOLTIPS_CHANGMockED_EVENT_ID, (event: IAngularEvent, tooltips: Tooltips) => {
             expect(tooltips).toBe(values);
             done();
         });

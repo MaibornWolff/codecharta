@@ -20,8 +20,6 @@ module.exports = function (grunt) {
         clean: {
             dist: [paths.dist],
             webpack: [paths.bundlePath],
-            coverage: [paths.coveragePath],
-            reports: [paths.testReportsPath],
             doc: [paths.docPath],
             packageTmp: [paths.packagePath + "/CodeCharta"],
             package: [paths.packagePath]
@@ -30,14 +28,6 @@ module.exports = function (grunt) {
         exec: {
             doc: {
                 command: path.resolve("node_modules", ".bin", "esdoc") + " -c conf/esdoc.json",
-                stdout: true
-            },
-            karmaSingle: {
-                command: path.resolve("node_modules", ".bin", "karma") + " start ./conf/karma.config.js",
-                stdout: true
-            },
-            karmaAuto: {
-                command: path.resolve("node_modules", ".bin", "karma") + " start ./conf/karma.auto.config.js",
                 stdout: true
             }
         },
@@ -95,7 +85,5 @@ module.exports = function (grunt) {
     grunt.registerTask("serve", ["clean:webpack", "webpack:dev"]);
     grunt.registerTask("package", ["clean:package", "nwjs", "force:compress", "clean:packageTmp"]);
     grunt.registerTask("doc", ["clean:doc", "exec:doc"]);
-    grunt.registerTask("test", ["clean:coverage", "clean:reports", "exec:karmaSingle"]);
-    grunt.registerTask("test:auto", ["clean:coverage", "clean:reports", "exec:karmaAuto"]);
 
 };

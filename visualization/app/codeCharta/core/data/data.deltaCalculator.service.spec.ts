@@ -1,5 +1,6 @@
 import "./data.module.ts";
-import angular from "angular";
+import {NGMock} from "../../../ng.mockhelper.ts";
+import DoneCallback = jest.DoneCallback;
 import {CodeMap} from "./model/CodeMap";
 import {TEST_FILE_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B} from "./data.mocks.ts";
 import {DeltaCalculatorService} from "./data.deltaCalculator.service";
@@ -13,11 +14,9 @@ describe("app.codeCharta.core.data.dataService", function() {
     let b: CodeMap;
     let deltaCalculatorService: DeltaCalculatorService;
 
-    //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.module("app.codeCharta.core.data"));
+    beforeEach(NGMock.mock.module("app.codeCharta.core.data"));
 
-    //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.inject(function (_deltaCalculatorService_) {deltaCalculatorService = _deltaCalculatorService_;}));
+    beforeEach(NGMock.mock.inject(function (_deltaCalculatorService_) {deltaCalculatorService = _deltaCalculatorService_;}));
 
     beforeEach(function() {
         a = TEST_DELTA_MAP_A;

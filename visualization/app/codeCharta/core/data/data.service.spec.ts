@@ -1,5 +1,5 @@
 import "./data.module.ts";
-import angular from "angular";
+import {NGMock} from "../../../ng.mockhelper.ts";
 import {DataService} from "./data.service.ts";
 import {CodeMap} from "./model/CodeMap";
 import {TEST_FILE_DATA} from "./data.mocks.ts";
@@ -13,10 +13,10 @@ describe("app.codeCharta.core.data.dataService", function() {
     let dataService: DataService;
 
     //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.module("app.codeCharta.core.data"));
+    beforeEach(NGMock.mock.module("app.codeCharta.core.data"));
 
     //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.inject(function (_dataService_) {dataService = _dataService_;}));
+    beforeEach(NGMock.mock.inject(function (_dataService_) {dataService = _dataService_;}));
 
     beforeEach(function() {
         data = TEST_FILE_DATA;

@@ -1,11 +1,12 @@
 import "./settings.module.ts";
-import angular from "angular";
+import {NGMock} from "../../../ng.mockhelper.ts";
+import DoneCallback = jest.DoneCallback;
 import sinon from "sinon";
 
 /**
  * @test {SettingsService}
  */
-describe("app.codeCharta.core.settings.settingsService", function() {
+describe("settings.service", function() {
 
     var validData;
 
@@ -40,13 +41,13 @@ describe("app.codeCharta.core.settings.settingsService", function() {
     });
 
     //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.module("app.codeCharta.core.settings"));
+    beforeEach(NGMock.mock.module("app.codeCharta.core.settings"));
     
     //noinspection TypeScriptUnresolvedVariable
     /**
      * @test {SettingsService#constructor}
      */
-    it("should retrieve the angular service instance with enabled delta cubes and no details selected", angular.mock.inject(function(settingsService){
+    it("should retrieve the angular service instance with enabled delta cubes and no details selected", NGMock.mock.inject(function(settingsService){
         expect(settingsService).not.toBe(undefined);
         expect(settingsService.settings.deltas).toBe(true);
     }));
@@ -55,7 +56,7 @@ describe("app.codeCharta.core.settings.settingsService", function() {
     /**
      * @test {SettingsService#getQueryParamString}
      */
-    it("should retrieve the correct query param strings", angular.mock.inject(function(settingsService){
+    it("should retrieve the correct query param strings", NGMock.mock.inject(function(settingsService){
         settingsService.settings.areaMetric = "areaStuff";
         settingsService.settings.camera.x = "2";
         expect(settingsService.getQueryParamString()).toContain("areaMetric=areaStuff");
@@ -67,7 +68,7 @@ describe("app.codeCharta.core.settings.settingsService", function() {
     /**
      * @test {SettingsService#updateSettingsFromUrl}
      */
-    it("should update settings from url", angular.mock.inject(function(settingsService, $location){
+    it("should update settings from url", NGMock.mock.inject(function(settingsService, $location){
         $location.url("http://something.de?scaling.x=42&areaMetric=myMetric&scaling.y=0.32");
         settingsService.updateSettingsFromUrl();
         expect(settingsService.settings.scaling.x).toBe(42);
@@ -79,7 +80,7 @@ describe("app.codeCharta.core.settings.settingsService", function() {
     /**
      * @test {SettingsService#updateSettingsFromUrl}
      */
-    it("should not update settings.map from url", angular.mock.inject(function(settingsService, $location){
+    it("should not update settings.map from url", NGMock.mock.inject(function(settingsService, $location){
         $location.url("http://something.de?map=aHugeMap");
         settingsService.settings.map="correctMap";
         settingsService.updateSettingsFromUrl();
@@ -91,7 +92,7 @@ describe("app.codeCharta.core.settings.settingsService", function() {
      * @test {SettingsService#onSettingsChanged}
      * @test {SettingsService#constructor}
      */
-    it("should react to data-changed events", angular.mock.inject(function(settingsService, $rootScope){
+    it("should react to data-changed events", NGMock.mock.inject(function(settingsService, $rootScope){
 
         settingsService.onSettingsChanged = sinon.spy();
 
@@ -121,7 +122,7 @@ describe("app.codeCharta.core.settings.settingsService", function() {
      * @test {SettingsService#onCameraChanged}
      * @test {SettingsService#constructor}
      */
-    it("should react to camera-changed events", angular.mock.inject(function(settingsService, $rootScope){
+    it("should react to camera-changed events", NGMock.mock.inject(function(settingsService, $rootScope){
 
         settingsService.onCameraChanged = sinon.spy();
 
@@ -135,7 +136,7 @@ describe("app.codeCharta.core.settings.settingsService", function() {
     /**
      * @test {SettingsService#onCameraChanged}
      */
-    it("onCameraChanged should update settings object but not call onSettingsChanged to ensure performance", angular.mock.inject(function(settingsService){
+    it("onCameraChanged should update settings object but not call onSettingsChanged to ensure performance", NGMock.mock.inject(function(settingsService){
         settingsService.onSettingsChanged = sinon.spy();
         settingsService.onCameraChanged({position: {x:0, y:0, z: 42}});
         expect(!settingsService.onSettingsChanged.called);
@@ -148,7 +149,7 @@ describe("app.codeCharta.core.settings.settingsService", function() {
      * @test {SettingsService#onSettingsChanged}
      * @test {SettingsService#constructor}
      */
-    it("should react to data-changed events and set metrics correctly", angular.mock.inject(function(settingsService, $rootScope){
+    it("should react to data-changed events and set metrics correctly", NGMock.mock.inject(function(settingsService, $rootScope){
 
         settingsService.onSettingsChanged = sinon.spy();
 
@@ -167,7 +168,7 @@ describe("app.codeCharta.core.settings.settingsService", function() {
     /**
      * @test {SettingsService#getMetricByIdOrLast}
      */
-    it("should return last value when id is bigger than or equal to metrics length", angular.mock.inject(function(settingsService, $rootScope){
+    it("should return last value when id is bigger than or equal to metrics length", NGMock.mock.inject(function(settingsService, $rootScope){
 
         var arr = ["a", "b", "c"];
         var result = settingsService.getMetricByIdOrLast(32, arr);
@@ -182,7 +183,7 @@ describe("app.codeCharta.core.settings.settingsService", function() {
     /**
      * @test {SettingsService#getMetricByIdOrLast}
      */
-    it("should return correct value when id is smaller than metrics length", angular.mock.inject(function(settingsService, $rootScope){
+    it("should return correct value when id is smaller than metrics length", NGMock.mock.inject(function(settingsService, $rootScope){
 
         var arr = ["a", "b", "c"];
         var result = settingsService.getMetricByIdOrLast(1, arr);
@@ -194,7 +195,7 @@ describe("app.codeCharta.core.settings.settingsService", function() {
     /**
       * @test {SettingsService#getMetricOrDefault}
       */
-    it("should return defaultValue when metric is not in array", angular.mock.inject(function(settingsService){
+    it("should return defaultValue when metric is not in array", NGMock.mock.inject(function(settingsService){
         
         const arr = ["a", "b", "c"];
         const name = "lookingForThis";
@@ -210,7 +211,7 @@ describe("app.codeCharta.core.settings.settingsService", function() {
     /**
      * @test {SettingsService#getMetricOrDefault}
      */
-    it("should return the searched value when metric is in array", angular.mock.inject(function(settingsService){
+    it("should return the searched value when metric is in array", NGMock.mock.inject(function(settingsService){
                 
         const arr = ["a", "b", "lookingForThis"];
         const name = "lookingForThis";
@@ -226,7 +227,7 @@ describe("app.codeCharta.core.settings.settingsService", function() {
     /**
      * @test {SettingsService#correctSettings}
      */
-    it("should replace metric with default if metric is not available", angular.mock.inject(function(settingsService, dataService){
+    it("should replace metric with default if metric is not available", NGMock.mock.inject(function(settingsService, dataService){
         dataService.data.metrics = ["a", "f", "g", "h"];
         const settings = {areaMetric:"a", heightMetric:"b", colorMetric:"c"};
         const expected = {areaMetric: "a", heightMetric:"f", colorMetric:"g"};
@@ -240,7 +241,7 @@ describe("app.codeCharta.core.settings.settingsService", function() {
     /**
      * @test {SettingsService#correctSettings}
      */
-    it("should return input if metrics are available", angular.mock.inject(function(settingsService){
+    it("should return input if metrics are available", NGMock.mock.inject(function(settingsService){
         const settings = {areaMetric:"a", heightMetric:"b", colorMetric:"c"};
         const result = settingsService.correctSettings(settings);
         expect(result).toEqual(settings);

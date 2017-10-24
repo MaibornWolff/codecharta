@@ -1,6 +1,5 @@
-"use strict";
-
-import {CheckboxDirective} from "./checkboxDirective.js";
+import angular from "angular";
+import {CheckboxDirective} from "./checkboxDirective.ts";
 
 angular.module("app.codeCharta.ui.common.checkbox",[]);
 

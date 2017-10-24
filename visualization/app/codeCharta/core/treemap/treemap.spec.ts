@@ -1,7 +1,8 @@
+import {NGMock} from "../../../ng.mockhelper.ts";
+import DoneCallback = jest.DoneCallback;
+
 import "./treemap.module.ts";
 import {TreeMapService} from "./treemap.service";
-
-import angular from "angular";
 
 const createData = function(){
     const data = {
@@ -37,16 +38,16 @@ const createData = function(){
 /**
  * @test {TreeMapService}
  */
-describe("app.codeCharta.core.treemap.treemapService", function() {
+describe("treemap.service", function() {
 
     let treeMapService: TreeMapService, 
         data;
 
     //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.module("app.codeCharta.core.treemap"));
+    beforeEach(NGMock.mock.module("app.codeCharta.core.treemap"));
     beforeEach(()=>{data = createData();});
     //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.inject(function (_treeMapService_) {treeMapService = _treeMapService_;}));
+    beforeEach(NGMock.mock.inject(function (_treeMapService_) {treeMapService = _treeMapService_;}));
 
     /**
      * @test {TreeMapService#constructor}

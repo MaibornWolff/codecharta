@@ -1,6 +1,6 @@
 import angular from "angular";
 import "./dropdown/dropdown.js";
-import "./checkbox/checkbox.js";
+import "./checkbox/checkbox.ts";
 import "./fab/fab.js";
 import "./numberField/numberField.js";
 import "./collapsible/collapsible.js";

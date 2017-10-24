@@ -2,4 +2,5 @@ import angular from "angular";
 import "angular-mocks";
 import IAngularStatic = angular.IAngularStatic;
 
-export const ng: IAngularStatic = angular;
+export const NGMock: IAngularStatic = angular;
+export const NG = angular;

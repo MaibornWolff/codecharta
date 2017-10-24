@@ -1,25 +1,24 @@
-import angular from "angular";
+import {NGMock} from "../../../ng.mockhelper.ts";
 import {IRootScopeService, ILocationService, IHttpBackendService} from "angular";
-import "./url.module.ts";
+import DoneCallback = jest.DoneCallback;
+
 import {UrlService} from "./url.service.ts";
-import {VALID_TEST_DATA} from "./url.mocks.ts";
+import "./url.module.ts";
+import {VALID_TEST_DATA} from "./url.mocks";
 import {CodeMap} from "../data/model/CodeMap";
 
-describe("tooltip", ()=> {
+describe("url.service", ()=>{
 
     let urlService: UrlService;
-
     let $rootScope: IRootScopeService;
     let $location: ILocationService;
     let $httpBackend: IHttpBackendService;
 
     let data: CodeMap;
 
-    //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.module("app.codeCharta.core.url"));
+    beforeEach(NGMock.mock.module("app.codeCharta.core.url"));
 
-    //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.inject((_urlService_, _$rootScope_, _$location_, _$httpBackend_)=> {
+    beforeEach(NGMock.mock.inject((_urlService_, _$rootScope_, _$location_, _$httpBackend_) => {
         urlService = _urlService_;
         $rootScope = _$rootScope_;
         $location = _$location_;
@@ -30,7 +29,7 @@ describe("tooltip", ()=> {
         data = VALID_TEST_DATA;
     });
 
-    it("file parameter should correctly resolve to a file", (done: DoneFn) => {
+    it("file parameter should correctly resolve to a file", (done: DoneCallback) => {
 
         // mocks + values
         let url = "http://testurl?file=valid.json";
@@ -45,8 +44,6 @@ describe("tooltip", ()=> {
             (data: CodeMap) => {
                 expect(data.fileName).toBe("valid.json");
                 done();
-            },() => {
-                done.fail("should succeed");
             }
         );
 
@@ -54,7 +51,7 @@ describe("tooltip", ()=> {
 
     });
 
-    it("getFileDataFromQueryParam should allow URL's", (done: DoneFn) => {
+    it("getFileDataFromQueryParam should allow URL's", (done: DoneCallback) => {
 
         // mocks + values
         let url = "http://testurl.de/?file=http://someurl.com/some.json";
@@ -114,3 +111,5 @@ describe("tooltip", ()=> {
     });
 
 });
+
+
