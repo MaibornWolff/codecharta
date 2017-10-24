@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - faster rendering
 
 ### Removed
+- nwjs packages and native apps due to a bug
 
 ### Fixed
 - using color metric instead of height metric for color range slider ceil
