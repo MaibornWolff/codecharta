@@ -1,16 +1,17 @@
 import "./codeMap.ts";
-import angular from "angular";
+
 import {CodeMapService} from "./codeMapService.ts";
+import {NG} from "../../ng.mockhelper";
 
 describe("app.codeCharta.codeMap.codeMapService", function () {
 
     let codeMapService: CodeMapService, $scope;
 
     //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.module("app.codeCharta.codeMap"));
+    beforeEach(NG.mock.module("app.codeCharta.codeMap"));
 
     //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.inject((_codeMapService_, _$rootScope_)=> {
+    beforeEach(NG.mock.inject((_codeMapService_, _$rootScope_)=> {
         codeMapService = _codeMapService_;
         $scope = _$rootScope_;
     }));

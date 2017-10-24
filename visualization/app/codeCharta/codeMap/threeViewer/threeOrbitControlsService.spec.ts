@@ -1,5 +1,5 @@
 import "./threeViewer.ts";
-import angular from "angular";
+import {NG} from "../../../ng.mockhelper.ts";
 
 /**
  * @test {ThreeOrbitControlsService}
@@ -7,10 +7,10 @@ import angular from "angular";
 describe("app.codeCharta.codeMap.threeViewer.threeOrbitControlsService", function() {
 
     //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.module("app.codeCharta.codeMap.threeViewer"));
+    beforeEach(NG.mock.module("app.codeCharta.codeMap.threeViewer"));
 
     //noinspection TypeScriptUnresolvedVariable
-    it("should retrieve the angular service instance", angular.mock.inject(function(threeOrbitControlsService){
+    it("should retrieve the angular service instance", NG.mock.inject(function(threeOrbitControlsService){
         expect(threeOrbitControlsService).not.toBe(undefined);
     }));
 

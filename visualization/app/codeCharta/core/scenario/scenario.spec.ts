@@ -1,5 +1,7 @@
+import {NGMock} from "../../../ng.mockhelper.ts";
+import DoneCallback = jest.DoneCallback;
+
 import "./scenario.module.ts";
-import angular from "angular";
 import {ScenarioService, Scenario} from "./scenario.service.ts";
 import {SettingsService} from "../settings/settings.service.ts";
 import {createDefaultScenario} from "./scenario.data.ts";
@@ -15,10 +17,10 @@ describe("app.codeCharta.core.scenarioService", function () {
         settingsService: SettingsService;
 
     //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.module("app.codeCharta.core.scenario"));
+    beforeEach(NGMock.mock.module("app.codeCharta.core.scenario"));
 
     //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.inject((_scenarioService_, _settingsService_, _$rootScope_)=> {
+    beforeEach(NGMock.mock.inject((_scenarioService_, _settingsService_, _$rootScope_)=> {
         scenarioService = _scenarioService_;
         settingsService = _settingsService_;
         $scope = _$rootScope_;

@@ -16,9 +16,9 @@
     "postinstall": "grunt build",
     "start": "nw",
     "build": "grunt build",
-    "test": "grunt test",
-    "jest": "jest",
-    "test:auto": "grunt test:auto",
+    "test": "jest",
+    "test:auto": "jest --watch",
+    "test:updateSnaps": "jest --updateSnapshot",
     "doc": "grunt doc",
     "package": "grunt package",
     "serve": "grunt serve"
@@ -28,14 +28,19 @@
   },
   "license": "BSD-3-Clause",
   "jest": {
-    "setupTestFrameworkScriptFile": "",
+    "collectCoverage": true,
+    "coverageDirectory": "<rootDir>/dist/coverage",
+    "coveragePathIgnorePatterns": [
+      "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx)$",
+      "<rootDir>/app/ng.mockhelper.ts"
+    ],
     "transform": {
       ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
     "roots": [
       "<rootDir>/app"
     ],
-    "testRegex": "(/__tests__/.*|\\.(test))\\.(ts|tsx)$",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx)$",
     "moduleFileExtensions": [
       "ts",
       "tsx",
@@ -55,6 +60,8 @@
   "dependencies": {
     "@types/angular": "^1.6.32",
     "@types/angular-mocks": "^1.5.11",
+    "@types/jest": "^21.1.4",
+    "@types/node": "^8.0.46",
     "@types/sinon": "^2.3.5",
     "ajv": "^5.2.2",
     "angular": "^1.6.0",

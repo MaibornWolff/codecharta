@@ -1,6 +1,5 @@
 import "./data.module.ts";
-import * as angular from "angular";
-import "angular-mocks";
+import {NGMock} from "../../../ng.mockhelper.ts";
 import {DataLoadingService} from "./data.loading.service.ts";
 import {TEST_FILE_CONTENT} from "./data.mocks.ts";
 
@@ -13,21 +12,25 @@ describe("app.codeCharta.core.data.dataLoadingService", function () {
         validFileContent;
 
     //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.module("app.codeCharta.core.data"));
+    beforeEach(NGMock.mock.module("app.codeCharta.core.data"));
     //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.inject(function (_dataLoadingService_) {
+    beforeEach(NGMock.mock.inject(function (_dataLoadingService_) {
         dataLoadingService = _dataLoadingService_;
         validFileContent = TEST_FILE_CONTENT;
     }));
 
-    it("should resolve valid file", (done)=> {
-        dataLoadingService.loadMapFromFileContent("file.json", validFileContent, 0).then(done, done.fail);
+    it("should resolve valid file", ()=> {
+        return dataLoadingService.loadMapFromFileContent("file.json", validFileContent, 0);
     });
 
-    it("should reject invalid file", (done)=> {
+    it("should reject or catch invalid file", (done)=> {
         let invalidFileContent = validFileContent;
         delete invalidFileContent.projectName;
-        dataLoadingService.loadMapFromFileContent("file.json", invalidFileContent, 0).then(()=>{done.fail()}, done);
+        dataLoadingService.loadMapFromFileContent("file.json", invalidFileContent, 0).then(()=>{}, ()=>{
+            done();
+        }).catch(()=>{
+            done()
+        });
     });
 
 });
