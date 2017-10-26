@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`common fab snapshot test 1`] = `
+Object {
+  "0": <fab-component
+    class="ng-scope ng-isolate-scope"
+    icon-class="some class"
+  >
+    <a
+      class="btn-floating btn-large waves-effect waves-light teal"
+    >
+      <i
+        class="fa some class"
+      />
+    </a>
+  </fab-component>,
+  "length": 1,
+}
+`;
+
+exports[`fab snapshot test 1`] = `
+Object {
+  "0": <fab-component
+    class="ng-scope ng-isolate-scope"
+    icon-class="some class"
+  >
+    <a
+      class="btn-floating btn-large waves-effect waves-light teal"
+    >
+      <i
+        class="fa some class"
+      />
+    </a>
+  </fab-component>,
+  "length": 1,
+}
+`;
