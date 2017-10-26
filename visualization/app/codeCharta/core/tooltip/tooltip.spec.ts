@@ -4,7 +4,7 @@ import {IRootScopeService, IAngularEvent} from "angular";
 
 import "./tooltip.module.ts";
 import {
-    TooltipService, Tooltips, TooltipServiceSubscriber, TOOLTIPS_CHANGMockED_EVENT_ID, NO_DESCRIPTION
+    TooltipService, Tooltips, TooltipServiceSubscriber, TOOLTIPS_CHANGED_EVENT_ID, NO_DESCRIPTION
 } from "./tooltip.service.ts";
 
 describe("tooltip.service", ()=> {
@@ -28,7 +28,7 @@ describe("tooltip.service", ()=> {
             b: "b"
         };
 
-        $rootScope.$on(TOOLTIPS_CHANGMockED_EVENT_ID, (event: IAngularEvent, tooltips: Tooltips) => {
+        $rootScope.$on(TOOLTIPS_CHANGED_EVENT_ID, (event: IAngularEvent, tooltips: Tooltips) => {
             expect(tooltips).toBe(values);
             done();
         });
