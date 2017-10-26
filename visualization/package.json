@@ -16,7 +16,7 @@
     "postinstall": "grunt build",
     "start": "nw",
     "build": "grunt build",
-    "test": "jest",
+    "test": "jest --runInBand",
     "test:auto": "jest --watch",
     "test:updateSnaps": "jest --updateSnapshot",
     "doc": "grunt doc",
