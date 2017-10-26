@@ -1,5 +1,5 @@
 "use strict";
-import {DropdownController} from "./dropdownController.ts";
+import {DropdownController} from "./dropdown.controller.ts";
 
 /**
  * Renders a dropdown menu.
@@ -12,7 +12,13 @@ class DropdownDirective{
     constructor() {
 
         /** @type {string} */
-        this.template = require("./dropdown.html");
+        this.template = "<div class=\"input-field col s12\">\n" +
+            "    <label for=\"dropdown-directive-{{::$id}}\">{{::ctrl.label}}</label>\n" +
+            "    <br />\n" +
+            "    <select class=\"browser-default\" ng-model=\"ctrl.model\" id=\"dropdown-directive-{{::$id}}\">\n" +
+            "        <option title=\"{{ctrl.getTooltipTextByKey(x);}}\" ng-repeat=\"x in ctrl.values\" value=\"{{x}}\">{{x}}</option>\n" +
+            "    </select>\n" +
+            "</div>";
 
         /** @type {string} */
         this.restrict = "E";

@@ -1,7 +1,5 @@
 "use strict";
 
-
-
 /**
  * Collapsible element. Should be put inside a {@link CollapsibleDirective}.
  */
@@ -34,7 +32,14 @@ class CollapsibleElementDirective{
         this.transclude = true;
 
         /** @type {string} */
-        this.template = require("./collapsibleElement.html");
+        this.template = "<li>\n" +
+            "    <div class=\"collapsible-header\"><i class=\"fa {{::iconClass}}\"></i>{{::label}}</div>\n" +
+            "    <div class=\"collapsible-body\">\n" +
+            "        <div class=\"row\" ng-transclude>\n" +
+            "          <!--transcluded content-->\n" +
+            "        </div>\n" +
+            "    </div>\n" +
+            "</li>";
     }
 
     /**
