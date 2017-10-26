@@ -1,31 +1,29 @@
 "use strict";
 
 /**
- * Renders a slider.
+ * Renders a number field.
  */
-class SliderDirective {
+class NumberFieldDirective {
 
-    /**
-     * @constuctor
-     */
     constructor() {
         /** @type {string} **/
-        this.template = require("./slider.html");
+        this.template = "<div class=\"input-field col s12\">\n" +
+            "    <label for=\"numberField-directive-{{::$id}}\">{{::label}}</label>\n" +
+            "    <br />\n" +
+            "    <input id=\"numberField-directive-{{::$id}}\" type=\"number\" ng-model=\"model\" min={{::min}}>\n" +
+            "</div>";
 
         /** @type {string} **/
         this.restrict = "E";
 
         /**
-         * Binds model, label, min, max, step, decimals and a change function.
+         * Binds 'model', 'label', a minimal value 'min' and a 'change' function.
          * @type {Scope}
          **/
         this.scope = {
             model: "=",
             label: "@",
             min: "@",
-            max: "@",
-            step: "@",
-            decimals: "@",
             change:"&"
         };
     }
@@ -35,15 +33,13 @@ class SliderDirective {
      * @param {Scope} scope
      */
     link(scope){
-
         scope.$watch(
             ()=>{return scope.model;},
             ()=>{scope.change();}
         );
-
     }
     
 }
 
-export {SliderDirective};
+export {NumberFieldDirective};
 
