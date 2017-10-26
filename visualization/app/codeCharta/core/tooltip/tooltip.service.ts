@@ -1,6 +1,6 @@
 "use strict";
 
-export const TOOLTIPS_CHANGMockED_EVENT_ID = "tooltips-changed";
+export const TOOLTIPS_CHANGED_EVENT_ID = "tooltips-changed";
 export const NO_DESCRIPTION = "no description";
 
 export interface Tooltips {
@@ -26,7 +26,7 @@ class TooltipService {
     }
 
     public subscribe(subscriber: TooltipServiceSubscriber) {
-        this.$rootScope.$on(TOOLTIPS_CHANGMockED_EVENT_ID, (event, data) => {
+        this.$rootScope.$on(TOOLTIPS_CHANGED_EVENT_ID, (event, data) => {
             subscriber.onTooltipsChanged(data, event);
         });
     }
@@ -37,7 +37,7 @@ class TooltipService {
 
     set tooltips(value: Tooltips) {
         this._tooltips = value;
-        this.$rootScope.$broadcast(TOOLTIPS_CHANGMockED_EVENT_ID, this._tooltips);
+        this.$rootScope.$broadcast(TOOLTIPS_CHANGED_EVENT_ID, this._tooltips);
     }
 
     /**
