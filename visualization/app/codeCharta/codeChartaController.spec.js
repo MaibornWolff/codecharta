@@ -108,6 +108,7 @@ describe("app.codeCharta.codeChartaController", function() {
 
         codeChartaController = $controller("codeChartaController", {dataService: dataService, urlService: urlService, settingsService:settingsService, scenarioService:scenarioService});
 
+        expect(dataService.setFileData.calledWithExactly("someData"));
         expect(settingsService.onSettingsChanged.calledOnce);
         expect(dataService.setComparisonMap.called);
         expect(dataService.setReferenceMap.called);
