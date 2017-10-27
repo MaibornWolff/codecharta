@@ -47,23 +47,25 @@ public final class ProjectConverter {
         // utility class
     }
 
-    public static Project convert(String projectName, List<VersionControlledFile> versionControlledFiles) {
+    public static Project convert(String projectName, List<VersionControlledFile> versionControlledFiles, boolean containsAuthors) {
         Project project = new Project(projectName);
-        versionControlledFiles.forEach(vcFile -> ProjectConverter.addVersionControlledFile(project, vcFile));
+        versionControlledFiles.forEach(vcFile -> ProjectConverter.addVersionControlledFile(project, vcFile, containsAuthors));
         return project;
     }
 
-    private static void addVersionControlledFile(Project project, VersionControlledFile versionControlledFile) {
-        Map<String, Object> attributes = extractAttributes(versionControlledFile);
+    private static void addVersionControlledFile(Project project, VersionControlledFile versionControlledFile, boolean containsAuthors) {
+        Map<String, Object> attributes = extractAttributes(versionControlledFile, containsAuthors);
         Node newNode = new Node(extractFilenamePart(versionControlledFile), NodeType.File, attributes, "", Collections.emptyList());
         NodeInserter.insertByPath(project, PathFactory.fromFileSystemPath(extractPathPart(versionControlledFile)), newNode);
     }
 
-    private static Map<String, Object> extractAttributes(VersionControlledFile versionControlledFile) {
+    private static Map<String, Object> extractAttributes(VersionControlledFile versionControlledFile, boolean containsAuthors) {
         HashMap<String, Object> attributes = new HashMap<>();
         attributes.put("number_of_commits", versionControlledFile.getNumberOfOccurrencesInCommits());
         attributes.put("weeks_with_commits", versionControlledFile.getNumberOfWeeksWithCommits());
-        attributes.put("authors", versionControlledFile.getAuthors());
+        if (containsAuthors) {
+            attributes.put("authors", versionControlledFile.getAuthors());
+        }
         attributes.put("number_of_authors", versionControlledFile.getNumberOfAuthors());
         return attributes;
     }
