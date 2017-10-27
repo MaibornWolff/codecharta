@@ -25,9 +25,24 @@ public class SCMLogParser {
             String pathToLog = args[0];
             String gitOrSvn = args[1];
 
-            Project project = parseDataFromLog(pathToLog, gitOrSvn);
+            String outputFile = null;
+
+            boolean containsAuthors = false;
+
             if (args.length >= 3) {
-                ProjectSerializer.serializeProjectAndWriteToFile(project, args[2]);
+                if ("--a".equals(args[2])) {
+                    containsAuthors = true;
+                    if (args.length >= 4) {
+                        outputFile = args[3];
+                    }
+                } else {
+                    outputFile = args[2];
+                }
+            }
+
+            Project project = parseDataFromLog(pathToLog, gitOrSvn, containsAuthors);
+            if (outputFile != null) {
+                ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile);
             } else {
                 ProjectSerializer.serializeProject(project, new OutputStreamWriter(System.out));
             }
@@ -36,7 +51,7 @@ public class SCMLogParser {
         }
     }
 
-    private static Project parseDataFromLog(String pathToLog, String gitOrSvn) throws IOException {
+    private static Project parseDataFromLog(String pathToLog, String gitOrSvn, boolean containsAuthors) throws IOException {
         LogParserStrategy parserStrategy = null;
         switch (gitOrSvn) {
             case "--git":
@@ -49,7 +64,7 @@ public class SCMLogParser {
                 showErrorAndTerminate();
         }
         Stream<String> lines = Files.lines(Paths.get(pathToLog));
-        return new LogParser(parserStrategy).parse(lines);
+        return new LogParser(parserStrategy, containsAuthors).parse(lines);
     }
 
     private static void showErrorAndTerminate() {
@@ -58,8 +73,9 @@ public class SCMLogParser {
     }
 
     private static void showHelpAndTerminate() {
-        System.out.println("Please use the following syntax\n\"SCMLogParser-x.x.jar <pathToLogFile> --git/--svn\" [<pathToOutputfile>]\n" +
+        System.out.println("Please use the following syntax\n\"SCMLogParser-x.x.jar <pathToLogFile> --git/--svn [--a] [<pathToOutputfile>]\"\n" +
                 "The log file must have been created by using \"svn log --verbose\" or \"git log --name-status\"\n" +
+                "Set the --a parameter to add an array of authors to every file of your output\n" +
                 "If no output file was specified, the output will be piped to standard out");
         System.exit(0);
     }
