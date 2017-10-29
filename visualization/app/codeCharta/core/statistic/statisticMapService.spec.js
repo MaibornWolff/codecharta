@@ -209,9 +209,10 @@ describe("app.codeCharta.core.statistic", function() {
     }));
 
     it("test mean", angular.mock.inject(function(statisticMapService){
+        const util = require('util');
         const maps = [ file1, file2];
-        const resultingMap = statisticMapService.unifyMaps(maps);
-        expect(resultingMap).to.deep.equal(file_mean, STATISTIC_OPS.MEAN);
+        const resultingMap = statisticMapService.unifyMaps(maps, STATISTIC_OPS.MEAN);
+        expect(resultingMap).to.deep.equal(file_mean);
     }));
 
     it("test median", angular.mock.inject(function(statisticMapService){
@@ -255,7 +256,6 @@ describe("app.codeCharta.core.statistic", function() {
     }));
 
     it("test repeated", angular.mock.inject(function(statisticMapService){
-        const util = require('util');
         const map = [file1, file1, file1, file1];
         const resultingMapMean = statisticMapService.unifyMaps(map, STATISTIC_OPS.MEAN);
         const resultingMapMedian = statisticMapService.unifyMaps(map, STATISTIC_OPS.MEDIAN);
