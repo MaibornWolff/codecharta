@@ -1,4 +1,5 @@
 "use strict";
+import {STATISTIC_OPS, StatisticMapService} from "../../core/statistic/statisticMapService";
 
 /**
  * Controls the settingsPanel
@@ -27,6 +28,17 @@ export class SettingsPanelController {
         const ctx = this;
 
         /**
+         * @type {StatisticMapService}
+         */
+        this.statisticMapService = settingsService.statisticMapService;
+
+        /**
+         *
+         * @type {STATISTIC_OPS}
+         */
+        this.STATISTIC_OPS = STATISTIC_OPS;
+
+        /**
          * Options for the rz color slider
          * @type {Object}
          */
@@ -42,6 +54,11 @@ export class SettingsPanelController {
          */
         this.metrics = this.sortStringArrayAlphabetically(dataService.data.metrics);
 
+        /**
+         *
+         */
+        this.setOfMaps= dataService.data.revisions;
+
         $scope.$on("data-changed", (e,d)=>{ctx.onDataChanged(d);});
         $scope.$on("settings-changed", (e,s)=>{ctx.onSettingsChanged(s);});
 
@@ -56,7 +73,11 @@ export class SettingsPanelController {
      * @param {Settings} settings
      */
     onSettingsChanged(settings) {
+        const util = require('util');
         this.sliderOptions.ceil = this.treeMapService.getMaxNodeHeightInAllRevisions(settings.heightMetric);
+        console.log("operation "+this.settings.operation);
+        this.settings.map = this.statisticMapService.unifyMaps(this.setOfMaps, this.settings.operation);//Working here
+        console.log("this.settings.map ",util.inspect(this.settings.map,{showHidden: true, depth: null}));
     }
 
     /**

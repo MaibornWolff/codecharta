@@ -54,28 +54,7 @@ export class DataService {
         let attributeList = leaves.map(function(d) { return d.data.attributes ? Object.keys(d.data.attributes) : []; });
         let attributes = attributeList.reduce(function(left, right) {return left.concat(right.filter(function(el){return left.indexOf(el) === -1;})); });
         this.data.metrics = attributes;
-        for(let value in leaves) {
-            if (leaves[value]) {
-                //console.log("leaves1 "+leaves[value]);
-                for (let value2 in leaves[value]) {
-                    if (leaves[value][value2]) {
-                        //console.log(" leaves2 " + leaves[value][value2]);
-
-                    }
-                }
-            }
-        }
     }
-
-
-    /////IM WERDEN////////////////////
-    /**
-     * Sets metrics from the statistic of two revisions
-     */
-    //setStatistics()
-
-    //ein funktion für jedes Statistik??
-    /////IM WERDEN////////////////////
 
     /**
      * resets all maps (deletes them)

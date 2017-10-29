@@ -2,6 +2,7 @@ import {CodeMap} from "../data/model/codeMap.js";
 
 
 export const STATISTIC_OPS = {
+    NO_OPERATIONS: "NO_OPERATIONS",
     MEAN: "MEAN",
     MEDIAN: "MEDIAN",
     MAX: "MAX",
@@ -23,8 +24,13 @@ export class StatisticMapService {
      * Every new statistical operation should  have a new value in STATISTIC_OPS and a new function, which should be
      * added to the statistic function switch.
      */
-    unifyMaps(maps, operation = STATISTIC_OPS.MEAN) {
-        const util = require('util');
+    unifyMaps(maps, operation = STATISTIC_OPS.NO_OPERATIONS) {
+        if(operation==STATISTIC_OPS.NO_OPERATIONS){
+            return maps;
+        }
+        else if(maps.length==1){
+            return maps[0];
+        }
         var accumulated  = new CodeMap();//Map that contains an array of every value of every map given in maps array
         var unified;
         for(var i=0; i<maps.length; i++){//Loop through every CodeMap of the input array and get all of them in accumulated
@@ -33,7 +39,7 @@ export class StatisticMapService {
             if(accumulated.fileName.length === 0){
                 accumulated.fileName=maps[i].fileName;
             }
-            else if(accumulated.fileName!==maps[i].fileName){//Only for debugging porpouses
+            else if(accumulated.fileName!==maps[i].fileName){//!!!WARNING!!! Reached, is that a problem?
                 console.log("Not every map with the same file name: "+accumulated.fileName+" "+maps[i].fileName);
             }
             //Here projectName is added
@@ -159,10 +165,7 @@ export class StatisticMapService {
      * This function is determinated by the string in operation
      */
     applyStatistics(input,output, operation){
-        const util = require('util');
         //If the input has attributes, a function is applied to every metric and the returned value is given in output
-        //console.log("input ",util.inspect(input,{showHidden: true, depth: null}));
-        //console.log("output ",util.inspect(output,{showHidden: true, depth: null}));
         if(input.attributes&&Object.keys(input.attributes).length!=0){
             for(let metric in input.attributes){
                 output.attributes[metric]=this.statistic(input.attributes[metric], operation);
