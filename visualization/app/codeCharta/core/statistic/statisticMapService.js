@@ -39,7 +39,7 @@ export class StatisticMapService {
             if(accumulated.fileName.length === 0){
                 accumulated.fileName=maps[i].fileName;
             }
-            else if(accumulated.fileName!==maps[i].fileName){//!!!WARNING!!! Reached, is that a problem?
+            else if(accumulated.fileName!==maps[i].fileName){
                 console.log("Not every map with the same file name: "+accumulated.fileName+" "+maps[i].fileName);
             }
             //Here projectName is added
