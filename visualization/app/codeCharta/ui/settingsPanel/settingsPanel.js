@@ -74,10 +74,10 @@ export class SettingsPanelController {
      */
     onSettingsChanged(settings) {
         const util = require('util');
-        this.sliderOptions.ceil = this.treeMapService.getMaxNodeHeightInAllRevisions(settings.heightMetric);
         console.log("operation "+this.settings.operation);
         this.settings.map = this.statisticMapService.unifyMaps(this.setOfMaps, this.settings.operation);//Working here
         console.log("this.settings.map ",util.inspect(this.settings.map,{showHidden: true, depth: null}));
+        this.sliderOptions.ceil = this.treeMapService.getMaxNodeHeightInAllRevisions(settings.heightMetric);
     }
 
     /**
