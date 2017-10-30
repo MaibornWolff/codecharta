@@ -58,7 +58,11 @@ module.exports = {
                     'babel-loader', 'ts-loader'
                 ],
                 
-              }
+            },
+            {
+                test: /\.glsl$/,
+                loaders: ['webpack-glsl-loader']
+            }
         ]
     },
     plugins: [
@@ -71,6 +75,8 @@ module.exports = {
             server: {baseDir: [dist]}
         })
     ],
-    devtool: 'source-map'
-
+    devtool: 'source-map',
+    resolve: {
+        extensions: ['.ts', '.tsx', '.js']
+      }
 };

@@ -78,8 +78,14 @@ describe("app.codeCharta.codeChartaController", function() {
             .respond(200, "someData");
 
         dataService.setFileData = sinon.spy();
+        dataService.setReferenceMap = sinon.spy();
+        dataService.setComparisonMap = sinon.spy();
+        settingsService.applySettings = sinon.spy();
         codeChartaController = $controller("codeChartaController", {dataService: dataService, urlService: urlService, settingsService:settingsService, scenarioService:scenarioService});
         expect(dataService.setFileData.calledWithExactly("someData"));
+        expect(dataService.setComparisonMap.called);
+        expect(dataService.setReferenceMap.called);
+        expect(settingsService.applySettings.called);
 
     });
 
@@ -95,10 +101,18 @@ describe("app.codeCharta.codeChartaController", function() {
             .respond(200, "someData");
 
         settingsService.onSettingsChanged = sinon.spy();
+        dataService.setFileData = sinon.spy();
+        dataService.setReferenceMap = sinon.spy();
+        dataService.setComparisonMap = sinon.spy();
+        settingsService.applySettings = sinon.spy();
 
         codeChartaController = $controller("codeChartaController", {dataService: dataService, urlService: urlService, settingsService:settingsService, scenarioService:scenarioService});
 
+        expect(dataService.setFileData.calledWithExactly("someData"));
         expect(settingsService.onSettingsChanged.calledOnce);
+        expect(dataService.setComparisonMap.called);
+        expect(dataService.setReferenceMap.called);
+        expect(settingsService.applySettings.called);
 
     });
 
