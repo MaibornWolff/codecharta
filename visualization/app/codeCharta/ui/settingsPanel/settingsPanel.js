@@ -73,10 +73,6 @@ export class SettingsPanelController {
      * @param {Settings} settings
      */
     onSettingsChanged(settings) {
-        const util = require('util');
-        console.log("operation "+this.settings.operation);
-        this.settings.map = this.statisticMapService.unifyMaps(this.setOfMaps, this.settings.operation);//Working here
-        console.log("this.settings.map ",util.inspect(this.settings.map,{showHidden: true, depth: null}));
         this.sliderOptions.ceil = this.treeMapService.getMaxNodeHeightInAllRevisions(settings.heightMetric);
     }
 
@@ -102,6 +98,17 @@ export class SettingsPanelController {
      */
     sortStringArrayAlphabetically(arr) {
         return arr.sort();
+    }
+
+    /**
+     * Updates the map before broadcasting the udpate of the settings
+     */
+    onStatisticsChange(){
+        const util = require('util');
+        console.log("operation "+this.settings.operation);
+        this.settings.map = this.statisticMapService.unifyMaps(this.setOfMaps, this.settings.operation);//Working here
+        console.log("this.settings.map ",util.inspect(this.settings.map,{showHidden: true, depth: null}));
+        this.notify();
     }
 
 }
