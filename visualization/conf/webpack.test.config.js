@@ -61,8 +61,6 @@ module.exports = {
                 use: [
                     'babel-loader', 'ts-loader'
                 ],
-
-
             }
         ]
     },

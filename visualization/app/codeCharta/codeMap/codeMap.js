@@ -8,7 +8,7 @@ import "../core/core.js";
 import {CodeMapDirective} from "./codeMapDirective.js";
 import {CodeMapService} from "./codeMapService.js";
 import {CodeMapAssetService} from "./codeMapAssetService.js";
-import {CodeMapController} from "./codeMapController";
+import {CodeMapController} from "./codeMapController.js";
 
 angular.module("app.codeCharta.codeMap",["app.codeCharta.codeMap.threeViewer", "app.codeCharta.core"]);
 

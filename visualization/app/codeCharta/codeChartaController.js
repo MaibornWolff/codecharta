@@ -41,6 +41,7 @@ class CodeChartaController {
                 // set loaded data
                 dataLoadingService.loadMapFromFileContent(urlService.getParam("file"), data, 0).then(
                     () => {
+                        ctx.loadingFinished();
                         settingsService.updateSettingsFromUrl();
                     },
                     (r) => {
