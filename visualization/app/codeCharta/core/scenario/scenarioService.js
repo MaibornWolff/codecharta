@@ -4,6 +4,7 @@ import {Scenario} from "./model/scenario.js";
 import {Settings} from "../settings/model/settings.js";
 import {Scale} from "../settings/model/scale.js";
 import {Range} from "../settings/model/range.js";
+import {STATISTIC_OPS} from "../statistic/statisticMapService";
 
 /**
  * Applies and manages scenarios.
@@ -53,7 +54,7 @@ class ScenarioService {
      */
     getDefaultScenario() {
         let defaultRange = new Range(20,40,false);
-        let defaultSettings = new Settings(this.settingsService.settings.map, defaultRange, "rloc", "mcc", "mcc", false, 1, new Scale(1,1,1), new Scale(0,300,1000), 1);
+        let defaultSettings = new Settings(this.settingsService.settings.map, defaultRange, "rloc", "mcc", "mcc", false, 1, new Scale(1,1,1), new Scale(0,300,1000), 1, STATISTIC_OPS.NO_OPERATIONS);
         return new Scenario("rloc/mcc/mcc(20,40)", defaultSettings);
     }
 
