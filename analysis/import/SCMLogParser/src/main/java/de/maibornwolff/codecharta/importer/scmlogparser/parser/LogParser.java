@@ -12,9 +12,11 @@ import java.util.stream.Stream;
 public class LogParser {
 
     private final LogParserStrategy parserStrategy;
+    private final boolean containsAuthors;
 
-    public LogParser(LogParserStrategy parserStrategy) {
+    public LogParser(LogParserStrategy parserStrategy, boolean containsAuthors) {
         this.parserStrategy = parserStrategy;
+        this.containsAuthors = containsAuthors;
     }
 
     public Project parse(Stream<String> lines) {
@@ -29,7 +31,7 @@ public class LogParser {
     }
 
     private Project convertToProject(List<VersionControlledFile> versionControlledFiles) {
-        return ProjectConverter.convert("SCMLogParser", versionControlledFiles);
+        return ProjectConverter.convert("SCMLogParser", versionControlledFiles, containsAuthors);
     }
 
     Commit parseCommit(List<String> commitLines) {
