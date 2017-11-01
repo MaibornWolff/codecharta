@@ -37,10 +37,6 @@
             <checkbox-directive model="$ctrl.settings.deltas" label="Deltas" change="$ctrl.notify()"></checkbox-directive>
         </collapsible-element-directive>
 
-        <collapsible-element-directive label="Statistics" icon-class="fa-line-chart">
-            <dropdown-directive values="$ctrl.STATISTIC_OPS" model="$ctrl.settings.operation" change="$ctrl.onStatisticsChange()"></dropdown-directive>
-        </collapsible-element-directive>
-
     </collapsible-directive>
 
     <a class="waves-effect waves-light btn settings-panel-btn" title="Show Url Parameters" ng-click="$ctrl.showUrlParams()">Show Url Parameters</a>

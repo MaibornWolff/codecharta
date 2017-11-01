@@ -6,7 +6,6 @@ import "./url/url.js";
 import "./treemap/treemap.js";
 import "./scenario/scenario.js";
 import "./tooltip/tooltip.js";
-import "./statistic/statistic.js";
 
 angular.module(
     "app.codeCharta.core",
@@ -16,7 +15,6 @@ angular.module(
         "app.codeCharta.core.url",
         "app.codeCharta.core.treemap",
         "app.codeCharta.core.scenario",
-        "app.codeCharta.core.tooltip",
-        "app.codeCharta.core.statistic"
+        "app.codeCharta.core.tooltip"
     ]
 );

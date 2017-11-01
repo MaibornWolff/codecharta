@@ -15,10 +15,8 @@ export class Settings {
      * @param {Scale} scaling
      * @param {Scale} camera
      * @param {Number} margin
-     * @param {STATISTIC_OPS} operation
      */
-    constructor(map, neutralColorRange, areaMetric, heightMetric, colorMetric, deltas, amountOfTopLabels, scaling,
-                 camera, margin, operation) {
+    constructor(map, neutralColorRange, areaMetric, heightMetric, colorMetric, deltas, amountOfTopLabels, scaling, camera, margin) {
 
         /**
          * currently selected map
@@ -80,12 +78,6 @@ export class Settings {
          */
         this.margin = margin;
 
-        /**
-         * statistical operation to be applied in the set of maps to get map
-         * @type {STATISTIC_OPS}
-         */
-        this.operation = operation;
-
     }
 
     /**
@@ -103,7 +95,6 @@ export class Settings {
         this.scaling = settings.scaling;
         this.camera = settings.camera;
         this.margin = settings.margin;
-        this.operation = settings.operation;
     }
 
 }
