@@ -2,12 +2,12 @@ import angular from "angular";
 
 import {fabComponent} from "./fab.component.ts";
 import {CheckboxDirective} from "./checkbox.directive.ts";
-import {CollapsibleDirective} from "./collapsible.directive.js";
-import {SliderDirective} from "./slider.directive.js";
-import {NumberFieldDirective} from "./numberField.directive.js";
-import {CollapsibleElementDirective} from "./collapsible.element.directive.js";
+import {CollapsibleDirective} from "./collapsible.directive.ts";
+import {SliderDirective} from "./slider.directive.ts";
+import {NumberFieldDirective} from "./numberField.directive.ts";
+import {CollapsibleElementDirective} from "./collapsible.element.directive.ts";
 import {DropdownController} from "./dropdown.controller.ts";
-import {DropdownDirective} from "./dropdown.directive.js";
+import {DropdownDirective} from "./dropdown.directive.ts";
 
 import "../../core/tooltip/tooltip.module.ts";
 

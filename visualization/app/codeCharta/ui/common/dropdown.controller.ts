@@ -1,4 +1,3 @@
-"use strict";
 import {TooltipService, TooltipServiceSubscriber, Tooltips} from "../../core/tooltip/tooltip.service.ts";
 import {IScope} from "angular";
 /**
