@@ -13,15 +13,15 @@
     "height": 768
   },
   "scripts": {
-    "postinstall": "grunt build",
-    "start": "nw",
-    "build": "grunt build",
-    "test": "jest --runInBand",
-    "test:auto": "jest --watch",
-    "test:updateSnaps": "jest --updateSnapshot",
+    "postinstall": "export NODE_ENV=production && grunt build",
+    "start": "export NODE_ENV=development && nw",
+    "build": "export NODE_ENV=production && grunt build",
+    "test": "export NODE_ENV=testing && jest --runInBand",
+    "test:auto": "export NODE_ENV=testing && jest --watch",
+    "test:updateSnaps": "export NODE_ENV=testing && jest --updateSnapshot",
     "doc": "grunt doc",
-    "package": "grunt package",
-    "serve": "grunt serve"
+    "package": "export NODE_ENV=production && grunt package",
+    "serve": "export NODE_ENV=development && grunt serve"
   },
   "bin": {
     "codecharta": "./script/npm-start.sh"
