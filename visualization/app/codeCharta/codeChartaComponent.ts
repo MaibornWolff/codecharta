@@ -45,6 +45,7 @@ export class CodeChartaController {
                 // set loaded data
                 this.dataLoadingService.loadMapFromFileContent(this.urlService.getParam("file"), data, 0).then(
                     () => {
+                        this.loadingFinished();
                         this.settingsService.updateSettingsFromUrl();
                     },
                     (r) => {
