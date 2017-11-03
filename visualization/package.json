@@ -78,7 +78,6 @@
     "three-text2d": "^0.3.4"
   },
   "devDependencies": {
-    "@types/jest": "^21.1.4",
     "angular-mocks": "^1.6.0",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.24.0",
@@ -114,7 +113,7 @@
     "karma-webpack": "^2.0.4",
     "load-grunt-tasks": "^3.5.2",
     "ng-annotate-loader": "^0.6.1",
-    "nw": "^0.20.3",
+    "nw": "^0.26.3",
     "path": "^0.12.7",
     "phantomjs": "^2.1.7",
     "script-loader": "^0.7.0",

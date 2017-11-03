@@ -2,7 +2,7 @@ const paths = require("./paths.js");
 
 module.exports = {
     options: {
-        platforms: ['win','osx64', 'linux'],
+        platforms: ['win', 'linux'],
         buildDir: paths.packagePath,
         buildType: 'default',
         cacheDir: paths.cachePath
