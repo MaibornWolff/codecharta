@@ -1,18 +1,10 @@
 export class codeMapShaderStrings {
 
-    public vertexShaderCode;
-    public fragmentShaderCode;
+    public vertexShaderCode: string;
+    public fragmentShaderCode: string;
 
-    constructor()
-    {
-        /**
-         * @type {string}
-         */
+    constructor() {
         this.vertexShaderCode = require('./codeMapVertexShader.glsl');
-
-        /**
-         * @type {string}
-         */
         this.fragmentShaderCode = require('./codeMapFragmentShader.glsl');
     }
 }

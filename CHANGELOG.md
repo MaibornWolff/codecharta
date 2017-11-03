@@ -6,13 +6,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.5.0] - 2017-10-24
+### Added
 - experimental delta functionality
 - loading multiple maps
 - experimental margin slider
 
 ### Changed
+- faster rendering
 
 ### Removed
+- nwjs packages and native apps due to a bug
 
 ### Fixed
 - using color metric instead of height metric for color range slider ceil
