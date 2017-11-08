@@ -61,7 +61,10 @@ export class SettingsPanelController {
 
         $scope.$on("data-changed", (e,d)=>{ctx.onDataChanged(d);});
         $scope.$on("settings-changed", (e,s)=>{ctx.onSettingsChanged(s);});
+    }
 
+    getFilterOperationFunction() {
+        return (input)=>{return input + "!!!";};
     }
 
     showUrlParams() {
@@ -82,6 +85,7 @@ export class SettingsPanelController {
      */
     onDataChanged(data) {
         this.metrics = this.sortStringArrayAlphabetically(data.metrics);
+        this.onStatisticsChange();
     }
 
     /**
@@ -101,12 +105,13 @@ export class SettingsPanelController {
     }
 
     /**
-     * Updates the map before broadcasting the udpate of the settings
+     * Updates the map before broadcasting the update of the settings
      */
     onStatisticsChange(){
         const util = require('util');
         console.log("operation "+this.settings.operation);
-        this.settings.map = this.statisticMapService.unifyMaps(this.setOfMaps, this.settings.operation);//Working here
+            this.settings.map = this.statisticMapService.unifyMaps(this.setOfMaps, this.settings.operation);
+        console.log("this.setOfMaps ",util.inspect(this.setOfMaps,{showHidden: true, depth: null}));
         console.log("this.settings.map ",util.inspect(this.settings.map,{showHidden: true, depth: null}));
         this.notify();
     }

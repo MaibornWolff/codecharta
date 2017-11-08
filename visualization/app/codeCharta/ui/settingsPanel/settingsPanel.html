@@ -38,7 +38,8 @@
         </collapsible-element-directive>
 
         <collapsible-element-directive label="Statistics" icon-class="fa-line-chart">
-            <dropdown-directive values="$ctrl.STATISTIC_OPS" model="$ctrl.settings.operation" change="$ctrl.onStatisticsChange()"></dropdown-directive>
+            A new map is shown, where each class is the result of applying a statistical function to that class in every loaded version of the map
+            <dropdown-directive label="Function to apply" values="$ctrl.STATISTIC_OPS" model="$ctrl.settings.operation" change="$ctrl.onStatisticsChange()" use-enum-filter="true"></dropdown-directive>
         </collapsible-element-directive>
 
     </collapsible-directive>

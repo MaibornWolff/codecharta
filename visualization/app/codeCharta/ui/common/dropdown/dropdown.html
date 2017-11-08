@@ -2,6 +2,7 @@
     <label for="dropdown-directive-{{::$id}}">{{::ctrl.label}}</label>
     <br />
     <select class="browser-default" ng-model="ctrl.model" id="dropdown-directive-{{::$id}}">
-        <option title="{{ctrl.getTooltipTextByKey(x);}}" ng-repeat="x in ctrl.values" value="{{x}}">{{x}}</option>
+        <option ng-if="ctrl.useEnumFilter" title="{{ctrl.getTooltipTextByKey(x);}}" ng-repeat="x in ctrl.values" value="{{x}}">{{x | enumFilter}}</option>
+        <option ng-if="!ctrl.useEnumFilter" title="{{ctrl.getTooltipTextByKey(x);}}" ng-repeat="x in ctrl.values" value="{{x}}">{{x}}</option>
     </select>
 </div>

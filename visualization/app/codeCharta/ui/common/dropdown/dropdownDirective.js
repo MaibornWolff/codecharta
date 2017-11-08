@@ -25,7 +25,8 @@ class DropdownDirective{
             label: "@",
             values: "=",
             model: "=",
-            change: "&"
+            change: "&",
+            useEnumFilter: "@"
         };
 
         /**

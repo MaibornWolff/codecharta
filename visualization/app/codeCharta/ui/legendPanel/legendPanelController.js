@@ -1,4 +1,5 @@
 "use strict";
+import {STATISTIC_OPS} from "../../core/statistic/statisticMapService";
 
 class LegendPanelController {
 
@@ -7,6 +8,7 @@ class LegendPanelController {
 
         this.mats = codeMapMaterialFactory;
         this.$timeout = $timeout;
+        this.operation = this.setOperation(settingsService.settings.operation);
 
         let ctx = this;
         $timeout(ctx.onDataChanged(dataService.revisions));
@@ -36,6 +38,7 @@ class LegendPanelController {
         this.neutral = this.getImageDataUri(this.mats.neutral().color.getHex());
         this.negative = this.getImageDataUri(this.mats.negative().color.getHex());
         this.select = this.getImageDataUri(this.mats.selected().color.getHex());
+        this.operation = this.setOperation(s.operation);
 
         $("#green").attr("src", this.positive);
         $("#yellow").attr("src", this.neutral);
@@ -74,6 +77,13 @@ class LegendPanelController {
 
     generatePixel(color) {
         return "data:image/gif;base64,R0lGODlhAQABAPAA" + color + "/yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
+    }
+
+    setOperation(operation){
+        if(operation=== STATISTIC_OPS.NOTHING){
+            return "";
+        }
+        return operation.replace("_", " ").toLowerCase();
     }
 
 

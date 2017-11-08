@@ -2,7 +2,7 @@ import {CodeMap} from "../data/model/codeMap.js";
 
 
 export const STATISTIC_OPS = {
-    NO_OPERATIONS: "NO_OPERATIONS",
+    NOTHING: "NOTHING",
     MEAN: "MEAN",
     MEDIAN: "MEDIAN",
     MAX: "MAX",
@@ -24,12 +24,14 @@ export class StatisticMapService {
      * Every new statistical operation should  have a new value in STATISTIC_OPS and a new function, which should be
      * added to the statistic function switch.
      */
-    unifyMaps(maps, operation = STATISTIC_OPS.NO_OPERATIONS) {
-        if(operation==STATISTIC_OPS.NO_OPERATIONS){
-            return maps;
-        }
-        else if(maps.length==1){
-            return maps[0];
+    unifyMaps(maps, operation = STATISTIC_OPS.NOTHING) {
+        const util = require('util');
+        if(operation == STATISTIC_OPS.NOTHING&&maps.length>1){
+            var cleanMaps = [];
+            for(var i=0;i<maps.length;i++){
+                cleanMaps.push(this.unifyMaps([maps[i]],operation));
+            }
+            return cleanMaps;
         }
         var accumulated  = new CodeMap();//Map that contains an array of every value of every map given in maps array
         var unified;
@@ -71,7 +73,7 @@ export class StatisticMapService {
         const util = require('util');//Only for debugging purpouses
         let childExist= false;
         for(let value in input){
-            if(value!=="children"&&value!=="attributes"&&value!=="root"){
+            if(value!=="children"&&value!=="attributes"&&value!=="root"&&value!=="$$hashKey"){
                 output[value]=input[value];
             }
             else if (value=="attributes"&&!output[value]){
@@ -191,6 +193,8 @@ export class StatisticMapService {
      */
     statistic(input, operation){
         switch(operation) {
+            case STATISTIC_OPS.NOTHING:
+                return input[0];
             case STATISTIC_OPS.MEAN:
                 return this.mean(input);
             case STATISTIC_OPS.MAX:

@@ -15,3 +15,9 @@ angular.module("app.codeCharta.ui.common.dropdown").controller(
     "dropdownController",
     DropdownController
 );
+
+angular.module("app.codeCharta.ui.common.dropdown").filter('enumFilter', function () {
+    return function (i) {
+        return i.replace("_", " ").toLowerCase();
+    };
+});
