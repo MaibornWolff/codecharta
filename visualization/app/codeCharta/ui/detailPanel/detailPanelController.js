@@ -175,7 +175,7 @@ class DetailPanelController{
      * @param {object} data
      */
     onHover(data){
-        console.log("data",data);
+        console.log("data",data.to);
         if (data.to && data.to.node) {
             this.setHoveredDetails(data.to.node);
         } else {
