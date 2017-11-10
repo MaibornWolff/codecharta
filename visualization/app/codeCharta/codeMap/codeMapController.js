@@ -71,9 +71,7 @@ class CodeMapController {
      * Update method which is bound to the {@link UpdateCycleService}
      */
     update() {
-        console.log("befffore",this);
         this.cameraService.camera.updateMatrixWorld();
-        console.log("middle", this);
 
         if (this.sceneService.getMapMesh() != null)
         {
@@ -90,7 +88,6 @@ class CodeMapController {
             {
                 to = null;
             }
-            console.log("affffter",this);
             if (from != to)
             {
                 this.onBuildingHovered(from, to);
