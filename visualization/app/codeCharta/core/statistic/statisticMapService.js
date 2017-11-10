@@ -12,10 +12,6 @@ export const STATISTIC_OPS = {
 
 export class StatisticMapService {
 
-    constructor() {
-
-    }
-
     /*
      * Function that receives an array of maps and returns a map with a structure that contains every leaf contained in
      * any of the maps of the input array.
@@ -24,26 +20,25 @@ export class StatisticMapService {
      * Every new statistical operation should  have a new value in STATISTIC_OPS and a new function, which should be
      * added to the statistic function switch.
      */
-    unifyMaps(maps, settings) {
+    unifyMaps(data, settings) {
         let operation = settings.operation || STATISTIC_OPS.NOTHING;
-        if(operation == STATISTIC_OPS.NOTHING&&maps.length>1){
-            var cleanMaps = [];
-            for(var i=0;i<maps.length;i++){
-                cleanMaps.push(this.unifyMaps([maps[i]],operation));
-            }
-            return cleanMaps[0]; //get correct map index
+        if(operation == STATISTIC_OPS.NOTHING){
+            return data.referenceMap;
+        }
+        var maps = data.revisions;
+        if(maps.length === 1){
+            return maps[0];
         }
         var accumulated  = new CodeMap();//Map that contains an array of every value of every map given in maps array
         var unified;
+        accumulated.fileName = operation+"";
         for(var i=0; i<maps.length; i++){//Loop through every CodeMap of the input array and get all of them in accumulated
             //Only leaf have attributes and no child.
             //A CodeMap contains fileName, projectName and root. Here filename is added to accumulated
-            if(accumulated.fileName.length === 0){
-                accumulated.fileName=maps[i].fileName;
-            }
+            accumulated.fileName= accumulated.fileName+"_"+maps[i].fileName;
             //Here projectName is added
             if(accumulated.projectName.length === 0){
-                accumulated.projectName=maps[i].projectName;
+                accumulated.projectName= maps[i].projectName;
             }
             //Create an empty map which contains every different leaf and node of every map in the input
             accumulated.root = this.createArrayMap(maps[i].root, accumulated.root, maps.length);
@@ -53,7 +48,7 @@ export class StatisticMapService {
             accumulated.root=this.fulfillMap(maps[i].root,accumulated.root, i);
         }
         unified = JSON.parse(JSON.stringify(accumulated));
-        unified = this.emptyMap(unified);
+        unified = this.emptyMap(unified);//The map is copied, before emptying it in order not to modify accumulated
         unified= this.applyStatistics(accumulated,unified, operation);
         return unified;
     }
@@ -184,8 +179,6 @@ export class StatisticMapService {
      */
     statistic(input, operation){
         switch(operation) {
-            case STATISTIC_OPS.NOTHING:
-                return input[0];
             case STATISTIC_OPS.MEAN:
                 return this.mean(input);
             case STATISTIC_OPS.MAX:

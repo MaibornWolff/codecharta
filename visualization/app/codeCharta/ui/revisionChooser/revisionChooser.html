@@ -8,7 +8,7 @@
 
 <div id="revisionChooser">
 
-    Current <span ng-if="ctrl.settingsService.settings.deltas">Reference </span>Map: {{ctrl.dataService.data.referenceMap.fileName}}<br/>
+    Current <span ng-if="ctrl.settingsService.settings.deltas">Reference </span>Map: {{ctrl.settingsService.settings.map.fileName}}<br/>
     Select <span ng-if="ctrl.settingsService.settings.deltas">Reference </span>Map:
     <span ng-repeat="(key, value) in ctrl.revisions">
         <a href="#" ng-click="ctrl.loadReferenceMap(key)">{{value.fileName}} - </a>

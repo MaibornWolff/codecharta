@@ -56,16 +56,15 @@ export class SettingsPanelController {
 
         /**
          *
+         * Set of all loaded data
+         * @type {DataModel}
          */
-        this.setOfMaps= dataService.data.revisions;
+        this.data = dataService.data;
 
         $scope.$on("data-changed", (e,d)=>{ctx.onDataChanged(d);});
         $scope.$on("settings-changed", (e,s)=>{ctx.onSettingsChanged(s);});
     }
 
-    getFilterOperationFunction() {
-        return (input)=>{return input + "!!!";};
-    }
 
     showUrlParams() {
         window.prompt("Copy to clipboard: Ctrl+C", this.settingsService.getQueryParamString());
@@ -108,7 +107,7 @@ export class SettingsPanelController {
      * Updates the map before broadcasting the update of the settings
      */
     onStatisticsChange(){
-        this.settings.map = this.statisticMapService.unifyMaps(this.setOfMaps, this.settings);
+        this.settings.map = this.statisticMapService.unifyMaps(this.data, this.settings);
         this.notify();
     }
 
