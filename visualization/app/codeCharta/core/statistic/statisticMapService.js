@@ -24,14 +24,14 @@ export class StatisticMapService {
      * Every new statistical operation should  have a new value in STATISTIC_OPS and a new function, which should be
      * added to the statistic function switch.
      */
-    unifyMaps(maps, operation = STATISTIC_OPS.NOTHING) {
-        const util = require('util');
+    unifyMaps(maps, settings) {
+        let operation = settings.operation || STATISTIC_OPS.NOTHING;
         if(operation == STATISTIC_OPS.NOTHING&&maps.length>1){
             var cleanMaps = [];
             for(var i=0;i<maps.length;i++){
                 cleanMaps.push(this.unifyMaps([maps[i]],operation));
             }
-            return cleanMaps;
+            return cleanMaps[0]; //get correct map index
         }
         var accumulated  = new CodeMap();//Map that contains an array of every value of every map given in maps array
         var unified;
@@ -41,15 +41,9 @@ export class StatisticMapService {
             if(accumulated.fileName.length === 0){
                 accumulated.fileName=maps[i].fileName;
             }
-            else if(accumulated.fileName!==maps[i].fileName){
-                console.log("Not every map with the same file name: "+accumulated.fileName+" "+maps[i].fileName);
-            }
             //Here projectName is added
             if(accumulated.projectName.length === 0){
                 accumulated.projectName=maps[i].projectName;
-            }
-            else if(accumulated.projectName!==maps[i].projectName){//Only for debugging porpouses
-                console.log("Not every map with the same name "+accumulated.projectName+" "+maps[i].projectName);
             }
             //Create an empty map which contains every different leaf and node of every map in the input
             accumulated.root = this.createArrayMap(maps[i].root, accumulated.root, maps.length);
@@ -70,7 +64,6 @@ export class StatisticMapService {
      *  every attribute with "length" zeros
      */
     createArrayMap(input, output, length){
-        const util = require('util');//Only for debugging purpouses
         let childExist= false;
         for(let value in input){
             if(value!=="children"&&value!=="attributes"&&value!=="root"&&value!=="$$hashKey"){
@@ -103,9 +96,7 @@ export class StatisticMapService {
                 }
                 //if the children does not exist in the output its copied from the input
                 if (!childExist) {
-                    //console.log("before",util.inspect(output.children,{showHidden: true, depth: null}));
                     output.children.push(JSON.parse(JSON.stringify(input.children[i])));
-                    //console.log("after",util.inspect(output.children,{showHidden: true, depth: null}));
                     //Once the children is copied we loop through it
                     output.children[output.children.length -1] =
                         this.createArrayMap(input.children[i], output.children[output.children.length -1], length);

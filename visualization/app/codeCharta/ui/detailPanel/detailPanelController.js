@@ -149,8 +149,6 @@ class DetailPanelController{
      * @param {Settings} settings
      */
     onSettingsChanged(settings){
-        const util = require('util');
-        console.log("settings.map ",util.inspect(settings.map,{showHidden: true, depth: null}));
         this.details.common.areaAttributeName = settings.areaMetric;
         this.details.common.heightAttributeName = settings.heightMetric;
         this.details.common.colorAttributeName = settings.colorMetric;
@@ -175,7 +173,6 @@ class DetailPanelController{
      * @param {object} data
      */
     onHover(data){
-        console.log("data",data.to);
         if (data.to && data.to.node) {
             this.setHoveredDetails(data.to.node);
         } else {
