@@ -95,7 +95,7 @@
     "time-grunt": "^1.4.0",
     "ts-loader": "^2.3.6",
     "typescript": "^2.5.2",
-    "webpack": "^3.5.5",
+    "webpack": "^3.8.1",
     "webpack-glsl-loader": "^1.0.1"
   }
 }
