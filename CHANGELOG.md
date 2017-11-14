@@ -13,6 +13,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+## [1.5.1] - 2017-11-14
+### Added
+- command line parameter to toggle "authors" attribute in SCMLogParser
+
+### Changed
+
+### Removed
+
+### Fixed
+- when passing a file through the "file" parameter in the URL, the map now renders correctly
+
 ## [1.5.0] - 2017-10-24
 ### Added
 - experimental delta functionality
