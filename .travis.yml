@@ -9,7 +9,7 @@ jdk:
    - oraclejdk8
 
 env:
-  - TRAVIS_NODE_VERSION="6"
+  - TRAVIS_NODE_VERSION="9"
 
 before_install:
  - chmod +x ./analysis/gradlew
@@ -27,8 +27,8 @@ before_cache:
 
 cache:
   directories:
-    - visualization/node_modules
-    - visualization/.cache
+    # - visualization/node_modules
+    # - visualization/.cache
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
