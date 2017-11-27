@@ -33,7 +33,7 @@ interface mousePos {
     y : number
 }
 
-export class codeMapMesh {
+export class CodeMapMesh {
     private threeMesh : THREE.Mesh;
     private material : THREE.ShaderMaterial;
     private geomGen : geometryGenerator;

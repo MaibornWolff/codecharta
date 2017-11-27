@@ -1,4 +1,5 @@
-require("./revisionChooser.js");
+require("./revisionChooser.ts");
+import {RevisionChooserController} from "./revisionChooserComponent.ts";
 
 /**
  * @test {RevisionChooserController}
@@ -7,8 +8,20 @@ describe("app.codeCharta.ui.revisionChooser.revisionChooserController", function
 
     var revisionChooserController, dataService, scope;
 
+    beforeEach(()=>{
 
-    beforeEach(angular.mock.module("app.codeCharta.ui.revisionChooser"));
+        //mock module under test
+        angular.mock.module("app.codeCharta.ui.revisionChooser");
+
+        //build a module dependent on the module under test and the specific controller under test
+        angular.module("sut", ["app.codeCharta.ui.revisionChooser"])
+            .controller("revisionChooserController", RevisionChooserController);
+
+        //mock it
+        angular.mock.module("sut");
+
+    });
+
 
     beforeEach(angular.mock.inject((_dataService_, _$rootScope_, $controller)=>{
         dataService = _dataService_;

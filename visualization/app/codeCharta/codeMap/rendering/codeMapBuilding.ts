@@ -7,6 +7,7 @@ export class codeMapBuilding {
     public boundingBox : THREE.Box3;
     public color : number;
     public node : node;
+    public parent?: codeMapBuilding;
 
     constructor(id : number, box : THREE.Box3, node : node, color? : number)
     {
