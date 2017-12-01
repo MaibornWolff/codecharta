@@ -15,11 +15,13 @@ export class SettingsPanelController implements DataServiceSubscriber, SettingsS
     public data: DataModel;
     public STATISTIC_OPS = STATISTIC_OPS;
 
+
     /* @ngInject */
     constructor(
         private settingsService: SettingsService,
         private dataService: DataService,
-        private treeMapService: TreeMapService
+        private treeMapService: TreeMapService,
+        private statisticMapService: StatisticMapService
     ) {
 
         this.settings = settingsService.settings;

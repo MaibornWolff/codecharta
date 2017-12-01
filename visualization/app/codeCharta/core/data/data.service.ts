@@ -5,7 +5,7 @@ import {CodeMap, CodeMapNode} from "./model/CodeMap";
 import {IRootScopeService, IAngularEvent} from "angular";
 import {DeltaCalculatorService} from "./data.deltaCalculator.service";
 import {DataDecoratorService} from "./data.decorator.service";
-import {HierarchyNode} from "d3-hierarchy";
+import * as HierarchyNode from "d3-hierarchy";
 
 export interface DataModel {
 
