@@ -6,6 +6,7 @@ import {
     ThreeOrbitControlsService
 } from "../../codeMap/threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera} from "three";
+import {STATISTIC_OPS} from "../statistic/statistic.service";
 
 export interface Settings {
 
@@ -18,7 +19,8 @@ export interface Settings {
     amountOfTopLabels: number,
     scaling: Scale,
     camera: Scale,
-    margin: number
+    margin: number,
+    operation: STATISTIC_OPS
 
 }
 
@@ -39,7 +41,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     }
 
     /* ngInject */
-    constructor(private urlService, private dataService: DataService, private $rootScope, private threeOrbitControlsService: ThreeOrbitControlsService) {
+    constructor(private urlService, private dataService: DataService, private $rootScope,
+                private threeOrbitControlsService: ThreeOrbitControlsService, private statisticMapService) {
 
         let ctx = this;
 
@@ -82,7 +85,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             amountOfTopLabels: 1,
             scaling: s,
             camera: c,
-            margin: 1
+            margin: 1,
+            operation: STATISTIC_OPS.NOTHING
         };
 
     }

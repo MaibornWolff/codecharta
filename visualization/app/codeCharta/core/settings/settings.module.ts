@@ -11,7 +11,8 @@ angular.module(
     [
         "app.codeCharta.core.url",
         "app.codeCharta.core.data",
-        "app.codeCharta.codeMap.threeViewer"
+        "app.codeCharta.codeMap.threeViewer",
+        "app.codeCharta.core.statistic"
     ]
 )
     .service(

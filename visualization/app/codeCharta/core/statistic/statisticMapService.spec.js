@@ -1,6 +1,6 @@
 import "./statistic.js";
 import {CodeMap} from "../data/model/codeMap.js";
-import {STATISTIC_OPS} from "./statisticMapService";
+import {STATISTIC_OPS} from "./statistic.service";
 import {DataModel} from "../data/model/dataModel";
 import {Settings} from "../settings/model/settings";
 

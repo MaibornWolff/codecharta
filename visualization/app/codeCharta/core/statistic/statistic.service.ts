@@ -1,16 +1,21 @@
-import {CodeMap} from "../data/model/codeMap.js";
+import {CodeMap, CodeMapNode} from "../data/model/codeMap";
+import {Settings} from "../../core/settings/settings.service";
+import {DataModel} from "../data/data.service";
 
 
-export const STATISTIC_OPS = {
-    NOTHING: "NOTHING",
-    MEAN: "MEAN",
-    MEDIAN: "MEDIAN",
-    MAX: "MAX",
-    MIN: "MIN",
-    FASHION: "FASHION"
+export enum STATISTIC_OPS  {
+    NOTHING =  "NOTHING",
+    MEAN = "MEAN",
+    MEDIAN = "MEDIAN",
+    MAX = "MAX",
+    MIN = "MIN",
+    FASHION = "FASHION"
 };
 
 export class StatisticMapService {
+
+
+    public static SELECTOR = "statisticMapService";
 
     /*
      * Function that receives an array of maps and returns a map with a structure that contains every leaf contained in
@@ -20,30 +25,32 @@ export class StatisticMapService {
      * Every new statistical operation should  have a new value in STATISTIC_OPS and a new function, which should be
      * added to the statistic function switch.
      */
-    unifyMaps(data, settings) {
+    unifyMaps(data: DataModel, settings: Settings): CodeMap {
         let operation = settings.operation || STATISTIC_OPS.NOTHING;
         if(operation == STATISTIC_OPS.NOTHING){
             return data.referenceMap;
         }
-        var maps = data.revisions;
+        var maps: CodeMap[] = data.revisions;
         if(maps.length === 1){
             return maps[0];
         }
-        var accumulated  = new CodeMap();//Map that contains an array of every value of every map given in maps array
-        var unified;
+
+        var accumulated = {} as CodeMap;//Map that contains an array of every value of every map given in maps array
+        accumulated.root = {} as CodeMapNode;
+        var unified: CodeMap;
         accumulated.fileName = operation+"";
-        for(var i=0; i<maps.length; i++){//Loop through every CodeMap of the input array and get all of them in accumulated
+        for(let i: number=0; i<maps.length; i++){//Loop through every CodeMap of the input array and get all of them in accumulated
             //Only leaf have attributes and no child.
             //A CodeMap contains fileName, projectName and root. Here filename is added to accumulated
             accumulated.fileName= accumulated.fileName+"_"+maps[i].fileName;
             //Here projectName is added
-            if(accumulated.projectName.length === 0){
+            if(!accumulated.projectName || accumulated.projectName.length === 0){
                 accumulated.projectName= maps[i].projectName;
             }
             //Create an empty map which contains every different leaf and node of every map in the input
             accumulated.root = this.createArrayMap(maps[i].root, accumulated.root, maps.length);
         }
-        for(i=0; i<maps.length; i++){
+        for(let i: number=0; i<maps.length; i++){
             //The empty accumulated map gets fulfilled with the values of every map in the maps array
             accumulated.root=this.fulfillMap(maps[i].root,accumulated.root, i);
         }
@@ -58,7 +65,7 @@ export class StatisticMapService {
      *  Returns a map which contains every different leaf and node of every map in the input map with an array for
      *  every attribute with "length" zeros
      */
-    createArrayMap(input, output, length){
+    createArrayMap(input: CodeMapNode, output: CodeMapNode, length: number){
         let childExist= false;
         for(let value in input){
             if(value!=="children"&&value!=="attributes"&&value!=="root"&&value!=="$$hashKey"){
@@ -291,19 +298,23 @@ export class StatisticMapService {
      * Only used in testing
      */
 
-    unorderedCompare(a,b){
-        var same = false;
-        if(Object.keys(a).length==0&& JSON.stringify(a) != JSON.stringify(b)){
+    unorderedCompare(a: Object,b: Object): boolean{
+        var same : boolean = false;
+        //We check if we reached a leave. Falls that happened the
+        if(Object.keys(a).length==0&&JSON.stringify(a) != JSON.stringify(b)){
             return false;
         }
-        for(var key in a){
+        //If a key contained in a is not contained in b, has different type or different number of keys they are diff
+        for(let key in a){
             if(!b[key]||typeof(b[key])!=typeof(a[key])||Object.keys(a[key]).length!=Object.keys(b[key]).length){
                 return false;
             }
         }
-        for(var key in a){
-            if(typeof(a[key])=="object"){
-                if(!isNaN(key)){
+        //Here is only reached if both a and b have the same keys and those values have the same type and number of keys
+        for(let key in a){
+            if(typeof(a[key])=="object"){//check if this works
+                //if key is a number we look for a branch in b that has the same as this branch in a
+                if(typeof (key)=="number"){
                     for(var keyb in b){
                         if(this.unorderedCompare(a[key],b[keyb])){
                             same= true;
@@ -313,10 +324,11 @@ export class StatisticMapService {
                         return false;
                     }
                 }
+                //If the key is not a number we compare that branch in a with the branch with the same key in b
                 else if(!this.unorderedCompare(a[key],b[key])){
                     return false;
                 }
-            }
+            }//if the value is not an object
             else if(a[key]!=b[key]){
                 return false;
             }
