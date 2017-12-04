@@ -1,6 +1,7 @@
 import {CodeMap, CodeMapNode} from "../data/model/codeMap";
 import {Settings} from "../../core/settings/settings.service";
 import {DataModel} from "../data/data.service";
+import {node} from "../../codeMap/rendering/node";
 
 
 export enum STATISTIC_OPS  {
@@ -65,8 +66,8 @@ export class StatisticMapService {
      *  Returns a map which contains every different leaf and node of every map in the input map with an array for
      *  every attribute with "length" zeros
      */
-    createArrayMap(input: CodeMapNode, output: CodeMapNode, length: number){
-        let childExist= false;
+    createArrayMap(input: CodeMapNode, output: CodeMapNode, length: number): CodeMapNode{
+        let childExist: boolean= false;
         for(let value in input){
             if(value!=="children"&&value!=="attributes"&&value!=="root"&&value!=="$$hashKey"){
                 output[value]=input[value];
@@ -84,9 +85,9 @@ export class StatisticMapService {
             if (!output.children ) {//if the output have no children we add it
                 output.children = [JSON.parse(JSON.stringify(input.children[0]))];
             }
-            for(let i=0; i<input.children.length; i++) {//Go through every child of the input
+            for(let i: number=0; i<input.children.length; i++) {//Go through every child of the input
                 //We look for the output children with the same name as the input children we are working with
-                for (let j = 0; j < output.children.length; j++) {
+                for (let j: number = 0; j < output.children.length; j++) {
                     childExist = false;
                         //if the children of the input is already in the output we go through it
                     if (input.children[i].name === output.children[j].name) {
@@ -115,7 +116,7 @@ export class StatisticMapService {
      * attribute array in the position given in position value.
      * The output map should contain every children and node in output.
      */
-    fulfillMap(input, output, position){
+    fulfillMap(input: CodeMapNode, output: CodeMapNode, position: number){
         if(!input.children||!output.children||Object.keys(output.children).length==0||
             Object.keys(input.children).length==0){
             for(let metric in input.attributes){
@@ -124,8 +125,8 @@ export class StatisticMapService {
         }
         else{
             //Go through every position in the maps
-            for(let i=0; i<input.children.length; i++) {
-                for(let j=0;j<output.children.length; j++){
+            for(let i: number=0; i<input.children.length; i++) {
+                for(let j: number=0;j<output.children.length; j++){
                     if(input.children[i].name==output.children[j].name){
                         output.children[j]= this.fulfillMap(input.children[i],output.children[j],position);
                     }
@@ -139,7 +140,7 @@ export class StatisticMapService {
     /*
     *  Returns a map which contains the same structure as the input map but contains no metric
     */
-    emptyMap(output){
+    emptyMap(output: any){
         if(output.root){
             output.root=this.emptyMap(output.root);
         }
@@ -159,7 +160,7 @@ export class StatisticMapService {
      * input but with a function applied to the values of the same attribute array for every attribute.
      * This function is determinated by the string in operation
      */
-    applyStatistics(input,output, operation){
+    applyStatistics(input: any,output: any, operation: STATISTIC_OPS): any{
         //If the input has attributes, a function is applied to every metric and the returned value is given in output
         if(input.attributes&&Object.keys(input.attributes).length!=0){
             for(let metric in input.attributes){
@@ -184,7 +185,7 @@ export class StatisticMapService {
      * is defined by operation.
      * @param {STATISTICS_OPS} operation
      */
-    statistic(input, operation){
+    statistic(input: number[], operation: STATISTIC_OPS): number{
         switch(operation) {
             case STATISTIC_OPS.MEAN:
                 return this.mean(input);
@@ -206,9 +207,9 @@ export class StatisticMapService {
     /*
      * Function that returns the mean of the values in the input array.
      */
-    mean(input){
-        var output = 0.0;
-        for(var i=0;i<input.length; i++){
+    mean(input: number[]): number{
+        var output: number = 0.0;
+        for(var i: number=0;i<input.length; i++){
             if(input[i] !== undefined){
                 output+=input[i];
             }
@@ -220,9 +221,9 @@ export class StatisticMapService {
     /*
      * Function that returns the highest value of the input array
      */
-    max(input){
-        var output;
-        for(var i=0;i<input.length; i++){
+    max(input: number[]): number{
+        var output: number;
+        for(var i: number=0;i<input.length; i++){
             if(input[i] !== undefined){
                 if(output == undefined || output<input[i]){
                     output=input[i];
@@ -235,9 +236,9 @@ export class StatisticMapService {
     /*
      * Function that returns the lowest value of the input array
      */
-    min(input){
+    min(input: number[]): number{
         var output;
-        for(var i=0;i<input.length; i++){
+        for(var i: number=0;i<input.length; i++){
             if(input[i] !== undefined){
                 if(output == undefined || output>input[i]){
                     output=input[i];
@@ -250,11 +251,11 @@ export class StatisticMapService {
     /*
      * Function that returns the most common value in the input array
      */
-    fashion(input){
-        var frequency = {};//Object that contains every different value in input linked to its absolute frequency
-        var fashion_frequency = 0;//Absolute frequency of the fashion value
-        var fashion_value;
-        for(var i=0;i<input.length; i++){
+    fashion(input: number[]): number{
+        var frequency: any = {};//Object that contains every different value in input linked to its absolute frequency
+        var fashion_frequency: number = 0;//Absolute frequency of the fashion value
+        var fashion_value: number;
+        for(var i: number=0;i<input.length; i++){
             if(input[i] !== undefined){
                 if(!frequency[input[i]]){
                     frequency[input[i]] = 1;
@@ -264,7 +265,7 @@ export class StatisticMapService {
                 }
             }
         }
-        for(var value in frequency){
+        for(let value in frequency){
             if(fashion_frequency< frequency[value]){
                 fashion_frequency=frequency[value];
                 fashion_value= parseInt(value);
@@ -276,10 +277,10 @@ export class StatisticMapService {
     /*
      * Function that returns the median value in the input array
      */
-    median(input){
-        var sorted = input.filter(function(value) { return value !== undefined }).sort();
-        var median;
-        var num = sorted.length;
+    median(input: number[]): number{
+        var sorted: number[] = input.filter(function(value) { return value !== undefined }).sort();
+        var median: number;
+        var num: number = sorted.length;
         if((num % 2) == 0){
             median = sorted[num/2];
         }
