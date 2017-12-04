@@ -10,7 +10,8 @@ export class DropdownDirective implements IDirective{
         "    <label for=\"dropdown-directive-{{::$id}}\">{{::ctrl.label}}</label>\n" +
         "    <br />\n" +
         "    <select class=\"browser-default\" ng-model=\"ctrl.model\" id=\"dropdown-directive-{{::$id}}\">\n" +
-        "        <option title=\"{{ctrl.getTooltipTextByKey(x);}}\" ng-repeat=\"x in ctrl.values\" value=\"{{x}}\">{{x}}</option>\n" +
+        "        <option ng-if=\"ctrl.useEnumFilter\" title=\"{{ctrl.getTooltipTextByKey(x);}}\" ng-repeat=\"x in ctrl.values\" value=\"{{x}}\">{{ctrl.toLowerCaseButFirst(x)}}</option>\n" +
+        "        <option ng-if=\"!ctrl.useEnumFilter\" title=\"{{ctrl.getTooltipTextByKey(x);}}\" ng-repeat=\"x in ctrl.values\" value=\"{{x}}\">{{x}}</option>\n" +
         "    </select>\n" +
         "</div>";
 
@@ -20,11 +21,12 @@ export class DropdownDirective implements IDirective{
         label: "@",
         values: "=",
         model: "=",
-        change: "&"
+        change: "&",
+        useEnumFilter: "@"
     };
 
 
-    controller = DropdownController;
+controller = DropdownController;
     controllerAs = "ctrl";
     bindToController = true;
 
