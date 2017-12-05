@@ -89,7 +89,7 @@ module.exports = function (grunt) {
     grunt.registerTask("default", ["build"]);
     grunt.registerTask("build", ["clean:webpack", "webpack:prod"]);
     grunt.registerTask("serve", ["clean:webpack", "webpack:dev"]);
-    grunt.registerTask("package", ["clean:package", /* "nwjs" */, "compress", "clean:packageTmp"]);
+    grunt.registerTask("package", ["clean:package", "nwjs", "compress", "clean:packageTmp"]);
     grunt.registerTask("doc", ["clean:doc", "typedoc"]);
 
 };
