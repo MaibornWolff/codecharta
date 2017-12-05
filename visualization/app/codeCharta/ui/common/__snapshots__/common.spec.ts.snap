@@ -3,28 +3,28 @@
 exports[`common checkbox snapshot test 1`] = `
 Object {
   "0": <checkbox-directive
-    label="some label"
-    model="model"
     change="change()"
     class="ng-scope ng-isolate-scope"
->
+    label="some label"
+    model="model"
+  >
     <div
-        class="input-field col s12"
+      class="input-field col s12"
     >
-        <input
-            type="checkbox"
-            ng-model="model"
-            id="checkbox-directive-3"
-            class="ng-pristine ng-untouched ng-valid ng-empty"
-        />
-        <label
-            for="checkbox-directive-3"
-            class="ng-binding"
-        >
-            some label
-        </label>
+      <input
+        class="ng-pristine ng-untouched ng-valid ng-empty"
+        id="checkbox-directive-3"
+        ng-model="model"
+        type="checkbox"
+      />
+      <label
+        class="ng-binding"
+        for="checkbox-directive-3"
+      >
+        some label
+      </label>
     </div>
-</checkbox-directive>,
+  </checkbox-directive>,
   "length": 1,
 }
 `;
@@ -35,9 +35,9 @@ Object {
     class="collapsible ng-scope ng-isolate-scope"
     data-collapsible="accordion"
     ng-transclude=""
->
+  >
     SOMETHING
-</ul>,
+  </ul>,
   "length": 1,
 }
 `;
@@ -45,35 +45,49 @@ Object {
 exports[`common dropdown snapshot test 1`] = `
 Object {
   "0": <dropdown-directive
-    label="label"
-    value="value"
-    model="value"
     class="ng-scope ng-isolate-scope"
->
+    label="label"
+    model="value"
+    value="value"
+  >
     <div
-        class="input-field col s12"
+      class="input-field col s12"
     >
-        <label
-            for="dropdown-directive-13"
-            class="ng-binding"
-        >
-            label
-        </label>
-        <br />
-        <select
-            class="browser-default ng-pristine ng-untouched ng-valid ng-empty"
-            ng-model="ctrl.model"
-            id="dropdown-directive-13"
-        >
-            <option
-                value="? undefined:undefined ?"
-                selected="selected"
-            />
-            <!-- ngRepeat: x in ctrl.values -->
-            <!-- ngRepeat: x in ctrl.values -->
-        </select>
+      
+    
+      <label
+        class="ng-binding"
+        for="dropdown-directive-13"
+      >
+        label
+      </label>
+      
+    
+      <br />
+      
+    
+      <select
+        class="browser-default ng-pristine ng-untouched ng-valid ng-empty"
+        id="dropdown-directive-13"
+        ng-model="ctrl.model"
+      >
+        <option
+          selected="selected"
+          value="? undefined:undefined ?"
+        />
+        
+        
+        <!-- ngRepeat: x in ctrl.values -->
+        
+        
+        <!-- ngRepeat: x in ctrl.values -->
+        
+    
+      </select>
+      
+
     </div>
-</dropdown-directive>,
+  </dropdown-directive>,
   "length": 1,
 }
 `;
@@ -81,17 +95,17 @@ Object {
 exports[`common fab snapshot test 1`] = `
 Object {
   "0": <fab-component
-    icon-class="some class"
     class="ng-scope ng-isolate-scope"
->
+    icon-class="some class"
+  >
     <a
-        class="btn-floating btn-large waves-effect waves-light teal"
+      class="btn-floating btn-large waves-effect waves-light teal"
     >
-        <i
-            class="fa some class"
-        />
+      <i
+        class="fa some class"
+      />
     </a>
-</fab-component>,
+  </fab-component>,
   "length": 1,
 }
 `;
@@ -99,31 +113,39 @@ Object {
 exports[`common numberField snapshot test 1`] = `
 Object {
   "0": <number-field-directive
-    label="label"
-    value="10"
-    model="value"
-    min="2"
     class="ng-scope ng-isolate-scope"
->
+    label="label"
+    min="2"
+    model="value"
+    value="10"
+  >
     <div
-        class="input-field col s12"
+      class="input-field col s12"
     >
-        <label
-            for="numberField-directive-16"
-            class="ng-binding"
-        >
-            label
-        </label>
-        <br />
-        <input
-            id="numberField-directive-16"
-            type="number"
-            ng-model="model"
-            min="2"
-            class="ng-pristine ng-untouched ng-valid ng-empty ng-valid-min"
-        />
+      
+    
+      <label
+        class="ng-binding"
+        for="numberField-directive-16"
+      >
+        label
+      </label>
+      
+    
+      <br />
+      
+    
+      <input
+        class="ng-pristine ng-untouched ng-valid ng-empty ng-valid-min"
+        id="numberField-directive-16"
+        min="2"
+        ng-model="model"
+        type="number"
+      />
+      
+
     </div>
-</number-field-directive>,
+  </number-field-directive>,
   "length": 1,
 }
 `;
@@ -131,36 +153,44 @@ Object {
 exports[`common slider snapshot test 1`] = `
 Object {
   "0": <slider-directive
-    label="label"
-    value="10"
-    model="value"
-    min="2"
-    max="4"
-    step="1"
-    decimal="0"
     class="ng-scope ng-isolate-scope"
->
+    decimal="0"
+    label="label"
+    max="4"
+    min="2"
+    model="value"
+    step="1"
+    value="10"
+  >
     <div
-        class="range-field col s12"
+      class="range-field col s12"
     >
-        <label
-            for="slider-directive-19"
-            class="ng-binding"
-        >
-            label
-        </label>
-        <br />
-        <input
-            id="slider-directive-19"
-            type="range"
-            ng-model="model"
-            min="2"
-            max="4"
-            step="1"
-            class="ng-pristine ng-untouched ng-valid ng-empty ng-valid-min ng-valid-max ng-valid-step"
-        />
+      
+    
+      <label
+        class="ng-binding"
+        for="slider-directive-19"
+      >
+        label
+      </label>
+      
+    
+      <br />
+      
+    
+      <input
+        class="ng-pristine ng-untouched ng-valid ng-empty ng-valid-min ng-valid-max ng-valid-step"
+        id="slider-directive-19"
+        max="4"
+        min="2"
+        ng-model="model"
+        step="1"
+        type="range"
+      />
+      
+
     </div>
-</slider-directive>,
+  </slider-directive>,
   "length": 1,
 }
 `;
