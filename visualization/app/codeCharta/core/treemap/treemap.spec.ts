@@ -1,7 +1,7 @@
-import {NGMock} from "../../../ng.mockhelper.ts";
+import {NGMock} from "../../../ng.mockhelper";
 import DoneCallback = jest.DoneCallback;
 
-import "./treemap.module.ts";
+import "./treemap.module";
 import {TreeMapService} from "./treemap.service";
 
 const createData = function(){

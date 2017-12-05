@@ -1,5 +1,5 @@
-require("./detailPanel.ts");
-import {DetailPanelController} from "./detailPanelComponent.ts";
+require("./detailPanel");
+import {DetailPanelController} from "./detailPanelComponent";
 
 /**
  * @test {DetailPanelController}

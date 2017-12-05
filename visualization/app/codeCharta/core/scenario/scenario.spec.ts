@@ -1,10 +1,10 @@
-import {NGMock} from "../../../ng.mockhelper.ts";
+import {NGMock} from "../../../ng.mockhelper";
 import DoneCallback = jest.DoneCallback;
 
-import "./scenario.module.ts";
-import {ScenarioService, Scenario} from "./scenario.service.ts";
-import {SettingsService} from "../settings/settings.service.ts";
-import {createDefaultScenario} from "./scenario.data.ts";
+import "./scenario.module";
+import {ScenarioService, Scenario} from "./scenario.service";
+import {SettingsService} from "../settings/settings.service";
+import {createDefaultScenario} from "./scenario.data";
 /**
  * @test {ScenatioService}
  */

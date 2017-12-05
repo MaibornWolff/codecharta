@@ -1,4 +1,4 @@
-import {codeMapBuilding} from "./rendering/codeMapBuilding.ts"
+import {codeMapBuilding} from "./rendering/codeMapBuilding"
 import {ThreeCameraService} from "./threeViewer/threeCameraService";
 import {IAngularEvent, IRootScopeService} from "angular";
 import {ThreeViewerService} from "./threeViewer/threeViewerService";

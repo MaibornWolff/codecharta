@@ -1,7 +1,7 @@
 "use strict";
 
 import * as d3 from "d3";
-import {CodeMap, CodeMapNode} from "./model/CodeMap.ts";
+import {CodeMap, CodeMapNode} from "./model/CodeMap";
 import {HierarchyNode} from "d3-hierarchy";
 
 interface KVObject {

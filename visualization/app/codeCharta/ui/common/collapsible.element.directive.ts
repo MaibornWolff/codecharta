@@ -1,7 +1,7 @@
 import {IDirective} from "angular";
 
 /*
- * TODO find a better approach with shims or globals. At this moment $ is loaded in app.ts and after that decorated by materialize.
+ * TODO find a better approach with shims or globals. At this moment $ is loaded in app and after that decorated by materialize.
  */
 declare function $(arg: any): any;
 

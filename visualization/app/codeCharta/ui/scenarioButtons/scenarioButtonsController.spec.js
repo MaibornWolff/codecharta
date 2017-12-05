@@ -1,4 +1,4 @@
-require("./scenarioButtonsComponent.ts");
+require("./scenarioButtonsComponent");
 
 /**
  * @test

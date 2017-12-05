@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import {MapColors} from "./renderSettings.ts";
-import {node} from "./node.ts"
+import {MapColors} from "./renderSettings";
+import {node} from "./node"
 
 export class codeMapBuilding {
     public id : number;

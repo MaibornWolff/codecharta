@@ -1,9 +1,9 @@
 "use strict";
 
-import {CodeMapMesh} from "./rendering/codeMapMesh.ts";
-import {renderSettings} from "./rendering/renderSettings.ts"
-import {LabelManager} from "./rendering/labelManager.ts"
-import {SettingsServiceSubscriber, Settings, SettingsService} from "../core/settings/settings.service.ts";
+import {CodeMapMesh} from "./rendering/codeMapMesh";
+import {renderSettings} from "./rendering/renderSettings"
+import {LabelManager} from "./rendering/labelManager"
+import {SettingsServiceSubscriber, Settings, SettingsService} from "../core/settings/settings.service";
 
 const mapSize = 500.0;
 

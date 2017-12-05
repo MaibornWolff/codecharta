@@ -1,8 +1,8 @@
-import "./data.module.ts";
-import {NGMock} from "../../../ng.mockhelper.ts";
+import "./data.module";
+import {NGMock} from "../../../ng.mockhelper";
 import DoneCallback = jest.DoneCallback;
-import {DataValidatorService} from "./data.validator.service.ts";
-import {TEST_FILE_DATA} from "./data.mocks.ts";
+import {DataValidatorService} from "./data.validator.service";
+import {TEST_FILE_DATA} from "./data.mocks";
 import {CodeMap} from "./model/CodeMap";
 
 /**

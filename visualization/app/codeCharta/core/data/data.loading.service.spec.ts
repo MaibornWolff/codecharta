@@ -1,7 +1,7 @@
-import "./data.module.ts";
-import {NGMock} from "../../../ng.mockhelper.ts";
-import {DataLoadingService} from "./data.loading.service.ts";
-import {TEST_FILE_CONTENT} from "./data.mocks.ts";
+import "./data.module";
+import {NGMock} from "../../../ng.mockhelper";
+import {DataLoadingService} from "./data.loading.service";
+import {TEST_FILE_CONTENT} from "./data.mocks";
 
 /**
  * @test {DataLoadingService}

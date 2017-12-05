@@ -1,10 +1,10 @@
 "use strict";
 
-import "./codeMap/codeMap.ts";
-import "./core/core.module.ts";
-import "./ui/ui.ts";
+import "./codeMap/codeMap";
+import "./core/core.module";
+import "./ui/ui";
 
-import {codeChartaComponent, CodeChartaController} from "./codeChartaComponent.ts";
+import {codeChartaComponent, CodeChartaController} from "./codeChartaComponent";
 
 import angular from "angular";
 

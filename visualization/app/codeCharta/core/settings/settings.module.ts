@@ -1,11 +1,11 @@
 import angular from "angular";
 
-import "../url/url.module.ts";
-import "../data/data.module.ts";
-import "../statistic/statistic.module.ts";
-import "../../codeMap/threeViewer/threeViewer.ts";
+import "../url/url.module";
+import "../data/data.module";
+import "../statistic/statistic.module";
+import "../../codeMap/threeViewer/threeViewer";
 
-import {SettingsService} from "./settings.service.ts";
+import {SettingsService} from "./settings.service";
 
 angular.module(
     "app.codeCharta.core.settings",

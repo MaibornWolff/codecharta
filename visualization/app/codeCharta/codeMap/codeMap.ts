@@ -1,10 +1,10 @@
 import angular from "angular";
 
-import "./threeViewer/threeViewer.ts";
-import "../core/core.module.ts";
+import "./threeViewer/threeViewer";
+import "../core/core.module";
 
-import {CodeMapService} from "./codeMapService.ts";
-import {codeMapComponent} from "./codeMapComponent.ts";
+import {CodeMapService} from "./codeMapService";
+import {codeMapComponent} from "./codeMapComponent";
 
 angular.module("app.codeCharta.codeMap",["app.codeCharta.codeMap.threeViewer", "app.codeCharta.core"])
 

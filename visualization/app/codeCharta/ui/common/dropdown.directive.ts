@@ -1,4 +1,4 @@
-import {DropdownController} from "./dropdown.controller.ts";
+import {DropdownController} from "./dropdown.controller";
 import {IDirective} from "angular";
 
 /**

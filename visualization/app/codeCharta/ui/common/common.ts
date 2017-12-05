@@ -1,15 +1,15 @@
 import angular from "angular";
 
-import {fabComponent} from "./fab.component.ts";
-import {CheckboxDirective} from "./checkbox.directive.ts";
-import {CollapsibleDirective} from "./collapsible.directive.ts";
-import {SliderDirective} from "./slider.directive.ts";
-import {NumberFieldDirective} from "./numberField.directive.ts";
-import {CollapsibleElementDirective} from "./collapsible.element.directive.ts";
-import {DropdownController} from "./dropdown.controller.ts";
-import {DropdownDirective} from "./dropdown.directive.ts";
+import {fabComponent} from "./fab.component";
+import {CheckboxDirective} from "./checkbox.directive";
+import {CollapsibleDirective} from "./collapsible.directive";
+import {SliderDirective} from "./slider.directive";
+import {NumberFieldDirective} from "./numberField.directive";
+import {CollapsibleElementDirective} from "./collapsible.element.directive";
+import {DropdownController} from "./dropdown.controller";
+import {DropdownDirective} from "./dropdown.directive";
 
-import "../../core/tooltip/tooltip.module.ts";
+import "../../core/tooltip/tooltip.module";
 
 angular.module("app.codeCharta.ui.common", ["app.codeCharta.core.tooltip"])
     .component(fabComponent.selector, fabComponent)

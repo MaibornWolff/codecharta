@@ -1,9 +1,9 @@
 import angular from "angular";
 
-import "../../core/core.module.ts";
-import "../../codeMap/codeMap.ts";
+import "../../core/core.module";
+import "../../codeMap/codeMap";
 
-import {detailPanelComponent} from "./detailPanelComponent.ts";
+import {detailPanelComponent} from "./detailPanelComponent";
 
 angular.module(
     "app.codeCharta.ui.detailPanel",

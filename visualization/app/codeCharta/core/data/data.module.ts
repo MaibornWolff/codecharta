@@ -1,10 +1,10 @@
 "use strict";
 
-import {DataService} from "./data.service.ts";
-import {DataValidatorService} from "./data.validator.service.ts";
-import {DataLoadingService} from "./data.loading.service.ts";
-import {DeltaCalculatorService} from "./data.deltaCalculator.service.ts";
-import {DataDecoratorService} from "./data.decorator.service.ts";
+import {DataService} from "./data.service";
+import {DataValidatorService} from "./data.validator.service";
+import {DataLoadingService} from "./data.loading.service";
+import {DeltaCalculatorService} from "./data.deltaCalculator.service";
+import {DataDecoratorService} from "./data.decorator.service";
 
 import angular from "angular";
 

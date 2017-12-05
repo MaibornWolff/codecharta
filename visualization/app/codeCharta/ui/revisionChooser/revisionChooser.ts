@@ -1,6 +1,6 @@
 import angular from "angular";
-import "../../core/core.module.ts";
-import {revisionChooserComponent} from "./revisionChooserComponent.ts";
+import "../../core/core.module";
+import {revisionChooserComponent} from "./revisionChooserComponent";
 
 angular.module("app.codeCharta.ui.revisionChooser",["app.codeCharta.core"]);
 

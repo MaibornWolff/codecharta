@@ -1,7 +1,7 @@
-import {CodeMap, CodeMapNode} from "../data/model/CodeMap.ts";
-import {Settings} from "../../core/settings/settings.service.ts";
-import {DataModel} from "../data/data.service.ts";
-import {node} from "../../codeMap/rendering/node.ts";
+import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
+import {Settings} from "../../core/settings/settings.service";
+import {DataModel} from "../data/data.service";
+import {node} from "../../codeMap/rendering/node";
 
 
 export enum STATISTIC_OPS  {
@@ -296,10 +296,10 @@ export class StatisticMapService {
     /*
      * Function that returns true when two objects contain the same even when it is not in the same order
      * ({a,b}=={b,a} would return true)
-     * Only used in testing
+     * Only used in testing TODO such methods should not be implemented. Testing should not rely on test specific methods
      */
 
-    unorderedCompare(a: Object,b: Object): boolean{
+    /*unorderedCompare(a: Object,b: Object): boolean{
         var same : boolean = false;
         //We check if we reached a leave. Falls that happened the
         if(Object.keys(a).length==0&&JSON.stringify(a) != JSON.stringify(b)){
@@ -316,7 +316,7 @@ export class StatisticMapService {
             if(typeof(a[key])=="object"){//check if this works
                 //if key is a number we look for a branch in b that has the same as this branch in a
                 if(typeof (key)=="number"){
-                    for(var keyb in b){
+                    for(let keyb in b){
                         if(this.unorderedCompare(a[key],b[keyb])){
                             same= true;
                         }
@@ -335,5 +335,5 @@ export class StatisticMapService {
             }
         }
         return true;
-    }
+    }*/
 }

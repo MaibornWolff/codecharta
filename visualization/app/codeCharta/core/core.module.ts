@@ -1,12 +1,12 @@
 "use strict";
 
-import "./data/data.module.ts";
-import "./settings/settings.module.ts";
-import "./url/url.module.ts";
-import "./treemap/treemap.module.ts";
-import "./scenario/scenario.module.ts";
-import "./tooltip/tooltip.module.ts";
-import "./statistic/statistic.module.ts";
+import "./data/data.module";
+import "./settings/settings.module";
+import "./url/url.module";
+import "./treemap/treemap.module";
+import "./scenario/scenario.module";
+import "./tooltip/tooltip.module";
+import "./statistic/statistic.module";
 
 import angular from "angular";
 

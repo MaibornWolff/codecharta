@@ -1,7 +1,7 @@
 import {IRootScopeService, ICompileService, IScope} from "angular";
 
-import "./common.ts";
-import {NG, NGMock} from "../../../ng.mockhelper.ts";
+import "./common";
+import {NG, NGMock} from "../../../ng.mockhelper";
 
 describe("common", ()=>{
 

@@ -1,6 +1,6 @@
-require("./legendPanel.ts");
+require("./legendPanel");
 
-import {LegendPanelController} from "./legendPanelComponent.ts";
+import {LegendPanelController} from "./legendPanelComponent";
 
 xdescribe("app.codeCharta.ui.legendPanel.legendPanelController", function() {
 

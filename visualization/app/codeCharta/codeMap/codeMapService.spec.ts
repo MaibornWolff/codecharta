@@ -1,6 +1,6 @@
-import "./codeMap.ts";
+import "./codeMap";
 
-import {CodeMapService} from "./codeMapService.ts";
+import {CodeMapService} from "./codeMapService";
 import {NG} from "../../ng.mockhelper";
 
 describe("app.codeCharta.codeMap.codeMapService", function () {

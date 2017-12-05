@@ -1,6 +1,6 @@
 import angular from "angular";
-import "../common/common.ts";
-import {fabBarComponent} from "./fabBarComponent.ts";
+import "../common/common";
+import {fabBarComponent} from "./fabBarComponent";
 
 angular.module("app.codeCharta.ui.fabBar",["app.codeCharta.ui.common"]);
 
