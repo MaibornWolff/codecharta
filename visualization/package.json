@@ -13,7 +13,6 @@
     "height": 768
   },
   "scripts": {
-    "postinstall": "export NODE_ENV=production && grunt build",
     "start": "export NODE_ENV=development && nw",
     "build": "export NODE_ENV=production && grunt build",
     "test": "export NODE_ENV=testing && jest --runInBand",
