@@ -1,6 +1,6 @@
-require("./codeCharta.ts");
+require("./codeCharta");
 
-import {CodeChartaController} from "./codeChartaComponent.ts";
+import {CodeChartaController} from "./codeChartaComponent";
 
 /**
  * @test {CodeChartaController}

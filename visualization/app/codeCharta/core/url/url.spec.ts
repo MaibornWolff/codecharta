@@ -1,9 +1,9 @@
-import {NGMock} from "../../../ng.mockhelper.ts";
+import {NGMock} from "../../../ng.mockhelper";
 import {IRootScopeService, ILocationService, IHttpBackendService} from "angular";
 import DoneCallback = jest.DoneCallback;
 
-import {UrlService} from "./url.service.ts";
-import "./url.module.ts";
+import {UrlService} from "./url.service";
+import "./url.module";
 import {VALID_TEST_DATA} from "./url.mocks";
 import {CodeMap} from "../data/model/CodeMap";
 

@@ -1,5 +1,5 @@
-require("./revisionChooser.ts");
-import {RevisionChooserController} from "./revisionChooserComponent.ts";
+require("./revisionChooser");
+import {RevisionChooserController} from "./revisionChooserComponent";
 
 /**
  * @test {RevisionChooserController}

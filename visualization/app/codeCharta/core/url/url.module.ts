@@ -2,7 +2,7 @@
 
 import angular from "angular";
 
-import {UrlService} from "./url.service.ts";
+import {UrlService} from "./url.service";
 
 angular.module(
     "app.codeCharta.core.url",

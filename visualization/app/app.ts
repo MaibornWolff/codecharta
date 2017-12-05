@@ -9,7 +9,7 @@ import "angularjs-slider/dist/rzslider.css";
 
 import "font-awesome/css/font-awesome.css";
 
-import "./codeCharta/codeCharta.ts";
+import "./codeCharta/codeCharta";
 
 angular.module("app", ["app.codeCharta"]);
 

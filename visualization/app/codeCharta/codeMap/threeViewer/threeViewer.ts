@@ -1,10 +1,10 @@
-import {ThreeViewerService} from "./threeViewerService.ts";
-import {ThreeSceneService} from "./threeSceneService.ts";
-import {ThreeCameraService} from "./threeCameraService.ts";
-import {ThreeOrbitControlsService} from "./threeOrbitControlsService.ts";
-import {ThreeRendererService} from "./threeRendererService.ts";
-import {ThreeUpdateCycleService} from "./threeUpdateCycleService.ts";
-import "../../core/settings/settings.module.ts";
+import {ThreeViewerService} from "./threeViewerService";
+import {ThreeSceneService} from "./threeSceneService";
+import {ThreeCameraService} from "./threeCameraService";
+import {ThreeOrbitControlsService} from "./threeOrbitControlsService";
+import {ThreeRendererService} from "./threeRendererService";
+import {ThreeUpdateCycleService} from "./threeUpdateCycleService";
+import "../../core/settings/settings.module";
 
 import angular from "angular";
 

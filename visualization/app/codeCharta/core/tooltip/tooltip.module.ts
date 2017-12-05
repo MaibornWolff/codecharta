@@ -1,6 +1,6 @@
 "use strict";
 
-import {TooltipService} from "./tooltip.service.ts";
+import {TooltipService} from "./tooltip.service";
 
 import angular from "angular";
 

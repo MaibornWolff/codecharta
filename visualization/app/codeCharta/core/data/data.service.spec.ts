@@ -1,8 +1,8 @@
-import "./data.module.ts";
-import {NGMock} from "../../../ng.mockhelper.ts";
-import {DataService} from "./data.service.ts";
+import "./data.module";
+import {NGMock} from "../../../ng.mockhelper";
+import {DataService} from "./data.service";
 import {CodeMap} from "./model/CodeMap";
-import {TEST_FILE_DATA} from "./data.mocks.ts";
+import {TEST_FILE_DATA} from "./data.mocks";
 
 /**
  * @test {DataService}

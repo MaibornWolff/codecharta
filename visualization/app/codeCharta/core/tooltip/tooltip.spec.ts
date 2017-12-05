@@ -1,11 +1,11 @@
-import {NGMock} from "../../../ng.mockhelper.ts";
+import {NGMock} from "../../../ng.mockhelper";
 import DoneCallback = jest.DoneCallback;
 import {IRootScopeService, IAngularEvent} from "angular";
 
-import "./tooltip.module.ts";
+import "./tooltip.module";
 import {
     TooltipService, Tooltips, TooltipServiceSubscriber, TOOLTIPS_CHANGED_EVENT_ID, NO_DESCRIPTION
-} from "./tooltip.service.ts";
+} from "./tooltip.service";
 
 describe("tooltip.service", ()=> {
 

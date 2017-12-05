@@ -1,5 +1,5 @@
-import "./settings.module.ts";
-import {NGMock} from "../../../ng.mockhelper.ts";
+import "./settings.module";
+import {NGMock} from "../../../ng.mockhelper";
 import DoneCallback = jest.DoneCallback;
 import sinon from "sinon";
 

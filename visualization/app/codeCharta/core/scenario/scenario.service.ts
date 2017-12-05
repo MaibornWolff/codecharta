@@ -1,6 +1,6 @@
 "use strict";
 import {Settings} from "../settings/settings.service";
-import {createDefaultScenario} from "./scenario.data.ts";
+import {createDefaultScenario} from "./scenario.data";
 
 export interface Scenario {
     name: string,

@@ -1,8 +1,8 @@
-import {SettingsService, Settings, SettingsServiceSubscriber} from "../../core/settings/settings.service.ts";
+import {SettingsService, Settings, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import {
     CodeMapControllerSubscriber, CodeMapBuildingTransition,
     CodeMapController
-} from "../../codeMap/codeMapComponent.ts";
+} from "../../codeMap/codeMapComponent";
 
 interface CommonDetails {
     areaAttributeName: string | null,

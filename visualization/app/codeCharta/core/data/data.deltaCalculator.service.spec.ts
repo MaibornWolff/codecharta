@@ -1,8 +1,8 @@
-import "./data.module.ts";
-import {NGMock} from "../../../ng.mockhelper.ts";
+import "./data.module";
+import {NGMock} from "../../../ng.mockhelper";
 import DoneCallback = jest.DoneCallback;
 import {CodeMap} from "./model/CodeMap";
-import {TEST_FILE_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B} from "./data.mocks.ts";
+import {TEST_FILE_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B} from "./data.mocks";
 import {DeltaCalculatorService} from "./data.deltaCalculator.service";
 
 /**

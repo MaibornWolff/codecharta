@@ -1,4 +1,4 @@
-import {TooltipService, TooltipServiceSubscriber, Tooltips} from "../../core/tooltip/tooltip.service.ts";
+import {TooltipService, TooltipServiceSubscriber, Tooltips} from "../../core/tooltip/tooltip.service";
 import {IScope} from "angular";
 /**
  * Controller for the DropdownDirective

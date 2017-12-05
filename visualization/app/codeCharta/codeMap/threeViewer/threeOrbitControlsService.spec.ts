@@ -1,5 +1,5 @@
-import "./threeViewer.ts";
-import {NG} from "../../../ng.mockhelper.ts";
+import "./threeViewer";
+import {NG} from "../../../ng.mockhelper";
 
 /**
  * @test {ThreeOrbitControlsService}

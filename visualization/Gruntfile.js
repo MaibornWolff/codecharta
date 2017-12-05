@@ -17,19 +17,24 @@ module.exports = function (grunt) {
 
         nwjs: require("./conf/grunt.nwjs.config.js"),
 
+        typedoc: {
+            build: {
+                options: {
+                    module: 'es2015',
+                    target: 'es2016',
+                    out: 'dist/docs/',
+                    name: 'CodeCharta'
+                },
+                src: 'app/**/*.ts'
+            }
+        },
+
         clean: {
             dist: [paths.dist],
             webpack: [paths.bundlePath],
             doc: [paths.docPath],
             packageTmp: [paths.packagePath + "/CodeCharta"],
             package: [paths.packagePath]
-        },
-
-        exec: {
-            doc: {
-                command: path.resolve("node_modules", ".bin", "esdoc") + " -c conf/esdoc.json",
-                stdout: true
-            }
         },
 
         compress: {
@@ -84,6 +89,6 @@ module.exports = function (grunt) {
     grunt.registerTask("build", ["clean:webpack", "webpack:prod"]);
     grunt.registerTask("serve", ["clean:webpack", "webpack:dev"]);
     grunt.registerTask("package", ["clean:package", /* "nwjs" */, "compress", "clean:packageTmp"]);
-    grunt.registerTask("doc", ["clean:doc", /* "exec:doc" */]);
+    grunt.registerTask("doc", ["clean:doc", "typedoc"]);
 
 };
