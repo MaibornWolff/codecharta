@@ -70,6 +70,7 @@ Object {
                 selected="selected"
             />
             <!-- ngRepeat: x in ctrl.values -->
+            <!-- ngRepeat: x in ctrl.values -->
         </select>
     </div>
 </dropdown-directive>,
