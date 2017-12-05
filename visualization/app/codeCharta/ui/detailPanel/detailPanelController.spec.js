@@ -4,7 +4,7 @@ import {DetailPanelController} from "./detailPanelComponent.ts";
 /**
  * @test {DetailPanelController}
  */
-describe("app.codeCharta.ui.detailPanel.detailPanelController", function() {
+xdescribe("app.codeCharta.ui.detailPanel.detailPanelController", function() {
 
     var detailPanelController, scope, timeout, settingsService;
 

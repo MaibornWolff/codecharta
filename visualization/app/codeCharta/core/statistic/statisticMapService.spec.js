@@ -4,7 +4,7 @@ import {STATISTIC_OPS} from "./statistic.service";
 import {DataModel} from "../data/model/dataModel";
 import {Settings} from "../settings/model/settings";
 
-describe("app.codeCharta.core.statistic", function() {
+xdescribe("app.codeCharta.core.statistic", function() {
 
     var data,settings;
 

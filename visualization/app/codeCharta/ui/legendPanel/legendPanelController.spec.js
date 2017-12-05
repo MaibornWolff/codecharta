@@ -2,7 +2,7 @@ require("./legendPanel.ts");
 
 import {LegendPanelController} from "./legendPanelComponent.ts";
 
-describe("app.codeCharta.ui.legendPanel.legendPanelController", function() {
+xdescribe("app.codeCharta.ui.legendPanel.legendPanelController", function() {
 
     var legendPanelController, dataService, scope, codeMapMaterialFactory, timeout, settingsService;
 
