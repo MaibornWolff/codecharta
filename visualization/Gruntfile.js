@@ -23,7 +23,8 @@ module.exports = function (grunt) {
                     module: 'es2015',
                     target: 'es2016',
                     out: 'dist/docs/',
-                    name: 'CodeCharta'
+                    name: 'CodeCharta',
+                    exclude: 'app/**/*.spec.ts'
                 },
                 src: 'app/**/*.ts'
             }
