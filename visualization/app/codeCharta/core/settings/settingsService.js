@@ -3,7 +3,6 @@
 import {Settings} from "./model/settings";
 import {Scale} from "./model/scale";
 import {Range} from "./model/range";
-import {STATISTIC_OPS, StatisticMapService} from "../statistic/statisticMapService";
 
 /**
  * Stores and manipulates the current settings
@@ -16,27 +15,14 @@ class SettingsService {
      * @constructor 
      * @param {UrlService} urlService 
      * @param {DataService} dataService
-     * @param {Scope} $rootScope
-     * @param {StatisticMapService} statisticMapService;
+     * @param {Scope} $rootScope 
      */
-    constructor(urlService, dataService, $rootScope, statisticMapService) {
+    constructor(urlService, dataService, $rootScope) {
 
         /**
          * @type {UrlService}
          */
         this.urlService = urlService;
-
-
-
-        /**
-         * @type {STATISTIC_OPS}
-         */
-        this.STATISTIC_OPS= STATISTIC_OPS;
-
-        /**
-         * @type {statisticMapService}
-         */
-        this.statisticMapService = statisticMapService;
 
         /**
          * @type {DataService}
@@ -63,8 +49,7 @@ class SettingsService {
             1,
             new Scale(1,1,1),
             new Scale(0,300,1000),
-            1,
-            STATISTIC_OPS.NO_OPERATIONS
+            1
         );
 
         $rootScope.$on("data-changed", (event,data) => {

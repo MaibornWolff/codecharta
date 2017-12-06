@@ -3,7 +3,7 @@ module.exports = function (config) {
         basePath: '../',
         singleRun: true,
         autoWatch: false,
-        logLevel: 'ERROR',
+        logLevel: 'INFO',
         junitReporter: {
             outputDir: 'dist/test-reports'
         },
@@ -49,6 +49,7 @@ module.exports = function (config) {
             require('karma-phantomjs-launcher'),
             require('karma-phantomjs-shim'),
             require('karma-webpack')
+
         ],
         devtool: 'source-map'
     };
