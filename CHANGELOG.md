@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
+- scaling slider now has steps of 0.1. This allows the user to select precise values like 2.0
 
 ### Removed
 
