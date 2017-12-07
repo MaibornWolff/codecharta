@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- Opening the same file a second time does not work #53
+- added missing require declaration
+- added glsl loader in testing environment
 
 ## [1.5.1] - 2017-11-14
 ### Added
