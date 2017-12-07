@@ -49,7 +49,7 @@ class FileChooserController {
                     var name = file.name;
                     var reader = new FileReader();
                     reader.onload = function(e) {
-                        ctx.onNewFileLoaded(e.target.result, i, name);
+                        ctx.onNewFileLoaded(e.target.result, i, name, element);
                     };
                     reader.readAsText(file, "UTF-8");
                 })(element.files[i], i);
@@ -65,7 +65,8 @@ class FileChooserController {
      * @param {number} revision the revision number
      * @param {string} name the filename
      */
-    onNewFileLoaded(data, revision, name){
+    onNewFileLoaded(data, revision, name, element){
+        element.value = "";
         $("#fileChooserPanel").modal("close");
 
         try {

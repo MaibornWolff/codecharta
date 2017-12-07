@@ -1,3 +1,5 @@
+declare function require(name:string): string;
+
 export class codeMapShaderStrings {
 
     public vertexShaderCode: string;
