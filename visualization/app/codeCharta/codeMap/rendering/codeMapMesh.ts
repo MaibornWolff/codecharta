@@ -44,7 +44,7 @@ export class CodeMapMesh {
     private currentlyHighlighted : codeMapBuilding[] | null;
     private currentlySelected : codeMapBuilding[] | null;
 
-    private settings : renderSettings;
+    public settings : renderSettings;
 
     private lightingParams : codeMapLightingParams = {
         numHighlights : {type : 'f', value : 0.0},
