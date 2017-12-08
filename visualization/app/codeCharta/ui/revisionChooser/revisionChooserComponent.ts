@@ -43,7 +43,6 @@ export class RevisionChooserController implements DataServiceSubscriber{
      * Toggles the visibility
      */
     toggle(){
-        console.log("toggle");
         if (this.visible) {
             //noinspection TypeScriptUnresolvedFunction
             $("#revisionChooser").animate({left: -500 + "px"});

@@ -28,7 +28,7 @@ export interface SettingsServiceSubscriber {
     onSettingsChanged(settings: Settings, event: Event)
 }
 
-export class SettingsService implements DataServiceSubscriber, CameraChangeSubscriber{
+export class SettingsService implements DataServiceSubscriber, CameraChangeSubscriber {
 
     public static SELECTOR = "settingsService";
 
@@ -139,6 +139,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     }
 
     /**
+     * TODO this method can be propably implemented much better
      * updates the settings object according to url parameters. url parameters are named like the accessors of the Settings object. E.g. scale.x or areaMetric
      * @emits {settings-changed} transitively on call
      */
@@ -158,14 +159,26 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
                     const res = ctx.urlService.getParam(prefix + i);
 
-                    let val = parseFloat(res);
+                    if(res) {
 
-                    if (isNaN(val)) {
-                        val = res;
-                    }
+                        if (res == "true") {
+                            obj[i] = true;
+                        } else if (res == "false") {
+                            obj[i] = false;
+                        } else if (res === 0 || res) {
 
-                    if (val === 0 || val) {
-                        obj[i] = val;
+                            let val = parseFloat(res);
+
+                            if (isNaN(val)) {
+                                val = res;
+                            }
+
+                            obj[i] = val;
+                        } else {
+                            obj[i] = res;
+                        }
+
+                        // if we work with strings here it can cause errors in other parts of the app, check with console.log(typeof obj[i], obj[i]);
                     }
 
                 }
@@ -245,6 +258,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.map = this.settings.map;
 
         this.onSettingsChanged();
+
     }
 
     //TODO return new copy ? this would need a change listener for angular...
