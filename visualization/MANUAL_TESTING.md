@@ -1,3 +1,58 @@
+# Scenario: url params
+
+## Given 
+- CC is running
+
+## When 
+- user attaches invalid params to the url and navigates to the page
+
+## Then 
+- nothing changes
+
+# Scenario: url params
+
+## Given 
+- CC is running
+
+## When 
+- user clicks url param button
+
+## Then 
+- dialog with current params opens 
+
+# Scenario: url params
+
+## Given 
+- CC is running
+
+## When 
+- user changes settings
+
+## Then 
+- nothing in url changes (one way change)
+
+# Scenario: url params
+
+## Given 
+- CC is running
+
+## When 
+- user attaches valid params to the url and does not navigate to the page
+
+## Then 
+- nothing changes
+
+# Scenario: url params
+
+## Given 
+- CC is running
+
+## When 
+- user attaches valid params to the url and navigates to the page
+
+## Then 
+- initial settings should be overwritten and correctly rendered
+
 # Scenario: rendering
 
 ## Given 
