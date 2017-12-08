@@ -19,6 +19,13 @@ analysis: Tools for generating visualisation data
 - > ./ccsh install
 - > ./ccsh -h
 
+## run local sonar analysis with a docker container (Mac)
+- `brew install sonar-scanner`
+- `docker run -d --name sonarqube -p 9000:9000 -p 9092:9092 sonarqube`
+- add a correct sonar-project.properties file to the target project
+- run `sonar-scanner` in the projects folder
+- you can now access your sonarqube instance and analysis on localhost:9000
+
 ## Analyze a sonarqube project
 
 Choose a sonar analysed project of your choice and enter the file, url and project-id. If necessary, generate a User Token in the sonar remote instance and include it in the following command:
