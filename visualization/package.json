@@ -20,7 +20,10 @@
     "test:updateSnaps": "export NODE_ENV=testing && jest --updateSnapshot",
     "doc": "grunt doc",
     "package": "export NODE_ENV=production && grunt package",
-    "serve": "export NODE_ENV=development && grunt serve"
+    "serve": "export NODE_ENV=development && grunt serve",
+    "test:updateWebdriver": "export NODE_ENV=testing && webdriver-manager update",
+    "test:startWebdriver": "export NODE_ENV=testing && webdriver-manager start",
+    "test:e2e": "export NODE_ENV=testing && protractor ./conf/protractor.js"
   },
   "bin": {
     "codecharta": "./script/npm-start.sh"
@@ -127,6 +130,7 @@
     "nw": "^0.26.3",
     "path": "^0.12.7",
     "phantomjs": "^2.1.7",
+    "protractor": "^5.2.1",
     "script-loader": "^0.7.0",
     "sinon": "^4.0.1",
     "style-loader": "^0.18.2",
