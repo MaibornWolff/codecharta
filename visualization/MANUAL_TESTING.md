@@ -1,3 +1,15 @@
+# Scenario: deltas
+
+## Given 
+- CC is running
+- deltas not enabled
+
+## When 
+- selects/hovers building
+
+## Then 
+- no delta values are shown
+
 # Scenario: url params
 
 ## Given 
