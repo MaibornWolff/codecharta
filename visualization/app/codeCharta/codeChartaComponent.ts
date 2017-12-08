@@ -58,8 +58,10 @@ export class CodeChartaController {
             //fail
             () => {
 
-                //try to load sample data
-                this.dataLoadingService.loadMapFromFileContent("sample1.json", require("./sample1.json"), 0).then(
+                Promise.all([
+                    this.dataLoadingService.loadMapFromFileContent("sample1.json", require("./sample1.json"), 0),
+                    this.dataLoadingService.loadMapFromFileContent("sample2.json", require("./sample2.json"), 1)
+                ]).then(
                     () => {
                         this.loadingFinished();
                         this.settingsService.updateSettingsFromUrl();
@@ -68,17 +70,6 @@ export class CodeChartaController {
                         this.printErrors(r);
                     }
                 );
-
-                //try to load sample data
-                this.dataLoadingService.loadMapFromFileContent("sample2.json", require("./sample2.json"), 1).then(
-                    () => {
-                        this.loadingFinished();
-                    },
-                    (r) => {
-                        this.printErrors(r);
-                    }
-                );
-
 
             }
 
