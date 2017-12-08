@@ -68,7 +68,7 @@ export class SettingsPanelController implements DataServiceSubscriber, SettingsS
      * Notifies the settings service about changes.
      */
     notify() {
-        this.settingsService.onSettingsChanged();
+        this.settingsService.applySettings();
     }
 
     /**

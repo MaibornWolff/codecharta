@@ -33,12 +33,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     public static SELECTOR = "settingsService";
 
     private _settings: Settings;
-    private urlUpdateDone: boolean;
-
-
-    get settings(): Settings {
-        return this._settings;
-    }
 
     /* ngInject */
     constructor(private urlService, private dataService: DataService, private $rootScope,
@@ -81,7 +75,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             areaMetric: this.getMetricByIdOrLast(0, metrics),
             heightMetric: this.getMetricByIdOrLast(1, metrics),
             colorMetric: this.getMetricByIdOrLast(2, metrics),
-            deltas: true,
+            deltas: false,
             amountOfTopLabels: 1,
             scaling: s,
             camera: c,
@@ -140,7 +134,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      * Broadcasts a settings-changed event with the new {Settings} object as a payload
      * @emits {settings-changed} on call
      */
-    public onSettingsChanged() {
+    private onSettingsChanged() {
         this.$rootScope.$broadcast("settings-changed", this._settings);
     }
 
@@ -180,7 +174,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         iterateProperties(this._settings, "");
 
-        this.urlUpdateDone = true;
 
         this.onSettingsChanged();
 
@@ -222,12 +215,41 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     }
 
     /**
-     * Applies given settings
+     * Applies given settings. ignores map. this ensures to copy settings object and prevent side effects
      * @param {Settings} settings
      */
-    public applySettings(settings) {
-        Object.assign(this._settings, settings);
+    public applySettings(settings: Settings = this._settings) {
+
+        this._settings.neutralColorRange.to = settings.neutralColorRange.to;
+        this._settings.neutralColorRange.from = settings.neutralColorRange.from;
+        this._settings.neutralColorRange.flipped = settings.neutralColorRange.flipped;
+
+        this._settings.camera.x = settings.camera.x;
+        this._settings.camera.y = settings.camera.y;
+        this._settings.camera.z = settings.camera.z;
+
+        this._settings.scaling.x = settings.scaling.x;
+        this._settings.scaling.y = settings.scaling.y;
+        this._settings.scaling.z = settings.scaling.z;
+
+        this._settings.areaMetric = settings.areaMetric + "";
+        this._settings.colorMetric = settings.colorMetric + "";
+        this._settings.heightMetric = settings.heightMetric + "";
+
+        this._settings.amountOfTopLabels = settings.amountOfTopLabels;
+        this._settings.margin = settings.margin;
+        this._settings.deltas = settings.deltas;
+        this._settings.operation = settings.operation;
+
+        //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
+        this._settings.map = this.settings.map;
+
         this.onSettingsChanged();
+    }
+
+    //TODO return new copy ? this would need a change listener for angular...
+    get settings(): Settings {
+        return this._settings;
     }
 
     /**
@@ -269,4 +291,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         return result;
     }
+
+
 }
