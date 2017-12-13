@@ -16,20 +16,11 @@ class CommitCollector {
     }
 
     private void collectCommit(List<VersionControlledFile> versionControlledFiles, Commit commit) {
-        removeEmptyFiles(commit);
-        if (isEmpty(commit)) {
+        if (commit.isEmpty()) {
             return;
         }
         addYetUnknownFilesToVersionControlledFiles(versionControlledFiles, commit.getFilenames());
         addCommitMetadataToMatchingVersionControlledFiles(commit, versionControlledFiles);
-    }
-
-    private void removeEmptyFiles(Commit commit) {
-        commit.getFilenames().removeIf(String::isEmpty);
-    }
-
-    private boolean isEmpty(Commit commit) {
-        return commit.getFilenames().isEmpty();
     }
 
     private void addYetUnknownFilesToVersionControlledFiles(List<VersionControlledFile> versionControlledFiles, List<String> filenamesOfCommit) {
