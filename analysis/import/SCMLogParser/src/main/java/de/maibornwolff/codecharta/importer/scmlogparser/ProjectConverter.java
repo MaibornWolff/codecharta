@@ -29,9 +29,9 @@
 
 package de.maibornwolff.codecharta.importer.scmlogparser;
 
-import de.maibornwolff.codecharta.model.PathFactory;
 import de.maibornwolff.codecharta.model.Node;
 import de.maibornwolff.codecharta.model.NodeType;
+import de.maibornwolff.codecharta.model.PathFactory;
 import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.model.input.VersionControlledFile;
 import de.maibornwolff.codecharta.nodeinserter.NodeInserter;
@@ -60,13 +60,10 @@ public final class ProjectConverter {
     }
 
     private static Map<String, Object> extractAttributes(VersionControlledFile versionControlledFile, boolean containsAuthors) {
-        HashMap<String, Object> attributes = new HashMap<>();
-        attributes.put("number_of_commits", versionControlledFile.getNumberOfOccurrencesInCommits());
-        attributes.put("weeks_with_commits", versionControlledFile.getNumberOfWeeksWithCommits());
+        HashMap<String, Object> attributes = new HashMap<>(versionControlledFile.getMetricsMap());
         if (containsAuthors) {
             attributes.put("authors", versionControlledFile.getAuthors());
         }
-        attributes.put("number_of_authors", versionControlledFile.getNumberOfAuthors());
         return attributes;
     }
 

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static de.maibornwolff.codecharta.model.input.metrics.NumberOfOccurencesInCommits.NUMBER_OF_COMMITS;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,7 +73,7 @@ public abstract class ParserStrategyContractTest {
         Stream<String> logLines = Stream.concat(getFullCommit().stream(), getFullCommit().stream());
         List<VersionControlledFile> files = new LogParser(getLogParserStrategy(), true).parseLoglines(logLines);
         assertThat(files)
-                .extracting(VersionControlledFile::getFilename, VersionControlledFile::getNumberOfOccurrencesInCommits, VersionControlledFile::getAuthors)
+                .extracting(VersionControlledFile::getFilename, f -> f.getMetricValue(NUMBER_OF_COMMITS), VersionControlledFile::getAuthors)
                 .containsExactlyInAnyOrder(
                         tuple("src/Util.java", 2, singleton("TheAuthor")),
                         tuple("src/Main.java", 4, singleton("TheAuthor")));

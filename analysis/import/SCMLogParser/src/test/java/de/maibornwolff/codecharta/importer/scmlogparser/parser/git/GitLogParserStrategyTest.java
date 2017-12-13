@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.importer.scmlogparser.parser.git;
 
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.ParserStrategyContractTest;
-import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogParserStrategy;
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class GitLogParserStrategyTest extends ParserStrategyContractTest {
 
-    public static final List<String> FULL_COMMIT = asList(
+    private static final List<String> FULL_COMMIT = asList(
             "commit ca1fe2ba3be4",
             "Author: TheAuthor <mail@example.com>",
             "Date:   Tue May 9 19:57:57 2017 +0200",
@@ -32,12 +31,12 @@ public class GitLogParserStrategyTest extends ParserStrategyContractTest {
     }
 
     @Override
-    protected List<String> getFullCommit(){
+    protected List<String> getFullCommit() {
         return FULL_COMMIT;
     }
 
     @Override
-    protected LogParserStrategy getLogParserStrategy(){
+    protected LogParserStrategy getLogParserStrategy() {
         return parserStrategy;
     }
 

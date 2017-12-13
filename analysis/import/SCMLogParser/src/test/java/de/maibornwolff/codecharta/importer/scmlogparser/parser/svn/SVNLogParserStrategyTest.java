@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.importer.scmlogparser.parser.svn;
 
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.ParserStrategyContractTest;
-import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy;
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +68,6 @@ public class SVNLogParserStrategyTest extends ParserStrategyContractTest {
         String filename = parserStrategy.parseFilename("   M /trunk/src/srcFolderTest.txt");
         assertThat(filename).isEqualTo("src/srcFolderTest.txt");
     }
-
 
 
     @Test
