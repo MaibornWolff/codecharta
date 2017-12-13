@@ -10,22 +10,24 @@ class CodeChartaController {
     /**
      * @constructor
      * @param {UrlService} urlService
-     * @param {DataService} dataService
+     * @param {DataLoadingService} dataLoadingService
      * @param {SettingsService} settingsService
      */
-    constructor(dataService, urlService, settingsService, scenarioService) {
+    constructor(dataLoadingService, urlService, settingsService, scenarioService, dataService) {
         this.initHandlers();
-        this.loadFileOrSample(urlService, dataService, settingsService);
+        this.loadFileOrSample(urlService, dataLoadingService, settingsService);
         this.scenarioService = scenarioService;
+        this.dataService = dataService;
+        this.pkg = require("../../package.json");
     }
 
     /**
      * Tries to load the file specified in the given url. Loads sample data if it fails.
      * @param {UrlService} urlService
-     * @param {DataService} dataService
+     * @param {DataLoadingService} dataLoadingService
      * @param {SettingsService} settingsService
      */
-    loadFileOrSample(urlService, dataService, settingsService) {
+    loadFileOrSample(urlService, dataLoadingService, settingsService) {
 
         let ctx = this;
 
@@ -37,11 +39,14 @@ class CodeChartaController {
             (data) => {
 
                 // set loaded data
-                dataService.setFileData(data).then(
+                dataLoadingService.loadMapFromFileContent(urlService.getParam("file"), data, 0).then(
                     () => {
+                        ctx.loadingFinished();
                         settingsService.updateSettingsFromUrl();
                     },
-                    (r) => {ctx.printErrors(r);}
+                    (r) => {
+                        ctx.printErrors(r);
+                    }
                 );
 
             },
@@ -50,27 +55,26 @@ class CodeChartaController {
             () => {
 
                 //try to load sample data
-                urlService.getFileDataFromFile("sample.json").then(
-
-                    //success
-                    (data) => {
-
-                        // set loaded data
-                        dataService.setFileData(data).then(
-                            () => {
-                                ctx.loadingFinished();
-                            },
-                            (r) => {ctx.printErrors(r);}
-                        );
-
-                    },
-
-                    //fail
+                dataLoadingService.loadMapFromFileContent("sample1.json", require("./sample1.json"), 0).then(
                     () => {
-                        window.alert("failed loading sample data");
+                        ctx.loadingFinished();
+                        settingsService.updateSettingsFromUrl();
+                    },
+                    (r) => {
+                        ctx.printErrors(r);
                     }
-
                 );
+
+                //try to load sample data
+                dataLoadingService.loadMapFromFileContent("sample2.json", require("./sample2.json"), 1).then(
+                    () => {
+                        ctx.loadingFinished();
+                    },
+                    (r) => {
+                        ctx.printErrors(r);
+                    }
+                );
+
 
             }
 
@@ -83,6 +87,8 @@ class CodeChartaController {
      */
     loadingFinished() {
         this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
+        this.dataService.setComparisonMap(0);
+        this.dataService.setReferenceMap(0);
     }
 
     /**
@@ -90,13 +96,13 @@ class CodeChartaController {
      */
     initHandlers() {
 
-        $(window).keyup(function(event){
+        $(window).keyup(function (event) {
             if (event.which === 116) {
                 window.location.reload();
             }
         });
 
-        $(window).keypress(function(event){
+        $(window).keypress(function (event) {
             if (event.which === 18 && (event.ctrlKey || event.metaKey)) {
                 window.location.reload();
             }
@@ -108,11 +114,11 @@ class CodeChartaController {
      * Prints errors to the browser console and alerts the user
      * @param {Object} errors an errors object
      */
-    printErrors(errors){
+    printErrors(errors) {
         window.alert("Wrong format. See console logs for details.");
         console.log(errors);
     }
-    
+
 }
 
 export {CodeChartaController};

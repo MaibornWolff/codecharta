@@ -34,7 +34,7 @@ public abstract class ParserStrategyContractTest {
 
     @Test
     public void parsesCommit() {
-        LogParser logParser = new LogParser(getLogParserStrategy());
+        LogParser logParser = new LogParser(getLogParserStrategy(), true);
         Commit commit = logParser.parseCommit(getFullCommit());
         assertThat(commit)
                 .extracting(Commit::getAuthor, Commit::getFilenames, Commit::getCommitDate)
@@ -70,7 +70,7 @@ public abstract class ParserStrategyContractTest {
     @Test
     public void accumulatesCommitFiles() {
         Stream<String> logLines = Stream.concat(getFullCommit().stream(), getFullCommit().stream());
-        List<VersionControlledFile> files = new LogParser(getLogParserStrategy()).parseLoglines(logLines);
+        List<VersionControlledFile> files = new LogParser(getLogParserStrategy(), true).parseLoglines(logLines);
         assertThat(files)
                 .extracting(VersionControlledFile::getFilename, VersionControlledFile::getNumberOfOccurrencesInCommits, VersionControlledFile::getAuthors)
                 .containsExactlyInAnyOrder(

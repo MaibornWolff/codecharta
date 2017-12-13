@@ -10,7 +10,7 @@ class FabDirective{
      */
     constructor() {
         /** @type {string} */
-        this.templateUrl = "./fab.html";
+        this.template = require("./fab.html");
 
         /** @type {string} */
         this.restrict = "E";

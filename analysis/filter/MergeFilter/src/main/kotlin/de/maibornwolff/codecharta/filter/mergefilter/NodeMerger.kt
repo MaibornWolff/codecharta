@@ -1,75 +1,63 @@
+/*
+ * Copyright (c) 2017, MaibornWolff GmbH
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *  * Neither the name of  nor the names of its contributors may be used to
+ *    endorse or promote products derived from this software without specific
+ *    prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.model.Node
-import de.maibornwolff.codecharta.util.NullableMapMerger
-
 
 class NodeMerger {
-    val nullableMapMerger = NullableMapMerger<String>()
-
-    fun mergeNodeLists(lists: List<List<Node>>?): List<Node>? {
-        val realNodeList = lists!!.filter { l -> !l.isEmpty() }
-        return merge(realNodeList.flatten())
-    }
-
-    private fun mergedListOf(list1: List<Node>?, list2: List<Node>?): List<Node> {
-        return when {
-            list1 == null -> list2 ?: listOf()
-            list2 == null -> list1
-            else -> list1.union(list2).toList()
-        }
-    }
-
-    fun merge(n1: Node, n2: Node): Node {
+    /**
+     * merge nodes, ignoring children
+     */
+    fun merge(vararg nodes: Node): Node {
         return Node(
-                n1.name,
-                n1.type,
-                nullableMapMerger.merge(n1.attributes, n2.attributes),
-                mergeLink(n1.link, n2.link),
-                merge(mergedListOf(n1.children, n2.children)))
+                createName(nodes),
+                createType(nodes),
+                createAttributes(nodes),
+                createLink(nodes))
     }
 
-    private fun  mergeLink(link1: String?, link2: String?): String? {
-        return when {
-            link1 == link2 -> link1
-            link1 == null -> link2
-            link2 == null -> link1
-            else -> null
-        }
-    }
+    private fun createLink(nodes: Array<out Node>) = nodes.map { it.link }.filter { it != null && !it.isBlank() }.firstOrNull()
 
-    private fun areSameNodes(n1: Node, n2: Node): Boolean {
-        return n1.name == n2.name
-    }
+    private fun createAttributes(nodes: Array<out Node>) = nodes.map { it.attributes }.filterNotNull().reduce { acc, mutableMap -> acc.plus(mutableMap) }.orEmpty()
 
-    fun merge(list: List<Node>): List<Node>? {
-        // precondition:
-        if (list == null || list.size <= 1) {
-            return list
-        }
+    private fun createType(nodes: Array<out Node>) = nodes.map { it.type }.first()
 
-        /* algorithm:
-            1. Sort given list
-            2. Check successive nodes for equal id, merge if necessary
-            3. Add to merged list
-         */
-        val mergedList = mutableSetOf<Node>()
-        val listWithDuplicates = list.toMutableList()
-        listWithDuplicates.sortBy { t -> t.name }
+    private fun createName(nodes: Array<out Node>) = nodes.map { it.name }.first()
 
-        var nextNode = listWithDuplicates.removeAt(0)
-        while (!listWithDuplicates.isEmpty()) {
-            val actualNode = nextNode
-            nextNode = listWithDuplicates.removeAt(0)
-            if (areSameNodes(actualNode, nextNode)) {
-                nextNode = merge(actualNode, nextNode)
-
-            } else {
-                mergedList.add(actualNode)
-            }
-        }
-        mergedList.add(nextNode)
-        return mergedList.toList()
+    /**
+     * merge nodes using mergerStrategy for children
+     */
+    fun merge(mergerStrategy: NodeMergerStrategy, vararg nodes: Node): Node {
+        val node = merge(*nodes)
+        node.children.addAll(mergerStrategy.mergeNodeLists(nodes.map { it.children }))
+        return node
     }
 
 }

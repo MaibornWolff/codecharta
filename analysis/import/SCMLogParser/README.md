@@ -8,7 +8,7 @@ Generates visualisation data from repository (Git or SVN) logs. It supports the 
 | `weeks_with_commits` | weeks with commits |
 | `number_of_authors`  | number of authors with commits |
 
-Additionally it saves the names of authors.
+Additionally it saves the names of authors when the --a flag is set.
 
 ## Usage
 
@@ -21,6 +21,6 @@ The generated logs must be in UTF-8 encoding.
 
 ### Executing the SCMLogParser
 
-> `ccsh scmlogparser <log file> [--git|--svn] [<output file>]`
+> `ccsh scmlogparser <log file> [--git|--svn] [--a] [<output file>]`
 
 The result is written as JSON to standard out or into the specified output file.

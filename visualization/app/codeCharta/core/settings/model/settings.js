@@ -11,10 +11,14 @@ export class Settings {
      * @param {string} heightMetric
      * @param {string} colorMetric
      * @param {boolean} deltas
-     * @param {boolean} grid
      * @param {Number} amountOfTopLabels
+     * @param {Scale} scaling
+     * @param {Scale} camera
+     * @param {Number} margin
+     * @param {STATISTIC_OPS} operation
      */
-    constructor(map, neutralColorRange, areaMetric, heightMetric, colorMetric, deltas, grid, amountOfTopLabels) {
+    constructor(map, neutralColorRange, areaMetric, heightMetric, colorMetric, deltas, amountOfTopLabels, scaling,
+                 camera, margin, operation) {
 
         /**
          * currently selected map
@@ -53,18 +57,40 @@ export class Settings {
         this.deltas = deltas;
 
         /**
-         * grid flag
-         * @type {boolean}
+         * number of highest buildings with labels
+         * @type {Number}
          */
-        this.grid = grid;
-
         this.amountOfTopLabels = amountOfTopLabels;
+
+        /**
+         * scaling settings
+         * @type {Scale}
+         */
+        this.scaling = scaling;
+
+        /**
+         * camera position
+         * @type {Scale}
+         */
+        this.camera = camera;
+
+        /**
+         * margin between buildings
+         * @type {number}
+         */
+        this.margin = margin;
+
+        /**
+         * statistical operation to be applied in the set of maps to get map
+         * @type {STATISTIC_OPS}
+         */
+        this.operation = operation;
 
     }
 
     /**
      * Imports the given settings values without replacing this object with the given one.
-     * @param settings given settings
+     * @param {Settings} settings given settings
      */
     importSettingValues(settings){
         this.map = settings.map;
@@ -73,8 +99,11 @@ export class Settings {
         this.heightMetric = settings.heightMetric;
         this.colorMetric = settings.colorMetric;
         this.deltas = settings.deltas;
-        this.grid = settings.grid;
         this.amountOfTopLabels = settings.amountOfTopLabels;
+        this.scaling = settings.scaling;
+        this.camera = settings.camera;
+        this.margin = settings.margin;
+        this.operation = settings.operation;
     }
 
 }

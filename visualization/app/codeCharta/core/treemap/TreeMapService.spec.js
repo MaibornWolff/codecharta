@@ -171,7 +171,7 @@ describe("app.codeCharta.core.treemap.treemapService", function() {
                 },
                 x1: 10,
                 x0: 5,
-                y1: 15,
+                y1: 2,
                 y0: 5,
                 isLeaf: true,
                 depth: 2
@@ -179,16 +179,16 @@ describe("app.codeCharta.core.treemap.treemapService", function() {
 
             let heightScale = 0.5;
 
-            treeMapService.transformNode(node, "somekey", 15, heightScale);
+            treeMapService.transformNode(node, "somekey", heightScale, 2);
 
             // expect measures
             expect(node.width).to.equal(5);
             expect(node.height).to.equal(10);
-            expect(node.length).to.equal(10);
+            expect(node.length).to.equal(1);
 
             // expect new z values
-            expect(node.z0).to.equal(30);
-            expect(node.z1).to.equal(40);
+            expect(node.z0).to.equal(4);
+            expect(node.z1).to.equal(14);
 
             // expect node.data properties to be pushed to node
             expect(node.attributes["somekey"]).to.equal(20);
@@ -212,13 +212,13 @@ describe("app.codeCharta.core.treemap.treemapService", function() {
                 },
                 x1: 10,
                 x0: 5,
-                y1: 15,
+                y1: 2,
                 y0: 5,
                 isLeaf: true,
                 depth: 2
             };
 
-            treeMapService.transformNode(node, "someinvalidkey", -15, 1);
+            treeMapService.transformNode(node, "someinvalidkey",1, 2);
 
             //TODO what should really happen ?
 
@@ -235,15 +235,15 @@ describe("app.codeCharta.core.treemap.treemapService", function() {
                 },
                 x1: 10,
                 x0: 5,
-                y1: 15,
+                y1: 2,
                 y0: 5,
                 isLeaf: false,
                 depth: 2
             };
 
-            treeMapService.transformNode(node, "somekey", 15, 1);
+            treeMapService.transformNode(node, "somekey", 1, 2);
 
-            expect(node.height).to.equal(15)
+            expect(node.height).to.equal(2);
 
         });
 
@@ -258,13 +258,13 @@ describe("app.codeCharta.core.treemap.treemapService", function() {
                 },
                 x1: 10,
                 x0: 5,
-                y1: 15,
+                y1: 2,
                 y0: 5,
                 isLeaf: true,
                 depth: 2
             };
 
-            treeMapService.transformNode(node, "someinvalidkey", 15, 1);
+            treeMapService.transformNode(node, "someinvalidkey", 1, 2);
 
             //TODO what should really happen ?
 

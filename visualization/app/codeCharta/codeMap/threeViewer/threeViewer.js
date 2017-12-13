@@ -6,10 +6,11 @@ import {ThreeCameraService} from "./threeCameraService.js";
 import {ThreeOrbitControlsService} from "./threeOrbitControlsService.js";
 import {ThreeRendererService} from "./threeRendererService.js";
 import {ThreeUpdateCycleService} from "./threeUpdateCycleService.js";
+import "../../core/settings/settings.js";
 
 let id = "app.codeCharta.codeMap.threeViewer";
 
-angular.module(id, []);
+angular.module(id, ["app.codeCharta.core.settings"]);
 
 angular.module(id).service(
     "threeViewerService",

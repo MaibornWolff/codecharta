@@ -36,7 +36,7 @@ public class LogParserTest {
     @Test
     public void logParserSVNGoldenMasterTest() throws Exception {
         // given
-        LogParser svnLogParser = new LogParser(new SVNLogParserStrategy());
+        LogParser svnLogParser = new LogParser(new SVNLogParserStrategy(), true);
         InputStreamReader ccjsonReader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(EXPECTED_SVN_CC_JSON));
         Project expectedProject = ProjectDeserializer.deserializeProject(ccjsonReader);
         URL resource = this.getClass().getClassLoader().getResource(SVN_LOG);
@@ -54,7 +54,7 @@ public class LogParserTest {
     @Test
     public void logParserGitGoldenMasterTest() throws Exception {
         // given
-        LogParser gitLogParser = new LogParser(new GitLogParserStrategy());
+        LogParser gitLogParser = new LogParser(new GitLogParserStrategy(), true);
         InputStreamReader ccjsonReader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(EXPECTED_GIT_CC_JSON));
         Project expectedProject = ProjectDeserializer.deserializeProject(ccjsonReader);
         URL resource = this.getClass().getClassLoader().getResource(GIT_LOG);
@@ -83,7 +83,7 @@ public class LogParserTest {
         when(parserStrategy.parseAuthor(any())).thenReturn(Optional.empty());
         when(parserStrategy.parseDate(any())).thenReturn(Optional.of(LocalDateTime.now()));
         when(parserStrategy.parseFilenames(any())).thenReturn(Collections.emptyList());
-        LogParser logParser = new LogParser(parserStrategy);
+        LogParser logParser = new LogParser(parserStrategy, true);
 
         // when & then
         assertThatThrownBy(() -> logParser.parseCommit(Collections.emptyList())).isInstanceOf(RuntimeException.class);
@@ -96,7 +96,7 @@ public class LogParserTest {
         when(parserStrategy.parseAuthor(any())).thenReturn(Optional.of("An Author"));
         when(parserStrategy.parseDate(any())).thenReturn(Optional.empty());
         when(parserStrategy.parseFilenames(any())).thenReturn(Collections.emptyList());
-        LogParser logParser = new LogParser(parserStrategy);
+        LogParser logParser = new LogParser(parserStrategy, true);
 
         // when & then
         assertThatThrownBy(() -> logParser.parseCommit(Collections.emptyList())).isInstanceOf(RuntimeException.class);
@@ -113,7 +113,7 @@ public class LogParserTest {
         when(parserStrategy.parseAuthor(input)).thenReturn(Optional.of(author));
         when(parserStrategy.parseDate(input)).thenReturn(Optional.of(commitDate));
         when(parserStrategy.parseFilenames(input)).thenReturn(filenames);
-        LogParser logParser = new LogParser(parserStrategy);
+        LogParser logParser = new LogParser(parserStrategy, true);
 
         // when
         Commit commit = logParser.parseCommit(input);
