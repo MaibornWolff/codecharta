@@ -42,7 +42,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class SonarResourceToProjectConverterTest {
-    private static final String PROJECT_NAME = "test project";
+    private static final String PROJECT_NAME = "componentShouldBeInsertedAccordingToComponentPath project";
 
     private static SonarResource createEmptyProjectResource() {
         return new SonarResource(ImmutableList.of(), "", PROJECT_NAME, Scope.PRJ, Qualifier.TRK, "");

@@ -27,5 +27,5 @@
   "statements_at_level_7": "Statements in nesting level 7",
   "statements_at_level_8": "Statements in nesting level 8",
   "statements_at_level_9": "Statements in nesting level 9",
-  "Default": "rloc/mcc/mcc with color range (20,40) \n rloc: _rloc_ \n mcc: _mcc_"
+  "rloc/mcc/mcc(20,40)": "rloc/mcc/mcc with color range (20,40) \n rloc: _rloc_ \n mcc: _mcc_"
 }

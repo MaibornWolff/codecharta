@@ -14,23 +14,25 @@ public class SonarMeasuresAPIImporter {
     private final SonarMetricsAPIDatasource metricsDS;
     private final SonarCodeURLLinker sonarCodeURLLinker;
     private final MetricNameTranslator translator;
+    private final boolean usePath;
 
-    public SonarMeasuresAPIImporter(SonarMeasuresAPIDatasource measuresDS, SonarMetricsAPIDatasource metricsDS){
-        this(measuresDS, metricsDS, SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL);
+    public SonarMeasuresAPIImporter(SonarMeasuresAPIDatasource measuresDS, SonarMetricsAPIDatasource metricsDS) {
+        this(measuresDS, metricsDS, SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL, false);
     }
 
-    public SonarMeasuresAPIImporter(SonarMeasuresAPIDatasource measuresDS, SonarMetricsAPIDatasource metricsDS, SonarCodeURLLinker sonarCodeURLLinker, MetricNameTranslator translator) {
+    public SonarMeasuresAPIImporter(SonarMeasuresAPIDatasource measuresDS, SonarMetricsAPIDatasource metricsDS, SonarCodeURLLinker sonarCodeURLLinker, MetricNameTranslator translator, boolean usePath) {
         this.measuresDS = measuresDS;
         this.metricsDS = metricsDS;
         this.sonarCodeURLLinker = sonarCodeURLLinker;
         this.translator = translator;
+        this.usePath = usePath;
     }
 
-    public Project getProjectFromMeasureAPI(String name, List<String> metrics) {
+    public Project getProjectFromMeasureAPI(String projectKey, String projectName, List<String> metrics) {
         List<String> metricsList = getMetricList(metrics);
-        ComponentMap componentMap = measuresDS.getComponentMap(metricsList);
+        ComponentMap componentMap = measuresDS.getComponentMap(projectKey, metricsList);
 
-        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter(name, sonarCodeURLLinker, translator);
+        SonarComponentProjectAdapter project = new SonarComponentProjectAdapter(projectName, sonarCodeURLLinker, translator, usePath);
         project.addComponentMapsAsNodes(componentMap);
 
         return project;

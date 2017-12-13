@@ -16,52 +16,38 @@ import java.util.stream.Stream;
 public class SCMLogParser {
 
     public static void main(String[] args) throws IOException {
-        if (args.length >= 1) {
-            if (args[0].equals("-h") || args[0].equals("--help")) {
-                showHelpAndTerminate();
-            }
-        }
-        if (args.length >= 2) {
-            String pathToLog = args[0];
-            String gitOrSvn = args[1];
+        SCMLogParserParameter callParameter = new SCMLogParserParameter(args);
 
-            Project project = parseDataFromLog(pathToLog, gitOrSvn);
-            if (args.length >= 3) {
-                ProjectSerializer.serializeProjectAndWriteToFile(project, args[2]);
+        if (callParameter.isHelp() || callParameter.getFiles().size() != 1) {
+            callParameter.printUsage();
+        } else {
+            String pathToLog = callParameter.getFiles().get(0);
+            SCMLogParserParameter.SCM gitOrSvn = callParameter.getSCM();
+            boolean addAuthor = callParameter.isAddAuthor();
+            boolean containsAuthors = false;
+            String outputFile = callParameter.getOutputFile();
+
+            Project project = parseDataFromLog(pathToLog, gitOrSvn, addAuthor);
+            if (outputFile != null && !outputFile.isEmpty()) {
+                ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile);
             } else {
                 ProjectSerializer.serializeProject(project, new OutputStreamWriter(System.out));
             }
-        } else {
-            showErrorAndTerminate();
         }
     }
 
-    private static Project parseDataFromLog(String pathToLog, String gitOrSvn) throws IOException {
+    private static Project parseDataFromLog(String pathToLog, SCMLogParserParameter.SCM scm, boolean containsAuthors) throws IOException {
         LogParserStrategy parserStrategy = null;
-        switch (gitOrSvn) {
-            case "--git":
+        switch (scm) {
+            default:
+            case GIT:
                 parserStrategy = new GitLogParserStrategy();
                 break;
-            case "--svn":
+            case SVN:
                 parserStrategy = new SVNLogParserStrategy();
                 break;
-            default:
-                showErrorAndTerminate();
         }
         Stream<String> lines = Files.lines(Paths.get(pathToLog));
-        return new LogParser(parserStrategy).parse(lines);
+        return new LogParser(parserStrategy, containsAuthors).parse(lines);
     }
-
-    private static void showErrorAndTerminate() {
-        System.out.println("Invalid arguments!\n");
-        showHelpAndTerminate();
-    }
-
-    private static void showHelpAndTerminate() {
-        System.out.println("Please use the following syntax\n\"SCMLogParser-x.x.jar <pathToLogFile> --git/--svn\" [<pathToOutputfile>]\n" +
-                "The log file must have been created by using \"svn log --verbose\" or \"git log --name-status\"\n" +
-                "If no output file was specified, the output will be piped to standard out");
-        System.exit(0);
-    }
-
 }

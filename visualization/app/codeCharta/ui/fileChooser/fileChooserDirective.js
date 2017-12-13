@@ -16,13 +16,15 @@ class FileChooserDirective{
          *
          * @type {string}
          */
-        this.templateUrl = "./fileChooser.html";
+        this.template = require("./fileChooser.html");
 
         /**
          *
          * @type {string}
          */
         this.restrict = "E";
+
+        this.scope = {};
 
         /**
          *

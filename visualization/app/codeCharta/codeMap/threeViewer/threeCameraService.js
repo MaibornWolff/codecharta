@@ -11,28 +11,39 @@ class ThreeCameraService {
      * @constructor
      * @external {PerspectiveCamera} https://threejs.org/docs/#Reference/Cameras/PerspectiveCamera
      */
-    constructor() {
+    constructor($rootScope) {
         /**
          * @type {PerspectiveCamera}
          */
         this.camera = {};
+
+        let ctx = this;
+
+        $rootScope.$on("settings-changed", (event,settings) => {
+            ctx.setPosition(settings.camera.x, settings.camera.y, settings.camera.z);
+        });
     }
 
     /**
      * Inits the camera with a specific container width and height
-     * @param containerWidth initial width
-     * @param containerHeight initial height
+     * @param {number} containerWidth initial width
+     * @param {number} containerHeight initial height
+     * @param {number} x camera position component x
+     * @param {number} y camera position component y
+     * @param {number} z camera position component z
      */
-    init(containerWidth, containerHeight) {
-        var cameraHeight = 300;
-        var cameraDistance = 1000;
+    init(containerWidth, containerHeight, x, y, z) {
         var VIEW_ANGLE = 45;
         var ASPECT = containerWidth / containerHeight;
-        var NEAR = 100;
+        var NEAR = 1;
         var FAR = 20000;
 
         this.camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-        this.camera.position.set(0, cameraHeight, cameraDistance);
+        this.setPosition(x, y, z);
+    }
+
+    setPosition(x, y, z) {
+        this.camera.position.set(x,y,z);
     }
 
 }

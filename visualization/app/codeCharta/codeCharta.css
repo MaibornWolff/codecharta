@@ -114,8 +114,27 @@ html, body {
     transform: rotate(90deg);
 }
 
+#mapButton {
+    position: absolute;
+    top: 21em;
+    left: -2.3em;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
 #revisionChooser {
     position: fixed;
     top: 18.5em;
-    left: -400px;
+    left: -500px;
+}
+
+.rzslider .rz-pointer, .rzslider .rz-selection {
+    background: #26a69a !important;
+}
+
+.rzslider .rz-bar {
+    background: rgb(196,196,196);
 }

@@ -1,21 +1,49 @@
 require("./codeMap.js");
+import {CodeMap} from "../core/data/model/codeMap";
 
 /**
  * @test {CodeMapService}
  */
-describe("app.codeCharta.codeMap.codeMapService", function() {
+xdescribe("app.codeCharta.codeMap.codeMapService", function() {
 
-    var codeMapService, $scope, sandbox, mesh;
+    let codeMapService, $scope, sandbox, mesh, data;
 
     beforeEach(angular.mock.module("app.codeCharta.codeMap"));
 
     beforeEach(angular.mock.inject((_codeMapService_, _$rootScope_)=>{
         codeMapService = _codeMapService_;
         $scope = _$rootScope_;
-        var geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
-        var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+        const geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
+        const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
         mesh = new THREE.Mesh( geometry, material );
         codeMapService.addRoot();
+        data = new CodeMap("file", "project", {
+            "name": "root",
+            "attributes": {},
+            "children": [
+                {
+                    "name": "big leaf",
+                    "attributes": {"rloc": 100, "functions": 10, "mcc": 1},
+                    "link": "http://www.google.de"
+                },
+                {
+                    "name": "Parent Leaf",
+                    "attributes": {},
+                    "children": [
+                        {
+                            "name": "small leaf",
+                            "attributes": {"rloc": 30, "functions": 100, "mcc": 100},
+                            "children": []
+                        },
+                        {
+                            "name": "other small leaf",
+                            "attributes": {"rloc": 70, "functions": 1000, "mcc": 10},
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        });
     }));
 
     beforeEach(()=>{
@@ -31,39 +59,9 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
      */
     it("drawMap should showLabels for the highest building", ()=>{
 
-         var data = {
-          "name": "root",
-          "attributes": {},
-          "children": [
-            {
-              "name": "big leaf",
-              "attributes": {"rloc": 100, "functions": 10, "mcc": 1},
-              "link": "http://www.google.de"
-            },
-            {
-              "name": "Parent Leaf",
-              "attributes": {},
-              "children": [
-                {
-                  "name": "small leaf",
-                  "attributes": {"rloc": 30, "functions": 100, "mcc": 100},
-                  "children": []
-                },
-                {
-                  "name": "other small leaf",
-                  "attributes": {"rloc": 70, "functions": 1000, "mcc": 10},
-                  "children": []
-                }
-              ]
-            }
-          ]
-        };
-
-        var tmp = codeMapService.addNode;
-
-        var smallSpy = sinon.spy();
-        var otherSpy = sinon.spy();
-        var elseSpy = sinon.spy();
+        const smallSpy = sinon.spy();
+        const otherSpy = sinon.spy();
+        const elseSpy = sinon.spy();
 
         codeMapService.addNode = (node, heightKey, showLabel) => {
             if(node.name === "small leaf"){
@@ -78,7 +76,7 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
            }
         };
 
-        codeMapService.drawMap(data, 2, 2, "rloc", "mcc", "mcc", "colorConfig", 1);
+        codeMapService.drawMap(data, 2, 2, "rloc", "mcc", "mcc", "colorConfig", 1, false);
 
         expect(smallSpy.calledOnce);
         expect(otherSpy.calledOnce);
@@ -149,23 +147,20 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
     /**
      * @test {CodeMapService#drawMap}
      */
-    it("draw map should clear the scene, add a root, call the treemap service, call addNode for every node, center the map, draw the scene and color the map, grid is deactivated", ()=>{
+    it("draw map should clear the scene, add a root, call the treemap service, call addNode for every node, center the map, draw the scene and color the map", ()=>{
 
         codeMapService.clearScene = sandbox.spy();
         codeMapService.addRoot = sandbox.spy();
-        codeMapService.addGrid = sandbox.spy();
         codeMapService.treemapService.createTreemapNodes = sandbox.stub().returns([{},{},{}]);
         codeMapService.addNode = sandbox.spy();
         codeMapService.centerMap = sandbox.spy();
         codeMapService.drawScene = sandbox.spy();
         codeMapService.colorMap = sandbox.spy();
-        codeMapService.settingsService.settings.grid = false;
 
         codeMapService.drawMap("map", "s", "p", "areaKey", "heightKey", "colorKey", "colorConfig");
 
         expect(codeMapService.clearScene.calledOnce);
         expect(codeMapService.addRoot.calledOnce);
-        expect(!codeMapService.addGrid.called);
         expect(codeMapService.treemapService.createTreemapNodes.calledOnce);
         expect(codeMapService.addNode.calledThrice);
         expect(codeMapService.centerMap.calledOnce);
@@ -177,23 +172,20 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
     /**
      * @test {CodeMapService#drawMap}
      */
-    it("draw map should clear the scene, add a root, call the treemap service, call addNode for every node, center the map, draw the scene and color the map, grid is activated", ()=>{
+    it("draw map should clear the scene, add a root, call the treemap service, call addNode for every node, center the map, draw the scene and color the map", ()=>{
 
         codeMapService.clearScene = sandbox.spy();
         codeMapService.addRoot = sandbox.spy();
-        codeMapService.addGrid = sandbox.spy();
         codeMapService.treemapService.createTreemapNodes = sandbox.stub().returns([{},{},{}]);
         codeMapService.addNode = sandbox.spy();
         codeMapService.centerMap = sandbox.spy();
         codeMapService.drawScene = sandbox.spy();
         codeMapService.colorMap = sandbox.spy();
-        codeMapService.settingsService.settings.grid = true;
 
         codeMapService.drawMap("map", "s", "p", "areaKey", "heightKey", "colorKey", "colorConfig");
 
         expect(codeMapService.clearScene.calledOnce);
         expect(codeMapService.addRoot.calledOnce);
-        expect(codeMapService.addGrid.calledOnce);
         expect(codeMapService.treemapService.createTreemapNodes.calledOnce);
         expect(codeMapService.addNode.calledThrice);
         expect(codeMapService.centerMap.calledOnce);
@@ -205,21 +197,24 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
     /**
      * @test {CodeMapService#applySettings}
      */
-    it("applySettings should call drawFromData when all variables are set", ()=>{
+    it("applySettings should call drawFromData and scaleTo when all variables are set", ()=>{
 
         codeMapService.drawFromData = sandbox.spy();
+        codeMapService.scaleTo = sandbox.spy();
 
-        var s = {
+        const s = {
             areaMetric:1,
             heightMetric:1,
             colorMetric:1,
             map: {},
-            range: {}
+            range: {},
+            scale: {x:1,y:1,z:1}
         };
 
         codeMapService.applySettings(s);
 
         expect(codeMapService.drawFromData.calledOnce);
+        expect(codeMapService.scaleTo.calledOnce);
 
     });
 
@@ -245,7 +240,7 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
      * @test {CodeMapService#getTransformedMesh}
      */
     it("getTransformedMesh should create correct mesh", ()=>{
-        var mesh = codeMapService.getTransformedMesh(1,1,1,0,0,0,new THREE.MeshLambertMaterial({color: 0x69AE40}), "something");
+        const mesh = codeMapService.getTransformedMesh(1,1,1,0,0,0,new THREE.MeshLambertMaterial({color: 0x69AE40}), "something");
         expect(mesh.node).to.equal("something");
         expect(mesh.scale.x).to.equal(1);
     });
@@ -257,7 +252,7 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
 
         codeMapService.drawFromData = sandbox.spy();
 
-        var s = {
+        const s = {
             areaMetric:1,
             heightMetric:1,
             colorMetric:1,
@@ -359,14 +354,33 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
     /**
      * @test {CodeMapService#scaleTo}
      */
-    it("scaleTo should scale root if available", ()=>{
-        codeMapService.root = {
+    it("scaleTo should scale buildings if available", ()=>{
+        codeMapService.drawMap(data, 2, 2, "rloc", "mcc", "mcc", "colorConfig", 0, false);
+        codeMapService.addLabel = sandbox.spy();
+
+        codeMapService.buildings = {
             scale: {
                 set: sandbox.spy()
             }
         };
         codeMapService.scaleTo(1,2,3);
-        expect(codeMapService.root.scale.set.calledOnce);
+        expect(codeMapService.buildings.scale.set.calledOnce);
+    });
+
+    /**
+     * @test {CodeMapService#scaleTo}
+     */
+    it("scaleTo should scale floors if available", ()=>{
+        codeMapService.drawMap(data, 2, 2, "rloc", "mcc", "mcc", "colorConfig", 0, false);
+        codeMapService.addLabel = sandbox.spy();
+
+        codeMapService.floors = {
+            scale: {
+                set: sandbox.spy()
+            }
+        };
+        codeMapService.scaleTo(1,2,3);
+        expect(codeMapService.floors.scale.set.calledOnce);
     });
 
     /**
@@ -385,6 +399,52 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
         codeMapService.addBuilding = sandbox.spy();
         codeMapService.addNode({isLeaf: true}, "heightKey");
         expect(codeMapService.addBuilding.calledOnce);
+    });
+
+    /**
+     * @test {CodeMapService#repositionLabelsAndConnectors}
+     */
+    it("should change values correctly", ()=>{
+
+        codeMapService.labels.children = [
+            {
+                position: {
+                    x:2,
+                    y:3,
+                    z:4
+                },
+                labelBuildingConnector: {
+                    geometry: {
+                        vertices: [
+                            {
+                                x:5,
+                                y:6,
+                                z:7
+                            },
+                            {
+                                x:8,
+                                y:9,
+                                z:10
+                            }
+                        ]
+                    }
+                }
+            }
+        ];
+
+        codeMapService.repositionLabelsAndConnectors(2,3,4);
+        expect(codeMapService.labels.children[0].position.x).to.be.equal(4);
+        expect(codeMapService.labels.children[0].position.y).to.be.equal(9);
+        expect(codeMapService.labels.children[0].position.z).to.be.equal(16);
+
+        expect(codeMapService.labels.children[0].labelBuildingConnector.geometry.vertices[0].x).to.be.equal(10);
+        expect(codeMapService.labels.children[0].labelBuildingConnector.geometry.vertices[0].y).to.be.equal(18);
+        expect(codeMapService.labels.children[0].labelBuildingConnector.geometry.vertices[0].z).to.be.equal(28);
+
+        expect(codeMapService.labels.children[0].labelBuildingConnector.geometry.vertices[1].x).to.be.equal(16);
+        expect(codeMapService.labels.children[0].labelBuildingConnector.geometry.vertices[1].y).to.be.equal(27);
+        expect(codeMapService.labels.children[0].labelBuildingConnector.geometry.vertices[1].z).to.be.equal(40);
+
     });
 
     /**
@@ -412,12 +472,13 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
 
         codeMapService.drawFromData = sandbox.spy();
 
-        var min = {
+        const min = {
             areaMetric: "area",
             heightMetric: "height",
             colorMetric: "color",
             map: {},
-            range: {}
+            range: {},
+            margin: 1
         };
 
         codeMapService.applySettings(min);
@@ -433,7 +494,7 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
 
         codeMapService.drawFromData = sandbox.spy();
 
-        var min = {
+        const min = {
             areaMetric: "area",
             colorMetric: "color",
             map: {},
@@ -443,19 +504,6 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
         codeMapService.applySettings(min);
 
         expect(codeMapService.drawFromData.called).to.equal(false);
-
-    });
-
-    /**
-     * @test {CodeMapService#addGrid}
-     */
-    it("adding a helper grid to the scene should add a group of 3 Meshes to the scene", ()=>{
-
-        codeMapService.root.add = (mesh) => {
-            expect(mesh.children.length).to.equal(3);
-        };
-
-        codeMapService.addGrid(500, 10);
 
     });
 
@@ -486,10 +534,10 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
 
         codeMapService.colorDelta(group);
 
-        var foundDelta = false;
+        let foundDelta = false;
 
         group.children.forEach((c)=>{
-            if(c.isDelta && c.originalMaterial && c.selectedMaterial && c.hoveredMaterial){ // a set originalMaterial indicates a colored cube
+            if(c.isDelta && c.originalMaterial && c.selectedMaterial){ // a set originalMaterial indicates a colored cube
                 foundDelta = true;
             }
         });
@@ -502,8 +550,8 @@ describe("app.codeCharta.codeMap.codeMapService", function() {
      * @test {CodeMapService#centerMap}
      */
     it("center map should translate root in xz plane at some point", ()=>{
-        var x = codeMapService.root.translateX = sandbox.spy();
-        var z = codeMapService.root.translateZ = sandbox.spy();
+        const x = codeMapService.root.translateX = sandbox.spy();
+        const z = codeMapService.root.translateZ = sandbox.spy();
         codeMapService.centerMap(0,0);
         expect(x.calledOnce);
         expect(z.calledOnce);

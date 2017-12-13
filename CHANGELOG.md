@@ -8,10 +8,76 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
+- scaling slider now has steps of 0.1. This allows the user to select precise values like 2.0
 
 ### Removed
 
 ### Fixed
+- Opening the same file a second time does not work #53
+- added missing require declaration
+- added glsl loader in testing environment
+
+## [1.5.1] - 2017-11-14
+### Added
+- command line parameter to toggle "authors" attribute in SCMLogParser
+
+### Changed
+
+### Removed
+
+### Fixed
+- when passing a file through the "file" parameter in the URL, the map now renders correctly
+
+## [1.5.0] - 2017-10-24
+### Added
+- experimental delta functionality
+- loading multiple maps
+- experimental margin slider
+
+### Changed
+- faster rendering
+
+### Removed
+- nwjs packages and native apps due to a bug
+
+### Fixed
+- using color metric instead of height metric for color range slider ceil
+
+## [1.4.0] - 2017-09-14
+### Added
+- Typescript support
+- Browsersync
+- added advanced merging strategy "leaf" in MergeFilter
+- advanced merging with restructuring
+
+### Changed
+- Browserify replaced with Webpack
+- Better debugging
+- Karma instead of Mocha
+
+### Removed
+
+### Fixed
+
+## [1.3.2] - 2017-08-18
+### Added
+- add slider controls for color thresholds #19
+- Added additional structuring in SonarImporter for multi-module projects
+- button to generate current url parameters
+- camera position is now a setting (e.g. in scenarios or url parameters)
+- margin slider: make it easier to find out to which package/folder a class belongs #20
+
+### Changed
+- better url parameter resolution (nested parameters are handled correctly)
+- changed hover color. Allows better distinction between hover and select
+
+### Removed
+- obsolete helper grid
+
+### Fixed
+- changing display or color settings resets scaling #18
+- scenario description #32
+- Scaling should not scale the labels #35
 
 ## [1.3.1] - 2017-07-05
 ### Added

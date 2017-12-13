@@ -47,31 +47,8 @@ public final class NodeInserter {
         // Utility Class
     }
 
-    private static final Path TRIVIAL_PATH = new Path() {
-
-        @Override
-        public boolean isSingleElement() {
-            return true;
-        }
-
-        @Override
-        public boolean isTrivial() {
-            return true;
-        }
-
-        @Override
-        public Object head() {
-            return null;
-        }
-
-        @Override
-        public Path tail() {
-            return null;
-        }
-    };
-
     /**
-     * Traverses the node tree and inserts the node as child of the element at the specified position in the tree.
+     * Inserts the node as child of the element at the specified position in the tree.
      *
      * @param project  where the node has to be inserted
      * @param position absolute path to the parent element of the node that has to be inserted
@@ -86,14 +63,14 @@ public final class NodeInserter {
     }
 
     /**
-     * Recursively traverses the node tree and inserts the node as child of the element at the specified position
+     * Inserts the node as child of the element at the specified position
      * in the sub-tree spanned by the children of the root node.
      *
      * @param root where another node should be inserted
      * @param path relative path to parent of new node in root node
      * @param node that has to be inserted
      */
-    static void insertByPath(Node root, Path path, Node node) {
+    public static void insertByPath(Node root, Path path, Node node) {
         if (path.isTrivial()) {
             if (rootContainsNodeAlready(root, node)) {
                 System.err.println("Element " + path + " already exists, skipping.");
@@ -101,17 +78,16 @@ public final class NodeInserter {
             }
             root.getChildren().add(node);
         } else {
-            String name = path.head().toString();
+            String name = path.head();
             Node folderNode = getFolderNode(root, name).orElseGet(() -> createFolderNodeAndInsertAtRoot(root, name));
             insertByPath(folderNode, path.tail(), node);
         }
     }
 
-
     private static Node createFolderNodeAndInsertAtRoot(Node root, String name) {
         Node folderNode;
         folderNode = createFolderNode(name);
-        insertByPath(root, TRIVIAL_PATH, folderNode);
+        insertByPath(root, Path.TRIVIAL, folderNode);
         return folderNode;
     }
 

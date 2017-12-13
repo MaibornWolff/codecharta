@@ -8,7 +8,7 @@ import "../core/core.js";
 import {CodeMapDirective} from "./codeMapDirective.js";
 import {CodeMapService} from "./codeMapService.js";
 import {CodeMapAssetService} from "./codeMapAssetService.js";
-import {CodeMapController} from "./codeMapController";
+import {CodeMapController} from "./codeMapController.js";
 
 angular.module("app.codeCharta.codeMap",["app.codeCharta.codeMap.threeViewer", "app.codeCharta.core"]);
 
@@ -41,10 +41,10 @@ angular.module("app.codeCharta.codeMap").factory(
                     odd: () => {return new THREE.MeshLambertMaterial({color: 0x501A1C});},
                     even: () => {return new THREE.MeshLambertMaterial({color: 0xD1A9A9});},
                     selected: () => {return new THREE.MeshLambertMaterial({color: 0xEB8319});},
-                    hovered: () => {return new THREE.MeshLambertMaterial({ color: 0xEB8319, emissive: 0x111111});},
                     default: () => {return new THREE.MeshLambertMaterial({color: 0x89ACB4});},
                     positiveDelta: () => {return new THREE.MeshLambertMaterial({color: 0x69ff40});}, //building grew -> positive delta, the change may be negative for specific metrics
-                    negativeDelta: () => {return new THREE.MeshLambertMaterial({color: 0xff0E0E});}
+                    negativeDelta: () => {return new THREE.MeshLambertMaterial({color: 0xff0E0E});},
+                    base: () => {return new THREE.MeshLambertMaterial({color: 0x666666});}
             };}
 
 );

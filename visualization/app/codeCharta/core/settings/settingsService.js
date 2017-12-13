@@ -1,7 +1,9 @@
 "use strict";
 
 import {Settings} from "./model/settings";
+import {Scale} from "./model/scale";
 import {Range} from "./model/range";
+import {STATISTIC_OPS, StatisticMapService} from "../statistic/statisticMapService";
 
 /**
  * Stores and manipulates the current settings
@@ -14,14 +16,27 @@ class SettingsService {
      * @constructor 
      * @param {UrlService} urlService 
      * @param {DataService} dataService
-     * @param {Scope} $rootScope 
+     * @param {Scope} $rootScope
+     * @param {StatisticMapService} statisticMapService;
      */
-    constructor(urlService, dataService, $rootScope) {
+    constructor(urlService, dataService, $rootScope, statisticMapService) {
 
         /**
          * @type {UrlService}
          */
         this.urlService = urlService;
+
+
+
+        /**
+         * @type {STATISTIC_OPS}
+         */
+        this.STATISTIC_OPS= STATISTIC_OPS;
+
+        /**
+         * @type {statisticMapService}
+         */
+        this.statisticMapService = statisticMapService;
 
         /**
          * @type {DataService}
@@ -39,20 +54,25 @@ class SettingsService {
         * @type {Settings}
         */
         this.settings = new Settings(
-            dataService.data.currentmap,
+            dataService.data.referenceMap,
             new Range(10,20,false),
             ctx.getMetricByIdOrLast(0, dataService.data.metrics),
             ctx.getMetricByIdOrLast(1, dataService.data.metrics),
             ctx.getMetricByIdOrLast(2, dataService.data.metrics),
             true,
-            false,
-            1
+            1,
+            new Scale(1,1,1),
+            new Scale(0,300,1000),
+            1,
+            STATISTIC_OPS.NO_OPERATIONS
         );
 
-
-
         $rootScope.$on("data-changed", (event,data) => {
-           ctx.onDataChanged(data);
+            ctx.onDataChanged(data);
+        });
+
+        $rootScope.$on("camera-changed", (event,data) => {
+            ctx.onCameraChanged(data);
         });
 
     }
@@ -65,7 +85,7 @@ class SettingsService {
      */
     onDataChanged(data) {
 
-        this.settings.map = data.currentmap;
+        this.settings.map = data.referenceMap;
 
         if(data.metrics.indexOf(this.settings.areaMetric) === -1){
             //area metric is not set or not in the new metrics and needs to be chosen
@@ -87,41 +107,105 @@ class SettingsService {
 
     }
 
+    onCameraChanged(camera) {
+        if(
+            this.settings.camera.x !== camera.position.x ||
+            this.settings.camera.y !== camera.position.y ||
+            this.settings.camera.z !== camera.position.z
+        ) {
+            this.settings.camera.x = camera.position.x;
+            this.settings.camera.y = camera.position.y;
+            this.settings.camera.z = camera.position.z;
+            // There is no component in CC which needs live updates when camera changes. Broadcasting an
+            // onSettingsChanged Event would cause big performance issues
+            // this.onSettingsChanged();
+        }
+    }
+
     /**
      * Broadcasts a settings-changed event with the new {Settings} object as a payload
      * @emits {settings-changed} on call
      */
     onSettingsChanged() {
         this.rootScope.$broadcast("settings-changed", this.settings);
-
     }
 
     /**
-     * updates the settings object according to url parameters.
+     * updates the settings object according to url parameters. url parameters are named like the accessors of the Settings object. E.g. scale.x or areaMetric
      * @emits {settings-changed} transitively on call
      */
     updateSettingsFromUrl() {
 
-        //for every property in settings...
-        for (var property in this.settings) {
+        let ctx = this;
 
-            //...that is not inherited from object...
-            if (this.settings.hasOwnProperty(property) && property !== "map") {
+        var iterateProperties = function(obj,prefix) {
+            for(var i in obj) {
+                if(obj.hasOwnProperty(i) && i !== "map" && i !== 0 && i){
 
-                //...get the query param value for the property...
-                var val = this.urlService.getParam(property);
+                    if (typeof obj[i] === "string" || obj[i] instanceof String) {
+                        //do not iterate over strings
+                    } else {
+                        iterateProperties(obj[i], i + ".");
+                    }
 
-                if (val && val.length > 0) {
+                    const res = ctx.urlService.getParam(prefix+i);
 
-                    //if it exists, set ist the settings value
-                    this.settings[property] = val;
+                    let val = parseFloat(res);
+
+                    if(isNaN(val)){
+                        val = res;
+                    }
+
+                    if (val === 0 || val) {
+                        obj[i] = val;
+                    }
+
                 }
             }
-        }
+        };
 
-        //TODO map some special keys like neutralColorRange
+        iterateProperties(this.settings, "");
+
+        this.urlUpdateDone = true;
 
         this.onSettingsChanged();
+
+    }
+
+    /**
+     * Updates query params to current settings
+     */
+    getQueryParamString() {
+
+        let ctx = this;
+
+        let result = "";
+
+        var iterateProperties = function(obj,prefix) {
+            for(var i in obj) {
+                if(obj.hasOwnProperty(i) && i !== "map" && i !== 0 && i){
+
+                    if (typeof obj[i] === "string" || obj[i] instanceof String) {
+                        //do not iterate over strings
+                    } else {
+                        iterateProperties(obj[i], i + ".");
+                    }
+
+                    if(typeof obj[i] === "object" || obj[i] instanceof Object) {
+                        //do not print objects in string
+                    } else {
+                        result += "&" + prefix + i + "=" + obj[i];
+                    }
+
+                }
+
+            }
+
+        };
+
+        iterateProperties(this.settings, "", 0);
+
+        return "?" + result.substring(1);
 
     }
 
@@ -150,6 +234,7 @@ class SettingsService {
      */
     correctSettings(settings){
         const result = settings;
+        result.map = this.settings.map; //do not change the map
         result.areaMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.areaMetric,this.getMetricByIdOrLast(0, this.dataService.data.metrics));
         result.heightMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.heightMetric, this.getMetricByIdOrLast(1, this.dataService.data.metrics));
         result.colorMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.colorMetric, this.getMetricByIdOrLast(2, this.dataService.data.metrics));
@@ -163,7 +248,6 @@ class SettingsService {
       * @param {String} defaultValue a default name in case metricName was not found
       */
     getMetricOrDefault(metricsArray, metricName, defaultValue) {
-
         let result = defaultValue;
         metricsArray.forEach((metric) => {
             if(metric + "" === metricName + ""){
