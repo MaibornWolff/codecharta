@@ -15,9 +15,9 @@ import java.util.stream.Stream;
 
 public class GitLogParserStrategy implements LogParserStrategy {
 
-    public static final String CORRESPONDING_LOG_CREATION_CMD = "git log --name-status";
+    public static final String CORRESPONDING_LOG_CREATION_CMD = "git log --name-status --no-renames";
 
-    public static final Predicate<String> GIT_COMMIT_SEPARATOR_TEST = logLine -> logLine.startsWith("commit");
+    private static final Predicate<String> GIT_COMMIT_SEPARATOR_TEST = logLine -> logLine.startsWith("commit");
     private static final String AUTHOR_ROW_INDICATOR = "Author: ";
     private static final String DATE_ROW_INDICATOR = "Date: ";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("EEE MMM d HH:mm:ss yyyy ZZZ", Locale.US);

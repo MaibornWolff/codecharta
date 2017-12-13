@@ -14,7 +14,7 @@ Additionally it saves the names of authors when the --a flag is set.
 
 ### Creating the repository log for metric generation  
 
-* Git:   `git log --name-status`
+* Git:   `git log --name-status --no-renames`
 * SVN:   `svn log --verbose`
 
 The generated logs must be in UTF-8 encoding.

@@ -24,7 +24,7 @@ enum Status {
                     .map(Status::statusLetter)
                     .collect(Collectors.toList());
 
-    private char letter;
+    private final char letter;
 
     Status(char t) {
         letter = t;
