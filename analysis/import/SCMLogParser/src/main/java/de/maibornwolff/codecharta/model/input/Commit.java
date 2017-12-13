@@ -32,7 +32,16 @@ public class Commit {
         return modifications.stream().map(Modification::getFilename).collect(Collectors.toList());
     }
 
+
+    public List<Modification> getModifications() {
+        return modifications;
+    }
+
     public LocalDateTime getCommitDate() {
         return commitDate;
+    }
+
+    public boolean isEmpty() {
+        return modifications.isEmpty();
     }
 }

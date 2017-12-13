@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.model.input;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -99,10 +98,10 @@ public class VersionControlledFileTest {
         LocalDateTime commitDateTime = LocalDateTime.of(2016, 4, 2, 12, 0);
 
         // when
-        VersionControlledFile.CalendarWeek kw = VersionControlledFile.CalendarWeek.forDateTime(commitDateTime);
+        CalendarWeek kw = CalendarWeek.forDateTime(commitDateTime);
 
         // then
-        assertThat(kw).isEqualTo(new VersionControlledFile.CalendarWeek(13, 2016));
+        assertThat(kw).isEqualTo(new CalendarWeek(13, 2016));
     }
 
     @Test
@@ -111,10 +110,10 @@ public class VersionControlledFileTest {
         LocalDateTime commitDateTime = LocalDateTime.of(2016, 1, 3, 12, 0);
 
         // when
-        VersionControlledFile.CalendarWeek kw = VersionControlledFile.CalendarWeek.forDateTime(commitDateTime);
+        CalendarWeek kw = CalendarWeek.forDateTime(commitDateTime);
 
         // then
-        assertThat(kw).isEqualTo(new VersionControlledFile.CalendarWeek(53, 2015));
+        assertThat(kw).isEqualTo(new CalendarWeek(53, 2015));
     }
 
     @Test
@@ -123,10 +122,10 @@ public class VersionControlledFileTest {
         LocalDateTime commitDateTime = LocalDateTime.of(2018, 12, 31, 12, 0);
 
         // when
-        VersionControlledFile.CalendarWeek kw = VersionControlledFile.CalendarWeek.forDateTime(commitDateTime);
+        CalendarWeek kw = CalendarWeek.forDateTime(commitDateTime);
 
         // then
-        assertThat(kw).isEqualTo(new VersionControlledFile.CalendarWeek(1, 2019));
+        assertThat(kw).isEqualTo(new CalendarWeek(1, 2019));
     }
 
 }
