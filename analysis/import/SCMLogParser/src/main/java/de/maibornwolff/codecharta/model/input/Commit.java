@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.model.input;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Commit {
@@ -35,6 +36,11 @@ public class Commit {
 
     public List<Modification> getModifications() {
         return modifications;
+    }
+
+    public Optional<Modification> getModification(String filename) {
+        // we assume that in one commit there is only one modification for a file.
+        return modifications.stream().filter(m -> filename.equals(m.getFilename())).findFirst();
     }
 
     public LocalDateTime getCommitDate() {
