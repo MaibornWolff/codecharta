@@ -1,29 +1,43 @@
 package de.maibornwolff.codecharta.model.input;
 
-import java.util.HashSet;
-import java.util.Set;
+import de.maibornwolff.codecharta.model.input.metrics.ModificationMetric;
+import de.maibornwolff.codecharta.model.input.metrics.NumberOfOccurencesInCommits;
+
+import java.util.*;
 
 public class VersionControlledFile {
 
     private final String filename;
-
-    private int numberOfOccurrencesInCommits;
-
     private final Set<CalendarWeek> weeksWithCommits;
-
     private final Set<String> authors;
+    private final List<ModificationMetric> metrics = createModificationMetrics();
 
     public VersionControlledFile(String filename) {
         this.filename = filename;
-        this.numberOfOccurrencesInCommits = 0;
         this.authors = new HashSet<>();
         this.weeksWithCommits = new HashSet<>();
     }
 
+    private static List<ModificationMetric> createModificationMetrics() {
+        return Arrays.asList(
+                new NumberOfOccurencesInCommits()
+        );
+    }
+
     public void registerCommit(Commit commit) {
-        numberOfOccurrencesInCommits++;
+        visitModificationMetrics(commit.getModification(filename));
+        visitCommitMetrics(commit);
+    }
+
+    private void visitCommitMetrics(Commit commit) {
         authors.add(commit.getAuthor());
         weeksWithCommits.add(CalendarWeek.forDateTime(commit.getCommitDate()));
+    }
+
+    private void visitModificationMetrics(Optional<Modification> modification) {
+        if (modification.isPresent()) {
+            metrics.forEach(m -> m.registerModification(modification.get()));
+        }
     }
 
     public String getFilename() {
@@ -31,7 +45,9 @@ public class VersionControlledFile {
     }
 
     public int getNumberOfOccurrencesInCommits() {
-        return numberOfOccurrencesInCommits;
+        return metrics.stream()
+                .filter(m -> m.metricName().equals("number_of_commits")).findAny().get()
+                .value().intValue();
     }
 
     public Set<String> getAuthors() {
