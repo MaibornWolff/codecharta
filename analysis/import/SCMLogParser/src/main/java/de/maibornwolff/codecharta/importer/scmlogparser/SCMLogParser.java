@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.importer.scmlogparser;
 
-import de.maibornwolff.codecharta.importer.scmlogparser.parser.GitLogParserStrategy;
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParser;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
-import de.maibornwolff.codecharta.importer.scmlogparser.parser.SVNLogParserStrategy;
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy;
 import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.serialization.ProjectSerializer;
 

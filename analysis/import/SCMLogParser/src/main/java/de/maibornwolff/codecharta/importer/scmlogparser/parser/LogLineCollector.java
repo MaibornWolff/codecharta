@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-class LogLineCollector {
+public class LogLineCollector {
 
     private final Predicate<String> isCommitSeparator;
 
@@ -14,7 +14,7 @@ class LogLineCollector {
         this.isCommitSeparator = isCommitSeparator;
     }
 
-    static Collector<String, ?, Stream<List<String>>> create(Predicate<String> commitSeparatorTest) {
+    public static Collector<String, ?, Stream<List<String>>> create(Predicate<String> commitSeparatorTest) {
         LogLineCollector collector = new LogLineCollector(commitSeparatorTest);
         return Collector.of(ArrayList::new, collector::collectLogLine, collector::combineForParallelExecution, collector::removeIncompleteCommits);
     }
