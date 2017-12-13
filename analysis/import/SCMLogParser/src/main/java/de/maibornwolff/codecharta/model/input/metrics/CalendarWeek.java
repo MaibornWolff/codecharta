@@ -1,11 +1,11 @@
-package de.maibornwolff.codecharta.model.input;
+package de.maibornwolff.codecharta.model.input.metrics;
 
 import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
 
 class CalendarWeek {
-    final int week;
-    final int year;
+    private final int week;
+    private final int year;
 
     public CalendarWeek(int week, int year) {
         this.week = week;

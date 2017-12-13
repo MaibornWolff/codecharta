@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 /**
  * SVN Modification Status
- *
+ * <p>
  * see "action" char at http://svn.apache.org/viewvc/subversion/trunk/subversion/include/svn_types.h?view=markup&pathrev=1751399#l835
  */
 enum Status {

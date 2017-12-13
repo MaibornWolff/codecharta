@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 /**
  * Git Modification Status
- *
+ * <p>
  * see "diff-raw status letters" at https://github.com/git/git/blob/35f6318d44379452d8d33e880d8df0267b4a0cd0/diff.h#L326
  */
 enum Status {

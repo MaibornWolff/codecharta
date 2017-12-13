@@ -7,13 +7,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.maibornwolff.codecharta.model.input.metrics.NumberOfAuthors.NUMBER_OF_AUTHORS;
+import static de.maibornwolff.codecharta.model.input.metrics.NumberOfOccurencesInCommits.NUMBER_OF_COMMITS;
+import static de.maibornwolff.codecharta.model.input.metrics.WeeksWithCommit.WEEKS_WITH_COMMITS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class VersionControlledFileTest {
+
     private static List<Modification> modificationsByFilename(String... filenames) {
         return Stream.of(filenames).map(Modification::new).collect(Collectors.toList());
     }
-
 
     @Test
     public void versionControlledFileHoldsInitallyOnlyTheFilename() throws Exception {
@@ -26,9 +29,10 @@ public class VersionControlledFileTest {
         // then
         assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
         assertThat(versionControlledFile.getAuthors()).isEmpty();
-        assertThat(versionControlledFile.getNumberOfAuthors()).isEqualTo(0);
-        assertThat(versionControlledFile.getNumberOfOccurrencesInCommits()).isEqualTo(0);
+        assertThat(versionControlledFile.getMetricValue(NUMBER_OF_AUTHORS)).isEqualTo(0);
+        assertThat(versionControlledFile.getMetricValue(NUMBER_OF_COMMITS)).isEqualTo(0);
     }
+
 
     @Test
     public void canRegisterACommit() throws Exception {
@@ -43,8 +47,8 @@ public class VersionControlledFileTest {
         // then
         assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
         assertThat(versionControlledFile.getAuthors()).containsExactly(author);
-        assertThat(versionControlledFile.getNumberOfAuthors()).isEqualTo(1);
-        assertThat(versionControlledFile.getNumberOfOccurrencesInCommits()).isEqualTo(1);
+        assertThat(versionControlledFile.getMetricValue(NUMBER_OF_AUTHORS)).isEqualTo(1);
+        assertThat(versionControlledFile.getMetricValue(NUMBER_OF_COMMITS)).isEqualTo(1);
     }
 
     @Test
@@ -63,8 +67,8 @@ public class VersionControlledFileTest {
         // then
         assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
         assertThat(versionControlledFile.getAuthors()).containsExactlyInAnyOrder(author1, author2);
-        assertThat(versionControlledFile.getNumberOfAuthors()).isEqualTo(2);
-        assertThat(versionControlledFile.getNumberOfOccurrencesInCommits()).isEqualTo(3);
+        assertThat(versionControlledFile.getMetricValue(NUMBER_OF_AUTHORS)).isEqualTo(2);
+        assertThat(versionControlledFile.getMetricValue(NUMBER_OF_COMMITS)).isEqualTo(3);
     }
 
 
@@ -87,45 +91,9 @@ public class VersionControlledFileTest {
         // then
         assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
         assertThat(versionControlledFile.getAuthors()).containsExactlyInAnyOrder(author1, author2);
-        assertThat(versionControlledFile.getNumberOfAuthors()).isEqualTo(2);
-        assertThat(versionControlledFile.getNumberOfOccurrencesInCommits()).isEqualTo(3);
-        assertThat(versionControlledFile.getNumberOfWeeksWithCommits()).isEqualTo(2);
-    }
-
-    @Test
-    public void canCreateCalendarWeekFromADateTime() {
-        // given
-        LocalDateTime commitDateTime = LocalDateTime.of(2016, 4, 2, 12, 0);
-
-        // when
-        CalendarWeek kw = CalendarWeek.forDateTime(commitDateTime);
-
-        // then
-        assertThat(kw).isEqualTo(new CalendarWeek(13, 2016));
-    }
-
-    @Test
-    public void kalenderwoche_wird_mit_tagimjahr_richtig_berechnet_wenn_tag_am_anfang_des_jahres_und_kw_im_vorjahr() {
-        // given
-        LocalDateTime commitDateTime = LocalDateTime.of(2016, 1, 3, 12, 0);
-
-        // when
-        CalendarWeek kw = CalendarWeek.forDateTime(commitDateTime);
-
-        // then
-        assertThat(kw).isEqualTo(new CalendarWeek(53, 2015));
-    }
-
-    @Test
-    public void kalenderwoche_wird_mit_tagimjahr_richtig_berechnet_wenn_tag_am_ende_des_jahres_und_kw_im_folgejahr() {
-        // given
-        LocalDateTime commitDateTime = LocalDateTime.of(2018, 12, 31, 12, 0);
-
-        // when
-        CalendarWeek kw = CalendarWeek.forDateTime(commitDateTime);
-
-        // then
-        assertThat(kw).isEqualTo(new CalendarWeek(1, 2019));
+        assertThat(versionControlledFile.getMetricValue(NUMBER_OF_AUTHORS)).isEqualTo(2);
+        assertThat(versionControlledFile.getMetricValue(NUMBER_OF_COMMITS)).isEqualTo(3);
+        assertThat(versionControlledFile.getMetricValue(WEEKS_WITH_COMMITS)).isEqualTo(2);
     }
 
 }
