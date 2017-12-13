@@ -3,12 +3,18 @@ package de.maibornwolff.codecharta.model.input;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class VersionControlledFileTest {
+    private static List<Modification> modificationsByFilename(String... filenames) {
+        return Stream.of(filenames).map(Modification::new).collect(Collectors.toList());
+    }
+
 
     @Test
     public void versionControlledFileHoldsInitallyOnlyTheFilename() throws Exception {
@@ -33,7 +39,7 @@ public class VersionControlledFileTest {
         VersionControlledFile versionControlledFile = new VersionControlledFile(filename);
 
         // when
-        versionControlledFile.registerCommit(new Commit(author, Collections.singletonList(filename), LocalDateTime.now()));
+        versionControlledFile.registerCommit(new Commit(author, modificationsByFilename(filename), LocalDateTime.now()));
 
         // then
         assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
@@ -51,9 +57,9 @@ public class VersionControlledFileTest {
         VersionControlledFile versionControlledFile = new VersionControlledFile(filename);
 
         // when
-        versionControlledFile.registerCommit(new Commit(author1, Collections.singletonList(filename), LocalDateTime.now()));
-        versionControlledFile.registerCommit(new Commit(author2, Collections.singletonList(filename), LocalDateTime.now()));
-        versionControlledFile.registerCommit(new Commit(author1, Collections.singletonList(filename), LocalDateTime.now()));
+        versionControlledFile.registerCommit(new Commit(author1, modificationsByFilename(filename), LocalDateTime.now()));
+        versionControlledFile.registerCommit(new Commit(author2, modificationsByFilename(filename), LocalDateTime.now()));
+        versionControlledFile.registerCommit(new Commit(author1, modificationsByFilename(filename), LocalDateTime.now()));
 
         // then
         assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
@@ -75,9 +81,9 @@ public class VersionControlledFileTest {
         VersionControlledFile versionControlledFile = new VersionControlledFile(filename);
 
         // when
-        versionControlledFile.registerCommit(new Commit(author1, Collections.singletonList(filename), commitDate1));
-        versionControlledFile.registerCommit(new Commit(author2, Collections.singletonList(filename), commitDate2));
-        versionControlledFile.registerCommit(new Commit(author1, Collections.singletonList(filename), commitDate3));
+        versionControlledFile.registerCommit(new Commit(author1, modificationsByFilename(filename), commitDate1));
+        versionControlledFile.registerCommit(new Commit(author2, modificationsByFilename(filename), commitDate2));
+        versionControlledFile.registerCommit(new Commit(author1, modificationsByFilename(filename), commitDate3));
 
         // then
         assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
@@ -88,7 +94,7 @@ public class VersionControlledFileTest {
     }
 
     @Test
-    public void canCreateCalendarWeekFromADateTime(){
+    public void canCreateCalendarWeekFromADateTime() {
         // given
         LocalDateTime commitDateTime = LocalDateTime.of(2016, 4, 2, 12, 0);
 
@@ -100,7 +106,7 @@ public class VersionControlledFileTest {
     }
 
     @Test
-    public void kalenderwoche_wird_mit_tagimjahr_richtig_berechnet_wenn_tag_am_anfang_des_jahres_und_kw_im_vorjahr(){
+    public void kalenderwoche_wird_mit_tagimjahr_richtig_berechnet_wenn_tag_am_anfang_des_jahres_und_kw_im_vorjahr() {
         // given
         LocalDateTime commitDateTime = LocalDateTime.of(2016, 1, 3, 12, 0);
 
@@ -112,7 +118,7 @@ public class VersionControlledFileTest {
     }
 
     @Test
-    public void kalenderwoche_wird_mit_tagimjahr_richtig_berechnet_wenn_tag_am_ende_des_jahres_und_kw_im_folgejahr(){
+    public void kalenderwoche_wird_mit_tagimjahr_richtig_berechnet_wenn_tag_am_ende_des_jahres_und_kw_im_folgejahr() {
         // given
         LocalDateTime commitDateTime = LocalDateTime.of(2018, 12, 31, 12, 0);
 
