@@ -7,7 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -18,7 +17,7 @@ import java.util.stream.Stream;
 public class SVNLogParserStrategy implements LogParserStrategy {
 
     public static final String CORRESPONDING_LOG_CREATION_CMD = "svn log --verbose";
-    public static final Predicate<String> SVN_COMMIT_SEPARATOR_TEST = logLine -> !logLine.isEmpty() && StringUtils.containsOnly(logLine, '-');
+    private static final Predicate<String> SVN_COMMIT_SEPARATOR_TEST = logLine -> !logLine.isEmpty() && StringUtils.containsOnly(logLine, '-');
     private static final String[] DEFAULT_REPOSITORY_FOLDER_PREFIXES = new String[]{"/branches/", "/tags/", "/trunk/"};
     private static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()

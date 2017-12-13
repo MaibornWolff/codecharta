@@ -98,8 +98,7 @@ public class VersionControlledFile {
 
             CalendarWeek that = (CalendarWeek) o;
 
-            if (week != that.week) return false;
-            return year == that.year;
+            return week == that.week && year == that.year;
         }
 
         @Override

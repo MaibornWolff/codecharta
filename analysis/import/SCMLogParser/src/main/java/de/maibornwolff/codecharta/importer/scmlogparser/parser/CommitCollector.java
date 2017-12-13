@@ -34,8 +34,8 @@ class CommitCollector {
 
     private void addYetUnknownFilesToVersionControlledFiles(List<VersionControlledFile> versionControlledFiles, List<String> filenamesOfCommit) {
         filenamesOfCommit.stream()
-            .filter(filename -> !versionControlledFilesContainsFile(versionControlledFiles, filename))
-            .forEach(unknownFilename-> addYetUnknownFile(versionControlledFiles, unknownFilename));
+                .filter(filename -> !versionControlledFilesContainsFile(versionControlledFiles, filename))
+                .forEach(unknownFilename -> addYetUnknownFile(versionControlledFiles, unknownFilename));
     }
 
     private boolean versionControlledFilesContainsFile(List<VersionControlledFile> versionControlledFiles, String filename) {
@@ -44,8 +44,8 @@ class CommitCollector {
 
     private Optional<VersionControlledFile> findVersionControlledFileByFilename(List<VersionControlledFile> versionControlledFiles, String filename) {
         return versionControlledFiles.stream()
-            .filter(commit -> commit.getFilename().equals(filename))
-            .findFirst();
+                .filter(commit -> commit.getFilename().equals(filename))
+                .findFirst();
     }
 
     private boolean addYetUnknownFile(List<VersionControlledFile> versionControlledFiles, String filenameOfYetUnversionedFile) {
@@ -56,8 +56,8 @@ class CommitCollector {
     private void addCommitMetadataToMatchingVersionControlledFiles(Commit commit, List<VersionControlledFile> versionControlledFiles) {
         commit.getFilenames().stream()
                 .map(file -> findVersionControlledFileByFilename(versionControlledFiles, file))
-                .filter(Optional::isPresent)
-                .forEach(vcFile -> vcFile.get().registerCommit(commit));
+                .flatMap(Optional::stream)
+                .forEach(vcFile -> vcFile.registerCommit(commit));
 
     }
 
