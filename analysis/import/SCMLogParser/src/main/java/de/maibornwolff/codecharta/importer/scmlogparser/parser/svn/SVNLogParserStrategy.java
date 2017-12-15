@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.parser.svn;
 
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogLineCollector;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
+import de.maibornwolff.codecharta.model.input.Modification;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
@@ -48,11 +49,11 @@ public class SVNLogParserStrategy implements LogParserStrategy {
         return path;
     }
 
-    private static String ignoreIfRepresentsFolder(String filePath) {
-        if (!filePath.contains(".")) {
-            return "";
+    private static Modification ignoreIfRepresentsFolder(Modification modification) {
+        if (!modification.getFilename().contains(".")) {
+            return Modification.EMPTY;
         }
-        return filePath;
+        return modification;
     }
 
     @Override
@@ -87,10 +88,10 @@ public class SVNLogParserStrategy implements LogParserStrategy {
     }
 
     @Override
-    public List<String> parseFilenames(List<String> commitLines) {
+    public List<Modification> parseModifications(List<String> commitLines) {
         return commitLines.stream()
                 .filter(this::isFileLine)
-                .map(this::parseFilename)
+                .map(this::parseModification)
                 .collect(Collectors.toList());
     }
 
@@ -104,11 +105,11 @@ public class SVNLogParserStrategy implements LogParserStrategy {
         return isStatusLetter(firstChar) && Character.isWhitespace(secondChar);
     }
 
-    String parseFilename(String fileLine) {
+    Modification parseModification(String fileLine) {
         String metadataWithoutWhitespacePrefix = stripWhitespacePrefix(fileLine);
         String metadataWithoutStatusLetter = metadataWithoutWhitespacePrefix.substring(1);
         String filePath = removeDefaultRepositoryFolderPrefix(metadataWithoutStatusLetter.trim());
-        return ignoreIfRepresentsFolder(filePath);
+        return ignoreIfRepresentsFolder(new Modification(filePath));
     }
 
     public Collector<String, ?, Stream<List<String>>> createLogLineCollector() {

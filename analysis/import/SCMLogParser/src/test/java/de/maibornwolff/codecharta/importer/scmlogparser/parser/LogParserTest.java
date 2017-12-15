@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogParserS
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy;
 import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.model.input.Commit;
+import de.maibornwolff.codecharta.model.input.Modification;
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer;
 import de.maibornwolff.codecharta.serialization.ProjectSerializer;
 import org.junit.Test;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -84,7 +86,7 @@ public class LogParserTest {
         LogParserStrategy parserStrategy = mock(LogParserStrategy.class);
         when(parserStrategy.parseAuthor(any())).thenReturn(Optional.empty());
         when(parserStrategy.parseDate(any())).thenReturn(Optional.of(LocalDateTime.now()));
-        when(parserStrategy.parseFilenames(any())).thenReturn(Collections.emptyList());
+        when(parserStrategy.parseModifications(any())).thenReturn(Collections.emptyList());
         LogParser logParser = new LogParser(parserStrategy, true);
 
         // when & then
@@ -97,7 +99,7 @@ public class LogParserTest {
         LogParserStrategy parserStrategy = mock(LogParserStrategy.class);
         when(parserStrategy.parseAuthor(any())).thenReturn(Optional.of("An Author"));
         when(parserStrategy.parseDate(any())).thenReturn(Optional.empty());
-        when(parserStrategy.parseFilenames(any())).thenReturn(Collections.emptyList());
+        when(parserStrategy.parseModifications(any())).thenReturn(Collections.emptyList());
         LogParser logParser = new LogParser(parserStrategy, true);
 
         // when & then
@@ -114,7 +116,8 @@ public class LogParserTest {
         List<String> input = Collections.emptyList();
         when(parserStrategy.parseAuthor(input)).thenReturn(Optional.of(author));
         when(parserStrategy.parseDate(input)).thenReturn(Optional.of(commitDate));
-        when(parserStrategy.parseFilenames(input)).thenReturn(filenames);
+        when(parserStrategy.parseModifications(input))
+                .thenReturn(filenames.stream().map(Modification::new).collect(Collectors.toList()));
         LogParser logParser = new LogParser(parserStrategy, true);
 
         // when

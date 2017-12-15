@@ -8,7 +8,6 @@ import de.maibornwolff.codecharta.model.input.VersionControlledFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class LogParser {
@@ -19,10 +18,6 @@ public class LogParser {
     public LogParser(LogParserStrategy parserStrategy, boolean containsAuthors) {
         this.parserStrategy = parserStrategy;
         this.containsAuthors = containsAuthors;
-    }
-
-    private static List<Modification> modificationsByFilename(List<String> filenames) {
-        return filenames.stream().map(Modification::new).collect(Collectors.toList());
     }
 
     public Project parse(Stream<String> lines) {
@@ -43,7 +38,7 @@ public class LogParser {
     Commit parseCommit(List<String> commitLines) {
         String author = parserStrategy.parseAuthor(commitLines).orElseThrow(() -> new IllegalArgumentException("No author found in input"));
         LocalDateTime commitDate = parserStrategy.parseDate(commitLines).orElseThrow(() -> new IllegalArgumentException("No commit date found in input"));
-        List<String> filenames = parserStrategy.parseFilenames(commitLines);
-        return new Commit(author, modificationsByFilename(filenames), commitDate);
+        List<Modification> modifications = parserStrategy.parseModifications(commitLines);
+        return new Commit(author, modifications, commitDate);
     }
 }

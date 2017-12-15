@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.parser.git;
 
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogLineCollector;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
+import de.maibornwolff.codecharta.model.input.Modification;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -35,12 +36,12 @@ public class GitLogParserStrategy implements LogParserStrategy {
         return isStatusLetter(firstChar) && Character.isWhitespace(secondChar);
     }
 
-    String parseFilename(String fileLine) {
+    Modification parseModification(String fileLine) {
         if (fileLine.isEmpty()) {
-            return fileLine;
+            return Modification.EMPTY;
         }
         String filename = fileLine.substring(1);
-        return filename.trim();
+        return new Modification(filename.trim());
     }
 
     public Collector<String, ?, Stream<List<String>>> createLogLineCollector() {
@@ -66,10 +67,10 @@ public class GitLogParserStrategy implements LogParserStrategy {
     }
 
     @Override
-    public List<String> parseFilenames(List<String> commitLines) {
+    public List<Modification> parseModifications(List<String> commitLines) {
         return commitLines.stream()
                 .filter(this::isFileLine)
-                .map(this::parseFilename)
+                .map(this::parseModification)
                 .collect(Collectors.toList());
     }
 
