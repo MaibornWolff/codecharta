@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser;
 
 import de.maibornwolff.codecharta.model.input.Commit;
+import de.maibornwolff.codecharta.model.input.Modification;
 import de.maibornwolff.codecharta.model.input.VersionControlledFile;
 import org.junit.Test;
 
@@ -44,9 +45,11 @@ public abstract class ParserStrategyContractTest {
 
     @Test
     public void parsesFilesInCommitLines() {
-        List<String> filenames = getLogParserStrategy().parseFilenames(getFullCommit());
-        assertThat(filenames).hasSize(3);
-        assertThat(filenames).containsExactlyInAnyOrder("src/Main.java", "src/Main.java", "src/Util.java");
+        List<Modification> modifications = getLogParserStrategy().parseModifications(getFullCommit());
+        assertThat(modifications).hasSize(3);
+        assertThat(modifications)
+                .extracting(modification -> modification.getFilename())
+                .containsExactlyInAnyOrder("src/Main.java", "src/Main.java", "src/Util.java");
     }
 
     @Test

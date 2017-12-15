@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.parser.git;
 
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.ParserStrategyContractTest;
+import de.maibornwolff.codecharta.model.input.Modification;
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,14 +54,15 @@ public class GitLogParserStrategyTest extends ParserStrategyContractTest {
     @Test
     public void parsesFilenameFromFileMetadata() {
         String fileMetadata = "M\t src/Main.java";
-        String filename = parserStrategy.parseFilename(fileMetadata);
-        assertThat(filename).isEqualTo("src/Main.java");
+        Modification modification = parserStrategy.parseModification(fileMetadata);
+        assertThat(modification.getFilename()).isEqualTo("src/Main.java");
     }
 
     @Test
     public void parsesFilenamesFromUnusualFileMetadata() {
-        assertThat(parserStrategy.parseFilename("")).isEqualTo("");
-        assertThat(parserStrategy.parseFilename("  src/Main.java")).isEqualTo("src/Main.java");
+        assertThat(parserStrategy.parseModification("")).isEqualTo(Modification.EMPTY);
+        assertThat(parserStrategy.parseModification("  src/Main.java").getFilename())
+                .isEqualTo("src/Main.java");
     }
 
     @Test

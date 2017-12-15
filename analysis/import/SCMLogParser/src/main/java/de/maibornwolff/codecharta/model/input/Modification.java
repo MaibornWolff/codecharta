@@ -1,6 +1,8 @@
 package de.maibornwolff.codecharta.model.input;
 
 public class Modification {
+    public static final Modification EMPTY = new Modification("");
+
     private final String filename;
     private final int additions;
     private final int deletions;
