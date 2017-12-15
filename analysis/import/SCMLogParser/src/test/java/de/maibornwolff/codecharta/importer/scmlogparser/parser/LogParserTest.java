@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.model.input.Commit;
 import de.maibornwolff.codecharta.model.input.Modification;
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer;
 import de.maibornwolff.codecharta.serialization.ProjectSerializer;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.*;
@@ -38,6 +39,7 @@ public class LogParserTest {
     private static final String GIT_LOG = "example_git.log";
 
     @Test
+    @Ignore
     public void logParserSVNGoldenMasterTest() throws Exception {
         // given
         LogParser svnLogParser = new LogParser(new SVNLogParserStrategy(), true);
@@ -56,6 +58,7 @@ public class LogParserTest {
     }
 
     @Test
+    @Ignore
     public void logParserGitGoldenMasterTest() throws Exception {
         // given
         LogParser gitLogParser = new LogParser(new GitLogParserStrategy(), true);
