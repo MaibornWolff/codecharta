@@ -28,8 +28,9 @@ public class VersionControlledFile {
     }
 
     private static List<ModificationMetric> createModificationMetrics() {
-        return Collections.singletonList(
-                new NumberOfOccurencesInCommits()
+        return Arrays.asList(
+                new NumberOfOccurencesInCommits(),
+                new CodeChurn()
         );
     }
 
