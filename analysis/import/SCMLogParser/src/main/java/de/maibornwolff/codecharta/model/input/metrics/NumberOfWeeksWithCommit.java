@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.model.input.Commit;
 import java.util.HashSet;
 import java.util.Set;
 
-public final class WeeksWithCommit implements CommitMetric<Integer> {
+public final class NumberOfWeeksWithCommit implements CommitMetric<Integer> {
     public static final String WEEKS_WITH_COMMITS = "weeks_with_commits";
 
     private final Set<CalendarWeek> weeksWithCommits = new HashSet<>();

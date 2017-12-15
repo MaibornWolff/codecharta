@@ -9,13 +9,22 @@ import java.util.stream.Stream;
 public class VersionControlledFile {
 
     private final String filename;
-    private final Set<String> authors;
-    private final List<ModificationMetric> modificationMetrics = createModificationMetrics();
-    private final List<CommitMetric> commitMetrics = createCommitMetrics();
+    private final Set<String> authors = new HashSet<>();
+    private final List<ModificationMetric> modificationMetrics;
+    private final List<CommitMetric> commitMetrics;
 
     public VersionControlledFile(String filename) {
+        this(filename, createModificationMetrics(), createCommitMetrics());
+    }
+
+    VersionControlledFile(
+            String filename,
+            List<ModificationMetric> modificationMetrics,
+            List<CommitMetric> commitMetrics
+    ) {
         this.filename = filename;
-        this.authors = new HashSet<>();
+        this.modificationMetrics = modificationMetrics;
+        this.commitMetrics = commitMetrics;
     }
 
     private static List<ModificationMetric> createModificationMetrics() {
@@ -26,7 +35,7 @@ public class VersionControlledFile {
 
     private static List<CommitMetric> createCommitMetrics() {
         return Arrays.asList(
-                new WeeksWithCommit(),
+                new NumberOfWeeksWithCommit(),
                 new NumberOfAuthors()
         );
     }
