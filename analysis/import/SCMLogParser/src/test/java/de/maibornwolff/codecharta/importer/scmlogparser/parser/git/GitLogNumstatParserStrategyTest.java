@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GitLog2ParserStrategyTest extends ParserStrategyContractTest {
+public class GitLogNumstatParserStrategyTest extends ParserStrategyContractTest {
 
     private static final List<String> FULL_COMMIT = asList(
             "commit ca1fe2ba3be4",
@@ -24,11 +24,11 @@ public class GitLog2ParserStrategyTest extends ParserStrategyContractTest {
             "2 1 src/Main.java",
             "20 0 src/Util.java");
 
-    private GitLog2ParserStrategy parserStrategy;
+    private GitLogNumstatParserStrategy parserStrategy;
 
     @Before
     public void setup() {
-        parserStrategy = new GitLog2ParserStrategy();
+        parserStrategy = new GitLogNumstatParserStrategy();
     }
 
     @Override

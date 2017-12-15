@@ -2,6 +2,8 @@ package de.maibornwolff.codecharta.importer.scmlogparser;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogNumstatParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy;
 
@@ -20,6 +22,8 @@ public class SCMLogParserParameter {
     @Parameter(names = {"--svn"}, description = "Analysis of svn log, created via \""
             + SVNLogParserStrategy.CORRESPONDING_LOG_CREATION_CMD + "\"")
     private boolean svnLog = false;
+    @Parameter(names = {"--input-format"}, description = "Input for parsing")
+    private InputFormatNames inputFormatNames;
     @Parameter(names = {"--add-author"}, description = "Add an array of authors to every file")
     private boolean addAuthor = false;
     @Parameter(names = {"-h", "--help"}, description = "This help text", help = true)
@@ -49,17 +53,23 @@ public class SCMLogParserParameter {
         jc.usage();
     }
 
-    public SCM getSCM() {
+    public LogParserStrategy getLogParserStrategy() {
         if (gitLog && !svnLog) {
-            return SCM.GIT;
+            return new GitLogParserStrategy();
         } else if (svnLog && !gitLog) {
-            return SCM.SVN;
-        } else {
-            throw new IllegalArgumentException("one and only one of --git or --svn must be set");
+            return new SVNLogParserStrategy();
+        } else if (svnLog && gitLog) {
+            throw new IllegalArgumentException("only one of --git or --svn must be set");
         }
-    }
-
-    public enum SCM {
-        GIT, SVN
+        switch (inputFormatNames) {
+            case GIT_LOG:
+                return new GitLogParserStrategy();
+            case GIT_LOG_NUMSTAT:
+                return new GitLogNumstatParserStrategy();
+            case SVN_LOG:
+                return new SVNLogParserStrategy();
+            default:
+                throw new IllegalArgumentException("--git or --svn or --input-foramt must specified");
+        }
     }
 }

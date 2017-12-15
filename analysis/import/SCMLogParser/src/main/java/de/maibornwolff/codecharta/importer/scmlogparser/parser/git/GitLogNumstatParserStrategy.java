@@ -14,7 +14,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class GitLog2ParserStrategy implements LogParserStrategy {
+public class GitLogNumstatParserStrategy implements LogParserStrategy {
 
     public static final String CORRESPONDING_LOG_CREATION_CMD = "git log --numstat --no-renames";
 
@@ -24,10 +24,6 @@ public class GitLog2ParserStrategy implements LogParserStrategy {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("EEE MMM d HH:mm:ss yyyy ZZZ", Locale.US);
 
     private static final String FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S+";
-
-    private static boolean isStatusLetter(char character) {
-        return Status.ALL_STATUS_LETTERS.contains(character);
-    }
 
     private boolean isFileLine(String commitLine) {
         if (commitLine.length() < 5) {
