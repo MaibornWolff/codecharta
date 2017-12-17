@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 public class GitLogParserStrategy implements LogParserStrategy {
 
-    public static final String CORRESPONDING_LOG_CREATION_CMD = "git log --name-status --no-renames";
+    public static final String CORRESPONDING_LOG_CREATION_CMD = "git log --name-status [--no-renames]";
 
     private static final Predicate<String> GIT_COMMIT_SEPARATOR_TEST = logLine -> logLine.startsWith("commit");
     private static final String AUTHOR_ROW_INDICATOR = "Author: ";

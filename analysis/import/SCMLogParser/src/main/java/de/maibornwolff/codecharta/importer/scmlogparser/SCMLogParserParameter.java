@@ -10,17 +10,17 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserS
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.maibornwolff.codecharta.importer.scmlogparser.InputFormatNames.*;
+
 public class SCMLogParserParameter {
     private final JCommander jc;
     @Parameter(description = "[file]")
     private List<String> files = new ArrayList<>();
     @Parameter(names = {"-o", "--outputFile"}, description = "Output File (or empty for stdout)")
     private String outputFile = "";
-    @Parameter(names = {"--git"}, description = "Analysis of git log, created via \""
-            + GitLogParserStrategy.CORRESPONDING_LOG_CREATION_CMD + "\"")
+    @Parameter(names = {"--git"}, description = "Analysis of git log, equivalent --input-format GIT_LOG")
     private boolean gitLog = false;
-    @Parameter(names = {"--svn"}, description = "Analysis of svn log, created via \""
-            + SVNLogParserStrategy.CORRESPONDING_LOG_CREATION_CMD + "\"")
+    @Parameter(names = {"--svn"}, description = "Analysis of svn log, equivalent --input-format SVN_LOG")
     private boolean svnLog = false;
     @Parameter(names = {"--input-format"}, description = "Input for parsing")
     private InputFormatNames inputFormatNames;
@@ -51,6 +51,14 @@ public class SCMLogParserParameter {
 
     public void printUsage() {
         jc.usage();
+
+        String infoFormat = "   -> %s : \"%s\".";
+
+        System.out.println("  Log creation via:");
+        System.out.println(String.format(infoFormat, GIT_LOG, GitLogParserStrategy.CORRESPONDING_LOG_CREATION_CMD));
+        System.out.println(String.format(infoFormat, GIT_LOG_NUMSTAT, GitLogNumstatParserStrategy.CORRESPONDING_LOG_CREATION_CMD));
+        System.out.println(String.format(infoFormat, SVN_LOG, SVNLogParserStrategy.CORRESPONDING_LOG_CREATION_CMD));
+        System.out.println("");
     }
 
     public LogParserStrategy getLogParserStrategy() {
