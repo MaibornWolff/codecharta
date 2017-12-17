@@ -16,7 +16,6 @@ import static de.maibornwolff.codecharta.model.input.metrics.NumberOfOccurencesI
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 public class CommitCollectorTest {
 

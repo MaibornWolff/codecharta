@@ -15,7 +15,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.mockito.Mockito.mock;
 
 public abstract class ParserStrategyContractTest {
 
@@ -52,7 +51,7 @@ public abstract class ParserStrategyContractTest {
         List<Modification> modifications = getLogParserStrategy().parseModifications(getFullCommit());
         assertThat(modifications).hasSize(3);
         assertThat(modifications)
-                .extracting(modification -> modification.getFilename())
+                .extracting(Modification::getFilename)
                 .containsExactlyInAnyOrder("src/Main.java", "src/Main.java", "src/Util.java");
     }
 

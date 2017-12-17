@@ -54,7 +54,7 @@ public class VersionControlledFile {
         }
     }
 
-    public List<Metric> getMetrics() {
+    private List<Metric> getMetrics() {
         return Stream.of(modificationMetrics, commitMetrics)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());

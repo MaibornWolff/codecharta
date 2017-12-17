@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 
 public class MetricsFactory {
 
-    private List<String> metricNames;
+    private final List<String> metricNames;
 
     public MetricsFactory() {
         this.metricNames = Stream.concat(createAllModificationMetrics().stream(),createAllCommitMetrics().stream())
