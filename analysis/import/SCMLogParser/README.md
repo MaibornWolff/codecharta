@@ -7,20 +7,29 @@ Generates visualisation data from repository (Git or SVN) logs. It supports the 
 | `number_of_commits`  | total number of commits |
 | `weeks_with_commits` | weeks with commits |
 | `number_of_authors`  | number of authors with commits |
+| `code_churn`         | code churn, i.e. number of additions plus deletions to file (git numstat only) |
 
-Additionally it saves the names of authors when the --a flag is set.
+Additionally it saves the names of authors when the --add-author flag is set.
 
 ## Usage
 
 ### Creating the repository log for metric generation  
 
-* Git:   `git log --name-status --no-renames`
-* SVN:   `svn log --verbose`
+* Git:          `git log --name-status [--no-renames]`
+* Git Numstat:  `git log --numstat --no-renames`
+* SVN:          `svn log --verbose`
 
 The generated logs must be in UTF-8 encoding.
 
 ### Executing the SCMLogParser
 
-> `ccsh scmlogparser <log file> [--git|--svn] [--a] [<output file>]`
+See `ccsh -h` for help.
+
+> `ccsh scmlogparser <log file> [--git|--svn] [--add-author] [-o <output file>]`
+
+or
+
+> `ccsh scmlogparser <log file> --input-format [GIT_LOG|GIT_LOG_NUMSTAT|TSVN_LOG] [--a] [-o <output file>]`
+
 
 The result is written as JSON to standard out or into the specified output file.
