@@ -38,11 +38,8 @@ public class GitLogParserStrategy implements LogParserStrategy {
     }
 
     private boolean isFileLine(String commitLine) {
-        if (commitLine.length() < 3) {
-            return false;
-        }
+        return commitLine.length() >= 3 && commitLine.matches(FILE_LINE_REGEX) && isStatusLetter(commitLine.charAt(0));
 
-        return commitLine.matches(FILE_LINE_REGEX) && isStatusLetter(commitLine.charAt(0));
     }
 
     Modification parseModification(String fileLine) {

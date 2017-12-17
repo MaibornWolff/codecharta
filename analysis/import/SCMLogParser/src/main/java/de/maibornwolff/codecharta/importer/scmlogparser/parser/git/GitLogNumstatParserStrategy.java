@@ -35,10 +35,7 @@ public class GitLogNumstatParserStrategy implements LogParserStrategy {
     }
 
     private boolean isFileLine(String commitLine) {
-        if (commitLine.length() < 5) {
-            return false;
-        }
-        return commitLine.matches(FILE_LINE_REGEX);
+        return commitLine.length() >= 5 && commitLine.matches(FILE_LINE_REGEX);
     }
 
     Modification parseModification(String fileLine) {

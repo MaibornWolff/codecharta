@@ -11,7 +11,7 @@ import java.util.stream.Collector;
 
 class CommitCollector {
 
-    MetricsFactory metricsFactory;
+    private final MetricsFactory metricsFactory;
 
     private CommitCollector(MetricsFactory metricsFactory) {
         this.metricsFactory = metricsFactory;
