@@ -30,6 +30,13 @@ enum Status {
         letter = t;
     }
 
+    public static Status byCharacter(char c) {
+        return Stream.of(Status.class.getEnumConstants())
+                .filter(status -> status.letter == c)
+                .findFirst()
+                .orElse(UNKNOWN);
+    }
+
     public char statusLetter() {
         return letter;
     }

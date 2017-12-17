@@ -15,6 +15,8 @@ public class VersionControlledFile {
     private final Set<String> authors = new HashSet<>();
     private final List<ModificationMetric> modificationMetrics;
     private final List<CommitMetric> commitMetrics;
+    private Modification.Type lastType = Modification.Type.UNKNOWN;
+    private boolean ignoreCommits = false;
 
     public VersionControlledFile(String filename, MetricsFactory metricsFactory) {
         this(filename, metricsFactory.createModificationMetrics(), metricsFactory.createCommitMetrics());
@@ -32,10 +34,23 @@ public class VersionControlledFile {
 
     public void registerCommit(Commit commit) {
         Optional<Modification> modification = commit.getModification(filename);
-        if (modification.isPresent()) {
+
+        if (modification.isPresent() && !ignoreCommits) {
             modificationMetrics.forEach(m -> m.registerModification(modification.get()));
             commitMetrics.forEach(m -> m.registerCommit(commit));
             authors.add(commit.getAuthor());
+
+            Modification.Type type = modification.get().getType();
+            switch (type) {
+                case ADD:
+                case DELETE:
+                case RENAME:
+                    ignoreCommits = true;
+                    lastType = type;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -43,6 +58,14 @@ public class VersionControlledFile {
         return Stream.of(modificationMetrics, commitMetrics)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
+    }
+
+    public boolean markedDeleted() {
+        boolean markedDeleted = lastType.equals(Modification.Type.DELETE) || lastType.equals(Modification.Type.RENAME);
+        if (markedDeleted) {
+            System.err.println("Ignoring " + filename + " as it's last modification was " + lastType);
+        }
+        return markedDeleted;
     }
 
     public Map<String, Number> getMetricsMap() {

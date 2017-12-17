@@ -17,11 +17,12 @@ import java.util.stream.Stream;
 
 public class GitLogParserStrategy implements LogParserStrategy {
 
-    public static final String CORRESPONDING_LOG_CREATION_CMD = "git log --name-status [--no-renames]";
+    public static final String CORRESPONDING_LOG_CREATION_CMD = "git log --name-status --topo-order [--no-renames]";
     private static final Predicate<String> GIT_COMMIT_SEPARATOR_TEST = logLine -> logLine.startsWith("commit");
     private static final String AUTHOR_ROW_INDICATOR = "Author: ";
     private static final String DATE_ROW_INDICATOR = "Date: ";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("EEE MMM d HH:mm:ss yyyy ZZZ", Locale.US);
+    private static final String FILE_LINE_REGEX = "\\w\\d*\\s+\\S+(.*|\\s+\\S+.*)";
 
     private static boolean isStatusLetter(char character) {
         return Status.ALL_STATUS_LETTERS.contains(character);
@@ -37,20 +38,36 @@ public class GitLogParserStrategy implements LogParserStrategy {
     }
 
     private boolean isFileLine(String commitLine) {
-        if (commitLine.length() < 2) {
+        if (commitLine.length() < 3) {
             return false;
         }
-        char firstChar = commitLine.charAt(0);
-        char secondChar = commitLine.charAt(1);
-        return isStatusLetter(firstChar) && Character.isWhitespace(secondChar);
+
+        return commitLine.matches(FILE_LINE_REGEX) && isStatusLetter(commitLine.charAt(0));
     }
 
     Modification parseModification(String fileLine) {
         if (fileLine.isEmpty()) {
             return Modification.EMPTY;
         }
-        String filename = fileLine.substring(1);
-        return new Modification(filename.trim());
+        Status status = Status.byCharacter(fileLine.charAt(0));
+        String[] lineParts = fileLine.split("\\s+");
+        String filename = lineParts[1];
+        return new Modification(filename.trim(), mapStatusToType(status));
+    }
+
+    private Modification.Type mapStatusToType(Status status) {
+        switch (status) {
+            case ADDED:
+                return Modification.Type.ADD;
+            case DELETED:
+                return Modification.Type.DELETE;
+            case MODIFIED:
+                return Modification.Type.MODIFY;
+            case RENAMED:
+                return Modification.Type.RENAME;
+            default:
+                return Modification.Type.UNKNOWN;
+        }
     }
 
     public Collector<String, ?, Stream<List<String>>> createLogLineCollector() {

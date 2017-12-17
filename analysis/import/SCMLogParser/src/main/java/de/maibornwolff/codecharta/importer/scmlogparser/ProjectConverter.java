@@ -49,7 +49,11 @@ public final class ProjectConverter {
 
     public static Project convert(String projectName, List<VersionControlledFile> versionControlledFiles, boolean containsAuthors) {
         Project project = new Project(projectName);
-        versionControlledFiles.forEach(vcFile -> ProjectConverter.addVersionControlledFile(project, vcFile, containsAuthors));
+
+        versionControlledFiles.stream()
+                .filter(vc -> !vc.markedDeleted())
+                .forEach(vcFile -> ProjectConverter.addVersionControlledFile(project, vcFile, containsAuthors));
+
         return project;
     }
 

@@ -75,7 +75,7 @@ public class LogParserTest {
                 NumberOfWeeksWithCommit.WEEKS_WITH_COMMITS
         ));
 
-        LogParser gitLogParser = new LogParser(new GitLogParserStrategy(), true, metricsFactory);
+        LogParser gitLogParser = new LogParser(new GitLogParserStrategy(), false, metricsFactory);
         InputStreamReader ccjsonReader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(EXPECTED_GIT_CC_JSON));
         Project expectedProject = ProjectDeserializer.deserializeProject(ccjsonReader);
         URL resource = this.getClass().getClassLoader().getResource(GIT_LOG);
