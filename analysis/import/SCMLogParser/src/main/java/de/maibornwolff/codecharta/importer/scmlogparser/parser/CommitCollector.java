@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.parser;
 
 import de.maibornwolff.codecharta.model.input.Commit;
 import de.maibornwolff.codecharta.model.input.VersionControlledFile;
+import de.maibornwolff.codecharta.model.input.metrics.MetricsFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +11,14 @@ import java.util.stream.Collector;
 
 class CommitCollector {
 
-    static Collector<Commit, ?, List<VersionControlledFile>> create() {
-        CommitCollector collector = new CommitCollector();
+    MetricsFactory metricsFactory;
+
+    private CommitCollector(MetricsFactory metricsFactory) {
+        this.metricsFactory = metricsFactory;
+    }
+
+    static Collector<Commit, ?, List<VersionControlledFile>> create(MetricsFactory metricsFactory) {
+        CommitCollector collector = new CommitCollector(metricsFactory);
         return Collector.of(ArrayList::new, collector::collectCommit, collector::combineForParallelExecution);
     }
 
@@ -40,7 +47,7 @@ class CommitCollector {
     }
 
     private boolean addYetUnknownFile(List<VersionControlledFile> versionControlledFiles, String filenameOfYetUnversionedFile) {
-        VersionControlledFile missingVersionControlledFile = new VersionControlledFile(filenameOfYetUnversionedFile);
+        VersionControlledFile missingVersionControlledFile = new VersionControlledFile(filenameOfYetUnversionedFile, metricsFactory);
         return versionControlledFiles.add(missingVersionControlledFile);
     }
 

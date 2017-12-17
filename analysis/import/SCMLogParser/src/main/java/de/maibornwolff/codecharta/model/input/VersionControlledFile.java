@@ -1,6 +1,9 @@
 package de.maibornwolff.codecharta.model.input;
 
-import de.maibornwolff.codecharta.model.input.metrics.*;
+import de.maibornwolff.codecharta.model.input.metrics.CommitMetric;
+import de.maibornwolff.codecharta.model.input.metrics.Metric;
+import de.maibornwolff.codecharta.model.input.metrics.MetricsFactory;
+import de.maibornwolff.codecharta.model.input.metrics.ModificationMetric;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -13,8 +16,8 @@ public class VersionControlledFile {
     private final List<ModificationMetric> modificationMetrics;
     private final List<CommitMetric> commitMetrics;
 
-    public VersionControlledFile(String filename) {
-        this(filename, createModificationMetrics(), createCommitMetrics());
+    public VersionControlledFile(String filename, MetricsFactory metricsFactory) {
+        this(filename, metricsFactory.createModificationMetrics(), metricsFactory.createCommitMetrics());
     }
 
     VersionControlledFile(
@@ -25,20 +28,6 @@ public class VersionControlledFile {
         this.filename = filename;
         this.modificationMetrics = modificationMetrics;
         this.commitMetrics = commitMetrics;
-    }
-
-    private static List<ModificationMetric> createModificationMetrics() {
-        return Arrays.asList(
-                new NumberOfOccurencesInCommits(),
-                new CodeChurn()
-        );
-    }
-
-    private static List<CommitMetric> createCommitMetrics() {
-        return Arrays.asList(
-                new NumberOfWeeksWithCommit(),
-                new NumberOfAuthors()
-        );
     }
 
     public void registerCommit(Commit commit) {

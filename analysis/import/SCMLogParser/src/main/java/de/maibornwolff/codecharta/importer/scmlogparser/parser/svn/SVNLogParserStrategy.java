@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -54,6 +55,15 @@ public class SVNLogParserStrategy implements LogParserStrategy {
             return Modification.EMPTY;
         }
         return modification;
+    }
+
+    @Override
+    public List<String> listSupportedMetrics() {
+        return Arrays.asList(
+                "number_of_authors",
+                "number_of_commits",
+                "weeks_with_commits"
+        );
     }
 
     @Override
