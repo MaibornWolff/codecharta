@@ -20,9 +20,9 @@ public class GitLogParserStrategyTest extends ParserStrategyContractTest {
             "Author: TheAuthor <mail@example.com>",
             "Date:   Tue May 9 19:57:57 2017 +0200",
             "    the commit message",
-            "A src/Main.java",
             "M src/Main.java",
-            "A src/Util.java");
+            "M src/Main.java",
+            "M src/Util.java");
 
     private GitLogParserStrategy parserStrategy;
 
@@ -56,6 +56,15 @@ public class GitLogParserStrategyTest extends ParserStrategyContractTest {
         String fileMetadata = "M\t src/Main.java";
         Modification modification = parserStrategy.parseModification(fileMetadata);
         assertThat(modification.getFilename()).isEqualTo("src/Main.java");
+        assertThat(modification.getType()).isEqualTo(Modification.Type.MODIFY);
+    }
+
+    @Test
+    public void parsesFilenameFromFileMetadataWithRename() {
+        String fileMetadata = "R094\t src/Main.java\t srcs/Main.java";
+        Modification modification = parserStrategy.parseModification(fileMetadata);
+        assertThat(modification.getFilename()).isEqualTo("src/Main.java");
+        assertThat(modification.getType()).isEqualTo(Modification.Type.RENAME);
     }
 
     @Test
