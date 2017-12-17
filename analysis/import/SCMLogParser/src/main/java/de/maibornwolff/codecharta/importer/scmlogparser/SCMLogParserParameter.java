@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogNumstatParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy;
+import de.maibornwolff.codecharta.model.input.metrics.MetricsFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,5 +80,9 @@ public class SCMLogParserParameter {
             default:
                 throw new IllegalArgumentException("--git or --svn or --input-foramt must specified");
         }
+    }
+
+    public MetricsFactory getMetricsFactory() {
+        return new MetricsFactory(getLogParserStrategy().listSupportedMetrics());
     }
 }

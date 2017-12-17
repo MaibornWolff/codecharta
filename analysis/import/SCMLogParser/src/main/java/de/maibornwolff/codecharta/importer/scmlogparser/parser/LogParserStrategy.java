@@ -18,4 +18,6 @@ public interface LogParserStrategy {
 
     Optional<LocalDateTime> parseDate(List<String> commitLines);
 
+    List<String> listSupportedMetrics();
+
 }

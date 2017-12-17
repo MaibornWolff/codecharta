@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.model.input;
 
 import de.maibornwolff.codecharta.model.input.metrics.CommitMetric;
+import de.maibornwolff.codecharta.model.input.metrics.MetricsFactory;
 import de.maibornwolff.codecharta.model.input.metrics.ModificationMetric;
 import org.junit.Test;
 
@@ -13,13 +14,15 @@ import static org.mockito.Mockito.*;
 
 public class VersionControlledFileTest {
 
+    private final MetricsFactory metricsFactory = mock(MetricsFactory.class);
+
     @Test
     public void versionControlledFileHoldsInitallyOnlyTheFilename() {
         // given
         String filename = "filename";
 
         // when
-        VersionControlledFile versionControlledFile = new VersionControlledFile(filename);
+        VersionControlledFile versionControlledFile = new VersionControlledFile(filename, metricsFactory);
 
         // then
         assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
