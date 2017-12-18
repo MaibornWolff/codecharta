@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser;
 
+import de.maibornwolff.codecharta.importer.scmlogparser.ProjectConverter;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy;
 import de.maibornwolff.codecharta.model.Project;
@@ -50,8 +51,10 @@ public class LogParserTest {
                 NumberOfOccurencesInCommits.NUMBER_OF_COMMITS,
                 NumberOfWeeksWithCommit.WEEKS_WITH_COMMITS
         ));
+        ProjectConverter projectConverter = new ProjectConverter(true);
 
-        LogParser svnLogParser = new LogParser(new SVNLogParserStrategy(), true, metricsFactory);
+
+        LogParser svnLogParser = new LogParser(new SVNLogParserStrategy(), metricsFactory, projectConverter);
         InputStreamReader ccjsonReader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(EXPECTED_SVN_CC_JSON));
         Project expectedProject = ProjectDeserializer.deserializeProject(ccjsonReader);
         URL resource = this.getClass().getClassLoader().getResource(SVN_LOG);
@@ -74,8 +77,10 @@ public class LogParserTest {
                 NumberOfOccurencesInCommits.NUMBER_OF_COMMITS,
                 NumberOfWeeksWithCommit.WEEKS_WITH_COMMITS
         ));
+        ProjectConverter projectConverter = new ProjectConverter(false);
 
-        LogParser gitLogParser = new LogParser(new GitLogParserStrategy(), false, metricsFactory);
+
+        LogParser gitLogParser = new LogParser(new GitLogParserStrategy(), metricsFactory, projectConverter);
         InputStreamReader ccjsonReader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(EXPECTED_GIT_CC_JSON));
         Project expectedProject = ProjectDeserializer.deserializeProject(ccjsonReader);
         URL resource = this.getClass().getClassLoader().getResource(GIT_LOG);
@@ -101,11 +106,12 @@ public class LogParserTest {
     public void parseCommitRaisesExceptionWhenAuthorIsMissing() {
         // given
         MetricsFactory metricsFactory = mock(MetricsFactory.class);
+        ProjectConverter projectConverter = mock(ProjectConverter.class);
         LogParserStrategy parserStrategy = mock(LogParserStrategy.class);
         when(parserStrategy.parseAuthor(any())).thenReturn(Optional.empty());
         when(parserStrategy.parseDate(any())).thenReturn(Optional.of(LocalDateTime.now()));
         when(parserStrategy.parseModifications(any())).thenReturn(Collections.emptyList());
-        LogParser logParser = new LogParser(parserStrategy, true, metricsFactory);
+        LogParser logParser = new LogParser(parserStrategy, metricsFactory, projectConverter);
 
         // when & then
         assertThatThrownBy(() -> logParser.parseCommit(Collections.emptyList())).isInstanceOf(RuntimeException.class);
@@ -115,11 +121,12 @@ public class LogParserTest {
     public void parseCommitRaisesExceptionWhenCommitDateIsMissing() {
         // given
         MetricsFactory metricsFactory = mock(MetricsFactory.class);
+        ProjectConverter projectConverter = mock(ProjectConverter.class);
         LogParserStrategy parserStrategy = mock(LogParserStrategy.class);
         when(parserStrategy.parseAuthor(any())).thenReturn(Optional.of("An Author"));
         when(parserStrategy.parseDate(any())).thenReturn(Optional.empty());
         when(parserStrategy.parseModifications(any())).thenReturn(Collections.emptyList());
-        LogParser logParser = new LogParser(parserStrategy, true, metricsFactory);
+        LogParser logParser = new LogParser(parserStrategy, metricsFactory, projectConverter);
 
         // when & then
         assertThatThrownBy(() -> logParser.parseCommit(Collections.emptyList())).isInstanceOf(RuntimeException.class);
@@ -129,6 +136,7 @@ public class LogParserTest {
     public void parseCommit() {
         // given
         MetricsFactory metricsFactory = mock(MetricsFactory.class);
+        ProjectConverter projectConverter = mock(ProjectConverter.class);
         LogParserStrategy parserStrategy = mock(LogParserStrategy.class);
         String author = "An Author";
         LocalDateTime commitDate = LocalDateTime.now();
@@ -138,7 +146,7 @@ public class LogParserTest {
         when(parserStrategy.parseDate(input)).thenReturn(Optional.of(commitDate));
         when(parserStrategy.parseModifications(input))
                 .thenReturn(filenames.stream().map(Modification::new).collect(Collectors.toList()));
-        LogParser logParser = new LogParser(parserStrategy, true, metricsFactory);
+        LogParser logParser = new LogParser(parserStrategy, metricsFactory, projectConverter);
 
         // when
         Commit commit = logParser.parseCommit(input);

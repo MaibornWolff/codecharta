@@ -45,7 +45,8 @@ public class SCMLogParser {
     ) throws IOException {
 
         Stream<String> lines = Files.lines(Paths.get(pathToLog));
-        return new LogParser(parserStrategy, containsAuthors, metricsFactory).parse(lines);
+        ProjectConverter projectConverter = new ProjectConverter(containsAuthors);
+        return new LogParser(parserStrategy, metricsFactory, projectConverter).parse(lines);
 
     }
 }

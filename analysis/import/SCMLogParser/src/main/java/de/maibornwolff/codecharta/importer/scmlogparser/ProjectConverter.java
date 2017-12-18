@@ -40,30 +40,22 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-public final class ProjectConverter {
+public class ProjectConverter {
+    private final boolean containsAuthors;
 
-    private ProjectConverter() {
-        // utility class
+    public ProjectConverter(boolean containsAuthors) {
+        this.containsAuthors = containsAuthors;
     }
 
-    public static Project convert(String projectName, List<VersionControlledFile> versionControlledFiles, boolean containsAuthors) {
-        Project project = new Project(projectName);
-
-        versionControlledFiles.stream()
-                .filter(vc -> !vc.markedDeleted())
-                .forEach(vcFile -> ProjectConverter.addVersionControlledFile(project, vcFile, containsAuthors));
-
-        return project;
-    }
-
-    private static void addVersionControlledFile(Project project, VersionControlledFile versionControlledFile, boolean containsAuthors) {
-        Map<String, Object> attributes = extractAttributes(versionControlledFile, containsAuthors);
+    private void addVersionControlledFile(Project project, VersionControlledFile versionControlledFile) {
+        Map<String, Object> attributes = extractAttributes(versionControlledFile);
         Node newNode = new Node(extractFilenamePart(versionControlledFile), NodeType.File, attributes, "", Collections.emptyList());
         NodeInserter.insertByPath(project, PathFactory.fromFileSystemPath(extractPathPart(versionControlledFile)), newNode);
     }
 
-    private static Map<String, Object> extractAttributes(VersionControlledFile versionControlledFile, boolean containsAuthors) {
+    private Map<String, Object> extractAttributes(VersionControlledFile versionControlledFile) {
         HashMap<String, Object> attributes = new HashMap<>(versionControlledFile.getMetricsMap());
         if (containsAuthors) {
             attributes.put("authors", versionControlledFile.getAuthors());
@@ -71,13 +63,31 @@ public final class ProjectConverter {
         return attributes;
     }
 
-    private static String extractFilenamePart(VersionControlledFile versionControlledFile) {
-        String path = versionControlledFile.getFilename();
+    private String extractFilenamePart(VersionControlledFile versionControlledFile) {
+        String path = versionControlledFile.getActualFilename();
         return path.substring(path.lastIndexOf('/') + 1);
     }
 
-    private static String extractPathPart(VersionControlledFile versionControlledFile) {
-        String path = versionControlledFile.getFilename();
+    private String extractPathPart(VersionControlledFile versionControlledFile) {
+        String path = versionControlledFile.getActualFilename();
         return path.substring(0, path.lastIndexOf('/') + 1);
+    }
+
+    public Project convert(String projectName, List<VersionControlledFile> versionControlledFiles) {
+        Project project = new Project(projectName);
+
+        versionControlledFiles.stream()
+                .filter(vc -> !vc.markedDeleted())
+                .forEach(vcFile -> addVersionControlledFile(project, vcFile));
+
+        List<String> deletedFiles = versionControlledFiles.stream()
+                .filter(VersionControlledFile::markedDeleted)
+                .map(VersionControlledFile::getActualFilename)
+                .collect(Collectors.toList());
+
+        System.err.println("There were " + deletedFiles.size() + " file deletions:");
+        System.err.println("  " + deletedFiles);
+
+        return project;
     }
 }

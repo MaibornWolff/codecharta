@@ -28,10 +28,11 @@ public class ProjectConverterTest {
     @Test
     public void canCreateAnEmptyProject() throws Exception {
         // given
+        ProjectConverter projectConverter = new ProjectConverter(true);
         String projectname = "Projectname";
 
         // when
-        Project project = ProjectConverter.convert(projectname, Collections.emptyList(), true);
+        Project project = projectConverter.convert(projectname, Collections.emptyList());
 
         //then
         assertThat(project.getNodes()).hasSize(0);
@@ -41,12 +42,13 @@ public class ProjectConverterTest {
     @Test
     public void canConvertProjectWithAuthors() {
         //given
+        ProjectConverter projectConverter = new ProjectConverter(true);
         String projectname = "ProjectWithAuthors";
         VersionControlledFile file1 = new VersionControlledFile("File 1", metricsFactory);
         file1.registerCommit(new Commit("Author", modificationsByFilename("File 1, File 2"), LocalDateTime.now()));
 
         //when
-        Project project = ProjectConverter.convert(projectname, Arrays.asList(file1), true);
+        Project project = projectConverter.convert(projectname, Arrays.asList(file1));
 
         //then
         assertThat(project.getRootNode().getChildren().get(0).getAttributes().containsKey("authors")).isTrue();
@@ -55,12 +57,13 @@ public class ProjectConverterTest {
     @Test
     public void canConvertProjectWithoutAuthors() {
         //given
+        ProjectConverter projectConverter = new ProjectConverter(false);
         String projectname = "ProjectWithoutAuthors";
         VersionControlledFile file1 = new VersionControlledFile("File 1", metricsFactory);
         file1.registerCommit(new Commit("Author", modificationsByFilename("File 1, File 2"), LocalDateTime.now()));
 
         //when
-        Project project = ProjectConverter.convert(projectname, Arrays.asList(file1), false);
+        Project project = projectConverter.convert(projectname, Arrays.asList(file1));
 
         //then
         assertThat(project.getRootNode().getChildren().get(0).getAttributes().containsKey("authors")).isFalse();

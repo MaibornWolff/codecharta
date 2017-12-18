@@ -4,6 +4,7 @@ public class Modification {
     public static final Modification EMPTY = new Modification("");
 
     private final String filename;
+    private final String oldFilename;
     private final int additions;
     private final int deletions;
     private final Type type;
@@ -20,8 +21,17 @@ public class Modification {
         this(filename, 0, 0, type);
     }
 
+    public Modification(String filename, String oldFilename, Type type) {
+        this(filename, oldFilename, 0, 0, type);
+    }
+
     public Modification(String filename, int additions, int deletions, Type type) {
+        this(filename, "", additions, deletions, type);
+    }
+
+    public Modification(String filename, String oldFilename, int additions, int deletions, Type type) {
         this.filename = filename;
+        this.oldFilename = oldFilename;
         this.additions = additions;
         this.deletions = deletions;
         this.type = type;
@@ -30,7 +40,6 @@ public class Modification {
     public String getFilename() {
         return filename;
     }
-
 
     public int getAdditions() {
         return additions;
@@ -42,6 +51,10 @@ public class Modification {
 
     public Type getType() {
         return type;
+    }
+
+    public String getOldFilename() {
+        return oldFilename;
     }
 
     public enum Type {
