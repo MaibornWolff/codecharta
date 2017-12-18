@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 public class GitLogParserStrategy implements LogParserStrategy {
 
-    public static final String CORRESPONDING_LOG_CREATION_CMD = "git log --name-status --topo-order [--no-renames]";
+    public static final String CORRESPONDING_LOG_CREATION_CMD = "git log --name-status --topo-order";
     private static final Predicate<String> GIT_COMMIT_SEPARATOR_TEST = logLine -> logLine.startsWith("commit");
     private static final String AUTHOR_ROW_INDICATOR = "Author: ";
     private static final String DATE_ROW_INDICATOR = "Date: ";
@@ -48,8 +48,12 @@ public class GitLogParserStrategy implements LogParserStrategy {
         }
         Status status = Status.byCharacter(fileLine.charAt(0));
         String[] lineParts = fileLine.split("\\s+");
-        String filename = lineParts[1];
-        return new Modification(filename.trim(), mapStatusToType(status));
+
+        if(status == Status.RENAMED) {
+            return new Modification(lineParts[2].trim(), lineParts[1].trim(), mapStatusToType(status));
+        }
+
+        return new Modification(lineParts[1].trim(), mapStatusToType(status));
     }
 
     private Modification.Type mapStatusToType(Status status) {

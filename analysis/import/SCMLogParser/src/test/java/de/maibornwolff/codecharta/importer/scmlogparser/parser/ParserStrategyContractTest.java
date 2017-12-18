@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser;
 
+import de.maibornwolff.codecharta.importer.scmlogparser.ProjectConverter;
 import de.maibornwolff.codecharta.model.input.Commit;
 import de.maibornwolff.codecharta.model.input.Modification;
 import de.maibornwolff.codecharta.model.input.VersionControlledFile;
@@ -39,7 +40,8 @@ public abstract class ParserStrategyContractTest {
 
     @Test
     public void parsesCommit() {
-        LogParser logParser = new LogParser(getLogParserStrategy(), true, metricsFactory);
+        ProjectConverter projectConverter = new ProjectConverter(true);
+        LogParser logParser = new LogParser(getLogParserStrategy(), metricsFactory, projectConverter);
         Commit commit = logParser.parseCommit(getFullCommit());
         assertThat(commit)
                 .extracting(Commit::getAuthor, Commit::getFilenames, Commit::getCommitDate)
@@ -76,9 +78,11 @@ public abstract class ParserStrategyContractTest {
 
     @Test
     public void accumulatesCommitFiles() {
+        ProjectConverter projectConverter = new ProjectConverter(true);
+
         Stream<String> logLines = Stream.concat(getFullCommit().stream(), getFullCommit().stream());
         List<VersionControlledFile> files =
-                new LogParser(getLogParserStrategy(), true, metricsFactory).parseLoglines(logLines);
+                new LogParser(getLogParserStrategy(), metricsFactory, projectConverter).parseLoglines(logLines);
         assertThat(files)
                 .extracting(VersionControlledFile::getFilename, f -> f.getMetricValue(NUMBER_OF_COMMITS), VersionControlledFile::getAuthors)
                 .containsExactlyInAnyOrder(

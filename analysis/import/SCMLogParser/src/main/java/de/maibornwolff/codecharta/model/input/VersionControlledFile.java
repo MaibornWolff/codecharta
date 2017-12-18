@@ -11,12 +11,15 @@ import java.util.stream.Stream;
 
 public class VersionControlledFile {
 
-    private final String filename;
+    // actual filename
+    private final String actualFilename;
     private final Set<String> authors = new HashSet<>();
     private final List<ModificationMetric> modificationMetrics;
     private final List<CommitMetric> commitMetrics;
-    private Modification.Type lastType = Modification.Type.UNKNOWN;
-    private boolean ignoreCommits = false;
+
+    // current filename in a specific revision, might change in history
+    private String filename;
+    private boolean markedDeleted = false;
 
     public VersionControlledFile(String filename, MetricsFactory metricsFactory) {
         this(filename, metricsFactory.createModificationMetrics(), metricsFactory.createCommitMetrics());
@@ -28,6 +31,7 @@ public class VersionControlledFile {
             List<CommitMetric> commitMetrics
     ) {
         this.filename = filename;
+        this.actualFilename = filename;
         this.modificationMetrics = modificationMetrics;
         this.commitMetrics = commitMetrics;
     }
@@ -35,23 +39,27 @@ public class VersionControlledFile {
     public void registerCommit(Commit commit) {
         Optional<Modification> modification = commit.getModification(filename);
 
-        if (modification.isPresent() && !ignoreCommits) {
-            modificationMetrics.forEach(m -> m.registerModification(modification.get()));
+        if (modification.isPresent()) {
             commitMetrics.forEach(m -> m.registerCommit(commit));
             authors.add(commit.getAuthor());
 
-            Modification.Type type = modification.get().getType();
-            switch (type) {
-                case ADD:
-                case DELETE:
-                case RENAME:
-                    ignoreCommits = true;
-                    lastType = type;
-                    break;
-                default:
-                    break;
-            }
+            registerModification(modification.get());
         }
+    }
+
+    private void registerModification(Modification modification) {
+        Modification.Type type = modification.getType();
+        switch (type) {
+            case DELETE:
+                markedDeleted = true;
+                break;
+            case RENAME:
+                filename = modification.getOldFilename();
+                break;
+            default:
+                break;
+        }
+        modificationMetrics.forEach(m -> m.registerModification(modification));
     }
 
     private List<Metric> getMetrics() {
@@ -61,10 +69,6 @@ public class VersionControlledFile {
     }
 
     public boolean markedDeleted() {
-        boolean markedDeleted = lastType.equals(Modification.Type.DELETE) || lastType.equals(Modification.Type.RENAME);
-        if (markedDeleted) {
-            System.err.println("Ignoring " + filename + " as it's last modification was " + lastType);
-        }
         return markedDeleted;
     }
 
@@ -82,7 +86,7 @@ public class VersionControlledFile {
 
     @Override
     public String toString() {
-        return filename + " with metrics " + getMetricsMap();
+        return getActualFilename() + " with metrics " + getMetricsMap();
     }
 
     public int getMetricValue(String metricName) {
@@ -90,5 +94,9 @@ public class VersionControlledFile {
                 .filter(m -> m.metricName().equals(metricName)).findAny()
                 .orElseThrow(() -> new RuntimeException("metric " + metricName + " not found."))
                 .value().intValue();
+    }
+
+    public String getActualFilename() {
+        return actualFilename;
     }
 }

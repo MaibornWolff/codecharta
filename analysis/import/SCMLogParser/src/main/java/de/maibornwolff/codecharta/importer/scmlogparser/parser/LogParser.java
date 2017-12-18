@@ -15,12 +15,12 @@ public class LogParser {
 
     private final LogParserStrategy parserStrategy;
     private final MetricsFactory metricsFactory;
-    private final boolean containsAuthors;
+    private final ProjectConverter projectConverter;
 
-    public LogParser(LogParserStrategy parserStrategy, boolean containsAuthors, MetricsFactory metricsFactory) {
+    public LogParser(LogParserStrategy parserStrategy, MetricsFactory metricsFactory, ProjectConverter projectConverter) {
         this.parserStrategy = parserStrategy;
-        this.containsAuthors = containsAuthors;
         this.metricsFactory = metricsFactory;
+        this.projectConverter = projectConverter;
     }
 
     public Project parse(Stream<String> lines) {
@@ -35,7 +35,7 @@ public class LogParser {
     }
 
     private Project convertToProject(List<VersionControlledFile> versionControlledFiles) {
-        return ProjectConverter.convert("SCMLogParser", versionControlledFiles, containsAuthors);
+        return projectConverter.convert("SCMLogParser", versionControlledFiles);
     }
 
     Commit parseCommit(List<String> commitLines) {
