@@ -1,43 +1,33 @@
-require("./legendPanel.js");
+require("./legendPanel");
 
-describe("app.codeCharta.ui.legendPanel.legendPanelController", function() {
+import {LegendPanelController} from "./legendPanelComponent";
+
+xdescribe("app.codeCharta.ui.legendPanel.legendPanelController", function() {
 
     var legendPanelController, dataService, scope, codeMapMaterialFactory, timeout, settingsService;
 
-    beforeEach(angular.mock.module("app.codeCharta.ui.legendPanel"));
-
     beforeEach(()=>{
 
-        angular.mock.module("app.codeCharta.codeMap");
+        //mock module under test
+        angular.mock.module("app.codeCharta.ui.legendPanel");
 
-        angular.module("app.codeCharta.codeMap").factory("codeMapMaterialFactory", () => {
-            return {
-                positive: () => {return new THREE.MeshLambertMaterial({color: 0x000000});},
-                neutral: () => {return new THREE.MeshLambertMaterial({color: 0x111111});},
-                negative: () => {return new THREE.MeshLambertMaterial({color: 0x222222});},
-                odd: () => {return new THREE.MeshLambertMaterial({color: 0x333333});},
-                even: () => {return new THREE.MeshLambertMaterial({color: 0x444444});},
-                selected: () => {return new THREE.MeshLambertMaterial({color: 0x555555});},
-                default: () => {return new THREE.MeshLambertMaterial({color: 0x777777});},
-                positiveDelta: () => {return new THREE.MeshLambertMaterial({color: 0x888888});},
-                negativeDelta: () => {return new THREE.MeshLambertMaterial({color: 0x999999});}
-            }
-        });
+        //build a module dependent on the module under test and the specific controller under test
+        angular.module("sut", ["app.codeCharta.ui.legendPanel"])
+            .controller("legendPanelController", LegendPanelController);
+
+        //mock it
+        angular.mock.module("sut");
 
     });
 
-    beforeEach(angular.mock.inject((_codeMapMaterialFactory_,_$timeout_, _settingsService_, _dataService_, _$rootScope_, $controller)=>{
+
+    beforeEach(angular.mock.inject((_$timeout_, _settingsService_, _dataService_, _$rootScope_, $controller)=>{
         dataService = _dataService_;
         scope = _$rootScope_;
-        codeMapMaterialFactory = _codeMapMaterialFactory_;
         settingsService = _settingsService_;
         timeout = _$timeout_;
-        legendPanelController = $controller("legendPanelController", {$scope: scope, dataService: dataService, codeMapMaterialFactory: codeMapMaterialFactory, settingsService:settingsService, $timeout: timeout});
+        legendPanelController = $controller("legendPanelController", {$scope: scope, dataService: dataService, settingsService:settingsService, $timeout: timeout, $element: "<div></div>"});
     }));
-
-    it("should have correct values in scope", ()=>{
-        expect(legendPanelController.mats).to.equal(codeMapMaterialFactory);
-    });
 
     it("generate pixel in base64",()=>{
         expect(legendPanelController.generatePixel("some color value")).to.equal("data:image/gif;base64,R0lGODlhAQABAPAAsome color value/yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==");

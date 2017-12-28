@@ -13,20 +13,60 @@
     "height": 768
   },
   "scripts": {
-    "postinstall": "grunt build",
-    "start": "nw",
-    "build": "grunt build",
-    "test": "grunt test",
-    "test:auto": "grunt test:auto",
+    "start": "export NODE_ENV=development && nw",
+    "build": "export NODE_ENV=production && grunt build",
+    "test": "export NODE_ENV=testing && jest --runInBand",
+    "test:auto": "export NODE_ENV=testing && jest --watch",
+    "test:updateSnaps": "export NODE_ENV=testing && jest --updateSnapshot",
     "doc": "grunt doc",
-    "package": "grunt package",
-    "serve": "grunt serve"
+    "package": "export NODE_ENV=production && grunt package",
+    "serve": "export NODE_ENV=development && grunt serve",
+    "test:updateWebdriver": "export NODE_ENV=testing && webdriver-manager update",
+    "test:startWebdriver": "export NODE_ENV=testing && webdriver-manager start",
+    "test:e2e": "export NODE_ENV=testing && protractor ./conf/protractor.js"
   },
   "bin": {
     "codecharta": "./script/npm-start.sh"
   },
   "license": "BSD-3-Clause",
+  "jest": {
+    "collectCoverage": true,
+    "coverageDirectory": "<rootDir>/dist/coverage",
+    "coveragePathIgnorePatterns": [
+      "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx)$",
+      "<rootDir>/app/ng.mockhelper.ts"
+    ],
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "roots": [
+      "<rootDir>/app"
+    ],
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "<rootDir>/app"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "tsconfig.json",
+        "skipBabel": false
+      }
+    }
+  },
   "dependencies": {
+    "@types/angular": "^1.6.32",
+    "@types/angular-mocks": "^1.5.11",
+    "@types/d3": "^4.12.0",
+    "@types/d3-hierarchy": "^1.1.0",
+    "@types/jest": "^21.1.4",
+    "@types/node": "^8.0.46",
+    "@types/sinon": "^2.3.5",
     "@types/three": "^0.84.27",
     "ajv": "^5.2.2",
     "angular": "^1.6.0",
@@ -46,6 +86,7 @@
     "babel-cli": "^6.18.0",
     "babel-core": "^6.24.0",
     "babel-loader": "^7.1.2",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
     "babel-preset-es2015": "^6.18.0",
     "babel-register": "^6.18.0",
     "browser-sync": "^2.18.13",
@@ -62,11 +103,13 @@
     "grunt-exec": "1.0.1",
     "grunt-force-task": "^2.0.0",
     "grunt-nw-builder": "^3.1.0",
+    "grunt-typedoc": "^0.2.4",
     "grunt-webpack": "^3.0.2",
     "html-loader": "^0.5.1",
     "html-webpack-plugin": "^2.30.1",
     "istanbul": "^1.1.0-alpha.1",
     "jasmine-core": "^2.8.0",
+    "jest": "^21.2.1",
     "json-loader": "^0.5.7",
     "karma": "^1.7.0",
     "karma-chai": "^0.1.0",
@@ -84,17 +127,19 @@
     "load-grunt-tasks": "^3.5.2",
     "mocha": "^3.2.0",
     "ng-annotate-loader": "^0.6.1",
-    "nw": "^0.20.3",
+    "nw": "^0.26.3",
     "path": "^0.12.7",
     "phantomjs": "^2.1.7",
+    "protractor": "^5.2.1",
     "script-loader": "^0.7.0",
-    "sinon": "^1.17.7",
-    "sinon-chai": "^2.13.0",
+    "sinon": "^4.0.1",
     "style-loader": "^0.18.2",
     "time-grunt": "^1.4.0",
+    "ts-jest": "^21.1.3",
     "ts-loader": "^2.3.6",
+    "typedoc": "^0.9.0",
     "typescript": "^2.5.2",
-    "webpack": "^3.5.5",
+    "webpack": "^3.8.1",
     "webpack-glsl-loader": "^1.0.1"
   }
 }

@@ -3,7 +3,7 @@ require("./fileChooser.js");
 /**
  * @test {FileChooserController}
  */
-describe("app.codeCharta.ui.fileChooser.fileChooserController", function() {
+xdescribe("app.codeCharta.ui.fileChooser.fileChooserController", function() {
 
     var dataService, dataLoadingService, scenarioService, fileChooserController, $controller, $httpBackend, $rootScope, originalReader;
 
