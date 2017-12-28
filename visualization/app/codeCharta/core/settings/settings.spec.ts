@@ -6,7 +6,7 @@ import sinon from "sinon";
 /**
  * @test {SettingsService}
  */
-describe("settings.service", function() {
+xdescribe("settings.service", function() {
 
     var validData;
 
