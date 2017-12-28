@@ -4,25 +4,25 @@
 
 <div id="legendPanel">
     <div class="legendInfo">
-      Area: {{ctrl.areaMetric}}<br/>
-      Height: {{ctrl.heightMetric}}<br/>
-      Color: {{ctrl.colorMetric}}
+      Area:{{$ctrl.operation}} {{$ctrl.areaMetric}}<br/>
+      Height:{{$ctrl.operation}} {{$ctrl.heightMetric}}<br/>
+      Color:{{$ctrl.operation}} {{$ctrl.colorMetric}}
     </div>
     <div class="chip">
         <img id="green">
-        <span ng-if="!ctrl.range.flipped">0 to &lt; {{ctrl.range.from}}</span>
-        <span ng-if="ctrl.range.flipped">&gt; {{ctrl.range.to}} to Infinite</span>
+        <span ng-if="!$ctrl.range.flipped">0 to &lt; {{$ctrl.range.from}}</span>
+        <span ng-if="$ctrl.range.flipped">&gt; {{$ctrl.range.to}} to Infinite</span>
     </div>
     </br>
     <div class="chip">
         <img id="yellow">
-        &ge; {{ctrl.range.from}} to &le; {{ctrl.range.to}}
+        &ge; {{$ctrl.range.from}} to &le; {{$ctrl.range.to}}
     </div>
     </br>
     <div class="chip">
         <img id="red">
-        <span ng-if="!ctrl.range.flipped">&gt; {{ctrl.range.to}} to Infinite</span>
-        <span ng-if="ctrl.range.flipped">0 to &lt; {{ctrl.range.from}}</span>
+        <span ng-if="!$ctrl.range.flipped">&gt; {{$ctrl.range.to}} to Infinite</span>
+        <span ng-if="$ctrl.range.flipped">0 to &lt; {{$ctrl.range.from}}</span>
     </div>
     <br />‚
     <div class="chip">
