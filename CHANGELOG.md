@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Opening the same file a second time does not work #53
 - added missing require declaration
 - added glsl loader in testing environment
+- Native Application support is bugged while building in Travis CI #48
 
 ## [1.5.1] - 2017-11-14
 ### Added
