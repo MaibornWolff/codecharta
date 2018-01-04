@@ -19,10 +19,10 @@ module.exports = function (grunt) {
             build: {
                 options: {
                     module: 'es2015',
+                    exclude: '**/*.spec.ts',
                     target: 'es2016',
                     out: 'dist/docs/',
-                    name: 'CodeCharta',
-                    exclude: 'app/**/*.spec.ts'
+                    name: 'CodeCharta'
                 },
                 src: 'app/**/*.ts'
             }
