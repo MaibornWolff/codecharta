@@ -2,7 +2,7 @@ import "./data.module";
 import {NGMock} from "../../../ng.mockhelper";
 import DoneCallback = jest.DoneCallback;
 import {DataValidatorService} from "./data.validator.service";
-import {TEST_FILE_DATA} from "./data.mocks";
+import {TEST_FILE_CONTENT, TEST_FILE_DATA} from "./data.mocks";
 import {CodeMap} from "./model/CodeMap";
 
 /**
@@ -21,12 +21,24 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
         dataValidatorService = _dataValidatorService_;}));
 
     beforeEach(()=> {
-        file = TEST_FILE_DATA;
+        file = TEST_FILE_CONTENT;
+    });
+
+    it("should not reject a file when numbers are floating point values", (done: DoneCallback)=> {
+        file.nodes[0].children[0].attributes["RLOC"] = 333.4;
+        dataValidatorService.validate(file).then(
+            ()=> {
+                done();
+            },
+            ()=> {
+                done.fail("should accept floats");
+            }
+        );
     });
 
     it("should reject when children are not unique in name ", (done: DoneCallback)=> {
-        file.root.children[0].name = "same";
-        file.root.children[1].name = "same";
+        file.nodes[0].children[0].name = "same";
+        file.nodes[0].children[1].name = "same";
         dataValidatorService.validate(file).then(
             ()=> {
                 done.fail("should reject")
@@ -37,8 +49,8 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
         );
     });
 
-    it("should reject when children are empty", (done: DoneCallback)=> {
-        file.root.children = [];
+    it("should reject when nodes are empty", (done: DoneCallback)=> {
+        file.nodes = [];
         dataValidatorService.validate(file).then(
             ()=> {
                 done.fail("should reject")
@@ -50,8 +62,8 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
     });
 
     it("should reject if root is not a node and therefore has no name or id", (done: DoneCallback)=> {
-        file.root = {
-            name: "name"
+        file.nodes[0] = {
+            something: "something"
         };
         dataValidatorService.validate(file).then(
             ()=> {
@@ -64,7 +76,7 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
     });
 
     it("attributes should not allow whitespaces", (done: DoneCallback)=> {
-        file.root.attributes = {
+        file.nodes[0].attributes = {
             "tes t1": 0
         };
         dataValidatorService.validate(file).then(
@@ -78,7 +90,7 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
     });
 
     it("attributes should not allow special characters", (done: DoneCallback)=> {
-        file.root.attributes = {
+        file.nodes[0].attributes = {
             "tes)t1": 0
         };
         dataValidatorService.validate(file).then(
