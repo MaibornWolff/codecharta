@@ -166,7 +166,7 @@
   },
   "optionalDependencies": {
     "7zip-bin-mac": "^1.0.1",
-    "7zip-bin-win": "^1.0.1",
-    "7zip-bin-linux": "^1.0.1"
+    "7zip-bin-win": "^2.1.1",
+    "7zip-bin-linux": "^1.2.0"
   }
 }
