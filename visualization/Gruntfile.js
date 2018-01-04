@@ -15,8 +15,6 @@ module.exports = function (grunt) {
 
         webpack: require("./conf/grunt.webpack.config.js"),
 
-        nwjs: require("./conf/grunt.nwjs.config.js"),
-
         typedoc: {
             build: {
                 options: {
@@ -30,57 +28,26 @@ module.exports = function (grunt) {
             }
         },
 
+        exec: {
+            nwjs_package: "build --concurrent --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --mirror https://dl.nwjs.io/ ."
+        },
+
         clean: {
             dist: [paths.dist],
             webpack: [paths.bundlePath],
             doc: [paths.docPath],
-            packageTmp: [paths.packagePath + "/CodeCharta"],
             package: [paths.packagePath]
         },
 
         compress: {
             web: {
                 options: {
-                    archive: paths.packagePath + '/codecharta-web.zip'
+                    archive: paths.packagePath + '/CodeCharta-' + grunt.file.readJSON('package.json').version + '-web.zip'
                 },
                 files: [
                     {expand: true, cwd:"./dist/webpack/", src: ['**/*'], dest: '.'}
                 ]
-            },
-            linux32: {
-                options: {
-                    archive: paths.packagePath + '/codecharta-visualization-linux32.zip'
-                },
-                files: [
-                    {expand: true, cwd: paths.packagePath + '/CodeCharta/linux32/', src: ['**/*'], dest: '.'}
-                ]
-            },
-            linux64: {
-                options: {
-                    archive: paths.packagePath + '/codecharta-visualization-linux64.zip'
-                },
-                files: [
-                    {expand: true, cwd: paths.packagePath + '/CodeCharta/linux64/', src: ['**/*'], dest: '.'}
-                ]
-            },
-
-            win32: {
-                options: {
-                    archive: paths.packagePath + '/codecharta-visualization-win32.zip'
-                },
-                files: [
-                    {expand: true, cwd:paths.packagePath + '/CodeCharta/win32/', src: ['**/*'], dest: '.'}
-                ]
-            },
-            win64: {
-                options: {
-                    archive: paths.packagePath + '/codecharta-visualization-win64.zip'
-                },
-                files: [
-                    {expand: true, cwd: paths.packagePath + '/CodeCharta/win64/', src: ['**/*'], dest: '.'}
-                ]
             }
-
         }
 
     });
@@ -89,7 +56,7 @@ module.exports = function (grunt) {
     grunt.registerTask("default", ["build"]);
     grunt.registerTask("build", ["clean:webpack", "webpack:prod"]);
     grunt.registerTask("serve", ["clean:webpack", "webpack:dev"]);
-    grunt.registerTask("package", ["clean:package", "nwjs", "compress", "clean:packageTmp"]);
+    grunt.registerTask("package", ["clean:package", "exec:nwjs_package", "compress"]);
     grunt.registerTask("doc", ["clean:doc", "typedoc"]);
 
 };
