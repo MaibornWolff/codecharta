@@ -17,7 +17,9 @@
     "output": "./dist/packages",
     "files": "./dist/webpack/**/*",
     "packed": true,
-    "targets": ["zip"],
+    "targets": [
+      "zip"
+    ],
     "appId": "io.github.maibornwolff.codecharta",
     "win": {
       "companyName": "MaibornWolff GmbH",
@@ -147,7 +149,6 @@
     "load-grunt-tasks": "^3.5.2",
     "mocha": "^3.2.0",
     "ng-annotate-loader": "^0.6.1",
-    "nw": "^0.26.3",
     "nwjs-builder-phoenix": "^1.14.6",
     "path": "^0.12.7",
     "phantomjs": "^2.1.7",
@@ -162,5 +163,10 @@
     "typescript": "^2.5.2",
     "webpack": "^3.8.1",
     "webpack-glsl-loader": "^1.0.1"
+  },
+  "optionalDependencies": {
+    "7zip-bin-mac": "^1.0.1",
+    "7zip-bin-win": "^1.0.1",
+    "7zip-bin-linux": "^1.0.1"
   }
 }
