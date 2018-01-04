@@ -12,18 +12,33 @@
     "width": 1024,
     "height": 768
   },
+  "build": {
+    "nwVersion": "0.27.3",
+    "output": "./dist/packages",
+    "files": "./dist/webpack/**/*",
+    "packed": true,
+    "targets": ["zip"],
+    "appId": "io.github.maibornwolff.codecharta",
+    "win": {
+      "companyName": "MaibornWolff GmbH",
+      "icon": "app/icon.ico"
+    },
+    "mac": {
+      "icon": "app/icon.icns"
+    }
+  },
   "scripts": {
-    "start": "export NODE_ENV=development && nw",
+    "start": "run --mirror https://dl.nwjs.io/ .",
     "build": "export NODE_ENV=production && grunt build",
     "test": "export NODE_ENV=testing && jest --runInBand",
     "test:auto": "export NODE_ENV=testing && jest --watch",
     "test:updateSnaps": "export NODE_ENV=testing && jest --updateSnapshot",
     "doc": "grunt doc",
-    "package": "export NODE_ENV=production && grunt package",
     "serve": "export NODE_ENV=development && grunt serve",
     "test:updateWebdriver": "export NODE_ENV=testing && webdriver-manager update",
     "test:startWebdriver": "export NODE_ENV=testing && webdriver-manager start",
-    "test:e2e": "export NODE_ENV=testing && protractor ./conf/protractor.js"
+    "test:e2e": "export NODE_ENV=testing && protractor ./conf/protractor.js",
+    "package": "grunt package"
   },
   "bin": {
     "codecharta": "./script/npm-start.sh"
@@ -133,6 +148,7 @@
     "mocha": "^3.2.0",
     "ng-annotate-loader": "^0.6.1",
     "nw": "^0.26.3",
+    "nwjs-builder-phoenix": "^1.14.6",
     "path": "^0.12.7",
     "phantomjs": "^2.1.7",
     "protractor": "^5.2.1",
