@@ -9,7 +9,7 @@ import $ from "jquery";
  */
 export class RevisionChooserController implements DataServiceSubscriber{
 
-    private revisions: CodeMap[];
+    public revisions: CodeMap[];
     public visible: boolean = false;
 
     /* @ngInject */
@@ -23,10 +23,8 @@ export class RevisionChooserController implements DataServiceSubscriber{
         private dataService: DataService,
         private settingsService: SettingsService
     ) {
-
         this.revisions = dataService.data.revisions;
         dataService.subscribe(this);
-
     }
 
     /**
