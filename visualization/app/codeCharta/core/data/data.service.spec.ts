@@ -38,7 +38,7 @@ describe("app.codeCharta.core.data.dataService", function() {
     it("should find all metrics, even in child nodes", () => {
         let sut = dataService;
         sut.setMap(data, 0);
-        expect(sut.data.metrics.length).toBe(3);
+        expect(sut.data.metrics.length).toBe(4);
     });
 
     it("should retrieve instance", ()=>{
