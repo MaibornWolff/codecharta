@@ -68,6 +68,7 @@ export class DeltaCalculatorService {
 
             this.insertLeftIntoRightWithZeroMetrics(leftRoot, rightRoot);
             this.insertLeftIntoRightWithZeroMetrics(rightRoot, leftRoot);
+
             return {leftMap: leftMapCopy, rightMap: rightMapCopy};
 
         } else {
@@ -114,6 +115,7 @@ export class DeltaCalculatorService {
                 if (!leftChildExistsInRight) {
                     let copy = this.deepcopy(leftChild);
                     right.data.children.push(copy.data);
+                    console.log("INSERT");
                 } else {
                     // if left child exists in right nodes children, skip, since we only look for direct children
                     right.children.forEach((rightChildInner) => {

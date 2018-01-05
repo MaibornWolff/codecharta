@@ -7,6 +7,8 @@ import {
 } from "../../codeMap/threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera} from "three";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
+import {DeltaCalculatorService} from "../data/data.deltaCalculator.service";
+import * as d3 from "d3";
 
 export interface Settings {
 
@@ -34,9 +36,11 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
     private _settings: Settings;
 
+    private _lastDeltaState = false;
+
     /* ngInject */
     constructor(private urlService, private dataService: DataService, private $rootScope,
-                private threeOrbitControlsService: ThreeOrbitControlsService, private statisticMapService) {
+                private threeOrbitControlsService: ThreeOrbitControlsService, private statisticMapService, private deltaCalculatorService: DeltaCalculatorService) {
 
         let ctx = this;
 
@@ -69,6 +73,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             x: 0, y: 300, z: 1000
         };
 
+        this._lastDeltaState = false;
+
         return {
             map: referenceMap,
             neutralColorRange: r,
@@ -85,6 +91,34 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
     }
 
+    private onActivateDeltas() {
+        this.applyNodeMerging();
+    }
+
+    private applyNodeMerging() {
+        //TODO this is data manipulation which should be delegated to data service itself
+        let result = this.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(
+            this.deltaCalculatorService.removeUpCrossOriginNodes(this.dataService.data.referenceMap),
+            this.deltaCalculatorService.removeUpCrossOriginNodes(this.dataService.data.comparisonMap));
+
+        //recalculate deltas on maps
+        this.deltaCalculatorService.decorateMapsWithDeltas(result.leftMap, result.rightMap);
+
+        //The left map is the map to be rendered
+        this._settings.map = result.leftMap;
+
+        //we should write back map changes to dataService, no need to call notify and make an infinite loop
+        this.dataService.data.referenceMap = this._settings.map;
+    }
+
+    private onDeactivateDeltas() {
+        this.deactivateNodeMerging();
+    }
+
+    private deactivateNodeMerging() {
+        this.dataService.setReferenceMap();
+    }
+
     /**
      * change the map and metric settings according to the parameter.
      * @listens {data-changed} called on data-changed
@@ -95,10 +129,13 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         this._settings.map = data.referenceMap;
 
+        if(this._settings.deltas){
+            this.applyNodeMerging();
+        }
+
         if (data.metrics.indexOf(this._settings.areaMetric) === -1) {
             //area metric is not set or not in the new metrics and needs to be chosen
             this._settings.areaMetric = this.getMetricByIdOrLast(0, data.metrics);
-
         }
 
         if (data.metrics.indexOf(this._settings.heightMetric) === -1) {
@@ -135,6 +172,17 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      * @emits {settings-changed} on call
      */
     private onSettingsChanged() {
+
+        if (this._lastDeltaState && !this._settings.deltas) {
+            this._lastDeltaState = false;
+            this.onDeactivateDeltas();
+        } else
+
+        if (!this._lastDeltaState && this._settings.deltas) {
+            this._lastDeltaState = true;
+            this.onActivateDeltas();
+        }
+
         this.$rootScope.$broadcast("settings-changed", this._settings);
     }
 
@@ -159,7 +207,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
                     const res = ctx.urlService.getParam(prefix + i);
 
-                    if(res) {
+                    if (res) {
 
                         if (res == "true") {
                             obj[i] = true;
