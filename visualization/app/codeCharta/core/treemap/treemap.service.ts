@@ -56,9 +56,7 @@ class TreeMapService {
             this.transformNode(node, heightKey, heightScale, 2);
         });
 
-        return nodes.filter(function (el: any) {
-            return el.value > 0 && el.width > 0 && el.height > 0 && el.length > 0;
-        }); //dont draw invisble nodes (for the current metrics)
+        return nodes;
     }
 
     /**

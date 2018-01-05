@@ -9,6 +9,7 @@ import {PerspectiveCamera} from "three";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
 import {DeltaCalculatorService} from "../data/data.deltaCalculator.service";
 import * as d3 from "d3";
+import {DataDecoratorService} from "../data/data.decorator.service";
 
 export interface Settings {
 
@@ -40,7 +41,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
     /* ngInject */
     constructor(private urlService, private dataService: DataService, private $rootScope,
-                private threeOrbitControlsService: ThreeOrbitControlsService, private statisticMapService, private deltaCalculatorService: DeltaCalculatorService) {
+                private threeOrbitControlsService: ThreeOrbitControlsService, private statisticMapService, private deltaCalculatorService: DeltaCalculatorService,
+                private dataDecoratorService: DataDecoratorService) {
 
         let ctx = this;
 
@@ -101,8 +103,10 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             this.deltaCalculatorService.removeUpCrossOriginNodes(this.dataService.data.referenceMap),
             this.deltaCalculatorService.removeUpCrossOriginNodes(this.dataService.data.comparisonMap));
 
+        this.dataDecoratorService.decorateMapWithUnaryMetric(result.leftMap);
+
         //recalculate deltas on maps
-        this.deltaCalculatorService.decorateMapsWithDeltas(result.leftMap, result.rightMap);
+        this.deltaCalculatorService.decorateMapsWithDeltas(result.leftMap, this.dataService.data.comparisonMap);
 
         //The left map is the map to be rendered
         this._settings.map = result.leftMap;

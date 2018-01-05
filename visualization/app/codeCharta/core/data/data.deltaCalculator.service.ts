@@ -141,20 +141,20 @@ export class DeltaCalculatorService {
         let copy: HierarchyNode<CodeMapNode> = deepcopy.default(nodes.copy()); //Hm this seems to be doing the right thing. First shallow copy then a deep copy ?!
 
         //make own attributes 0
-        //for (let property in copy.data.attributes) {
-        //    if (copy.data.attributes.hasOwnProperty(property)) {
-        //        //TODO copy.data.attributes[property] = 0;
-        //    }
-        //}
-//
+        for (let property in copy.data.attributes) {
+            if (copy.data.attributes.hasOwnProperty(property)) {
+                copy.data.attributes[property] = 0;
+            }
+        }
+
         ////make all ancestors attributes 0
-        //copy.each((node) => {
-        //    for (var property in node.data.attributes) {
-        //        if (node.data.attributes.hasOwnProperty(property)) {
-        //            //TODO node.data.attributes[property] = 0;
-        //        }
-        //    }
-        //});
+        copy.each((node) => {
+            for (var property in node.data.attributes) {
+                if (node.data.attributes.hasOwnProperty(property)) {
+                    node.data.attributes[property] = 0;
+                }
+            }
+        });
 
         return copy;
 
