@@ -4,6 +4,7 @@ import DoneCallback = jest.DoneCallback;
 import {CodeMap} from "./model/CodeMap";
 import {TEST_FILE_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B} from "./data.mocks";
 import {DeltaCalculatorService} from "./data.deltaCalculator.service";
+import {DataDecoratorService} from "./data.decorator.service";
 
 /**
  * @test {DataService}
@@ -21,6 +22,26 @@ describe("app.codeCharta.core.data.dataService", function() {
     beforeEach(function() {
         a = TEST_DELTA_MAP_A;
         b = TEST_DELTA_MAP_B;
+    });
+
+    it("additionalLeaf from map b should exist in a after calling fillMapsWithNonExistingNodesFromOtherMap", ()=>{
+
+        let dds = new DataDecoratorService();
+        dds.decorateMapWithOriginAttribute(a);
+        dds.decorateMapWithOriginAttribute(b);
+
+        a.root.children[0].origin = "blas";
+
+        let result = deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(a, b);
+        let da = result.leftMap;
+        let db = result.rightMap;
+
+        expect(da.root.children[2].name).toBe("additional leaf");
+        expect(db.root.children[1].name).toBe("additional leaf");
+
+        expect(da.root.children[2].attributes.rloc).toBe(10);
+        expect(db.root.children[1].attributes.rloc).toBe(10);
+
     });
 
     it("should result in expected delta maps", ()=>{
