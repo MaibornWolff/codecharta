@@ -6,6 +6,7 @@ import {IRootScopeService, IAngularEvent} from "angular";
 import {DeltaCalculatorService} from "./data.deltaCalculator.service";
 import {DataDecoratorService} from "./data.decorator.service";
 import {HierarchyNode} from "d3-hierarchy";
+import {SettingsService} from "../settings/settings.service";
 
 export interface DataModel {
 
@@ -26,6 +27,7 @@ export interface DataServiceSubscriber {
 export class DataService {
 
     private _data: DataModel;
+    private _lastReferenceIndex = 0;
 
     /* @ngInject */
     constructor(private $rootScope: IRootScopeService,
@@ -51,7 +53,7 @@ export class DataService {
         });
     }
 
-    private notify() {
+    public notify() {
         this.$rootScope.$broadcast("data-changed", this._data);
     }
 
@@ -63,7 +65,7 @@ export class DataService {
     public setMap(map: CodeMap, revision: number) {
         this._data.revisions[revision] = map;
         this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.revisions[revision]);
-        this.setComparisonMap(revision);
+        this.setReferenceMap(revision);
     }
 
     /**
@@ -98,12 +100,11 @@ export class DataService {
     }
 
     /**
-     * Selects and sets the first map to compare.
+     * Selects and sets the first map to compare.  this is the map which is substracted from the main map
      * @param {number} index the maps index in the revisions array
      */
     public setComparisonMap(index: number) {
         if (this._data.revisions[index] !== null) {
-
             this._data.comparisonMap = this._data.revisions[index];
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.comparisonMap);
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.referenceMap);
@@ -114,12 +115,12 @@ export class DataService {
     }
 
     /**
-     * Selects and sets the second map to compare.
+     * Selects and sets the second map to compare. this is the main visible map
      * @param {number} index the maps index in the revisions array
      */
-    public setReferenceMap(index: number) {
+    public setReferenceMap(index: number = this._lastReferenceIndex) {
         if (this._data.revisions[index] !== null) {
-
+            this._lastReferenceIndex = index;
             this._data.referenceMap = this._data.revisions[index];
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.comparisonMap);
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.referenceMap);
@@ -128,4 +129,5 @@ export class DataService {
             this.notify();
         }
     }
+
 }
