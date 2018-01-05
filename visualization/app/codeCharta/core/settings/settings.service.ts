@@ -120,6 +120,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     }
 
     private deactivateNodeMerging() {
+        this.dataService.setComparisonMap();
         this.dataService.setReferenceMap();
     }
 

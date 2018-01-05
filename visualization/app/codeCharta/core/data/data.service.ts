@@ -103,7 +103,7 @@ export class DataService {
      * Selects and sets the first map to compare.  this is the map which is substracted from the main map
      * @param {number} index the maps index in the revisions array
      */
-    public setComparisonMap(index: number) {
+    public setComparisonMap(index: number = this._lastReferenceIndex) { //this allows to reset delta values when switching back from delta view
         if (this._data.revisions[index] !== null) {
             this._data.comparisonMap = this._data.revisions[index];
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.comparisonMap);
