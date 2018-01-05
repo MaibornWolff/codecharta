@@ -106,7 +106,15 @@ export class DataService {
             this._data.comparisonMap = this._data.revisions[index];
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.comparisonMap);
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.referenceMap);
+            this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.comparisonMap);
+            this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.referenceMap);
             this.deltaCalculatorService.decorateMapsWithDeltas(this._data.comparisonMap, this._data.referenceMap);
+
+            //TODO display node origin
+            //TODO make this toggleable since two huge different maps result in two even bigger maps (performance)
+            //let nodeMerge = this.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(this._data.comparisonMap, this._data.referenceMap);
+            //this._data.referenceMap = nodeMerge.rightMap;
+            //this._data.comparisonMap = nodeMerge.leftMap;
             this.notify();
         }
     }
@@ -121,7 +129,15 @@ export class DataService {
             this._data.referenceMap = this._data.revisions[index];
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.comparisonMap);
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.referenceMap);
+            this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.comparisonMap);
+            this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.referenceMap);
             this.deltaCalculatorService.decorateMapsWithDeltas(this._data.comparisonMap, this._data.referenceMap);
+
+            //TODO display node origin
+            //TODO make this toggleable since two huge different maps result in two even bigger maps (performance)
+            //let nodeMerge = this.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(this._data.comparisonMap, this._data.referenceMap);
+            //this._data.referenceMap = nodeMerge.rightMap;
+            //this._data.comparisonMap = nodeMerge.leftMap;
             this.notify();
         }
     }

@@ -86,6 +86,7 @@ class TreeMapService {
             node.deltas = node.data.deltas;
         }
         node.link = node.data.link;
+        node.origin = node.data.origin;
 
         node.data = {};
         delete node.data;

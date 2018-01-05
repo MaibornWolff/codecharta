@@ -5,6 +5,11 @@
     "attributes": {},
     "children": [
       {
+        "name": "sample1 only leaf",
+        "attributes": {"rloc": 400, "functions": 10, "mcc": 100},
+        "link": "http://www.google.de"
+      },
+      {
         "name": "big leaf",
         "attributes": {"rloc": 100, "functions": 10, "mcc": 1},
         "link": "http://www.google.de"

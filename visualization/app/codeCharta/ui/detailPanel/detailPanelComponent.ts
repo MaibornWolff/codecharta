@@ -19,7 +19,8 @@ interface SpecificDetails {
     heightDelta: number | null,
     areaDelta: number | null,
     colorDelta: number | null,
-    link: string | null
+    link: string | null,
+    origin: string | null
 }
 
 interface Details {
@@ -52,7 +53,8 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
                 heightDelta: null,
                 areaDelta: null,
                 colorDelta: null,
-                link: null
+                link: null,
+                origin: null
             },
             selected: {
                 name: null,
@@ -62,7 +64,8 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
                 heightDelta: null,
                 areaDelta: null,
                 colorDelta: null,
-                link: null
+                link: null,
+                origin: null
             }
         };
 
@@ -152,6 +155,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
             this.details.hovered.areaDelta = hovered.deltas ? hovered.deltas[this.details.common.areaAttributeName] : null;
             this.details.hovered.colorDelta = hovered.deltas ? hovered.deltas[this.details.common.colorAttributeName] : null;
             this.details.hovered.link = hovered.link;
+            this.details.hovered.origin = hovered.origin;
         }.bind(this));
     }
 
@@ -169,6 +173,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
             this.details.selected.areaDelta = selected.deltas ? selected.deltas[this.details.common.areaAttributeName] : null;
             this.details.selected.colorDelta = selected.deltas ? selected.deltas[this.details.common.colorAttributeName] : null;
             this.details.selected.link = selected.link;
+            this.details.selected.origin = selected.origin;
         }.bind(this));
     }
 
@@ -185,6 +190,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
             this.details.hovered.areaDelta = null;
             this.details.hovered.colorDelta = null;
             this.details.hovered.link = null;
+            this.details.hovered.origin = null;
         }.bind(this));
     }
 
@@ -201,6 +207,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
             this.details.selected.areaDelta = null;
             this.details.selected.colorDelta = null;
             this.details.selected.link = null;
+            this.details.selected.origin = null;
         }.bind(this));
     }
 

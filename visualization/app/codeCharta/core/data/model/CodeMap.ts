@@ -7,7 +7,8 @@ export interface CodeMapNode {
     deltas?: {
         [key: string]: number
     },
-    link?: string
+    link?: string,
+    origin?: string
 }
 
 export interface CodeMap {
