@@ -6,12 +6,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
+- the file origin of a node is displayed in the details now
 
 ### Changed
+- two selected delta maps now merge their nodes correctly. The map where 
+a node was missing get's a copy of this node with metrics=0. 
+File additions/deletions are therefore only visible when areaMetric is 
+unary and deltas are activated.
 
 ### Removed
 
 ### Fixed
+- delta display bug for heights
+- going back from delta view now correctly removes deltas from node data
 
 ## [1.5.2] - 2018-01-04
 ### Added

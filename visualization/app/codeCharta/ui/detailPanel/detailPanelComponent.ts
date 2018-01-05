@@ -148,12 +148,16 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
     setHoveredDetails(hovered) {
         this.$timeout(function () {
             this.details.hovered.name = hovered.name;
-            this.details.hovered.area = hovered.attributes ? hovered.attributes[this.details.common.areaAttributeName] : null;
-            this.details.hovered.height = hovered.attributes ? hovered.attributes[this.details.common.heightAttributeName] : null;
-            this.details.hovered.color = hovered.attributes ? hovered.attributes[this.details.common.colorAttributeName] : null;
-            this.details.hovered.heightDelta = hovered.deltas && hovered.deltas.length ? hovered.deltas[this.details.common.heightAttributeName] : null;
-            this.details.hovered.areaDelta = hovered.deltas ? hovered.deltas[this.details.common.areaAttributeName] : null;
-            this.details.hovered.colorDelta = hovered.deltas ? hovered.deltas[this.details.common.colorAttributeName] : null;
+            if(hovered.deltas != undefined){
+                this.details.hovered.heightDelta = hovered.deltas ? hovered.deltas[this.details.common.heightAttributeName] : null;
+                this.details.hovered.areaDelta = hovered.deltas ? hovered.deltas[this.details.common.areaAttributeName] : null;
+                this.details.hovered.colorDelta = hovered.deltas ? hovered.deltas[this.details.common.colorAttributeName] : null;
+            }
+            if(hovered.attributes != undefined) {
+                this.details.hovered.area = hovered.attributes ? hovered.attributes[this.details.common.areaAttributeName] : null;
+                this.details.hovered.height = hovered.attributes ? hovered.attributes[this.details.common.heightAttributeName] : null;
+                this.details.hovered.color = hovered.attributes ? hovered.attributes[this.details.common.colorAttributeName] : null;
+            }
             this.details.hovered.link = hovered.link;
             this.details.hovered.origin = hovered.origin;
         }.bind(this));
@@ -166,12 +170,16 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
     setSelectedDetails(selected) {
         this.$timeout(function () {
             this.details.selected.name = selected.name;
-            this.details.selected.area = selected.attributes ? selected.attributes[this.details.common.areaAttributeName] : null;
-            this.details.selected.height = selected.attributes ? selected.attributes[this.details.common.heightAttributeName] : null;
-            this.details.selected.color = selected.attributes ? selected.attributes[this.details.common.colorAttributeName] : null;
-            this.details.selected.heightDelta = selected.deltas ? selected.deltas[this.details.common.heightAttributeName] : null;
-            this.details.selected.areaDelta = selected.deltas ? selected.deltas[this.details.common.areaAttributeName] : null;
-            this.details.selected.colorDelta = selected.deltas ? selected.deltas[this.details.common.colorAttributeName] : null;
+            if(selected.attributes != undefined) {
+                this.details.selected.area = selected.attributes ? selected.attributes[this.details.common.areaAttributeName] : null;
+                this.details.selected.height = selected.attributes ? selected.attributes[this.details.common.heightAttributeName] : null;
+                this.details.selected.color = selected.attributes ? selected.attributes[this.details.common.colorAttributeName] : null;
+            }
+            if(selected.deltas != undefined) {
+                this.details.selected.heightDelta = selected.deltas ? selected.deltas[this.details.common.heightAttributeName] : null;
+                this.details.selected.areaDelta = selected.deltas ? selected.deltas[this.details.common.areaAttributeName] : null;
+                this.details.selected.colorDelta = selected.deltas ? selected.deltas[this.details.common.colorAttributeName] : null;
+            }
             this.details.selected.link = selected.link;
             this.details.selected.origin = selected.origin;
         }.bind(this));
