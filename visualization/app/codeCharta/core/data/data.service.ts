@@ -62,6 +62,7 @@ export class DataService {
      */
     public setMap(map: CodeMap, revision: number) {
         this._data.revisions[revision] = map;
+        this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.revisions[revision]);
         this.setComparisonMap(revision);
     }
 
@@ -102,19 +103,12 @@ export class DataService {
      */
     public setComparisonMap(index: number) {
         if (this._data.revisions[index] !== null) {
-            this.setMetrics(index);
+
             this._data.comparisonMap = this._data.revisions[index];
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.comparisonMap);
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.referenceMap);
-            this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.comparisonMap);
-            this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.referenceMap);
             this.deltaCalculatorService.decorateMapsWithDeltas(this._data.comparisonMap, this._data.referenceMap);
-
-            //TODO display node origin
-            //TODO make this toggleable since two huge different maps result in two even bigger maps (performance)
-            //let nodeMerge = this.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(this._data.comparisonMap, this._data.referenceMap);
-            //this._data.referenceMap = nodeMerge.rightMap;
-            //this._data.comparisonMap = nodeMerge.leftMap;
+            this.setMetrics(index);
             this.notify();
         }
     }
@@ -125,21 +119,13 @@ export class DataService {
      */
     public setReferenceMap(index: number) {
         if (this._data.revisions[index] !== null) {
-            this.setMetrics(index);
+
             this._data.referenceMap = this._data.revisions[index];
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.comparisonMap);
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.referenceMap);
-            this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.comparisonMap);
-            this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.referenceMap);
             this.deltaCalculatorService.decorateMapsWithDeltas(this._data.comparisonMap, this._data.referenceMap);
-
-            //TODO display node origin
-            //TODO make this toggleable since two huge different maps result in two even bigger maps (performance)
-            //let nodeMerge = this.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(this._data.comparisonMap, this._data.referenceMap);
-            //this._data.referenceMap = nodeMerge.rightMap;
-            //this._data.comparisonMap = nodeMerge.leftMap;
+            this.setMetrics(index);
             this.notify();
         }
     }
-
 }

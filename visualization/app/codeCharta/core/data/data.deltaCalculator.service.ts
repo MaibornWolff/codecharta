@@ -63,10 +63,6 @@ export class DeltaCalculatorService {
             let leftMapCopy: CodeMap = deepcopy.default(leftMap);
             let rightMapCopy: CodeMap = deepcopy.default(rightMap);
 
-            //clean up maps
-            leftMapCopy = this.removeUpCrossOriginNodes(leftMapCopy);
-            rightMapCopy = this.removeUpCrossOriginNodes(rightMapCopy);
-
             let leftRoot = d3.hierarchy<CodeMapNode>(leftMapCopy.root);
             let rightRoot = d3.hierarchy<CodeMapNode>(rightMapCopy.root);
 
@@ -85,10 +81,9 @@ export class DeltaCalculatorService {
             let mapCopy: CodeMap = deepcopy.default(map);
 
             let mapRoot = d3.hierarchy<CodeMapNode>(mapCopy.root);
-
             mapRoot.each((node)=>{
                 if(node.data.children) {
-                    node.data.children = node.data.children.filter(x => x.origin === mapCopy.fileName);
+                    node.data.children = node.data.children.filter(x => (x.origin === mapCopy.fileName));
                 }
             });
 
