@@ -24,13 +24,13 @@ describe("app.codeCharta.core.data.dataService", function() {
         b = TEST_DELTA_MAP_B;
     });
 
-    it("additionalLeaf from map b should exist in a after calling fillMapsWithNonExistingNodesFromOtherMap", ()=>{
+    it("additionalLeaf from map b should exist in a after calling fillMapsWithNonExistingNodesFromOtherMap, metrics should be 0", ()=>{
 
         let dds = new DataDecoratorService();
         dds.decorateMapWithOriginAttribute(a);
         dds.decorateMapWithOriginAttribute(b);
 
-        a.root.children[0].origin = "blas";
+        a.root.children[0].origin = "hallo";
 
         let result = deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(a, b);
         let da = result.leftMap;
@@ -39,7 +39,7 @@ describe("app.codeCharta.core.data.dataService", function() {
         expect(da.root.children[2].name).toBe("additional leaf");
         expect(db.root.children[1].name).toBe("additional leaf");
 
-        expect(da.root.children[2].attributes.rloc).toBe(10);
+        expect(da.root.children[2].attributes.rloc).toBe(0);
         expect(db.root.children[1].attributes.rloc).toBe(10);
 
     });
