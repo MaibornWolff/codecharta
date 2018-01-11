@@ -7,7 +7,7 @@ Generates visualisation data from repository (Git or SVN) logs. It supports the 
 | `number_of_commits`  | total number of commits |
 | `weeks_with_commits` | weeks with commits |
 | `number_of_authors`  | number of authors with commits |
-| `code_churn`         | code churn, i.e. number of additions plus deletions to file (git numstat only) |
+| `code_churn`         | code churn, i.e. number of additions plus deletions to file |
 
 Additionally it saves the names of authors when the --add-author flag is set.
 
@@ -15,11 +15,16 @@ Additionally it saves the names of authors when the --add-author flag is set.
 
 ### Creating the repository log for metric generation  
 
-* Git:          `git log --name-status --topo-order`
-* Git Numstat:  `git log --numstat --no-renames`
-* SVN:          `svn log --verbose`
+
+| SCM | Log format | Command for log creation | tracks renames | ignores deleted files | supports code churn | 
+| --- | ---        | ---                      | ---            | ---                   | --- |
+| git | GIT_LOG    | `git log --name-status --topo-order` | yes | yes                  | no  |
+| git | GIT_LOG_NUMSTAT | `git log --numstat --no-renames` | no | no                   | yes |
+| SVN | SVN_LOG    | `svn log --verbose`      | no              | yes                  | no |
+
 
 The generated logs must be in UTF-8 encoding.
+
 
 ### Executing the SCMLogParser
 

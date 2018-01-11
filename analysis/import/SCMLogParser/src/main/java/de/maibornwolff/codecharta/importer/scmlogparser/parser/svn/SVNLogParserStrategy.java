@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser.svn;
 
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogLineCollector;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
-import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
@@ -117,10 +117,27 @@ public class SVNLogParserStrategy implements LogParserStrategy {
 
     Modification parseModification(String fileLine) {
         String metadataWithoutWhitespacePrefix = stripWhitespacePrefix(fileLine);
+        Status status = Status.byCharacter(metadataWithoutWhitespacePrefix.charAt(0));
         String metadataWithoutStatusLetter = metadataWithoutWhitespacePrefix.substring(1);
         String filePath = removeDefaultRepositoryFolderPrefix(metadataWithoutStatusLetter.trim());
-        return ignoreIfRepresentsFolder(new Modification(filePath));
+        return ignoreIfRepresentsFolder(new Modification(filePath, mapStatusToModificationType(status)));
     }
+
+    private Modification.Type mapStatusToModificationType(Status status) {
+        switch (status) {
+            case ADD:
+                return Modification.Type.ADD;
+            case DELETE:
+                return Modification.Type.DELETE;
+            case MODIFY:
+                return Modification.Type.MODIFY;
+            case REPLACE:
+                return Modification.Type.UNKNOWN;
+            default:
+                return Modification.Type.UNKNOWN;
+        }
+    }
+
 
     public Collector<String, ?, Stream<List<String>>> createLogLineCollector() {
         return LogLineCollector.create(SVN_COMMIT_SEPARATOR_TEST);
