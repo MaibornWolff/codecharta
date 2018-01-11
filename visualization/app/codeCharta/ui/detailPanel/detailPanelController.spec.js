@@ -1,40 +1,32 @@
-require("./detailPanel.js");
+require("./detailPanel");
+import {DetailPanelController} from "./detailPanelComponent";
+
 /**
  * @test {DetailPanelController}
  */
-describe("app.codeCharta.ui.detailPanel.detailPanelController", function() {
+xdescribe("app.codeCharta.ui.detailPanel.detailPanelController", function() {
 
-    var detailPanelController, scope, codeMapMaterialFactory, timeout, settingsService;
-
-    beforeEach(angular.mock.module("app.codeCharta.ui.detailPanel"));
+    var detailPanelController, scope, timeout, settingsService;
 
     beforeEach(()=>{
 
-        angular.mock.module("app.codeCharta.codeMap");
+        //mock module under test
+        angular.mock.module("app.codeCharta.ui.detailPanel");
 
-        angular.module("app.codeCharta.codeMap").factory("codeMapMaterialFactory", () => {
-            return {
-                positive: () => {return new THREE.MeshLambertMaterial({color: 0x000000});},
-                neutral: () => {return new THREE.MeshLambertMaterial({color: 0x111111});},
-                negative: () => {return new THREE.MeshLambertMaterial({color: 0x222222});},
-                odd: () => {return new THREE.MeshLambertMaterial({color: 0x333333});},
-                even: () => {return new THREE.MeshLambertMaterial({color: 0x444444});},
-                selected: () => {return new THREE.MeshLambertMaterial({color: 0x555555});},
-                hovered: () => {return new THREE.MeshLambertMaterial({ color: 0x666666, emissive: 0x111111});},
-                default: () => {return new THREE.MeshLambertMaterial({color: 0x777777});},
-                positiveDelta: () => {return new THREE.MeshLambertMaterial({color: 0x888888});},
-                negativeDelta: () => {return new THREE.MeshLambertMaterial({color: 0x999999});}
-            }
-        });
+        //build a module dependent on the module under test and the specific controller under test
+        angular.module("sut", ["app.codeCharta.ui.detailPanel"])
+            .controller("detailPanelController", DetailPanelController);
+
+        //mock it
+        angular.mock.module("sut");
 
     });
 
-    beforeEach(angular.mock.inject((_codeMapMaterialFactory_,_$timeout_, _settingsService_, _$rootScope_, $controller)=>{
+    beforeEach(angular.mock.inject((_$timeout_, _settingsService_, _$rootScope_, $controller)=>{
         scope = _$rootScope_;
-        codeMapMaterialFactory = _codeMapMaterialFactory_;
         settingsService = _settingsService_;
         timeout = _$timeout_;
-        detailPanelController = $controller("detailPanelController", {$scope: scope, $rootScope: scope, codeMapMaterialFactory: codeMapMaterialFactory, settingsService:settingsService, $timeout: timeout});
+        detailPanelController = $controller("detailPanelController", {$scope: scope, $rootScope: scope, settingsService:settingsService, $timeout: timeout});
     }));
 
     /**

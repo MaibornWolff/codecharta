@@ -1,12 +1,17 @@
 {
-  "presets": [
-    "es2015"
-  ],
+  "ignore": [],
   "env": {
-    "test": {
-      "plugins": [
-        "istanbul"
-      ]
+    "testing": {
+      "presets": ["es2015", { "modules": true }],
+      "plugins": []
+    },
+    "production": {
+      "presets": [["es2015", { "modules": "commonjs" }]],
+      "plugins": []
+    },
+    "development": {
+      "presets": [["es2015", { "modules": "commonjs" }]],
+      "plugins": []
     }
   }
 }

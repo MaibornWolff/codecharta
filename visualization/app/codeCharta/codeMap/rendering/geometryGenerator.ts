@@ -1,13 +1,13 @@
 import * as THREE from "three";
-import {node} from "./node.ts";
-import {codeMapGeometricDescription} from "./codeMapGeometricDescription.ts";
-import {codeMapBuilding} from "./codeMapBuilding.ts";
-import {MapColors} from "./renderSettings.ts";
-import {colorRange} from "./renderSettings.ts";
-import {renderSettings} from "./renderSettings.ts";
-import {renderingUtil} from "./renderingUtil.ts";
-import {intermediateVertexData} from "./intermediateVertexData.ts";
-import {boxGeometryGenerationHelper} from "./boxGeometryGenerationHelper.ts";
+import {node} from "./node";
+import {codeMapGeometricDescription} from "./codeMapGeometricDescription";
+import {codeMapBuilding} from "./codeMapBuilding";
+import {MapColors} from "./renderSettings";
+import {colorRange} from "./renderSettings";
+import {renderSettings} from "./renderSettings";
+import {renderingUtil} from "./renderingUtil";
+import {intermediateVertexData} from "./intermediateVertexData";
+import {boxGeometryGenerationHelper} from "./boxGeometryGenerationHelper";
 
 export interface boxMeasures {
     x : number,

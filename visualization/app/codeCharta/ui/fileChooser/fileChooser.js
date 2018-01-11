@@ -1,6 +1,6 @@
 "use strict";
 
-import "../../core/core.js";
+import "../../core/core.module";
 import {FileChooserDirective} from "./fileChooserDirective.js";
 import {FileChooserController} from "./fileChooserController.js";
 import {FileChooserPanelDirective} from "./fileChooserPanelDirective.js";

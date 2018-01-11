@@ -6,13 +6,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public final class NumberOfAuthors implements CommitMetric<Integer> {
-    public static final String NUMBER_OF_AUTHORS = "number_of_authors";
-
     private final Set<String> authors = new HashSet<>();
 
     @Override
     public String metricName() {
-        return NUMBER_OF_AUTHORS;
+        return "number_of_authors";
     }
 
     @Override

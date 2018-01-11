@@ -11,14 +11,14 @@
         "target": "es2016",
         "module": "es2015",
         "moduleResolution": "node",
-        "noImplicitAny": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
+        "noImplicitAny": false,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
         "removeComments": false,
         "preserveConstEnums": true,
         "sourceMap": true,
         "skipLibCheck": true,
-        "allowJs": true,
-        "strictNullChecks": true
+        "allowJs": false,
+        "strictNullChecks": false
     }
 }

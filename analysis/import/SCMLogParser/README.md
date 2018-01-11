@@ -23,13 +23,15 @@ The generated logs must be in UTF-8 encoding.
 
 ### Executing the SCMLogParser
 
-See `ccsh -h` for help.
+See `ccsh -h` for help. Standard usage:
 
-> `ccsh scmlogparser <log file> [--git|--svn] [--add-author] [-o <output file>]`
+> `ccsh scmlogparser <log file> --input-format [GIT_LOG|GIT_LOG_NUMSTAT|SVN_LOG]`
 
-or
+The result is written as JSON to standard out or into the specified output file (if specified by `-o` option).
 
-> `ccsh scmlogparser <log file> --input-format [GIT_LOG|GIT_LOG_NUMSTAT|TSVN_LOG] [--a] [-o <output file>]`
+### Example
 
-
-The result is written as JSON to standard out or into the specified output file.
+* Install the tool
+* git log --numstat --no-renames > log.txt
+* ./ccsh scmlogparser log.txt --input-format GIT_LOG_NUMSTAT -o output.json
+* load output.json in visualization
