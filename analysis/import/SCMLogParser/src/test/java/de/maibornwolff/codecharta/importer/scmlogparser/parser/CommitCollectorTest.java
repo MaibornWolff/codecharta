@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.maibornwolff.codecharta.model.input.metrics.NumberOfOccurencesInCommits.NUMBER_OF_COMMITS;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.*;
@@ -33,7 +32,7 @@ public class CommitCollectorTest {
         Commit secondCommit = new Commit("AnotherAuthor", modificationsByFilename("src/Util.java"), commitDate);
         List<VersionControlledFile> commits = Stream.of(firstCommit, secondCommit).collect(CommitCollector.create(metricsFactory));
         assertThat(commits)
-                .extracting(VersionControlledFile::getFilename, f -> f.getMetricValue(NUMBER_OF_COMMITS), VersionControlledFile::getAuthors)
+                .extracting(VersionControlledFile::getFilename, f -> f.getMetricValue("number_of_commits"), VersionControlledFile::getAuthors)
                 .containsExactly(
                         tuple("src/Main.java", 1, singleton("TheAuthor")),
                         tuple("src/Util.java", 2, new HashSet<>(asList("TheAuthor", "AnotherAuthor"))));
