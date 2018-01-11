@@ -15,7 +15,7 @@ Additionally it saves the names of authors when the --add-author flag is set.
 
 ### Creating the repository log for metric generation  
 
-* Git:          `git log --name-status [--no-renames]`
+* Git:          `git log --name-status --topo-order`
 * Git Numstat:  `git log --numstat --no-renames`
 * SVN:          `svn log --verbose`
 
@@ -27,11 +27,11 @@ See `ccsh -h` for help. Standard usage:
 
 > `ccsh scmlogparser <log file> --input-format [GIT_LOG|GIT_LOG_NUMSTAT|SVN_LOG]`
 
-The result is written as JSON to standard out or into the specified output file (if specified by `-o` option).
+The result is written as JSON to standard out or into an output file (if specified by `-o` option).
 
 ### Example
 
 * Install the tool
-* git log --numstat --no-renames > log.txt
-* ./ccsh scmlogparser log.txt --input-format GIT_LOG_NUMSTAT -o output.json
-* load output.json in visualization
+* `git log --numstat --no-renames > log.txt`
+* `./ccsh scmlogparser log.txt --input-format GIT_LOG_NUMSTAT -o output.json`
+* load `output.json` in visualization

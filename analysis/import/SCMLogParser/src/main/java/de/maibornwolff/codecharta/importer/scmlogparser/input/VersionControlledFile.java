@@ -36,6 +36,10 @@ public class VersionControlledFile {
         this.commitMetrics = commitMetrics;
     }
 
+    /**
+     * registers commits in anti-chronological order
+     *
+     */
     public void registerCommit(Commit commit) {
         Optional<Modification> modification = commit.getModification(filename);
 
@@ -62,10 +66,9 @@ public class VersionControlledFile {
         modificationMetrics.forEach(m -> m.registerModification(modification));
     }
 
-    private List<Metric> getMetrics() {
+    private Stream<Metric> getMetrics() {
         return Stream.of(modificationMetrics, commitMetrics)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .flatMap(Collection::stream);
     }
 
     public boolean markedDeleted() {
@@ -73,7 +76,7 @@ public class VersionControlledFile {
     }
 
     public Map<String, Number> getMetricsMap() {
-        return getMetrics().stream().collect(Collectors.toMap(Metric::metricName, Metric::value));
+        return getMetrics().collect(Collectors.toMap(Metric::metricName, Metric::value));
     }
 
     public String getFilename() {
@@ -90,7 +93,7 @@ public class VersionControlledFile {
     }
 
     public int getMetricValue(String metricName) {
-        return getMetrics().stream()
+        return getMetrics()
                 .filter(m -> m.metricName().equals(metricName)).findAny()
                 .orElseThrow(() -> new RuntimeException("metric " + metricName + " not found."))
                 .value().intValue();
