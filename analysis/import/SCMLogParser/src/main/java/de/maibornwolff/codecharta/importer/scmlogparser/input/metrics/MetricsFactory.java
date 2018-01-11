@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.model.input.metrics;
+package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 
 import java.util.Arrays;
 import java.util.List;

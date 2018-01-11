@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.model.input.metrics;
+package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 
-import de.maibornwolff.codecharta.model.input.Modification;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

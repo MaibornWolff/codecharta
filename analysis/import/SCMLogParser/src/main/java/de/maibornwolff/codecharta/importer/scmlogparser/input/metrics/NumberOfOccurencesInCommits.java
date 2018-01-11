@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.model.input.metrics;
+package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 
-import de.maibornwolff.codecharta.model.input.Modification;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 
 public final class NumberOfOccurencesInCommits implements ModificationMetric<Integer> {
     private int numberOfOccurrencesInCommits = 0;

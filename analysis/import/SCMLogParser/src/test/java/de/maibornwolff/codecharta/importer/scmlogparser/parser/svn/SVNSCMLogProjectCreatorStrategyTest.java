@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.parser.svn;
 
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.ParserStrategyContractTest;
-import de.maibornwolff.codecharta.model.input.Modification;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SVNLogParserStrategyTest extends ParserStrategyContractTest {
+public class SVNSCMLogProjectCreatorStrategyTest extends ParserStrategyContractTest {
 
     private static final List<String> FULL_COMMIT = asList(
             "------------------------------------------------------------------------",

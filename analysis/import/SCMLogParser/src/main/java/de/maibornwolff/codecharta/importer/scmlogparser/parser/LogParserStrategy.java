@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser;
 
-import de.maibornwolff.codecharta.model.input.Modification;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 
 import java.time.LocalDateTime;
 import java.util.List;

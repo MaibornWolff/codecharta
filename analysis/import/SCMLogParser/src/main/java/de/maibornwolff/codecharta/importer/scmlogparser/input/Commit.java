@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.model.input;
+package de.maibornwolff.codecharta.importer.scmlogparser.input;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.model.input.metrics;
+package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 
 public interface Metric<T extends Number> {
     String metricName();
