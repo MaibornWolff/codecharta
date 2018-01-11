@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - added support for git log --numstat and codechurn
 
 ### Changed
+
+### Removed
+
+### Fixed
+
+## [1.5.2] - 2018-01-04
+### Added
+
+### Changed
 - scaling slider now has steps of 0.1. This allows the user to select precise values like 2.0
 - updated jdk to jdk9
 
@@ -18,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Opening the same file a second time does not work #53
 - added missing require declaration
 - added glsl loader in testing environment
+- Native Application support is bugged while building in Travis CI #48
 
 ## [1.5.1] - 2017-11-14
 ### Added

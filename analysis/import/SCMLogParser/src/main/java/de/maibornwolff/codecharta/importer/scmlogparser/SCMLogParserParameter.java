@@ -78,7 +78,7 @@ public class SCMLogParserParameter {
             case SVN_LOG:
                 return new SVNLogParserStrategy();
             default:
-                throw new IllegalArgumentException("--git or --svn or --input-foramt must specified");
+                throw new IllegalArgumentException("--git or --svn or --input-format must specified");
         }
     }
 

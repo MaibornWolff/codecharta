@@ -20,8 +20,10 @@ public class GitLogNumstatParserStrategy implements LogParserStrategy {
     public static final String CORRESPONDING_LOG_CREATION_CMD = "git log --numstat --no-renames";
     private static final Predicate<String> GIT_COMMIT_SEPARATOR_TEST = logLine -> logLine.startsWith("commit");
     private static final String AUTHOR_ROW_INDICATOR = "Author: ";
+    public static final char AUTHOR_ROW_BEGIN_OF_EMAIL = '<';
     private static final String DATE_ROW_INDICATOR = "Date: ";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("EEE MMM d HH:mm:ss yyyy ZZZ", Locale.US);
+    public static final String FILE_LINE_SPLITTER = "\\s+";
     private static final String FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S+";
 
     @Override
@@ -39,7 +41,7 @@ public class GitLogNumstatParserStrategy implements LogParserStrategy {
     }
 
     Modification parseModification(String fileLine) {
-        String[] lineParts = fileLine.split("\\s+");
+        String[] lineParts = fileLine.split(FILE_LINE_SPLITTER);
         int additions = Integer.parseInt(lineParts[0]);
         int deletions = Integer.parseInt(lineParts[1]);
         String filename = lineParts[2];
@@ -61,7 +63,7 @@ public class GitLogNumstatParserStrategy implements LogParserStrategy {
 
     String parseAuthor(String authorLine) {
         String authorWithEmail = authorLine.substring(AUTHOR_ROW_INDICATOR.length());
-        int beginOfEmail = authorWithEmail.indexOf('<');
+        int beginOfEmail = authorWithEmail.indexOf(AUTHOR_ROW_BEGIN_OF_EMAIL);
         if (beginOfEmail < 0) {
             return authorWithEmail;
         }

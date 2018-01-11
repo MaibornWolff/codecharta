@@ -7,9 +7,6 @@ import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.model.input.Commit;
 import de.maibornwolff.codecharta.model.input.Modification;
 import de.maibornwolff.codecharta.model.input.metrics.MetricsFactory;
-import de.maibornwolff.codecharta.model.input.metrics.NumberOfAuthors;
-import de.maibornwolff.codecharta.model.input.metrics.NumberOfOccurencesInCommits;
-import de.maibornwolff.codecharta.model.input.metrics.NumberOfWeeksWithCommit;
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer;
 import de.maibornwolff.codecharta.serialization.ProjectSerializer;
 import org.junit.Test;
@@ -47,9 +44,9 @@ public class LogParserTest {
     public void logParserSVNGoldenMasterTest() throws Exception {
         // given
         MetricsFactory metricsFactory = new MetricsFactory(Arrays.asList(
-                NumberOfAuthors.NUMBER_OF_AUTHORS,
-                NumberOfOccurencesInCommits.NUMBER_OF_COMMITS,
-                NumberOfWeeksWithCommit.WEEKS_WITH_COMMITS
+                "number_of_authors",
+                "number_of_commits",
+                "weeks_with_commits"
         ));
         ProjectConverter projectConverter = new ProjectConverter(true);
 
@@ -73,9 +70,9 @@ public class LogParserTest {
     public void logParserGitGoldenMasterTest() throws Exception {
         // given
         MetricsFactory metricsFactory = new MetricsFactory(Arrays.asList(
-                NumberOfAuthors.NUMBER_OF_AUTHORS,
-                NumberOfOccurencesInCommits.NUMBER_OF_COMMITS,
-                NumberOfWeeksWithCommit.WEEKS_WITH_COMMITS
+                "number_of_authors",
+                "number_of_commits",
+                "weeks_with_commits"
         ));
         ProjectConverter projectConverter = new ProjectConverter(false);
 
