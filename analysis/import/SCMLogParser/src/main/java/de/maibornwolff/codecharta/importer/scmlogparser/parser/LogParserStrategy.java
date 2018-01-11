@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser;
 
+import de.maibornwolff.codecharta.model.input.Modification;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -12,8 +14,10 @@ public interface LogParserStrategy {
 
     Optional<String> parseAuthor(List<String> commitLines);
 
-    List<String> parseFilenames(List<String> commitLines);
+    List<Modification> parseModifications(List<String> commitLines);
 
     Optional<LocalDateTime> parseDate(List<String> commitLines);
+
+    List<String> listSupportedMetrics();
 
 }

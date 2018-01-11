@@ -1,5 +1,8 @@
-package de.maibornwolff.codecharta.importer.scmlogparser.parser;
+package de.maibornwolff.codecharta.importer.scmlogparser.parser.svn;
 
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.ParserStrategyContractTest;
+import de.maibornwolff.codecharta.model.input.Modification;
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +13,7 @@ import java.util.stream.Stream;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SVNLogParserStrategyTest extends ParserStrategyContractTest{
+public class SVNLogParserStrategyTest extends ParserStrategyContractTest {
 
     private static final List<String> FULL_COMMIT = asList(
             "------------------------------------------------------------------------",
@@ -51,22 +54,21 @@ public class SVNLogParserStrategyTest extends ParserStrategyContractTest{
 
     @Test
     public void parsesFilenameFromFileMetadata() {
-        String filename = parserStrategy.parseFilename("   M /src/srcFolderTest.txt");
-        assertThat(filename).isEqualTo("/src/srcFolderTest.txt");
+        Modification modification = parserStrategy.parseModification("   M /src/srcFolderTest.txt");
+        assertThat(modification.getFilename()).isEqualTo("/src/srcFolderTest.txt");
     }
 
     @Test
     public void doesNotParseFilenameWithoutADot() {
-        String filename = parserStrategy.parseFilename("   A /innerFolder");
-        assertThat(filename).isEmpty();
+        Modification modification = parserStrategy.parseModification("   A /innerFolder");
+        assertThat(modification.getFilename()).isEmpty();
     }
 
     @Test
     public void removesStandardSVNFoldersInFilename() {
-        String filename = parserStrategy.parseFilename("   M /trunk/src/srcFolderTest.txt");
-        assertThat(filename).isEqualTo("src/srcFolderTest.txt");
+        Modification modification = parserStrategy.parseModification("   M /trunk/src/srcFolderTest.txt");
+        assertThat(modification.getFilename()).isEqualTo("src/srcFolderTest.txt");
     }
-
 
 
     @Test

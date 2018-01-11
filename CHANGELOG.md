@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
+- added support for git log --numstat and codechurn
 
 ### Changed
 
@@ -18,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 - scaling slider now has steps of 0.1. This allows the user to select precise values like 2.0
+- updated jdk to jdk9
 
 ### Removed
 
