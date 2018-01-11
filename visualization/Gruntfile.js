@@ -1,13 +1,11 @@
 "use strict";
 
 var path = require("path");
+const paths = require("./conf/paths.js");
 
 module.exports = function (grunt) {
 
-    // Load grunt tasks automatically
     require("load-grunt-tasks")(grunt);
-
-    // Time how long tasks take
     require("time-grunt")(grunt);
 
     // Define configuration for all tasks
@@ -15,108 +13,41 @@ module.exports = function (grunt) {
 
         pkg: grunt.file.readJSON('package.json'),
 
-        webpack: {
-            options: {
-                stats: !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
-            },
-            prod: require("./conf/webpack.config.js"),
-            dev: Object.assign({ watch: true }, require("./conf/webpack.config.js"))
-        },
+        webpack: require("./conf/grunt.webpack.config.js"),
 
-        mocha_istanbul: {
-            coverage: {
-                src: ["test/unit-helper.js", "app/**/*.spec.js"],
+        typedoc: {
+            build: {
                 options: {
-                    mask: '**/*.js',
-                    require: ['test/mocha-babel'],
-                    coverageFolder: 'dist/coverage',
-                    mochaOptions: ['--compilers', 'js:babel-core/register'],
-                    istanbulOptions: ['--handle-sigint']
-                }
+                    module: 'es2015',
+                    exclude: '**/*.spec.ts',
+                    target: 'es2016',
+                    out: 'dist/docs/',
+                    name: 'CodeCharta'
+                },
+                src: 'app/**/*.ts'
             }
-        },
-
-        nwjs: {
-            options: {
-                platforms: ['win','osx64', 'linux'],
-                buildDir: './dist/packages/',
-                buildType: 'default',
-                cacheDir: '.cache'
-            },
-            src: ['./dist/webpack/**/*', './package.json', './LICENSE.md']
-        },
-
-        clean: {
-            dist: ["dist"],
-            webpack: ["dist/webpack"],
-            coverage: ["dist/coverage/"],
-            reports: ["dist/test-reports/"],
-            doc: ["dist/doc/"],
-            packageTmp: ["dist/packages/CodeCharta"],
-            package: ["dist/packages/"]
         },
 
         exec: {
-            doc: {
-                command: path.resolve("node_modules", ".bin", "esdoc") + " -c conf/esdoc.json",
-                stdout: true
-            },
-            karmaSingle: {
-                command: path.resolve("node_modules", ".bin", "karma") + " start ./conf/karma.config.js",
-                stdout: true,
-                options: {
-                    maxBuffer: 40000 * 1024
-                }
-            },
-            karmaAuto: {
-                command: path.resolve("node_modules", ".bin", "karma") + " start ./conf/karma.auto.config.js",
-                stdout: true
-            }
+            nwjs_package: "build --concurrent --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --mirror https://dl.nwjs.io/ ."
+        },
+
+        clean: {
+            dist: [paths.dist],
+            webpack: [paths.bundlePath],
+            doc: [paths.docPath],
+            package: [paths.packagePath]
         },
 
         compress: {
             web: {
                 options: {
-                    archive: './dist/packages/codecharta-web.zip'
+                    archive: paths.packagePath + '/CodeCharta-' + grunt.file.readJSON('package.json').version + '-web.zip'
                 },
                 files: [
                     {expand: true, cwd:"./dist/webpack/", src: ['**/*'], dest: '.'}
                 ]
-            },
-            linux32: {
-                options: {
-                    archive: './dist/packages/codecharta-visualization-linux32.zip'
-                },
-                files: [
-                    {expand: true, cwd:"./dist/packages/CodeCharta/linux32/", src: ['**/*'], dest: '.'}
-                ]
-            },
-            linux64: {
-                options: {
-                    archive: './dist/packages/codecharta-visualization-linux64.zip'
-                },
-                files: [
-                    {expand: true, cwd:"./dist/packages/CodeCharta/linux64/", src: ['**/*'], dest: '.'}
-                ]
-            },
-
-            win32: {
-                options: {
-                    archive: './dist/packages/codecharta-visualization-win32.zip'
-                },
-                files: [
-                    {expand: true, cwd:"./dist/packages/CodeCharta/win32/", src: ['**/*'], dest: '.'}
-                ]
-            },
-            win64: {
-                options: {
-                    archive: './dist/packages/codecharta-visualization-win64.zip'
-                },
-                files: [
-                    {expand: true, cwd:"./dist/packages/CodeCharta/win64/", src: ['**/*'], dest: '.'}
-                ]
             }
-
         }
 
     });
@@ -125,9 +56,7 @@ module.exports = function (grunt) {
     grunt.registerTask("default", ["build"]);
     grunt.registerTask("build", ["clean:webpack", "webpack:prod"]);
     grunt.registerTask("serve", ["clean:webpack", "webpack:dev"]);
-    grunt.registerTask("package", ["clean:package", /*"nwjs",*/ "compress:web", "clean:packageTmp"]);
-    grunt.registerTask("doc", ["clean:doc", "exec:doc"]);
-    grunt.registerTask("test", ["clean:coverage", "clean:reports", "exec:karmaSingle"]);
-    grunt.registerTask("test:auto", ["clean:coverage", "clean:reports", "exec:karmaAuto"]);
+    grunt.registerTask("package", ["clean:package", "exec:nwjs_package", "compress"]);
+    grunt.registerTask("doc", ["clean:doc", "typedoc"]);
 
 };

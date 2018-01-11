@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import {node} from "./node.ts"
-import {renderSettings} from "./renderSettings.ts"
+import {node} from "./node"
+import {renderSettings} from "./renderSettings"
 
 interface internalLabel {
     sprite : THREE.Sprite,
@@ -8,7 +8,7 @@ interface internalLabel {
     heightValue : number
 }
 
-export class labelManager {
+export class LabelManager {
     private parentObjectInScene : THREE.Object3D;
     private labels : internalLabel[];
 
