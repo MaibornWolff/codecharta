@@ -1,113 +1,71 @@
 package de.maibornwolff.codecharta.model.input;
 
-import java.time.LocalDateTime;
-import java.time.temporal.WeekFields;
-import java.util.HashSet;
-import java.util.Set;
+import de.maibornwolff.codecharta.model.input.metrics.CommitMetric;
+import de.maibornwolff.codecharta.model.input.metrics.Metric;
+import de.maibornwolff.codecharta.model.input.metrics.MetricsFactory;
+import de.maibornwolff.codecharta.model.input.metrics.ModificationMetric;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class VersionControlledFile {
 
     private final String filename;
+    private final Set<String> authors = new HashSet<>();
+    private final List<ModificationMetric> modificationMetrics;
+    private final List<CommitMetric> commitMetrics;
 
-    private int numberOfOccurrencesInCommits;
+    public VersionControlledFile(String filename, MetricsFactory metricsFactory) {
+        this(filename, metricsFactory.createModificationMetrics(), metricsFactory.createCommitMetrics());
+    }
 
-    private final Set<CalendarWeek> weeksWithCommits;
-
-    private final Set<String> authors;
-
-    public VersionControlledFile(String filename) {
+    VersionControlledFile(
+            String filename,
+            List<ModificationMetric> modificationMetrics,
+            List<CommitMetric> commitMetrics
+    ) {
         this.filename = filename;
-        this.numberOfOccurrencesInCommits = 0;
-        this.authors = new HashSet<>();
-        this.weeksWithCommits = new HashSet<>();
+        this.modificationMetrics = modificationMetrics;
+        this.commitMetrics = commitMetrics;
     }
 
     public void registerCommit(Commit commit) {
-        numberOfOccurrencesInCommits++;
-        authors.add(commit.getAuthor());
-        weeksWithCommits.add(CalendarWeek.forDateTime(commit.getCommitDate()));
+        Optional<Modification> modification = commit.getModification(filename);
+        if (modification.isPresent()) {
+            modificationMetrics.forEach(m -> m.registerModification(modification.get()));
+            commitMetrics.forEach(m -> m.registerCommit(commit));
+            authors.add(commit.getAuthor());
+        }
+    }
+
+    public List<Metric> getMetrics() {
+        return Stream.of(modificationMetrics, commitMetrics)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
+    public Map<String, Number> getMetricsMap() {
+        return getMetrics().stream().collect(Collectors.toMap(Metric::metricName, Metric::value));
     }
 
     public String getFilename() {
         return filename;
     }
 
-    public int getNumberOfOccurrencesInCommits() {
-        return numberOfOccurrencesInCommits;
-    }
-
     public Set<String> getAuthors() {
         return authors;
     }
 
-    public int getNumberOfAuthors() {
-        return this.authors.size();
-    }
-
     @Override
     public String toString() {
-        return this.getFilename() + " was changed " + this.getNumberOfOccurrencesInCommits() + " time(s).";
+        return filename + " with metrics " + getMetricsMap();
     }
 
-    public int getNumberOfWeeksWithCommits() {
-        return weeksWithCommits.size();
-
+    public int getMetricValue(String metricName) {
+        return getMetrics().stream()
+                .filter(m -> m.metricName().equals(metricName)).findAny()
+                .orElseThrow(() -> new RuntimeException("metric " + metricName + " not found."))
+                .value().intValue();
     }
-
-
-    static class CalendarWeek {
-        final int week;
-        final int year;
-
-        public CalendarWeek(int week, int year) {
-            this.week = week;
-            this.year = year;
-        }
-
-        public static CalendarWeek forDateTime(LocalDateTime dateTime) {
-            int cwWeek = dateTime.get(WeekFields.ISO.weekOfWeekBasedYear());
-            int cwYear = dateTime.getYear();
-            cwYear = modifyYear(dateTime, cwWeek, cwYear);
-            return new CalendarWeek(cwWeek, cwYear);
-        }
-
-        private static int modifyYear(LocalDateTime dateTime, int cwWeek, int cwYear) {
-            if (dayIsOneOfTheLastSevenDaysInYear(dateTime) && isFirstOrSecondWeek(cwWeek))
-                cwYear++;
-            else if (dayIsOneOfTheFirstSevenDaysOfTheYear(dateTime) && !isFirstOrSecondWeek(cwWeek))
-                cwYear--;
-            return cwYear;
-        }
-
-        private static boolean dayIsOneOfTheFirstSevenDaysOfTheYear(LocalDateTime dateTime) {
-            return dateTime.getDayOfYear() < 7;
-        }
-
-        private static boolean isFirstOrSecondWeek(int kalenderWeeknWeek) {
-            return kalenderWeeknWeek <= 2;
-        }
-
-        private static boolean dayIsOneOfTheLastSevenDaysInYear(LocalDateTime dateTime) {
-            return dateTime.getDayOfYear() > 358;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            CalendarWeek that = (CalendarWeek) o;
-
-            if (week != that.week) return false;
-            return year == that.year;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = week;
-            result = 31 * result + year;
-            return result;
-        }
-    }
-
 }

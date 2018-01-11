@@ -1,10 +1,9 @@
 package de.maibornwolff.codecharta.importer.scmlogparser;
 
-import de.maibornwolff.codecharta.importer.scmlogparser.parser.GitLogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParser;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
-import de.maibornwolff.codecharta.importer.scmlogparser.parser.SVNLogParserStrategy;
 import de.maibornwolff.codecharta.model.Project;
+import de.maibornwolff.codecharta.model.input.metrics.MetricsFactory;
 import de.maibornwolff.codecharta.serialization.ProjectSerializer;
 
 import java.io.IOException;
@@ -22,12 +21,14 @@ public class SCMLogParser {
             callParameter.printUsage();
         } else {
             String pathToLog = callParameter.getFiles().get(0);
-            SCMLogParserParameter.SCM gitOrSvn = callParameter.getSCM();
             boolean addAuthor = callParameter.isAddAuthor();
-            boolean containsAuthors = false;
             String outputFile = callParameter.getOutputFile();
 
-            Project project = parseDataFromLog(pathToLog, gitOrSvn, addAuthor);
+            Project project = parseDataFromLog(
+                    pathToLog,
+                    callParameter.getLogParserStrategy(),
+                    callParameter.getMetricsFactory(),
+                    addAuthor);
             if (outputFile != null && !outputFile.isEmpty()) {
                 ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile);
             } else {
@@ -36,18 +37,15 @@ public class SCMLogParser {
         }
     }
 
-    private static Project parseDataFromLog(String pathToLog, SCMLogParserParameter.SCM scm, boolean containsAuthors) throws IOException {
-        LogParserStrategy parserStrategy = null;
-        switch (scm) {
-            default:
-            case GIT:
-                parserStrategy = new GitLogParserStrategy();
-                break;
-            case SVN:
-                parserStrategy = new SVNLogParserStrategy();
-                break;
-        }
+    private static Project parseDataFromLog(
+            String pathToLog, LogParserStrategy
+            parserStrategy,
+            MetricsFactory metricsFactory,
+            boolean containsAuthors
+    ) throws IOException {
+
         Stream<String> lines = Files.lines(Paths.get(pathToLog));
-        return new LogParser(parserStrategy, containsAuthors).parse(lines);
+        return new LogParser(parserStrategy, containsAuthors, metricsFactory).parse(lines);
+
     }
 }

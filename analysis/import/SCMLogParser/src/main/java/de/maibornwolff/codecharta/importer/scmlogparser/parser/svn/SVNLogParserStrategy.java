@@ -1,5 +1,8 @@
-package de.maibornwolff.codecharta.importer.scmlogparser.parser;
+package de.maibornwolff.codecharta.importer.scmlogparser.parser.svn;
 
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogLineCollector;
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
+import de.maibornwolff.codecharta.model.input.Modification;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
@@ -15,8 +18,9 @@ import java.util.stream.Stream;
 
 public class SVNLogParserStrategy implements LogParserStrategy {
 
+    public static final String CORRESPONDING_LOG_CREATION_CMD = "svn log --verbose";
+    private static final Predicate<String> SVN_COMMIT_SEPARATOR_TEST = logLine -> !logLine.isEmpty() && StringUtils.containsOnly(logLine, '-');
     private static final String[] DEFAULT_REPOSITORY_FOLDER_PREFIXES = new String[]{"/branches/", "/tags/", "/trunk/"};
-
     private static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
             .append(DateTimeFormatter.ISO_LOCAL_DATE)
@@ -25,20 +29,42 @@ public class SVNLogParserStrategy implements LogParserStrategy {
             .appendLiteral(' ')
             .appendOffset("+HHMM", "")
             .toFormatter();
-
-    /*
-     * see "action" char at http://svn.apache.org/viewvc/subversion/trunk/subversion/include/svn_types.h?view=markup&pathrev=1751399#l835
-     */
-    private static final List<Character> STATUS_LETTERS = Arrays.asList('A', 'D', 'M', 'R');
-
     private static final int AUTHOR_INDEX_IN_METADATA = 1;
-
     private static final int DATE_INDEX_IN_METADATA = 2;
-
     private static final char METADATA_SEPARATOR = '|';
 
-    public static final Predicate<String> SVN_COMMIT_SEPARATOR_TEST = logLine -> !logLine.isEmpty() && StringUtils.containsOnly(logLine, '-');
+    private static String stripWhitespacePrefix(String string) {
+        return StringUtils.stripStart(string, null);
+    }
 
+    private static boolean isStatusLetter(char character) {
+        return Status.ALL_STATUS_LETTERS.contains(character);
+    }
+
+    private static String removeDefaultRepositoryFolderPrefix(String path) {
+        for (String prefix : DEFAULT_REPOSITORY_FOLDER_PREFIXES) {
+            if (path.startsWith(prefix)) {
+                return path.substring(prefix.length());
+            }
+        }
+        return path;
+    }
+
+    private static Modification ignoreIfRepresentsFolder(Modification modification) {
+        if (!modification.getFilename().contains(".")) {
+            return Modification.EMPTY;
+        }
+        return modification;
+    }
+
+    @Override
+    public List<String> listSupportedMetrics() {
+        return Arrays.asList(
+                "number_of_authors",
+                "number_of_commits",
+                "weeks_with_commits"
+        );
+    }
 
     @Override
     public Optional<LocalDateTime> parseDate(List<String> commitLines) {
@@ -51,7 +77,7 @@ public class SVNLogParserStrategy implements LogParserStrategy {
     private LocalDateTime parseCommitDate(String metadataLine) {
         String[] splittedLine = metadataLine.split("\\" + METADATA_SEPARATOR);
         String commitDateAsString = splittedLine[DATE_INDEX_IN_METADATA].trim().replaceAll(" \\(.*\\)", "");
-        return LocalDateTime.parse(commitDateAsString, DATE_TIME_FORMATTER );
+        return LocalDateTime.parse(commitDateAsString, DATE_TIME_FORMATTER);
     }
 
     @Override
@@ -72,10 +98,10 @@ public class SVNLogParserStrategy implements LogParserStrategy {
     }
 
     @Override
-    public List<String> parseFilenames(List<String> commitLines) {
+    public List<Modification> parseModifications(List<String> commitLines) {
         return commitLines.stream()
                 .filter(this::isFileLine)
-                .map(this::parseFilename)
+                .map(this::parseModification)
                 .collect(Collectors.toList());
     }
 
@@ -89,35 +115,11 @@ public class SVNLogParserStrategy implements LogParserStrategy {
         return isStatusLetter(firstChar) && Character.isWhitespace(secondChar);
     }
 
-    private static String stripWhitespacePrefix(String string) {
-        return StringUtils.stripStart(string, null);
-    }
-
-    private static boolean isStatusLetter(char character) {
-        return STATUS_LETTERS.contains(character);
-    }
-
-    String parseFilename(String fileLine) {
+    Modification parseModification(String fileLine) {
         String metadataWithoutWhitespacePrefix = stripWhitespacePrefix(fileLine);
         String metadataWithoutStatusLetter = metadataWithoutWhitespacePrefix.substring(1);
         String filePath = removeDefaultRepositoryFolderPrefix(metadataWithoutStatusLetter.trim());
-        return ignoreIfRepresentsFolder(filePath);
-    }
-
-    private static String removeDefaultRepositoryFolderPrefix(String path) {
-        for (String prefix : DEFAULT_REPOSITORY_FOLDER_PREFIXES) {
-            if (path.startsWith(prefix)) {
-                return path.substring(prefix.length());
-            }
-        }
-        return path;
-    }
-
-    private static String ignoreIfRepresentsFolder(String filePath) {
-        if (!filePath.contains(".")) {
-            return "";
-        }
-        return filePath;
+        return ignoreIfRepresentsFolder(new Modification(filePath));
     }
 
     public Collector<String, ?, Stream<List<String>>> createLogLineCollector() {
