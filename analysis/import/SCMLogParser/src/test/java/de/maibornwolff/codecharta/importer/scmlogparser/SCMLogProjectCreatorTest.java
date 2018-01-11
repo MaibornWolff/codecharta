@@ -1,13 +1,9 @@
 package de.maibornwolff.codecharta.importer.scmlogparser;
 
-import de.maibornwolff.codecharta.importer.scmlogparser.SCMLogProjectCreator;
 import de.maibornwolff.codecharta.importer.scmlogparser.converter.ProjectConverter;
-import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy;
 import de.maibornwolff.codecharta.model.Project;
-import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit;
-import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory;
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer;
 import de.maibornwolff.codecharta.serialization.ProjectSerializer;
@@ -17,19 +13,12 @@ import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class SCMLogProjectCreatorTest {
 
@@ -41,6 +30,8 @@ public class SCMLogProjectCreatorTest {
 
     private static final String GIT_LOG = "example_git.log";
 
+    private static final String PROJECT_NAME = "SCMLogParser";
+
 
     @Test
     public void logParserSVNGoldenMasterTest() throws Exception {
@@ -50,7 +41,7 @@ public class SCMLogProjectCreatorTest {
                 "number_of_commits",
                 "weeks_with_commits"
         ));
-        ProjectConverter projectConverter = new ProjectConverter(true);
+        ProjectConverter projectConverter = new ProjectConverter(true, PROJECT_NAME);
 
 
         SCMLogProjectCreator svnSCMLogProjectCreator = new SCMLogProjectCreator(new SVNLogParserStrategy(), metricsFactory, projectConverter);
@@ -76,7 +67,7 @@ public class SCMLogProjectCreatorTest {
                 "number_of_commits",
                 "weeks_with_commits"
         ));
-        ProjectConverter projectConverter = new ProjectConverter(false);
+        ProjectConverter projectConverter = new ProjectConverter(false, PROJECT_NAME);
 
 
         SCMLogProjectCreator gitSCMLogProjectCreator = new SCMLogProjectCreator(new GitLogParserStrategy(), metricsFactory, projectConverter);
