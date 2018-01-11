@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.converter;
 
-import de.maibornwolff.codecharta.importer.scmlogparser.converter.ProjectConverter;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile;
@@ -29,11 +28,11 @@ public class ProjectConverterTest {
     @Test
     public void canCreateAnEmptyProject() throws Exception {
         // given
-        ProjectConverter projectConverter = new ProjectConverter(true);
         String projectname = "Projectname";
+        ProjectConverter projectConverter = new ProjectConverter(true, projectname);
 
         // when
-        Project project = projectConverter.convert(projectname, Collections.emptyList());
+        Project project = projectConverter.convert(Collections.emptyList());
 
         //then
         assertThat(project.getNodes()).hasSize(0);
@@ -43,13 +42,12 @@ public class ProjectConverterTest {
     @Test
     public void canConvertProjectWithAuthors() {
         //given
-        ProjectConverter projectConverter = new ProjectConverter(true);
-        String projectname = "ProjectWithAuthors";
+        ProjectConverter projectConverter = new ProjectConverter(true, "ProjectWithAuthors");
         VersionControlledFile file1 = new VersionControlledFile("File 1", metricsFactory);
         file1.registerCommit(new Commit("Author", modificationsByFilename("File 1, File 2"), LocalDateTime.now()));
 
         //when
-        Project project = projectConverter.convert(projectname, Arrays.asList(file1));
+        Project project = projectConverter.convert(Arrays.asList(file1));
 
         //then
         assertThat(project.getRootNode().getChildren().get(0).getAttributes().containsKey("authors")).isTrue();
@@ -58,13 +56,12 @@ public class ProjectConverterTest {
     @Test
     public void canConvertProjectWithoutAuthors() {
         //given
-        ProjectConverter projectConverter = new ProjectConverter(false);
-        String projectname = "ProjectWithoutAuthors";
+        ProjectConverter projectConverter = new ProjectConverter(false, "ProjectWithoutAuthors");
         VersionControlledFile file1 = new VersionControlledFile("File 1", metricsFactory);
         file1.registerCommit(new Commit("Author", modificationsByFilename("File 1, File 2"), LocalDateTime.now()));
 
         //when
-        Project project = projectConverter.convert(projectname, Arrays.asList(file1));
+        Project project = projectConverter.convert(Arrays.asList(file1));
 
         //then
         assertThat(project.getRootNode().getChildren().get(0).getAttributes().containsKey("authors")).isFalse();

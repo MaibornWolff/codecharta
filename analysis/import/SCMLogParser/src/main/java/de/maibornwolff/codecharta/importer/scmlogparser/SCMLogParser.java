@@ -28,6 +28,7 @@ public class SCMLogParser {
                     pathToLog,
                     callParameter.getLogParserStrategy(),
                     callParameter.getMetricsFactory(),
+                    callParameter.getProjectName(),
                     addAuthor);
             if (outputFile != null && !outputFile.isEmpty()) {
                 ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile);
@@ -41,11 +42,12 @@ public class SCMLogParser {
             String pathToLog,
             LogParserStrategy parserStrategy,
             MetricsFactory metricsFactory,
+            String projectName,
             boolean containsAuthors
     ) throws IOException {
 
         Stream<String> lines = Files.lines(Paths.get(pathToLog));
-        ProjectConverter projectConverter = new ProjectConverter(containsAuthors);
+        ProjectConverter projectConverter = new ProjectConverter(containsAuthors, projectName);
         return new SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter).parse(lines);
 
     }

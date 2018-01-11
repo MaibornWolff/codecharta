@@ -2,11 +2,11 @@ package de.maibornwolff.codecharta.importer.scmlogparser;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogNumstatParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy;
-import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +19,8 @@ public class SCMLogParserParameter {
     private List<String> files = new ArrayList<>();
     @Parameter(names = {"-o", "--outputFile"}, description = "Output File (or empty for stdout)")
     private String outputFile = "";
+    @Parameter(names = {"-p", "--projectName"}, description = "Project name")
+    private String projectName = "SCMLogParser";
     @Parameter(names = {"--git"}, description = "Analysis of git log, equivalent --input-format GIT_LOG")
     private boolean gitLog = false;
     @Parameter(names = {"--svn"}, description = "Analysis of svn log, equivalent --input-format SVN_LOG")
@@ -84,5 +86,9 @@ public class SCMLogParserParameter {
 
     public MetricsFactory getMetricsFactory() {
         return new MetricsFactory(getLogParserStrategy().listSupportedMetrics());
+    }
+
+    public String getProjectName() {
+        return projectName;
     }
 }

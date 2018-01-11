@@ -29,11 +29,11 @@
 
 package de.maibornwolff.codecharta.importer.scmlogparser.converter;
 
+import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile;
 import de.maibornwolff.codecharta.model.Node;
 import de.maibornwolff.codecharta.model.NodeType;
 import de.maibornwolff.codecharta.model.PathFactory;
 import de.maibornwolff.codecharta.model.Project;
-import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile;
 import de.maibornwolff.codecharta.nodeinserter.NodeInserter;
 
 import java.util.Collections;
@@ -47,9 +47,11 @@ import java.util.Map;
 public class ProjectConverter {
     private static final char PATH_SEPARATOR = '/';
     private final boolean containsAuthors;
+    private final String projectName;
 
-    public ProjectConverter(boolean containsAuthors) {
+    public ProjectConverter(boolean containsAuthors, String projectName) {
         this.containsAuthors = containsAuthors;
+        this.projectName = projectName;
     }
 
     private void addVersionControlledFile(Project project, VersionControlledFile versionControlledFile) {
@@ -76,7 +78,7 @@ public class ProjectConverter {
         return path.substring(0, path.lastIndexOf(PATH_SEPARATOR) + 1);
     }
 
-    public Project convert(String projectName, List<VersionControlledFile> versionControlledFiles) {
+    public Project convert(List<VersionControlledFile> versionControlledFiles) {
         Project project = new Project(projectName);
 
         versionControlledFiles.stream()

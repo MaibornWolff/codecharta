@@ -29,7 +29,7 @@ public class SCMLogProjectCreator {
 
     public Project parse(Stream<String> lines) {
         List<VersionControlledFile> versionControlledFiles = logLineParser.parse(lines);
-        return projectConverter.convert("SCMLogParser", versionControlledFiles);
+        return projectConverter.convert(versionControlledFiles);
     }
 
 }
