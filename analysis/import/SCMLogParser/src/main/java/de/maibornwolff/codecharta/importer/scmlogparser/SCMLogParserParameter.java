@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogNumstatParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy;
-import de.maibornwolff.codecharta.model.input.metrics.MetricsFactory;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory;
 
 import java.util.ArrayList;
 import java.util.List;

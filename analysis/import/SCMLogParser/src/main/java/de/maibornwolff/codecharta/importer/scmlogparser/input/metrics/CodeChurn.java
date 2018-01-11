@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.model.input.metrics;
+package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 
-import de.maibornwolff.codecharta.model.input.Modification;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 
 public final class CodeChurn implements ModificationMetric<Integer> {
     private int accumulatedNumberOfLinesAdded = 0;

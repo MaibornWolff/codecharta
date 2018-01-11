@@ -1,8 +1,8 @@
-package de.maibornwolff.codecharta.model.input;
+package de.maibornwolff.codecharta.importer.scmlogparser.input;
 
-import de.maibornwolff.codecharta.model.input.metrics.CommitMetric;
-import de.maibornwolff.codecharta.model.input.metrics.MetricsFactory;
-import de.maibornwolff.codecharta.model.input.metrics.ModificationMetric;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.CommitMetric;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.ModificationMetric;
 import org.junit.Test;
 
 import java.time.LocalDateTime;

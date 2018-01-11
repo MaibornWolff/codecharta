@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.model.input;
+package de.maibornwolff.codecharta.importer.scmlogparser.input;
 
 public class Modification {
     public static final Modification EMPTY = new Modification("");

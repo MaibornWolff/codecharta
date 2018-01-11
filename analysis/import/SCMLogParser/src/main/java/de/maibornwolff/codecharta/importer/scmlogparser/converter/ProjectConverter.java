@@ -27,22 +27,25 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.importer.scmlogparser;
+package de.maibornwolff.codecharta.importer.scmlogparser.converter;
 
 import de.maibornwolff.codecharta.model.Node;
 import de.maibornwolff.codecharta.model.NodeType;
 import de.maibornwolff.codecharta.model.PathFactory;
 import de.maibornwolff.codecharta.model.Project;
-import de.maibornwolff.codecharta.model.input.VersionControlledFile;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile;
 import de.maibornwolff.codecharta.nodeinserter.NodeInserter;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+/**
+ * creates Projects from List of VersionControlledFiles
+ */
 public class ProjectConverter {
+    private static final char PATH_SEPARATOR = '/';
     private final boolean containsAuthors;
 
     public ProjectConverter(boolean containsAuthors) {
@@ -65,12 +68,12 @@ public class ProjectConverter {
 
     private String extractFilenamePart(VersionControlledFile versionControlledFile) {
         String path = versionControlledFile.getActualFilename();
-        return path.substring(path.lastIndexOf('/') + 1);
+        return path.substring(path.lastIndexOf(PATH_SEPARATOR) + 1);
     }
 
     private String extractPathPart(VersionControlledFile versionControlledFile) {
         String path = versionControlledFile.getActualFilename();
-        return path.substring(0, path.lastIndexOf('/') + 1);
+        return path.substring(0, path.lastIndexOf(PATH_SEPARATOR) + 1);
     }
 
     public Project convert(String projectName, List<VersionControlledFile> versionControlledFiles) {
@@ -79,14 +82,6 @@ public class ProjectConverter {
         versionControlledFiles.stream()
                 .filter(vc -> !vc.markedDeleted())
                 .forEach(vcFile -> addVersionControlledFile(project, vcFile));
-
-        List<String> deletedFiles = versionControlledFiles.stream()
-                .filter(VersionControlledFile::markedDeleted)
-                .map(VersionControlledFile::getActualFilename)
-                .collect(Collectors.toList());
-
-        System.err.println("There were " + deletedFiles.size() + " file deletions:");
-        System.err.println("  " + deletedFiles);
 
         return project;
     }

@@ -1,9 +1,9 @@
-package de.maibornwolff.codecharta.model.input;
+package de.maibornwolff.codecharta.importer.scmlogparser.input;
 
-import de.maibornwolff.codecharta.model.input.metrics.CommitMetric;
-import de.maibornwolff.codecharta.model.input.metrics.Metric;
-import de.maibornwolff.codecharta.model.input.metrics.MetricsFactory;
-import de.maibornwolff.codecharta.model.input.metrics.ModificationMetric;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.CommitMetric;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.Metric;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.ModificationMetric;
 
 import java.util.*;
 import java.util.stream.Collectors;

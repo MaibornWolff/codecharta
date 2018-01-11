@@ -1,10 +1,9 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser;
 
-import de.maibornwolff.codecharta.importer.scmlogparser.ProjectConverter;
-import de.maibornwolff.codecharta.model.input.Commit;
-import de.maibornwolff.codecharta.model.input.Modification;
-import de.maibornwolff.codecharta.model.input.VersionControlledFile;
-import de.maibornwolff.codecharta.model.input.metrics.MetricsFactory;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
@@ -39,9 +38,8 @@ public abstract class ParserStrategyContractTest {
 
     @Test
     public void parsesCommit() {
-        ProjectConverter projectConverter = new ProjectConverter(true);
-        LogParser logParser = new LogParser(getLogParserStrategy(), metricsFactory, projectConverter);
-        Commit commit = logParser.parseCommit(getFullCommit());
+        LogLineParser parser = new LogLineParser(getLogParserStrategy(), metricsFactory);
+        Commit commit = parser.parseCommit(getFullCommit());
         assertThat(commit)
                 .extracting(Commit::getAuthor, Commit::getFilenames, Commit::getCommitDate)
                 .containsExactly("TheAuthor", asList("src/Main.java", "src/Main.java", "src/Util.java"), LocalDateTime.of(2017, 5, 9, 19, 57, 57));
@@ -77,11 +75,10 @@ public abstract class ParserStrategyContractTest {
 
     @Test
     public void accumulatesCommitFiles() {
-        ProjectConverter projectConverter = new ProjectConverter(true);
+        LogLineParser parser = new LogLineParser(getLogParserStrategy(), metricsFactory);
 
         Stream<String> logLines = Stream.concat(getFullCommit().stream(), getFullCommit().stream());
-        List<VersionControlledFile> files =
-                new LogParser(getLogParserStrategy(), metricsFactory, projectConverter).parseLoglines(logLines);
+        List<VersionControlledFile> files = parser.parse(logLines);
         assertThat(files)
                 .extracting(VersionControlledFile::getFilename, f -> f.getMetricValue("number_of_commits"), VersionControlledFile::getAuthors)
                 .containsExactlyInAnyOrder(

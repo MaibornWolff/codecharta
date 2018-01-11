@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.parser.git;
 
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogLineCollector;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
-import de.maibornwolff.codecharta.model.input.Modification;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
