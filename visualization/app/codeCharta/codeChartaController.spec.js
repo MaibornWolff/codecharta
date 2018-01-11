@@ -1,4 +1,6 @@
-require("./codeCharta.js");
+require("./codeCharta");
+
+import {CodeChartaController} from "./codeChartaComponent";
 
 /**
  * @test {CodeChartaController}
@@ -7,7 +9,14 @@ describe("app.codeCharta.codeChartaController", function() {
 
     var dataService, urlService, settingsService, codeChartaController, $controller, $httpBackend , scenarioService;
 
-    beforeEach(angular.mock.module("app.codeCharta"));
+    beforeEach(()=>{
+        angular.mock.module("app.codeCharta");
+        angular.module("app.codeCharta").controller(
+            "codeChartaController",
+            CodeChartaController
+        );
+
+    });
 
     beforeEach(angular.mock.inject((_$controller_, _dataService_, _settingsService_, _urlService_, _$httpBackend_, _scenarioService_)=>{
         dataService = _dataService_;

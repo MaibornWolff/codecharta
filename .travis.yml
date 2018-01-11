@@ -9,10 +9,12 @@ jdk:
    - oraclejdk9
 
 env:
-  - TRAVIS_NODE_VERSION="6"
+  - TRAVIS_NODE_VERSION="9"
 
 before_install:
  - chmod +x ./analysis/gradlew
+ - sudo apt-get -qq update
+ - sudo apt-get install -y wine
 
 install:
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
@@ -27,8 +29,8 @@ before_cache:
 
 cache:
   directories:
-    - visualization/node_modules
-    - visualization/.cache
+    # - visualization/node_modules
+    # - visualization/.cache
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
