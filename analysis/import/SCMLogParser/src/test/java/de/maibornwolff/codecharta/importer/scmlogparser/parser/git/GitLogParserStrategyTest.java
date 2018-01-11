@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GitSCMLogProjectCreatorStrategyTest extends ParserStrategyContractTest {
+public class GitLogParserStrategyTest extends ParserStrategyContractTest {
 
     private static final List<String> FULL_COMMIT = asList(
             "commit ca1fe2ba3be4",
@@ -65,6 +65,22 @@ public class GitSCMLogProjectCreatorStrategyTest extends ParserStrategyContractT
         Modification modification = parserStrategy.parseModification(fileMetadata);
         assertThat(modification.getFilename()).isEqualTo("src/Main.java");
         assertThat(modification.getType()).isEqualTo(Modification.Type.RENAME);
+    }
+
+    @Test
+    public void parsesFilenameFromAddedFile() {
+        String fileMetadata = "A\t src/Main.java";
+        Modification modification = parserStrategy.parseModification(fileMetadata);
+        assertThat(modification.getFilename()).isEqualTo("src/Main.java");
+        assertThat(modification.getType()).isEqualTo(Modification.Type.ADD);
+    }
+
+    @Test
+    public void parsesFilenameFromDeletedFile() {
+        String fileMetadata = "D\t src/Main.java";
+        Modification modification = parserStrategy.parseModification(fileMetadata);
+        assertThat(modification.getFilename()).isEqualTo("src/Main.java");
+        assertThat(modification.getType()).isEqualTo(Modification.Type.DELETE);
     }
 
     @Test

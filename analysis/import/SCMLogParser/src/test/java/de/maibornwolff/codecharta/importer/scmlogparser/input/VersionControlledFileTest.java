@@ -7,17 +7,19 @@ import org.junit.Test;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class VersionControlledFileTest {
 
-    private final MetricsFactory metricsFactory = mock(MetricsFactory.class);
-
     @Test
     public void versionControlledFileHoldsInitallyOnlyTheFilename() {
         // given
+        MetricsFactory metricsFactory = mock(MetricsFactory.class);
         String filename = "filename";
 
         // when
@@ -25,9 +27,41 @@ public class VersionControlledFileTest {
 
         // then
         assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
+        assertThat(versionControlledFile.getActualFilename()).isEqualTo(filename);
         assertThat(versionControlledFile.getAuthors()).isEmpty();
+        assertThat(versionControlledFile.markedDeleted()).isFalse();
     }
 
+
+    @Test
+    public void canRegisterMetricsByMetricsFactory() {
+        // given
+
+        ModificationMetric modificationMetric = mock(ModificationMetric.class);
+        when(modificationMetric.metricName()).thenReturn("modificationMetric");
+        when(modificationMetric.value()).thenReturn(1);
+
+        CommitMetric commitMetric = mock(CommitMetric.class);
+        when(commitMetric.metricName()).thenReturn("commitMetric");
+        when(commitMetric.value()).thenReturn(2);
+
+        MetricsFactory metricsFactory = mock(MetricsFactory.class);
+        when(metricsFactory.createCommitMetrics()).thenReturn(Arrays.asList(commitMetric));
+        when(metricsFactory.createModificationMetrics()).thenReturn(Arrays.asList(modificationMetric));
+
+        VersionControlledFile versionControlledFile = new VersionControlledFile(
+                "filename",
+                metricsFactory
+        );
+
+        // when
+        Map<String, Number> metricsMap = versionControlledFile.getMetricsMap();
+
+        // then
+        assertThat(metricsMap).hasSize(2);
+        assertThat(versionControlledFile.getMetricValue("modificationMetric"))
+                .isEqualTo(1);
+    }
 
     @Test
     public void ignoresCommitsForDifferentFiles() {
@@ -55,7 +89,7 @@ public class VersionControlledFileTest {
     }
 
     @Test
-    public void canRegisterACommit() {
+    public void canRegisterASimpleCommit() {
         // given
         ModificationMetric modificationMetric = mock(ModificationMetric.class);
         CommitMetric commitMetric = mock(CommitMetric.class);
@@ -75,7 +109,9 @@ public class VersionControlledFileTest {
 
         // then
         assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
+        assertThat(versionControlledFile.getActualFilename()).isEqualTo(filename);
         assertThat(versionControlledFile.getAuthors()).containsExactly(author);
+        assertThat(versionControlledFile.markedDeleted()).isFalse();
 
         verify(modificationMetric, times(1)).registerModification(any());
         verify(modificationMetric, times(1)).registerModification(eq(modification));
@@ -85,14 +121,61 @@ public class VersionControlledFileTest {
     }
 
     @Test
-    public void canRegisterMultipleCommitsWithSimpleStatistics() {
+    public void getAuthorsReturnsAllAuthors() {
+        // given
+        String filename = "filename";
+        String author1 = "An Author";
+        String author2 = "2nd Author";
+        VersionControlledFile versionControlledFile = new VersionControlledFile(
+                filename, Collections.emptyList(), Collections.emptyList()
+        );
+
+        // when
+        Modification modification1 = new Modification(filename);
+        versionControlledFile.registerCommit(createCommit(author1, modification1));
+        Modification modification2 = new Modification(filename);
+        versionControlledFile.registerCommit(createCommit(author2, modification2));
+        Modification modification3 = new Modification(filename);
+        versionControlledFile.registerCommit(createCommit(author1, modification3));
+
+        // then
+        assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
+        assertThat(versionControlledFile.getAuthors()).containsExactlyInAnyOrder(author1, author2);
+    }
+
+    @Test
+    public void deletionMarksFileAsDeleted() {
+        // given
+        String filename = "filename";
+        VersionControlledFile versionControlledFile = new VersionControlledFile(
+                filename, Collections.emptyList(), Collections.emptyList()
+        );
+
+        // when
+        List<Modification> modifications = Arrays.asList(
+                new Modification(filename),
+                new Modification(filename, Modification.Type.DELETE),
+                new Modification(filename)
+        );
+        modifications.stream()
+                .forEach(
+                        mod -> versionControlledFile.registerCommit(createCommit("An Author", mod))
+                );
+
+        // then
+        assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
+        assertThat(versionControlledFile.getActualFilename()).isEqualTo(filename);
+        assertThat(versionControlledFile.markedDeleted()).isTrue();
+    }
+
+    @Test
+    public void renamingChangesActualFilename() {
         // given
         ModificationMetric modificationMetric = mock(ModificationMetric.class);
         CommitMetric commitMetric = mock(CommitMetric.class);
 
+        String oldFilename = "old filename";
         String filename = "filename";
-        String author1 = "An Author";
-        String author2 = "2nd Author";
         VersionControlledFile versionControlledFile = new VersionControlledFile(
                 filename,
                 Arrays.asList(modificationMetric),
@@ -100,29 +183,25 @@ public class VersionControlledFileTest {
         );
 
         // when
-        Modification modification1 = new Modification(filename);
-        Commit commit1 = createCommit(author1, modification1);
-        versionControlledFile.registerCommit(commit1);
-        Modification modification2 = new Modification(filename);
-        Commit commit2 = createCommit(author2, modification2);
-        versionControlledFile.registerCommit(commit2);
-        Modification modification3 = new Modification(filename);
-        Commit commit3 = createCommit(author1, modification3);
-        versionControlledFile.registerCommit(commit3);
+        // anti-chronological ordering
+        List<Modification> modifications = Arrays.asList(
+                new Modification(filename),
+                new Modification(filename, oldFilename, Modification.Type.RENAME),
+                new Modification(oldFilename),
+                new Modification(filename)
+        );
+        modifications.stream()
+                .forEach(
+                        mod -> versionControlledFile.registerCommit(createCommit("An Author", mod))
+                );
 
         // then
-        assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
-        assertThat(versionControlledFile.getAuthors()).containsExactlyInAnyOrder(author1, author2);
-
-        verify(commitMetric, times(3)).registerCommit(any());
-        verify(commitMetric, times(1)).registerCommit(eq(commit1));
-        verify(commitMetric, times(1)).registerCommit(eq(commit2));
-        verify(commitMetric, times(1)).registerCommit(eq(commit3));
+        assertThat(versionControlledFile.getFilename()).isEqualTo(oldFilename);
+        assertThat(versionControlledFile.getActualFilename()).isEqualTo(filename);
+        assertThat(versionControlledFile.markedDeleted()).isFalse();
 
         verify(modificationMetric, times(3)).registerModification(any());
-        verify(modificationMetric, times(1)).registerModification(eq(modification1));
-        verify(modificationMetric, times(1)).registerModification(eq(modification2));
-        verify(modificationMetric, times(1)).registerModification(eq(modification3));
+        verify(commitMetric, times(3)).registerCommit(any());
     }
 
     private Commit createCommit(String author, Modification modification) {
