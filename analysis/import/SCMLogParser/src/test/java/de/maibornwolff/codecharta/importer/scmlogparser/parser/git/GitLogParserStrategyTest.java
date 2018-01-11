@@ -64,6 +64,7 @@ public class GitLogParserStrategyTest extends ParserStrategyContractTest {
         String fileMetadata = "R094\t srcs/Main.java\t src/Main.java";
         Modification modification = parserStrategy.parseModification(fileMetadata);
         assertThat(modification.getFilename()).isEqualTo("src/Main.java");
+        assertThat(modification.getOldFilename()).isEqualTo("srcs/Main.java");
         assertThat(modification.getType()).isEqualTo(Modification.Type.RENAME);
     }
 

@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser.svn;
 
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.ParserStrategyContractTest;
-import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,6 +57,28 @@ public class SVNLogParserStrategyTest extends ParserStrategyContractTest {
     public void parsesFilenameFromFileMetadata() {
         Modification modification = parserStrategy.parseModification("   M /src/srcFolderTest.txt");
         assertThat(modification.getFilename()).isEqualTo("/src/srcFolderTest.txt");
+        assertThat(modification.getType()).isEqualTo(Modification.Type.MODIFY);
+    }
+
+    @Test
+    public void parsesFilenameFromAddedFile() {
+        Modification modification = parserStrategy.parseModification("   A /src/srcFolderTest.txt");
+        assertThat(modification.getFilename()).isEqualTo("/src/srcFolderTest.txt");
+        assertThat(modification.getType()).isEqualTo(Modification.Type.ADD);
+    }
+
+    @Test
+    public void parsesFilenameFromDeletedFile() {
+        Modification modification = parserStrategy.parseModification("   D  /src/srcFolderTest.txt");
+        assertThat(modification.getFilename()).isEqualTo("/src/srcFolderTest.txt");
+        assertThat(modification.getType()).isEqualTo(Modification.Type.DELETE);
+    }
+
+    @Test
+    public void parsesFilenameFromReplacedFile() {
+        Modification modification = parserStrategy.parseModification("   R  /src/srcFolderTest.txt");
+        assertThat(modification.getFilename()).isEqualTo("/src/srcFolderTest.txt");
+        assertThat(modification.getType()).isEqualTo(Modification.Type.UNKNOWN);
     }
 
     @Test
