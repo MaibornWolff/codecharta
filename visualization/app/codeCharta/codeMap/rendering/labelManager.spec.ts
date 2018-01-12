@@ -89,28 +89,6 @@ describe("LabelManager", () => {
         expect(labelManager.labels.length).toBe(0);
     });
 
-    it("addLabel should add delta to height when it exists", ()=>{
-
-        const DELTA = 2;
-
-        //no delta base value
-        sampleRenderSettings.renderDeltas = false;
-        labelManager.addLabel(sampleLeaf, sampleRenderSettings);
-        let positionWithoutDelta: Vector3 = labelManager.labels[0].sprite.position;
-
-        //delta position value
-        labelManager.labels = [];
-        sampleRenderSettings.renderDeltas = true;
-        sampleRenderSettings.heightKey = "deltaKey";
-        sampleLeaf.attributes = {"deltaKey": 10};
-        sampleLeaf.deltas = {"deltaKey": DELTA};
-        labelManager.addLabel(sampleLeaf, sampleRenderSettings);
-        let positionWithDelta: Vector3 = labelManager.labels[0].sprite.position;
-
-        expect(positionWithDelta.y - positionWithoutDelta.y).toBe(DELTA);
-
-    });
-
     it("addLabel should calculate correct height without delta", ()=>{
         labelManager.addLabel(sampleLeaf, sampleRenderSettings);
         let positionWithoutDelta: Vector3 = labelManager.labels[0].sprite.position;
