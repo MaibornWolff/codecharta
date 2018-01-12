@@ -17,7 +17,7 @@
     <br><br>
 
     <span ng-if="$ctrl.settingsService.settings.deltas">
-        Current Comparison Map: {{$ctrl.dataService.data.comparisonMap.fileName}}<br/>
+        Current Comparison Map: {{$ctrl.dataService.getComparisonMapName()}}<br/>
         Select Comparison Map:
         <span ng-repeat="(key, value) in $ctrl.revisions">
             <a href="#" ng-click="$ctrl.loadComparisonMap(key)">{{value.fileName}} - </a>
