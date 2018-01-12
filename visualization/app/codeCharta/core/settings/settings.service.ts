@@ -94,25 +94,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     }
 
     private onActivateDeltas() {
-        this.applyNodeMerging();
-    }
-
-    private applyNodeMerging() {
-        //TODO this is data manipulation which should be delegated to data service itself
-        let result = this.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(
-            this.deltaCalculatorService.removeUpCrossOriginNodes(this.dataService.data.referenceMap),
-            this.deltaCalculatorService.removeUpCrossOriginNodes(this.dataService.data.comparisonMap));
-
-        this.dataDecoratorService.decorateMapWithUnaryMetric(result.leftMap);
-
-        //recalculate deltas on maps
-        this.deltaCalculatorService.decorateMapsWithDeltas(result.leftMap, this.dataService.data.comparisonMap);
-
-        //The left map is the map to be rendered
-        this._settings.map = result.leftMap;
-
-        //we should write back map changes to dataService, no need to call notify and make an infinite loop
-        this.dataService.data.referenceMap = this._settings.map;
+        this._settings.map = this.dataService.applyNodeMerging();
     }
 
     private onDeactivateDeltas() {
@@ -135,7 +117,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.map = data.referenceMap;
 
         if(this._settings.deltas){
-            this.applyNodeMerging();
+            this.onActivateDeltas();
         }
 
         if (data.metrics.indexOf(this._settings.areaMetric) === -1) {
