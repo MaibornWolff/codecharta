@@ -130,4 +130,23 @@ export class DataService {
         }
     }
 
+    public applyNodeMerging(): CodeMap {
+        //TODO this is data manipulation which should be delegated to data service itself
+        let result = this.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(
+            this.deltaCalculatorService.removeUpCrossOriginNodes(this.data.referenceMap),
+            this.deltaCalculatorService.removeUpCrossOriginNodes(this.data.comparisonMap));
+
+        this.dataDecoratorService.decorateMapWithUnaryMetric(result.leftMap);
+
+        //recalculate deltas on maps
+        this.deltaCalculatorService.decorateMapsWithDeltas(result.leftMap, this.data.comparisonMap);
+
+        //The left map is the map to be rendered
+
+        //we should write back map changes to dataService, no need to call notify and make an infinite loop
+        this.data.referenceMap = result.leftMap;
+
+        return this.data.referenceMap
+    }
+
 }
