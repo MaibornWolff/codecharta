@@ -34,7 +34,7 @@ Components that take visualisation data and modifies them.
 ## Requirements
 
 - Bash or similar
-- JRE 8 (Oracle Java or OpenJDK)
+- JRE 9 (Oracle Java or OpenJDK)
 
 ## Installation
 

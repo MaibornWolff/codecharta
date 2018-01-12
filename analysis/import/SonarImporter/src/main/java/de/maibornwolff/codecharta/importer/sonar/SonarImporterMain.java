@@ -132,6 +132,9 @@ public class SonarImporterMain {
         if (callParameter.getFiles().size() == 2) {
             String urlString = callParameter.getFiles().get(0);
             try {
+                while(urlString.endsWith("/")){
+                    urlString = urlString.substring(0, urlString.length() - 1);
+                }
                 return new URL(urlString);
             } catch (MalformedURLException e) {
                 throw new SonarImporterException("No valid url for remote connection given: " + urlString);
