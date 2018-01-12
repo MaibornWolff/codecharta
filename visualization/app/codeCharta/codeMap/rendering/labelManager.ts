@@ -28,10 +28,11 @@ export class LabelManager {
             let h : number = node.height;
             let l : number = node.length;
 
-            if (settings.renderDeltas && node.deltas[settings.heightKey] > 0.0)
-            {
-                h += node.deltas[settings.heightKey];
-            }
+            //if (settings.renderDeltas && node.heightDelta > 0.0)
+            //{
+            //    h += node.heightDelta;
+            //    console.log(h, node.heightDelta);
+            //}
 
             let label : internalLabel = this.makeText(node.name + ": " + node.attributes[settings.heightKey], 30);
             label.sprite.position.set(x+w/2,y+60+h + label.heightValue/2,z+l/2);
