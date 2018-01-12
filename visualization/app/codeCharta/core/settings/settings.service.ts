@@ -94,16 +94,11 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     }
 
     private onActivateDeltas() {
-        this._settings.map = this.dataService.applyNodeMerging();
+        this.dataService.onActivateDeltas();
     }
 
     private onDeactivateDeltas() {
-        this.deactivateNodeMerging();
-    }
-
-    private deactivateNodeMerging() {
-        this.dataService.setComparisonMap();
-        this.dataService.setReferenceMap();
+        this.dataService.onDeactivateDeltas();
     }
 
     /**
@@ -114,10 +109,10 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      */
     public onDataChanged(data: DataModel) {
 
-        this._settings.map = data.referenceMap;
+        this._settings.map = data.referenceMap; // reference map is always the map which should be drawn
 
         if(this._settings.deltas){
-            this.onActivateDeltas();
+            //this.onActivateDeltas();
         }
 
         if (data.metrics.indexOf(this._settings.areaMetric) === -1) {

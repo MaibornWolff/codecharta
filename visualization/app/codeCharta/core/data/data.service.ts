@@ -28,6 +28,8 @@ export class DataService {
 
     private _data: DataModel;
     private _lastReferenceIndex = 0;
+    private _lastComparisonMap = null;
+    private _deltasEnabled = false;
 
     /* @ngInject */
     constructor(private $rootScope: IRootScopeService,
@@ -68,6 +70,14 @@ export class DataService {
         this.setReferenceMap(revision);
     }
 
+    public getReferenceMapName(): string {
+        return this._data.referenceMap.fileName;
+    }
+
+    public getComparisonMapName(): string {
+        return this._data.comparisonMap.fileName;
+    }
+
     /**
      * Sets metrics from a revision by id.
      * @param {number} index id
@@ -103,13 +113,18 @@ export class DataService {
      * Selects and sets the first map to compare.  this is the map which is substracted from the main map
      * @param {number} index the maps index in the revisions array
      */
-    public setComparisonMap(index: number = this._lastReferenceIndex) { //this allows to reset delta values when switching back from delta view
+    public setComparisonMap(index: number) { //this allows to reset delta values when switching back from delta view
         if (this._data.revisions[index] !== null) {
             this._data.comparisonMap = this._data.revisions[index];
+            if (this._deltasEnabled) {
+                this.applyNodeMerging();
+            }
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.comparisonMap);
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.referenceMap);
             this.deltaCalculatorService.decorateMapsWithDeltas(this._data.comparisonMap, this._data.referenceMap);
             this.setMetrics(index);
+            this.setReferenceMap(this._lastReferenceIndex);
+
             this.notify();
         }
     }
@@ -118,10 +133,13 @@ export class DataService {
      * Selects and sets the second map to compare. this is the main visible map
      * @param {number} index the maps index in the revisions array
      */
-    public setReferenceMap(index: number = this._lastReferenceIndex) {
+    public setReferenceMap(index: number) {
         if (this._data.revisions[index] !== null) {
             this._lastReferenceIndex = index;
             this._data.referenceMap = this._data.revisions[index];
+            if (this._deltasEnabled) {
+                this.applyNodeMerging();
+            }
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.comparisonMap);
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.referenceMap);
             this.deltaCalculatorService.decorateMapsWithDeltas(this._data.comparisonMap, this._data.referenceMap);
@@ -130,23 +148,39 @@ export class DataService {
         }
     }
 
-    public applyNodeMerging(): CodeMap {
-        //TODO this is data manipulation which should be delegated to data service itself
+    //TODO "subscribe with interface" not possible because angular would produce a circular dependency
+    public onActivateDeltas() {
+        if (!this._deltasEnabled) {
+            this._deltasEnabled = true;
+            this.setComparisonMap(this._lastReferenceIndex);
+            this.setReferenceMap(this._lastReferenceIndex);
+        }
+
+
+    }
+
+    public onDeactivateDeltas() {
+        if (this._deltasEnabled) {
+            this._deltasEnabled = false;
+            this.setComparisonMap(this._lastReferenceIndex);
+            this.setReferenceMap(this._lastReferenceIndex);
+        }
+    }
+
+    public applyNodeMerging() {
         let result = this.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(
-            this.deltaCalculatorService.removeUpCrossOriginNodes(this.data.referenceMap),
-            this.deltaCalculatorService.removeUpCrossOriginNodes(this.data.comparisonMap));
+            this.deltaCalculatorService.removeUpCrossOriginNodes(this._data.referenceMap),
+            this.deltaCalculatorService.removeUpCrossOriginNodes(this._data.comparisonMap));
 
         this.dataDecoratorService.decorateMapWithUnaryMetric(result.leftMap);
 
         //recalculate deltas on maps
-        this.deltaCalculatorService.decorateMapsWithDeltas(result.leftMap, this.data.comparisonMap);
+        this.deltaCalculatorService.decorateMapsWithDeltas(result.leftMap, this._data.comparisonMap);
 
-        //The left map is the map to be rendered
 
         //we should write back map changes to dataService, no need to call notify and make an infinite loop
-        this.data.referenceMap = result.leftMap;
-
-        return this.data.referenceMap
+        this._data.referenceMap = result.leftMap;
+        this._data.comparisonMap = result.rightMap;
     }
 
 }
