@@ -46,7 +46,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         let ctx = this;
 
-        this._settings = this.getInitialSettings(dataService.data.referenceMap, dataService.data.metrics);
+        this._settings = this.getInitialSettings(dataService.data.renderMap, dataService.data.metrics);
 
         dataService.subscribe(this);
         threeOrbitControlsService.subscribe(this);
@@ -59,7 +59,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         });
     }
 
-    private getInitialSettings(referenceMap: any, metrics: string[]): Settings {
+    private getInitialSettings(renderMap: any, metrics: string[]): Settings {
 
         let r: Range = {
             from: 10,
@@ -78,7 +78,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._lastDeltaState = false;
 
         return {
-            map: referenceMap,
+            map: renderMap,
             neutralColorRange: r,
             areaMetric: this.getMetricByIdOrLast(0, metrics),
             heightMetric: this.getMetricByIdOrLast(1, metrics),
@@ -109,11 +109,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      */
     public onDataChanged(data: DataModel) {
 
-        this._settings.map = data.referenceMap; // reference map is always the map which should be drawn
-
-        if(this._settings.deltas){
-            //this.onActivateDeltas();
-        }
+        this._settings.map = data.renderMap; // reference map is always the map which should be drawn
 
         if (data.metrics.indexOf(this._settings.areaMetric) === -1) {
             //area metric is not set or not in the new metrics and needs to be chosen
