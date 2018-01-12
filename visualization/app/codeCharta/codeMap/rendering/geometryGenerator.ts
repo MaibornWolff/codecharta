@@ -106,10 +106,8 @@ export class geometryGenerator {
         {
             deltaValue = n.deltas[settings.heightKey];
 
-            if (deltaValue > 0.0)
-            {
-                measures.height += deltaValue;
-            }
+
+            measures.height += Math.abs(deltaValue);
         }
 
         desc.add(
