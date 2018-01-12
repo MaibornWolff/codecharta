@@ -58,9 +58,15 @@ export class geometryGenerator {
             y : n.z0,
             z : n.y0,
             width : n.width,
-            height : Math.max(n.height, 5.0),
+            height : this.ensureMinHeightIfDeltaNotNegative(n.height, n.heightDelta),
             depth : n.length
         };
+    }
+
+    private ensureMinHeightIfDeltaNotNegative(x: number, d: number): number {
+        if(d >= 0) {
+            return Math.max(x, 5.0);
+        } else return x;
     }
 
     private addFloor(data : intermediateVertexData, n : node, idx : number, desc : codeMapGeometricDescription)
@@ -100,14 +106,14 @@ export class geometryGenerator {
         let measures : boxMeasures = this.mapNodeToLocalBox(n);
         let color : number = this.estimateColorForBuilding(n, settings.colorKey, settings.colorRange, settings.renderDeltas);
 
-        let deltaValue : number = 0.0;
+        let renderDelta: number = 0.0;
 
-        if (settings.renderDeltas && this.nodeHasSuitableDeltas(n, settings.heightKey))
+        if (settings.renderDeltas && this.nodeHasSuitableDeltas(n, settings.heightKey) && n.heightDelta)
         {
-            deltaValue = n.deltas[settings.heightKey];
+            renderDelta = n.heightDelta; //set the transformed render delta
 
-            if(deltaValue < 0) {
-                measures.height += Math.abs(deltaValue);
+            if(renderDelta < 0) {
+                measures.height += Math.abs(renderDelta);
             }
 
         }
@@ -124,7 +130,7 @@ export class geometryGenerator {
             )
         );
 
-        boxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, idx, deltaValue);
+        boxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, idx, renderDelta);
     }
 
     private estimateColorForBuilding(n : node, colorKey : string, range : colorRange, deltasEnabled : boolean) : number
