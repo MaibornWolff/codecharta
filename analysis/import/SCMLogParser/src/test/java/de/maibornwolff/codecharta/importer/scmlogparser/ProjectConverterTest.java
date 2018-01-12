@@ -2,16 +2,28 @@ package de.maibornwolff.codecharta.importer.scmlogparser;
 
 import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.model.input.Commit;
+import de.maibornwolff.codecharta.model.input.Modification;
 import de.maibornwolff.codecharta.model.input.VersionControlledFile;
+import de.maibornwolff.codecharta.model.input.metrics.MetricsFactory;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class ProjectConverterTest {
+
+    private final MetricsFactory metricsFactory = mock(MetricsFactory.class);
+
+    private static List<Modification> modificationsByFilename(String... filenames) {
+        return Stream.of(filenames).map(Modification::new).collect(Collectors.toList());
+    }
 
     @Test
     public void canCreateAnEmptyProject() throws Exception {
@@ -30,8 +42,8 @@ public class ProjectConverterTest {
     public void canConvertProjectWithAuthors() {
         //given
         String projectname = "ProjectWithAuthors";
-        VersionControlledFile file1 = new VersionControlledFile("File 1");
-        file1.registerCommit(new Commit("Author", Arrays.asList("File 1, File 2"), LocalDateTime.now()));
+        VersionControlledFile file1 = new VersionControlledFile("File 1", metricsFactory);
+        file1.registerCommit(new Commit("Author", modificationsByFilename("File 1, File 2"), LocalDateTime.now()));
 
         //when
         Project project = ProjectConverter.convert(projectname, Arrays.asList(file1), true);
@@ -44,8 +56,8 @@ public class ProjectConverterTest {
     public void canConvertProjectWithoutAuthors() {
         //given
         String projectname = "ProjectWithoutAuthors";
-        VersionControlledFile file1 = new VersionControlledFile("File 1");
-        file1.registerCommit(new Commit("Author", Arrays.asList("File 1, File 2"), LocalDateTime.now()));
+        VersionControlledFile file1 = new VersionControlledFile("File 1", metricsFactory);
+        file1.registerCommit(new Commit("Author", modificationsByFilename("File 1, File 2"), LocalDateTime.now()));
 
         //when
         Project project = ProjectConverter.convert(projectname, Arrays.asList(file1), false);

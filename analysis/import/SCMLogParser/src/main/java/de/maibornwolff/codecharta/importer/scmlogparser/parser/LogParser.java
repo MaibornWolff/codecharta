@@ -3,7 +3,9 @@ package de.maibornwolff.codecharta.importer.scmlogparser.parser;
 import de.maibornwolff.codecharta.importer.scmlogparser.ProjectConverter;
 import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.model.input.Commit;
+import de.maibornwolff.codecharta.model.input.Modification;
 import de.maibornwolff.codecharta.model.input.VersionControlledFile;
+import de.maibornwolff.codecharta.model.input.metrics.MetricsFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,11 +14,13 @@ import java.util.stream.Stream;
 public class LogParser {
 
     private final LogParserStrategy parserStrategy;
+    private final MetricsFactory metricsFactory;
     private final boolean containsAuthors;
 
-    public LogParser(LogParserStrategy parserStrategy, boolean containsAuthors) {
+    public LogParser(LogParserStrategy parserStrategy, boolean containsAuthors, MetricsFactory metricsFactory) {
         this.parserStrategy = parserStrategy;
         this.containsAuthors = containsAuthors;
+        this.metricsFactory = metricsFactory;
     }
 
     public Project parse(Stream<String> lines) {
@@ -27,7 +31,7 @@ public class LogParser {
     List<VersionControlledFile> parseLoglines(Stream<String> logLines) {
         return logLines.collect(parserStrategy.createLogLineCollector())
                 .map(this::parseCommit)
-                .collect(CommitCollector.create());
+                .collect(CommitCollector.create(metricsFactory));
     }
 
     private Project convertToProject(List<VersionControlledFile> versionControlledFiles) {
@@ -37,7 +41,7 @@ public class LogParser {
     Commit parseCommit(List<String> commitLines) {
         String author = parserStrategy.parseAuthor(commitLines).orElseThrow(() -> new IllegalArgumentException("No author found in input"));
         LocalDateTime commitDate = parserStrategy.parseDate(commitLines).orElseThrow(() -> new IllegalArgumentException("No commit date found in input"));
-        List<String> filenames = parserStrategy.parseFilenames(commitLines);
-        return new Commit(author, filenames, commitDate);
+        List<Modification> modifications = parserStrategy.parseModifications(commitLines);
+        return new Commit(author, modifications, commitDate);
     }
 }

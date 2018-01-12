@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [Unreleased]
 ### Added
 - the file origin of a node is displayed in the details now
+- added support for git log --numstat and codechurn
 
 ### Changed
 - two selected delta maps now merge their nodes correctly. The map where 
@@ -25,6 +26,7 @@ unary and deltas are activated.
 
 ### Changed
 - scaling slider now has steps of 0.1. This allows the user to select precise values like 2.0
+- updated jdk to jdk9
 
 ### Removed
 

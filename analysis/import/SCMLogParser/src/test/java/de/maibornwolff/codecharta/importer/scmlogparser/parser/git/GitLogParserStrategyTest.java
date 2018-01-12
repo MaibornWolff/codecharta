@@ -1,5 +1,8 @@
-package de.maibornwolff.codecharta.importer.scmlogparser.parser;
+package de.maibornwolff.codecharta.importer.scmlogparser.parser.git;
 
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.ParserStrategyContractTest;
+import de.maibornwolff.codecharta.model.input.Modification;
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class GitLogParserStrategyTest extends ParserStrategyContractTest {
 
-    public static final List<String> FULL_COMMIT = asList(
+    private static final List<String> FULL_COMMIT = asList(
             "commit ca1fe2ba3be4",
             "Author: TheAuthor <mail@example.com>",
             "Date:   Tue May 9 19:57:57 2017 +0200",
@@ -29,12 +32,12 @@ public class GitLogParserStrategyTest extends ParserStrategyContractTest {
     }
 
     @Override
-    protected List<String> getFullCommit(){
+    protected List<String> getFullCommit() {
         return FULL_COMMIT;
     }
 
     @Override
-    protected LogParserStrategy getLogParserStrategy(){
+    protected LogParserStrategy getLogParserStrategy() {
         return parserStrategy;
     }
 
@@ -51,14 +54,15 @@ public class GitLogParserStrategyTest extends ParserStrategyContractTest {
     @Test
     public void parsesFilenameFromFileMetadata() {
         String fileMetadata = "M\t src/Main.java";
-        String filename = parserStrategy.parseFilename(fileMetadata);
-        assertThat(filename).isEqualTo("src/Main.java");
+        Modification modification = parserStrategy.parseModification(fileMetadata);
+        assertThat(modification.getFilename()).isEqualTo("src/Main.java");
     }
 
     @Test
     public void parsesFilenamesFromUnusualFileMetadata() {
-        assertThat(parserStrategy.parseFilename("")).isEqualTo("");
-        assertThat(parserStrategy.parseFilename("  src/Main.java")).isEqualTo("src/Main.java");
+        assertThat(parserStrategy.parseModification("")).isEqualTo(Modification.EMPTY);
+        assertThat(parserStrategy.parseModification("  src/Main.java").getFilename())
+                .isEqualTo("src/Main.java");
     }
 
     @Test

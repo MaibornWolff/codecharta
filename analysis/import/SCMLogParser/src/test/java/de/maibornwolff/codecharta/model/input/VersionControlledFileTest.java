@@ -1,126 +1,133 @@
 package de.maibornwolff.codecharta.model.input;
 
+import de.maibornwolff.codecharta.model.input.metrics.CommitMetric;
+import de.maibornwolff.codecharta.model.input.metrics.MetricsFactory;
+import de.maibornwolff.codecharta.model.input.metrics.ModificationMetric;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 public class VersionControlledFileTest {
 
+    private final MetricsFactory metricsFactory = mock(MetricsFactory.class);
+
     @Test
-    public void versionControlledFileHoldsInitallyOnlyTheFilename() throws Exception {
+    public void versionControlledFileHoldsInitallyOnlyTheFilename() {
         // given
         String filename = "filename";
 
         // when
-        VersionControlledFile versionControlledFile = new VersionControlledFile(filename);
+        VersionControlledFile versionControlledFile = new VersionControlledFile(filename, metricsFactory);
 
         // then
         assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
         assertThat(versionControlledFile.getAuthors()).isEmpty();
-        assertThat(versionControlledFile.getNumberOfAuthors()).isEqualTo(0);
-        assertThat(versionControlledFile.getNumberOfOccurrencesInCommits()).isEqualTo(0);
+    }
+
+
+    @Test
+    public void ignoresCommitsForDifferentFiles() {
+        // given
+        ModificationMetric modificationMetric = mock(ModificationMetric.class);
+        CommitMetric commitMetric = mock(CommitMetric.class);
+
+        VersionControlledFile versionControlledFile = new VersionControlledFile(
+                "filename",
+                Arrays.asList(modificationMetric),
+                Arrays.asList(commitMetric)
+        );
+
+        // when
+        Modification modification = new Modification("anotherFilename");
+        Commit commit = createCommit("An Author", modification);
+        versionControlledFile.registerCommit(commit);
+
+        // then
+        assertThat(versionControlledFile.getAuthors()).isEmpty();
+
+        verify(modificationMetric, times(0)).registerModification(any());
+
+        verify(commitMetric, times(0)).registerCommit(any());
     }
 
     @Test
-    public void canRegisterACommit() throws Exception {
+    public void canRegisterACommit() {
         // given
+        ModificationMetric modificationMetric = mock(ModificationMetric.class);
+        CommitMetric commitMetric = mock(CommitMetric.class);
+
         String filename = "filename";
         String author = "An Author";
-        VersionControlledFile versionControlledFile = new VersionControlledFile(filename);
+        VersionControlledFile versionControlledFile = new VersionControlledFile(
+                filename,
+                Arrays.asList(modificationMetric),
+                Arrays.asList(commitMetric)
+        );
 
         // when
-        versionControlledFile.registerCommit(new Commit(author, Collections.singletonList(filename), LocalDateTime.now()));
+        Modification modification = new Modification(filename);
+        Commit commit = createCommit(author, modification);
+        versionControlledFile.registerCommit(commit);
 
         // then
         assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
         assertThat(versionControlledFile.getAuthors()).containsExactly(author);
-        assertThat(versionControlledFile.getNumberOfAuthors()).isEqualTo(1);
-        assertThat(versionControlledFile.getNumberOfOccurrencesInCommits()).isEqualTo(1);
+
+        verify(modificationMetric, times(1)).registerModification(any());
+        verify(modificationMetric, times(1)).registerModification(eq(modification));
+
+        verify(commitMetric, times(1)).registerCommit(any());
+        verify(commitMetric, times(1)).registerCommit(eq(commit));
     }
 
     @Test
-    public void canRegisterMultipleCommitsWithSimpleStatistics() throws Exception {
+    public void canRegisterMultipleCommitsWithSimpleStatistics() {
         // given
+        ModificationMetric modificationMetric = mock(ModificationMetric.class);
+        CommitMetric commitMetric = mock(CommitMetric.class);
+
         String filename = "filename";
         String author1 = "An Author";
         String author2 = "2nd Author";
-        VersionControlledFile versionControlledFile = new VersionControlledFile(filename);
+        VersionControlledFile versionControlledFile = new VersionControlledFile(
+                filename,
+                Arrays.asList(modificationMetric),
+                Arrays.asList(commitMetric)
+        );
 
         // when
-        versionControlledFile.registerCommit(new Commit(author1, Collections.singletonList(filename), LocalDateTime.now()));
-        versionControlledFile.registerCommit(new Commit(author2, Collections.singletonList(filename), LocalDateTime.now()));
-        versionControlledFile.registerCommit(new Commit(author1, Collections.singletonList(filename), LocalDateTime.now()));
+        Modification modification1 = new Modification(filename);
+        Commit commit1 = createCommit(author1, modification1);
+        versionControlledFile.registerCommit(commit1);
+        Modification modification2 = new Modification(filename);
+        Commit commit2 = createCommit(author2, modification2);
+        versionControlledFile.registerCommit(commit2);
+        Modification modification3 = new Modification(filename);
+        Commit commit3 = createCommit(author1, modification3);
+        versionControlledFile.registerCommit(commit3);
 
         // then
         assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
         assertThat(versionControlledFile.getAuthors()).containsExactlyInAnyOrder(author1, author2);
-        assertThat(versionControlledFile.getNumberOfAuthors()).isEqualTo(2);
-        assertThat(versionControlledFile.getNumberOfOccurrencesInCommits()).isEqualTo(3);
+
+        verify(commitMetric, times(3)).registerCommit(any());
+        verify(commitMetric, times(1)).registerCommit(eq(commit1));
+        verify(commitMetric, times(1)).registerCommit(eq(commit2));
+        verify(commitMetric, times(1)).registerCommit(eq(commit3));
+
+        verify(modificationMetric, times(3)).registerModification(any());
+        verify(modificationMetric, times(1)).registerModification(eq(modification1));
+        verify(modificationMetric, times(1)).registerModification(eq(modification2));
+        verify(modificationMetric, times(1)).registerModification(eq(modification3));
     }
 
-
-    @Test
-    public void canRegisterMultipleCommitsAndReturnsCommitWeeks() throws Exception {
-        // given
-        String filename = "filename";
-        String author1 = "An Author";
-        String author2 = "A 2nd Author";
-        LocalDateTime commitDate1 = LocalDateTime.now();
-        LocalDateTime commitDate2 = LocalDateTime.now();
-        LocalDateTime commitDate3 = commitDate1.minusDays(7);
-        VersionControlledFile versionControlledFile = new VersionControlledFile(filename);
-
-        // when
-        versionControlledFile.registerCommit(new Commit(author1, Collections.singletonList(filename), commitDate1));
-        versionControlledFile.registerCommit(new Commit(author2, Collections.singletonList(filename), commitDate2));
-        versionControlledFile.registerCommit(new Commit(author1, Collections.singletonList(filename), commitDate3));
-
-        // then
-        assertThat(versionControlledFile.getFilename()).isEqualTo(filename);
-        assertThat(versionControlledFile.getAuthors()).containsExactlyInAnyOrder(author1, author2);
-        assertThat(versionControlledFile.getNumberOfAuthors()).isEqualTo(2);
-        assertThat(versionControlledFile.getNumberOfOccurrencesInCommits()).isEqualTo(3);
-        assertThat(versionControlledFile.getNumberOfWeeksWithCommits()).isEqualTo(2);
-    }
-
-    @Test
-    public void canCreateCalendarWeekFromADateTime(){
-        // given
-        LocalDateTime commitDateTime = LocalDateTime.of(2016, 4, 2, 12, 0);
-
-        // when
-        VersionControlledFile.CalendarWeek kw = VersionControlledFile.CalendarWeek.forDateTime(commitDateTime);
-
-        // then
-        assertThat(kw).isEqualTo(new VersionControlledFile.CalendarWeek(13, 2016));
-    }
-
-    @Test
-    public void kalenderwoche_wird_mit_tagimjahr_richtig_berechnet_wenn_tag_am_anfang_des_jahres_und_kw_im_vorjahr(){
-        // given
-        LocalDateTime commitDateTime = LocalDateTime.of(2016, 1, 3, 12, 0);
-
-        // when
-        VersionControlledFile.CalendarWeek kw = VersionControlledFile.CalendarWeek.forDateTime(commitDateTime);
-
-        // then
-        assertThat(kw).isEqualTo(new VersionControlledFile.CalendarWeek(53, 2015));
-    }
-
-    @Test
-    public void kalenderwoche_wird_mit_tagimjahr_richtig_berechnet_wenn_tag_am_ende_des_jahres_und_kw_im_folgejahr(){
-        // given
-        LocalDateTime commitDateTime = LocalDateTime.of(2018, 12, 31, 12, 0);
-
-        // when
-        VersionControlledFile.CalendarWeek kw = VersionControlledFile.CalendarWeek.forDateTime(commitDateTime);
-
-        // then
-        assertThat(kw).isEqualTo(new VersionControlledFile.CalendarWeek(1, 2019));
+    private Commit createCommit(String author, Modification modification) {
+        return new Commit(author, Arrays.asList(modification), LocalDateTime.now());
     }
 
 }

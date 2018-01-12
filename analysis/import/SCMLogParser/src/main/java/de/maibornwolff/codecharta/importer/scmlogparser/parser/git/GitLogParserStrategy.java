@@ -1,4 +1,8 @@
-package de.maibornwolff.codecharta.importer.scmlogparser.parser;
+package de.maibornwolff.codecharta.importer.scmlogparser.parser.git;
+
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogLineCollector;
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
+import de.maibornwolff.codecharta.model.input.Modification;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,18 +17,24 @@ import java.util.stream.Stream;
 
 public class GitLogParserStrategy implements LogParserStrategy {
 
-    /*
-     * see "diff-raw status letters" at https://github.com/git/git/blob/35f6318d44379452d8d33e880d8df0267b4a0cd0/diff.h#L326
-     */
-    private static final List<Character> STATUS_LETTERS = Arrays.asList('A', 'C', 'D', 'M', 'R', 'T', 'X', 'U');
-
+    public static final String CORRESPONDING_LOG_CREATION_CMD = "git log --name-status [--no-renames]";
+    private static final Predicate<String> GIT_COMMIT_SEPARATOR_TEST = logLine -> logLine.startsWith("commit");
     private static final String AUTHOR_ROW_INDICATOR = "Author: ";
-
     private static final String DATE_ROW_INDICATOR = "Date: ";
-
-    public static final Predicate<String> GIT_COMMIT_SEPARATOR_TEST = logLine -> logLine.startsWith("commit");
-
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("EEE MMM d HH:mm:ss yyyy ZZZ", Locale.US);
+
+    private static boolean isStatusLetter(char character) {
+        return Status.ALL_STATUS_LETTERS.contains(character);
+    }
+
+    @Override
+    public List<String> listSupportedMetrics() {
+        return Arrays.asList(
+                "number_of_authors",
+                "number_of_commits",
+                "weeks_with_commits"
+        );
+    }
 
     private boolean isFileLine(String commitLine) {
         if (commitLine.length() < 2) {
@@ -35,16 +45,12 @@ public class GitLogParserStrategy implements LogParserStrategy {
         return isStatusLetter(firstChar) && Character.isWhitespace(secondChar);
     }
 
-    private static boolean isStatusLetter(char character) {
-        return STATUS_LETTERS.contains(character);
-    }
-
-    String parseFilename(String fileLine) {
+    Modification parseModification(String fileLine) {
         if (fileLine.isEmpty()) {
-            return fileLine;
+            return Modification.EMPTY;
         }
         String filename = fileLine.substring(1);
-        return filename.trim();
+        return new Modification(filename.trim());
     }
 
     public Collector<String, ?, Stream<List<String>>> createLogLineCollector() {
@@ -70,10 +76,10 @@ public class GitLogParserStrategy implements LogParserStrategy {
     }
 
     @Override
-    public List<String> parseFilenames(List<String> commitLines) {
+    public List<Modification> parseModifications(List<String> commitLines) {
         return commitLines.stream()
                 .filter(this::isFileLine)
-                .map(this::parseFilename)
+                .map(this::parseModification)
                 .collect(Collectors.toList());
     }
 
@@ -87,6 +93,6 @@ public class GitLogParserStrategy implements LogParserStrategy {
 
     private LocalDateTime parseCommitDate(String metadataDateLine) {
         String commitDateAsString = metadataDateLine.replace(DATE_ROW_INDICATOR, "").trim();
-        return LocalDateTime.parse(commitDateAsString, DATE_TIME_FORMATTER );
+        return LocalDateTime.parse(commitDateAsString, DATE_TIME_FORMATTER);
     }
 }

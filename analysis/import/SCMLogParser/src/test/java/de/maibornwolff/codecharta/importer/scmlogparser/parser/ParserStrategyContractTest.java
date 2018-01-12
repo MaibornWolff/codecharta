@@ -1,7 +1,9 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser;
 
 import de.maibornwolff.codecharta.model.input.Commit;
+import de.maibornwolff.codecharta.model.input.Modification;
 import de.maibornwolff.codecharta.model.input.VersionControlledFile;
+import de.maibornwolff.codecharta.model.input.metrics.MetricsFactory;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
@@ -12,8 +14,11 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.Mockito.mock;
 
 public abstract class ParserStrategyContractTest {
+
+    protected MetricsFactory metricsFactory = new MetricsFactory();
 
     /**
      * This method should return test data for the contract test. <br><br>
@@ -34,7 +39,7 @@ public abstract class ParserStrategyContractTest {
 
     @Test
     public void parsesCommit() {
-        LogParser logParser = new LogParser(getLogParserStrategy(), true);
+        LogParser logParser = new LogParser(getLogParserStrategy(), true, metricsFactory);
         Commit commit = logParser.parseCommit(getFullCommit());
         assertThat(commit)
                 .extracting(Commit::getAuthor, Commit::getFilenames, Commit::getCommitDate)
@@ -43,9 +48,11 @@ public abstract class ParserStrategyContractTest {
 
     @Test
     public void parsesFilesInCommitLines() {
-        List<String> filenames = getLogParserStrategy().parseFilenames(getFullCommit());
-        assertThat(filenames).hasSize(3);
-        assertThat(filenames).containsExactlyInAnyOrder("src/Main.java", "src/Main.java", "src/Util.java");
+        List<Modification> modifications = getLogParserStrategy().parseModifications(getFullCommit());
+        assertThat(modifications).hasSize(3);
+        assertThat(modifications)
+                .extracting(modification -> modification.getFilename())
+                .containsExactlyInAnyOrder("src/Main.java", "src/Main.java", "src/Util.java");
     }
 
     @Test
@@ -70,9 +77,10 @@ public abstract class ParserStrategyContractTest {
     @Test
     public void accumulatesCommitFiles() {
         Stream<String> logLines = Stream.concat(getFullCommit().stream(), getFullCommit().stream());
-        List<VersionControlledFile> files = new LogParser(getLogParserStrategy(), true).parseLoglines(logLines);
+        List<VersionControlledFile> files =
+                new LogParser(getLogParserStrategy(), true, metricsFactory).parseLoglines(logLines);
         assertThat(files)
-                .extracting(VersionControlledFile::getFilename, VersionControlledFile::getNumberOfOccurrencesInCommits, VersionControlledFile::getAuthors)
+                .extracting(VersionControlledFile::getFilename, f -> f.getMetricValue("number_of_commits"), VersionControlledFile::getAuthors)
                 .containsExactlyInAnyOrder(
                         tuple("src/Util.java", 2, singleton("TheAuthor")),
                         tuple("src/Main.java", 4, singleton("TheAuthor")));
