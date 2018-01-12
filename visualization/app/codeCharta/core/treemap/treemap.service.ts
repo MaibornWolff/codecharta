@@ -2,6 +2,7 @@ import * as d3 from "d3";
 import {DataService} from "../data/data.service";
 import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
 import {HierarchyNode} from "d3-hierarchy";
+import {node} from "../../codeMap/rendering/node";
 
 /**
  * This service transforms valid file data to a custom treemap. Our custom treemap has a 3rd axis added to the nodes.
@@ -71,7 +72,7 @@ class TreeMapService {
      * @param {number} heightScale scaling factor
      * @param {number} folderHeight height of folder
      */
-    transformNode(node, heightKey, heightScale, folderHeight) {
+    private transformNode(node, heightKey, heightScale, folderHeight) {
 
         node.width = Math.max(node.x1 - node.x0, 1);
         node.length = Math.max(node.y1 - node.y0, 1);
@@ -82,6 +83,9 @@ class TreeMapService {
         node.name = node.data.name;
         if (node.data.deltas) {
             node.deltas = node.data.deltas;
+            if(node.deltas[heightKey]) {
+                node.heightDelta = heightScale * node.data.deltas[heightKey];
+            }
         }
         node.link = node.data.link;
         node.origin = node.data.origin;
