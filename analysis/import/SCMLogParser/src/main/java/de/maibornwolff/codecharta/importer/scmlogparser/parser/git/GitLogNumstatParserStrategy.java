@@ -1,30 +1,61 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser.git;
 
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogLineCollector;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
-import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.maibornwolff.codecharta.importer.scmlogparser.parser.git.AuthorParser.AUTHOR_ROW_INDICATOR;
+import static de.maibornwolff.codecharta.importer.scmlogparser.parser.git.CommitDateParser.DATE_ROW_INDICATOR;
+
 public class GitLogNumstatParserStrategy implements LogParserStrategy {
 
-    public static final String CORRESPONDING_LOG_CREATION_CMD = "git log --numstat --no-renames";
+    public static final String CORRESPONDING_LOG_CREATION_CMD = "git log --numstat --topo-order";
+    private static final String STANDARD_FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S+\\s*";
+    private static final String RENAME_FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S*\\{\\S+ => \\S+}\\S*\\s*";
     private static final Predicate<String> GIT_COMMIT_SEPARATOR_TEST = logLine -> logLine.startsWith("commit");
-    private static final String AUTHOR_ROW_INDICATOR = "Author: ";
-    private static final char AUTHOR_ROW_BEGIN_OF_EMAIL = '<';
-    private static final String DATE_ROW_INDICATOR = "Date: ";
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("EEE MMM d HH:mm:ss yyyy ZZZ", Locale.US);
-    private static final String FILE_LINE_SPLITTER = "\\s+";
-    private static final String FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S+";
+    private static final String STANDARD_FILE_LINE_SPLITTER = "\\s+";
+    private static final String RENAME_FILE_LINE_SPLITTER = "[{}\\s+]";
+
+    static boolean isFileLine(String commitLine) {
+        return commitLine.length() >= 5
+                && (commitLine.matches(STANDARD_FILE_LINE_REGEX) || commitLine.matches(RENAME_FILE_LINE_REGEX));
+    }
+
+    static Modification parseModification(String fileLine) {
+        if (fileLine.matches(STANDARD_FILE_LINE_REGEX)) {
+            return parseStandardModification(fileLine);
+        } else if (fileLine.matches(RENAME_FILE_LINE_REGEX)) {
+            return parseRenameModification(fileLine);
+        }
+
+        return Modification.EMPTY;
+    }
+
+    private static Modification parseRenameModification(String fileLine) {
+        String[] lineParts = fileLine.split(RENAME_FILE_LINE_SPLITTER);
+        int additions = Integer.parseInt(lineParts[0]);
+        int deletions = Integer.parseInt(lineParts[1]);
+        String oldFileName = lineParts[2] + lineParts[3] + (lineParts.length > 6 ? lineParts[6] : "");
+        String newFileName = lineParts[2] + lineParts[5] + (lineParts.length > 6 ? lineParts[6] : "");
+        return new Modification(newFileName, oldFileName, additions, deletions, Modification.Type.RENAME);
+    }
+
+    private static Modification parseStandardModification(String fileLine) {
+        String[] lineParts = fileLine.split(STANDARD_FILE_LINE_SPLITTER);
+        int additions = Integer.parseInt(lineParts[0]);
+        int deletions = Integer.parseInt(lineParts[1]);
+        String filename = lineParts[2];
+        return new Modification(filename.trim(), additions, deletions);
+    }
 
     @Override
     public List<String> listSupportedMetrics() {
@@ -36,18 +67,7 @@ public class GitLogNumstatParserStrategy implements LogParserStrategy {
         );
     }
 
-    private boolean isFileLine(String commitLine) {
-        return commitLine.length() >= 5 && commitLine.matches(FILE_LINE_REGEX);
-    }
-
-    Modification parseModification(String fileLine) {
-        String[] lineParts = fileLine.split(FILE_LINE_SPLITTER);
-        int additions = Integer.parseInt(lineParts[0]);
-        int deletions = Integer.parseInt(lineParts[1]);
-        String filename = lineParts[2];
-        return new Modification(filename.trim(), additions, deletions);
-    }
-
+    @Override
     public Collector<String, ?, Stream<List<String>>> createLogLineCollector() {
         return LogLineCollector.create(GIT_COMMIT_SEPARATOR_TEST);
     }
@@ -56,25 +76,16 @@ public class GitLogNumstatParserStrategy implements LogParserStrategy {
     public Optional<String> parseAuthor(List<String> commitLines) {
         return commitLines.stream()
                 .filter(commitLine -> commitLine.startsWith(AUTHOR_ROW_INDICATOR))
-                .map(this::parseAuthor)
+                .map(AuthorParser::parseAuthor)
                 .findFirst();
-
-    }
-
-    String parseAuthor(String authorLine) {
-        String authorWithEmail = authorLine.substring(AUTHOR_ROW_INDICATOR.length());
-        int beginOfEmail = authorWithEmail.indexOf(AUTHOR_ROW_BEGIN_OF_EMAIL);
-        if (beginOfEmail < 0) {
-            return authorWithEmail;
-        }
-        return authorWithEmail.substring(0, beginOfEmail).trim();
     }
 
     @Override
     public List<Modification> parseModifications(List<String> commitLines) {
         return commitLines.stream()
-                .filter(this::isFileLine)
-                .map(this::parseModification)
+                .filter(GitLogNumstatParserStrategy::isFileLine)
+                .map(GitLogNumstatParserStrategy::parseModification)
+                .filter(mod -> mod != Modification.EMPTY)
                 .collect(Collectors.toList());
     }
 
@@ -82,12 +93,7 @@ public class GitLogNumstatParserStrategy implements LogParserStrategy {
     public Optional<LocalDateTime> parseDate(List<String> commitLines) {
         return commitLines.stream()
                 .filter(commitLine -> commitLine.startsWith(DATE_ROW_INDICATOR))
-                .map(this::parseCommitDate)
+                .map(CommitDateParser::parseCommitDate)
                 .findFirst();
-    }
-
-    private LocalDateTime parseCommitDate(String metadataDateLine) {
-        String commitDateAsString = metadataDateLine.replace(DATE_ROW_INDICATOR, "").trim();
-        return LocalDateTime.parse(commitDateAsString, DATE_TIME_FORMATTER);
     }
 }

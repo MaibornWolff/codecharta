@@ -6,8 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
+- added support for git log --raw and git log --numstat --raw
 - added support for git log --numstat and codechurn
 - added support for renames in SCMLogParser for git log --name-status
+- added support for renames in SCMLogParser for git log --numstat, git log --raw  and git log --numstat --raw
 
 ### Changed
 
