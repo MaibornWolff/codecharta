@@ -5,7 +5,9 @@ import com.beust.jcommander.Parameter;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogNumstatParserStrategy;
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogNumstatRawParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogParserStrategy;
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogRawParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy;
 
 import java.util.ArrayList;
@@ -60,6 +62,8 @@ public class SCMLogParserParameter {
         System.out.println("  Log creation via:");
         System.out.println(String.format(infoFormat, GIT_LOG, GitLogParserStrategy.CORRESPONDING_LOG_CREATION_CMD));
         System.out.println(String.format(infoFormat, GIT_LOG_NUMSTAT, GitLogNumstatParserStrategy.CORRESPONDING_LOG_CREATION_CMD));
+        System.out.println(String.format(infoFormat, GIT_LOG_NUMSTAT_RAW, GitLogNumstatRawParserStrategy.CORRESPONDING_LOG_CREATION_CMD));
+        System.out.println(String.format(infoFormat, GIT_LOG_RAW, GitLogRawParserStrategy.CORRESPONDING_LOG_CREATION_CMD));
         System.out.println(String.format(infoFormat, SVN_LOG, SVNLogParserStrategy.CORRESPONDING_LOG_CREATION_CMD));
         System.out.println("");
     }
@@ -77,6 +81,10 @@ public class SCMLogParserParameter {
                 return new GitLogParserStrategy();
             case GIT_LOG_NUMSTAT:
                 return new GitLogNumstatParserStrategy();
+            case GIT_LOG_RAW:
+                return new GitLogRawParserStrategy();
+            case GIT_LOG_NUMSTAT_RAW:
+                return new GitLogNumstatRawParserStrategy();
             case SVN_LOG:
                 return new SVNLogParserStrategy();
             default:

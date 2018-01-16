@@ -16,11 +16,13 @@ Additionally it saves the names of authors when the --add-author flag is set.
 ### Creating the repository log for metric generation  
 
 
-| SCM | Log format | Command for log creation | tracks renames | ignores deleted files | supports code churn | 
-| --- | ---        | ---                      | ---            | ---                   | --- |
-| git | GIT_LOG    | `git log --name-status --topo-order` | yes | yes                  | no  |
-| git | GIT_LOG_NUMSTAT | `git log --numstat --no-renames` | no | no                   | yes |
-| SVN | SVN_LOG    | `svn log --verbose`      | no              | yes                  | no |
+| SCM | Log format | Command for log creation                   | tracks renames | ignores deleted files | supports code churn | 
+| --- | ---        | ---                                        | ---            | ---                   | --- |
+| git | GIT_LOG    | `git log --name-status --topo-order`       | yes            | yes                   | no  |
+| git | GIT_LOG_NUMSTAT | `git log --numstat --topo-order`      | yes            | no                    | yes |
+| git | GIT_LOG_NUMSTAT_RAW | `git log --numstat --topo-order`  | yes            | yes                   | yes |
+| git | GIT_LOG_RAW | `git log --numstat --topo-order`          | yes            | yes                   | no  |
+| SVN | SVN_LOG    | `svn log --verbose`                        | no             | yes                   | no  |
 
 
 The generated logs must be in UTF-8 encoding.
@@ -30,13 +32,13 @@ The generated logs must be in UTF-8 encoding.
 
 See `ccsh -h` for help. Standard usage:
 
-> `ccsh scmlogparser <log file> --input-format [GIT_LOG|GIT_LOG_NUMSTAT|SVN_LOG]`
+> `ccsh scmlogparser <log file> --input-format [GIT_LOG|GIT_LOG_NUMSTAT|GIT_LOG_NUMSTAT_RAW|GIT_LOG_RAW|SVN_LOG]`
 
 The result is written as JSON to standard out or into an output file (if specified by `-o` option).
 
 ### Example
 
 * Install the tool
-* `git log --numstat --no-renames > log.txt`
+* `git log --numstat --topo-order > log.txt`
 * `./ccsh scmlogparser log.txt --input-format GIT_LOG_NUMSTAT -o output.json`
 * load `output.json` in visualization

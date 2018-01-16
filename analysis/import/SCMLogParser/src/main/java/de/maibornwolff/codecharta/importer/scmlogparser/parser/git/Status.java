@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser.git;
 
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -35,6 +37,21 @@ enum Status {
                 .filter(status -> status.letter == c)
                 .findFirst()
                 .orElse(UNKNOWN);
+    }
+
+    public Modification.Type toModificationType() {
+        switch (this) {
+            case ADDED:
+                return Modification.Type.ADD;
+            case DELETED:
+                return Modification.Type.DELETE;
+            case MODIFIED:
+                return Modification.Type.MODIFY;
+            case RENAMED:
+                return Modification.Type.RENAME;
+            default:
+                return Modification.Type.UNKNOWN;
+        }
     }
 
     public char statusLetter() {

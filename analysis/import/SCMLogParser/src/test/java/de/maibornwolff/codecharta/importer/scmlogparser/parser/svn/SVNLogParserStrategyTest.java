@@ -20,9 +20,9 @@ public class SVNLogParserStrategyTest extends ParserStrategyContractTest {
             "------------------------------------------------------------------------",
             "r2 | TheAuthor | 2017-05-09 19:57:57 +0200 (Tue, 9 May 2017) | 1 line",
             "Changed paths:",
-            "   A /trunk/src/Main.java",
-            "   M /trunk/src/Main.java",
-            "   A /trunk/src/Util.java",
+            "   A /trunk/src/Added.java",
+            "   M /trunk/src/Modified.java",
+            "   D /trunk/src/Deleted.java",
             "the commit message");
 
     private SVNLogParserStrategy parserStrategy;

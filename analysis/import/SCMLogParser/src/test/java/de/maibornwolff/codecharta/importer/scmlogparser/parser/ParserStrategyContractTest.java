@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -41,8 +40,10 @@ public abstract class ParserStrategyContractTest {
         LogLineParser parser = new LogLineParser(getLogParserStrategy(), metricsFactory);
         Commit commit = parser.parseCommit(getFullCommit());
         assertThat(commit)
-                .extracting(Commit::getAuthor, Commit::getFilenames, Commit::getCommitDate)
-                .containsExactly("TheAuthor", asList("src/Main.java", "src/Main.java", "src/Util.java"), LocalDateTime.of(2017, 5, 9, 19, 57, 57));
+                .extracting(Commit::getAuthor, Commit::getCommitDate)
+                .containsExactly("TheAuthor", LocalDateTime.of(2017, 5, 9, 19, 57, 57));
+        assertThat(commit.getFilenames())
+                .containsExactlyInAnyOrder("src/Added.java", "src/Modified.java", "src/Deleted.java");
     }
 
     @Test
@@ -51,7 +52,7 @@ public abstract class ParserStrategyContractTest {
         assertThat(modifications).hasSize(3);
         assertThat(modifications)
                 .extracting(Modification::getFilename)
-                .containsExactlyInAnyOrder("src/Main.java", "src/Main.java", "src/Util.java");
+                .containsExactlyInAnyOrder("src/Added.java", "src/Modified.java", "src/Deleted.java");
     }
 
     @Test
@@ -82,7 +83,8 @@ public abstract class ParserStrategyContractTest {
         assertThat(files)
                 .extracting(VersionControlledFile::getFilename, f -> f.getMetricValue("number_of_commits"), VersionControlledFile::getAuthors)
                 .containsExactlyInAnyOrder(
-                        tuple("src/Util.java", 2, singleton("TheAuthor")),
-                        tuple("src/Main.java", 4, singleton("TheAuthor")));
+                        tuple("src/Deleted.java", 2, singleton("TheAuthor")),
+                        tuple("src/Added.java", 2, singleton("TheAuthor")),
+                        tuple("src/Modified.java", 2, singleton("TheAuthor")));
     }
 }

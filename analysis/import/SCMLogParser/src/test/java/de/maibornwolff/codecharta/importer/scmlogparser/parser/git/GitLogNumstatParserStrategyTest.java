@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser.git;
 
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.ParserStrategyContractTest;
-import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,9 +20,9 @@ public class GitLogNumstatParserStrategyTest extends ParserStrategyContractTest 
             "Author: TheAuthor <mail@example.com>",
             "Date:   Tue May 9 19:57:57 2017 +0200",
             "    the commit message",
-            "0 10 src/Main.java",
-            "2 1 src/Main.java",
-            "20 0 src/Util.java");
+            "10 0 src/Added.java",
+            "2 1 src/Modified.java",
+            "0 20 src/Deleted.java");
 
     private GitLogNumstatParserStrategy parserStrategy;
 
@@ -65,15 +65,30 @@ public class GitLogNumstatParserStrategyTest extends ParserStrategyContractTest 
     }
 
     @Test
-    public void parsesAuthorWithoutEmail() {
-        String author = parserStrategy.parseAuthor("Author: TheAuthor");
-        assertThat(author).isEqualTo("TheAuthor");
+    public void isFilelineWorksForStandardExamples() {
+        assertThat(GitLogNumstatParserStrategy.isFileLine("0\t10\tsrc/Main.java")).isTrue();
+        assertThat(GitLogNumstatParserStrategy.isFileLine("0\t10\tsrc/Main.java ")).isTrue();
+        assertThat(GitLogNumstatParserStrategy.isFileLine("9 2 src/{RenameOld.java => RenameNew.java}")).isTrue();
+        assertThat(GitLogNumstatParserStrategy.isFileLine("1 1 {old => new}/Rename.java")).isTrue();
     }
 
     @Test
-    public void parsesAuthorFromAuthorAndEmail() {
-        String author = parserStrategy.parseAuthor("Author: TheAuthor <mail@example.com>");
-        assertThat(author).isEqualTo("TheAuthor");
+    public void parsesFilenameFromFileMetadataWithRename() {
+        String fileMetadata = "9 2 src/{RenameOld.java => RenameNew.java}";
+        Modification modification = parserStrategy.parseModification(fileMetadata);
+
+        assertThat(GitLogNumstatParserStrategy.isFileLine(fileMetadata)).isTrue();
+        assertThat(modification).extracting(Modification::getFilename, Modification::getOldFilename, Modification::getType, Modification::getAdditions, Modification::getDeletions)
+                .containsExactly("src/RenameNew.java", "src/RenameOld.java", Modification.Type.RENAME, 9, 2);
     }
 
+    @Test
+    public void parsesFilenameFromFileMetadataWithDirectoryRename() {
+        String fileMetadata = "1 1 {old => new}/Rename.java";
+        Modification modification = parserStrategy.parseModification(fileMetadata);
+
+        assertThat(GitLogNumstatParserStrategy.isFileLine(fileMetadata)).isTrue();
+        assertThat(modification).extracting(Modification::getFilename, Modification::getOldFilename, Modification::getType, Modification::getAdditions, Modification::getDeletions)
+                .containsExactly("new/Rename.java", "old/Rename.java", Modification.Type.RENAME, 1, 1);
+    }
 }
