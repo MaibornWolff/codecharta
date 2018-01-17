@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogNumstat
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogNumstatRawParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogRawParserStrategy;
+import de.maibornwolff.codecharta.model.Node;
 import de.maibornwolff.codecharta.model.Project;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,6 +53,15 @@ public class SCMLogProjectCreatorTest {
         return project.getNodes().isEmpty() ? 0 : project.getNodes().get(0).getLeaves().size();
     }
 
+    private static void assertNodesValid(Project project) {
+        Collection<Node> leaves = project.getNodes().get(0).getLeaves().values();
+        leaves.stream()
+                .flatMap(l -> l.getAttributes().entrySet().stream())
+                .forEach(v -> assertThat(((Number) v.getValue()).doubleValue())
+                        .as("attribute %s non positive (%s)", v.getKey(), v.getValue())
+                        .isGreaterThanOrEqualTo(0));
+    }
+
     @Test
     public void logParserGitExampleTest() throws Exception {
         // given
@@ -70,6 +80,7 @@ public class SCMLogProjectCreatorTest {
         assertThat(gitProject)
                 .extracting(SCMLogProjectCreatorTest::projectSize)
                 .containsExactly(expectedProjectSize);
+        assertNodesValid(gitProject);
     }
 
 }
