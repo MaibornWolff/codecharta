@@ -68,9 +68,6 @@ public class GitLogNumstatParserStrategyTest extends ParserStrategyContractTest 
     public void isFilelineWorksForStandardExamples() {
         assertThat(GitLogNumstatParserStrategy.isFileLine("0\t10\tsrc/Main.java")).isTrue();
         assertThat(GitLogNumstatParserStrategy.isFileLine("0\t10\tsrc/Main.java ")).isTrue();
-        assertThat(GitLogNumstatParserStrategy.isFileLine("9 2 src/{RenameOld.java => RenameNew.java}")).isTrue();
-        assertThat(GitLogNumstatParserStrategy.isFileLine("1 1 {old => new}/Rename.java")).isTrue();
-        assertThat(GitLogNumstatParserStrategy.isFileLine("0\t0\tRename.java => new/Rename.java")).isTrue();
     }
 
     @Test

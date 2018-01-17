@@ -47,9 +47,17 @@ public class GitLogNumstatParserStrategy implements LogParserStrategy {
         String oldFileName;
         String newFileName;
 
+
         if ("=>".equals(lineParts[4])) {
             oldFileName = lineParts[2] + lineParts[3] + (lineParts.length > 6 ? lineParts[6] : "");
+            if (lineParts[3].isEmpty()) {
+                oldFileName = oldFileName.replaceAll("//", "/");
+            }
+
             newFileName = lineParts[2] + lineParts[5] + (lineParts.length > 6 ? lineParts[6] : "");
+            if (lineParts[5].isEmpty()) {
+                newFileName = newFileName.replaceAll("//", "/");
+            }
         } else if ("=>".equals(lineParts[3])) {
             oldFileName = lineParts[2];
             newFileName = lineParts[4];
