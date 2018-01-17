@@ -44,7 +44,7 @@ public class SCMLogProjectCreatorTest {
                 {"--name-status", new GitLogParserStrategy(), "codecharta_git.log", 358L},
                 {"--raw", new GitLogRawParserStrategy(), "codecharta_git_raw.log", 358L},
                 {"--numstat --raw", new GitLogNumstatRawParserStrategy(), "codecharta_git_numstat_raw.log", 358L},
-                {"--numstat", new GitLogNumstatParserStrategy(), "codecharta_git_numstat.log", 478L}
+                {"--numstat", new GitLogNumstatParserStrategy(), "codecharta_git_numstat.log", 472L}
         });
     }
 
