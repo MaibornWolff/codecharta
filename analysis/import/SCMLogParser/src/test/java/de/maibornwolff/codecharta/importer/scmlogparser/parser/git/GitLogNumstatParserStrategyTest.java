@@ -70,6 +70,7 @@ public class GitLogNumstatParserStrategyTest extends ParserStrategyContractTest 
         assertThat(GitLogNumstatParserStrategy.isFileLine("0\t10\tsrc/Main.java ")).isTrue();
         assertThat(GitLogNumstatParserStrategy.isFileLine("9 2 src/{RenameOld.java => RenameNew.java}")).isTrue();
         assertThat(GitLogNumstatParserStrategy.isFileLine("1 1 {old => new}/Rename.java")).isTrue();
+        assertThat(GitLogNumstatParserStrategy.isFileLine("0\t0\tRename.java => new/Rename.java")).isTrue();
     }
 
     @Test
@@ -80,6 +81,17 @@ public class GitLogNumstatParserStrategyTest extends ParserStrategyContractTest 
         assertThat(GitLogNumstatParserStrategy.isFileLine(fileMetadata)).isTrue();
         assertThat(modification).extracting(Modification::getFilename, Modification::getOldFilename, Modification::getType, Modification::getAdditions, Modification::getDeletions)
                 .containsExactly("src/RenameNew.java", "src/RenameOld.java", Modification.Type.RENAME, 9, 2);
+    }
+
+
+    @Test
+    public void parsesFilenameFromFileMetadataWithRename2() {
+        String fileMetadata = "1\t2\tRename.java => new/Rename.java";
+        Modification modification = parserStrategy.parseModification(fileMetadata);
+
+        assertThat(GitLogNumstatParserStrategy.isFileLine(fileMetadata)).isTrue();
+        assertThat(modification).extracting(Modification::getFilename, Modification::getOldFilename, Modification::getType, Modification::getAdditions, Modification::getDeletions)
+                .containsExactly("new/Rename.java", "Rename.java", Modification.Type.RENAME, 1, 2);
     }
 
     @Test
