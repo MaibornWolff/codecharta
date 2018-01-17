@@ -23,6 +23,7 @@ public class MetricsFactory {
         return Arrays.asList(
                 new NumberOfOccurencesInCommits(),
                 new CodeChurn(),
+                new RelativeCodeChurn(),
                 new LinesOfCode()
         );
     }
