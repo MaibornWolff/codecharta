@@ -10,7 +10,7 @@ public class MetricsFactory {
     private final List<String> metricNames;
 
     public MetricsFactory() {
-        this.metricNames = Stream.concat(createAllModificationMetrics().stream(),createAllCommitMetrics().stream())
+        this.metricNames = Stream.concat(createAllModificationMetrics().stream(), createAllCommitMetrics().stream())
                 .map(Metric::metricName)
                 .collect(Collectors.toList());
     }
@@ -22,7 +22,8 @@ public class MetricsFactory {
     private List<ModificationMetric> createAllModificationMetrics() {
         return Arrays.asList(
                 new NumberOfOccurencesInCommits(),
-                new CodeChurn()
+                new CodeChurn(),
+                new LinesOfCode()
         );
     }
 

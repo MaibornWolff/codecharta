@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
-public class SCMLogProjectCreatorTest {
+public class SCMLogProjectCreatorGoldenMasterTest {
 
     private static final String PROJECT_NAME = "SCMLogParser";
 
