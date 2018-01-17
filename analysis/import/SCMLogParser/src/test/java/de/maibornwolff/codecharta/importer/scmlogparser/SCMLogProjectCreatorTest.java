@@ -1,94 +1,74 @@
 package de.maibornwolff.codecharta.importer.scmlogparser;
 
 import de.maibornwolff.codecharta.importer.scmlogparser.converter.ProjectConverter;
-import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogParserStrategy;
-import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy;
-import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory;
-import de.maibornwolff.codecharta.serialization.ProjectDeserializer;
-import de.maibornwolff.codecharta.serialization.ProjectSerializer;
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogNumstatRawParserStrategy;
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogParserStrategy;
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogRawParserStrategy;
+import de.maibornwolff.codecharta.model.Project;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
-import java.io.*;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
 
+@RunWith(Parameterized.class)
 public class SCMLogProjectCreatorTest {
 
-    private static final String EXPECTED_SVN_CC_JSON = "expected_svn.json";
+    @Parameterized.Parameter
+    public String testName;
 
-    private static final String SVN_LOG = "example_svn.log";
+    @Parameterized.Parameter(1)
+    public LogParserStrategy strategy;
 
-    private static final String EXPECTED_GIT_CC_JSON = "expected_git.json";
+    @Parameterized.Parameter(2)
+    public String logFilename;
 
-    private static final String GIT_LOG = "example_git.log";
+    @Parameterized.Parameter(3)
+    public long expectedProjectSize;
 
-    private static final String PROJECT_NAME = "SCMLogParser";
+    private MetricsFactory metricsFactory = new MetricsFactory();
+    private ProjectConverter projectConverter = new ProjectConverter(false, "");
 
+    @Parameterized.Parameters(name = "{index}: {0}")
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{
+                {"--name-status", new GitLogParserStrategy(), "codecharta_git.log", 358L},
+                {"--raw", new GitLogRawParserStrategy(), "codecharta_git_raw.log", 358L},
+                {"--numstat --raw", new GitLogNumstatRawParserStrategy(), "codecharta_git_numstat_raw.log", 358L},
+                {"--raw", new GitLogNumstatRawParserStrategy(), "codecharta_git_numstat.log", 479L}
+        });
+    }
 
-    @Test
-    public void logParserSVNGoldenMasterTest() throws Exception {
-        // given
-        MetricsFactory metricsFactory = new MetricsFactory(Arrays.asList(
-                "number_of_authors",
-                "number_of_commits",
-                "weeks_with_commits"
-        ));
-        ProjectConverter projectConverter = new ProjectConverter(true, PROJECT_NAME);
-
-
-        SCMLogProjectCreator svnSCMLogProjectCreator = new SCMLogProjectCreator(new SVNLogParserStrategy(), metricsFactory, projectConverter);
-        InputStreamReader ccjsonReader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(EXPECTED_SVN_CC_JSON));
-        Project expectedProject = ProjectDeserializer.deserializeProject(ccjsonReader);
-        URL resource = this.getClass().getClassLoader().getResource(SVN_LOG);
-        Stream logStream = Files.lines(Paths.get(resource.toURI()));
-
-        // when
-        Project svnProject = svnSCMLogProjectCreator.parse(logStream);
-        // This step is necessary because the comparison of the attribute map in Node fails if the project is used directly;
-        Project svnProjectForComparison = serializeAndDeserializeProject(svnProject);
-
-        // then
-        assertThat(svnProjectForComparison).isEqualTo(expectedProject);
+    private static long projectSize(Project project) {
+        return project.getNodes().isEmpty() ? 0 : project.getNodes().get(0).getLeaves().size();
     }
 
     @Test
-    public void logParserGitGoldenMasterTest() throws Exception {
+    public void logParserGitExampleTest() throws Exception {
         // given
-        MetricsFactory metricsFactory = new MetricsFactory(Arrays.asList(
-                "number_of_authors",
-                "number_of_commits",
-                "weeks_with_commits"
-        ));
-        ProjectConverter projectConverter = new ProjectConverter(false, PROJECT_NAME);
-
-
-        SCMLogProjectCreator gitSCMLogProjectCreator = new SCMLogProjectCreator(new GitLogParserStrategy(), metricsFactory, projectConverter);
-        InputStreamReader ccjsonReader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(EXPECTED_GIT_CC_JSON));
-        Project expectedProject = ProjectDeserializer.deserializeProject(ccjsonReader);
-        URL resource = this.getClass().getClassLoader().getResource(GIT_LOG);
-        Stream logStream = Files.lines(Paths.get(resource.toURI()));
+        SCMLogProjectCreator gitSCMLogProjectCreator = new SCMLogProjectCreator(
+                strategy,
+                metricsFactory,
+                projectConverter
+        );
+        Stream logStream =
+                Files.lines(Paths.get(this.getClass().getClassLoader().getResource(logFilename).toURI()));
 
         // when
         Project gitProject = gitSCMLogProjectCreator.parse(logStream);
-        // This step is necessary because the comparison of the attribute map in Node fails if the project is used directly;
-        Project gitProjectForComparison = serializeAndDeserializeProject(gitProject);
 
         // then
-        assertThat(gitProjectForComparison).isEqualTo(expectedProject);
+        assertThat(gitProject)
+                .extracting(SCMLogProjectCreatorTest::projectSize)
+                .containsExactly(expectedProjectSize);
     }
 
-    private Project serializeAndDeserializeProject(Project svnProject) throws IOException {
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            ProjectSerializer.serializeProject(svnProject, new OutputStreamWriter(baos));
-            return ProjectDeserializer.deserializeProject(new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
-        }
-    }
 }
