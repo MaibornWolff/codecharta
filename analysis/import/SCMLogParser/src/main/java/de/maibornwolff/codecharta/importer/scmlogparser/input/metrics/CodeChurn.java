@@ -2,6 +2,9 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 
+/**
+ * this is only an approximation of the correct code churn.
+ */
 public final class CodeChurn implements ModificationMetric<Integer> {
     private int accumulatedNumberOfLinesAdded = 0;
     private int accumulatedNumberOfLinesDeleted = 0;
