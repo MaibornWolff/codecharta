@@ -20,7 +20,7 @@ public class GitLogNumstatParserStrategy implements LogParserStrategy {
 
     public static final String CORRESPONDING_LOG_CREATION_CMD = "git log --numstat --topo-order";
     private static final String STANDARD_FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S+\\s*";
-    private static final String RENAME_FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S*\\{\\S+ => \\S+}\\S*\\s*";
+    private static final String RENAME_FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S*\\S+ => \\S+\\S*\\s*";
     private static final Predicate<String> GIT_COMMIT_SEPARATOR_TEST = logLine -> logLine.startsWith("commit");
     private static final String STANDARD_FILE_LINE_SPLITTER = "\\s+";
     private static final String RENAME_FILE_LINE_SPLITTER = "[{}\\s+]";
@@ -44,8 +44,21 @@ public class GitLogNumstatParserStrategy implements LogParserStrategy {
         String[] lineParts = fileLine.split(RENAME_FILE_LINE_SPLITTER);
         int additions = Integer.parseInt(lineParts[0]);
         int deletions = Integer.parseInt(lineParts[1]);
-        String oldFileName = lineParts[2] + lineParts[3] + (lineParts.length > 6 ? lineParts[6] : "");
-        String newFileName = lineParts[2] + lineParts[5] + (lineParts.length > 6 ? lineParts[6] : "");
+        String oldFileName;
+        String newFileName;
+
+        if ("=>".equals(lineParts[4])) {
+            oldFileName = lineParts[2] + lineParts[3] + (lineParts.length > 6 ? lineParts[6] : "");
+            newFileName = lineParts[2] + lineParts[5] + (lineParts.length > 6 ? lineParts[6] : "");
+        } else if ("=>".equals(lineParts[3])) {
+            oldFileName = lineParts[2];
+            newFileName = lineParts[4];
+        } else {
+            System.err.println("Log line could not be parsed" + fileLine);
+            return Modification.EMPTY;
+        }
+
+
         return new Modification(newFileName, oldFileName, additions, deletions, Modification.Type.RENAME);
     }
 
