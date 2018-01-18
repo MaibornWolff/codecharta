@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +24,7 @@ public class NumberOfAuthorsTest {
         NumberOfAuthors metric = new NumberOfAuthors();
 
         // when
-        metric.registerCommit(new Commit("An author", Collections.emptyList(), LocalDateTime.now()));
+        metric.registerCommit(new Commit("An author", Collections.emptyList(), OffsetDateTime.now()));
 
         // then
         assertThat(metric.value()).isEqualTo(1);
@@ -37,8 +37,8 @@ public class NumberOfAuthorsTest {
 
         // when
         String author = "An author";
-        metric.registerCommit(new Commit(author, Collections.emptyList(), LocalDateTime.now()));
-        metric.registerCommit(new Commit(author, Collections.emptyList(), LocalDateTime.now()));
+        metric.registerCommit(new Commit(author, Collections.emptyList(), OffsetDateTime.now()));
+        metric.registerCommit(new Commit(author, Collections.emptyList(), OffsetDateTime.now()));
 
         // then
         assertThat(metric.value()).isEqualTo(1);
@@ -51,8 +51,8 @@ public class NumberOfAuthorsTest {
         NumberOfAuthors metric = new NumberOfAuthors();
 
         // when
-        metric.registerCommit(new Commit("An author", Collections.emptyList(), LocalDateTime.now()));
-        metric.registerCommit(new Commit("Another author", Collections.emptyList(), LocalDateTime.now()));
+        metric.registerCommit(new Commit("An author", Collections.emptyList(), OffsetDateTime.now()));
+        metric.registerCommit(new Commit("Another author", Collections.emptyList(), OffsetDateTime.now()));
 
         // then
         assertThat(metric.value()).isEqualTo(2);

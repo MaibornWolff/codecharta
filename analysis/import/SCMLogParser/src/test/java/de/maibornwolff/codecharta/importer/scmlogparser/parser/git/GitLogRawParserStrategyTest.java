@@ -54,7 +54,7 @@ public class GitLogRawParserStrategyTest extends ParserStrategyContractTest {
     @Test
     public void parsesFilenameFromFileMetadata() {
         String fileMetadata = ":100644 100644 afb6ce4... b1c5aa3... M  src/Main.java";
-        Modification modification = parserStrategy.parseModification(fileMetadata);
+        Modification modification = GitLogRawParserStrategy.parseModification(fileMetadata);
         assertThat(modification.getFilename()).isEqualTo("src/Main.java");
         assertThat(modification.getType()).isEqualTo(Modification.Type.MODIFY);
     }
@@ -62,7 +62,7 @@ public class GitLogRawParserStrategyTest extends ParserStrategyContractTest {
     @Test
     public void parsesFilenameFromFileMetadataWithRename() {
         String fileMetadata = ":100644 100644 e7ab6f3... 0c5845c... R079 srcs/Main.java src/Main.java";
-        Modification modification = parserStrategy.parseModification(fileMetadata);
+        Modification modification = GitLogRawParserStrategy.parseModification(fileMetadata);
         assertThat(modification.getFilename()).isEqualTo("src/Main.java");
         assertThat(modification.getOldFilename()).isEqualTo("srcs/Main.java");
         assertThat(modification.getType()).isEqualTo(Modification.Type.RENAME);
@@ -71,7 +71,7 @@ public class GitLogRawParserStrategyTest extends ParserStrategyContractTest {
     @Test
     public void parsesFilenameFromAddedFile() {
         String fileMetadata = ":100644 100644 afb6ce4... b1c5aa3... A  src/Main.java";
-        Modification modification = parserStrategy.parseModification(fileMetadata);
+        Modification modification = GitLogRawParserStrategy.parseModification(fileMetadata);
         assertThat(modification.getFilename()).isEqualTo("src/Main.java");
         assertThat(modification.getType()).isEqualTo(Modification.Type.ADD);
     }
@@ -79,7 +79,7 @@ public class GitLogRawParserStrategyTest extends ParserStrategyContractTest {
     @Test
     public void parsesFilenameFromDeletedFile() {
         String fileMetadata = ":100644 100644 64d6a85... 8c57f3d... D  src/Util.java";
-        Modification modification = parserStrategy.parseModification(fileMetadata);
+        Modification modification = GitLogRawParserStrategy.parseModification(fileMetadata);
         assertThat(modification.getFilename()).isEqualTo("src/Util.java");
         assertThat(modification.getType()).isEqualTo(Modification.Type.DELETE);
     }

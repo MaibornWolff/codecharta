@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogLineCollector;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
 import org.apache.commons.lang3.StringUtils;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.Arrays;
@@ -67,17 +67,17 @@ public class SVNLogParserStrategy implements LogParserStrategy {
     }
 
     @Override
-    public Optional<LocalDateTime> parseDate(List<String> commitLines) {
+    public Optional<OffsetDateTime> parseDate(List<String> commitLines) {
         return commitLines.stream()
                 .filter(this::isMetadataLine)
                 .map(this::parseCommitDate)
                 .findFirst();
     }
 
-    private LocalDateTime parseCommitDate(String metadataLine) {
+    private OffsetDateTime parseCommitDate(String metadataLine) {
         String[] splittedLine = metadataLine.split("\\" + METADATA_SEPARATOR);
         String commitDateAsString = splittedLine[DATE_INDEX_IN_METADATA].trim().replaceAll(" \\(.*\\)", "");
-        return LocalDateTime.parse(commitDateAsString, DATE_TIME_FORMATTER);
+        return OffsetDateTime.parse(commitDateAsString, DATE_TIME_FORMATTER);
     }
 
     @Override
