@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser.git;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
@@ -9,8 +9,8 @@ class CommitDateParser {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("EEE MMM d HH:mm:ss yyyy ZZZ", Locale.US);
 
 
-    static LocalDateTime parseCommitDate(String metadataDateLine) {
+    static OffsetDateTime parseCommitDate(String metadataDateLine) {
         String commitDateAsString = metadataDateLine.replace(DATE_ROW_INDICATOR, "").trim();
-        return LocalDateTime.parse(commitDateAsString, DATE_TIME_FORMATTER);
+        return OffsetDateTime.parse(commitDateAsString, DATE_TIME_FORMATTER);
     }
 }

@@ -3,16 +3,19 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 
 import org.junit.Test;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CalendarWeekTest {
 
+    private final ZoneOffset zoneOffset = ZoneOffset.UTC;
+
     @Test
     public void canCreateCalendarWeekFromADateTime() {
         // given
-        LocalDateTime commitDateTime = LocalDateTime.of(2016, 4, 2, 12, 0);
+        OffsetDateTime commitDateTime = OffsetDateTime.of(2016, 4, 2, 12, 0, 0, 0, zoneOffset);
 
         // when
         CalendarWeek kw = CalendarWeek.forDateTime(commitDateTime);
@@ -24,7 +27,7 @@ public class CalendarWeekTest {
     @Test
     public void kalenderwoche_wird_mit_tagimjahr_richtig_berechnet_wenn_tag_am_anfang_des_jahres_und_kw_im_vorjahr() {
         // given
-        LocalDateTime commitDateTime = LocalDateTime.of(2016, 1, 3, 12, 0);
+        OffsetDateTime commitDateTime = OffsetDateTime.of(2016, 1, 3, 12, 0, 0, 0, zoneOffset);
 
         // when
         CalendarWeek kw = CalendarWeek.forDateTime(commitDateTime);
@@ -36,7 +39,7 @@ public class CalendarWeekTest {
     @Test
     public void kalenderwoche_wird_mit_tagimjahr_richtig_berechnet_wenn_tag_am_ende_des_jahres_und_kw_im_folgejahr() {
         // given
-        LocalDateTime commitDateTime = LocalDateTime.of(2018, 12, 31, 12, 0);
+        OffsetDateTime commitDateTime = OffsetDateTime.of(2018, 12, 31, 12, 0, 0, 0, zoneOffset);
 
         // when
         CalendarWeek kw = CalendarWeek.forDateTime(commitDateTime);

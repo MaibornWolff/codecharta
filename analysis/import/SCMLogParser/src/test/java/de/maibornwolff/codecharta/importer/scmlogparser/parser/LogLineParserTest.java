@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +26,7 @@ public class LogLineParserTest {
         MetricsFactory metricsFactory = mock(MetricsFactory.class);
         LogParserStrategy parserStrategy = mock(LogParserStrategy.class);
         when(parserStrategy.parseAuthor(any())).thenReturn(Optional.empty());
-        when(parserStrategy.parseDate(any())).thenReturn(Optional.of(LocalDateTime.now()));
+        when(parserStrategy.parseDate(any())).thenReturn(Optional.of(OffsetDateTime.now()));
         when(parserStrategy.parseModifications(any())).thenReturn(Collections.emptyList());
         LogLineParser parser = new LogLineParser(parserStrategy, metricsFactory);
 
@@ -54,7 +54,7 @@ public class LogLineParserTest {
         MetricsFactory metricsFactory = mock(MetricsFactory.class);
         LogParserStrategy parserStrategy = mock(LogParserStrategy.class);
         String author = "An Author";
-        LocalDateTime commitDate = LocalDateTime.now();
+        OffsetDateTime commitDate = OffsetDateTime.now();
         List<String> filenames = Arrays.asList("src/Main.java", "src/Util.java");
         List<String> input = Collections.emptyList();
         when(parserStrategy.parseAuthor(input)).thenReturn(Optional.of(author));
