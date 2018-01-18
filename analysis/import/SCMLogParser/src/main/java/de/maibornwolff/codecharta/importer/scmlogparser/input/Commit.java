@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,9 +11,9 @@ public class Commit {
 
     private final List<Modification> modifications;
 
-    private final LocalDateTime commitDate;
+    private final OffsetDateTime commitDate;
 
-    public Commit(String author, List<Modification> modifications, LocalDateTime commitDate) {
+    public Commit(String author, List<Modification> modifications, OffsetDateTime commitDate) {
         this.author = author;
         this.commitDate = commitDate;
         this.modifications = filterEmptyFiles(modifications);
@@ -43,7 +43,7 @@ public class Commit {
         return modifications.stream().filter(m -> filename.equals(m.getFilename())).findFirst();
     }
 
-    public LocalDateTime getCommitDate() {
+    public OffsetDateTime getCommitDate() {
         return commitDate;
     }
 

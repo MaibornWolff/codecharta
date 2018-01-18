@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFac
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.ModificationMetric;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -157,7 +157,7 @@ public class VersionControlledFileTest {
                 new Modification(filename, Modification.Type.DELETE),
                 new Modification(filename)
         );
-        modifications.stream()
+        modifications
                 .forEach(
                         mod -> versionControlledFile.registerCommit(createCommit("An Author", mod))
                 );
@@ -190,7 +190,7 @@ public class VersionControlledFileTest {
                 new Modification(oldFilename),
                 new Modification(filename)
         );
-        modifications.stream()
+        modifications
                 .forEach(
                         mod -> versionControlledFile.registerCommit(createCommit("An Author", mod))
                 );
@@ -205,7 +205,7 @@ public class VersionControlledFileTest {
     }
 
     private Commit createCommit(String author, Modification modification) {
-        return new Commit(author, Arrays.asList(modification), LocalDateTime.now());
+        return new Commit(author, Arrays.asList(modification), OffsetDateTime.now());
     }
 
 }

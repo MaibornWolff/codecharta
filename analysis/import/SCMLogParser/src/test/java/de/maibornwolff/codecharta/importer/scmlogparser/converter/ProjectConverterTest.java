@@ -7,7 +7,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFac
 import de.maibornwolff.codecharta.model.Project;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -44,7 +44,7 @@ public class ProjectConverterTest {
         //given
         ProjectConverter projectConverter = new ProjectConverter(true, "ProjectWithAuthors");
         VersionControlledFile file1 = new VersionControlledFile("File 1", metricsFactory);
-        file1.registerCommit(new Commit("Author", modificationsByFilename("File 1, File 2"), LocalDateTime.now()));
+        file1.registerCommit(new Commit("Author", modificationsByFilename("File 1, File 2"), OffsetDateTime.now()));
 
         //when
         Project project = projectConverter.convert(Arrays.asList(file1));
@@ -58,7 +58,7 @@ public class ProjectConverterTest {
         //given
         ProjectConverter projectConverter = new ProjectConverter(false, "ProjectWithoutAuthors");
         VersionControlledFile file1 = new VersionControlledFile("File 1", metricsFactory);
-        file1.registerCommit(new Commit("Author", modificationsByFilename("File 1, File 2"), LocalDateTime.now()));
+        file1.registerCommit(new Commit("Author", modificationsByFilename("File 1, File 2"), OffsetDateTime.now()));
 
         //when
         Project project = projectConverter.convert(Arrays.asList(file1));
