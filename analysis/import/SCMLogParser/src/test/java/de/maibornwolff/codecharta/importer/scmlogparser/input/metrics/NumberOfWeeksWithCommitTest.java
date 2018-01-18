@@ -18,7 +18,7 @@ public class NumberOfWeeksWithCommitTest {
         NumberOfWeeksWithCommit metric = new NumberOfWeeksWithCommit();
 
         // then
-        assertThat(metric.value()).isEqualTo(0);
+        assertThat(metric.value(metric.metricName())).isEqualTo(0);
     }
 
     @Test
@@ -31,7 +31,7 @@ public class NumberOfWeeksWithCommitTest {
         metric.registerCommit(new Commit("author", Collections.emptyList(), date));
 
         // then
-        assertThat(metric.value()).isEqualTo(1);
+        assertThat(metric.value(metric.metricName())).isEqualTo(1);
     }
 
 
@@ -47,7 +47,7 @@ public class NumberOfWeeksWithCommitTest {
         metric.registerCommit(new Commit("author", Collections.emptyList(), date2));
 
         // then
-        assertThat(metric.value()).isEqualTo(1);
+        assertThat(metric.value(metric.metricName())).isEqualTo(1);
     }
 
     @Test
@@ -62,6 +62,6 @@ public class NumberOfWeeksWithCommitTest {
         metric.registerCommit(new Commit("author", Collections.emptyList(), date2));
 
         // then
-        assertThat(metric.value()).isEqualTo(2);
+        assertThat(metric.value(metric.metricName())).isEqualTo(2);
     }
 }
