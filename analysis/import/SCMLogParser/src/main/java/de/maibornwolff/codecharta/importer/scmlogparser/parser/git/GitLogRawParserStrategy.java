@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogLineCollector;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -70,7 +70,7 @@ public class GitLogRawParserStrategy implements LogParserStrategy {
     }
 
     @Override
-    public Optional<LocalDateTime> parseDate(List<String> commitLines) {
+    public Optional<OffsetDateTime> parseDate(List<String> commitLines) {
         return commitLines.stream()
                 .filter(commitLine -> commitLine.startsWith(DATE_ROW_INDICATOR))
                 .map(CommitDateParser::parseCommitDate)

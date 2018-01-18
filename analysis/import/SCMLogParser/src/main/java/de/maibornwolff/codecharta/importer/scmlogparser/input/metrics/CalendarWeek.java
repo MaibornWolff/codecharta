@@ -1,25 +1,25 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.temporal.WeekFields;
 
 class CalendarWeek {
     private final int week;
     private final int year;
 
-    public CalendarWeek(int week, int year) {
+    CalendarWeek(int week, int year) {
         this.week = week;
         this.year = year;
     }
 
-    public static CalendarWeek forDateTime(LocalDateTime dateTime) {
+    public static CalendarWeek forDateTime(OffsetDateTime dateTime) {
         int cwWeek = dateTime.get(WeekFields.ISO.weekOfWeekBasedYear());
         int cwYear = dateTime.getYear();
         cwYear = modifyYear(dateTime, cwWeek, cwYear);
         return new CalendarWeek(cwWeek, cwYear);
     }
 
-    private static int modifyYear(LocalDateTime dateTime, int cwWeek, int cwYear) {
+    private static int modifyYear(OffsetDateTime dateTime, int cwWeek, int cwYear) {
         if (dayIsOneOfTheLastSevenDaysInYear(dateTime) && isFirstOrSecondWeek(cwWeek))
             cwYear++;
         else if (dayIsOneOfTheFirstSevenDaysOfTheYear(dateTime) && !isFirstOrSecondWeek(cwWeek))
@@ -27,7 +27,7 @@ class CalendarWeek {
         return cwYear;
     }
 
-    private static boolean dayIsOneOfTheFirstSevenDaysOfTheYear(LocalDateTime dateTime) {
+    private static boolean dayIsOneOfTheFirstSevenDaysOfTheYear(OffsetDateTime dateTime) {
         return dateTime.getDayOfYear() < 7;
     }
 
@@ -35,7 +35,7 @@ class CalendarWeek {
         return kalenderWeeknWeek <= 2;
     }
 
-    private static boolean dayIsOneOfTheLastSevenDaysInYear(LocalDateTime dateTime) {
+    private static boolean dayIsOneOfTheLastSevenDaysInYear(OffsetDateTime dateTime) {
         return dateTime.getDayOfYear() > 358;
     }
 

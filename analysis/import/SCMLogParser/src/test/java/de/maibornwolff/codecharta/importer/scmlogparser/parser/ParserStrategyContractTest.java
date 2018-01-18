@@ -6,7 +6,8 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledF
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -16,7 +17,8 @@ import static org.assertj.core.api.Assertions.tuple;
 
 public abstract class ParserStrategyContractTest {
 
-    protected MetricsFactory metricsFactory = new MetricsFactory();
+    private static final ZoneOffset ZONE_OFFSET = ZoneOffset.ofHours(2);
+    private final MetricsFactory metricsFactory = new MetricsFactory();
 
     /**
      * This method should return test data for the contract test. <br><br>
@@ -24,7 +26,7 @@ public abstract class ParserStrategyContractTest {
      * We assume that a commit can be represented as a list of Strings containing all necessary
      * informations a LogParserStrategy can extract.<br>
      * The test data set should contain a parsable author "TheAuthor", a parsable date with the
-     * localDateTime "LocalDateTime.of(2017, 5, 9, 19, 57, 57)" (Tue May 9 19:57:57 2017) and three files of the commit
+     * offsetDateTime "OffsetDateTime.of(2017, 5, 9, 19, 57, 57, 0, ZONE_OFFSET)" (Tue May 9 19:57:57 2017 +2:00) and three files of the commit
      * whereby one filename is duplicated; "src/Main.java","src/Main.java","src/Util.java"
      *
      * @return the test data as a List<String>
@@ -41,7 +43,7 @@ public abstract class ParserStrategyContractTest {
         Commit commit = parser.parseCommit(getFullCommit());
         assertThat(commit)
                 .extracting(Commit::getAuthor, Commit::getCommitDate)
-                .containsExactly("TheAuthor", LocalDateTime.of(2017, 5, 9, 19, 57, 57));
+                .containsExactly("TheAuthor", OffsetDateTime.of(2017, 5, 9, 19, 57, 57, 0, ZONE_OFFSET));
         assertThat(commit.getFilenames())
                 .containsExactlyInAnyOrder("src/Added.java", "src/Modified.java", "src/Deleted.java");
     }
@@ -63,8 +65,8 @@ public abstract class ParserStrategyContractTest {
 
     @Test
     public void parseDateFromCommitLines() {
-        LocalDateTime commitDate = getLogParserStrategy().parseDate(getFullCommit()).get();
-        assertThat(commitDate).isEqualToIgnoringNanos(LocalDateTime.of(2017, 5, 9, 19, 57, 57));
+        OffsetDateTime commitDate = getLogParserStrategy().parseDate(getFullCommit()).get();
+        assertThat(commitDate).isEqualToIgnoringNanos(OffsetDateTime.of(2017, 5, 9, 19, 57, 57, 0, ZONE_OFFSET));
     }
 
     @Test

@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser.git;
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
-import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +48,7 @@ public class GitLogNumstatParserStrategyRenamingTest {
 
     @Test
     public void parseModification() {
-        Modification modification = parserStrategy.parseModification(fileLine);
+        Modification modification = GitLogNumstatParserStrategy.parseModification(fileLine);
 
         assertThat(modification).extracting(Modification::getFilename, Modification::getOldFilename, Modification::getType, Modification::getAdditions, Modification::getDeletions)
                 .containsExactly(newFilename, oldFilename, Modification.Type.RENAME, 1, 2);

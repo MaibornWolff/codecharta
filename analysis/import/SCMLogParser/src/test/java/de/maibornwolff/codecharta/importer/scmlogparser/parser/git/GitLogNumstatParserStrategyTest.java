@@ -54,13 +54,13 @@ public class GitLogNumstatParserStrategyTest extends ParserStrategyContractTest 
     @Test
     public void parsesFilenameFromFileMetadata() {
         String fileMetadata = "0 10\t src/Main.java";
-        Modification modification = parserStrategy.parseModification(fileMetadata);
+        Modification modification = GitLogNumstatParserStrategy.parseModification(fileMetadata);
         assertThat(modification.getFilename()).isEqualTo("src/Main.java");
     }
 
     @Test
     public void parsesFilenamesFromUnusualFileMetadata() {
-        assertThat(parserStrategy.parseModification("0\t10\tsrc/Main.java").getFilename())
+        assertThat(GitLogNumstatParserStrategy.parseModification("0\t10\tsrc/Main.java").getFilename())
                 .isEqualTo("src/Main.java");
     }
 
@@ -73,7 +73,7 @@ public class GitLogNumstatParserStrategyTest extends ParserStrategyContractTest 
     @Test
     public void parsesFilenameFromFileMetadataWithRename() {
         String fileMetadata = "9 2 src/{RenameOld.java => RenameNew.java}";
-        Modification modification = parserStrategy.parseModification(fileMetadata);
+        Modification modification = GitLogNumstatParserStrategy.parseModification(fileMetadata);
 
         assertThat(GitLogNumstatParserStrategy.isFileLine(fileMetadata)).isTrue();
         assertThat(modification).extracting(Modification::getFilename, Modification::getOldFilename, Modification::getType, Modification::getAdditions, Modification::getDeletions)
@@ -84,7 +84,7 @@ public class GitLogNumstatParserStrategyTest extends ParserStrategyContractTest 
     @Test
     public void parsesFilenameFromFileMetadataWithRename2() {
         String fileMetadata = "1\t2\tRename.java => new/Rename.java";
-        Modification modification = parserStrategy.parseModification(fileMetadata);
+        Modification modification = GitLogNumstatParserStrategy.parseModification(fileMetadata);
 
         assertThat(GitLogNumstatParserStrategy.isFileLine(fileMetadata)).isTrue();
         assertThat(modification).extracting(Modification::getFilename, Modification::getOldFilename, Modification::getType, Modification::getAdditions, Modification::getDeletions)
@@ -94,7 +94,7 @@ public class GitLogNumstatParserStrategyTest extends ParserStrategyContractTest 
     @Test
     public void parsesFilenameFromFileMetadataWithDirectoryRename() {
         String fileMetadata = "1 1 {old => new}/Rename.java";
-        Modification modification = parserStrategy.parseModification(fileMetadata);
+        Modification modification = GitLogNumstatParserStrategy.parseModification(fileMetadata);
 
         assertThat(GitLogNumstatParserStrategy.isFileLine(fileMetadata)).isTrue();
         assertThat(modification).extracting(Modification::getFilename, Modification::getOldFilename, Modification::getType, Modification::getAdditions, Modification::getDeletions)

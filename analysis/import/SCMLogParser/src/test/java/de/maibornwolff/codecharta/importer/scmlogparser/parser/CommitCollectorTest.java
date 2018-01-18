@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledF
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,15 +18,15 @@ import static org.assertj.core.api.Assertions.*;
 
 public class CommitCollectorTest {
 
+    private final MetricsFactory metricsFactory = new MetricsFactory();
+
     private static List<Modification> modificationsByFilename(String... filenames) {
         return Stream.of(filenames).map(Modification::new).collect(Collectors.toList());
     }
 
-    private final MetricsFactory metricsFactory = new MetricsFactory();
-
     @Test
     public void collectsCommits() {
-        LocalDateTime commitDate = LocalDateTime.now();
+        OffsetDateTime commitDate = OffsetDateTime.now();
         Commit firstCommit = new Commit("TheAuthor", modificationsByFilename("src/Main.java", "src/Util.java"), commitDate);
         Commit secondCommit = new Commit("AnotherAuthor", modificationsByFilename("src/Util.java"), commitDate);
         List<VersionControlledFile> commits = Stream.of(firstCommit, secondCommit).collect(CommitCollector.create(metricsFactory));
@@ -39,14 +39,14 @@ public class CommitCollectorTest {
 
     @Test
     public void doesNotCollectEmptyFilenames() {
-        Commit commit = new Commit("TheAuthor", modificationsByFilename(""), LocalDateTime.now());
+        Commit commit = new Commit("TheAuthor", modificationsByFilename(""), OffsetDateTime.now());
         List<VersionControlledFile> commits = Stream.of(commit).collect(CommitCollector.create(metricsFactory));
         assertThat(commits).isEmpty();
     }
 
     @Test
     public void collectsHalfEmptyFilelists() {
-        Commit commit = new Commit("TheAuthor", modificationsByFilename("", "src/Main.java"), LocalDateTime.now());
+        Commit commit = new Commit("TheAuthor", modificationsByFilename("", "src/Main.java"), OffsetDateTime.now());
         List<VersionControlledFile> commits = Stream.of(commit).collect(CommitCollector.create(metricsFactory));
         assertThat(commits)
                 .extracting(VersionControlledFile::getFilename)
@@ -55,7 +55,7 @@ public class CommitCollectorTest {
 
     @Test
     public void doesNotSupportParallelStreams() {
-        Commit commit = new Commit("TheAuthor", modificationsByFilename("src/Main.java", "src/Util.java"), LocalDateTime.now());
+        Commit commit = new Commit("TheAuthor", modificationsByFilename("src/Main.java", "src/Util.java"), OffsetDateTime.now());
         Stream<Commit> parallelCommitStream = Stream.of(commit, commit).parallel();
         assertThatThrownBy(() -> parallelCommitStream.collect(CommitCollector.create(metricsFactory))).isInstanceOf(UnsupportedOperationException.class);
     }

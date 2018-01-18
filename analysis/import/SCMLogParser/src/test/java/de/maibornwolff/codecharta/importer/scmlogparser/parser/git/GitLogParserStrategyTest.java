@@ -54,7 +54,7 @@ public class GitLogParserStrategyTest extends ParserStrategyContractTest {
     @Test
     public void parsesFilenameFromFileMetadata() {
         String fileMetadata = "M\t src/Main.java";
-        Modification modification = parserStrategy.parseModification(fileMetadata);
+        Modification modification = GitLogParserStrategy.parseModification(fileMetadata);
         assertThat(modification.getFilename()).isEqualTo("src/Main.java");
         assertThat(modification.getType()).isEqualTo(Modification.Type.MODIFY);
     }
@@ -62,7 +62,7 @@ public class GitLogParserStrategyTest extends ParserStrategyContractTest {
     @Test
     public void parsesFilenameFromFileMetadataWithRename() {
         String fileMetadata = "R094\t srcs/Main.java\t src/Main.java";
-        Modification modification = parserStrategy.parseModification(fileMetadata);
+        Modification modification = GitLogParserStrategy.parseModification(fileMetadata);
         assertThat(modification.getFilename()).isEqualTo("src/Main.java");
         assertThat(modification.getOldFilename()).isEqualTo("srcs/Main.java");
         assertThat(modification.getType()).isEqualTo(Modification.Type.RENAME);
@@ -71,7 +71,7 @@ public class GitLogParserStrategyTest extends ParserStrategyContractTest {
     @Test
     public void parsesFilenameFromAddedFile() {
         String fileMetadata = "A\t src/Main.java";
-        Modification modification = parserStrategy.parseModification(fileMetadata);
+        Modification modification = GitLogParserStrategy.parseModification(fileMetadata);
         assertThat(modification.getFilename()).isEqualTo("src/Main.java");
         assertThat(modification.getType()).isEqualTo(Modification.Type.ADD);
     }
@@ -79,15 +79,15 @@ public class GitLogParserStrategyTest extends ParserStrategyContractTest {
     @Test
     public void parsesFilenameFromDeletedFile() {
         String fileMetadata = "D\t src/Main.java";
-        Modification modification = parserStrategy.parseModification(fileMetadata);
+        Modification modification = GitLogParserStrategy.parseModification(fileMetadata);
         assertThat(modification.getFilename()).isEqualTo("src/Main.java");
         assertThat(modification.getType()).isEqualTo(Modification.Type.DELETE);
     }
 
     @Test
     public void parsesFilenamesFromUnusualFileMetadata() {
-        assertThat(parserStrategy.parseModification("")).isEqualTo(Modification.EMPTY);
-        assertThat(parserStrategy.parseModification("  src/Main.java").getFilename())
+        assertThat(GitLogParserStrategy.parseModification("")).isEqualTo(Modification.EMPTY);
+        assertThat(GitLogParserStrategy.parseModification("  src/Main.java").getFilename())
                 .isEqualTo("src/Main.java");
     }
 

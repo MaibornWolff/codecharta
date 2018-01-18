@@ -3,12 +3,15 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class NumberOfWeeksWithCommitTest {
+    private final ZoneOffset zoneOffset = ZoneOffset.UTC;
+
     @Test
     public void should_have_initial_value_zero() {
         // when
@@ -24,7 +27,7 @@ public class NumberOfWeeksWithCommitTest {
         NumberOfWeeksWithCommit metric = new NumberOfWeeksWithCommit();
 
         // when
-        LocalDateTime date = LocalDateTime.of(2016, 4, 2, 12, 0);
+        OffsetDateTime date = OffsetDateTime.of(2016, 4, 2, 12, 0, 0, 0, zoneOffset);
         metric.registerCommit(new Commit("author", Collections.emptyList(), date));
 
         // then
@@ -38,9 +41,9 @@ public class NumberOfWeeksWithCommitTest {
         NumberOfWeeksWithCommit metric = new NumberOfWeeksWithCommit();
 
         // when
-        LocalDateTime date1 = LocalDateTime.of(2016, 4, 2, 12, 0);
+        OffsetDateTime date1 = OffsetDateTime.of(2016, 4, 2, 12, 0, 0, 0, zoneOffset);
         metric.registerCommit(new Commit("author", Collections.emptyList(), date1));
-        LocalDateTime date2 = LocalDateTime.of(2016, 4, 3, 12, 0);
+        OffsetDateTime date2 = OffsetDateTime.of(2016, 4, 3, 12, 0, 0, 0, zoneOffset);
         metric.registerCommit(new Commit("author", Collections.emptyList(), date2));
 
         // then
@@ -53,9 +56,9 @@ public class NumberOfWeeksWithCommitTest {
         NumberOfWeeksWithCommit metric = new NumberOfWeeksWithCommit();
 
         // when
-        LocalDateTime date1 = LocalDateTime.of(2016, 4, 3, 12, 0);
+        OffsetDateTime date1 = OffsetDateTime.of(2016, 4, 3, 12, 0, 0, 0, zoneOffset);
         metric.registerCommit(new Commit("author", Collections.emptyList(), date1));
-        LocalDateTime date2 = LocalDateTime.of(2016, 4, 4, 12, 0);
+        OffsetDateTime date2 = OffsetDateTime.of(2016, 4, 4, 12, 0, 0, 0, zoneOffset);
         metric.registerCommit(new Commit("author", Collections.emptyList(), date2));
 
         // then

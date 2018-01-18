@@ -57,14 +57,14 @@ public class GitLogNumstatRawParserStrategyTest extends ParserStrategyContractTe
     @Test
     public void parsesFilenameFromFileMetadataNumstat() {
         String fileMetadata = "0 10\t src/Main.java";
-        Modification modification = parserStrategy.parseModification(fileMetadata);
+        Modification modification = GitLogNumstatRawParserStrategy.parseModification(fileMetadata);
         assertThat(modification.getFilename()).isEqualTo("src/Main.java");
     }
 
     @Test
     public void parsesFilenameFromFileMetadataRaw() {
         String fileMetadata = ":100644 100644 afb6ce4... b1c5aa3... A  src/Added.java";
-        Modification modification = parserStrategy.parseModification(fileMetadata);
+        Modification modification = GitLogNumstatRawParserStrategy.parseModification(fileMetadata);
         assertThat(modification.getFilename()).isEqualTo("src/Added.java");
     }
 
