@@ -12,7 +12,7 @@ public class NumberOfOccurencesInCommitsTest {
         NumberOfOccurencesInCommits metric = new NumberOfOccurencesInCommits();
 
         // then
-        assertThat(metric.value()).isEqualTo(0);
+        assertThat(metric.value(metric.metricName())).isEqualTo(0L);
     }
 
     @Test
@@ -24,6 +24,6 @@ public class NumberOfOccurencesInCommitsTest {
         metric.registerModification(new Modification("any"));
 
         // then
-        assertThat(metric.value()).isEqualTo(1);
+        assertThat(metric.value(metric.metricName())).isEqualTo(1L);
     }
 }

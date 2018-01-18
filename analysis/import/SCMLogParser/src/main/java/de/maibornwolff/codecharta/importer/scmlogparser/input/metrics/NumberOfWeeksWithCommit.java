@@ -2,10 +2,12 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-public final class NumberOfWeeksWithCommit implements CommitMetric<Integer> {
+public final class NumberOfWeeksWithCommit implements Metric {
     private final Set<CalendarWeek> weeksWithCommits = new HashSet<>();
 
     @Override
@@ -14,12 +16,16 @@ public final class NumberOfWeeksWithCommit implements CommitMetric<Integer> {
     }
 
     @Override
+    public Map<String, Number> value() {
+        return Collections.singletonMap(metricName(), singleValue());
+    }
+
+    @Override
     public void registerCommit(Commit commit) {
         weeksWithCommits.add(CalendarWeek.forDateTime(commit.getCommitDate()));
     }
 
-    @Override
-    public Integer value() {
+    public int singleValue() {
         return weeksWithCommits.size();
     }
 }

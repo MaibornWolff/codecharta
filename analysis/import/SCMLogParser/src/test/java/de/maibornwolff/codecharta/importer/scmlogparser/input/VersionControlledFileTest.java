@@ -1,8 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input;
 
-import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.CommitMetric;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.Metric;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory;
-import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.ModificationMetric;
 import org.junit.Test;
 
 import java.time.OffsetDateTime;
@@ -36,18 +35,14 @@ public class VersionControlledFileTest {
     @Test
     public void canRegisterMetricsByMetricsFactory() {
         // given
-
-        ModificationMetric modificationMetric = mock(ModificationMetric.class);
-        when(modificationMetric.metricName()).thenReturn("modificationMetric");
-        when(modificationMetric.value()).thenReturn(1);
-
-        CommitMetric commitMetric = mock(CommitMetric.class);
-        when(commitMetric.metricName()).thenReturn("commitMetric");
-        when(commitMetric.value()).thenReturn(2);
+        String metricName = "metric";
+        Metric metric = mock(Metric.class);
+        when(metric.metricName()).thenReturn(metricName);
+        when(metric.value()).thenReturn(Map.of(metricName, 1));
+        when(metric.value(metricName)).thenReturn(1);
 
         MetricsFactory metricsFactory = mock(MetricsFactory.class);
-        when(metricsFactory.createCommitMetrics()).thenReturn(Arrays.asList(commitMetric));
-        when(metricsFactory.createModificationMetrics()).thenReturn(Arrays.asList(modificationMetric));
+        when(metricsFactory.createMetrics()).thenReturn(Arrays.asList(metric));
 
         VersionControlledFile versionControlledFile = new VersionControlledFile(
                 "filename",
@@ -55,24 +50,22 @@ public class VersionControlledFileTest {
         );
 
         // when
-        Map<String, Number> metricsMap = versionControlledFile.getMetricsMap();
+        Map<String, ? extends Number> metricsMap = versionControlledFile.getMetricsMap();
 
         // then
-        assertThat(metricsMap).hasSize(2);
-        assertThat(versionControlledFile.getMetricValue("modificationMetric"))
+        assertThat(metricsMap).hasSize(1);
+        assertThat(versionControlledFile.getMetricValue(metricName))
                 .isEqualTo(1);
     }
 
     @Test
     public void ignoresCommitsForDifferentFiles() {
         // given
-        ModificationMetric modificationMetric = mock(ModificationMetric.class);
-        CommitMetric commitMetric = mock(CommitMetric.class);
+        Metric modificationMetric = mock(Metric.class);
 
         VersionControlledFile versionControlledFile = new VersionControlledFile(
                 "filename",
-                Arrays.asList(modificationMetric),
-                Arrays.asList(commitMetric)
+                Arrays.asList(modificationMetric)
         );
 
         // when
@@ -84,22 +77,18 @@ public class VersionControlledFileTest {
         assertThat(versionControlledFile.getAuthors()).isEmpty();
 
         verify(modificationMetric, times(0)).registerModification(any());
-
-        verify(commitMetric, times(0)).registerCommit(any());
     }
 
     @Test
     public void canRegisterASimpleCommit() {
         // given
-        ModificationMetric modificationMetric = mock(ModificationMetric.class);
-        CommitMetric commitMetric = mock(CommitMetric.class);
+        Metric modificationMetric = mock(Metric.class);
 
         String filename = "filename";
         String author = "An Author";
         VersionControlledFile versionControlledFile = new VersionControlledFile(
                 filename,
-                Arrays.asList(modificationMetric),
-                Arrays.asList(commitMetric)
+                Arrays.asList(modificationMetric)
         );
 
         // when
@@ -115,9 +104,6 @@ public class VersionControlledFileTest {
 
         verify(modificationMetric, times(1)).registerModification(any());
         verify(modificationMetric, times(1)).registerModification(eq(modification));
-
-        verify(commitMetric, times(1)).registerCommit(any());
-        verify(commitMetric, times(1)).registerCommit(eq(commit));
     }
 
     @Test
@@ -126,9 +112,7 @@ public class VersionControlledFileTest {
         String filename = "filename";
         String author1 = "An Author";
         String author2 = "2nd Author";
-        VersionControlledFile versionControlledFile = new VersionControlledFile(
-                filename, Collections.emptyList(), Collections.emptyList()
-        );
+        VersionControlledFile versionControlledFile = new VersionControlledFile(filename);
 
         // when
         Modification modification1 = new Modification(filename);
@@ -147,9 +131,7 @@ public class VersionControlledFileTest {
     public void deletionMarksFileAsDeleted() {
         // given
         String filename = "filename";
-        VersionControlledFile versionControlledFile = new VersionControlledFile(
-                filename, Collections.emptyList(), Collections.emptyList()
-        );
+        VersionControlledFile versionControlledFile = new VersionControlledFile(filename);
 
         // when
         List<Modification> modifications = Arrays.asList(
@@ -171,16 +153,11 @@ public class VersionControlledFileTest {
     @Test
     public void renamingChangesActualFilename() {
         // given
-        ModificationMetric modificationMetric = mock(ModificationMetric.class);
-        CommitMetric commitMetric = mock(CommitMetric.class);
+        Metric modificationMetric = mock(Metric.class);
 
         String oldFilename = "old filename";
         String filename = "filename";
-        VersionControlledFile versionControlledFile = new VersionControlledFile(
-                filename,
-                Arrays.asList(modificationMetric),
-                Arrays.asList(commitMetric)
-        );
+        VersionControlledFile versionControlledFile = new VersionControlledFile(filename,Arrays.asList(modificationMetric));
 
         // when
         // anti-chronological ordering
@@ -201,7 +178,6 @@ public class VersionControlledFileTest {
         assertThat(versionControlledFile.markedDeleted()).isFalse();
 
         verify(modificationMetric, times(3)).registerModification(any());
-        verify(commitMetric, times(3)).registerCommit(any());
     }
 
     private Commit createCommit(String author, Modification modification) {

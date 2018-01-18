@@ -1,54 +1,54 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input;
 
-import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.CommitMetric;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.Metric;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.Metrics;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory;
-import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.ModificationMetric;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class VersionControlledFile {
 
     // actual filename
     private final String actualFilename;
     private final Set<String> authors = new HashSet<>();
-    private final List<ModificationMetric> modificationMetrics;
-    private final List<CommitMetric> commitMetrics;
+    private final Metric rootMetric;
 
     // current filename in a specific revision, might change in history
     private String filename;
     private boolean markedDeleted = false;
 
     public VersionControlledFile(String filename, MetricsFactory metricsFactory) {
-        this(filename, metricsFactory.createModificationMetrics(), metricsFactory.createCommitMetrics());
+        this(filename, metricsFactory.createMetrics());
     }
 
     VersionControlledFile(
             String filename,
-            List<ModificationMetric> modificationMetrics,
-            List<CommitMetric> commitMetrics
+            Metric... metrics
+    ) {
+        this(filename, Arrays.asList(metrics));
+    }
+
+    VersionControlledFile(
+            String filename,
+            List<Metric> metrics
     ) {
         this.filename = filename;
         this.actualFilename = filename;
-        this.modificationMetrics = modificationMetrics;
-        this.commitMetrics = commitMetrics;
+        rootMetric = Metrics.of(metrics);
     }
 
     /**
      * registers commits in anti-chronological order
-     *
      */
     public void registerCommit(Commit commit) {
         Optional<Modification> modification = commit.getModification(filename);
 
-        if (modification.isPresent()) {
-            commitMetrics.forEach(m -> m.registerCommit(commit));
+        modification.ifPresent(mod -> {
+            rootMetric.registerCommit(commit);
             authors.add(commit.getAuthor());
 
-            registerModification(modification.get());
-        }
+            registerModification(mod);
+        });
     }
 
     private void registerModification(Modification modification) {
@@ -63,20 +63,15 @@ public class VersionControlledFile {
             default:
                 break;
         }
-        modificationMetrics.forEach(m -> m.registerModification(modification));
-    }
-
-    private Stream<Metric> getMetrics() {
-        return Stream.of(modificationMetrics, commitMetrics)
-                .flatMap(Collection::stream);
+        rootMetric.registerModification(modification);
     }
 
     public boolean markedDeleted() {
         return markedDeleted;
     }
 
-    public Map<String, Number> getMetricsMap() {
-        return getMetrics().collect(Collectors.toMap(Metric::metricName, Metric::value));
+    public Map<String, ? extends Number> getMetricsMap() {
+        return rootMetric.value();
     }
 
     public String getFilename() {
@@ -92,11 +87,8 @@ public class VersionControlledFile {
         return getActualFilename() + " with metrics " + getMetricsMap();
     }
 
-    public int getMetricValue(String metricName) {
-        return getMetrics()
-                .filter(m -> m.metricName().equals(metricName)).findAny()
-                .orElseThrow(() -> new RuntimeException("metric " + metricName + " not found."))
-                .value().intValue();
+    public Number getMetricValue(String metricName) {
+        return rootMetric.value(metricName);
     }
 
     public String getActualFilename() {

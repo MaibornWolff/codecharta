@@ -85,8 +85,8 @@ public abstract class ParserStrategyContractTest {
         assertThat(files)
                 .extracting(VersionControlledFile::getFilename, f -> f.getMetricValue("number_of_commits"), VersionControlledFile::getAuthors)
                 .containsExactlyInAnyOrder(
-                        tuple("src/Deleted.java", 2, singleton("TheAuthor")),
-                        tuple("src/Added.java", 2, singleton("TheAuthor")),
-                        tuple("src/Modified.java", 2, singleton("TheAuthor")));
+                        tuple("src/Deleted.java", 2L, singleton("TheAuthor")),
+                        tuple("src/Added.java", 2L, singleton("TheAuthor")),
+                        tuple("src/Modified.java", 2L, singleton("TheAuthor")));
     }
 }

@@ -33,8 +33,8 @@ public class CommitCollectorTest {
         assertThat(commits)
                 .extracting(VersionControlledFile::getFilename, f -> f.getMetricValue("number_of_commits"), VersionControlledFile::getAuthors)
                 .containsExactly(
-                        tuple("src/Main.java", 1, singleton("TheAuthor")),
-                        tuple("src/Util.java", 2, new HashSet<>(asList("TheAuthor", "AnotherAuthor"))));
+                        tuple("src/Main.java", 1L, singleton("TheAuthor")),
+                        tuple("src/Util.java", 2L, new HashSet<>(asList("TheAuthor", "AnotherAuthor"))));
     }
 
     @Test

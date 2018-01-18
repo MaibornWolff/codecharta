@@ -3,47 +3,45 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MetricsFactory {
 
-    private final List<String> metricNames;
+    private final List<Class<? extends Metric>> metricClasses;
 
     public MetricsFactory() {
-        this.metricNames = Stream.concat(createAllModificationMetrics().stream(), createAllCommitMetrics().stream())
-                .map(Metric::metricName)
+        this.metricClasses = createAllMetrics().stream()
+                .map(Metric::getClass)
                 .collect(Collectors.toList());
     }
 
     public MetricsFactory(List<String> metricNames) {
-        this.metricNames = metricNames;
+        this.metricClasses = createAllMetrics().stream()
+                .filter(m -> metricNames.contains(m.metricName()))
+                .map(Metric::getClass)
+                .collect(Collectors.toList());
+
     }
 
-    private List<ModificationMetric> createAllModificationMetrics() {
+    private static Metric createMetric(Class<? extends Metric> clazz) {
+        try {
+            return clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new IllegalArgumentException("metric " + clazz + " not found.");
+        }
+    }
+
+    private List<Metric> createAllMetrics() {
         return Arrays.asList(
                 new NumberOfOccurencesInCommits(),
                 new CodeChurn(),
-                new RelativeCodeChurn(),
-                new LinesOfCode()
-        );
-    }
-
-    private List<CommitMetric> createAllCommitMetrics() {
-        return Arrays.asList(
                 new NumberOfWeeksWithCommit(),
                 new NumberOfAuthors()
         );
     }
 
-    public List<ModificationMetric> createModificationMetrics() {
-        return createAllModificationMetrics().stream()
-                .filter(m -> metricNames.contains(m.metricName()))
-                .collect(Collectors.toList());
-    }
-
-    public List<CommitMetric> createCommitMetrics() {
-        return createAllCommitMetrics().stream()
-                .filter(m -> metricNames.contains(m.metricName()))
+    public List<Metric> createMetrics() {
+        return metricClasses.stream()
+                .map(MetricsFactory::createMetric)
                 .collect(Collectors.toList());
     }
 }

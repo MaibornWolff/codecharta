@@ -67,7 +67,6 @@ public class GitLogNumstatRawParserStrategy implements LogParserStrategy {
     public List<String> listSupportedMetrics() {
         return Arrays.asList(
                 "code_churn",
-                "loc",
                 "number_of_authors",
                 "number_of_commits",
                 "weeks_with_commits"
