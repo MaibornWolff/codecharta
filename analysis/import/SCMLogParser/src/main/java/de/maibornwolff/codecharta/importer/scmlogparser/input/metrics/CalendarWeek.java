@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 import java.time.OffsetDateTime;
 import java.time.temporal.WeekFields;
 
-class CalendarWeek {
+class CalendarWeek implements Comparable<CalendarWeek> {
     private final int week;
     private final int year;
 
@@ -17,6 +17,10 @@ class CalendarWeek {
         int cwYear = dateTime.getYear();
         cwYear = modifyYear(dateTime, cwWeek, cwYear);
         return new CalendarWeek(cwWeek, cwYear);
+    }
+
+    public static int numberOfWeeksBetween(CalendarWeek a, CalendarWeek b) {
+        return b.week - a.week + 12 * (b.year - a.year);
     }
 
     private static int modifyYear(OffsetDateTime dateTime, int cwWeek, int cwYear) {
@@ -54,5 +58,10 @@ class CalendarWeek {
         int result = week;
         result = 31 * result + year;
         return result;
+    }
+
+    @Override
+    public int compareTo(CalendarWeek o) {
+        return numberOfWeeksBetween(this, o);
     }
 }

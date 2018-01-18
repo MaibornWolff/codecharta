@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 public final class NumberOfWeeksWithCommit implements Metric {
+
     private final Set<CalendarWeek> weeksWithCommits = new HashSet<>();
 
     @Override
@@ -17,7 +18,7 @@ public final class NumberOfWeeksWithCommit implements Metric {
 
     @Override
     public Map<String, Number> value() {
-        return Collections.singletonMap(metricName(), singleValue());
+        return Collections.singletonMap("weeks_with_commits", numberOfWeeksWithCommit());
     }
 
     @Override
@@ -25,7 +26,7 @@ public final class NumberOfWeeksWithCommit implements Metric {
         weeksWithCommits.add(CalendarWeek.forDateTime(commit.getCommitDate()));
     }
 
-    public int singleValue() {
+    int numberOfWeeksWithCommit() {
         return weeksWithCommits.size();
     }
 }
