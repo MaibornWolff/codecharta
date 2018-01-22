@@ -6,3 +6,4 @@ npm run build
 npm run test
 npm run doc
 npm run package
+sonar-scanner
