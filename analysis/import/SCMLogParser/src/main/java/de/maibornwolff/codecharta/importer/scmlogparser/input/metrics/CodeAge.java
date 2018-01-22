@@ -18,8 +18,7 @@ public final class CodeAge implements Metric {
     @Override
     public Map<String, Number> value() {
         return ImmutableMap.of(
-                "avg_commit_frequency", avgCommitFrequency(),
-                "commit_date_span", commitDateSpan()
+                "avg_commit_frequency", avgCommitFrequency()
         );
     }
 
@@ -29,11 +28,11 @@ public final class CodeAge implements Metric {
     }
 
     private long commitDateSpan() {
-        if (weeksWithCommits.size() < 2) {
+        if (weeksWithCommits.size() < 1) {
             return 0;
         }
 
-        return CalendarWeek.numberOfWeeksBetween(weeksWithCommits.last(), weeksWithCommits.first());
+        return 1 + CalendarWeek.numberOfWeeksBetween(weeksWithCommits.last(), weeksWithCommits.first());
     }
 
     private int numberOfWeeksWithCommit() {
@@ -41,7 +40,7 @@ public final class CodeAge implements Metric {
     }
 
     private double avgCommitFrequency() {
-        int numberOfWeeksWithCommit = numberOfWeeksWithCommit();
-        return numberOfWeeksWithCommit > 0 ? commitDateSpan() / numberOfWeeksWithCommit : 0;
+        long span = commitDateSpan();
+        return span > 0 ? (double) numberOfWeeksWithCommit() / (double) span : 1d;
     }
 }
