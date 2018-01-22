@@ -148,7 +148,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
     setHoveredDetails(hovered) {
         this.$timeout(function () {
             this.details.hovered.name = hovered.name;
-            if(hovered.deltas != undefined){
+            if(hovered.deltas != undefined && this.settings.deltas){
                 this.details.hovered.heightDelta = hovered.deltas ? hovered.deltas[this.details.common.heightAttributeName] : null;
                 this.details.hovered.areaDelta = hovered.deltas ? hovered.deltas[this.details.common.areaAttributeName] : null;
                 this.details.hovered.colorDelta = hovered.deltas ? hovered.deltas[this.details.common.colorAttributeName] : null;
@@ -175,7 +175,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
                 this.details.selected.height = selected.attributes ? selected.attributes[this.details.common.heightAttributeName] : null;
                 this.details.selected.color = selected.attributes ? selected.attributes[this.details.common.colorAttributeName] : null;
             }
-            if(selected.deltas != undefined) {
+            if(selected.deltas != undefined && this.settings.deltas) {
                 this.details.selected.heightDelta = selected.deltas ? selected.deltas[this.details.common.heightAttributeName] : null;
                 this.details.selected.areaDelta = selected.deltas ? selected.deltas[this.details.common.areaAttributeName] : null;
                 this.details.selected.colorDelta = selected.deltas ? selected.deltas[this.details.common.colorAttributeName] : null;
