@@ -16,6 +16,9 @@ addons:
     organization: "maibornwolff"
     token:
       secure: $SONAR_TOKEN
+ branches:
+      - master
+      - integration/sonar
 
 before_install:
  - chmod +x ./analysis/gradlew
