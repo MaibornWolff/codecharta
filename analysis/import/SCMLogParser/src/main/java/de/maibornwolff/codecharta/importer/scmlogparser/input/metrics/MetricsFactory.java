@@ -35,7 +35,6 @@ public class MetricsFactory {
                 new NumberOfOccurencesInCommits(),
                 new CodeChurn(),
                 new WeeksWithCommits(),
-                new CodeAge(),
                 new NumberOfAuthors()
         );
     }
