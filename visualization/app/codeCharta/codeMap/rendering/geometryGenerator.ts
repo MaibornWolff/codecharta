@@ -24,6 +24,9 @@ export interface buildResult {
 }
 
 export class geometryGenerator {
+
+    private static MINIMAL_BUILDING_HEIGHT = 5.0;
+
     constructor() {};
 
     public build(nodes : node[], material : THREE.Material, settings : renderSettings) : buildResult
@@ -65,7 +68,7 @@ export class geometryGenerator {
 
     private ensureMinHeightIfDeltaNotNegative(x: number, d: number): number {
         if(d >= 0) {
-            return Math.max(x, 5.0);
+            return Math.max(x, geometryGenerator.MINIMAL_BUILDING_HEIGHT);
         } else return x;
     }
 

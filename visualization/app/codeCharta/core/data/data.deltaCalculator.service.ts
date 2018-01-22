@@ -102,14 +102,7 @@ export class DeltaCalculatorService {
 
             left.children.forEach((leftChild) => {
 
-                //Is the leftChild existant in the right node's children ?
-                let leftChildExistsInRight = false;
-                right.children.forEach((rightChild) => {
-                    if (leftChild.data.name === rightChild.data.name) {
-                        leftChildExistsInRight = true;
-                    }
-                });
-
+                let leftChildExistsInRight = this.childExistsInHierarchy(right, leftChild);
 
                 //if left child does not exist in the right node's children, insert it as a new valueless node into rights children
                 if (!leftChildExistsInRight) {
@@ -132,6 +125,16 @@ export class DeltaCalculatorService {
             });
 
         }
+    }
+
+    private childExistsInHierarchy(hierarchy: HierarchyNode<CodeMapNode>, child: HierarchyNode<CodeMapNode>): boolean {
+        let tmp = false;
+        hierarchy.children.forEach((rightChild) => {
+            if (child.data.name === rightChild.data.name) {
+                tmp = true;
+            }
+        });
+        return tmp;
     }
 
     private deepcopy(nodes: HierarchyNode<CodeMapNode>): HierarchyNode<CodeMapNode> {
