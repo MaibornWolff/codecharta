@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [Unreleased]
 ### Added
 - added support for git log --numstat and codechurn
+- sonarqube analysis on CI build
 
 ### Changed
 
