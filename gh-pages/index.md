@@ -1,3 +1,9 @@
+<a href="visualization/app/" class="button">
+              <small>Browser Demo</small>
+              Launch CodeCharta in your browser
+            </a>
+
+
 # What is CodeCharta ?
 
 CodeCharta visualizes multiple code metrics using 3D tree maps. It consists of two parts:
