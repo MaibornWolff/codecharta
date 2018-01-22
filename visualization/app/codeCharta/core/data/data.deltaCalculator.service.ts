@@ -76,7 +76,7 @@ export class DeltaCalculatorService {
         }
     }
 
-    public removeUpCrossOriginNodes(map: CodeMap): CodeMap {
+    public removeCrossOriginNodes(map: CodeMap): CodeMap {
         if (map && map.root) {
 
             let mapCopy: CodeMap = deepcopy.default(map);

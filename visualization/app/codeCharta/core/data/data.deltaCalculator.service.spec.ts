@@ -5,6 +5,7 @@ import {CodeMap} from "./model/CodeMap";
 import {TEST_FILE_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B} from "./data.mocks";
 import {DeltaCalculatorService} from "./data.deltaCalculator.service";
 import {DataDecoratorService} from "./data.decorator.service";
+import * as d3 from "d3";
 
 /**
  * @test {DataService}
@@ -20,8 +21,52 @@ describe("app.codeCharta.core.data.dataService", function() {
     beforeEach(NGMock.mock.inject(function (_deltaCalculatorService_) {deltaCalculatorService = _deltaCalculatorService_;}));
 
     beforeEach(function() {
-        a = TEST_DELTA_MAP_A;
-        b = TEST_DELTA_MAP_B;
+        a = JSON.parse(JSON.stringify(TEST_DELTA_MAP_A));
+        b = JSON.parse(JSON.stringify(TEST_DELTA_MAP_B));
+    });
+
+    it("should remove all nodes with other origin than itself", ()=>{
+        a.root.children[0].origin = "something else"
+        a.root.children[1].origin = a.fileName;
+        let res = deltaCalculatorService.removeCrossOriginNodes(a);
+        let h = d3.hierarchy(res.root);
+        h.each((node)=>{
+            expect(node.data.origin === a.fileName);
+        });
+    });
+
+    it("fill maps should return input maps when a map does not exist", ()=>{
+
+        let dds = new DataDecoratorService();
+        dds.decorateMapWithOriginAttribute(a);
+        dds.decorateMapWithOriginAttribute(b);
+
+        a = null;
+
+        let result = deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(a, b);
+        let da = result.leftMap;
+        let db = result.rightMap;
+
+        expect(da).toBe(a);
+        expect(db).toBe(b);
+
+    });
+
+    it("fill maps should return input maps when a map has no root", ()=>{
+
+        let dds = new DataDecoratorService();
+        dds.decorateMapWithOriginAttribute(a);
+        dds.decorateMapWithOriginAttribute(b);
+
+        a.root = null;
+
+        let result = deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(a, b);
+        let da = result.leftMap;
+        let db = result.rightMap;
+
+        expect(da).toBe(a);
+        expect(db).toBe(b);
+
     });
 
     it("additionalLeaf from map b should exist in a after calling fillMapsWithNonExistingNodesFromOtherMap, metrics should be 0", ()=>{
