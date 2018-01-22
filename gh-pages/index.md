@@ -137,6 +137,8 @@ It provides a simple way to customize your links with query parameters.
 
 [Readme](https://github.com/MaibornWolff/codecharta/tree/master/analysis)
 
+[Sonarqube Analysis](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Aanalysis)
+
 # Contributing
 
 [Contributing](https://github.com/MaibornWolff/codecharta/blob/master/CONTRIBUTE.md)
