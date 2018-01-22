@@ -45,6 +45,30 @@ describe("app.codeCharta.core.data.dataService", function() {
         expect(dataService).not.toBe(undefined);
     });
 
+    it("resetting map should clear everything", ()=>{
+        dataService.setMap(data, 0);
+        dataService.setMap(data, 1);
+        dataService.resetMaps();
+        expect(dataService.data.renderMap).toBe(null);
+        expect(dataService.data.metrics).toEqual([]);
+    });
+
+    it("setting a map should set it as render map and add the origin attribute", ()=>{
+        dataService.setMap(data, 0);
+        expect(dataService.data.renderMap.root.origin).toBe(dataService.data.renderMap.fileName);
+    });
+
+    it("setting a comparison map should do nothing if map at index does not exist", ()=>{
+        dataService.setMap(data, 0);
+        dataService.setComparisonMap(1);
+        expect(dataService.data.renderMap.fileName).toBe(data.fileName);
+    });
+
+    it("setting a reference map should do nothing if map at index does not exist", ()=>{
+        dataService.setMap(data, 0);
+        dataService.setReferenceMap(1);
+        expect(dataService.data.renderMap.fileName).toBe(data.fileName);
+    });
 
 });
 

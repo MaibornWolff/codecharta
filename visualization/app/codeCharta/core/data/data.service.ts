@@ -112,7 +112,7 @@ export class DataService {
      * @param {number} index the maps index in the revisions array
      */
     public setComparisonMap(index: number) { //this allows to reset delta values when switching back from delta view
-        if (this._data.revisions[index] !== null) {
+        if (this._data.revisions[index] != null) {
             this._lastComparisonMap = this._data.revisions[index];
             if (this._deltasEnabled) {
                 this.applyNodeMerging();
@@ -132,7 +132,7 @@ export class DataService {
      * @param {number} index the maps index in the revisions array
      */
     public setReferenceMap(index: number) {
-        if (this._data.revisions[index] !== null) {
+        if (this._data.revisions[index] != null) {
             this._lastReferenceIndex = index;
             this._data.renderMap = this._data.revisions[index];
             if (this._deltasEnabled) {
@@ -167,8 +167,8 @@ export class DataService {
 
     public applyNodeMerging() {
         let result = this.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(
-            this.deltaCalculatorService.removeUpCrossOriginNodes(this._data.renderMap),
-            this.deltaCalculatorService.removeUpCrossOriginNodes(this._lastComparisonMap));
+            this.deltaCalculatorService.removeCrossOriginNodes(this._data.renderMap),
+            this.deltaCalculatorService.removeCrossOriginNodes(this._lastComparisonMap));
 
         this.dataDecoratorService.decorateMapWithUnaryMetric(result.leftMap);
         this.dataDecoratorService.decorateMapWithUnaryMetric(result.rightMap);
