@@ -36,10 +36,7 @@ import de.maibornwolff.codecharta.model.PathFactory;
 import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.nodeinserter.NodeInserter;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * creates Projects from List of VersionControlledFiles
@@ -56,7 +53,7 @@ public class ProjectConverter {
 
     private void addVersionControlledFile(Project project, VersionControlledFile versionControlledFile) {
         Map<String, Object> attributes = extractAttributes(versionControlledFile);
-        Node newNode = new Node(extractFilenamePart(versionControlledFile), NodeType.File, attributes, "", Collections.emptyList());
+        Node newNode = new Node(extractFilenamePart(versionControlledFile), NodeType.File, attributes, "", new ArrayList<>());
         NodeInserter.insertByPath(project, PathFactory.fromFileSystemPath(extractPathPart(versionControlledFile)), newNode);
     }
 
