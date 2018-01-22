@@ -34,7 +34,7 @@ public class MetricsFactory {
         return Arrays.asList(
                 new NumberOfOccurencesInCommits(),
                 new CodeChurn(),
-                new NumberOfWeeksWithCommit(),
+                new WeeksWithCommits(),
                 new CodeAge(),
                 new NumberOfAuthors()
         );

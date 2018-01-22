@@ -20,7 +20,7 @@ class CalendarWeek implements Comparable<CalendarWeek> {
     }
 
     public static int numberOfWeeksBetween(CalendarWeek a, CalendarWeek b) {
-        return b.week - a.week + 12 * (b.year - a.year);
+        return (b.week + 52 * b.year) - (a.week + 52 * a.year);
     }
 
     private static int modifyYear(OffsetDateTime dateTime, int cwWeek, int cwYear) {
