@@ -18,7 +18,7 @@ addons:
       secure: $SONAR_TOKEN
  branches:
       - master
-      - integration/sonar
+      - 'integration/sonar'
 
 before_install:
  - chmod +x ./analysis/gradlew
@@ -45,6 +45,7 @@ cache:
 
 # runs the script which copies all needed ressources into the gh-pages directory
 before_deploy:
+  - sonar-scanner
   - ./script/build_gh_pages.sh
 
 deploy:
