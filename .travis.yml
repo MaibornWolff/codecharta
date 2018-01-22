@@ -18,7 +18,6 @@ addons:
       secure: $SONAR_TOKEN
     branches:
       - master
-      - sonar
 
 before_install:
  - chmod +x ./analysis/gradlew
