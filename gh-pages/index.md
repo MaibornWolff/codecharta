@@ -129,6 +129,8 @@ It provides a simple way to customize your links with query parameters.
 
 [Coverage](visualization/coverage/lcov-report)
 
+[Sonarqube Analysis](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Avisualization%3Amaster)
+
 [Reference](visualization/docs/)
 
 ## Analysis
