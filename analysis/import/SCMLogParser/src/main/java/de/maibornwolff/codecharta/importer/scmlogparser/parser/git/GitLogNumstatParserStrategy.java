@@ -85,7 +85,7 @@ public class GitLogNumstatParserStrategy implements LogParserStrategy {
                 "number_of_authors",
                 "number_of_commits",
                 "weeks_with_commits",
-                "code_age"
+                "temporal_coupling"
         );
     }
 
