@@ -35,7 +35,8 @@ public class MetricsFactory {
                 new NumberOfOccurencesInCommits(),
                 new CodeChurn(),
                 new WeeksWithCommits(),
-                new NumberOfAuthors()
+                new NumberOfAuthors(),
+                new TemporalCoupling()
         );
     }
 
