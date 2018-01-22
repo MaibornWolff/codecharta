@@ -1,8 +1,7 @@
-<a href="visualization/app/" class="button">
-              <small>Browser Demo</small>
-              Launch CodeCharta in your browser
-            </a>
+# Quicklinks
 
+[Visualization Demo](visualization/app/)
+[Downloads](https://github.com/MaibornWolff/codecharta/releases)
 
 # What is CodeCharta ?
 
