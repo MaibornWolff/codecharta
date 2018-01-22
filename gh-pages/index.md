@@ -1,6 +1,7 @@
 # Quicklinks
 
 [Visualization Demo](visualization/app/)
+
 [Downloads](https://github.com/MaibornWolff/codecharta/releases)
 
 # What is CodeCharta ?
