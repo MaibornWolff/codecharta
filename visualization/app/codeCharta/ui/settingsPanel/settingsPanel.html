@@ -1,6 +1,6 @@
-<div id="settingsPanel">
+<collapsible-directive>
 
-    <fab-component onclick="$('#settingsPanel').animate({ width : 0 } );" icon-class="fa-arrow-circle-o-right"></fab-component>
+    <collapsible-element-directive label="Settings" icon-class="fa-cogs">
 
     <collapsible-directive>
 
@@ -46,4 +46,5 @@
 
     <a class="waves-effect waves-light btn settings-panel-btn" title="Show Url Parameters" ng-click="$ctrl.showUrlParams()">Show Url Parameters</a>
 
-</div>
+    </collapsible-element-directive>
+</collapsible-directive>

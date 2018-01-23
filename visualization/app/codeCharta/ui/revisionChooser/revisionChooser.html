@@ -1,27 +1,38 @@
-<div ng-show="$ctrl.settingsService.settings.deltas && $ctrl.dataService.data.revisions.length != 1" id="revisionButton">
+<collapsible-directive>
+
+    <collapsible-element-directive label="Maps" icon-class="fa-map">
+
+
+        <div class="row">
+            <div class="col l12">
+                Show...
+            </div>
+            <div class="input-field col l12">
+                <select class="browser-default" ng-model="$ctrl.ui.chosenReference" ng-options="value.fileName for (key, value) in $ctrl.revisions" ng-change="$ctrl.onReferenceChange($ctrl.ui.chosenReference)">
+                </select>
+            </div>
+        </div>
+
+        <div class="row" ng-if="$ctrl.settingsService.settings.deltas">
+            <div class="col l12">
+                In comparison to...
+            </div>
+            <div class="input-field col l12">
+                <select class="browser-default" ng-model="$ctrl.ui.chosenComparison" ng-options="value.fileName for (key, value) in $ctrl.revisions" ng-change="$ctrl.onComparisonChange($ctrl.ui.chosenComparison)">
+                </select>
+            </div>
+        </div>
+
+
+    </collapsible-element-directive>
+
+</collapsible-directive>
+
+
+<!--<div ng-show="$ctrl.settingsService.settings.deltas && $ctrl.dataService.data.revisions.length != 1" id="revisionButton">
     <a class="waves-effect waves-light btn ">revisions</a>
 </div>
 
 <div ng-show="!$ctrl.settingsService.settings.deltas && $ctrl.dataService.data.revisions.length != 1" id="mapButton">
     <a class="waves-effect waves-light btn ">maps</a>
-</div>
-
-<div id="revisionChooser">
-
-    Current <span ng-if="$ctrl.settingsService.settings.deltas">Reference </span>Map: {{$ctrl.settingsService.settings.map.fileName}}<br/>
-    Select <span ng-if="$ctrl.settingsService.settings.deltas">Reference </span>Map:
-    <span ng-repeat="(key, value) in $ctrl.revisions">
-        <a href="#" ng-click="$ctrl.loadReferenceMap(key)">{{value.fileName}} - </a>
-     </span>
-
-    <br><br>
-
-    <span ng-if="$ctrl.settingsService.settings.deltas">
-        Current Comparison Map: {{$ctrl.dataService.data.comparisonMap.fileName}}<br/>
-        Select Comparison Map:
-        <span ng-repeat="(key, value) in $ctrl.revisions">
-            <a href="#" ng-click="$ctrl.loadComparisonMap(key)">{{value.fileName}} - </a>
-        </span>
-    </span>
-
-</div>
+</div>-->

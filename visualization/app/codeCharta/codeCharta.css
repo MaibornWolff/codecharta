@@ -21,18 +21,33 @@ html, body {
     font-weight: 300;
 }
 
-#title {
-    position: fixed;
-    z-index: 10;
+#codeMap {
+    position: absolute;
+    z-index: 0;
+    top: 50px;
+    left: 0;
     width: 100%;
+    height: 100%;
 }
 
-#title > a, img {
-    width: 4em;
-    margin: 0.5em 0 0 1.5em;
+#hud {
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none !important;
+    pointer-events: none;
+    padding-left:10px;
+    padding-right:10px;
 }
 
-#title > h1 {
+revision-chooser-component, legend-panel-component, file-chooser-panel-directive, settings-panel-component, .mwlink {
+    pointer-events: auto;
+}
+
+#title {
     text-transform: uppercase;
     font-size: 0.9em;
     line-height: 1.4em;
@@ -43,22 +58,40 @@ html, body {
     font-weight: 300;
 }
 
-#title > h1:first-child {
+#title:first-child {
     font-size: 1.82em;
 }
 
-#title > h1:last-child {
+#title:last-child {
     font-size: 1.5em;
 }
 
-#codeMap {
-    position: absolute;
-    z-index: 0;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+.collapsible > li {
+    background-color: #ffffff !important;
 }
+
+.col-backdrop {
+    background-color: rgba(0,0,0,0.1);
+}
+
+.bottom-row {
+    position: fixed;
+    bottom: 0;
+    width:100%;
+}
+
+.mwlink > img{
+    width: 100%;
+    max-width: 4em;
+    float:right;
+}
+
+.chip {
+    background-color: #efefef;
+}
+
+
+/*
 
 #actionButtons {
     position: fixed;
@@ -137,4 +170,4 @@ html, body {
 
 .rzslider .rz-bar {
     background: rgb(196,196,196);
-}
+}*/

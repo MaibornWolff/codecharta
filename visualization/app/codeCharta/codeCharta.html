@@ -1,14 +1,37 @@
-<fab-bar-component></fab-bar-component>
+<div id="hud" class="container">
 
-<settings-panel-component></settings-panel-component>
-<file-chooser-panel-directive></file-chooser-panel-directive>
-<detail-panel-component></detail-panel-component>
+    <div class="row">
 
-<header id="title">
-    <a href="https://www.maibornwolff.de" target="_blank"><img src="./logo.png" alt="MaibornWolff"></a>
-    <h1><span>CodeCharta {{$ctrl.pkg.version}}</span></h1>
-</header>
+        <div class="col l3 m6 s12 col-backdrop">
+            <legend-panel-component></legend-panel-component>
+        </div>
+
+        <div class="col l3 m6 s12 col-backdrop">
+            <revision-chooser-component></revision-chooser-component>
+        </div>
+
+        <div class="col l3 m6 s12 col-backdrop">
+            <file-chooser-panel-directive></file-chooser-panel-directive>
+        </div>
+
+        <div class="col l3 m6 s12 col-backdrop">
+            <settings-panel-component></settings-panel-component>
+        </div>
+
+
+    </div>
+
+    <div class="row bottom-row">
+        <div class="col l1">
+          <a class="mwlink" href="https://www.maibornwolff.de" target="_blank"><img src="./logo.png" alt="MaibornWolff"></a>
+      </div>
+      <div class="col l2 offset-l9">
+          <h1 id="title"><span>CodeCharta {{$ctrl.pkg.version}}</span></h1>
+      </div>
+    </div>
+
+
+
+</div>
 
 <code-map-component></code-map-component>
-<legend-panel-component></legend-panel-component>
-<revision-chooser-component></revision-chooser-component>
