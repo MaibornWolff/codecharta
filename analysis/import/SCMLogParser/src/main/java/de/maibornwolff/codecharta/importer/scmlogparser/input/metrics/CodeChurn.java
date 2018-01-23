@@ -21,8 +21,8 @@ public final class CodeChurn implements Metric {
     @Override
     public Map<String, Number> value() {
         return ImmutableMap.of("abs_code_churn", absoluteCodeChurn(),
-                "rel_code_churn", relativeCodeChurn(),
-                "loc", loc());
+                "experimental_rel_code_churn", relativeCodeChurn(),
+                "experimental_loc", loc());
     }
 
 
@@ -38,16 +38,15 @@ public final class CodeChurn implements Metric {
      * this is only an approximation of the correct file size.
      * correct only if e.g. --numstat -m --first-parent ist given.
      */
-    public Long loc() {
+    Long loc() {
         return loc >= 0 ? loc : 0;
     }
 
-    public Long absoluteCodeChurn() {
+    Long absoluteCodeChurn() {
         return accumulatedNumberOfLinesAdded + accumulatedNumberOfLinesDeleted;
     }
 
-
-    public Double relativeCodeChurn() {
+    Double relativeCodeChurn() {
         double relativeChurn;
 
         if (loc() > 0) {

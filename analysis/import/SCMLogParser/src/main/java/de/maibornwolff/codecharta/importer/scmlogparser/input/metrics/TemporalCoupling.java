@@ -44,11 +44,11 @@ public final class TemporalCoupling implements Metric {
     public Map<String, Number> value() {
         Map<String, Number> values = new HashMap<>();
 
-        values.put("median_coupled_files", median_coupled_files());
-        values.put("max_coupling", max_coupling());
-        values.put("number_of_highly_coupled_files", highly_coupled());
-        values.put("coupled_churn", coupled_churn());
-        values.put("weighted_coupled_churn", weighted_coupled_churn());
+        values.put("experimental_median_coupled_files", median_coupled_files());
+        values.put("experimental_max_coupling", max_coupling());
+        values.put("experimental_number_of_highly_coupled_files", highly_coupled());
+        values.put("experimental_coupled_churn", coupled_churn());
+        values.put("experimental_weighted_coupled_churn", weighted_coupled_churn());
 
         return values;
     }
@@ -116,7 +116,7 @@ public final class TemporalCoupling implements Metric {
     @Override
     public void registerCommit(Commit commit) {
         numberOfCommits++;
-        commit.getModifications().stream()
+        commit.getModifications()
                 .forEach(
                         mod -> {
                             if (!simultaneouslyCommitedFiles.containsKey(mod.getFilename())) {
