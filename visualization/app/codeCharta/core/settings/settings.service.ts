@@ -38,8 +38,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     constructor(private urlService, private dataService: DataService, private $rootScope,
                 private threeOrbitControlsService: ThreeOrbitControlsService, private statisticMapService) {
 
-        let ctx = this;
-
         this._settings = this.getInitialSettings(dataService.data.referenceMap, dataService.data.metrics);
 
         dataService.subscribe(this);
