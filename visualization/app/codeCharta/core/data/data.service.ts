@@ -6,13 +6,13 @@ import {IRootScopeService, IAngularEvent} from "angular";
 import {DeltaCalculatorService} from "./data.deltaCalculator.service";
 import {DataDecoratorService} from "./data.decorator.service";
 import {HierarchyNode} from "d3-hierarchy";
+import {SettingsService} from "../settings/settings.service";
 
 export interface DataModel {
 
     revisions: CodeMap[],
     metrics: string[],
-    referenceMap: CodeMap,
-    comparisonMap: CodeMap
+    renderMap: CodeMap
 
 }
 
@@ -26,6 +26,9 @@ export interface DataServiceSubscriber {
 export class DataService {
 
     private _data: DataModel;
+    private _lastReferenceIndex = 0;
+    private _lastComparisonMap = null;
+    private _deltasEnabled = false;
 
     /* @ngInject */
     constructor(private $rootScope: IRootScopeService,
@@ -35,8 +38,7 @@ export class DataService {
         this._data = {
             revisions: [],
             metrics: [],
-            referenceMap: null,
-            comparisonMap: null
+            renderMap: null
         };
 
     }
@@ -51,7 +53,7 @@ export class DataService {
         });
     }
 
-    private notify() {
+    public notify() {
         this.$rootScope.$broadcast("data-changed", this._data);
     }
 
@@ -62,7 +64,16 @@ export class DataService {
      */
     public setMap(map: CodeMap, revision: number) {
         this._data.revisions[revision] = map;
-        this.setComparisonMap(revision);
+        this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.revisions[revision]);
+        this.setReferenceMap(revision);
+    }
+
+    public getReferenceMapName(): string {
+        return this._data.renderMap.fileName;
+    }
+
+    public getComparisonMapName(): string {
+        return this._lastComparisonMap.fileName;
     }
 
     /**
@@ -91,39 +102,84 @@ export class DataService {
     public resetMaps() {
         this._data.revisions = [];
         this._data.metrics = [];
-        this._data.comparisonMap = null;
-        this._data.referenceMap = null;
+        this._lastComparisonMap = null;
+        this._data.renderMap = null;
         this.notify();
     }
 
     /**
-     * Selects and sets the first map to compare.
+     * Selects and sets the first map to compare.  this is the map which is substracted from the main map
      * @param {number} index the maps index in the revisions array
      */
-    public setComparisonMap(index: number) {
-        if (this._data.revisions[index] !== null) {
+    public setComparisonMap(index: number) { //this allows to reset delta values when switching back from delta view
+        if (this._data.revisions[index] != null) {
+            this._lastComparisonMap = this._data.revisions[index];
+            if (this._deltasEnabled) {
+                this.applyNodeMerging();
+            }
+            this.dataDecoratorService.decorateMapWithUnaryMetric(this._lastComparisonMap);
+            this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.renderMap);
+            this.deltaCalculatorService.decorateMapsWithDeltas(this._lastComparisonMap, this._data.renderMap);
             this.setMetrics(index);
-            this._data.comparisonMap = this._data.revisions[index];
-            this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.comparisonMap);
-            this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.referenceMap);
-            this.deltaCalculatorService.decorateMapsWithDeltas(this._data.comparisonMap, this._data.referenceMap);
+            this.setReferenceMap(this._lastReferenceIndex);
+
             this.notify();
         }
     }
 
     /**
-     * Selects and sets the second map to compare.
+     * Selects and sets the second map to compare. this is the main visible map
      * @param {number} index the maps index in the revisions array
      */
     public setReferenceMap(index: number) {
-        if (this._data.revisions[index] !== null) {
+        if (this._data.revisions[index] != null) {
+            this._lastReferenceIndex = index;
+            this._data.renderMap = this._data.revisions[index];
+            if (this._deltasEnabled) {
+                this.applyNodeMerging();
+            }
+            this.dataDecoratorService.decorateMapWithUnaryMetric(this._lastComparisonMap);
+            this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.renderMap);
+            this.deltaCalculatorService.decorateMapsWithDeltas(this._lastComparisonMap, this._data.renderMap);
             this.setMetrics(index);
-            this._data.referenceMap = this._data.revisions[index];
-            this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.comparisonMap);
-            this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.referenceMap);
-            this.deltaCalculatorService.decorateMapsWithDeltas(this._data.comparisonMap, this._data.referenceMap);
             this.notify();
         }
+    }
+
+    //TODO "subscribe with interface" not possible because angular would produce a circular dependency
+    public onActivateDeltas() {
+        if (!this._deltasEnabled) {
+            this._deltasEnabled = true;
+            this.setComparisonMap(this._lastReferenceIndex);
+            this.setReferenceMap(this._lastReferenceIndex);
+        }
+
+
+    }
+
+    public onDeactivateDeltas() {
+        if (this._deltasEnabled) {
+            this._deltasEnabled = false;
+            this.setComparisonMap(this._lastReferenceIndex);
+            this.setReferenceMap(this._lastReferenceIndex);
+        }
+    }
+
+    public applyNodeMerging() {
+        let result = this.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(
+            this.deltaCalculatorService.removeCrossOriginNodes(this._data.renderMap),
+            this.deltaCalculatorService.removeCrossOriginNodes(this._lastComparisonMap));
+
+        this.dataDecoratorService.decorateMapWithUnaryMetric(result.leftMap);
+        this.dataDecoratorService.decorateMapWithUnaryMetric(result.rightMap);
+
+        //recalculate deltas on maps
+        this.deltaCalculatorService.decorateMapsWithDeltas(result.leftMap, this._lastComparisonMap);
+
+
+        //we should write back map changes to dataService, no need to call notify and make an infinite loop
+        this._data.renderMap = result.leftMap;
+        this._lastComparisonMap = result.rightMap;
     }
 
     public getIndexOfMap(map: CodeMap) {

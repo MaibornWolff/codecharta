@@ -213,7 +213,7 @@ xdescribe("app.codeCharta.core.statistic", function() {
     beforeEach(angular.mock.module("app.codeCharta.core.statistic"));
     beforeEach(() =>{
         data = new DataModel();
-        data.referenceMap = file1;
+        data.renderMap = file1;
         settings = new Settings();
     });
 

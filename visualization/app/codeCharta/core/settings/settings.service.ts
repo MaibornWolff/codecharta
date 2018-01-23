@@ -7,6 +7,9 @@ import {
 } from "../../codeMap/threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera} from "three";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
+import {DeltaCalculatorService} from "../data/data.deltaCalculator.service";
+import * as d3 from "d3";
+import {DataDecoratorService} from "../data/data.decorator.service";
 
 export interface Settings {
 
@@ -34,11 +37,16 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
     private _settings: Settings;
 
+    private _lastDeltaState = false;
+
     /* ngInject */
     constructor(private urlService, private dataService: DataService, private $rootScope,
-                private threeOrbitControlsService: ThreeOrbitControlsService, private statisticMapService) {
+                private threeOrbitControlsService: ThreeOrbitControlsService, private statisticMapService, private deltaCalculatorService: DeltaCalculatorService,
+                private dataDecoratorService: DataDecoratorService) {
 
-        this._settings = this.getInitialSettings(dataService.data.referenceMap, dataService.data.metrics);
+        let ctx = this;
+
+        this._settings = this.getInitialSettings(dataService.data.renderMap, dataService.data.metrics);
 
         dataService.subscribe(this);
         threeOrbitControlsService.subscribe(this);
@@ -51,7 +59,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         });
     }
 
-    private getInitialSettings(referenceMap: any, metrics: string[]): Settings {
+    private getInitialSettings(renderMap: any, metrics: string[]): Settings {
 
         let r: Range = {
             from: 10,
@@ -67,8 +75,10 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             x: 0, y: 300, z: 1000
         };
 
+        this._lastDeltaState = false;
+
         return {
-            map: referenceMap,
+            map: renderMap,
             neutralColorRange: r,
             areaMetric: this.getMetricByIdOrLast(0, metrics),
             heightMetric: this.getMetricByIdOrLast(1, metrics),
@@ -83,6 +93,14 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
     }
 
+    private onActivateDeltas() {
+        this.dataService.onActivateDeltas();
+    }
+
+    private onDeactivateDeltas() {
+        this.dataService.onDeactivateDeltas();
+    }
+
     /**
      * change the map and metric settings according to the parameter.
      * @listens {data-changed} called on data-changed
@@ -91,12 +109,11 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      */
     public onDataChanged(data: DataModel) {
 
-        this._settings.map = data.referenceMap;
+        this._settings.map = data.renderMap; // reference map is always the map which should be drawn
 
         if (data.metrics.indexOf(this._settings.areaMetric) === -1) {
             //area metric is not set or not in the new metrics and needs to be chosen
             this._settings.areaMetric = this.getMetricByIdOrLast(0, data.metrics);
-
         }
 
         if (data.metrics.indexOf(this._settings.heightMetric) === -1) {
@@ -133,6 +150,17 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      * @emits {settings-changed} on call
      */
     private onSettingsChanged() {
+
+        if (this._lastDeltaState && !this._settings.deltas) {
+            this._lastDeltaState = false;
+            this.onDeactivateDeltas();
+        } else
+
+        if (!this._lastDeltaState && this._settings.deltas) {
+            this._lastDeltaState = true;
+            this.onActivateDeltas();
+        }
+
         this.$rootScope.$broadcast("settings-changed", this._settings);
     }
 
@@ -157,7 +185,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
                     const res = ctx.urlService.getParam(prefix + i);
 
-                    if(res) {
+                    if (res) {
 
                         if (res == "true") {
                             obj[i] = true;
