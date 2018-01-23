@@ -43,6 +43,14 @@ export class DataService {
 
     }
 
+    public getLastComparisonMap(): CodeMap {
+        return this._lastComparisonMap;
+    }
+
+    public getLastReferenceMap(): CodeMap {
+        return this._data.revisions[this._lastReferenceIndex];
+    }
+
     get data(): DataModel {
         return this._data;
     }

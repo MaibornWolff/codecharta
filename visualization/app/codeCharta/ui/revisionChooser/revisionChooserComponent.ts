@@ -28,8 +28,8 @@ export class RevisionChooserController implements DataServiceSubscriber{
         private settingsService: SettingsService
     ) {
         this.revisions = dataService.data.revisions;
-        this.ui.chosenComparison = this.dataService.data.comparisonMap;
-        this.ui.chosenReference = this.dataService.data.referenceMap;
+        this.ui.chosenComparison = this.dataService.getLastComparisonMap();
+        this.ui.chosenReference = this.dataService.getLastReferenceMap();
         dataService.subscribe(this);
     }
 
@@ -64,8 +64,8 @@ export class RevisionChooserController implements DataServiceSubscriber{
      */
     onDataChanged(data: DataModel) {
         this.revisions = data.revisions;
-        this.ui.chosenComparison = data.comparisonMap;
-        this.ui.chosenReference = data.referenceMap;
+        this.ui.chosenComparison = this.dataService.getLastComparisonMap();
+        this.ui.chosenReference = this.dataService.getLastReferenceMap();
     }
 
     onReferenceChange(map: CodeMap) {
