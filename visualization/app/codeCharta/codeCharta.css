@@ -90,6 +90,10 @@ revision-chooser-component, legend-panel-component, file-chooser-panel-directive
     background-color: #efefef;
 }
 
+.row, .col {
+    min-height: 0px !important;
+}
+
 
 /*
 

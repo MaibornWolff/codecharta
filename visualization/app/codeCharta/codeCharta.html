@@ -18,19 +18,20 @@
             <settings-panel-component></settings-panel-component>
         </div>
 
-
     </div>
 
     <div class="row bottom-row">
-        <div class="col l1">
-          <a class="mwlink" href="https://www.maibornwolff.de" target="_blank"><img src="./logo.png" alt="MaibornWolff"></a>
-      </div>
-      <div class="col l2 offset-l9">
-          <h1 id="title"><span>CodeCharta {{$ctrl.pkg.version}}</span></h1>
-      </div>
+
+        <div class="col l4 col-backdrop">
+            <detail-panel-component></detail-panel-component>
+        </div>
+
     </div>
 
-
+    <div id="titlebox">
+        <a class="mwlink" href="https://www.maibornwolff.de" target="_blank"><img src="./logo.png" alt="MaibornWolff"></a>
+        <h1 id="title"><span>CodeCharta {{$ctrl.pkg.version}}</span></h1>
+    </div>
 
 </div>
 
