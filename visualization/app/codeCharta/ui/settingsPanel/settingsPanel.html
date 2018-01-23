@@ -2,49 +2,74 @@
 
     <collapsible-element-directive label="Settings" icon-class="fa-cogs">
 
-    <collapsible-directive>
+        <div class="row">
+            <div class="col l12">
+                <collapsible-directive>
 
-        <collapsible-element-directive label="Color Settings" icon-class="fa-paint-brush">
-            <label id="colorSliderLabel" for="colorSlider">Neutral Color Range</label>
-            <rzslider id="colorSlider" rz-slider-model="$ctrl.settings.neutralColorRange.from"
-                      rz-slider-high="$ctrl.settings.neutralColorRange.to"
-                      rz-slider-options="$ctrl.sliderOptions"></rzslider>
-            <checkbox-directive model="$ctrl.settings.neutralColorRange.flipped" label="Invert Colors" change="$ctrl.notify()"></checkbox-directive>
-        </collapsible-element-directive>
+                    <collapsible-element-directive label="Color Settings" icon-class="fa-paint-brush">
+                        <label id="colorSliderLabel" for="colorSlider">Neutral Color Range</label>
+                        <rzslider id="colorSlider" rz-slider-model="$ctrl.settings.neutralColorRange.from"
+                                  rz-slider-high="$ctrl.settings.neutralColorRange.to"
+                                  rz-slider-options="$ctrl.sliderOptions"></rzslider>
+                        <checkbox-directive model="$ctrl.settings.neutralColorRange.flipped" label="Invert Colors"
+                                            change="$ctrl.notify()"></checkbox-directive>
+                    </collapsible-element-directive>
 
-        <collapsible-element-directive label="Display" icon-class="fa-television">
-            <number-field-directive label="Amount of labeled buildings" min="0" model="$ctrl.settings.amountOfTopLabels" change="$ctrl.notify()"></number-field-directive>
-        </collapsible-element-directive>
+                    <collapsible-element-directive label="Display" icon-class="fa-television">
+                        <number-field-directive label="Amount of labeled buildings" min="0"
+                                                model="$ctrl.settings.amountOfTopLabels"
+                                                change="$ctrl.notify()"></number-field-directive>
+                    </collapsible-element-directive>
 
-        <collapsible-element-directive label="Scaling" icon-class="fa-cube">
-            <slider-directive step="0.1"  label="x" min="0.1" max="5" model="$ctrl.settings.scaling.x" change="$ctrl.notify()"></slider-directive>
-            <slider-directive step="0.1"  label="y" min="0.1" max="5" model="$ctrl.settings.scaling.y" change="$ctrl.notify()"></slider-directive>
-            <slider-directive step="0.1"  label="z" min="0.1" max="5" model="$ctrl.settings.scaling.z" change="$ctrl.notify()"></slider-directive>
-        </collapsible-element-directive>
+                    <collapsible-element-directive label="Scaling" icon-class="fa-cube">
+                        <slider-directive step="0.1" label="x" min="0.1" max="5" model="$ctrl.settings.scaling.x"
+                                          change="$ctrl.notify()"></slider-directive>
+                        <slider-directive step="0.1" label="y" min="0.1" max="5" model="$ctrl.settings.scaling.y"
+                                          change="$ctrl.notify()"></slider-directive>
+                        <slider-directive step="0.1" label="z" min="0.1" max="5" model="$ctrl.settings.scaling.z"
+                                          change="$ctrl.notify()"></slider-directive>
+                    </collapsible-element-directive>
 
-        <collapsible-element-directive label="Metrics" icon-class="fa-line-chart">
-            <dropdown-directive label="Area" values="$ctrl.metrics" model="$ctrl.settings.areaMetric" change="$ctrl.notify()"></dropdown-directive>
-            <dropdown-directive label="Height" values="$ctrl.metrics" model="$ctrl.settings.heightMetric" change="$ctrl.notify()"></dropdown-directive>
-            <dropdown-directive label="Color" values="$ctrl.metrics" model="$ctrl.settings.colorMetric" change="$ctrl.notify()"></dropdown-directive>
-        </collapsible-element-directive>
+                    <collapsible-element-directive label="Metrics" icon-class="fa-line-chart">
+                        <dropdown-directive label="Area" values="$ctrl.metrics" model="$ctrl.settings.areaMetric"
+                                            change="$ctrl.notify()"></dropdown-directive>
+                        <dropdown-directive label="Height" values="$ctrl.metrics" model="$ctrl.settings.heightMetric"
+                                            change="$ctrl.notify()"></dropdown-directive>
+                        <dropdown-directive label="Color" values="$ctrl.metrics" model="$ctrl.settings.colorMetric"
+                                            change="$ctrl.notify()"></dropdown-directive>
+                    </collapsible-element-directive>
 
-        <collapsible-element-directive label="Scenarios" icon-class="fa-line-chart">
-            <scenario-buttons-component></scenario-buttons-component>
-        </collapsible-element-directive>
+                    <collapsible-element-directive label="Scenarios" icon-class="fa-line-chart">
+                        <scenario-buttons-component></scenario-buttons-component>
+                    </collapsible-element-directive>
 
-        <collapsible-element-directive label="Experimental" icon-class="fa-flask">
-            <slider-directive step="1"  label="Margin between buildings" min="1" max="100" model="$ctrl.settings.margin" change="$ctrl.notify()"></slider-directive><br/><br/>
-            <checkbox-directive model="$ctrl.settings.deltas" label="Deltas" change="$ctrl.notify()"></checkbox-directive>
-        </collapsible-element-directive>
+                    <collapsible-element-directive label="Experimental" icon-class="fa-flask">
+                        <slider-directive step="1" label="Margin between buildings" min="1" max="100"
+                                          model="$ctrl.settings.margin" change="$ctrl.notify()"></slider-directive>
+                        <br/><br/>
+                        <checkbox-directive model="$ctrl.settings.deltas" label="Deltas"
+                                            change="$ctrl.notify()"></checkbox-directive>
+                    </collapsible-element-directive>
 
-        <collapsible-element-directive label="Statistics" icon-class="fa-line-chart">
-            A new map is shown, where each class is the result of applying a statistical function to that class in every loaded version of the map
-            <dropdown-directive label="Function to apply" values="$ctrl.STATISTIC_OPS" model="$ctrl.settings.operation" change="$ctrl.onStatisticsChange()" use-enum-filter="true"></dropdown-directive>
-        </collapsible-element-directive>
+                    <collapsible-element-directive label="Statistics" icon-class="fa-line-chart">
+                        A new map is shown, where each class is the result of applying a statistical function to that
+                        class
+                        in every loaded version of the map
+                        <dropdown-directive label="Function to apply" values="$ctrl.STATISTIC_OPS"
+                                            model="$ctrl.settings.operation" change="$ctrl.onStatisticsChange()"
+                                            use-enum-filter="true"></dropdown-directive>
+                    </collapsible-element-directive>
 
-    </collapsible-directive>
+                </collapsible-directive>
 
-    <a class="waves-effect waves-light btn settings-panel-btn" title="Show Url Parameters" ng-click="$ctrl.showUrlParams()">Show Url Parameters</a>
+            </div>
+        </div>
 
+        <div class="row">
+            <div class="col l12">
+                <a class="waves-effect waves-light btn" title="Show Url Parameters"
+                   ng-click="$ctrl.showUrlParams()">Show Url Parameters</a>
+            </div>
+        </div>
     </collapsible-element-directive>
 </collapsible-directive>
