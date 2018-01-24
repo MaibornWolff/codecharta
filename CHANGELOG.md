@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- Allow inversion of delta colors #57
 
 ## [1.5.2] - 2018-01-04
 ### Added
