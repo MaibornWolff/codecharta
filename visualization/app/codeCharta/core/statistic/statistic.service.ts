@@ -29,7 +29,7 @@ export class StatisticMapService {
     unifyMaps(data: DataModel, settings: Settings): CodeMap {
         let operation = settings.operation || STATISTIC_OPS.NOTHING;
         if(operation == STATISTIC_OPS.NOTHING){
-            return data.referenceMap;
+            return data.renderMap;
         }
         var maps: CodeMap[] = data.revisions;
         if(maps.length === 1){
