@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - sonarqube analysis on CI build
 
 ### Changed
+- UI rework
 - Deltas are no longer experimental
 - two selected delta maps now merge their nodes correctly. The map where 
 a node was missing get's a copy of this node with metrics=0. 
