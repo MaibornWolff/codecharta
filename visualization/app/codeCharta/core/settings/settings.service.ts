@@ -149,7 +149,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      * Broadcasts a settings-changed event with the new {Settings} object as a payload
      * @emits {settings-changed} on call
      */
-    private onSettingsChanged() {
+    public onSettingsChanged() {
 
         if (this._lastDeltaState && !this._settings.deltas) {
             this._lastDeltaState = false;
