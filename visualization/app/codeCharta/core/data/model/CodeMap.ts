@@ -9,6 +9,7 @@ export interface CodeMapNode {
     },
     link?: string,
     origin?: string
+    visible?: boolean
 }
 
 export interface CodeMap {
