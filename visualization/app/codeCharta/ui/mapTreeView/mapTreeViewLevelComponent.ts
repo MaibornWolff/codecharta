@@ -7,12 +7,11 @@ export class MapTreeViewLevelController {
     public node: CodeMapNode = null;
     public depth: number = 0;
     public collapsed: boolean = true;
-    public visible: boolean = true;
 
     /* @ngInject */
-    constructor(private $timeout: ITimeoutService, private $scope) {
+    constructor(private $timeout: ITimeoutService, private $scope, private settingsService: SettingsService) {
         this.$scope.$on("tree-parent-visibility-changed", (event, visibility)=>{
-            this.visible = visibility;
+            this.node.visible = visibility;
         });
     }
 
@@ -21,15 +20,19 @@ export class MapTreeViewLevelController {
     }
 
     onEyeClick() {
-        this.setAndBroadcastVisibility(!this.visible);
+        this.setAndBroadcastVisibility(!this.node.visible);
     }
 
     setAndBroadcastVisibility(value: boolean) {
-        this.visible = value;
+        this.node.visible = value;
         if(!this.isLeaf()) {
             //broadcast to children
             this.$scope.$broadcast("tree-parent-visibility-changed", value);
         }
+        //TODO ensure to call it after all broadcasts
+        this.$timeout(()=>{
+            this.settingsService.onSettingsChanged();
+        },100);
     }
 
     isLeaf(): boolean {
