@@ -29,7 +29,8 @@ export class MapTreeViewLevelController {
             //broadcast to children
             this.$scope.$broadcast("tree-parent-visibility-changed", value);
         }
-        //TODO ensure to call it after all broadcasts
+        //TODO ensure to call it after all broadcasts, as of now this leads to timing issues in big maps
+        //TODO performance :(
         this.$timeout(()=>{
             this.settingsService.onSettingsChanged();
         },100);
