@@ -44,8 +44,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
                 private threeOrbitControlsService: ThreeOrbitControlsService, private statisticMapService, private deltaCalculatorService: DeltaCalculatorService,
                 private dataDecoratorService: DataDecoratorService) {
 
-        let ctx = this;
-
         this._settings = this.getInitialSettings(dataService.data.renderMap, dataService.data.metrics);
 
         dataService.subscribe(this);
