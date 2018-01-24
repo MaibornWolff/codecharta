@@ -43,6 +43,12 @@ html, body {
     padding-right:10px;
 }
 
+#titlebox {
+    position: fixed;
+    bottom: 10px;
+    right:10px;
+}
+
 revision-chooser-component, legend-panel-component, file-chooser-panel-directive, settings-panel-component, .mwlink {
     pointer-events: auto;
 }
