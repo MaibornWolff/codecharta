@@ -1,10 +1,14 @@
 import angular from "angular";
 import "../../core/core.module";
 
-import {mapTreeViewComponent} from "./mapTreeViewComponent";
+import "./mapTreeView.css";
 
-angular.module("app.codeCharta.ui.mapTreeView",["app.codeCharta.core"]);
+import {mapTreeViewComponent, MapTreeViewController} from "./mapTreeViewComponent";
+import {mapTreeViewLevelComponent} from "./mapTreeViewLevelComponent";
 
-angular.module("app.codeCharta.ui.mapTreeView").component(
-    mapTreeViewComponent.selector, mapTreeViewComponent
-);
+angular.module("app.codeCharta.ui.mapTreeView", ["app.codeCharta.core"])
+    .component(
+        mapTreeViewComponent.selector, mapTreeViewComponent
+    ).component(
+        mapTreeViewLevelComponent.selector, mapTreeViewLevelComponent
+    );
