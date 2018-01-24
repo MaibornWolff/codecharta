@@ -3,7 +3,7 @@
     <collapsible-element-directive label="Settings" icon-class="fa-cogs">
 
         <div class="row">
-            <div class="col l12">
+            <div class="col s12">
                 <collapsible-directive>
 
                     <collapsible-element-directive label="Color Settings" icon-class="fa-paint-brush">
@@ -13,13 +13,17 @@
                                   rz-slider-options="$ctrl.sliderOptions"></rzslider>
                         <checkbox-directive model="$ctrl.settings.neutralColorRange.flipped" label="Invert Colors"
                                             change="$ctrl.notify()"></checkbox-directive>
-                        <checkbox-directive ng-if="$ctrl.settings.deltas"  model="$ctrl.settings.deltaColorFlipped" label="Invert Delta Colors" change="$ctrl.notify()"></checkbox-directive>
+                        <checkbox-directive ng-if="$ctrl.settings.deltas" model="$ctrl.settings.deltaColorFlipped"
+                                            label="Invert Delta Colors" change="$ctrl.notify()"></checkbox-directive>
                     </collapsible-element-directive>
 
-        <collapsible-element-directive label="Display" icon-class="fa-television">
-            <number-field-directive label="Amount of labeled buildings" min="0" model="$ctrl.settings.amountOfTopLabels" change="$ctrl.notify()"></number-field-directive>
-            <checkbox-directive model="$ctrl.settings.deltas" label="Deltas" change="$ctrl.notify()"></checkbox-directive>
-        </collapsible-element-directive>
+                    <collapsible-element-directive label="Display" icon-class="fa-television">
+                        <number-field-directive label="Amount of labeled buildings" min="0"
+                                                model="$ctrl.settings.amountOfTopLabels"
+                                                change="$ctrl.notify()"></number-field-directive>
+                        <checkbox-directive model="$ctrl.settings.deltas" label="Deltas"
+                                            change="$ctrl.notify()"></checkbox-directive>
+                    </collapsible-element-directive>
 
                     <collapsible-element-directive label="Scaling" icon-class="fa-cube">
                         <slider-directive step="0.1" label="x" min="0.1" max="5" model="$ctrl.settings.scaling.x"
@@ -43,16 +47,12 @@
                         <scenario-buttons-component></scenario-buttons-component>
                     </collapsible-element-directive>
 
+
                     <collapsible-element-directive label="Experimental" icon-class="fa-flask">
                         <slider-directive step="1" label="Margin between buildings" min="1" max="100"
                                           model="$ctrl.settings.margin" change="$ctrl.notify()"></slider-directive>
                         <br/><br/>
-                        <checkbox-directive model="$ctrl.settings.deltas" label="Deltas"
-                                            change="$ctrl.notify()"></checkbox-directive>
                     </collapsible-element-directive>
-        <collapsible-element-directive label="Experimental" icon-class="fa-flask">
-            <slider-directive step="1"  label="Margin between buildings" min="1" max="100" model="$ctrl.settings.margin" change="$ctrl.notify()"></slider-directive><br/><br/>
-        </collapsible-element-directive>
 
                     <collapsible-element-directive label="Statistics" icon-class="fa-line-chart">
                         A new map is shown, where each class is the result of applying a statistical function to that
