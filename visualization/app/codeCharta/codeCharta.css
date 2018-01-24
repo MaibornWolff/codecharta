@@ -47,10 +47,12 @@ html, body {
     position: fixed;
     bottom: 10px;
     right:10px;
+    z-index: -1;
 }
 
 revision-chooser-component, legend-panel-component, file-chooser-panel-directive, settings-panel-component, .mwlink {
     pointer-events: auto;
+    z-index: 12;
 }
 
 #title {
