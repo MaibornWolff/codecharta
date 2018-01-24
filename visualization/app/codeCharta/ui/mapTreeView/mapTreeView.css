@@ -1,4 +1,8 @@
-.tree-root .row {
+.tree-root div{
     margin:0;
     padding:0;
+}
+
+.tree-root .tree-element-children {
+    margin-left: 22px;
 }
