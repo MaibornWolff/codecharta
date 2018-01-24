@@ -65,7 +65,7 @@ export class CodeMapMesh {
     {
         this.nodes = nodes;
 
-        this.initMaterial();
+        this.initMaterial(settings);
 
         this.geomGen = new geometryGenerator();
         let buildRes : buildResult = this.geomGen.build(this.nodes, this.material, settings);
@@ -76,8 +76,16 @@ export class CodeMapMesh {
         this.settings = settings;
     }
 
-    private initMaterial() : void
+    private initMaterial(settings : renderSettings) : void
     {
+
+        //TODO
+        if(settings.deltaColorFlipped) {
+            this.setDeltaColorsFlipped();
+        } else {
+            this.setDeltaColorsUnflipped();
+        }
+
         let uniforms = THREE.UniformsUtils.merge([THREE.UniformsLib['lights'], this.lightingParams]);
 
         let shaderCode : codeMapShaderStrings = new codeMapShaderStrings();
@@ -88,6 +96,17 @@ export class CodeMapMesh {
             lights : true,
             uniforms : uniforms
         });
+    }
+
+    private setDeltaColorsFlipped() {
+        this.lightingParams.deltaColorPositive = {type : 'v3', value : renderingUtil.colorToVec3(MapColors.negativeDelta)};
+        this.lightingParams.deltaColorNegative = {type : 'v3', value : renderingUtil.colorToVec3(MapColors.positiveDelta)};
+    }
+
+
+    private setDeltaColorsUnflipped() {
+        this.lightingParams.deltaColorPositive = {type : 'v3', value : renderingUtil.colorToVec3(MapColors.positiveDelta)};
+        this.lightingParams.deltaColorNegative = {type : 'v3', value : renderingUtil.colorToVec3(MapColors.negativeDelta)};
     }
 
     public getThreeMesh() : THREE.Mesh {
