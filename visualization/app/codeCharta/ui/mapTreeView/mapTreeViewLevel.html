@@ -1,13 +1,21 @@
 <div class="{{$ctrl.depth?'':'tree-root'}} tree-element-{{$ctrl.depth?$ctrl.depth:0}} {{$ctrl.isLeaf()?'tree-leaf':'tree-parent'}}">
 
-    <div ng-click="$ctrl.onLabelClick()" class="row tree-element-label-{{$ctrl.depth?$ctrl.depth:0}}">
+    <div class="tree-element-label-{{$ctrl.depth?$ctrl.depth:0}}">
 
-            <span >
-                <i ng-if="!$ctrl.isLeaf() && $ctrl.collapsed" class="fa fa-folder" aria-hidden="true"></i>
-                <i ng-if="!$ctrl.isLeaf() && !$ctrl.collapsed" class="fa fa-folder-open" aria-hidden="true"></i>
-                <i ng-if="$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></i>
-                 {{$ctrl.node.name}}
-            </span>
+        <span ng-click="$ctrl.onLabelClick()">
+            <i ng-if="!$ctrl.isLeaf() && $ctrl.collapsed" class="fa fa-folder" aria-hidden="true"></i>
+            <i ng-if="!$ctrl.isLeaf() && !$ctrl.collapsed" class="fa fa-folder-open" aria-hidden="true"></i>
+            <i ng-if="$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></i>
+        </span>
+
+        <span ng-click="$ctrl.onEyeClick()">
+            <i ng-if="$ctrl.visible" class="fa fa-eye" aria-hidden="true"></i>
+            <i ng-if="!$ctrl.visible" class="fa fa-eye-slash" aria-hidden="true"></i>
+        </span>
+
+        <span ng-click="$ctrl.onLabelClick()">
+            {{$ctrl.node.name}}
+        </span>
 
     </div>
 
