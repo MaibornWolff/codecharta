@@ -36,7 +36,7 @@ export class CodeMapService implements SettingsServiceSubscriber{
      */
     applySettings(s: Settings) {
 
-        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.root && s.neutralColorRange) {
+        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.root && s.neutralColorRange && s.deltaColorFlipped != undefined) {
             this.updateMapGeometry(s);
         }
 
@@ -54,7 +54,8 @@ export class CodeMapService implements SettingsServiceSubscriber{
             colorKey : s.colorMetric,
             renderDeltas : s.deltas,
             colorRange : s.neutralColorRange,
-            mapSize : mapSize
+            mapSize : mapSize,
+            deltaColorFlipped: s.deltaColorFlipped
         };
 
         this.threeSceneService.clearLabels();
