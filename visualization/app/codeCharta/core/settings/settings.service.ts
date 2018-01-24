@@ -23,7 +23,8 @@ export interface Settings {
     scaling: Scale,
     camera: Scale,
     margin: number,
-    operation: STATISTIC_OPS
+    operation: STATISTIC_OPS,
+    deltaColorFlipped: boolean
 
 }
 
@@ -43,8 +44,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     constructor(private urlService, private dataService: DataService, private $rootScope,
                 private threeOrbitControlsService: ThreeOrbitControlsService, private statisticMapService, private deltaCalculatorService: DeltaCalculatorService,
                 private dataDecoratorService: DataDecoratorService) {
-
-        let ctx = this;
 
         this._settings = this.getInitialSettings(dataService.data.renderMap, dataService.data.metrics);
 
@@ -88,7 +87,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             scaling: s,
             camera: c,
             margin: 1,
-            operation: STATISTIC_OPS.NOTHING
+            operation: STATISTIC_OPS.NOTHING,
+            deltaColorFlipped: false
         };
 
     }
@@ -279,6 +279,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.margin = settings.margin;
         this._settings.deltas = settings.deltas;
         this._settings.operation = settings.operation;
+        this._settings.deltaColorFlipped = this.settings.deltaColorFlipped;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = this.settings.map;

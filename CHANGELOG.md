@@ -22,6 +22,7 @@ unary and deltas are activated.
 - delta display bug for heights
 - going back from delta view now correctly removes deltas from node data
 - Delta shown although not in delta mode #60
+- Allow inversion of delta colors #57
 
 ## [1.5.2] - 2018-01-04
 ### Added

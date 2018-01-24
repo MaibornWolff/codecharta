@@ -20,6 +20,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     private negative: string;
     private select: string;
     private operation: string;
+    private deltaColorsFlipped: boolean;
 
     private visible: boolean = false;
 
@@ -71,11 +72,20 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     onDataChanged(data: DataModel) {
         if (data && data.revisions && data.revisions.length > 1) {
             this.deltas = true;
+            this.refreshDeltaColors();
+        }
+    }
+
+    refreshDeltaColors() {
+        if(this.deltaColorsFlipped){
+            this.pd = this.getImageDataUri(MapColors.negativeDelta);
+            this.nd = this.getImageDataUri(MapColors.positiveDelta);
+        } else {
             this.pd = this.getImageDataUri(MapColors.positiveDelta);
             this.nd = this.getImageDataUri(MapColors.negativeDelta);
-            this.$timeout(()=>$("#positiveDelta").attr("src", this.pd), 200);
-            this.$timeout(()=>$("#negativeDelta").attr("src", this.nd), 200);
         }
+        this.$timeout(()=>$("#positiveDelta").attr("src", this.pd), 200);
+        this.$timeout(()=>$("#negativeDelta").attr("src", this.nd), 200);
     }
 
     onSettingsChanged(s: Settings) {
@@ -83,6 +93,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         this.areaMetric = s.areaMetric;
         this.heightMetric = s.heightMetric;
         this.colorMetric = s.colorMetric;
+        this.deltaColorsFlipped = s.deltaColorFlipped;
 
         this.positive = this.getImageDataUri(MapColors.positive);
         this.neutral = this.getImageDataUri(MapColors.neutral);
@@ -94,6 +105,9 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         $("#yellow").attr("src", this.neutral);
         $("#red").attr("src", this.negative);
         $("#select").attr("src", this.select);
+
+        this.refreshDeltaColors();
+
     }
 
     getImageDataUri(hex: number): string {

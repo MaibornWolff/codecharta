@@ -25,7 +25,8 @@ export function createDefaultScenario(map: CodeMap): Scenario {
                 x: 1806, y: 1024, z: 948
             },
             margin: 1,
-            operation: STATISTIC_OPS.NOTHING
+            operation: STATISTIC_OPS.NOTHING,
+            deltaColorFlipped: false
         }
     };
 
