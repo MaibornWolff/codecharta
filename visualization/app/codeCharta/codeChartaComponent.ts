@@ -59,8 +59,8 @@ export class CodeChartaController {
             () => {
 
                 Promise.all([
-                    this.dataLoadingService.loadMapFromFileContent("firefox.json", require("./firefox.json"), 0),
-                    //this.dataLoadingService.loadMapFromFileContent("sample2.json", require("./sample2.json"), 1)
+                    this.dataLoadingService.loadMapFromFileContent("sample1.json", require("./sample1.json"), 0),
+                    this.dataLoadingService.loadMapFromFileContent("sample2.json", require("./sample2.json"), 1)
                 ]).then(
                     () => {
                         this.loadingFinished();
