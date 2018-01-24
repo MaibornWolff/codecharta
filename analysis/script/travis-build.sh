@@ -2,3 +2,4 @@
 
 cd analysis
 ./gradlew build
+sonar-scanner

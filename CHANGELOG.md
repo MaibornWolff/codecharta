@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 - the file origin of a node is displayed in the details now
 - added support for git log --numstat and codechurn
+- sonarqube analysis on CI build
 
 ### Changed
 - two selected delta maps now merge their nodes correctly. The map where 
