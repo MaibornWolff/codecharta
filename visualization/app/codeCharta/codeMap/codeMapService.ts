@@ -48,7 +48,8 @@ export class CodeMapService implements SettingsServiceSubscriber{
 
     updateMapGeometry(s) {
         let nodes = this.treeMapService.createTreemapNodes(s.map.root, mapSize, mapSize, s.margin, s.areaMetric, s.heightMetric);
-        let sorted: node[] = nodes.sort((a,b)=>{return b.height - a.height;});
+        let filtered = nodes.filter(node => node.visible);
+        let sorted: node[] = filtered.sort((a,b)=>{return b.height - a.height;});
         let renderSettings: renderSettings  =  {
             heightKey : s.heightMetric,
             colorKey : s.colorMetric,
