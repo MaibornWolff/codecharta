@@ -10,7 +10,7 @@
                       rz-slider-high="$ctrl.settings.neutralColorRange.to"
                       rz-slider-options="$ctrl.sliderOptions"></rzslider>
             <checkbox-directive model="$ctrl.settings.neutralColorRange.flipped" label="Invert Colors" change="$ctrl.notify()"></checkbox-directive>
-            <checkbox-directive model="$ctrl.settings.deltaColorFlipped" label="Invert Delta Colors" change="$ctrl.notify()"></checkbox-directive>
+            <checkbox-directive ng-if="$ctrl.settings.deltas" model="$ctrl.settings.deltaColorFlipped" label="Invert Delta Colors" change="$ctrl.notify()"></checkbox-directive>
 
         </collapsible-element-directive>
 
