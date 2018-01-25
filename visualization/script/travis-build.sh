@@ -4,6 +4,6 @@ cd visualization
 npm install
 npm run build
 npm run test
-sonar-scanner
+sonar-scanner || true
 npm run doc
 npm run package

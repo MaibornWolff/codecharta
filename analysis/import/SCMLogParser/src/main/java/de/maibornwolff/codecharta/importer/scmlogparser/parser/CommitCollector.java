@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser;
 
-import de.maibornwolff.codecharta.model.input.Commit;
-import de.maibornwolff.codecharta.model.input.VersionControlledFile;
-import de.maibornwolff.codecharta.model.input.metrics.MetricsFactory;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.stream.Collector;
 
 class CommitCollector {
 
-    MetricsFactory metricsFactory;
+    private final MetricsFactory metricsFactory;
 
     private CommitCollector(MetricsFactory metricsFactory) {
         this.metricsFactory = metricsFactory;

@@ -16,32 +16,26 @@ import java.util.stream.Stream;
 import static de.maibornwolff.codecharta.importer.scmlogparser.parser.git.AuthorParser.AUTHOR_ROW_INDICATOR;
 import static de.maibornwolff.codecharta.importer.scmlogparser.parser.git.CommitDateParser.DATE_ROW_INDICATOR;
 
-public class GitLogParserStrategy implements LogParserStrategy {
+public class GitLogRawParserStrategy implements LogParserStrategy {
 
-    public static final String CORRESPONDING_LOG_CREATION_CMD = "git log --name-status --topo-order";
+    public static final String CORRESPONDING_LOG_CREATION_CMD = "git log --raw --topo-order";
+    private static final String FILE_LINE_REGEX = ":\\d+\\s+\\d+\\s+\\S+\\s+\\S+\\s+.+";
     private static final Predicate<String> GIT_COMMIT_SEPARATOR_TEST = logLine -> logLine.startsWith("commit");
-    private static final String FILE_LINE_REGEX = "\\w\\d*\\s+\\S+(.*|\\s+\\S+.*)";
+    private static final String FILE_LINE_SPLITTER = "\\s+";
 
-    private static boolean isStatusLetter(char character) {
-        return Status.ALL_STATUS_LETTERS.contains(character);
-    }
-
-    private static boolean isFileLine(String commitLine) {
-        return commitLine.length() >= 3 && commitLine.matches(FILE_LINE_REGEX) && isStatusLetter(commitLine.charAt(0));
+    static boolean isFileLine(String commitLine) {
+        return commitLine.length() >= 5 && commitLine.matches(FILE_LINE_REGEX);
     }
 
     static Modification parseModification(String fileLine) {
-        if (fileLine.isEmpty()) {
-            return Modification.EMPTY;
-        }
-        Status status = Status.byCharacter(fileLine.charAt(0));
-        String[] lineParts = fileLine.split("\\s+");
+        String[] lineParts = fileLine.split(FILE_LINE_SPLITTER);
+        Status status = Status.byCharacter(lineParts[4].trim().charAt(0));
 
         if (status == Status.RENAMED) {
-            return new Modification(lineParts[2].trim(), lineParts[1].trim(), status.toModificationType());
+            return new Modification(lineParts[6].trim(), lineParts[5].trim(), status.toModificationType());
         }
 
-        return new Modification(lineParts[1].trim(), status.toModificationType());
+        return new Modification(lineParts[5].trim(), status.toModificationType());
     }
 
     @Override
@@ -71,8 +65,8 @@ public class GitLogParserStrategy implements LogParserStrategy {
     @Override
     public List<Modification> parseModifications(List<String> commitLines) {
         return commitLines.stream()
-                .filter(GitLogParserStrategy::isFileLine)
-                .map(GitLogParserStrategy::parseModification)
+                .filter(GitLogRawParserStrategy::isFileLine)
+                .map(GitLogRawParserStrategy::parseModification)
                 .collect(Collectors.toList());
     }
 
