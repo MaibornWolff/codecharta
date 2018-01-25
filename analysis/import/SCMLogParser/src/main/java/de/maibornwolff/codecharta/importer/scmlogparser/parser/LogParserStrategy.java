@@ -18,6 +18,4 @@ public interface LogParserStrategy {
 
     Optional<OffsetDateTime> parseDate(List<String> commitLines);
 
-    List<String> listSupportedMetrics();
-
 }

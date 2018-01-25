@@ -1,17 +1,17 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input;
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.Metric;
-import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.Metrics;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class VersionControlledFile {
 
     // actual filename
     private final String actualFilename;
     private final Set<String> authors = new HashSet<>();
-    private final Metric rootMetric;
+    private final List<Metric> metrics;
 
     // current filename in a specific revision, might change in history
     private String filename;
@@ -34,7 +34,7 @@ public class VersionControlledFile {
     ) {
         this.filename = filename;
         this.actualFilename = filename;
-        rootMetric = Metrics.of(metrics);
+        this.metrics = metrics;
     }
 
     /**
@@ -44,7 +44,7 @@ public class VersionControlledFile {
         Optional<Modification> modification = commit.getModification(filename);
 
         modification.ifPresent(mod -> {
-            rootMetric.registerCommit(commit);
+            metrics.forEach(metric -> metric.registerCommit(commit));
             authors.add(commit.getAuthor());
 
             registerModification(mod);
@@ -63,7 +63,7 @@ public class VersionControlledFile {
             default:
                 break;
         }
-        rootMetric.registerModification(modification);
+        metrics.forEach(metric -> metric.registerModification(modification));
     }
 
     public boolean markedDeleted() {
@@ -71,7 +71,8 @@ public class VersionControlledFile {
     }
 
     public Map<String, ? extends Number> getMetricsMap() {
-        return rootMetric.value();
+        return metrics.stream()
+                .collect(Collectors.toMap(Metric::metricName, Metric::value));
     }
 
     public String getFilename() {
@@ -88,7 +89,11 @@ public class VersionControlledFile {
     }
 
     public Number getMetricValue(String metricName) {
-        return rootMetric.value(metricName);
+        return metrics.stream()
+                .filter(m -> m.metricName().equals(metricName))
+                .findFirst()
+                .map(Metric::value)
+                .orElseThrow(() -> new RuntimeException("metric " + metricName + " not found."));
     }
 
     public String getActualFilename() {

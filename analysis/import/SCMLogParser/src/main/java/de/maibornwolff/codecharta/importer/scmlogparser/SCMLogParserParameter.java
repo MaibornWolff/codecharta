@@ -11,11 +11,19 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogRawPars
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static de.maibornwolff.codecharta.importer.scmlogparser.InputFormatNames.*;
 
 public class SCMLogParserParameter {
+    private static final List<String> nonChurnMetrics = Arrays.asList(
+            "number_of_authors",
+            "number_of_commits",
+            "range_of_weeks_with_commits",
+            "successive_weeks_of_commits",
+            "weeks_with_commits"
+    );
     private final JCommander jc;
     @Parameter(description = "[file]")
     private List<String> files = new ArrayList<>();
@@ -93,7 +101,14 @@ public class SCMLogParserParameter {
     }
 
     public MetricsFactory getMetricsFactory() {
-        return new MetricsFactory(getLogParserStrategy().listSupportedMetrics());
+        switch (inputFormatNames) {
+            case GIT_LOG:
+            case GIT_LOG_RAW:
+            case SVN_LOG:
+                return new MetricsFactory(nonChurnMetrics);
+            default:
+                return new MetricsFactory();
+        }
     }
 
     public String getProjectName() {

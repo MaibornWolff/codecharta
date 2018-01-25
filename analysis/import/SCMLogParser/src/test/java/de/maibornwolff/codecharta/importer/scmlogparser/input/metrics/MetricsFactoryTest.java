@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MetricsFactoryTest {
     @Test
     public void createMetricsShouldReturnCorrectMetric() {
-        String metricName = "code_churn";
+        String metricName = "abs_code_churn";
         MetricsFactory factory = new MetricsFactory(Arrays.asList(metricName));
 
         List<Metric> modificationMetrics = factory.createMetrics();

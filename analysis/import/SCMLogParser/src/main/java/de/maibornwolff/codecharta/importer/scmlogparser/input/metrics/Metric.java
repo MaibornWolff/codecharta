@@ -9,7 +9,7 @@ public interface Metric {
 
     String metricName();
 
-    Map<String, Number> value();
+    Number value();
 
     default void registerModification(Modification modification) {
         // defaults to: do nothing
@@ -17,9 +17,5 @@ public interface Metric {
 
     default void registerCommit(Commit commit) {
         // defaults to: do nothing
-    }
-
-    default Number value(String name) {
-        return value().get(name);
     }
 }
