@@ -38,8 +38,7 @@ public class VersionControlledFileTest {
         String metricName = "metric";
         Metric metric = mock(Metric.class);
         when(metric.metricName()).thenReturn(metricName);
-        when(metric.value()).thenReturn(Map.of(metricName, 1));
-        when(metric.value(metricName)).thenReturn(1);
+        when(metric.value()).thenReturn(1);
 
         MetricsFactory metricsFactory = mock(MetricsFactory.class);
         when(metricsFactory.createMetrics()).thenReturn(Arrays.asList(metric));

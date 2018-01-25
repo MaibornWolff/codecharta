@@ -32,11 +32,15 @@ public class MetricsFactory {
 
     private List<Metric> createAllMetrics() {
         return Arrays.asList(
-                new NumberOfOccurencesInCommits(),
-                new CodeChurn(),
-                new WeeksWithCommits(),
+                new AbsoluteCodeChurn(),
+                new LinesOfCode(),
                 new NumberOfAuthors(),
-                new TemporalCoupling()
+                new NumberOfOccurencesInCommits(),
+                new RangeOfWeeksWithCommits(),
+                new RelativeCodeChurn(),
+                new SuccessiveWeeksWithCommits(),
+                new WeeksWithCommits(),
+                new WeightedCoupledChurn()
         );
     }
 

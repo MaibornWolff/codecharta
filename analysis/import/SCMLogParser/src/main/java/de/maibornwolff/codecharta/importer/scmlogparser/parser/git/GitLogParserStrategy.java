@@ -18,7 +18,6 @@ import static de.maibornwolff.codecharta.importer.scmlogparser.parser.git.Commit
 
 public class GitLogParserStrategy implements LogParserStrategy {
 
-    public static final String CORRESPONDING_LOG_CREATION_CMD = "git log --name-status --topo-order";
     private static final Predicate<String> GIT_COMMIT_SEPARATOR_TEST = logLine -> logLine.startsWith("commit");
     private static final String FILE_LINE_REGEX = "\\w\\d*\\s+\\S+(.*|\\s+\\S+.*)";
 
@@ -45,13 +44,8 @@ public class GitLogParserStrategy implements LogParserStrategy {
     }
 
     @Override
-    public List<String> listSupportedMetrics() {
-        return Arrays.asList(
-                "number_of_authors",
-                "number_of_commits",
-                "weeks_with_commits",
-                "temporal_coupling"
-        );
+    public String creationCommand() {
+        return "git log --name-status --topo-order";
     }
 
     @Override

@@ -11,11 +11,15 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogRawPars
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
-import static de.maibornwolff.codecharta.importer.scmlogparser.InputFormatNames.*;
+import static de.maibornwolff.codecharta.importer.scmlogparser.InputFormatNames.GIT_LOG;
+import static de.maibornwolff.codecharta.importer.scmlogparser.InputFormatNames.SVN_LOG;
 
 public class SCMLogParserParameter {
+
     private final JCommander jc;
     @Parameter(description = "[file]")
     private List<String> files = new ArrayList<>();
@@ -27,6 +31,8 @@ public class SCMLogParserParameter {
     private boolean gitLog = false;
     @Parameter(names = {"--svn"}, description = "Analysis of svn log, equivalent --input-format SVN_LOG")
     private boolean svnLog = false;
+
+
     @Parameter(names = {"--input-format"}, description = "Input for parsing")
     private InputFormatNames inputFormatNames;
     @Parameter(names = {"--add-author"}, description = "Add an array of authors to every file")
@@ -38,45 +44,76 @@ public class SCMLogParserParameter {
         this.jc = new JCommander(this, args);
     }
 
-    public List<String> getFiles() {
+    List<String> getFiles() {
         return files;
     }
 
-    public boolean isHelp() {
+    boolean isHelp() {
         return help;
     }
 
-    public String getOutputFile() {
+    String getOutputFile() {
         return outputFile;
     }
 
-    public boolean isAddAuthor() {
+    boolean isAddAuthor() {
         return addAuthor;
     }
 
-    public void printUsage() {
-        jc.usage();
 
-        String infoFormat = "   -> %s : \"%s\".";
-
-        System.out.println("  Log creation via:");
-        System.out.println(String.format(infoFormat, GIT_LOG, GitLogParserStrategy.CORRESPONDING_LOG_CREATION_CMD));
-        System.out.println(String.format(infoFormat, GIT_LOG_NUMSTAT, GitLogNumstatParserStrategy.CORRESPONDING_LOG_CREATION_CMD));
-        System.out.println(String.format(infoFormat, GIT_LOG_NUMSTAT_RAW, GitLogNumstatRawParserStrategy.CORRESPONDING_LOG_CREATION_CMD));
-        System.out.println(String.format(infoFormat, GIT_LOG_RAW, GitLogRawParserStrategy.CORRESPONDING_LOG_CREATION_CMD));
-        System.out.println(String.format(infoFormat, SVN_LOG, SVNLogParserStrategy.CORRESPONDING_LOG_CREATION_CMD));
-        System.out.println("");
-    }
-
-    public LogParserStrategy getLogParserStrategy() {
+    private InputFormatNames getInputFormatNames() {
         if (gitLog && !svnLog) {
-            return new GitLogParserStrategy();
+            return GIT_LOG;
         } else if (svnLog && !gitLog) {
-            return new SVNLogParserStrategy();
+            return SVN_LOG;
         } else if (svnLog && gitLog) {
             throw new IllegalArgumentException("only one of --git or --svn must be set");
         }
-        switch (inputFormatNames) {
+
+        return inputFormatNames;
+    }
+
+    void printUsage() {
+        jc.usage();
+
+        System.out.println("----");
+        printLogCreation();
+
+        System.out.println("----");
+        printMetricInfo();
+    }
+
+    private void printLogCreation() {
+        System.out.println("  Log creation via:");
+
+        if (getInputFormatNames() != null) {
+            printLogCreationByInputFormatNames(getInputFormatNames());
+        } else {
+            Stream.of(InputFormatNames.class.getEnumConstants())
+                    .forEach(this::printLogCreationByInputFormatNames);
+        }
+    }
+
+    private void printLogCreationByInputFormatNames(InputFormatNames actualInfoFormatName) {
+        String creationCommand = getLogParserStrategyByInputFormat(actualInfoFormatName).creationCommand();
+        System.out.println(String.format("  \t%s :\t\"%s\".", actualInfoFormatName, creationCommand));
+    }
+
+    private void printMetricInfo() {
+        String infoFormat = "  \t%s:\t %s";
+        System.out.println("  Available metrics:");
+        getMetricsFactory().createMetrics().forEach(
+                metric -> System.out.println(String.format(infoFormat, metric.metricName(), metric.description()))
+        );
+    }
+
+
+    LogParserStrategy getLogParserStrategy() {
+        return getLogParserStrategyByInputFormat(getInputFormatNames());
+    }
+
+    private LogParserStrategy getLogParserStrategyByInputFormat(InputFormatNames formatName) {
+        switch (formatName) {
             case GIT_LOG:
                 return new GitLogParserStrategy();
             case GIT_LOG_NUMSTAT:
@@ -92,11 +129,30 @@ public class SCMLogParserParameter {
         }
     }
 
-    public MetricsFactory getMetricsFactory() {
-        return new MetricsFactory(getLogParserStrategy().listSupportedMetrics());
+    MetricsFactory getMetricsFactory() {
+        final List<String> nonChurnMetrics = Arrays.asList(
+                "number_of_authors",
+                "number_of_commits",
+                "range_of_weeks_with_commits",
+                "successive_weeks_of_commits",
+                "weeks_with_commits"
+        );
+
+        if (getInputFormatNames() == null) {
+            return new MetricsFactory();
+        }
+
+        switch (getInputFormatNames()) {
+            case GIT_LOG:
+            case GIT_LOG_RAW:
+            case SVN_LOG:
+                return new MetricsFactory(nonChurnMetrics);
+            default:
+                return new MetricsFactory();
+        }
     }
 
-    public String getProjectName() {
+    String getProjectName() {
         return projectName;
     }
 }

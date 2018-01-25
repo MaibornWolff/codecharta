@@ -32,4 +32,16 @@ export class DataDecoratorService {
         }
     }
 
+    public decorateMapWithOriginAttribute(map: CodeMap) {
+
+        if(map && map.root) {
+
+            let root = d3.hierarchy<CodeMapNode>(map.root);
+            root.each((node)=>{
+                node.data.origin = map.fileName;
+            });
+
+        }
+    }
+
 }

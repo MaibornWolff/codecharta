@@ -10,11 +10,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * Aggregates some metrics for temporal coupling
+/*
  * experimental -> therefore no tests
  */
-public final class TemporalCoupling implements Metric {
+public final class WeightedCoupledChurn implements Metric {
     public static final double HIGH_COUPLING_VALUE = .35;
     public static final long MIN_NO_COMMITS_FOR_HIGH_COUPLING = 5L;
 
@@ -36,23 +35,14 @@ public final class TemporalCoupling implements Metric {
     }
 
     @Override
-    public String metricName() {
-        return "temporal_coupling";
+    public String description() {
+        return "";
     }
 
     @Override
-    public Map<String, Number> value() {
-        Map<String, Number> values = new HashMap<>();
-
-        values.put("experimental_median_coupled_files", median_coupled_files());
-        values.put("experimental_max_coupling", max_coupling());
-        values.put("experimental_number_of_highly_coupled_files", highly_coupled());
-        values.put("experimental_coupled_churn", coupled_churn());
-        values.put("experimental_weighted_coupled_churn", weighted_coupled_churn());
-
-        return values;
+    public String metricName() {
+        return "weighted_coupled_churn";
     }
-
 
     /**
      * @return number of highly coupled files
@@ -85,7 +75,8 @@ public final class TemporalCoupling implements Metric {
     /**
      * @return expected coupled churn when the given file is modified
      */
-    private long weighted_coupled_churn() {
+    @Override
+    public Number value() {
         return simultaneouslyCommitedFiles.values().stream()
                 .filter(m -> m.churn < numberOfCommits)
                 .map(m -> (double) m.churn * (double) m.numberOfCommits / (double) numberOfCommits)
