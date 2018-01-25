@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * this is only an approximation of the correct code churn.
  */
-public final class RelativeCodeChurn implements Metric {
+public class RelativeCodeChurn implements Metric {
     private long accumulatedNumberOfLinesAdded = 0;
     private long accumulatedNumberOfLinesDeleted = 0;
     private List<SingleCodeChurn> codeChurns = new ArrayList<>();
