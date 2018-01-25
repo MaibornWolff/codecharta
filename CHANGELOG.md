@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
-## [1.6.0] - 2018-01-25
+## [1.6.1] - 2018-01-25
 ### Added
 - added support for git log --raw and git log --numstat --raw
 - added support for git log --numstat and codechurn
@@ -38,6 +38,7 @@ unary and deltas are activated.
 - going back from delta view now correctly removes deltas from node data
 - Delta shown although not in delta mode #60
 - Allow inversion of delta colors #57
+- npm binary error
 
 ## [1.5.2] - 2018-01-04
 ### Added
