@@ -21,6 +21,8 @@ addons:
 
 before_install:
  - chmod +x ./analysis/gradlew
+ - chmod -R +x ./analysis/script/
+ - chmod -R +x ./visualization/script/
  - sudo apt-get -qq update
  - sudo apt-get install -y wine
 
@@ -37,8 +39,6 @@ before_cache:
 
 cache:
   directories:
-    # - visualization/node_modules
-    # - visualization/.cache
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
@@ -64,4 +64,26 @@ deploy:
     skip_cleanup: true
     local_dir: "gh-pages"
     on:
+      branch: master
+
+  # publishes visualization sonar results
+  - provider: script
+    script: visualization/script/sonar-publish.sh
+    skip_cleanup: true
+    on:
+      branch: master
+
+  # publishes analysis sonar results
+  - provider: script
+    script: analysis/script/sonar-publish.sh
+    skip_cleanup: true
+    on:
+      branch: master
+
+  # publishes npm package
+  - provider: script
+    script: visualization/script/npm-publish.sh
+    skip_cleanup: true
+    on:
+      tags: true
       branch: master
