@@ -98,6 +98,7 @@
     "font-awesome": "^4.7.0",
     "hammerjs": "^2.0.8",
     "jquery": "^3.1.1",
+    "makeshift": "^1.1.0",
     "materialize-css": "^0.98.0",
     "three": "^0.84.0",
     "three-orbit-controls": "^82.1.0",
