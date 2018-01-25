@@ -15,7 +15,7 @@ public class NumberOfAuthorsTest {
         NumberOfAuthors metric = new NumberOfAuthors();
 
         // then
-        assertThat(metric.value(metric.metricName())).isEqualTo(0);
+        assertThat(metric.value()).isEqualTo(0);
     }
 
     @Test
@@ -27,7 +27,7 @@ public class NumberOfAuthorsTest {
         metric.registerCommit(new Commit("An author", Collections.emptyList(), OffsetDateTime.now()));
 
         // then
-        assertThat(metric.value(metric.metricName())).isEqualTo(1);
+        assertThat(metric.value()).isEqualTo(1);
     }
 
     @Test
@@ -41,7 +41,7 @@ public class NumberOfAuthorsTest {
         metric.registerCommit(new Commit(author, Collections.emptyList(), OffsetDateTime.now()));
 
         // then
-        assertThat(metric.value(metric.metricName())).isEqualTo(1);
+        assertThat(metric.value()).isEqualTo(1);
     }
 
 
@@ -55,6 +55,6 @@ public class NumberOfAuthorsTest {
         metric.registerCommit(new Commit("Another author", Collections.emptyList(), OffsetDateTime.now()));
 
         // then
-        assertThat(metric.value(metric.metricName())).isEqualTo(2);
+        assertThat(metric.value()).isEqualTo(2);
     }
 }

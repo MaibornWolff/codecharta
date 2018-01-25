@@ -44,16 +44,6 @@ public class GitLogParserStrategy implements LogParserStrategy {
     }
 
     @Override
-    public List<String> listSupportedMetrics() {
-        return Arrays.asList(
-                "number_of_authors",
-                "number_of_commits",
-                "weeks_with_commits",
-                "code_age"
-        );
-    }
-
-    @Override
     public Collector<String, ?, Stream<List<String>>> createLogLineCollector() {
         return LogLineCollector.create(GIT_COMMIT_SEPARATOR_TEST);
     }

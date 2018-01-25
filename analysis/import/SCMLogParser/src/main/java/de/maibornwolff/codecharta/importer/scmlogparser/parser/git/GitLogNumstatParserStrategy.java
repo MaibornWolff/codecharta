@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -75,17 +76,6 @@ public class GitLogNumstatParserStrategy implements LogParserStrategy {
         int deletions = Integer.parseInt(lineParts[1]);
         String filename = lineParts[2];
         return new Modification(filename.trim(), additions, deletions);
-    }
-
-    @Override
-    public List<String> listSupportedMetrics() {
-        return Arrays.asList(
-                "code_churn",
-                "number_of_authors",
-                "number_of_commits",
-                "weeks_with_commits",
-                "code_age"
-        );
     }
 
     @Override

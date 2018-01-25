@@ -4,13 +4,13 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit;
 
 import java.util.TreeSet;
 
-public final class WeeksWithCommits implements Metric {
+public final class RangeOfWeeksWithCommits implements Metric {
 
     private final TreeSet<CalendarWeek> weeksWithCommits = new TreeSet<>();
 
     @Override
     public String metricName() {
-        return "weeks_with_commits";
+        return "range_of_weeks_with_commits";
     }
 
     @Override
@@ -20,6 +20,10 @@ public final class WeeksWithCommits implements Metric {
 
     @Override
     public Number value() {
-        return weeksWithCommits.size();
+        if (weeksWithCommits.size() < 1) {
+            return 0;
+        }
+
+        return 1 + CalendarWeek.numberOfWeeksBetween(weeksWithCommits.last(), weeksWithCommits.first());
     }
 }

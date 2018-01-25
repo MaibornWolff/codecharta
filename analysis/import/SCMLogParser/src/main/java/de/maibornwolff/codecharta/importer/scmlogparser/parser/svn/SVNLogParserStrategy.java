@@ -57,16 +57,6 @@ public class SVNLogParserStrategy implements LogParserStrategy {
     }
 
     @Override
-    public List<String> listSupportedMetrics() {
-        return Arrays.asList(
-                "number_of_authors",
-                "number_of_commits",
-                "weeks_with_commits",
-                "code_age"
-        );
-    }
-
-    @Override
     public Optional<OffsetDateTime> parseDate(List<String> commitLines) {
         return commitLines.stream()
                 .filter(this::isMetadataLine)
