@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,5 +48,11 @@ public class HighlyCoupledFiles implements Metric {
                 .forEach(
                         mod -> simultaneouslyCommitedFiles.merge(mod.getFilename(), 1L, (x, y) -> x + y)
                 );
+    }
+
+    @Override
+    public void registerModification(Modification modification) {
+        // delete this file
+        simultaneouslyCommitedFiles.remove(modification.getFilename());
     }
 }
