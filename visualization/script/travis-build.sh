@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+echo "TEST"
+echo $NPM_TOKEN
+echo "TEST"
+
 cd visualization
 npm install
 npm run build
