@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 
 public class SVNLogParserStrategy implements LogParserStrategy {
 
-    public static final String CORRESPONDING_LOG_CREATION_CMD = "svn log --verbose";
     private static final Predicate<String> SVN_COMMIT_SEPARATOR_TEST = logLine -> !logLine.isEmpty() && StringUtils.containsOnly(logLine, '-');
     private static final String[] DEFAULT_REPOSITORY_FOLDER_PREFIXES = new String[]{"/branches/", "/tags/", "/trunk/"};
     private static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()

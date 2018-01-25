@@ -18,9 +18,9 @@ public class WeeksWithCommitsTest {
         WeeksWithCommits metric = new WeeksWithCommits();
 
         // then
-        assertThat(metric.numberOfWeeksWithCommit()).isEqualTo(0);
-        assertThat(metric.commitDateSpan()).isEqualTo(0);
-        assertThat(metric.numberOfSuccessiveWeeksWithCommit()).isEqualTo(0);
+        assertThat(metric.weeksWithCommits()).isEqualTo(0);
+        assertThat(metric.rangeOfWeeksWithCommits()).isEqualTo(0);
+        assertThat(metric.successiveWeeksOfCommits()).isEqualTo(0);
 
         assertThat(metric.value().values()).hasSize(3);
         assertThat(metric.value().values()).containsOnly(0, 0L);
@@ -36,9 +36,9 @@ public class WeeksWithCommitsTest {
         metric.registerCommit(new Commit("author", Collections.emptyList(), date));
 
         // then
-        assertThat(metric.numberOfWeeksWithCommit()).isEqualTo(1);
-        assertThat(metric.commitDateSpan()).isEqualTo(1);
-        assertThat(metric.numberOfSuccessiveWeeksWithCommit()).isEqualTo(1);
+        assertThat(metric.weeksWithCommits()).isEqualTo(1);
+        assertThat(metric.rangeOfWeeksWithCommits()).isEqualTo(1);
+        assertThat(metric.successiveWeeksOfCommits()).isEqualTo(1);
     }
 
 
@@ -54,9 +54,9 @@ public class WeeksWithCommitsTest {
         metric.registerCommit(new Commit("author", Collections.emptyList(), date2));
 
         // then
-        assertThat(metric.numberOfWeeksWithCommit()).isEqualTo(1);
-        assertThat(metric.commitDateSpan()).isEqualTo(1);
-        assertThat(metric.numberOfSuccessiveWeeksWithCommit()).isEqualTo(1);
+        assertThat(metric.weeksWithCommits()).isEqualTo(1);
+        assertThat(metric.rangeOfWeeksWithCommits()).isEqualTo(1);
+        assertThat(metric.successiveWeeksOfCommits()).isEqualTo(1);
     }
 
     @Test
@@ -71,9 +71,9 @@ public class WeeksWithCommitsTest {
         metric.registerCommit(new Commit("author", Collections.emptyList(), date2));
 
         // then
-        assertThat(metric.numberOfWeeksWithCommit()).isEqualTo(2);
-        assertThat(metric.commitDateSpan()).isEqualTo(2);
-        assertThat(metric.numberOfSuccessiveWeeksWithCommit()).isEqualTo(2);
+        assertThat(metric.weeksWithCommits()).isEqualTo(2);
+        assertThat(metric.rangeOfWeeksWithCommits()).isEqualTo(2);
+        assertThat(metric.successiveWeeksOfCommits()).isEqualTo(2);
     }
 
     @Test
@@ -88,8 +88,8 @@ public class WeeksWithCommitsTest {
         metric.registerCommit(new Commit("author", Collections.emptyList(), date2));
 
         // then
-        assertThat(metric.numberOfWeeksWithCommit()).isEqualTo(2);
-        assertThat(metric.commitDateSpan()).isEqualTo(3);
-        assertThat(metric.numberOfSuccessiveWeeksWithCommit()).isEqualTo(1);
+        assertThat(metric.weeksWithCommits()).isEqualTo(2);
+        assertThat(metric.rangeOfWeeksWithCommits()).isEqualTo(3);
+        assertThat(metric.successiveWeeksOfCommits()).isEqualTo(1);
     }
 }

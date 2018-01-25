@@ -20,8 +20,8 @@ Additionally it saves the names of authors when the --add-author flag is set.
 | --- | ---        | ---                                        | ---            | ---                   | --- |
 | git | GIT_LOG    | `git log --name-status --topo-order`       | yes            | yes                   | no  |
 | git | GIT_LOG_NUMSTAT | `git log --numstat --topo-order`      | yes            | no                    | yes |
-| git | GIT_LOG_NUMSTAT_RAW | `git log --numstat --topo-order`  | yes            | yes                   | yes |
-| git | GIT_LOG_RAW | `git log --numstat --topo-order`          | yes            | yes                   | no  |
+| git | GIT_LOG_NUMSTAT_RAW | `git log --numstat --raw --topo-order`  | yes      | yes                   | yes |
+| git | GIT_LOG_RAW | `git log --raw --topo-order`              | yes            | yes                   | no  |
 | SVN | SVN_LOG    | `svn log --verbose`                        | no             | yes                   | no  |
 
 
