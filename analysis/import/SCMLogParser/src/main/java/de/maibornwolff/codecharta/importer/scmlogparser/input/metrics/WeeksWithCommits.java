@@ -9,6 +9,11 @@ public final class WeeksWithCommits implements Metric {
     private final TreeSet<CalendarWeek> weeksWithCommits = new TreeSet<>();
 
     @Override
+    public String description() {
+        return "Weeks With Commits: number of weeks with commits for this file.";
+    }
+
+    @Override
     public String metricName() {
         return "weeks_with_commits";
     }

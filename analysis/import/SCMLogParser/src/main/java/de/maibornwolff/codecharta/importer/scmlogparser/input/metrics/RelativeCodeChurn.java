@@ -10,6 +10,11 @@ public final class RelativeCodeChurn implements Metric {
     private long accumulatedNumberOfLinesDeleted = 0;
 
     @Override
+    public String description() {
+        return "Relative Code Churn: Approximation for the quotient of absolute code churn and loc.";
+    }
+
+    @Override
     public String metricName() {
         return "rel_code_churn";
     }

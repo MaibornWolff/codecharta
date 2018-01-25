@@ -79,6 +79,11 @@ public class GitLogNumstatParserStrategy implements LogParserStrategy {
     }
 
     @Override
+    public String creationCommand() {
+        return "git log --numstat --topo-order";
+    }
+
+    @Override
     public Collector<String, ?, Stream<List<String>>> createLogLineCollector() {
         return LogLineCollector.create(GIT_COMMIT_SEPARATOR_TEST);
     }

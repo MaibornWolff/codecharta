@@ -9,6 +9,11 @@ public final class NumberOfAuthors implements Metric {
     private final Set<String> authors = new HashSet<>();
 
     @Override
+    public String description() {
+        return "Number of Authors: Number of authors that contributed to this file.";
+    }
+
+    @Override
     public String metricName() {
         return "number_of_authors";
     }

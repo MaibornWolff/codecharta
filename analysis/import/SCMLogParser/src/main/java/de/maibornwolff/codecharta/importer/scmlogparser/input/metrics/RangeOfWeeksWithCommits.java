@@ -9,6 +9,11 @@ public final class RangeOfWeeksWithCommits implements Metric {
     private final TreeSet<CalendarWeek> weeksWithCommits = new TreeSet<>();
 
     @Override
+    public String description() {
+        return "Range Of Weeks With Commits: Range in Weeks between first and last commit of this file.";
+    }
+
+    @Override
     public String metricName() {
         return "range_of_weeks_with_commits";
     }

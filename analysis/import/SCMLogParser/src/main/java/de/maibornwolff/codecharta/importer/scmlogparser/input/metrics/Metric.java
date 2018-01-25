@@ -7,6 +7,8 @@ import java.util.Map;
 
 public interface Metric {
 
+    String description();
+
     String metricName();
 
     Number value();

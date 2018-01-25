@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -128,6 +127,11 @@ public class SVNLogParserStrategy implements LogParserStrategy {
         }
     }
 
+
+    @Override
+    public String creationCommand() {
+        return "svn log --verbose";
+    }
 
     public Collector<String, ?, Stream<List<String>>> createLogLineCollector() {
         return LogLineCollector.create(SVN_COMMIT_SEPARATOR_TEST);
