@@ -7,7 +7,8 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
  * experimental -> therefore no tests
  */
 public class AbsoluteCoupledChurn implements Metric {
-    private long coupledChurn = 0;
+    private long totalChurn = 0;
+    private long ownChurn = 0;
 
     @Override
     public String description() {
@@ -21,16 +22,23 @@ public class AbsoluteCoupledChurn implements Metric {
 
     @Override
     public Number value() {
-        return coupledChurn;
+        return totalChurn - ownChurn;
     }
 
     @Override
     public void registerCommit(Commit commit) {
-        commit.getModifications()
-                .forEach(this::addToCoupledChurn);
+        long commitsTotalChurn = commit.getModifications().stream()
+                .map(mod -> (long) (mod.getAdditions() + mod.getDeletions()))
+                .mapToLong(Long::longValue)
+                .sum();
+
+        if (commitsTotalChurn > 0) {
+            totalChurn += commitsTotalChurn;
+        }
     }
 
-    private void addToCoupledChurn(Modification modification) {
-        coupledChurn += modification.getAdditions() + modification.getDeletions();
+    @Override
+    public void registerModification(Modification modification) {
+        ownChurn += modification.getAdditions() + modification.getDeletions();
     }
 }

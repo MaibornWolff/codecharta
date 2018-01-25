@@ -2,9 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /*
@@ -15,7 +13,6 @@ public class HighlyCoupledFiles implements Metric {
     public static final long MIN_NO_COMMITS_FOR_HIGH_COUPLING = 5L;
 
     private final Map<String, Long> simultaneouslyCommitedFiles = new HashMap<>();
-    private final List<Integer> numberCommitedFiles = new ArrayList<>();
     private long numberOfCommits = 0;
 
     @Override
@@ -48,10 +45,7 @@ public class HighlyCoupledFiles implements Metric {
         numberOfCommits++;
         commit.getModifications()
                 .forEach(
-                        mod -> {
-                            simultaneouslyCommitedFiles.merge(mod.getFilename(), 1L, (x, y) -> x + y);
-                        }
+                        mod -> simultaneouslyCommitedFiles.merge(mod.getFilename(), 1L, (x, y) -> x + y)
                 );
-        numberCommitedFiles.add(commit.getModifications().size() - 1);
     }
 }
