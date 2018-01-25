@@ -22,5 +22,6 @@ export interface renderSettings {
     colorKey : string,
     renderDeltas : boolean,
     colorRange : colorRange,
-    mapSize : number
+    mapSize : number,
+    deltaColorFlipped: boolean
 }

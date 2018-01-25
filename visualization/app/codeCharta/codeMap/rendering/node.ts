@@ -16,4 +16,5 @@ export interface node {
     readonly attributes : nodeAttributes;
     readonly children : node[];
     readonly isDelta : boolean;
+    readonly heightDelta : number;
 }

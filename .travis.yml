@@ -11,6 +11,14 @@ jdk:
 env:
   - TRAVIS_NODE_VERSION="9"
 
+addons:
+  sonarcloud:
+    organization: "maibornwolff"
+    token:
+      secure: $SONAR_TOKEN
+    branches:
+      - master
+
 before_install:
  - chmod +x ./analysis/gradlew
  - sudo apt-get -qq update

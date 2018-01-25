@@ -31,6 +31,11 @@
                           <td ng-hide="!$ctrl.isHovered()">{{$ctrl.details.hovered.color}} <span ng-hide="!$ctrl.details.hovered.colorDelta">(&Delta;{{$ctrl.details.hovered.colorDelta}})</span></td>
                           <td ng-hide="!$ctrl.isSelected()">{{$ctrl.details.selected.color}} <span ng-hide="!$ctrl.details.selected.colorDelta">(&Delta;{{$ctrl.details.selected.colorDelta}})</span></td>
                       </tr>
+                      <tr>
+                          <td>Origin</td>
+                          <td ng-hide="!$ctrl.isHovered()">{{$ctrl.details.hovered.origin}}</td>
+                          <td ng-hide="!$ctrl.isSelected()">{{$ctrl.details.selected.origin}}</td>
+                      </tr>
                   </tbody>
               </table>
 
