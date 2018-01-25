@@ -20,7 +20,7 @@ addons:
       - master
 
 before_install:
- - chmod +x ./analysis/gradlew
+
  - sudo apt-get -qq update
  - sudo apt-get install -y wine
 
@@ -29,16 +29,6 @@ install:
 
 script:
   - ./visualization/script/travis-build.sh
-  - ./analysis/script/travis-build.sh
-
-before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-
-cache:
-  directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
 
 # runs the script which copies all needed ressources into the gh-pages directory
 before_deploy:
