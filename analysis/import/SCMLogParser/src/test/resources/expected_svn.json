@@ -5,61 +5,70 @@
     {
       "name": "root",
       "type": "Folder",
-      "link": "",
       "attributes": {},
+      "link": "",
       "children": [
         {
           "name": "src",
           "type": "Folder",
-          "link": "",
           "attributes": {},
+          "link": "",
           "children": [
             {
               "name": "innerFolder",
               "type": "Folder",
-              "link": "",
               "attributes": {},
+              "link": "",
               "children": [
                 {
                   "name": "BestClassEver.java",
                   "type": "File",
-                  "link": "",
                   "attributes": {
-                    "number_of_commits": 3,
                     "weeks_with_commits": 1,
+                    "range_of_weeks_with_commits": 1,
+                    "number_of_commits": 3,
+                    "successive_weeks_of_commits": 1,
+                    "number_of_authors": 1,
                     "authors": [
                       "MartinSc"
-                    ],
-                    "number_of_authors": 1
-                  }
+                    ]
+                  },
+                  "link": "",
+                  "children": []
                 },
                 {
                   "name": "Main.java",
                   "type": "File",
-                  "link": "",
                   "attributes": {
-                    "number_of_commits": 2,
                     "weeks_with_commits": 1,
+                    "range_of_weeks_with_commits": 1,
+                    "number_of_commits": 2,
+                    "successive_weeks_of_commits": 1,
+                    "number_of_authors": 1,
                     "authors": [
                       "MartinSc"
-                    ],
-                    "number_of_authors": 1
-                  }
+                    ]
+                  },
+                  "link": "",
+                  "children": []
                 }
               ]
             },
             {
               "name": "srcFolderTest.txt",
               "type": "File",
-              "link": "",
               "attributes": {
-                "number_of_commits": 2,
                 "weeks_with_commits": 1,
+                "range_of_weeks_with_commits": 1,
+                "number_of_commits": 2,
+                "successive_weeks_of_commits": 1,
+                "number_of_authors": 1,
                 "authors": [
                   "MartinSc"
-                ],
-                "number_of_authors": 1
-              }
+                ]
+              },
+              "link": "",
+              "children": []
             }
           ]
         }

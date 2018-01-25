@@ -26,6 +26,13 @@ enum Status {
         letter = t;
     }
 
+    public static Status byCharacter(char c) {
+        return Stream.of(Status.class.getEnumConstants())
+                .filter(status -> status.letter == c)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Unknown status character"));
+    }
+
     public char statusLetter() {
         return letter;
     }

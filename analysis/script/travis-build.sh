@@ -2,4 +2,4 @@
 
 cd analysis
 ./gradlew build
-sonar-scanner
+sonar-scanner || true

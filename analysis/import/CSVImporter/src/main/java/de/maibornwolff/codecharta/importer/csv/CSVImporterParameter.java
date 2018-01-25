@@ -13,7 +13,7 @@ public class CSVImporterParameter {
     private String csvDelimiter = ",";
 
     @Parameter(names = {"-p", "--projectName"}, description = "Project name")
-    private String projectName = "testProject";
+    private String projectName = "SCMLogParser";
 
     @Parameter(names = {"--backslash"}, description = "Backslash is used as path separator")
     private boolean backslashPathSeparator = false;

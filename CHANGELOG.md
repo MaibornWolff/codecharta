@@ -6,8 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 ### Added
-- the file origin of a node is displayed in the details now
+- added support for git log --raw and git log --numstat --raw
 - added support for git log --numstat and codechurn
+- added support for renames in SCMLogParser for git log --name-status
+- added support for renames in SCMLogParser for git log --numstat, git log --raw  and git log --numstat --raw
+- added new SCM experimental metrics range_of_weeks_with_commits and successive_weeks_of_commits
+- the file origin of a node is displayed in the details now
 - sonarqube analysis on CI build
 
 ### Changed
