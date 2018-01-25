@@ -57,6 +57,7 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
+      branch: master
 
   # commits the gh-pages directory to the gh-pages branch. Does not ignore built ressources
   - provider: pages
@@ -64,6 +65,7 @@ deploy:
     skip_cleanup: true
     local_dir: "gh-pages"
     on:
+      tags: true
       branch: master
 
   # publishes visualization sonar results
