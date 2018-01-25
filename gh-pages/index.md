@@ -1,3 +1,9 @@
+# Quicklinks
+
+[Visualization Demo](visualization/app/)
+
+[Downloads](https://github.com/MaibornWolff/codecharta/releases)
+
 # What is CodeCharta ?
 
 CodeCharta visualizes multiple code metrics using 3D tree maps. It consists of two parts:
@@ -123,11 +129,15 @@ It provides a simple way to customize your links with query parameters.
 
 [Coverage](visualization/coverage/lcov-report)
 
+[Sonarqube Analysis](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Avisualization)
+
 [Reference](visualization/docs/)
 
 ## Analysis
 
 [Readme](https://github.com/MaibornWolff/codecharta/tree/master/analysis)
+
+[Sonarqube Analysis](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Aanalysis)
 
 # Contributing
 

@@ -26,6 +26,11 @@
             "name": "other small leaf",
             "id":3,
             "attributes": {"rloc": 70, "functions": 10, "mcc": 100}
+          },
+          {
+            "name": "sample2 leaf merged in",
+            "attributes": {"rloc": 600, "functions": 10, "mcc": 1},
+            "link": "http://www.google.de"
           }
         ]
       }

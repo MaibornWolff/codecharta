@@ -217,7 +217,7 @@ describe("app.codeCharta.core.statistic", function() {
     beforeEach(() =>{
         data = {} as DataModel;
         settings = {} as Settings;
-        data.referenceMap = file1;
+        data.renderMap = file1;
     });
 
     /**
