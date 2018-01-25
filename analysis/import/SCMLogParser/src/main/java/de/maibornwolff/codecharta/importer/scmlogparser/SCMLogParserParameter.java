@@ -135,7 +135,9 @@ public class SCMLogParserParameter {
                 "number_of_commits",
                 "range_of_weeks_with_commits",
                 "successive_weeks_of_commits",
-                "weeks_with_commits"
+                "weeks_with_commits",
+                "highly_coupled_files",
+                "median_coupled_files"
         );
 
         if (getInputFormatNames() == null) {
