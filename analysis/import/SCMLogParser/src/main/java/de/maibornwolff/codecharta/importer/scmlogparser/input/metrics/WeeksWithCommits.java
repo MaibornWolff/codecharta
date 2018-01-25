@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit;
 
 import java.util.TreeSet;
 
-public final class WeeksWithCommits implements Metric {
+public class WeeksWithCommits implements Metric {
 
     private final TreeSet<CalendarWeek> weeksWithCommits = new TreeSet<>();
 
