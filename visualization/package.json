@@ -26,7 +26,8 @@
     "package-lock.json",
     "README.md",
     "tsconfig.json",
-    "tsconfig.webpack.json"
+    "tsconfig.webpack.json",
+    "cli.js"
   ],
   "window": {
     "icon": "app/icon.png",
