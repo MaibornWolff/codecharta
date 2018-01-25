@@ -71,7 +71,7 @@ deploy:
     script: visualization/script/sonar-publish.sh
     skip_cleanup: true
     on:
-      branch: npmpublish
+      branch: master
 
   # publishes analysis sonar results
   - provider: script
@@ -79,3 +79,10 @@ deploy:
     skip_cleanup: true
     on:
       branch: master
+
+  # publishes npm package
+  - provider: script
+    script: visualization/script/npm-publish.sh
+    skip_cleanup: true
+    on:
+      branch: npmpublish
