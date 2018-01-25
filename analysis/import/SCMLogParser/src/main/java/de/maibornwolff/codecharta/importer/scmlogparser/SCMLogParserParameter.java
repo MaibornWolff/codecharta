@@ -60,11 +60,11 @@ public class SCMLogParserParameter {
         String infoFormat = "   -> %s : \"%s\".";
 
         System.out.println("  Log creation via:");
-        System.out.println(String.format(infoFormat, GIT_LOG, GitLogParserStrategy.CORRESPONDING_LOG_CREATION_CMD));
-        System.out.println(String.format(infoFormat, GIT_LOG_NUMSTAT, GitLogNumstatParserStrategy.CORRESPONDING_LOG_CREATION_CMD));
-        System.out.println(String.format(infoFormat, GIT_LOG_NUMSTAT_RAW, GitLogNumstatRawParserStrategy.CORRESPONDING_LOG_CREATION_CMD));
-        System.out.println(String.format(infoFormat, GIT_LOG_RAW, GitLogRawParserStrategy.CORRESPONDING_LOG_CREATION_CMD));
-        System.out.println(String.format(infoFormat, SVN_LOG, SVNLogParserStrategy.CORRESPONDING_LOG_CREATION_CMD));
+        System.out.println(String.format(infoFormat, GIT_LOG, "git log --name-status --topo-order"));
+        System.out.println(String.format(infoFormat, GIT_LOG_NUMSTAT, "git log --numstat --topo-order"));
+        System.out.println(String.format(infoFormat, GIT_LOG_NUMSTAT_RAW, "git log --numstat --raw --topo-order"));
+        System.out.println(String.format(infoFormat, GIT_LOG_RAW, "git log --raw --topo-order"));
+        System.out.println(String.format(infoFormat, SVN_LOG, "svn log --verbose"));
         System.out.println("");
     }
 

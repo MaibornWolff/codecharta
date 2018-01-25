@@ -18,9 +18,9 @@ public final class WeeksWithCommits implements Metric {
     @Override
     public Map<String, Number> value() {
         return ImmutableMap.of(
-                "weeks_with_commits", numberOfWeeksWithCommit(),
-                "range_of_weeks_with_commits", commitDateSpan(),
-                "successive_weeks_of_commits", numberOfSuccessiveWeeksWithCommit()
+                "weeks_with_commits", weeksWithCommits(),
+                "range_of_weeks_with_commits", rangeOfWeeksWithCommits(),
+                "successive_weeks_of_commits", successiveWeeksOfCommits()
         );
     }
 
@@ -29,11 +29,11 @@ public final class WeeksWithCommits implements Metric {
         weeksWithCommits.add(CalendarWeek.forDateTime(commit.getCommitDate()));
     }
 
-    int numberOfWeeksWithCommit() {
+    int weeksWithCommits() {
         return weeksWithCommits.size();
     }
 
-    long commitDateSpan() {
+    long rangeOfWeeksWithCommits() {
         if (weeksWithCommits.size() < 1) {
             return 0;
         }
@@ -41,7 +41,7 @@ public final class WeeksWithCommits implements Metric {
         return 1 + CalendarWeek.numberOfWeeksBetween(weeksWithCommits.last(), weeksWithCommits.first());
     }
 
-    int numberOfSuccessiveWeeksWithCommit() {
+    int successiveWeeksOfCommits() {
         int numberOfSuccessiveWeeks = 0;
 
         int temp = 0;
