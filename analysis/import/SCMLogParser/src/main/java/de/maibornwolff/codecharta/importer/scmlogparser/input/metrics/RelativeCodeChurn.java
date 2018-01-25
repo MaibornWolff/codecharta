@@ -1,34 +1,27 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * this is only an approximation of the correct code churn.
  */
-public final class CodeChurn implements Metric {
+public final class RelativeCodeChurn implements Metric {
     private long accumulatedNumberOfLinesAdded = 0;
     private long accumulatedNumberOfLinesDeleted = 0;
     private List<SingleCodeChurn> codeChurns = new ArrayList<>();
 
     @Override
-    public String metricName() {
-        return "code_churn";
+    public String description() {
+        return "Relative Code Churn: Approximation for the quotient of absolute code churn and loc.";
     }
 
     @Override
-    public Map<String, Number> value() {
-        return ImmutableMap.of("abs_code_churn", absoluteCodeChurn(),
-                "experimental_rel_code_churn", relativeCodeChurn(),
-                "experimental_rel_code_churn2", relativeCodeChurn2(),
-                "experimental_add_quot_deletion", add_quot_deletion(),
-                "experimental_loc", loc()
-        );
+    public String metricName() {
+        return "rel_code_churn";
     }
 
     private long add_quot_deletion() {
@@ -46,11 +39,7 @@ public final class CodeChurn implements Metric {
         accumulatedNumberOfLinesDeleted += modification.getDeletions();
     }
 
-    /**
-     * this is only an approximation of the correct file size.
-     * correct only if e.g. --numstat -m --first-parent ist given.
-     */
-    long loc() {
+    private long loc() {
         long loc = accumulatedNumberOfLinesAdded - accumulatedNumberOfLinesDeleted;
         return loc >= 0 ? loc : 0;
     }
@@ -62,7 +51,8 @@ public final class CodeChurn implements Metric {
     /**
      * @return codeChurn weighted by the maximal number of lines
      */
-    long relativeCodeChurn() {
+    @Override
+    public Number value() {
         long relativeChurn;
 
         if (loc() > 0) {

@@ -4,6 +4,7 @@ import {CodeMapMesh} from "./rendering/codeMapMesh";
 import {renderSettings} from "./rendering/renderSettings"
 import {LabelManager} from "./rendering/labelManager"
 import {SettingsServiceSubscriber, Settings, SettingsService} from "../core/settings/settings.service";
+import {node} from "./rendering/node";
 
 const mapSize = 500.0;
 
@@ -36,7 +37,7 @@ export class CodeMapService implements SettingsServiceSubscriber{
      */
     applySettings(s: Settings) {
 
-        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.root && s.neutralColorRange) {
+        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.root && s.neutralColorRange && s.deltaColorFlipped != undefined) {
             this.updateMapGeometry(s);
         }
 
@@ -47,14 +48,14 @@ export class CodeMapService implements SettingsServiceSubscriber{
 
     updateMapGeometry(s) {
         let nodes = this.treeMapService.createTreemapNodes(s.map.root, mapSize, mapSize, s.margin, s.areaMetric, s.heightMetric);
-        let sorted = nodes.sort((a,b)=>{return b.height - a.height;});
-
+        let sorted: node[] = nodes.sort((a,b)=>{return b.height - a.height;});
         let renderSettings: renderSettings  =  {
             heightKey : s.heightMetric,
             colorKey : s.colorMetric,
             renderDeltas : s.deltas,
             colorRange : s.neutralColorRange,
-            mapSize : mapSize
+            mapSize : mapSize,
+            deltaColorFlipped: s.deltaColorFlipped
         };
 
         this.threeSceneService.clearLabels();

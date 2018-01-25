@@ -11,12 +11,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - added support for renames in SCMLogParser for git log --name-status
 - added support for renames in SCMLogParser for git log --numstat, git log --raw  and git log --numstat --raw
 - added new SCM experimental metrics range_of_weeks_with_commits and successive_weeks_of_commits
+- the file origin of a node is displayed in the details now
+- sonarqube analysis on CI build
 
 ### Changed
+- Deltas are no longer experimental
+- two selected delta maps now merge their nodes correctly. The map where 
+a node was missing get's a copy of this node with metrics=0. 
+File additions/deletions are therefore only visible when areaMetric is 
+unary and deltas are activated.
 
 ### Removed
 
 ### Fixed
+- delta display bug for heights
+- going back from delta view now correctly removes deltas from node data
+- Delta shown although not in delta mode #60
+- Allow inversion of delta colors #57
 
 ## [1.5.2] - 2018-01-04
 ### Added

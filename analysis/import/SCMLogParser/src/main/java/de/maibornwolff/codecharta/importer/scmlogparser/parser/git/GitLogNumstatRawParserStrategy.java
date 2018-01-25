@@ -18,7 +18,6 @@ import static de.maibornwolff.codecharta.importer.scmlogparser.parser.git.Commit
 
 public class GitLogNumstatRawParserStrategy implements LogParserStrategy {
 
-    public static final String CORRESPONDING_LOG_CREATION_CMD = "git log --numstat --raw --topo-order";
     public static final java.util.function.BiFunction<Modification, Modification, Modification> MODIFICATION_MODIFICATION_MODIFICATION_BI_FUNCTION = (a, b) -> a;
     private static final Predicate<String> GIT_COMMIT_SEPARATOR_TEST = logLine -> logLine.startsWith("commit");
     private static final String FILE_LINE_SPLITTER = "\\s+";
@@ -64,14 +63,8 @@ public class GitLogNumstatRawParserStrategy implements LogParserStrategy {
     }
 
     @Override
-    public List<String> listSupportedMetrics() {
-        return Arrays.asList(
-                "code_churn",
-                "number_of_authors",
-                "number_of_commits",
-                "weeks_with_commits",
-                "temporal_coupling"
-        );
+    public String creationCommand() {
+        return "git log --numstat --raw --topo-order";
     }
 
     @Override

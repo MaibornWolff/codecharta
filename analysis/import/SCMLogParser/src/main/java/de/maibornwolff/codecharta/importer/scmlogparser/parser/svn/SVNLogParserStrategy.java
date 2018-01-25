@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -18,7 +17,6 @@ import java.util.stream.Stream;
 
 public class SVNLogParserStrategy implements LogParserStrategy {
 
-    public static final String CORRESPONDING_LOG_CREATION_CMD = "svn log --verbose";
     private static final Predicate<String> SVN_COMMIT_SEPARATOR_TEST = logLine -> !logLine.isEmpty() && StringUtils.containsOnly(logLine, '-');
     private static final String[] DEFAULT_REPOSITORY_FOLDER_PREFIXES = new String[]{"/branches/", "/tags/", "/trunk/"};
     private static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
@@ -55,16 +53,6 @@ public class SVNLogParserStrategy implements LogParserStrategy {
             return Modification.EMPTY;
         }
         return modification;
-    }
-
-    @Override
-    public List<String> listSupportedMetrics() {
-        return Arrays.asList(
-                "number_of_authors",
-                "number_of_commits",
-                "weeks_with_commits",
-                "temporal_coupling"
-        );
     }
 
     @Override
@@ -139,6 +127,11 @@ public class SVNLogParserStrategy implements LogParserStrategy {
         }
     }
 
+
+    @Override
+    public String creationCommand() {
+        return "svn log --verbose";
+    }
 
     public Collector<String, ?, Stream<List<String>>> createLogLineCollector() {
         return LogLineCollector.create(SVN_COMMIT_SEPARATOR_TEST);

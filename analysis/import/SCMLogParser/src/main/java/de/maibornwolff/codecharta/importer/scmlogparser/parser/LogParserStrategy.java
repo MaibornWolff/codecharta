@@ -10,6 +10,8 @@ import java.util.stream.Stream;
 
 public interface LogParserStrategy {
 
+    String creationCommand();
+
     Collector<String, ?, Stream<List<String>>> createLogLineCollector();
 
     Optional<String> parseAuthor(List<String> commitLines);
@@ -17,7 +19,5 @@ public interface LogParserStrategy {
     List<Modification> parseModifications(List<String> commitLines);
 
     Optional<OffsetDateTime> parseDate(List<String> commitLines);
-
-    List<String> listSupportedMetrics();
 
 }

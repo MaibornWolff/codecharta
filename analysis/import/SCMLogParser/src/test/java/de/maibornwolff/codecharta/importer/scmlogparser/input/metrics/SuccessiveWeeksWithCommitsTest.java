@@ -9,13 +9,13 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class WeeksWithCommitsTest {
+public class SuccessiveWeeksWithCommitsTest {
     private final ZoneOffset zoneOffset = ZoneOffset.UTC;
 
     @Test
     public void initial_value_zero() {
         // when
-        WeeksWithCommits metric = new WeeksWithCommits();
+        SuccessiveWeeksWithCommits metric = new SuccessiveWeeksWithCommits();
 
         // then
         assertThat(metric.value()).isEqualTo(0);
@@ -24,7 +24,7 @@ public class WeeksWithCommitsTest {
     @Test
     public void single_modification() {
         // given
-        WeeksWithCommits metric = new WeeksWithCommits();
+        SuccessiveWeeksWithCommits metric = new SuccessiveWeeksWithCommits();
 
         // when
         OffsetDateTime date = OffsetDateTime.of(2016, 4, 2, 12, 0, 0, 0, zoneOffset);
@@ -38,7 +38,7 @@ public class WeeksWithCommitsTest {
     @Test
     public void additional_modification_in_same_calendar_week() {
         // given
-        WeeksWithCommits metric = new WeeksWithCommits();
+        SuccessiveWeeksWithCommits metric = new SuccessiveWeeksWithCommits();
 
         // when
         OffsetDateTime date1 = OffsetDateTime.of(2016, 4, 2, 12, 0, 0, 0, zoneOffset);
@@ -53,7 +53,7 @@ public class WeeksWithCommitsTest {
     @Test
     public void additional_modification_in_successive_calendar_week() {
         // given
-        WeeksWithCommits metric = new WeeksWithCommits();
+        SuccessiveWeeksWithCommits metric = new SuccessiveWeeksWithCommits();
 
         // when
         OffsetDateTime date1 = OffsetDateTime.of(2016, 4, 3, 12, 0, 0, 0, zoneOffset);
@@ -68,7 +68,7 @@ public class WeeksWithCommitsTest {
     @Test
     public void additional_modification_in_non_successive_calendar_week() {
         // given
-        WeeksWithCommits metric = new WeeksWithCommits();
+        SuccessiveWeeksWithCommits metric = new SuccessiveWeeksWithCommits();
 
         // when
         OffsetDateTime date1 = OffsetDateTime.of(2016, 4, 3, 12, 0, 0, 0, zoneOffset);
@@ -77,6 +77,6 @@ public class WeeksWithCommitsTest {
         metric.registerCommit(new Commit("author", Collections.emptyList(), date2));
 
         // then
-        assertThat(metric.value()).isEqualTo(2);
+        assertThat(metric.value()).isEqualTo(1);
     }
 }

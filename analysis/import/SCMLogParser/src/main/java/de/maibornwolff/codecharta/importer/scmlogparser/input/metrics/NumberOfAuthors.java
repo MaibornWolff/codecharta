@@ -2,13 +2,16 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit;
 
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public final class NumberOfAuthors implements Metric {
     private final Set<String> authors = new HashSet<>();
+
+    @Override
+    public String description() {
+        return "Number of Authors: Number of authors that contributed to this file.";
+    }
 
     @Override
     public String metricName() {
@@ -16,17 +19,12 @@ public final class NumberOfAuthors implements Metric {
     }
 
     @Override
-    public Map<String, Number> value() {
-        return Collections.singletonMap(metricName(), singleValue());
-    }
-
-    @Override
     public void registerCommit(Commit commit) {
         authors.add(commit.getAuthor());
     }
 
-
-    public Integer singleValue() {
+    @Override
+    public Number value() {
         return authors.size();
     }
 }
