@@ -85,4 +85,5 @@ deploy:
     script: visualization/script/npm-publish.sh
     skip_cleanup: true
     on:
-      branch: npmpublish
+      tags: true
+      branch: master
