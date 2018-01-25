@@ -64,19 +64,12 @@ deploy:
     on:
       branch: master
 
-  # publishes visualization to npm repo
-  - provider: script
-    script: visualization/script/npm-publish.sh
-    skip_cleanup: true
-    on:
-      branch: npmpublish
-
   # publishes visualization sonar results
   - provider: script
     script: visualization/script/sonar-publish.sh
     skip_cleanup: true
     on:
-      branch: master
+      branch: npmpublish
 
   # publishes analysis sonar results
   - provider: script
