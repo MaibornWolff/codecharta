@@ -29,6 +29,7 @@
 
 package de.maibornwolff.codecharta.importer.scmlogparser.converter;
 
+import de.maibornwolff.codecharta.importer.scmlogparser.converter.projectmetrics.ProjectMetric;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile;
 import de.maibornwolff.codecharta.model.Node;
 import de.maibornwolff.codecharta.model.NodeType;
@@ -46,9 +47,19 @@ public class ProjectConverter {
     private final boolean containsAuthors;
     private final String projectName;
 
+    private final List<ProjectMetric> metrics;
+
     public ProjectConverter(boolean containsAuthors, String projectName) {
         this.containsAuthors = containsAuthors;
         this.projectName = projectName;
+        this.metrics = Collections.emptyList();
+    }
+
+    private static void addProjectAttributes(
+            Project project,
+            ProjectMetric metric,
+            List<VersionControlledFile> versionControlledFiles) {
+        project.getRootNode().getAttributes().putAll(metric.value(versionControlledFiles));
     }
 
     private void addVersionControlledFile(Project project, VersionControlledFile versionControlledFile) {
@@ -81,6 +92,11 @@ public class ProjectConverter {
         versionControlledFiles.stream()
                 .filter(vc -> !vc.markedDeleted())
                 .forEach(vcFile -> addVersionControlledFile(project, vcFile));
+
+
+        if (project.hasRootNode()) {
+            metrics.forEach(m -> addProjectAttributes(project, m, versionControlledFiles));
+        }
 
         return project;
     }

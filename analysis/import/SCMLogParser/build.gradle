@@ -5,6 +5,7 @@ dependencies {
     compile project(':model')
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'com.beust:jcommander:1.58'
+    compile 'org.apache.commons:commons-math3:3.6.1'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:3.5.2'
