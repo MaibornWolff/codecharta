@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
-## [1.6.1] - 2018-01-25
+## [1.6.2] - 2018-01-25
 ### Added
 - added support for git log --raw and git log --numstat --raw
 - added support for git log --numstat and codechurn
