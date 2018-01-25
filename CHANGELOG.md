@@ -4,7 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
-## [Unreleased]
+## [unreleased]
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.6.0] - 2018-01-25
 ### Added
 - added support for git log --raw and git log --numstat --raw
 - added support for git log --numstat and codechurn
@@ -13,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - added new SCM experimental metrics range_of_weeks_with_commits and successive_weeks_of_commits
 - the file origin of a node is displayed in the details now
 - sonarqube analysis on CI build
+- npm publish support in visualization
 
 ### Changed
 - Deltas are no longer experimental

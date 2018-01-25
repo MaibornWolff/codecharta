@@ -13,6 +13,11 @@
 ## Installation
 [[Back To Top]](#jump-to-section)
 
+#### Install application for desktop usage with npm
+
+* install with `npm install codecharta-visualization -g`
+* run with `codecharta-visualization`
+
 #### Install application for desktop usage
 
 * Download or build [latest version](https://github.com/MaibornWolff/codecharta/releases/latest) for your system. 
