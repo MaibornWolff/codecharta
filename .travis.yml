@@ -65,3 +65,27 @@ deploy:
     local_dir: "gh-pages"
     on:
       branch: master
+
+  # publishes visualization to npm repo
+  deploy:
+    provider: script
+    script: visualization/script/npm-publish.sh
+    skip_cleanup: true
+    on:
+      branch: npmpublish
+
+  # publishes visualization sonar results
+  deploy:
+    provider: script
+    script: visualization/script/sonar-publish.sh
+    skip_cleanup: true
+    on:
+      branch: master
+
+  # publishes analysis sonar results
+  deploy:
+    provider: script
+    script: analysis/script/sonar-publish.sh
+    skip_cleanup: true
+    on:
+      branch: master
