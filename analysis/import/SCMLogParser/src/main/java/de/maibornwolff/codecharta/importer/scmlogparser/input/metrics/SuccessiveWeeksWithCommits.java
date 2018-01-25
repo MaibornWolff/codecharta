@@ -9,6 +9,11 @@ public final class SuccessiveWeeksWithCommits implements Metric {
     private final TreeSet<CalendarWeek> weeksWithCommits = new TreeSet<>();
 
     @Override
+    public String description() {
+        return "Successive Weeks With Commits: maximal number of successive weeks with commits.";
+    }
+
+    @Override
     public String metricName() {
         return "successive_weeks_of_commits";
     }

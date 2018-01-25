@@ -9,6 +9,11 @@ public final class LinesOfCode implements Metric {
     private long loc = 0;
 
     @Override
+    public String description() {
+        return "Lines Of Code: Approximation for loc. Number of added minus number of deleted lines of all commits for this file.";
+    }
+
+    @Override
     public String metricName() {
         return "loc";
     }

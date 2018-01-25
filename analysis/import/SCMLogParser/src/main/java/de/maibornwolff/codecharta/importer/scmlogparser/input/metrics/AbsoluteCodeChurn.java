@@ -7,6 +7,11 @@ public final class AbsoluteCodeChurn implements Metric {
     private long accumulatedNumberOfLinesDeleted = 0;
 
     @Override
+    public String description() {
+        return "Absolute Code Churn: Sum of number of added and deleted lines of all commits for this file.";
+    }
+
+    @Override
     public String metricName() {
         return "abs_code_churn";
     }

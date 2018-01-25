@@ -6,6 +6,11 @@ public final class NumberOfOccurencesInCommits implements Metric {
     private long numberOfOccurrencesInCommits = 0;
 
     @Override
+    public String description() {
+        return "Number Of Commits: Number of times this file occured in a commit.";
+    }
+
+    @Override
     public String metricName() {
         return "number_of_commits";
     }
