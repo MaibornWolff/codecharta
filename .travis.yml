@@ -37,8 +37,6 @@ before_cache:
 
 cache:
   directories:
-    # - visualization/node_modules
-    # - visualization/.cache
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
