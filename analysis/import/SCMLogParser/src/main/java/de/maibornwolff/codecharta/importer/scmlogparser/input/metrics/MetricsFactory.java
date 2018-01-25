@@ -40,10 +40,11 @@ public class MetricsFactory {
                 new RelativeCodeChurn(),
                 new SuccessiveWeeksWithCommits(),
                 new WeeksWithCommits(),
-                new WeightedCoupledChurn(),
                 new HighlyCoupledFiles(),
-                new CoupledChurn(),
-                new MedianCoupledFiles()
+                new MedianCoupledFiles(),
+                new AbsoluteCoupledChurn(),
+                new AverageCodeChurnPerCommit(),
+                new AddQuotDel()
         );
     }
 
