@@ -5,11 +5,11 @@ command -v perl >/dev/null 2>&1 || { echo >&2 "'perl' is required but it's not i
 command -v git >/dev/null 2>&1 || { echo >&2 "'git' is required but it's not installed.  Aborting."; exit 1; }
 
 # Check if there are any uncommited changes
-#if [[ -n $(git status -s) ]]
-#then
-#    echo "Please commit your changes first and/or ignore untracked files in git. Aborting."
-#    exit 1
-#fi
+if [[ -n $(git status -s) ]]
+then
+    echo "Please commit your changes first and/or ignore untracked files in git. Aborting."
+    exit 1
+fi
 
 # Check if we are on master branch
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
@@ -39,10 +39,10 @@ select RELEASE_TYPE in "major" "minor" "patch" "exit"; do
 done
 
 # Confirm release
-echo "Do you REALLY want to release ${NEW_VERSION}? WARNING: Release needs to be undone manually when done unintentionally!"
+echo "Do you REALLY want to release ${NEW_VERSION}? WARNING: File changes need to be undone manually or through git when done unintentionally!"
 select CONFIRM in "yes" "no"; do
     case $CONFIRM in
-        yes ) echo "Selected ${RELEASE_TYPE} release."; break;;
+        yes ) echo "Selected ${RELEASE_TYPE} release. Updating project..."; break;;
         no ) echo "Aborting."; exit 1; break;;
     esac
 done
@@ -66,6 +66,28 @@ REPLACE="${UNRELEASED_TPL}## [${NEW_VERSION}] - ${DATE}"
 $(perl -p -i -e "s/^\#\# \[unreleased\]/${REPLACE}/g" ../CHANGELOG.md)
 echo "updated ../CHANGELOG.md"
 
-# make a commit and tag it correctly
+# confirm and make a commit and tag it correctly
+
+echo "Do you want to commit the changes and tag them correctly? WARNING: Commit and Tag need to be undone manually when done unintentionally!"
+select CONFIRM in "yes" "no"; do
+    case $CONFIRM in
+        yes ) echo "Committing and tagging..."; break;;
+        no ) echo "Aborting."; exit 1; break;;
+    esac
+done
+
 git commit -a -m "Releasing ${NEW_VERSION}"
 git tag -a ${NEW_VERSION}
+
+# push?
+echo "The release is now committed and tagged but not pushed. In order to finish this release you need to push the commit and tag. Push ?"
+
+echo "Do you want to commit the changes and tag them correctly? WARNING: Commit and Tag need to be undone manually when done unintentionally!"
+select CONFIRM in "yes" "no"; do
+    case $CONFIRM in
+        yes ) echo "Pushing..."; break;;
+        no ) echo "Aborting."; exit 1; break;;
+    esac
+done
+
+git push --follow-tags
