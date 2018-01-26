@@ -34,7 +34,7 @@ select RELEASE_TYPE in "major" "minor" "patch" "exit"; do
         major ) NEW_VERSION=$NEW_MAJOR_VERSION; break;;
         minor ) NEW_VERSION=$NEW_MINOR_VERSION; break;;
         patch ) NEW_VERSION=$NEW_PATCH_VERSION; break;;
-        exit ) echo "Aborting."; exit 1; break;;
+        exit ) echo "Aborting."; exit 1;
     esac
 done
 
@@ -43,7 +43,7 @@ echo "Do you REALLY want to release ${NEW_VERSION}? WARNING: File changes need t
 select CONFIRM in "yes" "no"; do
     case $CONFIRM in
         yes ) echo "Selected ${RELEASE_TYPE} release. Updating project..."; break;;
-        no ) echo "Aborting."; exit 1; break;;
+        no ) echo "Aborting."; exit 1;
     esac
 done
 
@@ -72,7 +72,7 @@ echo "Do you want to commit the changes and tag them correctly? WARNING: Commit 
 select CONFIRM in "yes" "no"; do
     case $CONFIRM in
         yes ) echo "Committing and tagging..."; break;;
-        no ) echo "Aborting."; exit 1; break;;
+        no ) echo "Aborting."; exit 1;
     esac
 done
 
@@ -86,7 +86,7 @@ echo "Do you want to commit the changes and tag them correctly? WARNING: Commit 
 select CONFIRM in "yes" "no"; do
     case $CONFIRM in
         yes ) echo "Pushing..."; break;;
-        no ) echo "Aborting."; exit 1; break;;
+        no ) echo "Aborting."; exit 1;
     esac
 done
 
