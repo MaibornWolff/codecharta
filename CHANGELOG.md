@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - sonarqube analysis on CI build
 - added metrics for temporal coupling in SCMLogParser: abs_coupled_churn, add_quot_deletion, highly_coupled_files, median_coupled_files
 - added metrics in SCMLogParser: avg_code_churn
+- added Project Metrics
 
 ### Changed
 - Deltas are no longer experimental
