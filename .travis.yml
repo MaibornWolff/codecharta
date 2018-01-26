@@ -82,9 +82,17 @@ deploy:
     on:
       branch: master
 
-  # publishes npm package
+  # publishes visualization npm package
   - provider: script
     script: visualization/script/npm-publish.sh
+    skip_cleanup: true
+    on:
+      tags: true
+      branch: master
+
+  # publishes visualization npm package
+  - provider: script
+    script: analysis/script/npm-publish.sh
     skip_cleanup: true
     on:
       tags: true
