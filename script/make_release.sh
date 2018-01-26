@@ -5,13 +5,18 @@ command -v perl >/dev/null 2>&1 || { echo >&2 "'perl' is required but it's not i
 command -v git >/dev/null 2>&1 || { echo >&2 "'git' is required but it's not installed.  Aborting."; exit 1; }
 
 # Check if there are any uncommited changes
-if [[ -n $(git status -s) ]]
-then
-    echo "Please commit your changes first and/or ignore untracked files in git."
-    exit 1
-fi
+#if [[ -n $(git status -s) ]]
+#then
+#    echo "Please commit your changes first and/or ignore untracked files in git. Aborting."
+#    exit 1
+#fi
 
 # Check if we are on master branch
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [[ "$BRANCH" != "master" ]]; then
+  echo 'You can only release on master branch. Aborting.';
+  exit 1;
+fi
 
 # Get latest tag
 LAST_VERSION="$(git describe --abbrev=0 --tags)"
@@ -42,4 +47,25 @@ select CONFIRM in "yes" "no"; do
     esac
 done
 
-#bump version in gradle.properties
+# bump version in gradle.properties
+$(perl -p -i -e "s/^currentVersion=(.*)/currentVersion=${NEW_VERSION}/g" ../analysis/gradle.properties)
+echo "v${NEW_VERSION}"
+echo "incremented version in ../analysis/gradle.properties"
+
+# bump version in package.jsons
+npm --prefix ../analysis/node-wrapper --no-git-tag-version version $NEW_VERSION
+echo "incremented version in ../analysis/node-wrapper/package.json + locks"
+
+npm --prefix ../visualization --no-git-tag-version version $NEW_VERSION
+echo "incremented version in ../visualization/package.json + locks"
+
+# update changelog
+DATE=`date +%Y-%m-%d`
+UNRELEASED_TPL="## [unreleased]\n### Added\n\n### Changed\n\n### Removed\n\n### Fixed\n\n"
+REPLACE="${UNRELEASED_TPL}## [${NEW_VERSION}] - ${DATE}"
+$(perl -p -i -e "s/^\#\# \[unreleased\]/${REPLACE}/g" ../CHANGELOG.md)
+echo "updated ../CHANGELOG.md"
+
+# make a commit and tag it correctly
+git commit -a -m "Releasing ${NEW_VERSION}"
+git tag -a ${NEW_VERSION}
