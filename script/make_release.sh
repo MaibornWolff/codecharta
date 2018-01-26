@@ -77,7 +77,7 @@ select CONFIRM in "yes" "no"; do
 done
 
 git commit -a -m "Releasing ${NEW_VERSION}"
-git tag -a ${NEW_VERSION}
+git tag -a ${NEW_VERSION} -m "Releasing ${NEW_VERSION}"
 
 # push
 echo "The release is now committed and tagged but not pushed. In order to finish this release you need to push the commit and tag. Push ?"
