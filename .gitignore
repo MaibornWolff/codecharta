@@ -2,6 +2,8 @@
 codecharta-analyse.sonargraph
 auth.txt
 .cache
+**/node-wrapper/public
+.scannerwork
 
 #gh-pages
 gh-pages/visualization
