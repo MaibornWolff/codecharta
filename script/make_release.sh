@@ -79,10 +79,8 @@ done
 git commit -a -m "Releasing ${NEW_VERSION}"
 git tag -a ${NEW_VERSION}
 
-# push?
+# push
 echo "The release is now committed and tagged but not pushed. In order to finish this release you need to push the commit and tag. Push ?"
-
-echo "Do you want to commit the changes and tag them correctly? WARNING: Commit and Tag need to be undone manually when done unintentionally!"
 select CONFIRM in "yes" "no"; do
     case $CONFIRM in
         yes ) echo "Pushing..."; break;;
