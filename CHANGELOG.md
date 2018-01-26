@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.6.3] - 2018-01-26
+### Added
 - added npm publish for analysis
 - simple release script for automatic changelog updates, commits, tags, version bumps
 
