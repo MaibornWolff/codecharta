@@ -2,6 +2,8 @@ package de.maibornwolff.codecharta.importer.scmlogparser;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import de.maibornwolff.codecharta.importer.scmlogparser.converter.projectmetrics.ProjectCorrelationMetrics;
+import de.maibornwolff.codecharta.importer.scmlogparser.converter.projectmetrics.ProjectMetric;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogNumstatParserStrategy;
@@ -12,6 +14,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserS
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -39,6 +42,9 @@ public class SCMLogParserParameter {
     private boolean addAuthor = false;
     @Parameter(names = {"-h", "--help"}, description = "This help text", help = true)
     private boolean help = false;
+
+    @Parameter(names = {"--experimental"}, description = "some experimental features for tests")
+    private boolean experimental = false;
 
     public SCMLogParserParameter(String[] args) {
         this.jc = new JCommander(this, args);
@@ -156,5 +162,12 @@ public class SCMLogParserParameter {
 
     String getProjectName() {
         return projectName;
+    }
+
+    public List<ProjectMetric> getProjectMetrics() {
+        if (experimental) {
+            return Arrays.asList(new ProjectCorrelationMetrics());
+        }
+        return Collections.emptyList();
     }
 }
