@@ -21,3 +21,4 @@ obj
 .vagrant
 codecharta-analyse.sonargraph
 auth.txt
+./**/public
