@@ -36,6 +36,14 @@ Components that take visualisation data and modifies them.
 - Bash or similar
 - JRE 9 (Oracle Java or OpenJDK)
 
+## Installation via npm
+
+This installs all binaries to run the analysis. Java 9 is required.
+
+`npm install -g codecharta-analysis`
+
+To run it you can call `ccsh`  
+
 ## Installation
 
 - Download / build package

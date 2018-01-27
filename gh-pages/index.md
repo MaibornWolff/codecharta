@@ -13,7 +13,12 @@ analysis: Tools for generating visualisation data
 
 # Quickstart
 
-## How to install CodeCharta
+## Install application for desktop usage with npm
+
+* install with `npm install codecharta-visualization -g`
+* run with `codecharta-visualization`
+
+## How to install CodeCharta from github
 
 - Download the [latest release](https://github.com/MaibornWolff/codecharta/releases/latest) of CodeCharta (codecharta-analysis and codecharta-visualization)
 - you should now have the analysis and visualization package 
