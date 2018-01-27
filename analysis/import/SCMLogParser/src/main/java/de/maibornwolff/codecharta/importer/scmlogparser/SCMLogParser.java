@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.importer.scmlogparser;
 
 import de.maibornwolff.codecharta.importer.scmlogparser.converter.ProjectConverter;
-import de.maibornwolff.codecharta.importer.scmlogparser.converter.projectmetrics.ProjectMetric;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
 import de.maibornwolff.codecharta.model.Project;
@@ -11,7 +10,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.stream.Stream;
 
 public class SCMLogParser {
@@ -31,8 +29,7 @@ public class SCMLogParser {
                     callParameter.getLogParserStrategy(),
                     callParameter.getMetricsFactory(),
                     callParameter.getProjectName(),
-                    addAuthor,
-                    callParameter.getProjectMetrics());
+                    addAuthor);
             if (outputFile != null && !outputFile.isEmpty()) {
                 ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile);
             } else {
@@ -46,11 +43,11 @@ public class SCMLogParser {
             LogParserStrategy parserStrategy,
             MetricsFactory metricsFactory,
             String projectName,
-            boolean containsAuthors,
-            List<ProjectMetric> projectMetrics) throws IOException {
+            boolean containsAuthors
+    ) throws IOException {
 
         Stream<String> lines = Files.lines(Paths.get(pathToLog));
-        ProjectConverter projectConverter = new ProjectConverter(containsAuthors, projectName, projectMetrics);
+        ProjectConverter projectConverter = new ProjectConverter(containsAuthors, projectName);
         return new SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter).parse(lines);
 
     }

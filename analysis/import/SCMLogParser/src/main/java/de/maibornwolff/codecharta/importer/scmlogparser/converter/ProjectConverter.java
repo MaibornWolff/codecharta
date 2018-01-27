@@ -55,12 +55,6 @@ public class ProjectConverter {
         this.metrics = Collections.emptyList();
     }
 
-    public ProjectConverter(boolean containsAuthors, String projectName, List<ProjectMetric> metrics) {
-        this.containsAuthors = containsAuthors;
-        this.projectName = projectName;
-        this.metrics = metrics;
-    }
-
     private static void addProjectAttributes(
             Project project,
             ProjectMetric metric,
