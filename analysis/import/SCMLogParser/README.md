@@ -1,6 +1,6 @@
 # CVSLogParser
 
-Generates visualisation data from repository (Git or SVN) logs. It supports among others the following metrics per file:
+Generates visualisation data from repository (Git or SVN) logs. It supports the following metrics per file:
 
 | Metric               | Description |
 | ---                  | --- |
@@ -10,8 +10,6 @@ Generates visualisation data from repository (Git or SVN) logs. It supports amon
 | `code_churn`         | code churn, i.e. number of additions plus deletions to file |
 
 Additionally it saves the names of authors when the --add-author flag is set.
-
-For full list of metrics please run `ccsh scmlogparser -h`.
 
 ## Usage
 
@@ -32,7 +30,7 @@ The generated logs must be in UTF-8 encoding.
 
 ### Executing the SCMLogParser
 
-See `ccsh scmlogparser -h` for help. Standard usage:
+See `ccsh -h` for help. Standard usage:
 
 > `ccsh scmlogparser <log file> --input-format [GIT_LOG|GIT_LOG_NUMSTAT|GIT_LOG_NUMSTAT_RAW|GIT_LOG_RAW|SVN_LOG]`
 
