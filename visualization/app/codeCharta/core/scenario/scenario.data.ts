@@ -5,7 +5,7 @@ import {STATISTIC_OPS} from "../statistic/statistic.service";
 export function createDefaultScenario(map: CodeMap): Scenario {
 
     return {
-        name: "rloc/mcc/mcc(20,40)",
+        name: "ncloc/mcc/mcc(20,40)",
         settings: {
             map: map,
             neutralColorRange: {
@@ -13,7 +13,7 @@ export function createDefaultScenario(map: CodeMap): Scenario {
                 to: 40,
                 flipped: false
             },
-            areaMetric: "rloc",
+            areaMetric: "ncloc",
             heightMetric: "mcc",
             colorMetric: "mcc",
             deltas: false,

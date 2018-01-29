@@ -4,7 +4,7 @@
   "comment_lines": "Number of comment lines",
   "statements": "Number of Statements",
   "loc": "Lines of Code",
-  "rloc": "Real (non-commenting) lines of code",
+  "ncloc": "Non-commenting lines of code",
   "mcc": "MacCabe Complexity or cyclomatic complexity",
   "average_function_mcc": "Average cyclomatic complexity per function",
   "max_function_mcc": "Cyclomatic complexity of most complex function",
@@ -27,5 +27,5 @@
   "statements_at_level_7": "Statements in nesting level 7",
   "statements_at_level_8": "Statements in nesting level 8",
   "statements_at_level_9": "Statements in nesting level 9",
-  "rloc/mcc/mcc(20,40)": "rloc/mcc/mcc with color range (20,40) \n rloc: _rloc_ \n mcc: _mcc_"
+  "ncloc/mcc/mcc(20,40)": "ncloc/mcc/mcc with color range (20,40) \n ncloc: _ncloc_ \n mcc: _mcc_"
 }
