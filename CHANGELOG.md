@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- fixed broken SonarImporter due to jdk9 migration
 
 ## [1.6.3] - 2018-01-26
 ### Added

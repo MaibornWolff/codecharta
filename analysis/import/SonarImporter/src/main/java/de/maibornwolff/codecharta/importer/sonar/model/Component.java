@@ -3,19 +3,26 @@ package de.maibornwolff.codecharta.importer.sonar.model;
 import java.util.List;
 
 public class Component {
-    private String id;
+    private final String id;
 
-    private String key;
+    private final String key;
 
-    private String name;
+    private final String name;
 
-    private String path;
+    private final String path;
 
-    private String language;
+    private final Qualifier qualifier;
 
-    private Qualifier qualifier;
+    private final List<Measure> measures;
 
-    private List<Measure> measures;
+    public Component(String id, String key, String name, String path, Qualifier qualifier, List<Measure> measures) {
+        this.id = id;
+        this.key = key;
+        this.name = name;
+        this.path = path;
+        this.qualifier = qualifier;
+        this.measures = measures;
+    }
 
     public String getId() {
         return id;
@@ -33,10 +40,6 @@ public class Component {
         return path;
     }
 
-    public String getLanguage() {
-        return language;
-    }
-
     public Qualifier getQualifier() {
         return qualifier;
     }
@@ -44,17 +47,6 @@ public class Component {
     public List<Measure> getMeasures() {
         return measures;
     }
-
-    public Component(String id, String key, String name, String path, String language, Qualifier qualifier, List<Measure> measures) {
-        this.id = id;
-        this.key = key;
-        this.name = name;
-        this.path = path;
-        this.language = language;
-        this.qualifier = qualifier;
-        this.measures = measures;
-    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -67,7 +59,6 @@ public class Component {
         if (key != null ? !key.equals(component.key) : component.key != null) return false;
         if (name != null ? !name.equals(component.name) : component.name != null) return false;
         if (path != null ? !path.equals(component.path) : component.path != null) return false;
-        if (language != null ? !language.equals(component.language) : component.language != null) return false;
         if (qualifier != component.qualifier) return false;
         return measures != null ? measures.equals(component.measures) : component.measures == null;
     }
@@ -78,7 +69,6 @@ public class Component {
         result = 31 * result + (key != null ? key.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (path != null ? path.hashCode() : 0);
-        result = 31 * result + (language != null ? language.hashCode() : 0);
         result = 31 * result + (qualifier != null ? qualifier.hashCode() : 0);
         result = 31 * result + (measures != null ? measures.hashCode() : 0);
         return result;
@@ -91,7 +81,6 @@ public class Component {
                 ", key='" + key + '\'' +
                 ", name='" + name + '\'' +
                 ", path='" + path + '\'' +
-                ", language='" + language + '\'' +
                 ", qualifier=" + qualifier +
                 ", measures=" + measures +
                 '}';

@@ -24,18 +24,22 @@ public class ErrorResponseFilter implements ClientResponseFilter {
         Response.Status status = Response.Status.fromStatusCode(responseContext.getStatus());
         if (status != Response.Status.OK && responseContext.hasEntity()) {
             InputStream stream = responseContext.getEntityStream();
-            Gson gson = new GsonBuilder().create();
 
-            ErrorResponse error = gson.fromJson(new InputStreamReader(stream, StandardCharsets.UTF_8), ErrorResponse.class);
+            try {
+                Gson gson = new GsonBuilder().create();
+                ErrorResponse error = gson.fromJson(new InputStreamReader(stream, StandardCharsets.UTF_8), ErrorResponse.class);
 
-            String message = "Errors: \n";
-            for (ErrorEntity errorEntity : error.getErrors()) {
-                message += errorEntity.getMsg() + "\n";
+                String message = "Errors: \n";
+                for (ErrorEntity errorEntity : error.getErrors()) {
+                    message += errorEntity.getMsg() + "\n";
+                }
+
+                System.err.println(message);
+
+                throw new WebApplicationException(message);
+            } catch (RuntimeException e) {
+                System.err.println("Error response could not be parsed. ");
             }
-
-            System.err.println(message);
-
-            throw new WebApplicationException(message);
         }
     }
 }
