@@ -4,7 +4,7 @@
   "comment_lines": "Number of comment lines",
   "statements": "Number of Statements",
   "loc": "Lines of Code",
-  "ncloc": "Non-commenting lines of code",
+  "rloc": "Real (non-commenting) lines of code",
   "mcc": "MacCabe Complexity or cyclomatic complexity",
   "average_function_mcc": "Average cyclomatic complexity per function",
   "max_function_mcc": "Cyclomatic complexity of most complex function",
@@ -27,5 +27,13 @@
   "statements_at_level_7": "Statements in nesting level 7",
   "statements_at_level_8": "Statements in nesting level 8",
   "statements_at_level_9": "Statements in nesting level 9",
-  "ncloc/mcc/mcc(20,40)": "ncloc/mcc/mcc with color range (20,40) \n ncloc: _ncloc_ \n mcc: _mcc_"
+  "unary": "Constant 1",
+  "weeks_with_commits": "Number of weeks in SCM with commits",
+  "number_of_commits": "Number of commits in SCM",
+  "number_of_authors": "Number of authors of commits in SCM",
+  "abs_code_churn": "Absolute Code Churn, i.e. number of modified lines (added or deleted) in SCM",
+  "range_of_weeks_with_commits": "Number of weeks since first and last modification in SCM",
+  "successive_weeks_with_commits": "Number of successive weeks with modifications in SCM",
+  "Complexity": "rloc/mcc/mcc with color range (20,40) \n rloc: _rloc_ \n mcc: _mcc_",
+  "Coverage": "rloc/mcc/line_coverage with color range (50,75) \n rloc: _rloc_ \n line_coverage: _line_coverage_"
 }
