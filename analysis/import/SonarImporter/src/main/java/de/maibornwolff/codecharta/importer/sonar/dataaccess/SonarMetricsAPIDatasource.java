@@ -29,15 +29,18 @@
 
 package de.maibornwolff.codecharta.importer.sonar.dataaccess;
 
+import de.maibornwolff.codecharta.importer.sonar.SonarImporterException;
 import de.maibornwolff.codecharta.importer.sonar.filter.ErrorResponseFilter;
 import de.maibornwolff.codecharta.importer.sonar.model.MetricObject;
 import de.maibornwolff.codecharta.importer.sonar.model.Metrics;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
+import org.glassfish.jersey.client.ClientProperties;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.MediaType;
 import java.net.URL;
 import java.util.List;
 
@@ -46,13 +49,17 @@ import java.util.List;
  */
 public class SonarMetricsAPIDatasource {
 
-    static final int PAGE_SIZE = 100;
+    static final int PAGE_SIZE = 500;
 
-    private static final String METRICS_URL_PATTERN = "%s/api/metrics/search?p=%s&ps=" + PAGE_SIZE;
+    private static final String METRICS_URL_PATTERN = "%s/api/metrics/search?f=hidden,decimalScale&p=%s&ps=" + PAGE_SIZE;
+
+    private static final int TIMEOUT_MS = 5000;
 
     private final String user;
 
     private final URL baseUrl;
+
+    private final Client client;
 
     SonarMetricsAPIDatasource(URL baseUrl) {
         this("", baseUrl);
@@ -61,6 +68,14 @@ public class SonarMetricsAPIDatasource {
     public SonarMetricsAPIDatasource(String user, URL baseUrl) {
         this.user = user;
         this.baseUrl = baseUrl;
+
+        client = ClientBuilder.newClient()
+                .property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT_MS)
+                .property(ClientProperties.READ_TIMEOUT, TIMEOUT_MS);
+        client.register(ErrorResponseFilter.class);
+        client.register(GsonProvider.class);
+
+
     }
 
     public List<String> getAvailableMetricKeys() {
@@ -72,22 +87,23 @@ public class SonarMetricsAPIDatasource {
                         .map(this::getAvailableMetrics))
                 .filter(m -> m.getMetrics() != null)
                 .flatMap(m -> Flowable.fromIterable(m.getMetrics()))
-                .filter(m -> !m.isHidden() && m.isFloatType())
+                .filter(MetricObject::isFloatType)
                 .map(MetricObject::getKey).distinct().toSortedList().blockingGet();
     }
 
     public Metrics getAvailableMetrics(int page) {
-
-        Client client = ClientBuilder.newClient();
-        client.register(ErrorResponseFilter.class);
-        client.register(GsonProvider.class);
-
         String url = String.format(METRICS_URL_PATTERN, baseUrl, page);
-        Invocation.Builder request = client.target(url).request();
+        Invocation.Builder request = client.target(url)
+                .request(MediaType.APPLICATION_JSON + "; charset=utf-8");
         if (!user.isEmpty()) {
             request.header("Authorization", "Basic " + AuthentificationHandler.createAuthTxtBase64Encoded(user));
         }
-        return request.get(Metrics.class);
+
+        try {
+            return request.get(Metrics.class);
+        } catch (RuntimeException e) {
+            throw new SonarImporterException("Error requesting " + url, e);
+        }
     }
 
 

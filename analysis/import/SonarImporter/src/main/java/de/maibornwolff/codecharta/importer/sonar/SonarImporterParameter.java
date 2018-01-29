@@ -62,7 +62,8 @@ class SonarImporterParameter {
     private boolean local = false;
 
     public SonarImporterParameter(String[] args) {
-        this.jc = new JCommander(this, args);
+        this.jc = new JCommander(this);
+        this.jc.parse(args);
     }
 
     public boolean isHelp() {
