@@ -95,7 +95,7 @@ public class SonarMeasuresAPIImporterTest {
         sonar = new SonarMeasuresAPIImporter(measuresDS, metricsDS);
         ComponentMap components = new ComponentMap();
         List<Measure> measures = Arrays.asList(new Measure("metric", "1.2"));
-        components.updateComponent(new Component("id", "key", "name", "path", "lang", Qualifier.FIL, measures));
+        components.updateComponent(new Component("id", "key", "name", "path", Qualifier.FIL, measures));
         when(measuresDS.getComponentMap(projectKey, metrics)).thenReturn(components);
 
         // when

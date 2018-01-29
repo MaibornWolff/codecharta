@@ -47,14 +47,14 @@ import java.util.*;
 class SonarResourceReader {
 
     // names of tags in sonar xml
-    public static final String RESOURCE_TAG = "resource";
-    public static final String MSR_TAG = "msr";
-    public static final String KEY_TAG = "key";
-    public static final String VAL_TAG = "val";
-    public static final String NAME_TAG = "name";
-    public static final String LNAME_TAG = "lname";
-    public static final String SCOPE_TAG = "scope";
-    public static final String QUALIFIER_TAG = "qualifier";
+    private static final String RESOURCE_TAG = "resource";
+    private static final String MSR_TAG = "msr";
+    private static final String KEY_TAG = "key";
+    private static final String VAL_TAG = "val";
+    private static final String NAME_TAG = "name";
+    private static final String LNAME_TAG = "lname";
+    private static final String SCOPE_TAG = "scope";
+    private static final String QUALIFIER_TAG = "qualifier";
 
     private final List<SonarResource> parsedSonarResources = new ArrayList<>();
     private final XMLEventReader eventReader;
