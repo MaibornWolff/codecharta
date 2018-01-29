@@ -15,7 +15,7 @@ public class SonarCodeURLLinkerTest {
     public void should_createUrlString() throws Exception {
         // given
         URL baseUrl = new URL("https://sonarcloud.io");
-        Component component = new Component("","com.adobe%3Aas3corelib%3Asrc%2Fcom%2Fadobe%2Fair%2Fcrypto%2FEncryptionKeyGenerator.as", "","", "",  Qualifier.FIL, Collections.emptyList());
+        Component component = new Component("","com.adobe%3Aas3corelib%3Asrc%2Fcom%2Fadobe%2Fair%2Fcrypto%2FEncryptionKeyGenerator.as", "","", Qualifier.FIL, Collections.emptyList());
 
         // when
         String urlString = new SonarCodeURLLinker(baseUrl).createUrlString(component);
