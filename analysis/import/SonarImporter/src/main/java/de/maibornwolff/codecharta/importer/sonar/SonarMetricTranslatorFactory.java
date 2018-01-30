@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.translator.MetricNameTranslator;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class SonarMetricTranslatorFactory {
+final class SonarMetricTranslatorFactory {
     private SonarMetricTranslatorFactory() {
     }
 

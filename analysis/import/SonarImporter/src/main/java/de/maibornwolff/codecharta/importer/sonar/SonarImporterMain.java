@@ -132,7 +132,7 @@ public class SonarImporterMain {
         if (callParameter.getFiles().size() == 2) {
             String urlString = callParameter.getFiles().get(0);
             try {
-                while(urlString.endsWith("/")){
+                while (urlString.endsWith("/")) {
                     urlString = urlString.substring(0, urlString.length() - 1);
                 }
                 return new URL(urlString);
@@ -166,6 +166,7 @@ public class SonarImporterMain {
     }
 
     private static void showErrorMessageAndTerminate(String s, Exception e) {
+        e.printStackTrace();
         showErrorMessageAndTerminate(s + ": " + e.getMessage());
     }
 }

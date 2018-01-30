@@ -14,7 +14,7 @@ public class SonarCodeURLLinker {
         }
     };
 
-    public SonarCodeURLLinker() {
+    private SonarCodeURLLinker() {
         baseCodeUrl = "";
     }
 

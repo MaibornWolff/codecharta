@@ -1,14 +1,16 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
-  id 'org.sonarqube' version '2.6.1'
-  id 'distribution'
-  id 'maven'
+    id 'org.sonarqube' version '2.6.1'
+    id 'distribution'
+    id 'maven'
 }
 
 group 'de.maibornwolff.codecharta'
 version = currentVersion
 
 repositories {
-  mavenCentral()
+    mavenCentral()
 }
 
 allprojects {
@@ -30,16 +32,16 @@ distributions {
         baseName = 'codecharta-analysis'
         contents {
             from { 'README.md' }
-            from('src/main/dist'){
-                filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [
-                        'cc_version' : currentVersion,
+            from('src/main/dist') {
+                filter(ReplaceTokens, tokens: [
+                        'cc_version': currentVersion,
                 ])
             }
             subprojects {
                 from tasks.withType(Tar)
             }
         }
-   }
+    }
 }
 
 sonarqube {
@@ -47,6 +49,7 @@ sonarqube {
         property 'sonar.coverage.exclusions', '**/model/**, **/*Main*'
     }
 }
+
 task integrationTest(type: Exec) {
     executable 'sh'
     workingDir('test')

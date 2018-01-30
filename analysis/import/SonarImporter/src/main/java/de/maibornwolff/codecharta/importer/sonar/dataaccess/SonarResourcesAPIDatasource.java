@@ -31,6 +31,7 @@ package de.maibornwolff.codecharta.importer.sonar.dataaccess;
 
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException;
 import de.maibornwolff.codecharta.importer.sonar.filter.ErrorResponseFilter;
+import org.glassfish.jersey.client.ClientProperties;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -48,24 +49,31 @@ import java.util.stream.Collectors;
 public class SonarResourcesAPIDatasource {
 
     private static final String RESOURCE = "%s/api/resources?resource=%s&depth=-1&metrics=%s";
+    private static final int TIMEOUT_MS = 5000;
 
     private final String user;
 
     private final URL baseUrl;
 
     private final String projectKey;
-
-    private SonarMetricsAPIDatasource sonarMetricsAPIDatasource;
+    private final Client client;
+    private final SonarMetricsAPIDatasource sonarMetricsAPIDatasource;
 
     public SonarResourcesAPIDatasource(String user, URL baseUrl, String projectKey) {
         this(user, baseUrl, projectKey, new SonarMetricsAPIDatasource(user, baseUrl));
     }
 
-    SonarResourcesAPIDatasource(String user, URL baseUrl, String projectKey, SonarMetricsAPIDatasource sonarMetricsAPIDatasource) {
+    private SonarResourcesAPIDatasource(String user, URL baseUrl, String projectKey, SonarMetricsAPIDatasource sonarMetricsAPIDatasource) {
         this.user = user;
         this.baseUrl = baseUrl;
         this.projectKey = projectKey;
         this.sonarMetricsAPIDatasource = sonarMetricsAPIDatasource;
+
+        client = ClientBuilder.newClient()
+                .property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT_MS)
+                .property(ClientProperties.READ_TIMEOUT, TIMEOUT_MS);
+        client.register(ErrorResponseFilter.class);
+        client.register(GsonProvider.class);
     }
 
     /**
@@ -75,10 +83,6 @@ public class SonarResourcesAPIDatasource {
      * @return server's response in XML
      */
     public String getResourcesAsString(List<String> metricList) throws SonarImporterException {
-
-        Client client = ClientBuilder.newClient();
-        client.register(ErrorResponseFilter.class);
-        client.register(GsonProvider.class);
 
         Invocation.Builder request = client.target(createProjectMetricValuesRequestUrl(metricList)).request();
         if (!user.isEmpty()) {
@@ -96,7 +100,7 @@ public class SonarResourcesAPIDatasource {
         }
     }
 
-    String createMetricString(List<String> metricList) {
+    private String createMetricString(List<String> metricList) {
         if (metricList.isEmpty()) {
             sonarMetricsAPIDatasource
                     .getAvailableMetrics(0).getMetrics()

@@ -3,16 +3,25 @@ apply plugin: 'java'
 
 dependencies {
     compile project(':model')
-    compile 'org.apache.commons:commons-lang3:3.4'
-    compile 'com.beust:jcommander:1.58'
+    compile 'org.apache.commons:commons-lang3:3.7'
+    compile 'com.beust:jcommander:1.72'
 
     testCompile 'junit:junit:4.12'
-    testCompile 'org.assertj:assertj-core:3.5.2'
-    testCompile 'org.mockito:mockito-all:1.9.5'
+    testCompile 'org.assertj:assertj-core:3.9.0'
+    testCompile 'org.mockito:mockito-core:2.13.0'
 }
 
 mainClassName = "de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser"
 applicationName = 'codecharta-scmlogparser'
+
+
+compileJava {
+    options.compilerArgs += ['--release', '8']
+}
+
+compileTestJava {
+    options.compilerArgs += ['--release', '8']
+}
 
 jar {
     baseName = "${applicationName}"

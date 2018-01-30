@@ -41,7 +41,8 @@ public class SCMLogParserParameter {
     private boolean help = false;
 
     public SCMLogParserParameter(String[] args) {
-        this.jc = new JCommander(this, args);
+        this.jc = new JCommander(this);
+        this.jc.parse(args);
     }
 
     List<String> getFiles() {

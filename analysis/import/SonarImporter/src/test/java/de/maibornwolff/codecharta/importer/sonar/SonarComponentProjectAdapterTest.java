@@ -20,7 +20,7 @@ public class SonarComponentProjectAdapterTest {
         // given
         Measure measure = new Measure("metric", "50.0");
         String name = "name";
-        Component component = new Component("id", null, name, "path", "java", Qualifier.FIL, ImmutableList.of(measure));
+        Component component = new Component("id", null, name, "path", Qualifier.FIL, ImmutableList.of(measure));
         SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
 
         // when
@@ -37,7 +37,7 @@ public class SonarComponentProjectAdapterTest {
         // given
         Measure measure = new Measure("metric", "50.0");
         String id = "id";
-        Component component = new Component(id, null, null, null, "java", Qualifier.FIL, ImmutableList.of(measure));
+        Component component = new Component(id, null, null, null, Qualifier.FIL, ImmutableList.of(measure));
         SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
 
         // when
@@ -60,7 +60,7 @@ public class SonarComponentProjectAdapterTest {
         String key = "key";
         String name = "name";
         String path = "someFileName";
-        Component component = new Component(id, key, name, path, "java", Qualifier.FIL, ImmutableList.of(measure));
+        Component component = new Component(id, key, name, path, Qualifier.FIL, ImmutableList.of(measure));
         SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
 
         // when
@@ -80,7 +80,7 @@ public class SonarComponentProjectAdapterTest {
     public void should_ignore_string_measures() {
         // given
         Measure measure = new Measure("metric", "bla");
-        Component component = new Component("id", "key", "name", "path", "java", Qualifier.FIL, ImmutableList.of(measure));
+        Component component = new Component("id", "key", "name", "path", Qualifier.FIL, ImmutableList.of(measure));
         SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
 
         // when
@@ -95,7 +95,7 @@ public class SonarComponentProjectAdapterTest {
     @Test
     public void should_insert_a_file_node_from_uts_component() {
         // given
-        Component component = new Component("id", "key", "name", "path", "java", Qualifier.UTS, ImmutableList.of());
+        Component component = new Component("id", "key", "name", "path", Qualifier.UTS, ImmutableList.of());
         SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
 
         // when
@@ -110,7 +110,7 @@ public class SonarComponentProjectAdapterTest {
     @Test
     public void should_insert_a_folder_node_from_dir_component() {
         // given
-        Component component = new Component("id", "key", "name", "path", "java", Qualifier.DIR, ImmutableList.of());
+        Component component = new Component("id", "key", "name", "path", Qualifier.DIR, ImmutableList.of());
         SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
 
         // when
@@ -125,7 +125,7 @@ public class SonarComponentProjectAdapterTest {
     @Test
     public void should_insert_component_from_component_map() {
         // given
-        Component component = new Component("id", "key", "name", "path", "java", Qualifier.FIL, ImmutableList.of());
+        Component component = new Component("id", "key", "name", "path", Qualifier.FIL, ImmutableList.of());
         ComponentMap components = new ComponentMap();
         components.updateComponent(component);
         SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project");
@@ -141,7 +141,7 @@ public class SonarComponentProjectAdapterTest {
     public void should_insert_component_by_path_if_configured(){
         // given
         String path = "someFileName";
-        Component component = new Component("id", "key", "name", path, "java", Qualifier.FIL, ImmutableList.of());
+        Component component = new Component("id", "key", "name", path, Qualifier.FIL, ImmutableList.of());
         SonarComponentProjectAdapter project = new SonarComponentProjectAdapter("project", SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL, true);
 
         // when
