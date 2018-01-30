@@ -54,7 +54,8 @@ class CommitCollector {
     private void addCommitMetadataToMatchingVersionControlledFiles(Commit commit, List<VersionControlledFile> versionControlledFiles) {
         commit.getFilenames().stream()
                 .map(file -> findVersionControlledFileByFilename(versionControlledFiles, file))
-                .flatMap(Optional::stream)
+                .filter(x -> x.isPresent())
+                .map(x -> x.get())
                 .forEach(vcFile -> vcFile.registerCommit(commit));
 
     }
