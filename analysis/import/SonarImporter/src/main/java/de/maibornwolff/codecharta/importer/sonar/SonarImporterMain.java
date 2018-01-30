@@ -36,101 +36,62 @@ import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarResourcesAPIDat
 import de.maibornwolff.codecharta.model.Project;
 import de.maibornwolff.codecharta.serialization.ProjectSerializer;
 import de.maibornwolff.codecharta.translator.MetricNameTranslator;
+import picocli.CommandLine;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
-import static java.lang.System.*;
+import static java.lang.System.out;
 
-/**
- * Main Class: Parses command line input and delegates to SonarXMLImport for processing
- */
-public class SonarImporterMain {
-    private SonarImporterMain() {
-        // Main class - no instantiation
-    }
+@CommandLine.Command(name = "sonarimport",
+        description = "generates cc.json from metric data from SonarQube",
+        footer = "Copyright(c) 2018, MaibornWolff GmbH"
+)
+public class SonarImporterMain implements Callable<Void> {
+
+    @CommandLine.Option(names = {"-h", "--help"}, usageHelp = true, description = "displays this help and exits")
+    private Boolean help = false;
+
+    @CommandLine.Parameters(arity = "1..2", description = "[[file]|[url] [project-id]]")
+    private List<String> files = new ArrayList<>();
+
+    @CommandLine.Option(names = {"-o", "--outputFile"}, description = "output File (or empty for stdout)")
+    private String outputFile = "";
+
+    @CommandLine.Option(names = {"-m", "--metrics"}, description = "comma-separated list of metrics to import")
+    private List<String> metrics = new ArrayList<>();
+
+    @CommandLine.Option(names = {"-u", "--user"}, description = "user token for connecting to remote sonar instance")
+    private String user = "";
+
+    @CommandLine.Option(names = {"--old-api"}, description = "toggle to old SonarQube API")
+    private boolean oldApi = false;
+
+    @CommandLine.Option(names = {"--merge-modules"}, description = "merges modules in multi-module projects")
+    private boolean usePath = false;
+
+    @CommandLine.Option(names = {"-l", "--local"}, description = "local run")
+    private boolean local = false;
 
     public static void main(String[] args) {
-        SonarImporterParameter callParameter = new SonarImporterParameter(args);
+        CommandLine.call(new SonarImporterMain(), System.out, args);
+    }
 
-        if (callParameter.isHelp()) {
-            printHelp(callParameter);
-        } else if (callParameter.isOldApi()) {
-            try {
-                doOldImport(callParameter);
-            } catch (SonarImporterException | IOException e) {
-                showErrorMessageAndTerminate("unable to import", e);
-            }
-        } else {
-            try {
-                doImport(callParameter);
-            } catch (SonarImporterException | IOException e) {
-                showErrorMessageAndTerminate("unable to import", e);
-            }
+    private static Reader createFileReader(String file) {
+        try {
+            return new FileReader(file);
+        } catch (FileNotFoundException e) {
+            throw new SonarImporterException("File was not found at " + file, e);
         }
     }
 
-    private static SonarMeasuresAPIImporter createMesauresAPIImporter(SonarImporterParameter callParameter) {
-        if (callParameter.getFiles().size() != 2) {
-            callParameter.printUsage();
-            throw new SonarImporterException("Url and project key missing.");
-        }
-
-        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(callParameter.getUser(), createBaseUrlFrom(callParameter));
-        SonarMetricsAPIDatasource metricsDS = new SonarMetricsAPIDatasource(callParameter.getUser(), createBaseUrlFrom(callParameter));
-        SonarCodeURLLinker sonarCodeURLLinker = new SonarCodeURLLinker(createBaseUrlFrom(callParameter));
-        MetricNameTranslator translator = SonarMetricTranslatorFactory.createMetricTranslator();
-
-        return new SonarMeasuresAPIImporter(ds, metricsDS, sonarCodeURLLinker, translator, callParameter.isUsePath());
-    }
-
-    private static void doImport(SonarImporterParameter callParameter) throws IOException {
-        String projectKey = callParameter.getFiles().get(1);
-
-        SonarMeasuresAPIImporter importer = createMesauresAPIImporter(callParameter);
-        Project project = importer.getProjectFromMeasureAPI(projectKey, projectKey, callParameter.getMetrics());
-
-        ProjectSerializer.serializeProject(project, createWriterFrom(callParameter));
-    }
-
-    private static void printHelp(SonarImporterParameter callParameter) {
-        callParameter.printUsage();
-    }
-
-    private static void doOldImport(SonarImporterParameter callParameter) throws IOException {
-        Reader reader = createReaderFrom(callParameter);
-        URL baseUrl = createBaseUrlFrom(callParameter);
-        String baseUrlForLink = baseUrl == null ? "" : baseUrl.toString();
-
-        try (Writer writer = createWriterFrom(callParameter)) {
-            new SonarXMLImport(reader, writer, baseUrlForLink).doImport();
-        }
-    }
-
-    private static Reader createReaderFrom(SonarImporterParameter callParameter) {
-        if (callParameter.isLocal() && callParameter.getFiles().size() == 1) {
-            return createFileReader(callParameter.getFiles().get(0));
-        } else if (callParameter.getFiles().size() == 2) {
-            return createStringReaderFromSonarDatasource(callParameter);
-        }
-        throw new SonarImporterException("Only <file> or <baseUrl> <project> is supported, given was " + callParameter.getFiles());
-    }
-
-    private static Reader createStringReaderFromSonarDatasource(SonarImporterParameter callParameter) {
-        Reader reader;
-        String user = callParameter.getUser();
-        String projectKey = callParameter.getFiles().get(1);
-        List<String> metrics = callParameter.getMetrics();
-        SonarResourcesAPIDatasource datasource = new SonarResourcesAPIDatasource(user, createBaseUrlFrom(callParameter), projectKey);
-        reader = new StringReader(datasource.getResourcesAsString(metrics));
-        return reader;
-    }
-
-    private static URL createBaseUrlFrom(SonarImporterParameter callParameter) {
-        if (callParameter.getFiles().size() == 2) {
-            String urlString = callParameter.getFiles().get(0);
+    private URL baseUrl() {
+        if (files.size() == 2) {
+            String urlString = files.get(0);
             try {
                 while (urlString.endsWith("/")) {
                     urlString = urlString.substring(0, urlString.length() - 1);
@@ -143,30 +104,70 @@ public class SonarImporterMain {
         return null;
     }
 
-    private static Writer createWriterFrom(SonarImporterParameter callParameter) throws IOException {
-        if (callParameter.getOutputFile().isEmpty()) {
+    private Writer createWriterFrom() throws IOException {
+        if (outputFile.isEmpty()) {
             return new OutputStreamWriter(out);
         } else {
-            return new BufferedWriter(new FileWriter(callParameter.getOutputFile()));
+            return new BufferedWriter(new FileWriter(outputFile));
         }
     }
 
-    private static Reader createFileReader(String file) {
-        try {
-            return new FileReader(file);
-        } catch (FileNotFoundException e) {
-            throw new SonarImporterException("File was not found at " + file, e);
+    private Reader createReader() {
+        if (local && files.size() == 1) {
+            return createFileReader(files.get(0));
+        } else if (files.size() == 2) {
+            return createStringReaderFromSonarDatasource();
+        }
+        throw new SonarImporterException("Only <file> or <baseUrl> <project> is supported, given was " + files);
+    }
+
+    private Reader createStringReaderFromSonarDatasource() {
+        Reader reader;
+        SonarResourcesAPIDatasource datasource = new SonarResourcesAPIDatasource(user, baseUrl(), files.get(1));
+        reader = new StringReader(datasource.getResourcesAsString(metrics));
+        return reader;
+    }
+
+    private SonarMeasuresAPIImporter createMesauresAPIImporter() {
+        if (files.size() != 2) {
+            throw new SonarImporterException("Url and project key missing.");
+        }
+
+        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(user, baseUrl());
+        SonarMetricsAPIDatasource metricsDS = new SonarMetricsAPIDatasource(user, baseUrl());
+        SonarCodeURLLinker sonarCodeURLLinker = new SonarCodeURLLinker(baseUrl());
+        MetricNameTranslator translator = SonarMetricTranslatorFactory.createMetricTranslator();
+
+        return new SonarMeasuresAPIImporter(ds, metricsDS, sonarCodeURLLinker, translator, usePath);
+    }
+
+    private void doImport() throws IOException {
+        String projectKey = files.get(1);
+
+        SonarMeasuresAPIImporter importer = createMesauresAPIImporter();
+        Project project = importer.getProjectFromMeasureAPI(projectKey, projectKey, metrics);
+
+        ProjectSerializer.serializeProject(project, createWriterFrom());
+    }
+
+    private void doOldImport() throws IOException {
+        Reader reader = createReader();
+        URL baseUrl = baseUrl();
+        String baseUrlForLink = baseUrl == null ? "" : baseUrl.toString();
+
+        try (Writer writer = createWriterFrom()) {
+            new SonarXMLImport(reader, writer, baseUrlForLink).doImport();
         }
     }
 
-    private static void showErrorMessageAndTerminate(String message) {
-        err.println("Error!");
-        err.println(message);
-        exit(1);
-    }
+    @Override
+    public Void call() throws IOException {
+        if (oldApi) {
+            doOldImport();
+        } else {
+            doImport();
+        }
 
-    private static void showErrorMessageAndTerminate(String s, Exception e) {
-        e.printStackTrace();
-        showErrorMessageAndTerminate(s + ": " + e.getMessage());
+        return null;
     }
 }
