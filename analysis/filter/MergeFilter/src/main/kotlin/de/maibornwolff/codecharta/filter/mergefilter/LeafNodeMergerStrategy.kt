@@ -48,12 +48,12 @@ class LeafNodeMergerStrategy(val addMisfittingNodes: Boolean) : NodeMergerStrate
             return listOf()
         }
         val reference = lists.first()
-        return lists.drop(1).fold(reference, { acc, nodes ->
-            nodes.fold(acc, {
-                acc: List<Node>, node: Node ->
-                acc.flatMap { if (mergeConditionSatisfied(it, node)) merge(it, node) else listOf(it) }
-            })
-        })
+        return lists.drop(1)
+                .fold(reference, { acc1, nodes ->
+                    nodes.fold(acc1, { acc2: List<Node>, node: Node ->
+                        acc2.flatMap { if (mergeConditionSatisfied(it, node)) merge(it, node) else listOf(it) }
+                    })
+                })
     }
 
     /**

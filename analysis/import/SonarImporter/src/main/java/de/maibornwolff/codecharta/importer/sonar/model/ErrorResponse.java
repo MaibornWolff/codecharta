@@ -25,9 +25,7 @@ public class ErrorResponse {
         ErrorResponse that = (ErrorResponse) o;
 
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        if (!Arrays.equals(errors, that.errors)) return false;
-
-        return true;
+        return Arrays.equals(errors, that.errors);
     }
 
     @Override

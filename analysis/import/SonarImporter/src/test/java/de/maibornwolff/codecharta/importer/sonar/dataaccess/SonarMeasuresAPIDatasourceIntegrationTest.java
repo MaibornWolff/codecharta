@@ -12,7 +12,6 @@ import de.maibornwolff.codecharta.importer.sonar.model.*;
 import org.junit.Rule;
 import org.junit.Test;
 
-import javax.ws.rs.WebApplicationException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -21,6 +20,7 @@ import java.net.URL;
 
 import static com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder.jsonResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource.PAGE_SIZE;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -29,7 +29,7 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
     private static final String USERNAME = "somename";
     private static final String PROJECT_KEY = "someProject";
     private static final Gson GSON = new GsonBuilder().create();
-    private static final String URL_PATH = "/api/measures/component_tree?baseComponentKey=" + PROJECT_KEY + "&qualifiers=FIL,UTS&metricKeys=coverage&p=1&ps=100";
+    private static final String URL_PATH = "/api/measures/component_tree?baseComponentKey=" + PROJECT_KEY + "&qualifiers=FIL,UTS&metricKeys=coverage&p=1&ps=" + PAGE_SIZE;
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(PORT);
@@ -87,7 +87,7 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
         assertThat(measures, is(createExpectedMeasures()));
     }
 
-    @Test(expected = WebApplicationException.class)
+    @Test(expected = SonarImporterException.class)
     public void getMeasures_throws_exception_if_bad_request() throws Exception {
         // given
         ErrorEntity error = new ErrorEntity("some Error");
@@ -102,30 +102,9 @@ public class SonarMeasuresAPIDatasourceIntegrationTest {
     }
 
     @Test
-    public void getNumberOfPages_from_server() throws Exception {
-        // given
-        Measures measures = new Measures(
-                new PagingInfo(1, 100, 999),
-                null,
-                null);
-        stubFor(get(urlEqualTo(URL_PATH)).withBasicAuth(USERNAME, "")
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withStatus(200)
-                        .withBody(GSON.toJson(measures))));
-
-        // when
-        SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource(USERNAME, createBaseUrl());
-        int numberOfPages = ds.getNumberOfPages(PROJECT_KEY, ImmutableList.of("coverage"));
-
-        // then
-        assertThat(numberOfPages, is(10));
-    }
-
-    @Test
     public void createMeasureAPIRequestURI() throws Exception {
         // given
-        URI expectedMeasuresAPIRequestURI = new URI(createBaseUrl() + "/api/measures/component_tree?baseComponentKey=&qualifiers=FIL,UTS&metricKeys=coverage&p=0&ps=100");
+        URI expectedMeasuresAPIRequestURI = new URI(createBaseUrl() + "/api/measures/component_tree?baseComponentKey=&qualifiers=FIL,UTS&metricKeys=coverage&p=0&ps=500");
 
         // when
         SonarMeasuresAPIDatasource ds = new SonarMeasuresAPIDatasource("", createBaseUrl());
