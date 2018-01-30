@@ -15,6 +15,14 @@ dependencies {
 mainClassName = "de.maibornwolff.codecharta.importer.csv.CSVImporter"
 applicationName = 'codecharta-csvimport'
 
+compileJava {
+    options.compilerArgs += ['--release', '8']
+}
+
+compileTestJava {
+    options.compilerArgs += ['--release', '8']
+}
+
 jar {
     baseName = "${applicationName}"
     manifest {

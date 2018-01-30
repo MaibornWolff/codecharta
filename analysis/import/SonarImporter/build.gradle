@@ -34,6 +34,14 @@ run {
     }
 }
 
+compileJava {
+    options.compilerArgs += ['--release', '8']
+}
+
+compileTestJava {
+    options.compilerArgs += ['--release', '8']
+}
+
 jacocoTestReport {
     afterEvaluate {
         classDirectories = files(classDirectories.files.collect {
