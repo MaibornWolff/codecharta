@@ -29,25 +29,37 @@
 
 package de.maibornwolff.codecharta.tools.validation
 
+import picocli.CommandLine
 import java.io.File
 import java.io.FileInputStream
-import kotlin.system.exitProcess
+import java.util.concurrent.Callable
 
-var SCHEMA_PATH = "cc.json"
+@CommandLine.Command(name = "check",
+        description = ["validates cc.json files"],
+        footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
+)
+class ValidationTool : Callable<Void?> {
+    var SCHEMA_PATH = "cc.json"
 
-fun main(args: Array<String>) {
-    if (args.size != 1) {
-        System.err?.println("Wrong number of arguments " + args.size)
-        printUsage()
-        exitProcess(-1)
+    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+    var help: Boolean = false
+
+    @CommandLine.Parameters(index = "0", description = ["file to validate"])
+    var file: String = ""
+
+    override fun call(): Void? {
+        EveritValidator(SCHEMA_PATH).validate(FileInputStream(File(file).absoluteFile))
+
+        return null
     }
 
-    val validator = EveritValidator(SCHEMA_PATH)
+    companion object {
+        var SCHEMA_PATH = "cc.json"
 
-    validator.validate(FileInputStream(File(args[0]).absoluteFile))
+        @JvmStatic
+        fun main(args: Array<String>) {
+            CommandLine.call(ValidationTool(), System.out, *args)
+        }
+    }
+
 }
-
-fun printUsage() {
-    System.err?.println("Usage: ValidationFilter.exe <json>")
-}
-
