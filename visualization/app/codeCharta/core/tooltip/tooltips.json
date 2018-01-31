@@ -28,5 +28,11 @@
   "statements_at_level_8": "Statements in nesting level 8",
   "statements_at_level_9": "Statements in nesting level 9",
   "unary": "Assigns always the value 1 to this dimension",
-  "rloc/mcc/mcc(20,40)": "rloc/mcc/mcc with color range (20,40) \n rloc: {rloc} \n mcc: {mcc}"
+  "rloc/mcc/mcc(20,40)": "rloc/mcc/mcc with color range (20,40) \n rloc: {rloc} \n mcc: {mcc}",
+  "MEAN":"Shows mean values as height metric accumulated over all loaded maps",
+  "MEDIAN":"Shows median values as height metric accumulated over all loaded maps",
+  "MAX":"Shows maximum values as height metric accumulated over all loaded maps",
+  "MIN":"Shows minimum values as height metric accumulated over all loaded maps",
+  "NOTHING":"Shows the regular maps",
+  "FASHION":"Shows fashion values as height metric accumulated over all loaded maps"
 }
