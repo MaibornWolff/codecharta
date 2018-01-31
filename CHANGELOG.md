@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- No underscore for scenarios in tooltips #71
 
 ## [1.6.5] - 2018-01-30
 ### Added
