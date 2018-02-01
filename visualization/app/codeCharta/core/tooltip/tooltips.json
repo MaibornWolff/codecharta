@@ -35,5 +35,6 @@
   "range_of_weeks_with_commits": "Number of weeks since first and last modification in SCM",
   "successive_weeks_with_commits": "Number of successive weeks with modifications in SCM",
   "Complexity": "rloc/mcc/mcc with color range (20,40) \n rloc: _rloc_ \n mcc: _mcc_",
-  "Coverage": "rloc/mcc/line_coverage with color range (50,75) \n rloc: _rloc_ \n line_coverage: _line_coverage_"
+  "Coverage": "rloc/mcc/line_coverage with color range (50,75) \n rloc: _rloc_ \n line_coverage: _line_coverage_",
+  "Code Churn": "rloc/abs_code_churn/weeks_with_commits with color range (10,30) \n rloc: _rloc_ \n abs_code_churn: _abs_code_churn_ \n weeks_with_commits: _weeks_with_commits_"
 }
