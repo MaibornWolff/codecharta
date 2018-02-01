@@ -15,6 +15,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+## [1.6.7] - 2018-02-01
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.6.6] - 2018-02-01
+### Added
+- added anonymous git log generator anongit
+- browser demo shows codecharta-visualization sonar analysis
+
+### Changed
+
+### Removed
+
+### Fixed
+- No underscore for scenarios in tooltips #71
+
 ## [1.6.5] - 2018-01-30
 ### Added
 
