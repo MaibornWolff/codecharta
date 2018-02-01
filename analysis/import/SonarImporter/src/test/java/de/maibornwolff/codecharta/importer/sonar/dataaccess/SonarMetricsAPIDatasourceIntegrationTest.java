@@ -32,13 +32,13 @@ package de.maibornwolff.codecharta.importer.sonar.dataaccess;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
+import de.maibornwolff.codecharta.importer.sonar.SonarImporterException;
 import de.maibornwolff.codecharta.importer.sonar.model.MetricObject;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 
 import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.ServerErrorException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -58,13 +58,12 @@ public class SonarMetricsAPIDatasourceIntegrationTest {
 
     private static final int PORT = 8089;
     private static final String USERNAME = "somename";
-
-    private static final String METRIC_LIST_URL_PATH(int page) {
-        return "/api/metrics/search?p=" + page + "&ps=" + PAGE_SIZE;
-    }
-
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(PORT);
+
+    private static final String METRIC_LIST_URL_PATH(int page) {
+        return "/api/metrics/search?f=hidden,decimalScale&p=" + page + "&ps=" + PAGE_SIZE;
+    }
 
     private static URL createBaseUrl() {
         try {
@@ -135,7 +134,7 @@ public class SonarMetricsAPIDatasourceIntegrationTest {
         assertThat(metricsList, is(Arrays.asList(METRIC_ARRAY)));
     }
 
-    @Test(expected = NotAuthorizedException.class)
+    @Test(expected = SonarImporterException.class)
     public void getAvailableMetrics_should_throw_exception_if_unauthorized() throws Exception {
         // given
         stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
@@ -149,7 +148,7 @@ public class SonarMetricsAPIDatasourceIntegrationTest {
         // then throw
     }
 
-    @Test(expected = ServerErrorException.class)
+    @Test(expected = SonarImporterException.class)
     public void getAvailableMetrics_should_throw_exception_if_return_code_not_oK() throws Exception {
         // given
         stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
@@ -178,6 +177,6 @@ public class SonarMetricsAPIDatasourceIntegrationTest {
         int numberOfPages = ds.getNumberOfPages();
 
         // then
-        Assert.assertThat(numberOfPages, is(2));
+        Assert.assertThat(numberOfPages, is(1));
     }
 }

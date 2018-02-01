@@ -19,7 +19,8 @@ public class SourceMonitorImporterParameter {
     private boolean help = false;
 
     public SourceMonitorImporterParameter(String[] args) {
-        this.jc = new JCommander(this, args);
+        this.jc = new JCommander(this);
+        this.jc.parse(args);
     }
 
     public List<String> getFiles() {

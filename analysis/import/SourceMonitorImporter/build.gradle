@@ -9,6 +9,15 @@ dependencies {
 mainClassName = "de.maibornwolff.codecharta.importer.sourcemonitor.SourceMonitorImporter"
 applicationName = 'codecharta-sourcemonitorimport'
 
+
+compileJava {
+    options.compilerArgs += ['--release', '8']
+}
+
+compileTestJava {
+    options.compilerArgs += ['--release', '8']
+}
+
 jar {
     baseName = "${applicationName}"
     manifest {
