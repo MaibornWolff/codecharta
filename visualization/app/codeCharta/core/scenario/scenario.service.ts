@@ -12,8 +12,12 @@ export interface Scenario {
  */
 export class ScenarioService {
 
+    private scenarios: Scenario[];
+
     /* ngInject */
-    constructor(private settingsService) {}
+    constructor(private settingsService) {
+        this.scenarios = require("./scenarios.json");
+    }
 
     /**
      * Applies a given scenario to the current codecharta session.
@@ -28,7 +32,7 @@ export class ScenarioService {
      * @returns {Scenario[]} all scenarios
      */
     public getScenarios(): Scenario[] {
-        return [this.getDefaultScenario()];
+        return this.scenarios;
     }
 
     /**
