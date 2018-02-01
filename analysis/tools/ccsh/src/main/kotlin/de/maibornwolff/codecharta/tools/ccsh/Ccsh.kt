@@ -63,7 +63,6 @@ class Ccsh : Callable<Void?> {
 
     override fun call(): Void? {
         // info: always run
-        CommandLine.usage(this, System.out)
 
         return null
     }

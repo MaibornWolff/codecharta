@@ -29,6 +29,10 @@ distributions {
     main {
         baseName = 'codecharta-analysis'
         contents {
+            from { '../LICENSE.md' }
+            from { '../CHANGELOG.md' }
+
+            // Readmes
             from { 'README.md' }
 
             project.subprojects.each { p ->
@@ -41,8 +45,10 @@ distributions {
                         from { p.jar }
                     }
                 }
-                // Readmes
             }
+
+            // deprecated ccsh
+            from {'dist/ccsh'}
         }
     }
 }

@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - added anonymous git log generator anongit
 
 ### Changed
+- rewrote command line interface
+- linking ccsh to bin/ccsh will be deleted later
 
 ### Removed
 

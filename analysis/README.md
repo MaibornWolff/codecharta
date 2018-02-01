@@ -48,9 +48,7 @@ To run it you can call `ccsh`
 
 - Download / build package
 - Unzip / untar package in desired destination folder (named CC_INSTALL_DIR)
-- If on Linux: make extracted ccsh runnable (`chmod u+x ccsh`)
 - In bash:
-> ./ccsh install 
 > ./ccsh -h
 
 ## Build
