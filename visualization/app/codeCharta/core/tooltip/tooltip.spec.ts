@@ -71,18 +71,24 @@ describe("tooltip.service", ()=> {
         expect(tooltipService.getTooltipTextByKey(undefined)).toBe(NO_DESCRIPTION);
     });
 
-    it("should return nested answer by keys in keys sorrounded by _", () => {
-        tooltipService.tooltips = {a: "a description", c: "c description _a_"};
+    it("should return nested answer by keys in keys sorrounded by {}", () => {
+        tooltipService.tooltips = {a: "a description", c: "c description {a}"};
         expect(tooltipService.getTooltipTextByKey("c")).toBe("c description a description");
     });
 
-    it("should return nested \"no description\" by unknown keys in keys sorrounded by _", () => {
-        tooltipService.tooltips = {d: "d description _as_"};
+    it("should allow strings like lines_of_code", () => {
+        tooltipService.tooltips = {a: "lines_of_code", c: "c description {a}"};
+        expect(tooltipService.getTooltipTextByKey("a")).toBe("lines_of_code");
+        expect(tooltipService.getTooltipTextByKey("c")).toBe("c description lines_of_code");
+    });
+
+    it("should return nested \"no description\" by unknown keys in keys sorrounded by {}", () => {
+        tooltipService.tooltips = {d: "d description {as}"};
         expect(tooltipService.getTooltipTextByKey("d")).toBe("d description " + NO_DESCRIPTION);
     });
 
     it("should return nested into nested descriptions", () => {
-        tooltipService.tooltips = {a: "a description", c: "c description _a_", e: "nested descriptions _c_"};
+        tooltipService.tooltips = {a: "a description", c: "c description {a}", e: "nested descriptions {c}"};
         expect(tooltipService.getTooltipTextByKey("e")).toBe("nested descriptions c description a description");
     });
 

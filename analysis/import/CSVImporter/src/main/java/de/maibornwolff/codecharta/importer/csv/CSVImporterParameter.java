@@ -25,7 +25,8 @@ public class CSVImporterParameter {
     private boolean help = false;
 
     public CSVImporterParameter(String[] args) {
-        this.jc = new JCommander(this, args);
+        this.jc = new JCommander(this);
+        this.jc.parse(args);
     }
 
     public char getPathSeparator() {

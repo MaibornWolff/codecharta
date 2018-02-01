@@ -39,28 +39,12 @@ import java.util.List;
 public class MetricObject {
     private static final List<String> FLOAT_TYPES = ImmutableList.of("INT", "FLOAT", "PERCENT");
 
-    private final int id;
     private final String key;
     private final String type;
-    private final String name;
-    private final String description;
-    private final String domain;
-    private final double direction;
-    private final boolean qualitative;
-    private final boolean hidden;
-    private final boolean custom;
 
-    public MetricObject(int id, String key, String type, String name, String description, String domain, double direction, boolean qualitative, boolean hidden, boolean custom) {
-        this.id = id;
+    public MetricObject(String key, String type) {
         this.key = key;
         this.type = type;
-        this.name = name;
-        this.description = description;
-        this.domain = domain;
-        this.direction = direction;
-        this.qualitative = qualitative;
-        this.hidden = hidden;
-        this.custom = custom;
     }
 
     public String getKey() {
@@ -69,9 +53,5 @@ public class MetricObject {
 
     public boolean isFloatType() {
         return FLOAT_TYPES.contains(type);
-    }
-
-    public boolean isHidden() {
-        return hidden;
     }
 }
