@@ -70,6 +70,7 @@ Object {
         class="browser-default ng-pristine ng-untouched ng-valid ng-empty"
         id="dropdown-directive-13"
         ng-model="ctrl.model"
+        title="no description"
       >
         <option
           selected="selected"
