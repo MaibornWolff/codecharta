@@ -54,7 +54,7 @@
     }
   },
   {
-    "name": "Coverage",
+    "name": "Code Churn",
     "settings": {
       "neutralColorRange": {
         "from": 10,
