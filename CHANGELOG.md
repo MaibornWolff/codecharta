@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
+- Defined further scenarios via json file
+- Added description for metrics and scenarios
 
 ### Removed
 
