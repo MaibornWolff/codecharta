@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- Bugfix: detail panel should be cleared before setting new details else old values may survive
 
 ## [1.6.7] - 2018-02-01
 ### Added
