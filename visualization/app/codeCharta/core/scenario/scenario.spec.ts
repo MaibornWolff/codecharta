@@ -1,10 +1,10 @@
 import {NGMock} from "../../../ng.mockhelper";
-import DoneCallback = jest.DoneCallback;
 
 import "./scenario.module";
-import {ScenarioService, Scenario} from "./scenario.service";
+import {Scenario, ScenarioService} from "./scenario.service";
 import {SettingsService} from "../settings/settings.service";
 import {createDefaultScenario} from "./scenario.data";
+
 /**
  * @test {ScenatioService}
  */
@@ -20,7 +20,7 @@ describe("app.codeCharta.core.scenarioService", function () {
     beforeEach(NGMock.mock.module("app.codeCharta.core.scenario"));
 
     //noinspection TypeScriptUnresolvedVariable
-    beforeEach(NGMock.mock.inject((_scenarioService_, _settingsService_, _$rootScope_)=> {
+    beforeEach(NGMock.mock.inject((_scenarioService_, _settingsService_, _$rootScope_) => {
         scenarioService = _scenarioService_;
         settingsService = _settingsService_;
         $scope = _$rootScope_;
@@ -28,16 +28,20 @@ describe("app.codeCharta.core.scenarioService", function () {
         defaultScenario = createDefaultScenario(settingsService.settings.map);
     }));
 
-    it("should apply the settings from a given scenario", ()=> {
+    it("should apply the settings from a given scenario", () => {
         scenarioService.applyScenario(scenario);
         expect(settingsService.settings).toBe(scenario.settings);
     });
 
-    it("default scenario should be rloc/mcc/mcc", ()=> {
+    it("default scenario should be rloc/mcc/mcc", () => {
         var scenario = scenarioService.getDefaultScenario();
         expect(scenario.settings.areaMetric).toBe(defaultScenario.settings.areaMetric);
         expect(scenario.settings.heightMetric).toBe(defaultScenario.settings.heightMetric);
         expect(scenario.settings.colorMetric).toBe(defaultScenario.settings.colorMetric);
+    });
+
+    it("scenarios should be scenarios from json file", () => {
+        expect(scenarioService.getScenarios()).toBe(require("./scenarios.json"));
     });
 
 });

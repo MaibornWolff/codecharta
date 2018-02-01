@@ -135,7 +135,7 @@ public class SCMLogParserParameter {
                 "number_of_authors",
                 "number_of_commits",
                 "range_of_weeks_with_commits",
-                "successive_weeks_of_commits",
+                "successive_weeks_with_commits",
                 "weeks_with_commits"
         );
 
