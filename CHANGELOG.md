@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Defined further scenarios via json file
 - Added description for metrics and scenarios
 - using fixed point values in detail panel (ui) to truncate infinite or long decimals
+- folders now use the mean attributes of their buildings(leaves)
 
 ### Removed
 
