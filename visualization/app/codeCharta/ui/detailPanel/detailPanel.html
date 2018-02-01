@@ -1,45 +1,71 @@
-<div class="row" id="detailWindow" ng-hide="!($ctrl.isSelected() || $ctrl.isHovered())">
-    <div class="col s12 m5">
+<div class="row" ng-hide="!($ctrl.isSelected() || $ctrl.isHovered())">
+    <div class="col s4 m4 l4 ">
+        <strong>Property</strong>
+    </div>
+    <div class="col s4 m4 l4 ">
+        <strong>Hovered</strong>
+    </div>
+    <div class="col s4 m4 l4 ">
+        <strong>Selected</strong>
+    </div>
+</div>
 
-              <table>
-                  <thead>
-                  <tr>
-                      <th>Property</th>
-                      <th ng-hide="!$ctrl.isHovered()" id="hoveredHeader">Hovered</th>
-                      <th ng-hide="!$ctrl.isSelected()" id="selectedHeader">Selected</th>
-                  </tr>
-                  </thead>
+<div class="row" ng-hide="!($ctrl.isSelected() || $ctrl.isHovered())">
+    <div class="col s4 m4 l4 ">
+        <strong>Name</strong>
+    </div>
+    <div class="col s4 m4 l4 ">
+        <span ng-hide="!$ctrl.isHovered()">{{$ctrl.details.hovered.name}}</span>
+    </div>
+    <div class="col s4 m4 l4 ">
+        <span ng-hide="!$ctrl.isSelected()">{{$ctrl.details.selected.name}}</span>
+    </div>
+</div>
 
-                  <tbody>
-                      <tr>
-                          <td>Name</td>
-                          <td ng-hide="!$ctrl.isHovered()">{{$ctrl.details.hovered.name}}</td>
-                          <td ng-hide="!$ctrl.isSelected()">{{$ctrl.details.selected.name}}</td>
-                      </tr>
-                      <tr>
-                          <td>{{$ctrl.details.common.areaAttributeName}}</td>
-                          <td ng-hide="!$ctrl.isHovered()">{{$ctrl.details.hovered.area}} <span ng-hide="!$ctrl.details.hovered.areaDelta">(&Delta;{{$ctrl.details.hovered.areaDelta}})</span></td>
-                          <td ng-hide="!$ctrl.isSelected()">{{$ctrl.details.selected.area}} <span ng-hide="!$ctrl.details.selected.areaDelta">(&Delta;{{$ctrl.details.selected.areaDelta}})</span></td>
-                      </tr>
-                      <tr>
-                          <td>{{$ctrl.details.common.heightAttributeName}}</td>
-                          <td ng-hide="!$ctrl.isHovered()">{{$ctrl.details.hovered.height}} <span ng-hide="!$ctrl.details.hovered.heightDelta">(&Delta;{{$ctrl.details.hovered.heightDelta}})</span></td>
-                          <td ng-hide="!$ctrl.isSelected()">{{$ctrl.details.selected.height}} <span ng-hide="!$ctrl.details.selected.heightDelta">(&Delta;{{$ctrl.details.selected.heightDelta}})</span></td>
-                      </tr>
-                      <tr>
-                          <td>{{$ctrl.details.common.colorAttributeName}}</td>
-                          <td ng-hide="!$ctrl.isHovered()">{{$ctrl.details.hovered.color}} <span ng-hide="!$ctrl.details.hovered.colorDelta">(&Delta;{{$ctrl.details.hovered.colorDelta}})</span></td>
-                          <td ng-hide="!$ctrl.isSelected()">{{$ctrl.details.selected.color}} <span ng-hide="!$ctrl.details.selected.colorDelta">(&Delta;{{$ctrl.details.selected.colorDelta}})</span></td>
-                      </tr>
-                      <tr>
-                          <td>Origin</td>
-                          <td ng-hide="!$ctrl.isHovered()">{{$ctrl.details.hovered.origin}}</td>
-                          <td ng-hide="!$ctrl.isSelected()">{{$ctrl.details.selected.origin}}</td>
-                      </tr>
-                  </tbody>
-              </table>
+<div class="row" ng-hide="!($ctrl.isSelected() || $ctrl.isHovered())">
+    <div class="col s4 m4 l4 ">
+        <strong>{{$ctrl.details.common.areaAttributeName}}</strong>
+    </div>
+    <div class="col s4 m4 l4 ">
+        <span ng-hide="!$ctrl.isHovered()">{{$ctrl.details.hovered.area}} <span ng-hide="!$ctrl.details.hovered.areaDelta">(&Delta;{{$ctrl.details.hovered.areaDelta}})</span></span>
+    </div>
+    <div class="col s4 m4 l4 ">
+        <span ng-hide="!$ctrl.isSelected()">{{$ctrl.details.selected.area}} <span ng-hide="!$ctrl.details.selected.areaDelta">(&Delta;{{$ctrl.details.selected.areaDelta}})</span></span>
+    </div>
+</div>
 
-        <!--<a ng-hide="!$ctrl.details.selected.link" target="_blank" href="{{$ctrl.details.selected.link}}">link to selected</a>-->
+<div class="row" ng-hide="!($ctrl.isSelected() || $ctrl.isHovered())">
+    <div class="col s4 m4 l4 ">
+        <strong>{{$ctrl.details.common.heightAttributeName}}</strong>
+    </div>
+    <div class="col s4 m4 l4 ">
+        <span ng-hide="!$ctrl.isHovered()">{{$ctrl.details.hovered.height}} <span ng-hide="!$ctrl.details.hovered.heightDelta">(&Delta;{{$ctrl.details.hovered.heightDelta}})</span></span>
+    </div>
+    <div class="col s4 m4 l4 ">
+        <span ng-hide="!$ctrl.isSelected()">{{$ctrl.details.selected.height}} <span ng-hide="!$ctrl.details.selected.heightDelta">(&Delta;{{$ctrl.details.selected.heightDelta}})</span></span>
+    </div>
+</div>
 
+<div class="row" ng-hide="!($ctrl.isSelected() || $ctrl.isHovered())">
+    <div class="col s4 m4 l4 ">
+        <strong>{{$ctrl.details.common.colorAttributeName}}</strong>
+    </div>
+    <div class="col s4 m4 l4 ">
+        <span ng-hide="!$ctrl.isHovered()">{{$ctrl.details.hovered.color}} <span ng-hide="!$ctrl.details.hovered.colorDelta">(&Delta;{{$ctrl.details.hovered.colorDelta}})</span></span>
+    </div>
+    <div class="col s4 m4 l4 ">
+        <span ng-hide="!$ctrl.isSelected()">{{$ctrl.details.selected.color}} <span ng-hide="!$ctrl.details.selected.colorDelta">(&Delta;{{$ctrl.details.selected.colorDelta}})</span></span>
+    </div>
+</div>
+
+<div class="row" ng-hide="!($ctrl.isSelected() || $ctrl.isHovered())">
+    <div class="col s4 m4 l4 ">
+        <strong>Origin</strong>
+    </div>
+    <div class="col s4 m4 l4 ">
+        <span ng-hide="!$ctrl.isHovered()">{{$ctrl.details.hovered.origin}}</span>
+    </div>
+    <div class="col s4 m4 l4 ">
+        <span ng-hide="!$ctrl.isSelected()">{{$ctrl.details.selected.origin}}</span>
     </div>
 </div>

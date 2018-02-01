@@ -11,6 +11,10 @@ export class RevisionChooserController implements DataServiceSubscriber{
 
     public revisions: CodeMap[];
     public visible: boolean = false;
+    public ui = {
+        chosenReference: null,
+        chosenComparison: null,
+    };
 
     /* @ngInject */
 
@@ -24,6 +28,8 @@ export class RevisionChooserController implements DataServiceSubscriber{
         private settingsService: SettingsService
     ) {
         this.revisions = dataService.data.revisions;
+        this.ui.chosenComparison = this.dataService.getLastComparisonMap();
+        this.ui.chosenReference = this.dataService.getLastReferenceMap();
         dataService.subscribe(this);
     }
 
@@ -58,6 +64,16 @@ export class RevisionChooserController implements DataServiceSubscriber{
      */
     onDataChanged(data: DataModel) {
         this.revisions = data.revisions;
+        this.ui.chosenComparison = this.dataService.getLastComparisonMap();
+        this.ui.chosenReference = this.dataService.getLastReferenceMap();
+    }
+
+    onReferenceChange(map: CodeMap) {
+        this.dataService.setReferenceMap(this.dataService.getIndexOfMap(map));
+    }
+
+    onComparisonChange(map: CodeMap) {
+        this.dataService.setComparisonMap(this.dataService.getIndexOfMap(map));
     }
 
     loadComparisonMap(key: number) {

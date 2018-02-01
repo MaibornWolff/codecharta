@@ -19,7 +19,7 @@ export class CollapsibleElementDirective implements IDirective{
     replace = true;
     transclude = true;
     template = "<li>\n" +
-        "    <div class=\"collapsible-header\"><i class=\"fa {{::iconClass}}\"></i>{{::label}}</div>\n" +
+        "    <div class=\"collapsible-header hoverable\"><i class=\"fa {{::iconClass}}\"></i>{{::label}}</div>\n" +
         "    <div class=\"collapsible-body\">\n" +
         "        <div class=\"row\" ng-transclude>\n" +
         "          <!--transcluded content-->\n" +

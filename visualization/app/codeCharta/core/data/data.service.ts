@@ -43,6 +43,14 @@ export class DataService {
 
     }
 
+    public getLastComparisonMap(): CodeMap {
+        return this._lastComparisonMap;
+    }
+
+    public getLastReferenceMap(): CodeMap {
+        return this._data.revisions[this._lastReferenceIndex];
+    }
+
     get data(): DataModel {
         return this._data;
     }
@@ -180,6 +188,18 @@ export class DataService {
         //we should write back map changes to dataService, no need to call notify and make an infinite loop
         this._data.renderMap = result.leftMap;
         this._lastComparisonMap = result.rightMap;
+    }
+
+    public getIndexOfMap(map: CodeMap) {
+
+        for(let i = 0; i<this._data.revisions.length; i++){
+            if(this._data.revisions[i] && map && this._data.revisions[i].fileName === map.fileName){
+                return i;
+            }
+        }
+
+        return -1;
+
     }
 
 }

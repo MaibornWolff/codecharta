@@ -1,4 +1,60 @@
-<div id="legendButton">
+<collapsible-directive>
+
+    <collapsible-element-directive label="Legend" icon-class="fa-map-signs">
+
+        <div class="row">
+            <div class="col l4"><strong>{{$ctrl.operation}} Area</strong></div>
+            <div class="col l4"><strong>{{$ctrl.operation}} Height</strong></div>
+            <div class="col l4"><strong>{{$ctrl.operation}} Color</strong></div>
+        </div>
+
+        <div class="row">
+            <div class="col l4">{{$ctrl.areaMetric}}</div>
+            <div class="col l4">{{$ctrl.heightMetric}}</div>
+            <div class="col l4">{{$ctrl.colorMetric}}</div>
+        </div>
+
+        <div class="row">
+
+            <div class="chip col l12">
+                <img id="green" alt="green color">
+                <span ng-if="!$ctrl.range.flipped">0 to &lt; {{$ctrl.range.from}}</span>
+                <span ng-if="$ctrl.range.flipped">&gt; {{$ctrl.range.to}} to Infinite</span>
+            </div>
+
+            <div class="chip col l12">
+                <img id="yellow" alt="yellow color">
+                &ge; {{$ctrl.range.from}} to &le; {{$ctrl.range.to}}
+            </div>
+
+            <div class="chip col l12">
+                <img id="red" alt="red color">
+                <span ng-if="!$ctrl.range.flipped">&gt; {{$ctrl.range.to}} to Infinite</span>
+                <span ng-if="$ctrl.range.flipped">0 to &lt; {{$ctrl.range.from}}</span>
+            </div>
+
+            <div class="chip col l12">
+                <img id="select" alt="selected color">
+                selected
+            </div>
+
+            <div class="chip col l12">
+                <img id="positiveDelta" alt="positive delta color">
+                +&Delta;
+            </div>
+
+            <div class="chip col l12">
+                <img id="negativeDelta" alt="negative delta color">
+                -&Delta;
+            </div>
+
+        </div>
+
+    </collapsible-element-directive>
+
+</collapsible-directive>
+
+<!--<div id="legendButton">
     <a class="waves-effect waves-light btn ">legend</a>
 </div>
 
@@ -37,4 +93,4 @@
         <img id="negativeDelta" alt="negative delta color">
         -&Delta;
     </div>
-</div>
+</div>-->

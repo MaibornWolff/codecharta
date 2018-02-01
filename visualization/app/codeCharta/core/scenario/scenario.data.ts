@@ -22,7 +22,7 @@ export function createDefaultScenario(map: CodeMap): Scenario {
                 x: 1, y: 1, z: 1
             },
             camera: {
-                x: 0, y: 300, z: 1000
+                x: 1806, y: 1024, z: 948
             },
             margin: 1,
             operation: STATISTIC_OPS.NOTHING,

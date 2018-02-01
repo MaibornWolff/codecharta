@@ -1,17 +1,13 @@
-<div id="fileChooserPanel" class="modal bottom-sheet">
-    <div class="modal-content">
-        <table>
-            <tr>
-                <td></td>
-                <td><strong>Choose one or more (CMD, Ctrl) JSON files to import</strong></td>
-                <td><file-chooser-directive></file-chooser-directive></td>
-                <td></td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="modal-footer">
-        <a href="#!" class=" modal-action modal-close waves-effect waves-teal btn-flat">Cancel</a>
-    </div>
-</div>
+<collapsible-directive>
+    <collapsible-element-directive label="Open" icon-class="fa-folder-open">
+        <div class="row">
+            <div class="col l12">
+                <strong>Choose one or more (CMD, Ctrl) JSON files to import</strong>
+            </div>
+            <div class="col l12">
+                <file-chooser-directive></file-chooser-directive>
+            </div>
+        </div>
+    </collapsible-element-directive>
+</collapsible-directive>
 
