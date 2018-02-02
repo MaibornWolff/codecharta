@@ -9,7 +9,7 @@
     "type": "git",
     "url": "https://github.com/MaibornWolff/codecharta.git"
   },
-  "name": "codecharta-visualization",
+  "name": "@maibornwolff/codecharta-visualization",
   "version": "1.6.7",
   "description": "MaibornWolff CodeCharta",
   "files": [

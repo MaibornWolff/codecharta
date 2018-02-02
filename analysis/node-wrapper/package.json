@@ -9,7 +9,7 @@
     "type": "git",
     "url": "https://github.com/MaibornWolff/codecharta.git"
   },
-  "name": "codecharta-analysis",
+  "name": "@maibornwolff/codecharta-analysis",
   "version": "1.6.7",
   "description": "MaibornWolff CodeCharta Analysis Tools",
   "scripts": {
