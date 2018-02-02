@@ -3,6 +3,7 @@ import {LabelManager} from "./../rendering/labelManager"
 import {Scene} from "three";
 import {Group} from "three";
 import {CodeMapMesh} from "../rendering/codeMapMesh";
+import {ArrowManager} from "../rendering/arrowManager";
 
 /**
  * A service which manages the Three.js scene in an angular way.
@@ -13,8 +14,10 @@ class ThreeSceneService {
 
     scene: Scene;
     private labelManager: LabelManager;
+    private arrowManager: ArrowManager;
     private lights: Group;
     private labels: Group;
+    private dependencyArrows: Group;
     private mapGeometry: Group;
     private mapMesh: CodeMapMesh;
 
@@ -25,14 +28,17 @@ class ThreeSceneService {
         this.mapGeometry = new THREE.Group();
         this.lights = new THREE.Group();
         this.labels = new THREE.Group();
+        this.dependencyArrows = new THREE.Group();
 
         this.labelManager = new LabelManager(this.labels);
+        this.arrowManager = new ArrowManager(this.dependencyArrows);
 
         this.initLights();
 
-        this.scene.add(this.mapGeometry);
+        //this.scene.add(this.mapGeometry);
         this.scene.add(this.lights);
-        this.scene.add(this.labels);
+        this.scene.add(this.dependencyArrows);
+        //this.scene.add(this.labels);
 
     }
 
@@ -82,6 +88,11 @@ class ThreeSceneService {
     clearLabels() {
         while (this.labels.children.length > 0)
             this.labels.children.pop();
+    }
+
+    clearArrows() {
+        while (this.dependencyArrows.children.length > 0)
+            this.dependencyArrows.children.pop();
     }
 
     getMapMesh(): CodeMapMesh {
