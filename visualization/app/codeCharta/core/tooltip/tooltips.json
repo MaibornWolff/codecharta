@@ -27,5 +27,20 @@
   "statements_at_level_7": "Statements in nesting level 7",
   "statements_at_level_8": "Statements in nesting level 8",
   "statements_at_level_9": "Statements in nesting level 9",
-  "rloc/mcc/mcc(20,40)": "rloc/mcc/mcc with color range (20,40) \n rloc: _rloc_ \n mcc: _mcc_"
+  "weeks_with_commits": "Number of weeks in SCM with commits",
+  "number_of_commits": "Number of commits in SCM",
+  "number_of_authors": "Number of authors of commits in SCM",
+  "abs_code_churn": "Absolute Code Churn, i.e. number of modified lines (added or deleted) in SCM",
+  "range_of_weeks_with_commits": "Number of weeks since first and last modification in SCM",
+  "successive_weeks_with_commits": "Number of successive weeks with modifications in SCM",
+  "unary": "Assigns always the value 1 to this dimension",
+  "Complexity": "rloc/mcc/mcc with color range (20,40) \n rloc: {rloc} \n mcc: {mcc}",
+  "Coverage": "rloc/mcc/line_coverage with color range (50,75) \n rloc: {rloc} \n line_coverage: {line_coverage}",
+  "Code Churn": "rloc/abs_code_churn/weeks_with_commits with color range (10,30) \n rloc: {rloc} \n abs_code_churn: {abs_code_churn} \n weeks_with_commits: {weeks_with_commits}",
+  "MEAN":"Shows mean values as height metric accumulated over all loaded maps",
+  "MEDIAN":"Shows median values as height metric accumulated over all loaded maps",
+  "MAX":"Shows maximum values as height metric accumulated over all loaded maps",
+  "MIN":"Shows minimum values as height metric accumulated over all loaded maps",
+  "NOTHING":"Shows the regular maps",
+  "FASHION":"Shows fashion values as height metric accumulated over all loaded maps"
 }

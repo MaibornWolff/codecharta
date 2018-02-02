@@ -74,7 +74,7 @@ export class LabelManager {
     * @param {number} fontsize
     * @returns {THREE.Sprite}
     */
-    makeText(message : string, fontsize : number) : internalLabel {
+    private makeText(message : string, fontsize : number) : internalLabel {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
         ctx!.font = fontsize + "px Arial";

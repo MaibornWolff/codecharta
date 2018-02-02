@@ -28,7 +28,7 @@ interface codeMapLightingParams {
     deltaColorNegative : threeUniform;
 }
 
-interface mousePos {
+export interface mousePos {
     x : number,
     y : number
 }

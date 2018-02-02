@@ -53,7 +53,7 @@ class TooltipService {
          * non-whitespace symbols between "_"
          * @type {RegExp}
          */
-        const patt = new RegExp(/_\S*_/);
+        const patt = new RegExp(/{\S*}/);
 
         if (this._tooltips[key]) {
 
@@ -64,7 +64,7 @@ class TooltipService {
              * Any value between "_" Symbols is substituted by its description
              */
             while (patt.test(res)) {
-                res = res.replace(/_(.*?)_/, this.replaceString.bind(this));
+                res = res.replace(/{(.*?)}/, this.replaceString.bind(this));
             }
             return res;
 

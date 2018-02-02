@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import {DataService} from "../data/data.service";
 import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
-import {HierarchyNode} from "d3-hierarchy";
+import {HierarchyNode, HierarchyRectangularNode} from "d3-hierarchy";
 import {node} from "../../codeMap/rendering/node";
 
 /**

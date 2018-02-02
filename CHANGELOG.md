@@ -6,7 +6,60 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.7.2] - 2018-02-02
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+- url to homepage
+- analysis package
+
+## [1.7.1] - 2018-02-02
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.7.0] - 2018-02-02
+### Added
+
+### Changed
+- npm pachage scoped to @maibornwolff
+- Defined further scenarios via json file
+- Added description for metrics and scenarios
+- using fixed point values in detail panel (ui) to truncate infinite or long decimals
+
+### Removed
+
+### Fixed
+- Bugfix: detail panel should be cleared before setting new details else old values may survive
+
+## [1.6.7] - 2018-02-01
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.6.6] - 2018-02-01
+### Added
 - added anonymous git log generator anongit
+- browser demo shows codecharta-visualization sonar analysis
 
 ### Changed
 - rewrote command line interface
@@ -15,6 +68,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- No underscore for scenarios in tooltips #71
 
 ## [1.6.5] - 2018-01-30
 ### Added
