@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+
+## [1.7.2] - 2018-02-02
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
 - url to homepage
 - analysis package
 
