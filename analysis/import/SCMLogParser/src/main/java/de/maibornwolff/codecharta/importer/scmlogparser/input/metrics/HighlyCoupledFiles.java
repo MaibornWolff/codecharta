@@ -6,19 +6,16 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
- * experimental -> therefore no tests
- */
 public class HighlyCoupledFiles implements Metric {
-    public static final double HIGH_COUPLING_VALUE = .35;
-    public static final long MIN_NO_COMMITS_FOR_HIGH_COUPLING = 5L;
+    private static final double HIGH_COUPLING_VALUE = .35;
+    private static final long MIN_NO_COMMITS_FOR_HIGH_COUPLING = 5L;
 
     private final Map<String, Long> simultaneouslyCommitedFiles = new HashMap<>();
     private long numberOfCommits = 0;
 
     @Override
     public String description() {
-        return "Highly Coupled Files: Number of highly coupled files with this file.";
+        return "Highly Coupled Files: Number of highly coupled files (35% times modified the same time) with this file.";
     }
 
     @Override
@@ -34,7 +31,7 @@ public class HighlyCoupledFiles implements Metric {
     }
 
     private boolean isHighlyCoupled(long val) {
-        if (numberOfCommits > MIN_NO_COMMITS_FOR_HIGH_COUPLING) {
+        if (numberOfCommits >= MIN_NO_COMMITS_FOR_HIGH_COUPLING) {
             return (double) val / (double) numberOfCommits > HIGH_COUPLING_VALUE;
         }
 

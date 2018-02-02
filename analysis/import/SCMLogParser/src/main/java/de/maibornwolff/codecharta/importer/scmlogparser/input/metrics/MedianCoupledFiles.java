@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/*
- * experimental -> therefore no tests
- */
 public class MedianCoupledFiles implements Metric {
     private final List<Integer> numberCommitedFiles = new ArrayList<>();
 
@@ -28,7 +25,7 @@ public class MedianCoupledFiles implements Metric {
 
     @Override
     public String description() {
-        return "Median Coupled Files: Median of number of files that where commited with this file.";
+        return "Median Coupled Files: Median of number of other files that where commited with this file.";
     }
 
     @Override
