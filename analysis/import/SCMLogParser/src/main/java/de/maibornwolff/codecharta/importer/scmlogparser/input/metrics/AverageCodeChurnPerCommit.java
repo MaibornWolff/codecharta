@@ -2,9 +2,6 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 
-/*
- * experimental -> therefore no tests
- */
 public class AverageCodeChurnPerCommit implements Metric {
     private long absoluteCodeChurn = 0;
     private long numberOfNontrivialCommits = 0;
@@ -32,9 +29,6 @@ public class AverageCodeChurnPerCommit implements Metric {
         return absoluteCodeChurn;
     }
 
-    /**
-     * @return codeChurn weighted by the maximal number of lines
-     */
     @Override
     public Number value() {
         return numberOfNontrivialCommits > 0 ? absoluteCodeChurn() / numberOfNontrivialCommits : 0;

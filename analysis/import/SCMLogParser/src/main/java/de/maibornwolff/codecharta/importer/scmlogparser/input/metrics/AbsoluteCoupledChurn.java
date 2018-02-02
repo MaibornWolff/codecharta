@@ -3,16 +3,13 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 
-/*
- * experimental -> therefore no tests
- */
 public class AbsoluteCoupledChurn implements Metric {
     private long totalChurn = 0;
     private long ownChurn = 0;
 
     @Override
     public String description() {
-        return "Absolute Coupled Churn: Total number of lines changed in all files when this file was commited.";
+        return "Absolute Coupled Churn: Total number of lines changed in all other files when this file was commited.";
     }
 
     @Override
