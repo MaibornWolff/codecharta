@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
+- npm pachage scoped to @maibornwolff
 - Defined further scenarios via json file
 - Added description for metrics and scenarios
 - using fixed point values in detail panel (ui) to truncate infinite or long decimals
