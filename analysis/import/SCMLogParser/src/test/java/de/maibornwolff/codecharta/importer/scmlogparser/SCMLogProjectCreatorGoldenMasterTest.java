@@ -47,7 +47,7 @@ public class SCMLogProjectCreatorGoldenMasterTest {
             "number_of_commits",
             "weeks_with_commits",
             "range_of_weeks_with_commits",
-            "successive_weeks_of_commits"
+            "successive_weeks_with_commits"
     ));
 
     @Parameterized.Parameters(name = "{index}: {0}")

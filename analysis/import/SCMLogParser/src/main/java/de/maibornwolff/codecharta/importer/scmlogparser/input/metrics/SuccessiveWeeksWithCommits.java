@@ -15,7 +15,7 @@ public class SuccessiveWeeksWithCommits implements Metric {
 
     @Override
     public String metricName() {
-        return "successive_weeks_of_commits";
+        return "successive_weeks_with_commits";
     }
 
     @Override

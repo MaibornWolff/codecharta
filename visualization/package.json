@@ -9,8 +9,8 @@
     "type": "git",
     "url": "https://github.com/MaibornWolff/codecharta.git"
   },
-  "name": "codecharta-visualization",
-  "version": "1.6.5",
+  "name": "@maibornwolff/codecharta-visualization",
+  "version": "1.7.2",
   "description": "MaibornWolff CodeCharta",
   "files": [
     "dist/webpack",
@@ -39,7 +39,8 @@
   "main": "dist/webpack/index.html",
   "build": {
     "nwVersion": "0.27.3",
-    "output": "./dist/packages",
+    "output": "./dist/packages/",
+    "outputPattern": "codecharta-visualization-${VERSION}-${PLATFORM}-${ARCH}",
     "files": "./dist/webpack/**/*",
     "packed": true,
     "targets": [
@@ -47,11 +48,13 @@
     ],
     "appId": "io.github.maibornwolff.codecharta",
     "win": {
+      "productName": "codecharta-visualization",
       "companyName": "MaibornWolff GmbH",
       "icon": "app/icon.ico"
     },
     "mac": {
-      "icon": "app/icon.icns"
+      "icon": "app/icon.icns",
+      "displayName": "codecharta-visualization"
     }
   },
   "scripts": {

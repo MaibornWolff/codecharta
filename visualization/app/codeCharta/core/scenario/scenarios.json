@@ -1,0 +1,83 @@
+[
+  {
+    "name": "Complexity",
+    "settings": {
+      "neutralColorRange": {
+        "from": 20,
+        "to": 40,
+        "flipped": false
+      },
+      "areaMetric": "rloc",
+      "heightMetric": "mcc",
+      "colorMetric": "mcc",
+      "deltas": false,
+      "amountOfTopLabels": 1,
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "camera": {
+        "x": 0,
+        "y": 300,
+        "z": 1000
+      },
+      "margin": 1,
+      "deltaColorFlipped": false
+    }
+  },
+  {
+    "name": "Coverage",
+    "settings": {
+      "neutralColorRange": {
+        "from": 50,
+        "to": 75,
+        "flipped": true
+      },
+      "areaMetric": "rloc",
+      "heightMetric": "mcc",
+      "colorMetric": "line_coverage",
+      "deltas": false,
+      "amountOfTopLabels": 1,
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "camera": {
+        "x": 0,
+        "y": 300,
+        "z": 1000
+      },
+      "margin": 1,
+      "deltaColorFlipped": false
+    }
+  },
+  {
+    "name": "Code Churn",
+    "settings": {
+      "neutralColorRange": {
+        "from": 10,
+        "to": 30,
+        "flipped": false
+      },
+      "areaMetric": "rloc",
+      "heightMetric": "abs_code_churn",
+      "colorMetric": "weeks_with_commits",
+      "deltas": false,
+      "amountOfTopLabels": 1,
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "camera": {
+        "x": 0,
+        "y": 300,
+        "z": 1000
+      },
+      "margin": 1,
+      "deltaColorFlipped": false
+    }
+  }
+]

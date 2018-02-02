@@ -27,6 +27,8 @@ Additionally it saves the names of authors when the --add-author flag is set.
 
 The generated logs must be in UTF-8 encoding.
 
+You can also use the bash script anongit which generates an anonymous git log with log format GIT_LOG_NUMSTAT_RAW for usage with CodeCharta.
+
 
 ### Executing the SCMLogParser
 
@@ -39,6 +41,6 @@ The result is written as JSON to standard out or into an output file (if specifi
 ### Example
 
 * Install the tool
-* `git log --numstat --topo-order > log.txt`
-* `./ccsh scmlogparser log.txt --input-format GIT_LOG_NUMSTAT -o output.json`
+* `git log --numstat --raw --topo-order > log.txt` (or `anongit > log.txt`)
+* `./ccsh scmlogparser log.txt --input-format GIT_LOG_NUMSTAT_RAW -o output.json`
 * load `output.json` in visualization
