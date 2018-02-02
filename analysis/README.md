@@ -2,6 +2,8 @@
 
 [![Build Status](https://secure.travis-ci.org/)](https://travis-ci.org/)
 
+> CodeCharta by [MaibornWolff](www.maibornwolff.de)
+
 ## CodeCharta analysis tools
 
 CodeCharta analysis tools generally follow the pipes and filters architecture principle.
