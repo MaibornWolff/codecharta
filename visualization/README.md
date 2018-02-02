@@ -1,7 +1,7 @@
 # CodeCharta 
 [![Build Status](https://travis-ci.org/MaibornWolff/codecharta.svg?branch=master)](https://travis-ci.org/MaibornWolff/codecharta)
 
-> CodeCharta by [MaibornWolff](www.maibornwolff.de)
+> CodeCharta by [MaibornWolff](https://www.maibornwolff.de)
 
 ## Jump to Section
 

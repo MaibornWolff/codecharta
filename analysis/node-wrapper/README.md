@@ -1,6 +1,6 @@
 # CodeCharta
 
-> CodeCharta by [MaibornWolff](www.maibornwolff.de)
+> CodeCharta by [MaibornWolff](https://www.maibornwolff.de)
 
 Install via npm
 
