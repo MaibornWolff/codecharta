@@ -7,5 +7,4 @@ cp -R visualization/dist/webpack/ gh-pages/visualization/app/
 
 # get sonar analysis
 analysis/gradlew -p analysis/ installDist
-analysis/build/install/codecharta-analysis/ccsh install
-analysis/build/install/codecharta-analysis/ccsh sonarimport -o gh-pages/visualization/app/codecharta.cc.json https://sonarcloud.io de.maibornwolff.codecharta:visualization
+analysis/build/install/codecharta-analysis/bin/ccsh sonarimport -o gh-pages/visualization/app/codecharta.cc.json https://sonarcloud.io de.maibornwolff.codecharta:visualization

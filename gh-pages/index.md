@@ -25,11 +25,8 @@ analysis: Tools for generating visualisation data
 - Download the [latest release](https://github.com/MaibornWolff/codecharta/releases/latest) of CodeCharta (codecharta-analysis and codecharta-visualization)
 - you should now have the analysis and visualization package 
 - unpack both packages
-- enter the codecharta-analysis directory with your favorite console
+- enter the codecharta-analysis/bin directory with your favorite console
 
-**linux only:** make extracted ccsh runnable (`chmod u+x ccsh`)
-
-- > ./ccsh install
 - > ./ccsh -h
 
 ## run local sonar analysis with a docker container (Mac)
