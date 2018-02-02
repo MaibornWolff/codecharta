@@ -1,5 +1,15 @@
+buildscript {
+    ext.kotlin_version = '1.2.21'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
 apply plugin: 'application'
-apply plugin: 'java'
+apply plugin: 'kotlin'
 
 dependencies {
     compile project(':model')
@@ -9,6 +19,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:3.9.0'
     testCompile 'org.mockito:mockito-core:2.13.0'
+    testCompile "io.mockk:mockk:1.7.1"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 mainClassName = "de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser"
@@ -30,4 +42,15 @@ jar {
     }
 
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
