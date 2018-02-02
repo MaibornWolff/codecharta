@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 - url to homepage
+- analysis package
 
 ## [1.7.1] - 2018-02-02
 ### Added
