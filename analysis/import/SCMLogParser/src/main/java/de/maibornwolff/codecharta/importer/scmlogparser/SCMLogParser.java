@@ -146,7 +146,8 @@ public class SCMLogParser implements Callable<Void> {
     }
 
 
-    void printUsage() {
+    // not implemented yet.
+    private void printUsage() {
         System.out.println("----");
         printLogCreation();
 
