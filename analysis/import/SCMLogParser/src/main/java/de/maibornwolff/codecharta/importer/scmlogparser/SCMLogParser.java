@@ -101,7 +101,7 @@ public class SCMLogParser implements Callable<Void> {
         return inputFormatNames;
     }
 
-    LogParserStrategy getLogParserStrategy() {
+    private LogParserStrategy getLogParserStrategy() {
         return getLogParserStrategyByInputFormat(getInputFormatNames());
     }
 
@@ -122,7 +122,7 @@ public class SCMLogParser implements Callable<Void> {
         }
     }
 
-    MetricsFactory getMetricsFactory() {
+    private MetricsFactory getMetricsFactory() {
         final List<String> nonChurnMetrics = Arrays.asList(
                 "number_of_authors",
                 "number_of_commits",
