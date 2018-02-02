@@ -5,7 +5,7 @@ import {CodeMap, CodeMapNode} from "./model/CodeMap";
 import {HierarchyNode} from "d3-hierarchy";
 import * as deepcopy from "deepcopy";
 
-interface KVObject {
+export interface KVObject {
     [key: string]: number
 }
 

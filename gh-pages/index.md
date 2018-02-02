@@ -1,6 +1,6 @@
 # Quicklinks
 
-[Visualization Demo](visualization/app/)
+[Visualization Demo](visualization/app/index.html?file=codecharta.cc.json)
 
 [Downloads](https://github.com/MaibornWolff/codecharta/releases)
 
@@ -15,8 +15,10 @@ analysis: Tools for generating visualisation data
 
 ## Install application for desktop usage with npm
 
-* install with `npm install codecharta-visualization -g`
-* run with `codecharta-visualization`
+* install visualization with `npm install @maibornwolff/codecharta-visualization -g`
+* install analysis with `npm install @maibornwolff/codecharta-analysis -g`
+* run visualization with `codecharta-visualization`
+* run analysis with `ccsh`
 
 ## How to install CodeCharta from github
 
@@ -130,7 +132,7 @@ It provides a simple way to customize your links with query parameters.
 
 [Readme](https://github.com/MaibornWolff/codecharta/tree/master/visualization)
 
-[Browser Demo](visualization/app/)
+[Browser Demo](visualization/app/index.html?file=codecharta.cc.json)
 
 [Coverage](visualization/coverage/lcov-report)
 

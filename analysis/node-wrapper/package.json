@@ -9,11 +9,11 @@
     "type": "git",
     "url": "https://github.com/MaibornWolff/codecharta.git"
   },
-  "name": "codecharta-analysis",
-  "version": "1.6.5",
+  "name": "@maibornwolff/codecharta-analysis",
+  "version": "1.7.2",
   "description": "MaibornWolff CodeCharta Analysis Tools",
   "scripts": {
-    "prepare": "../gradlew -p .. installDist && ../build/install/codecharta-analysis/ccsh install && cp -R ../build/install/codecharta-analysis public"
+    "prepare": "rm -rf ../build/install/codecharta-analysis public && ../gradlew -p .. installDist && ../build/install/codecharta-analysis/ccsh install && cp -R ../build/install/codecharta-analysis public"
   },
   "bin": {
     "ccsh": "public/ccsh"
