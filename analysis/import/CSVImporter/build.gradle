@@ -4,7 +4,7 @@ apply plugin: 'application'
 dependencies {
     compile project(':model')
     compile 'com.univocity:univocity-parsers:2.5.9'
-    compile 'com.beust:jcommander:1.72'
+    compile 'info.picocli:picocli:2.2.1'
     compile 'io.fastjson:boon:0.34'
 
     testCompile 'org.hamcrest:hamcrest-core:1.3'
