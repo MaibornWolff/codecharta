@@ -2,7 +2,7 @@
 
 [![Build Status](https://secure.travis-ci.org/)](https://travis-ci.org/)
 
-> CodeCharta by [MaibornWolff](www.maibornwolff.de)
+> CodeCharta by [MaibornWolff](https://www.maibornwolff.de)
 
 ## CodeCharta analysis tools
 

@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- url to homepage
 
 ## [1.7.1] - 2018-02-02
 ### Added
