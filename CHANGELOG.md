@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
+
+### Removed
+
+### Fixed
+
+## [1.7.0] - 2018-02-02
+### Added
+
+### Changed
 - npm pachage scoped to @maibornwolff
 - Defined further scenarios via json file
 - Added description for metrics and scenarios
