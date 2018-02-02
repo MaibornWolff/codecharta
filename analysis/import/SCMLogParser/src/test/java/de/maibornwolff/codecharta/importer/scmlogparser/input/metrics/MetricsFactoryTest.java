@@ -27,4 +27,12 @@ public class MetricsFactoryTest {
         assertThat(factory.createMetrics()).hasSize(0);
     }
 
+    @Test
+    public void defaultConstructorShouldCreateAllMetrics() {
+        String metricName = "some_non_existing_metric";
+        MetricsFactory factory = new MetricsFactory();
+
+        assertThat(factory.createMetrics()).hasSize(13);
+    }
+
 }
