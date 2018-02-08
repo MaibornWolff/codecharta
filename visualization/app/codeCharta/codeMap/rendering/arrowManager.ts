@@ -2,6 +2,7 @@ import * as THREE from "three";
 import {node} from "./node"
 import {renderSettings} from "./renderSettings"
 import {Group, Object3D, Vector3} from "three";
+import {CodeMapDependency} from "../../core/data/model/CodeMap";
 
 export class ArrowManager {
     private parentObjectInScene: THREE.Object3D;
@@ -45,6 +46,42 @@ export class ArrowManager {
         this.arrows = [];
         while (this.parentObjectInScene.children.length > 0)
             this.parentObjectInScene.children.pop();
+    }
+
+    addCodeMapDependenciesAsArrows(nodes: node[], deps: CodeMapDependency[], settings: renderSettings) {
+
+        let map = this.getPathToNodeMap(nodes);
+
+        for(let i = 0; i< deps.length; i++) {
+            let originNode: node = map.get(deps[i].node);
+            let targetNode: node = map.get(deps[i].dependsOn);
+            if(originNode && targetNode) {
+                this.addArrow(targetNode, originNode, settings);
+            } else {
+                console.log("could not resolve dependency description");
+            }
+        }
+
+    }
+
+    private getPathToNodeMap(nodes: node[]): Map<string, node> {
+        let map = new Map<string, node>();
+
+        for(let node of nodes) {
+            map.set(this.getPathFromNode(node), node);
+        }
+
+        return map;
+    }
+
+    private getPathFromNode(node: node): string {
+        let current: node = node;
+        let path = "";
+        while(current) {
+            path = "/" + current.name + path;
+            current = current.parent;
+        }
+        return path;
     }
 
     addArrow(arrowTargetNode: node, arrowOriginNode: node,settings: renderSettings): void {

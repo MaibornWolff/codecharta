@@ -65,7 +65,6 @@ export class CodeMapService implements SettingsServiceSubscriber{
         this.arrowManager = new ArrowManager(this.threeSceneService.dependencyArrows);
         this.arrowManager.clearArrows();
 
-
         for (let i=0, numAdded = 0; i < sorted.length && numAdded < s.amountOfTopLabels; ++i)
         {
             if (sorted[i].isLeaf)
@@ -75,13 +74,15 @@ export class CodeMapService implements SettingsServiceSubscriber{
             }
         }
 
-        //TODO
-        for (let i=0; i < sorted.length; i++)
-        {
-            if (sorted[i].isLeaf)
+        s.map.dependencies = [
             {
-                this.arrowManager.addArrow(sorted[i], sorted[0], renderSettings);
+                node: "/root/big leaf",
+                dependsOn: "/root/Parent Leaf/small leaf"
             }
+        ];
+
+        if(s.map.dependencies) {
+            this.arrowManager.addCodeMapDependenciesAsArrows(sorted, s.map.dependencies, renderSettings);
         }
 
         this.mapMesh = new CodeMapMesh(sorted, renderSettings);
