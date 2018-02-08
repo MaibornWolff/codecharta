@@ -48,6 +48,17 @@ export class ArrowManager {
             this.parentObjectInScene.children.pop();
     }
 
+    public addCodeMapDependenciesFromOriginAsArrows(origin: node, nodes: node[], deps: CodeMapDependency[], settings: renderSettings) {
+        let resDeps: CodeMapDependency[] = [];
+        let originPath = this.getPathFromNode(origin);
+        for(let i=0; i<deps.length; i++){
+            if(deps[i].node === originPath) {
+                resDeps.push(deps[i]);
+            }
+        }
+        this.addCodeMapDependenciesAsArrows(nodes, resDeps, settings);
+    }
+
     public addCodeMapDependenciesAsArrows(nodes: node[], deps: CodeMapDependency[], settings: renderSettings) {
 
         let map = this.getPathToNodeMap(nodes);
