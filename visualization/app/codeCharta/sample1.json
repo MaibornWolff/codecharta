@@ -52,6 +52,10 @@
     {
       "node": "/root/big leaf",
       "dependsOn": "/root/Parent Leaf/small leaf"
+    },
+    {
+      "node": "/root/big leaf",
+      "dependsOn": "/root/Parent Leaf/other small leaf"
     }
   ]
 }

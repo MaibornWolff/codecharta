@@ -31,7 +31,8 @@ export class DataLoadingService {
             this.dataValidatorService.validate(fileContent).then(
 
                 ()=>{
-                    const map: CodeMap = {fileName: fileName, projectName: fileContent.projectName, root: fileContent.nodes[0]};
+                    const map: CodeMap = {fileName: fileName, projectName: fileContent.projectName, root: fileContent.nodes[0], dependencies: fileContent.dependencies || undefined};
+                    console.log(map);
                     this.dataService.setMap(map, revision);
 
                     resolve(map);
