@@ -13,12 +13,12 @@ export class ArrowManager {
         this.arrows = new Array<THREE.Object3D>();
     }
 
-    makeArrowFromBezier(bezier: THREE.CubicBezierCurve3,
-                        hex: number = 0,
-                        flipped: boolean = false,
-                        headLength: number = 10,
-                        headWidth: number = 10,
-                        bezierPoints: number = 50): THREE.Object3D {
+    private makeArrowFromBezier(bezier: THREE.CubicBezierCurve3,
+                                hex: number = 0,
+                                flipped: boolean = false,
+                                headLength: number = 10,
+                                headWidth: number = 10,
+                                bezierPoints: number = 50): THREE.Object3D {
 
         let points = bezier.getPoints(bezierPoints);
 
@@ -42,20 +42,20 @@ export class ArrowManager {
         return curveObject;
     }
 
-    clearArrows() {
+    public clearArrows() {
         this.arrows = [];
         while (this.parentObjectInScene.children.length > 0)
             this.parentObjectInScene.children.pop();
     }
 
-    addCodeMapDependenciesAsArrows(nodes: node[], deps: CodeMapDependency[], settings: renderSettings) {
+    public addCodeMapDependenciesAsArrows(nodes: node[], deps: CodeMapDependency[], settings: renderSettings) {
 
         let map = this.getPathToNodeMap(nodes);
 
-        for(let i = 0; i< deps.length; i++) {
+        for (let i = 0; i < deps.length; i++) {
             let originNode: node = map.get(deps[i].node);
             let targetNode: node = map.get(deps[i].dependsOn);
-            if(originNode && targetNode) {
+            if (originNode && targetNode) {
                 this.addArrow(targetNode, originNode, settings);
             } else {
                 console.log("could not resolve dependency description");
@@ -67,7 +67,7 @@ export class ArrowManager {
     private getPathToNodeMap(nodes: node[]): Map<string, node> {
         let map = new Map<string, node>();
 
-        for(let node of nodes) {
+        for (let node of nodes) {
             map.set(this.getPathFromNode(node), node);
         }
 
@@ -77,16 +77,14 @@ export class ArrowManager {
     private getPathFromNode(node: node): string {
         let current: node = node;
         let path = "";
-        while(current) {
+        while (current) {
             path = "/" + current.name + path;
             current = current.parent;
         }
         return path;
     }
 
-    addArrow(arrowTargetNode: node, arrowOriginNode: node,settings: renderSettings): void {
-
-        //TODO
+    public addArrow(arrowTargetNode: node, arrowOriginNode: node, settings: renderSettings): void {
 
         if (arrowTargetNode.attributes && arrowTargetNode.attributes[settings.heightKey] && arrowOriginNode.attributes && arrowOriginNode.attributes[settings.heightKey]) {
 
@@ -108,8 +106,8 @@ export class ArrowManager {
 
             var curve = new THREE.CubicBezierCurve3(
                 new THREE.Vector3(xOrigin + wOrigin / 2, yOrigin + hOrigin, zOrigin + lOrigin / 2),
-                new THREE.Vector3(xOrigin+ wOrigin / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + settings.mapSize, zOrigin + lOrigin / 2),
-                new THREE.Vector3(xTarget+ wTarget / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + settings.mapSize, zTarget + lTarget / 2),
+                new THREE.Vector3(xOrigin + wOrigin / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + settings.mapSize, zOrigin + lOrigin / 2),
+                new THREE.Vector3(xTarget + wTarget / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + settings.mapSize, zTarget + lTarget / 2),
                 new THREE.Vector3(xTarget + wTarget / 2, yTarget + hTarget, zTarget + lTarget / 2)
             );
 
@@ -122,8 +120,8 @@ export class ArrowManager {
 
     }
 
-    scale(x: number, y: number, z: number) {
-        for(let arrow of this.arrows) {
+    public scale(x: number, y: number, z: number) {
+        for (let arrow of this.arrows) {
             arrow.scale.x = x;
             arrow.scale.y = y;
             arrow.scale.z = z;
