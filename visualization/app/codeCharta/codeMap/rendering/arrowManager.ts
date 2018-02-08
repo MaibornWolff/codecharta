@@ -41,6 +41,12 @@ export class ArrowManager {
         return curveObject;
     }
 
+    clearArrows() {
+        this.arrows = [];
+        while (this.parentObjectInScene.children.length > 0)
+            this.parentObjectInScene.children.pop();
+    }
+
     addArrow(arrowTargetNode: node, arrowOriginNode: node,settings: renderSettings): void {
 
         //TODO

@@ -60,10 +60,11 @@ export class CodeMapService implements SettingsServiceSubscriber{
             deltaColorFlipped: s.deltaColorFlipped
         };
 
-        this.threeSceneService.clearLabels();
-        this.threeSceneService.clearArrows();
         this.labelManager = new LabelManager(this.threeSceneService.labels);
+        this.labelManager.clearLabels();
         this.arrowManager = new ArrowManager(this.threeSceneService.dependencyArrows);
+        this.arrowManager.clearArrows();
+
 
         for (let i=0, numAdded = 0; i < sorted.length && numAdded < s.amountOfTopLabels; ++i)
         {

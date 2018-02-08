@@ -13,8 +13,6 @@ class ThreeSceneService {
     public static SELECTOR = "threeSceneService";
 
     scene: Scene;
-    private labelManager: LabelManager;
-    private arrowManager: ArrowManager;
     private lights: Group;
     public labels: Group;
     public dependencyArrows: Group;
@@ -29,9 +27,6 @@ class ThreeSceneService {
         this.lights = new THREE.Group();
         this.labels = new THREE.Group();
         this.dependencyArrows = new THREE.Group();
-
-        this.labelManager = new LabelManager(this.labels);
-        this.arrowManager = new ArrowManager(this.dependencyArrows);
 
         this.initLights();
 
@@ -83,16 +78,6 @@ class ThreeSceneService {
         this.mapGeometry.position.x = -size / 2.0;
         this.mapGeometry.position.y = 0.0;
         this.mapGeometry.position.z = -size / 2.0;
-    }
-
-    clearLabels() {
-        while (this.labels.children.length > 0)
-            this.labels.children.pop();
-    }
-
-    clearArrows() {
-        while (this.dependencyArrows.children.length > 0)
-            this.dependencyArrows.children.pop();
     }
 
     getMapMesh(): CodeMapMesh {
