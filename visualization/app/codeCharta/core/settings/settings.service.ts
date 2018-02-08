@@ -10,10 +10,11 @@ import {STATISTIC_OPS} from "../statistic/statistic.service";
 import {DeltaCalculatorService} from "../data/data.deltaCalculator.service";
 import * as d3 from "d3";
 import {DataDecoratorService} from "../data/data.decorator.service";
+import {CodeMap} from "../data/model/CodeMap";
 
 export interface Settings {
 
-    map: any,
+    map: CodeMap,
     neutralColorRange: Range,
     areaMetric: string,
     heightMetric: string,
