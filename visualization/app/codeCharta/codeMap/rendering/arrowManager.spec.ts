@@ -113,6 +113,11 @@ describe("ArrowManager", () => {
         expect(arrowManager.arrows.length).toBe(0);
     });
 
+    it("should add arrows only from origin when there are resolvable dependencies", ()=>{
+        arrowManager.addCodeMapDependenciesFromOriginAsArrows(sampleLeaf, [sampleLeaf, sampleLeaf2], [{"node":"/sample", "dependsOn": "/sample2"}, {"node":"/sample2", "dependsOn": "/sample2"}], sampleRenderSettings);
+        expect(arrowManager.arrows.length).toBe(1);
+    });
+
     it("should add arrows when there are resolvable dependencies", ()=>{
         arrowManager.addCodeMapDependenciesAsArrows([sampleLeaf, sampleLeaf2], [{"node":"/sample", "dependsOn": "/sample2"}], sampleRenderSettings);
         expect(arrowManager.arrows.length).toBe(1);
