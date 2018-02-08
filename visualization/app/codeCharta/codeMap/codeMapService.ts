@@ -74,7 +74,7 @@ export class CodeMapService implements SettingsServiceSubscriber{
             }
         }
 
-        if(s.map.dependencies) {
+        if(s.map.dependencies && s.showDependencies) {
             this.arrowManager.addCodeMapDependenciesAsArrows(sorted, s.map.dependencies, renderSettings);
         }
 

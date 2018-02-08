@@ -25,7 +25,8 @@ export interface Settings {
     camera: Scale,
     margin: number,
     operation: STATISTIC_OPS,
-    deltaColorFlipped: boolean
+    deltaColorFlipped: boolean,
+    showDependencies: boolean
 
 }
 
@@ -89,7 +90,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             camera: c,
             margin: 1,
             operation: STATISTIC_OPS.NOTHING,
-            deltaColorFlipped: false
+            deltaColorFlipped: false,
+            showDependencies: false
         };
 
     }
