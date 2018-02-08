@@ -16,8 +16,8 @@ class ThreeSceneService {
     private labelManager: LabelManager;
     private arrowManager: ArrowManager;
     private lights: Group;
-    private labels: Group;
-    private dependencyArrows: Group;
+    public labels: Group;
+    public dependencyArrows: Group;
     private mapGeometry: Group;
     private mapMesh: CodeMapMesh;
 
@@ -35,10 +35,10 @@ class ThreeSceneService {
 
         this.initLights();
 
-        //this.scene.add(this.mapGeometry);
+        this.scene.add(this.mapGeometry);
         this.scene.add(this.lights);
         this.scene.add(this.dependencyArrows);
-        //this.scene.add(this.labels);
+        this.scene.add(this.labels);
 
     }
 

@@ -5,6 +5,7 @@ import {renderSettings} from "./rendering/renderSettings"
 import {LabelManager} from "./rendering/labelManager"
 import {SettingsServiceSubscriber, Settings, SettingsService} from "../core/settings/settings.service";
 import {node} from "./rendering/node";
+import {ArrowManager} from "./rendering/arrowManager";
 
 const mapSize = 500.0;
 
@@ -17,6 +18,7 @@ export class CodeMapService implements SettingsServiceSubscriber{
 
     private mapMesh: CodeMapMesh = null;
     private labelManager: LabelManager = null;
+    private arrowManager: ArrowManager = null;
 
     /* @ngInject */
     constructor(
@@ -59,14 +61,25 @@ export class CodeMapService implements SettingsServiceSubscriber{
         };
 
         this.threeSceneService.clearLabels();
+        this.threeSceneService.clearArrows();
         this.labelManager = new LabelManager(this.threeSceneService.labels);
-        
+        this.arrowManager = new ArrowManager(this.threeSceneService.dependencyArrows);
+
         for (let i=0, numAdded = 0; i < sorted.length && numAdded < s.amountOfTopLabels; ++i)
         {
             if (sorted[i].isLeaf)
             {
                 this.labelManager.addLabel(sorted[i], renderSettings);
                 ++numAdded;
+            }
+        }
+
+        //TODO
+        for (let i=0; i < sorted.length; i++)
+        {
+            if (sorted[i].isLeaf)
+            {
+                this.arrowManager.addArrow(sorted[i], sorted[0], renderSettings);
             }
         }
 
@@ -95,5 +108,8 @@ export class CodeMapService implements SettingsServiceSubscriber{
 
         if (this.labelManager)
             this.labelManager.scale(x, y, z);
+
+        if (this.arrowManager)
+            this.arrowManager.scale(x, y, z);
     }
 };
