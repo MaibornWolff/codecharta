@@ -74,13 +74,6 @@ export class CodeMapService implements SettingsServiceSubscriber{
             }
         }
 
-        s.map.dependencies = [
-            {
-                node: "/root/big leaf",
-                dependsOn: "/root/Parent Leaf/small leaf"
-            }
-        ];
-
         if(s.map.dependencies) {
             this.arrowManager.addCodeMapDependenciesAsArrows(sorted, s.map.dependencies, renderSettings);
         }
