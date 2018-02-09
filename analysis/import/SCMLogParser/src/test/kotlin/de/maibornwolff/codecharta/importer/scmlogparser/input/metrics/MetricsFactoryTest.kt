@@ -1,10 +1,8 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
-import org.junit.Test
-
-import java.util.Arrays
-
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Test
+import java.util.*
 
 class MetricsFactoryTest {
     @Test
@@ -28,7 +26,6 @@ class MetricsFactoryTest {
 
     @Test
     fun defaultConstructorShouldCreateAllMetrics() {
-        val metricName = "some_non_existing_metric"
         val factory = MetricsFactory()
 
         assertThat(factory.createMetrics()).hasSize(13)
