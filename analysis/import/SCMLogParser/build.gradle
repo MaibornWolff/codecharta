@@ -13,6 +13,7 @@ apply plugin: 'kotlin'
 
 dependencies {
     compile project(':model')
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile 'org.apache.commons:commons-lang3:3.7'
     compile 'info.picocli:picocli:2.2.1'
 
@@ -20,20 +21,11 @@ dependencies {
     testCompile 'org.assertj:assertj-core:3.9.0'
     testCompile 'org.mockito:mockito-core:2.13.0'
     testCompile "io.mockk:mockk:1.7.1"
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 mainClassName = "de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser"
 applicationName = 'codecharta-scmlogparser'
 
-
-compileJava {
-    options.compilerArgs += ['--release', '8']
-}
-
-compileTestJava {
-    options.compilerArgs += ['--release', '8']
-}
 
 jar {
     baseName = "${applicationName}"
