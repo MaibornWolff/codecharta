@@ -6,9 +6,10 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogParserStrategy
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.ProjectMatcher
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
-import org.assertj.core.api.Assertions.assertThat
+import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -65,7 +66,7 @@ class SCMLogProjectCreatorGoldenMasterTest (
         val svnProjectForComparison = serializeAndDeserializeProject(svnProject)
 
         // then
-        assertThat(svnProjectForComparison).isEqualTo(expectedProject)
+        Assert.assertThat(svnProjectForComparison, ProjectMatcher.matchesProject(expectedProject))
     }
 
     @Throws(IOException::class)

@@ -27,35 +27,37 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.tools.validation
+package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.tools.validation.ValidationTool.Companion.SCHEMA_PATH
-import org.everit.json.schema.ValidationException
-import org.json.JSONException
-import org.junit.Test
+import org.hamcrest.BaseMatcher
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 
-class EveritValidatorTest {
-    private fun createValidator(): Validator {
-        return EveritValidator(SCHEMA_PATH)
+object PathMatcher {
+
+    fun matchesPath(expectedPath: Path): Matcher<Path> {
+        return object : BaseMatcher<Path>() {
+
+            override fun describeTo(description: Description) {
+                description.appendText("should be ").appendValue(expectedPath)
+            }
+
+            override fun matches(item: Any): Boolean {
+                return item as Path == expectedPath
+            }
+        }
     }
 
-    @Test
-    fun shouldValidate() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("validFile.json"))
-    }
+    fun containsPath(expectedPath: Path): Matcher<List<Path>> {
+        return object : BaseMatcher<List<Path>>() {
 
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingNodeName() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("missingNodeNameFile.json"))
-    }
+            override fun describeTo(description: Description) {
+                description.appendText("does not contain ").appendValue(expectedPath)
+            }
 
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingProject() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidFile.json"))
-    }
-
-    @Test(expected = JSONException::class)
-    fun shouldInvalidateIfNoJson() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidJson.json"))
+            override fun matches(item: Any): Boolean {
+                return (item as List<Path>).contains(expectedPath)
+            }
+        }
     }
 }

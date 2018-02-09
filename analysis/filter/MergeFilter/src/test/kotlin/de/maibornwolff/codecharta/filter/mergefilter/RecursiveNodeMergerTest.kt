@@ -66,10 +66,10 @@ class RecursiveNodeMergerTest {
 
         // then
         assertThat(newNode.children, hasSize(2))
-        assertThat(newNode.children!![0].name, `is`(child1.name))
-        assertThat(newNode.children!![0].type, `is`(child1.type))
-        assertThat(newNode.children!![1].name, `is`(child2.name))
-        assertThat(newNode.children!![1].type, `is`(child2.type))
+        assertThat(newNode.children[0].name, `is`(child1.name))
+        assertThat(newNode.children[0].type, `is`(child1.type))
+        assertThat(newNode.children[1].name, `is`(child2.name))
+        assertThat(newNode.children[1].type, `is`(child2.type))
     }
 
     @Test

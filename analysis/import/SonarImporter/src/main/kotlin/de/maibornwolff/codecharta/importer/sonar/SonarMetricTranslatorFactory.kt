@@ -31,7 +31,6 @@ package de.maibornwolff.codecharta.importer.sonar
 
 import com.google.common.collect.ImmutableMap
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
-import java.util.*
 
 internal object SonarMetricTranslatorFactory {
 

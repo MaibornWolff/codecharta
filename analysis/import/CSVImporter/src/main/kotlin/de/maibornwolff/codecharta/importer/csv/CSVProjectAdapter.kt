@@ -41,7 +41,12 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
-class CSVProjectAdapter(projectName: String, private val pathSeparator: Char, private val csvDelimiter: Char) : Project(projectName) {
+class CSVProjectAdapter(
+        projectName: String,
+        private val pathSeparator: Char,
+        private val csvDelimiter: Char
+) : Project(projectName) {
+
     private val root = "root"
 
     private var header: CSVHeader? = null
@@ -50,10 +55,9 @@ class CSVProjectAdapter(projectName: String, private val pathSeparator: Char, pr
         this.nodes.add(Node(root, NodeType.Folder))
     }
 
-    @JvmOverloads
     fun addProjectFromCsv(inStream: InputStream, metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL) {
         val parser = createParser(inStream)
-        val oldHeader = parser.parseNext()
+        val oldHeader: Array<String?> = parser.parseNext()
         header = CSVHeader(metricNameTranslator.translate(oldHeader))
         parseContent(parser)
         parser.stopParsing()

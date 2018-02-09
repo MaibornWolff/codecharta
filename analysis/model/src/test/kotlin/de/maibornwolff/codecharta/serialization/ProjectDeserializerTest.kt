@@ -27,35 +27,53 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.tools.validation
+package de.maibornwolff.codecharta.serialization
 
-import de.maibornwolff.codecharta.tools.validation.ValidationTool.Companion.SCHEMA_PATH
-import org.everit.json.schema.ValidationException
-import org.json.JSONException
+import junit.framework.TestCase.assertTrue
+import org.hamcrest.Matchers.*
+import org.junit.Assert.assertThat
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
+import java.io.FileNotFoundException
+import java.io.InputStreamReader
+import java.io.StringReader
 
-class EveritValidatorTest {
-    private fun createValidator(): Validator {
-        return EveritValidator(SCHEMA_PATH)
+class ProjectDeserializerTest {
+    @JvmField
+    @Rule
+    var folder = TemporaryFolder()
+
+    @Test
+    @Throws(FileNotFoundException::class)
+    fun shouldDeserializeProjectJson() {
+        val expectedJsonReader = InputStreamReader(this.javaClass.classLoader.getResourceAsStream(EXAMPLE_CC_JSON))
+
+        val project = ProjectDeserializer.deserializeProject(expectedJsonReader)
+
+        assertTrue(project.projectName == "201701poolobject")
+        assertTrue(project.nodes.size == 1)
     }
 
     @Test
-    fun shouldValidate() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("validFile.json"))
+    @Throws(FileNotFoundException::class)
+    fun deserializeProject_should_map_nonexisting_values_to_defaults() {
+        // given
+        val jsonString = "{projectName='some Project', apiVersion='1.0', nodes=[{name:'root',type:'Folder'}]}"
+
+        // when
+        val project = ProjectDeserializer.deserializeProject(StringReader(jsonString))
+
+        // then
+        val node = project.nodes[0]
+
+        assertThat(node.link, `is`(nullValue()))
+        assertThat(node.attributes, not(nullValue()))
+        assertThat(node.children, not(nullValue()))
     }
 
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingNodeName() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("missingNodeNameFile.json"))
-    }
+    companion object {
 
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingProject() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidFile.json"))
-    }
-
-    @Test(expected = JSONException::class)
-    fun shouldInvalidateIfNoJson() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidJson.json"))
+        private const val EXAMPLE_CC_JSON = "example.cc.json"
     }
 }

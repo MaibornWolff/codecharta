@@ -64,7 +64,7 @@ class SonarComponentProjectAdapter @JvmOverloads constructor(name: String, priva
     }
 
     private fun convertMetricName(measure: Measure): String {
-        return translator.translate(measure.metric)
+        return translator.translate(measure.metric)!!
     }
 
     private fun createLink(component: Component): String {
@@ -103,7 +103,7 @@ class SonarComponentProjectAdapter @JvmOverloads constructor(name: String, priva
      * @param component the given component
      * @return node name for this component
      */
-    private fun createNodeName(component: Component): String? {
+    private fun createNodeName(component: Component): String {
         return if (!usePath && component.key != null) {
             component.key.substring(component.key.lastIndexOf('/') + 1)
         } else if (usePath && component.path != null) {

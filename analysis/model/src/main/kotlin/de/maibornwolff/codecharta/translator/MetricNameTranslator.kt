@@ -27,35 +27,56 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.tools.validation
+package de.maibornwolff.codecharta.translator
 
-import de.maibornwolff.codecharta.tools.validation.ValidationTool.Companion.SCHEMA_PATH
-import org.everit.json.schema.ValidationException
-import org.json.JSONException
-import org.junit.Test
+import java.util.*
 
-class EveritValidatorTest {
-    private fun createValidator(): Validator {
-        return EveritValidator(SCHEMA_PATH)
+/**
+ * This class provides methods to translate metric names. This enables normalization of metric names.
+ */
+open class MetricNameTranslator(
+        private val translationMap: Map<String, String>,
+        private val prefix: String = "") {
+
+    init {
+        validate()
     }
 
-    @Test
-    fun shouldValidate() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("validFile.json"))
+    open fun translate(oldMetricName: String?): String? {
+        return when {
+            oldMetricName == null -> null
+            translationMap.containsKey(oldMetricName) -> translationMap[oldMetricName]!!
+            else -> prefix + oldMetricName.toLowerCase().replace(' ', '_')
+        }
     }
 
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingNodeName() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("missingNodeNameFile.json"))
+    open fun translate(oldMetricName: Array<String?>): Array<String?> {
+        return oldMetricName
+                .map { translate(it) }
+                .toTypedArray()
     }
 
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingProject() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidFile.json"))
+    private fun validate() {
+        val seen = ArrayList<String>()
+
+        for (value in translationMap.values) {
+            if (!value.isEmpty() && seen.contains(value)) {
+                throw IllegalArgumentException("Replacement map should not map distinct keys to equal values, e.g. " + value)
+            } else {
+                seen.add(value)
+            }
+        }
     }
 
-    @Test(expected = JSONException::class)
-    fun shouldInvalidateIfNoJson() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidJson.json"))
+    companion object {
+        val TRIVIAL: MetricNameTranslator = object : MetricNameTranslator(emptyMap()) {
+            override fun translate(oldMetricName: String?): String? {
+                return oldMetricName
+            }
+
+            override fun translate(oldMetricName: Array<String?>): Array<String?> {
+                return oldMetricName
+            }
+        }
     }
 }

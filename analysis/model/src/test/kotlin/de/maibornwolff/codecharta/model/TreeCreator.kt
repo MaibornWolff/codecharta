@@ -27,35 +27,23 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.tools.validation
+package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.tools.validation.ValidationTool.Companion.SCHEMA_PATH
-import org.everit.json.schema.ValidationException
-import org.json.JSONException
-import org.junit.Test
+object TreeCreator {
 
-class EveritValidatorTest {
-    private fun createValidator(): Validator {
-        return EveritValidator(SCHEMA_PATH)
-    }
+    @JvmOverloads
+    fun createTree(pathToInnerTree: Path = Path.TRIVIAL, innerTree: Tree<*>? = null): Tree<Node> {
+        return object : Tree<Node>() {
+            override val children: List<Tree<Node>>
+                get() = if (innerTree == null) emptyList() else mutableListOf(innerTree as Tree<Node>)
 
-    @Test
-    fun shouldValidate() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("validFile.json"))
-    }
+            override fun getPathOfChild(child: Tree<Node>): Path {
+                return pathToInnerTree
+            }
 
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingNodeName() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("missingNodeNameFile.json"))
-    }
-
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingProject() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidFile.json"))
-    }
-
-    @Test(expected = JSONException::class)
-    fun shouldInvalidateIfNoJson() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidJson.json"))
+            override fun toString(): String {
+                return pathToInnerTree.toString() + " -> " + innerTree
+            }
+        }
     }
 }

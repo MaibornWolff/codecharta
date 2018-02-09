@@ -27,35 +27,37 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.tools.validation
+package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.tools.validation.ValidationTool.Companion.SCHEMA_PATH
-import org.everit.json.schema.ValidationException
-import org.json.JSONException
-import org.junit.Test
+import org.hamcrest.BaseMatcher
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 
-class EveritValidatorTest {
-    private fun createValidator(): Validator {
-        return EveritValidator(SCHEMA_PATH)
+object NodeMatcher {
+
+    fun matchesNode(expectedNode: Node): Matcher<Node> {
+        return object : BaseMatcher<Node>() {
+
+
+            override fun describeTo(description: Description) {
+                description.appendText("should be ").appendValue(expectedNode)
+            }
+
+            override fun matches(item: Any): Boolean {
+                return match(item as Node, expectedNode)
+            }
+        }
     }
 
-    @Test
-    fun shouldValidate() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("validFile.json"))
+    fun match(n1: Node, n2: Node): Boolean {
+        return n1.name == n2.name
+                && n1.type == n2.type
+                && n1.link == n2.link
+                && n1.attributes == n2.attributes
+                && n1.children.size == n2.children.size
+                && n1.children.indices
+                .map { match(n1.children[it], n2.children[it]) }
+                .fold(true, { x, y -> x && y })
     }
 
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingNodeName() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("missingNodeNameFile.json"))
-    }
-
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingProject() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidFile.json"))
-    }
-
-    @Test(expected = JSONException::class)
-    fun shouldInvalidateIfNoJson() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidJson.json"))
-    }
 }

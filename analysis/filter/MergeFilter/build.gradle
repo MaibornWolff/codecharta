@@ -22,6 +22,7 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.hamcrest:hamcrest-library:1.3'
+    testCompile project(path: ':model', configuration: 'testOutput')
 }
 
 mainClassName = 'de.maibornwolff.codecharta.filter.mergefilter.MergeFilter'

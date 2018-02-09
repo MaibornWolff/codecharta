@@ -27,35 +27,66 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.tools.validation
+package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.tools.validation.ValidationTool.Companion.SCHEMA_PATH
-import org.everit.json.schema.ValidationException
-import org.json.JSONException
-import org.junit.Test
+/**
+ * Represents a path in a tree
+ * may be seen as multiple edges in the tree of nodes
+ */
+data class Path(val edgesList: List<String>) {
 
-class EveritValidatorTest {
-    private fun createValidator(): Validator {
-        return EveritValidator(SCHEMA_PATH)
+    /**
+     * @return true, if there are no edges in the path
+     */
+    val isTrivial: Boolean
+        get() = edgesList.isEmpty()
+
+    /**
+     * @return true, if path consists of one or less edges
+     */
+    val isSingle: Boolean
+        get() = edgesList.size <= 1
+
+    constructor(vararg edges: String) : this(listOf(*edges))
+
+    /**
+     * @return first edge in path to node
+     */
+    val head: String
+        get() = edgesList.firstOrNull() ?: ""
+
+
+    /**
+     * @return tail, i.e. the remaining path when the head is removed, if not leaf, trivial element if leaf
+     */
+    val tail: Path
+        get() =
+            if (isSingle) Path.trivialPath()
+            else Path(edgesList.drop(1))
+
+
+    fun last(): String {
+        return edgesList[edgesList.size - 1]
     }
 
-    @Test
-    fun shouldValidate() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("validFile.json"))
+    /**
+     * @param path that will be added after the present path
+     * @return concatinated path
+     */
+    fun concat(path: Path): Path {
+        return when {
+            this.isTrivial -> path
+            path.isTrivial -> this
+            else -> Path(this.edgesList + path.edgesList)
+        }
     }
 
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingNodeName() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("missingNodeNameFile.json"))
-    }
+    companion object {
 
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingProject() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidFile.json"))
-    }
+        fun trivialPath(): Path {
+            return TRIVIAL
+        }
 
-    @Test(expected = JSONException::class)
-    fun shouldInvalidateIfNoJson() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidJson.json"))
+        val TRIVIAL = Path(emptyList())
     }
 }
