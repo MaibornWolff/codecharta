@@ -30,16 +30,17 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.ProjectMatcher
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.hamcrest.CoreMatchers
 import org.junit.Assert
 import org.junit.Test
 import java.io.InputStreamReader
 
-val DEFAULT_API_VERSION = "1.0"
+const val DEFAULT_API_VERSION = "1.0"
 
 class ProjectMergerTest {
-    val nodeMergerStrategy = RecursiveNodeMergerStrategy()
+    private val nodeMergerStrategy = RecursiveNodeMergerStrategy()
 
 
     @Test(expected = MergeException::class)
@@ -103,7 +104,7 @@ class ProjectMergerTest {
         val project = ProjectMerger(projectList, nodeMergerStrategy).merge()
 
         // then
-        Assert.assertThat(project, CoreMatchers.`is`(originalProject))
+        Assert.assertThat(project, ProjectMatcher.matchesProject(originalProject))
     }
 
     @Test

@@ -27,35 +27,42 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.tools.validation
+package de.maibornwolff.codecharta.serialization
 
-import de.maibornwolff.codecharta.tools.validation.ValidationTool.Companion.SCHEMA_PATH
-import org.everit.json.schema.ValidationException
-import org.json.JSONException
-import org.junit.Test
+import com.google.gson.GsonBuilder
+import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.Project
 
-class EveritValidatorTest {
-    private fun createValidator(): Validator {
-        return EveritValidator(SCHEMA_PATH)
+import java.io.BufferedReader
+import java.io.FileNotFoundException
+import java.io.FileReader
+import java.io.Reader
+
+/**
+ * This class provides static methods and functions to convert a json to a Project-Object
+ */
+object ProjectDeserializer {
+
+    private val GSON = GsonBuilder().registerTypeAdapter(Node::class.java, NodeJsonDeserializer()).create()
+
+    /**
+     * This function deserializes a given json-file and returns the Project-Object it represents.
+     *
+     * @param pathToJson the path to the Json-File
+     * @return the project, if the Json was parsed successfully, null if not
+     */
+    @Throws(FileNotFoundException::class)
+    fun deserializeProject(pathToJson: String): Project {
+        return deserializeProject(BufferedReader(FileReader(pathToJson)))
     }
 
-    @Test
-    fun shouldValidate() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("validFile.json"))
-    }
-
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingNodeName() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("missingNodeNameFile.json"))
-    }
-
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingProject() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidFile.json"))
-    }
-
-    @Test(expected = JSONException::class)
-    fun shouldInvalidateIfNoJson() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidJson.json"))
+    /**
+     * This function deserializes a json read from a reader and returns the Project-Object it represents.
+     *
+     * @param reader reader where
+     * @return the project, if the Json was parsed successfully, null if not
+     */
+    fun deserializeProject(reader: Reader): Project {
+        return GSON.fromJson(reader, Project::class.java)
     }
 }

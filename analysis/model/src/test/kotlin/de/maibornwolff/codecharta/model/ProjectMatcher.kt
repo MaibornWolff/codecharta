@@ -27,35 +27,32 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.tools.validation
+package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.tools.validation.ValidationTool.Companion.SCHEMA_PATH
-import org.everit.json.schema.ValidationException
-import org.json.JSONException
-import org.junit.Test
+import org.hamcrest.BaseMatcher
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 
-class EveritValidatorTest {
-    private fun createValidator(): Validator {
-        return EveritValidator(SCHEMA_PATH)
+object ProjectMatcher {
+
+    fun matchesProject(expectedProject: Project): Matcher<Project> {
+        return object : BaseMatcher<Project>() {
+
+            override fun describeTo(description: Description) {
+                description.appendText("should be ").appendValue(expectedProject)
+            }
+
+            override fun matches(item: Any): Boolean {
+                return match(item as Project, expectedProject)
+            }
+        }
     }
 
-    @Test
-    fun shouldValidate() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("validFile.json"))
-    }
-
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingNodeName() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("missingNodeNameFile.json"))
-    }
-
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingProject() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidFile.json"))
-    }
-
-    @Test(expected = JSONException::class)
-    fun shouldInvalidateIfNoJson() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidJson.json"))
+    fun match(p1: Project, p2: Project): Boolean {
+        return p1.apiVersion == p2.apiVersion
+                && p1.nodes.size == p2.nodes.size
+                && p1.nodes.indices
+                .map { NodeMatcher.match(p1.nodes[it], p2.nodes[it]) }
+                .fold(true, { x, y -> x && y })
     }
 }

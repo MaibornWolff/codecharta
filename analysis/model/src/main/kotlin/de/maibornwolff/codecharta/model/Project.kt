@@ -27,35 +27,33 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.tools.validation
+package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.tools.validation.ValidationTool.Companion.SCHEMA_PATH
-import org.everit.json.schema.ValidationException
-import org.json.JSONException
-import org.junit.Test
 
-class EveritValidatorTest {
-    private fun createValidator(): Validator {
-        return EveritValidator(SCHEMA_PATH)
+open class Project(
+        val projectName: String,
+        nodeList: List<Node> = listOf(),
+        val apiVersion: String = API_VERSION
+) {
+    val nodes = nodeList.toMutableList()
+
+    val rootNode: Node
+        get() = nodes[0]
+
+    fun hasRootNode(): Boolean {
+        return nodes.size == 1
     }
 
-    @Test
-    fun shouldValidate() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("validFile.json"))
+    override fun toString(): String {
+        return "Project{" +
+                "projectName='" + projectName + '\''.toString() +
+                ", apiVersion='" + apiVersion + '\''.toString() +
+                ", nodes=" + nodes +
+                '}'.toString()
     }
 
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingNodeName() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("missingNodeNameFile.json"))
+    companion object {
+        const val API_VERSION = "1.0"
     }
 
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingProject() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidFile.json"))
-    }
-
-    @Test(expected = JSONException::class)
-    fun shouldInvalidateIfNoJson() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidJson.json"))
-    }
 }

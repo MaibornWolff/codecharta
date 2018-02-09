@@ -57,7 +57,7 @@ class MergeFilter : Callable<Void?> {
     var leafStrategySet = false
 
     override fun call(): Void? {
-        var nodeMergerStrategy =
+        val nodeMergerStrategy =
                 when {
                     !leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes)
                     !recursiveStrategySet && leafStrategySet -> RecursiveNodeMergerStrategy()

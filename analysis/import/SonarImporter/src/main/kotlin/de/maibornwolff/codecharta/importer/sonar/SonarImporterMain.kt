@@ -38,7 +38,6 @@ import java.io.*
 import java.lang.System.out
 import java.net.MalformedURLException
 import java.net.URL
-import java.util.*
 import java.util.concurrent.Callable
 
 @CommandLine.Command(name = "sonarimport", description = ["generates cc.json from metric data from SonarQube"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])

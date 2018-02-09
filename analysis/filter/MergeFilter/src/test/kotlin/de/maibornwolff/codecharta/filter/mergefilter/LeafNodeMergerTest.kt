@@ -38,7 +38,7 @@ import org.junit.Assert.assertThat
 import org.junit.Test
 
 class LeafNodeMergerTest {
-    val fittingMerger = LeafNodeMergerStrategy(false)
+    private val fittingMerger = LeafNodeMergerStrategy(false)
 
     @Test
     fun should_merge_nodes_with_same_name() {
@@ -69,10 +69,10 @@ class LeafNodeMergerTest {
 
         // then
         assertThat(newNode.children, hasSize(2))
-        assertThat(newNode.children!![0].name, `is`(child1.name))
-        assertThat(newNode.children!![0].type, `is`(child1.type))
-        assertThat(newNode.children!![1].name, `is`(child2.name))
-        assertThat(newNode.children!![1].type, `is`(child2.type))
+        assertThat(newNode.children[0].name, `is`(child1.name))
+        assertThat(newNode.children[0].type, `is`(child1.type))
+        assertThat(newNode.children[1].name, `is`(child2.name))
+        assertThat(newNode.children[1].type, `is`(child2.type))
     }
 
     @Test
@@ -89,11 +89,11 @@ class LeafNodeMergerTest {
 
         // then
         assertThat(newNode.children, hasSize(2))
-        assertThat(newNode.children!![0].name, `is`(child1.name))
-        assertThat(newNode.children!![0].type, `is`(child1.type))
-        assertThat(newNode.children!![0].attributes.size, `is`(1))
-        assertThat(newNode.children!![1].name, `is`(child2.name))
-        assertThat(newNode.children!![1].type, `is`(child2.type))
+        assertThat(newNode.children[0].name, `is`(child1.name))
+        assertThat(newNode.children[0].type, `is`(child1.type))
+        assertThat(newNode.children[0].attributes.size, `is`(1))
+        assertThat(newNode.children[1].name, `is`(child2.name))
+        assertThat(newNode.children[1].type, `is`(child2.type))
     }
 
     @Test
@@ -110,8 +110,8 @@ class LeafNodeMergerTest {
 
         // then
         assertThat(newNode.children, hasSize(1))
-        assertThat(newNode.children!![0].name, `is`(child1.name))
-        assertThat(newNode.children!![0].type, `is`(child1.type))
+        assertThat(newNode.children[0].name, `is`(child1.name))
+        assertThat(newNode.children[0].type, `is`(child1.type))
     }
 
     @Test
@@ -155,6 +155,6 @@ class LeafNodeMergerTest {
 
         // then
         assertThat(newRoot.children, hasSize(2))
-        assertThat((newRoot.getNodeBy(Path(listOf("B", "A"))).get() as Node).attributes.size, `is`(0))
+        assertThat((newRoot.getNodeBy(Path(listOf("B", "A"))) as Node).attributes.size, `is`(0))
     }
 }
