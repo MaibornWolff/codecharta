@@ -29,7 +29,7 @@ module.exports = function (grunt) {
         },
 
         exec: {
-            nwjs_package: "build --concurrent --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --mirror https://dl.nwjs.io/ ."
+            nwjs_package: "build --concurrent --tasks win-x86,win-x64,mac-x64 --mirror https://dl.nwjs.io/ ."
         },
 
         clean: {

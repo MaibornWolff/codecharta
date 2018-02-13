@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 /**
  * this is only an approximation of the correct code churn.
  */
-public final class LinesOfCode implements Metric {
+public class LinesOfCode implements Metric {
     private long loc = 0;
 
     @Override

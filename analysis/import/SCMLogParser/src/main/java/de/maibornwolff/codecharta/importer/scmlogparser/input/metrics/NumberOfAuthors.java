@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit;
 import java.util.HashSet;
 import java.util.Set;
 
-public final class NumberOfAuthors implements Metric {
+public class NumberOfAuthors implements Metric {
     private final Set<String> authors = new HashSet<>();
 
     @Override

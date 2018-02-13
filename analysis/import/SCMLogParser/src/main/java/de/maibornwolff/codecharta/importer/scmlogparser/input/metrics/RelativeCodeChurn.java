@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 /**
  * this is only an approximation of the correct code churn.
  */
-public final class RelativeCodeChurn implements Metric {
+public class RelativeCodeChurn implements Metric {
     private long accumulatedNumberOfLinesAdded = 0;
     private long accumulatedNumberOfLinesDeleted = 0;
 
@@ -25,25 +25,24 @@ public final class RelativeCodeChurn implements Metric {
         accumulatedNumberOfLinesDeleted += modification.getDeletions();
     }
 
-    /**
-     * this is only an approximation of the correct file size.
-     * correct only if e.g. --numstat -m --first-parent ist given.
-     */
-    private Long loc() {
+    private long loc() {
         long loc = accumulatedNumberOfLinesAdded - accumulatedNumberOfLinesDeleted;
         return loc >= 0 ? loc : 0;
     }
 
-    private Long absoluteCodeChurn() {
+    private long absoluteCodeChurn() {
         return accumulatedNumberOfLinesAdded + accumulatedNumberOfLinesDeleted;
     }
 
+    /**
+     * @return codeChurn weighted by the maximal number of lines
+     */
     @Override
     public Number value() {
         long relativeChurn;
 
         if (loc() > 0) {
-            relativeChurn = (100 * absoluteCodeChurn() / loc());
+            relativeChurn = absoluteCodeChurn() * 100 / loc();
         } else {
             relativeChurn = 0;
         }
