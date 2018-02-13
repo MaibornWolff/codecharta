@@ -17,7 +17,7 @@ const mapSize = 500.0;
 /**
  * Main service to manage the state of the rendered code map
  */
-export class CodeMapService implements SettingsServiceSubscriber, CodeMapControllerSubscriber{
+export class CodeMapService implements SettingsServiceSubscriber, CodeMapControllerSubscriber {
 
     public static SELECTOR = "codeMapService";
 
@@ -29,11 +29,10 @@ export class CodeMapService implements SettingsServiceSubscriber, CodeMapControl
     private currentRenderSettings: renderSettings;
 
     /* @ngInject */
-    constructor(
-        private threeSceneService,
-        private treeMapService,
-        private $rootScope,
-        private settingsService: SettingsService) {
+    constructor(private threeSceneService,
+                private treeMapService,
+                private $rootScope,
+                private settingsService: SettingsService) {
         this.settingsService.subscribe(this);
         CodeMapController.subscribe($rootScope, this);
     }
@@ -47,8 +46,13 @@ export class CodeMapService implements SettingsServiceSubscriber, CodeMapControl
 
         this.arrowManager.clearArrows();
 
-        if(deps && data.to && this.currentSortedNodes && this.currentRenderSettings && this.settingsService.settings.showDependencies) {
+        if (deps && data.to && this.currentSortedNodes && this.currentRenderSettings && this.settingsService.settings.showDependencies) {
             this.arrowManager.addCodeMapDependenciesFromOriginAsArrows(data.to.node, this.currentSortedNodes, deps, this.currentRenderSettings);
+            this.arrowManager.scale(
+                this.threeSceneService.mapGeometry.scale.x,
+                this.threeSceneService.mapGeometry.scale.y,
+                this.threeSceneService.mapGeometry.scale.z,
+            );
         }
     }
 
@@ -67,20 +71,22 @@ export class CodeMapService implements SettingsServiceSubscriber, CodeMapControl
             this.updateMapGeometry(s);
         }
 
-        if(s.scaling && s.scaling.x && s.scaling.y &&s.scaling.z) {
+        if (s.scaling && s.scaling.x && s.scaling.y && s.scaling.z) {
             this.scaleMap(s.scaling.x, s.scaling.y, s.scaling.z);
         }
     }
 
     updateMapGeometry(s) {
         let nodes = this.treeMapService.createTreemapNodes(s.map.root, mapSize, mapSize, s.margin, s.areaMetric, s.heightMetric);
-        this.currentSortedNodes = nodes.sort((a,b)=>{return b.height - a.height;});
-        this.currentRenderSettings  =  {
-            heightKey : s.heightMetric,
-            colorKey : s.colorMetric,
-            renderDeltas : s.deltas,
-            colorRange : s.neutralColorRange,
-            mapSize : mapSize,
+        this.currentSortedNodes = nodes.sort((a, b) => {
+            return b.height - a.height;
+        });
+        this.currentRenderSettings = {
+            heightKey: s.heightMetric,
+            colorKey: s.colorMetric,
+            renderDeltas: s.deltas,
+            colorRange: s.neutralColorRange,
+            mapSize: mapSize,
             deltaColorFlipped: s.deltaColorFlipped
         };
 
@@ -89,10 +95,8 @@ export class CodeMapService implements SettingsServiceSubscriber, CodeMapControl
         this.arrowManager = new ArrowManager(this.threeSceneService.dependencyArrows);
         this.arrowManager.clearArrows();
 
-        for (let i=0, numAdded = 0; i < this.currentSortedNodes.length && numAdded < s.amountOfTopLabels; ++i)
-        {
-            if (this.currentSortedNodes[i].isLeaf)
-            {
+        for (let i = 0, numAdded = 0; i < this.currentSortedNodes.length && numAdded < s.amountOfTopLabels; ++i) {
+            if (this.currentSortedNodes[i].isLeaf) {
                 this.labelManager.addLabel(this.currentSortedNodes[i], this.currentRenderSettings);
                 ++numAdded;
             }
@@ -103,7 +107,7 @@ export class CodeMapService implements SettingsServiceSubscriber, CodeMapControl
         this.threeSceneService.setMapMesh(this.mapMesh, mapSize);
     }
 
-     /**
+    /**
      * scales the scene by the given values
      * @param {number} x
      * @param {number} y
