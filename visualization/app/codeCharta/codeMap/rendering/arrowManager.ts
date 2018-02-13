@@ -15,7 +15,6 @@ export class ArrowManager {
 
     private makeArrowFromBezier(bezier: THREE.CubicBezierCurve3,
                                 hex: number = 0,
-                                flipped: boolean = false,
                                 headLength: number = 10,
                                 headWidth: number = 10,
                                 bezierPoints: number = 50): THREE.Object3D {
@@ -24,11 +23,8 @@ export class ArrowManager {
 
         // arrowhead
         let dir = points[points.length - 1].clone().sub(points[points.length - 2].clone());
-        if (flipped) {
-            let dir = points[1].clone().sub(points[0].clone()); //TODO sth wrong while flipping
-        }
         dir.normalize();
-        let origin = flipped ? points[0].clone() : points[points.length - 1].clone(); //TODO sth wrong while flipping
+        let origin = points[points.length - 1].clone();
         let arrowHelper = new THREE.ArrowHelper(dir, origin, 0, hex, headLength, headWidth);
 
         // curve
