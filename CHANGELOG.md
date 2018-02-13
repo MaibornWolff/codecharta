@@ -8,6 +8,36 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
+
+### Removed
+
+### Fixed
+
+## [1.7.2] - 2018-02-02
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+- url to homepage
+- analysis package
+
+## [1.7.1] - 2018-02-02
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.7.0] - 2018-02-02
+### Added
+
+### Changed
+- npm pachage scoped to @maibornwolff
 - Defined further scenarios via json file
 - Added description for metrics and scenarios
 - using fixed point values in detail panel (ui) to truncate infinite or long decimals
@@ -33,6 +63,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - browser demo shows codecharta-visualization sonar analysis
 
 ### Changed
+- rewrote command line interface
+- linking ccsh to bin/ccsh will be deleted later
 
 ### Removed
 

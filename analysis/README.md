@@ -2,6 +2,8 @@
 
 [![Build Status](https://secure.travis-ci.org/)](https://travis-ci.org/)
 
+> CodeCharta by [MaibornWolff](https://www.maibornwolff.de)
+
 ## CodeCharta analysis tools
 
 CodeCharta analysis tools generally follow the pipes and filters architecture principle.
@@ -48,10 +50,8 @@ To run it you can call `ccsh`
 
 - Download / build package
 - Unzip / untar package in desired destination folder (named CC_INSTALL_DIR)
-- If on Linux: make extracted ccsh runnable (`chmod u+x ccsh`)
 - In bash:
-> ./ccsh install 
-> ./ccsh -h
+> ./bin/ccsh -h
 
 ## Build
 

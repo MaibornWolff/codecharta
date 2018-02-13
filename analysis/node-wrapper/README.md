@@ -1,8 +1,12 @@
-# Install via npm
+# CodeCharta
+
+> CodeCharta by [MaibornWolff](https://www.maibornwolff.de)
+
+Install via npm
 
 This installs all binaries to run the analysis. Java 9 is required.
 
-`npm install -g codecharta-analysis`
+`npm install -g @maibornwolff/codecharta-analysis`
 
 To run it you can call `ccsh`  
 

@@ -1,20 +1,40 @@
-plugins {
-    id "org.jetbrains.kotlin.jvm" version '1.2.21'
+buildscript {
+    ext.kotlin_version = '1.2.21'
+    repositories {
+        mavenCentral()
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'gradle.plugin.edu.sc.seis.gradle:launch4j:2.4.3'
+    }
 }
+
+apply plugin: 'kotlin'
 apply plugin: 'application'
+apply plugin: 'edu.sc.seis.launch4j'
 
 dependencies {
     compile project(':model')
 
-    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.2.21'
-    compile 'com.xenomachina:kotlin-argparser:2.0.4'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compile 'info.picocli:picocli:2.2.1'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.hamcrest:hamcrest-library:1.3'
 }
 
-mainClassName = 'de.maibornwolff.codecharta.filter.mergefilter.MergeFilterKt'
+mainClassName = 'de.maibornwolff.codecharta.filter.mergefilter.MergeFilter'
 applicationName = 'codecharta-merge'
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
 
 jar {
     baseName = "${applicationName}"

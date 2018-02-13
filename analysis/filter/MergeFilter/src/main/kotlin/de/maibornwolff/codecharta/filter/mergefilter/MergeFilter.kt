@@ -29,54 +29,55 @@
 
 package de.maibornwolff.codecharta.filter.mergefilter
 
-import com.xenomachina.argparser.ArgParser
-import com.xenomachina.argparser.SystemExitException
-import com.xenomachina.argparser.default
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import picocli.CommandLine
 import java.io.File
 import java.io.FileInputStream
-import java.io.InputStream
 import java.io.InputStreamReader
+import java.util.concurrent.Callable
 
-enum class Mode {
-    RECURSIVE, LEAF
-}
+@CommandLine.Command(name = "merge",
+        description = ["merges multiple cc.json files"],
+        footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
+class MergeFilter : Callable<Void?> {
+    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+    var help: Boolean = false
 
-class MergeFilterArgs(parser: ArgParser) {
-    val sources by parser.positionalList("json files to merge", 1..Int.MAX_VALUE) { File(this) }
-    val strategy by parser.mapping(
-            "--leaf" to Mode.LEAF,
-            "--recursive" to Mode.RECURSIVE,
-            help = "merging strategy").default(Mode.RECURSIVE)
-    val addMissingNodes by parser.flagging("-a", "--add-missing", help = "enable adding missing nodes to reference")
-}
+    @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["files to merge"])
+    var sources: Array<File>? = null
 
-fun main(args: Array<String>) {
-    val filterArgs = MergeFilterArgs(ArgParser(args))
+    @CommandLine.Option(names = ["-a", "--add-missing"], description = ["enable adding missing nodes to reference"])
+    var addMissingNodes = false
 
-    try {
-        val inputStream = createInputStreams(filterArgs.sources)
+    @CommandLine.Option(names = ["--recursive"], description = ["recursive merging strategy"])
+    var recursiveStrategySet = true
+
+    @CommandLine.Option(names = ["--leaf"], description = ["leaf merging strategy"])
+    var leafStrategySet = false
+
+    override fun call(): Void? {
+        var nodeMergerStrategy =
+                when {
+                    !leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes)
+                    !recursiveStrategySet && leafStrategySet -> RecursiveNodeMergerStrategy()
+                    else -> throw IllegalArgumentException("Only one merging strategy must be set")
+                }
+
+        val inputStream = sources!!.map { FileInputStream(it.absoluteFile) }
         val projects = inputStream.map { p -> ProjectDeserializer.deserializeProject(InputStreamReader(p)) }
 
-        val nodeMergerStrategy = createNodeMergerStrategy(filterArgs.strategy, filterArgs.addMissingNodes)
         val project = ProjectMerger(projects, nodeMergerStrategy).merge()
 
         System.out.writer().use { ProjectSerializer.serializeProject(project, it) }
 
-    } catch (e: SystemExitException) {
-        System.err.writer().use { e.printUserMessage(it, "merge", 80) }
+        return null
+    }
+
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            CommandLine.call(MergeFilter(), System.out, *args)
+        }
     }
 }
-
-fun createNodeMergerStrategy(mode: Mode, addMissingNodes: Boolean): NodeMergerStrategy {
-    return when (mode) {
-        Mode.LEAF -> LeafNodeMergerStrategy(addMissingNodes)
-        Mode.RECURSIVE -> RecursiveNodeMergerStrategy()
-    }
-}
-
-private fun createInputStreams(args: List<File>): List<InputStream> {
-    return args.map { FileInputStream(it.absoluteFile) }
-}
-

@@ -39,7 +39,12 @@ public class MetricsFactory {
                 new RangeOfWeeksWithCommits(),
                 new RelativeCodeChurn(),
                 new SuccessiveWeeksWithCommits(),
-                new WeeksWithCommits()
+                new WeeksWithCommits(),
+                new HighlyCoupledFiles(),
+                new MedianCoupledFiles(),
+                new AbsoluteCoupledChurn(),
+                new AverageCodeChurnPerCommit(),
+                new AddQuotDel()
         );
     }
 
