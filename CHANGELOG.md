@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 - canvas mouse event listener are now limited to the canvas dom element. UI events will not trigger the canvas listeners anymore
+- canvas mouse events distinguish now between click and drag. Dragging does not reset selection anymore
 
 ## [1.7.2] - 2018-02-02
 ### Added
