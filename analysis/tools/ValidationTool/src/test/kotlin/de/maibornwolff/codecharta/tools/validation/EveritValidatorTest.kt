@@ -29,6 +29,7 @@
 
 package de.maibornwolff.codecharta.tools.validation
 
+import de.maibornwolff.codecharta.tools.validation.ValidationTool.Companion.SCHEMA_PATH
 import org.everit.json.schema.ValidationException
 import org.json.JSONException
 import org.junit.Test
