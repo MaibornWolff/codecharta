@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - canvas mouse events distinguish now between click and drag. Dragging does not reset selection anymore
 - slider input #64
 - rz slider initialization bug
+- increasing test coverage
 
 ## [1.7.2] - 2018-02-02
 ### Added
