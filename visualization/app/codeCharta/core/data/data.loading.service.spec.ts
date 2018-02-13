@@ -25,6 +25,11 @@ describe("app.codeCharta.core.data.dataLoadingService", function () {
         return dataLoadingService.loadMapFromFileContent("file.json", validFileContent, 0);
     });
 
+    it("should load a file without dependencies if no revision index given", ()=> {
+        validFileContent.dependencies = undefined;
+        return dataLoadingService.loadMapFromFileContent("file.json", validFileContent);
+    });
+
     it("should resolve valid file", ()=> {
         return dataLoadingService.loadMapFromFileContent("file.json", validFileContent, 0);
     });
