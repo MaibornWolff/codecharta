@@ -58,15 +58,14 @@ export class CodeMapController {
          */
         this.mouse = {x: 0, y: 0};
 
-        document.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
-        document.addEventListener("click", this.onDocumentMouseDown.bind(this), false);
-
         threeUpdateCycleService.register(this.update.bind(this));
     }
 
     $postLink() {
         this.threeViewerService.init(this.$element[0]);
         this.threeViewerService.animate();
+        this.threeRendererService.renderer.domElement.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
+        this.threeRendererService.renderer.domElement.addEventListener("click", this.onDocumentMouseDown.bind(this), false);
     }
 
     static subscribe($rootScope: IRootScopeService, subscriber: CodeMapControllerSubscriber) {

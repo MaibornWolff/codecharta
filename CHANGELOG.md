@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- canvas mouse event listener are now limited to the canvas dom element. UI events will not trigger the canvas listeners anymore
 
 ## [1.7.2] - 2018-02-02
 ### Added
