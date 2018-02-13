@@ -62,6 +62,9 @@ class CalendarWeek implements Comparable<CalendarWeek> {
 
     @Override
     public int compareTo(CalendarWeek o) {
+        if (o == null) {
+            throw new NullPointerException();
+        }
         return numberOfWeeksBetween(this, o);
     }
 }

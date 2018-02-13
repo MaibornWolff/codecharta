@@ -3,8 +3,6 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit;
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 
-import java.util.Map;
-
 public interface Metric {
 
     String description();

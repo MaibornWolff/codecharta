@@ -1,18 +1,17 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics;
 
-
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class RelativeCodeChurnTest {
+public class AverageCodeChurnPerCommitTest {
     private static final String FILENAME = "filename";
 
     @Test
     public void should_have_initial_value_zero() {
         // when
-        RelativeCodeChurn metric = new RelativeCodeChurn();
+        AverageCodeChurnPerCommit metric = new AverageCodeChurnPerCommit();
 
         // then
         assertThat(metric.value()).isEqualTo(0L);
@@ -21,20 +20,20 @@ public class RelativeCodeChurnTest {
     @Test
     public void should_increase_by_single_modification() {
         // given
-        RelativeCodeChurn metric = new RelativeCodeChurn();
+        AverageCodeChurnPerCommit metric = new AverageCodeChurnPerCommit();
 
         // when
         metric.registerModification(new Modification(FILENAME, 7, 2));
 
         // then
-//        assertThat(metric.value()).isEqualTo(180L);
+        assertThat(metric.value()).isEqualTo(9L);
     }
 
 
     @Test
     public void should_increase_by_multiple_modification() {
         // given
-        RelativeCodeChurn metric = new RelativeCodeChurn();
+        AverageCodeChurnPerCommit metric = new AverageCodeChurnPerCommit();
 
         // when
         metric.registerModification(new Modification(FILENAME, 7, 2));
@@ -43,6 +42,6 @@ public class RelativeCodeChurnTest {
         metric.registerModification(new Modification(FILENAME, 6, 2));
 
         // then
-        // assertThat(metric.value()).isEqualTo(300L);
+        assertThat(metric.value()).isEqualTo(5L);
     }
 }

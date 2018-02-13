@@ -68,6 +68,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - browser demo shows codecharta-visualization sonar analysis
 
 ### Changed
+- rewrote command line interface
+- linking ccsh to bin/ccsh will be deleted later
 
 ### Removed
 
