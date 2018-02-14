@@ -3,6 +3,8 @@ import {NGMock} from "../../../ng.mockhelper";
 import {DataService} from "./data.service";
 import {CodeMap} from "./model/CodeMap";
 import {TEST_FILE_DATA} from "./data.mocks";
+import {CodeMapNode} from "../../../../../gh-pages/visualization/app/app/codeCharta/core/data/model/CodeMap";
+import * as d3 from "d3";
 
 /**
  * @test {DataService}
@@ -56,6 +58,14 @@ describe("app.codeCharta.core.data.dataService", function() {
     it("setting a map should set it as render map and add the origin attribute", ()=>{
         dataService.setMap(data, 0);
         expect(dataService.data.renderMap.root.origin).toBe(dataService.data.renderMap.fileName);
+    });
+
+    it("setting a map should set it as render map and every node should have attributes", ()=>{
+        dataService.setMap(data, 0);
+        let root = d3.hierarchy<CodeMapNode>(dataService.data.renderMap.root);
+        root.each((node)=>{
+            expect(node.data.attributes).toBeDefined();
+        });
     });
 
     it("setting a comparison map should do nothing if map at index does not exist", ()=>{
