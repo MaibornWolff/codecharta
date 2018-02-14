@@ -34,20 +34,29 @@ import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIData
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
-import java.io.*
+import java.io.BufferedWriter
+import java.io.FileWriter
+import java.io.OutputStreamWriter
+import java.io.Writer
 import java.lang.System.out
-import java.net.MalformedURLException
 import java.net.URL
 import java.util.concurrent.Callable
 
-@CommandLine.Command(name = "sonarimport", description = ["generates cc.json from metric data from SonarQube"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
+@CommandLine.Command(
+        name = "sonarimport",
+        description = ["generates cc.json from metric data from SonarQube"],
+        footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
+)
 class SonarImporterMain : Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-    @CommandLine.Parameters(arity = "2..2", description = ["[url] [project-id]"])
-    private var files = mutableListOf<String>()
+    @CommandLine.Parameters(index = "0", paramLabel = "URL", description = ["url of sonarqube server"])
+    private var baseUrl: URL = URL("http://localhost")
+
+    @CommandLine.Parameters(index = "1", arity = "1..1", paramLabel = "PROJECT_ID", description = ["sonarqube project id"])
+    private var projectId = ""
 
     @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
     private var outputFile = ""
@@ -61,19 +70,6 @@ class SonarImporterMain : Callable<Void> {
     @CommandLine.Option(names = ["--merge-modules"], description = ["merges modules in multi-module projects"])
     private var usePath = false
 
-    private fun baseUrl(): URL {
-        var urlString = files[0]
-        try {
-            while (urlString.endsWith("/")) {
-                urlString = urlString.substring(0, urlString.length - 1)
-            }
-            return URL(urlString)
-        } catch (e: MalformedURLException) {
-            throw SonarImporterException("No valid url for remote connection given: " + urlString)
-        }
-    }
-
-    @Throws(IOException::class)
     private fun writer(): Writer {
         return if (outputFile.isEmpty()) {
             OutputStreamWriter(out)
@@ -83,24 +79,17 @@ class SonarImporterMain : Callable<Void> {
     }
 
     private fun createMesauresAPIImporter(): SonarMeasuresAPIImporter {
-        if (files.size != 2) {
-            throw SonarImporterException("Url and project key missing.")
-        }
-
-        val ds = SonarMeasuresAPIDatasource(user, baseUrl())
-        val metricsDS = SonarMetricsAPIDatasource(user, baseUrl())
-        val sonarCodeURLLinker = SonarCodeURLLinker(baseUrl())
+        val ds = SonarMeasuresAPIDatasource(user, baseUrl)
+        val metricsDS = SonarMetricsAPIDatasource(user, baseUrl)
+        val sonarCodeURLLinker = SonarCodeURLLinker(baseUrl)
         val translator = SonarMetricTranslatorFactory.createMetricTranslator()
 
         return SonarMeasuresAPIImporter(ds, metricsDS, sonarCodeURLLinker, translator, usePath)
     }
 
-    @Throws(IOException::class)
     override fun call(): Void? {
-        val projectKey = files[1]
-
         val importer = createMesauresAPIImporter()
-        val project = importer.getProjectFromMeasureAPI(projectKey, projectKey, metrics)
+        val project = importer.getProjectFromMeasureAPI(projectId, projectId, metrics)
 
         ProjectSerializer.serializeProject(project, writer())
 
