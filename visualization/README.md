@@ -1,7 +1,7 @@
 # CodeCharta 
 [![Build Status](https://travis-ci.org/MaibornWolff/codecharta.svg?branch=master)](https://travis-ci.org/MaibornWolff/codecharta)
 
-> MaibornWolff CodeCharta
+> CodeCharta by [MaibornWolff](https://www.maibornwolff.de)
 
 ## Jump to Section
 
@@ -13,6 +13,11 @@
 ## Installation
 [[Back To Top]](#jump-to-section)
 
+#### Install application for desktop usage with npm
+
+* install with `npm install @maibornwolff/codecharta-visualization -g`
+* run with `codecharta-visualization`
+
 #### Install application for desktop usage
 
 * Download or build [latest version](https://github.com/MaibornWolff/codecharta/releases/latest) for your system. 
@@ -20,7 +25,7 @@
 
 #### Install project for development
 
-* Install node 6
+* Install node 8
 * Install dependencies `npm install`.
 
 Once you have installed the project, you can use all grunt tasks described in the next section.

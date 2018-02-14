@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.parser.git;
 
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy;
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.ParserStrategyContractTest;
-import de.maibornwolff.codecharta.model.input.Modification;
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification;
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,9 +20,9 @@ public class GitLogParserStrategyTest extends ParserStrategyContractTest {
             "Author: TheAuthor <mail@example.com>",
             "Date:   Tue May 9 19:57:57 2017 +0200",
             "    the commit message",
-            "A src/Main.java",
-            "M src/Main.java",
-            "A src/Util.java");
+            "A src/Added.java",
+            "M src/Modified.java",
+            "D src/Deleted.java");
 
     private GitLogParserStrategy parserStrategy;
 
@@ -54,27 +54,41 @@ public class GitLogParserStrategyTest extends ParserStrategyContractTest {
     @Test
     public void parsesFilenameFromFileMetadata() {
         String fileMetadata = "M\t src/Main.java";
-        Modification modification = parserStrategy.parseModification(fileMetadata);
+        Modification modification = GitLogParserStrategy.parseModification(fileMetadata);
         assertThat(modification.getFilename()).isEqualTo("src/Main.java");
+        assertThat(modification.getType()).isEqualTo(Modification.Type.MODIFY);
+    }
+
+    @Test
+    public void parsesFilenameFromFileMetadataWithRename() {
+        String fileMetadata = "R094\t srcs/Main.java\t src/Main.java";
+        Modification modification = GitLogParserStrategy.parseModification(fileMetadata);
+        assertThat(modification.getFilename()).isEqualTo("src/Main.java");
+        assertThat(modification.getOldFilename()).isEqualTo("srcs/Main.java");
+        assertThat(modification.getType()).isEqualTo(Modification.Type.RENAME);
+    }
+
+    @Test
+    public void parsesFilenameFromAddedFile() {
+        String fileMetadata = "A\t src/Main.java";
+        Modification modification = GitLogParserStrategy.parseModification(fileMetadata);
+        assertThat(modification.getFilename()).isEqualTo("src/Main.java");
+        assertThat(modification.getType()).isEqualTo(Modification.Type.ADD);
+    }
+
+    @Test
+    public void parsesFilenameFromDeletedFile() {
+        String fileMetadata = "D\t src/Main.java";
+        Modification modification = GitLogParserStrategy.parseModification(fileMetadata);
+        assertThat(modification.getFilename()).isEqualTo("src/Main.java");
+        assertThat(modification.getType()).isEqualTo(Modification.Type.DELETE);
     }
 
     @Test
     public void parsesFilenamesFromUnusualFileMetadata() {
-        assertThat(parserStrategy.parseModification("")).isEqualTo(Modification.EMPTY);
-        assertThat(parserStrategy.parseModification("  src/Main.java").getFilename())
+        assertThat(GitLogParserStrategy.parseModification("")).isEqualTo(Modification.EMPTY);
+        assertThat(GitLogParserStrategy.parseModification("  src/Main.java").getFilename())
                 .isEqualTo("src/Main.java");
-    }
-
-    @Test
-    public void parsesAuthorWithoutEmail() {
-        String author = parserStrategy.parseAuthor("Author: TheAuthor");
-        assertThat(author).isEqualTo("TheAuthor");
-    }
-
-    @Test
-    public void parsesAuthorFromAuthorAndEmail() {
-        String author = parserStrategy.parseAuthor("Author: TheAuthor <mail@example.com>");
-        assertThat(author).isEqualTo("TheAuthor");
     }
 
 }

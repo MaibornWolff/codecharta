@@ -146,6 +146,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
      * @param {object} hovered hovered building
      */
     setHoveredDetails(hovered) {
+        this.clearHoveredDetails();
         this.$timeout(function () {
             this.details.hovered.name = hovered.name;
             if(hovered.deltas != undefined && this.settings.deltas){
@@ -168,6 +169,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
      * @param {object} selected selected building
      */
     setSelectedDetails(selected) {
+        this.clearSelectedDetails();
         this.$timeout(function () {
             this.details.selected.name = selected.name;
             if(selected.attributes != undefined) {

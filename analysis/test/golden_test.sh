@@ -15,7 +15,7 @@ fi
 
 CC_VERSION=$1
 CC_TAR_NAME="codecharta-analysis-${CC_VERSION}.tar"
-CCSH="${INSTALL_DIR}/codecharta-analysis-${CC_VERSION}/ccsh"
+CCSH="${INSTALL_DIR}/codecharta-analysis-${CC_VERSION}/bin/ccsh"
 
 install_codecharta() {
     echo
@@ -24,7 +24,6 @@ install_codecharta() {
     mkdir -p "${INSTALL_DIR}"
     cp "$1" "${INSTALL_DIR}"
     tar xf "${INSTALL_DIR}/${CC_TAR_NAME}" -C "${INSTALL_DIR}"
-    "${CCSH}" install
     rm "${INSTALL_DIR}/${CC_TAR_NAME}"
 }
 
@@ -45,14 +44,13 @@ validate() {
 check_sonar() {
   echo " -- expect SonarImporter gives valid cc.json"
   ACTUAL_SONAR_JSON="${INSTALL_DIR}/actual_sonarimport.json"
-  "${CCSH}" sonarimport data/codecharta/sonar.xml -l --old-api -o "${ACTUAL_SONAR_JSON}"
+  "${CCSH}" sonarimport -l --old-api -o "${ACTUAL_SONAR_JSON}" data/codecharta/sonar.xml
   validate "${ACTUAL_SONAR_JSON}"
 }
 
 check_sourcemonitor() {
   echo " -- expect SourceMonitorImporter gives valid cc.json"
   ACTUAL_SOURCEMON_JSON="${INSTALL_DIR}/actual_sourcemonitorimporter.json"
-  echo "${CCSH}" sourcemonitorimport data/codecharta/sourcemonitor.csv > "${ACTUAL_SOURCEMON_JSON}"
   "${CCSH}" sourcemonitorimport data/codecharta/sourcemonitor.csv > "${ACTUAL_SOURCEMON_JSON}"
   validate "${ACTUAL_SOURCEMON_JSON}"
 }
@@ -60,15 +58,13 @@ check_sourcemonitor() {
 check_scmlog() {
   echo " -- expect SCMLogParser gives valid cc.json"
   ACTUAL_SCMLOG_JSON="${INSTALL_DIR}/actual_scmlog.json"
-  echo "${CCSH}" scmlogparser data/codecharta/SVNTestLog.txt --svn > "${ACTUAL_SCMLOG_JSON}"
-  "${CCSH}" scmlogparser data/codecharta/SVNTestLog.txt --svn > "${ACTUAL_SCMLOG_JSON}"
+  "${CCSH}" scmlogparser --svn data/codecharta/SVNTestLog.txt > "${ACTUAL_SCMLOG_JSON}"
   validate "${ACTUAL_SCMLOG_JSON}"
 }
 
 check_merge() {
   echo " -- expect MergeFilter gives valid cc.json"
   ACTUAL_MERGE_JSON="${INSTALL_DIR}/actual_merge.json"
-  echo "${CCSH}" merge data/codecharta/tomerge.json data/codecharta/tomerge2.json > "${ACTUAL_MERGE_JSON}"
   "${CCSH}" merge data/codecharta/tomerge.json data/codecharta/tomerge2.json > "${ACTUAL_MERGE_JSON}"
   validate "${ACTUAL_MERGE_JSON}"
 }

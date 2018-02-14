@@ -32,16 +32,18 @@ package de.maibornwolff.codecharta.importer.sonar.dataaccess;
 import com.google.common.collect.Lists;
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException;
 import de.maibornwolff.codecharta.importer.sonar.filter.ErrorResponseFilter;
+import de.maibornwolff.codecharta.importer.sonar.model.Component;
 import de.maibornwolff.codecharta.importer.sonar.model.ComponentMap;
 import de.maibornwolff.codecharta.importer.sonar.model.Measures;
-import de.maibornwolff.codecharta.importer.sonar.model.PagingInfo;
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier;
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.MediaType;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -50,54 +52,73 @@ import java.util.stream.Collectors;
 
 public class SonarMeasuresAPIDatasource {
 
-    private static final int PAGE_SIZE = 100;
-
+    private static final int PAGE_SIZE = 500;
     private static final int MAX_METRICS_IN_ONE_SONARCALL = 15;
-
     private static final String MEASURES_URL_PATTERN = "%s/api/measures/component_tree?baseComponentKey=%s&qualifiers=FIL,UTS&metricKeys=%s&p=%s&ps=" + PAGE_SIZE;
-
     private final String user;
 
     private final URL baseUrl;
 
+    private final Client client;
+
     public SonarMeasuresAPIDatasource(String user, URL baseUrl) {
         this.user = user;
         this.baseUrl = baseUrl;
+
+        client = ClientBuilder.newClient();
+        client.register(ErrorResponseFilter.class);
+        client.register(GsonProvider.class);
     }
 
     public ComponentMap getComponentMap(String componentKey, List<String> metricsList) {
         ComponentMap componentMap = new ComponentMap();
-        for (List<String> sublist : Lists.partition(metricsList, MAX_METRICS_IN_ONE_SONARCALL)) {
-            int noPages = getNumberOfPages(componentKey, sublist);
 
-            Flowable.range(1, noPages)
-                    .flatMap(p -> Flowable.just(p)
-                            .subscribeOn(Schedulers.io())
-                            .map(page -> getMeasures(componentKey, sublist, page)))
-                    .filter(m -> m.getComponents() != null)
-                    .flatMap(m -> Flowable.fromIterable(m.getComponents()))
-                    .filter(c -> c.getQualifier() == Qualifier.FIL || c.getQualifier() == Qualifier.UTS)
-                    .blockingForEach(componentMap::updateComponent);
-        }
+
+        Flowable.fromIterable(Lists.partition(metricsList, MAX_METRICS_IN_ONE_SONARCALL))
+                .flatMap(p -> getMeasures(componentKey, p)
+                        .subscribeOn(Schedulers.computation())
+                )
+                .blockingForEach(componentMap::updateComponent);
+
         return componentMap;
     }
 
+    private Flowable<Component> getMeasures(String componentKey, List<String> sublist) {
 
-    public Measures getMeasures(String componentKey, List<String> metrics, int pageNumber) {
+        return Flowable.create(subscriber -> {
+            int page = 0;
+            long total = PAGE_SIZE;
+            while (++page < (total / PAGE_SIZE) + 1) {
+                Measures measures = getMeasures(componentKey, sublist, page);
+                total = measures.getPaging().getTotal();
+
+                if (measures.getComponents() != null) {
+                    measures.getComponents().stream()
+                            .filter(c -> c.getQualifier() == Qualifier.FIL || c.getQualifier() == Qualifier.UTS)
+                            .forEach(subscriber::onNext);
+                }
+            }
+            subscriber.onComplete();
+        }, BackpressureStrategy.BUFFER);
+    }
+
+
+    Measures getMeasures(String componentKey, List<String> metrics, int pageNumber) {
         URI measureAPIRequestURI = createMeasureAPIRequestURI(componentKey, metrics, pageNumber);
 
-        Client client = ClientBuilder.newClient();
-        client.register(ErrorResponseFilter.class);
-        client.register(GsonProvider.class);
-
-        Invocation.Builder request = client.register(GsonProvider.class).target(measureAPIRequestURI).request();
+        Invocation.Builder request = client
+                .target(measureAPIRequestURI)
+                .request(MediaType.APPLICATION_JSON + "; charset=utf-8");
 
         if (!user.isEmpty()) {
             request.header("Authorization", "Basic " + AuthentificationHandler.createAuthTxtBase64Encoded(user));
         }
 
-        return request.get(Measures.class);
-
+        try {
+            return request.get(Measures.class);
+        } catch (RuntimeException e) {
+            throw new SonarImporterException("Error requesting " + measureAPIRequestURI, e);
+        }
     }
 
     URI createMeasureAPIRequestURI(String componentKey, List<String> metrics, int pageNumber) {
@@ -113,11 +134,5 @@ public class SonarMeasuresAPIDatasource {
         } catch (URISyntaxException e) {
             throw new SonarImporterException(e);
         }
-    }
-
-    public int getNumberOfPages(String componentKey, List<String> metrics) {
-        PagingInfo pagingInfo = getMeasures(componentKey, metrics, 1).getPaging();
-        int total = pagingInfo.getTotal();
-        return (total / PAGE_SIZE) + 1;
     }
 }
