@@ -3,12 +3,12 @@ package de.maibornwolff.codecharta.importer.csv
 import java.util.*
 import java.util.regex.Pattern
 
-class CSVRow(private val row: Array<String>, private val header: CSVHeader, private val pathSeparator: Char) {
+class CSVRow(private val row: Array<String?>, private val header: CSVHeader, private val pathSeparator: Char) {
 
     private val floatPattern = Pattern.compile("\\d+[,.]?\\d*")
 
     val path: String
-        get() = row[header.pathColumn]
+        get() = row[header.pathColumn]!!
 
     val fileName: String
         get() {
@@ -28,7 +28,7 @@ class CSVRow(private val row: Array<String>, private val header: CSVHeader, priv
                     .filter { this.validAttributeOfRow(it) }
                     .associateBy(
                             { header.getColumnName(it) },
-                            { i -> java.lang.Float.parseFloat(row[i].replace(',', '.')) }
+                            { i -> java.lang.Float.parseFloat(row[i]!!.replace(',', '.')) }
                     )
         }
 
@@ -40,6 +40,6 @@ class CSVRow(private val row: Array<String>, private val header: CSVHeader, priv
     }
 
     private fun validAttributeOfRow(i: Int): Boolean {
-        return i < row.size && floatPattern.matcher(row[i]).matches()
+        return i < row.size && row[i] != null && floatPattern.matcher(row[i]).matches()
     }
 }

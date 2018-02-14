@@ -18,7 +18,7 @@ class CSVRowTest : Spek({
 
         it("getPath should be path from this columnn") {
             val name = "someNodeName"
-            val csvRow = arrayOf("projectName", "blubb2", "blubb3", name)
+            val csvRow = arrayOf<String?>("projectName", "blubb2", "blubb3", name)
             val row = CSVRow(csvRow, header, PATH_SEPARATOR)
 
             assertThat(row.path, `is`(name))
@@ -59,25 +59,25 @@ class CSVRowTest : Spek({
         }
 
         it("should ignore columns if no attribute name in header") {
-            val rawRow = arrayOf("1", "2", "3", "file", "4", "5", "6", "7")
+            val rawRow = arrayOf<String?>("1", "2", "3", "file", "4", "5", "6", "7")
             val row = CSVRow(rawRow, header, PATH_SEPARATOR)
             assertThat(row.attributes.keys, hasSize(5))
         }
 
         it("should ignore column if not in row") {
-            val rawRow = arrayOf("blubb1", "blubb2", "blubb3", "path")
+            val rawRow = arrayOf<String?>("blubb1", "blubb2", "blubb3", "path")
             val row = CSVRow(rawRow, header, PATH_SEPARATOR)
             assertThat(row.attributes.keys, not(hasItem("attrib")))
         }
 
         it("should have attribute for metric columns") {
-            val rawRow = arrayOf("3,2", "2", "3", "file")
+            val rawRow = arrayOf<String?>("3,2", "2", "3", "file")
             val row = CSVRow(rawRow, header, PATH_SEPARATOR)
             assertThat<Any>(row.attributes["head1"], `is`<Any>(3.2f))
         }
 
         it("should have NO attribute for non-metric columns") {
-            val rawRow = arrayOf("bla", "2", "3", "file")
+            val rawRow = arrayOf<String?>("bla", "2", "3", "file")
             val row = CSVRow(rawRow, header, PATH_SEPARATOR)
             assertThat(row.attributes["head1"], nullValue())
         }

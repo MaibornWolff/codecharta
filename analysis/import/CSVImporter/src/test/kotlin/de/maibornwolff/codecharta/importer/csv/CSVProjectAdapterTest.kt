@@ -84,4 +84,16 @@ class CSVProjectAdapterTest : Spek({
             }
         }
     }
+
+    describe("CSVProjectAdapter") {
+        val project = CSVProjectAdapter("test", '\\', ',')
+
+        on("reading many csv lines") {
+            project.addProjectFromCsv(this.javaClass.classLoader.getResourceAsStream("sourcemonitor.csv"))
+
+            it("has more than one node") {
+                assertThat(project.rootNode.nodes.size, greaterThan(1))
+            }
+        }
+    }
 })

@@ -4,7 +4,6 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import picocli.CommandLine
 import java.io.*
-import java.util.*
 import java.util.concurrent.Callable
 
 @CommandLine.Command(name = "sourcemonitorimport", description = ["generates cc.json from sourcemonitor csv"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
@@ -16,8 +15,11 @@ class SourceMonitorImporter : Callable<Void> {
     @CommandLine.Option(names = ["-p", "--projectName"], description = ["project name"])
     private var projectName = "testProject"
 
+    @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
+    private var outputFile: File? = null
+
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["sourcemonitor csv files"])
-    private var files = ArrayList<String>()
+    private var files: List<File> = mutableListOf()
 
     private val pathSeparator = '\\'
 
@@ -26,8 +28,8 @@ class SourceMonitorImporter : Callable<Void> {
     @Throws(IOException::class)
     override fun call(): Void? {
         val project = CSVProjectAdapter(projectName, pathSeparator, csvDelimiter)
-        getInputStreamsFromArgs(files).forEach { `in` -> project.addProjectFromCsv(`in`, sourceMonitorReplacement) }
-        ProjectSerializer.serializeProject(project, OutputStreamWriter(System.out))
+        files.map { it.inputStream() }.forEach { project.addProjectFromCsv(it, sourceMonitorReplacement) }
+        ProjectSerializer.serializeProject(project, writer())
 
         return null
     }
@@ -61,18 +63,12 @@ class SourceMonitorImporter : Callable<Void> {
             return MetricNameTranslator(replacementMap.toMap(), prefix)
         }
 
-    private fun getInputStreamsFromArgs(files: List<String>): List<InputStream> {
-        val fileList = files.map { createFileInputStream(it) }
-        return if (fileList.isEmpty()) listOf(System.`in`) else fileList
-    }
-
-    private fun createFileInputStream(path: String): FileInputStream {
-        try {
-            return FileInputStream(path)
-        } catch (e: FileNotFoundException) {
-            throw RuntimeException("File $path not found.")
+    private fun writer(): Writer {
+        return if (outputFile == null) {
+            OutputStreamWriter(System.out)
+        } else {
+            BufferedWriter(FileWriter(outputFile))
         }
-
     }
 
     companion object {

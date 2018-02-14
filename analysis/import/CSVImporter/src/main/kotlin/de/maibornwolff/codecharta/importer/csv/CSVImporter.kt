@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.importer.csv
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
 import java.io.*
-import java.util.*
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -25,30 +24,27 @@ class CSVImporter : Callable<Void> {
     @CommandLine.Option(names = ["--pathSeparator"], description = ["path separator (default = '/')"])
     private var pathSeparator = '/'
 
-    @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["csv files"])
-    private var files = ArrayList<String>()
+    @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
+    private var outputFile: File? = null
+
+    @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["sourcemonitor csv files"])
+    private var files: List<File> = mutableListOf()
 
     @Throws(IOException::class)
     override fun call(): Void? {
         val project = CSVProjectAdapter(projectName, pathSeparator, csvDelimiter)
-        getInputStreamsFromArgs(files).forEach { project.addProjectFromCsv(it) }
-        ProjectSerializer.serializeProject(project, OutputStreamWriter(System.out))
+        files.map { it.inputStream() }.forEach { project.addProjectFromCsv(it) }
+        ProjectSerializer.serializeProject(project, writer())
 
         return null
     }
 
-    private fun getInputStreamsFromArgs(files: List<String>): List<InputStream> {
-        val fileList = files.map { createFileInputStream(it) }
-        return if (fileList.isEmpty()) listOf(System.`in`) else fileList
-    }
-
-    private fun createFileInputStream(path: String): FileInputStream {
-        try {
-            return FileInputStream(path)
-        } catch (e: FileNotFoundException) {
-            throw RuntimeException("File $path not found.")
+    private fun writer(): Writer {
+        return if (outputFile == null) {
+            OutputStreamWriter(System.out)
+        } else {
+            BufferedWriter(FileWriter(outputFile))
         }
-
     }
 
     companion object {
