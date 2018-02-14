@@ -29,7 +29,6 @@
 
 package de.maibornwolff.codecharta.importer.sonar.dataaccess
 
-import com.google.common.collect.Lists
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException
 import de.maibornwolff.codecharta.importer.sonar.filter.ErrorResponseFilter
 import de.maibornwolff.codecharta.importer.sonar.model.Component
@@ -59,8 +58,7 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
     fun getComponentMap(componentKey: String, metricsList: List<String>): ComponentMap {
         val componentMap = ComponentMap()
 
-
-        Flowable.fromIterable(Lists.partition(metricsList, MAX_METRICS_IN_ONE_SONARCALL))
+        Flowable.fromIterable(metricsList.windowed(MAX_METRICS_IN_ONE_SONARCALL, 1, true))
                 .flatMap { p ->
                     getMeasures(componentKey, p)
                             .subscribeOn(Schedulers.computation())

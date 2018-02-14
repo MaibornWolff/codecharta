@@ -33,9 +33,6 @@ import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder.jsonResponse
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.junit.WireMockRule
-import com.google.common.base.Charsets
-import com.google.common.collect.ImmutableList
-import com.google.common.io.CharStreams
 import com.google.gson.GsonBuilder
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource.Companion.PAGE_SIZE
@@ -47,7 +44,6 @@ import org.junit.Assert.assertThat
 import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
-import java.io.InputStreamReader
 import java.net.MalformedURLException
 import java.net.URI
 import java.net.URL
@@ -60,8 +56,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
 
     @Throws(IOException::class)
     private fun createResponseString(): String {
-        return CharStreams.toString(InputStreamReader(
-                this.javaClass.classLoader.getResourceAsStream("sonarqube_measures.json"), Charsets.UTF_8))
+        return this.javaClass.classLoader.getResource("sonarqube_measures.json").readText()
     }
 
     @Throws(IOException::class)
@@ -83,7 +78,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // when
         val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
-        val measures = ds.getMeasures(PROJECT_KEY, ImmutableList.of("coverage"), 1)
+        val measures = ds.getMeasures(PROJECT_KEY, listOf("coverage"), 1)
 
         // then
         assertThat(measures, `is`(createExpectedMeasures()))
@@ -101,7 +96,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // when
         val ds = SonarMeasuresAPIDatasource(USERNAME, createBaseUrl())
-        val measures = ds.getMeasures(PROJECT_KEY, ImmutableList.of("coverage"), 1)
+        val measures = ds.getMeasures(PROJECT_KEY, listOf("coverage"), 1)
 
         // then
         assertThat(measures, `is`(createExpectedMeasures()))
@@ -119,7 +114,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // when
         val ds = SonarMeasuresAPIDatasource(USERNAME, createBaseUrl())
-        ds.getMeasures(PROJECT_KEY, ImmutableList.of("coverage"), 1)
+        ds.getMeasures(PROJECT_KEY, listOf("coverage"), 1)
     }
 
     @Test
@@ -130,7 +125,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // when
         val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
-        val measureAPIRequestURI = ds.createMeasureAPIRequestURI("", ImmutableList.of("coverage"), 0)
+        val measureAPIRequestURI = ds.createMeasureAPIRequestURI("", listOf("coverage"), 0)
 
         // then
         assertThat(measureAPIRequestURI, `is`(expectedMeasuresAPIRequestURI))
@@ -142,7 +137,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         // given
         // when
         val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
-        ds.createMeasureAPIRequestURI("", ImmutableList.of(), 0)
+        ds.createMeasureAPIRequestURI("", listOf(), 0)
 
         // then throw
     }
@@ -153,7 +148,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         // given
         // when
         val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
-        ds.createMeasureAPIRequestURI("", ImmutableList.of(" "), 0)
+        ds.createMeasureAPIRequestURI("", listOf(" "), 0)
 
         // then throw
     }
@@ -170,7 +165,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // when
         val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
-        val components = ds.getComponentMap(PROJECT_KEY, ImmutableList.of("coverage"))
+        val components = ds.getComponentMap(PROJECT_KEY, listOf("coverage"))
 
         // then
         assertThat(components.componentList.count(), `is`(34))

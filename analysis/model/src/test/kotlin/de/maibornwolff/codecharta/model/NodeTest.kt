@@ -29,7 +29,6 @@
 
 package de.maibornwolff.codecharta.model
 
-import com.google.common.collect.ImmutableMap
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.MatcherAssert.assertThat
@@ -44,7 +43,7 @@ class NodeTest {
         // given
         val node11 = Node("node11", NodeType.File)
         val node1Children = Arrays.asList(node11)
-        val root = Node("node1", NodeType.Folder, ImmutableMap.of(), "", node1Children)
+        val root = Node("node1", NodeType.Folder, mapOf(), "", node1Children)
 
         // when
         val pathOfChild = root.getPathOfChild(node11)
@@ -59,7 +58,7 @@ class NodeTest {
         // given
         val node11 = Node("node11", NodeType.File)
         val node1Children = Arrays.asList(node11)
-        val root = Node("node1", NodeType.Folder, ImmutableMap.of(), "", node1Children)
+        val root = Node("node1", NodeType.Folder, mapOf(), "", node1Children)
 
         // when
         root.getPathOfChild(Node("node11", NodeType.Folder))
@@ -73,11 +72,11 @@ class NodeTest {
         val node11 = Node("node11", NodeType.File)
         val node12 = Node("node12", NodeType.File)
         val node1Children = Arrays.asList(node11, node12)
-        val node1 = Node("node1", NodeType.Folder, ImmutableMap.of(), "", node1Children)
+        val node1 = Node("node1", NodeType.Folder, mapOf(), "", node1Children)
         val node21 = Node("node21", NodeType.Folder)
         val node2Children = Arrays.asList(node21)
-        val node2 = Node("node2", NodeType.Folder, ImmutableMap.of(), "", node2Children)
-        val root = Node("root", NodeType.Folder, ImmutableMap.of(), "", Arrays.asList(node1, node2))
+        val node2 = Node("node2", NodeType.Folder, mapOf(), "", node2Children)
+        val root = Node("root", NodeType.Folder, mapOf(), "", Arrays.asList(node1, node2))
 
         // when
         val leafs = root.leafObjects
@@ -94,7 +93,7 @@ class NodeTest {
         // given
         val node1 = Node("node1", NodeType.Folder)
         val pathToNode1 = Path("node1")
-        val root = Node("root", NodeType.Folder, ImmutableMap.of(), "", Arrays.asList(node1))
+        val root = Node("root", NodeType.Folder, mapOf(), "", Arrays.asList(node1))
 
         // when
         val pathsToLeafs = root.pathsToLeaves
@@ -112,12 +111,12 @@ class NodeTest {
         val node12 = Node("node12", NodeType.File)
         val pathToNode12 = Path("node1", "node12")
         val node1Children = Arrays.asList(node11, node12)
-        val node1 = Node("node1", NodeType.Folder, ImmutableMap.of(), "", node1Children)
+        val node1 = Node("node1", NodeType.Folder, mapOf(), "", node1Children)
         val node21 = Node("node21", NodeType.Folder)
         val pathToNode21 = Path("node2", "node21")
         val node2Children = Arrays.asList(node21)
-        val node2 = Node("node2", NodeType.Folder, ImmutableMap.of(), "", node2Children)
-        val root = Node("root", NodeType.Folder, ImmutableMap.of(), "", Arrays.asList(node1, node2))
+        val node2 = Node("node2", NodeType.Folder, mapOf(), "", node2Children)
+        val root = Node("root", NodeType.Folder, mapOf(), "", Arrays.asList(node1, node2))
 
         // when
         val pathsToLeafs = root.pathsToLeaves

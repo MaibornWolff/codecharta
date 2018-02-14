@@ -29,7 +29,6 @@
 
 package de.maibornwolff.codecharta.importer.sonar
 
-import com.google.common.collect.ImmutableList
 import de.maibornwolff.codecharta.importer.sonar.model.Component
 import de.maibornwolff.codecharta.importer.sonar.model.ComponentMap
 import de.maibornwolff.codecharta.importer.sonar.model.Measure
@@ -47,7 +46,7 @@ class SonarComponentProjectAdapterTest {
         // given
         val measure = Measure("metric", "50.0")
         val name = "name"
-        val component = Component("id", null, name, "path", Qualifier.FIL, ImmutableList.of(measure))
+        val component = Component("id", null, name, "path", Qualifier.FIL, listOf(measure))
         val project = SonarComponentProjectAdapter("project")
 
         // when
@@ -64,7 +63,7 @@ class SonarComponentProjectAdapterTest {
         // given
         val measure = Measure("metric", "50.0")
         val id = "id"
-        val component = Component(id, null, null, null, Qualifier.FIL, ImmutableList.of(measure))
+        val component = Component(id, null, null, null, Qualifier.FIL, listOf(measure))
         val project = SonarComponentProjectAdapter("project")
 
         // when
@@ -87,7 +86,7 @@ class SonarComponentProjectAdapterTest {
         val key = "key"
         val name = "name"
         val path = "someFileName"
-        val component = Component(id, key, name, path, Qualifier.FIL, ImmutableList.of(measure))
+        val component = Component(id, key, name, path, Qualifier.FIL, listOf(measure))
         val project = SonarComponentProjectAdapter("project")
 
         // when
@@ -107,7 +106,7 @@ class SonarComponentProjectAdapterTest {
     fun should_ignore_string_measures() {
         // given
         val measure = Measure("metric", "bla")
-        val component = Component("id", "key", "name", "path", Qualifier.FIL, ImmutableList.of(measure))
+        val component = Component("id", "key", "name", "path", Qualifier.FIL, listOf(measure))
         val project = SonarComponentProjectAdapter("project")
 
         // when
@@ -122,7 +121,7 @@ class SonarComponentProjectAdapterTest {
     @Test
     fun should_insert_a_file_node_from_uts_component() {
         // given
-        val component = Component("id", "key", "name", "path", Qualifier.UTS, ImmutableList.of())
+        val component = Component("id", "key", "name", "path", Qualifier.UTS, listOf())
         val project = SonarComponentProjectAdapter("project")
 
         // when
@@ -137,7 +136,7 @@ class SonarComponentProjectAdapterTest {
     @Test
     fun should_insert_a_folder_node_from_dir_component() {
         // given
-        val component = Component("id", "key", "name", "path", Qualifier.DIR, ImmutableList.of())
+        val component = Component("id", "key", "name", "path", Qualifier.DIR, listOf())
         val project = SonarComponentProjectAdapter("project")
 
         // when
@@ -152,7 +151,7 @@ class SonarComponentProjectAdapterTest {
     @Test
     fun should_insert_component_from_component_map() {
         // given
-        val component = Component("id", "key", "name", "path", Qualifier.FIL, ImmutableList.of())
+        val component = Component("id", "key", "name", "path", Qualifier.FIL, listOf())
         val components = ComponentMap()
         components.updateComponent(component)
         val project = SonarComponentProjectAdapter("project")
@@ -168,7 +167,7 @@ class SonarComponentProjectAdapterTest {
     fun should_insert_component_by_path_if_configured() {
         // given
         val path = "someFileName"
-        val component = Component("id", "key", "name", path, Qualifier.FIL, ImmutableList.of())
+        val component = Component("id", "key", "name", path, Qualifier.FIL, listOf())
         val project = SonarComponentProjectAdapter("project", SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL, true)
 
         // when
