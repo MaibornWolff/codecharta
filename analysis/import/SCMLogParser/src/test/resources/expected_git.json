@@ -19,30 +19,15 @@
               "type": "File",
               "attributes": {
                 "weeks_with_commits": 1,
+                "range_of_weeks_with_commits": 1,
                 "number_of_commits": 2,
-                "authors": [
-                  "Dominik Ufer"
-                ],
+                "successive_weeks_with_commits": 1,
                 "number_of_authors": 1
               },
               "link": "",
               "children": []
             }
           ]
-        },
-        {
-          "name": "somefile",
-          "type": "File",
-          "attributes": {
-            "weeks_with_commits": 1,
-            "number_of_commits": 2,
-            "authors": [
-              "Dominik Ufer"
-            ],
-            "number_of_authors": 1
-          },
-          "link": "",
-          "children": []
         }
       ]
     }

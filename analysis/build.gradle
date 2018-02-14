@@ -1,14 +1,14 @@
 plugins {
-  id 'org.sonarqube' version '2.6.1'
-  id 'distribution'
-  id 'maven'
+    id 'org.sonarqube' version '2.6.1'
+    id 'distribution'
+    id 'maven'
 }
 
 group 'de.maibornwolff.codecharta'
 version = currentVersion
 
 repositories {
-  mavenCentral()
+    mavenCentral()
 }
 
 allprojects {
@@ -29,17 +29,28 @@ distributions {
     main {
         baseName = 'codecharta-analysis'
         contents {
+            from { '../LICENSE.md' }
+            from { '../CHANGELOG.md' }
+
+            // Readmes
             from { 'README.md' }
-            from('src/main/dist'){
-                filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [
-                        'cc_version' : currentVersion,
-                ])
+
+            project.subprojects.each { p ->
+                p.plugins.withType(ApplicationPlugin) {
+                    into('bin') {
+                        from { p.startScripts.outputs.files }
+                        fileMode = 0755
+                    }
+                    into('lib') {
+                        from { p.jar }
+                    }
+                }
             }
-            subprojects {
-                from tasks.withType(Tar)
-            }
+
+            // deprecated ccsh
+            from {'dist/ccsh'}
         }
-   }
+    }
 }
 
 sonarqube {
@@ -47,6 +58,7 @@ sonarqube {
         property 'sonar.coverage.exclusions', '**/model/**, **/*Main*'
     }
 }
+
 task integrationTest(type: Exec) {
     executable 'sh'
     workingDir('test')

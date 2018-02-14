@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.importer.sonar.model;
 
 public class Measure {
-    private String metric;
+    private final String metric;
 
-    private String value;
+    private final String value;
 
     public Measure(String metric, String value) {
         this.metric = metric;

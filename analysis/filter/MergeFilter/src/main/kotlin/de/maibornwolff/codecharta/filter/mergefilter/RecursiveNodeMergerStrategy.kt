@@ -44,8 +44,7 @@ class RecursiveNodeMergerStrategy : NodeMergerStrategy {
     }
 
     private fun reduceNodeList(total: List<Node>, actual: List<Node>): List<Node> {
-        return actual.fold(total, {
-            t: List<Node>, a: Node ->
+        return actual.fold(total, { t: List<Node>, a: Node ->
             t.map { if (mergeConditionSatisfied(it, a)) merge(it, a) else listOf(it) }
             when {
                 t.filter { mergeConditionSatisfied(it, a) }.count() > 0 -> t.map { if (mergeConditionSatisfied(it, a)) merge(it, a) else it }

@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class ComponentMap {
-    Map<String, Component> components = new HashMap<>();
+    private final Map<String, Component> components = new HashMap<>();
 
     public void updateComponent(Component component) {
         if (components.containsKey(component.getKey())) {

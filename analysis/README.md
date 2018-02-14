@@ -2,6 +2,8 @@
 
 [![Build Status](https://secure.travis-ci.org/)](https://travis-ci.org/)
 
+> CodeCharta by [MaibornWolff](https://www.maibornwolff.de)
+
 ## CodeCharta analysis tools
 
 CodeCharta analysis tools generally follow the pipes and filters architecture principle.
@@ -34,16 +36,22 @@ Components that take visualisation data and modifies them.
 ## Requirements
 
 - Bash or similar
-- JRE 9 (Oracle Java or OpenJDK)
+- JRE 8 (Oracle Java or OpenJDK)
+
+## Installation via npm
+
+This installs all binaries to run the analysis. Java 8 is required.
+
+`npm install -g codecharta-analysis`
+
+To run it you can call `ccsh`  
 
 ## Installation
 
 - Download / build package
 - Unzip / untar package in desired destination folder (named CC_INSTALL_DIR)
-- If on Linux: make extracted ccsh runnable (`chmod u+x ccsh`)
 - In bash:
-> ./ccsh install 
-> ./ccsh -h
+> ./bin/ccsh -h
 
 ## Build
 
