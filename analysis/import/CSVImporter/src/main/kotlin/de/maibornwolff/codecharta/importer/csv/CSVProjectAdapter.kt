@@ -80,7 +80,7 @@ class CSVProjectAdapter(
         return parser
     }
 
-    private fun insertNodeForRow(rawRow: Array<String>) {
+    private fun insertNodeForRow(rawRow: Array<String?>) {
         try {
             val row = CSVRow(rawRow, header!!, pathSeparator)
             val node = Node(row.fileName, NodeType.File, row.attributes)
