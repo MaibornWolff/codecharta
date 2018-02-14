@@ -35,17 +35,16 @@ import org.json.JSONObject
 import org.json.JSONTokener
 import java.io.InputStream
 
-class EveritValidator(var schemaPath: String) : Validator {
-    var schema = loadSchema()
+class EveritValidator(private var schemaPath: String) : Validator {
+    private var schema = loadSchema()
 
-    fun loadSchema(): Schema {
+    private fun loadSchema(): Schema {
         val input = this.javaClass.classLoader.getResourceAsStream(schemaPath)
         val rawJson = JSONObject(JSONTokener(input))
         return SchemaLoader.load(rawJson)
     }
 
     override fun validate(input: InputStream) {
-        val json = JSONObject(JSONTokener(input))
-        schema.validate(json)
+        schema.validate(JSONObject(JSONTokener(input)))
     }
 }

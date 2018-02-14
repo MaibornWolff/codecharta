@@ -1,88 +1,87 @@
 package de.maibornwolff.codecharta.importer.csv
 
-import org.junit.Test
-
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.*
+import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.on
 import java.io.ByteArrayInputStream
 import java.io.InputStream
-import java.io.UnsupportedEncodingException
 import java.nio.charset.StandardCharsets
 
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.hasSize
-
-class CSVProjectAdapterTest {
-    private val project = CSVProjectAdapter("test", '\\', ',')
-
-    private fun toInputStream(content: String): InputStream {
+class CSVProjectAdapterTest : Spek({
+    fun toInputStream(content: String): InputStream {
         return ByteArrayInputStream(content.toByteArray(StandardCharsets.UTF_8))
     }
 
-    @Test
-    @Throws(UnsupportedEncodingException::class)
-    fun should_ignore_row_if_no_path_column_present() {
-        // when
-        project.addProjectFromCsv(toInputStream("head,path\nnoValidContent\n"))
+    describe("a CSVProjectAdapter") {
+        val project = CSVProjectAdapter("test", '\\', ',')
 
-        // then
-        assertThat(project.rootNode.children, hasSize(0))
+        on("adding invalid csv") {
+
+            val invalidContent = "head,path\nnoValidContent\n"
+            project.addProjectFromCsv(toInputStream(invalidContent))
+
+            it("should be ignored") {
+                assertThat(project.rootNode.children, hasSize(0))
+            }
+        }
+
+        on("adding valid csv") {
+            val name = "someName"
+            project.addProjectFromCsv(toInputStream("someContent,,path\nprojectName,blubb2,$name"))
+
+            it("should have node with same name") {
+                assertThat(project.rootNode.children.map { it.name }, hasItem(name))
+            }
+        }
+
+        on("adding same line twice") {
+            val name = "someNameOrOther"
+            project.addProjectFromCsv(toInputStream("someContent\n" + name))
+            project.addProjectFromCsv(toInputStream("someContent\n" + name))
+
+            it("should add only first line") {
+
+                // then
+                assertThat(project.rootNode.children.filter { it.name == name }.size, `is`(1))
+            }
+        }
     }
 
-    @Test
-    @Throws(UnsupportedEncodingException::class)
-    fun should_read_node_name_from_specified_path_column() {
-        val name = "someName"
-        // when
-        project.addProjectFromCsv(toInputStream("someContent,,path\nprojectName,blubb2,$name"))
+    describe("a CSVProjectAdapter") {
+        val project = CSVProjectAdapter("test", '\\', ',')
 
-        // then
-        val rootNode = project.rootNode.children
-        assertThat(rootNode.size, `is`(1))
-        assertThat(rootNode.iterator().next().name, `is`(name))
+        on("adding line with metric values") {
+            val attribName = "attname"
+            val attribVal = "\"0,1\""
+            val attValFloat = 0.1f
+
+            project.addProjectFromCsv(toInputStream("head1,path,head3,head4,$attribName\nprojectName,\"9900,01\",\"blubb\",1.0,$attribVal\n"))
+
+            it("should add attributes to node") {
+                val nodeAttributes = project.rootNode.children.iterator().next().attributes
+                assertThat(nodeAttributes.size, `is`(3))
+                assertThat<Any>(nodeAttributes[attribName], `is`<Any>(attValFloat))
+            }
+        }
+
     }
 
-    @Test
-    @Throws(UnsupportedEncodingException::class)
-    fun should_read_node_with_name_only_once() {
-        val name = "someName"
-        // when
-        project.addProjectFromCsv(toInputStream("someContent\n" + name))
-        project.addProjectFromCsv(toInputStream("someContent\n" + name))
+    describe("a CSVProjectAdapter") {
+        val project = CSVProjectAdapter("test", '\\', ',')
 
-        // then
-        assertThat(project.rootNode.children.size, `is`(1))
+        on("adding file with subdirectory") {
+            val directoryName = "someNodeName"
+            project.addProjectFromCsv(toInputStream("someContent\n$directoryName\\someFile"))
+
+            it("should create node for subdirectory") {
+                assertThat(project.rootNode.children.size, `is`(1))
+                val node = project.rootNode.children.iterator().next()
+                assertThat(node.name, `is`(directoryName))
+                assertThat(node.children.size, `is`(1))
+            }
+        }
     }
-
-    @Test
-    @Throws(UnsupportedEncodingException::class)
-    fun should_create_nodes_for_directories() {
-        // given
-        val directoryName = "someNodeName"
-
-        // when
-        project.addProjectFromCsv(toInputStream("someContent\n$directoryName\\someFile"))
-
-        // then
-        assertThat(project.rootNode.children.size, `is`(1))
-        val node = project.rootNode.children.iterator().next()
-        assertThat(node.name, `is`(directoryName))
-        assertThat(node.children.size, `is`(1))
-    }
-
-    @Test
-    @Throws(UnsupportedEncodingException::class)
-    fun should_read_node_attributes_if_metric_values() {
-        // given
-        val attribName = "attname"
-        val attribVal = "\"0,1\""
-        val attValFloat = 0.1f
-
-        // when
-        project.addProjectFromCsv(toInputStream("head1,path,head3,head4,$attribName\nprojectName,\"9900,01\",\"blubb\",1.0,$attribVal\n"))
-
-        // then
-        val nodeAttributes = project.rootNode.children.iterator().next().attributes
-        assertThat(nodeAttributes.size, `is`(3))
-        assertThat<Any>(nodeAttributes[attribName], `is`<Any>(attValFloat))
-    }
-}
+})

@@ -1,132 +1,85 @@
 package de.maibornwolff.codecharta.importer.csv
 
-import com.google.common.collect.ImmutableMap
-import org.junit.Test
-
-import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasSize
+import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
+import kotlin.test.assertFailsWith
 
-class CSVRowTest {
+private const val PATH_SEPARATOR = '\\'
 
-    @Test
-    fun getPath_should_return_path_from_specified_path_column() {
-        // given
-        val name = "someNodeName"
-        val header = CSVHeader(arrayOf("head1", "head2", "head3", "path", "attrib"))
-        val csvRow = arrayOf("projectName", "blubb2", "blubb3", name)
+class CSVRowTest : Spek({
 
-        // when
-        val row = CSVRow(csvRow, header, PATH_SEPARATOR)
+    describe("Using a header with path column") {
+        val header = CSVHeader(arrayOf("head1", "head2", "head3", "path", "attrib", "attrib2", ""))
 
-        // then
-        assertThat(row.path, `is`(name))
-    }
 
-    @Test
-    fun getFileName_should_return_filename_from_specified_path_column() {
-        // given
-        val header = CSVHeader(arrayOf("head1", "head2", "head3", "Path", "attrib"))
-        val nameExpectedFilenameMap = ImmutableMap.of(
-                "someNodeName", "someNodeName",
-                "someDir\\someName", "someName",
-                "someDir\\anotherDir\\anotherName", "anotherName")
+        it("getPath should be path from this columnn") {
+            val name = "someNodeName"
+            val csvRow = arrayOf("projectName", "blubb2", "blubb3", name)
+            val row = CSVRow(csvRow, header, PATH_SEPARATOR)
 
-        for (name in nameExpectedFilenameMap.keys) {
-            // when
-            val row = CSVRow(arrayOf("projectName", "blubb2", "blubb3", name), header, PATH_SEPARATOR)
-            // then
-            assertThat(row.fileName, `is`<String>(nameExpectedFilenameMap[name]))
+            assertThat(row.path, `is`(name))
+        }
+
+        it("getFileName should be filename from this columnn") {
+            val nameExpectedFilenameMap = mapOf(
+                    Pair("someNodeName", "someNodeName"),
+                    Pair("someDir\\someName", "someName"),
+                    Pair("someDir\\anotherDir\\anotherName", "anotherName")
+            )
+
+            for (name in nameExpectedFilenameMap.keys) {
+                val row = CSVRow(arrayOf("projectName", "blubb2", "blubb3", name), header, PATH_SEPARATOR)
+                assertThat(row.fileName, `is`(nameExpectedFilenameMap[name]))
+            }
+        }
+
+        it("getFolderWithFile should be absolute file name from this column") {
+            val nameExpectedFolderWithFileMap = mapOf(
+                    Pair("someNodeName", ""),
+                    Pair("someDir\\someName", "someDir\\"),
+                    Pair("someDir\\anotherDir\\anotherName", "someDir\\anotherDir\\")
+            )
+
+            for (name in nameExpectedFolderWithFileMap.keys) {
+                // when
+                val row = CSVRow(arrayOf("projectName", "blubb2", "blubb3", name), header, PATH_SEPARATOR)
+                // then
+                assertThat(row.folderWithFile, `is`<String>(nameExpectedFolderWithFileMap[name]))
+            }
+        }
+
+        it("should throw exception if no path column present") {
+            assertFailsWith(IllegalArgumentException::class) {
+                CSVRow(arrayOf("", ""), header, PATH_SEPARATOR)
+            }
+        }
+
+        it("should ignore columns if no attribute name in header") {
+            val rawRow = arrayOf("1", "2", "3", "file", "4", "5", "6", "7")
+            val row = CSVRow(rawRow, header, PATH_SEPARATOR)
+            assertThat(row.attributes.keys, hasSize(5))
+        }
+
+        it("should ignore column if not in row") {
+            val rawRow = arrayOf("blubb1", "blubb2", "blubb3", "path")
+            val row = CSVRow(rawRow, header, PATH_SEPARATOR)
+            assertThat(row.attributes.keys, not(hasItem("attrib")))
+        }
+
+        it("should have attribute for metric columns") {
+            val rawRow = arrayOf("3,2", "2", "3", "file")
+            val row = CSVRow(rawRow, header, PATH_SEPARATOR)
+            assertThat<Any>(row.attributes["head1"], `is`<Any>(3.2f))
+        }
+
+        it("should have NO attribute for non-metric columns") {
+            val rawRow = arrayOf("bla", "2", "3", "file")
+            val row = CSVRow(rawRow, header, PATH_SEPARATOR)
+            assertThat(row.attributes["head1"], nullValue())
         }
     }
-
-    @Test
-    @Throws(Exception::class)
-    fun getFolderWithFile_should_return_folderWithFile_from_specified_path_column() {
-        // given
-        val header = CSVHeader(arrayOf("head1", "head2", "head3", "PATH", "attrib"))
-        val nameExpectedFolderWithFileMap = ImmutableMap.of(
-                "someNodeName", "",
-                "someDir\\someName", "someDir\\",
-                "someDir\\anotherDir\\anotherName", "someDir\\anotherDir\\")
-
-        for (name in nameExpectedFolderWithFileMap.keys) {
-            // when
-            val row = CSVRow(arrayOf("projectName", "blubb2", "blubb3", name), header, PATH_SEPARATOR)
-            // then
-            assertThat(row.folderWithFile, `is`<String>(nameExpectedFolderWithFileMap[name]))
-        }
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun getAttributes_should_read_float_from_metric_column() {
-        // given
-        val header = CSVHeader(arrayOf("path", "attrib"))
-        val rawRow = arrayOf("name", "3,2")
-
-        // when
-        val row = CSVRow(rawRow, header, PATH_SEPARATOR)
-
-        // then
-        assertThat<Set<String>>(row.attributes.keys, hasSize(1))
-        assertThat<Any>(row.attributes["attrib"], `is`<Any>(3.2f))
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun getAttributes_should_ignore_string_in_metric_column() {
-        // given
-        val header = CSVHeader(arrayOf("head1", "head2", "head3", "path", "attrib"))
-        val rawRow = arrayOf("projectName", "blubb2", "blubb3", "name", "3bla")
-
-        // when
-        val row = CSVRow(rawRow, header, PATH_SEPARATOR)
-
-        // then
-        assertThat<Set<String>>(row.attributes.keys, hasSize(0))
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun getAttributes_should_ignore_column_if_no_attributeName_in_head() {
-        // given
-        val header = CSVHeader(arrayOf("head1", "head2", "head3", "path"))
-        val rawRow = arrayOf("projectName", "blubb2", "blubb3", "name", "3,0")
-
-        // when
-        val row = CSVRow(rawRow, header, PATH_SEPARATOR)
-
-        // then
-        assertThat<Set<String>>(row.attributes.keys, hasSize(0))
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun getAttributes_should_ignore_column_if_not_present_in_row() {
-        // given
-        val header = CSVHeader(arrayOf("path", "head2", "head3", "missingValueColumn"))
-        val rawRow = arrayOf("somePath", "1,2", "1.3")
-
-        // when
-        val row = CSVRow(rawRow, header, PATH_SEPARATOR)
-
-        // then
-        assertThat<Set<String>>(row.attributes.keys, hasSize(2))
-    }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun should_throw_exception_if_no_path_column_present() {
-        // given
-        val header = CSVHeader(arrayOf("head1", "head2", "head3", "path"))
-
-        // when
-        CSVRow(arrayOf("", ""), header, PATH_SEPARATOR)
-
-        // then throw
-    }
-
-    companion object {
-        private const val PATH_SEPARATOR = '\\'
-    }
-}
+})
