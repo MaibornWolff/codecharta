@@ -27,6 +27,7 @@ export class codeMapGeometricDescription {
         this.scales = scales;
     }
 
+    //TODO Performance
     intersect(ray : THREE.Ray) : intersectionResult
     {
         let intersectedBuilding : codeMapBuilding | null = null;
@@ -36,30 +37,51 @@ export class codeMapGeometricDescription {
 
         for (let building of this.buildings)
         {
-            let box : THREE.Box3 = building.boundingBox.clone();
 
+            //Pre Transformation
+            let box : THREE.Box3 = building.boundingBox.clone();
+            
             box.min.x *= this.scales.x;
             box.min.y *= this.scales.y;
             box.min.z *= this.scales.z;
-
+            
             box.max.x *= this.scales.x;
             box.max.y *= this.scales.y;
             box.max.z *= this.scales.z;
-
+            
             box.translate(boxTranslation);
+            
+            // ray - axis aligned bounding box intersection method "slab"
+            
+            let tx1 = (box.min.x - ray.origin.x)*(1/ray.direction.x);
+            let tx2 = (box.max.x - ray.origin.x)*(1/ray.direction.x);
 
-            let intersectionPoint : THREE.Vector3 = ray.intersectBox(box);
+            let tmin = Math.min(tx1, tx2);
+            let tmax = Math.max(tx1, tx2);
 
-            if (intersectionPoint)
-            {
-                let intersectionDistance : number = intersectionPoint.distanceTo(ray.origin);
+            let ty1 = (box.min.y - ray.origin.y)*(1/ray.direction.y);
+            let ty2 = (box.max.y - ray.origin.y)*(1/ray.direction.y);
 
-                if (intersectionDistance < leastIntersectedDistance)
+            tmin = Math.max(tmin, Math.min(ty1, ty2));
+            tmax = Math.min(tmax, Math.max(ty1, ty2));
+
+            if(tmax >= tmin){ // TODO this is just some kind of efficient prefiltering since we still use ray.intersectBox and distance to
+
+                let intersectionPoint : THREE.Vector3 = ray.intersectBox(box);
+
+                if (intersectionPoint)
                 {
-                    leastIntersectedDistance = intersectionDistance;
-                    intersectedBuilding = building;
+                    let intersectionDistance : number = intersectionPoint.distanceTo(ray.origin);
+
+                    if (intersectionDistance < leastIntersectedDistance)
+                    {
+                        leastIntersectedDistance = intersectionDistance;
+                        intersectedBuilding = building;
+                    }
                 }
+
             }
+
         }
 
         if (intersectedBuilding)
