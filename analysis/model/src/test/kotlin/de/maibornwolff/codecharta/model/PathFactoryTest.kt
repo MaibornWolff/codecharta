@@ -29,7 +29,6 @@
 
 package de.maibornwolff.codecharta.model
 
-import com.google.common.collect.ImmutableList
 import org.hamcrest.Matchers.`is`
 import org.junit.Assert.assertThat
 import org.junit.Test
@@ -52,7 +51,7 @@ class PathFactoryTest {
 
     @Test
     fun leading_slash_should_define_same_hierarchical_position() {
-        val pathsWithoutSlash = ImmutableList.of(
+        val pathsWithoutSlash = listOf(
                 "file", "subdir/file", "subdir/subdir/file", "subdir/othersubdir/file"
         )
 

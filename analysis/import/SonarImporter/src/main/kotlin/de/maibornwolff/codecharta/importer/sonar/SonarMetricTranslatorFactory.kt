@@ -29,7 +29,6 @@
 
 package de.maibornwolff.codecharta.importer.sonar
 
-import com.google.common.collect.ImmutableMap
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
 internal object SonarMetricTranslatorFactory {
@@ -51,7 +50,7 @@ internal object SonarMetricTranslatorFactory {
         replacementMap["public_api"] = "public_api"
         replacementMap["statements"] = "statements"
 
-        return MetricNameTranslator(ImmutableMap.copyOf(replacementMap), prefix)
+        return MetricNameTranslator(replacementMap.toMap(), prefix)
 
     }
 }

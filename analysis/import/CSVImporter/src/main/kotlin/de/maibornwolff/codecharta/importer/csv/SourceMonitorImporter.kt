@@ -1,7 +1,5 @@
 package de.maibornwolff.codecharta.importer.csv
 
-import com.google.common.collect.ImmutableList
-import com.google.common.collect.ImmutableMap
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import picocli.CommandLine
@@ -38,7 +36,7 @@ class SourceMonitorImporter : Callable<Void> {
     private val sourceMonitorReplacement: MetricNameTranslator
         get() {
             val prefix = "sm_"
-            val replacementMap = HashMap<String, String>()
+            val replacementMap = mutableMapOf<String, String>()
             replacementMap["Project Name"] = ""
             replacementMap["Checkpoint Name"] = ""
             replacementMap["Created On"] = ""
@@ -60,12 +58,12 @@ class SourceMonitorImporter : Callable<Void> {
                 replacementMap["Statements at block level " + i] = "statements_at_level_" + i
             }
 
-            return MetricNameTranslator(ImmutableMap.copyOf(replacementMap), prefix)
+            return MetricNameTranslator(replacementMap.toMap(), prefix)
         }
 
     private fun getInputStreamsFromArgs(files: List<String>): List<InputStream> {
         val fileList = files.map { createFileInputStream(it) }
-        return if (fileList.isEmpty()) ImmutableList.of(System.`in`) else fileList
+        return if (fileList.isEmpty()) listOf(System.`in`) else fileList
     }
 
     private fun createFileInputStream(path: String): FileInputStream {

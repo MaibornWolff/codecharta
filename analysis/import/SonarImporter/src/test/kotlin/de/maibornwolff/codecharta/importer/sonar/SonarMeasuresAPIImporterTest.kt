@@ -29,7 +29,6 @@
 
 package de.maibornwolff.codecharta.importer.sonar
 
-import com.google.common.collect.ImmutableList
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.model.Component
@@ -75,7 +74,7 @@ class SonarMeasuresAPIImporterTest {
         val metricList = sonar.getMetricList(emptyMetrics)
 
         // then
-        assertThat(metricList, `is`<List<String>>(ImmutableList.of("metricKey")))
+        assertThat(metricList, `is`<List<String>>(listOf("metricKey")))
     }
 
     @Test

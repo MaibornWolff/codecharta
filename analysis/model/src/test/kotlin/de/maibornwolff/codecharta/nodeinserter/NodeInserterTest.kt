@@ -29,7 +29,6 @@
 
 package de.maibornwolff.codecharta.nodeinserter
 
-import com.google.common.collect.ImmutableList
 import de.maibornwolff.codecharta.model.*
 import de.maibornwolff.codecharta.nodeinserter.NodeInserter.insertByPath
 import org.hamcrest.BaseMatcher
@@ -174,7 +173,7 @@ class NodeInserterTest {
     fun should_use_root_node_if_present() {
         // given
         val root = Node("root", NodeType.Folder)
-        val project = Project("someName", ImmutableList.of(root))
+        val project = Project("someName", listOf(root))
         val nodeForInsertion = Node("someNode", NodeType.File)
 
         // when

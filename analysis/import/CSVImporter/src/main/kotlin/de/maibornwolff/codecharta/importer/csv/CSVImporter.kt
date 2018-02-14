@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.csv
 
-import com.google.common.collect.ImmutableList
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
 import java.io.*
@@ -40,7 +39,7 @@ class CSVImporter : Callable<Void> {
 
     private fun getInputStreamsFromArgs(files: List<String>): List<InputStream> {
         val fileList = files.map { createFileInputStream(it) }
-        return if (fileList.isEmpty()) ImmutableList.of(System.`in`) else fileList
+        return if (fileList.isEmpty()) listOf(System.`in`) else fileList
     }
 
     private fun createFileInputStream(path: String): FileInputStream {

@@ -31,8 +31,6 @@ package de.maibornwolff.codecharta.importer.sonar.dataaccess
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.junit.WireMockRule
-import com.google.common.base.Charsets
-import com.google.common.io.CharStreams
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource.Companion.PAGE_SIZE
 import org.hamcrest.MatcherAssert.assertThat
@@ -41,7 +39,6 @@ import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
-import java.io.InputStreamReader
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.*
@@ -53,8 +50,7 @@ class SonarMetricsAPIDatasourceIntegrationTest {
 
     @Throws(IOException::class)
     private fun createMetricResponseAsJsonString(): String {
-        return CharStreams.toString(InputStreamReader(
-                this.javaClass.classLoader.getResourceAsStream("metrics.json"), Charsets.UTF_8))
+        return this.javaClass.classLoader.getResource("metrics.json").readText()
     }
 
     @Test
