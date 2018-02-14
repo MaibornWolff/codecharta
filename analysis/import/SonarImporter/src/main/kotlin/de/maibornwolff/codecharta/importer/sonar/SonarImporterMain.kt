@@ -74,7 +74,7 @@ class SonarImporterMain : Callable<Void> {
     }
 
     @Throws(IOException::class)
-    private fun createWriterFrom(): Writer {
+    private fun writer(): Writer {
         return if (outputFile.isEmpty()) {
             OutputStreamWriter(out)
         } else {
@@ -102,7 +102,7 @@ class SonarImporterMain : Callable<Void> {
         val importer = createMesauresAPIImporter()
         val project = importer.getProjectFromMeasureAPI(projectKey, projectKey, metrics)
 
-        ProjectSerializer.serializeProject(project, createWriterFrom())
+        ProjectSerializer.serializeProject(project, writer())
 
         return null
     }
