@@ -13,22 +13,25 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserS
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
+import java.io.File
 import java.io.IOException
 import java.io.OutputStreamWriter
-import java.nio.file.Files
-import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.stream.Stream
 
-@CommandLine.Command(name = "scmlogparser", description = ["generates cc.json from scm log file (git or svn)"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
+@CommandLine.Command(
+        name = "scmlogparser",
+        description = ["generates cc.json from scm log file (git or svn)"],
+        footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
+)
 class SCMLogParser : Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["file to parse"])
-    private var file = ""
+    private var file: File? = null
 
     @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
     private var outputFile = ""
@@ -36,14 +39,14 @@ class SCMLogParser : Callable<Void> {
     @CommandLine.Option(names = ["-p", "--projectName"], description = ["project name"])
     private var projectName = "SCMLogParser"
 
-    @CommandLine.Option(names = ["--git"], description = ["analysis of git log, equivalent --input-format GIT_LOG"])
+    @CommandLine.Option(names = ["--git"], hidden= true, description = ["analysis of git log, equivalent --input-format GIT_LOG"])
     private var gitLog = false
 
-    @CommandLine.Option(names = ["--svn"], description = ["analysis of svn log, equivalent --input-format SVN_LOG"])
+    @CommandLine.Option(names = ["--svn"], hidden= true, description = ["analysis of svn log, equivalent --input-format SVN_LOG"])
     private var svnLog = false
 
     @CommandLine.Option(names = ["--input-format"], description = ["input format for parsing"])
-    private var inputFormatNames: InputFormatNames? = null
+    private var inputFormatNames: InputFormatNames = GIT_LOG
 
     @CommandLine.Option(names = ["--add-author"], description = ["add an array of authors to every file"])
     private var addAuthor = false
@@ -74,7 +77,7 @@ class SCMLogParser : Callable<Void> {
     @Throws(IOException::class)
     override fun call(): Void? {
         val project = createProjectFromLog(
-                file,
+                file!!,
                 logParserStrategy,
                 metricsFactory,
                 projectName,
@@ -151,14 +154,14 @@ class SCMLogParser : Callable<Void> {
 
         @Throws(IOException::class)
         private fun createProjectFromLog(
-                pathToLog: String,
+                pathToLog: File,
                 parserStrategy: LogParserStrategy,
                 metricsFactory: MetricsFactory,
                 projectName: String,
                 containsAuthors: Boolean
         ): Project {
 
-            val lines = Files.lines(Paths.get(pathToLog))
+            val lines = pathToLog.readLines().stream()
             val projectConverter = ProjectConverter(containsAuthors, projectName)
             return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter).parse(lines)
 
