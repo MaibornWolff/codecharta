@@ -68,6 +68,26 @@ describe("app.codeCharta.core.data.dataService", () => {
 
     describe("decorateMapWithUnaryMetric",() => {
 
+        it("maps with no attribute nodes should be accepted and an attributes member added", ()=>{
+
+            let cm: CodeMap = {
+                fileName: "a",
+                projectName: "b",
+                root: {
+                    name: "a node"
+                }
+            };
+
+            dataDecoratorService.decorateMapWithUnaryMetric(cm);
+
+            let h = d3.hierarchy(cm.root);
+
+            h.each((node)=>{
+                expect(node.data.attributes["unary"]).toBeDefined();
+            });
+
+        });
+
         it("all nodes should have a unary attribute", ()=>{
             a.root.children[0].attributes = {};
             dataDecoratorService.decorateMapWithUnaryMetric(a);
