@@ -8,10 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
+- added a ray-aabb intersection test before precise testing. Less time is spent in intersection methods. 
 
 ### Removed
 
 ### Fixed
+- fixed a minor bug
 
 ## [1.7.2] - 2018-02-02
 ### Added
