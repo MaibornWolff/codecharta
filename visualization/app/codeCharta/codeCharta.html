@@ -12,3 +12,18 @@
 <code-map-component></code-map-component>
 <legend-panel-component></legend-panel-component>
 <revision-chooser-component></revision-chooser-component>
+
+<div id="loading-indicator" ng-hide="$ctrl.numberOfLoadingTasks <= 0">
+    <div class="preloader-wrapper big active">
+        <div class="spinner-layer spinner-teal-only">
+            <div class="circle-clipper left">
+                <div class="circle"></div>
+            </div><div class="gap-patch">
+            <div class="circle"></div>
+        </div><div class="circle-clipper right">
+            <div class="circle"></div>
+        </div>
+        </div>
+    </div>
+    This may take a up to a few minutes when loading big maps...
+</div>
