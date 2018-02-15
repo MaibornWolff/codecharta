@@ -5,6 +5,7 @@ import {SettingsService} from "./core/settings/settings.service";
 import {ScenarioService} from "./core/scenario/scenario.service";
 import {DataService} from "./core/data/data.service";
 import $ from "jquery";
+import {IRootScopeService} from "angular";
 
 /**
  * This is the main controller of the CodeCharta application
@@ -12,6 +13,7 @@ import $ from "jquery";
 export class CodeChartaController {
 
     private pkg: Object;
+    private numberOfLoadingTasks = 0;
 
     /* @ngInject */
     constructor(
@@ -19,9 +21,20 @@ export class CodeChartaController {
         private urlService: UrlService,
         private settingsService: SettingsService,
         private scenarioService: ScenarioService,
-        private dataService: DataService
+        private dataService: DataService,
+        private $rootScope: IRootScopeService
     ) {
         this.init();
+
+        //Loading tasks
+        $rootScope.$on("add-loading-task", ()=>{
+            this.numberOfLoadingTasks++;
+        });
+
+        $rootScope.$on("remove-loading-task", ()=>{
+            this.numberOfLoadingTasks--;
+        });
+
     }
 
     init() {
@@ -35,6 +48,8 @@ export class CodeChartaController {
      */
     loadFileOrSample() {
 
+        this.numberOfLoadingTasks++;
+
         this.urlService.getFileDataFromQueryParam().then(
 
             //try loading from url param
@@ -47,9 +62,11 @@ export class CodeChartaController {
                     () => {
                         this.loadingFinished();
                         this.settingsService.updateSettingsFromUrl();
+                        this.numberOfLoadingTasks--;
                     },
                     (r) => {
                         this.printErrors(r);
+                        this.numberOfLoadingTasks--;
                     }
                 );
 
@@ -65,9 +82,11 @@ export class CodeChartaController {
                     () => {
                         this.loadingFinished();
                         this.settingsService.updateSettingsFromUrl();
+                        this.numberOfLoadingTasks--;
                     },
                     (r) => {
                         this.printErrors(r);
+                        this.numberOfLoadingTasks--;
                     }
                 );
 
