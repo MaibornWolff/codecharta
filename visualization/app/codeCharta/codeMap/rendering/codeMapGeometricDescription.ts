@@ -41,7 +41,6 @@ export class codeMapGeometricDescription {
         return tmax >= tmin;
     }
 
-    //TODO Performance
     intersect(ray: THREE.Ray): intersectionResult {
 
         let intersectedBuilding: codeMapBuilding | null = null;
@@ -64,7 +63,7 @@ export class codeMapGeometricDescription {
 
             box.translate(boxTranslation);
 
-            if (this.rayIntersectsAxisAlignedBoundingBox(ray, box)) { // TODO this is just some kind of efficient prefiltering since we still use ray.intersectBox which is kind of expensive
+            if (this.rayIntersectsAxisAlignedBoundingBox(ray, box)) {
 
                 let intersectionPoint: THREE.Vector3 = ray.intersectBox(box);
 
