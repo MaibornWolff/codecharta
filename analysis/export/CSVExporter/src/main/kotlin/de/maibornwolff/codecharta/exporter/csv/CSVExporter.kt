@@ -89,7 +89,7 @@ class CSVExporter : Callable<Void> {
 
     private fun row(path: Path, node: Node, attributeNames: List<String>): List<String> {
         val values: List<String> = node.toAttributeList(attributeNames)
-        
+
         return if (values.distinct().none { !it.isBlank() }) listOf()
         else listOf(path.toPath).plus(values)
     }
