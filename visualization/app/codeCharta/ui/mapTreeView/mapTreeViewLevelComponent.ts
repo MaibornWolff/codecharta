@@ -14,31 +14,42 @@ export class MapTreeViewLevelController {
 
     }
 
-    onLabelClick() {
+    onFolderClick() {
         this.collapsed = !this.collapsed;
     }
 
-    onEyeClick() {
-        this.setAndBroadcastVisibility(!this.node.visible);
+    onLabelClick() {
+        this.setParentsInvisibleAndChildrenVisible();
     }
 
-    setAndBroadcastVisibility(value: boolean) {
+    onEyeClick() {
+        this.setAndBroadcastVisibilityToChildren(!this.node.visible);
+    }
+
+    setParentsInvisibleAndChildrenVisible() {
+        // set root and all others invisible
+        // TODO not sure if we should acces the map through settings without getting triggered by the event. this saves memory though and should not be a problem
+        this.setAndBroadcastVisibilityToChildren(false, this.settingsService.settings.map.root);
+        // set this visible
+        this.setAndBroadcastVisibilityToChildren(true);
+    }
+
+    setAndBroadcastVisibilityToChildren(value: boolean, node: CodeMapNode = this.node) {
         this.node.visible = value;
-        if(!this.isLeaf()) {
-            let h = hierarchy(this.node);
-            h.descendants().forEach((d)=>{
-                d.data.visible = value;
-            });
-        }
+        let h = hierarchy(node);
+        h.descendants().forEach((d) => {
+            d.data.visible = value;
+        });
+
         //TODO ensure to call it after all broadcasts
         //TODO performance :(
-        this.$timeout(()=>{
+        this.$timeout(() => {
             this.settingsService.onSettingsChanged();
-        },100);
+        }, 100);
     }
 
-    isLeaf(): boolean {
-        return !(this.node && this.node.children && this.node.children.length > 0);
+    isLeaf(node: CodeMapNode = this.node): boolean {
+        return !(node && node.children && node.children.length > 0);
     }
 
 }
