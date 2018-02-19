@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- deltas where calculated on map loading even though, they were disabled
 
 ## [1.7.2] - 2018-02-02
 ### Added
