@@ -1,3 +1,7 @@
+.tree-root {
+    overflow-y: scroll;
+}
+
 .tree-root div{
     margin:0;
     padding:0;
