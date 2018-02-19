@@ -119,7 +119,9 @@ export class DataService {
             }
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._lastComparisonMap);
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.renderMap);
-            this.deltaCalculatorService.decorateMapsWithDeltas(this._lastComparisonMap, this._data.renderMap);
+            if (this._deltasEnabled && this._lastComparisonMap != this._data.renderMap) {
+                this.deltaCalculatorService.decorateMapsWithDeltas(this._lastComparisonMap, this._data.renderMap);
+            }
             this.setMetrics(index);
             this.dataDecoratorService.decorateEmptyAttributeLists(this._lastComparisonMap, this.data.metrics);
             this.dataDecoratorService.decorateEmptyAttributeLists(this._data.renderMap, this.data.metrics);
@@ -143,7 +145,9 @@ export class DataService {
             }
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._lastComparisonMap);
             this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.renderMap);
-            this.deltaCalculatorService.decorateMapsWithDeltas(this._lastComparisonMap, this._data.renderMap);
+            if (this._deltasEnabled && this._lastComparisonMap != this._data.renderMap) {
+                this.deltaCalculatorService.decorateMapsWithDeltas(this._lastComparisonMap, this._data.renderMap);
+            }
             this.setMetrics(index);
             this.dataDecoratorService.decorateEmptyAttributeLists(this._lastComparisonMap, this.data.metrics);
             this.dataDecoratorService.decorateEmptyAttributeLists(this._data.renderMap, this.data.metrics);
