@@ -1,6 +1,7 @@
 import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settings.service";
 import {ITimeoutService} from "angular";
 import {CodeMap, CodeMapNode} from "../../core/data/model/CodeMap";
+import {hierarchy} from "d3-hierarchy";
 
 export class MapTreeViewLevelController {
 
@@ -10,9 +11,7 @@ export class MapTreeViewLevelController {
 
     /* @ngInject */
     constructor(private $timeout: ITimeoutService, private $scope, private settingsService: SettingsService) {
-        this.$scope.$on("tree-parent-visibility-changed", (event, visibility)=>{
-            this.node.visible = visibility;
-        });
+
     }
 
     onLabelClick() {
@@ -26,8 +25,10 @@ export class MapTreeViewLevelController {
     setAndBroadcastVisibility(value: boolean) {
         this.node.visible = value;
         if(!this.isLeaf()) {
-            //broadcast to children
-            this.$scope.$broadcast("tree-parent-visibility-changed", value);
+            let h = hierarchy(this.node);
+            h.descendants().forEach((d)=>{
+                d.data.visible = value;
+            });
         }
         //TODO ensure to call it after all broadcasts
         //TODO performance :(
