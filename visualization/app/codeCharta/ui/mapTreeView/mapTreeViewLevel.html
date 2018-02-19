@@ -2,7 +2,7 @@
 
     <div class="tree-element-label-{{$ctrl.depth?$ctrl.depth:0}}">
 
-        <span ng-click="$ctrl.onLabelClick()">
+        <span ng-click="$ctrl.onFolderClick()">
             <i ng-if="!$ctrl.isLeaf() && $ctrl.collapsed" class="fa fa-folder" aria-hidden="true"></i>
             <i ng-if="!$ctrl.isLeaf() && !$ctrl.collapsed" class="fa fa-folder-open" aria-hidden="true"></i>
             <i ng-if="$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></i>
