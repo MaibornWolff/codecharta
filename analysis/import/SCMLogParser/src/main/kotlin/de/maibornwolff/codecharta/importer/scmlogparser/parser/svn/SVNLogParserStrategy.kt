@@ -34,7 +34,7 @@ class SVNLogParserStrategy : LogParserStrategy {
     }
 
     private fun isMetadataLine(commitLine: String): Boolean {
-        return commitLine.contains(Character.toString(METADATA_SEPARATOR))
+        return commitLine.startsWith('r') && commitLine.count { it == METADATA_SEPARATOR } >= 3
     }
 
     private fun parseAuthor(authorLine: String): String {
