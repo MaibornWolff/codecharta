@@ -1,27 +1,31 @@
+buildscript {
+    ext.kotlin_version = '1.2.21'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
 apply plugin: 'application'
-apply plugin: 'java'
+apply plugin: 'kotlin'
 
 dependencies {
     compile project(':model')
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile 'org.apache.commons:commons-lang3:3.7'
     compile 'info.picocli:picocli:2.2.1'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:3.9.0'
-    testCompile 'org.mockito:mockito-core:2.13.0'
+    testCompile "io.mockk:mockk:1.7.1"
+    testCompile project(path: ':model', configuration: 'testOutput')
 }
 
 mainClassName = "de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser"
 applicationName = 'codecharta-scmlogparser'
 
-
-compileJava {
-    options.compilerArgs += ['--release', '8']
-}
-
-compileTestJava {
-    options.compilerArgs += ['--release', '8']
-}
 
 jar {
     baseName = "${applicationName}"
@@ -30,4 +34,15 @@ jar {
     }
 
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }

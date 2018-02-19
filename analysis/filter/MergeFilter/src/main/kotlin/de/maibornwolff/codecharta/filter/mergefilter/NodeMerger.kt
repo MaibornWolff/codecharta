@@ -43,9 +43,9 @@ class NodeMerger {
                 createLink(nodes))
     }
 
-    private fun createLink(nodes: Array<out Node>) = nodes.map { it.link }.filter { it != null && !it.isBlank() }.firstOrNull()
+    private fun createLink(nodes: Array<out Node>) = nodes.map { it.link }.firstOrNull { it != null && !it.isBlank() }
 
-    private fun createAttributes(nodes: Array<out Node>) = nodes.map { it.attributes }.filterNotNull().reduce { acc, mutableMap -> acc.plus(mutableMap) }.orEmpty()
+    private fun createAttributes(nodes: Array<out Node>) = nodes.map { it.attributes }.reduce { acc, mutableMap -> acc.plus(mutableMap) }
 
     private fun createType(nodes: Array<out Node>) = nodes.map { it.type }.first()
 
