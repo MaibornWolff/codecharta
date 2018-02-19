@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- loading indicator
 
 ### Changed
 - added a ray-aabb intersection test before precise testing. Less time is spent in intersection methods. 
@@ -14,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 - fixed a minor bug
+- deltas where calculated on map loading even though, they were disabled
 
 ## [1.7.2] - 2018-02-02
 ### Added
