@@ -1,13 +1,14 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser.svn
 
+
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
+import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogLineParser
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.ParserStrategyContractTest
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.util.Lists
 import org.junit.Test
 import java.util.*
-import java.util.Arrays.asList
 import java.util.stream.Stream
 
 class SVNLogParserStrategyTest : ParserStrategyContractTest() {
@@ -20,7 +21,7 @@ class SVNLogParserStrategyTest : ParserStrategyContractTest() {
 
     override val twoCommitsAsStraem: Stream<String>
         get() {
-            val twoCommits = Lists.newArrayList("------------------------------------------------------------------------")
+            val twoCommits = mutableListOf("------------------------------------------------------------------------")
             twoCommits.addAll(FULL_COMMIT)
             twoCommits.add("------------------------------------------------------------------------")
             twoCommits.addAll(FULL_COMMIT)
@@ -86,9 +87,24 @@ class SVNLogParserStrategyTest : ParserStrategyContractTest() {
         assertThat(modifications).isEmpty()
     }
 
+    @Test
+    fun parsesSpecialCommit() {
+        val parser = LogLineParser(logParserStrategy, MetricsFactory())
+        val commitString = mutableListOf("------------------------------------------------------------------------",
+                "r156657 | dpagam05 | 2017-01-02 03:12:18 +0100 (Mo, 02 Jan 2017) | 1 line",
+                "Changed paths:",
+                "    M src/Modified.java",
+                "Task | Increased automaticly build number | builduser01",
+                "------------------------------------------------------------------------")
+        val commit = parser.parseCommit(commitString)
+        assertThat(commit.filenames)
+                .containsExactlyInAnyOrder("src/Modified.java")
+    }
+
+
     companion object {
 
-        private val FULL_COMMIT = asList(
+        private val FULL_COMMIT = mutableListOf(
                 "------------------------------------------------------------------------",
                 "r2 | TheAuthor | 2017-05-09 19:57:57 +0200 (Tue, 9 May 2017) | 1 line",
                 "Changed paths:",
