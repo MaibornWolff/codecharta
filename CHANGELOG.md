@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.8.0] - 2018-02-20
+### Added
 - Experimental dependency support
 - loading indicator
 - file path to detail panel
