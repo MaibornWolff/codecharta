@@ -8,7 +8,7 @@ fi
 
 # init hashmap of authors
 HASHMAP_FILE=hashmap.authors
-rm -f $HASHMAP_FILE 
+rm -f ${HASHMAP_FILE}
 COUNTER=1
 
 # main functionality
@@ -16,17 +16,17 @@ gitlog=`git log --numstat --raw --topo-order "$@"`
 
 while read -r line; do
   if [[ "$line" =~ ^Author.*\<.*\>$ ]]; then
-    aliasLine=$(grep -A1 "$line" $HASHMAP_FILE -m1 | tail -n 1)
+    aliasLine=$(grep -A1 "$line" ${HASHMAP_FILE} -m1 | tail -n 1)
     if [ -z "$aliasLine" ]; then
       aliasLine="Author: anon$COUNTER <anon$COUNTER@email.com>"
-      echo -e "$line\n$aliasLine" >> $HASHMAP_FILE
+      echo -e "$line\n$aliasLine" >> ${HASHMAP_FILE}
       ((COUNTER++))
     fi
-    echo $aliasLine
+    echo ${aliasLine}
   else
-    echo $line
+    echo ${line}
   fi
 done <<< "$gitlog"
 
 # clean up
-rm -f $HASHMAP_FILE
+rm -f ${HASHMAP_FILE}
