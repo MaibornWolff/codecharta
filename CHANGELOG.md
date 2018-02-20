@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+
+## [1.9.1] - 2018-02-20
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
 - detail panel bug fix
 
 ## [1.9.0] - 2018-02-20
