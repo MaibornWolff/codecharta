@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 - padding rendering
 - minimal building height is 1 to prevent clipping issues
+- fallback values for visualization when no metric is available (area = 1, height = 1, color = grey). Data in data structure will not be changed.
 
 ### Removed
 

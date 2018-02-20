@@ -78,10 +78,13 @@ class TreeMapService {
      * @param {number} folderHeight height of folder
      */
     private transformNode(node, heightKey, heightScale, folderHeight) {
-
+        let heightValue = node.data.attributes[heightKey];
+        if(heightValue === undefined || heightValue === null || heightValue === 0) {
+            heightValue = 1;
+        }
         node.width = Math.max(node.x1 - node.x0, 1);
         node.length = Math.max(node.y1 - node.y0, 1);
-        node.height = node.isLeaf ? heightScale * Math.max(1, node.data.attributes[heightKey]) : folderHeight;
+        node.height = node.isLeaf ? heightScale * heightValue : folderHeight;
         node.z0 = folderHeight * node.depth;
         node.z1 = folderHeight * node.depth + node.height;
         node.attributes = node.data.attributes;
