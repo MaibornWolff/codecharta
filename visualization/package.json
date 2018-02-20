@@ -10,7 +10,7 @@
     "url": "https://github.com/MaibornWolff/codecharta.git"
   },
   "name": "@maibornwolff/codecharta-visualization",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "MaibornWolff CodeCharta",
   "files": [
     "dist/webpack",

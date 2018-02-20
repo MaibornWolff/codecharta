@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
+
+### Removed
+
+### Fixed
+
+## [1.8.1] - 2018-02-20
+### Added
+
+### Changed
 - revision chooser moved to settings panel and uses now understandable dropdowns instead of links. Part of the #82 proposals
 
 ### Removed
