@@ -23,7 +23,8 @@
         "z": 1000
       },
       "margin": 1,
-      "deltaColorFlipped": false
+      "deltaColorFlipped": false,
+      "showDependencies": false
     }
   },
   {
@@ -50,7 +51,8 @@
         "z": 1000
       },
       "margin": 1,
-      "deltaColorFlipped": false
+      "deltaColorFlipped": false,
+      "showDependencies": false
     }
   },
   {
@@ -77,7 +79,8 @@
         "z": 1000
       },
       "margin": 1,
-      "deltaColorFlipped": false
+      "deltaColorFlipped": false,
+      "showDependencies": false
     }
   }
 ]
