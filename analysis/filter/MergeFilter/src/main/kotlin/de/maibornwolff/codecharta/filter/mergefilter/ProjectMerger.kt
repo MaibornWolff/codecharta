@@ -32,7 +32,7 @@ package de.maibornwolff.codecharta.filter.mergefilter
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
 
-class ProjectMerger(val projects: List<Project>, val nodeMerger: NodeMergerStrategy) {
+class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
 
     fun extractProjectName(): String {
         val projectNames = projects.map { p -> p.projectName }.toSortedSet()
@@ -42,7 +42,7 @@ class ProjectMerger(val projects: List<Project>, val nodeMerger: NodeMergerStrat
         }
     }
 
-    fun extractApiVersion(): String {
+    private fun extractApiVersion(): String {
         val apiVersion = projects.map { p -> p.apiVersion }.toSortedSet()
         when (apiVersion.size) {
             1 -> return apiVersion.first()
@@ -56,11 +56,11 @@ class ProjectMerger(val projects: List<Project>, val nodeMerger: NodeMergerStrat
         if (apiVersion != Project.API_VERSION) {
             throw MergeException("API-Version $apiVersion of project is not supported.")
         }
-        return Project(name, mergeProjectNodes())
+        return Project(name, mergeProjectNodes().toMutableList())
     }
 
     private fun mergeProjectNodes(): List<Node> {
-        return nodeMerger.mergeNodeLists(projects.map { p -> p.nodes!! })
+        return nodeMerger.mergeNodeLists(projects.map { it.nodes })
     }
 
 }
