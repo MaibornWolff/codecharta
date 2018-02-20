@@ -2,6 +2,7 @@ import angular from "angular";
 
 import "../../core/core.module";
 import "../../codeMap/codeMap";
+import "./detailPanel.css";
 
 import {detailPanelComponent} from "./detailPanelComponent";
 
