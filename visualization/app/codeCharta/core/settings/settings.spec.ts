@@ -6,7 +6,7 @@ import sinon from "sinon";
 /**
  * @test {SettingsService}
  */
-xdescribe("settings.service", function() {
+describe("settings.service", function() {
 
     var validData;
 
@@ -47,9 +47,9 @@ xdescribe("settings.service", function() {
     /**
      * @test {SettingsService#constructor}
      */
-    it("should retrieve the angular service instance with enabled delta cubes and no details selected", NGMock.mock.inject(function(settingsService){
+    it("should retrieve the angular service instance with disabled delta cubes and no details selected", NGMock.mock.inject(function(settingsService){
         expect(settingsService).not.toBe(undefined);
-        expect(settingsService.settings.deltas).toBe(true);
+        expect(settingsService.settings.deltas).toBe(false);
     }));
 
     //noinspection TypeScriptUnresolvedVariable
@@ -97,7 +97,7 @@ xdescribe("settings.service", function() {
         settingsService.onSettingsChanged = sinon.spy();
 
         //enough metrics
-        $rootScope.$broadcast("data-changed", {referenceMap: validData, metrics: ["a","b","c"]});
+        $rootScope.$broadcast("data-changed", {renderMap: validData, metrics: ["a","b","c"]});
 
         expect(settingsService.settings.map.fileName).toBe("file");
         expect(settingsService.settings.areaMetric).toBe("a");
@@ -106,7 +106,7 @@ xdescribe("settings.service", function() {
 
         //not enough metrics
         validData.fileName = "file2";
-        $rootScope.$broadcast("data-changed", {referenceMap: validData, metrics: ["a"]});
+        $rootScope.$broadcast("data-changed", {renderMap: validData, metrics: ["a"]});
 
         expect(settingsService.settings.map.fileName).toBe("file2");
         expect(settingsService.settings.areaMetric).toBe("a");
@@ -153,7 +153,7 @@ xdescribe("settings.service", function() {
 
         settingsService.onSettingsChanged = sinon.spy();
 
-        $rootScope.$broadcast("data-changed", {referenceMap: validData, metrics: ["a", "b"]});
+        $rootScope.$broadcast("data-changed", {renderMap: validData, metrics: ["a", "b"]});
 
         expect(settingsService.settings.map.fileName).toBe("file");
         expect(settingsService.settings.areaMetric).toBe("a");

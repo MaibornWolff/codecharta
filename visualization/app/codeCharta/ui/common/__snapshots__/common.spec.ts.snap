@@ -163,33 +163,49 @@ Object {
     step="1"
     value="10"
   >
-    <div
-      class="range-field col s12"
+    <label
+      class="ng-binding"
+      for="slider-directive-wrapper-19"
     >
-      
+      label
+    </label>
     
-      <label
-        class="ng-binding"
-        for="slider-directive-19"
-      >
-        label
-      </label>
-      
-    
-      <br />
-      
-    
-      <input
-        class="ng-pristine ng-untouched ng-valid ng-empty ng-valid-min ng-valid-max ng-valid-step"
-        id="slider-directive-19"
-        max="4"
-        min="2"
-        ng-model="model"
-        step="1"
-        type="range"
-      />
-      
 
+    <div
+      id="slider-directive-wrapper-19"
+    >
+      <div
+        class="range-field col s6"
+      >
+        
+
+        <br />
+        
+
+        <input
+          class="ng-pristine ng-untouched ng-valid ng-empty ng-valid-min ng-valid-max ng-valid-step"
+          id="slider-directive-19"
+          max="4"
+          min="2"
+          ng-model="model"
+          step="1"
+          type="range"
+        />
+        
+
+      </div>
+      <div
+        class="input-field col s6"
+      >
+        <input
+          class="ng-pristine ng-untouched ng-valid ng-empty ng-valid-min ng-valid-max ng-valid-step"
+          max="4"
+          min="2"
+          ng-model="model"
+          step="1"
+          type="number"
+        />
+      </div>
     </div>
   </slider-directive>,
   "length": 1,

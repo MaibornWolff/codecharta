@@ -25,7 +25,8 @@ describe("LabelManager", () => {
                 to: 2,
                 flipped: false
             },
-            mapSize: 500
+            mapSize: 500,
+            deltaColorFlipped: false
         };
 
         sampleLeaf = {
@@ -93,6 +94,12 @@ describe("LabelManager", () => {
         labelManager.addLabel(sampleLeaf, sampleRenderSettings);
         let positionWithoutDelta: Vector3 = labelManager.labels[0].sprite.position;
         expect(positionWithoutDelta.y).toBe(88);
+    });
+
+    it("clearLabel should clear parent in scene and internal labels", ()=>{
+        labelManager.clearLabels();
+        expect(parent.children.length).toBe(0);
+        expect(labelManager.labels.length).toBe(0);
     });
 
     it("scaling existing labels should scale their position correctly", ()=>{
