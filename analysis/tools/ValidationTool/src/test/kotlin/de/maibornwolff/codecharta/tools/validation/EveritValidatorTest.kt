@@ -31,31 +31,37 @@ package de.maibornwolff.codecharta.tools.validation
 
 import de.maibornwolff.codecharta.tools.validation.ValidationTool.Companion.SCHEMA_PATH
 import org.everit.json.schema.ValidationException
+import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import org.json.JSONException
-import org.junit.Test
+import kotlin.test.assertFailsWith
 
-class EveritValidatorTest {
-    fun createValidator(): Validator {
-        return EveritValidator(SCHEMA_PATH)
-    }
+class EveritValidatorTest : Spek({
+    describe("a validator") {
+        val validator = EveritValidator(SCHEMA_PATH)
 
-    @Test
-    fun shouldValidate() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("validFile.json"))
-    }
+        it("should validate valid File") {
+            validator.validate(this.javaClass.classLoader.getResourceAsStream("validFile.json"))
+        }
 
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingNodeName() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("missingNodeNameFile.json"))
-    }
+        it("should throw exception on missing node name") {
+            assertFailsWith(ValidationException::class) {
+                validator.validate(this.javaClass.classLoader.getResourceAsStream("missingNodeNameFile.json"))
+            }
+        }
 
-    @Test(expected = ValidationException::class)
-    fun shouldInvalidateOnMissingProject() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidFile.json"))
-    }
+        it("should throw exception on missing project") {
+            assertFailsWith(ValidationException::class) {
+                validator.validate(this.javaClass.classLoader.getResourceAsStream("invalidFile.json"))
+            }
+        }
 
-    @Test(expected = JSONException::class)
-    fun shouldInvalidateIfNoJson() {
-        createValidator().validate(this.javaClass.classLoader.getResourceAsStream("invalidJson.json"))
+        it("should throw exception if no json file") {
+            assertFailsWith(JSONException::class) {
+                validator.validate(this.javaClass.classLoader.getResourceAsStream("invalidJson.json"))
+            }
+        }
+
     }
-}
+})

@@ -41,13 +41,6 @@ validate() {
   fi
 }
 
-check_sonar() {
-  echo " -- expect SonarImporter gives valid cc.json"
-  ACTUAL_SONAR_JSON="${INSTALL_DIR}/actual_sonarimport.json"
-  "${CCSH}" sonarimport -l --old-api -o "${ACTUAL_SONAR_JSON}" data/codecharta/sonar.xml
-  validate "${ACTUAL_SONAR_JSON}"
-}
-
 check_sourcemonitor() {
   echo " -- expect SourceMonitorImporter gives valid cc.json"
   ACTUAL_SOURCEMON_JSON="${INSTALL_DIR}/actual_sourcemonitorimporter.json"
@@ -74,7 +67,6 @@ run_tests() {
   echo "Running Tests..."
   echo
 
-  check_sonar
   check_sourcemonitor
   check_scmlog
   check_merge
