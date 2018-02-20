@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.9.2] - 2018-02-20
+### Added
 - added preliminary CSVExporter for visualisation data
 
 ### Changed
