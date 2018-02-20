@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
+
+### Removed
+
+### Fixed
+
+## [1.8.2] - 2018-02-20
+### Added
+
+### Changed
 - detail panel background is white now. better visibility
 
 ### Removed
