@@ -8,6 +8,7 @@ export class codeMapBuilding {
     public color : number;
     public node : node;
     public parent?: codeMapBuilding;
+    public name?: string;
 
     constructor(id : number, box : THREE.Box3, node : node, color? : number)
     {

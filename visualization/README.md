@@ -15,7 +15,7 @@
 
 #### Install application for desktop usage with npm
 
-* install with `npm install @maibornwolff/codecharta-visualization -g`
+* install with `npm install codecharta-visualization -g`
 * run with `codecharta-visualization`
 
 #### Install application for desktop usage
