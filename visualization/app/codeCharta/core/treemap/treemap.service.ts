@@ -4,6 +4,8 @@ import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
 import {HierarchyNode, HierarchyRectangularNode} from "d3-hierarchy";
 import {node} from "../../codeMap/rendering/node";
 
+const PADDING_SCALING_FACTOR = 0.4;
+
 /**
  * This service transforms valid file data to a custom treemap. Our custom treemap has a 3rd axis added to the nodes.
  */
@@ -34,11 +36,14 @@ class TreeMapService {
         heightKey: string
     ) {
 
-        let treeMap = d3.treemap()
-            .size([w, l])
-            .padding(p || 1);
-
         let root = d3.hierarchy(data);
+
+        let nodesPerSide = Math.sqrt(root.descendants().length);
+
+        let treeMap = d3.treemap()
+            .size([w + nodesPerSide*p, l + nodesPerSide*p])
+            .paddingOuter(p * PADDING_SCALING_FACTOR || 1)
+            .paddingInner(p * PADDING_SCALING_FACTOR/2 || 1);
 
         root.descendants().forEach((l: any)=> {
             l.isLeaf = false;
@@ -54,7 +59,7 @@ class TreeMapService {
         let heightScale = w / maxHeight;
 
         nodes.forEach((node)=> {
-            this.transformNode(node, heightKey, heightScale, 2);
+            this.transformNode(node, heightKey, heightScale, p*PADDING_SCALING_FACTOR);
         });
 
         return nodes;
