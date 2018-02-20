@@ -81,7 +81,7 @@ export class DataService {
      * @param {number} index id
      */
     public setMetrics(index: number) {
-        if (this._data.revisions[index] !== null) {
+        if (this._data.revisions[index] !== (null || undefined)) {
             let root = d3.hierarchy<CodeMapNode>(this._data.revisions[index].root);
             let leaves: HierarchyNode<CodeMapNode>[] = root.leaves();
             let attributeList = leaves.map(function (d: HierarchyNode<CodeMapNode>) {
