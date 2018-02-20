@@ -36,7 +36,7 @@ import de.maibornwolff.codecharta.nodeinserter.NodeInserter
 /**
  * merges leafs according to the level of matching of their paths
  */
-class LeafNodeMergerStrategy(val addMisfittingNodes: Boolean) : NodeMergerStrategy {
+class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean) : NodeMergerStrategy {
     private val flatNodeMerger = NodeMerger()
 
     private val mergeConditionSatisfied = { n1: Node, n2: Node -> n1.name == n2.name }
@@ -90,7 +90,7 @@ class LeafNodeMergerStrategy(val addMisfittingNodes: Boolean) : NodeMergerStrate
         val reversedEdges1 = path1.edgesList.asReversed()
         val reversedEdges2 = path2.edgesList.asReversed()
         val minSize = minOf(reversedEdges1.size, reversedEdges2.size)
-        return (0..minSize - 1).firstOrNull { reversedEdges1[it] != reversedEdges2[it] } ?: minSize
+        return (0 until minSize).firstOrNull { reversedEdges1[it] != reversedEdges2[it] } ?: minSize
     }
 
     private fun findFittingPathOrNull(reference: Set<Path>, path: Path): Path? {
