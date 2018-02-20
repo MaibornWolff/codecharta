@@ -2,7 +2,7 @@
 
 cd analysis/node-wrapper
 
-echo "installin gnode-wrapper"
+echo "installing node-wrapper"
 npm install
 
 echo "makeshifting .npmrc with Token from Travis settings"

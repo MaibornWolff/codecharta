@@ -7,13 +7,72 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 ### Added
 - added preliminary CSVExporter for visualisation data
-- loading indicator
 
 ### Changed
 
 ### Removed
 
 ### Fixed
+
+## [1.9.1] - 2018-02-20
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+- detail panel bug fix
+
+## [1.9.0] - 2018-02-20
+### Added
+
+### Changed
+- moved to unscoped npm packages
+
+### Removed
+
+### Fixed
+
+## [1.8.2] - 2018-02-20
+### Added
+
+### Changed
+- detail panel background is white now. better visibility
+
+### Removed
+
+### Fixed
+
+## [1.8.1] - 2018-02-20
+### Added
+
+### Changed
+- revision chooser moved to settings panel and uses now understandable dropdowns instead of links. Part of the #82 proposals
+
+### Removed
+
+### Fixed
+
+## [1.8.0] - 2018-02-20
+### Added
+- Experimental dependency support
+- loading indicator
+- file path to detail panel
+- collapsible tree view and visibility/isolation per node toggles
+
+### Changed
+- added a ray-aabb intersection test before precise testing. Less time is spent in intersection methods.
+
+### Removed
+
+### Fixed
+- fixed a minor bug
+- canvas mouse event listener are now limited to the canvas dom element. UI events will not trigger the canvas listeners anymore
+- canvas mouse events distinguish now between click and drag. Dragging does not reset selection anymore
+- slider input #64
+- rz slider initialization bug
+- increasing test coverage
 - deltas where calculated on map loading even though, they were disabled
 
 ## [1.7.2] - 2018-02-02

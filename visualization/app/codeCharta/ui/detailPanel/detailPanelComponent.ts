@@ -3,6 +3,7 @@ import {
     CodeMapControllerSubscriber, CodeMapBuildingTransition,
     CodeMapController
 } from "../../codeMap/codeMapComponent";
+import {codeMapBuilding} from "../../codeMap/rendering/codeMapBuilding";
 
 interface CommonDetails {
     areaAttributeName: string | null,
@@ -20,7 +21,8 @@ interface SpecificDetails {
     areaDelta: number | null,
     colorDelta: number | null,
     link: string | null,
-    origin: string | null
+    origin: string | null,
+    path: string | null
 }
 
 interface Details {
@@ -54,7 +56,8 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
                 areaDelta: null,
                 colorDelta: null,
                 link: null,
-                origin: null
+                origin: null,
+                path: null
             },
             selected: {
                 name: null,
@@ -65,7 +68,8 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
                 areaDelta: null,
                 colorDelta: null,
                 link: null,
-                origin: null
+                origin: null,
+                path: null
             }
         };
 
@@ -161,7 +165,18 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
             }
             this.details.hovered.link = hovered.link;
             this.details.hovered.origin = hovered.origin;
+            this.details.hovered.path = this.getPathFromCodeMapBuilding(hovered);
         }.bind(this));
+    }
+
+    private getPathFromCodeMapBuilding(b: codeMapBuilding): string {
+        let current = b;
+        let result = "";
+        while(current) {
+            result = "/" + current.name + result;
+            current = current.parent;
+        }
+        return result;
     }
 
     /**
@@ -184,6 +199,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
             }
             this.details.selected.link = selected.link;
             this.details.selected.origin = selected.origin;
+            this.details.selected.path = this.getPathFromCodeMapBuilding(selected);
         }.bind(this));
     }
 
@@ -201,6 +217,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
             this.details.hovered.colorDelta = null;
             this.details.hovered.link = null;
             this.details.hovered.origin = null;
+            this.details.hovered.path = null;
         }.bind(this));
     }
 
@@ -218,6 +235,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
             this.details.selected.colorDelta = null;
             this.details.selected.link = null;
             this.details.selected.origin = null;
+            this.details.selected.path = null;
         }.bind(this));
     }
 

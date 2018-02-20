@@ -1,7 +1,7 @@
 import "./threeViewer";
 import {NG} from "../../../ng.mockhelper";
 import sinon from "sinon";
-import THREE from "three";
+import * as THREE from "three";
 
 /**
  * @test {ThreeCameraService}
@@ -20,7 +20,7 @@ describe("app.codeCharta.codeMap.threeViewer.threeCameraService", function () {
     /**
      * @test {ThreeCameraService#init}
      */
-    xit("init should create a new PerspectiveCamera", NG.mock.inject(function (threeCameraService, settingsService) {
+    it("init should create a new PerspectiveCamera", NG.mock.inject(function (threeCameraService, settingsService) {
 
         //mocks
         let spy = sinon.spy(THREE, "PerspectiveCamera");
@@ -44,20 +44,6 @@ describe("app.codeCharta.codeMap.threeViewer.threeCameraService", function () {
 
         //expectations
         expect(threeCameraService.camera.position).not.toBe(undefined);
-
-    }));
-
-    //noinspection TypeScriptUnresolvedVariable
-    /**
-     * @test {ThreeCameraService#init}
-     */
-    xit("the near plane of the viewing frustum should be at least 100 to prevent flickering of planes", NG.mock.inject(function (threeCameraService, settingsService) {
-
-        //action
-        threeCameraService.init(settingsService);
-
-        //expectations
-        expect(threeCameraService.camera.near).toBeGreaterThan(99);
 
     }));
 
