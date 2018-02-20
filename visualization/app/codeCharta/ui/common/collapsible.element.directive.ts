@@ -42,7 +42,6 @@ export class CollapsibleElementDirective implements IDirective{
         ($("#settingsPanel .collapsible") as any).click(function() { ctx.$timeout(function () {
             //This forces to rerender all rzsliders in this collapsible element. rz sliders do not automatically recognize collapse events from materialize therefore this is nessecary.
             ctx.$rootScope.$broadcast("rzSliderForceRender");
-            console.log("open");
         }, 0); });
     }
 
