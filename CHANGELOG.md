@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
+- revision chooser moved to settings panel and uses now understandable dropdowns instead of links. Part of the #82 proposals
 
 ### Removed
 

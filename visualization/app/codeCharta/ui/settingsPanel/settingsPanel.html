@@ -4,6 +4,12 @@
 
     <collapsible-directive>
 
+        <collapsible-element-directive label="Maps" icon-class="fa-map">
+
+            <revision-chooser-component></revision-chooser-component>
+
+        </collapsible-element-directive>
+
         <collapsible-element-directive label="Color Settings" icon-class="fa-paint-brush">
             <label id="colorSliderLabel" for="colorSlider">Neutral Color Range</label>
             <rzslider id="colorSlider" rz-slider-model="$ctrl.settings.neutralColorRange.from"
