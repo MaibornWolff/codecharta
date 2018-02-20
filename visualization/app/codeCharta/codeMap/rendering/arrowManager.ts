@@ -64,8 +64,6 @@ export class ArrowManager {
             let targetNode: node = map.get(deps[i].dependsOn);
             if (originNode && targetNode) {
                 this.addArrow(targetNode, originNode, settings);
-            } else {
-                console.log("could not resolve dependency description");
             }
         }
 
