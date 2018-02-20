@@ -18,6 +18,8 @@ describe("RevisionChooserController", () => {
             setComparisonMap: jest.fn(),
             setReferenceMap: jest.fn(),
             subscribe: jest.fn(),
+            getComparisonMap: jest.fn(),
+            getReferenceMap: jest.fn(),
             $rootScope: {
                 $on: jest.fn()
             },
@@ -49,22 +51,10 @@ describe("RevisionChooserController", () => {
         expect(dataServiceMock.subscribe).toHaveBeenCalledWith(revisionChooserController);
     });
 
-    it("should be invisible on construction", () => {
-        expect(!revisionChooserController.visible);
-    });
-
     it("should get revisions from data service on startup", () => {
         dataServiceMock.data.revisions = ["Some Revision"];
         rebuildSUT();
         expect(revisionChooserController.revisions).toBe(dataServiceMock.data.revisions);
-    });
-
-    it("toggle() should toggle visible property", () => {
-        expect(!revisionChooserController.visible);
-        revisionChooserController.toggle();
-        expect(revisionChooserController.visible);
-        revisionChooserController.toggle();
-        expect(!revisionChooserController.visible);
     });
 
     it("onDataChanged should refresh revisions", () => {
@@ -77,13 +67,6 @@ describe("RevisionChooserController", () => {
         revisionChooserController.onDataChanged = jest.fn();
         dataServiceMock.notify();
         expect(revisionChooserController.onDataChanged).toHaveBeenCalled();
-    });
-
-    it("loadComparisonMap and loadReferenceMap should delegate to dataService", () => {
-        revisionChooserController.loadComparisonMap(42);
-        expect(dataServiceMock.setComparisonMap).toHaveBeenCalledWith(42);
-        revisionChooserController.loadReferenceMap(12);
-        expect(dataServiceMock.setReferenceMap).toHaveBeenCalledWith(12);
     });
 
 });

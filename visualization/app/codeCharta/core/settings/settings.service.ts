@@ -10,10 +10,11 @@ import {STATISTIC_OPS} from "../statistic/statistic.service";
 import {DeltaCalculatorService} from "../data/data.deltaCalculator.service";
 import * as d3 from "d3";
 import {DataDecoratorService} from "../data/data.decorator.service";
+import {CodeMap} from "../data/model/CodeMap";
 
 export interface Settings {
 
-    map: any,
+    map: CodeMap,
     neutralColorRange: Range,
     areaMetric: string,
     heightMetric: string,
@@ -24,7 +25,8 @@ export interface Settings {
     camera: Scale,
     margin: number,
     operation: STATISTIC_OPS,
-    deltaColorFlipped: boolean
+    deltaColorFlipped: boolean,
+    showDependencies: boolean
 
 }
 
@@ -88,7 +90,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             camera: c,
             margin: 1,
             operation: STATISTIC_OPS.NOTHING,
-            deltaColorFlipped: false
+            deltaColorFlipped: false,
+            showDependencies: false
         };
 
     }
@@ -149,7 +152,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      * Broadcasts a settings-changed event with the new {Settings} object as a payload
      * @emits {settings-changed} on call
      */
-    private onSettingsChanged() {
+    public onSettingsChanged() {
 
         if (this._lastDeltaState && !this._settings.deltas) {
             this._lastDeltaState = false;

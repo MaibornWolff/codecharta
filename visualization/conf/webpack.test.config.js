@@ -45,6 +45,10 @@ module.exports = {
             ]
             },
             {
+                test: /\.(ico)$/,
+                use: ['file-loader?name=[name].[ext]']
+            },
+            {
                 test: /\.(json)$/, use: [
                 'json-loader'
             ]

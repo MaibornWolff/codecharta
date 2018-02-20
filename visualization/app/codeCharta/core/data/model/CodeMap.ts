@@ -8,13 +8,20 @@ export interface CodeMapNode {
         [key: string]: number
     },
     link?: string,
-    origin?: string
+    origin?: string,
+    visible?: boolean
 }
 
 export interface CodeMap {
 
     fileName: string,
     projectName: string,
-    root: CodeMapNode
+    root: CodeMapNode,
+    dependencies?: CodeMapDependency[]
 
+}
+
+export interface CodeMapDependency {
+    node: string,
+    dependsOn: string
 }

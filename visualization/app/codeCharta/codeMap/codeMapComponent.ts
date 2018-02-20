@@ -27,6 +27,7 @@ export class CodeMapController {
     private hovered;
     private selected;
     private mouse: Coordinates;
+    private dragOrClickFlag = 0;
 
     /* @ngInject */
     constructor(
@@ -58,15 +59,15 @@ export class CodeMapController {
          */
         this.mouse = {x: 0, y: 0};
 
-        document.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
-        document.addEventListener("click", this.onDocumentMouseDown.bind(this), false);
-
         threeUpdateCycleService.register(this.update.bind(this));
     }
 
     $postLink() {
         this.threeViewerService.init(this.$element[0]);
         this.threeViewerService.animate();
+        this.threeRendererService.renderer.domElement.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
+        this.threeRendererService.renderer.domElement.addEventListener("mouseup", this.onDocumentMouseUp.bind(this), false);
+        this.threeRendererService.renderer.domElement.addEventListener("mousedown", this.onDocumentMouseDown.bind(this), false);
     }
 
     static subscribe($rootScope: IRootScopeService, subscriber: CodeMapControllerSubscriber) {
@@ -118,24 +119,39 @@ export class CodeMapController {
     onDocumentMouseMove (event) {
         this.mouse.x = ( event.clientX / this.threeRendererService.renderer.domElement.width ) * 2 - 1;
         this.mouse.y = -( event.clientY / this.threeRendererService.renderer.domElement.height ) * 2 + 1;
+        this.dragOrClickFlag = 1;
+    }
+
+    /**
+     * updates {CodeMapController} on mouse up
+     */
+    onDocumentMouseUp() {
+
+        if(this.dragOrClickFlag === 0) {
+
+            var from = this.selected;
+
+            if (this.hovered) {
+                this.selected = this.hovered;
+                this.onBuildingSelected(from, this.selected);
+            }
+
+            if(!this.hovered && this.selected) {
+                this.selected = null;
+                this.onBuildingSelected(from, null);
+            }
+
+        } else if (this.dragOrClickFlag === 1){
+            //drag
+        }
+
     }
 
     /**
      * updates {CodeMapController} on mouse down
      */
     onDocumentMouseDown() {
-        var from = this.selected;
-
-        if (this.hovered) {
-            this.selected = this.hovered;
-            this.onBuildingSelected(from, this.selected);
-        }
-
-        if(!this.hovered && this.selected) {
-            this.selected = null;
-            this.onBuildingSelected(from, null);
-        }
-
+        this.dragOrClickFlag = 0;
     }
 
     /**
