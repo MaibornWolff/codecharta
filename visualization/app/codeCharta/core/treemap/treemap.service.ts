@@ -38,12 +38,12 @@ class TreeMapService {
 
         let root = d3.hierarchy(data);
 
-        let nodesPerSide = Math.sqrt(root.descendants().length);
+        let nodesPerSide = 2 * Math.sqrt(root.descendants().length);
 
         let treeMap = d3.treemap()
             .size([w + nodesPerSide*p, l + nodesPerSide*p])
             .paddingOuter(p * PADDING_SCALING_FACTOR || 1)
-            .paddingInner(p * PADDING_SCALING_FACTOR/3 || 1);
+            .paddingInner(p * PADDING_SCALING_FACTOR || 1);
 
         root.descendants().forEach((l: any)=> {
             l.isLeaf = false;
@@ -59,7 +59,7 @@ class TreeMapService {
         let heightScale = w / maxHeight;
 
         nodes.forEach((node)=> {
-            this.transformNode(node, heightKey, heightScale, p*PADDING_SCALING_FACTOR);
+            this.transformNode(node, heightKey, heightScale, p*PADDING_SCALING_FACTOR * 0.5);
         });
 
         return nodes;
@@ -81,7 +81,7 @@ class TreeMapService {
 
         node.width = Math.max(node.x1 - node.x0, 1);
         node.length = Math.max(node.y1 - node.y0, 1);
-        node.height = node.isLeaf ? heightScale * node.data.attributes[heightKey] : folderHeight;
+        node.height = node.isLeaf ? heightScale * Math.max(1, node.data.attributes[heightKey]) : folderHeight;
         node.z0 = folderHeight * node.depth;
         node.z1 = folderHeight * node.depth + node.height;
         node.attributes = node.data.attributes;

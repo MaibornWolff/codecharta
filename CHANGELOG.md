@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
+- padding rendering
+- minimal building height is 1 to prevent clipping issues
 
 ### Removed
 
