@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 - Experimental dependency support
 - loading indicator
-
+- collapsible tree view and visibility/isolation per node toggles
 ### Changed
 - added a ray-aabb intersection test before precise testing. Less time is spent in intersection methods.
 
