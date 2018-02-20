@@ -26,11 +26,20 @@ Components that take visualisation data and modifies them.
 | ---                                         | ---                         |
 | [MergeFilter](filter/MergeFilter/README.md) | merges multiple json files  |
 
+### Exporter
+
+Components that export data from visualisation data to other formats.
+
+| Target        | Project                                                 |
+| ---           | ---                                                     |
+|  CSV          | [CSVExporter](export/CSVExporter/README.md)             |
+
 ### Additional Tools
 
 | Name                                             | Description                  |
 | ---                                              | ---                          |
-| [ValidationTool](tools/ValidationTool/README.md) | validates a given json file |
+| [ValidationTool](tools/ValidationTool/README.md) | validates a given json file  |
+
 
 ## Requirements
 

@@ -1,7 +1,7 @@
 include 'model'
 include 'filter:MergeFilter'
 include 'import:SonarImporter', 'import:CSVImporter', 'import:SCMLogParser'
-
+include 'export:CSVExporter'
 include 'tools:ValidationTool', 'tools:ccsh'
 
 rootProject.name = 'codecharta'
