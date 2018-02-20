@@ -11,6 +11,8 @@ import "font-awesome/css/font-awesome.css";
 
 import "./codeCharta/codeCharta";
 
+import "./icon.ico";
+
 angular.module("app", ["app.codeCharta"]);
 
 angular.module("app").config(["$locationProvider", function($locationProvider) {
