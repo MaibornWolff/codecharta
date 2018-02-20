@@ -146,8 +146,11 @@ export class geometryGenerator {
             if (!deltasEnabled)
             {
                 const val : number = n.attributes[colorKey];
-                
-                if (val < range.from)
+
+                if(val === undefined || val === null){
+                    color = MapColors.base;
+                }
+                else if (val < range.from)
                 {
                     color = range.flipped ? MapColors.negative : MapColors.positive;
                 }
@@ -159,6 +162,8 @@ export class geometryGenerator {
                 {
                     color = MapColors.neutral;
                 }
+
+
             }
             else{
                 color = MapColors.base;
