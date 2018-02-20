@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 ### Added
 - loading indicator
-- collapsible tree view and visibility per node toggles
+- collapsible tree view and visibility/isolation per node toggles
 ### Changed
 
 ### Removed
