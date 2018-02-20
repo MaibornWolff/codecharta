@@ -77,6 +77,14 @@ export class DataService {
         return this._lastComparisonMap.fileName;
     }
 
+    public getReferenceMap(): CodeMap {
+        return this._data.renderMap;
+    }
+
+    public getComparisonMap(): CodeMap {
+        return this._lastComparisonMap;
+    }
+
     /**
      * Sets metrics from a revision by id.
      * @param {number} index id
@@ -173,6 +181,18 @@ export class DataService {
             this.setComparisonMap(this._lastReferenceIndex);
             this.setReferenceMap(this._lastReferenceIndex);
         }
+    }
+
+    public getIndexOfMap(map: CodeMap) {
+
+        for(let i = 0; i<this._data.revisions.length; i++){
+            if(this._data.revisions[i] && map && this._data.revisions[i].fileName === map.fileName){
+                return i;
+            }
+        }
+
+        return -1;
+
     }
 
     public applyNodeMerging() {
