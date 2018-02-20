@@ -43,7 +43,7 @@ class TreeMapService {
         let treeMap = d3.treemap()
             .size([w + nodesPerSide*p, l + nodesPerSide*p])
             .paddingOuter(p * PADDING_SCALING_FACTOR || 1)
-            .paddingInner(p * PADDING_SCALING_FACTOR/2 || 1);
+            .paddingInner(p * PADDING_SCALING_FACTOR/3 || 1);
 
         root.descendants().forEach((l: any)=> {
             l.isLeaf = false;
