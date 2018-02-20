@@ -65,7 +65,7 @@ describe("treemap.service", function() {
             //TODO
         });
 
-        it("TBD: mark leaf notes with isLeaf = true", ()=> {
+        xit("TBD: mark leaf notes with isLeaf = true", ()=> {
             var data = {
                 name:"root",
                 children: [

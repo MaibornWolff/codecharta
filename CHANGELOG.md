@@ -6,11 +6,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.9.2] - 2018-02-20
+### Added
 - added preliminary CSVExporter for visualisation data
 
 ### Changed
 - padding rendering
 - minimal building height is 1 to prevent clipping issues
+- fallback values for visualization when no metric is available (area = 1, height = 1, color = grey). Data in data structure will not be changed.
 
 ### Removed
 
