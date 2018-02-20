@@ -10,10 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - loading indicator
 - collapsible tree view and visibility/isolation per node toggles
 ### Changed
+- added a ray-aabb intersection test before precise testing. Less time is spent in intersection methods.
 
 ### Removed
 
 ### Fixed
+- fixed a minor bug
 - canvas mouse event listener are now limited to the canvas dom element. UI events will not trigger the canvas listeners anymore
 - canvas mouse events distinguish now between click and drag. Dragging does not reset selection anymore
 - slider input #64
