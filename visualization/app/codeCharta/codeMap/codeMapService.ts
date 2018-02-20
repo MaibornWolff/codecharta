@@ -5,25 +5,55 @@ import {renderSettings} from "./rendering/renderSettings"
 import {LabelManager} from "./rendering/labelManager"
 import {SettingsServiceSubscriber, Settings, SettingsService} from "../core/settings/settings.service";
 import {node} from "./rendering/node";
+import {ArrowManager} from "./rendering/arrowManager";
+import {
+    CodeMapBuildingTransition, CodeMapController,
+    CodeMapControllerSubscriber
+} from "./codeMapComponent";
+import {CodeMapDependency} from "../core/data/model/CodeMap";
 
 const mapSize = 500.0;
 
 /**
  * Main service to manage the state of the rendered code map
  */
-export class CodeMapService implements SettingsServiceSubscriber{
+export class CodeMapService implements SettingsServiceSubscriber, CodeMapControllerSubscriber {
 
     public static SELECTOR = "codeMapService";
 
     private mapMesh: CodeMapMesh = null;
     private labelManager: LabelManager = null;
+    private arrowManager: ArrowManager = null;
+
+    private currentSortedNodes: node[];
+    private currentRenderSettings: renderSettings;
 
     /* @ngInject */
-    constructor(
-        private threeSceneService,
-        private treeMapService,
-        private settingsService: SettingsService) {
+    constructor(private threeSceneService,
+                private treeMapService,
+                private $rootScope,
+                private settingsService: SettingsService) {
         this.settingsService.subscribe(this);
+        CodeMapController.subscribe($rootScope, this);
+    }
+
+    onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+
+    }
+
+    onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+        let deps: CodeMapDependency[] = this.settingsService.settings.map.dependencies;
+
+        this.arrowManager.clearArrows();
+
+        if (deps && data.to && this.currentSortedNodes && this.currentRenderSettings && this.settingsService.settings.showDependencies) {
+            this.arrowManager.addCodeMapDependenciesFromOriginAsArrows(data.to.node, this.currentSortedNodes, deps, this.currentRenderSettings);
+            this.arrowManager.scale(
+                this.threeSceneService.mapGeometry.scale.x,
+                this.threeSceneService.mapGeometry.scale.y,
+                this.threeSceneService.mapGeometry.scale.z,
+            );
+        }
     }
 
     onSettingsChanged(settings: Settings, event: Event) {
@@ -41,41 +71,44 @@ export class CodeMapService implements SettingsServiceSubscriber{
             this.updateMapGeometry(s);
         }
 
-        if(s.scaling && s.scaling.x && s.scaling.y &&s.scaling.z) {
+        if (s.scaling && s.scaling.x && s.scaling.y && s.scaling.z) {
             this.scaleMap(s.scaling.x, s.scaling.y, s.scaling.z);
         }
     }
 
     updateMapGeometry(s) {
         let nodes = this.treeMapService.createTreemapNodes(s.map.root, mapSize, mapSize, s.margin, s.areaMetric, s.heightMetric);
-        let sorted: node[] = nodes.sort((a,b)=>{return b.height - a.height;});
-        let renderSettings: renderSettings  =  {
-            heightKey : s.heightMetric,
-            colorKey : s.colorMetric,
-            renderDeltas : s.deltas,
-            colorRange : s.neutralColorRange,
-            mapSize : mapSize,
+        let filtered = nodes.filter(node => node.visible);
+        this.currentSortedNodes = filtered.sort((a, b) => {
+            return b.height - a.height;
+        });
+        this.currentRenderSettings = {
+            heightKey: s.heightMetric,
+            colorKey: s.colorMetric,
+            renderDeltas: s.deltas,
+            colorRange: s.neutralColorRange,
+            mapSize: mapSize,
             deltaColorFlipped: s.deltaColorFlipped
         };
 
-        this.threeSceneService.clearLabels();
         this.labelManager = new LabelManager(this.threeSceneService.labels);
-        
-        for (let i=0, numAdded = 0; i < sorted.length && numAdded < s.amountOfTopLabels; ++i)
-        {
-            if (sorted[i].isLeaf)
-            {
-                this.labelManager.addLabel(sorted[i], renderSettings);
+        this.labelManager.clearLabels();
+        this.arrowManager = new ArrowManager(this.threeSceneService.dependencyArrows);
+        this.arrowManager.clearArrows();
+
+        for (let i = 0, numAdded = 0; i < this.currentSortedNodes.length && numAdded < s.amountOfTopLabels; ++i) {
+            if (this.currentSortedNodes[i].isLeaf) {
+                this.labelManager.addLabel(this.currentSortedNodes[i], this.currentRenderSettings);
                 ++numAdded;
             }
         }
 
-        this.mapMesh = new CodeMapMesh(sorted, renderSettings);
+        this.mapMesh = new CodeMapMesh(this.currentSortedNodes, this.currentRenderSettings);
 
         this.threeSceneService.setMapMesh(this.mapMesh, mapSize);
     }
 
-     /**
+    /**
      * scales the scene by the given values
      * @param {number} x
      * @param {number} y
@@ -95,5 +128,8 @@ export class CodeMapService implements SettingsServiceSubscriber{
 
         if (this.labelManager)
             this.labelManager.scale(x, y, z);
+
+        if (this.arrowManager)
+            this.arrowManager.scale(x, y, z);
     }
 };

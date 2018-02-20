@@ -4,6 +4,10 @@
     width: 70%;
 }
 
+#settingsPanel {
+    overflow-y: scroll;
+}
+
 #colorSliderLabel {
     font-size: 1rem !important;
 }

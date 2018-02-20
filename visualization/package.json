@@ -9,8 +9,8 @@
     "type": "git",
     "url": "https://github.com/MaibornWolff/codecharta.git"
   },
-  "name": "@maibornwolff/codecharta-visualization",
-  "version": "1.7.2",
+  "name": "codecharta-visualization",
+  "version": "1.9.1",
   "description": "MaibornWolff CodeCharta",
   "files": [
     "dist/webpack",
@@ -85,6 +85,7 @@
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
       "\\.(css|less)$": "<rootDir>/mocks/styleMock.js",
+      "\\.(glsl)$": "<rootDir>/mocks/glslMock.js",
       "\\.(html)$": "<rootDir>/mocks/htmlMock.js"
     },
     "roots": [
@@ -130,7 +131,7 @@
     "@types/jest": "^21.1.4",
     "@types/node": "^8.0.46",
     "@types/sinon": "^2.3.5",
-    "@types/three": "^0.84.27",
+    "@types/three": "^0.89.5",
     "ajv": "^5.2.2",
     "angular": "^1.6.0",
     "angularjs-slider": "^6.2.2",
@@ -140,7 +141,7 @@
     "hammerjs": "^2.0.8",
     "jquery": "^3.1.1",
     "materialize-css": "^0.98.0",
-    "three": "^0.84.0",
+    "three": "^0.89.0",
     "three-orbit-controls": "^82.1.0",
     "three-text2d": "^0.3.4",
     "angular-mocks": "^1.6.0",

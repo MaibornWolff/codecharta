@@ -65,6 +65,7 @@ export class DataService {
     public setMap(map: CodeMap, revision: number) {
         this._data.revisions[revision] = map;
         this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.revisions[revision]);
+        this.dataDecoratorService.decorateMapWithVisibleAttribute(this._data.revisions[revision]);
         this.setReferenceMap(revision);
     }
 
@@ -76,12 +77,20 @@ export class DataService {
         return this._lastComparisonMap.fileName;
     }
 
+    public getReferenceMap(): CodeMap {
+        return this._data.renderMap;
+    }
+
+    public getComparisonMap(): CodeMap {
+        return this._lastComparisonMap;
+    }
+
     /**
      * Sets metrics from a revision by id.
      * @param {number} index id
      */
     public setMetrics(index: number) {
-        if (this._data.revisions[index] !== null) {
+        if (this._data.revisions[index] !== (null || undefined)) {
             let root = d3.hierarchy<CodeMapNode>(this._data.revisions[index].root);
             let leaves: HierarchyNode<CodeMapNode>[] = root.leaves();
             let attributeList = leaves.map(function (d: HierarchyNode<CodeMapNode>) {
@@ -114,20 +123,8 @@ export class DataService {
     public setComparisonMap(index: number) { //this allows to reset delta values when switching back from delta view
         if (this._data.revisions[index] != null) {
             this._lastComparisonMap = this._data.revisions[index];
-            if (this._deltasEnabled) {
-                this.applyNodeMerging();
-            }
-            this.dataDecoratorService.decorateMapWithUnaryMetric(this._lastComparisonMap);
-            this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.renderMap);
-            if (this._deltasEnabled && this._lastComparisonMap != this._data.renderMap) {
-                this.deltaCalculatorService.decorateMapsWithDeltas(this._lastComparisonMap, this._data.renderMap);
-            }
-            this.setMetrics(index);
-            this.dataDecoratorService.decorateEmptyAttributeLists(this._lastComparisonMap, this.data.metrics);
-            this.dataDecoratorService.decorateEmptyAttributeLists(this._data.renderMap, this.data.metrics);
-
+            this.processMap(index);
             this.setReferenceMap(this._lastReferenceIndex);
-
             this.notify();
         }
     }
@@ -140,22 +137,26 @@ export class DataService {
         if (this._data.revisions[index] != null) {
             this._lastReferenceIndex = index;
             this._data.renderMap = this._data.revisions[index];
-            if (this._deltasEnabled) {
-                this.applyNodeMerging();
-            }
-            this.dataDecoratorService.decorateMapWithUnaryMetric(this._lastComparisonMap);
-            this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.renderMap);
-            if (this._deltasEnabled && this._lastComparisonMap != this._data.renderMap) {
-                this.deltaCalculatorService.decorateMapsWithDeltas(this._lastComparisonMap, this._data.renderMap);
-            }
-            this.setMetrics(index);
-            this.dataDecoratorService.decorateEmptyAttributeLists(this._lastComparisonMap, this.data.metrics);
-            this.dataDecoratorService.decorateEmptyAttributeLists(this._data.renderMap, this.data.metrics);
+            this.processMap(index);
             this.notify();
         }
     }
 
-    //TODO "subscribe with interface" not possible because angular would produce a circular dependency
+    private processMap(index: number) {
+        if (this._deltasEnabled) {
+            this.applyNodeMerging();
+        }
+        this.dataDecoratorService.decorateMapWithUnaryMetric(this._lastComparisonMap);
+        this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.renderMap);
+        if (this._deltasEnabled && this._lastComparisonMap != this._data.renderMap) {
+            this.deltaCalculatorService.decorateMapsWithDeltas(this._lastComparisonMap, this._data.renderMap);
+        }
+        this.setMetrics(index);
+        this.dataDecoratorService.decorateEmptyAttributeLists(this._lastComparisonMap, this.data.metrics);
+        this.dataDecoratorService.decorateEmptyAttributeLists(this._data.renderMap, this.data.metrics);
+    }
+
+//TODO "subscribe with interface" not possible because angular would produce a circular dependency
     public onActivateDeltas() {
         if (!this._deltasEnabled) {
             this._deltasEnabled = true;
@@ -172,6 +173,18 @@ export class DataService {
             this.setComparisonMap(this._lastReferenceIndex);
             this.setReferenceMap(this._lastReferenceIndex);
         }
+    }
+
+    public getIndexOfMap(map: CodeMap) {
+
+        for(let i = 0; i<this._data.revisions.length; i++){
+            if(this._data.revisions[i] && map && this._data.revisions[i].fileName === map.fileName){
+                return i;
+            }
+        }
+
+        return -1;
+
     }
 
     public applyNodeMerging() {
