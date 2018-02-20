@@ -9,6 +9,15 @@
             <rzslider id="colorSlider" rz-slider-model="$ctrl.settings.neutralColorRange.from"
                       rz-slider-high="$ctrl.settings.neutralColorRange.to"
                       rz-slider-options="$ctrl.sliderOptions"></rzslider>
+
+            <div class='input-field col s6'>
+            <input type='number' ng-model="$ctrl.settings.neutralColorRange.from" min=0 max={{$ctrl.settings.neutralColorRange.to - 1}} step="1" ng-change="$ctrl.sliderOption.onChange()">
+            </div>
+
+            <div class='input-field col s6'>
+            <input type='number' ng-model="$ctrl.settings.neutralColorRange.to" min={{$ctrl.settings.neutralColorRange.from + 1}} max={{$ctrl.sliderOption.ceil}}  step="1" ng-change="$ctrl.sliderOption.onChange()">
+            </div>
+
             <checkbox-directive model="$ctrl.settings.neutralColorRange.flipped" label="Invert Colors" change="$ctrl.notify()"></checkbox-directive>
             <checkbox-directive ng-if="$ctrl.settings.deltas" model="$ctrl.settings.deltaColorFlipped" label="Invert Delta Colors" change="$ctrl.notify()"></checkbox-directive>
 
@@ -41,6 +50,7 @@
 
         <collapsible-element-directive label="Experimental" icon-class="fa-flask">
             <slider-directive step="1"  label="Margin between buildings" min="1" max="100" model="$ctrl.settings.margin" change="$ctrl.notify()"></slider-directive><br/><br/>
+            <checkbox-directive model="$ctrl.settings.showDependencies" label="Show dependencies of selected Building" change="$ctrl.notify()"></checkbox-directive><br /><br />
         </collapsible-element-directive>
 
         <collapsible-element-directive label="Statistics" icon-class="fa-line-chart">

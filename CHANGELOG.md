@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- Experimental dependency support
 - loading indicator
 - collapsible tree view and visibility/isolation per node toggles
 ### Changed
@@ -13,6 +14,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- canvas mouse event listener are now limited to the canvas dom element. UI events will not trigger the canvas listeners anymore
+- canvas mouse events distinguish now between click and drag. Dragging does not reset selection anymore
+- slider input #64
+- rz slider initialization bug
+- increasing test coverage
 - deltas where calculated on map loading even though, they were disabled
 
 ## [1.7.2] - 2018-02-02

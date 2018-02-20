@@ -24,6 +24,48 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
         file = TEST_FILE_CONTENT;
     });
 
+
+    it("should reject a file with empty dependencies", (done: DoneCallback)=> {
+        file.dependencies = [];
+        dataValidatorService.validate(file).then(
+            ()=> {
+                done.fail("should not accept empty dependencies");
+            },
+            ()=> {
+                done();
+            }
+        );
+    });
+
+    it("should not reject a file with dependencies", (done: DoneCallback)=> {
+        file.dependencies = [
+            {
+                node: "a",
+                dependsOn: "b"
+            }
+        ];
+        dataValidatorService.validate(file).then(
+            ()=> {
+                done();
+            },
+            ()=> {
+                done.fail("should accept without dependencies");
+            }
+        );
+    });
+
+    it("should not reject a file without dependencies", (done: DoneCallback)=> {
+        file.dependencies = undefined;
+        dataValidatorService.validate(file).then(
+            ()=> {
+                done();
+            },
+            ()=> {
+                done.fail("should accept without dependencies");
+            }
+        );
+    });
+
     it("should not reject a file when numbers are floating point values", (done: DoneCallback)=> {
         file.nodes[0].children[0].attributes["RLOC"] = 333.4;
         dataValidatorService.validate(file).then(
