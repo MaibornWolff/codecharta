@@ -1,5 +1,5 @@
 import {intermediateVertexData} from "./intermediateVertexData";
-import * as THREE from "THREE";
+import * as THREE from "three";
 import {codeMapShaderStrings} from "./codeMapShaderStrings";
 import {codeMapBuilding} from "./codeMapBuilding";
 import {MapColors} from "./renderSettings";

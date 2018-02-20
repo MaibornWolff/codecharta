@@ -44,6 +44,10 @@
             <scenario-buttons-component></scenario-buttons-component>
         </collapsible-element-directive>
 
+        <collapsible-element-directive label="TreeView" icon-class="fa-tree">
+            <map-tree-view-component></map-tree-view-component>
+        </collapsible-element-directive>
+
         <collapsible-element-directive label="Experimental" icon-class="fa-flask">
             <slider-directive step="1"  label="Margin between buildings" min="1" max="100" model="$ctrl.settings.margin" change="$ctrl.notify()"></slider-directive><br/><br/>
             <checkbox-directive model="$ctrl.settings.showDependencies" label="Show dependencies of selected Building" change="$ctrl.notify()"></checkbox-directive><br /><br />

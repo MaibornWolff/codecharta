@@ -78,7 +78,8 @@ export class CodeMapService implements SettingsServiceSubscriber, CodeMapControl
 
     updateMapGeometry(s) {
         let nodes = this.treeMapService.createTreemapNodes(s.map.root, mapSize, mapSize, s.margin, s.areaMetric, s.heightMetric);
-        this.currentSortedNodes = nodes.sort((a, b) => {
+        let filtered = nodes.filter(node => node.visible);
+        this.currentSortedNodes = filtered.sort((a, b) => {
             return b.height - a.height;
         });
         this.currentRenderSettings = {
