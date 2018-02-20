@@ -2,7 +2,9 @@ import "./data.module";
 import {NGMock} from "../../../ng.mockhelper";
 import {DataService, DataServiceSubscriber} from "./data.service";
 import {CodeMap} from "./model/CodeMap";
-import {TEST_FILE_DATA} from "./data.mocks";
+import {TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_FILE_DATA} from "./data.mocks";
+import {CodeMapNode} from "../../../../../gh-pages/visualization/app/app/codeCharta/core/data/model/CodeMap";
+import * as d3 from "d3";
 
 /**
  * @test {DataService}
@@ -76,6 +78,14 @@ describe("app.codeCharta.core.data.dataService", function() {
     it("resetting map should clear everything", () => {
         dataService.setMap(data, 0);
         dataService.setMap(data, 1);
+        dataService.resetMaps();
+        expect(dataService.data.renderMap).toBe(null);
+        expect(dataService.data.metrics).toEqual([]);
+    });
+
+    it("resetting map should clear everything", () => {
+        dataService.setMap(data, 0);
+        dataService.setMap(data, 1);
         dataService.notify = jest.fn();
         dataService.resetMaps();
         expect(dataService.data.renderMap).toBe(null);
@@ -88,6 +98,20 @@ describe("app.codeCharta.core.data.dataService", function() {
     it("setting a map should set it as render map and add the origin attribute", () => {
         dataService.setMap(data, 0);
         expect(dataService.data.renderMap.root.origin).toBe(dataService.data.renderMap.fileName);
+    });
+
+    it("setting a comparison map should do nothing if map at index does not exist", () => {
+        dataService.setMap(data, 0);
+        dataService.setComparisonMap(1);
+        expect(dataService.data.renderMap.fileName).toBe(data.fileName);
+    });
+
+    it("setting a map should set it as render map and every node should have attributes", () => {
+        dataService.setMap(data, 0);
+        let root = d3.hierarchy<CodeMapNode>(dataService.data.renderMap.root);
+        root.each((node) => {
+            expect(node.data.attributes).toBeDefined();
+        });
     });
 
     it("setting a comparison map should do nothing if map at index does not exist", () => {
@@ -168,6 +192,37 @@ describe("app.codeCharta.core.data.dataService", function() {
 
     }));
 
+    it("only calculate deltas when two maps exist and deltas are enabled", () => {
+
+        dataService.notify = jest.fn();
+        dataService.deltaCalculatorService.decorateMapsWithDeltas = jest.fn();
+
+        dataService._deltasEnabled = true;
+
+        dataService.setMap(TEST_DELTA_MAP_A, 0);
+        dataService.setMap(TEST_DELTA_MAP_B, 1);
+        dataService.setReferenceMap(0);
+        dataService.setComparisonMap(1);
+
+        expect(dataService.deltaCalculatorService.decorateMapsWithDeltas).toHaveBeenCalled();
+
+    });
+
+    it("do not calculate deltas when two maps exist and deltas are not enabled", () => {
+
+        dataService.notify = jest.fn();
+        dataService.deltaCalculatorService.decorateMapsWithDeltas = jest.fn();
+
+        dataService._deltasEnabled = false;
+
+        dataService.setMap(TEST_DELTA_MAP_A, 0);
+        dataService.setMap(TEST_DELTA_MAP_B, 1);
+        dataService.setReferenceMap(0);
+        dataService.setComparisonMap(1);
+
+        expect(dataService.deltaCalculatorService.decorateMapsWithDeltas).not.toHaveBeenCalled();
+
+    });
 
 });
 

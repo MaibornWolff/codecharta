@@ -10,43 +10,93 @@ import * as d3 from "d3";
 /**
  * @test {DataService}
  */
-describe("app.codeCharta.core.data.dataService", function() {
+describe("app.codeCharta.core.data.dataService", () => {
 
     let a: CodeMap;
     let b: CodeMap;
     let dataDecoratorService: DataDecoratorService;
 
-    beforeEach(NGMock.mock.module("app.codeCharta.core.data"));
-
-    beforeEach(NGMock.mock.inject(function (_dataDecoratorService_) {dataDecoratorService = _dataDecoratorService_;}));
-
     beforeEach(function() {
         a = JSON.parse(JSON.stringify(TEST_DELTA_MAP_A));
         b = JSON.parse(JSON.stringify(TEST_DELTA_MAP_B));
+        dataDecoratorService = new DataDecoratorService();
     });
 
-    it("decorator should do nothing if there is no map and root", ()=>{
-        a = undefined;
-        b.root = undefined;
-        dataDecoratorService.decorateMapWithOriginAttribute(a);
-        dataDecoratorService.decorateMapWithOriginAttribute(b);
-        dataDecoratorService.decorateMapWithUnaryMetric(a);
-        dataDecoratorService.decorateMapWithUnaryMetric(b);
-        expect(a).not.toBeDefined();
-        expect(b.root).not.toBeDefined();
+    describe("decorateEmptyAttributeLists",() => {
+
+        it("all nodes should have an attribute list", ()=>{
+            a.root.children[0].attributes = undefined
+            dataDecoratorService.decorateEmptyAttributeLists(a, ["some", "metrics"]);
+            let h = d3.hierarchy(a.root);
+            h.each((node)=>{
+                expect(node.data.attributes).toBeDefined();
+            });
+        });
+
+        it("all nodes should have an attribute list with listed and available metrics", ()=>{
+            dataDecoratorService.decorateEmptyAttributeLists(a, ["rloc", "functions"]);
+            let h = d3.hierarchy(a.root);
+            h.each((node)=>{
+                expect(node.data.attributes).toBeDefined();
+                expect(node.data.attributes["rloc"]).toBeDefined();
+                expect(node.data.attributes["functions"]).toBeDefined();
+            });
+        });
+
+        it("folders should have mean attributes of children", ()=>{
+            dataDecoratorService.decorateEmptyAttributeLists(a, ["rloc", "functions"]);
+            let h = d3.hierarchy(a.root);
+            expect(h.data.attributes["rloc"]).toBeCloseTo(200/3, 1);
+            expect(h.children[0].data.attributes["rloc"]).toBe(100);
+            expect(h.data.attributes["functions"]).toBe(370);
+        });
+
     });
 
-    it("unary decorator should add unaries", ()=>{
-        a.root.children[0].attributes = {};
-        dataDecoratorService.decorateMapWithUnaryMetric(a);
-        expect(a.root.children[0].attributes["unary"]).toBe(1);
+    describe("decorateMapWithOriginAttribute",() => {
+
+        it("all nodes should have an origin", ()=>{
+            a.root.children[0].origin = undefined
+            dataDecoratorService.decorateMapWithOriginAttribute(a);
+            let h = d3.hierarchy(a.root);
+            h.each((node)=>{
+                expect(node.data.origin).toBeDefined();
+            });
+        });
+
     });
 
+    describe("decorateMapWithUnaryMetric",() => {
 
-    it("origin decorator should add origins", ()=>{
-        a.root.children[0].origin = "";
-        dataDecoratorService.decorateMapWithOriginAttribute(a);
-        expect(a.root.children[0].origin).toBe(a.fileName);
+        it("maps with no attribute nodes should be accepted and an attributes member added", ()=>{
+
+            let cm: CodeMap = {
+                fileName: "a",
+                projectName: "b",
+                root: {
+                    name: "a node"
+                }
+            };
+
+            dataDecoratorService.decorateMapWithUnaryMetric(cm);
+
+            let h = d3.hierarchy(cm.root);
+
+            h.each((node)=>{
+                expect(node.data.attributes["unary"]).toBeDefined();
+            });
+
+        });
+
+        it("all nodes should have a unary attribute", ()=>{
+            a.root.children[0].attributes = {};
+            dataDecoratorService.decorateMapWithUnaryMetric(a);
+            let h = d3.hierarchy(a.root);
+            h.each((node)=>{
+                expect(node.data.attributes["unary"]).toBeDefined();
+            });
+        });
+
     });
 
 });

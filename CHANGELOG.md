@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 ### Added
 - Experimental dependency support
+- loading indicator
 
 ### Changed
 
@@ -18,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - slider input #64
 - rz slider initialization bug
 - increasing test coverage
+- deltas where calculated on map loading even though, they were disabled
 
 ## [1.7.2] - 2018-02-02
 ### Added
@@ -47,6 +49,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Defined further scenarios via json file
 - Added description for metrics and scenarios
 - using fixed point values in detail panel (ui) to truncate infinite or long decimals
+- folders now use the mean attributes of their buildings(leaves)
 
 ### Removed
 

@@ -18,13 +18,19 @@ class FileChooserController {
      * @param {Scope} $scope
      * @param {DataLoadingService} dataLoadingService
      */
-    constructor($scope, dataLoadingService, scenarioService, dataService){
+    constructor($scope, dataLoadingService, scenarioService, dataService, $rootScope){
 
         /**
          *
          * @type {Scope}
          */
         this.$scope = $scope;
+
+        /**
+         *
+         * @type {IRootScopeService}
+         */
+        this.$rootScope = $rootScope;
 
         /**
          *
@@ -42,6 +48,7 @@ class FileChooserController {
      */
     fileChanged(element) {
         let ctx = this;
+        this.$rootScope.$broadcast("add-loading-task");
         this.$scope.$apply(function() {
             ctx.dataService.resetMaps();
             for (let i = 0; i < element.files.length; i++) {
@@ -74,9 +81,11 @@ class FileChooserController {
         }
         catch (e) {
             window.alert("Error parsing JSON!" + e);
+            this.$rootScope.$broadcast("remove-loading-task");
             return;
         }
 
+        this.$rootScope.$broadcast("remove-loading-task");
         this.setNewData(name, data, revision);
 
     }
