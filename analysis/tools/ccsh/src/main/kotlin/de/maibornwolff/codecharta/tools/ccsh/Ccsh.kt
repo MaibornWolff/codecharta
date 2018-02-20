@@ -29,6 +29,7 @@
 
 package de.maibornwolff.codecharta.tools.ccsh
 
+import de.maibornwolff.codecharta.exporter.csv.CSVExporter
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.importer.csv.CSVImporter
 import de.maibornwolff.codecharta.importer.csv.SourceMonitorImporter
@@ -48,7 +49,8 @@ import java.util.concurrent.Callable
             SourceMonitorImporter::class,
             SonarImporterMain::class,
             SCMLogParser::class,
-            Installer::class
+            Installer::class,
+            CSVExporter::class
         ],
         versionProvider = Ccsh.ManifestVersionProvider::class,
         footer = ["Copyright(c) 2018, MaibornWolff GmbH"]

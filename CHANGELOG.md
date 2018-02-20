@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- added preliminary CSVExporter for visualisation data
 
 ### Changed
 - padding rendering
