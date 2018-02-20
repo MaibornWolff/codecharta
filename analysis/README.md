@@ -17,7 +17,6 @@ Components that import data from an external source, e.g. SonarQube, and generat
 | generic CSV   | [CSVImporter](import/CSVImporter/README.md)             |
 | SCM log       | [SCMLogParser](import/SCMLogParser/README.md)            |
 | SonarQube     | [SonarImporter](import/SonarImporter/README.md)         |
-| SourceMonitor | [SourceMonitorImporter](import/SourceMonitorImporter/README.md) |
 
 ### Filter
 
