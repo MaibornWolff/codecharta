@@ -29,28 +29,30 @@
 
 package de.maibornwolff.codecharta.model
 
+import de.maibornwolff.codecharta.model.PathMatcher.matchesPath
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
-import org.junit.Assert.assertThat
-import org.junit.Test
-import java.util.*
+import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
-class PathFactoryTest {
+class PathFactoryTest : Spek({
 
-    @Test
-    fun empty_dir_should_valid_path() {
-        val path = PathFactory.fromFileSystemPath("")
-        assertThat(path.isSingle, `is`(true))
-        assertThat(path.head, `is`(""))
+    describe("empty dir") {
+        val emptyPath = PathFactory.fromFileSystemPath("")
+
+        it("should be trivial path") {
+            assertTrue(PathFactory.fromFileSystemPath("").isTrivial)
+        }
+
+        it("should be equal with slash path") {
+            assertThat(emptyPath, matchesPath(PathFactory.fromFileSystemPath("/")))
+        }
     }
 
-    @Test
-    fun empty_dir_should_be_trivial() {
-        assertThat(PathFactory.fromFileSystemPath("").isTrivial, `is`(true))
-        assertThat(PathFactory.fromFileSystemPath("/").isTrivial, `is`(true))
-    }
-
-    @Test
-    fun leading_slash_should_define_same_hierarchical_position() {
+    it("leading slash should devine same hierarchical position") {
         val pathsWithoutSlash = listOf(
                 "file", "subdir/file", "subdir/subdir/file", "subdir/othersubdir/file"
         )
@@ -60,38 +62,38 @@ class PathFactoryTest {
         }
     }
 
-    @Test
-    fun no_subdirs_should_be_leafs() {
-        assertThat(PathFactory.fromFileSystemPath("somename").isSingle, `is`(true))
+    describe("path without subdirs") {
+        val filename = "leaf"
+        val path = PathFactory.fromFileSystemPath(filename)
+
+        it("should be leaf") {
+            assertFalse(path.isTrivial)
+            assertTrue(path.isSingle)
+        }
+
+        it("head should return filename") {
+            assertThat(path.head, `is`(filename))
+        }
+
+        it("tail should be trivial") {
+            assertTrue(path.tail.isTrivial)
+        }
     }
 
-    @Test
-    fun subdirs_should_not_be_leafs() {
-        assertThat(PathFactory.fromFileSystemPath("subdir/somename").isSingle, `is`(false))
-    }
+    describe("path with subdir") {
+        val path = PathFactory.fromFileSystemPath("subdir/filename")
 
-    @Test
-    fun descendants_should_be_same_as_path_descendant() {
-        assertThat(PathFactory.fromFileSystemPath("subdir/somename").tail, `is`(Path(Arrays.asList("somename"))))
-        assertThat(PathFactory.fromFileSystemPath("subdir/anothersubdir/somename").tail, `is`(Path(Arrays.asList("anothersubdir", "somename"))))
-    }
+        it("should not be leaf") {
+            assertFalse(path.isTrivial)
+            assertFalse(path.isSingle)
+        }
 
-    @Test
-    fun root_should_be_name_of_leading_path() {
-        assertThat(PathFactory.fromFileSystemPath("leadingpath/somename").head, `is`("leadingpath"))
-        assertThat(PathFactory.fromFileSystemPath("leadingpath/intermediatepath/somename").head, `is`("leadingpath"))
-    }
+        it("head should be subdir") {
+            assertThat(path.head, `is`("subdir"))
+        }
 
-    @Test
-    fun getRoot_should_return_leaf_if_already_leaf() {
-        val leaf = PathFactory.fromFileSystemPath("leaf")
-        val actual = leaf.head
-        assertThat(actual, `is`("leaf"))
+        it("tail should be file") {
+            assertThat(path.tail, `is`(Path(listOf("filename"))))
+        }
     }
-
-    @Test
-    fun tail_should_return_trivial_element_if_leaf() {
-        val trivialElement = PathFactory.fromFileSystemPath("leaf").tail
-        assertThat(trivialElement.isTrivial, `is`(true))
-    }
-}
+})

@@ -29,14 +29,12 @@
 
 package de.maibornwolff.codecharta.model
 
-class PathFactory {
-    companion object {
-        private const val PATH_SEPARATOR = "/"
+object PathFactory {
+    private const val PATH_SEPARATOR = "/"
 
-        fun fromFileSystemPath(path: String): Path {
-            return Path(path.split(PATH_SEPARATOR.toRegex())
-                    .dropLastWhile { it.isEmpty() }
-                    .filter { !it.isEmpty() })
-        }
+    fun fromFileSystemPath(path: String): Path {
+        return Path(path.split(PATH_SEPARATOR.toRegex())
+                .dropLastWhile { it.isEmpty() }
+                .filter { !it.isEmpty() })
     }
 }

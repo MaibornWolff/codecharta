@@ -32,7 +32,7 @@ package de.maibornwolff.codecharta.filter.mergefilter
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
-import java.io.*
+import java.io.File
 import java.util.concurrent.Callable
 
 @CommandLine.Command(name = "merge",
@@ -55,30 +55,27 @@ class MergeFilter : Callable<Void?> {
     private var leafStrategySet = false
 
     @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
-    private var outputFile = ""
+    private var outputFile: File? = null
 
-    private fun writer(): Writer {
-        return if (outputFile.isEmpty()) {
-            OutputStreamWriter(System.out)
-        } else {
-            BufferedWriter(FileWriter(outputFile))
-        }
-    }
+    @CommandLine.Option(names = ["--ignore-case"], description = ["ignores case when checking node names"])
+    private var ignoreCase = false
 
     override fun call(): Void? {
         val nodeMergerStrategy =
                 when {
-                    !leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes)
-                    !recursiveStrategySet && leafStrategySet -> RecursiveNodeMergerStrategy()
+                    leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
+                    recursiveStrategySet && !leafStrategySet -> RecursiveNodeMergerStrategy(ignoreCase)
                     else -> throw IllegalArgumentException("Only one merging strategy must be set")
                 }
 
-        val inputStream = sources.map { FileInputStream(it.absoluteFile) }
-        val projects = inputStream.map { p -> ProjectDeserializer.deserializeProject(InputStreamReader(p)) }
+        val srcProjects = sources
+                .map { it.bufferedReader() }
+                .map { ProjectDeserializer.deserializeProject(it) }
 
-        val project = ProjectMerger(projects, nodeMergerStrategy).merge()
+        val mergedProject = ProjectMerger(srcProjects, nodeMergerStrategy).merge()
 
-        ProjectSerializer.serializeProject(project, writer())
+        val writer = outputFile?.bufferedWriter() ?: System.out.bufferedWriter()
+        ProjectSerializer.serializeProject(mergedProject, writer)
 
         return null
     }
