@@ -77,16 +77,6 @@ class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase
         }
     }
 
-    private fun Path.fittingEdgesFromTailWith(path: Path): Int {
-        val size = this.edgesList.size
-        val sizePath = path.edgesList.size
-        val minSize = minOf(size, sizePath)
-        val firstMisfitFromTail = (1 until minSize + 1).firstOrNull {
-            this.edgesList[size - it] != path.edgesList[sizePath - it]
-        }
-        return minSize - (firstMisfitFromTail ?: 0)
-    }
-
     private fun Set<Path>.findFittingPathOrNull(path: Path): Path? {
         val matchingLeaf = this.filter { !it.isTrivial }.maxBy { path.fittingEdgesFromTailWith(it) } ?: path
         return when {

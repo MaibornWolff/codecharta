@@ -29,35 +29,26 @@
 
 package de.maibornwolff.codecharta.serialization
 
-import junit.framework.TestCase.assertTrue
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
-import org.junit.Assert.assertThat
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.TemporaryFolder
-import java.io.FileNotFoundException
-import java.io.InputStreamReader
+import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.it
 import java.io.StringReader
+import kotlin.test.assertTrue
 
-class ProjectDeserializerTest {
-    @JvmField
-    @Rule
-    var folder = TemporaryFolder()
+class ProjectDeserializerTest : Spek({
+    val EXAMPLE_CC_JSON = "example.cc.json"
 
-    @Test
-    @Throws(FileNotFoundException::class)
-    fun shouldDeserializeProjectJson() {
-        val expectedJsonReader = InputStreamReader(this.javaClass.classLoader.getResourceAsStream(EXAMPLE_CC_JSON))
+    it("shouldDeserializeProjectJson") {
+        val expectedJsonReader = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_CC_JSON).reader()
 
         val project = ProjectDeserializer.deserializeProject(expectedJsonReader)
 
         assertTrue(project.projectName == "201701poolobject")
-        assertTrue(project.nodes.size == 1)
+        assertThat(project.nodes, hasSize(1))
     }
 
-    @Test
-    @Throws(FileNotFoundException::class)
-    fun deserializeProject_should_map_nonexisting_values_to_defaults() {
+    it("deserializeProject_should_map_nonexisting_values_to_defaults") {
         // given
         val jsonString = "{projectName='some Project', apiVersion='1.0', nodes=[{name:'root',type:'Folder'}]}"
 
@@ -67,13 +58,8 @@ class ProjectDeserializerTest {
         // then
         val node = project.nodes[0]
 
-        assertThat(node.link, `is`(nullValue()))
+        assertThat(node.link, nullValue())
         assertThat(node.attributes, not(nullValue()))
         assertThat(node.children, not(nullValue()))
     }
-
-    companion object {
-
-        private const val EXAMPLE_CC_JSON = "example.cc.json"
-    }
-}
+})

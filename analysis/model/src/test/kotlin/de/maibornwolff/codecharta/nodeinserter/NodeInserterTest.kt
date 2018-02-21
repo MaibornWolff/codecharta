@@ -30,40 +30,18 @@
 package de.maibornwolff.codecharta.nodeinserter
 
 import de.maibornwolff.codecharta.model.*
+import de.maibornwolff.codecharta.model.NodeMatcher.hasNodeAtPath
 import de.maibornwolff.codecharta.nodeinserter.NodeInserter.insertByPath
-import org.hamcrest.BaseMatcher
-import org.hamcrest.Description
-import org.hamcrest.Matcher
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
-import org.junit.Assert.assertThat
-import org.junit.Test
+import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.it
 
-class NodeInserterTest {
-    private val root = Node("root", NodeType.Folder)
-
-    private fun hasNodeAtPath(node: Node, path: Path): Matcher<Node> {
-        return object : BaseMatcher<Node>() {
-            private var nodeAtPath: Node? = null
-
-            override fun describeTo(description: Description) {
-                description.appendText("paths should contain ").appendValue(node).appendText(" at ").appendValue(path)
-            }
-
-            override fun matches(item: Any?): Boolean {
-                nodeAtPath = root.getNodeBy(path) as Node
-                return if (nodeAtPath == null) item == null else nodeAtPath == node
-            }
-
-            override fun describeMismatch(item: Any, description: Description) {
-                description.appendText("but was ").appendValue(nodeAtPath)
-                description.appendText(", where paths to leaves were ").appendValue((item as Node).pathsToLeaves)
-            }
-        }
-    }
-
-    @Test
-    fun should_insert_node_in_leaf_position() {
+class NodeInserterTest : Spek({
+    it("should insert node in leaf position") {
         // given
+        val root = Node("root", NodeType.Folder)
+
         val nodeForInsertion = Node("insertedNode", NodeType.File)
 
         // when
@@ -75,9 +53,10 @@ class NodeInserterTest {
         assertThat(root, hasNodeAtPath(nodeForInsertion, Path("insertedNode")))
     }
 
-    @Test
-    fun should_not_insert_node_in_leaf_position_twice() {
+    it("should not insert node in leaf position twice") {
         // given
+        val root = Node("root", NodeType.Folder)
+
         val nodeForInsertion = Node("insertedNode", NodeType.File)
         val secondNodeForInsertion = Node("insertedNode", NodeType.Folder)
         NodeInserter.insertByPath(root, Path.trivialPath(), nodeForInsertion)
@@ -91,9 +70,10 @@ class NodeInserterTest {
         assertThat(root, hasNodeAtPath(nodeForInsertion, Path("insertedNode")))
     }
 
-    @Test
-    fun should_take_intermediate_node_in_inner_position_if_present() {
+    it("should take intermediate node in inner position if present") {
         // given
+        val root = Node("root", NodeType.Folder)
+
         val nodeForInsertion = Node("insertedNode", NodeType.File)
         val intermediateNode = Node("folder", NodeType.Folder)
         root.children.add(intermediateNode)
@@ -109,9 +89,10 @@ class NodeInserterTest {
         assertThat(root, hasNodeAtPath(nodeForInsertion, Path("folder", "insertedNode")))
     }
 
-    @Test
-    fun should_insert_phantom_node_in_inner_position_if_no_intermediate_node_present() {
+    it("should insert phantom node in inner position if no intermediate node present") {
         // given
+        val root = Node("root", NodeType.Folder)
+
         val nodeForInsertion = Node("insertedNode", NodeType.File)
         val position = Path("folder")
 
@@ -124,9 +105,10 @@ class NodeInserterTest {
         assertThat(createdPhantomNode.name, `is`("folder"))
     }
 
-    @Test
-    fun should_insert_node_in_end_position() {
+    it("should insert node in end position") {
         // given
+        val root = Node("root", NodeType.Folder)
+
         val nodeForInsertion = Node("insertedNode", NodeType.File)
 
         // when
@@ -138,9 +120,10 @@ class NodeInserterTest {
         assertThat(root, hasNodeAtPath(nodeForInsertion, Path("folder", "subfolder", "insertedNode")))
     }
 
-    @Test
-    fun should_insert_node_in_end_position_even_if_ending_slash_not_present() {
+    it("should insert node in end position even if ending slash not present") {
         // given
+        val root = Node("root", NodeType.Folder)
+
         val nodeForInsertion = Node("insertedNode", NodeType.File)
         val path = Path("folder", "subfolder")
 
@@ -153,8 +136,7 @@ class NodeInserterTest {
         assertThat(root, hasNodeAtPath(nodeForInsertion, Path("folder", "subfolder", "insertedNode")))
     }
 
-    @Test
-    fun should_create_root_node_if_not_present() {
+    it("should create root node if not present") {
         // given
         val project = Project("someName")
         val nodeForInsertion = Node("someNode", NodeType.File)
@@ -169,8 +151,7 @@ class NodeInserterTest {
         assertThat(root.children[0], `is`(nodeForInsertion))
     }
 
-    @Test
-    fun should_use_root_node_if_present() {
+    it("should use root node if present") {
         // given
         val root = Node("root", NodeType.Folder)
         val project = Project("someName", listOf(root))
@@ -185,4 +166,4 @@ class NodeInserterTest {
         assertThat(root.children, hasSize(1))
         assertThat(root.children[0], `is`(nodeForInsertion))
     }
-}
+})
