@@ -1,6 +1,6 @@
 # Quicklinks
 
-[Visualization Demo](visualization/app/index.html?file=codecharta.cc.json)
+[Visualization Demo](visualization/app/index.html?file=codecharta.cc.json&neutralColorRange.from=20&neutralColorRange.to=40&neutralColorRange.flipped=false&areaMetric=unary&heightMetric=mcc&colorMetric=mcc&deltas=false&amountOfTopLabels=1&scaling.x=1&scaling.y=1&scaling.z=1&camera.x=3354.0273251533754&camera.y=1651.2940622342821&camera.z=3840.682801465516&margin=100&operation=NOTHING&deltaColorFlipped=false&showDependencies=false)
 
 [Downloads](https://github.com/MaibornWolff/codecharta/releases)
 
