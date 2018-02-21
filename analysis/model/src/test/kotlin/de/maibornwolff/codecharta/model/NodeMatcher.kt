@@ -60,4 +60,24 @@ object NodeMatcher {
                 .fold(true, { x, y -> x && y })
     }
 
+    fun hasNodeAtPath(node: Node, path: Path): Matcher<Node> {
+        return object : BaseMatcher<Node>() {
+            private var nodeAtPath: Node? = null
+
+            override fun describeTo(description: Description) {
+                description.appendText("paths should contain ").appendValue(node).appendText(" at ").appendValue(path)
+            }
+
+            override fun matches(item: Any?): Boolean {
+                nodeAtPath = (item as Node).getNodeBy(path) as Node
+                return if (nodeAtPath == null) item == null else nodeAtPath == node
+            }
+
+            override fun describeMismatch(item: Any, description: Description) {
+                description.appendText("but was ").appendValue(nodeAtPath)
+                description.appendText(", where paths to leaves were ").appendValue((item as Node).pathsToLeaves)
+            }
+        }
+    }
+
 }

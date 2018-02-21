@@ -33,127 +33,117 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonNull
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
+import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
 import io.mockk.mockk
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.nullValue
-import org.junit.Assert.assertThat
-import org.junit.Test
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.nullValue
+import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.on
+import kotlin.test.assertFailsWith
 
-class NodeJsonDeserializerTest {
-    private val deserializer = NodeJsonDeserializer()
+class NodeJsonDeserializerTest : Spek({
+    val NAME = "nodeName"
+    val TYPE = NodeType.Folder
+    val nodeClass = Node::class.java
 
-    private fun createMinimalJsonObject(): JsonObject {
+    fun createMinimalJsonObject(): JsonObject {
         val obj = JsonObject()
         obj.addProperty("name", NAME)
         obj.addProperty("type", TYPE.toString())
         return obj
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun should_throw_exception_if_not_given_a_jsonObject() {
-        // when
-        deserializer.deserialize(JsonNull.INSTANCE, mockk(), mockk())
-        // then throw
-    }
+    describe("a node json deserializer") {
+        val deserializer = NodeJsonDeserializer()
 
-    @Test
-    fun should_deserialize_node() {
-        // given
-        val obj = createMinimalJsonObject()
-        // when
-        val node = deserializer.deserialize(obj, mockk(), mockk())
-        // then
-        assertThat(node.name, `is`(NAME))
-        assertThat(node.type, `is`(TYPE))
-        assertThat(node.link, nullValue())
-        assertThat(node.attributes.size, `is`(0))
-        assertThat(node.children.size, `is`(0))
-    }
+        it("deserialize should throw exception if not given a jsonObject") {
+            assertFailsWith(IllegalStateException::class) {
+                deserializer.deserialize(JsonNull.INSTANCE, nodeClass, mockk())
+            }
+        }
 
-    @Test(expected = JsonParseException::class)
-    fun should_throw_exception_if_type_not_given() {
-        // given
-        val obj = createMinimalJsonObject()
-        obj.remove("type")
-        // when
-        deserializer.deserialize(obj, mockk(), mockk())
-        // then throw
-    }
+        it("deserialize should throw exception if type not given") {
+            val obj = createMinimalJsonObject()
+            obj.remove("type")
 
-    @Test(expected = JsonParseException::class)
-    fun should_throw_exception_if_type_cryptic() {
-        // given
-        val obj = createMinimalJsonObject()
-        obj.addProperty("type", "someCrypticType")
-        // when
-        deserializer.deserialize(obj, mockk(), mockk())
-        // then throw
-    }
+            assertFailsWith(JsonParseException::class) {
+                deserializer.deserialize(obj, nodeClass, mockk())
+            }
+        }
 
-    @Test(expected = JsonParseException::class)
-    fun should_throw_exception_if_name_not_given() {
-        // given
-        val obj = createMinimalJsonObject()
-        obj.remove("name")
-        // when
-        deserializer.deserialize(obj, mockk(), mockk())
-        // then throw
-    }
+        it("deserialize should throw exception if type cryptic") {
+            val obj = createMinimalJsonObject()
+            obj.addProperty("type", "someCrypticType")
 
-    @Test
-    fun should_deserialize_link() {
-        // given
-        val obj = createMinimalJsonObject()
-        val url = "someUrl"
-        obj.addProperty("link", url)
-        // when
-        val node = deserializer.deserialize(obj, mockk(), mockk())
-        // then
-        assertThat(node.link, `is`(url))
-    }
+            assertFailsWith(JsonParseException::class) {
+                deserializer.deserialize(obj, nodeClass, mockk())
+            }
+        }
 
-    @Test
-    fun should_deserialize_int_attribute() {
-        // given
-        val attributeName = "bla"
-        val attributeValue = 1
-        val obj = createMinimalJsonObject()
-        val attributesObject = JsonObject()
-        attributesObject.addProperty(attributeName, attributeValue)
-        obj.add("attributes", attributesObject)
-        // when
-        val node = deserializer.deserialize(obj, mockk(), mockk())
-        // then
-        assertThat<Any>(node.attributes[attributeName], `is`(attributeValue.toDouble()))
-    }
+        it("deserialize should throw exception if name not given") {
+            val obj = createMinimalJsonObject()
+            obj.remove("name")
 
-    @Test(expected = IllegalStateException::class)
-    fun should_throw_exception_if_children_null_object() {
-        // given
-        val obj = createMinimalJsonObject()
-        obj.add("children", JsonNull.INSTANCE)
-        // when
-        deserializer.deserialize(obj, mockk(), mockk())
-        // then throw
-    }
+            assertFailsWith(JsonParseException::class) {
+                deserializer.deserialize(obj, nodeClass, mockk())
+            }
+        }
 
-    @Test
-    fun should_deserialize_children() {
-        // given
-        val obj = createMinimalJsonObject()
-        val childrenElement = JsonArray()
-        childrenElement.add(createMinimalJsonObject())
-        obj.add("children", childrenElement)
-        // when
-        val node = deserializer.deserialize(obj, mockk(), mockk())
-        // then
-        assertThat(node.children.size, `is`(1))
-    }
+        it("deserialize should deserialize node") {
+            val obj = createMinimalJsonObject()
+            val node = deserializer.deserialize(obj, nodeClass, mockk())
 
-    companion object {
+            assertThat(node.name, `is`(NAME))
+            assertThat(node.type, `is`(TYPE))
+            assertThat(node.link, nullValue())
+            assertThat(node.attributes.size, `is`(0))
+            assertThat(node.children.size, `is`(0))
+        }
 
-        private const val NAME = "nodeName"
-        private val TYPE = NodeType.Folder
+        it("deserialize should throw exception if children null object") {
+            val obj = createMinimalJsonObject()
+            obj.add("children", JsonNull.INSTANCE)
+
+            assertFailsWith(IllegalStateException::class) {
+                deserializer.deserialize(obj, nodeClass, mockk())
+            }
+        }
+
+        describe("with json object") {
+            val obj = createMinimalJsonObject()
+            val url = "someUrl"
+            obj.addProperty("link", url)
+
+            val attributeName = "bla"
+            val attributeValue = 1
+            val attributesObject = JsonObject()
+            attributesObject.addProperty(attributeName, attributeValue)
+            obj.add("attributes", attributesObject)
+
+            val childrenElement = JsonArray()
+            childrenElement.add(createMinimalJsonObject())
+            obj.add("children", childrenElement)
+
+            on("deserialize") {
+
+                val node = deserializer.deserialize(obj, nodeClass, mockk())
+
+                it("should deserialize link") {
+                    assertThat(node.link, `is`(url))
+                }
+
+                it("should deserialize int attribute") {
+                    assertThat(node.attributes[attributeName] as Double, `is`(attributeValue.toDouble()))
+                }
+
+                it("should deserialize children") {
+                    assertThat(node.children.size, `is`(1))
+                }
+            }
+        }
     }
-}
+})

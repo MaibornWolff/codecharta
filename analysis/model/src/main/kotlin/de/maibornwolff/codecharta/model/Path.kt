@@ -65,10 +65,6 @@ data class Path(val edgesList: List<String>) {
             else Path(edgesList.drop(1))
 
 
-    fun last(): String {
-        return edgesList[edgesList.size - 1]
-    }
-
     /**
      * @param path that will be added after the present path
      * @return concatinated path
@@ -79,6 +75,15 @@ data class Path(val edgesList: List<String>) {
             path.isTrivial -> this
             else -> Path(this.edgesList + path.edgesList)
         }
+    }
+
+    fun fittingEdgesFromTailWith(path: Path): Int {
+        val size = this.edgesList.size
+        val pathSize = path.edgesList.size
+        val minSize = minOf(size, pathSize)
+
+        return (0 until minSize).firstOrNull { this.edgesList[size - (it + 1)] != path.edgesList[pathSize - (it + 1)] }
+                ?: minSize
     }
 
     companion object {
