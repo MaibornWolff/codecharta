@@ -33,7 +33,7 @@ import java.util.*
 
 class Node constructor(
         val name: String,
-        val type: NodeType?,
+        val type: NodeType? = NodeType.File,
         var attributes: Map<String, Any> = mutableMapOf(),
         var link: String? = "",
         childrenList: List<Node> = listOf()

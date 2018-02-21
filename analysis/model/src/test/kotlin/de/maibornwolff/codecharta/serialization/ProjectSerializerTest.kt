@@ -30,36 +30,28 @@
 package de.maibornwolff.codecharta.serialization
 
 import com.google.gson.JsonParser
-import junit.framework.TestCase.assertTrue
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.TemporaryFolder
+import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.it
 import java.io.File
-import java.io.FileReader
 import java.io.IOException
+import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
-class ProjectSerializerTest {
-    @JvmField
-    @Rule
-    var folder = TemporaryFolder()
+class ProjectSerializerTest : Spek({
+    val EXAMPLE_JSON_PATH = this.javaClass.classLoader.getResource("example.cc.json").file
 
-    private val filename: String
-        get() {
-            val tmpFolder = folder.root.absolutePath
-            return tmpFolder + "test.cc.json"
-        }
+    val tempDir = createTempDir()
 
-    @Throws(IOException::class)
-    private fun fileContentEqual(actual: File, expected: File): Boolean {
+    val filename = tempDir.absolutePath + "test.cc.json"
+
+    fun fileContentEqual(actual: File, expected: File): Boolean {
         val parser = JsonParser()
-        val actualJson = parser.parse(FileReader(actual))
-        val expectedJson = parser.parse(FileReader(expected))
+        val actualJson = parser.parse(actual.reader())
+        val expectedJson = parser.parse(expected.reader())
         return actualJson == expectedJson
     }
 
-    @Test
-    @Throws(IOException::class)
-    fun shouldSerializeProject() {
+    it("should serialize project") {
         val testProject = ProjectDeserializer.deserializeProject(EXAMPLE_JSON_PATH)
 
         ProjectSerializer.serializeProjectAndWriteToFile(testProject, filename)
@@ -69,20 +61,12 @@ class ProjectSerializerTest {
         assertTrue(fileContentEqual(result, File(EXAMPLE_JSON_PATH)))
     }
 
-    @Test(expected = IOException::class)
-    @Throws(IOException::class)
-    fun serializeWithWrongPathThrowsException() {
+    it("serialize with wrong path throws exception") {
         val testProject = ProjectDeserializer.deserializeProject(EXAMPLE_JSON_PATH)
 
-        ProjectSerializer.serializeProjectAndWriteToFile(testProject, folder.root.absolutePath + "/someverystupidpath/out.json")
-
-        val result = File(filename)
-        assertTrue(result.exists())
-        assertTrue(fileContentEqual(result, File(EXAMPLE_JSON_PATH)))
+        assertFailsWith(IOException::class) {
+            ProjectSerializer.serializeProjectAndWriteToFile(testProject, tempDir.absolutePath + "/someverystupidpath/out.json")
+        }
     }
 
-    companion object {
-
-        private const val EXAMPLE_JSON_PATH = "./src/test/resources/example.cc.json"
-    }
-}
+})

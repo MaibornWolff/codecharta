@@ -115,7 +115,6 @@ class LeafNodeMergerTest : Spek({
             assertThat(newNode.children[0].type, `is`(child1.type))
         }
 
-
         on("merging empty nodes") {
             val nodeList = fittingMerger.mergeNodeLists(listOf())
 

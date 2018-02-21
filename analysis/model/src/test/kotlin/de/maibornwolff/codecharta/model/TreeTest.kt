@@ -30,66 +30,94 @@
 package de.maibornwolff.codecharta.model
 
 import de.maibornwolff.codecharta.model.TreeCreator.createTree
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
-import org.junit.Assert.assertThat
-import org.junit.Test
+import org.hamcrest.Matchers.hasItem
+import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.on
 import java.util.*
+import kotlin.test.assertFailsWith
 
-class TreeTest {
-    @Test
-    fun getNodeBy_trivial_should_return_same_tree() {
-        val tree = createTree(Path(Arrays.asList("bla")), createTree())
-
-        assertThat(tree.getNodeBy(Path.TRIVIAL), `is`<Any>(tree))
-    }
-
-    @Test
-    fun getNode_of_simple_tree_should_return_this_tree() {
+class TreeTest : Spek({
+    describe("a tree of depth 0") {
         val tree = createTree()
 
-        val nodes = tree.nodes
+        on("nodes") {
+            val nodes = tree.nodes
 
-        assertThat(nodes.size, `is`(1))
-        assertThat(nodes.keys.contains(Path.TRIVIAL), `is`(true))
-        assertThat(nodes.values.contains(tree), `is`(true))
+            it("should be only the tree itself") {
+                assertThat(nodes.size, `is`(1))
+                assertThat(nodes.keys, hasItem(Path.TRIVIAL))
+                assertThat(nodes.values, hasItem(tree))
+            }
+        }
+
+        on("leaves") {
+            val leaves = tree.leaves
+
+            it("should be only the tree itself") {
+                assertThat(leaves.size, `is`(1))
+                assertThat(leaves.keys, hasItem(Path.TRIVIAL))
+                assertThat(leaves.values, hasItem(tree))
+            }
+        }
+
+        on("getNodeBy") {
+            it("should return same tree on trivial path") {
+                assertThat(tree.getNodeBy(Path.TRIVIAL), `is`(tree))
+            }
+
+            it("should throw exception on path not contained in tree") {
+                assertFailsWith(NoSuchElementException::class) {
+                    tree.getNodeBy(Path("nonexistingpath"))
+                }
+            }
+        }
     }
 
-    @Test
-    fun getLeaves_of_simple_tree_should_return_this_leaf() {
-        val tree = createTree()
-
-        val leaves = tree.leaves
-
-        assertThat(leaves.size, `is`(1))
-        assertThat(leaves.keys.contains(Path.TRIVIAL), `is`(true))
-        assertThat(leaves.values.contains(tree), `is`(true))
-    }
-
-    @Test
-    fun getNode_should_return_nodes() {
+    describe("a tree of depth 1") {
         val innerTree = createTree()
-        val pathToInnerTree = Path(Arrays.asList("bla"))
+        val pathToInnerTree = Path("bla")
         val tree = createTree(pathToInnerTree, innerTree)
 
-        val nodes = tree.nodes
+        on("nodes") {
+            val nodes = tree.nodes
 
-        assertThat(nodes.size, `is`(2))
-        assertThat(nodes.keys.contains(Path.TRIVIAL), `is`(true))
-        assertThat(nodes.values.contains(tree), `is`(true))
-        assertThat(nodes.keys.contains(pathToInnerTree), `is`(true))
-        assertThat(nodes.values.contains(innerTree), `is`(true))
+            it("should contain exactly itself and the subtree") {
+                assertThat(nodes.size, `is`(2))
+                assertThat(nodes.keys, hasItem(Path.TRIVIAL))
+                assertThat(nodes.keys, hasItem(pathToInnerTree))
+                assertThat(nodes.values, hasItem(tree))
+                assertThat(nodes.values, hasItem(innerTree))
+            }
+        }
+
+        on("leaves") {
+            val leaves = tree.leaves
+
+            it("should return the inner tree") {
+                assertThat(leaves.size, `is`(1))
+                assertThat(leaves.keys, hasItem(pathToInnerTree))
+                assertThat(leaves.values, hasItem(innerTree))
+            }
+        }
+
+        on("getNodeBy") {
+            it("should return same tree on trivial path") {
+                assertThat(tree.getNodeBy(Path.TRIVIAL), `is`(tree))
+            }
+
+            it("should return inner tree on pathToInnerTree") {
+                assertThat(tree.getNodeBy(pathToInnerTree), `is`(innerTree))
+            }
+
+            it("should throw exception on path not contained in tree") {
+                assertFailsWith(NoSuchElementException::class) {
+                    tree.getNodeBy(Path("nonexistingpath"))
+                }
+            }
+        }
     }
-
-    @Test
-    fun getLeaves_should_return_leaves() {
-        val innerTree = createTree()
-        val pathToInnerTree = Path(Arrays.asList("bla"))
-        val tree = createTree(pathToInnerTree, innerTree)
-
-        val leaves = tree.leaves
-
-        assertThat(leaves.size, `is`(1))
-        assertThat(leaves.keys.contains(pathToInnerTree), `is`(true))
-        assertThat(leaves.values.contains(innerTree), `is`(true))
-    }
-}
+})

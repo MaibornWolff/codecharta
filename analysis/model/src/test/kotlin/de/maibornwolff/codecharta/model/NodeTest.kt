@@ -30,101 +30,91 @@
 package de.maibornwolff.codecharta.model
 
 import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.hasItem
 import org.hamcrest.Matchers.hasSize
-import org.junit.Test
+import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.on
 import java.util.*
+import kotlin.test.assertFailsWith
 
-class NodeTest {
+class NodeTest : Spek({
 
-    @Test
-    fun getPathOfChild_of_valid_child_should_return_path() {
-        // given
-        val node11 = Node("node11", NodeType.File)
-        val node1Children = Arrays.asList(node11)
-        val root = Node("node1", NodeType.Folder, mapOf(), "", node1Children)
+    describe("root with child") {
 
-        // when
-        val pathOfChild = root.getPathOfChild(node11)
+        val childName = "child1"
+        val child = Node(childName)
+        val root = Node("root", NodeType.Folder, childrenList = Arrays.asList(child))
 
-        // then
-        assertThat(pathOfChild.isSingle, `is`(true))
-        assertThat(pathOfChild.head, `is`("node11"))
+        on("getPathOfChild of valid child") {
+            val pathOfChild = root.getPathOfChild(child)
+
+            it("should return path") {
+
+                assertThat(pathOfChild.isSingle, `is`(true))
+                assertThat(pathOfChild.head, `is`(childName))
+            }
+        }
+
+        on("getPathOfChild of invalid child") {
+
+            it("should throw an exception") {
+
+                assertFailsWith(NoSuchElementException::class) {
+                    root.getPathOfChild(Node("invalidChild"))
+                }
+            }
+        }
+
+        on("pathsToLeafs") {
+
+            val pathsToLeafs = root.pathsToLeaves
+
+            it("should return path of child") {
+
+                assertThat(pathsToLeafs, hasSize(1))
+                assertThat(pathsToLeafs, PathMatcher.containsPath(Path(childName)))
+            }
+        }
+
     }
 
-    @Test(expected = NoSuchElementException::class)
-    fun getPathOfChild_of_invalid_child_should_throw_exception() {
-        // given
-        val node11 = Node("node11", NodeType.File)
-        val node1Children = Arrays.asList(node11)
-        val root = Node("node1", NodeType.Folder, mapOf(), "", node1Children)
+    describe("root node with many children") {
 
-        // when
-        root.getPathOfChild(Node("node11", NodeType.Folder))
-
-        // then throw
-    }
-
-    @Test
-    fun getLeafs_should_return_leafs() {
-        // given
-        val node11 = Node("node11", NodeType.File)
-        val node12 = Node("node12", NodeType.File)
-        val node1Children = Arrays.asList(node11, node12)
-        val node1 = Node("node1", NodeType.Folder, mapOf(), "", node1Children)
+        val node11 = Node("node11")
+        val node12 = Node("node12")
+        val node1 = Node("node1", NodeType.Folder, childrenList = Arrays.asList(node11, node12))
         val node21 = Node("node21", NodeType.Folder)
-        val node2Children = Arrays.asList(node21)
-        val node2 = Node("node2", NodeType.Folder, mapOf(), "", node2Children)
-        val root = Node("root", NodeType.Folder, mapOf(), "", Arrays.asList(node1, node2))
+        val node2 = Node("node2", NodeType.Folder, childrenList = Arrays.asList(node21))
+        val root = Node("root", NodeType.Folder, childrenList = Arrays.asList(node1, node2))
 
-        // when
-        val leafs = root.leafObjects
+        on("getLeafs") {
 
-        // then
-        assertThat(leafs, hasSize(3))
-        assertThat(leafs, hasItem(node11))
-        assertThat(leafs, hasItem(node12))
-        assertThat(leafs, hasItem(node21))
+            val leafs = root.leafObjects
+
+            it("should return leafs") {
+
+                assertThat(leafs, hasSize(3))
+                assertThat(leafs, hasItem(node11))
+                assertThat(leafs, hasItem(node12))
+                assertThat(leafs, hasItem(node21))
+            }
+        }
+
+        on("getPathsToLeafs") {
+
+            val pathsToLeafs = root.pathsToLeaves
+
+            it("should return paths of all leafs") {
+
+                assertThat(pathsToLeafs, hasSize(3))
+                assertThat(pathsToLeafs, PathMatcher.containsPath(Path("node1", "node11")))
+                assertThat(pathsToLeafs, PathMatcher.containsPath(Path("node1", "node12")))
+                assertThat(pathsToLeafs, PathMatcher.containsPath(Path("node2", "node21")))
+            }
+        }
+
     }
-
-    @Test
-    fun getPathsToLeafs_of_simple_tree() {
-        // given
-        val node1 = Node("node1", NodeType.Folder)
-        val pathToNode1 = Path("node1")
-        val root = Node("root", NodeType.Folder, mapOf(), "", Arrays.asList(node1))
-
-        // when
-        val pathsToLeafs = root.pathsToLeaves
-
-        // then
-        assertThat(pathsToLeafs, hasSize(1))
-        assertThat(pathsToLeafs, PathMatcher.containsPath(pathToNode1))
-    }
-
-    @Test
-    fun getPathsToLeafs() {
-        // given
-        val node11 = Node("node11", NodeType.File)
-        val pathToNode11 = Path("node1", "node11")
-        val node12 = Node("node12", NodeType.File)
-        val pathToNode12 = Path("node1", "node12")
-        val node1Children = Arrays.asList(node11, node12)
-        val node1 = Node("node1", NodeType.Folder, mapOf(), "", node1Children)
-        val node21 = Node("node21", NodeType.Folder)
-        val pathToNode21 = Path("node2", "node21")
-        val node2Children = Arrays.asList(node21)
-        val node2 = Node("node2", NodeType.Folder, mapOf(), "", node2Children)
-        val root = Node("root", NodeType.Folder, mapOf(), "", Arrays.asList(node1, node2))
-
-        // when
-        val pathsToLeafs = root.pathsToLeaves
-
-        // then
-        assertThat(pathsToLeafs, hasSize(3))
-        assertThat(pathsToLeafs, PathMatcher.containsPath(pathToNode11))
-        assertThat(pathsToLeafs, PathMatcher.containsPath(pathToNode12))
-        assertThat(pathsToLeafs, PathMatcher.containsPath(pathToNode21))
-    }
-}
+})
