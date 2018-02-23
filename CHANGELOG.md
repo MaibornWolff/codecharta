@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
+
+### Removed
+
+### Fixed
+
+## [1.9.3] - 2018-02-23
+### Added
+
+### Changed
 - sorting treeview by folders and names
 
 ### Removed
