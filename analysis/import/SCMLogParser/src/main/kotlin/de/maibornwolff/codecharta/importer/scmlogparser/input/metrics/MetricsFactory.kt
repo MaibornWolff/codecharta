@@ -32,18 +32,17 @@ class MetricsFactory {
     private fun createAllMetrics(): List<Metric> {
         return Arrays.asList(
                 AbsoluteCodeChurn(),
-                LinesOfCode(),
+                AddedLines(),
+                DeletedLines(),
                 NumberOfAuthors(),
                 NumberOfOccurencesInCommits(),
                 RangeOfWeeksWithCommits(),
-                RelativeCodeChurn(),
                 SuccessiveWeeksWithCommits(),
                 WeeksWithCommits(),
                 HighlyCoupledFiles(),
                 MedianCoupledFiles(),
                 AbsoluteCoupledChurn(),
-                AverageCodeChurnPerCommit(),
-                AddQuotDel()
+                AverageCodeChurnPerCommit()
         )
     }
 
