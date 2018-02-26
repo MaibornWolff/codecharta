@@ -2,18 +2,15 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 
-/**
- * this is only an approximation of the correct code churn.
- */
-class LinesOfCode : Metric {
+class DeletedLines : Metric {
     private var loc: Long = 0
 
     override fun description(): String {
-        return "Lines Of Code: Approximation for loc. Number of added minus number of deleted lines of all commits for this file."
+        return "Lines Of Code: Added lines for this file."
     }
 
     override fun metricName(): String {
-        return "loc"
+        return "deleted_lines"
     }
 
     override fun registerModification(modification: Modification) {
@@ -21,11 +18,7 @@ class LinesOfCode : Metric {
         loc -= modification.deletions
     }
 
-    /**
-     * this is only an approximation of the correct file size.
-     * correct only if e.g. --numstat -m --first-parent ist given.
-     */
     override fun value(): Number {
-        return if (loc >= 0) loc else 0
+        return if (loc >= 0) 0L else -loc
     }
 }
