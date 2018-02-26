@@ -52,6 +52,14 @@ export class MapTreeViewLevelController {
         return !(node && node.children && node.children.length > 0);
     }
 
+    sortByFolder(node: CodeMapNode) {
+        if(!(node && node.children && node.children.length > 0)){
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
 }
 
 export const mapTreeViewLevelComponent = {
