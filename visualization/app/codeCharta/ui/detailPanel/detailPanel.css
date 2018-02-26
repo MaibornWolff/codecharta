@@ -4,5 +4,6 @@ detail-panel-component table {
 }
 
 #detailWindow {
-    pointer-events: none;
+    max-height: 50%;
+    overflow-y: scroll;
 }

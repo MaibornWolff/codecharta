@@ -13,6 +13,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+## [1.9.3] - 2018-02-23
+### Added
+
+### Changed
+- sorting treeview by folders and names
+
+### Removed
+
+### Fixed
+
 ## [1.9.2] - 2018-02-20
 ### Added
 - added preliminary CSVExporter for visualisation data
