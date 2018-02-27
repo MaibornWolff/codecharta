@@ -2,7 +2,7 @@ import angular from "angular";
 import "script-loader!jquery";
 import 'script-loader!materialize-css/dist/js/materialize.min.js'
 import "./codeCharta/codeCharta";
-import "./img/icon.ico";
+import "./assets/icon.ico";
 import "./app.scss";
 
 angular.module("app", ["app.codeCharta"]);
