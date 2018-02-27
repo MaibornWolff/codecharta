@@ -1,4 +1,4 @@
-import {NGMock} from "../../../ng.mockhelper";
+import {NGMock} from "../../../../mocks/ng.mockhelper";
 import {IRootScopeService, ILocationService, IHttpBackendService} from "angular";
 import DoneCallback = jest.DoneCallback;
 
