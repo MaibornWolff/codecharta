@@ -8,8 +8,6 @@ import {codeChartaComponent, CodeChartaController} from "./codeChartaComponent";
 
 import angular from "angular";
 
-import "./codeCharta.css";
-
 angular.module(
     "app.codeCharta",
     ["app.codeCharta.codeMap", "app.codeCharta.core", "app.codeCharta.ui"]

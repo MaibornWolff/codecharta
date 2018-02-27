@@ -6,7 +6,7 @@
 
   @include prefix((
           box-sizing: border-box
-  ), webkit moz ms);
+  ), webkit moz ms o);
 
 }
 
@@ -14,7 +14,7 @@ html, body {
 
   @include prefix((
           user-select: none
-  ), webkit moz ms);
+  ), webkit moz ms o);
 
   width: 100%;
   height: 100%;

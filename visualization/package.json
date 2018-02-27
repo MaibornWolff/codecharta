@@ -50,10 +50,10 @@
     "win": {
       "productName": "codecharta-visualization",
       "companyName": "MaibornWolff GmbH",
-      "icon": "app/img/icon.ico"
+      "icon": "app/assets/icon.ico"
     },
     "mac": {
-      "icon": "app/img/icon.icns",
+      "icon": "app/assets/icon.icns",
       "displayName": "codecharta-visualization"
     }
   },
@@ -84,7 +84,7 @@
     },
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
-      "\\.(css|less)$": "<rootDir>/mocks/styleMock.js",
+      "\\.(css|less|scss)$": "<rootDir>/mocks/styleMock.js",
       "\\.(glsl)$": "<rootDir>/mocks/glslMock.js",
       "\\.(html)$": "<rootDir>/mocks/htmlMock.js"
     },
