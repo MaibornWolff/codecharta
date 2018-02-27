@@ -1,5 +1,3 @@
-import {Range} from "../../model/Range";
-import {Scale} from "../../model/Scale";
 import {DataService, DataServiceSubscriber, DataModel} from "../data/data.service";
 import {
     CameraChangeSubscriber,
@@ -11,6 +9,16 @@ import {DeltaCalculatorService} from "../data/data.deltaCalculator.service";
 import * as d3 from "d3";
 import {DataDecoratorService} from "../data/data.decorator.service";
 import {CodeMap} from "../data/model/CodeMap";
+
+export interface Range {
+    from: number, to: number, flipped: boolean
+}
+
+export interface Scale {
+    x: number,
+    y: number,
+    z: number
+}
 
 export interface Settings {
 
