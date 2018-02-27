@@ -1,5 +1,4 @@
 @import "mixins";
-@import "~roboto-fontface/css/roboto/roboto-fontface.css";
 @import "~materialize-css/dist/css/materialize.css";
 @import "~font-awesome/css/font-awesome.css";
 
@@ -7,7 +6,7 @@
 
   @include prefix((
           box-sizing: border-box
-  ), webkit moz);
+  ), webkit moz ms);
 
 }
 
