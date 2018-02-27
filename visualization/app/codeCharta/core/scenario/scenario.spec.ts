@@ -1,4 +1,4 @@
-import {NGMock} from "../../../ng.mockhelper";
+import {NGMock} from "../../../../mocks/ng.mockhelper";
 
 import "./scenario.module";
 import {Scenario, ScenarioService} from "./scenario.service";

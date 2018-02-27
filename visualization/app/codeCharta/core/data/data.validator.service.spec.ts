@@ -1,5 +1,5 @@
 import "./data.module";
-import {NGMock} from "../../../ng.mockhelper";
+import {NGMock} from "../../../../mocks/ng.mockhelper";
 import DoneCallback = jest.DoneCallback;
 import {DataValidatorService} from "./data.validator.service";
 import {TEST_FILE_CONTENT, TEST_FILE_DATA} from "./data.mocks";

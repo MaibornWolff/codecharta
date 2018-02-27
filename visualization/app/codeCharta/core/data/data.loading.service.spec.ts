@@ -1,5 +1,5 @@
 import "./data.module";
-import {NGMock} from "../../../ng.mockhelper";
+import {NGMock} from "../../../../mocks/ng.mockhelper";
 import {DataLoadingService} from "./data.loading.service";
 import {TEST_FILE_CONTENT} from "./data.mocks";
 
