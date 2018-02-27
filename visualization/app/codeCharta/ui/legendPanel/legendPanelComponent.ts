@@ -94,6 +94,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         this.heightMetric = s.heightMetric;
         this.colorMetric = s.colorMetric;
         this.deltaColorsFlipped = s.deltaColorFlipped;
+        this.deltas = s.deltas;
 
         this.positive = this.getImageDataUri(MapColors.positive);
         this.neutral = this.getImageDataUri(MapColors.neutral);

@@ -1,5 +1,5 @@
 .tree-root {
-    overflow-y: scroll;
+    overflow-y: hidden;
 }
 
 .tree-root div{
