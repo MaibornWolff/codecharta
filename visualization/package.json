@@ -50,10 +50,10 @@
     "win": {
       "productName": "codecharta-visualization",
       "companyName": "MaibornWolff GmbH",
-      "icon": "app/icon.ico"
+      "icon": "app/img/icon.ico"
     },
     "mac": {
-      "icon": "app/icon.icns",
+      "icon": "app/img/icon.icns",
       "displayName": "codecharta-visualization"
     }
   },

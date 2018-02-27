@@ -5,7 +5,7 @@ import 'script-loader!materialize-css/dist/js/materialize.min.js'
 
 import "./codeCharta/codeCharta";
 
-import "./icon.ico";
+import "./img/icon.ico";
 
 import "./app.scss";
 
