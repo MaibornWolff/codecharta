@@ -3,6 +3,7 @@ import {STATISTIC_OPS, StatisticMapService} from "../../core/statistic/statistic
 import {SettingsService, Settings, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import {DataService, DataServiceSubscriber, DataModel} from "../../core/data/data.service";
 import {TreeMapService} from "../../core/treemap/treemap.service";
+import "./settingsPanel.scss";
 
 /**
  * Controls the settingsPanel
