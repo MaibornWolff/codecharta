@@ -3,14 +3,14 @@
 import {CodeMapMesh} from "./rendering/codeMapMesh";
 import {renderSettings} from "./rendering/renderSettings"
 import {LabelManager} from "./rendering/labelManager"
-import {SettingsServiceSubscriber, Settings, SettingsService} from "../core/settings/settings.service";
+import {SettingsServiceSubscriber, Settings, SettingsService} from "../../core/settings/settings.service";
 import {node} from "./rendering/node";
 import {ArrowManager} from "./rendering/arrowManager";
 import {
     CodeMapBuildingTransition, CodeMapController,
     CodeMapControllerSubscriber
 } from "./codeMapComponent";
-import {CodeMapDependency} from "../core/data/model/CodeMap";
+import {CodeMapDependency} from "../../core/data/model/CodeMap";
 
 const mapSize = 500.0;
 

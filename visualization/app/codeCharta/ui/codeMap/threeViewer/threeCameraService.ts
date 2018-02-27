@@ -1,7 +1,7 @@
 "use strict";
 
 import * as THREE from "three";
-import {SettingsServiceSubscriber, Settings, SettingsService} from "../../core/settings/settings.service";
+import {SettingsServiceSubscriber, Settings, SettingsService} from "../../../core/settings/settings.service";
 import {PerspectiveCamera} from "three";
 
 /**

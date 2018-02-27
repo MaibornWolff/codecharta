@@ -2,7 +2,7 @@ import * as THREE from "three";
 import {node} from "./node"
 import {renderSettings} from "./renderSettings"
 import {Group, Object3D, Vector3} from "three";
-import {CodeMapDependency} from "../../core/data/model/CodeMap";
+import {CodeMapDependency} from "../../../core/data/model/CodeMap";
 
 export class ArrowManager {
     private parentObjectInScene: THREE.Object3D;

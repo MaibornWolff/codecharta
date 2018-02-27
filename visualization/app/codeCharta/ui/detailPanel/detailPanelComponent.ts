@@ -2,8 +2,8 @@ import {SettingsService, Settings, SettingsServiceSubscriber} from "../../core/s
 import {
     CodeMapControllerSubscriber, CodeMapBuildingTransition,
     CodeMapController
-} from "../../codeMap/codeMapComponent";
-import {codeMapBuilding} from "../../codeMap/rendering/codeMapBuilding";
+} from "../codeMap/codeMapComponent";
+import {codeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
 import {KVObject} from "../../core/data/data.deltaCalculator.service";
 import {DataService} from "../../core/data/data.service";
 

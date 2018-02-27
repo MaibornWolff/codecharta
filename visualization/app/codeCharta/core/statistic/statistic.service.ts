@@ -1,7 +1,7 @@
 import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
 import {Settings} from "../../core/settings/settings.service";
 import {DataModel} from "../data/data.service";
-import {node} from "../../codeMap/rendering/node";
+import {node} from "../../ui/codeMap/rendering/node";
 
 
 export enum STATISTIC_OPS  {

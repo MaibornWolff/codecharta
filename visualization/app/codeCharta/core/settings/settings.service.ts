@@ -2,7 +2,7 @@ import {DataService, DataServiceSubscriber, DataModel} from "../data/data.servic
 import {
     CameraChangeSubscriber,
     ThreeOrbitControlsService
-} from "../../codeMap/threeViewer/threeOrbitControlsService";
+} from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera} from "three";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
 import {DeltaCalculatorService} from "../data/data.deltaCalculator.service";
