@@ -4,9 +4,9 @@
 
 <div id="legendPanel">
     <div class="legendInfo">
-      Area:{{$ctrl.operation}} {{$ctrl.areaMetric}}<br/>
-      Height:{{$ctrl.operation}} {{$ctrl.heightMetric}}<br/>
-      Color:{{$ctrl.operation}} {{$ctrl.colorMetric}}
+        <i class='fa fa-arrows-alt'></i><span>Area:{{$ctrl.operation}} {{$ctrl.areaMetric}}</span><br/>
+        <i class='fa fa-arrows-v'></i><span>Height:{{$ctrl.operation}} {{$ctrl.heightMetric}}</span><br/>
+        <i class='fa fa-paint-brush'></i><span>Color:{{$ctrl.operation}} {{$ctrl.colorMetric}}</span>
     </div>
     <div class="chip">
         <img id="green" alt="green color">
@@ -24,16 +24,16 @@
         <span ng-if="!$ctrl.range.flipped">&gt; {{$ctrl.range.to}} to Infinite</span>
         <span ng-if="$ctrl.range.flipped">0 to &lt; {{$ctrl.range.from}}</span>
     </div>
-    <br />‚
+    <br />
     <div class="chip">
         <img id="select" alt="selected color">
         selected
     </div>
-    <div class="chip">
+    <div class="chip" ng-if="$ctrl.deltas">
         <img id="positiveDelta" alt="positive delta color">
         +&Delta;
     </div>
-    <div class="chip">
+    <div class="chip" ng-if="$ctrl.deltas">
         <img id="negativeDelta" alt="negative delta color">
         -&Delta;
     </div>

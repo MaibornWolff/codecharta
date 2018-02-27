@@ -8,6 +8,10 @@
     overflow-y: scroll;
 }
 
+#settingsPanel::-webkit-scrollbar {
+    display: none;
+}
+
 #colorSliderLabel {
     font-size: 1rem !important;
 }
