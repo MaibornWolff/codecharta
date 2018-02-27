@@ -1,6 +1,5 @@
 "use strict";
 
-import "./codeMap/codeMap";
 import "./core/core.module";
 import "./ui/ui";
 
@@ -10,7 +9,7 @@ import angular from "angular";
 
 angular.module(
     "app.codeCharta",
-    ["app.codeCharta.codeMap", "app.codeCharta.core", "app.codeCharta.ui"]
+    ["app.codeCharta.core", "app.codeCharta.ui"]
 );
 
 angular.module("app.codeCharta").component(

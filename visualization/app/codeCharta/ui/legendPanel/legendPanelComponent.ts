@@ -1,7 +1,7 @@
 import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/data.service";
 import {SettingsServiceSubscriber, SettingsService, Settings, Range} from "../../core/settings/settings.service";
 import $ from "jquery";
-import {MapColors} from "../../codeMap/rendering/renderSettings";
+import {MapColors} from "../codeMap/rendering/renderSettings";
 import {ITimeoutService} from "angular";
 import {STATISTIC_OPS} from "../../core/statistic/statistic.service";
 

@@ -6,11 +6,11 @@ import angular from "angular";
 /**
  * @test {ThreeUpdateCycleService}
  */
-describe("app.codeCharta.codeMap.threeViewer.threeUpdateCycleService", function() {
+describe("app.codeCharta.ui.codeMap.threeViewer.threeUpdateCycleService", function() {
 
 
     //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.module("app.codeCharta.codeMap.threeViewer"));
+    beforeEach(angular.mock.module("app.codeCharta.ui.codeMap.threeViewer"));
 
     //noinspection TypeScriptUnresolvedVariable
     /**

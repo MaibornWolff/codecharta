@@ -14,11 +14,11 @@ import * as THREE from "three";
 /**
  * @test {ThreeUpdateCycleService}
  */
-describe("app.codeCharta.codeMap.threeViewer.threeViewerService", function () {
+describe("app.codeCharta.ui.codeMap.threeViewer.threeViewerService", function () {
 
 
     //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.module("app.codeCharta.codeMap.threeViewer"));
+    beforeEach(angular.mock.module("app.codeCharta.ui.codeMap.threeViewer"));
 
     //noinspection TypeScriptUnresolvedVariable
     it("should retrieve the angular service instance", NG.mock.inject(function (threeViewerService: ThreeViewerService) {

@@ -2,7 +2,7 @@ import * as d3 from "d3";
 import {DataService} from "../data/data.service";
 import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
 import {HierarchyNode, HierarchyRectangularNode} from "d3-hierarchy";
-import {node} from "../../codeMap/rendering/node";
+import {node} from "../../ui/codeMap/rendering/node";
 
 const PADDING_SCALING_FACTOR = 0.4;
 
