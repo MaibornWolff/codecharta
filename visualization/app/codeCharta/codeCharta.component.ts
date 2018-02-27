@@ -6,7 +6,7 @@ import {ScenarioService} from "./core/scenario/scenario.service";
 import {DataService} from "./core/data/data.service";
 import $ from "jquery";
 import {IRootScopeService} from "angular";
-import "./codeCharta.scss";
+import "./codeCharta.component.scss";
 
 
 /**
@@ -141,7 +141,7 @@ export class CodeChartaController {
 
 export const codeChartaComponent = {
     selector: "codeChartaComponent",
-    template: require("./codeCharta.html"),
+    template: require("./codeCharta.component.html"),
     controller: CodeChartaController
 };
 

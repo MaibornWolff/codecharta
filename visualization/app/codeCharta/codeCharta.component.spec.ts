@@ -1,10 +1,11 @@
-import {codeChartaComponent, CodeChartaController} from "./codeChartaComponent";
+import {codeChartaComponent, CodeChartaController} from "./codeCharta.component";
 import {DataService} from "../../core/data/data.service";
 import {SettingsService} from "../../core/settings/settings.service";
 import {IRootScopeService} from "angular";
 import {DataLoadingService} from "./core/data/data.loading.service";
 import {UrlService} from "./core/url/url.service";
 import {ScenarioService} from "./core/scenario/scenario.service";
+import $ from "jquery";
 
 describe("CodeChartaController", () => {
 
@@ -30,7 +31,7 @@ describe("CodeChartaController", () => {
     function mockEverything() {
 
         const RootScopeMock = jest.fn<IRootScopeService>(() => ({
-
+            $on: jest.fn()
         }));
 
         rootScopeMock = new RootScopeMock();
@@ -57,7 +58,7 @@ describe("CodeChartaController", () => {
         scenarioServiceMock = new ScenarioServiceMock();
 
         const UrlServiceMock = jest.fn<UrlService>(() => ({
-
+            getFileDataFromQueryParam: jest.fn()
         }));
 
         urlServiceMock = new UrlServiceMock();
@@ -82,14 +83,11 @@ describe("CodeChartaController", () => {
         mockEverything();
     });
 
-    /**
-     * @test {CodeChartaController#initHandlers}
-     */
     xit("should reload page on key 18 and key 116", ()=>{
 
-        window.location.reload = sinon.spy();
+        codeChartaController.init = jest.fn();
 
-        codeChartaController = $controller("codeChartaController", {dataService: dataService, urlService: urlService, settingsService:settingsService, scenarioService:scenarioService});
+        window.location.reload = jest.fn();
 
         var event18c = $.Event( "keypress" );
         event18c.which = 18;
@@ -107,7 +105,7 @@ describe("CodeChartaController", () => {
 
         $(window).trigger("other");
 
-        expect(!window.location.reload.calledThrice);
+        expect(window.location.reload).toHaveBeenCalledTimes(3);
 
     });
 
