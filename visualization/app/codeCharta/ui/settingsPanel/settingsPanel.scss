@@ -1,4 +1,3 @@
-@import "~angularjs-slider/dist/rzslider.css";
 
 settings-panel-component {
 
@@ -14,18 +13,6 @@ settings-panel-component {
 
     #settingsPanel::-webkit-scrollbar {
         display: none;
-    }
-
-    #colorSliderLabel {
-        font-size: 1rem !important;
-    }
-
-    .rzslider .rz-pointer, .rzslider .rz-selection {
-        background: #26a69a !important;
-    }
-
-    .rzslider .rz-bar {
-        background: rgb(196, 196, 196);
     }
 
 }
