@@ -12,6 +12,7 @@ import "./detailPanel/detailPanel";
 import "./scenarioButtons/scenarioButtons";
 import "./mapTreeView/mapTreeView";
 import "./codeMap/codeMap";
+import "./metricChooser/metricChooser";
 
 angular.module(
     "app.codeCharta.ui",
@@ -25,6 +26,7 @@ angular.module(
         "app.codeCharta.ui.fileChooser",
         "app.codeCharta.ui.detailPanel",
         "app.codeCharta.ui.scenarioButtons",
-        "app.codeCharta.ui.codeMap"
+        "app.codeCharta.ui.codeMap",
+        "app.codeCharta.ui.metricChooser"
     ]);
 

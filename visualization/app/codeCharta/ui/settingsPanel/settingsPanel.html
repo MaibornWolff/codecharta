@@ -39,9 +39,7 @@
         </collapsible-element-directive>
 
         <collapsible-element-directive label="Metrics" icon-class="fa-line-chart">
-            <dropdown-directive label="Area" values="$ctrl.metrics" model="$ctrl.settings.areaMetric" change="$ctrl.notify()"></dropdown-directive>
-            <dropdown-directive label="Height" values="$ctrl.metrics" model="$ctrl.settings.heightMetric" change="$ctrl.notify()"></dropdown-directive>
-            <dropdown-directive label="Color" values="$ctrl.metrics" model="$ctrl.settings.colorMetric" change="$ctrl.notify()"></dropdown-directive>
+            <metric-chooser-component></metric-chooser-component>
         </collapsible-element-directive>
 
         <collapsible-element-directive label="Scenarios" icon-class="fa-star">
