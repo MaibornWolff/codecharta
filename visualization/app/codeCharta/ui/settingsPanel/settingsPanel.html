@@ -17,11 +17,6 @@
             <display-settings-panel-component></display-settings-panel-component>
         </collapsible-element-directive>
 
-        <collapsible-element-directive label="Scaling" icon-class="fa-cube">
-            <slider-directive step="0.1" label="Height" min="0.1" max="5" model="$ctrl.settings.scaling.y"
-                              change="$ctrl.notify()"></slider-directive>
-        </collapsible-element-directive>
-
         <collapsible-element-directive label="Metrics" icon-class="fa-line-chart">
             <metric-chooser-component></metric-chooser-component>
         </collapsible-element-directive>
