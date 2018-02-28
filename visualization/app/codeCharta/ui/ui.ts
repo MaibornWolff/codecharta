@@ -15,6 +15,7 @@ import "./codeMap/codeMap";
 import "./metricChooser/metricChooser";
 import "./rangeSlider/rangeSlider";
 import "./colorSettingsPanel/colorSettingsPanel";
+import "./displaySettingsPanel/displaySettingsPanel";
 
 angular.module(
     "app.codeCharta.ui",
@@ -31,6 +32,7 @@ angular.module(
         "app.codeCharta.ui.codeMap",
         "app.codeCharta.ui.metricChooser",
         "app.codeCharta.ui.colorSettingsPanel",
+        "app.codeCharta.ui.displaySettingsPanel",
         "app.codeCharta.ui.rangeSlider"
     ]);
 

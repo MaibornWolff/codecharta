@@ -1,0 +1,10 @@
+<md-input-container class="md-block">
+    <label>Amount of labeled buildings</label>
+    <input type="number" min="0" ng-model="$ctrl.settingsService.settings.amountOfTopLabels" ng-change="$ctrl.settingsService.applySettings()"></input>
+</md-input-container>
+
+<md-input-container class="md-block">
+    <md-checkbox ng-model="$ctrl.settingsService.settings.deltas" ng-change="$ctrl.settingsService.applySettings()">
+        Deltas
+    </md-checkbox>
+</md-input-container>
