@@ -11,7 +11,6 @@ import "./settingsPanel.scss";
 export class SettingsPanelController implements DataServiceSubscriber, SettingsServiceSubscriber{
 
     public settings: Settings;
-    public sliderOptions: any;
     public metrics: string[];
     public data: DataModel;
     public STATISTIC_OPS = STATISTIC_OPS;
@@ -21,21 +20,12 @@ export class SettingsPanelController implements DataServiceSubscriber, SettingsS
     constructor(
         private settingsService: SettingsService,
         private dataService: DataService,
-        private treeMapService: TreeMapService,
         private statisticMapService: StatisticMapService
     ) {
 
         this.settings = settingsService.settings;
         this.data = dataService.data;
         this.STATISTIC_OPS = STATISTIC_OPS;
-
-        const ctx = this;
-
-        this.sliderOptions = {
-            ceil: treeMapService.getMaxMetricInAllRevisions(settingsService.settings.colorMetric),
-            pushRange: true,
-            onChange: ctx.notify.bind(ctx)
-        };
 
         this.metrics = this.sortStringArrayAlphabetically(dataService.data.metrics);
 
@@ -49,20 +39,16 @@ export class SettingsPanelController implements DataServiceSubscriber, SettingsS
     }
 
     /**
-     * called on settings change.
-     * @param {Settings} settings
-     */
-    onSettingsChanged(settings: Settings) {
-        this.sliderOptions.ceil = this.treeMapService.getMaxMetricInAllRevisions(settings.colorMetric);
-    }
-
-    /**
      * called on data change.
      * @param {DataModel} data
      */
     onDataChanged(data: DataModel) {
         this.metrics = this.sortStringArrayAlphabetically(data.metrics);
         this.onStatisticsChange();
+    }
+
+    onSettingsChanged(settings: Settings, event: Event) {
+        this.settings = settings;
     }
 
     /**
