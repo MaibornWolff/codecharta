@@ -1,41 +1,32 @@
-<div id="settingsPanel">
+<collapsible-directive>
 
-    <fab-component onclick="$('#settingsPanel').animate({ width : 0 } );"
-                   icon-class="fa-arrow-circle-o-right"></fab-component>
+    <collapsible-element-directive label="Maps" icon-class="fa-map">
+        <revision-chooser-component></revision-chooser-component>
+    </collapsible-element-directive>
 
-    <collapsible-directive>
+    <collapsible-element-directive label="Color Settings" icon-class="fa-paint-brush">
+        <color-settings-panel-component></color-settings-panel-component>
+    </collapsible-element-directive>
 
-        <collapsible-element-directive label="Maps" icon-class="fa-map">
-            <revision-chooser-component></revision-chooser-component>
-        </collapsible-element-directive>
+    <collapsible-element-directive label="Display" icon-class="fa-television">
+        <display-settings-panel-component></display-settings-panel-component>
+    </collapsible-element-directive>
 
-        <collapsible-element-directive label="Color Settings" icon-class="fa-paint-brush">
-            <color-settings-panel-component></color-settings-panel-component>
-        </collapsible-element-directive>
+    <collapsible-element-directive label="Metrics" icon-class="fa-line-chart">
+        <metric-chooser-component></metric-chooser-component>
+    </collapsible-element-directive>
 
-        <collapsible-element-directive label="Display" icon-class="fa-television">
-            <display-settings-panel-component></display-settings-panel-component>
-        </collapsible-element-directive>
+    <collapsible-element-directive label="Scenarios" icon-class="fa-star">
+        <scenario-buttons-component></scenario-buttons-component>
+    </collapsible-element-directive>
 
-        <collapsible-element-directive label="Metrics" icon-class="fa-line-chart">
-            <metric-chooser-component></metric-chooser-component>
-        </collapsible-element-directive>
+    <collapsible-element-directive label="TreeView" icon-class="fa-tree">
+        <map-tree-view-component></map-tree-view-component>
+    </collapsible-element-directive>
 
-        <collapsible-element-directive label="Scenarios" icon-class="fa-star">
-            <scenario-buttons-component></scenario-buttons-component>
-        </collapsible-element-directive>
+    <collapsible-element-directive label="Experimental" icon-class="fa-flask">
+        <experimental-settings-panel-component></experimental-settings-panel-component>
+    </collapsible-element-directive>
 
-        <collapsible-element-directive label="TreeView" icon-class="fa-tree">
-            <map-tree-view-component></map-tree-view-component>
-        </collapsible-element-directive>
+</collapsible-directive>
 
-        <collapsible-element-directive label="Experimental" icon-class="fa-flask">
-            <experimental-settings-panel-component></experimental-settings-panel-component>
-        </collapsible-element-directive>
-
-    </collapsible-directive>
-
-    <a class="waves-effect waves-light btn settings-panel-btn" title="Show Url Parameters"
-       ng-click="$ctrl.showUrlParams()">Show Url Parameters</a>
-
-</div>

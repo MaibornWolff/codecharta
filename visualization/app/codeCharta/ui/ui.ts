@@ -3,7 +3,6 @@
 import angular from "angular";
 
 import "./common/common";
-import "./fabBar/fabBar";
 import "./settingsPanel/index";
 import "./revisionChooser/revisionChooser";
 import "./legendPanel/legendPanel";
@@ -23,7 +22,6 @@ angular.module(
     [
         "app.codeCharta.ui.mapTreeView",
         "app.codeCharta.ui.common",
-        "app.codeCharta.ui.fabBar",
         "app.codeCharta.ui.settingsPanel",
         "app.codeCharta.ui.revisionChooser",
         "app.codeCharta.ui.legendPanel",

@@ -24,6 +24,7 @@ export class CodeChartaController {
         private settingsService: SettingsService,
         private scenarioService: ScenarioService,
         private dataService: DataService,
+        private $mdSidenav: any,
         private $rootScope: IRootScopeService
     ) {
         this.init();
@@ -43,6 +44,14 @@ export class CodeChartaController {
         this.initHandlers();
         this.loadFileOrSample();
         this.pkg = require("../../package.json");
+    }
+
+    toggleSidenav(navID) {
+        this.$mdSidenav(navID).toggle();
+    }
+
+    showUrlParams() {
+        window.prompt("Copy to clipboard: Ctrl+C", this.settingsService.getQueryParamString());
     }
 
     /**
