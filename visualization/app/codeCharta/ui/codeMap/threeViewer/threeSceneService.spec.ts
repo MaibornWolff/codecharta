@@ -1,5 +1,6 @@
+import {NG} from "../../../../../mocks/ng.mockhelper";
+
 require("./threeViewer");
-import {NG} from "../../../../mocks/ng.mockhelper";
 
 /**
  * @test {ThreeSceneService}

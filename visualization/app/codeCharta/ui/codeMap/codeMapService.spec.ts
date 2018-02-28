@@ -1,7 +1,7 @@
 import "./codeMap";
 
 import {CodeMapService} from "./codeMapService";
-import {NG} from "../../../mocks/ng.mockhelper";
+import {NG} from "../../../../mocks/ng.mockhelper";
 
 describe("app.codeCharta.ui.codeMap.codeMapService", function () {
 
