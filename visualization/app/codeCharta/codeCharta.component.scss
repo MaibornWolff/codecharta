@@ -72,14 +72,8 @@ code-charta-component {
     margin-right: 4px;
   }
 
-  #settingsPanel {
-    position: fixed;
-    right: 0;
-    width: 0px;
-    height: 100%;
-    background: #fff;
-    z-index: 1000;
-    box-shadow: 0 0 10px #000;
+  md-sidenav {
+    width: 600px;
   }
 
   #loading-indicator {
