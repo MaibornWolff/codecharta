@@ -1,3 +1,26 @@
-<dropdown-directive label="Area" values="$ctrl.metrics" model="$ctrl.settingsService.settings.areaMetric" change="$ctrl.settingsService.applySettings()"></dropdown-directive>
-<dropdown-directive label="Height" values="$ctrl.metrics" model="$ctrl.settingsService.settings.heightMetric" change="$ctrl.settingsService.applySettings()"></dropdown-directive>
-<dropdown-directive label="Color" values="$ctrl.metrics" model="$ctrl.settingsService.settings.colorMetric" change="$ctrl.settingsService.applySettings()"></dropdown-directive>
+<md-input-container class="md-block">
+    <label>Area</label>
+    <md-select ng-model="$ctrl.settingsService.settings.areaMetric">
+        <md-option ng-repeat="metric in $ctrl.metrics" value="{{metric}}">
+            {{metric}}
+        </md-option>
+    </md-select>
+</md-input-container>
+
+<md-input-container class="md-block">
+    <label>Height</label>
+    <md-select ng-model="$ctrl.settingsService.settings.heightMetric" ng-change="$ctrl.settingsService.applySettings()">
+        <md-option ng-repeat="metric in $ctrl.metrics" value="{{metric}}">
+            {{metric}}
+        </md-option>
+    </md-select>
+</md-input-container>
+
+<md-input-container class="md-block">
+    <label>Color</label>
+    <md-select ng-model="$ctrl.settingsService.settings.colorMetric" ng-change="$ctrl.settingsService.applySettings()">
+        <md-option ng-repeat="metric in $ctrl.metrics" value="{{metric}}">
+            {{metric}}
+        </md-option>
+    </md-select>
+</md-input-container>
