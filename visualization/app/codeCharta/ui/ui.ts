@@ -2,7 +2,6 @@
 
 import angular from "angular";
 
-import "./common/common";
 import "./settingsPanel/index";
 import "./revisionChooser/revisionChooser";
 import "./legendPanel/legendPanel";
@@ -21,7 +20,6 @@ angular.module(
     "app.codeCharta.ui",
     [
         "app.codeCharta.ui.mapTreeView",
-        "app.codeCharta.ui.common",
         "app.codeCharta.ui.settingsPanel",
         "app.codeCharta.ui.revisionChooser",
         "app.codeCharta.ui.legendPanel",
