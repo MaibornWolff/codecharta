@@ -1,7 +1,27 @@
-<fab-bar-component></fab-bar-component>
+<md-sidenav class="md-sidenav-right" md-component-id="right" md-disable-backdrop md-whiteframe="4">
 
-<settings-panel-component></settings-panel-component>
-<file-chooser-panel-directive></file-chooser-panel-directive>
+        <settings-panel-component></settings-panel-component>
+
+        <md-button ng-click="$ctrl.showUrlParams()" class="md-primary">
+            URL Parameters
+        </md-button>
+
+        <md-button ng-click="$ctrl.toggleSidenav('right')" class="md-primary">
+            Close
+        </md-button>
+
+</md-sidenav>
+
+<div id="actionButtons">
+    <md-button class="md-fab md-primary" aria-label="Open File Chooser">
+        <i class="fa fa-folder-open fa-lg"></i>
+    </md-button>
+    <md-button class="md-fab md-primary" aria-label="Open Sidenav" ng-click="$ctrl.toggleSidenav('right')">
+        <i class="fa fa-bars fa-lg"></i>
+    </md-button>
+</div>
+
+<!--<file-chooser-panel-directive></file-chooser-panel-directive>
 <detail-panel-component></detail-panel-component>
 
 <header id="title">
@@ -17,12 +37,20 @@
         <div class="spinner-layer spinner-teal-only">
             <div class="circle-clipper left">
                 <div class="circle"></div>
-            </div><div class="gap-patch">
-            <div class="circle"></div>
-        </div><div class="circle-clipper right">
-            <div class="circle"></div>
-        </div>
+            </div>
+            <div class="gap-patch">
+                <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+                <div class="circle"></div>
+            </div>
         </div>
     </div>
     This may take a up to a few minutes when loading big maps...
-</div>
+</div>-->
+
+
+
+
+
+

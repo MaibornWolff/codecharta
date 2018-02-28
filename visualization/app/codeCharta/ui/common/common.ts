@@ -1,6 +1,5 @@
 import angular from "angular";
 
-import {fabComponent} from "./fab.component";
 import {CheckboxDirective} from "./checkbox.directive";
 import {CollapsibleDirective} from "./collapsible.directive";
 import {SliderDirective} from "./slider.directive";
@@ -12,7 +11,6 @@ import {DropdownDirective} from "./dropdown.directive";
 import "../../core/tooltip/tooltip.module";
 
 angular.module("app.codeCharta.ui.common", ["app.codeCharta.core.tooltip"])
-    .component(fabComponent.selector, fabComponent)
     .directive("checkboxDirective", () => new CheckboxDirective())
     .directive("collapsibleElementDirective", ($rootScope, $timeout) => new CollapsibleElementDirective($rootScope, $timeout))
     .directive("collapsibleDirective", () => new CollapsibleDirective())

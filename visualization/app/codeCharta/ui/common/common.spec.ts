@@ -27,17 +27,6 @@ describe("common", ()=>{
 
     });
 
-    describe("fab", ()=>{
-
-        it("snapshot test", () => {
-            let scope: IScope = $rootScope.$new();
-            let element = $compile(NG.element('<fab-component icon-class="some class"></fab-component>'))(scope);
-            scope.$apply();
-            expect(element).toMatchSnapshot();
-        });
-
-    });
-
     describe("collapsible", ()=>{
 
         it("snapshot test", () => {

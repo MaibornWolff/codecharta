@@ -57,7 +57,7 @@ Object {
     
       <label
         class="ng-binding"
-        for="dropdown-directive-13"
+        for="dropdown-directive-10"
       >
         label
       </label>
@@ -68,7 +68,7 @@ Object {
     
       <select
         class="browser-default ng-pristine ng-untouched ng-valid ng-empty"
-        id="dropdown-directive-13"
+        id="dropdown-directive-10"
         ng-model="ctrl.model"
         title="no description"
       >
@@ -93,24 +93,6 @@ Object {
 }
 `;
 
-exports[`common fab snapshot test 1`] = `
-Object {
-  "0": <fab-component
-    class="ng-scope ng-isolate-scope"
-    icon-class="some class"
-  >
-    <a
-      class="btn-floating btn-large waves-effect waves-light teal"
-    >
-      <i
-        class="fa some class"
-      />
-    </a>
-  </fab-component>,
-  "length": 1,
-}
-`;
-
 exports[`common numberField snapshot test 1`] = `
 Object {
   "0": <number-field-directive
@@ -127,7 +109,7 @@ Object {
     
       <label
         class="ng-binding"
-        for="numberField-directive-16"
+        for="numberField-directive-13"
       >
         label
       </label>
@@ -138,7 +120,7 @@ Object {
     
       <input
         class="ng-pristine ng-untouched ng-valid ng-empty ng-valid-min"
-        id="numberField-directive-16"
+        id="numberField-directive-13"
         min="2"
         ng-model="model"
         type="number"
@@ -165,14 +147,14 @@ Object {
   >
     <label
       class="ng-binding"
-      for="slider-directive-wrapper-19"
+      for="slider-directive-wrapper-16"
     >
       label
     </label>
     
 
     <div
-      id="slider-directive-wrapper-19"
+      id="slider-directive-wrapper-16"
     >
       <div
         class="range-field col s6"
@@ -184,7 +166,7 @@ Object {
 
         <input
           class="ng-pristine ng-untouched ng-valid ng-empty ng-valid-min ng-valid-max ng-valid-step"
-          id="slider-directive-19"
+          id="slider-directive-16"
           max="4"
           min="2"
           ng-model="model"

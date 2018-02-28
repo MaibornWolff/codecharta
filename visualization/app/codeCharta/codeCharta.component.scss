@@ -47,7 +47,29 @@ code-charta-component {
     position: fixed;
     bottom: 2em;
     right: 2em;
-    z-index: 1000;
+    z-index: 59;
+
+    .btn-floating {
+      margin-left: 0.5em;
+      width: 60px;
+      height: 60px;
+      line-height: 60px;
+    }
+
+    i.fa-folder-open {
+      margin: 4px 0 0 2px;
+    }
+
+    i.fa-bars {
+      margin-top: 4px;
+    }
+
+
+  }
+
+  #actionButtons > * {
+    margin-left: 4px;
+    margin-right: 4px;
   }
 
   #settingsPanel {
