@@ -59,6 +59,19 @@ export class DataDecoratorService {
         }
     }
 
+    public decorateMapWithPathAttribute(map: CodeMap) {
+        if(map && map.root) {
+            let root = d3.hierarchy<CodeMapNode>(map.root);
+            root.each((node)=>{
+                let path = root.path(node);
+                let pathString = "";
+                path.forEach((pnode)=>{
+                    pathString += "/" + pnode.data.name;
+                });
+                node.data.path = pathString;
+            });
+        }
+    }
 
     public decorateEmptyAttributeLists(map: CodeMap, metrics: string[]) {
 

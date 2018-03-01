@@ -99,5 +99,47 @@ describe("app.codeCharta.core.data.dataService", () => {
 
     });
 
+
+    describe("decorateMapWithPathAttribute",() => {
+
+        it("should have the correct path", ()=>{
+
+            let cm: CodeMap = {
+                fileName: "a",
+                projectName: "b",
+                root: {
+                    name: "a node",
+                    children: [
+                        {
+                            name: "b node"
+                        },
+                        {
+                            name: "c node",
+                            children: [
+                                {
+                                    name: "d node",
+                                }
+                            ]
+                        }
+                    ]
+                }
+            };
+
+            dataDecoratorService.decorateMapWithPathAttribute(cm);
+
+            let h = d3.hierarchy(cm.root);
+
+            h.each((node)=>{
+                expect(node.data.path).toBeDefined();
+            });
+
+            expect(cm.root.path).toBe("/a node");
+            expect(cm.root.children[1].children[0].path).toBe("/a node/c node/d node");
+
+        });
+
+
+    });
+
 });
 
