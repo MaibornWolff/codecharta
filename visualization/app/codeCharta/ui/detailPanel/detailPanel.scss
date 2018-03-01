@@ -1,0 +1,39 @@
+detail-panel-component {
+
+    #detailWindow {
+
+        $detail-border-color: #dfdfdf;
+
+        max-height: 50%;
+        overflow-y: scroll;
+
+        box-shadow: 0px 0px 8px 1px $detail-border-color;
+
+        table {
+
+            background-color: #fff;
+            opacity: 0.9;
+            text-align: left;
+            border-collapse: collapse;
+            border: 1px $detail-border-color solid;
+
+            th {
+                border-bottom: 1px $detail-border-color solid;
+                border-top: 1px $detail-border-color solid;
+            }
+
+            td, th {
+                border-left: 1px $detail-border-color solid;
+                padding: 4px;
+                min-width: 300px;
+            }
+
+            tr>td:first-child, tr>th:first-child {
+                min-width: inherit;
+            }
+
+        }
+
+    }
+
+}
