@@ -12,12 +12,12 @@ export class MetricChooserController implements DataServiceSubscriber{
         private dataService: DataService,
         private settingsService: SettingsService
     ) {
-        this.metrics = dataService.data.metrics;
+        this.metrics = dataService.data.metrics.sort();
         this.dataService.subscribe(this);
     }
 
     onDataChanged(data: DataModel, event: IAngularEvent) {
-        this.metrics = data.metrics;
+        this.metrics = data.metrics.sort();
     }
 
     public notify() {
