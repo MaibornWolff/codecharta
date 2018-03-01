@@ -1,37 +1,173 @@
-<h3><i class="fa fa-map"></i> Maps</h3>
-<revision-chooser-component></revision-chooser-component>
+<md-expansion-panel-group md-component-id="panelGroup" multiple>
 
-<md-divider></md-divider>
+    <md-expansion-panel>
 
-<h3><i class="fa fa-paint-brush"></i> Color Settings</h3>
-<color-settings-panel-component></color-settings-panel-component>
+        <md-expansion-panel-collapsed>
+            <div class="md-title"><i class="fa fa-map"></i> Maps</div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
 
-<md-divider></md-divider>
+        <md-expansion-panel-expanded>
 
-<h3><i class="fa fa-television"></i> Display</h3>
-<display-settings-panel-component></display-settings-panel-component>
+            <md-expansion-panel-header ng-click="$panel.collapse()">
+                <div class="md-title"><i class="fa fa-map"></i> Maps</div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
 
-<md-divider></md-divider>
+            <md-expansion-panel-content>
+                <revision-chooser-component></revision-chooser-component>
+            </md-expansion-panel-content>
 
-<h3><i class="fa fa-line-chart"></i> Metrics</h3>
-<metric-chooser-component></metric-chooser-component>
+        </md-expansion-panel-expanded>
 
-<md-divider></md-divider>
+    </md-expansion-panel>
 
-<h3><i class="fa fa-star"></i> Scenarios</h3>
-<scenario-buttons-component></scenario-buttons-component>
+    <md-expansion-panel>
 
-<md-divider></md-divider>
+        <md-expansion-panel-collapsed>
+            <div class="md-title"><i class="fa fa-paint-brush"></i> Color Settings</div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
 
-<h3><i class="fa fa-tree"></i> Treeview</h3>
-<map-tree-view-component></map-tree-view-component>
+        <md-expansion-panel-expanded>
 
-<md-divider></md-divider>
+            <md-expansion-panel-header ng-click="$panel.collapse()">
+                <div class="md-title"><i class="fa fa-paint-brush"></i> Color Settings</div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
 
-<h3><i class="fa fa-flask"></i> Experimental</h3>
-<experimental-settings-panel-component></experimental-settings-panel-component>
+            <md-expansion-panel-content>
+                <color-settings-panel-component></color-settings-panel-component>
+            </md-expansion-panel-content>
 
-<md-divider></md-divider>
+        </md-expansion-panel-expanded>
 
+    </md-expansion-panel>
+
+    <md-expansion-panel>
+
+        <md-expansion-panel-collapsed>
+            <div class="md-title"><i class="fa fa-television"></i> Display</div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
+
+        <md-expansion-panel-expanded>
+
+            <md-expansion-panel-header ng-click="$panel.collapse()">
+                <div class="md-title"><i class="fa fa-television"></i> Display</div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
+
+            <md-expansion-panel-content>
+                <display-settings-panel-component></display-settings-panel-component>
+            </md-expansion-panel-content>
+
+        </md-expansion-panel-expanded>
+
+    </md-expansion-panel>
+
+    <md-expansion-panel>
+
+        <md-expansion-panel-collapsed>
+            <div class="md-title"><i class="fa fa-line-chart"></i> Metrics</div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
+
+        <md-expansion-panel-expanded>
+
+            <md-expansion-panel-header ng-click="$panel.collapse()">
+                <div class="md-title"><i class="fa fa-line-chart"></i> Metrics</div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
+
+            <md-expansion-panel-content>
+                <metric-chooser-component></metric-chooser-component>
+            </md-expansion-panel-content>
+
+        </md-expansion-panel-expanded>
+
+    </md-expansion-panel>
+
+    <md-expansion-panel>
+
+        <md-expansion-panel-collapsed>
+            <div class="md-title"><i class="fa fa-star"></i> Scenarios</div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
+
+        <md-expansion-panel-expanded>
+
+            <md-expansion-panel-header ng-click="$panel.collapse()">
+                <div class="md-title"><i class="fa fa-star"></i> Scenarios</div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
+
+            <md-expansion-panel-content>
+                <scenario-buttons-component></scenario-buttons-component>
+            </md-expansion-panel-content>
+
+        </md-expansion-panel-expanded>
+
+    </md-expansion-panel>
+
+    <md-expansion-panel>
+
+        <md-expansion-panel-collapsed>
+            <div class="md-title"><i class="fa fa-tree"></i> Treeview</div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
+
+        <md-expansion-panel-expanded>
+
+            <md-expansion-panel-header ng-click="$panel.collapse()">
+                <div class="md-title"><i class="fa fa-tree"></i> Treeview</div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
+
+            <md-expansion-panel-content>
+                <map-tree-view-component></map-tree-view-component>
+            </md-expansion-panel-content>
+
+        </md-expansion-panel-expanded>
+
+    </md-expansion-panel>
+
+    <md-expansion-panel>
+
+        <md-expansion-panel-collapsed>
+            <div class="md-title"><i class="fa fa-flask"></i> Experimental</div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
+
+        <md-expansion-panel-expanded>
+
+            <md-expansion-panel-header ng-click="$panel.collapse()">
+                <div class="md-title"><i class="fa fa-flask"></i> Experimental</div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
+
+            <md-expansion-panel-content>
+                <experimental-settings-panel-component></experimental-settings-panel-component>
+            </md-expansion-panel-content>
+
+        </md-expansion-panel-expanded>
+
+    </md-expansion-panel>
+
+</md-expansion-panel-group>
 
 
