@@ -24,7 +24,8 @@ describe("MetricChooserController", () => {
                 $on: jest.fn()
             },
             data: {
-                revisions: []
+                revisions: [],
+                metrics: []
             },
             notify: ()=>{
                 metricChooserController.onDataChanged(dataServiceMock.data);
