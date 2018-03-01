@@ -96,6 +96,11 @@ export const TEST_DELTA_MAP_B: CodeMap = {
                     {
                         "name": "other small leaf",
                         "attributes": {"rloc": 70, "functions": 1000}
+                    },
+                    {
+                        "name": "big leaf",
+                        "attributes": {"rloc": 20, "functions": 10, "mcc": 1},
+                        "link": "http://www.google.de"
                     }
                 ]
             }

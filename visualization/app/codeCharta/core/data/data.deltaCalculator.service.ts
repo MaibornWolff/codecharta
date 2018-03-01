@@ -19,6 +19,18 @@ export class DeltaCalculatorService {
 
     }
 
+    /**
+     * This requires the map to have paths. e.g.
+     *
+     * let dds = new DataDecoratorService();
+     * dds.decorateMapWithPathAttribute(a);
+     * dds.decorateMapWithPathAttribute(b);
+     *
+     * TODO ensure paths through typings
+     *
+     * @param {CodeMap} firstMap
+     * @param {CodeMap} secondMap
+     */
     public decorateMapsWithDeltas(firstMap: CodeMap, secondMap: CodeMap) {
 
         if (firstMap && secondMap && firstMap.root && secondMap.root) {
@@ -33,7 +45,7 @@ export class DeltaCalculatorService {
                     let fl: HierarchyNode<CodeMapNode> = firstLeaves[j];
                     let sl: HierarchyNode<CodeMapNode> = secondLeaves[k];
 
-                    if (fl.data.name === sl.data.name) {
+                    if (fl.data.path === sl.data.path) {
                         //calculate delta for those nodes attributes and push it to the second leave
                         let firstDeltas = this.calculateAttributeListDelta(sl.data.attributes, fl.data.attributes);
                         let secondDeltas = this.calculateAttributeListDelta(fl.data.attributes, sl.data.attributes);
