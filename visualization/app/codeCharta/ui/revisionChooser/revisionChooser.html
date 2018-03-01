@@ -1,8 +1,8 @@
 <md-input-container class="md-block">
     <label>Show...</label>
     <md-select ng-model="$ctrl.ui.chosenReference" ng-change="$ctrl.onReferenceChange($ctrl.ui.chosenReference)">
-        <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{value}}">
-            {{value.fileName}}
+        <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::value}}">
+            {{::value.fileName}}
         </md-option>
     </md-select>
 </md-input-container>
@@ -10,8 +10,8 @@
 <md-input-container class="md-block" ng-if="$ctrl.settingsService.settings.deltas">
     <label>In comparison to...</label>
     <md-select ng-model="$ctrl.ui.chosenComparison" ng-change="$ctrl.onComparisonChange($ctrl.ui.chosenComparison)">
-        <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{value}}">
-            {{value.fileName}}
+        <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::value}}">
+            {{::value.fileName}}
         </md-option>
     </md-select>
 </md-input-container>

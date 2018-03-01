@@ -7,10 +7,10 @@
 
 <md-input-container class="md-block">
     <label>From</label>
-    <input type='number' ng-model="$ctrl.settingsService.settings.neutralColorRange.from" min=0 max={{$ctrl.settingsService.settings.neutralColorRange.to - 1}} step="1" ng-change="$ctrl.sliderOption.onChange()">
+    <input type='number' ng-model="$ctrl.settingsService.settings.neutralColorRange.from" min=0 step="1" ng-change="$ctrl.sliderOption.onChange()">
 </md-input-container>
 
 <md-input-container class="md-block">
     <label>From</label>
-    <input type='number' ng-model="$ctrl.settingsService.settings.neutralColorRange.to" min={{$ctrl.settingsService.settings.neutralColorRange.from + 1}} max={{$ctrl.sliderOption.ceil}} step="1" ng-change="$ctrl.sliderOption.onChange()">
+    <input type='number' ng-model="$ctrl.settingsService.settings.neutralColorRange.to" min=0 step="1" ng-change="$ctrl.sliderOption.onChange()">
 </md-input-container>
