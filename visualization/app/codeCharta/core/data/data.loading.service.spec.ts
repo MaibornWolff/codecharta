@@ -34,6 +34,22 @@ describe("app.codeCharta.core.data.dataLoadingService", function () {
         return dataLoadingService.loadMapFromFileContent("file.json", validFileContent, 0);
     });
 
+    it("should reject null", (done)=> {
+        dataLoadingService.loadMapFromFileContent("file.json", null, 0).then(()=>{}, ()=>{
+            done();
+        }).catch(()=>{
+            done()
+        });
+    });
+
+    it("should reject string", (done)=> {
+        dataLoadingService.loadMapFromFileContent("file.json", "string", 0).then(()=>{}, ()=>{
+            done();
+        }).catch(()=>{
+            done()
+        });
+    });
+
     it("should reject or catch invalid file", (done)=> {
         let invalidFileContent = validFileContent;
         delete invalidFileContent.projectName;

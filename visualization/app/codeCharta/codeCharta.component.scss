@@ -49,13 +49,6 @@ code-charta-component {
     right: 2em;
     z-index: 59;
 
-    .btn-floating {
-      margin-left: 0.5em;
-      width: 60px;
-      height: 60px;
-      line-height: 60px;
-    }
-
     i.fa-folder-open {
       margin: 4px 0 0 2px;
     }
@@ -63,7 +56,6 @@ code-charta-component {
     i.fa-bars {
       margin-top: 4px;
     }
-
 
   }
 
@@ -104,32 +96,11 @@ code-charta-component {
     font-size: 0.8em;
   }
 
-  #legendButton {
+  legend-panel-component {
     position: fixed;
-    top: 11.5em;
-    left: -2.9em;
-
-    @include prefix((
-            transform: rotate(90deg)
-    ), webkit moz ms o);
-
-  }
-
-  #legendPanel {
-    position: fixed;
+    z-index: 999;
     top: 9em;
-    left: -500px;
-  }
-
-  #mapButton {
-    position: absolute;
-    top: 21em;
-    left: -2.3em;
-
-    @include prefix((
-            transform: rotate(90deg)
-    ), webkit moz ms o);
-
+    left: 0.5em;
   }
 
 }

@@ -1,7 +1,6 @@
 import angular from "angular";
 import "../../core/core.module";
 import "../codeMap/codeMap";
-import "./legendPanel.css";
 
 import {legendPanelComponent} from "./legendPanelComponent";
 

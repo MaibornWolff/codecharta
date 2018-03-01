@@ -1,0 +1,29 @@
+legend-panel-component {
+
+    .legend-block {
+
+        disply: block;
+        height:25px;
+        margin-bottom: 5px;
+
+        i, img {
+            display: inline-block;
+            width:14px;
+        }
+
+        i {
+            margin-right: 4px;
+        }
+
+        img {
+            padding-top: 3px;
+            height:17px;
+        }
+
+        span {
+            display: inline-block;
+        }
+
+    }
+
+}
