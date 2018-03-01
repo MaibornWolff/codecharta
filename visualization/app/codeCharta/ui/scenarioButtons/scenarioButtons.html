@@ -1,9 +1,9 @@
 <md-button
         ng-repeat="(key, value) in $ctrl.scenarios"
         class="md-primary md-raised md-block"
-        aria-label="{{value.name}}"
-        title="{{$ctrl.getScenarioTooltipTextByKey(value.name);}}"
+        aria-label="{{::value.name}}"
+        title="{{::$ctrl.getScenarioTooltipTextByKey(value.name);}}"
         ng-click="$ctrl.onclick(value)""
 >
-    {{value.name}}
+    {{::value.name}}
 </md-button>
