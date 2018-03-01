@@ -65,6 +65,7 @@ export class DataService {
     public setMap(map: CodeMap, revision: number) {
         this._data.revisions[revision] = map;
         this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.revisions[revision]);
+        this.dataDecoratorService.decorateMapWithPathAttribute(this._data.revisions[revision]);
         this.dataDecoratorService.decorateMapWithVisibleAttribute(this._data.revisions[revision]);
         this.setReferenceMap(revision);
     }

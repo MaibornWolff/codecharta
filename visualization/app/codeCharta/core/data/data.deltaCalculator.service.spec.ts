@@ -10,7 +10,7 @@ import * as d3 from "d3";
 /**
  * @test {DataService}
  */
-describe("app.codeCharta.core.data.dataService", function() {
+describe("app.codeCharta.core.data.deltaCalculatorService", function() {
 
     let a: CodeMap;
     let b: CodeMap;
@@ -91,6 +91,11 @@ describe("app.codeCharta.core.data.dataService", function() {
 
     it("should result in expected delta maps", ()=>{
 
+        //we need the paths!
+        let dds = new DataDecoratorService();
+        dds.decorateMapWithPathAttribute(a);
+        dds.decorateMapWithPathAttribute(b);
+        
         deltaCalculatorService.decorateMapsWithDeltas(a, b);
 
         expect(a.root.children[0].deltas["rloc"]).toBe(80);
