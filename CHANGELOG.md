@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- Delta View shows Deltas of itself as non-trivial if nodes have same name #89: Compare deltas by path not name
 
 ## [1.9.3] - 2018-02-23
 ### Added
