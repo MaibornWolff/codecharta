@@ -24,6 +24,30 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
         file = TEST_FILE_CONTENT;
     });
 
+    it("should reject null", (done: DoneCallback)=> {
+        file.dependencies = [];
+        dataValidatorService.validate(null).then(
+            ()=> {
+                done.fail("should not accept null");
+            },
+            ()=> {
+                done();
+            }
+        );
+    });
+
+    it("should reject string", (done: DoneCallback)=> {
+        file.dependencies = [];
+        dataValidatorService.validate("").then(
+            ()=> {
+                done.fail("should not accept string");
+            },
+            ()=> {
+                done();
+            }
+        );
+    });
+
 
     it("should reject a file with empty dependencies", (done: DoneCallback)=> {
         file.dependencies = [];

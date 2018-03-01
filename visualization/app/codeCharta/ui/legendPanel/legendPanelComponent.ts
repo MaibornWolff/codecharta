@@ -4,6 +4,7 @@ import $ from "jquery";
 import {MapColors} from "../codeMap/rendering/renderSettings";
 import {ITimeoutService} from "angular";
 import {STATISTIC_OPS} from "../../core/statistic/statistic.service";
+import "./legendPanel.scss";
 
 export class LegendPanelController implements DataServiceSubscriber, SettingsServiceSubscriber {
 
@@ -42,30 +43,6 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
 
         this.dataService.subscribe(this);
 
-    }
-
-    /**
-     * Links the click Handler
-     * @param {Scope} scope
-     * @param {object} element dom element
-     */
-    $postLink() {
-        $(this.$element).bind("click", this.toggle.bind(this));
-    }
-
-    /**
-     * Toggles the visibility
-     */
-    toggle() {
-        if (this.visible) {
-            //noinspection TypeScriptUnresolvedFunction
-            $("#legendPanel").animate({left: -500 + "px"});
-            this.visible = false;
-        } else {
-            //noinspection TypeScriptUnresolvedFunction
-            $("#legendPanel").animate({left: 2.8 + "em"});
-            this.visible = true;
-        }
     }
 
     onDataChanged(data: DataModel) {
