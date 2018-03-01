@@ -74,7 +74,7 @@ class FileChooserController {
      */
     onNewFileLoaded(data, revision, name, element){
         element.value = "";
-        $("#fileChooserPanel").modal("close");
+        //$("#fileChooserPanel").modal("close");
 
         try {
             data = JSON.parse(data);
