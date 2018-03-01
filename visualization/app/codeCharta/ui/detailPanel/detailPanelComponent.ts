@@ -6,6 +6,7 @@ import {
 import {codeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
 import {KVObject} from "../../core/data/data.deltaCalculator.service";
 import {DataService} from "../../core/data/data.service";
+import "./detailPanel.scss";
 
 interface CommonDetails {
     areaAttributeName: string | null,
