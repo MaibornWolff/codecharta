@@ -28,8 +28,11 @@ detail-panel-component {
                 min-width: 300px;
             }
 
-            tr>td:first-child, tr>th:first-child {
-                min-width: inherit;
+            tr>td:nth-child(2),
+            tr>th:nth-child(2),
+            tr>td:first-child,
+            tr>th:first-child {
+                min-width: 0;
             }
 
         }
