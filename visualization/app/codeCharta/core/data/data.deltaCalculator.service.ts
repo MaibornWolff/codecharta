@@ -19,6 +19,101 @@ export class DeltaCalculatorService {
 
     }
 
+    public makeDeltasHappen(firstMap: CodeMap, secondMap: CodeMap) {
+
+        //make hashmaps with paths as indices
+        let firstLeafHashMap = new Map<string, CodeMapNode>();
+        d3.hierarchy(firstMap.root).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
+            firstLeafHashMap.set(node.data.path, node.data);
+        });
+
+        let secondLeafHashMap = new Map<string, CodeMapNode>();
+        d3.hierarchy(secondMap.root).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
+            secondLeafHashMap.set(node.data.path, node.data);
+        });
+
+        // iterate over maps and insert nodes
+        this.insertNodes(firstLeafHashMap, secondLeafHashMap, firstMap, secondMap);
+        this.insertNodes(secondLeafHashMap, firstLeafHashMap, secondMap, firstMap);
+
+        //console.log(Array.from(firstHashMap.keys()));
+        //console.log(Array.from(secondHashMap.keys()));
+
+        // add nodes from the other trees
+        //let mergedMaps = this.fillMapsWithNonExistingNodesFromOtherMap(firstMap, secondMap);
+        //let mergedFirstMap = mergedMaps.leftMap;
+        //let mergedSecondMap = mergedMaps.rightMap;
+
+    }
+
+    private insertNodes(firstLeafHashMap: Map<string, CodeMapNode>, secondLeafHashMap: Map<string, CodeMapNode>, firstMap: CodeMap, secondMap: CodeMap) {
+        firstLeafHashMap.forEach((node, path) => {
+            console.log(path);
+            if (!secondLeafHashMap.has(path)) {
+                // insert node into secondHashMap and secondMap
+                //secondHashMap.set(path, node); //TODO brauchen wir das ? wenn ja dann neue leere node
+                let addedNode = this.deepcopy2(node);
+                this.insertNodeIntoMapByPath(addedNode, secondMap);
+                //secondLeafHashMap.get(insertPath).children.push(addedNode); // TODO das ist der triviale fall für blatt inserts und nicht folder
+            }
+        });
+    }
+
+    private insertNodeIntoMapByPath(node: CodeMapNode, insertMap: CodeMap) {
+        let pathArray: string[] = node.path.split("/");
+
+        let insertPathArray: string[] = pathArray.slice(2, pathArray.length - 1);
+        let currentPathArray: string[] = pathArray.slice(0, 2);
+        let current = insertMap.root;
+
+
+        while (insertPathArray.length > 0) {
+
+            let childFoundSteppingIntoIt = false;
+
+            if (current.children) {
+
+                for (let i = 0; i < current.children.length && !childFoundSteppingIntoIt; i++) {
+                    let child = current.children[i];
+                    if (child.name === insertPathArray[0]) {
+                        // step into existing folder
+                        current = child;
+                        currentPathArray.push(insertPathArray[0]);
+                        insertPathArray = insertPathArray.slice(1);
+                        childFoundSteppingIntoIt = true;
+                    }
+                }
+
+            } else {
+                current.children = [];
+            }
+
+            if (!childFoundSteppingIntoIt) {
+                //create new folder and start again
+                currentPathArray.push(insertPathArray[0])
+
+                let folder = {
+                    name: insertPathArray[0],
+                    path: currentPathArray.join("/"),
+                    children: []
+                }
+                current.children.push(folder);
+                current = folder;
+
+
+                insertPathArray = insertPathArray.slice(1);
+            }
+
+        }
+
+        // insert node
+        if (!current.children) {
+            current.children = [];
+        }
+        current.children.push(node);
+
+    }
+
     /**
      * This requires the map to have paths. e.g.
      *
@@ -33,31 +128,31 @@ export class DeltaCalculatorService {
      */
     public decorateMapsWithDeltas(firstMap: CodeMap, secondMap: CodeMap) {
 
-        if (firstMap && secondMap && firstMap.root && secondMap.root) {
-            let firstRoot = d3.hierarchy<CodeMapNode>(firstMap.root);
-            let firstLeaves: HierarchyNode<CodeMapNode>[] = firstRoot.leaves();
-            let secondRoot = d3.hierarchy(secondMap.root);
-            let secondLeaves: HierarchyNode<CodeMapNode>[] = secondRoot.leaves();
-
-            for (var j = 0; j < firstLeaves.length; j++) {
-                for (var k = 0; k < secondLeaves.length; k++) {
-
-                    let fl: HierarchyNode<CodeMapNode> = firstLeaves[j];
-                    let sl: HierarchyNode<CodeMapNode> = secondLeaves[k];
-
-                    if (fl.data.path === sl.data.path) {
-                        //calculate delta for those nodes attributes and push it to the second leave
-                        let firstDeltas = this.calculateAttributeListDelta(sl.data.attributes, fl.data.attributes);
-                        let secondDeltas = this.calculateAttributeListDelta(fl.data.attributes, sl.data.attributes);
-
-                        firstLeaves[j].data.deltas = firstDeltas;
-                        secondLeaves[k].data.deltas = secondDeltas;
-
-                    }
-                }
-            }
-
-        }
+        //if (firstMap && secondMap && firstMap.root && secondMap.root) {
+        //    let firstRoot = d3.hierarchy<CodeMapNode>(firstMap.root);
+        //    let firstLeaves: HierarchyNode<CodeMapNode>[] = firstRoot.leaves();
+        //    let secondRoot = d3.hierarchy(secondMap.root);
+        //    let secondLeaves: HierarchyNode<CodeMapNode>[] = secondRoot.leaves();
+//
+        //    for (var j = 0; j < firstLeaves.length; j++) {
+        //        for (var k = 0; k < secondLeaves.length; k++) {
+//
+        //            let fl: HierarchyNode<CodeMapNode> = firstLeaves[j];
+        //            let sl: HierarchyNode<CodeMapNode> = secondLeaves[k];
+//
+        //            if (fl.data.path === sl.data.path) {
+        //                //calculate delta for those nodes attributes and push it to the second leave
+        //                let firstDeltas = this.calculateAttributeListDelta(sl.data.attributes, fl.data.attributes);
+        //                let secondDeltas = this.calculateAttributeListDelta(fl.data.attributes, sl.data.attributes);
+//
+        //                firstLeaves[j].data.deltas = firstDeltas;
+        //                secondLeaves[k].data.deltas = secondDeltas;
+//
+        //            }
+        //        }
+        //    }
+//
+        //}
 
     }
 
@@ -70,22 +165,29 @@ export class DeltaCalculatorService {
      * @returns {{leftMap: CodeMap; rightMap: CodeMap}}
      */
     public fillMapsWithNonExistingNodesFromOtherMap(leftMap: CodeMap, rightMap: CodeMap): { leftMap: CodeMap; rightMap: CodeMap; } {
+
         if (leftMap && rightMap && leftMap.root && rightMap.root) {
+            console.log("HE");
+            //make hashmaps with paths as indices
+            let firstLeafHashMap = new Map<string, CodeMapNode>();
+            d3.hierarchy(leftMap.root).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
+                firstLeafHashMap.set(node.data.path, node.data);
+            });
 
-            let leftMapCopy: CodeMap = deepcopy.default(leftMap);
-            let rightMapCopy: CodeMap = deepcopy.default(rightMap);
+            let secondLeafHashMap = new Map<string, CodeMapNode>();
+            d3.hierarchy(rightMap.root).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
+                secondLeafHashMap.set(node.data.path, node.data);
+            });
 
-            let leftRoot = d3.hierarchy<CodeMapNode>(leftMapCopy.root);
-            let rightRoot = d3.hierarchy<CodeMapNode>(rightMapCopy.root);
+            // iterate over maps and insert nodes
+            this.insertNodes(firstLeafHashMap, secondLeafHashMap, leftMap, rightMap);
+            this.insertNodes(secondLeafHashMap, firstLeafHashMap, rightMap, leftMap);
 
-            this.insertLeftIntoRightWithZeroMetrics(leftRoot, rightRoot);
-            this.insertLeftIntoRightWithZeroMetrics(rightRoot, leftRoot);
 
-            return {leftMap: leftMapCopy, rightMap: rightMapCopy};
-
-        } else {
-            return {leftMap: leftMap, rightMap: rightMap};
         }
+
+        return {leftMap: leftMap, rightMap: rightMap};
+
     }
 
     public removeCrossOriginNodes(map: CodeMap): CodeMap {
@@ -94,8 +196,8 @@ export class DeltaCalculatorService {
             let mapCopy: CodeMap = deepcopy.default(map);
 
             let mapRoot = d3.hierarchy<CodeMapNode>(mapCopy.root);
-            mapRoot.each((node)=>{
-                if(node.data.children) {
+            mapRoot.each((node) => {
+                if (node.data.children) {
                     node.data.children = node.data.children.filter(x => (x.origin === mapCopy.fileName));
                 }
             });
@@ -121,6 +223,7 @@ export class DeltaCalculatorService {
                     let copy = this.deepcopy(leftChild);
                     right.data.children.push(copy.data);
                 } else {
+
                     // if left child exists in right nodes children, skip, since we only look for direct children
                     right.children.forEach((rightChildInner) => {
                         left.children.forEach((leftChildInner) => {
@@ -171,6 +274,13 @@ export class DeltaCalculatorService {
         });
 
         return copy;
+
+    }
+
+    private deepcopy2(node: CodeMapNode): CodeMapNode {
+
+        let h = d3.hierarchy(node);
+        return this.deepcopy(h).data;
 
     }
 
