@@ -48,7 +48,6 @@ export class DeltaCalculatorService {
 
     private insertNodes(firstLeafHashMap: Map<string, CodeMapNode>, secondLeafHashMap: Map<string, CodeMapNode>, firstMap: CodeMap, secondMap: CodeMap) {
         firstLeafHashMap.forEach((node, path) => {
-            console.log(path);
             if (!secondLeafHashMap.has(path)) {
                 // insert node into secondHashMap and secondMap
                 //secondHashMap.set(path, node); //TODO brauchen wir das ? wenn ja dann neue leere node
@@ -128,31 +127,31 @@ export class DeltaCalculatorService {
      */
     public decorateMapsWithDeltas(firstMap: CodeMap, secondMap: CodeMap) {
 
-        //if (firstMap && secondMap && firstMap.root && secondMap.root) {
-        //    let firstRoot = d3.hierarchy<CodeMapNode>(firstMap.root);
-        //    let firstLeaves: HierarchyNode<CodeMapNode>[] = firstRoot.leaves();
-        //    let secondRoot = d3.hierarchy(secondMap.root);
-        //    let secondLeaves: HierarchyNode<CodeMapNode>[] = secondRoot.leaves();
-//
-        //    for (var j = 0; j < firstLeaves.length; j++) {
-        //        for (var k = 0; k < secondLeaves.length; k++) {
-//
-        //            let fl: HierarchyNode<CodeMapNode> = firstLeaves[j];
-        //            let sl: HierarchyNode<CodeMapNode> = secondLeaves[k];
-//
-        //            if (fl.data.path === sl.data.path) {
-        //                //calculate delta for those nodes attributes and push it to the second leave
-        //                let firstDeltas = this.calculateAttributeListDelta(sl.data.attributes, fl.data.attributes);
-        //                let secondDeltas = this.calculateAttributeListDelta(fl.data.attributes, sl.data.attributes);
-//
-        //                firstLeaves[j].data.deltas = firstDeltas;
-        //                secondLeaves[k].data.deltas = secondDeltas;
-//
-        //            }
-        //        }
-        //    }
-//
-        //}
+        if (firstMap && secondMap && firstMap.root && secondMap.root) {
+            let firstRoot = d3.hierarchy<CodeMapNode>(firstMap.root);
+            let firstLeaves: HierarchyNode<CodeMapNode>[] = firstRoot.leaves();
+            let secondRoot = d3.hierarchy(secondMap.root);
+            let secondLeaves: HierarchyNode<CodeMapNode>[] = secondRoot.leaves();
+
+            for (var j = 0; j < firstLeaves.length; j++) {
+                for (var k = 0; k < secondLeaves.length; k++) {
+
+                    let fl: HierarchyNode<CodeMapNode> = firstLeaves[j];
+                    let sl: HierarchyNode<CodeMapNode> = secondLeaves[k];
+
+                    if (fl.data.path === sl.data.path) {
+                        //calculate delta for those nodes attributes and push it to the second leave
+                        let firstDeltas = this.calculateAttributeListDelta(sl.data.attributes, fl.data.attributes);
+                        let secondDeltas = this.calculateAttributeListDelta(fl.data.attributes, sl.data.attributes);
+
+                        firstLeaves[j].data.deltas = firstDeltas;
+                        secondLeaves[k].data.deltas = secondDeltas;
+
+                    }
+                }
+            }
+
+        }
 
     }
 
@@ -167,7 +166,6 @@ export class DeltaCalculatorService {
     public fillMapsWithNonExistingNodesFromOtherMap(leftMap: CodeMap, rightMap: CodeMap): { leftMap: CodeMap; rightMap: CodeMap; } {
 
         if (leftMap && rightMap && leftMap.root && rightMap.root) {
-            console.log("HE");
             //make hashmaps with paths as indices
             let firstLeafHashMap = new Map<string, CodeMapNode>();
             d3.hierarchy(leftMap.root).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
@@ -185,6 +183,7 @@ export class DeltaCalculatorService {
 
 
         }
+
 
         return {leftMap: leftMap, rightMap: rightMap};
 
