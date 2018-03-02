@@ -25,6 +25,61 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
         b = JSON.parse(JSON.stringify(TEST_DELTA_MAP_B));
     });
 
+    it("make it happen", ()=>{
+
+        a.root.children.push({
+            name: "onlyA",
+            attributes: {},
+            path: "/root/onlyA",
+            children: [
+                {
+                    name: "special",
+                    attributes: {},
+                    path: "/root/onlyA/special",
+                    children: [
+                        {
+                            name: "unicorn",
+                            attributes: { "special": 42 },
+                            path: "/root/onlyA/special/unicorn"
+                        }
+                    ]
+                }
+            ]
+        });
+
+        b.root.children.push({
+            name: "onlyA",
+            attributes: {},
+            path: "/root/onlyA",
+            children: [
+                {
+                    name: "special",
+                    attributes: {},
+                    path: "/root/onlyA/special",
+                    children: [
+                        {
+                            name: "Narwal",
+                            attributes: {"monster": 666 },
+                            path: "/root/onlyA/special/Narwal"
+                        }
+                    ]
+                }
+            ]
+        });
+
+        //we need the paths! TODO and nothing else ?
+        let dds = new DataDecoratorService();
+        dds.decorateMapWithPathAttribute(a);
+        dds.decorateMapWithPathAttribute(b);
+
+        let res = deltaCalculatorService.makeDeltasHappen(a,b);
+        expect(a.root.children[2].children[0].children[0].attributes["special"]).toBe(42);
+        expect(a.root.children[2].children[0].children[1].attributes["monster"]).toBe(0);
+        expect(b.root.children[3].children[0].children[0].attributes["monster"]).toBe(666);
+        expect(b.root.children[3].children[0].children[1].attributes["special"]).toBe(0);
+    });
+
+
     it("should remove all nodes with other origin than itself", ()=>{
         a.root.children[0].origin = "something else"
         a.root.children[1].origin = a.fileName;
@@ -36,8 +91,12 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
     });
 
     it("fill maps should return input maps when a map does not exist", ()=>{
-
         let dds = new DataDecoratorService();
+
+        //we need the paths! TODO and nothing else ?
+        dds.decorateMapWithPathAttribute(a);
+        dds.decorateMapWithPathAttribute(b);
+
         dds.decorateMapWithOriginAttribute(a);
         dds.decorateMapWithOriginAttribute(b);
 
@@ -53,8 +112,12 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
     });
 
     it("fill maps should return input maps when a map has no root", ()=>{
-
         let dds = new DataDecoratorService();
+
+        //we need the paths! TODO and nothing else ?
+        dds.decorateMapWithPathAttribute(a);
+        dds.decorateMapWithPathAttribute(b);
+
         dds.decorateMapWithOriginAttribute(a);
         dds.decorateMapWithOriginAttribute(b);
 
@@ -72,6 +135,11 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
     it("additionalLeaf from map b should exist in a after calling fillMapsWithNonExistingNodesFromOtherMap, metrics should be 0", ()=>{
 
         let dds = new DataDecoratorService();
+
+        //we need the paths! TODO and nothing else ?
+        dds.decorateMapWithPathAttribute(a);
+        dds.decorateMapWithPathAttribute(b);
+
         dds.decorateMapWithOriginAttribute(a);
         dds.decorateMapWithOriginAttribute(b);
 
@@ -93,6 +161,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
 
         //we need the paths!
         let dds = new DataDecoratorService();
+
         dds.decorateMapWithPathAttribute(a);
         dds.decorateMapWithPathAttribute(b);
         
