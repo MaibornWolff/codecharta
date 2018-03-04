@@ -162,7 +162,6 @@ export class DataService {
         if (!this._deltasEnabled) {
             this._deltasEnabled = true;
             this.setComparisonMap(this._lastReferenceIndex);
-            this.setReferenceMap(this._lastReferenceIndex);
         }
 
 
@@ -172,7 +171,6 @@ export class DataService {
         if (this._deltasEnabled) {
             this._deltasEnabled = false;
             this.setComparisonMap(this._lastReferenceIndex);
-            this.setReferenceMap(this._lastReferenceIndex);
         }
     }
 
