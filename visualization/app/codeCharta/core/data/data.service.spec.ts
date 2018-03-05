@@ -163,24 +163,24 @@ describe("app.codeCharta.core.data.dataService", function() {
 
     it("process deltas should do nothing if maps are not set or deltas are not enabled", () => {
         dataService._deltasEnabled = false;
-        dataService.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap = jest.fn();
+        dataService.deltaCalculatorService.provideDeltas = jest.fn();
         dataService.processDeltas();
-        expect(dataService.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap).not.toHaveBeenCalled();
+        expect(dataService.deltaCalculatorService.provideDeltas).not.toHaveBeenCalled();
     });
 
     it("process deltas should call deltaCalculator if maps and deltas are set", () => {
         dataService._deltasEnabled = true;
         dataService._data.renderMap = "render map";
         dataService._lastComparisonMap = "comparison map";
-        dataService.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap = jest.fn();
+        dataService.deltaCalculatorService.provideDeltas = jest.fn();
         dataService.processDeltas();
-        expect(dataService.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap).toHaveBeenCalledWith("render map", "comparison map");
+        expect(dataService.deltaCalculatorService.provideDeltas).toHaveBeenCalledWith("render map", "comparison map");
     });
 
     it("only calculate deltas when two maps exist and deltas are enabled", () => {
 
         dataService.notify = jest.fn();
-        dataService.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap = jest.fn();
+        dataService.deltaCalculatorService.provideDeltas = jest.fn();
 
         dataService._deltasEnabled = true;
 
@@ -189,7 +189,7 @@ describe("app.codeCharta.core.data.dataService", function() {
         dataService.setReferenceMap(0);
         dataService.setComparisonMap(1);
 
-        expect(dataService.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap).toHaveBeenCalled();
+        expect(dataService.deltaCalculatorService.provideDeltas).toHaveBeenCalled();
 
     });
 

@@ -23,8 +23,7 @@ export class DeltaCalculatorService {
         firstLeafHashMap.forEach((node, path) => {
             if (!secondLeafHashMap.has(path)) {
                 // insert node into secondHashMap and secondMap
-                let addedNode = this.deepcopy2(node);
-                console.log(addedNode.attributes.unary, node.attributes.unary);
+                let addedNode = this.deepcopy(node);
                 secondLeafHashMap.set(path, addedNode);
                 this.insertNodeIntoMapByPath(addedNode, secondMap);
             }
@@ -86,7 +85,7 @@ export class DeltaCalculatorService {
 
     }
 
-    public fillMapsWithNonExistingNodesFromOtherMap(leftMap: CodeMap, rightMap: CodeMap) {
+    public provideDeltas(leftMap: CodeMap, rightMap: CodeMap) {
 
         //null checks
         if(!leftMap || !rightMap || !leftMap.root || !rightMap.root){
@@ -132,10 +131,11 @@ export class DeltaCalculatorService {
 
     }
 
-    private deepcopy(nodes: HierarchyNode<CodeMapNode>): HierarchyNode<CodeMapNode> {
+    private deepcopy(nodes:CodeMapNode): CodeMapNode {
 
         //deepcopy
-        let copy: HierarchyNode<CodeMapNode> = deepcopy.default(nodes.copy()); //Hm this seems to be doing the right thing. First shallow copy then a deep copy ?!
+        let h = d3.hierarchy(nodes);
+        let copy: HierarchyNode<CodeMapNode> = deepcopy.default(h.copy()); //Hm this seems to be doing the right thing. First shallow copy then a deep copy ?!
 
         //make own attributes 0 (not unary)
         for (let property in copy.data.attributes) {
@@ -156,14 +156,7 @@ export class DeltaCalculatorService {
             copy.data.attributes.unary = 1;
         });
 
-        return copy;
-
-    }
-
-    private deepcopy2(node: CodeMapNode): CodeMapNode {
-
-        let h = d3.hierarchy(node);
-        return this.deepcopy(h).data;
+        return copy.data;
 
     }
 

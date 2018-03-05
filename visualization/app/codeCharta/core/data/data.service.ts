@@ -43,9 +43,6 @@ export class DataService {
 
     }
 
-    //TODO check unit tests
-    //TODO check if deltas work this way
-    //TODO unary metrics are 0 for merged in nodes
     public setMap(map: CodeMap, revision: number) {
         this._data.revisions[revision] = map;
         this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.revisions[revision]);
@@ -76,7 +73,7 @@ export class DataService {
 
     private processDeltas() {
         if (this._deltasEnabled && this._data.renderMap && this._lastComparisonMap) {
-            this.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(this._data.renderMap,this._lastComparisonMap);
+            this.deltaCalculatorService.provideDeltas(this._data.renderMap,this._lastComparisonMap);
         }
     }
 
@@ -157,18 +154,5 @@ export class DataService {
         this._data.renderMap = null;
         this.notify();
     }
-
-    public getIndexOfMap(map: CodeMap) {
-
-        for(let i = 0; i<this._data.revisions.length; i++){
-            if(this._data.revisions[i] && map && this._data.revisions[i].fileName === map.fileName){
-                return i;
-            }
-        }
-
-        return -1;
-
-    }
-
 
 }

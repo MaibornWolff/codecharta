@@ -76,7 +76,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
         decorate(a);
         decorate(b);
 
-        deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(a,b);
+        deltaCalculatorService.provideDeltas(a,b);
 
         expect(a.root.children[2].children[0].children[0].attributes["special"]).toBe(42);
         expect(a.root.children[2].children[0].children[1].attributes["monster"]).toBe(0);
@@ -102,7 +102,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
         let na = null;
         let nb = JSON.parse(JSON.stringify(b));
 
-        deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(na, nb);
+        deltaCalculatorService.provideDeltas(na, nb);
 
         expect(na).toBe(null);
         expect(nb).toEqual(b);
@@ -117,7 +117,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
         let na = JSON.parse(JSON.stringify(a));
         let nb = JSON.parse(JSON.stringify(b));
 
-        deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(na, nb);
+        deltaCalculatorService.provideDeltas(na, nb);
 
         expect(na).toEqual(a);
         expect(nb).toEqual(b);
@@ -130,7 +130,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
 
         a.root.children[0].origin = "hallo";
 
-        deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(a, b);
+        deltaCalculatorService.provideDeltas(a, b);
 
         expect(a.root.children[2].name).toBe("additional leaf");
         expect(b.root.children[1].name).toBe("additional leaf");
@@ -144,7 +144,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
         decorate(a);
         decorate(b);
 
-        deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(a, b);
+        deltaCalculatorService.provideDeltas(a, b);
 
         expect(a.root.children[0].deltas["rloc"]).toBe(80);
         expect(b.root.children[0].deltas["rloc"]).toBe(-80);
