@@ -126,76 +126,61 @@ describe("app.codeCharta.core.data.dataService", function() {
         expect(dataService.data.renderMap.fileName).toBe(data.fileName);
     });
 
-    it("activating deltas when deltas are not enabled should set the flag and maps correctly", () => {
+    it("activating deltas when deltas are not enabled should toggle the delta flag and re-set the current comparison map", () => {
         dataService._lastReferenceIndex = 42;
         dataService._deltasEnabled = false;
         dataService.setComparisonMap = jest.fn();
-        dataService.setReferenceMap = jest.fn();
         dataService.onActivateDeltas();
         expect(dataService._deltasEnabled).toBe(true);
         expect(dataService.setComparisonMap).toHaveBeenCalledWith(42);
-        expect(dataService.setReferenceMap).toHaveBeenCalledWith(42);
     });
 
     it("activating deltas when deltas are enabled should do nothing", () => {
-        dataService._lastReferenceIndex = 42;
         dataService._deltasEnabled = true;
         dataService.setComparisonMap = jest.fn();
-        dataService.setReferenceMap = jest.fn();
         dataService.onActivateDeltas();
         expect(dataService._deltasEnabled).toBe(true);
         expect(dataService.setComparisonMap).not.toHaveBeenCalled();
-        expect(dataService.setReferenceMap).not.toHaveBeenCalled();
     });
+
 
     it("deactivating deltas when deltas are enabled should set the flag and maps correctly", () => {
         dataService._lastReferenceIndex = 42;
         dataService._deltasEnabled = true;
         dataService.setComparisonMap = jest.fn();
-        dataService.setReferenceMap = jest.fn();
         dataService.onDeactivateDeltas();
         expect(dataService._deltasEnabled).toBe(false);
         expect(dataService.setComparisonMap).toHaveBeenCalledWith(42);
-        expect(dataService.setReferenceMap).toHaveBeenCalledWith(42);
     });
 
     it("deactivating deltas when deltas are not enabled should do nothing", () => {
-        dataService._lastReferenceIndex = 42;
         dataService._deltasEnabled = false;
         dataService.setComparisonMap = jest.fn();
-        dataService.setReferenceMap = jest.fn();
         dataService.onDeactivateDeltas();
         expect(dataService._deltasEnabled).toBe(false);
         expect(dataService.setComparisonMap).not.toHaveBeenCalled();
-        expect(dataService.setReferenceMap).not.toHaveBeenCalled();
     });
 
-    it("apply node merging should retrieve the fillMapsWithNonExistingNodesFromOtherMap result and decorate it with unaries and deltas. after that write it back as current maps", NGMock.mock.inject(function (_dataService_, _deltaCalculatorService_, _dataDecoratorService_) {
-        _dataService_._data.renderMap = "OLD RENDER MAP";
-        _dataService_._lastComparisonMap = "OLD COMPARISON MAP";
+    it("process deltas should do nothing if maps are not set or deltas are not enabled", () => {
+        dataService._deltasEnabled = false;
+        dataService.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap = jest.fn();
+        dataService.processDeltas();
+        expect(dataService.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap).not.toHaveBeenCalled();
+    });
 
-        _deltaCalculatorService_.fillMapsWithNonExistingNodesFromOtherMap = jest.fn();
-        _deltaCalculatorService_.removeCrossOriginNodes = jest.fn();
-        _deltaCalculatorService_.fillMapsWithNonExistingNodesFromOtherMap.mockReturnValue({leftMap: "LEFT MAP WITH OTHER NODES", rightMap:"RIGHT MAP WITH OTHER NODES"});
-        _deltaCalculatorService_.removeCrossOriginNodes.mockReturnValue("MAP NO CROSS ORIGIN NODES");
-        _dataDecoratorService_.decorateMapWithUnaryMetric = jest.fn();
-        _deltaCalculatorService_.decorateMapsWithDeltas = jest.fn();
-
-        _dataService_.applyNodeMerging();
-
-        expect(_deltaCalculatorService_.fillMapsWithNonExistingNodesFromOtherMap).toHaveBeenCalledWith("MAP NO CROSS ORIGIN NODES", "MAP NO CROSS ORIGIN NODES");
-        expect(_deltaCalculatorService_.removeCrossOriginNodes).toHaveBeenCalledWith("OLD RENDER MAP");
-        expect(_deltaCalculatorService_.removeCrossOriginNodes).toHaveBeenCalledWith("OLD COMPARISON MAP");
-        expect(_dataDecoratorService_.decorateMapWithUnaryMetric).toHaveBeenCalledWith("RIGHT MAP WITH OTHER NODES");
-        expect(_dataDecoratorService_.decorateMapWithUnaryMetric).toHaveBeenCalledWith("LEFT MAP WITH OTHER NODES");
-        expect(_deltaCalculatorService_.decorateMapsWithDeltas).toHaveBeenCalledWith("LEFT MAP WITH OTHER NODES", "OLD COMPARISON MAP");
-
-    }));
+    it("process deltas should call deltaCalculator if maps and deltas are set", () => {
+        dataService._deltasEnabled = true;
+        dataService._data.renderMap = "render map";
+        dataService._lastComparisonMap = "comparison map";
+        dataService.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap = jest.fn();
+        dataService.processDeltas();
+        expect(dataService.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap).toHaveBeenCalledWith("render map", "comparison map");
+    });
 
     it("only calculate deltas when two maps exist and deltas are enabled", () => {
 
         dataService.notify = jest.fn();
-        dataService.deltaCalculatorService.decorateMapsWithDeltas = jest.fn();
+        dataService.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap = jest.fn();
 
         dataService._deltasEnabled = true;
 
@@ -204,7 +189,7 @@ describe("app.codeCharta.core.data.dataService", function() {
         dataService.setReferenceMap(0);
         dataService.setComparisonMap(1);
 
-        expect(dataService.deltaCalculatorService.decorateMapsWithDeltas).toHaveBeenCalled();
+        expect(dataService.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap).toHaveBeenCalled();
 
     });
 

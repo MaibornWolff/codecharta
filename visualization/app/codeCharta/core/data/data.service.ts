@@ -69,13 +69,13 @@ export class DataService {
     public setComparisonMap(index: number) {
         if (this._data.revisions[index] != null) {
             this._lastComparisonMap = this._data.revisions[index];
-            this.processDeltas(index);
+            this.processDeltas();
             this.notify();
         }
     }
 
-    private processDeltas(index: number) {
-        if (this._deltasEnabled && this.data.renderMap && this._lastComparisonMap) {
+    private processDeltas() {
+        if (this._deltasEnabled && this._data.renderMap && this._lastComparisonMap) {
             this.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(this._data.renderMap,this._lastComparisonMap);
         }
     }
