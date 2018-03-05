@@ -49,8 +49,9 @@ export class DataService {
         this.dataDecoratorService.decorateMapWithPathAttribute(this._data.revisions[revision]);
         this.dataDecoratorService.decorateMapWithVisibleAttribute(this._data.revisions[revision]);
         this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.revisions[revision]);
-        this.setMetrics(revision);
-        this.dataDecoratorService.decorateEmptyAttributeLists(this._data.revisions[revision], this.data.metrics);
+        this.updateMetrics();
+        this.dataDecoratorService.decorateLeavesWithMissingMetrics(this._data.revisions, this._data.metrics);
+        this.dataDecoratorService.decorateParentNodesWithMeanAttributesOfChildren(this._data.revisions, this._data.metrics);
         this.setReferenceMap(revision);
     }
 
@@ -73,7 +74,7 @@ export class DataService {
 
     private processDeltas() {
         if (this._deltasEnabled && this._data.renderMap && this._lastComparisonMap) {
-            this.deltaCalculatorService.provideDeltas(this._data.renderMap,this._lastComparisonMap);
+            this.deltaCalculatorService.provideDeltas(this._data.renderMap,this._lastComparisonMap, this._data.metrics);
         }
     }
 
@@ -124,24 +125,31 @@ export class DataService {
         return this._lastComparisonMap;
     }
 
-    /**
-     * Sets metrics from a revision by id.
-     * @param {number} index id
-     */
-    public setMetrics(index: number) {
-        if (this._data.revisions[index] !== (null || undefined)) {
-            let root = d3.hierarchy<CodeMapNode>(this._data.revisions[index].root);
-            let leaves: HierarchyNode<CodeMapNode>[] = root.leaves();
-            let attributeList = leaves.map(function (d: HierarchyNode<CodeMapNode>) {
-                return d.data.attributes ? Object.keys(d.data.attributes) : [];
-            });
-            let attributes: string[] = attributeList.reduce(function (left: string[], right: string[]) {
-                return left.concat(right.filter(function (el: string) {
-                    return left.indexOf(el) === -1;
-                }));
-            });
-            this._data.metrics = attributes;
+    public updateMetrics() {
+
+        if(this._data.revisions.length <= 0){
+            this._data.metrics = [];
+            return; //we cannot reduce if there are no maps
         }
+
+        let leaves: HierarchyNode<CodeMapNode>[] = [];
+
+        this._data.revisions.forEach((map)=>{
+            leaves = leaves.concat(d3.hierarchy<CodeMapNode>(map.root).leaves());
+        });
+
+        let attributeList = leaves.map(function (d: HierarchyNode<CodeMapNode>) {
+            return d.data.attributes ? Object.keys(d.data.attributes) : [];
+        });
+
+        let attributes: string[] = attributeList.reduce(function (left: string[], right: string[]) {
+            return left.concat(right.filter(function (el: string) {
+                return left.indexOf(el) === -1;
+            }));
+        });
+
+        this._data.metrics = attributes;
+
     }
 
     /**

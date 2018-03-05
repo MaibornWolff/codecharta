@@ -4,6 +4,7 @@ import * as d3 from "d3";
 import {CodeMap, CodeMapNode} from "./model/CodeMap";
 import {HierarchyNode} from "d3-hierarchy";
 import * as deepcopy from "deepcopy";
+import {DataDecoratorService} from "./data.decorator.service";
 
 export interface KVObject {
     [key: string]: number
@@ -15,22 +16,23 @@ export interface KVObject {
 export class DeltaCalculatorService {
 
     /* @ngInject */
-    constructor() {
+    constructor(private dataDecoratorService: DataDecoratorService) {
 
     }
 
-    private insertNodesIntoMapsAndHashmaps(firstLeafHashMap: Map<string, CodeMapNode>, secondLeafHashMap: Map<string, CodeMapNode>, firstMap: CodeMap, secondMap: CodeMap) {
+    private insertNodesIntoMapsAndHashmaps(firstLeafHashMap: Map<string, CodeMapNode>, secondLeafHashMap: Map<string, CodeMapNode>, firstMap: CodeMap, secondMap: CodeMap, metrics: string[]) {
         firstLeafHashMap.forEach((node, path) => {
             if (!secondLeafHashMap.has(path)) {
                 // insert node into secondHashMap and secondMap
                 let addedNode = this.deepcopy(node);
                 secondLeafHashMap.set(path, addedNode);
-                this.insertNodeIntoMapByPath(addedNode, secondMap);
+                this.insertNodeIntoMapByPath(addedNode, secondMap, metrics);
             }
         });
     }
 
-    private insertNodeIntoMapByPath(node: CodeMapNode, insertMap: CodeMap) {
+    private insertNodeIntoMapByPath(node: CodeMapNode, insertMap: CodeMap, metrics: string[]) {
+
         let pathArray: string[] = node.path.split("/");
 
         let insertPathArray: string[] = pathArray.slice(2, pathArray.length - 1);
@@ -66,8 +68,15 @@ export class DeltaCalculatorService {
                 let folder = {
                     name: insertPathArray[0],
                     path: currentPathArray.join("/"),
-                    children: []
+                    children: [],
+                    origin: node.origin,
+                    visible: true,
+                    attributes: {}
                 }
+
+                this.dataDecoratorService.decorateNodeWithChildrenMeanMetrics(d3.hierarchy(folder), metrics);
+                folder.attributes["unary"] = 1;
+
                 current.children.push(folder);
                 current = folder;
 
@@ -85,7 +94,7 @@ export class DeltaCalculatorService {
 
     }
 
-    public provideDeltas(leftMap: CodeMap, rightMap: CodeMap) {
+    public provideDeltas(leftMap: CodeMap, rightMap: CodeMap, metrics: string[]) {
 
         //null checks
         if(!leftMap || !rightMap || !leftMap.root || !rightMap.root){
@@ -108,8 +117,8 @@ export class DeltaCalculatorService {
         });
 
         //insert nodes from the other map
-        this.insertNodesIntoMapsAndHashmaps(firstLeafHashMap, secondLeafHashMap, leftMap, rightMap);
-        this.insertNodesIntoMapsAndHashmaps(secondLeafHashMap, firstLeafHashMap, rightMap, leftMap);
+        this.insertNodesIntoMapsAndHashmaps(firstLeafHashMap, secondLeafHashMap, leftMap, rightMap, metrics);
+        this.insertNodesIntoMapsAndHashmaps(secondLeafHashMap, firstLeafHashMap, rightMap, leftMap, metrics);
 
         //calculate deltas between leaves
         firstLeafHashMap.forEach((node, path) => {
