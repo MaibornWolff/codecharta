@@ -25,7 +25,13 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
         b = JSON.parse(JSON.stringify(TEST_DELTA_MAP_B));
     });
 
-    it("make it happen", ()=>{
+    function decorate(map: CodeMap) {
+        let dds = new DataDecoratorService();
+        dds.decorateMapWithPathAttribute(map);
+        dds.decorateMapWithOriginAttribute(map);
+    }
+
+    it("golden test", ()=>{
 
         a.root.children.push({
             name: "onlyA",
@@ -67,12 +73,11 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
             ]
         });
 
-        //we need the paths! TODO and nothing else ?
-        let dds = new DataDecoratorService();
-        dds.decorateMapWithPathAttribute(a);
-        dds.decorateMapWithPathAttribute(b);
+        decorate(a);
+        decorate(b);
 
-        let res = deltaCalculatorService.makeDeltasHappen(a,b);
+        deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(a,b);
+
         expect(a.root.children[2].children[0].children[0].attributes["special"]).toBe(42);
         expect(a.root.children[2].children[0].children[1].attributes["monster"]).toBe(0);
         expect(b.root.children[3].children[0].children[0].attributes["monster"]).toBe(666);
@@ -83,89 +88,63 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
     it("should remove all nodes with other origin than itself", ()=>{
         a.root.children[0].origin = "something else"
         a.root.children[1].origin = a.fileName;
-        let res = deltaCalculatorService.removeCrossOriginNodes(a);
-        let h = d3.hierarchy(res.root);
+        deltaCalculatorService.removeCrossOriginNodes(a);
+        let h = d3.hierarchy(a.root);
         h.each((node)=>{
             expect(node.data.origin === a.fileName);
         });
     });
 
     it("fill maps should return input maps when a map does not exist", ()=>{
-        let dds = new DataDecoratorService();
+        decorate(a);
+        decorate(b);
 
-        //we need the paths! TODO and nothing else ?
-        dds.decorateMapWithPathAttribute(a);
-        dds.decorateMapWithPathAttribute(b);
+        let na = null;
+        let nb = JSON.parse(JSON.stringify(b));
 
-        dds.decorateMapWithOriginAttribute(a);
-        dds.decorateMapWithOriginAttribute(b);
+        deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(na, nb);
 
-        a = null;
-
-        let result = deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(a, b);
-        let da = result.leftMap;
-        let db = result.rightMap;
-
-        expect(da).toBe(a);
-        expect(db).toBe(b);
+        expect(na).toBe(null);
+        expect(nb).toEqual(b);
 
     });
 
     it("fill maps should return input maps when a map has no root", ()=>{
-        let dds = new DataDecoratorService();
-
-        //we need the paths! TODO and nothing else ?
-        dds.decorateMapWithPathAttribute(a);
-        dds.decorateMapWithPathAttribute(b);
-
-        dds.decorateMapWithOriginAttribute(a);
-        dds.decorateMapWithOriginAttribute(b);
+        decorate(a);
+        decorate(b);
 
         a.root = null;
+        let na = JSON.parse(JSON.stringify(a));
+        let nb = JSON.parse(JSON.stringify(b));
 
-        let result = deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(a, b);
-        let da = result.leftMap;
-        let db = result.rightMap;
+        deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(na, nb);
 
-        expect(da).toBe(a);
-        expect(db).toBe(b);
+        expect(na).toEqual(a);
+        expect(nb).toEqual(b);
 
     });
 
     it("additionalLeaf from map b should exist in a after calling fillMapsWithNonExistingNodesFromOtherMap, metrics should be 0", ()=>{
-
-        let dds = new DataDecoratorService();
-
-        //we need the paths! TODO and nothing else ?
-        dds.decorateMapWithPathAttribute(a);
-        dds.decorateMapWithPathAttribute(b);
-
-        dds.decorateMapWithOriginAttribute(a);
-        dds.decorateMapWithOriginAttribute(b);
+        decorate(a);
+        decorate(b);
 
         a.root.children[0].origin = "hallo";
 
-        let result = deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(a, b);
-        let da = result.leftMap;
-        let db = result.rightMap;
+        deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(a, b);
 
-        expect(da.root.children[2].name).toBe("additional leaf");
-        expect(db.root.children[1].name).toBe("additional leaf");
+        expect(a.root.children[2].name).toBe("additional leaf");
+        expect(b.root.children[1].name).toBe("additional leaf");
 
-        expect(da.root.children[2].attributes.rloc).toBe(0);
-        expect(db.root.children[1].attributes.rloc).toBe(10);
+        expect(a.root.children[2].attributes.rloc).toBe(0);
+        expect(b.root.children[1].attributes.rloc).toBe(10);
 
     });
 
     it("should result in expected delta maps", ()=>{
+        decorate(a);
+        decorate(b);
 
-        //we need the paths!
-        let dds = new DataDecoratorService();
-
-        dds.decorateMapWithPathAttribute(a);
-        dds.decorateMapWithPathAttribute(b);
-        
-        deltaCalculatorService.decorateMapsWithDeltas(a, b);
+        deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(a, b);
 
         expect(a.root.children[0].deltas["rloc"]).toBe(80);
         expect(b.root.children[0].deltas["rloc"]).toBe(-80);
@@ -176,7 +155,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
         expect(b.root.children[2].children[1].deltas["mcc"]).toBe(undefined);
         expect(a.root.children[1].children[1].deltas["mcc"]).toBe(10);
 
-        expect(b.root.children[1].deltas).toBe(undefined);
+        expect(b.root.children[2].deltas).toBe(undefined);
 
     });
 
