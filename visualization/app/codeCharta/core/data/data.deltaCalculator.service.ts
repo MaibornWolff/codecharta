@@ -24,6 +24,7 @@ export class DeltaCalculatorService {
             if (!secondLeafHashMap.has(path)) {
                 // insert node into secondHashMap and secondMap
                 let addedNode = this.deepcopy2(node);
+                console.log(addedNode.attributes.unary, node.attributes.unary);
                 secondLeafHashMap.set(path, addedNode);
                 this.insertNodeIntoMapByPath(addedNode, secondMap);
             }
@@ -136,12 +137,14 @@ export class DeltaCalculatorService {
         //deepcopy
         let copy: HierarchyNode<CodeMapNode> = deepcopy.default(nodes.copy()); //Hm this seems to be doing the right thing. First shallow copy then a deep copy ?!
 
-        //make own attributes 0
+        //make own attributes 0 (not unary)
         for (let property in copy.data.attributes) {
             if (copy.data.attributes.hasOwnProperty(property)) {
                 copy.data.attributes[property] = 0;
             }
         }
+
+        copy.data.attributes.unary = 1;
 
         ////make all ancestors attributes 0
         copy.each((node) => {
@@ -150,6 +153,7 @@ export class DeltaCalculatorService {
                     node.data.attributes[property] = 0;
                 }
             }
+            copy.data.attributes.unary = 1;
         });
 
         return copy;

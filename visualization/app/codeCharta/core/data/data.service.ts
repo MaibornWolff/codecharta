@@ -61,7 +61,7 @@ export class DataService {
         if (this._data.revisions[index] != null) {
             this._lastReferenceIndex = index;
             this._data.renderMap = this._data.revisions[index];
-            this.processDeltas(index);
+            this.processDeltas();
             this.notify();
         }
     }
