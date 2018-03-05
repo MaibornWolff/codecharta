@@ -43,6 +43,58 @@ export class DataService {
 
     }
 
+    //TODO check unit tests
+    //TODO check if deltas work this way
+    //TODO unary metrics are 0 for merged in nodes
+    public setMap(map: CodeMap, revision: number) {
+        this._data.revisions[revision] = map;
+        this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.revisions[revision]);
+        this.dataDecoratorService.decorateMapWithPathAttribute(this._data.revisions[revision]);
+        this.dataDecoratorService.decorateMapWithVisibleAttribute(this._data.revisions[revision]);
+        this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.revisions[revision]);
+        this.setMetrics(revision);
+        this.dataDecoratorService.decorateEmptyAttributeLists(this._data.revisions[revision], this.data.metrics);
+        this.setReferenceMap(revision);
+    }
+
+    public setReferenceMap(index: number) {
+        if (this._data.revisions[index] != null) {
+            this._lastReferenceIndex = index;
+            this._data.renderMap = this._data.revisions[index];
+            this.processDeltas(index);
+            this.notify();
+        }
+    }
+
+    public setComparisonMap(index: number) {
+        if (this._data.revisions[index] != null) {
+            this._lastComparisonMap = this._data.revisions[index];
+            this.processDeltas(index);
+            this.notify();
+        }
+    }
+
+    private processDeltas(index: number) {
+        if (this._deltasEnabled && this.data.renderMap && this._lastComparisonMap) {
+            this.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(this._data.renderMap,this._lastComparisonMap);
+        }
+    }
+
+    public onActivateDeltas() {
+        if (!this._deltasEnabled) {
+            this._deltasEnabled = true;
+            this.setComparisonMap(this._lastReferenceIndex);
+        }
+    }
+
+    public onDeactivateDeltas() {
+        if (this._deltasEnabled) {
+            this._deltasEnabled = false;
+            this.setComparisonMap(this._lastReferenceIndex);
+        }
+    }
+
+
     get data(): DataModel {
         return this._data;
     }
@@ -57,18 +109,7 @@ export class DataService {
         this.$rootScope.$broadcast("data-changed", this._data);
     }
 
-    /**
-     * Puts a CodeMap into a given revision slot
-     * @param {CodeMap} map A well formed code map
-     * @param {number} revision the maps position in the revisions array
-     */
-    public setMap(map: CodeMap, revision: number) {
-        this._data.revisions[revision] = map;
-        this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.revisions[revision]);
-        this.dataDecoratorService.decorateMapWithPathAttribute(this._data.revisions[revision]);
-        this.dataDecoratorService.decorateMapWithVisibleAttribute(this._data.revisions[revision]);
-        this.setReferenceMap(revision);
-    }
+
 
     public getReferenceMapName(): string {
         return this._data.renderMap.fileName;
@@ -117,63 +158,6 @@ export class DataService {
         this.notify();
     }
 
-    /**
-     * Selects and sets the first map to compare.  this is the map which is substracted from the main map
-     * @param {number} index the maps index in the revisions array
-     */
-    public setComparisonMap(index: number) { //this allows to reset delta values when switching back from delta view
-        if (this._data.revisions[index] != null) {
-            this._lastComparisonMap = this._data.revisions[index];
-            this.processMap(index);
-            this.setReferenceMap(this._lastReferenceIndex);
-            this.notify();
-        }
-    }
-
-    /**
-     * Selects and sets the second map to compare. this is the main visible map
-     * @param {number} index the maps index in the revisions array
-     */
-    public setReferenceMap(index: number) {
-        if (this._data.revisions[index] != null) {
-            this._lastReferenceIndex = index;
-            this._data.renderMap = this._data.revisions[index];
-            this.processMap(index);
-            this.notify();
-        }
-    }
-
-    private processMap(index: number) {
-        if (this._deltasEnabled) {
-            this.applyNodeMerging();
-        }
-        this.dataDecoratorService.decorateMapWithUnaryMetric(this._lastComparisonMap);
-        this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.renderMap);
-        if (this._deltasEnabled && this._lastComparisonMap != this._data.renderMap) {
-            this.deltaCalculatorService.decorateMapsWithDeltas(this._lastComparisonMap, this._data.renderMap);
-        }
-        this.setMetrics(index);
-        this.dataDecoratorService.decorateEmptyAttributeLists(this._lastComparisonMap, this.data.metrics);
-        this.dataDecoratorService.decorateEmptyAttributeLists(this._data.renderMap, this.data.metrics);
-    }
-
-//TODO "subscribe with interface" not possible because angular would produce a circular dependency
-    public onActivateDeltas() {
-        if (!this._deltasEnabled) {
-            this._deltasEnabled = true;
-            this.setComparisonMap(this._lastReferenceIndex);
-        }
-
-
-    }
-
-    public onDeactivateDeltas() {
-        if (this._deltasEnabled) {
-            this._deltasEnabled = false;
-            this.setComparisonMap(this._lastReferenceIndex);
-        }
-    }
-
     public getIndexOfMap(map: CodeMap) {
 
         for(let i = 0; i<this._data.revisions.length; i++){
@@ -186,21 +170,5 @@ export class DataService {
 
     }
 
-    public applyNodeMerging() {
-        let result = this.deltaCalculatorService.fillMapsWithNonExistingNodesFromOtherMap(
-            this.deltaCalculatorService.removeCrossOriginNodes(this._data.renderMap),
-            this.deltaCalculatorService.removeCrossOriginNodes(this._lastComparisonMap));
-
-        this.dataDecoratorService.decorateMapWithUnaryMetric(result.leftMap);
-        this.dataDecoratorService.decorateMapWithUnaryMetric(result.rightMap);
-
-        //recalculate deltas on maps
-        this.deltaCalculatorService.decorateMapsWithDeltas(result.leftMap, this._lastComparisonMap);
-
-
-        //we should write back map changes to dataService, no need to call notify and make an infinite loop
-        this._data.renderMap = result.leftMap;
-        this._lastComparisonMap = result.rightMap;
-    }
 
 }
