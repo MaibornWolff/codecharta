@@ -87,6 +87,11 @@ export class DeltaCalculatorService {
 
     public fillMapsWithNonExistingNodesFromOtherMap(leftMap: CodeMap, rightMap: CodeMap) {
 
+        //null checks
+        if(!leftMap || !rightMap || !leftMap.root || !rightMap.root){
+            return;
+        }
+
         //remove cross origin nodes from maps
         this.removeCrossOriginNodes(leftMap);
         this.removeCrossOriginNodes(rightMap);
