@@ -118,13 +118,10 @@ export class DataDecoratorService {
         //make sure attributes exist
         this.createAttributesIfNecessary(node);
 
-        //count attributes except unary
-        //TODO necessery ? let attributesCounter = this.countAttributesExceptUnary(node);
-
         //if attributes is empty define property for each possible metric as a mean function of child metrics
         for (let i = 0; i < metrics.length; i++) {
             let metric = metrics[i];
-            if (/*attributesCounter == 0 &&*/ !node.data.attributes.hasOwnProperty(metric) && node.data.children && node.data.children.length > 0) {
+            if (!node.data.attributes.hasOwnProperty(metric) && node.data.children && node.data.children.length > 0) {
                 this.defineAttributeAsMeanMethod(node, metric);
             }
         }
@@ -144,18 +141,6 @@ export class DataDecoratorService {
                 return sum / count;
             }
         });
-    }
-
-    private countAttributesExceptUnary(node) {
-        let attributesCounter = 0;
-        for (let attribute in node.data.attributes) {
-            if (node.data.attributes.hasOwnProperty(attribute)) {
-                if (attribute !== "unary") {
-                    attributesCounter++;
-                }
-            }
-        }
-        return attributesCounter;
     }
 
     private createAttributesIfNecessary(node) {
