@@ -66,12 +66,22 @@ describe("app.codeCharta.core.data.dataService", function() {
 
     it("set metrics should set metrics correctly", ()=>{
         dataService.setMap(data, 0);
-        dataService.setMetrics(0);
+        dataService.updateMetrics();
         expect(dataService.data.metrics).toEqual(["RLOC", "Functions", "MCC", "unary"]);
     });
 
-    it("set metrics should not set metrics when map is null", ()=>{
-        dataService.setMetrics(42);
+    it("set metrics should set metrics correctly with multiple maps", ()=>{
+        dataService.setMap(data, 0);
+        let data2 = JSON.parse(JSON.stringify(data));
+        data2.root.children[0].attributes["test"] = 0;
+        dataService.setMap(data2, 0);
+        dataService.updateMetrics();
+        expect(dataService.data.metrics).toEqual(["RLOC", "Functions", "MCC", "unary", "test"]);
+    });
+
+    it("set metrics should not set metrics when all maps are null", ()=>{
+        dataService._data.revisions = [];
+        dataService.updateMetrics();
         expect(dataService.data.metrics).toEqual([]);
     });
 
@@ -171,10 +181,11 @@ describe("app.codeCharta.core.data.dataService", function() {
     it("process deltas should call deltaCalculator if maps and deltas are set", () => {
         dataService._deltasEnabled = true;
         dataService._data.renderMap = "render map";
+        dataService._data.metrics = ["special"];
         dataService._lastComparisonMap = "comparison map";
         dataService.deltaCalculatorService.provideDeltas = jest.fn();
         dataService.processDeltas();
-        expect(dataService.deltaCalculatorService.provideDeltas).toHaveBeenCalledWith("render map", "comparison map");
+        expect(dataService.deltaCalculatorService.provideDeltas).toHaveBeenCalledWith("render map", "comparison map", ["special"]);
     });
 
     it("only calculate deltas when two maps exist and deltas are enabled", () => {

@@ -10,7 +10,7 @@ import {HierarchyNode} from "d3-hierarchy";
 export class DataDecoratorService {
 
     /* @ngInject */
-    constructor(){
+    constructor() {
 
     }
 
@@ -20,13 +20,13 @@ export class DataDecoratorService {
      */
     public decorateMapWithUnaryMetric(map: CodeMap) {
 
-        if(map && map.root) {
+        if (map && map.root) {
 
             let root = d3.hierarchy<CodeMapNode>(map.root);
             let descendants: HierarchyNode<CodeMapNode>[] = root.descendants();
 
             for (var j = 0; j < descendants.length; j++) {
-                if(!descendants[j].data.attributes) {
+                if (!descendants[j].data.attributes) {
                     descendants[j].data.attributes = {};
                 }
                 Object.assign(descendants[j].data.attributes, {unary: 1})
@@ -37,10 +37,10 @@ export class DataDecoratorService {
 
     public decorateMapWithVisibleAttribute(map: CodeMap) {
 
-        if(map && map.root) {
+        if (map && map.root) {
 
             let root = d3.hierarchy<CodeMapNode>(map.root);
-            root.each((node)=>{
+            root.each((node) => {
                 node.data.visible = true;
             });
 
@@ -49,10 +49,10 @@ export class DataDecoratorService {
 
     public decorateMapWithOriginAttribute(map: CodeMap) {
 
-        if(map && map.root) {
+        if (map && map.root) {
 
             let root = d3.hierarchy<CodeMapNode>(map.root);
-            root.each((node)=>{
+            root.each((node) => {
                 node.data.origin = map.fileName;
             });
 
@@ -60,12 +60,12 @@ export class DataDecoratorService {
     }
 
     public decorateMapWithPathAttribute(map: CodeMap) {
-        if(map && map.root) {
+        if (map && map.root) {
             let root = d3.hierarchy<CodeMapNode>(map.root);
-            root.each((node)=>{
+            root.each((node) => {
                 let path = root.path(node);
                 let pathString = "";
-                path.forEach((pnode)=>{
+                path.forEach((pnode) => {
                     pathString += "/" + pnode.data.name;
                 });
                 node.data.path = pathString;
@@ -73,30 +73,62 @@ export class DataDecoratorService {
         }
     }
 
-    public decorateEmptyAttributeLists(map: CodeMap, metrics: string[]) {
+    public decorateLeavesWithMissingMetrics(maps: CodeMap[], metrics: string[]) {
 
-        if(map && map.root) {
+        maps.forEach((map) => {
+            if (map && map.root) {
 
-            let root = d3.hierarchy<CodeMapNode>(map.root);
-            root.each((node)=>{
+                let root = d3.hierarchy<CodeMapNode>(map.root);
+                root.leaves().forEach((node) => {
 
-                //make sure attributes exist
-                this.createAttributesIfNecessary(node);
+                    //make sure attributes exist
+                    this.createAttributesIfNecessary(node);
 
-                //count attributes except unary
-                let attributesCounter = this.countAttributesExceptUnary(node);
-
-                //if attributes is empty define property for each possible metric as a mean function of child metrics
-                for(let i=0;i<metrics.length;i++) {
-                    let metric = metrics[i];
-                    if (attributesCounter == 0 && !node.data.attributes.hasOwnProperty(metric) && node.data.children ) {
-                        this.defineAttributeAsMeanMethod(node, metric);
+                    //create Metrics
+                    for (let i = 0; i < metrics.length; i++) {
+                        let metric = metrics[i];
+                        if (!node.data.attributes.hasOwnProperty(metric)) {
+                            node.data.attributes[metric] = 0;
+                        }
                     }
-                }
 
-            });
+                });
 
+            }
+        });
+
+    }
+
+    public decorateParentNodesWithMeanAttributesOfChildren(maps: CodeMap[], metrics: string[]) {
+
+        maps.forEach((map) => {
+            if (map && map.root) {
+
+                let root = d3.hierarchy<CodeMapNode>(map.root);
+                root.each((node) => {
+                    this.decorateNodeWithChildrenMeanMetrics(node, metrics);
+
+                });
+
+            }
+        });
+    }
+
+    public decorateNodeWithChildrenMeanMetrics(node, metrics: string[]) {
+        //make sure attributes exist
+        this.createAttributesIfNecessary(node);
+
+        //count attributes except unary
+        //TODO necessery ? let attributesCounter = this.countAttributesExceptUnary(node);
+
+        //if attributes is empty define property for each possible metric as a mean function of child metrics
+        for (let i = 0; i < metrics.length; i++) {
+            let metric = metrics[i];
+            if (/*attributesCounter == 0 &&*/ !node.data.attributes.hasOwnProperty(metric) && node.data.children && node.data.children.length > 0) {
+                this.defineAttributeAsMeanMethod(node, metric);
+            }
         }
+
     }
 
     private defineAttributeAsMeanMethod(node, metric: string) {
