@@ -22,19 +22,55 @@ describe("app.codeCharta.core.data.dataService", () => {
         dataDecoratorService = new DataDecoratorService();
     });
 
-    describe("decorateEmptyAttributeLists",() => {
+    describe("decorateLeavesWithMissingMetrics", () => {
 
-        it("all nodes should have an attribute list", ()=>{
-            a.root.children[0].attributes = undefined
-            dataDecoratorService.decorateEmptyAttributeLists(a, ["some", "metrics"]);
+        it("leaves should have all metrics", ()=>{
+            dataDecoratorService.decorateLeavesWithMissingMetrics([a, b],["some", "metrics", "rloc", "functions", "mcc"]);
+            let h = d3.hierarchy(a.root);
+            h.leaves().forEach((node)=>{
+                expect(node.data.attributes).toBeDefined();
+                expect(node.data.attributes.some).toBe(0);
+                expect(node.data.attributes.metrics).toBe(0);
+                expect(node.data.attributes.rloc).toBeDefined();
+                expect(node.data.attributes.functions).toBeDefined();
+                expect(node.data.attributes.mcc).toBeDefined();
+            });
+        });
+
+        it("leaves should have all metrics even if some attributesLists are undefined", ()=>{
+            a.root.children[0].attributes = undefined;
+            dataDecoratorService.decorateLeavesWithMissingMetrics([a, b],["some", "metrics", "rloc", "functions", "mcc"]);
+            let h = d3.hierarchy(a.root);
+            h.leaves().forEach((node)=>{
+                expect(node.data.attributes).toBeDefined();
+                expect(node.data.attributes.some).toBe(0);
+                expect(node.data.attributes.metrics).toBe(0);
+                expect(node.data.attributes.rloc).toBeDefined();
+                expect(node.data.attributes.functions).toBeDefined();
+                expect(node.data.attributes.mcc).toBeDefined();
+            });
+        });
+
+    });
+
+    describe("decorateParentNodesWithMeanAttributesOfChildren",() => {
+
+        it("all nodes should have an attribute list with all possible metrics", ()=>{
+            a.root.children[0].attributes = undefined;
+            a.root.children[1].attributes = { "some": 1 };
+            dataDecoratorService.decorateLeavesWithMissingMetrics([a],["some", "metrics", "rloc", "functions", "mcc"]);
+            dataDecoratorService.decorateParentNodesWithMeanAttributesOfChildren([a], ["some", "metrics", "rloc", "functions", "mcc"]);
             let h = d3.hierarchy(a.root);
             h.each((node)=>{
                 expect(node.data.attributes).toBeDefined();
+                expect(node.data.attributes.some).toBeDefined();
+                expect(node.data.attributes.metrics).toBeDefined();
             });
         });
 
         it("all nodes should have an attribute list with listed and available metrics", ()=>{
-            dataDecoratorService.decorateEmptyAttributeLists(a, ["rloc", "functions"]);
+            dataDecoratorService.decorateLeavesWithMissingMetrics([a],["rloc", "functions"]);
+            dataDecoratorService.decorateParentNodesWithMeanAttributesOfChildren([a], ["rloc", "functions"]);
             let h = d3.hierarchy(a.root);
             h.each((node)=>{
                 expect(node.data.attributes).toBeDefined();
@@ -44,7 +80,8 @@ describe("app.codeCharta.core.data.dataService", () => {
         });
 
         it("folders should have mean attributes of children", ()=>{
-            dataDecoratorService.decorateEmptyAttributeLists(a, ["rloc", "functions"]);
+            dataDecoratorService.decorateLeavesWithMissingMetrics([a],["rloc", "functions"]);
+            dataDecoratorService.decorateParentNodesWithMeanAttributesOfChildren([a], ["rloc", "functions"]);
             let h = d3.hierarchy(a.root);
             expect(h.data.attributes["rloc"]).toBeCloseTo(200/3, 1);
             expect(h.children[0].data.attributes["rloc"]).toBe(100);
