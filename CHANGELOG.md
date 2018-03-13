@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Delta calculation performance boost #91
 - Problems when intermediate nodes missed metrics #92
 - removed unnecessary calculations
+- removed bug in SonarImporter that slowed up performance and missed out multiple metrics
 
 ## [1.9.3] - 2018-02-23
 ### Added

@@ -34,6 +34,7 @@ import de.maibornwolff.codecharta.importer.sonar.filter.ErrorResponseFilter
 import de.maibornwolff.codecharta.importer.sonar.model.Metrics
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
+import mu.KotlinLogging
 import org.glassfish.jersey.client.ClientProperties
 import java.net.URL
 import javax.ws.rs.client.Client
@@ -44,6 +45,9 @@ import javax.ws.rs.core.MediaType
  * Requests Data from Sonar Instance through REST-API
  */
 class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: URL?) {
+    private val METRICS_URL_PATTERN = "%s/api/metrics/search?f=hidden,decimalScale&p=%s&ps=$PAGE_SIZE"
+    private val TIMEOUT_MS = 5000
+    private val logger = KotlinLogging.logger {}
 
     private val client: Client
 
@@ -57,8 +61,8 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
                                 .subscribeOn(Schedulers.io())
                                 .map<Metrics>({ this.getAvailableMetrics(it) })
                     }
-                    .filter { m -> m.metrics != null }
-                    .flatMap { m -> Flowable.fromIterable(m.metrics!!) }
+                    .filter { it.metrics != null }
+                    .flatMap { Flowable.fromIterable(it.metrics!!) }
                     .filter({ it.isFloatType })
                     .map<String>({ it.key }).distinct().toSortedList().blockingGet()
         }
@@ -92,6 +96,8 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
         }
 
         try {
+            logger.debug { "Getting measures from $url"}
+
             return request.get(Metrics::class.java)
         } catch (e: RuntimeException) {
             throw SonarImporterException("Error requesting " + url, e)
@@ -100,11 +106,6 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
     }
 
     companion object {
-
         internal const val PAGE_SIZE = 500
-
-        private const val METRICS_URL_PATTERN = "%s/api/metrics/search?f=hidden,decimalScale&p=%s&ps=" + PAGE_SIZE
-
-        private const val TIMEOUT_MS = 5000
     }
 }
