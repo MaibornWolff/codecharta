@@ -38,6 +38,7 @@ import de.maibornwolff.codecharta.importer.sonar.model.Qualifier
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
+import mu.KotlinLogging
 import java.net.URI
 import java.net.URISyntaxException
 import java.net.URL
@@ -48,9 +49,9 @@ import javax.ws.rs.core.MediaType
 class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: URL?) {
 
     private val client: Client = ClientBuilder.newClient()
+    private val logger = KotlinLogging.logger {}
 
     init {
-
         client.register(ErrorResponseFilter::class.java)
         client.register(GsonProvider::class.java)
     }
@@ -58,7 +59,7 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
     fun getComponentMap(componentKey: String, metricsList: List<String>): ComponentMap {
         val componentMap = ComponentMap()
 
-        Flowable.fromIterable(metricsList.windowed(MAX_METRICS_IN_ONE_SONARCALL, 1, true))
+        Flowable.fromIterable(metricsList.windowed(MAX_METRICS_IN_ONE_SONARCALL, MAX_METRICS_IN_ONE_SONARCALL, true))
                 .flatMap { p ->
                     getMeasures(componentKey, p)
                             .subscribeOn(Schedulers.computation())
@@ -100,6 +101,7 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
         }
 
         try {
+            logger.debug { "Getting measures from $measureAPIRequestURI"}
             return request.get<Measures>(Measures::class.java)
         } catch (e: RuntimeException) {
             throw SonarImporterException("Error requesting " + measureAPIRequestURI, e)
@@ -125,6 +127,6 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
 
         private const val PAGE_SIZE = 500
         private const val MAX_METRICS_IN_ONE_SONARCALL = 15
-        private const val MEASURES_URL_PATTERN = "%s/api/measures/component_tree?baseComponentKey=%s&qualifiers=FIL,UTS&metricKeys=%s&p=%s&ps=" + PAGE_SIZE
+        private const val MEASURES_URL_PATTERN = "%s/api/measures/component_tree?baseComponentKey=%s&qualifiers=FIL,UTS&metricKeys=%s&p=%s&ps=$PAGE_SIZE"
     }
 }
