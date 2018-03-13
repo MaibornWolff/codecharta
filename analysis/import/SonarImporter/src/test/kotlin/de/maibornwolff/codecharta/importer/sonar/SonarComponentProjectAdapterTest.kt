@@ -46,7 +46,7 @@ class SonarComponentProjectAdapterTest {
         // given
         val measure = Measure("metric", "50.0")
         val name = "name"
-        val component = Component("id", null, name, "path", Qualifier.FIL, listOf(measure))
+        val component = Component("id", null, name, "path", Qualifier.FIL, listOf(measure).toMutableList())
         val project = SonarComponentProjectAdapter("project")
 
         // when
@@ -63,7 +63,7 @@ class SonarComponentProjectAdapterTest {
         // given
         val measure = Measure("metric", "50.0")
         val id = "id"
-        val component = Component(id, null, null, null, Qualifier.FIL, listOf(measure))
+        val component = Component(id, null, null, null, Qualifier.FIL, listOf(measure).toMutableList())
         val project = SonarComponentProjectAdapter("project")
 
         // when
@@ -86,7 +86,7 @@ class SonarComponentProjectAdapterTest {
         val key = "key"
         val name = "name"
         val path = "someFileName"
-        val component = Component(id, key, name, path, Qualifier.FIL, listOf(measure))
+        val component = Component(id, key, name, path, Qualifier.FIL, listOf(measure).toMutableList())
         val project = SonarComponentProjectAdapter("project")
 
         // when
@@ -106,7 +106,7 @@ class SonarComponentProjectAdapterTest {
     fun should_ignore_string_measures() {
         // given
         val measure = Measure("metric", "bla")
-        val component = Component("id", "key", "name", "path", Qualifier.FIL, listOf(measure))
+        val component = Component("id", "key", "name", "path", Qualifier.FIL, listOf(measure).toMutableList())
         val project = SonarComponentProjectAdapter("project")
 
         // when
@@ -121,7 +121,7 @@ class SonarComponentProjectAdapterTest {
     @Test
     fun should_insert_a_file_node_from_uts_component() {
         // given
-        val component = Component("id", "key", "name", "path", Qualifier.UTS, listOf())
+        val component = Component("id", "key", "name", "path", Qualifier.UTS)
         val project = SonarComponentProjectAdapter("project")
 
         // when
@@ -136,7 +136,7 @@ class SonarComponentProjectAdapterTest {
     @Test
     fun should_insert_a_folder_node_from_dir_component() {
         // given
-        val component = Component("id", "key", "name", "path", Qualifier.DIR, listOf())
+        val component = Component("id", "key", "name", "path", Qualifier.DIR)
         val project = SonarComponentProjectAdapter("project")
 
         // when
@@ -151,7 +151,7 @@ class SonarComponentProjectAdapterTest {
     @Test
     fun should_insert_component_from_component_map() {
         // given
-        val component = Component("id", "key", "name", "path", Qualifier.FIL, listOf())
+        val component = Component("id", "key", "name", "path", Qualifier.FIL)
         val components = ComponentMap()
         components.updateComponent(component)
         val project = SonarComponentProjectAdapter("project")
@@ -167,7 +167,7 @@ class SonarComponentProjectAdapterTest {
     fun should_insert_component_by_path_if_configured() {
         // given
         val path = "someFileName"
-        val component = Component("id", "key", "name", path, Qualifier.FIL, listOf())
+        val component = Component("id", "key", "name", path, Qualifier.FIL)
         val project = SonarComponentProjectAdapter("project", SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL, true)
 
         // when
