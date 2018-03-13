@@ -101,9 +101,7 @@ class FileChooserController {
         this.service.loadMapFromFileContent(name, parsedData, revision).then(
             () => {
 
-                ctx.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
                 ctx.dataService.setComparisonMap(revision);
-                ctx.dataService.setReferenceMap(revision);
 
                 if(!ctx.$scope.$$phase || !ctx.$scope.$root.$$phase) {
                     ctx.$scope.$digest();
