@@ -11,7 +11,8 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
     public mapRoot: CodeMapNode = null;
 
     public viewModel = {
-        filter: ""
+        filter: "",
+        error: ""
     }
 
     /* @ngInject */
@@ -28,6 +29,7 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
 
     onDataChanged(data: DataModel, event) {
         this.viewModel.filter = "";
+        this.viewModel.error = "";
     }
 
     onSettingsChanged(s: Settings) {
@@ -35,16 +37,21 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
     }
 
     onFilterChange(regex: string) {
+        this.viewModel.error = "";
         this.updateVisibilities();
     }
 
     private updateVisibilities(mapRoot: CodeMapNode = this.mapRoot) {
-        if(mapRoot){
-            let h = d3.hierarchy<CodeMapNode>(mapRoot);
-            h.each((n: HierarchyNode<CodeMapNode>) => {
-                n.data.visible = this.getCorrectNodeVisibility(n.data);
-            });
-            this.settingsService.onSettingsChanged();
+        try {
+            if (mapRoot) {
+                let h = d3.hierarchy<CodeMapNode>(mapRoot);
+                h.each((n: HierarchyNode<CodeMapNode>) => {
+                    n.data.visible = this.getCorrectNodeVisibility(n.data);
+                });
+                this.settingsService.onSettingsChanged();
+            }
+        } catch (e) {
+            this.viewModel.error = e;
         }
     }
 
