@@ -15,6 +15,7 @@ gh-pages/visualization
 /build/
 gradle-app.setting
 .gradletasknamecache
+/gradle/
 
 
 ### Angular ###
@@ -31,6 +32,7 @@ gradle-app.setting
 
 # IDEs and editors
 /.idea
+*.iml
 
 # misc
 /.sass-cache
