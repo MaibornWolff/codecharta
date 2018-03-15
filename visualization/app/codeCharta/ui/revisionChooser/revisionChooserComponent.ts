@@ -25,39 +25,32 @@ export class RevisionChooserController implements DataServiceSubscriber{
         private settingsService: SettingsService
     ) {
         this.revisions = dataService.data.revisions;
-        this.ui.chosenComparison = this.dataService.getComparisonMap();
-        this.ui.chosenReference = this.dataService.getReferenceMap();
+        this.ui.chosenComparison = this.getIndexOfMap(this.dataService.getComparisonMap(), this.revisions);
+        this.ui.chosenReference = this.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
         dataService.subscribe(this);
     }
 
     onDataChanged(data: DataModel) {
         this.revisions = data.revisions;
-        this.ui.chosenComparison = this.dataService.getComparisonMap();
-        this.ui.chosenReference = this.dataService.getReferenceMap();
+        this.ui.chosenComparison = this.getIndexOfMap(this.dataService.getComparisonMap(), this.revisions);
+        this.ui.chosenReference = this.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
     }
 
-    onReferenceChange(map: CodeMap) {
-        this.dataService.setReferenceMap(this.getIndexOfMap(map, this.dataService.data.revisions));
+    onReferenceChange(mapIndex: number) {
+        this.dataService.setReferenceMap(mapIndex);
     }
 
-    onComparisonChange(map: CodeMap) {
-        this.dataService.setComparisonMap(this.getIndexOfMap(map, this.dataService.data.revisions));
-    }
-
-    loadComparisonMap(key: number) {
-        this.dataService.setComparisonMap(key);
-    }
-
-
-    loadReferenceMap(key: number) {
-        this.dataService.setReferenceMap(key);
+    onComparisonChange(mapIndex: number) {
+        this.dataService.setComparisonMap(mapIndex);
     }
 
     private getIndexOfMap(map: CodeMap, mapArray: CodeMap[]) {
 
-        for(let i = 0; i<mapArray.length; i++){
-            if(mapArray[i] && map && mapArray[i].fileName === map.fileName){
-                return i;
+        if (mapArray && map) {
+            for (let i = 0; i < mapArray.length; i++) {
+                if (mapArray[i] && mapArray[i].fileName === map.fileName) {
+                    return i;
+                }
             }
         }
 

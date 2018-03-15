@@ -1,7 +1,7 @@
 <md-input-container class="md-block">
     <label>Show...</label>
     <md-select ng-model="$ctrl.ui.chosenReference" ng-change="$ctrl.onReferenceChange($ctrl.ui.chosenReference)">
-        <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::value}}">
+        <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
             {{::value.fileName}}
         </md-option>
     </md-select>
