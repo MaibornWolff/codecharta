@@ -37,11 +37,11 @@ export class RevisionChooserController implements DataServiceSubscriber{
     }
 
     onReferenceChange(map: CodeMap) {
-        this.dataService.setReferenceMap(this.dataService.getIndexOfMap(map));
+        this.dataService.setReferenceMap(this.getIndexOfMap(map, this.dataService.data.revisions));
     }
 
     onComparisonChange(map: CodeMap) {
-        this.dataService.setComparisonMap(this.dataService.getIndexOfMap(map));
+        this.dataService.setComparisonMap(this.getIndexOfMap(map, this.dataService.data.revisions));
     }
 
     loadComparisonMap(key: number) {
@@ -52,6 +52,19 @@ export class RevisionChooserController implements DataServiceSubscriber{
     loadReferenceMap(key: number) {
         this.dataService.setReferenceMap(key);
     }
+
+    private getIndexOfMap(map: CodeMap, mapArray: CodeMap[]) {
+
+        for(let i = 0; i<mapArray.length; i++){
+            if(mapArray[i] && map && mapArray[i].fileName === map.fileName){
+                return i;
+            }
+        }
+
+        return -1;
+
+    }
+
 
 }
 
