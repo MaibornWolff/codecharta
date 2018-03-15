@@ -15,6 +15,7 @@ import "./rangeSlider/rangeSlider";
 import "./colorSettingsPanel/colorSettingsPanel";
 import "./displaySettingsPanel/displaySettingsPanel";
 import "./experimentalSettingsPanel/experimentalSettingsPanel";
+import "./regexFilter/regexFilter";
 
 angular.module(
     "app.codeCharta.ui",
@@ -31,6 +32,7 @@ angular.module(
         "app.codeCharta.ui.colorSettingsPanel",
         "app.codeCharta.ui.displaySettingsPanel",
         "app.codeCharta.ui.experimentalSettingsPanel",
-        "app.codeCharta.ui.rangeSlider"
+        "app.codeCharta.ui.rangeSlider",
+        "app.codeCharta.ui.regexFilter"
     ]);
 
