@@ -22,8 +22,6 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     private operation: string;
     private deltaColorsFlipped: boolean;
 
-    private visible: boolean = false;
-
     /* @ngInject */
     constructor(private $timeout: ITimeoutService,
                 private settingsService: SettingsService,
@@ -42,6 +40,8 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         this.settingsService.subscribe(this);
 
         this.dataService.subscribe(this);
+
+        this.initAnimations();
 
     }
 
@@ -125,6 +125,18 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
             return "";
         }
         return (<string>operation).replace("_", " ").toLowerCase();
+    }
+
+    private initAnimations() {
+        $(document).ready(function(){
+            let start = 0;
+            let target = -140;
+            let visible = false;
+            $("legend-panel-component .panel-button").click(function(){
+                $("legend-panel-component").animate({left: visible ? target+"px" : start+"px"}, "fast");
+                visible = !visible;
+            });
+        });
     }
 
 }
