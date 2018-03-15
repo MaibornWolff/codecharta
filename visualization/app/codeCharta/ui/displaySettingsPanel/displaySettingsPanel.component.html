@@ -11,7 +11,7 @@
 
 <md-slider-container class="md-block">
     <span>Height Scaling</span>
-    <md-slider flex step="0.1" min="0.1" max="5" ng-model="$ctrl.settingsService.settings.scaling.y" id="y-scale-slider" ng-change="$ctrl.settingsService.applySettings()">
+    <md-slider flex step="0.1" min="0.1" max="5" ng-model="$ctrl.settingsService.settings.scaling.y" id="y-scale-slider" ng-change="$ctrl.settingsService.applySettings()" class="md-primary">
     </md-slider>
     <md-input-container>
         <input flex step="0.1" min="0.1" max="5" type="number" ng-model="$ctrl.settingsService.settings.scaling.y" aria-controls="y-scale-slider">

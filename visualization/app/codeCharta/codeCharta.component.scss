@@ -62,12 +62,12 @@ code-charta-component {
   #actionButtons > * {
     margin-left: 4px;
     margin-right: 4px;
-    z-index: 2;
+    z-index: 12;
   }
 
   md-sidenav {
     width: 600px;
-    z-index: 1;
+    z-index: 11;
   }
 
   #loading-indicator {
