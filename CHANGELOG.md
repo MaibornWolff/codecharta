@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
-- SASS support 
+- SASS support
+- simple regex filter
 
 ### Changed
 - Clean up UI #86
