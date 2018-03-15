@@ -38,7 +38,7 @@ class ComponentMap {
     fun updateComponent(component: Component) {
         if (components.containsKey(component.key)) {
             val updateableComponent = components[component.key]!!
-            updateableComponent.measures!!.union(component.measures!!)
+            updateableComponent.measures!!.addAll(component.measures!!)
         } else {
             components[component.key!!] = component
         }
