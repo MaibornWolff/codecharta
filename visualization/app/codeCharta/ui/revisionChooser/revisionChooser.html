@@ -10,7 +10,7 @@
 <md-input-container class="md-block" ng-if="$ctrl.settingsService.settings.deltas">
     <label>In comparison to...</label>
     <md-select ng-model="$ctrl.ui.chosenComparison" ng-change="$ctrl.onComparisonChange($ctrl.ui.chosenComparison)">
-        <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::value}}">
+        <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
             {{::value.fileName}}
         </md-option>
     </md-select>
