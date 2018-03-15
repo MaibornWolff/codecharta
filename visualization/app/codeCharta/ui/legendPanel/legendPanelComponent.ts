@@ -129,11 +129,11 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
 
     private initAnimations() {
         $(document).ready(function(){
-            let start = 0;
-            let target = -140;
+            let start = 40;
+            let target = -500;
             let visible = false;
             $("legend-panel-component .panel-button").click(function(){
-                $("legend-panel-component").animate({left: visible ? target+"px" : start+"px"}, "fast");
+                $("legend-panel-component .block-wrapper").animate({left: visible ? target+"px" : start+"px"}, "fast");
                 visible = !visible;
             });
         });

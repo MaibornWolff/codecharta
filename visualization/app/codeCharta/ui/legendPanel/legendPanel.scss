@@ -1,23 +1,19 @@
 legend-panel-component {
 
-  position: fixed;
-  z-index: 999;
-  top: 9em;
-  left: -140px; //initial state is closed
-  
   .panel-button {
-    display: block;
-    float: right;
-    top: -140px;
-    width: 100%;
-    left: 40px;
+    position: fixed;
+    top: 164px;
+    left: -35px;
     transform: rotate(90deg);
+    z-index: 999;
   }
 
   .block-wrapper {
 
-    display: block;
-    float: left;
+    position: fixed;
+    z-index: 998;
+    top: 9em;
+    left: -500px; //initial state is closed
 
     box-shadow: 0px 0px 8px 1px #dfdfdf;
     background-color: #fff;
