@@ -1,13 +1,13 @@
 <range-slider-component></range-slider-component>
 
 <md-input-container class="md-block">
-    <md-checkbox ng-model="$ctrl.settingsService.settings.neutralColorRange.flipped" ng-change="$ctrl.settingsService.applySettings()">
+    <md-checkbox ng-model="$ctrl.viewModel.flipped" ng-change="$ctrl.apply()">
         Invert Colors
     </md-checkbox>
 </md-input-container>
 
-<md-input-container class="md-block" ng-if="$ctrl.settingsService.settings.deltas">
-    <md-checkbox ng-model="$ctrl.settingsService.settings.deltaColorFlipped" ng-change="$ctrl.settingsService.applySettings()">
+<md-input-container class="md-block" ng-if="$ctrl.viewModel.deltas">
+    <md-checkbox ng-model="$ctrl.viewModel.deltaColorFlipped" ng-change="$ctrl.apply()">
         Invert Delta Colors
     </md-checkbox>
 </md-input-container>
