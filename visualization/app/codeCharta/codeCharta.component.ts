@@ -14,8 +14,10 @@ import "./codeCharta.component.scss";
  */
 export class CodeChartaController {
 
-    private pkg: Object;
-    private numberOfLoadingTasks = 0;
+    public viewModel = {
+        version: require("../../package.json").version,
+        numberOfLoadingTasks: 0
+    }
 
     /* @ngInject */
     constructor(
@@ -31,11 +33,11 @@ export class CodeChartaController {
 
         //Loading tasks
         $rootScope.$on("add-loading-task", ()=>{
-            this.numberOfLoadingTasks++;
+            this.viewModel.numberOfLoadingTasks++;
         });
 
         $rootScope.$on("remove-loading-task", ()=>{
-            this.numberOfLoadingTasks--;
+            this.viewModel.numberOfLoadingTasks--;
         });
 
     }
@@ -43,7 +45,6 @@ export class CodeChartaController {
     init() {
         this.initHandlers();
         this.loadFileOrSample();
-        this.pkg = require("../../package.json");
     }
 
     toggleSidenav(navID) {
@@ -59,7 +60,7 @@ export class CodeChartaController {
      */
     loadFileOrSample() {
 
-        this.numberOfLoadingTasks++;
+        this.viewModel.numberOfLoadingTasks++;
 
         this.urlService.getFileDataFromQueryParam().then(
 
@@ -73,11 +74,11 @@ export class CodeChartaController {
                     () => {
                         this.loadingFinished();
                         this.settingsService.updateSettingsFromUrl();
-                        this.numberOfLoadingTasks--;
+                        this.viewModel.numberOfLoadingTasks--;
                     },
                     (r) => {
                         this.printErrors(r);
-                        this.numberOfLoadingTasks--;
+                        this.viewModel.numberOfLoadingTasks--;
                     }
                 );
 
@@ -93,11 +94,11 @@ export class CodeChartaController {
                     () => {
                         this.loadingFinished();
                         this.settingsService.updateSettingsFromUrl();
-                        this.numberOfLoadingTasks--;
+                        this.viewModel.numberOfLoadingTasks--;
                     },
                     (r) => {
                         this.printErrors(r);
-                        this.numberOfLoadingTasks--;
+                        this.viewModel.numberOfLoadingTasks--;
                     }
                 );
 
