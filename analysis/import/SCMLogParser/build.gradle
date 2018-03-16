@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.2.21'
+    ext.kotlin_version = '1.2.30'
     repositories {
         mavenCentral()
     }
@@ -13,13 +13,14 @@ apply plugin: 'kotlin'
 
 dependencies {
     compile project(':model')
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compile 'org.apache.commons:commons-lang3:3.7'
-    compile 'info.picocli:picocli:2.2.1'
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.assertj:assertj-core:3.9.0'
-    testCompile "io.mockk:mockk:1.7.1"
+    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: "$kotlin_version"
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+    compile group: 'info.picocli', name: 'picocli', version: '2.3.0'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.9.1'
+    testCompile group: 'io.mockk', name: 'mockk', version: '1.7.11'
     testCompile project(path: ':model', configuration: 'testOutput')
 }
 
