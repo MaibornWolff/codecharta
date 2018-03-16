@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 - Clean up UI #86
+- Updated analysis dependencies
 
 ### Removed
 
