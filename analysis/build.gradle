@@ -1,5 +1,5 @@
 plugins {
-    id 'org.sonarqube' version '2.6.1'
+    id 'org.sonarqube' version '2.6.2'
     id 'distribution'
     id 'maven'
 }
@@ -24,7 +24,7 @@ allprojects {
     apply plugin: 'maven'
 
     jacoco {
-        toolVersion = "0.7.8"
+        toolVersion = "0.8.0"
     }
 }
 
