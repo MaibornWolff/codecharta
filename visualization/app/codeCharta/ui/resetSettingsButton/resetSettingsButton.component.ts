@@ -1,8 +1,8 @@
-import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {SettingsService} from "../../core/settings/settings.service";
 import "./resetSettingsButton.component.scss";
 import {ScenarioService} from "../../core/scenario/scenario.service";
 
-export class ResetSettingsButtonController implements SettingsServiceSubscriber{
+export class ResetSettingsButtonController {
 
     private settingsNames: string = "";
 
@@ -11,39 +11,42 @@ export class ResetSettingsButtonController implements SettingsServiceSubscriber{
         private settingsService: SettingsService,
         private scenarioService: ScenarioService
     ) {
-        this.onSettingsChanged(this.settingsService.settings, null);
-        this.settingsService.subscribe(this);
+
     }
 
     onClick() {
-        let tokens: string[] = this.settingsNames.split(",");
+        this.updateSettings(this.settingsNames);
+    }
 
-        tokens.forEach((token)=>{
+    public updateSettings(settingsList: string = this.settingsNames) {
+        settingsList = settingsList.replace(/ /g,"");
+        settingsList = settingsList.replace(/\n/g,"");
+        let tokens: string[] = settingsList.split(",");
 
-            let dotSplit = token.split(".");
-            //console.log(dotSplit);
+        tokens.forEach((token) => {
 
-            if(dotSplit.length > 1) {
+            let steps = token.split(".");
+            console.log(token);
 
-                let pointer = this.settingsService.settings;
-                let pointer2 = this.scenarioService.getDefaultScenario().settings;
+            if (steps.length > 1) {
 
-                dotSplit.forEach((nToken, index) => {
-                    if (pointer[nToken] && pointer2[nToken]) {
+                let writeSettingsPointer = this.settingsService.settings;
+                let readSettingsPointer = this.scenarioService.getDefaultScenario().settings;
 
-                        if (index === dotSplit.length - 1) {
-                            console.log("setting", nToken);
-                            pointer[nToken] = pointer2[nToken];
+                steps.forEach((step, index) => {
+
+                    if (writeSettingsPointer[step] != null && readSettingsPointer[step] != null) {
+
+                        if (index === steps.length - 1) {
+                            writeSettingsPointer[step] = readSettingsPointer[step];
                         } else {
-                            console.log("stepping into ", nToken);
-                            pointer = pointer[nToken];
-                            pointer2 = pointer2[nToken];
+                            writeSettingsPointer = writeSettingsPointer[step];
+                            readSettingsPointer = readSettingsPointer[step];
                         }
                     }
                 });
 
             } else {
-                console.log("setting", token);
                 this.settingsService.settings[token] = this.scenarioService.getDefaultScenario().settings[token];
             }
 
@@ -54,9 +57,6 @@ export class ResetSettingsButtonController implements SettingsServiceSubscriber{
 
     }
 
-    onSettingsChanged(settings: Settings, event) {
-
-    }
 
 }
 
