@@ -30,7 +30,7 @@ export class ArrowManager {
         // curve
         let geometry = new THREE.BufferGeometry();
         geometry.setFromPoints(points);
-        let material = new THREE.LineBasicMaterial({color: hex, linewidth: 30});
+        let material = new THREE.LineBasicMaterial({color: hex, linewidth: 1});
         let curveObject = new THREE.Line(geometry, material);
 
         //combine
