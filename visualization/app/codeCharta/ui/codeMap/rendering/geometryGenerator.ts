@@ -25,7 +25,7 @@ export interface buildResult {
 
 export class geometryGenerator {
 
-    private static MINIMAL_BUILDING_HEIGHT = 5.0;
+    private static MINIMAL_BUILDING_HEIGHT = 1.0;
 
     constructor() {};
 
@@ -61,7 +61,7 @@ export class geometryGenerator {
             y : n.z0,
             z : n.y0,
             width : n.width,
-            height : this.ensureMinHeightIfUnlessDeltaNegative(n.height, n.heightDelta),
+            height : n.height,
             depth : n.length
         };
     }
@@ -108,6 +108,8 @@ export class geometryGenerator {
     private addBuilding(data : intermediateVertexData, n : node, idx : number, desc : codeMapGeometricDescription, settings : renderSettings) : void
     {
         let measures : boxMeasures = this.mapNodeToLocalBox(n);
+        measures.height = this.ensureMinHeightIfUnlessDeltaNegative(n.height, n.heightDelta);
+
         let color : number = this.estimateColorForBuilding(n, settings.colorKey, settings.colorRange, settings.renderDeltas);
 
         let renderDelta: number = 0.0;
