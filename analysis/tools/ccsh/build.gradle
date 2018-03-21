@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.2.21'
+    ext.kotlin_version = '1.2.30'
 
     repositories {
         mavenCentral()
@@ -27,8 +27,8 @@ dependencies {
     compile project(':tools:ValidationTool')
     compile project(':export:CSVExporter')
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compile 'info.picocli:picocli:2.2.1'
+    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: "$kotlin_version"
+    compile group: 'info.picocli', name: 'picocli', version: '2.3.0'
 }
 
 compileKotlin {
