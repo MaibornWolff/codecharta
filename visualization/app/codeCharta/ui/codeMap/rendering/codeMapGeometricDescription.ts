@@ -7,18 +7,22 @@ export interface intersectionResult {
 }
 
 export class codeMapGeometricDescription {
-    private buildings: codeMapBuilding[];
+    private _buildings: codeMapBuilding[];
     private mapSize: number;
     private scales: THREE.Vector3;
 
     constructor(mapSize: number) {
-        this.buildings = new Array<codeMapBuilding>();
+        this._buildings = new Array<codeMapBuilding>();
         this.mapSize = mapSize;
         this.scales = new THREE.Vector3(1, 1, 1);
     }
 
+    get buildings(): codeMapBuilding[] {
+        return this._buildings;
+    }
+
     add(building: codeMapBuilding): void {
-        this.buildings.push(building);
+        this._buildings.push(building);
     }
 
     setScales(scales: THREE.Vector3) {
@@ -48,7 +52,7 @@ export class codeMapGeometricDescription {
 
         let boxTranslation = new THREE.Vector3(-this.mapSize * this.scales.x * 0.5, 0.0, -this.mapSize * this.scales.z * 0.5);
 
-        for (let building of this.buildings) {
+        for (let building of this._buildings) {
 
             //Pre Transformation
             let box: THREE.Box3 = building.boundingBox.clone();

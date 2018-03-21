@@ -1,7 +1,12 @@
 import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settings.service";
-import {ITimeoutService} from "angular";
+import {IRootScopeService, ITimeoutService} from "angular";
 import {CodeMap, CodeMapNode} from "../../core/data/model/CodeMap";
 import {hierarchy} from "d3-hierarchy";
+
+export interface MapTreeViewHoverEventSubscriber {
+    onShouldHoverNode(node: CodeMapNode);
+    onShouldUnhoverNode(node: CodeMapNode);
+}
 
 export class MapTreeViewLevelController {
 
@@ -10,8 +15,21 @@ export class MapTreeViewLevelController {
     public collapsed: boolean = true;
 
     /* @ngInject */
-    constructor(private $timeout: ITimeoutService, private $scope, private settingsService: SettingsService) {
+    constructor(private $timeout: ITimeoutService, private $scope, private settingsService: SettingsService, private $rootScope: IRootScopeService) {
 
+    }
+
+    static subscribeToHoverEvents($rootScope: IRootScopeService, subscriber: MapTreeViewHoverEventSubscriber){
+        $rootScope.$on("should-hover-node", (event, args)=>subscriber.onShouldHoverNode(args));
+        $rootScope.$on("should-unhover-node", (event, args)=>subscriber.onShouldUnhoverNode(args));
+    }
+
+    onMouseEnter() {
+        this.$rootScope.$broadcast("should-hover-node", this.node);
+    }
+
+    onMouseLeave() {
+        this.$rootScope.$broadcast("should-unhover-node", this.node);
     }
 
     onFolderClick() {

@@ -21,7 +21,7 @@ export class CodeMapService implements SettingsServiceSubscriber, CodeMapControl
 
     public static SELECTOR = "codeMapService";
 
-    private mapMesh: CodeMapMesh = null;
+    private _mapMesh: CodeMapMesh = null;
     private labelManager: LabelManager = null;
     private arrowManager: ArrowManager = null;
 
@@ -39,6 +39,10 @@ export class CodeMapService implements SettingsServiceSubscriber, CodeMapControl
 
     onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
 
+    }
+
+    get mapMesh(): CodeMapMesh {
+        return this._mapMesh;
     }
 
     onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
@@ -103,9 +107,9 @@ export class CodeMapService implements SettingsServiceSubscriber, CodeMapControl
             }
         }
 
-        this.mapMesh = new CodeMapMesh(this.currentSortedNodes, this.currentRenderSettings);
+        this._mapMesh = new CodeMapMesh(this.currentSortedNodes, this.currentRenderSettings);
 
-        this.threeSceneService.setMapMesh(this.mapMesh, mapSize);
+        this.threeSceneService.setMapMesh(this._mapMesh, mapSize);
     }
 
     /**

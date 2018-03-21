@@ -3,6 +3,8 @@ import {ThreeCameraService} from "./threeViewer/threeCameraService";
 import {IAngularEvent, IRootScopeService} from "angular";
 import {ThreeViewerService} from "./threeViewer/threeViewerService";
 import {CodeMapService} from "./codeMapService";
+import {MapTreeViewHoverEventSubscriber, MapTreeViewLevelController} from "../mapTreeView/mapTreeViewLevelComponent";
+import {CodeMapNode} from "../../core/data/model/CodeMap";
 
 interface Coordinates {
     x: number,
@@ -22,7 +24,7 @@ export interface CodeMapControllerSubscriber {
 /**
  * Controls the codeMapDirective
  */
-export class CodeMapController {
+export class CodeMapController implements MapTreeViewHoverEventSubscriber{
 
     private hovered;
     private selected;
@@ -60,6 +62,7 @@ export class CodeMapController {
         this.mouse = {x: 0, y: 0};
 
         threeUpdateCycleService.register(this.update.bind(this));
+        MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this);
     }
 
     $postLink() {
@@ -68,6 +71,19 @@ export class CodeMapController {
         this.threeRendererService.renderer.domElement.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
         this.threeRendererService.renderer.domElement.addEventListener("mouseup", this.onDocumentMouseUp.bind(this), false);
         this.threeRendererService.renderer.domElement.addEventListener("mousedown", this.onDocumentMouseDown.bind(this), false);
+    }
+
+    onShouldHoverNode(node: CodeMapNode) {
+        let buildings: codeMapBuilding[] = this.codeMapService.mapMesh.getMeshDescription().buildings;
+        buildings.forEach((building)=>{
+            if(building.node.path === node.path){
+                this.onBuildingHovered(this.hovered, building);
+            }
+        });
+    }
+
+    onShouldUnhoverNode(node: CodeMapNode) {
+        this.onBuildingHovered(this.hovered, null);
     }
 
     static subscribe($rootScope: IRootScopeService, subscriber: CodeMapControllerSubscriber) {

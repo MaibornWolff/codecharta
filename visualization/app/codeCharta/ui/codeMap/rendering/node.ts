@@ -18,4 +18,5 @@ export interface node {
     readonly parent : node;
     readonly isDelta : boolean;
     readonly heightDelta : number;
+    readonly path : string;
 }
