@@ -25,7 +25,8 @@
       "margin": 1,
       "deltaColorFlipped": false,
       "showDependencies": false
-    }
+    },
+    "autoFitCamera": true
   },
   {
     "name": "Coverage",
@@ -53,7 +54,8 @@
       "margin": 1,
       "deltaColorFlipped": false,
       "showDependencies": false
-    }
+    },
+    "autoFitCamera": true
   },
   {
     "name": "Code Churn",
@@ -81,6 +83,7 @@
       "margin": 1,
       "deltaColorFlipped": false,
       "showDependencies": false
-    }
+    },
+    "autoFitCamera": true
   }
 ]

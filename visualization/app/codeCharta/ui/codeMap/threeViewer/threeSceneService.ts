@@ -16,7 +16,7 @@ class ThreeSceneService {
     private lights: Group;
     public labels: Group;
     public dependencyArrows: Group;
-    private mapGeometry: Group;
+    public mapGeometry: Group;
     private mapMesh: CodeMapMesh;
 
     constructor() {
