@@ -61,15 +61,15 @@ export class geometryGenerator {
             y : n.z0,
             z : n.y0,
             width : n.width,
-            height : this.ensureMinHeightIfDeltaNotNegative(n.height, n.heightDelta),
+            height : this.ensureMinHeightIfUnlessDeltaNegative(n.height, n.heightDelta),
             depth : n.length
         };
     }
 
-    private ensureMinHeightIfDeltaNotNegative(x: number, d: number): number {
-        if(d >= 0) {
-            return Math.max(x, geometryGenerator.MINIMAL_BUILDING_HEIGHT);
-        } else return x;
+    private ensureMinHeightIfUnlessDeltaNegative(x: number, d: number): number {
+        if(d <= 0) {
+            return x;
+        } else return Math.max(x, geometryGenerator.MINIMAL_BUILDING_HEIGHT);
     }
 
     private addFloor(data : intermediateVertexData, n : node, idx : number, desc : codeMapGeometricDescription)
