@@ -69,7 +69,8 @@ export class geometryGenerator {
     private ensureMinHeightIfUnlessDeltaNegative(x: number, d: number): number {
         if(d <= 0) {
             return x;
-        } else return Math.max(x, geometryGenerator.MINIMAL_BUILDING_HEIGHT);
+        }
+        return Math.max(x, geometryGenerator.MINIMAL_BUILDING_HEIGHT);
     }
 
     private addFloor(data : intermediateVertexData, n : node, idx : number, desc : codeMapGeometricDescription)
