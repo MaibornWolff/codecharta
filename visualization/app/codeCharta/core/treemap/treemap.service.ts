@@ -59,10 +59,10 @@ class TreeMapService {
         let heightScale = w / maxHeight;
 
         nodes.forEach((node)=> {
-            this.transformNode(node, heightKey, heightScale, p*PADDING_SCALING_FACTOR * 0.5);
+            this.transformNode(node, heightKey, heightScale, p*PADDING_SCALING_FACTOR * 0.2);
         });
 
-        return nodes;
+        return nodes.filter(node=>(node.x1 - node.x0)>0 && (node.y1 - node.y0) > 0);
     }
 
     /**
@@ -79,14 +79,14 @@ class TreeMapService {
      */
     private transformNode(node, heightKey, heightScale, folderHeight) {
         let heightValue = node.data.attributes[heightKey];
-        if(heightValue === undefined || heightValue === null || heightValue === 0) {
-            heightValue = 1;
+        if(heightValue === undefined || heightValue === null) {
+            heightValue = 0;
         }
-        node.width = Math.max(node.x1 - node.x0, 1);
-        node.length = Math.max(node.y1 - node.y0, 1);
+        node.width = node.x1 - node.x0;
+        node.length = node.y1 - node.y0;
         node.height = node.isLeaf ? heightScale * heightValue : folderHeight;
         node.z0 = folderHeight * node.depth;
-        node.z1 = folderHeight * node.depth + node.height;
+        node.z1 = node.z0 + node.height;
         node.attributes = node.data.attributes;
         node.name = node.data.name;
         if (node.data.deltas) {
