@@ -1,0 +1,13 @@
+<md-dialog aria-label="url param dialog">
+    <md-dialog-content>
+        <p>You can copy these parameters and append them as URL parameters to your CodeCharta URL in order to apply the current settings. Ctrl/Cmd + C to copy selection.</p>
+        <br />
+        <md-input-container class="md-block">
+            <label>URL Parameters</label>
+            <textarea readonly ng-model="$ctrl.queryParams" md-select-on-focus md-auto-focus></textarea>
+        </md-input-container>
+    </md-dialog-content>
+    <md-dialog-actions>
+        <md-button ng-click="$ctrl.hide()" class="md-primary">Close</md-button>
+    </md-dialog-actions>
+</md-dialog>

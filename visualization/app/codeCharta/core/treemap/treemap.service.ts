@@ -78,7 +78,6 @@ class TreeMapService {
      * @param {number} folderHeight height of folder
      */
     private transformNode(node, heightKey, heightScale, folderHeight) {
-        if(!node.data.attributes){console.log("treemap no attributes", node);}
         let heightValue = node.data.attributes[heightKey];
         if(heightValue === undefined || heightValue === null || heightValue === 0) {
             heightValue = 1;

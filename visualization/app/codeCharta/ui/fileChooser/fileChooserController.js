@@ -18,7 +18,7 @@ class FileChooserController {
      * @param {Scope} $scope
      * @param {DataLoadingService} dataLoadingService
      */
-    constructor($scope, dataLoadingService, scenarioService, dataService, $rootScope){
+    constructor($scope, dataLoadingService, scenarioService, dataService, $rootScope, dialogService){
 
         /**
          *
@@ -40,6 +40,7 @@ class FileChooserController {
 
         this.scenarioService = scenarioService;
         this.dataService = dataService;
+        this.dialogService = dialogService;
     }
 
     /**
@@ -80,7 +81,7 @@ class FileChooserController {
             data = JSON.parse(data);
         }
         catch (e) {
-            window.alert("Error parsing JSON!" + e);
+            this.dialogService.showErrorDialog("Error parsing JSON!" + e);
             this.$rootScope.$broadcast("remove-loading-task");
             return;
         }
@@ -121,7 +122,7 @@ class FileChooserController {
      * @param {object} result
      */
     printErrors(result){
-        console.log(result);
+        this.dialogService.showErrorDialog(JSON.stringify(result, null, "\t"));
     }
     
 }

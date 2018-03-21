@@ -26,7 +26,6 @@ export class ResetSettingsButtonController {
         tokens.forEach((token) => {
 
             let steps = token.split(".");
-            console.log(token);
 
             if (steps.length > 1) {
 
