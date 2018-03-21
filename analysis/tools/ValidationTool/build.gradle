@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.2.21'
+    ext.kotlin_version = '1.2.30'
     repositories {
         mavenCentral()
         maven {
@@ -28,12 +28,12 @@ mainClassName = 'de.maibornwolff.codecharta.tools.validation.ValidationTool'
 applicationName = 'codecharta-check'
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compile 'org.everit.json:org.everit.json.schema:1.5.1'
-    compile 'info.picocli:picocli:2.2.1'
+    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: "$kotlin_version"
+    compile group: 'org.everit.json', name: 'org.everit.json.schema', version: '1.5.1'
+    compile group: 'info.picocli', name: 'picocli', version: '2.3.0'
 
-    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
-    testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: "$kotlin_version"
+    testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: "$kotlin_version"
     testCompile('org.jetbrains.spek:spek-api:1.1.5') {
         exclude group: 'org.jetbrains.kotlin'
     }
