@@ -81,7 +81,7 @@ export class StatisticMapService {
                 output.attributes[metric]= Array.apply(null, Array(length));
             }
         }
-        if(input.children&&input.children!={}){
+        if(input.children&&input.children!=[]){
             if (!output.children ) {//if the output have no children we add it
                 output.children = [JSON.parse(JSON.stringify(input.children[0]))];
             }
