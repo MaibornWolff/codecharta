@@ -31,22 +31,18 @@ export class CodeChartaController {
         private $rootScope: IRootScopeService,
         private dialogService: DialogService
     ) {
-        this.init();
+        this.subscribeToLoadingEvents($rootScope);
+        this.loadFileOrSample();
+    }
 
-        //Loading tasks
-        $rootScope.$on("add-loading-task", ()=>{
+    private subscribeToLoadingEvents($rootScope: angular.IRootScopeService) {
+        $rootScope.$on("add-loading-task", () => {
             this.viewModel.numberOfLoadingTasks++;
         });
 
-        $rootScope.$on("remove-loading-task", ()=>{
+        $rootScope.$on("remove-loading-task", () => {
             this.viewModel.numberOfLoadingTasks--;
         });
-
-    }
-
-    init() {
-        this.initHandlers();
-        this.loadFileOrSample();
     }
 
     toggleSidenav(navID) {
@@ -55,97 +51,60 @@ export class CodeChartaController {
 
     showUrlParams() {
         this.dialogService.showQueryParamDialog();
-        //this.dialogService.showPromptDialog("Copy to clipboard: Ctrl+C", this.settingsService.getQueryParamString());
-
     }
 
-    /**
-     * Tries to load the file specified in the given url. Loads sample data if it fails.
-     */
     loadFileOrSample() {
-
         this.viewModel.numberOfLoadingTasks++;
-
         this.urlService.getFileDataFromQueryParam().then(
-
-            //try loading from url param
-
-            //successfully loaded
-            (data) => {
-
-                // set loaded data
-                this.dataLoadingService.loadMapFromFileContent(this.urlService.getParam("file"), data, 0).then(
-                    () => {
-                        this.loadingFinished();
-                        this.settingsService.updateSettingsFromUrl();
-                        this.viewModel.numberOfLoadingTasks--;
-                    },
-                    (r) => {
-                        this.printErrors(r);
-                        this.viewModel.numberOfLoadingTasks--;
-                    }
-                );
-
+            (data)=>{
+                this.trySettingGivenData(this.urlService.getParam("file"), data);
             },
-
-            //fail
-            () => {
-
-                Promise.all([
-                    this.dataLoadingService.loadMapFromFileContent("sample1.json", require("./assets/sample1.json"), 0),
-                    this.dataLoadingService.loadMapFromFileContent("sample2.json", require("./assets/sample2.json"), 1)
-                ]).then(
-                    () => {
-                        this.loadingFinished();
-                        this.settingsService.updateSettingsFromUrl();
-                        this.viewModel.numberOfLoadingTasks--;
-                    },
-                    (r) => {
-                        this.printErrors(r);
-                        this.viewModel.numberOfLoadingTasks--;
-                    }
-                );
-
+            ()=>{
+                if(this.urlService.getParam("file")){
+                    this.dialogService.showErrorDialog("File from the given file URL parameter could not be loaded. Loading sample files instead.");
+                }
+                this.tryLoadingSampleFiles();
             }
-
         );
-
     }
 
-    /**
-     * called after map loading finished. Applies the default scenario.
-     */
+    private trySettingGivenData(name, data) {
+        this.dataLoadingService.loadMapFromFileContent(name, data, 0).then(
+            () => {
+                this.loadingFinished();
+                this.settingsService.updateSettingsFromUrl();
+                this.viewModel.numberOfLoadingTasks--;
+            },
+            (r) => {
+                this.printErrors(r);
+                this.viewModel.numberOfLoadingTasks--;
+            }
+        );
+    }
+
+    private tryLoadingSampleFiles() {
+        Promise.all([
+            this.dataLoadingService.loadMapFromFileContent("sample1.json", require("./assets/sample1.json"), 0),
+            this.dataLoadingService.loadMapFromFileContent("sample2.json", require("./assets/sample2.json"), 1)
+        ]).then(
+            () => {
+                this.loadingFinished();
+                this.settingsService.updateSettingsFromUrl();
+                this.viewModel.numberOfLoadingTasks--;
+            },
+            (r) => {
+                this.printErrors(r);
+                this.viewModel.numberOfLoadingTasks--;
+            }
+        );
+    }
+
     loadingFinished() {
         this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
         this.dataService.setComparisonMap(0);
         this.dataService.setReferenceMap(0);
     }
 
-    /**
-     * initializes keypress handlers
-     */
-    initHandlers() {
-
-        //noinspection TypeScriptUnresolvedFunction
-        $(window).keyup(function (event) {
-            if (event.which === 116) {
-                window.location.reload();
-            }
-        });
-
-        //noinspection TypeScriptUnresolvedFunction
-        $(window).keypress(function (event) {
-            if (event.which === 18 && (event.ctrlKey || event.metaKey)) {
-                window.location.reload();
-            }
-        });
-
-    }
-
-    /**
-     * Prints errors to the browser console and alerts the user
-     * @param {Object} errors an errors object
-     */
     printErrors(errors: Object) {
         this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"));
     }
