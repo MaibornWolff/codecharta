@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Reset Button
 - Dialog Service replaces console log calls and window.alert calls
 - linking tree view and map hover
+- auto fit scene button
 
 ### Changed
 - Clean up UI #86

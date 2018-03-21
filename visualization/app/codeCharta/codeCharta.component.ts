@@ -8,6 +8,7 @@ import {IRootScopeService} from "angular";
 import "./codeCharta.component.scss";
 import {DialogService} from "./ui/dialog/dialog.service";
 import {queryParamDialog} from "./ui/dialog/queryParam.dialog";
+import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
 
 
 /**
@@ -27,6 +28,7 @@ export class CodeChartaController {
         private settingsService: SettingsService,
         private scenarioService: ScenarioService,
         private dataService: DataService,
+        private threeOrbitControlsService: ThreeOrbitControlsService,
         private $mdSidenav: any,
         private $rootScope: IRootScopeService,
         private dialogService: DialogService
@@ -43,6 +45,10 @@ export class CodeChartaController {
         $rootScope.$on("remove-loading-task", () => {
             this.viewModel.numberOfLoadingTasks--;
         });
+    }
+
+    fitMapToView() {
+        this.threeOrbitControlsService.autoFitTo();
     }
 
     toggleSidenav(navID) {

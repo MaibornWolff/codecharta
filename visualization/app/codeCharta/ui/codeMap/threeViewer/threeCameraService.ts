@@ -2,7 +2,8 @@
 
 import * as THREE from "three";
 import {SettingsServiceSubscriber, Settings, SettingsService} from "../../../core/settings/settings.service";
-import {PerspectiveCamera} from "three";
+import {Object3D, PerspectiveCamera} from "three";
+import {ThreeOrbitControlsService} from "./threeOrbitControlsService";
 
 /**
  * Manages the three js camera in an angular way.
@@ -17,9 +18,6 @@ class ThreeCameraService implements SettingsServiceSubscriber {
 
     public camera: PerspectiveCamera;
 
-    /**
-     * @constructor
-     */
     constructor() {
 
     }
