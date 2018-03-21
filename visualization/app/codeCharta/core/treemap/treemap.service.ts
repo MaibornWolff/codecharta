@@ -62,7 +62,7 @@ class TreeMapService {
             this.transformNode(node, heightKey, heightScale, p*PADDING_SCALING_FACTOR * 0.2);
         });
 
-        return nodes.filter(node=>(node.x1 - node.x0)>0 && (node.y1 - node.y0) > 0);
+        return nodes;
     }
 
     /**

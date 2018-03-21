@@ -139,35 +139,30 @@ export class geometryGenerator {
     private estimateColorForBuilding(n : node, colorKey : string, range : colorRange, deltasEnabled : boolean) : number
     {
         let color : number = MapColors.defaultC;
-        
-        if (!n.isDelta)
+
+        if (!deltasEnabled)
         {
+            const val : number = n.attributes[colorKey];
 
-            if (!deltasEnabled)
-            {
-                const val : number = n.attributes[colorKey];
-
-                if(val === undefined || val === null){
-                    color = MapColors.base;
-                }
-                else if (val < range.from)
-                {
-                    color = range.flipped ? MapColors.negative : MapColors.positive;
-                }
-                else if(val > range.to)
-                {
-                    color = range.flipped ? MapColors.positive : MapColors.negative;
-                }
-                else
-                {
-                    color = MapColors.neutral;
-                }
-
-
-            }
-            else{
+            if(val === undefined || val === null){
                 color = MapColors.base;
             }
+            else if (val < range.from)
+            {
+                color = range.flipped ? MapColors.negative : MapColors.positive;
+            }
+            else if(val > range.to)
+            {
+                color = range.flipped ? MapColors.positive : MapColors.negative;
+            }
+            else
+            {
+                color = MapColors.neutral;
+            }
+
+        }
+        else{
+            color = MapColors.base;
         }
 
         return color;
