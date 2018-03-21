@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- Added CrococosmoImporter to Analysis
 
 ### Changed
 - Clean up UI #86
