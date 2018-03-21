@@ -82,9 +82,9 @@ class TreeMapService {
         if(heightValue === undefined || heightValue === null) {
             heightValue = 0;
         }
-        node.width = node.x1 - node.x0;
-        node.length = node.y1 - node.y0;
-        node.height = node.isLeaf ? heightScale * heightValue : folderHeight;
+        node.width = Math.abs(node.x1 - node.x0);
+        node.length = Math.abs(node.y1 - node.y0);
+        node.height = Math.abs(node.isLeaf ? heightScale * heightValue : folderHeight);
         node.z0 = folderHeight * node.depth;
         node.z1 = node.z0 + node.height;
         node.attributes = node.data.attributes;
