@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<graph>
+   <schema>
+      <versions>
+         <version date="2016-07-19 00:00:00" id="1" name="" revision="1"/>
+         <version date="2016-10-21 00:00:00" id="2" name="" revision="2"/>
+      </versions>
+      <nodeschema>
+      </nodeschema>
+      <edgeschema>
+      </edgeschema>
+   </schema>
+   <nodes>
+      <node id="243727125" name="de.mwea.codecharta.importer.sonarimporter" type="bla">
+         <node id="624140595" name="dataaccess" type="blubb">
+            <node id="922352011" name="AuthentificationHandler" type="blablubb">
+               <version id="1">
+                  <attribute name="Property 1" value="2.5"/>
+                  <attribute name="Property 2" value="3.0"/>
+               </version>
+               <version id="2">
+                  <attribute name="Property 1" value="2.5"/>
+                  <attribute name="Property 2" value="3.0"/>
+               </version>
+            </node>
+            <node id="321237028" name="JsonHandler" type="blablubb2">
+               <version id="1">
+                  <attribute name="Property 3" value="1.0"/>
+               </version>
+            </node>
+            <node id="1103129161" name="JsonHandler$MetricObject" type="blablubb3">
+               <version id="1">
+               </version>
+               <version id="2">
+               </version>
+            </node>
+         </node>
+      </node>
+   </nodes>
+   <edges>
+      <edge dstid="922352011" srcid="321237028" type="bla">
+         <version id="1">
+            <attribute name="External Weight" value="11.0"/>
+         </version>
+         <version id="2">
+            <attribute name="External Weight" value="11.0"/>
+         </version>
+      </edge>
+   </edges>
+</graph>

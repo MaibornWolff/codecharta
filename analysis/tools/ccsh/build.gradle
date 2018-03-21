@@ -19,6 +19,7 @@ mainClassName = 'de.maibornwolff.codecharta.tools.ccsh.Ccsh'
 applicationName = 'ccsh'
 
 dependencies {
+    compile project(':import:CrococosmoImporter')
     compile project(':import:CSVImporter')
     compile project(':import:SCMLogParser')
     compile project(':import:SCMLogParser')
