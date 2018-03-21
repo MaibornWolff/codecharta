@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - simple regex filter
 - Reset Button
 - Dialog Service replaces console log calls and window.alert calls
+- linking tree view and map hover
 
 ### Changed
 - Clean up UI #86
