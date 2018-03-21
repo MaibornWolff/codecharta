@@ -2,6 +2,7 @@ import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
 import {Settings} from "../../core/settings/settings.service";
 import {DataModel} from "../data/data.service";
 import {node} from "../../ui/codeMap/rendering/node";
+import {DialogService} from "../../ui/dialog/dialog.service";
 
 
 export enum STATISTIC_OPS  {
@@ -17,6 +18,10 @@ export class StatisticMapService {
 
 
     public static SELECTOR = "statisticMapService";
+
+    constructor(private dialogService: DialogService) {
+
+    }
 
     /*
      * Function that receives an array of maps and returns a map with a structure that contains every leaf contained in
@@ -198,7 +203,7 @@ export class StatisticMapService {
             case STATISTIC_OPS.MEDIAN:
                 return this.median(input);
             default:
-                console.log("The described statistical function, which is "+operation+" does not exist");
+                this.dialogService.showErrorDialog("The described statistical function, which is "+operation+" does not exist");
         }
         return -1;
     }

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - SASS support
 - simple regex filter
 - Reset Button
+- Dialog Service replaces console log calls and window.alert calls
 
 ### Changed
 - Clean up UI #86

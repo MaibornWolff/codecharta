@@ -17,6 +17,7 @@ import "./displaySettingsPanel/displaySettingsPanel";
 import "./experimentalSettingsPanel/experimentalSettingsPanel";
 import "./regexFilter/regexFilter";
 import "./resetSettingsButton/resetSettingsButton";
+import "./dialog/dialog";
 
 angular.module(
     "app.codeCharta.ui",
@@ -35,6 +36,7 @@ angular.module(
         "app.codeCharta.ui.experimentalSettingsPanel",
         "app.codeCharta.ui.rangeSlider",
         "app.codeCharta.ui.resetSettingsButton",
+        "app.codeCharta.ui.dialog",
         "app.codeCharta.ui.regexFilter"
     ]);
 

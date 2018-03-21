@@ -1,4 +1,3 @@
-"use strict";
 import {DataLoadingService} from "./core/data/data.loading.service";
 import {UrlService} from "./core/url/url.service";
 import {SettingsService} from "./core/settings/settings.service";
@@ -7,6 +6,8 @@ import {DataService} from "./core/data/data.service";
 import $ from "jquery";
 import {IRootScopeService} from "angular";
 import "./codeCharta.component.scss";
+import {DialogService} from "./ui/dialog/dialog.service";
+import {queryParamDialog} from "./ui/dialog/queryParam.dialog";
 
 
 /**
@@ -27,7 +28,8 @@ export class CodeChartaController {
         private scenarioService: ScenarioService,
         private dataService: DataService,
         private $mdSidenav: any,
-        private $rootScope: IRootScopeService
+        private $rootScope: IRootScopeService,
+        private dialogService: DialogService
     ) {
         this.init();
 
@@ -52,7 +54,9 @@ export class CodeChartaController {
     }
 
     showUrlParams() {
-        window.prompt("Copy to clipboard: Ctrl+C", this.settingsService.getQueryParamString());
+        this.dialogService.showQueryParamDialog();
+        //this.dialogService.showPromptDialog("Copy to clipboard: Ctrl+C", this.settingsService.getQueryParamString());
+
     }
 
     /**
@@ -143,8 +147,7 @@ export class CodeChartaController {
      * @param {Object} errors an errors object
      */
     printErrors(errors: Object) {
-        window.alert("Wrong format. See console logs for details.");
-        console.log(errors);
+        this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"));
     }
 
 }
