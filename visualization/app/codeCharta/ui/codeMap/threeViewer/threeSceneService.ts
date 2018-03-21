@@ -73,7 +73,11 @@ class ThreeSceneService {
             );
         }
 
-        this.mapGeometry.add(mesh.getThreeMesh());
+        //TODO discuss
+        let helper = new THREE.EdgesHelper( this.mapMesh.getThreeMesh(), 0x333333 );
+        this.mapGeometry.add(helper);
+        this.mapGeometry.add(this.mapMesh.getThreeMesh());
+
 
         this.mapGeometry.position.x = -size / 2.0;
         this.mapGeometry.position.y = 0.0;
