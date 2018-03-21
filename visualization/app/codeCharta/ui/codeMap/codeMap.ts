@@ -3,7 +3,7 @@ import angular from "angular";
 import "./threeViewer/threeViewer";
 import "../../core/core.module";
 
-import {codeMapComponent} from "./codeMapComponent";
+import {codeMapComponent} from "./codeMap.component";
 import {CodeMapMouseEventService} from "./codeMap.mouseEvent.service";
 import {CodeMapRenderService} from "./codeMap.render.service";
 
