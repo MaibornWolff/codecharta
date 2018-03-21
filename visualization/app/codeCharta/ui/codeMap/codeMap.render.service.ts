@@ -6,20 +6,20 @@ import {LabelManager} from "./rendering/labelManager"
 import {SettingsServiceSubscriber, Settings, SettingsService} from "../../core/settings/settings.service";
 import {node} from "./rendering/node";
 import {ArrowManager} from "./rendering/arrowManager";
-import {
-    CodeMapBuildingTransition, CodeMapController,
-    CodeMapControllerSubscriber
-} from "./codeMapComponent";
 import {CodeMapDependency} from "../../core/data/model/CodeMap";
+import {
+    CodeMapBuildingTransition, CodeMapMouseEventService,
+    CodeMapMouseEventServiceSubscriber
+} from "./codeMap.mouseEvent.service";
 
 const mapSize = 500.0;
 
 /**
  * Main service to manage the state of the rendered code map
  */
-export class CodeMapService implements SettingsServiceSubscriber, CodeMapControllerSubscriber {
+export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapMouseEventServiceSubscriber {
 
-    public static SELECTOR = "codeMapService";
+    public static SELECTOR = "codeMapRenderService";
 
     private _mapMesh: CodeMapMesh = null;
     private labelManager: LabelManager = null;
@@ -34,7 +34,7 @@ export class CodeMapService implements SettingsServiceSubscriber, CodeMapControl
                 private $rootScope,
                 private settingsService: SettingsService) {
         this.settingsService.subscribe(this);
-        CodeMapController.subscribe($rootScope, this);
+        CodeMapMouseEventService.subscribe($rootScope, this);
     }
 
     onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {

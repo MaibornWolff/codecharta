@@ -1,12 +1,12 @@
 import {SettingsService, Settings, SettingsServiceSubscriber} from "../../core/settings/settings.service";
-import {
-    CodeMapControllerSubscriber, CodeMapBuildingTransition,
-    CodeMapController
-} from "../codeMap/codeMapComponent";
 import {codeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
 import {KVObject} from "../../core/data/data.deltaCalculator.service";
 import {DataService} from "../../core/data/data.service";
 import "./detailPanel.scss";
+import {
+    CodeMapBuildingTransition, CodeMapMouseEventService,
+    CodeMapMouseEventServiceSubscriber
+} from "../codeMap/codeMap.mouseEvent.service";
 
 interface CommonDetails {
     areaAttributeName: string | null,
@@ -36,7 +36,7 @@ interface Details {
     selected: SpecificDetails
 }
 
-export class DetailPanelController implements SettingsServiceSubscriber, CodeMapControllerSubscriber {
+export class DetailPanelController implements SettingsServiceSubscriber, CodeMapMouseEventServiceSubscriber {
 
     private details: Details;
     private settings: Settings;
@@ -89,7 +89,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         this.onSettingsChanged(settingsService.settings);
 
         this.settingsService.subscribe(this);
-        CodeMapController.subscribe($rootScope, this);
+        CodeMapMouseEventService.subscribe($rootScope, this);
 
     }
 
