@@ -175,7 +175,7 @@ describe("treemap.service", function() {
             // expect measures
             expect(node.width).toBe(5);
             expect(node.height).toBe(10);
-            expect(node.length).toBe(1);
+            expect(node.length).toBe(3);
 
             // expect new z values
             expect(node.z0).toBe(4);
