@@ -5,7 +5,7 @@ import angular from "angular";
 import "./settingsPanel/index";
 import "./revisionChooser/revisionChooser";
 import "./legendPanel/legendPanel";
-import "./fileChooser/fileChooser.js";
+import "./fileChooser/fileChooser";
 import "./detailPanel/detailPanel";
 import "./scenarioButtons/scenarioButtons";
 import "./mapTreeView/mapTreeView";
