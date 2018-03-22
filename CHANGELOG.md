@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
+
+### Removed
+
+### Fixed
+
+## [1.10.0] - 2018-03-22
+### Added
+
+### Changed
 - Clean up UI #86
 - Updated analysis dependencies
 
