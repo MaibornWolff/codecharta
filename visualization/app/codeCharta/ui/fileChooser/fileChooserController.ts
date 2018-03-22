@@ -18,29 +18,14 @@ class FileChooserController {
      * @param {Scope} $scope
      * @param {DataLoadingService} dataLoadingService
      */
-    constructor($scope, dataLoadingService, scenarioService, dataService, $rootScope, dialogService){
-
-        /**
-         *
-         * @type {Scope}
-         */
-        this.$scope = $scope;
-
-        /**
-         *
-         * @type {IRootScopeService}
-         */
-        this.$rootScope = $rootScope;
-
-        /**
-         *
-         * @type {DataLoadingService}
-         */
-        this.service = dataLoadingService;
-
-        this.scenarioService = scenarioService;
-        this.dataService = dataService;
-        this.dialogService = dialogService;
+    constructor(
+        private $scope,
+        private dataLoadingService,
+        private scenarioService,
+        private dataService,
+        private $rootScope,
+        private dialogService
+    ){
     }
 
     /**
@@ -57,7 +42,7 @@ class FileChooserController {
                     var name = file.name;
                     var reader = new FileReader();
                     reader.onload = function(e) {
-                        ctx.onNewFileLoaded(e.target.result, i, name, element);
+                        ctx.onNewFileLoaded((<any>e.target).result, i, name, element);
                     };
                     reader.readAsText(file, "UTF-8");
                 })(element.files[i], i);
@@ -99,7 +84,7 @@ class FileChooserController {
      */
     setNewData(name, parsedData, revision){
         let ctx = this;
-        this.service.loadMapFromFileContent(name, parsedData, revision).then(
+        this.dataLoadingService.loadMapFromFileContent(name, parsedData, revision).then(
             () => {
 
                 ctx.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());

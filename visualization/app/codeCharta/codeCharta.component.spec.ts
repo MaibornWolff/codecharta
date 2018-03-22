@@ -1,113 +1,26 @@
-import {codeChartaComponent, CodeChartaController} from "./codeCharta.component";
-import {DataService} from "../../core/data/data.service";
-import {SettingsService} from "../../core/settings/settings.service";
-import {IRootScopeService} from "angular";
-import {DataLoadingService} from "./core/data/data.loading.service";
-import {UrlService} from "./core/url/url.service";
-import {ScenarioService} from "./core/scenario/scenario.service";
-import $ from "jquery";
+import "./codeCharta";
+import {CodeChartaController} from "./codeCharta.component";
+import {IHttpBackendService, IRootScopeService} from "angular";
+import {NGMock} from "../../mocks/ng.mockhelper";
 
 describe("CodeChartaController", () => {
 
-    let dataServiceMock: DataService;
-    let dataLoadingServiceMock: DataLoadingService;
-    let settingsServiceMock: SettingsService;
-    let urlServiceMock: UrlService;
-    let scenarioServiceMock: ScenarioService;
-    let rootScopeMock: IRootScopeService;
     let codeChartaController: CodeChartaController;
+    let $httpBackend: IHttpBackendService;
+    let $rootScope: IRootScopeService;
 
-    function rebuildSUT() {
-        codeChartaController = new CodeChartaController(
-            dataLoadingServiceMock,
-            urlServiceMock,
-            settingsServiceMock,
-            scenarioServiceMock,
-            dataServiceMock,
-            rootScopeMock
-        );
-    }
+    beforeEach(NGMock.mock.module("app.codeCharta"));
 
-    function mockEverything() {
+    beforeEach(NGMock.mock.inject((_codeChartaController_, _$rootScope_, _$httpBackend_) => {
+        $rootScope = _$rootScope_;
+        $httpBackend = _$httpBackend_;
+        codeChartaController = _codeChartaController_;
+    }));
 
-        const RootScopeMock = jest.fn<IRootScopeService>(() => ({
-            $on: jest.fn()
-        }));
+    it("number of loading tasks should change according to add-loading-task and remove-loading-task events",()=>{});
+    it("",()=>{});
 
-        rootScopeMock = new RootScopeMock();
-
-        const DataServiceMock = jest.fn<DataService>(() => ({
-            setComparisonMap: jest.fn(),
-            setReferenceMap: jest.fn(),
-            subscribe: jest.fn(),
-            getComparisonMap: jest.fn(),
-            getReferenceMap: jest.fn(),
-            $rootScope: rootScopeMock,
-            data: {
-                revisions: []
-            },
-            notify: jest.fn()
-        }));
-
-        dataServiceMock = new DataServiceMock();
-
-        const ScenarioServiceMock = jest.fn<ScenarioService>(() => ({
-
-        }));
-
-        scenarioServiceMock = new ScenarioServiceMock();
-
-        const UrlServiceMock = jest.fn<UrlService>(() => ({
-            getFileDataFromQueryParam: jest.fn()
-        }));
-
-        urlServiceMock = new UrlServiceMock();
-
-        const DataLoadingServiceMock = jest.fn<DataLoadingService>(() => ({
-
-        }));
-
-        dataLoadingServiceMock = new DataLoadingServiceMock();
-
-        const SettingsServiceMock = jest.fn<SettingsService>(() => ({
-
-        }));
-
-        settingsServiceMock = new SettingsServiceMock();
-
-        rebuildSUT();
-
-    }
-
-    beforeEach(()=>{
-        mockEverything();
-    });
-
-    xit("should reload page on key 18 and key 116", ()=>{
-
-        codeChartaController.init = jest.fn();
-
-        window.location.reload = jest.fn();
-
-        var event18c = $.Event( "keypress" );
-        event18c.which = 18;
-        event18c.ctrlKey = true;
-        $(window).trigger(event18c);
-
-        var event18m = $.Event( "keypress" );
-        event18m.which = 18;
-        event18m.metaKey = true;
-        $(window).trigger(event18m);
-
-        var event116 = $.Event( "keyup" );
-        event116.which = 116;
-        $(window).trigger(event116);
-
-        $(window).trigger("other");
-
-        expect(window.location.reload).toHaveBeenCalledTimes(3);
-
-    });
+    //////////////
 
     /**
      * @test {CodeChartaController#loadFileOrSample}

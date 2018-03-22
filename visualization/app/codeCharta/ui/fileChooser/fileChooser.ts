@@ -1,9 +1,11 @@
 "use strict";
 
+import angular from "angular";
+
 import "../../core/core.module";
 import "../../ui/dialog/dialog";
-import {FileChooserDirective} from "./fileChooserDirective.js";
-import {FileChooserController} from "./fileChooserController.js";
+import {FileChooserDirective} from "./fileChooserDirective";
+import {FileChooserController} from "./fileChooserController";
 
 angular.module("app.codeCharta.ui.fileChooser",["app.codeCharta.core", "app.codeCharta.ui.dialog"]);
 
