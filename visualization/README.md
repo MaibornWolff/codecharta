@@ -13,6 +13,8 @@
 ## Installation
 [[Back To Top]](#jump-to-section)
 
+change working directory `cd <projectpath>/codecharta/visualization/`
+
 #### Install application for desktop usage with npm
 
 * install with `npm install codecharta-visualization -g`
@@ -26,7 +28,7 @@
 #### Install project for development
 
 * Install node 8
-* Install dependencies `cd <projectpath>/codecharta/visualization/; npm install`.
+* Install dependencies `npm install`.
 
 Once you have installed the project, you can use all grunt tasks described in the next section.
 
