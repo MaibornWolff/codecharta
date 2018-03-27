@@ -1,17 +1,21 @@
 import {ScenarioButtonsController} from "./scenarioButtonsComponent";
 import {ScenarioService} from "../../core/scenario/scenario.service";
-import {ToolTipService} from "../../core/tooltip/tooltip.service";
+import {TooltipService} from "../../core/tooltip/tooltip.service";
 import {IScope} from "angular";
+import {SettingsService, SettingsService} from "../../core/settings/settings.service";
+import {DataService} from "../../core/data/data.service";
 
 describe("ScenarioButtonsController", () => {
 
     let scenarioServiceMock: ScenarioService;
-    let tooltipServiceMock: ToolTipService;
+    let settingsServiceMock: SettingsService;
+    let dataServiceMock: DataService;
+    let tooltipServiceMock: TooltipService;
     let scopeMock: IScope;
     let scenarioButtonsController: ScenarioButtonsController;
 
     function rebuildSUT() {
-        scenarioButtonsController = new ScenarioButtonsController(scenarioServiceMock, tooltipServiceMock, scopeMock);
+        scenarioButtonsController = new ScenarioButtonsController(scenarioServiceMock, tooltipServiceMock, settingsServiceMock, dataServiceMock, scopeMock);
     }
 
     function mockEverything() {
@@ -23,7 +27,19 @@ describe("ScenarioButtonsController", () => {
 
         scenarioServiceMock = new ScenarioServiceMock();
 
-        const TooltipServiceMock = jest.fn<ToolTipService>(() => ({
+        const SettingsServiceMock = jest.fn<SettingsService>(() => ({
+            subscribe: jest.fn()
+        }));
+
+        settingsServiceMock = new SettingsServiceMock();
+
+        const DataServiceMock = jest.fn<DataService>(() => ({
+            subscribe: jest.fn()
+        }));
+
+        dataServiceMock = new DataServiceMock();
+
+        const TooltipServiceMock = jest.fn<TooltipService>(() => ({
             getTooltipTextByKey: jest.fn(),
             subscribe: jest.fn()
         }));
@@ -44,12 +60,17 @@ describe("ScenarioButtonsController", () => {
         mockEverything();
     });
 
-    it("should subscribe to tooltipService on construction", () => {
+    it("should subscribe to services on construction", () => {
         expect(tooltipServiceMock.subscribe).toHaveBeenCalledWith(scenarioButtonsController);
+        expect(dataServiceMock.subscribe).toHaveBeenCalledWith(scenarioButtonsController);
+        expect(settingsServiceMock.subscribe).toHaveBeenCalledWith(scenarioButtonsController);
     });
 
-    it("should be invisible on construction", () => {
-        expect(!scenarioButtonsController.visible);
+    it("should update scenarios on data or settings change", () => {
+        scenarioButtonsController.updateScenarios = jest.fn();
+        scenarioButtonsController.onDataChanged(null, null);
+        scenarioButtonsController.onSettingsChanged(null, null);
+        expect(scenarioButtonsController.updateScenarios).toHaveBeenCalledTimes(2);
     });
 
     it("should get scenarios from scenario service on startup", () => {
@@ -57,14 +78,6 @@ describe("ScenarioButtonsController", () => {
         scenarioServiceMock.getScenarios.mockReturnValue(scenarios);
         rebuildSUT();
         expect(scenarioButtonsController.scenarios).toBe(scenarios);
-    });
-
-    it("toggle() should toggle visible property", () => {
-        expect(!scenarioButtonsController.visible);
-        scenarioButtonsController.toggle();
-        expect(scenarioButtonsController.visible);
-        scenarioButtonsController.toggle();
-        expect(!scenarioButtonsController.visible);
     });
 
     it("tooltips change should apply the scope", ()=>{

@@ -1,1 +1,2 @@
 <a ng-repeat="(key, value) in $ctrl.scenarios" class="waves-effect waves-light btn scenario-btn" title="{{$ctrl.getScenarioTooltipTextByKey(value.name);}}" ng-click="$ctrl.onclick(value)">{{value.name}}</a>
+<p ng-if="$ctrl.scenarios.length <= 0">No compatible scenarios found</p>
