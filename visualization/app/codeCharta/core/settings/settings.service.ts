@@ -176,7 +176,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     }
 
     /**
-     * TODO this method can be propably implemented much better
      * updates the settings object according to url parameters. url parameters are named like the accessors of the Settings object. E.g. scale.x or areaMetric
      * @emits {settings-changed} transitively on call
      */

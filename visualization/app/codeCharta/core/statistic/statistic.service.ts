@@ -297,48 +297,4 @@ export class StatisticMapService {
         }
         return median;
     }
-
-    /*
-     * Function that returns true when two objects contain the same even when it is not in the same order
-     * ({a,b}=={b,a} would return true)
-     * Only used in testing TODO such methods should not be implemented. Testing should not rely on test specific methods
-     */
-
-    /*unorderedCompare(a: Object,b: Object): boolean{
-        var same : boolean = false;
-        //We check if we reached a leave. Falls that happened the
-        if(Object.keys(a).length==0&&JSON.stringify(a) != JSON.stringify(b)){
-            return false;
-        }
-        //If a key contained in a is not contained in b, has different type or different number of keys they are diff
-        for(let key in a){
-            if(!b[key]||typeof(b[key])!=typeof(a[key])||Object.keys(a[key]).length!=Object.keys(b[key]).length){
-                return false;
-            }
-        }
-        //Here is only reached if both a and b have the same keys and those values have the same type and number of keys
-        for(let key in a){
-            if(typeof(a[key])=="object"){//check if this works
-                //if key is a number we look for a branch in b that has the same as this branch in a
-                if(typeof (key)=="number"){
-                    for(let keyb in b){
-                        if(this.unorderedCompare(a[key],b[keyb])){
-                            same= true;
-                        }
-                    }
-                    if(!same){
-                        return false;
-                    }
-                }
-                //If the key is not a number we compare that branch in a with the branch with the same key in b
-                else if(!this.unorderedCompare(a[key],b[key])){
-                    return false;
-                }
-            }//if the value is not an object
-            else if(a[key]!=b[key]){
-                return false;
-            }
-        }
-        return true;
-    }*/
 }
