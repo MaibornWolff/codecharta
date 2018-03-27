@@ -15,3 +15,7 @@
 #colorSliderLabel {
     font-size: 1rem !important;
 }
+
+.input-field label {
+    top: 0;
+}
