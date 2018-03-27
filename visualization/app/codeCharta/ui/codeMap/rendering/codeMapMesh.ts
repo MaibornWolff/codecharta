@@ -79,7 +79,6 @@ export class CodeMapMesh {
     private initMaterial(settings : renderSettings) : void
     {
 
-        //TODO
         if(settings.deltaColorFlipped) {
             this.setDeltaColorsFlipped();
         } else {

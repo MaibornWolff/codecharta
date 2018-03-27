@@ -1,13 +1,4 @@
 display-settings-panel-component {
 
-  /**
-   * TODO These are overrides needed to make materialize and ngMaterial work at the same time. remove these as soon materialize is gone
-   */
-  [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
-    position: relative;
-    left: 0px;
-    opacity: 1;
-  }
-
 }
 
