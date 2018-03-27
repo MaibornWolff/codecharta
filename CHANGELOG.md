@@ -14,6 +14,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - auto fit scene button
 
 ### Changed
+
+### Removed
+
+### Fixed
+- less flickering and artifacts
+
+## [1.10.0] - 2018-03-22
+### Added
+
+### Changed
 - Clean up UI #86
 - Updated analysis dependencies
 
@@ -25,7 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Problems when intermediate nodes missed metrics #92
 - removed unnecessary calculations
 - removed bug in SonarImporter that slowed up performance and missed out multiple metrics
-- less flickering and artifacts
+- minor bugs
 
 ## [1.9.3] - 2018-02-23
 ### Added

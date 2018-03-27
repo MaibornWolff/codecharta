@@ -13,6 +13,8 @@
 ## Installation
 [[Back To Top]](#jump-to-section)
 
+change working directory `cd <projectpath>/codecharta/visualization/`
+
 #### Install application for desktop usage with npm
 
 * install with `npm install codecharta-visualization -g`
