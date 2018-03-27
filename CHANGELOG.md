@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
-- Added Link in visualization
+- Added Link in visualization #84
 
 ### Changed
 
