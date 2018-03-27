@@ -1,6 +1,6 @@
 <range-slider-component></range-slider-component>
 
-<md-input-container class="md-block">
+<md-input-container class="md-block" ng-if="!$ctrl.viewModel.deltas">
     <md-checkbox class="md-primary" ng-model="$ctrl.viewModel.flipped" ng-change="$ctrl.apply()">
         Invert Colors
     </md-checkbox>
