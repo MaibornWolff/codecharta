@@ -15,7 +15,7 @@ export class ScenarioService {
     private scenarios: Scenario[];
 
     /* ngInject */
-    constructor(private settingsService) {
+    constructor(private settingsService, private dataService) {
         this.scenarios = require("./scenarios.json");
     }
 
@@ -32,7 +32,16 @@ export class ScenarioService {
      * @returns {Scenario[]} all scenarios
      */
     public getScenarios(): Scenario[] {
-        return this.scenarios;
+        return this.scenarios.filter(s => this.isScenarioPossible(s, this.dataService._data.metrics));
+    }
+
+    public isScenarioPossible(scenario: Scenario, metrics: string[]) {
+        if(!scenario || !metrics) {
+            return false;
+        }
+        return (metrics.filter(x => x === scenario.settings.areaMetric).length > 0 &&
+        metrics.filter(x => x === scenario.settings.heightMetric).length > 0 &&
+        metrics.filter(x => x === scenario.settings.colorMetric).length > 0);
     }
 
     /**
