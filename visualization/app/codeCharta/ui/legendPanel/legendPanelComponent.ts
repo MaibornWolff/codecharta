@@ -145,7 +145,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     }
 
     setOperation(operation: STATISTIC_OPS): string{
-        if(operation=== STATISTIC_OPS.NOTHING){
+        if(operation=== STATISTIC_OPS.NOTHING || !operation){
             return "";
         }
         return (<string>operation).replace("_", " ").toLowerCase();
