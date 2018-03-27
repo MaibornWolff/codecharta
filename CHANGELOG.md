@@ -12,10 +12,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Dialog Service replaces console log calls and window.alert calls
 - linking tree view and map hover
 - auto fit scene button
+- anugularJS material
 
 ### Changed
 
 ### Removed
+- materialize-css
 
 ### Fixed
 - less flickering and artifacts
