@@ -5,7 +5,7 @@ detail-panel-component {
         $detail-border-color: #dfdfdf;
 
         max-height: 50%;
-        overflow-y: scroll;
+        overflow-y: auto;
 
         box-shadow: 0px 0px 8px 1px $detail-border-color;
 
