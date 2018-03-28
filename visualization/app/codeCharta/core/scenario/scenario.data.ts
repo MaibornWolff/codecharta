@@ -32,4 +32,4 @@ export function createDefaultScenario(map: CodeMap): Scenario {
         autoFitCamera: true
     };
 
-};
+}

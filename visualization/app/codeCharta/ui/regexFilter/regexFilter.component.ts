@@ -13,7 +13,7 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
     public viewModel = {
         filter: "",
         error: ""
-    }
+    };
 
     /* @ngInject */
     constructor(private $timeout: ITimeoutService,

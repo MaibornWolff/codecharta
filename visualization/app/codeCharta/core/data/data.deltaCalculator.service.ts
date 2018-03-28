@@ -7,7 +7,7 @@ import * as deepcopy from "deepcopy";
 import {DataDecoratorService} from "./data.decorator.service";
 
 export interface KVObject {
-    [key: string]: number
+    [key: string]: number;
 }
 
 /**
@@ -63,7 +63,7 @@ export class DeltaCalculatorService {
 
             if (!childFoundSteppingIntoIt) {
                 //create new folder and start again
-                currentPathArray.push(insertPathArray[0])
+                currentPathArray.push(insertPathArray[0]);
 
                 let folder = {
                     name: insertPathArray[0],
@@ -72,7 +72,7 @@ export class DeltaCalculatorService {
                     origin: node.origin,
                     visible: true,
                     attributes: {}
-                }
+                };
 
                 this.dataDecoratorService.decorateNodeWithChildrenMeanMetrics(d3.hierarchy(folder), metrics);
                 folder.attributes["unary"] = 1;
@@ -157,7 +157,7 @@ export class DeltaCalculatorService {
 
         ////make all ancestors attributes 0
         copy.each((node) => {
-            for (var property in node.data.attributes) {
+            for (let property in node.data.attributes) {
                 if (node.data.attributes.hasOwnProperty(property)) {
                     node.data.attributes[property] = 0;
                 }
@@ -171,7 +171,7 @@ export class DeltaCalculatorService {
 
     private calculateAttributeListDelta(first: KVObject, second: KVObject) {
         let deltas = {};
-        for (var key in second) {
+        for (let key in second) {
             if (key) {
                 let firstValue = first[key] ? first[key] : 0; //assume zero if no value in first
                 let secondValue = second[key];

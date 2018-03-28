@@ -23,4 +23,4 @@ export class FileChooserDirective{
         $scope.id = "fileChooser" + (this.uniqueId++);
     }
 
-};
+}

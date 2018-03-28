@@ -4,9 +4,9 @@ import {createDefaultScenario} from "./scenario.data";
 import {ThreeOrbitControlsService} from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 
 export interface Scenario {
-    name: string,
-    settings: Settings,
-    autoFitCamera: boolean
+    name: string;
+    settings: Settings;
+    autoFitCamera: boolean;
 }
 
 /**

@@ -9,31 +9,31 @@ import {
 } from "../codeMap/codeMap.mouseEvent.service";
 
 interface CommonDetails {
-    areaAttributeName: string | null,
-    heightAttributeName: string | null,
-    colorAttributeName: string | null
+    areaAttributeName: string | null;
+    heightAttributeName: string | null;
+    colorAttributeName: string | null;
 }
 
 
 interface SpecificDetails {
-    name: string | null,
-    area: number | null,
-    height: number | null,
-    color: number | null,
-    heightDelta: number | null,
-    areaDelta: number | null,
-    colorDelta: number | null,
-    link: string | null,
-    origin: string | null,
-    path: string | null,
-    attributes: KVObject | null
-    deltas: KVObject | null
+    name: string | null;
+    area: number | null;
+    height: number | null;
+    color: number | null;
+    heightDelta: number | null;
+    areaDelta: number | null;
+    colorDelta: number | null;
+    link: string | null;
+    origin: string | null;
+    path: string | null;
+    attributes: KVObject | null;
+    deltas: KVObject | null;
 }
 
 interface Details {
-    common: CommonDetails,
-    hovered: SpecificDetails,
-    selected: SpecificDetails
+    common: CommonDetails;
+    hovered: SpecificDetails;
+    selected: SpecificDetails;
 }
 
 export class DetailPanelController implements SettingsServiceSubscriber, CodeMapMouseEventServiceSubscriber {

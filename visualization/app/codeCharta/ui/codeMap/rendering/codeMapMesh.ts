@@ -8,8 +8,8 @@ import {codeMapBuilding} from "./codeMapBuilding";
 import {renderingUtil} from "./renderingUtil";
 import {node} from "./node";
 
-import {MapColors} from "./renderSettings"
-import {renderSettings} from "./renderSettings"
+import {MapColors} from "./renderSettings";
+import {renderSettings} from "./renderSettings";
 
 interface threeUniform {
     type : string;
@@ -17,8 +17,8 @@ interface threeUniform {
 }
 
 interface codeMapLightingParams {
-    numHighlights : threeUniform,
-    numSelections : threeUniform,
+    numHighlights : threeUniform;
+    numSelections : threeUniform;
     highlightColor : threeUniform;
     highlightedIndices : threeUniform;
     selectedColor : threeUniform;
@@ -29,8 +29,8 @@ interface codeMapLightingParams {
 }
 
 export interface mousePos {
-    x : number,
-    y : number
+    x : number;
+    y : number;
 }
 
 export class CodeMapMesh {
@@ -115,7 +115,7 @@ export class CodeMapMesh {
     public setHighlighted(buildings : codeMapBuilding[], color? : number)
     {
         //noinspection TypeScriptUnresolvedVariable
-        this.material.uniforms.highlightedIndices.value = buildings.map((b : codeMapBuilding) => {return b.id});
+        this.material.uniforms.highlightedIndices.value = buildings.map((b : codeMapBuilding) => {return b.id;});
         //noinspection TypeScriptUnresolvedVariable
         this.material.uniforms.numHighlights.value = buildings.length;
 
@@ -129,7 +129,7 @@ export class CodeMapMesh {
     public setSelected(buildings : codeMapBuilding[], color? : number)
     {
         //noinspection TypeScriptUnresolvedVariable
-        this.material.uniforms.selectedIndices.value = buildings.map((b : codeMapBuilding) => {return b.id});
+        this.material.uniforms.selectedIndices.value = buildings.map((b : codeMapBuilding) => {return b.id;});
         //noinspection TypeScriptUnresolvedVariable
         this.material.uniforms.numSelections.value  = buildings.length;
         

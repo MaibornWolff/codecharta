@@ -6,7 +6,7 @@ import * as THREE from "three";
 import {ThreeSceneService} from "./threeSceneService";
 
 export interface CameraChangeSubscriber {
-    onCameraChanged(camera: PerspectiveCamera, event: IAngularEvent)
+    onCameraChanged(camera: PerspectiveCamera, event: IAngularEvent);
 }
 
 /**
@@ -32,8 +32,8 @@ class ThreeOrbitControlsService {
 
         const scale = 1.4; // object size / display size
         const objectAngularSize = ( this.threeCameraService.camera.fov * Math.PI / 180 ) * scale;
-        const distanceToCamera = boundingSphere.radius / Math.tan( objectAngularSize / 2 )
-        const len = Math.sqrt( Math.pow( distanceToCamera, 2 ) + Math.pow( distanceToCamera, 2 ) )
+        const distanceToCamera = boundingSphere.radius / Math.tan( objectAngularSize / 2 );
+        const len = Math.sqrt( Math.pow( distanceToCamera, 2 ) + Math.pow( distanceToCamera, 2 ) );
 
         this.threeCameraService.camera.position.set(len, len, len);
         this.controls.update();

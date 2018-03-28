@@ -12,7 +12,7 @@ export enum STATISTIC_OPS  {
     MAX = "MAX",
     MIN = "MIN",
     FASHION = "FASHION"
-};
+}
 
 export class StatisticMapService {
 
@@ -36,14 +36,14 @@ export class StatisticMapService {
         if(operation == STATISTIC_OPS.NOTHING){
             return data.renderMap;
         }
-        var maps: CodeMap[] = data.revisions;
+        let maps: CodeMap[] = data.revisions;
         if(maps.length === 1){
             return maps[0];
         }
 
-        var accumulated = {} as CodeMap;//Map that contains an array of every value of every map given in maps array
+        let accumulated = {} as CodeMap;//Map that contains an array of every value of every map given in maps array
         accumulated.root = {} as CodeMapNode;
-        var unified: CodeMap;
+        let unified: CodeMap;
         accumulated.fileName = operation+"";
         for(let i: number=0; i<maps.length; i++){//Loop through every CodeMap of the input array and get all of them in accumulated
             //Only leaf have attributes and no child.
@@ -150,7 +150,7 @@ export class StatisticMapService {
             output.root=this.emptyMap(output.root);
         }
         else if(output.children&&output.children.length!=0){
-            for(var i=0;i<output.children.length;i++){
+            for(let i=0;i<output.children.length;i++){
                 output.children[i]=this.emptyMap(output.children[i]);
             }
         }
@@ -213,8 +213,8 @@ export class StatisticMapService {
      * Function that returns the mean of the values in the input array.
      */
     mean(input: number[]): number{
-        var output: number = 0.0;
-        for(var i: number=0;i<input.length; i++){
+        let output: number = 0.0;
+        for(let i: number=0;i<input.length; i++){
             if(input[i] !== undefined){
                 output+=input[i];
             }
@@ -227,8 +227,8 @@ export class StatisticMapService {
      * Function that returns the highest value of the input array
      */
     max(input: number[]): number{
-        var output: number;
-        for(var i: number=0;i<input.length; i++){
+        let output: number;
+        for(let i: number=0;i<input.length; i++){
             if(input[i] !== undefined){
                 if(output == undefined || output<input[i]){
                     output=input[i];
@@ -242,8 +242,8 @@ export class StatisticMapService {
      * Function that returns the lowest value of the input array
      */
     min(input: number[]): number{
-        var output;
-        for(var i: number=0;i<input.length; i++){
+        let output;
+        for(let i: number=0;i<input.length; i++){
             if(input[i] !== undefined){
                 if(output == undefined || output>input[i]){
                     output=input[i];
@@ -257,10 +257,10 @@ export class StatisticMapService {
      * Function that returns the most common value in the input array
      */
     fashion(input: number[]): number{
-        var frequency: any = {};//Object that contains every different value in input linked to its absolute frequency
-        var fashion_frequency: number = 0;//Absolute frequency of the fashion value
-        var fashion_value: number;
-        for(var i: number=0;i<input.length; i++){
+        let frequency: any = {};//Object that contains every different value in input linked to its absolute frequency
+        let fashion_frequency: number = 0;//Absolute frequency of the fashion value
+        let fashion_value: number;
+        for(let i: number=0;i<input.length; i++){
             if(input[i] !== undefined){
                 if(!frequency[input[i]]){
                     frequency[input[i]] = 1;
@@ -283,9 +283,9 @@ export class StatisticMapService {
      * Function that returns the median value in the input array
      */
     median(input: number[]): number{
-        var sorted: number[] = input.filter(function(value) { return value !== undefined }).sort();
-        var median: number;
-        var num: number = sorted.length;
+        let sorted: number[] = input.filter(function(value) { return value !== undefined; }).sort();
+        let median: number;
+        let num: number = sorted.length;
         if((num % 2) == 0){
             median = sorted[num/2];
         }

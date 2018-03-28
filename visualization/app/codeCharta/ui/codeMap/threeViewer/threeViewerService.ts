@@ -77,4 +77,4 @@ export class ThreeViewerService {
         this.threeUpdateCycleService.update();
     }
 
-};
+}

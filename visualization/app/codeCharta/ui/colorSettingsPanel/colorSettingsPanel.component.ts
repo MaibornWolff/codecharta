@@ -7,7 +7,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber{
         flipped: false,
         deltas: false,
         deltaColorFlipped: false
-    }
+    };
 
     /* @ngInject */
     constructor(

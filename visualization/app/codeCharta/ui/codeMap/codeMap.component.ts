@@ -1,4 +1,4 @@
-import {codeMapBuilding} from "./rendering/codeMapBuilding"
+import {codeMapBuilding} from "./rendering/codeMapBuilding";
 import {ThreeCameraService} from "./threeViewer/threeCameraService";
 import {IAngularEvent, IRootScopeService} from "angular";
 import {ThreeViewerService} from "./threeViewer/threeViewerService";
@@ -24,7 +24,7 @@ export class CodeMapController {
         this.codeMapMouseEventService.start();
     }
 
-};
+}
 
 export const codeMapComponent = {
     selector: "codeMapComponent",

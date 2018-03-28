@@ -46,7 +46,7 @@ export class DialogService {
             .textContent(msg)
             .initialValue(initial)
             .placeholder(placeholder)
-            .ok(button)
+            .ok(button);
 
         return this.$mdDialog.show(prompt);
 
