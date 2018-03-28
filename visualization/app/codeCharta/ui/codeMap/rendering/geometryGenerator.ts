@@ -10,24 +10,24 @@ import {intermediateVertexData} from "./intermediateVertexData";
 import {boxGeometryGenerationHelper} from "./boxGeometryGenerationHelper";
 
 export interface boxMeasures {
-    x : number,
-    y : number,
-    z : number,
-    width : number,
-    height : number,
-    depth : number
+    x : number;
+    y : number;
+    z : number;
+    width : number;
+    height : number;
+    depth : number;
 }
 
 export interface buildResult {
-    mesh : THREE.Mesh,
-    desc : codeMapGeometricDescription
+    mesh : THREE.Mesh;
+    desc : codeMapGeometricDescription;
 }
 
 export class geometryGenerator {
 
     private static MINIMAL_BUILDING_HEIGHT = 1.0;
 
-    constructor() {};
+    constructor() {}
 
     public build(nodes : node[], material : THREE.Material, settings : renderSettings) : buildResult
     {

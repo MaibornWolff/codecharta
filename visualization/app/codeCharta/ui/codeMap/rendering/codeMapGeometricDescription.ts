@@ -1,9 +1,9 @@
 import {codeMapBuilding} from "./codeMapBuilding";
-import * as THREE from "three"
+import * as THREE from "three";
 
 export interface intersectionResult {
     intersectionFound: boolean;
-    building?: codeMapBuilding
+    building?: codeMapBuilding;
 }
 
 export class codeMapGeometricDescription {
@@ -88,12 +88,12 @@ export class codeMapGeometricDescription {
             return {
                 intersectionFound: true,
                 building: intersectedBuilding
-            }
+            };
         }
         else {
             return {
                 intersectionFound: false
-            }
+            };
         }
     }
 }

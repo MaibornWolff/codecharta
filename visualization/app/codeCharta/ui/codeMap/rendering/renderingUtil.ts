@@ -1,4 +1,4 @@
-import * as THREE from "three"
+import * as THREE from "three";
 
 export class renderingUtil {
     static colorToVec3(color : number) : THREE.Vector3
