@@ -1,6 +1,12 @@
 module.exports = {
     rules: [
         {
+            test: /\.ts$/,
+            enforce: 'pre',
+            loader: 'tslint-loader',
+            options: require("./tslint.loader.config")
+        },
+        {
             test: /\.js$/,
             exclude: /node_modules/,
             loaders: [ 'ng-annotate-loader', 'babel-loader']
