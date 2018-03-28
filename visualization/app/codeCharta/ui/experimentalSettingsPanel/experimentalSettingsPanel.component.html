@@ -4,16 +4,6 @@
     </md-checkbox>
 </md-input-container>
 
-<md-slider-container class="md-block">
-    <span>Margin</span>
-    <md-slider flex step="1" min="1" max="100" ng-model="$ctrl.settingsService.settings.margin" id="margin-slider" ng-change="$ctrl.settingsService.applySettings()" class="md-primary">
-    </md-slider>
-    <md-input-container>
-        <input flex step="0.1" min="0.1" max="5" type="number" ng-model="$ctrl.settingsService.settings.margin" aria-controls="margin-slider">
-    </md-input-container>
-</md-slider-container>
-
+<statistic-settings-panel-component></statistic-settings-panel-component>
 
 <reset-settings-button-component settings-names="showDependencies, margin"></reset-settings-button-component>
-
-<statistic-settings-panel-component></statistic-settings-panel-component>

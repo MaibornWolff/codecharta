@@ -1,21 +1,40 @@
+<!--
 <md-input-container class="md-block">
     <label>Amount of labeled buildings</label>
     <input type="number" min="0" ng-model="$ctrl.settingsService.settings.amountOfTopLabels" ng-change="$ctrl.settingsService.applySettings()"></input>
 </md-input-container>
 
-<md-input-container class="md-block">
-    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.deltas" ng-change="$ctrl.settingsService.applySettings()">
-        Deltas
-    </md-checkbox>
-</md-input-container>
+<md-slider-container class="md-block">
+    <span>Labels</span>
+    <md-slider flex step="1" min="0" max="100" ng-model="$ctrl.settingsService.settings.amountOfTopLabels" id="labels-slider" ng-change="$ctrl.settingsService.applySettings()" class="md-primary">
+    </md-slider>
+    <md-input-container>
+        <input flex step="1" min="0" max="100" type="number" ng-model="$ctrl.settingsService.settings.amountOfTopLabels" aria-controls="labels-slider">
+    </md-input-container>
+</md-slider-container>-->
 
 <md-slider-container class="md-block">
-    <span>Height Scaling</span>
+    <span>Height</span>
     <md-slider flex step="0.1" min="0.1" max="5" ng-model="$ctrl.settingsService.settings.scaling.y" id="y-scale-slider" ng-change="$ctrl.settingsService.applySettings()" class="md-primary">
     </md-slider>
     <md-input-container>
         <input flex step="0.1" min="0.1" max="5" type="number" ng-model="$ctrl.settingsService.settings.scaling.y" aria-controls="y-scale-slider">
     </md-input-container>
 </md-slider-container>
+
+<md-slider-container class="md-block">
+    <span>Margin</span>
+    <md-slider flex step="1" min="1" max="100" ng-model="$ctrl.settingsService.settings.margin" id="margin-slider" ng-change="$ctrl.settingsService.applySettings()" class="md-primary">
+    </md-slider>
+    <md-input-container>
+        <input flex step="0.1" min="0.1" max="5" type="number" ng-model="$ctrl.settingsService.settings.margin" aria-controls="margin-slider">
+    </md-input-container>
+</md-slider-container>
+
+<md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.deltas" ng-change="$ctrl.settingsService.applySettings()">
+        Deltas
+    </md-checkbox>
+</md-input-container>
 
 <reset-settings-button-component settings-names="deltas, scaling.y, amountOfTopLabels"></reset-settings-button-component>
