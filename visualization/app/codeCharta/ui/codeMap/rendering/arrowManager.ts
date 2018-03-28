@@ -40,8 +40,9 @@ export class ArrowManager {
 
     public clearArrows() {
         this.arrows = [];
-        while (this.parentObjectInScene.children.length > 0)
+        while (this.parentObjectInScene.children.length > 0) {
             this.parentObjectInScene.children.pop();
+        }
     }
 
     public addCodeMapDependenciesFromOriginAsArrows(origin: node, nodes: node[], deps: CodeMapDependency[], settings: renderSettings) {

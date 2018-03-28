@@ -1,10 +1,6 @@
 module.exports = {
     emitErrors: false,
     failOnHint: false,
-    fix: false,
-    configuration: {
-        rules: {
-            quotemark: [true, 'double']
-        }
-    }
+    fix: true,
+    configFile: __dirname + "/tslint.rules.config.json",
 };
