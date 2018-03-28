@@ -64,7 +64,7 @@ export const resetSettingsButtonComponent = {
     template: require("./resetSettingsButton.component.html"),
     controller: ResetSettingsButtonController,
     bindings: {
-        settingsNames: '@'
+        settingsNames: "@"
     }
 };
 

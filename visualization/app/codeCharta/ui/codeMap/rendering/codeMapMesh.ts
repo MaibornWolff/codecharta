@@ -47,18 +47,18 @@ export class CodeMapMesh {
     public settings : renderSettings;
 
     private lightingParams : codeMapLightingParams = {
-        numHighlights : {type : 'f', value : 0.0},
-        highlightColor : {type : 'v3', value : renderingUtil.colorToVec3(0x666666)},
-        highlightedIndices : {type : 'fv1', value : []},
+        numHighlights : {type : "f", value : 0.0},
+        highlightColor : {type : "v3", value : renderingUtil.colorToVec3(0x666666)},
+        highlightedIndices : {type : "fv1", value : []},
 
-        numSelections : {type : 'f', value : 0.0},
-        selectedColor : {type : 'f', value : renderingUtil.colorToVec3(MapColors.selected)},
-        selectedIndices : {type : 'fv1', value : []},
+        numSelections : {type : "f", value : 0.0},
+        selectedColor : {type : "f", value : renderingUtil.colorToVec3(MapColors.selected)},
+        selectedIndices : {type : "fv1", value : []},
 
-        deltaColorPositive : {type : 'v3', value : renderingUtil.colorToVec3(MapColors.positiveDelta)},
-        deltaColorNegative : {type : 'v3', value : renderingUtil.colorToVec3(MapColors.negativeDelta)},
+        deltaColorPositive : {type : "v3", value : renderingUtil.colorToVec3(MapColors.positiveDelta)},
+        deltaColorNegative : {type : "v3", value : renderingUtil.colorToVec3(MapColors.negativeDelta)},
 
-        emissive : {type : 'v3', value : new THREE.Vector3(0.0, 0.0, 0.0)}
+        emissive : {type : "v3", value : new THREE.Vector3(0.0, 0.0, 0.0)}
     };
 
     constructor(nodes : node[], settings : renderSettings)
@@ -85,7 +85,7 @@ export class CodeMapMesh {
             this.setDeltaColorsUnflipped();
         }
 
-        let uniforms = THREE.UniformsUtils.merge([THREE.UniformsLib['lights'], this.lightingParams]);
+        let uniforms = THREE.UniformsUtils.merge([THREE.UniformsLib["lights"], this.lightingParams]);
 
         let shaderCode : codeMapShaderStrings = new codeMapShaderStrings();
 
@@ -98,14 +98,14 @@ export class CodeMapMesh {
     }
 
     private setDeltaColorsFlipped() {
-        this.lightingParams.deltaColorPositive = {type : 'v3', value : renderingUtil.colorToVec3(MapColors.negativeDelta)};
-        this.lightingParams.deltaColorNegative = {type : 'v3', value : renderingUtil.colorToVec3(MapColors.positiveDelta)};
+        this.lightingParams.deltaColorPositive = {type : "v3", value : renderingUtil.colorToVec3(MapColors.negativeDelta)};
+        this.lightingParams.deltaColorNegative = {type : "v3", value : renderingUtil.colorToVec3(MapColors.positiveDelta)};
     }
 
 
     private setDeltaColorsUnflipped() {
-        this.lightingParams.deltaColorPositive = {type : 'v3', value : renderingUtil.colorToVec3(MapColors.positiveDelta)};
-        this.lightingParams.deltaColorNegative = {type : 'v3', value : renderingUtil.colorToVec3(MapColors.negativeDelta)};
+        this.lightingParams.deltaColorPositive = {type : "v3", value : renderingUtil.colorToVec3(MapColors.positiveDelta)};
+        this.lightingParams.deltaColorNegative = {type : "v3", value : renderingUtil.colorToVec3(MapColors.negativeDelta)};
     }
 
     public getThreeMesh() : THREE.Mesh {
