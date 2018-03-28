@@ -127,13 +127,16 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         this.threeSceneService.mapGeometry.position.y = 0.0;
         this.threeSceneService.mapGeometry.position.z = -mapSize / 2.0 * z;
 
-        if (this.threeSceneService.getMapMesh())
+        if (this.threeSceneService.getMapMesh()) {
             this.threeSceneService.getMapMesh().setScale(x, y, z);
+        }
 
-        if (this.labelManager)
+        if (this.labelManager) {
             this.labelManager.scale(x, y, z);
+        }
 
-        if (this.arrowManager)
+        if (this.arrowManager) {
             this.arrowManager.scale(x, y, z);
+        }
     }
 };

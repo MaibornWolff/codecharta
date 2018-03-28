@@ -1,0 +1,9 @@
+{
+    //"extends": "tslint:recommended",
+    "rules": {
+        "quotemark": [true, "double", "avoid-escape"],
+        "max-line-length": [false],
+        "ordered-imports": [false],
+        "curly": [true]
+    }
+}

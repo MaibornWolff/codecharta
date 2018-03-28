@@ -119,8 +119,9 @@ export class CodeMapMesh {
         //noinspection TypeScriptUnresolvedVariable
         this.material.uniforms.numHighlights.value = buildings.length;
 
-        if (color)
+        if (color) {
             this.lightingParams.highlightColor.value = renderingUtil.colorToVec3(color);
+        }
 
         this.currentlyHighlighted = buildings;
     }
@@ -132,8 +133,9 @@ export class CodeMapMesh {
         //noinspection TypeScriptUnresolvedVariable
         this.material.uniforms.numSelections.value  = buildings.length;
         
-        if (color)
+        if (color) {
             this.lightingParams.selectedColor.value = renderingUtil.colorToVec3(color);
+        }
 
         this.currentlySelected = buildings;
     }

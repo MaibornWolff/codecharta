@@ -52,8 +52,9 @@ export class LabelManager {
 
     clearLabels() {
         this.labels = [];
-        while (this.parentObjectInScene.children.length > 0)
+        while (this.parentObjectInScene.children.length > 0) {
             this.parentObjectInScene.children.pop();
+        }
     }
         
     scale(x : number, y : number, z : number) {
