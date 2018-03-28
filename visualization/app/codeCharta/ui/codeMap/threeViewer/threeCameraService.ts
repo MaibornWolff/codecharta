@@ -23,7 +23,7 @@ class ThreeCameraService implements SettingsServiceSubscriber {
     }
 
     onSettingsChanged(settings: Settings, event: Event) {
-        this.setPosition(settings.camera.x, settings.camera.y, settings.camera.z)
+        this.setPosition(settings.camera.x, settings.camera.y, settings.camera.z);
     }
 
     /**

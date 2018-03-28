@@ -8,7 +8,7 @@ export interface Tooltips {
 }
 
 export interface TooltipServiceSubscriber {
-    onTooltipsChanged(tooltips: Tooltips, event: Event)
+    onTooltipsChanged(tooltips: Tooltips, event: Event);
 }
 
 /**
@@ -57,7 +57,7 @@ class TooltipService {
 
         if (this._tooltips[key]) {
 
-            var res = this._tooltips[key];
+            let res = this._tooltips[key];
 
 
             /**

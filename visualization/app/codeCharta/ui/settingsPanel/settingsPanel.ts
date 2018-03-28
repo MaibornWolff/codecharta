@@ -21,7 +21,7 @@ export class SettingsPanelController{
         $panel.collapse();
         this.$timeout(() => {
             this.$scope.$broadcast("rzSliderForceRender");
-        },50)
+        },50);
     }
 
 }

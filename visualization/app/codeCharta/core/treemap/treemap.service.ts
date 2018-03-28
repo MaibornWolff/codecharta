@@ -111,10 +111,10 @@ class TreeMapService {
      * @returns {number} max value
      */
     getMaxMetricInAllRevisions(metric: string) {
-        var maxValue = 0;
+        let maxValue = 0;
 
         this.dataService.data.revisions.forEach((rev)=> {
-            var nodes = d3.hierarchy(rev.root).leaves();
+            let nodes = d3.hierarchy(rev.root).leaves();
             nodes.forEach((node: any)=> {
                 if (node.data.attributes[metric] > maxValue) {
                     maxValue = node.data.attributes[metric];

@@ -7,18 +7,18 @@ import {codeMapBuilding} from "./rendering/codeMapBuilding";
 import {CodeMapRenderService} from "./codeMap.render.service";
 
 interface Coordinates {
-    x: number,
-    y: number
+    x: number;
+    y: number;
 }
 
 export interface CodeMapBuildingTransition {
-    from: codeMapBuilding,
-    to: codeMapBuilding
+    from: codeMapBuilding;
+    to: codeMapBuilding;
 }
 
 export interface CodeMapMouseEventServiceSubscriber {
-    onBuildingHovered(data: CodeMapBuildingTransition, event: IAngularEvent),
-    onBuildingSelected(data: CodeMapBuildingTransition, event: IAngularEvent)
+    onBuildingHovered(data: CodeMapBuildingTransition, event: IAngularEvent);
+    onBuildingSelected(data: CodeMapBuildingTransition, event: IAngularEvent);
 }
 
 export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber {
@@ -99,7 +99,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
         if(this.dragOrClickFlag === 0) {
 
-            var from = this.selected;
+            let from = this.selected;
 
             if (this.hovered) {
                 this.selected = this.hovered;
@@ -184,4 +184,4 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
         this.onBuildingHovered(this.hovered, null);
     }
 
-};
+}

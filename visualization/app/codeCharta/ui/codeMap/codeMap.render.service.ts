@@ -1,8 +1,8 @@
 "use strict";
 
 import {CodeMapMesh} from "./rendering/codeMapMesh";
-import {renderSettings} from "./rendering/renderSettings"
-import {LabelManager} from "./rendering/labelManager"
+import {renderSettings} from "./rendering/renderSettings";
+import {LabelManager} from "./rendering/labelManager";
 import {SettingsServiceSubscriber, Settings, SettingsService} from "../../core/settings/settings.service";
 import {node} from "./rendering/node";
 import {ArrowManager} from "./rendering/arrowManager";
@@ -139,4 +139,4 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             this.arrowManager.scale(x, y, z);
         }
     }
-};
+}

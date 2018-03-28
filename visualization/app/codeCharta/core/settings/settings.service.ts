@@ -11,35 +11,35 @@ import {DataDecoratorService} from "../data/data.decorator.service";
 import {CodeMap} from "../data/model/CodeMap";
 
 export interface Range {
-    from: number, to: number, flipped: boolean
+    from: number; to: number; flipped: boolean;
 }
 
 export interface Scale {
-    x: number,
-    y: number,
-    z: number
+    x: number;
+    y: number;
+    z: number;
 }
 
 export interface Settings {
 
-    map: CodeMap,
-    neutralColorRange: Range,
-    areaMetric: string,
-    heightMetric: string,
-    colorMetric: string,
-    deltas: boolean,
-    amountOfTopLabels: number,
-    scaling: Scale,
-    camera: Scale,
-    margin: number,
-    operation: STATISTIC_OPS,
-    deltaColorFlipped: boolean,
-    showDependencies: boolean
+    map: CodeMap;
+    neutralColorRange: Range;
+    areaMetric: string;
+    heightMetric: string;
+    colorMetric: string;
+    deltas: boolean;
+    amountOfTopLabels: number;
+    scaling: Scale;
+    camera: Scale;
+    margin: number;
+    operation: STATISTIC_OPS;
+    deltaColorFlipped: boolean;
+    showDependencies: boolean;
 
 }
 
 export interface SettingsServiceSubscriber {
-    onSettingsChanged(settings: Settings, event: Event)
+    onSettingsChanged(settings: Settings, event: Event);
 }
 
 export class SettingsService implements DataServiceSubscriber, CameraChangeSubscriber {
@@ -183,8 +183,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         let ctx = this;
 
-        var iterateProperties = function (obj, prefix) {
-            for (var i in obj) {
+        let iterateProperties = function (obj, prefix) {
+            for (let i in obj) {
                 if (obj.hasOwnProperty(i) && i !== "map" && i) {
 
                     if (typeof obj[i] === "string" || obj[i] instanceof String) {
@@ -235,8 +235,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         let result = "";
 
-        var iterateProperties = function (obj, prefix) {
-            for (var i in obj) {
+        let iterateProperties = function (obj, prefix) {
+            for (let i in obj) {
                 if (obj.hasOwnProperty(i) && i !== "map" && i) {
 
                     if (typeof obj[i] === "string" || obj[i] instanceof String) {

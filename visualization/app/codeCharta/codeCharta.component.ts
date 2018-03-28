@@ -19,7 +19,7 @@ export class CodeChartaController {
     public viewModel = {
         version: require("../../package.json").version,
         numberOfLoadingTasks: 0
-    }
+    };
 
     /* @ngInject */
     constructor(

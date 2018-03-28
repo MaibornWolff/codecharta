@@ -67,7 +67,7 @@ export class ScenarioButtonsController implements TooltipServiceSubscriber{
     onclick(value: Scenario){
         this.scenarioService.applyScenario(value);
     }
-};
+}
 
 export const scenarioButtonsComponent = {
     selector: "scenarioButtonsComponent",

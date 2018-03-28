@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import {LabelManager} from "./../rendering/labelManager"
+import {LabelManager} from "./../rendering/labelManager";
 import {Scene} from "three";
 import {Group} from "three";
 import {CodeMapMesh} from "../rendering/codeMapMesh";

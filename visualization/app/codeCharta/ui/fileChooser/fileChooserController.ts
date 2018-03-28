@@ -39,8 +39,8 @@ class FileChooserController {
             ctx.dataService.resetMaps();
             for (let i = 0; i < element.files.length; i++) {
                 (function(file, i) {
-                    var name = file.name;
-                    var reader = new FileReader();
+                    let name = file.name;
+                    let reader = new FileReader();
                     reader.onload = function(e) {
                         ctx.onNewFileLoaded((<any>e.target).result, i, name, element);
                     };
