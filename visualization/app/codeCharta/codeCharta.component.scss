@@ -68,6 +68,10 @@ code-charta-component {
   md-sidenav {
     width: 600px;
     z-index: 11;
+
+    .padding_bottom {
+      padding-bottom: 100px;
+    }
   }
 
   #loading-indicator {
