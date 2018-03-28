@@ -58,7 +58,7 @@ class ThreeOrbitControlsService {
      * @param domElement Element with the canvas on it
      */
     init(domElement){
-        const OrbitControls = require('three-orbit-controls')(require("three"));
+        const OrbitControls = require("three-orbit-controls")(require("three"));
         this.controls = new OrbitControls(this.threeCameraService.camera, domElement);
         let ctx= this;
         this.controls.addEventListener( "change", function () {

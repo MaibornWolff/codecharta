@@ -17,8 +17,8 @@ angular.module("app")
         });
     }])
     .config(function ($mdThemingProvider) {
-        $mdThemingProvider.theme('default')
-            .primaryPalette('teal')
-            .warnPalette('teal')
-            .accentPalette('teal');
+        $mdThemingProvider.theme("default")
+            .primaryPalette("teal")
+            .warnPalette("teal")
+            .accentPalette("teal");
     });

@@ -216,12 +216,12 @@ export class geometryGenerator {
 
         let geometry : THREE.BufferGeometry = new THREE.BufferGeometry();
 
-        geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, dimension ) );
-        geometry.addAttribute( 'normal', new THREE.BufferAttribute( normals, dimension ) );
-        geometry.addAttribute( 'uv', new THREE.BufferAttribute( uvs, uvDimension ) );
-        geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, dimension ) );
-        geometry.addAttribute( 'subGeomIdx' , new THREE.BufferAttribute(ids, 1));
-        geometry.addAttribute( 'delta' , new THREE.BufferAttribute(deltas, 1));
+        geometry.addAttribute( "position", new THREE.BufferAttribute( positions, dimension ) );
+        geometry.addAttribute( "normal", new THREE.BufferAttribute( normals, dimension ) );
+        geometry.addAttribute( "uv", new THREE.BufferAttribute( uvs, uvDimension ) );
+        geometry.addAttribute( "color", new THREE.BufferAttribute( colors, dimension ) );
+        geometry.addAttribute( "subGeomIdx" , new THREE.BufferAttribute(ids, 1));
+        geometry.addAttribute( "delta" , new THREE.BufferAttribute(deltas, 1));
 
         geometry.setIndex(new THREE.BufferAttribute(indices, 1));
 

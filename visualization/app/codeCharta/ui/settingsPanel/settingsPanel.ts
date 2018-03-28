@@ -20,7 +20,7 @@ export class SettingsPanelController{
     collapseAndUpdateChildRzSlider($panel) {
         $panel.collapse();
         this.$timeout(() => {
-            this.$scope.$broadcast('rzSliderForceRender');
+            this.$scope.$broadcast("rzSliderForceRender");
         },50)
     }
 
