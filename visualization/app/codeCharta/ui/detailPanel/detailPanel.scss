@@ -26,6 +26,7 @@ detail-panel-component {
                 border-left: 1px $detail-border-color solid;
                 padding: 4px;
                 min-width: 300px;
+                max-width: 350px;
             }
 
             tr>td:nth-child(2),
