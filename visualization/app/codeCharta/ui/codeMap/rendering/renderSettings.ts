@@ -18,10 +18,10 @@ export enum MapColors {
 }
 
 export interface renderSettings {
-    heightKey : string,
-    colorKey : string,
-    renderDeltas : boolean,
-    colorRange : colorRange,
-    mapSize : number,
-    deltaColorFlipped: boolean
+    heightKey : string;
+    colorKey : string;
+    renderDeltas : boolean;
+    colorRange : colorRange;
+    mapSize : number;
+    deltaColorFlipped: boolean;
 }

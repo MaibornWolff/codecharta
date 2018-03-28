@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import {node} from "./node"
-import {renderSettings} from "./renderSettings"
+import {node} from "./node";
+import {renderSettings} from "./renderSettings";
 import {Group, Object3D, Vector3} from "three";
 import {CodeMapDependency} from "../../../core/data/model/CodeMap";
 
@@ -110,7 +110,7 @@ export class ArrowManager {
             let hOrigin: number = arrowOriginNode.height;
             let lOrigin: number = arrowOriginNode.length;
 
-            var curve = new THREE.CubicBezierCurve3(
+            let curve = new THREE.CubicBezierCurve3(
                 new THREE.Vector3(xOrigin + wOrigin / 2, yOrigin + hOrigin, zOrigin + lOrigin / 2),
                 new THREE.Vector3(xOrigin + wOrigin / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + settings.mapSize, zOrigin + lOrigin / 2),
                 new THREE.Vector3(xTarget + wTarget / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + settings.mapSize, zTarget + lTarget / 2),

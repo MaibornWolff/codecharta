@@ -1,11 +1,11 @@
 import * as THREE from "three";
-import {node} from "./node"
-import {renderSettings} from "./renderSettings"
+import {node} from "./node";
+import {renderSettings} from "./renderSettings";
 
 interface internalLabel {
-    sprite : THREE.Sprite,
-    line : THREE.Line | null,
-    heightValue : number
+    sprite : THREE.Sprite;
+    line : THREE.Line | null;
+    heightValue : number;
 }
 
 export class LabelManager {

@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import {intermediateVertexData} from "./intermediateVertexData"
-import {boxMeasures} from "./geometryGenerator"
+import {intermediateVertexData} from "./intermediateVertexData";
+import {boxMeasures} from "./geometryGenerator";
 
 enum sides {
     left = 0,
@@ -9,14 +9,14 @@ enum sides {
     top = 3,
     back = 4,
     front = 5
-};
+}
 
 enum vertexLocation {
     bottomLeft = 0,
     topLeft = 1,
     topRight = 2,
     bottomRight = 3
-};
+}
 
 const normals : THREE.Vector3[] = [
     new THREE.Vector3(-1.0, 0.0, 0.0),
