@@ -1,6 +1,6 @@
 module.exports = {
-    emitErrors: true,
-    failOnHint: true,
+    emitErrors: false,
+    failOnHint: false,
     configuration: {
         rules: {
             quotemark: [true, 'double']

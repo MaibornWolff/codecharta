@@ -21,5 +21,9 @@
         "allowJs": false,
         "strictNullChecks": false,
         "declaration": false
-    }
+    },
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts"
+    ]
 }

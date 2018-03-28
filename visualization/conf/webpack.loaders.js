@@ -39,7 +39,7 @@ module.exports = {
         },
         {
             test: /\.ts(x?)$/,
-            use: ['babel-loader', 'ts-loader?configFile=tsconfig.webpack.json'],
+            use: ['babel-loader', 'ts-loader?configFile=tsconfig.json'],
 
         },
         {

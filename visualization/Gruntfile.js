@@ -1,8 +1,3 @@
-"use strict";
-
-var path = require("path");
-const paths = require("./conf/paths.js");
-
 module.exports = function (grunt) {
 
     require("load-grunt-tasks")(grunt);
@@ -13,7 +8,13 @@ module.exports = function (grunt) {
 
         pkg: grunt.file.readJSON('package.json'),
 
-        webpack: require("./conf/grunt.webpack.config.js"),
+        webpack: {
+            options: {
+                stats: !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
+            },
+            prod: require("./conf/webpack.config.js"),
+            dev: Object.assign({ watch: true }, require("./conf/webpack.config.js"))
+        },
 
         typedoc: {
             build: {
@@ -33,16 +34,16 @@ module.exports = function (grunt) {
         },
 
         clean: {
-            dist: [paths.dist],
-            webpack: [paths.bundlePath],
-            doc: [paths.docPath],
-            package: [paths.packagePath]
+            dist: ["./dist"],
+            webpack: ["./dist/webpack"],
+            doc: ["./dist/doc"],
+            package: ["./dist/packages"]
         },
 
         compress: {
             web: {
                 options: {
-                    archive: paths.packagePath + '/CodeCharta-' + grunt.file.readJSON('package.json').version + '-web.zip'
+                    archive: "./dist/packages" + '/CodeCharta-' + grunt.file.readJSON('package.json').version + '-web.zip'
                 },
                 files: [
                     {expand: true, cwd:"./dist/webpack/", src: ['**/*'], dest: '.'}
