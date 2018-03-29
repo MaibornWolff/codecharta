@@ -5,13 +5,13 @@ legend-panel-component {
     top: 164px;
     left: -35px;
     transform: rotate(90deg);
-    z-index: 999;
+    z-index: 30;
   }
 
   .block-wrapper {
 
     position: fixed;
-    z-index: 998;
+    z-index: 29;
     top: 9em;
     left: -500px; //initial state is closed
 
