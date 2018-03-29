@@ -47,7 +47,7 @@ code-charta-component {
     position: fixed;
     bottom: 2em;
     right: 2em;
-    z-index: 59;
+    z-index: 1010;
 
     i.fa-folder-open {
       margin: 4px 0 0 2px;
@@ -62,12 +62,12 @@ code-charta-component {
   #actionButtons > * {
     margin-left: 4px;
     margin-right: 4px;
-    z-index: 12;
+    z-index: 1020;
   }
 
   md-sidenav {
     width: 600px;
-    z-index: 11;
+    z-index: 1000;
 
     .padding_bottom {
       padding-bottom: 100px;
