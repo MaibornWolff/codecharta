@@ -12,6 +12,11 @@ settings-panel-component {
         margin: 18px 0 0 0;
     }
 
+    /* enlarge the input field next to a slider */
+    md-slider-container md-input-container input[type="number"] {
+        padding-left: 0;
+    }
+
     .settings-panel-btn {
         margin: 0 auto;
         display: block;
