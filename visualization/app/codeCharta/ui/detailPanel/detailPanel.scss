@@ -27,6 +27,8 @@ detail-panel-component {
                 padding: 4px;
                 min-width: 300px;
                 max-width: 350px;
+                -ms-word-break: break-all;
+                word-break: break-all;
             }
 
             tr>td:nth-child(2),
