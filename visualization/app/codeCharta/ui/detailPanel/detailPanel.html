@@ -15,7 +15,10 @@
                       <tr>
                           <td></td>
                           <td>Name</td>
-                          <td ng-hide="!$ctrl.isSelected()">{{$ctrl.details.selected.name}}</td>
+                          <td ng-hide="!$ctrl.isSelected()">
+                              <a ng-hide="!$ctrl.details.selected.link" target="_blank" href="{{$ctrl.details.selected.link}}">{{$ctrl.details.selected.name}}</a>
+                              <ng-hide ng-hide="$ctrl.details.selected.link">{{$ctrl.details.selected.name}}</ng-hide>
+                          </td>
                           <td ng-hide="!$ctrl.isHovered()">{{$ctrl.details.hovered.name}}</td>
                       </tr>
                       <tr>
@@ -63,8 +66,6 @@
                   </tr>
                   </tbody>
               </table>
-
-        <!--<a ng-hide="!$ctrl.details.selected.link" target="_blank" href="{{$ctrl.details.selected.link}}">link to selected</a>-->
 
     </div>
 </div>
