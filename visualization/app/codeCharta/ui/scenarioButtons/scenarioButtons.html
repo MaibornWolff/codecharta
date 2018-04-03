@@ -1,9 +1,12 @@
+
 <md-button
         ng-repeat="(key, value) in $ctrl.scenarios"
         class="md-primary md-raised md-block"
         aria-label="{{::value.name}}"
         title="{{::$ctrl.getScenarioTooltipTextByKey(value.name);}}"
-        ng-click="$ctrl.onclick(value)""
+        ng-click="$ctrl.onclick(value)"
 >
     {{::value.name}}
 </md-button>
+
+<p ng-if="$ctrl.scenarios.length <= 0">No compatible scenarios found</p>

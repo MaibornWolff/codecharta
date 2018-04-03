@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - linking tree view and map hover
 - auto fit scene button
 - anugularJS material
-- Added Link in visualization #84
+- Scenarios are now filtered by compatibility for the given map
+- Link in visualization #84
 
 ### Changed
 
