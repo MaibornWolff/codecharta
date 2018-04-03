@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- Scenarios are now filtered by compatibility for the given map
 - Added Link in visualization #84
 
 ### Changed
