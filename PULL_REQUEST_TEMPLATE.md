@@ -9,6 +9,7 @@
 A task/pull request will not be considered to be complete until all these items can be checked off.
 
 * [ ] **All** requirements mentioned in the issue are implemented
+* [ ] Does match the Code of Conduct and the Contribution file 
 * [ ] Task has its own **GitHub issue** (something it is solving)
   * [ ] Issue number is **included in the commit messages** for traceability
 * [ ] **Update the README.md** with any changes/additions made
