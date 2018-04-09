@@ -64,7 +64,7 @@
 
                 <td  ng-hide="!$ctrl.isHovered()">
                     <a ng-if="$ctrl.details.hovered.link" target="_blank" href="{{$ctrl.details.hovered.link}}">{{$ctrl.details.hovered.path}}</a>
-                    <a ng-if="!$ctrl.details.hovered.link">{{$ctrl.details.hovered.path}}</a>
+                    <p ng-if="!$ctrl.details.hovered.link">{{$ctrl.details.hovered.path}}</p>
                 </td>
             </tr>
             <tr>
