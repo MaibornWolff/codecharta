@@ -59,12 +59,12 @@
                 <td>Path</td>
                 <td  ng-hide="!$ctrl.isSelected()">
                     <a ng-if="$ctrl.details.selected.link" target="_blank" href="{{$ctrl.details.selected.link}}">{{$ctrl.details.selected.path}}</a>
-                    <p ng-if="!$ctrl.details.selected.link">{{$ctrl.details.selected.path}}</p>
+                    <a ng-if="!$ctrl.details.selected.link">{{$ctrl.details.selected.path}}</a>
                 </td>
 
                 <td  ng-hide="!$ctrl.isHovered()">
                     <a ng-if="$ctrl.details.hovered.link" target="_blank" href="{{$ctrl.details.hovered.link}}">{{$ctrl.details.hovered.path}}</a>
-                    <p ng-if="!$ctrl.details.hovered.link">{{$ctrl.details.hovered.path}}</p>
+                    <a ng-if="!$ctrl.details.hovered.link">{{$ctrl.details.hovered.path}}</a>
                 </td>
             </tr>
             <tr>
