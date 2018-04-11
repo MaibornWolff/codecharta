@@ -47,8 +47,11 @@ import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URI
 import java.net.URL
+import mu.KotlinLogging
 
 class SonarMeasuresAPIDatasourceIntegrationTest {
+
+    private val logger = KotlinLogging.logger {}
 
     @Rule
     @JvmField

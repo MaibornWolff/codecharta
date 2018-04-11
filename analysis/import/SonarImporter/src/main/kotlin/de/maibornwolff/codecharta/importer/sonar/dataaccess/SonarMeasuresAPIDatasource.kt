@@ -72,9 +72,9 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
     private fun getMeasures(componentKey: String, sublist: List<String>): Flowable<Component> {
 
         return Flowable.create({ subscriber ->
-            var page = 0
-            var total = PAGE_SIZE.toLong()
-            while (++page < total / PAGE_SIZE + 1) {
+            var page = 1
+            var total = 0L
+            do {
                 val measures = getMeasures(componentKey, sublist, page)
                 total = measures.paging.total.toLong()
 
@@ -83,7 +83,8 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
                             .filter { c -> c.qualifier == Qualifier.FIL || c.qualifier == Qualifier.UTS }
                             .forEach({ subscriber.onNext(it) })
                 }
-            }
+
+            } while (page++ * PAGE_SIZE < total)
             subscriber.onComplete()
         }, BackpressureStrategy.BUFFER)
     }
