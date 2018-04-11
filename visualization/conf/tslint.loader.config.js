@@ -1,7 +1,7 @@
 module.exports = {
     emitErrors: false,
     failOnHint: false,
-    typeCheck: true, //slow
-    fix: true,
+    typeCheck: false, //slow
+    fix: false,
     configFile: __dirname + "/tslint.rules.config.json"
 };

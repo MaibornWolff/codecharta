@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Removed
 - materialize-css
+- grunt
 
 ### Fixed
 - less flickering and artifacts
