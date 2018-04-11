@@ -1,0 +1,62 @@
+{
+  "paging": {
+    "pageIndex": 3,
+    "pageSize": 2,
+    "total": 5
+  },
+  "baseComponent": {
+    "id": "AVpgljwSAwvKRXcPxJMX",
+    "key": "de.maibornwolff.codecharta:codecharta",
+    "name": "codecharta",
+    "qualifier": "TRK",
+    "measures": [
+      {
+        "metric": "coverage",
+        "value": "85.1",
+        "periods": [
+          {
+            "index": 1,
+            "value": "0.0"
+          },
+          {
+            "index": 2,
+            "value": "0.0"
+          },
+          {
+            "index": 3,
+            "value": "0.0"
+          }
+        ]
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "AVpglkG6K9udye1JocV_",
+      "key": "de.maibornwolff.codecharta:codecharta:import",
+      "name": "import",
+      "qualifier": "BRC",
+      "path": "import",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "85.8",
+          "periods": [
+            {
+              "index": 1,
+              "value": "0.0"
+            },
+            {
+              "index": 2,
+              "value": "0.0"
+            },
+            {
+              "index": 3,
+              "value": "-0.7000000000000028"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
