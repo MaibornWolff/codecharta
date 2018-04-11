@@ -65,6 +65,23 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         return GSON.fromJson(responseString, Measures::class.java)
     }
 
+    @Test
+    @Throws(Exception::class)
+    fun getMeasures_from_server_if_no_authentication_needed_and_there_are_multiple_result_pages() {
+        // given
+        stubFor(get(urlEqualTo(URL_PATH))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(200)
+                        .withBody(createResponseString())))
+
+        // when
+        val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
+        val measures = ds.getMeasures(PROJECT_KEY, listOf("coverage"))
+
+        // then
+        assertThat(measures, `is`(createExpectedMeasures()))
+    }
 
     @Test
     @Throws(Exception::class)
@@ -175,8 +192,9 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         private const val PORT = 8089
         private const val USERNAME = "somename"
         private const val PROJECT_KEY = "someProject"
+        private const val PAGE = "1"
         private val GSON = GsonBuilder().create()
-        private const val URL_PATH = "/api/measures/component_tree?baseComponentKey=$PROJECT_KEY&qualifiers=FIL,UTS&metricKeys=coverage&p=1&ps=$PAGE_SIZE"
+        private const val URL_PATH = "/api/measures/component_tree?baseComponentKey=$PROJECT_KEY&qualifiers=FIL,UTS&metricKeys=coverage&p=$PAGE&ps=$PAGE_SIZE"
 
         private fun createBaseUrl(): URL {
             try {
