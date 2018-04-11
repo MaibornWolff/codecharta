@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- Link behind filepath in detailPanel #84
+- Double click event-handler on Buildings #84
 
 ### Changed
 
