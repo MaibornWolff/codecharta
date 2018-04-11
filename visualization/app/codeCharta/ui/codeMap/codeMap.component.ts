@@ -4,7 +4,7 @@ import {IAngularEvent, IRootScopeService} from "angular";
 import {ThreeViewerService} from "./threeViewer/threeViewerService";
 import {MapTreeViewHoverEventSubscriber, MapTreeViewLevelController} from "../mapTreeView/mapTreeViewLevelComponent";
 import {CodeMapNode} from "../../core/data/model/CodeMap";
-import {CodeMapMouseEventService} from "./codeMap.MouseEvent.service";
+import {CodeMapMouseEventService} from "./codeMap.mouseEvent.service";
 import {CodeMapRenderService} from "./codeMap.render.service";
 
 export class CodeMapController {
