@@ -1,0 +1,51 @@
+legend-panel-component {
+
+  .panel-button {
+    position: fixed;
+    top: 164px;
+    left: -35px;
+    transform: rotate(90deg);
+    z-index: 30;
+  }
+
+  .block-wrapper {
+
+    position: fixed;
+    z-index: 29;
+    top: 9em;
+    left: -500px; //initial state is closed
+
+    box-shadow: 0px 0px 8px 1px #dfdfdf;
+    background-color: #fff;
+    opacity: 0.9;
+    padding: 10px;
+
+    .legend-block {
+
+      display: block;
+      height: 25px;
+      margin-bottom: 5px;
+
+      i, img {
+        display: inline-block;
+        width: 14px;
+      }
+
+      i {
+        margin-right: 4px;
+      }
+
+      img {
+        padding-top: 3px;
+        height: 17px;
+      }
+
+      span {
+        display: inline-block;
+      }
+
+    }
+
+  }
+
+}

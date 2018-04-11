@@ -8,6 +8,8 @@ export class UrlService {
 
     public static SELECTOR = "urlService";
 
+    private static OK_CODE = 200;
+
     /* @ngInject */
     constructor(private $location: ILocationService, private $http: IHttpService) {
     }
@@ -58,7 +60,7 @@ export class UrlService {
     public getFileDataFromQueryParam(): Promise<Object> {
 
         return new Promise((resolve, reject) => {
-            var param = this.getParam("file");
+            let param = this.getParam("file");
             this.getFileDataFromFile(param).then(resolve, reject);
         });
 
@@ -75,7 +77,7 @@ export class UrlService {
             if (file && file.length > 0) {
                 this.$http.get(file).then(
                     function (response: IHttpResponse<Object>) {
-                        if (response.status === 200) {
+                        if (response.status === UrlService.OK_CODE) {
                             Object.assign(response.data, {fileName: file});
                             resolve(response.data);
                         } else {

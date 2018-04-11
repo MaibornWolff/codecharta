@@ -1,7 +1,8 @@
 import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
 import {Settings} from "../../core/settings/settings.service";
 import {DataModel} from "../data/data.service";
-import {node} from "../../codeMap/rendering/node";
+import {node} from "../../ui/codeMap/rendering/node";
+import {DialogService} from "../../ui/dialog/dialog.service";
 
 
 export enum STATISTIC_OPS  {
@@ -11,12 +12,16 @@ export enum STATISTIC_OPS  {
     MAX = "MAX",
     MIN = "MIN",
     FASHION = "FASHION"
-};
+}
 
 export class StatisticMapService {
 
 
     public static SELECTOR = "statisticMapService";
+
+    constructor(private dialogService: DialogService) {
+
+    }
 
     /*
      * Function that receives an array of maps and returns a map with a structure that contains every leaf contained in
@@ -31,14 +36,14 @@ export class StatisticMapService {
         if(operation == STATISTIC_OPS.NOTHING){
             return data.renderMap;
         }
-        var maps: CodeMap[] = data.revisions;
+        let maps: CodeMap[] = data.revisions;
         if(maps.length === 1){
             return maps[0];
         }
 
-        var accumulated = {} as CodeMap;//Map that contains an array of every value of every map given in maps array
+        let accumulated = {} as CodeMap;//Map that contains an array of every value of every map given in maps array
         accumulated.root = {} as CodeMapNode;
-        var unified: CodeMap;
+        let unified: CodeMap;
         accumulated.fileName = operation+"";
         for(let i: number=0; i<maps.length; i++){//Loop through every CodeMap of the input array and get all of them in accumulated
             //Only leaf have attributes and no child.
@@ -145,7 +150,7 @@ export class StatisticMapService {
             output.root=this.emptyMap(output.root);
         }
         else if(output.children&&output.children.length!=0){
-            for(var i=0;i<output.children.length;i++){
+            for(let i=0;i<output.children.length;i++){
                 output.children[i]=this.emptyMap(output.children[i]);
             }
         }
@@ -198,7 +203,7 @@ export class StatisticMapService {
             case STATISTIC_OPS.MEDIAN:
                 return this.median(input);
             default:
-                console.log("The described statistical function, which is "+operation+" does not exist");
+                this.dialogService.showErrorDialog("The described statistical function, which is "+operation+" does not exist");
         }
         return -1;
     }
@@ -208,8 +213,8 @@ export class StatisticMapService {
      * Function that returns the mean of the values in the input array.
      */
     mean(input: number[]): number{
-        var output: number = 0.0;
-        for(var i: number=0;i<input.length; i++){
+        let output: number = 0.0;
+        for(let i: number=0;i<input.length; i++){
             if(input[i] !== undefined){
                 output+=input[i];
             }
@@ -222,8 +227,8 @@ export class StatisticMapService {
      * Function that returns the highest value of the input array
      */
     max(input: number[]): number{
-        var output: number;
-        for(var i: number=0;i<input.length; i++){
+        let output: number;
+        for(let i: number=0;i<input.length; i++){
             if(input[i] !== undefined){
                 if(output == undefined || output<input[i]){
                     output=input[i];
@@ -237,8 +242,8 @@ export class StatisticMapService {
      * Function that returns the lowest value of the input array
      */
     min(input: number[]): number{
-        var output;
-        for(var i: number=0;i<input.length; i++){
+        let output;
+        for(let i: number=0;i<input.length; i++){
             if(input[i] !== undefined){
                 if(output == undefined || output>input[i]){
                     output=input[i];
@@ -252,10 +257,10 @@ export class StatisticMapService {
      * Function that returns the most common value in the input array
      */
     fashion(input: number[]): number{
-        var frequency: any = {};//Object that contains every different value in input linked to its absolute frequency
-        var fashion_frequency: number = 0;//Absolute frequency of the fashion value
-        var fashion_value: number;
-        for(var i: number=0;i<input.length; i++){
+        let frequency: any = {};//Object that contains every different value in input linked to its absolute frequency
+        let fashion_frequency: number = 0;//Absolute frequency of the fashion value
+        let fashion_value: number;
+        for(let i: number=0;i<input.length; i++){
             if(input[i] !== undefined){
                 if(!frequency[input[i]]){
                     frequency[input[i]] = 1;
@@ -278,9 +283,9 @@ export class StatisticMapService {
      * Function that returns the median value in the input array
      */
     median(input: number[]): number{
-        var sorted: number[] = input.filter(function(value) { return value !== undefined }).sort();
-        var median: number;
-        var num: number = sorted.length;
+        let sorted: number[] = input.filter(function(value) { return value !== undefined; }).sort();
+        let median: number;
+        let num: number = sorted.length;
         if((num % 2) == 0){
             median = sorted[num/2];
         }
@@ -292,48 +297,4 @@ export class StatisticMapService {
         }
         return median;
     }
-
-    /*
-     * Function that returns true when two objects contain the same even when it is not in the same order
-     * ({a,b}=={b,a} would return true)
-     * Only used in testing TODO such methods should not be implemented. Testing should not rely on test specific methods
-     */
-
-    /*unorderedCompare(a: Object,b: Object): boolean{
-        var same : boolean = false;
-        //We check if we reached a leave. Falls that happened the
-        if(Object.keys(a).length==0&&JSON.stringify(a) != JSON.stringify(b)){
-            return false;
-        }
-        //If a key contained in a is not contained in b, has different type or different number of keys they are diff
-        for(let key in a){
-            if(!b[key]||typeof(b[key])!=typeof(a[key])||Object.keys(a[key]).length!=Object.keys(b[key]).length){
-                return false;
-            }
-        }
-        //Here is only reached if both a and b have the same keys and those values have the same type and number of keys
-        for(let key in a){
-            if(typeof(a[key])=="object"){//check if this works
-                //if key is a number we look for a branch in b that has the same as this branch in a
-                if(typeof (key)=="number"){
-                    for(let keyb in b){
-                        if(this.unorderedCompare(a[key],b[keyb])){
-                            same= true;
-                        }
-                    }
-                    if(!same){
-                        return false;
-                    }
-                }
-                //If the key is not a number we compare that branch in a with the branch with the same key in b
-                else if(!this.unorderedCompare(a[key],b[key])){
-                    return false;
-                }
-            }//if the value is not an object
-            else if(a[key]!=b[key]){
-                return false;
-            }
-        }
-        return true;
-    }*/
 }

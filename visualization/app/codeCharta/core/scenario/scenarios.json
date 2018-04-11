@@ -25,7 +25,8 @@
       "margin": 1,
       "deltaColorFlipped": false,
       "showDependencies": false
-    }
+    },
+    "autoFitCamera": true
   },
   {
     "name": "Average Complexity*",
@@ -81,7 +82,8 @@
       "margin": 1,
       "deltaColorFlipped": false,
       "showDependencies": false
-    }
+    },
+    "autoFitCamera": true
   },
   {
     "name": "Code Churn",
@@ -109,6 +111,7 @@
       "margin": 1,
       "deltaColorFlipped": false,
       "showDependencies": false
-    }
+    },
+    "autoFitCamera": true
   }
 ]
