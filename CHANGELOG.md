@@ -13,6 +13,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+## [1.11.1] - 2018-04-11
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
 ## [1.11.0] - 2018-04-11
 ### Added
 - SASS support
