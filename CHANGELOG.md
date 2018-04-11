@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.11.0] - 2018-04-11
+### Added
 - SASS support
 - simple regex filter
 - Reset Button
