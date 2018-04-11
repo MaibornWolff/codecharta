@@ -2,7 +2,7 @@ import * as d3 from "d3";
 import {DataService} from "../data/data.service";
 import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
 import {HierarchyNode, HierarchyRectangularNode} from "d3-hierarchy";
-import {node} from "../../codeMap/rendering/node";
+import {node} from "../../ui/codeMap/rendering/node";
 
 const PADDING_SCALING_FACTOR = 0.4;
 
@@ -59,7 +59,7 @@ class TreeMapService {
         let heightScale = w / maxHeight;
 
         nodes.forEach((node)=> {
-            this.transformNode(node, heightKey, heightScale, p*PADDING_SCALING_FACTOR * 0.5);
+            this.transformNode(node, heightKey, heightScale, p*PADDING_SCALING_FACTOR * 0.2);
         });
 
         return nodes;
@@ -78,16 +78,15 @@ class TreeMapService {
      * @param {number} folderHeight height of folder
      */
     private transformNode(node, heightKey, heightScale, folderHeight) {
-        if(!node.data.attributes){console.log("treemap no attributes", node);}
         let heightValue = node.data.attributes[heightKey];
-        if(heightValue === undefined || heightValue === null || heightValue === 0) {
-            heightValue = 1;
+        if(heightValue === undefined || heightValue === null) {
+            heightValue = 0;
         }
-        node.width = Math.max(node.x1 - node.x0, 1);
-        node.length = Math.max(node.y1 - node.y0, 1);
-        node.height = node.isLeaf ? heightScale * heightValue : folderHeight;
+        node.width = Math.abs(node.x1 - node.x0);
+        node.length = Math.abs(node.y1 - node.y0);
+        node.height = Math.abs(node.isLeaf ? heightScale * heightValue : folderHeight);
         node.z0 = folderHeight * node.depth;
-        node.z1 = folderHeight * node.depth + node.height;
+        node.z1 = node.z0 + node.height;
         node.attributes = node.data.attributes;
         node.name = node.data.name;
         if (node.data.deltas) {
@@ -99,6 +98,7 @@ class TreeMapService {
         node.link = node.data.link;
         node.origin = node.data.origin;
         node.visible = node.data.visible;
+        node.path = node.data.path;
 
         node.data = {};
         delete node.data;
@@ -111,10 +111,10 @@ class TreeMapService {
      * @returns {number} max value
      */
     getMaxMetricInAllRevisions(metric: string) {
-        var maxValue = 0;
+        let maxValue = 0;
 
         this.dataService.data.revisions.forEach((rev)=> {
-            var nodes = d3.hierarchy(rev.root).leaves();
+            let nodes = d3.hierarchy(rev.root).leaves();
             nodes.forEach((node: any)=> {
                 if (node.data.attributes[metric] > maxValue) {
                     maxValue = node.data.attributes[metric];

@@ -1,9 +1,0 @@
-detail-panel-component table {
-    background-color: #fff;
-    opacity: 0.9;
-}
-
-#detailWindow {
-    max-height: 50%;
-    overflow-y: scroll;
-}

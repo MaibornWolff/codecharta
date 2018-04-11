@@ -1,10 +1,12 @@
 "use strict";
 import {Settings} from "../settings/settings.service";
 import {createDefaultScenario} from "./scenario.data";
+import {ThreeOrbitControlsService} from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 
 export interface Scenario {
-    name: string,
-    settings: Settings
+    name: string;
+    settings: Settings;
+    autoFitCamera: boolean;
 }
 
 /**
@@ -15,7 +17,7 @@ export class ScenarioService {
     private scenarios: Scenario[];
 
     /* ngInject */
-    constructor(private settingsService, private dataService) {
+    constructor(private settingsService, private dataService, private threeOrbitControlsService:ThreeOrbitControlsService) {
         this.scenarios = require("./scenarios.json");
     }
 
@@ -25,6 +27,9 @@ export class ScenarioService {
      */
     public applyScenario(scenario: Scenario) {
         this.settingsService.applySettings(scenario.settings);
+        if(scenario.autoFitCamera){
+            this.threeOrbitControlsService.autoFitTo();
+        }
     }
 
     /**

@@ -1,11 +1,11 @@
-<div class="{{$ctrl.depth?'':'tree-root'}} tree-element-{{$ctrl.depth?$ctrl.depth:0}} {{$ctrl.isLeaf()?'tree-leaf':'tree-parent'}}">
+<div class="{{::$ctrl.depth?'':'tree-root'}} tree-element-{{::$ctrl.depth?$ctrl.depth:0}} {{::$ctrl.isLeaf()?'tree-leaf':'tree-parent'}}">
 
-    <div class="tree-element-label-{{$ctrl.depth?$ctrl.depth:0}}">
+    <div class="tree-element-label-{{::$ctrl.depth?$ctrl.depth:0}} tree-element-label" ng-mouseenter="$ctrl.onMouseEnter()" ng-mouseleave="$ctrl.onMouseLeave()">
 
         <span ng-click="$ctrl.onFolderClick()">
             <span role="img" ng-if="!$ctrl.isLeaf() && $ctrl.collapsed" class="fa fa-folder" aria-hidden="true"></span>
             <span role="img" ng-if="!$ctrl.isLeaf() && !$ctrl.collapsed" class="fa fa-folder-open" aria-hidden="true"></span>
-            <span role="img" ng-if="$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></span>
+            <span role="img" ng-if="::$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></span>
         </span>
 
         <span ng-click="$ctrl.onEyeClick()">
@@ -14,16 +14,16 @@
         </span>
 
         <span ng-click="$ctrl.onLabelClick()">
-            {{$ctrl.node.name}}
+            {{::$ctrl.node.name}}
         </span>
 
     </div>
 
-    <div class="tree-element-children tree-element-children-{{$ctrl.depth?$ctrl.depth:0}}">
+    <div class="tree-element-children tree-element-children-{{::$ctrl.depth?$ctrl.depth:0}}">
 
         <div ng-if="!$ctrl.collapsed"
              ng-repeat="node in $ctrl.node.children | orderBy: [$ctrl.sortByFolder,'name'] ">
-            <map-tree-view-level-component node="node" depth="$ctrl.depth+1"></map-tree-view-level-component>
+            <map-tree-view-level-component node="::node" depth="::$ctrl.depth+1"></map-tree-view-level-component>
         </div>
 
     </div>

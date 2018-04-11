@@ -2,16 +2,15 @@
 
 import "../../ui/ui";
 import "../../core/core.module";
-import "../../codeMap/codeMap";
-import "angularjs-slider";
+import "../codeMap/codeMap";
+
+import "angular-material-expansion-panel";
 
 import angular from "angular";
 
 import {settingsPanelComponent} from "./settingsPanel";
 
-import "./settingsPanel.css";
-
-angular.module("app.codeCharta.ui.settingsPanel", ["app.codeCharta.ui", "app.codeCharta.core", "rzModule"])
+angular.module("app.codeCharta.ui.settingsPanel", ["app.codeCharta.ui", "app.codeCharta.core", "material.components.expansionPanels"])
     .component(settingsPanelComponent.selector, settingsPanelComponent);
 
 

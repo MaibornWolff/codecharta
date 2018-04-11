@@ -10,3 +10,7 @@
 .tree-root .tree-element-children {
     margin-left: 22px;
 }
+
+.tree-element-label:hover {
+    background-color: #efefef;
+}

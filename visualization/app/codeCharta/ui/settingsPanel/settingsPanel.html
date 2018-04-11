@@ -1,69 +1,174 @@
-<div id="settingsPanel">
+<md-expansion-panel-group multiple>
 
-    <fab-component onclick="$('#settingsPanel').animate({ width : 0 } );" icon-class="fa-arrow-circle-o-right"></fab-component>
+    <md-expansion-panel>
 
-    <collapsible-directive>
+        <md-expansion-panel-collapsed>
+            <div class="md-title"><i class="fa fa-map"></i> Maps</div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
 
-        <collapsible-element-directive label="Maps" icon-class="fa-map">
+        <md-expansion-panel-expanded>
 
-            <revision-chooser-component></revision-chooser-component>
+            <md-expansion-panel-header ng-click="$panel.collapse()">
+                <div class="md-title"><i class="fa fa-map"></i> Maps</div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
 
-        </collapsible-element-directive>
+            <md-expansion-panel-content>
+                <revision-chooser-component></revision-chooser-component>
+            </md-expansion-panel-content>
 
-        <collapsible-element-directive label="Color Settings" icon-class="fa-paint-brush">
-            <label id="colorSliderLabel" for="colorSlider">Neutral Color Range</label>
-            <rzslider id="colorSlider" rz-slider-model="$ctrl.settings.neutralColorRange.from"
-                      rz-slider-high="$ctrl.settings.neutralColorRange.to"
-                      rz-slider-options="$ctrl.sliderOptions"></rzslider>
+        </md-expansion-panel-expanded>
 
-            <div class='input-field col s6'>
-            <input type='number' ng-model="$ctrl.settings.neutralColorRange.from" min=0 max={{$ctrl.settings.neutralColorRange.to - 1}} step="1" ng-change="$ctrl.sliderOption.onChange()">
-            </div>
+    </md-expansion-panel>
 
-            <div class='input-field col s6'>
-            <input type='number' ng-model="$ctrl.settings.neutralColorRange.to" min={{$ctrl.settings.neutralColorRange.from + 1}} max={{$ctrl.sliderOption.ceil}}  step="1" ng-change="$ctrl.sliderOption.onChange()">
-            </div>
+    <md-expansion-panel>
 
-            <checkbox-directive model="$ctrl.settings.neutralColorRange.flipped" label="Invert Colors" change="$ctrl.notify()"></checkbox-directive>
-            <checkbox-directive ng-if="$ctrl.settings.deltas" model="$ctrl.settings.deltaColorFlipped" label="Invert Delta Colors" change="$ctrl.notify()"></checkbox-directive>
+        <md-expansion-panel-collapsed ng-click="$ctrl.collapseAndUpdateChildRzSlider($panel)">
+            <div class="md-title"><i class="fa fa-paint-brush"></i> Color</div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
 
-        </collapsible-element-directive>
+        <md-expansion-panel-expanded>
 
-        <collapsible-element-directive label="Display" icon-class="fa-television">
-            <number-field-directive label="Amount of labeled buildings" min="0" model="$ctrl.settings.amountOfTopLabels" change="$ctrl.notify()"></number-field-directive>
-            <checkbox-directive model="$ctrl.settings.deltas" label="Deltas" change="$ctrl.notify()"></checkbox-directive>
-        </collapsible-element-directive>
+            <md-expansion-panel-header ng-click="$ctrl.collapseAndUpdateChildRzSlider($panel)">
+                <div class="md-title"><i class="fa fa-paint-brush"></i> Color</div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
 
-        <collapsible-element-directive label="Scaling" icon-class="fa-cube">
-            <slider-directive step="0.1"  label="Height" min="0.1" max="5" model="$ctrl.settings.scaling.y" change="$ctrl.notify()"></slider-directive>
-        </collapsible-element-directive>
+            <md-expansion-panel-content>
+                <color-settings-panel-component></color-settings-panel-component>
+            </md-expansion-panel-content>
 
-        <collapsible-element-directive label="Metrics" icon-class="fa-line-chart">
-            <dropdown-directive label="Area" values="$ctrl.metrics" model="$ctrl.settings.areaMetric" change="$ctrl.notify()"></dropdown-directive>
-            <dropdown-directive label="Height" values="$ctrl.metrics" model="$ctrl.settings.heightMetric" change="$ctrl.notify()"></dropdown-directive>
-            <dropdown-directive label="Color" values="$ctrl.metrics" model="$ctrl.settings.colorMetric" change="$ctrl.notify()"></dropdown-directive>
-        </collapsible-element-directive>
+        </md-expansion-panel-expanded>
 
-        <collapsible-element-directive label="Scenarios" icon-class="fa-star">
-            <scenario-buttons-component></scenario-buttons-component>
-        </collapsible-element-directive>
+    </md-expansion-panel>
 
-        <collapsible-element-directive label="TreeView" icon-class="fa-tree">
-            <map-tree-view-component></map-tree-view-component>
-        </collapsible-element-directive>
+    <md-expansion-panel>
 
-        <collapsible-element-directive label="Experimental" icon-class="fa-flask">
-            <slider-directive step="1"  label="Margin between buildings" min="1" max="100" model="$ctrl.settings.margin" change="$ctrl.notify()"></slider-directive><br/><br/>
-            <checkbox-directive model="$ctrl.settings.showDependencies" label="Show dependencies of selected Building" change="$ctrl.notify()"></checkbox-directive><br /><br />
-        </collapsible-element-directive>
+        <md-expansion-panel-collapsed>
+            <div class="md-title"><i class="fa fa-television"></i> Display</div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
 
-        <collapsible-element-directive label="Statistics" icon-class="fa-line-chart">
-            A new map is shown, where each class is the result of applying a statistical function to that class in every loaded version of the map
-            <dropdown-directive label="Function to apply" values="$ctrl.STATISTIC_OPS" model="$ctrl.settings.operation" change="$ctrl.onStatisticsChange()" use-enum-filter="true"></dropdown-directive>
-        </collapsible-element-directive>
+        <md-expansion-panel-expanded>
 
-    </collapsible-directive>
+            <md-expansion-panel-header ng-click="$panel.collapse()">
+                <div class="md-title"><i class="fa fa-television"></i> Display</div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
 
-    <a class="waves-effect waves-light btn settings-panel-btn" title="Show Url Parameters" ng-click="$ctrl.showUrlParams()">Show Url Parameters</a>
+            <md-expansion-panel-content>
+                <display-settings-panel-component></display-settings-panel-component>
+            </md-expansion-panel-content>
 
-</div>
+        </md-expansion-panel-expanded>
+
+    </md-expansion-panel>
+
+    <md-expansion-panel>
+
+        <md-expansion-panel-collapsed>
+            <div class="md-title"><i class="fa fa-line-chart"></i> Metrics</div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
+
+        <md-expansion-panel-expanded>
+
+            <md-expansion-panel-header ng-click="$panel.collapse()">
+                <div class="md-title"><i class="fa fa-line-chart"></i> Metrics</div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
+
+            <md-expansion-panel-content>
+                <metric-chooser-component></metric-chooser-component>
+            </md-expansion-panel-content>
+
+        </md-expansion-panel-expanded>
+
+    </md-expansion-panel>
+
+    <md-expansion-panel>
+
+        <md-expansion-panel-collapsed>
+            <div class="md-title"><i class="fa fa-star"></i> Scenarios</div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
+
+        <md-expansion-panel-expanded>
+
+            <md-expansion-panel-header ng-click="$panel.collapse()">
+                <div class="md-title"><i class="fa fa-star"></i> Scenarios</div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
+
+            <md-expansion-panel-content>
+                <scenario-buttons-component></scenario-buttons-component>
+            </md-expansion-panel-content>
+
+        </md-expansion-panel-expanded>
+
+    </md-expansion-panel>
+
+    <md-expansion-panel>
+
+        <md-expansion-panel-collapsed>
+            <div class="md-title"><i class="fa fa-tree"></i> Treeview</div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
+
+        <md-expansion-panel-expanded>
+
+            <md-expansion-panel-header ng-click="$panel.collapse()">
+                <div class="md-title"><i class="fa fa-tree"></i> Treeview</div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
+
+            <md-expansion-panel-content>
+                <regex-filter-component></regex-filter-component>
+                <map-tree-view-component></map-tree-view-component>
+            </md-expansion-panel-content>
+
+        </md-expansion-panel-expanded>
+
+    </md-expansion-panel>
+
+    <md-expansion-panel>
+
+        <md-expansion-panel-collapsed>
+            <div class="md-title"><i class="fa fa-flask"></i> Experimental</div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
+
+        <md-expansion-panel-expanded>
+
+            <md-expansion-panel-header ng-click="$panel.collapse()">
+                <div class="md-title"><i class="fa fa-flask"></i> Experimental</div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
+
+            <md-expansion-panel-content>
+                <experimental-settings-panel-component></experimental-settings-panel-component>
+            </md-expansion-panel-content>
+
+        </md-expansion-panel-expanded>
+
+    </md-expansion-panel>
+
+</md-expansion-panel-group>
+
+

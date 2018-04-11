@@ -6,14 +6,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- SASS support
+- simple regex filter
+- Reset Button
+- Dialog Service replaces console log calls and window.alert calls
+- linking tree view and map hover
+- auto fit scene button
+- anugularJS material
 - Scenarios are now filtered by compatibility for the given map
-- Added Link in visualization #84
+- Link in visualization #84
 
 ### Changed
 
 ### Removed
+- materialize-css
+- grunt
 
 ### Fixed
+- less flickering and artifacts
 
 ## [1.10.0] - 2018-03-22
 ### Added

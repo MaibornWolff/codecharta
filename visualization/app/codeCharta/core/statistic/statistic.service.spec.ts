@@ -1,6 +1,6 @@
 import "./statistic.module";
 import angular from "angular";
-import {NGMock} from "../../../ng.mockhelper";
+import {NGMock} from "../../../../mocks/ng.mockhelper";
 import {CodeMap} from "../data/model/codeMap";
 import {STATISTIC_OPS} from "./statistic.service";
 import {DataModel} from "../data/data.service";

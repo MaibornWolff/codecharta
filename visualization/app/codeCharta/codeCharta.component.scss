@@ -1,0 +1,105 @@
+@import "../mixins";
+
+code-charta-component {
+
+  #title {
+
+    position: fixed;
+    z-index: 10;
+    width: 100%;
+
+    a, img {
+      width: 4em;
+      margin: 0.5em 0 0 1.5em;
+    }
+
+    h1 {
+      text-transform: uppercase;
+      font-size: 0.9em;
+      line-height: 1.4em;
+      float: right;
+      margin: 0.5em 1.6em 0 0;
+      color: #5A585A;
+      font-family: Roboto, sans-serif;
+      font-weight: 300;
+    }
+
+    h1:first-child {
+      font-size: 1.82em;
+    }
+
+    h1:last-child {
+      font-size: 1.5em;
+    }
+
+  }
+
+  #codeMap {
+    position: fixed;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  #actionButtons {
+    position: fixed;
+    bottom: 2em;
+    right: 2em;
+    z-index: 60;
+
+    i.fa-folder-open {
+      margin: 4px 0 0 2px;
+    }
+
+    i.fa-bars {
+      margin-top: 4px;
+    }
+
+  }
+
+  #actionButtons > * {
+    margin-left: 4px;
+    margin-right: 4px;
+    z-index: 60;
+  }
+
+  md-sidenav {
+    width: 600px;
+    z-index: 50;
+
+    .padding_bottom {
+      padding-bottom: 100px;
+    }
+  }
+
+  #loading-indicator {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: block;
+    text-align: center;
+
+    md-progress-circular {
+      display: block;
+      margin: 0 auto;
+      margin-top: 22%;
+    }
+
+  }
+
+  #detailWindow {
+    position: fixed;
+    z-index: 40;
+    bottom: 0.5em;
+    left: 0.5em;
+    color: #5A585A;
+    font-size: 0.8em;
+  }
+
+}

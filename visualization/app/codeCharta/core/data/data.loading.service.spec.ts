@@ -1,5 +1,5 @@
 import "./data.module";
-import {NGMock} from "../../../ng.mockhelper";
+import {NGMock} from "../../../../mocks/ng.mockhelper";
 import {DataLoadingService} from "./data.loading.service";
 import {TEST_FILE_CONTENT} from "./data.mocks";
 
@@ -32,6 +32,22 @@ describe("app.codeCharta.core.data.dataLoadingService", function () {
 
     it("should resolve valid file", ()=> {
         return dataLoadingService.loadMapFromFileContent("file.json", validFileContent, 0);
+    });
+
+    it("should reject null", (done)=> {
+        dataLoadingService.loadMapFromFileContent("file.json", null, 0).then(()=>{}, ()=>{
+            done();
+        }).catch(()=>{
+            done()
+        });
+    });
+
+    it("should reject string", (done)=> {
+        dataLoadingService.loadMapFromFileContent("file.json", "string", 0).then(()=>{}, ()=>{
+            done();
+        }).catch(()=>{
+            done()
+        });
     });
 
     it("should reject or catch invalid file", (done)=> {

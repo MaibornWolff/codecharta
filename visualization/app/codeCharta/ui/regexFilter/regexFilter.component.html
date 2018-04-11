@@ -1,0 +1,5 @@
+<md-input-container class="md-block">
+    <label>Filter by regex</label>
+    <input type='text' ng-model="$ctrl.viewModel.filter" ng-change="$ctrl.onFilterChange($ctrl.viewModel.filter)">
+    <div ng-messages="$ctrl.viewModel.error">{{$ctrl.viewModel.error}}</div>
+</md-input-container>

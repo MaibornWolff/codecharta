@@ -1,6 +1,12 @@
 module.exports = {
     rules: [
         {
+            test: /\.ts$/,
+            enforce: 'pre',
+            loader: 'tslint-loader',
+            options: require("./tslint.loader.config")
+        },
+        {
             test: /\.js$/,
             exclude: /node_modules/,
             loaders: [ 'ng-annotate-loader', 'babel-loader']
@@ -12,6 +18,10 @@ module.exports = {
         {
             test: /\.css$/,
             use: ['style-loader', 'css-loader']
+        },
+        {
+            test: /\.scss$/,
+            use: ['style-loader', 'css-loader', 'sass-loader?sourceMap']
         },
         {
             test: /\.(png|svg|jpg|gif)$/, use: ['file-loader']
@@ -29,7 +39,7 @@ module.exports = {
         },
         {
             test: /\.ts(x?)$/,
-            use: ['babel-loader', 'ts-loader?configFile=tsconfig.webpack.json'],
+            use: ['babel-loader', 'ts-loader?configFile=tsconfig.json'],
 
         },
         {
