@@ -1,8 +1,8 @@
 {
   "paging": {
     "pageIndex": 3,
-    "pageSize": 2,
-    "total": 5
+    "pageSize": 500,
+    "total": 1499
   },
   "baseComponent": {
     "id": "AVpgljwSAwvKRXcPxJMX",
@@ -32,29 +32,16 @@
   },
   "components": [
     {
-      "id": "AVpglkG6K9udye1JocV_",
-      "key": "de.maibornwolff.codecharta:codecharta:import",
-      "name": "import",
-      "qualifier": "BRC",
-      "path": "import",
+      "id": "AVpmw6eEK9udye1JpWHR",
+      "key": "de.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/SonarXMLImport.java",
+      "name": "SonarXMLImport.java",
+      "qualifier": "FIL",
+      "path": "src/main/java/de/maibornwolff/codecharta/importer/sonar/SonarXMLImport.java",
+      "language": "java",
       "measures": [
         {
           "metric": "coverage",
-          "value": "85.8",
-          "periods": [
-            {
-              "index": 1,
-              "value": "0.0"
-            },
-            {
-              "index": 2,
-              "value": "0.0"
-            },
-            {
-              "index": 3,
-              "value": "-0.7000000000000028"
-            }
-          ]
+          "value": "100.0"
         }
       ]
     }
