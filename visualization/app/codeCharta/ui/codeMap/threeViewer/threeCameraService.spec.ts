@@ -1,50 +1,48 @@
-import "./threeViewer";
-import {NG} from "../../../../../mocks/ng.mockhelper";
-import sinon from "sinon";
-import * as THREE from "three";
+import {SettingsService} from "../../../core/settings/settings.service";
 
-/**
- * @test {ThreeCameraService}
- */
-describe("app.codeCharta.ui.codeMap.threeViewer.threeCameraService", function () {
+jest.mock("../../../core/settings/settings.service");
 
-    //noinspection TypeScriptUnresolvedVariable
-    beforeEach(NG.mock.module("app.codeCharta.ui.codeMap.threeViewer"));
+import {PerspectiveCamera} from "three";
 
-    //noinspection TypeScriptUnresolvedVariable
-    it("should retrieve the angular service instance", NG.mock.inject(function (threeCameraService) {
-        expect(threeCameraService).not.toBe(undefined);
-    }));
+jest.mock("three");
 
-    //noinspection TypeScriptUnresolvedVariable
-    /**
-     * @test {ThreeCameraService#init}
-     */
-    it("init should create a new PerspectiveCamera", NG.mock.inject(function (threeCameraService, settingsService) {
+import {ThreeCameraService} from "./threeCameraService";
 
-        //mocks
-        let spy = sinon.spy(THREE, "PerspectiveCamera");
+describe("threeCameraService", () => {
 
-        //action
-        threeCameraService.init(settingsService);
+    let sut: ThreeCameraService;
 
-        //expectations
-        expect(spy.calledOnce);
+    beforeEach(() => {
+        SettingsService.mockClear();
+        PerspectiveCamera.mockClear();
+        sut = new ThreeCameraService();
+    });
 
-    }));
+    it("init should create a new PerspectiveCamera", () => {
+        sut.setPosition = jest.fn();
+        sut.init(new SettingsService());
+        expect(PerspectiveCamera).toHaveBeenCalledTimes(1);
+    });
 
-    //noinspection TypeScriptUnresolvedVariable
-    /**
-     * @test {ThreeCameraService#init}
-     */
-    it("init should set the camera position", NG.mock.inject(function (threeCameraService, settingsService) {
+    it("init should set the camera position", () => {
+        sut.setPosition = jest.fn();
+        sut.init(new SettingsService());
+        expect(sut.setPosition).toHaveBeenCalled();
+    });
 
-        //action
-        threeCameraService.init(settingsService);
+    it("onSettingsChanged should set the camera position", () => {
+        sut.setPosition = jest.fn();
+        sut.onSettingsChanged({camera: {x: 0, y: 1, z: 2}});
+        expect(sut.setPosition).toHaveBeenCalledWith(0, 1, 2);
+    });
 
-        //expectations
-        expect(threeCameraService.camera.position).not.toBe(undefined);
-
-    }));
+    it("setPosition should update the camera position", () => {
+        sut.camera = new PerspectiveCamera();
+        sut.camera.position = {
+            set: jest.fn()
+        };
+        sut.setPosition(0,1,2);
+        expect(sut.camera.position.set).toHaveBeenCalledWith(0, 1, 2);
+    });
 
 });
