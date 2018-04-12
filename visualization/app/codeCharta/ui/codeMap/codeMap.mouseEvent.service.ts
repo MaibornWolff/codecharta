@@ -32,7 +32,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
     /* @ngInject */
     constructor(
-        private $rootScope,
+        private $rootScope: IRootScopeService,
         private $window,
         private threeCameraService: ThreeCameraService,
         private threeRendererService,
