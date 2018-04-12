@@ -6,6 +6,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- Link behind filepath in detailPanel #84
+- Double click event-handler on Buildings #84
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.11.1] - 2018-04-11
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.11.0] - 2018-04-11
+### Added
 - SASS support
 - simple regex filter
 - Reset Button
@@ -20,6 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Removed
 - materialize-css
+- grunt
 
 ### Fixed
 - less flickering and artifacts
