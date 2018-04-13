@@ -5,7 +5,7 @@
             {{::metric}}
         </md-option>
     </md-select>
-    <span class="metric-value">{{$ctrl.hoveredAreaValue || "-"}}</span>
+    <span class="metric-value">{{($ctrl.hoveredAreaValue | number) || "-"}}</span>
 </md-input-container>
 
 <md-input-container class="md-block">
@@ -15,7 +15,7 @@
             {{::metric}}
         </md-option>
     </md-select>
-    <span class="metric-value">{{$ctrl.hoveredHeightValue || "-"}}</span>
+    <span class="metric-value">{{($ctrl.hoveredHeightValue | number) || "-"}}</span>
 </md-input-container>
 
 <md-input-container class="md-block">
@@ -25,5 +25,5 @@
             {{::metric}}
         </md-option>
     </md-select>
-    <span class="metric-value">{{$ctrl.hoveredColorValue || "-"}}</span>
+    <span class="metric-value">{{($ctrl.hoveredColorValue | number) || "-"}}</span>
 </md-input-container>
