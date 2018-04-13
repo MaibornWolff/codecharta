@@ -9,6 +9,20 @@ detail-panel-component {
 
         box-shadow: 0px 0px 8px 1px $detail-border-color;
 
+        position: fixed;
+        z-index: 40;
+        bottom: 0.5em;
+        left: 0.5em;
+        color: #5A585A;
+        font-size: 0.8em;
+
+        table.minimized {
+            td, th {
+                min-width: initial;
+                max-width: initial;
+            }
+        }
+
         table {
 
             background-color: #fff;
