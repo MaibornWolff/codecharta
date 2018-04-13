@@ -71,8 +71,16 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
     val numberOfPages: Int
         get() {
             val response = getAvailableMetrics(1)
-            return response.total / PAGE_SIZE + 1
+            return calculateNumberOfPages(response.total)
         }
+
+    fun calculateNumberOfPages(total: Int): Int {
+        var incrementor = 0;
+        if(total % PAGE_SIZE > 0){
+            incrementor = 1;
+        }
+        return total / PAGE_SIZE + incrementor
+    }
 
     internal constructor(baseUrl: URL) : this("", baseUrl)
 
