@@ -1,29 +1,29 @@
 <md-input-container class="md-block">
-    <label>Area</label>
+    <i class='fa fa-arrows-alt'></i>
     <md-select ng-model="$ctrl.settingsService.settings.areaMetric" ng-change="$ctrl.settingsService.applySettings()">
         <md-option ng-repeat="metric in $ctrl.metrics" value="{{::metric}}">
             {{::metric}}
         </md-option>
     </md-select>
-    {{$ctrl.hoveredAreaValue || "-"}}
+    <span class="metric-value">{{$ctrl.hoveredAreaValue || "-"}}</span>
 </md-input-container>
 
 <md-input-container class="md-block">
-    <label>Height</label>
+    <i class='fa fa-arrows-v'></i>
     <md-select ng-model="$ctrl.settingsService.settings.heightMetric" ng-change="$ctrl.settingsService.applySettings()">
         <md-option ng-repeat="metric in $ctrl.metrics" value="{{::metric}}">
             {{::metric}}
         </md-option>
     </md-select>
-    {{$ctrl.hoveredHeightValue || "-"}}
+    <span class="metric-value">{{$ctrl.hoveredHeightValue || "-"}}</span>
 </md-input-container>
 
 <md-input-container class="md-block">
-    <label>Color</label>
+    <i class='fa fa-paint-brush'></i>
     <md-select ng-model="$ctrl.settingsService.settings.colorMetric" ng-change="$ctrl.settingsService.applySettings()">
         <md-option ng-repeat="metric in $ctrl.metrics" value="{{::metric}}">
             {{::metric}}
         </md-option>
     </md-select>
-    {{$ctrl.hoveredColorValue || "-"}}
+    <span class="metric-value">{{$ctrl.hoveredColorValue || "-"}}</span>
 </md-input-container>
