@@ -1,3 +1,18 @@
 metric-chooser-component {
 
 }
+
+horizontal-metric-chooser-component {
+
+  position: relative;
+  top: -10px;
+  left: 40px;
+  display: inline-block !important;
+
+  md-input-container {
+    display: inline-block !important;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+}
