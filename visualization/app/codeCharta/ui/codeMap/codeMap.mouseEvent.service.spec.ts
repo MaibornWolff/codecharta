@@ -83,7 +83,117 @@ describe("mouseEventService", () => {
         sut.start();
         expect(adder).toHaveBeenCalledWith("mouseup", expect.any(Function), false);
         expect(adder).toHaveBeenCalledWith("mousedown", expect.any(Function), false);
+        expect(adder).toHaveBeenCalledWith("mousemove", expect.any(Function), false);
         expect(adder).toHaveBeenCalledWith("dblclick", expect.any(Function), false);
     });
+
+    it("onShouldHoverNode should not call onBuildingHovered when no buildings exist", ()=>{
+
+        // given
+        sut.onBuildingHovered = jest.fn();
+
+        sut.codeMapRenderService.mapMesh = {
+            getMeshDescription: jest.fn()
+        }
+
+        sut.codeMapRenderService.mapMesh.getMeshDescription.mockImplementation(() => {
+            return {
+                buildings: []
+            };
+        })
+
+        // when
+        sut.onShouldHoverNode({ path: "some path"} );
+
+        // then
+        expect(sut.onBuildingHovered).not.toHaveBeenCalled();
+
+    });
+
+    it("onShouldHoverNode should call onBuildingHovered when a building exists and the its path is equal to the nodes path", ()=>{
+
+        // given
+
+        const building = {
+            node: {
+                path: "some path"
+            }
+        }
+
+        sut.onBuildingHovered = jest.fn();
+
+        sut.hovered = null;
+
+        sut.codeMapRenderService.mapMesh = {
+            getMeshDescription: jest.fn()
+        }
+
+        sut.codeMapRenderService.mapMesh.getMeshDescription.mockImplementation(() => {
+            return {
+                buildings: [building]
+            };
+        })
+
+        // when
+        sut.onShouldHoverNode({ path: "some path"} );
+
+        // then
+        expect(sut.onBuildingHovered).toHaveBeenCalledWith(null, building);
+
+    });
+
+    it("onShouldHoverNode should not call onBuildingHovered when a building exists and the its path is not equal to the nodes path", ()=>{
+
+        // given
+
+        const building = {
+            node: {
+                path: "some other path"
+            }
+        }
+
+        sut.onBuildingHovered = jest.fn();
+
+        sut.codeMapRenderService.mapMesh = {
+            getMeshDescription: jest.fn()
+        }
+
+        sut.codeMapRenderService.mapMesh.getMeshDescription.mockImplementation(() => {
+            return {
+                buildings: [building]
+            };
+        })
+
+        // when
+        sut.onShouldHoverNode({ path: "some path"} );
+
+        // then
+        expect(sut.onBuildingHovered).not.toHaveBeenCalled();
+
+    });
+
+
+    it("onShouldUnhoverNode should always call onBuildingHovered(something, null)", ()=>{
+
+        // given
+
+        const building = {
+            node: {
+                path: "some other path"
+            }
+        }
+
+        sut.hovered = building;
+
+        sut.onBuildingHovered = jest.fn();
+
+        // when
+        sut.onShouldUnhoverNode({ path: "some path"} );
+
+        // then
+        expect(sut.onBuildingHovered).toHaveBeenCalledWith(building, null);
+
+    });
+
 
 });
