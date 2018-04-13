@@ -14,6 +14,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+## [1.11.2] - 2018-04-13
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+- a sonar importer bug which prevented the importer to fetch the last page #122
+
 ## [1.11.1] - 2018-04-11
 ### Added
 
