@@ -67,7 +67,8 @@
     "serve": "webpack --config ./conf/webpack.config.js --watch --hot",
     "package": "rimraf dist/packages && build --concurrent --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --mirror https://dl.nwjs.io/ . && bestzip ./dist/packages/codecharta-visualization-$npm_package_version-web.zip ./dist/webpack",
     "prepare": "npm run build",
-    "e2e": "npm run build && cypress open"
+    "e2e:gui": "npm run build && cypress open",
+    "e2e": "npm run build && cypress run"
   },
   "bin": {
     "codecharta-visualization": "cli.js"
