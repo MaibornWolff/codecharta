@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 - horizontal quick access metric chooser
 - Detail Panel can be minimized and maximized
+- cypress as an e2e test runner
 
 ### Changed
 
