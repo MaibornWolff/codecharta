@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 - Detail Panel can be minimized and maximized
 - Settings option to minimize Detail Panel
+
 ### Changed
 
 ### Removed
