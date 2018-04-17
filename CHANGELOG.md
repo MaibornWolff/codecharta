@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 - horizontal quick access metric chooser
 - Detail Panel can be minimized and maximized
-- removing metric details from legend
-- removing metric chooser from settings panel
 
 ### Changed
 
 ### Removed
+- metric details from legend
+- metric chooser from settings panel
 
 ### Fixed
 
