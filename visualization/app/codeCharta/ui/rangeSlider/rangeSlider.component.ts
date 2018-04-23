@@ -23,8 +23,21 @@ export class RangeSliderController implements SettingsServiceSubscriber {
         this.sliderOptions = {
             ceil: this.treeMapService.getMaxMetricInAllRevisions(settings.colorMetric),
             pushRange: true,
-            onChange: this.onSliderChange.bind(this)
+            onToChange: this.onToSliderChange.bind(this),
+            onFromChange: this.onFromSliderChange.bind(this)
         };
+    }
+
+    private onToSliderChange() {
+        this.settingsService.settings.neutralColorRange.from = Math.min(
+            this.settingsService.settings.neutralColorRange.to-1, this.settingsService.settings.neutralColorRange.from);
+        this.onToSliderChange.bind(this);
+    }
+
+    private onFromSliderChange() {
+        this.settingsService.settings.neutralColorRange.to = Math.max(
+            this.settingsService.settings.neutralColorRange.to, this.settingsService.settings.neutralColorRange.from+1);
+        this.onToSliderChange.bind(this);
     }
 
     private onSliderChange() {
