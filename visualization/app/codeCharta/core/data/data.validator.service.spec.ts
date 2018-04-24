@@ -1,5 +1,5 @@
 import "./data.module";
-import {NGMock} from "../../../ng.mockhelper";
+import {NGMock} from "../../../../mocks/ng.mockhelper";
 import DoneCallback = jest.DoneCallback;
 import {DataValidatorService} from "./data.validator.service";
 import {TEST_FILE_CONTENT, TEST_FILE_DATA} from "./data.mocks";
@@ -22,6 +22,30 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
 
     beforeEach(()=> {
         file = TEST_FILE_CONTENT;
+    });
+
+    it("should reject null", (done: DoneCallback)=> {
+        file.dependencies = [];
+        dataValidatorService.validate(null).then(
+            ()=> {
+                done.fail("should not accept null");
+            },
+            ()=> {
+                done();
+            }
+        );
+    });
+
+    it("should reject string", (done: DoneCallback)=> {
+        file.dependencies = [];
+        dataValidatorService.validate("").then(
+            ()=> {
+                done.fail("should not accept string");
+            },
+            ()=> {
+                done();
+            }
+        );
     });
 
 

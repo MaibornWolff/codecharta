@@ -25,11 +25,11 @@ export class DataDecoratorService {
             let root = d3.hierarchy<CodeMapNode>(map.root);
             let descendants: HierarchyNode<CodeMapNode>[] = root.descendants();
 
-            for (var j = 0; j < descendants.length; j++) {
+            for (let j = 0; j < descendants.length; j++) {
                 if (!descendants[j].data.attributes) {
                     descendants[j].data.attributes = {};
                 }
-                Object.assign(descendants[j].data.attributes, {unary: 1})
+                Object.assign(descendants[j].data.attributes, {unary: 1});
             }
 
         }

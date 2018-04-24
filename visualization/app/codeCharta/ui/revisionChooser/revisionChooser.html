@@ -1,19 +1,24 @@
-<div class="row">
-    <div class="col l12">
-        Show...
-    </div>
-    <div class="input-field col l12">
-        <select class="browser-default" ng-model="$ctrl.ui.chosenReference" ng-options="value.fileName for (key, value) in $ctrl.revisions" ng-change="$ctrl.onReferenceChange($ctrl.ui.chosenReference)">
-        </select>
-    </div>
-</div>
+<md-input-container class="md-block">
+    <label>Show</label>
+    <md-select ng-model="$ctrl.ui.chosenReference" ng-change="$ctrl.onReferenceChange($ctrl.ui.chosenReference)">
+        <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
+            {{::value.fileName}}
+        </md-option>
+    </md-select>
+</md-input-container>
 
-<div class="row" ng-if="$ctrl.settingsService.settings.deltas">
-    <div class="col l12">
-        In comparison to...
-    </div>
-    <div class="input-field col l12">
-        <select class="browser-default" ng-model="$ctrl.ui.chosenComparison" ng-options="value.fileName for (key, value) in $ctrl.revisions" ng-change="$ctrl.onComparisonChange($ctrl.ui.chosenComparison)">
-        </select>
-    </div>
-</div>
+<md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.deltas" ng-change="$ctrl.settingsService.applySettings()">
+        Deltas
+    </md-checkbox>
+</md-input-container>
+
+<md-input-container class="md-block" ng-if="$ctrl.settingsService.settings.deltas">
+    <label>In comparison to</label>
+    <md-select ng-model="$ctrl.ui.chosenComparison" ng-change="$ctrl.onComparisonChange($ctrl.ui.chosenComparison)">
+        <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
+            {{::value.fileName}}
+        </md-option>
+    </md-select>
+</md-input-container>
+

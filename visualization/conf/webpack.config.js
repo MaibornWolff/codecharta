@@ -1,22 +1,22 @@
-const path = require('path');
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
+const path = require("path");
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 
-const paths = require("./paths.js");
-
-const dist = path.resolve(__dirname, '.' + paths.bundlePath);
+const dist = path.resolve(__dirname, "../dist/webpack");
 
 module.exports = {
-    entry: paths.appEntry,
+    entry: "./app/app.ts",
     output: {
-        filename: paths.bundleName,
+        filename: "bundle.js",
         path: dist
     },
     module: require("./webpack.loaders.js"),
     plugins: [
+        new CleanWebpackPlugin([dist], {verbose: true, root: dist + "/.."}),
         new HtmlWebpackPlugin({
-            template: paths.htmlEntry
+            template: "./app/index.html"
         }),
         new BrowserSyncPlugin({
             host: 'localhost',

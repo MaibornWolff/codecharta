@@ -1,10 +1,10 @@
 import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/data.service";
-import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settings.service";
+import {SettingsServiceSubscriber, SettingsService, Settings, Range} from "../../core/settings/settings.service";
 import $ from "jquery";
-import {MapColors} from "../../codeMap/rendering/renderSettings";
-import {Range} from "../../model/Range";
+import {MapColors} from "../codeMap/rendering/renderSettings";
 import {ITimeoutService} from "angular";
 import {STATISTIC_OPS} from "../../core/statistic/statistic.service";
+import "./legendPanel.scss";
 
 export class LegendPanelController implements DataServiceSubscriber, SettingsServiceSubscriber {
 
@@ -22,8 +22,6 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     private operation: string;
     private deltaColorsFlipped: boolean;
 
-    private visible: boolean = false;
-
     /* @ngInject */
     constructor(private $timeout: ITimeoutService,
                 private settingsService: SettingsService,
@@ -33,40 +31,18 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         let ctx = this;
 
         $timeout(()=> {
-            ctx.onDataChanged(dataService.data)
+            ctx.onDataChanged(dataService.data);
         });
         $timeout(()=> {
-            ctx.onSettingsChanged(settingsService.settings)
+            ctx.onSettingsChanged(settingsService.settings);
         });
 
         this.settingsService.subscribe(this);
 
         this.dataService.subscribe(this);
 
-    }
+        this.initAnimations();
 
-    /**
-     * Links the click Handler
-     * @param {Scope} scope
-     * @param {object} element dom element
-     */
-    $postLink() {
-        $(this.$element).bind("click", this.toggle.bind(this));
-    }
-
-    /**
-     * Toggles the visibility
-     */
-    toggle() {
-        if (this.visible) {
-            //noinspection TypeScriptUnresolvedFunction
-            $("#legendPanel").animate({left: -500 + "px"});
-            this.visible = false;
-        } else {
-            //noinspection TypeScriptUnresolvedFunction
-            $("#legendPanel").animate({left: 2.8 + "em"});
-            this.visible = true;
-        }
     }
 
     onDataChanged(data: DataModel) {
@@ -113,7 +89,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
 
     getImageDataUri(hex: number): string {
         let hexS: string = "#" + hex.toString(16);
-        var color: string = this.encodeHex(hexS);
+        let color: string = this.encodeHex(hexS);
         return this.generatePixel(color);
     }
 
@@ -131,11 +107,11 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     }
 
     encodeTriplet(e1: number, e2: number, e3: number): string {
-        var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-        var enc1 = e1 >> 2;
-        var enc2 = ((e1 & 3) << 4) | (e2 >> 4);
-        var enc3 = ((e2 & 15) << 2) | (e3 >> 6);
-        var enc4 = e3 & 63;
+        let keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+        let enc1 = e1 >> 2;
+        let enc2 = ((e1 & 3) << 4) | (e2 >> 4);
+        let enc3 = ((e2 & 15) << 2) | (e3 >> 6);
+        let enc4 = e3 & 63;
         return keyStr.charAt(enc1) + keyStr.charAt(enc2) + keyStr.charAt(enc3) + keyStr.charAt(enc4);
     }
 
@@ -149,6 +125,18 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
             return "";
         }
         return (<string>operation).replace("_", " ").toLowerCase();
+    }
+
+    private initAnimations() {
+        $(document).ready(function(){
+            let start = 40;
+            let target = -500;
+            let visible = false;
+            $("legend-panel-component .panel-button").click(function(){
+                $("legend-panel-component .block-wrapper").animate({left: visible ? target+"px" : start+"px"}, "fast");
+                visible = !visible;
+            });
+        });
     }
 
 }
