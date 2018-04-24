@@ -103,6 +103,6 @@ class CrococosmoConverterTest {
         val graph = CrococosmoDeserializer().deserializeCrococosmoXML(`in`)
         val project = converter.convertToProject("test", graph)
 
-        assertThat(project.rootNode.leafObjects.count(), `is`(3))
+        assertThat(project.rootNode.leafObjects.count(), `is`(17))
     }
 }
