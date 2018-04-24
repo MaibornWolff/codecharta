@@ -10,14 +10,14 @@ import {SettingsService} from "../settings/settings.service";
 
 export interface DataModel {
 
-    revisions: CodeMap[],
-    metrics: string[],
-    renderMap: CodeMap
+    revisions: CodeMap[];
+    metrics: string[];
+    renderMap: CodeMap;
 
 }
 
 export interface DataServiceSubscriber {
-    onDataChanged(data: DataModel, event: IAngularEvent)
+    onDataChanged(data: DataModel, event: IAngularEvent);
 }
 
 /**

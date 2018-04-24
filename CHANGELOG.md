@@ -7,12 +7,53 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 ### Added
 - Added CrococosmoImporter to Analysis
+- Detail Panel can be minimized and maximized
 
 ### Changed
 
 ### Removed
 
 ### Fixed
+
+## [1.11.2] - 2018-04-13
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+- a sonar importer bug which prevented the importer to fetch the last page #122
+
+## [1.11.1] - 2018-04-11
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.11.0] - 2018-04-11
+### Added
+- SASS support
+- simple regex filter
+- Reset Button
+- Dialog Service replaces console log calls and window.alert calls
+- linking tree view and map hover
+- auto fit scene button
+- anugularJS material
+- Scenarios are now filtered by compatibility for the given map
+- Link in visualization #84
+
+### Changed
+
+### Removed
+- materialize-css
+- grunt
+
+### Fixed
+- less flickering and artifacts
 
 ## [1.10.0] - 2018-03-22
 ### Added

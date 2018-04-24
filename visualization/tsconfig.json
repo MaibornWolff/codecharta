@@ -14,12 +14,16 @@
         "noImplicitAny": false,
         "noUnusedLocals": false,
         "noUnusedParameters": false,
-        "removeComments": false,
+        "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
         "skipLibCheck": true,
         "allowJs": false,
         "strictNullChecks": false,
-        "declaration": true
-    }
+        "declaration": false
+    },
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts"
+    ]
 }

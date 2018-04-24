@@ -15,8 +15,8 @@ analysis: Tools for generating visualisation data
 
 ## Install application for desktop usage with npm
 
-* install visualization with `npm install @maibornwolff/codecharta-visualization -g`
-* install analysis with `npm install @maibornwolff/codecharta-analysis -g`
+* install visualization with `npm install codecharta-visualization -g`
+* install analysis with `npm install codecharta-analysis -g`
 * run visualization with `codecharta-visualization`
 * run analysis with `ccsh`
 

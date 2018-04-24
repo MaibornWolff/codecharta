@@ -1,10 +1,6 @@
-<div id="{{id}}" class="file-field input-field">
-    <div class="btn">
-        <span>Select file</span>
-        <input type="file" onchange="angular.element(this).scope().ctrl.fileChanged(this)" multiple="multiple">
-    </div>
+<input class="ng-hide" id="input-file-id" multiple type="file"
+       onchange="angular.element(this).scope().ctrl.fileChanged(this)"/>
 
-    <div class="file-path-wrapper">
-        <input class="file-path" type="text" >
-    </div>
-</div>
+<md-button class="md-fab md-primary" aria-label="Open File Chooser" onclick="document.getElementById('input-file-id').click();">
+    <i class="fa fa-folder-open fa-lg"></i>
+</md-button>

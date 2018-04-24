@@ -1,5 +1,5 @@
 import "./data.module";
-import {NGMock} from "../../../ng.mockhelper";
+import {NGMock} from "../../../../mocks/ng.mockhelper";
 import {DataService, DataServiceSubscriber} from "./data.service";
 import {CodeMap} from "./model/CodeMap";
 import {TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_FILE_DATA} from "./data.mocks";
