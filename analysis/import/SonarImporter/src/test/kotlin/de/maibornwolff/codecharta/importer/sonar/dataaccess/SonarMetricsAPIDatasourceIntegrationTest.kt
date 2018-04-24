@@ -54,6 +54,21 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     }
 
     @Test
+    fun getNoOfPages() {
+        assertNoOfPages(1499, 3);
+        assertNoOfPages(1500, 3);
+        assertNoOfPages(1501, 4);
+        assertNoOfPages(0, 0);
+        assertNoOfPages(1, 1);
+    }
+
+    fun assertNoOfPages(total: Int, expectation: Int) {
+        val ds = SonarMetricsAPIDatasource(createBaseUrl())
+        val pages = ds.calculateNumberOfPages(total)
+        assertThat(pages, `is`(expectation))
+    }
+
+    @Test
     @Throws(Exception::class)
     fun getAvailableMetrics() {
         // given
