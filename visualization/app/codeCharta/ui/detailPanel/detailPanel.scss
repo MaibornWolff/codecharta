@@ -35,8 +35,7 @@ detail-panel-component {
                 border-bottom: 1px $detail-border-color solid;
                 border-top: 1px $detail-border-color solid;
 
-                .fa.fa-window-minimize,
-                .fa.fa-window-maximize {
+                i.fa {
                     cursor: pointer;
                 }
             }
