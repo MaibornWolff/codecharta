@@ -6,7 +6,7 @@
         <thead>
             <tr>
                 <th ng-click="$ctrl.hidden = false">
-                    <i class="fa fa-window-maximize"></i>
+                    <i class="fa fa-arrow-up"></i>
                 </th>
                 <th ng-hide="!$ctrl.isHovered()">
                     {{$ctrl.details.hovered.path}}
@@ -19,7 +19,7 @@
         <thead>
             <tr>
                 <th ng-click="$ctrl.hidden = true">
-                    <i class="fa fa-window-minimize"></i>
+                    <i class="fa fa-arrow-down"></i>
                 </th>
                 <th>Property</th>
                 <th ng-hide="!$ctrl.isSelected()" id="selectedHeader">Selected</th>
