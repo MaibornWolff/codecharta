@@ -32,7 +32,8 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
     /* @ngInject */
     constructor(
-        private $rootScope,
+        private $rootScope: IRootScopeService,
+        private $window,
         private threeCameraService: ThreeCameraService,
         private threeRendererService,
         private threeSceneService,
@@ -60,6 +61,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
         this.threeRendererService.renderer.domElement.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
         this.threeRendererService.renderer.domElement.addEventListener("mouseup", this.onDocumentMouseUp.bind(this), false);
         this.threeRendererService.renderer.domElement.addEventListener("mousedown", this.onDocumentMouseDown.bind(this), false);
+        this.threeRendererService.renderer.domElement.addEventListener("dblclick", this.onDocumentDoubleClick.bind(this), false);
     }
 
     update() {
@@ -131,6 +133,14 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
     onLeftClick(event) {
         this.dragOrClickFlag = 0;
+    }
+
+    onDocumentDoubleClick(event){
+        let fileSourceLink = this.hovered.node.link;
+
+        if (fileSourceLink) {
+            this.$window.open(fileSourceLink, "_blank");
+        }
     }
 
     onBuildingHovered(from: codeMapBuilding, to: codeMapBuilding){
