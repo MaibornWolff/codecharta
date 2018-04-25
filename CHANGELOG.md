@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 ### Added
 - horizontal quick access metric chooser
+- Link behind filepath in detailPanel #84
+- Double click event-handler on Buildings #84
 - Detail Panel can be minimized and maximized
 - cypress as an e2e test runner
 
