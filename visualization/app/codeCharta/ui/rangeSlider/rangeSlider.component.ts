@@ -22,6 +22,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
     initSliderOptions(settings: Settings = this.settingsService.settings) {
         this.sliderOptions = {
             ceil: this.treeMapService.getMaxMetricInAllRevisions(settings.colorMetric),
+            onChange: this.onSliderChange.bind(this),
             pushRange: true,
             onToChange: this.onToSliderChange.bind(this),
             onFromChange: this.onFromSliderChange.bind(this)
@@ -29,15 +30,23 @@ export class RangeSliderController implements SettingsServiceSubscriber {
     }
 
     private onToSliderChange() {
+        this.settingsService.settings.neutralColorRange.to = Math.max(1,
+            this.settingsService.settings.neutralColorRange.to );
+        this.settingsService.settings.neutralColorRange.to = Math.min (
+            this.treeMapService.getMaxMetricInAllRevisions(this.settingsService.settings.colorMetric),
+            this.settingsService.settings.neutralColorRange.to );
         this.settingsService.settings.neutralColorRange.from = Math.min(
             this.settingsService.settings.neutralColorRange.to-1, this.settingsService.settings.neutralColorRange.from);
-        this.onToSliderChange.bind(this);
+        this.onSliderChange();
     }
 
     private onFromSliderChange() {
+        this.settingsService.settings.neutralColorRange.from = Math.min(
+            this.treeMapService.getMaxMetricInAllRevisions(this.settingsService.settings.colorMetric)-1,
+            this.settingsService.settings.neutralColorRange.from );
         this.settingsService.settings.neutralColorRange.to = Math.max(
             this.settingsService.settings.neutralColorRange.to, this.settingsService.settings.neutralColorRange.from+1);
-        this.onToSliderChange.bind(this);
+        this.onSliderChange();
     }
 
     private onSliderChange() {
