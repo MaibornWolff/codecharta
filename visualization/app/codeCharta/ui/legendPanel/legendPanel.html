@@ -1,13 +1,4 @@
 <div class="block-wrapper">
-    <div class="legend-block">
-        <i class='fa fa-arrows-alt'></i><span>Area:{{$ctrl.operation}} {{$ctrl.areaMetric}}</span>
-    </div>
-    <div class="legend-block">
-        <i class='fa fa-arrows-v'></i><span>Height:{{$ctrl.operation}} {{$ctrl.heightMetric}}</span>
-    </div>
-    <div class="legend-block">
-        <i class='fa fa-paint-brush'></i><span>Color:{{$ctrl.operation}} {{$ctrl.colorMetric}}</span>
-    </div>
     <div class="legend-block" ng-show="!$ctrl.deltas">
         <img id="green" alt="green color">
         <span ng-if="!$ctrl.range.flipped">0 to &lt; {{$ctrl.range.from}}</span>
