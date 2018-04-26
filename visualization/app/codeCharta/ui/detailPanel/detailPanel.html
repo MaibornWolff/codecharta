@@ -2,24 +2,25 @@
 
 <div id="detailWindow" ng-hide="!($ctrl.isSelected() || $ctrl.isHovered())">
 
-    <table class="minimized" ng-hide="!$ctrl.hidden">
+
+    <table class="minimized" ng-hide="!$ctrl.settingsService.settings.minimizeDetailPanel">
         <thead>
-            <tr>
-                <th ng-click="$ctrl.hidden = false">
-                    <i class="fa fa-arrow-up"></i>
-                </th>
-                <th ng-hide="!$ctrl.isHovered()">
-                    {{$ctrl.details.hovered.path}}
-                </th>
-            </tr>
+
+        <tr>
+            <th ng-click="$ctrl.settingsService.settings.minimizeDetailPanel = false">
+                <i class="fa fa-window-maximize"></i>
+            </th>
+            <th ng-hide="!$ctrl.isHovered()">{{$ctrl.details.hovered.path}}</th>
+        </tr>
         </thead>
     </table>
 
-    <table ng-hide="$ctrl.hidden">
+
+    <table ng-hide="$ctrl.settingsService.settings.minimizeDetailPanel">
         <thead>
             <tr>
-                <th ng-click="$ctrl.hidden = true">
-                    <i class="fa fa-arrow-down"></i>
+                <th ng-click="$ctrl.settingsService.settings.minimizeDetailPanel = true">
+                    <i class="fa fa-window-minimize"></i>
                 </th>
                 <th>Property</th>
                 <th ng-hide="!$ctrl.isSelected()" id="selectedHeader">Selected</th>

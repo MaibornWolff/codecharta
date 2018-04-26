@@ -24,7 +24,8 @@
       },
       "margin": 1,
       "deltaColorFlipped": false,
-      "showDependencies": false
+      "showDependencies": false,
+      "minimizeDetailPanel": false
     },
     "autoFitCamera": true
   },
@@ -53,7 +54,8 @@
       },
       "margin": 1,
       "deltaColorFlipped": false,
-      "showDependencies": false
+      "showDependencies": false,
+      "minimizeDetailPanel": false
     }
   },
   {
@@ -81,7 +83,8 @@
       },
       "margin": 1,
       "deltaColorFlipped": false,
-      "showDependencies": false
+      "showDependencies": false,
+      "minimizeDetailPanel": false
     },
     "autoFitCamera": true
   },
@@ -110,7 +113,8 @@
       },
       "margin": 1,
       "deltaColorFlipped": false,
-      "showDependencies": false
+      "showDependencies": false,
+      "minimizeDetailPanel": false
     },
     "autoFitCamera": true
   }

@@ -31,4 +31,10 @@
     </md-checkbox>
 </md-input-container>
 
-<reset-settings-button-component settings-names="amountOfTopLabels, scaling.y, margin, showDependencies"></reset-settings-button-component>
+<md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.minimizeDetailPanel" ng-change="$ctrl.settingsService.applySettings()">
+        Minimize Detail Panel
+    </md-checkbox>
+</md-input-container>
+
+<reset-settings-button-component settings-names="amountOfTopLabels, scaling.y, margin, showDependencies, minimizeDetailPanel"></reset-settings-button-component>
