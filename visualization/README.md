@@ -49,6 +49,8 @@ Once you have installed the project, you can use all grunt tasks described in th
 #### Test
 
 `npm run test` runs all unit tests on the source files in app/ and generates a coverage report in dist/coverage/.
+`npm run e2e` runs all e2e tests on the built app in headless mode.
+`npm run e2e:gui` runs all e2e tests on the built app in gui mode.
 
 #### Run
 

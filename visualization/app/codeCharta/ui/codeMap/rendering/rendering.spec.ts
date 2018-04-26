@@ -21,8 +21,8 @@ describe("common rendering tests", () => {
 
         it("init", () => {
             let cmss: codeMapShaderStrings = new codeMapShaderStrings();
-            expect(cmss.fragmentShaderCode).toBe("glsl-file-stub");
-            expect(cmss.vertexShaderCode).toBe("glsl-file-stub");
+            expect(cmss.fragmentShaderCode).toMatchSnapshot();
+            expect(cmss.vertexShaderCode).toMatchSnapshot();
         });
 
     });

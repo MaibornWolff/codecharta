@@ -5,6 +5,7 @@
 
     <table class="minimized" ng-hide="!$ctrl.settingsService.settings.minimizeDetailPanel">
         <thead>
+
         <tr>
             <th ng-click="$ctrl.settingsService.settings.minimizeDetailPanel = false">
                 <i class="fa fa-window-maximize"></i>
@@ -72,8 +73,15 @@
             <tr>
                 <td><i class='fa fa-location-arrow'></i></td>
                 <td>Path</td>
-                <td ng-hide="!$ctrl.isSelected()">{{$ctrl.details.selected.path}}</td>
-                <td ng-hide="!$ctrl.isHovered()">{{$ctrl.details.hovered.path}}</td>
+                <td  ng-hide="!$ctrl.isSelected()">
+                    <a ng-if="$ctrl.details.selected.link" target="_blank" href="{{$ctrl.details.selected.link}}">{{$ctrl.details.selected.path}}</a>
+                    <a ng-if="!$ctrl.details.selected.link">{{$ctrl.details.selected.path}}</a>
+                </td>
+
+                <td  ng-hide="!$ctrl.isHovered()">
+                    <a ng-if="$ctrl.details.hovered.link" target="_blank" href="{{$ctrl.details.hovered.link}}">{{$ctrl.details.hovered.path}}</a>
+                    <a ng-if="!$ctrl.details.hovered.link">{{$ctrl.details.hovered.path}}</a>
+                </td>
             </tr>
             <tr>
                 <th></th>
@@ -93,7 +101,4 @@
             </tr>
         </tbody>
     </table>
-
-    <!--<a ng-hide="!$ctrl.details.selected.link" target="_blank" href="{{$ctrl.details.selected.link}}">link to selected</a>-->
-
 </div>
