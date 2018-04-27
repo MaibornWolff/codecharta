@@ -35,7 +35,7 @@ export interface Settings {
     operation: STATISTIC_OPS;
     deltaColorFlipped: boolean;
     showDependencies: boolean;
-
+    minimizeDetailPanel: boolean;
 }
 
 export interface SettingsServiceSubscriber {
@@ -99,7 +99,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             margin: 1,
             operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
-            showDependencies: false
+            showDependencies: false,
+            minimizeDetailPanel: false
         };
 
     }
@@ -290,6 +291,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.deltas = settings.deltas;
         this._settings.operation = settings.operation;
         this._settings.deltaColorFlipped = this.settings.deltaColorFlipped;
+        this._settings.minimizeDetailPanel = settings.minimizeDetailPanel;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = this.settings.map;
