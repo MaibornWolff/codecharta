@@ -5,7 +5,7 @@
 
 CodeCharta is a beautiful tool for visualizing code as cities (3D tree maps).
 
-![Screenshot of visualization](screenshot_2.png)
+![Screenshot of visualization](screenshot.png)
 
 The [visualization](/visualization/README.md) displays code metrics given in json files, specified by [cc.json](cc.json) using [json-schema v4](https://tools.ietf.org/html/draft-zyp-json-schema-04).
 
