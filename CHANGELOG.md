@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.12.0] - 2018-04-27
+### Added
 - horizontal quick access metric chooser
 - Link behind filepath in detailPanel #84
 - Double click event-handler on Buildings #84
