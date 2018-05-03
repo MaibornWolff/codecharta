@@ -48,8 +48,7 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
                 let h = d3.hierarchy<CodeMapNode>(mapRoot);
                 h.each((node: HierarchyNode<CodeMapNode>) => {
 
-                    this.updateVisibilityToFolder(node);
-                    this.updateVisibilityToLeaf(node);
+                    this.updateVisibilityForEachNode(node);
                 });
                 this.settingsService.onSettingsChanged();
             }
@@ -58,25 +57,25 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
         }
     }
 
-    private updateVisibilityToFolder(node: HierarchyNode<CodeMapNode>) {
-        let splitPath = node.data.path.split("/");
-        let pathLastNode = splitPath[splitPath.length - 1];
+    private updateVisibilityForEachNode(node: HierarchyNode<CodeMapNode>) {
 
-        node.data.visible = (pathLastNode).match(this.viewModel.filter) !== null;
-    }
+        let nodePath = (node.data.path).toLowerCase();
+        let regexFilter = this.viewModel.filter.toLowerCase();
+        let isRegexMatch = nodePath.match(regexFilter) !== null;
 
-    private updateVisibilityToLeaf(node: HierarchyNode<CodeMapNode>) {
-        if ((node.data.name).match(this.viewModel.filter) !== null) {
-
-            this.updateVisibilityToParents(node);
+        if (isRegexMatch) {
+            node.data.visible = true;
+            this.showParentNodes(node);
+        } else {
+            node.data.visible = false;
         }
     }
 
-    private updateVisibilityToParents(node: HierarchyNode<CodeMapNode>) {
+    private showParentNodes(node: HierarchyNode<CodeMapNode>) {
         node.data.visible = true;
 
         if (node.parent != null) {
-            this.updateVisibilityToParents(node.parent);
+            this.showParentNodes(node.parent);
         }
     }
 
