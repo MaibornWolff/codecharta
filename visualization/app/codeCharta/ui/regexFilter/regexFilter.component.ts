@@ -3,11 +3,12 @@ import {ITimeoutService} from "angular";
 import {CodeMap, CodeMapNode} from "../../core/data/model/CodeMap";
 import "./regexFilter.component.scss";
 import * as d3 from "d3";
-import {hierarchy, HierarchyNode} from "d3-hierarchy";
+import {HierarchyNode} from "d3-hierarchy";
 import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/data.service";
-import Code = marked.Tokens.Code;
 
 export class RegexFilterController implements SettingsServiceSubscriber, DataServiceSubscriber {
+
+    private static TIMEOUT_DELAY_MS = 100;
 
     public mapRoot: CodeMapNode = null;
 
@@ -74,7 +75,7 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
     private showParentNodes(node: HierarchyNode<CodeMapNode>) {
         node.data.visible = true;
 
-        if (node.parent != null) {
+        if (node.parent !== null) {
             this.showParentNodes(node.parent);
         }
     }
@@ -83,7 +84,7 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
         if(map && map.root) {
             this.$timeout(()=>{
                 this.mapRoot = map.root;
-            }, 100);
+            }, RegexFilterController.TIMEOUT_DELAY_MS);
         }
     }
 
