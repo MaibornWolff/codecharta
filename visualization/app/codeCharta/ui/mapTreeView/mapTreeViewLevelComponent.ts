@@ -1,7 +1,7 @@
 import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settings.service";
 import {IRootScopeService, ITimeoutService} from "angular";
 import {CodeMap, CodeMapNode} from "../../core/data/model/CodeMap";
-import {hierarchy} from "d3-hierarchy";
+import {hierarchy, HierarchyNode} from "d3-hierarchy";
 
 export interface MapTreeViewHoverEventSubscriber {
     onShouldHoverNode(node: CodeMapNode);
@@ -38,29 +38,32 @@ export class MapTreeViewLevelController {
 
     onLabelClick() {
         this.setParentsInvisibleAndChildrenVisible();
+        this.broadcastVisibility();
     }
 
     onEyeClick() {
-        this.setAndBroadcastVisibilityToChildren(!this.node.visible);
+        this.setVisibilityToChildren(!this.node.visible);
+        this.broadcastVisibility();
     }
 
-    setParentsInvisibleAndChildrenVisible() {
-        // set root and all others invisible
-        // TODO not sure if we should acces the map through settings without getting triggered by the event. this saves memory though and should not be a problem
-        this.setAndBroadcastVisibilityToChildren(false, this.settingsService.settings.map.root);
+    private setParentsInvisibleAndChildrenVisible() {
+        // TODO not sure if we should access the map through settings without getting triggered by the event. this saves memory though and should not be a problem
+        this.setVisibilityToChildren(false, this.settingsService.settings.map.root);
         // set this visible
-        this.setAndBroadcastVisibilityToChildren(true);
+        this.setVisibilityToChildren(true);
     }
 
-    setAndBroadcastVisibilityToChildren(value: boolean, node: CodeMapNode = this.node) {
-        this.node.visible = value;
-        let h = hierarchy(node);
-        h.descendants().forEach((d) => {
-            d.data.visible = value;
-        });
+    private setVisibilityToChildren(visibility: boolean, node: CodeMapNode = this.node) {
+        this.node.visible = visibility;
 
-        //TODO ensure to call it after all broadcasts
-        //TODO performance :(
+        hierarchy(node).descendants().forEach((d) => {
+            d.data.visible = visibility;
+        });
+    }
+
+    private broadcastVisibility() {
+        // TODO ensure to call it after all broadcasts
+        // TODO performance :(
         this.$timeout(() => {
             this.settingsService.onSettingsChanged();
         }, 100);
