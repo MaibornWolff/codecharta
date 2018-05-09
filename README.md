@@ -5,11 +5,11 @@
 
 ## Jump to Section
 
-* [What is CodeCharta?](#what-is-codecharta?)
+* [What is CodeCharta?](#what-is-codecharta)
 * [Download](#download)
-* [Quickstart Guide](#quickstart-guide)
-* [Feature request / Bug / Feedback](#feature-request-/-bug-/-feedback)
-* [Further information](#further-information)
+* [Feature request / Bug / Feedback](#feature-request--bug--feedback)
+* [Further Information](#further-information)
+* [Tool Information](#tool-information)
 
 ## What is CodeCharta?
 
@@ -38,21 +38,19 @@ You can get the [latest version](https://github.com/MaibornWolff/codecharta/rele
 * unpack both packages
 * enter the codecharta-analysis/bin directory with your favorite console `./ccsh -h`
 
-## Quickstart Guide
-
-You can find a quickstart guide [here](https://maibornwolff.github.io/codecharta/). 
-
 ## Feature request / Bug / Feedback
 
-Have a bug, a feature request or any question? [Please open a new issue](https://github.com/MaibornWolff/codecharta/issues/new). Feedback is always welcome.
+Have a bug, a feature request or any question? Please [open a new issue](https://github.com/MaibornWolff/codecharta/issues/new). Feedback is always welcome.
 
-## Further information
+## Further Information
 
+* [Quickstart Guide](https://maibornwolff.github.io/codecharta/)
 * [Coverage](https://maibornwolff.github.io/codecharta/visualization/coverage/lcov-report/)
 * [Sonarqube Visualization](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Avisualization)
 * [Sonarqube Analysis](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Aanalysis)
 * [Integrating CodeCharte into a Jenkins 2 and Sonarqube pipeline](https://maibornwolff.github.io/codecharta/ci.html)
 
+## Tool Information
 
 * [Releases](https://github.com/MaibornWolff/codecharta/releases)
 * [Changelog](https://github.com/MaibornWolff/codecharta/blob/master/CHANGELOG.md)

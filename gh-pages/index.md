@@ -1,8 +1,10 @@
-# Quicklinks
+# Step by Step Example
 
-# Quickstart
+[CodeCharta Readme](https://github.com/MaibornWolff/codecharta/blob/master/README.md)
 
-## run local sonar analysis with a docker container (Mac)
+Here we will explain an example to analyze a SonarQube Project and visualize it afterwards.
+
+## Run local sonar analysis with a docker container (Mac)
 * `brew install sonar-scanner`
 * `docker run -d --name sonarqube -p 9000:9000 -p 9092:9092 sonarqube`
 * add a correct sonar-project.properties file to the target project
@@ -30,11 +32,11 @@ Log in to your server, navigate to the project and create a user token. This str
 If you don't have any own projects yet, you can test CodeCharta with any opensource project you can find on the sonarqube website.
 
 The easiest example:
->./ccsh sonarimport [sonar-server-url] [project-id]
+> ./ccsh sonarimport [sonar-server-url] [project-id]
  
 An output file has been created.
 
-## Visualize the analyzed project
+## Visualizing the analyzed project
 
 Open the visualization directory and run the executable. A new window should open now. 
 You can also use the [online demo](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json).
