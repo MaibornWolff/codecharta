@@ -1,5 +1,6 @@
 "use strict";
 
+import "./aggregate/aggregate.module";
 import "./data/data.module";
 import "./settings/settings.module";
 import "./url/url.module";
@@ -13,6 +14,7 @@ import angular from "angular";
 angular.module(
     "app.codeCharta.core",
     [
+        "app.codeCharta.core.aggregate",
         "app.codeCharta.core.data",
         "app.codeCharta.core.settings",
         "app.codeCharta.core.url",

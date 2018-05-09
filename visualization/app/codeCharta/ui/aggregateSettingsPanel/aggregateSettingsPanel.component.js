@@ -1,9 +1,9 @@
 import "./aggregateSettingsPanel.component.scss";
-export class AggregateSettingsPanelComponent {
+export class AggregateSettingsPanelController {
     constructor(settingsService, dataService) {
         this.settingsService = settingsService;
         this.dataService = dataService;
-        this.lista = ["a", "b", "c"];
+        this.maps = dataService.data.revisions;
         this.settings = settingsService.settings;
         this.data = dataService.data;
         this.dataService.subscribe(this);

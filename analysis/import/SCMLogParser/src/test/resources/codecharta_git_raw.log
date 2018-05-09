@@ -283,8 +283,8 @@ Date:   Fri Jan 12 15:37:35 2018 +0100
 
 :100755 100755 3ec6d5c... 476bcce... M	visualization/app/codeCharta/core/data/data.service.ts
 :100755 100755 a83518b... f80dd65... M	visualization/app/codeCharta/core/settings/settings.service.ts
-:100755 100755 37f3ed8... 71f6716... M	visualization/app/codeCharta/core/statistic/statistic.service.ts
-:100755 100755 b0c8a4c... 6f32238... M	visualization/app/codeCharta/core/statistic/statisticMapService.spec.js
+:100755 100755 37f3ed8... 71f6716... M	visualization/app/codeCharta/core/statistic/aggregate.service.ts
+:100755 100755 b0c8a4c... 6f32238... M	visualization/app/codeCharta/core/statistic/aggregateMapService.spec.js
 
 commit ac46e70a9d1b29a93e2c746807711deb9358e35f
 Author: anonymous <>
@@ -294,7 +294,7 @@ Date:   Fri Jan 12 15:31:07 2018 +0100
 
 :100755 100755 d94c6b5... 3ec6d5c... M	visualization/app/codeCharta/core/data/data.service.ts
 :100755 100755 1d71a7e... a83518b... M	visualization/app/codeCharta/core/settings/settings.service.ts
-:100755 100755 a9b95fa... 871a6a7... M	visualization/app/codeCharta/core/statistic/statistic.service.spec.ts
+:100755 100755 a9b95fa... 871a6a7... M	visualization/app/codeCharta/core/statistic/aggregate.service.spec.ts
 :100755 100755 2d4e759... 62ebb3e... M	visualization/app/codeCharta/ui/revisionChooser/revisionChooser.html
 
 commit e08a56f479f0baddcf0f59fcfc3be39eecf21911
@@ -588,7 +588,7 @@ Date:   Fri Dec 15 14:15:27 2017 +0100
 
     Statistic Testing translation into TS completed
 
-:000000 100755 0000000... a9b95fa... A	visualization/app/codeCharta/core/statistic/statistic.service.spec.ts
+:000000 100755 0000000... a9b95fa... A	visualization/app/codeCharta/core/statistic/aggregate.service.spec.ts
 
 commit 9fc2c8236a1a40112573b85df71339873060a35b
 Author: anonymous <>
@@ -813,8 +813,8 @@ Date:   Tue Dec 5 20:08:28 2017 +0100
 :100755 100755 8ddf697... 0c5a90a... M	visualization/app/codeCharta/core/scenario/scenario.spec.ts
 :100755 100755 831da86... a8a78fa... M	visualization/app/codeCharta/core/settings/settings.module.ts
 :100755 100755 f8cf86b... ce8e5d9... M	visualization/app/codeCharta/core/settings/settings.spec.ts
-:100644 100644 9fa0861... 911f0b8... M	visualization/app/codeCharta/core/statistic/statistic.module.ts
-:100755 100755 a902d19... 37f3ed8... M	visualization/app/codeCharta/core/statistic/statistic.service.ts
+:100644 100644 9fa0861... 911f0b8... M	visualization/app/codeCharta/core/statistic/aggregate.module.ts
+:100755 100755 a902d19... 37f3ed8... M	visualization/app/codeCharta/core/statistic/aggregate.service.ts
 :100755 100755 c00ed67... 2e37ed6... M	visualization/app/codeCharta/core/tooltip/tooltip.module.ts
 :100644 100644 62901dc... e8f32e9... M	visualization/app/codeCharta/core/tooltip/tooltip.spec.ts
 :100755 100755 8862d5f... 2b620b9... M	visualization/app/codeCharta/core/treemap/treemap.module.ts
@@ -875,7 +875,7 @@ Date:   Tue Dec 5 14:19:18 2017 +0100
 
     fix
 
-:100755 100755 beba976... a902d19... M	visualization/app/codeCharta/core/statistic/statistic.service.ts
+:100755 100755 beba976... a902d19... M	visualization/app/codeCharta/core/statistic/aggregate.service.ts
 
 commit 9b7c191e78ac6c5a570cc5624a06731095d59fd0
 Author: anonymous <>
@@ -894,7 +894,7 @@ Date:   Tue Dec 5 13:51:22 2017 +0100
 
 :100755 000000 3568d12... 0000000... D	visualization/app/codeCharta/codeMap/codeMapController.js
 :100755 100755 84e3732... 831da86... M	visualization/app/codeCharta/core/settings/settings.module.ts
-:100755 100755 d90def0... b0c8a4c... M	visualization/app/codeCharta/core/statistic/statisticMapService.spec.js
+:100755 100755 d90def0... b0c8a4c... M	visualization/app/codeCharta/core/statistic/aggregateMapService.spec.js
 :100644 100644 a6bd546... 2e2403c... M	visualization/app/codeCharta/ui/common/__snapshots__/common.spec.ts.snap
 :100755 100755 d4aca5d... 978100e... M	visualization/app/codeCharta/ui/detailPanel/detailPanelController.spec.js
 :100755 100755 54ae98d... c3e815f... M	visualization/app/codeCharta/ui/fileChooser/fileChooserController.spec.js
@@ -906,7 +906,7 @@ Date:   Mon Dec 4 09:42:19 2017 +0100
 
     Branch translation into TS completed
 
-:100755 100755 4586eb5... beba976... M	visualization/app/codeCharta/core/statistic/statistic.service.ts
+:100755 100755 4586eb5... beba976... M	visualization/app/codeCharta/core/statistic/aggregate.service.ts
 :100755 100755 b431ced... 0ef48bf... M	visualization/app/codeCharta/ui/common/dropdown.controller.ts
 :100755 100755 b10e75d... e989754... M	visualization/app/codeCharta/ui/common/dropdown.directive.ts
 
@@ -970,9 +970,9 @@ Date:   Fri Dec 1 09:41:52 2017 +0100
 :100755 100755 a37e696... a07fab6... M	visualization/app/codeCharta/core/settings/settings.service.ts
 :100755 000000 9c0cf3f... 0000000... D	visualization/app/codeCharta/core/settings/settingsService.js
 :100644 000000 716b06d... 0000000... D	visualization/app/codeCharta/core/statistic/statistic.js
-:000000 100644 0000000... 9fa0861... A	visualization/app/codeCharta/core/statistic/statistic.module.ts
-:100755 100755 78aafe3... 4586eb5... R085	visualization/app/codeCharta/core/statistic/statisticMapService.js	visualization/app/codeCharta/core/statistic/statistic.service.ts
-:100755 100755 19d806b... d90def0... M	visualization/app/codeCharta/core/statistic/statisticMapService.spec.js
+:000000 100644 0000000... 9fa0861... A	visualization/app/codeCharta/core/statistic/aggregate.module.ts
+:100755 100755 78aafe3... 4586eb5... R085	visualization/app/codeCharta/core/statistic/statisticMapService.js	visualization/app/codeCharta/core/statistic/aggregate.service.ts
+:100755 100755 19d806b... d90def0... M	visualization/app/codeCharta/core/statistic/aggregateMapService.spec.js
 :100755 100755 af2a0e2... b431ced... M	visualization/app/codeCharta/ui/common/dropdown.controller.ts
 :100755 000000 56f57e6... 0000000... D	visualization/app/codeCharta/ui/common/dropdown/dropdown.html
 :100755 000000 b23b827... 0000000... D	visualization/app/codeCharta/ui/common/dropdown/dropdown.js
@@ -1771,7 +1771,7 @@ Date:   Fri Nov 10 17:46:57 2017 +0100
     statistics completed in JS
 
 :100755 100755 ae40a42... 78aafe3... M	visualization/app/codeCharta/core/statistic/statisticMapService.js
-:100755 100755 e31f634... 19d806b... M	visualization/app/codeCharta/core/statistic/statisticMapService.spec.js
+:100755 100755 e31f634... 19d806b... M	visualization/app/codeCharta/core/statistic/aggregateMapService.spec.js
 :100755 100755 0dc0fae... d24bc75... M	visualization/app/codeCharta/ui/revisionChooser/revisionChooser.html
 :100755 100755 50bd48b... 692a982... M	visualization/app/codeCharta/ui/settingsPanel/settingsPanel.js
 
@@ -2093,7 +2093,7 @@ Date:   Sun Oct 29 14:17:12 2017 +0100
 :100755 100755 cdb6b4a... 49529ab... M	visualization/app/codeCharta/core/settings/settingsService.js
 :100644 100644 24348c6... 716b06d... M	visualization/app/codeCharta/core/statistic/statistic.js
 :100755 100755 f6aa8a8... 43cb69d... M	visualization/app/codeCharta/core/statistic/statisticMapService.js
-:100755 100755 33800a8... e31f634... M	visualization/app/codeCharta/core/statistic/statisticMapService.spec.js
+:100755 100755 33800a8... e31f634... M	visualization/app/codeCharta/core/statistic/aggregateMapService.spec.js
 :100755 100755 f613432... a5c7f44... M	visualization/app/codeCharta/ui/settingsPanel/settingsPanel.html
 :100755 100755 af48f0f... 204fe3f... M	visualization/app/codeCharta/ui/settingsPanel/settingsPanel.js
 
@@ -2115,7 +2115,7 @@ Date:   Mon Oct 23 15:56:36 2017 +0200
 :100755 100755 5e9ba3c... c0ff19a... M	visualization/app/codeCharta/core/data/model/codeMap.js
 :000000 100644 0000000... 24348c6... A	visualization/app/codeCharta/core/statistic/statistic.js
 :000000 100755 0000000... f6aa8a8... A	visualization/app/codeCharta/core/statistic/statisticMapService.js
-:000000 100755 0000000... 33800a8... A	visualization/app/codeCharta/core/statistic/statisticMapService.spec.js
+:000000 100755 0000000... 33800a8... A	visualization/app/codeCharta/core/statistic/aggregateMapService.spec.js
 :100644 100644 dbdcd70... a691d33... M	visualization/conf/karma.config.js
 :100644 100644 3c95cc1... bd8f875... M	visualization/conf/webpack.test.config.js
 
@@ -2130,7 +2130,7 @@ Date:   Mon Oct 23 15:56:36 2017 +0200
 :100755 100755 5e9ba3c... c0ff19a... M	visualization/app/codeCharta/core/data/model/codeMap.js
 :000000 100644 0000000... 24348c6... A	visualization/app/codeCharta/core/statistic/statistic.js
 :000000 100755 0000000... f6aa8a8... A	visualization/app/codeCharta/core/statistic/statisticMapService.js
-:000000 100755 0000000... 33800a8... A	visualization/app/codeCharta/core/statistic/statisticMapService.spec.js
+:000000 100755 0000000... 33800a8... A	visualization/app/codeCharta/core/statistic/aggregateMapService.spec.js
 :100644 100644 dbdcd70... a691d33... M	visualization/conf/karma.config.js
 :100644 100644 3c95cc1... bd8f875... M	visualization/conf/webpack.test.config.js
 

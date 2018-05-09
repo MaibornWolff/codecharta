@@ -283,8 +283,8 @@ Date:   Fri Jan 12 15:37:35 2018 +0100
 
 M	visualization/app/codeCharta/core/data/data.service.ts
 M	visualization/app/codeCharta/core/settings/settings.service.ts
-M	visualization/app/codeCharta/core/statistic/statistic.service.ts
-M	visualization/app/codeCharta/core/statistic/statisticMapService.spec.js
+M	visualization/app/codeCharta/core/statistic/aggregate.service.ts
+M	visualization/app/codeCharta/core/statistic/aggregateMapService.spec.js
 
 commit ac46e70a9d1b29a93e2c746807711deb9358e35f
 Author: anonymous <>
@@ -294,7 +294,7 @@ Date:   Fri Jan 12 15:31:07 2018 +0100
 
 M	visualization/app/codeCharta/core/data/data.service.ts
 M	visualization/app/codeCharta/core/settings/settings.service.ts
-M	visualization/app/codeCharta/core/statistic/statistic.service.spec.ts
+M	visualization/app/codeCharta/core/statistic/aggregate.service.spec.ts
 M	visualization/app/codeCharta/ui/revisionChooser/revisionChooser.html
 
 commit e08a56f479f0baddcf0f59fcfc3be39eecf21911
@@ -588,7 +588,7 @@ Date:   Fri Dec 15 14:15:27 2017 +0100
 
     Statistic Testing translation into TS completed
 
-A	visualization/app/codeCharta/core/statistic/statistic.service.spec.ts
+A	visualization/app/codeCharta/core/statistic/aggregate.service.spec.ts
 
 commit 9fc2c8236a1a40112573b85df71339873060a35b
 Author: anonymous <>
@@ -813,8 +813,8 @@ M	visualization/app/codeCharta/core/scenario/scenario.service.ts
 M	visualization/app/codeCharta/core/scenario/scenario.spec.ts
 M	visualization/app/codeCharta/core/settings/settings.module.ts
 M	visualization/app/codeCharta/core/settings/settings.spec.ts
-M	visualization/app/codeCharta/core/statistic/statistic.module.ts
-M	visualization/app/codeCharta/core/statistic/statistic.service.ts
+M	visualization/app/codeCharta/core/statistic/aggregate.module.ts
+M	visualization/app/codeCharta/core/statistic/aggregate.service.ts
 M	visualization/app/codeCharta/core/tooltip/tooltip.module.ts
 M	visualization/app/codeCharta/core/tooltip/tooltip.spec.ts
 M	visualization/app/codeCharta/core/treemap/treemap.module.ts
@@ -875,7 +875,7 @@ Date:   Tue Dec 5 14:19:18 2017 +0100
 
     fix
 
-M	visualization/app/codeCharta/core/statistic/statistic.service.ts
+M	visualization/app/codeCharta/core/statistic/aggregate.service.ts
 
 commit 9b7c191e78ac6c5a570cc5624a06731095d59fd0
 Author: anonymous <>
@@ -894,7 +894,7 @@ Date:   Tue Dec 5 13:51:22 2017 +0100
 
 D	visualization/app/codeCharta/codeMap/codeMapController.js
 M	visualization/app/codeCharta/core/settings/settings.module.ts
-M	visualization/app/codeCharta/core/statistic/statisticMapService.spec.js
+M	visualization/app/codeCharta/core/statistic/aggregateMapService.spec.js
 M	visualization/app/codeCharta/ui/common/__snapshots__/common.spec.ts.snap
 M	visualization/app/codeCharta/ui/detailPanel/detailPanelController.spec.js
 M	visualization/app/codeCharta/ui/fileChooser/fileChooserController.spec.js
@@ -906,7 +906,7 @@ Date:   Mon Dec 4 09:42:19 2017 +0100
 
     Branch translation into TS completed
 
-M	visualization/app/codeCharta/core/statistic/statistic.service.ts
+M	visualization/app/codeCharta/core/statistic/aggregate.service.ts
 M	visualization/app/codeCharta/ui/common/dropdown.controller.ts
 M	visualization/app/codeCharta/ui/common/dropdown.directive.ts
 
@@ -970,9 +970,9 @@ M	visualization/app/codeCharta/core/settings/settings.module.ts
 M	visualization/app/codeCharta/core/settings/settings.service.ts
 D	visualization/app/codeCharta/core/settings/settingsService.js
 D	visualization/app/codeCharta/core/statistic/statistic.js
-A	visualization/app/codeCharta/core/statistic/statistic.module.ts
-R085	visualization/app/codeCharta/core/statistic/statisticMapService.js	visualization/app/codeCharta/core/statistic/statistic.service.ts
-M	visualization/app/codeCharta/core/statistic/statisticMapService.spec.js
+A	visualization/app/codeCharta/core/statistic/aggregate.module.ts
+R085	visualization/app/codeCharta/core/statistic/statisticMapService.js	visualization/app/codeCharta/core/statistic/aggregate.service.ts
+M	visualization/app/codeCharta/core/statistic/aggregateMapService.spec.js
 M	visualization/app/codeCharta/ui/common/dropdown.controller.ts
 D	visualization/app/codeCharta/ui/common/dropdown/dropdown.html
 D	visualization/app/codeCharta/ui/common/dropdown/dropdown.js
@@ -1771,7 +1771,7 @@ Date:   Fri Nov 10 17:46:57 2017 +0100
     statistics completed in JS
 
 M	visualization/app/codeCharta/core/statistic/statisticMapService.js
-M	visualization/app/codeCharta/core/statistic/statisticMapService.spec.js
+M	visualization/app/codeCharta/core/statistic/aggregateMapService.spec.js
 M	visualization/app/codeCharta/ui/revisionChooser/revisionChooser.html
 M	visualization/app/codeCharta/ui/settingsPanel/settingsPanel.js
 
@@ -2093,7 +2093,7 @@ M	visualization/app/codeCharta/core/settings/settings.js
 M	visualization/app/codeCharta/core/settings/settingsService.js
 M	visualization/app/codeCharta/core/statistic/statistic.js
 M	visualization/app/codeCharta/core/statistic/statisticMapService.js
-M	visualization/app/codeCharta/core/statistic/statisticMapService.spec.js
+M	visualization/app/codeCharta/core/statistic/aggregateMapService.spec.js
 M	visualization/app/codeCharta/ui/settingsPanel/settingsPanel.html
 M	visualization/app/codeCharta/ui/settingsPanel/settingsPanel.js
 
@@ -2115,7 +2115,7 @@ M	visualization/app/codeCharta/core/data/dataService.js
 M	visualization/app/codeCharta/core/data/model/codeMap.js
 A	visualization/app/codeCharta/core/statistic/statistic.js
 A	visualization/app/codeCharta/core/statistic/statisticMapService.js
-A	visualization/app/codeCharta/core/statistic/statisticMapService.spec.js
+A	visualization/app/codeCharta/core/statistic/aggregateMapService.spec.js
 M	visualization/conf/karma.config.js
 M	visualization/conf/webpack.test.config.js
 
@@ -2130,7 +2130,7 @@ M	visualization/app/codeCharta/core/data/dataService.js
 M	visualization/app/codeCharta/core/data/model/codeMap.js
 A	visualization/app/codeCharta/core/statistic/statistic.js
 A	visualization/app/codeCharta/core/statistic/statisticMapService.js
-A	visualization/app/codeCharta/core/statistic/statisticMapService.spec.js
+A	visualization/app/codeCharta/core/statistic/aggregateMapService.spec.js
 M	visualization/conf/karma.config.js
 M	visualization/conf/webpack.test.config.js
 
