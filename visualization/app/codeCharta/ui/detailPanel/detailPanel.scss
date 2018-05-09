@@ -7,8 +7,6 @@ detail-panel-component {
         max-height: 50%;
         overflow-y: auto;
 
-        box-shadow: 0px 0px 8px 1px $detail-border-color;
-
         position: fixed;
         z-index: 40;
         bottom: 0.5em;
@@ -26,23 +24,28 @@ detail-panel-component {
         table {
 
             background-color: #fff;
-            opacity: 0.9;
             text-align: left;
             border-collapse: collapse;
-            border: 1px $detail-border-color solid;
+            border: 0;
 
             th {
                 border-bottom: 1px $detail-border-color solid;
-                border-top: 1px $detail-border-color solid;
 
-                .fa.fa-window-minimize,
-                .fa.fa-window-maximize {
+                i.fa {
                     cursor: pointer;
                 }
             }
 
-            td, th {
+            tr:not(:first-child) th {
+                border-top: 1px $detail-border-color solid;
+            }
+
+            td:not(:first-child),
+            th:not(:first-child){
                 border-left: 1px $detail-border-color solid;
+            }
+
+            td, th {
                 padding: 4px;
                 min-width: 300px;
                 max-width: 350px;

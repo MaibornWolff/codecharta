@@ -8,6 +8,8 @@ import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/dat
 
 export class RegexFilterController implements SettingsServiceSubscriber, DataServiceSubscriber {
 
+    private static TIMEOUT_DELAY_MS = 100;
+
     public mapRoot: CodeMapNode = null;
 
     public viewModel = {
@@ -36,7 +38,7 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
         this.updateMapRoot(this.settingsService.settings.map);
     }
 
-    onFilterChange(regex: string) {
+    onFilterChange() {
         this.viewModel.error = "";
         this.updateVisibilities();
     }
@@ -45,8 +47,9 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
         try {
             if (mapRoot) {
                 let h = d3.hierarchy<CodeMapNode>(mapRoot);
-                h.each((n: HierarchyNode<CodeMapNode>) => {
-                    n.data.visible = this.getCorrectNodeVisibility(n.data);
+                h.each((node: HierarchyNode<CodeMapNode>) => {
+
+                    this.updateVisibilityForEachNode(node);
                 });
                 this.settingsService.onSettingsChanged();
             }
@@ -55,15 +58,33 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
         }
     }
 
-    private getCorrectNodeVisibility(node: CodeMapNode, regex: string = this.viewModel.filter): boolean {
-        return (node.path + "/" + node.name).match(regex) !== null;
+    private updateVisibilityForEachNode(node: HierarchyNode<CodeMapNode>) {
+
+        let nodePath = (node.data.path).toLowerCase();
+        let regexFilter = this.viewModel.filter.toLowerCase();
+        let isRegexMatch = nodePath.match(regexFilter) !== null;
+
+        if (isRegexMatch) {
+            node.data.visible = true;
+            this.showParentNodes(node);
+        } else {
+            node.data.visible = false;
+        }
+    }
+
+    private showParentNodes(node: HierarchyNode<CodeMapNode>) {
+        node.data.visible = true;
+
+        if (node.parent !== null) {
+            this.showParentNodes(node.parent);
+        }
     }
 
     private updateMapRoot(map: CodeMap) {
         if(map && map.root) {
             this.$timeout(()=>{
                 this.mapRoot = map.root;
-            },100);
+            }, RegexFilterController.TIMEOUT_DELAY_MS);
         }
     }
 

@@ -10,17 +10,18 @@
 </md-sidenav>
 
 <div id="actionButtons">
-    <md-button class="md-fab md-primary" aria-label="Fit Map to View" ng-click="$ctrl.fitMapToView()">
+    <md-button class="md-fab md-primary dark_shadow_opacity" aria-label="Fit Map to View" ng-click="$ctrl.fitMapToView()">
         <i class="fa fa-compress fa-lg"></i>
     </md-button>
     <file-chooser-directive></file-chooser-directive>
-    <md-button class="md-fab md-primary" aria-label="Open Sidenav" ng-click="$ctrl.toggleSidenav('right')">
+    <md-button class="md-fab md-primary dark_shadow_opacity" aria-label="Open Sidenav" ng-click="$ctrl.toggleSidenav('right')">
         <i class="fa fa-bars fa-lg"></i>
     </md-button>
 </div>
 
 <header id="title">
     <a href="https://www.maibornwolff.de" target="_blank"><img src="assets/logo.png" alt="MaibornWolff"></a>
+    <horizontal-metric-chooser-component></horizontal-metric-chooser-component>
     <h1><span>CodeCharta {{$ctrl.viewModel.version}}</span></h1>
 </header>
 
