@@ -1,4 +1,8 @@
+import {CodeChartaController} from "../codeCharta/codeCharta.component";
+import "../codeCharta/codeCharta.component.scss";
+
 export const testVilleComponent = {
     selector: "testVilleComponent",
-    template: "<h3>HELLO TESTVILLE</h3>"
+    template: require("./testVille.component.html"),
+    controller: CodeChartaController
 };
