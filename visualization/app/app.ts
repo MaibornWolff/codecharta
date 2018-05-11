@@ -6,8 +6,9 @@ import "./codeCharta/codeCharta";
 import "./assets/icon.ico";
 import "./app.scss";
 import "@uirouter/angularjs";
+import "./testVille/testVille";
 
-angular.module("app", ["app.codeCharta", "ngMaterial", "ui.router"]);
+angular.module("app", ["app.codeCharta", "ngMaterial", "ui.router", "app.testVille"]);
 
 angular.module("app")
     .config(["$locationProvider", function ($locationProvider) {
@@ -31,8 +32,8 @@ angular.module("app")
         });
 
         $stateProvider.state({
-            name: "about",
-            template: "<h3>Its the UI-Router hello world app!</h3>"
+            name: "testville",
+            template: "<test-ville-component>Loading testVille...</test-ville-component>"
         });
 
     });
