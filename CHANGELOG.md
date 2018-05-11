@@ -7,11 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 ### Added
 - Layout switcher #141
+- Added CrococosmoImporter to Analysis
+
 ### Changed
 
 ### Removed
 
 ### Fixed
+- filter by regex shows parent nodes #116
 
 ## [1.12.0] - 2018-04-27
 ### Added
