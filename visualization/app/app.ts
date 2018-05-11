@@ -26,15 +26,15 @@ angular.module("app")
     }).config(function($stateProvider) {
 
         $stateProvider.state({
-            name: "codecharta",
+            name: "CodeCharta",
             template: "<code-charta-component>Loading CodeCharta...</code-charta-component>"
         });
 
         $stateProvider.state({
-            name: "testville",
+            name: "TestVille",
             template: "<test-ville-component>Loading testVille...</test-ville-component>"
         });
 
     }).run(function($state) {
-        $state.go("codecharta");
+        $state.go("CodeCharta");
     });
