@@ -5,8 +5,9 @@ import "angular-material";
 import "./codeCharta/codeCharta";
 import "./assets/icon.ico";
 import "./app.scss";
+import "@uirouter/angularjs";
 
-angular.module("app", ["app.codeCharta", "ngMaterial"]);
+angular.module("app", ["app.codeCharta", "ngMaterial", "ui.router"]);
 
 angular.module("app")
     .config(["$locationProvider", function ($locationProvider) {
@@ -21,4 +22,18 @@ angular.module("app")
             .primaryPalette("teal")
             .warnPalette("teal")
             .accentPalette("teal");
+    }).config(function($stateProvider) {
+        let helloState = {
+            name: "hello",
+            url: "/hello",
+            template: "<code-charta-component>Loading CodeCharta...</code-charta-component>"
+        };
+        let aboutState = {
+            name: "about",
+            url: "/about",
+            template: "<h3>Its the UI-Router hello world app!</h3>"
+        };
+
+        $stateProvider.state(helloState);
+        $stateProvider.state(aboutState);
     });
