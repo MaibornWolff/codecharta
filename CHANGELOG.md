@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
-
+- Layout switcher #141
 ### Changed
 
 ### Removed
