@@ -23,17 +23,16 @@ angular.module("app")
             .warnPalette("teal")
             .accentPalette("teal");
     }).config(function($stateProvider) {
-        let helloState = {
-            name: "hello",
-            url: "/hello",
-            template: "<code-charta-component>Loading CodeCharta...</code-charta-component>"
-        };
-        let aboutState = {
-            name: "about",
-            url: "/about",
-            template: "<h3>Its the UI-Router hello world app!</h3>"
-        };
 
-        $stateProvider.state(helloState);
-        $stateProvider.state(aboutState);
+        $stateProvider.state({
+            name: "codecharta",
+            url: "/",
+            template: "<code-charta-component>Loading CodeCharta...</code-charta-component>"
+        });
+
+        $stateProvider.state({
+            name: "about",
+            template: "<h3>Its the UI-Router hello world app!</h3>"
+        });
+
     });
