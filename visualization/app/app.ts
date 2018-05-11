@@ -27,7 +27,6 @@ angular.module("app")
 
         $stateProvider.state({
             name: "codecharta",
-            url: "/",
             template: "<code-charta-component>Loading CodeCharta...</code-charta-component>"
         });
 
@@ -36,4 +35,6 @@ angular.module("app")
             template: "<test-ville-component>Loading testVille...</test-ville-component>"
         });
 
+    }).run(function($state) {
+        $state.go("codecharta");
     });
