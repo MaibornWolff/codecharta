@@ -34,11 +34,11 @@ export class AggregateMapService {
         }
         outputMap.projectName=outputMap.projectName.substring(0,outputMap.projectName.length-2).concat(".");
         outputMap.fileName=outputMap.fileName.substring(0,outputMap.fileName.length-2).concat(".");
-        outputMap.root = new CodeMapNode();
+        outputMap.root = {} as CodeMapNode;
         outputMap.root.name = "root";
         outputMap.root.children ={} as CodeMapNode[];
         for(let input in inputMaps){
-            outputMap.root.children.push(convertMapToNode(input));
+            outputMap.root.children.push(this.convertMapToNode(input));
         }
         return outputMap;
     }
