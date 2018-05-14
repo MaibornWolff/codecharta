@@ -7,14 +7,15 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
 
     public settings: Settings;
     public data: DataModel;
-    public maps: CodeMap[];
+    public revisions: CodeMap[];
+    public currentAggregation : Number;
 
     /* @ngInject */
     constructor(
         private settingsService: SettingsService,
         private dataService: DataService,
     ) {
-        this.maps = dataService.data.revisions;
+        this.revisions = dataService.data.revisions;
         this.settings = settingsService.settings;
         this.data = dataService.data;
         this.dataService.subscribe(this);
@@ -22,6 +23,7 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
     }
 
     onAggregateChange(){
+        //Call backend code here
         this.settingsService.applySettings();
     }
 
@@ -33,6 +35,8 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
     onSettingsChanged(settings: Settings, event: Event) {
         this.settings = settings;
     }
+
+
 
 }
 

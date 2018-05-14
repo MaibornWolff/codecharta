@@ -1,9 +1,9 @@
 <md-input-container class="md-block">
     <label>Aggregate following maps</label>
-    <md-select ng-model="$ctrl.maps" ng-change="$ctrl.onAggregateChange()">
-        <!--md-option ng-repeat="(key, value) in $ctrl.maps" value="{{::key}}">
+    <md-select ng-model="$ctrl.currentAggregation"  multiple="{{true}}" ng-change="$ctrl.onAggregateChange()">
+        <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
             {{::value.fileName}}
-        </md-option-->
+        </md-option>
     </md-select>
 </md-select>
 </md-input-container>

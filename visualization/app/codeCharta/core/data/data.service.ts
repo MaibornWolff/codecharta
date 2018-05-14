@@ -129,7 +129,7 @@ export class DataService {
 
         if(this._data.revisions.length <= 0){
             this._data.metrics = [];
-            return; //we cannot reduce if there are no maps
+            return; //we cannot reduce if there are no revisions
         }
 
         let leaves: HierarchyNode<CodeMapNode>[] = [];
@@ -153,7 +153,7 @@ export class DataService {
     }
 
     /**
-     * resets all maps (deletes them)
+     * resets all revisions (deletes them)
      */
     public resetMaps() {
         this._data.revisions = [];

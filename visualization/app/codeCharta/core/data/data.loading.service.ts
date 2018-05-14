@@ -4,7 +4,7 @@ import {DataValidatorService} from "./data.validator.service";
 import {DataService} from "./data.service";
 
 /**
- * This service loads maps into the DataService
+ * This service loads revisions into the DataService
  */
 export class DataLoadingService {
 

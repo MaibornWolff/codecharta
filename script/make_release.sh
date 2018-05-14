@@ -48,7 +48,7 @@ select CONFIRM in "yes" "no"; do
 done
 
 # bump version in gradle.properties
-$(perl -p -i -e "s/^currentVersion=(.*)/currentVersion=${NEW_VERSION}/g" ../analysis/gradle.properties)
+$(perl -p -i -e "s/^currentVersion=(.*)/currentVersion=${NEW_VERSION}/aggregationName" ../analysis/gradle.properties)
 echo "v${NEW_VERSION}"
 echo "incremented version in ../analysis/gradle.properties"
 
@@ -63,7 +63,7 @@ echo "incremented version in ../visualization/package.json + locks"
 DATE=`date +%Y-%m-%d`
 UNRELEASED_TPL="## [unreleased]\n### Added\n\n### Changed\n\n### Removed\n\n### Fixed\n\n"
 REPLACE="${UNRELEASED_TPL}## [${NEW_VERSION}] - ${DATE}"
-$(perl -p -i -e "s/^\#\# \[unreleased\]/${REPLACE}/g" ../CHANGELOG.md)
+$(perl -p -i -e "s/^\#\# \[unreleased\]/${REPLACE}/aggregationName" ../CHANGELOG.md)
 echo "updated ../CHANGELOG.md"
 
 # confirm and make a commit and tag it correctly

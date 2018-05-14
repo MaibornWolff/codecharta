@@ -3,7 +3,7 @@ export class AggregateSettingsPanelController {
     constructor(settingsService, dataService) {
         this.settingsService = settingsService;
         this.dataService = dataService;
-        this.maps = dataService.data.revisions;
+        this.revisions = dataService.data.revisions;
         this.settings = settingsService.settings;
         this.data = dataService.data;
         this.dataService.subscribe(this);

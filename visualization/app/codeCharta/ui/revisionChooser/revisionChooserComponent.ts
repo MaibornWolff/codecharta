@@ -11,7 +11,7 @@ export class RevisionChooserController implements DataServiceSubscriber{
     public ui = {
         chosenReference: null,
         chosenComparison: null,
-    };
+    };e
 
     /* @ngInject */
 

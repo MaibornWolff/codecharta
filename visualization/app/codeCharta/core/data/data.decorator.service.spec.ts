@@ -105,7 +105,7 @@ describe("app.codeCharta.core.data.dataService", () => {
 
     describe("decorateMapWithUnaryMetric",() => {
 
-        it("maps with no attribute nodes should be accepted and an attributes member added", ()=>{
+        it("revisions with no attribute nodes should be accepted and an attributes member added", ()=>{
 
             let cm: CodeMap = {
                 fileName: "a",

@@ -95,7 +95,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
         });
     });
 
-    it("fill maps should return input maps when a map does not exist", ()=>{
+    it("fill revisions should return input revisions when a map does not exist", ()=>{
         decorate(a);
         decorate(b);
 
@@ -109,7 +109,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
 
     });
 
-    it("fill maps should return input maps when a map has no root", ()=>{
+    it("fill revisions should return input revisions when a map has no root", ()=>{
         decorate(a);
         decorate(b);
 
@@ -140,7 +140,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
 
     });
 
-    it("should result in expected delta maps", ()=>{
+    it("should result in expected delta revisions", ()=>{
         decorate(a);
         decorate(b);
 
