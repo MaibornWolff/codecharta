@@ -8,11 +8,10 @@ import Code = marked.Tokens.Code;
 
 export class AggregateMapService {
 
-
-    public static SELECTOR = "statisticMapService";
+    public static SELECTOR = "aggregateMapService";
 
     constructor(private dialogService: DialogService) {
-
+        console.log("hi");
     }
 
     /*
@@ -20,26 +19,36 @@ export class AggregateMapService {
      *
      *
      */
-    aggregateMaps(inputMaps: CodeMap[]):CodeMap{
-        if(inputMaps.length==1) return inputMaps[0];
-        let outputMap: CodeMap;
-        outputMap.projectName = "Aggregation of following projects:  ";
-        outputMap.fileName = "Aggregation of following files:  ";
-        for(let input of inputMaps){
-            if(input.projectName){
-                outputMap.projectName=outputMap.projectName.concat(input.projectName," ,");
-            }if(input.fileName){
-                outputMap.fileName=outputMap.fileName.concat(input.fileName," ,");
-            }
+    public aggregateMaps(inputMaps: CodeMap[]): CodeMap {
+
+        console.log("hi2");
+
+        if(inputMaps.length == 1) return inputMaps[0];
+
+        let outputMap: CodeMap = {} as CodeMap;
+        let projectNameArray = [];
+        let fileNameArray = [];
+
+        for(let inputMap of inputMaps){
+            projectNameArray.push(inputMap.projectName);
+            fileNameArray.push(inputMap.fileName);
         }
-        outputMap.projectName=outputMap.projectName.substring(0,outputMap.projectName.length-2).concat(".");
-        outputMap.fileName=outputMap.fileName.substring(0,outputMap.fileName.length-2).concat(".");
+
+        outputMap.projectName = "Aggregation of following projects:  " + projectNameArray.join(", ").concat(".");
+        outputMap.fileName = "Aggregation of following files:  " + fileNameArray.join(", ").concat(".");
+
         outputMap.root = {} as CodeMapNode;
         outputMap.root.name = "root";
-        outputMap.root.children ={} as CodeMapNode[];
-        for(let input of inputMaps){
-            outputMap.root.children.push(this.convertMapToNode(input));
+        outputMap.root.children = {} as CodeMapNode[];
+
+        console.log("outputMap", outputMap);
+
+        for(let inputMap of inputMaps){
+            //outputMap.root.children.push(this.convertMapToNode(inputMap));
         }
+
+
+
         return outputMap;
     }
 
