@@ -125,6 +125,20 @@ export class DataService {
         return this._lastComparisonMap;
     }
 
+    public getIndexOfMap(map: CodeMap, mapArray: CodeMap[]) {
+
+        if (mapArray && map) {
+            for (let i = 0; i < mapArray.length; i++) {
+                if (mapArray[i] && mapArray[i].fileName === map.fileName) {
+                    return i;
+                }
+            }
+        }
+
+        return -1;
+
+    }
+
     public updateMetrics() {
 
         if(this._data.revisions.length <= 0){

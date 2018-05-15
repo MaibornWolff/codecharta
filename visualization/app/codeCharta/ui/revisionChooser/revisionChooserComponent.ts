@@ -25,15 +25,16 @@ export class RevisionChooserController implements DataServiceSubscriber{
         private settingsService: SettingsService
     ) {
         this.revisions = dataService.data.revisions;
-        this.ui.chosenComparison = this.getIndexOfMap(this.dataService.getComparisonMap(), this.revisions);
-        this.ui.chosenReference = this.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
+        this.ui.chosenComparison = this.dataService.getIndexOfMap(this.dataService.getComparisonMap(), this.revisions);
+        this.ui.chosenReference = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
+        console.log("revision", this.ui.chosenComparison);
         dataService.subscribe(this);
     }
 
     onDataChanged(data: DataModel) {
         this.revisions = data.revisions;
-        this.ui.chosenComparison = this.getIndexOfMap(this.dataService.getComparisonMap(), this.revisions);
-        this.ui.chosenReference = this.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
+        this.ui.chosenComparison= this.dataService.getIndexOfMap(this.dataService.getComparisonMap(), this.revisions);
+        this.ui.chosenReference = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
     }
 
     onReferenceChange(mapIndex: number) {
@@ -42,20 +43,6 @@ export class RevisionChooserController implements DataServiceSubscriber{
 
     onComparisonChange(mapIndex: number) {
         this.dataService.setComparisonMap(mapIndex);
-    }
-
-    private getIndexOfMap(map: CodeMap, mapArray: CodeMap[]) {
-
-        if (mapArray && map) {
-            for (let i = 0; i < mapArray.length; i++) {
-                if (mapArray[i] && mapArray[i].fileName === map.fileName) {
-                    return i;
-                }
-            }
-        }
-
-        return -1;
-
     }
 
 

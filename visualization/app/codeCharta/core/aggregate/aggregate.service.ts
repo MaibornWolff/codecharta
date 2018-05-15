@@ -26,6 +26,7 @@ export class AggregateMapService {
         outputMap.projectName = "Aggregation of following projects:  ";
         outputMap.fileName = "Aggregation of following files:  ";
         for(let input in inputMaps){
+            console.log(input);
             if(input.projectName){
                 outputMap.projectName=outputMap.projectName.concat(input.projectName," ,");
             }if(input.fileName){
