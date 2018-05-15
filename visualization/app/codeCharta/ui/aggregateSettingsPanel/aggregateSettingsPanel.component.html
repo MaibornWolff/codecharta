@@ -1,6 +1,6 @@
 <md-input-container class="md-block">
     <label>Aggregate following maps</label>
-    <md-select ng-model="$ctrl.currentAggregation"  multiple="{{true}}" ng-change="$ctrl.onAggregateChange()">
+    <md-select ng-model="$ctrl.selectedMapIndices" multiple="{{true}}" ng-change="$ctrl.onAggregateChange()">
         <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
             {{::value.fileName}}
         </md-option>

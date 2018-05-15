@@ -9,7 +9,7 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
     public settings: Settings;
     public data: DataModel;
     public revisions: CodeMap[];
-    public currentAggregation : number[];
+    public selectedMapIndices : number[];
     public aggregate : AggregateMapService;
     public mapsToAggregate : CodeMap[];
 
@@ -17,21 +17,23 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
     constructor(
         private settingsService: SettingsService,
         private dataService: DataService,
+        private aggregateMapService: AggregateMapService
     ) {
         this.revisions = dataService.data.revisions;
         this.settings = settingsService.settings;
         this.data = dataService.data;
         this.dataService.subscribe(this);
         this.settingsService.subscribe(this);
-        this.mapsToAggregate = [];
+        this.mapsToAggregate = [] as CodeMap[];
+        this.aggregate = aggregateMapService;
     }
 
     onAggregateChange(){
 
-        if(!this.currentAggregation){
-            this.currentAggregation = [];
+        if(!this.selectedMapIndices){
+            this.selectedMapIndices = [];
             let indexOfReferenceMap = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
-            this.currentAggregation.push(indexOfReferenceMap);
+            this.selectedMapIndices.push(indexOfReferenceMap);
         }
 
         this.selectMapsToAggregate();
@@ -52,9 +54,9 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
 
 
     selectMapsToAggregate(){
-        this.mapsToAggregate = [];
+        this.mapsToAggregate = [] as CodeMap[];
 
-        for(let position of this.currentAggregation){
+        for(let position of this.selectedMapIndices){
             let currentCodeMap = this.revisions[position];
             this.mapsToAggregate.push(currentCodeMap);
         }
