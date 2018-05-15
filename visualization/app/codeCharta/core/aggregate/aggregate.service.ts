@@ -38,54 +38,47 @@ export class AggregateMapService {
         outputMap.root.name = "root";
         outputMap.root.children = [] as CodeMapNode[];
 
-        console.log("outputMap", outputMap);
-
         for(let inputMap of inputMaps){
             outputMap.root.children.push(this.convertMapToNode(inputMap));
         }
 
         console.log("outputMap",outputMap);
 
-
         return outputMap;
     }
 
     convertMapToNode(inputCodeMap: CodeMap): CodeMapNode{
+
+        let newPath = this.updatePath(inputCodeMap.projectName, inputCodeMap.root.path);
+
         let outputNode: CodeMapNode = {
             name: inputCodeMap.projectName,
-            children: inputCodeMap.root.children,
+            children: JSON.parse(JSON.stringify(inputCodeMap.root.children)),
             attributes: inputCodeMap.root.attributes,
             deltas: inputCodeMap.root.deltas,
             link: inputCodeMap.root.link,
             origin: inputCodeMap.root.origin,
             visible: inputCodeMap.root.visible,
-            path: inputCodeMap.projectName+"/"+inputCodeMap.root.path
-        } ;
+            path: newPath,
+        };
+
+        this.updatePathOfChildren(inputCodeMap.projectName, outputNode.children);
+
         return outputNode;
     }
-}
-/*
-export interface CodeMapNode {
-    name: string,
-    children?: CodeMapNode[]
-    attributes?: {
-        [key: string]: number
-    },
-    deltas?: {
-        [key: string]: number
-    },
-    link?: string,
-    origin?: string,
-    visible?: boolean,
-    path?:string
-}
 
-export interface CodeMap {
+    updatePathOfChildren(projectName, children: CodeMapNode[]) {
+        for(let i = 0; i < children.length; i++) {
+            children[i].path = this.updatePath(projectName, children[i].path);
 
-    fileName: string,
-    projectName: string,
-    root: CodeMapNode,
-    dependencies?: CodeMapDependency[]
+            if(children[i].children) {
+                this.updatePathOfChildren(projectName, children[i].children);
+            }
+        }
+    }
 
+    updatePath(projectName, path) {
+        let subPath = path.substring(6, path.length);
+        return "/root/" + projectName + "/" + subPath;
+    }
 }
-*/
