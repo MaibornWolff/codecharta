@@ -5,27 +5,51 @@ export class AggregateMapService {
     aggregateMaps(inputMaps) {
         if (inputMaps.length == 1)
             return inputMaps[0];
-        let outputMap;
-        outputMap.projectName = "Aggregation of following projects:  ";
-        outputMap.fileName = "Aggregation of following files:  ";
-        for (let input in inputMaps) {
-            if (input.projectName) {
-                outputMap.projectName = outputMap.projectName.concat(input.projectName, " ,");
-            }
-            if (input.fileName) {
-                outputMap.fileName = outputMap.fileName.concat(input.fileName, " ,");
-            }
+        let outputMap = {};
+        let projectNameArray = [];
+        let fileNameArray = [];
+        for (let inputMap of inputMaps) {
+            projectNameArray.push(inputMap.projectName);
+            fileNameArray.push(inputMap.fileName);
         }
-        outputMap.projectName = outputMap.projectName.substring(0, outputMap.projectName.length - 2).concat(".");
-        outputMap.fileName = outputMap.fileName.substring(0, outputMap.fileName.length - 2).concat(".");
-        outputMap.root = new CodeMapNode();
+        outputMap.projectName = "Aggregation of following projects: " + projectNameArray.join(", ");
+        outputMap.fileName = "Aggregation of following files: " + fileNameArray.join(", ");
+        outputMap.root = {};
         outputMap.root.name = "root";
         outputMap.root.children = [];
-        for (let input in inputMaps) {
-            outputMap.root.children.push(convertMapToNode(input));
+        for (let inputMap of inputMaps) {
+            outputMap.root.children.push(this.convertMapToNode(inputMap));
         }
+        console.log("outputMap", outputMap);
         return outputMap;
     }
+    convertMapToNode(inputCodeMap) {
+        let newPath = this.updatePath(inputCodeMap.projectName, inputCodeMap.root.path);
+        let outputNode = {
+            name: inputCodeMap.projectName,
+            children: JSON.parse(JSON.stringify(inputCodeMap.root.children)),
+            attributes: inputCodeMap.root.attributes,
+            deltas: inputCodeMap.root.deltas,
+            link: inputCodeMap.root.link,
+            origin: inputCodeMap.root.origin,
+            visible: inputCodeMap.root.visible,
+            path: newPath,
+        };
+        this.updatePathOfChildren(inputCodeMap.projectName, outputNode.children);
+        return outputNode;
+    }
+    updatePathOfChildren(projectName, children) {
+        for (let i = 0; i < children.length; i++) {
+            children[i].path = this.updatePath(projectName, children[i].path);
+            if (children[i].children) {
+                this.updatePathOfChildren(projectName, children[i].children);
+            }
+        }
+    }
+    updatePath(projectName, path) {
+        let subPath = path.substring(6, path.length);
+        return "/root/" + projectName + "/" + subPath;
+    }
 }
-AggregateMapService.SELECTOR = "statisticMapService";
+AggregateMapService.SELECTOR = "aggregateMapService";
 //# sourceMappingURL=aggregate.service.js.map

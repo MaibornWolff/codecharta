@@ -1,15 +1,26 @@
 import "./aggregateSettingsPanel.component.scss";
 export class AggregateSettingsPanelController {
-    constructor(settingsService, dataService) {
+    constructor(settingsService, dataService, aggregateMapService) {
         this.settingsService = settingsService;
         this.dataService = dataService;
+        this.aggregateMapService = aggregateMapService;
         this.revisions = dataService.data.revisions;
         this.settings = settingsService.settings;
         this.data = dataService.data;
         this.dataService.subscribe(this);
         this.settingsService.subscribe(this);
+        this.mapsToAggregate = [];
+        this.aggregate = aggregateMapService;
     }
     onAggregateChange() {
+        if (!this.selectedMapIndices) {
+            this.selectedMapIndices = [];
+            let indexOfReferenceMap = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
+            this.selectedMapIndices.push(indexOfReferenceMap);
+        }
+        this.selectMapsToAggregate();
+        this.settings.map = this.aggregate.aggregateMaps(this.mapsToAggregate);
+        console.log("map", this.settings.map);
         this.settingsService.applySettings();
     }
     onDataChanged(data) {
@@ -18,6 +29,13 @@ export class AggregateSettingsPanelController {
     }
     onSettingsChanged(settings, event) {
         this.settings = settings;
+    }
+    selectMapsToAggregate() {
+        this.mapsToAggregate = [];
+        for (let position of this.selectedMapIndices) {
+            let currentCodeMap = this.revisions[position];
+            this.mapsToAggregate.push(currentCodeMap);
+        }
     }
 }
 export const aggregateSettingsPanelComponent = {

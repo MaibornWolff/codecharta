@@ -38,7 +38,8 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
 
         this.selectMapsToAggregate();
 
-        this.aggregate.aggregateMaps(this.mapsToAggregate);
+        this.settings.map = this.aggregate.aggregateMaps(this.mapsToAggregate);
+        console.log("map",this.settings.map);
         this.settingsService.applySettings();
     }
 
