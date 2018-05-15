@@ -11,7 +11,7 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
     public revisions: CodeMap[];
     public currentAggregation : number[];
     public aggregate : AggregateMapService;
-    public chosenMaps : CodeMap[];
+    public mapsToAggregate : CodeMap[];
 
     /* @ngInject */
     constructor(
@@ -23,28 +23,26 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
         this.data = dataService.data;
         this.dataService.subscribe(this);
         this.settingsService.subscribe(this);
-        this.chosenMaps = [];
-
-        //this.selectMaps();
+        this.mapsToAggregate = [];
     }
 
     onAggregateChange(){
-        //Call backend code here
-        this.selectMaps();
-        console.log("chosenMaps", this.chosenMaps);
-        this.aggregate.aggregateMaps(this.chosenMaps);
+
+        if(!this.currentAggregation){
+            this.currentAggregation = [];
+            let indexOfReferenceMap = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
+            this.currentAggregation.push(indexOfReferenceMap);
+        }
+
+        this.selectMapsToAggregate();
+        console.log("mapsToAggregate", this.mapsToAggregate);
+
+        this.aggregate.aggregateMaps(this.mapsToAggregate);
         this.settingsService.applySettings();
     }
 
     onDataChanged(data: DataModel) {
         this.data = data;
-
-        if(!this.currentAggregation){
-            this.currentAggregation = [];
-            this.currentAggregation.push(this.dataService.getIndexOfMap(
-                this.dataService.getReferenceMap(), this.revisions));
-        }
-
         this.onAggregateChange();
     }
 
@@ -53,15 +51,14 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
     }
 
 
-    selectMaps(){
-        this.chosenMaps = [];
+    selectMapsToAggregate(){
+        this.mapsToAggregate = [];
 
-        for(let position in this.currentAggregation){
-            let currentCodeMap = this.revisions[parseInt(position)];
-            this.chosenMaps.push(currentCodeMap);
+        for(let position of this.currentAggregation){
+            let currentCodeMap = this.revisions[position];
+            this.mapsToAggregate.push(currentCodeMap);
         }
     }
-
 }
 
 export const aggregateSettingsPanelComponent = {

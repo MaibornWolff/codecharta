@@ -134,9 +134,7 @@ export class DataService {
                 }
             }
         }
-
         return -1;
-
     }
 
     public updateMetrics() {
