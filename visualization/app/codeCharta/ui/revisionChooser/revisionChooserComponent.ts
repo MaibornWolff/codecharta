@@ -11,7 +11,7 @@ export class RevisionChooserController implements DataServiceSubscriber{
     public ui = {
         chosenReference: null,
         chosenComparison: null,
-    };e
+    };
 
     /* @ngInject */
 
@@ -27,7 +27,6 @@ export class RevisionChooserController implements DataServiceSubscriber{
         this.revisions = dataService.data.revisions;
         this.ui.chosenComparison = this.dataService.getIndexOfMap(this.dataService.getComparisonMap(), this.revisions);
         this.ui.chosenReference = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
-        console.log("revision", this.ui.chosenComparison);
         dataService.subscribe(this);
     }
 

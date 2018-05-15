@@ -25,8 +25,7 @@ export class AggregateMapService {
         let outputMap: CodeMap;
         outputMap.projectName = "Aggregation of following projects:  ";
         outputMap.fileName = "Aggregation of following files:  ";
-        for(let input in inputMaps){
-            console.log(input);
+        for(let input of inputMaps){
             if(input.projectName){
                 outputMap.projectName=outputMap.projectName.concat(input.projectName," ,");
             }if(input.fileName){
@@ -38,7 +37,7 @@ export class AggregateMapService {
         outputMap.root = {} as CodeMapNode;
         outputMap.root.name = "root";
         outputMap.root.children ={} as CodeMapNode[];
-        for(let input in inputMaps){
+        for(let input of inputMaps){
             outputMap.root.children.push(this.convertMapToNode(input));
         }
         return outputMap;
