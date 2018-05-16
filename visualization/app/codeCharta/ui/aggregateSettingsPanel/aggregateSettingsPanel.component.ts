@@ -3,6 +3,7 @@ import "./aggregateSettingsPanel.component.scss";
 import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/data.service";
 import {CodeMap} from "../../core/data/model/CodeMap";
 import {AggregateMapService} from "../../core/aggregate/aggregate.service";
+import {IRootScopeService} from "angular";
 
 export class AggregateSettingsPanelController implements DataServiceSubscriber, SettingsServiceSubscriber{
 
@@ -15,9 +16,10 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
 
     /* @ngInject */
     constructor(
+        private $rootScope: IRootScopeService,
         private settingsService: SettingsService,
         private dataService: DataService,
-        private aggregateMapService: AggregateMapService
+        private aggregateMapService: AggregateMapService,
     ) {
         this.revisions = dataService.data.revisions;
         this.settings = settingsService.settings;
@@ -38,9 +40,20 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
 
         this.selectMapsToAggregate();
 
-        this.settings.map = this.aggregate.aggregateMaps(this.mapsToAggregate);
-        console.log("map",this.settings.map);
-        this.settingsService.applySettings();
+        let newMap = this.aggregate.aggregateMaps(this.mapsToAggregate);
+        console.log("New Map",newMap);
+
+        //******* following map reloads dont work ***********//
+
+        //this.settings.map = newMap;
+        //this.settingsService.applySettings();
+
+        //this.data.renderMap = newMap;
+        //this.settingsService.onDataChanged(this.data);
+        //this.$rootScope.$broadcast("data-changed", this.data);
+
+        //this.settings.map = newMap;
+        //this.settingsService.applySettings(this.settings);
     }
 
     onDataChanged(data: DataModel) {

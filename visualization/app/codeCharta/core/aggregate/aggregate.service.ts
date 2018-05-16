@@ -1,9 +1,5 @@
-import {Settings} from "../../core/settings/settings.service";
-import {DataModel} from "../data/data.service";
-import {node} from "../../ui/codeMap/rendering/node";
 import {DialogService} from "../../ui/dialog/dialog.service";
 import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
-import Code = marked.Tokens.Code;
 
 
 export class AggregateMapService {
@@ -13,16 +9,10 @@ export class AggregateMapService {
     constructor(private dialogService: DialogService) {
     }
 
-    /*
-     *
-     *
-     *
-     */
     public aggregateMaps(inputMaps: CodeMap[]): CodeMap {
 
         if(inputMaps.length == 1) return inputMaps[0];
 
-        let outputMap: CodeMap = {} as CodeMap;
         let projectNameArray = [];
         let fileNameArray = [];
 
@@ -31,9 +21,9 @@ export class AggregateMapService {
             fileNameArray.push(inputMap.fileName);
         }
 
+        let outputMap: CodeMap = {} as CodeMap;
         outputMap.projectName = "Aggregation of following projects: " + projectNameArray.join(", ");
         outputMap.fileName = "Aggregation of following files: " + fileNameArray.join(", ");
-
         outputMap.root = {} as CodeMapNode;
         outputMap.root.name = "root";
         outputMap.root.children = [] as CodeMapNode[];
@@ -42,14 +32,10 @@ export class AggregateMapService {
             outputMap.root.children.push(this.convertMapToNode(inputMap));
         }
 
-        console.log("outputMap",outputMap);
-
         return outputMap;
     }
 
-    convertMapToNode(inputCodeMap: CodeMap): CodeMapNode{
-
-        let newPath = this.updatePath(inputCodeMap.projectName, inputCodeMap.root.path);
+    private convertMapToNode(inputCodeMap: CodeMap): CodeMapNode{
 
         let outputNode: CodeMapNode = {
             name: inputCodeMap.projectName,
@@ -59,26 +45,27 @@ export class AggregateMapService {
             link: inputCodeMap.root.link,
             origin: inputCodeMap.root.origin,
             visible: inputCodeMap.root.visible,
-            path: newPath,
+            path: this.updatePath(inputCodeMap.projectName, inputCodeMap.root.path),
         };
 
-        this.updatePathOfChildren(inputCodeMap.projectName, outputNode.children);
+        this.updatePathOfAllChildren(inputCodeMap.projectName, outputNode.children);
 
         return outputNode;
     }
 
-    updatePathOfChildren(projectName, children: CodeMapNode[]) {
+    private updatePathOfAllChildren(projectName, children: CodeMapNode[]) {
         for(let i = 0; i < children.length; i++) {
             children[i].path = this.updatePath(projectName, children[i].path);
 
             if(children[i].children) {
-                this.updatePathOfChildren(projectName, children[i].children);
+                this.updatePathOfAllChildren(projectName, children[i].children);
             }
         }
     }
 
-    updatePath(projectName, path) {
+    private updatePath(projectName, path) {
         let subPath = path.substring(6, path.length);
-        return "/root/" + projectName + "/" + subPath;
+        let slash = (subPath.length > 0) ? "/" : "";
+        return "/root/" + projectName + slash + subPath;
     }
 }
