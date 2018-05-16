@@ -29,18 +29,29 @@
 
 package de.maibornwolff.codecharta.importer.crococosmo
 
+import de.maibornwolff.codecharta.importer.crococosmo.model.Graph
+import de.maibornwolff.codecharta.importer.crococosmo.model.SchemaVersion
+import de.maibornwolff.codecharta.importer.crococosmo.model.Version
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.importer.crococosmo.model.Graph
-import de.maibornwolff.codecharta.importer.crococosmo.model.Version
 
 class CrococosmoConverter {
 
-    fun convertToProject(projectName: String, graph: Graph): Project {
-        val version = graph.schema.versions.versions.first().id
-        return Project(projectName, createNodeListForProject(graph.nodes, version))
+    fun convertToProjectsMap(projectName: String, graph: Graph): Map<String, Project> {
+        return graph.schema.versions.versions
+                .associateBy({ createVersionName(it) }, { createProject(projectName, graph, it.id) })
     }
+
+    private fun createVersionName(it: SchemaVersion) =
+            when {
+                it.name.isNotEmpty() -> it.name
+                it.revision.isNotEmpty() -> it.revision
+                else -> it.id
+            }
+
+    fun createProject(projectName: String, graph: Graph, version: String = graph.schema.versions.versions.first().id) =
+            Project(projectName, createNodeListForProject(graph.nodes, version))
 
     private fun createNodeListForProject(nodes: List<de.maibornwolff.codecharta.importer.crococosmo.model.Node>, version: String): List<Node> {
         return listOf(Node("rootNode", NodeType.Folder, mapOf(), "", convertToNodeList(nodes, version)))
