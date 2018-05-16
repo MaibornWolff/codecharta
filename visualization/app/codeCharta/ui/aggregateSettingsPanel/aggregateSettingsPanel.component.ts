@@ -32,11 +32,10 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
 
     onAggregateChange(){
 
-        if(!this.selectedMapIndices){
-            this.selectedMapIndices = [];
-            let indexOfReferenceMap = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
-            this.selectedMapIndices.push(indexOfReferenceMap);
-        }
+        let indexOfReferenceMap = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
+            if(!this.selectedMapIndices.includes(indexOfReferenceMap)){
+                this.selectedMapIndices.push(indexOfReferenceMap);
+            }
 
         this.selectMapsToAggregate();
 
@@ -58,6 +57,11 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
 
     onDataChanged(data: DataModel) {
         this.data = data;
+
+        console.log("before", this.revisions);
+        this.revisions = data.revisions;
+        console.log("after", this.revisions);
+
         this.onAggregateChange();
     }
 

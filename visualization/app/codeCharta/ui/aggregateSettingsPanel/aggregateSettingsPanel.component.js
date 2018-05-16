@@ -1,6 +1,7 @@
 import "./aggregateSettingsPanel.component.scss";
 export class AggregateSettingsPanelController {
-    constructor(settingsService, dataService, aggregateMapService) {
+    constructor($rootScope, settingsService, dataService, aggregateMapService) {
+        this.$rootScope = $rootScope;
         this.settingsService = settingsService;
         this.dataService = dataService;
         this.aggregateMapService = aggregateMapService;
@@ -19,9 +20,8 @@ export class AggregateSettingsPanelController {
             this.selectedMapIndices.push(indexOfReferenceMap);
         }
         this.selectMapsToAggregate();
-        this.settings.map = this.aggregate.aggregateMaps(this.mapsToAggregate);
-        console.log("map", this.settings.map);
-        this.settingsService.applySettings();
+        let newMap = this.aggregate.aggregateMaps(this.mapsToAggregate);
+        console.log("New Map", newMap);
     }
     onDataChanged(data) {
         this.data = data;
