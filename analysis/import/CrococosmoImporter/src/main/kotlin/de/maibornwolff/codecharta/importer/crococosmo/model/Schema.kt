@@ -39,5 +39,9 @@ class Schema(@JsonProperty("versions") val versions: Versions) {
 
 class Versions(@JsonProperty("version") val versions: List<SchemaVersion>)
 
-@JsonIgnoreProperties("date", "name", "revision")
-class SchemaVersion(@JsonProperty("id") val id: String)
+@JsonIgnoreProperties("date")
+class SchemaVersion(
+        @JsonProperty("id") val id: String,
+        @JsonProperty("name") val name: String,
+        @JsonProperty("revision") val revision: String
+)
