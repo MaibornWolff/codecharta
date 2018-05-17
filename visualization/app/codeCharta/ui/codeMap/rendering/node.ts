@@ -3,20 +3,20 @@ export interface nodeAttributes {
 }
 
 export interface node {
-    readonly name : string;
-    readonly width : number;
-    readonly height : number;
-    readonly length : number;
-    readonly depth : number;
-    readonly x0 : number;
-    readonly z0 : number;
-    readonly y0 : number;
-    readonly isLeaf : boolean;
-    readonly deltas : nodeAttributes;
-    readonly attributes : nodeAttributes;
-    readonly children : node[];
-    readonly parent : node;
-    readonly heightDelta : number;
-    readonly visible : boolean;
-    readonly path : string;
+    name : string;
+    width : number;
+    height : number;
+    length : number;
+    depth : number;
+    x0 : number;
+    z0 : number;
+    y0 : number;
+    isLeaf : boolean;
+    deltas : nodeAttributes;
+    attributes : nodeAttributes;
+    children : node[];
+    parent : node;
+    heightDelta : number;
+    visible : boolean;
+    path : string;
 }

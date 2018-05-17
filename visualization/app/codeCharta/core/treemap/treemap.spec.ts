@@ -1,4 +1,4 @@
-import {TreeMapService, ValuedCodeMapNode} from "./treemap.service";
+import {SquarifiedValuedCodeMapNode, TreeMapService, ValuedCodeMapNode} from "./treemap.service";
 import {CodeMapNode} from "../data/model/CodeMap";
 import {node} from "../../ui/codeMap/rendering/node";
 import {DataService} from "../data/data.service";
@@ -46,7 +46,7 @@ describe("tdd", ()=> {
 
     });
 
-    it("value root node with two direct children and some grand children", ()=> {
+    it("value+squarify root node with two direct children and some grand children", ()=> {
 
         dataServiceMock.getMaxMetricInAllRevisions.mockReturnValue(1000);
 
@@ -67,8 +67,63 @@ describe("tdd", ()=> {
         root.children = [firstChild, secondChild];
 
         let valued: ValuedCodeMapNode = treeMapService.valueCodeMapNodes(root, "fun");
+        let squarified: SquarifiedValuedCodeMapNode = treeMapService.squarify(valued, 6, 6);
 
-        console.log(valued);
+        console.log(squarified);
+
+    });
+
+    describe("CodeMap value calculation", ()=> {
+
+        it("attribute exists, no children", ()=> {
+            let root = {name: "root"};
+            root.attributes = {a:100};
+            expect(root.calculateValue("a")).toBe(100);
+        });
+
+        it("attribute do not exists, no children", ()=> {
+            let root = {name: "root"};
+            root.attributes = {a:100};
+            expect(root.calculateValue("b")).toBe(0);
+        });
+
+        it("attribute do not exists, multiple children with non existant attributes", ()=> {
+            let root = {name: "root"};
+            let firstChild = {name: "firstChild"};
+            let secondChild = {name: "secondChild"};
+            root.children = [firstChild, secondChild];
+            expect(root.calculateValue("a")).toBe(0);
+        });
+
+        it("attribute do not exists, multiple children with existant attributes", ()=> {
+            let root = {name: "root"};
+            let firstChild = {name: "firstChild"};
+            firstChild.attributes = {a:100};
+            let secondChild = {name: "secondChild"};
+            secondChild.attributes = {a:200};
+            root.children = [firstChild, secondChild];
+            expect(root.calculateValue("a")).toBe(300);
+        });
+
+        it("attribute do not exists, multiple children with some existant attributes", ()=> {
+            let root = {name: "root"};
+            let firstChild = {name: "firstChild"};
+            firstChild.attributes = {a:100};
+            let secondChild = {name: "secondChild"};
+            root.children = [firstChild, secondChild];
+            expect(root.calculateValue("a")).toBe(100);
+        });
+
+        it("attribute exists, multiple children with existant attributes", ()=> {
+            let root = {name: "root"};
+            root.attributes = {a:99};
+            let firstChild = {name: "firstChild"};
+            firstChild.attributes = {a:100};
+            let secondChild = {name: "secondChild"};
+            secondChild.attributes = {a:200};
+            root.children = [firstChild, secondChild];
+            expect(root.calculateValue("a")).toBe(300);
+        });
 
     });
 

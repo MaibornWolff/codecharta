@@ -81,7 +81,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     }
 
     updateMapGeometry(s) {
-        let nodes: node[] = this.treeMapService.createTreemapNodes(s.map.root, mapSize, mapSize, s.margin, s.areaMetric, s.heightMetric);
+        let nodes: node[] = this.treeMapService.createTreemapNodes(s.map.root, mapSize, mapSize, s.areaMetric, s.heightMetric);
         let filtered = nodes.filter(node => node.visible && node.length > 0 && node.width > 0);
         this.currentSortedNodes = filtered.sort((a, b) => {
             return b.height - a.height;
