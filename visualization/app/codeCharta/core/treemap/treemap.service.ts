@@ -32,6 +32,9 @@ export interface SquarifiedValuedCodeMapNode {
  * y0       *-width-*
  *  |
  *  0 - - - x0- - - x1 - - X
+ *
+ *  This figure shows the relation between x,y,width and length. These dimensions are only used for the treemapping.
+ *  The map's height dimension is called z and is added after treemapping the floor. Z is orthogonal to the XY plane
  */
 export class TreeMapService {
 
@@ -48,13 +51,14 @@ export class TreeMapService {
                               heightKey: string
     ): node[] {
         let valued: ValuedCodeMapNode = this.valueCodeMapNodes(data, areaKey);
-        this.scaleValuedCodeMapNodesToMapSize(valued, w, l);
+        //this.scaleValuedCodeMapNodesToMapSize(valued, w, l);
         let squarified: SquarifiedValuedCodeMapNode = this.squarifyFromRoot(valued, w, l);
         let resultingNodes: node[] = [];
         this.addHeightDimension(squarified, heightKey, resultingNodes);
         return resultingNodes;
     }
 
+    //TODO scale height to map, min values
     public addHeightDimension(squaredNode: SquarifiedValuedCodeMapNode, key: string, collected: node[] = [], depth = 0, height = 2): node {
 
         let finalNode = {
@@ -102,19 +106,30 @@ export class TreeMapService {
             y0: 0,
             width: containerWidth,
             length: containerLength,
-            children: this.squarifyNodesIntoContainer(root.children, containerWidth, containerLength, 0, 0)
+            children: this.squarifyNodesIntoContainer(root.children, root.value, containerWidth, containerLength, 0, 0, 10)
         };
 
     }
 
-    public squarifyNodesIntoContainer(nodes: ValuedCodeMapNode[], containerWidth: number, containerLength: number, containerX: number, containerY: number): SquarifiedValuedCodeMapNode[] {
+    //TODO global paddings, aspect ratio optimization, padding per level
+    public squarifyNodesIntoContainer(nodes: ValuedCodeMapNode[], containerValue: number, containerWidth: number, containerLength: number, containerX: number, containerY: number, containerPadding: number): SquarifiedValuedCodeMapNode[] {
 
         if(!nodes) {
             return [];
         }
 
+        // Padding
+        containerWidth -= 2*containerPadding;
+        containerLength -= 2*containerPadding;
+        containerX += containerPadding;
+        containerY += containerPadding;
+
+        // scale value to container
+        let valuePixelScale = containerWidth * containerLength / containerValue;
+
+        // Treemapping
         let squarifiedChildren: SquarifiedValuedCodeMapNode[] = [];
-        let sortedValuedCodeMapNodes = nodes.sort((a, b) => b.value - a.value);
+        let sortedValuedCodeMapNodes = nodes.sort((a, b) => b.value - a.value );
 
         let offsetX = 0;
         let offsetY = 0;
@@ -124,7 +139,7 @@ export class TreeMapService {
             if(containerWidth - offsetX > containerLength - offsetY) {
                 let unsquarifiedChild = sortedValuedCodeMapNodes[i];
                 let squarifiedChildLength = containerLength - offsetY;
-                let squarifiedChildWidth = unsquarifiedChild.value / squarifiedChildLength;
+                let squarifiedChildWidth = unsquarifiedChild.value * valuePixelScale / squarifiedChildLength;
                 squarifiedChildren.push({
                     value: unsquarifiedChild.value,
                     data: unsquarifiedChild.data,
@@ -132,13 +147,13 @@ export class TreeMapService {
                     y0: containerY + offsetY,
                     width: squarifiedChildWidth,
                     length: squarifiedChildLength,
-                    children: this.squarifyNodesIntoContainer(unsquarifiedChild.children, squarifiedChildWidth, squarifiedChildLength, containerX + offsetX, containerY + offsetY)
+                    children: this.squarifyNodesIntoContainer(unsquarifiedChild.children, unsquarifiedChild.value, squarifiedChildWidth, squarifiedChildLength, containerX + offsetX, containerY + offsetY, containerPadding)
                 });
                 offsetX += squarifiedChildWidth;
             } else {
                 let unsquarifiedChild = sortedValuedCodeMapNodes[i];
                 let squarifiedChildWidth = containerWidth - offsetX;
-                let squarifiedChildLength = unsquarifiedChild.value / squarifiedChildWidth;
+                let squarifiedChildLength = unsquarifiedChild.value * valuePixelScale / squarifiedChildWidth;
                 squarifiedChildren.push({
                     value: unsquarifiedChild.value,
                     data: unsquarifiedChild.data,
@@ -146,7 +161,7 @@ export class TreeMapService {
                     y0: containerY + offsetY,
                     width: squarifiedChildWidth,
                     length: squarifiedChildLength,
-                    children: this.squarifyNodesIntoContainer(unsquarifiedChild.children, squarifiedChildWidth, squarifiedChildLength, containerX + offsetX, containerY + offsetY)
+                    children: this.squarifyNodesIntoContainer(unsquarifiedChild.children, unsquarifiedChild.value, squarifiedChildWidth, squarifiedChildLength, containerX + offsetX, containerY + offsetY, containerPadding)
                 });
                 offsetY += squarifiedChildLength;
             }
@@ -156,21 +171,6 @@ export class TreeMapService {
         return squarifiedChildren;
 
     }
-
-    public scaleValuedCodeMapNodesToMapSize(node: ValuedCodeMapNode, mapWidth: number, mapLength: number) {
-        let scale = mapWidth * mapLength / node.value;
-        this.scaleValuedCodeMapNodes(node, scale);
-    }
-
-    public scaleValuedCodeMapNodes(node: ValuedCodeMapNode, scale: number) {
-        node.value = node.value*scale;
-        if (node.children) {
-            for (let i = 0; i < node.children.length; i++) {
-                this.scaleValuedCodeMapNodes(node.children[i], scale);
-            }
-        }
-    }
-
 
     public valueCodeMapNodes(node: CodeMapNode, key: string): ValuedCodeMapNode {
 
