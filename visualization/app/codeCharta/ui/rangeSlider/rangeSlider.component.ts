@@ -9,7 +9,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 
     /* @ngInject */
     constructor(private settingsService: SettingsService,
-                private dataService: DataService,) {
+                private dataService: DataService) {
         this.settingsService.subscribe(this);
         this.initSliderOptions();
     }
@@ -32,7 +32,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
         this.settingsService.settings.neutralColorRange.to = Math.max(1,
             this.settingsService.settings.neutralColorRange.to );
         this.settingsService.settings.neutralColorRange.to = Math.min (
-            this.treeMapService.getMaxMetricInAllRevisions(this.settingsService.settings.colorMetric),
+            this.dataService.getMaxMetricInAllRevisions(this.settingsService.settings.colorMetric),
             this.settingsService.settings.neutralColorRange.to );
         this.settingsService.settings.neutralColorRange.from = Math.min(
             this.settingsService.settings.neutralColorRange.to-1, this.settingsService.settings.neutralColorRange.from);
@@ -41,7 +41,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 
     private onFromSliderChange() {
         this.settingsService.settings.neutralColorRange.from = Math.min(
-            this.treeMapService.getMaxMetricInAllRevisions(this.settingsService.settings.colorMetric)-1,
+            this.dataService.getMaxMetricInAllRevisions(this.settingsService.settings.colorMetric)-1,
             this.settingsService.settings.neutralColorRange.from );
         this.settingsService.settings.neutralColorRange.to = Math.max(
             this.settingsService.settings.neutralColorRange.to, this.settingsService.settings.neutralColorRange.from+1);
