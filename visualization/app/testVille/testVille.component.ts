@@ -1,5 +1,5 @@
 import {CodeChartaController} from "../codeCharta/codeCharta.component";
-import "../codeCharta/codeCharta.component.scss";
+import "./testVille.component.scss";
 
 export const testVilleComponent = {
     selector: "testVilleComponent",
