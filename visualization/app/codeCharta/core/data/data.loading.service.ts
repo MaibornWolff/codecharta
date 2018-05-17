@@ -32,9 +32,9 @@ export class DataLoadingService {
 
                 ()=>{
                     const map: CodeMap = {
-                        fileName: fileName,
-                        projectName: fileContent.projectName,
-                        root: fileContent.nodes[0],
+                        fileName: fileName, 
+                        projectName: fileContent.projectName, 
+                        root: fileContent.nodes[0], 
                         dependencies: fileContent.dependencies || undefined
                     };
                     this.dataService.setMap(map, revision);

@@ -41,8 +41,6 @@ export class AggregateMapService {
             name: inputCodeMap.projectName
         };
 
-
-
         for(let property in inputCodeMap.root){
 
             if(property == "children")
