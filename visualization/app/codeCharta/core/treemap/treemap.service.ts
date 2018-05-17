@@ -107,26 +107,18 @@ export class TreeMapService {
             let xRowOffset = xContainerOffset;
             let yRowOffset = yContainerOffset;
 
+            let x0 = squarifiedNode.x0;
+            let y0 = squarifiedNode.y0;
+
+            let childWidth = squarifiedNode.width;
+            let childLength = squarifiedNode.length;
+
             for (let i = 0; i < sortedValuedCodeMapNodes.length; i++) {
 
-                let x0 = xRowOffset;
-                let y0 = yRowOffset;
-                let childWidth = 0;
-                let childLength = 0;
-
-                if (containerWidth + xContainerOffset - xRowOffset> containerLength + yContainerOffset - yRowOffset) {
-                    childLength = containerLength-yRowOffset;
-                    childWidth = sortedValuedCodeMapNodes[i].value / containerLength;
-                    xRowOffset += childWidth;
-                } else {
-                    childWidth = containerWidth-xRowOffset;
-                    childLength = sortedValuedCodeMapNodes[i].value / containerWidth;
-                    yRowOffset += childLength;
-                }
-
-                squarifiedChildren.push(
-                    this.squarify(sortedValuedCodeMapNodes[i], childWidth-xRowOffset, childLength-yRowOffset, x0, y0)
-                );
+                childLength = containerLength;
+                childWidth = sortedValuedCodeMapNodes[i].value / childLength;
+                squarifiedChildren.push(this.squarify(sortedValuedCodeMapNodes[i], childWidth, childLength, x0, y0));
+                x0 += childWidth;
 
                 //TODO step back when aspect ratio gets worse
 
