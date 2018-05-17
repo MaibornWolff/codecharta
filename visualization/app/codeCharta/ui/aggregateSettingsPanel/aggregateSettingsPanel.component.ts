@@ -32,10 +32,11 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
 
     onAggregateChange(){
 
-        let indexOfReferenceMap = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
-            if(!this.selectedMapIndices.includes(indexOfReferenceMap)){
-                this.selectedMapIndices.push(indexOfReferenceMap);
-            }
+        if(!this.selectedMapIndices) {
+            this.selectedMapIndices = [];
+            let indexOfReferenceMap = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
+            this.selectedMapIndices.push(indexOfReferenceMap);
+        }
 
         this.selectMapsToAggregate();
 
@@ -44,12 +45,12 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
 
         //******* following map reloads dont work ***********//
 
-        //this.settings.map = newMap;
-        //this.settingsService.applySettings();
+        this.settings.map = newMap;
+        this.settingsService.applySettings(this.settings);
 
         //this.data.renderMap = newMap;
         //this.settingsService.onDataChanged(this.data);
-        //this.$rootScope.$broadcast("data-changed", this.data);
+        //this.$rootScope.notify("data-changed", this.data);
 
         //this.settings.map = newMap;
         //this.settingsService.applySettings(this.settings);
@@ -58,9 +59,7 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
     onDataChanged(data: DataModel) {
         this.data = data;
 
-        console.log("before", this.revisions);
         this.revisions = data.revisions;
-        console.log("after", this.revisions);
 
         this.onAggregateChange();
     }

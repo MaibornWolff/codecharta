@@ -38,15 +38,20 @@ export class AggregateMapService {
     private convertMapToNode(inputCodeMap: CodeMap): CodeMapNode{
 
         let outputNode: CodeMapNode = {
-            name: inputCodeMap.projectName,
-            children: JSON.parse(JSON.stringify(inputCodeMap.root.children)),
-            attributes: inputCodeMap.root.attributes,
-            deltas: inputCodeMap.root.deltas,
-            link: inputCodeMap.root.link,
-            origin: inputCodeMap.root.origin,
-            visible: inputCodeMap.root.visible,
-            path: this.updatePath(inputCodeMap.projectName, inputCodeMap.root.path),
+            name: inputCodeMap.projectName
         };
+
+
+
+        for(let property in inputCodeMap.root){
+
+            if(property == "children")
+                outputNode[property] = JSON.parse(JSON.stringify(inputCodeMap.root.children));
+            else if(property == "path")
+                outputNode[property] = this.updatePath(inputCodeMap.projectName, inputCodeMap.root.path);
+            else
+                outputNode[property] =  inputCodeMap.root[property];
+        }
 
         this.updatePathOfAllChildren(inputCodeMap.projectName, outputNode.children);
 

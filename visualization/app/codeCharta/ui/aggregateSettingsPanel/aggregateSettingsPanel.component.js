@@ -25,6 +25,7 @@ export class AggregateSettingsPanelController {
     }
     onDataChanged(data) {
         this.data = data;
+        this.revisions = data.revisions;
         this.onAggregateChange();
     }
     onSettingsChanged(settings, event) {
