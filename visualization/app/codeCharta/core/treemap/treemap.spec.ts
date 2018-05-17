@@ -1,269 +1,77 @@
-import {NGMock} from "../../../../mocks/ng.mockhelper";
-import DoneCallback = jest.DoneCallback;
+import {TreeMapService, ValuedCodeMapNode} from "./treemap.service";
+import {CodeMapNode} from "../data/model/CodeMap";
+import {node} from "../../ui/codeMap/rendering/node";
+import {DataService} from "../data/data.service";
 
-import "./treemap.module";
-import {TreeMapService} from "./treemap.service";
+describe("tdd", ()=> {
 
-describe()
+    let treeMapService: TreeMapService;
+    let root: CodeMapNode;
+    let dataServiceMock: DataService;
 
-const createData = function(){
-    const data = {
-        "t": "root",
-        "color": "transparent",
-        "children": [
-            {
-                "t": "big leaf",
-                "stuff": 10,
-                "color": "red",
-            },
-            {
-                "t": "01",
-                "color": "transparent",
-                "children": [
-                    {
-                        "t": "small leaf",
-                        "color": "blue",
-                        "stuff": 5
-                    },
-                    {
-                        "t": "other small leaf",
-                        "color": "purple",
-                        "stuff": 5
-                    }
-                ]
-            }
-        ]
-    };
-    return data;
-};
-
-/**
- * @test {TreeMapService}
- */
-xdescribe("treemap.service", function() {
-
-    let treeMapService: TreeMapService, 
-        data;
-
-    //noinspection TypeScriptUnresolvedVariable
-    beforeEach(NGMock.mock.module("app.codeCharta.core.treemap"));
-    beforeEach(()=>{data = createData();});
-    //noinspection TypeScriptUnresolvedVariable
-    beforeEach(NGMock.mock.inject(function (_treeMapService_) {treeMapService = _treeMapService_;}));
-
-    /**
-     * @test {TreeMapService#constructor}
-     */
-    it("should retrieve instance", ()=>{
-        expect(treeMapService).not.toBe(undefined);
+    beforeEach(()=>{
+        dataServiceMock = {
+            getMaxMetricInAllRevisions: jest.fn()
+        };
+        treeMapService = new TreeMapService(dataServiceMock);
+        root = new CodeMapNode("root");
+        root.attributes = {
+            "mcc": 1,
+            "fun": 10,
+            "lin": 100,
+        };
+        root.path = "/";
     });
 
-    /**
-     * @test {TreeMapService#createTreemapNodes}
-     */
-    describe("#createTreemapNodes(data, w, l, p, areaKey, heightKey)", function() {
+    xit("only root node", ()=> {
+        dataServiceMock.getMaxMetricInAllRevisions.mockReturnValue(1000);
+        let node: node = treeMapService.createTreemapNodes(root, 100, 200, 0, "fun", "mcc");
+    });
 
-        it("TBD: filter invisible nodes", ()=> {
-            //TODO
-        });
+    xit("root node with two direct children", ()=> {
 
-        xit("TBD: mark leaf notes with isLeaf = true", ()=> {
-            var data = {
-                name:"root",
-                children: [
-                    {
-                        name:"leaf1",
-                        children: [],
-                        attributes: {"Statements": 30, "Functions": 100, "Average Complexity*": 100}
-                    },
-                    {
-                        name:"leaf2",
-                        children: [],
-                        attributes: {"Statements": 30, "Functions": 100, "Average Complexity*": 100}
-                    },
-                    {
-                        name:"parent",
-                        children: [
-                            {
-                                name:"leaf3",
-                                children: [],
-                                attributes: {"Statements": 30, "Functions": 100, "Average Complexity*": 100}
-                            }
-                        ]
-                    }
-                ]
-            };
+        dataServiceMock.getMaxMetricInAllRevisions.mockReturnValue(1000);
 
-            var result = treeMapService.createTreemapNodes(data, 100, 100, 1, "Functions", "Statements");
+        let firstChild = new CodeMapNode("firstChild");
+        firstChild.attributes = root.attributes;
 
-            //TODO correct types in d3
-            result.forEach((node:any)=>{
+        let secondChild = new CodeMapNode("secondChild");
+        secondChild.attributes = root.attributes;
 
-                switch(node.name) {
-                    case "parent":
-                    case "root":
-                        expect(node.isLeaf).toBeFalsy();
-                        break;
-                    default:
-                        expect(node.isLeaf).toBeTruthy();
-                }
+        root.children = [firstChild, secondChild];
 
-            });
+        let node: node = treeMapService.createTreemapNodes(root, 100, 200, 0, "fun", "mcc")
 
-        });
-
-        it("TBD: empty data", ()=> {
-            //TODO
-        });
-
-        it("TBD: test data", ()=> {
-            //TODO
-        });
+        console.log(node);
 
     });
 
-    /**
-     * @test {TreeMapService#getArea}
-     */
-    describe("#getArea(node, areaKey)", function() {
+    it("value root node with two direct children and some grand children", ()=> {
 
-        it("extract area by areaKey from node: node with no attributes", ()=> {
-            let node = {};
-            let area = treeMapService.getArea(node, "some key");
-            expect(area).toBe(0);
-        });
+        dataServiceMock.getMaxMetricInAllRevisions.mockReturnValue(1000);
 
-        it("node with empty attributes", ()=> {
-            let node = {attributes: {}};
-            let area = treeMapService.getArea(node, "some key");
-            expect(area).toBe(0);
-        });
+        let firstChild = new CodeMapNode("firstChild");
+        firstChild.attributes = root.attributes;
 
-        it("node with some/empty attributes and empty children array", ()=> {
-            let node = {attributes: {}, children:[]};
-            let area = treeMapService.getArea(node, "some key");
-            expect(area).toBe(0);
-        });
+        let firstGrandChild = new CodeMapNode("firstGrandChild");
+        firstGrandChild.attributes = root.attributes;
 
-    });
+        let secondGrandChild = new CodeMapNode("secondGrandChild");
+        secondGrandChild.attributes = root.attributes;
 
-    /**
-     * @test {TreeMapService#transformNode}
-     */
-    describe("#transformNode(node, heightKey, p)", function() {
+        firstChild.children = [firstGrandChild, secondGrandChild];
 
-        it("valid heightKey, is leaf node, p positive", ()=> {
+        let secondChild = new CodeMapNode("secondChild");
+        secondChild.attributes = root.attributes;
 
-            //TODO types
-            let node: any = {
-                data: {
-                    name: "some name",
-                    attributes: {"somekey":20},
-                    deltas: {"somedeltakey": -2},
-                    link: "www.some-page.something"
-                },
-                x1: 10,
-                x0: 5,
-                y1: 2,
-                y0: 5,
-                isLeaf: true,
-                depth: 2
-            };
+        root.children = [firstChild, secondChild];
 
-            let heightScale = 0.5;
+        let valued: ValuedCodeMapNode = treeMapService.valueCodeMapNodes(root, "fun");
 
-            treeMapService.transformNode(node, "somekey", heightScale, 2);
-
-            // expect measures
-            expect(node.width).toBe(5);
-            expect(node.height).toBe(10);
-            expect(node.length).toBe(3);
-
-            // expect new z values
-            expect(node.z0).toBe(4);
-            expect(node.z1).toBe(14);
-
-            // expect node.data properties to be pushed to node
-            expect(node.attributes["somekey"]).toBe(20);
-            expect(node.name).toBe("some name");
-            expect(node.deltas["somedeltakey"]).toBe(-2);
-            expect(node.link).toBe("www.some-page.something");
-
-            // expect node.data to be deleted
-            expect(node.data).toBe(undefined);
-            //TODO
-        });
-
-        it("TBD: valid heightKey, is leaf node, p negative", ()=> {
-
-            let node = {
-                data: {
-                    name: "some name",
-                    attributes: {"somekey":20},
-                    deltas: {"somedeltakey": -42},
-                    link: "www.some-page.something"
-                },
-                x1: 10,
-                x0: 5,
-                y1: 2,
-                y0: 5,
-                isLeaf: true,
-                depth: 2
-            };
-
-            treeMapService.transformNode(node, "someinvalidkey",1, 2);
-
-            //TODO what should really happen ?
-
-        });
-
-        it("valid heightKey, is not a leaf node, p positive", ()=> {
-
-            let node: any = {
-                data: {
-                    name: "some name",
-                    attributes: {"somekey":20},
-                    deltas: {"somedeltakey": -42},
-                    link: "www.some-page.something"
-                },
-                x1: 10,
-                x0: 5,
-                y1: 2,
-                y0: 5,
-                isLeaf: false,
-                depth: 2
-            };
-
-            treeMapService.transformNode(node, "somekey", 1, 2);
-
-            expect(node.height).toBe(2);
-
-        });
-
-        it("TBD: invalid heightKey, is leaf node, p positive", ()=> {
-
-            let node = {
-                data: {
-                    name: "some name",
-                    attributes: {"somekey":20},
-                    deltas: {"somedeltakey": -42},
-                    link: "www.some-page.something"
-                },
-                x1: 10,
-                x0: 5,
-                y1: 2,
-                y0: 5,
-                isLeaf: true,
-                depth: 2
-            };
-
-            treeMapService.transformNode(node, "someinvalidkey", 1, 2);
-
-            //TODO what should really happen ?
-
-        });
+        console.log(valued);
 
     });
+
 
 });
 
