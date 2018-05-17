@@ -55,18 +55,18 @@ export class TreeMapService {
         return resultingNodes;
     }
 
-    public addHeightDimension(squaredNode: SquarifiedValuedCodeMapNode, key: string, collected: node[] = [], depth = 0, height = 5): node {
+    public addHeightDimension(squaredNode: SquarifiedValuedCodeMapNode, key: string, collected: node[] = [], depth = 0, height = 2): node {
 
         let finalNode = {
             name : squaredNode.data.name,
             width : Math.max(squaredNode.width,1),
-            height : height,
+            height : squaredNode.data.attributes[key],
             length : Math.max(squaredNode.length,1),
             depth : depth,
             x0 : squaredNode.x0,
             z0 : depth*height,
             y0 : squaredNode.y0,
-            isLeaf : false,
+            isLeaf : true,
             attributes : squaredNode.data.attributes,
             deltas : squaredNode.data.deltas,
             parent : null,
@@ -76,7 +76,12 @@ export class TreeMapService {
             children : []
         };
 
-        if (squaredNode.children) {
+        if (squaredNode.children && squaredNode.children.length > 0) {
+
+            //is not a building
+            finalNode.isLeaf = false;
+            finalNode.height = height;
+
             let finalChildren: node[] = [];
             for (let i = 0; i < squaredNode.children.length; i++) {
                 finalChildren.push(this.addHeightDimension(squaredNode.children[i], key, collected, depth + 1));
