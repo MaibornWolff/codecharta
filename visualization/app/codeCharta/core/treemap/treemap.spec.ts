@@ -4,6 +4,8 @@ import DoneCallback = jest.DoneCallback;
 import "./treemap.module";
 import {TreeMapService} from "./treemap.service";
 
+describe()
+
 const createData = function(){
     const data = {
         "t": "root",
@@ -38,7 +40,7 @@ const createData = function(){
 /**
  * @test {TreeMapService}
  */
-describe("treemap.service", function() {
+xdescribe("treemap.service", function() {
 
     let treeMapService: TreeMapService, 
         data;

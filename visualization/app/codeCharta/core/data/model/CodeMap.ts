@@ -1,16 +1,16 @@
-export interface CodeMapNode {
-    name: string,
-    children?: CodeMapNode[]
-    attributes?: {
+export class CodeMapNode {
+    public name: string;
+    public children?: CodeMapNode[];
+    public attributes?: {
         [key: string]: number
-    },
-    deltas?: {
+    };
+    public deltas?: {
         [key: string]: number
-    },
-    link?: string,
-    origin?: string,
-    visible?: boolean,
-    path?:string
+    };
+    public link?: string;
+    public origin?: string;
+    public visible?: boolean;
+    public path?: string;
 }
 
 export interface CodeMap {

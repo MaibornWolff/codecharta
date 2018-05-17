@@ -163,4 +163,19 @@ export class DataService {
         this.notify();
     }
 
+    getMaxMetricInAllRevisions(metric: string) {
+        let maxValue = 0;
+
+        this.data.revisions.forEach((rev)=> {
+            let nodes = d3.hierarchy(rev.root).leaves();
+            nodes.forEach((node: any)=> {
+                if (node.data.attributes[metric] > maxValue) {
+                    maxValue = node.data.attributes[metric];
+                }
+            });
+        });
+
+        return maxValue;
+    }
+
 }

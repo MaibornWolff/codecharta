@@ -2,7 +2,6 @@ import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/dat
 import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import {IAngularEvent} from "angular";
 import "./rangeSlider.component.scss";
-import {TreeMapService} from "../../core/treemap/treemap.service";
 
 export class RangeSliderController implements SettingsServiceSubscriber {
 
@@ -10,7 +9,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 
     /* @ngInject */
     constructor(private settingsService: SettingsService,
-                private treeMapService: TreeMapService,) {
+                private dataService: DataService,) {
         this.settingsService.subscribe(this);
         this.initSliderOptions();
     }
@@ -21,7 +20,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 
     initSliderOptions(settings: Settings = this.settingsService.settings) {
         this.sliderOptions = {
-            ceil: this.treeMapService.getMaxMetricInAllRevisions(settings.colorMetric),
+            ceil: this.dataService.getMaxMetricInAllRevisions(settings.colorMetric),
             onChange: this.onSliderChange.bind(this),
             pushRange: true,
             onToChange: this.onToSliderChange.bind(this),
