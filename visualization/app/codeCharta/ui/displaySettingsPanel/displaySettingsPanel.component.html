@@ -32,9 +32,15 @@
 </md-input-container>
 
 <md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.invertHeight" ng-change="$ctrl.settingsService.applySettings()">
+        Invert Height
+    </md-checkbox>
+</md-input-container>
+
+<md-input-container class="md-block">
     <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.minimizeDetailPanel" ng-change="$ctrl.settingsService.applySettings()">
         Minimize Detail Panel
     </md-checkbox>
 </md-input-container>
 
-<reset-settings-button-component settings-names="amountOfTopLabels, scaling.y, margin, showDependencies, minimizeDetailPanel"></reset-settings-button-component>
+<reset-settings-button-component settings-names="amountOfTopLabels, scaling.y, margin, showDependencies, minimizeDetailPanel, invertHeight"></reset-settings-button-component>
