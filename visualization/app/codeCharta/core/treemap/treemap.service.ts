@@ -48,9 +48,10 @@ export class TreeMapService {
                               heightKey: string
     ): node[] {
         let valued: ValuedCodeMapNode = this.valueCodeMapNodes(data, areaKey);
+        this.scaleValuedCodeMapNodesToMapSize(valued, w, l);
         let squarified: SquarifiedValuedCodeMapNode = this.squarify(valued, w, l);
         let resultingNodes: node[] = [];
-        this.addHeightDimension(squarified, heightKey, resultingNodes);
+        console.log(this.addHeightDimension(squarified, heightKey, resultingNodes));
         return resultingNodes;
     }
 
@@ -58,9 +59,9 @@ export class TreeMapService {
 
         let finalNode = {
             name : squaredNode.data.name,
-            width : squaredNode.width,
+            width : Math.max(squaredNode.width,1),
             height : height,
-            length : squaredNode.length,
+            length : Math.max(squaredNode.length,1),
             depth : depth,
             x0 : squaredNode.x0,
             z0 : depth*height,
@@ -89,6 +90,7 @@ export class TreeMapService {
 
     public squarify(node: ValuedCodeMapNode, containerWidth: number, containerLength: number, xContainerOffset: number = 0, yContainerOffset = 0): SquarifiedValuedCodeMapNode {
 
+        console.log(containerWidth, containerLength);
         let squarifiedNode: SquarifiedValuedCodeMapNode = {
             value: node.value,
             data: node.data,
@@ -100,7 +102,7 @@ export class TreeMapService {
 
         if (node.children) {
             let squarifiedChildren: SquarifiedValuedCodeMapNode[] = [];
-            let sortedValuedCodeMapNodes = node.children.sort((a, b) => a.value - b.value); //TODO - or + ?
+            let sortedValuedCodeMapNodes = node.children.sort((a, b) => b.value - a.value);
 
             let xRowOffset = xContainerOffset;
             let yRowOffset = yContainerOffset;
@@ -113,25 +115,20 @@ export class TreeMapService {
                 let childLength = 0;
 
                 if (containerWidth + xContainerOffset - xRowOffset> containerLength + yContainerOffset - yRowOffset) {
-                    childLength = containerLength;
+                    childLength = containerLength-yRowOffset;
                     childWidth = sortedValuedCodeMapNodes[i].value / containerLength;
                     xRowOffset += childWidth;
                 } else {
-                    childWidth = containerWidth;
+                    childWidth = containerWidth-xRowOffset;
                     childLength = sortedValuedCodeMapNodes[i].value / containerWidth;
                     yRowOffset += childLength;
                 }
 
-                squarifiedChildren.push({
-                    value: sortedValuedCodeMapNodes[i].value,
-                    data: sortedValuedCodeMapNodes[i].data,
-                    x0: x0,
-                    y0: y0,
-                    width: childWidth,
-                    length: childLength,
-                });
+                squarifiedChildren.push(
+                    this.squarify(sortedValuedCodeMapNodes[i], childWidth-xRowOffset, childLength-yRowOffset, x0, y0)
+                );
 
-                //TODO recursion, step back when aspect ratio gets worse
+                //TODO step back when aspect ratio gets worse
 
             }
             squarifiedNode.children = squarifiedChildren;
@@ -140,6 +137,21 @@ export class TreeMapService {
         return squarifiedNode;
 
     }
+
+    public scaleValuedCodeMapNodesToMapSize(node: ValuedCodeMapNode, mapWidth: number, mapLength: number) {
+        let scale = mapWidth * mapLength / node.value;
+        this.scaleValuedCodeMapNodes(node, scale);
+    }
+
+    public scaleValuedCodeMapNodes(node: ValuedCodeMapNode, scale: number) {
+        node.value = node.value*scale;
+        if (node.children) {
+            for (let i = 0; i < node.children.length; i++) {
+                this.scaleValuedCodeMapNodes(node.children[i], scale);
+            }
+        }
+    }
+
 
     public valueCodeMapNodes(node: CodeMapNode, key: string): ValuedCodeMapNode {
 
