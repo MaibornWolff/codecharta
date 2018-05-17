@@ -9,12 +9,16 @@ settings-panel-component {
     }
 
     md-input-container {
-        margin: 18px 0 0 0;
+        margin: 5px 0 0 0;
     }
 
     /* enlarge the input field next to a slider */
     md-slider-container md-input-container input[type="number"] {
         padding-left: 0;
+    }
+
+    md-checkbox {
+        margin-bottom: 5px;
     }
 
     .settings-panel-btn {
