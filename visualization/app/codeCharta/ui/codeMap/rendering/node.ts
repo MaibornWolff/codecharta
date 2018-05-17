@@ -19,4 +19,6 @@ export interface node {
     heightDelta : number;
     visible : boolean;
     path : string;
+    origin : string;
+    link : string;
 }

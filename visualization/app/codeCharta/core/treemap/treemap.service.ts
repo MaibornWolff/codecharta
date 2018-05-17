@@ -44,51 +44,55 @@ export class TreeMapService {
     constructor(private dataService: DataService) {
     }
 
-    public createTreemapNodes(data: CodeMapNode,
-                              w: number,
-                              l: number,
-                              areaKey: string,
-                              heightKey: string
-    ): node[] {
+    public createTreemapNodesSquared(data: CodeMapNode, mapSize: number, areaKey: string, heightKey: string): node[] {
+        return this.createTreemapNodes(data, mapSize, mapSize, mapSize, areaKey, heightKey);
+    }
+
+    public createTreemapNodes(data: CodeMapNode, w: number, l: number, h: number, areaKey: string, heightKey: string): node[] {
         let valued: ValuedCodeMapNode = this.valueCodeMapNodes(data, areaKey);
-        //this.scaleValuedCodeMapNodesToMapSize(valued, w, l);
         let squarified: SquarifiedValuedCodeMapNode = this.squarifyFromRoot(valued, w, l);
         let resultingNodes: node[] = [];
-        this.addHeightDimension(squarified, heightKey, resultingNodes);
+        this.addMapScaledHeightDimensionAndFinalizeFromRoot(squarified, heightKey, h, resultingNodes);
         return resultingNodes;
     }
 
-    //TODO scale height to map, min values
-    public addHeightDimension(squaredNode: SquarifiedValuedCodeMapNode, key: string, collected: node[] = [], depth = 0, height = 2): node {
+    public addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, key: string, targetMaxHeight: number, collected: node[] = [], folderHeight = 2): node {
+        return this.addHeightDimensionAndFinalize(squaredNode, key, targetMaxHeight / this.dataService.getMaxMetricInAllRevisions(key), collected, 0,  null, folderHeight);
+    }
 
-        let finalNode = {
+    public addHeightDimensionAndFinalize(squaredNode: SquarifiedValuedCodeMapNode, key: string, heightScale: number, collected: node[], depth, parent: node, folderHeight): node {
+
+        let heightValue = squaredNode.data.attributes[key];
+        if(heightValue === undefined || heightValue === null) {
+            heightValue = 0;
+        }
+
+        let finalNode: node = {
             name : squaredNode.data.name,
-            width : Math.max(squaredNode.width,1),
-            height : squaredNode.data.attributes[key],
-            length : Math.max(squaredNode.length,1),
+            width : squaredNode.width,
+            height : Math.abs(squaredNode.children && squaredNode.children.length <= 0 ? heightScale * heightValue : folderHeight),
+            length : squaredNode.length,
             depth : depth,
             x0 : squaredNode.x0,
-            z0 : depth*height,
+            z0 : depth*folderHeight,
             y0 : squaredNode.y0,
-            isLeaf : true,
+            isLeaf : squaredNode.children && squaredNode.children.length <= 0,
             attributes : squaredNode.data.attributes,
             deltas : squaredNode.data.deltas,
-            parent : null,
-            heightDelta : 0,
-            visible : true,
-            path : "some path",
+            parent : parent,
+            heightDelta : Math.abs(squaredNode.data.deltas && squaredNode.data.deltas[key] ? heightScale * squaredNode.data.deltas[key] : 0),
+            visible : squaredNode.data.visible,
+            path : squaredNode.data.path,
+            origin : squaredNode.data.origin,
+            link : squaredNode.data.link,
             children : []
         };
 
         if (squaredNode.children && squaredNode.children.length > 0) {
 
-            //is not a building
-            finalNode.isLeaf = false;
-            finalNode.height = height;
-
             let finalChildren: node[] = [];
             for (let i = 0; i < squaredNode.children.length; i++) {
-                finalChildren.push(this.addHeightDimension(squaredNode.children[i], key, collected, depth + 1));
+                finalChildren.push(this.addHeightDimensionAndFinalize(squaredNode.children[i], key, heightScale, collected, depth + 1, finalNode, folderHeight));
             }
             finalNode.children = finalChildren;
         }
@@ -106,7 +110,7 @@ export class TreeMapService {
             y0: 0,
             width: containerWidth,
             length: containerLength,
-            children: this.squarifyNodesIntoContainer(root.children, root.value, containerWidth, containerLength, 0, 0, 10)
+            children: this.squarifyNodesIntoContainer(root.children, root.value, containerWidth, containerLength, 0, 0, 0)
         };
 
     }
@@ -136,33 +140,17 @@ export class TreeMapService {
 
         for (let i = 0; i < sortedValuedCodeMapNodes.length; i++) {
 
+            let unsquarifiedChild = sortedValuedCodeMapNodes[i];
+
             if(containerWidth - offsetX > containerLength - offsetY) {
-                let unsquarifiedChild = sortedValuedCodeMapNodes[i];
                 let squarifiedChildLength = containerLength - offsetY;
                 let squarifiedChildWidth = unsquarifiedChild.value * valuePixelScale / squarifiedChildLength;
-                squarifiedChildren.push({
-                    value: unsquarifiedChild.value,
-                    data: unsquarifiedChild.data,
-                    x0: containerX + offsetX,
-                    y0: containerY + offsetY,
-                    width: squarifiedChildWidth,
-                    length: squarifiedChildLength,
-                    children: this.squarifyNodesIntoContainer(unsquarifiedChild.children, unsquarifiedChild.value, squarifiedChildWidth, squarifiedChildLength, containerX + offsetX, containerY + offsetY, containerPadding)
-                });
+                this.squarifyChildrenAndPushToArray(squarifiedChildren, unsquarifiedChild, containerX, offsetX, containerY, offsetY, squarifiedChildWidth, squarifiedChildLength, containerPadding);
                 offsetX += squarifiedChildWidth;
             } else {
-                let unsquarifiedChild = sortedValuedCodeMapNodes[i];
                 let squarifiedChildWidth = containerWidth - offsetX;
                 let squarifiedChildLength = unsquarifiedChild.value * valuePixelScale / squarifiedChildWidth;
-                squarifiedChildren.push({
-                    value: unsquarifiedChild.value,
-                    data: unsquarifiedChild.data,
-                    x0: containerX + offsetX,
-                    y0: containerY + offsetY,
-                    width: squarifiedChildWidth,
-                    length: squarifiedChildLength,
-                    children: this.squarifyNodesIntoContainer(unsquarifiedChild.children, unsquarifiedChild.value, squarifiedChildWidth, squarifiedChildLength, containerX + offsetX, containerY + offsetY, containerPadding)
-                });
+                this.squarifyChildrenAndPushToArray(squarifiedChildren, unsquarifiedChild, containerX, offsetX, containerY, offsetY, squarifiedChildWidth, squarifiedChildLength, containerPadding);
                 offsetY += squarifiedChildLength;
             }
 
@@ -170,6 +158,18 @@ export class TreeMapService {
 
         return squarifiedChildren;
 
+    }
+
+    private squarifyChildrenAndPushToArray(squarifiedChildren: SquarifiedValuedCodeMapNode[], unsquarifiedChild: ValuedCodeMapNode, containerX: number, offsetX: number, containerY: number, offsetY: number, squarifiedChildWidth: number, squarifiedChildLength: number, containerPadding: number) {
+        squarifiedChildren.push({
+            value: unsquarifiedChild.value,
+            data: unsquarifiedChild.data,
+            x0: containerX + offsetX,
+            y0: containerY + offsetY,
+            width: squarifiedChildWidth,
+            length: squarifiedChildLength,
+            children: this.squarifyNodesIntoContainer(unsquarifiedChild.children, unsquarifiedChild.value, squarifiedChildWidth, squarifiedChildLength, containerX + offsetX, containerY + offsetY, containerPadding)
+        });
     }
 
     public valueCodeMapNodes(node: CodeMapNode, key: string): ValuedCodeMapNode {
@@ -201,34 +201,6 @@ export class TreeMapService {
         }
         return value;
     }
-
-    //private transformNode(node, heightKey, heightScale, folderHeight) {
-    //    let heightValue = node.data.attributes[heightKey];
-    //    if(heightValue === undefined || heightValue === null) {
-    //        heightValue = 0;
-    //    }
-    //    node.width = Math.abs(node.x1 - node.x0);
-    //    node.length = Math.abs(node.y1 - node.y0);
-    //    node.height = Math.abs(node.isLeaf ? heightScale * heightValue : folderHeight);
-    //    node.z0 = folderHeight * node.depth;
-    //    node.z1 = node.z0 + node.height;
-    //    node.attributes = node.data.attributes;
-    //    node.name = node.data.name;
-    //    if (node.data.deltas) {
-    //        node.deltas = node.data.deltas;
-    //        if(node.deltas[heightKey]) {
-    //            node.heightDelta = heightScale * node.data.deltas[heightKey];
-    //        }
-    //    }
-    //    node.link = node.data.link;
-    //    node.origin = node.data.origin;
-    //    node.visible = node.data.visible;
-    //    node.path = node.data.path;
-//
-    //    node.data = {};
-    //    delete node.data;
-//
-    //}
 
 }
 
