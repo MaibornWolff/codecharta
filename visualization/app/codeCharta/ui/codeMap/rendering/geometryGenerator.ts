@@ -27,13 +27,16 @@ export class geometryGenerator {
 
     private static MINIMAL_BUILDING_HEIGHT = 1.0;
 
+    private floorGradient: number[];
+
     constructor() {}
 
     public build(nodes : node[], material : THREE.Material, settings : renderSettings) : buildResult
     {
         let data : intermediateVertexData = new intermediateVertexData();
         let desc : codeMapGeometricDescription = new codeMapGeometricDescription(settings.mapSize);
-
+        this.floorGradient = renderingUtil.gradient("#666666", "#ffffff", this.getMaxNodeDepth(nodes)); //TODO move to settings
+        console.log(this.floorGradient);
         for (let i:number = 0; i < nodes.length; ++i)
         {
             let n : node = nodes[i];
@@ -52,6 +55,14 @@ export class geometryGenerator {
             mesh : this.buildMeshFromIntermediateVertexData(data, material),
             desc : desc
         };
+    }
+
+    private getMaxNodeDepth(nodes: node[]): number {
+        let max = 0;
+        nodes.forEach((node)=>{
+           max = Math.max(node.depth, max);
+        });
+        return max;
     }
 
     private mapNodeToLocalBox(n : node) : boxMeasures
@@ -75,10 +86,7 @@ export class geometryGenerator {
 
     private addFloor(data : intermediateVertexData, n : node, idx : number, desc : codeMapGeometricDescription, settings: renderSettings)
     {
-        let color : number = n.depth % 2 == 0 ? MapColors.even : MapColors.odd;
-        if(settings.fanoutLevels.includes(n.depth)){
-            color = MapColors.fanout;
-        }
+        let color: number = this.floorGradient[n.depth];
         let measures : boxMeasures = this.mapNodeToLocalBox(n);
 
         desc.add(
