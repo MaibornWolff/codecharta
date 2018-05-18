@@ -1,6 +1,17 @@
 import * as THREE from "three";
+import {node} from "./node";
 
 export class renderingUtil {
+
+
+    static getMaxNodeDepth(nodes: node[]): number {
+        let max = 0;
+        nodes.forEach((node)=>{
+            max = Math.max(node.depth, max);
+        });
+        return max;
+    }
+
     static colorToVec3(color : number) : THREE.Vector3
     {
         return new THREE.Vector3(

@@ -1,7 +1,14 @@
+import {renderingUtil} from "./renderingUtil";
+import {node} from "./node";
+
 export interface colorRange {
     from : number;
     to : number;
     flipped : boolean;
+}
+
+export function getFloorGradient(nodes: node[]): number[] {
+    return renderingUtil.gradient("#666666", "#ffffff", renderingUtil.getMaxNodeDepth(nodes));
 }
 
 export enum MapColors {

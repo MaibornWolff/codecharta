@@ -2,7 +2,7 @@ import * as THREE from "three";
 import {node} from "./node";
 import {codeMapGeometricDescription} from "./codeMapGeometricDescription";
 import {codeMapBuilding} from "./codeMapBuilding";
-import {MapColors} from "./renderSettings";
+import {getFloorGradient, MapColors} from "./renderSettings";
 import {colorRange} from "./renderSettings";
 import {renderSettings} from "./renderSettings";
 import {renderingUtil} from "./renderingUtil";
@@ -35,8 +35,9 @@ export class geometryGenerator {
     {
         let data : intermediateVertexData = new intermediateVertexData();
         let desc : codeMapGeometricDescription = new codeMapGeometricDescription(settings.mapSize);
-        this.floorGradient = renderingUtil.gradient("#666666", "#ffffff", this.getMaxNodeDepth(nodes)); //TODO move to settings
-        console.log(this.floorGradient);
+
+        this.floorGradient = getFloorGradient(nodes);
+
         for (let i:number = 0; i < nodes.length; ++i)
         {
             let n : node = nodes[i];
@@ -55,14 +56,6 @@ export class geometryGenerator {
             mesh : this.buildMeshFromIntermediateVertexData(data, material),
             desc : desc
         };
-    }
-
-    private getMaxNodeDepth(nodes: node[]): number {
-        let max = 0;
-        nodes.forEach((node)=>{
-           max = Math.max(node.depth, max);
-        });
-        return max;
     }
 
     private mapNodeToLocalBox(n : node) : boxMeasures
