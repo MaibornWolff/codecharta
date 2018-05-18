@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 - Layout switcher #141
 - Added CrococosmoImporter to Analysis
+- Added type, dirs, name to CSVExporter
 
 ### Changed
 
