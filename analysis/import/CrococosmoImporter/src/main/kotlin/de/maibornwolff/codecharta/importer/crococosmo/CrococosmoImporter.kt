@@ -32,7 +32,6 @@ package de.maibornwolff.codecharta.importer.crococosmo
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
 import java.io.File
-import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -51,24 +50,26 @@ class CrococosmoImporter : Callable<Void> {
     @CommandLine.Option(names = ["-p", "--projectName"], description = ["project name"])
     private var projectName = "CrococosmoImporter"
 
-    @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
-    private var outputFile: File? = null
+    @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File or prefix for File (or empty for stdout)"])
+    private var outputFile: String? = null
 
     override fun call(): Void? {
         val graph = CrococosmoDeserializer().deserializeCrococosmoXML(file!!.inputStream())
-        val project = CrococosmoConverter().convertToProject(projectName, graph)
-        ProjectSerializer.serializeProject(project, writer())
+        val projects = CrococosmoConverter().convertToProjectsMap(projectName, graph)
+        projects.forEach {
+            val suffix = if (projects.isNotEmpty())  "_" + it.key else ""
+            ProjectSerializer.serializeProject(it.value, writer(suffix))
+        }
 
         return null
     }
 
 
-    private fun writer(): Writer {
-        return when (outputFile) {
-            null -> System.out.bufferedWriter()
-            else -> outputFile!!.bufferedWriter()
-        }
-    }
+    private fun writer(name: String = "") =
+            when {
+                outputFile.isNullOrEmpty() -> System.out.bufferedWriter()
+                else -> File(outputFile + name).bufferedWriter()
+            }
 
     companion object {
 

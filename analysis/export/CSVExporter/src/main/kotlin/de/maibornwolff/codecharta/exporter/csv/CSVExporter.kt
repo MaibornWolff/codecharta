@@ -56,6 +56,9 @@ class CSVExporter : Callable<Void> {
     @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
     private var outputFile = ""
 
+    @CommandLine.Option(names = ["--depthOfHierarchy"], description = ["depth of the hierarchy"])
+    private var maxHierarchy: Int = 10
+
     private fun writer(): Writer {
         return if (outputFile.isEmpty()) {
             OutputStreamWriter(System.out)
@@ -66,9 +69,12 @@ class CSVExporter : Callable<Void> {
 
     @Throws(IOException::class)
     override fun call(): Void? {
+        if (maxHierarchy < 0){
+            throw IllegalArgumentException("depthOfHierarchy must not be negative")
+        }
+
         val projects = sources.map { ProjectDeserializer.deserializeProject(it.reader()) }
 
-        // write to writer
         projects.forEach { writeUsingWriter(it, writer()) }
 
         return null
@@ -80,7 +86,11 @@ class CSVExporter : Callable<Void> {
 
         val attributeNames: List<String> = project.rootNode.nodes.flatMap { it.value.attributes.keys }.distinct()
 
-        writer.writeHeaders(listOf("path").plus(attributeNames))
+        val header = listOf("path", "name", "type")
+                .plus(attributeNames)
+                .plus(List(maxHierarchy, { "dir$it" }))
+
+        writer.writeHeaders(header)
 
         project.rootNode.nodes.forEach({ path: Path, node: Node -> writer.writeRow(row(path, node, attributeNames)) })
 
@@ -90,8 +100,15 @@ class CSVExporter : Callable<Void> {
     private fun row(path: Path, node: Node, attributeNames: List<String>): List<String> {
         val values: List<String> = node.toAttributeList(attributeNames)
 
-        return if (values.distinct().none { !it.isBlank() }) listOf()
-        else listOf(path.toPath).plus(values)
+        val rowWithoutDirs = listOf(path.toPath, node.name, node.type.toString())
+                .plus(values)
+        val dirs = path.edgesList.dropLast(1)
+
+        return when {
+            values.distinct().none { !it.isBlank() } -> listOf()
+            dirs.size < maxHierarchy -> rowWithoutDirs.plus(dirs).plus(List(maxHierarchy - dirs.size, { "" }))
+            else -> rowWithoutDirs.plus(dirs.subList(0,maxHierarchy))
+        }
     }
 
     companion object {
