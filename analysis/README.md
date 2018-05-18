@@ -17,7 +17,7 @@ Components that import data from an external source, e.g. SonarQube, and generat
 | Crococosmo    | [CrococosmoImporter](import/CrococosmoImporter/README.md)             |
 | generic CSV   | [CSVImporter](import/CSVImporter/README.md)             |
 | SourceMonitor CSV | [CSVImporter](import/CSVImporter/README.md)         |
-| Understand CSV | [CSVImporter](import/CSVImporter/README.md)         |
+| SCITools' Understand CSV | [CSVImporter](import/CSVImporter/README.md)         |
 | SCM log       | [SCMLogParser](import/SCMLogParser/README.md)            |
 | SonarQube     | [SonarImporter](import/SonarImporter/README.md)         |
 

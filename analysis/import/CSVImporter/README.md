@@ -18,7 +18,7 @@ Generates visualisation data from [SourceMonitor](http://www.campwoodsw.com/sour
 
 # UnderstandImporter
 
-Generates visualisation data from [SciTools (TM) Understand](https://scitools.com/features/) through its CSV export functionality.
+Generates visualisation data from [SciTools Understand](https://scitools.com/features/) through its CSV export functionality.
 
 ## Usage
 
@@ -40,7 +40,7 @@ If SourceMonitor v3.5 is installed in 'C:\Program Files (x86)\SourceMonitor' you
 
 If SourceMonitor is installed in a different directory the script must be changed accordingly.
 
-### CSV Import for SciTools (TM) Understand
+### CSV Import for SciTools Understand
 
 If you have analized your project with Understand and exported the metric data to a csv-file, you may call the command
 
