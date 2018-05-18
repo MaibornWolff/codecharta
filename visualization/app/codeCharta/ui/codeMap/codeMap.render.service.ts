@@ -92,7 +92,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             renderDeltas: s.deltas,
             colorRange: s.neutralColorRange,
             mapSize: mapSize,
-            deltaColorFlipped: s.deltaColorFlipped
+            deltaColorFlipped: s.deltaColorFlipped,
+            fanoutLevels: [0,1]
         };
 
         this.labelManager = new LabelManager(this.threeSceneService.labels);

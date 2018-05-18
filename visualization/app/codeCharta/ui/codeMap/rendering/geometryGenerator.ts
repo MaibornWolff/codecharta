@@ -40,7 +40,7 @@ export class geometryGenerator {
 
             if (!n.isLeaf)
             {
-                this.addFloor(data, n, i, desc);
+                this.addFloor(data, n, i, desc, settings);
             }
             else
             {
@@ -73,9 +73,12 @@ export class geometryGenerator {
         return Math.max(x, geometryGenerator.MINIMAL_BUILDING_HEIGHT);
     }
 
-    private addFloor(data : intermediateVertexData, n : node, idx : number, desc : codeMapGeometricDescription)
+    private addFloor(data : intermediateVertexData, n : node, idx : number, desc : codeMapGeometricDescription, settings: renderSettings)
     {
         let color : number = n.depth % 2 == 0 ? MapColors.even : MapColors.odd;
+        if(settings.fanoutLevels.includes(n.depth)){
+            color = MapColors.fanout;
+        }
         let measures : boxMeasures = this.mapNodeToLocalBox(n);
 
         desc.add(

@@ -109,9 +109,9 @@ export class TreeMapService {
             data: root.data,
             x0: 0,
             y0: 0,
-            width: containerWidth,
-            length: containerLength,
-            children: this.squarifyNodesIntoContainer(root.children, containerWidth, containerLength, 0, 0, 0)
+            width: containerWidth*10,
+            length: containerLength*10,
+            children: this.squarifyNodesIntoContainer(root.children, containerWidth*10, containerLength*10, 0, 0, 10)
         };
 
     }
