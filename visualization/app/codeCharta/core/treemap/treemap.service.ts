@@ -45,6 +45,7 @@ export class TreeMapService {
     constructor(private dataService: DataService) {
     }
 
+    //TODO bundle all the settings in a treemapsettingsclass
     public createTreemapNodesSquared(data: CodeMapNode, mapSize: number, areaKey: string, heightKey: string, margin: number, fanoutDepths: number[], fanoutScale: number): node {
         return this.createTreemapNodes(data, mapSize, mapSize, mapSize, areaKey, heightKey, margin, fanoutDepths, fanoutScale);
     }

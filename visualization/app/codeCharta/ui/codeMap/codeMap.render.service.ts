@@ -91,8 +91,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         return nodes;
     }
 
-    updateMapGeometry(s) {
-        let nodes: node[] = this.collectNodesToArray(this.treeMapService.createTreemapNodesSquared(s.map.root, mapSize, s.areaMetric, s.heightMetric));
+    updateMapGeometry(s: Settings) {
+        let nodes: node[] = this.collectNodesToArray(this.treeMapService.createTreemapNodesSquared(s.map.root, mapSize, s.areaMetric, s.heightMetric, s.margin, [1,3], 2));
         let filtered = nodes.filter(node => node.visible && node.length > 0 && node.width > 0);
         this.currentSortedNodes = filtered.sort((a, b) => {
             return b.height - a.height;
@@ -103,8 +103,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             renderDeltas: s.deltas,
             colorRange: s.neutralColorRange,
             mapSize: mapSize,
-            deltaColorFlipped: s.deltaColorFlipped,
-            fanoutLevels: []
+            deltaColorFlipped: s.deltaColorFlipped
         };
 
         this.labelManager = new LabelManager(this.threeSceneService.labels);
