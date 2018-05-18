@@ -11,6 +11,7 @@ import {
     CodeMapBuildingTransition, CodeMapMouseEventService,
     CodeMapMouseEventServiceSubscriber
 } from "./codeMap.mouseEvent.service";
+import {TreeMapSettings} from "../../core/treemap/treemap.service";
 
 const mapSize = 500.0;
 
@@ -92,7 +93,20 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     }
 
     updateMapGeometry(s: Settings) {
-        let nodes: node[] = this.collectNodesToArray(this.treeMapService.createTreemapNodesSquared(s.map.root, mapSize, s.areaMetric, s.heightMetric, s.margin, [1,3], 2));
+
+        const treeMapSettings: TreeMapSettings = {
+            size: mapSize,
+            areaKey: s.areaMetric,
+            heightKey: s.heightMetric,
+            margin: s.margin,
+            fanoutDepths: [1,2],
+            fanoutScale: 2
+        };
+
+        let nodes: node[] = this.collectNodesToArray(
+            this.treeMapService.createTreemapNodes(s.map.root, treeMapSettings)
+        );
+
         let filtered = nodes.filter(node => node.visible && node.length > 0 && node.width > 0);
         this.currentSortedNodes = filtered.sort((a, b) => {
             return b.height - a.height;

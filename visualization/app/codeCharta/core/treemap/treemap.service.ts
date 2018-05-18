@@ -2,6 +2,7 @@ import {CodeMapNode} from "../data/model/CodeMap";
 import {node} from "../../ui/codeMap/rendering/node";
 import {DataService} from "../data/data.service";
 import squarify from "squarify";
+import {TreeMapUtils} from "./treemap.util";
 
 export interface ValuedCodeMapNode {
     data: CodeMapNode;
@@ -19,111 +20,84 @@ export interface SquarifiedValuedCodeMapNode {
     length: number;
 }
 
-/**
- *  Y
- * y1       *-------*
- *  |       |       |
- *  |       l       |
- *  |       e       |
- *  |       n       |
- *  |       g       |
- *  |       t       |
- *  |       h       |
- *  |       |       |
- * y0       *-width-*
- *  |
- *  0 - - - x0- - - x1 - - X
- *
- *  This figure shows the relation between x,y,width and length. These dimensions are only used for the treemapping.
- *  The map's height dimension is called z and is added after treemapping the floor. Z is orthogonal to the XY plane
- */
+export interface TreeMapSettings {
+    size: number;
+    areaKey: string;
+    heightKey: string;
+    margin: number;
+    fanoutDepths: number[];
+    fanoutScale: number
+}
+
 export class TreeMapService {
 
-    public static SELECTOR = "treeMapService";
+    private static HEIGHT_DIVISOR = 3;
+    private static FOLDER_HEIGHT = 1;
+    private static MIN_BUILDING_HEIGHT = 1;
+    private static START_X = 0;
+    private static START_Y = 0;
+    private static HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND = 0;
 
     /* @ngInject */
-    constructor(private dataService: DataService) {
-    }
+    constructor(private dataService: DataService) {}
 
-    //TODO bundle all the settings in a treemapsettingsclass
-    public createTreemapNodesSquared(data: CodeMapNode, mapSize: number, areaKey: string, heightKey: string, margin: number, fanoutDepths: number[], fanoutScale: number): node {
-        return this.createTreemapNodes(data, mapSize, mapSize, mapSize, areaKey, heightKey, margin, fanoutDepths, fanoutScale);
-    }
-
-    public createTreemapNodes(data: CodeMapNode, w: number, l: number, h: number, areaKey: string, heightKey: string, margin: number, fanoutDepths: number[], fanoutScale: number): node {
-        let totalMarginPerSide = this.predictTotalMarginPerSide(data, margin, fanoutDepths, fanoutScale);
-        let valued: ValuedCodeMapNode = this.valueCodeMapNodes(data, areaKey);
-        let squarified: SquarifiedValuedCodeMapNode = this.squarifyFromRoot(valued, w + totalMarginPerSide, l + totalMarginPerSide, margin, fanoutDepths, fanoutScale);
-        let heighted = this.addMapScaledHeightDimensionAndFinalizeFromRoot(squarified, heightKey, (h + totalMarginPerSide)/3);
+    public createTreemapNodes(data: CodeMapNode, s: TreeMapSettings): node {
+        const totalMarginPerSide = this.predictTotalMarginPerSide(data, s);
+        const valued: ValuedCodeMapNode = this.valueCodeMapNodes(data, s.areaKey);
+        const squarified: SquarifiedValuedCodeMapNode = this.squarifyFromRoot(valued, totalMarginPerSide, s);
+        const heighted = this.addMapScaledHeightDimensionAndFinalizeFromRoot(squarified, s);
         return heighted;
     }
 
-    public addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, key: string, targetMaxHeight: number, folderHeight = 1): node {
-        return this.addHeightDimensionAndFinalize(squaredNode, key, targetMaxHeight / this.dataService.getMaxMetricInAllRevisions(key), 0, null, folderHeight);
+    private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): node {
+        const heightScale = s.size / TreeMapService.HEIGHT_DIVISOR / this.dataService.getMaxMetricInAllRevisions(s.heightKey);
+        return this.addHeightDimensionAndFinalize(squaredNode, s.heightKey, heightScale);
     }
 
-    public addHeightDimensionAndFinalize(squaredNode: SquarifiedValuedCodeMapNode, key: string, heightScale: number, depth, parent: node, folderHeight): node {
+    private addHeightDimensionAndFinalize(squaredNode: SquarifiedValuedCodeMapNode, key: string, heightScale: number, depth = 0, parent: node = null): node {
 
         let heightValue = squaredNode.data.attributes[key];
+
         if (heightValue === undefined || heightValue === null) {
-            heightValue = 0;
+            heightValue = TreeMapService.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND;
         }
 
-        let finalNode: node = {
-            name: squaredNode.data.name,
-            width: squaredNode.width,
-            height: Math.abs(squaredNode.children && squaredNode.children.length <= 0 ? Math.max(heightScale * heightValue, folderHeight) : folderHeight),
-            length: squaredNode.length,
-            depth: depth,
-            x0: squaredNode.x0,
-            z0: depth * folderHeight,
-            y0: squaredNode.y0,
-            isLeaf: squaredNode.children && squaredNode.children.length <= 0,
-            attributes: squaredNode.data.attributes,
-            deltas: squaredNode.data.deltas,
-            parent: parent,
-            heightDelta: Math.abs(squaredNode.data.deltas && squaredNode.data.deltas[key] ? heightScale * squaredNode.data.deltas[key] : 0),
-            visible: squaredNode.data.visible,
-            path: squaredNode.data.path,
-            origin: squaredNode.data.origin,
-            link: squaredNode.data.link,
-            children: []
-        };
+        const finalNode = TreeMapUtils.buildNodeFrom(squaredNode, heightScale, heightValue, depth, parent, key,TreeMapService.MIN_BUILDING_HEIGHT, TreeMapService.FOLDER_HEIGHT);
 
         if (squaredNode.children && squaredNode.children.length > 0) {
-
-            let finalChildren: node[] = [];
+            const finalChildren: node[] = [];
             for (let i = 0; i < squaredNode.children.length; i++) {
-                finalChildren.push(this.addHeightDimensionAndFinalize(squaredNode.children[i], key, heightScale, depth + 1, finalNode, folderHeight));
+                finalChildren.push(this.addHeightDimensionAndFinalize(squaredNode.children[i], key, heightScale, depth + 1, finalNode));
             }
             finalNode.children = finalChildren;
         }
-
         return finalNode;
+
     }
 
-    public squarifyFromRoot(root: ValuedCodeMapNode, containerWidth: number, containerLength: number, margin: number, fanoutDepths: number[], fanoutScale: number): SquarifiedValuedCodeMapNode {
+    private squarifyFromRoot(root: ValuedCodeMapNode, totalMarginPerSide: number, s: TreeMapSettings): SquarifiedValuedCodeMapNode {
+
+        const containerWidth = s.size + totalMarginPerSide;
+        const containerLength = s.size + totalMarginPerSide;
 
         return {
             value: root.value,
             data: root.data,
-            x0: 0,
-            y0: 0,
+            x0: TreeMapService.START_X,
+            y0: TreeMapService.START_Y,
             width: containerWidth,
             length: containerLength,
-            children: this.squarifyNodesIntoContainer(root.children, containerWidth, containerLength, 0, 0, margin, 1, fanoutDepths, fanoutScale)
+            children: this.squarifyNodesIntoContainer(root.children, containerWidth, containerLength, TreeMapService.START_X, TreeMapService.START_Y, 1, s)
         };
 
     }
 
-    public squarifyNodesIntoContainer(nodes: ValuedCodeMapNode[], containerWidth: number, containerLength: number, containerX: number, containerY: number, margin: number, depth: number, fanoutDepths: number[], fanoutScale: number): SquarifiedValuedCodeMapNode[] {
+    private squarifyNodesIntoContainer(nodes: ValuedCodeMapNode[], containerWidth: number, containerLength: number, containerX: number, containerY: number, depth: number, s: TreeMapSettings): SquarifiedValuedCodeMapNode[] {
 
-        if (!nodes) {
-            return [];
-        }
+        if (!nodes) {return [];}
 
-        let input = [];
-        let container = {
+        const input = [];
+        const container = {
             x0: containerX,
             y0: containerY,
             x1: containerX + containerWidth,
@@ -143,11 +117,11 @@ export class TreeMapService {
 
         for (let i = 0; i < output.length; i++) {
 
-            let effectiveMargin = margin;
-            if (fanoutDepths.includes(depth)) {
-                effectiveMargin *= fanoutScale;
+            let effectiveMargin = s.margin;
+            if (s.fanoutDepths.includes(depth)) {
+                effectiveMargin *= s.fanoutScale;
             }
-            let effectiveMarginRelativeToNodeSize = effectiveMargin*this.predictTotalMarginPerSide(output[i], margin, fanoutDepths, fanoutScale);
+            let effectiveMarginRelativeToNodeSize = effectiveMargin*this.predictTotalMarginPerSide(output[i], s);
 
             squarifiedChildren.push({
                 value: output[i].value,
@@ -162,10 +136,8 @@ export class TreeMapService {
                     output[i].y1 - output[i].y0 - effectiveMarginRelativeToNodeSize,
                     output[i].x0 + effectiveMarginRelativeToNodeSize / 2,
                     output[i].y0 + effectiveMarginRelativeToNodeSize / 2,
-                    margin,
                     depth + 1,
-                    fanoutDepths,
-                    fanoutScale
+                    s
                 )
             });
         }
@@ -174,7 +146,7 @@ export class TreeMapService {
 
     }
 
-    public valueCodeMapNodes(node: CodeMapNode, key: string): ValuedCodeMapNode {
+    private valueCodeMapNodes(node: CodeMapNode, key: string): ValuedCodeMapNode {
 
         let valuedNode: ValuedCodeMapNode = {
             value: this.calculateValue(node, key),
@@ -192,7 +164,7 @@ export class TreeMapService {
         return valuedNode;
     }
 
-    public calculateValue(node: CodeMapNode, key: string): number {
+    private calculateValue(node: CodeMapNode, key: string): number {
         let value = 0;
         if (node.children && node.children.length > 0) {
             for (let i = 0; i < node.children.length; i++) {
@@ -204,24 +176,13 @@ export class TreeMapService {
         return value;
     }
 
-    public predictTotalMarginPerSide(node: { children?: any }, margin: number, fanoutDepths: number[],fanoutScale: number): number {
-
-        let margins = [margin];
-        fanoutDepths.forEach(d=>margins.push(margin*fanoutScale));
+    private predictTotalMarginPerSide(node: { children?: any }, s: TreeMapSettings): number {
+        let margins = [s.margin];
+        s.fanoutDepths.forEach(d=>margins.push(s.margin*s.fanoutScale));
         let avgMargin = 0;
         margins.forEach((m)=>{avgMargin+=m;});
         avgMargin /= margins.length * 2;
-        return Math.sqrt(this.countNodes(node)) * avgMargin * 2;
-    }
-
-    public countNodes(node: { children?: any }): number {
-        let count = 1;
-        if (node.children && node.children.length > 0) {
-            for (let i = 0; i < node.children.length; i++) {
-                count += this.countNodes(node.children[i]);
-            }
-        }
-        return count;
+        return Math.sqrt(TreeMapUtils.countNodes(node)) * avgMargin * 2;
     }
 
 }
