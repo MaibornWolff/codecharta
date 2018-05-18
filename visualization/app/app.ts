@@ -21,4 +21,6 @@ angular.module("app")
             .primaryPalette("teal")
             .warnPalette("teal")
             .accentPalette("teal");
+    }).config(function($mdAriaProvider) {
+        $mdAriaProvider.disableWarnings();
     });

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Added CrococosmoImporter to Analysis
 
 ### Changed
+- Suppressing ARIA warnings
 
 ### Removed
 
