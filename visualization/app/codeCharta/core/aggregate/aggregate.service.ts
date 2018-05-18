@@ -27,6 +27,7 @@ export class AggregateMapService {
         outputMap.root = {} as CodeMapNode;
         outputMap.root.name = "root";
         outputMap.root.children = [] as CodeMapNode[];
+        outputMap.root.attributes = {};
 
         for(let inputMap of inputMaps){
             outputMap.root.children.push(this.convertMapToNode(inputMap));
