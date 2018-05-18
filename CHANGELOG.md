@@ -11,7 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Added type, dirs, name to CSVExporter
 
 ### Changed
-
+- Crococosmo xml files will now generate a cc.json file for each version
+ 
 ### Removed
 
 ### Fixed
