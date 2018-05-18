@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.csv
 
+import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.jetbrains.spek.api.Spek
@@ -10,7 +11,7 @@ import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
 
-class CSVProjectAdapterTest : Spek({
+class FFCSVProjectAdapterTest : Spek({
     fun toInputStream(content: String): InputStream {
         return ByteArrayInputStream(content.toByteArray(StandardCharsets.UTF_8))
     }
@@ -43,8 +44,6 @@ class CSVProjectAdapterTest : Spek({
             project.addProjectFromCsv(toInputStream("someContent\n" + name))
 
             it("should add only first line") {
-
-                // then
                 assertThat(project.rootNode.children.filter { it.name == name }.size, `is`(1))
             }
         }
@@ -85,11 +84,28 @@ class CSVProjectAdapterTest : Spek({
         }
     }
 
-    describe("CSVProjectAdapter") {
-        val project = CSVProjectAdapter("test", '\\', ',')
+    describe("CSVProjectAdapter for Sourcemonitor") {
+        val project = CSVProjectAdapter("test", '\\', ',',
+                MetricNameTranslator(mapOf(Pair("File Name", "path"))))
 
-        on("reading many csv lines") {
+        on("reading csv lines from Sourcemonitor") {
             project.addProjectFromCsv(this.javaClass.classLoader.getResourceAsStream("sourcemonitor.csv"))
+
+            it("has more than one node") {
+                assertThat(project.rootNode.nodes.size, greaterThan(1))
+            }
+        }
+    }
+
+    describe("CSVProjectAdapter for Understand") {
+        val project = CSVProjectAdapter("test", '\\', ',',
+                MetricNameTranslator(mapOf(Pair("File", "path"))),
+                { it[0] == "File" }
+        )
+
+
+        on("reading csv lines from Understand") {
+            project.addProjectFromCsv(this.javaClass.classLoader.getResourceAsStream("understand.csv"))
 
             it("has more than one node") {
                 assertThat(project.rootNode.nodes.size, greaterThan(1))

@@ -8,7 +8,10 @@ class CSVRow(private val row: Array<String?>, private val header: CSVHeader, pri
     private val floatPattern = Pattern.compile("\\d+[,.]?\\d*")
 
     val path: String
-        get() = row[header.pathColumn]!!
+        get() {
+            if (row[header.pathColumn] == null) throw IllegalArgumentException("Ignoring empty paths.")
+            return row[header.pathColumn]!!
+        }
 
     val fileName: String
         get() {

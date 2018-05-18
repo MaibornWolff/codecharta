@@ -14,7 +14,11 @@ _Conventions for csv input:_
 
 # SourceMonitorImporter
 
-Generates visualisation data from [SourceMonitor](http://www.campwoodsw.com/sourcemonitor.html) through SourceMonitor's CSV export functionality.
+Generates visualisation data from [SourceMonitor](http://www.campwoodsw.com/sourcemonitor.html) through its CSV export functionality.
+
+# UnderstandImporter
+
+Generates visualisation data from [SciTools (TM) Understand](https://scitools.com/features/) through its CSV export functionality.
 
 ## Usage
 
@@ -22,7 +26,7 @@ Generates visualisation data from [SourceMonitor](http://www.campwoodsw.com/sour
 
 If you have analized your project with SourceMonitor and exported the metric data (for classes only) to a csv-file, you may call the command
 
-> ccsh csvimport \<path to sourcemonitor csv file>
+> ccsh sourcemonitorimport \<path to sourcemonitor csv file>
 
 which prints the visualisation data to stdout.
 
@@ -35,6 +39,16 @@ If SourceMonitor v3.5 is installed in 'C:\Program Files (x86)\SourceMonitor' you
 > sourcemonImport.bat \<project name> \<source code path> \<language>
 
 If SourceMonitor is installed in a different directory the script must be changed accordingly.
+
+### CSV Import for SciTools (TM) Understand
+
+If you have analized your project with Understand and exported the metric data to a csv-file, you may call the command
+
+> ccsh understandimport \<path to sourcemonitor csv file>
+
+which prints the visualisation data to stdout.
+
+Currently, UnderstandImporter does only support metrics for files in csv files from Understand.
 
 ### General CSV Import
 

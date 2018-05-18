@@ -44,7 +44,9 @@ import java.nio.charset.StandardCharsets
 class CSVProjectAdapter(
         projectName: String,
         private val pathSeparator: Char,
-        private val csvDelimiter: Char
+        private val csvDelimiter: Char,
+        private val metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
+        private val includeRows: (Array<String>) -> Boolean = { true }
 ) : Project(projectName) {
 
     private val root = "root"
@@ -55,7 +57,9 @@ class CSVProjectAdapter(
         this.nodes.add(Node(root, NodeType.Folder))
     }
 
-    fun addProjectFromCsv(inStream: InputStream, metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL) {
+    fun addProjectFromCsv(
+            inStream: InputStream
+    ) {
         val parser = createParser(inStream)
         val oldHeader: Array<String?> = parser.parseNext()
         header = CSVHeader(metricNameTranslator.translate(oldHeader))
@@ -66,7 +70,7 @@ class CSVProjectAdapter(
     private fun parseContent(parser: CsvParser) {
         var row = parser.parseNext()
         while (row != null) {
-            insertNodeForRow(row)
+            if (includeRows(row)) insertNodeForRow(row);
             row = parser.parseNext()
         }
     }
@@ -84,9 +88,13 @@ class CSVProjectAdapter(
         try {
             val row = CSVRow(rawRow, header!!, pathSeparator)
             val node = Node(row.fileName, NodeType.File, row.attributes)
-            NodeInserter.insertByPath(this, PathFactory.fromFileSystemPath(row.folderWithFile.replace(pathSeparator, '/')), node)
+            NodeInserter.insertByPath(
+                    this,
+                    PathFactory.fromFileSystemPath(row.folderWithFile.replace(pathSeparator, '/')),
+                    node
+            )
         } catch (e: IllegalArgumentException) {
-            System.err.println("Ignoring " + e.message)
+            System.err.println(e.message)
         }
 
     }
