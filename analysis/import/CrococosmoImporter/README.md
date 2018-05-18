@@ -10,7 +10,7 @@ Please contact this team concerning questions about Crococosmo.
 
 ## Usage
 
-Output goes to *stdout*.
+Output goes to *stdout* or to a file if specified by '-o'.
 
 ### Example
 
