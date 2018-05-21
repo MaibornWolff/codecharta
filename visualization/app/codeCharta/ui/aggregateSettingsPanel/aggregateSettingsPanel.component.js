@@ -20,8 +20,10 @@ export class AggregateSettingsPanelController {
             this.selectedMapIndices.push(indexOfReferenceMap);
         }
         this.selectMapsToAggregate();
-        let newMap = this.aggregate.aggregateMaps(this.mapsToAggregate);
+        let newMap = this.aggregate.aggregateMaps(JSON.parse(JSON.stringify(this.mapsToAggregate)));
         console.log("New Map", newMap);
+        this.settings.map = newMap;
+        this.settingsService.applySettings(this.settings);
     }
     onDataChanged(data) {
         this.data = data;

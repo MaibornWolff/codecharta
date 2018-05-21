@@ -38,18 +38,20 @@ export class AggregateMapService {
 
     private convertMapToNode(inputCodeMap: CodeMap): CodeMapNode{
 
-        let outputNode: CodeMapNode = {
-            name: inputCodeMap.projectName
-        };
+        let outputNode: CodeMapNode = {} as CodeMapNode;
+        outputNode["name"]= inputCodeMap.projectName;
 
         for(let property in inputCodeMap.root){
 
-            if(property == "children")
+            if(property == "children"){
                 outputNode[property] = JSON.parse(JSON.stringify(inputCodeMap.root.children));
-            else if(property == "path")
+            }
+            else if(property == "path"){
                 outputNode[property] = this.updatePath(inputCodeMap.projectName, inputCodeMap.root.path);
-            else
+            }
+            else if(property != "name"){
                 outputNode[property] =  inputCodeMap.root[property];
+            }
         }
 
         this.updatePathOfAllChildren(inputCodeMap.projectName, outputNode.children);
@@ -59,7 +61,9 @@ export class AggregateMapService {
 
     private updatePathOfAllChildren(projectName, children: CodeMapNode[]) {
         for(let i = 0; i < children.length; i++) {
-            children[i].path = this.updatePath(projectName, children[i].path);
+            if(children[i].path){
+                children[i].path = this.updatePath(projectName, children[i].path);
+            }
 
             if(children[i].children) {
                 this.updatePathOfAllChildren(projectName, children[i].children);
