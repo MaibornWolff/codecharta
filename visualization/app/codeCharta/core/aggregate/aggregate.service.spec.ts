@@ -64,7 +64,7 @@ describe("app.codeCharta.core.aggregate", function() {
 
     const file_aggregation_two: CodeMap = {
         fileName: "Aggregation of following files: file, file",
-        projectName: "Aggregation of following projects: Sample project, Sample project",
+        projectName: "Aggregation of following projects: Sample Project, Sample Project",
         root: {
             name: "root",
             attributes: {},
@@ -119,7 +119,7 @@ describe("app.codeCharta.core.aggregate", function() {
 
     const file_aggregation_four: CodeMap = {
         fileName: "Aggregation of following files: file, file, file, file",
-        projectName: "Aggregation of following projects: Sample project, Sample project, Sample project, Sample project",
+        projectName: "Aggregation of following projects: Sample Project, Sample Project, Sample Project, Sample Project",
         root: {
             name: "root",
             attributes: {},
