@@ -1,4 +1,14 @@
 <md-input-container class="md-block">
+    <md-radio-group ng-model="$ctrl.show" ng-change="$ctrl.onShowChange($ctrl.show)">
+
+    <md-radio-button value="simple" >simple</md-radio-button>
+    <md-radio-button value="deltas">deltas</md-radio-button>
+    <md-radio-button value="aggregate">aggregate</md-radio-button>
+
+</md-radio-group>
+</md-input-container>
+
+<md-input-container class="md-block" ng-if="$ctrl.show == 'simple' || $ctrl.show == 'deltas'">
     <label>Show</label>
     <md-select ng-model="$ctrl.ui.chosenReference" ng-change="$ctrl.onReferenceChange($ctrl.ui.chosenReference)">
         <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
@@ -7,13 +17,7 @@
     </md-select>
 </md-input-container>
 
-<md-input-container class="md-block">
-    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.deltas" ng-change="$ctrl.settingsService.applySettings()">
-        Deltas
-    </md-checkbox>
-</md-input-container>
-
-<md-input-container class="md-block" ng-if="$ctrl.settingsService.settings.deltas">
+<md-input-container class="md-block" ng-if="$ctrl.show == 'deltas'">
     <label>In comparison to</label>
     <md-select ng-model="$ctrl.ui.chosenComparison" ng-change="$ctrl.onComparisonChange($ctrl.ui.chosenComparison)">
         <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
@@ -21,4 +25,6 @@
         </md-option>
     </md-select>
 </md-input-container>
+
+<aggregate-settings-panel-component ng-if="$ctrl.show == 'aggregate'"></aggregate-settings-panel-component>
 

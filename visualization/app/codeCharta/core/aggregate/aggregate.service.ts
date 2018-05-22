@@ -1,4 +1,3 @@
-import {DialogService} from "../../ui/dialog/dialog.service";
 import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
 
 
@@ -6,8 +5,6 @@ export class AggregateMapService {
 
     public static SELECTOR = "aggregateMapService";
 
-    constructor(private dialogService: DialogService) {
-    }
 
     public aggregateMaps(inputMaps: CodeMap[]): CodeMap {
 
@@ -21,13 +18,15 @@ export class AggregateMapService {
             fileNameArray.push(inputMap.fileName);
         }
 
-        let outputMap: CodeMap = {} as CodeMap;
-        outputMap.projectName = "Aggregation of following projects: " + projectNameArray.join(", ");
-        outputMap.fileName = "Aggregation of following files: " + fileNameArray.join(", ");
-        outputMap.root = {} as CodeMapNode;
-        outputMap.root.name = "root";
-        outputMap.root.children = [] as CodeMapNode[];
-        outputMap.root.attributes = {};
+        let outputMap: CodeMap = {
+            projectName: "Aggregation of following projects: " + projectNameArray.join(", "),
+            fileName: "Aggregation of following files: " + fileNameArray.join(", "),
+            root: {
+                name: "root",
+                children: [] as CodeMapNode[],
+                attributes: {}
+            }
+        };
 
         for(let inputMap of inputMaps){
             outputMap.root.children.push(this.convertMapToNode(inputMap));

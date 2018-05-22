@@ -1,5 +1,4 @@
 import "./aggregate.module";
-//import angular from "angular";
 import {NGMock} from "../../../../mocks/ng.mockhelper";
 import {CodeMap} from "../data/model/codeMap";
 

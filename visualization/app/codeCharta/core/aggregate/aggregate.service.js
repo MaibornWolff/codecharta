@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var AggregateMapService = /** @class */ (function () {
-    function AggregateMapService(dialogService) {
-        this.dialogService = dialogService;
+    function AggregateMapService() {
     }
     AggregateMapService.prototype.aggregateMaps = function (inputMaps) {
         if (inputMaps.length == 1)
@@ -14,13 +13,15 @@ var AggregateMapService = /** @class */ (function () {
             projectNameArray.push(inputMap.projectName);
             fileNameArray.push(inputMap.fileName);
         }
-        var outputMap = {};
-        outputMap.projectName = "Aggregation of following projects: " + projectNameArray.join(", ");
-        outputMap.fileName = "Aggregation of following files: " + fileNameArray.join(", ");
-        outputMap.root = {};
-        outputMap.root.name = "root";
-        outputMap.root.children = [];
-        outputMap.root.attributes = {};
+        var outputMap = {
+            projectName: "Aggregation of following projects: " + projectNameArray.join(", "),
+            fileName: "Aggregation of following files: " + fileNameArray.join(", "),
+            root: {
+                name: "root",
+                children: [],
+                attributes: {}
+            }
+        };
         for (var _a = 0, inputMaps_2 = inputMaps; _a < inputMaps_2.length; _a++) {
             var inputMap = inputMaps_2[_a];
             outputMap.root.children.push(this.convertMapToNode(inputMap));

@@ -21,14 +21,12 @@ export class AggregateSettingsPanelController {
         }
         this.selectMapsToAggregate();
         let newMap = this.aggregate.aggregateMaps(JSON.parse(JSON.stringify(this.mapsToAggregate)));
-        console.log("New Map", newMap);
         this.settings.map = newMap;
         this.settingsService.applySettings(this.settings);
     }
     onDataChanged(data) {
         this.data = data;
         this.revisions = data.revisions;
-        this.onAggregateChange();
     }
     onSettingsChanged(settings, event) {
         this.settings = settings;
