@@ -6,8 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- Added CrococosmoImporter to Analysis
+- Added type, dirs, name to CSVExporter
 
 ### Changed
+- Crococosmo xml files will now generate a cc.json file for each version
+- Suppressing ARIA warnings
 
 ### Removed
 
