@@ -218,7 +218,6 @@ describe("app.codeCharta.core.aggregate", function() {
      * @test {aggregateMapService}
      */
     it("instance", NGMock.mock.inject(function(aggregateMapService){
-        console.log(((file1.root.children[1].path)));
         expect(aggregateMapService).not.toBe(undefined);
     }));
 
