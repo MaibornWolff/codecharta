@@ -27,7 +27,7 @@ export class StatisticSettingsPanelController implements DataServiceSubscriber, 
 
     onStatisticsChange(){
         this.settings.map = this.statisticMapService.unifyMaps(this.data, this.settings);
-        this.settingsService.applySettings();
+        this.settingsService.applySettingsSlow();
     }
 
     onDataChanged(data: DataModel) {

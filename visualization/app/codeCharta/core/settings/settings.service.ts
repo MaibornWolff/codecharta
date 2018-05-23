@@ -48,6 +48,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
     private _settings: Settings;
 
+    public numberOfCalls: number;
+
     private _lastDeltaState = false;
 
     /* ngInject */
@@ -57,6 +59,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         this._settings = this.getInitialSettings(dataService.data.renderMap, dataService.data.metrics);
 
+        this.numberOfCalls = 0;
         dataService.subscribe(this);
         threeOrbitControlsService.subscribe(this);
 
@@ -262,6 +265,24 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         return "?" + result.substring(1);
 
+    }
+
+    /*
+     *
+     */
+    public applySettingsSlow(settings: Settings = this._settings){
+        this.numberOfCalls++;
+        let currentCalls = this.numberOfCalls;
+        let _this=this;
+        setTimeout(function(){
+            if(currentCalls== _this.numberOfCalls){
+                console.log(("load settings called"));
+                _this.applySettings(settings);
+            }
+            else{
+                console.log("load settings avoided");
+            }
+        },500);
     }
 
     /**

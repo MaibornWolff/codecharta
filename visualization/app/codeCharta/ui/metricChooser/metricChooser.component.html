@@ -1,6 +1,6 @@
 <md-input-container class="md-block">
     <label>Area</label>
-    <md-select ng-model="$ctrl.settingsService.settings.areaMetric" ng-change="$ctrl.settingsService.applySettings()">
+    <md-select ng-model="$ctrl.settingsService.settings.areaMetric" ng-change="$ctrl.settingsService.applySettingsSlow()">
         <md-option ng-repeat="metric in $ctrl.metrics" value="{{::metric}}">
             {{::metric}}
         </md-option>
@@ -9,7 +9,7 @@
 
 <md-input-container class="md-block">
     <label>Height</label>
-    <md-select ng-model="$ctrl.settingsService.settings.heightMetric" ng-change="$ctrl.settingsService.applySettings()">
+    <md-select ng-model="$ctrl.settingsService.settings.heightMetric" ng-change="$ctrl.settingsService.applySettingsSlow()">
         <md-option ng-repeat="metric in $ctrl.metrics" value="{{::metric}}">
             {{::metric}}
         </md-option>
@@ -18,7 +18,7 @@
 
 <md-input-container class="md-block">
     <label>Color</label>
-    <md-select ng-model="$ctrl.settingsService.settings.colorMetric" ng-change="$ctrl.settingsService.applySettings()">
+    <md-select ng-model="$ctrl.settingsService.settings.colorMetric" ng-change="$ctrl.settingsService.applySettingsSlow()">
         <md-option ng-repeat="metric in $ctrl.metrics" value="{{::metric}}">
             {{::metric}}
         </md-option>

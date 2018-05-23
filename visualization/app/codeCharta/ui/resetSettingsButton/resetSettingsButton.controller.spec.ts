@@ -37,7 +37,7 @@ describe("colorSettingsPanelController", ()=>{
         expect(controller.updateSettings).toHaveBeenCalledWith("HELLO");
     });
 
-    it("updateSettings should call its applySettings", ()=>{
+    it("updateSettings should call its applySettingsSlow", ()=>{
         scenarioService.getDefaultScenario.mockReturnValue({
             settings: {}
         });

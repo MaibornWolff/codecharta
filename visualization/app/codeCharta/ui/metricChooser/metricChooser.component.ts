@@ -31,7 +31,7 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
     }
 
     public notify() {
-        this.settingsService.applySettings();
+        this.settingsService.applySettingsSlow();
     }
 
     onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
