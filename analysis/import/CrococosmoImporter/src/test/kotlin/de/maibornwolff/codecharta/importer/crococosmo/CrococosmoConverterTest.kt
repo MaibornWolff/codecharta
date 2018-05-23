@@ -31,6 +31,7 @@ package de.maibornwolff.codecharta.importer.crococosmo
 
 import de.maibornwolff.codecharta.importer.crococosmo.model.*
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
@@ -43,7 +44,7 @@ class CrococosmoConverterTest {
     @Test
     fun convertedProjectShouldContainRootNode() {
         val g = Graph(schema, listOf())
-        val project = converter.convertToProject("sample Project", g)
+        val project = converter.createProject("sample Project", g)
         assertThat(project.nodes.size, `is`(1))
     }
 
@@ -51,7 +52,7 @@ class CrococosmoConverterTest {
     fun convertedProjectShouldCollapseNodesWithoutName() {
         val nodeWithoutName = Node("", "type", listOf(), listOf())
         val g = Graph(schema, listOf(Node("node name", "type", listOf(nodeWithoutName), listOf())))
-        val project = converter.convertToProject("sample Project", g)
+        val project = converter.createProject("sample Project", g)
         val grantChildren = project.nodes[0].children[0].children
 
         assertThat(grantChildren.count(), `is`(0))
@@ -61,7 +62,7 @@ class CrococosmoConverterTest {
     fun convertedProjectShouldNotCollapseNodesWithName() {
         val nodeWithName = Node("happyChild", "type", listOf(), listOf())
         val g = Graph(schema, listOf(Node("node name", "type", listOf(nodeWithName), listOf())))
-        val project = converter.convertToProject("sample Project", g)
+        val project = converter.createProject("sample Project", g)
         val grantChildren = project.nodes[0].children[0].children
 
         assertThat(grantChildren.count(), `is`(1))
@@ -71,7 +72,7 @@ class CrococosmoConverterTest {
     fun convertedProjectShouldContainNode() {
         val nodeName = "node name"
         val g = Graph(schema, listOf(Node(nodeName, "type", listOf(), listOf())))
-        val project = converter.convertToProject("sample Project", g)
+        val project = converter.createProject("sample Project", g)
         val children = project.nodes[0].children
 
         assertThat(children.filter({ nodeName == it.name }).count(), `is`(1))
@@ -86,7 +87,7 @@ class CrococosmoConverterTest {
         val e = Node("some node", "type", listOf(), listOf(v))
         val g = Graph(schema, listOf(e))
 
-        val project = converter.convertToProject("sample Project", g)
+        val project = converter.createProject("sample Project", g)
 
         var node = project.nodes.first()
         while (!node.children.isEmpty()) {
@@ -101,8 +102,20 @@ class CrococosmoConverterTest {
 
         val `in` = this.javaClass.classLoader.getResourceAsStream("test.xml")
         val graph = CrococosmoDeserializer().deserializeCrococosmoXML(`in`)
-        val project = converter.convertToProject("test", graph)
+        val project = converter.createProject("test", graph)
 
         assertThat(project.rootNode.leafObjects.count(), `is`(17))
     }
+
+    @Test
+    fun shouldConvertGraphWithMultipleVersions() {
+        val schemaWithMultipleVersions = Schema(listOf(SchemaVersion("1"), SchemaVersion("2")))
+        val nodeWithoutName = Node("", "type", listOf(), listOf())
+        val g = Graph(schemaWithMultipleVersions, listOf(Node("node name", "type", listOf(nodeWithoutName), listOf())))
+        val projects = converter.convertToProjectsMap("sample Project", g)
+
+        assertThat(projects.size, `is`(2))
+    }
+
+
 }
