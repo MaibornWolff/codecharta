@@ -27,6 +27,7 @@ class TreeMapService {
      * @param {number} p padding between treemap squares
      * @param {string} areaKey area metric name
      * @param {string} heightKey height metric name
+     * @param {boolean} invertHeight invert the height of buildings
      */
     createTreemapNodes(
         data: CodeMapNode,
@@ -81,7 +82,7 @@ class TreeMapService {
      * @param {boolean} invertHeight Scalaing of Buildings
      * @param {number} maxHeight of heightKey Metric Building of Project
      */
-    private transformNode(node, heightKey, heightScale, folderHeight, invertHeight: boolean, maxHeight: number) {
+     transformNode(node, heightKey, heightScale, folderHeight, invertHeight: boolean, maxHeight: number) {
         let heightValue = node.data.attributes[heightKey];
         if(heightValue === undefined || heightValue === null) {
             heightValue = 0;
