@@ -28,15 +28,10 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
         this.settingsService.subscribe(this);
         this.mapsToAggregate = [] as CodeMap[];
         this.aggregate = aggregateMapService;
+        this.updateSelectedMapIndices();
     }
 
     onAggregateChange(){
-
-        if(!this.selectedMapIndices) {
-            this.selectedMapIndices = [];
-            let indexOfReferenceMap = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
-            this.selectedMapIndices.push(indexOfReferenceMap);
-        }
 
         this.selectMapsToAggregate();
 
@@ -49,10 +44,17 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
     onDataChanged(data: DataModel) {
         this.data = data;
         this.revisions = data.revisions;
+        this.updateSelectedMapIndices();
     }
 
     onSettingsChanged(settings: Settings, event: Event) {
         this.settings = settings;
+    }
+
+    updateSelectedMapIndices(){
+        this.selectedMapIndices = [];
+        let indexOfReferenceMap = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
+        this.selectedMapIndices.push(indexOfReferenceMap);
     }
 
 

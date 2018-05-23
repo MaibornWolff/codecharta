@@ -26,7 +26,7 @@ export class RevisionChooserController implements DataServiceSubscriber{
         private settingsService: SettingsService
     ) {
         this.revisions = dataService.data.revisions;
-        this.show = "simple";
+        this.show = "single";
         this.ui.chosenComparison = this.dataService.getIndexOfMap(this.dataService.getComparisonMap(), this.revisions);
         this.ui.chosenReference = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
         dataService.subscribe(this);
@@ -48,7 +48,7 @@ export class RevisionChooserController implements DataServiceSubscriber{
 
     onShowChange(option){
         switch (option){
-            case "simple":{
+            case "single":{
                 this.settingsService.settings.deltas = false;
                 this.onReferenceChange(this.ui.chosenReference);
                 break;
@@ -60,7 +60,7 @@ export class RevisionChooserController implements DataServiceSubscriber{
                 break;
             }
 
-            case "deltas":{
+            case "delta":{
                 this.settingsService.settings.deltas = true;
                 this.settingsService.applySettings();
                 break;

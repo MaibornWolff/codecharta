@@ -12,13 +12,9 @@ export class AggregateSettingsPanelController {
         this.settingsService.subscribe(this);
         this.mapsToAggregate = [];
         this.aggregate = aggregateMapService;
+        this.updateSelectedMapIndices();
     }
     onAggregateChange() {
-        if (!this.selectedMapIndices) {
-            this.selectedMapIndices = [];
-            let indexOfReferenceMap = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
-            this.selectedMapIndices.push(indexOfReferenceMap);
-        }
         this.selectMapsToAggregate();
         let newMap = this.aggregate.aggregateMaps(JSON.parse(JSON.stringify(this.mapsToAggregate)));
         this.settings.map = newMap;
@@ -27,9 +23,15 @@ export class AggregateSettingsPanelController {
     onDataChanged(data) {
         this.data = data;
         this.revisions = data.revisions;
+        this.updateSelectedMapIndices();
     }
     onSettingsChanged(settings, event) {
         this.settings = settings;
+    }
+    updateSelectedMapIndices() {
+        this.selectedMapIndices = [];
+        let indexOfReferenceMap = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
+        this.selectedMapIndices.push(indexOfReferenceMap);
     }
     selectMapsToAggregate() {
         this.mapsToAggregate = [];
