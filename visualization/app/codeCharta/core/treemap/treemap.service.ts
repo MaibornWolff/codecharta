@@ -15,6 +15,7 @@ class TreeMapService {
 
     /* @ngInject */
     constructor(private dataService: DataService) {
+
     }
 
     /**
@@ -26,6 +27,7 @@ class TreeMapService {
      * @param {number} p padding between treemap squares
      * @param {string} areaKey area metric name
      * @param {string} heightKey height metric name
+     * @param {boolean} invertHeight invert the height of buildings
      */
     createTreemapNodes(
         data: CodeMapNode,
@@ -33,7 +35,8 @@ class TreeMapService {
         l: number,
         p: number,
         areaKey: string,
-        heightKey: string
+        heightKey: string,
+        invertHeight: boolean
     ) {
 
         let root = d3.hierarchy(data);
@@ -59,7 +62,7 @@ class TreeMapService {
         let heightScale = w / maxHeight;
 
         nodes.forEach((node)=> {
-            this.transformNode(node, heightKey, heightScale, p*PADDING_SCALING_FACTOR * 0.2);
+            this.transformNode(node, heightKey, heightScale, p*PADDING_SCALING_FACTOR * 0.2, invertHeight, maxHeight);
         });
 
         return nodes;
@@ -76,15 +79,27 @@ class TreeMapService {
      * @param {string} heightKey name of the height metric
      * @param {number} heightScale scaling factor
      * @param {number} folderHeight height of folder
+     * @param {boolean} invertHeight Scalaing of Buildings
+     * @param {number} maxHeight of heightKey Metric Building of Project
      */
-    private transformNode(node, heightKey, heightScale, folderHeight) {
+     transformNode(node, heightKey, heightScale, folderHeight, invertHeight: boolean, maxHeight: number) {
         let heightValue = node.data.attributes[heightKey];
         if(heightValue === undefined || heightValue === null) {
             heightValue = 0;
         }
         node.width = Math.abs(node.x1 - node.x0);
         node.length = Math.abs(node.y1 - node.y0);
-        node.height = Math.abs(node.isLeaf ? heightScale * heightValue : folderHeight);
+
+        if (!node.isLeaf) {
+            node.height = folderHeight;
+        } else if (!invertHeight) {
+            node.height = heightScale * heightValue;
+        } else {
+            node.height = (maxHeight - heightValue) * heightScale;
+        }
+
+        node.height = Math.abs(node.height);
+
         node.z0 = folderHeight * node.depth;
         node.z1 = node.z0 + node.height;
         node.attributes = node.data.attributes;

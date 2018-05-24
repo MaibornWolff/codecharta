@@ -36,6 +36,7 @@ export interface Settings {
     deltaColorFlipped: boolean;
     showDependencies: boolean;
     minimizeDetailPanel: boolean;
+    invertHeight: boolean;
 }
 
 export interface SettingsServiceSubscriber {
@@ -86,7 +87,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         this._lastDeltaState = false;
 
-        return {
+        let settings: Settings =  {
             map: renderMap,
             neutralColorRange: r,
             areaMetric: this.getMetricByIdOrLast(0, metrics),
@@ -100,8 +101,11 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
             showDependencies: false,
-            minimizeDetailPanel: false
+            minimizeDetailPanel: false,
+            invertHeight: false
         };
+
+        return settings;
 
     }
 
@@ -292,6 +296,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.operation = settings.operation;
         this._settings.deltaColorFlipped = this.settings.deltaColorFlipped;
         this._settings.minimizeDetailPanel = settings.minimizeDetailPanel;
+        this._settings.invertHeight = settings.invertHeight;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = this.settings.map;
