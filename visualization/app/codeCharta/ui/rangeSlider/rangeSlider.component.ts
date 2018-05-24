@@ -50,7 +50,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
     }
 
     private onSliderChange() {
-        this.settingsService.applySettings(this.settingsService.settings);
+        this.settingsService.applySettings();
     }
 
 }
