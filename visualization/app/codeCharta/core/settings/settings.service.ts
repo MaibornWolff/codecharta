@@ -272,21 +272,26 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     }
 
     /*
+     * Avoids the excesive calling of updateSettings with standard settings in order to increase the efficiency
+     * When the function is called with an argument it calls updateSettings in order to avoid the lost of the information
+     * contained in that argument.
      *
+     * @param {Settings} settings
      */
-    public applySettings(settings: Settings = this._settings){
+    public applySettings(settings: Settings = null){
         this.numberOfCalls++;
-        let currentCalls = this.numberOfCalls;
-        let _this=this;
-        setTimeout(function(){
-            if(currentCalls== _this.numberOfCalls){
-                console.log(("load settings called"));
-                _this.updateSettings(settings);
-            }
-            else{
-                console.log("load settings avoided");
-            }
-        },500);
+        if(settings){
+            this.updateSettings(settings);
+        }
+        else{
+            let currentCalls = this.numberOfCalls;
+            let _this=this;
+            setTimeout(function(){
+                if(currentCalls== _this.numberOfCalls){
+                    _this.updateSettings();
+                }
+            },400);
+        }
     }
 
     /**
@@ -294,7 +299,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      * @param {Settings} settings
      */
     public updateSettings(settings: Settings = this._settings) {
-
         this._settings.neutralColorRange.to = settings.neutralColorRange.to;
         this._settings.neutralColorRange.from = settings.neutralColorRange.from;
         this._settings.neutralColorRange.flipped = settings.neutralColorRange.flipped;
