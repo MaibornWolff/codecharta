@@ -88,9 +88,9 @@ describe("MetricChooserController", () => {
         expect(metricChooserController.onDataChanged).toHaveBeenCalled();
     });
 
-    it("notify should be call applySettingsSlow", () => {
+    it("notify should be call applySettings", () => {
         metricChooserController.notify();
-        expect(settingsServiceMock.applySettingsSlow).toHaveBeenCalled();
+        expect(settingsServiceMock.applySettings).toHaveBeenCalled();
     });
 
     it("onBuildingHovered should reset values if data, data.to, data.to.node or data.to.node.attributes are non existant", () => {

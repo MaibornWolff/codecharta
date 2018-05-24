@@ -270,14 +270,14 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     /*
      *
      */
-    public applySettingsSlow(settings: Settings = this._settings){
+    public applySettings(settings: Settings = this._settings){
         this.numberOfCalls++;
         let currentCalls = this.numberOfCalls;
         let _this=this;
         setTimeout(function(){
             if(currentCalls== _this.numberOfCalls){
                 console.log(("load settings called"));
-                _this.applySettings(settings);
+                _this.updateSettings(settings);
             }
             else{
                 console.log("load settings avoided");
@@ -289,7 +289,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      * Applies given settings. ignores map. this ensures to copy settings object and prevent side effects
      * @param {Settings} settings
      */
-    public applySettings(settings: Settings = this._settings) {
+    public updateSettings(settings: Settings = this._settings) {
 
         this._settings.neutralColorRange.to = settings.neutralColorRange.to;
         this._settings.neutralColorRange.from = settings.neutralColorRange.from;

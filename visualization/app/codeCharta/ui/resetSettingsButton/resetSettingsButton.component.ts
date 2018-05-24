@@ -52,7 +52,7 @@ export class ResetSettingsButtonController {
         });
 
 
-        this.settingsService.applySettingsSlow();
+        this.settingsService.applySettings();
 
     }
 

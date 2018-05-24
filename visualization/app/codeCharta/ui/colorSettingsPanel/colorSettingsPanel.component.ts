@@ -26,7 +26,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber{
     apply() {
         this.settingsService.settings.neutralColorRange.flipped = this.viewModel.flipped;
         this.settingsService.settings.deltaColorFlipped = this.viewModel.deltaColorFlipped;
-        this.settingsService.applySettingsSlow();
+        this.settingsService.applySettings();
     }
 
 }

@@ -48,10 +48,10 @@ describe("RangeSliderController", () => {
         expect(rangeSliderController.sliderOptions.ceil).toBe(42);
     });
 
-    it("slider should applySettingsSlow on change", () => {
+    it("slider should applySettings on change", () => {
         rangeSliderController.initSliderOptions();
         rangeSliderController.sliderOptions.onChange();
-        expect(settingsServiceMock.applySettingsSlow).toHaveBeenCalled();
+        expect(settingsServiceMock.applySettings).toHaveBeenCalled();
     });
 
 });

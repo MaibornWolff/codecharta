@@ -1,6 +1,6 @@
 <md-input-container class="md-block dark_shadow_opacity">
     <i class='fa fa-arrows-alt'></i>
-    <md-select ng-model="$ctrl.settingsService.settings.areaMetric" ng-change="$ctrl.settingsService.applySettingsSlow()">
+    <md-select ng-model="$ctrl.settingsService.settings.areaMetric" ng-change="$ctrl.settingsService.applySettings()">
         <md-option ng-repeat="metric in $ctrl.metrics" value="{{::metric}}">
             {{::metric}}
         </md-option>
@@ -10,7 +10,7 @@
 
 <md-input-container class="md-block dark_shadow_opacity">
     <i class='fa fa-arrows-v'></i>
-    <md-select ng-model="$ctrl.settingsService.settings.heightMetric" ng-change="$ctrl.settingsService.applySettingsSlow()">
+    <md-select ng-model="$ctrl.settingsService.settings.heightMetric" ng-change="$ctrl.settingsService.applySettings()">
         <md-option ng-repeat="metric in $ctrl.metrics" value="{{::metric}}">
             {{::metric}}
         </md-option>
@@ -20,7 +20,7 @@
 
 <md-input-container class="md-block dark_shadow_opacity">
     <i class='fa fa-paint-brush'></i>
-    <md-select ng-model="$ctrl.settingsService.settings.colorMetric" ng-change="$ctrl.settingsService.applySettingsSlow()">
+    <md-select ng-model="$ctrl.settingsService.settings.colorMetric" ng-change="$ctrl.settingsService.applySettings()">
         <md-option ng-repeat="metric in $ctrl.metrics" value="{{::metric}}">
             {{::metric}}
         </md-option>
