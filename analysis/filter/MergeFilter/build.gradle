@@ -1,18 +1,14 @@
 buildscript {
-    ext.kotlin_version = '1.2.30'
     repositories {
-        mavenCentral()
         maven {
             url 'https://plugins.gradle.org/m2/'
         }
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'org.junit.platform:junit-platform-gradle-plugin:1.1.0'
     }
 }
 
-apply plugin: 'kotlin'
 apply plugin: 'application'
 apply plugin: 'org.junit.platform.gradle.plugin'
 
@@ -27,7 +23,6 @@ junitPlatform {
 dependencies {
     compile project(':model')
 
-    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: "$kotlin_version"
     compile group: 'info.picocli', name: 'picocli', version: '2.3.0'
 
     testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: "$kotlin_version"
@@ -44,13 +39,6 @@ dependencies {
 
 mainClassName = 'de.maibornwolff.codecharta.filter.mergefilter.MergeFilter'
 applicationName = 'codecharta-merge'
-
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
 
 jar {
     baseName = "${applicationName}"
