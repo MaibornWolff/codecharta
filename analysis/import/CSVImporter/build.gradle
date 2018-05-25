@@ -23,9 +23,9 @@ junitPlatform {
 dependencies {
     compile project(':model')
 
-    compile group: 'com.univocity', name: 'univocity-parsers', version: '2.6.1'
+    compile group: 'com.univocity', name: 'univocity-parsers', version: univocity_parsers_version
     compile group: 'info.picocli', name: 'picocli', version: picocli_version
-    compile group: 'io.fastjson', name: 'boon', version: '0.34'
+    compile group: 'io.fastjson', name: 'boon', version: boon_version
 
     testCompile group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
     testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version

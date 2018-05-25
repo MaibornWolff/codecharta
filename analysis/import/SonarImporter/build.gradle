@@ -3,14 +3,14 @@ apply plugin: 'application'
 dependencies {
     compile project(':model')
 
-    compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.1.9'
-    compile group: 'org.glassfish.jersey.core', name: 'jersey-client', version: '2.26'
+    compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.1.14'
+    compile group: 'org.glassfish.jersey.core', name: 'jersey-client', version: jersey_version
     compile group: 'com.google.code.gson', name: 'gson', version: gson_version
     compile group: 'info.picocli', name: 'picocli', version: picocli_version
-    compile group: 'io.github.microutils', name: 'kotlin-logging', version: '1.5.3'
+    compile group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
 
-    runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
-    runtime group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version: '2.26'
+    runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
+    runtime group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version: jersey_version
     runtime group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
 
     testCompile group: 'junit', name: 'junit', version: junit4_version

@@ -3,9 +3,9 @@ apply plugin: 'application'
 dependencies {
     compile project(':model')
 
-    compile group: 'com.fasterxml.jackson', name: 'jackson-parent', version: '2.9.1'
-    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.9.4'
-    compile group: 'io.fastjson', name: 'boon', version: '0.34'
+    compile group: 'com.fasterxml.jackson', name: 'jackson-base', version: jackson_version
+    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: jackson_version
+    compile group: 'io.fastjson', name: 'boon', version: boon_version
     compile group: 'info.picocli', name: 'picocli', version: picocli_version
 
     testCompile group: 'junit', name: 'junit', version: junit4_version
