@@ -61,7 +61,7 @@ open class MetricNameTranslator(
 
         for (value in translationMap.values) {
             if (!value.isEmpty() && seen.contains(value)) {
-                throw IllegalArgumentException("Replacement map should not map distinct keys to equal values, e.aggregationName. " + value)
+                throw IllegalArgumentException("Replacement map should not map distinct keys to equal values, e.g. $value")
             } else {
                 seen.add(value)
             }

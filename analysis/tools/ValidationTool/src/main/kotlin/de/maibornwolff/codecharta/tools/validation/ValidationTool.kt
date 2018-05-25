@@ -39,7 +39,7 @@ import java.util.concurrent.Callable
         footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
 )
 class ValidationTool : Callable<Void?> {
-    var SCHEMA_PATH = "cc.json"
+    private val schemaPath = "cc.json"
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
@@ -48,7 +48,7 @@ class ValidationTool : Callable<Void?> {
     var file: String = ""
 
     override fun call(): Void? {
-        EveritValidator(SCHEMA_PATH).validate(FileInputStream(File(file).absoluteFile))
+        EveritValidator(schemaPath).validate(FileInputStream(File(file).absoluteFile))
 
         return null
     }
