@@ -35,7 +35,6 @@ import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.nodeinserter.NodeInserter
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -70,7 +69,7 @@ class CSVProjectAdapter(
     private fun parseContent(parser: CsvParser) {
         var row = parser.parseNext()
         while (row != null) {
-            if (includeRows(row)) insertNodeForRow(row);
+            if (includeRows(row)) insertNodeForRow(row)
             row = parser.parseNext()
         }
     }
@@ -88,8 +87,7 @@ class CSVProjectAdapter(
         try {
             val row = CSVRow(rawRow, header!!, pathSeparator)
             val node = Node(row.fileName, NodeType.File, row.attributes)
-            NodeInserter.insertByPath(
-                    this,
+            this.insertByPath(
                     PathFactory.fromFileSystemPath(row.folderWithFile.replace(pathSeparator, '/')),
                     node
             )

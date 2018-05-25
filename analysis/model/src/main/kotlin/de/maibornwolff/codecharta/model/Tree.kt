@@ -32,7 +32,7 @@ package de.maibornwolff.codecharta.model
  * tree structure
  *
  * @param <T> must satisfy T = Tree<T>
-</T></T> */
+ */
 abstract class Tree<T> {
     /**
      * @return children of the present tree
@@ -88,5 +88,18 @@ abstract class Tree<T> {
             path.isSingle -> children.first { path == getPathOfChild(it) }
             else -> getNodeBy(Path(listOf(path.head)))!!.getNodeBy(path.tail)
         }
+    }
+
+    @Transient
+    open val mergingStrategy: MergingStrategy<T> = object : MergingStrategy<T> {
+        override fun merge(tree: Tree<T>, otherTrees: List<Tree<T>>): Tree<T> {
+            System.err.println("Element already exists, skipping.")
+            return tree
+        }
+    }
+
+
+    fun merge(nodes: List<Tree<T>>){
+        mergingStrategy.merge(this, nodes)
     }
 }

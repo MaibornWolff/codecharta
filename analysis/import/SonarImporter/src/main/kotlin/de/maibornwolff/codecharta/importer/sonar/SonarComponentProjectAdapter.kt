@@ -34,7 +34,6 @@ import de.maibornwolff.codecharta.importer.sonar.model.ComponentMap
 import de.maibornwolff.codecharta.importer.sonar.model.Measure
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier
 import de.maibornwolff.codecharta.model.*
-import de.maibornwolff.codecharta.nodeinserter.NodeInserter
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
 class SonarComponentProjectAdapter @JvmOverloads constructor(name: String, private val sonarCodeURLLinker: SonarCodeURLLinker = SonarCodeURLLinker.NULL, private val translator: MetricNameTranslator = MetricNameTranslator.TRIVIAL, private val usePath: Boolean = false) : Project(name) {
@@ -53,7 +52,7 @@ class SonarComponentProjectAdapter @JvmOverloads constructor(name: String, priva
         val node = Node(
                 createNodeName(component),
                 createNodeTypeFromQualifier(component.qualifier!!), createAttributes(component.measures!!), createLink(component))
-        NodeInserter.insertByPath(this, createParentPath(component), node)
+        this.insertByPath(createParentPath(component), node)
     }
 
     private fun createAttributes(measures: List<Measure>): Map<String, Any> {

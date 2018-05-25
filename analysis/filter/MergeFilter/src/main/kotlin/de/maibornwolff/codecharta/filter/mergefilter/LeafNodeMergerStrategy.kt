@@ -31,7 +31,6 @@ package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Path
-import de.maibornwolff.codecharta.nodeinserter.NodeInserter
 
 /**
  * merges leafs according to the level of matching of their paths
@@ -66,7 +65,7 @@ class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase
         val root = flatNodeMerger.merge(*nodes)
         nodes.map { it.nodes }
                 .reduce { total, next -> total.addAll(next) }
-                .forEach { NodeInserter.insertByPath(root, Path(it.key.edgesList.dropLast(1)), it.value) }
+                .forEach { root.insertAt(Path(it.key.edgesList.dropLast(1)), it.value) }
         return listOf(root)
     }
 

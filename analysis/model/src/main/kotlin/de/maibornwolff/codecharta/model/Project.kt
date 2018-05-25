@@ -40,8 +40,22 @@ open class Project(
     val rootNode: Node
         get() = nodes[0]
 
-    fun hasRootNode(): Boolean {
+    private fun hasRootNode(): Boolean {
         return nodes.size == 1
+    }
+
+    /**
+     * Inserts the node as child of the element at the specified position in the tree.
+     *
+     * @param position absolute path to the parent element of the node that has to be inserted
+     * @param node     that has to be inserted
+     */
+    fun insertByPath(position: Path, node: Node) {
+        if (!hasRootNode()) {
+            nodes.add(Node("root", NodeType.Folder))
+        }
+
+        rootNode.insertAt(position, node)
     }
 
     override fun toString(): String {
