@@ -1,15 +1,14 @@
 buildscript {
-    ext.kotlin_version = '1.2.30'
     repositories {
-        mavenCentral()
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.3'
+        classpath group: 'org.junit.platform', name: 'junit-platform-gradle-plugin', version: junit_platform_gradle_plugin_version
     }
 }
 
-apply plugin: 'kotlin'
 apply plugin: 'application'
 apply plugin: 'org.junit.platform.gradle.plugin'
 
@@ -24,32 +23,23 @@ junitPlatform {
 dependencies {
     compile project(':model')
 
-    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: "$kotlin_version"
-    compile group: 'com.univocity', name: 'univocity-parsers', version: '2.6.1'
-    compile group: 'info.picocli', name: 'picocli', version: '2.3.0'
-    compile group: 'io.fastjson', name: 'boon', version: '0.34'
+    compile group: 'com.univocity', name: 'univocity-parsers', version: univocity_parsers_version
+    compile group: 'info.picocli', name: 'picocli', version: picocli_version
+    compile group: 'io.fastjson', name: 'boon', version: boon_version
 
-    testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: "$kotlin_version"
-    testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: "$kotlin_version"
-    testCompile('org.jetbrains.spek:spek-api:1.1.5') {
+    testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
+    testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
+    testCompile("org.jetbrains.spek:spek-api:$spek_version") {
         exclude group: 'org.jetbrains.kotlin'
     }
-    testRuntime('org.jetbrains.spek:spek-junit-platform-engine:1.1.5') {
+    testRuntime("org.jetbrains.spek:spek-junit-platform-engine:$spek_version") {
         exclude group: 'org.jetbrains.kotlin'
     }
-    testCompile group: 'org.hamcrest', name: 'hamcrest-library', version: '1.3'
+    testCompile group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
 }
 
 mainClassName = "de.maibornwolff.codecharta.exporter.csv.CSVExporter"
 applicationName = 'codecharta-csvexport'
-
-compileJava {
-    options.compilerArgs += ['--release', '8']
-}
-
-compileTestJava {
-    options.compilerArgs += ['--release', '8']
-}
 
 jar {
     baseName = "${applicationName}"
@@ -58,15 +48,4 @@ jar {
     }
 
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-}
-
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }

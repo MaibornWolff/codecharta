@@ -57,7 +57,7 @@ class SourceMonitorImporter : Callable<Void> {
             replacementMap["Average Complexity*"] = "average_function_mcc"
 
             for (i in 0..9) {
-                replacementMap["Statements at block level " + i] = "statements_at_level_" + i
+                replacementMap["Statements at block level $i"] = "statements_at_level_$i"
             }
 
             return MetricNameTranslator(replacementMap.toMap(), prefix)

@@ -75,9 +75,9 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
         }
 
     fun calculateNumberOfPages(total: Int): Int {
-        var incrementor = 0;
+        var incrementor = 0
         if(total % PAGE_SIZE > 0){
-            incrementor = 1;
+            incrementor = 1
         }
         return total / PAGE_SIZE + incrementor
     }
@@ -108,7 +108,7 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
 
             return request.get(Metrics::class.java)
         } catch (e: RuntimeException) {
-            throw SonarImporterException("Error requesting " + url, e)
+            throw SonarImporterException("Error requesting $url", e)
         }
 
     }
