@@ -5,4 +5,3 @@ include 'export:CSVExporter'
 include 'tools:ValidationTool', 'tools:ccsh'
 
 rootProject.name = 'codecharta'
-

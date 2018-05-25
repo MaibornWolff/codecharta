@@ -38,7 +38,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         val projectNames = projects.map { p -> p.projectName }.toSortedSet()
         when (projectNames.size) {
             1 -> return projectNames.first()
-            else -> throw MergeException("Projects contain several project names : " + projectNames)
+            else -> throw MergeException("Projects contain several project names : $projectNames")
         }
     }
 
@@ -46,7 +46,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         val apiVersion = projects.map { p -> p.apiVersion }.toSortedSet()
         when (apiVersion.size) {
             1 -> return apiVersion.first()
-            else -> throw MergeException("Projects use multiple Api-Versions of CodeCharta : " + apiVersion)
+            else -> throw MergeException("Projects use multiple Api-Versions of CodeCharta : $apiVersion")
         }
     }
 

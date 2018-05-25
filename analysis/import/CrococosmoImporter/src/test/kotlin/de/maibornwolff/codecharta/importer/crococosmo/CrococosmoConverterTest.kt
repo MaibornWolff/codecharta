@@ -31,7 +31,6 @@ package de.maibornwolff.codecharta.importer.crococosmo
 
 import de.maibornwolff.codecharta.importer.crococosmo.model.*
 import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 

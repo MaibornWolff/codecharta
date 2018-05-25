@@ -63,7 +63,7 @@ class VersionControlledFile internal constructor(
     }
 
     override fun toString(): String {
-        return actualFilename + " with metrics " + metricsMap
+        return "$actualFilename with metrics $metricsMap"
     }
 
     fun getMetricValue(metricName: String): Number {
