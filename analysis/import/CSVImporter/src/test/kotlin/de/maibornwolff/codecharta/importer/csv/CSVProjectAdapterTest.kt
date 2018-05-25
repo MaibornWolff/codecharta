@@ -39,8 +39,8 @@ class CSVProjectAdapterTest : Spek({
 
         on("adding same line twice") {
             val name = "someNameOrOther"
-            project.addProjectFromCsv(toInputStream("someContent\n" + name))
-            project.addProjectFromCsv(toInputStream("someContent\n" + name))
+            project.addProjectFromCsv(toInputStream("someContent\n$name"))
+            project.addProjectFromCsv(toInputStream("someContent\n$name"))
 
             it("should add only first line") {
 

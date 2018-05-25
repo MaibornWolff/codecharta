@@ -105,7 +105,7 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
             logger.debug { "Getting measures from $measureAPIRequestURI"}
             return request.get<Measures>(Measures::class.java)
         } catch (e: RuntimeException) {
-            throw SonarImporterException("Error requesting " + measureAPIRequestURI, e)
+            throw SonarImporterException("Error requesting $measureAPIRequestURI", e)
         }
 
     }
