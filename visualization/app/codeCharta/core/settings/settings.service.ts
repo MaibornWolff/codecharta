@@ -288,7 +288,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             this.numberOfCalls++;
             if(this.numberOfCalls>4){
                 this.numberOfCalls = 0;
-                this.updateSettings();
+                this.onSettingsChanged();
             }
             else{
                 let currentCalls = this.numberOfCalls;
@@ -297,7 +297,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
                 setTimeout(function(){
                     if(currentCalls == _this.numberOfCalls){
                         this.numberOfCalls = 0;
-                        _this.updateSettings();
+                        _this.onSettingsChanged();
                     }
 
                 },400);
@@ -309,7 +309,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      * Applies given settings. ignores map. this ensures to copy settings object and prevent side effects
      * @param {Settings} settings
      */
-    public updateSettings(settings: Settings = this._settings) {
+    private updateSettings(settings: Settings) {
         this._settings.neutralColorRange.to = settings.neutralColorRange.to;
         this._settings.neutralColorRange.from = settings.neutralColorRange.from;
         this._settings.neutralColorRange.flipped = settings.neutralColorRange.flipped;
@@ -330,12 +330,12 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.margin = settings.margin;
         this._settings.deltas = settings.deltas;
         this._settings.operation = settings.operation;
-        this._settings.deltaColorFlipped = this.settings.deltaColorFlipped;
+        this._settings.deltaColorFlipped = settings.deltaColorFlipped;
         this._settings.minimizeDetailPanel = settings.minimizeDetailPanel;
         this._settings.invertHeight = settings.invertHeight;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
-        this._settings.map = this.settings.map;
+        this._settings.map = settings.map;
 
         this.onSettingsChanged();
 
