@@ -286,15 +286,22 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         else{
             this.numberOfCalls++;
-            let currentCalls = this.numberOfCalls;
-            let _this = this;
+            if(this.numberOfCalls>4){
+                this.numberOfCalls = 0;
+                this.updateSettings();
+            }
+            else{
+                let currentCalls = this.numberOfCalls;
+                let _this = this;
 
-            setTimeout(function(){
-                if(currentCalls == _this.numberOfCalls){
-                    _this.updateSettings();
-                }
+                setTimeout(function(){
+                    if(currentCalls == _this.numberOfCalls){
+                        this.numberOfCalls = 0;
+                        _this.updateSettings();
+                    }
 
-            },400);
+                },400);
+            }
         }
     }
 
