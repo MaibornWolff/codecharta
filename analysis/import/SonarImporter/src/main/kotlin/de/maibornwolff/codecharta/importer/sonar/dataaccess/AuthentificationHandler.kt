@@ -37,6 +37,6 @@ internal object AuthentificationHandler {
     }
 
     fun createAuthTxtBase64Encoded(username: String, password: String): String {
-        return String(Base64.getEncoder().encode((username + ":" + password).toByteArray()))
+        return String(Base64.getEncoder().encode(("$username:$password").toByteArray()))
     }
 }// utility class

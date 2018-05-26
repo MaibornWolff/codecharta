@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 - Crococosmo xml files will now generate a cc.json file for each version
 - Suppressing ARIA warnings
+- Simplified gradle structure of analysis part
 
 ### Removed
 
