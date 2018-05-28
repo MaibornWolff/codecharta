@@ -45,7 +45,7 @@ abstract class Tree<T> {
         }
 
     private val treeNodes: List<TreeNode<T>>
-        get() = listOf(TreeNode(Path.trivialPath(), this as T)) +
+        get() = listOf(TreeNode(Path.trivialPath(), asTreeNode())) +
                 children.flatMap { child ->
                     child.treeNodes.map { TreeNode(getPathOfChild(child).concat(it.path), it.node) }
                 }
@@ -90,16 +90,15 @@ abstract class Tree<T> {
         }
     }
 
-    @Transient
-    open val mergingStrategy: MergingStrategy<T> = object : MergingStrategy<T> {
-        override fun merge(tree: Tree<T>, otherTrees: List<Tree<T>>): Tree<T> {
-            System.err.println("Element already exists, skipping.")
-            return tree
-        }
+    open fun merge(nodes: List<T>) : T {
+        System.err.println("Element already exists, skipping.")
+        return asTreeNode()
     }
 
-
-    fun merge(nodes: List<Tree<T>>){
-        mergingStrategy.merge(this, nodes)
+    // attention!!! Tree<T> = T
+    fun asTreeNode() : T{
+        return this as T
     }
+
+    abstract fun insertAt(path: Path, node: T)
 }

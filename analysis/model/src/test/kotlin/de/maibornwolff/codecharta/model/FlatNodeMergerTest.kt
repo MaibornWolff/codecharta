@@ -27,10 +27,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.filter.mergefilter
+package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.model.Node
-import de.maibornwolff.codecharta.model.NodeType
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasSize
@@ -39,9 +37,8 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 
-class NodeMergerTest : Spek({
+class FlatNodeMergerTest : Spek({
     describe("a node merger") {
-        val merger = NodeMerger()
 
         on("merging nodes with same name") {
             val name = "Name"
@@ -51,7 +48,7 @@ class NodeMergerTest : Spek({
             val node1 = Node(name, type, attrib1, link)
             val node2 = Node(name, type)
 
-            val newNode = merger.merge(node1, node2)
+            val newNode = node1.merge(listOf(node2))
 
             it("should return merged node") {
                 assertThat(newNode.name, `is`(name))
@@ -78,7 +75,7 @@ class NodeMergerTest : Spek({
             val node1 = Node("Name", NodeType.File, mapOf(), "", listOf(child1_littleBitDifferent))
             val node2 = Node("Name", NodeType.File, mapOf(), "", listOf(child1, child2))
 
-            val newNode = merger.merge(node1, node2)
+            val newNode = node1.merge(listOf(node2))
 
             // then
             it("should NOT merge children") {

@@ -29,36 +29,39 @@
 
 package de.maibornwolff.codecharta.model
 
-import java.util.*
-
-class Node constructor(
-        val name: String,
-        val type: NodeType? = NodeType.File,
-        val attributes: Map<String, Any> = mutableMapOf(),
-        var link: String? = "",
-        childrenList: List<Node> = listOf(),
-        @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeAttributeMergerIgnoringChildren
-) : Tree<Node>() {
-
-    override val children = childrenList.toMutableList()
-
-    override fun getPathOfChild(child: Tree<Node>): Path {
-        if (!children.contains(child)) {
-            throw NoSuchElementException("Child $child not contained in Node.")
-        }
-        return Path(listOf((child.asTreeNode()).name))
+/**
+ * merging multiply nodes by adding additional attributes and link, ignoring children
+ */
+object NodeAttributeMergerIgnoringChildren : NodeMergerStrategy {
+    override fun merge(tree: Node, otherTrees: List<Node>): Node {
+        val nodes = listOf(tree).plus(otherTrees)
+        return Node(
+                createName(tree),
+                createType(tree),
+                createAttributes(nodes),
+                createLink(nodes),
+                nodeMergingStrategy = tree.nodeMergingStrategy
+        )
     }
 
-    override fun toString(): String {
-        return "Node(name='$name', type=$type, attributes=$attributes, link=$link, children=$children)"
+    private fun createLink(nodes: List<Node>) = nodes.map { it.link }.firstOrNull { it != null && !it.isBlank() }
+
+    private fun createAttributes(nodes: List<Node>) = nodes.map { it.attributes }.reduce { acc, mutableMap -> acc.plus(mutableMap) }
+
+    private fun createType(nodes: Node) = nodes.type
+
+    private fun createName(nodes: Node) = nodes.name
+
+}
+
+/**
+ * merging multiply nodes by adding additional attributes and link, ignoring children
+ */
+object NodeAttributeMerger : NodeMergerStrategy {
+    override fun merge(tree: Node, otherTrees: List<Node>): Node {
+        val node = NodeAttributeMergerIgnoringChildren.merge(tree, otherTrees)
+        node.children.addAll(tree.children)
+        return node
     }
 
-    override fun insertAt(path: Path, node: Node) {
-        NodeInserter.insertByPath(this, path, node)
-    }
-
-
-    override fun merge(nodes: List<Node>) : Node {
-        return nodeMergingStrategy.merge(this, nodes)
-    }
 }

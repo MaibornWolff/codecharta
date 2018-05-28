@@ -93,6 +93,7 @@ class FFCSVProjectAdapterTest : Spek({
 
             it("has more than one node") {
                 assertThat(project.rootNode.nodes.size, greaterThan(1))
+                assertThat(project.rootNode.leafObjects.size, `is`(39))
             }
         }
     }
@@ -109,6 +110,7 @@ class FFCSVProjectAdapterTest : Spek({
 
             it("has more than one node") {
                 assertThat(project.rootNode.nodes.size, greaterThan(1))
+                assertThat(project.rootNode.leafObjects.size, `is`(223))
             }
         }
     }

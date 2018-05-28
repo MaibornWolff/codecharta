@@ -75,6 +75,18 @@ class TreeTest : Spek({
                 }
             }
         }
+
+        on("merge") {
+            tree.merge(listOf(createTree().asTreeNode()))
+
+            it("should do nothing by default") {
+                val leaves = tree.leaves
+
+                assertThat(leaves.size, `is`(1))
+                assertThat(leaves.keys, hasItem(Path.TRIVIAL))
+                assertThat(leaves.values, hasItem(tree))
+            }
+        }
     }
 
     describe("a tree of depth 1") {
