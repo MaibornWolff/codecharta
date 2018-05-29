@@ -1,6 +1,7 @@
 import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/data.service";
 import {SettingsService} from "../../core/settings/settings.service";
 import {CodeMap} from "../../core/data/model/CodeMap";
+import "./revisionChooser.scss";
 
 /**
  * Controls the RevisionChooser
