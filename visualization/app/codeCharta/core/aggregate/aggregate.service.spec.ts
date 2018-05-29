@@ -10,7 +10,7 @@ describe("app.codeCharta.core.aggregate", function() {
 
 
     const file1: CodeMap = {
-        fileName: "file",
+        fileName: "file1",
         projectName: "Sample Project",
         root: {
             name: "root",
@@ -36,7 +36,7 @@ describe("app.codeCharta.core.aggregate", function() {
     };
 
     const file2: CodeMap = {
-        fileName: "file",
+        fileName: "file2",
         projectName: "Sample Project",
         root: {
             name: "root",
@@ -62,14 +62,14 @@ describe("app.codeCharta.core.aggregate", function() {
     };
 
     const file_aggregation_two: CodeMap = {
-        fileName: "Aggregation of following files: file, file",
+        fileName: "Aggregation of following files: file1, file2",
         projectName: "Aggregation of following projects: Sample Project, Sample Project",
         root: {
             name: "root",
             attributes: {},
             children: [
                 {
-                    name: "Sample Project",
+                    name: "file1",
                     attributes: {},
                     children: [
                         {
@@ -91,7 +91,7 @@ describe("app.codeCharta.core.aggregate", function() {
                 },
                 {
 
-                    name: "Sample Project",
+                    name: "file2",
                     attributes: {},
                     children: [
                         {
@@ -117,13 +117,13 @@ describe("app.codeCharta.core.aggregate", function() {
     };
 
     const file_aggregation_four: CodeMap = {
-        fileName: "Aggregation of following files: file, file, file, file",
+        fileName: "Aggregation of following files: file1, file2, file1, file2",
         projectName: "Aggregation of following projects: Sample Project, Sample Project, Sample Project, Sample Project",
         root: {
             name: "root",
             attributes: {},
             children: [{
-                name: "Sample Project",
+                name: "file1",
                 attributes: {},
                 children: [
                     {
@@ -145,7 +145,7 @@ describe("app.codeCharta.core.aggregate", function() {
             },
                 {
 
-                    name: "Sample Project",
+                    name: "file2",
                     attributes: {},
                     children: [
                         {
@@ -166,7 +166,7 @@ describe("app.codeCharta.core.aggregate", function() {
                     ]
                 },
                 {
-                    name: "Sample Project",
+                    name: "file1",
                     attributes: {},
                     children: [
                         {
@@ -188,7 +188,7 @@ describe("app.codeCharta.core.aggregate", function() {
                 },
                 {
 
-                    name: "Sample Project",
+                    name: "file2",
                     attributes: {},
                     children: [
                         {

@@ -46,33 +46,37 @@ export class AggregateMapService {
                 outputNode[property] = JSON.parse(JSON.stringify(inputCodeMap.root.children));
             }
             else if(property == "path"){
-                outputNode[property] = this.updatePath(inputCodeMap.projectName, inputCodeMap.root.path);
+                outputNode[property] = this.updatePath(inputCodeMap.fileName, inputCodeMap.root.path);
             }
             else if(property != "name"){
                 outputNode[property] =  inputCodeMap.root[property];
             }
         }
 
-        this.updatePathOfAllChildren(inputCodeMap.projectName, outputNode.children);
+        this.updatePathOfAllChildren(inputCodeMap.fileName, outputNode.children);
 
         return outputNode;
     }
 
-    private updatePathOfAllChildren(projectName, children: CodeMapNode[]) {
+    private updatePathOfAllChildren(fileName, children: CodeMapNode[]) {
         for(let i = 0; i < children.length; i++) {
             if(children[i].path){
-                children[i].path = this.updatePath(projectName, children[i].path);
+                console.log("children: "+children[i].path);
+                children[i].path = this.updatePath(fileName, children[i].path);
             }
 
             if(children[i].children) {
-                this.updatePathOfAllChildren(projectName, children[i].children);
+                this.updatePathOfAllChildren(fileName, children[i].children);
             }
         }
     }
 
-    private updatePath(projectName, path) {
+    private updatePath(fileName, path) {
+        console.log("path: "+path);
         let subPath = path.substring(6, path.length);
         let slash = (subPath.length > 0) ? "/" : "";
-        return "/root/" + projectName + slash + subPath;
+        let pathName = "/root/" + fileName + slash + subPath;
+        console.log("updated path: "+pathName);
+        return pathName;
     }
 }

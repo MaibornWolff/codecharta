@@ -50,7 +50,7 @@ describe("app.codeCharta.core.scenarioService", function () {
 
     it("scenarios should be filtered when not all metrics are set", () => {
         dataService.data.metrics = ["unary", "Average Complexity*"];
-        expect(scenarioService.getScenarios()).toEqual([{"name": "Average Complexity*", "settings": {"amountOfTopLabels": 1, "areaMetric": "unary", "camera": {"x": 0, "y": 300, "z": 1000}, "colorMetric": "Average Complexity*", "deltaColorFlipped": false, "deltas": false, "heightMetric": "Average Complexity*", "margin": 1, "neutralColorRange": {"flipped": false, "from": 20, "to": 40}, "scaling": {"x": 1, "y": 1, "z": 1}, "showDependencies": false}}]
+        expect(scenarioService.getScenarios()).toEqual([{"name": "Average Complexity*", "settings": {"amountOfTopLabels": 1, "areaMetric": "unary", "camera": {"x": 0, "y": 300, "z": 1000}, "colorMetric": "Average Complexity*", "deltaColorFlipped": false, "deltas": false, "heightMetric": "Average Complexity*", "margin": 1, "minimizeDetailPanel": false, "neutralColorRange": {"flipped": false, "from": 20, "to": 40}, "scaling": {"x": 1, "y": 1, "z": 1}, "showDependencies": false}}]
         );
     });
 
