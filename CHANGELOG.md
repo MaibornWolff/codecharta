@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
-
+- compacting empty middle packages #150
 ### Removed
 
 ### Fixed
