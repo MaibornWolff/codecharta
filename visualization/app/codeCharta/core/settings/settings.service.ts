@@ -335,7 +335,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.invertHeight = settings.invertHeight;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
-        this._settings.map = settings.map;
+        this._settings.map = settings.map|| this.settings.map;
 
         this.onSettingsChanged();
 
