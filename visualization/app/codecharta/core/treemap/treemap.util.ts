@@ -43,7 +43,8 @@ export class TreeMapUtils {
             path: squaredNode.data.path,
             origin: squaredNode.data.origin,
             link: squaredNode.data.link,
-            children: []
+            children: [],
+            highlighted: depth === 2
         };
     }
 
