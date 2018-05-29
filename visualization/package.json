@@ -171,7 +171,6 @@
     "sass-loader": "^6.0.7",
     "script-loader": "^0.7.0",
     "sinon": "^4.4.10",
-    "squarify": "^1.0.1",
     "string-loader": "0.0.1",
     "style-loader": "^0.18.2",
     "three": "^0.89.0",
