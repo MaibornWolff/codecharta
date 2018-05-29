@@ -25,8 +25,6 @@ export interface TreeMapSettings {
     areaKey: string;
     heightKey: string;
     margin: number;
-    fanoutDepths: number[];
-    fanoutScale: number
 }
 
 export class TreeMapService {
@@ -117,11 +115,7 @@ export class TreeMapService {
 
         for (let i = 0; i < output.length; i++) {
 
-            let effectiveMargin = s.margin;
-            if (s.fanoutDepths.includes(depth)) {
-                effectiveMargin *= s.fanoutScale;
-            }
-            let effectiveMarginRelativeToNodeSize = effectiveMargin*this.predictTotalMarginPerSide(output[i], s);
+            let effectiveMarginRelativeToNodeSize = s.margin*this.predictTotalMarginPerSide(output[i], s);
 
             squarifiedChildren.push({
                 value: output[i].value,
@@ -177,12 +171,7 @@ export class TreeMapService {
     }
 
     private predictTotalMarginPerSide(node: { children?: any }, s: TreeMapSettings): number {
-        let margins = [s.margin];
-        s.fanoutDepths.forEach(d=>margins.push(s.margin*s.fanoutScale));
-        let avgMargin = 0;
-        margins.forEach((m)=>{avgMargin+=m;});
-        avgMargin /= margins.length * 2;
-        return Math.sqrt(TreeMapUtils.countNodes(node)) * avgMargin * 2;
+        return Math.sqrt(TreeMapUtils.countNodes(node)) * s.margin * 2;
     }
 
 }

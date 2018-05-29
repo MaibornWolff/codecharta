@@ -98,9 +98,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             size: mapSize,
             areaKey: s.areaMetric,
             heightKey: s.heightMetric,
-            margin: s.margin,
-            fanoutDepths: [1,2],
-            fanoutScale: 2
+            margin: s.margin
         };
 
         let nodes: node[] = this.collectNodesToArray(
