@@ -26,30 +26,22 @@
         {
           "name": "Parent Leaf",
           "attributes": {},
-          "link": "http://www.google.de",
           "children": [
             {
-              "name": "Parent Leaf 2",
-              "attributes": {},
-              "link": "http://www.google.de",
-              "children": [
-                {
-                  "name": "small leaf",
-                  "attributes": {
-                    "rloc": 30,
-                    "functions": 100,
-                    "mcc": 100
-                  }
-                },
-                {
-                  "name": "other small leaf",
-                  "attributes": {
-                    "rloc": 70,
-                    "functions": 1000,
-                    "mcc": 10
-                  }
-                }
-              ]
+              "name": "small leaf",
+              "attributes": {
+                "rloc": 30,
+                "functions": 100,
+                "mcc": 100
+              }
+            },
+            {
+              "name": "other small leaf",
+              "attributes": {
+                "rloc": 70,
+                "functions": 1000,
+                "mcc": 10
+              }
             }
           ]
         }
