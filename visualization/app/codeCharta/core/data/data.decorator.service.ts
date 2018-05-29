@@ -26,7 +26,7 @@ export class DataDecoratorService {
                 current.name += "/" + child.name;
                 current.path += "/" + child.name;
                 if(child.link) {
-                    current.link += "\n" + child.link;
+                    current.link = child.link;
                 }
                 current.attributes = child.attributes;
                 current.deltas = child.deltas;

@@ -89,7 +89,7 @@ describe("app.codeCharta.core.data.dataService", () => {
                 ]
             }];
             dataDecoratorService.decorateMapWithCompactMiddlePackages(a);
-            expect(a.root.link).toBe("link0\nlink1");
+            expect(a.root.link).toBe("link1");
         });
 
         it("should collect paths correctly", ()=>{
