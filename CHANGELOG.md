@@ -9,10 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Layout switcher #141
 - Added CrococosmoImporter to Analysis
 - Added type, dirs, name to CSVExporter
+- Invert height of building checkbox
 
 ### Changed
 - Crococosmo xml files will now generate a cc.json file for each version
- 
+- Suppressing ARIA warnings
+- Simplified gradle structure of analysis part
+
 ### Removed
 
 ### Fixed

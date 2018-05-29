@@ -58,7 +58,7 @@ class PathFactoryTest : Spek({
         )
 
         for (path in pathsWithoutSlash) {
-            assertThat(PathFactory.fromFileSystemPath(path), `is`(PathFactory.fromFileSystemPath("/" + path)))
+            assertThat(PathFactory.fromFileSystemPath(path), `is`(PathFactory.fromFileSystemPath("/$path")))
         }
     }
 
