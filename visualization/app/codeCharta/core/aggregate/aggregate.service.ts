@@ -38,7 +38,7 @@ export class AggregateMapService {
     private convertMapToNode(inputCodeMap: CodeMap): CodeMapNode{
 
         let outputNode: CodeMapNode = {} as CodeMapNode;
-        outputNode["name"]= inputCodeMap.projectName;
+        outputNode["name"]= inputCodeMap.fileName;
 
         for(let property in inputCodeMap.root){
 

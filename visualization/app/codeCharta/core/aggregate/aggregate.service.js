@@ -24,7 +24,7 @@ export class AggregateMapService {
     }
     convertMapToNode(inputCodeMap) {
         let outputNode = {};
-        outputNode["name"] = inputCodeMap.projectName;
+        outputNode["name"] = inputCodeMap.fileName;
         for (let property in inputCodeMap.root) {
             if (property == "children") {
                 outputNode[property] = JSON.parse(JSON.stringify(inputCodeMap.root.children));
