@@ -6,10 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
-- CrococosmoImporter to Analysis
-- Type, dirs, name to CSVExporter
+- Layout switcher #141
+- Added CrococosmoImporter to Analysis
+- Added type, dirs, name to CSVExporter
+- Invert height of building checkbox
 - Aggregate multiple maps in visualization #110
-- Invert height of building checkbox #112
 
 ### Changed
 - Crococosmo xml files will now generate a cc.json file for each version

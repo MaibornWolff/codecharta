@@ -125,6 +125,7 @@
     "@types/node": "^8.10.17",
     "@types/sinon": "^2.3.5",
     "@types/three": "^0.89.12",
+    "@uirouter/angularjs": "^1.0.16",
     "ajv": "^5.5.2",
     "angular": "^1.7.0",
     "angular-animate": "^1.7.0",

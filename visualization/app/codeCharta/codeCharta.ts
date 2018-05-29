@@ -3,7 +3,7 @@
 import "./core/core.module";
 import "./ui/ui";
 
-import {codeChartaComponent, CodeChartaController} from "./codeCharta.component";
+import {codeChartaComponent} from "./codeCharta.component";
 
 import angular from "angular";
 
