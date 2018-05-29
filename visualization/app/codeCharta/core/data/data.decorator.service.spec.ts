@@ -53,6 +53,79 @@ describe("app.codeCharta.core.data.dataService", () => {
 
     });
 
+    describe("compact middle packages",() => {
+
+        it("should compact from root", ()=>{
+            a.root.children = [{
+                name: "middle",
+                children: [
+                    {
+                        name: "a"
+                    },
+                    {
+                        name: "b"
+                    }
+                ]
+            }];
+            dataDecoratorService.decorateMapWithCompactMiddlePackages(a);
+            expect(a.root.name).toBe("root/middle");
+            expect(a.root.children.length).toBe(2);
+            expect(a.root.children[0].name).toBe("a");
+            expect(a.root.children[1].name).toBe("b");
+        });
+
+        it("should not compact with single leaves", ()=>{
+            a.root.children = [{
+                name: "middle",
+                children: [
+                    {
+                        name: "singleLeaf"
+                    }
+                ]
+            }];
+            dataDecoratorService.decorateMapWithCompactMiddlePackages(a);
+            expect(a.root.name).toBe("root/middle");
+            expect(a.root.children.length).toBe(1);
+            expect(a.root.children[0].name).toBe("singleLeaf");
+        });
+
+        it("should compact intermediate middle packages", ()=>{
+            a.root.children = [{
+                name: "start",
+                children: [
+                    {
+                        name: "middle",
+                        children: [
+                            {
+                                name: "middle2",
+                                children: [
+                                    {
+                                        name: "a"
+                                    },
+                                    {
+                                        name: "b"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: "c"
+                    }
+                ]
+            }];
+            dataDecoratorService.decorateMapWithCompactMiddlePackages(a);
+            expect(a.root.name).toBe("root/start");
+            expect(a.root.children.length).toBe(2);
+            expect(a.root.children[0].name).toBe("middle/middle2");
+            expect(a.root.children[1].name).toBe("c");
+            expect(a.root.children[0].children.length).toBe(2);
+            expect(a.root.children[0].children[0].name).toBe("a");
+            expect(a.root.children[0].children[1].name).toBe("b");
+        });
+
+    });
+
     describe("decorateParentNodesWithMeanAttributesOfChildren",() => {
 
         it("all nodes should have an attribute list with all possible metrics", ()=>{
