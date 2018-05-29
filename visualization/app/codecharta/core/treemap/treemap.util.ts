@@ -13,6 +13,10 @@ export class TreeMapUtils {
         return count;
     }
 
+    public static isNodeLeaf(squaredNode: SquarifiedValuedCodeMapNode): boolean {
+        return !(squaredNode.children && squaredNode.children.length > 0);
+    }
+
     public static buildNodeFrom(squaredNode: SquarifiedValuedCodeMapNode,
                                 heightScale: number,
                                 heightValue: number,
@@ -23,14 +27,14 @@ export class TreeMapUtils {
                                 folderHeight: number): node {
         return {
             name: squaredNode.data.name,
-            width: squaredNode.width,
-            height: Math.abs(squaredNode.children && squaredNode.children.length <= 0 ? Math.max(heightScale * heightValue, minHeight) : folderHeight),
-            length: squaredNode.length,
+            width: squaredNode.x1 - squaredNode.x0,
+            height: Math.abs(TreeMapUtils.isNodeLeaf(squaredNode) ? Math.max(heightScale * heightValue, minHeight) : folderHeight),
+            length: squaredNode.y1 - squaredNode.y0,
             depth: depth,
             x0: squaredNode.x0,
             z0: depth * folderHeight,
             y0: squaredNode.y0,
-            isLeaf: squaredNode.children && squaredNode.children.length <= 0,
+            isLeaf: TreeMapUtils.isNodeLeaf(squaredNode),
             attributes: squaredNode.data.attributes,
             deltas: squaredNode.data.deltas,
             parent: parent,
@@ -41,6 +45,6 @@ export class TreeMapUtils {
             link: squaredNode.data.link,
             children: []
         };
-    };
+    }
 
 }
