@@ -91,7 +91,7 @@ class FFCSVProjectAdapterTest : Spek({
         on("reading csv lines from Sourcemonitor") {
             project.addProjectFromCsv(this.javaClass.classLoader.getResourceAsStream("sourcemonitor.csv"))
 
-            it("has more than one node") {
+            it("has correct number of nodes") {
                 assertThat(project.rootNode.nodes.size, greaterThan(1))
                 assertThat(project.rootNode.leafObjects.size, `is`(39))
             }
@@ -101,16 +101,26 @@ class FFCSVProjectAdapterTest : Spek({
     describe("CSVProjectAdapter for Understand") {
         val project = CSVProjectAdapter("test", '\\', ',',
                 MetricNameTranslator(mapOf(Pair("File", "path"))),
-                { it[0] == "File" }
+                { it[0] == "File" || it[0] == "Class" }
         )
 
 
         on("reading csv lines from Understand") {
             project.addProjectFromCsv(this.javaClass.classLoader.getResourceAsStream("understand.csv"))
 
-            it("has more than one node") {
+            it("has correct number of nodes") {
                 assertThat(project.rootNode.nodes.size, greaterThan(1))
                 assertThat(project.rootNode.leafObjects.size, `is`(223))
+            }
+
+            it("leaf has file attributes") {
+                val attributes = project.rootNode.leafObjects.flatMap { it.attributes.keys }.distinct()
+                assertThat(attributes, hasItem("countline"))
+            }
+
+            it("leaf has class attributes") {
+                val attributes = project.rootNode.leafObjects.flatMap { it.attributes.keys }.distinct()
+                assertThat(attributes, hasItem("countclasscoupled"))
             }
         }
     }

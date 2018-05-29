@@ -30,9 +30,9 @@
 package de.maibornwolff.codecharta.model
 
 /**
- * merging multiply nodes by adding additional attributes and link, ignoring children
+ * merging multiply nodes by using max attribute and link, ignoring children
  */
-object NodeAttributeMergerIgnoringChildren : NodeMergerStrategy {
+object NodeMaxAttributeMergerIgnoringChildren : NodeMergerStrategy {
     override fun merge(tree: Node, otherTrees: List<Node>): Node {
         val nodes = listOf(tree).plus(otherTrees)
         return Node(
@@ -46,20 +46,33 @@ object NodeAttributeMergerIgnoringChildren : NodeMergerStrategy {
 
     private fun createLink(nodes: List<Node>) = nodes.map { it.link }.firstOrNull { it != null && !it.isBlank() }
 
-    private fun createAttributes(nodes: List<Node>) = nodes.map { it.attributes }.reduce { acc, mutableMap -> acc.plus(mutableMap) }
+    private fun createAttributes(nodes: List<Node>) =
+            nodes.map { it.attributes }.
+                    reduce { acc, mutableMap -> acc.mergeReduce(mutableMap, {x,y -> maxValOrFirst(x,y)}) }
+                    .toMutableMap()
 
     private fun createType(nodes: Node) = nodes.type
 
     private fun createName(nodes: Node) = nodes.name
 
+    private fun maxValOrFirst(x: Any, y: Any) : Any  {
+        return when {
+            x is Long && y is Long -> maxOf(x,y)
+            x is Double && y is Double -> maxOf(x,y)
+            else -> x
+        }
+    }
+
+    private fun <K, V> Map<K, V>.mergeReduce(other: Map<K, V>, reduce: (V, V) -> V = { _, b -> b }): Map<K, V> =
+            this.toMutableMap().apply { other.forEach { merge(it.key, it.value, reduce) } }
 }
 
 /**
  * merging multiply nodes by adding additional attributes and link, ignoring children
  */
-object NodeAttributeMerger : NodeMergerStrategy {
+object NodeMaxAttributeMerger : NodeMergerStrategy {
     override fun merge(tree: Node, otherTrees: List<Node>): Node {
-        val node = NodeAttributeMergerIgnoringChildren.merge(tree, otherTrees)
+        val node = NodeMaxAttributeMergerIgnoringChildren.merge(tree, otherTrees)
         node.children.addAll(tree.children)
         return node
     }

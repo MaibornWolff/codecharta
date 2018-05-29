@@ -37,7 +37,7 @@ class Node constructor(
         val attributes: Map<String, Any> = mutableMapOf(),
         var link: String? = "",
         childrenList: List<Node> = listOf(),
-        @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeAttributeMergerIgnoringChildren
+        @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeMaxAttributeMergerIgnoringChildren
 ) : Tree<Node>() {
 
     override val children = childrenList.toMutableList()
@@ -56,7 +56,6 @@ class Node constructor(
     override fun insertAt(path: Path, node: Node) {
         NodeInserter.insertByPath(this, path, node)
     }
-
 
     override fun merge(nodes: List<Node>) : Node {
         return nodeMergingStrategy.merge(this, nodes)

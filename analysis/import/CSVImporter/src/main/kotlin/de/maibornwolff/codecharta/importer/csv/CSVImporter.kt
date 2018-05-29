@@ -33,7 +33,7 @@ class CSVImporter : Callable<Void> {
     @Throws(IOException::class)
     override fun call(): Void? {
         val project = CSVProjectAdapter(projectName, pathSeparator, csvDelimiter)
-        files.map { it.inputStream() }.forEach { project.addProjectFromCsv(it) }
+        project.addProjectFromCsv(files.map { it.inputStream() })
         ProjectSerializer.serializeProject(project, writer())
 
         return null

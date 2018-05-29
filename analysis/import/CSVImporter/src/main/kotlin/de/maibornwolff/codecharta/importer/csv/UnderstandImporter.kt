@@ -28,9 +28,9 @@ class UnderstandImporter : Callable<Void> {
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        val includeRows = { row: Array<String> -> row[0] == "File" }
+        val includeRows = { row: Array<String> -> row[0].contains("Class") || row[0].contains("File")}
         val project = CSVProjectAdapter(projectName, pathSeparator, csvDelimiter, understandReplacement, includeRows)
-        files.map { it.inputStream() }.forEach { project.addProjectFromCsv(it) }
+        project.addProjectFromCsv(files.map { it.inputStream() })
         ProjectSerializer.serializeProject(project, writer())
 
         return null

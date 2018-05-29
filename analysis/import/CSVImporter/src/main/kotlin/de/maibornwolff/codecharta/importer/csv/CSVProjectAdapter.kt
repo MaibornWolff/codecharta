@@ -31,10 +31,7 @@ package de.maibornwolff.codecharta.importer.csv
 
 import com.univocity.parsers.csv.CsvParser
 import com.univocity.parsers.csv.CsvParserSettings
-import de.maibornwolff.codecharta.model.Node
-import de.maibornwolff.codecharta.model.NodeType
-import de.maibornwolff.codecharta.model.PathFactory
-import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.*
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -54,6 +51,10 @@ class CSVProjectAdapter(
 
     init {
         this.nodes.add(Node(root, NodeType.Folder))
+    }
+
+    fun addProjectFromCsv(inStreams : List<InputStream>) {
+        inStreams.forEach { this.addProjectFromCsv(it) }
     }
 
     fun addProjectFromCsv(
@@ -86,7 +87,7 @@ class CSVProjectAdapter(
     private fun insertNodeForRow(rawRow: Array<String?>) {
         try {
             val row = CSVRow(rawRow, header!!, pathSeparator)
-            val node = Node(row.fileName, NodeType.File, row.attributes)
+            val node = Node(row.fileName, NodeType.File, row.attributes, nodeMergingStrategy = NodeMaxAttributeMerger)
             this.insertByPath(
                     PathFactory.fromFileSystemPath(row.folderWithFile.replace(pathSeparator, '/')),
                     node

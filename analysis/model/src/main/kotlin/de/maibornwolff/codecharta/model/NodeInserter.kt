@@ -41,19 +41,21 @@ object NodeInserter {
     fun insertByPath(root: Node, path: Path, node: Node) {
         if (path.isTrivial) {
             if (rootContainsNodeAlready(root, node)) {
-                System.err.println("Element $path already exists, skipping.")
-                return
+                val original = getNode(root, node.name)!!
+                root.children.remove(original)
+                root.children.add(original.merge(listOf(node)))
+            } else {
+                root.children.add(node)
             }
-            root.children.add(node)
         } else {
             val name = path.head
-            val folderNode = getFolderNode(root, name)
+            val folderNode = getNode(root, name)
                     ?: createFolderNodeAndInsertAtRoot(root, name)
             insertByPath(folderNode, path.tail, node)
         }
     }
 
-    private fun getFolderNode(root: Node, name: String): Node? {
+    private fun getNode(root: Node, name: String): Node? {
         return root.children.firstOrNull { it.name == name }
     }
 
