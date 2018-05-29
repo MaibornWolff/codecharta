@@ -6,8 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
-- CrococosmoImporter to Analysis
-- type, dirs, name to CSVExporter
+- Layout switcher #141
+- Added CrococosmoImporter to Analysis
+- Added type, dirs, name to CSVExporter
 - Invert height of building checkbox
 
 ### Changed
