@@ -105,6 +105,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             this.treeMapService.createTreemapNodes(s.map.root, treeMapSettings)
         );
 
+        console.log(nodes);
+
         let filtered = nodes.filter(node => node.visible && node.length > 0 && node.width > 0);
         this.currentSortedNodes = filtered.sort((a, b) => {
             return b.height - a.height;
