@@ -74,6 +74,44 @@ describe("app.codeCharta.core.data.dataService", () => {
             expect(a.root.children[1].name).toBe("b");
         });
 
+        it("should collect links correctly", ()=>{
+            a.root.link = "link0";
+            a.root.children = [{
+                name: "middle",
+                link: "link1",
+                children: [
+                    {
+                        name: "a"
+                    },
+                    {
+                        name: "b"
+                    }
+                ]
+            }];
+            dataDecoratorService.decorateMapWithCompactMiddlePackages(a);
+            expect(a.root.link).toBe("link0\nlink1");
+        });
+
+        it("should collect paths correctly", ()=>{
+            a.root.path = "/root";
+            a.root.children = [{
+                name: "middle",
+                path: "/root/middle",
+                children: [
+                    {
+                        name: "a",
+                        path: "/root/middle/a",
+                    },
+                    {
+                        name: "b",
+                        path: "/root/middle/b",
+                    }
+                ]
+            }];
+            dataDecoratorService.decorateMapWithCompactMiddlePackages(a);
+            expect(a.root.path).toBe("/root/middle");
+        });
+
         it("should not compact with single leaves", ()=>{
             a.root.children = [{
                 name: "middle",
