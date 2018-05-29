@@ -31,7 +31,7 @@ package de.maibornwolff.codecharta.model
 
 import java.util.*
 
-class Node constructor(
+open class Node constructor(
         val name: String,
         val type: NodeType? = NodeType.File,
         val attributes: Map<String, Any> = mutableMapOf(),

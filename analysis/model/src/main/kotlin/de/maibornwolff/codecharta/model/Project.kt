@@ -30,7 +30,7 @@
 package de.maibornwolff.codecharta.model
 
 
-open class Project(
+ open class Project(
         val projectName: String,
         nodeList: List<Node> = listOf(),
         val apiVersion: String = API_VERSION

@@ -14,4 +14,4 @@ Output goes to *stdout* or to a file if specified by '-o'.
 
 ### Example
 
-> ccsh crococosmoimport crococosmo-project.xml
+> ccsh crococosmoimport crococosmo-projectCreator.xml

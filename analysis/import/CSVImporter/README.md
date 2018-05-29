@@ -24,7 +24,7 @@ Generates visualisation data from [SciTools Understand](https://scitools.com/fea
 
 ### CSV Import for SourceMonitor
 
-If you have analized your project with SourceMonitor and exported the metric data (for classes only) to a csv-file, you may call the command
+If you have analized your projectCreator with SourceMonitor and exported the metric data (for classes only) to a csv-file, you may call the command
 
 > ccsh sourcemonitorimport \<path to sourcemonitor csv file>
 
@@ -36,13 +36,13 @@ Currently, SourceMonitorImporter does not support metrics for methods in csv fil
 
 If SourceMonitor v3.5 is installed in 'C:\Program Files (x86)\SourceMonitor' you may use the wrapper script sourcemonImport.bat to generate and import metrics from SourceMonitor in one step:
 
-> sourcemonImport.bat \<project name> \<source code path> \<language>
+> sourcemonImport.bat \<projectCreator name> \<source code path> \<language>
 
 If SourceMonitor is installed in a different directory the script must be changed accordingly.
 
 ### CSV Import for SciTools Understand
 
-If you have analized your project with Understand and exported the metric data to a csv-file, you may call the command
+If you have analized your projectCreator with Understand and exported the metric data to a csv-file, you may call the command
 
 > ccsh understandimport \<path to sourcemonitor csv file>
 
