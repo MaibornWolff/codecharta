@@ -21,6 +21,11 @@ export class renderingUtil {
         );
     }
 
+    static rgbToHexNumber(r: number, g: number, b: number):number  {
+        return parseInt(Math.round(r).toString(16) + '' + Math.round(g).toString(16) + '' + Math.round(b).toString(16), 16);
+    }
+
+
     static gradient(startColor: string, endColor: string, steps: number): number[] {
         let start = {
             'Hex'   : startColor,

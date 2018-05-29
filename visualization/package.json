@@ -148,6 +148,7 @@
     "cypress": "^2.1.0",
     "d3": "^4.13.0",
     "deepcopy": "^0.6.3",
+    "distinct-colors": "^1.0.4",
     "es6-shim": "^0.35.3",
     "file-api": "^0.10.4",
     "file-loader": "^0.11.2",
