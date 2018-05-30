@@ -1,0 +1,7 @@
+@import "../mixins";
+@import "../codecharta/codeCharta.component";
+
+test-ville-component {
+  @extend code-charta-component;
+}
+

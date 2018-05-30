@@ -6,12 +6,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- Layout switcher #141
+- Added CrococosmoImporter to Analysis
+- Added type, dirs, name to CSVExporter
+- Invert height of building checkbox
 
 ### Changed
+- Crococosmo xml files will now generate a cc.json file for each version
+- Suppressing ARIA warnings
+- Simplified gradle structure of analysis part
 - compacting empty middle packages #150
 ### Removed
 
 ### Fixed
+- filter by regex shows parent nodes #116
 
 ## [1.12.0] - 2018-04-27
 ### Added

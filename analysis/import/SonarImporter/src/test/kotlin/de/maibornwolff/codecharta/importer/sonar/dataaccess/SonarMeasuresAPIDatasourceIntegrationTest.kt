@@ -64,7 +64,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
 
     @Throws(IOException::class)
     private fun createPagedResponseString(page: Number): String {
-        return this.javaClass.classLoader.getResource("sonarqube_measures_paged_" + page +".json").readText()
+        return this.javaClass.classLoader.getResource("sonarqube_measures_paged_$page.json").readText()
     }
 
     @Throws(IOException::class)
@@ -263,7 +263,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
 
         private fun createBaseUrl(): URL {
             try {
-                return URL("http://localhost:" + PORT)
+                return URL("http://localhost:$PORT")
             } catch (e: MalformedURLException) {
                 throw RuntimeException(e)
             }

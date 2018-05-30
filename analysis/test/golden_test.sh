@@ -48,6 +48,13 @@ check_sourcemonitor() {
   validate "${ACTUAL_SOURCEMON_JSON}"
 }
 
+check_crococosmo() {
+  echo " -- expect CrococosmoImporter gives valid cc.json"
+  ACTUAL_COSMO_JSON=${INSTALL_DIR}/actual_cosmoimport.json
+  "${CCSH}" crococosmoimport data/codecharta/crococosmo.xml > "${ACTUAL_COSMO_JSON}"
+  validate "${ACTUAL_COSMO_JSON}"
+}
+
 check_scmlog() {
   echo " -- expect SCMLogParser gives valid cc.json"
   ACTUAL_SCMLOG_JSON="${INSTALL_DIR}/actual_scmlog.json"
@@ -68,6 +75,7 @@ run_tests() {
   echo
 
   check_sourcemonitor
+  check_crococosmo
   check_scmlog
   check_merge
 

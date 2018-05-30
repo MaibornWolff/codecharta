@@ -18,6 +18,14 @@ Cypress.Commands.add("getInjector",
     }
 );
 
+Cypress.Commands.add("openExperimentalTab", () => {
+    cy.get('[md-component-id="_expansion_panel_id_18"] > md-expansion-panel-collapsed').click({force:true});
+});
+
+Cypress.Commands.add("openMenu", () => {
+    cy.get('[aria-label="Open Sidenav"]').click();
+});
+
 Cypress.Commands.add("getAreaMetricSelection", () => {
     return cy.get('horizontal-metric-chooser-component > :nth-child(1) md-select');
 });

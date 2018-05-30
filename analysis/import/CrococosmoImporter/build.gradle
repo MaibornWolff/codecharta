@@ -1,0 +1,26 @@
+apply plugin: 'application'
+
+dependencies {
+    compile project(':model')
+
+    compile group: 'com.fasterxml.jackson', name: 'jackson-base', version: jackson_version
+    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: jackson_version
+    compile group: 'io.fastjson', name: 'boon', version: boon_version
+    compile group: 'info.picocli', name: 'picocli', version: picocli_version
+
+    testCompile group: 'junit', name: 'junit', version: junit4_version
+    testCompile project(path: ':model', configuration: 'testOutput')
+}
+
+
+mainClassName = "de.maibornwolff.codecharta.importer.crococosmo.CrococosmoImporter"
+applicationName = 'codecharta-crococosmoimport'
+
+jar {
+    baseName = "${applicationName}"
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
