@@ -24,14 +24,16 @@ export class AggregateMapService {
             root: {
                 name: "root",
                 children: [] as CodeMapNode[],
-                attributes: {}
+                attributes: {},
+                origin: "Aggregation of following files: " + fileNameArray.join(", "),
+                path: "/root",
+                visible: true
             }
         };
 
         for(let inputMap of inputMaps){
             outputMap.root.children.push(this.convertMapToNode(inputMap));
         }
-
         return outputMap;
     }
 
@@ -61,7 +63,6 @@ export class AggregateMapService {
     private updatePathOfAllChildren(fileName, children: CodeMapNode[]) {
         for(let i = 0; i < children.length; i++) {
             if(children[i].path){
-                console.log("children: "+children[i].path);
                 children[i].path = this.updatePath(fileName, children[i].path);
             }
 
@@ -72,11 +73,9 @@ export class AggregateMapService {
     }
 
     private updatePath(fileName, path) {
-        console.log("path: "+path);
         let subPath = path.substring(6, path.length);
         let slash = (subPath.length > 0) ? "/" : "";
         let pathName = "/root/" + fileName + slash + subPath;
-        console.log("updated path: "+pathName);
         return pathName;
     }
 }

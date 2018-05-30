@@ -67,6 +67,9 @@ describe("app.codeCharta.core.aggregate", function() {
         root: {
             name: "root",
             attributes: {},
+            origin: "Aggregation of following files: file1, file2",
+            visible: true,
+            path: "/root",
             children: [
                 {
                     name: "file1",
@@ -122,6 +125,9 @@ describe("app.codeCharta.core.aggregate", function() {
         root: {
             name: "root",
             attributes: {},
+            origin: "Aggregation of following files: file1, file2, file1, file2",
+            visible: true,
+            path: "/root",
             children: [{
                 name: "file1",
                 attributes: {},

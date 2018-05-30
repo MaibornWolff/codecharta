@@ -1,31 +1,40 @@
-export class AggregateMapService {
-    aggregateMaps(inputMaps) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var AggregateMapService = /** @class */ (function () {
+    function AggregateMapService() {
+    }
+    AggregateMapService.prototype.aggregateMaps = function (inputMaps) {
         if (inputMaps.length == 1)
             return inputMaps[0];
-        let projectNameArray = [];
-        let fileNameArray = [];
-        for (let inputMap of inputMaps) {
+        var projectNameArray = [];
+        var fileNameArray = [];
+        for (var _i = 0, inputMaps_1 = inputMaps; _i < inputMaps_1.length; _i++) {
+            var inputMap = inputMaps_1[_i];
             projectNameArray.push(inputMap.projectName);
             fileNameArray.push(inputMap.fileName);
         }
-        let outputMap = {
+        var outputMap = {
             projectName: "Aggregation of following projects: " + projectNameArray.join(", "),
             fileName: "Aggregation of following files: " + fileNameArray.join(", "),
             root: {
                 name: "root",
                 children: [],
-                attributes: {}
+                attributes: {},
+                origin: "Aggregation of following files: " + fileNameArray.join(", "),
+                path: "/root",
+                visible: true
             }
         };
-        for (let inputMap of inputMaps) {
+        for (var _a = 0, inputMaps_2 = inputMaps; _a < inputMaps_2.length; _a++) {
+            var inputMap = inputMaps_2[_a];
             outputMap.root.children.push(this.convertMapToNode(inputMap));
         }
         return outputMap;
-    }
-    convertMapToNode(inputCodeMap) {
-        let outputNode = {};
+    };
+    AggregateMapService.prototype.convertMapToNode = function (inputCodeMap) {
+        var outputNode = {};
         outputNode["name"] = inputCodeMap.fileName;
-        for (let property in inputCodeMap.root) {
+        for (var property in inputCodeMap.root) {
             if (property == "children") {
                 outputNode[property] = JSON.parse(JSON.stringify(inputCodeMap.root.children));
             }
@@ -38,26 +47,24 @@ export class AggregateMapService {
         }
         this.updatePathOfAllChildren(inputCodeMap.fileName, outputNode.children);
         return outputNode;
-    }
-    updatePathOfAllChildren(fileName, children) {
-        for (let i = 0; i < children.length; i++) {
+    };
+    AggregateMapService.prototype.updatePathOfAllChildren = function (fileName, children) {
+        for (var i = 0; i < children.length; i++) {
             if (children[i].path) {
-                console.log("children: " + children[i].path);
                 children[i].path = this.updatePath(fileName, children[i].path);
             }
             if (children[i].children) {
                 this.updatePathOfAllChildren(fileName, children[i].children);
             }
         }
-    }
-    updatePath(fileName, path) {
-        console.log("path: " + path);
-        let subPath = path.substring(6, path.length);
-        let slash = (subPath.length > 0) ? "/" : "";
-        let pathName = "/root/" + fileName + slash + subPath;
-        console.log("updated path: " + pathName);
+    };
+    AggregateMapService.prototype.updatePath = function (fileName, path) {
+        var subPath = path.substring(6, path.length);
+        var slash = (subPath.length > 0) ? "/" : "";
+        var pathName = "/root/" + fileName + slash + subPath;
         return pathName;
-    }
-}
-AggregateMapService.SELECTOR = "aggregateMapService";
-//# sourceMappingURL=aggregate.service.js.map
+    };
+    AggregateMapService.SELECTOR = "aggregateMapService";
+    return AggregateMapService;
+}());
+exports.AggregateMapService = AggregateMapService;
