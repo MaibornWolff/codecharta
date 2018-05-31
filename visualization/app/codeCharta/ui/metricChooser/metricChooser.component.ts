@@ -14,6 +14,7 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
     public hoveredAreaValue: number;
     public hoveredHeightValue: number;
     public hoveredColorValue: number;
+    public hoveredDeltaValue: number;
 
     /* @ngInject */
     constructor(
@@ -39,10 +40,17 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
             this.hoveredAreaValue = data.to.node.attributes[this.settingsService.settings.areaMetric];
             this.hoveredColorValue = data.to.node.attributes[this.settingsService.settings.colorMetric];
             this.hoveredHeightValue = data.to.node.attributes[this.settingsService.settings.heightMetric];
+            if(data.to.node.deltas && data.to.node.deltas[this.settingsService.settings.heightMetric] != null){
+                this.hoveredDeltaValue = data.to.node.deltas[this.settingsService.settings.heightMetric];
+            }
+            else{
+                this.hoveredDeltaValue = null;
+            }
         } else {
             this.hoveredAreaValue = null;
             this.hoveredColorValue = null;
             this.hoveredHeightValue = null;
+            this.hoveredDeltaValue = null;
         }
     }
 
