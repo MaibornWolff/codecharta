@@ -35,13 +35,13 @@
             {{::metric}}-delta
         </md-option>
     </md-select>
-    <span class="metric-value" ng-if="$ctrl.hoveredDeltaValue&&$ctrl.hoveredDeltaValue > 0" style=" color: green;">
+    <span class="metric-value" ng-if="$ctrl.hoveredDeltaValue && $ctrl.hoveredDeltaValue > 0" style=" color: green;">
         {{"+" + ($ctrl.hoveredDeltaValue | number)}}
     </span>
-    <span class="metric-value" ng-if="$ctrl.hoveredDeltaValue!=null&&$ctrl.hoveredDeltaValue == 0" >
+    <span class="metric-value" ng-if="$ctrl.hoveredDeltaValue!=null && $ctrl.hoveredDeltaValue == 0" >
         {{($ctrl.hoveredDeltaValue | number)}}
     </span>
-    <span class="metric-value" ng-if="$ctrl.hoveredDeltaValue&&$ctrl.hoveredDeltaValue < 0" style="color:red;">
+    <span class="metric-value" ng-if="$ctrl.hoveredDeltaValue && $ctrl.hoveredDeltaValue < 0" style="color:red;">
         {{($ctrl.hoveredDeltaValue | number)}}
     </span>
     <span class="metric-value" ng-if="$ctrl.hoveredDeltaValue == null">
