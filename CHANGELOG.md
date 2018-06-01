@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Suppressing ARIA warnings
 - Simplified gradle structure of analysis part
 - Ticks and ResetValue Buttons call to onSettingsChange to avoid applySettings timer
-
+- compacting empty middle packages #150
 ### Removed
 
 ### Fixed

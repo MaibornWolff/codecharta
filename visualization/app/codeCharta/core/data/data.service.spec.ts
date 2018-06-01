@@ -204,6 +204,29 @@ describe("app.codeCharta.core.data.dataService", function() {
 
     });
 
+    it("middle package compacting should only be called after delta calculation, never before", () => {
+
+        dataService.notify = jest.fn();
+        dataService.deltaCalculatorService.provideDeltas = jest.fn();
+        dataService.dataDecoratorService.decorateMapWithCompactMiddlePackages = jest.fn();
+
+        dataService._deltasEnabled = true;
+
+        dataService.setMap(TEST_DELTA_MAP_A, 0);
+
+        let compactingCalledBeforeDeltas = false;
+        dataService.dataDecoratorService.decorateMapWithCompactMiddlePackages = jest.fn(()=>{
+            compactingCalledBeforeDeltas = dataService.deltaCalculatorService.provideDeltas.mock.calls.length == 0;
+        });
+        dataService.deltaCalculatorService.provideDeltas.mockClear();
+        expect(dataService.deltaCalculatorService.provideDeltas.mock.calls.length).toBe(0);
+
+        dataService.setMap(TEST_DELTA_MAP_B, 1);
+
+        expect(compactingCalledBeforeDeltas).toBeTruthy();
+
+    });
+
     it("do not calculate deltas when two maps exist and deltas are not enabled", () => {
 
         dataService.notify = jest.fn();

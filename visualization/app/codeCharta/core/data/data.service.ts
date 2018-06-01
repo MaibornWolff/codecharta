@@ -60,6 +60,7 @@ export class DataService {
             this._lastReferenceIndex = index;
             this._data.renderMap = this._data.revisions[index];
             this.processDeltas();
+            this.dataDecoratorService.decorateMapWithCompactMiddlePackages(this._data.renderMap);
             this.notify();
         }
     }
@@ -68,6 +69,7 @@ export class DataService {
         if (this._data.revisions[index] != null) {
             this._lastComparisonMap = this._data.revisions[index];
             this.processDeltas();
+            this.dataDecoratorService.decorateMapWithCompactMiddlePackages(this._data.renderMap);
             this.notify();
         }
     }
