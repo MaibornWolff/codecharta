@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Suppressing ARIA warnings
 - Simplified gradle structure of analysis part
 - Deltas substitute heigh and color in the metric quick access panel
-
+- compacting empty middle packages #150
 ### Removed
 
 ### Fixed

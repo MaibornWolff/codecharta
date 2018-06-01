@@ -9,8 +9,38 @@ import {HierarchyNode} from "d3-hierarchy";
  */
 export class DataDecoratorService {
 
-    /* @ngInject */
-    constructor() {
+    public decorateMapWithCompactMiddlePackages(map: CodeMap) {
+
+        const isEmptyMiddlePackage = (current) => {
+            return current
+                && current.children
+                && current.children.length === 1
+                && current.children[0].children
+                && current.children[0].children.length > 0;
+        };
+
+        const rec = (current) => {
+            if (isEmptyMiddlePackage(current)) {
+                let child = current.children[0];
+                current.children = child.children;
+                current.name += "/" + child.name;
+                current.path += "/" + child.name;
+                if(child.link) {
+                    current.link = child.link;
+                }
+                current.attributes = child.attributes;
+                current.deltas = child.deltas;
+                rec(current);
+            } else if (current && current.children && current.children.length > 1) {
+                for (let i=0; i<current.children.length; i++) {
+                    rec(current.children[i]);
+                }
+            }
+        };
+
+        if (map && map.root) {
+            rec(map.root);
+        }
 
     }
 
