@@ -1,1 +1,0 @@
-{"version":3,"file":"aggregateSettingsPanel.js","sourceRoot":"","sources":["aggregateSettingsPanel.ts"],"names":[],"mappings":"AAAA,OAAO,4BAA4B,CAAC;AACpC,OAAO,wBAAwB,CAAC;AAEhC,OAAO,OAAO,MAAM,SAAS,CAAC;AAE9B,OAAO,EAAC,+BAA+B,EAAC,MAAM,oCAAoC,CAAC;AAEnF,OAAO,CAAC,MAAM,CAAC,0CAA0C,EAAE,CAAC,+BAA+B,EAAE,qBAAqB,CAAC,CAAC;KAC/G,SAAS,CAAC,+BAA+B,CAAC,QAAQ,EAAE,+BAA+B,CAAC,CAAC"}
