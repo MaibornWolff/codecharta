@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Crococosmo xml files will now generate a cc.json file for each version
 - Suppressing ARIA warnings
 - Simplified gradle structure of analysis part
-- Ticks and ResetValue Buttons call to onSettingsChange to avoid applySettings timmer
+- Ticks and ResetValue Buttons call to onSettingsChange to avoid applySettings timer
 
 ### Removed
 
