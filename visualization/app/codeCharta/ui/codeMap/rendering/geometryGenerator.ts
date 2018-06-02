@@ -2,7 +2,7 @@ import * as THREE from "three";
 import {node} from "./node";
 import {codeMapGeometricDescription} from "./codeMapGeometricDescription";
 import {codeMapBuilding} from "./codeMapBuilding";
-import {getDistinctColors, getFloorGradient, MapColors} from "./renderSettings";
+import {getDistinctColors, getFloorGradient, getHighlightGradient, MapColors} from "./renderSettings";
 import {colorRange} from "./renderSettings";
 import {renderSettings} from "./renderSettings";
 import {renderingUtil} from "./renderingUtil";
@@ -28,14 +28,9 @@ export class geometryGenerator {
     private static MINIMAL_BUILDING_HEIGHT = 1.0;
 
     private floorGradient: number[];
-    private distinctColors: number[];
-    private distinctColorIndex = 0;
+    private highlightGradient: number[];
 
     constructor() {}
-
-    private getNextDistinctColor(): number{
-        return this.distinctColors[this.distinctColorIndex++%this.distinctColors.length];
-    }
 
     public build(nodes : node[], material : THREE.Material, settings : renderSettings) : buildResult
     {
@@ -43,7 +38,7 @@ export class geometryGenerator {
         let desc : codeMapGeometricDescription = new codeMapGeometricDescription(settings.mapSize);
 
         this.floorGradient = getFloorGradient(nodes);
-        this.distinctColors = getDistinctColors();
+        this.highlightGradient = getHighlightGradient(nodes);
 
         for (let i:number = 0; i < nodes.length; ++i)
         {
@@ -86,7 +81,7 @@ export class geometryGenerator {
 
     private addFloor(data : intermediateVertexData, n : node, idx : number, desc : codeMapGeometricDescription, settings: renderSettings)
     {
-        let color: number = n.highlighted ? this.getNextDistinctColor() : this.floorGradient[n.depth];
+        let color: number = ((n.markingColor? n.markingColor: this.floorGradient[n.depth]) & 0xfefefe) >> n.depth % 2;
         let measures : boxMeasures = this.mapNodeToLocalBox(n);
 
         desc.add(

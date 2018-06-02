@@ -11,7 +11,7 @@ export interface CodeMapNode {
     origin?: string;
     visible?: boolean;
     path?: string;
-    highlighted?: boolean;
+    markingColor?: string;
 }
 
 export interface CodeMap {

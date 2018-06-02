@@ -26,7 +26,6 @@
         {
           "name": "Parent Leaf",
           "attributes": {},
-          "highlighted": true,
           "children": [
             {
               "name": "small leaf",
