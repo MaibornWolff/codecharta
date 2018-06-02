@@ -44,7 +44,7 @@ export class TreeMapUtils {
             origin: squaredNode.data.origin,
             link: squaredNode.data.link,
             children: [],
-            highlighted: depth === 2
+            highlighted: squaredNode.data.highlighted
         };
     }
 

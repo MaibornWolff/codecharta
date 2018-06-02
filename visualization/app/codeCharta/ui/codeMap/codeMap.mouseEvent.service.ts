@@ -19,6 +19,7 @@ export interface CodeMapBuildingTransition {
 export interface CodeMapMouseEventServiceSubscriber {
     onBuildingHovered(data: CodeMapBuildingTransition, event: IAngularEvent);
     onBuildingSelected(data: CodeMapBuildingTransition, event: IAngularEvent);
+    onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: IAngularEvent);
 }
 
 export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber {
@@ -53,6 +54,10 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
         $rootScope.$on("building-selected", (e, data:CodeMapBuildingTransition) => {
             subscriber.onBuildingSelected(data, e);
+        });
+
+        $rootScope.$on("building-right-clicked", (e, data) => {
+            subscriber.onBuildingRightClicked(data.building, data.x, data.y, e);
         });
 
     }
@@ -128,7 +133,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
     }
 
     onRightClick(event) {
-        console.log("right click");
+        this.$rootScope.$broadcast("building-right-clicked", {building: this.hovered, x:event.clientX, y:event.clientY, event: event});
     }
 
     onLeftClick(event) {

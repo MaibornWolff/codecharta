@@ -44,7 +44,6 @@ export class geometryGenerator {
 
         this.floorGradient = getFloorGradient(nodes);
         this.distinctColors = getDistinctColors();
-        console.log(this.distinctColors);
 
         for (let i:number = 0; i < nodes.length; ++i)
         {

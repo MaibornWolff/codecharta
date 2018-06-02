@@ -6,6 +6,7 @@ import {
     CodeMapBuildingTransition, CodeMapMouseEventService,
     CodeMapMouseEventServiceSubscriber
 } from "../codeMap/codeMap.mouseEvent.service";
+import {codeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
 
 export class MetricChooserController implements DataServiceSubscriber, CodeMapMouseEventServiceSubscriber{
 
@@ -32,6 +33,9 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
 
     public notify() {
         this.settingsService.applySettings();
+    }
+
+    onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: IAngularEvent) {
     }
 
     onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {

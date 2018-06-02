@@ -12,6 +12,7 @@ import {
     CodeMapMouseEventServiceSubscriber
 } from "./codeMap.mouseEvent.service";
 import {TreeMapSettings} from "../../core/treemap/treemap.service";
+import {codeMapBuilding} from "./rendering/codeMapBuilding";
 
 const mapSize = 500.0;
 
@@ -36,6 +37,10 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
                 private settingsService: SettingsService) {
         this.settingsService.subscribe(this);
         CodeMapMouseEventService.subscribe($rootScope, this);
+    }
+
+    onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
+
     }
 
     onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
@@ -104,8 +109,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         let nodes: node[] = this.collectNodesToArray(
             this.treeMapService.createTreemapNodes(s.map.root, treeMapSettings)
         );
-
-        console.log(nodes);
 
         let filtered = nodes.filter(node => node.visible && node.length > 0 && node.width > 0);
         this.currentSortedNodes = filtered.sort((a, b) => {
