@@ -12,25 +12,17 @@ code-charta-component {
       margin: 0.5em 0 0 1.5em;
     }
 
-    h1 {
+    h2 {
       text-transform: uppercase;
-      font-size: 0.9em;
-      line-height: 1.4em;
-      float: right;
-      margin: 0.5em 1.6em 0 0;
       color: #5A585A;
       font-family: Roboto, sans-serif;
       font-weight: 300;
+      position: absolute;
+      top: 15px;
+      right: 35px;
+      margin: 0;
+      z-index: -1;
     }
-
-    h1:first-child {
-      font-size: 1.82em;
-    }
-
-    h1:last-child {
-      font-size: 1.5em;
-    }
-
   }
 
   #codeMap {
