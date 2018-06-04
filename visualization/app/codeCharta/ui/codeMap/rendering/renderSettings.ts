@@ -25,9 +25,9 @@ export function getDistinctColors(): number[] {
 }
 
 export enum MapColors {
-    positive = 0xD2FDD2,
-    neutral = 0xFDFDD2,
-    negative = 0xFDD2D2,
+    positive = 0x69AE40,
+    neutral = 0xddcc00,
+    negative = 0x820E0E,
     highlight_pink = 0xFF1D8E,
     highlight_blue = 0x1d8eff,
     highlight_green = 0x8eff1d,
