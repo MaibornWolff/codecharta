@@ -15,6 +15,7 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
     public hoveredHeightValue: number;
     public hoveredColorValue: number;
     public hoveredDeltaValue: number;
+    public hoveredDeltaColor: string;
 
     /* @ngInject */
     constructor(
@@ -40,10 +41,12 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
             this.hoveredAreaValue = data.to.node.attributes[this.settingsService.settings.areaMetric];
             this.hoveredColorValue = data.to.node.attributes[this.settingsService.settings.colorMetric];
             this.hoveredHeightValue = data.to.node.attributes[this.settingsService.settings.heightMetric];
+
             if(data.to.node.deltas && data.to.node.deltas[this.settingsService.settings.heightMetric] != null){
                 this.hoveredDeltaValue = data.to.node.deltas[this.settingsService.settings.heightMetric];
+                this.hoveredDeltaColor = this.getHoveredDeltaColor();
             }
-            else{
+            else {
                 this.hoveredDeltaValue = null;
             }
         } else {
@@ -55,6 +58,21 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
     }
 
     onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+    }
+
+    private getHoveredDeltaColor() {
+        let colors = {
+            0: "green",
+            1: "red"
+        };
+
+        if (this.hoveredDeltaValue > 0) {
+            return colors[Number(this.settingsService.settings.deltaColorFlipped)];
+        } else if (this.hoveredDeltaValue < 0) {
+            return colors[Number(!this.settingsService.settings.deltaColorFlipped)];
+        } else {
+            return "inherit";
+        }
     }
 
 }
