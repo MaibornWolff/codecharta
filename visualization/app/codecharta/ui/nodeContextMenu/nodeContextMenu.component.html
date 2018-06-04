@@ -1,0 +1,12 @@
+<md-card id="codemap-context-menu" ng-show="$ctrl.contextMenuBuilding">
+    <md-button ng-click="$ctrl.hideNode()">Hide</md-button>
+    <md-button ng-click="$ctrl.isolateNode()">Isolate</md-button>
+    <md-button ng-if="$ctrl.nodeIsFolder()" ng-click="$ctrl.markFolderPink()">Mark pink</md-button>
+    <md-button ng-if="$ctrl.nodeIsFolder()" ng-click="$ctrl.markFolderGreen()">Mark green</md-button>
+    <md-button ng-if="$ctrl.nodeIsFolder()" ng-click="$ctrl.markFolderBlue()">Mark blue</md-button>
+    <md-button ng-if="$ctrl.nodeIsFolder() && $ctrl.contextMenuBuilding.markingColor" ng-click="$ctrl.unmarkFolder()">Unmark</md-button>
+    <md-button ng-click="$ctrl.showAllNodes()">Show all</md-button>
+    <md-card-actions layout="row" layout-align="end center">
+        <md-button ng-click="$ctrl.hideContextMenu()">Close</md-button>
+    </md-card-actions>
+</md-card>

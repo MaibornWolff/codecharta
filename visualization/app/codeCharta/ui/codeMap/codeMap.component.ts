@@ -14,6 +14,7 @@ import {hierarchy} from "d3-hierarchy";
 import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 import {MapColors, renderSettings} from "./rendering/renderSettings";
+import {NodeContextMenuComponent} from "../nodeContextMenu/nodeContextMenu.component";
 
 export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
 
@@ -40,9 +41,9 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
     }
 
     onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
-        this.hideContextMenu();
+        NodeContextMenuComponent.hide(this.$rootScope);
         if (building) {
-            this.showContextMenu(building, x, y);
+            NodeContextMenuComponent.show(this.$rootScope, building, x, y);
         }
     }
 
@@ -50,119 +51,6 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
     }
 
     onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
-    }
-
-    showContextMenu(building: codeMapBuilding, x, y) {
-        //TODO find a better way to do this
-        this.$timeout(() => {
-            this.contextMenuBuilding = this.getCodeMapNodeFromCodeMapBuilding(building);
-        }, 50).then(()=>{
-            this.$timeout(() => {
-                let w = this.$element[0].children[1].clientWidth;
-                let h = this.$element[0].children[1].clientHeight;
-                let resX = Math.min(x, this.$window.innerWidth - w);
-                let resY = Math.min(y, this.$window.innerHeight - h);
-                angular.element(this.$element[0].children[1]).css("top", resY + "px");
-                angular.element(this.$element[0].children[1]).css("left", resX + "px");
-                console.log(w,h,x,y);
-            },50);
-        });
-    }
-
-    hideNode() {
-        this.contextMenuBuilding.visible = false;
-        hierarchy<CodeMapNode>(this.contextMenuBuilding).descendants().forEach((hierarchyNode) => {
-            hierarchyNode.data.visible = false;
-        });
-        this.hideContextMenu();
-        this.apply();
-    }
-
-    markFolder(color: number) {
-
-        this.contextMenuBuilding.markingColor = color;
-
-        hierarchy<CodeMapNode>(this.contextMenuBuilding).descendants().forEach((hierarchyNode) => {
-            hierarchyNode.data.markingColor = color;
-        });
-        this.hideContextMenu();
-        this.apply();
-    }
-
-    markFolderPink() {
-        this.markFolder(MapColors.highlight_pink);
-    }
-
-    markFolderBlue() {
-        this.markFolder(MapColors.highlight_blue);
-    }
-
-    markFolderGreen() {
-        this.markFolder(MapColors.highlight_green);
-    }
-
-    unmarkFolder() {
-        this.contextMenuBuilding.markingColor = false;
-        hierarchy<CodeMapNode>(this.contextMenuBuilding).descendants().forEach((hierarchyNode) => {
-            hierarchyNode.data.markingColor = false;
-        });
-        this.hideContextMenu();
-        this.apply();
-    }
-
-    nodeIsFolder() {
-        return this.contextMenuBuilding && this.contextMenuBuilding.children && this.contextMenuBuilding.children.length > 0;
-    }
-
-    isolateNode() {
-        this.settingsService.settings.map.root.visible = false;
-        hierarchy<CodeMapNode>(this.settingsService.settings.map.root).descendants().forEach((hierarchyNode) => {
-            hierarchyNode.data.visible = false;
-        });
-        this.contextMenuBuilding.visible = true;
-        hierarchy<CodeMapNode>(this.contextMenuBuilding).descendants().forEach((hierarchyNode) => {
-            hierarchyNode.data.visible = true;
-        });
-        this.$timeout(() => {
-            this.threeOrbitControlsService.autoFitTo();
-        }, 250);
-        this.hideContextMenu();
-        this.apply();
-    }
-
-    showAllNodes() {
-        this.settingsService.settings.map.root.visible = true;
-        hierarchy<CodeMapNode>(this.settingsService.settings.map.root).descendants().forEach((hierarchyNode) => {
-            hierarchyNode.data.visible = true;
-        });
-        this.$timeout(() => {
-            this.threeOrbitControlsService.autoFitTo();
-        }, 250);
-        this.hideContextMenu();
-        this.apply();
-    }
-
-    hideContextMenu() {
-        this.$timeout(() => {
-            this.contextMenuBuilding = null;
-        }, 50);
-    }
-
-    getCodeMapNodeFromCodeMapBuilding(building: codeMapBuilding) {
-        let path = building.node.path;
-        let res = null;
-        hierarchy<CodeMapNode>(this.settingsService.settings.map.root).each((hierarchyNode) => {
-            if (hierarchyNode.data.path === path) {
-                res = hierarchyNode.data;
-            }
-        });
-        return res;
-    }
-
-    apply() {
-        this.$timeout(() => {
-            this.settingsService.onSettingsChanged();
-        }, 50);
     }
 
 }
