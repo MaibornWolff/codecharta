@@ -24,6 +24,7 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
                 private $element: Element,
                 private $rootScope,
                 private $timeout,
+                private $window,
                 private settingsService: SettingsService,
                 private codeMapMouseEventService: CodeMapMouseEventService,
                 private threeOrbitControlsService: ThreeOrbitControlsService,
@@ -52,11 +53,20 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
     }
 
     showContextMenu(building: codeMapBuilding, x, y) {
+        //TODO find a better way to do this
         this.$timeout(() => {
             this.contextMenuBuilding = this.getCodeMapNodeFromCodeMapBuilding(building);
-            angular.element(this.$element[0].children[1]).css("top", y + "px");
-            angular.element(this.$element[0].children[1]).css("left", x + "px");
-        }, 50);
+        }, 50).then(()=>{
+            this.$timeout(() => {
+                let w = this.$element[0].children[1].clientWidth;
+                let h = this.$element[0].children[1].clientHeight;
+                let resX = Math.min(x, this.$window.innerWidth - w);
+                let resY = Math.min(y, this.$window.innerHeight - h);
+                angular.element(this.$element[0].children[1]).css("top", resY + "px");
+                angular.element(this.$element[0].children[1]).css("left", resX + "px");
+                console.log(w,h,x,y);
+            },50);
+        });
     }
 
     hideNode() {
@@ -101,7 +111,7 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
     }
 
     nodeIsFolder() {
-        return this.contextMenuBuilding.children && this.contextMenuBuilding.children.length > 0;
+        return this.contextMenuBuilding && this.contextMenuBuilding.children && this.contextMenuBuilding.children.length > 0;
     }
 
     isolateNode() {
