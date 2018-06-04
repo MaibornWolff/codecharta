@@ -42,8 +42,8 @@ private const val PATH_SEPARATOR = '\\'
 
 class CSVRowTest : Spek({
 
-    describe("Using a header with path column") {
-        val header = CSVHeader(arrayOf("head1", "head2", "head3", "path", "attrib", "attrib2", ""))
+    describe("Using a valid header with path column") {
+        val header = UnderstandCSVHeader(arrayOf("head1", "head2", "head3", "File", "Name", "Kind", "attrib", "attrib2", ""))
 
 
         it("name of node should be filename from this columnn") {
@@ -54,7 +54,7 @@ class CSVRowTest : Spek({
             )
 
             for (name in nameExpectedFilenameMap.keys) {
-                val node = CSVRow(arrayOf("projectName", "blubb2", "blubb3", name), header, PATH_SEPARATOR).asNode()
+                val node = UnderstandCSVRow(arrayOf("projectName", "blubb2", "blubb3", name, "", "File"), header, PATH_SEPARATOR).asNode()
                 assertThat(node.name, `is`(nameExpectedFilenameMap[name]))
             }
         }
@@ -67,38 +67,38 @@ class CSVRowTest : Spek({
             )
 
             for (name in nameExpectedFolderWithFileMap.keys) {
-                val path = CSVRow(arrayOf("projectName", "blubb2", "blubb3", name), header, PATH_SEPARATOR).pathInTree()
+                val path = UnderstandCSVRow(arrayOf("projectName", "blubb2", "blubb3", name, "", "File"), header, PATH_SEPARATOR).pathInTree()
                 assertThat(path, `is`<Path>(nameExpectedFolderWithFileMap[name]))
             }
         }
 
         it("should throw exception if no path column present") {
             assertFailsWith(IllegalArgumentException::class) {
-                CSVRow(arrayOf("", ""), header, PATH_SEPARATOR)
+                UnderstandCSVRow(arrayOf("", ""), header, PATH_SEPARATOR)
             }
         }
 
         it("should ignore columns if no attribute name in header") {
-            val rawRow = arrayOf<String?>("1", "2", "3", "file", "4", "5", "6", "7")
-            val node = CSVRow(rawRow, header, PATH_SEPARATOR).asNode()
+            val rawRow = arrayOf<String?>("1", "2", "3", "file", "", "File", "4", "5", "6", "7")
+            val node = UnderstandCSVRow(rawRow, header, PATH_SEPARATOR).asNode()
             assertThat(node.attributes.keys, hasSize(5))
         }
 
         it("should ignore column if not in row") {
-            val rawRow = arrayOf<String?>("blubb1", "blubb2", "blubb3", "path")
-            val node = CSVRow(rawRow, header, PATH_SEPARATOR).asNode()
+            val rawRow = arrayOf<String?>("blubb1", "blubb2", "blubb3", "path", "", "File")
+            val node = UnderstandCSVRow(rawRow, header, PATH_SEPARATOR).asNode()
             assertThat(node.attributes.keys, not(hasItem("attrib")))
         }
 
         it("should have attribute for metric columns") {
-            val rawRow = arrayOf<String?>("3,2", "2", "3", "file")
-            val node = CSVRow(rawRow, header, PATH_SEPARATOR).asNode()
+            val rawRow = arrayOf<String?>("3,2", "2", "3", "file", "", "File")
+            val node = UnderstandCSVRow(rawRow, header, PATH_SEPARATOR).asNode()
             assertThat<Any>(node.attributes["head1"], `is`<Any>(3.2f))
         }
 
         it("should have NO attribute for non-metric columns") {
-            val rawRow = arrayOf<String?>("bla", "2", "3", "file")
-            val node = CSVRow(rawRow, header, PATH_SEPARATOR).asNode()
+            val rawRow = arrayOf<String?>("bla", "2", "3", "file", "", "File")
+            val node = UnderstandCSVRow(rawRow, header, PATH_SEPARATOR).asNode()
             assertThat(node.attributes["head1"], nullValue())
         }
     }

@@ -33,38 +33,36 @@ import de.maibornwolff.codecharta.model.*
 import java.util.*
 import java.util.regex.Pattern
 
-class UnderstandCSVRow(private val row: Array<String?>, private val header: CSVHeader, private val pathSeparator: Char) {
+class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: UnderstandCSVHeader, private val pathSeparator: Char) {
 
     init {
-        if (row.size <= header.pathColumn) {
+        if (rawRow.size <= maxOf(header.fileColumn, header.nameColumn, header.nameColumn)) {
             throw IllegalArgumentException(
-                    "Row " + Arrays.toString(row) + " has no column containing the file path. Should be in " + header.pathColumn + "th column.")
+                    "Row " + Arrays.toString(rawRow) + " does not contain the necessary hierarchical information.")
         }
     }
 
-    fun pathInTree(): Path {
-        return PathFactory.fromFileSystemPath(
-                path.substring(0, path.lastIndexOf(pathSeparator) + 1),
-                pathSeparator
-        )
-    }
+    private val file =
+            if (rawRow[header.fileColumn] == null) throw IllegalArgumentException("Ignoring empty paths.")
+            else rawRow[header.fileColumn]!!
 
-    fun asNode(): Node {
-        val filename = path.substring(path.lastIndexOf(pathSeparator) + 1)
-        return Node(filename, NodeType.File, attributes, nodeMergingStrategy = NodeMaxAttributeMerger)
-    }
+    private val name = rawRow[header.nameColumn] ?: ""
 
-    private val path =
-            if (row[header.pathColumn] == null) throw IllegalArgumentException("Ignoring empty paths.")
-            else row[header.pathColumn]!!
+    private val kind =
+            if (rawRow[header.kindColumn] == null) throw IllegalArgumentException("Ignoring rows without kind information.")
+            else rawRow[header.kindColumn]!!
+
+    private val filename = file.substring(file.lastIndexOf(pathSeparator) + 1)
+
+    private val directoryContainingFile = file.substring(0, file.lastIndexOf(pathSeparator) + 1)
 
     private val floatPattern = Pattern.compile("\\d+[,.]?\\d*")
 
     private fun validAttributeOfRow(i: Int) =
-            i < row.size && row[i] != null && floatPattern.matcher(row[i]).matches()
+            i < rawRow.size && rawRow[i] != null && floatPattern.matcher(rawRow[i]).matches()
 
     private fun parseAttributeOfRow(i: Int) =
-            java.lang.Float.parseFloat(row[i]!!.replace(',', '.'))
+            java.lang.Float.parseFloat(rawRow[i]!!.replace(',', '.'))
 
     private val attributes =
             header.columnNumbers
@@ -73,5 +71,33 @@ class UnderstandCSVRow(private val row: Array<String?>, private val header: CSVH
                             { header.getColumnName(it) },
                             { parseAttributeOfRow(it) }
                     )
+
+    val isFileRow = kind.equals("file", true)
+
+    private val nodeType =
+            mapOf(
+                    Pair("File", NodeType.File),
+                    Pair("Package", NodeType.Package),
+                    Pair("Class", NodeType.Class),
+                    Pair("Interface", NodeType.Interface),
+                    Pair("Method", NodeType.Method),
+                    Pair("Function", NodeType.Method)
+            )[kind] ?: NodeType.Unknown
+
+
+    fun pathInTree(): Path {
+        return when {
+            isFileRow -> PathFactory.fromFileSystemPath(directoryContainingFile, pathSeparator)
+            else -> PathFactory.fromFileSystemPath(file, pathSeparator)
+        }
+    }
+
+    fun asNode(): Node {
+        return when {
+            isFileRow -> Node(filename, nodeType, attributes, nodeMergingStrategy = NodeMaxAttributeMerger)
+            else -> Node(name, nodeType, attributes, nodeMergingStrategy = NodeMaxAttributeMerger)
+        }
+    }
+
 
 }

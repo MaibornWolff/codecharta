@@ -29,49 +29,43 @@
 
 package de.maibornwolff.codecharta.importer.understand
 
-import de.maibornwolff.codecharta.model.*
 import java.util.*
-import java.util.regex.Pattern
 
-class CSVRow(private val row: Array<String?>, private val header: CSVHeader, private val pathSeparator: Char) {
+class UnderstandCSVHeader(header: Array<String?>) {
+    private val headerMap: MutableMap<Int, String>
+
+    val columnNumbers: Set<Int>
+        get() = headerMap.keys
+
+    val fileColumn: Int
+        get() = headerMap.keys.first { i -> headerMap[i].equals("File") }
+
+    val nameColumn: Int
+        get() = headerMap.keys.first { i -> headerMap[i].equals("Name") }
+
+    val kindColumn: Int
+        get() = headerMap.keys.first { i -> headerMap[i].equals("Kind") }
 
     init {
-        if (row.size <= header.pathColumn) {
-            throw IllegalArgumentException(
-                    "Row " + Arrays.toString(row) + " has no column containing the file path. Should be in " + header.pathColumn + "th column.")
+        headerMap = HashMap()
+        for (i in header.indices) {
+            when {
+                header[i] == null || header[i]!!.isEmpty() -> System.err.println("Ignoring column number $i (counting from 0) as it has no column name.")
+                headerMap.containsValue(header[i]) -> System.err.println("Ignoring column number " + i + " (counting from 0) with column name " + header[i] + " as it duplicates a previous column.")
+                else -> headerMap[i] = header[i]!!
+            }
+        }
+
+        if (headerMap.isEmpty()) {
+            throw IllegalArgumentException("Header is empty.")
+        }
+
+        if(!headerMap.values.containsAll(setOf("File", "Name", "Kind"))) {
+            throw IllegalArgumentException("csv needs File, Name and Kind in header.")
         }
     }
 
-    fun pathInTree(): Path {
-        return PathFactory.fromFileSystemPath(
-                path.substring(0, path.lastIndexOf(pathSeparator) + 1),
-                pathSeparator
-        )
+    fun getColumnName(i: Int): String {
+        return headerMap[i] ?: throw IllegalArgumentException("No " + i + "th column present.")
     }
-
-    fun asNode(): Node {
-        val filename = path.substring(path.lastIndexOf(pathSeparator) + 1)
-        return Node(filename, NodeType.File, attributes, nodeMergingStrategy = NodeMaxAttributeMerger)
-    }
-
-    private val path =
-            if (row[header.pathColumn] == null) throw IllegalArgumentException("Ignoring empty paths.")
-            else row[header.pathColumn]!!
-
-    private val floatPattern = Pattern.compile("\\d+[,.]?\\d*")
-
-    private fun validAttributeOfRow(i: Int) =
-            i < row.size && row[i] != null && floatPattern.matcher(row[i]).matches()
-
-    private fun parseAttributeOfRow(i: Int) =
-            java.lang.Float.parseFloat(row[i]!!.replace(',', '.'))
-
-    private val attributes =
-            header.columnNumbers
-                    .filter { validAttributeOfRow(it) }
-                    .associateBy(
-                            { header.getColumnName(it) },
-                            { parseAttributeOfRow(it) }
-                    )
-
 }

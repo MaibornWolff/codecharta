@@ -52,12 +52,12 @@ class UnderstandImporter : Callable<Void> {
     @CommandLine.Option(names = ["--pathSeparator"], description = ["path separator (default = '/')"])
     private var pathSeparator = '/'
 
-    private val csvDelimiter = ','
+    @CommandLine.Option(names = ["-a","--aggregation"], description = ["aggregate metrics to "])
+    private var aggregation = AGGREGATION.FILE
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        val includeRows = { row: Array<String> -> row[0].contains("Class") || row[0].contains("File")}
-        val projectCreator = ProjectCreator(projectName, pathSeparator, csvDelimiter, understandReplacement, includeRows)
+        val projectCreator = ProjectCreator(projectName, pathSeparator)
         val project = projectCreator.createFromCsvStream(files.map { it.inputStream() })
         ProjectSerializer.serializeProject(project, writer())
 
@@ -69,9 +69,6 @@ class UnderstandImporter : Callable<Void> {
         get() {
             val prefix = "understand_"
             val replacementMap = mutableMapOf<String, String>()
-            replacementMap["Kind"] = ""
-            replacementMap["Name"] = ""
-            replacementMap["File"] = "path"
             replacementMap["AvgCyclomatic"] = "average_function_mcc"
             replacementMap["CountDeclClass"] = "classes"
             replacementMap["CountDeclMethod"] = "functions"

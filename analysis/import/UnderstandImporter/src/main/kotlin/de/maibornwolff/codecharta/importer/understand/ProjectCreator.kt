@@ -34,7 +34,6 @@ import com.univocity.parsers.csv.CsvParserSettings
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
@@ -42,10 +41,10 @@ import java.nio.charset.StandardCharsets
 class ProjectCreator(
         private val projectName: String,
         private val pathSeparator: Char,
-        private val csvDelimiter: Char,
-        private val metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
-        private val includeRows: (Array<String>) -> Boolean = { true }
+        private val aggregation: AGGREGATION = AGGREGATION.FILE
 ) {
+
+    private val csvDelimiter = ','
 
     private fun createEmptyProject(): Project {
         val project = Project(projectName)
@@ -66,19 +65,16 @@ class ProjectCreator(
             project: Project = createEmptyProject()
     ): Project {
         val parser = createParser(inStream)
-        val oldHeader: Array<String?> = parser.parseNext()
-        val header = CSVHeader(metricNameTranslator.translate(oldHeader))
+        val header = UnderstandCSVHeader(parser.parseNext())
         parseContent(project, parser, header)
         parser.stopParsing()
         return project
     }
 
-    private fun parseContent(project: Project, parser: CsvParser, header: CSVHeader) {
+    private fun parseContent(project: Project, parser: CsvParser, header: UnderstandCSVHeader) {
         var row = parser.parseNext()
         while (row != null) {
-            if (includeRows(row)) {
-                insertRowInProject(project, row, header)
-            }
+            insertRowInProject(project, row, header)
             row = parser.parseNext()
         }
     }
@@ -92,12 +88,18 @@ class ProjectCreator(
         return parser
     }
 
-    private fun insertRowInProject(project: Project, rawRow: Array<String?>, header: CSVHeader) {
+    private fun insertRowInProject(project: Project, rawRow: Array<String?>, header: UnderstandCSVHeader) {
         try {
-            val row = CSVRow(rawRow, header, pathSeparator)
-            project.insertByPath(row.pathInTree(), row.asNode())
+            val row = UnderstandCSVRow(rawRow, header, pathSeparator)
+            if (row.isFileRow) {
+                project.insertByPath(row.pathInTree(), row.asNode())
+            }
         } catch (e: IllegalArgumentException) {
             System.err.println(e.message)
         }
     }
+}
+
+enum class AGGREGATION {
+    FILE
 }
