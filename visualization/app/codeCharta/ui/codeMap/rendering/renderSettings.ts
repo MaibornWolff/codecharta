@@ -24,13 +24,20 @@ export function getDistinctColors(): number[] {
     return res;
 }
 
+export const highlightColors = [
+    "#FF1D8E",
+    "#1d8eff",
+    "#1DFFFF",
+    "#8eff1d",
+    "#8e1dff",
+    "#ff8e1d",
+    "#FFFF1D",
+];
+
 export enum MapColors {
     positive = 0x69AE40,
     neutral = 0xddcc00,
     negative = 0x820E0E,
-    highlight_pink = 0xFF1D8E,
-    highlight_blue = 0x1d8eff,
-    highlight_green = 0x8eff1d,
     selected = 0xEB8319,
     defaultC = 0x89ACB4,
     positiveDelta = 0x69ff40,

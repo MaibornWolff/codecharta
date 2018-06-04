@@ -6,11 +6,13 @@ import {SettingsService} from "../../core/settings/settings.service";
 import {ThreeOrbitControlsService} from "../codeMap/threeViewer/threeOrbitControlsService";
 
 import angular from "angular";
-import {MapColors} from "../codeMap/rendering/renderSettings";
+import {highlightColors, MapColors} from "../codeMap/rendering/renderSettings";
 
 export class NodeContextMenuComponent {
 
     private contextMenuBuilding;
+
+    private colors = highlightColors;
 
     /* @ngInject */
     constructor(private $element: Element,
@@ -61,35 +63,24 @@ export class NodeContextMenuComponent {
         this.apply();
     }
 
-    markFolder(color: number) {
-
-        this.contextMenuBuilding.markingColor = color+"";
+    markFolder(color: string) {
+        this.hideContextMenu();
+        this.contextMenuBuilding.markingColor = "0x"+color.substr(1);
 
         hierarchy<CodeMapNode>(this.contextMenuBuilding).descendants().forEach((hierarchyNode) => {
-            hierarchyNode.data.markingColor = color+"";
+            hierarchyNode.data.markingColor =  "0x"+color.substr(1);
         });
-        this.hideContextMenu();
+
         this.apply();
     }
 
-    markFolderPink() {
-        this.markFolder(MapColors.highlight_pink);
-    }
-
-    markFolderBlue() {
-        this.markFolder(MapColors.highlight_blue);
-    }
-
-    markFolderGreen() {
-        this.markFolder(MapColors.highlight_green);
-    }
-
     unmarkFolder() {
+        this.hideContextMenu();
         this.contextMenuBuilding.markingColor = null;
         hierarchy<CodeMapNode>(this.contextMenuBuilding).descendants().forEach((hierarchyNode) => {
             hierarchyNode.data.markingColor = null;
         });
-        this.hideContextMenu();
+
         this.apply();
     }
 
@@ -98,6 +89,7 @@ export class NodeContextMenuComponent {
     }
 
     isolateNode() {
+        this.hideContextMenu();
         this.settingsService.settings.map.root.visible = false;
         hierarchy<CodeMapNode>(this.settingsService.settings.map.root).descendants().forEach((hierarchyNode) => {
             hierarchyNode.data.visible = false;
@@ -109,11 +101,12 @@ export class NodeContextMenuComponent {
         this.$timeout(() => {
             this.threeOrbitControlsService.autoFitTo();
         }, 250);
-        this.hideContextMenu();
+
         this.apply();
     }
 
     showAllNodes() {
+        this.hideContextMenu();
         this.settingsService.settings.map.root.visible = true;
         hierarchy<CodeMapNode>(this.settingsService.settings.map.root).descendants().forEach((hierarchyNode) => {
             hierarchyNode.data.visible = true;
@@ -121,14 +114,14 @@ export class NodeContextMenuComponent {
         this.$timeout(() => {
             this.threeOrbitControlsService.autoFitTo();
         }, 250);
-        this.hideContextMenu();
+
         this.apply();
     }
 
     hideContextMenu() {
         this.$timeout(() => {
             this.contextMenuBuilding = null;
-        }, 50);
+        }, 0);
     }
 
     getCodeMapNodeFromPath(path: string) {
