@@ -43,7 +43,7 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
     onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
         NodeContextMenuComponent.hide(this.$rootScope);
         if (building) {
-            NodeContextMenuComponent.show(this.$rootScope, building, x, y);
+            NodeContextMenuComponent.show(this.$rootScope, building.node.path, x, y);
         }
     }
 

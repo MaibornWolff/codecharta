@@ -21,25 +21,25 @@ export class NodeContextMenuComponent {
                 private threeOrbitControlsService: ThreeOrbitControlsService,
     ) {
         this.$rootScope.$on("show-node-context-menu",(e, data)=>{
-            this.showContextMenu(data.building, data.x, data.y)
+            this.showContextMenu(data.path, data.x, data.y)
         });
         this.$rootScope.$on("hide-node-context-menu",()=>{
             this.hideContextMenu()
         });
     }
 
-    public static show($rootScope, building: codeMapBuilding, x, y) {
-        $rootScope.$broadcast("show-node-context-menu", {building: building, x:x, y:y});
+    public static show($rootScope, path: string, x, y) {
+        $rootScope.$broadcast("show-node-context-menu", {path: path, x:x, y:y});
     }
 
     public static hide($rootScope) {
         $rootScope.$broadcast("hide-node-context-menu");
     }
 
-    showContextMenu(building: codeMapBuilding, x, y) {
+    showContextMenu(path: string, x, y) {
         //TODO find a better way to do this
         this.$timeout(() => {
-            this.contextMenuBuilding = this.getCodeMapNodeFromCodeMapBuilding(building);
+            this.contextMenuBuilding = this.getCodeMapNodeFromPath(path);
         }, 50).then(()=>{
             this.$timeout(() => {
                 let w = this.$element[0].children[0].clientWidth;
@@ -131,8 +131,7 @@ export class NodeContextMenuComponent {
         }, 50);
     }
 
-    getCodeMapNodeFromCodeMapBuilding(building: codeMapBuilding) {
-        let path = building.node.path;
+    getCodeMapNodeFromPath(path: string) {
         let res = null;
         hierarchy<CodeMapNode>(this.settingsService.settings.map.root).each((hierarchyNode) => {
             if (hierarchyNode.data.path === path) {

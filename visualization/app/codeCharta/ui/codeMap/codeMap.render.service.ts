@@ -27,7 +27,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     private labelManager: LabelManager = null;
     private arrowManager: ArrowManager = null;
 
-    private currentSortedNodes: node[];
+    public currentSortedNodes: node[];
     private currentRenderSettings: renderSettings;
 
     /* @ngInject */
