@@ -22,6 +22,7 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
         private dataService: DataService,
         private settingsService: SettingsService,
         private $rootScope: IRootScopeService
+
     ) {
         this.metrics = dataService.data.metrics.sort();
         this.dataService.subscribe(this);
@@ -48,6 +49,7 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
             }
             else {
                 this.hoveredDeltaValue = null;
+                this.hoveredDeltaColor = null;
             }
         } else {
             this.hoveredAreaValue = null;
