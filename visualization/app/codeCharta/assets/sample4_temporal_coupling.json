@@ -1,0 +1,84 @@
+{
+  "projectName": "Sample Project Temporal Coupling",
+  "nodes": [
+    {
+      "name": "root",
+      "attributes": {},
+      "children": [
+        {
+          "name": "sample1 only leaf",
+          "attributes": {
+            "rloc": 400,
+            "functions": 10,
+            "mcc": 100
+          },
+          "link": "http://www.google.de"
+        },
+        {
+          "name": "big leaf",
+          "attributes": {
+            "rloc": 100,
+            "functions": 10,
+            "mcc": 1
+          },
+          "link": "http://www.google.de"
+        },
+        {
+          "name": "Parent Leaf",
+          "attributes": {},
+          "children": [
+            {
+              "name": "small leaf",
+              "attributes": {
+                "rloc": 30,
+                "functions": 100,
+                "mcc": 100
+              }
+            },
+            {
+              "name": "other small leaf",
+              "attributes": {
+                "rloc": 70,
+                "functions": 1000,
+                "mcc": 10
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "dependencies": {
+    "static": [
+      {
+        "node": "/root/big leaf",
+        "dependsOn": "/root/Parent Leaf/small leaf"
+      },
+      {
+        "node": "/root/big leaf",
+        "dependsOn": "/root/Parent Leaf/other small leaf"
+      },
+      {
+        "node": "/root/Parent Leaf/other small leaf",
+        "dependsOn": "/root/big leaf"
+      }
+    ],
+    "temporal_coupling": [
+      {
+        "node": "/root/big leaf",
+        "dependsOn": "/root/Parent Leaf/small leaf",
+        "pairingRate": 98
+      },
+      {
+        "node": "/root/big leaf",
+        "dependsOn": "/root/Parent Leaf/other small leaf",
+        "pairingRate": 65
+      },
+      {
+        "node": "/root/Parent Leaf/other small leaf",
+        "dependsOn": "/root/big leaf",
+        "pairingRate": 42
+      }
+    ]
+  }
+}
