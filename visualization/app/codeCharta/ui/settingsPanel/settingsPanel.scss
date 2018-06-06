@@ -21,6 +21,11 @@ settings-panel-component {
         margin-bottom: 5px;
     }
 
+    .fix-list-height {
+        max-height: 200px;
+        overflow: auto;
+    }
+
     .settings-panel-btn {
         margin: 0 auto;
         display: block;

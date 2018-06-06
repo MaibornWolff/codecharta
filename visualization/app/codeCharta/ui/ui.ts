@@ -19,6 +19,7 @@ import "./regexFilter/regexFilter";
 import "./resetSettingsButton/resetSettingsButton";
 import "./dialog/dialog";
 import "./layoutSwitcher/layoutSwitcher";
+import "./temporalCoupling/temporalCoupling"
 
 angular.module(
     "app.codeCharta.ui",
@@ -39,6 +40,7 @@ angular.module(
         "app.codeCharta.ui.resetSettingsButton",
         "app.codeCharta.ui.dialog",
         "app.codeCharta.ui.layoutSwitcher",
-        "app.codeCharta.ui.regexFilter"
+        "app.codeCharta.ui.regexFilter",
+        "app.codeCharta.ui.temporalCoupling"
     ]);
 

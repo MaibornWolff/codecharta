@@ -1,0 +1,17 @@
+<md-divider></md-divider>
+
+<md-list-item class="md-2-line"
+              ng-repeat="couple in $ctrl.temporalCoupling"
+              ng-mouseenter="$ctrl.onMouseEnter()"
+              ng-mouseleave="$ctrl.onMouseLeave()"
+              ng-click="$ctrl.onLabelClick()">
+
+    <div class="md-icon" layout="column">
+        <p class="dependency-percent">{{::couple.pairingRate}}%</p>
+    </div>
+    <div class="md-list-item-text" layout="column">
+        <h3>{{::couple.node}}</h3>
+        <h4>{{::couple.dependsOn}}</h4>
+    </div>
+    <md-divider></md-divider>
+</md-list-item>
