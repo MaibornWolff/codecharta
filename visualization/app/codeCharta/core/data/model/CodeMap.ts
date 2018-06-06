@@ -18,7 +18,10 @@ export interface CodeMap {
     fileName: string,
     projectName: string,
     root: CodeMapNode,
-    dependencies?: CodeMapDependency[]
+    dependencies?: {
+        static?: CodeMapDependency[],
+        temporal_coupling?: CodeMapDependency[]
+    }
 
 }
 
