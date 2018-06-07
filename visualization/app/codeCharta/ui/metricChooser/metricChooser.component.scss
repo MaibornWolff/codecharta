@@ -4,9 +4,9 @@ metric-chooser-component {
 
 horizontal-metric-chooser-component {
 
-  position: relative;
-  top: -37px;
-  left: 40px;
+  position: absolute;
+  top: 10px;
+  left: 160px;
   display: inline-block !important;
 
   md-input-container {
@@ -29,10 +29,12 @@ horizontal-metric-chooser-component {
   i.fa {
     margin-left: 5px;
     margin-right: 10px;
+    min-width: 16px;
   }
 
   .metric-value {
     margin-left: 10px;
     min-width: 40px;
+    float: right;
   }
 }
