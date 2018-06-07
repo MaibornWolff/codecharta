@@ -46,7 +46,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     }
 
     onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
-        let deps: CodeMapDependency[] = this.settingsService.settings.map.dependencies;
+        let deps: CodeMapDependency[] = this.settingsService.settings.map.dependencies.static;
 
         this.arrowManager.clearArrows();
 
@@ -81,7 +81,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     }
 
     updateMapGeometry(s) {
-        let nodes: node[] = this.treeMapService.createTreemapNodes(s.map.root, mapSize, mapSize, s.margin, s.areaMetric, s.heightMetric, s.invertHeight);
+        let nodes: node[] = this.treeMapService.createTreemapNodes(s.map.root, mapSize, mapSize, s.margin, s.areaMetric, s.heightMetric, s.invertHeight, s.emphasizedDependencies);
         let filtered = nodes.filter(node => node.visible && node.length > 0 && node.width > 0);
         this.currentSortedNodes = filtered.sort((a, b) => {
             return b.height - a.height;

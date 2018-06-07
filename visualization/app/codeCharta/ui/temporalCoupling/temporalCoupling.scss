@@ -1,7 +1,5 @@
 temporal-coupling-component {
 
-    height: 50px;
-
     .layout-column {
         margin: 0 5px 0 5px !important;
     }
@@ -12,5 +10,9 @@ temporal-coupling-component {
 
     md-list-item._md-button-wrap > div.md-button:first-child {
         padding: 0;
+    }
+
+    md-checkbox {
+        margin-right: 0 !important;
     }
 }

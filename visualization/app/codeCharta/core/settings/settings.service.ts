@@ -8,7 +8,7 @@ import {STATISTIC_OPS} from "../statistic/statistic.service";
 import {DeltaCalculatorService} from "../data/data.deltaCalculator.service";
 import * as d3 from "d3";
 import {DataDecoratorService} from "../data/data.decorator.service";
-import {CodeMap} from "../data/model/CodeMap";
+import {CodeMap, CodeMapDependency, CodeMapNode} from "../data/model/CodeMap";
 
 export interface Range {
     from: number; to: number; flipped: boolean;
@@ -37,6 +37,7 @@ export interface Settings {
     showDependencies: boolean;
     minimizeDetailPanel: boolean;
     invertHeight: boolean;
+    emphasizedDependencies: CodeMapDependency[];
 }
 
 export interface SettingsServiceSubscriber {
@@ -105,7 +106,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             deltaColorFlipped: false,
             showDependencies: false,
             minimizeDetailPanel: false,
-            invertHeight: false
+            invertHeight: false,
+            emphasizedDependencies: []
         };
 
         return settings;
@@ -271,7 +273,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
     }
 
-    /*
+    /**
      * Avoids the excesive calling of updateSettings with standard settings in order to increase the efficiency
      * When the function is called with an argument it calls updateSettings in order to avoid the lost of the information
      * contained in that argument.
@@ -333,6 +335,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.deltaColorFlipped = settings.deltaColorFlipped;
         this._settings.minimizeDetailPanel = settings.minimizeDetailPanel;
         this._settings.invertHeight = settings.invertHeight;
+        this._settings.emphasizedDependencies = settings.emphasizedDependencies;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = settings.map|| this.settings.map;

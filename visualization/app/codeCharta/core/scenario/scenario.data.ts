@@ -29,7 +29,8 @@ export function createDefaultScenario(map: CodeMap): Scenario {
             deltaColorFlipped: false,
             showDependencies: false,
             minimizeDetailPanel: false,
-            invertHeight: false
+            invertHeight: false,
+            emphasizedDependencies: []
         },
         autoFitCamera: true
     };

@@ -2,9 +2,7 @@
 
 <md-list-item class="md-2-line"
               ng-repeat="couple in $ctrl.temporalCoupling"
-              ng-mouseenter="$ctrl.onMouseEnter()"
-              ng-mouseleave="$ctrl.onMouseLeave()"
-              ng-click="$ctrl.onLabelClick()">
+              ng-click="$ctrl.onClickCouple(couple, false)">
 
     <div class="md-icon" layout="column">
         <p class="dependency-percent">{{::couple.pairingRate}}%</p>
@@ -13,5 +11,6 @@
         <h3>{{::couple.node}}</h3>
         <h4>{{::couple.dependsOn}}</h4>
     </div>
+    <md-checkbox class="md-primary" ng-model="::$ctrl.temporalCouplingCheckbox[$ctrl.temporalCoupling.indexOf(couple)]" ng-click="$ctrl.onClickCouple(couple, true)"></md-checkbox>
     <md-divider></md-divider>
 </md-list-item>
