@@ -70,7 +70,7 @@ describe("app.codeCharta.core.data.dataService", function() {
         expect(dataService.data.metrics).toEqual(["RLOC", "Functions", "MCC", "unary"]);
     });
 
-    it("set metrics should set metrics correctly with multiple revisions", ()=>{
+    it("set metrics should set metrics correctly with multiple maps", ()=>{
         dataService.setMap(data, 0);
         let data2 = JSON.parse(JSON.stringify(data));
         data2.root.children[0].attributes["test"] = 0;
@@ -79,7 +79,7 @@ describe("app.codeCharta.core.data.dataService", function() {
         expect(dataService.data.metrics).toEqual(["RLOC", "Functions", "MCC", "unary", "test"]);
     });
 
-    it("set metrics should not set metrics when all revisions are null", ()=>{
+    it("set metrics should not set metrics when all maps are null", ()=>{
         dataService._data.revisions = [];
         dataService.updateMetrics();
         expect(dataService.data.metrics).toEqual([]);
@@ -154,7 +154,7 @@ describe("app.codeCharta.core.data.dataService", function() {
     });
 
 
-    it("deactivating deltas when deltas are enabled should set the flag and revisions correctly", () => {
+    it("deactivating deltas when deltas are enabled should set the flag and maps correctly", () => {
         dataService._lastReferenceIndex = 42;
         dataService._deltasEnabled = true;
         dataService.setComparisonMap = jest.fn();
@@ -171,14 +171,14 @@ describe("app.codeCharta.core.data.dataService", function() {
         expect(dataService.setComparisonMap).not.toHaveBeenCalled();
     });
 
-    it("process deltas should do nothing if revisions are not set or deltas are not enabled", () => {
+    it("process deltas should do nothing if maps are not set or deltas are not enabled", () => {
         dataService._deltasEnabled = false;
         dataService.deltaCalculatorService.provideDeltas = jest.fn();
         dataService.processDeltas();
         expect(dataService.deltaCalculatorService.provideDeltas).not.toHaveBeenCalled();
     });
 
-    it("process deltas should call deltaCalculator if revisions and deltas are set", () => {
+    it("process deltas should call deltaCalculator if maps and deltas are set", () => {
         dataService._deltasEnabled = true;
         dataService._data.renderMap = "render map";
         dataService._data.metrics = ["special"];
@@ -188,7 +188,7 @@ describe("app.codeCharta.core.data.dataService", function() {
         expect(dataService.deltaCalculatorService.provideDeltas).toHaveBeenCalledWith("render map", "comparison map", ["special"]);
     });
 
-    it("only calculate deltas when two revisions exist and deltas are enabled", () => {
+    it("only calculate deltas when two maps exist and deltas are enabled", () => {
 
         dataService.notify = jest.fn();
         dataService.deltaCalculatorService.provideDeltas = jest.fn();
@@ -204,7 +204,30 @@ describe("app.codeCharta.core.data.dataService", function() {
 
     });
 
-    it("do not calculate deltas when two revisions exist and deltas are not enabled", () => {
+    it("middle package compacting should only be called after delta calculation, never before", () => {
+
+        dataService.notify = jest.fn();
+        dataService.deltaCalculatorService.provideDeltas = jest.fn();
+        dataService.dataDecoratorService.decorateMapWithCompactMiddlePackages = jest.fn();
+
+        dataService._deltasEnabled = true;
+
+        dataService.setMap(TEST_DELTA_MAP_A, 0);
+
+        let compactingCalledBeforeDeltas = false;
+        dataService.dataDecoratorService.decorateMapWithCompactMiddlePackages = jest.fn(()=>{
+            compactingCalledBeforeDeltas = dataService.deltaCalculatorService.provideDeltas.mock.calls.length == 0;
+        });
+        dataService.deltaCalculatorService.provideDeltas.mockClear();
+        expect(dataService.deltaCalculatorService.provideDeltas.mock.calls.length).toBe(0);
+
+        dataService.setMap(TEST_DELTA_MAP_B, 1);
+
+        expect(compactingCalledBeforeDeltas).toBeTruthy();
+
+    });
+
+    it("do not calculate deltas when two maps exist and deltas are not enabled", () => {
 
         dataService.notify = jest.fn();
         dataService.deltaCalculatorService.decorateMapsWithDeltas = jest.fn();
