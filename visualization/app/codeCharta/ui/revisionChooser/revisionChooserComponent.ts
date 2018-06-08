@@ -1,6 +1,7 @@
 import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/data.service";
 import {SettingsService} from "../../core/settings/settings.service";
 import {CodeMap} from "../../core/data/model/CodeMap";
+import "./revisionChooser.scss";
 
 /**
  * Controls the RevisionChooser
@@ -12,6 +13,7 @@ export class RevisionChooserController implements DataServiceSubscriber{
         chosenReference: null,
         chosenComparison: null,
     };
+    public show: string;
 
     /* @ngInject */
 
@@ -25,15 +27,16 @@ export class RevisionChooserController implements DataServiceSubscriber{
         private settingsService: SettingsService
     ) {
         this.revisions = dataService.data.revisions;
-        this.ui.chosenComparison = this.getIndexOfMap(this.dataService.getComparisonMap(), this.revisions);
-        this.ui.chosenReference = this.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
+        this.show = "single";
+        this.ui.chosenComparison = this.dataService.getIndexOfMap(this.dataService.getComparisonMap(), this.revisions);
+        this.ui.chosenReference = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
         dataService.subscribe(this);
     }
 
     onDataChanged(data: DataModel) {
         this.revisions = data.revisions;
-        this.ui.chosenComparison = this.getIndexOfMap(this.dataService.getComparisonMap(), this.revisions);
-        this.ui.chosenReference = this.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
+        this.ui.chosenComparison= this.dataService.getIndexOfMap(this.dataService.getComparisonMap(), this.revisions);
+        this.ui.chosenReference = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
     }
 
     onReferenceChange(mapIndex: number) {
@@ -44,21 +47,31 @@ export class RevisionChooserController implements DataServiceSubscriber{
         this.dataService.setComparisonMap(mapIndex);
     }
 
-    private getIndexOfMap(map: CodeMap, mapArray: CodeMap[]) {
+    onShowChange(option){
+        switch (option){
+            case "single":{
+                this.settingsService.settings.deltas = false;
+                this.onReferenceChange(this.ui.chosenReference);
+                break;
+            }
 
-        if (mapArray && map) {
-            for (let i = 0; i < mapArray.length; i++) {
-                if (mapArray[i] && mapArray[i].fileName === map.fileName) {
-                    return i;
-                }
+            case "aggregate":{
+                this.settingsService.settings.deltas = false;
+                this.settingsService.applySettings();
+                break;
+            }
+
+            case "delta":{
+                this.settingsService.settings.deltas = true;
+                this.settingsService.applySettings();
+                break;
+            }
+
+            default:{
+                console.log("Unexpected value for showing option: "+option);
             }
         }
-
-        return -1;
-
-    }
-
-
+     }
 }
 
 export const revisionChooserComponent = {
