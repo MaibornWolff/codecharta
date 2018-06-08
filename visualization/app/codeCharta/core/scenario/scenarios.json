@@ -25,7 +25,8 @@
       "margin": 1,
       "deltaColorFlipped": false,
       "showDependencies": false,
-      "maximizeDetailPanel": false
+      "minimizeDetailPanel": false,
+      "invertHeight": false
     },
     "autoFitCamera": true
   },
@@ -55,8 +56,10 @@
       "margin": 1,
       "deltaColorFlipped": false,
       "showDependencies": false,
-      "maximizeDetailPanel": false
-    }
+      "minimizeDetailPanel": false,
+      "invertHeight": false
+    },
+    "autoFitCamera": true
   },
   {
     "name": "Coverage",
@@ -84,7 +87,8 @@
       "margin": 1,
       "deltaColorFlipped": false,
       "showDependencies": false,
-      "maximizeDetailPanel": false
+      "minimizeDetailPanel": false,
+      "invertHeight": false
     },
     "autoFitCamera": true
   },
@@ -114,7 +118,8 @@
       "margin": 1,
       "deltaColorFlipped": false,
       "showDependencies": false,
-      "maximizeDetailPanel": false
+      "minimizeDetailPanel": false,
+      "invertHeight": false
     },
     "autoFitCamera": true
   }
