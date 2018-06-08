@@ -20,6 +20,7 @@ describe("RevisionChooserController", () => {
             subscribe: jest.fn(),
             getComparisonMap: jest.fn(),
             getReferenceMap: jest.fn(),
+            getIndexOfMap: jest.fn(),
             $rootScope: {
                 $on: jest.fn()
             },
