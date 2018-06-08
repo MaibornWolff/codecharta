@@ -1,16 +1,40 @@
 "use strict";
 import "./settingsPanel.scss";
+import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {CodeMap} from "../../core/data/model/CodeMap";
 
 /**
  * Controls the settingsPanel
  */
-export class SettingsPanelController{
+export class SettingsPanelController implements SettingsServiceSubscriber {
+
+    public showTemporalCouplingPanel : boolean = false;
 
     /* @ngInject */
     constructor(
         private $scope,
-        private $timeout
-    ) {
+        private $timeout,
+        private settingsService: SettingsService) {
+
+        this.onSettingsChanged(settingsService.settings);
+        this.settingsService.subscribe(this);
+    }
+
+    onSettingsChanged(s: Settings) {
+        this.showTemporalCouplingPanel = this.hasTemporalCouplingDependencies();
+    }
+
+    private hasTemporalCouplingDependencies() {
+
+        let settings = this.settingsService.settings;
+
+        if (settings.map &&
+            settings.map.dependencies &&
+            settings.map.dependencies.temporal_coupling) {
+            return settings.map.dependencies.temporal_coupling.length > 0;
+        }
+
+        return false;
     }
 
     /**
@@ -23,6 +47,8 @@ export class SettingsPanelController{
             this.$scope.$broadcast("rzSliderForceRender");
         },50);
     }
+
+
 
 }
 
