@@ -11,7 +11,6 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
     public data: DataModel;
     public revisions: CodeMap[];
     public selectedMapIndices : number[];
-    public aggregate : AggregateMapService;
     public mapsToAggregate : CodeMap[];
 
     /* @ngInject */
@@ -27,7 +26,6 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
         this.dataService.subscribe(this);
         this.settingsService.subscribe(this);
         this.mapsToAggregate = [] as CodeMap[];
-        this.aggregate = aggregateMapService;
         this.updateSelectedMapIndices();
     }
 
@@ -35,7 +33,7 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
 
         this.selectMapsToAggregate();
 
-        let newMap = this.aggregate.aggregateMaps(JSON.parse(JSON.stringify(this.mapsToAggregate)));
+        let newMap = this.aggregateMapService.aggregateMaps(JSON.parse(JSON.stringify(this.mapsToAggregate)));
 
         this.settings.map = newMap;
         this.settingsService.applySettings(this.settings);

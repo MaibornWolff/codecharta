@@ -8,3 +8,4 @@ import {statisticSettingsPanelComponent} from "./statisticSettingsPanel.componen
 angular.module("app.codeCharta.ui.statisticSettingsPanel", ["app.codeCharta.ui.rangeSlider", "app.codeCharta.core"])
     .component(statisticSettingsPanelComponent.selector, statisticSettingsPanelComponent);
 
+

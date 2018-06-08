@@ -11,7 +11,7 @@ export interface KVObject {
 }
 
 /**
- * Calculates the deltas between given revisions and modifies the data structure
+ * Calculates the deltas between given maps and modifies the data structure
  */
 export class DeltaCalculatorService {
 
@@ -101,11 +101,11 @@ export class DeltaCalculatorService {
             return;
         }
 
-        //remove cross origin nodes from revisions
+        //remove cross origin nodes from maps
         this.removeCrossOriginNodes(leftMap);
         this.removeCrossOriginNodes(rightMap);
 
-        //build hash revisions for fast search indices
+        //build hash maps for fast search indices
         let firstLeafHashMap = new Map<string, CodeMapNode>();
         d3.hierarchy(leftMap.root).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
             firstLeafHashMap.set(node.data.path, node.data);

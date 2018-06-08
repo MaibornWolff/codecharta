@@ -24,10 +24,10 @@ export class StatisticMapService {
     }
 
     /*
-     * Function that receives an array of revisions and returns a map with a structure that contains every leaf contained in
-     * any of the revisions of the input array.
+     * Function that receives an array of maps and returns a map with a structure that contains every leaf contained in
+     * any of the maps of the input array.
      * The attributes of the output map contain as values the result of an statistical operation applied to the values
-     * of the input revisions. That operation can be selected among the implemented ones by the operation value.
+     * of the input maps. That operation can be selected among the implemented ones by the operation value.
      * Every new statistical operation should  have a new value in STATISTIC_OPS and a new function, which should be
      * added to the statistic function switch.
      */
@@ -41,7 +41,7 @@ export class StatisticMapService {
             return maps[0];
         }
 
-        let accumulated = {} as CodeMap;//Map that contains an array of every value of every map given in revisions array
+        let accumulated = {} as CodeMap;//Map that contains an array of every value of every map given in maps array
         accumulated.root = {} as CodeMapNode;
         let unified: CodeMap;
         accumulated.fileName = operation+"";
@@ -57,7 +57,7 @@ export class StatisticMapService {
             accumulated.root = this.createArrayMap(maps[i].root, accumulated.root, maps.length);
         }
         for(let i: number=0; i<maps.length; i++){
-            //The empty accumulated map gets fulfilled with the values of every map in the revisions array
+            //The empty accumulated map gets fulfilled with the values of every map in the maps array
             accumulated.root=this.fulfillMap(maps[i].root,accumulated.root, i);
         }
         unified = JSON.parse(JSON.stringify(accumulated));
@@ -129,7 +129,7 @@ export class StatisticMapService {
             }
         }
         else{
-            //Go through every position in the revisions
+            //Go through every position in the maps
             for(let i: number=0; i<input.children.length; i++) {
                 for(let j: number=0;j<output.children.length; j++){
                     if(input.children[i].name==output.children[j].name){
@@ -173,7 +173,7 @@ export class StatisticMapService {
             }
         }
         else if(input.children&&input.children.length!=0){
-            //Go through every position in the revisions
+            //Go through every position in the maps
             for(let i=0; i<input.children.length; i++) {
                 output.children[i]= this.applyStatistics(input.children[i],output.children[i],operation);
             }

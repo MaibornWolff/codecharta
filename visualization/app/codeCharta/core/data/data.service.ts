@@ -127,7 +127,7 @@ export class DataService {
         return this._lastComparisonMap;
     }
 
-    public getIndexOfMap(map: CodeMap, mapArray: CodeMap[]) {
+    public getIndexOfMap(map: CodeMap, mapArray: CodeMap[]):number {
 
         if (mapArray && map) {
             for (let i = 0; i < mapArray.length; i++) {
@@ -143,7 +143,7 @@ export class DataService {
 
         if(this._data.revisions.length <= 0){
             this._data.metrics = [];
-            return; //we cannot reduce if there are no revisions
+            return; //we cannot reduce if there are no maps
         }
 
         let leaves: HierarchyNode<CodeMapNode>[] = [];
@@ -167,7 +167,7 @@ export class DataService {
     }
 
     /**
-     * resets all revisions (deletes them)
+     * resets all maps (deletes them)
      */
     public resetMaps() {
         this._data.revisions = [];

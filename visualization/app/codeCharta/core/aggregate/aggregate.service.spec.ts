@@ -230,7 +230,7 @@ describe("app.codeCharta.core.aggregate", function() {
     /**
      * @test {aggregateMapService}
      */
-    it ( "aggregation two",NGMock.mock.inject(function(aggregateMapService){
+    it ( "aggregation of two maps",NGMock.mock.inject(function(aggregateMapService){
         let aggregated: CodeMap;
         aggregated = aggregateMapService.aggregateMaps([file1,file2]);
         expect(aggregated).toEqual(file_aggregation_two);
@@ -239,7 +239,7 @@ describe("app.codeCharta.core.aggregate", function() {
     /**
      * @test {aggregateMapService}
      */
-    it ( "aggregation four",NGMock.mock.inject(function(aggregateMapService){
+    it ( "aggregation of four maps",NGMock.mock.inject(function(aggregateMapService){
         let aggregated: CodeMap;
         aggregated = aggregateMapService.aggregateMaps([file1,file2,file1,file2]);
         expect(aggregated).toEqual(file_aggregation_four);
@@ -248,7 +248,7 @@ describe("app.codeCharta.core.aggregate", function() {
     /**
      * @test {aggregateMapService}
      */
-    it ( "aggregation one",NGMock.mock.inject(function(aggregateMapService){
+    it ( "aggregation one map",NGMock.mock.inject(function(aggregateMapService){
         let aggregated: CodeMap;
         aggregated = aggregateMapService.aggregateMaps([file1]);
         expect(aggregated).toEqual(file1);
