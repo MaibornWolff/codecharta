@@ -138,13 +138,14 @@ class TreeMapService {
 
         for (var couple of emphasizedDependencies) {
 
-            if (node.path != couple.node &&
-                node.path != couple.dependsOn) {
-
-                height = 0;
+            if (node.path == couple.node ||
+                node.path == couple.dependsOn) {
+                return height;
             }
         }
+        height = 0;
         return height;
+
     }
 
     /**
