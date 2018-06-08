@@ -2,6 +2,7 @@ import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/s
 import {IRootScopeService, ITimeoutService} from "angular";
 import {CodeMap, CodeMapNode} from "../../core/data/model/CodeMap";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
+import {ThreeOrbitControlsService} from "../codeMap/threeViewer/threeOrbitControlsService";
 
 export interface MapTreeViewHoverEventSubscriber {
     onShouldHoverNode(node: CodeMapNode);
@@ -15,7 +16,7 @@ export class MapTreeViewLevelController {
     public collapsed: boolean = true;
 
     /* @ngInject */
-    constructor(private $timeout: ITimeoutService, private $scope, private settingsService: SettingsService, private $rootScope: IRootScopeService) {
+    constructor(private $timeout: ITimeoutService, private $scope, private settingsService: SettingsService, private $rootScope: IRootScopeService, private threeOrbitControlsService: ThreeOrbitControlsService) {
 
     }
 
@@ -39,6 +40,9 @@ export class MapTreeViewLevelController {
     onLabelClick() {
         this.setParentsInvisibleAndChildrenVisible();
         this.broadcastVisibility();
+        this.$timeout(() => {
+            this.threeOrbitControlsService.autoFitTo();
+        }, 200);
     }
 
     onEyeClick() {

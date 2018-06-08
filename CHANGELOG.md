@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Added CrococosmoImporter to Analysis
 - Added type, dirs, name to CSVExporter
 - Invert height of building checkbox
+- Auto Focus selected map part
 - Timmer added to applySettings in SettingsService
 
 ### Changed
