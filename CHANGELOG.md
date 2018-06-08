@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.13.0] - 2018-06-08
+### Added
 - Layout switcher #141
 - Added CrococosmoImporter to Analysis
 - Added type, dirs, name to CSVExporter
