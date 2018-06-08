@@ -35,7 +35,7 @@ export interface Settings {
     operation: STATISTIC_OPS;
     deltaColorFlipped: boolean;
     showDependencies: boolean;
-    minimizeDetailPanel: boolean;
+    maximizeDetailPanel: boolean;
     invertHeight: boolean;
     emphasizedDependencies: CodeMapDependency[];
 }
@@ -105,7 +105,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
             showDependencies: false,
-            minimizeDetailPanel: false,
+            maximizeDetailPanel: false,
             invertHeight: false,
             emphasizedDependencies: []
         };
@@ -333,7 +333,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.deltas = settings.deltas;
         this._settings.operation = settings.operation;
         this._settings.deltaColorFlipped = settings.deltaColorFlipped;
-        this._settings.minimizeDetailPanel = settings.minimizeDetailPanel;
+        this._settings.maximizeDetailPanel = settings.maximizeDetailPanel;
         this._settings.invertHeight = settings.invertHeight;
         this._settings.emphasizedDependencies = settings.emphasizedDependencies;
 
