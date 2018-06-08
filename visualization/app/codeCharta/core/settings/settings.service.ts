@@ -184,7 +184,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     }
 
     /**
-     * updates the settings object according to url parameters. url parameters are named like the accessors of the Settings object. E.aggregationName. scale.x or areaMetric
+     * updates the settings object according to url parameters. url parameters are named like the accessors of the Settings object. E.g. scale.x or areaMetric
      * @emits {settings-changed} transitively on call
      */
     public updateSettingsFromUrl() {
