@@ -1,5 +1,5 @@
-@import "../mixins";
-@import "../codecharta/codeCharta.component";
+@import "../mixins.scss";
+@import "../codecharta/codeCharta.component.scss";
 
 test-ville-component {
   @extend code-charta-component;
