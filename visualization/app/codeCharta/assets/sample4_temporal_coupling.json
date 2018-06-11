@@ -67,17 +67,17 @@
       {
         "node": "/root/big leaf",
         "dependsOn": "/root/Parent Leaf/small leaf",
-        "pairingRate": 98
+        "pairingRate": 42
       },
       {
         "node": "/root/big leaf",
         "dependsOn": "/root/Parent Leaf/other small leaf",
-        "pairingRate": 65
+        "pairingRate": 89
       },
       {
         "node": "/root/Parent Leaf/other small leaf",
         "dependsOn": "/root/big leaf",
-        "pairingRate": 42
+        "pairingRate": 65
       }
     ]
   }

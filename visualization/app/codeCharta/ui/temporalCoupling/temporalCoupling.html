@@ -1,7 +1,7 @@
 <md-divider></md-divider>
 
 <md-list-item class="md-2-line"
-              ng-repeat="couple in $ctrl.temporalCoupling"
+              ng-repeat="couple in $ctrl.temporalCoupling | orderBy: 'pairingRate' : true"
               ng-click="$ctrl.onClickCouple(couple, false)">
 
     <div class="md-icon" layout="column">
