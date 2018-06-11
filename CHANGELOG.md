@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 - filter by regex shows parent nodes #116
+- typo in scss file
 
 ## [1.12.0] - 2018-04-27
 ### Added
