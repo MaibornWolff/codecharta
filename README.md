@@ -54,6 +54,6 @@ Have a bug, a feature request or any question? Please [open a new issue](https:/
 
 * [Releases](https://github.com/MaibornWolff/codecharta/releases)
 * [Changelog](https://github.com/MaibornWolff/codecharta/blob/master/CHANGELOG.md)
-* [Contributing](https://github.com/MaibornWolff/codecharta/blob/master/CONTRIBUTE.md)
+* [Contributing](https://github.com/MaibornWolff/codecharta/blob/master/CONTRIBUTING.md)
 * [Code of Conduct](https://github.com/MaibornWolff/codecharta/blob/master/CODE_OF_CONDUCT.md)
 * [License](LICENSE.md)
