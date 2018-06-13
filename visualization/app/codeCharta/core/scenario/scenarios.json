@@ -87,7 +87,7 @@
       "margin": 1,
       "deltaColorFlipped": false,
       "showDependencies": false,
-      "minimizeDetailPanel": false,
+      "maximizeDetailPanel": false,
       "invertHeight": false
     },
     "autoFitCamera": true
@@ -118,7 +118,7 @@
       "margin": 1,
       "deltaColorFlipped": false,
       "showDependencies": false,
-      "minimizeDetailPanel": false,
+      "maximizeDetailPanel": false,
       "invertHeight": false
     },
     "autoFitCamera": true
