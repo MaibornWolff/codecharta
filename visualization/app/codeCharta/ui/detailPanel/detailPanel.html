@@ -3,11 +3,11 @@
 <div id="detailWindow" class="dark_shadow_opacity" ng-hide="!($ctrl.isSelected() || $ctrl.isHovered())">
 
 
-    <table class="minimized" ng-hide="!$ctrl.settingsService.settings.minimizeDetailPanel">
+    <table class="minimized" ng-hide="$ctrl.settingsService.settings.maximizeDetailPanel">
         <thead>
 
         <tr>
-            <th ng-click="$ctrl.settingsService.settings.minimizeDetailPanel = false">
+            <th ng-click="$ctrl.settingsService.settings.maximizeDetailPanel = true">
                 <i class="fa fa-arrow-up"></i>
             </th>
             <th ng-hide="!$ctrl.isHovered()">{{$ctrl.details.hovered.path}}</th>
@@ -16,10 +16,10 @@
     </table>
 
 
-    <table ng-hide="$ctrl.settingsService.settings.minimizeDetailPanel">
+    <table ng-hide="!$ctrl.settingsService.settings.maximizeDetailPanel">
         <thead>
             <tr>
-                <th ng-click="$ctrl.settingsService.settings.minimizeDetailPanel = true">
+                <th ng-click="$ctrl.settingsService.settings.maximizeDetailPanel = false">
                     <i class="fa fa-arrow-down"></i>
                 </th>
                 <th>Property</th>

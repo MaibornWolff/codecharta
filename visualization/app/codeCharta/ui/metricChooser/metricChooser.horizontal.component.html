@@ -5,7 +5,9 @@
             {{::metric}}
         </md-option>
     </md-select>
-    <span class="metric-value">{{($ctrl.hoveredAreaValue | number) || "-"}}</span>
+    <span class="metric-value">{{($ctrl.hoveredAreaValue | number) || "-"}}
+    <span  ng-hide="!$ctrl.hoveredAreaDelta">(&Delta;{{$ctrl.hoveredAreaDelta | number}})</span>
+        </span>
 </md-input-container>
 
 <md-input-container class="md-block dark_shadow_opacity">
@@ -15,7 +17,9 @@
             {{::metric}}
         </md-option>
     </md-select>
-    <span class="metric-value">{{($ctrl.hoveredHeightValue | number) || "-"}}</span>
+    <span class="metric-value">{{($ctrl.hoveredHeightValue | number) || "-"}}
+        <span style="color: {{$ctrl.hoveredDeltaColor}};" ng-hide="!$ctrl.hoveredHeightDelta">(&Delta;{{$ctrl.hoveredHeightDelta | number}})</span>
+    </span>
 </md-input-container>
 
 <md-input-container class="md-block dark_shadow_opacity">
@@ -25,5 +29,7 @@
             {{::metric}}
         </md-option>
     </md-select>
-    <span class="metric-value">{{($ctrl.hoveredColorValue | number) || "-"}}</span>
+    <span class="metric-value">{{($ctrl.hoveredColorValue | number) || "-"}}
+    <span  ng-hide="!$ctrl.hoveredHeightDelta">(&Delta;{{$ctrl.hoveredColorDelta | number}})</span>
+        </span>
 </md-input-container>

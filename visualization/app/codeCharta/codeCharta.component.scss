@@ -1,37 +1,38 @@
-@import "../mixins";
+@import "../mixins.scss";
 
 code-charta-component {
-
   #title {
 
     position: fixed;
     z-index: 10;
     width: 100%;
 
-    a, img {
-      width: 4em;
-      margin: 0.5em 0 0 1.5em;
-    }
+    .logo {
 
-    h1 {
-      text-transform: uppercase;
-      font-size: 0.9em;
-      line-height: 1.4em;
-      float: right;
-      margin: 0.5em 1.6em 0 0;
-      color: #5A585A;
-      font-family: Roboto, sans-serif;
-      font-weight: 300;
-    }
+      width: 160px;
+      height: 100px;
+      position: fixed;
+      left: 0;
+      top: 5px;
+      z-index: -2;
 
-    h1:first-child {
-      font-size: 1.82em;
-    }
+      a, img {
+        width: 5em;
+        display: block;
+        margin: auto !important;
+      }
 
-    h1:last-child {
-      font-size: 1.5em;
+      h2 {
+        text-transform: uppercase;
+        color: #5A585A;
+        font-family: Roboto, sans-serif;
+        font-weight: 500;
+        font-size: 9pt;
+        text-align: center;
+        margin: 0;
+        z-index: -1;
+      }
     }
-
   }
 
   #codeMap {
@@ -97,5 +98,4 @@ code-charta-component {
     box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2) !important;
     opacity: 0.97;
   }
-
 }
