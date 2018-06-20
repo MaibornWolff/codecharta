@@ -6,7 +6,7 @@ Generates visualisation data from SonarQube data through an API call to a SonarQ
 
 The command
 
-> ccsh sonarimport \<url of server> \<projectCreator id>
+> ccsh sonarimport \<url of server> \<project id>
 
 prints the visualisation data to stdout (or a file if option `-o <filename>` is given).
 
