@@ -31,14 +31,11 @@ package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Path
-import de.maibornwolff.codecharta.nodeinserter.NodeInserter
 
 /**
  * merges leafs according to the level of matching of their paths
  */
 class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase: Boolean = false) : NodeMergerStrategy {
-    private val flatNodeMerger = NodeMerger()
-
     private val mergeConditionSatisfied: (Node, Node) -> Boolean
 
     init {
@@ -63,10 +60,10 @@ class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase
      * merge multiple nodes
      */
     private fun merge(vararg nodes: Node): List<Node> {
-        val root = flatNodeMerger.merge(*nodes)
+        val root = nodes[0].merge(nodes.asList())
         nodes.map { it.nodes }
                 .reduce { total, next -> total.addAll(next) }
-                .forEach { NodeInserter.insertByPath(root, Path(it.key.edgesList.dropLast(1)), it.value) }
+                .forEach { root.insertAt(Path(it.key.edgesList.dropLast(1)), it.value) }
         return listOf(root)
     }
 
@@ -93,6 +90,8 @@ class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase
 
         return newNodes
                 .plus(unchangedNodes)
-                .mapValues { flatNodeMerger.merge(it.value, this[it.key] ?: it.value) }
+                .mapValues {
+                    if (this[it.key] == null) it.value else it.value.merge(listOf(this[it.key]!!))
+                }
     }
 }

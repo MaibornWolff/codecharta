@@ -27,37 +27,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.nodeinserter
+package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.model.Node
-import de.maibornwolff.codecharta.model.NodeType
-import de.maibornwolff.codecharta.model.Path
-import de.maibornwolff.codecharta.model.Project
-
-/**
- * Inserts a new node into a project.
- *
- *
- * The nodes of a project span a tree using their parent children relationship.
- * A path in this tree is represented by the ordered list of names of nodes.
- */
 object NodeInserter {
-
-    /**
-     * Inserts the node as child of the element at the specified position in the tree.
-     *
-     * @param project  where the node has to be inserted
-     * @param position absolute path to the parent element of the node that has to be inserted
-     * @param node     that has to be inserted
-     */
-    fun insertByPath(project: Project, position: Path, node: Node) {
-        if (!project.hasRootNode()) {
-            project.nodes.add(createFolderNode("root"))
-        }
-
-        insertByPath(project.rootNode, position, node)
-    }
-
     /**
      * Inserts the node as child of the element at the specified position
      * in the sub-tree spanned by the children of the root node.
@@ -69,24 +41,21 @@ object NodeInserter {
     fun insertByPath(root: Node, path: Path, node: Node) {
         if (path.isTrivial) {
             if (rootContainsNodeAlready(root, node)) {
-                System.err.println("Element $path already exists, skipping.")
-                return
+                val original = getNode(root, node.name)!!
+                root.children.remove(original)
+                root.children.add(original.merge(listOf(node)))
+            } else {
+                root.children.add(node)
             }
-            root.children.add(node)
         } else {
             val name = path.head
-            val folderNode = getFolderNode(root, name) ?: createFolderNodeAndInsertAtRoot(root, name)
+            val folderNode = getNode(root, name)
+                    ?: createFolderNodeAndInsertAtRoot(root, name)
             insertByPath(folderNode, path.tail, node)
         }
     }
 
-    private fun createFolderNodeAndInsertAtRoot(root: Node, name: String): Node {
-        val folderNode = createFolderNode(name)
-        insertByPath(root, Path.TRIVIAL, folderNode)
-        return folderNode
-    }
-
-    private fun getFolderNode(root: Node, name: String): Node? {
+    private fun getNode(root: Node, name: String): Node? {
         return root.children.firstOrNull { it.name == name }
     }
 
@@ -98,4 +67,9 @@ object NodeInserter {
         return Node(name, NodeType.Folder)
     }
 
+    private fun createFolderNodeAndInsertAtRoot(root: Node, name: String): Node {
+        val folderNode = createFolderNode(name)
+        insertByPath(root, Path.TRIVIAL, folderNode)
+        return folderNode
+    }
 }

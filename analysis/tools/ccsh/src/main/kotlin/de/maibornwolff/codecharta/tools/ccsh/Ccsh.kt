@@ -37,6 +37,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import de.maibornwolff.codecharta.importer.crococosmo.CrococosmoImporter
+import de.maibornwolff.codecharta.importer.understand.UnderstandImporter
 import picocli.CommandLine
 import java.util.concurrent.Callable
 
@@ -48,11 +49,13 @@ import java.util.concurrent.Callable
             MergeFilter::class,
             CSVImporter::class,
             SourceMonitorImporter::class,
+            UnderstandImporter::class,
             SonarImporterMain::class,
             SCMLogParser::class,
             Installer::class,
             CSVExporter::class,
-            CrococosmoImporter::class
+            CrococosmoImporter::class,
+            UnderstandImporter::class
         ],
         versionProvider = Ccsh.ManifestVersionProvider::class,
         footer = ["Copyright(c) 2018, MaibornWolff GmbH"]

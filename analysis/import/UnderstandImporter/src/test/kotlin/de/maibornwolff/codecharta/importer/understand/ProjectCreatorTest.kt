@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, MaibornWolff GmbH
+ * Copyright (c) 2018, MaibornWolff GmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,53 +27,32 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.model
+package de.maibornwolff.codecharta.importer.understand
 
-import de.maibornwolff.codecharta.translator.MetricNameTranslator
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.*
+import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.on
+
+class ProjectCreatorTest : Spek({
+    describe("ProjectCreator for Understand") {
+        val projectCreator = ProjectCreator("test", '/')
 
 
-open class Project(
-        val projectName: String,
-        nodeList: List<Node> = listOf(),
-        val apiVersion: String = API_VERSION
-) {
-    val nodes = nodeList.toMutableList()
+        on("reading csv lines from Understand") {
+            val project = projectCreator.createFromCsvStream(this.javaClass.classLoader.getResourceAsStream("understand.csv"))
 
-    val rootNode: Node
-        get() = nodes[0]
+            it("has correct number of nodes") {
+                assertThat(project.rootNode.nodes.size, greaterThan(1))
+                assertThat(project.rootNode.leafObjects.size, `is`(223))
+            }
 
-    private fun hasRootNode(): Boolean {
-        return nodes.size == 1
-    }
-
-    /**
-     * Inserts the node as child of the element at the specified position in the tree.
-     *
-     * @param position absolute path to the parent element of the node that has to be inserted
-     * @param node     that has to be inserted
-     */
-    fun insertByPath(position: Path, node: Node) {
-        if (!hasRootNode()) {
-            nodes.add(Node("root", NodeType.Folder))
+            it("leaf has file attributes") {
+                val attributes = project.rootNode.leafObjects.flatMap { it.attributes.keys }.distinct()
+                assertThat(attributes, hasItem("CountLine"))
+            }
         }
-
-        rootNode.insertAt(position, node)
     }
-
-     fun translateMetricNames(metricNameTranslator: MetricNameTranslator) {
-         rootNode.translateMetricNames(metricNameTranslator, recursive= true)
-     }
-
-    override fun toString(): String {
-        return "Project{" +
-                "projectName='" + projectName + '\''.toString() +
-                ", apiVersion='" + apiVersion + '\''.toString() +
-                ", nodes=" + nodes +
-                '}'.toString()
-    }
-
-    companion object {
-        const val API_VERSION = "1.0"
-    }
-
-}
+})

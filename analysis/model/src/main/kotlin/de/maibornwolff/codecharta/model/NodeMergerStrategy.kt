@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, MaibornWolff GmbH
+ * Copyright (c) 2018, MaibornWolff GmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,51 +29,7 @@
 
 package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.translator.MetricNameTranslator
-
-
-open class Project(
-        val projectName: String,
-        nodeList: List<Node> = listOf(),
-        val apiVersion: String = API_VERSION
-) {
-    val nodes = nodeList.toMutableList()
-
-    val rootNode: Node
-        get() = nodes[0]
-
-    private fun hasRootNode(): Boolean {
-        return nodes.size == 1
-    }
-
-    /**
-     * Inserts the node as child of the element at the specified position in the tree.
-     *
-     * @param position absolute path to the parent element of the node that has to be inserted
-     * @param node     that has to be inserted
-     */
-    fun insertByPath(position: Path, node: Node) {
-        if (!hasRootNode()) {
-            nodes.add(Node("root", NodeType.Folder))
-        }
-
-        rootNode.insertAt(position, node)
-    }
-
-     fun translateMetricNames(metricNameTranslator: MetricNameTranslator) {
-         rootNode.translateMetricNames(metricNameTranslator, recursive= true)
-     }
-
-    override fun toString(): String {
-        return "Project{" +
-                "projectName='" + projectName + '\''.toString() +
-                ", apiVersion='" + apiVersion + '\''.toString() +
-                ", nodes=" + nodes +
-                '}'.toString()
-    }
-
-    companion object {
-        const val API_VERSION = "1.0"
-    }
-
+interface NodeMergerStrategy {
+    fun merge(tree: Node, otherTrees: List<Node>) : Node
 }
+

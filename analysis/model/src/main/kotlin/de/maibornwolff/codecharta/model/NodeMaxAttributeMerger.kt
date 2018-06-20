@@ -29,51 +29,40 @@
 
 package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.translator.MetricNameTranslator
-
-
-open class Project(
-        val projectName: String,
-        nodeList: List<Node> = listOf(),
-        val apiVersion: String = API_VERSION
-) {
-    val nodes = nodeList.toMutableList()
-
-    val rootNode: Node
-        get() = nodes[0]
-
-    private fun hasRootNode(): Boolean {
-        return nodes.size == 1
+/**
+ * merging multiply nodes by using max attribute and link, ignoring children
+ */
+object NodeMaxAttributeMergerIgnoringChildren : NodeMergerStrategy {
+    override fun merge(tree: Node, otherTrees: List<Node>): Node {
+        val nodes = listOf(tree).plus(otherTrees)
+        return Node(
+                createName(tree),
+                createType(tree),
+                createAttributes(nodes),
+                createLink(nodes),
+                nodeMergingStrategy = tree.nodeMergingStrategy
+        )
     }
 
-    /**
-     * Inserts the node as child of the element at the specified position in the tree.
-     *
-     * @param position absolute path to the parent element of the node that has to be inserted
-     * @param node     that has to be inserted
-     */
-    fun insertByPath(position: Path, node: Node) {
-        if (!hasRootNode()) {
-            nodes.add(Node("root", NodeType.Folder))
+    private fun createLink(nodes: List<Node>) = nodes.map { it.link }.firstOrNull { it != null && !it.isBlank() }
+
+    private fun createAttributes(nodes: List<Node>) =
+            nodes.map { it.attributes }.
+                    reduce { acc, mutableMap -> acc.mergeReduce(mutableMap, {x,y -> maxValOrFirst(x,y)}) }
+                    .toMutableMap()
+
+    private fun createType(nodes: Node) = nodes.type
+
+    private fun createName(nodes: Node) = nodes.name
+
+    private fun maxValOrFirst(x: Any, y: Any) : Any  {
+        return when {
+            x is Long && y is Long -> maxOf(x,y)
+            x is Double && y is Double -> maxOf(x,y)
+            else -> x
         }
-
-        rootNode.insertAt(position, node)
     }
 
-     fun translateMetricNames(metricNameTranslator: MetricNameTranslator) {
-         rootNode.translateMetricNames(metricNameTranslator, recursive= true)
-     }
-
-    override fun toString(): String {
-        return "Project{" +
-                "projectName='" + projectName + '\''.toString() +
-                ", apiVersion='" + apiVersion + '\''.toString() +
-                ", nodes=" + nodes +
-                '}'.toString()
-    }
-
-    companion object {
-        const val API_VERSION = "1.0"
-    }
-
+    private fun <K, V> Map<K, V>.mergeReduce(other: Map<K, V>, reduce: (V, V) -> V = { _, b -> b }): Map<K, V> =
+            this.toMutableMap().apply { other.forEach { merge(it.key, it.value, reduce) } }
 }

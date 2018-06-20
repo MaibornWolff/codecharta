@@ -34,7 +34,6 @@ import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.nodeinserter.NodeInserter
 
 import java.util.*
 
@@ -48,7 +47,7 @@ class ProjectConverter(private val containsAuthors: Boolean, private val project
         val fileName = versionControlledFile.actualFilename.substringAfterLast(PATH_SEPARATOR)
         val newNode = Node(fileName, NodeType.File, attributes, "", ArrayList())
         val path = PathFactory.fromFileSystemPath(versionControlledFile.actualFilename.substringBeforeLast(PATH_SEPARATOR, ""))
-        NodeInserter.insertByPath(project, path, newNode)
+        project.insertByPath(path, newNode)
     }
 
     private fun extractAttributes(versionControlledFile: VersionControlledFile): Map<String, Any> {

@@ -44,6 +44,10 @@ object TreeCreator {
             override fun toString(): String {
                 return pathToInnerTree.toString() + " -> " + innerTree
             }
+
+            override fun insertAt(path: Path, node: Node) {
+                throw NotImplementedError()
+            }
         }
     }
 }
