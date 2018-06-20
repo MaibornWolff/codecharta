@@ -52,13 +52,14 @@ class UnderstandImporter : Callable<Void> {
     @CommandLine.Option(names = ["--pathSeparator"], description = ["path separator (default = '/')"])
     private var pathSeparator = '/'
 
-    @CommandLine.Option(names = ["-a","--aggregation"], description = ["aggregate metrics to "])
+    @CommandLine.Option(names = ["-a", "--aggregation"], description = ["aggregate metrics to "])
     private var aggregation = AGGREGATION.FILE
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        val projectCreator = ProjectCreator(projectName, pathSeparator)
+        val projectCreator = ProjectCreator(projectName, pathSeparator, aggregation)
         val project = projectCreator.createFromCsvStream(files.map { it.inputStream() })
+        project.translateMetricNames(understandReplacement)
         ProjectSerializer.serializeProject(project, writer())
 
         return null

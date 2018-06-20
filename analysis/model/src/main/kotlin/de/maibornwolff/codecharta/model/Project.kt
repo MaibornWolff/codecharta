@@ -29,8 +29,10 @@
 
 package de.maibornwolff.codecharta.model
 
+import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
- open class Project(
+
+open class Project(
         val projectName: String,
         nodeList: List<Node> = listOf(),
         val apiVersion: String = API_VERSION
@@ -57,6 +59,10 @@ package de.maibornwolff.codecharta.model
 
         rootNode.insertAt(position, node)
     }
+
+     fun translateMetricNames(metricNameTranslator: MetricNameTranslator) {
+         rootNode.translateMetricNames(metricNameTranslator, recursive= true)
+     }
 
     override fun toString(): String {
         return "Project{" +

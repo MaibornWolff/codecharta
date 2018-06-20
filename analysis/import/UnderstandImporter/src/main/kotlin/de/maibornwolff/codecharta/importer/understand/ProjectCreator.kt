@@ -44,6 +44,10 @@ class ProjectCreator(
         private val aggregation: AGGREGATION = AGGREGATION.FILE
 ) {
 
+    init {
+        if (aggregation != AGGREGATION.FILE) throw NotImplementedError("only file aggregation is implemented yet.")
+    }
+
     private val csvDelimiter = ','
 
     private fun createEmptyProject(): Project {
