@@ -2,6 +2,7 @@
 import {Settings} from "../settings/settings.service";
 import {createDefaultScenario} from "./scenario.data";
 import {ThreeOrbitControlsService} from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
+import {CodeMapNode} from "../data/model/CodeMap";
 
 export interface Scenario {
     name: string;
@@ -32,6 +33,38 @@ export class ScenarioService {
         }
     }
 
+    public  computeMargin(): number{
+        let margin: number = 12;
+        let rloc = this.sumRlocWholeMap(this.dataService._data.renderMap.root);
+        console.log("rloc output",rloc);
+        return margin;
+    }
+
+    private sumRlocWholeMap(root: CodeMapNode): number{
+        var Rloc: number[] = [0];
+        console.log(root);
+        if(root){
+            this.goThroughMap(root, this.addRloc, Rloc );
+        }
+        return Math.round(Rloc[0]);
+    }
+
+    public addRloc(map: CodeMapNode, previousRloc: number[]){
+        if(map.attributes["rloc"] && typeof(map.attributes["rloc"]) == "number"){
+            console.log("one rloc", map.attributes["rloc"]);
+            previousRloc[0]+=map.attributes["rloc"];
+        }
+    }
+
+    public goThroughMap(map: CodeMapNode, func: Function, valueReference: any){
+        func(map, valueReference);
+        if(map.children){
+            for(let child of map.children){
+                this.goThroughMap(child, func, valueReference);
+            }
+        }
+    }
+
     /**
      * Returns an array of all scenarios.
      * @returns {Scenario[]} all scenarios
@@ -54,7 +87,7 @@ export class ScenarioService {
      * @returns {Scenario} the scenario
      */
     public getDefaultScenario(): Scenario {
-        return createDefaultScenario(this.settingsService.settings.map);
+        return createDefaultScenario(this.settingsService.settings.map, this.computeMargin());
     }
 
 }
