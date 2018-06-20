@@ -57,6 +57,12 @@ abstract class Tree<T> {
         get() = treeNodes.filter { (it.node as Tree<*>).isLeaf }.map { it.path to it.node }.toMap()
 
     /**
+     * @return size as number of leaves
+     */
+    val size: Int
+        get() = leaves.size
+
+    /**
      * @return all leafs of object
      */
     val leafObjects: List<T>

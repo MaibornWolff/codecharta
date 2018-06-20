@@ -27,37 +27,55 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.importer.sonar
+package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource
-import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
-import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
-import mu.KotlinLogging
 
-class SonarMeasuresAPIImporter @JvmOverloads constructor(
-        private val measuresDS: SonarMeasuresAPIDatasource?,
-        private val metricsDS: SonarMetricsAPIDatasource?,
-        private val sonarCodeURLLinker: SonarCodeURLLinker = SonarCodeURLLinker.NULL,
-        private val translator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
-        private val usePath: Boolean = false) {
 
-    private val logger = KotlinLogging.logger {}
-
-    fun getProjectFromMeasureAPI(projectKey: String, projectName: String, metrics: List<String>): Project {
-        val metricsList = getMetricList(metrics)
-        logger.info { "Get values for metrics $metricsList." }
-
-        val componentMap = measuresDS!!.getComponentMap(projectKey, metricsList)
-
-        val projectBuilder = SonarComponentProjectBuilder(projectName, sonarCodeURLLinker, translator, usePath)
-        return projectBuilder.addComponentMapsAsNodes(componentMap).build()
+open class ProjectBuilder(
+        val projectName: String,
+        private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
+        val apiVersion: String = API_VERSION
+) {
+    init {
+        if (nodes.size != 1) throw IllegalStateException("no root node present in project")
     }
 
-    fun getMetricList(metrics: List<String>): List<String> {
-        return if (metrics.isEmpty()) {
-            metricsDS!!.availableMetricKeys
-        } else metrics
+    private val rootNode: MutableNode
+        get() = nodes[0]
+
+    /**
+     * Inserts the node as child of the element at the specified position in the tree.
+     *
+     * @param position absolute path to the parent element of the node that has to be inserted
+     * @param node     that has to be inserted
+     */
+    fun insertByPath(position: Path, node: MutableNode): ProjectBuilder {
+        rootNode.insertAt(position, node)
+        return this
+    }
+
+    private lateinit var metricNameTranslator: MetricNameTranslator
+
+    fun withMetricTranslator(metricNameTranslator: MetricNameTranslator): ProjectBuilder {
+        this.metricNameTranslator = metricNameTranslator
+        return this
+    }
+
+    fun build(): Project {
+        return Project(projectName, nodes.map { it.toNode() }.toList(), apiVersion)
+    }
+
+    override fun toString(): String {
+        return "Project{" +
+                "projectName='" + projectName + '\''.toString() +
+                ", apiVersion='" + apiVersion + '\''.toString() +
+                ", nodes=" + nodes +
+                '}'.toString()
+    }
+
+    companion object {
+        const val API_VERSION = "1.0"
     }
 
 }

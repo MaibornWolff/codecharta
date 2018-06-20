@@ -22,7 +22,9 @@ class ProjectCreatorTest : Spek({
         on("adding invalid csv") {
 
             val invalidContent = "head,path\nnoValidContent\n"
-            val project = projectCreator.createFromCsvStream(toInputStream(invalidContent))
+            val project = projectCreator
+                    .createFromCsvStream(toInputStream(invalidContent))
+                    .build()
 
             it("should be ignored") {
                 assertThat(project.rootNode.children, hasSize(0))
@@ -34,6 +36,7 @@ class ProjectCreatorTest : Spek({
             val project = projectCreator.createFromCsvStream(
                     toInputStream("someContent,,path\nprojectName,blubb2,$name")
             )
+                    .build()
 
             it("should have node with same name") {
                 assertThat(project.rootNode.children.map { it.name }, hasItem(name))
@@ -66,6 +69,7 @@ class ProjectCreatorTest : Spek({
             val project = projectCreator.createFromCsvStream(
                     toInputStream("head1,path,head3,head4,$attribName\nprojectName,\"9900,01\",\"blubb\",1.0,$attribVal\n")
             )
+                    .build()
 
             it("should add attributes to node") {
                 val nodeAttributes = project.rootNode.children.iterator().next().attributes
@@ -81,7 +85,9 @@ class ProjectCreatorTest : Spek({
 
         on("adding file with subdirectory") {
             val directoryName = "someNodeName"
-            val project = projectCreator.createFromCsvStream(toInputStream("someContent\n$directoryName\\someFile"))
+            val project = projectCreator
+                    .createFromCsvStream(toInputStream("someContent\n$directoryName\\someFile"))
+                    .build()
 
             it("should create node for subdirectory") {
                 assertThat(project.rootNode.children.size, `is`(1))
@@ -97,11 +103,12 @@ class ProjectCreatorTest : Spek({
                 MetricNameTranslator(mapOf(Pair("File Name", "path"))))
 
         on("reading csv lines from Sourcemonitor") {
-            val project = projectCreator.createFromCsvStream(this.javaClass.classLoader.getResourceAsStream("sourcemonitor.csv"))
+            val project = projectCreator
+                    .createFromCsvStream(this.javaClass.classLoader.getResourceAsStream("sourcemonitor.csv"))
+                    .build()
 
             it("has correct number of nodes") {
-                assertThat(project.rootNode.nodes.size, greaterThan(1))
-                assertThat(project.rootNode.leafObjects.size, `is`(39))
+                assertThat(project.size, `is`(39))
             }
         }
     }

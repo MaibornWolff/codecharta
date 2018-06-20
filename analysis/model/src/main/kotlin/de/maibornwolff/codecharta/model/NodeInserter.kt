@@ -38,7 +38,7 @@ object NodeInserter {
      * @param path relative path to parent of new node in root node
      * @param node that has to be inserted
      */
-    fun insertByPath(root: Node, path: Path, node: Node) {
+    fun insertByPath(root: MutableNode, path: Path, node: MutableNode): MutableNode {
         if (path.isTrivial) {
             if (rootContainsNodeAlready(root, node)) {
                 val original = getNode(root, node.name)!!
@@ -50,26 +50,27 @@ object NodeInserter {
         } else {
             val name = path.head
             val folderNode = getNode(root, name)
-                    ?: createFolderNodeAndInsertAtRoot(root, name)
+                    ?: root.insertNewFolderNode(name).getNodeBy(Path(name)) as MutableNode
             insertByPath(folderNode, path.tail, node)
         }
+        return root
     }
 
-    private fun getNode(root: Node, name: String): Node? {
+    private fun getNode(root: MutableNode, name: String): MutableNode? {
         return root.children.firstOrNull { it.name == name }
     }
 
-    private fun rootContainsNodeAlready(root: Node, node: Node): Boolean {
+    private fun rootContainsNodeAlready(root: MutableNode, node: MutableNode): Boolean {
         return root.children.filter { it.name == node.name }.count() > 0
     }
 
-    private fun createFolderNode(name: String): Node {
-        return Node(name, NodeType.Folder)
+    private fun createFolderNode(name: String): MutableNode {
+        return MutableNode(name, NodeType.Folder)
     }
 
-    private fun createFolderNodeAndInsertAtRoot(root: Node, name: String): Node {
+    private fun MutableNode.insertNewFolderNode(name: String): MutableNode {
         val folderNode = createFolderNode(name)
-        insertByPath(root, Path.TRIVIAL, folderNode)
-        return folderNode
+        insertByPath(this, Path.TRIVIAL, folderNode)
+        return this
     }
 }

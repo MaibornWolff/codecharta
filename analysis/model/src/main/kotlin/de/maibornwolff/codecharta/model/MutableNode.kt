@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, MaibornWolff GmbH
+ * Copyright (c) 2017, MaibornWolff GmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,39 @@
 
 package de.maibornwolff.codecharta.model
 
-interface NodeMergerStrategy {
-    fun merge(tree: MutableNode, otherTrees: List<MutableNode>) : MutableNode
-}
+import java.util.*
 
+class MutableNode constructor(
+        val name: String,
+        val type: NodeType? = NodeType.File,
+        val attributes: Map<String, Any> = mapOf(),
+        val link: String? = "",
+        childrenList: List<MutableNode> = listOf(),
+        @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeMaxAttributeMergerIgnoringChildren
+) : Tree<MutableNode>() {
+
+    override val children = childrenList.toMutableList()
+
+    override fun getPathOfChild(child: Tree<MutableNode>): Path {
+        if (!children.contains(child)) {
+            throw NoSuchElementException("Child $child not contained in MutableNode.")
+        }
+        return Path(listOf((child.asTreeNode()).name))
+    }
+
+    override fun toString(): String {
+        return "MutableNode(name='$name', type=$type, attributes=$attributes, link=$link, children=$children)"
+    }
+
+    override fun insertAt(path: Path, node: MutableNode) {
+        NodeInserter.insertByPath(this, path, node)
+    }
+
+    override fun merge(nodes: List<MutableNode>): MutableNode {
+        return nodeMergingStrategy.merge(this, nodes)
+    }
+
+    fun toNode(): Node {
+        return Node(name, type, attributes, link, children = children.map { it.toNode() }.toList())
+    }
+}
