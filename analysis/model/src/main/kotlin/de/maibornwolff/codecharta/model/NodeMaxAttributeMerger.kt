@@ -66,15 +66,3 @@ object NodeMaxAttributeMergerIgnoringChildren : NodeMergerStrategy {
     private fun <K, V> Map<K, V>.mergeReduce(other: Map<K, V>, reduce: (V, V) -> V = { _, b -> b }): Map<K, V> =
             this.toMutableMap().apply { other.forEach { merge(it.key, it.value, reduce) } }
 }
-
-/**
- * merging multiply nodes by adding additional attributes and link, ignoring children
- */
-object NodeMaxAttributeMerger : NodeMergerStrategy {
-    override fun merge(tree: Node, otherTrees: List<Node>): Node {
-        val node = NodeMaxAttributeMergerIgnoringChildren.merge(tree, otherTrees)
-        node.children.addAll(tree.children)
-        return node
-    }
-
-}

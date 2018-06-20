@@ -29,7 +29,6 @@
 
 package de.maibornwolff.codecharta.importer.understand
 
-import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.jetbrains.spek.api.Spek

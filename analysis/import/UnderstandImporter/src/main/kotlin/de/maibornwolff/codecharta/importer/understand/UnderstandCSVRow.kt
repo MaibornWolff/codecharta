@@ -94,8 +94,8 @@ class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: U
 
     fun asNode(): Node {
         return when {
-            isFileRow -> Node(filename, nodeType, attributes, nodeMergingStrategy = NodeMaxAttributeMerger)
-            else -> Node(name, nodeType, attributes, nodeMergingStrategy = NodeMaxAttributeMerger)
+            isFileRow -> Node(filename, nodeType, attributes)
+            else -> Node(name, nodeType, attributes)
         }
     }
 

@@ -37,15 +37,15 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 
-class FlatNodeMergerTest : Spek({
-    describe("a node merger") {
+class NodeMergerTest : Spek({
+    describe("a node merger NodeMaxAttributeMergerIgnoringChildren") {
 
         on("merging nodes with same name") {
             val name = "Name"
             val type = NodeType.File
             val link = "node1"
             val attrib1 = mapOf("attrib11" to 1.0)
-            val node1 = Node(name, type, attrib1, link)
+            val node1 = Node(name, type, attrib1, link, nodeMergingStrategy = NodeMaxAttributeMergerIgnoringChildren)
             val node2 = Node(name, type)
 
             val newNode = node1.merge(listOf(node2))
@@ -72,7 +72,7 @@ class FlatNodeMergerTest : Spek({
             val child1 = Node("child1", NodeType.File)
             val child2 = Node("child2", NodeType.Folder)
             val child1_littleBitDifferent = Node("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", listOf())
-            val node1 = Node("Name", NodeType.File, mapOf(), "", listOf(child1_littleBitDifferent))
+            val node1 = Node("Name", NodeType.File, mapOf(), "", listOf(child1_littleBitDifferent), nodeMergingStrategy = NodeMaxAttributeMergerIgnoringChildren)
             val node2 = Node("Name", NodeType.File, mapOf(), "", listOf(child1, child2))
 
             val newNode = node1.merge(listOf(node2))
@@ -83,5 +83,4 @@ class FlatNodeMergerTest : Spek({
             }
         }
     }
-
 })

@@ -22,7 +22,7 @@ class CSVRow(private val row: Array<String?>, private val header: CSVHeader, pri
 
     fun asNode(): Node {
         val filename = path.substring(path.lastIndexOf(pathSeparator) + 1)
-        return Node(filename, NodeType.File, attributes, nodeMergingStrategy = NodeMaxAttributeMerger)
+        return Node(filename, NodeType.File, attributes)
     }
 
     private val path =
