@@ -70,7 +70,7 @@
         "pairingRate": 42
       },
       {
-        "node": "/root/big leaf",
+        "node": "/root/sample1 only leaf",
         "dependsOn": "/root/Parent Leaf/other small leaf",
         "pairingRate": 89
       },
