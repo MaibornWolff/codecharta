@@ -27,11 +27,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.nodeinserter
+package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.model.*
 import de.maibornwolff.codecharta.model.NodeMatcher.hasNodeAtPath
-import de.maibornwolff.codecharta.nodeinserter.NodeInserter.insertByPath
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.jetbrains.spek.api.Spek
@@ -134,36 +132,5 @@ class NodeInserterTest : Spek({
         assertThat(root.children, hasSize(1))
         assertThat(root.pathsToLeaves.count(), `is`(1))
         assertThat(root, hasNodeAtPath(nodeForInsertion, Path("folder", "subfolder", "insertedNode")))
-    }
-
-    it("should create root node if not present") {
-        // given
-        val project = Project("someName")
-        val nodeForInsertion = Node("someNode", NodeType.File)
-
-        // when
-        insertByPath(project, Path.trivialPath(), nodeForInsertion)
-
-        // then
-        assertThat(project.nodes, hasSize(1))
-        val root = project.rootNode
-        assertThat(root.children, hasSize(1))
-        assertThat(root.children[0], `is`(nodeForInsertion))
-    }
-
-    it("should use root node if present") {
-        // given
-        val root = Node("root", NodeType.Folder)
-        val project = Project("someName", listOf(root))
-        val nodeForInsertion = Node("someNode", NodeType.File)
-
-        // when
-        insertByPath(project, Path.trivialPath(), nodeForInsertion)
-
-        // then
-        assertThat(project.nodes, hasSize(1))
-        assertThat(project.rootNode, NodeMatcher.matchesNode(root))
-        assertThat(root.children, hasSize(1))
-        assertThat(root.children[0], `is`(nodeForInsertion))
     }
 })

@@ -29,26 +29,43 @@
 
 package de.maibornwolff.codecharta.model
 
+import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import java.util.*
 
-class Node constructor(
+open class Node constructor(
         val name: String,
         val type: NodeType? = NodeType.File,
         var attributes: Map<String, Any> = mutableMapOf(),
         var link: String? = "",
-        childrenList: List<Node> = listOf()
+        childrenList: List<Node> = listOf(),
+        @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeMaxAttributeMergerIgnoringChildren
 ) : Tree<Node>() {
 
-    override var children = childrenList.toMutableList()
+    override val children = childrenList.toMutableList()
 
     override fun getPathOfChild(child: Tree<Node>): Path {
         if (!children.contains(child)) {
             throw NoSuchElementException("Child $child not contained in Node.")
         }
-        return Path(listOf((child as Node).name))
+        return Path(listOf((child.asTreeNode()).name))
     }
 
     override fun toString(): String {
         return "Node(name='$name', type=$type, attributes=$attributes, link=$link, children=$children)"
+    }
+
+    override fun insertAt(path: Path, node: Node) {
+        NodeInserter.insertByPath(this, path, node)
+    }
+
+    override fun merge(nodes: List<Node>): Node {
+        return nodeMergingStrategy.merge(this, nodes)
+    }
+
+    fun translateMetricNames(metricNameTranslator: MetricNameTranslator, recursive: Boolean) {
+        attributes = attributes.mapKeys { metricNameTranslator.translate(it.key) }
+        if (recursive) {
+            children.forEach { it.translateMetricNames(metricNameTranslator, recursive) }
+        }
     }
 }

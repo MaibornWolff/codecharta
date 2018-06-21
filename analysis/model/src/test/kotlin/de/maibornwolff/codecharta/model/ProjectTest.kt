@@ -29,51 +29,42 @@
 
 package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.translator.MetricNameTranslator
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers
+import org.hamcrest.Matchers.hasSize
+import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.it
 
+class ProjectTest : Spek({
 
-open class Project(
-        val projectName: String,
-        nodeList: List<Node> = listOf(),
-        val apiVersion: String = API_VERSION
-) {
-    val nodes = nodeList.toMutableList()
+    it("should create root node if not present") {
+        // given
+        val project = Project("someName")
+        val nodeForInsertion = Node("someNode", NodeType.File)
 
-    val rootNode: Node
-        get() = nodes[0]
+        // when
+        project.insertByPath(Path.trivialPath(), nodeForInsertion)
 
-    private fun hasRootNode(): Boolean {
-        return nodes.size == 1
+        // then
+        assertThat(project.nodes, hasSize(1))
+        val root = project.rootNode
+        assertThat(root.children, hasSize(1))
+        assertThat(root.children[0], Matchers.`is`(nodeForInsertion))
     }
 
-    /**
-     * Inserts the node as child of the element at the specified position in the tree.
-     *
-     * @param position absolute path to the parent element of the node that has to be inserted
-     * @param node     that has to be inserted
-     */
-    fun insertByPath(position: Path, node: Node) {
-        if (!hasRootNode()) {
-            nodes.add(Node("root", NodeType.Folder))
-        }
+    it("should use root node if present") {
+        // given
+        val root = Node("root", NodeType.Folder)
+        val project = Project("someName", listOf(root))
+        val nodeForInsertion = Node("someNode", NodeType.File)
 
-        rootNode.insertAt(position, node)
+        // when
+        project.insertByPath(Path.trivialPath(), nodeForInsertion)
+
+        // then
+        assertThat(project.nodes, hasSize(1))
+        assertThat(project.rootNode, NodeMatcher.matchesNode(root))
+        assertThat(root.children, hasSize(1))
+        assertThat(root.children[0], Matchers.`is`(nodeForInsertion))
     }
-
-     fun translateMetricNames(metricNameTranslator: MetricNameTranslator) {
-         rootNode.translateMetricNames(metricNameTranslator, recursive= true)
-     }
-
-    override fun toString(): String {
-        return "Project{" +
-                "projectName='" + projectName + '\''.toString() +
-                ", apiVersion='" + apiVersion + '\''.toString() +
-                ", nodes=" + nodes +
-                '}'.toString()
-    }
-
-    companion object {
-        const val API_VERSION = "1.0"
-    }
-
-}
+})

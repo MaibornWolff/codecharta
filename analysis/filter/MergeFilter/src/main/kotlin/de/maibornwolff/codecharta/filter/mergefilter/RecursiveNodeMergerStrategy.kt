@@ -35,8 +35,6 @@ import de.maibornwolff.codecharta.model.Node
  * merges nodes recursively if their paths coincide
  */
 class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false) : NodeMergerStrategy {
-    private val flatNodeMerger = NodeMerger()
-
     private val mergeConditionSatisfied: (Node, Node) -> Boolean
 
     init {
@@ -59,6 +57,8 @@ class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false) : NodeMergerStrat
     }
 
     private fun merge(vararg nodes: Node): Node {
-        return flatNodeMerger.merge(this, *nodes)
+        val node = nodes[0].merge(nodes.toList())
+        node.children.addAll(this.mergeNodeLists(nodes.map { it.children }))
+        return node
     }
 }

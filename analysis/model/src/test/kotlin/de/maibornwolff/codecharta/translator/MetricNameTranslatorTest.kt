@@ -75,8 +75,8 @@ class MetricNameTranslatorTest : Spek({
     }
 
     it("should replaceMany") {
-        val original: Array<String?> = arrayOf("this", "that", "other")
-        val expected: Array<String?> = arrayOf("oooo", "iiii", "other")
+        val original: Array<String?> = arrayOf("this", "that", "other", null)
+        val expected: Array<String?> = arrayOf("oooo", "iiii", "other", null)
         val replacer = MetricNameTranslator(mapOf(
                 Pair("this", "oooo"),
                 Pair("that", "iiii"),
