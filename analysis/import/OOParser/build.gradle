@@ -1,0 +1,49 @@
+apply plugin: 'application'
+apply plugin: 'antlr'
+
+dependencies {
+    compile project(':model')
+
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+    compile group: 'info.picocli', name: 'picocli', version: picocli_version
+    antlr "org.antlr:antlr4:$antlr_version"
+    compile "org.antlr:antlr4-runtime:$antlr_version"
+
+    testCompile group: 'junit', name: 'junit', version: junit4_version
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.10.0'
+    testCompile group: 'io.mockk', name: 'mockk', version: mokk_version
+    testCompile project(path: ':model', configuration: 'testOutput')
+}
+
+mainClassName = "de.maibornwolff.codecharta.importer.ooparser.OOParserMain"
+applicationName = 'codecharta-ooparser'
+
+
+jar {
+    baseName = "${applicationName}"
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+generateGrammarSource {
+    maxHeapSize = "64m"
+    arguments += ['-package', 'de.maibornwolff.codecharta.importer.ooparser.antlr.java']
+    arguments += ["-visitor", "-long-messages"]
+    outputDirectory = new File("src/generated/antlr/de/maibornwolff/codecharta/importer/ooparser/antlr/java".toString())
+}
+compileJava.dependsOn generateGrammarSource
+
+sourceSets {
+    main {
+        java.srcDirs = ["src/main/java", "src/generated/antlr"]
+    }
+}
+
+compileJava.source sourceSets.main.java
+
+clean{
+    delete "generated-src"
+}
