@@ -27,8 +27,9 @@ class SourceMonitorImporter : Callable<Void> {
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        val projectCreator = ProjectCreator(projectName, pathSeparator, csvDelimiter, sourceMonitorReplacement)
-        val project = projectCreator.createFromCsvStream(files.map { it.inputStream() })
+        val csvProjectBuilder = CSVProjectBuilder(projectName, pathSeparator, csvDelimiter, sourceMonitorReplacement)
+        files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
+        val project = csvProjectBuilder.build()
         ProjectSerializer.serializeProject(project, writer())
 
         return null

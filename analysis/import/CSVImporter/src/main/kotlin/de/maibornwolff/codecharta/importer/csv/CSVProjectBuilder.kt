@@ -31,53 +31,42 @@ package de.maibornwolff.codecharta.importer.csv
 
 import com.univocity.parsers.csv.CsvParser
 import com.univocity.parsers.csv.CsvParserSettings
-import de.maibornwolff.codecharta.model.Node
-import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
-class ProjectCreator(
-        private val projectName: String,
+class CSVProjectBuilder(
+        projectName: String,
         private val pathSeparator: Char,
         private val csvDelimiter: Char,
-        private val metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
-        private val includeRows: (Array<String>) -> Boolean = { true }
+        metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
 ) {
+    private val includeRows: (Array<String>) -> Boolean = { true }
+    private val projectBuilder = ProjectBuilder(projectName)
+            .withMetricTranslator(metricNameTranslator)
 
-    private fun createEmptyProject(): Project {
-        val project = Project(projectName)
-        project.nodes.add(Node("root", NodeType.Folder))
-        return project
-    }
-
-    fun createFromCsvStream(
-            inStreams: List<InputStream>,
-            project: Project = createEmptyProject()
-    ): Project {
-        inStreams.forEach { createFromCsvStream(it, project) }
-        return project
-    }
-
-    fun createFromCsvStream(
-            inStream: InputStream,
-            project: Project = createEmptyProject()
-    ): Project {
+    fun parseCSVStream(
+            inStream: InputStream
+    ): ProjectBuilder {
         val parser = createParser(inStream)
-        val oldHeader: Array<String?> = parser.parseNext()
-        val header = CSVHeader(metricNameTranslator.translate(oldHeader))
-        parseContent(project, parser, header)
+        val header = CSVHeader(parser.parseNext())
+        parseContent(parser, header)
         parser.stopParsing()
-        return project
+        return projectBuilder
     }
 
-    private fun parseContent(project: Project, parser: CsvParser, header: CSVHeader) {
+    fun build() : Project {
+        return projectBuilder.build()
+    }
+
+    private fun parseContent(parser: CsvParser, header: CSVHeader) {
         var row = parser.parseNext()
         while (row != null) {
             if (includeRows(row)) {
-                insertRowInProject(project, row, header)
+                insertRowInProject(row, header)
             }
             row = parser.parseNext()
         }
@@ -92,10 +81,10 @@ class ProjectCreator(
         return parser
     }
 
-    private fun insertRowInProject(project: Project, rawRow: Array<String?>, header: CSVHeader) {
+    private fun insertRowInProject(rawRow: Array<String?>, header: CSVHeader) {
         try {
             val row = CSVRow(rawRow, header, pathSeparator)
-            project.insertByPath(row.pathInTree(), row.asNode())
+            projectBuilder.insertByPath(row.pathInTree(), row.asNode())
         } catch (e: IllegalArgumentException) {
             System.err.println(e.message)
         }

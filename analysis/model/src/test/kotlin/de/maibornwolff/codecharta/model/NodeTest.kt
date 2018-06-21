@@ -45,8 +45,8 @@ class NodeTest : Spek({
     describe("root with child") {
 
         val childName = "child1"
-        val child = Node(childName)
-        val root = Node("root", NodeType.Folder, childrenList = Arrays.asList(child))
+        val child = MutableNode(childName)
+        val root = MutableNode("root", NodeType.Folder, childrenList = Arrays.asList(child))
 
         on("getPathOfChild of valid child") {
             val pathOfChild = root.getPathOfChild(child)
@@ -63,7 +63,7 @@ class NodeTest : Spek({
             it("should throw an exception") {
 
                 assertFailsWith(NoSuchElementException::class) {
-                    root.getPathOfChild(Node("invalidChild"))
+                    root.getPathOfChild(MutableNode("invalidChild"))
                 }
             }
         }
@@ -83,12 +83,12 @@ class NodeTest : Spek({
 
     describe("root node with many children") {
 
-        val node11 = Node("node11")
-        val node12 = Node("node12")
-        val node1 = Node("node1", NodeType.Folder, childrenList = Arrays.asList(node11, node12))
-        val node21 = Node("node21", NodeType.Folder)
-        val node2 = Node("node2", NodeType.Folder, childrenList = Arrays.asList(node21))
-        val root = Node("root", NodeType.Folder, childrenList = Arrays.asList(node1, node2))
+        val node11 = MutableNode("node11")
+        val node12 = MutableNode("node12")
+        val node1 = MutableNode("node1", NodeType.Folder, childrenList = Arrays.asList(node11, node12))
+        val node21 = MutableNode("node21", NodeType.Folder)
+        val node2 = MutableNode("node2", NodeType.Folder, childrenList = Arrays.asList(node21))
+        val root = MutableNode("root", NodeType.Folder, childrenList = Arrays.asList(node1, node2))
 
         on("getLeafs") {
 
