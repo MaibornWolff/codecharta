@@ -1,5 +1,5 @@
 "use strict";
-import {Settings} from "../settings/settings.service";
+import {Settings, SettingsService} from "../settings/settings.service";
 import {createDefaultScenario} from "./scenario.data";
 import {ThreeOrbitControlsService} from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 import {CodeMapNode} from "../data/model/CodeMap";
@@ -18,8 +18,15 @@ export class ScenarioService {
     private scenarios: Scenario[];
 
     /* ngInject */
-    constructor(private settingsService, private dataService, private threeOrbitControlsService:ThreeOrbitControlsService) {
+    constructor(private settingsService: SettingsService,
+                private dataService,
+                private threeOrbitControlsService:ThreeOrbitControlsService) {
         this.scenarios = require("./scenarios.json");
+        this.settingsService.subscribe(this);
+    }
+
+    public onSettingsChanged(){
+        this.settingsService.settings["margin"] = this.computeMargin();
     }
 
     /**
@@ -33,37 +40,48 @@ export class ScenarioService {
         }
     }
 
+    /**
+     * @returns {number}
+     *
+     * Function that computes the margin applied to a scenario depending of the
+     * added rloc value of the whole map
+     */
     public  computeMargin(): number{
-        let margin: number = 12;
-        let rloc = this.sumRlocWholeMap(this.dataService._data.renderMap.root);
-        console.log("rloc output",rloc);
+
+        let areaMetricName = this.settingsService.settings.areaMetric;
+        let accumulatedValue: number = 0;
+        var parametersWrapped: any[] = [accumulatedValue, areaMetricName];
+
+        this.dataService.goThroughMap((this.dataService._data.renderMap.root),this.addMetric,parametersWrapped);
+        accumulatedValue = parametersWrapped[0];
+
+        let logBase = 2;
+        let margin: number = (isFinite(accumulatedValue)&&accumulatedValue>=1)?
+            Math.round(
+            Math.log(accumulatedValue)/Math.log(logBase)//Equivalent to logarithm with base logBase
+        ):1;
+
+        console.log(areaMetricName+accumulatedValue+", margin "+margin);
         return margin;
     }
 
-    private sumRlocWholeMap(root: CodeMapNode): number{
-        var Rloc: number[] = [0];
-        console.log(root);
-        if(root){
-            this.goThroughMap(root, this.addRloc, Rloc );
+
+    /**
+     *
+     * @param {CodeMapNode} map
+     * @param {any[]} metric: [0]contains the accumulated value of a metric, [1] contains its name
+     *
+     * Function that adds the value of the given metric contained in every node its called.
+     * It holds the value in an array in order to keep it from one call to another
+     * from a function that goes through all the nodes of a tree.
+     */
+    public addMetric(map: CodeMapNode, metric: any[]){
+        if(!map.children && //only the values of leaves are added
+            map.attributes[metric[1]]){
+            metric[0]+=map.attributes[metric[1]];
         }
-        return Math.round(Rloc[0]);
     }
 
-    public addRloc(map: CodeMapNode, previousRloc: number[]){
-        if(map.attributes["rloc"] && typeof(map.attributes["rloc"]) == "number"){
-            console.log("one rloc", map.attributes["rloc"]);
-            previousRloc[0]+=map.attributes["rloc"];
-        }
-    }
-
-    public goThroughMap(map: CodeMapNode, func: Function, valueReference: any){
-        func(map, valueReference);
-        if(map.children){
-            for(let child of map.children){
-                this.goThroughMap(child, func, valueReference);
-            }
-        }
-    }
 
     /**
      * Returns an array of all scenarios.

@@ -43,6 +43,26 @@ export class DataService {
 
     }
 
+    /**
+     *
+     * @param {CodeMapNode} map
+     * @param {Function} func
+     * @param {any[]} parameters
+     *
+     * Function that goes throught every node in a map and applies there a function
+     * whose parameters are hold in parameters array.
+     *
+     * The function input in fn is required to get their arguments into a single array
+     */
+    public goThroughMap(map: CodeMapNode, fn: Function, parameters: any[]){
+        fn(map, parameters);
+        if(map.children){
+            for(let child of map.children){
+                this.goThroughMap(child, fn, parameters);
+            }
+        }
+    }
+
     public setMap(map: CodeMap, revision: number) {
         this._data.revisions[revision] = map;
         this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.revisions[revision]);
