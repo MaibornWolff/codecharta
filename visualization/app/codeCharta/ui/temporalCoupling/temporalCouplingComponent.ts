@@ -24,8 +24,8 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
     onClickCouple(couple: CodeMapDependency, clickByCheckbox: boolean) {
 
         if (!clickByCheckbox) {
-            let index = this.temporalCoupling.indexOf(couple);
-            this.temporalCouplingCheckbox[index] = !this.temporalCouplingCheckbox[index];
+            var coupleIndex = this.temporalCoupling.indexOf(couple);
+            this.temporalCouplingCheckbox[coupleIndex] = !this.temporalCouplingCheckbox[coupleIndex];
         }
 
         this.removeOrPushCoupleFromList(this.settingsService.settings.emphasizedDependencies, couple);
@@ -34,9 +34,9 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
 
     private removeOrPushCoupleFromList(emphasizedNodes, couple) {
         if (emphasizedNodes.includes(couple)) {
-            var index = emphasizedNodes.indexOf(couple);
-            if (index > -1) {
-                emphasizedNodes.splice(index, 1);
+            var coupleIndex = emphasizedNodes.indexOf(couple);
+            if (coupleIndex > -1) {
+                emphasizedNodes.splice(coupleIndex, 1);
             }
         } else {
             emphasizedNodes.push(couple);
