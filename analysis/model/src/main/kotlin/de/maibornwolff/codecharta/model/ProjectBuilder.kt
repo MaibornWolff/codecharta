@@ -55,7 +55,7 @@ open class ProjectBuilder(
         return this
     }
 
-    private lateinit var metricNameTranslator: MetricNameTranslator
+    private var metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
 
     fun withMetricTranslator(metricNameTranslator: MetricNameTranslator): ProjectBuilder {
         this.metricNameTranslator = metricNameTranslator
@@ -63,15 +63,12 @@ open class ProjectBuilder(
     }
 
     fun build(): Project {
+        nodes.map { it.translateMetrics(metricNameTranslator, true) }
         return Project(projectName, nodes.map { it.toNode() }.toList(), apiVersion)
     }
 
     override fun toString(): String {
-        return "Project{" +
-                "projectName='" + projectName + '\''.toString() +
-                ", apiVersion='" + apiVersion + '\''.toString() +
-                ", nodes=" + nodes +
-                '}'.toString()
+        return "Project{projectName='$projectName', nodes=$nodes}"
     }
 
     companion object {

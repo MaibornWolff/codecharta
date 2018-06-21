@@ -37,13 +37,13 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 
-class ProjectCreatorTest : Spek({
+class UnderstandProjectBuilderTest : Spek({
     describe("UnderstandProjectBuilder for Understand") {
-        val projectCreator = UnderstandProjectBuilder("test", '/')
+        val understandProjectBuilder = UnderstandProjectBuilder("test", '/')
 
 
         on("reading csv lines from Understand") {
-            val project = projectCreator
+            val project = understandProjectBuilder
                     .parseCSVStream(this.javaClass.classLoader.getResourceAsStream("understand.csv"))
                     .build()
 
@@ -53,7 +53,7 @@ class ProjectCreatorTest : Spek({
 
             it("leaf has file attributes") {
                 val attributes = project.rootNode.leafObjects.flatMap { it.attributes.keys }.distinct()
-                assertThat(attributes, hasItem("CountLine"))
+                assertThat(attributes, hasItem("rloc"))
             }
         }
     }

@@ -36,7 +36,12 @@ import de.maibornwolff.codecharta.importer.sonar.model.Qualifier
 import de.maibornwolff.codecharta.model.*
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
-class SonarComponentProjectBuilder constructor(name: String, private val sonarCodeURLLinker: SonarCodeURLLinker = SonarCodeURLLinker.NULL, private val translator: MetricNameTranslator = MetricNameTranslator.TRIVIAL, private val usePath: Boolean = false) {
+class SonarComponentProjectBuilder constructor(
+        name: String,
+        private val sonarCodeURLLinker: SonarCodeURLLinker = SonarCodeURLLinker.NULL,
+        private val translator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
+        private val usePath: Boolean = false
+) {
 
     private val projectBuilder = ProjectBuilder(name)
 

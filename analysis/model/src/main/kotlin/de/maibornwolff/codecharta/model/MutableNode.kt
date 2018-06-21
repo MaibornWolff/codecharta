@@ -29,12 +29,13 @@
 
 package de.maibornwolff.codecharta.model
 
+import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import java.util.*
 
 class MutableNode constructor(
         val name: String,
         val type: NodeType? = NodeType.File,
-        val attributes: Map<String, Any> = mapOf(),
+        var attributes: Map<String, Any> = mapOf(),
         val link: String? = "",
         childrenList: List<MutableNode> = listOf(),
         @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeMaxAttributeMergerIgnoringChildren
@@ -59,6 +60,13 @@ class MutableNode constructor(
 
     override fun merge(nodes: List<MutableNode>): MutableNode {
         return nodeMergingStrategy.merge(this, nodes)
+    }
+
+    fun translateMetrics(metricNameTranslator: MetricNameTranslator, recursive: Boolean) {
+        if (recursive) {
+            children.forEach { it.translateMetrics(metricNameTranslator, recursive) }
+        }
+        attributes = attributes.mapKeys { metricNameTranslator.translate(it.key) }
     }
 
     fun toNode(): Node {

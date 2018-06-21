@@ -38,39 +38,35 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
-class ProjectCreator(
-        private val projectName: String,
+class CSVProjectBuilder(
+        projectName: String,
         private val pathSeparator: Char,
         private val csvDelimiter: Char,
-        private val metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
-        private val includeRows: (Array<String>) -> Boolean = { true }
+        metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
 ) {
+    private val includeRows: (Array<String>) -> Boolean = { true }
+    private val projectBuilder = ProjectBuilder(projectName)
+            .withMetricTranslator(metricNameTranslator)
 
-    fun createFromCsvStream(
-            inStreams: List<InputStream>,
-            projectBuilder: ProjectBuilder = ProjectBuilder(projectName)
-    ): Project {
-        inStreams.forEach { createFromCsvStream(it, projectBuilder) }
-        return projectBuilder.build()
-    }
-
-    fun createFromCsvStream(
-            inStream: InputStream,
-            projectBuilder: ProjectBuilder = ProjectBuilder(projectName)
+    fun parseCSVStream(
+            inStream: InputStream
     ): ProjectBuilder {
         val parser = createParser(inStream)
-        val oldHeader: Array<String?> = parser.parseNext()
-        val header = CSVHeader(metricNameTranslator.translate(oldHeader))
-        parseContent(projectBuilder, parser, header)
+        val header = CSVHeader(parser.parseNext())
+        parseContent(parser, header)
         parser.stopParsing()
         return projectBuilder
     }
 
-    private fun parseContent(projectBuilder: ProjectBuilder, parser: CsvParser, header: CSVHeader) {
+    fun build() : Project {
+        return projectBuilder.build()
+    }
+
+    private fun parseContent(parser: CsvParser, header: CSVHeader) {
         var row = parser.parseNext()
         while (row != null) {
             if (includeRows(row)) {
-                insertRowInProject(projectBuilder, row, header)
+                insertRowInProject(row, header)
             }
             row = parser.parseNext()
         }
@@ -85,7 +81,7 @@ class ProjectCreator(
         return parser
     }
 
-    private fun insertRowInProject(projectBuilder: ProjectBuilder, rawRow: Array<String?>, header: CSVHeader) {
+    private fun insertRowInProject(rawRow: Array<String?>, header: CSVHeader) {
         try {
             val row = CSVRow(rawRow, header, pathSeparator)
             projectBuilder.insertByPath(row.pathInTree(), row.asNode())
