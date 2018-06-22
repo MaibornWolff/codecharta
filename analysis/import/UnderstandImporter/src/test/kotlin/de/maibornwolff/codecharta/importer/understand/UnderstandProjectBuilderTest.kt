@@ -38,6 +38,7 @@ import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 
 class UnderstandProjectBuilderTest : Spek({
+
     describe("UnderstandProjectBuilder for Understand") {
         val understandProjectBuilder = UnderstandProjectBuilder("test", '/')
 
@@ -48,7 +49,7 @@ class UnderstandProjectBuilderTest : Spek({
                     .build()
 
             it("has correct number of nodes") {
-                assertThat(project.size, `is`(223))
+                assertThat(project.size, `is`(128))
             }
 
             it("leaf has file attributes") {
@@ -57,4 +58,5 @@ class UnderstandProjectBuilderTest : Spek({
             }
         }
     }
+
 })

@@ -48,7 +48,7 @@ class Node constructor(
     }
 
     override fun toString(): String {
-        return "MutableNode(name='$name', type=$type, attributes=$attributes, link=$link, children=$children)"
+        return "Node(name='$name', type=$type, attributes=$attributes, link=$link, children=$children)"
     }
 
     override fun insertAt(path: Path, node: Node) {

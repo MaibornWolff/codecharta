@@ -34,9 +34,11 @@ import com.univocity.parsers.csv.CsvParserSettings
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
+import mu.KotlinLogging
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
+import java.util.*
 
 class CSVProjectBuilder(
         projectName: String,
@@ -44,6 +46,8 @@ class CSVProjectBuilder(
         private val csvDelimiter: Char,
         metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
 ) {
+    private val logger = KotlinLogging.logger {}
+
     private val includeRows: (Array<String>) -> Boolean = { true }
     private val projectBuilder = ProjectBuilder(projectName)
             .withMetricTranslator(metricNameTranslator)
@@ -58,7 +62,7 @@ class CSVProjectBuilder(
         return projectBuilder
     }
 
-    fun build() : Project {
+    fun build(): Project {
         return projectBuilder.build()
     }
 
@@ -86,7 +90,7 @@ class CSVProjectBuilder(
             val row = CSVRow(rawRow, header, pathSeparator)
             projectBuilder.insertByPath(row.pathInTree(), row.asNode())
         } catch (e: IllegalArgumentException) {
-            System.err.println(e.message)
+            logger.warn { "Ignoring row ${Arrays.toString(rawRow)} due to: ${e.message}" }
         }
     }
 }

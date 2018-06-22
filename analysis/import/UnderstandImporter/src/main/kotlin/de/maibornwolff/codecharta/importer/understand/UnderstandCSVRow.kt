@@ -29,7 +29,10 @@
 
 package de.maibornwolff.codecharta.importer.understand
 
-import de.maibornwolff.codecharta.model.*
+import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.NodeType
+import de.maibornwolff.codecharta.model.Path
+import de.maibornwolff.codecharta.model.PathFactory
 import java.util.*
 import java.util.regex.Pattern
 
@@ -38,18 +41,18 @@ class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: U
     init {
         if (rawRow.size <= maxOf(header.fileColumn, header.nameColumn, header.nameColumn)) {
             throw IllegalArgumentException(
-                    "Row " + Arrays.toString(rawRow) + " does not contain the necessary hierarchical information.")
+                    "Row does not contain the necessary hierarchical information.")
         }
     }
 
     private val file =
-            if (rawRow[header.fileColumn] == null) throw IllegalArgumentException("Ignoring empty paths.")
+            if (rawRow[header.fileColumn] == null) throw IllegalArgumentException("Row has no path information.")
             else rawRow[header.fileColumn]!!
 
     private val name = rawRow[header.nameColumn] ?: ""
 
     private val kind =
-            if (rawRow[header.kindColumn] == null) throw IllegalArgumentException("Ignoring rows without kind information.")
+            if (rawRow[header.kindColumn] == null) throw IllegalArgumentException("Row has no kind information.")
             else rawRow[header.kindColumn]!!
 
     private val filename = file.substring(file.lastIndexOf(pathSeparator) + 1)
@@ -72,7 +75,7 @@ class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: U
                             { parseAttributeOfRow(it) }
                     )
 
-    val isFileRow = kind.equals("file", true)
+    val isFileRow = kind.equals("File", true)
 
     private val nodeType =
             mapOf(

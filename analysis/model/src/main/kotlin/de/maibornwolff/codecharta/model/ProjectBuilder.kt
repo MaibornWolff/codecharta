@@ -44,6 +44,9 @@ open class ProjectBuilder(
     private val rootNode: MutableNode
         get() = nodes[0]
 
+    val size: Int
+        get() = rootNode.size
+
     /**
      * Inserts the node as child of the element at the specified position in the tree.
      *
@@ -57,13 +60,23 @@ open class ProjectBuilder(
 
     private var metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
 
+    private var filterRule: (MutableNode) -> Boolean = { true }
+
     fun withMetricTranslator(metricNameTranslator: MetricNameTranslator): ProjectBuilder {
         this.metricNameTranslator = metricNameTranslator
         return this
     }
 
+    fun withFilter(filterRule: (MutableNode) -> Boolean = { true }): ProjectBuilder {
+        this.filterRule = filterRule
+        return this
+    }
+
     fun build(): Project {
-        nodes.map { it.translateMetrics(metricNameTranslator, true) }
+        nodes.flatMap { it.nodes.values }
+                .mapNotNull { it.filterChildren(filterRule, false) }
+                .map { it.translateMetrics(metricNameTranslator, false) }
+        nodes.forEach { it.filterChildren({ !it.isEmptyFolder }, true) }
         return Project(projectName, nodes.map { it.toNode() }.toList(), apiVersion)
     }
 

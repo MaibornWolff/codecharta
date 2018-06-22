@@ -31,24 +31,32 @@ package de.maibornwolff.codecharta.importer.understand
 
 import com.univocity.parsers.csv.CsvParser
 import com.univocity.parsers.csv.CsvParserSettings
+import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
+import mu.KotlinLogging
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
+import java.util.*
 
 class UnderstandProjectBuilder(
         projectName: String,
         private val pathSeparator: Char,
         aggregation: AGGREGATION = AGGREGATION.FILE
 ) {
+    private val logger = KotlinLogging.logger {}
+
+    private val filterRule: (MutableNode) -> Boolean = { it.type == NodeType.File || it.type == NodeType.Folder }
 
     private val projectBuilder = ProjectBuilder(projectName)
             .withMetricTranslator(understandReplacement)
+            .withFilter(filterRule)
 
     init {
-        if (aggregation != AGGREGATION.FILE) throw NotImplementedError("only file aggregation is implemented yet.")
+        if (aggregation != AGGREGATION.FILE) throw NotImplementedError("Only file aggregation is implemented yet.")
     }
 
     private val csvDelimiter = ','
@@ -106,11 +114,9 @@ class UnderstandProjectBuilder(
     private fun ProjectBuilder.insertRow(rawRow: Array<String?>, header: UnderstandCSVHeader) {
         try {
             val row = UnderstandCSVRow(rawRow, header, pathSeparator)
-            if (row.isFileRow) {
-                this.insertByPath(row.pathInTree(), row.asNode())
-            }
+            this.insertByPath(row.pathInTree(), row.asNode())
         } catch (e: IllegalArgumentException) {
-            System.err.println(e.message)
+            logger.warn { "Ignoring row ${Arrays.toString(rawRow)} due to: ${e.message}" }
         }
     }
 }

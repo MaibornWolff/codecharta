@@ -141,12 +141,10 @@ class SonarComponentProjectBuilderTest {
         val projectBuilder = SonarComponentProjectBuilder("project")
 
         // when
-        val project = projectBuilder.addComponentAsNode(component).build()
+        val project = projectBuilder.addComponentAsNode(component)
 
         // then
-        assertThat(project.rootNode.children, hasSize(1))
-        val actualNode = project.rootNode.children[0]
-        assertThat(actualNode.type, `is`(NodeType.Folder))
+        assertThat(project.size, `is`(1))
     }
 
     @Test
@@ -158,10 +156,10 @@ class SonarComponentProjectBuilderTest {
         val projectBuilder = SonarComponentProjectBuilder("project")
 
         // when
-        val project = projectBuilder.addComponentAsNode(component).build()
+        val project = projectBuilder.addComponentAsNode(component)
 
         // then
-        assertThat(project.rootNode.children, hasSize(1))
+        assertThat(project.size, `is`(1))
     }
 
     @Test

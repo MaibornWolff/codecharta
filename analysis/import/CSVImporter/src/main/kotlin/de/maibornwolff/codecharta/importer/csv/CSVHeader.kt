@@ -1,8 +1,11 @@
 package de.maibornwolff.codecharta.importer.csv
 
+import mu.KotlinLogging
 import java.util.*
 
 class CSVHeader(header: Array<String?>) {
+    private val logger = KotlinLogging.logger {}
+
     private val headerMap: MutableMap<Int, String>
 
     val columnNumbers: Set<Int>
@@ -16,9 +19,12 @@ class CSVHeader(header: Array<String?>) {
         headerMap = HashMap()
         for (i in header.indices) {
             when {
-                header[i] == null || header[i]!!.isEmpty() -> System.err.println("Ignoring column number $i (counting from 0) as it has no column name.")
-                headerMap.containsValue(header[i]) -> System.err.println("Ignoring column number " + i + " (counting from 0) with column name " + header[i] + " as it duplicates a previous column.")
-                else -> headerMap[i] = header[i]!!
+                header[i].isNullOrEmpty() ->
+                    logger.warn { "Ignoring ${i + 1}-th column number due to: Column has no name." }
+                headerMap.containsValue(header[i]) ->
+                    logger.warn { "Ignoring ${i + 1}-th column number due to: Column name '${header[i]}' duplicates a previous column." }
+                else ->
+                    headerMap[i] = header[i]!!
             }
         }
 
@@ -28,6 +34,6 @@ class CSVHeader(header: Array<String?>) {
     }
 
     fun getColumnName(i: Int): String {
-        return headerMap[i] ?: throw IllegalArgumentException("No " + i + "th column present.")
+        return headerMap[i] ?: throw IllegalArgumentException("No ${i + 1}-th column present.")
     }
 }
