@@ -54,15 +54,17 @@ export class ScenarioService {
 
         this.dataService.goThroughMap( root, marginComputeFunction, parametersWrapped);
 
-        if(parametersWrapped["maximalDeep"]<10){
+        if(parametersWrapped["maximalDeep"]<3){
             margin = 10;
         }
-        else if(parametersWrapped["maximalDeep"]<20){
+        else if(parametersWrapped["maximalDeep"]<6){
             margin = 15;
         }
         else{
             margin = 20;
         }
+
+        console.log("maximalDeep "+parametersWrapped["maximalDeep"]+" margin "+margin);
         return margin;
     }
 
@@ -74,11 +76,12 @@ export class ScenarioService {
      * Function that called by goThroughMap() finds the deeper level of a map.
      */
     public findMapDeep(map:CodeMapNode,deep: number[]){
-        if(!map.children){
+        if(map.children){
             deep["currentDeep"]++;
         }
         else{
             deep["maximalDeep"]=Math.max(deep["currentDeep"]+1,deep["maximalDeep"]);
+            if(deep["currentDeep"]==342) console.log("deepName: "+map.path);
             deep["currentDeep"]=0;
         }
     }
