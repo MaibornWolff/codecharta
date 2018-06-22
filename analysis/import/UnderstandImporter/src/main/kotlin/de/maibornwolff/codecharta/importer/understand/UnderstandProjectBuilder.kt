@@ -53,18 +53,112 @@ class UnderstandProjectBuilder(
 
     private val projectBuilder = ProjectBuilder(projectName)
             .withMetricTranslator(understandReplacement)
+            .withAggregationRules(aggregationRules)
             .withFilter(filterRule)
 
     init {
         if (aggregation != AGGREGATION.FILE) throw NotImplementedError("Only file aggregation is implemented yet.")
     }
 
+    private var rowNumber = 1
+
     private val csvDelimiter = ','
+
+    private val sumAttributes: (Any, Any) -> Any = { x, y ->
+        when {
+            x is Long && y is Long -> x + y
+            x is Number && y is Number -> x.toDouble() + y.toDouble()
+            else -> x
+        }
+    }
+
+    private val maxAttribute: (Any, Any) -> Any = { x, y ->
+        when {
+            x is Long && y is Long -> maxOf(x, y)
+            x is Number && y is Number -> maxOf(x.toDouble(), y.toDouble())
+            else -> x
+        }
+    }
+
+    private val aggregationRules: Map<String, (Any, Any) -> Any>
+        get() {
+            val aggregationMap = mutableMapOf<String, (Any, Any) -> Any>()
+
+            listOf(
+                    "CountDeclClass",
+                    "CountDeclClassMethod",
+                    "CountDeclClassVariable",
+                    "CountDeclExecutableUnit",
+                    "CountDeclFile",
+                    "CountDeclFunction",
+                    "CountDeclInstanceMethod",
+                    "CountDeclInstanceVariable",
+                    "CountDeclMethod",
+                    "CountDeclMethodAll",
+                    "CountDeclMethodDefault",
+                    "CountDeclMethodPrivate",
+                    "CountDeclMethodProtected",
+                    "CountDeclMethodPublic",
+                    "CountLine",
+                    "CountLine_Html",
+                    "CountLine_Javascript",
+                    "CountLine_Php",
+                    "CountLineBlank",
+                    "CountLineBlank_Html",
+                    "CountLineBlank_Javascript",
+                    "CountLineBlank_Php",
+                    "CountLineCode",
+                    "CountLineCode_Javascript",
+                    "CountLineCode_Php",
+                    "CountLineCodeDecl",
+                    "CountLineCodeExe",
+                    "CountLineComment",
+                    "CountLineComment_Html",
+                    "CountLineComment_Javascript",
+                    "CountLineComment_Php",
+                    "CountPath",
+                    "CountPathLog",
+                    "CountSemicolon",
+                    "CountStmt",
+                    "CountStmtDecl",
+                    "CountStmtDecl_Javascript",
+                    "CountStmtDecl_Php",
+                    "CountStmtExe",
+                    "CountStmtExe_Javascript",
+                    "CountStmtExe_Php",
+                    "Cyclomatic",
+                    "CyclomaticModified",
+                    "CyclomaticStrict",
+                    "Essential",
+                    "Knots",
+                    "SumCyclomatic",
+                    "SumCyclomaticModified",
+                    "SumCyclomaticStrict",
+                    "SumEssential"
+            ).forEach {
+                aggregationMap[it] = sumAttributes
+            }
+
+            listOf(
+                    "CountClassBase",
+                    "CountClassCoupled",
+                    "CountClassDerived",
+                    "CountInput",
+                    "CountOutput"
+            ).forEach {
+                aggregationMap[it] = maxAttribute
+            }
+
+            return aggregationMap.toMap()
+        }
+
 
     private val understandReplacement: MetricNameTranslator
         get() {
             val prefix = "understand_"
             val replacementMap = mutableMapOf<String, String>()
+
+            // map understand name to codecharta name
             replacementMap["AvgCyclomatic"] = "average_function_mcc"
             replacementMap["CountDeclClass"] = "classes"
             replacementMap["CountDeclMethod"] = "functions"
@@ -77,6 +171,13 @@ class UnderstandProjectBuilder(
             replacementMap["MaxNesting"] = "max_block_depth"
             replacementMap["SumCyclomatic"] = "mcc"
 
+            // ignore following understand metrics
+            replacementMap["Cyclomatic"] = ""
+            replacementMap["CyclomaticModified"] = ""
+            replacementMap["CyclomaticStrict"] = ""
+            replacementMap["Essential"] = ""
+            replacementMap["EssentialStrictModified"] = ""
+
             return MetricNameTranslator(replacementMap.toMap(), prefix)
         }
 
@@ -87,16 +188,20 @@ class UnderstandProjectBuilder(
         val header = UnderstandCSVHeader(parser.parseNext())
         parseContent(projectBuilder, parser, header)
         parser.stopParsing()
+        logger.info { "Found $rowNumber rows in stream." }
         return this
     }
 
     fun build(): Project {
+        logger.info { "ProjectBuilder with ${projectBuilder.size} leafs and ${projectBuilder.rootNode.nodes.count { it.value.type == NodeType.File }} files." }
+
         return projectBuilder.build()
     }
 
     private fun parseContent(projectBuilder: ProjectBuilder, parser: CsvParser, header: UnderstandCSVHeader) {
         var row = parser.parseNext()
         while (row != null) {
+            rowNumber++
             projectBuilder.insertRow(row, header)
             row = parser.parseNext()
         }
@@ -116,7 +221,7 @@ class UnderstandProjectBuilder(
             val row = UnderstandCSVRow(rawRow, header, pathSeparator)
             this.insertByPath(row.pathInTree(), row.asNode())
         } catch (e: IllegalArgumentException) {
-            logger.warn { "Ignoring row ${Arrays.toString(rawRow)} due to: ${e.message}" }
+            logger.warn { "Ignoring $rowNumber-th row ${Arrays.toString(rawRow)} due to: ${e.message}" }
         }
     }
 }

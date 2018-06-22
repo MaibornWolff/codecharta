@@ -28,8 +28,9 @@
  */
 package de.maibornwolff.codecharta.importer.understand
 
+import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
-import de.maibornwolff.codecharta.translator.MetricNameTranslator
+import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.*
 import java.util.concurrent.Callable
@@ -55,11 +56,16 @@ class UnderstandImporter : Callable<Void> {
     @CommandLine.Option(names = ["-a", "--aggregation"], description = ["aggregate metrics to "])
     private var aggregation = AGGREGATION.FILE
 
+    private val logger = KotlinLogging.logger {}
+
     @Throws(IOException::class)
     override fun call(): Void? {
         val projectBuilder = UnderstandProjectBuilder(projectName, pathSeparator, aggregation)
         files.forEach { projectBuilder.parseCSVStream(it.inputStream()) }
-        ProjectSerializer.serializeProject(projectBuilder.build(), writer())
+        val project = projectBuilder.build()
+        ProjectSerializer.serializeProject(project, writer())
+
+        logger.info { "Created project with ${project.size} leafs and ${project.rootNode.nodes.count { it.value.type == NodeType.File }} files." }
 
         return null
     }

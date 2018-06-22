@@ -41,7 +41,7 @@ open class ProjectBuilder(
         if (nodes.size != 1) throw IllegalStateException("no root node present in project")
     }
 
-    private val rootNode: MutableNode
+    val rootNode: MutableNode
         get() = nodes[0]
 
     val size: Int
@@ -62,6 +62,8 @@ open class ProjectBuilder(
 
     private var filterRule: (MutableNode) -> Boolean = { true }
 
+    private var aggregationRules: Map<String, (Any, Any) -> Any> = mapOf()
+
     fun withMetricTranslator(metricNameTranslator: MetricNameTranslator): ProjectBuilder {
         this.metricNameTranslator = metricNameTranslator
         return this
@@ -72,12 +74,29 @@ open class ProjectBuilder(
         return this
     }
 
+    fun withAggregationRules(aggregationRules: Map<String, (Any, Any) -> Any>): ProjectBuilder {
+        this.aggregationRules = aggregationRules
+        return this
+    }
+
     fun build(): Project {
+        addAggregatedAttributes()
+
         nodes.flatMap { it.nodes.values }
                 .mapNotNull { it.filterChildren(filterRule, false) }
                 .map { it.translateMetrics(metricNameTranslator, false) }
-        nodes.forEach { it.filterChildren({ !it.isEmptyFolder }, true) }
+
+        filterEmptyFolders()
+
         return Project(projectName, nodes.map { it.toNode() }.toList(), apiVersion)
+    }
+
+    private fun filterEmptyFolders() {
+        nodes.forEach { it.filterChildren({ !it.isEmptyFolder }, true) }
+    }
+
+    private fun addAggregatedAttributes() {
+        nodes.forEach { it.addAggregatedAttributes(aggregationRules) }
     }
 
     override fun toString(): String {

@@ -33,7 +33,6 @@ import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.PathFactory
-import java.util.*
 import java.util.regex.Pattern
 
 class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: UnderstandCSVHeader, private val pathSeparator: Char) {
@@ -65,7 +64,7 @@ class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: U
             i < rawRow.size && rawRow[i] != null && floatPattern.matcher(rawRow[i]).matches()
 
     private fun parseAttributeOfRow(i: Int) =
-            java.lang.Float.parseFloat(rawRow[i]!!.replace(',', '.'))
+            java.lang.Double.parseDouble(rawRow[i]!!.replace(',', '.'))
 
     private val attributes =
             header.columnNumbers
@@ -75,17 +74,16 @@ class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: U
                             { parseAttributeOfRow(it) }
                     )
 
-    val isFileRow = kind.equals("File", true)
+    private val isFileRow = kind.equals("File", true)
 
     private val nodeType =
-            mapOf(
-                    Pair("File", NodeType.File),
-                    Pair("Package", NodeType.Package),
-                    Pair("Class", NodeType.Class),
-                    Pair("Interface", NodeType.Interface),
-                    Pair("Method", NodeType.Method),
-                    Pair("Function", NodeType.Method)
-            )[kind] ?: NodeType.Unknown
+            when {
+                kind.endsWith("file", ignoreCase = true) -> NodeType.File
+                kind.endsWith("class", ignoreCase = true) -> NodeType.Class
+                kind.endsWith("interface", ignoreCase = true) -> NodeType.Class
+                kind.endsWith("enum type", ignoreCase = true) -> NodeType.Class
+                else -> NodeType.Unknown
+            }
 
 
     fun pathInTree(): Path {
@@ -98,6 +96,7 @@ class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: U
     fun asNode(): MutableNode {
         return when {
             isFileRow -> MutableNode(filename, nodeType, attributes)
+            nodeType == NodeType.Unknown -> throw IllegalArgumentException("Kind $kind not supported, yet.")
             else -> MutableNode(name, nodeType, attributes)
         }
     }

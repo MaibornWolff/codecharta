@@ -29,7 +29,11 @@
 
 package de.maibornwolff.codecharta.model
 
+import mu.KotlinLogging
+
 object NodeInserter {
+    private val logger = KotlinLogging.logger {}
+
     /**
      * Inserts the node as child of the element at the specified position
      * in the sub-tree spanned by the children of the root node.
@@ -41,6 +45,8 @@ object NodeInserter {
     fun insertByPath(root: MutableNode, path: Path, node: MutableNode): MutableNode {
         if (path.isTrivial) {
             if (rootContainsNodeAlready(root, node)) {
+                logger.info { "Node with name ${node.name} already exists, merging." }
+
                 val original = getNode(root, node.name)!!
                 root.children.remove(original)
                 root.children.add(original.merge(listOf(node)))

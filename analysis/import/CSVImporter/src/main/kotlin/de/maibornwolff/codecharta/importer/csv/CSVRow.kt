@@ -35,7 +35,7 @@ class CSVRow(private val row: Array<String?>, private val header: CSVHeader, pri
             i < row.size && row[i] != null && floatPattern.matcher(row[i]).matches()
 
     private fun parseAttributeOfRow(i: Int) =
-            java.lang.Float.parseFloat(row[i]!!.replace(',', '.'))
+            java.lang.Double.parseDouble(row[i]!!.replace(',', '.'))
 
     private val attributes =
             header.columnNumbers
