@@ -22,12 +22,8 @@ export class ScenarioService {
                 private dataService,
                 private threeOrbitControlsService:ThreeOrbitControlsService) {
         this.scenarios = require("./scenarios.json");
-        this.settingsService.subscribe(this);
     }
 
-    public onSettingsChanged(){
-        this.settingsService.settings["margin"] = this.computeMargin();
-    }
 
     /**
      * Applies a given scenario to the current codecharta session.
@@ -44,41 +40,46 @@ export class ScenarioService {
      * @returns {number}
      *
      * Function that computes the margin applied to a scenario depending of the
-     * added rloc value of the whole map
+     * maximal deep of the whole map
      */
     public  computeMargin(): number{
 
-        let areaMetricName = this.settingsService.settings.areaMetric;
-        let accumulatedValue: number = 0;
-        var parametersWrapped: any[] = [accumulatedValue, areaMetricName];
+        let marginComputeFunction: Function = this.findMapDeep;
+        let root: CodeMapNode = this.dataService._data.renderMap.root;
+        let margin: number;
 
-        this.dataService.goThroughMap((this.dataService._data.renderMap.root),this.addMetric,parametersWrapped);
-        accumulatedValue = parametersWrapped[0];
+        // Previous parameters are wrapped to introduce them into goThroughMap() and make value changes
+        // remain, with a pointer-like behaviour
+        let parametersWrapped = {currentDeep:0, maximalDeep:0};
 
-        let logBase = 2;
-        let margin: number = (isFinite(accumulatedValue)&&accumulatedValue>=1)?
-            Math.round(
-            Math.log(accumulatedValue)/Math.log(logBase)//Equivalent to logarithm with base logBase
-        ):1;
+        this.dataService.goThroughMap( root, marginComputeFunction, parametersWrapped);
 
-        console.log(areaMetricName+accumulatedValue+", margin "+margin);
+        if(parametersWrapped["maximalDeep"]<10){
+            margin = 10;
+        }
+        else if(parametersWrapped["maximalDeep"]<20){
+            margin = 15;
+        }
+        else{
+            margin = 20;
+        }
         return margin;
     }
-
 
     /**
      *
      * @param {CodeMapNode} map
-     * @param {any[]} metric: [0]contains the accumulated value of a metric, [1] contains its name
+     * @param {number[]} deep
      *
-     * Function that adds the value of the given metric contained in every node its called.
-     * It holds the value in an array in order to keep it from one call to another
-     * from a function that goes through all the nodes of a tree.
+     * Function that called by goThroughMap() finds the deeper level of a map.
      */
-    public addMetric(map: CodeMapNode, metric: any[]){
-        if(!map.children && //only the values of leaves are added
-            map.attributes[metric[1]]){
-            metric[0]+=map.attributes[metric[1]];
+    public findMapDeep(map:CodeMapNode,deep: number[]){
+        if(!map.children){
+            deep["currentDeep"]++;
+        }
+        else{
+            deep["maximalDeep"]=Math.max(deep["currentDeep"]+1,deep["maximalDeep"]);
+            deep["currentDeep"]=0;
         }
     }
 
