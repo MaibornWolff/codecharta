@@ -78,7 +78,7 @@ object NodeMatcher {
 
             override fun describeMismatch(item: Any, description: Description) {
                 description.appendText("but was ").appendValue(nodeAtPath)
-                description.appendText(", where paths to leaves were ").appendValue((item as Node).pathsToLeaves)
+                description.appendText(", where paths to leaves were ").appendValue((item as MutableNode).pathsToLeaves)
             }
         }
     }

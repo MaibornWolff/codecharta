@@ -719,7 +719,7 @@ Date:   Fri Dec 8 13:06:32 2017 +0100
 
     adding basic sonar file
 
-12	0	visualization/sonar-project.properties
+12	0	visualization/sonar-projectBuilder.properties
 
 commit eb817720a91648932d3388659a55ccd1ec8b9f31
 Author: anonymous <>

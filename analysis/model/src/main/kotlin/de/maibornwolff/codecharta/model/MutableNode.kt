@@ -29,48 +29,47 @@
 
 package de.maibornwolff.codecharta.model
 
-object NodeInserter {
-    /**
-     * Inserts the node as child of the element at the specified position
-     * in the sub-tree spanned by the children of the root node.
-     *
-     * @param root where another node should be inserted
-     * @param path relative path to parent of new node in root node
-     * @param node that has to be inserted
-     */
-    fun insertByPath(root: MutableNode, path: Path, node: MutableNode): MutableNode {
-        if (path.isTrivial) {
-            if (rootContainsNodeAlready(root, node)) {
-                val original = getNode(root, node.name)!!
-                root.children.remove(original)
-                root.children.add(original.merge(listOf(node)))
-            } else {
-                root.children.add(node)
-            }
-        } else {
-            val name = path.head
-            val folderNode = getNode(root, name)
-                    ?: root.insertNewFolderNode(name).getNodeBy(Path(name)) as MutableNode
-            insertByPath(folderNode, path.tail, node)
+import de.maibornwolff.codecharta.translator.MetricNameTranslator
+import java.util.*
+
+class MutableNode constructor(
+        val name: String,
+        val type: NodeType? = NodeType.File,
+        var attributes: Map<String, Any> = mapOf(),
+        val link: String? = "",
+        childrenList: List<MutableNode> = listOf(),
+        @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeMaxAttributeMergerIgnoringChildren
+) : Tree<MutableNode>() {
+
+    override val children = childrenList.toMutableList()
+
+    override fun getPathOfChild(child: Tree<MutableNode>): Path {
+        if (!children.contains(child)) {
+            throw NoSuchElementException("Child $child not contained in MutableNode.")
         }
-        return root
+        return Path(listOf((child.asTreeNode()).name))
     }
 
-    private fun getNode(root: MutableNode, name: String): MutableNode? {
-        return root.children.firstOrNull { it.name == name }
+    override fun toString(): String {
+        return "MutableNode(name='$name', type=$type, attributes=$attributes, link=$link, children=$children)"
     }
 
-    private fun rootContainsNodeAlready(root: MutableNode, node: MutableNode): Boolean {
-        return root.children.filter { it.name == node.name }.count() > 0
+    override fun insertAt(path: Path, node: MutableNode) {
+        NodeInserter.insertByPath(this, path, node)
     }
 
-    private fun createFolderNode(name: String): MutableNode {
-        return MutableNode(name, NodeType.Folder)
+    override fun merge(nodes: List<MutableNode>): MutableNode {
+        return nodeMergingStrategy.merge(this, nodes)
     }
 
-    private fun MutableNode.insertNewFolderNode(name: String): MutableNode {
-        val folderNode = createFolderNode(name)
-        insertByPath(this, Path.TRIVIAL, folderNode)
-        return this
+    fun translateMetrics(metricNameTranslator: MetricNameTranslator, recursive: Boolean) {
+        if (recursive) {
+            children.forEach { it.translateMetrics(metricNameTranslator, recursive) }
+        }
+        attributes = attributes.mapKeys { metricNameTranslator.translate(it.key) }
+    }
+
+    fun toNode(): Node {
+        return Node(name, type, attributes, link, children = children.map { it.toNode() }.toList())
     }
 }

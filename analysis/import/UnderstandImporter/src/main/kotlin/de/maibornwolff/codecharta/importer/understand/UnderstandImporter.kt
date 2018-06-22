@@ -57,33 +57,12 @@ class UnderstandImporter : Callable<Void> {
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        val projectCreator = ProjectCreator(projectName, pathSeparator, aggregation)
-        val project = projectCreator.createFromCsvStream(files.map { it.inputStream() })
-        project.translateMetricNames(understandReplacement)
-        ProjectSerializer.serializeProject(project, writer())
+        val projectBuilder = UnderstandProjectBuilder(projectName, pathSeparator, aggregation)
+        files.forEach { projectBuilder.parseCSVStream(it.inputStream()) }
+        ProjectSerializer.serializeProject(projectBuilder.build(), writer())
 
         return null
     }
-
-
-    private val understandReplacement: MetricNameTranslator
-        get() {
-            val prefix = "understand_"
-            val replacementMap = mutableMapOf<String, String>()
-            replacementMap["AvgCyclomatic"] = "average_function_mcc"
-            replacementMap["CountDeclClass"] = "classes"
-            replacementMap["CountDeclMethod"] = "functions"
-            replacementMap["CountDeclMethodPublic"] = "public_api"
-            replacementMap["CountLine"] = "loc"
-            replacementMap["CountLineCode"] = "rloc"
-            replacementMap["CountLineComment"] = "comment_lines"
-            replacementMap["CountStmt"] = "statements"
-            replacementMap["MaxCyclomatic"] = "max_function_mcc"
-            replacementMap["MaxNesting"] = "max_block_depth"
-            replacementMap["SumCyclomatic"] = "mcc"
-
-            return MetricNameTranslator(replacementMap.toMap(), prefix)
-        }
 
     private fun writer(): Writer {
         return if (outputFile == null) {

@@ -29,7 +29,7 @@
 
 package de.maibornwolff.codecharta.filter.mergefilter
 
-import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
@@ -44,8 +44,8 @@ class RecursiveNodeMergerTest : Spek({
         val merger = RecursiveNodeMergerStrategy()
 
         on("merging nodes with same name") {
-            val node1 = Node("Name", NodeType.File)
-            val node2 = Node("Name", NodeType.Folder)
+            val node1 = MutableNode("Name", NodeType.File)
+            val node2 = MutableNode("Name", NodeType.Folder)
 
             val nodeList = merger.mergeNodeLists(listOf(listOf(node1), listOf(node2)))
 
@@ -63,7 +63,7 @@ class RecursiveNodeMergerTest : Spek({
         }
 
         on("merging single node list") {
-            val nodeList = listOf(Node("node", NodeType.File, mapOf()))
+            val nodeList = listOf(MutableNode("node", NodeType.File, mapOf()))
             val actualNodeList = merger.mergeNodeLists(listOf(nodeList))
 
             it("should return same node list") {
@@ -72,12 +72,12 @@ class RecursiveNodeMergerTest : Spek({
         }
 
         on("merging nodes with children and with same name") {
-            val child1 = Node("child1", NodeType.File)
-            val child2 = Node("child2", NodeType.Folder)
+            val child1 = MutableNode("child1", NodeType.File)
+            val child2 = MutableNode("child2", NodeType.Folder)
             val child1_littleBitDifferent =
-                    Node("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", listOf())
-            val node1 = Node("Name", NodeType.File, mapOf(), "", listOf(child1_littleBitDifferent))
-            val node2 = Node("Name", NodeType.File, mapOf(), "", listOf(child1, child2))
+                    MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", listOf())
+            val node1 = MutableNode("Name", NodeType.File, mapOf(), "", listOf(child1_littleBitDifferent))
+            val node2 = MutableNode("Name", NodeType.File, mapOf(), "", listOf(child1, child2))
 
             val newNode = merger.mergeNodeLists(listOf(listOf(node2), listOf(node1)))[0]
 
@@ -96,9 +96,9 @@ class RecursiveNodeMergerTest : Spek({
 
         on("merging node list with two root nodes") {
             // given
-            val node11 = Node("Name1", NodeType.File)
-            val node12 = Node("Name2", NodeType.File)
-            val node2 = Node("Name1", NodeType.Folder)
+            val node11 = MutableNode("Name1", NodeType.File)
+            val node12 = MutableNode("Name2", NodeType.File)
+            val node2 = MutableNode("Name1", NodeType.Folder)
 
             // when
             val nodeList = merger.mergeNodeLists(listOf(listOf(node11, node12), listOf(node2)))

@@ -53,17 +53,13 @@ class SCMLogProjectCreatorTest(
 
         // then
         assertThat(gitProject)
-                .extracting(Function<Project, Any> { projectSize(it) })
+                .extracting(Function<Project, Any> { it.size.toLong() })
                 .containsExactly(expectedProjectSize)
         assertNodesValid(gitProject)
     }
 
-    private fun projectSize(project: Project): Long {
-        return (if (project.nodes.isEmpty()) 0 else project.nodes[0].leaves.size).toLong()
-    }
-
     private fun assertNodesValid(project: Project) {
-        val leaves = project.nodes[0].leaves.values
+        val leaves = project.rootNode.leaves.values
         leaves.flatMap { l -> l.attributes.entries }
                 .forEach { v ->
                     assertThat((v.value as Number).toDouble())

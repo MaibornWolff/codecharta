@@ -33,7 +33,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonNull
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
-import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import io.mockk.mockk
 import org.hamcrest.MatcherAssert.assertThat
@@ -48,7 +48,7 @@ import kotlin.test.assertFailsWith
 class NodeJsonDeserializerTest : Spek({
     val NAME = "nodeName"
     val TYPE = NodeType.Folder
-    val nodeClass = Node::class.java
+    val nodeClass = MutableNode::class.java
 
     fun createMinimalJsonObject(): JsonObject {
         val obj = JsonObject()

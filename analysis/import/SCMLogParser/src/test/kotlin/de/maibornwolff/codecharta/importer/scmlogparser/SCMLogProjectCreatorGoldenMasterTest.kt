@@ -62,7 +62,7 @@ class SCMLogProjectCreatorGoldenMasterTest (
 
         // when
         val svnProject = svnSCMLogProjectCreator.parse(logStream)
-        // This step is necessary because the comparison of the attribute map in Node fails if the project is used directly;
+        // This step is necessary because the comparison of the attribute map in MutableNode fails if the project is used directly;
         val svnProjectForComparison = serializeAndDeserializeProject(svnProject)
 
         // then

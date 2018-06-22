@@ -45,7 +45,7 @@ class ProjectDeserializerTest : Spek({
         val project = ProjectDeserializer.deserializeProject(expectedJsonReader)
 
         assertTrue(project.projectName == "201701poolobject")
-        assertThat(project.nodes, hasSize(1))
+        assertThat(project.size, `is`(6))
     }
 
     it("deserializeProject_should_map_nonexisting_values_to_defaults") {
@@ -56,7 +56,7 @@ class ProjectDeserializerTest : Spek({
         val project = ProjectDeserializer.deserializeProject(StringReader(jsonString))
 
         // then
-        val node = project.nodes[0]
+        val node = project.rootNode
 
         assertThat(node.link, nullValue())
         assertThat(node.attributes, not(nullValue()))

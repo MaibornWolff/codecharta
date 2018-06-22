@@ -30,28 +30,30 @@
 package de.maibornwolff.codecharta.importer.understand
 
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.hasItem
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 
-class ProjectCreatorTest : Spek({
-    describe("ProjectCreator for Understand") {
-        val projectCreator = ProjectCreator("test", '/')
+class UnderstandProjectBuilderTest : Spek({
+    describe("UnderstandProjectBuilder for Understand") {
+        val understandProjectBuilder = UnderstandProjectBuilder("test", '/')
 
 
         on("reading csv lines from Understand") {
-            val project = projectCreator.createFromCsvStream(this.javaClass.classLoader.getResourceAsStream("understand.csv"))
+            val project = understandProjectBuilder
+                    .parseCSVStream(this.javaClass.classLoader.getResourceAsStream("understand.csv"))
+                    .build()
 
             it("has correct number of nodes") {
-                assertThat(project.rootNode.nodes.size, greaterThan(1))
-                assertThat(project.rootNode.leafObjects.size, `is`(223))
+                assertThat(project.size, `is`(223))
             }
 
             it("leaf has file attributes") {
                 val attributes = project.rootNode.leafObjects.flatMap { it.attributes.keys }.distinct()
-                assertThat(attributes, hasItem("CountLine"))
+                assertThat(attributes, hasItem("rloc"))
             }
         }
     }
