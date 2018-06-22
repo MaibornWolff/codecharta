@@ -93,7 +93,7 @@ class CSVRowTest : Spek({
         it("should have attribute for metric columns") {
             val rawRow = arrayOf<String?>("3,2", "2", "3", "file", "", "File")
             val node = UnderstandCSVRow(rawRow, header, PATH_SEPARATOR).asNode()
-            assertThat<Any>(node.attributes["head1"], `is`<Any>(3.2f))
+            assertThat(node.attributes["head1"] as Double, `is`<Double>(3.2))
         }
 
         it("should have NO attribute for non-metric columns") {

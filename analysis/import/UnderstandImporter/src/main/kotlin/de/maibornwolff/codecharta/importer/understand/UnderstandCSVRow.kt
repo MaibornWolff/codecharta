@@ -33,7 +33,6 @@ import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.PathFactory
-import java.util.*
 import java.util.regex.Pattern
 
 class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: UnderstandCSVHeader, private val pathSeparator: Char) {
@@ -65,7 +64,7 @@ class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: U
             i < rawRow.size && rawRow[i] != null && floatPattern.matcher(rawRow[i]).matches()
 
     private fun parseAttributeOfRow(i: Int) =
-            java.lang.Float.parseFloat(rawRow[i]!!.replace(',', '.'))
+            java.lang.Double.parseDouble(rawRow[i]!!.replace(',', '.'))
 
     private val attributes =
             header.columnNumbers
@@ -75,7 +74,7 @@ class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: U
                             { parseAttributeOfRow(it) }
                     )
 
-    val isFileRow = kind.equals("File", true)
+    private val isFileRow = kind.equals("File", true)
 
     private val nodeType =
             mapOf(

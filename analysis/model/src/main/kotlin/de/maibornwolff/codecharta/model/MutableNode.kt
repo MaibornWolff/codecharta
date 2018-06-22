@@ -90,4 +90,28 @@ class MutableNode constructor(
             else -> this
         }
     }
+
+    private fun <K, V> Map<K, V>.mergeReduce(other: Map<K, V>, reduce: (V, V) -> V = { _, b -> b }): Map<K, V> =
+            this.toMutableMap().apply { other.forEach { merge(it.key, it.value, reduce) } }
+
+    private val sumAttributes: (Any, Any) -> Any = { x, y ->
+        when {
+            x is Long && y is Long -> x + y
+            x is Number && y is Number -> x.toDouble() + y.toDouble()
+            else -> x
+        }
+    }
+
+    fun addAggregatedAttributes(cummulativeMetricNames: List<String> = emptyList()): Map<String, Any> {
+        if (!children.isEmpty()) {
+
+            attributes = attributes.mergeReduce(
+                    children.map { it.addAggregatedAttributes(cummulativeMetricNames) }
+                            .reduce { acc, map -> map.mergeReduce(acc, sumAttributes) }
+            ) { x, _ -> x }
+
+        }
+
+        return attributes.filterKeys { cummulativeMetricNames.contains(it) }
+    }
 }

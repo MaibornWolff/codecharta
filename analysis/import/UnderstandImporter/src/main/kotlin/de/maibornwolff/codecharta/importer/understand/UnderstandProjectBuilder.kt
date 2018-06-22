@@ -53,6 +53,7 @@ class UnderstandProjectBuilder(
 
     private val projectBuilder = ProjectBuilder(projectName)
             .withMetricTranslator(understandReplacement)
+            .withCummulativeMetricNames(understandCummulativeMetricNames)
             .withFilter(filterRule)
 
     init {
@@ -61,10 +62,71 @@ class UnderstandProjectBuilder(
 
     private val csvDelimiter = ','
 
+    private val understandCummulativeMetricNames: List<String>
+        get() = listOf(
+                // TODO: "CountClassBase", this should be max per file
+                // TODO: "CountClassCoupled", this should be max per file not sum
+                // TODO: "CountClassDerived", this should be max per file not sum
+                "CountDeclClass",
+                "CountDeclClassMethod",
+                "CountDeclClassVariable",
+                "CountDeclExecutableUnit",
+                "CountDeclFile",
+                "CountDeclFunction",
+                "CountDeclInstanceMethod",
+                "CountDeclInstanceVariable",
+                "CountDeclMethod",
+                "CountDeclMethodAll",
+                "CountDeclMethodDefault",
+                "CountDeclMethodPrivate",
+                "CountDeclMethodProtected",
+                "CountDeclMethodPublic",
+                // TODO: "CountInput", this should be max per class, max per file not sum
+                "CountLine",
+                "CountLine_Html",
+                "CountLine_Javascript",
+                "CountLine_Php",
+                "CountLineBlank",
+                "CountLineBlank_Html",
+                "CountLineBlank_Javascript",
+                "CountLineBlank_Php",
+                "CountLineCode",
+                "CountLineCode_Javascript",
+                "CountLineCode_Php",
+                "CountLineCodeDecl",
+                "CountLineCodeExe",
+                "CountLineComment",
+                "CountLineComment_Html",
+                "CountLineComment_Javascript",
+                "CountLineComment_Php",
+                // TODO: "CountOutput", this should be max per class, max per file not sum
+                "CountPath",
+                "CountPathLog",
+                "CountSemicolon",
+                "CountStmt",
+                "CountStmtDecl",
+                "CountStmtDecl_Javascript",
+                "CountStmtDecl_Php",
+                "CountStmtExe",
+                "CountStmtExe_Javascript",
+                "CountStmtExe_Php",
+                "Cyclomatic",
+                "CyclomaticModified",
+                "CyclomaticStrict",
+                "Essential",
+                "Knots",
+                "SumCyclomatic",
+                "SumCyclomaticModified",
+                "SumCyclomaticStrict",
+                "SumEssential"
+        )
+
     private val understandReplacement: MetricNameTranslator
         get() {
             val prefix = "understand_"
             val replacementMap = mutableMapOf<String, String>()
+
+            // map understand name to codecharta name
             replacementMap["AvgCyclomatic"] = "average_function_mcc"
             replacementMap["CountDeclClass"] = "classes"
             replacementMap["CountDeclMethod"] = "functions"
@@ -76,6 +138,13 @@ class UnderstandProjectBuilder(
             replacementMap["MaxCyclomatic"] = "max_function_mcc"
             replacementMap["MaxNesting"] = "max_block_depth"
             replacementMap["SumCyclomatic"] = "mcc"
+
+            // ignore following understand metrics
+            replacementMap["Cyclomatic"] = ""
+            replacementMap["CyclomaticModified"] = ""
+            replacementMap["CyclomaticStrict"] = ""
+            replacementMap["Essential"] = ""
+            replacementMap["EssentialStrictModified"] = ""
 
             return MetricNameTranslator(replacementMap.toMap(), prefix)
         }

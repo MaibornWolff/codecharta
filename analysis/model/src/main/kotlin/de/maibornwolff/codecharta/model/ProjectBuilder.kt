@@ -62,6 +62,8 @@ open class ProjectBuilder(
 
     private var filterRule: (MutableNode) -> Boolean = { true }
 
+    private var cummulativeMetricNames: List<String> = listOf()
+
     fun withMetricTranslator(metricNameTranslator: MetricNameTranslator): ProjectBuilder {
         this.metricNameTranslator = metricNameTranslator
         return this
@@ -72,12 +74,29 @@ open class ProjectBuilder(
         return this
     }
 
+    fun withCummulativeMetricNames(cummulativeMetricNames: List<String>): ProjectBuilder {
+        this.cummulativeMetricNames = cummulativeMetricNames
+        return this
+    }
+
     fun build(): Project {
+        addAggregatedAttributes()
+
         nodes.flatMap { it.nodes.values }
                 .mapNotNull { it.filterChildren(filterRule, false) }
                 .map { it.translateMetrics(metricNameTranslator, false) }
-        nodes.forEach { it.filterChildren({ !it.isEmptyFolder }, true) }
+
+        filterEmptyFolders()
+
         return Project(projectName, nodes.map { it.toNode() }.toList(), apiVersion)
+    }
+
+    private fun filterEmptyFolders() {
+        nodes.forEach { it.filterChildren({ !it.isEmptyFolder }, true) }
+    }
+
+    private fun addAggregatedAttributes() {
+        nodes.forEach { it.addAggregatedAttributes(cummulativeMetricNames) }
     }
 
     override fun toString(): String {
