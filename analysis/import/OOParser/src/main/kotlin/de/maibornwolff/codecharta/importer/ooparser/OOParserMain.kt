@@ -8,6 +8,7 @@ import java.io.*
 import java.util.concurrent.Callable
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
+import org.antlr.v4.runtime.tree.ParseTree
 
 @CommandLine.Command(name = "parse", description = ["generates cc.json from projectpath"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
 class OOParserMain : Callable<Void> {
@@ -31,25 +32,38 @@ class OOParserMain : Callable<Void> {
     override fun call(): Void? {
 
         /*val file =  files.get(0)
-        print(file)
-        readFile(file)*/
-
-        val charStream = CharStreams.fromString("Hallo John!")
+        print(file)*/
 
         val filePath = files.get(0).absolutePath
+        println(filePath)
+
         val fileCharStream: CharStream = CharStreams.fromFileName(filePath)
         val lexer = JavaLexer(fileCharStream)
         val tokens = CommonTokenStream(lexer)
         val parser = JavaParser(tokens)
 
-        /*parse(parser.compilationUnit())*/
+        println("--------------------")
+        parse(parser.compilationUnit())
+
         println("--------------------")
         System.out.println(parser.compilationUnit().toStringTree())
+
         println("--------------------")
         System.out.println(parser.compilationUnit().start.getLine())
 
 
         return null
+    }
+
+    private fun parse(parseTree: ParseTree) {
+
+        if (parseTree.childCount > 1) {
+            println(parseTree.text)
+        }
+
+        for (i in 0 until parseTree.childCount) {
+            parse(parseTree.getChild(i))
+        }
     }
 
     /**
