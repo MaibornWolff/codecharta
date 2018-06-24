@@ -22,8 +22,14 @@ export class ScenarioService {
                 private dataService,
                 private threeOrbitControlsService:ThreeOrbitControlsService) {
         this.scenarios = require("./scenarios.json");
+        this.settingsService.subscribe(this);
     }
 
+
+    public onSettingsChanged(){
+        this.settingsService.settings.margin = this.computeMargin();
+        this.threeOrbitControlsService.autoFitTo();
+    }
 
     /**
      * Applies a given scenario to the current codecharta session.
@@ -39,33 +45,52 @@ export class ScenarioService {
     /**
      * @returns {number}
      *
-     * Function that computes the margin applied to a scenario depending of the
-     * maximal deep of the whole map
+     * Function that computes the margin applied to a scenario related the square root of the area divided
+     * by the number of buildings
      */
     public  computeMargin(): number{
 
-        let marginComputeFunction: Function = this.findMapDeep;
         let root: CodeMapNode = this.dataService._data.renderMap.root;
         let margin: number;
 
         // Previous parameters are wrapped to introduce them into goThroughMap() and make value changes
         // remain, with a pointer-like behaviour
-        let parametersWrapped = {currentDeep:0, maximalDeep:0};
+        let numberOfBuildingsWrapped = {numberOfBuildings:0};
+         let areaParametersWrapped = {areaMetricName: this.settingsService.settings.areaMetric, totalArea: 0};
 
-        this.dataService.goThroughMap( root, marginComputeFunction, parametersWrapped);
+        this.dataService.goThroughMap( root, this.countBuildings, numberOfBuildingsWrapped);
+        this.dataService.goThroughMap( root, this.calculateTotalArea, areaParametersWrapped);
 
-        if(parametersWrapped["maximalDeep"]<3){
-            margin = 10;
-        }
-        else if(parametersWrapped["maximalDeep"]<6){
-            margin = 15;
-        }
-        else{
-            margin = 20;
-        }
+        margin = 4*Math.round(
+            Math.sqrt(
+                (areaParametersWrapped["totalArea"]/numberOfBuildingsWrapped["numberOfBuildings"])));
 
-        console.log("maximalDeep "+parametersWrapped["maximalDeep"]+" margin "+margin);
+        console.log("buildings "+numberOfBuildingsWrapped["numberOfBuildings"]+" area "+
+            areaParametersWrapped["areaMetricName"] +" "+areaParametersWrapped["totalArea"]+" margin "+margin);
         return margin;
+    }
+
+    /*
+    * @param {CodeMapNode} map
+    * @param {number[]} buildings ["numberOfBuildings"] the number of leaves( aka buildings) in map
+    *
+     */
+    public countBuildings(map: CodeMapNode, buildings: number[]){
+        if(!map.children){
+            buildings["numberOfBuildings"]++;
+        }
+    }
+
+    /**
+     *
+     * @param map
+     * @param area ["areaMetricName"] name of the metric used for area in the map,
+     *          ["totalArea"] aggregated value of the area
+     */
+    public calculateTotalArea(map: CodeMapNode, area: any[]){
+        if(!map.children){
+            area["totalArea"]+=map.attributes[area["areaMetricName"]];
+        }
     }
 
     /**

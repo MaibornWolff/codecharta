@@ -134,6 +134,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             //area metric is not set or not in the new metrics and needs to be chosen
             this._settings.areaMetric = this.getMetricByIdOrLast(0, data.metrics);
         }
+        console.log("area "+this._settings.areaMetric);
 
         if (data.metrics.indexOf(this._settings.heightMetric) === -1) {
             //height metric is not set or not in the new metrics and needs to be chosen
