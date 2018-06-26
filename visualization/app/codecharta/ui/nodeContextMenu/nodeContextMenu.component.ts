@@ -30,6 +30,17 @@ export class NodeContextMenuComponent {
         });
     }
 
+    public getFilteredColors(){
+        return this.colors.filter((x) => {
+            let color = parseInt("0x"+x.substring(1),16);
+            if(this.contextMenuBuilding && this.contextMenuBuilding.markingColor && parseInt(this.contextMenuBuilding.markingColor,16) === color) {
+                return false;
+            } else {
+                return true;
+            }
+        });
+    }
+
     public static show($rootScope, path: string, x, y) {
         $rootScope.$broadcast("show-node-context-menu", {path: path, x:x, y:y});
     }
