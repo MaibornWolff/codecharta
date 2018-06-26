@@ -27,10 +27,8 @@ For more detailed information check out the source [Branch Types by CKSource](ht
 | `bugfix`	    | yes           | Bug fix
 | `codestyle`  	| no            | Our beloved code style improvements / refactorings
 | `docs`	    | no            | Updated documentation
-| `internal`	| no            | Other kinds of internal changes
-| `tests`	    | no            | Changes in test files
+| `tech`	    | no            | Other kinds of technical changes
 | `revert`      | no            | Revert of some commit
-| `release`     | no            | Commit used by the release tools
 
 Examples:
 - `feature/add-settings-option-xyz`
@@ -42,7 +40,7 @@ Commit messages usually are very different from each other, although similar wor
 To unify the overview of all commit messages we would like to keep track of the following principles.
 For more detailed information check out the source [Commit Conventions by Chris Beams](https://chris.beams.io/posts/git-commit/).
 1. Separate subject from optional body with a blank line
-2. Limit the subject line to 50 characters
+2. Limit the subject line to 50 characters and add the GitHub Issue Number (#123)
 
     If you’re having a hard time summarizing, you might be committing too many changes at once. Strive for atomic commits (a topic for a separate post).
 
@@ -51,20 +49,20 @@ For more detailed information check out the source [Commit Conventions by Chris 
 5. Use the imperative mood in the subject line
 
     A properly formed Git commit subject line should always be able to complete the following sentence:
-    > If applied, this commit will `<your-subject-line>`
+    > If applied, this commit will `<your-subject-line>` #`<issue-id>`
     
     Correct Subject Examples:
-    - If applied, this commit will **refactor subsystem X for readability**
-    - If applied, this commit will **update getting started documentation**
-    - If applied, this commit will **remove deprecated methods**
-    - If applied, this commit will **release version 1.0.0**
-    - If applied, this commit will **merge pull request #123 from user/branch**
+    - If applied, this commit will **refactor subsystem X for readability** #123
+    - If applied, this commit will **update getting started documentation** #123
+    - If applied, this commit will **remove deprecated methods** #123
+    - If applied, this commit will **release version 1.0.0** #123
+    - If applied, this commit will **merge pull request #123 from user/branch** #123
     
     Wrong Subject Examples:
-    - If applied, this commit will *fixed bug with Y*
-    - If applied, this commit will *changing behavior of Y*
-    - If applied, this commit will *more fixes for broken stuff*
-    - If applied, this commit will *sweet new API methods*
+    - If applied, this commit will *fixed bug with Y* #123
+    - If applied, this commit will *changing behavior of Y* #123
+    - If applied, this commit will *more fixes for broken stuff* #123
+    - If applied, this commit will *sweet new API methods* #123
 
 6. Wrap the body at 72 characters
 7. Use the body to explain what and why vs. how
