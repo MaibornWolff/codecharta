@@ -51,6 +51,7 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
     }
 
     onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+        NodeContextMenuComponent.hide(this.$rootScope);
     }
 
 }

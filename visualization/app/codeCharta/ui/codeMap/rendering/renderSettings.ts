@@ -30,7 +30,6 @@ export const highlightColors = [
     "#1DFFFF",
     "#8eff1d",
     "#8e1dff",
-    "#ff8e1d",
     "#FFFF1D",
 ];
 
