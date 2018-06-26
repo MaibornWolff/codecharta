@@ -18,7 +18,7 @@ We will *NOT* accept any pull requests that don't follow the Contributor Covenan
 ### Branching
 
 Branch names consist of a type and the describing branch name itself, which is always **lowercase** separated by **dashes**. 
-It follows this structure `<type>/<name>`. 
+It follows this structure `<type>/<issues-id>/<name>`.
 For more detailed information check out the source [Branch Types by CKSource](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/contributing/git-commit-message-convention.html) 
 
 | Types         | Changelog     | Description
@@ -31,8 +31,8 @@ For more detailed information check out the source [Branch Types by CKSource](ht
 | `revert`      | no            | Revert of some commit
 
 Examples:
-- `feature/add-settings-option-xyz`
-- `bugfix/solve-unecpected-settings-errors`
+- `feature/123/add-settings-option-xyz`
+- `bugfix/124/solve-unecpected-settings-errors`
 
 ### Commit Messages
 
