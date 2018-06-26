@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -e
+
+case `uname` in
+ "Darwin") {
+     if !(which greadlink > /dev/null); then
+        echo 'ERROR: GNU utils required for Mac. You may use homebrew to install them: brew install coreutils gnu-sed'
+        exit 1
+     fi
+     BIN_PATH=$(greadlink -f "$0")
+    } ;;
+ *)  BIN_PATH=$(readlink -f "$0") ;;
+esac
+
+BIN_DIR=$(dirname "${BIN_PATH}")
+
+# old="Project Name,Checkpoint Name,Created On,File Name,Lines,Statements,Percent Branch Statements,Method Call Statements,Percent Lines with Comments,Classes and Interfaces,Methods per Class,Average Statements per Method,Line Number of Most Complex Method*,Name of Most Complex Method*,Maximum Complexity*,Line Number of Deepest Block,Maximum Block Depth,Average Block Depth,Average Complexity*,Statements at block level 0,Statements at block level 1,Statements at block level 2,Statements at block level 3,Statements at block level 4,Statements at block level 5,Statements at block level 6,Statements at block level 7,Statements at block level 8,Statements at block level 9"
+new=",,,path,loc,statements,sm_percent_branch_statements,sm_method_call_statements,sm_percent_lines_with_comments,classes,functions_per_classs,average_statements_per_function,"
+
+print_help(){
+	echo "help"
+	"${BIN_DIR}"/codecharta-csvimport -h
+}
+
+while getopts ":h" opt; do
+  case ${opt} in
+    h)
+      print_help
+      exit 0
+      ;;
+  esac
+done
+shift "$((OPTIND-1))"
+
+sed "1s/^.*$/${new}/" | "${BIN_DIR}"/codecharta-csvimport --backslash "$@"
