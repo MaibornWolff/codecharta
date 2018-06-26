@@ -27,6 +27,13 @@ export class MapTreeViewLevelController {
         $rootScope.$on("should-unhover-node", (event, args)=>subscriber.onShouldUnhoverNode(args));
     }
 
+    getFolderColor() {
+        if(!this.node) {
+            return "#000";
+        }
+        return this.node.markingColor ? "#" + this.node.markingColor.substr(2) : "#000";
+    }
+
     onMouseEnter() {
         this.$rootScope.$broadcast("should-hover-node", this.node);
     }
