@@ -2,7 +2,7 @@ bin
 !**/src/**/bin
 **/out/**/*
 build
-.project
+.projectBuilder
 .settings
 .gradle
 .classpath
@@ -16,8 +16,8 @@ obj
 .metadata
 .metadata/**/*
 .jshintrc
-.sublime-project
-.tern-project
+.sublime-projectBuilder
+.tern-projectBuilder
 .vagrant
 codecharta-analyse.sonargraph
 auth.txt

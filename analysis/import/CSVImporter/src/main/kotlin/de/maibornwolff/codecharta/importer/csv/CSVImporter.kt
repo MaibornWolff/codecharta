@@ -32,8 +32,9 @@ class CSVImporter : Callable<Void> {
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        val project = CSVProjectAdapter(projectName, pathSeparator, csvDelimiter)
-        files.map { it.inputStream() }.forEach { project.addProjectFromCsv(it) }
+        val csvProjectBuilder = CSVProjectBuilder(projectName, pathSeparator, csvDelimiter)
+        files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
+        val project = csvProjectBuilder.build()
         ProjectSerializer.serializeProject(project, writer())
 
         return null

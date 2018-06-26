@@ -32,7 +32,7 @@ package de.maibornwolff.codecharta.model
  * tree structure
  *
  * @param <T> must satisfy T = Tree<T>
-</T></T> */
+ */
 abstract class Tree<T> {
     /**
      * @return children of the present tree
@@ -45,7 +45,7 @@ abstract class Tree<T> {
         }
 
     private val treeNodes: List<TreeNode<T>>
-        get() = listOf(TreeNode(Path.trivialPath(), this as T)) +
+        get() = listOf(TreeNode(Path.trivialPath(), asTreeNode())) +
                 children.flatMap { child ->
                     child.treeNodes.map { TreeNode(getPathOfChild(child).concat(it.path), it.node) }
                 }
@@ -55,6 +55,12 @@ abstract class Tree<T> {
 
     val leaves: Map<Path, T>
         get() = treeNodes.filter { (it.node as Tree<*>).isLeaf }.map { it.path to it.node }.toMap()
+
+    /**
+     * @return size as number of leaves
+     */
+    val size: Int
+        get() = leaves.size
 
     /**
      * @return all leafs of object
@@ -89,4 +95,16 @@ abstract class Tree<T> {
             else -> getNodeBy(Path(listOf(path.head)))!!.getNodeBy(path.tail)
         }
     }
+
+    open fun merge(nodes: List<T>) : T {
+        System.err.println("Element already exists, skipping.")
+        return asTreeNode()
+    }
+
+    // attention!!! Tree<T> = T
+    fun asTreeNode() : T{
+        return this as T
+    }
+
+    abstract fun insertAt(path: Path, node: T)
 }

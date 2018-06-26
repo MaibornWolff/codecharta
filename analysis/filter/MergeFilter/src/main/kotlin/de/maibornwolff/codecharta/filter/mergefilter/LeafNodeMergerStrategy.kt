@@ -29,30 +29,27 @@
 
 package de.maibornwolff.codecharta.filter.mergefilter
 
-import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Path
-import de.maibornwolff.codecharta.nodeinserter.NodeInserter
 
 /**
  * merges leafs according to the level of matching of their paths
  */
 class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase: Boolean = false) : NodeMergerStrategy {
-    private val flatNodeMerger = NodeMerger()
-
-    private val mergeConditionSatisfied: (Node, Node) -> Boolean
+    private val mergeConditionSatisfied: (MutableNode, MutableNode) -> Boolean
 
     init {
-        mergeConditionSatisfied = if (ignoreCase) { n1: Node, n2: Node -> n1.name.toUpperCase() == n2.name.toUpperCase() }
-        else { n1: Node, n2: Node -> n1.name == n2.name }
+        mergeConditionSatisfied = if (ignoreCase) { n1: MutableNode, n2: MutableNode -> n1.name.toUpperCase() == n2.name.toUpperCase() }
+        else { n1: MutableNode, n2: MutableNode -> n1.name == n2.name }
     }
 
     /**
      * merge list of nodeLists to single nodeList
      */
-    override fun mergeNodeLists(lists: List<List<Node>>): List<Node> {
+    override fun mergeNodeLists(lists: List<List<MutableNode>>): List<MutableNode> {
         return if (lists.isEmpty()) listOf()
         else lists.reduce { acc1, nodes ->
-            nodes.fold(acc1, { acc2: List<Node>, node: Node ->
+            nodes.fold(acc1, { acc2: List<MutableNode>, node: MutableNode ->
                 acc2.flatMap { if (mergeConditionSatisfied(it, node)) merge(it, node) else listOf(it) }
             })
         }
@@ -62,11 +59,11 @@ class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase
     /**
      * merge multiple nodes
      */
-    private fun merge(vararg nodes: Node): List<Node> {
-        val root = flatNodeMerger.merge(*nodes)
+    private fun merge(vararg nodes: MutableNode): List<MutableNode> {
+        val root = nodes[0].merge(nodes.asList())
         nodes.map { it.nodes }
                 .reduce { total, next -> total.addAll(next) }
-                .forEach { NodeInserter.insertByPath(root, Path(it.key.edgesList.dropLast(1)), it.value) }
+                .forEach { root.insertAt(Path(it.key.edgesList.dropLast(1)), it.value) }
         return listOf(root)
     }
 
@@ -85,7 +82,7 @@ class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase
         }
     }
 
-    private fun Map<Path, Node>.addAll(nodes: Map<Path, Node>): Map<Path, Node> {
+    private fun Map<Path, MutableNode>.addAll(nodes: Map<Path, MutableNode>): Map<Path, MutableNode> {
         val newNodes = nodes.filterValues { it.isLeaf }
                 .mapKeys { this.keys.findFittingPathOrNull(it.key) ?: replaceMisfittingPath(it.key) }
                 .filterKeys { !it.isTrivial }
@@ -93,6 +90,8 @@ class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase
 
         return newNodes
                 .plus(unchangedNodes)
-                .mapValues { flatNodeMerger.merge(it.value, this[it.key] ?: it.value) }
+                .mapValues {
+                    if (this[it.key] == null) it.value else it.value.merge(listOf(this[it.key]!!))
+                }
     }
 }

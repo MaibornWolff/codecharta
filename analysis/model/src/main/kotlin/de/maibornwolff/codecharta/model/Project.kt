@@ -30,19 +30,20 @@
 package de.maibornwolff.codecharta.model
 
 
-open class Project(
+class Project(
         val projectName: String,
-        nodeList: List<Node> = listOf(),
+        private val nodes: List<Node> = listOf(Node("root", NodeType.Folder)),
         val apiVersion: String = API_VERSION
 ) {
-    val nodes = nodeList.toMutableList()
+    init {
+        if (nodes.size != 1) throw IllegalStateException("no root node present in project")
+    }
 
     val rootNode: Node
         get() = nodes[0]
 
-    fun hasRootNode(): Boolean {
-        return nodes.size == 1
-    }
+    val size: Int
+        get() = rootNode.size
 
     override fun toString(): String {
         return "Project{" +

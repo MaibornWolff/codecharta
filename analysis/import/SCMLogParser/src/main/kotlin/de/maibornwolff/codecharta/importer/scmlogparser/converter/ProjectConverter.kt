@@ -30,11 +30,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.converter
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
-import de.maibornwolff.codecharta.model.Node
-import de.maibornwolff.codecharta.model.NodeType
-import de.maibornwolff.codecharta.model.PathFactory
-import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.nodeinserter.NodeInserter
+import de.maibornwolff.codecharta.model.*
 
 import java.util.*
 
@@ -43,12 +39,12 @@ import java.util.*
  */
 class ProjectConverter(private val containsAuthors: Boolean, private val projectName: String) {
 
-    private fun addVersionControlledFile(project: Project, versionControlledFile: VersionControlledFile) {
+    private fun addVersionControlledFile(projectBuilder: ProjectBuilder, versionControlledFile: VersionControlledFile) {
         val attributes = extractAttributes(versionControlledFile)
         val fileName = versionControlledFile.actualFilename.substringAfterLast(PATH_SEPARATOR)
-        val newNode = Node(fileName, NodeType.File, attributes, "", ArrayList())
+        val newNode = MutableNode(fileName, NodeType.File, attributes, "", ArrayList())
         val path = PathFactory.fromFileSystemPath(versionControlledFile.actualFilename.substringBeforeLast(PATH_SEPARATOR, ""))
-        NodeInserter.insertByPath(project, path, newNode)
+        projectBuilder.insertByPath(path, newNode)
     }
 
     private fun extractAttributes(versionControlledFile: VersionControlledFile): Map<String, Any> {
@@ -60,13 +56,13 @@ class ProjectConverter(private val containsAuthors: Boolean, private val project
     }
 
     fun convert(versionControlledFiles: List<VersionControlledFile>): Project {
-        val project = Project(projectName)
+        val projectBuilder = ProjectBuilder(projectName)
 
         versionControlledFiles
                 .filter { vc -> !vc.markedDeleted() }
-                .forEach { vcFile -> addVersionControlledFile(project, vcFile) }
+                .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
 
-        return project
+        return projectBuilder.build()
     }
 
     companion object {

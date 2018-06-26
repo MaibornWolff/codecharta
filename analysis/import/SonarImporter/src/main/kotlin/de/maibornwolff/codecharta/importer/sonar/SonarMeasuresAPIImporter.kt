@@ -50,10 +50,8 @@ class SonarMeasuresAPIImporter @JvmOverloads constructor(
 
         val componentMap = measuresDS!!.getComponentMap(projectKey, metricsList)
 
-        val project = SonarComponentProjectAdapter(projectName, sonarCodeURLLinker, translator, usePath)
-        project.addComponentMapsAsNodes(componentMap)
-
-        return project
+        val projectBuilder = SonarComponentProjectBuilder(projectName, sonarCodeURLLinker, translator, usePath)
+        return projectBuilder.addComponentMapsAsNodes(componentMap).build()
     }
 
     fun getMetricList(metrics: List<String>): List<String> {

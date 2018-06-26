@@ -1,5 +1,4 @@
 import {ColorSettingsPanelController} from "./colorSettingsPanel.component";
-import {SettingsService} from "../../core/settings/settings.service";
 
 describe("colorSettingsPanelController", ()=>{
 
@@ -11,6 +10,7 @@ describe("colorSettingsPanelController", ()=>{
         settingsService = {
             subscribe: jest.fn(),
             applySettings: jest.fn(),
+            onSettingsChanged: jest.fn(),
             settings: {
                 neutralColorRange: {
                     flipped: false
@@ -37,7 +37,7 @@ describe("colorSettingsPanelController", ()=>{
     it("apply should update settings in settingsservice and call its apply method", ()=>{
         controller.viewModel.deltaColorFlipped = true;
         controller.apply();
-        expect(settingsService.applySettings).toHaveBeenCalled();
+        expect(settingsService.onSettingsChanged).toHaveBeenCalled();
         expect(settingsService.settings.deltaColorFlipped).toBe(true);
     });
 

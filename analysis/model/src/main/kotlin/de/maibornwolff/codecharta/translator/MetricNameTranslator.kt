@@ -42,9 +42,8 @@ open class MetricNameTranslator(
         validate()
     }
 
-    open fun translate(oldMetricName: String?): String? {
+    open fun translate(oldMetricName: String): String {
         return when {
-            oldMetricName == null -> null
             translationMap.containsKey(oldMetricName) -> translationMap[oldMetricName]!!
             else -> prefix + oldMetricName.toLowerCase().replace(' ', '_')
         }
@@ -52,7 +51,7 @@ open class MetricNameTranslator(
 
     open fun translate(oldMetricName: Array<String?>): Array<String?> {
         return oldMetricName
-                .map { translate(it) }
+                .map { it?.let { translate(it) } }
                 .toTypedArray()
     }
 
@@ -70,7 +69,7 @@ open class MetricNameTranslator(
 
     companion object {
         val TRIVIAL: MetricNameTranslator = object : MetricNameTranslator(emptyMap()) {
-            override fun translate(oldMetricName: String?): String? {
+            override fun translate(oldMetricName: String): String {
                 return oldMetricName
             }
 
