@@ -32,8 +32,8 @@ export interface TreeMapSettings {
 export class TreeMapService {
 
     private static HEIGHT_DIVISOR = 1;
-    private static FOLDER_HEIGHT = 1;
-    private static MIN_BUILDING_HEIGHT = 1;
+    private static FOLDER_HEIGHT = 2;
+    private static MIN_BUILDING_HEIGHT = 2;
     private static HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND = 0;
     private static PADDING_SCALING_FACTOR = 0.4;
 
