@@ -31,27 +31,12 @@ class OOParserMain : Callable<Void> {
     @Throws(IOException::class)
     override fun call(): Void? {
 
-        /*val file =  files.get(0)
-        print(file)*/
-
         val filePath = files.get(0).absolutePath
-        println(filePath)
 
-        val fileCharStream: CharStream = CharStreams.fromFileName(filePath)
-        val lexer = JavaLexer(fileCharStream)
-        val tokens = CommonTokenStream(lexer)
-        val parser = JavaParser(tokens)
+        val ooparser: OOParser = OOParser()
+        val realLinesOfCode = ooparser.getAmountOfImports(filePath)
 
-        println("--------------------")
-        parse(parser.compilationUnit())
-
-        println("--------------------")
-        System.out.println(parser.compilationUnit().toStringTree())
-
-        println("--------------------")
-        System.out.println(parser.compilationUnit().start.getLine())
-
-
+        println("rLoC: " + realLinesOfCode)
         return null
     }
 
