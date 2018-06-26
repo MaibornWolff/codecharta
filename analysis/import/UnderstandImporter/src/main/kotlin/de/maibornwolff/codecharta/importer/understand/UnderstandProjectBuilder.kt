@@ -152,7 +152,6 @@ class UnderstandProjectBuilder(
             return aggregationMap.toMap()
         }
 
-
     private val understandReplacement: MetricNameTranslator
         get() {
             val prefix = "understand_"

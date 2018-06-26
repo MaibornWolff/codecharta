@@ -30,8 +30,7 @@
 package de.maibornwolff.codecharta.importer.understand
 
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.hasItem
+import org.hamcrest.Matchers.*
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
@@ -48,8 +47,8 @@ class UnderstandProjectBuilderTest : Spek({
                     .parseCSVStream(this.javaClass.classLoader.getResourceAsStream("understand.csv"))
                     .build()
 
-            it("has correct number of nodes") {
-                assertThat(project.size, `is`(128))
+            it("has number of nodes at least number of files in csv") {
+                assertThat(project.size, greaterThanOrEqualTo(128))
             }
 
             it("leaf has file attributes") {
