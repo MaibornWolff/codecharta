@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.importer.ooparser
+package de.maibornwolff.codecharta.importer.ooparser.intermediate
 
-import javax.print.DocFlavor
+import de.maibornwolff.codecharta.importer.ooparser.antlrinterop.Tags
 import kotlin.collections.ArrayList
 
 class Line(val lineNumber:Int, text: String) {

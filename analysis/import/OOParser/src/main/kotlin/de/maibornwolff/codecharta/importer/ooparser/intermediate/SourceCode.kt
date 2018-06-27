@@ -1,4 +1,7 @@
-package de.maibornwolff.codecharta.importer.ooparser
+package de.maibornwolff.codecharta.importer.ooparser.intermediate
+
+import de.maibornwolff.codecharta.importer.ooparser.antlrinterop.Source
+import de.maibornwolff.codecharta.importer.ooparser.antlrinterop.Tags
 
 class SourceCode(everySourceLine: List<String>): Source {
 
@@ -15,7 +18,7 @@ class SourceCode(everySourceLine: List<String>): Source {
         return lines.joinToString("\n") { it.text() }
     }
 
-    operator fun get(lineNumber: Int): Line{
+    operator fun get(lineNumber: Int): Line {
         return lines[lineNumber - 1]
     }
 

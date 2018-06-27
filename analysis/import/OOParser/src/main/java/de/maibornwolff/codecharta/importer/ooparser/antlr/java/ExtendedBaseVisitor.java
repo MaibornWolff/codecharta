@@ -1,7 +1,7 @@
-package de.maibornwolff.codecharta.importer.ooparser;
+package de.maibornwolff.codecharta.importer.ooparser.antlr.java;
 
-import de.maibornwolff.codecharta.importer.ooparser.antlr.java.JavaParser;
-import de.maibornwolff.codecharta.importer.ooparser.antlr.java.JavaParserBaseVisitor;
+import de.maibornwolff.codecharta.importer.ooparser.antlrinterop.CodeTags;
+import de.maibornwolff.codecharta.importer.ooparser.antlrinterop.Source;
 
 public class ExtendedBaseVisitor extends JavaParserBaseVisitor {
 

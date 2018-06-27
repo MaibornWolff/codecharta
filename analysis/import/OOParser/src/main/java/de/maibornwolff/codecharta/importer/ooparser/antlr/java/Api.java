@@ -1,7 +1,6 @@
-package de.maibornwolff.codecharta.importer.ooparser;
+package de.maibornwolff.codecharta.importer.ooparser.antlr.java;
 
-import de.maibornwolff.codecharta.importer.ooparser.antlr.java.JavaLexer;
-import de.maibornwolff.codecharta.importer.ooparser.antlr.java.JavaParser;
+import de.maibornwolff.codecharta.importer.ooparser.antlrinterop.Source;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 

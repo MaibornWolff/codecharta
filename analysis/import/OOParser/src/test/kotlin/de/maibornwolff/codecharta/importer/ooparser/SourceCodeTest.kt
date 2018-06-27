@@ -1,6 +1,11 @@
 package de.maibornwolff.codecharta.importer.ooparser
 
+import de.maibornwolff.codecharta.importer.ooparser.antlr.java.Api
+import de.maibornwolff.codecharta.importer.ooparser.antlr.java.ExtendedBaseVisitor
 import de.maibornwolff.codecharta.importer.ooparser.antlr.createParserForFile
+import de.maibornwolff.codecharta.importer.ooparser.antlrinterop.CodeTags
+import de.maibornwolff.codecharta.importer.ooparser.antlrinterop.NonCodeTags
+import de.maibornwolff.codecharta.importer.ooparser.intermediate.SourceCode
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.IOException
