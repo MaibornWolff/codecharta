@@ -47,13 +47,18 @@ class UnderstandProjectBuilderTest : Spek({
                     .parseCSVStream(this.javaClass.classLoader.getResourceAsStream("understand.csv"))
                     .build()
 
-            it("has number of nodes at least number of files in csv") {
+            it("project has number number of files in csv") {
                 assertThat(project.size, greaterThanOrEqualTo(128))
             }
 
             it("leaf has file attributes") {
                 val attributes = project.rootNode.leafObjects.flatMap { it.attributes.keys }.distinct()
                 assertThat(attributes, hasItem("rloc"))
+            }
+
+            it("leaf has class attributes") {
+                val attributes = project.rootNode.leafObjects.flatMap { it.attributes.keys }.distinct()
+                assertThat(attributes, hasItem("max_cbo"))
             }
         }
     }

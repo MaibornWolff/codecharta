@@ -93,12 +93,23 @@ class UnderstandProjectBuilder(
                     "CountDeclFunction",
                     "CountDeclInstanceMethod",
                     "CountDeclInstanceVariable",
+                    "CountDeclInstanceVariableInternal",
+                    "CountDeclInstanceVariableProtectedInternal",
                     "CountDeclMethod",
                     "CountDeclMethodAll",
+                    "CountDeclMethodConst",
                     "CountDeclMethodDefault",
+                    "CountDeclMethodFriend",
+                    "CountDeclMethodInternal",
                     "CountDeclMethodPrivate",
                     "CountDeclMethodProtected",
+                    "CountDeclMethodProtectedInternal",
                     "CountDeclMethodPublic",
+                    "CountDeclMethodStrictPrivate",
+                    "CountDeclMethodStrictPublished",
+                    "CountDeclModule",
+                    "CountDeclProgUnit",
+                    "CountDeclSubprogram",
                     "CountLine",
                     "CountLine_Html",
                     "CountLine_Javascript",
@@ -116,6 +127,8 @@ class UnderstandProjectBuilder(
                     "CountLineComment_Html",
                     "CountLineComment_Javascript",
                     "CountLineComment_Php",
+                    "CountLineInactive",
+                    "CountLinePreprocessor",
                     "CountPath",
                     "CountPathLog",
                     "CountSemicolon",
@@ -126,10 +139,6 @@ class UnderstandProjectBuilder(
                     "CountStmtExe",
                     "CountStmtExe_Javascript",
                     "CountStmtExe_Php",
-                    "Cyclomatic",
-                    "CyclomaticModified",
-                    "CyclomaticStrict",
-                    "Essential",
                     "Knots",
                     "SumCyclomatic",
                     "SumCyclomaticModified",
@@ -144,7 +153,16 @@ class UnderstandProjectBuilder(
                     "CountClassCoupled",
                     "CountClassDerived",
                     "CountInput",
-                    "CountOutput"
+                    "CountOutput",
+                    "MaxCyclomatic",
+                    "MaxCyclomaticModified",
+                    "MaxCyclomaticStrict",
+                    "MaxEssential",
+                    "MaxEssentialKnots",
+                    "MaxEssentialStrictModified",
+                    "MaxInheritanceTree",
+                    "MaxNesting",
+                    "PercentLackOfCohesion"
             ).forEach {
                 aggregationMap[it] = maxAttribute
             }
@@ -160,6 +178,7 @@ class UnderstandProjectBuilder(
             // map understand name to codecharta name
             replacementMap["AvgCyclomatic"] = "average_function_mcc"
             replacementMap["CountDeclClass"] = "classes"
+            replacementMap["CountDeclFile"] = "files"
             replacementMap["CountDeclMethod"] = "functions"
             replacementMap["CountDeclMethodPublic"] = "public_api"
             replacementMap["CountLine"] = "loc"
@@ -169,6 +188,16 @@ class UnderstandProjectBuilder(
             replacementMap["MaxCyclomatic"] = "max_function_mcc"
             replacementMap["MaxNesting"] = "max_block_depth"
             replacementMap["SumCyclomatic"] = "mcc"
+
+            // rename modified metrics
+            replacementMap["CountClassBase"] = "max_base_classes"
+            replacementMap["CountClassCoupled"] = "max_cbo"
+            replacementMap["CountClassDerived"] = "max_noc"
+            replacementMap["CountInput"] = "max_fanin"
+            replacementMap["CountOutput"] = "max_fanout"
+            replacementMap["PercentLackOfCohesion"] = "max_lcom"
+
+
 
             // ignore following understand metrics
             replacementMap["Cyclomatic"] = ""

@@ -36,7 +36,7 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import kotlin.test.assertFailsWith
 
-class CSVHeaderTest : Spek({
+class UnderstandCSVHeaderTest : Spek({
     describe("an empty header") {
         val headerLine = arrayOf<String?>()
         it("should throw exception") {

@@ -25,7 +25,8 @@ allprojects {
     apply plugin: 'maven'
 
     jacoco {
-        toolVersion = '0.8.0'
+        toolVersion = '0.8.1'
+        reportsDir = file("$buildDir/reports")
     }
 }
 
@@ -77,12 +78,6 @@ distributions {
             // deprecated ccsh
             from {'dist/ccsh'}
         }
-    }
-}
-
-sonarqube {
-    properties {
-        property 'sonar.coverage.exclusions', '**/model/**, **/*Main*'
     }
 }
 
