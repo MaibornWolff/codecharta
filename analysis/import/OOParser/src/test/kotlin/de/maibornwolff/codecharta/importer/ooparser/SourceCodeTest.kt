@@ -41,10 +41,8 @@ class SourceCodeTest {
     fun finds_package_declaration() {
         val resource = "de/maibornwolff/codecharta/importer/ooparser/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        val parser = createParserForFile(javaClass.classLoader.getResource(resource)!!.file)
-        val visitor = ExtendedBaseVisitor(sourceCode)
 
-        visitor.visit(parser.compilationUnit())
+        Api.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.PACKAGE)).containsExactly(1)
     }
@@ -54,10 +52,8 @@ class SourceCodeTest {
     fun empty_line_is_not_code() {
         val resource = "de/maibornwolff/codecharta/importer/ooparser/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        val parser = createParserForFile(javaClass.classLoader.getResource(resource)!!.file)
-        val visitor = ExtendedBaseVisitor(sourceCode)
 
-        visitor.visit(parser.compilationUnit())
+        Api.addTagsToSource(sourceCode)
 
         assertThat(sourceCode[2].tags()).isEmpty()
     }
@@ -67,10 +63,8 @@ class SourceCodeTest {
     fun finds_import_statements() {
         val resource = "de/maibornwolff/codecharta/importer/ooparser/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        val parser = createParserForFile(javaClass.classLoader.getResource(resource)!!.file)
-        val visitor = ExtendedBaseVisitor(sourceCode)
 
-        visitor.visit(parser.compilationUnit())
+        Api.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.IMPORT)).containsExactly(3, 4)
     }
@@ -80,10 +74,8 @@ class SourceCodeTest {
     fun finds_annotations() {
         val resource = "de/maibornwolff/codecharta/importer/ooparser/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        val parser = createParserForFile(javaClass.classLoader.getResource(resource)!!.file)
-        val visitor = ExtendedBaseVisitor(sourceCode)
 
-        visitor.visit(parser.compilationUnit())
+        Api.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.ANNOTATION)).containsExactly(9, 12)
     }
@@ -93,10 +85,8 @@ class SourceCodeTest {
     fun finds_field_declarations() {
         val resource = "de/maibornwolff/codecharta/importer/ooparser/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        val parser = createParserForFile(javaClass.classLoader.getResource(resource)!!.file)
-        val visitor = ExtendedBaseVisitor(sourceCode)
 
-        visitor.visit(parser.compilationUnit())
+        Api.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.FIELD)).containsExactly(13, 15)
     }
@@ -106,10 +96,8 @@ class SourceCodeTest {
     fun finds_constructor_declarations() {
         val resource = "de/maibornwolff/codecharta/importer/ooparser/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        val parser = createParserForFile(javaClass.classLoader.getResource(resource)!!.file)
-        val visitor = ExtendedBaseVisitor(sourceCode)
 
-        visitor.visit(parser.compilationUnit())
+        Api.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.CONSTRUCTOR)).containsExactly(18)
     }
@@ -119,10 +107,8 @@ class SourceCodeTest {
     fun finds_method_declarations() {
         val resource = "de/maibornwolff/codecharta/importer/ooparser/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        val parser = createParserForFile(javaClass.classLoader.getResource(resource)!!.file)
-        val visitor = ExtendedBaseVisitor(sourceCode)
 
-        visitor.visit(parser.compilationUnit())
+        Api.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.METHOD)).containsExactly(22, 29, 40)
     }
@@ -132,10 +118,8 @@ class SourceCodeTest {
     fun finds_global_and_local_variables() {
         val resource = "de/maibornwolff/codecharta/importer/ooparser/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        val parser = createParserForFile(javaClass.classLoader.getResource(resource)!!.file)
-        val visitor = ExtendedBaseVisitor(sourceCode)
 
-        visitor.visit(parser.compilationUnit())
+        Api.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.VARIABLE)).containsExactly(13, 15, 23)
     }
@@ -145,10 +129,8 @@ class SourceCodeTest {
     fun finds_expressions_inside_class() {
         val resource = "de/maibornwolff/codecharta/importer/ooparser/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        val parser = createParserForFile(javaClass.classLoader.getResource(resource)!!.file)
-        val visitor = ExtendedBaseVisitor(sourceCode)
 
-        visitor.visit(parser.compilationUnit())
+        Api.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.EXPRESSION))
                 .containsExactly(12, 15, 19, 23, 24, 25, 26, 30, 31, 32, 33, 34, 35, 37, 41)
@@ -159,10 +141,8 @@ class SourceCodeTest {
     fun finds_statements_inside_methods() {
         val resource = "de/maibornwolff/codecharta/importer/ooparser/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        val parser = createParserForFile(javaClass.classLoader.getResource(resource)!!.file)
-        val visitor = ExtendedBaseVisitor(sourceCode)
 
-        visitor.visit(parser.compilationUnit())
+        Api.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.STATEMENT))
                 .containsExactly(19, 24, 25, 26, 30, 31, 32, 33, 34, 35, 37, 41)
@@ -173,10 +153,8 @@ class SourceCodeTest {
     fun finds_method_calls() {
         val resource = "de/maibornwolff/codecharta/importer/ooparser/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        val parser = createParserForFile(javaClass.classLoader.getResource(resource)!!.file)
-        val visitor = ExtendedBaseVisitor(sourceCode)
 
-        visitor.visit(parser.compilationUnit())
+        Api.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.METHOD_CALL)).containsExactly(32, 34, 37)
     }
@@ -186,10 +164,8 @@ class SourceCodeTest {
     fun finds_conditions() {
         val resource = "de/maibornwolff/codecharta/importer/ooparser/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        val parser = createParserForFile(javaClass.classLoader.getResource(resource)!!.file)
-        val visitor = ExtendedBaseVisitor(sourceCode)
 
-        visitor.visit(parser.compilationUnit())
+        Api.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.CONDITION)).containsExactly(31, 34)
     }
