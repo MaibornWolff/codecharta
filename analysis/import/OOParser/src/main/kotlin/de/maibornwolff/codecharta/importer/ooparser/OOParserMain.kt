@@ -33,10 +33,10 @@ class OOParserMain : Callable<Void> {
 
         val filePath = files.get(0).absolutePath
 
-        val ooparser: OOParser = OOParser()
-        val realLinesOfCode = ooparser.getAmountOfImports(filePath)
+//        val ooparser: OOParser = OOParser()
+//        val realLinesOfCode = ooparser.getAmountOfImports(filePath)
 
-        println("rLoC: " + realLinesOfCode)
+//        println("rLoC: " + realLinesOfCode)
         return null
     }
 
