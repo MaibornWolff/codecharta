@@ -1,14 +1,19 @@
-package de.maibornwolff.codecharta.importer.ooparser;
+package de.maibornwolff.codecharta.importer.ooparser.antlr.java;
 
-import de.maibornwolff.codecharta.importer.ooparser.antlr.java.JavaParser;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
-import static de.maibornwolff.codecharta.importer.ooparser.antlr.AntlrHelperKt.createParserForFile;
+import static java.nio.file.Files.readAllBytes;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AntlrTest {
+public class AntlrAbstractSyntaxTreeTest {
 
     @Test
     public void findsSixClassMembers() throws IOException {
@@ -94,5 +99,17 @@ public class AntlrTest {
 
     private JavaParser createSimpleParser() throws IOException {
         return createParserForFile(getClass().getClassLoader().getResource("de/maibornwolff/codecharta/importer/ooparser/SourceCodeSimple.java").getFile());
+    }
+
+    private JavaParser createParserForFile(String filePath) throws IOException {
+        return createParser(new ByteArrayInputStream(readAllBytes(new File(filePath).toPath())));
+    }
+
+    private JavaParser createParser(InputStream code) throws IOException {
+
+        JavaLexer lexer = new JavaLexer(CharStreams.fromStream(code));
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+        return new JavaParser(tokens);
     }
 }
