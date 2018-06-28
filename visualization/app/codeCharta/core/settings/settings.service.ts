@@ -8,7 +8,7 @@ import {STATISTIC_OPS} from "../statistic/statistic.service";
 import {DeltaCalculatorService} from "../data/data.deltaCalculator.service";
 import * as d3 from "d3";
 import {DataDecoratorService} from "../data/data.decorator.service";
-import {CodeMap} from "../data/model/CodeMap";
+import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
 
 export interface Range {
     from: number; to: number; flipped: boolean;
@@ -146,6 +146,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             this._settings.colorMetric = this.getMetricByIdOrLast(2, data.metrics);
         }
 
+        this.settings.margin = this.computeMargin();
+
         this.onSettingsChanged();
 
     }
@@ -237,6 +239,61 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
     }
 
+    /**
+     * @returns {number}
+     *
+     * Function that computes the margin applied to a scenario related the square root of the area divided
+     * by the number of buildings
+     */
+    public  computeMargin(): number{
+
+        let margin: number;
+        if(this.dataService.data.renderMap != null){
+          let  root: CodeMapNode = this.dataService.data.renderMap.root;
+
+        // Previous parameters are wrapped to introduce them into goThroughMap() and make value changes
+        // remain, with a pointer-like behaviour
+        let numberOfBuildingsWrapped = {numberOfBuildings:0};
+        let areaParametersWrapped = {areaMetricName: this.settings.areaMetric, totalArea: 0};
+
+        this.dataService.goThroughMap( root, this.countBuildings, numberOfBuildingsWrapped);
+        this.dataService.goThroughMap( root, this.calculateTotalArea, areaParametersWrapped);
+
+        margin = 4 * Math.round(
+            Math.sqrt(
+                (areaParametersWrapped["totalArea"]/numberOfBuildingsWrapped["numberOfBuildings"])));
+
+        console.log("buildings "+numberOfBuildingsWrapped["numberOfBuildings"]+" area "+
+            areaParametersWrapped["areaMetricName"] +" "+areaParametersWrapped["totalArea"]+" margin "+margin);
+        }
+        else{
+            margin = 15;
+        }
+        return margin;
+    }
+
+    /*
+    * @param {CodeMapNode} map
+    * @param {number[]} buildings ["numberOfBuildings"] the number of leaves( aka buildings) in map
+    *
+     */
+    private countBuildings(map: CodeMapNode, buildings: number[]){
+        if(!map.children){
+            buildings["numberOfBuildings"]++;
+        }
+    }
+
+    /**
+     *
+     * @param map
+     * @param area ["areaMetricName"] name of the metric used for area in the map,
+     *          ["totalArea"] aggregated value of the area
+     */
+    private calculateTotalArea(map: CodeMapNode, area: any[]){
+        if(!map.children){
+            area["totalArea"]+=map.attributes[area["areaMetricName"]];
+        }
+    }
     /**
      * Updates query params to current settings
      */

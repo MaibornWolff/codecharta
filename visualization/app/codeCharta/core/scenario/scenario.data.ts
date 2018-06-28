@@ -1,11 +1,8 @@
 import {Scenario} from "./scenario.service";
-import {ScenarioService} from "./scenario.service";
 import {CodeMap} from "../data/model/CodeMap";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
 
-
 export function createDefaultScenario(map: CodeMap, margin: number): Scenario {
-
 
     return {
         name: "rloc/mcc/mcc(20,40)",
@@ -36,6 +33,5 @@ export function createDefaultScenario(map: CodeMap, margin: number): Scenario {
         },
         autoFitCamera: true
     };
-
 
 }
