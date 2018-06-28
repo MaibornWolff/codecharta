@@ -4,5 +4,6 @@ jdk:
 install: true
 cache:
   directories:
+    - '$HOME/.gradle/caches'
 script:
-  - '$HOME/.gradle/caches'
+  - strace ./gradlew generateGrammarSource
