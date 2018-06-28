@@ -3,12 +3,16 @@ package de.maibornwolff.codecharta.importer.ooparser.intermediate
 import de.maibornwolff.codecharta.importer.ooparser.antlrinterop.Source
 import de.maibornwolff.codecharta.importer.ooparser.antlrinterop.Tags
 
-class SourceCode(everySourceLine: List<String>): Source {
+class SourceCode(everySourceLine: List<String>): Iterable<Line>, Source {
 
     // IMPORTANT: line numbers start at 1, but this array starts at 0
     private val lines = everySourceLine
             .mapIndexed { lineNumber, text -> Line(lineNumber + 1, text) }
             .toTypedArray()
+
+    operator fun get(lineNumber: Int): Line =  lines[lineNumber - 1]
+
+    override fun iterator(): Iterator<Line> = lines.iterator()
 
     override fun addTag(lineNumber: Int, tag: Tags) {
         lines[lineNumber - 1].addTag(tag)
@@ -18,11 +22,8 @@ class SourceCode(everySourceLine: List<String>): Source {
         return lines.joinToString("\n") { it.text() }
     }
 
-    operator fun get(lineNumber: Int): Line {
-        return lines[lineNumber - 1]
-    }
 
-    fun linesOfCode(): Int {
+    fun lineCount(): Int {
         return lines.size
     }
 

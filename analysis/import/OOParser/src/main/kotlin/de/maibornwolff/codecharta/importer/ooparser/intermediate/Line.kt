@@ -1,9 +1,10 @@
 package de.maibornwolff.codecharta.importer.ooparser.intermediate
 
 import de.maibornwolff.codecharta.importer.ooparser.antlrinterop.Tags
+import de.maibornwolff.codecharta.importer.ooparser.extract.Row
 import kotlin.collections.ArrayList
 
-class Line(val lineNumber:Int, text: String) {
+public class Line(val lineNumber:Int, text: String) {
 
     private val text: String = text
     private val tags = ArrayList<Tags>()
@@ -17,5 +18,9 @@ class Line(val lineNumber:Int, text: String) {
     }
 
     fun text() = text
+
+    companion object{
+        val NULL = Line(0, "")
+    }
 
 }

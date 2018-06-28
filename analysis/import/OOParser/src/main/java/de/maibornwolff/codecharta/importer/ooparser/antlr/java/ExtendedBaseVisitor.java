@@ -30,14 +30,33 @@ public class ExtendedBaseVisitor extends JavaParserBaseVisitor {
     }
 
     @Override
-    public Object visitFieldDeclaration(JavaParser.FieldDeclarationContext ctx) {
-        source.addTag(ctx.getStart().getLine(), CodeTags.FIELD);
+    public Object visitClassDeclaration(JavaParser.ClassDeclarationContext ctx) {
+        source.addTag(ctx.getStart().getLine(), CodeTags.CLASS);
+        return visitChildren(ctx);
+    }
+
+    @Override
+    public Object visitInterfaceDeclaration(JavaParser.InterfaceDeclarationContext ctx) {
+        source.addTag(ctx.getStart().getLine(), CodeTags.INTERFACE);
         return visitChildren(ctx);
     }
 
     @Override
     public Object visitConstructorDeclaration(JavaParser.ConstructorDeclarationContext ctx) {
         source.addTag(ctx.getStart().getLine(), CodeTags.CONSTRUCTOR);
+        return visitChildren(ctx);
+    }
+
+    /** Called when a constant in an interface is found **/
+    @Override
+    public Object visitConstDeclaration(JavaParser.ConstDeclarationContext ctx) {
+        source.addTag(ctx.getStart().getLine(), CodeTags.INTERFACE_CONSTANT);
+        return visitChildren(ctx);
+    }
+
+    @Override
+    public Object visitFieldDeclaration(JavaParser.FieldDeclarationContext ctx) {
+        source.addTag(ctx.getStart().getLine(), CodeTags.CLASS_FIELD);
         return visitChildren(ctx);
     }
 
@@ -64,6 +83,12 @@ public class ExtendedBaseVisitor extends JavaParserBaseVisitor {
         source.addTag(ctx.getStart().getLine(), CodeTags.STATEMENT);
         if(ctx.IF() != null) { source.addTag(ctx.getStart().getLine(), CodeTags.CONDITION);}
         if(ctx.ELSE() != null) { source.addTag(ctx.getStart().getLine(), CodeTags.CONDITION);}
+        return visitChildren(ctx);
+    }
+
+    @Override
+    public Object visitEnumConstant(JavaParser.EnumConstantContext ctx) {
+        source.addTag(ctx.getStart().getLine(), CodeTags.ENUM_CONSTANT);
         return visitChildren(ctx);
     }
 
