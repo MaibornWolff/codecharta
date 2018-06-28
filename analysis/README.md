@@ -12,14 +12,15 @@ CodeCharta analysis tools generally follow the pipes and filters architecture pr
 
 Components that import data from an external source, e.g. SonarQube, and generate visualisation data.
 
-| Source        | Project                                                 |
-| ---           | ---                                                     |
-| Crococosmo    | [CrococosmoImporter](import/CrococosmoImporter/README.md)             |
-| generic CSV   | [CSVImporter](import/CSVImporter/README.md)             |
-| SourceMonitor CSV | [SourceMonitorImporter](import/CSVImporter/README.md)         |
-| SCITools' Understand CSV | [UnderstandImporter](import/UnderstandImporter/README.md)         |
-| SCM log       | [SCMLogParser](import/SCMLogParser/README.md)            |
-| SonarQube     | [SonarImporter](import/SonarImporter/README.md)         |
+| Source        | Project                                                                   |
+| ---           | ---                                                                       |
+| Crococosmo    | [CrococosmoImporter](import/CrococosmoImporter/README.md)                 |
+| generic CSV   | [CSVImporter](import/CSVImporter/README.md)                               |
+| SourceMonitor CSV | [SourceMonitorImporter](import/CSVImporter/README.md)                 |
+| SCITools' Understand CSV | [UnderstandImporter](import/UnderstandImporter/README.md)      |
+| SCM log       | [SCMLogParser](import/SCMLogParser/README.md)                             |
+| SonarQube     | [SonarImporter](import/SonarImporter/README.md)                           |
+| CodeMaat Coupling CSV    | [CodeMaatCouplingImporter](import/CodeMaatCouplingImporter/README.md)   |
 
 ### Filter
 
