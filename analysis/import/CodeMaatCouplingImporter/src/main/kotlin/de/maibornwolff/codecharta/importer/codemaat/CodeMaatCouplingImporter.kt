@@ -21,7 +21,7 @@ class CodeMaatCouplingImporter : Callable<Void> {
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["codemaat coupling csv files"])
     private var files: List<File> = mutableListOf()
 
-    private val pathSeparator = '\\'
+    private val pathSeparator = '/'
 
     private val csvDelimiter = ','
 

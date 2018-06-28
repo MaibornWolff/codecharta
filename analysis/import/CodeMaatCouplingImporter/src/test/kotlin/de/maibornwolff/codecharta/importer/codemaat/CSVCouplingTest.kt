@@ -26,7 +26,7 @@ class CSVCouplingTest : Spek ({
             }
 
             it("has correct number of temporal_coupling dependencies") {
-                assertThat(project.sizeOfDependencies(DependencyType.temporal_coupling), `is`(164))
+                assertThat(project.sizeOfDependencies(DependencyType.TEMPORAL_COUPLING), `is`(164))
             }
         }
     }

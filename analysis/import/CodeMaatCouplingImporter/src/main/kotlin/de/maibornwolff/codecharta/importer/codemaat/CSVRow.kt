@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.importer.codemaat
 
 import de.maibornwolff.codecharta.model.*
 import java.util.*
-import java.util.regex.Pattern
 
 class CSVRow(private val row: Array<String?>, private val header: CSVHeader, private val pathSeparator: Char) {
 
@@ -13,32 +12,23 @@ class CSVRow(private val row: Array<String?>, private val header: CSVHeader, pri
         }
     }
 
-    fun pathInTree(): Path {
-        return PathFactory.fromFileSystemPath(
-                path.substring(0, path.lastIndexOf(pathSeparator) + 1),
-                pathSeparator
-        )
-    }
-
-    fun asNode(): MutableNode {
-        val filename = path.substring(path.lastIndexOf(pathSeparator) + 1)
-        return MutableNode(filename, NodeType.File, attributes)
+    fun getFileNameFromPath(path: String): String {
+        return path.substring(path.lastIndexOf(pathSeparator) + 1)
     }
 
     fun asDependency(): Dependency {
+        val entityPath = Path(attributes.get("entity")!!).edgesList.first()
+        val coupledPath = Path(attributes.get("coupled")!!).edgesList.first()
+
         return Dependency(
-                Path(attributes.get("entity")!!).edgesList.first(),
-                Path(attributes.get("coupled")!!).edgesList.first(),
+                entityPath,
+                getFileNameFromPath(entityPath),
+                coupledPath,
+                getFileNameFromPath(coupledPath),
                 attributes.get("degree")!!.toInt(),
                 attributes.get("average-revs")!!.toInt()
         )
     }
-
-    private val path =
-            if (row[header.pathColumn] == null) throw IllegalArgumentException("Ignoring empty paths.")
-            else row[header.pathColumn]!!
-
-    private val floatPattern = Pattern.compile("\\d+[,.]?\\d*")
 
     private fun validAttributeOfRow(i: Int) =
             i < row.size && row[i] != null

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, MaibornWolff GmbH
+ * Copyright (c) 2018, MaibornWolff GmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,7 +79,7 @@ class CSVProjectBuilder(
             }
             row = parser.parseNext()
         }
-        projectBuilder.insertDependency(DependencyType.temporal_coupling, dependencies)
+        projectBuilder.insertDependency(DependencyType.TEMPORAL_COUPLING, dependencies)
     }
 
     private fun createParser(inStream: InputStream): CsvParser {
@@ -89,15 +89,5 @@ class CSVProjectBuilder(
         val parser = CsvParser(parserSettings)
         parser.beginParsing(InputStreamReader(inStream, StandardCharsets.UTF_8))
         return parser
-    }
-
-    private fun insertRowInProject(row: Array<String?>, header: CSVHeader): Dependency {
-        var dependency: Dependency? = null
-        try {
-            dependency = CSVRow(row, header, pathSeparator).asDependency()
-        } catch (e: IllegalArgumentException) {
-            System.err.println(e.message)
-        }
-        return dependency!!
     }
 }
