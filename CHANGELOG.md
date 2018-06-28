@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 ### Added
 - Added UnderstandImporter to Analysis
+- Added CodeMaatCouplingImporter to Analysis
 
 ### Changed
 

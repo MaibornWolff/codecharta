@@ -1,7 +1,6 @@
 # CodeMaat Coupling Importer
 
-Generates visualisation data from CodeMaat Temporal Coupling CSV data with header.
-https://github.com/adamtornhill/code-maat
+Generates visualisation data from CodeMaat Temporal Coupling CSV data with header. You can find the analizing tool on GitHub https://github.com/adamtornhill/code-maat
 
 ## Usage
 
