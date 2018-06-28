@@ -90,8 +90,8 @@ export class CodeChartaController {
 
     private tryLoadingSampleFiles() {
         Promise.all([
-            this.dataLoadingService.loadMapFromFileContent("sample4_temporal_coupling.json", require("./assets/sample4_temporal_coupling.json"), 0),
-            //this.dataLoadingService.loadMapFromFileContent("sample2.json", require("./assets/sample2.json"), 1)
+            this.dataLoadingService.loadMapFromFileContent("sample1.json", require("./assets/sample1.json"), 0),
+            this.dataLoadingService.loadMapFromFileContent("sample2.json", require("./assets/sample2.json"), 1)
         ]).then(
             () => {
                 this.loadingFinished();

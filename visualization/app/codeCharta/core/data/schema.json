@@ -51,15 +51,24 @@
         },
         "dependency":{
             "type": "object",
-            "required":["node", "dependsOn"],
+            "required":["node", "dependantNode"],
             "properties": {
                 "node": {
                     "type": "string"
                 },
-                "dependsOn": {
+                "nodeFilename": {
+                    "type": "string"
+                },
+                "dependantNode": {
+                    "type": "string"
+                },
+                "dependantNodeFilename": {
                     "type": "string"
                 },
                 "pairingRate": {
+                    "type": "number"
+                },
+                "averageRevs": {
                     "type": "number"
                 }
             }

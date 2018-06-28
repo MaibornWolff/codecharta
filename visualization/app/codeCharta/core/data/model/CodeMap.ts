@@ -27,5 +27,9 @@ export interface CodeMap {
 
 export interface CodeMapDependency {
     node: string,
-    dependsOn: string
+    nodeFilename?: string,
+    dependantNode: string,
+    dependantNodeFilename?: string,
+    pairingRate?: number,
+    averageRevs?: number
 }
