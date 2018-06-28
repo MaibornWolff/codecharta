@@ -34,7 +34,8 @@ generateGrammarSource {
     arguments += ["-visitor", "-long-messages"]
     outputDirectory = new File("src/generated/antlr/de/maibornwolff/codecharta/importer/ooparser/antlr/java".toString())
 }
-compileJava.dependsOn generateGrammarSource
+
+//compileJava.dependsOn generateGrammarSource
 
 sourceSets {
     main {
@@ -45,5 +46,5 @@ sourceSets {
 compileJava.source sourceSets.main.java
 
 clean{
-    delete "generated-src"
+    //delete "src/generated"
 }
