@@ -2,7 +2,7 @@ import * as THREE from "three";
 import {node} from "./node";
 import {codeMapGeometricDescription} from "./codeMapGeometricDescription";
 import {codeMapBuilding} from "./codeMapBuilding";
-import {getDistinctColors, getFloorGradient, getHighlightGradient, MapColors} from "./renderSettings";
+import {getFloorGradient, MapColors} from "./renderSettings";
 import {colorRange} from "./renderSettings";
 import {renderSettings} from "./renderSettings";
 import {renderingUtil} from "./renderingUtil";
@@ -28,7 +28,6 @@ export class geometryGenerator {
     private static MINIMAL_BUILDING_HEIGHT = 1.0;
 
     private floorGradient: number[];
-    private highlightGradient: number[];
 
     constructor() {}
 
@@ -38,7 +37,6 @@ export class geometryGenerator {
         let desc : codeMapGeometricDescription = new codeMapGeometricDescription(settings.mapSize);
 
         this.floorGradient = getFloorGradient(nodes);
-        this.highlightGradient = getHighlightGradient(nodes);
 
         for (let i:number = 0; i < nodes.length; ++i)
         {

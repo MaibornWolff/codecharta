@@ -11,19 +11,6 @@ export function getFloorGradient(nodes: node[]): number[] {
     return renderingUtil.gradient("#222222", "#aaaaaa", renderingUtil.getMaxNodeDepth(nodes));
 }
 
-export function getHighlightGradient(nodes: node[]): number[] {
-    return renderingUtil.gradient("#ffe8f3", "#FF1D8E", renderingUtil.getMaxNodeDepth(nodes));
-}
-
-export function getDistinctColors(): number[] {
-    const arr = require("distinct-colors")({count: 20});
-    const res = [];
-    for(let i = 0; i< arr.length;i++) {
-        res.push(renderingUtil.rgbToHexNumber(arr[i]["_rgb"][0], arr[i]["_rgb"][1], arr[i]["_rgb"][2]));
-    }
-    return res;
-}
-
 export const highlightColors = [
     "#FF1D8E",
     "#1d8eff",
