@@ -7,7 +7,11 @@ export class CodeMapActionsService {
 
     public static SELECTOR = "codeMapActionsService";
 
-    constructor(private settingsService: SettingsService, private threeOrbitControlsService: ThreeOrbitControlsService, private $timeout) {
+    constructor(
+        private settingsService: SettingsService,
+        private threeOrbitControlsService: ThreeOrbitControlsService,
+        private $timeout
+    ) {
 
     }
 
@@ -20,18 +24,12 @@ export class CodeMapActionsService {
     }
 
     hideNode(node: CodeMapNode) {
-        node.visible = false;
-        hierarchy<CodeMapNode>(node).descendants().forEach((hierarchyNode) => {
-            hierarchyNode.data.visible = false;
-        });
+        this.setVisibilityOfNodeAndDescendants(node, false);
         this.apply();
     }
 
     showNode(node: CodeMapNode) {
-        node.visible = true;
-        hierarchy<CodeMapNode>(node).descendants().forEach((hierarchyNode) => {
-            hierarchyNode.data.visible = true;
-        });
+        this.setVisibilityOfNodeAndDescendants(node, true);
         this.apply();
     }
 
@@ -63,38 +61,36 @@ export class CodeMapActionsService {
         this.apply();
     }
 
-
-
     isolateNode(node: CodeMapNode) {
-        this.settingsService.settings.map.root.visible = false;
-        hierarchy<CodeMapNode>(this.settingsService.settings.map.root).descendants().forEach((hierarchyNode) => {
-            hierarchyNode.data.visible = false;
-        });
-        node.visible = true;
-        hierarchy<CodeMapNode>(node).descendants().forEach((hierarchyNode) => {
-            hierarchyNode.data.visible = true;
-        });
-        this.$timeout(() => {
-            this.threeOrbitControlsService.autoFitTo();
-        }, 250);
+        this.setVisibilityOfNodeAndDescendants(this.settingsService.settings.map.root, false);
+        this.setVisibilityOfNodeAndDescendants(node, true);
+        this.autoFit();
         this.apply();
     }
 
     showAllNodes() {
-        this.settingsService.settings.map.root.visible = true;
-        hierarchy<CodeMapNode>(this.settingsService.settings.map.root).descendants().forEach((hierarchyNode) => {
-            hierarchyNode.data.visible = true;
-        });
-        this.$timeout(() => {
-            this.threeOrbitControlsService.autoFitTo();
-        }, 250);
+        this.setVisibilityOfNodeAndDescendants(this.settingsService.settings.map.root, true);
+        this.autoFit();
         this.apply();
     }
 
-    apply() {
+    private apply() {
         this.$timeout(() => {
             this.settingsService.onSettingsChanged();
         }, 50);
+    }
+
+    private autoFit() {
+        this.$timeout(() => {
+            this.threeOrbitControlsService.autoFitTo();
+        }, 250);
+    }
+
+    private setVisibilityOfNodeAndDescendants(node: CodeMapNode, visibility: boolean) {
+        node.visible = visibility;
+        hierarchy<CodeMapNode>(node).descendants().forEach((hierarchyNode) => {
+            hierarchyNode.data.visible = visibility;
+        });
     }
 
 }

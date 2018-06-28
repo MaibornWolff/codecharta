@@ -2,8 +2,6 @@ import "./nodeContextMenu.component.scss";
 import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {hierarchy} from "d3-hierarchy";
 import {SettingsService} from "../../core/settings/settings.service";
-import {ThreeOrbitControlsService} from "../codeMap/threeViewer/threeOrbitControlsService";
-
 import angular from "angular";
 import {highlightColors} from "../codeMap/rendering/renderSettings";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
