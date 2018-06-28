@@ -6,7 +6,7 @@ Generates visualisation data from [SciTools Understand](https://scitools.com/fea
 
 ### CSV Import for SciTools Understand
 
-If you have analized your project with Understand and exported the metric data to a csv-file, you may call the command
+If you have analized your projectBuilder with Understand and exported the metric data to a csv-file, you may call the command
 
 > ccsh understandimport \<path to sourcemonitor csv file>
 

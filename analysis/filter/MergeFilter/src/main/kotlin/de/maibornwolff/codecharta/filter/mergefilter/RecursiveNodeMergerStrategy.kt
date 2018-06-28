@@ -29,23 +29,23 @@
 
 package de.maibornwolff.codecharta.filter.mergefilter
 
-import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.MutableNode
 
 /**
  * merges nodes recursively if their paths coincide
  */
 class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false) : NodeMergerStrategy {
-    private val mergeConditionSatisfied: (Node, Node) -> Boolean
+    private val mergeConditionSatisfied: (MutableNode, MutableNode) -> Boolean
 
     init {
-        mergeConditionSatisfied = if (ignoreCase) { n1: Node, n2: Node -> n1.name.toUpperCase() == n2.name.toUpperCase() }
-        else { n1: Node, n2: Node -> n1.name == n2.name }
+        mergeConditionSatisfied = if (ignoreCase) { n1: MutableNode, n2: MutableNode -> n1.name.toUpperCase() == n2.name.toUpperCase() }
+        else { n1: MutableNode, n2: MutableNode -> n1.name == n2.name }
     }
 
-    override fun mergeNodeLists(lists: List<List<Node>>): List<Node> {
+    override fun mergeNodeLists(lists: List<List<MutableNode>>): List<MutableNode> {
         return if (lists.isEmpty()) listOf()
         else lists.reduce { total, next ->
-            next.fold(total, { t: List<Node>, a: Node ->
+            next.fold(total, { t: List<MutableNode>, a: MutableNode ->
                 t.map { if (mergeConditionSatisfied(it, a)) merge(it, a) else it }.map { listOf(it) }
                 when {
                     t.filter { mergeConditionSatisfied(it, a) }.count() > 0 ->
@@ -56,7 +56,7 @@ class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false) : NodeMergerStrat
         }
     }
 
-    private fun merge(vararg nodes: Node): Node {
+    private fun merge(vararg nodes: MutableNode): MutableNode {
         val node = nodes[0].merge(nodes.toList())
         node.children.addAll(this.mergeNodeLists(nodes.map { it.children }))
         return node

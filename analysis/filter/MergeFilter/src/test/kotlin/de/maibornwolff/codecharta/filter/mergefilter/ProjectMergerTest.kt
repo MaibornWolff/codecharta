@@ -47,7 +47,7 @@ class ProjectMergerTest : Spek({
         val nodeMergerStrategy = RecursiveNodeMergerStrategy()
 
         describe("merging an project with unsupported API version") {
-            val project = Project("project", listOf(), "unsupported Version")
+            val project = Project("project", apiVersion = "unsupported Version")
 
             it("should throw a exception") {
                 assertFailsWith(MergeException::class) {
@@ -58,8 +58,8 @@ class ProjectMergerTest : Spek({
 
         describe("merging project with different names") {
             val projects = listOf(
-                    Project("test1", listOf(), DEFAULT_API_VERSION),
-                    Project("test2", listOf(), DEFAULT_API_VERSION)
+                    Project("test1", apiVersion = DEFAULT_API_VERSION),
+                    Project("test2", apiVersion = DEFAULT_API_VERSION)
             )
 
             it("should throw a exception") {
@@ -72,8 +72,8 @@ class ProjectMergerTest : Spek({
         describe("merging project with different API versions") {
             val projectName = "test"
             val projects = listOf(
-                    Project(projectName, listOf(), "1.0"),
-                    Project(projectName, listOf(), "2.0")
+                    Project(projectName, apiVersion = "1.0"),
+                    Project(projectName, apiVersion = "2.0")
             )
 
             it("should throw a exception") {
@@ -84,8 +84,8 @@ class ProjectMergerTest : Spek({
         describe("merging projects with same name and API version") {
             val projectName = "test"
             val projects = listOf(
-                    Project(projectName, listOf(), DEFAULT_API_VERSION),
-                    Project(projectName, listOf(), DEFAULT_API_VERSION)
+                    Project(projectName, apiVersion =  DEFAULT_API_VERSION),
+                    Project(projectName, apiVersion =  DEFAULT_API_VERSION)
             )
 
             it("should extract project name") {

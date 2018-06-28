@@ -32,6 +32,7 @@ package de.maibornwolff.codecharta.importer.crococosmo
 import de.maibornwolff.codecharta.importer.crococosmo.model.Graph
 import de.maibornwolff.codecharta.importer.crococosmo.model.SchemaVersion
 import de.maibornwolff.codecharta.importer.crococosmo.model.Version
+import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
@@ -54,7 +55,7 @@ class CrococosmoConverter {
             Project(projectName, createNodeListForProject(graph.nodes, version))
 
     private fun createNodeListForProject(nodes: List<de.maibornwolff.codecharta.importer.crococosmo.model.Node>, version: String): List<Node> {
-        return listOf(Node("rootNode", NodeType.Folder, mapOf(), "", convertToNodeList(nodes, version)))
+        return listOf(Node("root", NodeType.Folder, mapOf(), "", convertToNodeList(nodes, version)))
     }
 
     private fun convertToNodeList(origin: List<de.maibornwolff.codecharta.importer.crococosmo.model.Node>, version: String): List<Node> {
