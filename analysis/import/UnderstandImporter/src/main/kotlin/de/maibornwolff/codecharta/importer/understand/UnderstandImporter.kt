@@ -65,7 +65,7 @@ class UnderstandImporter : Callable<Void> {
         val project = projectBuilder.build()
         ProjectSerializer.serializeProject(project, writer())
 
-        logger.info { "Created project with ${project.size} leafs and ${project.rootNode.nodes.count { it.value.type == NodeType.File }} files." }
+        logger.info { "Created project with ${project.size} leafs." }
 
         return null
     }

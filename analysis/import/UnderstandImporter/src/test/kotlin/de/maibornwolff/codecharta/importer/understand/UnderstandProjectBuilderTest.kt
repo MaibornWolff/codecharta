@@ -29,6 +29,7 @@
 
 package de.maibornwolff.codecharta.importer.understand
 
+import de.maibornwolff.codecharta.model.NodeType
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.jetbrains.spek.api.Spek
@@ -48,7 +49,7 @@ class UnderstandProjectBuilderTest : Spek({
                     .build()
 
             it("project has number number of files in csv") {
-                assertThat(project.size, greaterThanOrEqualTo(128))
+                assertThat(project.size, greaterThanOrEqualTo(223))
             }
 
             it("leaf has file attributes") {
@@ -59,6 +60,18 @@ class UnderstandProjectBuilderTest : Spek({
             it("leaf has class attributes") {
                 val attributes = project.rootNode.leafObjects.flatMap { it.attributes.keys }.distinct()
                 assertThat(attributes, hasItem("max_cbo"))
+            }
+
+            it("has no nodes other than files and folders") {
+                val nonFileNonFolderNodes = project.rootNode.nodes.values
+                        .filter { it.type != NodeType.Folder && it.type != NodeType.File }
+                assertThat(nonFileNonFolderNodes, hasSize(0))
+            }
+
+            it("has folder nodes as leaves") {
+                val folderLeaves = project.rootNode.leafObjects
+                        .filter { it.type == NodeType.Folder }
+                assertThat(folderLeaves, hasSize(0))
             }
         }
     }

@@ -31,38 +31,86 @@ package de.maibornwolff.codecharta.model
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.hasSize
 import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.on
 
 class ProjectBuilderTest : Spek({
 
-    it("should create root node if not present") {
-        // given
+    describe("ProjectBuilder without root node") {
         val projectBuilder = ProjectBuilder("someName")
-        val nodeForInsertion = MutableNode("someNode", NodeType.File)
 
-        // when
-        val project = projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion).build()
+        on("inserting new node") {
+            val nodeForInsertion = MutableNode("someNode", NodeType.File)
+            val project = projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion).build()
 
-        // then
-        val root = project.rootNode
-        assertThat(root.children, hasSize(1))
-        assertThat(root.children[0], NodeMatcher.matchesNode(nodeForInsertion.toNode()))
+            it("should create root node") {
+                val root = project.rootNode
+                assertThat(root.children, hasSize(1))
+                assertThat(root.children[0], NodeMatcher.matchesNode(nodeForInsertion.toNode()))
+            }
+
+        }
     }
 
-    it("should use root node if present") {
-        // given
+    describe("ProjectBuilder with root node") {
         val root = MutableNode("root", NodeType.Folder)
         val projectBuilder = ProjectBuilder("someName", listOf(root))
-        val nodeForInsertion = MutableNode("someNode", NodeType.File)
 
-        // when
-        val project = projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion).build()
+        on("inserting new node") {
+            val nodeForInsertion = MutableNode("someNode", NodeType.File)
+            val project = projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion).build()
 
-        // then
-        assertThat(project.rootNode, NodeMatcher.matchesNode(root.toNode()))
-        assertThat(root.children, hasSize(1))
-        assertThat(root.children[0], Matchers.`is`(nodeForInsertion))
+            it("should use root node if present") {
+                assertThat(project.rootNode, NodeMatcher.matchesNode(root.toNode()))
+                assertThat(root.children, hasSize(1))
+                assertThat(root.children[0], Matchers.`is`(nodeForInsertion))
+            }
+        }
+    }
+
+    describe("ProjectBuilder with empty folders") {
+        val projectBuilder = ProjectBuilder("someName")
+        val nodeForInsertion = MutableNode("someNode", NodeType.Folder)
+        projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
+
+        on("build") {
+            val project = projectBuilder.build()
+
+            it("should filter empty folders") {
+                val root = project.rootNode
+                assertThat(root.children, hasSize(0))
+            }
+        }
+
+    }
+
+    describe("ProjectBuilder with valid aggregationRule") {
+        val projectBuilder = ProjectBuilder("someName")
+                .withAggregationRules(mapOf(
+                        Pair("rloc", { x, y -> (x as Number).toLong() + (y as Number).toLong() })
+                ))
+        val nodeForInsertion = MutableNode("someNode", NodeType.File, mapOf(
+                Pair("rloc", 1L)
+        ))
+        projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
+        val nodeForInsertion2 = MutableNode("someNode2", NodeType.File, mapOf(
+                Pair("rloc", 2)
+        ))
+        projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion2)
+
+        on("build") {
+            val project = projectBuilder.build()
+
+            it("should aggregate Attributes") {
+                val root = project.rootNode
+                assertThat(root.attributes.size, `is`(1))
+                assertThat(root.attributes["rloc"] as Long, `is`<Long>(3L))
+            }
+        }
+
     }
 })

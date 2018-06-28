@@ -38,7 +38,7 @@ class MutableNode constructor(
         var attributes: Map<String, Any> = mapOf(),
         val link: String? = "",
         childrenList: List<MutableNode> = listOf(),
-        @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeMaxAttributeMergerIgnoringChildren
+        @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeMaxAttributeMerger()
 ) : Tree<MutableNode>() {
 
     override val children = childrenList.toMutableList()

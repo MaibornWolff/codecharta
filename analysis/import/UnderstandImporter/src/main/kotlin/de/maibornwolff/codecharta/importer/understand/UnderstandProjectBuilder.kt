@@ -64,21 +64,29 @@ class UnderstandProjectBuilder(
 
     private val csvDelimiter = ','
 
-    private val sumAttributes: (Any, Any) -> Any = { x, y ->
-        when {
-            x is Long && y is Long -> x + y
-            x is Number && y is Number -> x.toDouble() + y.toDouble()
-            else -> x
-        }
-    }
+    private val sumOrFirst: (Any, Any) -> Any =
+            { x, y ->
+                when {
+                    (x is Long || x is Int || x is Short || x is Byte)
+                            && (y is Long || y is Int || y is Short || y is Byte) ->
+                        (x as Number).toLong() + (y as Number).toLong()
+                    x is Number && y is Number -> x.toDouble() + y.toDouble()
+                    x !is Number && y is Number -> y
+                    else -> x
+                }
+            }
 
-    private val maxAttribute: (Any, Any) -> Any = { x, y ->
-        when {
-            x is Long && y is Long -> maxOf(x, y)
-            x is Number && y is Number -> maxOf(x.toDouble(), y.toDouble())
-            else -> x
-        }
-    }
+    private val maxValOrFirst: (Any, Any) -> Any =
+            { x, y ->
+                when {
+                    (x is Long || x is Int || x is Short || x is Byte)
+                            && (y is Long || y is Int || y is Short || y is Byte) ->
+                        maxOf((x as Number).toLong(), (y as Number).toLong())
+                    x is Number && y is Number -> maxOf(x.toDouble(), y.toDouble())
+                    x !is Number && y is Number -> y
+                    else -> x
+                }
+            }
 
     private val aggregationRules: Map<String, (Any, Any) -> Any>
         get() {
@@ -145,7 +153,7 @@ class UnderstandProjectBuilder(
                     "SumCyclomaticStrict",
                     "SumEssential"
             ).forEach {
-                aggregationMap[it] = sumAttributes
+                aggregationMap[it] = sumOrFirst
             }
 
             listOf(
@@ -164,7 +172,7 @@ class UnderstandProjectBuilder(
                     "MaxNesting",
                     "PercentLackOfCohesion"
             ).forEach {
-                aggregationMap[it] = maxAttribute
+                aggregationMap[it] = maxValOrFirst
             }
 
             return aggregationMap.toMap()
@@ -198,7 +206,6 @@ class UnderstandProjectBuilder(
             replacementMap["PercentLackOfCohesion"] = "max_lcom"
 
 
-
             // ignore following understand metrics
             replacementMap["Cyclomatic"] = ""
             replacementMap["CyclomaticModified"] = ""
@@ -214,19 +221,17 @@ class UnderstandProjectBuilder(
     ): UnderstandProjectBuilder {
         val parser = createParser(inStream)
         val header = UnderstandCSVHeader(parser.parseNext())
-        parseContent(projectBuilder, parser, header)
+        parseContent(parser, header)
         parser.stopParsing()
         logger.info { "Found $rowNumber rows in stream." }
         return this
     }
 
     fun build(): Project {
-        logger.info { "ProjectBuilder with ${projectBuilder.size} leafs and ${projectBuilder.rootNode.nodes.count { it.value.type == NodeType.File }} files." }
-
         return projectBuilder.build()
     }
 
-    private fun parseContent(projectBuilder: ProjectBuilder, parser: CsvParser, header: UnderstandCSVHeader) {
+    private fun parseContent(parser: CsvParser, header: UnderstandCSVHeader) {
         var row = parser.parseNext()
         while (row != null) {
             rowNumber++

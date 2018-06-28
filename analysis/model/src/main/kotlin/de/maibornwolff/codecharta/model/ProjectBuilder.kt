@@ -30,6 +30,7 @@
 package de.maibornwolff.codecharta.model
 
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
+import mu.KotlinLogging
 
 
 open class ProjectBuilder(
@@ -41,7 +42,9 @@ open class ProjectBuilder(
         if (nodes.size != 1) throw IllegalStateException("no root node present in project")
     }
 
-    val rootNode: MutableNode
+    private val logger = KotlinLogging.logger {}
+
+    private val rootNode: MutableNode
         get() = nodes[0]
 
     val size: Int
@@ -88,7 +91,11 @@ open class ProjectBuilder(
 
         filterEmptyFolders()
 
-        return Project(projectName, nodes.map { it.toNode() }.toList(), apiVersion)
+        val project = Project(projectName, nodes.map { it.toNode() }.toList(), apiVersion)
+
+        logger.info { "Created Project with ${project.size} leaves." }
+
+        return project
     }
 
     private fun filterEmptyFolders() {

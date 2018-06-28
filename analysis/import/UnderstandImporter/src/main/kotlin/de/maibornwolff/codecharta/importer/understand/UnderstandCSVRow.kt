@@ -29,22 +29,19 @@
 
 package de.maibornwolff.codecharta.importer.understand
 
-import de.maibornwolff.codecharta.model.MutableNode
-import de.maibornwolff.codecharta.model.NodeType
-import de.maibornwolff.codecharta.model.Path
-import de.maibornwolff.codecharta.model.PathFactory
+import de.maibornwolff.codecharta.model.*
 import java.util.regex.Pattern
 
 class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: UnderstandCSVHeader, private val pathSeparator: Char) {
 
     init {
-        if (rawRow.size <= maxOf(header.fileColumn, header.nameColumn, header.nameColumn)) {
+        if (rawRow.size <= maxOf(header.fileColumn, header.nameColumn, header.kindColumn)) {
             throw IllegalArgumentException(
                     "Row does not contain the necessary hierarchical information.")
         }
     }
 
-    private val file =
+    val file =
             if (rawRow[header.fileColumn] == null) throw IllegalArgumentException("Row has no path information.")
             else rawRow[header.fileColumn]!!
 
@@ -59,12 +56,17 @@ class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: U
     private val directoryContainingFile = file.substring(0, file.lastIndexOf(pathSeparator) + 1)
 
     private val floatPattern = Pattern.compile("\\d+[,.]?\\d*")
+    private val intPattern = Pattern.compile("\\d+")
 
     private fun validAttributeOfRow(i: Int) =
             i < rawRow.size && rawRow[i] != null && floatPattern.matcher(rawRow[i]).matches()
 
     private fun parseAttributeOfRow(i: Int) =
-            java.lang.Double.parseDouble(rawRow[i]!!.replace(',', '.'))
+            if (intPattern.matcher(rawRow[i]).matches()) {
+                rawRow[i]!!.toLong()
+            } else {
+                rawRow[i]!!.replace(',', '.').toDouble()
+            }
 
     private val attributes =
             header.columnNumbers
@@ -97,7 +99,7 @@ class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: U
         return when {
             isFileRow -> MutableNode(filename, nodeType, attributes)
             nodeType == NodeType.Unknown -> throw IllegalArgumentException("Kind $kind not supported, yet.")
-            else -> MutableNode(name, nodeType, attributes)
+            else -> MutableNode(name, nodeType, attributes, nodeMergingStrategy = NodeMaxAttributeMerger(true))
         }
     }
 

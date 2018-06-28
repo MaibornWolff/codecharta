@@ -38,14 +38,14 @@ import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 
 class NodeMergerTest : Spek({
-    describe("a node merger NodeMaxAttributeMergerIgnoringChildren") {
+    describe("a node merger NodeMaxAttributeMerger") {
 
         on("merging nodes with same name") {
             val name = "Name"
             val type = NodeType.File
             val link = "node1"
             val attrib1 = mapOf("attrib11" to 1.0)
-            val node1 = MutableNode(name, type, attrib1, link, nodeMergingStrategy = NodeMaxAttributeMergerIgnoringChildren)
+            val node1 = MutableNode(name, type, attrib1, link, nodeMergingStrategy = NodeMaxAttributeMerger())
             val node2 = MutableNode(name, type)
 
             val newNode = node1.merge(listOf(node2))
@@ -72,7 +72,7 @@ class NodeMergerTest : Spek({
             val child1 = MutableNode("child1", NodeType.File)
             val child2 = MutableNode("child2", NodeType.Folder)
             val child1_littleBitDifferent = MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", listOf())
-            val node1 = MutableNode("Name", NodeType.File, mapOf(), "", listOf(child1_littleBitDifferent), nodeMergingStrategy = NodeMaxAttributeMergerIgnoringChildren)
+            val node1 = MutableNode("Name", NodeType.File, mapOf(), "", listOf(child1_littleBitDifferent), nodeMergingStrategy = NodeMaxAttributeMerger())
             val node2 = MutableNode("Name", NodeType.File, mapOf(), "", listOf(child1, child2))
 
             val newNode = node1.merge(listOf(node2))
