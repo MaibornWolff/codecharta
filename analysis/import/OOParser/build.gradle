@@ -28,12 +28,13 @@ jar {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
+/*
 generateGrammarSource {
     maxHeapSize = "64m"
     arguments += ['-package', 'de.maibornwolff.codecharta.importer.ooparser.antlr.java']
     arguments += ["-visitor", "-long-messages"]
     outputDirectory = new File("src/generated/antlr/de/maibornwolff/codecharta/importer/ooparser/antlr/java".toString())
-}
+}*/
 
 //compileJava.dependsOn generateGrammarSource
 
