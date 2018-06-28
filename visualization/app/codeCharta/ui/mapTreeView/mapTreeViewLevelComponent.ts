@@ -5,6 +5,7 @@ import {hierarchy, HierarchyNode} from "d3-hierarchy";
 import {node} from "../codeMap/rendering/node";
 import {CodeMapRenderService} from "../codeMap/codeMap.render.service";
 import {NodeContextMenuComponent} from "../nodeContextMenu/nodeContextMenu.component";
+import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 
 export interface MapTreeViewHoverEventSubscriber {
     onShouldHoverNode(node: CodeMapNode);
@@ -18,7 +19,10 @@ export class MapTreeViewLevelController {
     public collapsed: boolean = true;
 
     /* @ngInject */
-    constructor(private $timeout: ITimeoutService, private $scope, private settingsService: SettingsService, private $rootScope: IRootScopeService, private codeMapRenderService: CodeMapRenderService) {
+    constructor(
+        private $rootScope: IRootScopeService,
+        private codeMapActionsService: CodeMapActionsService
+    ) {
 
     }
 
@@ -52,36 +56,11 @@ export class MapTreeViewLevelController {
     }
 
     onLabelClick() {
-        this.setParentsInvisibleAndChildrenVisible();
-        this.broadcastVisibility();
+        this.codeMapActionsService.isolateNode(this.node);
     }
 
     onEyeClick() {
-        this.setVisibilityToChildren(!this.node.visible);
-        this.broadcastVisibility();
-    }
-
-    private setParentsInvisibleAndChildrenVisible() {
-        // TODO not sure if we should access the map through settings without getting triggered by the event. this saves memory though and should not be a problem
-        this.setVisibilityToChildren(false, this.settingsService.settings.map.root);
-        // set this visible
-        this.setVisibilityToChildren(true);
-    }
-
-    private setVisibilityToChildren(visibility: boolean, node: CodeMapNode = this.node) {
-        this.node.visible = visibility;
-
-        hierarchy(node).descendants().forEach((d) => {
-            d.data.visible = visibility;
-        });
-    }
-
-    private broadcastVisibility() {
-        // TODO ensure to call it after all broadcasts
-        // TODO performance :(
-        this.$timeout(() => {
-            this.settingsService.onSettingsChanged();
-        }, 100);
+        this.codeMapActionsService.toggleNodeVisibility(this.node);
     }
 
     isLeaf(node: CodeMapNode = this.node): boolean {
