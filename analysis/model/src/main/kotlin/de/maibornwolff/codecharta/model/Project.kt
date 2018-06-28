@@ -60,7 +60,7 @@ class Project(
     }
 
     companion object {
-        const val API_VERSION = "1.1"
+        const val API_VERSION = "1.0"
     }
 
 }
