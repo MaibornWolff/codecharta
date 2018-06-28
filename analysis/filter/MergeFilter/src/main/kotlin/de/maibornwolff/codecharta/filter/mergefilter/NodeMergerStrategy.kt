@@ -29,8 +29,8 @@
 
 package de.maibornwolff.codecharta.filter.mergefilter
 
-import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.MutableNode
 
 interface NodeMergerStrategy {
-    fun mergeNodeLists(lists: List<List<Node>>): List<Node>
+    fun mergeNodeLists(lists: List<List<MutableNode>>): List<MutableNode>
 }

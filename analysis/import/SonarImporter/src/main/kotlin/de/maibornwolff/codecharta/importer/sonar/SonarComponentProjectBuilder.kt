@@ -34,26 +34,34 @@ import de.maibornwolff.codecharta.importer.sonar.model.ComponentMap
 import de.maibornwolff.codecharta.importer.sonar.model.Measure
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier
 import de.maibornwolff.codecharta.model.*
-import de.maibornwolff.codecharta.nodeinserter.NodeInserter
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
-class SonarComponentProjectAdapter @JvmOverloads constructor(name: String, private val sonarCodeURLLinker: SonarCodeURLLinker = SonarCodeURLLinker.NULL, private val translator: MetricNameTranslator = MetricNameTranslator.TRIVIAL, private val usePath: Boolean = false) : Project(name) {
+class SonarComponentProjectBuilder constructor(
+        name: String,
+        private val sonarCodeURLLinker: SonarCodeURLLinker = SonarCodeURLLinker.NULL,
+        private val translator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
+        private val usePath: Boolean = false
+) {
 
-    init {
-        this.nodes.add(Node("root", NodeType.Folder))
+    private val projectBuilder = ProjectBuilder(name)
+
+    fun build(): Project {
+        return projectBuilder.build()
     }
 
-    fun addComponentMapsAsNodes(components: ComponentMap) {
+    fun addComponentMapsAsNodes(components: ComponentMap): SonarComponentProjectBuilder {
         components.componentList
                 .sortedBy { it.path }
                 .forEach { this.addComponentAsNode(it) }
+        return this
     }
 
-    fun addComponentAsNode(component: Component) {
-        val node = Node(
+    fun addComponentAsNode(component: Component): SonarComponentProjectBuilder {
+        val node = MutableNode(
                 createNodeName(component),
                 createNodeTypeFromQualifier(component.qualifier!!), createAttributes(component.measures!!), createLink(component))
-        NodeInserter.insertByPath(this, createParentPath(component), node)
+        projectBuilder.insertByPath(createParentPath(component), node)
+        return this
     }
 
     private fun createAttributes(measures: List<Measure>): Map<String, Any> {
@@ -64,7 +72,7 @@ class SonarComponentProjectAdapter @JvmOverloads constructor(name: String, priva
     }
 
     private fun convertMetricName(measure: Measure): String {
-        return translator.translate(measure.metric)!!
+        return translator.translate(measure.metric)
     }
 
     private fun createLink(component: Component): String {

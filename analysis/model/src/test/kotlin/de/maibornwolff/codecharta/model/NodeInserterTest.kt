@@ -27,11 +27,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.nodeinserter
+package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.model.*
 import de.maibornwolff.codecharta.model.NodeMatcher.hasNodeAtPath
-import de.maibornwolff.codecharta.nodeinserter.NodeInserter.insertByPath
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.jetbrains.spek.api.Spek
@@ -40,9 +38,9 @@ import org.jetbrains.spek.api.dsl.it
 class NodeInserterTest : Spek({
     it("should insert node in leaf position") {
         // given
-        val root = Node("root", NodeType.Folder)
+        val root = MutableNode("root", NodeType.Folder)
 
-        val nodeForInsertion = Node("insertedNode", NodeType.File)
+        val nodeForInsertion = MutableNode("insertedNode", NodeType.File)
 
         // when
         NodeInserter.insertByPath(root, Path.trivialPath(), nodeForInsertion)
@@ -50,15 +48,15 @@ class NodeInserterTest : Spek({
         // then
         assertThat(root.children, hasSize(1))
         assertThat(root.pathsToLeaves.count(), `is`(1))
-        assertThat(root, hasNodeAtPath(nodeForInsertion, Path("insertedNode")))
+        assertThat(root.toNode(), hasNodeAtPath(nodeForInsertion.toNode(), Path("insertedNode")))
     }
 
     it("should not insert node in leaf position twice") {
         // given
-        val root = Node("root", NodeType.Folder)
+        val root = MutableNode("root", NodeType.Folder)
 
-        val nodeForInsertion = Node("insertedNode", NodeType.File)
-        val secondNodeForInsertion = Node("insertedNode", NodeType.Folder)
+        val nodeForInsertion = MutableNode("insertedNode", NodeType.File)
+        val secondNodeForInsertion = MutableNode("insertedNode", NodeType.Folder)
         NodeInserter.insertByPath(root, Path.trivialPath(), nodeForInsertion)
 
         // when
@@ -67,15 +65,15 @@ class NodeInserterTest : Spek({
         // then
         assertThat(root.children, hasSize(1))
         assertThat(root.pathsToLeaves.count(), `is`(1))
-        assertThat(root, hasNodeAtPath(nodeForInsertion, Path("insertedNode")))
+        assertThat(root.toNode(), hasNodeAtPath(nodeForInsertion.toNode(), Path("insertedNode")))
     }
 
     it("should take intermediate node in inner position if present") {
         // given
-        val root = Node("root", NodeType.Folder)
+        val root = MutableNode("root", NodeType.Folder)
 
-        val nodeForInsertion = Node("insertedNode", NodeType.File)
-        val intermediateNode = Node("folder", NodeType.Folder)
+        val nodeForInsertion = MutableNode("insertedNode", NodeType.File)
+        val intermediateNode = MutableNode("folder", NodeType.Folder)
         root.children.add(intermediateNode)
 
         // when
@@ -86,14 +84,14 @@ class NodeInserterTest : Spek({
         assertThat(root.children, hasSize(1))
         assertThat(root.children, hasItem(intermediateNode))
         assertThat(root.pathsToLeaves.count(), `is`(1))
-        assertThat(root, hasNodeAtPath(nodeForInsertion, Path("folder", "insertedNode")))
+        assertThat(root.toNode(), hasNodeAtPath(nodeForInsertion.toNode(), Path("folder", "insertedNode")))
     }
 
     it("should insert phantom node in inner position if no intermediate node present") {
         // given
-        val root = Node("root", NodeType.Folder)
+        val root = MutableNode("root", NodeType.Folder)
 
-        val nodeForInsertion = Node("insertedNode", NodeType.File)
+        val nodeForInsertion = MutableNode("insertedNode", NodeType.File)
         val position = Path("folder")
 
         // when
@@ -107,9 +105,9 @@ class NodeInserterTest : Spek({
 
     it("should insert node in end position") {
         // given
-        val root = Node("root", NodeType.Folder)
+        val root = MutableNode("root", NodeType.Folder)
 
-        val nodeForInsertion = Node("insertedNode", NodeType.File)
+        val nodeForInsertion = MutableNode("insertedNode", NodeType.File)
 
         // when
         NodeInserter.insertByPath(root, Path("folder", "subfolder"), nodeForInsertion)
@@ -117,14 +115,14 @@ class NodeInserterTest : Spek({
         // then
         assertThat(root.children, hasSize(1))
         assertThat(root.pathsToLeaves.count(), `is`(1))
-        assertThat(root, hasNodeAtPath(nodeForInsertion, Path("folder", "subfolder", "insertedNode")))
+        assertThat(root.toNode(), hasNodeAtPath(nodeForInsertion.toNode(), Path("folder", "subfolder", "insertedNode")))
     }
 
     it("should insert node in end position even if ending slash not present") {
         // given
-        val root = Node("root", NodeType.Folder)
+        val root = MutableNode("root", NodeType.Folder)
 
-        val nodeForInsertion = Node("insertedNode", NodeType.File)
+        val nodeForInsertion = MutableNode("insertedNode", NodeType.File)
         val path = Path("folder", "subfolder")
 
         // when
@@ -133,37 +131,6 @@ class NodeInserterTest : Spek({
         // then
         assertThat(root.children, hasSize(1))
         assertThat(root.pathsToLeaves.count(), `is`(1))
-        assertThat(root, hasNodeAtPath(nodeForInsertion, Path("folder", "subfolder", "insertedNode")))
-    }
-
-    it("should create root node if not present") {
-        // given
-        val project = Project("someName")
-        val nodeForInsertion = Node("someNode", NodeType.File)
-
-        // when
-        insertByPath(project, Path.trivialPath(), nodeForInsertion)
-
-        // then
-        assertThat(project.nodes, hasSize(1))
-        val root = project.rootNode
-        assertThat(root.children, hasSize(1))
-        assertThat(root.children[0], `is`(nodeForInsertion))
-    }
-
-    it("should use root node if present") {
-        // given
-        val root = Node("root", NodeType.Folder)
-        val project = Project("someName", listOf(root))
-        val nodeForInsertion = Node("someNode", NodeType.File)
-
-        // when
-        insertByPath(project, Path.trivialPath(), nodeForInsertion)
-
-        // then
-        assertThat(project.nodes, hasSize(1))
-        assertThat(project.rootNode, NodeMatcher.matchesNode(root))
-        assertThat(root.children, hasSize(1))
-        assertThat(root.children[0], `is`(nodeForInsertion))
+        assertThat(root.toNode(), hasNodeAtPath(nodeForInsertion.toNode(), Path("folder", "subfolder", "insertedNode")))
     }
 })

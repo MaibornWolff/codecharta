@@ -77,7 +77,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
      */
     applySettings(s: Settings) {
 
-        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.root && s.neutralColorRange && s.deltaColorFlipped != undefined) {
+        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.root && s.neutralColorRange && s.deltaColorFlipped != undefined && s.invertHeight != undefined) {
             this.updateMapGeometry(s);
         }
 
@@ -103,7 +103,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             size: mapSize,
             areaKey: s.areaMetric,
             heightKey: s.heightMetric,
-            margin: s.margin
+            margin: s.margin,
+            invertHeight: s.invertHeight
         };
 
         let nodes: node[] = this.collectNodesToArray(

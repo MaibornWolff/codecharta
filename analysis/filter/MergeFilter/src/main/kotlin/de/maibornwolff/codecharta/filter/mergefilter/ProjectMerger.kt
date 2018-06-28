@@ -29,8 +29,9 @@
 
 package de.maibornwolff.codecharta.filter.mergefilter
 
-import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.ProjectBuilder
 
 class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
 
@@ -38,7 +39,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         val projectNames = projects.map { p -> p.projectName }.toSortedSet()
         when (projectNames.size) {
             1 -> return projectNames.first()
-            else -> throw MergeException("Projects contain several project names : " + projectNames)
+            else -> throw MergeException("Projects contain several project names : $projectNames")
         }
     }
 
@@ -46,7 +47,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         val apiVersion = projects.map { p -> p.apiVersion }.toSortedSet()
         when (apiVersion.size) {
             1 -> return apiVersion.first()
-            else -> throw MergeException("Projects use multiple Api-Versions of CodeCharta : " + apiVersion)
+            else -> throw MergeException("Projects use multiple Api-Versions of CodeCharta : $apiVersion")
         }
     }
 
@@ -56,11 +57,11 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         if (apiVersion != Project.API_VERSION) {
             throw MergeException("API-Version $apiVersion of project is not supported.")
         }
-        return Project(name, mergeProjectNodes().toMutableList())
+        return ProjectBuilder(name, mergeProjectNodes()).build()
     }
 
-    private fun mergeProjectNodes(): List<Node> {
-        return nodeMerger.mergeNodeLists(projects.map { it.nodes })
+    private fun mergeProjectNodes(): List<MutableNode> {
+        return nodeMerger.mergeNodeLists(projects.map { listOf(it.rootNode.toMutableNode()) })
     }
 
 }

@@ -1,7 +1,7 @@
 export interface CodeMapNode {
-    name: string;
-    children?: CodeMapNode[];
-    attributes?: {
+    name: string,
+    children?: CodeMapNode[]
+    attributes: {
         [key: string]: number
     };
     deltas?: {

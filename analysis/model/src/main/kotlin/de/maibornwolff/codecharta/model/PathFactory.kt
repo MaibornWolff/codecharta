@@ -30,10 +30,9 @@
 package de.maibornwolff.codecharta.model
 
 object PathFactory {
-    private const val PATH_SEPARATOR = "/"
 
-    fun fromFileSystemPath(path: String): Path {
-        return Path(path.split(PATH_SEPARATOR.toRegex())
+    fun fromFileSystemPath(path: String, pathSeparator: Char = '/'): Path {
+        return Path(path.split(pathSeparator)
                 .dropLastWhile { it.isEmpty() }
                 .filter { !it.isEmpty() })
     }

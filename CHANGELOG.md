@@ -6,17 +6,37 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
-- Added CrococosmoImporter to Analysis
-- Added type, dirs, name to CSVExporter
+- Added UnderstandImporter to Analysis
 
 ### Changed
-- Crococosmo xml files will now generate a cc.json file for each version
-- Suppressing ARIA warnings
 
 ### Removed
 
 ### Fixed
+
+## [1.13.0] - 2018-06-08
+### Added
+- Layout switcher #141
+- Added CrococosmoImporter to Analysis
+- Added type, dirs, name to CSVExporter
+- Invert height of building checkbox
+- Aggregate multiple maps in visualization #110
+- Auto Focus selected map part
+- Timmer added to applySettings in SettingsService
+
+### Changed
+- Crococosmo xml files will now generate a cc.json file for each version
+- Suppressing ARIA warnings
+- Simplified gradle structure of analysis part
+- Deltas added in the metric quick access panel #138
+- Ticks and ResetValue Buttons call to onSettingsChange to avoid applySettings timer
+- compacting empty middle packages #150
+- Detail panel minimized by default
+### Removed
+
+### Fixed
 - filter by regex shows parent nodes #116
+- typo in scss file
 
 ## [1.12.0] - 2018-04-27
 ### Added

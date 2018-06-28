@@ -56,7 +56,7 @@ object ProjectSerializer {
         try {
             BufferedWriter(FileWriter(targetPath)).use { serializeProject(project, it) }
         } catch (e: IOException) {
-            throw IOException("There was an Error while writing the file at " + targetPath, e)
+            throw IOException("There was an Error while writing the file at $targetPath", e)
         }
 
     }

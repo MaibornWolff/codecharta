@@ -24,7 +24,14 @@ export class TreeMapUtils {
                                 parent: node,
                                 heightKey: string,
                                 minHeight: number,
-                                folderHeight: number): node {
+                                folderHeight: number,
+                                invertHeight: boolean,
+                                maxHeight: number): node {
+
+        if (invertHeight) {
+            heightValue = (maxHeight - heightValue);
+        }
+
         return {
             name: squaredNode.data.name,
             width: squaredNode.x1 - squaredNode.x0,
@@ -46,6 +53,7 @@ export class TreeMapUtils {
             children: [],
             markingColor: parseInt(squaredNode.data.markingColor)
         };
+
     }
 
 }

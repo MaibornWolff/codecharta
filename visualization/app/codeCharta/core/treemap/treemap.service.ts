@@ -27,6 +27,7 @@ export interface TreeMapSettings {
     areaKey: string;
     heightKey: string;
     margin: number;
+    invertHeight: boolean;
 }
 
 export class TreeMapService {
@@ -59,10 +60,11 @@ export class TreeMapService {
 
     private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): node {
         const heightScale = s.size / TreeMapService.HEIGHT_DIVISOR / this.dataService.getMaxMetricInAllRevisions(s.heightKey);
-        return this.addHeightDimensionAndFinalize(squaredNode, s.heightKey, heightScale);
+        const maxHeight = this.getMaxMetricInAllRevisions(s.heightKey);
+        return this.addHeightDimensionAndFinalize(squaredNode, s.heightKey, heightScale, s.invertHeight, maxHeight);
     }
 
-    private addHeightDimensionAndFinalize(squaredNode: SquarifiedValuedCodeMapNode, key: string, heightScale: number, depth = 0, parent: node = null): node {
+    private addHeightDimensionAndFinalize(squaredNode: SquarifiedValuedCodeMapNode, key: string, heightScale: number, invertHeight: boolean, maxHeight: number, depth = 0, parent: node = null): node {
 
         let heightValue = squaredNode.data.attributes[key];
 
@@ -70,17 +72,32 @@ export class TreeMapService {
             heightValue = TreeMapService.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND;
         }
 
-        const finalNode = TreeMapUtils.buildNodeFrom(squaredNode, heightScale, heightValue, depth, parent, key,TreeMapService.MIN_BUILDING_HEIGHT, TreeMapService.FOLDER_HEIGHT);
+        const finalNode = TreeMapUtils.buildNodeFrom(squaredNode, heightScale, heightValue, depth, parent, key,TreeMapService.MIN_BUILDING_HEIGHT, TreeMapService.FOLDER_HEIGHT, invertHeight, maxHeight);
 
         if (squaredNode.children && squaredNode.children.length > 0) {
             const finalChildren: node[] = [];
             for (let i = 0; i < squaredNode.children.length; i++) {
-                finalChildren.push(this.addHeightDimensionAndFinalize(squaredNode.children[i], key, heightScale, depth + 1, finalNode));
+                finalChildren.push(this.addHeightDimensionAndFinalize(squaredNode.children[i], key, heightScale, invertHeight, maxHeight, depth + 1, finalNode));
             }
             finalNode.children = finalChildren;
         }
         return finalNode;
 
+    }
+
+    private getMaxMetricInAllRevisions(metric: string) {
+        let maxValue = 0;
+
+        this.dataService.data.revisions.forEach((rev)=> {
+            let nodes = d3.hierarchy(rev.root).leaves();
+            nodes.forEach((node: any)=> {
+                if (node.data.attributes[metric] > maxValue) {
+                    maxValue = node.data.attributes[metric];
+                }
+            });
+        });
+
+        return maxValue;
     }
 
     private calculateValue(node: CodeMapNode, key: string): number {

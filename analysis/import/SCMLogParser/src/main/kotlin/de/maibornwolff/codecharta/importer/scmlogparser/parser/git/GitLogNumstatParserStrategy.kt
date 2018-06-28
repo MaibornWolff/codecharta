@@ -95,7 +95,7 @@ class GitLogNumstatParserStrategy : LogParserStrategy {
                 oldFileName = lineParts[2]
                 newFileName = lineParts[4]
             } else {
-                System.err.println("Log line could not be parsed" + fileLine)
+                System.err.println("Log line could not be parsed$fileLine")
                 return Modification.EMPTY
             }
 

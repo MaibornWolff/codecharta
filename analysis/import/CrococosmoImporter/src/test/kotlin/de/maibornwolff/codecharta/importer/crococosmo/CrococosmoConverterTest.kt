@@ -31,7 +31,6 @@ package de.maibornwolff.codecharta.importer.crococosmo
 
 import de.maibornwolff.codecharta.importer.crococosmo.model.*
 import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
@@ -45,7 +44,7 @@ class CrococosmoConverterTest {
     fun convertedProjectShouldContainRootNode() {
         val g = Graph(schema, listOf())
         val project = converter.createProject("sample Project", g)
-        assertThat(project.nodes.size, `is`(1))
+        assertThat(project.rootNode.isLeaf, `is`(true))
     }
 
     @Test
@@ -53,7 +52,7 @@ class CrococosmoConverterTest {
         val nodeWithoutName = Node("", "type", listOf(), listOf())
         val g = Graph(schema, listOf(Node("node name", "type", listOf(nodeWithoutName), listOf())))
         val project = converter.createProject("sample Project", g)
-        val grantChildren = project.nodes[0].children[0].children
+        val grantChildren = project.rootNode.children[0].children
 
         assertThat(grantChildren.count(), `is`(0))
     }
@@ -63,7 +62,7 @@ class CrococosmoConverterTest {
         val nodeWithName = Node("happyChild", "type", listOf(), listOf())
         val g = Graph(schema, listOf(Node("node name", "type", listOf(nodeWithName), listOf())))
         val project = converter.createProject("sample Project", g)
-        val grantChildren = project.nodes[0].children[0].children
+        val grantChildren = project.rootNode.children[0].children
 
         assertThat(grantChildren.count(), `is`(1))
     }
@@ -73,7 +72,7 @@ class CrococosmoConverterTest {
         val nodeName = "node name"
         val g = Graph(schema, listOf(Node(nodeName, "type", listOf(), listOf())))
         val project = converter.createProject("sample Project", g)
-        val children = project.nodes[0].children
+        val children = project.rootNode.children
 
         assertThat(children.filter({ nodeName == it.name }).count(), `is`(1))
     }
@@ -89,7 +88,7 @@ class CrococosmoConverterTest {
 
         val project = converter.createProject("sample Project", g)
 
-        var node = project.nodes.first()
+        var node = project.rootNode
         while (!node.children.isEmpty()) {
             node = node.children.first()
         }

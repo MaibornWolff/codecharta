@@ -45,7 +45,6 @@ export class DataService {
 
     public setMap(map: CodeMap, revision: number) {
         this._data.revisions[revision] = map;
-        this.dataDecoratorService.decorateMapWithCompactMiddlePackages(this._data.revisions[revision]);
         this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.revisions[revision]);
         this.dataDecoratorService.decorateMapWithPathAttribute(this._data.revisions[revision]);
         this.dataDecoratorService.decorateMapWithVisibleAttribute(this._data.revisions[revision]);
@@ -61,6 +60,7 @@ export class DataService {
             this._lastReferenceIndex = index;
             this._data.renderMap = this._data.revisions[index];
             this.processDeltas();
+            this.dataDecoratorService.decorateMapWithCompactMiddlePackages(this._data.renderMap);
             this.notify();
         }
     }
@@ -69,6 +69,7 @@ export class DataService {
         if (this._data.revisions[index] != null) {
             this._lastComparisonMap = this._data.revisions[index];
             this.processDeltas();
+            this.dataDecoratorService.decorateMapWithCompactMiddlePackages(this._data.renderMap);
             this.notify();
         }
     }
@@ -124,6 +125,18 @@ export class DataService {
 
     public getComparisonMap(): CodeMap {
         return this._lastComparisonMap;
+    }
+
+    public getIndexOfMap(map: CodeMap, mapArray: CodeMap[]):number {
+
+        if (mapArray && map) {
+            for (let i = 0; i < mapArray.length; i++) {
+                if (mapArray[i] && mapArray[i].fileName === map.fileName) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 
     public updateMetrics() {

@@ -27,8 +27,9 @@ class SourceMonitorImporter : Callable<Void> {
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        val project = CSVProjectAdapter(projectName, pathSeparator, csvDelimiter)
-        files.map { it.inputStream() }.forEach { project.addProjectFromCsv(it, sourceMonitorReplacement) }
+        val csvProjectBuilder = CSVProjectBuilder(projectName, pathSeparator, csvDelimiter, sourceMonitorReplacement)
+        files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
+        val project = csvProjectBuilder.build()
         ProjectSerializer.serializeProject(project, writer())
 
         return null
@@ -57,7 +58,7 @@ class SourceMonitorImporter : Callable<Void> {
             replacementMap["Average Complexity*"] = "average_function_mcc"
 
             for (i in 0..9) {
-                replacementMap["Statements at block level " + i] = "statements_at_level_" + i
+                replacementMap["Statements at block level $i"] = "statements_at_level_$i"
             }
 
             return MetricNameTranslator(replacementMap.toMap(), prefix)

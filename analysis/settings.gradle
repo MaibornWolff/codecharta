@@ -1,8 +1,7 @@
 include 'model'
 include 'filter:MergeFilter'
-include 'import:CrococosmoImporter', 'import:CSVImporter', 'import:SCMLogParser', 'import:SonarImporter'
+include 'import:CrococosmoImporter', 'import:CSVImporter', 'import:SCMLogParser', 'import:SonarImporter', 'import:UnderstandImporter'
 include 'export:CSVExporter'
 include 'tools:ValidationTool', 'tools:ccsh'
 
 rootProject.name = 'codecharta'
-

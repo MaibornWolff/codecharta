@@ -27,10 +27,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.filter.mergefilter
+package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.model.Node
-import de.maibornwolff.codecharta.model.NodeType
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasSize
@@ -40,18 +38,17 @@ import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 
 class NodeMergerTest : Spek({
-    describe("a node merger") {
-        val merger = NodeMerger()
+    describe("a node merger NodeMaxAttributeMergerIgnoringChildren") {
 
         on("merging nodes with same name") {
             val name = "Name"
             val type = NodeType.File
             val link = "node1"
             val attrib1 = mapOf("attrib11" to 1.0)
-            val node1 = Node(name, type, attrib1, link)
-            val node2 = Node(name, type)
+            val node1 = MutableNode(name, type, attrib1, link, nodeMergingStrategy = NodeMaxAttributeMergerIgnoringChildren)
+            val node2 = MutableNode(name, type)
 
-            val newNode = merger.merge(node1, node2)
+            val newNode = node1.merge(listOf(node2))
 
             it("should return merged node") {
                 assertThat(newNode.name, `is`(name))
@@ -72,13 +69,13 @@ class NodeMergerTest : Spek({
         }
 
         on("merging nodes with children") {
-            val child1 = Node("child1", NodeType.File)
-            val child2 = Node("child2", NodeType.Folder)
-            val child1_littleBitDifferent = Node("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", listOf())
-            val node1 = Node("Name", NodeType.File, mapOf(), "", listOf(child1_littleBitDifferent))
-            val node2 = Node("Name", NodeType.File, mapOf(), "", listOf(child1, child2))
+            val child1 = MutableNode("child1", NodeType.File)
+            val child2 = MutableNode("child2", NodeType.Folder)
+            val child1_littleBitDifferent = MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", listOf())
+            val node1 = MutableNode("Name", NodeType.File, mapOf(), "", listOf(child1_littleBitDifferent), nodeMergingStrategy = NodeMaxAttributeMergerIgnoringChildren)
+            val node2 = MutableNode("Name", NodeType.File, mapOf(), "", listOf(child1, child2))
 
-            val newNode = merger.merge(node1, node2)
+            val newNode = node1.merge(listOf(node2))
 
             // then
             it("should NOT merge children") {
@@ -86,5 +83,4 @@ class NodeMergerTest : Spek({
             }
         }
     }
-
 })

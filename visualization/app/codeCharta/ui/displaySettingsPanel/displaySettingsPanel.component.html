@@ -26,15 +26,21 @@
 </md-slider-container>
 
 <md-input-container class="md-block">
-    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.showDependencies" ng-change="$ctrl.settingsService.applySettings()">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.showDependencies" ng-change="$ctrl.settingsService.onSettingsChanged()">
         Dependencies of selected Building
     </md-checkbox>
 </md-input-container>
 
 <md-input-container class="md-block">
-    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.minimizeDetailPanel" ng-change="$ctrl.settingsService.applySettings()">
-        Minimize Detail Panel
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.invertHeight" ng-change="$ctrl.settingsService.onSettingsChanged()">
+        Invert Height
     </md-checkbox>
 </md-input-container>
 
-<reset-settings-button-component settings-names="amountOfTopLabels, scaling.y, margin, showDependencies, minimizeDetailPanel"></reset-settings-button-component>
+<md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.maximizeDetailPanel" ng-change="$ctrl.settingsService.onSettingsChanged()">
+        Maximize Detail Panel
+    </md-checkbox>
+</md-input-container>
+
+<reset-settings-button-component settings-names="amountOfTopLabels, scaling.y, margin, showDependencies, maximizeDetailPanel, invertHeight"></reset-settings-button-component>

@@ -29,7 +29,7 @@
 
 package de.maibornwolff.codecharta.filter.mergefilter
 
-import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Path
 import org.hamcrest.MatcherAssert.assertThat
@@ -45,8 +45,8 @@ class LeafNodeMergerTest : Spek({
         val fittingMerger = LeafNodeMergerStrategy(false)
 
         on("merging nodes with same name") {
-            val node1 = Node("Name", NodeType.File)
-            val node2 = Node("Name", NodeType.Folder)
+            val node1 = MutableNode("Name", NodeType.File)
+            val node2 = MutableNode("Name", NodeType.Folder)
 
             val nodeList = fittingMerger.mergeNodeLists(listOf(listOf(node1), listOf(node2)))
 
@@ -56,12 +56,12 @@ class LeafNodeMergerTest : Spek({
         }
 
         on("merging nodes with children and with same name") {
-            val child1 = Node("child1", NodeType.File)
-            val child2 = Node("child2", NodeType.Folder)
+            val child1 = MutableNode("child1", NodeType.File)
+            val child2 = MutableNode("child2", NodeType.Folder)
             val child1_littleBitDifferent =
-                    Node("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", listOf())
-            val node1 = Node("Name", NodeType.File, mapOf(), "", listOf(child1_littleBitDifferent))
-            val node2 = Node("Name", NodeType.File, mapOf(), "", listOf(child1, child2))
+                    MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", listOf())
+            val node1 = MutableNode("Name", NodeType.File, mapOf(), "", listOf(child1_littleBitDifferent))
+            val node2 = MutableNode("Name", NodeType.File, mapOf(), "", listOf(child1, child2))
 
             val newNode = fittingMerger.mergeNodeLists(listOf(listOf(node2), listOf(node1)))[0]
 
@@ -80,31 +80,31 @@ class LeafNodeMergerTest : Spek({
 
         on("merging nodes with children and with same name") {
             // given
-            val childA = Node("A", NodeType.File, mapOf("a" to 0))
-            val childB = Node("B", NodeType.Folder, mapOf(), "", listOf(Node("A", NodeType.File)))
-            val root1 = Node("root", NodeType.Folder, mapOf(), "", listOf(childA, childB))
+            val childA = MutableNode("A", NodeType.File, mapOf("a" to 0))
+            val childB = MutableNode("B", NodeType.Folder, mapOf(), "", listOf(MutableNode("A", NodeType.File)))
+            val root1 = MutableNode("root", NodeType.Folder, mapOf(), "", listOf(childA, childB))
 
-            val childA2 = Node("A", NodeType.File)
-            val childB2 = Node("B", NodeType.Folder, mapOf(), "", listOf(Node("A", NodeType.File)))
-            val root2 = Node("root", NodeType.Folder, mapOf(), "", listOf(childA2, childB2))
+            val childA2 = MutableNode("A", NodeType.File)
+            val childB2 = MutableNode("B", NodeType.Folder, mapOf(), "", listOf(MutableNode("A", NodeType.File)))
+            val root2 = MutableNode("root", NodeType.Folder, mapOf(), "", listOf(childA2, childB2))
 
             // when
             val newRoot = fittingMerger.mergeNodeLists(listOf(listOf(root1), listOf(root2)))[0]
 
             it("should merge children") {
                 assertThat(newRoot.children, hasSize(2))
-                assertThat((newRoot.getNodeBy(Path(listOf("B", "A"))) as Node).attributes.size, `is`(0))
+                assertThat((newRoot.getNodeBy(Path(listOf("B", "A"))) as MutableNode).attributes.size, `is`(0))
             }
         }
 
         it("should merge leafs") {
             // given
             val child1_littleBitDifferent =
-                    Node("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", listOf())
-            val node1 = Node("root", NodeType.File, mapOf(), "", listOf(child1_littleBitDifferent))
-            val child1 = Node("child1", NodeType.File)
-            val intermediateNode = Node("intermediateNode", NodeType.File, mapOf(), "", listOf(child1))
-            val node2 = Node("root", NodeType.File, mapOf(), "", listOf(intermediateNode))
+                    MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", listOf())
+            val node1 = MutableNode("root", NodeType.File, mapOf(), "", listOf(child1_littleBitDifferent))
+            val child1 = MutableNode("child1", NodeType.File)
+            val intermediateNode = MutableNode("intermediateNode", NodeType.File, mapOf(), "", listOf(child1))
+            val node2 = MutableNode("root", NodeType.File, mapOf(), "", listOf(intermediateNode))
 
             // when
             val newNode = fittingMerger.mergeNodeLists(listOf(listOf(node1), listOf(node2)))[0]
@@ -124,7 +124,7 @@ class LeafNodeMergerTest : Spek({
         }
 
         on("merging single node list") {
-            val nodeList = listOf(Node("node", NodeType.File, mapOf()))
+            val nodeList = listOf(MutableNode("node", NodeType.File, mapOf()))
             val actualNodeList = fittingMerger.mergeNodeLists(listOf(nodeList))
 
             it("should return same node list") {
@@ -136,12 +136,12 @@ class LeafNodeMergerTest : Spek({
     describe("a misfitting merger") {
         val misfittingMerger = LeafNodeMergerStrategy(true)
         on("merging nodes with children and with same name") {
-            val child1 = Node("child1", NodeType.File)
-            val child2 = Node("child2", NodeType.Folder)
+            val child1 = MutableNode("child1", NodeType.File)
+            val child2 = MutableNode("child2", NodeType.Folder)
             val child1_littleBitDifferent =
-                    Node("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", listOf())
-            val node1 = Node("Name", NodeType.File, mapOf(), "", listOf(child1_littleBitDifferent))
-            val node2 = Node("Name", NodeType.File, mapOf(), "", listOf(child1, child2))
+                    MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", listOf())
+            val node1 = MutableNode("Name", NodeType.File, mapOf(), "", listOf(child1_littleBitDifferent))
+            val node2 = MutableNode("Name", NodeType.File, mapOf(), "", listOf(child1, child2))
 
             val newNode = misfittingMerger.mergeNodeLists(listOf(listOf(node1), listOf(node2)))[0]
 

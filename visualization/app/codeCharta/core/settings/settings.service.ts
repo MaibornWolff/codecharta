@@ -35,7 +35,8 @@ export interface Settings {
     operation: STATISTIC_OPS;
     deltaColorFlipped: boolean;
     showDependencies: boolean;
-    minimizeDetailPanel: boolean;
+    maximizeDetailPanel: boolean;
+    invertHeight: boolean;
 }
 
 export interface SettingsServiceSubscriber {
@@ -48,6 +49,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
     private _settings: Settings;
 
+    public numberOfCalls: number;
+
     private _lastDeltaState = false;
 
     /* ngInject */
@@ -57,6 +60,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         this._settings = this.getInitialSettings(dataService.data.renderMap, dataService.data.metrics);
 
+        this.numberOfCalls = 0;
         dataService.subscribe(this);
         threeOrbitControlsService.subscribe(this);
 
@@ -86,7 +90,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         this._lastDeltaState = false;
 
-        return {
+        let settings: Settings =  {
             map: renderMap,
             neutralColorRange: r,
             areaMetric: this.getMetricByIdOrLast(0, metrics),
@@ -100,8 +104,11 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
             showDependencies: false,
-            minimizeDetailPanel: false
+            maximizeDetailPanel: false,
+            invertHeight: false
         };
+
+        return settings;
 
     }
 
@@ -264,12 +271,45 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
     }
 
+    /*
+     * Avoids the excesive calling of updateSettings with standard settings in order to increase the efficiency
+     * When the function is called with an argument it calls updateSettings in order to avoid the lost of the information
+     * contained in that argument.
+     *
+     * @param {Settings} settings
+     */
+    public applySettings(settings?: Settings){
+
+        if(settings){
+            this.updateSettings(settings);
+        }
+
+        else{
+            this.numberOfCalls++;
+            if(this.numberOfCalls>4){
+                this.numberOfCalls = 0;
+                this.onSettingsChanged();
+            }
+            else{
+                let currentCalls = this.numberOfCalls;
+                let _this = this;
+
+                setTimeout(function(){
+                    if(currentCalls == _this.numberOfCalls){
+                        this.numberOfCalls = 0;
+                        _this.onSettingsChanged();
+                    }
+
+                },400);
+            }
+        }
+    }
+
     /**
      * Applies given settings. ignores map. this ensures to copy settings object and prevent side effects
      * @param {Settings} settings
      */
-    public applySettings(settings: Settings = this._settings) {
-
+    private updateSettings(settings: Settings) {
         this._settings.neutralColorRange.to = settings.neutralColorRange.to;
         this._settings.neutralColorRange.from = settings.neutralColorRange.from;
         this._settings.neutralColorRange.flipped = settings.neutralColorRange.flipped;
@@ -290,11 +330,12 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.margin = settings.margin;
         this._settings.deltas = settings.deltas;
         this._settings.operation = settings.operation;
-        this._settings.deltaColorFlipped = this.settings.deltaColorFlipped;
-        this._settings.minimizeDetailPanel = settings.minimizeDetailPanel;
+        this._settings.deltaColorFlipped = settings.deltaColorFlipped;
+        this._settings.maximizeDetailPanel = settings.maximizeDetailPanel;
+        this._settings.invertHeight = settings.invertHeight;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
-        this._settings.map = this.settings.map;
+        this._settings.map = settings.map|| this.settings.map;
 
         this.onSettingsChanged();
 

@@ -48,6 +48,13 @@ check_sourcemonitor() {
   validate "${ACTUAL_SOURCEMON_JSON}"
 }
 
+check_understand() {
+  echo " -- expect UnderstandImporter gives valid cc.json"
+  ACTUAL_UNDERSTAND_JSON="${INSTALL_DIR}/actual_understandimporter.json"
+  "${CCSH}" understandimport data/codecharta/understand.csv > "${ACTUAL_UNDERSTAND_JSON}"
+  validate "${ACTUAL_UNDERSTAND_JSON}"
+}
+
 check_crococosmo() {
   echo " -- expect CrococosmoImporter gives valid cc.json"
   ACTUAL_COSMO_JSON=${INSTALL_DIR}/actual_cosmoimport.json
@@ -76,6 +83,7 @@ run_tests() {
 
   check_sourcemonitor
   check_crococosmo
+  check_understand
   check_scmlog
   check_merge
 

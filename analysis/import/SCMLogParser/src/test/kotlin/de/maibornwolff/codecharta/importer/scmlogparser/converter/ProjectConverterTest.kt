@@ -36,7 +36,7 @@ class ProjectConverterTest {
         val project = projectConverter.convert(emptyList())
 
         //then
-        assertThat(project.nodes).hasSize(0)
+        assertThat(project.rootNode.leaves).hasSize(1)
         assertThat(project.projectName).isEqualTo(projectname)
     }
 
