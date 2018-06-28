@@ -30,5 +30,5 @@
 package de.maibornwolff.codecharta.model
 
 enum class DependencyType {
-    STATIC, TEMPORAL_COUPLING
+    static, temporal_coupling
 }

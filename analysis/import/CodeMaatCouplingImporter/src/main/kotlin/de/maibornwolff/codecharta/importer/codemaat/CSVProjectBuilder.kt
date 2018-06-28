@@ -79,7 +79,7 @@ class CSVProjectBuilder(
             }
             row = parser.parseNext()
         }
-        projectBuilder.insertDependency(DependencyType.TEMPORAL_COUPLING, dependencies)
+        projectBuilder.insertDependency(DependencyType.temporal_coupling, dependencies)
     }
 
     private fun createParser(inStream: InputStream): CsvParser {
