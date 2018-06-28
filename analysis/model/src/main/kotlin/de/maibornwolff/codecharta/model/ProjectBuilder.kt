@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, MaibornWolff GmbH
+ * Copyright (c) 2018, MaibornWolff GmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,8 @@ import de.maibornwolff.codecharta.translator.MetricNameTranslator
 open class ProjectBuilder(
         val projectName: String,
         private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
-        val apiVersion: String = API_VERSION
+        val apiVersion: String = API_VERSION,
+        private var dependencies: MutableMap<DependencyType,MutableList<Dependency>> = mutableMapOf()
 ) {
     init {
         if (nodes.size != 1) throw IllegalStateException("no root node present in project")
@@ -55,6 +56,11 @@ open class ProjectBuilder(
         return this
     }
 
+    fun insertDependency(dependencyType: DependencyType, thisDependencies: MutableList<Dependency>): ProjectBuilder {
+        dependencies.put(dependencyType, thisDependencies)
+        return this
+    }
+
     private var metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
 
     fun withMetricTranslator(metricNameTranslator: MetricNameTranslator): ProjectBuilder {
@@ -64,7 +70,7 @@ open class ProjectBuilder(
 
     fun build(): Project {
         nodes.map { it.translateMetrics(metricNameTranslator, true) }
-        return Project(projectName, nodes.map { it.toNode() }.toList(), apiVersion)
+        return Project(projectName, nodes.map { it.toNode() }.toList(), apiVersion, dependencies)
     }
 
     override fun toString(): String {

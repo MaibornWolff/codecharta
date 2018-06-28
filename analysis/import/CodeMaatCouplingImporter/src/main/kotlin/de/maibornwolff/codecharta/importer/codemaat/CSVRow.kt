@@ -25,6 +25,15 @@ class CSVRow(private val row: Array<String?>, private val header: CSVHeader, pri
         return MutableNode(filename, NodeType.File, attributes)
     }
 
+    fun asDependency(): Dependency {
+        return Dependency(
+                Path(attributes.get("entity")!!).edgesList.first(),
+                Path(attributes.get("coupled")!!).edgesList.first(),
+                attributes.get("degree")!!.toInt(),
+                attributes.get("average-revs")!!.toInt()
+        )
+    }
+
     private val path =
             if (row[header.pathColumn] == null) throw IllegalArgumentException("Ignoring empty paths.")
             else row[header.pathColumn]!!
@@ -32,17 +41,13 @@ class CSVRow(private val row: Array<String?>, private val header: CSVHeader, pri
     private val floatPattern = Pattern.compile("\\d+[,.]?\\d*")
 
     private fun validAttributeOfRow(i: Int) =
-            i < row.size && row[i] != null && floatPattern.matcher(row[i]).matches()
-
-    private fun parseAttributeOfRow(i: Int) =
-            java.lang.Float.parseFloat(row[i]!!.replace(',', '.'))
+            i < row.size && row[i] != null
 
     private val attributes =
             header.columnNumbers
                     .filter { validAttributeOfRow(it) }
                     .associateBy(
                             { header.getColumnName(it) },
-                            { parseAttributeOfRow(it) }
+                            { row[it]!! }
                     )
-
 }

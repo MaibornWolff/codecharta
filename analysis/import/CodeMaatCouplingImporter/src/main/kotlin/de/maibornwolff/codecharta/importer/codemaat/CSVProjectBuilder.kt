@@ -31,6 +31,8 @@ package de.maibornwolff.codecharta.importer.codemaat
 
 import com.univocity.parsers.csv.CsvParser
 import com.univocity.parsers.csv.CsvParserSettings
+import de.maibornwolff.codecharta.model.Dependency
+import de.maibornwolff.codecharta.model.DependencyType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
@@ -64,12 +66,20 @@ class CSVProjectBuilder(
 
     private fun parseContent(parser: CsvParser, header: CSVHeader) {
         var row = parser.parseNext()
+        val dependencies: MutableList<Dependency> = mutableListOf()
         while (row != null) {
             if (includeRows(row)) {
-                insertRowInProject(row, header)
+                try {
+                    val csvRow = CSVRow(row, header, pathSeparator)
+                    val dependency: Dependency = csvRow.asDependency()
+                    dependencies.add(dependency)
+                } catch (e: IllegalArgumentException) {
+                    System.err.println(e.message)
+                }
             }
             row = parser.parseNext()
         }
+        projectBuilder.insertDependency(DependencyType.temporal_coupling, dependencies)
     }
 
     private fun createParser(inStream: InputStream): CsvParser {
@@ -81,12 +91,13 @@ class CSVProjectBuilder(
         return parser
     }
 
-    private fun insertRowInProject(rawRow: Array<String?>, header: CSVHeader) {
+    private fun insertRowInProject(row: Array<String?>, header: CSVHeader): Dependency {
+        var dependency: Dependency? = null
         try {
-            val row = CSVRow(rawRow, header, pathSeparator)
-            projectBuilder.insertByPath(row.pathInTree(), row.asNode())
+            dependency = CSVRow(row, header, pathSeparator).asDependency()
         } catch (e: IllegalArgumentException) {
             System.err.println(e.message)
         }
+        return dependency!!
     }
 }

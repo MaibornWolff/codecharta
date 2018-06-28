@@ -29,38 +29,6 @@
 
 package de.maibornwolff.codecharta.model
 
-
-class Project(
-        val projectName: String,
-        private val nodes: List<Node> = listOf(Node("root", NodeType.Folder)),
-        val apiVersion: String = API_VERSION,
-        val dependencies: MutableMap<DependencyType,MutableList<Dependency>> = mutableMapOf()
-) {
-    init {
-        if (nodes.size != 1) throw IllegalStateException("no root node present in project")
-    }
-
-    val rootNode: Node
-        get() = nodes[0]
-
-    val size: Int
-        get() = rootNode.size
-
-    fun sizeOfDependencies(dependencyType: DependencyType): Int {
-        return dependencies.get(dependencyType)!!.size
-    }
-
-    override fun toString(): String {
-        return "Project{" +
-                "projectName='" + projectName + '\''.toString() +
-                ", apiVersion='" + apiVersion + '\''.toString() +
-                ", nodes=" + nodes +
-                ", dependencies=" + dependencies +
-                '}'.toString()
-    }
-
-    companion object {
-        const val API_VERSION = "1.0"
-    }
-
+enum class DependencyType {
+    static, temporal_coupling
 }
