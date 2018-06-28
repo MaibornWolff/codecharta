@@ -49,6 +49,7 @@ export class NodeContextMenuComponent {
         $rootScope.$broadcast("hide-node-context-menu");
     }
 
+    // TODO all these node methods propably need to go to one of the codemap.*.service components
     showContextMenu(path: string, x, y) {
         //TODO find a better way to do this
         this.$timeout(() => {
@@ -76,21 +77,38 @@ export class NodeContextMenuComponent {
 
     markFolder(color: string) {
         this.hideContextMenu();
-        this.contextMenuBuilding.markingColor = "0x"+color.substr(1);
 
-        hierarchy<CodeMapNode>(this.contextMenuBuilding).descendants().forEach((hierarchyNode) => {
-            hierarchyNode.data.markingColor =  "0x"+color.substr(1);
-        });
+        let startingColor = this.contextMenuBuilding.markingColor;
+
+        let recFn = (current: CodeMapNode)=>{
+            if(!current.markingColor || current.markingColor === startingColor) {
+                current.markingColor = "0x"+color.substr(1);
+                if(current.children){
+                    current.children.forEach(recFn);
+                }
+            }
+        };
+
+        recFn(this.contextMenuBuilding);
 
         this.apply();
     }
 
     unmarkFolder() {
         this.hideContextMenu();
-        this.contextMenuBuilding.markingColor = null;
-        hierarchy<CodeMapNode>(this.contextMenuBuilding).descendants().forEach((hierarchyNode) => {
-            hierarchyNode.data.markingColor = null;
-        });
+
+        let startingColor = this.contextMenuBuilding.markingColor;
+
+        let recFn = (current: CodeMapNode)=>{
+            if(current.markingColor === startingColor) {
+                current.markingColor = null;
+                if(current.children){
+                    current.children.forEach(recFn);
+                }
+            }
+        };
+
+        recFn(this.contextMenuBuilding);
 
         this.apply();
     }
