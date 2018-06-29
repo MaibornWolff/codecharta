@@ -15,9 +15,7 @@ Generates visualisation data from CodeMaat Temporal Coupling CSV data with heade
 3. Convert csv file to cc.json format with CodeMaatCouplingImporter
 
     > ccsh codemaat-couplingimport <project_coupling>.csv -o <project_coupling>.json
-    
-    which prints the visualisation data to stdout.
-    
+        
 4. Merge the coupling data with the project metrics file while using the [MergeFilter](https://github.com/MaibornWolff/codecharta/blob/master/analysis/filter/MergeFilter/README.md)
 
     > ccsh merge <project_coupling>.json <project_metrics>.json -o <project_merged_data>.json
