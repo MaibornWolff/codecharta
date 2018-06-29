@@ -1,0 +1,113 @@
+{
+  "projectName": "Sample Project",
+  "apiVersion": "1.0",
+  "nodes": [{
+      "name": "root",
+      "type": "Folder",
+      "attributes": {
+
+      },
+      "children": [
+        {
+          "name": "file1",
+          "type": "File",
+          "attributes": {
+            "abs_code_churn": 542.0,
+            "added_lines": 460.0,
+            "deleted_lines": 0.0,
+            "number_of_commits": 170.0
+          },
+          "link": "",
+          "children": [
+
+          ]
+        },
+        {
+          "name": "file4",
+          "type": "File",
+          "attributes": {
+            "abs_code_churn": 628.0,
+            "added_lines": 230.0,
+            "deleted_lines": 1.0
+          },
+          "link": "",
+          "children": [
+
+          ]
+        },
+        {
+          "name": "visualization",
+          "type": "Folder",
+          "attributes": {
+          },
+          "link": "",
+          "children": [
+            {
+              "name": "file2",
+              "type": "File",
+              "attributes": {
+                "abs_code_churn": 742.0,
+                "added_lines": 400.0,
+                "deleted_lines": 3.0
+              },
+              "link": "",
+              "children": [
+
+              ]
+            },
+            {
+              "name": "file3",
+              "type": "File",
+              "attributes": {
+                "abs_code_churn": 200.0,
+                "added_lines": 100.0,
+                "deleted_lines": 2.0
+              },
+              "link": "",
+              "children": [
+
+              ]
+            }
+          ]
+        }
+      ]
+  }],
+  "dependencies": {
+    "temporal_coupling": [
+      {
+        "node": "file1",
+        "nodeFilename": "file1",
+        "dependantNode": "visualization/file2",
+        "dependantNodeFilename": "file2",
+        "pairingRate": 100,
+        "averageRevs": 5
+      },
+      {
+        "node": "file1",
+        "nodeFilename": "file1",
+        "dependantNode": "visualization/file3",
+        "dependantNodeFilename": "file3",
+        "pairingRate": 90,
+        "averageRevs": 4
+      }
+    ],
+    "static": [
+      {
+        "node": "file1",
+        "nodeFilename": "file1",
+        "dependantNode": "visualization/file3",
+        "dependantNodeFilename": "file3",
+        "pairingRate": 90,
+        "averageRevs": 4
+      },
+      {
+        "node": "visualization/file2",
+        "nodeFilename": "file2",
+        "dependantNode": "visualization/file3",
+        "dependantNodeFilename": "file3",
+        "pairingRate": 100,
+        "averageRevs": 5
+      }
+    ]
+  }
+}
