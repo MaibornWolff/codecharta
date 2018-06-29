@@ -29,9 +29,7 @@
 
 package de.maibornwolff.codecharta.filter.mergefilter
 
-import de.maibornwolff.codecharta.model.MutableNode
-import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.model.*
 
 class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
 
@@ -57,13 +55,31 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         if (apiVersion != Project.API_VERSION) {
             throw MergeException("API-Version $apiVersion of project is not supported.")
         }
-        return ProjectBuilder(name, mergeProjectNodes()).build()
+        return ProjectBuilder(name, mergeProjectNodes(), apiVersion, mergeProjectDependencies()).build()
     }
 
     private fun mergeProjectNodes(): List<MutableNode> {
         return nodeMerger.mergeNodeLists(projects.map { listOf(it.rootNode.toMutableNode()) })
     }
 
+    private fun mergeProjectDependencies(): MutableMap<DependencyType,MutableList<Dependency>> {
+        val mergedDependencies = mutableMapOf<DependencyType,MutableList<Dependency>>()
+
+        projects.forEach {
+            if (it.dependencies !== null) {
+                it.dependencies.forEach {
+                    val dependencyType: DependencyType = it.key
+
+                    if (mergedDependencies.get(dependencyType) == null) {
+                        mergedDependencies.put(dependencyType, mutableListOf())
+                    }
+
+                    it.value.forEach {
+                        mergedDependencies.get(dependencyType)!!.add(it)
+                    }
+                }
+            }
+        }
+        return mergedDependencies
+    }
 }
-
-
