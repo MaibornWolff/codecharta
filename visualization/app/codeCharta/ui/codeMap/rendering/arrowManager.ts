@@ -61,7 +61,7 @@ export class ArrowManager {
 
         for (var dep of deps) {
             let originNode: node = map.get(dep.node);
-            let targetNode: node = map.get(dep.dependsOn);
+            let targetNode: node = map.get(dep.dependantNode);
             if (originNode && targetNode) {
                 this.addArrow(targetNode, originNode, settings);
             }

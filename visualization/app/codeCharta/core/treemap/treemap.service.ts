@@ -139,7 +139,7 @@ class TreeMapService {
         for (var couple of emphasizedDependencies) {
 
             if (node.path == couple.node ||
-                node.path == couple.dependsOn) {
+                node.path == couple.dependantNode) {
                 return height;
             }
         }
