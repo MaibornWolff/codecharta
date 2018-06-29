@@ -35,35 +35,33 @@ import org.hamcrest.Matchers.hasSize
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.it
 
-class ProjectTest : Spek({
+class ProjectBuilderTest : Spek({
 
     it("should create root node if not present") {
         // given
-        val project = Project("someName")
-        val nodeForInsertion = Node("someNode", NodeType.File)
+        val projectBuilder = ProjectBuilder("someName")
+        val nodeForInsertion = MutableNode("someNode", NodeType.File)
 
         // when
-        project.insertByPath(Path.trivialPath(), nodeForInsertion)
+        val project = projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion).build()
 
         // then
-        assertThat(project.nodes, hasSize(1))
         val root = project.rootNode
         assertThat(root.children, hasSize(1))
-        assertThat(root.children[0], Matchers.`is`(nodeForInsertion))
+        assertThat(root.children[0], NodeMatcher.matchesNode(nodeForInsertion.toNode()))
     }
 
     it("should use root node if present") {
         // given
-        val root = Node("root", NodeType.Folder)
-        val project = Project("someName", listOf(root))
-        val nodeForInsertion = Node("someNode", NodeType.File)
+        val root = MutableNode("root", NodeType.Folder)
+        val projectBuilder = ProjectBuilder("someName", listOf(root))
+        val nodeForInsertion = MutableNode("someNode", NodeType.File)
 
         // when
-        project.insertByPath(Path.trivialPath(), nodeForInsertion)
+        val project = projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion).build()
 
         // then
-        assertThat(project.nodes, hasSize(1))
-        assertThat(project.rootNode, NodeMatcher.matchesNode(root))
+        assertThat(project.rootNode, NodeMatcher.matchesNode(root.toNode()))
         assertThat(root.children, hasSize(1))
         assertThat(root.children[0], Matchers.`is`(nodeForInsertion))
     }

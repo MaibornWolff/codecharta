@@ -32,7 +32,6 @@ package de.maibornwolff.codecharta.serialization
 import com.google.gson.GsonBuilder
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
-
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.FileReader

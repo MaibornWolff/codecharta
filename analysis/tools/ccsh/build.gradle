@@ -7,7 +7,6 @@ dependencies {
     compile project(':import:CrococosmoImporter')
     compile project(':import:CSVImporter')
     compile project(':import:SCMLogParser')
-    compile project(':import:SCMLogParser')
     compile project(':import:SonarImporter')
     compile project(':import:UnderstandImporter')
     compile project(':filter:MergeFilter')

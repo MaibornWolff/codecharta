@@ -92,10 +92,10 @@ class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: U
         }
     }
 
-    fun asNode(): Node {
+    fun asNode(): MutableNode {
         return when {
-            isFileRow -> Node(filename, nodeType, attributes)
-            else -> Node(name, nodeType, attributes)
+            isFileRow -> MutableNode(filename, nodeType, attributes)
+            else -> MutableNode(name, nodeType, attributes)
         }
     }
 

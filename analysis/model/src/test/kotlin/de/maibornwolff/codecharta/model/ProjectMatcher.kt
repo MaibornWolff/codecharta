@@ -50,9 +50,6 @@ object ProjectMatcher {
 
     fun match(p1: Project, p2: Project): Boolean {
         return p1.apiVersion == p2.apiVersion
-                && p1.nodes.size == p2.nodes.size
-                && p1.nodes.indices
-                .map { NodeMatcher.match(p1.nodes[it], p2.nodes[it]) }
-                .fold(true, { x, y -> x && y })
+                && NodeMatcher.match(p1.rootNode, p2.rootNode)
     }
 }

@@ -71,14 +71,14 @@ internal class NodeJsonDeserializer : JsonDeserializer<Node> {
     }
 
     private fun deserializeAttributes(context: JsonDeserializationContext, jsonNode: JsonObject): Map<String, Any> {
-        val attributes = jsonNode.get("attributes") ?: return HashMap()
+        val attributes = jsonNode.get("attributes") ?: return mapOf()
 
         val gson = GsonBuilder().create()
         return gson.fromJson<Map<String, Any>>(attributes, Map::class.java)
     }
 
-    private fun deserializeChildren(context: JsonDeserializationContext, jsonNode: JsonObject): MutableList<Node> {
-        val children = jsonNode.get("children") ?: return ArrayList()
+    private fun deserializeChildren(context: JsonDeserializationContext, jsonNode: JsonObject): List<Node> {
+        val children = jsonNode.get("children") ?: return listOf()
 
         return children.asJsonArray.mapTo(ArrayList()) { deserialize(it, Node::class.java, context) }
     }

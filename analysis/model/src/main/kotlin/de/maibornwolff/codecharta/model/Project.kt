@@ -29,40 +29,21 @@
 
 package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
-
-open class Project(
+class Project(
         val projectName: String,
-        nodeList: List<Node> = listOf(),
+        private val nodes: List<Node> = listOf(Node("root", NodeType.Folder)),
         val apiVersion: String = API_VERSION
 ) {
-    val nodes = nodeList.toMutableList()
+    init {
+        if (nodes.size != 1) throw IllegalStateException("no root node present in project")
+    }
 
     val rootNode: Node
         get() = nodes[0]
 
-    private fun hasRootNode(): Boolean {
-        return nodes.size == 1
-    }
-
-    /**
-     * Inserts the node as child of the element at the specified position in the tree.
-     *
-     * @param position absolute path to the parent element of the node that has to be inserted
-     * @param node     that has to be inserted
-     */
-    fun insertByPath(position: Path, node: Node) {
-        if (!hasRootNode()) {
-            nodes.add(Node("root", NodeType.Folder))
-        }
-
-        rootNode.insertAt(position, node)
-    }
-
-     fun translateMetricNames(metricNameTranslator: MetricNameTranslator) {
-         rootNode.translateMetricNames(metricNameTranslator, recursive= true)
-     }
+    val size: Int
+        get() = rootNode.size
 
     override fun toString(): String {
         return "Project{" +

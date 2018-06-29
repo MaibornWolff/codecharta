@@ -29,43 +29,37 @@
 
 package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import java.util.*
+import javax.naming.OperationNotSupportedException
 
-open class Node constructor(
+class Node constructor(
         val name: String,
         val type: NodeType? = NodeType.File,
-        var attributes: Map<String, Any> = mutableMapOf(),
-        var link: String? = "",
-        childrenList: List<Node> = listOf(),
-        @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeMaxAttributeMergerIgnoringChildren
+        val attributes: Map<String, Any> = mapOf(),
+        val link: String? = "",
+        override val children: List<Node> = listOf()
 ) : Tree<Node>() {
-
-    override val children = childrenList.toMutableList()
 
     override fun getPathOfChild(child: Tree<Node>): Path {
         if (!children.contains(child)) {
-            throw NoSuchElementException("Child $child not contained in Node.")
+            throw NoSuchElementException("Child $child not contained in MutableNode.")
         }
         return Path(listOf((child.asTreeNode()).name))
     }
 
     override fun toString(): String {
-        return "Node(name='$name', type=$type, attributes=$attributes, link=$link, children=$children)"
+        return "MutableNode(name='$name', type=$type, attributes=$attributes, link=$link, children=$children)"
     }
 
     override fun insertAt(path: Path, node: Node) {
-        NodeInserter.insertByPath(this, path, node)
+        throw OperationNotSupportedException("no inserting in immutable nodes")
     }
 
     override fun merge(nodes: List<Node>): Node {
-        return nodeMergingStrategy.merge(this, nodes)
+        throw OperationNotSupportedException("no inserting in immutable nodes")
     }
 
-    fun translateMetricNames(metricNameTranslator: MetricNameTranslator, recursive: Boolean) {
-        attributes = attributes.mapKeys { metricNameTranslator.translate(it.key) }
-        if (recursive) {
-            children.forEach { it.translateMetricNames(metricNameTranslator, recursive) }
-        }
+    fun toMutableNode(): MutableNode {
+        return MutableNode(name, type, attributes, link, children.map { it.toMutableNode() })
     }
 }

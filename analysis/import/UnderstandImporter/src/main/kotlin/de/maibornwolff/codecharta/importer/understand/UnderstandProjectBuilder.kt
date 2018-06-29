@@ -31,18 +31,21 @@ package de.maibornwolff.codecharta.importer.understand
 
 import com.univocity.parsers.csv.CsvParser
 import com.univocity.parsers.csv.CsvParserSettings
-import de.maibornwolff.codecharta.model.Node
-import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
-class ProjectCreator(
-        private val projectName: String,
+class UnderstandProjectBuilder(
+        projectName: String,
         private val pathSeparator: Char,
-        private val aggregation: AGGREGATION = AGGREGATION.FILE
+        aggregation: AGGREGATION = AGGREGATION.FILE
 ) {
+
+    private val projectBuilder = ProjectBuilder(projectName)
+            .withMetricTranslator(understandReplacement)
 
     init {
         if (aggregation != AGGREGATION.FILE) throw NotImplementedError("only file aggregation is implemented yet.")
@@ -50,35 +53,43 @@ class ProjectCreator(
 
     private val csvDelimiter = ','
 
-    private fun createEmptyProject(): Project {
-        val project = Project(projectName)
-        project.nodes.add(Node("root", NodeType.Folder))
-        return project
-    }
+    private val understandReplacement: MetricNameTranslator
+        get() {
+            val prefix = "understand_"
+            val replacementMap = mutableMapOf<String, String>()
+            replacementMap["AvgCyclomatic"] = "average_function_mcc"
+            replacementMap["CountDeclClass"] = "classes"
+            replacementMap["CountDeclMethod"] = "functions"
+            replacementMap["CountDeclMethodPublic"] = "public_api"
+            replacementMap["CountLine"] = "loc"
+            replacementMap["CountLineCode"] = "rloc"
+            replacementMap["CountLineComment"] = "comment_lines"
+            replacementMap["CountStmt"] = "statements"
+            replacementMap["MaxCyclomatic"] = "max_function_mcc"
+            replacementMap["MaxNesting"] = "max_block_depth"
+            replacementMap["SumCyclomatic"] = "mcc"
 
-    fun createFromCsvStream(
-            inStreams: List<InputStream>,
-            project: Project = createEmptyProject()
-    ): Project {
-        inStreams.forEach { createFromCsvStream(it, project) }
-        return project
-    }
+            return MetricNameTranslator(replacementMap.toMap(), prefix)
+        }
 
-    fun createFromCsvStream(
-            inStream: InputStream,
-            project: Project = createEmptyProject()
-    ): Project {
+    fun parseCSVStream(
+            inStream: InputStream
+    ): UnderstandProjectBuilder {
         val parser = createParser(inStream)
         val header = UnderstandCSVHeader(parser.parseNext())
-        parseContent(project, parser, header)
+        parseContent(projectBuilder, parser, header)
         parser.stopParsing()
-        return project
+        return this
     }
 
-    private fun parseContent(project: Project, parser: CsvParser, header: UnderstandCSVHeader) {
+    fun build(): Project {
+        return projectBuilder.build()
+    }
+
+    private fun parseContent(projectBuilder: ProjectBuilder, parser: CsvParser, header: UnderstandCSVHeader) {
         var row = parser.parseNext()
         while (row != null) {
-            insertRowInProject(project, row, header)
+            projectBuilder.insertRow(row, header)
             row = parser.parseNext()
         }
     }
@@ -92,11 +103,11 @@ class ProjectCreator(
         return parser
     }
 
-    private fun insertRowInProject(project: Project, rawRow: Array<String?>, header: UnderstandCSVHeader) {
+    private fun ProjectBuilder.insertRow(rawRow: Array<String?>, header: UnderstandCSVHeader) {
         try {
             val row = UnderstandCSVRow(rawRow, header, pathSeparator)
             if (row.isFileRow) {
-                project.insertByPath(row.pathInTree(), row.asNode())
+                this.insertByPath(row.pathInTree(), row.asNode())
             }
         } catch (e: IllegalArgumentException) {
             System.err.println(e.message)

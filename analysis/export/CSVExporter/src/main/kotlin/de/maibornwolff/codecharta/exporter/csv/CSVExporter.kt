@@ -69,7 +69,7 @@ class CSVExporter : Callable<Void> {
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        if (maxHierarchy < 0){
+        if (maxHierarchy < 0) {
             throw IllegalArgumentException("depthOfHierarchy must not be negative")
         }
 
@@ -107,7 +107,7 @@ class CSVExporter : Callable<Void> {
         return when {
             values.distinct().none { !it.isBlank() } -> listOf()
             dirs.size < maxHierarchy -> rowWithoutDirs.plus(dirs).plus(List(maxHierarchy - dirs.size, { "" }))
-            else -> rowWithoutDirs.plus(dirs.subList(0,maxHierarchy))
+            else -> rowWithoutDirs.plus(dirs.subList(0, maxHierarchy))
         }
     }
 

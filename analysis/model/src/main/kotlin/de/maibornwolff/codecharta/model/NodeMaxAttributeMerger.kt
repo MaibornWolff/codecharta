@@ -33,9 +33,9 @@ package de.maibornwolff.codecharta.model
  * merging multiply nodes by using max attribute and link, ignoring children
  */
 object NodeMaxAttributeMergerIgnoringChildren : NodeMergerStrategy {
-    override fun merge(tree: Node, otherTrees: List<Node>): Node {
+    override fun merge(tree: MutableNode, otherTrees: List<MutableNode>): MutableNode {
         val nodes = listOf(tree).plus(otherTrees)
-        return Node(
+        return MutableNode(
                 createName(tree),
                 createType(tree),
                 createAttributes(nodes),
@@ -44,16 +44,16 @@ object NodeMaxAttributeMergerIgnoringChildren : NodeMergerStrategy {
         )
     }
 
-    private fun createLink(nodes: List<Node>) = nodes.map { it.link }.firstOrNull { it != null && !it.isBlank() }
+    private fun createLink(nodes: List<MutableNode>) = nodes.map { it.link }.firstOrNull { it != null && !it.isBlank() }
 
-    private fun createAttributes(nodes: List<Node>) =
+    private fun createAttributes(nodes: List<MutableNode>) =
             nodes.map { it.attributes }.
                     reduce { acc, mutableMap -> acc.mergeReduce(mutableMap, {x,y -> maxValOrFirst(x,y)}) }
                     .toMutableMap()
 
-    private fun createType(nodes: Node) = nodes.type
+    private fun createType(nodes: MutableNode) = nodes.type
 
-    private fun createName(nodes: Node) = nodes.name
+    private fun createName(nodes: MutableNode) = nodes.name
 
     private fun maxValOrFirst(x: Any, y: Any) : Any  {
         return when {
