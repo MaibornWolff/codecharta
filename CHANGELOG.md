@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- Display buttons do not trigger map changes #185
 
 ## [1.13.0] - 2018-06-08
 ### Added
