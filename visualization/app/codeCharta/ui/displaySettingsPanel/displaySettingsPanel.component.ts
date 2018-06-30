@@ -9,6 +9,10 @@ export class DisplaySettingsPanelController {
     ) {
     }
 
+    public changeMargin(){
+        this.settingsService.settings.dynamicMargin = false;
+        this.settingsService.applySettings();
+    }
 }
 
 export const displaySettingsPanelComponent = {

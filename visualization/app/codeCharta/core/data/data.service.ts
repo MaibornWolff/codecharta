@@ -56,7 +56,7 @@ export class DataService {
      * as many variables as desired and also to remain the computed value in all calls to fn that recursive
      * procedure requires.
      */
-    public goThroughMap(map: CodeMapNode, fn: Function, parameters: any[]){
+    public goThroughMap(map: CodeMapNode, fn: Function, parameters: any[]|{}){
         fn(map, parameters);
         if(map.children){
             for(let child of map.children){

@@ -37,6 +37,7 @@ export interface Settings {
     showDependencies: boolean;
     maximizeDetailPanel: boolean;
     invertHeight: boolean;
+    dynamicMargin: boolean;
 }
 
 export interface SettingsServiceSubscriber {
@@ -105,7 +106,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             deltaColorFlipped: false,
             showDependencies: false,
             maximizeDetailPanel: false,
-            invertHeight: false
+            invertHeight: false,
+            dynamicMargin: true
         };
 
         return settings;
@@ -146,8 +148,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             this._settings.colorMetric = this.getMetricByIdOrLast(2, data.metrics);
         }
 
-        this.settings.margin = this.computeMargin();
-
         this.onSettingsChanged();
 
     }
@@ -173,6 +173,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      */
     public onSettingsChanged() {
 
+        this.settings.margin = this.computeMargin();
+
         if (this._lastDeltaState && !this._settings.deltas) {
             this._lastDeltaState = false;
             this.onDeactivateDeltas();
@@ -182,7 +184,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             this._lastDeltaState = true;
             this.onActivateDeltas();
         }
-
         this.$rootScope.$broadcast("settings-changed", this._settings);
     }
 
@@ -248,36 +249,38 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     public  computeMargin(): number{
 
         let margin: number;
-        if(this.dataService.data.renderMap != null){
-          let  root: CodeMapNode = this.dataService.data.renderMap.root;
+        if(this.dataService.data.renderMap != null && this.settings.dynamicMargin){
+            let  root: CodeMapNode = this.dataService.data.renderMap.root;
 
-        // Previous parameters are wrapped to introduce them into goThroughMap() and make value changes
-        // remain, with a pointer-like behaviour
-        let numberOfBuildingsWrapped = {numberOfBuildings:0};
-        let areaParametersWrapped = {areaMetricName: this.settings.areaMetric, totalArea: 0};
+            // Previous parameters are wrapped to introduce them into goThroughMap() and make value changes
+            // remain, with a pointer-like behaviour
+            let numberOfBuildingsWrapped = {numberOfBuildings:0};
+            let areaParametersWrapped = {areaMetricName: this.settings.areaMetric, totalArea: 0};
 
-        this.dataService.goThroughMap( root, this.countBuildings, numberOfBuildingsWrapped);
-        this.dataService.goThroughMap( root, this.calculateTotalArea, areaParametersWrapped);
+            this.dataService.goThroughMap( root, this.countBuildings, numberOfBuildingsWrapped);
+            this.dataService.goThroughMap( root, this.calculateTotalArea, areaParametersWrapped);
 
-        margin = 4 * Math.round(
-            Math.sqrt(
+            margin = 4 * Math.round(Math.sqrt(
                 (areaParametersWrapped["totalArea"]/numberOfBuildingsWrapped["numberOfBuildings"])));
 
-        console.log("buildings "+numberOfBuildingsWrapped["numberOfBuildings"]+" area "+
-            areaParametersWrapped["areaMetricName"] +" "+areaParametersWrapped["totalArea"]+" margin "+margin);
+            if(!Number.isFinite(margin)){
+                margin = 15;
+            }
         }
+
         else{
-            margin = 15;
+            margin = this.settings.margin||15;
         }
+
         return margin;
     }
 
     /*
     * @param {CodeMapNode} map
-    * @param {number[]} buildings ["numberOfBuildings"] the number of leaves( aka buildings) in map
+    * @param {number{}} buildings {"numberOfBuildings"} the number of leaves( aka buildings) in map
     *
      */
-    private countBuildings(map: CodeMapNode, buildings: number[]){
+    private countBuildings(map: CodeMapNode, buildings: {numberOfBuildings: number}){
         if(!map.children){
             buildings["numberOfBuildings"]++;
         }
@@ -286,10 +289,10 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     /**
      *
      * @param map
-     * @param area ["areaMetricName"] name of the metric used for area in the map,
-     *          ["totalArea"] aggregated value of the area
+     * @param area {"areaMetricName"} name of the metric used for area in the map,
+     *          {"totalArea"} aggregated value of the area
      */
-    private calculateTotalArea(map: CodeMapNode, area: any[]){
+    private calculateTotalArea(map: CodeMapNode, area: {totalArea: number, areaMetricName: string }){
         if(!map.children){
             area["totalArea"]+=map.attributes[area["areaMetricName"]];
         }
@@ -391,6 +394,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.deltaColorFlipped = settings.deltaColorFlipped;
         this._settings.maximizeDetailPanel = settings.maximizeDetailPanel;
         this._settings.invertHeight = settings.invertHeight;
+        this._settings.dynamicMargin = settings.dynamicMargin;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = settings.map|| this.settings.map;
