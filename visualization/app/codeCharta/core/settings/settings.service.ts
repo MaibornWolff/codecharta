@@ -6,7 +6,6 @@ import {
 import {PerspectiveCamera} from "three";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
 import {DeltaCalculatorService} from "../data/data.deltaCalculator.service";
-import * as d3 from "d3";
 import {DataDecoratorService} from "../data/data.decorator.service";
 import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
 
@@ -56,8 +55,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
     /* ngInject */
     constructor(private urlService, private dataService: DataService, private $rootScope,
-                private threeOrbitControlsService: ThreeOrbitControlsService, private statisticMapService, private deltaCalculatorService: DeltaCalculatorService,
-                private dataDecoratorService: DataDecoratorService) {
+                private threeOrbitControlsService: ThreeOrbitControlsService) {
 
         this._settings = this.getInitialSettings(dataService.data.renderMap, dataService.data.metrics);
 
@@ -136,7 +134,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             //area metric is not set or not in the new metrics and needs to be chosen
             this._settings.areaMetric = this.getMetricByIdOrLast(0, data.metrics);
         }
-        console.log("area "+this._settings.areaMetric);
 
         if (data.metrics.indexOf(this._settings.heightMetric) === -1) {
             //height metric is not set or not in the new metrics and needs to be chosen
