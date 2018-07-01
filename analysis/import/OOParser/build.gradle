@@ -36,6 +36,12 @@ generateGrammarSource {
     outputDirectory = new File("src/generated/antlr/de/maibornwolff/codecharta/importer/ooparser/antlr/java".toString())
 }
 
+
+generateGrammarSource.doFirst {
+    exec { executable "pwd" }
+    exec { executable "ls" }
+}
+
 //compileJava.dependsOn generateGrammarSource
 
 sourceSets {
