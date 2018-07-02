@@ -33,7 +33,7 @@ generateGrammarSource {
     maxHeapSize = "64m"
     arguments += ['-package', 'de.maibornwolff.codecharta.importer.ooparser.antlr.java']
     arguments += ["-visitor", "-long-messages"]
-    outputDirectory = new File("src/generated/antlr/de/maibornwolff/codecharta/importer/ooparser/antlr/java".toString())
+    outputDirectory = new File("generated/antlr/de/maibornwolff/codecharta/importer/ooparser/antlr/java".toString())
 }
 
 
@@ -42,14 +42,13 @@ generateGrammarSource.doFirst {
     exec { executable "pwd" }
     exec { executable "ls"; args = ["src"] }
     println ">Generated"
-    exec { executable "ls"; args = ["src/generated/antlr"] }
 }
 
 //compileJava.dependsOn generateGrammarSource
 
 sourceSets {
     main {
-        java.srcDirs = ["src/main/java", "src/generated/antlr"]
+        java.srcDirs = ["src/main/java", "generated/antlr"]
     }
 }
 
