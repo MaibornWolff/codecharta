@@ -38,8 +38,11 @@ generateGrammarSource {
 
 
 generateGrammarSource.doFirst {
+    println "--First--"
     exec { executable "pwd" }
-    exec { executable "ls" }
+    exec { executable "ls"; args = ["src"] }
+    println ">Generated"
+    exec { executable "ls"; args = ["src/generated/antlr"] }
 }
 
 //compileJava.dependsOn generateGrammarSource
