@@ -240,8 +240,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     /**
      * @returns {number}
      *
-     * Function that computes the margin applied to a scenario related the square root of the area divided
-     * by the number of buildings
+     * Function that computes the margin applied to a scenario related the square root of (the area divided
+     * by the number of buildings)
      */
     public  computeMargin(): number{
 
@@ -251,14 +251,14 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
             // Previous parameters are wrapped to introduce them into goThroughMap() and make value changes
             // remain, with a pointer-like behaviour
-            let numberOfBuildingsWrapped = {numberOfBuildings:0};
+            let numberOfBuildingsWrapped = {numberOfBuildings: 0};
             let areaParametersWrapped = {areaMetricName: this.settings.areaMetric, totalArea: 0};
 
             this.dataService.goThroughMap( root, this.countBuildings, numberOfBuildingsWrapped);
             this.dataService.goThroughMap( root, this.calculateTotalArea, areaParametersWrapped);
 
             margin = 4 * Math.round(Math.sqrt(
-                (areaParametersWrapped["totalArea"]/numberOfBuildingsWrapped["numberOfBuildings"])));
+                (areaParametersWrapped.totalArea / numberOfBuildingsWrapped.numberOfBuildings)));
 
             if(!Number.isFinite(margin)){
                 margin = 15;
@@ -279,7 +279,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      */
     private countBuildings(map: CodeMapNode, buildings: {numberOfBuildings: number}){
         if(!map.children){
-            buildings["numberOfBuildings"]++;
+            buildings.numberOfBuildings++;
         }
     }
 
@@ -291,7 +291,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      */
     private calculateTotalArea(map: CodeMapNode, area: {totalArea: number, areaMetricName: string }){
         if(!map.children){
-            area["totalArea"]+=map.attributes[area["areaMetricName"]];
+            area.totalArea += map.attributes[area.areaMetricName];
         }
     }
     /**
