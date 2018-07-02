@@ -33,16 +33,9 @@ generateGrammarSource {
     maxHeapSize = "64m"
     arguments += ['-package', 'de.maibornwolff.codecharta.importer.ooparser.antlr.java']
     arguments += ["-visitor", "-long-messages"]
-    outputDirectory = new File("src/generated/antlr/de/maibornwolff/codecharta/importer/ooparser/antlr/java")
+    // NOTE: We NEED projectDir here, because the root project build.gradle will otherwise use the wrong relative folder
+    outputDirectory = new File("${projectDir}/src/generated/antlr/de/maibornwolff/codecharta/importer/ooparser/antlr/java").absoluteFile
 }
-
-
-generateGrammarSource.doFirst {
-    println "File: "+(new File("src/generated/antlr/de/maibornwolff/codecharta/importer/ooparser/antlr/java").absolutePath)
-    println "File exists: "+(new File("src/generated/antlr/de/maibornwolff/codecharta/importer/ooparser/antlr/java").exists())
-}
-
-//compileJava.dependsOn generateGrammarSource
 
 sourceSets {
     main {
@@ -53,5 +46,5 @@ sourceSets {
 compileJava.source sourceSets.main.java
 
 clean{
-    //delete "src/generated"
+    delete "src/generated"
 }
