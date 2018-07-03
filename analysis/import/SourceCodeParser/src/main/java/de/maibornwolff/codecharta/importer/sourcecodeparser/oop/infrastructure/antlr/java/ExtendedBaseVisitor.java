@@ -42,6 +42,12 @@ public class ExtendedBaseVisitor extends JavaParserBaseVisitor {
     }
 
     @Override
+    public Object visitEnumDeclaration(JavaParser.EnumDeclarationContext ctx) {
+        source.addTag(ctx.getStart().getLine(), CodeTags.ENUM);
+        return visitChildren(ctx);
+    }
+
+    @Override
     public Object visitConstructorDeclaration(JavaParser.ConstructorDeclarationContext ctx) {
         source.addTag(ctx.getStart().getLine(), CodeTags.CONSTRUCTOR);
         return visitChildren(ctx);

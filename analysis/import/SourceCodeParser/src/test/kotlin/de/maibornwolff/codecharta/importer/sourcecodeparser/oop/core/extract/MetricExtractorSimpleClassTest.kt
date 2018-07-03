@@ -2,7 +2,8 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Api
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermediate.SourceCode
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.res.*
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.*
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.prettyPrint
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import java.io.IOException
@@ -45,8 +46,11 @@ class MetricExtractorSimpleClassTest {
         val metricExtractor = MetricExtractor(sourceCode)
 
         Assertions.assertThat(metricExtractor[1].rloc).isEqualTo(1)
+        Assertions.assertThat(metricExtractor[1].rlocWasIncremented).isTrue()
         Assertions.assertThat(metricExtractor[2].rloc).isEqualTo(1)
+        Assertions.assertThat(metricExtractor[2].rlocWasIncremented).isFalse()
         Assertions.assertThat(metricExtractor[3].rloc).isEqualTo(2)
+        Assertions.assertThat(metricExtractor[3].rlocWasIncremented).isTrue()
     }
 
     @Test

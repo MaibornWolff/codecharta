@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermedia
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Api
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.antlrinterop.CodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.antlrinterop.NonCodeTags
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.res.javaBaseFolder
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.javaBaseFolder
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.IOException
