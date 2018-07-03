@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.intermediate
 import de.maibornwolff.codecharta.importer.sourcecodeparser.antlr.java.Api
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.antlrinterop.CodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.antlrinterop.NonCodeTags
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.res.javaBaseFolder
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.IOException
@@ -14,7 +15,7 @@ class SourceCodeSimpleClassTest {
     @Test(expected = IndexOutOfBoundsException::class)
     @Throws(IOException::class)
     fun trying_index_0_results_in_exceptions_because_code_starts_at_line_1() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeSimple.java"
+        val resource = "$javaBaseFolder/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -25,7 +26,7 @@ class SourceCodeSimpleClassTest {
     @Test
     @Throws(IOException::class)
     fun trying_last_index_does_not_result_in_exception() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeSimple.java"
+        val resource = "$javaBaseFolder/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -36,7 +37,7 @@ class SourceCodeSimpleClassTest {
     @Test
     @Throws(IOException::class)
     fun finds_all_lines() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeSimple.java"
+        val resource = "$javaBaseFolder/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -47,7 +48,7 @@ class SourceCodeSimpleClassTest {
     @Test
     @Throws(IOException::class)
     fun finds_all_comments() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeSimple.java"
+        val resource = "$javaBaseFolder/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -58,7 +59,7 @@ class SourceCodeSimpleClassTest {
     @Test
     @Throws(IOException::class)
     fun finds_package_declaration() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeSimple.java"
+        val resource = "$javaBaseFolder/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -69,7 +70,7 @@ class SourceCodeSimpleClassTest {
     @Test
     @Throws(IOException::class)
     fun empty_line_is_not_code() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeSimple.java"
+        val resource = "$javaBaseFolder/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -80,7 +81,7 @@ class SourceCodeSimpleClassTest {
     @Test
     @Throws(IOException::class)
     fun finds_import_statements() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeSimple.java"
+        val resource = "$javaBaseFolder/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -91,7 +92,7 @@ class SourceCodeSimpleClassTest {
     @Test
     @Throws(IOException::class)
     fun finds_annotations() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeSimple.java"
+        val resource = "$javaBaseFolder/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -102,7 +103,7 @@ class SourceCodeSimpleClassTest {
     @Test
     @Throws(IOException::class)
     fun finds_class() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeSimple.java"
+        val resource = "$javaBaseFolder/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -113,7 +114,7 @@ class SourceCodeSimpleClassTest {
     @Test
     @Throws(IOException::class)
     fun finds_field_declarations() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeSimple.java"
+        val resource = "$javaBaseFolder/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -124,7 +125,7 @@ class SourceCodeSimpleClassTest {
     @Test
     @Throws(IOException::class)
     fun finds_constructor_declarations() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeSimple.java"
+        val resource = "$javaBaseFolder/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -135,7 +136,7 @@ class SourceCodeSimpleClassTest {
     @Test
     @Throws(IOException::class)
     fun finds_method_declarations() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeSimple.java"
+        val resource = "$javaBaseFolder/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -146,7 +147,7 @@ class SourceCodeSimpleClassTest {
     @Test
     @Throws(IOException::class)
     fun finds_global_and_local_variables() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeSimple.java"
+        val resource = "$javaBaseFolder/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -157,7 +158,7 @@ class SourceCodeSimpleClassTest {
     @Test
     @Throws(IOException::class)
     fun finds_expressions_inside_class() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeSimple.java"
+        val resource = "$javaBaseFolder/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -169,7 +170,7 @@ class SourceCodeSimpleClassTest {
     @Test
     @Throws(IOException::class)
     fun finds_statements_inside_methods() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeSimple.java"
+        val resource = "$javaBaseFolder/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -181,7 +182,7 @@ class SourceCodeSimpleClassTest {
     @Test
     @Throws(IOException::class)
     fun finds_method_calls() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeSimple.java"
+        val resource = "$javaBaseFolder/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -192,7 +193,7 @@ class SourceCodeSimpleClassTest {
     @Test
     @Throws(IOException::class)
     fun finds_conditions() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeSimple.java"
+        val resource = "$javaBaseFolder/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)

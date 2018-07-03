@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.intermediate
 import de.maibornwolff.codecharta.importer.sourcecodeparser.antlr.java.Api
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.antlrinterop.CodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.antlrinterop.NonCodeTags
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.res.javaBaseFolder
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import java.io.IOException
@@ -14,7 +15,7 @@ class SourceCodeComplexInterfaceTest {
     @Test
     @Throws(IOException::class)
     fun finds_all_lines() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeComplexInterface.java"
+        val resource = "$javaBaseFolder/SourceCodeComplexInterface.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -25,7 +26,7 @@ class SourceCodeComplexInterfaceTest {
     @Test
     @Throws(IOException::class)
     fun finds_all_comments() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeComplexInterface.java"
+        val resource = "$javaBaseFolder/SourceCodeComplexInterface.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -36,7 +37,7 @@ class SourceCodeComplexInterfaceTest {
     @Test
     @Throws(IOException::class)
     fun finds_imports() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeComplexInterface.java"
+        val resource = "$javaBaseFolder/SourceCodeComplexInterface.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -47,7 +48,7 @@ class SourceCodeComplexInterfaceTest {
     @Test
     @Throws(IOException::class)
     fun finds_interface() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeComplexInterface.java"
+        val resource = "$javaBaseFolder/SourceCodeComplexInterface.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -58,7 +59,7 @@ class SourceCodeComplexInterfaceTest {
     @Test
     @Throws(IOException::class)
     fun finds_constant_declarations() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeComplexInterface.java"
+        val resource = "$javaBaseFolder/SourceCodeComplexInterface.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -69,7 +70,7 @@ class SourceCodeComplexInterfaceTest {
     @Test
     @Throws(IOException::class)
     fun finds_enumConstant() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeComplexInterface.java"
+        val resource = "$javaBaseFolder/SourceCodeComplexInterface.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -80,7 +81,7 @@ class SourceCodeComplexInterfaceTest {
     @Test
     @Throws(IOException::class)
     fun finds_fields_in_enum() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeComplexInterface.java"
+        val resource = "$javaBaseFolder/SourceCodeComplexInterface.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -91,7 +92,7 @@ class SourceCodeComplexInterfaceTest {
     @Test
     @Throws(IOException::class)
     fun finds_methods() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeComplexInterface.java"
+        val resource = "$javaBaseFolder/SourceCodeComplexInterface.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -102,7 +103,7 @@ class SourceCodeComplexInterfaceTest {
     @Test
     @Throws(IOException::class)
     fun finds_constructor() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeComplexInterface.java"
+        val resource = "$javaBaseFolder/SourceCodeComplexInterface.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -113,7 +114,7 @@ class SourceCodeComplexInterfaceTest {
     @Test
     @Throws(IOException::class)
     fun finds_method_calls() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeComplexInterface.java"
+        val resource = "$javaBaseFolder/SourceCodeComplexInterface.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -124,7 +125,7 @@ class SourceCodeComplexInterfaceTest {
     @Test
     @Throws(IOException::class)
     fun finds_statements() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeComplexInterface.java"
+        val resource = "$javaBaseFolder/SourceCodeComplexInterface.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)
@@ -136,7 +137,7 @@ class SourceCodeComplexInterfaceTest {
     @Test
     @Throws(IOException::class)
     fun finds_expressions() {
-        val resource = "de/maibornwolff/codecharta/importer/sourcecodeparser/oop/java/SourceCodeComplexInterface.java"
+        val resource = "$javaBaseFolder/SourceCodeComplexInterface.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Api.addTagsToSource(sourceCode)

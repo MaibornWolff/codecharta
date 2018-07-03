@@ -1,4 +1,6 @@
-
+/*
+ * From https://github.com/antlr/grammars-v4/blob/master/java/examples/AllInOne7.java
+ */
 
 public class None {
 
