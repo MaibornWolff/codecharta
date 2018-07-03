@@ -19,7 +19,7 @@ class SourceCode(everySourceLine: List<String>): Iterable<Line>, Source {
     }
 
     override fun text(): String {
-        return lines.joinToString("\n") { it.text() }
+        return lines.joinToString("\n") { it.text }
     }
 
 
