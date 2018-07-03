@@ -6,11 +6,11 @@ Generates visualisation data from CodeMaat Temporal Coupling CSV data with heade
 
 1. Create VCS Log file from your project, e.x. with Git
 
-    > git log --pretty=format:'[%h] %an %ad %s' --date=short --numstat > <project>.log
+    > git log --pretty=format:'[%h] %an %ad %s' --since=<YYYY/MM/DD> --date=short --numstat > \<project>.log
 
 2. Analyse the Log with [CodeMaat](https://github.com/adamtornhill/code-maat)
 
-    > maat -c git -l <project>.log -a coupling > <project_coupling>.csv
+    > maat -c git -l \<project>.log -a coupling > <project_coupling>.csv
 
 3. Convert csv file to cc.json format with CodeMaatCouplingImporter
 
