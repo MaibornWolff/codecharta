@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.a
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.antlrinterop.CodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.antlrinterop.NonCodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.javaBaseFolder
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.IOException
 import java.nio.file.Files
@@ -20,7 +20,7 @@ class SourceCodeComplexInterfaceTest {
 
         Api.addTagsToSource(sourceCode)
 
-        Assertions.assertThat(sourceCode.lineCount()).isEqualTo(66)
+        assertThat(sourceCode.lineCount()).isEqualTo(66)
     }
 
     @Test
@@ -31,7 +31,7 @@ class SourceCodeComplexInterfaceTest {
 
         Api.addTagsToSource(sourceCode)
 
-        Assertions.assertThat(sourceCode.linesWithTag(NonCodeTags.COMMENT)).containsExactly(8, 9, 10, 11, 16, 19, 39, 48, 59)
+        assertThat(sourceCode.linesWithTag(NonCodeTags.COMMENT)).containsExactly(8, 9, 10, 11, 16, 19, 39, 48, 59)
     }
 
     @Test
@@ -42,7 +42,7 @@ class SourceCodeComplexInterfaceTest {
 
         Api.addTagsToSource(sourceCode)
 
-        Assertions.assertThat(sourceCode.linesWithTag(CodeTags.IMPORT)).containsExactly(4, 6)
+        assertThat(sourceCode.linesWithTag(CodeTags.IMPORT)).containsExactly(4, 6)
     }
 
     @Test
@@ -53,7 +53,7 @@ class SourceCodeComplexInterfaceTest {
 
         Api.addTagsToSource(sourceCode)
 
-        Assertions.assertThat(sourceCode.linesWithTag(CodeTags.INTERFACE)).containsExactly(13)
+        assertThat(sourceCode.linesWithTag(CodeTags.INTERFACE)).containsExactly(13)
     }
 
     @Test
@@ -64,7 +64,7 @@ class SourceCodeComplexInterfaceTest {
 
         Api.addTagsToSource(sourceCode)
 
-        Assertions.assertThat(sourceCode.linesWithTag(CodeTags.INTERFACE_CONSTANT)).containsExactly(17)
+        assertThat(sourceCode.linesWithTag(CodeTags.INTERFACE_CONSTANT)).containsExactly(17)
     }
 
     @Test
@@ -75,7 +75,7 @@ class SourceCodeComplexInterfaceTest {
 
         Api.addTagsToSource(sourceCode)
 
-        Assertions.assertThat(sourceCode.linesWithTag(CodeTags.ENUM_CONSTANT)).containsExactly(21, 22, 23, 24)
+        assertThat(sourceCode.linesWithTag(CodeTags.ENUM_CONSTANT)).containsExactly(21, 22, 23, 24)
     }
 
     @Test
@@ -86,7 +86,7 @@ class SourceCodeComplexInterfaceTest {
 
         Api.addTagsToSource(sourceCode)
 
-        Assertions.assertThat(sourceCode.linesWithTag(CodeTags.CLASS_FIELD)).containsExactly(26, 27)
+        assertThat(sourceCode.linesWithTag(CodeTags.CLASS_FIELD)).containsExactly(26, 27)
     }
 
     @Test
@@ -97,7 +97,7 @@ class SourceCodeComplexInterfaceTest {
 
         Api.addTagsToSource(sourceCode)
 
-        Assertions.assertThat(sourceCode.linesWithTag(CodeTags.METHOD)).containsExactly(34, 36, 40, 44, 49, 60)
+        assertThat(sourceCode.linesWithTag(CodeTags.METHOD)).containsExactly(34, 36, 40, 44, 49, 60)
     }
 
     @Test
@@ -108,7 +108,7 @@ class SourceCodeComplexInterfaceTest {
 
         Api.addTagsToSource(sourceCode)
 
-        Assertions.assertThat(sourceCode.linesWithTag(CodeTags.CONSTRUCTOR)).containsExactly(29)
+        assertThat(sourceCode.linesWithTag(CodeTags.CONSTRUCTOR)).containsExactly(29)
     }
 
     @Test
@@ -119,7 +119,7 @@ class SourceCodeComplexInterfaceTest {
 
         Api.addTagsToSource(sourceCode)
 
-        Assertions.assertThat(sourceCode.linesWithTag(CodeTags.METHOD_CALL)).containsExactly(51, 53, 55, 61, 62, 63, 64)
+        assertThat(sourceCode.linesWithTag(CodeTags.METHOD_CALL)).containsExactly(51, 53, 55, 61, 62, 63, 64)
     }
 
     @Test
@@ -130,7 +130,7 @@ class SourceCodeComplexInterfaceTest {
 
         Api.addTagsToSource(sourceCode)
 
-        Assertions.assertThat(sourceCode.linesWithTag(CodeTags.STATEMENT))
+        assertThat(sourceCode.linesWithTag(CodeTags.STATEMENT))
                 .containsExactly(30, 31, 34, 36, 50, 51, 53, 55, 61)
     }
 
@@ -142,7 +142,7 @@ class SourceCodeComplexInterfaceTest {
 
         Api.addTagsToSource(sourceCode)
 
-        Assertions.assertThat(sourceCode.linesWithTag(CodeTags.EXPRESSION))
+        assertThat(sourceCode.linesWithTag(CodeTags.EXPRESSION))
                 .containsExactly(17, 21, 22, 23, 24, 30, 31, 34, 36, 51, 53, 54, 55, 61, 62, 64)
     }
 

@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure
 
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.javaBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.MetricExtractor
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermediate.SourceCode
@@ -34,7 +35,7 @@ class MetricPrint {
 
         val output = prettyPrint(metricExtractor)
 
-        assertThat(elementsOf(output.lines()[0])).containsExactly("LoC", "RLoC", "Code")
+        assertThat(elementsOf(output.lines()[0])).containsExactly("LoC", "RLoC", "Code", "Tags")
     }
 
     @Test
@@ -60,12 +61,12 @@ class MetricPrint {
 
         val output = prettyPrint(metricExtractor)
 
-        assertThat(realLineCount(output.lines()[3])).isEqualTo("2")
+        assertThatMetricElement(metricExtractor){elementsOf(output.lines()[3])[1]}.isEqualTo("2")
     }
 
     @Test
     @Throws(IOException::class)
-    fun does_not_print_real_line_count_when_it_wasnt_incremented() {
+    fun does_not_print_real_line_count_when_it_wasnt_incremented_and_instead_prints_empty_tag_list() {
         val resource = "$javaBaseFolder/RealLinesShort.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Api.addTagsToSource(sourceCode)
@@ -73,9 +74,8 @@ class MetricPrint {
 
         val output = prettyPrint(metricExtractor)
 
-        assertThat(elementsOf(output.lines()[4]).size).isEqualTo(1)
+        assertThatMetricElement(metricExtractor){elementsOf(output.lines()[4])[1]}.isEqualTo("[]")
     }
 
     private fun elementsOf(text: String) = text.split(' ').filter { it.isNotEmpty() }
-    private fun realLineCount(text: String) = elementsOf(text)[1]
 }

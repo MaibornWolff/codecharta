@@ -97,7 +97,7 @@ class SourceCodeSimpleClassTest {
 
         Api.addTagsToSource(sourceCode)
 
-        assertThat(sourceCode.linesWithTag(CodeTags.ANNOTATION)).containsExactly(9, 12)
+        assertThat(sourceCode.linesWithTag(CodeTags.ANNOTATION_INVOCATION)).containsExactly(9, 12)
     }
 
     @Test

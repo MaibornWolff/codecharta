@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Api
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermediate.SourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.*
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.prettyPrint
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import java.io.IOException

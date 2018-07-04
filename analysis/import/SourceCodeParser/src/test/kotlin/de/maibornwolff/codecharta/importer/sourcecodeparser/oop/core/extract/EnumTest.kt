@@ -1,10 +1,10 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract
 
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Api
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermediate.SourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.javaBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.prettyPrint
-import org.assertj.core.api.Assertions
 import org.junit.Test
 import java.io.IOException
 import java.nio.file.Files
@@ -21,7 +21,7 @@ class EnumTest {
 
         val metricExtractor = MetricExtractor(sourceCode)
 
-        Assertions.assertThat(metricExtractor[17].rloc).describedAs("\n"+prettyPrint(metricExtractor)).isEqualTo(7)
+        assertThatMetricElement(metricExtractor){it[17].rloc}.isEqualTo(7)
     }
 
     @Test
@@ -33,7 +33,7 @@ class EnumTest {
 
         val metricExtractor = MetricExtractor(sourceCode)
 
-        Assertions.assertThat(metricExtractor[18].rloc).describedAs("\n"+prettyPrint(metricExtractor)).isEqualTo(9)
+        assertThatMetricElement(metricExtractor){it[17].rloc}.describedAs("\n"+prettyPrint(metricExtractor)).isEqualTo(9)
     }
 
 }

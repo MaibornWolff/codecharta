@@ -25,7 +25,30 @@ public class ExtendedBaseVisitor extends JavaParserBaseVisitor {
 
     @Override
     public Object visitAnnotation(JavaParser.AnnotationContext ctx) {
+        source.addTag(ctx.getStart().getLine(), CodeTags.ANNOTATION_INVOCATION);
+        return visitChildren(ctx);
+    }
+
+    /**
+     * --> @interface BlockingOperations {
+     *          boolean fileSystemOperations();
+     *     }
+     */
+    @Override
+    public Object visitAnnotationTypeDeclaration(JavaParser.AnnotationTypeDeclarationContext ctx) {
         source.addTag(ctx.getStart().getLine(), CodeTags.ANNOTATION);
+        return visitChildren(ctx);
+    }
+
+    /**
+     *     @interface BlockingOperations {
+     * -->      boolean fileSystemOperations();
+     * -->      boolean networkOperations() default false;
+     *     }
+     */
+    @Override
+    public Object visitAnnotationTypeElementDeclaration(JavaParser.AnnotationTypeElementDeclarationContext ctx) {
+        source.addTag(ctx.getStart().getLine(), CodeTags.ANNOTATION_ELEMENT);
         return visitChildren(ctx);
     }
 
