@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
-fun retrieveOutputAndErrorStream(tmp: () -> Unit): Pair<String, String>{
+fun retrieveOutputAndErrorStream(aMethod: () -> Unit): Pair<String, String>{
     // IMPORTANT: Save the old System.out!
     val oldOutputStream = System.out
     val baOutputStream = ByteArrayOutputStream()
@@ -13,7 +13,7 @@ fun retrieveOutputAndErrorStream(tmp: () -> Unit): Pair<String, String>{
     val baErrorStream = ByteArrayOutputStream()
     System.setErr(PrintStream(baErrorStream))
 
-    tmp()
+    aMethod()
 
     System.out.flush()
     System.setOut(oldOutputStream)

@@ -1,13 +1,17 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.OutputType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.MetricExtractor
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermediate.SourceCode
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.prettyPrint
 import org.antlr.v4.runtime.tree.ParseTree
 import picocli.CommandLine.*
 import java.io.*
+import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 
-@Command(name = "parse", description = ["generates cc.json from source code"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
+@Command(name = "parse", description = ["generates cc.JSON from source code"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
 class SourceCodeParserMain : Callable<Void> {
 
     @Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
@@ -16,8 +20,8 @@ class SourceCodeParserMain : Callable<Void> {
     @Option(names = ["-p", "--projectName"], description = ["project name"])
     private var projectName = "SourceCodeParserMain"
 
-    @Option(names = ["-out", "--outputType"], description = ["the format to output"])
-    private var outputType = OutputType.CC_JSON
+    @Option(names = ["-out", "--outputType"], description = ["the format to output"], converter = [(OutputTypeConverter::class)])
+    private var outputType = OutputType.JSON
 
     @Option(names = ["--pathSeparator"], description = ["path separator (default = '/')"])
     private var pathSeparator = '/'
@@ -38,11 +42,11 @@ class SourceCodeParserMain : Callable<Void> {
             return null
         }
 
+        val sourceCode = SourceCode(Files.readAllLines(Paths.get(files[0].absolutePath)))
+        Antlr.addTagsToSource(sourceCode)
+        val metricExtractor = MetricExtractor(sourceCode)
 
-//        val ooparser: OOParser = OOParser()
-//        val realLinesOfCode = ooparser.getAmountOfImports(filePath)
-
-//        println("rLoC: " + realLinesOfCode)
+        println(prettyPrint(metricExtractor))
         return null
     }
 
