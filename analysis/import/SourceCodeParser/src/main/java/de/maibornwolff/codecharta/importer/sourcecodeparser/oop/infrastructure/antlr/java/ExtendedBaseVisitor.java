@@ -76,6 +76,69 @@ public class ExtendedBaseVisitor extends JavaParserBaseVisitor {
         return visitChildren(ctx);
     }
 
+    /*
+     * try (
+     *  -->    java.util.zip.ZipFile zf =
+     *               new java.util.zip.ZipFile(zipFileName);
+     *  -->    java.io.BufferedWriter writer =
+     *               java.nio.file.Files.newBufferedWriter(outputFilePath, charset)
+     *     )
+     */
+    @Override
+    public Object visitResource(JavaParser.ResourceContext ctx) {
+        source.addTag(ctx.getStart().getLine(), CodeTags.RESOURCE);
+        return visitChildren(ctx);
+    }
+
+    /*
+     *  --> } catch (SQLException e) {
+     *          JDBCTutorialUtilities.printSQLException(e);
+     *      }
+     */
+    @Override
+    public Object visitCatchClause(JavaParser.CatchClauseContext ctx) {
+        source.addTag(ctx.getStart().getLine(), CodeTags.CATCH);
+        return visitChildren(ctx);
+    }
+
+    /*
+     *  --> } finally{
+     *          db.close();
+     *      }
+     */
+    @Override
+    public Object visitFinallyBlock(JavaParser.FinallyBlockContext ctx) {
+        source.addTag(ctx.getStart().getLine(), CodeTags.FINALLY);
+        return visitChildren(ctx);
+    }
+
+    /*
+     * public static void writeToFileZipFileContents(String zipFileName)
+     * -->  throws IOException, NullPointerException
+     */
+    @Override
+    public Object visitQualifiedNameList(JavaParser.QualifiedNameListContext ctx) {
+        // qualifiedNameList is only used by the throws declaration
+        source.addTag(ctx.getStart().getLine(), CodeTags.THROWS_DECLARATION);
+        return visitChildren(ctx);
+    }
+
+    /*
+     * switch (month) {
+     * -->  case 1:
+     *          break;
+     * -->  default:
+     *          break;
+     */
+    @Override
+    public Object visitSwitchLabel(JavaParser.SwitchLabelContext ctx) {
+        source.addTag(ctx.getStart().getLine(), CodeTags.SWITCH_LABEL);
+        return visitChildren(ctx);
+    }
+
+
+    //@Override public T visitSwitchBlockStatementGroup(JavaParser.SwitchBlockStatementGroupContext ctx) { return visitChildren(ctx); }
+
     /** Called when a constant in an interface is found **/
     @Override
     public Object visitConstDeclaration(JavaParser.ConstDeclarationContext ctx) {
