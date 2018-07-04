@@ -1,32 +1,43 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.OutputType
 import org.antlr.v4.runtime.tree.ParseTree
-import picocli.CommandLine
+import picocli.CommandLine.*
 import java.io.*
+import java.nio.file.Paths
 import java.util.concurrent.Callable
 
-@CommandLine.Command(name = "parse", description = ["generates cc.json from projectpath"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
+@Command(name = "parse", description = ["generates cc.json from source code"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
 class SourceCodeParserMain : Callable<Void> {
 
-    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+    @Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-    @CommandLine.Option(names = ["-p", "--projectName"], description = ["project name"])
+    @Option(names = ["-p", "--projectName"], description = ["project name"])
     private var projectName = "SourceCodeParserMain"
 
-    @CommandLine.Option(names = ["--pathSeparator"], description = ["path separator (default = '/')"])
+    @Option(names = ["-out", "--outputType"], description = ["the format to output"])
+    private var outputType = OutputType.CC_JSON
+
+    @Option(names = ["--pathSeparator"], description = ["path separator (default = '/')"])
     private var pathSeparator = '/'
 
-    @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
+    @Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
-    @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["project file"])
+    @Parameters(arity = "1..*", paramLabel = "FOLDER or FILEs", description = ["single code folder or files"])
     private var files: List<File> = mutableListOf()
 
     @Throws(IOException::class)
     override fun call(): Void? {
 
-        val filePath = files.get(0).absolutePath
+        if(!files[0].exists()){
+            val path = Paths.get("").toAbsolutePath().toString()
+            println("SourceCode Parser working directory = $path")
+            println("Could not find file: "+files[0].absolutePath)
+            return null
+        }
+
 
 //        val ooparser: OOParser = OOParser()
 //        val realLinesOfCode = ooparser.getAmountOfImports(filePath)
@@ -70,7 +81,7 @@ class SourceCodeParserMain : Callable<Void> {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(SourceCodeParserMain(), System.out, *args)
+            call(SourceCodeParserMain(), System.out, *args)
         }
     }
 }

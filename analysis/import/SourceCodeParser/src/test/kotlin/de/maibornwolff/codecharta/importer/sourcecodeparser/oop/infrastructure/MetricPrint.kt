@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertTha
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.infrastructureBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.MetricExtractor
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermediate.SourceCode
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Api
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.IOException
@@ -17,7 +17,7 @@ class MetricPrint {
     fun prints_all_rows_plus_header_and_underline() {
         val resource = "$infrastructureBaseFolder/java/RealLinesShort.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
         val metricExtractor = MetricExtractor(sourceCode)
 
         val output = prettyPrint(metricExtractor)
@@ -30,7 +30,7 @@ class MetricPrint {
     fun prints_correct_header_order() {
         val resource = "$infrastructureBaseFolder/java/RealLinesShort.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
         val metricExtractor = MetricExtractor(sourceCode)
 
         val output = prettyPrint(metricExtractor)
@@ -43,7 +43,7 @@ class MetricPrint {
     fun prints_underline() {
         val resource = "$infrastructureBaseFolder/java/RealLinesShort.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
         val metricExtractor = MetricExtractor(sourceCode)
 
         val output = prettyPrint(metricExtractor)
@@ -56,7 +56,7 @@ class MetricPrint {
     fun prints_real_line_count_when_it_was_incremented() {
         val resource = "$infrastructureBaseFolder/java/RealLinesShort.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
         val metricExtractor = MetricExtractor(sourceCode)
 
         val output = prettyPrint(metricExtractor)
@@ -69,7 +69,7 @@ class MetricPrint {
     fun does_not_print_real_line_count_when_it_wasnt_incremented_and_instead_prints_empty_tag_list() {
         val resource = "$infrastructureBaseFolder/java/RealLinesShort.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
         val metricExtractor = MetricExtractor(sourceCode)
 
         val output = prettyPrint(metricExtractor)

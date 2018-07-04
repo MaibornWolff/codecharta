@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermediate
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.intermediateBaseFolder
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Api
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.antlrinterop.CodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.antlrinterop.NonCodeTags
 import org.assertj.core.api.Assertions.assertThat
@@ -18,7 +18,7 @@ class SourceCodeSimpleClassTest {
         val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
 
         sourceCode[0]
     }
@@ -29,7 +29,7 @@ class SourceCodeSimpleClassTest {
         val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
 
         sourceCode[sourceCode.lineCount()]
     }
@@ -40,7 +40,7 @@ class SourceCodeSimpleClassTest {
         val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.lineCount()).isEqualTo(43)
     }
@@ -51,7 +51,7 @@ class SourceCodeSimpleClassTest {
         val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(NonCodeTags.COMMENT)).containsExactly(6, 7, 8, 17, 19)
     }
@@ -62,7 +62,7 @@ class SourceCodeSimpleClassTest {
         val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.PACKAGE)).containsExactly(1)
     }
@@ -73,7 +73,7 @@ class SourceCodeSimpleClassTest {
         val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
 
         assertThat(sourceCode[2].tags()).isEmpty()
     }
@@ -84,7 +84,7 @@ class SourceCodeSimpleClassTest {
         val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.IMPORT)).containsExactly(3, 4)
     }
@@ -95,7 +95,7 @@ class SourceCodeSimpleClassTest {
         val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.ANNOTATION_INVOCATION)).containsExactly(9, 12)
     }
@@ -106,7 +106,7 @@ class SourceCodeSimpleClassTest {
         val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.CLASS)).containsExactly(10)
     }
@@ -117,7 +117,7 @@ class SourceCodeSimpleClassTest {
         val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.CLASS_FIELD)).containsExactly(13, 15)
     }
@@ -128,7 +128,7 @@ class SourceCodeSimpleClassTest {
         val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.CONSTRUCTOR)).containsExactly(18)
     }
@@ -139,7 +139,7 @@ class SourceCodeSimpleClassTest {
         val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.METHOD)).containsExactly(22, 29, 40)
     }
@@ -150,7 +150,7 @@ class SourceCodeSimpleClassTest {
         val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.VARIABLE)).containsExactly(13, 15, 23)
     }
@@ -161,7 +161,7 @@ class SourceCodeSimpleClassTest {
         val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.EXPRESSION))
                 .containsExactly(12, 15, 19, 23, 24, 25, 26, 30, 31, 32, 33, 34, 35, 37, 41)
@@ -173,7 +173,7 @@ class SourceCodeSimpleClassTest {
         val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.STATEMENT))
                 .containsExactly(19, 24, 25, 26, 30, 31, 32, 33, 34, 35, 37, 41)
@@ -185,7 +185,7 @@ class SourceCodeSimpleClassTest {
         val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.METHOD_CALL)).containsExactly(32, 34, 37)
     }
@@ -196,7 +196,7 @@ class SourceCodeSimpleClassTest {
         val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
-        Api.addTagsToSource(sourceCode)
+        Antlr.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.CONDITION)).containsExactly(31, 34)
     }
