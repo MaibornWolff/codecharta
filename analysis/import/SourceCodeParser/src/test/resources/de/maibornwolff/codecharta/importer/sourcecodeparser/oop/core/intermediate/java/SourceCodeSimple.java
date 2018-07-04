@@ -9,7 +9,10 @@ import bar;
 @Entity
 public class Foo {
 
+    @Deprecated("this is bad code")
     private int stuff;
+
+    private volatile boolean wasReset = false;
 
     // constructor, d'uh
     public Foo(){
@@ -17,15 +20,21 @@ public class Foo {
     }
 
     public Blub getStuff(){
-        return stuff;
+        int i = stuff - 1;
+        i++;
+        i = i + 0;
+        return i;
     }
 
     public void setStuff(int stuff){
+        this.wasReset = false;
         if(stuff < 0){
             reset(5);
-        }else{
+            wasReset = true;
+        } else if(reset(-1)){
             this.stuff = stuff;
         }
+        System.out.println("SetStuff was called");
     }
 
     private void reset(int num){

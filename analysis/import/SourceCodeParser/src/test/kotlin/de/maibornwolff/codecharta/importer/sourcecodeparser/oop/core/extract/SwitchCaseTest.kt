@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.javaBaseFolder
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermediate.SourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Api
 import org.junit.Test
@@ -13,7 +13,7 @@ class SwitchCaseTest {
     @Test
     @Throws(IOException::class)
     fun example_has_correct_rloc_count() {
-        val resource = "$javaBaseFolder/SwitchCase.java"
+        val resource = "$extractBaseFolder/java/SwitchCase.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Api.addTagsToSource(sourceCode)
 
