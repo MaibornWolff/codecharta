@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract
 
+import de.maibornwolff.codecharta.importer.sourcecodeparser.common.core.Metric
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermediate.SourceCode
@@ -20,7 +21,7 @@ class EnumTest {
 
         val metricExtractor = RowMetrics(sourceCode)
 
-        assertThatMetricElement(metricExtractor){it.summary().rloc}.isEqualTo(7)
+        assertThatMetricElement(metricExtractor){it.summary()[Metric.RLoc]}.isEqualTo(7)
     }
 
     @Test
@@ -32,7 +33,7 @@ class EnumTest {
 
         val metricExtractor = RowMetrics(sourceCode)
 
-        assertThatMetricElement(metricExtractor){it.summary().rloc}.isEqualTo(9)
+        assertThatMetricElement(metricExtractor){it.summary()[Metric.RLoc]}.isEqualTo(9)
     }
 
 }

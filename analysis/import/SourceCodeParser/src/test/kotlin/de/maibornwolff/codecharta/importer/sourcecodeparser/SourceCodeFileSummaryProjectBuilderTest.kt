@@ -1,6 +1,8 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.common.core.FileSummary
+import de.maibornwolff.codecharta.importer.sourcecodeparser.common.core.Metric
+import de.maibornwolff.codecharta.importer.sourcecodeparser.common.core.MetricCollection
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
 import org.assertj.core.api.Assertions.assertThat
@@ -29,25 +31,25 @@ class SourceCodeFileSummaryProjectBuilderTest {
     @Test
     fun component_without_path_is_right_under_root() {
         val projectName = "CoolProject"
-        val component = FileSummary("CoolComponent", "", 1, 1)
+        val fileSummary = FileSummary("CoolComponent", "", MetricCollection())
 
         val project = SourceCodeComponentProjectBuilder(projectName)
-                .addComponentAsNode(component)
+                .addComponentAsNode(fileSummary)
                 .build()
 
-        assertThat(project.rootNode.children[0].name).isEqualTo(component.name)
+        assertThat(project.rootNode.children[0].name).isEqualTo(fileSummary.name)
     }
 
     @Test
     fun project_node_matches_metrics() {
         val projectName = "CoolProject"
-        val component = FileSummary("CoolComponent", "", 1, 1)
+        val fileSummary = FileSummary("CoolComponent", "", MetricCollection(Metric.LoC to 1))
 
         val project = SourceCodeComponentProjectBuilder(projectName)
-                .addComponentAsNode(component)
+                .addComponentAsNode(fileSummary)
                 .build()
 
-        assertThat(project.rootNode.children[0].attributes["lines_of_code"]).isEqualTo(component.loc)
+        assertThat(project.rootNode.children[0].attributes["lines_of_code"]).isEqualTo(fileSummary[Metric.LoC])
     }
 
     @Test
@@ -55,9 +57,9 @@ class SourceCodeFileSummaryProjectBuilderTest {
         val projectName = "CoolProject"
 
         val project = SourceCodeComponentProjectBuilder(projectName)
-                .addComponentAsNode(FileSummary("CoolComponent", "", 1, 1))
-                .addComponentAsNode(FileSummary("CoolerComponent", "", 1, 1))
-                .addComponentAsNode(FileSummary("BestComponent", "de", 1, 1))
+                .addComponentAsNode(FileSummary("CoolComponent", "", MetricCollection()))
+                .addComponentAsNode(FileSummary("CoolerComponent", "", MetricCollection()))
+                .addComponentAsNode(FileSummary("BestComponent", "de", MetricCollection()))
                 .build()
 
         assertThat(filterFiles(project.rootNode).size).isEqualTo(3)

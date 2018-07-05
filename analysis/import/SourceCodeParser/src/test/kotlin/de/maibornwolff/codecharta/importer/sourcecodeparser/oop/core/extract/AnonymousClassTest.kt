@@ -21,7 +21,7 @@ class AnonymousClassTest {
 
         val metricExtractor = RowMetrics(sourceCode)
 
-        assertThatMetricElement(metricExtractor) {it.summary().rloc}.isEqualTo(3)
+        assertThatMetricElement(metricExtractor) {it.summary()[Metric.RLoc]}.isEqualTo(3)
     }
 
 }

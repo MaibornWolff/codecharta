@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract
 
+import de.maibornwolff.codecharta.importer.sourcecodeparser.common.core.Metric
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermediate.SourceCode
@@ -19,6 +20,6 @@ class HelloWorldTest {
 
         val metricExtractor = RowMetrics(sourceCode)
 
-        assertThatMetricElement(metricExtractor) {it.summary().rloc}.isEqualTo(107)
+        assertThatMetricElement(metricExtractor) {it.summary()[Metric.RLoc]}.isEqualTo(107)
     }
 }

@@ -31,8 +31,7 @@ class RowMetrics(sourceCode: SourceCode): Iterable<Row> {
     fun summary() = FileSummary(
             "test",
             "",
-            rows.last()[Metric.LoC],
-            rows.last()[Metric.RLoc]
+            rows.last().metrics
     )
 
     fun loc() = get(rowCount())[Metric.LoC]
