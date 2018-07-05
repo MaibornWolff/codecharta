@@ -12,6 +12,8 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: junit4_version
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.10.0'
     testCompile group: 'io.mockk', name: 'mockk', version: mokk_version
+    testCompile 'com.tngtech.archunit:archunit:0.8.2'
+    testCompile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
     testCompile project(path: ':model', configuration: 'testOutput')
 }
 
