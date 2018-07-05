@@ -38,16 +38,39 @@ class SourceCodeParserMain : Callable<Void> {
         if(!files[0].exists()){
             val path = Paths.get("").toAbsolutePath().toString()
             println("SourceCode Parser working directory = $path")
-            println("Could not find file: "+files[0].absolutePath)
+            println("Could not find "+files[0].absolutePath)
             return null
         }
 
-        val sourceCode = SourceCode(Files.readAllLines(Paths.get(files[0].absolutePath)))
-        Antlr.addTagsToSource(sourceCode)
-        val metricExtractor = MetricExtractor(sourceCode)
+        if(files[0].isFile){
+            println(prettyPrint(parseFile(files[0].absolutePath)))
+        }else{
+            parseFolder(files[0].absolutePath)
+        }
 
-        println(prettyPrint(metricExtractor))
         return null
+    }
+
+    private fun parseFile(absolutePath: String):MetricExtractor{
+        val sourceCode = SourceCode(Files.readAllLines(Paths.get(absolutePath)))
+        Antlr.addTagsToSource(sourceCode)
+        return MetricExtractor(sourceCode)
+    }
+
+    private fun parseFolder(absolutePath: String){
+        var javafiles = 0
+        var loc = 0
+        File(absolutePath).walk().forEach {
+            if(it.isFile){
+                javafiles++
+                loc = parseFile(it.absolutePath).loc()
+            }
+        }
+        println("Language Files LoC")
+        println("--------------")
+        println("Java       $javafiles   $loc")
+        println("--------------")
+        println("SUM: 1 1")
     }
 
     private fun parse(parseTree: ParseTree) {

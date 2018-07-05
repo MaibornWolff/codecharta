@@ -19,12 +19,12 @@ class SourceCodeParserMainTest {
         }
 
         assertThat(outputStream.lines()[0]).contains("working directory")
-        assertThat(outputStream.lines()[1]).contains("Could not find file")
+        assertThat(outputStream.lines()[1]).contains("Could not find")
     }
 
     @Test
     @Throws(IOException::class)
-    fun prints_tabular_output_when_that_output_type_is_selected() {
+    fun tabular_output_for_single_file_contains_correct_header() {
         val resource = "src/test/resources/$infrastructureBaseFolder/java/RealLinesShort.java"
 
         val (outputStream, _) = retrieveOutputAndErrorStream {
@@ -33,7 +33,55 @@ class SourceCodeParserMainTest {
 
         assertThat(outputStream.lines()[0]).contains("LoC", "Code")
         assertThat(outputStream.lines()[1]).contains("------")
-        assertThat(outputStream.lines().size).isEqualTo(2 + 7 + 1)//header+code+trailing
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun tabular_output_for_single_file_has_correct_length() {
+        val resource = "src/test/resources/$infrastructureBaseFolder/java/RealLinesShort.java"
+
+        val (outputStream, _) = retrieveOutputAndErrorStream {
+            SourceCodeParserMain.main(arrayOf(resource, "-out=table"))
+        }
+
+        assertThat(outputStream.lines().size).isEqualTo(2 + 7 + 1)//header+code+trailing newline
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun tabular_output_for_folder_contains_correct_header() {
+        val resource = "src/test/resources/$infrastructureBaseFolder/java"
+
+        val (outputStream, _) = retrieveOutputAndErrorStream {
+            SourceCodeParserMain.main(arrayOf(resource, "-out=table"))
+        }
+
+        assertThat(outputStream.lines()[0]).contains("Language", "Files", "LoC")
+        assertThat(outputStream.lines()[1]).contains("------")
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun tabular_output_for_folder_has_correct_length() {
+        val resource = "src/test/resources/$infrastructureBaseFolder/java"
+
+        val (outputStream, _) = retrieveOutputAndErrorStream {
+            SourceCodeParserMain.main(arrayOf(resource, "-out=table"))
+        }
+
+        assertThat(outputStream.lines().size).isEqualTo(2 + 1 + 2 + 1)//header+javacode+summary+trailing newline
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun tabular_output_for_folder_finds_one_java_file() {
+        val resource = "src/test/resources/$infrastructureBaseFolder/java"
+
+        val (outputStream, _) = retrieveOutputAndErrorStream {
+            SourceCodeParserMain.main(arrayOf(resource, "-out=table"))
+        }
+
+        assertThat(elementsOf(outputStream.lines()[2])).containsExactly("Java", "1", "7")
     }
 
 }
