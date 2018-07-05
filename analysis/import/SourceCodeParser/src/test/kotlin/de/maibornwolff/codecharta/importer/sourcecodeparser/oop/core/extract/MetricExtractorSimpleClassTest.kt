@@ -18,7 +18,7 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = MetricExtractor(sourceCode)
+        val metricExtractor = FileMetrics(sourceCode)
 
         metricExtractor[0]
     }
@@ -30,7 +30,7 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = MetricExtractor(sourceCode)
+        val metricExtractor = FileMetrics(sourceCode)
 
         metricExtractor[metricExtractor.rowCount()]
     }
@@ -42,7 +42,7 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = MetricExtractor(sourceCode)
+        val metricExtractor = FileMetrics(sourceCode)
 
         Assertions.assertThat(metricExtractor[1].rloc).isEqualTo(1)
         Assertions.assertThat(metricExtractor[1].rlocWasIncremented).isTrue()
@@ -59,7 +59,7 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = MetricExtractor(sourceCode)
+        val metricExtractor = FileMetrics(sourceCode)
 
         Assertions.assertThat(metricExtractor[8].rloc).isEqualTo(3)
         Assertions.assertThat(metricExtractor[9].rloc).isEqualTo(4)
@@ -72,7 +72,7 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = MetricExtractor(sourceCode)
+        val metricExtractor = FileMetrics(sourceCode)
 
         Assertions.assertThat(metricExtractor[19].rloc).isEqualTo(10)
         Assertions.assertThat(metricExtractor[20].rloc).isEqualTo(10)
@@ -85,7 +85,7 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = MetricExtractor(sourceCode)
+        val metricExtractor = FileMetrics(sourceCode)
 
         Assertions.assertThat(metricExtractor.rowCount()).isEqualTo(43)
     }
@@ -97,7 +97,7 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = MetricExtractor(sourceCode)
+        val metricExtractor = FileMetrics(sourceCode)
 
         Assertions.assertThat(metricExtractor[43].rloc).isEqualTo(25)
     }

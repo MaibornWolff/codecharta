@@ -17,7 +17,7 @@ class ComplexInterfaceTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = MetricExtractor(sourceCode)
+        val metricExtractor = FileMetrics(sourceCode)
 
         assertThatMetricElement(metricExtractor) {it[66].rloc}.isEqualTo(32)
     }

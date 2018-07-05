@@ -3,9 +3,10 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure
 import de.maibornwolff.codecharta.importer.sourcecodeparser.elementsOf
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.infrastructureBaseFolder
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.MetricExtractor
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.FileMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermediate.SourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
+import de.maibornwolff.codecharta.importer.sourcecodeparser.sum.infrastructure.fileMetricToTabular
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.IOException
@@ -19,9 +20,9 @@ class MetricPrintTest {
         val resource = "$infrastructureBaseFolder/java/RealLinesShort.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
-        val metricExtractor = MetricExtractor(sourceCode)
+        val metricExtractor = FileMetrics(sourceCode)
 
-        val output = prettyPrint(metricExtractor)
+        val output = fileMetricToTabular(metricExtractor)
 
         assertThat(output.lines().size).isEqualTo(metricExtractor.rowCount() + 2)
     }
@@ -32,9 +33,9 @@ class MetricPrintTest {
         val resource = "$infrastructureBaseFolder/java/RealLinesShort.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
-        val metricExtractor = MetricExtractor(sourceCode)
+        val metricExtractor = FileMetrics(sourceCode)
 
-        val output = prettyPrint(metricExtractor)
+        val output = fileMetricToTabular(metricExtractor)
 
         assertThat(elementsOf(output.lines()[0])).containsExactly("LoC", "RLoC", "Code", "Tags")
     }
@@ -45,9 +46,9 @@ class MetricPrintTest {
         val resource = "$infrastructureBaseFolder/java/RealLinesShort.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
-        val metricExtractor = MetricExtractor(sourceCode)
+        val metricExtractor = FileMetrics(sourceCode)
 
-        val output = prettyPrint(metricExtractor)
+        val output = fileMetricToTabular(metricExtractor)
 
         assertThat(output.lines()[1]).containsPattern("[-]{20,}")
     }
@@ -58,9 +59,9 @@ class MetricPrintTest {
         val resource = "$infrastructureBaseFolder/java/RealLinesShort.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
-        val metricExtractor = MetricExtractor(sourceCode)
+        val metricExtractor = FileMetrics(sourceCode)
 
-        val output = prettyPrint(metricExtractor)
+        val output = fileMetricToTabular(metricExtractor)
 
         assertThatMetricElement(metricExtractor){elementsOf(output.lines()[3])[1]}.isEqualTo("2")
     }
@@ -71,9 +72,9 @@ class MetricPrintTest {
         val resource = "$infrastructureBaseFolder/java/RealLinesShort.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
-        val metricExtractor = MetricExtractor(sourceCode)
+        val metricExtractor = FileMetrics(sourceCode)
 
-        val output = prettyPrint(metricExtractor)
+        val output = fileMetricToTabular(metricExtractor)
 
         assertThatMetricElement(metricExtractor){elementsOf(output.lines()[4])[1]}.isEqualTo("[]")
     }

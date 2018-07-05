@@ -17,7 +17,7 @@ class NestedMethodsTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = MetricExtractor(sourceCode)
+        val metricExtractor = FileMetrics(sourceCode)
 
         assertThatMetricElement(metricExtractor) {it[19].rloc}.isEqualTo(8)
     }

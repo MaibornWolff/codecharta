@@ -17,7 +17,7 @@ class GenericMethodsTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = MetricExtractor(sourceCode)
+        val metricExtractor = FileMetrics(sourceCode)
 
         assertThatMetricElement(metricExtractor) {it[20].rloc}.isEqualTo(7)
     }

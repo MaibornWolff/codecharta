@@ -18,7 +18,7 @@ class AnnotationTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = MetricExtractor(sourceCode)
+        val metricExtractor = FileMetrics(sourceCode)
 
         assertThatMetricElement(metricExtractor) {it[8].rloc}.isEqualTo(3)
     }

@@ -1,10 +1,10 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.MetricExtractor
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.FileMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermediate.SourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.prettyPrint
-import de.maibornwolff.codecharta.importer.sourcecodeparser.sum.infrastructure.prettySummary
+import de.maibornwolff.codecharta.importer.sourcecodeparser.sum.application.Printer
+import de.maibornwolff.codecharta.importer.sourcecodeparser.sum.infrastructure.PrintStreamPrinter
 import org.antlr.v4.runtime.tree.ParseTree
 import picocli.CommandLine.*
 import java.io.*
@@ -13,7 +13,7 @@ import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @Command(name = "parse", description = ["generates cc.JSON from source code"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
-class SourceCodeParserMain : Callable<Void> {
+class SourceCodeParserMain(private val printer: Printer) : Callable<Void> {
 
     @Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -44,25 +44,24 @@ class SourceCodeParserMain : Callable<Void> {
         }
 
         if(files[0].isFile){
-            println(prettyPrint(parseFile(files[0].absolutePath)))
+            printer.printFile(parseFile(files[0].absolutePath))
         }else{
-            parseFolder(files[0].absolutePath)
+            printer.printFolder(parseFolder(files[0].absolutePath))
         }
 
         return null
     }
 
-    private fun parseFile(absolutePath: String):MetricExtractor{
+    private fun parseFile(absolutePath: String):FileMetrics{
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(absolutePath)))
         Antlr.addTagsToSource(sourceCode)
-        return MetricExtractor(sourceCode)
+        return FileMetrics(sourceCode)
     }
 
-    private fun parseFolder(absolutePath: String){
-        val result = File(absolutePath).walk()
+    private fun parseFolder(absolutePath: String): List<FileMetrics>{
+        return File(absolutePath).walk()
                 .filter { it.isFile && it.extension == "java" }
                 .map { parseFile(it.absolutePath) }.toList()
-        println(prettySummary(result))
     }
 
     private fun parse(parseTree: ParseTree) {
@@ -100,7 +99,7 @@ class SourceCodeParserMain : Callable<Void> {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            call(SourceCodeParserMain(), System.out, *args)
+            call(SourceCodeParserMain(PrintStreamPrinter(System.out)), System.out, *args)
         }
     }
 }

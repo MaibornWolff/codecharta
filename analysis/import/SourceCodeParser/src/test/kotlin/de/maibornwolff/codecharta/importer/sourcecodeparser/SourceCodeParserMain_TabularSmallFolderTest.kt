@@ -47,6 +47,7 @@ class SourceCodeParserMain_TabularSmallFolderTest {
     @Test
     @Throws(IOException::class)
     fun tabular_output_summary_for_folder_finds_one_file_with_rloc() {
+        println(outputStream)
         assertThat(elementsOf(outputStream.lines()[4])).contains("SUM:", "5")
     }
 

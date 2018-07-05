@@ -4,7 +4,6 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertTha
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermediate.SourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.prettyPrint
 import org.junit.Test
 import java.io.IOException
 import java.nio.file.Files
@@ -19,7 +18,7 @@ class EnumTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = MetricExtractor(sourceCode)
+        val metricExtractor = FileMetrics(sourceCode)
 
         assertThatMetricElement(metricExtractor){it[17].rloc}.isEqualTo(7)
     }
@@ -31,9 +30,9 @@ class EnumTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = MetricExtractor(sourceCode)
+        val metricExtractor = FileMetrics(sourceCode)
 
-        assertThatMetricElement(metricExtractor){it[17].rloc}.describedAs("\n"+prettyPrint(metricExtractor)).isEqualTo(9)
+        assertThatMetricElement(metricExtractor){it[17].rloc}.isEqualTo(9)
     }
 
 }
