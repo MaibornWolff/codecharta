@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract
 
+import de.maibornwolff.codecharta.importer.sourcecodeparser.common.core.Metric
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermediate.SourceCode
@@ -18,9 +19,9 @@ class AnonymousClassTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = FileMetrics(sourceCode)
+        val metricExtractor = RowMetrics(sourceCode)
 
-        assertThatMetricElement(metricExtractor) {it[12].rloc}.isEqualTo(3)
+        assertThatMetricElement(metricExtractor) {it.summary().rloc}.isEqualTo(3)
     }
 
 }

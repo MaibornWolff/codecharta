@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.sum.infrastructure
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.FileMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.common.core.Metric
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.RowMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.Row
 import de.maibornwolff.codecharta.importer.sourcecodeparser.sum.application.Printer
 import java.io.PrintStream
@@ -8,16 +9,16 @@ import java.io.PrintStream
 
 class PrintStreamPrinter(private val outputStream: PrintStream): Printer {
 
-    override fun printFile(fileMetrics: FileMetrics) {
-        outputStream.println(fileMetricToTabular(fileMetrics))
+    override fun printFile(rowMetrics: RowMetrics) {
+        outputStream.println(fileMetricToTabular(rowMetrics))
     }
 
-    override fun printFolder(metrics: List<FileMetrics>) {
+    override fun printFolder(metrics: List<RowMetrics>) {
         outputStream.println(folderMetricsToTabular(metrics))
     }
 
-    private fun folderMetricsToTabular(metrics: List<FileMetrics>): String{
-        var javaFiles = metrics.size
+    private fun folderMetricsToTabular(metrics: List<RowMetrics>): String{
+        val javaFiles = metrics.size
         var loc = 0
         var rloc = 0
 
@@ -37,10 +38,10 @@ class PrintStreamPrinter(private val outputStream: PrintStream): Printer {
 
 
 
-fun fileMetricToTabular(metricExtractor: FileMetrics): String{
+fun fileMetricToTabular(metricExtractor: RowMetrics): String{
     return String.format("%-5s %-5s %-120s %-20s", "LoC", "RLoC", "Code", "Tags") + "\n" +
             "-".repeat(40)+ "\n" +
-            metricExtractor.map { String.format("%-5d %-5s %-120s %-20s", it.loc, rlocText(it), it.text, it.tags) }.joinToString("\n")
+            metricExtractor.map { String.format("%-5d %-5s %-120s %-20s", it.metrics[Metric.LoC], rlocText(it), it.text, it.tags) }.joinToString("\n")
 }
 
-private fun rlocText(row: Row) = if(row.rlocWasIncremented) row.rloc else ""
+private fun rlocText(row: Row) = if(row.rlocWasIncremented) row[Metric.RLoc] else ""

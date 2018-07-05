@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.FileMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.RowMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermediate.SourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
 import de.maibornwolff.codecharta.importer.sourcecodeparser.sum.application.Printer
@@ -52,13 +52,13 @@ class SourceCodeParserMain(private val printer: Printer) : Callable<Void> {
         return null
     }
 
-    private fun parseFile(absolutePath: String):FileMetrics{
+    private fun parseFile(absolutePath: String):RowMetrics{
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(absolutePath)))
         Antlr.addTagsToSource(sourceCode)
-        return FileMetrics(sourceCode)
+        return RowMetrics(sourceCode)
     }
 
-    private fun parseFolder(absolutePath: String): List<FileMetrics>{
+    private fun parseFolder(absolutePath: String): List<RowMetrics>{
         return File(absolutePath).walk()
                 .filter { it.isFile && it.extension == "java" }
                 .map { parseFile(it.absolutePath) }.toList()

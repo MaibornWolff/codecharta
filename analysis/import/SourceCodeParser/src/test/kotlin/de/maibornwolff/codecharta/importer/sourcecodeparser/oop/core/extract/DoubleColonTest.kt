@@ -17,8 +17,8 @@ class DoubleColonTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = FileMetrics(sourceCode)
+        val metricExtractor = RowMetrics(sourceCode)
 
-        assertThatMetricElement(metricExtractor) {it[27].rloc}.isEqualTo(16)
+        assertThatMetricElement(metricExtractor) {it.summary().rloc}.isEqualTo(16)
     }
 }

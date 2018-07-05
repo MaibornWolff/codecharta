@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure
 import de.maibornwolff.codecharta.importer.sourcecodeparser.elementsOf
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.infrastructureBaseFolder
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.FileMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.RowMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermediate.SourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
 import de.maibornwolff.codecharta.importer.sourcecodeparser.sum.infrastructure.fileMetricToTabular
@@ -20,7 +20,7 @@ class MetricPrintTest {
         val resource = "$infrastructureBaseFolder/java/RealLinesShort.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
-        val metricExtractor = FileMetrics(sourceCode)
+        val metricExtractor = RowMetrics(sourceCode)
 
         val output = fileMetricToTabular(metricExtractor)
 
@@ -33,7 +33,7 @@ class MetricPrintTest {
         val resource = "$infrastructureBaseFolder/java/RealLinesShort.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
-        val metricExtractor = FileMetrics(sourceCode)
+        val metricExtractor = RowMetrics(sourceCode)
 
         val output = fileMetricToTabular(metricExtractor)
 
@@ -46,7 +46,7 @@ class MetricPrintTest {
         val resource = "$infrastructureBaseFolder/java/RealLinesShort.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
-        val metricExtractor = FileMetrics(sourceCode)
+        val metricExtractor = RowMetrics(sourceCode)
 
         val output = fileMetricToTabular(metricExtractor)
 
@@ -59,7 +59,7 @@ class MetricPrintTest {
         val resource = "$infrastructureBaseFolder/java/RealLinesShort.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
-        val metricExtractor = FileMetrics(sourceCode)
+        val metricExtractor = RowMetrics(sourceCode)
 
         val output = fileMetricToTabular(metricExtractor)
 
@@ -72,7 +72,7 @@ class MetricPrintTest {
         val resource = "$infrastructureBaseFolder/java/RealLinesShort.java"
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
-        val metricExtractor = FileMetrics(sourceCode)
+        val metricExtractor = RowMetrics(sourceCode)
 
         val output = fileMetricToTabular(metricExtractor)
 

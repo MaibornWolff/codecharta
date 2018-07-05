@@ -17,8 +17,8 @@ class SwitchCaseTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = FileMetrics(sourceCode)
+        val metricExtractor = RowMetrics(sourceCode)
 
-        assertThatMetricElement(metricExtractor) {it[23].rloc}.isEqualTo(15)
+        assertThatMetricElement(metricExtractor) {it.summary().rloc}.isEqualTo(15)
     }
 }

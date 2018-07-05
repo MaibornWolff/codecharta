@@ -17,8 +17,8 @@ class InnerClassTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = FileMetrics(sourceCode)
+        val metricExtractor = RowMetrics(sourceCode)
 
-        assertThatMetricElement(metricExtractor) {it[16].rloc}.isEqualTo(6)
+        assertThatMetricElement(metricExtractor) {it.summary().rloc}.isEqualTo(6)
     }
 }

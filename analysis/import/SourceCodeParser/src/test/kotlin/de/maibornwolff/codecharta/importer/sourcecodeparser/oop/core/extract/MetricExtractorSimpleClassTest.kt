@@ -18,7 +18,7 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = FileMetrics(sourceCode)
+        val metricExtractor = RowMetrics(sourceCode)
 
         metricExtractor[0]
     }
@@ -30,9 +30,9 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = FileMetrics(sourceCode)
+        val rowMetrics = RowMetrics(sourceCode)
 
-        metricExtractor[metricExtractor.rowCount()]
+        rowMetrics[rowMetrics.rowCount()]
     }
 
     @Test
@@ -42,14 +42,14 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = FileMetrics(sourceCode)
+        val rowMetrics = RowMetrics(sourceCode)
 
-        Assertions.assertThat(metricExtractor[1].rloc).isEqualTo(1)
-        Assertions.assertThat(metricExtractor[1].rlocWasIncremented).isTrue()
-        Assertions.assertThat(metricExtractor[2].rloc).isEqualTo(1)
-        Assertions.assertThat(metricExtractor[2].rlocWasIncremented).isFalse()
-        Assertions.assertThat(metricExtractor[3].rloc).isEqualTo(2)
-        Assertions.assertThat(metricExtractor[3].rlocWasIncremented).isTrue()
+        Assertions.assertThat(rowMetrics[1].rloc).isEqualTo(1)
+        Assertions.assertThat(rowMetrics[1].rlocWasIncremented).isTrue()
+        Assertions.assertThat(rowMetrics[2].rloc).isEqualTo(1)
+        Assertions.assertThat(rowMetrics[2].rlocWasIncremented).isFalse()
+        Assertions.assertThat(rowMetrics[3].rloc).isEqualTo(2)
+        Assertions.assertThat(rowMetrics[3].rlocWasIncremented).isTrue()
     }
 
     @Test
@@ -59,10 +59,10 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = FileMetrics(sourceCode)
+        val rowMetrics = RowMetrics(sourceCode)
 
-        Assertions.assertThat(metricExtractor[8].rloc).isEqualTo(3)
-        Assertions.assertThat(metricExtractor[9].rloc).isEqualTo(4)
+        Assertions.assertThat(rowMetrics[8].rloc).isEqualTo(3)
+        Assertions.assertThat(rowMetrics[9].rloc).isEqualTo(4)
     }
 
     @Test
@@ -72,10 +72,10 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = FileMetrics(sourceCode)
+        val rowMetrics = RowMetrics(sourceCode)
 
-        Assertions.assertThat(metricExtractor[19].rloc).isEqualTo(10)
-        Assertions.assertThat(metricExtractor[20].rloc).isEqualTo(10)
+        Assertions.assertThat(rowMetrics[19].rloc).isEqualTo(10)
+        Assertions.assertThat(rowMetrics[20].rloc).isEqualTo(10)
     }
 
     @Test
@@ -85,9 +85,9 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = FileMetrics(sourceCode)
+        val rowMetrics = RowMetrics(sourceCode)
 
-        Assertions.assertThat(metricExtractor.rowCount()).isEqualTo(43)
+        Assertions.assertThat(rowMetrics.rowCount()).isEqualTo(43)
     }
 
     @Test
@@ -97,8 +97,8 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = SourceCode(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = FileMetrics(sourceCode)
+        val rowMetrics = RowMetrics(sourceCode)
 
-        Assertions.assertThat(metricExtractor[43].rloc).isEqualTo(25)
+        Assertions.assertThat(rowMetrics[43].rloc).isEqualTo(25)
     }
 }
