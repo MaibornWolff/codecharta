@@ -27,4 +27,5 @@ class MetricExtractor(sourceCode: SourceCode): Iterable<Row> {
     }
 
     fun loc() = get(rowCount()).loc
+    fun rloc() = get(rowCount()).rloc
 }

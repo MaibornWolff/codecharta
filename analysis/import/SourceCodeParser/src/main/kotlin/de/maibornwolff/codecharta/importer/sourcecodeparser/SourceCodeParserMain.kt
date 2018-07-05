@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.Met
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermediate.SourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.prettyPrint
+import de.maibornwolff.codecharta.importer.sourcecodeparser.sum.infrastructure.prettySummary
 import org.antlr.v4.runtime.tree.ParseTree
 import picocli.CommandLine.*
 import java.io.*
@@ -58,19 +59,10 @@ class SourceCodeParserMain : Callable<Void> {
     }
 
     private fun parseFolder(absolutePath: String){
-        var javafiles = 0
-        var loc = 0
-        File(absolutePath).walk().forEach {
-            if(it.isFile){
-                javafiles++
-                loc = parseFile(it.absolutePath).loc()
-            }
-        }
-        println("Language Files LoC")
-        println("--------------")
-        println("Java       $javafiles   $loc")
-        println("--------------")
-        println("SUM: 1 1")
+        val result = File(absolutePath).walk()
+                .filter { it.isFile && it.extension == "java" }
+                .map { parseFile(it.absolutePath) }.toList()
+        println(prettySummary(result))
     }
 
     private fun parse(parseTree: ParseTree) {

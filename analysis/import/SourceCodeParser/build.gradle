@@ -33,10 +33,10 @@ jar {
 
 generateGrammarSource {
     maxHeapSize = "64m"
-    arguments += ['-package', 'de.maibornwolff.codecharta.importer.sourcecodeparser.antlr.java']
+    arguments += ['-package', 'de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java']
     arguments += ["-visitor", "-long-messages"]
     // NOTE: We NEED projectDir here, because the root project build.gradle will otherwise use the wrong relative folder
-    outputDirectory = new File("${projectDir}/src/generated/antlr/de/maibornwolff/codecharta/importer/sourcecodeparser/antlr/java").absoluteFile
+    outputDirectory = new File("${projectDir}/src/generated/antlr/de/maibornwolff/codecharta/importer/sourcecodeparser/oop/infrastructure/antlr/java").absoluteFile
 }
 
 sourceSets {
