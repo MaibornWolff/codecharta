@@ -4,8 +4,18 @@ temporal-coupling-component {
         margin: 0 5px 0 5px !important;
     }
 
-    .dependency-percent {
+    .dependency-pairings-rate,
+    .dependency-average-revs {
         margin: 0;
+        line-height: 21px;
+    }
+
+    .dependency-pairings-rate {
+        font-size: 11pt;
+    }
+
+    .dependency-numbers {
+        min-width: 35px !important;
     }
 
     md-list-item._md-button-wrap > div.md-button:first-child {
@@ -14,5 +24,6 @@ temporal-coupling-component {
 
     md-checkbox {
         margin-right: 0 !important;
+        margin-top: 8px !important;
     }
 }

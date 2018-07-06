@@ -1,12 +1,13 @@
 <md-divider></md-divider>
 
 <md-list-item class="md-2-line"
-              ng-repeat="couple in $ctrl.temporalCoupling | orderBy: 'pairingRate' : true"
+              ng-repeat="couple in $ctrl.temporalCoupling | orderBy: 'averageRevs' : true"
               ng-click="$ctrl.onClickCouple(couple, false)"
-              title="{{::couple.node}}&#013;{{::couple.dependantNode}}">
+              title="{{::couple.node}}&#013;&#013;{{::couple.dependantNode}}">
 
-    <div class="md-icon" layout="column">
-        <p class="dependency-percent">{{::couple.pairingRate}}%</p>
+    <div class="md-icon dependency-numbers" layout="column">
+        <p class="dependency-average-revs">{{::couple.averageRevs}}c</p>
+        <p class="dependency-pairings-rate">{{::couple.pairingRate}}%</p>
     </div>
     <div class="md-list-item-text" layout="column">
         <h3>{{::couple.nodeFilename}}</h3>
