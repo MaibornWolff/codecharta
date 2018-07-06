@@ -128,19 +128,20 @@ class TreeMapService {
         }
 
         if (emphasizedDependencies.length > 0) {
-            height = this.getEmphasizedHeight(node, emphasizedDependencies, height);
+            height = this.getEmphasizedHeight(node, emphasizedDependencies, height, maxHeight, heightScale);
         }
 
         return Math.abs(height);
     }
 
-    private getEmphasizedHeight(node, emphasizedDependencies, height) {
+    private getEmphasizedHeight(node, emphasizedDependencies, height, maxHeight, heightScale) {
 
         for (var couple of emphasizedDependencies) {
 
-            if (node.path == couple.node ||
-                node.path == couple.dependantNode) {
-                return height;
+            if (node.path === couple.node ||
+                node.path === couple.dependantNode) {
+                return maxHeight / 100 * couple.pairingRate * heightScale;
+                //return height;
             }
         }
         height = 0;
