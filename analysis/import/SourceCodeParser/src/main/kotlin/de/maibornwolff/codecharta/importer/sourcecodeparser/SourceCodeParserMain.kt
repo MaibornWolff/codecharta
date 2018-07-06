@@ -1,10 +1,10 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.extract.RowMetrics
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.core.intermediate.SourceCode
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.RowMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.SourceFile
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
-import de.maibornwolff.codecharta.importer.sourcecodeparser.sum.application.Printer
-import de.maibornwolff.codecharta.importer.sourcecodeparser.sum.infrastructure.PrintStreamPrinter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.Printer
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.PrintStreamPrinter
 import org.antlr.v4.runtime.tree.ParseTree
 import picocli.CommandLine.*
 import java.io.*
@@ -38,7 +38,7 @@ class SourceCodeParserMain(private val printer: Printer) : Callable<Void> {
 
         if(!files[0].exists()){
             val path = Paths.get("").toAbsolutePath().toString()
-            println("SourceCode Parser working directory = $path")
+            println("SourceFile Parser working directory = $path")
             println("Could not find "+files[0].absolutePath)
             return null
         }
@@ -53,7 +53,7 @@ class SourceCodeParserMain(private val printer: Printer) : Callable<Void> {
     }
 
     private fun parseFile(absolutePath: String):RowMetrics{
-        val sourceCode = SourceCode(Files.readAllLines(Paths.get(absolutePath)))
+        val sourceCode = SourceFile(Files.readAllLines(Paths.get(absolutePath)))
         Antlr.addTagsToSource(sourceCode)
         return RowMetrics(sourceCode)
     }

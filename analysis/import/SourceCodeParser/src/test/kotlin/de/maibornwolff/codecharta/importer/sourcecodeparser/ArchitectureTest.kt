@@ -13,7 +13,7 @@ class ArchitectureTest {
 
     @Test
     fun core_has_no_outgoing_dependencies() {
-        noClasses().that().resideInAPackage("..core..").should()
+        noClasses().that().resideInAPackage("..domain..").should()
                 .accessClassesThat().resideInAPackage("..infrastructure..").check(classes)
     }
 

@@ -1,8 +1,9 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.common.core.FileSummary
-import de.maibornwolff.codecharta.importer.sourcecodeparser.common.core.Metric
-import de.maibornwolff.codecharta.importer.sourcecodeparser.common.core.MetricCollection
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.FileSummary
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.Metric
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricCollection
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.SourceCodeComponentProjectBuilder
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
 import org.assertj.core.api.Assertions.assertThat

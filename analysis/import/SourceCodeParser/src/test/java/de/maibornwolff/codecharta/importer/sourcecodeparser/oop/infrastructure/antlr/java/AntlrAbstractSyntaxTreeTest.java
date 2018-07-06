@@ -98,7 +98,7 @@ public class AntlrAbstractSyntaxTreeTest {
     }
 
     private JavaParser createSimpleParser() throws IOException {
-        return createParserForFile(getClass().getClassLoader().getResource("de/maibornwolff/codecharta/importer/sourcecodeparser/oop/core/extract/java/SourceCodeSimple.java").getFile());
+        return createParserForFile(getClass().getClassLoader().getResource("de/maibornwolff/codecharta/importer/sourcecodeparser/oop/domain/metrics/java/SourceCodeSimple.java").getFile());
     }
 
     private JavaParser createParserForFile(String filePath) throws IOException {

@@ -2,8 +2,8 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`
 
 val baseFolder = "de/maibornwolff/codecharta/importer/sourcecodeparser"
-val extractBaseFolder = "$baseFolder/oop/core/extract"
-val intermediateBaseFolder = "$baseFolder/oop/core/intermediate"
+val extractBaseFolder = "$baseFolder/oop/domain/metrics"
+val intermediateBaseFolder = "$baseFolder/oop/domain/intermediate"
 val infrastructureBaseFolder = "$baseFolder/oop/infrastructure"
 
 
