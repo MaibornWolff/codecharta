@@ -154,5 +154,33 @@ class ProjectMergerTest : Spek({
         }
 
 
+        describe("merging two projects with dependencies with leadNodeMergingStrategy") {
+            val originalProject1 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_DEPENDENCY_JSON_FILE)))
+            val originalProject2 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_DEPENDENCY_JSON_FILE2)))
+            val projectList = listOf(originalProject1, originalProject2)
+
+            val nodeMergerStrategy: NodeMergerStrategy = LeafNodeMergerStrategy(false)
+            val project = ProjectMerger(projectList, nodeMergerStrategy).merge()
+
+            it("should return different project") {
+
+                assertThat(project == originalProject1, CoreMatchers.`is`(false))
+                assertThat(project == originalProject2, CoreMatchers.`is`(false))
+            }
+
+            it("should have correct number of dependencies") {
+                assertThat(project.sizeOfDependencies(DependencyType.static), CoreMatchers.`is`(0))
+                assertThat(project.sizeOfDependencies(DependencyType.temporal_coupling), CoreMatchers.`is`(0))
+            }
+
+            it("should have correct number of files") {
+                assertThat(project.size, CoreMatchers.`is`(4))
+            }
+
+            it("should have correct number of attributes") {
+                assertThat(project.rootNode.children.first().attributes.size, CoreMatchers.`is`(11))
+
+            }
+        }
     }
 })
