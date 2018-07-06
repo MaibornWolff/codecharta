@@ -62,9 +62,8 @@ class ProjectMergerTest : Spek({
             )
 
             it("should throw a exception") {
-                assertFailsWith(MergeException::class) {
-                    ProjectMerger(projects, nodeMergerStrategy).extractProjectName()
-                }
+                val firstProjectName = ProjectMerger(projects, nodeMergerStrategy).extractProjectName()
+                assertThat(firstProjectName, CoreMatchers.`is`("test1"))
             }
         }
 

@@ -34,11 +34,7 @@ import de.maibornwolff.codecharta.model.*
 class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
 
     fun extractProjectName(): String {
-        val projectNames = projects.map { p -> p.projectName }.toSortedSet()
-        when (projectNames.size) {
-            1 -> return projectNames.first()
-            else -> throw MergeException("Projects contain several project names : $projectNames")
-        }
+        return projects.map { p -> p.projectName }.first()
     }
 
 
