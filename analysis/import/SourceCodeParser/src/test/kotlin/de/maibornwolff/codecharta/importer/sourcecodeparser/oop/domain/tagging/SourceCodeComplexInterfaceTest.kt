@@ -1,10 +1,7 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.intermediate
+package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.intermediateBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.CodeTags
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.NonCodeTags
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.SourceFile
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.IOException
