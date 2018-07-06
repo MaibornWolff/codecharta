@@ -40,5 +40,16 @@ settings-panel-component {
         display: none;
     }
 
+    .beta-symbol {
+        border: 1px solid orange;
+        color: orange;
+        font-weight: normal;
+        line-height: 20px;
+        margin-top: 2px;
+        padding: 0 2px 0 2px;
+        width: 40px;
+        border-radius: 4px;
+    }
+
 }
 
