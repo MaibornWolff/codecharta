@@ -41,8 +41,6 @@ import org.jetbrains.spek.api.dsl.it
 import java.io.InputStreamReader
 import kotlin.test.assertFailsWith
 
-const val DEFAULT_API_VERSION = "1.0"
-
 class ProjectMergerTest : Spek({
     describe("using a recursive node merger strategy") {
         val nodeMergerStrategy = RecursiveNodeMergerStrategy()
@@ -59,8 +57,8 @@ class ProjectMergerTest : Spek({
 
         describe("merging project with different names") {
             val projects = listOf(
-                    Project("test1", apiVersion = DEFAULT_API_VERSION),
-                    Project("test2", apiVersion = DEFAULT_API_VERSION)
+                    Project("test1"),
+                    Project("test2")
             )
 
             it("should throw a exception") {
@@ -70,23 +68,37 @@ class ProjectMergerTest : Spek({
             }
         }
 
-        describe("merging project with different API versions") {
+        describe("merging project with same API major versions") {
             val projectName = "test"
             val projects = listOf(
                     Project(projectName, apiVersion = "1.0"),
-                    Project(projectName, apiVersion = "2.0")
+                    Project(projectName, apiVersion = "1.1")
+            )
+
+            it("should merge projects") {
+                val project = ProjectMerger(projects, nodeMergerStrategy).merge()
+                assertThat(project.projectName, CoreMatchers.`is`(projectName))
+            }
+        }
+
+        describe("merging project with different API major versions") {
+            val projects = listOf(
+                    Project("test", apiVersion = "1.0"),
+                    Project("test", apiVersion = "2.0")
             )
 
             it("should throw a exception") {
-                ProjectMerger(projects, nodeMergerStrategy).extractProjectName()
+                assertFailsWith(MergeException::class) {
+                    ProjectMerger(projects, nodeMergerStrategy).merge()
+                }
             }
         }
 
         describe("merging projects with same name and API version") {
             val projectName = "test"
             val projects = listOf(
-                    Project(projectName, apiVersion =  DEFAULT_API_VERSION),
-                    Project(projectName, apiVersion =  DEFAULT_API_VERSION)
+                    Project(projectName, apiVersion = "1.1"),
+                    Project(projectName, apiVersion = "1.1")
             )
 
             it("should extract project name") {
@@ -105,7 +117,7 @@ class ProjectMergerTest : Spek({
 
             it("should return project") {
                 val project = ProjectMerger(projectList, nodeMergerStrategy).merge()
-                assertThat(project, ProjectMatcher.matchesProject(originalProject))
+                assertThat(project, ProjectMatcher.matchesProjectUpToVersion(originalProject))
             }
         }
 

@@ -41,21 +41,21 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         }
     }
 
-    private fun extractApiVersion(): String {
-        val apiVersion = projects.map { p -> p.apiVersion }.toSortedSet()
-        when (apiVersion.size) {
-            1 -> return apiVersion.first()
-            else -> throw MergeException("Projects use multiple Api-Versions of CodeCharta : $apiVersion")
+
+    fun merge(): Project {
+        val name = extractProjectName()
+        return when {
+            areAllAPIVersionsCompatible() -> ProjectBuilder(name, mergeProjectNodes(), getDependencies()).build()
+            else -> throw MergeException("API versions not supported.")
         }
     }
 
-    fun merge(): Project {
-        val apiVersion = extractApiVersion()
-        val name = extractProjectName()
-        if (apiVersion != Project.API_VERSION) {
-            throw MergeException("API-Version $apiVersion of project is not supported.")
-        }
-        return ProjectBuilder(name, mergeProjectNodes(), apiVersion, getDependencies()).build()
+    private fun areAllAPIVersionsCompatible(): Boolean {
+        val unsupportedAPIVersions = projects
+                .map { it.apiVersion }
+                .filter { !Project.isAPIVersionCompatible(it) }
+
+        return !unsupportedAPIVersions.isNotEmpty()
     }
 
     private fun mergeProjectNodes(): List<MutableNode> {
@@ -70,11 +70,11 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         }
     }
 
-    private fun mergeProjectDependencies(): MutableMap<DependencyType,MutableList<Dependency>> {
+    private fun mergeProjectDependencies(): MutableMap<DependencyType, MutableList<Dependency>> {
         val mergedDependencies = mutableMapOf<DependencyType, MutableList<Dependency>>()
 
         projects.forEach {
-            if (it.dependencies !== null) {
+            if (it.dependencies != null) {
                 it.dependencies.forEach {
                     val dependencyType: DependencyType = it.key
 

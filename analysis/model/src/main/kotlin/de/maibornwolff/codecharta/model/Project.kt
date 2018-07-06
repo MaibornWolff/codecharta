@@ -34,7 +34,7 @@ class Project(
         val projectName: String,
         private val nodes: List<Node> = listOf(Node("root", NodeType.Folder)),
         val apiVersion: String = API_VERSION,
-        val dependencies: MutableMap<DependencyType,MutableList<Dependency>> = mutableMapOf()
+        val dependencies: MutableMap<DependencyType, MutableList<Dependency>> = mutableMapOf()
 ) {
     init {
         if (nodes.size != 1) throw IllegalStateException("no root node present in project")
@@ -65,7 +65,14 @@ class Project(
     }
 
     companion object {
-        const val API_VERSION = "1.0"
+        private const val API_VERSION_MAJOR = "1"
+        private const val API_VERSION_MINOR = "1"
+        const val API_VERSION = "$API_VERSION_MAJOR.$API_VERSION_MINOR"
+
+        fun isAPIVersionCompatible(apiVersion: String): Boolean {
+            val apiVersion_major = apiVersion.split('.')[0]
+            return apiVersion_major == API_VERSION_MAJOR
+        }
     }
 
 }
