@@ -17,8 +17,9 @@ class CSVRow(private val row: Array<String?>, private val header: CSVHeader, pri
     }
 
     fun asDependency(): Dependency {
-        val entityPath = Path(attributes.get("entity")!!).edgesList.first()
-        val coupledPath = Path(attributes.get("coupled")!!).edgesList.first()
+        val rootNode = "/root/"
+        val entityPath = rootNode + Path(attributes.get("entity")!!).edgesList.first()
+        val coupledPath = rootNode + Path(attributes.get("coupled")!!).edgesList.first()
 
         return Dependency(
                 entityPath,
