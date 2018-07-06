@@ -47,7 +47,12 @@ class Project(
         get() = rootNode.size
 
     fun sizeOfDependencies(dependencyType: DependencyType): Int {
-        return dependencies.get(dependencyType)!!.size
+        if (dependencies.get(dependencyType) !== null) {
+            return dependencies.get(dependencyType)!!.size
+        } else {
+            return 0
+        }
+
     }
 
     override fun toString(): String {

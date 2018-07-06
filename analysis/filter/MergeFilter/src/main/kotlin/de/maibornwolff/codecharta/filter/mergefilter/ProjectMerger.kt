@@ -55,15 +55,23 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         if (apiVersion != Project.API_VERSION) {
             throw MergeException("API-Version $apiVersion of project is not supported.")
         }
-        return ProjectBuilder(name, mergeProjectNodes(), apiVersion, mergeProjectDependencies()).build()
+        return ProjectBuilder(name, mergeProjectNodes(), apiVersion, getDependencies()).build()
     }
 
     private fun mergeProjectNodes(): List<MutableNode> {
         return nodeMerger.mergeNodeLists(projects.map { listOf(it.rootNode.toMutableNode()) })
     }
 
+    private fun getDependencies(): MutableMap<DependencyType,MutableList<Dependency>> {
+        if (nodeMerger.javaClass.simpleName == "RecursiveNodeMergerStrategy") {
+            return mergeProjectDependencies()
+        } else {
+            return mutableMapOf()
+        }
+    }
+
     private fun mergeProjectDependencies(): MutableMap<DependencyType,MutableList<Dependency>> {
-        val mergedDependencies = mutableMapOf<DependencyType,MutableList<Dependency>>()
+        val mergedDependencies = mutableMapOf<DependencyType, MutableList<Dependency>>()
 
         projects.forEach {
             if (it.dependencies !== null) {
