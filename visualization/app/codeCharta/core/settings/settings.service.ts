@@ -37,7 +37,7 @@ export interface Settings {
     showDependencies: boolean;
     maximizeDetailPanel: boolean;
     invertHeight: boolean;
-    emphasizedDependencies: CodeMapDependency[];
+    temporalCouplingDependencies: CodeMapDependency[];
 }
 
 export interface SettingsServiceSubscriber {
@@ -107,9 +107,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             showDependencies: false,
             maximizeDetailPanel: false,
             invertHeight: false,
-            emphasizedDependencies: []
+            temporalCouplingDependencies: []
         };
-
         return settings;
 
     }
@@ -335,7 +334,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.deltaColorFlipped = settings.deltaColorFlipped;
         this._settings.maximizeDetailPanel = settings.maximizeDetailPanel;
         this._settings.invertHeight = settings.invertHeight;
-        this._settings.emphasizedDependencies = settings.emphasizedDependencies;
+        this._settings.temporalCouplingDependencies = settings.temporalCouplingDependencies;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = settings.map|| this.settings.map;

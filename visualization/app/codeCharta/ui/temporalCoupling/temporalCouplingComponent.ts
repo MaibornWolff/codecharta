@@ -5,7 +5,6 @@ import {CodeMap, CodeMapDependency} from "../../core/data/model/CodeMap";
 export class TemporalCouplingController implements SettingsServiceSubscriber {
 
     public temporalCoupling: CodeMapDependency[] = null;
-    public temporalCouplingCheckbox: boolean[] = [];
 
     /* @ngInject */
     constructor(private $timeout: ITimeoutService,
@@ -14,50 +13,37 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
 
         this.onSettingsChanged(settingsService.settings);
         this.settingsService.subscribe(this);
-        this.setInitialTemporalCouplingCheckbox();
     }
 
     onSettingsChanged(s: Settings) {
         this.updateTemporalCouplingDependencies(this.settingsService.settings.map);
     }
 
-    onClickCouple(couple: CodeMapDependency, clickByCheckbox: boolean) {
+    onClickCouple(couple: CodeMapDependency) {
 
-        if (!clickByCheckbox) {
-            var coupleIndex = this.temporalCoupling.indexOf(couple);
-            this.temporalCouplingCheckbox[coupleIndex] = !this.temporalCouplingCheckbox[coupleIndex];
-        }
+        let coupleIndex = this.temporalCoupling.indexOf(couple);
 
-        this.removeOrPushCoupleFromList(this.settingsService.settings.emphasizedDependencies, couple);
+        let oldVisibility = this.settingsService.settings.map.dependencies.temporal_coupling[coupleIndex].visible;
+        let newVisibility = !(oldVisibility === true);
+
+        this.temporalCoupling[coupleIndex].visible = newVisibility;
+        this.settingsService.settings.map.dependencies.temporal_coupling[coupleIndex].visible = newVisibility;
+
         this.settingsService.applySettings();
-    }
 
-    private removeOrPushCoupleFromList(emphasizedNodes, couple) {
-        if (emphasizedNodes.includes(couple)) {
-            var coupleIndex = emphasizedNodes.indexOf(couple);
-            if (coupleIndex > -1) {
-                emphasizedNodes.splice(coupleIndex, 1);
-            }
-        } else {
-            emphasizedNodes.push(couple);
-        }
     }
 
     private updateTemporalCouplingDependencies(map: CodeMap) {
-        if(map && map.dependencies && map.dependencies.temporal_coupling) {
-            this.$timeout(()=>{
-                this.temporalCoupling = map.dependencies.temporal_coupling;
-            },100);
+        if (map && map.dependencies && map.dependencies.temporal_coupling) {
+            this.temporalCoupling = map.dependencies.temporal_coupling;
+
+            for (var couple of this.temporalCoupling) {
+                if (couple.visible !== true) {
+                    couple.visible = false;
+                }
+            }
         }
     }
-
-    private setInitialTemporalCouplingCheckbox() {
-        for (var couple in this.temporalCoupling) {
-            this.temporalCouplingCheckbox.push(false);
-        }
-    }
-
-
 }
 
 export const temporalCouplingComponent = {

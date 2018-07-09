@@ -81,7 +81,11 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     }
 
     updateMapGeometry(s) {
-        let nodes: node[] = this.treeMapService.createTreemapNodes(s.map.root, mapSize, mapSize, s.margin, s.areaMetric, s.heightMetric, s.invertHeight, s.emphasizedDependencies);
+        let visibleTemporalCouplingDependencies = [];
+        if (s.map && s.map.dependencies && s.map.dependencies.temporal_coupling) {
+            visibleTemporalCouplingDependencies = s.map.dependencies.temporal_coupling.filter(dependency => dependency.visible === true);
+        }
+        let nodes: node[] = this.treeMapService.createTreemapNodes(s.map.root, mapSize, mapSize, s.margin, s.areaMetric, s.heightMetric, s.invertHeight, visibleTemporalCouplingDependencies);
         let filtered = nodes.filter(node => node.visible && node.length > 0 && node.width > 0);
         this.currentSortedNodes = filtered.sort((a, b) => {
             return b.height - a.height;
@@ -107,9 +111,28 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             }
         }
 
+        if (visibleTemporalCouplingDependencies.length > 0) {
+            this.showCouplingArrows();
+        }
+
         this._mapMesh = new CodeMapMesh(this.currentSortedNodes, this.currentRenderSettings);
 
         this.threeSceneService.setMapMesh(this._mapMesh, mapSize);
+    }
+
+    showCouplingArrows() {
+        let deps: CodeMapDependency[] = this.settingsService.settings.temporalCouplingDependencies;
+
+        this.arrowManager.clearArrows();
+
+        if (deps && this.currentRenderSettings && this.settingsService.settings.showDependencies) {
+            this.arrowManager.addCodeMapDependenciesAsArrows(this.currentSortedNodes, deps, this.currentRenderSettings);
+            this.arrowManager.scale(
+                this.threeSceneService.mapGeometry.scale.x,
+                this.threeSceneService.mapGeometry.scale.y,
+                this.threeSceneService.mapGeometry.scale.z,
+            );
+        }
     }
 
     /**

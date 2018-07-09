@@ -32,4 +32,5 @@ export interface CodeMapDependency {
     dependantNodeFilename?: string,
     pairingRate?: number,
     averageRevs?: number
+    visible: boolean
 }

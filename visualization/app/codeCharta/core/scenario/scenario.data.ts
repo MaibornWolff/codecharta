@@ -30,7 +30,7 @@ export function createDefaultScenario(map: CodeMap): Scenario {
             showDependencies: false,
             maximizeDetailPanel: false,
             invertHeight: false,
-            emphasizedDependencies: []
+            temporalCouplingDependencies: []
         },
         autoFitCamera: true
     };

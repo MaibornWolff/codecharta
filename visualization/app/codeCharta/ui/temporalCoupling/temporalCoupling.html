@@ -1,8 +1,16 @@
+<reset-settings-button-component settings-names="showDependencies, emphasizedDependencies"></reset-settings-button-component>
+
+<md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.showDependencies" ng-change="$ctrl.settingsService.onSettingsChanged()">
+        Show Connections
+    </md-checkbox>
+</md-input-container>
+<br>
 <md-divider></md-divider>
 
 <md-list-item class="md-2-line"
               ng-repeat="couple in $ctrl.temporalCoupling | orderBy: 'averageRevs' : true"
-              ng-click="$ctrl.onClickCouple(couple, false)"
+              ng-click="$ctrl.onClickCouple(couple)"
               title="{{::couple.node}}&#013;&#013;{{::couple.dependantNode}}">
 
     <div class="md-icon dependency-numbers" layout="column">
@@ -13,6 +21,6 @@
         <h3>{{::couple.nodeFilename}}</h3>
         <h4>{{::couple.dependantNodeFilename}}</h4>
     </div>
-    <md-checkbox class="md-primary" ng-model="::$ctrl.temporalCouplingCheckbox[$ctrl.temporalCoupling.indexOf(couple)]" ng-click="$ctrl.onClickCouple(couple, true)"></md-checkbox>
+    <md-checkbox class="md-primary" ng-checked="$ctrl.temporalCoupling[$ctrl.temporalCoupling.indexOf(couple)].visible" ng-click="$ctrl.onClickCouple(couple)"></md-checkbox>
     <md-divider></md-divider>
 </md-list-item>
