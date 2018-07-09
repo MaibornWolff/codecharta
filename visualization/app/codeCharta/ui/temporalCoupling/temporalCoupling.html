@@ -1,4 +1,4 @@
-<reset-settings-button-component settings-names="showDependencies, emphasizedDependencies"></reset-settings-button-component>
+<md-button class="md-raised" ng-click="$ctrl.onResetDependencies()">Reset Selection</md-button>
 
 <md-input-container class="md-block">
     <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.showDependencies" ng-change="$ctrl.settingsService.onSettingsChanged()">

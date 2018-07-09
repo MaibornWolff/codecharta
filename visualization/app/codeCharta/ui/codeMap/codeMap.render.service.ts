@@ -112,7 +112,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         }
 
         if (visibleTemporalCouplingDependencies.length > 0) {
-            this.showCouplingArrows();
+            this.showCouplingArrows(visibleTemporalCouplingDependencies);
         }
 
         this._mapMesh = new CodeMapMesh(this.currentSortedNodes, this.currentRenderSettings);
@@ -120,9 +120,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         this.threeSceneService.setMapMesh(this._mapMesh, mapSize);
     }
 
-    showCouplingArrows() {
-        let deps: CodeMapDependency[] = this.settingsService.settings.temporalCouplingDependencies;
-
+    showCouplingArrows(deps: CodeMapDependency[]) {
         this.arrowManager.clearArrows();
 
         if (deps && this.currentRenderSettings && this.settingsService.settings.showDependencies) {

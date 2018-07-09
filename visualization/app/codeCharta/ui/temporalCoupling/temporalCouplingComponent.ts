@@ -19,6 +19,18 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
         this.updateTemporalCouplingDependencies(this.settingsService.settings.map);
     }
 
+    public onResetDependencies() {
+        var map = this.settingsService.settings.map;
+        if (this.temporalCoupling && map && map.dependencies && map.dependencies.temporal_coupling) {
+
+            for (var couple of this.temporalCoupling) {
+                couple.visible = false;
+            }
+            this.settingsService.settings.map.dependencies.temporal_coupling = this.temporalCoupling;
+        }
+        this.settingsService.applySettings();
+    }
+
     onClickCouple(couple: CodeMapDependency) {
 
         let coupleIndex = this.temporalCoupling.indexOf(couple);
