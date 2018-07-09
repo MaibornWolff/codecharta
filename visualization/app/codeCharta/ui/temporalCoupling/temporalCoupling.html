@@ -1,11 +1,12 @@
-<md-button class="md-raised" ng-click="$ctrl.onResetDependencies()">Reset Selection</md-button>
-
 <md-input-container class="md-block">
-    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.showDependencies" ng-change="$ctrl.settingsService.onSettingsChanged()">
+    <md-checkbox class="md-primary top-margin" ng-model="$ctrl.settingsService.settings.showDependencies" ng-change="$ctrl.settingsService.onSettingsChanged()">
         Show Connections
     </md-checkbox>
+    <md-button class="md-raised" ng-click="$ctrl.onResetDependencies()">Reset Selection</md-button>
+
 </md-input-container>
-<br>
+
+
 <md-divider></md-divider>
 
 <md-list-item class="md-2-line"

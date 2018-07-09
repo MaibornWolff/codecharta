@@ -46,18 +46,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     }
 
     onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
-        let deps: CodeMapDependency[] = this.settingsService.settings.map.dependencies.static;
 
-        this.arrowManager.clearArrows();
-
-        if (deps && data.to && this.currentSortedNodes && this.currentRenderSettings && this.settingsService.settings.showDependencies) {
-            this.arrowManager.addCodeMapDependenciesFromOriginAsArrows(data.to.node, this.currentSortedNodes, deps, this.currentRenderSettings);
-            this.arrowManager.scale(
-                this.threeSceneService.mapGeometry.scale.x,
-                this.threeSceneService.mapGeometry.scale.y,
-                this.threeSceneService.mapGeometry.scale.z,
-            );
-        }
     }
 
     onSettingsChanged(settings: Settings, event: Event) {
