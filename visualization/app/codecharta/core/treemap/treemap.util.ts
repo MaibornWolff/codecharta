@@ -13,8 +13,8 @@ export class TreeMapUtils {
         return count;
     }
 
-    public static isNodeLeaf(squaredNode: SquarifiedValuedCodeMapNode): boolean {
-        return !(squaredNode.children && squaredNode.children.length > 0);
+    public static isNodeLeaf(node: { children?: any }): boolean {
+        return !(node.children && node.children.length > 0);
     }
 
     public static buildNodeFrom(squaredNode: SquarifiedValuedCodeMapNode,
