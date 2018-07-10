@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.TaggableFile
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableFile
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.intermediateBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
 import org.assertj.core.api.Assertions.assertThat

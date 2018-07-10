@@ -2,29 +2,30 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrast
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.Printer
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.RowMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.MetricTable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.Row
 import java.io.PrintStream
 
 
-class ConsolePrinter(private val outputStream: PrintStream): Printer {
+class TablePrinter(private val outputStream: PrintStream): Printer {
 
-    override fun printFile(rowMetrics: RowMetrics) {
+    override fun printFile(rowMetrics: MetricTable) {
         outputStream.println(fileMetricToTabular(rowMetrics))
     }
 
-    override fun printFolder(metrics: List<RowMetrics>) {
+    override fun printFolder(metrics: List<MetricTable>) {
         outputStream.println(folderMetricsToTabular(metrics))
     }
 
-    private fun folderMetricsToTabular(metrics: List<RowMetrics>): String{
+    private fun folderMetricsToTabular(metrics: List<MetricTable>): String{
         val javaFiles = metrics.size
         var loc = 0
         var rloc = 0
 
         metrics.forEach {
-            loc += it.loc()
-            rloc += it.rloc()
+            val summary = it.summary()
+            loc += summary[MetricType.LoC]
+            rloc += summary[MetricType.RLoc]
         }
 
         return String.format("%-20s %-10s %-10s %-10s", "Language", "Files", "LoC", "RLoC") + "\n" +
@@ -38,10 +39,10 @@ class ConsolePrinter(private val outputStream: PrintStream): Printer {
 
 
 
-fun fileMetricToTabular(metricExtractor: RowMetrics): String{
+fun fileMetricToTabular(metricExtractor: MetricTable): String{
     return String.format("%-5s %-5s %-120s %-20s", "LoC", "RLoC", "Code", "Tags") + "\n" +
             "-".repeat(40)+ "\n" +
-            metricExtractor.map { String.format("%-5d %-5s %-120s %-20s", it.metrics[MetricType.LoC], rlocText(it), it.text, it.tags) }.joinToString("\n")
+            metricExtractor.map { String.format("%-5d %-5s %-120s %-20s", it[MetricType.LoC], rlocText(it), it.text, it.tags) }.joinToString("\n")
 }
 
 private fun rlocText(row: Row) = if(row.rlocWasIncremented) row[MetricType.RLoc] else ""

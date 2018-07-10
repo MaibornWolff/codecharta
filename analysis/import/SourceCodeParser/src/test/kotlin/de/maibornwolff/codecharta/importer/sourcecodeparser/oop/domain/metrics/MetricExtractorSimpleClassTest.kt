@@ -1,7 +1,8 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
 
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.TaggableFile
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableFile
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
 import org.assertj.core.api.Assertions
 import org.junit.Test
@@ -18,7 +19,7 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val metricExtractor = RowMetrics(sourceCode)
+        val metricExtractor = MetricTable(sourceCode, OopMetricStrategy())
 
         metricExtractor[0]
     }
@@ -30,7 +31,7 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val rowMetrics = RowMetrics(sourceCode)
+        val rowMetrics = MetricTable(sourceCode, OopMetricStrategy())
 
         rowMetrics[rowMetrics.rowCount()]
     }
@@ -42,13 +43,13 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val rowMetrics = RowMetrics(sourceCode)
+        val rowMetrics = MetricTable(sourceCode, OopMetricStrategy())
 
-        Assertions.assertThat(rowMetrics[1].rloc).isEqualTo(1)
+        Assertions.assertThat(rowMetrics[1][MetricType.RLoc]).isEqualTo(1)
         Assertions.assertThat(rowMetrics[1].rlocWasIncremented).isTrue()
-        Assertions.assertThat(rowMetrics[2].rloc).isEqualTo(1)
+        Assertions.assertThat(rowMetrics[2][MetricType.RLoc]).isEqualTo(1)
         Assertions.assertThat(rowMetrics[2].rlocWasIncremented).isFalse()
-        Assertions.assertThat(rowMetrics[3].rloc).isEqualTo(2)
+        Assertions.assertThat(rowMetrics[3][MetricType.RLoc]).isEqualTo(2)
         Assertions.assertThat(rowMetrics[3].rlocWasIncremented).isTrue()
     }
 
@@ -59,10 +60,10 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val rowMetrics = RowMetrics(sourceCode)
+        val rowMetrics = MetricTable(sourceCode, OopMetricStrategy())
 
-        Assertions.assertThat(rowMetrics[8].rloc).isEqualTo(3)
-        Assertions.assertThat(rowMetrics[9].rloc).isEqualTo(4)
+        Assertions.assertThat(rowMetrics[8][MetricType.RLoc]).isEqualTo(3)
+        Assertions.assertThat(rowMetrics[9][MetricType.RLoc]).isEqualTo(4)
     }
 
     @Test
@@ -72,10 +73,10 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val rowMetrics = RowMetrics(sourceCode)
+        val rowMetrics = MetricTable(sourceCode, OopMetricStrategy())
 
-        Assertions.assertThat(rowMetrics[19].rloc).isEqualTo(10)
-        Assertions.assertThat(rowMetrics[20].rloc).isEqualTo(10)
+        Assertions.assertThat(rowMetrics[19][MetricType.RLoc]).isEqualTo(10)
+        Assertions.assertThat(rowMetrics[20][MetricType.RLoc]).isEqualTo(10)
     }
 
     @Test
@@ -85,7 +86,7 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val rowMetrics = RowMetrics(sourceCode)
+        val rowMetrics = MetricTable(sourceCode, OopMetricStrategy())
 
         Assertions.assertThat(rowMetrics.rowCount()).isEqualTo(43)
     }
@@ -97,8 +98,8 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
-        val rowMetrics = RowMetrics(sourceCode)
+        val rowMetrics = MetricTable(sourceCode, OopMetricStrategy())
 
-        Assertions.assertThat(rowMetrics[43].rloc).isEqualTo(25)
+        Assertions.assertThat(rowMetrics[43][MetricType.RLoc]).isEqualTo(25)
     }
 }

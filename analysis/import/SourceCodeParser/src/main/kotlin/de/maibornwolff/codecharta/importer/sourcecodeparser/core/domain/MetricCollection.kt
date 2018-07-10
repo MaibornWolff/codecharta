@@ -1,8 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain
 
-class MetricCollection(private vararg val pairs: Pair<MetricType, Int>) {
-
-    private val metrics = hashMapOf(*pairs)
+class MetricCollection(private val metrics: Map<MetricType, Int>) {
+    constructor(vararg pairs: Pair<MetricType, Int>): this(pairs.toMap())
 
     operator fun get(metricKey: MetricType): Int = metrics.getOrDefault(metricKey, 0)
 }

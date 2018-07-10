@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain
+package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.raw
 
 interface SourceCode {
 

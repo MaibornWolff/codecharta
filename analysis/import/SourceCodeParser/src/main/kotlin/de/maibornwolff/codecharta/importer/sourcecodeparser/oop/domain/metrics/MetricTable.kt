@@ -1,10 +1,13 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.TaggableFile
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableFile
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.FileSummary
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricCollection
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricStrategy
 
-class RowMetrics(taggableFile: TaggableFile): Iterable<Row> {
+class MetricTable(taggableFile: TaggableFile, metricStrategy: MetricStrategy): Iterable<Row> {
+
+    private val metricStrategy = OopMetricStrategy()
 
     // IMPORTANT: line numbers start at 1 - just like our interface, but this array starts at 0
     private val rows = toRows(taggableFile)
@@ -16,10 +19,11 @@ class RowMetrics(taggableFile: TaggableFile): Iterable<Row> {
     override fun iterator(): Iterator<Row> = rows.iterator()
 
     private fun toRows(taggableFile: TaggableFile): Array<Row> {
-        var previousRow = Row.NULL
+        var previousMetrics = MetricCollection()
         return taggableFile.map {
-            val row = Row(it, previousRow.metrics)
-            previousRow = row
+            val newMetrics = metricStrategy.metricsOf(it, previousMetrics)
+            val row = Row(it, newMetrics)
+            previousMetrics = newMetrics
             row
         }.toTypedArray()
     }
@@ -33,7 +37,4 @@ class RowMetrics(taggableFile: TaggableFile): Iterable<Row> {
             "",
             rows.last().metrics
     )
-
-    fun loc() = get(rowCount())[MetricType.LoC]
-    fun rloc() = get(rowCount())[MetricType.RLoc]
 }

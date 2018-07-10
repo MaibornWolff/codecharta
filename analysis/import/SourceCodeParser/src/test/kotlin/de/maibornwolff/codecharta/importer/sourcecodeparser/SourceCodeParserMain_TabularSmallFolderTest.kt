@@ -28,27 +28,20 @@ class SourceCodeParserMain_TabularSmallFolderTest {
 
     @Test
     @Throws(IOException::class)
-    fun tabular_output_for_folder_finds_one_java_file_with_loc() {
-        assertThat(elementsOf(outputStream.lines()[2])).contains("Java", "1")
+    fun tabular_output_for_folder_finds_two_java_files() {
+        assertThat(elementsOf(outputStream.lines()[2])).contains("Java", "2")
     }
 
     @Test
     @Throws(IOException::class)
-    fun tabular_output_for_folder_finds_one_java_file_with_rloc() {
-        assertThat(elementsOf(outputStream.lines()[2])).contains("Java", "5")
+    fun tabular_output_summary_for_folder_sums_loc() {
+        assertThat(elementsOf(outputStream.lines()[4])).contains("SUM:", "15")
     }
 
     @Test
     @Throws(IOException::class)
-    fun tabular_output_summary_for_folder_finds_one_file_with_loc() {
-        assertThat(elementsOf(outputStream.lines()[4])).contains("SUM:", "7")
-    }
-
-    @Test
-    @Throws(IOException::class)
-    fun tabular_output_summary_for_folder_finds_one_file_with_rloc() {
-        println(outputStream)
-        assertThat(elementsOf(outputStream.lines()[4])).contains("SUM:", "5")
+    fun tabular_output_summary_for_folder_sums_rloc() {
+        assertThat(elementsOf(outputStream.lines()[4])).contains("SUM:", "8")
     }
 
 

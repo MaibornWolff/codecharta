@@ -1,11 +1,14 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.RowMetrics
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.TaggableFile
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.raw.SourceCode
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.MetricTable
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableFile
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.Printer
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.ConsolePrinter
-import org.antlr.v4.runtime.tree.ParseTree
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.SourceApp
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.FileSystemLocationResolver
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.TablePrinter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopMetricStrategy
 import picocli.CommandLine.*
 import java.io.*
 import java.nio.file.Files
@@ -13,7 +16,7 @@ import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @Command(name = "parse", description = ["generates cc.JSON from source code"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
-class SourceCodeParserMain(private val printer: Printer) : Callable<Void> {
+class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Void> {
 
     @Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -31,61 +34,38 @@ class SourceCodeParserMain(private val printer: Printer) : Callable<Void> {
     private var outputFile: File? = null
 
     @Parameters(arity = "1..*", paramLabel = "FOLDER or FILEs", description = ["single code folder or files"])
-    private var files: List<File> = mutableListOf()
+    private var files: List<String> = mutableListOf()
 
     @Throws(IOException::class)
     override fun call(): Void? {
 
-        if(!files[0].exists()){
+        if(!Files.exists(Paths.get(files[0]))){
             val path = Paths.get("").toAbsolutePath().toString()
-            println("TaggableFile Parser working directory = $path")
-            println("Could not find "+files[0].absolutePath)
+            outputStream.println("TaggableFile Parser working directory = $path")
+            outputStream.println("Could not find "+files[0])
             return null
         }
 
-        if(files[0].isFile){
-            printer.printFile(parseFile(files[0].absolutePath))
-        }else{
-            printer.printFolder(parseFolder(files[0].absolutePath))
-        }
+        val locationResolver = FileSystemLocationResolver()
+        val printer = TablePrinter(outputStream)
+        val sourceApp = SourceApp(locationResolver, printer)
+
+
+            sourceApp.printMetrics(files)
 
         return null
     }
 
-    private fun parseFile(absolutePath: String):RowMetrics{
+    private fun parseFile(absolutePath: String):MetricTable{
         val sourceCode = TaggableFile(Files.readAllLines(Paths.get(absolutePath)))
         Antlr.addTagsToSource(sourceCode)
-        return RowMetrics(sourceCode)
+        return MetricTable(sourceCode, OopMetricStrategy())
     }
 
-    private fun parseFolder(absolutePath: String): List<RowMetrics>{
+    private fun parseFolder(absolutePath: String): List<MetricTable>{
         return File(absolutePath).walk()
                 .filter { it.isFile && it.extension == "java" }
                 .map { parseFile(it.absolutePath) }.toList()
-    }
-
-    private fun parse(parseTree: ParseTree) {
-
-        if (parseTree.childCount > 1) {
-            println(parseTree.text)
-        }
-
-        for (i in 0 until parseTree.childCount) {
-            parse(parseTree.getChild(i))
-        }
-    }
-
-    /**
-     * Kotlin Example to read contents of file line by line
-     */
-    fun readFile(file: File) {
-
-        var i: Int = 1
-
-        file.readLines().forEach {
-            print((i++))
-            println(": "+it)
-        }
     }
 
     private fun writer(): Writer {
@@ -99,7 +79,12 @@ class SourceCodeParserMain(private val printer: Printer) : Callable<Void> {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            call(SourceCodeParserMain(ConsolePrinter(System.out)), System.out, *args)
+            mainWithOutputStream(System.out, args)
+        }
+
+        @JvmStatic
+        fun mainWithOutputStream(outputStream: PrintStream, args: Array<String>) {
+            call(SourceCodeParserMain(outputStream), System.out, *args)
         }
     }
 }

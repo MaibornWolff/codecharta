@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain
+package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged
 
 class TaggableFile(everySourceLine: List<String>): Iterable<Line> {
 
@@ -9,11 +9,11 @@ class TaggableFile(everySourceLine: List<String>): Iterable<Line> {
 
     operator fun get(lineNumber: Int): Line =  lines[lineNumber - 1]
 
-    override fun iterator(): Iterator<Line> = lines.iterator()
-
     fun addTag(lineNumber: Int, tag: Tags) {
         lines[lineNumber - 1].addTag(tag)
     }
+
+    override fun iterator(): Iterator<Line> = lines.iterator()
 
     fun text(): String {
         return lines.joinToString("\n") { it.text }

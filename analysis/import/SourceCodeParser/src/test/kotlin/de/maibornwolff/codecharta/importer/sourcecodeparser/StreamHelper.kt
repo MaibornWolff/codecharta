@@ -22,3 +22,12 @@ fun retrieveOutputAndErrorStream(aMethod: () -> Unit): Pair<String, String>{
 
     return Pair(baOutputStream.toString(), baErrorStream.toString())
 }
+
+fun retrieveStreamAsString(aMethod: (printStream: PrintStream) -> Unit): String{
+    val baOutputStream = ByteArrayOutputStream()
+    val printStream = PrintStream(baOutputStream)
+
+    aMethod(printStream)
+
+    return baOutputStream.toString()
+}

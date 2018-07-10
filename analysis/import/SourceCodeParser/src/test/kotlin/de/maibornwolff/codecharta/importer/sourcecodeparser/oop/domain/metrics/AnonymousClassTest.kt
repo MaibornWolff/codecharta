@@ -3,7 +3,11 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.TaggableFile
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableFile
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.SourceApp
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.FileSystemSourceCode
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.LocationResolverStub
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.PrinterSpy
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
 import org.junit.Test
 import java.io.IOException
@@ -16,12 +20,29 @@ class AnonymousClassTest {
     @Throws(IOException::class)
     fun example_has_correct_rloc_count() {
         val resource = "$extractBaseFolder/java/AnonymousClass.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Antlr.addTagsToSource(sourceCode)
+        val sourceCode = FileSystemSourceCode("java", code)
+        val locationResolverStub = LocationResolverStub(listOf(sourceCode))
+        val printerSpy = PrinterSpy()
 
-        val metricExtractor = RowMetrics(sourceCode)
+        SourceApp(locationResolverStub, printerSpy).printMetrics(listOf(resource))
 
-        assertThatMetricElement(metricExtractor) {it.summary()[MetricType.RLoc]}.isEqualTo(3)
+        assertThatMetricElement(printerSpy.printedRowMetrics!!) {it.summary()[MetricType.RLoc]}.isEqualTo(3)
     }
+
+    private val code =
+            """
+/*
+ * From https://github.com/antlr/grammars-v4/blob/master/java/examples/AllInOne7.java
+ */
+
+// Anonymous class
+class Foo {
+    void bar() {
+
+        new Object() {// Creation of a new anonymous class extending Object
+        };
+    }
+}
+""".trim().lines()
 
 }
