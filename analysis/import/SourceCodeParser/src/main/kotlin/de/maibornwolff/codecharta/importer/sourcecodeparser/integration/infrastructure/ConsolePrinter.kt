@@ -7,7 +7,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.R
 import java.io.PrintStream
 
 
-class PrintStreamPrinter(private val outputStream: PrintStream): Printer {
+class ConsolePrinter(private val outputStream: PrintStream): Printer {
 
     override fun printFile(rowMetrics: RowMetrics) {
         outputStream.println(fileMetricToTabular(rowMetrics))

@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging
+package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain
 
-class SourceFile(everySourceLine: List<String>): Iterable<Line> {
+class TaggableFile(everySourceLine: List<String>): Iterable<Line> {
 
     // IMPORTANT: line numbers start at 1, but this array starts at 0
     private val lines = everySourceLine

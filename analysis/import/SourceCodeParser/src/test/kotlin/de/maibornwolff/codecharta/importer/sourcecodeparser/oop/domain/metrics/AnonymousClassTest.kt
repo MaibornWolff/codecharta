@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.SourceFile
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.TaggableFile
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
 import org.junit.Test
 import java.io.IOException
@@ -16,7 +16,7 @@ class AnonymousClassTest {
     @Throws(IOException::class)
     fun example_has_correct_rloc_count() {
         val resource = "$extractBaseFolder/java/AnonymousClass.java"
-        val sourceCode = SourceFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
         val metricExtractor = RowMetrics(sourceCode)

@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging
+package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain
 
 class Line(val lineNumber:Int, val text: String) {
 

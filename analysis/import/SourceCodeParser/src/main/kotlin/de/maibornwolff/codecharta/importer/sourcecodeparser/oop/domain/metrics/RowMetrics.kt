@@ -1,13 +1,13 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.SourceFile
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.TaggableFile
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.FileSummary
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
 
-class RowMetrics(sourceFile: SourceFile): Iterable<Row> {
+class RowMetrics(taggableFile: TaggableFile): Iterable<Row> {
 
     // IMPORTANT: line numbers start at 1 - just like our interface, but this array starts at 0
-    private val rows = toRows(sourceFile)
+    private val rows = toRows(taggableFile)
 
     operator fun get(lineNumber: Int): Row {
         return rows[lineNumber - 1]
@@ -15,9 +15,9 @@ class RowMetrics(sourceFile: SourceFile): Iterable<Row> {
 
     override fun iterator(): Iterator<Row> = rows.iterator()
 
-    private fun toRows(sourceFile: SourceFile): Array<Row> {
+    private fun toRows(taggableFile: TaggableFile): Array<Row> {
         var previousRow = Row.NULL
-        return sourceFile.map {
+        return taggableFile.map {
             val row = Row(it, previousRow.metrics)
             previousRow = row
             row

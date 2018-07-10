@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging
 
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.TaggableFile
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.intermediateBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
 import org.assertj.core.api.Assertions.assertThat
@@ -14,7 +15,7 @@ class SourceCodeComplexInterfaceTest {
     @Throws(IOException::class)
     fun finds_all_lines() {
         val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = SourceFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -25,7 +26,7 @@ class SourceCodeComplexInterfaceTest {
     @Throws(IOException::class)
     fun finds_all_comments() {
         val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = SourceFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -36,7 +37,7 @@ class SourceCodeComplexInterfaceTest {
     @Throws(IOException::class)
     fun finds_imports() {
         val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = SourceFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -47,7 +48,7 @@ class SourceCodeComplexInterfaceTest {
     @Throws(IOException::class)
     fun finds_interface() {
         val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = SourceFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -58,7 +59,7 @@ class SourceCodeComplexInterfaceTest {
     @Throws(IOException::class)
     fun finds_constant_declarations() {
         val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = SourceFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -69,7 +70,7 @@ class SourceCodeComplexInterfaceTest {
     @Throws(IOException::class)
     fun finds_enumConstant() {
         val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = SourceFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -80,7 +81,7 @@ class SourceCodeComplexInterfaceTest {
     @Throws(IOException::class)
     fun finds_fields_in_enum() {
         val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = SourceFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -91,7 +92,7 @@ class SourceCodeComplexInterfaceTest {
     @Throws(IOException::class)
     fun finds_methods() {
         val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = SourceFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -102,7 +103,7 @@ class SourceCodeComplexInterfaceTest {
     @Throws(IOException::class)
     fun finds_constructor() {
         val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = SourceFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -113,7 +114,7 @@ class SourceCodeComplexInterfaceTest {
     @Throws(IOException::class)
     fun finds_method_calls() {
         val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = SourceFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -124,7 +125,7 @@ class SourceCodeComplexInterfaceTest {
     @Throws(IOException::class)
     fun finds_statements() {
         val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = SourceFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -136,7 +137,7 @@ class SourceCodeComplexInterfaceTest {
     @Throws(IOException::class)
     fun finds_expressions() {
         val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = SourceFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
 
         Antlr.addTagsToSource(sourceCode)
 

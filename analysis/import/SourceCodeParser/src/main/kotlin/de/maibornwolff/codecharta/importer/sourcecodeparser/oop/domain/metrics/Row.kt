@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricCollection
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.CodeTags
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.Line
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.Line
 
 class Row(line: Line, previousMetrics: MetricCollection) {
 

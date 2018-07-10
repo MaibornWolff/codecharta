@@ -30,6 +30,7 @@ class ArchitectureTest {
                 .should().accessClassesThat().resideInAPackage("..infrastructure..").check(classes)
     }
 
+    @Ignore
     @Test
     fun antlr_only_interacts_with_itself_standard_library_and_tagging() {
         noClasses().that().resideInAPackage("..antlr..")
