@@ -79,7 +79,7 @@ export class geometryGenerator {
 
     private addFloor(data : intermediateVertexData, n : node, idx : number, desc : codeMapGeometricDescription, settings: renderSettings)
     {
-        let color: number = ((n.markingColor? n.markingColor: this.floorGradient[n.depth]) & 0xfefefe) >> n.depth % 2;
+        let color: number = ((n.markingColor? n.markingColor  & (n.depth % 2 === 0?0xdddddd:0xffffff): this.floorGradient[n.depth]));
         let measures : boxMeasures = this.mapNodeToLocalBox(n);
 
         desc.add(
