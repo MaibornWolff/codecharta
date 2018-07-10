@@ -60,13 +60,14 @@ export class TreeMapService {
 
     private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): node {
         const heightScale = s.size / TreeMapService.HEIGHT_DIVISOR / this.dataService.getMaxMetricInAllRevisions(s.heightKey);
-        const maxHeight = this.getMaxMetricInAllRevisions(s.heightKey);
+        const maxHeight = this.dataService.getMaxMetricInAllRevisions(s.heightKey);
         return this.addHeightDimensionAndFinalize(squaredNode, s.heightKey, heightScale, s.invertHeight, maxHeight);
     }
 
     private addHeightDimensionAndFinalize(squaredNode: SquarifiedValuedCodeMapNode, key: string, heightScale: number, invertHeight: boolean, maxHeight: number, depth = 0, parent: node = null): node {
 
-        let heightValue = squaredNode.data.attributes[key];
+        let attr = squaredNode.data.attributes || {};
+        let heightValue = attr[key];
 
         if (heightValue === undefined || heightValue === null) {
             heightValue = TreeMapService.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND;
@@ -83,21 +84,6 @@ export class TreeMapService {
         }
         return finalNode;
 
-    }
-
-    private getMaxMetricInAllRevisions(metric: string) {
-        let maxValue = 0;
-
-        this.dataService.data.revisions.forEach((rev)=> {
-            let nodes = d3.hierarchy(rev.root).leaves();
-            nodes.forEach((node: any)=> {
-                if (node.data.attributes[metric] > maxValue) {
-                    maxValue = node.data.attributes[metric];
-                }
-            });
-        });
-
-        return maxValue;
     }
 
     private calculateValue(node: CodeMapNode, key: string): number {
