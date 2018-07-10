@@ -3,7 +3,7 @@ import {CodeMapNode} from "../data/model/CodeMap";
 import {node} from "../../ui/codeMap/rendering/node";
 import {DataService} from "../data/data.service";
 
-describe("tdd", ()=> {
+describe("treemap service", ()=> {
 
     let treeMapService: TreeMapService;
     let root: CodeMapNode;
