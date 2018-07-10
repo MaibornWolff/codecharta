@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.Metric
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.SourceFile
@@ -21,7 +21,7 @@ class AnonymousClassTest {
 
         val metricExtractor = RowMetrics(sourceCode)
 
-        assertThatMetricElement(metricExtractor) {it.summary()[Metric.RLoc]}.isEqualTo(3)
+        assertThatMetricElement(metricExtractor) {it.summary()[MetricType.RLoc]}.isEqualTo(3)
     }
 
 }

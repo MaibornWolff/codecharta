@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.elementsOf
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.fileMetricToTabular
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.integrationBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.RowMetrics

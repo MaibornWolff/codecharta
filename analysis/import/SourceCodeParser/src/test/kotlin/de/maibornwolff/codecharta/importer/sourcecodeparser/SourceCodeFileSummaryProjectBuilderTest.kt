@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.FileSummary
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.Metric
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricCollection
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.SourceCodeComponentProjectBuilder
 import de.maibornwolff.codecharta.model.Node
@@ -44,13 +44,13 @@ class SourceCodeFileSummaryProjectBuilderTest {
     @Test
     fun project_node_matches_metrics() {
         val projectName = "CoolProject"
-        val fileSummary = FileSummary("CoolComponent", "", MetricCollection(Metric.LoC to 1))
+        val fileSummary = FileSummary("CoolComponent", "", MetricCollection(MetricType.LoC to 1))
 
         val project = SourceCodeComponentProjectBuilder(projectName)
                 .addComponentAsNode(fileSummary)
                 .build()
 
-        assertThat(project.rootNode.children[0].attributes["lines_of_code"]).isEqualTo(fileSummary[Metric.LoC])
+        assertThat(project.rootNode.children[0].attributes["lines_of_code"]).isEqualTo(fileSummary[MetricType.LoC])
     }
 
     @Test

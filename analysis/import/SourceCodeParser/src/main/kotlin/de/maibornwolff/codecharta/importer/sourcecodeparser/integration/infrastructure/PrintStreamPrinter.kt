@@ -1,6 +1,7 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application
+package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.Metric
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.Printer
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.RowMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.Row
 import java.io.PrintStream
@@ -40,7 +41,7 @@ class PrintStreamPrinter(private val outputStream: PrintStream): Printer {
 fun fileMetricToTabular(metricExtractor: RowMetrics): String{
     return String.format("%-5s %-5s %-120s %-20s", "LoC", "RLoC", "Code", "Tags") + "\n" +
             "-".repeat(40)+ "\n" +
-            metricExtractor.map { String.format("%-5d %-5s %-120s %-20s", it.metrics[Metric.LoC], rlocText(it), it.text, it.tags) }.joinToString("\n")
+            metricExtractor.map { String.format("%-5d %-5s %-120s %-20s", it.metrics[MetricType.LoC], rlocText(it), it.text, it.tags) }.joinToString("\n")
 }
 
-private fun rlocText(row: Row) = if(row.rlocWasIncremented) row[Metric.RLoc] else ""
+private fun rlocText(row: Row) = if(row.rlocWasIncremented) row[MetricType.RLoc] else ""

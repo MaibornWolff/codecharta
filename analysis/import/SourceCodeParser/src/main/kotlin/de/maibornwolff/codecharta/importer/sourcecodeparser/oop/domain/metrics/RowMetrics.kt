@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.SourceFile
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.FileSummary
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.Metric
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
 
 class RowMetrics(sourceFile: SourceFile): Iterable<Row> {
 
@@ -34,6 +34,6 @@ class RowMetrics(sourceFile: SourceFile): Iterable<Row> {
             rows.last().metrics
     )
 
-    fun loc() = get(rowCount())[Metric.LoC]
-    fun rloc() = get(rowCount())[Metric.RLoc]
+    fun loc() = get(rowCount())[MetricType.LoC]
+    fun rloc() = get(rowCount())[MetricType.RLoc]
 }

@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.RowMetrics
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.PrintStreamPrinter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.PrintStreamPrinter
 import org.assertj.core.api.AbstractAssert
 import org.assertj.core.api.Assertions
 import org.assertj.core.util.CheckReturnValue

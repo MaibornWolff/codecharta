@@ -13,7 +13,6 @@ dependencies {
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.10.0'
     testCompile group: 'io.mockk', name: 'mockk', version: mokk_version
     testCompile 'com.tngtech.archunit:archunit:0.8.2'
-    testCompile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
     testCompile project(path: ':model', configuration: 'testOutput')
 }
 
@@ -38,6 +37,8 @@ generateGrammarSource {
     // NOTE: We NEED projectDir here, because the root project build.gradle will otherwise use the wrong relative folder
     outputDirectory = new File("${projectDir}/src/generated/antlr/de/maibornwolff/codecharta/importer/sourcecodeparser/oop/infrastructure/antlr/java").absoluteFile
 }
+
+compileJava.dependsOn generateGrammarSource
 
 sourceSets {
     main {

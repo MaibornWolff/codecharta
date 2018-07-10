@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.FileSummary
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.Metric
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
 import de.maibornwolff.codecharta.model.*
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import java.io.OutputStreamWriter
@@ -16,8 +16,8 @@ class SourceCodeComponentProjectBuilder(projectName: String) {
 
     fun addComponentAsNode(fileSummary: FileSummary): SourceCodeComponentProjectBuilder {
         val node = MutableNode(fileSummary.name, attributes = hashMapOf(
-                "lines_of_code" to fileSummary[Metric.LoC],
-                "rloc" to fileSummary[Metric.RLoc])
+                "lines_of_code" to fileSummary[MetricType.LoC],
+                "rloc" to fileSummary[MetricType.RLoc])
         )
         val path = PathFactory.fromFileSystemPath(fileSummary.path)
 

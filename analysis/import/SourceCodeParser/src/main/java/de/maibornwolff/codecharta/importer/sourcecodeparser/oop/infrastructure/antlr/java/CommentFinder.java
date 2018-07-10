@@ -5,15 +5,15 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.S
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 
-public class CommentFinder {
+class CommentFinder {
 
     private SourceFile source;
 
-    public CommentFinder(SourceFile source){
+    CommentFinder(SourceFile source){
         this.source = source;
     }
 
-    public void extractComments(CommonTokenStream tokens){
+    void extractComments(CommonTokenStream tokens){
         tokens.fill();
         for (int index = 0; index < tokens.size(); index++) {
             Token token = tokens.get(index);

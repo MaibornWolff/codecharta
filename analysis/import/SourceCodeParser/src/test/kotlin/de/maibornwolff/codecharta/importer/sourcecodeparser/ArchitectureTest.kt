@@ -3,23 +3,54 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser
 import com.tngtech.archunit.core.importer.ClassFileImporter
 import com.tngtech.archunit.core.importer.ImportOption
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*
+import com.tngtech.archunit.library.GeneralCodingRules
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices
+import org.junit.Ignore
 import org.junit.Test
 
 
 class ArchitectureTest {
-    private val classes = ClassFileImporter().withImportOption(ImportOption.Predefined.DONT_INCLUDE_TESTS)
+    private val classes = ClassFileImporter()
+            .withImportOption(ImportOption.Predefined.DONT_INCLUDE_TESTS)
             .importPackages("de.maibornwolff.codecharta.importer.sourcecodeparser")
 
     @Test
-    fun core_has_no_outgoing_dependencies() {
-        noClasses().that().resideInAPackage("..domain..").should()
-                .accessClassesThat().resideInAPackage("..infrastructure..").check(classes)
+    fun component_core_has_no_outgoing_dependencies() {
+        noClasses().that().resideInAPackage("..core..")
+                .should().accessClassesThat().resideInAPackage("..oop..").check(classes)
+        noClasses().that().resideInAPackage("..core..")
+                .should().accessClassesThat().resideInAPackage("..integration..").check(classes)
     }
 
     @Test
-    fun code_should_be_free_of_cycles() {
+    fun any_domain_has_no_outgoing_dependencies() {
+        noClasses().that().resideInAPackage("..domain..")
+                .should().accessClassesThat().resideInAPackage("..application..")
+        noClasses().that().resideInAPackage("..domain..")
+                .should().accessClassesThat().resideInAPackage("..infrastructure..").check(classes)
+    }
+
+    @Test
+    fun antlr_only_interacts_with_itself_standard_library_and_tagging() {
+        noClasses().that().resideInAPackage("..antlr..")
+                .should().accessClassesThat().resideOutsideOfPackages("..antlr..", "java.lang..", "..tagging..")
+                .check(classes)
+    }
+
+    @Test
+    fun components_should_be_free_of_cycles() {
         slices().matching("de.maibornwolff.codecharta.importer.sourcecodeparser.(*)..")
                 .should().beFreeOfCycles()
+    }
+
+    @Ignore
+    @Test
+    fun no_classes_should_access_standard_streams() {
+        GeneralCodingRules.NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS.check(classes)
+    }
+
+    @Test
+    fun no_classes_should_throw_generic_exceptions() {
+        GeneralCodingRules.NO_CLASSES_SHOULD_THROW_GENERIC_EXCEPTIONS.check(classes)
     }
 }

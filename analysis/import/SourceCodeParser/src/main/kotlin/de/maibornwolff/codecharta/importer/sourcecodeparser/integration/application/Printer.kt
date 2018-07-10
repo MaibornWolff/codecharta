@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.R
 
 interface Printer {
 
-    fun printFile(filemetrics: RowMetrics)
+    fun printFile(rowMetrics: RowMetrics)
     fun printFolder(metrics: List<RowMetrics>)
 
 }

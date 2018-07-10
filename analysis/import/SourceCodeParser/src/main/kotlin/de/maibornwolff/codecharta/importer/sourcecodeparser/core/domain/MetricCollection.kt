@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain
 
-class MetricCollection(private vararg val pairs: Pair<Metric, Int>) {
+class MetricCollection(private vararg val pairs: Pair<MetricType, Int>) {
 
     private val metrics = hashMapOf(*pairs)
 
-    operator fun get(metricKey: Metric): Int = metrics.getOrDefault(metricKey, 0)
+    operator fun get(metricKey: MetricType): Int = metrics.getOrDefault(metricKey, 0)
 }

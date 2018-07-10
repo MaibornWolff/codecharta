@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.R
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.SourceFile
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.Printer
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.PrintStreamPrinter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.PrintStreamPrinter
 import org.antlr.v4.runtime.tree.ParseTree
 import picocli.CommandLine.*
 import java.io.*

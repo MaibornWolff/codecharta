@@ -7,7 +7,7 @@ public class ExtendedBaseVisitor extends JavaParserBaseVisitor {
 
     private SourceFile source;
 
-    public ExtendedBaseVisitor(SourceFile source){
+    ExtendedBaseVisitor(SourceFile source){
         this.source = source;
     }
 
