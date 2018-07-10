@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.application.OopApp
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.MetricTable
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricTable
 
 class SourceApp(private val locationResolver: LocationResolver, private val printer: Printer) {
 

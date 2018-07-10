@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricTable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableFile
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
@@ -46,11 +47,10 @@ class MetricExtractorSimpleClassTest {
         val rowMetrics = MetricTable(sourceCode, OopMetricStrategy())
 
         Assertions.assertThat(rowMetrics[1][MetricType.RLoc]).isEqualTo(1)
-        Assertions.assertThat(rowMetrics[1].rlocWasIncremented).isTrue()
         Assertions.assertThat(rowMetrics[2][MetricType.RLoc]).isEqualTo(1)
-        Assertions.assertThat(rowMetrics[2].rlocWasIncremented).isFalse()
+        Assertions.assertThat(rowMetrics[2].metricWasIncremented(MetricType.RLoc, rowMetrics[1])).isFalse()
         Assertions.assertThat(rowMetrics[3][MetricType.RLoc]).isEqualTo(2)
-        Assertions.assertThat(rowMetrics[3].rlocWasIncremented).isTrue()
+        Assertions.assertThat(rowMetrics[3].metricWasIncremented(MetricType.RLoc, rowMetrics[2])).isTrue()
     }
 
     @Test

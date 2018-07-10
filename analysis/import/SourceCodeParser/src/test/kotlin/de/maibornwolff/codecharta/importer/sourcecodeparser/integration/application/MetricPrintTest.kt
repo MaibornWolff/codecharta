@@ -1,10 +1,9 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.elementsOf
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.fileMetricToTabular
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.integrationBaseFolder
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.MetricTable
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricTable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableFile
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.FileSystemSourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.application.OopApp

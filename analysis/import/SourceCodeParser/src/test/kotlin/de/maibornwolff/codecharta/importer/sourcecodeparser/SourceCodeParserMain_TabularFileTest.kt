@@ -17,6 +17,7 @@ class SourceCodeParserMain_TabularFileTest {
     @Test
     @Throws(IOException::class)
     fun tabular_output_for_single_file_contains_correct_header() {
+        println(outputStream)
         assertThat(outputStream.lines()[0]).contains("LoC", "Code")
         assertThat(outputStream.lines()[1]).contains("------")
     }

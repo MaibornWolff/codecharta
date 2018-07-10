@@ -1,13 +1,11 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.raw.SourceCode
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.MetricTable
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricTable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableFile
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.Printer
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.SourceApp
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.FileSystemLocationResolver
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.TablePrinter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.TablePrinter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopMetricStrategy
 import picocli.CommandLine.*
 import java.io.*
@@ -56,7 +54,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
         return null
     }
 
-    private fun parseFile(absolutePath: String):MetricTable{
+    private fun parseFile(absolutePath: String): MetricTable {
         val sourceCode = TaggableFile(Files.readAllLines(Paths.get(absolutePath)))
         Antlr.addTagsToSource(sourceCode)
         return MetricTable(sourceCode, OopMetricStrategy())

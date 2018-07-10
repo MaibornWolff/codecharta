@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.FileSummary
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricCollection
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.SourceCodeComponentProjectBuilder
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.JsonPrinter
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
 import org.assertj.core.api.Assertions.assertThat
@@ -15,7 +15,7 @@ class SourceCodeFileSummaryProjectBuilderTest {
     fun project_name_matches() {
         val projectName = "CoolProject"
 
-        val project = SourceCodeComponentProjectBuilder(projectName).build()
+        val project = JsonPrinter(projectName).build()
 
         assertThat(project.projectName).isEqualTo(projectName)
     }
@@ -24,7 +24,7 @@ class SourceCodeFileSummaryProjectBuilderTest {
     fun empty_project_has_no_nodes_except_root() {
         val projectName = "CoolProject"
 
-        val project = SourceCodeComponentProjectBuilder(projectName).build()
+        val project = JsonPrinter(projectName).build()
 
         assertThat(project.rootNode.children.size).isEqualTo(0)
     }
@@ -34,7 +34,7 @@ class SourceCodeFileSummaryProjectBuilderTest {
         val projectName = "CoolProject"
         val fileSummary = FileSummary("CoolComponent", "", MetricCollection())
 
-        val project = SourceCodeComponentProjectBuilder(projectName)
+        val project = JsonPrinter(projectName)
                 .addComponentAsNode(fileSummary)
                 .build()
 
@@ -46,7 +46,7 @@ class SourceCodeFileSummaryProjectBuilderTest {
         val projectName = "CoolProject"
         val fileSummary = FileSummary("CoolComponent", "", MetricCollection(MetricType.LoC to 1))
 
-        val project = SourceCodeComponentProjectBuilder(projectName)
+        val project = JsonPrinter(projectName)
                 .addComponentAsNode(fileSummary)
                 .build()
 
@@ -57,7 +57,7 @@ class SourceCodeFileSummaryProjectBuilderTest {
     fun project_file_node_count_matches_components() {
         val projectName = "CoolProject"
 
-        val project = SourceCodeComponentProjectBuilder(projectName)
+        val project = JsonPrinter(projectName)
                 .addComponentAsNode(FileSummary("CoolComponent", "", MetricCollection()))
                 .addComponentAsNode(FileSummary("CoolerComponent", "", MetricCollection()))
                 .addComponentAsNode(FileSummary("BestComponent", "de", MetricCollection()))

@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.Printer
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.MetricTable
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricTable
 
 class PrinterSpy: Printer{
     var printedRowMetrics: MetricTable? = null

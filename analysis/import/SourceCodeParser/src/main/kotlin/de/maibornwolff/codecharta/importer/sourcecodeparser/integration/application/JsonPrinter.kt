@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.model.*
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import java.io.OutputStreamWriter
 
-class SourceCodeComponentProjectBuilder(projectName: String) {
+class JsonPrinter(projectName: String) {
 
     private val projectBuilder = ProjectBuilder(projectName)
 
@@ -14,7 +14,7 @@ class SourceCodeComponentProjectBuilder(projectName: String) {
         return projectBuilder.build()
     }
 
-    fun addComponentAsNode(fileSummary: FileSummary): SourceCodeComponentProjectBuilder {
+    fun addComponentAsNode(fileSummary: FileSummary): JsonPrinter {
         val node = MutableNode(fileSummary.name, attributes = hashMapOf(
                 "lines_of_code" to fileSummary[MetricType.LoC],
                 "rloc" to fileSummary[MetricType.RLoc])

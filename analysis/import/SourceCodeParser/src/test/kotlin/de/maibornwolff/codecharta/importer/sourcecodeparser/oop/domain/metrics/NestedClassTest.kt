@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricTable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableFile

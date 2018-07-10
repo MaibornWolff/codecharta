@@ -1,13 +1,10 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
+package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableFile
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.FileSummary
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricCollection
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricStrategy
 
-class MetricTable(taggableFile: TaggableFile, metricStrategy: MetricStrategy): Iterable<Row> {
-
-    private val metricStrategy = OopMetricStrategy()
+class MetricTable(taggableFile: TaggableFile, private val metricStrategy: MetricStrategy): Iterable<Row> {
 
     // IMPORTANT: line numbers start at 1 - just like our interface, but this array starts at 0
     private val rows = toRows(taggableFile)
@@ -18,16 +15,6 @@ class MetricTable(taggableFile: TaggableFile, metricStrategy: MetricStrategy): I
 
     override fun iterator(): Iterator<Row> = rows.iterator()
 
-    private fun toRows(taggableFile: TaggableFile): Array<Row> {
-        var previousMetrics = MetricCollection()
-        return taggableFile.map {
-            val newMetrics = metricStrategy.metricsOf(it, previousMetrics)
-            val row = Row(it, newMetrics)
-            previousMetrics = newMetrics
-            row
-        }.toTypedArray()
-    }
-
     fun rowCount(): Int {
         return rows.size
     }
@@ -37,4 +24,14 @@ class MetricTable(taggableFile: TaggableFile, metricStrategy: MetricStrategy): I
             "",
             rows.last().metrics
     )
+
+    private fun toRows(taggableFile: TaggableFile): Array<Row> {
+        var previousMetrics = MetricCollection()
+        return taggableFile.map {
+            val newMetrics = metricStrategy.metricsOf(it, previousMetrics)
+            val row = Row(it, newMetrics)
+            previousMetrics = newMetrics
+            row
+        }.toTypedArray()
+    }
 }
