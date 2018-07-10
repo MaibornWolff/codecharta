@@ -8,9 +8,11 @@ import java.io.IOException
 
 class SourceCodeParserMain_TabularFileTest {
 
-   private val outputStream = retrieveOutputAndErrorStream {
-       SourceCodeParserMain.main(arrayOf("src/test/resources/$baseFolder/miniJavaProject/mini/RealLinesShort.java", "-out=table"))
-   }.first
+    private val resource = "src/test/resources/$baseFolder/miniJavaProject/mini/RealLinesShort.java"
+
+    private val outputStream = retrieveStreamAsString {
+        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "-out=table"))
+    }
 
     @Test
     @Throws(IOException::class)

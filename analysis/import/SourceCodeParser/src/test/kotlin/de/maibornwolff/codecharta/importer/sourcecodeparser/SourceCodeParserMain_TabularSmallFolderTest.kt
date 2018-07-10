@@ -8,10 +8,11 @@ import java.io.IOException
 
 class SourceCodeParserMain_TabularSmallFolderTest {
 
-    private val outputStream = retrieveOutputAndErrorStream {
-        SourceCodeParserMain.main(arrayOf("src/test/resources/$baseFolder/miniJavaProject", "-out=table"))
-    }.first
+    private val resource = "src/test/resources/$baseFolder/miniJavaProject"
 
+    private val outputStream = retrieveStreamAsString {
+        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "-out=table"))
+    }
 
     @Test
     @Throws(IOException::class)
