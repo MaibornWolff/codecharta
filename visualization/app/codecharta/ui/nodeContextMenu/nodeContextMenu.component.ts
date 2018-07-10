@@ -18,29 +18,17 @@ export class NodeContextMenuComponent {
                 private $window,
                 private $rootScope,
                 private settingsService: SettingsService,
-                private codeMapActionsService: CodeMapActionsService,
-    ) {
-        this.$rootScope.$on("show-node-context-menu",(e, data)=>{
+                private codeMapActionsService: CodeMapActionsService,) {
+        this.$rootScope.$on("show-node-context-menu", (e, data) => {
             this.showContextMenu(data.path, data.x, data.y)
         });
-        this.$rootScope.$on("hide-node-context-menu",()=>{
+        this.$rootScope.$on("hide-node-context-menu", () => {
             this.hideContextMenu()
         });
     }
 
-    public getFilteredColors(){
-        return this.colors.filter((x) => {
-            let color = parseInt("0x"+x.substring(1),16);
-            if(this.contextMenuBuilding && this.contextMenuBuilding.markingColor && parseInt(this.contextMenuBuilding.markingColor,16) === color) {
-                return false;
-            } else {
-                return true;
-            }
-        });
-    }
-
     public static show($rootScope, path: string, x, y) {
-        $rootScope.$broadcast("show-node-context-menu", {path: path, x:x, y:y});
+        $rootScope.$broadcast("show-node-context-menu", {path: path, x: x, y: y});
     }
 
     public static hide($rootScope) {
@@ -50,7 +38,7 @@ export class NodeContextMenuComponent {
     showContextMenu(path: string, x, y) {
         this.$timeout(() => {
             this.contextMenuBuilding = this.getCodeMapNodeFromPath(path);
-        }, 50).then(()=>{
+        }, 50).then(() => {
             this.$timeout(() => {
                 let w = this.$element[0].children[0].clientWidth;
                 let h = this.$element[0].children[0].clientHeight;
@@ -58,13 +46,28 @@ export class NodeContextMenuComponent {
                 let resY = Math.min(y, this.$window.innerHeight - h);
                 angular.element(this.$element[0].children[0]).css("top", resY + "px");
                 angular.element(this.$element[0].children[0]).css("left", resX + "px");
-            },50);
+            }, 50);
         });
     }
 
     hideNode() {
         this.hideContextMenu();
         this.codeMapActionsService.hideNode(this.contextMenuBuilding);
+    }
+
+    clickColor(color: string) {
+        if (this.currentFolderIsMarkedWithColor(color)) {
+            this.unmarkFolder();
+        } else {
+            this.markFolder(color);
+        }
+    }
+
+    currentFolderIsMarkedWithColor(color: string) {
+        return color
+        && this.contextMenuBuilding
+        && this.contextMenuBuilding.markingColor
+        && color.substring(1) === this.contextMenuBuilding.markingColor.substring(2);
     }
 
     markFolder(color: string) {
