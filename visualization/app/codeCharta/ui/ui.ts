@@ -18,6 +18,7 @@ import "./experimentalSettingsPanel/experimentalSettingsPanel";
 import "./regexFilter/regexFilter";
 import "./resetSettingsButton/resetSettingsButton";
 import "./dialog/dialog";
+import "./nodeContextMenu/nodeContextMenu";
 import "./layoutSwitcher/layoutSwitcher";
 import "./temporalCoupling/temporalCoupling"
 
@@ -39,6 +40,7 @@ angular.module(
         "app.codeCharta.ui.rangeSlider",
         "app.codeCharta.ui.resetSettingsButton",
         "app.codeCharta.ui.dialog",
+        "app.codeCharta.ui.nodeContextMenu",
         "app.codeCharta.ui.layoutSwitcher",
         "app.codeCharta.ui.regexFilter",
         "app.codeCharta.ui.temporalCoupling"

@@ -1,34 +1,63 @@
 import {codeMapBuilding} from "./rendering/codeMapBuilding";
-import {ThreeCameraService} from "./threeViewer/threeCameraService";
-import {IAngularEvent, IRootScopeService} from "angular";
 import {ThreeViewerService} from "./threeViewer/threeViewerService";
-import {MapTreeViewHoverEventSubscriber, MapTreeViewLevelController} from "../mapTreeView/mapTreeViewLevelComponent";
-import {CodeMapNode} from "../../core/data/model/CodeMap";
-import {CodeMapMouseEventService} from "./codeMap.mouseEvent.service";
+import {
+    CodeMapBuildingTransition, CodeMapMouseEventService,
+    CodeMapMouseEventServiceSubscriber
+} from "./codeMap.mouseEvent.service";
 import {CodeMapRenderService} from "./codeMap.render.service";
 
-export class CodeMapController {
+import "./codeMap.component.scss";
+
+import angular from "angular";
+import {SettingsService} from "../../core/settings/settings.service";
+import {hierarchy} from "d3-hierarchy";
+import {CodeMapNode} from "../../core/data/model/CodeMap";
+import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
+import {MapColors, renderSettings} from "./rendering/renderSettings";
+import {NodeContextMenuComponent} from "../nodeContextMenu/nodeContextMenu.component";
+
+export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
+
+    private contextMenuBuilding: CodeMapNode;
 
     /* @ngInject */
-    constructor(
-        private threeViewerService: ThreeViewerService,
-        private $element: Element,
-        private codeMapMouseEventService: CodeMapMouseEventService,
-        private codeMapRenderService: CodeMapRenderService, //we need to call this service somewhere.
-    ){
+    constructor(private threeViewerService: ThreeViewerService,
+                private $element: Element,
+                private $rootScope,
+                private $timeout,
+                private $window,
+                private settingsService: SettingsService,
+                private codeMapMouseEventService: CodeMapMouseEventService,
+                private threeOrbitControlsService: ThreeOrbitControlsService,
+                private codeMapRenderService: CodeMapRenderService, //we need to call this service somewhere.
+    ) {
+        CodeMapMouseEventService.subscribe($rootScope, this);
     }
 
     $postLink() {
-        this.threeViewerService.init(this.$element[0]);
+        this.threeViewerService.init(this.$element[0].children[0]);
         this.threeViewerService.animate();
         this.codeMapMouseEventService.start();
+    }
+
+    onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
+        NodeContextMenuComponent.hide(this.$rootScope);
+        if (building) {
+            NodeContextMenuComponent.show(this.$rootScope, building.node.path, x, y);
+        }
+    }
+
+    onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+    }
+
+    onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
     }
 
 }
 
 export const codeMapComponent = {
     selector: "codeMapComponent",
-    template: "<div id='#codeMap'></div>",
+    template: require("./codeMap.component.html"),
     controller: CodeMapController
 };
 

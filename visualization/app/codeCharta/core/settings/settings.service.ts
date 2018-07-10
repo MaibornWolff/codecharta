@@ -101,7 +101,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             amountOfTopLabels: 1,
             scaling: s,
             camera: c,
-            margin: 1,
+            margin: 15,
             operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
             showDependencies: false,

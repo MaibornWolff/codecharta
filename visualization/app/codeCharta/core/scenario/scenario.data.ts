@@ -24,7 +24,7 @@ export function createDefaultScenario(map: CodeMap): Scenario {
             camera: {
                 x: 0, y: 300, z: 1000
             },
-            margin: 1,
+            margin: 15,
             operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
             showDependencies: false,

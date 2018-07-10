@@ -1,159 +1,92 @@
-import * as d3 from "d3";
-import {DataService} from "../data/data.service";
-import {CodeMap, CodeMapDependency, CodeMapNode} from "../data/model/CodeMap";
-import {HierarchyNode, HierarchyRectangularNode} from "d3-hierarchy";
+import {CodeMapNode, CodeMapDependency} from "../data/model/CodeMap";
 import {node} from "../../ui/codeMap/rendering/node";
+import {DataService} from "../data/data.service";
+import * as d3 from "d3";
+import {TreeMapUtils} from "./treemap.util";
+import {HierarchyNode} from "d3";
 
-const PADDING_SCALING_FACTOR = 0.4;
+export interface ValuedCodeMapNode {
+    data: CodeMapNode;
+    children?: ValuedCodeMapNode[];
+    value: number;
+}
 
-/**
- * This service transforms valid file data to a custom treemap. Our custom treemap has a 3rd axis added to the nodes.
- */
-class TreeMapService {
+export interface SquarifiedValuedCodeMapNode {
+    data: CodeMapNode;
+    children?: SquarifiedValuedCodeMapNode[];
+    parent?: SquarifiedValuedCodeMapNode;
+    value: number;
+    x0: number;
+    y0: number;
+    x1: number;
+    y1: number;
+}
 
-    public static SELECTOR = "treeMapService";
+export interface TreeMapSettings {
+    size: number;
+    areaKey: string;
+    heightKey: string;
+    margin: number;
+    invertHeight: boolean;
+    visibleTemporalCouplingDependencies: CodeMapDependency[];
+}
+
+export class TreeMapService {
+
+    private static HEIGHT_DIVISOR = 1;
+    private static FOLDER_HEIGHT = 2;
+    private static MIN_BUILDING_HEIGHT = 2;
+    private static HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND = 0;
+    private static PADDING_SCALING_FACTOR = 0.4;
 
     /* @ngInject */
-    constructor(private dataService: DataService) {
+    constructor(private dataService: DataService) {}
 
+    public createTreemapNodes(data: CodeMapNode, s: TreeMapSettings): node {
+        const squarified: SquarifiedValuedCodeMapNode = this.squarify(data, s);
+        const heighted = this.addMapScaledHeightDimensionAndFinalizeFromRoot(squarified, s);
+        return heighted;
     }
 
-    /**
-     * creates an array of fully transformed/customized and visible {d3#treemap} nodes.
-     * @external {d3#treemap} https://github.com/d3/d3-hierarchy/blob/master/README.md#treemap
-     * @param {Object} data valid data
-     * @param {number} w treemap width for calculation
-     * @param {number} l treemap length for calculation
-     * @param {number} p padding between treemap squares
-     * @param {string} areaKey area metric name
-     * @param {string} heightKey height metric name
-     * @param {boolean} invertHeight invert the height of buildings
-     * @param {CodeMapDependency[]} temporalCouplingDependencies have full height, but rest of the nodes gets height of 1
-     */
-    createTreemapNodes(
-        data: CodeMapNode,
-        w: number,
-        l: number,
-        p: number,
-        areaKey: string,
-        heightKey: string,
-        invertHeight: boolean,
-        temporalCouplingDependencies: CodeMapDependency[]
-    ) {
-
-        let root = d3.hierarchy(data);
-
+    private squarify(data: CodeMapNode, s: TreeMapSettings): SquarifiedValuedCodeMapNode {
+        let root: HierarchyNode<CodeMapNode> = d3.hierarchy<CodeMapNode>(data);
         let nodesPerSide = 2 * Math.sqrt(root.descendants().length);
+        let treeMap = d3.treemap<CodeMapNode>()
+            .size([s.size + nodesPerSide*s.margin, s.size + nodesPerSide*s.margin])
+            .paddingOuter(s.margin * TreeMapService.PADDING_SCALING_FACTOR || 1)
+            .paddingInner(s.margin * TreeMapService.PADDING_SCALING_FACTOR || 1);
 
-        let treeMap = d3.treemap()
-            .size([w + nodesPerSide*p, l + nodesPerSide*p])
-            .paddingOuter(p * PADDING_SCALING_FACTOR || 1)
-            .paddingInner(p * PADDING_SCALING_FACTOR || 1);
-
-        root.descendants().forEach((l: any)=> {
-            l.isLeaf = false;
-        });
-
-        root.leaves().forEach((l: any)=> {
-            l.isLeaf = true;
-        });
-
-        let nodes = treeMap(root.sum((node)=>this.getArea(node, areaKey))).descendants();
-
-        let maxHeight = this.getMaxMetricInAllRevisions(heightKey);
-        let heightScale = w / maxHeight;
-
-        nodes.forEach((node)=> {
-            this.transformNode(node, heightKey, heightScale, p*PADDING_SCALING_FACTOR * 0.2, invertHeight, maxHeight, temporalCouplingDependencies);
-        });
-
-        return nodes;
+        return treeMap(root.sum((node) => this.calculateValue(node, s.areaKey))) as SquarifiedValuedCodeMapNode;
     }
 
-    /**
-     * Transforms a d3 node to our specific representation. Our specification requires a third axis z.
-     * -add z0 and z1 depending on treedepth and padding
-     * -add w,l,h depending on data.type and x, y
-     * -all we also write all important stuff into the node itself so we do not need node.data anymore (there could be obsolete data from old cc.jsons)
-     * -the height of the new z axis needs to be scaled to the w/l of the {d3#treemap}
-     *
-     * @param {Object} node d3 node
-     * @param {string} heightKey name of the height metric
-     * @param {number} heightScale scaling factor
-     * @param {number} folderHeight height of folder
-     * @param {boolean} invertHeight Scalaing of Buildings
-     * @param {number} maxHeight of heightKey Metric Building of Project
-     * @param {CodeMapDependency[]} temporalCouplingDependencies have full height, but rest of the nodes gets height of 1
-     */
-     transformNode(node, heightKey, heightScale, folderHeight, invertHeight: boolean, maxHeight: number, temporalCouplingDependencies: CodeMapDependency[]) {
-        let heightValue = node.data.attributes[heightKey];
-        if(heightValue === undefined || heightValue === null) {
-            heightValue = 0;
+    private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): node {
+        const heightScale = s.size / TreeMapService.HEIGHT_DIVISOR / this.dataService.getMaxMetricInAllRevisions(s.heightKey);
+        const maxHeight = this.getMaxMetricInAllRevisions(s.heightKey);
+        return this.addHeightDimensionAndFinalize(squaredNode, s, heightScale, maxHeight);
+    }
+
+    private addHeightDimensionAndFinalize(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings, heightScale: number, maxHeight: number, depth = 0, parent: node = null): node {
+
+        let heightValue = squaredNode.data.attributes[s.heightKey];
+
+        if (heightValue === undefined || heightValue === null) {
+            heightValue = TreeMapService.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND;
         }
-        node.name = node.data.name;
-        node.path = node.data.path;
 
-        node.width = Math.abs(node.x1 - node.x0);
-        node.length = Math.abs(node.y1 - node.y0);
-        node.height = this.getNodeHeight(node, folderHeight, heightScale, heightValue, maxHeight, invertHeight, temporalCouplingDependencies);
+        const finalNode = TreeMapUtils.buildNodeFrom(squaredNode, heightScale, heightValue, maxHeight, depth, parent, s, TreeMapService.MIN_BUILDING_HEIGHT, TreeMapService.FOLDER_HEIGHT);
 
-        node.z0 = folderHeight * node.depth;
-        node.z1 = node.z0 + node.height;
-        node.attributes = node.data.attributes;
-        if (node.data.deltas) {
-            node.deltas = node.data.deltas;
-            if(node.deltas[heightKey]) {
-                node.heightDelta = heightScale * node.data.deltas[heightKey];
+        if (squaredNode.children && squaredNode.children.length > 0) {
+            const finalChildren: node[] = [];
+            for (let i = 0; i < squaredNode.children.length; i++) {
+                finalChildren.push(this.addHeightDimensionAndFinalize(squaredNode.children[i], s, heightScale, maxHeight, depth + 1, finalNode));
             }
+            finalNode.children = finalChildren;
         }
-        node.link = node.data.link;
-        node.origin = node.data.origin;
-        node.visible = node.data.visible;
-
-        node.data = {};
-        delete node.data;
+        return finalNode;
 
     }
 
-    private getNodeHeight(node, folderHeight, heightScale, heightValue, maxHeight, invertHeight, temporalCouplingDependencies) {
-
-        var height = null;
-
-        if (!node.isLeaf) {
-            height = folderHeight;
-        } else if (!invertHeight) {
-            height = heightScale * heightValue;
-        } else {
-            height = (maxHeight - heightValue) * heightScale;
-        }
-
-        if (temporalCouplingDependencies.length > 0) {
-            height = this.getTemporalCouplingHeight(node, temporalCouplingDependencies, height, maxHeight, heightScale);
-        }
-
-        return Math.abs(height);
-    }
-
-    private getTemporalCouplingHeight(node, emphasizedDependencies, height, maxHeight, heightScale) {
-
-        for (var couple of emphasizedDependencies) {
-
-            if (node.path === couple.node ||
-                node.path === couple.dependantNode) {
-                return maxHeight / 100 * couple.pairingRate * heightScale;
-            }
-        }
-        height = 0;
-        return height;
-
-    }
-
-    /**
-     * Gets the biggest value of a metric in the current set of revisions
-     * @param {string} metric name of the metric
-     * @returns {number} max value
-     */
-    getMaxMetricInAllRevisions(metric: string) {
+    private getMaxMetricInAllRevisions(metric: string) {
         let maxValue = 0;
 
         this.dataService.data.revisions.forEach((rev)=> {
@@ -168,22 +101,13 @@ class TreeMapService {
         return maxValue;
     }
 
-    /**
-     * Extracts the area by areakey from the node.
-     *
-     * @param {Object} node d3 node
-     * @param {string} areaKey name of the area attribute key
-     * @returns {number} area value else 0
-     */
-    getArea(node, areaKey) {
+    private calculateValue(node: CodeMapNode, key: string): number {
         let result = 0;
         if (node.attributes && (!node.children || node.children.length === 0)) {
-            result = node.attributes[areaKey] || 0;
+            result = node.attributes[key] || 0;
         }
         return result;
     }
 
 }
-
-export {TreeMapService};
 

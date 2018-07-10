@@ -1,15 +1,29 @@
+import {renderingUtil} from "./renderingUtil";
+import {node} from "./node";
+
 export interface colorRange {
     from : number;
     to : number;
     flipped : boolean;
 }
 
+export function getFloorGradient(nodes: node[]): number[] {
+    return renderingUtil.gradient("#222222", "#aaaaaa", renderingUtil.getMaxNodeDepth(nodes));
+}
+
+export const highlightColors = [
+    "#FF1D8E",
+    "#1d8eff",
+    "#1DFFFF",
+    "#8eff1d",
+    "#8e1dff",
+    "#FFFF1D",
+];
+
 export enum MapColors {
     positive = 0x69AE40,
     neutral = 0xddcc00,
     negative = 0x820E0E,
-    odd = 0x501A1C,
-    even = 0xD1A9A9,
     selected = 0xEB8319,
     defaultC = 0x89ACB4,
     positiveDelta = 0x69ff40,
