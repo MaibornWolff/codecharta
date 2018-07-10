@@ -16,12 +16,11 @@ class AnnotationTest {
     @Test
     @Throws(IOException::class)
     fun example_has_correct_rloc_count() {
-        val resource = "$extractBaseFolder/java/Annotation.java"
         val sourceCode = FileSystemSourceCode("java", code)
         val locationResolverStub = LocationResolverStub(listOf(sourceCode))
         val printerSpy = PrinterSpy()
 
-        SourceApp(locationResolverStub, printerSpy).printMetrics(listOf(resource))
+        SourceApp(locationResolverStub, printerSpy).printMetrics(listOf("this file location is passed to our stub which returns code"))
 
         assertThatMetricElement(printerSpy.printedRowMetrics!!) {it.summary()[MetricType.RLoc]}.isEqualTo(3)
     }

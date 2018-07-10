@@ -12,10 +12,8 @@ import java.nio.file.Paths
 class SourceCodeSimpleClassTest {
 
     @Test(expected = IndexOutOfBoundsException::class)
-    @Throws(IOException::class)
     fun trying_index_0_results_in_exceptions_because_code_starts_at_line_1() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -23,10 +21,8 @@ class SourceCodeSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun trying_last_index_does_not_result_in_exception() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -34,10 +30,8 @@ class SourceCodeSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_all_lines() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -45,10 +39,8 @@ class SourceCodeSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_all_comments() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -56,10 +48,8 @@ class SourceCodeSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_package_declaration() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -67,10 +57,8 @@ class SourceCodeSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun empty_line_is_not_code() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -78,10 +66,8 @@ class SourceCodeSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_import_statements() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -89,10 +75,8 @@ class SourceCodeSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_annotations() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -100,10 +84,8 @@ class SourceCodeSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_class() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -111,10 +93,8 @@ class SourceCodeSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_field_declarations() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -122,10 +102,8 @@ class SourceCodeSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_constructor_declarations() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -133,10 +111,8 @@ class SourceCodeSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_method_declarations() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -144,10 +120,8 @@ class SourceCodeSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_global_and_local_variables() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -155,10 +129,8 @@ class SourceCodeSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_expressions_inside_class() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -167,10 +139,8 @@ class SourceCodeSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_statements_inside_methods() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -179,10 +149,8 @@ class SourceCodeSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_method_calls() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -190,14 +158,59 @@ class SourceCodeSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_conditions() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(code)
 
         Antlr.addTagsToSource(sourceCode)
 
         assertThat(sourceCode.linesWithTag(CodeTags.CONDITION)).containsExactly(31, 34)
     }
+
+    private val code =
+            """
+package none;
+
+import foo;
+import bar;
+
+/*
+ * class comment
+ */
+@Entity
+public class Foo {
+
+    @Deprecated("this is bad code")
+    private int stuff;
+
+    private volatile boolean wasReset = false;
+
+    // constructor, d'uh
+    public Foo(){
+        stuff = 5; // magic number
+    }
+
+    public Blub getStuff(){
+        int i = stuff - 1;
+        i++;
+        i = i + 0;
+        return i;
+    }
+
+    public void setStuff(int stuff){
+        this.wasReset = false;
+        if(stuff < 0){
+            reset(5);
+            wasReset = true;
+        } else if(reset(-1)){
+            this.stuff = stuff;
+        }
+        System.out.println("SetStuff was called");
+    }
+
+    private void reset(int num){
+        this.stuff = 0;
+    }
+}
+""".trim().lines()
 
 }
