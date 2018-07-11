@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.Language
 
 
-class TaggableFile(val language: Language, everySourceLine: List<String>): Iterable<Line> {
+class TaggableLines(val language: Language, everySourceLine: List<String>): Iterable<Line> {
 
     // IMPORTANT: line numbers start at 1, but this array starts at 0
     private val lines = everySourceLine

@@ -3,12 +3,12 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.applica
 import de.maibornwolff.codecharta.importer.sourcecodeparser.elementsOf
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.integrationBaseFolder
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricTable
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableFile
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.SingleMetricTable
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableLines
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.application.OopEntryPoint
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopMetricStrategy
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopMetricCalculationStrategy
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -22,7 +22,7 @@ class TableStreamPrinterTest {
     fun prints_all_rows_plus_header_and_underline() {
         val resource = "$integrationBaseFolder/java/RealLinesShort.java"
         val sourceCode = SourceCode(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        val metricExtractor = OopEntryPoint().fileSummary(sourceCode)
+        val metricExtractor = OopEntryPoint().calculateSingleMetrics(sourceCode)
 
         val output = fileMetricToTabular(metricExtractor)
 
@@ -33,9 +33,9 @@ class TableStreamPrinterTest {
     @Throws(IOException::class)
     fun prints_correct_header_order() {
         val resource = "$integrationBaseFolder/java/RealLinesShort.java"
-        val sourceCode = TaggableFile(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Antlr.addTagsToSource(sourceCode)
-        val metricExtractor = MetricTable(sourceCode, OopMetricStrategy())
+        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        Antlr.addTags(sourceCode)
+        val metricExtractor = SingleMetricTable(sourceCode, OopMetricCalculationStrategy())
 
         val output = fileMetricToTabular(metricExtractor)
 
@@ -46,9 +46,9 @@ class TableStreamPrinterTest {
     @Throws(IOException::class)
     fun prints_underline() {
         val resource = "$integrationBaseFolder/java/RealLinesShort.java"
-        val sourceCode = TaggableFile(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Antlr.addTagsToSource(sourceCode)
-        val metricExtractor = MetricTable(sourceCode, OopMetricStrategy())
+        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        Antlr.addTags(sourceCode)
+        val metricExtractor = SingleMetricTable(sourceCode, OopMetricCalculationStrategy())
 
         val output = fileMetricToTabular(metricExtractor)
 
@@ -59,9 +59,9 @@ class TableStreamPrinterTest {
     @Throws(IOException::class)
     fun prints_real_line_count_when_it_was_incremented() {
         val resource = "$integrationBaseFolder/java/RealLinesShort.java"
-        val sourceCode = TaggableFile(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Antlr.addTagsToSource(sourceCode)
-        val metricExtractor = MetricTable(sourceCode, OopMetricStrategy())
+        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        Antlr.addTags(sourceCode)
+        val metricExtractor = SingleMetricTable(sourceCode, OopMetricCalculationStrategy())
 
         val output = fileMetricToTabular(metricExtractor)
 
@@ -72,9 +72,9 @@ class TableStreamPrinterTest {
     @Throws(IOException::class)
     fun does_not_print_real_line_count_when_it_wasnt_incremented_and_instead_prints_empty_tag_list() {
         val resource = "$integrationBaseFolder/java/RealLinesShort.java"
-        val sourceCode = TaggableFile(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Antlr.addTagsToSource(sourceCode)
-        val metricExtractor = MetricTable(sourceCode, OopMetricStrategy())
+        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        Antlr.addTags(sourceCode)
+        val metricExtractor = SingleMetricTable(sourceCode, OopMetricCalculationStrategy())
 
         val output = fileMetricToTabular(metricExtractor)
 

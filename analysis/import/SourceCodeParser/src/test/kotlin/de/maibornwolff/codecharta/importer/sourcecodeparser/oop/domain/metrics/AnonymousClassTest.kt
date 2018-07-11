@@ -2,11 +2,9 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.SourceCodeParserEntryPoint
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.calculateSingleMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.SingleSourceProviderStub
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.FilePrinterSpy
 import org.junit.Test
 import java.io.IOException
 
@@ -20,7 +18,7 @@ class AnonymousClassTest {
 
         val singleMetrics = calculateSingleMetrics(locationResolverStub)
 
-        assertThatMetricElement(singleMetrics) {it.summary()[MetricType.RLoc]}.isEqualTo(3)
+        assertThatMetricElement(singleMetrics) { it.sum[MetricType.RLoc]}.isEqualTo(3)
     }
 
     private val code =

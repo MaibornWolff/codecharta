@@ -1,14 +1,16 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricTable
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableFile
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.SingleMetricTable
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableLines
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.JsonStreamPrinter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.Printer
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.SourceCodeParserEntryPoint
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.FileSystemSingleSourceProvider
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.TableStreamPrinter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.FileSystemMultiSourceProvider
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopMetricStrategy
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopMetricCalculationStrategy
 import picocli.CommandLine.*
 import java.io.*
 import java.nio.file.Files
@@ -27,9 +29,6 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     @Option(names = ["-out", "--outputType"], description = ["the format to output"], converter = [(OutputTypeConverter::class)])
     private var outputType = OutputType.JSON
 
-    @Option(names = ["--pathSeparator"], description = ["path separator (default = '/')"])
-    private var pathSeparator = '/'
-
     @Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
@@ -41,38 +40,39 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
 
         if(!files[0].exists()){
             val path = Paths.get("").toAbsolutePath().toString()
-            outputStream.println("TaggableFile Parser working directory = $path")
+            outputStream.println("Current working directory = $path")
             outputStream.println("Could not find "+files[0])
             return null
         }
 
-        val printer = TableStreamPrinter(outputStream)
+        val printer = getPrinter()
         val sourceApp = SourceCodeParserEntryPoint(printer)
 
         if(files.size == 1 && files[0].isFile) {
-            sourceApp.printMetrics(FileSystemSingleSourceProvider(files[0]))
+            sourceApp.printSingleMetrics(FileSystemSingleSourceProvider(files[0]))
         } else {
-            sourceApp.printMetrics(FileSystemMultiSourceProvider(files))
+            sourceApp.printMultiMetrics(FileSystemMultiSourceProvider(files))
         }
 
         return null
     }
 
-    private fun parseFile(absolutePath: String): MetricTable {
-        val sourceCode = TaggableFile(OopLanguage.JAVA, Files.readAllLines(Paths.get(absolutePath)))
-        Antlr.addTagsToSource(sourceCode)
-        return MetricTable(sourceCode, OopMetricStrategy())
+    private fun getPrinter(): Printer {
+        return when(outputType){
+            OutputType.JSON -> JsonStreamPrinter(outputStream, "Foo")
+            OutputType.TABLE -> TableStreamPrinter(outputStream)
+        }
     }
 
-    private fun parseFolder(absolutePath: String): List<MetricTable>{
-        return File(absolutePath).walk()
-                .filter { it.isFile && it.extension == "java" }
-                .map { parseFile(it.absolutePath) }.toList()
+    private fun parseFile(absolutePath: String): SingleMetricTable {
+        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(absolutePath)))
+        Antlr.addTags(sourceCode)
+        return SingleMetricTable(sourceCode, OopMetricCalculationStrategy())
     }
 
     private fun writer(): Writer {
         return if (outputFile == null) {
-            OutputStreamWriter(System.out)
+            OutputStreamWriter(outputStream)
         } else {
             BufferedWriter(FileWriter(outputFile))
         }

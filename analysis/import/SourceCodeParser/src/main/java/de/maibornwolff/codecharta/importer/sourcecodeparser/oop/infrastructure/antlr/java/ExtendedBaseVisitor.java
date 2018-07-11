@@ -1,13 +1,13 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java;
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.CodeTags;
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableFile;
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableLines;
 
 public class ExtendedBaseVisitor extends JavaParserBaseVisitor {
 
-    private TaggableFile source;
+    private TaggableLines source;
 
-    ExtendedBaseVisitor(TaggableFile source){
+    ExtendedBaseVisitor(TaggableLines source){
         this.source = source;
     }
 

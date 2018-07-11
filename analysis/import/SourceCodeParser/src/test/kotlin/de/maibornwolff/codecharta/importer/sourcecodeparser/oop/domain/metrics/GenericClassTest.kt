@@ -1,10 +1,10 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricTable
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.SingleMetricTable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableFile
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableLines
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
 import org.junit.Test
 import java.io.IOException
@@ -16,11 +16,11 @@ class GenericClassTest {
     @Throws(IOException::class)
     fun annotation_example_has_correct_rloc_count() {
         val resource = "$extractBaseFolder/java/GenericClass.java"
-        val sourceCode = TaggableFile(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Antlr.addTagsToSource(sourceCode)
+        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        Antlr.addTags(sourceCode)
 
-        val metricExtractor = MetricTable(sourceCode, OopMetricStrategy())
+        val metricExtractor = SingleMetricTable(sourceCode, OopMetricCalculationStrategy())
 
-        assertThatMetricElement(metricExtractor) {it.summary()[MetricType.RLoc]}.isEqualTo(7)
+        assertThatMetricElement(metricExtractor) { it.sum[MetricType.RLoc]}.isEqualTo(7)
     }
 }

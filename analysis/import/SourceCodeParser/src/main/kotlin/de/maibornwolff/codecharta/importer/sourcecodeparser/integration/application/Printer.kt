@@ -1,11 +1,11 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.FolderSummary
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricTable
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MultiMetric
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.SingleMetricTable
 
 interface Printer {
 
-    fun printFile(rowMetrics: MetricTable)
-    fun printFolder(folderMetrics: FolderSummary)
+    fun printFile(rowMetrics: SingleMetricTable)
+    fun printFolder(folderMetrics: MultiMetric)
 
 }

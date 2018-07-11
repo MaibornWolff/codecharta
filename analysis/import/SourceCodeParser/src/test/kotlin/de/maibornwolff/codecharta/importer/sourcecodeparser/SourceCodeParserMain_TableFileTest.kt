@@ -6,7 +6,7 @@ import org.junit.Test
 import java.io.IOException
 
 
-class SourceCodeParserMain_TabularFileTest {
+class SourceCodeParserMain_TableFileTest {
 
     private val resource = "src/test/resources/$baseFolder/miniJavaProject/mini/RealLinesShort.java"
 
@@ -16,16 +16,22 @@ class SourceCodeParserMain_TabularFileTest {
 
     @Test
     @Throws(IOException::class)
-    fun tabular_output_for_single_file_contains_correct_header() {
+    fun `table output has correct header`() {
         println(outputStream)
-        assertThat(outputStream.lines()[0]).contains("LoC", "Code")
+        assertThat(elementsOf(outputStream.lines()[0])).contains("LoC", "RLoC", "Code", "Tags")
         assertThat(outputStream.lines()[1]).contains("------")
     }
 
     @Test
     @Throws(IOException::class)
-    fun tabular_output_for_single_file_has_correct_length() {
-        assertThat(outputStream.lines().size).isEqualTo(2 + 7 + 1)//header+code+trailing newline
+    fun `table output has correct length`() {
+        assertThat(outputStream.lines().size).isEqualTo(2 + 7 + 1)//header+each code line+trailing new line
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun `table output has correct metrics for line`() {
+        assertThat(elementsOf(outputStream.lines()[7])).contains("6", "5", "public", "void", "noop(){")
     }
 
 

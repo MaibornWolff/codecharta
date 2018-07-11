@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.Language
 
-data class FileSummary(
+data class SingleMetricTableSum(
         val name: String,
         val path: String,
         val language: Language,

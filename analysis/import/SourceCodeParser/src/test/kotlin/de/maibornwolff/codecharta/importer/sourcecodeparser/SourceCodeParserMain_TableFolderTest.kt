@@ -6,7 +6,7 @@ import org.junit.Test
 import java.io.IOException
 
 
-class SourceCodeParserMain_TabularSmallFolderTest {
+class SourceCodeParserMain_TableFolderTest {
 
     private val resource = "src/test/resources/$baseFolder/miniJavaProject"
 

@@ -1,12 +1,12 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.FileSummary
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.SingleMetricTableSum
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.model.*
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import java.io.OutputStreamWriter
 
-class JsonPrinter(projectName: String) {
+class JsonBuilder(projectName: String) {
 
     private val projectBuilder = ProjectBuilder(projectName)
 
@@ -14,12 +14,12 @@ class JsonPrinter(projectName: String) {
         return projectBuilder.build()
     }
 
-    fun addComponentAsNode(fileSummary: FileSummary): JsonPrinter {
-        val node = MutableNode(fileSummary.name, attributes = hashMapOf(
-                "lines_of_code" to fileSummary[MetricType.LoC],
-                "rloc" to fileSummary[MetricType.RLoc])
+    fun addComponentAsNode(metricTableSum: SingleMetricTableSum): JsonBuilder {
+        val node = MutableNode(metricTableSum.name, attributes = hashMapOf(
+                "lines_of_code" to metricTableSum[MetricType.LoC],
+                "rloc" to metricTableSum[MetricType.RLoc])
         )
-        val path = PathFactory.fromFileSystemPath(fileSummary.path)
+        val path = PathFactory.fromFileSystemPath(metricTableSum.path)
 
         projectBuilder.insertByPath(path, node)
         return this

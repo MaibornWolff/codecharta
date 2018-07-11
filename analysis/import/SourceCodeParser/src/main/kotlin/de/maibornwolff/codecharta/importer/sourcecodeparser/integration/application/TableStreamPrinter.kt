@@ -1,24 +1,24 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.FolderSummary
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MultiMetric
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricTable
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.TableRow
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.SingleMetricTable
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.SingleMetricTableRow
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import java.io.PrintStream
 
 
 class TableStreamPrinter(private val outputStream: PrintStream): Printer {
 
-    override fun printFile(metricTable: MetricTable) {
-        outputStream.println(fileMetricToTabular(metricTable))
+    override fun printFile(singleMetricTable: SingleMetricTable) {
+        outputStream.println(fileMetricToTabular(singleMetricTable))
     }
 
-    override fun printFolder(folderMetrics: FolderSummary) {
+    override fun printFolder(folderMetrics: MultiMetric) {
         outputStream.println(folderMetricsToTabular(folderMetrics))
     }
 
-    private fun folderMetricsToTabular(folderMetrics: FolderSummary): String{
+    private fun folderMetricsToTabular(folderMetrics: MultiMetric): String{
         val javaFiles = folderMetrics.languageValue(OopLanguage.JAVA)
         var loc = folderMetrics.metricValue(MetricType.LoC)
         var rloc = folderMetrics.metricValue(MetricType.RLoc)
@@ -32,16 +32,16 @@ class TableStreamPrinter(private val outputStream: PrintStream): Printer {
     }
 }
 
-fun fileMetricToTabular(metricTable: MetricTable): String{
+fun fileMetricToTabular(singleMetricTable: SingleMetricTable): String{
     return String.format("%-5s %-5s %-120s %-20s", "LoC", "RLoC", "Code", "Tags") + "\n" +
             "-".repeat(40)+ "\n" +
-            rowsAsText(metricTable)
+            rowsAsText(singleMetricTable)
 
 }
 
-private fun rowsAsText(metricTable: MetricTable): String{
-    var previousRow = TableRow.NULL
-    val result = metricTable.map{
+private fun rowsAsText(singleMetricTable: SingleMetricTable): String{
+    var previousRow = SingleMetricTableRow.NULL
+    val result = singleMetricTable.map{
         val rowText = String.format("%-5d %-5s %-120s %-20s",
                 it[MetricType.LoC],
                 rlocText(it, it.metricWasIncremented(MetricType.RLoc, previousRow)),
@@ -53,4 +53,4 @@ private fun rowsAsText(metricTable: MetricTable): String{
     return result
 }
 
-private fun rlocText(tableRow: TableRow, rowMetricWasIncremented: Boolean) = if(rowMetricWasIncremented) tableRow[MetricType.RLoc].toString() else ""
+private fun rlocText(singleMetricTableRow: SingleMetricTableRow, rowMetricWasIncremented: Boolean) = if(rowMetricWasIncremented) singleMetricTableRow[MetricType.RLoc].toString() else ""

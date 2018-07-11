@@ -2,11 +2,11 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.applica
 
 class SourceCodeParserEntryPoint(private val printer: Printer) {
 
-    fun printMetrics(singleSourceProvider: SingleSourceProvider){
+    fun printSingleMetrics(singleSourceProvider: SingleSourceProvider){
         printer.printFile(calculateSingleMetrics(singleSourceProvider))
     }
 
-    fun printMetrics(multiSourceProvider: MultiSourceProvider) {
+    fun printMultiMetrics(multiSourceProvider: MultiSourceProvider) {
         printer.printFolder(calculateMultiMetrics(multiSourceProvider))
     }
 

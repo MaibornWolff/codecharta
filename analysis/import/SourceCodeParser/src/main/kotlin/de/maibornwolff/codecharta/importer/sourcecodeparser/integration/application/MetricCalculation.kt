@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.FolderSummary
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricTable
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MultiMetric
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.SingleMetricTable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.application.OopEntryPoint
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 
@@ -9,19 +9,19 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.O
 private val oopEntryPoint = OopEntryPoint()
 private val defaultEntryPoint = DefaultEntryPoint()
 
-fun calculateSingleMetrics(singleSourceProvider: SingleSourceProvider): MetricTable {
+fun calculateSingleMetrics(singleSourceProvider: SingleSourceProvider): SingleMetricTable {
     val singleSource = singleSourceProvider.readSource()
     return when(singleSource.language){
-        OopLanguage.JAVA -> oopEntryPoint.fileSummary(singleSource)
+        OopLanguage.JAVA -> oopEntryPoint.calculateSingleMetrics(singleSource)
         else -> defaultEntryPoint.fileSummary(singleSource)
     }
 }
 
-fun calculateMultiMetrics(multiSourceProvider: MultiSourceProvider): FolderSummary {
+fun calculateMultiMetrics(multiSourceProvider: MultiSourceProvider): MultiMetric {
     val tableMetrics = multiSourceProvider
             .readSources()
             .filter { it.language == OopLanguage.JAVA }
-            .map { oopEntryPoint.fileSummary(it) }
+            .map { oopEntryPoint.calculateSingleMetrics(it) }
 
-    return FolderSummary(tableMetrics.map { it.summary() })
+    return MultiMetric(tableMetrics.map { it.sum })
 }
