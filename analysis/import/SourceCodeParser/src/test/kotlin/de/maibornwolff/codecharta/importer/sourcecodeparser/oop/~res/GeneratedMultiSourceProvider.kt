@@ -1,32 +1,31 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.raw.SourceCode
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.LocationResolver
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.FileSystemSourceCode
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceCode
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.MultiSourceProvider
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import kotlin.coroutines.experimental.buildSequence
 
-class EndlessResolver(
+class GeneratedMultiSourceProvider(
         private val total2Real1Count: Int,
         private val total20Real10Count: Int,
-        private val total20Real10Mcc1Nl1Count: Int): LocationResolver {
+        private val total20Real10Mcc1Nl1Count: Int): MultiSourceProvider {
 
-    override fun resolve(locations: List<String>): List<SourceCode> {
+    override fun readSources(): List<SourceCode> {
         val simpleList = buildSequence {
             while (true) {
-                yield(FileSystemSourceCode(OopLanguage.JAVA, total2Real1))
+                yield(SourceCode(OopLanguage.JAVA, total2Real1))
             }
         }.take(total2Real1Count).toList()
 
         val mediumList = buildSequence {
             while (true) {
-                yield(FileSystemSourceCode(OopLanguage.JAVA, total20Real10))
+                yield(SourceCode(OopLanguage.JAVA, total20Real10))
             }
         }.take(total20Real10Count).toList()
 
         val mccList = buildSequence {
             while (true) {
-                yield(FileSystemSourceCode(OopLanguage.JAVA, total20Real10Mcc1Nl1))
+                yield(SourceCode(OopLanguage.JAVA, total20Real10Mcc1Nl1))
             }
         }.take(total20Real10Mcc1Nl1Count).toList()
 

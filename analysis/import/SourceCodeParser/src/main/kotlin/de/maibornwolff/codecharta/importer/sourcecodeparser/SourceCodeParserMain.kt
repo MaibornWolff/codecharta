@@ -3,9 +3,10 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricTable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableFile
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.SourceApp
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.FileSystemLocationResolver
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.TablePrinter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.SourceCodeParserEntryPoint
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.FileSystemSingleSourceProvider
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.TableStreamPrinter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.FileSystemMultiSourceProvider
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopMetricStrategy
 import picocli.CommandLine.*
@@ -33,24 +34,26 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     private var outputFile: File? = null
 
     @Parameters(arity = "1..*", paramLabel = "FOLDER or FILEs", description = ["single code folder or files"])
-    private var files: List<String> = mutableListOf()
+    private var files: List<File> = mutableListOf()
 
     @Throws(IOException::class)
     override fun call(): Void? {
 
-        if(!Files.exists(Paths.get(files[0]))){
+        if(!files[0].exists()){
             val path = Paths.get("").toAbsolutePath().toString()
             outputStream.println("TaggableFile Parser working directory = $path")
             outputStream.println("Could not find "+files[0])
             return null
         }
 
-        val locationResolver = FileSystemLocationResolver()
-        val printer = TablePrinter(outputStream)
-        val sourceApp = SourceApp(locationResolver, printer)
+        val printer = TableStreamPrinter(outputStream)
+        val sourceApp = SourceCodeParserEntryPoint(printer)
 
-
-            sourceApp.printMetrics(files)
+        if(files.size == 1 && files[0].isFile) {
+            sourceApp.printMetrics(FileSystemSingleSourceProvider(files[0]))
+        } else {
+            sourceApp.printMetrics(FileSystemMultiSourceProvider(files))
+        }
 
         return null
     }

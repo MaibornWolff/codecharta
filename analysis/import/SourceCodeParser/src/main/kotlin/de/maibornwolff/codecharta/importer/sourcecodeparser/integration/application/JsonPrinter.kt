@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.FileSummary
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.FileSummary
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.model.*
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import java.io.OutputStreamWriter

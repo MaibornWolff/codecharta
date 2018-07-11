@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.FolderSummary
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.FolderSummary
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricTable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.Printer
 

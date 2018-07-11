@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.raw.Language
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.Language
 
 
 class TaggableFile(val language: Language, everySourceLine: List<String>): Iterable<Line> {

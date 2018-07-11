@@ -5,8 +5,8 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertTha
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.integrationBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricTable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableFile
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.FileSystemSourceCode
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.application.OopApp
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceCode
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.application.OopEntryPoint
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopMetricStrategy
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
@@ -16,13 +16,13 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class TablePrinterTest {
+class TableStreamPrinterTest {
     @Test
     @Throws(IOException::class)
     fun prints_all_rows_plus_header_and_underline() {
         val resource = "$integrationBaseFolder/java/RealLinesShort.java"
-        val sourceCode = FileSystemSourceCode(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        val metricExtractor = OopApp().fileSummary(sourceCode)
+        val sourceCode = SourceCode(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val metricExtractor = OopEntryPoint().fileSummary(sourceCode)
 
         val output = fileMetricToTabular(metricExtractor)
 

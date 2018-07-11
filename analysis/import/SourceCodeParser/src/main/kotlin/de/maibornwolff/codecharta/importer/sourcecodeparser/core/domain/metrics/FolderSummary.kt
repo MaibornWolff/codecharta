@@ -1,8 +1,8 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain
+package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.raw.Language
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.Language
 
-class FolderSummary(fileMetrics: List<FileSummary>) {
+class FolderSummary(fileMetrics: List<FileSummary>): MetricSummary {
 
     private val languageFileCount = sumFiles(fileMetrics)
     private val folderMetrics = sumMetrics(fileMetrics)

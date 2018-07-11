@@ -1,10 +1,11 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.SourceApp
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.FileSystemSourceCode
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.LocationResolverStub
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.SourceCodeParserEntryPoint
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceCode
+import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.calculateSingleMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.SingleSourceProviderStub
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.FilePrinterSpy
 import org.junit.Test
 import java.io.IOException
@@ -13,13 +14,12 @@ class ConstructorAndInitializerTest {
     @Test
     @Throws(IOException::class)
     fun example_has_correct_rloc_count() {
-        val sourceCode = FileSystemSourceCode(OopLanguage.JAVA, code)
-        val locationResolverStub = LocationResolverStub(listOf(sourceCode))
-        val printerSpy = FilePrinterSpy()
+        val sourceCode = SourceCode(OopLanguage.JAVA, code)
+        val locationResolverStub = SingleSourceProviderStub(sourceCode)
 
-        SourceApp(locationResolverStub, printerSpy).printMetrics(listOf("this file location is passed to our stub which returns code"))
+        val singleMetrics = calculateSingleMetrics(locationResolverStub)
 
-        assertThatMetricElement(printerSpy.printedFileMetrics!!) {it.summary()[MetricType.RLoc]}.isEqualTo(9)
+        assertThatMetricElement(singleMetrics) {it.summary()[MetricType.RLoc]}.isEqualTo(9)
     }
 
     private val code =

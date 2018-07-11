@@ -32,7 +32,7 @@ class ArchitectureTest {
 
     @Ignore
     @Test
-    fun antlr_only_interacts_with_itself_standard_library_and_tagging() {
+    fun `antlr only interacts with itself, standard library and tagging`() {
         noClasses().that().resideInAPackage("..antlr..")
                 .should().accessClassesThat().resideOutsideOfPackages("..antlr..", "java.lang..", "..tagging..")
                 .check(classes)

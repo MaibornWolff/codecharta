@@ -1,14 +1,14 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.FolderSummary
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.FolderSummary
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricTable
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.Row
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.TableRow
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import java.io.PrintStream
 
 
-class TablePrinter(private val outputStream: PrintStream): Printer {
+class TableStreamPrinter(private val outputStream: PrintStream): Printer {
 
     override fun printFile(metricTable: MetricTable) {
         outputStream.println(fileMetricToTabular(metricTable))
@@ -40,7 +40,7 @@ fun fileMetricToTabular(metricTable: MetricTable): String{
 }
 
 private fun rowsAsText(metricTable: MetricTable): String{
-    var previousRow = Row.NULL
+    var previousRow = TableRow.NULL
     val result = metricTable.map{
         val rowText = String.format("%-5d %-5s %-120s %-20s",
                 it[MetricType.LoC],
@@ -53,4 +53,4 @@ private fun rowsAsText(metricTable: MetricTable): String{
     return result
 }
 
-private fun rlocText(row: Row, rowMetricWasIncremented: Boolean)=  if(rowMetricWasIncremented) row[MetricType.RLoc].toString() else ""
+private fun rlocText(tableRow: TableRow, rowMetricWasIncremented: Boolean) = if(rowMetricWasIncremented) tableRow[MetricType.RLoc].toString() else ""
