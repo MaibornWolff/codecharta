@@ -2,8 +2,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceDescriptor
 
-
-class TaggableSourceCode(val sourceDescriptor: SourceDescriptor, everySourceLine: List<String>): Iterable<Line> {
+class TagableSourceCode(val sourceDescriptor: SourceDescriptor, everySourceLine: List<String>): Iterable<Line> {
 
     // IMPORTANT: line numbers start at 1, but this array starts at 0
     private val lines = everySourceLine

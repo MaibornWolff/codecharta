@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java;
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableSourceCode;
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TagableSourceCode;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class Antlr {
 
-    public static void addTags(TaggableSourceCode source) throws IOException {
+    public static void addTags(TagableSourceCode source) throws IOException {
         String code = source.text();
         JavaLexer lexer = new JavaLexer(CharStreams.fromString(code));
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);

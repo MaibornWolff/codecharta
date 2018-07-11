@@ -10,7 +10,6 @@ import java.io.IOException
 class SourceCodeComplexInterfaceTest {
 
     @Test
-    @Throws(IOException::class)
     fun finds_all_lines() {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
@@ -21,7 +20,6 @@ class SourceCodeComplexInterfaceTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_all_comments() {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
@@ -32,7 +30,6 @@ class SourceCodeComplexInterfaceTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_imports() {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
@@ -43,7 +40,6 @@ class SourceCodeComplexInterfaceTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_interface() {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
@@ -54,7 +50,6 @@ class SourceCodeComplexInterfaceTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_constant_declarations() {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
@@ -65,7 +60,6 @@ class SourceCodeComplexInterfaceTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_enumConstant() {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
@@ -76,7 +70,6 @@ class SourceCodeComplexInterfaceTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_fields_in_enum() {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
@@ -87,7 +80,6 @@ class SourceCodeComplexInterfaceTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_methods() {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
@@ -98,7 +90,6 @@ class SourceCodeComplexInterfaceTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_constructor() {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
@@ -109,7 +100,6 @@ class SourceCodeComplexInterfaceTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_method_calls() {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
@@ -120,7 +110,6 @@ class SourceCodeComplexInterfaceTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_statements() {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
@@ -132,7 +121,6 @@ class SourceCodeComplexInterfaceTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun finds_expressions() {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)

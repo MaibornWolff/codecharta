@@ -11,7 +11,6 @@ import java.io.IOException
 class AnonymousClassTest {
 
     @Test
-    @Throws(IOException::class)
     fun `example has correct rloc count`() {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)

@@ -1,16 +1,16 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableSourceCode
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TagableSourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.Tags
 
-class DetailedMetricTable(taggableSourceCode: TaggableSourceCode, private val metricCalculationStrategy: MetricCalculationStrategy): Iterable<DetailedMetricTableRow> {
+class DetailedMetricTable(tagableSourceCode: TagableSourceCode, private val metricCalculationStrategy: MetricCalculationStrategy): Iterable<DetailedMetricTableRow> {
 
     // IMPORTANT: line numbers start at 1 - just like our interface, but this array starts at 0
-    private val rows = toRows(taggableSourceCode)
+    private val rows = toRows(tagableSourceCode)
     val sum = DetailedMetricTableSum(
-            taggableSourceCode.sourceDescriptor,
+            tagableSourceCode.sourceDescriptor,
             rows.last().metrics)
-    val language = taggableSourceCode.sourceDescriptor.language
+    val language = tagableSourceCode.sourceDescriptor.language
 
     operator fun get(lineNumber: Int): DetailedMetricTableRow {
         return rows[lineNumber - 1]
@@ -22,9 +22,9 @@ class DetailedMetricTable(taggableSourceCode: TaggableSourceCode, private val me
         return rows.size
     }
 
-    private fun toRows(taggableSourceCode: TaggableSourceCode): Array<DetailedMetricTableRow> {
+    private fun toRows(tagableSourceCode: TagableSourceCode): Array<DetailedMetricTableRow> {
         var previousMetrics = MetricMap()
-        return taggableSourceCode.map {
+        return tagableSourceCode.map {
             val newMetrics = metricCalculationStrategy.calculateMetrics(it, previousMetrics)
             val row = DetailedMetricTableRow(it, newMetrics)
             previousMetrics = newMetrics

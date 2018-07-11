@@ -53,7 +53,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
 
     private fun getPrinter(): MetricWriter {
         return when(outputType){
-            OutputType.JSON -> JsonMetricWriter(getWriter(), "Foo")
+            OutputType.JSON -> JsonMetricWriter(getWriter(), projectName)
             OutputType.TABLE -> TableMetricWriter(getWriter())
         }
     }
