@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableFile
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.intermediateBaseFolder
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -13,7 +14,7 @@ class SourceCodeSimpleClassTest {
 
     @Test(expected = IndexOutOfBoundsException::class)
     fun trying_index_0_results_in_exceptions_because_code_starts_at_line_1() {
-        val sourceCode = TaggableFile(code)
+        val sourceCode = TaggableFile(OopLanguage.JAVA, code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -22,7 +23,7 @@ class SourceCodeSimpleClassTest {
 
     @Test
     fun trying_last_index_does_not_result_in_exception() {
-        val sourceCode = TaggableFile(code)
+        val sourceCode = TaggableFile(OopLanguage.JAVA, code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -31,7 +32,7 @@ class SourceCodeSimpleClassTest {
 
     @Test
     fun finds_all_lines() {
-        val sourceCode = TaggableFile(code)
+        val sourceCode = TaggableFile(OopLanguage.JAVA, code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -40,7 +41,7 @@ class SourceCodeSimpleClassTest {
 
     @Test
     fun finds_all_comments() {
-        val sourceCode = TaggableFile(code)
+        val sourceCode = TaggableFile(OopLanguage.JAVA, code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -49,7 +50,7 @@ class SourceCodeSimpleClassTest {
 
     @Test
     fun finds_package_declaration() {
-        val sourceCode = TaggableFile(code)
+        val sourceCode = TaggableFile(OopLanguage.JAVA, code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -58,7 +59,7 @@ class SourceCodeSimpleClassTest {
 
     @Test
     fun empty_line_is_not_code() {
-        val sourceCode = TaggableFile(code)
+        val sourceCode = TaggableFile(OopLanguage.JAVA, code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -67,7 +68,7 @@ class SourceCodeSimpleClassTest {
 
     @Test
     fun finds_import_statements() {
-        val sourceCode = TaggableFile(code)
+        val sourceCode = TaggableFile(OopLanguage.JAVA, code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -76,7 +77,7 @@ class SourceCodeSimpleClassTest {
 
     @Test
     fun finds_annotations() {
-        val sourceCode = TaggableFile(code)
+        val sourceCode = TaggableFile(OopLanguage.JAVA, code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -85,7 +86,7 @@ class SourceCodeSimpleClassTest {
 
     @Test
     fun finds_class() {
-        val sourceCode = TaggableFile(code)
+        val sourceCode = TaggableFile(OopLanguage.JAVA, code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -94,7 +95,7 @@ class SourceCodeSimpleClassTest {
 
     @Test
     fun finds_field_declarations() {
-        val sourceCode = TaggableFile(code)
+        val sourceCode = TaggableFile(OopLanguage.JAVA, code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -103,7 +104,7 @@ class SourceCodeSimpleClassTest {
 
     @Test
     fun finds_constructor_declarations() {
-        val sourceCode = TaggableFile(code)
+        val sourceCode = TaggableFile(OopLanguage.JAVA, code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -112,7 +113,7 @@ class SourceCodeSimpleClassTest {
 
     @Test
     fun finds_method_declarations() {
-        val sourceCode = TaggableFile(code)
+        val sourceCode = TaggableFile(OopLanguage.JAVA, code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -121,7 +122,7 @@ class SourceCodeSimpleClassTest {
 
     @Test
     fun finds_global_and_local_variables() {
-        val sourceCode = TaggableFile(code)
+        val sourceCode = TaggableFile(OopLanguage.JAVA, code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -130,7 +131,7 @@ class SourceCodeSimpleClassTest {
 
     @Test
     fun finds_expressions_inside_class() {
-        val sourceCode = TaggableFile(code)
+        val sourceCode = TaggableFile(OopLanguage.JAVA, code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -140,7 +141,7 @@ class SourceCodeSimpleClassTest {
 
     @Test
     fun finds_statements_inside_methods() {
-        val sourceCode = TaggableFile(code)
+        val sourceCode = TaggableFile(OopLanguage.JAVA, code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -150,7 +151,7 @@ class SourceCodeSimpleClassTest {
 
     @Test
     fun finds_method_calls() {
-        val sourceCode = TaggableFile(code)
+        val sourceCode = TaggableFile(OopLanguage.JAVA, code)
 
         Antlr.addTagsToSource(sourceCode)
 
@@ -159,7 +160,7 @@ class SourceCodeSimpleClassTest {
 
     @Test
     fun finds_conditions() {
-        val sourceCode = TaggableFile(code)
+        val sourceCode = TaggableFile(OopLanguage.JAVA, code)
 
         Antlr.addTagsToSource(sourceCode)
 

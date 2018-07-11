@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.a
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.SourceApp
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.FileSystemLocationResolver
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.TablePrinter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopMetricStrategy
 import picocli.CommandLine.*
 import java.io.*
@@ -55,7 +56,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     }
 
     private fun parseFile(absolutePath: String): MetricTable {
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(absolutePath)))
+        val sourceCode = TaggableFile(OopLanguage.JAVA, Files.readAllLines(Paths.get(absolutePath)))
         Antlr.addTagsToSource(sourceCode)
         return MetricTable(sourceCode, OopMetricStrategy())
     }

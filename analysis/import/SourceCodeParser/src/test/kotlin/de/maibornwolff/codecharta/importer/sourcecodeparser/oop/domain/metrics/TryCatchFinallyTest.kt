@@ -16,7 +16,7 @@ class TryCatchFinallyTest {
     @Throws(IOException::class)
     fun example_has_correct_rloc_count() {
         val resource = "$extractBaseFolder/java/TryCatchFinally.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
         val metricExtractor = MetricTable(sourceCode, OopMetricStrategy())

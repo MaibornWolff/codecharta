@@ -1,8 +1,10 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application
 
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.FolderSummary
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricTable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.Row
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import java.io.PrintStream
 
 
@@ -12,20 +14,14 @@ class TablePrinter(private val outputStream: PrintStream): Printer {
         outputStream.println(fileMetricToTabular(metricTable))
     }
 
-    override fun printFolder(metricTable: List<MetricTable>) {
-        outputStream.println(folderMetricsToTabular(metricTable))
+    override fun printFolder(folderMetrics: FolderSummary) {
+        outputStream.println(folderMetricsToTabular(folderMetrics))
     }
 
-    private fun folderMetricsToTabular(metrics: List<MetricTable>): String{
-        val javaFiles = metrics.size
-        var loc = 0
-        var rloc = 0
-
-        metrics.forEach {
-            val summary = it.summary()
-            loc += summary[MetricType.LoC]
-            rloc += summary[MetricType.RLoc]
-        }
+    private fun folderMetricsToTabular(folderMetrics: FolderSummary): String{
+        val javaFiles = folderMetrics.languageValue(OopLanguage.JAVA)
+        var loc = folderMetrics.metricValue(MetricType.LoC)
+        var rloc = folderMetrics.metricValue(MetricType.RLoc)
 
         return String.format("%-20s %-10s %-10s %-10s", "Language", "Files", "LoC", "RLoC") + "\n" +
                 "-".repeat(40)+ "\n" +

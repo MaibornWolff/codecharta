@@ -8,6 +8,11 @@ class MetricTable(taggableFile: TaggableFile, private val metricStrategy: Metric
 
     // IMPORTANT: line numbers start at 1 - just like our interface, but this array starts at 0
     private val rows = toRows(taggableFile)
+    private val summary = FileSummary(
+            "test",
+            "",
+            taggableFile.language,
+            rows.last().metrics)
 
     operator fun get(lineNumber: Int): Row {
         return rows[lineNumber - 1]
@@ -19,11 +24,7 @@ class MetricTable(taggableFile: TaggableFile, private val metricStrategy: Metric
         return rows.size
     }
 
-    fun summary() = FileSummary(
-            "test",
-            "",
-            rows.last().metrics
-    )
+    fun summary() = summary
 
     private fun toRows(taggableFile: TaggableFile): Array<Row> {
         var previousMetrics = MetricCollection()

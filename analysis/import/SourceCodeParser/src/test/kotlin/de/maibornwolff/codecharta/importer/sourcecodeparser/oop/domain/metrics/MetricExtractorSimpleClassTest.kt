@@ -17,7 +17,7 @@ class MetricExtractorSimpleClassTest {
     @Throws(IOException::class)
     fun trying_index_0_results_in_exceptions_because_code_starts_at_line_1() {
         val resource = "$extractBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
         val metricExtractor = MetricTable(sourceCode, OopMetricStrategy())
@@ -29,7 +29,7 @@ class MetricExtractorSimpleClassTest {
     @Throws(IOException::class)
     fun trying_last_index_does_not_result_in_exception() {
         val resource = "$extractBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
         val rowMetrics = MetricTable(sourceCode, OopMetricStrategy())
@@ -41,7 +41,7 @@ class MetricExtractorSimpleClassTest {
     @Throws(IOException::class)
     fun does_not_count_empty_line_as_real() {
         val resource = "$extractBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
         val rowMetrics = MetricTable(sourceCode, OopMetricStrategy())
@@ -57,7 +57,7 @@ class MetricExtractorSimpleClassTest {
     @Throws(IOException::class)
     fun does_not_count_comment_line_as_real() {
         val resource = "$extractBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
         val rowMetrics = MetricTable(sourceCode, OopMetricStrategy())
@@ -70,7 +70,7 @@ class MetricExtractorSimpleClassTest {
     @Throws(IOException::class)
     fun does_not_count_lines_with_only_a_bracket_as_real() {
         val resource = "$extractBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
         val rowMetrics = MetricTable(sourceCode, OopMetricStrategy())
@@ -83,7 +83,7 @@ class MetricExtractorSimpleClassTest {
     @Throws(IOException::class)
     fun counts_all_lines_as_lines_of_code() {
         val resource = "$extractBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
         val rowMetrics = MetricTable(sourceCode, OopMetricStrategy())
@@ -95,7 +95,7 @@ class MetricExtractorSimpleClassTest {
     @Throws(IOException::class)
     fun counts_only_lines_with_actual_value_as_real() {
         val resource = "$extractBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
         val rowMetrics = MetricTable(sourceCode, OopMetricStrategy())

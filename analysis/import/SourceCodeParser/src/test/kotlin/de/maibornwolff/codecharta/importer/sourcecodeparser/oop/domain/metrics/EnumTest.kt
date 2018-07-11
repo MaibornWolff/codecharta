@@ -17,7 +17,7 @@ class EnumTest {
     @Throws(IOException::class)
     fun enum_example_1_has_correct_rloc_count() {
         val resource = "$extractBaseFolder/java/Enum1.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
         val metricExtractor = MetricTable(sourceCode, OopMetricStrategy())
@@ -29,7 +29,7 @@ class EnumTest {
     @Throws(IOException::class)
     fun enum_example_2_has_correct_rloc_count() {
         val resource = "$extractBaseFolder/java/Enum2.java"
-        val sourceCode = TaggableFile(Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = TaggableFile(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTagsToSource(sourceCode)
 
         val metricExtractor = MetricTable(sourceCode, OopMetricStrategy())
