@@ -19,7 +19,7 @@ class ArchitectureTest {
         noClasses().that().resideInAPackage("..core..")
                 .should().accessClassesThat().resideInAPackage("..oop..").check(classes)
         noClasses().that().resideInAPackage("..core..")
-                .should().accessClassesThat().resideInAPackage("..integration..").check(classes)
+                .should().accessClassesThat().resideInAPackage("..orchestration..").check(classes)
     }
 
     @Test

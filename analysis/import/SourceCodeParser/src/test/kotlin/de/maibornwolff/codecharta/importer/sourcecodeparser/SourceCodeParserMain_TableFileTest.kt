@@ -17,7 +17,6 @@ class SourceCodeParserMain_TableFileTest {
     @Test
     @Throws(IOException::class)
     fun `table output has correct header`() {
-        println(outputStream)
         assertThat(elementsOf(outputStream.lines()[0])).contains("LoC", "RLoC", "Code", "Tags")
         assertThat(outputStream.lines()[1]).contains("------")
     }

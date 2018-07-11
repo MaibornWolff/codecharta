@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.domain.metrics
+package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.domain.metrics
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricMap
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricCalculationStrategy

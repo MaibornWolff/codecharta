@@ -1,5 +1,7 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics
+package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.domain.metrics
 
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTableSum
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.Language
 
 class OverviewMetric(val tableSums: List<DetailedMetricTableSum>) {
@@ -24,7 +26,7 @@ class OverviewMetric(val tableSums: List<DetailedMetricTableSum>) {
         val sum = mutableMapOf<Language, Int>()
 
         fileMetrics.forEach {
-            sum[it.language] = 1 + sum.getOrDefault(it.language, 0)
+            sum[it.sourceDescriptor.language] = 1 + sum.getOrDefault(it.sourceDescriptor.language, 0)
         }
 
         return sum

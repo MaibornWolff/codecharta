@@ -1,14 +1,15 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTable
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceDescriptor
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableLines
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.JsonStreamPrinter
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.Printer
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.JsonStreamPrinter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.Printer
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.SourceCodeParserEntryPoint
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.FileSystemSingleSourceProvider
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.TableStreamPrinter
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.infrastructure.FileSystemMultiSourceProvider
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.SourceCodeParserEntryPoint
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.infrastructure.FileSystemDetailedSourceProvider
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.TableStreamPrinter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.infrastructure.FileSystemOverviewSourceProvider
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopMetricCalculationStrategy
 import picocli.CommandLine.*
@@ -49,9 +50,9 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
         val sourceApp = SourceCodeParserEntryPoint(printer)
 
         if(files.size == 1 && files[0].isFile) {
-            sourceApp.printSingleMetrics(FileSystemSingleSourceProvider(files[0]))
+            sourceApp.printDetailedMetrics(FileSystemDetailedSourceProvider(files[0]))
         } else {
-            sourceApp.printMultiMetrics(FileSystemMultiSourceProvider(files))
+            sourceApp.printOverviewMetrics(FileSystemOverviewSourceProvider(files))
         }
 
         return null
@@ -61,20 +62,6 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
         return when(outputType){
             OutputType.JSON -> JsonStreamPrinter(outputStream, "Foo")
             OutputType.TABLE -> TableStreamPrinter(outputStream)
-        }
-    }
-
-    private fun parseFile(absolutePath: String): DetailedMetricTable {
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(absolutePath)))
-        Antlr.addTags(sourceCode)
-        return DetailedMetricTable(sourceCode, OopMetricCalculationStrategy())
-    }
-
-    private fun writer(): Writer {
-        return if (outputFile == null) {
-            OutputStreamWriter(outputStream)
-        } else {
-            BufferedWriter(FileWriter(outputFile))
         }
     }
 

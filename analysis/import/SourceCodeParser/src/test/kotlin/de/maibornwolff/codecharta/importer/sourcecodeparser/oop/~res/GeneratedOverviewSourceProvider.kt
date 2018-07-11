@@ -1,31 +1,32 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceCode
-import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.MultiSourceProvider
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceDescriptor
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.OverviewSourceProvider
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import kotlin.coroutines.experimental.buildSequence
 
-class GeneratedMultiSourceProvider(
+class GeneratedOverviewSourceProvider(
         private val total2Real1Count: Int,
         private val total20Real10Count: Int,
-        private val total20Real10Mcc1Nl1Count: Int): MultiSourceProvider {
+        private val total20Real10Mcc1Nl1Count: Int): OverviewSourceProvider {
 
     override fun readSources(): List<SourceCode> {
         val simpleList = buildSequence {
             while (true) {
-                yield(SourceCode(OopLanguage.JAVA, total2Real1))
+                yield(SourceCode(SourceDescriptor("Foo.java", "", OopLanguage.JAVA), total2Real1))
             }
         }.take(total2Real1Count).toList()
 
         val mediumList = buildSequence {
             while (true) {
-                yield(SourceCode(OopLanguage.JAVA, total20Real10))
+                yield(SourceCode(SourceDescriptor("Foo.java", "", OopLanguage.JAVA), total20Real10))
             }
         }.take(total20Real10Count).toList()
 
         val mccList = buildSequence {
             while (true) {
-                yield(SourceCode(OopLanguage.JAVA, total20Real10Mcc1Nl1))
+                yield(SourceCode(SourceDescriptor("Foo.java", "", OopLanguage.JAVA), total20Real10Mcc1Nl1))
             }
         }.take(total20Real10Mcc1Nl1Count).toList()
 

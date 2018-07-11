@@ -1,11 +1,9 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.Language
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceDescriptor
 
 data class DetailedMetricTableSum(
-        val name: String,
-        val path: String,
-        val language: Language,
+        val sourceDescriptor: SourceDescriptor,
         val metrics: MetricMap
 ): Iterable<Map.Entry<MetricType, Int>> {
     override fun iterator() = metrics.iterator()

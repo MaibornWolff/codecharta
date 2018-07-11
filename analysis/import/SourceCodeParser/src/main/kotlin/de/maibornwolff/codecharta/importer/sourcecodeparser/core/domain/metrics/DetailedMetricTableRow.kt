@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.L
 
 class DetailedMetricTableRow(line: Line, internal val metrics: MetricMap) {
 
+    val rowNumber = line.lineNumber
     val text = line.text
     val tags = line.tags()
 

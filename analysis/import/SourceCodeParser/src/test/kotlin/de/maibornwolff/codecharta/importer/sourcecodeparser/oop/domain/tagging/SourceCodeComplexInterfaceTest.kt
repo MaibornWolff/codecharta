@@ -1,9 +1,10 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableLines
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.intermediateBaseFolder
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.*
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.IOException
@@ -15,135 +16,203 @@ class SourceCodeComplexInterfaceTest {
     @Test
     @Throws(IOException::class)
     fun finds_all_lines() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = javaSource("Foo.java", "", code)
+        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
 
-        Antlr.addTags(sourceCode)
+        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(sourceCode.lineCount()).isEqualTo(66)
+        assertThat(detailedMetricTable.rowCount()).isEqualTo(66)
     }
 
     @Test
     @Throws(IOException::class)
     fun finds_all_comments() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = javaSource("Foo.java", "", code)
+        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
 
-        Antlr.addTags(sourceCode)
+        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(sourceCode.linesWithTag(NonCodeTags.COMMENT)).containsExactly(8, 9, 10, 11, 16, 19, 39, 48, 59)
+        assertThat(detailedMetricTable.linesWithTag(NonCodeTags.COMMENT)).containsExactly(8, 9, 10, 11, 16, 19, 39, 48, 59)
     }
 
     @Test
     @Throws(IOException::class)
     fun finds_imports() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = javaSource("Foo.java", "", code)
+        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
 
-        Antlr.addTags(sourceCode)
+        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(sourceCode.linesWithTag(CodeTags.IMPORT)).containsExactly(4, 6)
+        assertThat(detailedMetricTable.linesWithTag(CodeTags.IMPORT)).containsExactly(4, 6)
     }
 
     @Test
     @Throws(IOException::class)
     fun finds_interface() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = javaSource("Foo.java", "", code)
+        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
 
-        Antlr.addTags(sourceCode)
+        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(sourceCode.linesWithTag(CodeTags.INTERFACE)).containsExactly(13)
+        assertThat(detailedMetricTable.linesWithTag(CodeTags.INTERFACE)).containsExactly(13)
     }
 
     @Test
     @Throws(IOException::class)
     fun finds_constant_declarations() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = javaSource("Foo.java", "", code)
+        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
 
-        Antlr.addTags(sourceCode)
+        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(sourceCode.linesWithTag(CodeTags.INTERFACE_CONSTANT)).containsExactly(17)
+        assertThat(detailedMetricTable.linesWithTag(CodeTags.INTERFACE_CONSTANT)).containsExactly(17)
     }
 
     @Test
     @Throws(IOException::class)
     fun finds_enumConstant() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = javaSource("Foo.java", "", code)
+        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
 
-        Antlr.addTags(sourceCode)
+        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(sourceCode.linesWithTag(CodeTags.ENUM_CONSTANT)).containsExactly(21, 22, 23, 24)
+        assertThat(detailedMetricTable.linesWithTag(CodeTags.ENUM_CONSTANT)).containsExactly(21, 22, 23, 24)
     }
 
     @Test
     @Throws(IOException::class)
     fun finds_fields_in_enum() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = javaSource("Foo.java", "", code)
+        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
 
-        Antlr.addTags(sourceCode)
+        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(sourceCode.linesWithTag(CodeTags.CLASS_FIELD)).containsExactly(26, 27)
+        assertThat(detailedMetricTable.linesWithTag(CodeTags.CLASS_FIELD)).containsExactly(26, 27)
     }
 
     @Test
     @Throws(IOException::class)
     fun finds_methods() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = javaSource("Foo.java", "", code)
+        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
 
-        Antlr.addTags(sourceCode)
+        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(sourceCode.linesWithTag(CodeTags.METHOD)).containsExactly(34, 36, 40, 44, 49, 60)
+        assertThat(detailedMetricTable.linesWithTag(CodeTags.METHOD)).containsExactly(34, 36, 40, 44, 49, 60)
     }
 
     @Test
     @Throws(IOException::class)
     fun finds_constructor() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = javaSource("Foo.java", "", code)
+        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
 
-        Antlr.addTags(sourceCode)
+        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(sourceCode.linesWithTag(CodeTags.CONSTRUCTOR)).containsExactly(29)
+        assertThat(detailedMetricTable.linesWithTag(CodeTags.CONSTRUCTOR)).containsExactly(29)
     }
 
     @Test
     @Throws(IOException::class)
     fun finds_method_calls() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = javaSource("Foo.java", "", code)
+        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
 
-        Antlr.addTags(sourceCode)
+        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(sourceCode.linesWithTag(CodeTags.METHOD_CALL)).containsExactly(51, 53, 55, 61, 62, 63, 64)
+        assertThat(detailedMetricTable.linesWithTag(CodeTags.METHOD_CALL)).containsExactly(51, 53, 55, 61, 62, 63, 64)
     }
 
     @Test
     @Throws(IOException::class)
     fun finds_statements() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = javaSource("Foo.java", "", code)
+        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
 
-        Antlr.addTags(sourceCode)
+        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(sourceCode.linesWithTag(CodeTags.STATEMENT))
+        assertThat(detailedMetricTable.linesWithTag(CodeTags.STATEMENT))
                 .containsExactly(30, 31, 34, 36, 50, 51, 53, 55, 61)
     }
 
     @Test
     @Throws(IOException::class)
     fun finds_expressions() {
-        val resource = "$intermediateBaseFolder/java/SourceCodeComplexInterface.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
+        val sourceCode = javaSource("Foo.java", "", code)
+        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
 
-        Antlr.addTags(sourceCode)
+        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(sourceCode.linesWithTag(CodeTags.EXPRESSION))
+        assertThat(detailedMetricTable.linesWithTag(CodeTags.EXPRESSION))
                 .containsExactly(17, 21, 22, 23, 24, 30, 31, 34, 36, 51, 53, 54, 55, 61, 62, 64)
     }
+
+    private val code =
+"""
+package none.that.matters;
+
+import foo;
+
+import javax.jws.WebService;import static blub.sponge;
+
+/*
+ * Longer interface comment
+ * that goes over multiple lines
+ */
+@WebService
+public interface SourceCodeComplexInterface
+        extends Interface1, Interface2, Interface3 {
+
+    // constants
+    double E = 2.718282;
+
+    // enums
+    public enum Suit {
+        DIAMONDS (1, "Diamonds"),
+        CLUBS    (2, "Clubs"   ),
+        HEARTS   (3, "Hearts"  ),
+        SPADES   (4, "Spades"  );
+
+        private final int value;
+        private final String text;
+
+        Suit(int value, String text) {
+            this.value = value;
+            this.text = text;
+        }
+
+        public int value() {return value;}
+
+        public String text() {return text;}
+    }
+
+    // methods
+    void turn(Direction direction,
+              double radius,
+              double startSpeed,
+              double endSpeed);
+    int changeLanes(Direction direction,
+                    double startSpeed,
+                    double endSpeed);
+
+    // static methods
+    static ZoneId getZoneId (String zoneString) {
+        try {
+            return ZoneId.of(zoneString);
+        } catch (DateTimeException e) {
+            System.err.println("Invalid time zone: " + zoneString +
+                    "; using default time zone instead.");
+            return ZoneId.systemDefault();
+        }
+    }
+
+    // default methods
+    default boolean didItWork(int i, double x, String s) {
+        return myDeck.sort(
+                Comparator.comparing(Card::getRank)
+                        .reversed()
+                        .thenComparing(Comparator.comparing(Card::getSuit)));
+    }
+}""".lines()
 
 }

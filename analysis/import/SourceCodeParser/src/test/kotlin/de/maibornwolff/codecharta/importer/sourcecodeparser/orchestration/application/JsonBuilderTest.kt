@@ -1,8 +1,9 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application
+package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTableSum
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricMap
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceDescriptor
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
@@ -32,19 +33,25 @@ class JsonBuilderTest {
     @Test
     fun component_without_path_is_right_under_root() {
         val projectName = "CoolProject"
-        val fileSummary = DetailedMetricTableSum("CoolComponent", "", OopLanguage.JAVA, MetricMap())
+        val fileSummary = DetailedMetricTableSum(
+                SourceDescriptor("CoolComponent", "", OopLanguage.JAVA),
+                MetricMap()
+        )
 
         val project = JsonBuilder(projectName)
                 .addComponentAsNode(fileSummary)
                 .build()
 
-        assertThat(project.rootNode.children[0].name).isEqualTo(fileSummary.name)
+        assertThat(project.rootNode.children[0].name).isEqualTo(fileSummary.sourceDescriptor.name)
     }
 
     @Test
     fun project_node_matches_metrics() {
         val projectName = "CoolProject"
-        val fileSummary = DetailedMetricTableSum("CoolComponent", "", OopLanguage.JAVA, MetricMap(MetricType.LoC to 1))
+        val fileSummary = DetailedMetricTableSum(
+                SourceDescriptor("CoolComponent", "", OopLanguage.JAVA),
+                MetricMap(MetricType.LoC to 1)
+        )
 
         val project = JsonBuilder(projectName)
                 .addComponentAsNode(fileSummary)
@@ -58,9 +65,9 @@ class JsonBuilderTest {
         val projectName = "CoolProject"
 
         val project = JsonBuilder(projectName)
-                .addComponentAsNode(DetailedMetricTableSum("CoolComponent", "", OopLanguage.JAVA, MetricMap()))
-                .addComponentAsNode(DetailedMetricTableSum("CoolerComponent", "", OopLanguage.JAVA, MetricMap()))
-                .addComponentAsNode(DetailedMetricTableSum("BestComponent", "de", OopLanguage.JAVA, MetricMap()))
+                .addComponentAsNode(DetailedMetricTableSum(SourceDescriptor("CoolComponent1", "", OopLanguage.JAVA), MetricMap()))
+                .addComponentAsNode(DetailedMetricTableSum(SourceDescriptor("CoolComponent2", "", OopLanguage.JAVA), MetricMap()))
+                .addComponentAsNode(DetailedMetricTableSum(SourceDescriptor("CoolComponent3", "", OopLanguage.JAVA), MetricMap()))
                 .build()
 
         assertThat(filterFiles(project.rootNode).size).isEqualTo(3)

@@ -1,105 +1,102 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableLines
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.Paths
 
 class MetricExtractorSimpleClassTest {
 
     @Test(expected = IndexOutOfBoundsException::class)
     @Throws(IOException::class)
     fun trying_index_0_results_in_exceptions_because_code_starts_at_line_1() {
-        val resource = "$extractBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Antlr.addTags(sourceCode)
+        val name = "SourceCodeSimple.java"
+        val location = "$extractBaseFolder/java"
+        val locationResolverStub = DetailedSourceProviderStub.javaLocationResolverFromResource(name, location)
 
-        val metricExtractor = DetailedMetricTable(sourceCode, OopMetricCalculationStrategy())
+        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        metricExtractor[0]
+        singleMetrics[0]
     }
 
     @Test
     @Throws(IOException::class)
     fun trying_last_index_does_not_result_in_exception() {
-        val resource = "$extractBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Antlr.addTags(sourceCode)
+        val name = "SourceCodeSimple.java"
+        val location = "$extractBaseFolder/java"
+        val locationResolverStub = DetailedSourceProviderStub.javaLocationResolverFromResource(name, location)
 
-        val rowMetrics = DetailedMetricTable(sourceCode, OopMetricCalculationStrategy())
+        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        rowMetrics[rowMetrics.rowCount()]
+        singleMetrics[singleMetrics.rowCount()]
     }
 
     @Test
     @Throws(IOException::class)
     fun does_not_count_empty_line_as_real() {
-        val resource = "$extractBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Antlr.addTags(sourceCode)
+        val name = "SourceCodeSimple.java"
+        val location = "$extractBaseFolder/java"
+        val locationResolverStub = DetailedSourceProviderStub.javaLocationResolverFromResource(name, location)
 
-        val rowMetrics = DetailedMetricTable(sourceCode, OopMetricCalculationStrategy())
+        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        Assertions.assertThat(rowMetrics[1][MetricType.RLoc]).isEqualTo(1)
-        Assertions.assertThat(rowMetrics[2][MetricType.RLoc]).isEqualTo(1)
-        Assertions.assertThat(rowMetrics[2].metricWasIncremented(MetricType.RLoc, rowMetrics[1])).isFalse()
-        Assertions.assertThat(rowMetrics[3][MetricType.RLoc]).isEqualTo(2)
-        Assertions.assertThat(rowMetrics[3].metricWasIncremented(MetricType.RLoc, rowMetrics[2])).isTrue()
+        Assertions.assertThat(singleMetrics[1][MetricType.RLoc]).isEqualTo(1)
+        Assertions.assertThat(singleMetrics[2][MetricType.RLoc]).isEqualTo(1)
+        Assertions.assertThat(singleMetrics[2].metricWasIncremented(MetricType.RLoc, singleMetrics[1])).isFalse()
+        Assertions.assertThat(singleMetrics[3][MetricType.RLoc]).isEqualTo(2)
+        Assertions.assertThat(singleMetrics[3].metricWasIncremented(MetricType.RLoc, singleMetrics[2])).isTrue()
     }
 
     @Test
     @Throws(IOException::class)
     fun does_not_count_comment_line_as_real() {
-        val resource = "$extractBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Antlr.addTags(sourceCode)
+        val name = "SourceCodeSimple.java"
+        val location = "$extractBaseFolder/java"
+        val locationResolverStub = DetailedSourceProviderStub.javaLocationResolverFromResource(name, location)
 
-        val rowMetrics = DetailedMetricTable(sourceCode, OopMetricCalculationStrategy())
+        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        Assertions.assertThat(rowMetrics[8][MetricType.RLoc]).isEqualTo(3)
-        Assertions.assertThat(rowMetrics[9][MetricType.RLoc]).isEqualTo(4)
+        Assertions.assertThat(singleMetrics[8][MetricType.RLoc]).isEqualTo(3)
+        Assertions.assertThat(singleMetrics[9][MetricType.RLoc]).isEqualTo(4)
     }
 
     @Test
     @Throws(IOException::class)
     fun does_not_count_lines_with_only_a_bracket_as_real() {
-        val resource = "$extractBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Antlr.addTags(sourceCode)
+        val name = "SourceCodeSimple.java"
+        val location = "$extractBaseFolder/java"
+        val locationResolverStub = DetailedSourceProviderStub.javaLocationResolverFromResource(name, location)
 
-        val rowMetrics = DetailedMetricTable(sourceCode, OopMetricCalculationStrategy())
+        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        Assertions.assertThat(rowMetrics[19][MetricType.RLoc]).isEqualTo(10)
-        Assertions.assertThat(rowMetrics[20][MetricType.RLoc]).isEqualTo(10)
+        Assertions.assertThat(singleMetrics[19][MetricType.RLoc]).isEqualTo(10)
+        Assertions.assertThat(singleMetrics[20][MetricType.RLoc]).isEqualTo(10)
     }
 
     @Test
     @Throws(IOException::class)
     fun counts_all_lines_as_lines_of_code() {
-        val resource = "$extractBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Antlr.addTags(sourceCode)
+        val name = "SourceCodeSimple.java"
+        val location = "$extractBaseFolder/java"
+        val locationResolverStub = DetailedSourceProviderStub.javaLocationResolverFromResource(name, location)
 
-        val rowMetrics = DetailedMetricTable(sourceCode, OopMetricCalculationStrategy())
+        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        Assertions.assertThat(rowMetrics.rowCount()).isEqualTo(43)
+        Assertions.assertThat(singleMetrics.rowCount()).isEqualTo(43)
     }
 
     @Test
     @Throws(IOException::class)
     fun counts_only_lines_with_actual_value_as_real() {
-        val resource = "$extractBaseFolder/java/SourceCodeSimple.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Antlr.addTags(sourceCode)
+        val name = "SourceCodeSimple.java"
+        val location = "$extractBaseFolder/java"
+        val locationResolverStub = DetailedSourceProviderStub.javaLocationResolverFromResource(name, location)
 
-        val rowMetrics = DetailedMetricTable(sourceCode, OopMetricCalculationStrategy())
+        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        Assertions.assertThat(rowMetrics[43][MetricType.RLoc]).isEqualTo(25)
+        Assertions.assertThat(singleMetrics[43][MetricType.RLoc]).isEqualTo(25)
     }
 }

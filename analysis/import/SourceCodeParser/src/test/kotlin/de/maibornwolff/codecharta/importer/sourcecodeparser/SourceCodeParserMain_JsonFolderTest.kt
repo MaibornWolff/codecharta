@@ -16,13 +16,12 @@ class SourceCodeParserMain_JsonFolderTest {
 
     @Test
     fun `json output has correct api version`() {
-        println(outputStream)
-        assertThat(outputStream.lines()[0]).contains("apiVersion='1.0'")
+        assertThat(outputStream).containsOnlyOnce(""""apiVersion":"1.0"""")
     }
 
     @Test
     fun `json output has one root node`() {
-        assertThat(outputStream.lines()[0]).containsOnlyOnce("MutableNode(name='root'")
+        assertThat(outputStream).containsOnlyOnce(""""name":"root"""")
     }
 
 

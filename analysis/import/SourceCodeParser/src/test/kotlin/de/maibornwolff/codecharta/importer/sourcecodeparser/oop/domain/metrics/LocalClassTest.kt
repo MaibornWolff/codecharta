@@ -1,26 +1,23 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTable
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertThatMetricElement
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertWithPrintOnFail
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableLines
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub.Companion.javaLocationResolverFromResource
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
 import org.junit.Test
 import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.Paths
 
 class LocalClassTest {
     @Test
     @Throws(IOException::class)
     fun annotation_example_has_correct_rloc_count() {
-        val resource = "$extractBaseFolder/java/LocalClass.java"
-        val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
-        Antlr.addTags(sourceCode)
+        val name = "LocalClass.java"
+        val location = "$extractBaseFolder/java"
+        val locationResolverStub = javaLocationResolverFromResource(name, location)
 
-        val metricExtractor = DetailedMetricTable(sourceCode, OopMetricCalculationStrategy())
+        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        assertThatMetricElement(metricExtractor) { it.sum[MetricType.RLoc]}.isEqualTo(4)
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc]}.isEqualTo(4)
     }
 }

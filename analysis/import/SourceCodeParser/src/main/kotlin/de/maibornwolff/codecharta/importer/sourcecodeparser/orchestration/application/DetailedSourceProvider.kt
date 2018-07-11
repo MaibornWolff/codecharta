@@ -1,9 +1,9 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application
+package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceCode
 
 
-interface SingleSourceProvider {
+interface DetailedSourceProvider {
 
     fun readSource(): SourceCode
 

@@ -9,7 +9,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.a
 
 class OopEntryPoint {
     fun calculateSingleMetrics(fileSource: SourceCode): DetailedMetricTable {
-        val taggableLines = TaggableLines(OopLanguage.JAVA, fileSource.lines)
+        val taggableLines = TaggableLines(fileSource.sourceDescriptor, fileSource.lines)
 
         Antlr.addTags(taggableLines)
 
