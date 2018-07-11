@@ -3,13 +3,10 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceDescriptor
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.OverviewSourceProvider
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.DetailedSourceProvider
-import java.net.URL
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.OverviewSourceProvider
 import java.nio.file.Files
-import java.nio.file.Path
 import java.nio.file.Paths
-import javax.xml.transform.Source
 
 class DetailedSourceProviderStub(private val sourceCode: SourceCode): DetailedSourceProvider {
     override fun readSource(): SourceCode = sourceCode

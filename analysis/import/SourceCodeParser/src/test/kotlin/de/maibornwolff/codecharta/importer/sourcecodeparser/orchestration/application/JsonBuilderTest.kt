@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTableSum
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricMap
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceDescriptor
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import de.maibornwolff.codecharta.model.Node

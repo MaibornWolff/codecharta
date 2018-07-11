@@ -1,11 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableLines
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.javaSource
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test

@@ -1,17 +1,16 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertWithPrintOnFail
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertWithPrintOnFail
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.javaSource
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
 import org.junit.Test
 import java.io.IOException
 
 class AnnotationTest {
 
     @Test
-    @Throws(IOException::class)
     fun `example has correct rloc count`() {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)

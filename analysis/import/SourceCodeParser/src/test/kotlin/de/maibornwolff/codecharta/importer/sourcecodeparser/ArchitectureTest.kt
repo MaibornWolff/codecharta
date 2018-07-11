@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser
 
 import com.tngtech.archunit.core.importer.ClassFileImporter
 import com.tngtech.archunit.core.importer.ImportOption
-import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*
+import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses
 import com.tngtech.archunit.library.GeneralCodingRules
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices
 import org.junit.Ignore

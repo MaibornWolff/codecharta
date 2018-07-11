@@ -1,48 +1,36 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.elementsOf
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertWithPrintOnFail
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertWithPrintOnFail
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.javaSource
-import de.maibornwolff.codecharta.importer.sourcecodeparser.retrieveStreamAsString
+import de.maibornwolff.codecharta.importer.sourcecodeparser.retrieveWriterAsString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.IOException
 
-class TableStreamPrinterTest {
+class TableConverterTest {
     @Test
-    @Throws(IOException::class)
-    fun `prints header all rows and trailing line`() {
+    fun `prints header and all code lines`() {
         // Arrange
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
-        val output = retrieveStreamAsString {
-            val tableStreamPrinter = TableStreamPrinter(it)
 
-            // Act
-            tableStreamPrinter.printDetails(detailedMetricTable)
-        }
-        println(output.lines())
-        // Assert
-        assertThat(output.lines().size).isEqualTo(detailedMetricTable.rowCount() + 2 + 1)
+        val output = detailedMetricToTable(detailedMetricTable)
+
+        assertThat(output.lines().size).isEqualTo(2 + detailedMetricTable.rowCount())
     }
 
     @Test
-    @Throws(IOException::class)
     fun prints_correct_header_order() {
         // Arrange
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
-        val output = retrieveStreamAsString {
-            val tableStreamPrinter = TableStreamPrinter(it)
 
-            // Act
-            tableStreamPrinter.printDetails(detailedMetricTable)
-        }
+        val output = detailedMetricToTable(detailedMetricTable)
 
-        // Assert
         assertThat(elementsOf(output.lines()[0])).containsExactly("LoC", "RLoC", "Code", "Tags")
     }
 
@@ -53,14 +41,9 @@ class TableStreamPrinterTest {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
-        val output = retrieveStreamAsString {
-            val tableStreamPrinter = TableStreamPrinter(it)
 
-            // Act
-            tableStreamPrinter.printDetails(detailedMetricTable)
-        }
+        val output = detailedMetricToTable(detailedMetricTable)
 
-        // Assert
         assertThat(output.lines()[1]).containsPattern("[-]{20,}")
     }
 
@@ -71,14 +54,9 @@ class TableStreamPrinterTest {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
-        val output = retrieveStreamAsString {
-            val tableStreamPrinter = TableStreamPrinter(it)
 
-            // Act
-            tableStreamPrinter.printDetails(detailedMetricTable)
-        }
+        val output = detailedMetricToTable(detailedMetricTable)
 
-        // Assert
         assertWithPrintOnFail(detailedMetricTable){elementsOf(output.lines()[3])[1]}.isEqualTo("2")
     }
 
@@ -89,14 +67,9 @@ class TableStreamPrinterTest {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
-        val output = retrieveStreamAsString {
-            val tableStreamPrinter = TableStreamPrinter(it)
 
-            // Act
-            tableStreamPrinter.printDetails(detailedMetricTable)
-        }
+        val output = detailedMetricToTable(detailedMetricTable)
 
-        // Assert
         assertWithPrintOnFail(detailedMetricTable){elementsOf(output.lines()[4])[1]}.isEqualTo("[]")
     }
 

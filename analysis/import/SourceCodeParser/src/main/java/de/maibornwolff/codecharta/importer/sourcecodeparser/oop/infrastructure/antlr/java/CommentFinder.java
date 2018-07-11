@@ -1,15 +1,15 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java;
 
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableSourceCode;
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.NonCodeTags;
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableLines;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 
 class CommentFinder {
 
-    private TaggableLines source;
+    private TaggableSourceCode source;
 
-    CommentFinder(TaggableLines source){
+    CommentFinder(TaggableSourceCode source){
         this.source = source;
     }
 

@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.domain.metrics.OverviewMetric
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.application.OopEntryPoint
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.domain.metrics.OverviewMetric
 
 
 private val oopEntryPoint = OopEntryPoint()

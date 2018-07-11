@@ -2,8 +2,8 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceDescriptor
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.OverviewSourceProvider
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.OverviewSourceProvider
 import kotlin.coroutines.experimental.buildSequence
 
 class GeneratedOverviewSourceProvider(

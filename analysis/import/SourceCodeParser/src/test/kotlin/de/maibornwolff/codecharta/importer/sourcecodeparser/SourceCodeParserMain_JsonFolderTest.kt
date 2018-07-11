@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.baseFolder
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.io.IOException
 
 
 class SourceCodeParserMain_JsonFolderTest {

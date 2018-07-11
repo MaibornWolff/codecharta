@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
 
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricCalculationStrategy
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricMap
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricCalculationStrategy
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.Line
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.CodeTags
 

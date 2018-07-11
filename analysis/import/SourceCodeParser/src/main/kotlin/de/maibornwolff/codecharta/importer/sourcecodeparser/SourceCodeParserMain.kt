@@ -1,20 +1,13 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTable
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceDescriptor
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableLines
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.JsonStreamPrinter
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.Printer
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.JsonMetricWriter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.MetricWriter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.SourceCodeParserEntryPoint
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.TableMetricWriter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.infrastructure.FileSystemDetailedSourceProvider
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.TableStreamPrinter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.infrastructure.FileSystemOverviewSourceProvider
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopMetricCalculationStrategy
 import picocli.CommandLine.*
 import java.io.*
-import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 
@@ -58,10 +51,18 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
         return null
     }
 
-    private fun getPrinter(): Printer {
+    private fun getPrinter(): MetricWriter {
         return when(outputType){
-            OutputType.JSON -> JsonStreamPrinter(outputStream, "Foo")
-            OutputType.TABLE -> TableStreamPrinter(outputStream)
+            OutputType.JSON -> JsonMetricWriter(getWriter(), "Foo")
+            OutputType.TABLE -> TableMetricWriter(getWriter())
+        }
+    }
+
+    private fun getWriter(): Writer {
+        return if (outputFile == null) {
+            OutputStreamWriter(outputStream)
+        } else {
+            BufferedWriter(FileWriter(outputFile))
         }
     }
 

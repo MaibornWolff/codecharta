@@ -23,8 +23,8 @@ class SourceCodeParserMain_TableFolderTest {
 
     @Test
     @Throws(IOException::class)
-    fun tabular_output_for_folder_has_correct_length() {
-        assertThat(outputStream.lines().size).isEqualTo(2 + 1 + 2 + 1)//header+javacode+summary+trailing newline
+    fun `tabular output has header, one line for the java files, and summary`() {
+        assertThat(outputStream.lines().size).isEqualTo(2 + 1 + 2)//header+javacode+summary
     }
 
     @Test

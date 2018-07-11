@@ -2,7 +2,10 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.appli
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTableSum
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
-import de.maibornwolff.codecharta.model.*
+import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.PathFactory
+import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.ProjectBuilder
 
 class JsonBuilder(projectName: String) {
 
