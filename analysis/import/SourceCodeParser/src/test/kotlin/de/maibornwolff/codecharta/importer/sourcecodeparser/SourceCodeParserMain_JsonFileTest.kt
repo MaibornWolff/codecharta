@@ -18,21 +18,29 @@ class SourceCodeParserMain_JsonFileTest {
     @Throws(IOException::class)
     fun `json output has correct api version`() {
         println(outputStream)
-        assertThat(outputStream.lines()[0]).contains("apiVersion='1.0'")
+        assertThat(outputStream.lines()[0]).containsOnlyOnce("apiVersion='1.0'")
+    }
+
+    @Test
+    fun `json output has one root node`() {
+        assertThat(outputStream.lines()[0]).containsOnlyOnce("MutableNode(name='root'")
+    }
+
+    @Test
+    fun `json output has java file`() {
+        assertThat(outputStream.lines()[0]).containsOnlyOnce("MutableNode(name='RealLinesShort.java'")
     }
 
     @Test
     @Throws(IOException::class)
     fun `json output has correct lines of code`() {
-        println(outputStream)
-        assertThat(outputStream.lines()[0]).contains("lines_of_code=7")
+        assertThat(outputStream.lines()[0]).containsOnlyOnce("lines_of_code=7")
     }
 
     @Test
     @Throws(IOException::class)
     fun `json output has correct real lines of code`() {
-        println(outputStream)
-        assertThat(outputStream.lines()[0]).contains("rloc=5")
+        assertThat(outputStream.lines()[0]).containsOnlyOnce("rloc=5")
     }
 
 

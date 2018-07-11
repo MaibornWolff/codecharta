@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.Language
 
-class MultiMetric(val tableSums: List<SingleMetricTableSum>) {
+class OverviewMetric(val tableSums: List<DetailedMetricTableSum>) {
 
     private val languageFileCount = sumFiles(tableSums)
     private val folderMetrics = sumMetrics(tableSums)
@@ -10,7 +10,7 @@ class MultiMetric(val tableSums: List<SingleMetricTableSum>) {
     fun languageValue(language: Language) = languageFileCount[language]
     fun metricValue(metricType: MetricType) = folderMetrics[metricType]
 
-    private fun sumMetrics(fileMetrics: List<SingleMetricTableSum>): Map<MetricType, Int>{
+    private fun sumMetrics(fileMetrics: List<DetailedMetricTableSum>): Map<MetricType, Int>{
         val sum = mutableMapOf<MetricType, Int>()
 
         fileMetrics.forEach {
@@ -20,7 +20,7 @@ class MultiMetric(val tableSums: List<SingleMetricTableSum>) {
         return sum
     }
 
-    private fun sumFiles(fileMetrics: List<SingleMetricTableSum>): Map<Language, Int>{
+    private fun sumFiles(fileMetrics: List<DetailedMetricTableSum>): Map<Language, Int>{
         val sum = mutableMapOf<Language, Int>()
 
         fileMetrics.forEach {

@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.SingleMetricTableSum
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTableSum
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.model.*
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -14,7 +14,7 @@ class JsonBuilder(projectName: String) {
         return projectBuilder.build()
     }
 
-    fun addComponentAsNode(metricTableSum: SingleMetricTableSum): JsonBuilder {
+    fun addComponentAsNode(metricTableSum: DetailedMetricTableSum): JsonBuilder {
         val node = MutableNode(metricTableSum.name, attributes = hashMapOf(
                 "lines_of_code" to metricTableSum[MetricType.LoC],
                 "rloc" to metricTableSum[MetricType.RLoc])
@@ -23,9 +23,5 @@ class JsonBuilder(projectName: String) {
 
         projectBuilder.insertByPath(path, node)
         return this
-    }
-
-    fun print(){
-        ProjectSerializer.serializeProject(projectBuilder.build(), OutputStreamWriter(System.out))
     }
 }

@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.SingleMetricTable
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableLines
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.Antlr
@@ -20,7 +20,7 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTags(sourceCode)
 
-        val metricExtractor = SingleMetricTable(sourceCode, OopMetricCalculationStrategy())
+        val metricExtractor = DetailedMetricTable(sourceCode, OopMetricCalculationStrategy())
 
         metricExtractor[0]
     }
@@ -32,7 +32,7 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTags(sourceCode)
 
-        val rowMetrics = SingleMetricTable(sourceCode, OopMetricCalculationStrategy())
+        val rowMetrics = DetailedMetricTable(sourceCode, OopMetricCalculationStrategy())
 
         rowMetrics[rowMetrics.rowCount()]
     }
@@ -44,7 +44,7 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTags(sourceCode)
 
-        val rowMetrics = SingleMetricTable(sourceCode, OopMetricCalculationStrategy())
+        val rowMetrics = DetailedMetricTable(sourceCode, OopMetricCalculationStrategy())
 
         Assertions.assertThat(rowMetrics[1][MetricType.RLoc]).isEqualTo(1)
         Assertions.assertThat(rowMetrics[2][MetricType.RLoc]).isEqualTo(1)
@@ -60,7 +60,7 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTags(sourceCode)
 
-        val rowMetrics = SingleMetricTable(sourceCode, OopMetricCalculationStrategy())
+        val rowMetrics = DetailedMetricTable(sourceCode, OopMetricCalculationStrategy())
 
         Assertions.assertThat(rowMetrics[8][MetricType.RLoc]).isEqualTo(3)
         Assertions.assertThat(rowMetrics[9][MetricType.RLoc]).isEqualTo(4)
@@ -73,7 +73,7 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTags(sourceCode)
 
-        val rowMetrics = SingleMetricTable(sourceCode, OopMetricCalculationStrategy())
+        val rowMetrics = DetailedMetricTable(sourceCode, OopMetricCalculationStrategy())
 
         Assertions.assertThat(rowMetrics[19][MetricType.RLoc]).isEqualTo(10)
         Assertions.assertThat(rowMetrics[20][MetricType.RLoc]).isEqualTo(10)
@@ -86,7 +86,7 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTags(sourceCode)
 
-        val rowMetrics = SingleMetricTable(sourceCode, OopMetricCalculationStrategy())
+        val rowMetrics = DetailedMetricTable(sourceCode, OopMetricCalculationStrategy())
 
         Assertions.assertThat(rowMetrics.rowCount()).isEqualTo(43)
     }
@@ -98,7 +98,7 @@ class MetricExtractorSimpleClassTest {
         val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(javaClass.classLoader.getResource(resource)!!.toURI())))
         Antlr.addTags(sourceCode)
 
-        val rowMetrics = SingleMetricTable(sourceCode, OopMetricCalculationStrategy())
+        val rowMetrics = DetailedMetricTable(sourceCode, OopMetricCalculationStrategy())
 
         Assertions.assertThat(rowMetrics[43][MetricType.RLoc]).isEqualTo(25)
     }

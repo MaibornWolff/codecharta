@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.SingleMetricTableSum
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTableSum
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricMap
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
@@ -32,7 +32,7 @@ class JsonBuilderTest {
     @Test
     fun component_without_path_is_right_under_root() {
         val projectName = "CoolProject"
-        val fileSummary = SingleMetricTableSum("CoolComponent", "", OopLanguage.JAVA, MetricMap())
+        val fileSummary = DetailedMetricTableSum("CoolComponent", "", OopLanguage.JAVA, MetricMap())
 
         val project = JsonBuilder(projectName)
                 .addComponentAsNode(fileSummary)
@@ -44,7 +44,7 @@ class JsonBuilderTest {
     @Test
     fun project_node_matches_metrics() {
         val projectName = "CoolProject"
-        val fileSummary = SingleMetricTableSum("CoolComponent", "", OopLanguage.JAVA, MetricMap(MetricType.LoC to 1))
+        val fileSummary = DetailedMetricTableSum("CoolComponent", "", OopLanguage.JAVA, MetricMap(MetricType.LoC to 1))
 
         val project = JsonBuilder(projectName)
                 .addComponentAsNode(fileSummary)
@@ -58,9 +58,9 @@ class JsonBuilderTest {
         val projectName = "CoolProject"
 
         val project = JsonBuilder(projectName)
-                .addComponentAsNode(SingleMetricTableSum("CoolComponent", "", OopLanguage.JAVA, MetricMap()))
-                .addComponentAsNode(SingleMetricTableSum("CoolerComponent", "", OopLanguage.JAVA, MetricMap()))
-                .addComponentAsNode(SingleMetricTableSum("BestComponent", "de", OopLanguage.JAVA, MetricMap()))
+                .addComponentAsNode(DetailedMetricTableSum("CoolComponent", "", OopLanguage.JAVA, MetricMap()))
+                .addComponentAsNode(DetailedMetricTableSum("CoolerComponent", "", OopLanguage.JAVA, MetricMap()))
+                .addComponentAsNode(DetailedMetricTableSum("BestComponent", "de", OopLanguage.JAVA, MetricMap()))
                 .build()
 
         assertThat(filterFiles(project.rootNode).size).isEqualTo(3)

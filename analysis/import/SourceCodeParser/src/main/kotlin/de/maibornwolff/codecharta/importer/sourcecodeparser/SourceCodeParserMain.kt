@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.SingleMetricTable
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TaggableLines
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.JsonStreamPrinter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.integration.application.Printer
@@ -64,10 +64,10 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
         }
     }
 
-    private fun parseFile(absolutePath: String): SingleMetricTable {
+    private fun parseFile(absolutePath: String): DetailedMetricTable {
         val sourceCode = TaggableLines(OopLanguage.JAVA, Files.readAllLines(Paths.get(absolutePath)))
         Antlr.addTags(sourceCode)
-        return SingleMetricTable(sourceCode, OopMetricCalculationStrategy())
+        return DetailedMetricTable(sourceCode, OopMetricCalculationStrategy())
     }
 
     private fun writer(): Writer {
