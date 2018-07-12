@@ -1,21 +1,21 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser
+package de.maibornwolff.codecharta.importer.sourcecodeparser.end_to_end_tests
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.baseFolder
+import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.end2EndFolder
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.retrieveStreamAsString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.io.IOException
 
 
-class SourceCodeParserMain_JsonFileTest {
+class JsonFileTest {
 
-    private val resource = "src/test/resources/$baseFolder/miniJavaProject/mini/RealLinesShort.java"
+    private val resource = "src/test/resources/$end2EndFolder/miniJavaProject/mini/RealLinesShort.java"
 
     private val outputStream = retrieveStreamAsString {
         SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "-out=json"))
     }
 
     @Test
-    @Throws(IOException::class)
     fun `json output has correct api version`() {
         assertThat(outputStream).containsOnlyOnce(""""apiVersion":"1.0"""")
     }
@@ -31,13 +31,11 @@ class SourceCodeParserMain_JsonFileTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun `json output has correct lines of code`() {
         assertThat(outputStream).containsOnlyOnce("""lines_of_code":7""")
     }
 
     @Test
-    @Throws(IOException::class)
     fun `json output has correct real lines of code`() {
         assertThat(outputStream).containsOnlyOnce("""rloc":5""")
     }

@@ -1,13 +1,15 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser
+package de.maibornwolff.codecharta.importer.sourcecodeparser.end_to_end_tests
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.baseFolder
+import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.end2EndFolder
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.retrieveStreamAsString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 
-class SourceCodeParserMain_JsonFolderTest {
+class JsonFolderTest {
 
-    private val resource = "src/test/resources/$baseFolder/miniJavaProject"
+    private val resource = "src/test/resources/$end2EndFolder/miniJavaProject"
 
     private val outputStream = retrieveStreamAsString {
         SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "-out=json"))

@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`
+package de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceDescriptor

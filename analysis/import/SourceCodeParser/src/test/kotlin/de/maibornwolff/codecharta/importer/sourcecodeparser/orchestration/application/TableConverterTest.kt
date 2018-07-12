@@ -1,10 +1,9 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.elementsOf
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertWithPrintOnFail
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.javaSource
-import de.maibornwolff.codecharta.importer.sourcecodeparser.retrieveWriterAsString
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.elementsOf
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.javaSource
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.IOException
@@ -57,7 +56,7 @@ class TableConverterTest {
 
         val output = detailedMetricToTable(detailedMetricTable)
 
-        assertWithPrintOnFail(detailedMetricTable){elementsOf(output.lines()[3])[1]}.isEqualTo("2")
+        assertWithPrintOnFail(detailedMetricTable) { elementsOf(output.lines()[3])[1] }.isEqualTo("2")
     }
 
     @Test
@@ -70,7 +69,7 @@ class TableConverterTest {
 
         val output = detailedMetricToTable(detailedMetricTable)
 
-        assertWithPrintOnFail(detailedMetricTable){elementsOf(output.lines()[4])[1]}.isEqualTo("[]")
+        assertWithPrintOnFail(detailedMetricTable) { elementsOf(output.lines()[4])[1] }.isEqualTo("[]")
     }
 
     private val code =

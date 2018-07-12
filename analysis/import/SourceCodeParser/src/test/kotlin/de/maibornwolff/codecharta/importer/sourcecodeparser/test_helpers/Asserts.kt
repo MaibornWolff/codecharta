@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`
+package de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.detailedMetricToTable

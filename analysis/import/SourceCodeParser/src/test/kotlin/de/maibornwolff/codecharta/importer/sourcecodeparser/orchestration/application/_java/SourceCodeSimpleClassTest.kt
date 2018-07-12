@@ -1,10 +1,10 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application._java
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.defaultJavaSource
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.CodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.NonCodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.defaultJavaSource
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -157,7 +157,7 @@ class SourceCodeSimpleClassTest {
     }
 
     private val code =
-            """
+"""
 package none;
 
 import foo;

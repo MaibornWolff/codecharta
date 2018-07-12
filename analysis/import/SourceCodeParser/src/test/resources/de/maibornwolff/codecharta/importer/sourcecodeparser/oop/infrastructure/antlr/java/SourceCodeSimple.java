@@ -1,8 +1,5 @@
 package none;
 
-import foo;
-import bar;
-
 /*
  * class comment
  */

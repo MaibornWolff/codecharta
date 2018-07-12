@@ -1,13 +1,10 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.defaultJavaSource
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.defaultJavaSource
 import org.assertj.core.api.Assertions
 import org.junit.Test
-import java.io.IOException
 
 class DetailedMetricTableRowTest {
 
