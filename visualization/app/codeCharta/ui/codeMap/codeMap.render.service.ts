@@ -122,8 +122,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
      * @param {number} z
      */
     scaleMap(x, y, z) {
-        let oldPositions: Vector3 = this.threeSceneService.mapGeometry.position;
-        let newPositions: Vector3;
+
         this.threeSceneService.mapGeometry.scale.x = x;
         this.threeSceneService.mapGeometry.scale.y = y;
         this.threeSceneService.mapGeometry.scale.z = z;
@@ -144,9 +143,5 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             this.arrowManager.scale(x, y, z);
         }
 
-        newPositions = this.threeSceneService.mapGeometry.position.x;
-        if (oldPositions.x != newPositions.x|| oldPositions.z != newPositions.z){
-            this.threeOrbitControlsService.autoFitTo();
-        }
     }
 }

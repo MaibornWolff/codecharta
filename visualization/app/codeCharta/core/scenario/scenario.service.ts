@@ -30,7 +30,10 @@ export class ScenarioService {
     public applyScenario(scenario: Scenario) {
         this.settingsService.applySettings(scenario.settings);
         if(scenario.autoFitCamera){
-            this.threeOrbitControlsService.autoFitTo();
+            let _this = this;
+            setTimeout(function(){
+                _this.threeOrbitControlsService.autoFitTo();
+            },10);
         }
     }
 
