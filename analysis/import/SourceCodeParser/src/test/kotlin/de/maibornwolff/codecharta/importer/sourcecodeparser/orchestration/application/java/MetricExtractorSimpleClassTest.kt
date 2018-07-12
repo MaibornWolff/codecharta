@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
+package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.java
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub

@@ -1,11 +1,12 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging
+package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.java
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.javaSource
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.CodeTags
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.NonCodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.io.IOException
 
 class SourceCodeComplexInterfaceTest {
 

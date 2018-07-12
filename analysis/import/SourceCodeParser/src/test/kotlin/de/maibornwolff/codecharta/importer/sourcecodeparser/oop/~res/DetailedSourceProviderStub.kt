@@ -28,3 +28,7 @@ class OverviewSourceProviderStub(private val sourceCodes: List<SourceCode>): Ove
 fun javaSource(name: String, location: String, code: List<String>): SourceCode {
     return SourceCode(SourceDescriptor(name, location, OopLanguage.JAVA), code)
 }
+
+fun defaultJavaSource(code: List<String>): SourceCode {
+    return SourceCode(SourceDescriptor("Foo.java", "none", OopLanguage.JAVA), code)
+}

@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
+package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.java
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub.Companion.javaLocationResolverFromResource
@@ -8,16 +8,16 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.applic
 import org.junit.Test
 import java.io.IOException
 
-class DoubleColonTest {
+class NestedClassTest {
     @Test
     @Throws(IOException::class)
     fun annotation_example_has_correct_rloc_count() {
-        val name = "DoubleColon.java"
+        val name = "NestedClass.java"
         val location = "$extractBaseFolder/java"
         val locationResolverStub = javaLocationResolverFromResource(name, location)
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc]}.isEqualTo(16)
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc]}.isEqualTo(2)
     }
 }

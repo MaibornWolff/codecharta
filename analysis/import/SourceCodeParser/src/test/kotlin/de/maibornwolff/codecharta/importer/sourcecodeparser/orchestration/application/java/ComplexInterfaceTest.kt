@@ -1,19 +1,19 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
+package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.java
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertWithPrintOnFail
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.defaultJavaSource
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.javaSource
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
 import org.junit.Test
 import java.io.IOException
 
 class ComplexInterfaceTest {
+
     @Test
-    @Throws(IOException::class)
     fun example_has_correct_rloc_count() {
-        val sourceCode = javaSource("Foo.java", "", code)
-        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 

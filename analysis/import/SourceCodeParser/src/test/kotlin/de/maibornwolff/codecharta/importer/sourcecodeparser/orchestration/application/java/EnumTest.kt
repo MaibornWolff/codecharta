@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics
+package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.java
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub.Companion.javaLocationResolverFromResource
@@ -8,16 +8,30 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.applic
 import org.junit.Test
 import java.io.IOException
 
-class NestedMethodsTest {
+class EnumTest {
+
     @Test
     @Throws(IOException::class)
-    fun annotation_example_has_correct_rloc_count() {
-        val name = "NestedMethods.java"
+    fun enum_example_1_has_correct_rloc_count() {
+        val name = "Enum1.java"
         val location = "$extractBaseFolder/java"
         val locationResolverStub = javaLocationResolverFromResource(name, location)
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc]}.isEqualTo(8)
+        assertWithPrintOnFail(singleMetrics){ it.sum[MetricType.RLoc]}.isEqualTo(7)
     }
+
+    @Test
+    @Throws(IOException::class)
+    fun enum_example_2_has_correct_rloc_count() {
+        val name = "Enum2.java"
+        val location = "$extractBaseFolder/java"
+        val locationResolverStub = javaLocationResolverFromResource(name, location)
+
+        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+
+        assertWithPrintOnFail(singleMetrics){ it.sum[MetricType.RLoc]}.isEqualTo(9)
+    }
+
 }
