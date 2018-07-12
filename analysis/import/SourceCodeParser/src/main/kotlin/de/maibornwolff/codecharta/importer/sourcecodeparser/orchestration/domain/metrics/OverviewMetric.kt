@@ -9,8 +9,8 @@ class OverviewMetric(val tableSums: List<DetailedMetricTableSum>) {
     private val languageFileCount = sumFiles(tableSums)
     private val folderMetrics = sumMetrics(tableSums)
 
-    fun languageValue(language: Language) = languageFileCount[language]
-    fun metricValue(metricType: MetricType) = folderMetrics[metricType]
+    fun languageValue(language: Language) = languageFileCount.getOrDefault(language, 0)
+    fun metricValue(metricType: MetricType) = folderMetrics.getOrDefault(metricType, 0)
 
     private fun sumMetrics(fileMetrics: List<DetailedMetricTableSum>): Map<MetricType, Int>{
         val sum = mutableMapOf<MetricType, Int>()

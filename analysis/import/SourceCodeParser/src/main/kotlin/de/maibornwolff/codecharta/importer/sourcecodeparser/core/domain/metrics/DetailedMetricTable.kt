@@ -7,9 +7,11 @@ class DetailedMetricTable(tagableSourceCode: TagableSourceCode, private val metr
 
     // IMPORTANT: line numbers start at 1 - just like our interface, but this array starts at 0
     private val rows = toRows(tagableSourceCode)
+
     val sum = DetailedMetricTableSum(
             tagableSourceCode.sourceDescriptor,
-            rows.last().metrics)
+            rows.lastOrNull()?.metrics ?: MetricMap())
+
     val language = tagableSourceCode.sourceDescriptor.language
 
     operator fun get(lineNumber: Int): DetailedMetricTableRow {
@@ -22,6 +24,12 @@ class DetailedMetricTable(tagableSourceCode: TagableSourceCode, private val metr
         return rows.size
     }
 
+    fun linesWithTag(tag: Tags): Collection<Int> {
+        return rows
+                .filter { it.tags.contains(tag) }
+                .map { it.rowNumber }
+    }
+
     private fun toRows(tagableSourceCode: TagableSourceCode): Array<DetailedMetricTableRow> {
         var previousMetrics = MetricMap()
         return tagableSourceCode.map {
@@ -30,11 +38,5 @@ class DetailedMetricTable(tagableSourceCode: TagableSourceCode, private val metr
             previousMetrics = newMetrics
             row
         }.toTypedArray()
-    }
-
-    fun linesWithTag(tag: Tags): Collection<Int> {
-        return rows
-                .filter { it.tags.contains(tag) }
-                .map { it.rowNumber }
     }
 }

@@ -4,21 +4,12 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.S
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceDescriptor
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.DetailedSourceProvider
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.OverviewSourceProvider
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.infrastructure.FileSystemDetailedSourceProvider
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.infrastructure.FileSystemOverviewSourceProvider
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class DetailedSourceProviderStub(private val sourceCode: SourceCode): DetailedSourceProvider {
-    override fun readSource(): SourceCode = sourceCode
-
-    companion object {
-        fun javaLocationResolverFromResource(name: String, location: String): DetailedSourceProviderStub {
-            val path = Paths.get(DetailedSourceProviderStub::class.java.classLoader.getResource("$location/$name")!!.toURI())
-            val code = Files.readAllLines(path)
-            val sourceCode = javaSource(name, location, code)
-            return DetailedSourceProviderStub(sourceCode)
-        }
-    }
-}
 
 fun javaSource(name: String, location: String, code: List<String>): SourceCode {
     return SourceCode(SourceDescriptor(name, location, OopLanguage.JAVA), code)
@@ -26,4 +17,18 @@ fun javaSource(name: String, location: String, code: List<String>): SourceCode {
 
 fun defaultJavaSource(code: List<String>): SourceCode {
     return SourceCode(SourceDescriptor("Foo.java", "none", OopLanguage.JAVA), code)
+}
+
+class DetailedSourceProviderStub(private val sourceCode: SourceCode): DetailedSourceProvider {
+    override fun readSource(): SourceCode = sourceCode
+}
+
+fun detailedSourceProviderFromResource(location: String): FileSystemDetailedSourceProvider {
+    val path = Paths.get(DetailedSourceProviderStub::class.java.classLoader.getResource(location)!!.toURI())
+    return FileSystemDetailedSourceProvider(path.toFile())
+}
+
+fun overviewSourceProviderFromResource(location: String): OverviewSourceProvider {
+    val path = Paths.get(DetailedSourceProviderStub::class.java.classLoader.getResource(location)!!.toURI())
+    return FileSystemOverviewSourceProvider(listOf(path.toFile()))
 }
