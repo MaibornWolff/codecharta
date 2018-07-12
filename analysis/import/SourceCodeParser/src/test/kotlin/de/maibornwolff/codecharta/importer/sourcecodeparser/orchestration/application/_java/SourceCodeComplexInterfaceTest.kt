@@ -1,6 +1,7 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.java
+package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application._java
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.defaultJavaSource
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.javaSource
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.CodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.NonCodeTags
@@ -12,8 +13,7 @@ class SourceCodeComplexInterfaceTest {
 
     @Test
     fun finds_all_lines() {
-        val sourceCode = javaSource("Foo.java", "", code)
-        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
@@ -22,8 +22,7 @@ class SourceCodeComplexInterfaceTest {
 
     @Test
     fun finds_all_comments() {
-        val sourceCode = javaSource("Foo.java", "", code)
-        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
@@ -32,8 +31,7 @@ class SourceCodeComplexInterfaceTest {
 
     @Test
     fun finds_imports() {
-        val sourceCode = javaSource("Foo.java", "", code)
-        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
@@ -42,8 +40,7 @@ class SourceCodeComplexInterfaceTest {
 
     @Test
     fun finds_interface() {
-        val sourceCode = javaSource("Foo.java", "", code)
-        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
@@ -52,8 +49,7 @@ class SourceCodeComplexInterfaceTest {
 
     @Test
     fun finds_constant_declarations() {
-        val sourceCode = javaSource("Foo.java", "", code)
-        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
@@ -62,8 +58,7 @@ class SourceCodeComplexInterfaceTest {
 
     @Test
     fun finds_enumConstant() {
-        val sourceCode = javaSource("Foo.java", "", code)
-        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
@@ -72,8 +67,7 @@ class SourceCodeComplexInterfaceTest {
 
     @Test
     fun finds_fields_in_enum() {
-        val sourceCode = javaSource("Foo.java", "", code)
-        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
@@ -82,8 +76,7 @@ class SourceCodeComplexInterfaceTest {
 
     @Test
     fun finds_methods() {
-        val sourceCode = javaSource("Foo.java", "", code)
-        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
@@ -92,8 +85,7 @@ class SourceCodeComplexInterfaceTest {
 
     @Test
     fun finds_constructor() {
-        val sourceCode = javaSource("Foo.java", "", code)
-        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
@@ -102,8 +94,7 @@ class SourceCodeComplexInterfaceTest {
 
     @Test
     fun finds_method_calls() {
-        val sourceCode = javaSource("Foo.java", "", code)
-        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
@@ -112,8 +103,7 @@ class SourceCodeComplexInterfaceTest {
 
     @Test
     fun finds_statements() {
-        val sourceCode = javaSource("Foo.java", "", code)
-        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
@@ -123,8 +113,7 @@ class SourceCodeComplexInterfaceTest {
 
     @Test
     fun finds_expressions() {
-        val sourceCode = javaSource("Foo.java", "", code)
-        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 

@@ -1,38 +1,39 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.java
+package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application._java
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertWithPrintOnFail
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.defaultJavaSource
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.javaSource
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
 import org.junit.Test
+import java.io.IOException
 
-class AnonymousClassTest {
-
+class InnerClassTest {
     @Test
-    fun `example has correct rloc count`() {
+    @Throws(IOException::class)
+    fun annotation_example_has_correct_rloc_count() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc]}.isEqualTo(3)
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc]}.isEqualTo(6)
     }
 
     private val code =
-            """
-/*
+"""/*
  * From https://github.com/antlr/grammars-v4/blob/master/java/examples/AllInOne7.java
  */
 
-// Anonymous class
-class Foo {
-    void bar() {
-
-        new Object() {// Creation of a new anonymous class extending Object
-        };
+// Inner class
+class Foo { // Top-level class
+    class Bar { // Inner class
     }
-}
-""".trim().lines()
 
+    static void inner_class_constructor() {
+        // https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.9
+        Foo foo = new Foo();
+        Foo.Bar fooBar1 = foo.new Bar();
+        Foo.Bar fooBar2 = new Foo().new Bar();
+    }
+}""".lines()
 }

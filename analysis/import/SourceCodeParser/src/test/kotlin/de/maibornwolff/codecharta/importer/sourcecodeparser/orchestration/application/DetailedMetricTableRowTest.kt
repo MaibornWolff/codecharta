@@ -1,21 +1,19 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.java
+package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.defaultJavaSource
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import java.io.IOException
 
-class MetricExtractorSimpleClassTest {
+class DetailedMetricTableRowTest {
 
     @Test(expected = IndexOutOfBoundsException::class)
-    @Throws(IOException::class)
     fun trying_index_0_results_in_exceptions_because_code_starts_at_line_1() {
-        val name = "SourceCodeSimple.java"
-        val location = "$extractBaseFolder/java"
-        val locationResolverStub = DetailedSourceProviderStub.javaLocationResolverFromResource(name, location)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
@@ -23,11 +21,8 @@ class MetricExtractorSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun trying_last_index_does_not_result_in_exception() {
-        val name = "SourceCodeSimple.java"
-        val location = "$extractBaseFolder/java"
-        val locationResolverStub = DetailedSourceProviderStub.javaLocationResolverFromResource(name, location)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
@@ -35,11 +30,8 @@ class MetricExtractorSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun does_not_count_empty_line_as_real() {
-        val name = "SourceCodeSimple.java"
-        val location = "$extractBaseFolder/java"
-        val locationResolverStub = DetailedSourceProviderStub.javaLocationResolverFromResource(name, location)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
@@ -51,11 +43,8 @@ class MetricExtractorSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun does_not_count_comment_line_as_real() {
-        val name = "SourceCodeSimple.java"
-        val location = "$extractBaseFolder/java"
-        val locationResolverStub = DetailedSourceProviderStub.javaLocationResolverFromResource(name, location)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
@@ -64,11 +53,8 @@ class MetricExtractorSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun does_not_count_lines_with_only_a_bracket_as_real() {
-        val name = "SourceCodeSimple.java"
-        val location = "$extractBaseFolder/java"
-        val locationResolverStub = DetailedSourceProviderStub.javaLocationResolverFromResource(name, location)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
@@ -77,11 +63,8 @@ class MetricExtractorSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun counts_all_lines_as_lines_of_code() {
-        val name = "SourceCodeSimple.java"
-        val location = "$extractBaseFolder/java"
-        val locationResolverStub = DetailedSourceProviderStub.javaLocationResolverFromResource(name, location)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
@@ -89,14 +72,56 @@ class MetricExtractorSimpleClassTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun counts_only_lines_with_actual_value_as_real() {
-        val name = "SourceCodeSimple.java"
-        val location = "$extractBaseFolder/java"
-        val locationResolverStub = DetailedSourceProviderStub.javaLocationResolverFromResource(name, location)
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
         Assertions.assertThat(singleMetrics[43][MetricType.RLoc]).isEqualTo(25)
     }
+
+    private val code =
+"""package none;
+
+import foo;
+import bar;
+
+/*
+ * class comment
+ */
+@Entity
+public class Foo {
+
+    @Deprecated("this is bad code")
+    private int stuff;
+
+    private volatile boolean wasReset = false;
+
+    // constructor, d'uh
+    public Foo(){
+        stuff = 5; // magic number
+    }
+
+    public Blub getStuff(){
+        int i = stuff - 1;
+        i++;
+        i = i + 0;
+        return i;
+    }
+
+    public void setStuff(int stuff){
+        this.wasReset = false;
+        if(stuff < 0){
+            reset(5);
+            wasReset = true;
+        } else if(reset(-1)){
+            this.stuff = stuff;
+        }
+        System.out.println("SetStuff was called");
+    }
+
+    private void reset(int num){
+        this.stuff = 0;
+    }
+}""".lines()
 }

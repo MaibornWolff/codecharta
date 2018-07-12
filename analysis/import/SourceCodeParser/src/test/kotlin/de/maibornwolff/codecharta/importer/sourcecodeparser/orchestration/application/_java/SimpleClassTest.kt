@@ -1,0 +1,68 @@
+package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application._java
+
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub.Companion.javaLocationResolverFromResource
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertWithPrintOnFail
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.defaultJavaSource
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.extractBaseFolder
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
+import org.junit.Test
+import java.io.IOException
+
+class SimpleClassTest {
+
+    @Test
+    fun example_has_correct_rloc_count() {
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
+
+        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc]}.isEqualTo(25)
+    }
+
+    private val code =
+"""package none;
+
+import foo;
+import bar;
+
+/*
+ * class comment
+ */
+@Entity
+public class Foo {
+
+    @Deprecated("this is bad code")
+    private int stuff;
+
+    private volatile boolean wasReset = false;
+
+    // constructor, d'uh
+    public Foo(){
+        stuff = 5; // magic number
+    }
+
+    public Blub getStuff(){
+        int i = stuff - 1;
+        i++;
+        i = i + 0;
+        return i;
+    }
+
+    public void setStuff(int stuff){
+        this.wasReset = false;
+        if(stuff < 0){
+            reset(5);
+            wasReset = true;
+        } else if(reset(-1)){
+            this.stuff = stuff;
+        }
+        System.out.println("SetStuff was called");
+    }
+
+    private void reset(int num){
+        this.stuff = 0;
+    }
+}""".lines()
+}

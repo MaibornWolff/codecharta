@@ -1,13 +1,11 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.java
+package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application._java
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertWithPrintOnFail
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.defaultJavaSource
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.javaSource
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
 import org.junit.Test
-import java.io.IOException
 
 class ConstructorAndInitializerTest {
 

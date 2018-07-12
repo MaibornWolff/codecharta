@@ -1,0 +1,69 @@
+package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application._java
+
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.DetailedSourceProviderStub
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.assertWithPrintOnFail
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.`~res`.defaultJavaSource
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
+import org.junit.Test
+
+class EnumTest {
+
+    @Test
+    fun enum_example_1_has_correct_rloc_count() {
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code1))
+
+        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+
+        assertWithPrintOnFail(singleMetrics){ it.sum[MetricType.RLoc]}.isEqualTo(7)
+    }
+
+    @Test
+    fun enum_example_2_has_correct_rloc_count() {
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code2))
+
+        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+
+        assertWithPrintOnFail(singleMetrics){ it.sum[MetricType.RLoc]}.isEqualTo(9)
+    }
+
+    private val code1 =
+"""/*
+ * From https://github.com/antlr/grammars-v4/blob/master/java/examples/AllInOne7.java
+ */
+
+public enum Season {
+    WINTER("Cold"), SPRING("Warmer"), SUMMER("Hot"), AUTUMN("Cooler");
+
+    Season(String description) {
+        this.description = description;
+    }
+
+    private final String description;
+
+    public String getDescription() {
+        return description;
+    }
+}""".trim().lines()
+
+    private val code2 =
+"""/*
+ * From https://github.com/antlr/grammars-v4/blob/master/java/examples/AllInOne7.java
+ */
+
+public enum Season {
+    WINTER {
+        String getDescription() {return "cold";}
+    },
+    SPRING {
+        String getDescription() {return "warmer";}
+    },
+    SUMMER {
+        String getDescription() {return "hot";}
+    },
+    FALL {
+        String getDescription() {return "cooler";}
+    };
+}""".trim().lines()
+
+}
