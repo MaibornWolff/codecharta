@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Packages can be highlighted in different colors #152
 - Adding a context menu with highlighting colors and convenience methods for the tree view and 3D view #155
 - Folders and files to highlight can be described in the cc.json #165
+- Dynamic/automatic margin computing de/activated by tick 
 
 ### Changed
 

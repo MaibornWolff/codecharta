@@ -2,7 +2,7 @@ import {Scenario} from "./scenario.service";
 import {CodeMap} from "../data/model/CodeMap";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
 
-export function createDefaultScenario(map: CodeMap): Scenario {
+export function createDefaultScenario(map: CodeMap, margin: number): Scenario {
 
     return {
         name: "rloc/mcc/mcc(20,40)",
@@ -24,12 +24,13 @@ export function createDefaultScenario(map: CodeMap): Scenario {
             camera: {
                 x: 0, y: 300, z: 1000
             },
-            margin: 15,
+            margin: margin,
             operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
             showDependencies: false,
             maximizeDetailPanel: false,
-            invertHeight: false
+            invertHeight: false,
+            dynamicMargin: true
         },
         autoFitCamera: true
     };

@@ -6,12 +6,14 @@ import {
 import {PerspectiveCamera} from "three";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
 import {DeltaCalculatorService} from "../data/data.deltaCalculator.service";
-import * as d3 from "d3";
 import {DataDecoratorService} from "../data/data.decorator.service";
-import {CodeMap} from "../data/model/CodeMap";
+import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
+import {hierarchy, HierarchyNode} from "d3-hierarchy";
 
 export interface Range {
-    from: number; to: number; flipped: boolean;
+    from: number;
+    to: number;
+    flipped: boolean;
 }
 
 export interface Scale {
@@ -37,6 +39,7 @@ export interface Settings {
     showDependencies: boolean;
     maximizeDetailPanel: boolean;
     invertHeight: boolean;
+    dynamicMargin: boolean;
 }
 
 export interface SettingsServiceSubscriber {
@@ -46,6 +49,8 @@ export interface SettingsServiceSubscriber {
 export class SettingsService implements DataServiceSubscriber, CameraChangeSubscriber {
 
     public static SELECTOR = "settingsService";
+    public static MIN_MARGIN = 15;
+    public static MARGIN_FACTOR = 4;
 
     private _settings: Settings;
 
@@ -55,8 +60,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
     /* ngInject */
     constructor(private urlService, private dataService: DataService, private $rootScope,
-                private threeOrbitControlsService: ThreeOrbitControlsService, private statisticMapService, private deltaCalculatorService: DeltaCalculatorService,
-                private dataDecoratorService: DataDecoratorService) {
+                private threeOrbitControlsService: ThreeOrbitControlsService) {
 
         this._settings = this.getInitialSettings(dataService.data.renderMap, dataService.data.metrics);
 
@@ -90,7 +94,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         this._lastDeltaState = false;
 
-        let settings: Settings =  {
+        let settings: Settings = {
             map: renderMap,
             neutralColorRange: r,
             areaMetric: this.getMetricByIdOrLast(0, metrics),
@@ -105,7 +109,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             deltaColorFlipped: false,
             showDependencies: false,
             maximizeDetailPanel: false,
-            invertHeight: false
+            invertHeight: false,
+            dynamicMargin: true
         };
 
         return settings;
@@ -170,12 +175,12 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      */
     public onSettingsChanged() {
 
+        this.settings.margin = this.computeMargin();
+
         if (this._lastDeltaState && !this._settings.deltas) {
             this._lastDeltaState = false;
             this.onDeactivateDeltas();
-        } else
-
-        if (!this._lastDeltaState && this._settings.deltas) {
+        } else if (!this._lastDeltaState && this._settings.deltas) {
             this._lastDeltaState = true;
             this.onActivateDeltas();
         }
@@ -237,6 +242,46 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     }
 
     /**
+     * @returns {number}
+     *
+     * Function that computes the margin applied to a scenario related the square root of (the area divided
+     * by the number of buildings)
+     */
+    public computeMargin(
+        map: CodeMap = this.dataService.data.renderMap,
+        areaMetric: string = this.settings.areaMetric,
+        settingsMargin: number = this.settings.margin,
+        dynamicMargin: boolean = this.settings.dynamicMargin
+    ): number {
+
+        let margin: number;
+        if (map !== null && dynamicMargin) {
+            let root: CodeMapNode = map.root;
+
+            let leaves = hierarchy<CodeMapNode>(root).leaves();
+            let numberOfBuildings = 0;
+            let totalArea = 0;
+            leaves.forEach((c: HierarchyNode<CodeMapNode>) => {
+                numberOfBuildings++;
+                if(c.data.attributes && c.data.attributes[areaMetric]){
+                    totalArea += c.data.attributes[areaMetric];
+                }
+            });
+
+            margin = SettingsService.MARGIN_FACTOR * Math.round(Math.sqrt(
+                (totalArea / numberOfBuildings)));
+
+            margin = Math.max(SettingsService.MIN_MARGIN, margin);
+        }
+
+        else {
+            margin = settingsMargin || SettingsService.MIN_MARGIN;
+        }
+
+        return margin;
+    }
+
+    /**
      * Updates query params to current settings
      */
     public getQueryParamString() {
@@ -278,29 +323,29 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      *
      * @param {Settings} settings
      */
-    public applySettings(settings?: Settings){
+    public applySettings(settings?: Settings) {
 
-        if(settings){
+        if (settings) {
             this.updateSettings(settings);
         }
 
-        else{
+        else {
             this.numberOfCalls++;
-            if(this.numberOfCalls>4){
+            if (this.numberOfCalls > 4) {
                 this.numberOfCalls = 0;
                 this.onSettingsChanged();
             }
-            else{
+            else {
                 let currentCalls = this.numberOfCalls;
                 let _this = this;
 
-                setTimeout(function(){
-                    if(currentCalls == _this.numberOfCalls){
+                setTimeout(function () {
+                    if (currentCalls == _this.numberOfCalls) {
                         this.numberOfCalls = 0;
                         _this.onSettingsChanged();
                     }
 
-                },400);
+                }, 400);
             }
         }
     }
@@ -333,9 +378,10 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.deltaColorFlipped = settings.deltaColorFlipped;
         this._settings.maximizeDetailPanel = settings.maximizeDetailPanel;
         this._settings.invertHeight = settings.invertHeight;
+        this._settings.dynamicMargin = settings.dynamicMargin;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
-        this._settings.map = settings.map|| this.settings.map;
+        this._settings.map = settings.map || this.settings.map;
 
         this.onSettingsChanged();
 
