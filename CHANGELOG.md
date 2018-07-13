@@ -13,6 +13,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+## [1.14.1] - 2018-07-13
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
 ## [1.14.0] - 2018-07-13
 ### Added
 - Added UnderstandImporter to Analysis
