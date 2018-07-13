@@ -132,7 +132,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             }
         }
 
-        if (visibleTemporalCouplingDependencies.length > 0) {
+        if (visibleTemporalCouplingDependencies.length > 0 && s.showDependencies) {
             this.showCouplingArrows(visibleTemporalCouplingDependencies);
         }
 
@@ -144,7 +144,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     showCouplingArrows(deps: CodeMapDependency[]) {
         this.arrowManager.clearArrows();
 
-        if (deps && this.currentRenderSettings && this.settingsService.settings.showDependencies) {
+        if (deps && this.currentRenderSettings) {
             this.arrowManager.addCodeMapDependenciesAsArrows(this.currentSortedNodes, deps, this.currentRenderSettings);
             this.arrowManager.scale(
                 this.threeSceneService.mapGeometry.scale.x,
