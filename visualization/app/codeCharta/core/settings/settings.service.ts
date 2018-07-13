@@ -8,6 +8,7 @@ import {STATISTIC_OPS} from "../statistic/statistic.service";
 import {DeltaCalculatorService} from "../data/data.deltaCalculator.service";
 import {DataDecoratorService} from "../data/data.decorator.service";
 import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
+import {hierarchy, HierarchyNode} from "d3-hierarchy";
 
 export interface Range {
     from: number; to: number; flipped: boolean;
@@ -46,6 +47,8 @@ export interface SettingsServiceSubscriber {
 export class SettingsService implements DataServiceSubscriber, CameraChangeSubscriber {
 
     public static SELECTOR = "settingsService";
+    public static MIN_MARGIN = 15;
+    public static MARGIN_FACTOR = 4;
 
     private _settings: Settings;
 
@@ -246,54 +249,30 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     public  computeMargin(): number{
 
         let margin: number;
-        if(this.dataService.data.renderMap != null && this.settings.dynamicMargin){
+        if(this.dataService.data.renderMap !== null && this.settings.dynamicMargin){
             let  root: CodeMapNode = this.dataService.data.renderMap.root;
 
-            // Previous parameters are wrapped to introduce them into goThroughMap() and make value changes
-            // remain, with a pointer-like behaviour
-            let numberOfBuildingsWrapped = {numberOfBuildings: 0};
-            let areaParametersWrapped = {areaMetricName: this.settings.areaMetric, totalArea: 0};
+            let leaves = hierarchy<CodeMapNode>(root).leaves();
+            let numberOfBuildings = 0;
+            let totalArea = 0;
+            leaves.forEach((c: HierarchyNode<CodeMapNode>) => {
+                numberOfBuildings++;
+                totalArea += c.data.attributes[this.settings.areaMetric];
+            });
 
-            this.dataService.goThroughMap( root, this.countBuildings, numberOfBuildingsWrapped);
-            this.dataService.goThroughMap( root, this.calculateTotalArea, areaParametersWrapped);
+            margin =  SettingsService.MARGIN_FACTOR * Math.round(Math.sqrt(
+                (totalArea / numberOfBuildings)));
 
-            margin = 4 * Math.round(Math.sqrt(
-                (areaParametersWrapped.totalArea / numberOfBuildingsWrapped.numberOfBuildings)));
-
-            if(!Number.isFinite(margin)){
-                margin = 15;
-            }
+            margin = Math.max(SettingsService.MIN_MARGIN, margin);
         }
 
         else{
-            margin = this.settings.margin||15;
+            margin = this.settings.margin||SettingsService.MIN_MARGIN;
         }
 
         return margin;
     }
 
-    /*
-    * @param {CodeMapNode} map
-    * @param {number{}} buildings {"numberOfBuildings"} the number of leaves( aka buildings) in map
-    *
-     */
-    private countBuildings(map: CodeMapNode, buildings: {numberOfBuildings: number}){
-        if(!map.children){
-            buildings.numberOfBuildings++;
-        }
-    }
-
-    /**
-     *
-     * @param map
-     * @param area {"areaMetricName"} name of the metric used for area in the map,
-     *          {"totalArea"} aggregated value of the area
-     */
-    private calculateTotalArea(map: CodeMapNode, area: {totalArea: number, areaMetricName: string }){
-        if(!map.children){
-            area.totalArea += map.attributes[area.areaMetricName];
-        }
-    }
     /**
      * Updates query params to current settings
      */
