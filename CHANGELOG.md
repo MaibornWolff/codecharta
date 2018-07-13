@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Dynamic/automatic margin computing de/activated by tick 
 
 ### Changed
+- Details panel: using the sum of the childrens metrics instead of the mean value
 
 ### Removed
 
