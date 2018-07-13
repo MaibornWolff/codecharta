@@ -8,7 +8,7 @@ export interface colorRange {
 }
 
 export function getFloorGradient(nodes: node[]): number[] {
-    return renderingUtil.gradient("#222222", "#aaaaaa", renderingUtil.getMaxNodeDepth(nodes));
+    return renderingUtil.gradient("#333333", "#dddddd", renderingUtil.getMaxNodeDepth(nodes));
 }
 
 export const highlightColors = [
