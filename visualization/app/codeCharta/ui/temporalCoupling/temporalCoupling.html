@@ -1,6 +1,6 @@
 <md-input-container class="md-block">
     <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.useCouplingHeight" ng-change="$ctrl.settingsService.onSettingsChanged()">
-        Use Coupling Height
+        Use Pairingrate Height
     </md-checkbox>
 </md-input-container>
 
@@ -11,13 +11,15 @@
     <md-button class="md-raised" ng-click="$ctrl.onResetDependencies()">Reset Selection</md-button>
 </md-input-container>
 
-<span class="small-text">Commits, Pairingrate</span>
+<span class="small-help" title="X shared commits between both Files">Commits, </span>
+<span class="small-help" title="File2 changes with File1 in N% of File1's commits">Pairingrate</span>
+
 <md-divider></md-divider>
 
 <md-list-item class="md-2-line"
               ng-repeat="couple in $ctrl.temporalCoupling | orderBy: 'averageRevs' : true"
               ng-click="$ctrl.onClickCouple(couple)"
-              title="{{::couple.averageRevs}} shared commits&#013;In {{::couple.pairingRate}}% of all commits with '{{::couple.nodeFilename}}' the '{{::couple.dependantNodeFilename}}' changed as well&#013;&#013;{{::couple.node}}&#013;&#013;{{::couple.dependantNode}}">
+              title="{{::couple.averageRevs}} shared commits&#013;{{::couple.pairingRate}}% Pairingrate&#013;&#013;{{::couple.node}}&#013;&#013;{{::couple.dependantNode}}">
 
     <div class="md-icon dependency-numbers" layout="column">
         <p class="dependency-average-revs">{{::couple.averageRevs}}</p>
