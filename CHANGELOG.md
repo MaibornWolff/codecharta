@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 ### Added
 - Added UnderstandImporter to Analysis
+- Packages can be highlighted in different colors #152
+- Adding a context menu with highlighting colors and convenience methods for the tree view and 3D view #155
+- Folders and files to highlight can be described in the cc.json #165
+- Dynamic/automatic margin computing de/activated by tick 
 
 ### Changed
 
@@ -14,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 - Display buttons do not trigger map changes #185
+- Flickering surfaces when zooming out
 
 ## [1.13.0] - 2018-06-08
 ### Added
