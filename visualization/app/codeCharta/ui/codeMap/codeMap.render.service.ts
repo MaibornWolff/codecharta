@@ -11,8 +11,6 @@ import {
     CodeMapBuildingTransition, CodeMapMouseEventService,
     CodeMapMouseEventServiceSubscriber
 } from "./codeMap.mouseEvent.service";
-import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
-import {Vector3} from "three";
 
 const mapSize = 500.0;
 
@@ -34,8 +32,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     constructor(private threeSceneService,
                 private treeMapService,
                 private $rootScope,
-                private settingsService: SettingsService,
-                private threeOrbitControlsService: ThreeOrbitControlsService) {
+                private settingsService: SettingsService) {
         this.settingsService.subscribe(this);
         CodeMapMouseEventService.subscribe($rootScope, this);
     }
