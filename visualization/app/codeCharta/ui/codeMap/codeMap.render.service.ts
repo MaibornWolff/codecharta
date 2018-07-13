@@ -119,7 +119,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
      * @param {number} z
      */
     scaleMap(x, y, z) {
-
         this.threeSceneService.mapGeometry.scale.x = x;
         this.threeSceneService.mapGeometry.scale.y = y;
         this.threeSceneService.mapGeometry.scale.z = z;
@@ -139,6 +138,5 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         if (this.arrowManager) {
             this.arrowManager.scale(x, y, z);
         }
-
     }
 }
