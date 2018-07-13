@@ -271,7 +271,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             margin = SettingsService.MARGIN_FACTOR * Math.round(Math.sqrt(
                 (totalArea / numberOfBuildings)));
 
-            margin = Math.max(SettingsService.MIN_MARGIN, margin);
+            margin = Math.min(100,Math.max(SettingsService.MIN_MARGIN, margin));
         }
 
         else {
