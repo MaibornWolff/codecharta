@@ -19,7 +19,7 @@ describe("settings.service", function() {
             "children": [
                 {
                     "name": "big leaf",
-                    "attributes": {"rloc": 100, "functions": 10, "mcc": 1},
+                    "attributes": {"rloc": 100, "functions": 10, "mcc": 1, "extremeMetric": 100000},
                     "link": "http://www.google.de"
                 },
                 {
@@ -28,12 +28,12 @@ describe("settings.service", function() {
                     "children": [
                         {
                             "name": "small leaf",
-                            "attributes": {"rloc": 30, "functions": 100, "mcc": 100},
+                            "attributes": {"rloc": 30, "functions": 100, "mcc": 100, "extremeMetric": 100000},
                             "children": []
                         },
                         {
                             "name": "other small leaf",
-                            "attributes": {"rloc": 70, "functions": 1000, "mcc": 10},
+                            "attributes": {"rloc": 70, "functions": 1000, "mcc": 10, "extremeMetric": 100000},
                             "children": []
                         }
                     ]
@@ -66,6 +66,11 @@ describe("settings.service", function() {
     it("compute margin should return default margin if metric does not exist", NGMock.mock.inject(function(settingsService: SettingsService){
         let computed = settingsService.computeMargin(validData, "nonExistant", 2, true);
         expect(computed).toBe(SettingsService.MIN_MARGIN);
+    }));
+
+    it("compute margin should return 100 as margin if computed margin bigger als 100 is", NGMock.mock.inject(function(settingsService: SettingsService){
+        let computed = settingsService.computeMargin(validData, "extremeMetric", 2, true);
+        expect(computed).toBe(100);
     }));
     
     //noinspection TypeScriptUnresolvedVariable
