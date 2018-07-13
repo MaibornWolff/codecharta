@@ -1,11 +1,15 @@
 <md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.useCouplingHeight" ng-change="$ctrl.settingsService.onSettingsChanged()">
+        Use Coupling Height
+    </md-checkbox>
+</md-input-container>
+
+<md-input-container class="md-block">
     <md-checkbox class="md-primary top-margin" ng-model="$ctrl.settingsService.settings.showDependencies" ng-change="$ctrl.settingsService.onSettingsChanged()">
         Show Connections
     </md-checkbox>
     <md-button class="md-raised" ng-click="$ctrl.onResetDependencies()">Reset Selection</md-button>
-
 </md-input-container>
-
 
 <md-divider></md-divider>
 

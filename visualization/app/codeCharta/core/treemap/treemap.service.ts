@@ -29,6 +29,7 @@ export interface TreeMapSettings {
     margin: number;
     invertHeight: boolean;
     visibleTemporalCouplingDependencies: CodeMapDependency[];
+    useCouplingHeight: boolean;
 }
 
 export class TreeMapService {

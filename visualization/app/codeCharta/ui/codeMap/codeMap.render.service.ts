@@ -99,7 +99,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             heightKey: s.heightMetric,
             margin: s.margin,
             invertHeight: s.invertHeight,
-            visibleTemporalCouplingDependencies: visibleTemporalCouplingDependencies
+            visibleTemporalCouplingDependencies: visibleTemporalCouplingDependencies,
+            useCouplingHeight: s.useCouplingHeight,
         };
 
         let nodes: node[] = this.collectNodesToArray(

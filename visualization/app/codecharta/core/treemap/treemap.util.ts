@@ -32,7 +32,7 @@ export class TreeMapUtils {
         }
 
         if (s.visibleTemporalCouplingDependencies.length > 0) {
-            heightValue = this.getTemporalCouplingHeight(squaredNode, s.visibleTemporalCouplingDependencies, maxHeight);
+            heightValue = this.getTemporalCouplingHeight(squaredNode, s, maxHeight, heightValue);
         }
 
         return {
@@ -59,15 +59,17 @@ export class TreeMapUtils {
 
     }
 
-    public static getTemporalCouplingHeight(squaredNode, visibleTemporalCouplingDependencies, maxHeight) {
+    public static getTemporalCouplingHeight(squaredNode, s, maxHeight, heightValue) {
 
-        for (var couple of visibleTemporalCouplingDependencies) {
+        const NON_TEMPORAL_COUPLING_HEIGHT = 0;
+
+        for (var couple of s.visibleTemporalCouplingDependencies) {
 
             if (squaredNode.data.path === couple.node ||
                 squaredNode.data.path === couple.dependantNode) {
-                return maxHeight / 100 * couple.pairingRate;
+                return (s.useCouplingHeight) ? maxHeight / 100 * couple.pairingRate : heightValue;
             }
         }
-        return 0;
+        return NON_TEMPORAL_COUPLING_HEIGHT;
     }
 }

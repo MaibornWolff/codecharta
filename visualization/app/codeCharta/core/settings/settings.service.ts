@@ -38,6 +38,7 @@ export interface Settings {
     maximizeDetailPanel: boolean;
     invertHeight: boolean;
     temporalCouplingDependencies: CodeMapDependency[];
+    useCouplingHeight: boolean;
 }
 
 export interface SettingsServiceSubscriber {
@@ -107,7 +108,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             showDependencies: false,
             maximizeDetailPanel: false,
             invertHeight: false,
-            temporalCouplingDependencies: []
+            temporalCouplingDependencies: [],
+            useCouplingHeight: false
         };
         return settings;
 
@@ -335,6 +337,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.maximizeDetailPanel = settings.maximizeDetailPanel;
         this._settings.invertHeight = settings.invertHeight;
         this._settings.temporalCouplingDependencies = settings.temporalCouplingDependencies;
+        this._settings.useCouplingHeight = settings.useCouplingHeight;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = settings.map|| this.settings.map;
