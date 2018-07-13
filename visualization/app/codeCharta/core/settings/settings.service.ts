@@ -184,6 +184,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             this._lastDeltaState = true;
             this.onActivateDeltas();
         }
+
         this.$rootScope.$broadcast("settings-changed", this._settings);
     }
 
