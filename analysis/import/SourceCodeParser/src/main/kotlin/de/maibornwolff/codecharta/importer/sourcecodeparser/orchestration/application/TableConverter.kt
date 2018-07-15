@@ -20,7 +20,7 @@ fun overviewMetricToTable(folderMetrics: OverviewMetric): String{
 }
 
 fun detailedMetricToTable(detailedMetricTable: DetailedMetricTable): String{
-    return String.format("%-5s %-5s %-120s %-20s", "LoC", "RLoC", "Code", "Tags") + "\n" +
+    return String.format("%-5s %-5s %-5s %-120s %-20s", "LoC", "RLoC", "MCC", "Code", "Tags") + "\n" +
             "-".repeat(40)+ "\n" +
             rowsAsText(detailedMetricTable)
 
@@ -30,9 +30,10 @@ fun detailedMetricToTable(detailedMetricTable: DetailedMetricTable): String{
 private fun rowsAsText(detailedMetricTable: DetailedMetricTable): String{
     var previousRow = DetailedMetricTableRow.NULL
     val result = detailedMetricTable.map{
-        val rowText = String.format("%-5d %-5s %-120s %-20s",
+        val rowText = String.format("%-5d %-5s %-5s %-120s %-20s",
                 it[MetricType.LoC],
-                rlocText(it, it.metricWasIncremented(MetricType.RLoc, previousRow)),
+                textToDisplay(it, MetricType.RLoc, previousRow),
+                textToDisplay(it, MetricType.MCC, previousRow),
                 it.text,
                 it.tags)
         previousRow = it
@@ -41,4 +42,10 @@ private fun rowsAsText(detailedMetricTable: DetailedMetricTable): String{
     return result
 }
 
-private fun rlocText(detailedMetricTableRow: DetailedMetricTableRow, rowMetricWasIncremented: Boolean) = if(rowMetricWasIncremented) detailedMetricTableRow[MetricType.RLoc].toString() else ""
+private fun textToDisplay(detailedMetricTableRow: DetailedMetricTableRow, metricType: MetricType, previousMetricTableRow: DetailedMetricTableRow): String {
+    return if(detailedMetricTableRow.metricWasIncremented(metricType, previousMetricTableRow)) {
+        detailedMetricTableRow[metricType].toString()
+    } else {
+        ""
+    }
+}

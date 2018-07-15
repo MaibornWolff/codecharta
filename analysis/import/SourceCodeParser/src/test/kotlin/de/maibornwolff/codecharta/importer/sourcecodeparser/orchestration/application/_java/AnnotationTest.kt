@@ -18,6 +18,16 @@ class AnnotationTest {
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(3)
     }
 
+
+    @Test
+    fun `example has McCabe of zero`() {
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
+
+        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(0)
+    }
+
     private val code =
 """/*
  * From https://github.com/antlr/grammars-v4/blob/master/java/examples/AllInOne7.java

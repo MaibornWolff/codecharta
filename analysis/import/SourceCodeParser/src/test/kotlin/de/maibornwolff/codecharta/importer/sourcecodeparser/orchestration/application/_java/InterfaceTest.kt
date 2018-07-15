@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application._java
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.CodeTags
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.MethodTags
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.UnsortedCodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.NonCodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
@@ -8,7 +9,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.default
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
-class SourceCodeComplexInterfaceTest {
+class InterfaceTest {
 
     @Test
     fun finds_all_lines() {
@@ -34,7 +35,7 @@ class SourceCodeComplexInterfaceTest {
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(detailedMetricTable.linesWithTag(CodeTags.IMPORT)).containsExactly(4, 6)
+        assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.IMPORT)).containsExactly(4, 6)
     }
 
     @Test
@@ -43,7 +44,7 @@ class SourceCodeComplexInterfaceTest {
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(detailedMetricTable.linesWithTag(CodeTags.INTERFACE)).containsExactly(13)
+        assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.INTERFACE)).containsExactly(13)
     }
 
     @Test
@@ -52,7 +53,7 @@ class SourceCodeComplexInterfaceTest {
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(detailedMetricTable.linesWithTag(CodeTags.INTERFACE_CONSTANT)).containsExactly(17)
+        assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.INTERFACE_CONSTANT)).containsExactly(17)
     }
 
     @Test
@@ -61,7 +62,7 @@ class SourceCodeComplexInterfaceTest {
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(detailedMetricTable.linesWithTag(CodeTags.ENUM_CONSTANT)).containsExactly(21, 22, 23, 24)
+        assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.ENUM_CONSTANT)).containsExactly(21, 22, 23, 24)
     }
 
     @Test
@@ -70,7 +71,7 @@ class SourceCodeComplexInterfaceTest {
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(detailedMetricTable.linesWithTag(CodeTags.CLASS_FIELD)).containsExactly(26, 27)
+        assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.CLASS_FIELD)).containsExactly(26, 27)
     }
 
     @Test
@@ -79,7 +80,7 @@ class SourceCodeComplexInterfaceTest {
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(detailedMetricTable.linesWithTag(CodeTags.METHOD)).containsExactly(34, 36, 40, 44, 49, 60)
+        assertThat(detailedMetricTable.linesWithTag(MethodTags.METHOD)).containsExactly(34, 36, 40, 44, 49, 60)
     }
 
     @Test
@@ -88,7 +89,7 @@ class SourceCodeComplexInterfaceTest {
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(detailedMetricTable.linesWithTag(CodeTags.CONSTRUCTOR)).containsExactly(29)
+        assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.CONSTRUCTOR)).containsExactly(29)
     }
 
     @Test
@@ -97,7 +98,7 @@ class SourceCodeComplexInterfaceTest {
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(detailedMetricTable.linesWithTag(CodeTags.METHOD_CALL)).containsExactly(51, 53, 55, 61, 62, 63, 64)
+        assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.METHOD_CALL)).containsExactly(51, 53, 55, 61, 62, 63, 64)
     }
 
     @Test
@@ -106,7 +107,7 @@ class SourceCodeComplexInterfaceTest {
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(detailedMetricTable.linesWithTag(CodeTags.STATEMENT))
+        assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.STATEMENT))
                 .containsExactly(30, 31, 34, 36, 50, 51, 53, 55, 61)
     }
 
@@ -116,7 +117,7 @@ class SourceCodeComplexInterfaceTest {
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(detailedMetricTable.linesWithTag(CodeTags.EXPRESSION))
+        assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.EXPRESSION))
                 .containsExactly(17, 21, 22, 23, 24, 30, 31, 34, 36, 51, 53, 54, 55, 61, 62, 64)
     }
 

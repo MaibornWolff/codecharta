@@ -30,7 +30,6 @@ class ArchitectureTest {
                 .should().accessClassesThat().resideInAPackage("..infrastructure..").check(classes)
     }
 
-    @Ignore
     @Test
     fun `antlr only interacts with itself, standard library and tagging`() {
         noClasses().that().resideInAPackage("..antlr..")
@@ -42,12 +41,6 @@ class ArchitectureTest {
     fun components_should_be_free_of_cycles() {
         slices().matching("de.maibornwolff.codecharta.importer.sourcecodeparser.(*)..")
                 .should().beFreeOfCycles()
-    }
-
-    @Ignore
-    @Test
-    fun no_classes_should_access_standard_streams() {
-        GeneralCodingRules.NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS.check(classes)
     }
 
     @Test

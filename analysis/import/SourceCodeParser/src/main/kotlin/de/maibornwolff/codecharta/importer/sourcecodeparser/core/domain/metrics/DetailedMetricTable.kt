@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TagableSourceCode
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.Tags
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagging.TagableSourceCode
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagging.Tags
 
 class DetailedMetricTable(tagableSourceCode: TagableSourceCode, private val metricCalculationStrategy: MetricCalculationStrategy): Iterable<DetailedMetricTableRow> {
 

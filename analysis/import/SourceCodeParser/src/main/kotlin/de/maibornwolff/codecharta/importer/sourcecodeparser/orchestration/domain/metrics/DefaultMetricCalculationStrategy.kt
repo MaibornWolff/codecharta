@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.domai
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricCalculationStrategy
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricMap
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.Line
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagging.Line
 
 class DefaultMetricCalculationStrategy: MetricCalculationStrategy {
     override fun calculateMetrics(line: Line, previousMetrics: MetricMap): MetricMap {

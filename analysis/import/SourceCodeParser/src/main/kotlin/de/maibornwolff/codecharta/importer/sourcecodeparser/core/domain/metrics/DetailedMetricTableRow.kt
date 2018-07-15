@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.Line
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagging.Line
 
 class DetailedMetricTableRow(line: Line, internal val metrics: MetricMap) {
 

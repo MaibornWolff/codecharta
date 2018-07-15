@@ -11,7 +11,6 @@ import java.io.IOException
 class TableConverterTest {
     @Test
     fun `prints header and all code lines`() {
-        // Arrange
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
@@ -23,20 +22,17 @@ class TableConverterTest {
 
     @Test
     fun prints_correct_header_order() {
-        // Arrange
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
         val output = detailedMetricToTable(detailedMetricTable)
 
-        assertThat(elementsOf(output.lines()[0])).containsExactly("LoC", "RLoC", "Code", "Tags")
+        assertThat(elementsOf(output.lines()[0])).containsExactly("LoC", "RLoC", "MCC", "Code", "Tags")
     }
 
     @Test
-    @Throws(IOException::class)
     fun prints_underline() {
-        // Arrange
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
@@ -47,9 +43,7 @@ class TableConverterTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun prints_real_line_count_when_it_was_incremented() {
-        // Arrange
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
@@ -62,7 +56,6 @@ class TableConverterTest {
     @Test
     @Throws(IOException::class)
     fun `does not print real line count when it wasnt incremented and instead prints empty tag list`() {
-        // Arrange
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)

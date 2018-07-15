@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java;
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged.TagableSourceCode;
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagging.TagableSourceCode;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 

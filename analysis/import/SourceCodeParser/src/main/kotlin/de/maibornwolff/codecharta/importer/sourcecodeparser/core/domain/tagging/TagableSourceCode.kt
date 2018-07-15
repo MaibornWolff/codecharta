@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagged
+package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagging
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceDescriptor
 

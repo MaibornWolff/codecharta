@@ -19,7 +19,7 @@ class TableFileTest {
     @Test
     fun `table output has correct header`() {
         assertThat(elementsOf(output.lines()[0])).describedAs(output).contains("LoC", "RLoC", "Code", "Tags")
-        assertThat(output.lines()[1]).contains("------")
+        assertThat(output.lines()[1]).describedAs(output).contains("------")
     }
 
     @Test
