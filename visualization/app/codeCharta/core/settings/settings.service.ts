@@ -41,6 +41,7 @@ export interface Settings {
     invertHeight: boolean;
     useCouplingHeight: boolean;
     dynamicMargin: boolean;
+    intelligentTemporalCouplingFilter: boolean;
 }
 
 export interface SettingsServiceSubscriber {
@@ -108,11 +109,12 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             margin: 15,
             operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
-            showDependencies: false,
+            showDependencies: true,
             maximizeDetailPanel: false,
             invertHeight: false,
-            useCouplingHeight: false,
+            useCouplingHeight: true,
             dynamicMargin: true,
+            intelligentTemporalCouplingFilter: true
         };
         return settings;
 
@@ -381,6 +383,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.invertHeight = settings.invertHeight;
         this._settings.useCouplingHeight = settings.useCouplingHeight;
         this._settings.dynamicMargin = settings.dynamicMargin;
+        this._settings.intelligentTemporalCouplingFilter = settings.intelligentTemporalCouplingFilter;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = settings.map || this.settings.map;

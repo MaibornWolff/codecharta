@@ -54,8 +54,40 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
                     couple.visible = false;
                 }
             }
+
+            if(this.settingsService.settings.intelligentTemporalCouplingFilter === true) {
+                this.temporalCoupling = this.temporalCoupling.filter(this.isEligibleCouple);
+            }
+            console.log(this.temporalCoupling);
         }
     }
+
+    private isEligibleCouple(couple, index, array) {
+
+        let nodenameBlacklist = [
+            /package-lock\.json/i,
+            /package\.json/i,
+            /CHANGELOG.*/i,
+            /README.*/i,
+            /.*\.log/i,
+            /gradle\.properties/i,
+            /build\.gradle/i,
+        ];
+        let isEligibleCouple = true;
+
+        nodenameBlacklist.forEach(function (re) {
+
+            let isNodeNameMatch = couple.nodeFilename.search(re) != -1;
+            let isDependantNodeNameMatch = couple.dependantNodeFilename.search(re) != -1;
+            let decision = isNodeNameMatch || isDependantNodeNameMatch;
+
+            if (decision) {
+                isEligibleCouple = false
+            }
+        });
+        return isEligibleCouple;
+    }
+
 }
 
 export const temporalCouplingComponent = {

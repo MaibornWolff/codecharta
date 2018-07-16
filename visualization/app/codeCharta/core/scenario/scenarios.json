@@ -24,9 +24,11 @@
       },
       "margin": 1,
       "deltaColorFlipped": false,
-      "showDependencies": false,
+      "showDependencies": true,
       "maximizeDetailPanel": false,
-      "invertHeight": false
+      "invertHeight": false,
+      "useCouplingHeight": true,
+      "intelligentTemporalCouplingFilter": true
     },
     "autoFitCamera": true
   },
@@ -55,9 +57,11 @@
       },
       "margin": 1,
       "deltaColorFlipped": false,
-      "showDependencies": false,
+      "showDependencies": true,
       "maximizeDetailPanel": false,
-      "invertHeight": false
+      "invertHeight": false,
+      "useCouplingHeight": true,
+      "intelligentTemporalCouplingFilter": true
     },
     "autoFitCamera": true
   },
@@ -86,9 +90,11 @@
       },
       "margin": 1,
       "deltaColorFlipped": false,
-      "showDependencies": false,
+      "showDependencies": true,
       "maximizeDetailPanel": false,
-      "invertHeight": false
+      "invertHeight": false,
+      "useCouplingHeight": true,
+      "intelligentTemporalCouplingFilter": true
     },
     "autoFitCamera": true
   },
@@ -117,9 +123,11 @@
       },
       "margin": 1,
       "deltaColorFlipped": false,
-      "showDependencies": false,
+      "showDependencies": true,
       "maximizeDetailPanel": false,
-      "invertHeight": false
+      "invertHeight": false,
+      "useCouplingHeight": true,
+      "intelligentTemporalCouplingFilter": true
     },
     "autoFitCamera": true
   }

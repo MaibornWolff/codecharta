@@ -88,10 +88,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
 
     updateMapGeometry(s: Settings) {
 
-        let visibleTemporalCouplingDependencies = [];
-        if (s.map && s.map.dependencies && s.map.dependencies.temporal_coupling) {
-            visibleTemporalCouplingDependencies = s.map.dependencies.temporal_coupling.filter(dependency => dependency.visible === true);
-        }
+        let visibleTemporalCouplingDependencies = this.getVisibleTemporalCouplingDependencies(s);
 
         const treeMapSettings: TreeMapSettings = {
             size: mapSize,
@@ -139,6 +136,13 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         this._mapMesh = new CodeMapMesh(this.currentSortedNodes, this.currentRenderSettings);
 
         this.threeSceneService.setMapMesh(this._mapMesh, mapSize);
+    }
+
+    private getVisibleTemporalCouplingDependencies(s: Settings) {
+        if (s.map && s.map.dependencies && s.map.dependencies.temporal_coupling) {
+            return s.map.dependencies.temporal_coupling.filter(dependency => dependency.visible === true);
+        }
+        return [];
     }
 
     showCouplingArrows(deps: CodeMapDependency[]) {
