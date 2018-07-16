@@ -3,7 +3,7 @@ import {LogoPageObject} from "./logo.po";
 
 jest.setTimeout(10000);
 
-describe("CodeCharta logo tests",()=>{
+describe("CodeCharta logo",()=>{
 
     let browser, page, logo;
 
@@ -18,15 +18,15 @@ describe("CodeCharta logo tests",()=>{
         await browser.close();
     });
 
-    it("check version", async ()=>{
+    it("should have correct version", async ()=>{
         expect(await logo.getVersion()).toBe(require("../../../package.json").version);
     });
 
-    it("check link", async ()=>{
+    it("should have correct link", async ()=>{
         expect(await logo.getLink()).toContain("maibornwolff.de");
     });
 
-    it("check image of logo against expected snapshot", async ()=>{
+    it("should have correct image as logo", async ()=>{
         const src = await logo.getImageSrc();
         const viewSource = await page.goto(src);
         expect(await viewSource.buffer()).toMatchSnapshot();
