@@ -13,7 +13,7 @@ import org.junit.Test
 class JsonBuilderTest {
 
     @Test
-    fun project_name_matches() {
+    fun `project name matches`() {
         val projectName = "CoolProject"
 
         val project = JsonBuilder(projectName).build()
@@ -22,7 +22,7 @@ class JsonBuilderTest {
     }
 
     @Test
-    fun empty_project_has_no_nodes_except_root() {
+    fun `empty project has no nodes except root`() {
         val projectName = "CoolProject"
 
         val project = JsonBuilder(projectName).build()
@@ -31,7 +31,7 @@ class JsonBuilderTest {
     }
 
     @Test
-    fun component_without_path_is_right_under_root() {
+    fun `component without path is right under root`() {
         val projectName = "CoolProject"
         val fileSummary = DetailedMetricTableSum(
                 SourceDescriptor("CoolComponent", "", OopLanguage.JAVA),
@@ -46,7 +46,7 @@ class JsonBuilderTest {
     }
 
     @Test
-    fun project_node_matches_metrics() {
+    fun `project node matches metrics`() {
         val projectName = "CoolProject"
         val fileSummary = DetailedMetricTableSum(
                 SourceDescriptor("CoolComponent", "", OopLanguage.JAVA),
@@ -61,7 +61,7 @@ class JsonBuilderTest {
     }
 
     @Test
-    fun project_file_node_count_matches_components() {
+    fun `project file node count matches components`() {
         val projectName = "CoolProject"
 
         val project = JsonBuilder(projectName)
