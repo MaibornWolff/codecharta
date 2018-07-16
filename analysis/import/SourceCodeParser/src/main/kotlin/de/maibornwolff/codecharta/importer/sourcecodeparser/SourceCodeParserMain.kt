@@ -11,8 +11,10 @@ import java.io.*
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 
-@Command(name = "parse", description = ["generates cc.JSON from source code"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
+@Command(name = "sourcecodeparser", description = ["generates cc.JSON from source code"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
 class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Void> {
+    // we need this constructor because ccsh requires an empty constructor
+    constructor(): this(System.out)
 
     @Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false

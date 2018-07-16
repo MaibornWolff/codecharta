@@ -55,6 +55,7 @@ import java.util.concurrent.Callable
             Installer::class,
             CSVExporter::class,
             CrococosmoImporter::class,
+            SourceCodeParserMain::class,
             UnderstandImporter::class
         ],
         versionProvider = Ccsh.ManifestVersionProvider::class,
