@@ -74,7 +74,7 @@ export class DeltaCalculatorService {
                     attributes: {}
                 };
 
-                this.dataDecoratorService.decorateNodeWithChildrenMeanMetrics(d3.hierarchy(folder), metrics);
+                this.dataDecoratorService.decorateNodeWithChildrenSumMetrics(d3.hierarchy(folder), metrics);
                 folder.attributes["unary"] = 1;
 
                 current.children.push(folder);
