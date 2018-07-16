@@ -9,6 +9,7 @@ import "./codeCharta.component.scss";
 import {DialogService} from "./ui/dialog/dialog.service";
 import {queryParamDialog} from "./ui/dialog/queryParam.dialog";
 import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
+import {nodeContextMenuComponent, NodeContextMenuComponent} from "./ui/nodeContextMenu/nodeContextMenu.component";
 
 
 /**
@@ -35,6 +36,11 @@ export class CodeChartaController {
     ) {
         this.subscribeToLoadingEvents($rootScope);
         this.loadFileOrSample();
+        this.initContextMenuCloseHandler();
+    }
+
+    private initContextMenuCloseHandler() {
+        document.body.addEventListener('click', ()=>NodeContextMenuComponent.hide(this.$rootScope), true);
     }
 
     private subscribeToLoadingEvents($rootScope: angular.IRootScopeService) {

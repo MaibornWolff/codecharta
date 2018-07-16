@@ -12,4 +12,14 @@ angular.module("app.codeCharta.ui.mapTreeView", ["app.codeCharta.core", "app.cod
         mapTreeViewComponent.selector, mapTreeViewComponent
     ).component(
         mapTreeViewLevelComponent.selector, mapTreeViewLevelComponent
-    );
+    ).directive('ngRightClick', function($parse) {
+        return function(scope, element, attrs) {
+            let fn = $parse(attrs.ngRightClick);
+            element.bind('contextmenu', function(event) {
+                scope.$apply(function() {
+                    event.preventDefault();
+                    fn(scope, {$event:event});
+                });
+            });
+        };
+    });

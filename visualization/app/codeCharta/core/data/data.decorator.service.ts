@@ -129,14 +129,14 @@ export class DataDecoratorService {
 
     }
 
-    public decorateParentNodesWithMeanAttributesOfChildren(maps: CodeMap[], metrics: string[]) {
+    public decorateParentNodesWithSumAttributesOfChildren(maps: CodeMap[], metrics: string[]) {
 
         maps.forEach((map) => {
             if (map && map.root) {
 
                 let root = d3.hierarchy<CodeMapNode>(map.root);
                 root.each((node) => {
-                    this.decorateNodeWithChildrenMeanMetrics(node, metrics);
+                    this.decorateNodeWithChildrenSumMetrics(node, metrics);
 
                 });
 
@@ -144,31 +144,30 @@ export class DataDecoratorService {
         });
     }
 
-    public decorateNodeWithChildrenMeanMetrics(node, metrics: string[]) {
+    public decorateNodeWithChildrenSumMetrics(node, metrics: string[]) {
         //make sure attributes exist
         this.createAttributesIfNecessary(node);
 
-        //if attributes is empty define property for each possible metric as a mean function of child metrics
+        //if attributes is empty define property for each possible metric as a sum function of child metrics
         for (let i = 0; i < metrics.length; i++) {
             let metric = metrics[i];
             if (!node.data.attributes.hasOwnProperty(metric) && node.data.children && node.data.children.length > 0) {
-                this.defineAttributeAsMeanMethod(node, metric);
+                this.defineAttributeAsSumMethod(node, metric);
             }
         }
 
     }
 
-    private defineAttributeAsMeanMethod(node, metric: string) {
+    private defineAttributeAsSumMethod(node, metric: string) {
         Object.defineProperty(node.data.attributes, metric, {
             enumerable: true,
             get: function () {
-                let count = 0;
                 let sum = 0;
                 let l = node.leaves();
-                for (; count < l.length; count++) {
+                for (let count = 0; count < l.length; count++) {
                     sum += l[count].data.attributes[metric];
                 }
-                return sum / count;
+                return sum;
             }
         });
     }
