@@ -164,13 +164,13 @@ describe("app.codeCharta.core.data.dataService", () => {
 
     });
 
-    describe("decorateParentNodesWithMeanAttributesOfChildren",() => {
+    describe("decorateParentNodesWithSumAttributesOfChildren",() => {
 
         it("all nodes should have an attribute list with all possible metrics", ()=>{
             a.root.children[0].attributes = undefined;
             a.root.children[1].attributes = { "some": 1 };
             dataDecoratorService.decorateLeavesWithMissingMetrics([a],["some", "metrics", "rloc", "functions", "mcc"]);
-            dataDecoratorService.decorateParentNodesWithMeanAttributesOfChildren([a], ["some", "metrics", "rloc", "functions", "mcc"]);
+            dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren([a], ["some", "metrics", "rloc", "functions", "mcc"]);
             let h = d3.hierarchy(a.root);
             h.each((node)=>{
                 expect(node.data.attributes).toBeDefined();
@@ -181,7 +181,7 @@ describe("app.codeCharta.core.data.dataService", () => {
 
         it("all nodes should have an attribute list with listed and available metrics", ()=>{
             dataDecoratorService.decorateLeavesWithMissingMetrics([a],["rloc", "functions"]);
-            dataDecoratorService.decorateParentNodesWithMeanAttributesOfChildren([a], ["rloc", "functions"]);
+            dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren([a], ["rloc", "functions"]);
             let h = d3.hierarchy(a.root);
             h.each((node)=>{
                 expect(node.data.attributes).toBeDefined();
@@ -190,13 +190,13 @@ describe("app.codeCharta.core.data.dataService", () => {
             });
         });
 
-        it("folders should have mean attributes of children", ()=>{
+        it("folders should have sum attributes of children", ()=>{
             dataDecoratorService.decorateLeavesWithMissingMetrics([a],["rloc", "functions"]);
-            dataDecoratorService.decorateParentNodesWithMeanAttributesOfChildren([a], ["rloc", "functions"]);
+            dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren([a], ["rloc", "functions"]);
             let h = d3.hierarchy(a.root);
-            expect(h.data.attributes["rloc"]).toBeCloseTo(200/3, 1);
+            expect(h.data.attributes["rloc"]).toBe(200);
             expect(h.children[0].data.attributes["rloc"]).toBe(100);
-            expect(h.data.attributes["functions"]).toBe(370);
+            expect(h.data.attributes["functions"]).toBe(1110);
         });
 
     });
