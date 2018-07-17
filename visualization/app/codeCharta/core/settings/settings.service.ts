@@ -133,24 +133,26 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      */
     public onDataChanged(data: DataModel) {
 
-        this._settings.map = data.renderMap; // reference map is always the map which should be drawn
+        if(data.metrics && data.renderMap && data.revisions) {
+            this._settings.map = data.renderMap; // reference map is always the map which should be drawn
 
-        if (data.metrics.indexOf(this._settings.areaMetric) === -1) {
-            //area metric is not set or not in the new metrics and needs to be chosen
-            this._settings.areaMetric = this.getMetricByIdOrLast(0, data.metrics);
+            if (data.metrics.indexOf(this._settings.areaMetric) === -1) {
+                //area metric is not set or not in the new metrics and needs to be chosen
+                this._settings.areaMetric = this.getMetricByIdOrLast(0, data.metrics);
+            }
+
+            if (data.metrics.indexOf(this._settings.heightMetric) === -1) {
+                //height metric is not set or not in the new metrics and needs to be chosen
+                this._settings.heightMetric = this.getMetricByIdOrLast(1, data.metrics);
+            }
+
+            if (data.metrics.indexOf(this._settings.colorMetric) === -1) {
+                //color metric is not set or not in the new metrics and needs to be chosen
+                this._settings.colorMetric = this.getMetricByIdOrLast(2, data.metrics);
+            }
+
+            this.onSettingsChanged();
         }
-
-        if (data.metrics.indexOf(this._settings.heightMetric) === -1) {
-            //height metric is not set or not in the new metrics and needs to be chosen
-            this._settings.heightMetric = this.getMetricByIdOrLast(1, data.metrics);
-        }
-
-        if (data.metrics.indexOf(this._settings.colorMetric) === -1) {
-            //color metric is not set or not in the new metrics and needs to be chosen
-            this._settings.colorMetric = this.getMetricByIdOrLast(2, data.metrics);
-        }
-
-        this.onSettingsChanged();
 
     }
 

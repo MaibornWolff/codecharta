@@ -83,7 +83,9 @@ export class CodeChartaController {
     private trySettingGivenData(name, data) {
         this.dataLoadingService.loadMapFromFileContent(name, data, 0).then(
             () => {
-                this.loadingFinished();
+                this.scenarioService.applyScenarioOnce(this.scenarioService.getDefaultScenario());
+                this.dataService.setComparisonMap(0);
+                this.dataService.setReferenceMap(0);
                 this.settingsService.updateSettingsFromUrl();
                 this.viewModel.numberOfLoadingTasks--;
             },
@@ -100,7 +102,9 @@ export class CodeChartaController {
             this.dataLoadingService.loadMapFromFileContent("sample2.json", require("./assets/sample2.json"), 1)
         ]).then(
             () => {
-                this.loadingFinished();
+                this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
+                this.dataService.setComparisonMap(0);
+                this.dataService.setReferenceMap(0);
                 this.settingsService.updateSettingsFromUrl();
                 this.viewModel.numberOfLoadingTasks--;
             },
@@ -109,12 +113,6 @@ export class CodeChartaController {
                 this.viewModel.numberOfLoadingTasks--;
             }
         );
-    }
-
-    loadingFinished() {
-        this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
-        this.dataService.setComparisonMap(0);
-        this.dataService.setReferenceMap(0);
     }
 
     printErrors(errors: Object) {
