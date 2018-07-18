@@ -68,6 +68,13 @@ describe("app.codeCharta.core.scenarioService", function () {
         expect(settingsService.settings).toBe(scenario.settings);
     });
 
+    it("should apply the settings from a given scenario once when applyScenarioOnce is called", () => {
+        scenarioService.applyScenario = jest.fn();
+        scenarioService.applyScenarioOnce(scenario);
+        scenarioService.applyScenarioOnce(scenario);
+        expect(scenarioService.applyScenario).toHaveBeenCalledTimes(1);
+    });
+
     it("default scenario should be rloc/mcc/mcc", () => {
         let scenario = scenarioService.getDefaultScenario();
         expect(scenario.settings.areaMetric).toBe(defaultScenario.settings.areaMetric);
@@ -109,6 +116,10 @@ describe("app.codeCharta.core.scenarioService", function () {
                 }
             };
             expect(scenarioService.isScenarioPossible(scenario, metrics)).toBe(false);
+        });
+
+        it("should be impossible when params are null", () => {
+            expect(scenarioService.isScenarioPossible(null, null)).toBe(false);
         });
 
     });
