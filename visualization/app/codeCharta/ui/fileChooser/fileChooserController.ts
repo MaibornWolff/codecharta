@@ -84,7 +84,7 @@ class FileChooserController {
      */
     setNewData(name, parsedData, revision){
         let ctx = this;
-        this.dataLoadingService.loadMapFromFileContent(name, parsedData, revision).then(
+        return this.dataLoadingService.loadMapFromFileContent(name, parsedData, revision).then(
             () => {
 
                 ctx.scenarioService.applyScenarioOnce(this.scenarioService.getDefaultScenario());
