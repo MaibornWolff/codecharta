@@ -3,11 +3,14 @@ import {DataLoadingService} from "../../core/data/data.loading.service";
 import {ScenarioService} from "../../core/scenario/scenario.service";
 import {DialogService} from "../dialog/dialog.service";
 import {DataService} from "../../core/data/data.service";
+import {SettingsService} from "../../core/settings/settings.service";
+import {ThreeOrbitControlsService} from "../codeMap/threeViewer/threeOrbitControlsService";
 
-jest.mock("../../core/scenario/scenario.service");
 jest.mock("../../core/data/data.loading.service");
+jest.mock("../../core/settings/settings.service");
 jest.mock("../dialog/dialog.service");
 jest.mock("../../core/data/data.service");
+jest.mock("../codeMap/threeViewer/threeOrbitControlsService");
 
 describe("file chooser controller", ()=>{
 
@@ -18,6 +21,8 @@ describe("file chooser controller", ()=>{
     let scenarioService;
     let dialogService;
     let dataService;
+    let settingsService;
+    let threeOrbitControlsService;
     let blob;
 
     beforeEach(()=>{
@@ -30,10 +35,14 @@ describe("file chooser controller", ()=>{
                 $$phase: false
             },
         };
+        threeOrbitControlsService = new ThreeOrbitControlsService();
         dataLoadingService = new DataLoadingService();
-        scenarioService = new ScenarioService();
-        dialogService = new DialogService();
+        settingsService = new SettingsService();
         dataService = new DataService();
+        scenarioService = new ScenarioService(settingsService, dataService, threeOrbitControlsService);
+        scenarioService.getDefaultScenario = jest.fn();
+        scenarioService.applyScenario = jest.fn();
+        dialogService = new DialogService();
 
         blob = new Blob([JSON.stringify({hello: "world"}, null, 2)], {type : "application/json"});
 
@@ -64,6 +73,15 @@ describe("file chooser controller", ()=>{
     });
 
     describe("#onNewFileLoaded",()=>{
+
+        it("should call apply settings only once",async ()=>{
+            const element = {value: [blob, blob]};
+            dataLoadingService.loadMapFromFileContent = jest.fn(()=>Promise.resolve());
+            await fcc.onNewFileLoaded('{ "name":"John", "age":30, "city":"New York"}', 0, "someFile.json", element);
+            await fcc.onNewFileLoaded('{ "name":"John", "age":30, "city":"New York"}', 1, "someOtherFile.json", element);
+            await fcc.onNewFileLoaded('{ "name":"John", "age":30, "city":"New York"}', 0, "someFile.json", element);
+            expect(scenarioService.applyScenario).toHaveBeenCalledTimes(1);
+        });
 
         it("should set set the elements value to ''",()=>{
             const element = {value: [blob, blob]};
@@ -109,6 +127,7 @@ describe("file chooser controller", ()=>{
 
         it("should apply the scenario once, set comparison and reference map when given valid data",async ()=>{
             dataLoadingService.loadMapFromFileContent = jest.fn(()=> Promise.resolve());
+            scenarioService.applyScenarioOnce = jest.fn();
             await fcc.setNewData("aName", {}, 0);
             expect(scenarioService.applyScenarioOnce).toHaveBeenCalled();
         });
