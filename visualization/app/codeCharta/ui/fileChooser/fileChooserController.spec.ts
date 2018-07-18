@@ -23,7 +23,12 @@ describe("file chooser controller", ()=>{
     beforeEach(()=>{
         $scope = $rootScope = {
             $broadcast: jest.fn(),
-            $apply: (fn) => {fn();}
+            $apply: (fn) => {fn();},
+            $$phase: false,
+            $digest: jest.fn(),
+            $root: {
+                $$phase: false
+            },
         };
         dataLoadingService = new DataLoadingService();
         scenarioService = new ScenarioService();
@@ -90,16 +95,22 @@ describe("file chooser controller", ()=>{
 
     describe("#setNewData",()=>{
 
-        it("should trigger a digestion cycle if necessary when given valid data",()=>{
-            //TODO
+        it("should trigger a digestion cycle if necessary when given valid data",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(()=> Promise.resolve());
+            await fcc.setNewData("aName", {}, 0);
+            expect($scope.$digest).toHaveBeenCalled();
         });
 
-        it("should print errors when given invalid data",()=>{
-            //TODO
+        it("should print errors when given invalid data",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(()=> Promise.reject());
+            await fcc.setNewData("aName", {}, 0);
+            expect(dialogService.showErrorDialog).toHaveBeenCalled();
         });
 
-        it("should apply the scenario once, set comparison and reference map when given valid data",()=>{
-            //TODO
+        it("should apply the scenario once, set comparison and reference map when given valid data",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(()=> Promise.resolve());
+            await fcc.setNewData("aName", {}, 0);
+            expect(scenarioService.applyScenarioOnce).toHaveBeenCalled();
         });
 
     });
