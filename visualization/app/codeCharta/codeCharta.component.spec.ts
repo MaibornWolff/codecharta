@@ -67,14 +67,115 @@ describe("codecharta component", ()=>{
     });
 
     describe("#trySettingGivenData",()=>{
-        //TODO
+
+        it("should try to load file with the correct indices",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
+            await cc.trySettingGivenData("a", {});
+            expect(dataLoadingService.loadMapFromFileContent).toHaveBeenCalledWith("a", expect.anything(), 0);
+        });
+
+        it("should apply scenario ONCE when map is loaded",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
+            await cc.trySettingGivenData("a", {});
+            expect(scenarioService.applyScenarioOnce).toHaveBeenCalled();
+        });
+
+        it("should update settings by url params when map is loaded",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
+            await cc.trySettingGivenData("a", {});
+            expect(settingsService.updateSettingsFromUrl).toHaveBeenCalled();
+        });
+
+        it("should decrement loading tasks when map is loaded",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
+            cc.viewModel.numberOfLoadingTasks = 99;
+            await cc.trySettingGivenData("a", {});
+            expect(cc.viewModel.numberOfLoadingTasks).toBe(98);
+        });
+
+        it("should print errors when map is loaded",async ()=>{
+            cc.printErrors = jest.fn();
+            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.reject());
+            await cc.trySettingGivenData("a", {});
+            expect(cc.printErrors).toHaveBeenCalled();
+        });
+
+        it("should decrement loading tasks when sample map is not loaded",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.reject());
+            cc.viewModel.numberOfLoadingTasks = 99;
+            await cc.trySettingGivenData("a", {});
+            expect(cc.viewModel.numberOfLoadingTasks).toBe(98);
+        });
+
+        it("should set maps correctly when map is loaded",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
+            await cc.trySettingGivenData("a", {});
+            expect(dataService.setComparisonMap).toHaveBeenCalledWith(0);
+            expect(dataService.setReferenceMap).toHaveBeenCalledWith(0);
+        });
     });
 
     describe("#tryLoadingSampleData",()=>{
-        //TODO
+
+        it("should try to load both sample files with the correct indices",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
+            await cc.tryLoadingSampleFiles();
+            expect(dataLoadingService.loadMapFromFileContent).toHaveBeenCalledWith("sample1.json", expect.anything(), 0);
+            expect(dataLoadingService.loadMapFromFileContent).toHaveBeenCalledWith("sample2.json", expect.anything(), 1);
+        });
+
+        it("should apply scenario when sample maps are loaded",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
+            await cc.tryLoadingSampleFiles();
+            expect(scenarioService.applyScenario).toHaveBeenCalled();
+        });
+
+        it("should update settings by url params when sample maps are loaded",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
+            await cc.tryLoadingSampleFiles();
+            expect(settingsService.updateSettingsFromUrl).toHaveBeenCalled();
+        });
+
+        it("should decrement loading tasks when sample maps are loaded",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
+            cc.viewModel.numberOfLoadingTasks = 99;
+            await cc.tryLoadingSampleFiles();
+            expect(cc.viewModel.numberOfLoadingTasks).toBe(98);
+        });
+
+        it("should print errors when sample maps are not loaded",async ()=>{
+            cc.printErrors = jest.fn();
+            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.reject());
+            await cc.tryLoadingSampleFiles();
+            expect(cc.printErrors).toHaveBeenCalled();
+        });
+
+        it("should decrement loading tasks when sample maps are not loaded",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.reject());
+            cc.viewModel.numberOfLoadingTasks = 99;
+            await cc.tryLoadingSampleFiles();
+            expect(cc.viewModel.numberOfLoadingTasks).toBe(98);
+        });
+
+        it("should set maps correctly when sample maps are loaded",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
+            await cc.tryLoadingSampleFiles();
+            expect(dataService.setComparisonMap).toHaveBeenCalledWith(0);
+            expect(dataService.setReferenceMap).toHaveBeenCalledWith(0);
+        });
+
     });
 
     describe("#loadFileOrSample",()=>{
+
+        it("should show error dialog when url param is valid and maps cannot be loaded",async ()=>{
+            cc.tryLoadingSampleFiles = jest.fn();
+            cc.trySettingGivenData = jest.fn();
+            urlService.getParam = jest.fn(()=>"some file that should have been loaded");
+            urlService.getFileDataFromQueryParam = jest.fn(() => Promise.reject());
+            await cc.loadFileOrSample();
+            expect(dialogService.showErrorDialog).toHaveBeenCalled();
+        });
 
         it("should load sample with no warning if file parameter is not set and therefore no valid data exists",async ()=>{
             cc.tryLoadingSampleFiles = jest.fn();
