@@ -1,10 +1,11 @@
 import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settings.service";
 import {IRootScopeService, ITimeoutService} from "angular";
 import {CodeMap, CodeMapDependency} from "../../core/data/model/CodeMap";
+import {map} from "d3-collection";
 
 export class TemporalCouplingController implements SettingsServiceSubscriber {
 
-    public temporalCoupling: CodeMapDependency[] = null;
+    public  temporalCoupling: CodeMapDependency[] = null;
 
     /* @ngInject */
     constructor(private $timeout: ITimeoutService,
@@ -32,17 +33,15 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
     }
 
     onClickCouple(couple: CodeMapDependency) {
-
-        let coupleIndex = this.temporalCoupling.indexOf(couple);
-
-        let oldVisibility = this.settingsService.settings.map.dependencies.temporal_coupling[coupleIndex].visible;
-        let newVisibility = !(oldVisibility === true);
-
-        this.temporalCoupling[coupleIndex].visible = newVisibility;
-        this.settingsService.settings.map.dependencies.temporal_coupling[coupleIndex].visible = newVisibility;
-
+        this.setNewVisibilityInSettingsService(this.settingsService.settings.map.dependencies.temporal_coupling, couple);
         this.settingsService.applySettings();
+    }
 
+    setNewVisibilityInSettingsService(deps: CodeMapDependency[], couple: CodeMapDependency) {
+        let coupleIndex = deps.indexOf(couple);
+        let oldVisibility = deps[coupleIndex].visible;
+        let newVisibility = !(oldVisibility === true);
+        this.settingsService.settings.map.dependencies.temporal_coupling[coupleIndex].visible = newVisibility;
     }
 
     private updateTemporalCouplingDependencies(map: CodeMap) {
@@ -58,7 +57,6 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
             if(this.settingsService.settings.intelligentTemporalCouplingFilter === true) {
                 this.temporalCoupling = this.temporalCoupling.filter(this.isEligibleCouple);
             }
-            console.log(this.temporalCoupling);
         }
     }
 
