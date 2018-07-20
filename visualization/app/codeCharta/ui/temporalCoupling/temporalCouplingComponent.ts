@@ -2,6 +2,7 @@ import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/s
 import {IRootScopeService, ITimeoutService} from "angular";
 import {CodeMap, CodeMapDependency} from "../../core/data/model/CodeMap";
 import {map} from "d3-collection";
+import {isBoolean} from "util";
 
 export class TemporalCouplingController implements SettingsServiceSubscriber {
 
@@ -54,13 +55,18 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
                 }
             }
 
-            if(this.settingsService.settings.intelligentTemporalCouplingFilter === true) {
+            /*if(this.settingsService.settings.intelligentTemporalCouplingFilter === true) {
                 this.temporalCoupling = this.temporalCoupling.filter(this.isEligibleCouple);
-            }
+            }*/
+            this.temporalCoupling = this.temporalCoupling.filter(
+                couple =>
+                    couple.averageRevs >= this.settingsService.settings.mininumAverageRevs &&
+                    this.isEligibleCouple(couple)
+            );
         }
     }
 
-    private isEligibleCouple(couple, index, array) {
+    private isEligibleCouple(couple) {
 
         let nodenameBlacklist = [
             /package-lock\.json/i,

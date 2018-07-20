@@ -28,7 +28,8 @@
       "maximizeDetailPanel": false,
       "invertHeight": false,
       "useCouplingHeight": true,
-      "intelligentTemporalCouplingFilter": true
+      "intelligentTemporalCouplingFilter": true,
+      "mininumAverageRevs": 15
     },
     "autoFitCamera": true
   },
@@ -61,7 +62,8 @@
       "maximizeDetailPanel": false,
       "invertHeight": false,
       "useCouplingHeight": true,
-      "intelligentTemporalCouplingFilter": true
+      "intelligentTemporalCouplingFilter": true,
+      "mininumAverageRevs": 15
     },
     "autoFitCamera": true
   },
@@ -94,7 +96,8 @@
       "maximizeDetailPanel": false,
       "invertHeight": false,
       "useCouplingHeight": true,
-      "intelligentTemporalCouplingFilter": true
+      "intelligentTemporalCouplingFilter": true,
+      "mininumAverageRevs": 15
     },
     "autoFitCamera": true
   },
@@ -127,7 +130,8 @@
       "maximizeDetailPanel": false,
       "invertHeight": false,
       "useCouplingHeight": true,
-      "intelligentTemporalCouplingFilter": true
+      "intelligentTemporalCouplingFilter": true,
+      "mininumAverageRevs": 15
     },
     "autoFitCamera": true
   }

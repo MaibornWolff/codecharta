@@ -77,7 +77,7 @@
         "dependantNode": "/root/Parent Leaf/small leaf",
         "dependantNodeFilename": "small leaf",
         "pairingRate": 42,
-        "averageRevs": 5
+        "averageRevs": 16
       },
       {
         "node": "/root/sample1 only leaf",
@@ -85,7 +85,7 @@
         "dependantNode": "/root/Parent Leaf/other small leaf",
         "dependantNodeFilename": "other small leaf",
         "pairingRate": 89,
-        "averageRevs": 6
+        "averageRevs": 34
       },
       {
         "node": "/root/Parent Leaf/other small leaf",
@@ -93,7 +93,7 @@
         "dependantNode": "/root/big leaf",
         "dependantNodeFilename": "big leaf",
         "pairingRate": 65,
-        "averageRevs": 8
+        "averageRevs": 22
       }
     ]
   }

@@ -1,3 +1,12 @@
+<md-slider-container class="md-block">
+    <span>Commit</span>
+    <md-slider flex step="1" min="0" max="100" ng-model="$ctrl.settingsService.settings.mininumAverageRevs" id="labels-slider" ng-change="$ctrl.settingsService.applySettings()" class="md-primary">
+    </md-slider>
+    <md-input-container>
+        <input flex step="1" min="0" max="100" type="number" ng-model="$ctrl.settingsService.settings.mininumAverageRevs" ng-change="$ctrl.settingsService.applySettings()" aria-controls="labels-slider">
+    </md-input-container>
+</md-slider-container>
+
 <md-input-container class="md-block">
     <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.useCouplingHeight" ng-change="$ctrl.settingsService.onSettingsChanged()">
         Use Pairingrate Height
@@ -23,7 +32,7 @@
 <md-divider></md-divider>
 
 <md-list-item class="md-2-line"
-              ng-repeat="couple in $ctrl.temporalCoupling | orderBy: 'averageRevs' : true"
+              ng-repeat="couple in $ctrl.temporalCoupling | orderBy: 'pairingRate' : true"
               ng-click="$ctrl.onClickCouple(couple)"
               title="{{::couple.averageRevs}} shared commits&#013;{{::couple.pairingRate}}% Pairingrate&#013;&#013;{{::couple.node}}&#013;&#013;{{::couple.dependantNode}}">
 
@@ -38,3 +47,6 @@
     <md-checkbox class="md-primary" ng-checked="$ctrl.temporalCoupling[$ctrl.temporalCoupling.indexOf(couple)].visible" ng-click="$ctrl.onClickCouple(couple)"></md-checkbox>
     <md-divider></md-divider>
 </md-list-item>
+
+<p ng-if="$ctrl.temporalCoupling.length == 0">No Dependencies listed</p>
+<p class="small-help" ng-if="$ctrl.temporalCoupling.length == 0">Maybe use different <i>Minimum Commits</i> or turn off <i>Intelligent Filter</i></p>

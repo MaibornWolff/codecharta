@@ -32,7 +32,8 @@ export function createDefaultScenario(map: CodeMap, margin: number): Scenario {
             invertHeight: false,
             useCouplingHeight: true,
             dynamicMargin: true,
-            intelligentTemporalCouplingFilter: true
+            intelligentTemporalCouplingFilter: true,
+            mininumAverageRevs: 15
 
         },
         autoFitCamera: true
