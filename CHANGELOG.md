@@ -6,6 +6,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.14.2] - 2018-07-16
+### Added
+
+### Changed
+- Changed folder detail metrics from mean to sum
+
+### Removed
+
+### Fixed
+
+## [1.14.1] - 2018-07-13
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.14.0] - 2018-07-13
+### Added
 - Added UnderstandImporter to Analysis
 - Packages can be highlighted in different colors #152
 - Adding a context menu with highlighting colors and convenience methods for the tree view and 3D view #155
@@ -13,6 +41,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Dynamic/automatic margin computing de/activated by tick 
 
 ### Changed
+- Details panel: using the sum of the childrens metrics instead of the mean value
 
 ### Removed
 
