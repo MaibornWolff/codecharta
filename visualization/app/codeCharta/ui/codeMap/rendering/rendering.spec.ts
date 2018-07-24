@@ -11,8 +11,6 @@ describe("common rendering tests", () => {
         it("init", () => {
             let cmb: codeMapBuilding = new codeMapBuilding(0, new THREE.Box3(), {});
             expect(cmb.color).toBe(MapColors.defaultC);
-            cmb = new codeMapBuilding(0, new THREE.Box3(), {}, MapColors.odd);
-            expect(cmb.color).toBe(MapColors.odd);
         });
 
     });

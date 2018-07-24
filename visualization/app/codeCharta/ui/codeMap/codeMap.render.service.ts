@@ -11,6 +11,8 @@ import {
     CodeMapBuildingTransition, CodeMapMouseEventService,
     CodeMapMouseEventServiceSubscriber
 } from "./codeMap.mouseEvent.service";
+import {TreeMapSettings} from "../../core/treemap/treemap.service";
+import {codeMapBuilding} from "./rendering/codeMapBuilding";
 
 const mapSize = 500.0;
 
@@ -25,7 +27,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     private labelManager: LabelManager = null;
     private arrowManager: ArrowManager = null;
 
-    private currentSortedNodes: node[];
+    public currentSortedNodes: node[];
     private currentRenderSettings: renderSettings;
 
     /* @ngInject */
@@ -35,6 +37,10 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
                 private settingsService: SettingsService) {
         this.settingsService.subscribe(this);
         CodeMapMouseEventService.subscribe($rootScope, this);
+    }
+
+    onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
+
     }
 
     onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
@@ -80,8 +86,31 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         }
     }
 
-    updateMapGeometry(s) {
-        let nodes: node[] = this.treeMapService.createTreemapNodes(s.map.root, mapSize, mapSize, s.margin, s.areaMetric, s.heightMetric, s.invertHeight);
+    public collectNodesToArray(node: node): node[] {
+        let nodes = [node];
+        for (let i = 0; i < node.children.length; i++) {
+            let collected = this.collectNodesToArray(node.children[i]);
+            for (let j = 0; j < collected.length; j++) {
+                nodes.push(collected[j]);
+            }
+        }
+        return nodes;
+    }
+
+    updateMapGeometry(s: Settings) {
+
+        const treeMapSettings: TreeMapSettings = {
+            size: mapSize,
+            areaKey: s.areaMetric,
+            heightKey: s.heightMetric,
+            margin: s.margin,
+            invertHeight: s.invertHeight
+        };
+
+        let nodes: node[] = this.collectNodesToArray(
+            this.treeMapService.createTreemapNodes(s.map.root, treeMapSettings)
+        );
+
         let filtered = nodes.filter(node => node.visible && node.length > 0 && node.width > 0);
         this.currentSortedNodes = filtered.sort((a, b) => {
             return b.height - a.height;

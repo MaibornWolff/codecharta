@@ -18,10 +18,10 @@ describe("threeCameraService", () => {
         sut = new ThreeCameraService();
     });
 
-    it("init should create a new PerspectiveCamera", () => {
+    it("cameras near plane should be 100 to prevent flickering surfaces", () => {
         sut.setPosition = jest.fn();
-        sut.init(new SettingsService());
-        expect(PerspectiveCamera).toHaveBeenCalledTimes(1);
+        sut.init(new SettingsService(), 100, 50);
+        expect(PerspectiveCamera).toHaveBeenCalledWith(ThreeCameraService.VIEW_ANGLE, 100/50, 100, ThreeCameraService.FAR);
     });
 
     it("init should set the camera position", () => {

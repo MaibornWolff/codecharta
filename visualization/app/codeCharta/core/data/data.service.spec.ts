@@ -243,5 +243,14 @@ describe("app.codeCharta.core.data.dataService", function() {
 
     });
 
+    it("should get max metric of all revisions correctly", ()=>{
+        dataService.setMap(TEST_DELTA_MAP_A, 0);
+        dataService.setMap(TEST_DELTA_MAP_B, 1);
+        dataService.setReferenceMap(0);
+        dataService.setComparisonMap(1);
+        expect(dataService.getMaxMetricInAllRevisions("rloc")).toBe(100);
+        expect(dataService.getMaxMetricInAllRevisions("functions")).toBe(1000);
+    });
+
 });
 
