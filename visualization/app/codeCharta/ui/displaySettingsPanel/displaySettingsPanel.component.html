@@ -18,12 +18,18 @@
 
 <md-slider-container class="md-block">
     <span>Margin</span>
-    <md-slider flex step="1" min="1" max="100" ng-model="$ctrl.settingsService.settings.margin" id="margin-slider" ng-change="$ctrl.settingsService.applySettings()" class="md-primary">
+    <md-slider flex step="1" min="1" max="100" ng-model="$ctrl.settingsService.settings.margin" id="margin-slider" ng-change="$ctrl.changeMargin()" class="md-primary">
     </md-slider>
     <md-input-container>
-        <input flex step="1" min="1" max="100" type="number" ng-model="$ctrl.settingsService.settings.margin" ng-change="$ctrl.settingsService.applySettings()" aria-controls="margin-slider">
+        <input flex step="1" min="1" max="100" type="number" ng-model="$ctrl.settingsService.settings.margin" ng-change="$ctrl.changeMargin()" aria-controls="margin-slider">
     </md-input-container>
 </md-slider-container>
+
+<md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.dynamicMargin" ng-change="$ctrl.settingsService.onSettingsChanged()">
+        Dynamic Margin
+    </md-checkbox>
+</md-input-container>
 
 <md-input-container class="md-block">
     <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.showDependencies" ng-change="$ctrl.settingsService.onSettingsChanged()">
@@ -43,4 +49,4 @@
     </md-checkbox>
 </md-input-container>
 
-<reset-settings-button-component settings-names="amountOfTopLabels, scaling.y, margin, showDependencies, maximizeDetailPanel, invertHeight"></reset-settings-button-component>
+<reset-settings-button-component settings-names="amountOfTopLabels, scaling.y, margin, dynamicMargin, showDependencies, maximizeDetailPanel, invertHeight"></reset-settings-button-component>

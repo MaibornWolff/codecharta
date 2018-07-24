@@ -2,13 +2,15 @@ import "./settings.module";
 import {NGMock} from "../../../../mocks/ng.mockhelper";
 import DoneCallback = jest.DoneCallback;
 import sinon from "sinon";
+import {SettingsService} from "./settings.service";
+import {CodeMap} from "../data/model/CodeMap";
 
 /**
  * @test {SettingsService}
  */
 describe("settings.service", function() {
 
-    var validData;
+    let validData: CodeMap;
 
     beforeEach(()=>{
         validData = {fileName: "file", projectName: "project", root:{
@@ -17,7 +19,7 @@ describe("settings.service", function() {
             "children": [
                 {
                     "name": "big leaf",
-                    "attributes": {"rloc": 100, "functions": 10, "mcc": 1},
+                    "attributes": {"rloc": 100, "functions": 10, "mcc": 1, "extremeMetric": 100000},
                     "link": "http://www.google.de"
                 },
                 {
@@ -26,12 +28,12 @@ describe("settings.service", function() {
                     "children": [
                         {
                             "name": "small leaf",
-                            "attributes": {"rloc": 30, "functions": 100, "mcc": 100},
+                            "attributes": {"rloc": 30, "functions": 100, "mcc": 100, "extremeMetric": 100000},
                             "children": []
                         },
                         {
                             "name": "other small leaf",
-                            "attributes": {"rloc": 70, "functions": 1000, "mcc": 10},
+                            "attributes": {"rloc": 70, "functions": 1000, "mcc": 10, "extremeMetric": 100000},
                             "children": []
                         }
                     ]
@@ -42,6 +44,34 @@ describe("settings.service", function() {
 
     //noinspection TypeScriptUnresolvedVariable
     beforeEach(NGMock.mock.module("app.codeCharta.core.settings"));
+
+    it("compute margin should compute correct margins for this map", NGMock.mock.inject(function(settingsService: SettingsService){
+        let computedA = settingsService.computeMargin(validData, "rloc", 2, true);
+        let computedB = settingsService.computeMargin(validData, "mcc", 2, true);
+        let computedC = settingsService.computeMargin(validData, "functions", 2, true);
+        expect(computedA).toBe(32);
+        expect(computedB).toBe(24);
+        expect(computedC).toBe(76);
+    }));
+
+    it("compute margin should compute correct margins for this map if dynamicMargin is off", NGMock.mock.inject(function(settingsService: SettingsService){
+        let computedA = settingsService.computeMargin(validData, "rloc", 2, false);
+        let computedB = settingsService.computeMargin(validData, "mcc", 2, false);
+        let computedC = settingsService.computeMargin(validData, "functions", 2, false);
+        expect(computedA).toBe(2);
+        expect(computedB).toBe(2);
+        expect(computedC).toBe(2);
+    }));
+
+    it("compute margin should return default margin if metric does not exist", NGMock.mock.inject(function(settingsService: SettingsService){
+        let computed = settingsService.computeMargin(validData, "nonExistant", 2, true);
+        expect(computed).toBe(SettingsService.MIN_MARGIN);
+    }));
+
+    it("compute margin should return 100 as margin if computed margin bigger als 100 is", NGMock.mock.inject(function(settingsService: SettingsService){
+        let computed = settingsService.computeMargin(validData, "extremeMetric", 2, true);
+        expect(computed).toBe(100);
+    }));
     
     //noinspection TypeScriptUnresolvedVariable
     /**

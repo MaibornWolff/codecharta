@@ -3,14 +3,15 @@ export interface CodeMapNode {
     children?: CodeMapNode[]
     attributes: {
         [key: string]: number
-    },
+    };
     deltas?: {
         [key: string]: number
-    },
-    link?: string,
-    origin?: string,
-    visible?: boolean,
-    path?:string
+    };
+    link?: string;
+    origin?: string;
+    visible?: boolean;
+    path?: string;
+    markingColor?: string;
 }
 
 export interface CodeMap {
