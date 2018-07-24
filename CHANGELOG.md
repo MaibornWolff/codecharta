@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - CodeMaatCouplingImport to Analysis #172
 
 ### Changed
+- MergeFilter merges dependencies #172
 
 ### Removed
 
