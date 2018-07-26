@@ -48,7 +48,7 @@ describe("app.codeCharta.core.scenarioService", function () {
                 "showDependencies": true,
                 "useCouplingHeight": true,
                 "intelligentTemporalCouplingFilter": true,
-                "mininumAverageRevs": 15
+                "minimumAverageRevs": 15
             },
 
         "autoFitCamera": true

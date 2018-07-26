@@ -59,7 +59,7 @@ export class TreeMapUtils {
 
     }
 
-    public static getTemporalCouplingHeight(squaredNode, s, maxHeight, heightValue) {
+    private static getTemporalCouplingHeight(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings, maxHeight: number, heightValue: number) {
 
         const NON_TEMPORAL_COUPLING_HEIGHT = 0;
 

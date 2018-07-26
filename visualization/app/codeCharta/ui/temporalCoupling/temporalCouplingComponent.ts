@@ -23,12 +23,11 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
 
     public onResetDependencies() {
         var map = this.settingsService.settings.map;
-        if (this.temporalCoupling && map && map.dependencies && map.dependencies.temporal_coupling) {
+        if (map && map.dependencies && map.dependencies.temporal_coupling) {
 
-            for (var couple of this.temporalCoupling) {
-                couple.visible = false;
+            for (var i = 0; i < this.settingsService.settings.map.dependencies.temporal_coupling.length; i++) {
+                this.settingsService.settings.map.dependencies.temporal_coupling[i].visible = false;
             }
-            this.settingsService.settings.map.dependencies.temporal_coupling = this.temporalCoupling;
         }
         this.settingsService.applySettings();
     }
@@ -56,10 +55,14 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
             }
 
             this.temporalCoupling = this.temporalCoupling.filter(
-                couple =>
-                    couple.averageRevs >= this.settingsService.settings.mininumAverageRevs &&
-                    this.isEligibleCouple(couple)
+                couple => couple.averageRevs >= this.settingsService.settings.minimumAverageRevs
             );
+
+            if (this.settingsService.settings.intelligentTemporalCouplingFilter) {
+                this.temporalCoupling = this.temporalCoupling.filter(
+                    couple => this.isEligibleCouple(couple)
+                );
+            }
         }
     }
 
@@ -73,6 +76,7 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
             /.*\.log/i,
             /gradle\.properties/i,
             /build\.gradle/i,
+            /sample1 only leaf/i,
         ];
         let isEligibleCouple = true;
 
@@ -80,9 +84,8 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
 
             let isNodeNameMatch = couple.nodeFilename.search(re) != -1;
             let isDependantNodeNameMatch = couple.dependantNodeFilename.search(re) != -1;
-            let decision = isNodeNameMatch || isDependantNodeNameMatch;
 
-            if (decision) {
+            if (isNodeNameMatch || isDependantNodeNameMatch) {
                 isEligibleCouple = false
             }
         });
