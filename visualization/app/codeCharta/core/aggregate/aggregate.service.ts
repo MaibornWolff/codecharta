@@ -23,12 +23,14 @@ export class AggregateMapService {
             fileName: "Aggregation of following files: " + fileNameArray.join(", "),
             root: {
                 name: "root",
+                type: "Folder",
                 children: [] as CodeMapNode[],
                 attributes: {},
                 origin: "Aggregation of following files: " + fileNameArray.join(", "),
                 path: "/root",
                 visible: true
-            }
+            },
+            dependencies: {}
         };
 
         for(let inputMap of inputMaps){

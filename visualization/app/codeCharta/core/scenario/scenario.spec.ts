@@ -43,8 +43,12 @@ describe("app.codeCharta.core.scenarioService", function () {
                 "scaling":
                     {"x": 1,
                         "y": 1,
-                        "z": 1},
-                "showDependencies": false
+                        "z": 1
+                    },
+                "showDependencies": true,
+                "useCouplingHeight": true,
+                "intelligentTemporalCouplingFilter": true,
+                "mininumAverageRevs": 15
             },
 
         "autoFitCamera": true

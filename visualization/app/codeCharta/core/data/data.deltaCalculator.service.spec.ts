@@ -35,16 +35,19 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
 
         a.root.children.push({
             name: "onlyA",
+            type: "Folder",
             attributes: {},
             path: "/root/onlyA",
             children: [
                 {
                     name: "special",
+                    type: "Folder",
                     attributes: {},
                     path: "/root/onlyA/special",
                     children: [
                         {
                             name: "unicorn",
+                            type: "File",
                             attributes: { "special": 42 },
                             path: "/root/onlyA/special/unicorn"
                         }
@@ -55,16 +58,19 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
 
         b.root.children.push({
             name: "onlyA",
+            type: "Folder",
             attributes: {},
             path: "/root/onlyA",
             children: [
                 {
                     name: "special",
+                    type: "Folder",
                     attributes: {},
                     path: "/root/onlyA/special",
                     children: [
                         {
                             name: "Narwal",
+                            type: "File",
                             attributes: {"monster": 666 },
                             path: "/root/onlyA/special/Narwal"
                         }

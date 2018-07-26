@@ -1,5 +1,6 @@
 export interface CodeMapNode {
     name: string,
+    type: string,
     children?: CodeMapNode[]
     attributes: {
         [key: string]: number
@@ -17,6 +18,7 @@ export interface CodeMapNode {
 export interface CodeMap {
 
     fileName: string,
+    apiVersion?: string,
     projectName: string,
     root: CodeMapNode,
     dependencies?: {

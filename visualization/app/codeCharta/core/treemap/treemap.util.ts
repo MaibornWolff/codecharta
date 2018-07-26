@@ -31,7 +31,7 @@ export class TreeMapUtils {
             heightValue = (maxHeight - heightValue);
         }
 
-        if (s.visibleTemporalCouplingDependencies.length > 0) {
+        if (s.visibleTemporalCouplingDependencies && s.visibleTemporalCouplingDependencies.length > 0) {
             heightValue = this.getTemporalCouplingHeight(squaredNode, s, maxHeight, heightValue);
         }
 

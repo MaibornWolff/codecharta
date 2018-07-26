@@ -55,9 +55,6 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
                 }
             }
 
-            /*if(this.settingsService.settings.intelligentTemporalCouplingFilter === true) {
-                this.temporalCoupling = this.temporalCoupling.filter(this.isEligibleCouple);
-            }*/
             this.temporalCoupling = this.temporalCoupling.filter(
                 couple =>
                     couple.averageRevs >= this.settingsService.settings.mininumAverageRevs &&
