@@ -1,5 +1,11 @@
 import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/data.service";
-import {SettingsServiceSubscriber, SettingsService, Settings, Range} from "../../core/settings/settings.service";
+import {
+    SettingsServiceSubscriber,
+    SettingsService,
+    Settings,
+    Range,
+    MarkingPackages
+} from "../../core/settings/settings.service";
 import $ from "jquery";
 import {MapColors} from "../codeMap/rendering/renderSettings";
 import {ITimeoutService} from "angular";
@@ -21,13 +27,13 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     private select: string;
     private operation: string;
     private deltaColorsFlipped: boolean;
+    private markingPackages: MarkingPackages[];
 
     /* @ngInject */
     constructor(private $timeout: ITimeoutService,
                 private settingsService: SettingsService,
                 private dataService: DataService,
                 private $element: Element) {
-
         let ctx = this;
 
         $timeout(()=> {
@@ -64,6 +70,32 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         this.$timeout(()=>$("#negativeDelta").attr("src", this.nd), 200);
     }
 
+    refreshMarkingPackagesColors(mp: MarkingPackages[]) {
+        this.markingPackages = [];
+        if (mp) {
+            for (var i = 0; i < mp.length; i++) {
+                var markingPackage: MarkingPackages = {
+                    markingColor: this.getImageDataUri(Number('0x' + mp[i].markingColor)),
+                    packageItem: [this.getPackageItem(mp, i)],
+                };
+                for(var j = i + 1; j < mp.length; j++) {
+                    if (mp[j].markingColor == mp[i].markingColor) {
+                        markingPackage.packageItem.push(this.getPackageItem(mp, j));
+                        mp.splice(mp.indexOf(mp[j]));
+                    }
+                }
+                this.markingPackages.push(markingPackage);
+            }
+        }
+    }
+
+    getPackageItem(mp: MarkingPackages[], index: number) {
+        return {
+            name: mp[index].packageItem[0].name,
+            path: mp[index].packageItem[0].path,
+        }
+    }
+
     onSettingsChanged(s: Settings) {
         this.range = s.neutralColorRange;
         this.areaMetric = s.areaMetric;
@@ -84,7 +116,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         $("#select").attr("src", this.select);
 
         this.refreshDeltaColors();
-
+        this.refreshMarkingPackagesColors(s.markingPackages);
     }
 
     getImageDataUri(hex: number): string {

@@ -22,6 +22,16 @@ export interface Scale {
     z: number;
 }
 
+export interface MarkingPackages {
+    markingColor: string,
+    packageItem: PackageItem[],
+}
+
+export interface PackageItem {
+    name: string,
+    path: string,
+}
+
 export interface Settings {
 
     map: CodeMap;
@@ -40,6 +50,7 @@ export interface Settings {
     maximizeDetailPanel: boolean;
     invertHeight: boolean;
     dynamicMargin: boolean;
+    markingPackages: MarkingPackages[];
 }
 
 export interface SettingsServiceSubscriber {
@@ -110,7 +121,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             showDependencies: false,
             maximizeDetailPanel: false,
             invertHeight: false,
-            dynamicMargin: true
+            dynamicMargin: true,
+            markingPackages: []
         };
 
         return settings;
@@ -379,6 +391,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.maximizeDetailPanel = settings.maximizeDetailPanel;
         this._settings.invertHeight = settings.invertHeight;
         this._settings.dynamicMargin = settings.dynamicMargin;
+        this._settings.markingPackages = settings.markingPackages;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = settings.map || this.settings.map;

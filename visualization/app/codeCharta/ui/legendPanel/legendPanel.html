@@ -25,6 +25,12 @@
         <img id="negativeDelta" alt="negative delta color">
         -&Delta;
     </div>
+    <div class="legend-block" ng-if="$ctrl.markingPackages" ng-repeat="markingPackage in $ctrl.markingPackages">
+        <img src="{{::markingPackage.markingColor}}">
+        <span ng-repeat="item in markingPackage.packageItem">
+            <span title="{{::item.path}}">{{::item.name}}</span><span ng-if="::item.isLast">{{::item.isLast}}</span>
+        </span>
+    </div>
 </div>
 <md-button class="panel-button md-raised md-primary dark_shadow_opacity" ng-click="$ctrl.toggle()">Legend</md-button>
 
