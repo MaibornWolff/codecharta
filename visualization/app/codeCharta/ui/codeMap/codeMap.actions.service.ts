@@ -44,7 +44,6 @@ export class CodeMapActionsService {
             }
         };
         recFn(node);
-        this.addPackageLabelToLegend(node, color.substr(1));
         this.apply();
     }
 
@@ -59,42 +58,7 @@ export class CodeMapActionsService {
             }
         };
         recFn(node);
-        this.removePackageLabelFromLegend(node);
         this.apply();
-    }
-
-    private addPackageLabelToLegend(node: CodeMapNode, newColor: string) {
-        const markingPackages = this.settingsService.settings.markingPackages;
-        const markingPackageItem : MarkingPackages = {
-            markingColor: newColor,
-            packageItem: [{name: node.name, path: node.path}]
-        };
-
-        if(markingPackages) {
-            for(const pl of markingPackages) {
-                if (pl.packageItem[0].name == markingPackageItem.packageItem[0].name) {
-                    const index = markingPackages.indexOf(pl);
-                    this.settingsService.settings.markingPackages.splice(index);
-                }
-            }
-            this.settingsService.settings.markingPackages.push(markingPackageItem);
-        } else {
-            this.settingsService.settings.markingPackages = [markingPackageItem];
-        }
-    }
-
-    private removePackageLabelFromLegend(node: CodeMapNode) {
-        const markingPackages = this.settingsService.settings.markingPackages;
-
-        if(markingPackages) {
-            for(var i = 0; i < markingPackages.length; i++) {
-
-                if( markingPackages[i].packageItem[0].path.indexOf(node.path) >= 0){
-                    const index = markingPackages.indexOf(markingPackages[i]);
-                    this.settingsService.settings.markingPackages.splice(index);
-                }
-            }
-        }
     }
 
     isolateNode(node: CodeMapNode) {
