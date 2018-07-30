@@ -52,6 +52,21 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
 
         this.initAnimations();
 
+        //this.testData();
+
+    }
+
+    private testData() {
+        this.markingPackages = [
+            {
+                markingColor: this.getImageDataUri(Number("0xFFF000")),
+                packageItem: [{
+                    name: "mytest.kt",
+                    path: "/src/maibornwolff/kotlin/mytest.kt",
+                }],
+            },
+
+        ];
     }
 
     onDataChanged(data: DataModel) {
@@ -75,7 +90,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
 
 
     private setMarkingPackagesIntoLegend() {
-        this.settingsService.settings.markingPackages = [];
+        this.markingPackages = [];
         if (this.settingsService.settings.map) {
             var rootNode: CodeMapNode = this.settingsService.settings.map.root;
 
@@ -87,7 +102,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
                         this.handleMarkingPackageWithExistingColor(mp);
 
                     } else {
-                        this.settingsService.settings.markingPackages = [mp];
+                        this.markingPackages = [mp];
                     }
                 }
             });
@@ -95,9 +110,9 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     }
 
     private legendContainsMarkingPackages() {
-        return this.settingsService.settings.markingPackages &&
-            this.settingsService.settings.markingPackages.length > 0 &&
-            this.settingsService.settings.markingPackages != [];
+        return this.markingPackages &&
+            this.markingPackages.length > 0 &&
+            this.markingPackages != [];
     }
 
     private getNewMarkingPackageFromNode(node: CodeMapNode) {
@@ -112,7 +127,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
 
     private handleMarkingPackageWithExistingColor(mp: MarkingPackages) {
         var addMP = true;
-        const packagesWithSameMarkingColor: MarkingPackages[] = this.getPackagesWithSameMarkingColor(mp, this.settingsService.settings.markingPackages);
+        const packagesWithSameMarkingColor: MarkingPackages[] = this.getPackagesWithSameMarkingColor(mp);
         if (packagesWithSameMarkingColor != []) {
             for (const mpWithSameColor of packagesWithSameMarkingColor) {
                 if (this.isPartOfSecondPackage(mp, mpWithSameColor)) {
@@ -123,13 +138,13 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
             addMP = true;
         }
         if (addMP) {
-            this.settingsService.settings.markingPackages.push(mp);
+            this.markingPackages.push(mp);
         }
     }
 
-    private getPackagesWithSameMarkingColor(mp: MarkingPackages, allMP: MarkingPackages[]) {
+    private getPackagesWithSameMarkingColor(mp: MarkingPackages) {
         var packagesWithSameMarkingColor: MarkingPackages[] = [];
-        for(const otherMP of allMP) {
+        for(const otherMP of this.markingPackages) {
             if (otherMP.markingColor == mp.markingColor) {
                 packagesWithSameMarkingColor.push(otherMP);
             }
@@ -141,7 +156,8 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         return mp1.packageItem[0].path.indexOf(mp2.packageItem[0].path) >= 0;
     }
 
-    private combineMarkingPackagesByColors(allMP: MarkingPackages[]) {
+    private combineMarkingPackagesByColors() {
+        const allMP = this.markingPackages;
         this.markingPackages = [];
         if (allMP) {
             for (var i = 0; i < allMP.length; i++) {
@@ -153,13 +169,9 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
                     }],
                 };
 
-                const markingPackageWithSameColor = this.getPackagesWithSameMarkingColor(markingPackage, this.markingPackages);
+                const markingPackageWithSameColor = this.getPackagesWithSameMarkingColor(markingPackage);
                 if (markingPackageWithSameColor != [] && markingPackageWithSameColor.length > 0) {
-                    console.log(markingPackageWithSameColor);
                     const index = this.markingPackages.indexOf(markingPackageWithSameColor[0]);
-                    console.log(index);
-                    console.log(this.markingPackages[index].packageItem);
-                    console.log(markingPackage.packageItem[0]);
                     this.markingPackages[index].packageItem.push(markingPackage.packageItem[0]);
                 } else {
                     this.markingPackages.push(markingPackage);
@@ -189,7 +201,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
 
         this.refreshDeltaColors();
         this.setMarkingPackagesIntoLegend();
-        this.combineMarkingPackagesByColors(s.markingPackages);
+        this.combineMarkingPackagesByColors();
     }
 
     getImageDataUri(hex: number): string {
