@@ -9,12 +9,12 @@ class SourceNamePrintingErrorListener extends BaseErrorListener {
 
     private SourceCode sourceCode;
 
-    SourceNamePrintingErrorListener(SourceCode sourceCode){
+    SourceNamePrintingErrorListener(SourceCode sourceCode) {
         this.sourceCode = sourceCode;
     }
 
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-        System.err.println("["+sourceCode.getSourceDescriptor().getName()+"] line " + line + ":" + charPositionInLine + " " + msg);
+        System.err.println("[" + sourceCode.getSourceDescriptor().getName() + "] line " + line + ":" + charPositionInLine + " " + msg);
     }
 }

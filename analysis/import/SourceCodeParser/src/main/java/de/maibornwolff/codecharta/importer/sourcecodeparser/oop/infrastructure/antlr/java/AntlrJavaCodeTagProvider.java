@@ -23,12 +23,12 @@ public class AntlrJavaCodeTagProvider implements JavaCodeTagProvider {
         return mccListener.getLineTags();
     }
 
-    private CommonTokenStream getTokenStream(SourceCode sourceCode){
+    private CommonTokenStream getTokenStream(SourceCode sourceCode) {
         JavaLexer lexer = new JavaLexer(CharStreams.fromString(String.join("\n", sourceCode.getLines())));
         return new CommonTokenStream(lexer);
     }
 
-    private JavaParser.CompilationUnitContext getCompilationUnit(SourceCode sourceCode, CommonTokenStream tokenStream){
+    private JavaParser.CompilationUnitContext getCompilationUnit(SourceCode sourceCode, CommonTokenStream tokenStream) {
         JavaParser parser = new JavaParser(tokenStream);
         parser.removeErrorListeners();
         parser.addErrorListener(new SourceNamePrintingErrorListener(sourceCode));

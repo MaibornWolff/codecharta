@@ -11,9 +11,12 @@ import java.util.*;
 class MccListener extends JavaParserBaseListener {
 
     private Map<Integer, List<Tags>> lineTags = new HashMap<>();
-    Map<Integer, List<Tags>> getLineTags(){ return lineTags; }
 
-    MccListener(Map<Integer, Set<Tags>> lineType){
+    Map<Integer, List<Tags>> getLineTags() {
+        return lineTags;
+    }
+
+    MccListener(Map<Integer, Set<Tags>> lineType) {
         for (Map.Entry<Integer, Set<Tags>> entry : lineType.entrySet()) {
             lineTags.put(entry.getKey(), new ArrayList<>(entry.getValue()));
         }
@@ -36,8 +39,8 @@ class MccListener extends JavaParserBaseListener {
 
     /**
      * --> @interface BlockingOperations {
-     *          boolean fileSystemOperations();
-     *     }
+     * boolean fileSystemOperations();
+     * }
      */
     @Override
     public void enterAnnotationTypeDeclaration(JavaParser.AnnotationTypeDeclarationContext ctx) {
@@ -45,10 +48,10 @@ class MccListener extends JavaParserBaseListener {
     }
 
     /**
-     *     @interface BlockingOperations {
+     * @interface BlockingOperations {
      * -->      boolean fileSystemOperations();
      * -->      boolean networkOperations() default false;
-     *     }
+     * }
      */
     @Override
     public void enterAnnotationTypeElementDeclaration(JavaParser.AnnotationTypeElementDeclarationContext ctx) {
@@ -87,11 +90,11 @@ class MccListener extends JavaParserBaseListener {
 
     /**
      * try (
-     *  -->    java.util.zip.ZipFile zf =
-     *               new java.util.zip.ZipFile(zipFileName);
-     *  -->    java.io.BufferedWriter writer =
-     *               java.nio.file.Files.newBufferedWriter(outputFilePath, charset)
-     *     )
+     * -->    java.util.zip.ZipFile zf =
+     * new java.util.zip.ZipFile(zipFileName);
+     * -->    java.io.BufferedWriter writer =
+     * java.nio.file.Files.newBufferedWriter(outputFilePath, charset)
+     * )
      */
     @Override
     public void enterResource(JavaParser.ResourceContext ctx) {
@@ -99,9 +102,9 @@ class MccListener extends JavaParserBaseListener {
     }
 
     /**
-     *  --> } catch (SQLException e) {
-     *          JDBCTutorialUtilities.printSQLException(e);
-     *      }
+     * --> } catch (SQLException e) {
+     * JDBCTutorialUtilities.printSQLException(e);
+     * }
      */
     @Override
     public void enterCatchClause(JavaParser.CatchClauseContext ctx) {
@@ -109,9 +112,9 @@ class MccListener extends JavaParserBaseListener {
     }
 
     /**
-     *  --> } finally{
-     *          db.close();
-     *      }
+     * --> } finally{
+     * db.close();
+     * }
      */
     @Override
     public void enterFinallyBlock(JavaParser.FinallyBlockContext ctx) {
@@ -130,14 +133,14 @@ class MccListener extends JavaParserBaseListener {
     /**
      * switch (month) {
      * -->  case 1:
-     *          break;
+     * break;
      * -->  default:
-     *          break;
+     * break;
      */
     @Override
     public void enterSwitchLabel(JavaParser.SwitchLabelContext ctx) {
         CodeTags codeTag = BranchTags.CASE;
-        if(ctx.DEFAULT() != null) {
+        if (ctx.DEFAULT() != null) {
             codeTag = UnsortedCodeTags.DEFAULT_CASE;
         }
         addTag(ctx.getStart().getLine(), codeTag);
@@ -146,23 +149,23 @@ class MccListener extends JavaParserBaseListener {
     /**
      * --> if (obj == null)
      * --> while (obj == null)
-     *      do { sth();
+     * do { sth();
      * -->  } while(obj == null)
      * -->  switch (ch) {
-     *          case 'A': ....
+     * case 'A': ....
      */
     @Override
     public void enterParExpression(JavaParser.ParExpressionContext ctx) {
-        if(isMcCabeBranchStatement(ctx)){
+        if (isMcCabeBranchStatement(ctx)) {
             addTag(ctx.getStart().getLine(), BranchTags.CONDITION);
         }
     }
 
-    private boolean isMcCabeBranchStatement(JavaParser.ParExpressionContext ctx){
+    private boolean isMcCabeBranchStatement(JavaParser.ParExpressionContext ctx) {
         boolean parentIsNotSwitch = false;
-        if(ctx.getParent() instanceof JavaParser.StatementContext){
-            JavaParser.StatementContext statement = (JavaParser.StatementContext)ctx.getParent();
-            if(statement.SWITCH() == null && statement.SYNCHRONIZED() == null){
+        if (ctx.getParent() instanceof JavaParser.StatementContext) {
+            JavaParser.StatementContext statement = (JavaParser.StatementContext) ctx.getParent();
+            if (statement.SWITCH() == null && statement.SYNCHRONIZED() == null) {
                 parentIsNotSwitch = true;
             }
         }
@@ -171,18 +174,20 @@ class MccListener extends JavaParserBaseListener {
 
     /**
      * --> for (int i = 0; i < 5; i++){
-     *         doStuff();
-     *     }
+     * doStuff();
+     * }
      * --> for(String element : list)
-     *          doSth();
-     *     }
+     * doSth();
+     * }
      */
     @Override
     public void enterForControl(JavaParser.ForControlContext ctx) {
         addTag(ctx.getStart().getLine(), BranchTags.CONDITION);
     }
 
-    /** Called when a constant in an interface is found **/
+    /**
+     * Called when a constant in an interface is found
+     **/
     @Override
     public void enterConstDeclaration(JavaParser.ConstDeclarationContext ctx) {
         addTag(ctx.getStart().getLine(), UnsortedCodeTags.INTERFACE_CONSTANT);
@@ -216,12 +221,12 @@ class MccListener extends JavaParserBaseListener {
     @Override
     public void enterExpression(JavaParser.ExpressionContext ctx) {
         addTag(ctx.getStart().getLine(), UnsortedCodeTags.EXPRESSION);
-        if(ctx.bop != null){
-            if(ctx.bop.getText().equals("||")){
+        if (ctx.bop != null) {
+            if (ctx.bop.getText().equals("||")) {
                 addTag(ctx.getStart().getLine(), BranchTags.OR_CONDITION);
-            } else if(ctx.bop.getText().equals("&&")){
+            } else if (ctx.bop.getText().equals("&&")) {
                 addTag(ctx.getStart().getLine(), BranchTags.AND_CONDITION);
-            }else if(ctx.bop.getText().equals("?")){
+            } else if (ctx.bop.getText().equals("?")) {
                 addTag(ctx.getStart().getLine(), BranchTags.TENARY_CONDITION);
             }
         }
@@ -232,9 +237,9 @@ class MccListener extends JavaParserBaseListener {
         addTag(ctx.getStart().getLine(), UnsortedCodeTags.METHOD_CALL);
     }
 
-    private void addTag(int lineNumber, CodeTags codeTag){
+    private void addTag(int lineNumber, CodeTags codeTag) {
         List<Tags> tags = lineTags.get(lineNumber);
-        if(tags.contains(UnsortedCodeTags.ANY)){
+        if (tags.contains(UnsortedCodeTags.ANY)) {
             tags.remove(UnsortedCodeTags.ANY);
         }
 

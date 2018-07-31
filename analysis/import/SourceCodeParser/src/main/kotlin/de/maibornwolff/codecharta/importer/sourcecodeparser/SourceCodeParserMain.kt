@@ -12,7 +12,7 @@ import java.util.concurrent.Callable
 @Command(name = "sourcecodeparser", description = ["generates cc.JSON from source code"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
 class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Void> {
     // we need this constructor because ccsh requires an empty constructor
-    constructor(): this(System.out)
+    constructor() : this(System.out)
 
     @Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -32,15 +32,15 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     @Throws(IOException::class)
     override fun call(): Void? {
 
-        if(!files[0].exists()){
+        if (!files[0].exists()) {
             val path = Paths.get("").toAbsolutePath().toString()
             outputStream.println("Current working directory = $path")
-            outputStream.println("Could not find "+files[0])
+            outputStream.println("Could not find " + files[0])
             return null
         }
         val sourceCodeParserEntryPoint = getSourceCodeParserEntryPoint()
 
-        if(files.size == 1 && files[0].isFile) {
+        if (files.size == 1 && files[0].isFile) {
             sourceCodeParserEntryPoint.printDetailedMetrics(FileSystemDetailedSourceProvider(files[0]))
         } else {
             sourceCodeParserEntryPoint.printOverviewMetrics(FileSystemOverviewSourceProvider(files))
@@ -57,7 +57,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     }
 
     private fun getPrinter(): MetricWriter {
-        return when(outputType){
+        return when (outputType) {
             OutputType.JSON -> JsonMetricWriter(getWriter(), projectName)
             OutputType.TABLE -> TableMetricWriter(getWriter())
         }

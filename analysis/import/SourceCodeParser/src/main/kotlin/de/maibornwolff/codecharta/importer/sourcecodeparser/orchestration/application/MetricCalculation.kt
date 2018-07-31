@@ -6,14 +6,14 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.application.OopE
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.domain.metrics.OverviewMetric
 
-public class MetricCalculator(javaCodeTagProvider: JavaCodeTagProvider){
+public class MetricCalculator(javaCodeTagProvider: JavaCodeTagProvider) {
 
     private val oopEntryPoint = OopEntryPoint(javaCodeTagProvider)
     private val defaultEntryPoint = DefaultEntryPoint()
 
     fun calculateDetailedMetrics(detailedSourceProvider: DetailedSourceProvider): DetailedMetricTable {
         val singleSource = detailedSourceProvider.readSource()
-        return when(singleSource.sourceDescriptor.language){
+        return when (singleSource.sourceDescriptor.language) {
             OopLanguage.JAVA -> oopEntryPoint.calculateSingleMetrics(singleSource)
             else -> defaultEntryPoint.fileSummary(singleSource)
         }

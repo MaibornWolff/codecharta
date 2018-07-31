@@ -12,7 +12,7 @@ class OverviewMetric(val tableSums: List<DetailedMetricTableSum>) {
     fun languageValue(language: Language) = languageFileCount.getOrDefault(language, 0)
     fun metricValue(metricType: MetricType) = folderMetrics.getOrDefault(metricType, 0)
 
-    private fun sumMetrics(fileMetrics: List<DetailedMetricTableSum>): Map<MetricType, Int>{
+    private fun sumMetrics(fileMetrics: List<DetailedMetricTableSum>): Map<MetricType, Int> {
         val sum = mutableMapOf<MetricType, Int>()
 
         fileMetrics.forEach {
@@ -22,7 +22,7 @@ class OverviewMetric(val tableSums: List<DetailedMetricTableSum>) {
         return sum
     }
 
-    private fun sumFiles(fileMetrics: List<DetailedMetricTableSum>): Map<Language, Int>{
+    private fun sumFiles(fileMetrics: List<DetailedMetricTableSum>): Map<Language, Int> {
         val sum = mutableMapOf<Language, Int>()
 
         fileMetrics.forEach {

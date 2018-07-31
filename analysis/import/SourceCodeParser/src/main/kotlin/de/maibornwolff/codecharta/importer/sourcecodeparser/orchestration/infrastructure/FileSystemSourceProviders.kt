@@ -13,19 +13,19 @@ import java.nio.file.Files
 /**
  * @sourceLocation only an actual FILE is allowed here, FOLDERs are handled by FileSystemOverviewSourceProvider
  */
-class FileSystemDetailedSourceProvider(private val sourceLocation: File): DetailedSourceProvider {
+class FileSystemDetailedSourceProvider(private val sourceLocation: File) : DetailedSourceProvider {
 
     override fun readSource() = resolveOneFile(sourceLocation)
 
 }
 
-class FileSystemOverviewSourceProvider(private val sourceLocations: List<File>): OverviewSourceProvider {
+class FileSystemOverviewSourceProvider(private val sourceLocations: List<File>) : OverviewSourceProvider {
 
     override fun readSources() = resolvePath(sourceLocations[0])
 
     private fun resolvePath(fileOrFolder: File): List<SourceCode> = fileOrFolder
             .walk()
-            .filter { it.isFile && languageFor.containsKey(it.extension)}
+            .filter { it.isFile && languageFor.containsKey(it.extension) }
             .map { resolveOneFile(it) }
             .toList()
 }

@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagging.TaggedSourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagging.Tags
 
-class DetailedMetricTable(taggedSourceCode: TaggedSourceCode, private val metricCalculationStrategy: MetricCalculationStrategy): Iterable<DetailedMetricTableRow> {
+class DetailedMetricTable(taggedSourceCode: TaggedSourceCode, private val metricCalculationStrategy: MetricCalculationStrategy) : Iterable<DetailedMetricTableRow> {
 
     // IMPORTANT: line numbers start at 1 - just like our interface, but this array starts at 0
     private val rows = toRows(taggedSourceCode)

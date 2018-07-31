@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.domain
 import java.io.Writer
 
 
-class TableMetricWriter(private val writer: Writer): MetricWriter {
+class TableMetricWriter(private val writer: Writer) : MetricWriter {
 
     override fun printDetails(detailedMetricTable: DetailedMetricTable) {
         writer.write(detailedMetricToTable(detailedMetricTable))

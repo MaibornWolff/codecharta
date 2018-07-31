@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.domain
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import java.io.Writer
 
-class JsonMetricWriter(private val writer: Writer, private val projectName: String): MetricWriter {
+class JsonMetricWriter(private val writer: Writer, private val projectName: String) : MetricWriter {
 
     override fun printOverview(overviewMetric: OverviewMetric) {
         val jsonBuilder = JsonBuilder(projectName)

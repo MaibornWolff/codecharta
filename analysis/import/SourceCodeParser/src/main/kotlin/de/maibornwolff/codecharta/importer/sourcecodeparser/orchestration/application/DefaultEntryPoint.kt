@@ -7,7 +7,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.domain
 
 class DefaultEntryPoint {
 
-    fun fileSummary(fileSource: SourceCode): DetailedMetricTable{
+    fun fileSummary(fileSource: SourceCode): DetailedMetricTable {
         return DetailedMetricTable(
                 TaggedSourceCode(fileSource.sourceDescriptor, emptyList(), emptyMap()),
                 DefaultMetricCalculationStrategy()

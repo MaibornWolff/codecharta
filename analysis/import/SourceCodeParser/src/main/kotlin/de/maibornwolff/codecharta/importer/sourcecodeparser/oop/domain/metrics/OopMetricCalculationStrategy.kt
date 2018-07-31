@@ -8,14 +8,14 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.B
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.CodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.MethodTags
 
-class OopMetricCalculationStrategy: MetricCalculationStrategy {
+class OopMetricCalculationStrategy : MetricCalculationStrategy {
 
     override fun calculateMetrics(line: Line, previousMetrics: MetricMap): MetricMap {
         return MetricMap(MetricType.values().map { it to singleMetric(it, line, previousMetrics) }.toMap())
     }
 
-    private fun singleMetric(metricType: MetricType, line: Line, previousMetrics: MetricMap): Int{
-        return when(metricType){
+    private fun singleMetric(metricType: MetricType, line: Line, previousMetrics: MetricMap): Int {
+        return when (metricType) {
             MetricType.LoC -> line.lineNumber
             MetricType.RLoc -> (if (hasCodeTags(line)) 1 else 0) + previousMetrics[MetricType.RLoc]
             MetricType.MCC -> countMethodDeclaration(line) + countBranchTags(line) + previousMetrics[MetricType.MCC]
