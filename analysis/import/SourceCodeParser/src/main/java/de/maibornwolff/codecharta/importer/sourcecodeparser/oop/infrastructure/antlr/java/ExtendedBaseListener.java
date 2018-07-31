@@ -75,30 +75,6 @@ class ExtendedBaseListener extends JavaParserBaseListener {
         addTag(ctx.getStart().getLine(), UnsortedCodeTags.CONSTRUCTOR);
     }
 
-    private int currentLevel = 0;
-
-    @Override
-    public void enterBlockStatement(JavaParser.BlockStatementContext ctx) {
-        String text = ctx.getText();
-//        currentLevel++;
-    }
-
-    @Override
-    public void exitBlockStatement(JavaParser.BlockStatementContext ctx) {
-        String text = ctx.getText();
-//        currentLevel--;
-    }
-
-    @Override
-    public void enterNestedStatement(JavaParser.NestedStatementContext ctx) {
-        currentLevel++;
-    }
-
-    @Override
-    public void exitNestedStatement(JavaParser.NestedStatementContext ctx) {
-        currentLevel--;
-    }
-
     @Override
     public void enterStatement(JavaParser.StatementContext ctx) {
         addTag(ctx.getStart().getLine(), UnsortedCodeTags.STATEMENT);
