@@ -12,7 +12,7 @@ class JsonFolderTest {
     private val resource = "src/test/resources/$end2EndFolder/miniJavaProject"
 
     private val outputStream = retrieveStreamAsString {
-        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "-format=json"))
+        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=json"))
     }
 
     @Test

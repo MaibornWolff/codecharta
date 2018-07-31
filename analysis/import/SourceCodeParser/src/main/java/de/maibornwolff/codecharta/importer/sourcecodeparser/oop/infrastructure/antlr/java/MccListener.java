@@ -194,6 +194,11 @@ class MccListener extends JavaParserBaseListener {
     }
 
     @Override
+    public void enterLambdaExpression(JavaParser.LambdaExpressionContext ctx) {
+        addTag(ctx.getStart().getLine(), MethodTags.LAMBDA);
+    }
+
+    @Override
     public void enterFieldDeclaration(JavaParser.FieldDeclarationContext ctx) {
         addTag(ctx.getStart().getLine(), UnsortedCodeTags.CLASS_FIELD);
     }
@@ -227,7 +232,7 @@ class MccListener extends JavaParserBaseListener {
             } else if (ctx.bop.getText().equals("&&")) {
                 addTag(ctx.getStart().getLine(), BranchTags.AND_CONDITION);
             } else if (ctx.bop.getText().equals("?")) {
-                addTag(ctx.getStart().getLine(), BranchTags.TENARY_CONDITION);
+                addTag(ctx.getStart().getLine(), BranchTags.TERNARY_CONDITION);
             }
         }
     }
