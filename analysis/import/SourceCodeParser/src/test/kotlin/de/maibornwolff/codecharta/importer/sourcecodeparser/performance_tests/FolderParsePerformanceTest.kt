@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.performance_tests
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateOverviewMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.GeneratedOverviewSourceProvider
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateOverviewMetrics
 import org.junit.Test
 
 class FolderParsePerformanceTest {

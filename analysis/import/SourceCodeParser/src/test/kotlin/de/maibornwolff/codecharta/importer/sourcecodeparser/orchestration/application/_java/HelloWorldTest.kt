@@ -1,11 +1,10 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application._java
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.detailedSourceProviderFromResource
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.javaApplicationFolder
-import org.junit.Ignore
 import org.junit.Test
 import java.io.IOException
 

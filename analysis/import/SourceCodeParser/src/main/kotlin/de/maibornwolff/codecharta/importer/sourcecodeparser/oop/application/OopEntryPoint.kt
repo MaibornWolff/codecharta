@@ -6,9 +6,9 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagging.
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopMetricCalculationStrategy
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.AntlrEntryPoint
 
-class OopEntryPoint {
+class OopEntryPoint(private val codeAnalyzeProvider: CodeAnalyzeProvider) {
     fun calculateSingleMetrics(sourceCode: SourceCode): DetailedMetricTable {
-        val lineTags = AntlrEntryPoint.addTags(sourceCode)
+        val lineTags = codeAnalyzeProvider.getTags(sourceCode)
 
         val taggedSourceCode = TaggedSourceCode(sourceCode.sourceDescriptor, sourceCode.lines, lineTags)
 

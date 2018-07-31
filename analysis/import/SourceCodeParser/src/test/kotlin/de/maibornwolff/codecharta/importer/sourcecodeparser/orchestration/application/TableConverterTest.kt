@@ -1,12 +1,8 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
-import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
-import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.elementsOf
-import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.javaSource
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.io.IOException
 
 class TableConverterTest {
     @Test

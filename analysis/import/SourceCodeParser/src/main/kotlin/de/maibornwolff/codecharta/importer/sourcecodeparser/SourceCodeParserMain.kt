@@ -1,9 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.JsonMetricWriter
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.MetricWriter
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.SourceCodeParserEntryPoint
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.TableMetricWriter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.AntlrEntryPoint
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.*
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.infrastructure.FileSystemDetailedSourceProvider
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.infrastructure.FileSystemOverviewSourceProvider
 import picocli.CommandLine.*
@@ -40,17 +38,22 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
             outputStream.println("Could not find "+files[0])
             return null
         }
-
-        val printer = getPrinter()
-        val sourceApp = SourceCodeParserEntryPoint(printer)
+        val sourceCodeParserEntryPoint = getSourceCodeParserEntryPoint()
 
         if(files.size == 1 && files[0].isFile) {
-            sourceApp.printDetailedMetrics(FileSystemDetailedSourceProvider(files[0]))
+            sourceCodeParserEntryPoint.printDetailedMetrics(FileSystemDetailedSourceProvider(files[0]))
         } else {
-            sourceApp.printOverviewMetrics(FileSystemOverviewSourceProvider(files))
+            sourceCodeParserEntryPoint.printOverviewMetrics(FileSystemOverviewSourceProvider(files))
         }
 
         return null
+    }
+
+    private fun getSourceCodeParserEntryPoint(): SourceCodeParserEntryPoint {
+        return SourceCodeParserEntryPoint(
+                MetricCalculator(AntlrEntryPoint()),
+                getPrinter()
+        )
     }
 
     private fun getPrinter(): MetricWriter {

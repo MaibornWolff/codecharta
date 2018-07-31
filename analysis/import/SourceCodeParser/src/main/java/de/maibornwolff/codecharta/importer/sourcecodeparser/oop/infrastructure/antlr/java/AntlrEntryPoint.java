@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class AntlrEntryPoint implements CodeAnalyzeProvider {
 
-    public static Map<Integer, List<Tags>> addTags(SourceCode sourceCode) {
+    public Map<Integer, List<Tags>> getTags(SourceCode sourceCode) {
         JavaLexer lexer = new JavaLexer(CharStreams.fromString(String.join("\n", sourceCode.getLines())));
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 

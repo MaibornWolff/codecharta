@@ -2,12 +2,11 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.appli
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.BranchTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.MethodTags
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.UnsortedCodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.NonCodeTags
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.detailedMetricToTable
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.UnsortedCodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.defaultJavaSource
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
