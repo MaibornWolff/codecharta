@@ -101,6 +101,9 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         this.onSelect(data);
     }
 
+    onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
+    }
+
     /**
      * Called when settings change. Applies them to the common details.
      */
