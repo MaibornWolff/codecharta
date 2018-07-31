@@ -15,7 +15,7 @@ class SimpleClassTest {
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(25)
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(31)
     }
 
     private val code =

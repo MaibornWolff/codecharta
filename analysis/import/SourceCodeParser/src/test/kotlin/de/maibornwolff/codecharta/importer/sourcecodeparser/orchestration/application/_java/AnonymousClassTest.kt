@@ -15,7 +15,16 @@ class AnonymousClassTest {
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(3)
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(6)
+    }
+
+    @Test
+    fun `example has a complexity of 1, because it has a method`() {
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
+
+        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(1)
     }
 
     private val code =

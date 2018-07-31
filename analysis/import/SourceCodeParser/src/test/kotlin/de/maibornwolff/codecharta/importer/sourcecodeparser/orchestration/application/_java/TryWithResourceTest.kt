@@ -15,7 +15,7 @@ class TryWithResourceTest {
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(9)
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(13)
     }
 
     private val code =

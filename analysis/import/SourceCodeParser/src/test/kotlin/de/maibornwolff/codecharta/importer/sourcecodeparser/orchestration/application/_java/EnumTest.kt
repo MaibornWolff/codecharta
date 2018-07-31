@@ -15,7 +15,7 @@ class EnumTest {
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(7)
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(10)
     }
 
     @Test
@@ -24,7 +24,7 @@ class EnumTest {
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(9)
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(14)
     }
 
     private val code1 =

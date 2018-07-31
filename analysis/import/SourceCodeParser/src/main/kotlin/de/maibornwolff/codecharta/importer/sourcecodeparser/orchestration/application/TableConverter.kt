@@ -6,21 +6,25 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.domain.metrics.OverviewMetric
 
+private const val overviewMetricTableFormat = "%-20s %-10s %-10s %-10s"
+
 fun overviewMetricToTable(folderMetrics: OverviewMetric): String{
     val javaFiles = folderMetrics.languageValue(OopLanguage.JAVA)
     val loc = folderMetrics.metricValue(MetricType.LoC)
     val rloc = folderMetrics.metricValue(MetricType.RLoc)
 
-    return String.format("%-20s %-10s %-10s %-10s", "Language", "Files", "LoC", "RLoC") + "\n" +
+    return String.format(overviewMetricTableFormat, "Language", "Files", "LoC", "RLoC") + "\n" +
             "-".repeat(40)+ "\n" +
-            String.format("%-20s %-10d %-10s %-10s", "Java", javaFiles, loc, rloc) + "\n" +
+            String.format(overviewMetricTableFormat, "Java", javaFiles, loc, rloc) + "\n" +
             "-".repeat(40)+ "\n" +
-            String.format("%-20s %-10d %-10s %-10s", "SUM:", javaFiles, loc, rloc)
+            String.format(overviewMetricTableFormat, "SUM:", javaFiles, loc, rloc)
 
 }
 
+private const val detailedMetricTableFormat = "%-5s %-5s %-5s %-120s"
+
 fun detailedMetricToTable(detailedMetricTable: DetailedMetricTable): String{
-    return String.format("%-5s %-5s %-5s %-120s %-20s", "LoC", "RLoC", "MCC", "Code", "Tags") + "\n" +
+    return String.format(detailedMetricTableFormat, "LoC", "RLoC", "MCC", "Code") + "\n" +
             "-".repeat(40)+ "\n" +
             rowsAsText(detailedMetricTable)
 
@@ -30,12 +34,11 @@ fun detailedMetricToTable(detailedMetricTable: DetailedMetricTable): String{
 private fun rowsAsText(detailedMetricTable: DetailedMetricTable): String{
     var previousRow = DetailedMetricTableRow.NULL
     val result = detailedMetricTable.map{
-        val rowText = String.format("%-5d %-5s %-5s %-120s %-20s",
+        val rowText = String.format(detailedMetricTableFormat,
                 it[MetricType.LoC],
                 textToDisplay(it, MetricType.RLoc, previousRow),
                 textToDisplay(it, MetricType.MCC, previousRow),
-                it.text,
-                it.tags)
+                it.text)
         previousRow = it
         rowText
     }.joinToString("\n")

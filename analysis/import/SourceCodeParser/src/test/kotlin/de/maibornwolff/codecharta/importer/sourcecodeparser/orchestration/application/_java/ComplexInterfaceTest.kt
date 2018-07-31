@@ -10,12 +10,12 @@ import org.junit.Test
 class ComplexInterfaceTest {
 
     @Test
-    fun example_has_correct_rloc_count() {
+    fun `example_has_correct_rloc_count`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(32)
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(44)
     }
 
     private val code =

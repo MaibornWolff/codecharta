@@ -22,7 +22,7 @@ class OopMetricCalculationStrategy: MetricCalculationStrategy {
         }
     }
 
-    private fun hasCodeTags(line: Line) = line.tags().filterIsInstance<CodeTags>().isNotEmpty()
-    private fun countBranchTags(line: Line) = line.tags().filterIsInstance<BranchTags>().count()
-    private fun countMethodDeclaration(line: Line) = line.tags().filterIsInstance<MethodTags>().count()
+    private fun hasCodeTags(line: Line) = line.tags.filterIsInstance<CodeTags>().isNotEmpty()
+    private fun countBranchTags(line: Line) = line.tags.filterIsInstance<BranchTags>().count()
+    private fun countMethodDeclaration(line: Line) = line.tags.filterIsInstance<MethodTags>().count()
 }

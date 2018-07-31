@@ -5,24 +5,27 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.M
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.UnsortedCodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.NonCodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.detailedMetricToTable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.defaultJavaSource
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class _RealLinesOfCodeTest {
 
-    @Test(expected = IndexOutOfBoundsException::class)
-    fun trying_index_0_results_in_exceptions_because_code_starts_at_line_1() {
+    @Test
+    fun `trying index 0 results in exceptions because code starts at line 1`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        detailedMetricTable[0]
+        Assertions.assertThatExceptionOfType(IndexOutOfBoundsException::class.java).isThrownBy{ detailedMetricTable[0] }
     }
 
     @Test
-    fun trying_last_index_does_not_result_in_exception() {
+    fun `trying last index does not result in exception`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
@@ -31,16 +34,16 @@ class _RealLinesOfCodeTest {
     }
 
     @Test
-    fun finds_all_lines() {
+    fun `finds all lines`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
 
-        assertThat(detailedMetricTable.rowCount()).isEqualTo(43)
+        assertWithPrintOnFail(detailedMetricTable){it.rowCount()}.isEqualTo(43)
     }
 
     @Test
-    fun finds_all_comments() {
+    fun `finds all comments`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
@@ -49,7 +52,7 @@ class _RealLinesOfCodeTest {
     }
 
     @Test
-    fun finds_package_declaration() {
+    fun `finds package declaration`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
@@ -58,7 +61,7 @@ class _RealLinesOfCodeTest {
     }
 
     @Test
-    fun finds_import_statements() {
+    fun `finds import statements`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
@@ -67,7 +70,7 @@ class _RealLinesOfCodeTest {
     }
 
     @Test
-    fun finds_annotations() {
+    fun `finds annotations`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
@@ -76,7 +79,7 @@ class _RealLinesOfCodeTest {
     }
 
     @Test
-    fun finds_class() {
+    fun `finds class`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
@@ -85,7 +88,7 @@ class _RealLinesOfCodeTest {
     }
 
     @Test
-    fun finds_field_declarations() {
+    fun `finds field declarations`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
@@ -94,7 +97,7 @@ class _RealLinesOfCodeTest {
     }
 
     @Test
-    fun finds_constructor_declarations() {
+    fun `finds constructor declarations`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
@@ -103,7 +106,7 @@ class _RealLinesOfCodeTest {
     }
 
     @Test
-    fun finds_method_declarations() {
+    fun `finds method declarations`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
@@ -112,7 +115,7 @@ class _RealLinesOfCodeTest {
     }
 
     @Test
-    fun finds_global_and_local_variables() {
+    fun `finds global and local variables`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
@@ -121,7 +124,7 @@ class _RealLinesOfCodeTest {
     }
 
     @Test
-    fun finds_expressions_inside_class() {
+    fun `finds expressions inside class`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
@@ -131,7 +134,7 @@ class _RealLinesOfCodeTest {
     }
 
     @Test
-    fun finds_statements_inside_methods() {
+    fun `finds statements inside methods`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
@@ -141,7 +144,7 @@ class _RealLinesOfCodeTest {
     }
 
     @Test
-    fun finds_method_calls() {
+    fun `finds method calls`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
@@ -150,7 +153,7 @@ class _RealLinesOfCodeTest {
     }
 
     @Test
-    fun finds_conditions() {
+    fun `finds conditions`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)

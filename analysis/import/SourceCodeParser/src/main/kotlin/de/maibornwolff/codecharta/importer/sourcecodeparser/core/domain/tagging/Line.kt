@@ -1,19 +1,9 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagging
 
-class Line(val lineNumber:Int, val text: String) {
-
-    private val tags = ArrayList<Tags>()
-
-    fun addTag(tag: Tags) {
-        this.tags.add(tag)
-    }
-
-    fun tags(): Collection<Tags>{
-        return tags
-    }
+data class Line(val lineNumber:Int, val text: String, val tags: List<Tags>) {
 
     companion object{
-        val NULL = Line(0, "")
+        val NULL = Line(0, "", emptyList())
     }
 
 }

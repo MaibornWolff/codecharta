@@ -28,7 +28,7 @@ class TabularBiggerFolderTest {
 
     @Test
     fun tabular_output_for_bigger_folder_contains_java_real_lines_of_code() {
-        assertThat(elementsOf(output.lines()[2])).describedAs("\n$output").contains("Java", "72")
+        assertThat(elementsOf(output.lines()[2])).describedAs("\n$output").contains("Java", "101")
     }
 
 }

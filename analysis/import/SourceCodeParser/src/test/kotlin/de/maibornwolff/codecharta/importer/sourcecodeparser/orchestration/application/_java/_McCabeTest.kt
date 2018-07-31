@@ -1,7 +1,10 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application._java
 
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTable
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricCalculationStrategy
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.DetailedSourceProvider
+import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.calculateDetailedMetrics as calcDetailed
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.defaultJavaSource
@@ -16,6 +19,10 @@ class _McCabeTest {
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(1 + 0)
+    }
+
+    fun calculateDetailedMetrics(detailedSourceProvider: DetailedSourceProvider): DetailedMetricTable {
+        return calcDetailed(detailedSourceProvider)
     }
 
     @Test

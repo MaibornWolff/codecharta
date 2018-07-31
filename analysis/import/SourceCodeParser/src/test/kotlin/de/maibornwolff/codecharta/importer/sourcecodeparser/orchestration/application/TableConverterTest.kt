@@ -28,7 +28,7 @@ class TableConverterTest {
 
         val output = detailedMetricToTable(detailedMetricTable)
 
-        assertThat(elementsOf(output.lines()[0])).containsExactly("LoC", "RLoC", "MCC", "Code", "Tags")
+        assertThat(elementsOf(output.lines()[0])).containsExactly("LoC", "RLoC", "MCC", "Code")
     }
 
     @Test
@@ -51,18 +51,6 @@ class TableConverterTest {
         val output = detailedMetricToTable(detailedMetricTable)
 
         assertWithPrintOnFail(detailedMetricTable) { elementsOf(output.lines()[3])[1] }.isEqualTo("2")
-    }
-
-    @Test
-    @Throws(IOException::class)
-    fun `does not print real line count when it wasnt incremented and instead prints empty tag list`() {
-        val sourceCode = javaSource("Foo.java", "", code)
-        val locationResolverStub = DetailedSourceProviderStub(sourceCode)
-        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
-
-        val output = detailedMetricToTable(detailedMetricTable)
-
-        assertWithPrintOnFail(detailedMetricTable) { elementsOf(output.lines()[4])[1] }.isEqualTo("[]")
     }
 
     private val code =

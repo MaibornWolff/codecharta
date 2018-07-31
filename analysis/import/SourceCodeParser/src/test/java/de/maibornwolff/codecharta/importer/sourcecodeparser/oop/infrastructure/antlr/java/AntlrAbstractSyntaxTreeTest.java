@@ -90,8 +90,6 @@ public class AntlrAbstractSyntaxTreeTest {
 
         List<JavaParser.BlockStatementContext> blockStatements = bodyDeclaration.memberDeclaration().methodDeclaration().methodBody().block().blockStatement();
         assertThat(blockStatements.get(0).statement().expression(0).expression(0).getText()).isEqualTo("this.wasReset");
-        assertThat(blockStatements.get(1).statement().statement(0).block().blockStatement(0).getText()).isEqualTo("reset(5);");
-        assertThat(blockStatements.get(1).statement().statement(1).getText()).isEqualTo("if(reset(-1)){this.stuff=stuff;}");
         assertThat(blockStatements.get(2).statement().expression(0).expression(0).getText()).isEqualTo("System.out");
         assertThat(blockStatements.get(2).statement().expression(0).methodCall().IDENTIFIER().getText()).isEqualTo("println");
         assertThat(blockStatements.get(2).statement().expression(0).methodCall().expressionList().getText()).isEqualTo("\"SetStuff was called\"");

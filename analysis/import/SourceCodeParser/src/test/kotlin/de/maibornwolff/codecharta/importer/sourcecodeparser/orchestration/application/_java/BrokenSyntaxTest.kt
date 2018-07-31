@@ -18,6 +18,15 @@ class BrokenSyntaxTest {
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(7)
     }
 
+    @Test
+    fun `broken syntax produces complexity of 3`() {
+        val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
+
+        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(1 + 2)
+    }
+
     private val code =
 """package none;
 

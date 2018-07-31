@@ -31,13 +31,6 @@ class ArchitectureTest {
     }
 
     @Test
-    fun `antlr only interacts with itself, standard library and tagging`() {
-        noClasses().that().resideInAPackage("..antlr..")
-                .should().accessClassesThat().resideOutsideOfPackages("..antlr..", "java.lang..", "..tagging..")
-                .check(classes)
-    }
-
-    @Test
     fun components_should_be_free_of_cycles() {
         slices().matching("de.maibornwolff.codecharta.importer.sourcecodeparser.(*)..")
                 .should().beFreeOfCycles()

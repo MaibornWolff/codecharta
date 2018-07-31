@@ -2,18 +2,18 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagging
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceDescriptor
 
-class TagableSourceCode(val sourceDescriptor: SourceDescriptor, everySourceLine: List<String>): Iterable<Line> {
+class TaggedSourceCode(
+        val sourceDescriptor: SourceDescriptor,
+        everySourceLine: List<String>,
+        lineTags: Map<Int, List<Tags>>
+): Iterable<Line> {
 
     // IMPORTANT: line numbers start at 1, but this array starts at 0
     private val lines = everySourceLine
-            .mapIndexed { lineNumber, text -> Line(lineNumber + 1, text) }
+            .mapIndexed { index, text -> Line(index + 1, text, lineTags.getOrDefault(index + 1, emptyList())) }
             .toTypedArray()
 
-    operator fun get(lineNumber: Int): Line =  lines[lineNumber - 1]
-
-    fun addTag(lineNumber: Int, tag: Tags) {
-        lines[lineNumber - 1].addTag(tag)
-    }
+    operator fun get(lineNumber: Int): Line = if(lineNumber != 0) lines[lineNumber - 1] else throw IndexOutOfBoundsException()
 
     override fun iterator(): Iterator<Line> = lines.iterator()
 

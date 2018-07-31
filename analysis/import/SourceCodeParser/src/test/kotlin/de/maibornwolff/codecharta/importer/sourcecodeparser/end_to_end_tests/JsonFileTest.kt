@@ -37,7 +37,7 @@ class JsonFileTest {
 
     @Test
     fun `json output has correct real lines of code`() {
-        assertThat(outputStream).containsOnlyOnce("""rloc":5""")
+        assertThat(outputStream).containsOnlyOnce("""rloc":6""")
     }
 
 

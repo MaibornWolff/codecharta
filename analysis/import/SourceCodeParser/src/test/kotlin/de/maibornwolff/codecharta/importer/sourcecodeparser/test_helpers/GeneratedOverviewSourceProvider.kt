@@ -14,32 +14,32 @@ class GeneratedOverviewSourceProvider(
     override fun readSources(): List<SourceCode> {
         val simpleList = buildSequence {
             while (true) {
-                yield(SourceCode(SourceDescriptor("Foo.java", "", OopLanguage.JAVA), total2Real1))
+                yield(SourceCode(SourceDescriptor("Foo.java", "", OopLanguage.JAVA), total2Real2))
             }
         }.take(total2Real1Count).toList()
 
         val mediumList = buildSequence {
             while (true) {
-                yield(SourceCode(SourceDescriptor("Foo.java", "", OopLanguage.JAVA), total20Real10))
+                yield(SourceCode(SourceDescriptor("Foo.java", "", OopLanguage.JAVA), total20Real13))
             }
         }.take(total20Real10Count).toList()
 
         val mccList = buildSequence {
             while (true) {
-                yield(SourceCode(SourceDescriptor("Foo.java", "", OopLanguage.JAVA), total20Real10Mcc1Nl1))
+                yield(SourceCode(SourceDescriptor("Foo.java", "", OopLanguage.JAVA), total20Real14Mcc1Nl1))
             }
         }.take(total20Real10Mcc1Nl1Count).toList()
 
         return simpleList + mediumList + mccList
     }
 
-    private val total2Real1 =
+    private val total2Real2 =
 """
 public class TaggingInterface {
 }
 """.trim().lines()
 
-    private val total20Real10 =
+    private val total20Real13 =
 """
 package none;
 
@@ -61,7 +61,7 @@ public class Foo {
     }
 }""".trim().lines()
 
-    private val total20Real10Mcc1Nl1 =
+    private val total20Real14Mcc1Nl1 =
             """
 package none;
 

@@ -6,7 +6,7 @@ class DetailedMetricTableRow(line: Line, internal val metrics: MetricMap) {
 
     val rowNumber = line.lineNumber
     val text = line.text
-    val tags = line.tags()
+    val tags = line.tags
 
     operator fun get(metricKey: MetricType) = metrics[metricKey]
 

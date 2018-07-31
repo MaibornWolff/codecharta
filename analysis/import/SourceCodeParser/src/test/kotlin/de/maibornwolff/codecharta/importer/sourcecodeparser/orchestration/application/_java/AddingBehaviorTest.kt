@@ -15,11 +15,11 @@ class AddingBehaviorTest {
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(6)
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(10)
     }
 
     @Test
-    fun `java 10 example has McCabe of two`() {
+    fun `java 10 example has McCabe of two because it has two methods`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)

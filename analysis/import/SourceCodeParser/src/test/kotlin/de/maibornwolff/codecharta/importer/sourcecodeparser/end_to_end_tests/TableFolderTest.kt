@@ -39,7 +39,7 @@ class TableFolderTest {
 
     @Test
     fun tabular_output_summary_for_folder_sums_rloc() {
-        assertThat(elementsOf(output.lines()[4])).describedAs(output).contains("SUM:", "8")
+        assertThat(elementsOf(output.lines()[4])).describedAs(output).contains("SUM:", "10")
     }
 
 

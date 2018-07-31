@@ -2,19 +2,22 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.appli
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.defaultJavaSource
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThatExceptionOfType
+import org.assertj.core.api.Assertions.fail
 import org.junit.Test
 
 class DetailedMetricTableRowTest {
 
-    @Test(expected = IndexOutOfBoundsException::class)
+    @Test
     fun trying_index_0_results_in_exceptions_because_code_starts_at_line_1() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        singleMetrics[0]
+        assertThatExceptionOfType(IndexOutOfBoundsException::class.java).isThrownBy{ singleMetrics[0] }
     }
 
     @Test
@@ -32,8 +35,8 @@ class DetailedMetricTableRowTest {
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        Assertions.assertThat(singleMetrics[1][MetricType.RLoc]).isEqualTo(1)
-        Assertions.assertThat(singleMetrics[2][MetricType.RLoc]).isEqualTo(1)
+        assertWithPrintOnFail(singleMetrics){it[1][MetricType.RLoc]}.isEqualTo(1)
+        assertWithPrintOnFail(singleMetrics){it[2][MetricType.RLoc]}.isEqualTo(1)
         Assertions.assertThat(singleMetrics[2].metricWasIncremented(MetricType.RLoc, singleMetrics[1])).isFalse()
         Assertions.assertThat(singleMetrics[3][MetricType.RLoc]).isEqualTo(2)
         Assertions.assertThat(singleMetrics[3].metricWasIncremented(MetricType.RLoc, singleMetrics[2])).isTrue()
@@ -45,18 +48,18 @@ class DetailedMetricTableRowTest {
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        Assertions.assertThat(singleMetrics[8][MetricType.RLoc]).isEqualTo(3)
-        Assertions.assertThat(singleMetrics[9][MetricType.RLoc]).isEqualTo(4)
+        assertWithPrintOnFail(singleMetrics){it[8][MetricType.RLoc]}.isEqualTo(3)
+        assertWithPrintOnFail(singleMetrics){it[9][MetricType.RLoc]}.isEqualTo(4)
     }
 
     @Test
-    fun does_not_count_lines_with_only_a_bracket_as_real() {
+    fun count_lines_with_only_a_bracket_as_real() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        Assertions.assertThat(singleMetrics[19][MetricType.RLoc]).isEqualTo(10)
-        Assertions.assertThat(singleMetrics[20][MetricType.RLoc]).isEqualTo(10)
+        assertWithPrintOnFail(singleMetrics){it[19][MetricType.RLoc]}.isEqualTo(10)
+        assertWithPrintOnFail(singleMetrics){it[20][MetricType.RLoc]}.isEqualTo(11)
     }
 
     @Test
@@ -65,7 +68,7 @@ class DetailedMetricTableRowTest {
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        Assertions.assertThat(singleMetrics.rowCount()).isEqualTo(43)
+        assertWithPrintOnFail(singleMetrics){it.rowCount()}.isEqualTo(43)
     }
 
     @Test
@@ -74,7 +77,7 @@ class DetailedMetricTableRowTest {
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        Assertions.assertThat(singleMetrics[43][MetricType.RLoc]).isEqualTo(25)
+        assertWithPrintOnFail(singleMetrics){it[43][MetricType.RLoc]}.isEqualTo(31)
     }
 
     private val code =

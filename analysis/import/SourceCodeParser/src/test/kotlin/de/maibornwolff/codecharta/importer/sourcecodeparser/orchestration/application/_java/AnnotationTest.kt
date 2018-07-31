@@ -15,12 +15,12 @@ class AnnotationTest {
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(3)
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(4)
     }
 
 
     @Test
-    fun `example has McCabe of zero`() {
+    fun `example has McCabe of zero because it has no methods`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)

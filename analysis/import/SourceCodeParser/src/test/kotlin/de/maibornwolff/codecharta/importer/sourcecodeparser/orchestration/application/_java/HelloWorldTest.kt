@@ -19,10 +19,9 @@ class HelloWorldTest {
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(107)
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(133)
     }
 
-    @Ignore
     @Test
     @Throws(IOException::class)
     fun `example has correct McCabe`() {
@@ -31,7 +30,7 @@ class HelloWorldTest {
 
         val singleMetrics = calculateDetailedMetrics(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(107)
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(29)
 
     }
 
