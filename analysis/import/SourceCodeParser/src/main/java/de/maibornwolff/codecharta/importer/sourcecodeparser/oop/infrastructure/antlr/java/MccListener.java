@@ -8,12 +8,12 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.U
 
 import java.util.*;
 
-class ExtendedBaseListener extends JavaParserBaseListener {
+class MccListener extends JavaParserBaseListener {
 
     private Map<Integer, List<Tags>> lineTags = new HashMap<>();
     Map<Integer, List<Tags>> getLineTags(){ return lineTags; }
 
-    ExtendedBaseListener(Map<Integer, Set<Tags>> lineType){
+    MccListener(Map<Integer, Set<Tags>> lineType){
         for (Map.Entry<Integer, Set<Tags>> entry : lineType.entrySet()) {
             lineTags.put(entry.getKey(), new ArrayList<>(entry.getValue()));
         }

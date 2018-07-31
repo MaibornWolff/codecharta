@@ -7,7 +7,6 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.applic
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.OverviewSourceProvider
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.infrastructure.FileSystemDetailedSourceProvider
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.infrastructure.FileSystemOverviewSourceProvider
-import java.nio.file.Files
 import java.nio.file.Paths
 
 
@@ -16,7 +15,9 @@ fun javaSource(name: String, location: String, code: List<String>): SourceCode {
 }
 
 fun defaultJavaSource(code: List<String>): SourceCode {
-    return SourceCode(SourceDescriptor("Foo.java", "none", OopLanguage.JAVA), code)
+    val stacktrace = Thread.currentThread().stackTrace
+    val e = stacktrace[2]
+    return SourceCode(SourceDescriptor("${e.className}.${e.methodName}", "none", OopLanguage.JAVA), code)
 }
 
 class DetailedSourceProviderStub(private val sourceCode: SourceCode): DetailedSourceProvider {

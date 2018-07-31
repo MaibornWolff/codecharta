@@ -1,14 +1,14 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTable
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.application.CodeAnalyzeProvider
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.application.JavaCodeTagProvider
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.application.OopEntryPoint
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.domain.metrics.OverviewMetric
 
-public class MetricCalculator(codeAnalyzeProvider: CodeAnalyzeProvider){
+public class MetricCalculator(javaCodeTagProvider: JavaCodeTagProvider){
 
-    private val oopEntryPoint = OopEntryPoint(codeAnalyzeProvider)
+    private val oopEntryPoint = OopEntryPoint(javaCodeTagProvider)
     private val defaultEntryPoint = DefaultEntryPoint()
 
     fun calculateDetailedMetrics(detailedSourceProvider: DetailedSourceProvider): DetailedMetricTable {

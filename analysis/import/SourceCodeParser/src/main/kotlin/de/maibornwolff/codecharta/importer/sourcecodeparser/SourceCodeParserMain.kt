@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.AntlrEntryPoint
+import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.AntlrJavaCodeTagProvider
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.*
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.infrastructure.FileSystemDetailedSourceProvider
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.infrastructure.FileSystemOverviewSourceProvider
@@ -51,7 +51,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
 
     private fun getSourceCodeParserEntryPoint(): SourceCodeParserEntryPoint {
         return SourceCodeParserEntryPoint(
-                MetricCalculator(AntlrEntryPoint()),
+                MetricCalculator(AntlrJavaCodeTagProvider()),
                 getPrinter()
         )
     }
