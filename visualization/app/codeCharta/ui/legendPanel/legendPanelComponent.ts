@@ -51,22 +51,6 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         this.dataService.subscribe(this);
 
         this.initAnimations();
-
-        //this.testData();
-
-    }
-
-    private testData() {
-        this.markingPackages = [
-            {
-                markingColor: this.getImageDataUri(Number("0xFFF000")),
-                packageItem: [{
-                    name: "mytest.kt",
-                    path: "/src/maibornwolff/kotlin/mytest.kt",
-                }],
-            },
-
-        ];
     }
 
     onDataChanged(data: DataModel) {
@@ -164,7 +148,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
                 var markingPackage: MarkingPackages = {
                     markingColor: this.getImageDataUri(Number(allMP[i].markingColor)),
                     packageItem: [{
-                        name: allMP[i].packageItem[0].name,
+                        name: this.getPackagePathPreview(allMP[i]),
                         path: allMP[i].packageItem[0].path,
                     }],
                 };
@@ -177,6 +161,31 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
                     this.markingPackages.push(markingPackage);
                 }
             }
+        }
+    }
+
+    getPackagePathPreview(mp: MarkingPackages) {
+        const MAX_NAME_LENGTH = {
+            lowerLimit: 24,
+            upperLimit: 28,
+        };
+        const packageName = mp.packageItem[0].name;
+        const packagePath = mp.packageItem[0].path;
+
+        if (packageName.length > MAX_NAME_LENGTH.lowerLimit && packageName.length < MAX_NAME_LENGTH.upperLimit) {
+            return ".../" + packageName;
+
+        } else if (packageName.length > MAX_NAME_LENGTH.upperLimit) {
+            const firstPart = packageName.substr(0, MAX_NAME_LENGTH.lowerLimit / 2);
+            const secondPart = packageName.substr(packageName.length - MAX_NAME_LENGTH.lowerLimit / 2);
+            return firstPart + "..." + secondPart;
+
+        } else {
+            const from = Math.max(packagePath.length - MAX_NAME_LENGTH.lowerLimit, 0);
+            const previewPackagePath = packagePath.substring(from);
+            const rootNode = this.settingsService.settings.map.root;
+            const startingDots = (previewPackagePath.startsWith(rootNode.path)) ? "" : "...";
+            return startingDots + previewPackagePath;
         }
     }
 

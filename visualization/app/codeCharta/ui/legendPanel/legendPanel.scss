@@ -21,7 +21,7 @@ legend-panel-component {
     .legend-block {
 
       display: block;
-      height: 25px;
+      min-height: 25px;
       margin-bottom: 5px;
       max-width: 250px;
 
@@ -42,6 +42,11 @@ legend-panel-component {
       span {
         display: inline-block;
       }
+
+      .set-left-margin {
+         margin-left: 18px;
+       }
+
 
     }
 

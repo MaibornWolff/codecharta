@@ -27,8 +27,8 @@
     </div>
     <div class="legend-block" ng-if="$ctrl.markingPackages" ng-repeat="markingPackage in $ctrl.markingPackages">
         <img src="{{::markingPackage.markingColor}}">
-        <span ng-repeat="item in markingPackage.packageItem">
-            <span title="{{::item.path}}">{{::item.name}}{{$last ? '' : ',&nbsp;'}}</span>
+        <span class="{{$first ? '' : 'set-left-margin'}}" ng-repeat="item in markingPackage.packageItem" title="{{::item.path}}">
+            {{::item.name}}{{$last ? '' : ',&nbsp;'}}
         </span>
     </div>
 </div>
