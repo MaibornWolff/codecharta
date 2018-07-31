@@ -13,7 +13,6 @@ import {STATISTIC_OPS} from "../../core/statistic/statistic.service";
 import "./legendPanel.scss";
 import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {hierarchy} from "d3-hierarchy";
-import Code = marked.Tokens.Code;
 
 export class LegendPanelController implements DataServiceSubscriber, SettingsServiceSubscriber {
 
@@ -84,7 +83,6 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
                     const mp = this.getNewMarkingPackageFromNode(node);
                     if (this.legendContainsMarkingPackages()) {
                         this.handleMarkingPackageWithExistingColor(mp);
-
                     } else {
                         this.markingPackages = [mp];
                     }
