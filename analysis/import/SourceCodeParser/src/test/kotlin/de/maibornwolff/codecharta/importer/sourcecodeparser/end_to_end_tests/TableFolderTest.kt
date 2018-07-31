@@ -13,7 +13,7 @@ class TableFolderTest {
     private val resource = "src/test/resources/$end2EndFolder/miniJavaProject"
 
     private val output = retrieveStreamAsString {
-        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "-out=table"))
+        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=table"))
     }
 
     @Test

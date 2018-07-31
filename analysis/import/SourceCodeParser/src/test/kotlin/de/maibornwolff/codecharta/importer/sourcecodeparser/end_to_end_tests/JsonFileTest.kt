@@ -12,7 +12,7 @@ class JsonFileTest {
     private val resource = "src/test/resources/$end2EndFolder/miniJavaProject/mini/RealLinesShort.java"
 
     private val outputStream = retrieveStreamAsString {
-        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "-out=json"))
+        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=json"))
     }
 
     @Test

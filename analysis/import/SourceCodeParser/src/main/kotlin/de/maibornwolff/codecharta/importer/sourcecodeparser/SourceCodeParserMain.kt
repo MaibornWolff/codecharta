@@ -20,8 +20,8 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     @Option(names = ["-p", "--projectName"], description = ["project name"])
     private var projectName = "SourceCodeParserMain"
 
-    @Option(names = ["-out", "--outputType"], description = ["the format to output"], converter = [(OutputTypeConverter::class)])
-    private var outputType = OutputType.JSON
+    @Option(names = ["-f", "--format"], description = ["the format to output"], converter = [(OutputTypeConverter::class)])
+    private var outputFormat = OutputFormat.JSON
 
     @Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
@@ -57,9 +57,9 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     }
 
     private fun getPrinter(): MetricWriter {
-        return when (outputType) {
-            OutputType.JSON -> JsonMetricWriter(getWriter(), projectName)
-            OutputType.TABLE -> TableMetricWriter(getWriter())
+        return when (outputFormat) {
+            OutputFormat.JSON -> JsonMetricWriter(getWriter(), projectName)
+            OutputFormat.TABLE -> TableMetricWriter(getWriter())
         }
     }
 
