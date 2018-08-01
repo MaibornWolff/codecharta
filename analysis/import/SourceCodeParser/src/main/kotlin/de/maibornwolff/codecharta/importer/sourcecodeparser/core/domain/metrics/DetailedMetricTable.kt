@@ -3,14 +3,18 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagging.TaggedSourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagging.Tags
 
-class DetailedMetricTable(taggedSourceCode: TaggedSourceCode, private val metricCalculationStrategy: MetricCalculationStrategy) : Iterable<DetailedMetricTableRow> {
+class DetailedMetricTable(
+        taggedSourceCode: TaggedSourceCode,
+        private val metricCalculationStrategy: MetricCalculationStrategy,
+        overviewMetricCalculationStrategy: OverviewMetricCalculationStrategy
+) : Iterable<DetailedMetricTableRow> {
 
     // IMPORTANT: line numbers start at 1 - just like our interface, but this array starts at 0
     private val rows = toRows(taggedSourceCode)
 
     val sum = DetailedMetricTableSum(
             taggedSourceCode.sourceDescriptor,
-            rows.lastOrNull()?.metrics ?: MetricMap())
+            OopMetricOverviewStrategy().toOverviewMetrics(rows.lastOrNull()?.metrics))
 
     val language = taggedSourceCode.sourceDescriptor.language
 
@@ -31,7 +35,7 @@ class DetailedMetricTable(taggedSourceCode: TaggedSourceCode, private val metric
     }
 
     private fun toRows(taggedSourceCode: TaggedSourceCode): Array<DetailedMetricTableRow> {
-        var previousMetrics = MetricMap()
+        var previousMetrics = DetailedMetricMap()
         return taggedSourceCode.map {
             val newMetrics = metricCalculationStrategy.calculateMetrics(it, previousMetrics)
             val row = DetailedMetricTableRow(it, newMetrics)

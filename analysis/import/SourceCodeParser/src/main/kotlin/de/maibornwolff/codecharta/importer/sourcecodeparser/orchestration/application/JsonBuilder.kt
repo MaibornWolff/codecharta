@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTableSum
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.OverviewMetricType
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.Project
@@ -17,8 +17,8 @@ class JsonBuilder(projectName: String) {
 
     fun addComponentAsNode(metricTableSum: DetailedMetricTableSum): JsonBuilder {
         val node = MutableNode(metricTableSum.sourceDescriptor.name, attributes = hashMapOf(
-                "lines_of_code" to metricTableSum[MetricType.LoC],
-                "rloc" to metricTableSum[MetricType.RLoc])
+                "lines_of_code" to metricTableSum[OverviewMetricType.LoC],
+                "rloc" to metricTableSum[OverviewMetricType.RLoc])
         )
         val path = PathFactory.fromFileSystemPath(metricTableSum.sourceDescriptor.location)
 

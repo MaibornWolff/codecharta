@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.OverviewMetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetricsWithFailOnParseError
@@ -35,11 +36,11 @@ class DetailedMetricTableRowTest {
 
         val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics) { it[1][MetricType.RLoc] }.isEqualTo(1)
-        assertWithPrintOnFail(singleMetrics) { it[2][MetricType.RLoc] }.isEqualTo(1)
-        Assertions.assertThat(singleMetrics[2].metricWasIncremented(MetricType.RLoc, singleMetrics[1])).isFalse()
-        Assertions.assertThat(singleMetrics[3][MetricType.RLoc]).isEqualTo(2)
-        Assertions.assertThat(singleMetrics[3].metricWasIncremented(MetricType.RLoc, singleMetrics[2])).isTrue()
+        assertWithPrintOnFail(singleMetrics) { it[1][DetailedMetricType.RLoc] }.isEqualTo(1)
+        assertWithPrintOnFail(singleMetrics) { it[2][DetailedMetricType.RLoc] }.isEqualTo(1)
+        Assertions.assertThat(singleMetrics[2].metricWasIncremented(DetailedMetricType.RLoc, singleMetrics[1])).isFalse()
+        Assertions.assertThat(singleMetrics[3][DetailedMetricType.RLoc]).isEqualTo(2)
+        Assertions.assertThat(singleMetrics[3].metricWasIncremented(DetailedMetricType.RLoc, singleMetrics[2])).isTrue()
     }
 
     @Test
@@ -48,8 +49,8 @@ class DetailedMetricTableRowTest {
 
         val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics) { it[8][MetricType.RLoc] }.isEqualTo(3)
-        assertWithPrintOnFail(singleMetrics) { it[9][MetricType.RLoc] }.isEqualTo(4)
+        assertWithPrintOnFail(singleMetrics) { it[8][DetailedMetricType.RLoc] }.isEqualTo(3)
+        assertWithPrintOnFail(singleMetrics) { it[9][DetailedMetricType.RLoc] }.isEqualTo(4)
     }
 
     @Test
@@ -58,8 +59,8 @@ class DetailedMetricTableRowTest {
 
         val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics) { it[19][MetricType.RLoc] }.isEqualTo(10)
-        assertWithPrintOnFail(singleMetrics) { it[20][MetricType.RLoc] }.isEqualTo(11)
+        assertWithPrintOnFail(singleMetrics) { it[19][DetailedMetricType.RLoc] }.isEqualTo(10)
+        assertWithPrintOnFail(singleMetrics) { it[20][DetailedMetricType.RLoc] }.isEqualTo(11)
     }
 
     @Test
@@ -77,7 +78,7 @@ class DetailedMetricTableRowTest {
 
         val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics) { it[43][MetricType.RLoc] }.isEqualTo(31)
+        assertWithPrintOnFail(singleMetrics) { it[43][DetailedMetricType.RLoc] }.isEqualTo(31)
     }
 
     private val code =

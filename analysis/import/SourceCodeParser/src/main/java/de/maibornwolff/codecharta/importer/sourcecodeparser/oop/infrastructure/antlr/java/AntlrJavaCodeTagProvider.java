@@ -20,6 +20,7 @@ public class AntlrJavaCodeTagProvider implements JavaCodeTagProvider {
         this.parseErrorPrintStream = parseErrorPrintStream;
     }
 
+    @Override
     public Map<Integer, List<Tags>> getTags(SourceCode sourceCode) {
         CommonTokenStream tokenStream = getTokenStream(sourceCode);
         Map<Integer, Set<Tags>> categoriesPerLine = new CodeLineCategorizer().getCategoriesPerLine(tokenStream);

@@ -16,7 +16,7 @@ class FileDoesNotExistTest {
     }
 
     @Test
-    fun prints_working_directory_if_file_not_found() {
+    fun `prints working directory if file not found`() {
         assertThat(outputStream.lines()[0]).contains("working directory")
         assertThat(outputStream.lines()[1]).contains("Could not find")
     }

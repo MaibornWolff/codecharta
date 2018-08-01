@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.OverviewMetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.*
 import org.junit.Test
@@ -15,7 +15,7 @@ class NoSourceCodeFoundTest {
 
         val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolver)
 
-        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.LoC] }.isEqualTo(0)
+        assertWithPrintOnFail(singleMetrics) { it.sum[OverviewMetricType.LoC] }.isEqualTo(0)
     }
 
     @Test
@@ -26,8 +26,8 @@ class NoSourceCodeFoundTest {
         val singleMetrics = calculateOverviewMetricsWithFailOnParseError(locationResolver)
 
         assertWithPrintOnFail(singleMetrics) { it.languageValue(OopLanguage.JAVA) }.isEqualTo(0)
-        assertWithPrintOnFail(singleMetrics) { it.metricValue(MetricType.LoC) }.isEqualTo(0)
-        assertWithPrintOnFail(singleMetrics) { it.metricValue(MetricType.RLoc) }.isEqualTo(0)
+        assertWithPrintOnFail(singleMetrics) { it.metricValue(OverviewMetricType.LoC) }.isEqualTo(0)
+        assertWithPrintOnFail(singleMetrics) { it.metricValue(OverviewMetricType.RLoc) }.isEqualTo(0)
     }
 
 }

@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTableSum
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricMap
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.OverviewMetricMap
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.OverviewMetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceDescriptor
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import de.maibornwolff.codecharta.model.Node
@@ -35,7 +35,7 @@ class JsonBuilderTest {
         val projectName = "CoolProject"
         val fileSummary = DetailedMetricTableSum(
                 SourceDescriptor("CoolComponent", "", OopLanguage.JAVA),
-                MetricMap()
+                OverviewMetricMap()
         )
 
         val project = JsonBuilder(projectName)
@@ -50,14 +50,14 @@ class JsonBuilderTest {
         val projectName = "CoolProject"
         val fileSummary = DetailedMetricTableSum(
                 SourceDescriptor("CoolComponent", "", OopLanguage.JAVA),
-                MetricMap(MetricType.LoC to 1)
+                OverviewMetricMap(OverviewMetricType.LoC to 1)
         )
 
         val project = JsonBuilder(projectName)
                 .addComponentAsNode(fileSummary)
                 .build()
 
-        assertThat(project.rootNode.children[0].attributes["lines_of_code"]).isEqualTo(fileSummary[MetricType.LoC])
+        assertThat(project.rootNode.children[0].attributes["lines_of_code"]).isEqualTo(fileSummary[OverviewMetricType.LoC])
     }
 
     @Test
@@ -65,9 +65,9 @@ class JsonBuilderTest {
         val projectName = "CoolProject"
 
         val project = JsonBuilder(projectName)
-                .addComponentAsNode(DetailedMetricTableSum(SourceDescriptor("CoolComponent1", "", OopLanguage.JAVA), MetricMap()))
-                .addComponentAsNode(DetailedMetricTableSum(SourceDescriptor("CoolComponent2", "", OopLanguage.JAVA), MetricMap()))
-                .addComponentAsNode(DetailedMetricTableSum(SourceDescriptor("CoolComponent3", "", OopLanguage.JAVA), MetricMap()))
+                .addComponentAsNode(DetailedMetricTableSum(SourceDescriptor("CoolComponent1", "", OopLanguage.JAVA), OverviewMetricMap()))
+                .addComponentAsNode(DetailedMetricTableSum(SourceDescriptor("CoolComponent2", "", OopLanguage.JAVA), OverviewMetricMap()))
+                .addComponentAsNode(DetailedMetricTableSum(SourceDescriptor("CoolComponent3", "", OopLanguage.JAVA), OverviewMetricMap()))
                 .build()
 
         assertThat(filterFiles(project.rootNode).size).isEqualTo(3)

@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.performance_tests
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.OverviewMetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.GeneratedOverviewSourceProvider
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateOverviewMetricsWithFailOnParseError
@@ -18,6 +18,6 @@ class FolderParsePerformanceTest {
 
         val multiMetrics = calculateOverviewMetricsWithFailOnParseError(locationResolverStub)
 
-        assertWithPrintOnFail(multiMetrics) { it.metricValue(MetricType.RLoc) }.isEqualTo(totalReal)
+        assertWithPrintOnFail(multiMetrics) { it.metricValue(OverviewMetricType.RLoc) }.isEqualTo(totalReal)
     }
 }

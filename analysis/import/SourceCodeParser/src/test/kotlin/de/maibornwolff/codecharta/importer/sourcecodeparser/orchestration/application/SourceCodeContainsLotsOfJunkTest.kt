@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.OverviewMetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateOverviewMetricsWithFailOnParseError
@@ -19,8 +19,8 @@ class SourceCodeContainsLotsOfJunkTest {
         val singleMetrics = calculateOverviewMetricsWithFailOnParseError(locationResolver)
 
         assertWithPrintOnFail(singleMetrics) { it.languageValue(OopLanguage.JAVA) }.isEqualTo(1)
-        assertWithPrintOnFail(singleMetrics) { it.metricValue(MetricType.LoC) }.isEqualTo(1)
-        assertWithPrintOnFail(singleMetrics) { it.metricValue(MetricType.RLoc) }.isEqualTo(1)
+        assertWithPrintOnFail(singleMetrics) { it.metricValue(OverviewMetricType.LoC) }.isEqualTo(1)
+        assertWithPrintOnFail(singleMetrics) { it.metricValue(OverviewMetricType.RLoc) }.isEqualTo(1)
     }
 
 }

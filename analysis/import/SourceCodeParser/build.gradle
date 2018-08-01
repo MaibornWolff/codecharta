@@ -1,17 +1,20 @@
-apply plugin: 'application'
-apply plugin: 'antlr'
+plugins {
+    id 'application'
+    id 'antlr'
+    id "net.ltgt.errorprone" version "0.0.16"
+}
 
 dependencies {
     compile project(':model')
 
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+    antlr group: 'org.antlr', name:'antlr4', version: antlr_version
+    errorprone group: 'com.google.errorprone', name:'error_prone_core', version:'2.3.1'
+
     compile group: 'info.picocli', name: 'picocli', version: picocli_version
-    antlr "org.antlr:antlr4:$antlr_version"
     compile "org.antlr:antlr4-runtime:$antlr_version"
 
     testCompile group: 'junit', name: 'junit', version: junit4_version
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.10.0'
-    testCompile group: 'io.mockk', name: 'mockk', version: mokk_version
     testCompile 'com.tngtech.archunit:archunit:0.8.2'
     testCompile project(path: ':model', configuration: 'testOutput')
 }
@@ -27,6 +30,11 @@ jar {
     }
 
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+tasks.withType(JavaCompile) {
+    // In Gradle 4.9+, prefer using tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ['-XepExcludedPaths:.*/src/generated/.*', '-Xep:DeadException:WARN' ]
 }
 
 

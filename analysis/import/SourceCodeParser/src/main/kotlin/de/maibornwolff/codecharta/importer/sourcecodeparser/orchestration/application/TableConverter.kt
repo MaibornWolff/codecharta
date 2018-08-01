@@ -2,7 +2,8 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.appli
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTableRow
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricType
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.OverviewMetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.domain.metrics.OverviewMetric
 
@@ -10,8 +11,8 @@ private const val overviewMetricTableFormat = "%-20s %-10s %-10s %-10s"
 
 fun overviewMetricToTable(folderMetrics: OverviewMetric): String {
     val javaFiles = folderMetrics.languageValue(OopLanguage.JAVA)
-    val loc = folderMetrics.metricValue(MetricType.LoC)
-    val rloc = folderMetrics.metricValue(MetricType.RLoc)
+    val loc = folderMetrics.metricValue(OverviewMetricType.LoC)
+    val rloc = folderMetrics.metricValue(OverviewMetricType.RLoc)
 
     return String.format(overviewMetricTableFormat, "Language", "Files", "LoC", "RLoC") + "\n" +
             "-".repeat(40) + "\n" +
@@ -35,9 +36,9 @@ private fun rowsAsText(detailedMetricTable: DetailedMetricTable): String {
     var previousRow = DetailedMetricTableRow.NULL
     val result = detailedMetricTable.map {
         val rowText = String.format(detailedMetricTableFormat,
-                it[MetricType.LoC],
-                textToDisplay(it, MetricType.RLoc, previousRow),
-                textToDisplay(it, MetricType.MCC, previousRow),
+                it[DetailedMetricType.LoC],
+                textToDisplay(it, DetailedMetricType.RLoc, previousRow),
+                textToDisplay(it, DetailedMetricType.MCC, previousRow),
                 it.text)
         previousRow = it
         rowText
@@ -45,7 +46,7 @@ private fun rowsAsText(detailedMetricTable: DetailedMetricTable): String {
     return result
 }
 
-private fun textToDisplay(detailedMetricTableRow: DetailedMetricTableRow, metricType: MetricType, previousMetricTableRow: DetailedMetricTableRow): String {
+private fun textToDisplay(detailedMetricTableRow: DetailedMetricTableRow, metricType: DetailedMetricType, previousMetricTableRow: DetailedMetricTableRow): String {
     return if (detailedMetricTableRow.metricWasIncremented(metricType, previousMetricTableRow)) {
         detailedMetricTableRow[metricType].toString()
     } else {
