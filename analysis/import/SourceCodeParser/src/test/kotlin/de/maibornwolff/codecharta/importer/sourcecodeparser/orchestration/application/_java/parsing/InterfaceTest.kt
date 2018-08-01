@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.M
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.NonCodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.tagging.UnsortedCodeTags
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
-import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetricsWithFailOnParseError
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.defaultJavaSource
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -15,7 +15,7 @@ class InterfaceTest {
     fun finds_all_lines() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
+        val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertThat(detailedMetricTable.rowCount()).isEqualTo(66)
     }
@@ -24,7 +24,7 @@ class InterfaceTest {
     fun finds_all_comments() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
+        val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertThat(detailedMetricTable.linesWithTag(NonCodeTags.COMMENT)).containsExactly(8, 9, 10, 11, 16, 19, 39, 48, 59)
     }
@@ -33,7 +33,7 @@ class InterfaceTest {
     fun finds_imports() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
+        val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.IMPORT)).containsExactly(4, 6)
     }
@@ -42,7 +42,7 @@ class InterfaceTest {
     fun finds_interface() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
+        val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.INTERFACE)).containsExactly(13)
     }
@@ -51,7 +51,7 @@ class InterfaceTest {
     fun finds_constant_declarations() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
+        val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.INTERFACE_CONSTANT)).containsExactly(17)
     }
@@ -60,7 +60,7 @@ class InterfaceTest {
     fun finds_enumConstant() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
+        val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.ENUM_CONSTANT)).containsExactly(21, 22, 23, 24)
     }
@@ -69,7 +69,7 @@ class InterfaceTest {
     fun finds_fields_in_enum() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
+        val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.CLASS_FIELD)).containsExactly(26, 27)
     }
@@ -78,7 +78,7 @@ class InterfaceTest {
     fun finds_methods() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
+        val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertThat(detailedMetricTable.linesWithTag(MethodTags.METHOD)).containsExactly(34, 36, 40, 44, 49, 60)
     }
@@ -87,7 +87,7 @@ class InterfaceTest {
     fun finds_constructor() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
+        val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.CONSTRUCTOR)).containsExactly(29)
     }
@@ -96,7 +96,7 @@ class InterfaceTest {
     fun finds_method_calls() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
+        val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.METHOD_CALL)).containsExactly(51, 53, 55, 61, 62, 63, 64)
     }
@@ -105,7 +105,7 @@ class InterfaceTest {
     fun finds_statements() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
+        val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.STATEMENT))
                 .containsExactly(30, 31, 34, 36, 50, 51, 53, 55, 61)
@@ -115,14 +115,14 @@ class InterfaceTest {
     fun finds_expressions() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
+        val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.EXPRESSION))
                 .containsExactly(17, 21, 22, 23, 24, 30, 31, 34, 36, 51, 53, 54, 55, 61, 62, 64)
     }
 
     private val code =
-"""
+            """
 package none.that.matters;
 
 import foo;

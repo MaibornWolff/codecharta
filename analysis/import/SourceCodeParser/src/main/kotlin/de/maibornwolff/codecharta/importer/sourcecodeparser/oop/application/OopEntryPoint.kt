@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagging.
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopMetricCalculationStrategy
 
 class OopEntryPoint(private val javaCodeTagProvider: JavaCodeTagProvider) {
+
     fun calculateSingleMetrics(sourceCode: SourceCode): DetailedMetricTable {
         val lineTags = javaCodeTagProvider.getTags(sourceCode)
 
@@ -13,4 +14,5 @@ class OopEntryPoint(private val javaCodeTagProvider: JavaCodeTagProvider) {
 
         return DetailedMetricTable(taggedSourceCode, OopMetricCalculationStrategy())
     }
+
 }

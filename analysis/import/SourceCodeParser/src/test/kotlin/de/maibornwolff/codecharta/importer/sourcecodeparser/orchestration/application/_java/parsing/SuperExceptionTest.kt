@@ -7,25 +7,34 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calcula
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.defaultJavaSource
 import org.junit.Test
 
-class NestedClassTest {
+class SuperExceptionTest {
 
     @Test
-    fun annotation_example_has_correct_rloc_count() {
+    fun `example has correct real lines of code`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
         val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(4)
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(12)
     }
 
-    private val code =
-            """/*
- * From https://github.com/antlr/grammars-v4/blob/master/java/examples/AllInOne7.java
- */
+    private val code = """
+package somehwere.over.the.rainbow;
 
-// Nested class
-class Foo { // Top-level class
-    static class Bar { // Nested class
+public class InvalidInputParameterException extends RuntimeException {
+
+    public InvalidInputParameterException(Exception e) {
+        super(e);
     }
-}""".lines()
+
+    public InvalidInputParameterException(String message) {
+        super(message);
+    }
+
+    public InvalidInputParameterException(Exception e, String message) {
+        super(e, message);
+    }
+
+}
+""".lines()
 }

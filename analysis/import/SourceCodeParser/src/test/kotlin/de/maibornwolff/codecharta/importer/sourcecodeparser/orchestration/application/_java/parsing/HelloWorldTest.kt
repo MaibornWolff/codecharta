@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.appli
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
-import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetricsWithFailOnParseError
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.detailedSourceProviderFromResource
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.javaApplicationFolder
 import org.junit.Test
@@ -16,7 +16,7 @@ class HelloWorldTest {
         val resource = "$javaApplicationFolder/HelloWorld.java"
         val locationResolverStub = detailedSourceProviderFromResource(resource)
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(133)
     }
@@ -27,7 +27,7 @@ class HelloWorldTest {
         val resource = "$javaApplicationFolder/HelloWorld.java"
         val locationResolverStub = detailedSourceProviderFromResource(resource)
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(29)
 

@@ -9,7 +9,7 @@ import kotlin.coroutines.experimental.buildSequence
 class GeneratedOverviewSourceProvider(
         private val total2Real1Count: Int,
         private val total20Real10Count: Int,
-        private val total20Real10Mcc1Nl1Count: Int): OverviewSourceProvider {
+        private val total20Real10Mcc1Nl1Count: Int) : OverviewSourceProvider {
 
     override fun readSources(): List<SourceCode> {
         val simpleList = buildSequence {
@@ -34,13 +34,13 @@ class GeneratedOverviewSourceProvider(
     }
 
     private val total2Real2 =
-"""
+            """
 public class TaggingInterface {
 }
 """.trim().lines()
 
     private val total20Real13 =
-"""
+            """
 package none;
 
 import foo;

@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.appli
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
-import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetricsWithFailOnParseError
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.defaultJavaSource
 import org.junit.Test
 
@@ -13,13 +13,13 @@ class TryWithResourceTest {
     fun example_has_correct_rloc_count() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(13)
     }
 
     private val code =
-"""/*
+            """/*
  * From https://github.com/antlr/grammars-v4/blob/master/java9/examples/TryWithResourceDemo.java
  */
 public class TryWithResourceDemo implements AutoCloseable{

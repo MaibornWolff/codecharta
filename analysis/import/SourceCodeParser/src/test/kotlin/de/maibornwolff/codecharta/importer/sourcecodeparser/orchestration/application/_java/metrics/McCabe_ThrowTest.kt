@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.appli
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
-import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetricsWithFailOnParseError
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.defaultJavaSource
 import org.junit.Test
 
@@ -13,7 +13,7 @@ class McCabe_ThrowTest {
     fun `try does not increment complexity`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(tryWithoutCatch))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(1 + 0)
     }
@@ -31,7 +31,7 @@ public class Foo {
     fun `finally does not increment complexity`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(tryFinally))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(1 + 0)
     }
@@ -51,7 +51,7 @@ public class Foo {
     fun `only catch increments complexity`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(tryWithOneCatch))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(1 + 1)
     }
@@ -71,7 +71,7 @@ public class Foo {
     fun `Each catch increments complexity by one`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(tryWithTwoCatch))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(1 + 2)
     }

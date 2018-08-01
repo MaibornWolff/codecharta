@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.appli
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
-import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetricsWithFailOnParseError
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.defaultJavaSource
 import org.junit.Test
 
@@ -13,7 +13,7 @@ class EnumTest {
     fun enum_example_1_has_correct_rloc_count() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code1))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(10)
     }
@@ -22,13 +22,13 @@ class EnumTest {
     fun enum_example_2_has_correct_rloc_count() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code2))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(14)
     }
 
     private val code1 =
-"""/*
+            """/*
  * From https://github.com/antlr/grammars-v4/blob/master/java/examples/AllInOne7.java
  */
 
@@ -47,7 +47,7 @@ public enum Season {
 }""".trim().lines()
 
     private val code2 =
-"""/*
+            """/*
  * From https://github.com/antlr/grammars-v4/blob/master/java/examples/AllInOne7.java
  */
 

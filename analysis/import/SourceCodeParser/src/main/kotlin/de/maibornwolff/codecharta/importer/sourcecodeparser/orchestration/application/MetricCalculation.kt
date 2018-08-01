@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.application.OopE
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopLanguage
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.domain.metrics.OverviewMetric
 
-public class MetricCalculator(javaCodeTagProvider: JavaCodeTagProvider) {
+class MetricCalculator(javaCodeTagProvider: JavaCodeTagProvider) {
 
     private val oopEntryPoint = OopEntryPoint(javaCodeTagProvider)
     private val defaultEntryPoint = DefaultEntryPoint()

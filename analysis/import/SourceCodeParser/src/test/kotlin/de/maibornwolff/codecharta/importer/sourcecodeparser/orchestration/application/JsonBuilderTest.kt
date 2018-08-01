@@ -73,11 +73,14 @@ class JsonBuilderTest {
         assertThat(filterFiles(project.rootNode).size).isEqualTo(3)
     }
 
-    private fun filterFiles(node: Node): List<Node>{
+    private fun filterFiles(node: Node): List<Node> {
         val files = mutableListOf<Node>()
-        node.children.forEach{
-            if(it.type == NodeType.File){ files.add(it)}
-            else {files.addAll(filterFiles(it))}
+        node.children.forEach {
+            if (it.type == NodeType.File) {
+                files.add(it)
+            } else {
+                files.addAll(filterFiles(it))
+            }
         }
         return files
     }

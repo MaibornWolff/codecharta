@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.appli
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
-import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetricsWithFailOnParseError
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.defaultJavaSource
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -15,16 +15,16 @@ class DetailedMetricTableRowTest {
     fun trying_index_0_results_in_exceptions_because_code_starts_at_line_1() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
-        assertThatExceptionOfType(IndexOutOfBoundsException::class.java).isThrownBy{ singleMetrics[0] }
+        assertThatExceptionOfType(IndexOutOfBoundsException::class.java).isThrownBy { singleMetrics[0] }
     }
 
     @Test
     fun trying_last_index_does_not_result_in_exception() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         singleMetrics[singleMetrics.rowCount()]
     }
@@ -33,10 +33,10 @@ class DetailedMetricTableRowTest {
     fun does_not_count_empty_line_as_real() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics){it[1][MetricType.RLoc]}.isEqualTo(1)
-        assertWithPrintOnFail(singleMetrics){it[2][MetricType.RLoc]}.isEqualTo(1)
+        assertWithPrintOnFail(singleMetrics) { it[1][MetricType.RLoc] }.isEqualTo(1)
+        assertWithPrintOnFail(singleMetrics) { it[2][MetricType.RLoc] }.isEqualTo(1)
         Assertions.assertThat(singleMetrics[2].metricWasIncremented(MetricType.RLoc, singleMetrics[1])).isFalse()
         Assertions.assertThat(singleMetrics[3][MetricType.RLoc]).isEqualTo(2)
         Assertions.assertThat(singleMetrics[3].metricWasIncremented(MetricType.RLoc, singleMetrics[2])).isTrue()
@@ -46,42 +46,42 @@ class DetailedMetricTableRowTest {
     fun does_not_count_comment_line_as_real() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics){it[8][MetricType.RLoc]}.isEqualTo(3)
-        assertWithPrintOnFail(singleMetrics){it[9][MetricType.RLoc]}.isEqualTo(4)
+        assertWithPrintOnFail(singleMetrics) { it[8][MetricType.RLoc] }.isEqualTo(3)
+        assertWithPrintOnFail(singleMetrics) { it[9][MetricType.RLoc] }.isEqualTo(4)
     }
 
     @Test
     fun count_lines_with_only_a_bracket_as_real() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics){it[19][MetricType.RLoc]}.isEqualTo(10)
-        assertWithPrintOnFail(singleMetrics){it[20][MetricType.RLoc]}.isEqualTo(11)
+        assertWithPrintOnFail(singleMetrics) { it[19][MetricType.RLoc] }.isEqualTo(10)
+        assertWithPrintOnFail(singleMetrics) { it[20][MetricType.RLoc] }.isEqualTo(11)
     }
 
     @Test
     fun counts_all_lines_as_lines_of_code() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics){it.rowCount()}.isEqualTo(43)
+        assertWithPrintOnFail(singleMetrics) { it.rowCount() }.isEqualTo(43)
     }
 
     @Test
     fun counts_only_lines_with_actual_value_as_real() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
-        assertWithPrintOnFail(singleMetrics){it[43][MetricType.RLoc]}.isEqualTo(31)
+        assertWithPrintOnFail(singleMetrics) { it[43][MetricType.RLoc] }.isEqualTo(31)
     }
 
     private val code =
-"""package none;
+            """package none;
 
 import foo;
 import bar;

@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.appli
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
-import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetricsWithFailOnParseError
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.defaultJavaSource
 import org.junit.Test
 
@@ -13,13 +13,13 @@ class TryCatchFinallyTest {
     fun example_has_correct_rloc_count() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(code))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(44)
     }
 
     private val code =
-"""/*
+            """/*
  * From https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
  */
 public class Foo{

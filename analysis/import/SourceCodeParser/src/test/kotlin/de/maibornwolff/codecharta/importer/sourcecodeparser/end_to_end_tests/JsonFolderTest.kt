@@ -9,7 +9,7 @@ import org.junit.Test
 
 class JsonFolderTest {
 
-    private val resource = "src/test/resources/$end2EndFolder/biggerJavaProject"
+    private val resource = "src/test/../test/resources/$end2EndFolder/biggerJavaProject/."
 
     private val output = retrieveStreamAsString {
         SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=json"))

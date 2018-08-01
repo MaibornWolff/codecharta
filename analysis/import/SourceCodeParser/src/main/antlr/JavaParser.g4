@@ -166,7 +166,18 @@ genericConstructorDeclaration
     ;
 
 constructorDeclaration
-    : IDENTIFIER formalParameters (THROWS qualifiedNameList)? constructorBody=block
+    : IDENTIFIER formalParameters (THROWS qualifiedNameList)? constructorBody
+    ;
+
+constructorBody
+	:	'{' explicitConstructorInvocation? blockStatement* '}'
+    ;
+
+explicitConstructorInvocation
+	:	typeArguments? THIS '(' expressionList? ')' ';'
+	|	typeArguments? SUPER '(' expressionList? ')' ';'
+	|	IDENTIFIER '.' typeArguments? SUPER '(' expressionList? ')' ';'
+	|	primary '.' typeArguments SUPER '(' expressionList? ')' ';'
     ;
 
 fieldDeclaration
@@ -418,7 +429,16 @@ resources
     ;
 
 resource
+    : resourceDeclaration
+    | resourceReference
+    ;
+
+resourceDeclaration
     : variableModifier* classOrInterfaceType variableDeclaratorId '=' expression
+    ;
+
+resourceReference
+    : IDENTIFIER
     ;
 
 /** Matches cases then statements, both of which are mandatory.

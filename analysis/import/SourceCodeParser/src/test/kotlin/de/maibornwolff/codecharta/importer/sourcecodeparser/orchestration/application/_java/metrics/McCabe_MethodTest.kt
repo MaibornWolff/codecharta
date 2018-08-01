@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.appli
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
-import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetricsWithFailOnParseError
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.defaultJavaSource
 import org.junit.Test
 
@@ -13,7 +13,7 @@ class McCabe_MethodTest {
     fun `no method means no complexity`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(noMethod))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(0 + 0)
     }
@@ -27,7 +27,7 @@ public class Foo {
     fun `empty method increments complexity by one`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(emptyMethod))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(1 + 0)
     }
@@ -44,7 +44,7 @@ public class Foo {
     fun `two empty method means complexity by two`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(doubleEmptyMethod))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(2 + 0)
     }
@@ -60,7 +60,7 @@ public class Foo {
     fun `calling method by name does not increment complexity`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(streamWithDoubleColon))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(1 + 0)
     }
@@ -79,7 +79,7 @@ public class Foo {
     fun `creating a lambda increments complexity because it is the same as a method declaration`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(streamWithLambda))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(1 + 1)
     }
@@ -99,24 +99,22 @@ public class Foo {
     fun `creating a long lambda increments complexity because it is the same as a method declaration`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(streamWithLongLambda))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(1 + 1)
     }
 
-
     private val streamWithLongLambda = """
 public class Foo {
-    private int bla;
+    private List<Integer> myList;
     public void doStuff(){
         myList
-            .stream()
-            .reduce((a, b) -> {
-                return a + b;
-            })
+                .stream()
+                .reduce((a, b) -> {
+                    return a + b;
+                });
     }
 }""".lines()
-
 
 
 }

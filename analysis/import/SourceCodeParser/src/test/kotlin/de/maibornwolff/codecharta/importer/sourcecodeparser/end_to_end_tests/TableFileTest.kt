@@ -19,17 +19,17 @@ class TableFileTest {
     @Test
     fun `table output has correct header`() {
         assertThat(elementsOf(output.lines()[0])).describedAs(output).containsExactly("LoC", "RLoC", "MCC", "Code")
-        assertThat(output.lines()[1]).describedAs("\n"+output).contains("------")
+        assertThat(output.lines()[1]).describedAs("\n" + output).contains("------")
     }
 
     @Test
     fun `table output has correct length`() {
-        assertThat(output.lines().size).describedAs("\n"+output).isEqualTo(2 + 7)//header+each code line
+        assertThat(output.lines().size).describedAs("\n" + output).isEqualTo(2 + 7)//header+each code line
     }
 
     @Test
     fun `table output has correct metrics for line`() {
-        assertThat(elementsOf(output.lines()[7])).describedAs("\n"+output).contains("6", "5", "public", "void", "noop(){")
+        assertThat(elementsOf(output.lines()[7])).describedAs("\n" + output).contains("6", "5", "public", "void", "noop(){")
     }
 
 

@@ -11,10 +11,10 @@ import org.assertj.core.util.CheckReturnValue
 
 @CheckReturnValue
 fun <T> assertWithPrintOnFail(detailedMetricTable: DetailedMetricTable, foo: (detailedMetricTable: DetailedMetricTable) -> T): AbstractAssert<*, T> {
-    return Assertions.assertThat(foo(detailedMetricTable)).describedAs("\n"+ detailedMetricToTable(detailedMetricTable) +"\n")
+    return Assertions.assertThat(foo(detailedMetricTable)).describedAs("\n" + detailedMetricToTable(detailedMetricTable) + "\n")
 }
 
 @CheckReturnValue
 fun <T> assertWithPrintOnFail(overviewMetric: OverviewMetric, foo: (overviewMetric: OverviewMetric) -> T): AbstractAssert<*, T> {
-    return Assertions.assertThat(foo(overviewMetric)).describedAs("\n"+ overviewMetricToTable(overviewMetric) +"\n")
+    return Assertions.assertThat(foo(overviewMetric)).describedAs("\n" + overviewMetricToTable(overviewMetric) + "\n")
 }

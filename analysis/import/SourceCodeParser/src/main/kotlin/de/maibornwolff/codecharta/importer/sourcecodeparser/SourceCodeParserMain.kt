@@ -18,7 +18,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     private var help = false
 
     @Option(names = ["-p", "--projectName"], description = ["project name"])
-    private var projectName = "SourceCodeParserMain"
+    private var projectName = "DefaultProjectName"
 
     @Option(names = ["-f", "--format"], description = ["the format to output"], converter = [(OutputTypeConverter::class)])
     private var outputFormat = OutputFormat.JSON
@@ -51,7 +51,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
 
     private fun getSourceCodeParserEntryPoint(): SourceCodeParserEntryPoint {
         return SourceCodeParserEntryPoint(
-                MetricCalculator(AntlrJavaCodeTagProvider()),
+                MetricCalculator(AntlrJavaCodeTagProvider(System.err)),
                 getPrinter()
         )
     }

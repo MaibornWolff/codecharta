@@ -7,11 +7,18 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class AntlrJavaCodeTagProvider implements JavaCodeTagProvider {
+
+    private PrintStream parseErrorPrintStream;
+
+    public AntlrJavaCodeTagProvider(PrintStream parseErrorPrintStream) {
+        this.parseErrorPrintStream = parseErrorPrintStream;
+    }
 
     public Map<Integer, List<Tags>> getTags(SourceCode sourceCode) {
         CommonTokenStream tokenStream = getTokenStream(sourceCode);
@@ -31,7 +38,7 @@ public class AntlrJavaCodeTagProvider implements JavaCodeTagProvider {
     private JavaParser.CompilationUnitContext getCompilationUnit(SourceCode sourceCode, CommonTokenStream tokenStream) {
         JavaParser parser = new JavaParser(tokenStream);
         parser.removeErrorListeners();
-        parser.addErrorListener(new SourceNamePrintingErrorListener(sourceCode));
+        parser.addErrorListener(new SourceNamePrintingErrorListener(parseErrorPrintStream, sourceCode));
         return parser.compilationUnit();
     }
 }

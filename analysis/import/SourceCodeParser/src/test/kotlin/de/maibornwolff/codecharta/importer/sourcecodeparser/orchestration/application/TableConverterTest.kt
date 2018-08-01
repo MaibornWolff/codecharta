@@ -9,7 +9,7 @@ class TableConverterTest {
     fun `prints header and all code lines`() {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
-        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
+        val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         val output = detailedMetricToTable(detailedMetricTable)
 
@@ -20,7 +20,7 @@ class TableConverterTest {
     fun prints_correct_header_order() {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
-        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
+        val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         val output = detailedMetricToTable(detailedMetricTable)
 
@@ -31,7 +31,7 @@ class TableConverterTest {
     fun prints_underline() {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
-        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
+        val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         val output = detailedMetricToTable(detailedMetricTable)
 
@@ -42,7 +42,7 @@ class TableConverterTest {
     fun prints_real_line_count_when_it_was_incremented() {
         val sourceCode = javaSource("Foo.java", "", code)
         val locationResolverStub = DetailedSourceProviderStub(sourceCode)
-        val detailedMetricTable = calculateDetailedMetrics(locationResolverStub)
+        val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         val output = detailedMetricToTable(detailedMetricTable)
 
@@ -50,7 +50,7 @@ class TableConverterTest {
     }
 
     private val code =
-"""
+            """
 package none;
 import foo;
 

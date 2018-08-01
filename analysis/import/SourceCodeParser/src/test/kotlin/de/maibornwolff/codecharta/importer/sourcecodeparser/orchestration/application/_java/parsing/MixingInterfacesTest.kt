@@ -18,12 +18,12 @@ class MixingInterfacesTest {
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.RLoc] }.isEqualTo(6)
     }
 
-    private val code =
-"""package none;
+    private val code = """
+package none;
 
 public class Foo {
 
-    public Blub getStuff(){
+    public void getStuff(){
         var seaplane = (Navigable & Flyer) Vehicle::create;
     }
 }""".lines()

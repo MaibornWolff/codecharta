@@ -13,9 +13,9 @@ class NoSourceCodeFoundTest {
         val location = "$end2EndFolder/emptySourceProject/de/oh/no/MoreTest.md"
         val locationResolver = detailedSourceProviderFromResource(location)
 
-        val singleMetrics = calculateDetailedMetrics(locationResolver)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolver)
 
-        assertWithPrintOnFail(singleMetrics) {it.sum[MetricType.LoC]}.isEqualTo(0)
+        assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.LoC] }.isEqualTo(0)
     }
 
     @Test
@@ -23,11 +23,11 @@ class NoSourceCodeFoundTest {
         val location = "$end2EndFolder/emptySourceProject"
         val locationResolver = overviewSourceProviderFromResource(location)
 
-        val singleMetrics = calculateOverviewMetrics(locationResolver)
+        val singleMetrics = calculateOverviewMetricsWithFailOnParseError(locationResolver)
 
-        assertWithPrintOnFail(singleMetrics) {it.languageValue(OopLanguage.JAVA)}.isEqualTo(0)
-        assertWithPrintOnFail(singleMetrics) {it.metricValue(MetricType.LoC)}.isEqualTo(0)
-        assertWithPrintOnFail(singleMetrics) {it.metricValue(MetricType.RLoc)}.isEqualTo(0)
+        assertWithPrintOnFail(singleMetrics) { it.languageValue(OopLanguage.JAVA) }.isEqualTo(0)
+        assertWithPrintOnFail(singleMetrics) { it.metricValue(MetricType.LoC) }.isEqualTo(0)
+        assertWithPrintOnFail(singleMetrics) { it.metricValue(MetricType.RLoc) }.isEqualTo(0)
     }
 
 }

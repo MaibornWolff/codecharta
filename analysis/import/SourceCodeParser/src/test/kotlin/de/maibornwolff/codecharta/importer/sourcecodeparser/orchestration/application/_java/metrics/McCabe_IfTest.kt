@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.appli
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.MetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
-import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetricsWithFailOnParseError
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.defaultJavaSource
 import org.junit.Test
 
@@ -13,7 +13,7 @@ class McCabe_IfTest {
     fun `if increments complexity by one, else does not count because that is the normal control flow`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(singleIf))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(1 + 1)
     }
@@ -33,7 +33,7 @@ public class Foo {
     fun `three if conditions increment complexity by three`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(threeIfConditions))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(1 + 3)
     }
@@ -51,7 +51,7 @@ public class Foo {
     fun `ternary operator increments complexity`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(ternaryOperator))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(1 + 1)
     }
@@ -67,15 +67,16 @@ public class Foo {
     fun `two ternary operators increments complexity by two`() {
         val locationResolverStub = DetailedSourceProviderStub(defaultJavaSource(doubleTernaryOperator))
 
-        val singleMetrics = calculateDetailedMetrics(locationResolverStub)
+        val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[MetricType.MCC] }.isEqualTo(1 + 2)
     }
 
     private val doubleTernaryOperator = """
 public class Foo {
+    private Object a, b, c, d, e;
     public void doStuff(){
-        Object a = a == null ? b ==  null ? c : d;
+        Object z = a == null ? (b ==  null ? c : d) : e;
     }
 }""".lines()
 

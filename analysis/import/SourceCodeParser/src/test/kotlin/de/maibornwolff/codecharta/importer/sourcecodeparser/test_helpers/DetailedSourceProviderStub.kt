@@ -20,7 +20,7 @@ fun defaultJavaSource(code: List<String>): SourceCode {
     return SourceCode(SourceDescriptor("${e.className}.${e.methodName}", "none", OopLanguage.JAVA), code)
 }
 
-class DetailedSourceProviderStub(private val sourceCode: SourceCode): DetailedSourceProvider {
+class DetailedSourceProviderStub(private val sourceCode: SourceCode) : DetailedSourceProvider {
     override fun readSource(): SourceCode = sourceCode
 }
 
