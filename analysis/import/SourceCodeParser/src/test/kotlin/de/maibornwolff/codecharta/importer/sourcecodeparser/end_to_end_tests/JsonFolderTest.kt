@@ -9,21 +9,38 @@ import org.junit.Test
 
 class JsonFolderTest {
 
-    private val resource = "src/test/resources/$end2EndFolder/miniJavaProject"
+    private val resource = "src/test/resources/$end2EndFolder/biggerJavaProject"
 
-    private val outputStream = retrieveStreamAsString {
+    private val output = retrieveStreamAsString {
         SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=json"))
     }
 
     @Test
     fun `json output has correct api version`() {
-        assertThat(outputStream).containsOnlyOnce(""""apiVersion":"1.0"""")
+        assertThat(output).containsOnlyOnce(""""apiVersion":"1.0"""")
     }
 
     @Test
     fun `json output has one root node`() {
-        assertThat(outputStream).containsOnlyOnce(""""name":"root"""")
+        assertThat(output).containsOnlyOnce(""""name":"root"""")
     }
 
+    @Test
+    fun `json output does not contains source path, because we don't care about that information`() {
+        assertThat(output).doesNotContain(
+                """"name":"src"""",
+                """"name":"test"""",
+                """"name":"resources"""",
+                """"name":"biggerJavaProject""""
+        )
+    }
+
+    @Test
+    fun `json output contains the path relative to the source path`() {
+        assertThat(output).contains(
+                """"name":"de"""",
+                """"name":"foo""""
+        )
+    }
 
 }

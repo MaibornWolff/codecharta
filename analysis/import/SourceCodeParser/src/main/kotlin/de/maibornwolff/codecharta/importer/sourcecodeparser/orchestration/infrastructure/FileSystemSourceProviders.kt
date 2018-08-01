@@ -15,7 +15,7 @@ import java.nio.file.Files
  */
 class FileSystemDetailedSourceProvider(private val sourceLocation: File) : DetailedSourceProvider {
 
-    override fun readSource() = resolveOneFile(sourceLocation)
+    override fun readSource() = resolveOneFile(sourceLocation, sourceLocation)
 
 }
 
@@ -26,7 +26,7 @@ class FileSystemOverviewSourceProvider(private val sourceLocations: List<File>) 
     private fun resolvePath(fileOrFolder: File): List<SourceCode> = fileOrFolder
             .walk()
             .filter { it.isFile && languageFor.containsKey(it.extension) }
-            .map { resolveOneFile(it) }
+            .map { resolveOneFile(it, fileOrFolder) }
             .toList()
 }
 
@@ -34,11 +34,12 @@ private val languageFor = mapOf<String, Language>(
         "java" to OopLanguage.JAVA
 )
 
-private fun resolveOneFile(file: File): SourceCode {
+private fun resolveOneFile(file: File, sourceLocation: File): SourceCode {
+    val relativePath = sourceLocation.toPath().normalize().relativize(file.parentFile.toPath().normalize()).toString()
     return SourceCode(
             SourceDescriptor(
                     file.name,
-                    file.parentFile.path,
+                    relativePath,
                     languageFor.getOrDefault(file.extension, DefaultLanguage.NONE_FOUND)
             ),
             Files.readAllLines(file.toPath())
