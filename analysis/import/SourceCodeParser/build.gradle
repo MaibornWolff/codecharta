@@ -1,25 +1,25 @@
 plugins {
     id 'application'
     id 'antlr'
-    id "net.ltgt.errorprone" version "0.0.16"
+    id 'net.ltgt.errorprone' version '0.0.16'
 }
 
 dependencies {
     compile project(':model')
 
     antlr group: 'org.antlr', name:'antlr4', version: antlr_version
-    errorprone group: 'com.google.errorprone', name:'error_prone_core', version:'2.3.1'
+    errorprone group: 'com.google.errorprone', name:'error_prone_core', version: '2.3.1'
 
     compile group: 'info.picocli', name: 'picocli', version: picocli_version
-    compile "org.antlr:antlr4-runtime:$antlr_version"
+    compile group: 'org.antlr', name:'antlr4-runtime', version: antlr_version
 
     testCompile group: 'junit', name: 'junit', version: junit4_version
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.10.0'
-    testCompile 'com.tngtech.archunit:archunit:0.8.2'
+    testCompile group: 'com.tngtech.archunit', name: 'archunit', version: '0.8.2'
     testCompile project(path: ':model', configuration: 'testOutput')
 }
 
-mainClassName = "de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain"
+mainClassName = 'de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain'
 applicationName = 'codecharta-sourcecodeparser'
 
 
@@ -33,7 +33,7 @@ jar {
 }
 
 tasks.withType(JavaCompile) {
-    // In Gradle 4.9+, prefer using tasks.withType(JavaCompile).configureEach {
+    // errorprone should ignore generated code
     options.compilerArgs += ['-XepExcludedPaths:.*/src/generated/.*', '-Xep:DeadException:WARN' ]
 }
 
@@ -41,7 +41,7 @@ tasks.withType(JavaCompile) {
 generateGrammarSource {
     maxHeapSize = "64m"
     arguments += ['-package', 'de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java']
-    arguments += ["-visitor", "-long-messages"]
+    arguments += ['-visitor', '-long-messages']
     // NOTE: We NEED projectDir here, because the root project build.gradle will otherwise use the wrong relative folder
     outputDirectory = new File("${projectDir}/src/generated/antlr/de/maibornwolff/codecharta/importer/sourcecodeparser/oop/infrastructure/antlr/java").absoluteFile
 }
@@ -50,12 +50,12 @@ compileJava.dependsOn generateGrammarSource
 
 sourceSets {
     main {
-        java.srcDirs = ["src/main/java", "src/generated/antlr"]
+        java.srcDirs = ['src/main/java', 'src/generated/antlr']
     }
 }
 
 compileJava.source sourceSets.main.java
 
 clean{
-    delete "src/generated"
+    delete 'src/generated'
 }
