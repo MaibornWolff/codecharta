@@ -18,8 +18,9 @@ class JsonBuilder(projectName: String) {
     fun addComponentAsNode(metricTableSum: DetailedMetricTableSum): JsonBuilder {
         val node = MutableNode(metricTableSum.sourceDescriptor.name, attributes = hashMapOf(
                 "lines_of_code" to metricTableSum[OverviewMetricType.LoC],
-                "rloc" to metricTableSum[OverviewMetricType.RLoc])
-        )
+                "rloc" to metricTableSum[OverviewMetricType.RLoc],
+                "mcc" to metricTableSum[OverviewMetricType.MCC]
+        ))
         val path = PathFactory.fromFileSystemPath(metricTableSum.sourceDescriptor.location)
 
         projectBuilder.insertByPath(path, node)

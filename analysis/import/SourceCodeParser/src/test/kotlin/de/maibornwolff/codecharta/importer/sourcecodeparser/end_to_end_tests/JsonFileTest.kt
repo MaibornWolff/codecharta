@@ -40,5 +40,10 @@ class JsonFileTest {
         assertThat(outputStream).containsOnlyOnce("""rloc":6""")
     }
 
+    @Test
+    fun `json output has correct complexity`() {
+        assertThat(outputStream).containsOnlyOnce("""mcc":1""")
+    }
+
 
 }
