@@ -18,6 +18,14 @@ legend-panel-component {
     background-color: #fff;
     padding: 10px;
 
+
+    hr {
+      border-right-style: none;
+      border-left-style: none;
+      border-bottom-style: none;
+      color: #000;
+    }
+
     .legend-block {
 
       display: block;
@@ -46,7 +54,6 @@ legend-panel-component {
       .set-left-margin {
          margin-left: 18px;
        }
-
 
     }
 
