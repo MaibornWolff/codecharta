@@ -13,6 +13,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+## [1.14.2] - 2018-07-16
+### Added
+
+### Changed
+- Changed folder detail metrics from mean to sum
+
+### Removed
+
+### Fixed
+
 ## [1.14.1] - 2018-07-13
 ### Added
 
