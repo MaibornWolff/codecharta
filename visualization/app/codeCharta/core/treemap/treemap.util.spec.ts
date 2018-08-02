@@ -22,6 +22,7 @@ describe("treemap utils", () => {
 
             codeMapNode = {
                 name: "Anode",
+                path: "/root/Anode",
                 type: "File",
                 attributes: {}
             }
@@ -83,6 +84,35 @@ describe("treemap utils", () => {
             TreeMapUtils.isNodeLeaf.mockReturnValue(true);
             expect(buildNode()).toMatchSnapshot();
             TreeMapUtils.isNodeLeaf = tmp;
+        });
+
+        it("dependency couple node should use pairingrate/normal metric as height", () => {
+            treeMapSettings.visibleTemporalCouplingDependencies = [{
+                node: "/root/Anode",
+                nodeFilename: "Anode",
+                dependantNode: "/root/AnotherNode",
+                dependantNodeFilename: "AnotherNode",
+                pairingRate: 68,
+                averageRevs: 17,
+                visible: true,
+            }];
+            treeMapSettings.useCouplingHeight = true;
+            expect(buildNode()).toMatchSnapshot();
+            treeMapSettings.useCouplingHeight = false;
+            expect(buildNode()).toMatchSnapshot();
+        });
+
+        it("should set lowest possible height caused by other visible dependency pairs", () => {
+            treeMapSettings.visibleTemporalCouplingDependencies = [{
+                node: "/root/AnotherNode1",
+                nodeFilename: "AnotherNode1",
+                dependantNode: "/root/AnotherNode2",
+                dependantNodeFilename: "AnotherNode2",
+                pairingRate: 33,
+                averageRevs: 12,
+                visible: true,
+            }];
+            expect(buildNode()).toMatchSnapshot();
         });
 
     });
