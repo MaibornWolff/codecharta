@@ -1,6 +1,6 @@
 import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {hierarchy} from "d3-hierarchy";
-import {MarkingPackages, SettingsService} from "../../core/settings/settings.service";
+import {SettingsService} from "../../core/settings/settings.service";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 
 export class CodeMapActionsService {

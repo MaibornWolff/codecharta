@@ -3,8 +3,7 @@ import {
     SettingsServiceSubscriber,
     SettingsService,
     Settings,
-    Range,
-    MarkingPackages
+    Range
 } from "../../core/settings/settings.service";
 import $ from "jquery";
 import {MapColors} from "../codeMap/rendering/renderSettings";
@@ -13,6 +12,16 @@ import {STATISTIC_OPS} from "../../core/statistic/statistic.service";
 import "./legendPanel.scss";
 import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {hierarchy} from "d3-hierarchy";
+
+export interface MarkingPackages {
+    markingColor: string,
+    packageItem: PackageItem[],
+}
+
+export interface PackageItem {
+    name: string,
+    path: string,
+}
 
 export class LegendPanelController implements DataServiceSubscriber, SettingsServiceSubscriber {
 

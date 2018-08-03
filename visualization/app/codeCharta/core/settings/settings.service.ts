@@ -22,16 +22,6 @@ export interface Scale {
     z: number;
 }
 
-export interface MarkingPackages {
-    markingColor: string,
-    packageItem: PackageItem[],
-}
-
-export interface PackageItem {
-    name: string,
-    path: string,
-}
-
 export interface Settings {
 
     map: CodeMap;
