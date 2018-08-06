@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- Show names of marked packages in legend
 - CodeMaatCouplingImport to Analysis #172
 
 ### Changed
