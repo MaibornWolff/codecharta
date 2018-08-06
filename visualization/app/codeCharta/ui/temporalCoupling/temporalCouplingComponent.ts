@@ -1,8 +1,9 @@
 import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settings.service";
 import {IRootScopeService, ITimeoutService} from "angular";
-import {CodeMap, CodeMapDependency} from "../../core/data/model/CodeMap";
+import {CodeMap, CodeMapDependency, CodeMapNode} from "../../core/data/model/CodeMap";
 import {map} from "d3-collection";
 import {isBoolean} from "util";
+import {hierarchy} from "d3-hierarchy";
 
 export class TemporalCouplingController implements SettingsServiceSubscriber {
 
@@ -55,7 +56,9 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
             }
 
             this.temporalCoupling = this.temporalCoupling.filter(
-                couple => couple.averageRevs >= this.settingsService.settings.minimumAverageRevs
+                couple =>
+                    couple.averageRevs >= this.settingsService.settings.minimumAverageRevs &&
+                    this.isCoupleVisibleInCodeMap(couple, map)
             );
 
             if (this.settingsService.settings.intelligentTemporalCouplingFilter) {
@@ -64,6 +67,22 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
                 );
             }
         }
+    }
+
+    private isCoupleVisibleInCodeMap(couple, map) {
+        var isNodeInCodeMap = false;
+        var isDependantNodeInCodeMap = false;
+
+        hierarchy<CodeMapNode>(map.root).leaves().forEach(function (node) {
+
+            if (node.data.path == couple.node && node.data.visible) {
+                isNodeInCodeMap = true;
+            }
+            if (node.data.path == couple.dependantNode && node.data.visible) {
+                isDependantNodeInCodeMap = true;
+            }
+        });
+        return isNodeInCodeMap && isDependantNodeInCodeMap;
     }
 
     private isEligibleCouple(couple) {
@@ -91,7 +110,6 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
         });
         return isEligibleCouple;
     }
-
 }
 
 export const temporalCouplingComponent = {
