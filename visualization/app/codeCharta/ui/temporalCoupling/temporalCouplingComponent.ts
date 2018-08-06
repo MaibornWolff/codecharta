@@ -1,8 +1,6 @@
 import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settings.service";
-import {IRootScopeService, ITimeoutService} from "angular";
+import {ITimeoutService} from "angular";
 import {CodeMap, CodeMapDependency, CodeMapNode} from "../../core/data/model/CodeMap";
-import {map} from "d3-collection";
-import {isBoolean} from "util";
 import {hierarchy} from "d3-hierarchy";
 
 export class TemporalCouplingController implements SettingsServiceSubscriber {
