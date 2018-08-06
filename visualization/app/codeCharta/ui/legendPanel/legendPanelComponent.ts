@@ -1,10 +1,27 @@
 import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/data.service";
-import {SettingsServiceSubscriber, SettingsService, Settings, Range} from "../../core/settings/settings.service";
+import {
+    SettingsServiceSubscriber,
+    SettingsService,
+    Settings,
+    Range
+} from "../../core/settings/settings.service";
 import $ from "jquery";
 import {MapColors} from "../codeMap/rendering/renderSettings";
 import {ITimeoutService} from "angular";
 import {STATISTIC_OPS} from "../../core/statistic/statistic.service";
 import "./legendPanel.scss";
+import {CodeMapNode} from "../../core/data/model/CodeMap";
+import {hierarchy} from "d3-hierarchy";
+
+export interface MarkingPackages {
+    markingColor: string,
+    packageItem: PackageItem[],
+}
+
+export interface PackageItem {
+    name: string,
+    path: string,
+}
 
 export class LegendPanelController implements DataServiceSubscriber, SettingsServiceSubscriber {
 
@@ -21,13 +38,13 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     private select: string;
     private operation: string;
     private deltaColorsFlipped: boolean;
+    private markingPackages: MarkingPackages[];
 
     /* @ngInject */
     constructor(private $timeout: ITimeoutService,
                 private settingsService: SettingsService,
                 private dataService: DataService,
                 private $element: Element) {
-
         let ctx = this;
 
         $timeout(()=> {
@@ -42,7 +59,6 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         this.dataService.subscribe(this);
 
         this.initAnimations();
-
     }
 
     onDataChanged(data: DataModel) {
@@ -62,6 +78,122 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         }
         this.$timeout(()=>$("#positiveDelta").attr("src", this.pd), 200);
         this.$timeout(()=>$("#negativeDelta").attr("src", this.nd), 200);
+    }
+
+
+    private setMarkingPackagesIntoLegend() {
+        this.markingPackages = [];
+        if (this.settingsService.settings.map) {
+            var rootNode: CodeMapNode = this.settingsService.settings.map.root;
+
+            hierarchy<CodeMapNode>(rootNode).descendants().forEach((hierarchyNode) => {
+                const node: CodeMapNode = hierarchyNode.data;
+                if (node.markingColor) {
+                    const mp = this.getNewMarkingPackageFromNode(node);
+                    if (this.legendContainsMarkingPackages()) {
+                        this.handleMarkingPackageWithExistingColor(mp);
+                    } else {
+                        this.markingPackages = [mp];
+                    }
+                }
+            });
+        }
+    }
+
+    private legendContainsMarkingPackages() {
+        return this.markingPackages &&
+            this.markingPackages.length > 0 &&
+            this.markingPackages != [];
+    }
+
+    private getNewMarkingPackageFromNode(node: CodeMapNode) {
+        return {
+            markingColor: node.markingColor,
+            packageItem: [{
+                name: node.name.split('/').slice(-1)[0],
+                path: node.path
+            }]
+        };
+    }
+
+    private handleMarkingPackageWithExistingColor(mp: MarkingPackages) {
+        var addMP = true;
+        const packagesWithSameMarkingColor: MarkingPackages[] = this.getPackagesWithSameMarkingColor(mp);
+        if (packagesWithSameMarkingColor != []) {
+            for (const mpWithSameColor of packagesWithSameMarkingColor) {
+                if (this.isPartOfSecondPackage(mp, mpWithSameColor)) {
+                    addMP = false;
+                }
+            }
+        } else {
+            addMP = true;
+        }
+        if (addMP) {
+            this.markingPackages.push(mp);
+        }
+    }
+
+    private getPackagesWithSameMarkingColor(mp: MarkingPackages) {
+        var packagesWithSameMarkingColor: MarkingPackages[] = [];
+        for(const otherMP of this.markingPackages) {
+            if (otherMP.markingColor == mp.markingColor) {
+                packagesWithSameMarkingColor.push(otherMP);
+            }
+        }
+        return packagesWithSameMarkingColor;
+    }
+
+    private isPartOfSecondPackage(mp1: MarkingPackages, mp2: MarkingPackages) {
+        return mp1.packageItem[0].path.indexOf(mp2.packageItem[0].path) >= 0;
+    }
+
+    private combineMarkingPackagesByColors() {
+        const allMP = this.markingPackages;
+        this.markingPackages = [];
+        if (allMP) {
+            for (var i = 0; i < allMP.length; i++) {
+                var markingPackage: MarkingPackages = {
+                    markingColor: this.getImageDataUri(Number(allMP[i].markingColor)),
+                    packageItem: [{
+                        name: this.getPackagePathPreview(allMP[i]),
+                        path: allMP[i].packageItem[0].path,
+                    }],
+                };
+
+                const markingPackageWithSameColor = this.getPackagesWithSameMarkingColor(markingPackage);
+                if (markingPackageWithSameColor != [] && markingPackageWithSameColor.length > 0) {
+                    const index = this.markingPackages.indexOf(markingPackageWithSameColor[0]);
+                    this.markingPackages[index].packageItem.push(markingPackage.packageItem[0]);
+                } else {
+                    this.markingPackages.push(markingPackage);
+                }
+            }
+        }
+    }
+
+    getPackagePathPreview(mp: MarkingPackages) {
+        const MAX_NAME_LENGTH = {
+            lowerLimit: 24,
+            upperLimit: 28,
+        };
+        const packageName = mp.packageItem[0].name;
+        const packagePath = mp.packageItem[0].path;
+
+        if (packageName.length > MAX_NAME_LENGTH.lowerLimit && packageName.length < MAX_NAME_LENGTH.upperLimit) {
+            return ".../" + packageName;
+
+        } else if (packageName.length > MAX_NAME_LENGTH.upperLimit) {
+            const firstPart = packageName.substr(0, MAX_NAME_LENGTH.lowerLimit / 2);
+            const secondPart = packageName.substr(packageName.length - MAX_NAME_LENGTH.lowerLimit / 2);
+            return firstPart + "..." + secondPart;
+
+        } else {
+            const from = Math.max(packagePath.length - MAX_NAME_LENGTH.lowerLimit, 0);
+            const previewPackagePath = packagePath.substring(from);
+            const rootNode = this.settingsService.settings.map.root;
+            const startingDots = (previewPackagePath.startsWith(rootNode.path)) ? "" : "...";
+            return startingDots + previewPackagePath;
+        }
     }
 
     onSettingsChanged(s: Settings) {
@@ -84,7 +216,8 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         $("#select").attr("src", this.select);
 
         this.refreshDeltaColors();
-
+        this.setMarkingPackagesIntoLegend();
+        this.combineMarkingPackagesByColors();
     }
 
     getImageDataUri(hex: number): string {
@@ -146,7 +279,6 @@ export const legendPanelComponent = {
     template: require("./legendPanel.html"),
     controller: LegendPanelController
 };
-
 
 
 
