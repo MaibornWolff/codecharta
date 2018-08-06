@@ -146,54 +146,6 @@ Object {
 }
 `;
 
-exports[`treemap utils build node should check coupling height 1`] = `
-Object {
-  "attributes": Object {},
-  "children": Array [],
-  "deltas": undefined,
-  "depth": 0,
-  "height": 1360,
-  "heightDelta": 0,
-  "isLeaf": true,
-  "length": 400,
-  "link": undefined,
-  "markingColor": NaN,
-  "name": "Anode",
-  "origin": undefined,
-  "parent": null,
-  "path": "/root/Anode",
-  "visible": undefined,
-  "width": 400,
-  "x0": 0,
-  "y0": 0,
-  "z0": 0,
-}
-`;
-
-exports[`treemap utils build node should check coupling height 2`] = `
-Object {
-  "attributes": Object {},
-  "children": Array [],
-  "deltas": undefined,
-  "depth": 0,
-  "height": 100,
-  "heightDelta": 0,
-  "isLeaf": true,
-  "length": 400,
-  "link": undefined,
-  "markingColor": NaN,
-  "name": "Anode",
-  "origin": undefined,
-  "parent": null,
-  "path": "/root/Anode",
-  "visible": undefined,
-  "width": 400,
-  "x0": 0,
-  "y0": 0,
-  "z0": 0,
-}
-`;
-
 exports[`treemap utils build node should set lowest possible height caused by other visible dependency pairs 1`] = `
 Object {
   "attributes": Object {},
