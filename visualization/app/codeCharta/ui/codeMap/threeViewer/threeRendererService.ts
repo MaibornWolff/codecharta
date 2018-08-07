@@ -23,12 +23,13 @@ export class ThreeRendererService implements SettingsServiceSubscriber {
         preserveDrawingBuffer: true
     };
 
-    renderer: WebGLRenderer = new THREE.WebGLRenderer(ThreeRendererService.RENDER_OPTIONS);
+    public renderer: WebGLRenderer;
 
     /* @ngInject */
     constructor(
         private settingsService: SettingsService
     ) {
+        this.renderer = new THREE.WebGLRenderer(ThreeRendererService.RENDER_OPTIONS);
         this.settingsService.subscribe(this);
         this.onSettingsChanged(this.settingsService.settings, null);
     }
