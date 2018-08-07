@@ -1,11 +1,11 @@
 import * as THREE from "three";
 import {WebGLRenderer} from "three";
-import {SettingsService, Settings} from "../../../core/settings/settings.service";
+import {SettingsService, Settings, SettingsServiceSubscriber} from "../../../core/settings/settings.service";
 
 /**
  * A service which manages the Three.js renderer in an angular way.
  */
-export class ThreeRendererService {
+export class ThreeRendererService implements SettingsServiceSubscriber {
 
     public static SELECTOR = "threeRendererService";
 

@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 ### Added
 - Show names of marked packages in legend
+- Added option to set white background
 
 ### Changed
 
