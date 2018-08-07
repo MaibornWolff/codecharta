@@ -22,6 +22,9 @@ Generates visualisation data from CodeMaat Temporal Coupling CSV data with heade
     
 5. Visualizing `merged.json` with [Visualization](https://github.com/MaibornWolff/codecharta/tree/master/visualization)
 
+![CodeMaat CouplingImport Modell](src/codemaat-couplingimport-modell.jpg)
+
+
 ## Example File Content
 
 ```
