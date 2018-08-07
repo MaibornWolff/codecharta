@@ -37,7 +37,7 @@ export class CodeMapActionsService {
         let startingColor = node.markingColor;
         let recFn = (current: CodeMapNode)=>{
             if(!current.markingColor || current.markingColor === startingColor) {
-                current.markingColor = "0x"+color.substr(1);
+                current.markingColor = "0x" + color.substr(1);
                 if(current.children){
                     current.children.forEach(recFn);
                 }
