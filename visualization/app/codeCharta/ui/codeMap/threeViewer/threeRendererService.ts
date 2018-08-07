@@ -23,7 +23,6 @@ export class ThreeRendererService {
         preserveDrawingBuffer: true
     };
 
-
     renderer: WebGLRenderer = new THREE.WebGLRenderer(ThreeRendererService.RENDER_OPTIONS);
 
     /* @ngInject */
@@ -32,7 +31,6 @@ export class ThreeRendererService {
     ) {
         this.settingsService.subscribe(this);
         this.onSettingsChanged(this.settingsService.settings, null);
-        //
     }
 
     /**
@@ -46,7 +44,6 @@ export class ThreeRendererService {
 
     public setCurrentClearColorFromSettings(settings: Settings) {
         if (settings.isWhiteBackground != undefined) {
-            console.log("onSettingsChanged", settings.isWhiteBackground);
             if (settings.isWhiteBackground) {
                 ThreeRendererService.CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.white;
             } else {
