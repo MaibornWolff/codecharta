@@ -12,4 +12,10 @@
     </md-checkbox>
 </md-input-container>
 
+<md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.isWhiteBackground" ng-change="$ctrl.settingsService.onSettingsChanged()">
+        White Background
+    </md-checkbox>
+</md-input-container>
+
 <reset-settings-button-component settings-names="deltaColorFlipped,neutralColorRange.to,neutralColorRange.flipped,neutralColorRange.from"></reset-settings-button-component>

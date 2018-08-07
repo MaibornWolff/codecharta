@@ -10,10 +10,8 @@ import "./codeMap.component.scss";
 
 import angular from "angular";
 import {SettingsService} from "../../core/settings/settings.service";
-import {hierarchy} from "d3-hierarchy";
 import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
-import {MapColors, renderSettings} from "./rendering/renderSettings";
 import {NodeContextMenuComponent} from "../nodeContextMenu/nodeContextMenu.component";
 
 export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
