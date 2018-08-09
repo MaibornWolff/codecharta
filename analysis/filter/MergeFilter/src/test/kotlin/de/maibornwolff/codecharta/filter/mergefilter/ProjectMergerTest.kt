@@ -29,6 +29,7 @@
 
 package de.maibornwolff.codecharta.filter.mergefilter
 
+import de.maibornwolff.codecharta.model.DependencyType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectMatcher
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
@@ -39,8 +40,6 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import java.io.InputStreamReader
 import kotlin.test.assertFailsWith
-
-const val DEFAULT_API_VERSION = "1.0"
 
 class ProjectMergerTest : Spek({
     describe("using a recursive node merger strategy") {
@@ -58,34 +57,47 @@ class ProjectMergerTest : Spek({
 
         describe("merging project with different names") {
             val projects = listOf(
-                    Project("test1", apiVersion = DEFAULT_API_VERSION),
-                    Project("test2", apiVersion = DEFAULT_API_VERSION)
+                    Project("test1"),
+                    Project("test2")
+            )
+
+            it("should throw a exception") {
+                val firstProjectName = ProjectMerger(projects, nodeMergerStrategy).extractProjectName()
+                assertThat(firstProjectName, CoreMatchers.`is`("test1"))
+            }
+        }
+
+        describe("merging project with same API major versions") {
+            val projectName = "test"
+            val projects = listOf(
+                    Project(projectName, apiVersion = "1.0"),
+                    Project(projectName, apiVersion = "1.1")
+            )
+
+            it("should merge projects") {
+                val project = ProjectMerger(projects, nodeMergerStrategy).merge()
+                assertThat(project.projectName, CoreMatchers.`is`(projectName))
+            }
+        }
+
+        describe("merging project with different API major versions") {
+            val projects = listOf(
+                    Project("test", apiVersion = "1.0"),
+                    Project("test", apiVersion = "2.0")
             )
 
             it("should throw a exception") {
                 assertFailsWith(MergeException::class) {
-                    ProjectMerger(projects, nodeMergerStrategy).extractProjectName()
+                    ProjectMerger(projects, nodeMergerStrategy).merge()
                 }
-            }
-        }
-
-        describe("merging project with different API versions") {
-            val projectName = "test"
-            val projects = listOf(
-                    Project(projectName, apiVersion = "1.0"),
-                    Project(projectName, apiVersion = "2.0")
-            )
-
-            it("should throw a exception") {
-                ProjectMerger(projects, nodeMergerStrategy).extractProjectName()
             }
         }
 
         describe("merging projects with same name and API version") {
             val projectName = "test"
             val projects = listOf(
-                    Project(projectName, apiVersion =  DEFAULT_API_VERSION),
-                    Project(projectName, apiVersion =  DEFAULT_API_VERSION)
+                    Project(projectName, apiVersion = "1.1"),
+                    Project(projectName, apiVersion = "1.1")
             )
 
             it("should extract project name") {
@@ -104,7 +116,7 @@ class ProjectMergerTest : Spek({
 
             it("should return project") {
                 val project = ProjectMerger(projectList, nodeMergerStrategy).merge()
-                assertThat(project, ProjectMatcher.matchesProject(originalProject))
+                assertThat(project, ProjectMatcher.matchesProjectUpToVersion(originalProject))
             }
         }
 
@@ -121,6 +133,65 @@ class ProjectMergerTest : Spek({
             }
         }
 
+        val TEST_DEPENDENCY_JSON_FILE = "testDependencies1.json"
+        val TEST_DEPENDENCY_JSON_FILE2 = "testDependencies2.json"
 
+        describe("merging two projects with dependencies") {
+            val originalProject1 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_DEPENDENCY_JSON_FILE)))
+            val originalProject2 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_DEPENDENCY_JSON_FILE2)))
+            val projectList = listOf(originalProject1, originalProject2)
+
+            val project = ProjectMerger(projectList, nodeMergerStrategy).merge()
+
+            it("should return different project") {
+
+                assertThat(project == originalProject1, CoreMatchers.`is`(false))
+                assertThat(project == originalProject2, CoreMatchers.`is`(false))
+            }
+
+            it("should have correct number of dependencies") {
+                assertThat(project.sizeOfDependencies(DependencyType.static), CoreMatchers.`is`(4))
+                assertThat(project.sizeOfDependencies(DependencyType.temporal_coupling), CoreMatchers.`is`(6))
+            }
+
+            it("should have correct number of files") {
+                assertThat(project.size, CoreMatchers.`is`(4))
+            }
+
+            it("should have correct number of attributes") {
+                assertThat(project.rootNode.children.first().attributes.size, CoreMatchers.`is`(11))
+
+            }
+        }
+
+
+        describe("merging two projects with dependencies with leadNodeMergingStrategy") {
+            val originalProject1 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_DEPENDENCY_JSON_FILE)))
+            val originalProject2 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_DEPENDENCY_JSON_FILE2)))
+            val projectList = listOf(originalProject1, originalProject2)
+
+            val nodeMergerStrategy: NodeMergerStrategy = LeafNodeMergerStrategy(false)
+            val project = ProjectMerger(projectList, nodeMergerStrategy).merge()
+
+            it("should return different project") {
+
+                assertThat(project == originalProject1, CoreMatchers.`is`(false))
+                assertThat(project == originalProject2, CoreMatchers.`is`(false))
+            }
+
+            it("should have correct number of dependencies") {
+                assertThat(project.sizeOfDependencies(DependencyType.static), CoreMatchers.`is`(0))
+                assertThat(project.sizeOfDependencies(DependencyType.temporal_coupling), CoreMatchers.`is`(0))
+            }
+
+            it("should have correct number of files") {
+                assertThat(project.size, CoreMatchers.`is`(4))
+            }
+
+            it("should have correct number of attributes") {
+                assertThat(project.rootNode.children.first().attributes.size, CoreMatchers.`is`(11))
+
+            }
+        }
     }
 })

@@ -48,8 +48,37 @@ object ProjectMatcher {
         }
     }
 
+    fun matchesProjectUpToVersion(expectedProject: Project): Matcher<Project> {
+        return object : BaseMatcher<Project>() {
+
+            override fun describeTo(description: Description) {
+                description.appendText("should be ").appendValue(expectedProject)
+            }
+
+            override fun matches(item: Any): Boolean {
+                return matchUpToVersion(item as Project, expectedProject)
+            }
+        }
+    }
+
+    fun matchUpToVersion(p1: Project, p2: Project): Boolean {
+        return NodeMatcher.match(p1.rootNode, p2.rootNode)
+                && p1.projectName == p2.projectName
+                && match(p1.dependencies, p2.dependencies)
+    }
+
+    fun match(
+            d1: MutableMap<DependencyType, MutableList<Dependency>>,
+            d2: MutableMap<DependencyType, MutableList<Dependency>>
+    ): Boolean {
+        return DependencyType.values()
+                .map { d1[it] == d2[it] }
+                .plus(true)
+                .reduce { acc, eval -> acc && eval }
+    }
+
     fun match(p1: Project, p2: Project): Boolean {
         return p1.apiVersion == p2.apiVersion
-                && NodeMatcher.match(p1.rootNode, p2.rootNode)
+                && matchUpToVersion(p1, p2)
     }
 }
