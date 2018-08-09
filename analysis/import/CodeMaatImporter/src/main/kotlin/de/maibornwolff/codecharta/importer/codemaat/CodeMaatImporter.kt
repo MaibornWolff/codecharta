@@ -6,8 +6,8 @@ import picocli.CommandLine
 import java.io.*
 import java.util.concurrent.Callable
 
-@CommandLine.Command(name = "codemaat-couplingimport", description = ["generates cc.json from codemaat coupling csv"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
-class CodeMaatCouplingImporter : Callable<Void> {
+@CommandLine.Command(name = "codemaatimport", description = ["generates cc.json from codemaat coupling csv"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
+class CodeMaatImporter : Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -60,7 +60,7 @@ class CodeMaatCouplingImporter : Callable<Void> {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(CodeMaatCouplingImporter(), System.out, *args)
+            CommandLine.call(CodeMaatImporter(), System.out, *args)
         }
     }
 }

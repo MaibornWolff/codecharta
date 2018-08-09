@@ -31,7 +31,7 @@ package de.maibornwolff.codecharta.tools.ccsh
 
 import de.maibornwolff.codecharta.exporter.csv.CSVExporter
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.importer.codemaat.CodeMaatCouplingImporter
+import de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.importer.csv.CSVImporter
 import de.maibornwolff.codecharta.importer.csv.SourceMonitorImporter
 import de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser
@@ -56,7 +56,7 @@ import java.util.concurrent.Callable
             CSVExporter::class,
             CrococosmoImporter::class,
             UnderstandImporter::class,
-            CodeMaatCouplingImporter::class
+            CodeMaatImporter::class
         ],
         versionProvider = Ccsh.ManifestVersionProvider::class,
         footer = ["Copyright(c) 2018, MaibornWolff GmbH"]

@@ -1,4 +1,4 @@
-# CodeMaat Coupling Importer
+# CodeMaatImporter
 
 Generates visualisation data from CodeMaat Temporal Coupling CSV data with header. You can find the analizing tool on GitHub https://github.com/adamtornhill/code-maat
 
@@ -12,9 +12,9 @@ Generates visualisation data from CodeMaat Temporal Coupling CSV data with heade
 
     `maat -c git -l project.log -a coupling > coupling.csv`
 
-3. Convert csv file to cc.json format with CodeMaatCouplingImporter
+3. Convert csv file to cc.json format with CodeMaatImporter
 
-    `ccsh codemaat-couplingimport coupling.csv -o oupling.json`
+    `ccsh codemaatimport coupling.csv -o oupling.json`
         
 4. Merge the coupling data with the project metrics file while using the [MergeFilter](https://github.com/MaibornWolff/codecharta/blob/master/analysis/filter/MergeFilter/README.md)
 
@@ -22,7 +22,7 @@ Generates visualisation data from CodeMaat Temporal Coupling CSV data with heade
     
 5. Visualizing `merged.json` with [Visualization](https://github.com/MaibornWolff/codecharta/tree/master/visualization)
 
-![CodeMaat CouplingImport Modell](src/codemaat-couplingimport-modell.jpg)
+![CodeMaatImport Modell](src/codemaatimport-modell.jpg)
 
 
 ## Example File Content

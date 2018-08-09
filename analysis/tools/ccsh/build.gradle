@@ -9,7 +9,7 @@ dependencies {
     compile project(':import:SCMLogParser')
     compile project(':import:SonarImporter')
     compile project(':import:UnderstandImporter')
-    compile project(':import:CodeMaatCouplingImporter')
+    compile project(':import:CodeMaatImporter')
     compile project(':filter:MergeFilter')
     compile project(':tools:ValidationTool')
     compile project(':export:CSVExporter')
