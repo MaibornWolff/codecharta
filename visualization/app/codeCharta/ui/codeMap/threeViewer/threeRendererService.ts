@@ -44,16 +44,14 @@ export class ThreeRendererService implements SettingsServiceSubscriber {
     }
 
     public setCurrentClearColorFromSettings(settings: Settings) {
-        if (settings.isWhiteBackground != undefined) {
-            if (settings.isWhiteBackground) {
-                ThreeRendererService.CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.white;
-            } else {
-                ThreeRendererService.CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.normal;
-            }
+        if (settings.isWhiteBackground) {
+            ThreeRendererService.CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.white;
+        } else {
+            ThreeRendererService.CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.normal;
         }
     }
 
-    onSettingsChanged(settings: Settings, param2) {
+    onSettingsChanged(settings: Settings, event) {
         this.setCurrentClearColorFromSettings(settings);
         this.renderer.setClearColor(ThreeRendererService.CLEAR_COLOR, ThreeRendererService.CLEAR_ALPHA);
     }
