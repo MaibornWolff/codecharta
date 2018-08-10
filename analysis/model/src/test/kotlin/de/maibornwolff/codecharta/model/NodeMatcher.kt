@@ -57,7 +57,7 @@ object NodeMatcher {
                 && n1.children.size == n2.children.size
                 && n1.children.indices
                 .map { match(n1.children[it], n2.children[it]) }
-                .fold(true, { x, y -> x && y })
+                .fold(true) { x, y -> x && y }
     }
 
     private fun linksMatch(n1: Node, n2: Node) =

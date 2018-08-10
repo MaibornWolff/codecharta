@@ -29,41 +29,61 @@
 
 package de.maibornwolff.codecharta.filter.mergefilter
 
-import de.maibornwolff.codecharta.model.MutableNode
-import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.model.*
 
 class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
 
     fun extractProjectName(): String {
-        val projectNames = projects.map { p -> p.projectName }.toSortedSet()
-        when (projectNames.size) {
-            1 -> return projectNames.first()
-            else -> throw MergeException("Projects contain several project names : $projectNames")
-        }
+        return projects.map { p -> p.projectName }.first()
     }
 
-    private fun extractApiVersion(): String {
-        val apiVersion = projects.map { p -> p.apiVersion }.toSortedSet()
-        when (apiVersion.size) {
-            1 -> return apiVersion.first()
-            else -> throw MergeException("Projects use multiple Api-Versions of CodeCharta : $apiVersion")
-        }
-    }
 
     fun merge(): Project {
-        val apiVersion = extractApiVersion()
         val name = extractProjectName()
-        if (apiVersion != Project.API_VERSION) {
-            throw MergeException("API-Version $apiVersion of project is not supported.")
+        return when {
+            areAllAPIVersionsCompatible() -> ProjectBuilder(name, mergeProjectNodes(), getDependencies()).build()
+            else -> throw MergeException("API versions not supported.")
         }
-        return ProjectBuilder(name, mergeProjectNodes()).build()
+    }
+
+    private fun areAllAPIVersionsCompatible(): Boolean {
+        val unsupportedAPIVersions = projects
+                .map { it.apiVersion }
+                .filter { !Project.isAPIVersionCompatible(it) }
+
+        return !unsupportedAPIVersions.isNotEmpty()
     }
 
     private fun mergeProjectNodes(): List<MutableNode> {
         return nodeMerger.mergeNodeLists(projects.map { listOf(it.rootNode.toMutableNode()) })
     }
 
+    private fun getDependencies(): MutableMap<DependencyType,MutableList<Dependency>> {
+        if (nodeMerger.javaClass.simpleName == "RecursiveNodeMergerStrategy") {
+            return mergeProjectDependencies()
+        } else {
+            return mutableMapOf()
+        }
+    }
+
+    private fun mergeProjectDependencies(): MutableMap<DependencyType, MutableList<Dependency>> {
+        val mergedDependencies = mutableMapOf<DependencyType, MutableList<Dependency>>()
+
+        projects.forEach {
+            if (it.dependencies != null) {
+                it.dependencies.forEach {
+                    val dependencyType: DependencyType = it.key
+
+                    if (mergedDependencies.get(dependencyType) == null) {
+                        mergedDependencies.put(dependencyType, mutableListOf())
+                    }
+
+                    it.value.forEach {
+                        mergedDependencies.get(dependencyType)!!.add(it)
+                    }
+                }
+            }
+        }
+        return mergedDependencies
+    }
 }
-
-

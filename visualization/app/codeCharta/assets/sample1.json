@@ -1,12 +1,15 @@
 {
-  "projectName": "Sample Project",
+  "projectName": "Sample Project Temporal Coupling",
+  "apiVersion": "1.0",
   "nodes": [
     {
       "name": "root",
+      "type": "Folder",
       "attributes": {},
       "children": [
         {
           "name": "sample1 only leaf",
+          "type": "File",
           "attributes": {
             "rloc": 400,
             "functions": 10,
@@ -16,6 +19,7 @@
         },
         {
           "name": "big leaf",
+          "type":" File",
           "attributes": {
             "rloc": 100,
             "functions": 10,
@@ -25,10 +29,12 @@
         },
         {
           "name": "Parent Leaf",
+          "type": "Folder",
           "attributes": {},
           "children": [
             {
               "name": "small leaf",
+              "type": "File",
               "attributes": {
                 "rloc": 30,
                 "functions": 100,
@@ -37,6 +43,7 @@
             },
             {
               "name": "other small leaf",
+              "type": "File",
               "attributes": {
                 "rloc": 70,
                 "functions": 1000,
@@ -48,18 +55,46 @@
       ]
     }
   ],
-  "dependencies": [
-    {
-      "node": "/root/big leaf",
-      "dependsOn": "/root/Parent Leaf/small leaf"
-    },
-    {
-      "node": "/root/big leaf",
-      "dependsOn": "/root/Parent Leaf/other small leaf"
-    },
-    {
-      "node": "/root/Parent Leaf/other small leaf",
-      "dependsOn": "/root/big leaf"
-    }
-  ]
+  "dependencies": {
+    "static": [
+      {
+        "node": "/root/big leaf",
+        "dependantNode": "/root/Parent Leaf/small leaf"
+      },
+      {
+        "node": "/root/big leaf",
+        "dependantNode": "/root/Parent Leaf/other small leaf"
+      },
+      {
+        "node": "/root/Parent Leaf/other small leaf",
+        "dependantNode": "/root/big leaf"
+      }
+    ],
+    "temporal_coupling": [
+      {
+        "node": "/root/big leaf",
+        "nodeFilename": "big leaf",
+        "dependantNode": "/root/Parent Leaf/small leaf",
+        "dependantNodeFilename": "small leaf",
+        "pairingRate": 42,
+        "averageRevs": 16
+      },
+      {
+        "node": "/root/sample1 only leaf",
+        "nodeFilename": "sample1 only leaf",
+        "dependantNode": "/root/Parent Leaf/other small leaf",
+        "dependantNodeFilename": "other small leaf",
+        "pairingRate": 89,
+        "averageRevs": 34
+      },
+      {
+        "node": "/root/Parent Leaf/other small leaf",
+        "nodeFilename": "other small leaf",
+        "dependantNode": "/root/big leaf",
+        "dependantNodeFilename": "big leaf",
+        "pairingRate": 65,
+        "averageRevs": 22
+      }
+    ]
+  }
 }

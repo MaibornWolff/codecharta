@@ -9,8 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - e2e tests are running in CI Environment (headless)
 - pupeteer as e2e test framework
 - Show names of marked packages in legend
+- CodeMaatCouplingImport to Analysis #172
 
 ### Changed
+- MergeFilter merges dependencies #172
 
 ### Removed
 - cypress
@@ -42,7 +44,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Packages can be highlighted in different colors #152
 - Adding a context menu with highlighting colors and convenience methods for the tree view and 3D view #155
 - Folders and files to highlight can be described in the cc.json #165
-- Dynamic/automatic margin computing de/activated by tick 
+- Dynamic/automatic margin computing de/activated by tick
 
 ### Changed
 - Details panel: using the sum of the childrens metrics instead of the mean value
