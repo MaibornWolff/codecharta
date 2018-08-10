@@ -8,11 +8,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 - e2e tests are running in CI Environment (headless)
 - pupeteer as e2e test framework
+- Show names of marked packages in legend
 
 ### Changed
 
 ### Removed
 - cypress
+
+### Fixed
+
+## [1.14.2] - 2018-07-16
+### Added
+
+### Changed
+- Changed folder detail metrics from mean to sum
+
+### Removed
 
 ### Fixed
 
@@ -34,6 +45,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Dynamic/automatic margin computing de/activated by tick 
 
 ### Changed
+- Details panel: using the sum of the childrens metrics instead of the mean value
 
 ### Removed
 

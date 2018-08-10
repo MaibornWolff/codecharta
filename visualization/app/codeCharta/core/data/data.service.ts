@@ -51,7 +51,7 @@ export class DataService {
         this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.revisions[revision]);
         this.updateMetrics();
         this.dataDecoratorService.decorateLeavesWithMissingMetrics(this._data.revisions, this._data.metrics);
-        this.dataDecoratorService.decorateParentNodesWithMeanAttributesOfChildren(this._data.revisions, this._data.metrics);
+        this.dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren(this._data.revisions, this._data.metrics);
         this.setReferenceMap(revision);
     }
 
