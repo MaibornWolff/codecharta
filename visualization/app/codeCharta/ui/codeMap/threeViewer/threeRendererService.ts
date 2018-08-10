@@ -29,15 +29,15 @@ export class ThreeRendererService implements SettingsServiceSubscriber {
     constructor(
         private settingsService: SettingsService
     ) {
-        this.renderer = new THREE.WebGLRenderer(ThreeRendererService.RENDER_OPTIONS);
-        this.settingsService.subscribe(this);
-        this.onSettingsChanged(this.settingsService.settings, null);
     }
 
     /**
      * Inits the renderer.
      */
     init(containerWidth: number, containerHeight: number){
+        this.renderer = new THREE.WebGLRenderer(ThreeRendererService.RENDER_OPTIONS);
+        this.settingsService.subscribe(this);
+        this.onSettingsChanged(this.settingsService.settings, null);
         this.setCurrentClearColorFromSettings(this.settingsService.settings);
         this.renderer.setSize(containerWidth, containerHeight);
         this.renderer.setClearColor(ThreeRendererService.CLEAR_COLOR, ThreeRendererService.CLEAR_ALPHA);
