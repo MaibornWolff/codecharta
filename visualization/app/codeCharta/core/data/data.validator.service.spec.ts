@@ -25,7 +25,6 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
     });
 
     it("should reject null", (done: DoneCallback)=> {
-        file.dependencies = [];
         dataValidatorService.validate(null).then(
             ()=> {
                 done.fail("should not accept null");
@@ -37,7 +36,6 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
     });
 
     it("should reject string", (done: DoneCallback)=> {
-        file.dependencies = [];
         dataValidatorService.validate("").then(
             ()=> {
                 done.fail("should not accept string");
@@ -48,32 +46,26 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
         );
     });
 
-
-    it("should reject a file with empty dependencies", (done: DoneCallback)=> {
-        file.dependencies = [];
-        dataValidatorService.validate(file).then(
-            ()=> {
-                done.fail("should not accept empty dependencies");
-            },
-            ()=> {
-                done();
-            }
-        );
-    });
-
     it("should not reject a file with dependencies", (done: DoneCallback)=> {
-        file.dependencies = [
-            {
-                node: "a",
-                dependsOn: "b"
-            }
-        ];
+        file.dependencies = {
+            temporal_coupling: [
+                {
+                    node: "a",
+                    nodeFilename: "a",
+                    dependantNode: "b",
+                    dependantNodeFilename: "b",
+                    averageRevs: 42,
+                    pairingRate: 80,
+                    visible: false
+                }
+            ]
+        };
         dataValidatorService.validate(file).then(
             ()=> {
                 done();
             },
             ()=> {
-                done.fail("should accept without dependencies");
+                done.fail("should accept with dependencies");
             }
         );
     });

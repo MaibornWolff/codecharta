@@ -1,0 +1,52 @@
+<md-slider-container class="md-block">
+    <span>Commit</span>
+    <md-slider flex step="1" min="0" max="100" ng-model="$ctrl.settingsService.settings.minimumAverageRevs" id="labels-slider" ng-change="$ctrl.settingsService.applySettings()" class="md-primary">
+    </md-slider>
+    <md-input-container>
+        <input flex step="1" min="0" max="100" type="number" ng-model="$ctrl.settingsService.settings.minimumAverageRevs" ng-change="$ctrl.settingsService.applySettings()" aria-controls="labels-slider">
+    </md-input-container>
+</md-slider-container>
+
+<md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.useCouplingHeight" ng-change="$ctrl.settingsService.onSettingsChanged()">
+        Use Pairingrate Height
+    </md-checkbox>
+</md-input-container>
+
+<md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.intelligentTemporalCouplingFilter" ng-change="$ctrl.settingsService.onSettingsChanged()">
+        Intelligent Filter
+    </md-checkbox>
+</md-input-container>
+
+<md-input-container class="md-block">
+    <md-checkbox class="md-primary top-margin" ng-model="$ctrl.settingsService.settings.showDependencies" ng-change="$ctrl.settingsService.onSettingsChanged()">
+        Show Connections
+    </md-checkbox>
+    <md-button class="md-raised" ng-click="$ctrl.onResetDependencies()">Reset Selection</md-button>
+</md-input-container>
+
+<span class="small-help" title="X shared commits between both Files">Commits, </span>
+<span class="small-help" title="File2 changes with File1 in N% of File1's commits">Pairingrate</span>
+
+<md-divider></md-divider>
+
+<md-list-item class="md-2-line"
+              ng-repeat="couple in $ctrl.temporalCoupling | orderBy: 'pairingRate' : true"
+              ng-click="$ctrl.onClickCouple(couple)"
+              title="{{::couple.averageRevs}} shared commits&#013;{{::couple.pairingRate}}% Pairingrate&#013;&#013;{{::couple.node}}&#013;&#013;{{::couple.dependantNode}}">
+
+    <div class="md-icon dependency-numbers" layout="column">
+        <p class="dependency-average-revs">{{::couple.averageRevs}}</p>
+        <p class="dependency-pairings-rate">{{::couple.pairingRate}}%</p>
+    </div>
+    <div class="md-list-item-text" layout="column">
+        <h3>{{::couple.nodeFilename}}</h3>
+        <h4>{{::couple.dependantNodeFilename}}</h4>
+    </div>
+    <md-checkbox class="md-primary" ng-checked="$ctrl.temporalCoupling[$ctrl.temporalCoupling.indexOf(couple)].visible" ng-click="$ctrl.onClickCouple(couple)"></md-checkbox>
+    <md-divider></md-divider>
+</md-list-item>
+
+<p ng-if="$ctrl.temporalCoupling.length == 0">No Dependencies listed</p>
+<p class="small-help" ng-if="$ctrl.temporalCoupling.length == 0">Maybe use different <i>Minimum Commits</i> or turn off <i>Intelligent Filter</i></p>

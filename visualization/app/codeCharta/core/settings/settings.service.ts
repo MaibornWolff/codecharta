@@ -7,7 +7,7 @@ import {PerspectiveCamera} from "three";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
 import {DeltaCalculatorService} from "../data/data.deltaCalculator.service";
 import {DataDecoratorService} from "../data/data.decorator.service";
-import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
+import {CodeMap, CodeMapDependency, CodeMapNode} from "../data/model/CodeMap";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 
 export interface Range {
@@ -39,7 +39,10 @@ export interface Settings {
     showDependencies: boolean;
     maximizeDetailPanel: boolean;
     invertHeight: boolean;
+    useCouplingHeight: boolean;
     dynamicMargin: boolean;
+    intelligentTemporalCouplingFilter: boolean;
+    minimumAverageRevs: number;
 }
 
 export interface SettingsServiceSubscriber {
@@ -107,12 +110,14 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             margin: 15,
             operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
-            showDependencies: false,
+            showDependencies: true,
             maximizeDetailPanel: false,
             invertHeight: false,
-            dynamicMargin: true
+            useCouplingHeight: true,
+            dynamicMargin: true,
+            intelligentTemporalCouplingFilter: true,
+            minimumAverageRevs: 15,
         };
-
         return settings;
 
     }
@@ -316,7 +321,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
     }
 
-    /*
+    /**
      * Avoids the excesive calling of updateSettings with standard settings in order to increase the efficiency
      * When the function is called with an argument it calls updateSettings in order to avoid the lost of the information
      * contained in that argument.
@@ -378,7 +383,10 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.deltaColorFlipped = settings.deltaColorFlipped;
         this._settings.maximizeDetailPanel = settings.maximizeDetailPanel;
         this._settings.invertHeight = settings.invertHeight;
+        this._settings.useCouplingHeight = settings.useCouplingHeight;
         this._settings.dynamicMargin = settings.dynamicMargin;
+        this._settings.intelligentTemporalCouplingFilter = settings.intelligentTemporalCouplingFilter;
+        this._settings.minimumAverageRevs = settings.minimumAverageRevs;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = settings.map || this.settings.map;

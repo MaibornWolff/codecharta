@@ -1,4 +1,4 @@
-import {CodeMapNode} from "../data/model/CodeMap";
+import {CodeMapNode, CodeMapDependency} from "../data/model/CodeMap";
 import {node} from "../../ui/codeMap/rendering/node";
 import {DataService} from "../data/data.service";
 import * as d3 from "d3";
@@ -28,6 +28,8 @@ export interface TreeMapSettings {
     heightKey: string;
     margin: number;
     invertHeight: boolean;
+    visibleTemporalCouplingDependencies: CodeMapDependency[];
+    useCouplingHeight: boolean;
 }
 
 export class TreeMapService {
@@ -55,30 +57,31 @@ export class TreeMapService {
             .paddingOuter(s.margin * TreeMapService.PADDING_SCALING_FACTOR || 1)
             .paddingInner(s.margin * TreeMapService.PADDING_SCALING_FACTOR || 1);
 
-        return treeMap(root.sum((node)=>this.calculateValue(node, s.areaKey))) as SquarifiedValuedCodeMapNode;
+        return treeMap(root.sum((node) => this.calculateValue(node, s.areaKey))) as SquarifiedValuedCodeMapNode;
     }
 
     private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): node {
         const heightScale = s.size / TreeMapService.HEIGHT_DIVISOR / this.dataService.getMaxMetricInAllRevisions(s.heightKey);
+
         const maxHeight = this.dataService.getMaxMetricInAllRevisions(s.heightKey);
-        return this.addHeightDimensionAndFinalize(squaredNode, s.heightKey, heightScale, s.invertHeight, maxHeight);
+        return this.addHeightDimensionAndFinalize(squaredNode, s, heightScale, maxHeight);
     }
 
-    private addHeightDimensionAndFinalize(squaredNode: SquarifiedValuedCodeMapNode, key: string, heightScale: number, invertHeight: boolean, maxHeight: number, depth = 0, parent: node = null): node {
+    private addHeightDimensionAndFinalize(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings, heightScale: number, maxHeight: number, depth = 0, parent: node = null): node {
 
         let attr = squaredNode.data.attributes || {};
-        let heightValue = attr[key];
+        let heightValue = attr[s.heightKey];
 
         if (heightValue === undefined || heightValue === null) {
             heightValue = TreeMapService.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND;
         }
 
-        const finalNode = TreeMapUtils.buildNodeFrom(squaredNode, heightScale, heightValue, depth, parent, key,TreeMapService.MIN_BUILDING_HEIGHT, TreeMapService.FOLDER_HEIGHT, invertHeight, maxHeight);
+        const finalNode = TreeMapUtils.buildNodeFrom(squaredNode, heightScale, heightValue, maxHeight, depth, parent, s, TreeMapService.MIN_BUILDING_HEIGHT, TreeMapService.FOLDER_HEIGHT);
 
         if (squaredNode.children && squaredNode.children.length > 0) {
             const finalChildren: node[] = [];
             for (let i = 0; i < squaredNode.children.length; i++) {
-                finalChildren.push(this.addHeightDimensionAndFinalize(squaredNode.children[i], key, heightScale, invertHeight, maxHeight, depth + 1, finalNode));
+                finalChildren.push(this.addHeightDimensionAndFinalize(squaredNode.children[i], s, heightScale, maxHeight, depth + 1, finalNode));
             }
             finalNode.children = finalChildren;
         }

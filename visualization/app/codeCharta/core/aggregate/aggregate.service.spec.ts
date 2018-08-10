@@ -14,25 +14,30 @@ describe("app.codeCharta.core.aggregate", function() {
         projectName: "Sample Project",
         root: {
             name: "root",
+            type: "Folder",
             attributes: {},
             children: [
                 {
                     name: "big leaf",
+                    type: "File",
                     attributes: {"rloc": 100, "functions": 10, "mcc": 1},
                     link: "http://www.google.de"
                 },
                 {
                     name: "Parent Leaf",
+                    type: "Folder",
                     attributes: {},
                     children: [
                         {
                             name: "other small leaf",
+                            type: "File",
                             attributes: {"rloc": 70, "functions": 1000, "mcc": 10}
                         }
                     ]
                 }
             ]
-        }
+        },
+        dependencies: {}
     };
 
     const file2: CodeMap = {
@@ -40,25 +45,30 @@ describe("app.codeCharta.core.aggregate", function() {
         projectName: "Sample Project",
         root: {
             name: "root",
+            type: "Folder",
             attributes: {},
             children: [
                 {
                     name: "big leaf",
+                    type: "File",
                     attributes: {"rloc": 200, "functions": 20, "mcc": 2},
                     link: "http://www.google.de"
                 },
                 {
                     name: "Parent Leaf",
+                    type: "Folder",
                     attributes: {},
                     children: [
                         {
                             name: "small leaf",
+                            type: "File",
                             attributes: {"rloc": 60, "functions": 200, "mcc": 200}
                         }
                     ]
                 }
             ]
-        }
+        },
+        dependencies: {}
     };
 
     const file_aggregation_two: CodeMap = {
@@ -66,6 +76,7 @@ describe("app.codeCharta.core.aggregate", function() {
         projectName: "Aggregation of following projects: Sample Project, Sample Project",
         root: {
             name: "root",
+            type: "Folder",
             attributes: {},
             origin: "Aggregation of following files: file1, file2",
             visible: true,
@@ -73,19 +84,23 @@ describe("app.codeCharta.core.aggregate", function() {
             children: [
                 {
                     name: "file1",
+                    type: "Folder",
                     attributes: {},
                     children: [
                         {
                             name: "big leaf",
+                            type: "File",
                             attributes: {"rloc": 100, "functions": 10, "mcc": 1},
                             link: "http://www.google.de"
                         },
                         {
                             name: "Parent Leaf",
+                            type: "Folder",
                             attributes: {},
                             children: [
                                 {
                                     name: "other small leaf",
+                                    type: "File",
                                     attributes: {"rloc": 70, "functions": 1000, "mcc": 10}
                                 }
                             ]
@@ -95,19 +110,23 @@ describe("app.codeCharta.core.aggregate", function() {
                 {
 
                     name: "file2",
+                    type: "Folder",
                     attributes: {},
                     children: [
                         {
                             name: "big leaf",
+                            type: "File",
                             attributes: {"rloc": 200, "functions": 20, "mcc": 2},
                             link: "http://www.google.de"
                         },
                         {
                             name: "Parent Leaf",
+                            type: "Folder",
                             attributes: {},
                             children: [
                                 {
                                     name: "small leaf",
+                                    type: "File",
                                     attributes: {"rloc": 60, "functions": 200, "mcc": 200}
                                 }
                             ]
@@ -116,7 +135,8 @@ describe("app.codeCharta.core.aggregate", function() {
                 }
 
             ]
-        }
+        },
+        dependencies: {}
     };
 
     const file_aggregation_four: CodeMap = {
@@ -124,25 +144,30 @@ describe("app.codeCharta.core.aggregate", function() {
         projectName: "Aggregation of following projects: Sample Project, Sample Project, Sample Project, Sample Project",
         root: {
             name: "root",
+            type: "Folder",
             attributes: {},
             origin: "Aggregation of following files: file1, file2, file1, file2",
             visible: true,
             path: "/root",
             children: [{
                 name: "file1",
+                type: "Folder",
                 attributes: {},
                 children: [
                     {
                         name: "big leaf",
+                        type: "File",
                         attributes: {"rloc": 100, "functions": 10, "mcc": 1},
                         link: "http://www.google.de"
                     },
                     {
                         name: "Parent Leaf",
+                        type: "Folder",
                         attributes: {},
                         children: [
                             {
                                 name: "other small leaf",
+                                type: "File",
                                 attributes: {"rloc": 70, "functions": 1000, "mcc": 10}
                             }
                         ]
@@ -152,19 +177,23 @@ describe("app.codeCharta.core.aggregate", function() {
                 {
 
                     name: "file2",
+                    type: "Folder",
                     attributes: {},
                     children: [
                         {
                             name: "big leaf",
+                            type: "File",
                             attributes: {"rloc": 200, "functions": 20, "mcc": 2},
                             link: "http://www.google.de"
                         },
                         {
                             name: "Parent Leaf",
+                            type: "Folder",
                             attributes: {},
                             children: [
                                 {
                                     name: "small leaf",
+                                    type: "File",
                                     attributes: {"rloc": 60, "functions": 200, "mcc": 200}
                                 }
                             ]
@@ -173,19 +202,23 @@ describe("app.codeCharta.core.aggregate", function() {
                 },
                 {
                     name: "file1",
+                    type: "Folder",
                     attributes: {},
                     children: [
                         {
                             name: "big leaf",
+                            type: "File",
                             attributes: {"rloc": 100, "functions": 10, "mcc": 1},
                             link: "http://www.google.de"
                         },
                         {
                             name: "Parent Leaf",
+                            type: "Folder",
                             attributes: {},
                             children: [
                                 {
                                     name: "other small leaf",
+                                    type: "File",
                                     attributes: {"rloc": 70, "functions": 1000, "mcc": 10}
                                 }
                             ]
@@ -195,19 +228,23 @@ describe("app.codeCharta.core.aggregate", function() {
                 {
 
                     name: "file2",
+                    type: "Folder",
                     attributes: {},
                     children: [
                         {
                             name: "big leaf",
+                            type: "File",
                             attributes: {"rloc": 200, "functions": 20, "mcc": 2},
                             link: "http://www.google.de"
                         },
                         {
                             name: "Parent Leaf",
+                            type: "Folder",
                             attributes: {},
                             children: [
                                 {
                                     name: "small leaf",
+                                    type: "File",
                                     attributes: {"rloc": 60, "functions": 200, "mcc": 200}
                                 }
                             ]
@@ -215,7 +252,8 @@ describe("app.codeCharta.core.aggregate", function() {
                     ]
                 }
             ]
-        }
+        },
+        dependencies: {}
     };
 
     beforeEach(NGMock.mock.module("app.codeCharta.core.aggregate"));

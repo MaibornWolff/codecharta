@@ -32,12 +32,6 @@
 </md-input-container>
 
 <md-input-container class="md-block">
-    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.showDependencies" ng-change="$ctrl.settingsService.onSettingsChanged()">
-        Dependencies of selected Building
-    </md-checkbox>
-</md-input-container>
-
-<md-input-container class="md-block">
     <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.invertHeight" ng-change="$ctrl.settingsService.onSettingsChanged()">
         Invert Height
     </md-checkbox>
@@ -49,4 +43,4 @@
     </md-checkbox>
 </md-input-container>
 
-<reset-settings-button-component settings-names="amountOfTopLabels, scaling.y, margin, dynamicMargin, showDependencies, maximizeDetailPanel, invertHeight"></reset-settings-button-component>
+<reset-settings-button-component settings-names="amountOfTopLabels, scaling.y, margin, dynamicMargin, invertHeight, maximizeDetailPanel"></reset-settings-button-component>

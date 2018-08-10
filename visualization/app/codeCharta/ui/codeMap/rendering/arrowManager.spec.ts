@@ -109,22 +109,22 @@ describe("ArrowManager", () => {
     });
 
     it("should add no arrows when there are no resolvable dependencies", ()=>{
-        arrowManager.addCodeMapDependenciesAsArrows([sampleLeaf, sampleLeaf2], [{"node":"a", "dependsOn": "b"}], sampleRenderSettings);
+        arrowManager.addCodeMapDependenciesAsArrows([sampleLeaf, sampleLeaf2], [{"node":"a", "dependantNode": "b"}], sampleRenderSettings);
         expect(arrowManager.arrows.length).toBe(0);
     });
 
     it("should add arrows only from origin when there are resolvable dependencies", ()=>{
-        arrowManager.addCodeMapDependenciesFromOriginAsArrows(sampleLeaf, [sampleLeaf, sampleLeaf2], [{"node":"/sample", "dependsOn": "/sample2"}, {"node":"/sample2", "dependsOn": "/sample2"}], sampleRenderSettings);
+        arrowManager.addCodeMapDependenciesFromOriginAsArrows(sampleLeaf, [sampleLeaf, sampleLeaf2], [{"node":"/sample", "dependantNode": "/sample2"}, {"node":"/sample2", "dependantNode": "/sample2"}], sampleRenderSettings);
         expect(arrowManager.arrows.length).toBe(1);
     });
 
     it("should add arrows when there are resolvable dependencies", ()=>{
-        arrowManager.addCodeMapDependenciesAsArrows([sampleLeaf, sampleLeaf2], [{"node":"/sample", "dependsOn": "/sample2"}], sampleRenderSettings);
+        arrowManager.addCodeMapDependenciesAsArrows([sampleLeaf, sampleLeaf2], [{"node":"/sample", "dependantNode": "/sample2"}], sampleRenderSettings);
         expect(arrowManager.arrows.length).toBe(1);
     });
 
     it("should clear all arrows", ()=>{
-        arrowManager.addCodeMapDependenciesAsArrows([sampleLeaf, sampleLeaf2], [{"node":"/sample", "dependsOn": "/sample2"}], sampleRenderSettings);
+        arrowManager.addCodeMapDependenciesAsArrows([sampleLeaf, sampleLeaf2], [{"node":"/sample", "dependantNode": "/sample2"}], sampleRenderSettings);
         expect(arrowManager.arrows.length).toBe(1);
         arrowManager.clearArrows();
         expect(arrowManager.arrows.length).toBe(0);

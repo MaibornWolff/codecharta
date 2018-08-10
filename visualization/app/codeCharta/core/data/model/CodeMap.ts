@@ -1,5 +1,6 @@
 export interface CodeMapNode {
     name: string,
+    type: string,
     children?: CodeMapNode[]
     attributes: {
         [key: string]: number
@@ -17,13 +18,22 @@ export interface CodeMapNode {
 export interface CodeMap {
 
     fileName: string,
+    apiVersion?: string,
     projectName: string,
     root: CodeMapNode,
-    dependencies?: CodeMapDependency[]
+    dependencies?: {
+        static?: CodeMapDependency[],
+        temporal_coupling?: CodeMapDependency[]
+    }
 
 }
 
 export interface CodeMapDependency {
     node: string,
-    dependsOn: string
+    nodeFilename?: string,
+    dependantNode: string,
+    dependantNodeFilename?: string,
+    pairingRate?: number,
+    averageRevs?: number
+    visible: boolean
 }

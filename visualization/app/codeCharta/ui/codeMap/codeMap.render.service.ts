@@ -52,18 +52,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     }
 
     onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
-        let deps: CodeMapDependency[] = this.settingsService.settings.map.dependencies;
 
-        this.arrowManager.clearArrows();
-
-        if (deps && data.to && this.currentSortedNodes && this.currentRenderSettings && this.settingsService.settings.showDependencies) {
-            this.arrowManager.addCodeMapDependenciesFromOriginAsArrows(data.to.node, this.currentSortedNodes, deps, this.currentRenderSettings);
-            this.arrowManager.scale(
-                this.threeSceneService.mapGeometry.scale.x,
-                this.threeSceneService.mapGeometry.scale.y,
-                this.threeSceneService.mapGeometry.scale.z,
-            );
-        }
     }
 
     onSettingsChanged(settings: Settings, event: Event) {
@@ -99,12 +88,16 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
 
     updateMapGeometry(s: Settings) {
 
+        let visibleTemporalCouplingDependencies = this.getVisibleTemporalCouplingDependencies(s);
+
         const treeMapSettings: TreeMapSettings = {
             size: mapSize,
             areaKey: s.areaMetric,
             heightKey: s.heightMetric,
             margin: s.margin,
-            invertHeight: s.invertHeight
+            invertHeight: s.invertHeight,
+            visibleTemporalCouplingDependencies: visibleTemporalCouplingDependencies,
+            useCouplingHeight: s.useCouplingHeight,
         };
 
         let nodes: node[] = this.collectNodesToArray(
@@ -136,9 +129,33 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             }
         }
 
+        if (visibleTemporalCouplingDependencies.length > 0 && s.showDependencies) {
+            this.showCouplingArrows(visibleTemporalCouplingDependencies);
+        }
+
         this._mapMesh = new CodeMapMesh(this.currentSortedNodes, this.currentRenderSettings);
 
         this.threeSceneService.setMapMesh(this._mapMesh, mapSize);
+    }
+
+    private getVisibleTemporalCouplingDependencies(s: Settings) {
+        if (s.map && s.map.dependencies && s.map.dependencies.temporal_coupling) {
+            return s.map.dependencies.temporal_coupling.filter(dependency => dependency.visible === true);
+        }
+        return [];
+    }
+
+    showCouplingArrows(deps: CodeMapDependency[]) {
+        this.arrowManager.clearArrows();
+
+        if (deps && this.currentRenderSettings) {
+            this.arrowManager.addCodeMapDependenciesAsArrows(this.currentSortedNodes, deps, this.currentRenderSettings);
+            this.arrowManager.scale(
+                this.threeSceneService.mapGeometry.scale.x,
+                this.threeSceneService.mapGeometry.scale.y,
+                this.threeSceneService.mapGeometry.scale.z,
+            );
+        }
     }
 
     /**

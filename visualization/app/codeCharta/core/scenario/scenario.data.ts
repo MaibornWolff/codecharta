@@ -27,10 +27,14 @@ export function createDefaultScenario(map: CodeMap, margin: number): Scenario {
             margin: margin,
             operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
-            showDependencies: false,
+            showDependencies: true,
             maximizeDetailPanel: false,
             invertHeight: false,
-            dynamicMargin: true
+            useCouplingHeight: true,
+            dynamicMargin: true,
+            intelligentTemporalCouplingFilter: true,
+            minimumAverageRevs: 15
+
         },
         autoFitCamera: true
     };

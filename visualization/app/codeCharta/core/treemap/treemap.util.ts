@@ -1,4 +1,4 @@
-import {SquarifiedValuedCodeMapNode} from "./treemap.service";
+import {SquarifiedValuedCodeMapNode, TreeMapSettings} from "./treemap.service";
 import {node} from "../../ui/codeMap/rendering/node";
 
 export class TreeMapUtils {
@@ -20,16 +20,19 @@ export class TreeMapUtils {
     public static buildNodeFrom(squaredNode: SquarifiedValuedCodeMapNode,
                                 heightScale: number,
                                 heightValue: number,
+                                maxHeight: number,
                                 depth: number,
                                 parent: node,
-                                heightKey: string,
+                                s: TreeMapSettings,
                                 minHeight: number,
-                                folderHeight: number,
-                                invertHeight: boolean,
-                                maxHeight: number): node {
+                                folderHeight: number): node {
 
-        if (invertHeight) {
+        if (s.invertHeight) {
             heightValue = (maxHeight - heightValue);
+        }
+
+        if (s.visibleTemporalCouplingDependencies && s.visibleTemporalCouplingDependencies.length > 0) {
+            heightValue = this.getTemporalCouplingHeight(squaredNode, s, maxHeight, heightValue);
         }
 
         return {
@@ -45,7 +48,7 @@ export class TreeMapUtils {
             attributes: squaredNode.data.attributes,
             deltas: squaredNode.data.deltas,
             parent: parent,
-            heightDelta: Math.abs(squaredNode.data.deltas && squaredNode.data.deltas[heightKey] ? heightScale * squaredNode.data.deltas[heightKey] : 0),
+            heightDelta: Math.abs(squaredNode.data.deltas && squaredNode.data.deltas[s.heightKey] ? heightScale * squaredNode.data.deltas[s.heightKey] : 0),
             visible: squaredNode.data.visible,
             path: squaredNode.data.path,
             origin: squaredNode.data.origin,
@@ -56,4 +59,17 @@ export class TreeMapUtils {
 
     }
 
+    private static getTemporalCouplingHeight(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings, maxHeight: number, heightValue: number) {
+
+        const NON_TEMPORAL_COUPLING_HEIGHT = 0;
+
+        for (var couple of s.visibleTemporalCouplingDependencies) {
+
+            if (squaredNode.data.path === couple.node ||
+                squaredNode.data.path === couple.dependantNode) {
+                return (s.useCouplingHeight) ? maxHeight / 100 * couple.pairingRate : heightValue;
+            }
+        }
+        return NON_TEMPORAL_COUPLING_HEIGHT;
+    }
 }

@@ -1,6 +1,6 @@
 import {TreeMapUtils} from "./treemap.util";
-import {SquarifiedValuedCodeMapNode} from "./treemap.service";
-import {CodeMapNode} from "../data/model/CodeMap";
+import {SquarifiedValuedCodeMapNode, TreeMapSettings} from "./treemap.service";
+import {CodeMapDependency, CodeMapNode} from "../data/model/CodeMap";
 import {node} from "../../ui/codeMap/rendering/node";
 describe("treemap utils", () => {
 
@@ -8,21 +8,22 @@ describe("treemap utils", () => {
 
         let codeMapNode: CodeMapNode;
         let squaredNode: SquarifiedValuedCodeMapNode;
+        let treeMapSettings: TreeMapSettings;
 
         let heightScale = 1;
         let heightValue = 100;
         let depth = 0;
         let parent = null;
-        let heightKey = "theHeight";
         let minHeight = 1;
         let folderHeight = 2;
-        let invertHeight = false;
         let maxHeight = 2000;
 
         beforeEach(() => {
 
             codeMapNode = {
                 name: "Anode",
+                path: "/root/Anode",
+                type: "File",
                 attributes: {}
             }
 
@@ -32,7 +33,17 @@ describe("treemap utils", () => {
                 x0: 0,
                 y0: 0,
                 x1: 400,
-                y1: 400,
+                y1: 400
+            }
+
+            treeMapSettings = {
+                size: 1,
+                areaKey: "theArea",
+                heightKey: "theHeight",
+                margin: 15,
+                invertHeight: false,
+                visibleTemporalCouplingDependencies: [],
+                useCouplingHeight: true
             }
 
         });
@@ -42,13 +53,12 @@ describe("treemap utils", () => {
                 squaredNode,
                 heightScale,
                 heightValue,
+                maxHeight,
                 depth,
                 parent,
-                heightKey,
+                treeMapSettings,
                 minHeight,
-                folderHeight,
-                invertHeight,
-                maxHeight
+                folderHeight
             );
         }
 
@@ -57,13 +67,13 @@ describe("treemap utils", () => {
         });
 
         it("invertHeight", () => {
-            invertHeight = true;
+            treeMapSettings.invertHeight = true;
             expect(buildNode()).toMatchSnapshot();
         });
 
         it("deltas", () => {
             squaredNode.data.deltas = {};
-            squaredNode.data.deltas[heightKey] = 33;
+            squaredNode.data.deltas[treeMapSettings.heightKey] = 33;
             expect(buildNode()).toMatchSnapshot();
             squaredNode.data.deltas = undefined;
         });
@@ -74,6 +84,35 @@ describe("treemap utils", () => {
             TreeMapUtils.isNodeLeaf.mockReturnValue(true);
             expect(buildNode()).toMatchSnapshot();
             TreeMapUtils.isNodeLeaf = tmp;
+        });
+
+        it("dependency couple node should use pairingrate/normal metric as height", () => {
+            treeMapSettings.visibleTemporalCouplingDependencies = [{
+                node: "/root/Anode",
+                nodeFilename: "Anode",
+                dependantNode: "/root/AnotherNode",
+                dependantNodeFilename: "AnotherNode",
+                pairingRate: 68,
+                averageRevs: 17,
+                visible: true,
+            }];
+            treeMapSettings.useCouplingHeight = true;
+            expect(buildNode()).toMatchSnapshot();
+            treeMapSettings.useCouplingHeight = false;
+            expect(buildNode()).toMatchSnapshot();
+        });
+
+        it("should set lowest possible height caused by other visible dependency pairs", () => {
+            treeMapSettings.visibleTemporalCouplingDependencies = [{
+                node: "/root/AnotherNode1",
+                nodeFilename: "AnotherNode1",
+                dependantNode: "/root/AnotherNode2",
+                dependantNodeFilename: "AnotherNode2",
+                pairingRate: 33,
+                averageRevs: 12,
+                visible: true,
+            }];
+            expect(buildNode()).toMatchSnapshot();
         });
 
     });
