@@ -6,11 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- e2e tests are running in CI Environment (headless)
+- pupeteer as e2e test framework
 - Show names of marked packages in legend
 
 ### Changed
 
 ### Removed
+- cypress
 
 ### Fixed
 
