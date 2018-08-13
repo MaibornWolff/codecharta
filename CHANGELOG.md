@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.15.0] - 2018-08-13
+### Added
 - e2e tests are running in CI Environment (headless)
 - pupeteer as e2e test framework
 - Show names of marked packages in legend
