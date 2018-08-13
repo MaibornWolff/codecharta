@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+set -o pipefail
 cd visualization
 npm install
 npm run build
