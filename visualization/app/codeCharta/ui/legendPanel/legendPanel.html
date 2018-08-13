@@ -26,8 +26,8 @@
         -&Delta;
     </div>
     <hr ng-show="$ctrl.markingPackages[0]">
-    <div class="legend-block" ng-if="$ctrl.markingPackages" ng-repeat="markingPackage in $ctrl.markingPackages">
-        <img src="{{::markingPackage.markingColor}}">
+    <div class="legend-block" ng-show="$ctrl.markingPackages" ng-repeat="markingPackage in $ctrl.markingPackages">
+        <img ng-src="{{::markingPackage.markingColor}}">
         <span class="{{$first ? '' : 'set-left-margin'}}" ng-repeat="item in markingPackage.packageItem" title="{{::item.path}}">
             {{::item.name}}{{$last ? '' : ',&nbsp;'}}
         </span>
