@@ -5,8 +5,6 @@ import {
 } from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera} from "three";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
-import {DeltaCalculatorService} from "../data/data.deltaCalculator.service";
-import {DataDecoratorService} from "../data/data.decorator.service";
 import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 
@@ -40,6 +38,7 @@ export interface Settings {
     maximizeDetailPanel: boolean;
     invertHeight: boolean;
     dynamicMargin: boolean;
+    isWhiteBackground: boolean;
 }
 
 export interface SettingsServiceSubscriber {
@@ -110,7 +109,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             showDependencies: false,
             maximizeDetailPanel: false,
             invertHeight: false,
-            dynamicMargin: true
+            dynamicMargin: true,
+            isWhiteBackground: false,
         };
 
         return settings;
@@ -379,6 +379,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.maximizeDetailPanel = settings.maximizeDetailPanel;
         this._settings.invertHeight = settings.invertHeight;
         this._settings.dynamicMargin = settings.dynamicMargin;
+        this._settings.isWhiteBackground = settings.isWhiteBackground;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = settings.map || this.settings.map;
