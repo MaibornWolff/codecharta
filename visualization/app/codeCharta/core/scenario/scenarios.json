@@ -26,7 +26,8 @@
       "deltaColorFlipped": false,
       "showDependencies": false,
       "maximizeDetailPanel": false,
-      "invertHeight": false
+      "invertHeight": false,
+      "isWhiteBackground": false
     },
     "autoFitCamera": true
   },
@@ -57,7 +58,8 @@
       "deltaColorFlipped": false,
       "showDependencies": false,
       "maximizeDetailPanel": false,
-      "invertHeight": false
+      "invertHeight": false,
+      "isWhiteBackground": false
     },
     "autoFitCamera": true
   },
@@ -88,7 +90,8 @@
       "deltaColorFlipped": false,
       "showDependencies": false,
       "maximizeDetailPanel": false,
-      "invertHeight": false
+      "invertHeight": false,
+      "isWhiteBackground": false
     },
     "autoFitCamera": true
   },
@@ -119,7 +122,8 @@
       "deltaColorFlipped": false,
       "showDependencies": false,
       "maximizeDetailPanel": false,
-      "invertHeight": false
+      "invertHeight": false,
+      "isWhiteBackground": false
     },
     "autoFitCamera": true
   }
