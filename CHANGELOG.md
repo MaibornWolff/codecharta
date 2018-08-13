@@ -13,6 +13,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+## [1.15.1] - 2018-08-13
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
 ## [1.15.0] - 2018-08-13
 ### Added
 - e2e tests are running in CI Environment (headless)
