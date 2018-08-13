@@ -124,10 +124,10 @@ describe("settings.service", function() {
      */
     it("should react to data-changed events", NGMock.mock.inject(function(settingsService, $rootScope){
 
-        settingsService.onSettingsChanged = sinon.spy();
+        settingsService.onSettingsChanged = jest.fn();
 
         //enough metrics
-        $rootScope.$broadcast("data-changed", {renderMap: validData, metrics: ["a","b","c"]});
+        $rootScope.$broadcast("data-changed", {renderMap: validData, metrics: ["a","b","c"], revisions: [validData, validData]});
 
         expect(settingsService.settings.map.fileName).toBe("file");
         expect(settingsService.settings.areaMetric).toBe("a");
@@ -136,14 +136,14 @@ describe("settings.service", function() {
 
         //not enough metrics
         validData.fileName = "file2";
-        $rootScope.$broadcast("data-changed", {renderMap: validData, metrics: ["a"]});
+        $rootScope.$broadcast("data-changed", {renderMap: validData, metrics: ["a"], revisions: [validData, validData]});
 
         expect(settingsService.settings.map.fileName).toBe("file2");
         expect(settingsService.settings.areaMetric).toBe("a");
         expect(settingsService.settings.heightMetric).toBe("a");
         expect(settingsService.settings.colorMetric).toBe("a");
 
-        expect(settingsService.onSettingsChanged.calledTwice);
+        expect(settingsService.onSettingsChanged).toHaveBeenCalledTimes(2);
 
     }));
 
@@ -183,7 +183,7 @@ describe("settings.service", function() {
 
         settingsService.onSettingsChanged = sinon.spy();
 
-        $rootScope.$broadcast("data-changed", {renderMap: validData, metrics: ["a", "b"]});
+        $rootScope.$broadcast("data-changed", {renderMap: validData, metrics: ["a", "b"], revisions: [validData, validData]});
 
         expect(settingsService.settings.map.fileName).toBe("file");
         expect(settingsService.settings.areaMetric).toBe("a");
