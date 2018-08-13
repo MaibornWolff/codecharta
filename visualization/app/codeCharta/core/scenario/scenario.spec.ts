@@ -44,7 +44,8 @@ describe("app.codeCharta.core.scenarioService", function () {
                     {"x": 1,
                         "y": 1,
                         "z": 1},
-                "showDependencies": false
+                "showDependencies": false,
+                "isWhiteBackground": false
             },
 
         "autoFitCamera": true

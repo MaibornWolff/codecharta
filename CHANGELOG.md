@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - pupeteer as e2e test framework
 - Show names of marked packages in legend
 - Added a source code importer that can analyse rloc,mcc for java source code
+- Added option to set white background
 
 ### Changed
 
