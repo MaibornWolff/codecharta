@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - e2e tests are running in CI Environment (headless)
 - pupeteer as e2e test framework
 - Show names of marked packages in legend
+- Added a source code importer that can analyse rloc,mcc for java source code
 
 ### Changed
 
