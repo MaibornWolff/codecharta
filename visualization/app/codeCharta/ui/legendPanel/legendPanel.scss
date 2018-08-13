@@ -18,11 +18,20 @@ legend-panel-component {
     background-color: #fff;
     padding: 10px;
 
+
+    hr {
+      border-right-style: none;
+      border-left-style: none;
+      border-bottom-style: none;
+      color: #000;
+    }
+
     .legend-block {
 
       display: block;
-      height: 25px;
+      min-height: 25px;
       margin-bottom: 5px;
+      max-width: 250px;
 
       i, img {
         display: inline-block;
@@ -41,6 +50,10 @@ legend-panel-component {
       span {
         display: inline-block;
       }
+
+      .set-left-margin {
+         margin-left: 18px;
+       }
 
     }
 
