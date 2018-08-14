@@ -1,55 +1,39 @@
 @import "../mixins.scss";
 
 code-charta-component {
+  #title {
 
-  #header {
-
+    position: fixed;
+    z-index: 10;
     width: 100%;
-    margin: 0;
-    padding: 0;
-    display: block;
-    height: 80px;
-    overflow: hidden;
 
-    .section {
-      display: inline-block;
-      height:100%;
-      width: 200px;
-      padding: 5px;
-      padding-right: 9px;
-      border-right: 1px solid #efefef;
+    .logo {
 
-      .section-header {
-        margin-bottom: 10px;
-        padding: 0;
-        height: 70px;
-        font-size: 0.9em;
-        color: #444;
+      width: 160px;
+      height: 100px;
+      position: fixed;
+      left: 0;
+      top: 5px;
+      z-index: -2;
 
-        md-input-container {
-          padding:0;
-          margin:0;
-          padding-top: 25px;
-          height: 40px;
-        }
-
-        img {
-          height: 70px;
-        }
-
+      a, img {
+        width: 5em;
+        display: block;
+        margin: auto !important;
       }
 
-      .section-body {
-        height: 0px;
-        padding-top: 20px;
-        overflow: hidden;
-        border-top: 1px solid #efefef;
+      h2 {
+        text-transform: uppercase;
+        color: #5A585A;
+        font-family: Roboto, sans-serif;
+        font-weight: 500;
+        font-size: 9pt;
+        text-align: center;
+        margin: 0;
+        z-index: -1;
       }
-
     }
-
   }
-
 
   #codeMap {
     position: fixed;
