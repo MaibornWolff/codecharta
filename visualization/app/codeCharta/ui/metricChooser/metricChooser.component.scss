@@ -2,22 +2,20 @@ metric-chooser-component {
 
 }
 
-horizontal-metric-chooser-component {
-
-  position: absolute;
-  top: 10px;
-  left: 160px;
-  display: inline-block !important;
+area-metric-chooser-component, horizontal-metric-chooser-component {
 
   md-input-container {
-    display: inline-block !important;
-    margin: 0 0 5px 0;
-    padding: 5px;
-    background-color: #fff;
+    display: block;
+    margin: 0;
+    padding: 0;
+    top: -5px;
   }
 
   md-input-container > * {
-    float: left;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
   }
 
   i.fa,
@@ -37,4 +35,21 @@ horizontal-metric-chooser-component {
     min-width: 40px;
     float: right;
   }
+
+}
+
+horizontal-metric-chooser-component {
+
+  position: absolute;
+  top: 10px;
+  left: 160px;
+  display: inline-block !important;
+
+  md-input-container {
+    display: inline-block !important;
+    margin: 0 0 5px 0;
+    padding: 5px;
+    background-color: #fff;
+  }
+
 }

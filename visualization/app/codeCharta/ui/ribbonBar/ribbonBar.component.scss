@@ -1,0 +1,51 @@
+ribbon-bar-component {
+
+    #header {
+
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        display: block;
+        height: 50px;
+        overflow: hidden;
+
+        .section {
+            display: inline-block;
+            height:100%;
+            width: 200px;
+            padding: 5px;
+            padding-right: 9px;
+            border-right: 1px solid #efefef;
+
+            .section-header {
+                margin-bottom: 10px;
+                padding: 0;
+                height: 40px;
+                line-height: 40px;
+                font-size: 0.9em;
+                color: #444;
+                text-align: center;
+
+                img {
+                    height: 40px;
+                }
+
+            }
+
+            .section-body {
+                height: 0px;
+                padding-top: 20px;
+                overflow: hidden;
+                border-top: 1px solid #efefef;
+                text-align: center;
+            }
+
+        }
+
+        .section:first-child {
+            width: 50px;
+        }
+
+    }
+
+}

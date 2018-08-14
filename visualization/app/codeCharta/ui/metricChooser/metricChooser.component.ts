@@ -106,6 +106,12 @@ export const horizontalMetricChooserComponent = {
     controller: MetricChooserController
 };
 
+export const areaMetricChooserComponent = {
+    selector: "areaMetricChooserComponent",
+    template: require("./metricChooser.area.component.html"),
+    controller: MetricChooserController
+};
+
 
 
 
