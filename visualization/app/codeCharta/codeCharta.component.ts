@@ -37,6 +37,23 @@ export class CodeChartaController {
         this.subscribeToLoadingEvents($rootScope);
         this.loadFileOrSample();
         this.initContextMenuCloseHandler();
+
+        $("#header").on("mouseenter",
+            ()=>{
+                $("#header, .section-body").animate({
+                    height: "+=250px"
+                }, 500);
+            }
+        );
+
+        $("#header").on("mouseleave",
+            ()=>{
+                $("#header, .section-body").animate({
+                    height: "-=250px"
+                }, 500);
+            }
+        );
+
     }
 
     private initContextMenuCloseHandler() {
