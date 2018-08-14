@@ -2,7 +2,7 @@ import {NGMock} from "../../../../mocks/ng.mockhelper";
 import {IRootScopeService, ILocationService, IHttpBackendService} from "angular";
 import DoneCallback = jest.DoneCallback;
 
-import {UrlService} from "./url.service";
+import {NameDataPair, UrlService} from "./url.service";
 import "./url.module";
 import {VALID_TEST_DATA} from "./url.mocks";
 import {CodeMap} from "../data/model/CodeMap";
@@ -41,8 +41,41 @@ describe("url.service", ()=>{
         $location.url(url);
 
         urlService.getFileDataFromQueryParam().then(
-            (data: CodeMap) => {
-                expect(data.fileName).toBe("valid.json");
+            (data: NameDataPair[]) => {
+                expect(data.length).toBe(1);
+                expect(data[0].name).toBe("valid.json");
+                done();
+            }
+        );
+
+        $httpBackend.flush();
+
+    });
+
+
+    it("file parameter should correctly resolve to multiple files", (done: DoneCallback) => {
+
+        // mocks + values
+        let url = "http://testurl?file=valid.json&file=other.json";
+
+        $httpBackend
+            .when("GET", "valid.json")
+            .respond(200, data);
+
+        let otherData = VALID_TEST_DATA;
+        otherData.fileName = "other.json";
+
+        $httpBackend
+            .when("GET", "other.json")
+            .respond(200, otherData);
+
+        $location.url(url);
+
+        urlService.getFileDataFromQueryParam().then(
+            (data: NameDataPair[]) => {
+                expect(data.length).toBe(2);
+                expect(data[0].name).toBe("valid.json");
+                expect(data[1].name).toBe("other.json");
                 done();
             }
         );
@@ -63,8 +96,8 @@ describe("url.service", ()=>{
         $location.url(url);
 
         urlService.getFileDataFromQueryParam().then(
-            (data: CodeMap) => {
-                expect(data.fileName).toBe("http://someurl.com/some.json");
+            (data: NameDataPair[]) => {
+                expect(data[0].name).toBe("http://someurl.com/some.json");
                 done();
             },() => {
                 done.fail("should succeed");
