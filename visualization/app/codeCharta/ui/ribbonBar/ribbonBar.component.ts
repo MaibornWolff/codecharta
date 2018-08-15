@@ -1,43 +1,40 @@
 import "./ribbonBar.component.scss";
 import $ from "jquery";
-import {mouse} from "d3-selection";
 
 export class RibbonBarController {
 
+    private heightExpanded = 300;
+    private animationDuration = 500;
+    private heightCollapsed = $("ribbon-bar-component #header").height();
+    private collapsingElements = $("ribbon-bar-component #header, ribbon-bar-component .section-body");
+
+    private isExpanded: boolean = false;
+
     /* @ngInject */
     constructor() {
+        $(document).on("mousemove", this.onMouseMove.bind(this));
+    }
 
-        let open = false;
-        $(document).on("mousemove",
-            (e)=> {
+    private onMouseMove(e) {
+        if (e.pageY <= this.heightCollapsed && !this.isExpanded) {
+            this.expand();
+        } else if (e.pageY > this.heightExpanded && this.isExpanded) {
+            this.collapse();
+        }
+    }
 
-                let mouseY = e.pageY;
+    public expand() {
+        this.isExpanded = true;
+        this.collapsingElements.animate({
+            height: "+=" + (this.heightExpanded - this.heightCollapsed) + "px"
+        }, this.animationDuration);
+    }
 
-                if (mouseY <= 50 && !open) {
-                    open = true;
-                    $("#header, .section-body").animate({
-                        height: "+=250px"
-                    }, 500);
-                }
-
-                if (mouseY > 300 && open) {
-                    open = false;
-                    $("#header, .section-body").animate({
-                        height: "-=250px"
-                    }, 500);
-                }
-
-            }
-        );
-
-        //$("#header").on("mouseleave",
-        //    ()=>{
-        //        $("#header, .section-body").animate({
-        //            height: "-=250px"
-        //        }, 500);
-        //    }
-        //);
-
+    public collapse() {
+        this.isExpanded = false;
+        this.collapsingElements.animate({
+            height: "-=" + (this.heightExpanded - this.heightCollapsed) + "px"
+        }, this.animationDuration);
     }
 
 }
