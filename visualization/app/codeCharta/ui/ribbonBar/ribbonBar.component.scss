@@ -10,6 +10,21 @@ ribbon-bar-component {
     $headerColor: #444;
     $headerSize: 0.9em;
 
+    #toggle-ribbon-bar-fab {
+        position: relative;
+        bottom:40px;
+        left: 95%;
+        z-index: 999;
+    }
+
+    #toggle-ribbon-bar-fab > i:before {
+        content: "\f0ab";
+    }
+
+    #toggle-ribbon-bar-fab.expanded > i:before {
+        content: "\f0aa";
+    }
+
     #header {
 
         width: 100%;
@@ -51,7 +66,7 @@ ribbon-bar-component {
 
         }
 
-        .section:first-child, .section:last-child {
+        .section:first-child {
             width: $heightCollapsed + px;
         }
 
@@ -68,7 +83,7 @@ ribbon-bar-component {
         }
     }
 
-    #header, #header * {
+    #header, #header *, #toggle-ribbon-bar-fab, #toggle-ribbon-bar-fab * {
         transition: all $animationDuration + s ease;
     }
 

@@ -3,15 +3,9 @@ import $ from "jquery";
 
 export class RibbonBarController {
 
-    private collapsingElements = $("ribbon-bar-component #header, ribbon-bar-component .section-body");
-    private toggleElement = $("ribbon-bar-component #toggle-button");
+    private collapsingElements = $("ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab");
 
     private isExpanded: boolean = false;
-
-    /* @ngInject */
-    constructor() {
-        this.toggleElement.on("click", this.toggle.bind(this));
-    }
 
     private toggle(e) {
         if (!this.isExpanded) {
