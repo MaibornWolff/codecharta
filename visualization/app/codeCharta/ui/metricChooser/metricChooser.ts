@@ -1,7 +1,10 @@
 import angular from "angular";
 import "../../core/core.module";
 import {
-    areaMetricChooserComponent, horizontalMetricChooserComponent,
+    areaMetricChooserComponent,
+    colorMetricChooserComponent,
+    heightMetricChooserComponent,
+    horizontalMetricChooserComponent,
     metricChooserComponent
 } from "./metricChooser.component";
 
@@ -16,5 +19,11 @@ angular.module("app.codeCharta.ui.metricChooser").component(
 ).component(
     areaMetricChooserComponent.selector,
     areaMetricChooserComponent
+).component(
+    heightMetricChooserComponent.selector,
+    heightMetricChooserComponent
+).component(
+    colorMetricChooserComponent.selector,
+    colorMetricChooserComponent
 );
 

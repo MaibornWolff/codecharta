@@ -112,6 +112,20 @@ export const areaMetricChooserComponent = {
     controller: MetricChooserController
 };
 
+export const heightMetricChooserComponent = {
+    selector: "heightMetricChooserComponent",
+    template: require("./metricChooser.height.component.html"),
+    controller: MetricChooserController
+};
+
+
+export const colorMetricChooserComponent = {
+    selector: "colorMetricChooserComponent",
+    template: require("./metricChooser.color.component.html"),
+    controller: MetricChooserController
+};
+
+
 
 
 
