@@ -11,8 +11,6 @@ export class RibbonBarController {
 
     /* @ngInject */
     constructor() {
-
-        console.log(this.heightExpanded);
         $(document).on("mousemove", this.onMouseMove.bind(this));
     }
 
