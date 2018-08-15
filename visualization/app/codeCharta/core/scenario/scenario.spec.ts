@@ -50,7 +50,7 @@ describe("app.codeCharta.core.scenarioService", function () {
                 "dynamicMargin": true,
                 "isWhiteBackground": false,
                 "useCouplingHeight": true,
-                "minimumAverageRevs": 15,
+                "minimumAvgCommits": 15,
             },
 
         "autoFitCamera": true

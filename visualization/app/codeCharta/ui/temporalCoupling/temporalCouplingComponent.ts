@@ -54,7 +54,7 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
 
             this.edges = this.edges.filter(
                 edge =>
-                    edge.attributes.averageRevs >= this.settingsService.settings.minimumAverageRevs &&
+                    edge.attributes.avgCommits >= this.settingsService.settings.minimumAvgCommits &&
                     this.isEdgeVisibleInCodeMap(edge, map)
             );
         }
@@ -64,7 +64,7 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
         var isFromNodeInCodeMap = false;
         var isToNodeInCodeMap = false;
 
-        console.log(hierarchy(map.root));/*.leaves().forEach(function (node) {
+        hierarchy(map.root).leaves().forEach(function (node) {
 
             if (node.data.path == edge.fromNodeName && node.data.visible) {
                 isFromNodeInCodeMap = true;
@@ -72,7 +72,7 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
             if (node.data.path == edge.toNodeName && node.data.visible) {
                 isToNodeInCodeMap = true;
             }
-        });*/
+        });
         return isFromNodeInCodeMap && isToNodeInCodeMap;
     }
 }

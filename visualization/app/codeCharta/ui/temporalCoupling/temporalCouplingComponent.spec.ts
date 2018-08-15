@@ -15,7 +15,7 @@ describe("TemporalCouplingComponent", () => {
         toNodeName: "/root/AnotherNode",
         attributes: {
             pairingRate: 42,
-            averageRevs: 21
+            avgCommits: 21
         },
         visible: true,
     };
@@ -43,7 +43,7 @@ describe("TemporalCouplingComponent", () => {
                             toNodeName: "/root/AnotherNode",
                             attributes: {
                                 pairingRate: 42,
-                                averageRevs: 21,
+                                avgCommits: 21,
                             },
                             visible: true,
                         },
@@ -52,13 +52,13 @@ describe("TemporalCouplingComponent", () => {
                             toNodeName: "/root/parent/AnotherNode",
                             attributes: {
                                 pairingRate: 42,
-                                averageRevs: 21,
+                                avgCommits: 21,
                             },
                             visible: true,
                         },
                     ],
                 },
-                minimumAverageRevs: 15,
+                minimumAvgCommits: 15,
             },
             subscribe: jest.fn(),
             applySettings: jest.fn(),

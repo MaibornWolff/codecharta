@@ -1,9 +1,9 @@
 <md-slider-container class="md-block">
     <span>Commit</span>
-    <md-slider flex step="1" min="0" max="100" ng-model="$ctrl.settingsService.settings.minimumAverageRevs" id="labels-slider" ng-change="$ctrl.settingsService.applySettings()" class="md-primary">
+    <md-slider flex step="1" min="0" max="100" ng-model="$ctrl.settingsService.settings.minimumAvgCommits" id="labels-slider" ng-change="$ctrl.settingsService.applySettings()" class="md-primary">
     </md-slider>
     <md-input-container>
-        <input flex step="1" min="0" max="100" type="number" ng-model="$ctrl.settingsService.settings.minimumAverageRevs" ng-change="$ctrl.settingsService.applySettings()" aria-controls="labels-slider">
+        <input flex step="1" min="0" max="100" type="number" ng-model="$ctrl.settingsService.settings.minimumAvgCommits" ng-change="$ctrl.settingsService.applySettings()" aria-controls="labels-slider">
     </md-input-container>
 </md-slider-container>
 
@@ -15,7 +15,7 @@
 
 <md-input-container class="md-block">
     <md-checkbox class="md-primary top-margin" ng-model="$ctrl.settingsService.settings.showEdgeArrows" ng-change="$ctrl.settingsService.onSettingsChanged()">
-        Show Connections
+        Show Arrows
     </md-checkbox>
     <md-button class="md-raised" ng-click="$ctrl.onResetEdges()">Reset Selection</md-button>
 </md-input-container>
@@ -28,10 +28,10 @@
 <md-list-item class="md-2-line"
               ng-repeat="edge in $ctrl.edges | orderBy: 'pairingRate' : true"
               ng-click="$ctrl.onClickCouple(edge)"
-              title="{{::edge.attributes.averageRevs}} average commits&#013;{{::edge.attributes.pairingRate}}% Pairingrate&#013;&#013;{{::edge.fromNodeName}}&#013;&#013;{{::edge.toNodeName}}">
+              title="{{::edge.attributes.avgCommits}} average commits&#013;{{::edge.attributes.pairingRate}}% Pairingrate&#013;&#013;{{::edge.fromNodeName}}&#013;&#013;{{::edge.toNodeName}}">
 
     <div class="md-icon edge-numbers" layout="column">
-        <p class="edge-averagerevs">{{::edge.attributes.averageRevs}}</p>
+        <p class="edge-avgcommits">{{::edge.attributes.avgCommits}}</p>
         <p class="edge-pairingrate">{{::edge.attributes.pairingRate}}%</p>
     </div>
     <div class="md-list-item-text" layout="column">
@@ -43,4 +43,4 @@
 </md-list-item>
 
 <p ng-if="$ctrl.edges.length == 0">No Dependencies listed</p>
-<p class="small-help" ng-if="$ctrl.edges.length == 0">Maybe use different <i>Minimum Commits</i> or turn off <i>Intelligent Filter</i></p>
+<p class="small-help" ng-if="$ctrl.edges.length == 0">Maybe use a different amount of <i>Minimum Commits</i></p>

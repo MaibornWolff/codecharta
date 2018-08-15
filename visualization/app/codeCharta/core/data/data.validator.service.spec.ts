@@ -52,7 +52,7 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
                 fromNodeName: "a",
                 toNodeName: "b",
                 attributes: {
-                    averageRevs: 42,
+                    avgCommits: 42,
                     pairingRate: 80,
                 },
                 visible: false

@@ -92,7 +92,7 @@ describe("treemap utils", () => {
                 toNodeName: "/root/AnotherNode",
                 attributes: {
                     pairingRate: 68,
-                    averageRevs: 17
+                    avgCommits: 17
                 },
                 visible: true,
             }];
@@ -108,7 +108,7 @@ describe("treemap utils", () => {
                 toNodeName: "/root/AnotherNode2",
                 attributes: {
                     pairingRate: 33,
-                    averageRevs: 12
+                    avgCommits: 12
                 },
                 visible: true,
             }];

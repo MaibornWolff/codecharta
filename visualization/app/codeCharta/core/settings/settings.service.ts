@@ -40,7 +40,7 @@ export interface Settings {
     dynamicMargin: boolean;
     isWhiteBackground: boolean;
     useCouplingHeight: boolean;
-    minimumAverageRevs: number;
+    minimumAvgCommits: number;
 }
 
 export interface SettingsServiceSubscriber {
@@ -114,7 +114,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             dynamicMargin: true,
             isWhiteBackground: false,
             useCouplingHeight: true,
-            minimumAverageRevs: 15,
+            minimumAvgCommits: 15,
         };
         return settings;
 
@@ -386,7 +386,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.dynamicMargin = settings.dynamicMargin;
         this._settings.isWhiteBackground = settings.isWhiteBackground;
         this._settings.useCouplingHeight = settings.useCouplingHeight;
-        this._settings.minimumAverageRevs = settings.minimumAverageRevs;
+        this._settings.minimumAvgCommits = settings.minimumAvgCommits;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = settings.map || this.settings.map;
