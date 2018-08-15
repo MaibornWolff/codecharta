@@ -1,4 +1,4 @@
-import {CodeMapNode, CodeMapDependency} from "../data/model/CodeMap";
+import {CodeMapNode, Edge} from "../data/model/CodeMap";
 import {node} from "../../ui/codeMap/rendering/node";
 import {DataService} from "../data/data.service";
 import * as d3 from "d3";
@@ -28,7 +28,7 @@ export interface TreeMapSettings {
     heightKey: string;
     margin: number;
     invertHeight: boolean;
-    visibleTemporalCouplingDependencies: CodeMapDependency[];
+    visibleEdges: Edge[];
     useCouplingHeight: boolean;
 }
 

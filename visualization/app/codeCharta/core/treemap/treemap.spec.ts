@@ -35,7 +35,7 @@ describe("treemap service", ()=> {
             margin: 0,
             invertHeight: false,
             useCouplingHeight: true,
-            visibleTemporalCouplingDependencies: []
+            visibleEdges: []
         };
 
     });

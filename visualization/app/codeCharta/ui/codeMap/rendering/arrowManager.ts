@@ -12,31 +12,6 @@ export class ArrowManager {
         this.arrows = new Array<THREE.Object3D>();
     }
 
-    private makeArrowFromBezier(bezier: THREE.CubicBezierCurve3,
-                                hex: number = 0,
-                                headLength: number = 10,
-                                headWidth: number = 10,
-                                bezierPoints: number = 50): THREE.Object3D {
-
-        let points = bezier.getPoints(bezierPoints);
-
-        // arrowhead
-        let dir = points[points.length - 1].clone().sub(points[points.length - 2].clone());
-        dir.normalize();
-        let origin = points[points.length - 1].clone();
-        let arrowHelper = new THREE.ArrowHelper(dir, origin, 0, hex, headLength, headWidth);
-
-        // curve
-        let geometry = new THREE.BufferGeometry();
-        geometry.setFromPoints(points);
-        let material = new THREE.LineBasicMaterial({color: hex, linewidth: 1});
-        let curveObject = new THREE.Line(geometry, material);
-
-        //combine
-        curveObject.add(arrowHelper);
-        return curveObject;
-    }
-
     public clearArrows() {
         this.arrows = [];
         while (this.parentObjectInScene.children.length > 0) {
@@ -44,7 +19,7 @@ export class ArrowManager {
         }
     }
 
-    public addCodeMapDependenciesFromOriginAsArrows(origin: node, nodes: node[], deps: Edge[], settings: renderSettings) {
+    public addEdgeArrowsFromOrigin(origin: node, nodes: node[], deps: Edge[], settings: renderSettings) {
         let resDeps: Edge[] = [];
         let originPath = this.getPathFromNode(origin);
         for (var dep of deps) {
@@ -52,12 +27,12 @@ export class ArrowManager {
                 resDeps.push(dep);
             }
         }
-        this.addCodeMapDependenciesAsArrows(nodes, resDeps, settings);
+        this.addEdgeArrows(nodes, resDeps, settings);
     }
 
-    public addCodeMapDependenciesAsArrows(nodes: node[], deps: Edge[], settings: renderSettings) {
+    public addEdgeArrows(nodes: node[], deps: Edge[], settings: renderSettings) {
 
-        let map = this.getPathToNodeMap(nodes);
+        let map = this.getNodepathMap(nodes);
 
         for (var dep of deps) {
             let originNode: node = map.get(dep.fromNodeName);
@@ -69,7 +44,7 @@ export class ArrowManager {
 
     }
 
-    private getPathToNodeMap(nodes: node[]): Map<string, node> {
+    private getNodepathMap(nodes: node[]): Map<string, node> {
         let map = new Map<string, node>();
 
         for (let node of nodes) {
@@ -120,9 +95,32 @@ export class ArrowManager {
 
             this.parentObjectInScene.add(arrow);
             this.arrows.push(arrow);
-
         }
+    }
 
+    private makeArrowFromBezier(bezier: THREE.CubicBezierCurve3,
+                                hex: number = 0,
+                                headLength: number = 10,
+                                headWidth: number = 10,
+                                bezierPoints: number = 50): THREE.Object3D {
+
+        let points = bezier.getPoints(bezierPoints);
+
+        // arrowhead
+        let dir = points[points.length - 1].clone().sub(points[points.length - 2].clone());
+        dir.normalize();
+        let origin = points[points.length - 1].clone();
+        let arrowHelper = new THREE.ArrowHelper(dir, origin, 0, hex, headLength, headWidth);
+
+        // curve
+        let geometry = new THREE.BufferGeometry();
+        geometry.setFromPoints(points);
+        let material = new THREE.LineBasicMaterial({color: hex, linewidth: 1});
+        let curveObject = new THREE.Line(geometry, material);
+
+        //combine
+        curveObject.add(arrowHelper);
+        return curveObject;
     }
 
     public scale(x: number, y: number, z: number) {

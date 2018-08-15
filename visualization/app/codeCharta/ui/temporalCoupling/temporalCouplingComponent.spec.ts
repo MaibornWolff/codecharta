@@ -1,8 +1,7 @@
-import {ScenarioButtonsController} from "./scenarioButtonsComponent";
 import {ITimeoutService} from "angular";
 import {SettingsService} from "../../core/settings/settings.service";
 import {TemporalCouplingController} from "./temporalCouplingComponent";
-import {CodeMapDependency} from "../../core/data/model/CodeMap";
+import {Edge} from "../../core/data/model/CodeMap";
 
 describe("TemporalCouplingComponent", () => {
 
@@ -11,13 +10,13 @@ describe("TemporalCouplingComponent", () => {
     let $scope;
     let settingsService: SettingsService;
 
-    const couple: CodeMapDependency = {
-        node: "/root/Anode",
-        nodeFilename: "Anode",
-        dependantNode: "/root/AnotherNode",
-        dependantNodeFilename: "AnotherNode",
-        pairingRate: 42,
-        averageRevs: 21,
+    const edge: Edge = {
+        fromNodeName: "/root/Anode",
+        toNodeName: "/root/AnotherNode",
+        attributes: {
+            pairingRate: 42,
+            averageRevs: 21
+        },
         visible: true,
     };
 
@@ -41,21 +40,21 @@ describe("TemporalCouplingComponent", () => {
                     dependencies: {
                         temporal_coupling: [
                             {
-                                node: "/root/Anode",
-                                nodeFilename: "Anode",
-                                dependantNode: "/root/AnotherNode",
-                                dependantNodeFilename: "AnotherNode",
-                                pairingRate: 42,
-                                averageRevs: 21,
+                                fromNodeName: "/root/Anode",
+                                toNodeName: "/root/AnotherNode",
+                                attributes: {
+                                    pairingRate: 42,
+                                    averageRevs: 21
+                                },
                                 visible: true,
                             },
                             {
-                                node: "/root/parent/Anode",
-                                nodeFilename: "Anode",
-                                dependantNode: "/root/parent/AnotherNode",
-                                dependantNodeFilename: "AnotherNode",
-                                pairingRate: 42,
-                                averageRevs: 21,
+                                fromNodeName: "/root/parent/Anode",
+                                toNodeName: "/root/parent/AnotherNode",
+                                attributes: {
+                                    pairingRate: 42,
+                                    averageRevs: 21
+                                },
                                 visible: true,
                             },
                         ]
@@ -78,47 +77,47 @@ describe("TemporalCouplingComponent", () => {
 
 
     it("should toggle visibility for clicked edge", () => {
-        const couple = {
-            node: "/root/Anode",
-            nodeFilename: "Anode",
-            dependantNode: "/root/AnotherNode",
-            dependantNodeFilename: "AnotherNode",
-            pairingRate: 42,
-            averageRevs: 21,
+        const edge = {
+            fromNodeName: "/root/Anode",
+            toNodeName: "/root/AnotherNode",
+            attributes: {
+                pairingRate: 42,
+                averageRevs: 21
+            },
             visible: true
         };
-        settingsService.settings.map.dependencies.temporal_coupling[0] = couple;
-        temporalCouplingController.onClickCouple(couple);
-        expect(settingsService.settings.map.dependencies.temporal_coupling).toMatchSnapshot();
+        settingsService.settings.map.edges[0] = edge;
+        temporalCouplingController.onClickCouple(edge);
+        expect(settingsService.settings.map.edges).toMatchSnapshot();
     });
 
     it("should reset visibility for all dependencies to false", () => {
-        temporalCouplingController.onResetDependencies();
-        expect(settingsService.settings.map.dependencies.temporal_coupling).toMatchSnapshot();
+        temporalCouplingController.onResetEdges();
+        expect(settingsService.settings.map.edges).toMatchSnapshot();
     });
 
     it("should be eligible Couple", () => {
-        expect(temporalCouplingController.isEligibleCouple(couple)).toBe(true);
+        expect(temporalCouplingController.isEligibleEdge(edge)).toBe(true);
     });
 
     it("should be eligible Couple", () => {
-        couple.node = "/root/package-lock.json";
-        couple.nodeFilename = "package-lock.json";
-        expect(temporalCouplingController.isEligibleCouple(couple)).toBe(false);
+        edge.fromNodeName = "/root/package-lock.json";
+        edge.toNodeName = "package-lock.json";
+        expect(temporalCouplingController.isEligibleEdge(edge)).toBe(false);
     });
 
     it("should use filter when updating temporalCOuplingController.edges", () => {
-        settingsService.settings.map.dependencies.temporal_coupling[0] = {
-            node: "/root/parent/children/package.json",
-            nodeFilename: "package.json",
-            dependantNode: "/root/AnotherNode",
-            dependantNodeFilename: "AnotherNode",
-            pairingRate: 42,
-            averageRevs: 10,
+        settingsService.settings.map.edges[0] = {
+            fromNodeName: "/root/parent/children/package.json",
+            toNodeName: "/root/AnotherNode",
+            attributes: {
+                pairingRate: 42,
+                averageRevs: 10
+            },
             visible: false
         };
         settingsService.settings.intelligentTemporalCouplingFilter = true;
-        temporalCouplingController.updateTemporalCouplingDependencies(settingsService.settings.map);
+        temporalCouplingController.updateEdges(settingsService.settings.map);
         expect(temporalCouplingController.edges.length).toEqual(1);
     });
 

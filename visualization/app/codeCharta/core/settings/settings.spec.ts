@@ -47,8 +47,7 @@ describe("settings.service", function() {
                         ]
                     }
                 ]
-            },
-            dependencies: {}
+            }
         };
     });
 

@@ -45,7 +45,7 @@ describe("app.codeCharta.core.scenarioService", function () {
                         "y": 1,
                         "z": 1
                     },
-                "showDependencies": true,
+                "showEdgeArrows": true,
                 "invertHeight": false,
                 "dynamicMargin": true,
                 "isWhiteBackground": false,

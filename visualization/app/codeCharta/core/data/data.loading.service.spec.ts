@@ -13,6 +13,7 @@ describe("app.codeCharta.core.data.dataLoadingService", function () {
 
     //noinspection TypeScriptUnresolvedVariable
     beforeEach(NGMock.mock.module("app.codeCharta.core.data"));
+
     //noinspection TypeScriptUnresolvedVariable
     beforeEach(NGMock.mock.inject(function (_dataLoadingService_) {
         dataLoadingService = _dataLoadingService_;
@@ -20,13 +21,13 @@ describe("app.codeCharta.core.data.dataLoadingService", function () {
     }));
 
 
-    it("should load a file without dependencies", ()=> {
-        validFileContent.dependencies = undefined;
+    it("should load a file without edges", ()=> {
+        validFileContent.edges = undefined;
         return dataLoadingService.loadMapFromFileContent("file.json", validFileContent, 0);
     });
 
-    it("should load a file without dependencies if no revision index given", ()=> {
-        validFileContent.dependencies = undefined;
+    it("should load a file without edges if no revision index given", ()=> {
+        validFileContent.edges = undefined;
         return dataLoadingService.loadMapFromFileContent("file.json", validFileContent);
     });
 

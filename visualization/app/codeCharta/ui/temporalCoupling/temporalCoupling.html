@@ -20,10 +20,10 @@
 </md-input-container>
 
 <md-input-container class="md-block">
-    <md-checkbox class="md-primary top-margin" ng-model="$ctrl.settingsService.settings.showDependencies" ng-change="$ctrl.settingsService.onSettingsChanged()">
+    <md-checkbox class="md-primary top-margin" ng-model="$ctrl.settingsService.settings.showEdgeArrows" ng-change="$ctrl.settingsService.onSettingsChanged()">
         Show Connections
     </md-checkbox>
-    <md-button class="md-raised" ng-click="$ctrl.onResetDependencies()">Reset Selection</md-button>
+    <md-button class="md-raised" ng-click="$ctrl.onResetEdges()">Reset Selection</md-button>
 </md-input-container>
 
 <span class="small-help" title="Average commits between both files">Avg-Commits, </span>
@@ -36,9 +36,9 @@
               ng-click="$ctrl.onClickCouple(edge)"
               title="{{::edge.attributes.averageRevs}} average commits&#013;{{::edge.attributes.pairingRate}}% Pairingrate&#013;&#013;{{::edge.fromNodeName}}&#013;&#013;{{::edge.toNodeName}}">
 
-    <div class="md-icon dependency-numbers" layout="column">
-        <p class="dependency-average-revs">{{::edge.attributes.averageRevs}}</p>
-        <p class="dependency-pairings-rate">{{::edge.attributes.pairingRate}}%</p>
+    <div class="md-icon edge-numbers" layout="column">
+        <p class="edge-averagerevs">{{::edge.attributes.averageRevs}}</p>
+        <p class="edge-pairingrate">{{::edge.attributes.pairingRate}}%</p>
     </div>
     <div class="md-list-item-text" layout="column">
         <h3>{{::edge.fromNodeName.split('/')[edge.fromNodeName.split('/').length - 1]}}</h3>

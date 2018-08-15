@@ -8,7 +8,7 @@ import {CodeMap} from "../../core/data/model/CodeMap";
  */
 export class SettingsPanelController implements SettingsServiceSubscriber {
 
-    public showTemporalCouplingPanel : boolean = false;
+    public showEdgePanel : boolean = false;
 
     /* @ngInject */
     constructor(
@@ -21,18 +21,15 @@ export class SettingsPanelController implements SettingsServiceSubscriber {
     }
 
     onSettingsChanged(s: Settings) {
-        this.showTemporalCouplingPanel = this.hasTemporalCouplingDependencies();
+        this.showEdgePanel = this.hasEdges();
     }
 
-    private hasTemporalCouplingDependencies() {
-
+    private hasEdges() {
         let settings = this.settingsService.settings;
 
-        if (settings.map &&
-            settings.map.edges) {
+        if (settings.map && settings.map.edges) {
             return settings.map.edges.length > 0;
         }
-
         return false;
     }
 

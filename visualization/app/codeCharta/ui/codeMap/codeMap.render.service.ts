@@ -88,7 +88,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
 
     updateMapGeometry(s: Settings) {
 
-        let visibleTemporalCouplingDependencies = this.getVisibleTemporalCouplingDependencies(s);
+        let visibleEdges = this.getVisibleEdges(s);
 
         const treeMapSettings: TreeMapSettings = {
             size: mapSize,
@@ -96,7 +96,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             heightKey: s.heightMetric,
             margin: s.margin,
             invertHeight: s.invertHeight,
-            visibleTemporalCouplingDependencies: visibleTemporalCouplingDependencies,
+            visibleEdges: visibleEdges,
             useCouplingHeight: s.useCouplingHeight,
         };
 
@@ -119,7 +119,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
 
         this.labelManager = new LabelManager(this.threeSceneService.labels);
         this.labelManager.clearLabels();
-        this.arrowManager = new ArrowManager(this.threeSceneService.dependencyArrows);
+        this.arrowManager = new ArrowManager(this.threeSceneService.edgeArrows);
         this.arrowManager.clearArrows();
 
         for (let i = 0, numAdded = 0; i < this.currentSortedNodes.length && numAdded < s.amountOfTopLabels; ++i) {
@@ -129,8 +129,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             }
         }
 
-        if (visibleTemporalCouplingDependencies.length > 0 && s.showDependencies) {
-            this.showCouplingArrows(visibleTemporalCouplingDependencies);
+        if (visibleEdges.length > 0 && s.showEdgeArrows) {
+            this.showCouplingArrows(visibleEdges);
         }
 
         this._mapMesh = new CodeMapMesh(this.currentSortedNodes, this.currentRenderSettings);
@@ -138,7 +138,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         this.threeSceneService.setMapMesh(this._mapMesh, mapSize);
     }
 
-    private getVisibleTemporalCouplingDependencies(s: Settings) {
+    private getVisibleEdges(s: Settings) {
         if (s.map && s.map.edges) {
             return s.map.edges.filter(edge => edge.visible === true);
         }
@@ -149,7 +149,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         this.arrowManager.clearArrows();
 
         if (deps && this.currentRenderSettings) {
-            this.arrowManager.addCodeMapDependenciesAsArrows(this.currentSortedNodes, deps, this.currentRenderSettings);
+            this.arrowManager.addEdgeArrows(this.currentSortedNodes, deps, this.currentRenderSettings);
             this.arrowManager.scale(
                 this.threeSceneService.mapGeometry.scale.x,
                 this.threeSceneService.mapGeometry.scale.y,

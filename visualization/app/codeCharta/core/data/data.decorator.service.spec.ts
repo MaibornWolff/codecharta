@@ -260,8 +260,7 @@ describe("app.codeCharta.core.data.dataService", () => {
                     name: "a node",
                     type: "File",
                     attributes: {}
-                },
-                dependencies: {}
+                }
             };
 
             dataDecoratorService.decorateMapWithUnaryMetric(cm);

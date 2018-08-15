@@ -17,10 +17,10 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
     }
 
     onSettingsChanged(s: Settings) {
-        this.updateTemporalCouplingDependencies(this.settingsService.settings.map);
+        this.updateEdges(this.settingsService.settings.map);
     }
 
-    public onResetDependencies() {
+    public onResetEdges() {
         var map = this.settingsService.settings.map;
         if (map && map.edges) {
             for (var i = 0; i < this.settingsService.settings.map.edges.length; i++) {
@@ -31,58 +31,58 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
     }
 
     onClickCouple(couple: Edge) {
-        this.setNewVisibilityInSettingsService(this.settingsService.settings.map.edges, couple);
+        this.setNewEdgeVisibilityInSettingsService(this.settingsService.settings.map.edges, couple);
         this.settingsService.applySettings();
     }
 
-    setNewVisibilityInSettingsService(edges: Edge[], edge: Edge) {
+    setNewEdgeVisibilityInSettingsService(edges: Edge[], edge: Edge) {
         let coupleIndex = edges.indexOf(edge);
         let oldVisibility = edges[coupleIndex].visible;
         let newVisibility = !(oldVisibility === true);
         this.settingsService.settings.map.edges[coupleIndex].visible = newVisibility;
     }
 
-    private updateTemporalCouplingDependencies(map: CodeMap) {
+    updateEdges(map: CodeMap) {
         if (map && map.edges) {
             this.edges = map.edges;
 
-            for (var couple of this.edges) {
-                if (couple.visible !== true) {
-                    couple.visible = false;
+            for (var edge of this.edges) {
+                if (edge.visible !== true) {
+                    edge.visible = false;
                 }
             }
 
             this.edges = this.edges.filter(
-                couple =>
-                    couple.attributes.averageRevs >= this.settingsService.settings.minimumAverageRevs &&
-                    this.isCoupleVisibleInCodeMap(couple, map)
+                edge =>
+                    edge.attributes.averageRevs >= this.settingsService.settings.minimumAverageRevs &&
+                    this.isEdgeVisibleInCodeMap(edge, map)
             );
 
             if (this.settingsService.settings.intelligentTemporalCouplingFilter) {
                 this.edges = this.edges.filter(
-                    couple => this.isEligibleCouple(couple)
+                    couple => this.isEligibleEdge(couple)
                 );
             }
         }
     }
 
-    private isCoupleVisibleInCodeMap(couple, map) {
+    isEdgeVisibleInCodeMap(edge, map) {
         var isFromNodeInCodeMap = false;
         var isToNodeInCodeMap = false;
 
         hierarchy<CodeMapNode>(map.root).leaves().forEach(function (node) {
 
-            if (node.data.path == couple.fromNodeName && node.data.visible) {
+            if (node.data.path == edge.fromNodeName && node.data.visible) {
                 isFromNodeInCodeMap = true;
             }
-            if (node.data.path == couple.toNodeName && node.data.visible) {
+            if (node.data.path == edge.toNodeName && node.data.visible) {
                 isToNodeInCodeMap = true;
             }
         });
         return isFromNodeInCodeMap && isToNodeInCodeMap;
     }
 
-    private isEligibleCouple(couple) {
+    isEligibleEdge(edge) {
 
         let nodenameBlacklist = [
             /package-lock\.json/i,
@@ -94,18 +94,18 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
             /build\.gradle/i,
             /sample1 only leaf/i,
         ];
-        let isEligibleCouple = true;
+        let isEligibleEdge = true;
 
         nodenameBlacklist.forEach(function (re) {
 
-            let isNodeNameMatch = couple.fromNodeName.search(re) != -1;
-            let isDependantNodeNameMatch = couple.toNodeName.search(re) != -1;
+            let isFromNameMatch = edge.fromNodeName.search(re) != -1;
+            let isToNodeNameMatch = edge.toNodeName.search(re) != -1;
 
-            if (isNodeNameMatch || isDependantNodeNameMatch) {
-                isEligibleCouple = false
+            if (isFromNameMatch || isToNodeNameMatch) {
+                isEligibleEdge = false
             }
         });
-        return isEligibleCouple;
+        return isEligibleEdge;
     }
 }
 

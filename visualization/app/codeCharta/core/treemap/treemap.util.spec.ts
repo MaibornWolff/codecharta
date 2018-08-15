@@ -1,6 +1,6 @@
 import {TreeMapUtils} from "./treemap.util";
 import {SquarifiedValuedCodeMapNode, TreeMapSettings} from "./treemap.service";
-import {CodeMapDependency, CodeMapNode} from "../data/model/CodeMap";
+import {CodeMapNode, Edge} from "../data/model/CodeMap";
 import {node} from "../../ui/codeMap/rendering/node";
 describe("treemap utils", () => {
 
@@ -42,7 +42,7 @@ describe("treemap utils", () => {
                 heightKey: "theHeight",
                 margin: 15,
                 invertHeight: false,
-                visibleTemporalCouplingDependencies: [],
+                visibleEdges: [],
                 useCouplingHeight: true
             }
 
@@ -86,14 +86,14 @@ describe("treemap utils", () => {
             TreeMapUtils.isNodeLeaf = tmp;
         });
 
-        it("dependency edge node should use pairingrate/normal metric as height", () => {
-            treeMapSettings.visibleTemporalCouplingDependencies = [{
-                node: "/root/Anode",
-                nodeFilename: "Anode",
-                dependantNode: "/root/AnotherNode",
-                dependantNodeFilename: "AnotherNode",
-                pairingRate: 68,
-                averageRevs: 17,
+        it("edge node should use pairingrate/normal metric as height", () => {
+            treeMapSettings.visibleEdges = [{
+                fromNodeName: "/root/Anode",
+                toNodeName: "/root/AnotherNode",
+                attributes: {
+                    pairingRate: 68,
+                    averageRevs: 17
+                },
                 visible: true,
             }];
             treeMapSettings.useCouplingHeight = true;
@@ -102,14 +102,14 @@ describe("treemap utils", () => {
             expect(buildNode()).toMatchSnapshot();
         });
 
-        it("should set lowest possible height caused by other visible dependency pairs", () => {
-            treeMapSettings.visibleTemporalCouplingDependencies = [{
-                node: "/root/AnotherNode1",
-                nodeFilename: "AnotherNode1",
-                dependantNode: "/root/AnotherNode2",
-                dependantNodeFilename: "AnotherNode2",
-                pairingRate: 33,
-                averageRevs: 12,
+        it("should set lowest possible height caused by other visible edge pairs", () => {
+            treeMapSettings.visibleEdges = [{
+                fromNodeName: "/root/AnotherNode1",
+                toNodeName: "/root/AnotherNode2",
+                attributes: {
+                    pairingRate: 33,
+                    averageRevs: 12
+                },
                 visible: true,
             }];
             expect(buildNode()).toMatchSnapshot();
