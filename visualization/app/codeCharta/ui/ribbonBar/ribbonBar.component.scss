@@ -5,7 +5,7 @@ ribbon-bar-component {
     $sectionWidth: 275;
     $padding: 5;
     $animationDuration: 0.5;
-    $opacityExpanded: 0.8;
+    $opacityExpanded: 1;
     $border: 1px solid #efefef;
     $headerColor: #444;
     $headerSize: 0.9em;
@@ -51,7 +51,7 @@ ribbon-bar-component {
 
         }
 
-        .section:first-child {
+        .section:first-child, .section:last-child {
             width: $heightCollapsed + px;
         }
 
