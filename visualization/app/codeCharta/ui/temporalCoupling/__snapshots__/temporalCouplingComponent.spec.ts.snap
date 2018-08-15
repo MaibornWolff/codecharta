@@ -22,26 +22,3 @@ Array [
   },
 ]
 `;
-
-exports[`TemporalCouplingComponent should toggle visibility for clicked couple 1`] = `
-Array [
-  Object {
-    "averageRevs": 21,
-    "dependantNode": "/root/AnotherNode",
-    "dependantNodeFilename": "AnotherNode",
-    "node": "/root/Anode",
-    "nodeFilename": "Anode",
-    "pairingRate": 42,
-    "visible": false,
-  },
-  Object {
-    "averageRevs": 21,
-    "dependantNode": "/root/parent/AnotherNode",
-    "dependantNodeFilename": "AnotherNode",
-    "node": "/root/parent/Anode",
-    "nodeFilename": "Anode",
-    "pairingRate": 42,
-    "visible": true,
-  },
-]
-`;

@@ -17,7 +17,7 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
     }
 
     onSettingsChanged(s: Settings) {
-        this.updateEdges(this.settingsService.settings.map);
+        this.updateAndFilterEdges(this.settingsService.settings.map);
     }
 
     onResetEdges() {
@@ -42,7 +42,7 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
         this.settingsService.settings.map.edges[coupleIndex].visible = newVisibility;
     }
 
-    updateEdges(map: CodeMap) {
+    updateAndFilterEdges(map: CodeMap) {
         if (map && map.edges) {
             this.edges = map.edges;
 
@@ -64,7 +64,7 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
         var isFromNodeInCodeMap = false;
         var isToNodeInCodeMap = false;
 
-        hierarchy<CodeMapNode>(map.root).leaves().forEach(function (node) {
+        console.log(hierarchy(map.root));/*.leaves().forEach(function (node) {
 
             if (node.data.path == edge.fromNodeName && node.data.visible) {
                 isFromNodeInCodeMap = true;
@@ -72,7 +72,7 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
             if (node.data.path == edge.toNodeName && node.data.visible) {
                 isToNodeInCodeMap = true;
             }
-        });
+        });*/
         return isFromNodeInCodeMap && isToNodeInCodeMap;
     }
 }

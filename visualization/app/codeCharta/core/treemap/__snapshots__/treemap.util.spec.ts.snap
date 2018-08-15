@@ -26,7 +26,7 @@ Object {
 }
 `;
 
-exports[`treemap utils build node dependency couple node should use pairingrate/normal metric as height 1`] = `
+exports[`treemap utils build node edge node should use pairingrate/normal metric as height 1`] = `
 Object {
   "attributes": Object {},
   "children": Array [],
@@ -50,7 +50,7 @@ Object {
 }
 `;
 
-exports[`treemap utils build node dependency couple node should use pairingrate/normal metric as height 2`] = `
+exports[`treemap utils build node edge node should use pairingrate/normal metric as height 2`] = `
 Object {
   "attributes": Object {},
   "children": Array [],
@@ -146,7 +146,7 @@ Object {
 }
 `;
 
-exports[`treemap utils build node should set lowest possible height caused by other visible dependency pairs 1`] = `
+exports[`treemap utils build node should set lowest possible height caused by other visible edge pairs 1`] = `
 Object {
   "attributes": Object {},
   "children": Array [],
