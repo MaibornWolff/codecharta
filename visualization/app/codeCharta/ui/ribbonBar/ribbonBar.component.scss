@@ -1,10 +1,11 @@
 ribbon-bar-component {
 
-    $heightExpanded: 300;
+    $heightExpanded: 550;
     $heightCollapsed: 50;
-    $sectionWidth: 200;
+    $sectionWidth: 275;
     $padding: 5;
     $animationDuration: 0.5;
+    $opacityExpanded: 0.8;
     $border: 1px solid #efefef;
     $headerColor: #444;
     $headerSize: 0.9em;
@@ -58,6 +59,8 @@ ribbon-bar-component {
 
     #header.expanded {
         height: $heightExpanded + px;
+        opacity: $opacityExpanded;
+
         .section {
             .section-body {
                 height: ($heightExpanded - $heightCollapsed) + px;
