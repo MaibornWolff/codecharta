@@ -9,6 +9,8 @@ ribbon-bar-component {
         height: 50px;
         overflow: hidden;
 
+        transition: all 0.5s ease;
+
         .section {
             display: inline-block;
             height:100%;
@@ -46,6 +48,15 @@ ribbon-bar-component {
             width: 50px;
         }
 
+    }
+
+    #header.expanded {
+        height: 300px;
+        .section {
+            .section-body {
+                height: 250px;
+            }
+        }
     }
 
 }

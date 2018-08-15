@@ -4,7 +4,6 @@ import $ from "jquery";
 export class RibbonBarController {
 
     private heightExpanded = 300;
-    private animationDuration = 500;
     private heightCollapsed = $("ribbon-bar-component #header").height();
     private collapsingElements = $("ribbon-bar-component #header, ribbon-bar-component .section-body");
 
@@ -25,16 +24,12 @@ export class RibbonBarController {
 
     public expand() {
         this.isExpanded = true;
-        this.collapsingElements.animate({
-            height: "+=" + (this.heightExpanded - this.heightCollapsed) + "px"
-        }, this.animationDuration);
+        this.collapsingElements.addClass("expanded");
     }
 
     public collapse() {
         this.isExpanded = false;
-        this.collapsingElements.animate({
-            height: "-=" + (this.heightExpanded - this.heightCollapsed) + "px"
-        }, this.animationDuration);
+        this.collapsingElements.removeClass("expanded");
     }
 
 }
