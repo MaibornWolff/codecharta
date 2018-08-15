@@ -1,11 +1,23 @@
 import "./ribbonBar.component.scss";
 import $ from "jquery";
+import {SettingsService} from "../../core/settings/settings.service";
 
 export class RibbonBarController {
 
     private collapsingElements = $("ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab");
 
     private isExpanded: boolean = false;
+
+    /* @ngInject */
+    constructor(
+        private settingsService: SettingsService
+    ) {
+    }
+
+    public changeMargin(){
+        this.settingsService.settings.dynamicMargin = false;
+        this.settingsService.applySettings();
+    }
 
     private toggle(e) {
         if (!this.isExpanded) {

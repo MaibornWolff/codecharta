@@ -6,7 +6,9 @@ ribbon-bar-component {
     $padding: 5;
     $animationDuration: 0.5;
     $opacityExpanded: 1;
-    $border: 1px solid #efefef;
+    $border: 1px solid #cdcdcd;
+    $border-thin: 0px dotted #cdcdcd;
+    $subsection-bg: #efefef;
     $headerColor: #444;
     $headerSize: 0.9em;
 
@@ -56,12 +58,18 @@ ribbon-bar-component {
 
             }
 
+            .section-header.bordered {
+                border-bottom: $border-thin;
+                border-top: $border-thin;
+                background-color: $subsection-bg;
+            }
+
             .section-body {
                 height: 0px;
                 padding-top: ($padding * 4) + px;
                 overflow: hidden;
                 border-top: $border;
-                text-align: center;
+                text-align: left;
             }
 
         }
