@@ -3,7 +3,7 @@ import $ from "jquery";
 
 export class RibbonBarController {
 
-    private heightExpanded = 300;
+    private heightExpanded = RibbonBarController.getExpandedHeight();
     private heightCollapsed = $("ribbon-bar-component #header").height();
     private collapsingElements = $("ribbon-bar-component #header, ribbon-bar-component .section-body");
 
@@ -11,6 +11,8 @@ export class RibbonBarController {
 
     /* @ngInject */
     constructor() {
+
+        console.log(this.heightExpanded);
         $(document).on("mousemove", this.onMouseMove.bind(this));
     }
 
@@ -30,6 +32,16 @@ export class RibbonBarController {
     public collapse() {
         this.isExpanded = false;
         this.collapsingElements.removeClass("expanded");
+    }
+
+    private static getExpandedHeight() {
+        const $inspector = $("<ribbon-bar-component><div id='header' class='expanded'></div></ribbon-bar-component>").css('display', 'none');
+        $("body").append($inspector);
+        try {
+            return $inspector.find(".expanded").css("height").replace("px","");
+        } finally {
+            $inspector.remove();
+        }
     }
 
 }

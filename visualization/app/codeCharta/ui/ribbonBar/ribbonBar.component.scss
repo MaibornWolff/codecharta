@@ -1,62 +1,72 @@
 ribbon-bar-component {
 
+    $heightExpanded: 500;
+    $heightCollapsed: 50;
+    $sectionWidth: 200;
+    $padding: 5;
+    $animationDuration: 0.5;
+    $border: 1px solid #efefef;
+    $headerColor: #444;
+    $headerSize: 0.9em;
+
     #header {
 
         width: 100%;
         margin: 0;
         padding: 0;
         display: block;
-        height: 50px;
+        height: $heightCollapsed + px;
         overflow: hidden;
-
-        transition: all 0.5s ease;
 
         .section {
             display: inline-block;
             height:100%;
-            width: 200px;
-            padding: 5px;
-            padding-right: 9px;
-            border-right: 1px solid #efefef;
+            width: $sectionWidth + px;
+            padding: $padding + px;
+            border-right: $border;
 
             .section-header {
-                margin-bottom: 10px;
+                margin-bottom: ($padding * 2) + px;
                 padding: 0;
-                height: 40px;
-                line-height: 40px;
-                font-size: 0.9em;
-                color: #444;
+                height: ($heightCollapsed - 2 * $padding) + px;
+                line-height: ($heightCollapsed - 2 * $padding) + px;
+                font-size: $headerSize;
+                color: $headerColor;
                 text-align: center;
 
                 img {
-                    height: 40px;
+                    height: ($heightCollapsed - 2 * $padding) + px;
                 }
 
             }
 
             .section-body {
                 height: 0px;
-                padding-top: 20px;
+                padding-top: ($padding * 4) + px;
                 overflow: hidden;
-                border-top: 1px solid #efefef;
+                border-top: $border;
                 text-align: center;
             }
 
         }
 
         .section:first-child {
-            width: 50px;
+            width: $heightCollapsed + px;
         }
 
     }
 
     #header.expanded {
-        height: 300px;
+        height: $heightExpanded + px;
         .section {
             .section-body {
-                height: 250px;
+                height: ($heightExpanded - $heightCollapsed) + px;
             }
         }
+    }
+
+    #header, #header * {
+        transition: all $animationDuration + s ease;
     }
 
 }
