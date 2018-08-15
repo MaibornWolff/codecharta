@@ -31,7 +31,8 @@ export function createDefaultScenario(map: CodeMap, margin: number): Scenario {
             maximizeDetailPanel: false,
             invertHeight: false,
             dynamicMargin: true,
-            isWhiteBackground: false
+            isWhiteBackground: false,
+            showRibbonBar: false
         },
         autoFitCamera: true
     };

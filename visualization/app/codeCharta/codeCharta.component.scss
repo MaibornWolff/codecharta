@@ -2,6 +2,40 @@
 
 code-charta-component {
 
+  #title {
+
+    position: fixed;
+    z-index: 10;
+    width: 100%;
+
+    .logo {
+
+      width: 160px;
+      height: 100px;
+      position: fixed;
+      left: 0;
+      top: 5px;
+      z-index: -2;
+
+      a, img {
+        width: 5em;
+        display: block;
+        margin: auto !important;
+      }
+
+      h2 {
+        text-transform: uppercase;
+        color: #5A585A;
+        font-family: Roboto, sans-serif;
+        font-weight: 500;
+        font-size: 9pt;
+        text-align: center;
+        margin: 0;
+        z-index: -1;
+      }
+    }
+  }
+
   ribbon-bar-component {
     position: fixed;
     z-index: 10;
