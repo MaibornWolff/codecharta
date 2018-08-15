@@ -1,26 +1,42 @@
 import "./ribbonBar.component.scss";
 import $ from "jquery";
+import {mouse} from "d3-selection";
 
 export class RibbonBarController {
 
     /* @ngInject */
     constructor() {
 
-        $("#header").on("mouseenter",
-            ()=>{
-                $("#header, .section-body").animate({
-                    height: "+=250px"
-                }, 500);
+        let open = false;
+        $(document).on("mousemove",
+            (e)=> {
+
+                let mouseY = e.pageY;
+
+                if (mouseY <= 50 && !open) {
+                    open = true;
+                    $("#header, .section-body").animate({
+                        height: "+=250px"
+                    }, 500);
+                }
+
+                if (mouseY > 300 && open) {
+                    open = false;
+                    $("#header, .section-body").animate({
+                        height: "-=250px"
+                    }, 500);
+                }
+
             }
         );
 
-        $("#header").on("mouseleave",
-            ()=>{
-                $("#header, .section-body").animate({
-                    height: "-=250px"
-                }, 500);
-            }
-        );
+        //$("#header").on("mouseleave",
+        //    ()=>{
+        //        $("#header, .section-body").animate({
+        //            height: "-=250px"
+        //        }, 500);
+        //    }
+        //);
 
     }
 
