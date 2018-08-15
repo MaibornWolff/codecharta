@@ -50,7 +50,8 @@ Once you have installed the project, you can use all grunt tasks described in th
 
 `npm run test` runs all unit tests on the source files in app/ and generates a coverage report in dist/coverage/.
 `npm run e2e` runs all e2e tests on the built app in headless mode.
-`npm run e2e:gui` runs all e2e tests on the built app in gui mode.
+
+adding ":auto" to run target will run the tests in watch mode
 
 #### Run
 
@@ -61,10 +62,6 @@ Once you have installed the project, you can use all grunt tasks described in th
 
 `npm run package` packages the nwjs app
 
-#### Watch
-
-`npm run watch:app` watches the app directory and triggers a quick rebuild.
-`npm run watch:unit` watches the unit test directory and runs tests on change.
 
 ## URL Parameters used by the web application
 [[Back To Top]](#jump-to-section)

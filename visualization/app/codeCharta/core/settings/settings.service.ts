@@ -5,8 +5,6 @@ import {
 } from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera} from "three";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
-import {DeltaCalculatorService} from "../data/data.deltaCalculator.service";
-import {DataDecoratorService} from "../data/data.decorator.service";
 import {CodeMap, CodeMapDependency, CodeMapNode} from "../data/model/CodeMap";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 
@@ -39,8 +37,9 @@ export interface Settings {
     showDependencies: boolean;
     maximizeDetailPanel: boolean;
     invertHeight: boolean;
-    useCouplingHeight: boolean;
     dynamicMargin: boolean;
+    isWhiteBackground: boolean;
+    useCouplingHeight: boolean;
     intelligentTemporalCouplingFilter: boolean;
     minimumAverageRevs: number;
 }
@@ -113,8 +112,9 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             showDependencies: true,
             maximizeDetailPanel: false,
             invertHeight: false,
-            useCouplingHeight: true,
             dynamicMargin: true,
+            isWhiteBackground: false,
+            useCouplingHeight: true,
             intelligentTemporalCouplingFilter: true,
             minimumAverageRevs: 15,
         };
@@ -138,24 +138,26 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      */
     public onDataChanged(data: DataModel) {
 
-        this._settings.map = data.renderMap; // reference map is always the map which should be drawn
+        if(data.metrics && data.renderMap && data.revisions) {
+            this._settings.map = data.renderMap; // reference map is always the map which should be drawn
 
-        if (data.metrics.indexOf(this._settings.areaMetric) === -1) {
-            //area metric is not set or not in the new metrics and needs to be chosen
-            this._settings.areaMetric = this.getMetricByIdOrLast(0, data.metrics);
+            if (data.metrics.indexOf(this._settings.areaMetric) === -1) {
+                //area metric is not set or not in the new metrics and needs to be chosen
+                this._settings.areaMetric = this.getMetricByIdOrLast(0, data.metrics);
+            }
+
+            if (data.metrics.indexOf(this._settings.heightMetric) === -1) {
+                //height metric is not set or not in the new metrics and needs to be chosen
+                this._settings.heightMetric = this.getMetricByIdOrLast(1, data.metrics);
+            }
+
+            if (data.metrics.indexOf(this._settings.colorMetric) === -1) {
+                //color metric is not set or not in the new metrics and needs to be chosen
+                this._settings.colorMetric = this.getMetricByIdOrLast(2, data.metrics);
+            }
+
+            this.onSettingsChanged();
         }
-
-        if (data.metrics.indexOf(this._settings.heightMetric) === -1) {
-            //height metric is not set or not in the new metrics and needs to be chosen
-            this._settings.heightMetric = this.getMetricByIdOrLast(1, data.metrics);
-        }
-
-        if (data.metrics.indexOf(this._settings.colorMetric) === -1) {
-            //color metric is not set or not in the new metrics and needs to be chosen
-            this._settings.colorMetric = this.getMetricByIdOrLast(2, data.metrics);
-        }
-
-        this.onSettingsChanged();
 
     }
 
@@ -383,8 +385,9 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.deltaColorFlipped = settings.deltaColorFlipped;
         this._settings.maximizeDetailPanel = settings.maximizeDetailPanel;
         this._settings.invertHeight = settings.invertHeight;
-        this._settings.useCouplingHeight = settings.useCouplingHeight;
         this._settings.dynamicMargin = settings.dynamicMargin;
+        this._settings.isWhiteBackground = settings.isWhiteBackground;
+        this._settings.useCouplingHeight = settings.useCouplingHeight;
         this._settings.intelligentTemporalCouplingFilter = settings.intelligentTemporalCouplingFilter;
         this._settings.minimumAverageRevs = settings.minimumAverageRevs;
 

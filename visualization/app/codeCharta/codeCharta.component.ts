@@ -67,7 +67,7 @@ export class CodeChartaController {
 
     loadFileOrSample() {
         this.viewModel.numberOfLoadingTasks++;
-        this.urlService.getFileDataFromQueryParam().then(
+        return this.urlService.getFileDataFromQueryParam().then(
             (data)=>{
                 this.trySettingGivenData(this.urlService.getParam("file"), data);
             },
@@ -80,10 +80,12 @@ export class CodeChartaController {
         );
     }
 
-    private trySettingGivenData(name, data) {
+    trySettingGivenData(name, data) {
         this.dataLoadingService.loadMapFromFileContent(name, data, 0).then(
             () => {
-                this.loadingFinished();
+                this.scenarioService.applyScenarioOnce(this.scenarioService.getDefaultScenario());
+                this.dataService.setComparisonMap(0);
+                this.dataService.setReferenceMap(0);
                 this.settingsService.updateSettingsFromUrl();
                 this.viewModel.numberOfLoadingTasks--;
             },
@@ -94,13 +96,15 @@ export class CodeChartaController {
         );
     }
 
-    private tryLoadingSampleFiles() {
-        Promise.all([
+    tryLoadingSampleFiles() {
+        return Promise.all([
             this.dataLoadingService.loadMapFromFileContent("sample1.json", require("./assets/sample1.json"), 0),
             this.dataLoadingService.loadMapFromFileContent("sample2.json", require("./assets/sample2.json"), 1)
         ]).then(
             () => {
-                this.loadingFinished();
+                this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
+                this.dataService.setComparisonMap(0);
+                this.dataService.setReferenceMap(0);
                 this.settingsService.updateSettingsFromUrl();
                 this.viewModel.numberOfLoadingTasks--;
             },
@@ -109,12 +113,6 @@ export class CodeChartaController {
                 this.viewModel.numberOfLoadingTasks--;
             }
         );
-    }
-
-    loadingFinished() {
-        this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
-        this.dataService.setComparisonMap(0);
-        this.dataService.setReferenceMap(0);
     }
 
     printErrors(errors: Object) {

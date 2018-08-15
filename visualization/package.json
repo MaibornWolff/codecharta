@@ -10,7 +10,7 @@
     "url": "https://github.com/MaibornWolff/codecharta.git"
   },
   "name": "codecharta-visualization",
-  "version": "1.14.2",
+  "version": "1.15.1",
   "description": "MaibornWolff CodeCharta",
   "files": [
     "dist/webpack",
@@ -60,15 +60,15 @@
   "scripts": {
     "start": "run --mirror https://dl.nwjs.io/ .",
     "build": "webpack --config ./conf/webpack.config.js",
-    "test": "jest --runInBand",
-    "test:auto": "jest --watch",
-    "test:updateSnaps": "jest --updateSnapshot",
+    "test": "jest .*\\.spec\\.ts --runInBand",
+    "test:auto": "jest .*\\.spec\\.ts --watch",
+    "test:updateSnaps": "jest .*\\.spec\\.ts --updateSnapshot",
+    "e2e": "jest .*\\.e2e\\.ts --runInBand --coverage false",
+    "e2e:auto": "jest .*\\.e2e\\.ts --watch --coverage false",
     "doc": "rimraf dist/docs && typedoc --module es2015 --target ES6 --exclude **/*.spec.ts --out dist/docs/ --name CodeCharta app/**/*.ts",
     "serve": "webpack --config ./conf/webpack.config.js --watch",
     "package": "rimraf dist/packages && build --concurrent --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --mirror https://dl.nwjs.io/ . && bestzip ./dist/packages/codecharta-visualization-$npm_package_version-web.zip ./dist/webpack",
-    "prepare": "npm run build",
-    "e2e:gui": "npm run build && cypress open",
-    "e2e": "npm run build && cypress run"
+    "prepare": "npm run build"
   },
   "bin": {
     "codecharta-visualization": "cli.js"
@@ -78,7 +78,7 @@
     "collectCoverage": true,
     "coverageDirectory": "<rootDir>/dist/coverage",
     "coveragePathIgnorePatterns": [
-      "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx)$",
+      "(/__tests__/.*|\\.(spec|e2e))\\.(ts|tsx)$",
       "<rootDir>/app/ng.mockhelper.ts"
     ],
     "snapshotSerializers": [
@@ -95,11 +95,12 @@
     "roots": [
       "<rootDir>/app"
     ],
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx)$",
+    "testRegex": "(/__tests__/.*|\\.(spec|e2e))\\.(ts|tsx)$",
     "moduleFileExtensions": [
       "ts",
       "tsx",
-      "js"
+      "js",
+      "json"
     ],
     "moduleDirectories": [
       "node_modules",
@@ -146,7 +147,6 @@
     "browser-sync-webpack-plugin": "^1.2.0",
     "clean-webpack-plugin": "^0.1.19",
     "css-loader": "^0.28.10",
-    "cypress": "^2.1.0",
     "d3": "^4.13.0",
     "deepcopy": "^0.6.3",
     "es6-shim": "^0.35.3",
@@ -162,10 +162,10 @@
     "json-loader": "^0.5.7",
     "load-grunt-tasks": "^3.5.2",
     "makeshift": "^1.1.0",
-    "materialize-css": "^0.98.0",
     "ng-annotate-loader": "^0.6.1",
     "node-sass": "^4.8.2",
     "path": "^0.12.7",
+    "puppeteer": "^1.6.0",
     "resolve-url-loader": "^2.3.0",
     "rimraf": "^2.6.2",
     "roboto-fontface": "^0.9.0",

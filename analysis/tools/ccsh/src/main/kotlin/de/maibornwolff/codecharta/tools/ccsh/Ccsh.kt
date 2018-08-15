@@ -38,6 +38,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import de.maibornwolff.codecharta.importer.crococosmo.CrococosmoImporter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.importer.understand.UnderstandImporter
 import picocli.CommandLine
 import java.util.concurrent.Callable
@@ -55,7 +56,8 @@ import java.util.concurrent.Callable
             Installer::class,
             CSVExporter::class,
             CrococosmoImporter::class,
-            UnderstandImporter::class,
+            SourceCodeParserMain::class,
+            UnderstandImporter::class
             CodeMaatImporter::class
         ],
         versionProvider = Ccsh.ManifestVersionProvider::class,

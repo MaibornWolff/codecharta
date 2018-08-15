@@ -6,13 +6,37 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
-- Show names of marked packages in legend
 - CodeMaatCouplingImport to Analysis #172
 
 ### Changed
 - MergeFilter merges dependencies #172
 
 ### Removed
+
+### Fixed
+
+## [1.15.1] - 2018-08-13
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.15.0] - 2018-08-13
+### Added
+- e2e tests are running in CI Environment (headless)
+- pupeteer as e2e test framework
+- Show names of marked packages in legend
+- Added a source code importer that can analyse rloc,mcc for java source code
+- keep settings when the user changes a file
+- Added option to set white background
+
+### Changed
+
+### Removed
+- cypress
 
 ### Fixed
 
