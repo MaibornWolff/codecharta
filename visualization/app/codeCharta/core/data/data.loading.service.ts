@@ -31,7 +31,7 @@ export class DataLoadingService {
                         fileName: fileName, 
                         projectName: fileContent.projectName,
                         root: fileContent.nodes[0],
-                        dependencies: fileContent.dependencies || {}
+                        edges: fileContent.edges || []
                     };
                     this.dataService.setMap(map, revision);
 

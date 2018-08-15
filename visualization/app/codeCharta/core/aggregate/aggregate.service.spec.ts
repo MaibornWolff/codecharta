@@ -36,8 +36,7 @@ describe("app.codeCharta.core.aggregate", function() {
                     ]
                 }
             ]
-        },
-        dependencies: {}
+        }
     };
 
     const file2: CodeMap = {
@@ -67,8 +66,7 @@ describe("app.codeCharta.core.aggregate", function() {
                     ]
                 }
             ]
-        },
-        dependencies: {}
+        }
     };
 
     const file_aggregation_two: CodeMap = {
@@ -135,8 +133,7 @@ describe("app.codeCharta.core.aggregate", function() {
                 }
 
             ]
-        },
-        dependencies: {}
+        }
     };
 
     const file_aggregation_four: CodeMap = {
@@ -252,8 +249,7 @@ describe("app.codeCharta.core.aggregate", function() {
                     ]
                 }
             ]
-        },
-        dependencies: {}
+        }
     };
 
     beforeEach(NGMock.mock.module("app.codeCharta.core.aggregate"));

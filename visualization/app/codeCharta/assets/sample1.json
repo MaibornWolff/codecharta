@@ -55,46 +55,30 @@
       ]
     }
   ],
-  "dependencies": {
-    "static": [
-      {
-        "node": "/root/big leaf",
-        "dependantNode": "/root/Parent Leaf/small leaf"
-      },
-      {
-        "node": "/root/big leaf",
-        "dependantNode": "/root/Parent Leaf/other small leaf"
-      },
-      {
-        "node": "/root/Parent Leaf/other small leaf",
-        "dependantNode": "/root/big leaf"
-      }
-    ],
-    "temporal_coupling": [
-      {
-        "node": "/root/big leaf",
-        "nodeFilename": "big leaf",
-        "dependantNode": "/root/Parent Leaf/small leaf",
-        "dependantNodeFilename": "small leaf",
-        "pairingRate": 42,
-        "averageRevs": 16
-      },
-      {
-        "node": "/root/sample1 only leaf",
-        "nodeFilename": "sample1 only leaf",
-        "dependantNode": "/root/Parent Leaf/other small leaf",
-        "dependantNodeFilename": "other small leaf",
+  "edges": [
+    {
+      "fromNodeName": "/root/big leaf",
+      "toNodeName": "/root/Parent Leaf/small leaf",
+      "attributes": {
         "pairingRate": 89,
         "averageRevs": 34
-      },
-      {
-        "node": "/root/Parent Leaf/other small leaf",
-        "nodeFilename": "other small leaf",
-        "dependantNode": "/root/big leaf",
-        "dependantNodeFilename": "big leaf",
+      }
+    },
+    {
+      "fromNodeName": "/root/sample1 only leaf",
+      "toNodeName": "/root/Parent Leaf/small leaf",
+      "attributes": {
+        "pairingRate": 89,
+        "averageRevs": 34
+      }
+    },
+    {
+      "fromNodeName": "/root/Parent Leaf/other small leaf",
+      "toNodeName": "/root/big leaf",
+      "attributes": {
         "pairingRate": 65,
         "averageRevs": 22
       }
-    ]
-  }
+    }
+  ]
 }

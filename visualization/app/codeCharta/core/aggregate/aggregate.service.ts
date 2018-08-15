@@ -29,8 +29,7 @@ export class AggregateMapService {
                 origin: "Aggregation of following files: " + fileNameArray.join(", "),
                 path: "/root",
                 visible: true
-            },
-            dependencies: {}
+            }
         };
 
         for(let inputMap of inputMaps){

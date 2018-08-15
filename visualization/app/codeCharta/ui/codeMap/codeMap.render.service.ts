@@ -6,7 +6,7 @@ import {LabelManager} from "./rendering/labelManager";
 import {SettingsServiceSubscriber, Settings, SettingsService} from "../../core/settings/settings.service";
 import {node} from "./rendering/node";
 import {ArrowManager} from "./rendering/arrowManager";
-import {CodeMapDependency} from "../../core/data/model/CodeMap";
+import {Edge} from "../../core/data/model/CodeMap";
 import {
     CodeMapBuildingTransition, CodeMapMouseEventService,
     CodeMapMouseEventServiceSubscriber
@@ -139,13 +139,13 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     }
 
     private getVisibleTemporalCouplingDependencies(s: Settings) {
-        if (s.map && s.map.dependencies && s.map.dependencies.temporal_coupling) {
-            return s.map.dependencies.temporal_coupling.filter(dependency => dependency.visible === true);
+        if (s.map && s.map.edges) {
+            return s.map.edges.filter(edge => edge.visible === true);
         }
         return [];
     }
 
-    showCouplingArrows(deps: CodeMapDependency[]) {
+    showCouplingArrows(deps: Edge[]) {
         this.arrowManager.clearArrows();
 
         if (deps && this.currentRenderSettings) {

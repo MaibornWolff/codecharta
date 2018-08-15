@@ -77,7 +77,7 @@ describe("TemporalCouplingComponent", () => {
     });
 
 
-    it("should toggle visibility for clicked couple", () => {
+    it("should toggle visibility for clicked edge", () => {
         const couple = {
             node: "/root/Anode",
             nodeFilename: "Anode",
@@ -107,7 +107,7 @@ describe("TemporalCouplingComponent", () => {
         expect(temporalCouplingController.isEligibleCouple(couple)).toBe(false);
     });
 
-    it("should use filter when updating temporalCOuplingController.temporalCoupling", () => {
+    it("should use filter when updating temporalCOuplingController.edges", () => {
         settingsService.settings.map.dependencies.temporal_coupling[0] = {
             node: "/root/parent/children/package.json",
             nodeFilename: "package.json",
@@ -119,7 +119,7 @@ describe("TemporalCouplingComponent", () => {
         };
         settingsService.settings.intelligentTemporalCouplingFilter = true;
         temporalCouplingController.updateTemporalCouplingDependencies(settingsService.settings.map);
-        expect(temporalCouplingController.temporalCoupling.length).toEqual(1);
+        expect(temporalCouplingController.edges.length).toEqual(1);
     });
 
 

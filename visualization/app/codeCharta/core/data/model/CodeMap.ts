@@ -1,7 +1,7 @@
 export interface CodeMapNode {
-    name: string,
-    type: string,
-    children?: CodeMapNode[]
+    name: string;
+    type: string;
+    children?: CodeMapNode[];
     attributes: {
         [key: string]: number
     };
@@ -16,24 +16,18 @@ export interface CodeMapNode {
 }
 
 export interface CodeMap {
-
-    fileName: string,
-    apiVersion?: string,
-    projectName: string,
-    root: CodeMapNode,
-    dependencies?: {
-        static?: CodeMapDependency[],
-        temporal_coupling?: CodeMapDependency[]
-    }
-
+    fileName: string;
+    apiVersion?: string;
+    projectName: string;
+    root: CodeMapNode;
+    edges?: [Edge];
 }
 
-export interface CodeMapDependency {
-    node: string,
-    nodeFilename?: string,
-    dependantNode: string,
-    dependantNodeFilename?: string,
-    pairingRate?: number,
-    averageRevs?: number
-    visible: boolean
+export interface Edge {
+    fromNodeName: string;
+    toNodeName: string;
+    attributes: {
+        [key: string]: number
+    };
+    visible?: boolean;
 }

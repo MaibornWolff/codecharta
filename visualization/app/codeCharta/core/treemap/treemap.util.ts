@@ -65,9 +65,9 @@ export class TreeMapUtils {
 
         for (var couple of s.visibleTemporalCouplingDependencies) {
 
-            if (squaredNode.data.path === couple.node ||
-                squaredNode.data.path === couple.dependantNode) {
-                return (s.useCouplingHeight) ? maxHeight / 100 * couple.pairingRate : heightValue;
+            if (squaredNode.data.path === couple.fromNodeName ||
+                squaredNode.data.path === couple.toNodeName) {
+                return (s.useCouplingHeight) ? maxHeight / 100 * couple.attributes.pairingRate : heightValue;
             }
         }
         return NON_TEMPORAL_COUPLING_HEIGHT;

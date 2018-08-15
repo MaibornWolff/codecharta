@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import {node} from "./node";
 import {renderSettings} from "./renderSettings";
-import {CodeMapDependency} from "../../../core/data/model/CodeMap";
+import {Edge} from "../../../core/data/model/CodeMap";
 
 export class ArrowManager {
     private parentObjectInScene: THREE.Object3D;
@@ -44,24 +44,24 @@ export class ArrowManager {
         }
     }
 
-    public addCodeMapDependenciesFromOriginAsArrows(origin: node, nodes: node[], deps: CodeMapDependency[], settings: renderSettings) {
-        let resDeps: CodeMapDependency[] = [];
+    public addCodeMapDependenciesFromOriginAsArrows(origin: node, nodes: node[], deps: Edge[], settings: renderSettings) {
+        let resDeps: Edge[] = [];
         let originPath = this.getPathFromNode(origin);
         for (var dep of deps) {
-            if (dep.node === originPath) {
+            if (dep.fromNodeName === originPath) {
                 resDeps.push(dep);
             }
         }
         this.addCodeMapDependenciesAsArrows(nodes, resDeps, settings);
     }
 
-    public addCodeMapDependenciesAsArrows(nodes: node[], deps: CodeMapDependency[], settings: renderSettings) {
+    public addCodeMapDependenciesAsArrows(nodes: node[], deps: Edge[], settings: renderSettings) {
 
         let map = this.getPathToNodeMap(nodes);
 
         for (var dep of deps) {
-            let originNode: node = map.get(dep.node);
-            let targetNode: node = map.get(dep.dependantNode);
+            let originNode: node = map.get(dep.fromNodeName);
+            let targetNode: node = map.get(dep.toNodeName);
             if (originNode && targetNode) {
                 this.addArrow(targetNode, originNode, settings);
             }

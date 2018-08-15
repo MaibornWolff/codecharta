@@ -29,9 +29,8 @@ export class SettingsPanelController implements SettingsServiceSubscriber {
         let settings = this.settingsService.settings;
 
         if (settings.map &&
-            settings.map.dependencies &&
-            settings.map.dependencies.temporal_coupling) {
-            return settings.map.dependencies.temporal_coupling.length > 0;
+            settings.map.edges) {
+            return settings.map.edges.length > 0;
         }
 
         return false;

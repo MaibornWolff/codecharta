@@ -1,11 +1,11 @@
 import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settings.service";
 import {ITimeoutService} from "angular";
-import {CodeMap, CodeMapDependency, CodeMapNode} from "../../core/data/model/CodeMap";
+import {CodeMap, Edge, CodeMapNode} from "../../core/data/model/CodeMap";
 import {hierarchy} from "d3-hierarchy";
 
 export class TemporalCouplingController implements SettingsServiceSubscriber {
 
-    public  temporalCoupling: CodeMapDependency[] = null;
+    public  edges: Edge[] = null;
 
     /* @ngInject */
     constructor(private $timeout: ITimeoutService,
@@ -22,45 +22,44 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
 
     public onResetDependencies() {
         var map = this.settingsService.settings.map;
-        if (map && map.dependencies && map.dependencies.temporal_coupling) {
-
-            for (var i = 0; i < this.settingsService.settings.map.dependencies.temporal_coupling.length; i++) {
-                this.settingsService.settings.map.dependencies.temporal_coupling[i].visible = false;
+        if (map && map.edges) {
+            for (var i = 0; i < this.settingsService.settings.map.edges.length; i++) {
+                this.settingsService.settings.map.edges[i].visible = false;
             }
         }
         this.settingsService.applySettings();
     }
 
-    onClickCouple(couple: CodeMapDependency) {
-        this.setNewVisibilityInSettingsService(this.settingsService.settings.map.dependencies.temporal_coupling, couple);
+    onClickCouple(couple: Edge) {
+        this.setNewVisibilityInSettingsService(this.settingsService.settings.map.edges, couple);
         this.settingsService.applySettings();
     }
 
-    setNewVisibilityInSettingsService(deps: CodeMapDependency[], couple: CodeMapDependency) {
-        let coupleIndex = deps.indexOf(couple);
-        let oldVisibility = deps[coupleIndex].visible;
+    setNewVisibilityInSettingsService(edges: Edge[], edge: Edge) {
+        let coupleIndex = edges.indexOf(edge);
+        let oldVisibility = edges[coupleIndex].visible;
         let newVisibility = !(oldVisibility === true);
-        this.settingsService.settings.map.dependencies.temporal_coupling[coupleIndex].visible = newVisibility;
+        this.settingsService.settings.map.edges[coupleIndex].visible = newVisibility;
     }
 
     private updateTemporalCouplingDependencies(map: CodeMap) {
-        if (map && map.dependencies && map.dependencies.temporal_coupling) {
-            this.temporalCoupling = map.dependencies.temporal_coupling;
+        if (map && map.edges) {
+            this.edges = map.edges;
 
-            for (var couple of this.temporalCoupling) {
+            for (var couple of this.edges) {
                 if (couple.visible !== true) {
                     couple.visible = false;
                 }
             }
 
-            this.temporalCoupling = this.temporalCoupling.filter(
+            this.edges = this.edges.filter(
                 couple =>
-                    couple.averageRevs >= this.settingsService.settings.minimumAverageRevs &&
+                    couple.attributes.averageRevs >= this.settingsService.settings.minimumAverageRevs &&
                     this.isCoupleVisibleInCodeMap(couple, map)
             );
 
             if (this.settingsService.settings.intelligentTemporalCouplingFilter) {
-                this.temporalCoupling = this.temporalCoupling.filter(
+                this.edges = this.edges.filter(
                     couple => this.isEligibleCouple(couple)
                 );
             }
@@ -68,19 +67,19 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
     }
 
     private isCoupleVisibleInCodeMap(couple, map) {
-        var isNodeInCodeMap = false;
-        var isDependantNodeInCodeMap = false;
+        var isFromNodeInCodeMap = false;
+        var isToNodeInCodeMap = false;
 
         hierarchy<CodeMapNode>(map.root).leaves().forEach(function (node) {
 
-            if (node.data.path == couple.node && node.data.visible) {
-                isNodeInCodeMap = true;
+            if (node.data.path == couple.fromNodeName && node.data.visible) {
+                isFromNodeInCodeMap = true;
             }
-            if (node.data.path == couple.dependantNode && node.data.visible) {
-                isDependantNodeInCodeMap = true;
+            if (node.data.path == couple.toNodeName && node.data.visible) {
+                isToNodeInCodeMap = true;
             }
         });
-        return isNodeInCodeMap && isDependantNodeInCodeMap;
+        return isFromNodeInCodeMap && isToNodeInCodeMap;
     }
 
     private isEligibleCouple(couple) {
@@ -99,8 +98,8 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
 
         nodenameBlacklist.forEach(function (re) {
 
-            let isNodeNameMatch = couple.nodeFilename.search(re) != -1;
-            let isDependantNodeNameMatch = couple.dependantNodeFilename.search(re) != -1;
+            let isNodeNameMatch = couple.fromNodeName.search(re) != -1;
+            let isDependantNodeNameMatch = couple.toNodeName.search(re) != -1;
 
             if (isNodeNameMatch || isDependantNodeNameMatch) {
                 isEligibleCouple = false

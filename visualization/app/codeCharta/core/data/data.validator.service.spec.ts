@@ -46,38 +46,36 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
         );
     });
 
-    it("should not reject a file with dependencies", (done: DoneCallback)=> {
-        file.dependencies = {
-            temporal_coupling: [
-                {
-                    node: "a",
-                    nodeFilename: "a",
-                    dependantNode: "b",
-                    dependantNodeFilename: "b",
+    it("should not reject a file with edges", (done: DoneCallback)=> {
+        file.edges = [
+            {
+                fromNodeName: "a",
+                toNodeName: "b",
+                attributes: {
                     averageRevs: 42,
                     pairingRate: 80,
-                    visible: false
-                }
-            ]
-        };
+                },
+                visible: false
+            }
+        ];
         dataValidatorService.validate(file).then(
             ()=> {
                 done();
             },
             ()=> {
-                done.fail("should accept with dependencies");
+                done.fail("should accept with edges");
             }
         );
     });
 
-    it("should not reject a file without dependencies", (done: DoneCallback)=> {
-        file.dependencies = undefined;
+    it("should not reject a file without edges", (done: DoneCallback)=> {
+        file.edges = undefined;
         dataValidatorService.validate(file).then(
             ()=> {
                 done();
             },
             ()=> {
-                done.fail("should accept without dependencies");
+                done.fail("should accept without edges");
             }
         );
     });

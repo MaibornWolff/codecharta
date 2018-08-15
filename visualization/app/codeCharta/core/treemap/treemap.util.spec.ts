@@ -86,7 +86,7 @@ describe("treemap utils", () => {
             TreeMapUtils.isNodeLeaf = tmp;
         });
 
-        it("dependency couple node should use pairingrate/normal metric as height", () => {
+        it("dependency edge node should use pairingrate/normal metric as height", () => {
             treeMapSettings.visibleTemporalCouplingDependencies = [{
                 node: "/root/Anode",
                 nodeFilename: "Anode",

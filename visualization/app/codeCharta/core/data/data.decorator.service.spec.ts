@@ -316,8 +316,7 @@ describe("app.codeCharta.core.data.dataService", () => {
                             ]
                         }
                     ]
-                },
-                dependencies: {}
+                }
             };
 
             dataDecoratorService.decorateMapWithPathAttribute(cm);
