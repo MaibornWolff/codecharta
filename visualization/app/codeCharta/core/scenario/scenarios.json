@@ -31,7 +31,7 @@
       "isWhiteBackground": false,
       "useCouplingHeight": true,
       "intelligentTemporalCouplingFilter": true,
-      "minimumAverageRevs": 15,
+      "minimumAverageRevs": 15
     },
     "autoFitCamera": true
   },
@@ -67,7 +67,7 @@
       "isWhiteBackground": false,
       "useCouplingHeight": true,
       "intelligentTemporalCouplingFilter": true,
-      "minimumAverageRevs": 15,
+      "minimumAverageRevs": 15
     },
     "autoFitCamera": true
   },
@@ -103,7 +103,7 @@
       "isWhiteBackground": false,
       "useCouplingHeight": true,
       "intelligentTemporalCouplingFilter": true,
-      "minimumAverageRevs": 15,
+      "minimumAverageRevs": 15
     },
     "autoFitCamera": true
   },
@@ -139,7 +139,7 @@
       "isWhiteBackground": false,
       "useCouplingHeight": true,
       "intelligentTemporalCouplingFilter": true,
-      "minimumAverageRevs": 15,
+      "minimumAverageRevs": 15
     },
     "autoFitCamera": true
   }
