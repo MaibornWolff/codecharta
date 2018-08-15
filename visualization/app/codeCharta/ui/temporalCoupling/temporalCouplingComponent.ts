@@ -20,7 +20,7 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
         this.updateEdges(this.settingsService.settings.map);
     }
 
-    public onResetEdges() {
+    onResetEdges() {
         var map = this.settingsService.settings.map;
         if (map && map.edges) {
             for (var i = 0; i < this.settingsService.settings.map.edges.length; i++) {
@@ -57,12 +57,6 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
                     edge.attributes.averageRevs >= this.settingsService.settings.minimumAverageRevs &&
                     this.isEdgeVisibleInCodeMap(edge, map)
             );
-
-            if (this.settingsService.settings.intelligentTemporalCouplingFilter) {
-                this.edges = this.edges.filter(
-                    couple => this.isEligibleEdge(couple)
-                );
-            }
         }
     }
 
@@ -80,32 +74,6 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
             }
         });
         return isFromNodeInCodeMap && isToNodeInCodeMap;
-    }
-
-    isEligibleEdge(edge) {
-
-        let nodenameBlacklist = [
-            /package-lock\.json/i,
-            /package\.json/i,
-            /CHANGELOG.*/i,
-            /README.*/i,
-            /.*\.log/i,
-            /gradle\.properties/i,
-            /build\.gradle/i,
-            /sample1 only leaf/i,
-        ];
-        let isEligibleEdge = true;
-
-        nodenameBlacklist.forEach(function (re) {
-
-            let isFromNameMatch = edge.fromNodeName.search(re) != -1;
-            let isToNodeNameMatch = edge.toNodeName.search(re) != -1;
-
-            if (isFromNameMatch || isToNodeNameMatch) {
-                isEligibleEdge = false
-            }
-        });
-        return isEligibleEdge;
     }
 }
 

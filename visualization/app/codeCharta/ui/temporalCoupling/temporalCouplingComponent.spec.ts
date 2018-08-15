@@ -95,32 +95,4 @@ describe("TemporalCouplingComponent", () => {
         temporalCouplingController.onResetEdges();
         expect(settingsService.settings.map.edges).toMatchSnapshot();
     });
-
-    it("should be eligible Couple", () => {
-        expect(temporalCouplingController.isEligibleEdge(edge)).toBe(true);
-    });
-
-    it("should be eligible Couple", () => {
-        edge.fromNodeName = "/root/package-lock.json";
-        edge.toNodeName = "package-lock.json";
-        expect(temporalCouplingController.isEligibleEdge(edge)).toBe(false);
-    });
-
-    it("should use filter when updating temporalCOuplingController.edges", () => {
-        settingsService.settings.map.edges[0] = {
-            fromNodeName: "/root/parent/children/package.json",
-            toNodeName: "/root/AnotherNode",
-            attributes: {
-                pairingRate: 42,
-                averageRevs: 10
-            },
-            visible: false
-        };
-        settingsService.settings.intelligentTemporalCouplingFilter = true;
-        temporalCouplingController.updateEdges(settingsService.settings.map);
-        expect(temporalCouplingController.edges.length).toEqual(1);
-    });
-
-
-
 });

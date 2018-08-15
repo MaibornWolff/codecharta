@@ -50,7 +50,6 @@ describe("app.codeCharta.core.scenarioService", function () {
                 "dynamicMargin": true,
                 "isWhiteBackground": false,
                 "useCouplingHeight": true,
-                "intelligentTemporalCouplingFilter": true,
                 "minimumAverageRevs": 15,
             },
 
