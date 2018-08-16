@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.importer.codemaat
 
 import de.maibornwolff.codecharta.model.*
 import java.util.*
-import java.util.regex.Pattern
 
 class CSVRow(private val row: Array<String?>, private val header: CSVHeader, private val pathSeparator: Char) {
 
@@ -29,17 +28,16 @@ class CSVRow(private val row: Array<String?>, private val header: CSVHeader, pri
                             { row[it]!! }
                     )
 
-    private val attributes: Map<String, String> =
+    private val attributes: Map<String, Int> =
             header.columnNumbers
                     .filter { validAttributeValue(it) && isAttributeColumn(it) }
                     .associateBy(
                             { header.getColumnName(it) },
-                            { row[it]!! }
+                            { row[it]!!.toInt() }
                     )
 
     private fun validAttributeValue(i: Int) =
-            i < row.size
-                    && row[i] != null
+            i < row.size && row[i] != null
 
     private fun isAttributeColumn(i: Int) =
             header.pathColumn.filter { pathColumnIndex -> i == pathColumnIndex }.isEmpty()
