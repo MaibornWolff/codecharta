@@ -68,6 +68,7 @@ export class DeltaCalculatorService {
                 let folder = {
                     name: insertPathArray[0],
                     path: currentPathArray.join("/"),
+                    type: "Folder",
                     children: [],
                     origin: node.origin,
                     visible: true,

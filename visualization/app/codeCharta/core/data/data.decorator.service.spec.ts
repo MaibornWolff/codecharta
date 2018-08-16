@@ -168,12 +168,12 @@ describe("app.codeCharta.core.data.dataService", () => {
                                 children: [
                                     {
                                         name: "a",
-                                        type: "file",
+                                        type: "File",
                                         attributes: {}
                                     },
                                     {
                                         name: "b",
-                                        type: "file",
+                                        type: "File",
                                         attributes: {}
                                     }
                                 ]
@@ -182,7 +182,7 @@ describe("app.codeCharta.core.data.dataService", () => {
                     },
                     {
                         name: "c",
-                        type: "file",
+                        type: "File",
                         attributes: {}
                     }
                 ]
