@@ -38,8 +38,8 @@ dependencies {
     }
 }
 
-mainClassName = "de.maibornwolff.codecharta.importer.codemaat.CodeMaatCouplingImporter"
-applicationName = 'codecharta-codemaatcouplingimport'
+mainClassName = "de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter"
+applicationName = 'codecharta-codemaatimport'
 
 jar {
     baseName = "${applicationName}"

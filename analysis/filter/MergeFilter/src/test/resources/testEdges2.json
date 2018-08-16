@@ -72,42 +72,22 @@
         }
       ]
   }],
-  "dependencies": {
-    "temporal_coupling": [
-      {
-        "node": "file1",
-        "nodeFilename": "file1",
-        "dependantNode": "visualization/file2",
-        "dependantNodeFilename": "file2",
-        "pairingRate": 100,
-        "averageRevs": 5
-      },
-      {
-        "node": "file1",
-        "nodeFilename": "file1",
-        "dependantNode": "visualization/file3",
-        "dependantNodeFilename": "file3",
-        "pairingRate": 90,
-        "averageRevs": 4
-      }
-    ],
-    "static": [
-      {
-        "node": "file1",
-        "nodeFilename": "file1",
-        "dependantNode": "visualization/file3",
-        "dependantNodeFilename": "file3",
-        "pairingRate": 90,
-        "averageRevs": 4
-      },
-      {
-        "node": "visualization/file2",
-        "nodeFilename": "file2",
-        "dependantNode": "visualization/file3",
-        "dependantNodeFilename": "file3",
+  "edges": [
+    {
+      "fromNodeName": "file1",
+      "toNodeName": "visualization/file2",
+      "attributes": {
         "pairingRate": 100,
         "averageRevs": 5
       }
-    ]
-  }
+    },
+    {
+      "fromNodeName": "file1",
+      "toNodeName": "visualization/file3",
+      "attributes": {
+        "pairingRate": 90,
+        "averageRevs": 4
+      }
+    }
+  ]
 }

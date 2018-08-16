@@ -80,7 +80,6 @@ class NodeInserterTest : Spek({
         NodeInserter.insertByPath(root, Path("folder"), nodeForInsertion)
 
         // then
-        println(root)
         assertThat(root.children, hasSize(1))
         assertThat(root.children, hasItem(intermediateNode))
         assertThat(root.pathsToLeaves.count(), `is`(1))

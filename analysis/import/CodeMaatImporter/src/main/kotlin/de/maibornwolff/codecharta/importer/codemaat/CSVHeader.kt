@@ -8,9 +8,11 @@ class CSVHeader(header: Array<String?>) {
     val columnNumbers: Set<Int>
         get() = headerMap.keys
 
-    val pathColumn: Int
-        get() = headerMap.keys.firstOrNull { i -> headerMap[i].equals("path", ignoreCase = true) }
-                ?: headerMap.keys.first()
+    val pathColumn: List<Int>
+        get() = headerMap.keys.filter {
+            i -> headerMap[i].equals("entity", ignoreCase = true)
+                || headerMap[i].equals("coupled", ignoreCase = true)
+        }
 
     init {
         headerMap = HashMap()
