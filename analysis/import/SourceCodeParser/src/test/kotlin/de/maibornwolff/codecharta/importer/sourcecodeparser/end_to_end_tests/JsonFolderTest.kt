@@ -16,11 +16,6 @@ class JsonFolderTest {
     }
 
     @Test
-    fun `json output has correct api version`() {
-        assertThat(output).containsOnlyOnce(""""apiVersion":"1.0"""")
-    }
-
-    @Test
     fun `json output has one root node`() {
         assertThat(output).containsOnlyOnce(""""name":"root"""")
     }

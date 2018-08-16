@@ -22,18 +22,13 @@
       "title": "version of schema",
       "type": "string"
     },
-    "dependencies": {
-      "title": "dependency types",
-      "type": "object",
+    "edges": {
+      "title": "edges between nodes",
+      "type": "array",
       "minItems": 0,
       "items": {
-        "type": "array",
-        "minItems": 1,
-        "items": {
-          "$ref": "#/definitions/dependency"
-        }
+        "$ref": "#/definitions/edge"
       }
-
     }
   },
 
@@ -65,34 +60,22 @@
         }
       }
     },
-    "dependency":{
-      "title": "dependency types",
+    "edge":{
+      "title": "edge between nodes",
       "type": "object",
-      "required":["node", "dependantNode"],
+      "required":["fromNodeName", "toNodeName"],
       "properties": {
-        "node": {
-          "title": "node1 path",
+        "fromNodeName": {
+          "title": "node where the edge comes from",
           "type": "string"
         },
-        "nodeFilename": {
-          "title": "node1 filename",
+        "toNodeName": {
+          "title": "node where the edge goes to",
           "type": "string"
         },
-        "dependantNode": {
-          "title": "node2 path",
-          "type": "string"
-        },
-        "dependantNodeFilename": {
-          "title": "node2 filename",
-          "type": "string"
-        },
-        "pairingRate": {
-          "title": "pairingRate between 0 and 100",
-          "type": "number"
-        },
-        "averageRevs": {
-          "title": "average revisions",
-          "type": "number"
+        "attributes": {
+          "title": "attributes of edges",
+          "$ref": "#/definitions/attributeList"
         }
       }
     },

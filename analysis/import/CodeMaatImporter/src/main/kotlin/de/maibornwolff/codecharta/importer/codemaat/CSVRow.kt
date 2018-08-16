@@ -2,43 +2,47 @@ package de.maibornwolff.codecharta.importer.codemaat
 
 import de.maibornwolff.codecharta.model.*
 import java.util.*
+import java.util.regex.Pattern
 
 class CSVRow(private val row: Array<String?>, private val header: CSVHeader, private val pathSeparator: Char) {
 
     init {
-        if (row.size <= header.pathColumn) {
+        if (row.size <= header.pathColumn.size) {
             throw IllegalArgumentException(
-                    "Row " + Arrays.toString(row) + " has no column containing the file path. Should be in " + header.pathColumn + "th column.")
+                    "Row " + Arrays.toString(row) + " has no column containing the file path. Should be in one of " + header.pathColumn + " columns.")
         }
     }
 
-    fun getFileNameFromPath(path: String): String {
-        return path.substring(path.lastIndexOf(pathSeparator) + 1)
-    }
-
-    fun asDependency(): Dependency {
+    fun asEdge(): Edge {
         val rootNode = "/root/"
-        val entityPath = rootNode + Path(attributes.get("entity")!!).edgesList.first()
-        val coupledPath = rootNode + Path(attributes.get("coupled")!!).edgesList.first()
+        val fromNodeName = rootNode + allColumns.get("entity")
+        val toNodeName = rootNode + allColumns.get("coupled")
 
-        return Dependency(
-                entityPath,
-                getFileNameFromPath(entityPath),
-                coupledPath,
-                getFileNameFromPath(coupledPath),
-                attributes.get("degree")!!.toInt(),
-                attributes.get("average-revs")!!.toInt()
-        )
+        return Edge(fromNodeName, toNodeName, attributes)
     }
 
-    private fun validAttributeOfRow(i: Int) =
-            i < row.size && row[i] != null
-
-    private val attributes =
+    private val allColumns: Map<String, String> =
             header.columnNumbers
-                    .filter { validAttributeOfRow(it) }
+                    .filter { validAttributeValue(it) }
                     .associateBy(
                             { header.getColumnName(it) },
                             { row[it]!! }
                     )
+
+    private val attributes: Map<String, String> =
+            header.columnNumbers
+                    .filter { validAttributeValue(it) && isAttributeColumn(it) }
+                    .associateBy(
+                            { header.getColumnName(it) },
+                            { row[it]!! }
+                    )
+
+    private fun validAttributeValue(i: Int) =
+            i < row.size
+                    && row[i] != null
+
+    private fun isAttributeColumn(i: Int) =
+            header.pathColumn.filter { pathColumnIndex -> i == pathColumnIndex }.isEmpty()
+
+
 }

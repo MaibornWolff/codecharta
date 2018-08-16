@@ -35,7 +35,7 @@ import de.maibornwolff.codecharta.translator.MetricNameTranslator
 open class ProjectBuilder(
         val projectName: String,
         private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
-        private var dependencies: MutableMap<DependencyType, MutableList<Dependency>> = mutableMapOf()
+        private var edges: MutableList<Edge> = mutableListOf()
 ) {
     init {
         if (nodes.size != 1) throw IllegalStateException("no root node present in project")
@@ -55,8 +55,8 @@ open class ProjectBuilder(
         return this
     }
 
-    fun insertDependency(dependencyType: DependencyType, thisDependencies: MutableList<Dependency>): ProjectBuilder {
-        dependencies.put(dependencyType, thisDependencies)
+    fun insertEdge(thisEdges: Edge): ProjectBuilder {
+        edges.add(thisEdges)
         return this
     }
 
@@ -69,11 +69,12 @@ open class ProjectBuilder(
 
     fun build(): Project {
         nodes.map { it.translateMetrics(metricNameTranslator, true) }
-        return Project(projectName, nodes.map { it.toNode() }.toList(), dependencies = dependencies)
+        edges.forEach { it.translateMetrics(metricNameTranslator) }
+        return Project(projectName, nodes.map { it.toNode() }.toList(), edges = edges.toList())
     }
 
     override fun toString(): String {
-        return "Project{projectName='$projectName', nodes=$nodes}"
+        return "Project{projectName='$projectName', nodes=$nodes, edges=$edges}"
     }
 
 }

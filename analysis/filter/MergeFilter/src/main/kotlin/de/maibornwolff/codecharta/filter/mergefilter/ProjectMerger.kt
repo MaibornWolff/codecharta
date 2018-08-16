@@ -41,7 +41,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
     fun merge(): Project {
         val name = extractProjectName()
         return when {
-            areAllAPIVersionsCompatible() -> ProjectBuilder(name, mergeProjectNodes(), getDependencies()).build()
+            areAllAPIVersionsCompatible() -> ProjectBuilder(name, mergeProjectNodes(), getEdges()).build()
             else -> throw MergeException("API versions not supported.")
         }
     }
@@ -58,30 +58,20 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         return nodeMerger.mergeNodeLists(projects.map { listOf(it.rootNode.toMutableNode()) })
     }
 
-    private fun getDependencies(): MutableMap<DependencyType,MutableList<Dependency>> {
+    private fun getEdges(): MutableList<Edge> {
         if (nodeMerger.javaClass.simpleName == "RecursiveNodeMergerStrategy") {
-            return mergeProjectDependencies()
+            return mergeProjectEdges()
         } else {
-            return mutableMapOf()
+            return mutableListOf()
         }
     }
 
-    private fun mergeProjectDependencies(): MutableMap<DependencyType, MutableList<Dependency>> {
-        val mergedDependencies = mutableMapOf<DependencyType, MutableList<Dependency>>()
+    private fun mergeProjectEdges(): MutableList<Edge> {
+        val mergedDependencies = mutableListOf<Edge>()
 
         projects.forEach {
-            if (it.dependencies != null) {
-                it.dependencies.forEach {
-                    val dependencyType: DependencyType = it.key
-
-                    if (mergedDependencies.get(dependencyType) == null) {
-                        mergedDependencies.put(dependencyType, mutableListOf())
-                    }
-
-                    it.value.forEach {
-                        mergedDependencies.get(dependencyType)!!.add(it)
-                    }
-                }
+            it.edges.forEach {
+                mergedDependencies.add(it)
             }
         }
         return mergedDependencies

@@ -14,13 +14,13 @@ Generates visualisation data from CodeMaat Temporal Coupling CSV data with heade
 
 3. Convert csv file to cc.json format with CodeMaatImporter
 
-    `ccsh codemaatimport coupling.csv -o oupling.json`
+    `ccsh codemaatimport coupling.csv -o coupling.cc.json`
         
 4. Merge the coupling data with the project metrics file while using the [MergeFilter](https://github.com/MaibornWolff/codecharta/blob/master/analysis/filter/MergeFilter/README.md)
 
-    `ccsh merge coupling.json metrics.json -o merged.json`
+    `ccsh merge coupling.cc.json metrics.cc.json -o merged.cc.json`
     
-5. Visualizing `merged.json` with [Visualization](https://github.com/MaibornWolff/codecharta/tree/master/visualization)
+5. Visualizing `merged.cc.json` with [Visualization](https://github.com/MaibornWolff/codecharta/tree/master/visualization)
 
 ![CodeMaatImport Modell](src/codemaatimport-modell.jpg)
 
@@ -47,9 +47,9 @@ app/testVille.html, app/codeCharta.html, 42, 8
 ```
 
 ```
-$ cat coupling.json
+$ cat coupling.cc.json
 {
-  "projectName": "Sample Project Temporal Coupling",
+  "projectName": "Sample Project with edges",
   "apiVersion": "1.1",
   "nodes": [
     {
@@ -61,25 +61,23 @@ $ cat coupling.json
       ]
     }
   ],
-  "dependencies": {
-    "temporal_coupling": [
+  "edges": [
       {
-        "node": "/app/codeCharta.html",
-        "nodeFilename": "codeCharta.html",
-        "dependantNode": "/app/codeCharta.scss",
-        "dependantNodeFilename": "codeCharta.scss",
-        "pairingRate": 56,
-        "averageRevs": 10
+        "fromNodeName": "/root/app/codeCharta.html",
+        "toNodeName": "/root/app/codeCharta.scss",
+        "attributes": {
+          "pairingRate": 56,
+          "avgCommits": 10
+        }
       },
       {
-        "node": "/app/testVille.html",
-        "nodeFilename": "testVille.html",
-        "dependantNode": "/app/codeCharta.html",
-        "dependantNodeFilename": "codeCharta.html",
-        "pairingRate": 42,
-        "averageRevs": 8
+        "fromNodeName": "/root/app/testVille.html",
+        "toNodeName": "/root/app/codeCharta.html",
+        "attributes": {
+          "pairingRate": 42,
+          "avgCommits": 8
+        }
       }
     ]
-  }
 }
 ```

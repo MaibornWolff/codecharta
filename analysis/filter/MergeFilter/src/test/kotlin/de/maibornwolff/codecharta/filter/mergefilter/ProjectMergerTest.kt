@@ -29,7 +29,6 @@
 
 package de.maibornwolff.codecharta.filter.mergefilter
 
-import de.maibornwolff.codecharta.model.DependencyType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectMatcher
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
@@ -133,25 +132,23 @@ class ProjectMergerTest : Spek({
             }
         }
 
-        val TEST_DEPENDENCY_JSON_FILE = "testDependencies1.json"
-        val TEST_DEPENDENCY_JSON_FILE2 = "testDependencies2.json"
+        val TEST_EDGES_JSON_FILE = "testEdges1.json"
+        val TEST_EDGES_JSON_FILE2 = "testEdges2.json"
 
-        describe("merging two projects with dependencies") {
-            val originalProject1 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_DEPENDENCY_JSON_FILE)))
-            val originalProject2 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_DEPENDENCY_JSON_FILE2)))
+        describe("merging two projects with edges") {
+            val originalProject1 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE)))
+            val originalProject2 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE2)))
             val projectList = listOf(originalProject1, originalProject2)
 
             val project = ProjectMerger(projectList, nodeMergerStrategy).merge()
 
             it("should return different project") {
-
                 assertThat(project == originalProject1, CoreMatchers.`is`(false))
                 assertThat(project == originalProject2, CoreMatchers.`is`(false))
             }
 
             it("should have correct number of dependencies") {
-                assertThat(project.sizeOfDependencies(DependencyType.static), CoreMatchers.`is`(4))
-                assertThat(project.sizeOfDependencies(DependencyType.temporal_coupling), CoreMatchers.`is`(6))
+                assertThat(project.sizeOfEdges(), CoreMatchers.`is`(6))
             }
 
             it("should have correct number of files") {
@@ -165,9 +162,9 @@ class ProjectMergerTest : Spek({
         }
 
 
-        describe("merging two projects with dependencies with leadNodeMergingStrategy") {
-            val originalProject1 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_DEPENDENCY_JSON_FILE)))
-            val originalProject2 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_DEPENDENCY_JSON_FILE2)))
+        describe("merging two projects with edges with leadNodeMergingStrategy") {
+            val originalProject1 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE)))
+            val originalProject2 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE2)))
             val projectList = listOf(originalProject1, originalProject2)
 
             val nodeMergerStrategy: NodeMergerStrategy = LeafNodeMergerStrategy(false)
@@ -179,9 +176,8 @@ class ProjectMergerTest : Spek({
                 assertThat(project == originalProject2, CoreMatchers.`is`(false))
             }
 
-            it("should have correct number of dependencies") {
-                assertThat(project.sizeOfDependencies(DependencyType.static), CoreMatchers.`is`(0))
-                assertThat(project.sizeOfDependencies(DependencyType.temporal_coupling), CoreMatchers.`is`(0))
+            it("should have correct number of edges") {
+                assertThat(project.sizeOfEdges(), CoreMatchers.`is`(0))
             }
 
             it("should have correct number of files") {

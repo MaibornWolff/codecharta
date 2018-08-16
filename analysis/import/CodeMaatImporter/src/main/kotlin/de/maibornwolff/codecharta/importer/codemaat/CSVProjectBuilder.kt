@@ -31,8 +31,7 @@ package de.maibornwolff.codecharta.importer.codemaat
 
 import com.univocity.parsers.csv.CsvParser
 import com.univocity.parsers.csv.CsvParserSettings
-import de.maibornwolff.codecharta.model.Dependency
-import de.maibornwolff.codecharta.model.DependencyType
+import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
@@ -47,12 +46,9 @@ class CSVProjectBuilder(
         metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
 ) {
     private val includeRows: (Array<String>) -> Boolean = { true }
-    private val projectBuilder = ProjectBuilder(projectName)
-            .withMetricTranslator(metricNameTranslator)
+    private val projectBuilder = ProjectBuilder(projectName).withMetricTranslator(metricNameTranslator)
 
-    fun parseCSVStream(
-            inStream: InputStream
-    ): ProjectBuilder {
+    fun parseCSVStream(inStream: InputStream): ProjectBuilder {
         val parser = createParser(inStream)
         val header = CSVHeader(parser.parseNext())
         parseContent(parser, header)
@@ -66,20 +62,19 @@ class CSVProjectBuilder(
 
     private fun parseContent(parser: CsvParser, header: CSVHeader) {
         var row = parser.parseNext()
-        val dependencies: MutableList<Dependency> = mutableListOf()
         while (row != null) {
             if (includeRows(row)) {
                 try {
                     val csvRow = CSVRow(row, header, pathSeparator)
-                    val dependency: Dependency = csvRow.asDependency()
-                    dependencies.add(dependency)
+                    val edge: Edge = csvRow.asEdge()
+                    projectBuilder.insertEdge(edge)
                 } catch (e: IllegalArgumentException) {
                     System.err.println(e.message)
                 }
             }
             row = parser.parseNext()
         }
-        projectBuilder.insertDependency(DependencyType.temporal_coupling, dependencies)
+
     }
 
     private fun createParser(inStream: InputStream): CsvParser {

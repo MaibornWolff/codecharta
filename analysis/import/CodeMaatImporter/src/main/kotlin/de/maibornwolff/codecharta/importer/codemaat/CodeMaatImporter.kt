@@ -27,7 +27,7 @@ class CodeMaatImporter : Callable<Void> {
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        val csvProjectBuilder = CSVProjectBuilder(projectName, pathSeparator, csvDelimiter, sourceMonitorReplacement)
+        val csvProjectBuilder = CSVProjectBuilder(projectName, pathSeparator, csvDelimiter, codemaatReplacement)
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
 
@@ -37,14 +37,14 @@ class CodeMaatImporter : Callable<Void> {
     }
 
 
-    private val sourceMonitorReplacement: MetricNameTranslator
+    private val codemaatReplacement: MetricNameTranslator
         get() {
-            val prefix = "sm_"
+            val prefix = ""
             val replacementMap = mutableMapOf<String, String>()
-            replacementMap["entity"] = "node"
-            replacementMap["coupled"] = "dependsOn"
+            replacementMap["entity"] = "fromNodename"
+            replacementMap["coupled"] = "toNodeName"
             replacementMap["degree"] = "pairingRate"
-            replacementMap["average-revs"] = "averageRevisions"
+            replacementMap["average-revs"] = "avgCommits"
 
             return MetricNameTranslator(replacementMap.toMap(), prefix)
         }

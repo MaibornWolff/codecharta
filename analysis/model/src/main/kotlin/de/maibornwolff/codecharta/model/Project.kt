@@ -34,7 +34,7 @@ class Project(
         val projectName: String,
         private val nodes: List<Node> = listOf(Node("root", NodeType.Folder)),
         val apiVersion: String = API_VERSION,
-        val dependencies: MutableMap<DependencyType, MutableList<Dependency>> = mutableMapOf()
+        val edges: List<Edge> = listOf()
 ) {
     init {
         if (nodes.size != 1) throw IllegalStateException("no root node present in project")
@@ -46,13 +46,8 @@ class Project(
     val size: Int
         get() = rootNode.size
 
-    fun sizeOfDependencies(dependencyType: DependencyType): Int {
-        if (dependencies.get(dependencyType) !== null) {
-            return dependencies.get(dependencyType)!!.size
-        } else {
-            return 0
-        }
-
+    fun sizeOfEdges(): Int {
+        return edges.size
     }
 
     override fun toString(): String {
@@ -60,7 +55,7 @@ class Project(
                 "projectName='" + projectName + '\''.toString() +
                 ", apiVersion='" + apiVersion + '\''.toString() +
                 ", nodes=" + nodes +
-                ", dependencies=" + dependencies +
+                ", edges=" + edges +
                 '}'.toString()
     }
 
