@@ -20,7 +20,7 @@ import "./resetSettingsButton/resetSettingsButton";
 import "./dialog/dialog";
 import "./nodeContextMenu/nodeContextMenu";
 import "./layoutSwitcher/layoutSwitcher";
-import "./temporalCoupling/temporalCoupling"
+import "./edgesPanel/edges"
 
 angular.module(
     "app.codeCharta.ui",
@@ -43,6 +43,6 @@ angular.module(
         "app.codeCharta.ui.nodeContextMenu",
         "app.codeCharta.ui.layoutSwitcher",
         "app.codeCharta.ui.regexFilter",
-        "app.codeCharta.ui.temporalCoupling"
+        "app.codeCharta.ui.edges"
     ]);
 

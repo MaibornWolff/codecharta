@@ -1,9 +1,9 @@
 import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settings.service";
 import {ITimeoutService} from "angular";
-import {CodeMap, Edge, CodeMapNode} from "../../core/data/model/CodeMap";
+import {CodeMap, Edge} from "../../core/data/model/CodeMap";
 import {hierarchy} from "d3-hierarchy";
 
-export class TemporalCouplingController implements SettingsServiceSubscriber {
+export class EdgesController implements SettingsServiceSubscriber {
 
     public  edges: Edge[] = null;
 
@@ -77,10 +77,10 @@ export class TemporalCouplingController implements SettingsServiceSubscriber {
     }
 }
 
-export const temporalCouplingComponent = {
-    selector: "temporalCouplingComponent",
-    template: require("./temporalCoupling.html"),
-    controller: TemporalCouplingController
+export const edgesComponent = {
+    selector: "edgesComponent",
+    template: require("./edges.html"),
+    controller: EdgesController
 };
 
 

@@ -1,11 +1,11 @@
 import {ITimeoutService} from "angular";
 import {SettingsService} from "../../core/settings/settings.service";
-import {TemporalCouplingController} from "./temporalCouplingComponent";
+import {EdgesController} from "./edgesComponent";
 import {Edge} from "../../core/data/model/CodeMap";
 
-describe("TemporalCouplingComponent", () => {
+describe("EdgesComponent", () => {
 
-    let temporalCouplingController: TemporalCouplingController;
+    let edgesController: EdgesController;
     let $timeout: ITimeoutService;
     let $scope;
     let settingsService: SettingsService;
@@ -21,7 +21,7 @@ describe("TemporalCouplingComponent", () => {
     };
 
     function rebuildSUT() {
-        temporalCouplingController = new TemporalCouplingController($timeout, $scope, settingsService);
+        edgesController = new EdgesController($timeout, $scope, settingsService);
     }
 
     function mockEverything() {
@@ -76,13 +76,13 @@ describe("TemporalCouplingComponent", () => {
 
     xit("should toggle visibility for clicked edge", () => {
         settingsService.settings.map.edges[0] = edge;
-        temporalCouplingController.onClickCouple(edge);
+        edgesController.onClickCouple(edge);
         expect(settingsService.settings.map.edges).toMatchSnapshot();
     });
 
 
     xit("should reset visibility for all dependencies to false", () => {
-        temporalCouplingController.onResetEdges();
+        edgesController.onResetEdges();
         expect(settingsService.settings.map.edges).toMatchSnapshot();
     });
 });
