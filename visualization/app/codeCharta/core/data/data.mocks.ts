@@ -41,8 +41,7 @@ export const TEST_FILE_DATA: CodeMap = {
     fileName: "file",
     projectName: "Sample Map",
     apiVersion: "1.1",
-    root: VALID_NODE,
-    edges: []
+    root: VALID_NODE
 };
 
 export const TEST_DELTA_MAP_A: CodeMap = {
@@ -78,8 +77,7 @@ export const TEST_DELTA_MAP_A: CodeMap = {
                 ]
             }
         ]
-    },
-    edges: []
+    }
 };
 
 export const TEST_DELTA_MAP_B: CodeMap = {
@@ -127,6 +125,5 @@ export const TEST_DELTA_MAP_B: CodeMap = {
                 ]
             }
         ]
-    },
-    edges: []
+    }
 };

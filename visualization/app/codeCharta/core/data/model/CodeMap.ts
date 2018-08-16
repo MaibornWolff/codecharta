@@ -20,7 +20,7 @@ export interface CodeMap {
     apiVersion?: string;
     projectName: string;
     root: CodeMapNode;
-    edges?: [Edge];
+    edges?: Edge[];
 }
 
 export interface Edge {
