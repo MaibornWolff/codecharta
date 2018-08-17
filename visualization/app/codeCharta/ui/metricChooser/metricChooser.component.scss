@@ -6,7 +6,7 @@ area-metric-chooser-component,
 height-metric-chooser-component,
 color-metric-chooser-component,
 horizontal-metric-chooser-component {
-
+  width: 100%;
   md-input-container {
     display: block;
     margin: 0;
@@ -43,9 +43,6 @@ horizontal-metric-chooser-component {
 
 horizontal-metric-chooser-component {
 
-  position: absolute;
-  top: 10px;
-  left: 160px;
   display: inline-block !important;
 
   md-input-container {

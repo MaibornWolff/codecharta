@@ -2,6 +2,7 @@ import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/dat
 import {SettingsService} from "../../core/settings/settings.service";
 import {CodeMap} from "../../core/data/model/CodeMap";
 import "./revisionChooser.scss";
+import "./revisionChooserFileDropDown.scss";
 
 /**
  * Controls the RevisionChooser
@@ -79,7 +80,11 @@ export const revisionChooserComponent = {
     template: require("./revisionChooser.html"),
     controller: RevisionChooserController
 };
-
+export const revisionChooserFileDropDownComponent = {
+    selector: "revisionChooserFileDropDownComponent",
+    template: require("./revisionChooserFileDropDown.html"),
+    controller: RevisionChooserController
+};
 
 
 

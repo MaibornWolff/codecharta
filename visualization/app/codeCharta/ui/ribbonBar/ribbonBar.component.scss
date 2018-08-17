@@ -12,6 +12,10 @@ ribbon-bar-component {
     $headerColor: #444;
     $headerSize: 0.9em;
 
+    md-checkbox {
+        margin: 0 !important;
+    }
+
     #toggle-ribbon-bar-fab {
         position: relative;
         bottom:40px;
@@ -39,7 +43,7 @@ ribbon-bar-component {
         .section {
             display: inline-block;
             height:100%;
-            width: $sectionWidth + px;
+            width: auto;
             padding: $padding + px;
             border-right: $border;
 
@@ -51,10 +55,6 @@ ribbon-bar-component {
                 font-size: $headerSize;
                 color: $headerColor;
                 text-align: center;
-
-                img {
-                    height: ($heightCollapsed - 2 * $padding) + px;
-                }
 
             }
 
@@ -72,10 +72,6 @@ ribbon-bar-component {
                 text-align: left;
             }
 
-        }
-
-        .section:first-child {
-            width: $heightCollapsed + px;
         }
 
     }
