@@ -71,7 +71,7 @@ certain settings. Query params are added by appending a `?` to the url,
 followed by a key value pair `key=value`. Additional parameters can be 
 added by appending `&key2=value2`. E.g. `http://yourdomain.com/pathtocc/index.html?file=something.json&scaling.x=2&areaMetric=myMetric`
 
-* The `file` parameter is a special parameter which accepts a file location. The file must be reachable through XHR.
+* The `file` parameter is a special parameter which accepts a file location. The file must be reachable through XHR. You can use this parameter multiple times in order to load more than one map e.g. `http://localhost:3000/?file=firefox.json&file=firefox_single_delta.json`
 * All other parameters are defined by the [Settings class](/visualization/app/codeCharta/core/settings/model/settings.js). 
 `areaMetric=myMetric` therefore sets the value of settings.areaMetric to `myMetric`. Nested properties like `settings.scale.x` can be 
 set by the query parameter `scaling.x=42`
