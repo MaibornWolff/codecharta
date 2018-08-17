@@ -5,12 +5,12 @@
               rz-slider-options="$ctrl.sliderOptions"></rzslider>
 </md-input-container>
 
-<md-input-container class="md-block">
+<md-input-container class="md-block" ng-if="!$ctrl.settingsService.settings.showRibbonBar">
     <label>From</label>
     <input type='number' ng-model="$ctrl.settingsService.settings.neutralColorRange.from" min=0 step="1" ng-change="$ctrl.sliderOptions.onFromChange()">
 </md-input-container>
 
-<md-input-container class="md-block">
+<md-input-container class="md-block" ng-if="!$ctrl.settingsService.settings.showRibbonBar">
     <label>To</label>
     <input type='number' ng-model="$ctrl.settingsService.settings.neutralColorRange.to" min=0 step="1" ng-change="$ctrl.sliderOptions.onToChange()">
 </md-input-container>

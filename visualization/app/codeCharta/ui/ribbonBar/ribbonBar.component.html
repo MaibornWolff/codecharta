@@ -6,13 +6,19 @@
         </div>
         <div class="section-body">
             <div class="section-header bordered">
-                <i class="fa fa-map"></i> Maps
+                Mode
             </div>
             <revision-chooser-component></revision-chooser-component>
-            <br />
-            <br />
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+
+        </div>
+        <div class="section-body">
             <div class="section-header bordered">
-                <i class="fa fa-star"></i> Scenarios
+                Scenarios
             </div>
             <scenario-buttons-component></scenario-buttons-component>
         </div>
@@ -24,7 +30,7 @@
         </div>
         <div class="section-body">
             <div class="section-header bordered">
-                <i class="fa fa-star"></i> Area Options
+                Area Options
             </div>
             <md-slider-container class="md-block">
                 <span>Margin</span>
@@ -48,7 +54,7 @@
         </div>
         <div class="section-body">
             <div class="section-header bordered">
-                <i class="fa fa-star"></i> Height Options
+                Height Options
             </div>
             <md-slider-container class="md-block">
                 <span>Height</span>
@@ -72,7 +78,7 @@
         </div>
         <div class="section-body">
             <div class="section-header bordered">
-                <i class="fa fa-star"></i> Color Options
+                Color Options
             </div>
             <color-settings-panel-component></color-settings-panel-component>
         </div>
@@ -84,7 +90,7 @@
         </div>
         <div class="section-body">
             <div class="section-header bordered">
-                <i class="fa fa-star"></i> Options
+                Options
             </div>
             <md-input-container class="md-block">
                 <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.maximizeDetailPanel" ng-change="$ctrl.settingsService.onSettingsChanged()">
@@ -107,19 +113,19 @@
 
         </div>
     </div>
-
     <div class="section">
         <div class="section-header">
 
         </div>
         <div class="section-body">
             <div class="section-header bordered">
-                <i class="fa fa-star"></i> Links
+                Links
             </div>
-            <md-button>Manual</md-button>
-            <md-button>Issues</md-button>
-            <md-button>Changelog</md-button>
-            <md-button>Github</md-button>
+            <md-button href="https://github.com/MaibornWolff/codecharta/blob/master/README.md" target="_blank">Manual</md-button>
+            <md-button href="https://github.com/MaibornWolff/codecharta/issues" target="_blank">Issues</md-button><br>
+            <md-button href="https://github.com/MaibornWolff/codecharta/blob/master/CHANGELOG.md" target="_blank">Changelog</md-button>
+            <md-button href="https://github.com/MaibornWolff/codecharta/" target="_blank">Github</md-button>
+
         </div>
     </div>
 
