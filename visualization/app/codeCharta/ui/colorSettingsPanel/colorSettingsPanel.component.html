@@ -18,4 +18,4 @@
     </md-checkbox>
 </md-input-container>
 
-<reset-settings-button-component settings-names="deltaColorFlipped,neutralColorRange.to,neutralColorRange.flipped,neutralColorRange.from,isWhiteBackground"></reset-settings-button-component>
+<reset-settings-button-component ng-if="!$ctrl.settingsService.settings.showRibbonBar" settings-names="deltaColorFlipped,neutralColorRange.to,neutralColorRange.flipped,neutralColorRange.from,isWhiteBackground"></reset-settings-button-component>

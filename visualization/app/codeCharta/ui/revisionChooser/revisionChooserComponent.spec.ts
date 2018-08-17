@@ -9,7 +9,10 @@ describe("RevisionChooserController", () => {
     let revisionChooserController: RevisionChooserController;
 
     function rebuildSUT() {
-        revisionChooserController = new RevisionChooserController(dataServiceMock, settingsServiceMock);
+        revisionChooserController = new RevisionChooserController(dataServiceMock, settingsServiceMock, {
+            $on: jest.fn(),
+            $broadcast: jest.fn()
+        });
     }
 
     function mockEverything() {
@@ -22,7 +25,8 @@ describe("RevisionChooserController", () => {
             getReferenceMap: jest.fn(),
             getIndexOfMap: jest.fn(),
             $rootScope: {
-                $on: jest.fn()
+                $on: jest.fn(),
+                $broadcast: jest.fn()
             },
             data: {
                 revisions: []

@@ -1,6 +1,6 @@
 import angular from "angular";
 import "../../core/core.module";
-import {revisionChooserComponent} from "./revisionChooserComponent";
+import {revisionChooserComponent, revisionChooserFileDropDownComponent} from "./revisionChooserComponent";
 
 angular.module("app.codeCharta.ui.revisionChooser",["app.codeCharta.core"]);
 
@@ -9,3 +9,7 @@ angular.module("app.codeCharta.ui.revisionChooser").component(
     revisionChooserComponent
 );
 
+angular.module("app.codeCharta.ui.revisionChooser").component(
+    revisionChooserFileDropDownComponent.selector,
+    revisionChooserFileDropDownComponent
+);

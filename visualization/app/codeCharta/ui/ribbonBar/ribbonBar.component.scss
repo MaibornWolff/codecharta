@@ -1,0 +1,94 @@
+ribbon-bar-component {
+
+    $heightExpanded: 330;
+    $heightCollapsed: 50;
+    $sectionWidth: 275;
+    $padding: 5;
+    $animationDuration: 0.5;
+    $opacityExpanded: 0.95;
+    $border: 1px solid #cdcdcd;
+    $border-thin: 0px dotted #cdcdcd;
+    $subsection-bg: #efefef;
+    $headerColor: #444;
+    $headerSize: 0.9em;
+
+    md-checkbox {
+        margin: 0 !important;
+    }
+
+    #toggle-ribbon-bar-fab {
+        position: relative;
+        bottom:40px;
+        left: 95%;
+        z-index: 999;
+    }
+
+    #toggle-ribbon-bar-fab > i:before {
+        content: "\f0ab";
+    }
+
+    #toggle-ribbon-bar-fab.expanded > i:before {
+        content: "\f0aa";
+    }
+
+    #header {
+
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        display: block;
+        height: $heightCollapsed + px;
+        overflow: hidden;
+
+        .section {
+            display: inline-block;
+            height:100%;
+            width: auto;
+            padding: $padding + px;
+            border-right: $border;
+
+            .section-header {
+                margin-bottom: ($padding * 2) + px;
+                padding: 0;
+                height: ($heightCollapsed - 2 * $padding) + px;
+                line-height: ($heightCollapsed - 2 * $padding) + px;
+                font-size: $headerSize;
+                color: $headerColor;
+                text-align: center;
+
+            }
+
+            .section-header.bordered {
+                border-bottom: $border-thin;
+                border-top: $border-thin;
+                background-color: $subsection-bg;
+            }
+
+            .section-body {
+                height: 0px;
+                padding-top: ($padding * 4) + px;
+                overflow: hidden;
+                border-top: $border;
+                text-align: left;
+            }
+
+        }
+
+    }
+
+    #header.expanded {
+        height: $heightExpanded + px;
+        opacity: $opacityExpanded;
+
+        .section {
+            .section-body {
+                height: ($heightExpanded - $heightCollapsed) + px;
+            }
+        }
+    }
+
+    #header, #header *, #toggle-ribbon-bar-fab, #toggle-ribbon-bar-fab * {
+        transition: all $animationDuration + s ease;
+    }
+
+}

@@ -19,12 +19,14 @@ import "./regexFilter/regexFilter";
 import "./resetSettingsButton/resetSettingsButton";
 import "./dialog/dialog";
 import "./nodeContextMenu/nodeContextMenu";
+import "./ribbonBar/ribbonBar.module";
 import "./layoutSwitcher/layoutSwitcher";
 
 angular.module(
     "app.codeCharta.ui",
     [
         "app.codeCharta.ui.mapTreeView",
+        "app.codeCharta.ui.ribbonBar",
         "app.codeCharta.ui.settingsPanel",
         "app.codeCharta.ui.revisionChooser",
         "app.codeCharta.ui.legendPanel",
