@@ -5,4 +5,9 @@ revision-chooser-file-drop-down-component{
     padding: 0;
     top: -5px;
   }
+
+  md-input-container.half {
+    display: inline-block;
+    width: 40%;
+  }
 }
