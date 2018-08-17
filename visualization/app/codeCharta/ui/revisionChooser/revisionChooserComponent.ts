@@ -25,13 +25,18 @@ export class RevisionChooserController implements DataServiceSubscriber{
      */
     constructor(
         private dataService: DataService,
-        private settingsService: SettingsService
+        private settingsService: SettingsService,
+        private $rootScope
     ) {
         this.revisions = dataService.data.revisions;
         this.show = "single";
         this.ui.chosenComparison = this.dataService.getIndexOfMap(this.dataService.getComparisonMap(), this.revisions);
         this.ui.chosenReference = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
         dataService.subscribe(this);
+        $rootScope.$on("revision-mode-changed", (event, data)=>{
+            this.show = data;
+        });
+
     }
 
     onDataChanged(data: DataModel) {
@@ -53,18 +58,21 @@ export class RevisionChooserController implements DataServiceSubscriber{
             case "single":{
                 this.settingsService.settings.deltas = false;
                 this.onReferenceChange(this.ui.chosenReference);
+                this.$rootScope.$broadcast("revision-mode-changed", option);
                 break;
             }
 
             case "aggregate":{
                 this.settingsService.settings.deltas = false;
                 this.settingsService.applySettings();
+                this.$rootScope.$broadcast("revision-mode-changed", option);
                 break;
             }
 
             case "delta":{
                 this.settingsService.settings.deltas = true;
                 this.settingsService.applySettings();
+                this.$rootScope.$broadcast("revision-mode-changed", option);
                 break;
             }
 
@@ -72,6 +80,8 @@ export class RevisionChooserController implements DataServiceSubscriber{
                 console.log("Unexpected value for showing option: "+option);
             }
         }
+
+
      }
 }
 
