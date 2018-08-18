@@ -105,6 +105,7 @@ export class CodeChartaController {
                 this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
                 this.dataService.setComparisonMap(0);
                 this.dataService.setReferenceMap(0);
+                this.dataService
                 this.settingsService.updateSettingsFromUrl();
                 this.viewModel.numberOfLoadingTasks--;
             },

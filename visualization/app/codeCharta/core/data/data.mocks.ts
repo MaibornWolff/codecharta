@@ -1,4 +1,4 @@
-import {CodeMap, CodeMapNode} from "./model/CodeMap";
+import {CodeMap, CodeMapNode, Edge} from "./model/CodeMap";
 
 export const VALID_NODE: CodeMapNode = {
     "name": "root",
@@ -31,6 +31,25 @@ export const VALID_NODE: CodeMapNode = {
     ]
 };
 
+export const VALID_EDGE: Edge[] = [
+    {
+        "fromNodeName": "/root/big leaf",
+        "toNodeName": "/root/Parent Leaf/small leaf",
+        "attributes": {
+            "pairingRate": 89,
+            "avgCommits": 34
+        }
+    },
+    {
+        "fromNodeName": "/root/sample1 only leaf",
+        "toNodeName": "/root/Parent Leaf/small leaf",
+        "attributes": {
+            "pairingRate": 89,
+            "avgCommits": 34
+        }
+    }
+];
+
 export const TEST_FILE_CONTENT = {
     projectName: "Sample Map",
     apiVersion: "1.1",
@@ -41,7 +60,8 @@ export const TEST_FILE_DATA: CodeMap = {
     fileName: "file",
     projectName: "Sample Map",
     apiVersion: "1.1",
-    root: VALID_NODE
+    root: VALID_NODE,
+    edges: VALID_EDGE
 };
 
 export const TEST_DELTA_MAP_A: CodeMap = {
