@@ -97,11 +97,10 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             margin: s.margin,
             invertHeight: s.invertHeight,
             visibleEdges: visibleEdges,
-            useCouplingHeight: s.useCouplingHeight,
         };
 
         let nodes: node[] = this.collectNodesToArray(
-            this.treeMapService.createTreemapNodes(s.map.root, treeMapSettings)
+            this.treeMapService.createTreemapNodes(s.map.root, treeMapSettings, s.map.edges)
         );
 
         let filtered = nodes.filter(node => node.visible && node.length > 0 && node.width > 0);

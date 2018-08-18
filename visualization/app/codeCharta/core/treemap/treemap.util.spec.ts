@@ -42,8 +42,7 @@ describe("treemap utils", () => {
                 heightKey: "theHeight",
                 margin: 15,
                 invertHeight: false,
-                visibleEdges: [],
-                useCouplingHeight: true
+                visibleEdges: []
             }
 
         });
@@ -84,22 +83,6 @@ describe("treemap utils", () => {
             TreeMapUtils.isNodeLeaf.mockReturnValue(true);
             expect(buildNode()).toMatchSnapshot();
             TreeMapUtils.isNodeLeaf = tmp;
-        });
-
-        it("edge node should use pairingrate/normal metric as height", () => {
-            treeMapSettings.visibleEdges = [{
-                fromNodeName: "/root/Anode",
-                toNodeName: "/root/AnotherNode",
-                attributes: {
-                    pairingRate: 68,
-                    avgCommits: 17
-                },
-                visible: true,
-            }];
-            treeMapSettings.useCouplingHeight = true;
-            expect(buildNode()).toMatchSnapshot();
-            treeMapSettings.useCouplingHeight = false;
-            expect(buildNode()).toMatchSnapshot();
         });
 
         it("should set lowest possible height caused by other visible edge pairs", () => {

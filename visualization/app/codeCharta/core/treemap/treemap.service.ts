@@ -29,7 +29,6 @@ export interface TreeMapSettings {
     margin: number;
     invertHeight: boolean;
     visibleEdges: Edge[];
-    useCouplingHeight: boolean;
 }
 
 export class TreeMapService {
@@ -43,13 +42,13 @@ export class TreeMapService {
     /* @ngInject */
     constructor(private dataService: DataService) {}
 
-    public createTreemapNodes(data: CodeMapNode, s: TreeMapSettings): node {
-        const squarified: SquarifiedValuedCodeMapNode = this.squarify(data, s);
-        const heighted = this.addMapScaledHeightDimensionAndFinalizeFromRoot(squarified, s);
+    public createTreemapNodes(data: CodeMapNode, s: TreeMapSettings, edges: Edge[]): node {
+        const squarified: SquarifiedValuedCodeMapNode = this.squarify(data, s, edges);
+        const heighted = this.addMapScaledHeightDimensionAndFinalizeFromRoot(squarified, edges, s);
         return heighted;
     }
 
-    private squarify(data: CodeMapNode, s: TreeMapSettings): SquarifiedValuedCodeMapNode {
+    private squarify(data: CodeMapNode, s: TreeMapSettings, edges: Edge[]): SquarifiedValuedCodeMapNode {
         let root: HierarchyNode<CodeMapNode> = d3.hierarchy<CodeMapNode>(data);
         let nodesPerSide = 2 * Math.sqrt(root.descendants().length);
         let treeMap = d3.treemap<CodeMapNode>()
@@ -57,10 +56,10 @@ export class TreeMapService {
             .paddingOuter(s.margin * TreeMapService.PADDING_SCALING_FACTOR || 1)
             .paddingInner(s.margin * TreeMapService.PADDING_SCALING_FACTOR || 1);
 
-        return treeMap(root.sum((node) => this.calculateValue(node, s.areaKey))) as SquarifiedValuedCodeMapNode;
+        return treeMap(root.sum((node) => this.calculateValue(node, edges, s.areaKey))) as SquarifiedValuedCodeMapNode;
     }
 
-    private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): node {
+    private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, edges: Edge[], s: TreeMapSettings): node {
         const heightScale = s.size / TreeMapService.HEIGHT_DIVISOR / this.dataService.getMaxMetricInAllRevisions(s.heightKey);
 
         const maxHeight = this.dataService.getMaxMetricInAllRevisions(s.heightKey);
@@ -71,6 +70,10 @@ export class TreeMapService {
 
         let attr = squaredNode.data.attributes || {};
         let heightValue = attr[s.heightKey];
+
+        if (heightValue === undefined || heightValue === null) {
+            heightValue = TreeMapService.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND;
+        }
 
         if (heightValue === undefined || heightValue === null) {
             heightValue = TreeMapService.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND;
@@ -89,13 +92,32 @@ export class TreeMapService {
 
     }
 
-    private calculateValue(node: CodeMapNode, key: string): number {
+    private calculateValue(node: CodeMapNode, edges: Edge[], key: string): number {
         let result = 0;
-        if (node.attributes && (!node.children || node.children.length === 0)) {
-            result = node.attributes[key] || 0;
+        if ((!node.children || node.children.length === 0)) {
+            if(node.attributes && node.attributes[key]) {
+                result = node.attributes[key] || 0;
+            } else {
+                result = this.getEdgeValue(node, edges, key);
+                console.log("result", result);
+            }
         }
         return result;
     }
 
+    private getEdgeValue(node: CodeMapNode, edges: Edge[], key: string) {
+        let filteredEdgeAttributes: number[] = [];
+
+        edges.forEach((edge)=> {
+            if (edge.fromNodeName == node.path || edge.toNodeName == node.path) {
+                filteredEdgeAttributes.push(edge.attributes[key]);
+            }
+        });
+
+        if (filteredEdgeAttributes) {
+            return filteredEdgeAttributes.sort().reverse()[0];
+        }
+        return 1;
+    }
 }
 

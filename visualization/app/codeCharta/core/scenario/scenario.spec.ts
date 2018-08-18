@@ -49,7 +49,6 @@ describe("app.codeCharta.core.scenarioService", function () {
                 "invertHeight": false,
                 "dynamicMargin": true,
                 "isWhiteBackground": false,
-                "useCouplingHeight": true,
                 "minimumAvgCommits": 15,
             },
 

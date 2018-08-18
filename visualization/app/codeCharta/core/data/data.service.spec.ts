@@ -60,7 +60,7 @@ describe("app.codeCharta.core.data.dataService", function() {
         dataService.data.metrics = ["HELLO"];
         dataService.notify();
 
-        expect(subscriber.onDataChanged).toHaveBeenCalledWith({"edgeMetrics": [], "metrics": ["HELLO"], "renderMap": null, "revisions": []}, expect.anything());
+        expect(subscriber.onDataChanged).toHaveBeenCalledWith({"metrics": ["HELLO"], "renderMap": null, "revisions": []}, expect.anything());
 
     });
 
@@ -83,7 +83,6 @@ describe("app.codeCharta.core.data.dataService", function() {
         dataService._data.revisions = [];
         dataService.updateMetrics();
         expect(dataService.data.metrics).toEqual([]);
-        expect(dataService.data.edgeMetrics).toEqual([]);
     });
 
     it("resetting map should clear everything", () => {
@@ -92,7 +91,6 @@ describe("app.codeCharta.core.data.dataService", function() {
         dataService.resetMaps();
         expect(dataService.data.renderMap).toBe(null);
         expect(dataService.data.metrics).toEqual([]);
-        expect(dataService.data.edgeMetrics).toEqual([]);
     });
 
     it("resetting map should clear everything", () => {
@@ -103,7 +101,6 @@ describe("app.codeCharta.core.data.dataService", function() {
         expect(dataService.data.renderMap).toBe(null);
         expect(dataService._lastComparisonMap).toBe(null);
         expect(dataService.data.metrics).toEqual([]);
-        expect(dataService.data.edgeMetrics).toEqual([]);
         expect(dataService.data.revisions).toEqual([]);
         expect(dataService.notify).toHaveBeenCalled();
     });

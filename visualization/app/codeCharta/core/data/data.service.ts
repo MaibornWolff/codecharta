@@ -12,7 +12,6 @@ export interface DataModel {
 
     revisions: CodeMap[];
     metrics: string[];
-    edgeMetrics: string[];
     renderMap: CodeMap;
 
 }
@@ -39,7 +38,6 @@ export class DataService {
         this._data = {
             revisions: [],
             metrics: [],
-            edgeMetrics: [],
             renderMap: null
         };
 
@@ -51,8 +49,8 @@ export class DataService {
         this.dataDecoratorService.decorateMapWithPathAttribute(this._data.revisions[revision]);
         this.dataDecoratorService.decorateMapWithVisibleAttribute(this._data.revisions[revision]);
         this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.revisions[revision]);
+        this.dataDecoratorService.decorateMapWithEdgeMetrics(this._data.revisions[revision]);
         this.updateMetrics();
-        this.updateEdgeMetrics();
         this.dataDecoratorService.decorateLeavesWithMissingMetrics(this._data.revisions, this._data.metrics);
         this.dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren(this._data.revisions, this._data.metrics);
         this.setReferenceMap(revision);
@@ -168,27 +166,12 @@ export class DataService {
         this._data.metrics = attributes;
     }
 
-    public updateEdgeMetrics() {
-        let edgeAttributes: string[] = [];
-
-        this._data.revisions.forEach((revision)=>{
-            if (revision.edges) {
-                revision.edges.forEach((edge) => {
-                    edgeAttributes = edge.attributes ? Object.keys(edge.attributes) : [];
-                });
-            }
-        });
-
-        this._data.edgeMetrics = edgeAttributes;
-    }
-
     /**
      * resets all maps (deletes them)
      */
     public resetMaps() {
         this._data.revisions = [];
         this._data.metrics = [];
-        this._data.edgeMetrics = [];
         this._lastComparisonMap = null;
         this._data.renderMap = null;
         this.notify();

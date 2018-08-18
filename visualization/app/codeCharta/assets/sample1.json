@@ -68,8 +68,8 @@
       "fromNodeName": "/root/sample1 only leaf",
       "toNodeName": "/root/Parent Leaf/small leaf",
       "attributes": {
-        "pairingRate": 89,
-        "avgCommits": 34
+        "pairingRate": 32,
+        "avgCommits": 17
       }
     },
     {

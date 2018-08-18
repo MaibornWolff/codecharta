@@ -4,10 +4,6 @@
         <md-option ng-repeat="metric in $ctrl.metrics" value="{{::metric}}">
             {{::metric}}
         </md-option>
-        <hr ng-if="$ctrl.edgeMetrics.length != 0">
-        <md-option ng-show="$ctrl.edgeMetrics" ng-repeat="metric in $ctrl.edgeMetrics" value="{{::metric}}">
-            {{::metric}}
-        </md-option>
     </md-select>
 </md-input-container>
 
@@ -17,10 +13,6 @@
         <md-option ng-repeat="metric in $ctrl.metrics" value="{{::metric}}">
             {{::metric}}
         </md-option>
-        <hr ng-if="$ctrl.edgeMetrics.length != 0">
-        <md-option ng-show="$ctrl.edgeMetrics" ng-repeat="metric in $ctrl.edgeMetrics" value="{{::metric}}">
-            {{::metric}}
-        </md-option>
     </md-select>
 </md-input-container>
 
@@ -28,10 +20,6 @@
     <label>Color</label>
     <md-select ng-model="$ctrl.settingsService.settings.colorMetric" ng-change="$ctrl.settingsService.applySettings()">
         <md-option ng-repeat="metric in $ctrl.metrics" value="{{::metric}}">
-            {{::metric}}
-        </md-option>
-        <hr ng-if="$ctrl.edgeMetrics.length != 0">
-        <md-option ng-show="$ctrl.edgeMetrics" ng-repeat="metric in $ctrl.edgeMetrics" value="{{::metric}}">
             {{::metric}}
         </md-option>
     </md-select>

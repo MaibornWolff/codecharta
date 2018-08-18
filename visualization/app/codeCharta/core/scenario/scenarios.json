@@ -29,7 +29,6 @@
       "invertHeight": false,
       "dynamicMargin": true,
       "isWhiteBackground": false,
-      "useCouplingHeight": true,
       "minimumAvgCommits": 15
     },
     "autoFitCamera": true
@@ -64,7 +63,6 @@
       "invertHeight": false,
       "dynamicMargin": true,
       "isWhiteBackground": false,
-      "useCouplingHeight": true,
       "minimumAvgCommits": 15
     },
     "autoFitCamera": true
@@ -99,7 +97,6 @@
       "invertHeight": false,
       "dynamicMargin": true,
       "isWhiteBackground": false,
-      "useCouplingHeight": true,
       "minimumAvgCommits": 15
     },
     "autoFitCamera": true
@@ -134,7 +131,6 @@
       "invertHeight": false,
       "dynamicMargin": true,
       "isWhiteBackground": false,
-      "useCouplingHeight": true,
       "minimumAvgCommits": 15
     },
     "autoFitCamera": true

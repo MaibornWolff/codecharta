@@ -11,7 +11,6 @@ import {codeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
 export class MetricChooserController implements DataServiceSubscriber, CodeMapMouseEventServiceSubscriber{
 
     public metrics: string[];
-    public edgeMetrics: string[];
 
     public hoveredAreaValue: number;
     public hoveredHeightValue: number;
@@ -29,14 +28,12 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
 
     ) {
         this.metrics = dataService.data.metrics.sort();
-        this.edgeMetrics = dataService.data.edgeMetrics.sort();
         this.dataService.subscribe(this);
         CodeMapMouseEventService.subscribe($rootScope, this);
     }
 
     onDataChanged(data: DataModel, event: IAngularEvent) {
         this.metrics = data.metrics.sort();
-        this.edgeMetrics = data.edgeMetrics.sort();
     }
 
     public notify() {

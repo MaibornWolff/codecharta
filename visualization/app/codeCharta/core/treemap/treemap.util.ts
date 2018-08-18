@@ -32,7 +32,7 @@ export class TreeMapUtils {
         }
 
         if (s.visibleEdges && s.visibleEdges.length > 0) {
-            heightValue = this.getEdgesHeight(squaredNode, s, maxHeight, heightValue);
+            heightValue = this.getEdgesHeight(squaredNode, s, heightValue);
         }
 
         return {
@@ -59,7 +59,7 @@ export class TreeMapUtils {
 
     }
 
-    private static getEdgesHeight(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings, maxHeight: number, heightValue: number) {
+    private static getEdgesHeight(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings, heightValue: number) {
 
         const NON_EDGE_HEIGHT = 0;
 
@@ -67,7 +67,7 @@ export class TreeMapUtils {
 
             if (squaredNode.data.path === edge.fromNodeName ||
                 squaredNode.data.path === edge.toNodeName) {
-                return (s.useCouplingHeight) ? maxHeight / 100 * edge.attributes.pairingRate : heightValue;
+                return heightValue;
             }
         }
         return NON_EDGE_HEIGHT;

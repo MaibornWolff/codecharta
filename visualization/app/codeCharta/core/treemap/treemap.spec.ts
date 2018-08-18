@@ -34,7 +34,6 @@ describe("treemap service", ()=> {
             heightKey: "fun",
             margin: 0,
             invertHeight: false,
-            useCouplingHeight: true,
             visibleEdges: []
         };
 
