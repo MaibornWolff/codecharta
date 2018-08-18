@@ -108,11 +108,13 @@ export class TreeMapService {
     private getEdgeValue(node: CodeMapNode, edges: Edge[], key: string) {
         let filteredEdgeAttributes: number[] = [];
 
-        edges.forEach((edge)=> {
-            if (edge.fromNodeName == node.path || edge.toNodeName == node.path) {
-                filteredEdgeAttributes.push(edge.attributes[key]);
-            }
-        });
+        if (edges) {
+            edges.forEach((edge)=> {
+                if (edge.fromNodeName == node.path || edge.toNodeName == node.path) {
+                    filteredEdgeAttributes.push(edge.attributes[key]);
+                }
+            });
+        }
 
         if (filteredEdgeAttributes) {
             return filteredEdgeAttributes.sort().reverse()[0];
