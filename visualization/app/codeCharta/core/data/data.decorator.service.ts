@@ -90,15 +90,17 @@ export class DataDecoratorService {
     private getEdgeValue(node: CodeMapNode, edges: Edge[]) {
         let filteredEdgeAttributes: {[key: string]: number} = {};
 
-        edges.forEach((edge)=> {
-            if (edge.fromNodeName == node.path || edge.toNodeName == node.path) {
-                Object.keys(edge.attributes).forEach((key)=> {
-                    if(filteredEdgeAttributes[key] == undefined || edge.attributes[key] > filteredEdgeAttributes[key]) {
-                        filteredEdgeAttributes[key] = edge.attributes[key];
-                    }
-                });
-            }
-        });
+        if (edges) {
+            edges.forEach((edge)=> {
+                if (edge.fromNodeName == node.path || edge.toNodeName == node.path) {
+                    Object.keys(edge.attributes).forEach((key)=> {
+                        if(filteredEdgeAttributes[key] == undefined || edge.attributes[key] > filteredEdgeAttributes[key]) {
+                            filteredEdgeAttributes[key] = edge.attributes[key];
+                        }
+                    });
+                }
+            });
+        }
 
         return filteredEdgeAttributes;
     }

@@ -42,7 +42,7 @@ describe("app.codeCharta.core.data.dataService", function() {
     it("should find all metrics, even in child nodes", () => {
         let sut = dataService;
         sut.setMap(data, 0);
-        expect(sut.data.metrics.length).toBe(4);
+        expect(sut.data.metrics.length).toBe(6);
     });
 
     it("should retrieve instance", () => {
@@ -67,7 +67,7 @@ describe("app.codeCharta.core.data.dataService", function() {
     it("set metrics should set metrics correctly", ()=>{
         dataService.setMap(data, 0);
         dataService.updateMetrics();
-        expect(dataService.data.metrics).toEqual(["RLOC", "Functions", "MCC", "unary"]);
+        expect(dataService.data.metrics).toEqual(["RLOC", "Functions", "MCC", "unary", "pairingRate", "avgCommits"]);
     });
 
     it("set metrics should set metrics correctly with multiple maps", ()=>{
@@ -76,7 +76,7 @@ describe("app.codeCharta.core.data.dataService", function() {
         data2.root.children[0].attributes["test"] = 0;
         dataService.setMap(data2, 0);
         dataService.updateMetrics();
-        expect(dataService.data.metrics).toEqual(["RLOC", "Functions", "MCC", "unary", "test"]);
+        expect(dataService.data.metrics).toEqual(["RLOC", "Functions", "MCC", "unary", "pairingRate", "avgCommits", "test"]);
     });
 
     it("set metrics should not set metrics when all maps are null", ()=>{
