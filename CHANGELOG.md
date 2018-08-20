@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 ### Added
 - CodeMaatCouplingImport to Analysis #172
+- Option to show and hide dependent edges from node-context-menu #218
+- Select edge-attributes in MetricChooser #217
+- See edge-attributes inside detailPanel #217
 
 ### Changed
 - MergeFilter merges dependencies #172
