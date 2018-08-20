@@ -99,7 +99,6 @@ export class TreeMapService {
                 result = node.attributes[key] || 0;
             } else {
                 result = this.getEdgeValue(node, edges, key);
-                console.log("result", result);
             }
         }
         return result;
