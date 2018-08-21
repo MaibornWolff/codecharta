@@ -11,6 +11,7 @@ export class NodeContextMenuComponent {
     private contextMenuBuilding;
     public nodeHasEdges;
     public allDependentEdgesAreVisible;
+    public anyEdgeIsVisible;
 
     private colors = highlightColors;
 
@@ -43,6 +44,8 @@ export class NodeContextMenuComponent {
         }, 50).then(() => {
             this.nodeHasEdges = this.codeMapActionsService.nodeHasEdges(this.contextMenuBuilding);
             this.allDependentEdgesAreVisible = this.codeMapActionsService.allDependentEdgesAreVisible(this.contextMenuBuilding);
+            this.anyEdgeIsVisible = this.codeMapActionsService.anyEdgeIsVisible();
+
             this.$timeout(() => {
                 let w = this.$element[0].children[0].clientWidth;
                 let h = this.$element[0].children[0].clientHeight;
@@ -108,6 +111,11 @@ export class NodeContextMenuComponent {
     hideDependentEdges() {
         this.hideContextMenu();
         this.codeMapActionsService.hideDependentEdges(this.contextMenuBuilding);
+    }
+
+    hideAllEdges() {
+        this.hideContextMenu();
+        this.codeMapActionsService.hideAllEdges();
     }
 
     getCodeMapNodeFromPath(path: string) {

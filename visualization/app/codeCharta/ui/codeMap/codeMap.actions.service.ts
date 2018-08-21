@@ -76,14 +76,31 @@ export class CodeMapActionsService {
 
     showDependentEdges(node: CodeMapNode) {
         if (this.settingsService.settings.map.edges) {
-            this.showOrHideDependentEdges(node, true);
+            this.settingsService.settings.map.edges.forEach((edge) => {
+                if (this.edgeContainsNode(edge, node)) {
+                    edge.visible = true;
+                }
+            });
             this.apply();
         }
     }
 
     hideDependentEdges(node: CodeMapNode) {
         if (this.settingsService.settings.map.edges) {
-            this.showOrHideDependentEdges(node, false);
+            this.settingsService.settings.map.edges.forEach((edge) => {
+                if (this.edgeContainsNode(edge, node)) {
+                    edge.visible = false;
+                }
+            });
+            this.apply();
+        }
+    }
+
+    hideAllEdges() {
+        if (this.settingsService.settings.map.edges) {
+            this.settingsService.settings.map.edges.forEach((edge) => {
+                edge.visible = false;
+            });
             this.apply();
         }
     }
@@ -110,10 +127,15 @@ export class CodeMapActionsService {
         return allDependentEdgesAreVisible;
     }
 
-    private showOrHideDependentEdges(node: CodeMapNode, makeVisible: boolean) {
+    anyEdgeIsVisible() {
+        let anyEdgeIsVisible = false;
         this.settingsService.settings.map.edges.forEach((edge) => {
-            edge.visible = makeVisible && this.edgeContainsNode(edge, node);
+            if(edge.visible) {
+                anyEdgeIsVisible = true;
+                return; // break forEach
+            }
         });
+        return anyEdgeIsVisible;
     }
 
     private edgeContainsNode(edge: Edge, node: CodeMapNode) {

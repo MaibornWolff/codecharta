@@ -16,4 +16,5 @@
     <md-button ng-click="$ctrl.showAllNodes()">Show all</md-button>
     <md-button ng-if="$ctrl.nodeHasEdges && ! $ctrl.allDependentEdgesAreVisible" ng-click="$ctrl.showDependentEdges()">Show Edges</md-button>
     <md-button ng-if="$ctrl.nodeHasEdges && $ctrl.allDependentEdgesAreVisible" ng-click="$ctrl.hideDependentEdges()">Hide Edges</md-button>
+    <md-button ng-if="$ctrl.anyEdgeIsVisible" ng-click="$ctrl.hideAllEdges()">Hide All Edges</md-button>
 </md-card>
