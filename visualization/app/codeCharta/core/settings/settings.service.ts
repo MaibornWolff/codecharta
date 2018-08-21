@@ -39,7 +39,6 @@ export interface Settings {
     invertHeight: boolean;
     dynamicMargin: boolean;
     isWhiteBackground: boolean;
-    minimumAvgCommits: number;
 }
 
 export interface SettingsServiceSubscriber {
@@ -112,7 +111,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             invertHeight: false,
             dynamicMargin: true,
             isWhiteBackground: false,
-            minimumAvgCommits: 15,
         };
         return settings;
 
@@ -383,7 +381,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.invertHeight = settings.invertHeight;
         this._settings.dynamicMargin = settings.dynamicMargin;
         this._settings.isWhiteBackground = settings.isWhiteBackground;
-        this._settings.minimumAvgCommits = settings.minimumAvgCommits;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = settings.map || this.settings.map;

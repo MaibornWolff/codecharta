@@ -1,40 +1,7 @@
-<md-slider-container class="md-block">
-    <span>Commit</span>
-    <md-slider flex step="1" min="0" max="100" ng-model="$ctrl.settingsService.settings.minimumAvgCommits" id="labels-slider" ng-change="$ctrl.settingsService.applySettings()" class="md-primary">
-    </md-slider>
-    <md-input-container>
-        <input flex step="1" min="0" max="100" type="number" ng-model="$ctrl.settingsService.settings.minimumAvgCommits" ng-change="$ctrl.settingsService.applySettings()" aria-controls="labels-slider">
-    </md-input-container>
-</md-slider-container>
-
 <md-input-container class="md-block">
-    <md-checkbox class="md-primary top-margin" ng-model="$ctrl.settingsService.settings.showEdgeArrows" ng-change="$ctrl.settingsService.onSettingsChanged()">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.showEdgeArrows" ng-change="$ctrl.settingsService.onSettingsChanged()">
         Show Arrows
     </md-checkbox>
-    <md-button class="md-raised" ng-click="$ctrl.onResetEdges()">Reset Selection</md-button>
 </md-input-container>
 
-<span class="small-help" title="Average commits between both files">Avg-Commits, </span>
-<span class="small-help" title="File2 changes with File1 in N% of File1's commits">Pairingrate</span>
-
-<md-divider></md-divider>
-
-<md-list-item class="md-2-line"
-              ng-repeat="edge in $ctrl.edges | orderBy: 'pairingRate' : true"
-              ng-click="$ctrl.onClickCouple(edge)"
-              title="{{::edge.attributes.avgCommits}} average commits&#013;{{::edge.attributes.pairingRate}}% Pairingrate&#013;&#013;{{::edge.fromNodeName}}&#013;&#013;{{::edge.toNodeName}}">
-
-    <div class="md-icon edge-numbers" layout="column">
-        <p class="edge-avgcommits">{{::edge.attributes.avgCommits}}</p>
-        <p class="edge-pairingrate">{{::edge.attributes.pairingRate}}%</p>
-    </div>
-    <div class="md-list-item-text" layout="column">
-        <h3>{{::edge.fromNodeName.split('/')[edge.fromNodeName.split('/').length - 1]}}</h3>
-        <h4>{{::edge.toNodeName.split('/')[edge.toNodeName.split('/').length - 1]}}</h4>
-    </div>
-    <md-checkbox class="md-primary" ng-checked="$ctrl.edges[$ctrl.edges.indexOf(edge)].visible" ng-click="$ctrl.onClickCouple(edge)"></md-checkbox>
-    <md-divider></md-divider>
-</md-list-item>
-
-<p ng-if="$ctrl.edges.length == 0">No Dependencies listed</p>
-<p class="small-help" ng-if="$ctrl.edges.length == 0">Try using a different threshold of <i>Minimum Commits</i></p>
+<reset-settings-button-component settings-names="showEdgeArrows"></reset-settings-button-component>

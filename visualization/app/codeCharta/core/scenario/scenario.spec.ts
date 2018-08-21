@@ -48,8 +48,7 @@ describe("app.codeCharta.core.scenarioService", function () {
                 "showEdgeArrows": true,
                 "invertHeight": false,
                 "dynamicMargin": true,
-                "isWhiteBackground": false,
-                "minimumAvgCommits": 15,
+                "isWhiteBackground": false
             },
 
         "autoFitCamera": true
