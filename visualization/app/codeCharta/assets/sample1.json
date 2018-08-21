@@ -80,5 +80,16 @@
         "avgCommits": 22
       }
     }
-  ]
+  ],
+  "aggregation": {
+    "nodes": [
+      {"rloc": "sum"},
+      {"functions": "sum"},
+      {"mcc": "sum"}
+    ],
+    "edges": [
+      {"pairingRate": "average"},
+      {"avgCommits": "sum"}
+    ]
+  }
 }

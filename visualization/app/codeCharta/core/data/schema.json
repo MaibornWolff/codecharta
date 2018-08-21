@@ -29,6 +29,18 @@
             "items": {
                 "$ref": "#/definitions/edge"
             }
+        },
+        "aggregation": {
+            "title": "list of nodes an edges aggregation type",
+            "type": "object",
+            "minItems": 1,
+            "items": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                    "$ref": "#/definitions/edge-aggregation"
+                }
+            }
         }
     },
 
@@ -85,6 +97,20 @@
             "type":"object",
             "patternProperties": {
                 "^[A-Za-z0-9_]+$":{
+                    "type": "number"
+                }
+            }
+        },
+        "edge-aggregation":{
+            "title": "aggregation list",
+            "type": "object",
+            "properties": {
+                "sum": {
+                    "title": "sum of aggregated attribute numbers",
+                    "type": "number"
+                },
+                "average": {
+                    "title": "average of aggregated attribute numbers",
                     "type": "number"
                 }
             }
