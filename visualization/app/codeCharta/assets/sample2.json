@@ -42,5 +42,12 @@
         ]
       }
     ]
-  }]
+  }],
+  "aggregationTypes": {
+    "nodes": [
+      {"rloc": "absolute"},
+      {"functions": "absolute"},
+      {"mcc": "absolute"}
+    ]
+  },
 }

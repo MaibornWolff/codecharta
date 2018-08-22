@@ -49,7 +49,6 @@ export class DataService {
         this.dataDecoratorService.decorateMapWithPathAttribute(this._data.revisions[revision]);
         this.dataDecoratorService.decorateMapWithVisibleAttribute(this._data.revisions[revision]);
         this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.revisions[revision]);
-        this.dataDecoratorService.decorateMapWithEdgeMetrics(this._data.revisions[revision]);
         this.updateMetrics();
         this.dataDecoratorService.decorateLeavesWithMissingMetrics(this._data.revisions, this._data.metrics);
         this.dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren(this._data.revisions, this._data.metrics);

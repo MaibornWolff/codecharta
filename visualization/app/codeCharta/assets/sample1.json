@@ -81,15 +81,15 @@
       }
     }
   ],
-  "aggregation": {
+  "aggregationTypes": {
     "nodes": [
-      {"rloc": "sum"},
-      {"functions": "sum"},
-      {"mcc": "sum"}
+      {"rloc": "absolute"},
+      {"functions": "absolute"},
+      {"mcc": "absolute"}
     ],
     "edges": [
-      {"pairingRate": "average"},
-      {"avgCommits": "sum"}
+      {"pairingRate": "relative"},
+      {"avgCommits": "absolute"}
     ]
   }
 }

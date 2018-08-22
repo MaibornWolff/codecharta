@@ -65,46 +65,6 @@ export class DataDecoratorService {
         }
     }
 
-    public decorateMapWithEdgeMetrics(map: CodeMap) {
-
-        if (map && map.root) {
-
-            let root = d3.hierarchy<CodeMapNode>(map.root);
-            let leaves: HierarchyNode<CodeMapNode>[] = root.leaves();
-
-            for (let j = 0; j < leaves.length; j++) {
-                if (!leaves[j].data.attributes) {
-                    leaves[j].data.attributes = {};
-                }
-
-                let attributes = this.getEdgeValue(leaves[j].data, map.edges);
-                Object.keys(attributes).forEach((key) => {
-                    const attributeObject = {[key]: attributes[key]};
-                    Object.assign(leaves[j].data.attributes, attributeObject);
-                });
-            }
-
-        }
-    }
-
-    private getEdgeValue(node: CodeMapNode, edges: Edge[]) {
-        let filteredEdgeAttributes: {[key: string]: number} = {};
-
-        if (edges) {
-            edges.forEach((edge)=> {
-                if (edge.fromNodeName == node.path || edge.toNodeName == node.path) {
-                    Object.keys(edge.attributes).forEach((key)=> {
-                        if(filteredEdgeAttributes[key] == undefined || edge.attributes[key] > filteredEdgeAttributes[key]) {
-                            filteredEdgeAttributes[key] = edge.attributes[key];
-                        }
-                    });
-                }
-            });
-        }
-
-        return filteredEdgeAttributes;
-    }
-
     public decorateMapWithVisibleAttribute(map: CodeMap) {
 
         if (map && map.root) {

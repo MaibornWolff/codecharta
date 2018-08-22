@@ -30,15 +30,15 @@
                 "$ref": "#/definitions/edge"
             }
         },
-        "aggregation": {
-            "title": "list of nodes an edges aggregation type",
+        "attributesTypes": {
+            "title": "list of nodes and edges attributesTypes",
             "type": "object",
             "minItems": 1,
             "items": {
                 "type": "array",
                 "minItems": 1,
                 "items": {
-                    "$ref": "#/definitions/edge-aggregation"
+                    "$ref": "#/definitions/attributesType"
                 }
             }
         }
@@ -101,8 +101,8 @@
                 }
             }
         },
-        "edge-aggregation":{
-            "title": "aggregation list",
+        "attributesType":{
+            "title": "attributesType list",
             "type": "object",
             "properties": {
                 "sum": {

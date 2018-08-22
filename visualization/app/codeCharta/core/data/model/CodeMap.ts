@@ -21,6 +21,7 @@ export interface CodeMap {
     projectName: string;
     root: CodeMapNode;
     edges?: Edge[];
+    aggregationTypes: AggregationTypes;
 }
 
 export interface Edge {
@@ -30,4 +31,17 @@ export interface Edge {
         [key: string]: number
     };
     visible?: boolean;
+}
+
+export interface AggregationTypes {
+    nodes: {
+        [key: string]: AggregationType
+    };
+    edges: {
+        [key: string]: AggregationType
+    };
+}
+
+export enum AggregationType {
+    absolute, relative
 }
