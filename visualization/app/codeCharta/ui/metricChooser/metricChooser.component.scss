@@ -7,11 +7,13 @@ height-metric-chooser-component,
 color-metric-chooser-component,
 horizontal-metric-chooser-component {
   width: 100%;
+
   md-input-container {
     display: block;
     margin: 0;
     padding: 0;
     top: -5px;
+    text-align: left;
   }
 
   md-input-container > * {
@@ -24,7 +26,7 @@ horizontal-metric-chooser-component {
   i.fa,
   .metric-value {
     vertical-align: middle;
-    margin-top: 7px;
+    margin-top: 4px;
   }
 
   i.fa {

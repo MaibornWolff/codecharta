@@ -1,6 +1,6 @@
 ribbon-bar-component {
 
-    $heightExpanded: 330;
+    $heightExpanded: 200;
     $heightCollapsed: 50;
     $sectionWidth: 275;
     $padding: 5;
@@ -10,16 +10,31 @@ ribbon-bar-component {
     $border-thin: 0px dotted #cdcdcd;
     $subsection-bg: #efefef;
     $headerColor: #444;
-    $headerSize: 0.9em;
+    $headerSize: 1em;
 
-    md-checkbox {
-        margin: 0 !important;
+    md-input-container {
+        margin: 5px 0 0 0;
     }
 
+    /* enlarge the input field next to a slider */
+    md-slider-container md-input-container input[type="number"] {
+        padding-left: 0;
+    }
+
+    md-checkbox {
+        margin: 0;
+    }
+
+    md-button {
+        margin: 0;
+        padding: 0;
+    }
+
+
     #toggle-ribbon-bar-fab {
-        position: relative;
-        bottom:40px;
-        left: 95%;
+        position: absolute;
+        top: 1em;
+        right: 2em;
         z-index: 999;
     }
 
@@ -46,15 +61,20 @@ ribbon-bar-component {
             width: auto;
             padding: $padding + px;
             border-right: $border;
+            vertical-align: top;
 
             .section-header {
                 margin-bottom: ($padding * 2) + px;
                 padding: 0;
-                height: ($heightCollapsed - 2 * $padding) + px;
+                height: ($heightCollapsed - 2 * $padding) + px !important;
                 line-height: ($heightCollapsed - 2 * $padding) + px;
                 font-size: $headerSize;
                 color: $headerColor;
                 text-align: center;
+
+                md-input-container {
+                    margin-top: 0;
+                }
 
             }
 
@@ -65,11 +85,11 @@ ribbon-bar-component {
             }
 
             .section-body {
-                height: 0px;
-                padding-top: ($padding * 4) + px;
+                height: 0;
                 overflow: hidden;
                 border-top: $border;
                 text-align: left;
+                vertical-align: top;
             }
 
         }
