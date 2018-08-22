@@ -21,6 +21,7 @@ import "./dialog/dialog";
 import "./nodeContextMenu/nodeContextMenu";
 import "./ribbonBar/ribbonBar.module";
 import "./layoutSwitcher/layoutSwitcher";
+import "./optionsPanel/optionsPanel"
 
 angular.module(
     "app.codeCharta.ui",
@@ -43,6 +44,7 @@ angular.module(
         "app.codeCharta.ui.dialog",
         "app.codeCharta.ui.nodeContextMenu",
         "app.codeCharta.ui.layoutSwitcher",
-        "app.codeCharta.ui.regexFilter"
+        "app.codeCharta.ui.regexFilter",
+        "app.codeCharta.ui.optionsPanel"
     ]);
 
