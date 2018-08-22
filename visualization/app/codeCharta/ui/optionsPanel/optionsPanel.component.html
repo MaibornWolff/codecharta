@@ -1,0 +1,29 @@
+<md-slider-container class="md-block">
+    <span>Labels</span>
+    <md-slider flex step="1" min="0" max="200" ng-model="$ctrl.settingsService.settings.amountOfTopLabels" id="labels-slider" ng-change="$ctrl.settingsService.applySettings()" class="md-primary">
+    </md-slider>
+    <md-input-container>
+        <input flex step="1" min="0" max="200" type="number" ng-model="$ctrl.settingsService.settings.amountOfTopLabels" ng-change="$ctrl.settingsService.applySettings()" aria-controls="labels-slider">
+    </md-input-container>
+</md-slider-container>
+
+<md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.showDependencies" ng-change="$ctrl.settingsService.onSettingsChanged()">
+        Show Edge Arrows
+    </md-checkbox>
+</md-input-container>
+
+<md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.maximizeDetailPanel" ng-change="$ctrl.settingsService.onSettingsChanged()">
+        Maximize Detail Panel
+    </md-checkbox>
+</md-input-container>
+
+<md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.isWhiteBackground" ng-change="$ctrl.settingsService.onSettingsChanged()">
+        White Background
+    </md-checkbox>
+</md-input-container>
+
+<reset-settings-button-component settings-names="amountOfTopLabels, showDependencies, maximizeDetailPanel, isWhiteBackground"></reset-settings-button-component>
+
