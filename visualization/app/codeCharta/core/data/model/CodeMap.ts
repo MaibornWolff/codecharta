@@ -21,7 +21,7 @@ export interface CodeMap {
     projectName: string;
     root: CodeMapNode;
     edges?: Edge[];
-    aggregationTypes: AggregationTypes;
+    aggregationTypes?: AggregationTypes;
 }
 
 export interface Edge {
