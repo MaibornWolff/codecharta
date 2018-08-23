@@ -5,6 +5,9 @@
             {{::metric}}
         </md-option>
     </md-select>
+    <div no-ui-slider
+         slider-options="$ctrl.optionsWithoutStart"
+         ng-model="$ctrl.sliderPositions"></div>
     <span class="metric-value">{{($ctrl.hoveredColorValue | number) || "-"}}
     <span  ng-hide="!$ctrl.hoveredHeightDelta">(&Delta;{{$ctrl.hoveredColorDelta | number}})</span>
         </span>

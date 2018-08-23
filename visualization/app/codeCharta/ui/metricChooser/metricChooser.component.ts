@@ -19,6 +19,9 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
     public hoveredAreaDelta: number;
     public hoveredColorDelta: number;
     public hoveredDeltaColor: string;
+    public optionsWithoutStart;
+    public sliderPositions;
+
 
     /* @ngInject */
     constructor(
@@ -30,6 +33,15 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
         this.metrics = dataService.data.metrics.sort();
         this.dataService.subscribe(this);
         CodeMapMouseEventService.subscribe($rootScope, this);
+        this.optionsWithoutStart = {
+            connect: true,
+            range: {
+                min: 0,
+                max: 100,
+            },
+        };
+
+        this.sliderPositions = [20, 80];
     }
 
     onDataChanged(data: DataModel, event: IAngularEvent) {

@@ -1,4 +1,5 @@
 import angular from "angular";
+import noUiSliderModule from 'angularjs-nouislider';
 import "../../core/core.module";
 import {
     areaMetricChooserComponent,
@@ -8,7 +9,7 @@ import {
     metricChooserComponent
 } from "./metricChooser.component";
 
-angular.module("app.codeCharta.ui.metricChooser",["app.codeCharta.core"]);
+angular.module("app.codeCharta.ui.metricChooser",["app.codeCharta.core", noUiSliderModule]);
 
 angular.module("app.codeCharta.ui.metricChooser").component(
     metricChooserComponent.selector,

@@ -114,6 +114,8 @@
     }
   },
   "dependencies": {
+    "angularjs-nouislider": "^0.2.0",
+    "nouislider": "^11.1.0",
     "nwjs-builder-phoenix": "^1.14.6",
     "shelljs": "^0.8.1"
   },
