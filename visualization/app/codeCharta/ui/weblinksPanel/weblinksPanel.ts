@@ -6,9 +6,9 @@ import "../layoutSwitcher/layoutSwitcher";
 
 import angular from "angular";
 
-import {optionsPanelComponent} from "./optionsPanel.component";
+import {weblinksPanelComponent} from "./weblinksPanel.component";
 
-angular.module("app.codeCharta.ui.optionsPanel", ["app.codeCharta.core"])
-    .component(optionsPanelComponent.selector, optionsPanelComponent);
+angular.module("app.codeCharta.ui.weblinksPanel", ["app.codeCharta.core"])
+    .component(weblinksPanelComponent.selector, weblinksPanelComponent);
 
 

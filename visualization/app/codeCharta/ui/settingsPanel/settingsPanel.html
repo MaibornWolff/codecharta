@@ -103,6 +103,26 @@
 
     <md-expansion-panel>
         <md-expansion-panel-collapsed>
+            <div class="md-title"><i class="fa fa-external-link"></i> Weblinks</div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
+
+        <md-expansion-panel-expanded>
+            <md-expansion-panel-header ng-click="$panel.collapse()">
+                <div class="md-title"><i class="fa fa-external-link"></i> Weblinks</div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
+
+            <md-expansion-panel-content>
+                <weblinks-panel-component></weblinks-panel-component>
+            </md-expansion-panel-content>
+        </md-expansion-panel-expanded>
+    </md-expansion-panel>
+
+    <md-expansion-panel>
+        <md-expansion-panel-collapsed>
             <div class="md-title"><i class="fa fa-flask"></i> Experimental</div>
             <div flex></div>
             <md-expansion-panel-icon></md-expansion-panel-icon>
