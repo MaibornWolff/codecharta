@@ -45,7 +45,7 @@ describe("app.codeCharta.core.scenarioService", function () {
                         "y": 1,
                         "z": 1},
                 "showDependencies": false,
-                "showRibbonBar": false,
+                "showRibbonBar": true,
                 "isWhiteBackground": false
             },
 
