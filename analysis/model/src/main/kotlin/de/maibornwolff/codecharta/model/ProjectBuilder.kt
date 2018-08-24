@@ -55,8 +55,8 @@ open class ProjectBuilder(
         return this
     }
 
-    fun insertEdge(thisEdges: Edge): ProjectBuilder {
-        edges.add(thisEdges)
+    fun insertEdge(thisEdge: Edge): ProjectBuilder {
+        edges.add(thisEdge)
         return this
     }
 

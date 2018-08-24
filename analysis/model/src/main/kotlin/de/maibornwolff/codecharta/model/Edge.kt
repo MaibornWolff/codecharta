@@ -3,9 +3,9 @@ package de.maibornwolff.codecharta.model
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
 class Edge constructor(
-        private val fromNodeName: String,
-        private val toNodeName: String,
-        private var attributes: Map<String, Any> = mapOf()
+        val fromNodeName: String,
+        val toNodeName: String,
+        var attributes: Map<String, Any> = mapOf()
 ) {
 
     override fun toString(): String {

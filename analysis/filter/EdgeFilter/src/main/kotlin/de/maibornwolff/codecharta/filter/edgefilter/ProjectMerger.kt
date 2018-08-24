@@ -33,45 +33,54 @@ import de.maibornwolff.codecharta.model.*
 
 class ProjectMerger(private val project: Project, private val recursiveNodeMergerStrategy: RecursiveNodeMergerStrategy) {
 
-    private val projectBuilder = ProjectBuilder(extractProjectName())
+    private val projectBuilder = ProjectBuilder(getProjectName())
 
-    fun extractProjectName(): String {
+    fun getProjectName(): String {
         return project.projectName
     }
 
     fun merge(): Project {
-        val name = extractProjectName()
-        return ProjectBuilder(name, getProjectNodes(), project.edges.toMutableList()).build()
+        insertEdges()
+        goThroughAllNodes(listOf(project.rootNode.toMutableNode()))
+        return projectBuilder.build()
     }
 
-    private fun getProjectNodes(): List<MutableNode> {
-        project.rootNode = addEdgeAggregatedAttributes(project.rootNode)
-
-        return recursiveNodeMergerStrategy.mergeNodeLists(listOf(project.rootNode.toMutableNode()))
+    private fun insertEdges() {
+        project.edges.forEach {
+            projectBuilder.insertEdge(it)
+        }
     }
 
-    private fun addEdgeAggregatedAttributes(node: Node): Node {
-        val newAttributes: MutableMap<String, Any> = mutableMapOf()
-        newAttributes.putAll(getAggregatedEdgeAttribute(node))
-        node.attributes = newAttributes.toMap()
-        if (node.children.isEmpty()) {
-            node.children.map { it ->
-                it = addEdgeAggregatedAttributes(it)
+    private fun goThroughAllNodes(nodes: List<MutableNode>) {
+        nodes.forEach {
+            insertRowInProject(it.toNode())
+            if (!it.children.isEmpty()) {
+                goThroughAllNodes(it.children)
             }
         }
-        return node
-
     }
 
-    private fun getAggregatedEdgeAttribute(node: Node): MutableMap<String, Any> {
+    private fun getAttributes(node: Node): Map<String, Any> {
+        val newAttributes: MutableMap<String, Any> = mutableMapOf()
+        newAttributes.putAll(getAggregatedEdgeAttributes(node))
+        return newAttributes.toMap()
+    }
 
+    private fun getAggregatedEdgeAttributes(node: Node): MutableMap<String, Any> {
+        val edgeAttributes = project.edges.filter { edge ->
+            edge.fromNodeName == node.asTreeNode().name
+                    || edge.toNodeName == node.asTreeNode().name
+        }
+        //val attributeTypes
+        return mutableMapOf()
     }
 
 
     private fun insertRowInProject(node: Node) {
+        val newNode = Node(node.name, node.type, getAttributes(node), node.link, node.children)
         try {
-            val path = Path(listOf((node.asTreeNode()).name))
-            projectBuilder.insertByPath(path, node.toMutableNode())
+            val path = Path(listOf((newNode.asTreeNode()).name))
+            projectBuilder.insertByPath(path, newNode.toMutableNode())
         } catch (e: IllegalArgumentException) {
             System.err.println(e.message)
         }
