@@ -2,7 +2,7 @@
                     ng-class="{half: $ctrl.show == 'delta'}">
     <md-select ng-model="$ctrl.ui.chosenReference" ng-change="$ctrl.onReferenceChange($ctrl.ui.chosenReference)">
         <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
-            {{::value.fileName}}
+            <md-truncate>{{::value.fileName}}</md-truncate>
         </md-option>
     </md-select>
 </md-input-container>
@@ -11,7 +11,7 @@
     <label>In comparison to</label>
     <md-select ng-model="$ctrl.ui.chosenComparison" ng-change="$ctrl.onComparisonChange($ctrl.ui.chosenComparison)">
         <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
-            {{::value.fileName}}
+            <md-truncate>{{::value.fileName}}</md-truncate>
         </md-option>
     </md-select>
 </md-input-container>
