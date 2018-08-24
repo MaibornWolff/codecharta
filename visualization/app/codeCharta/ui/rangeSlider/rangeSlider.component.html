@@ -1,5 +1,4 @@
 <md-input-container class="md-block">
-    <label ng-if="!$ctrl.settingsService.settings.showRibbonBar" id="colorSliderLabel" for="colorSlider">Color Range<br><br></label>
     <rzslider id="colorSlider" rz-slider-model="$ctrl.settingsService.settings.neutralColorRange.from"
               rz-slider-high="$ctrl.settingsService.settings.neutralColorRange.to"
               rz-slider-options="$ctrl.sliderOptions"></rzslider>

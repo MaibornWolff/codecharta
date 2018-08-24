@@ -1,4 +1,4 @@
-<ribbon-bar-component  ng-if="$ctrl.settingsService.settings.showRibbonBar"></ribbon-bar-component>
+<ribbon-bar-component></ribbon-bar-component>
 
 <md-sidenav class="md-sidenav-right" md-component-id="right" md-disable-backdrop md-whiteframe="4">
     <md-content layout-padding class="padding_bottom">
@@ -20,10 +20,6 @@
         <i class="fa fa-bars fa-lg"></i>
     </md-button>
 </div>
-
-<header id="title" ng-if="!$ctrl.settingsService.settings.showRibbonBar">
-    <horizontal-metric-chooser-component></horizontal-metric-chooser-component>
-</header>
 
 <code-map-component></code-map-component>
 
