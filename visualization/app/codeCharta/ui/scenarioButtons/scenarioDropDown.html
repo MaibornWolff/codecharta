@@ -1,8 +1,7 @@
-<md-input-container class="md-block">
-    <label>Scenario</label>
-    <md-select ng-model="$ctrl.scenario" ng-change="$ctrl.applySettings()">
-        <md-option ng-repeat="(key, value) in $ctrl.scenarios" value="{{value}}">
-            {{value.name}}
+<md-input-container>
+    <md-select placeholder="Scenario" ng-model="$ctrl.key" ng-change="::$ctrl.applySettings()">
+        <md-option ng-repeat="(key, value) in $ctrl.scenarios" value="{{::key}}">
+            {{::value.name}}
         </md-option>
     </md-select>
 </md-input-container>

@@ -11,6 +11,7 @@ import "./scenarioDropDown.scss";
 export class ScenarioButtonsController implements TooltipServiceSubscriber, DataServiceSubscriber, SettingsServiceSubscriber {
 
     private scenarios: Scenario[];
+    private key;
     private visible: boolean = false;
     public  scenario: Scenario;
     /* @ngInject */
@@ -67,6 +68,10 @@ export class ScenarioButtonsController implements TooltipServiceSubscriber, Data
     }
     applySettings(){
         this.scenarioService.applyScenario(this.scenario);
+    }
+    applySettings(){
+        this.scenarioService.applyScenario(this.scenarios[this.key]);
+        this.key = null;
     }
 }
 

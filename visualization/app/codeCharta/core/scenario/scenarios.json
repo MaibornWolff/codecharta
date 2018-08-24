@@ -28,7 +28,7 @@
       "maximizeDetailPanel": false,
       "invertHeight": false,
       "isWhiteBackground": false,
-      "showRibbonBar": false
+      "showRibbonBar": true
     },
     "autoFitCamera": true
   },
@@ -61,7 +61,7 @@
       "maximizeDetailPanel": false,
       "invertHeight": false,
       "isWhiteBackground": false,
-      "showRibbonBar": false
+      "showRibbonBar": true
     },
     "autoFitCamera": true
   },
@@ -94,7 +94,7 @@
       "maximizeDetailPanel": false,
       "invertHeight": false,
       "isWhiteBackground": false,
-      "showRibbonBar": false
+      "showRibbonBar": true
     },
     "autoFitCamera": true
   },
@@ -127,7 +127,7 @@
       "maximizeDetailPanel": false,
       "invertHeight": false,
       "isWhiteBackground": false,
-      "showRibbonBar": false
+      "showRibbonBar": true
     },
     "autoFitCamera": true
   }
