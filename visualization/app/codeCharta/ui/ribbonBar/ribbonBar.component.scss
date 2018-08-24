@@ -33,12 +33,17 @@ ribbon-bar-component {
 
     #toggle-ribbon-bar-fab {
         position: absolute;
-        top: 1em;
+        bottom: -2em;
         right: 2em;
         z-index: 999;
     }
 
+    #toggle-ribbon-bar-fab.expanded {
+        bottom: 1em;
+    }
+
     #toggle-ribbon-bar-fab > i:before {
+
         content: "\f0ab";
     }
 
@@ -92,6 +97,10 @@ ribbon-bar-component {
                 vertical-align: top;
             }
 
+        }
+
+        .section.small {
+            width: 15%;
         }
 
     }

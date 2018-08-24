@@ -3,3 +3,15 @@
               rz-slider-high="$ctrl.settingsService.settings.neutralColorRange.to"
               rz-slider-options="$ctrl.sliderOptions"></rzslider>
 </md-input-container>
+
+<br>
+
+<md-input-container class="small-input-field">
+    <label>From</label>
+    <input type='number' ng-model="$ctrl.settingsService.settings.neutralColorRange.from" min=0 step="1" ng-change="$ctrl.sliderOptions.onFromChange()">
+</md-input-container>
+
+<md-input-container class="small-input-field">
+    <label>To</label>
+    <input type='number' ng-model="$ctrl.settingsService.settings.neutralColorRange.to" min=0 step="1" ng-change="$ctrl.sliderOptions.onToChange()">
+</md-input-container>
