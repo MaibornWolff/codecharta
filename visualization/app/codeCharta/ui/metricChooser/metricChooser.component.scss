@@ -1,11 +1,6 @@
-metric-chooser-component {
-
-}
-
 area-metric-chooser-component,
 height-metric-chooser-component,
-color-metric-chooser-component,
-horizontal-metric-chooser-component {
+color-metric-chooser-component {
   width: 100%;
 
   md-input-container {
@@ -39,19 +34,6 @@ horizontal-metric-chooser-component {
     margin-left: 10px;
     min-width: 40px;
     float: right;
-  }
-
-}
-
-horizontal-metric-chooser-component {
-
-  display: inline-block !important;
-
-  md-input-container {
-    display: inline-block !important;
-    margin: 0 0 5px 0;
-    padding: 5px;
-    background-color: #fff;
   }
 
 }

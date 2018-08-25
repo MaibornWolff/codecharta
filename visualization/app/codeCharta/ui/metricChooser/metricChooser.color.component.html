@@ -1,14 +1,13 @@
 <md-input-container class="md-block">
     <i class='fa fa-paint-brush'></i>
+
     <md-select ng-model="$ctrl.settingsService.settings.colorMetric" ng-change="$ctrl.settingsService.applySettings()">
         <md-option ng-repeat="metric in $ctrl.metrics" value="{{::metric}}">
             {{::metric}}
         </md-option>
     </md-select>
-    <div no-ui-slider
-         slider-options="$ctrl.optionsWithoutStart"
-         ng-model="$ctrl.sliderPositions"></div>
+
     <span class="metric-value">{{($ctrl.hoveredColorValue | number) || "-"}}
-    <span  ng-hide="!$ctrl.hoveredHeightDelta">(&Delta;{{$ctrl.hoveredColorDelta | number}})</span>
-        </span>
+        <span ng-hide="!$ctrl.hoveredHeightDelta">(&Delta;{{$ctrl.hoveredColorDelta | number}})</span>
+    </span>
 </md-input-container>

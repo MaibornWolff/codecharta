@@ -9,7 +9,7 @@ import "./codeCharta.component.scss";
 import {DialogService} from "./ui/dialog/dialog.service";
 import {queryParamDialog} from "./ui/dialog/queryParam.dialog";
 import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
-import {nodeContextMenuComponent, NodeContextMenuComponent} from "./ui/nodeContextMenu/nodeContextMenu.component";
+import {NodeContextMenuComponent} from "./ui/nodeContextMenu/nodeContextMenu.component";
 
 
 /**

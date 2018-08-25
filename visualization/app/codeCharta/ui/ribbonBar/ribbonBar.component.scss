@@ -1,6 +1,6 @@
 ribbon-bar-component {
 
-    $heightExpanded: 195;
+    $heightExpanded: 190;
     $heightCollapsed: 50;
     $sectionWidth: 275;
     $padding: 5;
@@ -11,44 +11,25 @@ ribbon-bar-component {
     $subsection-bg: #efefef;
     $headerColor: #444;
     $headerSize: 1em;
-
-    md-input-container {
-        margin: 5px 0 0 0;
-    }
-
-    /* enlarge the input field next to a slider */
-    md-slider-container md-input-container input[type="number"] {
-        padding-left: 0;
-    }
-
-    md-checkbox {
-        margin: 0;
-    }
-
-    md-button {
-        margin: 0;
-        padding: 0;
-    }
-
+    $bodySize: 0.9em;
 
     #toggle-ribbon-bar-fab {
         position: absolute;
         bottom: -2em;
         right: 2em;
         z-index: 999;
-    }
 
-    #toggle-ribbon-bar-fab.expanded {
-        bottom: 1em;
-    }
+        > i:before {
+            content: "\f0ab";
+        }
 
-    #toggle-ribbon-bar-fab > i:before {
+        &.expanded {
+            bottom: 1em;
 
-        content: "\f0ab";
-    }
-
-    #toggle-ribbon-bar-fab.expanded > i:before {
-        content: "\f0aa";
+            > i:before {
+                content: "\f0aa";
+            }
+        }
     }
 
     #header {
@@ -62,12 +43,19 @@ ribbon-bar-component {
 
         .section {
             display: inline-block;
-            height:100%;
+            height: 100%;
             width: auto;
             padding: $padding + px;
             border-right: $border;
             vertical-align: top;
             position: relative;
+
+            md-input-container,
+            md-checkbox,
+            md-button {
+                margin: 0;
+                padding: 0;
+            }
 
             .section-header {
                 margin-bottom: ($padding * 3) + px;
@@ -77,17 +65,13 @@ ribbon-bar-component {
                 font-size: $headerSize;
                 color: $headerColor;
                 text-align: center;
+                overflow: hidden;
 
-                md-input-container {
-                    margin-top: 0;
+                &.bordered {
+                    border-bottom: $border-thin;
+                    border-top: $border-thin;
+                    background-color: $subsection-bg;
                 }
-
-            }
-
-            .section-header.bordered {
-                border-bottom: $border-thin;
-                border-top: $border-thin;
-                background-color: $subsection-bg;
             }
 
             .section-title {
@@ -95,35 +79,38 @@ ribbon-bar-component {
                 display: block;
                 position: absolute;
                 bottom: 0;
-                left: 40%;
+                left: 40px;
             }
 
             .section-body {
                 height: 0;
+                padding-top: $padding + px;
                 overflow: hidden;
                 border-top: $border;
+                font-size: $bodySize;
                 text-align: left;
                 vertical-align: top;
             }
 
-        }
-
-        .section.small {
-            width: 15%;
-        }
-
-    }
-
-    #header.expanded {
-        height: $heightExpanded + px;
-        opacity: $opacityExpanded;
-
-        .section {
-            .section-header {
-                margin-bottom: $padding + px;
+            &.small {
+                width: 15%;
             }
-            .section-body {
-                height: ($heightExpanded - $heightCollapsed) + px;
+        }
+
+        &.expanded {
+            height: $heightExpanded + px;
+            opacity: $opacityExpanded;
+
+            .section {
+                .section-header {
+                    margin-bottom: $padding + px;
+                }
+                .section-title {
+                    left: 45%;
+                }
+                .section-body {
+                    height: ($heightExpanded - $heightCollapsed) + px;
+                }
             }
         }
     }

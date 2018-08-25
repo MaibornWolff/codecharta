@@ -2,14 +2,6 @@
 
 code-charta-component {
 
-  horizontal-metric-chooser-component {
-
-    position: absolute;
-    top: 10px;
-    left: 10px;
-
-  }
-
   #mw-logo{
     .logo {
 
@@ -20,6 +12,7 @@ code-charta-component {
       bottom: 30px;
       z-index: 29;
     }
+
     a, img {
       width: 5em;
       display: block;
@@ -40,12 +33,9 @@ code-charta-component {
   }
 
   #title {
-
     position: fixed;
     z-index: 2;
     width: 100%;
-
-
   }
 
   ribbon-bar-component {
@@ -77,12 +67,11 @@ code-charta-component {
       margin-top: 4px;
     }
 
-  }
-
-  #actionButtons > * {
-    margin-left: 4px;
-    margin-right: 4px;
-    z-index: 60;
+    > * {
+       margin-left: 4px;
+       margin-right: 4px;
+       z-index: 60;
+    }
   }
 
   md-sidenav {
@@ -110,7 +99,6 @@ code-charta-component {
       margin: 0 auto;
       margin-top: 22%;
     }
-
   }
 
   .dark_shadow_opacity {
