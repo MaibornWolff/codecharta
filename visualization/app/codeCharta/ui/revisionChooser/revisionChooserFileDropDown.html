@@ -1,6 +1,8 @@
 <md-input-container class="md-block"
                     ng-class="{half: $ctrl.show == 'delta'}"
                     ng-if="$ctrl.show == 'single' || $ctrl.show == 'delta'">
+    <i class="fa fa-folder-open" onclick="document.getElementById('input-file-id').click();"></i>
+
     <md-select ng-model="$ctrl.ui.chosenReference" ng-change="$ctrl.onReferenceChange($ctrl.ui.chosenReference)">
         <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
             <md-truncate>{{::value.fileName}}</md-truncate>
@@ -8,7 +10,7 @@
     </md-select>
 </md-input-container>
 
-<md-input-container class="md-block"
+<md-input-container class="md-block second"
                     ng-class="{half: $ctrl.show == 'delta'}"
                     ng-if="$ctrl.show == 'delta'">
     <md-select ng-model="$ctrl.ui.chosenComparison" ng-change="$ctrl.onComparisonChange($ctrl.ui.chosenComparison)">

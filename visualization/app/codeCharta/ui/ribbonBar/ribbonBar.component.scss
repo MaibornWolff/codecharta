@@ -79,6 +79,10 @@ ribbon-bar-component {
                 position: absolute;
                 bottom: 0;
                 left: 40px;
+
+                &.second {
+                    left: 145px;
+                }
             }
 
             .section-body {
@@ -103,6 +107,11 @@ ribbon-bar-component {
                 }
                 .section-title {
                     left: 45%;
+
+                    &.second {
+                        visibility: hidden;
+                        opacity: 0;
+                    }
                 }
                 .section-body {
                     height: ($heightExpanded - $heightCollapsed) + px;
