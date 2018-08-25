@@ -1,7 +1,7 @@
 ribbon-bar-component {
 
-    $heightExpanded: 190;
-    $heightCollapsed: 50;
+    $heightExpanded: 170;
+    $heightCollapsed: 38;
     $sectionWidth: 275;
     $padding: 5;
     $animationDuration: 0.5;
@@ -58,10 +58,9 @@ ribbon-bar-component {
             }
 
             .section-header {
-                margin-bottom: ($padding * 3) + px;
+                margin-bottom: ($padding * 2) + px;
                 padding: 0;
-                height: ($heightCollapsed - 2 * $padding) + px !important;
-                line-height: ($heightCollapsed - 2 * $padding) + px;
+                height: ($heightCollapsed - 5) + px !important;
                 font-size: $headerSize;
                 color: $headerColor;
                 text-align: center;
@@ -91,10 +90,6 @@ ribbon-bar-component {
                 text-align: left;
                 vertical-align: top;
             }
-
-            &.small {
-                width: 15%;
-            }
         }
 
         &.expanded {
@@ -103,7 +98,8 @@ ribbon-bar-component {
 
             .section {
                 .section-header {
-                    margin-bottom: $padding + px;
+                    margin-bottom: 0;
+                    height: ($heightCollapsed - 10) + px !important;
                 }
                 .section-title {
                     left: 45%;

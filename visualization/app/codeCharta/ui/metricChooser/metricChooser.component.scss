@@ -1,21 +1,23 @@
 area-metric-chooser-component,
 height-metric-chooser-component,
 color-metric-chooser-component {
-  width: 100%;
+  $selectWidth: 150;
 
   md-input-container {
     display: block;
-    margin: 0;
-    padding: 0;
     top: -5px;
     text-align: left;
-  }
 
-  md-input-container > * {
-    display: inline-block;
-    margin: 0;
-    padding: 0;
-    vertical-align: middle;
+    md-select {
+      width: $selectWidth + px;
+    }
+
+    > * {
+      display: inline-block;
+      margin: 0;
+      padding: 0;
+      vertical-align: middle;
+    }
   }
 
   i.fa,
@@ -31,7 +33,7 @@ color-metric-chooser-component {
   }
 
   .metric-value {
-    margin-left: 10px;
+    margin-left: 5px;
     min-width: 40px;
     float: right;
   }

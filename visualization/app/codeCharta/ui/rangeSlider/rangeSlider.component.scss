@@ -2,6 +2,7 @@
 
 range-slider-component {
 
+  $sliderWidth: 110;
   .rzslider .rz-pointer, .rzslider .rz-selection {
     background: #26a69a !important;
   }
@@ -11,6 +12,6 @@ range-slider-component {
   }
 
   .small-input-field {
-    width: 48%
+    width: $sliderWidth + px;
   }
 }
