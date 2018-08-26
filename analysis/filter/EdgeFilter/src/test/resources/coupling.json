@@ -19,7 +19,7 @@
         },
         {
           "name": "big leaf",
-          "type":" File",
+          "type": "File",
           "attributes": {
             "rloc": 100,
             "functions": 10,

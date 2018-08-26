@@ -4,6 +4,7 @@ import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
+import de.maibornwolff.codecharta.model.AggregationType
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
@@ -16,13 +17,15 @@ class ProjectJsonDeserializer : JsonDeserializer<Project> {
 
         val listOfNodesType = object : TypeToken<List<Node>>() {}.type
         val listOfEdgesType = object : TypeToken<List<Edge>>() {}.type
+        val mapOfAggregationTypes = object : TypeToken<Map<String, Map<String, AggregationType>>>() {}.type
 
         val projectName = jsonNode.get("projectName")?.asString ?: ""
         val nodes = context.deserialize<List<Node>>(jsonNode.get("nodes"), listOfNodesType) ?: listOf()
         val apiVersion = jsonNode.get("apiVersion")?.asString ?: Project.API_VERSION
         val edges = context.deserialize<List<Edge>>(jsonNode.get("edges"), listOfEdgesType) ?: listOf()
+        val aggregationTypes = context.deserialize<Map<String, Map<String, AggregationType>>>(jsonNode.get("aggregationTypes"), mapOfAggregationTypes) ?: mapOf()
 
-        return Project(projectName, nodes, apiVersion, edges.toMutableList())
+        return Project(projectName, nodes, apiVersion, edges.toMutableList(), aggregationTypes)
     }
 
 }
