@@ -54,8 +54,7 @@ class EdgeFilter : Callable<Void?> {
     override fun call(): Void? {
         val srcProject = ProjectDeserializer.deserializeProject(source.bufferedReader())
 
-        val recursiveNodeMergerStrategy = RecursiveNodeMergerStrategy(ignoreCase)
-        val newProject = ProjectMerger(srcProject, recursiveNodeMergerStrategy).merge()
+        val newProject = ProjectMerger(srcProject).merge()
 
         val writer = outputFile?.bufferedWriter() ?: System.out.bufferedWriter()
         ProjectSerializer.serializeProject(newProject, writer)

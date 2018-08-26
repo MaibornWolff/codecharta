@@ -34,7 +34,8 @@ class Project(
         val projectName: String,
         private val nodes: List<Node> = listOf(Node("root", NodeType.Folder)),
         val apiVersion: String = API_VERSION,
-        val edges: List<Edge> = listOf()
+        val edges: List<Edge> = listOf(),
+        val aggregationTypes: Map<String, Map<String, AggregationType>> = mapOf()
 ) {
     init {
         if (nodes.size != 1) throw IllegalStateException("no root node present in project")
@@ -56,6 +57,7 @@ class Project(
                 ", apiVersion='" + apiVersion + '\''.toString() +
                 ", nodes=" + nodes +
                 ", edges=" + edges +
+                ", aggregationTypes" + aggregationTypes +
                 '}'.toString()
     }
 
@@ -71,3 +73,17 @@ class Project(
     }
 
 }
+
+/*
+  "aggregationTypes": {
+    "nodes": [
+      {"rloc": "absolute"},
+      {"functions": "absolute"},
+      {"mcc": "absolute"}
+    ],
+    "edges": [
+      {"pairingRate": "relative"},
+      {"avgCommits": "absolute"}
+    ]
+  }
+ */

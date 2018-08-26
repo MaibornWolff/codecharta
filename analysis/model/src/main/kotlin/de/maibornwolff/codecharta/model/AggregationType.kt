@@ -27,52 +27,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.filter.edgefilter
+package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.model.MutableNode
-
-/**
- * merges nodes recursively if their paths coincide
- */
-class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false) {
-    private val mergeConditionSatisfied: (MutableNode, MutableNode) -> Boolean
-
-    init {
-        mergeConditionSatisfied = if (ignoreCase) {
-            n1: MutableNode, n2: MutableNode -> n1.name.toUpperCase() == n2.name.toUpperCase() }
-        else {
-            n1: MutableNode, n2: MutableNode -> n1.name == n2.name
-        }
-    }
-
-    fun mergeNodeLists(lists: List<MutableNode>): List<MutableNode> {
-        return if (lists.isEmpty())
-            listOf()
-        else lists.reduce {
-            total, next -> next.fold(total, { t: List<MutableNode>, a: MutableNode ->
-            t.map {
-                if (mergeConditionSatisfied(it, a))
-                    merge(it, a)
-                else
-                    it
-            }.map { listOf(it) }
-        when {
-            t.filter { mergeConditionSatisfied(it, a) }.count() > 0 ->
-                t.map {
-                    if (mergeConditionSatisfied(it, a))
-                        merge(it, a)
-                    else
-                        it
-                }
-        else -> t + a
-        }
-        })
-        }
-    }
-
-    private fun merge(vararg nodes: MutableNode): MutableNode {
-        val node = nodes[0].merge(nodes.toList())
-        node.children.addAll(this.mergeNodeLists(nodes.map { it.children }))
-        return node
-    }
+enum class AggregationType {
+    absolute, relative
 }
