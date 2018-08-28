@@ -19,7 +19,7 @@ export class RibbonBarController {
         this.settingsService.applySettings();
     }
 
-    private toggle(e) {
+    toggle() {
         if (!this.isExpanded) {
             this.expand();
         } else {

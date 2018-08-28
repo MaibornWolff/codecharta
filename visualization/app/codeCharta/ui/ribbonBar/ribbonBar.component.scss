@@ -15,19 +15,18 @@ ribbon-bar-component {
 
     #toggle-ribbon-bar-fab {
         position: absolute;
-        bottom: -2em;
-        right: 2em;
+        bottom: 0;
+        right: 0;
         z-index: 999;
+        font-size: 30px;
 
         > i:before {
-            content: "\f0ab";
+            content: "\f107";
         }
 
         &.expanded {
-            bottom: 1em;
-
             > i:before {
-                content: "\f0aa";
+                content: "\f106";
             }
         }
     }
