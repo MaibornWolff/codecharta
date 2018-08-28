@@ -32,6 +32,32 @@ ribbon-bar-component {
         }
     }
 
+    .md-fab.file-chooser-button {
+        position: absolute;
+        top: 6px;
+        left: 5px;
+        margin: 0;
+        padding: 0;
+        height: 26px;
+        width: 26px;
+        min-height: initial;
+        z-index: 0;
+        border-radius: 2px;
+    }
+
+    .file-chooser-icon {
+        position: absolute;
+        top: 11px;
+        left: 10px;
+        color: white;
+
+        &:hover {
+            cursor: pointer;
+            color: #eee;
+        }
+    }
+
+
     #header {
 
         width: 100%;
@@ -118,8 +144,8 @@ ribbon-bar-component {
     }
 
     #header,
-    #header .section-header,
-    #header .section-body,
+    #header .section > *,
+    .file-chooser-icon,
     #toggle-ribbon-bar-fab,
     #toggle-ribbon-bar-fab * {
         transition: all $animationDuration + s ease;
