@@ -78,7 +78,12 @@ ribbon-bar-component {
                 display: block;
                 position: absolute;
                 bottom: 0;
-                left: 40px;
+                left: 42%;
+                color: gray;
+
+                &.first {
+                    left: 40px;
+                }
 
                 &.second {
                     left: 145px;
@@ -105,14 +110,6 @@ ribbon-bar-component {
                     margin-bottom: 0;
                     height: ($heightCollapsed - 10) + px !important;
                 }
-                .section-title {
-                    left: 45%;
-
-                    &.second {
-                        visibility: hidden;
-                        opacity: 0;
-                    }
-                }
                 .section-body {
                     height: ($heightExpanded - $heightCollapsed) + px;
                 }
@@ -120,7 +117,11 @@ ribbon-bar-component {
         }
     }
 
-    #header, #header *, #toggle-ribbon-bar-fab, #toggle-ribbon-bar-fab * {
+    #header,
+    #header .section-header,
+    #header .section-body,
+    #toggle-ribbon-bar-fab,
+    #toggle-ribbon-bar-fab * {
         transition: all $animationDuration + s ease;
     }
 

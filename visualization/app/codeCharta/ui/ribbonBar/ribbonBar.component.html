@@ -5,7 +5,8 @@
             <file-chooser-directive></file-chooser-directive>
             <revision-chooser-file-drop-down-component></revision-chooser-file-drop-down-component>
         </div>
-        <span class="section-title">File</span>
+        <span class="section-title" ng-if="!$ctrl.settingsService.settings.deltas">File</span>
+        <span class="section-title first" ng-if="$ctrl.settingsService.settings.deltas">File</span>
         <span class="section-title second" ng-if="$ctrl.settingsService.settings.deltas">Compare</span>
         <div class="section-body">
             <revision-chooser-component></revision-chooser-component>
