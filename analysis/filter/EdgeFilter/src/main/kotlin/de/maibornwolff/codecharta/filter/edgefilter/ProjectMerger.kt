@@ -96,7 +96,8 @@ class ProjectMerger(private val project: Project) {
         var aggregatedAttributes: MutableMap<String, Any> = mutableMapOf()
 
         listOfAttributes.forEach {key: String ->
-            val aggregationType = project.aggregationTypes["edges"]!!.get(key)
+            // TODO get value of key
+            val aggregationType = project.aggregationTypes["edges"]
             val filtereAttribute = edgeAttributes.filter { edge: Edge -> edge.attributes.containsKey(key) }
             var aggregatedAttributeValue = filtereAttribute.sumBy { edge: Edge -> edge.attributes.get(key).toString().toInt() }
 
