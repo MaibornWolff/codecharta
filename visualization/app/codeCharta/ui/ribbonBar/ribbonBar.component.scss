@@ -141,13 +141,4 @@ ribbon-bar-component {
             }
         }
     }
-
-    #header,
-    #header .section > *,
-    .file-chooser-icon,
-    #toggle-ribbon-bar-fab,
-    #toggle-ribbon-bar-fab * {
-        transition: all $animationDuration + s ease;
-    }
-
 }

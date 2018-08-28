@@ -4,7 +4,7 @@ import {SettingsService} from "../../core/settings/settings.service";
 
 export class RibbonBarController {
 
-    private collapsingElements = $("ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab");
+    private collapsingElements = $("code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab");
 
     private isExpanded: boolean = false;
 
