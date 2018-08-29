@@ -69,23 +69,10 @@ code-charta-component {
       margin: 4px 0 0 2px;
     }
 
-    i.fa-bars {
-      margin-top: 4px;
-    }
-
     > * {
        margin-left: 4px;
        margin-right: 4px;
        z-index: 60;
-    }
-  }
-
-  md-sidenav {
-    width: 600px;
-    z-index: 50;
-
-    .padding_bottom {
-      padding-bottom: 100px;
     }
   }
 

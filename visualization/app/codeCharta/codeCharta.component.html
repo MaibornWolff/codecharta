@@ -1,23 +1,10 @@
 <ribbon-bar-component></ribbon-bar-component>
 
-<md-sidenav class="md-sidenav-right" md-component-id="right" md-disable-backdrop md-whiteframe="4">
-    <md-content layout-padding class="padding_bottom">
-
-        <settings-panel-component></settings-panel-component>
-
-        <md-button ng-click="$ctrl.showUrlParams()" class="md-primary">
-            URL Parameters
-        </md-button>
-    </md-content>
-</md-sidenav>
-
 <div id="actionButtons">
     <md-button class="md-fab md-primary dark_shadow_opacity" aria-label="Fit Map to View" ng-click="$ctrl.fitMapToView()">
         <i class="fa fa-compress fa-lg"></i>
     </md-button>
-    <md-button class="md-fab md-primary dark_shadow_opacity" aria-label="Open Sidenav" ng-click="$ctrl.toggleSidenav('right')">
-        <i class="fa fa-bars fa-lg"></i>
-    </md-button>
+    <sidenav-toggle-component></sidenav-toggle-component>
 </div>
 
 <code-map-component></code-map-component>

@@ -23,6 +23,7 @@ import "./ribbonBar/ribbonBar.module";
 import "./layoutSwitcher/layoutSwitcher";
 import "./optionsPanel/optionsPanel"
 import "./weblinksPanel/weblinksPanel"
+import "./sidenav/sidenav.module"
 
 angular.module(
     "app.codeCharta.ui",
@@ -47,6 +48,7 @@ angular.module(
         "app.codeCharta.ui.layoutSwitcher",
         "app.codeCharta.ui.regexFilter",
         "app.codeCharta.ui.optionsPanel",
+        "app.codeCharta.ui.sidenav",
         "app.codeCharta.ui.weblinksPanel"
     ]);
 

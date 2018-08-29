@@ -30,7 +30,6 @@ export class CodeChartaController {
         private scenarioService: ScenarioService,
         private dataService: DataService,
         private threeOrbitControlsService: ThreeOrbitControlsService,
-        private $mdSidenav: any,
         private $rootScope: IRootScopeService,
         private dialogService: DialogService
     ) {
@@ -55,14 +54,6 @@ export class CodeChartaController {
 
     fitMapToView() {
         this.threeOrbitControlsService.autoFitTo();
-    }
-
-    toggleSidenav(navID) {
-        this.$mdSidenav(navID).toggle();
-    }
-
-    showUrlParams() {
-        this.dialogService.showQueryParamDialog();
     }
 
     loadFileOrSample() {
