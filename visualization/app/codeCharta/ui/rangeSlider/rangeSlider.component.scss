@@ -2,16 +2,44 @@
 
 range-slider-component {
 
-  $sliderWidth: 110;
+  display: block;
+  padding-top: 7px;
+
+  * {
+    display: inline-block !important;
+  }
+
+  .rzslider {
+    width: 150px;
+    margin: -10px 0 15px 0 !important;
+  }
+
   .rzslider .rz-pointer, .rzslider .rz-selection {
     background: #26a69a !important;
   }
 
+  .rzslider .rz-pointer {
+    top: -6px;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    border-radius: 16px;
+  }
+
+  .rz-bubble, .rz-limit {
+    bottom: 7px !important;
+    padding: 1px 3px;
+    color: #aeaeae !important;
+    cursor: default;
+}
+
   .rzslider .rz-bar {
-    background: rgb(196, 196, 196);
+    background: #a3a3a3;
+    height: 2px;
   }
 
   .small-input-field {
-    width: $sliderWidth + px;
+    width: 42px;
+    text-align: center !important;
   }
 }
