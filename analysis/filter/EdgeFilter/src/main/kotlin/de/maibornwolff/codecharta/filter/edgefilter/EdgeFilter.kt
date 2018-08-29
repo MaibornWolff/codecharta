@@ -45,6 +45,9 @@ class EdgeFilter : Callable<Void?> {
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["files to filter"])
     private var source: File = File.createTempFile("", "")
 
+    @CommandLine.Option(names = ["--pathSeparator"], description = ["path separator (default = '/')"])
+    private var pathSeparator = '/'
+
     @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
@@ -54,7 +57,7 @@ class EdgeFilter : Callable<Void?> {
     override fun call(): Void? {
         val srcProject = ProjectDeserializer.deserializeProject(source.bufferedReader())
 
-        val newProject = ProjectMerger(srcProject).merge()
+        val newProject = EdgeProjectBuilder(srcProject, pathSeparator).merge()
 
         val writer = outputFile?.bufferedWriter() ?: System.out.bufferedWriter()
         ProjectSerializer.serializeProject(newProject, writer)

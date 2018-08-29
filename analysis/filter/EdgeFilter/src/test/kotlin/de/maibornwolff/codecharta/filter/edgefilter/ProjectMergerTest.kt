@@ -36,7 +36,6 @@ import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import java.io.InputStreamReader
-import kotlin.test.assertFailsWith
 
 class ProjectMergerTest : Spek({
 
@@ -44,21 +43,7 @@ class ProjectMergerTest : Spek({
 
     describe("filter edges as node attributes") {
         val originalProject = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE)))
-
-
-        println("_A1")
-        println(originalProject)
-        println(originalProject.rootNode.children[0].name)
-        println(originalProject.rootNode.children[0].attributes)
-        println("_A2")
-
-        val project = ProjectMerger(originalProject).merge()
-
-        println("_B1")
-        println(project)
-        println(project.rootNode.children[0].name)
-        println(project.rootNode.children[0].attributes)
-        println("_B2")
+        val project = EdgeProjectBuilder(originalProject, '/').merge()
 
         it("should have correct number of dependencies") {
             MatcherAssert.assertThat(project.sizeOfEdges(), CoreMatchers.`is`(3))
@@ -70,7 +55,6 @@ class ProjectMergerTest : Spek({
 
         it("should have correct number of attributes") {
             MatcherAssert.assertThat(project.rootNode.children.first().attributes.size, CoreMatchers.`is`(5))
-
         }
     }
 })
