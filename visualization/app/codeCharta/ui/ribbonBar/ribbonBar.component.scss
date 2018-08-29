@@ -12,13 +12,19 @@ ribbon-bar-component {
     $headerColor: #444;
     $headerSize: 1em;
     $bodySize: 0.9em;
+    $toggleButtonSize: 35;
+    overflow: visible;
 
     #toggle-ribbon-bar-fab {
         position: absolute;
-        bottom: 0;
+        margin-top: (-1 * $toggleButtonSize / 2) + px;
         right: 0;
         z-index: 999;
-        font-size: 30px;
+        width: $toggleButtonSize + px;
+        height:  $toggleButtonSize + px !important;
+        min-height: $toggleButtonSize + px !important;
+        line-height: $toggleButtonSize + px !important;
+        float: right;
 
         > i:before {
             content: "\f107";
@@ -41,7 +47,6 @@ ribbon-bar-component {
         width: 26px;
         min-height: initial;
         z-index: 0;
-        border-radius: 2px;
     }
 
     .file-chooser-icon {
