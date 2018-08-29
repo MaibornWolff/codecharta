@@ -32,7 +32,7 @@ export class DataLoadingService {
                         projectName: fileContent.projectName,
                         root: fileContent.nodes[0],
                         edges: fileContent.edges || [],
-                        aggregationTypes: fileContent.aggregationTypes || {}
+                        attributeTypes: fileContent.attributeTypes || {}
                     };
                     this.dataService.setMap(map, revision);
 

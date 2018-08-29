@@ -81,7 +81,7 @@
       }
     }
   ],
-  "aggregationTypes": {
+  "attributeTypes": {
     "nodes": [
       {"rloc": "absolute"},
       {"functions": "absolute"},

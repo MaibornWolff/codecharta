@@ -43,7 +43,7 @@ class EdgeFilter : Callable<Void?> {
     var help: Boolean = false
 
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["files to filter"])
-    private var source: File = File.createTempFile("", "")
+    private var source: String = ""
 
     @CommandLine.Option(names = ["--pathSeparator"], description = ["path separator (default = '/')"])
     private var pathSeparator = '/'
@@ -55,7 +55,7 @@ class EdgeFilter : Callable<Void?> {
     private var ignoreCase = false
 
     override fun call(): Void? {
-        val srcProject = ProjectDeserializer.deserializeProject(source.bufferedReader())
+        val srcProject = ProjectDeserializer.deserializeProject(File(source).bufferedReader())
 
         val newProject = EdgeProjectBuilder(srcProject, pathSeparator).merge()
 

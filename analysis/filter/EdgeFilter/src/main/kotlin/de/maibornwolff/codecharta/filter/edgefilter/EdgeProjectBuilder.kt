@@ -104,7 +104,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         val aggregatedAttributes: MutableMap<String, Any> = mutableMapOf()
 
         listOfAttributes.forEach {key: String ->
-            val aggregationType = getAttributeValueByKey(project.aggregationTypes["edges"]!!, key)
+            val aggregationType = getAttributeValueByKey(project.attributeTypes["edges"]!!, key)
             val filteredAttribute = filteredAttributes.filter { edge: Edge -> edge.attributes.containsKey(key) }
             var aggregatedAttributeValue = filteredAttribute.sumBy { edge: Edge -> edge.attributes.get(key).toString().toFloat().toInt() }
 

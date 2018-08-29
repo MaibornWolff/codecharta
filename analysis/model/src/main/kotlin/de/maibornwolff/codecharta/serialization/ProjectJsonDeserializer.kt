@@ -17,15 +17,15 @@ class ProjectJsonDeserializer : JsonDeserializer<Project> {
 
         val listOfNodesType = object : TypeToken<List<Node>>() {}.type
         val listOfEdgesType = object : TypeToken<List<Edge>>() {}.type
-        val mapOfAggregationTypes = object : TypeToken<Map<String, List<Map<String, AggregationType>>>>() {}.type
+        val mapOfAttributeTypes = object : TypeToken<Map<String, List<Map<String, AggregationType>>>>() {}.type
 
         val projectName = jsonNode.get("projectName")?.asString ?: ""
         val nodes = context.deserialize<List<Node>>(jsonNode.get("nodes"), listOfNodesType) ?: listOf()
         val apiVersion = jsonNode.get("apiVersion")?.asString ?: Project.API_VERSION
         val edges = context.deserialize<List<Edge>>(jsonNode.get("edges"), listOfEdgesType) ?: listOf()
-        val aggregationTypes = context.deserialize<Map<String, List<Map<String, AggregationType>>>>(jsonNode.get("aggregationTypes"), mapOfAggregationTypes) ?: mapOf()
+        val attributeTypes = context.deserialize<Map<String, List<Map<String, AggregationType>>>>(jsonNode.get("attributeTypes"), mapOfAttributeTypes) ?: mapOf()
 
-        return Project(projectName, nodes, apiVersion, edges.toMutableList(), aggregationTypes)
+        return Project(projectName, nodes, apiVersion, edges.toMutableList(), attributeTypes)
     }
 
 }
