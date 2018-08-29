@@ -9,9 +9,16 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 
     /* @ngInject */
     constructor(private settingsService: SettingsService,
-                private dataService: DataService) {
+                private dataService: DataService,
+                $timeout,
+                $scope) {
         this.settingsService.subscribe(this);
         this.initSliderOptions();
+
+        $timeout(function() {
+            $scope.$broadcast('rzSliderForceRender')
+        })
+
     }
 
     onSettingsChanged(settings: Settings) {
