@@ -45,24 +45,31 @@ class ProjectMergerTest : Spek({
     describe("filter edges as node attributes") {
         val originalProject = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE)))
 
+
+        println("_A1")
+        println(originalProject)
+        println(originalProject.rootNode.children[0].name)
+        println(originalProject.rootNode.children[0].attributes)
+        println("_A2")
+
         val project = ProjectMerger(originalProject).merge()
 
-        println("_")
+        println("_B1")
         println(project)
-        println(project.rootNode.children[0].children[0].children[0].name)
-        println(project.rootNode.children[0].children[0].children[0].attributes)
-        println("_")
+        println(project.rootNode.children[0].name)
+        println(project.rootNode.children[0].attributes)
+        println("_B2")
 
         it("should have correct number of dependencies") {
             MatcherAssert.assertThat(project.sizeOfEdges(), CoreMatchers.`is`(3))
         }
 
         it("should have correct number of files") {
-            MatcherAssert.assertThat(project.size, CoreMatchers.`is`(4))
+            MatcherAssert.assertThat(project.size, CoreMatchers.`is`(5))
         }
 
         it("should have correct number of attributes") {
-            MatcherAssert.assertThat(project.rootNode.children.first().children.first().children.first().attributes.size, CoreMatchers.`is`(5))
+            MatcherAssert.assertThat(project.rootNode.children.first().attributes.size, CoreMatchers.`is`(5))
 
         }
     }

@@ -73,17 +73,3 @@ class Project(
     }
 
 }
-
-/*
-  "aggregationTypes": {
-    "nodes": [
-      {"rloc": "absolute"},
-      {"functions": "absolute"},
-      {"mcc": "absolute"}
-    ],
-    "edges": [
-      {"pairingRate": "relative"},
-      {"avgCommits": "absolute"}
-    ]
-  }
- */

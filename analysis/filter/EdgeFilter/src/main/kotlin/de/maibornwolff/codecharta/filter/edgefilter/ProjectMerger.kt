@@ -30,6 +30,7 @@
 package de.maibornwolff.codecharta.filter.edgefilter
 
 import de.maibornwolff.codecharta.model.*
+import org.omg.IOP.TaggedComponent
 
 class ProjectMerger(private val project: Project) {
 
@@ -41,7 +42,7 @@ class ProjectMerger(private val project: Project) {
 
     fun merge(): Project {
         insertEdges()
-        goThroughAllNodes(listOf(project.rootNode.toMutableNode()))
+        goThroughAllNodes(project.rootNode.children)
         return projectBuilder.build()
     }
 
@@ -51,62 +52,83 @@ class ProjectMerger(private val project: Project) {
         }
     }
 
-    private fun goThroughAllNodes(nodes: List<MutableNode>) {
+    private fun goThroughAllNodes(nodes: List<Node>, parentPath: MutableList<String> = mutableListOf()) {
         nodes.forEach {
-            insertRowInProject(it.toNode())
+            insertRowInProject(it, parentPath)
             if (!it.children.isEmpty()) {
-                goThroughAllNodes(it.children)
+                parentPath.add(it.name)
+                goThroughAllNodes(it.children, parentPath)
             }
         }
     }
 
-    private fun insertRowInProject(node: Node) {
-        val newNode = Node(node.name, node.type, getAttributes(node), node.link, node.children)
+    private fun insertRowInProject(node: Node, parentPath: MutableList<String>) {
+        val newNode = Node(node.name, node.type, getAttributes(node, parentPath), node.link)
         try {
-            val path = Path(listOf((newNode.asTreeNode()).name))
-            projectBuilder.insertByPath(path, newNode.toMutableNode())
+            projectBuilder.insertByPath(Path(parentPath.toList()), newNode.toMutableNode())
         } catch (e: IllegalArgumentException) {
             System.err.println(e.message)
         }
     }
 
-    private fun getAttributes(node: Node): Map<String, Any> {
+    private fun getAttributes(node: Node, parentPath: MutableList<String>): Map<String, Any> {
         val newAttributes: MutableMap<String, Any> = mutableMapOf()
         newAttributes.putAll(node.attributes)
-        newAttributes.putAll(getAggregatedEdgeAttributes(node))
+        newAttributes.putAll(getAggregatedEdgeAttributes(node, parentPath))
         return newAttributes.toMap()
     }
 
-    private fun getAggregatedEdgeAttributes(node: Node): MutableMap<String, Any> {
+    private fun getAggregatedEdgeAttributes(node: Node, parentPath: MutableList<String>): MutableMap<String, Any> {
+        val nodePath: String = getPathAsString(parentPath, node.name)
         val edgeAttributes = project.edges.filter { edge ->
-            edge.fromNodeName == node.asTreeNode().name
-                    || edge.toNodeName == node.asTreeNode().name
+            edge.fromNodeName == nodePath || edge.toNodeName == nodePath
         }
+        println("-----")
+        println("----- " + nodePath)
+        println("edgeAttributes: " + edgeAttributes)
 
         val listOfAttributes: MutableList<String> = mutableListOf()
 
         edgeAttributes.forEach {
             it.attributes.forEach { key, value ->
                 if (!listOfAttributes.contains(key)) {
-                    listOfAttributes.fill(key)
+                    listOfAttributes.add(key)
                 }
             }
         }
 
+        println("listOfAttributes: " + listOfAttributes)
+
+
         var aggregatedAttributes: MutableMap<String, Any> = mutableMapOf()
 
         listOfAttributes.forEach {key: String ->
-            // TODO get value of key
-            val aggregationType = project.aggregationTypes["edges"]
-            val filtereAttribute = edgeAttributes.filter { edge: Edge -> edge.attributes.containsKey(key) }
-            var aggregatedAttributeValue = filtereAttribute.sumBy { edge: Edge -> edge.attributes.get(key).toString().toInt() }
+            val aggregationType = getAttributeValueByKey(project.aggregationTypes["edges"]!!, key)
+            val filteredAttribute = edgeAttributes.filter { edge: Edge -> edge.attributes.containsKey(key) }
+            var aggregatedAttributeValue = filteredAttribute.sumBy { edge: Edge -> edge.attributes.get(key).toString().toFloat().toInt() }
 
             if (aggregationType == AggregationType.relative) {
-                aggregatedAttributeValue /= filtereAttribute.size
+                aggregatedAttributeValue /= filteredAttribute.size
             }
             aggregatedAttributes.put(key + "_" + aggregationType, aggregatedAttributeValue)
         }
 
+        println("aggregatedAttributes: " + aggregatedAttributes)
+
         return aggregatedAttributes
+    }
+
+    private fun getPathAsString(path: List<String>, leafName: String, pathSeperator: String = "/"): String {
+        var nodePath = pathSeperator + "root"
+        path.forEach { nodePath += pathSeperator+ it }
+        nodePath += pathSeperator + leafName
+        return nodePath
+    }
+
+    private fun getAttributeValueByKey(attributes: List<Map<String, AggregationType>>, key: String): AggregationType {
+        attributes.forEach {
+            if (it.containsKey(key)) return it[key]!!
+        }
+        return AggregationType.absolute
     }
 }

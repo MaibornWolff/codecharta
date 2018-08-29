@@ -43,12 +43,32 @@
             },
             {
               "name": "other small leaf",
-              "type": "File",
+              "type": "Folder",
               "attributes": {
                 "rloc": 70,
                 "functions": 1000,
                 "mcc": 10
-              }
+              },
+              "children": [
+                {
+                  "name": "small leaf 2",
+                  "type": "File",
+                  "attributes": {
+                    "rloc": 30,
+                    "functions": 100,
+                    "mcc": 100
+                  }
+                },
+                {
+                  "name": "other small leaf 2",
+                  "type": "File",
+                  "attributes": {
+                    "rloc": 70,
+                    "functions": 1000,
+                    "mcc": 10
+                  }
+                }
+              ]
             }
           ]
         }
