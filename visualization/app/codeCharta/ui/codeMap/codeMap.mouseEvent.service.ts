@@ -5,6 +5,7 @@ import {IAngularEvent, IRootScopeService} from "angular";
 import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {codeMapBuilding} from "./rendering/codeMapBuilding";
 import {CodeMapRenderService} from "./codeMap.render.service";
+import $ from "jquery";
 
 interface Coordinates {
     x: number;
@@ -91,8 +92,9 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
     }
 
     onDocumentMouseMove(event) {
+        const topOffset = $(this.threeRendererService.renderer.domElement).offset().top - $(window).scrollTop();
         this.mouse.x = ( event.clientX / this.threeRendererService.renderer.domElement.width ) * 2 - 1;
-        this.mouse.y = -( event.clientY / this.threeRendererService.renderer.domElement.height ) * 2 + 1;
+        this.mouse.y = -( (event.clientY - topOffset) / this.threeRendererService.renderer.domElement.height ) * 2 + 1;
         this.dragOrClickFlag = 1;
     }
 
