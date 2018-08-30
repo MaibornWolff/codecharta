@@ -55,8 +55,10 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         nodes.forEach {
             insertNodeInProject(it, parentPath)
             if (!it.children.isEmpty()) {
-                parentPath.add(it.name)
-                insertNewNodes(it.children, parentPath)
+                val  newParentPath: MutableList<String> = parentPath.toMutableList() // clone object
+                newParentPath.add(it.name)
+                println(newParentPath)
+                insertNewNodes(it.children, newParentPath)
             }
         }
     }
@@ -64,6 +66,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     private fun insertNodeInProject(node: Node, parentPath: MutableList<String>) {
         val newNode = Node(node.name, node.type, getAttributes(node, parentPath), node.link)
         try {
+            println(node.name + ": " + Path(parentPath.toList()))
             projectBuilder.insertByPath(Path(parentPath.toList()), newNode.toMutableNode())
         } catch (e: IllegalArgumentException) {
             System.err.println(e.message)
@@ -95,7 +98,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     private fun getAttributeKeys(filteredAttributes: List<Edge>): MutableList<String> {
         val attributeKeys: MutableList<String> = mutableListOf()
         filteredAttributes.forEach {
-            it.attributes.forEach { key, value -> if (!attributeKeys.contains(key)) attributeKeys.add(key) }
+            it.attributes.forEach { key, _ -> if (!attributeKeys.contains(key)) attributeKeys.add(key) }
         }
         return attributeKeys
     }
