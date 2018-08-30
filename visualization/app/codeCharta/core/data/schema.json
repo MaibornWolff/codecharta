@@ -30,8 +30,8 @@
                 "$ref": "#/definitions/edge"
             }
         },
-        "attributesTypes": {
-            "title": "list of nodes and edges attributesTypes",
+        "attributeTypes": {
+            "title": "list of nodes and edges attributeTypes",
             "type": "object",
             "minItems": 1,
             "items": {
