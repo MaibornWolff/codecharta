@@ -57,7 +57,6 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
             if (!it.children.isEmpty()) {
                 val  newParentPath: MutableList<String> = parentPath.toMutableList() // clone object
                 newParentPath.add(it.name)
-                println(newParentPath)
                 insertNewNodes(it.children, newParentPath)
             }
         }
@@ -66,7 +65,6 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     private fun insertNodeInProject(node: Node, parentPath: MutableList<String>) {
         val newNode = Node(node.name, node.type, getAttributes(node, parentPath), node.link)
         try {
-            println(node.name + ": " + Path(parentPath.toList()))
             projectBuilder.insertByPath(Path(parentPath.toList()), newNode.toMutableNode())
         } catch (e: IllegalArgumentException) {
             System.err.println(e.message)

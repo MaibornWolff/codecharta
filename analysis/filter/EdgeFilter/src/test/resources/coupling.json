@@ -8,7 +8,7 @@
       "attributes": {},
       "children": [
         {
-          "name": "sample1 only leaf",
+          "name": "leaf 1",
           "type": "File",
           "attributes": {
             "rloc": 400,
@@ -18,7 +18,7 @@
           "link": "http://www.google.de"
         },
         {
-          "name": "big leaf",
+          "name": "leaf 2",
           "type": "File",
           "attributes": {
             "rloc": 100,
@@ -28,12 +28,12 @@
           "link": "http://www.google.de"
         },
         {
-          "name": "Parent Leaf",
+          "name": "Parent 1",
           "type": "Folder",
           "attributes": {},
           "children": [
             {
-              "name": "small leaf",
+              "name": "leaf 3",
               "type": "File",
               "attributes": {
                 "rloc": 30,
@@ -42,7 +42,7 @@
               }
             },
             {
-              "name": "other small leaf",
+              "name": "Parent 2",
               "type": "Folder",
               "attributes": {
                 "rloc": 70,
@@ -51,7 +51,7 @@
               },
               "children": [
                 {
-                  "name": "small leaf 2",
+                  "name": "leaf 4",
                   "type": "File",
                   "attributes": {
                     "rloc": 30,
@@ -60,7 +60,7 @@
                   }
                 },
                 {
-                  "name": "other small leaf 2",
+                  "name": "leaf 5",
                   "type": "File",
                   "attributes": {
                     "rloc": 70,
@@ -77,27 +77,51 @@
   ],
   "edges": [
     {
-      "fromNodeName": "/root/big leaf",
-      "toNodeName": "/root/Parent Leaf/small leaf",
+      "fromNodeName": "/root/leaf 1",
+      "toNodeName": "/root/Parent 1/leaf 3",
       "attributes": {
-        "pairingRate": 89,
-        "avgCommits": 34
+        "pairingRate": 90,
+        "avgCommits": 30
       }
     },
     {
-      "fromNodeName": "/root/sample1 only leaf",
-      "toNodeName": "/root/Parent Leaf/small leaf",
+      "fromNodeName": "/root/leaf 1",
+      "toNodeName": "/root/leaf 2",
       "attributes": {
-        "pairingRate": 32,
-        "avgCommits": 17
+        "pairingRate": 30,
+        "avgCommits": 10
       }
     },
     {
-      "fromNodeName": "/root/Parent Leaf/other small leaf",
-      "toNodeName": "/root/big leaf",
+      "fromNodeName": "/root/Parent 1/Parent 2/leaf 4",
+      "toNodeName": "/root/leaf 2",
       "attributes": {
-        "pairingRate": 65,
-        "avgCommits": 22
+        "pairingRate": 60,
+        "avgCommits": 20
+      }
+    },
+    {
+      "fromNodeName": "/root/Parent 1/Parent 2/leaf 5",
+      "toNodeName": "/root/Parent 1/Parent 2/leaf 4",
+      "attributes": {
+        "pairingRate": 80,
+        "avgCommits": 30
+      }
+    },
+    {
+      "fromNodeName": "/root/Parent 1/Parent 2/leaf 4",
+      "toNodeName": "/root/Parent 1/leaf 3",
+      "attributes": {
+        "pairingRate": 60,
+        "avgCommits": 40
+      }
+    },
+    {
+      "fromNodeName": "/root/Parent 1/leaf 3",
+      "toNodeName": "/root/leaf 1",
+      "attributes": {
+        "pairingRate": 70,
+        "avgCommits": 30
       }
     }
   ],
