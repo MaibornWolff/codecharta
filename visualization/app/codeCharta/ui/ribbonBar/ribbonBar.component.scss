@@ -1,6 +1,6 @@
 ribbon-bar-component {
 
-    $heightExpanded: 170;
+    $heightExpanded: 195;
     $heightCollapsed: 38;
     $sectionWidth: 275;
     $padding: 5;
@@ -76,6 +76,7 @@ ribbon-bar-component {
             height: 100%;
             width: auto;
             padding: $padding + px;
+            margin-bottom: 6px;
             border-right: $border;
             vertical-align: top;
             position: relative;
@@ -121,6 +122,7 @@ ribbon-bar-component {
             }
 
             .section-body {
+                margin-top: 0;
                 height: 0;
                 padding-top: $padding + px;
                 overflow: hidden;
@@ -141,6 +143,8 @@ ribbon-bar-component {
                     height: ($heightCollapsed - 10) + px !important;
                 }
                 .section-body {
+                    padding-top: 15px;
+                    padding-bottom: 15px;
                     height: ($heightExpanded - $heightCollapsed) + px;
                 }
             }
