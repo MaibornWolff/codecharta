@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.16.0] - 2018-08-31
+### Added
 - add the option to add multiple files via url parameter (e.g. ?file=a&file=b...)
 ### Changed
 
