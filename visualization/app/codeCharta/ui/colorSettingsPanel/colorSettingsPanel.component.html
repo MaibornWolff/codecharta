@@ -11,11 +11,3 @@
         Invert Delta Colors
     </md-checkbox>
 </md-input-container>
-
-<md-input-container class="md-block">
-    <md-checkbox class="md-primary" ng-model="$ctrl.viewModel.backgroundFlipped" ng-change="$ctrl.apply()">
-        White Background
-    </md-checkbox>
-</md-input-container>
-
-<reset-settings-button-component ng-if="!$ctrl.settingsService.settings.showRibbonBar" settings-names="deltaColorFlipped,neutralColorRange.to,neutralColorRange.flipped,neutralColorRange.from,isWhiteBackground"></reset-settings-button-component>

@@ -1,16 +1,19 @@
 "use strict";
 import "./settingsPanel.scss";
+import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 
 /**
  * Controls the settingsPanel
  */
-export class SettingsPanelController{
+export class SettingsPanelController implements SettingsServiceSubscriber{
 
     /* @ngInject */
     constructor(
         private $scope,
-        private $timeout
+        private $timeout,
+        private settingsService: SettingsService
     ) {
+        this.onSettingsChanged(this.settingsService.settings, event);
     }
 
     /**
@@ -22,6 +25,10 @@ export class SettingsPanelController{
         this.$timeout(() => {
             this.$scope.$broadcast("rzSliderForceRender");
         },50);
+    }
+
+    onSettingsChanged(settings: Settings, event: Event) {
+        this.settingsService.applySettings();
     }
 
 }

@@ -26,7 +26,6 @@ describe("codecharta component", ()=>{
     let scenarioService: ScenarioService;
     let dataService: DataService;
     let threeOrbitControlsService: ThreeOrbitControlsService;
-    let $mdSidenav: any;
     let $rootScope: any;
     let dialogService: DialogService;
 
@@ -45,7 +44,6 @@ describe("codecharta component", ()=>{
         scenarioService = new ScenarioService();
         dataService = new DataService();
         threeOrbitControlsService = new ThreeOrbitControlsService();
-        $mdSidenav = jest.fn();
         $rootScope = {
             $on: jest.fn()
         };
@@ -57,7 +55,6 @@ describe("codecharta component", ()=>{
             scenarioService,
             dataService,
             threeOrbitControlsService,
-            $mdSidenav,
             $rootScope,
             dialogService
         );
@@ -234,11 +231,6 @@ describe("codecharta component", ()=>{
     it("should call error dialog on errors",()=>{
        cc.printErrors({});
        expect(dialogService.showErrorDialog).toHaveBeenCalled();
-    });
-
-    it("should show url params",()=>{
-       cc.showUrlParams();
-       expect(dialogService.showQueryParamDialog).toHaveBeenCalled();
     });
 
 });

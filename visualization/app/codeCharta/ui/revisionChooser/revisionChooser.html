@@ -1,30 +1,7 @@
 <md-input-container class="md-block">
     <md-radio-group ng-model="$ctrl.show" ng-change="$ctrl.onShowChange($ctrl.show)">
-
-    <md-radio-button value="single" >Single</md-radio-button>
-    <md-radio-button value="delta">Delta</md-radio-button>
-    <md-radio-button value="aggregate">Aggregate</md-radio-button>
-
+        <md-radio-button value="single">Single</md-radio-button>
+        <md-radio-button value="delta">Delta</md-radio-button>
+        <md-radio-button value="aggregate">Aggregate</md-radio-button>
     </md-radio-group>
 </md-input-container>
-
-<md-input-container class="md-block" ng-if="!$ctrl.settingsService.settings.showRibbonBar && ($ctrl.show == 'single' || $ctrl.show == 'delta')">
-    <label>Show</label>
-    <md-select ng-model="$ctrl.ui.chosenReference" ng-change="$ctrl.onReferenceChange($ctrl.ui.chosenReference)">
-        <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
-            {{::value.fileName}}
-        </md-option>
-    </md-select>
-</md-input-container>
-
-<md-input-container class="md-block" ng-if="!$ctrl.settingsService.settings.showRibbonBar && $ctrl.show == 'delta'">
-    <label>In comparison to</label>
-    <md-select ng-model="$ctrl.ui.chosenComparison" ng-change="$ctrl.onComparisonChange($ctrl.ui.chosenComparison)">
-        <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
-            {{::value.fileName}}
-        </md-option>
-    </md-select>
-</md-input-container>
-
-<aggregate-settings-panel-component ng-if="!$ctrl.settingsService.settings.showRibbonBar && $ctrl.show == 'aggregate'"></aggregate-settings-panel-component>
-

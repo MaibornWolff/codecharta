@@ -27,8 +27,7 @@
       "showDependencies": false,
       "maximizeDetailPanel": false,
       "invertHeight": false,
-      "isWhiteBackground": false,
-      "showRibbonBar": false
+      "isWhiteBackground": false
     },
     "autoFitCamera": true
   },
@@ -60,8 +59,7 @@
       "showDependencies": false,
       "maximizeDetailPanel": false,
       "invertHeight": false,
-      "isWhiteBackground": false,
-      "showRibbonBar": false
+      "isWhiteBackground": false
     },
     "autoFitCamera": true
   },
@@ -93,8 +91,7 @@
       "showDependencies": false,
       "maximizeDetailPanel": false,
       "invertHeight": false,
-      "isWhiteBackground": false,
-      "showRibbonBar": false
+      "isWhiteBackground": false
     },
     "autoFitCamera": true
   },
@@ -126,8 +123,7 @@
       "showDependencies": false,
       "maximizeDetailPanel": false,
       "invertHeight": false,
-      "isWhiteBackground": false,
-      "showRibbonBar": false
+      "isWhiteBackground": false
     },
     "autoFitCamera": true
   }

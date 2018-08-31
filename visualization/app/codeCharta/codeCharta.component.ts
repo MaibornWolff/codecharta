@@ -3,9 +3,11 @@ import {NameDataPair, UrlService} from "./core/url/url.service";
 import {SettingsService} from "./core/settings/settings.service";
 import {ScenarioService} from "./core/scenario/scenario.service";
 import {DataService} from "./core/data/data.service";
+import $ from "jquery";
 import {IRootScopeService} from "angular";
 import "./codeCharta.component.scss";
 import {DialogService} from "./ui/dialog/dialog.service";
+import {queryParamDialog} from "./ui/dialog/queryParam.dialog";
 import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
 import {NodeContextMenuComponent} from "./ui/nodeContextMenu/nodeContextMenu.component";
 
@@ -27,7 +29,6 @@ export class CodeChartaController {
         private scenarioService: ScenarioService,
         private dataService: DataService,
         private threeOrbitControlsService: ThreeOrbitControlsService,
-        private $mdSidenav: any,
         private $rootScope: IRootScopeService,
         private dialogService: DialogService
     ) {
@@ -52,14 +53,6 @@ export class CodeChartaController {
 
     fitMapToView() {
         this.threeOrbitControlsService.autoFitTo();
-    }
-
-    toggleSidenav(navID) {
-        this.$mdSidenav(navID).toggle();
-    }
-
-    showUrlParams() {
-        this.dialogService.showQueryParamDialog();
     }
 
     loadFileOrSample() {

@@ -6,12 +6,14 @@ import {ScenarioService, Scenario} from "../../core/scenario/scenario.service";
 import $ from "jquery";
 import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/data.service";
+import "./scenarioDropDown.scss";
 
 export class ScenarioButtonsController implements TooltipServiceSubscriber, DataServiceSubscriber, SettingsServiceSubscriber {
 
     private scenarios: Scenario[];
+    private key;
     private visible: boolean = false;
-
+    public  scenario: Scenario;
     /* @ngInject */
     /**
      *
@@ -62,12 +64,23 @@ export class ScenarioButtonsController implements TooltipServiceSubscriber, Data
      */
     onclick(value: Scenario) {
         this.scenarioService.applyScenario(value);
+        console.log(value);
+    }
+
+    applySettings(){
+        this.scenarioService.applyScenario(this.scenarios[this.key]);
+        this.key = null;
     }
 }
 
 export const scenarioButtonsComponent = {
     selector: "scenarioButtonsComponent",
     template: require("./scenarioButtons.html"),
+    controller: ScenarioButtonsController
+};
+export const scenarioDropDownComponent = {
+    selector: "scenarioDropDownComponent",
+    template: require("./scenarioDropDown.html"),
     controller: ScenarioButtonsController
 };
 

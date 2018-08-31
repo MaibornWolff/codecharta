@@ -1,7 +1,7 @@
 ribbon-bar-component {
 
-    $heightExpanded: 330;
-    $heightCollapsed: 50;
+    $heightExpanded: 195;
+    $heightCollapsed: 38;
     $sectionWidth: 275;
     $padding: 5;
     $animationDuration: 0.5;
@@ -10,26 +10,57 @@ ribbon-bar-component {
     $border-thin: 0px dotted #cdcdcd;
     $subsection-bg: #efefef;
     $headerColor: #444;
-    $headerSize: 0.9em;
-
-    md-checkbox {
-        margin: 0 !important;
-    }
+    $headerSize: 1em;
+    $bodySize: 0.9em;
+    $toggleButtonSize: 35;
 
     #toggle-ribbon-bar-fab {
-        position: relative;
-        bottom:40px;
-        left: 95%;
+        position: absolute;
+        margin-top: (-1 * $toggleButtonSize / 2) + px;
+        right: 10px;
         z-index: 999;
+        width: $toggleButtonSize + px;
+        height:  $toggleButtonSize + px !important;
+        min-height: $toggleButtonSize + px !important;
+        line-height: $toggleButtonSize + px !important;
+        float: right;
+
+        > i:before {
+            content: "\f107";
+        }
+
+        &.expanded {
+            > i:before {
+                content: "\f106";
+            }
+        }
     }
 
-    #toggle-ribbon-bar-fab > i:before {
-        content: "\f0ab";
+    .md-fab.file-chooser-button {
+        position: absolute;
+        top: 6px;
+        left: 5px;
+        margin: 0;
+        padding: 0;
+        height: 26px;
+        width: 26px;
+        min-height: initial;
+        z-index: 0;
+        border-radius: 50%;
     }
 
-    #toggle-ribbon-bar-fab.expanded > i:before {
-        content: "\f0aa";
+    .file-chooser-icon {
+        position: absolute;
+        top: 11px;
+        left: 10px;
+        color: white;
+
+        &:hover {
+            cursor: pointer;
+            color: #eee;
+        }
     }
+
 
     #header {
 
@@ -37,58 +68,86 @@ ribbon-bar-component {
         margin: 0;
         padding: 0;
         display: block;
-        height: $heightCollapsed + px;
+        height: ($heightCollapsed + 8) + px;
         overflow: hidden;
 
         .section {
             display: inline-block;
-            height:100%;
+            height: 100%;
             width: auto;
             padding: $padding + px;
+            margin-bottom: 6px;
             border-right: $border;
+            vertical-align: top;
+            position: relative;
+
+            md-input-container,
+            md-checkbox,
+            md-button {
+                margin: 0;
+                padding: 0;
+            }
 
             .section-header {
                 margin-bottom: ($padding * 2) + px;
                 padding: 0;
-                height: ($heightCollapsed - 2 * $padding) + px;
-                line-height: ($heightCollapsed - 2 * $padding) + px;
+                height: ($heightCollapsed - 5) + px !important;
                 font-size: $headerSize;
                 color: $headerColor;
                 text-align: center;
+                overflow: hidden;
 
+                &.bordered {
+                    border-bottom: $border-thin;
+                    border-top: $border-thin;
+                    background-color: $subsection-bg;
+                }
             }
 
-            .section-header.bordered {
-                border-bottom: $border-thin;
-                border-top: $border-thin;
-                background-color: $subsection-bg;
+            .section-title {
+                font-size: 8pt;
+                display: block;
+                position: absolute;
+                bottom: 0;
+                left: 42%;
+                color: gray;
+
+                &.first {
+                    left: 40px;
+                }
+
+                &.second {
+                    left: 145px;
+                }
             }
 
             .section-body {
-                height: 0px;
-                padding-top: ($padding * 4) + px;
+                margin-top: 0;
+                height: 0;
+                padding-top: $padding + px;
                 overflow: hidden;
                 border-top: $border;
+                font-size: $bodySize;
                 text-align: left;
-            }
-
-        }
-
-    }
-
-    #header.expanded {
-        height: $heightExpanded + px;
-        opacity: $opacityExpanded;
-
-        .section {
-            .section-body {
-                height: ($heightExpanded - $heightCollapsed) + px;
+                vertical-align: top;
             }
         }
-    }
 
-    #header, #header *, #toggle-ribbon-bar-fab, #toggle-ribbon-bar-fab * {
-        transition: all $animationDuration + s ease;
-    }
+        &.expanded {
+            height: $heightExpanded + px;
+            opacity: $opacityExpanded;
 
+            .section {
+                .section-header {
+                    margin-bottom: 0;
+                    height: ($heightCollapsed - 10) + px !important;
+                }
+                .section-body {
+                    padding-top: 15px;
+                    padding-bottom: 15px;
+                    height: ($heightExpanded - $heightCollapsed) + px;
+                }
+            }
+        }
+    }
 }

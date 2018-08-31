@@ -19,6 +19,9 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
     public hoveredAreaDelta: number;
     public hoveredColorDelta: number;
     public hoveredDeltaColor: string;
+    public optionsWithoutStart;
+    public sliderPositions;
+
 
     /* @ngInject */
     constructor(
@@ -30,6 +33,15 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
         this.metrics = dataService.data.metrics.sort();
         this.dataService.subscribe(this);
         CodeMapMouseEventService.subscribe($rootScope, this);
+        this.optionsWithoutStart = {
+            connect: true,
+            range: {
+                min: 0,
+                max: 100,
+            },
+        };
+
+        this.sliderPositions = [20, 80];
     }
 
     onDataChanged(data: DataModel, event: IAngularEvent) {
@@ -94,18 +106,6 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
 
 }
 
-export const metricChooserComponent = {
-    selector: "metricChooserComponent",
-    template: require("./metricChooser.component.html"),
-    controller: MetricChooserController
-};
-
-export const horizontalMetricChooserComponent = {
-    selector: "horizontalMetricChooserComponent",
-    template: require("./metricChooser.horizontal.component.html"),
-    controller: MetricChooserController
-};
-
 export const areaMetricChooserComponent = {
     selector: "areaMetricChooserComponent",
     template: require("./metricChooser.area.component.html"),
@@ -117,7 +117,6 @@ export const heightMetricChooserComponent = {
     template: require("./metricChooser.height.component.html"),
     controller: MetricChooserController
 };
-
 
 export const colorMetricChooserComponent = {
     selector: "colorMetricChooserComponent",

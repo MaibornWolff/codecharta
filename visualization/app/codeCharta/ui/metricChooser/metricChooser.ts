@@ -1,22 +1,15 @@
 import angular from "angular";
+import noUiSliderModule from 'angularjs-nouislider';
 import "../../core/core.module";
 import {
     areaMetricChooserComponent,
     colorMetricChooserComponent,
-    heightMetricChooserComponent,
-    horizontalMetricChooserComponent,
-    metricChooserComponent
+    heightMetricChooserComponent
 } from "./metricChooser.component";
 
-angular.module("app.codeCharta.ui.metricChooser",["app.codeCharta.core"]);
+angular.module("app.codeCharta.ui.metricChooser",["app.codeCharta.core", noUiSliderModule]);
 
 angular.module("app.codeCharta.ui.metricChooser").component(
-    metricChooserComponent.selector,
-    metricChooserComponent
-).component(
-    horizontalMetricChooserComponent.selector,
-    horizontalMetricChooserComponent
-).component(
     areaMetricChooserComponent.selector,
     areaMetricChooserComponent
 ).component(

@@ -1,7 +1,14 @@
 revision-chooser-component{
+  md-radio-button {
+    float: left;
+    margin-top: 10px;
 
-  md-input-container{
+    .md-label {
+      margin-left: 25px;
+    }
+  }
 
-    margin: 15px 0 0 0;
+  md-radio-button:not(:last-child) {
+    margin-right: 10px;
   }
 }
