@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.16.1] - 2018-08-31
+### Added
 - gitlab + dotnet manual
 ### Changed
 
