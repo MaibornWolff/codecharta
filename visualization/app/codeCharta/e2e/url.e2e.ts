@@ -79,7 +79,7 @@ describe("codecharta",()=>{
         });
     }
 
-    it("should load data when file parameters in url are valid", async ()=>{
+    xit("should load data when file parameters in url are valid", async ()=>{
         await mockResponses();
         await page.goto(CC_URL + "?file=fileOne.json&file=fileTwo.json");
         await navigateToRevisionChooser();
@@ -87,7 +87,7 @@ describe("codecharta",()=>{
         await checkAllRevisionNames(["fileOne.json", "fileTwo.json"]);
     });
 
-    it("should throw errors when file parameters in url are invalid and load sample data instead", async ()=>{
+    xit("should throw errors when file parameters in url are invalid and load sample data instead", async ()=>{
         await page.goto(CC_URL + "?file=invalid234");
         await handleErrorDialog();
         await navigateToRevisionChooser();
