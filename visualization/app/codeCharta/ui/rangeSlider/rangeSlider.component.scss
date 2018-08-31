@@ -31,7 +31,11 @@ range-slider-component {
     padding: 1px 3px;
     color: #aeaeae !important;
     cursor: default;
-}
+  }
+
+  .rz-active:after {
+    display: none;
+  }
 
   .rzslider .rz-bar {
     background: #a3a3a3;
