@@ -79,11 +79,11 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
 
     private fun getAggregatedEdgeAttributes(node: Node, parentPath: MutableList<String>): MutableMap<String, Any> {
         val nodePath: String = getNodePathAsString(parentPath, node.name)
-        val filteredAttributes: List<Edge> = project.edges.filter { edge ->
+        val filteredEdges: List<Edge> = project.edges.filter { edge ->
             edge.fromNodeName == nodePath || edge.toNodeName == nodePath
         }
-        val attributeKeys: MutableList<String> = getAttributeKeys(filteredAttributes)
-        return getAggregatedAttributes(attributeKeys, filteredAttributes)
+        val attributeKeys: MutableList<String> = getAttributeKeys(filteredEdges)
+        return getAggregatedAttributes(attributeKeys, filteredEdges)
     }
 
     private fun getNodePathAsString(path: List<String>, leafName: String): String {
@@ -93,20 +93,20 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         return nodePath
     }
 
-    private fun getAttributeKeys(filteredAttributes: List<Edge>): MutableList<String> {
+    private fun getAttributeKeys(filteredEdges: List<Edge>): MutableList<String> {
         val attributeKeys: MutableList<String> = mutableListOf()
-        filteredAttributes.forEach {
+        filteredEdges.forEach {
             it.attributes.forEach { key, _ -> if (!attributeKeys.contains(key)) attributeKeys.add(key) }
         }
         return attributeKeys
     }
 
-    private fun getAggregatedAttributes(listOfAttributes: MutableList<String>, filteredAttributes: List<Edge>): MutableMap<String, Any> {
+    private fun getAggregatedAttributes(listOfAttributes: MutableList<String>, filteredEdges: List<Edge>): MutableMap<String, Any> {
         val aggregatedAttributes: MutableMap<String, Any> = mutableMapOf()
 
         listOfAttributes.forEach {key: String ->
-            val attributeType = getAttributeValueByKey(key)
-            val filteredAttribute = filteredAttributes.filter { edge: Edge -> edge.attributes.containsKey(key) }
+            val attributeType = getAttributeTypeByKey(key)
+            val filteredAttribute = filteredEdges.filter { edge: Edge -> edge.attributes.containsKey(key) }
             var aggregatedAttributeValue = filteredAttribute.sumBy { edge: Edge -> edge.attributes.get(key).toString().toFloat().toInt() }
 
             if (attributeType == AttributeType.relative) aggregatedAttributeValue /= filteredAttribute.size
@@ -116,7 +116,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         return aggregatedAttributes
     }
 
-    private fun getAttributeValueByKey(key: String): AttributeType {
+    private fun getAttributeTypeByKey(key: String): AttributeType {
         if (!project.attributeTypes.isEmpty()) {
             project.attributeTypes["edges"]!!.forEach {
                 if (it.containsKey(key)) return it[key]!!
