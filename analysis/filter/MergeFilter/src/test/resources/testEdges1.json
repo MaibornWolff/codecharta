@@ -1,5 +1,5 @@
 {
-  "projectName": "Sample Project",
+  "projectName": "Sample Project 1",
   "apiVersion": "1.0",
   "nodes": [{
       "name": "root",
@@ -100,7 +100,7 @@
       "toNodeName": "visualization/file3",
       "attributes": {
         "pairingRate": 80,
-        "averageRevs": 3
+        "avgCommits": 3
       }
     },
     {
@@ -108,7 +108,7 @@
       "toNodeName": "visualization/file3",
       "attributes": {
         "pairingRate": 70,
-        "averageRevs": 5
+        "avgCommits": 5
       }
     },
     {
@@ -116,7 +116,7 @@
       "toNodeName": "file4",
       "attributes": {
         "pairingRate": 90,
-        "averageRevs": 4
+        "avgCommits": 4
       }
     },
     {
@@ -124,8 +124,25 @@
       "toNodeName": "file1",
       "attributes": {
         "pairingRate": 100,
-        "averageRevs": 5
+        "avgCommits": 5
       }
     }
-  ]
+  ],
+  "attributeTypes": {
+    "nodes": [
+      {"number_of_authors": "absolute"},
+      {"number_of_commits": "absolute"},
+      {"range_of_weeks_with_commits": "absolute"},
+      {"successive_weeks_with_commits": "absolute"},
+      {"weeks_with_commits": "absolute"},
+      {"highly_coupled_files": "absolute"},
+      {"median_coupled_files": "absolute"},
+      {"abs_coupled_churn": "absolute"},
+      {"avg_code_churn": "absolute"}
+    ],
+    "edges": [
+      {"pairingRate": "absolute"},
+      {"avgCommits": "relative"}
+    ]
+  }
 }

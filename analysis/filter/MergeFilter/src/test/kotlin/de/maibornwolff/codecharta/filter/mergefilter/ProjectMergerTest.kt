@@ -155,14 +155,18 @@ class ProjectMergerTest : Spek({
                 assertThat(project.size, CoreMatchers.`is`(4))
             }
 
+            it("should have correct number of attributeTypes") {
+                assertThat(project.attributeTypes["edges"]!!.size, CoreMatchers.`is`(2))
+                assertThat(project.attributeTypes["nodes"]!!.size, CoreMatchers.`is`(12))
+            }
+
             it("should have correct number of attributes") {
                 assertThat(project.rootNode.children.first().attributes.size, CoreMatchers.`is`(11))
-
             }
         }
 
 
-        describe("merging two projects with edges with leadNodeMergingStrategy") {
+        describe("merging two projects with edges with leafNodeMergingStrategy") {
             val originalProject1 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE)))
             val originalProject2 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE2)))
             val projectList = listOf(originalProject1, originalProject2)

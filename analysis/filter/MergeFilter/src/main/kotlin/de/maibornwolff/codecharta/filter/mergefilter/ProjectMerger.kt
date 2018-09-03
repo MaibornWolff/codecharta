@@ -41,9 +41,29 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
     fun merge(): Project {
         val name = extractProjectName()
         return when {
-            areAllAPIVersionsCompatible() -> ProjectBuilder(name, mergeProjectNodes(), getEdges()).build()
+            areAllAPIVersionsCompatible() -> ProjectBuilder(name, mergeProjectNodes(), getEdges(), getAttributeTypes()).build()
             else -> throw MergeException("API versions not supported.")
         }
+    }
+
+    private fun getAttributeTypes(): MutableMap<String, MutableList<Map<String, AttributeType>>> {
+        val mergedAttributeTypes: MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf()
+
+        projects.forEach {
+            it.attributeTypes.forEach {
+                val key : String = it.key
+                if (mergedAttributeTypes.containsKey(key)) {
+                    it.value.forEach {
+                        if (!mergedAttributeTypes[key]!!.contains(it)) {
+                            mergedAttributeTypes[key]!!.add(it)
+                        }
+                    }
+                } else {
+                    mergedAttributeTypes[key] = it.value.toMutableList()
+                }
+            }
+        }
+        return mergedAttributeTypes
     }
 
     private fun areAllAPIVersionsCompatible(): Boolean {

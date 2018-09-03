@@ -1,5 +1,5 @@
 {
-  "projectName": "Sample Project",
+  "projectName": "Sample Project 2",
   "apiVersion": "1.0",
   "nodes": [{
       "name": "root",
@@ -78,7 +78,7 @@
       "toNodeName": "visualization/file2",
       "attributes": {
         "pairingRate": 100,
-        "averageRevs": 5
+        "avgCommits": 5
       }
     },
     {
@@ -86,8 +86,19 @@
       "toNodeName": "visualization/file3",
       "attributes": {
         "pairingRate": 90,
-        "averageRevs": 4
+        "avgCommits": 4
       }
     }
-  ]
+  ],
+  "attributeTypes": {
+    "nodes": [
+      {"abs_code_churn": "absolute"},
+      {"added_lines": "absolute"},
+      {"deleted_lines": "absolute"}
+    ],
+    "edges": [
+      {"pairingRate": "absolute"},
+      {"avgCommits": "relative"}
+    ]
+  }
 }
