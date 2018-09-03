@@ -31,6 +31,7 @@ package de.maibornwolff.codecharta.importer.codemaat
 
 import com.univocity.parsers.csv.CsvParser
 import com.univocity.parsers.csv.CsvParserSettings
+import de.maibornwolff.codecharta.attributeTypes.AttributeTypes
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
@@ -43,10 +44,13 @@ class CSVProjectBuilder(
         projectName: String,
         private val pathSeparator: Char,
         private val csvDelimiter: Char,
-        metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
+        metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
+        attributeTypes: AttributeTypes = AttributeTypes(mutableMapOf())
 ) {
     private val includeRows: (Array<String>) -> Boolean = { true }
-    private val projectBuilder = ProjectBuilder(projectName).withMetricTranslator(metricNameTranslator)
+    private val projectBuilder = ProjectBuilder(projectName)
+            .withMetricTranslator(metricNameTranslator)
+            .addAttributeTypes(attributeTypes)
 
     fun parseCSVStream(inStream: InputStream): ProjectBuilder {
         val parser = createParser(inStream)

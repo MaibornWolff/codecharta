@@ -27,8 +27,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.maibornwolff.codecharta.model
+package de.maibornwolff.codecharta.attributeTypes
 
-enum class AggregationType {
-    absolute, relative
+import de.maibornwolff.codecharta.model.AttributeType
+
+
+open class AttributeTypes(
+        val attributeTypes: Map<String, AttributeType>,
+        val type: String = "") {
 }

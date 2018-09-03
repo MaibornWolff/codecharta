@@ -29,13 +29,15 @@
 
 package de.maibornwolff.codecharta.model
 
+import de.maibornwolff.codecharta.attributeTypes.AttributeTypes
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
 
 open class ProjectBuilder(
         val projectName: String,
         private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
-        private var edges: MutableList<Edge> = mutableListOf()
+        private var edges: MutableList<Edge> = mutableListOf(),
+        private var attributeTypes: MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf()
 ) {
     init {
         if (nodes.size != 1) throw IllegalStateException("no root node present in project")
@@ -70,11 +72,24 @@ open class ProjectBuilder(
     fun build(): Project {
         nodes.map { it.translateMetrics(metricNameTranslator, true) }
         edges.forEach { it.translateMetrics(metricNameTranslator) }
-        return Project(projectName, nodes.map { it.toNode() }.toList(), edges = edges.toList())
+        return Project(
+                projectName,
+                nodes.map { it.toNode() }.toList(),
+                edges = edges.toList(),
+                attributeTypes = attributeTypes.toMap()
+        )
+    }
+
+    fun addAttributeTypes(attributeTypes: AttributeTypes): ProjectBuilder {
+        if (!this.attributeTypes.containsKey(attributeTypes.type)) {
+            this.attributeTypes[attributeTypes.type] = mutableListOf(attributeTypes.attributeTypes)
+        } else {
+            this.attributeTypes[attributeTypes.type]!!.add(attributeTypes.attributeTypes)
+        }
+        return this
     }
 
     override fun toString(): String {
-        return "Project{projectName='$projectName', nodes=$nodes, edges=$edges}"
+        return "Project{projectName='$projectName', nodes=$nodes, edges=$edges, attributeTypes=$attributeTypes)"
     }
-
 }

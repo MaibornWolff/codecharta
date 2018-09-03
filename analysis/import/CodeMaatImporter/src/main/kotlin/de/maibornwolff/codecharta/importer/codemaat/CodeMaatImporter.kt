@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.importer.codemaat
 
+import de.maibornwolff.codecharta.attributeTypes.AttributeTypes
+import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import picocli.CommandLine
@@ -27,7 +29,7 @@ class CodeMaatImporter : Callable<Void> {
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        val csvProjectBuilder = CSVProjectBuilder(projectName, pathSeparator, csvDelimiter, codemaatReplacement)
+        val csvProjectBuilder = CSVProjectBuilder(projectName, pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes)
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
 
@@ -47,6 +49,16 @@ class CodeMaatImporter : Callable<Void> {
             replacementMap["average-revs"] = "avgCommits"
 
             return MetricNameTranslator(replacementMap.toMap(), prefix)
+        }
+
+    private val attributeTypes: AttributeTypes
+        get() {
+            val type = "edges"
+            val attributeTypes = mutableMapOf<String, AttributeType>()
+            attributeTypes["pairingRate"] = AttributeType.relative
+            attributeTypes["avgCommits"] = AttributeType.absolute
+
+            return AttributeTypes(attributeTypes.toMap(), type)
         }
 
     private fun writer(): Writer {

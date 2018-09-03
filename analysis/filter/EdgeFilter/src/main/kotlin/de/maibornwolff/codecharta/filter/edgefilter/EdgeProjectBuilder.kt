@@ -105,23 +105,23 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         val aggregatedAttributes: MutableMap<String, Any> = mutableMapOf()
 
         listOfAttributes.forEach {key: String ->
-            val aggregationType = getAttributeValueByKey(key)
+            val attributeType = getAttributeValueByKey(key)
             val filteredAttribute = filteredAttributes.filter { edge: Edge -> edge.attributes.containsKey(key) }
             var aggregatedAttributeValue = filteredAttribute.sumBy { edge: Edge -> edge.attributes.get(key).toString().toFloat().toInt() }
 
-            if (aggregationType == AggregationType.relative) aggregatedAttributeValue /= filteredAttribute.size
+            if (attributeType == AttributeType.relative) aggregatedAttributeValue /= filteredAttribute.size
 
-            aggregatedAttributes.put(key + "_" + aggregationType, aggregatedAttributeValue)
+            aggregatedAttributes.put(key + "_" + attributeType, aggregatedAttributeValue)
         }
         return aggregatedAttributes
     }
 
-    private fun getAttributeValueByKey(key: String): AggregationType {
+    private fun getAttributeValueByKey(key: String): AttributeType {
         if (!project.attributeTypes.isEmpty()) {
             project.attributeTypes["edges"]!!.forEach {
                 if (it.containsKey(key)) return it[key]!!
             }
         }
-        return AggregationType.absolute
+        return AttributeType.absolute
     }
 }
