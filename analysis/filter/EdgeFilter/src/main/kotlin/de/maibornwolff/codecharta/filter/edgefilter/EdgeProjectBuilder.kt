@@ -33,7 +33,19 @@ import de.maibornwolff.codecharta.model.*
 
 class EdgeProjectBuilder(private val project: Project, private val pathSeparator: Char) {
 
-    private val projectBuilder = ProjectBuilder(getProjectName())
+    private val projectBuilder = ProjectBuilder(
+            getProjectName(),
+            listOf(MutableNode("root", NodeType.Folder)),
+            mutableListOf(),
+            getAttributeTypes())
+
+    private fun getAttributeTypes(): MutableMap<String, MutableList<Map<String, AttributeType>>> {
+        val newAttributetypes : MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf()
+        project.attributeTypes.forEach {
+            newAttributetypes[it.key] = it.value.toMutableList()
+        }
+        return newAttributetypes
+    }
 
     fun getProjectName(): String {
         return project.projectName
