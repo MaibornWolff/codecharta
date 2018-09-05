@@ -30,6 +30,7 @@
 package de.maibornwolff.codecharta.filter.edgefilter
 
 import de.maibornwolff.codecharta.model.*
+import kotlin.math.max
 
 class EdgeProjectBuilder(private val project: Project, private val pathSeparator: Char) {
 
@@ -53,7 +54,9 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
 
     fun merge(): Project {
         insertEdges()
-        insertNewNodes(project.rootNode.children)
+        insertEmptyNodesFromEdges()
+        insertEdgeAttributesIntoNodes(project.rootNode.children)
+        insertEdgeAttributesIntoNodes(projectBuilder.rootNode.children.map { it.toNode() })
         return projectBuilder.build()
     }
 
@@ -63,33 +66,48 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         }
     }
 
-    private fun insertNewNodes(nodes: List<Node>, parentPath: MutableList<String> = mutableListOf()) {
+    private fun insertEmptyNodesFromEdges() {
+        project.edges.forEach {
+            insertEdgeAsNode(it.fromNodeName)
+            insertEdgeAsNode(it.toNodeName)
+        }
+    }
+
+    private fun insertEdgeAsNode(nodeEdgeName: String) {
+        val nodeFilename = nodeEdgeName.split(pathSeparator).reversed().first()
+        val nodePath = nodeEdgeName.split(pathSeparator)
+        val nodeParentPath = nodePath.subList(2, max(2, nodePath.size - 1))
+        val node = Node(nodeFilename, NodeType.File)
+        insertNodeInProjectBuilder(node, nodeParentPath)
+    }
+
+    private fun insertEdgeAttributesIntoNodes(nodes: List<Node>, parentPath: MutableList<String> = mutableListOf()) {
         nodes.forEach {
-            insertNodeInProject(it, parentPath)
+            val node = Node(it.name, it.type, getAttributes(it, parentPath), it.link)
+            insertNodeInProjectBuilder(node, parentPath.toList())
             if (!it.children.isEmpty()) {
-                val  newParentPath: MutableList<String> = parentPath.toMutableList() // clone object
+                val newParentPath = parentPath.toMutableList() // clone object
                 newParentPath.add(it.name)
-                insertNewNodes(it.children, newParentPath)
+                insertEdgeAttributesIntoNodes(it.children, newParentPath)
             }
         }
     }
 
-    private fun insertNodeInProject(node: Node, parentPath: MutableList<String>) {
-        val newNode = Node(node.name, node.type, getAttributes(node, parentPath), node.link)
+    private fun insertNodeInProjectBuilder(node: Node, parentPath: List<String>) {
         try {
-            projectBuilder.insertByPath(Path(parentPath.toList()), newNode.toMutableNode())
+            projectBuilder.insertByPath(Path(parentPath), node.toMutableNode())
         } catch (e: IllegalArgumentException) {
             System.err.println(e.message)
         }
     }
 
-    private fun getAttributes(node: Node, parentPath: MutableList<String>): Map<String, Any> {
+    private fun getAttributes(node: Node, parentPath: List<String>): Map<String, Any> {
         val attributes: MutableMap<String, Any> = node.attributes.toMutableMap()
         attributes.putAll(getAggregatedEdgeAttributes(node, parentPath))
         return attributes.toMap()
     }
 
-    private fun getAggregatedEdgeAttributes(node: Node, parentPath: MutableList<String>): MutableMap<String, Any> {
+    private fun getAggregatedEdgeAttributes(node: Node, parentPath: List<String>): MutableMap<String, Any> {
         val nodePath: String = getNodePathAsString(parentPath, node.name)
         val filteredEdges: List<Edge> = project.edges.filter { edge ->
             edge.fromNodeName == nodePath || edge.toNodeName == nodePath
@@ -123,7 +141,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
 
             if (attributeType == AttributeType.relative) aggregatedAttributeValue /= filteredAttribute.size
 
-            aggregatedAttributes.put(key + "_" + attributeType, aggregatedAttributeValue)
+            aggregatedAttributes[key + "_" + attributeType] = aggregatedAttributeValue
         }
         return aggregatedAttributes
     }

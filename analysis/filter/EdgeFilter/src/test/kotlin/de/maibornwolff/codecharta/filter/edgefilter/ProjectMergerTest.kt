@@ -29,6 +29,7 @@
 
 package de.maibornwolff.codecharta.filter.edgefilter
 
+import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
@@ -46,9 +47,13 @@ class ProjectMergerTest : Spek({
     describe("filter edges as node attributes") {
         val originalProject = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE)))
         val project = EdgeProjectBuilder(originalProject, '/').merge()
-        val leaf1 = project.rootNode.children.first()
-        val leaf3 = project.rootNode.children[2].children.first()
-        val leaf4 = project.rootNode.children[2].children[1].children.first()
+
+        val parent1 = getChildByName(project.rootNode.children, "Parent 1")
+        val parent2 = getChildByName(parent1.children, "Parent 2")
+
+        val leaf1 = getChildByName(project.rootNode.children, "leaf 1")
+        val leaf3 = getChildByName(parent1.children, "leaf 3")
+        val leaf4 = getChildByName(parent2.children, "leaf 4")
 
         it("should have correct amount of edges") {
             MatcherAssert.assertThat(project.sizeOfEdges(), CoreMatchers.`is`(6))
@@ -103,16 +108,21 @@ class ProjectMergerTest : Spek({
     describe("filter edges as node attributes with empty nodes list in testfile") {
         val originalProject = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE_2)))
         val project = EdgeProjectBuilder(originalProject, '/').merge()
-        val leaf1 = project.rootNode.children.first()
-        val leaf3 = project.rootNode.children[2].children.first()
-        val leaf4 = project.rootNode.children[2].children[1].children.first()
+
+        val parent1 = getChildByName(project.rootNode.children, "Parent 1")
+        val parent2 = getChildByName(parent1.children, "Parent 2")
+
+        val leaf1 = getChildByName(project.rootNode.children, "leaf 1")
+        val leaf3 = getChildByName(parent1.children, "leaf 3")
+        val leaf4 = getChildByName(parent2.children, "leaf 4")
+
 
         it("should have correct amount of edges") {
             MatcherAssert.assertThat(project.sizeOfEdges(), CoreMatchers.`is`(6))
         }
 
         it("leaf1 should have correct number of attributes") {
-            MatcherAssert.assertThat(leaf1.attributes.size, CoreMatchers.`is`(5))
+            MatcherAssert.assertThat(leaf1.attributes.size, CoreMatchers.`is`(2))
         }
 
         it("leaf1 should have correct pairingRate_relative value") {
@@ -152,6 +162,13 @@ class ProjectMergerTest : Spek({
         }
     }
 })
+
+fun getChildByName(children: List<Node>, nodeName: String): Node {
+    children.forEach {
+        if (it.name == nodeName) return it
+    }
+    return Node(nodeName)
+}
 
 fun getAttributeValue(attributes: Map<String, Any>, attributeName: String): Int {
     return attributes.filterKeys { s: String -> s == attributeName }[attributeName].toString().toInt()

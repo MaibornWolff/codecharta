@@ -43,7 +43,7 @@ open class ProjectBuilder(
         if (nodes.size != 1) throw IllegalStateException("no root node present in project")
     }
 
-    private val rootNode: MutableNode
+    val rootNode: MutableNode
         get() = nodes[0]
 
     /**
