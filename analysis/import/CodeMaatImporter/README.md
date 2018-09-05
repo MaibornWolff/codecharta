@@ -1,6 +1,6 @@
 # CodeMaatImporter
 
-Generates visualisation data from CodeMaat Temporal Coupling CSV data with header. You can find the analizing tool on GitHub https://github.com/adamtornhill/code-maat
+Generates visualisation data from CodeMaat Temporal Coupling CSV data with header. You can find the analysing tool on GitHub https://github.com/adamtornhill/code-maat
 
 ## Usage
 
@@ -10,17 +10,21 @@ Generates visualisation data from CodeMaat Temporal Coupling CSV data with heade
 
 2. Analyse the Log with [CodeMaat](https://github.com/adamtornhill/code-maat)
 
-    `maat -c git -l project.log -a coupling > coupling.csv`
+    `maat -c git -l project.log -a coupling > edges.csv`
 
 3. Convert csv file to cc.json format with CodeMaatImporter
 
-    `ccsh codemaatimport coupling.csv -o coupling.cc.json`
-        
-4. Merge the coupling data with the project metrics file while using the [MergeFilter](https://github.com/MaibornWolff/codecharta/blob/master/analysis/filter/MergeFilter/README.md)
+    `ccsh codemaatimport edges.csv -o edges.cc.json`
+      
+4. Aggregate edge-attributes and insert them into the appropriate nodes attribute-list with [EdgeFilter](https://github.com/MaibornWolff/codecharta/blob/master/analysis/filter/EdgeFilter/README.md)
+      
+    `ccsh edgefilter edges.cc.json -o visual_edges.cc.json`
+            
+5. Merge the coupling data with the project metrics file while using the [MergeFilter](https://github.com/MaibornWolff/codecharta/blob/master/analysis/filter/MergeFilter/README.md)
 
-    `ccsh merge coupling.cc.json metrics.cc.json -o merged.cc.json`
+    `ccsh merge visual_edges.cc.json metrics.cc.json -o merged.cc.json`
     
-5. Visualizing `merged.cc.json` with [Visualization](https://github.com/MaibornWolff/codecharta/tree/master/visualization)
+6. Visualizing `merged.cc.json` with [Visualization](https://github.com/MaibornWolff/codecharta/tree/master/visualization)
 
 ![CodeMaatImport Modell](src/codemaatimport-modell.jpg)
 
@@ -39,7 +43,7 @@ $ cat project.log
 ```
 
 ```
-$ cat coupling.csv
+$ cat edges.csv
 entity,coupled,degree,average-revs
 app/codeCharta.html, app/codeCharta.scss, 56, 10
 app/testVille.html, app/codeCharta.html, 42, 8
@@ -47,7 +51,7 @@ app/testVille.html, app/codeCharta.html, 42, 8
 ```
 
 ```
-$ cat coupling.cc.json
+$ cat edges.cc.json
 {
   "projectName": "Sample Project with edges",
   "apiVersion": "1.1",
@@ -57,27 +61,103 @@ $ cat coupling.cc.json
       "type": "Folder",
       "attributes": {},
       "children": []
+    }
+  ],
+  "edges": [
+    {
+      "fromNodeName": "/root/app/codeCharta.html",
+      "toNodeName": "/root/app/codeCharta.scss",
+      "attributes": {
+        "pairingRate": 56,
+        "avgCommits": 10
+      }
+    },
+    {
+      "fromNodeName": "/root/app/testVille.html",
+      "toNodeName": "/root/app/codeCharta.html",
+      "attributes": {
+        "pairingRate": 42,
+        "avgCommits": 8
+      }
+    }
+  ],
+  "attributeTypes": {
+    "edges": [
+      "pairingRate": "relative",
+      "avgCommits": "absolute"
+    ]
+  }
+}
+```
+
+```
+$ cat visual_edges.cc.json
+{
+  "projectName": "Sample Project with edges",
+  "apiVersion": "1.1",
+  "nodes": [
+    {
+      "name": "root",
+      "type": "Folder",
+      "attributes": {},
+      "children": [
+        {
+          "name": "app",
+          "type": "Folder",
+          "attributes": {},
+            "children": [
+              {
+                "name": "codeCharta.html",
+                "type": "File",
+                "attributes": {
+                  "pairingRate": 49,
+                  "avgCommits": 18
+                }
+              },
+              {
+                "name": "codeCharta.scss",
+                "type": "File",
+                "attributes": {
+                  "pairingRate": 56,
+                  "avgCommits": 10
+                }
+              },
+              {
+                "name": "testVille.html",
+                "type": "File",
+                "attributes": {
+                  "pairingRate": 42,
+                  "avgCommits": 8
+                }
+              }
+            ]
         }
       ]
     }
   ],
   "edges": [
-      {
-        "fromNodeName": "/root/app/codeCharta.html",
-        "toNodeName": "/root/app/codeCharta.scss",
-        "attributes": {
-          "pairingRate": 56,
-          "avgCommits": 10
-        }
-      },
-      {
-        "fromNodeName": "/root/app/testVille.html",
-        "toNodeName": "/root/app/codeCharta.html",
-        "attributes": {
-          "pairingRate": 42,
-          "avgCommits": 8
-        }
+    {
+      "fromNodeName": "/root/app/codeCharta.html",
+      "toNodeName": "/root/app/codeCharta.scss",
+      "attributes": {
+        "pairingRate": 56,
+        "avgCommits": 10
       }
+    },
+    {
+      "fromNodeName": "/root/app/testVille.html",
+      "toNodeName": "/root/app/codeCharta.html",
+      "attributes": {
+        "pairingRate": 42,
+        "avgCommits": 8
+      }
+    }
+  ],
+  "attributeTypes": {
+    "edges": [
+      "pairingRate": "relative",
+      "avgCommits": "absolute"
     ]
+  }
 }
 ```

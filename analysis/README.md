@@ -31,6 +31,7 @@ Components that take visualisation data and modifies them.
 | Name                                        | Description                 |
 | ---                                         | ---                         |
 | [MergeFilter](filter/MergeFilter/README.md) | merges multiple json files  |
+| [EdgeFilter](filter/EdgeFilter/README.md)   | aggregates edge-attributes of each appropriate node and inserts them into the nodes attribute-list |
 
 ### Exporter
 
