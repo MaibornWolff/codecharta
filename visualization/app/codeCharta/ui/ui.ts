@@ -19,13 +19,18 @@ import "./regexFilter/regexFilter";
 import "./resetSettingsButton/resetSettingsButton";
 import "./dialog/dialog";
 import "./nodeContextMenu/nodeContextMenu";
+import "./ribbonBar/ribbonBar.module";
 import "./layoutSwitcher/layoutSwitcher";
-import "./edgesPanel/edges"
+import "./optionsPanel/optionsPanel";
+import "./weblinksPanel/weblinksPanel";
+import "./sidenav/sidenav.module";
+import "./edgesPanel/edges";
 
 angular.module(
     "app.codeCharta.ui",
     [
         "app.codeCharta.ui.mapTreeView",
+        "app.codeCharta.ui.ribbonBar",
         "app.codeCharta.ui.settingsPanel",
         "app.codeCharta.ui.revisionChooser",
         "app.codeCharta.ui.legendPanel",
@@ -43,6 +48,9 @@ angular.module(
         "app.codeCharta.ui.nodeContextMenu",
         "app.codeCharta.ui.layoutSwitcher",
         "app.codeCharta.ui.regexFilter",
+        "app.codeCharta.ui.optionsPanel",
+        "app.codeCharta.ui.sidenav",
+        "app.codeCharta.ui.weblinksPanel",
         "app.codeCharta.ui.edges"
     ]);
 

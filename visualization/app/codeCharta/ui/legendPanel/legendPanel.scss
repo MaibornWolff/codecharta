@@ -2,17 +2,17 @@ legend-panel-component {
 
   .panel-button {
     position: fixed;
-    top: 164px;
+    top: 212px;
     left: -35px;
     transform: rotate(90deg);
-    z-index: 30;
+    z-index: 2;
   }
 
   .block-wrapper {
 
     position: fixed;
     z-index: 29;
-    top: 9em;
+    top: 12em;
     left: -500px; //initial state is closed
 
     background-color: #fff;

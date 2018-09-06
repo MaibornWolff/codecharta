@@ -1,31 +1,11 @@
-<md-sidenav class="md-sidenav-right" md-component-id="right" md-disable-backdrop md-whiteframe="4">
-    <md-content layout-padding class="padding_bottom">
-
-        <settings-panel-component></settings-panel-component>
-
-        <md-button ng-click="$ctrl.showUrlParams()" class="md-primary">
-            URL Parameters
-        </md-button>
-    </md-content>
-</md-sidenav>
+<ribbon-bar-component></ribbon-bar-component>
 
 <div id="actionButtons">
     <md-button class="md-fab md-primary dark_shadow_opacity" aria-label="Fit Map to View" ng-click="$ctrl.fitMapToView()">
         <i class="fa fa-compress fa-lg"></i>
     </md-button>
-    <file-chooser-directive></file-chooser-directive>
-    <md-button class="md-fab md-primary dark_shadow_opacity" aria-label="Open Sidenav" ng-click="$ctrl.toggleSidenav('right')">
-        <i class="fa fa-bars fa-lg"></i>
-    </md-button>
+    <sidenav-toggle-component></sidenav-toggle-component>
 </div>
-
-<header id="title">
-    <horizontal-metric-chooser-component></horizontal-metric-chooser-component>
-    <div class="logo">
-        <a href="https://www.maibornwolff.de" target="_blank"><img src="assets/logo.png" alt="MaibornWolff"></a>
-        <h2><span>CodeCharta {{$ctrl.viewModel.version}}</span></h2>
-    </div>
-</header>
 
 <code-map-component></code-map-component>
 
@@ -36,7 +16,12 @@
 <div id="loading-indicator" ng-hide="$ctrl.viewModel.numberOfLoadingTasks <= 0">
     <md-progress-circular md-mode="indeterminate" md-diameter="96"></md-progress-circular>
 </div>
-
+<div id="mw-logo">
+    <div class="logo">
+        <a href="https://www.maibornwolff.de" target="_blank"><img src="assets/logo.png" alt="MaibornWolff"></a>
+        <h2><span>CodeCharta {{$ctrl.viewModel.version}}</span></h2>
+    </div>
+</div>
 <node-context-menu-component></node-context-menu-component>
 
 

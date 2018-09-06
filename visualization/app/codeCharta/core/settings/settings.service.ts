@@ -110,7 +110,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             maximizeDetailPanel: false,
             invertHeight: false,
             dynamicMargin: true,
-            isWhiteBackground: false,
+            isWhiteBackground: false
         };
         return settings;
 

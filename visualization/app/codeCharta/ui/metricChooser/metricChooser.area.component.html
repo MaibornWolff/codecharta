@@ -1,0 +1,13 @@
+<md-input-container>
+    <i class='fa fa-arrows-alt'></i>
+
+    <md-select ng-model="$ctrl.settingsService.settings.areaMetric" ng-change="$ctrl.settingsService.applySettings()">
+        <md-option ng-repeat="metric in $ctrl.metrics" value="{{::metric}}">
+            {{::metric}}
+        </md-option>
+    </md-select>
+
+    <span class="metric-value">{{($ctrl.hoveredAreaValue | number) || "-"}}
+        <span ng-hide="!$ctrl.hoveredAreaDelta">(&Delta;{{$ctrl.hoveredAreaDelta | number}})</span>
+    </span>
+</md-input-container>

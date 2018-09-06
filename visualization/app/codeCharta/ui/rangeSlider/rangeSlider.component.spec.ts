@@ -1,18 +1,27 @@
 import {rangeSliderComponent, RangeSliderController} from "./rangeSlider.component";
 import {SettingsService} from "../../core/settings/settings.service";
-import {TreeMapService} from "../../core/treemap/treemap.service";
+import { DataService } from "../../core/data/data.service";
 
 describe("RangeSliderController", () => {
 
-    let treeMapServiceMock: TreeMapService;
+    let dataServiceMock: DataService;
     let settingsServiceMock: SettingsService;
     let rangeSliderController: RangeSliderController;
+    let $timeout;
+    let $scope;
+
 
     function rebuildSUT() {
-        rangeSliderController = new RangeSliderController(settingsServiceMock, treeMapServiceMock);
+        rangeSliderController = new RangeSliderController(settingsServiceMock, dataServiceMock, $timeout, $scope);
     }
 
     function mockEverything() {
+
+        $timeout = jest.fn();
+
+        $scope = {
+            $broadcast: jest.fn()
+        };
 
         const SettingsServiceMock = jest.fn<SettingsService>(() => ({
             subscribe: jest.fn(),
@@ -24,11 +33,11 @@ describe("RangeSliderController", () => {
 
         settingsServiceMock = new SettingsServiceMock();
 
-        const TreeMapServiceMock = jest.fn<TreeMapService>(() => ({
+        const DataServiceMock = jest.fn<DataService>(() => ({
             getMaxMetricInAllRevisions: jest.fn()
         }));
 
-        treeMapServiceMock = new TreeMapServiceMock();
+        dataServiceMock = new DataServiceMock();
 
         rebuildSUT();
 
@@ -38,12 +47,18 @@ describe("RangeSliderController", () => {
         mockEverything();
     });
 
+    it("should broadcast rzslider event in order to load values correctly on startup", () => {
+        rebuildSUT();
+        $timeout.mock.calls[0][0]();
+        expect($scope.$broadcast).toHaveBeenCalledWith("rzSliderForceRender");
+    });
+
     it("should subscribe to settingsService on construction", () => {
         expect(settingsServiceMock.subscribe).toHaveBeenCalledWith(rangeSliderController);
     });
 
     it("initSliderOptions should use treemapService for ceil calculation", () => {
-        treeMapServiceMock.getMaxMetricInAllRevisions.mockReturnValueOnce(42);
+        dataServiceMock.getMaxMetricInAllRevisions.mockReturnValueOnce(42);
         rangeSliderController.initSliderOptions();
         expect(rangeSliderController.sliderOptions.ceil).toBe(42);
     });

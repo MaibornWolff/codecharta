@@ -1,5 +1,5 @@
 import {DataLoadingService} from "./core/data/data.loading.service";
-import {UrlService} from "./core/url/url.service";
+import {NameDataPair, UrlService} from "./core/url/url.service";
 import {SettingsService} from "./core/settings/settings.service";
 import {ScenarioService} from "./core/scenario/scenario.service";
 import {DataService} from "./core/data/data.service";
@@ -9,8 +9,7 @@ import "./codeCharta.component.scss";
 import {DialogService} from "./ui/dialog/dialog.service";
 import {queryParamDialog} from "./ui/dialog/queryParam.dialog";
 import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
-import {nodeContextMenuComponent, NodeContextMenuComponent} from "./ui/nodeContextMenu/nodeContextMenu.component";
-
+import {NodeContextMenuComponent} from "./ui/nodeContextMenu/nodeContextMenu.component";
 
 /**
  * This is the main controller of the CodeCharta application
@@ -30,7 +29,6 @@ export class CodeChartaController {
         private scenarioService: ScenarioService,
         private dataService: DataService,
         private threeOrbitControlsService: ThreeOrbitControlsService,
-        private $mdSidenav: any,
         private $rootScope: IRootScopeService,
         private dialogService: DialogService
     ) {
@@ -57,33 +55,37 @@ export class CodeChartaController {
         this.threeOrbitControlsService.autoFitTo();
     }
 
-    toggleSidenav(navID) {
-        this.$mdSidenav(navID).toggle();
-    }
-
-    showUrlParams() {
-        this.dialogService.showQueryParamDialog();
-    }
-
     loadFileOrSample() {
         this.viewModel.numberOfLoadingTasks++;
         return this.urlService.getFileDataFromQueryParam().then(
-            (data)=>{
-                this.trySettingGivenData(this.urlService.getParam("file"), data);
-            },
-            ()=>{
-                if(this.urlService.getParam("file")){
-                    this.dialogService.showErrorDialog("File from the given file URL parameter could not be loaded. Loading sample files instead.");
+            (data: NameDataPair[])=>{
+                if(data.length > 0) {
+                    this.tryLoadingFiles(data);
+                } else {
+                    this.tryLoadingSampleFiles();
                 }
-                this.tryLoadingSampleFiles();
-            }
+            },
+            this.tryLoadingSampleFiles.bind(this)
         );
     }
 
-    trySettingGivenData(name, data) {
-        this.dataLoadingService.loadMapFromFileContent(name, data, 0).then(
+    tryLoadingFiles(nameDataPairs: NameDataPair[], applyScenarioOnce = true) {
+
+        let tasks = [];
+
+        nameDataPairs.forEach((o, i)=>{
+           tasks.push(
+               this.dataLoadingService.loadMapFromFileContent(o.name, o.data, i)
+           );
+        });
+
+        return Promise.all(tasks).then(
             () => {
-                this.scenarioService.applyScenarioOnce(this.scenarioService.getDefaultScenario());
+                if(applyScenarioOnce) {
+                    this.scenarioService.applyScenarioOnce(this.scenarioService.getDefaultScenario());
+                } else {
+                    this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
+                }
                 this.dataService.setComparisonMap(0);
                 this.dataService.setReferenceMap(0);
                 this.settingsService.updateSettingsFromUrl();
@@ -94,26 +96,18 @@ export class CodeChartaController {
                 this.viewModel.numberOfLoadingTasks--;
             }
         );
+
     }
 
     tryLoadingSampleFiles() {
-        return Promise.all([
-            this.dataLoadingService.loadMapFromFileContent("sample1.json", require("./assets/sample1.json"), 0),
-            this.dataLoadingService.loadMapFromFileContent("sample2.json", require("./assets/sample2.json"), 1)
-        ]).then(
-            () => {
-                this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
-                this.dataService.setComparisonMap(0);
-                this.dataService.setReferenceMap(0);
-                this.dataService
-                this.settingsService.updateSettingsFromUrl();
-                this.viewModel.numberOfLoadingTasks--;
-            },
-            (r) => {
-                this.printErrors(r);
-                this.viewModel.numberOfLoadingTasks--;
-            }
-        );
+        if(this.urlService.getParam("file")){
+            this.dialogService.showErrorDialog("One or more files from the given file URL parameter could not be loaded. Loading sample files instead.");
+        }
+        return this.tryLoadingFiles([
+            { name: "sample1.json", data: require("./assets/sample1.json") },
+            { name: "sample2.json", data: require("./assets/sample2.json") },
+        ], false);
+
     }
 
     printErrors(errors: Object) {

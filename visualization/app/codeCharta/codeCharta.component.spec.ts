@@ -6,8 +6,7 @@ import {SettingsService} from "./core/settings/settings.service";
 import {ScenarioService} from "./core/scenario/scenario.service";
 import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
 import {DataLoadingService} from "./core/data/data.loading.service";
-import {UrlService} from "./core/url/url.service";
-import {IRootScopeService} from "angular";
+import {NameDataPair, UrlService} from "./core/url/url.service";
 import {NodeContextMenuComponent} from "./ui/nodeContextMenu/nodeContextMenu.component";
 
 jest.mock("./core/data/data.service");
@@ -27,11 +26,12 @@ describe("codecharta component", ()=>{
     let scenarioService: ScenarioService;
     let dataService: DataService;
     let threeOrbitControlsService: ThreeOrbitControlsService;
-    let $mdSidenav: any;
     let $rootScope: any;
     let dialogService: DialogService;
 
     let tmpEventListener;
+
+    let singleNameDataPair: NameDataPair[] = [{name: "a", data: {}}];
 
     beforeEach(()=>{
         tmpEventListener = document.body.addEventListener;
@@ -44,7 +44,6 @@ describe("codecharta component", ()=>{
         scenarioService = new ScenarioService();
         dataService = new DataService();
         threeOrbitControlsService = new ThreeOrbitControlsService();
-        $mdSidenav = jest.fn();
         $rootScope = {
             $on: jest.fn()
         };
@@ -56,7 +55,6 @@ describe("codecharta component", ()=>{
             scenarioService,
             dataService,
             threeOrbitControlsService,
-            $mdSidenav,
             $rootScope,
             dialogService
         );
@@ -66,50 +64,57 @@ describe("codecharta component", ()=>{
         document.body.addEventListener = tmpEventListener;
     });
 
-    describe("#trySettingGivenData",()=>{
+    describe("#tryLoadingFiles",()=>{
 
         it("should try to load file with the correct indices",async ()=>{
             dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
-            await cc.trySettingGivenData("a", {});
+            await cc.tryLoadingFiles(singleNameDataPair);
             expect(dataLoadingService.loadMapFromFileContent).toHaveBeenCalledWith("a", expect.anything(), 0);
         });
 
         it("should apply scenario ONCE when map is loaded",async ()=>{
             dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
-            await cc.trySettingGivenData("a", {});
+            await cc.tryLoadingFiles(singleNameDataPair);
             expect(scenarioService.applyScenarioOnce).toHaveBeenCalled();
+        });
+
+        it("should apply scenario NOT ONCE when map is loaded and flag is set",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
+            await cc.tryLoadingFiles(singleNameDataPair, false);
+            expect(scenarioService.applyScenarioOnce).not.toHaveBeenCalled();
+            expect(scenarioService.applyScenario).toHaveBeenCalled();
         });
 
         it("should update settings by url params when map is loaded",async ()=>{
             dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
-            await cc.trySettingGivenData("a", {});
+            await cc.tryLoadingFiles(singleNameDataPair);
             expect(settingsService.updateSettingsFromUrl).toHaveBeenCalled();
         });
 
         it("should decrement loading tasks when map is loaded",async ()=>{
             dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
             cc.viewModel.numberOfLoadingTasks = 99;
-            await cc.trySettingGivenData("a", {});
+            await cc.tryLoadingFiles(singleNameDataPair);
             expect(cc.viewModel.numberOfLoadingTasks).toBe(98);
         });
 
         it("should print errors when map is loaded",async ()=>{
             cc.printErrors = jest.fn();
             dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.reject());
-            await cc.trySettingGivenData("a", {});
+            await cc.tryLoadingFiles(singleNameDataPair);
             expect(cc.printErrors).toHaveBeenCalled();
         });
 
         it("should decrement loading tasks when sample map is not loaded",async ()=>{
             dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.reject());
             cc.viewModel.numberOfLoadingTasks = 99;
-            await cc.trySettingGivenData("a", {});
+            await cc.tryLoadingFiles(singleNameDataPair);
             expect(cc.viewModel.numberOfLoadingTasks).toBe(98);
         });
 
         it("should set maps correctly when map is loaded",async ()=>{
             dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
-            await cc.trySettingGivenData("a", {});
+            await cc.tryLoadingFiles(singleNameDataPair);
             expect(dataService.setComparisonMap).toHaveBeenCalledWith(0);
             expect(dataService.setReferenceMap).toHaveBeenCalledWith(0);
         });
@@ -168,31 +173,23 @@ describe("codecharta component", ()=>{
 
     describe("#loadFileOrSample",()=>{
 
-        it("should show error dialog when url param is valid and maps cannot be loaded",async ()=>{
-            cc.tryLoadingSampleFiles = jest.fn();
-            cc.trySettingGivenData = jest.fn();
+        it("should show error dialog when url param is valid and maps cannot be loaded amd load sample data",async ()=>{
+            cc.tryLoadingFiles = jest.fn();
             urlService.getParam = jest.fn(()=>"some file that should have been loaded");
             urlService.getFileDataFromQueryParam = jest.fn(() => Promise.reject());
             await cc.loadFileOrSample();
             expect(dialogService.showErrorDialog).toHaveBeenCalled();
-        });
-
-        it("should load sample with no warning if file parameter is not set and therefore no valid data exists",async ()=>{
-            cc.tryLoadingSampleFiles = jest.fn();
-            cc.trySettingGivenData = jest.fn();
-            urlService.getParam = jest.fn(()=>null);
-            urlService.getFileDataFromQueryParam = jest.fn(() => Promise.reject());
-            await cc.loadFileOrSample();
-            expect(cc.tryLoadingSampleFiles).toHaveBeenCalled();
-            expect(dialogService.showErrorDialog).not.toHaveBeenCalled();
-            expect(cc.trySettingGivenData).not.toHaveBeenCalled();
+            expect(cc.tryLoadingFiles).toHaveBeenCalledWith([
+                { name: "sample1.json", data: require("./assets/sample1.json") },
+                { name: "sample2.json", data: require("./assets/sample2.json") },
+            ], false);
         });
 
         it("should try setting given data if file in url is valid",async ()=>{
-            cc.trySettingGivenData = jest.fn();
+            cc.tryLoadingFiles = jest.fn();
             urlService.getFileDataFromQueryParam = jest.fn(() => Promise.resolve("SOME_DATA"));
             await cc.loadFileOrSample();
-            expect(cc.trySettingGivenData).toHaveBeenCalled();
+            expect(cc.tryLoadingFiles).toHaveBeenCalled();
         });
 
         it("should increase number of loading tasks",async ()=>{
@@ -234,11 +231,6 @@ describe("codecharta component", ()=>{
     it("should call error dialog on errors",()=>{
        cc.printErrors({});
        expect(dialogService.showErrorDialog).toHaveBeenCalled();
-    });
-
-    it("should show url params",()=>{
-       cc.showUrlParams();
-       expect(dialogService.showQueryParamDialog).toHaveBeenCalled();
     });
 
 });

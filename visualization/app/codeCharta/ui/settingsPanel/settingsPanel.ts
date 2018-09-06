@@ -1,7 +1,6 @@
 "use strict";
 import "./settingsPanel.scss";
 import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
-import {CodeMap} from "../../core/data/model/CodeMap";
 
 /**
  * Controls the settingsPanel
@@ -16,12 +15,8 @@ export class SettingsPanelController implements SettingsServiceSubscriber {
         private $timeout,
         private settingsService: SettingsService) {
 
-        this.onSettingsChanged(settingsService.settings);
         this.settingsService.subscribe(this);
-    }
-
-    onSettingsChanged(s: Settings) {
-        this.showEdgePanel = this.hasEdges();
+        this.onSettingsChanged(settingsService.settings, event);
     }
 
     private hasEdges() {
@@ -44,7 +39,10 @@ export class SettingsPanelController implements SettingsServiceSubscriber {
         },50);
     }
 
-
+    onSettingsChanged(settings: Settings, event: Event) {
+        this.showEdgePanel = this.hasEdges();
+        this.settingsService.applySettings();
+    }
 
 }
 

@@ -1,0 +1,86 @@
+<md-card id="header" class="dark_shadow_opacity">
+
+    <div class="section">
+        <div class="section-header">
+            <file-chooser-directive></file-chooser-directive>
+            <revision-chooser-file-drop-down-component></revision-chooser-file-drop-down-component>
+        </div>
+        <span class="section-title" ng-if="!$ctrl.settingsService.settings.deltas">File</span>
+        <span class="section-title first" ng-if="$ctrl.settingsService.settings.deltas">File</span>
+        <span class="section-title second" ng-if="$ctrl.settingsService.settings.deltas">Compare</span>
+        <div class="section-body">
+            <revision-chooser-component></revision-chooser-component>
+            <scenario-drop-down-component></scenario-drop-down-component>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <area-metric-chooser-component></area-metric-chooser-component>
+        </div>
+        <span class="section-title">Size</span>
+        <div class="section-body">
+            <md-slider-container class="md-block">
+                <span>Margin</span>
+                <md-slider flex step="1" min="1" max="100" ng-model="$ctrl.settingsService.settings.margin" id="margin-slider" ng-change="$ctrl.changeMargin()" class="md-primary">
+                </md-slider>
+                <md-input-container>
+                    <input flex step="1" min="1" max="100" type="number" ng-model="$ctrl.settingsService.settings.margin" ng-change="$ctrl.changeMargin()" aria-controls="margin-slider">
+                </md-input-container>
+            </md-slider-container>
+            <md-input-container class="md-block">
+                <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.dynamicMargin" ng-change="$ctrl.settingsService.onSettingsChanged()">
+                    Dynamic Margin
+                </md-checkbox>
+            </md-input-container>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <height-metric-chooser-component></height-metric-chooser-component>
+        </div>
+        <span class="section-title">Height</span>
+        <div class="section-body">
+            <md-slider-container class="md-block">
+                <span>Labels</span>
+                <md-slider flex step="1" min="0" max="200" ng-model="$ctrl.settingsService.settings.amountOfTopLabels" id="labels-slider" ng-change="$ctrl.settingsService.applySettings()" class="md-primary">
+                </md-slider>
+                <md-input-container>
+                    <input flex step="1" min="0" max="200" type="number" ng-model="$ctrl.settingsService.settings.amountOfTopLabels" ng-change="$ctrl.settingsService.applySettings()" aria-controls="labels-slider">
+                </md-input-container>
+            </md-slider-container>
+            <md-slider-container class="md-block">
+                <span>Height</span>
+                <md-slider flex step="0.1" min="0.1" max="5" ng-model="$ctrl.settingsService.settings.scaling.y" id="y-scale-slider" ng-change="$ctrl.settingsService.applySettings()" class="md-primary">
+                </md-slider>
+                <md-input-container>
+                    <input flex step="0.1" min="0.1" max="5" type="number" ng-model="$ctrl.settingsService.settings.scaling.y" ng-change="$ctrl.settingsService.applySettings()" aria-controls="y-scale-slider">
+                </md-input-container>
+            </md-slider-container>
+            <md-input-container class="md-block">
+                <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.invertHeight" ng-change="$ctrl.settingsService.onSettingsChanged()">
+                    Invert Height
+                </md-checkbox>
+            </md-input-container>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <color-metric-chooser-component></color-metric-chooser-component>
+        </div>
+        <span class="section-title">Color</span>
+        <div class="section-body">
+            <color-settings-panel-component></color-settings-panel-component>
+        </div>
+    </div>
+
+    <md-button class="md-fab md-primary dark_shadow_opacity file-chooser-button" onclick="document.getElementById('input-file-id').click();"></md-button>
+    <i class="fa fa-folder-open file-chooser-icon" onclick="document.getElementById('input-file-id').click();"></i>
+
+</md-card>
+
+<md-button id="toggle-ribbon-bar-fab" class="md-fab md-primary" aria-label="Toggle Ribbon Bar" ng-click="$ctrl.toggle()">
+    <i class="fa fa-angle-down"></i>
+</md-button>

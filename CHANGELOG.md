@@ -17,6 +17,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+## [1.16.1] - 2018-08-31
+### Added
+- gitlab + dotnet manual
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.16.0] - 2018-08-31
+### Added
+- add the option to add multiple files via url parameter (e.g. ?file=a&file=b...)
+### Changed
+
+### Removed
+
+### Fixed
+
 ## [1.15.1] - 2018-08-13
 ### Added
 
