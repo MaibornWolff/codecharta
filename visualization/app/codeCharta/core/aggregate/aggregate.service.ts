@@ -18,6 +18,7 @@ export class AggregateMapService {
         let projectNameArray = [];
         let fileNameArray = [];
         let edges: Edge[] = [];
+        let edgeOnWork: Edge = {} as Edge;
         let attributeTypesEdge:{[key: string]: AttributeType} = {};
         let attributeTypesNode:{[key: string]: AttributeType} = {};
 
@@ -25,8 +26,19 @@ export class AggregateMapService {
             projectNameArray.push(inputMap.projectName);
             fileNameArray.push(inputMap.fileName);
             if(inputMap.edges){
-                for(let edge of inputMap.edges){
-                    edges.push(edge);
+                for(let currentEdge of inputMap.edges){
+                    edgeOnWork["fromNodeName"] = this.updatePath(inputMap.fileName, currentEdge.fromNodeName);
+                    edgeOnWork["toNodeName"] = this.updatePath(inputMap.fileName, currentEdge.toNodeName );
+                    edgeOnWork["attributes"] =  currentEdge.attributes;
+
+                    if(currentEdge.visible ) {
+                        edgeOnWork["visible"] = currentEdge.visible;
+                    }
+                    else if(edgeOnWork.hasOwnProperty("visible") ){
+                        delete edgeOnWork["visible"];
+                    }
+
+                    edges.push(edgeOnWork);
                 }
             }
             if(inputMap.attributeTypes && inputMap.attributeTypes.edges && inputMap.attributeTypes.nodes ){
