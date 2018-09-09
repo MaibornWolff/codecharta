@@ -1,9 +1,14 @@
-import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
+import {AttributeType, CodeMap, CodeMapNode} from "../data/model/CodeMap";
+import {DialogService} from "../../ui/dialog/dialog.service";
 
 
 export class AggregateMapService {
 
     public static SELECTOR = "aggregateMapService";
+
+    constructor(private dialogService: DialogService) {
+
+    }
 
 
     public aggregateMaps(inputMaps: CodeMap[]): CodeMap {
@@ -12,10 +17,23 @@ export class AggregateMapService {
 
         let projectNameArray = [];
         let fileNameArray = [];
+        let AttributeTypesEdge:{[key: string]: AttributeType} = {};
+        let AttributeTypesNode:{[key: string]: AttributeType} = {};
+        console.log("Before");
 
         for(let inputMap of inputMaps){
             projectNameArray.push(inputMap.projectName);
             fileNameArray.push(inputMap.fileName);
+            for(let key in inputMap.attributeTypes.edges){
+                console.log(key);
+                console.log(inputMap.attributeTypes.edges[key]);
+                AttributeTypesEdge[key] = inputMap.attributeTypes.edges[key];
+            }
+            for(let key in inputMap.attributeTypes.nodes){
+                console.log(key);
+                console.log(inputMap.attributeTypes.nodes[key]);
+                AttributeTypesNode[key] = inputMap.attributeTypes.nodes[key];
+            }
         }
 
         let outputMap: CodeMap = {
@@ -31,6 +49,14 @@ export class AggregateMapService {
                 visible: true
             }
         };
+
+
+        if(Object.keys(AttributeTypesEdge).length != 0 && Object.keys(AttributeTypesNode).length != 0  ){
+            outputMap["attributeTypes"] = {
+                nodes: AttributeTypesNode,
+                edges: AttributeTypesEdge
+            }
+        }
 
         for(let inputMap of inputMaps){
             outputMap.root.children.push(this.convertMapToNode(inputMap));
