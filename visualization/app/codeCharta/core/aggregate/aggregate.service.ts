@@ -24,8 +24,10 @@ export class AggregateMapService {
         for(let inputMap of inputMaps){
             projectNameArray.push(inputMap.projectName);
             fileNameArray.push(inputMap.fileName);
-            for(let edge of inputMap.edges){
-                edges.push(edge);
+            if(inputMap.edges){
+                for(let edge of inputMap.edges){
+                    edges.push(edge);
+                }
             }
             if(inputMap.attributeTypes && inputMap.attributeTypes.edges && inputMap.attributeTypes.nodes ){
                 for(let key in inputMap.attributeTypes.edges){
