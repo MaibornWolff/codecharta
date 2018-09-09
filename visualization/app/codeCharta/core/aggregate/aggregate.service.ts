@@ -1,4 +1,4 @@
-import {AttributeType, CodeMap, CodeMapNode} from "../data/model/CodeMap";
+import {AttributeType, CodeMap, CodeMapNode, Edge} from "../data/model/CodeMap";
 import {DialogService} from "../../ui/dialog/dialog.service";
 
 
@@ -17,22 +17,21 @@ export class AggregateMapService {
 
         let projectNameArray = [];
         let fileNameArray = [];
-        let AttributeTypesEdge:{[key: string]: AttributeType} = {};
-        let AttributeTypesNode:{[key: string]: AttributeType} = {};
-        console.log("Before");
+        let edges: Edge[] = [];
+        let attributeTypesEdge:{[key: string]: AttributeType} = {};
+        let attributeTypesNode:{[key: string]: AttributeType} = {};
 
         for(let inputMap of inputMaps){
             projectNameArray.push(inputMap.projectName);
             fileNameArray.push(inputMap.fileName);
+            for(let edge of inputMap.edges){
+                edges.push(edge);
+            }
             for(let key in inputMap.attributeTypes.edges){
-                console.log(key);
-                console.log(inputMap.attributeTypes.edges[key]);
-                AttributeTypesEdge[key] = inputMap.attributeTypes.edges[key];
+                attributeTypesEdge[key] = inputMap.attributeTypes.edges[key];
             }
             for(let key in inputMap.attributeTypes.nodes){
-                console.log(key);
-                console.log(inputMap.attributeTypes.nodes[key]);
-                AttributeTypesNode[key] = inputMap.attributeTypes.nodes[key];
+                attributeTypesNode[key] = inputMap.attributeTypes.nodes[key];
             }
         }
 
@@ -49,12 +48,14 @@ export class AggregateMapService {
                 visible: true
             }
         };
+        if(edges.length != 0){
+            outputMap["edges"] = edges;
+        }
 
-
-        if(Object.keys(AttributeTypesEdge).length != 0 && Object.keys(AttributeTypesNode).length != 0  ){
+        if(Object.keys(attributeTypesEdge).length != 0 && Object.keys(attributeTypesNode).length != 0  ){
             outputMap["attributeTypes"] = {
-                nodes: AttributeTypesNode,
-                edges: AttributeTypesEdge
+                nodes: attributeTypesNode,
+                edges: attributeTypesEdge
             }
         }
 
