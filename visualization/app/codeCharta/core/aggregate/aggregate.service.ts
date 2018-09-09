@@ -27,12 +27,15 @@ export class AggregateMapService {
             for(let edge of inputMap.edges){
                 edges.push(edge);
             }
-            for(let key in inputMap.attributeTypes.edges){
-                attributeTypesEdge[key] = inputMap.attributeTypes.edges[key];
+            if(inputMap.attributeTypes && inputMap.attributeTypes.edges && inputMap.attributeTypes.nodes ){
+                for(let key in inputMap.attributeTypes.edges){
+                    attributeTypesEdge[key] = inputMap.attributeTypes.edges[key];
+                }
+                for(let key in inputMap.attributeTypes.nodes){
+                    attributeTypesNode[key] = inputMap.attributeTypes.nodes[key];
+                }
             }
-            for(let key in inputMap.attributeTypes.nodes){
-                attributeTypesNode[key] = inputMap.attributeTypes.nodes[key];
-            }
+
         }
 
         let outputMap: CodeMap = {
