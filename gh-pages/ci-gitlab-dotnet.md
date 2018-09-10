@@ -20,7 +20,7 @@ This writeup documents a way to use CC in a Jenkins 2 Pipeline. CC will take you
 	* download/export the certificate of your instance (please use google how to do it in your specific browser)
 	* use the Java keytool to import the certificate e.g. `C:\"Program Files (x86)"\Java\jre1.8.0_40\bin\keytool -importcert -file sonar-cert.cer -alias sonar -keystore C:\"Program Files (x86)"\Java\jre1.8.0_40\lib\security\cacerts`
 4. Create a new powershell script similiar to the following in order to run the analysis:
-```powershell
+```
 $SQ_RUNNER = "C:\Sonar\sonar-scanner-msbuild\MSBuild.SonarQube.Runner.exe"
  
 $NUGET = "$Env:NUGET"
@@ -49,7 +49,7 @@ Set-Location $ROOT_DIRECTORY
 ```
 
 5. Create a script similiar to the following in order to run CC analysis:
-```powershell
+```
 $ROOT_DIRECTORY = "$Env:CI_PROJECT_DIR"
 $CCSH = ".\node_modules\codecharta-analysis\public\bin\ccsh.bat"
  
@@ -61,7 +61,7 @@ npm install codecharta-analysis --silent
 ```
 
 6. Add your scripts to your pipeline definition
-```yaml
+```
 
 stages:
 	...
