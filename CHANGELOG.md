@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+
+## [1.16.2] - 2018-09-10
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
 - missing event in firefox #232
 
 ## [1.16.1] - 2018-08-31
