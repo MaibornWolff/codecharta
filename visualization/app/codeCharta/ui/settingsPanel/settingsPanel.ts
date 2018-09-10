@@ -13,7 +13,7 @@ export class SettingsPanelController implements SettingsServiceSubscriber{
         private $timeout,
         private settingsService: SettingsService
     ) {
-        this.onSettingsChanged(this.settingsService.settings, event);
+        this.onSettingsChanged(this.settingsService.settings, null);
     }
 
     /**

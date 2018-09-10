@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- missing event in firefox #232
 
 ## [1.16.1] - 2018-08-31
 ### Added
