@@ -1,6 +1,4 @@
-# Integrating CodeCharte into a Jenkins 2 and Sonarqube pipeline
-
-This writeup documents a way to use CC in a Jenkins 2 Pipeline. CC will take your project analysis and publish the CodeCharta web-application as an artifact.
+# Integrating CodeCharte into a Gitlab CI on Windows for .net projects
 
 ## Prerequisites
 
