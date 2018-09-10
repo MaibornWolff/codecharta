@@ -48,8 +48,8 @@ Have a bug, a feature request or any question? Please [open a new issue](https:/
 * [Coverage](https://maibornwolff.github.io/codecharta/visualization/coverage/lcov-report/)
 * [Sonarqube Visualization](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Avisualization)
 * [Sonarqube Analysis](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Aanalysis)
-* [Integrating CodeCharta into a Jenkins 2 and Sonarqube pipeline](https://maibornwolff.github.io/codecharta/ci-jenkins-java.html)
-* [Integrating CodeCharta into a Gitlab CI and Sonarqube pipeline for .net projects](https://maibornwolff.github.io/codecharta/ci-gitlab-dotnet.html)
+* [Integrating CodeCharta into a Jenkins 2 and Sonarqube pipeline](https://github.com/MaibornWolff/codecharta/blob/master/gh-pages/ci-jenkins-java.md)
+* [Integrating CodeCharta into a Gitlab CI and Sonarqube pipeline for .net projects](https://github.com/MaibornWolff/codecharta/blob/master/gh-pages/ci-gitlab-dotnet.md)
 
 ## Tool Information
 
