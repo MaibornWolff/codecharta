@@ -128,7 +128,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             }
         }
 
-        if (visibleEdges.length > 0 && s.showEdgeArrows) {
+        if (visibleEdges.length > 0 && s.enableEdgeArrows) {
             this.showCouplingArrows(visibleEdges);
         }
 

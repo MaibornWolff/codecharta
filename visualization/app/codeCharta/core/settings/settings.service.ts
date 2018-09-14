@@ -34,7 +34,7 @@ export interface Settings {
     margin: number;
     operation: STATISTIC_OPS;
     deltaColorFlipped: boolean;
-    showEdgeArrows: boolean;
+    enableEdgeArrows: boolean;
     maximizeDetailPanel: boolean;
     invertHeight: boolean;
     dynamicMargin: boolean;
@@ -106,7 +106,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             margin: 15,
             operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
-            showEdgeArrows: true,
+            enableEdgeArrows: true,
             maximizeDetailPanel: false,
             invertHeight: false,
             dynamicMargin: true,
