@@ -1,6 +1,6 @@
 import "./aggregate.module";
 import {NGMock} from "../../../../mocks/ng.mockhelper";
-import {CodeMap} from "../data/model/codeMap";
+import {AttributeType, CodeMap} from "../data/model/codeMap";
 
 
 /**
@@ -288,5 +288,150 @@ describe("app.codeCharta.core.aggregate", function() {
         expect(aggregated).toEqual(file1);
     }));
 
+    describe("edges", ()=> {
 
+        const edges1 = [
+            {
+                "fromNodeName": "/root/big leaf",
+                "toNodeName": "/root/Parent Leaf/small leaf",
+                "attributes": {
+                    "pairingRate": 9,
+                    "avgCommits": 4
+                }
+            }
+        ];
+
+        const edges2 = [
+            {
+                "fromNodeName": "/root/big leaf",
+                "toNodeName": "/root/Parent Leaf/small leaf",
+                "attributes": {
+                    "pairingRate": 89,
+                    "avgCommits": 34
+                }
+            }
+        ];
+
+        const aggEdges = [
+            {
+                "fromNodeName": "/root/file1/big leaf",
+                "toNodeName": "/root/file1/Parent Leaf/small leaf",
+                "attributes": {
+                    "pairingRate": 9,
+                    "avgCommits": 4
+                }
+            },
+            {
+                "fromNodeName": "/root/file2/big leaf",
+                "toNodeName": "/root/file2/Parent Leaf/small leaf",
+                "attributes": {
+                    "pairingRate": 89,
+                    "avgCommits": 34
+                }
+            }
+        ];
+
+        /**
+         * @test {aggregateMapService}
+         */
+        it ( "aggregation of two maps with empty edges should result in empty edges",NGMock.mock.inject(function(aggregateMapService){
+            let aggregated: CodeMap;
+            file1.edges = [];
+            file2.edges = [];
+            aggregated = aggregateMapService.aggregateMaps([file1,file2]);
+            expect(aggregated.edges).toEqual([]);
+        }));
+
+        /**
+         * @test {aggregateMapService}
+         */
+        it ( "aggregation of two maps with empty edges should result in empty edges",NGMock.mock.inject(function(aggregateMapService){
+            file1.edges = edges1;
+            file2.edges = edges2;
+            let aggregated = aggregateMapService.aggregateMaps([file1,file2]);
+            expect(aggregated.edges).toEqual(aggEdges);
+        }));
+
+        /**
+         * @test {aggregateMapService}
+         */
+        it ( "aggregation of one map with  edges and other without should result in merged edges",NGMock.mock.inject(function(aggregateMapService){
+            file1.edges = [edges1[0], edges2[0]];
+            file2.edges = null;
+            const expectedEdges = aggEdges;
+            expectedEdges[1].fromNodeName = "/root/file1/big leaf";
+            expectedEdges[1].toNodeName = "/root/file1/Parent Leaf/small leaf";
+            let aggregated = aggregateMapService.aggregateMaps([file1,file2]);
+            expect(aggregated.edges).toEqual(expectedEdges);
+        }));
+    }
+
+);
+
+
+    describe("AttributeTypes", ()=> {
+
+         const attribute1 = {
+            nodes: {
+                ["key1"]: AttributeType.absolute
+    },
+        edges: {
+            ["key2"]: AttributeType.relative
+        }
+         };
+
+        const attribute_reverse1 = {
+            nodes: {
+                ["key1"]: AttributeType.relative
+
+            },
+            edges: {
+                ["key2"]: AttributeType.absolute
+            }
+        };
+
+
+        const attribute2 = {
+            nodes: {
+                ["key1_2"]: AttributeType.absolute
+            },
+            edges: {
+                ["key2_2"]: AttributeType.relative
+            }
+        };
+
+
+        const aggAttributes = {
+            nodes: {
+                ["key1"]: AttributeType.absolute,
+
+                ["key1_2"]: AttributeType.absolute
+            },
+            edges: {
+                ["key2"]: AttributeType.relative,
+
+                ["key2_2"]: AttributeType.relative
+            }
+        };
+
+        /**
+         * @test {aggregateMapService}
+         */
+        it ( "aggregation of two maps with different key attributes should result in all keys aggregated map",NGMock.mock.inject(function(aggregateMapService){
+            file1.attributeTypes = attribute1;
+            file2.attributeTypes = attribute2;
+            let aggregated = aggregateMapService.aggregateMaps([file1,file2]);
+            expect(aggregated.attributeTypes).toEqual(aggAttributes);
+        }));
+
+        /**
+         * @test {aggregateMapService}
+         */
+        it ( "aggregation of one map with  attributes and other without should result in merged with same attributes as the one with them",NGMock.mock.inject(function(aggregateMapService){
+            file1.attributeTypes = attribute1;
+            let aggregated = aggregateMapService.aggregateMaps([file1,file2]);
+            expect(aggregated.attributeTypes).toEqual(attribute1);
+        }));
+
+    })
 });
