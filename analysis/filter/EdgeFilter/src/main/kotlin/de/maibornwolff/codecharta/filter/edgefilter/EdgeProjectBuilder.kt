@@ -55,8 +55,8 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     fun merge(): Project {
         insertEdges()
         insertEmptyNodesFromEdges()
-        insertEdgeAttributesIntoNodes(project.rootNode.children)
-        insertEdgeAttributesIntoNodes(projectBuilder.rootNode.children.map { it.toNode() })
+        insertNodesFromOriginProject()
+        insertNodesWithAttributesFromEdges()
         return projectBuilder.build()
     }
 
@@ -71,6 +71,14 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
             insertEdgeAsNode(it.fromNodeName)
             insertEdgeAsNode(it.toNodeName)
         }
+    }
+
+    private fun insertNodesFromOriginProject() {
+        insertEdgeAttributesIntoNodes(project.rootNode.children)
+    }
+
+    private fun insertNodesWithAttributesFromEdges() {
+        insertEdgeAttributesIntoNodes(projectBuilder.rootNode.children.map { it.toNode() })
     }
 
     private fun insertEdgeAsNode(nodeEdgeName: String) {
