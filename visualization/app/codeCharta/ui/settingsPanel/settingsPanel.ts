@@ -5,7 +5,7 @@ import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/s
 /**
  * Controls the settingsPanel
  */
-export class SettingsPanelController implements SettingsServiceSubscriber {
+export class SettingsPanelController implements SettingsServiceSubscriber{
 
     public showEdgePanel : boolean = false;
 
