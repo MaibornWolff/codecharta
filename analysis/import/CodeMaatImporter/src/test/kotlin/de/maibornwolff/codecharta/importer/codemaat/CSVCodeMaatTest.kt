@@ -27,7 +27,23 @@ class CSVCodeMaatTest : Spek ({
             it("has correct number of edges") {
                 assertThat(project.sizeOfEdges(), `is`(164))
             }
+
+            it("first edge has 2 attributes") {
+                assertThat(project.edges[0].attributes.size, `is`(2))
+            }
+
+            it("first edge has correct attribute values") {
+                val degreeValue = getAttributeValue(project.edges[0].attributes, "degree")
+                assertThat(degreeValue, `is`(100))
+                val averageRevsValue = getAttributeValue(project.edges[0].attributes, "average-revs")
+                assertThat(averageRevsValue, `is`(5))
+            }
+
         }
     }
 
 })
+
+fun getAttributeValue(attributes: Map<String, Any>, attributeName: String): Int {
+    return attributes.filterKeys { s: String -> s == attributeName }[attributeName].toString().toInt()
+}
