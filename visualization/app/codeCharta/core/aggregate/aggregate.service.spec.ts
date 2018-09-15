@@ -1,6 +1,6 @@
 import "./aggregate.module";
 import {NGMock} from "../../../../mocks/ng.mockhelper";
-import {AttributeType, CodeMap} from "../data/model/codeMap";
+import {AttributeType, CodeMap} from "../data/model/CodeMap";
 
 
 /**
