@@ -34,10 +34,10 @@ export interface Edge {
 }
 
 export interface AttributeTypes {
-    nodes: {
+    nodes?: {
         [key: string]: AttributeType
     };
-    edges: {
+    edges?: {
         [key: string]: AttributeType
     };
 }

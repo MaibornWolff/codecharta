@@ -429,7 +429,7 @@ describe("app.codeCharta.core.aggregate", function() {
          */
         it ( "aggregation of one map with attributes and other without should result in merged with same attributes as the one with them",NGMock.mock.inject(function(aggregateMapService){
             file1.attributeTypes = attribute1;
-            file2.attributeTypes = [];
+            file2.attributeTypes = {};
             let aggregated = aggregateMapService.aggregateMaps([file1,file2]);
             expect(aggregated.attributeTypes).toEqual(attribute1);
         }));
