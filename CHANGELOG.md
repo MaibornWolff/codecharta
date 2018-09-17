@@ -6,12 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
-- CodeMaatImport to Analysis #172
-- Option to show and hide dependent edges from node-context-menu #218
+- CodeMaatImport for temporal coupling dependencies #172
 - EdgeFilter to aggregate edge-attributes as node-attributes #222
+- Option to show and hide dependent edges from node-context-menu #218
 
 ### Changed
-- MergeFilter merges dependencies #172
+- MergeFilter merges edges #172
 
 ### Removed
 
