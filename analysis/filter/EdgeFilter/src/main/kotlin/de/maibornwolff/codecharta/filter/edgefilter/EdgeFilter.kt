@@ -36,7 +36,7 @@ import java.io.File
 import java.util.concurrent.Callable
 
 @CommandLine.Command(name = "edgefilter",
-        description = ["aggregtes edgeAttributes and adds them as nodeAttributes into a new cc.json file"],
+        description = ["aggregtes edgeAttributes as nodeAttributes into a new cc.json file"],
         footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
 class EdgeFilter : Callable<Void?> {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
@@ -50,9 +50,6 @@ class EdgeFilter : Callable<Void?> {
 
     @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
-
-    @CommandLine.Option(names = ["--ignore-case"], description = ["ignores case when checking node names"])
-    private var ignoreCase = false
 
     override fun call(): Void? {
         val srcProject = ProjectDeserializer.deserializeProject(File(source).bufferedReader())
