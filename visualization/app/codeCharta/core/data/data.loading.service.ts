@@ -30,6 +30,7 @@ export class DataLoadingService {
                     const map: CodeMap = {
                         fileName: fileName, 
                         projectName: fileContent.projectName,
+                        apiVersion: fileContent.apiVersion,
                         root: fileContent.nodes[0],
                         edges: fileContent.edges || [],
                         attributeTypes: fileContent.attributeTypes || {}
