@@ -1,5 +1,9 @@
 package de.maibornwolff.codecharta.importer.codemaat
 
+import de.maibornwolff.codecharta.attributeTypes.AttributeTypes
+import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
@@ -28,21 +32,26 @@ class CSVCodeMaatTest : Spek ({
                 assertThat(project.sizeOfEdges(), `is`(164))
             }
 
-            it("first edge has 2 attributes") {
-                assertThat(project.edges[0].attributes.size, `is`(2))
-            }
+            it("specific edge exists and has correct attribute values") {
+                val edge = getChildByName(project.edges, "/root/analysis/build.gradle", "/root/analysis/model/build.gradle")
+                val pairingRate = getAttributeValue(edge.attributes, "degree")
+                val avgCommits = getAttributeValue(edge.attributes, "average-revs")
 
-            it("first edge has correct attribute values") {
-                val degreeValue = getAttributeValue(project.edges[0].attributes, "degree")
-                assertThat(degreeValue, `is`(100))
-                val averageRevsValue = getAttributeValue(project.edges[0].attributes, "average-revs")
-                assertThat(averageRevsValue, `is`(5))
+                assertThat(edge.attributes.size, `is`(2))
+                assertThat(pairingRate, `is`(43))
+                assertThat(avgCommits, `is`(12))
             }
-
         }
     }
 
 })
+
+fun getChildByName(edges: List<Edge>, fromNodeName: String, toNodeName: String): Edge {
+    edges.forEach {
+        if (it.fromNodeName == fromNodeName && it.toNodeName == toNodeName) return it
+    }
+    return Edge(fromNodeName, toNodeName)
+}
 
 fun getAttributeValue(attributes: Map<String, Any>, attributeName: String): Int {
     return attributes.filterKeys { s: String -> s == attributeName }[attributeName].toString().toInt()
