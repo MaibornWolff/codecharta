@@ -103,28 +103,28 @@ describe("ArrowManager", () => {
         expect(arrowManager.getPathFromNode(sampleLeaf)).toBe("/sample2/sample");
     });
 
-    it("should add no arrows when there are no dependencies", ()=>{
-        arrowManager.addCodeMapDependenciesAsArrows([sampleLeaf], [], sampleRenderSettings);
+    it("should add no arrows when there are no edges", ()=>{
+        arrowManager.addEdgeArrows([sampleLeaf], [], sampleRenderSettings);
         expect(arrowManager.arrows.length).toBe(0);
     });
 
-    it("should add no arrows when there are no resolvable dependencies", ()=>{
-        arrowManager.addCodeMapDependenciesAsArrows([sampleLeaf, sampleLeaf2], [{"node":"a", "dependsOn": "b"}], sampleRenderSettings);
+    it("should add no arrows when there are no resolvable edges", ()=>{
+        arrowManager.addEdgeArrows([sampleLeaf, sampleLeaf2], [{fromNodeName:"a", toNodeName: "b"}], sampleRenderSettings);
         expect(arrowManager.arrows.length).toBe(0);
     });
 
-    it("should add arrows only from origin when there are resolvable dependencies", ()=>{
-        arrowManager.addCodeMapDependenciesFromOriginAsArrows(sampleLeaf, [sampleLeaf, sampleLeaf2], [{"node":"/sample", "dependsOn": "/sample2"}, {"node":"/sample2", "dependsOn": "/sample2"}], sampleRenderSettings);
+    it("should add arrows only from origin when there are resolvable edges", ()=>{
+        arrowManager.addEdgeArrowsFromOrigin(sampleLeaf, [sampleLeaf, sampleLeaf2], [{fromNodeName:"/sample", toNodeName: "/sample2"}, {fromNodeName:"/sample2", toNodeName: "/sample2"}], sampleRenderSettings);
         expect(arrowManager.arrows.length).toBe(1);
     });
 
-    it("should add arrows when there are resolvable dependencies", ()=>{
-        arrowManager.addCodeMapDependenciesAsArrows([sampleLeaf, sampleLeaf2], [{"node":"/sample", "dependsOn": "/sample2"}], sampleRenderSettings);
+    it("should add arrows when there are resolvable edges", ()=>{
+        arrowManager.addEdgeArrows([sampleLeaf, sampleLeaf2], [{fromNodeName:"/sample", toNodeName: "/sample2"}], sampleRenderSettings);
         expect(arrowManager.arrows.length).toBe(1);
     });
 
     it("should clear all arrows", ()=>{
-        arrowManager.addCodeMapDependenciesAsArrows([sampleLeaf, sampleLeaf2], [{"node":"/sample", "dependsOn": "/sample2"}], sampleRenderSettings);
+        arrowManager.addEdgeArrows([sampleLeaf, sampleLeaf2], [{fromNodeName:"/sample", toNodeName: "/sample2"}], sampleRenderSettings);
         expect(arrowManager.arrows.length).toBe(1);
         arrowManager.clearArrows();
         expect(arrowManager.arrows.length).toBe(0);

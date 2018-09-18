@@ -12,15 +12,17 @@ CodeCharta analysis tools generally follow the pipes and filters architecture pr
 
 Components that import data from an external source, e.g. SonarQube, and generate visualisation data.
 
+
 | Source        | Project                                                 |
 | ---           | ---                                                     |
 | Crococosmo    | [CrococosmoImporter](import/CrococosmoImporter/README.md)             |
 | generic CSV   | [CSVImporter](import/CSVImporter/README.md)             |
-| Source Code | [SourceCodeParser](import/SourceCodeParser/README.md)         |
+| Source Code   | [SourceCodeParser](import/SourceCodeParser/README.md)         |
 | SourceMonitor CSV | [SourceMonitorImporter](import/CSVImporter/README.md)         |
 | SCITools' Understand CSV | [UnderstandImporter](import/UnderstandImporter/README.md)         |
 | SCM log       | [SCMLogParser](import/SCMLogParser/README.md)            |
 | SonarQube     | [SonarImporter](import/SonarImporter/README.md)         |
+| CodeMaat CSV    | [CodeMaatImporter](import/CodeMaatImporter/README.md)   |
 
 ### Filter
 
@@ -29,6 +31,7 @@ Components that take visualisation data and modifies them.
 | Name                                        | Description                 |
 | ---                                         | ---                         |
 | [MergeFilter](filter/MergeFilter/README.md) | merges multiple json files  |
+| [EdgeFilter](filter/EdgeFilter/README.md)   | aggregates edge-attributes of each appropriate node and inserts them into the nodes attribute-list |
 
 ### Exporter
 

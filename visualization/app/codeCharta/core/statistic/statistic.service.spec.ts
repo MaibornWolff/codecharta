@@ -16,19 +16,23 @@ describe("app.codeCharta.core.statistic", function() {
         projectName: "Sample Project",
         root: {
             name: "root",
+            type: "Folder",
             attributes: {},
             children: [
                 {
                     name: "big leaf",
+                    type: "File",
                     attributes: {"rloc": 100, "functions": 10, "mcc": 1},
                     link: "http://www.google.de"
                 },
                 {
                     name: "Parent Leaf",
+                    type: "Folder",
                     attributes: {},
                     children: [
                         {
                             name: "other small leaf",
+                            type: "File",
                             attributes: {"rloc": 70, "functions": 1000, "mcc": 10}
                         }
                     ]
@@ -42,19 +46,23 @@ describe("app.codeCharta.core.statistic", function() {
         projectName: "Sample Project",
         root: {
             name: "root",
+            type: "Folder",
             attributes: {},
             children: [
                 {
                     name: "big leaf",
+                    type: "File",
                     attributes: {"rloc": 200, "functions": 20, "mcc": 2},
                     link: "http://www.google.de"
                 },
                 {
                     name: "Parent Leaf",
+                    type: "Folder",
                     attributes: {},
                     children: [
                         {
                             name: "small leaf",
+                            type: "File",
                             attributes: {"rloc": 60, "functions": 200, "mcc": 200}
                         }
                     ]
@@ -68,23 +76,28 @@ describe("app.codeCharta.core.statistic", function() {
         projectName: "Sample Project",
         root: {
             name: "root",
+            type: "Folder",
             attributes: {},
             children: [
                 {
                     name: "big leaf",
+                    type: "File",
                     attributes: {"rloc": 150, "functions": 15, "mcc": 1.5},
                     link: "http://www.google.de"
                 },
                 {
                     name: "Parent Leaf",
+                    type: "Folder",
                     attributes: {},
                     children: [
                         {
                             name: "other small leaf",
+                            type: "File",
                             attributes: {"rloc": 35, "functions": 500, "mcc": 5}
                         },
                         {
                             name: "small leaf",
+                            type: "File",
                             attributes: {"rloc": 30, "functions": 100, "mcc": 100}
                         }
                     ]
@@ -98,23 +111,28 @@ describe("app.codeCharta.core.statistic", function() {
         projectName: "Sample Project",
         root: {
             name: "root",
+            type: "Folder",
             attributes: {},
             children: [
                 {
                     name: "big leaf",
+                    type: "File",
                     attributes: {"rloc": 200, "functions": 20, "mcc": 2},
                     link: "http://www.google.de"
                 },
                 {
                     name: "Parent Leaf",
+                    type: "Folder",
                     attributes: {},
                     children: [
                         {
                             name: "other small leaf",
+                            type: "File",
                             attributes: {"rloc": 70, "functions": 1000, "mcc": 10}
                         },
                         {
                             name: "small leaf",
+                            type: "File",
                             attributes: {"rloc": 60, "functions": 200, "mcc": 200}
                         }
                     ]
@@ -128,23 +146,28 @@ describe("app.codeCharta.core.statistic", function() {
         projectName: "Sample Project",
         root: {
             name:"root",
+            type: "Folder",
             attributes:{},
             children: [
                 {
                     name: "big leaf",
+                    type: "File",
                     attributes: {"rloc": 200, "functions": 20, "mcc": 2},
                     link: "http://www.google.de"
                 },
                 {
                     name: "Parent Leaf",
+                    type: "Folder",
                     attributes: {},
                     children: [
                         {
                             name: "other small leaf",
+                            type: "File",
                             attributes: {"rloc": 70, "functions": 1000, "mcc": 10}
                         },
                         {
                             name: "small leaf",
+                            type: "File",
                             attributes: {"rloc": 60, "functions": 200, "mcc": 200}
                         }
                     ]
@@ -156,25 +179,30 @@ describe("app.codeCharta.core.statistic", function() {
     const file_min: CodeMap = {
         fileName: "MIN_file_file",
         projectName: "Sample Project",
-        root:{
+        root: {
             name: "root",
+            type: "Folder",
             attributes: {},
             children: [
                 {
                     name: "big leaf",
+                    type: "File",
                     attributes: {"rloc": 100, "functions": 10, "mcc": 1},
                     link: "http://www.google.de"
                 },
                 {
                     name: "Parent Leaf",
+                    type: "Folder",
                     attributes: {},
                     children: [
                         {
                             name: "other small leaf",
+                            type: "File",
                             attributes: {"rloc": 70, "functions": 1000, "mcc": 10}
                         },
                         {
                             name: "small leaf",
+                            type: "File",
                             attributes: {"rloc": 60, "functions": 200, "mcc": 200}
                         }
                     ]
@@ -186,25 +214,30 @@ describe("app.codeCharta.core.statistic", function() {
     const file_fashion: CodeMap = {
         fileName: "FASHION_file_file",
         projectName: "Sample Project",
-        root:{
+        root: {
             name: "root",
+            type: "Folder",
             attributes: {},
             children: [
                 {
                     name: "big leaf",
+                    type: "File",
                     attributes: {"rloc": 100, "functions": 10, "mcc": 1},
                     link: "http://www.google.de"
                 },
                 {
                     name: "Parent Leaf",
+                    type: "Folder",
                     attributes: {},
                     children: [
                         {
                             name: "other small leaf",
+                            type: "File",
                             attributes: {"rloc": 70, "functions": 1000, "mcc": 10}
                         },
                         {
                             name: "small leaf",
+                            type: "File",
                             attributes: {"rloc": 60, "functions": 200, "mcc": 200}
                         }
                     ]
@@ -304,7 +337,7 @@ describe("app.codeCharta.core.statistic", function() {
      * @test {statisticMapService}
      */
     it("test repeated", angular.mock.inject(function(statisticMapService){
-        data.revisions= [file1, file1, file1, file1];
+        data.revisions = [file1, file1, file1, file1];
         settings.operation = STATISTIC_OPS.MEAN;
         const resultingMapMean = statisticMapService.unifyMaps(data, settings);
         settings.operation = STATISTIC_OPS.MEDIAN;

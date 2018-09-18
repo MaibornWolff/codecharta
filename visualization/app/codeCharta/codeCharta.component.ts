@@ -107,6 +107,7 @@ export class CodeChartaController {
             { name: "sample1.json", data: require("./assets/sample1.json") },
             { name: "sample2.json", data: require("./assets/sample2.json") },
         ], false);
+
     }
 
     printErrors(errors: Object) {

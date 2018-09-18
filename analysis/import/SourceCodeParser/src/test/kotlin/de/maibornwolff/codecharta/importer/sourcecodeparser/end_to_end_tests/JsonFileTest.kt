@@ -16,11 +16,6 @@ class JsonFileTest {
     }
 
     @Test
-    fun `json output has correct api version`() {
-        assertThat(outputStream).containsOnlyOnce(""""apiVersion":"1.0"""")
-    }
-
-    @Test
     fun `json output has one root node`() {
         assertThat(outputStream).containsOnlyOnce(""""name":"root"""")
     }

@@ -68,6 +68,7 @@ export class DeltaCalculatorService {
                 let folder = {
                     name: insertPathArray[0],
                     path: currentPathArray.join("/"),
+                    type: "Folder",
                     children: [],
                     origin: node.origin,
                     visible: true,
@@ -140,10 +141,10 @@ export class DeltaCalculatorService {
 
     }
 
-    private deepcopy(nodes:CodeMapNode): CodeMapNode {
+    private deepcopy(root:CodeMapNode): CodeMapNode {
 
         //deepcopy
-        let h = d3.hierarchy(nodes);
+        let h = d3.hierarchy(root);
         let copy: HierarchyNode<CodeMapNode> = deepcopy.default(h.copy()); //Hm this seems to be doing the right thing. First shallow copy then a deep copy ?!
 
         //make own attributes 0 (not unary)

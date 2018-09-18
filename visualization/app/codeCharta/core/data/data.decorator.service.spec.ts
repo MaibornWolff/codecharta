@@ -58,12 +58,19 @@ describe("app.codeCharta.core.data.dataService", () => {
         it("should compact from root", ()=>{
             a.root.children = [{
                 name: "middle",
+                type: "Folder",
+                attributes: {},
                 children: [
                     {
-                        name: "a"
+                        name: "a",
+                        type: "File",
+                        attributes: {}
                     },
                     {
-                        name: "b"
+                        name: "b",
+                        type: "File",
+                        attributes: {}
+
                     }
                 ]
             }];
@@ -78,13 +85,19 @@ describe("app.codeCharta.core.data.dataService", () => {
             a.root.link = "link0";
             a.root.children = [{
                 name: "middle",
+                type: "File",
+                attributes: {},
                 link: "link1",
                 children: [
                     {
-                        name: "a"
+                        name: "a",
+                        type: "File",
+                        attributes: {}
                     },
                     {
-                        name: "b"
+                        name: "b",
+                        type: "File",
+                        attributes: {}
                     }
                 ]
             }];
@@ -97,14 +110,20 @@ describe("app.codeCharta.core.data.dataService", () => {
             a.root.children = [{
                 name: "middle",
                 path: "/root/middle",
+                type: "Folder",
+                attributes: {},
                 children: [
                     {
                         name: "a",
+                        type: "File",
                         path: "/root/middle/a",
+                        attributes: {}
                     },
                     {
                         name: "b",
+                        type: "File",
                         path: "/root/middle/b",
+                        attributes: {}
                     }
                 ]
             }];
@@ -115,9 +134,13 @@ describe("app.codeCharta.core.data.dataService", () => {
         it("should not compact with single leaves", ()=>{
             a.root.children = [{
                 name: "middle",
+                type: "Folder",
+                attributes: {},
                 children: [
                     {
-                        name: "singleLeaf"
+                        name: "singleLeaf",
+                        type: "File",
+                        attributes: {}
                     }
                 ]
             }];
@@ -130,25 +153,37 @@ describe("app.codeCharta.core.data.dataService", () => {
         it("should compact intermediate middle packages", ()=>{
             a.root.children = [{
                 name: "start",
+                type: "Folder",
+                attributes: {},
                 children: [
                     {
                         name: "middle",
+                        type: "Folder",
+                        attributes: {},
                         children: [
                             {
                                 name: "middle2",
+                                type: "Folder",
+                                attributes: {},
                                 children: [
                                     {
-                                        name: "a"
+                                        name: "a",
+                                        type: "File",
+                                        attributes: {}
                                     },
                                     {
-                                        name: "b"
+                                        name: "b",
+                                        type: "File",
+                                        attributes: {}
                                     }
                                 ]
                             }
                         ]
                     },
                     {
-                        name: "c"
+                        name: "c",
+                        type: "File",
+                        attributes: {}
                     }
                 ]
             }];
@@ -204,7 +239,7 @@ describe("app.codeCharta.core.data.dataService", () => {
     describe("decorateMapWithOriginAttribute",() => {
 
         it("all nodes should have an origin", ()=>{
-            a.root.children[0].origin = undefined
+            a.root.children[0].origin = undefined;
             dataDecoratorService.decorateMapWithOriginAttribute(a);
             let h = d3.hierarchy(a.root);
             h.each((node)=>{
@@ -222,7 +257,9 @@ describe("app.codeCharta.core.data.dataService", () => {
                 fileName: "a",
                 projectName: "b",
                 root: {
-                    name: "a node"
+                    name: "a node",
+                    type: "File",
+                    attributes: {}
                 }
             };
 
@@ -257,15 +294,23 @@ describe("app.codeCharta.core.data.dataService", () => {
                 projectName: "b",
                 root: {
                     name: "a node",
+                    type: "Folder",
+                    attributes: {},
                     children: [
                         {
-                            name: "b node"
+                            name: "b node",
+                            type: "File",
+                            attributes: {}
                         },
                         {
                             name: "c node",
+                            type: "Folder",
+                            attributes: {},
                             children: [
                                 {
                                     name: "d node",
+                                    type: "File",
+                                    attributes: {}
                                 }
                             ]
                         }

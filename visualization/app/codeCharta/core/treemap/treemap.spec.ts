@@ -33,7 +33,8 @@ describe("treemap service", ()=> {
             areaKey: "mcc",
             heightKey: "fun",
             margin: 0,
-            invertHeight: false
+            invertHeight: false,
+            visibleEdges: []
         };
 
     });

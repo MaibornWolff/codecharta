@@ -32,7 +32,6 @@ describe("app.codeCharta.core.scenarioService", function () {
                 "deltaColorFlipped": false,
                 "deltas": false,
                 "heightMetric": "Average Complexity*",
-                "invertHeight": false,
                 "margin": 1,
                 "maximizeDetailPanel": false,
                 "neutralColorRange":
@@ -41,10 +40,14 @@ describe("app.codeCharta.core.scenarioService", function () {
                         "to": 40
                     },
                 "scaling":
-                    {"x": 1,
+                    {
+                        "x": 1,
                         "y": 1,
-                        "z": 1},
-                "showDependencies": false,
+                        "z": 1
+                    },
+                "enableEdgeArrows": true,
+                "invertHeight": false,
+                "dynamicMargin": true,
                 "isWhiteBackground": false
             },
 

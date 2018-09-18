@@ -42,7 +42,10 @@ import java.io.Reader
  */
 object ProjectDeserializer {
 
-    private val GSON = GsonBuilder().registerTypeAdapter(Node::class.java, NodeJsonDeserializer()).create()
+    private val GSON = GsonBuilder()
+            .registerTypeAdapter(Node::class.java, NodeJsonDeserializer())
+            .registerTypeAdapter(Project::class.java, ProjectJsonDeserializer())
+            .create()
 
     /**
      * This function deserializes a given json-file and returns the Project-Object it represents.

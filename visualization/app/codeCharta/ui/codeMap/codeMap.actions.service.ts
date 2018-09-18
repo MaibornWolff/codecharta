@@ -1,4 +1,4 @@
-import {CodeMapNode} from "../../core/data/model/CodeMap";
+import {CodeMapNode, Edge} from "../../core/data/model/CodeMap";
 import {hierarchy} from "d3-hierarchy";
 import {SettingsService} from "../../core/settings/settings.service";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
@@ -72,6 +72,74 @@ export class CodeMapActionsService {
         this.setVisibilityOfNodeAndDescendants(this.settingsService.settings.map.root, true);
         this.autoFit();
         this.apply();
+    }
+
+    showDependentEdges(node: CodeMapNode) {
+        if (this.settingsService.settings.map.edges) {
+            this.settingsService.settings.map.edges.forEach((edge) => {
+                if (this.edgeContainsNode(edge, node)) {
+                    edge.visible = true;
+                }
+            });
+            this.apply();
+        }
+    }
+
+    hideDependentEdges(node: CodeMapNode) {
+        if (this.settingsService.settings.map.edges) {
+            this.settingsService.settings.map.edges.forEach((edge) => {
+                if (this.edgeContainsNode(edge, node)) {
+                    edge.visible = false;
+                }
+            });
+            this.apply();
+        }
+    }
+
+    hideAllEdges() {
+        if (this.settingsService.settings.map.edges) {
+            this.settingsService.settings.map.edges.forEach((edge) => {
+                edge.visible = false;
+            });
+            this.apply();
+        }
+    }
+
+    nodeHasEdges(node: CodeMapNode) {
+        let nodeHasEdges = false;
+        this.settingsService.settings.map.edges.forEach((edge) => {
+            if(this.edgeContainsNode(edge, node)) {
+                nodeHasEdges = true;
+                return; // break forEach
+            }
+        });
+        return nodeHasEdges;
+    }
+
+    allDependentEdgesAreVisible(node: CodeMapNode) {
+        let allDependentEdgesAreVisible = true;
+        this.settingsService.settings.map.edges.forEach((edge) => {
+            if(!edge.visible && this.edgeContainsNode(edge, node)) {
+                allDependentEdgesAreVisible = false;
+                return; // break forEach
+            }
+        });
+        return allDependentEdgesAreVisible;
+    }
+
+    anyEdgeIsVisible() {
+        let anyEdgeIsVisible = false;
+        this.settingsService.settings.map.edges.forEach((edge) => {
+            if(edge.visible) {
+                anyEdgeIsVisible = true;
+                return; // break forEach
+            }
+        });
+        return anyEdgeIsVisible;
+    }
+
+    private edgeContainsNode(edge: Edge, node: CodeMapNode) {
+        return (node.path == edge.fromNodeName || node.path == edge.toNodeName);
     }
 
     private apply() {

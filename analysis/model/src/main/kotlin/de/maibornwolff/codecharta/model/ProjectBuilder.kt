@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, MaibornWolff GmbH
+ * Copyright (c) 2018, MaibornWolff GmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,19 +29,21 @@
 
 package de.maibornwolff.codecharta.model
 
+import de.maibornwolff.codecharta.attributeTypes.AttributeTypes
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
 
 open class ProjectBuilder(
         val projectName: String,
         private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
-        val apiVersion: String = API_VERSION
+        private var edges: MutableList<Edge> = mutableListOf(),
+        private var attributeTypes: MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf()
 ) {
     init {
         if (nodes.size != 1) throw IllegalStateException("no root node present in project")
     }
 
-    private val rootNode: MutableNode
+    val rootNode: MutableNode
         get() = nodes[0]
 
     /**
@@ -55,6 +57,11 @@ open class ProjectBuilder(
         return this
     }
 
+    fun insertEdge(thisEdge: Edge): ProjectBuilder {
+        edges.add(thisEdge)
+        return this
+    }
+
     private var metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
 
     fun withMetricTranslator(metricNameTranslator: MetricNameTranslator): ProjectBuilder {
@@ -64,15 +71,25 @@ open class ProjectBuilder(
 
     fun build(): Project {
         nodes.map { it.translateMetrics(metricNameTranslator, true) }
-        return Project(projectName, nodes.map { it.toNode() }.toList(), apiVersion)
+        edges.forEach { it.translateMetrics(metricNameTranslator) }
+        return Project(
+                projectName,
+                nodes.map { it.toNode() }.toList(),
+                edges = edges.toList(),
+                attributeTypes = attributeTypes.toMap()
+        )
+    }
+
+    fun addAttributeTypes(attributeTypes: AttributeTypes): ProjectBuilder {
+        if (!this.attributeTypes.containsKey(attributeTypes.type)) {
+            this.attributeTypes[attributeTypes.type] = mutableListOf(attributeTypes.attributeTypes)
+        } else {
+            this.attributeTypes[attributeTypes.type]!!.add(attributeTypes.attributeTypes)
+        }
+        return this
     }
 
     override fun toString(): String {
-        return "Project{projectName='$projectName', nodes=$nodes}"
+        return "Project{projectName='$projectName', nodes=$nodes, edges=$edges, attributeTypes=$attributeTypes)"
     }
-
-    companion object {
-        const val API_VERSION = "1.0"
-    }
-
 }

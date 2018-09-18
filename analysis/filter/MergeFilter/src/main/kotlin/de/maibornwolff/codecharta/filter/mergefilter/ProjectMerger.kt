@@ -29,41 +29,71 @@
 
 package de.maibornwolff.codecharta.filter.mergefilter
 
-import de.maibornwolff.codecharta.model.MutableNode
-import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.model.*
 
 class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
 
     fun extractProjectName(): String {
-        val projectNames = projects.map { p -> p.projectName }.toSortedSet()
-        when (projectNames.size) {
-            1 -> return projectNames.first()
-            else -> throw MergeException("Projects contain several project names : $projectNames")
-        }
+        return projects.map { p -> p.projectName }.first()
     }
 
-    private fun extractApiVersion(): String {
-        val apiVersion = projects.map { p -> p.apiVersion }.toSortedSet()
-        when (apiVersion.size) {
-            1 -> return apiVersion.first()
-            else -> throw MergeException("Projects use multiple Api-Versions of CodeCharta : $apiVersion")
-        }
-    }
 
     fun merge(): Project {
-        val apiVersion = extractApiVersion()
         val name = extractProjectName()
-        if (apiVersion != Project.API_VERSION) {
-            throw MergeException("API-Version $apiVersion of project is not supported.")
+        return when {
+            areAllAPIVersionsCompatible() -> ProjectBuilder(name, mergeProjectNodes(), getEdges(), getAttributeTypes()).build()
+            else -> throw MergeException("API versions not supported.")
         }
-        return ProjectBuilder(name, mergeProjectNodes()).build()
+    }
+
+    private fun getAttributeTypes(): MutableMap<String, MutableList<Map<String, AttributeType>>> {
+        val mergedAttributeTypes: MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf()
+
+        projects.forEach {
+            it.attributeTypes.forEach {
+                val key : String = it.key
+                if (mergedAttributeTypes.containsKey(key)) {
+                    it.value.forEach {
+                        if (!mergedAttributeTypes[key]!!.contains(it)) {
+                            mergedAttributeTypes[key]!!.add(it)
+                        }
+                    }
+                } else {
+                    mergedAttributeTypes[key] = it.value.toMutableList()
+                }
+            }
+        }
+        return mergedAttributeTypes
+    }
+
+    private fun areAllAPIVersionsCompatible(): Boolean {
+        val unsupportedAPIVersions = projects
+                .map { it.apiVersion }
+                .filter { !Project.isAPIVersionCompatible(it) }
+
+        return !unsupportedAPIVersions.isNotEmpty()
     }
 
     private fun mergeProjectNodes(): List<MutableNode> {
         return nodeMerger.mergeNodeLists(projects.map { listOf(it.rootNode.toMutableNode()) })
     }
 
+    private fun getEdges(): MutableList<Edge> {
+        if (nodeMerger.javaClass.simpleName == "RecursiveNodeMergerStrategy") {
+            return mergeProjectEdges()
+        } else {
+            return mutableListOf()
+        }
+    }
+
+    private fun mergeProjectEdges(): MutableList<Edge> {
+        val mergedDependencies = mutableListOf<Edge>()
+
+        projects.forEach {
+            it.edges.forEach {
+                mergedDependencies.add(it)
+            }
+        }
+        return mergedDependencies
+    }
 }
-
-

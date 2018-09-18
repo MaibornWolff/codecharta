@@ -23,25 +23,29 @@ describe("code map action service tests", ()=>{
     };
 
     beforeEach(()=>{
-       visibleNode = {name: "test", attributes: {}, visible: true};
-       hiddenNode = {name: "test", attributes: {}, visible: false};
+       visibleNode = {name: "test", type: "File", attributes: {}, visible: true};
+       hiddenNode = {name: "test", type: "File", attributes: {}, visible: false};
        simpleHiddenHierarchy = {
             name: "root",
+            type: "Folder",
             attributes: {},
             visible: false,
             children: [
                 {
                     name: "a",
+                    type: "Folder",
                     attributes: {},
                     visible: false,
                     children: [
                         {
                             name: "aa",
+                            type: "File",
                             attributes: {},
                             visible: false
                         },
                         {
                             name: "ab",
+                            type: "File",
                             attributes: {},
                             visible: false
                         }
@@ -49,6 +53,7 @@ describe("code map action service tests", ()=>{
                 },
                 {
                     name: "b",
+                    type: "File",
                     attributes: {},
                     visible: false
                 }

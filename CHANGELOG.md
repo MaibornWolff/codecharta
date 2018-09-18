@@ -6,8 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- CodeMaatImport for temporal coupling dependencies #172
+- EdgeFilter to aggregate edge-attributes as node-attributes #222
+- Option to show and hide dependent edges from node-context-menu #218
 
 ### Changed
+- MergeFilter merges edges #172
 
 ### Removed
 
@@ -91,7 +95,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Packages can be highlighted in different colors #152
 - Adding a context menu with highlighting colors and convenience methods for the tree view and 3D view #155
 - Folders and files to highlight can be described in the cc.json #165
-- Dynamic/automatic margin computing de/activated by tick 
+- Dynamic/automatic margin computing de/activated by tick
 
 ### Changed
 - Details panel: using the sum of the childrens metrics instead of the mean value

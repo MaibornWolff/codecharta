@@ -10,9 +10,12 @@ dependencies {
     compile project(':import:SonarImporter')
     compile project(':import:UnderstandImporter')
     compile project(':import:SourceCodeParser')
+    compile project(':import:CodeMaatImporter')
     compile project(':filter:MergeFilter')
+    compile project(':filter:EdgeFilter')
     compile project(':tools:ValidationTool')
     compile project(':export:CSVExporter')
+
 
     compile group: 'info.picocli', name: 'picocli', version: picocli_version
 }

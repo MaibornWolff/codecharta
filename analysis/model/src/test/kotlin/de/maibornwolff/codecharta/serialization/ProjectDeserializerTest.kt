@@ -34,7 +34,6 @@ import org.hamcrest.Matchers.*
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.it
 import java.io.StringReader
-import kotlin.test.assertTrue
 
 class ProjectDeserializerTest : Spek({
     val EXAMPLE_CC_JSON = "example.cc.json"
@@ -44,7 +43,7 @@ class ProjectDeserializerTest : Spek({
 
         val project = ProjectDeserializer.deserializeProject(expectedJsonReader)
 
-        assertTrue(project.projectName == "201701poolobject")
+        assertThat(project.projectName, `is`("201701poolobject"))
         assertThat(project.size, `is`(6))
     }
 

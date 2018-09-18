@@ -27,7 +27,7 @@ export function createDefaultScenario(map: CodeMap, margin: number): Scenario {
             margin: margin,
             operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
-            showDependencies: false,
+            enableEdgeArrows: true,
             maximizeDetailPanel: false,
             invertHeight: false,
             dynamicMargin: true,

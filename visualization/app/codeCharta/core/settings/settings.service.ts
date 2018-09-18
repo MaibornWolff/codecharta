@@ -5,7 +5,7 @@ import {
 } from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera} from "three";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
-import {CodeMap, CodeMapNode} from "../data/model/CodeMap";
+import {CodeMap, Edge, CodeMapNode} from "../data/model/CodeMap";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 
 export interface Range {
@@ -34,7 +34,7 @@ export interface Settings {
     margin: number;
     operation: STATISTIC_OPS;
     deltaColorFlipped: boolean;
-    showDependencies: boolean;
+    enableEdgeArrows: boolean;
     maximizeDetailPanel: boolean;
     invertHeight: boolean;
     dynamicMargin: boolean;
@@ -106,13 +106,12 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             margin: 15,
             operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
-            showDependencies: false,
+            enableEdgeArrows: true,
             maximizeDetailPanel: false,
             invertHeight: false,
             dynamicMargin: true,
             isWhiteBackground: false
         };
-
         return settings;
 
     }
@@ -318,7 +317,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
     }
 
-    /*
+    /**
      * Avoids the excesive calling of updateSettings with standard settings in order to increase the efficiency
      * When the function is called with an argument it calls updateSettings in order to avoid the lost of the information
      * contained in that argument.

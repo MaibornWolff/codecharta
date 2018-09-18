@@ -21,9 +21,9 @@ import "./dialog/dialog";
 import "./nodeContextMenu/nodeContextMenu";
 import "./ribbonBar/ribbonBar.module";
 import "./layoutSwitcher/layoutSwitcher";
-import "./optionsPanel/optionsPanel"
-import "./weblinksPanel/weblinksPanel"
-import "./sidenav/sidenav.module"
+import "./optionsPanel/optionsPanel";
+import "./weblinksPanel/weblinksPanel";
+import "./sidenav/sidenav.module";
 
 angular.module(
     "app.codeCharta.ui",
