@@ -37,7 +37,7 @@ export class SidenavController {
             edges: map.edges,
             attributeTypes: map.attributeTypes,
             userSettings: userSettings,
-            blacklist: map.blacklist || [],
+            blacklist: userSettings.blacklist,
         };
         this.downloadData(data, filename);
     }

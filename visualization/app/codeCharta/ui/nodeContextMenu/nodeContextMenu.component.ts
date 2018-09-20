@@ -118,6 +118,11 @@ export class NodeContextMenuComponent {
         this.codeMapActionsService.hideAllEdges();
     }
 
+    excludeNode() {
+        this.hideContextMenu();
+        this.codeMapActionsService.excludeNode(this.contextMenuBuilding)
+    }
+
     getCodeMapNodeFromPath(path: string) {
         let res = null;
         hierarchy<CodeMapNode>(this.settingsService.settings.map.root).each((hierarchyNode) => {
