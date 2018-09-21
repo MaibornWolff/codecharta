@@ -21,7 +21,8 @@ export class MapTreeViewLevelController {
     /* @ngInject */
     constructor(
         private $rootScope: IRootScopeService,
-        private codeMapActionsService: CodeMapActionsService
+        private codeMapActionsService: CodeMapActionsService,
+        private settingsService: SettingsService
     ) {
 
     }
@@ -65,6 +66,18 @@ export class MapTreeViewLevelController {
 
     isLeaf(node: CodeMapNode = this.node): boolean {
         return !(node && node.children && node.children.length > 0);
+    }
+
+    isBlacklisted(path: string): boolean {
+        let result = false;
+        this.settingsService.settings.blacklist.forEach((b)=>{
+            if(b.exclude && path.includes(b.exclude)){
+                //TODO ANT STYLE REGEX CHECK
+                result = true;
+            }
+        });
+
+        return result;
     }
 
     sortByFolder(node: CodeMapNode) {
