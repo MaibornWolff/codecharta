@@ -115,7 +115,6 @@ export class TreeMapService {
         var minimatch = require("minimatch")
 
         blacklist.forEach((b)=>{
-            console.log(path, b.exclude, minimatch(path, b.exclude));
             if(b.exclude && minimatch(path, b.exclude)){
                 result = true;
             }
