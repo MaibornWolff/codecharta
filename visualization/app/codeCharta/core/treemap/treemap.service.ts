@@ -112,9 +112,11 @@ export class TreeMapService {
 
     private isBlacklisted(path: string, blacklist: Array<{[key: string]: string}>): boolean {
         let result = false;
+        var minimatch = require("minimatch")
+
         blacklist.forEach((b)=>{
-            if(b.exclude && path.includes(b.exclude)){
-                //TODO ANT STYLE REGEX CHECK
+            console.log(path, b.exclude, minimatch(path, b.exclude));
+            if(b.exclude && minimatch(path, b.exclude)){
                 result = true;
             }
         });

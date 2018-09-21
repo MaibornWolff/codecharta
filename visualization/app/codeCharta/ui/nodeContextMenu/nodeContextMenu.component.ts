@@ -120,7 +120,7 @@ export class NodeContextMenuComponent {
 
     excludeNode() {
         this.hideContextMenu();
-        this.codeMapActionsService.excludeNode(this.contextMenuBuilding)
+        this.settingsService.excludeNode(this.contextMenuBuilding)
     }
 
     getCodeMapNodeFromPath(path: string) {

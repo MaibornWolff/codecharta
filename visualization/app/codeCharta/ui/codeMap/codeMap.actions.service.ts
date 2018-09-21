@@ -105,11 +105,6 @@ export class CodeMapActionsService {
         }
     }
 
-    excludeNode(node: CodeMapNode) {
-        this.settingsService.settings.blacklist.push({exclude: node.path});
-        this.apply();
-    }
-
     nodeHasEdges(node: CodeMapNode) {
         let nodeHasEdges = false;
         this.settingsService.settings.map.edges.forEach((edge) => {

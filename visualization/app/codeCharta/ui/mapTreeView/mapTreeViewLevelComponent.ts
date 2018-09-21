@@ -69,10 +69,15 @@ export class MapTreeViewLevelController {
     }
 
     isBlacklisted(path: string): boolean {
+        if(!path) {
+            return false;
+        }
+
+        var minimatch = require("minimatch")
+
         let result = false;
         this.settingsService.settings.blacklist.forEach((b)=>{
-            if(b.exclude && path.includes(b.exclude)){
-                //TODO ANT STYLE REGEX CHECK
+            if(b.exclude && minimatch(path, b.exclude)){
                 result = true;
             }
         });
