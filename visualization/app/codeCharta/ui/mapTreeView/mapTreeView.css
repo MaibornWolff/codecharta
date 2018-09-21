@@ -14,7 +14,3 @@
 .tree-element-label:hover {
     background-color: #efefef;
 }
-
-.tree-root .blacklisted {
-    opacity: 0.5;
-}

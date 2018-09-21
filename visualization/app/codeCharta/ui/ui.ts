@@ -24,6 +24,7 @@ import "./layoutSwitcher/layoutSwitcher";
 import "./optionsPanel/optionsPanel";
 import "./weblinksPanel/weblinksPanel";
 import "./sidenav/sidenav.module";
+import "./blacklistPanel/blacklistPanel";
 
 angular.module(
     "app.codeCharta.ui",
@@ -49,6 +50,7 @@ angular.module(
         "app.codeCharta.ui.regexFilter",
         "app.codeCharta.ui.optionsPanel",
         "app.codeCharta.ui.sidenav",
+        "app.codeCharta.ui.blacklistPanel",
         "app.codeCharta.ui.weblinksPanel"
     ]);
 

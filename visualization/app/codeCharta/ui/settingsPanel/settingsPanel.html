@@ -62,6 +62,26 @@
     </md-expansion-panel>
 
     <md-expansion-panel>
+        <md-expansion-panel-collapsed>
+            <div class="md-title"><i class="fa fa-tree"></i> Blacklist</div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
+
+        <md-expansion-panel-expanded>
+            <md-expansion-panel-header ng-click="$panel.collapse()">
+                <div class="md-title"><i class="fa fa-tree"></i> Treeview</div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
+
+            <md-expansion-panel-content>
+                <blacklist-panel-component></blacklist-panel-component>
+            </md-expansion-panel-content>
+        </md-expansion-panel-expanded>
+    </md-expansion-panel>
+
+    <md-expansion-panel>
 
         <md-expansion-panel-collapsed>
             <div class="md-title"><i class="fa fa-flask"></i> Experimental</div>
