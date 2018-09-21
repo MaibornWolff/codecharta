@@ -1,4 +1,5 @@
 import {DisplaySettingsPanelController} from "./displaySettingsPanel.component";
+import {KindOfMap} from "../../core/settings/settings.service";
 
 describe("displaySettingsPanelController", ()=>{
 
@@ -15,7 +16,7 @@ describe("displaySettingsPanelController", ()=>{
                 neutralColorRange: {
                     flipped: false
                 },
-                deltas: false,
+                kindOfMap: KindOfMap.Single,
                 deltaColorFlipped: false
             }
         };
@@ -31,7 +32,7 @@ describe("displaySettingsPanelController", ()=>{
     it("apply should not update read only settings in settingsservice", ()=>{
         controller.viewModel.deltas = true;
         controller.apply();
-        expect(settingsService.settings.deltas).toBe(false);
+        expect(settingsService.settings.kindOfMap).toBe(KindOfMap.Single);
     });
 
     it("apply should update settings in settingsservice and call its apply method", ()=>{
@@ -42,7 +43,7 @@ describe("displaySettingsPanelController", ()=>{
     });
 
     it("should update viewModel when settings are updated", ()=>{
-        settingsService.settings.deltas = true;
+        settingsService.settings.kindOfMap = KindOfMap.Delta;
         settingsService.settings.deltaColorFlipped = true;
         settingsService.settings.neutralColorRange.flipped = true;
         controller.onSettingsChanged(settingsService.settings);

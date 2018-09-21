@@ -1,4 +1,4 @@
-import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {KindOfMap, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import "./colorSettingsPanel.component.scss";
 
 export class ColorSettingsPanelController implements SettingsServiceSubscriber{
@@ -19,7 +19,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber{
 
     onSettingsChanged(settings: Settings, event) {
         this.viewModel.flipped = settings.neutralColorRange.flipped;
-        this.viewModel.deltas = settings.deltas;
+        this.viewModel.deltas = settings.kindOfMap == KindOfMap.Delta;
         this.viewModel.deltaColorFlipped = settings.deltaColorFlipped;
     }
 

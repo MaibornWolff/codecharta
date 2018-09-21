@@ -2,7 +2,7 @@ import {NGMock} from "../../../../mocks/ng.mockhelper";
 
 import "./scenario.module";
 import {Scenario, ScenarioService} from "./scenario.service";
-import {SettingsService} from "../settings/settings.service";
+import {KindOfMap, SettingsService} from "../settings/settings.service";
 import {createDefaultScenario} from "./scenario.data";
 import {DataService} from "../data/data.service";
 
@@ -30,7 +30,7 @@ describe("app.codeCharta.core.scenarioService", function () {
                     },
                 "colorMetric": "Average Complexity*",
                 "deltaColorFlipped": false,
-                "deltas": false,
+                "kindOfMap": "KindOfMap.Single",
                 "heightMetric": "Average Complexity*",
                 "margin": 1,
                 "maximizeDetailPanel": false,
