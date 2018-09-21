@@ -29,6 +29,7 @@ export interface TreeMapSettings {
     margin: number;
     invertHeight: boolean;
     visibleEdges: Edge[];
+    blacklist: Array<{[key: string]: string}>;
 }
 
 export class TreeMapService {
@@ -56,7 +57,7 @@ export class TreeMapService {
             .paddingOuter(s.margin * TreeMapService.PADDING_SCALING_FACTOR || 1)
             .paddingInner(s.margin * TreeMapService.PADDING_SCALING_FACTOR || 1);
 
-        return treeMap(root.sum((node) => this.calculateValue(node, edges, s.areaKey))) as SquarifiedValuedCodeMapNode;
+        return treeMap(root.sum((node) => this.calculateValue(node, edges, s.areaKey, s.blacklist))) as SquarifiedValuedCodeMapNode;
     }
 
     private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, edges: Edge[], s: TreeMapSettings): node {
@@ -92,8 +93,13 @@ export class TreeMapService {
 
     }
 
-    private calculateValue(node: CodeMapNode, edges: Edge[], key: string): number {
+    private calculateValue(node: CodeMapNode, edges: Edge[], key: string, blacklist: Array<{[key: string]: string}>): number {
         let result = 0;
+
+        if(this.isBlacklisted(node.path, blacklist)) {
+            return 0;
+        }
+
         if ((!node.children || node.children.length === 0)) {
             if(node.attributes && node.attributes[key]) {
                 result = node.attributes[key] || 0;
@@ -101,6 +107,18 @@ export class TreeMapService {
                 result = this.getEdgeValue(node, edges, key);
             }
         }
+        return result;
+    }
+
+    private isBlacklisted(path: string, blacklist: Array<{[key: string]: string}>): boolean {
+        let result = false;
+        blacklist.forEach((b)=>{
+            if(b.exclude && path.includes(b.exclude)){
+                //TODO ANT STYLE REGEX CHECK
+                result = true;
+            }
+        });
+
         return result;
     }
 

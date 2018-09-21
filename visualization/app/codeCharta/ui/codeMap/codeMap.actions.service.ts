@@ -108,6 +108,7 @@ export class CodeMapActionsService {
     excludeNode(node: CodeMapNode) {
         // TODO: To push an object to the array doesnt work yet
         this.settingsService.settings.blacklist.push({exclude: node.path});
+        this.apply();
     }
 
     nodeHasEdges(node: CodeMapNode) {

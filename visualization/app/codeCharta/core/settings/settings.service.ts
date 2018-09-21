@@ -39,7 +39,7 @@ export interface Settings {
     invertHeight: boolean;
     dynamicMargin: boolean;
     isWhiteBackground: boolean;
-    blacklist?: [{[key: string]: string}];
+    blacklist: Array<{[key: string]: string}>;
 }
 
 export interface SettingsServiceSubscriber {
@@ -112,7 +112,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             invertHeight: false,
             dynamicMargin: true,
             isWhiteBackground: false,
-            blacklist: [{}],
+            blacklist: [],
         };
         return settings;
 

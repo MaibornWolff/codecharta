@@ -22,6 +22,7 @@ export interface CodeMap {
     root: CodeMapNode;
     edges?: Edge[];
     attributeTypes?: AttributeTypes;
+    blacklist?: Array<{[key: string]: string}>;
 }
 
 export interface Edge {
