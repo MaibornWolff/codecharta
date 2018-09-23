@@ -25,14 +25,7 @@ export function createDefaultScenario(map: CodeMap, margin: number): Scenario {
                 x: 0, y: 300, z: 1000
             },
             margin: margin,
-            operation: STATISTIC_OPS.NOTHING,
-            deltaColorFlipped: false,
-            enableEdgeArrows: true,
-            maximizeDetailPanel: false,
-            invertHeight: false,
-            dynamicMargin: true,
-            isWhiteBackground: false,
-            blacklist:[]
+            operation: STATISTIC_OPS.NOTHING
         },
         autoFitCamera: true
     };

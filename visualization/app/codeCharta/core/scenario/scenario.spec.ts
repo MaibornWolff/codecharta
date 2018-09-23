@@ -29,11 +29,8 @@ describe("app.codeCharta.core.scenarioService", function () {
                         "z": 1000
                     },
                 "colorMetric": "Average Complexity*",
-                "deltaColorFlipped": false,
                 "deltas": false,
                 "heightMetric": "Average Complexity*",
-                "margin": 1,
-                "maximizeDetailPanel": false,
                 "neutralColorRange":
                     {"flipped": false,
                         "from": 20,
@@ -44,13 +41,8 @@ describe("app.codeCharta.core.scenarioService", function () {
                         "x": 1,
                         "y": 1,
                         "z": 1
-                    },
-                "enableEdgeArrows": true,
-                "invertHeight": false,
-                "dynamicMargin": true,
-                "isWhiteBackground": false
+                    }
             },
-
         "autoFitCamera": true
     }];
 

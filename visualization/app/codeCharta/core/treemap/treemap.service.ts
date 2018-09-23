@@ -112,13 +112,15 @@ export class TreeMapService {
 
     private isBlacklisted(path: string, blacklist: Array<{[key: string]: string}>): boolean {
         let result = false;
-        var minimatch = require("minimatch")
+        var minimatch = require("minimatch");
 
-        blacklist.forEach((b)=>{
-            if(b.exclude && minimatch(path, b.exclude)){
-                result = true;
-            }
-        });
+        if (blacklist) {
+            blacklist.forEach((b)=>{
+                if(b.exclude && minimatch(path, b.exclude)){
+                    result = true;
+                }
+            });
+        }
 
         return result;
     }

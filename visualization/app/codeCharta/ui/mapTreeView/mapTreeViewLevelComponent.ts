@@ -73,14 +73,16 @@ export class MapTreeViewLevelController {
             return false;
         }
 
-        var minimatch = require("minimatch")
+        var minimatch = require("minimatch");
 
         let result = false;
-        this.settingsService.settings.blacklist.forEach((b)=>{
-            if(b.exclude && minimatch(path, b.exclude)){
-                result = true;
-            }
-        });
+        if(this.settingsService.settings.blacklist) {
+            this.settingsService.settings.blacklist.forEach((b)=>{
+                if(b.exclude && minimatch(path, b.exclude)){
+                    result = true;
+                }
+            });
+        }
 
         return result;
     }
