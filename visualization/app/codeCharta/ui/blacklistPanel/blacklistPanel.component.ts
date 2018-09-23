@@ -7,16 +7,25 @@ export class BlacklistPanelController implements SettingsServiceSubscriber{
 
     constructor(private settingsService: SettingsService) {
         settingsService.subscribe(this);
-        this.text = settingsService.settings.blacklist.map(b=>b.exclude).join("\n");
+
+        if(settingsService.settings.blacklist) {
+            this.text = settingsService.settings.blacklist.map(b=>b.exclude).join("\n");
+        }
     }
 
     onChange() {
-        this.settingsService.settings.blacklist = this.text.split("\n").map((b)=>{ return {exclude: b}; });
+        if(this.settingsService.settings.blacklist) {
+            this.settingsService.settings.blacklist = this.text.split("\n").map((b) => {
+                return {exclude: b};
+            });
+        }
         this.settingsService.onSettingsChanged();
     }
 
     onSettingsChanged(settings: Settings, event: Event) {
-        this.text = settings.blacklist.map(b=>b.exclude).join("\n");
+        if(settings.blacklist) {
+            this.text = settings.blacklist.map(b => b.exclude).join("\n");
+        }
     }
 
 }
@@ -26,6 +35,3 @@ export const blacklistPanelComponent = {
     template: require("./blacklistPanel.component.html"),
     controller: BlacklistPanelController
 };
-
-
-
