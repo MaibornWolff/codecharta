@@ -1,12 +1,20 @@
-sidenav-component md-sidenav {
-    width: 600px;
-    z-index: 50;
+sidenav-component {
 
-    .padding_bottom {
-        padding-bottom: 100px;
+    md-sidenav {
+        width: 600px;
+        z-index: 50;
+
+
+        .padding_bottom {
+            padding-bottom: 100px;
+        }
     }
 }
 
-sidenav-toggle-component i.fa-bars {
-    margin-top: 4px;
+sidenav-toggle-component {
+
+    i.fa-bars {
+        margin-top: 4px;
+    }
 }
+

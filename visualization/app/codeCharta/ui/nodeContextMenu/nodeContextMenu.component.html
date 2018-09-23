@@ -17,23 +17,23 @@
 
     <div class="button-group">
         <md-button ng-disabled="true">Node</md-button>
-        <md-button ng-click="$ctrl.hideNode()"><i class="fa fa-eye-slash"> Hide</i></md-button>
-        <md-button ng-click="$ctrl.isolateNode()"><i class="fa fa-bullseye"> Isolate</i></md-button>
-        <md-button ng-click="$ctrl.showAllNodes()"><i class="fa fa-eye"> Show all</i></md-button>
-        <md-button ng-click="$ctrl.excludeNode()"><i class="fa fa-times"> Exclude</i></md-button>
+        <md-button ng-click="$ctrl.hideNode()"><i class="fa fa-eye-slash"></i> Hide</md-button>
+        <md-button ng-click="$ctrl.isolateNode()"><i class="fa fa-bullseye"></i> Isolate</md-button>
+        <md-button ng-click="$ctrl.showAllNodes()"><i class="fa fa-eye"></i> Show all</md-button>
+        <md-button ng-click="$ctrl.excludeNode()"><i class="fa fa-times"></i> Exclude</md-button>
     </div>
 
     <div class="button-group" ng-if="$ctrl.nodeHasEdges || $ctrl.anyEdgeIsVisible">
         <md-divider></md-divider>
         <md-button ng-disabled="true">Edges</md-button>
         <md-button ng-if="$ctrl.nodeHasEdges && ! $ctrl.allDependentEdgesAreVisible" ng-click="$ctrl.showDependentEdges()">
-            <i class="fa fa-eye"> Show</i>
+            <i class="fa fa-eye"></i> Show
         </md-button>
         <md-button ng-if="$ctrl.nodeHasEdges && $ctrl.allDependentEdgesAreVisible" ng-click="$ctrl.hideDependentEdges()">
-            <i class="fa fa-eye-slash"> Hide</i>
+            <i class="fa fa-eye-slash"></i> Hide
         </md-button>
         <md-button ng-if="$ctrl.anyEdgeIsVisible" ng-click="$ctrl.hideAllEdges()">
-            <i class="fa fa-eye-slash"> Hide all</i>
+            <i class="fa fa-eye-slash"></i> Hide all
         </md-button>
     </div>
 </md-card>
