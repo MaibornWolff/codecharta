@@ -12,6 +12,8 @@ node-context-menu-component {
   .md-button:not(.colorButton) {
     text-align: left;
     margin-top: 0;
+    line-height: 30px;
+    min-height: 30px;
 
     &:not(:last-child) {
       margin-bottom: 0;
