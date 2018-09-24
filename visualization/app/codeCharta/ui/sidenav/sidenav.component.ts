@@ -23,11 +23,12 @@ export class SidenavController {
     }
 
     downloadCurrentJson() {
-
         const filename: string = this.settingsService.settings.map.fileName;
         var map: any = this.settingsService.settings.map;
+        var blacklist = this.settingsService.settings.blacklist;
         var userSettings = this.settingsService.settings;
         delete userSettings.map;
+        delete userSettings.blacklist;
 
         let data = {
             fileName: map.fileName,
@@ -37,7 +38,7 @@ export class SidenavController {
             edges: map.edges,
             attributeTypes: map.attributeTypes,
             userSettings: userSettings,
-            blacklist: userSettings.blacklist,
+            blacklist: blacklist,
         };
         this.downloadData(data, filename);
     }
