@@ -130,6 +130,11 @@ ribbon-bar-component {
                 font-size: $bodySize;
                 text-align: left;
                 vertical-align: top;
+
+                reset-settings-button-component .md-button {
+                    top: 150px;
+                    right: -5px;
+                }
             }
         }
 
