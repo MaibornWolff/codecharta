@@ -1,103 +1,6 @@
 <md-expansion-panel-group multiple>
 
     <md-expansion-panel>
-
-        <md-expansion-panel-collapsed>
-            <div class="md-title"><i class="fa fa-map"></i> Maps</div>
-            <div flex></div>
-            <md-expansion-panel-icon></md-expansion-panel-icon>
-        </md-expansion-panel-collapsed>
-
-        <md-expansion-panel-expanded>
-
-            <md-expansion-panel-header ng-click="$panel.collapse()">
-                <div class="md-title"><i class="fa fa-map"></i> Maps</div>
-                <div flex></div>
-                <md-expansion-panel-icon></md-expansion-panel-icon>
-            </md-expansion-panel-header>
-
-            <md-expansion-panel-content>
-                <revision-chooser-component></revision-chooser-component>
-            </md-expansion-panel-content>
-
-        </md-expansion-panel-expanded>
-
-    </md-expansion-panel>
-
-    <md-expansion-panel>
-
-        <md-expansion-panel-collapsed ng-click="$ctrl.collapseAndUpdateChildRzSlider($panel)">
-            <div class="md-title"><i class="fa fa-paint-brush"></i> Color</div>
-            <div flex></div>
-            <md-expansion-panel-icon></md-expansion-panel-icon>
-        </md-expansion-panel-collapsed>
-
-        <md-expansion-panel-expanded>
-
-            <md-expansion-panel-header ng-click="$ctrl.collapseAndUpdateChildRzSlider($panel)">
-                <div class="md-title"><i class="fa fa-paint-brush"></i> Color</div>
-                <div flex></div>
-                <md-expansion-panel-icon></md-expansion-panel-icon>
-            </md-expansion-panel-header>
-
-            <md-expansion-panel-content>
-                <color-settings-panel-component></color-settings-panel-component>
-            </md-expansion-panel-content>
-
-        </md-expansion-panel-expanded>
-
-    </md-expansion-panel>
-
-    <md-expansion-panel>
-
-        <md-expansion-panel-collapsed>
-            <div class="md-title"><i class="fa fa-television"></i> Display</div>
-            <div flex></div>
-            <md-expansion-panel-icon></md-expansion-panel-icon>
-        </md-expansion-panel-collapsed>
-
-        <md-expansion-panel-expanded>
-
-            <md-expansion-panel-header ng-click="$panel.collapse()">
-                <div class="md-title"><i class="fa fa-television"></i> Display</div>
-                <div flex></div>
-                <md-expansion-panel-icon></md-expansion-panel-icon>
-            </md-expansion-panel-header>
-
-            <md-expansion-panel-content>
-                <display-settings-panel-component></display-settings-panel-component>
-            </md-expansion-panel-content>
-
-        </md-expansion-panel-expanded>
-
-    </md-expansion-panel>
-
-    <md-expansion-panel>
-
-        <md-expansion-panel-collapsed>
-            <div class="md-title"><i class="fa fa-star"></i> Scenarios</div>
-            <div flex></div>
-            <md-expansion-panel-icon></md-expansion-panel-icon>
-        </md-expansion-panel-collapsed>
-
-        <md-expansion-panel-expanded>
-
-            <md-expansion-panel-header ng-click="$panel.collapse()">
-                <div class="md-title"><i class="fa fa-star"></i> Scenarios</div>
-                <div flex></div>
-                <md-expansion-panel-icon></md-expansion-panel-icon>
-            </md-expansion-panel-header>
-
-            <md-expansion-panel-content>
-                <scenario-buttons-component></scenario-buttons-component>
-            </md-expansion-panel-content>
-
-        </md-expansion-panel-expanded>
-
-    </md-expansion-panel>
-
-    <md-expansion-panel>
-
         <md-expansion-panel-collapsed>
             <div class="md-title"><i class="fa fa-tree"></i> Treeview</div>
             <div flex></div>
@@ -105,7 +8,6 @@
         </md-expansion-panel-collapsed>
 
         <md-expansion-panel-expanded>
-
             <md-expansion-panel-header ng-click="$panel.collapse()">
                 <div class="md-title"><i class="fa fa-tree"></i> Treeview</div>
                 <div flex></div>
@@ -116,9 +18,47 @@
                 <regex-filter-component></regex-filter-component>
                 <map-tree-view-component></map-tree-view-component>
             </md-expansion-panel-content>
-
         </md-expansion-panel-expanded>
+    </md-expansion-panel>
 
+    <md-expansion-panel>
+        <md-expansion-panel-collapsed>
+            <div class="md-title"><i class="fa fa-cog"></i> Options</div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
+
+        <md-expansion-panel-expanded>
+            <md-expansion-panel-header ng-click="$panel.collapse()">
+                <div class="md-title"><i class="fa fa-cog"></i> Options</div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
+
+            <md-expansion-panel-content>
+                <options-panel-component></options-panel-component>
+            </md-expansion-panel-content>
+        </md-expansion-panel-expanded>
+    </md-expansion-panel>
+
+    <md-expansion-panel>
+        <md-expansion-panel-collapsed>
+            <div class="md-title"><i class="fa fa-external-link"></i> Weblinks</div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
+
+        <md-expansion-panel-expanded>
+            <md-expansion-panel-header ng-click="$panel.collapse()">
+                <div class="md-title"><i class="fa fa-external-link"></i> Weblinks</div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
+
+            <md-expansion-panel-content>
+                <weblinks-panel-component></weblinks-panel-component>
+            </md-expansion-panel-content>
+        </md-expansion-panel-expanded>
     </md-expansion-panel>
 
     <md-expansion-panel>
@@ -130,7 +70,6 @@
         </md-expansion-panel-collapsed>
 
         <md-expansion-panel-expanded>
-
             <md-expansion-panel-header ng-click="$panel.collapse()">
                 <div class="md-title"><i class="fa fa-flask"></i> Experimental</div>
                 <div flex></div>
@@ -140,9 +79,7 @@
             <md-expansion-panel-content>
                 <experimental-settings-panel-component></experimental-settings-panel-component>
             </md-expansion-panel-content>
-
         </md-expansion-panel-expanded>
-
     </md-expansion-panel>
 
 </md-expansion-panel-group>

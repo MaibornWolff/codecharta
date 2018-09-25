@@ -1,17 +1,54 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "schema": "http://json-schema.org/draft-04/schema#",
   "title": "CodeCharta visualization data",
   "description": "data used for visualization",
   "type": "object",
-  "definitions": {
-    "Attributes": {
-      "title": "attributes",
-      "type": "object",
-      "description": "attributes, interpreted as map<string,object>"
+  "required":["projectName", "nodes", "apiVersion"],
+
+  "properties": {
+    "projectName": {
+      "title": "project name",
+      "type": "string"
     },
-    "Node": {
+    "nodes": {
+      "title": "list of nodes",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/node"
+      }
+    },
+    "apiVersion": {
+      "title": "version of schema",
+      "type": "string"
+    },
+    "edges": {
+      "title": "edges between nodes",
+      "type": "array",
+      "minItems": 0,
+      "items": {
+        "$ref": "#/definitions/edge"
+      }
+    },
+    "attributeTypes": {
+      "title": "list of nodes and edges attributeTypes",
+      "type": "object",
+      "minItems": 1,
+      "items": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "$ref": "#/definitions/attributeType"
+        }
+      }
+    }
+  },
+
+  "definitions": {
+    "node":{
       "title": "nodes",
       "type": "object",
+      "required":["name", "type"],
       "properties": {
         "name": {
           "title": "name of node",
@@ -21,44 +58,62 @@
           "title": "type of node",
           "type": "string"
         },
-        "attributes": {
-          "title": "attributes of node",
-          "$ref": "#/definitions/Attributes"
-        },
         "children": {
           "title": "children of node",
           "type": "array",
+          "minItems": 0,
           "items": {
-            "$ref": "#/definitions/Node"
+            "$ref": "#/definitions/node"
           }
+        },
+        "attributes": {
+          "title": "attributes of node",
+          "$ref": "#/definitions/attributeList"
         }
-      },
-      "required": [
-        "name",
-        "type"
-      ]
-    }
-  },
-  "properties": {
-    "projectName": {
-      "title": "project name",
-      "type": "string"
+      }
     },
-    "apiVersion": {
-      "title": "version of schema",
-      "type": "string"
+    "edge":{
+      "title": "edge between nodes",
+      "type": "object",
+      "required":["fromNodeName", "toNodeName"],
+      "properties": {
+        "fromNodeName": {
+          "title": "node where the edge comes from",
+          "type": "string"
+        },
+        "toNodeName": {
+          "title": "node where the edge goes to",
+          "type": "string"
+        },
+        "attributes": {
+          "title": "attributes of edges",
+          "$ref": "#/definitions/attributeList"
+        }
+      }
     },
-    "nodes": {
-      "title": "list of nodes",
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/Node"
+    "attributeList":{
+      "title": "attributes",
+      "description": "attributes, interpreted as map<string,object>",
+      "type":"object",
+      "patternProperties": {
+        "^[A-Za-z0-9_]+$":{
+          "type": "number"
+        }
+      }
+    },
+    "attributeType":{
+      "title": "attributeType list",
+      "type": "object",
+      "properties": {
+        "sum": {
+          "title": "sum of aggregated attribute numbers",
+          "type": "number"
+        },
+        "average": {
+          "title": "average of aggregated attribute numbers",
+          "type": "number"
+        }
       }
     }
-  },
-  "required": [
-    "projectName",
-    "apiVersion",
-    "nodes"
-  ]
+  }
 }

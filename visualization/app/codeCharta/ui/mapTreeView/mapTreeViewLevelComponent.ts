@@ -2,7 +2,10 @@ import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/s
 import {IRootScopeService, ITimeoutService} from "angular";
 import {CodeMap, CodeMapNode} from "../../core/data/model/CodeMap";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
-import {ThreeOrbitControlsService} from "../codeMap/threeViewer/threeOrbitControlsService";
+import {node} from "../codeMap/rendering/node";
+import {CodeMapRenderService} from "../codeMap/codeMap.render.service";
+import {NodeContextMenuComponent} from "../nodeContextMenu/nodeContextMenu.component";
+import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 
 export interface MapTreeViewHoverEventSubscriber {
     onShouldHoverNode(node: CodeMapNode);
@@ -16,13 +19,23 @@ export class MapTreeViewLevelController {
     public collapsed: boolean = true;
 
     /* @ngInject */
-    constructor(private $timeout: ITimeoutService, private $scope, private settingsService: SettingsService, private $rootScope: IRootScopeService, private threeOrbitControlsService: ThreeOrbitControlsService) {
+    constructor(
+        private $rootScope: IRootScopeService,
+        private codeMapActionsService: CodeMapActionsService
+    ) {
 
     }
 
     static subscribeToHoverEvents($rootScope: IRootScopeService, subscriber: MapTreeViewHoverEventSubscriber){
         $rootScope.$on("should-hover-node", (event, args)=>subscriber.onShouldHoverNode(args));
         $rootScope.$on("should-unhover-node", (event, args)=>subscriber.onShouldUnhoverNode(args));
+    }
+
+    getFolderColor() {
+        if(!this.node) {
+            return "#000";
+        }
+        return this.node.markingColor ? "#" + this.node.markingColor.substr(2) : "#000";
     }
 
     onMouseEnter() {
@@ -33,44 +46,21 @@ export class MapTreeViewLevelController {
         this.$rootScope.$broadcast("should-unhover-node", this.node);
     }
 
+    onRightClick($event) {
+        NodeContextMenuComponent.hide(this.$rootScope);
+        NodeContextMenuComponent.show(this.$rootScope, this.node.path, $event.clientX, $event.clientY);
+    }
+
     onFolderClick() {
         this.collapsed = !this.collapsed;
     }
 
     onLabelClick() {
-        this.setParentsInvisibleAndChildrenVisible();
-        this.broadcastVisibility();
-        this.$timeout(() => {
-            this.threeOrbitControlsService.autoFitTo();
-        }, 200);
+        this.codeMapActionsService.isolateNode(this.node);
     }
 
     onEyeClick() {
-        this.setVisibilityToChildren(!this.node.visible);
-        this.broadcastVisibility();
-    }
-
-    private setParentsInvisibleAndChildrenVisible() {
-        // TODO not sure if we should access the map through settings without getting triggered by the event. this saves memory though and should not be a problem
-        this.setVisibilityToChildren(false, this.settingsService.settings.map.root);
-        // set this visible
-        this.setVisibilityToChildren(true);
-    }
-
-    private setVisibilityToChildren(visibility: boolean, node: CodeMapNode = this.node) {
-        this.node.visible = visibility;
-
-        hierarchy(node).descendants().forEach((d) => {
-            d.data.visible = visibility;
-        });
-    }
-
-    private broadcastVisibility() {
-        // TODO ensure to call it after all broadcasts
-        // TODO performance :(
-        this.$timeout(() => {
-            this.settingsService.onSettingsChanged();
-        }, 100);
+        this.codeMapActionsService.toggleNodeVisibility(this.node);
     }
 
     isLeaf(node: CodeMapNode = this.node): boolean {

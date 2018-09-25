@@ -1,7 +1,7 @@
 "use strict";
 
 import * as d3 from "d3";
-import {CodeMap, CodeMapNode} from "./model/CodeMap";
+import {CodeMap, CodeMapNode, Edge} from "./model/CodeMap";
 import {IRootScopeService, IAngularEvent} from "angular";
 import {DeltaCalculatorService} from "./data.deltaCalculator.service";
 import {DataDecoratorService} from "./data.decorator.service";
@@ -51,7 +51,7 @@ export class DataService {
         this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.revisions[revision]);
         this.updateMetrics();
         this.dataDecoratorService.decorateLeavesWithMissingMetrics(this._data.revisions, this._data.metrics);
-        this.dataDecoratorService.decorateParentNodesWithMeanAttributesOfChildren(this._data.revisions, this._data.metrics);
+        this.dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren(this._data.revisions, this._data.metrics);
         this.setReferenceMap(revision);
     }
 
@@ -163,7 +163,6 @@ export class DataService {
         });
 
         this._data.metrics = attributes;
-
     }
 
     /**
@@ -175,6 +174,21 @@ export class DataService {
         this._lastComparisonMap = null;
         this._data.renderMap = null;
         this.notify();
+    }
+
+    getMaxMetricInAllRevisions(metric: string) {
+        let maxValue = 0;
+
+        this.data.revisions.forEach((rev)=> {
+            let nodes = d3.hierarchy(rev.root).leaves();
+            nodes.forEach((node: any)=> {
+                if (node.data.attributes[metric] > maxValue) {
+                    maxValue = node.data.attributes[metric];
+                }
+            });
+        });
+
+        return maxValue;
     }
 
 }

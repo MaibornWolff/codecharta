@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, MaibornWolff GmbH
+ * Copyright (c) 2018, MaibornWolff GmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,20 +29,19 @@
 
 package de.maibornwolff.codecharta.model
 
+import de.maibornwolff.codecharta.attributeTypes.AttributeTypes
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
-import mu.KotlinLogging
 
 
 open class ProjectBuilder(
         val projectName: String,
         private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
-        val apiVersion: String = API_VERSION
+        private var edges: MutableList<Edge> = mutableListOf(),
+        private var attributeTypes: MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf()
 ) {
     init {
         if (nodes.size != 1) throw IllegalStateException("no root node present in project")
     }
-
-    private val logger = KotlinLogging.logger {}
 
     private val rootNode: MutableNode
         get() = nodes[0]
@@ -58,6 +57,11 @@ open class ProjectBuilder(
      */
     fun insertByPath(position: Path, node: MutableNode): ProjectBuilder {
         rootNode.insertAt(position, node)
+        return this
+    }
+
+    fun insertEdge(thisEdge: Edge): ProjectBuilder {
+        edges.add(thisEdge)
         return this
     }
 
@@ -83,35 +87,26 @@ open class ProjectBuilder(
     }
 
     fun build(): Project {
-        addAggregatedAttributes()
-
-        nodes.flatMap { it.nodes.values }
-                .mapNotNull { it.filterChildren(filterRule, false) }
-                .map { it.translateMetrics(metricNameTranslator, false) }
-
-        filterEmptyFolders()
-
-        val project = Project(projectName, nodes.map { it.toNode() }.toList(), apiVersion)
-
-        logger.info { "Created Project with ${project.size} leaves." }
-
-        return project
+        nodes.map { it.translateMetrics(metricNameTranslator, true) }
+        edges.forEach { it.translateMetrics(metricNameTranslator) }
+        return Project(
+                projectName,
+                nodes.map { it.toNode() }.toList(),
+                edges = edges.toList(),
+                attributeTypes = attributeTypes.toMap()
+        )
     }
 
-    private fun filterEmptyFolders() {
-        nodes.forEach { it.filterChildren({ !it.isEmptyFolder }, true) }
-    }
-
-    private fun addAggregatedAttributes() {
-        nodes.forEach { it.addAggregatedAttributes(aggregationRules) }
+    fun addAttributeTypes(attributeTypes: AttributeTypes): ProjectBuilder {
+        if (!this.attributeTypes.containsKey(attributeTypes.type)) {
+            this.attributeTypes[attributeTypes.type] = mutableListOf(attributeTypes.attributeTypes)
+        } else {
+            this.attributeTypes[attributeTypes.type]!!.add(attributeTypes.attributeTypes)
+        }
+        return this
     }
 
     override fun toString(): String {
-        return "Project{projectName='$projectName', nodes=$nodes}"
+        return "Project{projectName='$projectName', nodes=$nodes, edges=$edges, attributeTypes=$attributeTypes)"
     }
-
-    companion object {
-        const val API_VERSION = "1.0"
-    }
-
 }

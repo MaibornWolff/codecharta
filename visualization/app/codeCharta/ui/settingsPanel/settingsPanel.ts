@@ -4,13 +4,14 @@ import "./settingsPanel.scss";
 /**
  * Controls the settingsPanel
  */
-export class SettingsPanelController{
+export class SettingsPanelController {
+
+    public showEdgePanel : boolean = false;
 
     /* @ngInject */
     constructor(
         private $scope,
-        private $timeout
-    ) {
+        private $timeout) {
     }
 
     /**
@@ -23,7 +24,6 @@ export class SettingsPanelController{
             this.$scope.$broadcast("rzSliderForceRender");
         },50);
     }
-
 }
 
 export const settingsPanelComponent = {

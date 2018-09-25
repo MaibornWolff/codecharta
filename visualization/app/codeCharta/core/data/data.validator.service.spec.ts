@@ -25,7 +25,6 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
     });
 
     it("should reject null", (done: DoneCallback)=> {
-        file.dependencies = [];
         dataValidatorService.validate(null).then(
             ()=> {
                 done.fail("should not accept null");
@@ -37,7 +36,6 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
     });
 
     it("should reject string", (done: DoneCallback)=> {
-        file.dependencies = [];
         dataValidatorService.validate("").then(
             ()=> {
                 done.fail("should not accept string");
@@ -48,24 +46,16 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
         );
     });
 
-
-    it("should reject a file with empty dependencies", (done: DoneCallback)=> {
-        file.dependencies = [];
-        dataValidatorService.validate(file).then(
-            ()=> {
-                done.fail("should not accept empty dependencies");
-            },
-            ()=> {
-                done();
-            }
-        );
-    });
-
-    it("should not reject a file with dependencies", (done: DoneCallback)=> {
-        file.dependencies = [
+    it("should not reject a file with edges", (done: DoneCallback)=> {
+        file.edges = [
             {
-                node: "a",
-                dependsOn: "b"
+                fromNodeName: "a",
+                toNodeName: "b",
+                attributes: {
+                    avgCommits: 42,
+                    pairingRate: 80,
+                },
+                visible: false
             }
         ];
         dataValidatorService.validate(file).then(
@@ -73,19 +63,19 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
                 done();
             },
             ()=> {
-                done.fail("should accept without dependencies");
+                done.fail("should accept with edges");
             }
         );
     });
 
-    it("should not reject a file without dependencies", (done: DoneCallback)=> {
-        file.dependencies = undefined;
+    it("should not reject a file without edges", (done: DoneCallback)=> {
+        file.edges = undefined;
         dataValidatorService.validate(file).then(
             ()=> {
                 done();
             },
             ()=> {
-                done.fail("should accept without dependencies");
+                done.fail("should accept without edges");
             }
         );
     });

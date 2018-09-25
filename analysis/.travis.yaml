@@ -4,5 +4,4 @@ jdk:
 install: true
 cache:
   directories:
-script:
-  - '$HOME/.gradle/caches'
+    - '$HOME/.gradle/caches'

@@ -1,0 +1,123 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`treemap utils build node deltas 1`] = `
+Object {
+  "attributes": Object {},
+  "children": Array [],
+  "deltas": Object {
+    "theHeight": 33,
+  },
+  "depth": 0,
+  "height": 100,
+  "heightDelta": 33,
+  "isLeaf": true,
+  "length": 400,
+  "link": undefined,
+  "markingColor": NaN,
+  "name": "Anode",
+  "origin": undefined,
+  "parent": null,
+  "path": "/root/Anode",
+  "visible": undefined,
+  "width": 400,
+  "x0": 0,
+  "y0": 0,
+  "z0": 0,
+}
+`;
+
+exports[`treemap utils build node invertHeight 1`] = `
+Object {
+  "attributes": Object {},
+  "children": Array [],
+  "deltas": undefined,
+  "depth": 0,
+  "height": 1900,
+  "heightDelta": 0,
+  "isLeaf": true,
+  "length": 400,
+  "link": undefined,
+  "markingColor": NaN,
+  "name": "Anode",
+  "origin": undefined,
+  "parent": null,
+  "path": "/root/Anode",
+  "visible": undefined,
+  "width": 400,
+  "x0": 0,
+  "y0": 0,
+  "z0": 0,
+}
+`;
+
+exports[`treemap utils build node is leaf 1`] = `
+Object {
+  "attributes": Object {},
+  "children": Array [],
+  "deltas": undefined,
+  "depth": 0,
+  "height": 100,
+  "heightDelta": 0,
+  "isLeaf": true,
+  "length": 400,
+  "link": undefined,
+  "markingColor": NaN,
+  "name": "Anode",
+  "origin": undefined,
+  "parent": null,
+  "path": "/root/Anode",
+  "visible": undefined,
+  "width": 400,
+  "x0": 0,
+  "y0": 0,
+  "z0": 0,
+}
+`;
+
+exports[`treemap utils build node minimal 1`] = `
+Object {
+  "attributes": Object {},
+  "children": Array [],
+  "deltas": undefined,
+  "depth": 0,
+  "height": 100,
+  "heightDelta": 0,
+  "isLeaf": true,
+  "length": 400,
+  "link": undefined,
+  "markingColor": NaN,
+  "name": "Anode",
+  "origin": undefined,
+  "parent": null,
+  "path": "/root/Anode",
+  "visible": undefined,
+  "width": 400,
+  "x0": 0,
+  "y0": 0,
+  "z0": 0,
+}
+`;
+
+exports[`treemap utils build node should set lowest possible height caused by other visible edge pairs 1`] = `
+Object {
+  "attributes": Object {},
+  "children": Array [],
+  "deltas": undefined,
+  "depth": 0,
+  "height": 1,
+  "heightDelta": 0,
+  "isLeaf": true,
+  "length": 400,
+  "link": undefined,
+  "markingColor": NaN,
+  "name": "Anode",
+  "origin": undefined,
+  "parent": null,
+  "path": "/root/Anode",
+  "visible": undefined,
+  "width": 400,
+  "x0": 0,
+  "y0": 0,
+  "z0": 0,
+}
+`;

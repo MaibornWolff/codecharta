@@ -1,0 +1,20 @@
+<md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.enableEdgeArrows" ng-change="$ctrl.settingsService.onSettingsChanged()">
+        Enable Edge Arrows
+    </md-checkbox>
+</md-input-container>
+
+<md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.maximizeDetailPanel" ng-change="$ctrl.settingsService.onSettingsChanged()">
+        Maximize Detail Panel
+    </md-checkbox>
+</md-input-container>
+
+<md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.isWhiteBackground" ng-change="$ctrl.settingsService.onSettingsChanged()">
+        White Background
+    </md-checkbox>
+</md-input-container>
+
+<reset-settings-button-component settings-names="showDependencies, maximizeDetailPanel, isWhiteBackground"></reset-settings-button-component>
+

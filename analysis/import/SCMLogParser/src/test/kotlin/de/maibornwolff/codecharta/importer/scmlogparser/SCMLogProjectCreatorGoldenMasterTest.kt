@@ -66,7 +66,7 @@ class SCMLogProjectCreatorGoldenMasterTest (
         val svnProjectForComparison = serializeAndDeserializeProject(svnProject)
 
         // then
-        Assert.assertThat(svnProjectForComparison, ProjectMatcher.matchesProject(expectedProject))
+        Assert.assertThat(svnProjectForComparison, ProjectMatcher.matchesProjectUpToVersion(expectedProject))
     }
 
     @Throws(IOException::class)

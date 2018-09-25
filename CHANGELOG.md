@@ -6,13 +6,114 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
-- Added UnderstandImporter to Analysis
 
 ### Changed
 
 ### Removed
 
 ### Fixed
+
+## [1.17.0] - 2018-09-21
+### Added
+- CodeMaatImport for temporal coupling dependencies #172
+- EdgeFilter to aggregate edge-attributes as node-attributes #222
+- Option to show and hide dependent edges from node-context-menu #218
+
+### Changed
+- MergeFilter merges edges #172
+
+### Removed
+
+### Fixed
+
+## [1.16.2] - 2018-09-10
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+- missing event in firefox #232
+
+## [1.16.1] - 2018-08-31
+### Added
+- gitlab + dotnet manual
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.16.0] - 2018-08-31
+### Added
+- add the option to add multiple files via url parameter (e.g. ?file=a&file=b...)
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.15.1] - 2018-08-13
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.15.0] - 2018-08-13
+### Added
+- e2e tests are running in CI Environment (headless)
+- pupeteer as e2e test framework
+- Show names of marked packages in legend
+- Added a source code importer that can analyse rloc,mcc for java source code
+- keep settings when the user changes a file
+- Added option to set white background
+
+### Changed
+
+### Removed
+- cypress
+
+### Fixed
+
+## [1.14.2] - 2018-07-16
+### Added
+
+### Changed
+- Changed folder detail metrics from mean to sum
+
+### Removed
+
+### Fixed
+
+## [1.14.1] - 2018-07-13
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.14.0] - 2018-07-13
+### Added
+- Added UnderstandImporter to Analysis
+- Packages can be highlighted in different colors #152
+- Adding a context menu with highlighting colors and convenience methods for the tree view and 3D view #155
+- Folders and files to highlight can be described in the cc.json #165
+- Dynamic/automatic margin computing de/activated by tick
+
+### Changed
+- Details panel: using the sum of the childrens metrics instead of the mean value
+
+### Removed
+
+### Fixed
+- Display buttons do not trigger map changes #185
+- Flickering surfaces when zooming out
 
 ## [1.13.0] - 2018-06-08
 ### Added

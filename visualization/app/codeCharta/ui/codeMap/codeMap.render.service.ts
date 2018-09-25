@@ -6,11 +6,13 @@ import {LabelManager} from "./rendering/labelManager";
 import {SettingsServiceSubscriber, Settings, SettingsService} from "../../core/settings/settings.service";
 import {node} from "./rendering/node";
 import {ArrowManager} from "./rendering/arrowManager";
-import {CodeMapDependency} from "../../core/data/model/CodeMap";
+import {Edge} from "../../core/data/model/CodeMap";
 import {
     CodeMapBuildingTransition, CodeMapMouseEventService,
     CodeMapMouseEventServiceSubscriber
 } from "./codeMap.mouseEvent.service";
+import {TreeMapSettings} from "../../core/treemap/treemap.service";
+import {codeMapBuilding} from "./rendering/codeMapBuilding";
 
 const mapSize = 500.0;
 
@@ -25,7 +27,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     private labelManager: LabelManager = null;
     private arrowManager: ArrowManager = null;
 
-    private currentSortedNodes: node[];
+    public currentSortedNodes: node[];
     private currentRenderSettings: renderSettings;
 
     /* @ngInject */
@@ -37,6 +39,10 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         CodeMapMouseEventService.subscribe($rootScope, this);
     }
 
+    onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
+
+    }
+
     onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
 
     }
@@ -46,18 +52,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     }
 
     onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
-        let deps: CodeMapDependency[] = this.settingsService.settings.map.dependencies;
 
-        this.arrowManager.clearArrows();
-
-        if (deps && data.to && this.currentSortedNodes && this.currentRenderSettings && this.settingsService.settings.showDependencies) {
-            this.arrowManager.addCodeMapDependenciesFromOriginAsArrows(data.to.node, this.currentSortedNodes, deps, this.currentRenderSettings);
-            this.arrowManager.scale(
-                this.threeSceneService.mapGeometry.scale.x,
-                this.threeSceneService.mapGeometry.scale.y,
-                this.threeSceneService.mapGeometry.scale.z,
-            );
-        }
     }
 
     onSettingsChanged(settings: Settings, event: Event) {
@@ -80,8 +75,34 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         }
     }
 
-    updateMapGeometry(s) {
-        let nodes: node[] = this.treeMapService.createTreemapNodes(s.map.root, mapSize, mapSize, s.margin, s.areaMetric, s.heightMetric, s.invertHeight);
+    public collectNodesToArray(node: node): node[] {
+        let nodes = [node];
+        for (let i = 0; i < node.children.length; i++) {
+            let collected = this.collectNodesToArray(node.children[i]);
+            for (let j = 0; j < collected.length; j++) {
+                nodes.push(collected[j]);
+            }
+        }
+        return nodes;
+    }
+
+    updateMapGeometry(s: Settings) {
+
+        let visibleEdges = this.getVisibleEdges(s);
+
+        const treeMapSettings: TreeMapSettings = {
+            size: mapSize,
+            areaKey: s.areaMetric,
+            heightKey: s.heightMetric,
+            margin: s.margin,
+            invertHeight: s.invertHeight,
+            visibleEdges: visibleEdges,
+        };
+
+        let nodes: node[] = this.collectNodesToArray(
+            this.treeMapService.createTreemapNodes(s.map.root, treeMapSettings, s.map.edges)
+        );
+
         let filtered = nodes.filter(node => node.visible && node.length > 0 && node.width > 0);
         this.currentSortedNodes = filtered.sort((a, b) => {
             return b.height - a.height;
@@ -97,7 +118,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
 
         this.labelManager = new LabelManager(this.threeSceneService.labels);
         this.labelManager.clearLabels();
-        this.arrowManager = new ArrowManager(this.threeSceneService.dependencyArrows);
+        this.arrowManager = new ArrowManager(this.threeSceneService.edgeArrows);
         this.arrowManager.clearArrows();
 
         for (let i = 0, numAdded = 0; i < this.currentSortedNodes.length && numAdded < s.amountOfTopLabels; ++i) {
@@ -107,9 +128,33 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             }
         }
 
+        if (visibleEdges.length > 0 && s.enableEdgeArrows) {
+            this.showCouplingArrows(visibleEdges);
+        }
+
         this._mapMesh = new CodeMapMesh(this.currentSortedNodes, this.currentRenderSettings);
 
         this.threeSceneService.setMapMesh(this._mapMesh, mapSize);
+    }
+
+    private getVisibleEdges(s: Settings) {
+        if (s.map && s.map.edges) {
+            return s.map.edges.filter(edge => edge.visible === true);
+        }
+        return [];
+    }
+
+    showCouplingArrows(deps: Edge[]) {
+        this.arrowManager.clearArrows();
+
+        if (deps && this.currentRenderSettings) {
+            this.arrowManager.addEdgeArrows(this.currentSortedNodes, deps, this.currentRenderSettings);
+            this.arrowManager.scale(
+                this.threeSceneService.mapGeometry.scale.x,
+                this.threeSceneService.mapGeometry.scale.y,
+                this.threeSceneService.mapGeometry.scale.z,
+            );
+        }
     }
 
     /**

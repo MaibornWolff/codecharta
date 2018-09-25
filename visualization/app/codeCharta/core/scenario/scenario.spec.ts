@@ -32,7 +32,6 @@ describe("app.codeCharta.core.scenarioService", function () {
                 "deltaColorFlipped": false,
                 "deltas": false,
                 "heightMetric": "Average Complexity*",
-                "invertHeight": false,
                 "margin": 1,
                 "maximizeDetailPanel": false,
                 "neutralColorRange":
@@ -41,10 +40,15 @@ describe("app.codeCharta.core.scenarioService", function () {
                         "to": 40
                     },
                 "scaling":
-                    {"x": 1,
+                    {
+                        "x": 1,
                         "y": 1,
-                        "z": 1},
-                "showDependencies": false
+                        "z": 1
+                    },
+                "enableEdgeArrows": true,
+                "invertHeight": false,
+                "dynamicMargin": true,
+                "isWhiteBackground": false
             },
 
         "autoFitCamera": true
@@ -66,6 +70,13 @@ describe("app.codeCharta.core.scenarioService", function () {
     it("should apply the settings from a given scenario", () => {
         scenarioService.applyScenario(scenario);
         expect(settingsService.settings).toBe(scenario.settings);
+    });
+
+    it("should apply the settings from a given scenario once when applyScenarioOnce is called", () => {
+        scenarioService.applyScenario = jest.fn();
+        scenarioService.applyScenarioOnce(scenario);
+        scenarioService.applyScenarioOnce(scenario);
+        expect(scenarioService.applyScenario).toHaveBeenCalledTimes(1);
     });
 
     it("default scenario should be rloc/mcc/mcc", () => {
@@ -109,6 +120,10 @@ describe("app.codeCharta.core.scenarioService", function () {
                 }
             };
             expect(scenarioService.isScenarioPossible(scenario, metrics)).toBe(false);
+        });
+
+        it("should be impossible when params are null", () => {
+            expect(scenarioService.isScenarioPossible(null, null)).toBe(false);
         });
 
     });

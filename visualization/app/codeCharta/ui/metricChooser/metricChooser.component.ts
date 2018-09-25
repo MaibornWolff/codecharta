@@ -6,6 +6,7 @@ import {
     CodeMapBuildingTransition, CodeMapMouseEventService,
     CodeMapMouseEventServiceSubscriber
 } from "../codeMap/codeMap.mouseEvent.service";
+import {codeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
 
 export class MetricChooserController implements DataServiceSubscriber, CodeMapMouseEventServiceSubscriber{
 
@@ -18,6 +19,9 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
     public hoveredAreaDelta: number;
     public hoveredColorDelta: number;
     public hoveredDeltaColor: string;
+    public optionsWithoutStart;
+    public sliderPositions;
+
 
     /* @ngInject */
     constructor(
@@ -29,6 +33,15 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
         this.metrics = dataService.data.metrics.sort();
         this.dataService.subscribe(this);
         CodeMapMouseEventService.subscribe($rootScope, this);
+        this.optionsWithoutStart = {
+            connect: true,
+            range: {
+                min: 0,
+                max: 100,
+            },
+        };
+
+        this.sliderPositions = [20, 80];
     }
 
     onDataChanged(data: DataModel, event: IAngularEvent) {
@@ -37,6 +50,9 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
 
     public notify() {
         this.settingsService.applySettings();
+    }
+
+    onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: IAngularEvent) {
     }
 
     onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
@@ -90,17 +106,24 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
 
 }
 
-export const metricChooserComponent = {
-    selector: "metricChooserComponent",
-    template: require("./metricChooser.component.html"),
+export const areaMetricChooserComponent = {
+    selector: "areaMetricChooserComponent",
+    template: require("./metricChooser.area.component.html"),
     controller: MetricChooserController
 };
 
-export const horizontalMetricChooserComponent = {
-    selector: "horizontalMetricChooserComponent",
-    template: require("./metricChooser.horizontal.component.html"),
+export const heightMetricChooserComponent = {
+    selector: "heightMetricChooserComponent",
+    template: require("./metricChooser.height.component.html"),
     controller: MetricChooserController
 };
+
+export const colorMetricChooserComponent = {
+    selector: "colorMetricChooserComponent",
+    template: require("./metricChooser.color.component.html"),
+    controller: MetricChooserController
+};
+
 
 
 
