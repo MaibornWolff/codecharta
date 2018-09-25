@@ -3,13 +3,15 @@ import {DialogService} from "../../ui/dialog/dialog.service";
 import {ColorKeywords} from "three";
 import forestgreen = ColorKeywords.forestgreen;
 import {forEachComment} from "tslint";
+import {SettingsService} from "../settings/settings.service";
 
 
 export class AggregateMapService {
 
     public static SELECTOR = "aggregateMapService";
 
-    constructor(private dialogService: DialogService) {
+    constructor(private dialogService: DialogService,
+                private settingsService: SettingsService) {
 
     }
 
@@ -61,6 +63,7 @@ export class AggregateMapService {
         let outputMap: CodeMap = {
             projectName: "Aggregation of following projects: " + projectNameArray.join(", "),
             fileName: "Aggregation of following files: " + fileNameArray.join(", "),
+            apiVersion: this.settingsService.settings.map.apiVersion,
             root: {
                 name: "root",
                 type: "Folder",

@@ -23,6 +23,7 @@ export interface CodeMap {
     edges?: Edge[];
     attributeTypes?: AttributeTypes;
     blacklist?: Array<{[key: string]: string}>;
+    userSettings?: any;
 }
 
 export interface Edge {
