@@ -90,27 +90,4 @@ class MutableNode constructor(
             else -> this
         }
     }
-
-    private fun <K, V> Map<K, V>.mergeReduce(other: Map<K, V>, reduce: (V, V) -> V = { _, b -> b }): Map<K, V> =
-            this.toMutableMap().apply { other.forEach { merge(it.key, it.value, reduce) } }
-
-    private fun <K, V> Map<K, V>.mergeReduce(other: Map<K, V>, reductionMap: Map<K, (V, V) -> V> = mapOf()): Map<K, V> =
-            this.toMutableMap().apply {
-                other.forEach {
-                    merge(it.key, it.value, reductionMap[it.key] ?: { _, b -> b })
-                }
-            }
-
-    fun addAggregatedAttributes(aggregationRules: Map<String, (Any, Any) -> Any> = emptyMap()): Map<String, Any> {
-        if (!children.isEmpty()) {
-
-            attributes = attributes.mergeReduce(
-                    children.map { it.addAggregatedAttributes(aggregationRules) }
-                            .reduce { acc, map -> map.mergeReduce(acc, aggregationRules) }
-            ) { x, _ -> x }
-
-        }
-
-        return attributes.filterKeys { aggregationRules.keys.contains(it) }
-    }
 }

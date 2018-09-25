@@ -31,6 +31,7 @@ package de.maibornwolff.codecharta.model
 
 import de.maibornwolff.codecharta.attributeTypes.AttributeTypes
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
+import mu.KotlinLogging
 
 
 open class ProjectBuilder(
@@ -43,7 +44,9 @@ open class ProjectBuilder(
         if (nodes.size != 1) throw IllegalStateException("no root node present in project")
     }
 
-    private val rootNode: MutableNode
+    private val logger = KotlinLogging.logger {}
+
+    val rootNode: MutableNode
         get() = nodes[0]
 
     val size: Int
@@ -69,8 +72,6 @@ open class ProjectBuilder(
 
     private var filterRule: (MutableNode) -> Boolean = { true }
 
-    private var aggregationRules: Map<String, (Any, Any) -> Any> = mapOf()
-
     fun withMetricTranslator(metricNameTranslator: MetricNameTranslator): ProjectBuilder {
         this.metricNameTranslator = metricNameTranslator
         return this
@@ -81,20 +82,29 @@ open class ProjectBuilder(
         return this
     }
 
-    fun withAggregationRules(aggregationRules: Map<String, (Any, Any) -> Any>): ProjectBuilder {
-        this.aggregationRules = aggregationRules
-        return this
-    }
-
     fun build(): Project {
-        nodes.map { it.translateMetrics(metricNameTranslator, true) }
+        nodes.flatMap { it.nodes.values }
+                .mapNotNull { it.filterChildren(filterRule, false) }
+                .map { it.translateMetrics(metricNameTranslator, false) }
+
         edges.forEach { it.translateMetrics(metricNameTranslator) }
-        return Project(
+
+        filterEmptyFolders()
+
+        val project = Project(
                 projectName,
                 nodes.map { it.toNode() }.toList(),
                 edges = edges.toList(),
                 attributeTypes = attributeTypes.toMap()
         )
+
+        logger.info { "Created Project with ${project.size} leaves." }
+
+        return project
+    }
+
+    private fun filterEmptyFolders() {
+        nodes.forEach { it.filterChildren({ !it.isEmptyFolder }, true) }
     }
 
     fun addAttributeTypes(attributeTypes: AttributeTypes): ProjectBuilder {

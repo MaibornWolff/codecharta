@@ -45,7 +45,7 @@ import java.util.*
 class UnderstandProjectBuilder(
         projectName: String,
         private val pathSeparator: Char,
-        aggregation: AGGREGATION = AGGREGATION.FILE
+        private val aggregation: AGGREGATION = AGGREGATION.FILE
 ) {
     private val logger = KotlinLogging.logger {}
 
@@ -53,7 +53,6 @@ class UnderstandProjectBuilder(
 
     private val projectBuilder = ProjectBuilder(projectName)
             .withMetricTranslator(understandReplacement)
-            .withAggregationRules(aggregationRules)
             .withFilter(filterRule)
 
     init {
@@ -203,6 +202,7 @@ class UnderstandProjectBuilder(
             replacementMap["CountClassDerived"] = "max_noc"
             replacementMap["CountInput"] = "max_fanin"
             replacementMap["CountOutput"] = "max_fanout"
+            replacementMap["MaxInheritanceTree"] = "max_dit"
             replacementMap["PercentLackOfCohesion"] = "max_lcom"
 
 
@@ -227,7 +227,44 @@ class UnderstandProjectBuilder(
         return this
     }
 
+
+    private fun <K, V> Map<K, V>.mergeReduce(other: Map<K, V>, reduce: (V, V) -> V = { _, b -> b }): Map<K, V> =
+            this.toMutableMap().apply { other.forEach { merge(it.key, it.value, reduce) } }
+
+    private fun <K, V> Map<K, V>.mergeReduce(other: Map<K, V>, reductionMap: Map<K, (V, V) -> V> = mapOf()): Map<K, V> =
+            this.toMutableMap().apply {
+                other.forEach {
+                    merge(it.key, it.value, reductionMap[it.key] ?: { _, b -> b })
+                }
+            }
+
+    private fun isAggregationType(type: NodeType?): Boolean {
+        return when (aggregation) {
+            AGGREGATION.FILE -> type != NodeType.Folder && type != NodeType.Unknown
+        }
+    }
+
+    private fun MutableNode.addAggregatedAttributes(aggregationRules: Map<String, (Any, Any) -> Any> = emptyMap()): Map<String, Any> {
+        if (!children.isEmpty()) {
+
+            if (isAggregationType(type)) {
+                attributes = attributes.mergeReduce(
+                        children.map { it.addAggregatedAttributes(aggregationRules) }
+                                .reduce { acc, map -> map.mergeReduce(acc, aggregationRules) }
+                ) { x, _ -> x }
+            } else {
+                children.map { it.addAggregatedAttributes(aggregationRules) }
+                        .reduce { acc, map -> map.mergeReduce(acc, aggregationRules) }
+            }
+        }
+
+        return attributes.filterKeys { aggregationRules.keys.contains(it) }
+    }
+
     fun build(): Project {
+        val nodes: List<MutableNode> = projectBuilder.rootNode.children
+        nodes.forEach { it.addAggregatedAttributes(aggregationRules) }
+
         return projectBuilder.build()
     }
 

@@ -68,7 +68,7 @@ class UnderstandProjectBuilderTest : Spek({
                 assertThat(nonFileNonFolderNodes, hasSize(0))
             }
 
-            it("has folder nodes as leaves") {
+            it("has no folder nodes as leaves") {
                 val folderLeaves = project.rootNode.leafObjects
                         .filter { it.type == NodeType.Folder }
                 assertThat(folderLeaves, hasSize(0))

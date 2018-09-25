@@ -87,30 +87,4 @@ class ProjectBuilderTest : Spek({
         }
 
     }
-
-    describe("ProjectBuilder with valid aggregationRule") {
-        val projectBuilder = ProjectBuilder("someName")
-                .withAggregationRules(mapOf(
-                        Pair("rloc", { x, y -> (x as Number).toLong() + (y as Number).toLong() })
-                ))
-        val nodeForInsertion = MutableNode("someNode", NodeType.File, mapOf(
-                Pair("rloc", 1L)
-        ))
-        projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
-        val nodeForInsertion2 = MutableNode("someNode2", NodeType.File, mapOf(
-                Pair("rloc", 2)
-        ))
-        projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion2)
-
-        on("build") {
-            val project = projectBuilder.build()
-
-            it("should aggregate Attributes") {
-                val root = project.rootNode
-                assertThat(root.attributes.size, `is`(1))
-                assertThat(root.attributes["rloc"] as Long, `is`<Long>(3L))
-            }
-        }
-
-    }
 })
