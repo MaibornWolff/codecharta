@@ -121,6 +121,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     excludeNode(node: CodeMapNode) {
         if(node.type === "Folder") {
             this.settings.blacklist.push({exclude: node.path + "/*"});
+            this.settings.blacklist.push({exclude: node.path + "/**"});
         }
         this.settings.blacklist.push({exclude: node.path});
         this.onSettingsChanged();
