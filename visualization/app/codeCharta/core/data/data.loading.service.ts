@@ -35,7 +35,6 @@ export class DataLoadingService {
                         edges: fileContent.edges || [],
                         attributeTypes: fileContent.attributeTypes || {},
                         blacklist: fileContent.blacklist || [],
-                        userSettings: fileContent.userSettings || {},
                     };
                     this.dataService.setMap(map, revision);
 
