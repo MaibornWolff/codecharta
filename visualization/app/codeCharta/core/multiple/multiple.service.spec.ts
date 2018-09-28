@@ -1,4 +1,4 @@
-import "./aggregate.module";
+import "./multiple.module";
 import {NGMock} from "../../../../mocks/ng.mockhelper";
 import {AttributeType, CodeMap} from "../data/model/CodeMap";
 
@@ -6,7 +6,7 @@ import {AttributeType, CodeMap} from "../data/model/CodeMap";
 /**
  * @test {Multiple}
  */
-describe("app.codeCharta.core.aggregate", function() {
+describe("app.codeCharta.core.multiple", function() {
 
     const file1: CodeMap = {
         fileName: "file1",
@@ -251,42 +251,42 @@ describe("app.codeCharta.core.aggregate", function() {
         }
     };
 
-    beforeEach(NGMock.mock.module("app.codeCharta.core.aggregate"));
+    beforeEach(NGMock.mock.module("app.codeCharta.core.multiple"));
 
-    describe("aggregateService", function() {
+    describe("multipleService", function() {
 
         /**
-         * @test {aggregateMapService}
+         * @test {multipleMapService}
          */
-        it("instance", NGMock.mock.inject(function (aggregateMapService) {
-            expect(aggregateMapService).not.toBe(undefined);
+        it("instance", NGMock.mock.inject(function (multipleMapService) {
+            expect(multipleMapService).not.toBe(undefined);
         }));
 
         /**
-         * @test {aggregateMapService}
+         * @test {multipleMapService}
          */
-        it("aggregation of two maps", NGMock.mock.inject(function (aggregateMapService) {
-            let aggregated: CodeMap;
-            aggregated = aggregateMapService.aggregateMaps([file1, file2]);
-            expect(aggregated).toEqual(file_aggregation_two);
+        it("aggregation of two maps", NGMock.mock.inject(function (multipleMapService) {
+            let multiple: CodeMap;
+            multiple = multipleMapService.aggregateMaps([file1, file2]);
+            expect(multiple).toEqual(file_aggregation_two);
         }));
 
         /**
-         * @test {aggregateMapService}
+         * @test {multipleMapService}
          */
-        it("aggregation of four maps", NGMock.mock.inject(function (aggregateMapService) {
-            let aggregated: CodeMap;
-            aggregated = aggregateMapService.aggregateMaps([file1, file2, file1, file2]);
-            expect(aggregated).toEqual(file_aggregation_four);
+        it("aggregation of four maps", NGMock.mock.inject(function (multipleMapService) {
+            let multiple: CodeMap;
+            multiple = multipleMapService.aggregateMaps([file1, file2, file1, file2]);
+            expect(multiple).toEqual(file_aggregation_four);
         }));
 
         /**
-         * @test {aggregateMapService}
+         * @test {multipleMapService}
          */
-        it("aggregation one map", NGMock.mock.inject(function (aggregateMapService) {
-            let aggregated: CodeMap;
-            aggregated = aggregateMapService.aggregateMaps([file1]);
-            expect(aggregated).toEqual(file1);
+        it("aggregation one map", NGMock.mock.inject(function (multipleMapService) {
+            let multiple: CodeMap;
+            multiple = multipleMapService.aggregateMaps([file1]);
+            expect(multiple).toEqual(file1);
         }));
     });
 
@@ -334,36 +334,36 @@ describe("app.codeCharta.core.aggregate", function() {
         ];
 
         /**
-         * @test {aggregateMapService}
+         * @test {multipleMapService}
          */
-        it ( "aggregation of two maps with empty edges should result in empty edges",NGMock.mock.inject(function(aggregateMapService){
+        it ( "aggregation of two maps with empty edges should result in empty edges",NGMock.mock.inject(function(multipleMapService){
             file1.edges = [];
             file2.edges = [];
-            let aggregated: CodeMap = aggregateMapService.aggregateMaps([file1,file2]);
-            expect(aggregated.edges).toEqual([]);
+            let multiple: CodeMap = multipleMapService.aggregateMaps([file1,file2]);
+            expect(multiple.edges).toEqual([]);
         }));
 
         /**
-         * @test {aggregateMapService}
+         * @test {multipleMapService}
          */
-        it ( "aggregation of two maps with given edges should result in summarized edges",NGMock.mock.inject(function(aggregateMapService){
+        it ( "aggregation of two maps with given edges should result in summarized edges",NGMock.mock.inject(function(multipleMapService){
             file1.edges = edges1;
             file2.edges = edges2;
-            let aggregated = aggregateMapService.aggregateMaps([file1,file2]);
-            expect(aggregated.edges).toEqual(aggEdges);
+            let multiple = multipleMapService.aggregateMaps([file1,file2]);
+            expect(multiple.edges).toEqual(aggEdges);
         }));
 
         /**
-         * @test {aggregateMapService}
+         * @test {multipleMapService}
          */
-        it ( "aggregation of one map with edges and other without should result in merged edges",NGMock.mock.inject(function(aggregateMapService){
+        it ( "aggregation of one map with edges and other without should result in merged edges",NGMock.mock.inject(function(multipleMapService){
             file1.edges = [edges1[0], edges2[0]];
             file2.edges = null;
             const expectedEdges = aggEdges;
             expectedEdges[1].fromNodeName = "/root/file1/big leaf";
             expectedEdges[1].toNodeName = "/root/file1/Parent Leaf/small leaf";
-            let aggregated = aggregateMapService.aggregateMaps([file1,file2]);
-            expect(aggregated.edges).toEqual(expectedEdges);
+            let multiple = multipleMapService.aggregateMaps([file1,file2]);
+            expect(multiple.edges).toEqual(expectedEdges);
         }));
 
     });
@@ -415,23 +415,23 @@ describe("app.codeCharta.core.aggregate", function() {
         };
 
         /**
-         * @test {aggregateMapService}
+         * @test {multipleMapService}
          */
-        it ( "aggregation of two maps with different key attributes should result in all keys aggregated map",NGMock.mock.inject(function(aggregateMapService){
+        it ( "aggregation of two maps with different key attributes should result in all keys aggregated map",NGMock.mock.inject(function(multipleMapService){
             file1.attributeTypes = attribute1;
             file2.attributeTypes = attribute2;
-            let aggregated = aggregateMapService.aggregateMaps([file1,file2]);
-            expect(aggregated.attributeTypes).toEqual(aggAttributes);
+            let multiple = multipleMapService.aggregateMaps([file1,file2]);
+            expect(multiple.attributeTypes).toEqual(aggAttributes);
         }));
 
         /**
-         * @test {aggregateMapService}
+         * @test {multipleMapService}
          */
-        it ( "aggregation of one map with attributes and other without should result in merged with same attributes as the one with them",NGMock.mock.inject(function(aggregateMapService){
+        it ( "aggregation of one map with attributes and other without should result in merged with same attributes as the one with them",NGMock.mock.inject(function(multipleMapService){
             file1.attributeTypes = attribute1;
             file2.attributeTypes = {};
-            let aggregated = aggregateMapService.aggregateMaps([file1,file2]);
-            expect(aggregated.attributeTypes).toEqual(attribute1);
+            let multiple = multipleMapService.aggregateMaps([file1,file2]);
+            expect(multiple.attributeTypes).toEqual(attribute1);
         }));
 
     });

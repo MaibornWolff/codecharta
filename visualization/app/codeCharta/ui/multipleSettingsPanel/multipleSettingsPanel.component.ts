@@ -1,11 +1,11 @@
 import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
-import "./aggregateSettingsPanel.component.scss";
+import "./multipleSettingsPanel.component.scss";
 import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/data.service";
 import {CodeMap} from "../../core/data/model/CodeMap";
-import {AggregateMapService} from "../../core/aggregate/aggregate.service";
+import {MultipleMapService} from "../../core/multiple/multiple.service";
 import {IRootScopeService} from "angular";
 
-export class AggregateSettingsPanelController implements DataServiceSubscriber, SettingsServiceSubscriber{
+export class MultipleSettingsPanelController implements DataServiceSubscriber, SettingsServiceSubscriber{
 
     public settings: Settings;
     public data: DataModel;
@@ -18,7 +18,7 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
         private $rootScope: IRootScopeService,
         private settingsService: SettingsService,
         private dataService: DataService,
-        private aggregateMapService: AggregateMapService,
+        private multipleMapService: MultipleMapService,
     ) {
         this.revisions = dataService.data.revisions;
         this.settings = settingsService.settings;
@@ -29,11 +29,11 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
         this.updateSelectedMapIndices();
     }
 
-    onAggregateChange(){
+    onMultipleChange(){
 
         this.selectMapsToAggregate();
 
-        let newMap = this.aggregateMapService.aggregateMaps(JSON.parse(JSON.stringify(this.mapsToAggregate)));
+        let newMap = this.multipleMapService.aggregateMaps(JSON.parse(JSON.stringify(this.mapsToAggregate)));
 
         this.settings.map = newMap;
         this.settingsService.applySettings(this.settings);
@@ -66,8 +66,8 @@ export class AggregateSettingsPanelController implements DataServiceSubscriber, 
     }
 }
 
-export const aggregateSettingsPanelComponent = {
-    selector: "aggregateSettingsPanelComponent",
-    template: require("./aggregateSettingsPanel.component.html"),
-    controller: AggregateSettingsPanelController
+export const multipleSettingsPanelComponent = {
+    selector: "multipleSettingsPanelComponent",
+    template: require("./multipleSettingsPanel.component.html"),
+    controller: MultipleSettingsPanelController
 };

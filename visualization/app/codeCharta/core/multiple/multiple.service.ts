@@ -5,9 +5,9 @@ import forestgreen = ColorKeywords.forestgreen;
 import {forEachComment} from "tslint";
 
 
-export class AggregateMapService {
+export class MultipleMapService {
 
-    public static SELECTOR = "aggregateMapService";
+    public static SELECTOR = "multipleMapService";
 
     constructor(private dialogService: DialogService) {
 

@@ -1,6 +1,6 @@
 import "../rangeSlider/rangeSlider";
 import "../statisticSettingsPanel/statisticSettingsPanel";
-import "../aggregateSettingsPanel/aggregateSettingsPanel";
+import "../multipleSettingsPanel/multipleSettingsPanel";
 import "../../core/core.module";
 import "../layoutSwitcher/layoutSwitcher";
 
