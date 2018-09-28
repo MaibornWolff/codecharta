@@ -30,7 +30,7 @@ export interface TreeMapSettings {
     margin: number;
     invertHeight: boolean;
     visibleEdges: Edge[];
-    blacklist: Array<{[key: string]: string}>;
+    blacklist: Array<Exclude>;
 }
 
 export class TreeMapService {

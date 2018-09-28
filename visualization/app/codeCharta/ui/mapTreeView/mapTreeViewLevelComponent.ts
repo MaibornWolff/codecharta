@@ -78,7 +78,7 @@ export class MapTreeViewLevelController {
         let result = false;
         if(this.settingsService.settings.blacklist) {
             this.settingsService.settings.blacklist.forEach((b)=>{
-                if(b.exclude && minimatch(path, b.exclude)){
+                if(b.path && (minimatch(path, b.path)||minimatch(path, b.path + "/*")||minimatch(path, b.path + "/**"))){
                     result = true;
                 }
             });
