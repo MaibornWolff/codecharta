@@ -79,9 +79,17 @@
         </div>
     </div>
 
-    <md-button class="md-fab md-primary dark_shadow_opacity file-chooser-button" onclick="document.getElementById('input-file-id').click();"></md-button>
-    <i class="fa fa-folder-open file-chooser-icon" onclick="document.getElementById('input-file-id').click();"></i>
+    <div class="file-chooser-btn">
+        <md-button class="md-fab md-primary dark_shadow_opacity" onclick="document.getElementById('input-file-id').click();">
+            <i class="fa fa-folder-open" onclick="document.getElementById('input-file-id').click();"></i>
+        </md-button>
+    </div>
 
+    <div class="save-btn">
+        <md-button class="md-fab md-primary dark_shadow_opacity" ng-click="$ctrl.downloadCurrentJson()">
+            <i class="fa fa-download" ng-click="$ctrl.downloadCurrentJson()"></i>
+        </md-button>
+    </div>
 </md-card>
 
 <md-button id="toggle-ribbon-bar-fab" class="md-fab md-primary" aria-label="Toggle Ribbon Bar" ng-click="$ctrl.toggle()">

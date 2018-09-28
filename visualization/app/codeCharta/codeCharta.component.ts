@@ -89,7 +89,6 @@ export class CodeChartaController {
                 this.dataService.setComparisonMap(0);
                 this.dataService.setReferenceMap(0);
                 this.settingsService.updateSettingsFromUrl();
-                this.settingsService.updateSettingsFromFile();
                 this.viewModel.numberOfLoadingTasks--;
             },
             (r) => {

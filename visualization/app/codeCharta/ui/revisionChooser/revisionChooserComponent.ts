@@ -47,7 +47,6 @@ export class RevisionChooserController implements DataServiceSubscriber{
 
     onReferenceChange(mapIndex: number) {
         this.dataService.setReferenceMap(mapIndex);
-        this.settingsService.updateSettingsFromFile();
     }
 
     onComparisonChange(mapIndex: number) {

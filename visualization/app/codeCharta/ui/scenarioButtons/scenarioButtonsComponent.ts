@@ -64,6 +64,7 @@ export class ScenarioButtonsController implements TooltipServiceSubscriber, Data
      */
     onclick(value: Scenario) {
         this.scenarioService.applyScenario(value);
+        console.log(value);
     }
 
     applySettings(){

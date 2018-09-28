@@ -149,7 +149,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         if(data.metrics && data.renderMap && data.revisions) {
             this._settings.map = data.renderMap; // reference map is always the map which should be drawn
-            this._settings.blacklist = data.renderMap.blacklist;
 
             if (data.metrics.indexOf(this._settings.areaMetric) === -1) {
                 //area metric is not set or not in the new metrics and needs to be chosen
@@ -205,64 +204,57 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this.$rootScope.$broadcast("settings-changed", this._settings);
     }
 
-    public updateSettingsFromFile() {
-        if (Object.keys(this._settings.map.userSettings).length !== 0) {
-            this._settings = this.iterateAndUpdateSettings();
-            this.onSettingsChanged();
-        }
-    }
-
-    public iterateAndUpdateSettings(settingsObj = this._settings, fileObj = this.settings.map.userSettings) {
-        for (let key in settingsObj) {
-            if (key !== "map" && fileObj[key] != undefined) {
-                if (typeof settingsObj[key] === "object"){
-                    this.iterateAndUpdateSettings(settingsObj[key], fileObj[key]);
-                } else {
-                    settingsObj[key] = fileObj[key];
-                }
-            }
-        }
-        return settingsObj;
-    }
-
     /**
      * updates the settings object according to url parameters. url parameters are named like the accessors of the Settings object. E.g. scale.x or areaMetric
      * @emits {settings-changed} transitively on call
      */
     public updateSettingsFromUrl() {
-        this._settings = this.iterateSettingsProperties(this._settings, "");
-        this.onSettingsChanged();
-    }
 
-    public iterateSettingsProperties(settingsObj, urlPrefix) {
-        for (let key in settingsObj) {
-            if (settingsObj.hasOwnProperty(key) && key !== "map" && key) {
+        let ctx = this;
 
-                if (!(typeof settingsObj[key] === "string" || settingsObj[key] instanceof String)) {
-                    this.iterateSettingsProperties(settingsObj[key], key + ".");
-                }
+        let iterateProperties = function (obj, prefix) {
+            for (let i in obj) {
+                if (obj.hasOwnProperty(i) && i !== "map" && i) {
 
-                const res = this.urlService.getParam(urlPrefix + key);
+                    if (typeof obj[i] === "string" || obj[i] instanceof String) {
+                        //do not iterate over strings
+                    } else {
+                        iterateProperties(obj[i], i + ".");
+                    }
 
-                if (res) {
-                    settingsObj[key] = this.getNewPropertyValue(res);
+                    const res = ctx.urlService.getParam(prefix + i);
+
+                    if (res) {
+
+                        if (res == "true") {
+                            obj[i] = true;
+                        } else if (res == "false") {
+                            obj[i] = false;
+                        } else if (res === 0 || res) {
+
+                            let val = parseFloat(res);
+
+                            if (isNaN(val)) {
+                                val = res;
+                            }
+
+                            obj[i] = val;
+                        } else {
+                            obj[i] = res;
+                        }
+
+                        // if we work with strings here it can cause errors in other parts of the app, check with console.log(typeof obj[i], obj[i]);
+                    }
+
                 }
             }
-        }
-        return settingsObj;
-    }
+        };
 
-    private getNewPropertyValue(res) {
-        if (res == "true") return true;
-        else if (res == "false") return false;
-        else if (res === 0 || res) {
-            let val = parseFloat(res);
-            if (isNaN(val)) val = res;
-            return val;
-        } else {
-            return res;
-        }
-        // if we work with strings: here it can cause errors in other parts of the app, check with console.log(typeof obj[i], obj[i]);
+        iterateProperties(this._settings, "");
+
+
+        this.onSettingsChanged();
+
     }
 
     /**
