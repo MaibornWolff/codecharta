@@ -4,7 +4,7 @@ import {AttributeType, CodeMap} from "../data/model/CodeMap";
 
 
 /**
- * @test {Aggregate}
+ * @test {Multiple}
  */
 describe("app.codeCharta.core.aggregate", function() {
 

@@ -22,8 +22,8 @@ export interface Scale {
 
 export enum KindOfMap {
     Single = "Single",
-    Delta = "Delta",
-    Aggregate = "Aggregate"
+    Multiple = "Multiple",
+    Delta = "Delta"
 }
 
 export interface Settings {

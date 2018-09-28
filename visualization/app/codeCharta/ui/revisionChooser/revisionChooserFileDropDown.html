@@ -1,6 +1,6 @@
 <md-input-container class="md-block"
-                    ng-class="{half: $ctrl.settingsService.settings.kindOfMap == KindOfMap.Delta}"
-                    ng-if="$ctrl.settingsService.settings.kindOfMap != KindOfMap.Aggregate">
+                    ng-class="{half: $ctrl.settingsService.settings.kindOfMap == 'Delta'}"
+                    ng-if="$ctrl.settingsService.settings.kindOfMap != 'Multiple'">
     <i class="fa fa-folder-open" onclick="document.getElementById('input-file-id').click();"></i>
 
     <md-select ng-model="$ctrl.ui.chosenReference" ng-change="$ctrl.onReferenceChange($ctrl.ui.chosenReference)">
@@ -11,8 +11,8 @@
 </md-input-container>
 
 <md-input-container class="md-block second"
-                    ng-class="{half: $ctrl.settingsService.settings.kindOfMap == KindOfMap.Delta}"
-                    ng-if="$ctrl.settingsService.settings.kindOfMap == KindOfMap.Delta">
+                    ng-class="{half: $ctrl.settingsService.settings.kindOfMap == 'Delta'}"
+                    ng-if="$ctrl.settingsService.settings.kindOfMap == 'Delta'">
     <md-select ng-model="$ctrl.ui.chosenComparison" ng-change="$ctrl.onComparisonChange($ctrl.ui.chosenComparison)">
         <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
             <md-truncate>{{::value.fileName}}</md-truncate>
@@ -20,5 +20,5 @@
     </md-select>
 </md-input-container>
 
-<aggregate-settings-panel-component ng-if="$ctrl.settingsService.settings.kindOfMap == KindOfMap.Aggregate"></aggregate-settings-panel-component>
+<aggregate-settings-panel-component ng-if="$ctrl.settingsService.settings.kindOfMap == 'Multiple'"></aggregate-settings-panel-component>
 
