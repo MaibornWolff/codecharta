@@ -13,6 +13,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+
+## [1.17.0] - 2018-09-28
+### Added
+
+### Changed
+- Invert delta colors moved from color to heigh metric column in ribbon bar #220
+- Delta value now as kindOfMap shown #220
+- Aggreate maps as multiple rename #220
+
+### Removed
+
+### Fixed
+-  Single/delta buttons now correctly activated when delta in ulr shown #220
+
+
 ## [1.17.0] - 2018-09-21
 ### Added
 - CodeMaatImport for temporal coupling dependencies #172
