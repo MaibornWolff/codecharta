@@ -58,36 +58,7 @@ export class RevisionChooserController implements DataServiceSubscriber{
 
     onShowChange(settings: Settings){
         this.settings = settings;
-        //this.show = settings.kindOfMap;
         this.settingsService.applySettings();
-
-       /* switch (option){
-            case "single":{
-                this.settingsService.settings.kindOfMap = false;
-                this.onReferenceChange(this.ui.chosenReference);
-                this.$rootScope.$broadcast("revision-mode-changed", option);
-                break;
-            }
-
-            case "aggregate":{
-                this.settingsService.settings.kindOfMap = false;
-                this.settingsService.applySettings();
-                this.$rootScope.$broadcast("revision-mode-changed", option);
-                break;
-            }
-
-            case "delta":{
-                this.settingsService.settings.kindOfMap = true;
-                this.settingsService.applySettings();
-                this.$rootScope.$broadcast("revision-mode-changed", option);
-                break;
-            }
-
-            default:{
-                console.log("Unexpected value for showing option: "+option);
-            }
-        }*/
-
 
      }
 }
