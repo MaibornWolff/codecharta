@@ -19,6 +19,10 @@ export interface Scale {
     y: number;
     z: number;
 }
+export interface Exclude {
+    path: string;
+    type: string;
+}
 
 export interface Settings {
 
@@ -39,7 +43,7 @@ export interface Settings {
     invertHeight: boolean;
     dynamicMargin: boolean;
     isWhiteBackground: boolean;
-    blacklist: Array<{[key: string]: string}>;
+    blacklist: Array<Exclude>;
 }
 
 export interface SettingsServiceSubscriber {
@@ -119,11 +123,11 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     }
 
     excludeNode(node: CodeMapNode) {
-        if(node.type === "Folder") {
-            this.settings.blacklist.push({exclude: node.path + "/*"});
-            this.settings.blacklist.push({exclude: node.path + "/**"});
-        }
-        this.settings.blacklist.push({exclude: node.path});
+        this.settings.blacklist.push({path: node.path, type: node.type});
+        this.onSettingsChanged();
+    }
+    includeNode(entry: Exclude) {
+        this.settings.blacklist = this.settings.blacklist.filter(obj => obj !== entry);
         this.onSettingsChanged();
     }
 

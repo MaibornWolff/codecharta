@@ -1,31 +1,36 @@
-import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {Exclude, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import "./blacklistPanel.component.scss";
 
 export class BlacklistPanelController implements SettingsServiceSubscriber{
 
+    public blacklist: Array<Exclude>;
     public text: string;
 
     constructor(private settingsService: SettingsService) {
         settingsService.subscribe(this);
 
         if(settingsService.settings.blacklist) {
-            this.text = settingsService.settings.blacklist.map(b=>b.exclude).join("\n");
+            this.blacklist = settingsService.settings.blacklist;
         }
     }
 
     onChange() {
-        if(this.settingsService.settings.blacklist) {
-            this.settingsService.settings.blacklist = this.text.split("\n").map((b) => {
-                return {exclude: b};
-            });
-        }
         this.settingsService.onSettingsChanged();
     }
 
     onSettingsChanged(settings: Settings, event: Event) {
         if(settings.blacklist) {
-            this.text = settings.blacklist.map(b => b.exclude).join("\n");
+            this.blacklist = settings.blacklist;
         }
+    }
+    removeBlacklistEntry(entry: Exclude){
+        console.log("clicked");
+        this.settingsService.includeNode(entry);
+        this.onChange();
+    }
+    addBlacklistEntry(){
+        this.settingsService.settings.blacklist.push({path: this.text, type: "undefined"});
+        this.onChange()
     }
 
 }

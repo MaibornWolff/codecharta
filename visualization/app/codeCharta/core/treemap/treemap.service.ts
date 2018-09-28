@@ -4,6 +4,7 @@ import {DataService} from "../data/data.service";
 import * as d3 from "d3";
 import {TreeMapUtils} from "./treemap.util";
 import {HierarchyNode} from "d3";
+import {Exclude} from "../settings/settings.service"
 
 export interface ValuedCodeMapNode {
     data: CodeMapNode;
@@ -93,7 +94,7 @@ export class TreeMapService {
 
     }
 
-    private calculateValue(node: CodeMapNode, edges: Edge[], key: string, blacklist: Array<{[key: string]: string}>): number {
+    private calculateValue(node: CodeMapNode, edges: Edge[], key: string, blacklist: Array<Exclude>): number {
         let result = 0;
 
         if(this.isBlacklisted(node.path, blacklist)) {
@@ -110,13 +111,13 @@ export class TreeMapService {
         return result;
     }
 
-    private isBlacklisted(path: string, blacklist: Array<{[key: string]: string}>): boolean {
+    private isBlacklisted(path: string, blacklist: Array<Exclude>): boolean {
         let result = false;
         var minimatch = require("minimatch");
 
         if (blacklist) {
             blacklist.forEach((b)=>{
-                if(b.exclude && minimatch(path, b.exclude)){
+                if(b.path && (minimatch(path, b.path)||minimatch(path, b.path + "/*")||minimatch(path, b.path + "/**"))){
                     result = true;
                 }
             });

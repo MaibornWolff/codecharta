@@ -1,2 +1,16 @@
-<textarea ng-model="$ctrl.text"></textarea>
-<md-button ng-click="$ctrl.onChange()">Apply</md-button>
+<md-list>
+    <md-list-item ng-repeat="item in $ctrl.blacklist">
+        <div class="md-list-item-text">
+            {{item.path}}
+            <md-button class="md-secondary" ng-click="$ctrl.removeBlacklistEntry(item)">
+                <i class="fas fa-trash"></i>
+            </md-button>
+        </div>
+    </md-list-item>
+    <md-list-item>
+        <textarea ng-model="$ctrl.text"></textarea>
+        <md-button class="md-secondary" ng-click="$ctrl.addBlacklistEntry()">
+            Add
+        </md-button>
+    </md-list-item>
+</md-list>
