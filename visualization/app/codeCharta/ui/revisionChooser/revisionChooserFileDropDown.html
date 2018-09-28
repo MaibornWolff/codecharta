@@ -1,7 +1,8 @@
 <md-input-container class="md-block"
                     ng-class="{half: $ctrl.show == 'delta'}"
                     ng-if="$ctrl.show == 'single' || $ctrl.show == 'delta'">
-    <i class="fa fa-folder-open" onclick="document.getElementById('input-file-id').click();"></i>
+    <i class="fa fa-folder-open"></i>
+    <i class="fa fa-download"></i>
 
     <md-select ng-model="$ctrl.ui.chosenReference" ng-change="$ctrl.onReferenceChange($ctrl.ui.chosenReference)">
         <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
