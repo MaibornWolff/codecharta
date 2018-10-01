@@ -1,8 +1,24 @@
 blacklist-panel-component {
-  textarea {
-    resize: vertical;
-    max-height: 200px;
+  md-input {
     width: 100%;
+    height: 45px;
+  }
+
+  .item-type {
+    min-width: 35px !important;
+  }
+
+  md-list-item.md-no-proxy,
+  md-list-item .md-no-style {
+    padding: 0;
+  }
+
+  .md-button.round-button {
+    margin-right: 0 !important;
+    float: right;
+    min-width: 0;
+    width: 36px;
+    border-radius: 50%;
   }
 }
 

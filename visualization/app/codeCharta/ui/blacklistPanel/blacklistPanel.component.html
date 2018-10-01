@@ -1,16 +1,35 @@
 <md-list>
-    <md-list-item ng-repeat="item in $ctrl.blacklist">
-        <div class="md-list-item-text">
-            {{item.path}}
-            <md-button class="md-secondary" ng-click="$ctrl.removeBlacklistEntry(item)">
-                <i class="fas fa-trash"></i>
-            </md-button>
-        </div>
-    </md-list-item>
     <md-list-item>
-        <textarea ng-model="$ctrl.text"></textarea>
-        <md-button class="md-secondary" ng-click="$ctrl.addBlacklistEntry()">
-            Add
+        <md-select ng-model="$ctrl.newItemType">
+            <md-option value="File" select="true">File</md-option>
+            <md-option value="Folder">Folder</md-option>
+        </md-select>
+
+        <md-input-container class="md-block">
+            <label>Node Path</label>
+            <input type="text" ng-model="$ctrl.text">
+        </md-input-container>
+        <md-button class="round-button" ng-click="$ctrl.addBlacklistEntry()">
+            <i class="fa fa-plus"></i>
         </md-button>
+    </md-list-item>
+
+    <md-divider ng-if="$ctrl.blacklist.length != 0"></md-divider>
+
+    <md-list-item class="md-1-line"
+                  ng-repeat="item in $ctrl.blacklist"
+                  title="{{::item.type}}: {{::item.path}}">
+
+        <div class="md-icon item-type" layout="column">
+            <i ng-if="::item.type == 'File'" class="fa fa-file-o"></i>
+            <i ng-if="::item.type == 'Folder'" class="fa fa-folder"></i>
+        </div>
+        <div class="md-list-item-text" layout="column">
+            <p>{{::item.path}}</p>
+        </div>
+        <md-button class="md-secondary round-button" ng-click="$ctrl.removeBlacklistEntry(item)">
+            <i class="fa fa-trash"></i>
+        </md-button>
+        <md-divider></md-divider>
     </md-list-item>
 </md-list>

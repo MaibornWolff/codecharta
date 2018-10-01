@@ -1,10 +1,12 @@
-import {Exclude, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import "./blacklistPanel.component.scss";
+import {Exclude, NodeType} from "../../core/data/model/CodeMap";
 
 export class BlacklistPanelController implements SettingsServiceSubscriber{
 
     public blacklist: Array<Exclude>;
     public text: string;
+    public newItemType: NodeType = NodeType.File;
 
     constructor(private settingsService: SettingsService) {
         settingsService.subscribe(this);
@@ -29,7 +31,7 @@ export class BlacklistPanelController implements SettingsServiceSubscriber{
         this.onChange();
     }
     addBlacklistEntry(){
-        this.settingsService.settings.blacklist.push({path: this.text, type: "undefined"});
+        this.settingsService.settings.blacklist.push({path: this.text, type: this.newItemType});
         this.onChange()
     }
 
