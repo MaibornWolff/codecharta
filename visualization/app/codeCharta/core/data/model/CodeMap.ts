@@ -1,5 +1,3 @@
-import {Exclude} from "../../settings/settings.service";
-
 export interface CodeMapNode {
     name: string;
     type: string;
@@ -24,7 +22,7 @@ export interface CodeMap {
     root: CodeMapNode;
     edges?: Edge[];
     attributeTypes?: AttributeTypes;
-    blacklist?: Array<{[key: string]: string}>;
+    blacklist?: Array<Exclude>;
 }
 
 export interface Edge {
@@ -47,4 +45,9 @@ export interface AttributeTypes {
 
 export enum AttributeType {
     absolute, relative
+}
+
+export interface Exclude {
+    path: string;
+    type: string;
 }

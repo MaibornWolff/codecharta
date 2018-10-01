@@ -5,7 +5,7 @@ import {
 } from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera} from "three";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
-import {AttributeType, CodeMap, CodeMapNode} from "../data/model/CodeMap";
+import {CodeMap, CodeMapNode, Exclude} from "../data/model/CodeMap";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 
 export interface Range {
@@ -18,10 +18,6 @@ export interface Scale {
     x: number;
     y: number;
     z: number;
-}
-export interface Exclude {
-    path: string;
-    type: string;
 }
 
 export interface Settings {
@@ -149,6 +145,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         if(data.metrics && data.renderMap && data.revisions) {
             this._settings.map = data.renderMap; // reference map is always the map which should be drawn
+            this._settings.blacklist = data.renderMap.blacklist;
 
             if (data.metrics.indexOf(this._settings.areaMetric) === -1) {
                 //area metric is not set or not in the new metrics and needs to be chosen

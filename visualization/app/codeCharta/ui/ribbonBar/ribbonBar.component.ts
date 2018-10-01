@@ -37,13 +37,9 @@ export class RibbonBarController {
         this.collapsingElements.removeClass("expanded");
     }
 
-    downloadCurrentJson() {
-        const filename: string = this.settingsService.settings.map.fileName;
-        var map: any = this.settingsService.settings.map;
-        var blacklist = this.settingsService.settings.blacklist;
-        var userSettings = this.settingsService.settings;
-        delete userSettings.map;
-        delete userSettings.blacklist;
+    prepareFileDownload() {
+        var settings: any = this.settingsService.settings;
+        var map: any = settings.map;
 
         let data = {
             fileName: map.fileName,
@@ -52,13 +48,12 @@ export class RibbonBarController {
             nodes: [map.root],
             edges: map.edges,
             attributeTypes: map.attributeTypes,
-            userSettings: userSettings,
-            blacklist: blacklist,
+            blacklist: settings.blacklist,
         };
-        this.downloadData(data, filename);
+        this.downloadData(data, map.fileName);
     }
 
-    downloadData(data, filename) {
+    downloadData(data, fileName) {
         if (typeof data === "object") {
             data = JSON.stringify(data, undefined, 4);
         }
@@ -67,7 +62,7 @@ export class RibbonBarController {
         const e = document.createEvent("MouseEvents");
         const a = document.createElement("a");
 
-        a.download = filename;
+        a.download = fileName;
         a.href = window.URL.createObjectURL(blob);
         a.dataset.downloadurl = ["text/json", a.download, a.href].join(":");
         e.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
