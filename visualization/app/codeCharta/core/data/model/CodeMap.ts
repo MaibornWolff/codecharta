@@ -49,9 +49,5 @@ export enum AttributeType {
 
 export interface Exclude {
     path: string;
-    type: NodeType;
-}
-
-export enum NodeType {
-    File, Folder
+    type: string;
 }

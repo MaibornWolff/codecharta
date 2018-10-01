@@ -1,12 +1,12 @@
 import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import "./blacklistPanel.component.scss";
-import {Exclude, NodeType} from "../../core/data/model/CodeMap";
+import {Exclude} from "../../core/data/model/CodeMap";
 
 export class BlacklistPanelController implements SettingsServiceSubscriber{
 
     public blacklist: Array<Exclude>;
-    public text: string;
-    public newItemType: NodeType = NodeType.File;
+    public newItemPath: string;
+    public newItemType: string = "File";
 
     constructor(private settingsService: SettingsService) {
         settingsService.subscribe(this);
@@ -25,16 +25,31 @@ export class BlacklistPanelController implements SettingsServiceSubscriber{
             this.blacklist = settings.blacklist;
         }
     }
+
     removeBlacklistEntry(entry: Exclude){
-        console.log("clicked");
         this.settingsService.includeNode(entry);
         this.onChange();
     }
+
     addBlacklistEntry(){
-        this.settingsService.settings.blacklist.push({path: this.text, type: this.newItemType});
-        this.onChange()
+        if (this.isValidNode(this.newItemPath, this.newItemType)) {
+            this.settingsService.settings.blacklist.push({path: this.newItemPath, type: this.newItemType});
+            this.onChange()
+        }
     }
 
+    private isValidNode(itemPath: string, itemType: string) {
+
+        const equalExcludeItem = this.blacklist.filter(item => {
+            return itemPath == item.path && itemType == item.type
+        });
+
+        return itemPath.length > 0 && equalExcludeItem.length == 0;
+    }
+
+    sortByFolder(item: Exclude) {
+        return (item && item.type == "Folder") ? 0 : 1;
+    }
 }
 
 export const blacklistPanelComponent = {

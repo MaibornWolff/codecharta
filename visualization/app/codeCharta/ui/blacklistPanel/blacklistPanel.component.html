@@ -1,14 +1,14 @@
 <md-list>
     <md-list-item>
-        <md-select ng-model="$ctrl.newItemType">
-            <md-option value="File" select="true">File</md-option>
+        <md-select ng-model="$ctrl.newItemType" md-select-on-focus="$ctrl.newItemType">
+            <md-option value="File">File</md-option>
             <md-option value="Folder">Folder</md-option>
         </md-select>
 
         <md-input-container class="md-block">
-            <label>Node Path</label>
-            <input type="text" ng-model="$ctrl.text">
+            <input type="text" placeholder="/root/nodePath" ng-model="$ctrl.newItemPath">
         </md-input-container>
+
         <md-button class="round-button" ng-click="$ctrl.addBlacklistEntry()">
             <i class="fa fa-plus"></i>
         </md-button>
@@ -16,9 +16,9 @@
 
     <md-divider ng-if="$ctrl.blacklist.length != 0"></md-divider>
 
-    <md-list-item class="md-1-line"
-                  ng-repeat="item in $ctrl.blacklist"
-                  title="{{::item.type}}: {{::item.path}}">
+    <md-list-item
+                  ng-repeat="item in $ctrl.blacklist | orderBy: [$ctrl.sortByFolder,'path']"
+                  title="{{::item.path}}">
 
         <div class="md-icon item-type" layout="column">
             <i ng-if="::item.type == 'File'" class="fa fa-file-o"></i>
