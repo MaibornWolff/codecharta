@@ -28,7 +28,6 @@
  */
 package de.maibornwolff.codecharta.importer.understand
 
-import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import mu.KotlinLogging
 import picocli.CommandLine
@@ -53,14 +52,11 @@ class UnderstandImporter : Callable<Void> {
     @CommandLine.Option(names = ["--pathSeparator"], description = ["path separator (default = '/')"])
     private var pathSeparator = '/'
 
-    @CommandLine.Option(names = ["-a", "--aggregation"], description = ["aggregate metrics to "])
-    private var aggregation = AGGREGATION.FILE
-
     private val logger = KotlinLogging.logger {}
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        val projectBuilder = UnderstandProjectBuilder(projectName, pathSeparator, aggregation)
+        val projectBuilder = UnderstandProjectBuilder(projectName, pathSeparator)
         files.forEach { projectBuilder.parseCSVStream(it.inputStream()) }
         val project = projectBuilder.build()
         ProjectSerializer.serializeProject(project, writer())

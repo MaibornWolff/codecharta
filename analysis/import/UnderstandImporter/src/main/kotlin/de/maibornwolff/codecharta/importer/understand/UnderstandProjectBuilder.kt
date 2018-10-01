@@ -44,8 +44,7 @@ import java.util.*
 
 class UnderstandProjectBuilder(
         projectName: String,
-        private val pathSeparator: Char,
-        private val aggregation: AGGREGATION = AGGREGATION.FILE
+        private val pathSeparator: Char
 ) {
     private val logger = KotlinLogging.logger {}
 
@@ -55,37 +54,9 @@ class UnderstandProjectBuilder(
             .withMetricTranslator(understandReplacement)
             .withFilter(filterRule)
 
-    init {
-        if (aggregation != AGGREGATION.FILE) throw NotImplementedError("Only file aggregation is implemented yet.")
-    }
-
     private var rowNumber = 1
 
     private val csvDelimiter = ','
-
-    private val sumOrFirst: (Any, Any) -> Any =
-            { x, y ->
-                when {
-                    (x is Long || x is Int || x is Short || x is Byte)
-                            && (y is Long || y is Int || y is Short || y is Byte) ->
-                        (x as Number).toLong() + (y as Number).toLong()
-                    x is Number && y is Number -> x.toDouble() + y.toDouble()
-                    x !is Number && y is Number -> y
-                    else -> x
-                }
-            }
-
-    private val maxValOrFirst: (Any, Any) -> Any =
-            { x, y ->
-                when {
-                    (x is Long || x is Int || x is Short || x is Byte)
-                            && (y is Long || y is Int || y is Short || y is Byte) ->
-                        maxOf((x as Number).toLong(), (y as Number).toLong())
-                    x is Number && y is Number -> maxOf(x.toDouble(), y.toDouble())
-                    x !is Number && y is Number -> y
-                    else -> x
-                }
-            }
 
     private val aggregationRules: Map<String, (Any, Any) -> Any>
         get() {
@@ -152,7 +123,7 @@ class UnderstandProjectBuilder(
                     "SumCyclomaticStrict",
                     "SumEssential"
             ).forEach {
-                aggregationMap[it] = sumOrFirst
+                aggregationMap[it] = getSumOrFirst()
             }
 
             listOf(
@@ -171,7 +142,7 @@ class UnderstandProjectBuilder(
                     "MaxNesting",
                     "PercentLackOfCohesion"
             ).forEach {
-                aggregationMap[it] = maxValOrFirst
+                aggregationMap[it] = getMaxValOrFirst()
             }
 
             return aggregationMap.toMap()
@@ -228,20 +199,8 @@ class UnderstandProjectBuilder(
     }
 
 
-    private fun <K, V> Map<K, V>.mergeReduce(other: Map<K, V>, reduce: (V, V) -> V = { _, b -> b }): Map<K, V> =
-            this.toMutableMap().apply { other.forEach { merge(it.key, it.value, reduce) } }
-
-    private fun <K, V> Map<K, V>.mergeReduce(other: Map<K, V>, reductionMap: Map<K, (V, V) -> V> = mapOf()): Map<K, V> =
-            this.toMutableMap().apply {
-                other.forEach {
-                    merge(it.key, it.value, reductionMap[it.key] ?: { _, b -> b })
-                }
-            }
-
     private fun isAggregationType(type: NodeType?): Boolean {
-        return when (aggregation) {
-            AGGREGATION.FILE -> type != NodeType.Folder && type != NodeType.Unknown
-        }
+        return type != NodeType.Folder && type != NodeType.Unknown
     }
 
     private fun MutableNode.addAggregatedAttributes(aggregationRules: Map<String, (Any, Any) -> Any> = emptyMap()): Map<String, Any> {
@@ -294,8 +253,4 @@ class UnderstandProjectBuilder(
             logger.warn { "Ignoring $rowNumber-th row ${Arrays.toString(rawRow)} due to: ${e.message}" }
         }
     }
-}
-
-enum class AGGREGATION {
-    FILE
 }

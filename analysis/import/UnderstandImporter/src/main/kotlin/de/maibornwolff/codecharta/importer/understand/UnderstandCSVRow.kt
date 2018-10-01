@@ -41,7 +41,7 @@ class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: U
         }
     }
 
-    val file =
+    private val file =
             if (rawRow[header.fileColumn] == null) throw IllegalArgumentException("Row has no path information.")
             else rawRow[header.fileColumn]!!
 
