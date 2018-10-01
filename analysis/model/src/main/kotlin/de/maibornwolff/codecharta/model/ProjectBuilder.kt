@@ -107,11 +107,11 @@ open class ProjectBuilder(
         nodes.forEach { it.filterChildren({ !it.isEmptyFolder }, true) }
     }
 
-    fun addAttributeTypes(attributeTypes: AttributeTypes): ProjectBuilder {
-        if (!this.attributeTypes.containsKey(attributeTypes.type)) {
-            this.attributeTypes[attributeTypes.type] = mutableListOf(attributeTypes.attributeTypes)
+    fun addAttributeTypes(attributeTypesToAdd: AttributeTypes): ProjectBuilder {
+        if (!attributeTypes.containsKey(attributeTypesToAdd.type)) {
+            attributeTypes[attributeTypesToAdd.type] = mutableListOf(attributeTypesToAdd.attributeTypes)
         } else {
-            this.attributeTypes[attributeTypes.type]!!.add(attributeTypes.attributeTypes)
+            attributeTypes[attributeTypesToAdd.type]!!.add(attributeTypesToAdd.attributeTypes)
         }
         return this
     }

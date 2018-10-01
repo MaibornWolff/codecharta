@@ -31,7 +31,6 @@ package de.maibornwolff.codecharta.model
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
-import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.hasSize
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
@@ -45,14 +44,13 @@ class ProjectBuilderTest : Spek({
 
         on("inserting new node") {
             val nodeForInsertion = MutableNode("someNode", NodeType.File)
-            val project = projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion).build()
+            projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
 
-            it("should create root node") {
-                val root = project.rootNode
+            it("has node as child of root") {
+                val root = projectBuilder.build().rootNode
                 assertThat(root.children, hasSize(1))
                 assertThat(root.children[0], NodeMatcher.matchesNode(nodeForInsertion.toNode()))
             }
-
         }
     }
 
@@ -62,9 +60,10 @@ class ProjectBuilderTest : Spek({
 
         on("inserting new node") {
             val nodeForInsertion = MutableNode("someNode", NodeType.File)
-            val project = projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion).build()
+            projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
 
-            it("should use root node if present") {
+            it("creates a Project with root node") {
+                val project = projectBuilder.build()
                 assertThat(project.rootNode, NodeMatcher.matchesNode(root.toNode()))
                 assertThat(root.children, hasSize(1))
                 assertThat(root.children[0], Matchers.`is`(nodeForInsertion))
