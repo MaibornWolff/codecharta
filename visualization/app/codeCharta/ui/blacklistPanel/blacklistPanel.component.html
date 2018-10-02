@@ -1,18 +1,21 @@
 <md-list>
+    <form>
     <md-list-item>
-        <md-select ng-model="$ctrl.newItemType" md-select-on-focus="$ctrl.newItemType">
+        <md-select ng-model="$ctrl.viewModel.itemType" md-select-on-focus="$ctrl.viewModel.newItemType">
             <md-option value="File">File</md-option>
             <md-option value="Folder">Folder</md-option>
         </md-select>
 
         <md-input-container class="md-block">
-            <input type="text" placeholder="/root/nodePath" ng-model="$ctrl.newItemPath">
+            <input type="text" type="submit" placeholder="/root/nodePath" ng-model="$ctrl.viewModel.itemPath">
+            <div ng-messages="$ctrl.viewModel.error">{{$ctrl.viewModel.error}}</div>
         </md-input-container>
 
-        <md-button class="round-button" ng-click="$ctrl.addBlacklistEntry()">
+        <md-button type="submit" class="round-button" ng-click="$ctrl.addBlacklistEntry()">
             <i class="fa fa-plus"></i>
         </md-button>
     </md-list-item>
+    </form>
 
     <md-divider ng-if="$ctrl.blacklist.length != 0"></md-divider>
 

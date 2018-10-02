@@ -4,7 +4,7 @@ import {DataService} from "../data/data.service";
 import * as d3 from "d3";
 import {TreeMapUtils} from "./treemap.util";
 import {HierarchyNode} from "d3";
-import {Exclude} from "../settings/settings.service"
+import {Exclude} from "../data/model/CodeMap";
 
 export interface ValuedCodeMapNode {
     data: CodeMapNode;
