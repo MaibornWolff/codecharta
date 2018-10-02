@@ -15,6 +15,10 @@ node-context-menu-component {
     line-height: 30px;
     min-height: 30px;
 
+    i {
+      min-width: 15px;
+    }
+
     &:not(:last-child) {
       margin-bottom: 0;
     }

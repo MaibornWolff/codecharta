@@ -30,8 +30,8 @@ export class NodeContextMenuComponent {
         });
     }
 
-    public static show($rootScope, path: string, x, y) {
-        $rootScope.$broadcast("show-node-context-menu", {path: path, x: x, y: y});
+    public static show($rootScope, path: string, type: string, x, y) {
+        $rootScope.$broadcast("show-node-context-menu", {path: path, type: type, x: x, y: y});
     }
 
     public static hide($rootScope) {
