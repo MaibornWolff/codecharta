@@ -62,7 +62,7 @@
                 <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.invertHeight" ng-change="$ctrl.settingsService.onSettingsChanged()">
                     Invert Height
                 </md-checkbox>
-                <md-checkbox class="md-primary" ng-if="$ctrl.settingsService.settings.kindOfMap == 'Delta'" ng-model="$ctrl.settingsService.settings.deltaColorFlipped" ng-change="$ctrl.apply()">
+                <md-checkbox class="md-primary" ng-if="$ctrl.settingsService.settings.kindOfMap == 'Delta'" ng-model="$ctrl.settingsService.settings.deltaColorFlipped" ng-change="$ctrl.settingsService.onSettingsChanged()">
                     Invert Delta Colors
                 </md-checkbox>
             </md-input-container>
