@@ -5,8 +5,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber{
 
     public viewModel = {
         flipped: false,
-        deltas: false,
-        deltaColorFlipped: false,
+        deltas: false
     };
 
     /* @ngInject */
