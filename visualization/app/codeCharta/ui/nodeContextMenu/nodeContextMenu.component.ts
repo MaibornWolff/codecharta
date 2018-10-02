@@ -46,14 +46,12 @@ export class NodeContextMenuComponent {
             this.allDependentEdgesAreVisible = this.codeMapActionsService.allDependentEdgesAreVisible(this.contextMenuBuilding);
             this.anyEdgeIsVisible = this.codeMapActionsService.anyEdgeIsVisible();
 
-            this.$timeout(() => {
-                let w = this.$element[0].children[0].clientWidth;
-                let h = this.$element[0].children[0].clientHeight;
-                let resX = Math.min(x, this.$window.innerWidth - w);
-                let resY = Math.min(y, this.$window.innerHeight - h);
-                angular.element(this.$element[0].children[0]).css("top", resY + "px");
-                angular.element(this.$element[0].children[0]).css("left", resX + "px");
-            }, 50);
+            let w = this.$element[0].children[0].clientWidth;
+            let h = this.$element[0].children[0].clientHeight;
+            let resX = Math.min(x, this.$window.innerWidth - w);
+            let resY = Math.min(y, this.$window.innerHeight - h);
+            angular.element(this.$element[0].children[0]).css("top", resY + "px");
+            angular.element(this.$element[0].children[0]).css("left", resX + "px");
         });
     }
 
