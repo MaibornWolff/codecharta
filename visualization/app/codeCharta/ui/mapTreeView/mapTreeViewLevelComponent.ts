@@ -49,7 +49,7 @@ export class MapTreeViewLevelController {
 
     onRightClick($event) {
         NodeContextMenuComponent.hide(this.$rootScope);
-        NodeContextMenuComponent.show(this.$rootScope, this.node.path, $event.clientX, $event.clientY);
+        NodeContextMenuComponent.show(this.$rootScope, this.node.path, this.node.type, $event.clientX, $event.clientY);
     }
 
     onFolderClick() {
