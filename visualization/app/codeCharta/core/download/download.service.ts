@@ -1,4 +1,5 @@
 import { SettingsService } from "../settings/settings.service";
+import angular from "angular";
 
 export class DownloadService {
 
@@ -44,7 +45,7 @@ export class DownloadService {
 
     private downloadData(data, fileName) {
         if (typeof data === "object") {
-            data = JSON.stringify(data, undefined, 4);
+            data = angular.toJson(data, 4);
         }
 
         const blob = new Blob([data], {type: "text/json"});
