@@ -17,7 +17,7 @@ export class RibbonBarController {
     }
 
     public downloadFile() {
-        this.downloadService.prepareFileDownload();
+        this.downloadService.downloadCurrentMap();
     }
 
     public changeMargin(){

@@ -8,7 +8,7 @@ export class DownloadService {
     constructor(private settingsService: SettingsService) {
     }
 
-    addDateToFileName(fileName) {
+    private addDateToFileName(fileName) {
         const date = new Date();
         const dateString = date.getDate() + "_" + (date.getMonth() + 1)  + "_" + date.getFullYear();
         let tokens = fileName.split(".");
@@ -16,14 +16,14 @@ export class DownloadService {
         return tokens.join(".");
     }
 
-    addJsonFileEndingIfNecessary(fileName) {
+    private addJsonFileEndingIfNecessary(fileName) {
         if(!fileName.endsWith(".json")) {
             return fileName + ".json";
         }
         return fileName;
     }
 
-    prepareFileDownload() {
+    public downloadCurrentMap() {
         var settings: any = this.settingsService.settings;
         var map: any = settings.map;
 
@@ -42,7 +42,7 @@ export class DownloadService {
         this.downloadData(data, resultingFileName);
     }
 
-    downloadData(data, fileName) {
+    private downloadData(data, fileName) {
         if (typeof data === "object") {
             data = JSON.stringify(data, undefined, 4);
         }
