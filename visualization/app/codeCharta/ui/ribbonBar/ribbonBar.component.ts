@@ -37,12 +37,30 @@ export class RibbonBarController {
         this.collapsingElements.removeClass("expanded");
     }
 
+    addDateToFileName(fileName) {
+        const date = new Date();
+        const dateString = date.getDate() + "_" + (date.getMonth() + 1)  + "_" + date.getFullYear();
+        let tokens = fileName.split(".");
+        tokens.splice(1, 0, dateString);
+        return tokens.join(".");
+    }
+
+    addJsonFileEndingIfNecessary(fileName) {
+        if(!fileName.endsWith(".json")) {
+            return fileName + ".json";
+        }
+        return fileName;
+    }
+
     prepareFileDownload() {
         var settings: any = this.settingsService.settings;
         var map: any = settings.map;
 
+        const datedFileName = this.addDateToFileName(map.fileName);
+        const resultingFileName = this.addJsonFileEndingIfNecessary(datedFileName);
+
         let data = {
-            fileName: map.fileName,
+            fileName: resultingFileName,
             projectName: map.projectName,
             apiVersion: map.apiVersion,
             nodes: [map.root],
@@ -50,7 +68,7 @@ export class RibbonBarController {
             attributeTypes: map.attributeTypes,
             blacklist: settings.blacklist,
         };
-        this.downloadData(data, map.fileName);
+        this.downloadData(data, resultingFileName);
     }
 
     downloadData(data, fileName) {
