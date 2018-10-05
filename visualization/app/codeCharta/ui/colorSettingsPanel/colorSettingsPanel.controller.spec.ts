@@ -35,13 +35,6 @@ describe("colorSettingsPanelController", ()=>{
         expect(settingsService.settings.kindOfMap).toBe(KindOfMap.Single);
     });
 
-    it("apply should update settings in settingsService and call its apply method", ()=>{
-        controller.viewModel.deltaColorFlipped = true;
-        controller.apply();
-        expect(settingsService.onSettingsChanged).toHaveBeenCalled();
-        expect(settingsService.settings.deltaColorFlipped).toBe(true);
-    });
-
     it("should update viewModel when settings are updated", ()=>{
         settingsService.settings.kindOfMap  = KindOfMap.Delta;
         settingsService.settings.deltaColorFlipped = true;
@@ -49,7 +42,6 @@ describe("colorSettingsPanelController", ()=>{
         controller.onSettingsChanged(settingsService.settings);
         expect(controller.viewModel.deltas).toBe(true);
         expect(controller.viewModel.flipped).toBe(true);
-        expect(controller.viewModel.deltaColorFlipped).toBe(true);
     });
 
 });
