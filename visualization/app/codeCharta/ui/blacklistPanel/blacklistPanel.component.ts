@@ -1,7 +1,6 @@
 import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import "./blacklistPanel.component.scss";
-import {Exclude} from "../../core/data/model/CodeMap";
-import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
+import {Exclude, ExcludeType} from "../../core/data/model/CodeMap";
 
 export class BlacklistPanelController implements SettingsServiceSubscriber{
 
@@ -9,12 +8,11 @@ export class BlacklistPanelController implements SettingsServiceSubscriber{
 
     public viewModel = {
         itemPath: "",
-        itemType: "File",
+        itemType: ExcludeType.exclude,
         error: "",
     };
 
-    constructor(private settingsService: SettingsService,
-                private codeMapUtilService: CodeMapUtilService) {
+    constructor(private settingsService: SettingsService) {
         settingsService.subscribe(this);
 
         if(settingsService.settings.blacklist) {
@@ -38,7 +36,6 @@ export class BlacklistPanelController implements SettingsServiceSubscriber{
     }
 
     addBlacklistEntry(){
-        this.viewModel.itemPath = this.removeLastCharacterIfSeparator(this.viewModel.itemPath);
         if (this.isValidNode()) {
             this.settingsService.settings.blacklist.push({path: this.viewModel.itemPath, type: this.viewModel.itemType});
             this.onChange()
@@ -51,9 +48,6 @@ export class BlacklistPanelController implements SettingsServiceSubscriber{
 
         } else if (this.isAlreadyBlacklistedNode()) {
             this.viewModel.error = this.viewModel.itemType + " is blacklisted";
-
-        } else if (this.codeMapUtilService.getCodeMapNodeFromPath(this.viewModel.itemPath, this.viewModel.itemType) == null) {
-            this.viewModel.error = this.viewModel.itemType + " does not exist";
 
         } else {
             this.viewModel.error = "";
@@ -69,12 +63,8 @@ export class BlacklistPanelController implements SettingsServiceSubscriber{
         }).length != 0;
     }
 
-    private removeLastCharacterIfSeparator(path: string) {
-        return (path[path.length - 1] == "/") ? path.substr(0, path.length - 1 ) : path
-    }
-
-    sortByFolder(item: Exclude) {
-        return (item && item.type == "Folder") ? 0 : 1;
+    sortByExcludes(item: Exclude) {
+        return (item && item.type == ExcludeType.exclude) ? 0 : 1;
     }
 }
 

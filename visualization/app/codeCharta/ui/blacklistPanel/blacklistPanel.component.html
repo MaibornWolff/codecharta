@@ -2,12 +2,12 @@
     <form>
     <md-list-item>
         <md-select ng-model="$ctrl.viewModel.itemType" md-select-on-focus="$ctrl.viewModel.newItemType">
-            <md-option value="File">File</md-option>
-            <md-option value="Folder">Folder</md-option>
+            <md-option value="exclude">Exclude</md-option>
+            <md-option value="hide">Hide</md-option>
         </md-select>
 
         <md-input-container class="md-block">
-            <input type="text" type="submit" placeholder="/root/nodePath" ng-model="$ctrl.viewModel.itemPath">
+            <input type="text" type="submit" placeholder=".gitignore style path" ng-model="$ctrl.viewModel.itemPath">
             <div ng-messages="$ctrl.viewModel.error">{{$ctrl.viewModel.error}}</div>
         </md-input-container>
 
@@ -20,12 +20,12 @@
     <md-divider ng-if="$ctrl.blacklist.length != 0"></md-divider>
 
     <md-list-item
-                  ng-repeat="item in $ctrl.blacklist | orderBy: [$ctrl.sortByFolder,'path']"
+                  ng-repeat="item in $ctrl.blacklist | orderBy: [$ctrl.sortByExcludes,'path']"
                   title="{{::item.path}}">
 
         <div class="md-icon item-type" layout="column">
-            <i ng-if="::item.type == 'File'" class="fa fa-file-o"></i>
-            <i ng-if="::item.type == 'Folder'" class="fa fa-folder"></i>
+            <i ng-if="::item.type == 'hide'" class="fa fa-eye-slash"></i>
+            <i ng-if="::item.type == 'exclude'" class="fa fa-times"></i>
         </div>
         <div class="md-list-item-text" layout="column">
             <p>{{::item.path}}</p>
