@@ -1,10 +1,10 @@
-import {CodeMapNode, Edge} from "../data/model/CodeMap";
+import {CodeMapNode, Edge, Exclude, ExcludeType} from "../data/model/CodeMap";
 import {node} from "../../ui/codeMap/rendering/node";
 import {DataService} from "../data/data.service";
 import * as d3 from "d3";
-import {TreeMapUtils} from "./treemap.util";
 import {HierarchyNode} from "d3";
-import {Exclude} from "../data/model/CodeMap";
+import {TreeMapUtils} from "./treemap.util";
+import {hierarchy} from "d3";
 
 export interface ValuedCodeMapNode {
     data: CodeMapNode;
@@ -81,6 +81,10 @@ export class TreeMapService {
             heightValue = TreeMapService.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND;
         }
 
+        if (this.isBlacklistHidden(squaredNode.data.path, s.blacklist)) {
+            squaredNode.data = this.setVisibilityOfNodeAndDescendants(squaredNode.data, false);
+        }
+
         const finalNode = TreeMapUtils.buildNodeFrom(squaredNode, heightScale, heightValue, maxHeight, depth, parent, s, TreeMapService.MIN_BUILDING_HEIGHT, TreeMapService.FOLDER_HEIGHT);
 
         if (squaredNode.children && squaredNode.children.length > 0) {
@@ -94,10 +98,18 @@ export class TreeMapService {
 
     }
 
+    public setVisibilityOfNodeAndDescendants(node: CodeMapNode, visibility: boolean) {
+        node.visible = visibility;
+        hierarchy<CodeMapNode>(node).descendants().forEach((hierarchyNode) => {
+            hierarchyNode.data.visible = visibility;
+        });
+        return node;
+    }
+
     private calculateValue(node: CodeMapNode, edges: Edge[], key: string, blacklist: Array<Exclude>): number {
         let result = 0;
 
-        if(this.isBlacklisted(node.path, blacklist)) {
+        if(this.isBlacklistExcluded(node.path, blacklist)) {
             return 0;
         }
 
@@ -111,13 +123,28 @@ export class TreeMapService {
         return result;
     }
 
-    private isBlacklisted(path: string, blacklist: Array<Exclude>): boolean {
+    private isBlacklistHidden(path: string, blacklist: Array<Exclude>): boolean {
         let result = false;
         var minimatch = require("minimatch");
 
         if (blacklist) {
             blacklist.forEach((b)=>{
-                if(b.path && (minimatch(path, b.path)||minimatch(path, b.path + "/*")||minimatch(path, b.path + "/**"))){
+                if(b.type == ExcludeType.hide && b.path && (minimatch(path, b.path) || minimatch(path, b.path + "/*") || minimatch(path, b.path + "/**"))){
+                    result = true;
+                }
+            });
+        }
+
+        return result;
+    }
+
+    private isBlacklistExcluded(path: string, blacklist: Array<Exclude>): boolean {
+        let result = false;
+        var minimatch = require("minimatch");
+
+        if (blacklist) {
+            blacklist.forEach((b)=>{
+                if(b.type == ExcludeType.exclude && b.path && (minimatch(path, b.path) || minimatch(path, b.path + "/*") || minimatch(path, b.path + "/**"))){
                     result = true;
                 }
             });
