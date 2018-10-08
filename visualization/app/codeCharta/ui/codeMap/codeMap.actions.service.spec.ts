@@ -122,22 +122,21 @@ describe("code map action service tests", ()=>{
 
     describe("node visibility", ()=>{
 
-        it("showing all nodes should make all nodes visible", ()=>{
+        beforeEach(()=>{
             codeMapActionService.settingsService.settings = {
                 map: {
                     root: simpleHiddenHierarchy
-                }
+                },
+                blacklist: []
             };
+        });
+
+        it("showing all nodes should make all nodes visible", ()=>{
             codeMapActionService.showAllNodes();
             checkTreeVisibility(simpleHiddenHierarchy, true);
         });
 
         it("isolationg node should show all descendants and hide all ascendants", ()=>{
-            codeMapActionService.settingsService.settings = {
-                map: {
-                    root: simpleHiddenHierarchy
-                }
-            };
             simpleHiddenHierarchy.visible = true;
             codeMapActionService.isolateNode(simpleHiddenHierarchy.children[0]);
             expect(simpleHiddenHierarchy.visible).toBe(false);

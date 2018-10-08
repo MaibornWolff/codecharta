@@ -4,6 +4,7 @@ import angular from "angular";
 import {highlightColors} from "../codeMap/rendering/renderSettings";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
+import {ExcludeType} from "../../core/data/model/CodeMap";
 
 export class NodeContextMenuComponent {
 

@@ -1,4 +1,4 @@
-import {CodeMapNode, Edge} from "../../core/data/model/CodeMap";
+import {CodeMapNode, Edge, ExcludeType} from "../../core/data/model/CodeMap";
 import {hierarchy} from "d3-hierarchy";
 import {SettingsService} from "../../core/settings/settings.service";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
@@ -24,11 +24,17 @@ export class CodeMapActionsService {
     }
 
     hideNode(node: CodeMapNode) {
+        this.settingsService.settings.blacklist.push({path: node.path, type: ExcludeType.hide});
         this.setVisibilityOfNodeAndDescendants(node, false);
         this.apply();
     }
 
     showNode(node: CodeMapNode) {
+        if(this.settingsService.settings.blacklist) {
+            const objectToDelete = {path: node.path, type: ExcludeType.hide};
+            const indexToDelete = this.settingsService.settings.blacklist.indexOf(objectToDelete);
+            this.settingsService.settings.blacklist.splice(indexToDelete, 1);
+        }
         this.setVisibilityOfNodeAndDescendants(node, true);
         this.apply();
     }

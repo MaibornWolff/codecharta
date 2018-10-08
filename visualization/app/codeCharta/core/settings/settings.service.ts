@@ -1,11 +1,11 @@
-import {DataService, DataServiceSubscriber, DataModel} from "../data/data.service";
+import {DataModel, DataService, DataServiceSubscriber} from "../data/data.service";
 import {
     CameraChangeSubscriber,
     ThreeOrbitControlsService
 } from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera} from "three";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
-import {CodeMap, CodeMapNode, Exclude} from "../data/model/CodeMap";
+import {CodeMap, CodeMapNode, Exclude, ExcludeType} from "../data/model/CodeMap";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 
 export interface Range {
@@ -119,9 +119,10 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     }
 
     excludeNode(node: CodeMapNode) {
-        this.settings.blacklist.push({path: node.path, type: node.type});
+        this.settings.blacklist.push({path: node.path, type: ExcludeType.exclude});
         this.onSettingsChanged();
     }
+
     includeNode(entry: Exclude) {
         this.settings.blacklist = this.settings.blacklist.filter(obj => obj !== entry);
         this.onSettingsChanged();

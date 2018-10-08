@@ -49,5 +49,10 @@ export enum AttributeType {
 
 export interface Exclude {
     path: string;
-    type: string;
+    type: ExcludeType;
+}
+
+export enum ExcludeType {
+    hide = "hide",
+    exclude = "exclude"
 }
