@@ -36,6 +36,7 @@ import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
+import mu.KotlinLogging
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
@@ -47,6 +48,8 @@ class CSVProjectBuilder(
         metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
         attributeTypes: AttributeTypes = AttributeTypes(mutableMapOf())
 ) {
+    private val logger = KotlinLogging.logger {}
+
     private val includeRows: (Array<String>) -> Boolean = { true }
     private val projectBuilder = ProjectBuilder(projectName)
             .withMetricTranslator(metricNameTranslator)
@@ -60,7 +63,7 @@ class CSVProjectBuilder(
         return projectBuilder
     }
 
-    fun build() : Project {
+    fun build(): Project {
         return projectBuilder.build()
     }
 
@@ -73,7 +76,7 @@ class CSVProjectBuilder(
                     val edge: Edge = csvRow.asEdge()
                     projectBuilder.insertEdge(edge)
                 } catch (e: IllegalArgumentException) {
-                    System.err.println(e.message)
+                    logger.warn { "Ignoring row due to ${e.message}" }
                 }
             }
             row = parser.parseNext()

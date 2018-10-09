@@ -25,6 +25,9 @@ dependencies {
     compile group: 'com.univocity', name: 'univocity-parsers', version: univocity_parsers_version
     compile group: 'info.picocli', name: 'picocli', version: picocli_version
     compile group: 'io.fastjson', name: 'boon', version: boon_version
+    compile group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
+
+    runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
     testCompile group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
     testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version

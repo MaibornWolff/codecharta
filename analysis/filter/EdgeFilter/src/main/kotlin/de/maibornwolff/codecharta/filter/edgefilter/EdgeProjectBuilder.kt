@@ -30,9 +30,11 @@
 package de.maibornwolff.codecharta.filter.edgefilter
 
 import de.maibornwolff.codecharta.model.*
+import mu.KotlinLogging
 import kotlin.math.max
 
 class EdgeProjectBuilder(private val project: Project, private val pathSeparator: Char) {
+    private val logger = KotlinLogging.logger {}
 
     private val projectBuilder = ProjectBuilder(
             getProjectName(),
@@ -41,7 +43,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
             getAttributeTypes())
 
     private fun getAttributeTypes(): MutableMap<String, MutableList<Map<String, AttributeType>>> {
-        val newAttributetypes : MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf()
+        val newAttributetypes: MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf()
         project.attributeTypes.forEach {
             newAttributetypes[it.key] = it.value.toMutableList()
         }
@@ -105,7 +107,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         try {
             projectBuilder.insertByPath(Path(parentPath), node.toMutableNode())
         } catch (e: IllegalArgumentException) {
-            System.err.println(e.message)
+            logger.warn { "Node $node not inserted due to ${e.message}" }
         }
     }
 
@@ -142,7 +144,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     private fun getAggregatedAttributes(listOfAttributes: MutableList<String>, filteredEdges: List<Edge>): MutableMap<String, Any> {
         val aggregatedAttributes: MutableMap<String, Any> = mutableMapOf()
 
-        listOfAttributes.forEach {key: String ->
+        listOfAttributes.forEach { key: String ->
             val attributeType = getAttributeTypeByKey(key)
             val filteredAttribute = filteredEdges.filter { edge: Edge -> edge.attributes.containsKey(key) }
             var aggregatedAttributeValue = filteredAttribute.sumBy { edge: Edge -> edge.attributes.get(key).toString().toFloat().toInt() }

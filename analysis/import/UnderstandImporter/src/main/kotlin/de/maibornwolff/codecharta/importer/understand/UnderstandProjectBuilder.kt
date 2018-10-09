@@ -34,6 +34,7 @@ import com.univocity.parsers.csv.CsvParserSettings
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
+import mu.KotlinLogging
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
@@ -43,6 +44,7 @@ class UnderstandProjectBuilder(
         private val pathSeparator: Char,
         aggregation: AGGREGATION = AGGREGATION.FILE
 ) {
+    private val logger = KotlinLogging.logger {}
 
     private val projectBuilder = ProjectBuilder(projectName)
             .withMetricTranslator(understandReplacement)
@@ -110,7 +112,7 @@ class UnderstandProjectBuilder(
                 this.insertByPath(row.pathInTree(), row.asNode())
             }
         } catch (e: IllegalArgumentException) {
-            System.err.println(e.message)
+            logger.warn { "Ignoring row due to ${e.message}" }
         }
     }
 }
