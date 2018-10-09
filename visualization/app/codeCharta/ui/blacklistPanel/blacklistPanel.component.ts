@@ -2,7 +2,7 @@ import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/s
 import "./blacklistPanel.component.scss";
 import {Exclude} from "../../core/data/model/CodeMap";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
-
+import * as d3 from "d3";
 export class BlacklistPanelController implements SettingsServiceSubscriber{
 
     public blacklist: Array<Exclude>;
@@ -46,15 +46,14 @@ export class BlacklistPanelController implements SettingsServiceSubscriber{
     }
 
     private isValidNode() {
+        const nodes = d3.hierarchy(this.settingsService.settings.map.root).descendants().map(d=>d.data);
+
         if (this.viewModel.itemPath.length == 0) {
-            this.viewModel.error = "Invalid empty path";
-
+            this.viewModel.error = "Invalid empty pattern";
+        } else if (CodeMapUtilService.numberOfBlacklistedNodes(nodes, [{path: this.viewModel.itemPath, type: "Folder"}]) === 0) {
+            this.viewModel.error = "Pattern not found";
         } else if (this.isAlreadyBlacklistedNode()) {
-            this.viewModel.error = this.viewModel.itemType + " is blacklisted";
-
-        } else if (this.codeMapUtilService.getCodeMapNodeFromPath(this.viewModel.itemPath, this.viewModel.itemType) == null) {
-            this.viewModel.error = this.viewModel.itemType + " does not exist";
-
+            this.viewModel.error = "Pattern already blacklisted";
         } else {
             this.viewModel.error = "";
             return true;

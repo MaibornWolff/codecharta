@@ -5,6 +5,7 @@ import * as d3 from "d3";
 import {TreeMapUtils} from "./treemap.util";
 import {HierarchyNode} from "d3";
 import {Exclude} from "../data/model/CodeMap";
+import { CodeMapUtilService } from "../../ui/codeMap/codeMap.util.service";
 
 export interface ValuedCodeMapNode {
     data: CodeMapNode;
@@ -52,7 +53,8 @@ export class TreeMapService {
 
     private squarify(data: CodeMapNode, s: TreeMapSettings, edges: Edge[]): SquarifiedValuedCodeMapNode {
         let root: HierarchyNode<CodeMapNode> = d3.hierarchy<CodeMapNode>(data);
-        let nodesPerSide = 2 * Math.sqrt(root.descendants().length);
+        const blacklisted = CodeMapUtilService.numberOfBlacklistedNodes(root.descendants().map(d=>d.data), s.blacklist);
+        let nodesPerSide = 2 * Math.sqrt(root.descendants().length - blacklisted);
         let treeMap = d3.treemap<CodeMapNode>()
             .size([s.size + nodesPerSide*s.margin, s.size + nodesPerSide*s.margin])
             .paddingOuter(s.margin * TreeMapService.PADDING_SCALING_FACTOR || 1)
@@ -97,7 +99,7 @@ export class TreeMapService {
     private calculateValue(node: CodeMapNode, edges: Edge[], key: string, blacklist: Array<Exclude>): number {
         let result = 0;
 
-        if(this.isBlacklisted(node.path, blacklist)) {
+        if(CodeMapUtilService.isBlacklisted(node, blacklist)) {
             return 0;
         }
 
@@ -108,21 +110,6 @@ export class TreeMapService {
                 result = this.getEdgeValue(node, edges, key);
             }
         }
-        return result;
-    }
-
-    private isBlacklisted(path: string, blacklist: Array<Exclude>): boolean {
-        let result = false;
-        var minimatch = require("minimatch");
-
-        if (blacklist) {
-            blacklist.forEach((b)=>{
-                if(b.path && (minimatch(path, b.path)||minimatch(path, b.path + "/*")||minimatch(path, b.path + "/**"))){
-                    result = true;
-                }
-            });
-        }
-
         return result;
     }
 
