@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
+- No longer fat jar of every subcomponent of analysis, baked into ccsh
+- Changed simple syserr write to logger call for analysis #243
 
 ### Removed
 
