@@ -9,7 +9,6 @@ buildscript {
     }
 }
 
-apply plugin: 'application'
 apply plugin: 'org.junit.platform.gradle.plugin'
 
 junitPlatform {
@@ -36,16 +35,4 @@ dependencies {
     testRuntime("org.jetbrains.spek:spek-junit-platform-engine:$spek_version") {
         exclude group: 'org.jetbrains.kotlin'
     }
-}
-
-mainClassName = "de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter"
-applicationName = 'codecharta-codemaatimport'
-
-jar {
-    baseName = "${applicationName}"
-    manifest {
-        attributes 'Main-Class': mainClassName
-    }
-
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }

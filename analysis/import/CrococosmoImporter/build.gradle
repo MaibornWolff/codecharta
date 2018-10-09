@@ -1,5 +1,3 @@
-apply plugin: 'application'
-
 dependencies {
     compile project(':model')
 
@@ -10,17 +8,4 @@ dependencies {
 
     testCompile group: 'junit', name: 'junit', version: junit4_version
     testCompile project(path: ':model', configuration: 'testOutput')
-}
-
-
-mainClassName = "de.maibornwolff.codecharta.importer.crococosmo.CrococosmoImporter"
-applicationName = 'codecharta-crococosmoimport'
-
-jar {
-    baseName = "${applicationName}"
-    manifest {
-        attributes 'Main-Class': mainClassName
-    }
-
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
