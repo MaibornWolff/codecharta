@@ -1,0 +1,39 @@
+buildscript {
+    repositories {
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath group: 'org.junit.platform', name: 'junit-platform-gradle-plugin', version: junit_platform_gradle_plugin_version
+    }
+}
+
+apply plugin: 'org.junit.platform.gradle.plugin'
+
+junitPlatform {
+    filters {
+        engines {
+            include 'spek'
+        }
+    }
+}
+
+dependencies {
+    compile project(':model')
+
+    compile group: 'com.fasterxml.jackson', name: 'jackson-base', version: jackson_version
+    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: jackson_version
+    compile group: 'io.fastjson', name: 'boon', version: boon_version
+    compile group: 'info.picocli', name: 'picocli', version: picocli_version
+
+    testCompile group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
+    testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
+    testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
+    testCompile("org.jetbrains.spek:spek-api:$spek_version") {
+        exclude group: 'org.jetbrains.kotlin'
+    }
+    testRuntime("org.jetbrains.spek:spek-junit-platform-engine:$spek_version") {
+        exclude group: 'org.jetbrains.kotlin'
+    }
+}
