@@ -1,26 +1,14 @@
-apply plugin: 'application'
-
 dependencies {
     compile project(':model')
 
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
     compile group: 'info.picocli', name: 'picocli', version: picocli_version
+    compile group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
+
+    runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
     testCompile group: 'junit', name: 'junit', version: junit4_version
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.10.0'
     testCompile group: 'io.mockk', name: 'mockk', version: mokk_version
     testCompile project(path: ':model', configuration: 'testOutput')
-}
-
-mainClassName = "de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser"
-applicationName = 'codecharta-scmlogparser'
-
-
-jar {
-    baseName = "${applicationName}"
-    manifest {
-        attributes 'Main-Class': mainClassName
-    }
-
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }

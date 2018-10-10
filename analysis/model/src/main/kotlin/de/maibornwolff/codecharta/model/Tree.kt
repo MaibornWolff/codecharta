@@ -28,12 +28,17 @@
  */
 package de.maibornwolff.codecharta.model
 
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
+
 /**
  * tree structure
  *
  * @param <T> must satisfy T = Tree<T>
  */
 abstract class Tree<T> {
+
     /**
      * @return children of the present tree
      */
@@ -96,13 +101,13 @@ abstract class Tree<T> {
         }
     }
 
-    open fun merge(nodes: List<T>) : T {
-        System.err.println("Element already exists, skipping.")
+    open fun merge(nodes: List<T>): T {
+        logger.warn { "Element already exists, skipping." }
         return asTreeNode()
     }
 
     // attention!!! Tree<T> = T
-    fun asTreeNode() : T{
+    fun asTreeNode(): T {
         return this as T
     }
 

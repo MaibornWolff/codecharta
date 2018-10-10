@@ -1,5 +1,4 @@
 plugins {
-    id 'application'
     id 'antlr'
     id 'net.ltgt.errorprone' version '0.0.16'
 }
@@ -17,19 +16,6 @@ dependencies {
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.10.0'
     testCompile group: 'com.tngtech.archunit', name: 'archunit', version: '0.8.2'
     testCompile project(path: ':model', configuration: 'testOutput')
-}
-
-mainClassName = 'de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain'
-applicationName = 'codecharta-sourcecodeparser'
-
-
-jar {
-    baseName = "${applicationName}"
-    manifest {
-        attributes 'Main-Class': mainClassName
-    }
-
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 tasks.withType(JavaCompile) {

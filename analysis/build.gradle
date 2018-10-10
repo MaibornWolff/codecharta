@@ -34,7 +34,8 @@ subprojects {
     apply plugin: 'kotlin'
 
     dependencies {
-        compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
+        compileOnly group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
+        testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
     }
 
     compileJava {

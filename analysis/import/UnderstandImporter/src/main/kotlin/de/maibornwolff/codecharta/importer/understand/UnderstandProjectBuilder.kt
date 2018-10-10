@@ -47,7 +47,6 @@ class UnderstandProjectBuilder(
         private val pathSeparator: Char
 ) {
     private val logger = KotlinLogging.logger {}
-
     private val filterRule: (MutableNode) -> Boolean = { it.type == NodeType.File || it.type == NodeType.Folder }
 
     private val projectBuilder = ProjectBuilder(projectName)

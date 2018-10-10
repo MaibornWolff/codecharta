@@ -5,13 +5,13 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogLineCollector
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.AuthorParser.AUTHOR_ROW_INDICATOR
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.CommitDateParser.DATE_ROW_INDICATOR
+import mu.KotlinLogging
 import java.time.OffsetDateTime
 import java.util.function.Predicate
 import java.util.stream.Collector
 import java.util.stream.Stream
 
 class GitLogNumstatParserStrategy : LogParserStrategy {
-
     override fun creationCommand(): String {
         return "git log --numstat --topo-order"
     }
@@ -42,6 +42,7 @@ class GitLogNumstatParserStrategy : LogParserStrategy {
     }
 
     companion object {
+        private val logger = KotlinLogging.logger {}
 
         private const val STANDARD_FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S+\\s*"
         private const val RENAME_FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S*\\S+ => \\S+\\S*\\s*"
@@ -95,7 +96,7 @@ class GitLogNumstatParserStrategy : LogParserStrategy {
                 oldFileName = lineParts[2]
                 newFileName = lineParts[4]
             } else {
-                System.err.println("Log line could not be parsed$fileLine")
+                logger.warn { "Log line could not be parsed$fileLine" }
                 return Modification.EMPTY
             }
 

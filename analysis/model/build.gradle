@@ -51,10 +51,6 @@ artifacts {
     testOutput jarTest
 }
 
-jar {
-    baseName = 'codecharta-model'
-}
-
 jacocoTestReport {
     afterEvaluate {
         classDirectories = files(classDirectories.files.collect {
