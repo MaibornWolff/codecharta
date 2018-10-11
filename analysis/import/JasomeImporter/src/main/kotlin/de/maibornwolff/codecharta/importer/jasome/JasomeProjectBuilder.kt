@@ -33,10 +33,8 @@ import de.maibornwolff.codecharta.importer.jasome.model.Class
 import de.maibornwolff.codecharta.importer.jasome.model.Package
 import de.maibornwolff.codecharta.model.*
 import java.math.BigDecimal
-import java.text.DecimalFormat
 
 class JasomeProjectBuilder(projectName: String = "") {
-    private val JASOME_DECIMAL_FORMAT = DecimalFormat("0.0########")
 
     private val projectBuilder = ProjectBuilder(projectName)
 
@@ -46,6 +44,12 @@ class JasomeProjectBuilder(projectName: String = "") {
     }
 
     fun add(jasomePackage: Package): JasomeProjectBuilder {
+        if (!jasomePackage.name.isNullOrBlank()) {
+            val nodeForPackage = createNode(jasomePackage)
+            val parentPath = createPathByPackageName(jasomePackage.name!!).parent
+            projectBuilder.insertByPath(parentPath, nodeForPackage)
+        }
+
         jasomePackage.classes.orEmpty()
                 .forEach { this.add(jasomePackage.name ?: "", it) }
         return this
@@ -60,6 +64,14 @@ class JasomeProjectBuilder(projectName: String = "") {
 
     private fun createPathByPackageName(packageName: String): Path {
         return PathFactory.fromFileSystemPath(packageName, '.')
+    }
+
+    private fun createNode(jasomePackage: Package): MutableNode {
+        val attributes =
+                jasomePackage.metrics
+                        ?.filter { !it.name.isNullOrBlank() && !it.value.isNullOrBlank() }
+                        ?.associateBy({ it.name!! }, { convertMetricValue(it.value) }) ?: mapOf()
+        return MutableNode(jasomePackage.name!!.substringAfterLast('.'), NodeType.Package, attributes)
     }
 
     private fun createNode(jasomeClass: Class): MutableNode {

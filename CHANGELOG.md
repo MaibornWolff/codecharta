@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- Integration with Jasome through JasomeImporter #245
 
 ### Changed
 - No longer fat jar of every subcomponent of analysis, baked into ccsh
