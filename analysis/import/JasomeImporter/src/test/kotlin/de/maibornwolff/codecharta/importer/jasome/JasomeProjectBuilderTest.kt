@@ -57,8 +57,15 @@ class JasomeProjectBuilderTest : Spek({
 
     describe("JasomeProjectBuilder adding a Jasome Project with a Class") {
         val projectBuilder = JasomeProjectBuilder("test")
-        val jasomeClass = Class(name = "ClassName", metrics = listOf(Metric("TLOC", "1,2")))
-        val jasomePackage = Package(name = "com.package.name", classes = listOf(jasomeClass))
+        val jasomeClass = Class(
+                name = "ClassName",
+                metrics = listOf(Metric("ClTCi", "6,333333333"))
+        )
+        val jasomePackage = Package(
+                name = "com.package.name",
+                classes = listOf(jasomeClass),
+                metrics = listOf(Metric("PkgRCi", "2,388888889"))
+        )
         val jasomeProject = Project(packages = listOf(jasomePackage))
 
 
@@ -78,9 +85,14 @@ class JasomeProjectBuilderTest : Spek({
             MatcherAssert.assertThat(node.name, `is`("ClassName"))
         }
 
-        it("has attributes in nodes") {
+        it("has attributes in package nodes") {
+            val attributes = project.rootNode.nodes.flatMap { it.value.attributes.keys }
+            MatcherAssert.assertThat(attributes, hasItem("PkgRCi"))
+        }
+
+        it("has attributes in class nodes") {
             val attributes = project.rootNode.leafObjects.flatMap { it.attributes.keys }
-            MatcherAssert.assertThat(attributes, hasItem("TLOC"))
+            MatcherAssert.assertThat(attributes, hasItem("ClTCi"))
         }
     }
 

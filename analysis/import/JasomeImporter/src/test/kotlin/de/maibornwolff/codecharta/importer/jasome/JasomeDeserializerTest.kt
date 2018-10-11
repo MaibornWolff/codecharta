@@ -45,8 +45,14 @@ class JasomeDeserializerTest : Spek({
                     this.javaClass.classLoader.getResourceAsStream("jasome.xml")
             )
 
-            it("should have nodes") {
+            it("should have packages") {
                 MatcherAssert.assertThat(jasomeProject.packages!!, hasSize(7))
+            }
+
+            it("should have metrics in packages") {
+                MatcherAssert.assertThat(jasomeProject.packages!!.flatMap {
+                    it.metrics ?: listOf()
+                }, hasSize(77))
             }
 
             it("should have classes") {
