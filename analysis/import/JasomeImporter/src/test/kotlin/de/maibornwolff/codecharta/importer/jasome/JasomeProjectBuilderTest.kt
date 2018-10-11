@@ -29,7 +29,14 @@
 
 package de.maibornwolff.codecharta.importer.jasome
 
+import de.maibornwolff.codecharta.importer.jasome.model.Class
+import de.maibornwolff.codecharta.importer.jasome.model.Metric
+import de.maibornwolff.codecharta.importer.jasome.model.Package
+import de.maibornwolff.codecharta.importer.jasome.model.Project
+import de.maibornwolff.codecharta.model.NodeType
+import de.maibornwolff.codecharta.model.Path
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.MatcherAssert
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
@@ -37,14 +44,57 @@ import org.jetbrains.spek.api.dsl.it
 
 class JasomeProjectBuilderTest : Spek({
     describe("JasomeProjectBuilder adding an empty Jasome Project") {
-        val understandProjectBuilder = JasomeProjectBuilder("test")
+        val projectBuilder = JasomeProjectBuilder("test")
         val jasomeProject = de.maibornwolff.codecharta.importer.jasome.model.Project(listOf())
-        val project = understandProjectBuilder
-                .addJasomeProject(jasomeProject)
+        val project = projectBuilder
+                .add(jasomeProject)
                 .build()
 
-        it("should have nodes") {
+        it("has nodes") {
             MatcherAssert.assertThat(project.size, `is`(1))
+        }
+    }
+
+    describe("JasomeProjectBuilder adding a Jasome Project with a Class") {
+        val projectBuilder = JasomeProjectBuilder("test")
+        val jasomeClass = Class(name = "ClassName", metrics = listOf(Metric("TLOC", "1,2")))
+        val jasomePackage = Package(name = "com.package.name", classes = listOf(jasomeClass))
+        val jasomeProject = Project(packages = listOf(jasomePackage))
+
+
+        val project = projectBuilder
+                .add(jasomeProject)
+                .build()
+
+        val leaves = project.rootNode.leaves
+
+        it("has node in correct path") {
+            MatcherAssert.assertThat(leaves.keys, hasItem(Path(listOf("com", "package", "name", "ClassName"))))
+        }
+
+        it("contains class") {
+            val node = leaves.values.first()
+            MatcherAssert.assertThat(node.type, `is`(NodeType.Class))
+            MatcherAssert.assertThat(node.name, `is`("ClassName"))
+        }
+
+        it("has attributes in nodes") {
+            val attributes = project.rootNode.leafObjects.flatMap { it.attributes.keys }
+            MatcherAssert.assertThat(attributes, hasItem("TLOC"))
+        }
+    }
+
+    describe("JasomeProjectBuilder adding an big Jasome Project") {
+        val projectBuilder = JasomeProjectBuilder("test")
+        val jasomeProject = JasomeDeserializer().deserializeJasomeXML(
+                this.javaClass.classLoader.getResourceAsStream("jasome.xml")
+        )
+        val project = projectBuilder
+                .add(jasomeProject)
+                .build()
+
+        it("has nodes for classes") {
+            MatcherAssert.assertThat(project.size, `is`(45))
         }
     }
 })

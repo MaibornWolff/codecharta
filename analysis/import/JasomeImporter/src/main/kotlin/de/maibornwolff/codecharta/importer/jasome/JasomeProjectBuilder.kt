@@ -29,17 +29,51 @@
 
 package de.maibornwolff.codecharta.importer.jasome
 
-import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.importer.jasome.model.Class
+import de.maibornwolff.codecharta.importer.jasome.model.Package
+import de.maibornwolff.codecharta.model.*
+import java.math.BigDecimal
+import java.text.DecimalFormat
 
 class JasomeProjectBuilder(projectName: String = "") {
+    private val JASOME_DECIMAL_FORMAT = DecimalFormat("0.0########")
 
     private val projectBuilder = ProjectBuilder(projectName)
 
-
-    fun addJasomeProject(jasomeProject: de.maibornwolff.codecharta.importer.jasome.model.Project): JasomeProjectBuilder {
+    fun add(jasomeProject: de.maibornwolff.codecharta.importer.jasome.model.Project): JasomeProjectBuilder {
+        jasomeProject.packages.orEmpty().forEach { this.add(it) }
         return this
     }
+
+    fun add(jasomePackage: Package): JasomeProjectBuilder {
+        jasomePackage.classes.orEmpty()
+                .forEach { this.add(jasomePackage.name ?: "", it) }
+        return this
+    }
+
+    fun add(packageName: String, jasomeClass: Class): JasomeProjectBuilder {
+        val nodeForClass = createNode(jasomeClass)
+        val parentPath = createPathByPackageName(packageName)
+        projectBuilder.insertByPath(parentPath, nodeForClass)
+        return this
+    }
+
+    private fun createPathByPackageName(packageName: String): Path {
+        return PathFactory.fromFileSystemPath(packageName, '.')
+    }
+
+    private fun createNode(jasomeClass: Class): MutableNode {
+        val attributes =
+                jasomeClass.metrics
+                        ?.filter { !it.name.isNullOrBlank() && !it.value.isNullOrBlank() }
+                        ?.associateBy({ it.name!! }, { convertMetricValue(it.value) }) ?: mapOf()
+        return MutableNode(jasomeClass.name ?: "", NodeType.Class, attributes)
+    }
+
+    private fun convertMetricValue(value: String?): BigDecimal {
+        return value?.replace(',', '.', false)?.toBigDecimal() ?: BigDecimal.ZERO
+    }
+
 
     fun build(): Project {
         return projectBuilder.build()

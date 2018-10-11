@@ -57,7 +57,7 @@ class JasomeImporter : Callable<Void> {
 
     override fun call(): Void? {
         val jasomeProject = JasomeDeserializer().deserializeJasomeXML(file!!.inputStream())
-        val project = JasomeProjectBuilder(projectName).addJasomeProject(jasomeProject).build()
+        val project = JasomeProjectBuilder(projectName).add(jasomeProject).build()
         ProjectSerializer.serializeProject(project, writer)
 
         return null
