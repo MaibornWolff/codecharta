@@ -1,6 +1,6 @@
 "use strict";
 
-import "./multiple/multiple.module";
+import "./multipleFile/multipleFile.module";
 import "./data/data.module";
 import "./settings/settings.module";
 import "./url/url.module";

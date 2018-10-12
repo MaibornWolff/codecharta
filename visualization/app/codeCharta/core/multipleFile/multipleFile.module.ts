@@ -1,12 +1,12 @@
 "use strict";
 
 import angular from "angular";
-import {MultipleMapService} from "./multiple.service";
+import {MultipleFileService} from "./multipleFile.service";
 import "../../ui/dialog/dialog";
 
 angular.module(
     "app.codeCharta.core.multiple", ["app.codeCharta.ui.dialog"]
 ).service(
-    MultipleMapService.SELECTOR, MultipleMapService
+    MultipleFileService.SELECTOR, MultipleFileService
 );
 

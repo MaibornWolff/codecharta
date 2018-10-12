@@ -2,7 +2,7 @@ import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/s
 import "./multipleSettingsPanel.component.scss";
 import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/data.service";
 import {CodeMap} from "../../core/data/model/CodeMap";
-import {MultipleMapService} from "../../core/multiple/multiple.service";
+import {MultipleFileService} from "../../core/multipleFile/multipleFile.service";
 import {IRootScopeService} from "angular";
 
 export class MultipleSettingsPanelController implements DataServiceSubscriber, SettingsServiceSubscriber{
@@ -18,7 +18,7 @@ export class MultipleSettingsPanelController implements DataServiceSubscriber, S
         private $rootScope: IRootScopeService,
         private settingsService: SettingsService,
         private dataService: DataService,
-        private multipleMapService: MultipleMapService,
+        private multipleFileService: MultipleFileService,
     ) {
         this.revisions = dataService.data.revisions;
         this.settings = settingsService.settings;
@@ -33,7 +33,7 @@ export class MultipleSettingsPanelController implements DataServiceSubscriber, S
 
         this.selectMapsToAggregate();
 
-        let newMap = this.multipleMapService.aggregateMaps(JSON.parse(JSON.stringify(this.mapsToAggregate)));
+        let newMap = this.multipleFileService.aggregateMaps(JSON.parse(JSON.stringify(this.mapsToAggregate)));
 
         this.settings.map = newMap;
         this.settingsService.applySettings(this.settings);

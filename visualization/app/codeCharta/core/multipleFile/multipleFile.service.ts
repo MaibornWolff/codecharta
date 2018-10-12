@@ -5,9 +5,9 @@ import forestgreen = ColorKeywords.forestgreen;
 import {forEachComment} from "tslint";
 
 
-export class MultipleMapService {
+export class MultipleFileService {
 
-    public static SELECTOR = "multipleMapService";
+    public static SELECTOR = "multipleFileService";
 
     constructor(private dialogService: DialogService) {
 
