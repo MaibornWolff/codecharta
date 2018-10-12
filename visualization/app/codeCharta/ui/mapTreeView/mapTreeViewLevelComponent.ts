@@ -1,11 +1,10 @@
-import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settings.service";
-import {IRootScopeService, ITimeoutService} from "angular";
-import {CodeMap, CodeMapNode} from "../../core/data/model/CodeMap";
-import {hierarchy, HierarchyNode} from "d3-hierarchy";
+import {SettingsService} from "../../core/settings/settings.service";
+import {IRootScopeService} from "angular";
+import {CodeMapNode, ExcludeType} from "../../core/data/model/CodeMap";
 import {node} from "../codeMap/rendering/node";
-import {CodeMapRenderService} from "../codeMap/codeMap.render.service";
 import {NodeContextMenuComponent} from "../nodeContextMenu/nodeContextMenu.component";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
+import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
 
 export interface MapTreeViewHoverEventSubscriber {
     onShouldHoverNode(node: CodeMapNode);
@@ -22,7 +21,8 @@ export class MapTreeViewLevelController {
     constructor(
         private $rootScope: IRootScopeService,
         private codeMapActionsService: CodeMapActionsService,
-        private settingsService: SettingsService
+        private settingsService: SettingsService,
+        private codeMapUtilService: CodeMapUtilService
     ) {
 
     }
@@ -69,22 +69,8 @@ export class MapTreeViewLevelController {
     }
 
     isBlacklisted(path: string): boolean {
-        if(!path) {
-            return false;
-        }
-
-        var minimatch = require("minimatch");
-
-        let result = false;
-        if(this.settingsService.settings.blacklist) {
-            this.settingsService.settings.blacklist.forEach((b)=>{
-                if(b.path && (minimatch(path, b.path)||minimatch(path, b.path + "/*")||minimatch(path, b.path + "/**"))){
-                    result = true;
-                }
-            });
-        }
-
-        return result;
+        const node = this.codeMapUtilService.getCodeMapNodeFromPath(path, "File");
+        return CodeMapUtilService.isBlacklisted(node, this.settingsService.settings.blacklist, ExcludeType.exclude)
     }
 
     sortByFolder(node: CodeMapNode) {
