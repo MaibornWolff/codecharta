@@ -88,7 +88,7 @@ describe("settings.service", function() {
      */
     it("should retrieve the angular service instance with disabled delta cubes and no details selected", NGMock.mock.inject(function(settingsService){
         expect(settingsService).not.toBe(undefined);
-        expect(settingsService.settings.kindOfMap).toBe(KindOfMap.Single);
+        expect(settingsService.settings.mode).toBe(KindOfMap.Single);
     }));
 
     //noinspection TypeScriptUnresolvedVariable

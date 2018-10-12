@@ -33,7 +33,7 @@ export interface Settings {
     areaMetric: string;
     heightMetric: string;
     colorMetric: string;
-    kindOfMap: KindOfMap;
+    mode: KindOfMap;
     amountOfTopLabels: number;
     scaling: Scale;
     camera: Scale;
@@ -105,7 +105,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             areaMetric: this.getMetricByIdOrLast(0, metrics),
             heightMetric: this.getMetricByIdOrLast(1, metrics),
             colorMetric: this.getMetricByIdOrLast(2, metrics),
-            kindOfMap: KindOfMap.Single,
+            mode: KindOfMap.Single,
             amountOfTopLabels: 1,
             scaling: s,
             camera: c,
@@ -184,10 +184,10 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         this.settings.margin = this.computeMargin();
 
-        if (this._lastDeltaState && this._settings.kindOfMap != KindOfMap.Delta) {
+        if (this._lastDeltaState && this._settings.mode != KindOfMap.Delta) {
             this._lastDeltaState = false;
             this.onDeactivateDeltas();
-        } else if (!this._lastDeltaState && this._settings.kindOfMap == KindOfMap.Delta) {
+        } else if (!this._lastDeltaState && this._settings.mode == KindOfMap.Delta) {
             this._lastDeltaState = true;
             this.onActivateDeltas();
         }
@@ -380,7 +380,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         this._settings.amountOfTopLabels = settings.amountOfTopLabels;
         this._settings.margin = settings.margin;
-        this._settings.kindOfMap = settings.kindOfMap;
+        this._settings.mode = settings.mode;
         this._settings.operation = settings.operation;
         this._settings.deltaColorFlipped = settings.deltaColorFlipped;
         this._settings.maximizeDetailPanel = settings.maximizeDetailPanel;

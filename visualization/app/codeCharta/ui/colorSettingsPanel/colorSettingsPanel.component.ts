@@ -18,7 +18,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber{
 
     onSettingsChanged(settings: Settings, event) {
         this.viewModel.flipped = settings.neutralColorRange.flipped;
-        this.viewModel.deltas = settings.kindOfMap == KindOfMap.Delta;
+        this.viewModel.deltas = settings.mode == KindOfMap.Delta;
     }
 
     apply() {

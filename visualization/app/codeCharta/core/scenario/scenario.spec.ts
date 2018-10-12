@@ -30,7 +30,7 @@ describe("app.codeCharta.core.scenarioService", function () {
                     },
                 "colorMetric": "Average Complexity*",
                 "deltaColorFlipped": false,
-                "kindOfMap": "KindOfMap.Single",
+                "mode": "KindOfMap.Single",
                 "heightMetric": "Average Complexity*",
                 "margin": 1,
                 "maximizeDetailPanel": false,

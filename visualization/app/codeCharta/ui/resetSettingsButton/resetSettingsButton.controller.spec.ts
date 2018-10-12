@@ -17,7 +17,7 @@ describe("colorSettingsPanelController", ()=>{
                     from:0,
                     to:0
                 },
-                kindOfMap: KindOfMap.Single,
+                mode: KindOfMap.Single,
                 deltaColorFlipped: false
             }
         };
@@ -46,43 +46,43 @@ describe("colorSettingsPanelController", ()=>{
     });
 
     it(",,?", ()=>{
-        settingsService.settings.kindOfMap = KindOfMap.Single;
+        settingsService.settings.mode = KindOfMap.Single;
         controller.settingsNames = ",,";
         scenarioService.getDefaultScenario.mockReturnValue({
             settings: {
-                kindOfMap: KindOfMap.Delta
+                mode: KindOfMap.Delta
             }
         });
         controller.updateSettings();
-        expect(settingsService.settings.kindOfMap).toBe(KindOfMap.Single);
+        expect(settingsService.settings.mode).toBe(KindOfMap.Single);
     });
 
     it(" ?", ()=>{
-        settingsService.settings.kindOfMap = KindOfMap.Single;
+        settingsService.settings.mode = KindOfMap.Single;
         controller.settingsNames = " ";
         scenarioService.getDefaultScenario.mockReturnValue({
             settings: {
-                kindOfMap: KindOfMap.Delta
+                mode: KindOfMap.Delta
             }
         });
         controller.updateSettings();
-        expect(settingsService.settings.kindOfMap).toBe(KindOfMap.Single);
+        expect(settingsService.settings.mode).toBe(KindOfMap.Single);
     });
 
     it("settingname not in settingsservice?", ()=>{
-        settingsService.settings.kindOfMap = {};
+        settingsService.settings.mode = {};
         controller.settingsNames = "deltas.something.bla";
         scenarioService.getDefaultScenario.mockReturnValue({
             settings: {
-                kindOfMap: KindOfMap.Delta
+                mode: KindOfMap.Delta
             }
         });
         controller.updateSettings();
-        expect(settingsService.settings.kindOfMap).toEqual({});
+        expect(settingsService.settings.mode).toEqual({});
     });
 
     it("settingname not directly in settingsservice?", ()=>{
-        settingsService.settings.kindOfMap = {
+        settingsService.settings.mode = {
             hello: {
                 notBla: 12
             }
@@ -90,36 +90,36 @@ describe("colorSettingsPanelController", ()=>{
         controller.settingsNames = "deltas.hello.bla";
         scenarioService.getDefaultScenario.mockReturnValue({
             settings: {
-                kindOfMap: {
+                mode: {
                     hello: {}
                 }
             }
         });
         controller.updateSettings();
-        expect(settingsService.settings.kindOfMap).toEqual({ hello: {
+        expect(settingsService.settings.mode).toEqual({ hello: {
             notBla: 12
         } });
     });
 
     it("updateSettings should update setting in service", ()=>{
-        settingsService.settings.kindOfMap = KindOfMap.Single;
-        controller.settingsNames = "kindOfMap";
+        settingsService.settings.mode = KindOfMap.Single;
+        controller.settingsNames = "mode";
         scenarioService.getDefaultScenario.mockReturnValue({
             settings: {
-                kindOfMap: KindOfMap.Delta
+                mode: KindOfMap.Delta
             }
         });
         controller.updateSettings();
-        expect(settingsService.settings.kindOfMap).toBe(KindOfMap.Delta);
+        expect(settingsService.settings.mode).toBe(KindOfMap.Delta);
     });
 
     it("updateSettings should update settings in service", ()=>{
-        settingsService.settings.kindOfMap = KindOfMap.Single;
+        settingsService.settings.mode = KindOfMap.Single;
         settingsService.settings.something = 13;
-        controller.settingsNames = "kindOfMap,something";
+        controller.settingsNames = "mode,something";
         scenarioService.getDefaultScenario.mockReturnValue({
             settings: {
-                kindOfMap: KindOfMap.Delta,
+                mode: KindOfMap.Delta,
                 something: 32
             }
         });
@@ -152,12 +152,12 @@ describe("colorSettingsPanelController", ()=>{
     });
 
     it("updateSettings should allow blankspace", ()=>{
-        settingsService.settings.kindOfMap = KindOfMap.Single;
+        settingsService.settings.mode = KindOfMap.Single;
         settingsService.settings.something = 13;
-        controller.settingsNames = "kindOfMap, something";
+        controller.settingsNames = "mode, something";
         scenarioService.getDefaultScenario.mockReturnValue({
             settings: {
-                kindOfMap: KindOfMap.Delta,
+                mode: KindOfMap.Delta,
                 something: 32
             }
         });
@@ -166,12 +166,12 @@ describe("colorSettingsPanelController", ()=>{
     });
 
     it("updateSettings should allow nl", ()=>{
-        settingsService.settings.kindOfMap = KindOfMap.Single;
+        settingsService.settings.mode = KindOfMap.Single;
         settingsService.settings.something = 13;
-        controller.settingsNames = "kindOfMap,\nsomething";
+        controller.settingsNames = "mode,\nsomething";
         scenarioService.getDefaultScenario.mockReturnValue({
             settings: {
-                kindOfMap: KindOfMap.Delta,
+                mode: KindOfMap.Delta,
                 something: 32
             }
         });

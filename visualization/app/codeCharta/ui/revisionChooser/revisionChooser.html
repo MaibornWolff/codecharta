@@ -1,5 +1,5 @@
 <md-input-container class="md-block">
-    <md-radio-group ng-model="$ctrl.settingsService.settings.kindOfMap" ng-change="$ctrl.onShowChange($ctrl.settingsService.settings)">
+    <md-radio-group ng-model="$ctrl.settingsService.settings.mode" ng-change="$ctrl.onShowChange($ctrl.settingsService.settings)">
         <md-radio-button ng-model="$ctrl.show" ng-repeat="kind in $ctrl.show" value="{{::kind}}">
             {{::kind}}
         </md-radio-button>

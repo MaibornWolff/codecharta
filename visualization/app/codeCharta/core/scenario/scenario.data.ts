@@ -17,7 +17,7 @@ export function createDefaultScenario(map: CodeMap, margin: number): Scenario {
             areaMetric: "rloc",
             heightMetric: "mcc",
             colorMetric: "mcc",
-            kindOfMap: KindOfMap.Single,
+            mode: KindOfMap.Single,
             amountOfTopLabels: 1,
             scaling: {
                 x: 1, y: 1, z: 1

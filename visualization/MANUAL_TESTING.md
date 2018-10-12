@@ -178,12 +178,12 @@
 - experimental section is open
 
 ## When 
-- kindOfMap enabled
+- mode enabled
 - same comparison and reference map
 
 ## Then 
 - legend and revision panel change accordingly
-- detail panel shows kindOfMap (0)
+- detail panel shows mode (0)
 - base color becomes grey 
 - delta blocks should not appear 
 
@@ -194,12 +194,12 @@
 - experimental section is open
 
 ## When 
-- kindOfMap enabled
+- mode enabled
 - different comparison and reference map
 
 ## Then 
 - legend and revision panel change accordingly
-- detail panel shows kindOfMap
+- detail panel shows mode
 - base color becomes grey 
 - delta blocks appear in green or red 
 
@@ -533,7 +533,7 @@
 - CC is running
 - multiple maps are loaded
 - revision/maps panel is open
-- kindOfMap disabled
+- mode disabled
 
 ## When 
 - user selects map 
@@ -547,7 +547,7 @@
 - CC is running
 - multiple maps are loaded
 - revision/maps panel is open
-- kindOfMap enabled
+- mode enabled
 
 ## When 
 - user selects reference map and comparison map (multiple cases possible) 
@@ -561,7 +561,7 @@
 - CC is running
 - multiple maps are loaded
 - revision/maps panel is open
-- kindOfMap enabled
+- mode enabled
 
 ## When 
 - nothing
@@ -576,7 +576,7 @@
 - CC is running
 - multiple maps are loaded
 - revision/maps panel is open
-- kindOfMap disabled
+- mode disabled
 
 ## When 
 - nothing
@@ -596,12 +596,12 @@
 ## Then 
 - revision/maps button should not be visible
 
-# Scenario: multiple maps loaded and kindOfMap disabled
+# Scenario: multiple maps loaded and mode disabled
 
 ## Given 
 - CC is running
 - two maps are loaded
-- kindOfMap disabled
+- mode disabled
 
 ## When 
 - nothing
@@ -609,12 +609,12 @@
 ## Then 
 - revision button should be called maps not revisions
 
-# Scenario: multiple maps loaded and kindOfMap enabled
+# Scenario: multiple maps loaded and mode enabled
 
 ## Given 
 - CC is running
 - two maps are loaded
-- kindOfMap enabled
+- mode enabled
 
 ## When 
 - nothing
@@ -652,7 +652,7 @@
 
 ## Given 
 - CC is running
-- kindOfMap enabled
+- mode enabled
 
 ## When 
 - User clicks legend panel button
@@ -666,7 +666,7 @@
 
 ## Given 
 - CC is running
-- kindOfMap disabled
+- mode disabled
 
 ## When 
 - User clicks legend panel button

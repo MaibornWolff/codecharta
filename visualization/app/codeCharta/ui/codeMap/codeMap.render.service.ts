@@ -110,7 +110,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         this.currentRenderSettings = {
             heightKey: s.heightMetric,
             colorKey: s.colorMetric,
-            renderDeltas: s.kindOfMap == KindOfMap.Delta,
+            renderDeltas: s.mode == KindOfMap.Delta,
             colorRange: s.neutralColorRange,
             mapSize: mapSize,
             deltaColorFlipped: s.deltaColorFlipped
