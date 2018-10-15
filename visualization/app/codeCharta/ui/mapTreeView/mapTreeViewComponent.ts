@@ -21,9 +21,7 @@ export class MapTreeViewController implements SettingsServiceSubscriber {
 
     private updateMapRoot(map: CodeMap) {
         if(map && map.root) {
-            this.$timeout(()=>{
-                this.mapRoot = map.root;
-            },100);
+            this.mapRoot = map.root;
         }
     }
 

@@ -18,8 +18,13 @@ export class CodeMapUtilService {
     }
 
     public static numberOfBlacklistedNodes(nodes: Array<CodeMapNode>, blacklist: Array<Exclude>): number {
-        const ig = ignore().add(blacklist.map(ex=>CodeMapUtilService.transformPath(ex.path)));
-        return nodes.length - ig.filter(nodes.map(n=>CodeMapUtilService.transformPath(n.path))).length;
+        if (blacklist) {
+            const ig = ignore().add(blacklist.map(ex=>CodeMapUtilService.transformPath(ex.path)));
+            const filteredNodes = ig.filter(nodes.map(n=>CodeMapUtilService.transformPath(n.path)));
+            return nodes.length - filteredNodes.length;
+        } else {
+            return 0;
+        }
     }
 
     public static isBlacklisted(node: CodeMapNode, blacklist: Array<Exclude>, type: ExcludeType): boolean {
@@ -31,7 +36,13 @@ export class CodeMapUtilService {
 
     getCodeMapNodeFromPath(path: string, nodeType: string) {
         let res = null;
-        hierarchy<CodeMapNode>(this.settingsService.settings.map.root).each((hierarchyNode) => {
+        const rootNode = this.settingsService.settings.map.root;
+
+        if (path == rootNode.path) {
+            return rootNode;
+        }
+
+        hierarchy<CodeMapNode>(rootNode).each((hierarchyNode) => {
             if (hierarchyNode.data.path === path && hierarchyNode.data.type === nodeType) {
                 res = hierarchyNode.data;
             }
