@@ -1,4 +1,4 @@
-import {CodeMapNode, Edge, ExcludeType} from "../../core/data/model/CodeMap";
+import {CodeMapNode, Edge, Exclude, ExcludeType} from "../../core/data/model/CodeMap";
 import {hierarchy} from "d3-hierarchy";
 import {SettingsService} from "../../core/settings/settings.service";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
@@ -71,6 +71,16 @@ export class CodeMapActionsService {
     showAllNodes() {
         this.removeAllBlacklistItemsOfTypeHidden();
         this.autoFit();
+        this.apply();
+    }
+
+    excludeNode(node: CodeMapNode) {
+        this.settingsService.settings.blacklist.push({path: node.path, type: ExcludeType.exclude});
+        this.apply();
+    }
+
+    includeNode(entry: Exclude) {
+        this.settingsService.settings.blacklist = this.settingsService.settings.blacklist.filter(obj => obj !== entry);
         this.apply();
     }
 

@@ -118,16 +118,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
     }
 
-    excludeNode(node: CodeMapNode) {
-        this.settings.blacklist.push({path: node.path, type: ExcludeType.exclude});
-        this.onSettingsChanged();
-    }
-
-    includeNode(entry: Exclude) {
-        this.settings.blacklist = this.settings.blacklist.filter(obj => obj !== entry);
-        this.onSettingsChanged();
-    }
-
     private onActivateDeltas() {
         this.dataService.onActivateDeltas();
     }

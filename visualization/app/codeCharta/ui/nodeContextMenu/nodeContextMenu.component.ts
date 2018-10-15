@@ -119,7 +119,7 @@ export class NodeContextMenuComponent {
 
     excludeNode() {
         this.hideContextMenu();
-        this.settingsService.excludeNode(this.contextMenuBuilding)
+        this.codeMapActionsService.excludeNode(this.contextMenuBuilding)
     }
 
     nodeIsFolder() {

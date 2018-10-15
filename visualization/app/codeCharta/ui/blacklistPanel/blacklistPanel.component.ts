@@ -3,6 +3,7 @@ import "./blacklistPanel.component.scss";
 import {Exclude, ExcludeType} from "../../core/data/model/CodeMap";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
 import * as d3 from "d3";
+import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 
 export class BlacklistPanelController implements SettingsServiceSubscriber{
 
@@ -14,7 +15,8 @@ export class BlacklistPanelController implements SettingsServiceSubscriber{
         error: "",
     };
 
-    constructor(private settingsService: SettingsService) {
+    constructor(private settingsService: SettingsService,
+                private codeMapActionsService: CodeMapActionsService) {
         settingsService.subscribe(this);
 
         if(settingsService.settings.blacklist) {
@@ -33,7 +35,7 @@ export class BlacklistPanelController implements SettingsServiceSubscriber{
     }
 
     removeBlacklistEntry(entry: Exclude){
-        this.settingsService.includeNode(entry);
+        this.codeMapActionsService.includeNode(entry);
         this.onChange();
     }
 
