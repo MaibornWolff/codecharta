@@ -40,7 +40,7 @@ describe("treemap service", ()=> {
     });
 
     it("only root node", ()=> {
-        let node: node = treeMapService.createTreemapNodes(root, treemapSettings);
+        let node: node = treeMapService.createTreemapNodes(root, treemapSettings, null);
         expect(node).toMatchSnapshot();
     });
 
@@ -54,7 +54,7 @@ describe("treemap service", ()=> {
 
         root.children = [firstChild, secondChild];
 
-        let node: node = treeMapService.createTreemapNodes(root, treemapSettings)
+        let node: node = treeMapService.createTreemapNodes(root, treemapSettings, null);
 
         expect(node).toMatchSnapshot();
 
@@ -78,7 +78,7 @@ describe("treemap service", ()=> {
 
         root.children = [firstChild, secondChild];
 
-        let node: node = treeMapService.createTreemapNodes(root, treemapSettings);
+        let node: node = treeMapService.createTreemapNodes(root, treemapSettings, null);
 
         expect(node).toMatchSnapshot();
 
@@ -89,14 +89,14 @@ describe("treemap service", ()=> {
         it("attribute exists, no children", ()=> {
             let root = {name: "root"};
             root.attributes = {a:100};
-            let node: node = treeMapService.createTreemapNodes(root, treemapSettings);
+            let node: node = treeMapService.createTreemapNodes(root, treemapSettings, null);
             expect(node.attributes["a"]).toBe(100);
         });
 
         it("attribute do not exists, no children", ()=> {
             let root = {name: "root"};
             root.attributes = {};
-            let node: node = treeMapService.createTreemapNodes(root, treemapSettings);
+            let node: node = treeMapService.createTreemapNodes(root, treemapSettings, null);
             expect(node.attributes["b"]).toBe(undefined);
         });
 
@@ -110,7 +110,7 @@ describe("treemap service", ()=> {
             root.children = [firstChild, secondChild];
             treemapSettings.heightKey = "b";
             treemapSettings.areaKey = "b";
-            let node: node = treeMapService.createTreemapNodes(root, treemapSettings);
+            let node: node = treeMapService.createTreemapNodes(root, treemapSettings, null);
             expect(node.attributes["b"]).toBe(undefined);
         });
 
