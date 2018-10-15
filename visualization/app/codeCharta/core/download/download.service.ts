@@ -1,5 +1,7 @@
-import { SettingsService } from "../settings/settings.service";
+import { SettingsService, Settings } from "../settings/settings.service";
 import angular from "angular";
+import { CodeMap, CodeMapNode } from "../data/model/CodeMap";
+import * as d3 from "d3";
 
 export class DownloadService {
 
@@ -24,9 +26,17 @@ export class DownloadService {
         return fileName;
     }
 
+    private removeVisibleAttribute(root: CodeMapNode) {
+        let copy = JSON.parse(JSON.stringify(root));
+        d3.hierarchy(copy).each((node)=>{
+            delete node.data.visible;
+        });
+        return copy;
+    }
+
     public downloadCurrentMap() {
-        var settings: any = this.settingsService.settings;
-        var map: any = settings.map;
+        var settings: Settings = this.settingsService.settings;
+        var map: CodeMap = settings.map;
 
         const datedFileName = this.addDateToFileName(map.fileName);
         const resultingFileName = this.addJsonFileEndingIfNecessary(datedFileName);
@@ -35,7 +45,7 @@ export class DownloadService {
             fileName: resultingFileName,
             projectName: map.projectName,
             apiVersion: map.apiVersion,
-            nodes: [map.root],
+            nodes: [this.removeVisibleAttribute(map.root)],
             edges: map.edges,
             attributeTypes: map.attributeTypes,
             blacklist: settings.blacklist,
