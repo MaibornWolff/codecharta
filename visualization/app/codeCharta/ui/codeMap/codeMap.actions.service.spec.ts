@@ -1,11 +1,13 @@
 import {CodeMapActionsService} from "./codeMap.actions.service";
-import {hierarchy} from "d3-hierarchy";
-import {CodeMapNode} from "../../core/data/model/CodeMap";
+import {hierarchy, HierarchyNode} from "d3-hierarchy";
+import {CodeMapNode, Exclude, ExcludeType} from "../../core/data/model/CodeMap";
 
 import {SettingsService} from "../../core/settings/settings.service";
+import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
+import {ColorKeywords} from "three";
+
 jest.mock("../../core/settings/settings.service");
 
-import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 jest.mock("./threeViewer/threeOrbitControlsService");
 
 describe("code map action service tests", ()=>{
@@ -15,12 +17,18 @@ describe("code map action service tests", ()=>{
     let visibleNode: CodeMapNode;
     let hiddenNode: CodeMapNode;
     let simpleHiddenHierarchy: CodeMapNode;
+    let blacklistItems: Array<Exclude>;
 
     function checkTreeVisibility(node: CodeMapNode, shouldBeVisible: boolean) {
-        hierarchy<CodeMapNode>(node).eachAfter((node: CodeMapNode) => {
+        hierarchy<CodeMapNode>(node).eachAfter((node: HierarchyNode<CodeMapNode>) => {
             expect(node.data.visible).toBe(shouldBeVisible);
         });
-    };
+    }
+
+    function checkBlacklistItems(type: ExcludeType, node: CodeMapNode, shouldExist: boolean) {
+        const hasItems = blacklistItems.filter(b => b.type == type && b.path == node.path).length == 1;
+        expect(hasItems).toBe(shouldExist);
+    }
 
     beforeEach(()=>{
        visibleNode = {name: "test", type: "File", attributes: {}, visible: true};
@@ -59,6 +67,20 @@ describe("code map action service tests", ()=>{
                 }
             ]
         };
+        blacklistItems = [
+            {
+                path: "/root/a/aa",
+                type: ExcludeType.exclude
+            },
+            {
+                path: "/root/a/ab",
+                type: ExcludeType.hide
+            },
+            {
+                path: "/root/b",
+                type: ExcludeType.hide
+            }
+        ];
         $timeout = jest.fn();
         codeMapActionService = new CodeMapActionsService(
             new SettingsService(),
@@ -74,7 +96,7 @@ describe("code map action service tests", ()=>{
 
         beforeEach(()=>{
             markedNode = visibleNode;
-            markedNode.markingColor = 0x000FFF;
+            markedNode.markingColor = "0x000FFF";
             unmarkedNode = visibleNode;
             simpleUnmarkedHierarchy = simpleHiddenHierarchy;
         });
@@ -82,13 +104,13 @@ describe("code map action service tests", ()=>{
         it("marking an unmarked folder should mark it", ()=>{
             codeMapActionService.markFolder(unmarkedNode, "#FFF000");
             expect(unmarkedNode.markingColor).toBe("0xFFF000");
-        })
+        });
 
         it("marking an marked folder should update its color", ()=>{
             expect(unmarkedNode.markingColor).not.toBe("0xFFF000");
             codeMapActionService.markFolder(markedNode, "#FFF000");
             expect(unmarkedNode.markingColor).toBe("0xFFF000");
-        })
+        });
 
         it("marking an unmarked folder should mark its unmarked children but should not overwrite marked childrens colors", ()=>{
             simpleUnmarkedHierarchy.children[1].markingColor="0x330033";
@@ -98,13 +120,13 @@ describe("code map action service tests", ()=>{
             expect(simpleUnmarkedHierarchy.children[0].children[0].markingColor).toBe("0xFFF000");
             expect(simpleUnmarkedHierarchy.children[0].children[1].markingColor).toBe("0xFFF000");
             expect(simpleUnmarkedHierarchy.markingColor).toBe("0xFFF000");
-        })
+        });
 
         it("unmarking an marked folder should unmark it", ()=>{
             expect(markedNode.markingColor).not.toBeFalsy();
             codeMapActionService.unmarkFolder(markedNode);
             expect(markedNode.markingColor).toBeFalsy();
-        })
+        });
 
         it("unmarking an marked folder should unmark its marked children as long as they have the same color", ()=>{
             simpleUnmarkedHierarchy.markingColor="0x330033";
@@ -116,7 +138,7 @@ describe("code map action service tests", ()=>{
             expect(simpleUnmarkedHierarchy.children[1].markingColor).toBe("0x777777");
             expect(simpleUnmarkedHierarchy.children[0].children[0].markingColor).toBeFalsy();
             expect(simpleUnmarkedHierarchy.children[0].children[1].markingColor).toBeFalsy();
-        })
+        });
 
     });
 
@@ -127,13 +149,13 @@ describe("code map action service tests", ()=>{
                 map: {
                     root: simpleHiddenHierarchy
                 },
-                blacklist: []
+                blacklist: blacklistItems
             };
         });
 
         it("showing all nodes should make all nodes visible", ()=>{
             codeMapActionService.showAllNodes();
-            checkTreeVisibility(simpleHiddenHierarchy, true);
+            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy, false);
         });
 
         it("isolationg node should show all descendants and hide all ascendants", ()=>{
@@ -144,40 +166,20 @@ describe("code map action service tests", ()=>{
             checkTreeVisibility(simpleHiddenHierarchy.children[1], false);
         });
 
-        it("hiding invisible node with invisible children should make them all hidden", ()=>{
+        it("hiding visible node should create blacklistHide item", ()=>{
             codeMapActionService.hideNode(simpleHiddenHierarchy);
-            checkTreeVisibility(simpleHiddenHierarchy, false);
+            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy, true);
         });
 
-        it("hiding visible node with invisible children should make them all hidden", ()=>{
-            simpleHiddenHierarchy.visible = true;
-            codeMapActionService.hideNode(simpleHiddenHierarchy);
-            checkTreeVisibility(simpleHiddenHierarchy, false);
+        it("excluding node should create blacklistExcluded item", ()=>{
+            codeMapActionService.excludeNode(simpleHiddenHierarchy);
+            checkBlacklistItems(ExcludeType.exclude, simpleHiddenHierarchy, true);
         });
 
-        it("hiding visible node with mixed children should make them all hidden", ()=>{
-            simpleHiddenHierarchy.visible = true;
-            simpleHiddenHierarchy.children[0].visible = true;
-            codeMapActionService.hideNode(simpleHiddenHierarchy);
-            checkTreeVisibility(simpleHiddenHierarchy, false);
-        });
-
-        it("showing invisible node with invisible children should make them all visible", ()=>{
+        it("showing invisible node remove blacklistHide item", ()=>{
+            blacklistItems.push({path: "/root", type: ExcludeType.hide});
             codeMapActionService.showNode(simpleHiddenHierarchy);
-            checkTreeVisibility(simpleHiddenHierarchy, true);
-        });
-
-        it("showing visible node with invisible children should make them all visible", ()=>{
-            simpleHiddenHierarchy.visible = true;
-            codeMapActionService.showNode(simpleHiddenHierarchy);
-            checkTreeVisibility(simpleHiddenHierarchy, true);
-        });
-
-        it("showing visible node with mixed children should make them all visible", ()=>{
-            simpleHiddenHierarchy.visible = true;
-            simpleHiddenHierarchy.children[0].visible = true;
-            codeMapActionService.showNode(simpleHiddenHierarchy);
-            checkTreeVisibility(simpleHiddenHierarchy, true);
+            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy, false);
         });
 
         it("toggling visible node should call hide method", ()=>{
