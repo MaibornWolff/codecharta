@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.17.0] - 2018-09-21
+### Added
 - CodeMaatImport for temporal coupling dependencies #172
 - EdgeFilter to aggregate edge-attributes as node-attributes #222
 - Option to show and hide dependent edges from node-context-menu #218
