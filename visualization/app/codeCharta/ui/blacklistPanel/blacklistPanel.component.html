@@ -2,8 +2,8 @@
     <form>
     <md-list-item>
         <md-select ng-model="$ctrl.viewModel.itemType" md-select-on-focus="$ctrl.viewModel.newItemType">
-            <md-option value="exclude">Exclude</md-option>
-            <md-option value="hide">Hide</md-option>
+            <md-option value="exclude" title="Exclude matching nodes in CodeMap, like they would not exist">Exclude</md-option>
+            <md-option value="hide" title="Hide matching nodes in CodeMap, but keep an empty space where the nodes have been">Hide</md-option>
         </md-select>
 
         <md-input-container class="md-block">
@@ -12,7 +12,7 @@
         </md-input-container>
 
         <md-button type="submit" class="round-button" ng-click="$ctrl.addBlacklistEntry()">
-            <i class="fa fa-plus"></i>
+            <i class="fa fa-plus" title="Add new blacklist list item"></i>
         </md-button>
     </md-list-item>
     </form>
@@ -25,14 +25,14 @@
                       title="{{::item.path}}">
 
             <div class="md-icon item-type" layout="column">
-                <i ng-if="::item.type == 'hide'" class="fa fa-eye-slash"></i>
-                <i ng-if="::item.type == 'exclude'" class="fa fa-times"></i>
+                <i ng-if="::item.type == 'hide'" class="fa fa-eye-slash" title="Hide"></i>
+                <i ng-if="::item.type == 'exclude'" class="fa fa-times" title="Exclude"></i>
             </div>
             <div class="md-list-item-text" layout="column">
                 <p>{{::item.path}}</p>
             </div>
             <md-button class="md-secondary round-button" ng-click="$ctrl.removeBlacklistEntry(item)">
-                <i class="fa fa-trash"></i>
+                <i class="fa fa-trash" title="Remove list item"></i>
             </md-button>
             <md-divider></md-divider>
         </md-list-item>
