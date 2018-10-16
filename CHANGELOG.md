@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- Blacklist to persist excluded or hidden nodes #205
+- Option to exclude nodes in nodeContextMenu #205
+- BlacklistPanel in SettingsSidebar to manage blacklist #205 
+- Save-Button to download current CodeMap #205
 
 ### Changed
 
