@@ -1,11 +1,11 @@
 import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
-import "./multipleSettingsPanel.component.scss";
+import "./multipleFilePanel.component.scss";
 import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/data.service";
 import {CodeMap} from "../../core/data/model/CodeMap";
 import {MultipleFileService} from "../../core/multipleFile/multipleFile.service";
 import {IRootScopeService} from "angular";
 
-export class MultipleSettingsPanelController implements DataServiceSubscriber, SettingsServiceSubscriber{
+export class MultipleFilePanelController implements DataServiceSubscriber, SettingsServiceSubscriber{
 
     public settings: Settings;
     public data: DataModel;
@@ -66,8 +66,8 @@ export class MultipleSettingsPanelController implements DataServiceSubscriber, S
     }
 }
 
-export const multipleSettingsPanelComponent = {
-    selector: "multipleSettingsPanelComponent",
-    template: require("./multipleSettingsPanel.component.html"),
-    controller: MultipleSettingsPanelController
+export const multipleFilePanelComponent = {
+    selector: "multipleFilePanelComponent",
+    template: require("./multipleFilePanel.component.html"),
+    controller: MultipleFilePanelController
 };

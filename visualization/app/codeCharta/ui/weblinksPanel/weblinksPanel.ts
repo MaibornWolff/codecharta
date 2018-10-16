@@ -1,8 +1,4 @@
-import "../rangeSlider/rangeSlider";
-import "../statisticSettingsPanel/statisticSettingsPanel";
-import "../multipleSettingsPanel/multipleSettingsPanel";
 import "../../core/core.module";
-import "../layoutSwitcher/layoutSwitcher";
 
 import angular from "angular";
 
