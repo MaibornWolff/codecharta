@@ -69,6 +69,7 @@ export class CodeMapActionsService {
     }
 
     showAllNodes() {
+        this.setVisibilityOfNodeAndDescendants(this.settingsService.settings.map.root, true);
         this.removeAllBlacklistItemsOfTypeHidden();
         this.autoFit();
         this.apply();
