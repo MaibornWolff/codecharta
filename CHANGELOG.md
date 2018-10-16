@@ -6,13 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- URL parameter 'mode' with the values Single, Multiple or Delta 
 
 ### Changed
 
 ### Removed
+- URL parameter 'delta' does not exist anymore
 
 ### Fixed
-
+- Show delta of CodeMap when URL parameter mode=delta is set
 
 ## [1.17.0] - 2018-09-28
 ### Added
