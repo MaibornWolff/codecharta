@@ -10,7 +10,7 @@
       "areaMetric": "rloc",
       "heightMetric": "mcc",
       "colorMetric": "mcc",
-      "deltas": false,
+      "mode": "KindOfMap.Single",
       "amountOfTopLabels": 1,
       "scaling": {
         "x": 1,
@@ -44,7 +44,7 @@
       "areaMetric": "unary",
       "heightMetric": "Average Complexity*",
       "colorMetric": "Average Complexity*",
-      "deltas": false,
+      "mode": "KindOfMap.Single",
       "amountOfTopLabels": 1,
       "scaling": {
         "x": 1,
@@ -78,7 +78,7 @@
       "areaMetric": "rloc",
       "heightMetric": "mcc",
       "colorMetric": "line_coverage",
-      "deltas": false,
+      "mode": "KindOfMap.Single",
       "amountOfTopLabels": 1,
       "scaling": {
         "x": 1,
@@ -112,7 +112,7 @@
       "areaMetric": "rloc",
       "heightMetric": "abs_code_churn",
       "colorMetric": "weeks_with_commits",
-      "deltas": false,
+      "mode": "KindOfMap.Single",
       "amountOfTopLabels": 1,
       "scaling": {
         "x": 1,

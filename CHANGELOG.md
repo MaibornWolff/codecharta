@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- URL parameter 'mode' with the values Single, Multiple or Delta 
 - Blacklist to persist excluded or hidden nodes #205
 - Option to exclude nodes in nodeContextMenu #205
 - BlacklistPanel in SettingsSidebar to manage blacklist #205 
@@ -14,8 +15,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 ### Removed
+- URL parameter 'delta' does not exist anymore
 
 ### Fixed
+- Show delta of CodeMap when URL parameter mode=delta is set
+
+## [1.17.0] - 2018-09-28
+### Added
+
+### Changed
+- Invert delta colors moved from color to heigh metric column in ribbon bar #220
+- Delta value now as kindOfMap shown #220
+- Aggreate maps as multiple rename #220
+
+### Removed
+
+### Fixed
+-  Single/delta buttons now correctly activated when delta in ulr shown #220
+
 
 ## [1.17.0] - 2018-09-21
 ### Added
