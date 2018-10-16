@@ -1,12 +1,11 @@
-import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {KindOfMap, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import "./colorSettingsPanel.component.scss";
 
 export class ColorSettingsPanelController implements SettingsServiceSubscriber{
 
     public viewModel = {
         flipped: false,
-        deltas: false,
-        deltaColorFlipped: false,
+        deltas: false
     };
 
     /* @ngInject */
@@ -19,13 +18,11 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber{
 
     onSettingsChanged(settings: Settings, event) {
         this.viewModel.flipped = settings.neutralColorRange.flipped;
-        this.viewModel.deltas = settings.deltas;
-        this.viewModel.deltaColorFlipped = settings.deltaColorFlipped;
+        this.viewModel.deltas = settings.mode == KindOfMap.Delta;
     }
 
     apply() {
         this.settingsService.settings.neutralColorRange.flipped = this.viewModel.flipped;
-        this.settingsService.settings.deltaColorFlipped = this.viewModel.deltaColorFlipped;
         this.settingsService.onSettingsChanged();
     }
 

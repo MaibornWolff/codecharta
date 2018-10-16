@@ -5,9 +5,9 @@
             <file-chooser-directive></file-chooser-directive>
             <revision-chooser-file-drop-down-component></revision-chooser-file-drop-down-component>
         </div>
-        <span class="section-title" ng-if="!$ctrl.settingsService.settings.deltas">File</span>
-        <span class="section-title first" ng-if="$ctrl.settingsService.settings.deltas">File</span>
-        <span class="section-title second" ng-if="$ctrl.settingsService.settings.deltas">Compare</span>
+        <span class="section-title" ng-if="$ctrl.settingsService.settings.mode != 'Delta'">File</span>
+        <span class="section-title first" ng-if="$ctrl.settingsService.settings.mode  == 'Delta'">File</span>
+        <span class="section-title second" ng-if="$ctrl.settingsService.settings.mode  == 'Delta'">Compare</span>
         <div class="section-body">
             <revision-chooser-component></revision-chooser-component>
             <scenario-drop-down-component></scenario-drop-down-component>
@@ -61,6 +61,9 @@
             <md-input-container class="md-block">
                 <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.invertHeight" ng-change="$ctrl.settingsService.onSettingsChanged()">
                     Invert Height
+                </md-checkbox>
+                <md-checkbox class="md-primary" ng-if="$ctrl.settingsService.settings.mode == 'Delta'" ng-model="$ctrl.settingsService.settings.deltaColorFlipped" ng-change="$ctrl.settingsService.onSettingsChanged()">
+                    Invert Delta Colors
                 </md-checkbox>
             </md-input-container>
         </div>
