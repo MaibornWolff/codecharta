@@ -19,20 +19,22 @@
 
     <md-divider ng-if="$ctrl.blacklist.length != 0"></md-divider>
 
-    <md-list-item
-                  ng-repeat="item in $ctrl.blacklist | orderBy: [$ctrl.sortByExcludes,'path']"
-                  title="{{::item.path}}">
+    <div class="sub-list">
+        <md-list-item
+                      ng-repeat="item in $ctrl.blacklist | orderBy: [$ctrl.sortByExcludes,'path']"
+                      title="{{::item.path}}">
 
-        <div class="md-icon item-type" layout="column">
-            <i ng-if="::item.type == 'hide'" class="fa fa-eye-slash"></i>
-            <i ng-if="::item.type == 'exclude'" class="fa fa-times"></i>
-        </div>
-        <div class="md-list-item-text" layout="column">
-            <p>{{::item.path}}</p>
-        </div>
-        <md-button class="md-secondary round-button" ng-click="$ctrl.removeBlacklistEntry(item)">
-            <i class="fa fa-trash"></i>
-        </md-button>
-        <md-divider></md-divider>
-    </md-list-item>
+            <div class="md-icon item-type" layout="column">
+                <i ng-if="::item.type == 'hide'" class="fa fa-eye-slash"></i>
+                <i ng-if="::item.type == 'exclude'" class="fa fa-times"></i>
+            </div>
+            <div class="md-list-item-text" layout="column">
+                <p>{{::item.path}}</p>
+            </div>
+            <md-button class="md-secondary round-button" ng-click="$ctrl.removeBlacklistEntry(item)">
+                <i class="fa fa-trash"></i>
+            </md-button>
+            <md-divider></md-divider>
+        </md-list-item>
+    </div>
 </md-list>

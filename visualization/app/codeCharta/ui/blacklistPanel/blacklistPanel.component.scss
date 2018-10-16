@@ -29,5 +29,10 @@ blacklist-panel-component {
     -ms-user-select: initial;
     user-select: initial;
   }
+
+  md-list .sub-list {
+    max-height: 300px;
+    overflow: auto;
+  }
 }
 
