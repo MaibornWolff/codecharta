@@ -1,6 +1,7 @@
 import {Scenario} from "./scenario.service";
 import {CodeMap} from "../data/model/CodeMap";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
+import {KindOfMap} from "../settings/settings.service";
 
 export function createDefaultScenario(map: CodeMap, margin: number): Scenario {
 
@@ -16,7 +17,7 @@ export function createDefaultScenario(map: CodeMap, margin: number): Scenario {
             areaMetric: "rloc",
             heightMetric: "mcc",
             colorMetric: "mcc",
-            deltas: false,
+            mode: KindOfMap.Single,
             amountOfTopLabels: 1,
             scaling: {
                 x: 1, y: 1, z: 1
@@ -31,7 +32,8 @@ export function createDefaultScenario(map: CodeMap, margin: number): Scenario {
             maximizeDetailPanel: false,
             invertHeight: false,
             dynamicMargin: true,
-            isWhiteBackground: false
+            isWhiteBackground: false,
+            blacklist:[]
         },
         autoFitCamera: true
     };

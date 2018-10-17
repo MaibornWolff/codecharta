@@ -42,7 +42,8 @@ describe("treemap utils", () => {
                 heightKey: "theHeight",
                 margin: 15,
                 invertHeight: false,
-                visibleEdges: []
+                visibleEdges: [],
+                blacklist: []
             }
 
         });

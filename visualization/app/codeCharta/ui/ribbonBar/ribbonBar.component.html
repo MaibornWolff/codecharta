@@ -5,9 +5,9 @@
             <file-chooser-directive></file-chooser-directive>
             <revision-chooser-file-drop-down-component></revision-chooser-file-drop-down-component>
         </div>
-        <span class="section-title" ng-if="!$ctrl.settingsService.settings.deltas">File</span>
-        <span class="section-title first" ng-if="$ctrl.settingsService.settings.deltas">File</span>
-        <span class="section-title second" ng-if="$ctrl.settingsService.settings.deltas">Compare</span>
+        <span class="section-title" ng-if="$ctrl.settingsService.settings.mode != 'Delta'">File</span>
+        <span class="section-title first" ng-if="$ctrl.settingsService.settings.mode  == 'Delta'">File</span>
+        <span class="section-title second" ng-if="$ctrl.settingsService.settings.mode  == 'Delta'">Compare</span>
         <div class="section-body">
             <revision-chooser-component></revision-chooser-component>
             <scenario-drop-down-component></scenario-drop-down-component>
@@ -33,6 +33,7 @@
                     Dynamic Margin
                 </md-checkbox>
             </md-input-container>
+            <reset-settings-button-component settings-names="margin, dynamicMargin"></reset-settings-button-component>
         </div>
     </div>
 
@@ -62,7 +63,11 @@
                 <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.invertHeight" ng-change="$ctrl.settingsService.onSettingsChanged()">
                     Invert Height
                 </md-checkbox>
+                <md-checkbox class="md-primary" ng-if="$ctrl.settingsService.settings.mode == 'Delta'" ng-model="$ctrl.settingsService.settings.deltaColorFlipped" ng-change="$ctrl.settingsService.onSettingsChanged()">
+                    Invert Delta Colors
+                </md-checkbox>
             </md-input-container>
+            <reset-settings-button-component settings-names="amountOfTopLabels, scaling.y, invertHeight"></reset-settings-button-component>
         </div>
     </div>
 
@@ -73,12 +78,21 @@
         <span class="section-title">Color</span>
         <div class="section-body">
             <color-settings-panel-component></color-settings-panel-component>
+            <reset-settings-button-component settings-names="neutralColorRange.flipped, deltaColorFlipped, neutralColorRange.from, neutralColorRange.to"></reset-settings-button-component>
         </div>
     </div>
 
-    <md-button class="md-fab md-primary dark_shadow_opacity file-chooser-button" onclick="document.getElementById('input-file-id').click();"></md-button>
-    <i class="fa fa-folder-open file-chooser-icon" onclick="document.getElementById('input-file-id').click();"></i>
+    <div class="file-chooser-btn">
+        <md-button class="md-fab md-primary dark_shadow_opacity" onclick="document.getElementById('input-file-id').click();">
+            <i class="fa fa-folder-open"></i>
+        </md-button>
+    </div>
 
+    <div class="save-btn">
+        <md-button class="md-fab md-primary dark_shadow_opacity" ng-click="$ctrl.downloadFile()">
+            <i class="fa fa-download"></i>
+        </md-button>
+    </div>
 </md-card>
 
 <md-button id="toggle-ribbon-bar-fab" class="md-fab md-primary" aria-label="Toggle Ribbon Bar" ng-click="$ctrl.toggle()">
