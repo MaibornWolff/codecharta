@@ -1,6 +1,7 @@
 import "./ribbonBar.component.scss";
 import $ from "jquery";
 import {SettingsService} from "../../core/settings/settings.service";
+import { DownloadService } from "../../core/download/download.service";
 
 export class RibbonBarController {
 
@@ -10,8 +11,13 @@ export class RibbonBarController {
 
     /* @ngInject */
     constructor(
-        private settingsService: SettingsService
+        private settingsService: SettingsService,
+        private downloadService: DownloadService
     ) {
+    }
+
+    public downloadFile() {
+        this.downloadService.downloadCurrentMap();
     }
 
     public changeMargin(){

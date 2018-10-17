@@ -1,11 +1,11 @@
-import {DataService, DataServiceSubscriber, DataModel} from "../data/data.service";
+import {DataModel, DataService, DataServiceSubscriber} from "../data/data.service";
 import {
     CameraChangeSubscriber,
     ThreeOrbitControlsService
 } from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera} from "three";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
-import {CodeMap, Edge, CodeMapNode} from "../data/model/CodeMap";
+import {CodeMap, CodeMapNode, Exclude, ExcludeType} from "../data/model/CodeMap";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 
 export interface Range {
@@ -45,6 +45,7 @@ export interface Settings {
     invertHeight: boolean;
     dynamicMargin: boolean;
     isWhiteBackground: boolean;
+    blacklist: Array<Exclude>;
 }
 
 export interface SettingsServiceSubscriber {
@@ -116,7 +117,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             maximizeDetailPanel: false,
             invertHeight: false,
             dynamicMargin: true,
-            isWhiteBackground: false
+            isWhiteBackground: false,
+            blacklist: [],
         };
         return settings;
 
@@ -140,6 +142,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         if(data.metrics && data.renderMap && data.revisions) {
             this._settings.map = data.renderMap; // reference map is always the map which should be drawn
+            this._settings.blacklist = data.renderMap.blacklist;
 
             if (data.metrics.indexOf(this._settings.areaMetric) === -1) {
                 //area metric is not set or not in the new metrics and needs to be chosen
@@ -387,6 +390,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.invertHeight = settings.invertHeight;
         this._settings.dynamicMargin = settings.dynamicMargin;
         this._settings.isWhiteBackground = settings.isWhiteBackground;
+        this._settings.blacklist = settings.blacklist;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = settings.map || this.settings.map;

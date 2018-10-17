@@ -5,7 +5,7 @@ import angular from "angular";
 
 import {multipleFilePanelComponent} from "./multipleFilePanelComponent";
 
-angular.module("app.codeCharta.ui.multipleSettingsPanel", ["app.codeCharta.ui.rangeSlider", "app.codeCharta.core"])
+angular.module("app.codeCharta.ui.multipleFilePanel", ["app.codeCharta.ui.rangeSlider", "app.codeCharta.core"])
     .component(multipleFilePanelComponent.selector, multipleFilePanelComponent);
 
 

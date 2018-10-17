@@ -28,7 +28,8 @@
       "maximizeDetailPanel": false,
       "invertHeight": false,
       "dynamicMargin": true,
-      "isWhiteBackground": false
+      "isWhiteBackground": false,
+      "blacklist":[]
     },
     "autoFitCamera": true
   },
@@ -61,7 +62,8 @@
       "maximizeDetailPanel": false,
       "invertHeight": false,
       "dynamicMargin": true,
-      "isWhiteBackground": false
+      "isWhiteBackground": false,
+      "blacklist":[]
     },
     "autoFitCamera": true
   },
@@ -94,7 +96,8 @@
       "maximizeDetailPanel": false,
       "invertHeight": false,
       "dynamicMargin": true,
-      "isWhiteBackground": false
+      "isWhiteBackground": false,
+      "blacklist":[]
     },
     "autoFitCamera": true
   },
@@ -127,7 +130,8 @@
       "maximizeDetailPanel": false,
       "invertHeight": false,
       "dynamicMargin": true,
-      "isWhiteBackground": false
+      "isWhiteBackground": false,
+      "blacklist":[]
     },
     "autoFitCamera": true
   }
