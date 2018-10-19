@@ -1,4 +1,4 @@
-import {Settings, SettingsService} from "../../core/settings/settings.service";
+import {KindOfMap, Settings, SettingsService} from "../../core/settings/settings.service";
 import "./displaySettingsPanel.component.scss";
 
 export class DisplaySettingsPanelController {
@@ -19,7 +19,7 @@ export class DisplaySettingsPanelController {
 
     onSettingsChanged(settings: Settings, event) {
         this.viewModel.flipped = settings.neutralColorRange.flipped;
-        this.viewModel.deltas = settings.deltas;
+        this.viewModel.deltas = settings.mode == KindOfMap.Delta;
         this.viewModel.deltaColorFlipped = settings.deltaColorFlipped;
     }
 

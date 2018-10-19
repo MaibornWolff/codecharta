@@ -1,4 +1,4 @@
-import {CodeMapNode, Edge} from "../../core/data/model/CodeMap";
+import {CodeMapNode, Edge, Exclude, ExcludeType} from "../../core/data/model/CodeMap";
 import {hierarchy} from "d3-hierarchy";
 import {SettingsService} from "../../core/settings/settings.service";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
@@ -24,12 +24,12 @@ export class CodeMapActionsService {
     }
 
     hideNode(node: CodeMapNode) {
-        this.setVisibilityOfNodeAndDescendants(node, false);
+        this.settingsService.settings.blacklist.push({path: node.path, type: ExcludeType.hide});
         this.apply();
     }
 
     showNode(node: CodeMapNode) {
-        this.setVisibilityOfNodeAndDescendants(node, true);
+        this.removeBlacklistEntry({path: node.path, type: ExcludeType.hide});
         this.apply();
     }
 
@@ -70,7 +70,18 @@ export class CodeMapActionsService {
 
     showAllNodes() {
         this.setVisibilityOfNodeAndDescendants(this.settingsService.settings.map.root, true);
+        this.removeAllBlacklistItemsOfTypeHidden();
         this.autoFit();
+        this.apply();
+    }
+
+    excludeNode(node: CodeMapNode) {
+        this.settingsService.settings.blacklist.push({path: node.path, type: ExcludeType.exclude});
+        this.apply();
+    }
+
+    includeNode(entry: Exclude) {
+        this.settingsService.settings.blacklist = this.settingsService.settings.blacklist.filter(obj => obj !== entry);
         this.apply();
     }
 
@@ -136,6 +147,23 @@ export class CodeMapActionsService {
             }
         });
         return anyEdgeIsVisible;
+    }
+
+    private removeBlacklistEntry(item) {
+        if(this.settingsService.settings.blacklist) {
+            const indexToDelete = this.settingsService.settings.blacklist.indexOf(item);
+            this.settingsService.settings.blacklist.splice(indexToDelete, 1);
+        }
+    }
+
+    private removeAllBlacklistItemsOfTypeHidden() {
+        var onlyExcludeItems = [];
+        this.settingsService.settings.blacklist.forEach((item)=> {
+            if(item.type == ExcludeType.exclude) {
+                onlyExcludeItems.push(item);
+            }
+        });
+        this.settingsService.settings.blacklist = onlyExcludeItems;
     }
 
     private edgeContainsNode(edge: Edge, node: CodeMapNode) {

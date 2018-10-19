@@ -22,6 +22,7 @@ export interface CodeMap {
     root: CodeMapNode;
     edges?: Edge[];
     attributeTypes?: AttributeTypes;
+    blacklist?: Array<Exclude>;
 }
 
 export interface Edge {
@@ -44,4 +45,14 @@ export interface AttributeTypes {
 
 export enum AttributeType {
     absolute, relative
+}
+
+export interface Exclude {
+    path: string;
+    type: ExcludeType;
+}
+
+export enum ExcludeType {
+    hide = "hide",
+    exclude = "exclude"
 }

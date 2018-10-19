@@ -92,9 +92,11 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
         );
     });
 
-    it("should reject when children are not unique in name ", (done: DoneCallback)=> {
+    it("should reject when children are not unique in name+type", (done: DoneCallback)=> {
         file.nodes[0].children[0].name = "same";
+        file.nodes[0].children[0].type = "File";
         file.nodes[0].children[1].name = "same";
+        file.nodes[0].children[1].type = "File";
         dataValidatorService.validate(file).then(
             ()=> {
                 done.fail("should reject")

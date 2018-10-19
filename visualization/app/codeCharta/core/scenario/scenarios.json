@@ -10,7 +10,7 @@
       "areaMetric": "rloc",
       "heightMetric": "mcc",
       "colorMetric": "mcc",
-      "deltas": false,
+      "mode": "KindOfMap.Single",
       "amountOfTopLabels": 1,
       "scaling": {
         "x": 1,
@@ -28,7 +28,8 @@
       "maximizeDetailPanel": false,
       "invertHeight": false,
       "dynamicMargin": true,
-      "isWhiteBackground": false
+      "isWhiteBackground": false,
+      "blacklist":[]
     },
     "autoFitCamera": true
   },
@@ -43,7 +44,7 @@
       "areaMetric": "unary",
       "heightMetric": "Average Complexity*",
       "colorMetric": "Average Complexity*",
-      "deltas": false,
+      "mode": "KindOfMap.Single",
       "amountOfTopLabels": 1,
       "scaling": {
         "x": 1,
@@ -61,7 +62,8 @@
       "maximizeDetailPanel": false,
       "invertHeight": false,
       "dynamicMargin": true,
-      "isWhiteBackground": false
+      "isWhiteBackground": false,
+      "blacklist":[]
     },
     "autoFitCamera": true
   },
@@ -76,7 +78,7 @@
       "areaMetric": "rloc",
       "heightMetric": "mcc",
       "colorMetric": "line_coverage",
-      "deltas": false,
+      "mode": "KindOfMap.Single",
       "amountOfTopLabels": 1,
       "scaling": {
         "x": 1,
@@ -94,7 +96,8 @@
       "maximizeDetailPanel": false,
       "invertHeight": false,
       "dynamicMargin": true,
-      "isWhiteBackground": false
+      "isWhiteBackground": false,
+      "blacklist":[]
     },
     "autoFitCamera": true
   },
@@ -109,7 +112,7 @@
       "areaMetric": "rloc",
       "heightMetric": "abs_code_churn",
       "colorMetric": "weeks_with_commits",
-      "deltas": false,
+      "mode": "KindOfMap.Single",
       "amountOfTopLabels": 1,
       "scaling": {
         "x": 1,
@@ -127,7 +130,8 @@
       "maximizeDetailPanel": false,
       "invertHeight": false,
       "dynamicMargin": true,
-      "isWhiteBackground": false
+      "isWhiteBackground": false,
+      "blacklist":[]
     },
     "autoFitCamera": true
   }

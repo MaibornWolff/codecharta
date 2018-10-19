@@ -1,9 +1,10 @@
-import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/data.service";
+import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/data.service";
 import {
-    SettingsServiceSubscriber,
-    SettingsService,
+    KindOfMap,
+    Range,
     Settings,
-    Range
+    SettingsService,
+    SettingsServiceSubscriber
 } from "../../core/settings/settings.service";
 import $ from "jquery";
 import {MapColors} from "../codeMap/rendering/renderSettings";
@@ -202,7 +203,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         this.heightMetric = s.heightMetric;
         this.colorMetric = s.colorMetric;
         this.deltaColorsFlipped = s.deltaColorFlipped;
-        this.deltas = s.deltas;
+        this.deltas = s.mode == KindOfMap.Delta;
 
         this.positive = this.getImageDataUri(MapColors.positive);
         this.neutral = this.getImageDataUri(MapColors.neutral);
