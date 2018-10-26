@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- Integration with Jasome through JasomeImporter #245
 - URL parameter 'mode' with the values Single, Multiple or Delta 
 - Blacklist to persist excluded or hidden nodes #205
 - Option to exclude nodes in nodeContextMenu #205
