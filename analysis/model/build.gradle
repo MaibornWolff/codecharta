@@ -21,6 +21,9 @@ junitPlatform {
 
 dependencies {
     compile group: 'com.google.code.gson', name: 'gson', version: gson_version
+    compile group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
+
+    runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
     testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
     testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
@@ -46,10 +49,6 @@ configurations {
 
 artifacts {
     testOutput jarTest
-}
-
-jar {
-    baseName = 'codecharta-model'
 }
 
 jacocoTestReport {

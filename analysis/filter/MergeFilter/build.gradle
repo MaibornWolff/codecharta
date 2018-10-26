@@ -9,7 +9,6 @@ buildscript {
     }
 }
 
-apply plugin: 'application'
 apply plugin: 'org.junit.platform.gradle.plugin'
 
 junitPlatform {
@@ -35,16 +34,4 @@ dependencies {
     }
     testCompile group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
     testCompile project(path: ':model', configuration: 'testOutput')
-}
-
-mainClassName = 'de.maibornwolff.codecharta.filter.mergefilter.MergeFilter'
-applicationName = 'codecharta-merge'
-
-jar {
-    baseName = "${applicationName}"
-    manifest {
-        attributes 'Main-Class': mainClassName
-    }
-
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }

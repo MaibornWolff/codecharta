@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Save-Button to download current CodeMap #205
 
 ### Changed
+- No longer fat jar of every subcomponent of analysis, baked into ccsh
+- Changed simple syserr write to logger call for analysis #243
 
 ### Removed
 - URL parameter 'delta' does not exist anymore

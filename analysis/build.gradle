@@ -33,7 +33,8 @@ subprojects {
     apply plugin: 'kotlin'
 
     dependencies {
-        compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
+        compileOnly group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
+        testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
     }
 
     compileJava {
@@ -77,12 +78,6 @@ distributions {
             // deprecated ccsh
             from {'dist/ccsh'}
         }
-    }
-}
-
-sonarqube {
-    properties {
-        property 'sonar.coverage.exclusions', '**/model/**, **/*Main*'
     }
 }
 

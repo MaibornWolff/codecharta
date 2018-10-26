@@ -31,6 +31,7 @@ package de.maibornwolff.codecharta.importer.sonar.filter
 
 import com.google.gson.GsonBuilder
 import de.maibornwolff.codecharta.importer.sonar.model.ErrorResponse
+import mu.KotlinLogging
 import java.io.IOException
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
@@ -43,6 +44,7 @@ import javax.ws.rs.ext.Provider
 
 @Provider
 class ErrorResponseFilter : ClientResponseFilter {
+    private val logger = KotlinLogging.logger {}
 
     @Throws(IOException::class)
     override fun filter(requestContext: ClientRequestContext, responseContext: ClientResponseContext) {
@@ -59,11 +61,11 @@ class ErrorResponseFilter : ClientResponseFilter {
                     message += errorEntity.msg + "\n"
                 }
 
-                System.err.println(message)
+                logger.error { message }
 
                 throw WebApplicationException(message)
             } catch (e: RuntimeException) {
-                System.err.println("Error response could not be parsed. ")
+                logger.error { "Error response could not be parsed." }
             }
 
         }

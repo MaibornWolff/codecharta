@@ -29,9 +29,12 @@
 
 package de.maibornwolff.codecharta.importer.understand
 
+import mu.KotlinLogging
 import java.util.*
 
 class UnderstandCSVHeader(header: Array<String?>) {
+    private val logger = KotlinLogging.logger {}
+
     private val headerMap: MutableMap<Int, String>
 
     val columnNumbers: Set<Int>
@@ -50,8 +53,8 @@ class UnderstandCSVHeader(header: Array<String?>) {
         headerMap = HashMap()
         for (i in header.indices) {
             when {
-                header[i] == null || header[i]!!.isEmpty() -> System.err.println("Ignoring column number $i (counting from 0) as it has no column name.")
-                headerMap.containsValue(header[i]) -> System.err.println("Ignoring column number " + i + " (counting from 0) with column name " + header[i] + " as it duplicates a previous column.")
+                header[i] == null || header[i]!!.isEmpty() -> logger.warn { "Ignoring column number $i (counting from 0) as it has no column name." }
+                headerMap.containsValue(header[i]) -> logger.warn { "Ignoring column number $i (counting from 0) with column name ${header[i]} as it duplicates a previous column." }
                 else -> headerMap[i] = header[i]!!
             }
         }
@@ -60,7 +63,7 @@ class UnderstandCSVHeader(header: Array<String?>) {
             throw IllegalArgumentException("Header is empty.")
         }
 
-        if(!headerMap.values.containsAll(setOf("File", "Name", "Kind"))) {
+        if (!headerMap.values.containsAll(setOf("File", "Name", "Kind"))) {
             throw IllegalArgumentException("csv needs File, Name and Kind in header.")
         }
     }
