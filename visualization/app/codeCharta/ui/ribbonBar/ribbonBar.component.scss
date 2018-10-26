@@ -36,30 +36,53 @@ ribbon-bar-component {
         }
     }
 
-    .md-fab.file-chooser-button {
+    .file-chooser-btn {
+        left: 5px;
+    }
+
+    .save-btn {
+        left: 35px;
+    }
+
+    .file-chooser-btn,
+    .save-btn {
         position: absolute;
         top: 6px;
-        left: 5px;
         margin: 0;
         padding: 0;
         height: 26px;
         width: 26px;
-        min-height: initial;
-        z-index: 0;
-        border-radius: 50%;
-    }
 
-    .file-chooser-icon {
-        position: absolute;
-        top: 11px;
-        left: 10px;
-        color: white;
-
-        &:hover {
-            cursor: pointer;
-            color: #eee;
+        * {
+            margin: 0;
+            padding: 0;
         }
+
+        .md-fab {
+            position: relative;
+            min-height: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            border-radius: 50%;
+
+            i {
+                position: absolute;
+                top: 7px;
+                left: 7px;
+                color: white;
+
+                &:hover {
+                    cursor: pointer;
+                    color: #eee;
+                }
+            }
+        }
+
+
     }
+
+
 
 
     #header {
@@ -113,11 +136,11 @@ ribbon-bar-component {
                 color: gray;
 
                 &.first {
-                    left: 40px;
+                    left: 63px;
                 }
 
                 &.second {
-                    left: 145px;
+                    left: 168px;
                 }
             }
 
@@ -130,6 +153,11 @@ ribbon-bar-component {
                 font-size: $bodySize;
                 text-align: left;
                 vertical-align: top;
+
+                reset-settings-button-component .md-button {
+                    top: 150px;
+                    right: -5px;
+                }
             }
         }
 

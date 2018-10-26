@@ -2,7 +2,7 @@ import "./settings.module";
 import {NGMock} from "../../../../mocks/ng.mockhelper";
 import DoneCallback = jest.DoneCallback;
 import sinon from "sinon";
-import {SettingsService} from "./settings.service";
+import {KindOfMap, SettingsService} from "./settings.service";
 import {CodeMap} from "../data/model/CodeMap";
 
 /**
@@ -88,7 +88,7 @@ describe("settings.service", function() {
      */
     it("should retrieve the angular service instance with disabled delta cubes and no details selected", NGMock.mock.inject(function(settingsService){
         expect(settingsService).not.toBe(undefined);
-        expect(settingsService.settings.deltas).toBe(false);
+        expect(settingsService.settings.mode).toBe(KindOfMap.Single);
     }));
 
     //noinspection TypeScriptUnresolvedVariable

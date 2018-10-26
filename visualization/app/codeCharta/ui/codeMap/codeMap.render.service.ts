@@ -3,7 +3,7 @@
 import {CodeMapMesh} from "./rendering/codeMapMesh";
 import {renderSettings} from "./rendering/renderSettings";
 import {LabelManager} from "./rendering/labelManager";
-import {SettingsServiceSubscriber, Settings, SettingsService} from "../../core/settings/settings.service";
+import {KindOfMap, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import {node} from "./rendering/node";
 import {ArrowManager} from "./rendering/arrowManager";
 import {Edge} from "../../core/data/model/CodeMap";
@@ -97,6 +97,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             margin: s.margin,
             invertHeight: s.invertHeight,
             visibleEdges: visibleEdges,
+            blacklist: s.blacklist
         };
 
         let nodes: node[] = this.collectNodesToArray(
@@ -110,7 +111,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         this.currentRenderSettings = {
             heightKey: s.heightMetric,
             colorKey: s.colorMetric,
-            renderDeltas: s.deltas,
+            renderDeltas: s.mode == KindOfMap.Delta,
             colorRange: s.neutralColorRange,
             mapSize: mapSize,
             deltaColorFlipped: s.deltaColorFlipped

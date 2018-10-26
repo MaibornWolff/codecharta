@@ -101,6 +101,21 @@
                 }
             }
         },
+        "blacklist":{
+            "title": "blacklist",
+            "description": "blacklist of excluded nodes",
+            "type":"array",
+            "items": {
+                "title": "blacklist items",
+                "description": "blacklist type and minimatch paths",
+                "type":"object",
+                "patternProperties": {
+                    "^[A-Za-z0-9_]+$": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "attributesType":{
             "title": "attributesType list",
             "type": "object",
