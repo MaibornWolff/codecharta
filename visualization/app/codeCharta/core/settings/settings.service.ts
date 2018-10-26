@@ -1,11 +1,11 @@
-import {DataService, DataServiceSubscriber, DataModel} from "../data/data.service";
+import {DataModel, DataService, DataServiceSubscriber} from "../data/data.service";
 import {
     CameraChangeSubscriber,
     ThreeOrbitControlsService
 } from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera} from "three";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
-import {CodeMap, Edge, CodeMapNode} from "../data/model/CodeMap";
+import {CodeMap, CodeMapNode, Exclude, ExcludeType} from "../data/model/CodeMap";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 
 export interface Range {
@@ -20,6 +20,12 @@ export interface Scale {
     z: number;
 }
 
+export enum KindOfMap {
+    Single = "Single",
+    Multiple = "Multiple",
+    Delta = "Delta"
+}
+
 export interface Settings {
 
     map: CodeMap;
@@ -27,7 +33,7 @@ export interface Settings {
     areaMetric: string;
     heightMetric: string;
     colorMetric: string;
-    deltas: boolean;
+    mode: KindOfMap;
     amountOfTopLabels: number;
     scaling: Scale;
     camera: Scale;
@@ -39,6 +45,7 @@ export interface Settings {
     invertHeight: boolean;
     dynamicMargin: boolean;
     isWhiteBackground: boolean;
+    blacklist: Array<Exclude>;
 }
 
 export interface SettingsServiceSubscriber {
@@ -99,7 +106,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             areaMetric: this.getMetricByIdOrLast(0, metrics),
             heightMetric: this.getMetricByIdOrLast(1, metrics),
             colorMetric: this.getMetricByIdOrLast(2, metrics),
-            deltas: false,
+            mode: KindOfMap.Single,
             amountOfTopLabels: 1,
             scaling: s,
             camera: c,
@@ -110,7 +117,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             maximizeDetailPanel: false,
             invertHeight: false,
             dynamicMargin: true,
-            isWhiteBackground: false
+            isWhiteBackground: false,
+            blacklist: [],
         };
         return settings;
 
@@ -134,6 +142,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         if(data.metrics && data.renderMap && data.revisions) {
             this._settings.map = data.renderMap; // reference map is always the map which should be drawn
+            this._settings.blacklist = data.renderMap.blacklist;
 
             if (data.metrics.indexOf(this._settings.areaMetric) === -1) {
                 //area metric is not set or not in the new metrics and needs to be chosen
@@ -178,10 +187,10 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         this.settings.margin = this.computeMargin();
 
-        if (this._lastDeltaState && !this._settings.deltas) {
+        if (this._lastDeltaState && this._settings.mode != KindOfMap.Delta) {
             this._lastDeltaState = false;
             this.onDeactivateDeltas();
-        } else if (!this._lastDeltaState && this._settings.deltas) {
+        } else if (!this._lastDeltaState && this._settings.mode == KindOfMap.Delta) {
             this._lastDeltaState = true;
             this.onActivateDeltas();
         }
@@ -374,13 +383,14 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         this._settings.amountOfTopLabels = settings.amountOfTopLabels;
         this._settings.margin = settings.margin;
-        this._settings.deltas = settings.deltas;
+        this._settings.mode = settings.mode;
         this._settings.operation = settings.operation;
         this._settings.deltaColorFlipped = settings.deltaColorFlipped;
         this._settings.maximizeDetailPanel = settings.maximizeDetailPanel;
         this._settings.invertHeight = settings.invertHeight;
         this._settings.dynamicMargin = settings.dynamicMargin;
         this._settings.isWhiteBackground = settings.isWhiteBackground;
+        this._settings.blacklist = settings.blacklist;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = settings.map || this.settings.map;

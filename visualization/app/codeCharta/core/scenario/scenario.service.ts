@@ -5,7 +5,7 @@ import {ThreeOrbitControlsService} from "../../ui/codeMap/threeViewer/threeOrbit
 
 export interface Scenario {
     name: string;
-    settings: Settings;
+    settings: any;
     autoFitCamera: boolean;
 }
 

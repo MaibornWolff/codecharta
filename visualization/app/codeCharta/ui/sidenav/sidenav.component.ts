@@ -18,7 +18,6 @@ export class SidenavController {
     toggleSidenav(navID) {
         this.$mdSidenav(navID).toggle();
     }
-
 }
 
 export const sidenavComponent = {

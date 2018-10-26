@@ -1,11 +1,9 @@
-import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settings.service";
-import {IRootScopeService, ITimeoutService} from "angular";
-import {CodeMap, CodeMapNode} from "../../core/data/model/CodeMap";
-import {hierarchy, HierarchyNode} from "d3-hierarchy";
-import {node} from "../codeMap/rendering/node";
-import {CodeMapRenderService} from "../codeMap/codeMap.render.service";
+import {SettingsService} from "../../core/settings/settings.service";
+import {IRootScopeService} from "angular";
+import {CodeMapNode, ExcludeType} from "../../core/data/model/CodeMap";
 import {NodeContextMenuComponent} from "../nodeContextMenu/nodeContextMenu.component";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
+import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
 
 export interface MapTreeViewHoverEventSubscriber {
     onShouldHoverNode(node: CodeMapNode);
@@ -21,7 +19,9 @@ export class MapTreeViewLevelController {
     /* @ngInject */
     constructor(
         private $rootScope: IRootScopeService,
-        private codeMapActionsService: CodeMapActionsService
+        private codeMapActionsService: CodeMapActionsService,
+        private settingsService: SettingsService,
+        private codeMapUtilService: CodeMapUtilService
     ) {
 
     }
@@ -48,7 +48,7 @@ export class MapTreeViewLevelController {
 
     onRightClick($event) {
         NodeContextMenuComponent.hide(this.$rootScope);
-        NodeContextMenuComponent.show(this.$rootScope, this.node.path, $event.clientX, $event.clientY);
+        NodeContextMenuComponent.show(this.$rootScope, this.node.path, this.node.type, $event.clientX, $event.clientY);
     }
 
     onFolderClick() {
@@ -65,6 +65,13 @@ export class MapTreeViewLevelController {
 
     isLeaf(node: CodeMapNode = this.node): boolean {
         return !(node && node.children && node.children.length > 0);
+    }
+
+    isBlacklisted(node: CodeMapNode): boolean {
+        if (node != null) {
+            return CodeMapUtilService.isBlacklisted(node, this.settingsService.settings.blacklist, ExcludeType.exclude)
+        }
+        return false;
     }
 
     sortByFolder(node: CodeMapNode) {

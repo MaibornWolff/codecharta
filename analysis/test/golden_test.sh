@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-INSTALL_DIR="../build/tmp/golden test"
+INSTALL_DIR="../build/tmp/goldentest"
 
 exit_with_err(){
   echo $1 >&2
@@ -57,9 +57,16 @@ check_understand() {
 
 check_crococosmo() {
   echo " -- expect CrococosmoImporter gives valid cc.json"
-  ACTUAL_COSMO_JSON=${INSTALL_DIR}/actual_cosmoimport.json
+  ACTUAL_COSMO_JSON="${INSTALL_DIR}/actual_cosmoimport.json"
   "${CCSH}" crococosmoimport data/codecharta/crococosmo.xml > "${ACTUAL_COSMO_JSON}"
   validate "${ACTUAL_COSMO_JSON}"
+}
+
+check_jasome() {
+  echo " -- expect JasomeImporter gives valid cc.json"
+  ACTUAL_JASOME_JSON="${INSTALL_DIR}/actual_jasomeimport.json"
+  "${CCSH}" jasomeimport data/codecharta/jasome.xml > "${ACTUAL_JASOME_JSON}"
+  validate "${ACTUAL_JASOME_JSON}"
 }
 
 check_scmlog() {
@@ -84,6 +91,7 @@ run_tests() {
   check_sourcemonitor
   check_crococosmo
   check_understand
+  check_jasome
   check_scmlog
   check_merge
 

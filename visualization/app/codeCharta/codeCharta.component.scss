@@ -54,7 +54,7 @@ code-charta-component {
     height: 100%;
 
     &.expanded {
-      top: 170px;
+      top: 195px;
       height: calc(100% - 170px);
     }
   }
@@ -105,10 +105,9 @@ code-charta-component {
 
   ribbon-bar-component {
     #header,
-    #header .section > *,
-    .file-chooser-icon,
-    #toggle-ribbon-bar-fab,
-    #toggle-ribbon-bar-fab * {
+    #header .section .section-header,
+    #header .section .section-body,
+    #toggle-ribbon-bar-fab {
       transition: all $animationDuration + s ease;
     }
   }

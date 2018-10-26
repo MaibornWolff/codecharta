@@ -1,10 +1,10 @@
 import "./nodeContextMenu.component.scss";
-import {CodeMapNode} from "../../core/data/model/CodeMap";
-import {hierarchy} from "d3-hierarchy";
 import {SettingsService} from "../../core/settings/settings.service";
 import angular from "angular";
 import {highlightColors} from "../codeMap/rendering/renderSettings";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
+import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
+import {ExcludeType} from "../../core/data/model/CodeMap";
 
 export class NodeContextMenuComponent {
 
@@ -21,39 +21,38 @@ export class NodeContextMenuComponent {
                 private $window,
                 private $rootScope,
                 private settingsService: SettingsService,
-                private codeMapActionsService: CodeMapActionsService,) {
+                private codeMapActionsService: CodeMapActionsService,
+                private codeMapUtilService: CodeMapUtilService) {
         this.$rootScope.$on("show-node-context-menu", (e, data) => {
-            this.showContextMenu(data.path, data.x, data.y)
+            this.showContextMenu(data.path, data.type, data.x, data.y)
         });
         this.$rootScope.$on("hide-node-context-menu", () => {
             this.hideContextMenu()
         });
     }
 
-    public static show($rootScope, path: string, x, y) {
-        $rootScope.$broadcast("show-node-context-menu", {path: path, x: x, y: y});
+    public static show($rootScope, path: string, type: string, x, y) {
+        $rootScope.$broadcast("show-node-context-menu", {path: path, type: type, x: x, y: y});
     }
 
     public static hide($rootScope) {
         $rootScope.$broadcast("hide-node-context-menu");
     }
 
-    showContextMenu(path: string, x, y) {
+    showContextMenu(path: string, nodeType: string, x, y) {
         this.$timeout(() => {
-            this.contextMenuBuilding = this.getCodeMapNodeFromPath(path);
+            this.contextMenuBuilding = this.codeMapUtilService.getCodeMapNodeFromPath(path, nodeType);
         }, 50).then(() => {
             this.nodeHasEdges = this.codeMapActionsService.nodeHasEdges(this.contextMenuBuilding);
             this.allDependentEdgesAreVisible = this.codeMapActionsService.allDependentEdgesAreVisible(this.contextMenuBuilding);
             this.anyEdgeIsVisible = this.codeMapActionsService.anyEdgeIsVisible();
 
-            this.$timeout(() => {
-                let w = this.$element[0].children[0].clientWidth;
-                let h = this.$element[0].children[0].clientHeight;
-                let resX = Math.min(x, this.$window.innerWidth - w);
-                let resY = Math.min(y, this.$window.innerHeight - h);
-                angular.element(this.$element[0].children[0]).css("top", resY + "px");
-                angular.element(this.$element[0].children[0]).css("left", resX + "px");
-            }, 50);
+            let w = this.$element[0].children[0].clientWidth;
+            let h = this.$element[0].children[0].clientHeight;
+            let resX = Math.min(x, this.$window.innerWidth - w);
+            let resY = Math.min(y, this.$window.innerHeight - h);
+            angular.element(this.$element[0].children[0]).css("top", resY + "px");
+            angular.element(this.$element[0].children[0]).css("left", resX + "px");
         });
     }
 
@@ -118,14 +117,9 @@ export class NodeContextMenuComponent {
         this.codeMapActionsService.hideAllEdges();
     }
 
-    getCodeMapNodeFromPath(path: string) {
-        let res = null;
-        hierarchy<CodeMapNode>(this.settingsService.settings.map.root).each((hierarchyNode) => {
-            if (hierarchyNode.data.path === path) {
-                res = hierarchyNode.data;
-            }
-        });
-        return res;
+    excludeNode() {
+        this.hideContextMenu();
+        this.codeMapActionsService.excludeNode(this.contextMenuBuilding)
     }
 
     nodeIsFolder() {
