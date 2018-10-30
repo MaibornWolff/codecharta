@@ -1,5 +1,7 @@
 # CodeCharta 
 [![Build Status](https://travis-ci.org/MaibornWolff/codecharta.svg?branch=master)](https://travis-ci.org/MaibornWolff/codecharta)
+[![Quality Gate Analysis](https://sonarcloud.io/api/project_badges/measure?project=de.maibornwolff.codecharta%3Aanalysis&metric=alert_status)](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Aanalysis)
+[![Quality Gate Visualization](https://sonarcloud.io/api/project_badges/measure?project=de.maibornwolff.codecharta%3Avisualization&metric=alert_status)](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Avisualization)
 
 > CodeCharta by [MaibornWolff](https://www.maibornwolff.de)
 
@@ -34,9 +36,13 @@ You can get the [latest version](https://github.com/MaibornWolff/codecharta/rele
 ### Install CodeCharta from GitHub
 
 * Download the [latest release](https://github.com/MaibornWolff/codecharta/releases/latest) of CodeCharta (codecharta-analysis and codecharta-visualization)
-* you should now have the analysis and visualization package 
+* you should now have the analysis and visualization package
 * unpack both packages
 * enter the codecharta-analysis/bin directory with your favorite console `./ccsh -h`
+
+### Install CodeCharta visualization from Docker Hub
+
+* run visualization with `docker run -p 80:8080 maibornwolff/codecharta-visualization`
 
 ## Feature request / Bug / Feedback
 
