@@ -105,3 +105,6 @@ deploy:
   - provider: script
     script: visualization/script/docker-publish.sh
     skip_cleanup: true
+    on:
+      tags: true
+      branch: master
