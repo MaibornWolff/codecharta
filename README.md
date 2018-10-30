@@ -34,9 +34,13 @@ You can get the [latest version](https://github.com/MaibornWolff/codecharta/rele
 ### Install CodeCharta from GitHub
 
 * Download the [latest release](https://github.com/MaibornWolff/codecharta/releases/latest) of CodeCharta (codecharta-analysis and codecharta-visualization)
-* you should now have the analysis and visualization package 
+* you should now have the analysis and visualization package
 * unpack both packages
 * enter the codecharta-analysis/bin directory with your favorite console `./ccsh -h`
+
+### Install CodeCharta visualization from Docker Hub
+
+* run visualization with `docker run -p 80:8080 maibornwolff/codecharta-visualization`
 
 ## Feature request / Bug / Feedback
 
