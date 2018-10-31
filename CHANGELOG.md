@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- Buildings in the delta view are not colored correctly #253
 
 ## [1.18.1] - 2018-10-31
 ### Added

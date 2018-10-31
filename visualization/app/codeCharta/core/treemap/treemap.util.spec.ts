@@ -78,6 +78,13 @@ describe("treemap utils", () => {
             squaredNode.data.deltas = undefined;
         });
 
+        it("given negative deltas the resulting heightDelta also should be negative", () => {
+            squaredNode.data.deltas = {};
+            squaredNode.data.deltas[treeMapSettings.heightKey] = -33;
+            expect(buildNode().heightDelta).toBe(-33);
+            squaredNode.data.deltas = undefined;
+        });
+
         it("is leaf", () => {
             let tmp = TreeMapUtils.isNodeLeaf;
             TreeMapUtils.isNodeLeaf = jest.fn();
