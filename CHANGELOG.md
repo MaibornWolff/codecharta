@@ -13,6 +13,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+## [1.18.1] - 2018-10-31
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
 ## [1.18.0] - 2018-10-29
 ### Added
 - Integration with Jasome through JasomeImporter #245
