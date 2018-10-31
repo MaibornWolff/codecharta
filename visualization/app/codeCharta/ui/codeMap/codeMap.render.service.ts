@@ -97,7 +97,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             margin: s.margin,
             invertHeight: s.invertHeight,
             visibleEdges: visibleEdges,
-            blacklist: s.blacklist
+            blacklist: s.blacklist,
+            fileName: s.map.fileName
         };
 
         let nodes: node[] = this.collectNodesToArray(
