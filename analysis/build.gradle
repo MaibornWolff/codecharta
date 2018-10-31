@@ -25,7 +25,17 @@ allprojects {
     apply plugin: 'maven'
 
     jacoco {
-        toolVersion = '0.8.0'
+        toolVersion = '0.8.1'
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "de.maibornwolff.codecharta:analysis"
+        property "sonar.projectName", "CodeCharta Analysis"
+        property "sonar.sourceEncoding", "UTF-8"
+
     }
 }
 

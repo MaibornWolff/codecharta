@@ -15,14 +15,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Reset Button in RibbonBar to reset 'Invert Colors' #255
 - Remove lag of 'Invert Color' checkboxes, when selecting single/delta mode #255
 
+## [1.18.1] - 2018-10-31
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
 ## [1.18.0] - 2018-10-29
 ### Added
 - Integration with Jasome through JasomeImporter #245
 - URL parameter 'mode' with the values Single, Multiple or Delta 
 - Blacklist to persist excluded or hidden nodes #205
 - Option to exclude nodes in nodeContextMenu #205
-- BlacklistPanel in SettingsSidebar to manage blacklist #205 
+- BlacklistPanel in SettingsSidebar to manage blacklist #205
 - Save-Button to download current CodeMap #205
+- Publishing visualization on Docker Hub #252
 
 ### Changed
 - No longer fat jar of every subcomponent of analysis, baked into ccsh

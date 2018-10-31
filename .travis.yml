@@ -5,6 +5,9 @@ dist: trusty
 
 language: java
 
+services:
+  - docker
+
 jdk:
    - oraclejdk9
 
@@ -90,9 +93,17 @@ deploy:
       tags: true
       branch: master
 
-  # publishes visualization npm package
+  # publishes analysis npm package
   - provider: script
     script: analysis/script/npm-publish.sh
+    skip_cleanup: true
+    on:
+      tags: true
+      branch: master
+
+  # publishes visualization docker image
+  - provider: script
+    script: visualization/script/docker-publish.sh
     skip_cleanup: true
     on:
       tags: true

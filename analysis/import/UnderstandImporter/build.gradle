@@ -17,6 +17,8 @@ junitPlatform {
             include 'spek'
         }
     }
+
+    enableStandardTestTask true
 }
 
 dependencies {
