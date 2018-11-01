@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- Buildings in the delta view are not colored correctly #253
 - Reset Button in RibbonBar to reset 'Invert Colors' #255
 - Remove lag of 'Invert Color' checkboxes, when selecting single/delta mode #255
 
