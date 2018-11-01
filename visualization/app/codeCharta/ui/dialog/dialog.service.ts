@@ -1,5 +1,6 @@
 import angular, {IAngularEvent} from "angular";
-import {queryParamDialog} from "./queryParam.dialog";
+import {queryParamDialog, QueryParamDialogController} from "./queryParam.dialog";
+import {distanceButtonDialog, ButtonDialogController} from "./distanceButton.dialog";
 
 export class DialogService {
 
@@ -11,6 +12,10 @@ export class DialogService {
 
     showQueryParamDialog() {
         this.showCustomDialog(queryParamDialog);
+    }
+
+    showDistanceButtonDialog(){
+        this.showCustomDialog(distanceButtonDialog);
     }
 
     showCustomDialog(dialog) {
@@ -51,5 +56,7 @@ export class DialogService {
         return this.$mdDialog.show(prompt);
 
     }
+
+
 
 }

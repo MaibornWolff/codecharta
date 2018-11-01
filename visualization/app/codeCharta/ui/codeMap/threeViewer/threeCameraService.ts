@@ -14,6 +14,7 @@ class ThreeCameraService implements SettingsServiceSubscriber {
 
     public static VIEW_ANGLE = 45;
     public static NEAR = 100;
+    public static DEFAULT_FAR= 20000;
     public static FAR = 20000;
 
     public camera: PerspectiveCamera;
