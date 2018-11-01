@@ -1,12 +1,12 @@
 import "./ribbonBar.component.scss";
 import $ from "jquery";
-import {SettingsService} from "../../core/settings/settings.service";
+import {KindOfMap, SettingsService} from "../../core/settings/settings.service";
 import { DownloadService } from "../../core/download/download.service";
 
 export class RibbonBarController {
 
     private collapsingElements = $("code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab");
-
+    private deltaMode = KindOfMap.Delta;
     private isExpanded: boolean = false;
 
     /* @ngInject */
