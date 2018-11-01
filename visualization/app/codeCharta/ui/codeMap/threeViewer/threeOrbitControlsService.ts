@@ -33,6 +33,7 @@ class ThreeOrbitControlsService {
         const scale = 1.4; // object size / display size
         const objectAngularSize = ( this.threeCameraService.camera.fov * Math.PI / 180 ) * scale;
         const distanceToCamera = boundingSphere.radius / Math.tan( objectAngularSize / 2 );
+        const distanceCamBottom = distanceToCamera+boundingSphere.radius;
         const len = Math.sqrt( Math.pow( distanceToCamera, 2 ) + Math.pow( distanceToCamera, 2 ) );
 
         this.threeCameraService.camera.position.set(len, len, len);
@@ -44,6 +45,10 @@ class ThreeOrbitControlsService {
         this.controls.target.set( t.x, t.y, t.z );
 
         this.threeCameraService.camera.updateProjectionMatrix();
+
+        if(distanceCamBottom > ThreeCameraService.FAR){
+            console.log("Something is outside");
+        }
 
     }
 
