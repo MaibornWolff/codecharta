@@ -163,6 +163,27 @@ describe("app.codeCharta.core.data.dataService", function() {
         expect(dataService.setComparisonMap).toHaveBeenCalledWith(42);
     });
 
+    it("deactivating deltas when deltas are enabled should remove all cross origin nodes from render map", () => {
+        
+        // given
+        dataService.notify = jest.fn();
+        dataService._deltasEnabled = true;
+        dataService.setMap(TEST_DELTA_MAP_A, 0);
+        dataService.setMap(TEST_DELTA_MAP_B, 1);
+        dataService.setReferenceMap(0);
+        dataService.setComparisonMap(1);
+
+        // when
+        dataService.onDeactivateDeltas();
+
+        // then
+        const renderMap = dataService.data.renderMap;
+        d3.hierarchy<CodeMapNode>(renderMap.root).each((node) => {
+            expect(node.data.origin).toBe(renderMap.fileName);
+        });
+
+    });
+
     it("deactivating deltas when deltas are not enabled should do nothing", () => {
         dataService._deltasEnabled = false;
         dataService.setComparisonMap = jest.fn();
@@ -179,13 +200,21 @@ describe("app.codeCharta.core.data.dataService", function() {
     });
 
     it("process deltas should call deltaCalculator if maps and deltas are set", () => {
+        
+        // given
         dataService._deltasEnabled = true;
-        dataService._data.renderMap = "render map";
-        dataService._data.metrics = ["special"];
-        dataService._lastComparisonMap = "comparison map";
+        dataService.setMap(TEST_DELTA_MAP_A, 0);
+        dataService.setMap(TEST_DELTA_MAP_B, 1);
+        dataService.setReferenceMap(0);
+        dataService.setComparisonMap(1);
         dataService.deltaCalculatorService.provideDeltas = jest.fn();
+
+        // when
         dataService.processDeltas();
-        expect(dataService.deltaCalculatorService.provideDeltas).toHaveBeenCalledWith("render map", "comparison map", ["special"]);
+
+        // then
+        expect(dataService.deltaCalculatorService.provideDeltas).toHaveBeenCalledWith(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, ["rloc", "functions", "mcc", "unary", "more"]);
+
     });
 
     it("only calculate deltas when two maps exist and deltas are enabled", () => {

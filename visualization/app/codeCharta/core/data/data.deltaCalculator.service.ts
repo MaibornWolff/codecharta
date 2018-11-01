@@ -130,7 +130,7 @@ export class DeltaCalculatorService {
 
     }
 
-    private removeCrossOriginNodes(map: CodeMap) {
+    public removeCrossOriginNodes(map: CodeMap) {
 
             let mapRoot = d3.hierarchy<CodeMapNode>(map.root);
             mapRoot.each((node) => {
