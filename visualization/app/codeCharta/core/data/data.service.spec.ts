@@ -163,6 +163,27 @@ describe("app.codeCharta.core.data.dataService", function() {
         expect(dataService.setComparisonMap).toHaveBeenCalledWith(42);
     });
 
+    it("deactivating deltas when deltas are enabled should remove all cross origin nodes from render map", () => {
+        
+        // given
+        dataService.notify = jest.fn();
+        dataService._deltasEnabled = true;
+        dataService.setMap(TEST_DELTA_MAP_A, 0);
+        dataService.setMap(TEST_DELTA_MAP_B, 1);
+        dataService.setReferenceMap(0);
+        dataService.setComparisonMap(1);
+
+        // when
+        dataService.onDeactivateDeltas();
+
+        // then
+        const renderMap = dataService.data.renderMap;
+        d3.hierarchy<CodeMapNode>(renderMap.root).each((node) => {
+            expect(node.data.origin).toBe(renderMap.fileName);
+        });
+
+    });
+
     it("deactivating deltas when deltas are not enabled should do nothing", () => {
         dataService._deltasEnabled = false;
         dataService.setComparisonMap = jest.fn();
