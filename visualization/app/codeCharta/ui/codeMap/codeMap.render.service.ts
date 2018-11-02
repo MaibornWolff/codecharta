@@ -6,13 +6,15 @@ import {LabelManager} from "./rendering/labelManager";
 import {KindOfMap, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import {node} from "./rendering/node";
 import {ArrowManager} from "./rendering/arrowManager";
-import {Edge} from "../../core/data/model/CodeMap";
+import {Edge, ExcludeType} from "../../core/data/model/CodeMap";
 import {
-    CodeMapBuildingTransition, CodeMapMouseEventService,
+    CodeMapBuildingTransition,
+    CodeMapMouseEventService,
     CodeMapMouseEventServiceSubscriber
 } from "./codeMap.mouseEvent.service";
 import {TreeMapSettings} from "../../core/treemap/treemap.service";
 import {codeMapBuilding} from "./rendering/codeMapBuilding";
+import {CodeMapUtilService} from "./codeMap.util.service";
 
 const mapSize = 500.0;
 
@@ -34,7 +36,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     constructor(private threeSceneService,
                 private treeMapService,
                 private $rootScope,
-                private settingsService: SettingsService) {
+                private settingsService: SettingsService,
+                private codeMapUtilService: CodeMapUtilService) {
         this.settingsService.subscribe(this);
         CodeMapMouseEventService.subscribe($rootScope, this);
     }
@@ -101,6 +104,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             fileName: s.map.fileName
         };
 
+        this.showAllOrOnlyIsolatedNode(s);
+
         let nodes: node[] = this.collectNodesToArray(
             this.treeMapService.createTreemapNodes(s.map.root, treeMapSettings, s.map.edges)
         );
@@ -137,6 +142,17 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         this._mapMesh = new CodeMapMesh(this.currentSortedNodes, this.currentRenderSettings);
 
         this.threeSceneService.setMapMesh(this._mapMesh, mapSize);
+    }
+
+    private showAllOrOnlyIsolatedNode(s: Settings) {
+        var isolatedBlacklistNode = s.blacklist.filter(item => item.type == ExcludeType.isolate);
+        if (isolatedBlacklistNode.length == 1) {
+            var isolatedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(isolatedBlacklistNode[0].path);
+            this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, false);
+            this.treeMapService.setVisibilityOfNodeAndDescendants(isolatedNode, true);
+        } else {
+            this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, true);
+        }
     }
 
     private getVisibleEdges(s: Settings) {
