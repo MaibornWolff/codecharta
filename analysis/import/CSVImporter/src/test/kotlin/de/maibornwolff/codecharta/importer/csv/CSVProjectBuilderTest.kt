@@ -31,7 +31,7 @@ class CSVProjectBuilderTest : Spek({
             }
         }
 
-        on("adding valid csv") {
+        on("adding valid csv with usual line breaks") {
             val name = "someName"
             val project = csvProjectBuilder.parseCSVStream(
                     toInputStream("someContent,,path\nprojectName,blubb2,$name")
@@ -42,6 +42,19 @@ class CSVProjectBuilderTest : Spek({
                 assertThat(project.rootNode.children.map { it.name }, hasItem(name))
             }
         }
+
+        on("adding valid csv with windows line breaks") {
+            val name = "someName"
+            val project = csvProjectBuilder.parseCSVStream(
+                    toInputStream("someContent,,path\r\nprojectName,blubb2,$name")
+            )
+                    .build()
+
+            it("should have node with same name") {
+                assertThat(project.rootNode.children.map { it.name }, hasItem(name))
+            }
+        }
+
     }
 
     describe("a CSVProjectBuilder") {
