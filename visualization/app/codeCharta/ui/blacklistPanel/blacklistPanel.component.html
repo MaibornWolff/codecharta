@@ -21,10 +21,11 @@
 
     <div class="sub-list">
         <md-list-item
-                      ng-repeat="item in $ctrl.blacklist | orderBy: [$ctrl.sortByExcludes,'path']"
+                      ng-repeat="item in $ctrl.blacklist | orderBy: [$ctrl.sortByIsolateAndExcludes,'path']"
                       title="{{::item.path}}">
 
             <div class="md-icon item-type" layout="column">
+                <i ng-if="::item.type == 'isolate'" class="fa fa-bullseye" title="Isolate"></i>
                 <i ng-if="::item.type == 'hide'" class="fa fa-eye-slash" title="Hide"></i>
                 <i ng-if="::item.type == 'exclude'" class="fa fa-times" title="Exclude"></i>
             </div>

@@ -62,15 +62,15 @@ export class CodeMapActionsService {
     }
 
     isolateNode(node: CodeMapNode) {
-        this.setVisibilityOfNodeAndDescendants(this.settingsService.settings.map.root, false);
-        this.setVisibilityOfNodeAndDescendants(node, true);
+        this.removeAllBlacklistItemsOfType([ExcludeType.isolate]);
+        this.settingsService.settings.blacklist.push({path: node.path, type: ExcludeType.isolate});
         this.autoFit();
         this.apply();
     }
 
     showAllNodes() {
         this.setVisibilityOfNodeAndDescendants(this.settingsService.settings.map.root, true);
-        this.removeAllBlacklistItemsOfTypeHidden();
+        this.removeAllBlacklistItemsOfType([ExcludeType.isolate, ExcludeType.hide]);
         this.autoFit();
         this.apply();
     }
@@ -156,14 +156,14 @@ export class CodeMapActionsService {
         }
     }
 
-    private removeAllBlacklistItemsOfTypeHidden() {
-        var onlyExcludeItems = [];
+    private removeAllBlacklistItemsOfType(excludeTypeArray: ExcludeType[]) {
+        var remainingItems = [];
         this.settingsService.settings.blacklist.forEach((item)=> {
-            if(item.type == ExcludeType.exclude) {
-                onlyExcludeItems.push(item);
+            if(!excludeTypeArray.includes(item.type)) {
+                remainingItems.push(item);
             }
         });
-        this.settingsService.settings.blacklist = onlyExcludeItems;
+        this.settingsService.settings.blacklist = remainingItems;
     }
 
     private edgeContainsNode(edge: Edge, node: CodeMapNode) {

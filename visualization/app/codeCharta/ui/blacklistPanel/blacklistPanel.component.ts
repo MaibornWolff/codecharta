@@ -71,8 +71,13 @@ export class BlacklistPanelController implements SettingsServiceSubscriber{
         }).length != 0;
     }
 
-    sortByExcludes(item: Exclude) {
-        return (item && item.type == ExcludeType.exclude) ? 0 : 1;
+    sortByIsolateAndExcludes(item: Exclude) {
+        if (item) {
+            if (item.type == ExcludeType.isolate) {
+                return 0;
+            }
+            return (item.type == ExcludeType.exclude) ? 1 : 2;
+        }
     }
 }
 
