@@ -54,5 +54,6 @@ export interface Exclude {
 
 export enum ExcludeType {
     hide = "hide",
-    exclude = "exclude"
+    exclude = "exclude",
+    isolate = "isolate"
 }
