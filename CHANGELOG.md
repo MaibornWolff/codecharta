@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.19.0] - 2018-11-02
+### Added
 - Deleted files in delta view use their previous area value in order to be visible #254
 ### Changed
 
