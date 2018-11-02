@@ -4,7 +4,6 @@ import {IRootScopeService, IAngularEvent} from "angular";
 import {Object3D, OrbitControls, PerspectiveCamera} from "three";
 import * as THREE from "three";
 import {ThreeSceneService} from "./threeSceneService";
-import {DialogService} from "../../dialog/dialog.service";
 
 export interface CameraChangeSubscriber {
     onCameraChanged(camera: PerspectiveCamera, event: IAngularEvent);
@@ -17,7 +16,6 @@ class ThreeOrbitControlsService {
 
     public static SELECTOR = "threeOrbitControlsService";
     public static CAMERA_CHANGED_EVENT_NAME = "camera-changed";
-    public static DISTANCE_CAMERA_BOTTOM = 0;
 
     controls: OrbitControls;
 
@@ -25,8 +23,7 @@ class ThreeOrbitControlsService {
     constructor(
         private threeCameraService: ThreeCameraService,
         private threeSceneService: ThreeSceneService,
-        private $rootScope: IRootScopeService,
-        private dialogService: DialogService
+        private $rootScope: IRootScopeService
     ) {}
 
     autoFitTo( obj = this.threeSceneService.mapGeometry) {
@@ -36,7 +33,6 @@ class ThreeOrbitControlsService {
         const scale = 1.4; // object size / display size
         const objectAngularSize = ( this.threeCameraService.camera.fov * Math.PI / 180 ) * scale;
         const distanceToCamera = boundingSphere.radius / Math.tan( objectAngularSize / 2 );
-        ThreeOrbitControlsService.DISTANCE_CAMERA_BOTTOM = (distanceToCamera+boundingSphere.radius)*1.5;
         const len = Math.sqrt( Math.pow( distanceToCamera, 2 ) + Math.pow( distanceToCamera, 2 ) );
 
         this.threeCameraService.camera.position.set(len, len, len);
@@ -48,16 +44,6 @@ class ThreeOrbitControlsService {
         this.controls.target.set( t.x, t.y, t.z );
 
         this.threeCameraService.camera.updateProjectionMatrix();
-
-        if(ThreeOrbitControlsService.DISTANCE_CAMERA_BOTTOM > ThreeCameraService.FAR){
-            this.dialogService.showDistanceButtonDialog();
-        }
-        else if(ThreeCameraService.FAR!=ThreeCameraService.DEFAULT_FAR&&
-            ThreeOrbitControlsService.DISTANCE_CAMERA_BOTTOM<=ThreeCameraService.DEFAULT_FAR){
-            ThreeCameraService.FAR=ThreeCameraService.DEFAULT_FAR;
-            //TODO check when this value should be set back
-            //What about when loading a new file or selecting a new metric?
-        }
 
     }
 
