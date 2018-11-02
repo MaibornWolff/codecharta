@@ -56,7 +56,7 @@ class ThreeOrbitControlsService {
             ThreeOrbitControlsService.DISTANCE_CAMERA_BOTTOM<=ThreeCameraService.DEFAULT_FAR){
             ThreeCameraService.FAR=ThreeCameraService.DEFAULT_FAR;
             //TODO check when this value should be set back
-            //What about when loading a new file or selecting a new metric
+            //What about when loading a new file or selecting a new metric?
         }
 
     }
