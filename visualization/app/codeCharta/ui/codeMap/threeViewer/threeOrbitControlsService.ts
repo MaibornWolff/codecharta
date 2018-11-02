@@ -36,7 +36,7 @@ class ThreeOrbitControlsService {
         const scale = 1.4; // object size / display size
         const objectAngularSize = ( this.threeCameraService.camera.fov * Math.PI / 180 ) * scale;
         const distanceToCamera = boundingSphere.radius / Math.tan( objectAngularSize / 2 );
-        ThreeOrbitControlsService.DISTANCE_CAMERA_BOTTOM = distanceToCamera+boundingSphere.radius;
+        ThreeOrbitControlsService.DISTANCE_CAMERA_BOTTOM = (distanceToCamera+boundingSphere.radius)*1.5;
         const len = Math.sqrt( Math.pow( distanceToCamera, 2 ) + Math.pow( distanceToCamera, 2 ) );
 
         this.threeCameraService.camera.position.set(len, len, len);
