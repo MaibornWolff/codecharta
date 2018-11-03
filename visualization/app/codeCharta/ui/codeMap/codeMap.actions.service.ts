@@ -62,6 +62,7 @@ export class CodeMapActionsService {
     }
 
     isolateNode(node: CodeMapNode) {
+        this.removeBlacklistEntry({path: node.path, type: ExcludeType.hide});
         this.removeAllBlacklistItemsOfType([ExcludeType.isolate]);
         this.settingsService.settings.blacklist.push({path: node.path, type: ExcludeType.isolate});
         this.autoFit();

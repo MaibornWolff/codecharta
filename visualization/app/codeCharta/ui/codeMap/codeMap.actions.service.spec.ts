@@ -4,7 +4,6 @@ import {CodeMapNode, Exclude, ExcludeType} from "../../core/data/model/CodeMap";
 
 import {SettingsService} from "../../core/settings/settings.service";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
-import {ColorKeywords} from "three";
 
 jest.mock("../../core/settings/settings.service");
 
@@ -35,24 +34,28 @@ describe("code map action service tests", ()=>{
        hiddenNode = {name: "test", type: "File", attributes: {}, visible: false};
        simpleHiddenHierarchy = {
             name: "root",
+            path: "/root",
             type: "Folder",
             attributes: {},
             visible: false,
             children: [
                 {
                     name: "a",
+                    path: "/root/a",
                     type: "Folder",
                     attributes: {},
                     visible: false,
                     children: [
                         {
                             name: "aa",
+                            path: "/root/a/aa",
                             type: "File",
                             attributes: {},
                             visible: false
                         },
                         {
                             name: "ab",
+                            path: "/root/a/ab",
                             type: "File",
                             attributes: {},
                             visible: false
@@ -61,6 +64,7 @@ describe("code map action service tests", ()=>{
                 },
                 {
                     name: "b",
+                    path: "/root/b",
                     type: "File",
                     attributes: {},
                     visible: false
@@ -153,17 +157,15 @@ describe("code map action service tests", ()=>{
             };
         });
 
-        it("showing all nodes should make all nodes visible", ()=>{
+        it("showing all nodes should remove all nodes of type hidden from blacklist", ()=>{
             codeMapActionService.showAllNodes();
-            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy, false);
+            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy.children[0].children[0], false);
+            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy.children[1], false);
         });
 
-        it("isolationg node should show all descendants and hide all ascendants", ()=>{
-            simpleHiddenHierarchy.visible = true;
-            codeMapActionService.isolateNode(simpleHiddenHierarchy.children[0]);
-            expect(simpleHiddenHierarchy.visible).toBe(false);
-            checkTreeVisibility(simpleHiddenHierarchy.children[0], true);
-            checkTreeVisibility(simpleHiddenHierarchy.children[1], false);
+        it("isolationg node should add the node to the blacklist", ()=>{
+            codeMapActionService.isolateNode(simpleHiddenHierarchy.children[1]);
+            checkBlacklistItems(ExcludeType.isolate, simpleHiddenHierarchy.children[1], true);
         });
 
         it("hiding visible node should create blacklistHide item", ()=>{
@@ -186,7 +188,7 @@ describe("code map action service tests", ()=>{
             let tmp = codeMapActionService.hideNode;
             codeMapActionService.hideNode = jest.fn();
             codeMapActionService.toggleNodeVisibility(visibleNode);
-            expect(codeMapActionService.hideNode).toHaveBeenCalledWith(visibleNode)
+            expect(codeMapActionService.hideNode).toHaveBeenCalledWith(visibleNode);
             codeMapActionService.hideNode = tmp;
         });
 
@@ -194,7 +196,7 @@ describe("code map action service tests", ()=>{
             let tmp = codeMapActionService.showNode;
             codeMapActionService.showNode = jest.fn();
             codeMapActionService.toggleNodeVisibility(hiddenNode);
-            expect(codeMapActionService.showNode).toHaveBeenCalledWith(hiddenNode)
+            expect(codeMapActionService.showNode).toHaveBeenCalledWith(hiddenNode);
             codeMapActionService.showNode = tmp;
         });
 
