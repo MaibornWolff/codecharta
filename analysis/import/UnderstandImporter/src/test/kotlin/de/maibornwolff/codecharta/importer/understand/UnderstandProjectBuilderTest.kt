@@ -74,6 +74,18 @@ class UnderstandProjectBuilderTest : Spek({
                 assertThat(folderLeaves, hasSize(0))
             }
         }
+
+        on("reading csv lines from Understand with LF breaks") {
+            val project = understandProjectBuilder
+                    .parseCSVStream(this.javaClass.classLoader.getResourceAsStream("understand_lf.csv"))
+                    .build()
+
+            it("project has number number of files in csv") {
+                assertThat(project.size, greaterThanOrEqualTo(223))
+            }
+
+        }
+
     }
 
 })
