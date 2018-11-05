@@ -2,6 +2,7 @@ import {CodeMapNode, Edge, Exclude, ExcludeType} from "../../core/data/model/Cod
 import {hierarchy} from "d3-hierarchy";
 import {SettingsService} from "../../core/settings/settings.service";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
+import angular from "angular";
 
 export class CodeMapActionsService {
 
@@ -24,7 +25,7 @@ export class CodeMapActionsService {
     }
 
     hideNode(node: CodeMapNode) {
-        this.settingsService.settings.blacklist.push({path: node.path, type: ExcludeType.hide});
+        this.pushItemToBlacklist({path: node.path, type: ExcludeType.hide});
         this.apply();
     }
 
@@ -64,7 +65,13 @@ export class CodeMapActionsService {
     isolateNode(node: CodeMapNode) {
         this.removeBlacklistEntry({path: node.path, type: ExcludeType.hide});
         this.removeAllBlacklistItemsOfType([ExcludeType.isolate]);
-        this.settingsService.settings.blacklist.push({path: node.path, type: ExcludeType.isolate});
+        this.pushItemToBlacklist({path: node.path, type: ExcludeType.isolate});
+        this.autoFit();
+        this.apply();
+    }
+
+    unisolateNode(node: CodeMapNode) {
+        this.removeBlacklistEntry({path: node.path, type: ExcludeType.isolate});
         this.autoFit();
         this.apply();
     }
@@ -77,13 +84,22 @@ export class CodeMapActionsService {
     }
 
     excludeNode(node: CodeMapNode) {
-        this.settingsService.settings.blacklist.push({path: node.path, type: ExcludeType.exclude});
+        this.pushItemToBlacklist({path: node.path, type: ExcludeType.exclude});
         this.apply();
     }
 
     includeNode(entry: Exclude) {
-        this.settingsService.settings.blacklist = this.settingsService.settings.blacklist.filter(obj => obj !== entry);
+        this.settingsService.settings.blacklist = this.settingsService.settings.blacklist.filter(obj => !this.isEqualObjects(obj, entry));
         this.apply();
+    }
+
+    pushItemToBlacklist(item: Exclude) {
+        var foundDuplicate = this.settingsService.settings.blacklist.filter(obj => {
+            return this.isEqualObjects(obj, item);
+        });
+        if (foundDuplicate.length == 0) {
+            this.settingsService.settings.blacklist.push(item);
+        }
     }
 
     showDependentEdges(node: CodeMapNode) {
@@ -115,6 +131,13 @@ export class CodeMapActionsService {
             });
             this.apply();
         }
+    }
+
+    nodeIsIsolated(node: CodeMapNode) {
+        var foundItem =  this.settingsService.settings.blacklist.filter(obj =>
+            this.isEqualObjects(obj, {path: node.path, type: ExcludeType.isolate}));
+
+        return foundItem.length == 1;
     }
 
     nodeHasEdges(node: CodeMapNode) {
@@ -152,8 +175,13 @@ export class CodeMapActionsService {
 
     private removeBlacklistEntry(item) {
         if(this.settingsService.settings.blacklist) {
-            const indexToDelete = this.settingsService.settings.blacklist.indexOf(item);
-            this.settingsService.settings.blacklist.splice(indexToDelete, 1);
+            var foundItem = this.settingsService.settings.blacklist.filter(obj => this.isEqualObjects(obj, item));
+            if (foundItem.length != 0) {
+                const indexToDelete = this.settingsService.settings.blacklist.indexOf(foundItem[0]);
+                if (indexToDelete != -1) {
+                    this.settingsService.settings.blacklist.splice(indexToDelete, 1);
+                }
+            }
         }
     }
 
@@ -169,6 +197,10 @@ export class CodeMapActionsService {
 
     private edgeContainsNode(edge: Edge, node: CodeMapNode) {
         return (node.path == edge.fromNodeName || node.path == edge.toNodeName);
+    }
+
+    private isEqualObjects(obj1, obj2) {
+        return JSON.stringify(angular.toJson(obj1)) === JSON.stringify(angular.toJson(obj2))
     }
 
     private apply() {

@@ -1,5 +1,4 @@
 import {CodeMapActionsService} from "./codeMap.actions.service";
-import {hierarchy, HierarchyNode} from "d3-hierarchy";
 import {CodeMapNode, Exclude, ExcludeType} from "../../core/data/model/CodeMap";
 
 import {SettingsService} from "../../core/settings/settings.service";
@@ -18,15 +17,10 @@ describe("code map action service tests", ()=>{
     let simpleHiddenHierarchy: CodeMapNode;
     let blacklistItems: Array<Exclude>;
 
-    function checkTreeVisibility(node: CodeMapNode, shouldBeVisible: boolean) {
-        hierarchy<CodeMapNode>(node).eachAfter((node: HierarchyNode<CodeMapNode>) => {
-            expect(node.data.visible).toBe(shouldBeVisible);
-        });
-    }
-
     function checkBlacklistItems(type: ExcludeType, node: CodeMapNode, shouldExist: boolean) {
-        const hasItems = blacklistItems.filter(b => b.type == type && b.path == node.path).length == 1;
-        expect(hasItems).toBe(shouldExist);
+        const amountOfFoundItems = codeMapActionService.settingsService.settings.blacklist.filter(b =>
+            b.type == type && b.path == node.path).length == 1;
+        expect(amountOfFoundItems).toBe(shouldExist);
     }
 
     beforeEach(()=>{
@@ -157,18 +151,43 @@ describe("code map action service tests", ()=>{
             };
         });
 
-        it("showing all nodes should remove all nodes of type hidden from blacklist", ()=>{
+        it("showing all nodes should remove all nodes of type blacklistHide and blacklistIsolate", ()=>{
+            codeMapActionService.isolateNode(simpleHiddenHierarchy);
+            codeMapActionService.hideNode(simpleHiddenHierarchy.children[0].children[0]);
+            codeMapActionService.hideNode(simpleHiddenHierarchy.children[0]);
+            checkBlacklistItems(ExcludeType.isolate, simpleHiddenHierarchy, true);
+            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy.children[0].children[0], true);
+            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy.children[0], true);
             codeMapActionService.showAllNodes();
+            checkBlacklistItems(ExcludeType.isolate, simpleHiddenHierarchy, false);
             checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy.children[0].children[0], false);
+            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy.children[0], false);
+        });
+
+        it("isolating node should remove this node if it was hidden and add it as blacklistIsolate item", ()=>{
+            codeMapActionService.hideNode(simpleHiddenHierarchy.children[1]);
+            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy.children[1], true);
+            codeMapActionService.isolateNode(simpleHiddenHierarchy.children[1]);
+            checkBlacklistItems(ExcludeType.isolate, simpleHiddenHierarchy.children[1], true);
             checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy.children[1], false);
         });
 
-        it("isolationg node should add the node to the blacklist", ()=>{
+        it("isolating node should keep other hidden nodes and add itself as blacklistIsolate item", ()=>{
+            codeMapActionService.hideNode(simpleHiddenHierarchy.children[0]);
+            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy.children[0], true);
             codeMapActionService.isolateNode(simpleHiddenHierarchy.children[1]);
             checkBlacklistItems(ExcludeType.isolate, simpleHiddenHierarchy.children[1], true);
+            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy.children[0], true);
         });
 
-        it("hiding visible node should create blacklistHide item", ()=>{
+        it("hiding node should create blacklistHide item", ()=>{
+            codeMapActionService.hideNode(simpleHiddenHierarchy);
+            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy, true);
+        });
+
+        it("hiding the same node again should not create blacklistHide item", ()=>{
+            codeMapActionService.hideNode(simpleHiddenHierarchy);
+            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy, true);
             codeMapActionService.hideNode(simpleHiddenHierarchy);
             checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy, true);
         });
@@ -178,10 +197,11 @@ describe("code map action service tests", ()=>{
             checkBlacklistItems(ExcludeType.exclude, simpleHiddenHierarchy, true);
         });
 
-        it("showing invisible node remove blacklistHide item", ()=>{
-            blacklistItems.push({path: "/root", type: ExcludeType.hide});
-            codeMapActionService.showNode(simpleHiddenHierarchy);
-            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy, false);
+        it("including node should remove blacklistExcluded item", ()=>{
+            codeMapActionService.excludeNode(simpleHiddenHierarchy);
+            checkBlacklistItems(ExcludeType.exclude, simpleHiddenHierarchy, true);
+            codeMapActionService.includeNode({path: "/root", type: ExcludeType.exclude});
+            checkBlacklistItems(ExcludeType.exclude, simpleHiddenHierarchy, false);
         });
 
         it("toggling visible node should call hide method", ()=>{
@@ -199,8 +219,5 @@ describe("code map action service tests", ()=>{
             expect(codeMapActionService.showNode).toHaveBeenCalledWith(hiddenNode);
             codeMapActionService.showNode = tmp;
         });
-
-
     });
-
 });

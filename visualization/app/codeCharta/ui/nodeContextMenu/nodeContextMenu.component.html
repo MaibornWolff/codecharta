@@ -17,8 +17,10 @@
 
     <div class="button-group">
         <md-button ng-disabled="true">Node</md-button>
-        <md-button ng-click="$ctrl.hideNode()" title="Hide node and children-nodes, but keep an empty space"><i class="fa fa-eye-slash"></i> Hide</md-button>
-        <md-button ng-click="$ctrl.isolateNode()" title="Only show selected nodes with children-nodes"><i class="fa fa-bullseye"></i> Isolate</md-button>
+        <md-button ng-if="$ctrl.contextMenuBuilding.visible" ng-click="$ctrl.hideNode()" title="Hide node and children-nodes, but keep an empty space"><i class="fa fa-eye-slash"></i> Hide</md-button>
+        <md-button ng-if="!$ctrl.contextMenuBuilding.visible" ng-click="$ctrl.showNode()" title="Show node and children-nodes"><i class="fa fa-eye"></i> Show</md-button>
+        <md-button ng-if="!$ctrl.nodeIsIsolated" ng-click="$ctrl.isolateNode()" title="Only show selected nodes with children-nodes"><i class="fa fa-bullseye"></i> Isolate</md-button>
+        <md-button ng-if="$ctrl.nodeIsIsolated" ng-click="$ctrl.unisolateNode()" title="Remove Isolation and show map like before"><i class="fa fa-bullseye"></i> Unisolate</md-button>
         <md-button ng-click="$ctrl.showAllNodes()" title="Show all nodes and remove blacklist items of type 'Hide'"><i class="fa fa-eye"></i> Show all</md-button>
         <md-button ng-click="$ctrl.excludeNode()" title="Exclude node and children-nodes and reorder the CodeMap"><i class="fa fa-times"></i> Exclude</md-button>
     </div>

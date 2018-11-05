@@ -12,6 +12,7 @@ export class NodeContextMenuComponent {
     public nodeHasEdges;
     public allDependentEdgesAreVisible;
     public anyEdgeIsVisible;
+    public nodeIsIsolated;
 
     private colors = highlightColors;
 
@@ -46,6 +47,7 @@ export class NodeContextMenuComponent {
             this.nodeHasEdges = this.codeMapActionsService.nodeHasEdges(this.contextMenuBuilding);
             this.allDependentEdgesAreVisible = this.codeMapActionsService.allDependentEdgesAreVisible(this.contextMenuBuilding);
             this.anyEdgeIsVisible = this.codeMapActionsService.anyEdgeIsVisible();
+            this.nodeIsIsolated = this.codeMapActionsService.nodeIsIsolated(this.contextMenuBuilding);
 
             let w = this.$element[0].children[0].clientWidth;
             let h = this.$element[0].children[0].clientHeight;
@@ -59,6 +61,11 @@ export class NodeContextMenuComponent {
     hideNode() {
         this.hideContextMenu();
         this.codeMapActionsService.hideNode(this.contextMenuBuilding);
+    }
+
+    showNode() {
+        this.hideContextMenu();
+        this.codeMapActionsService.showNode(this.contextMenuBuilding);
     }
 
     clickColor(color: string) {
@@ -89,6 +96,11 @@ export class NodeContextMenuComponent {
     isolateNode() {
         this.hideContextMenu();
         this.codeMapActionsService.isolateNode(this.contextMenuBuilding);
+    }
+
+    unisolateNode() {
+        this.hideContextMenu();
+        this.codeMapActionsService.unisolateNode(this.contextMenuBuilding);
     }
 
     showAllNodes() {
