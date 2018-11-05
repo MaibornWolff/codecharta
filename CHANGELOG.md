@@ -6,8 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- Isolate node shows up in the blacklist
+- Option to Unisolate node from NodeContextMenu in TreeView
+- Option to only hide dependent edges
 
 ### Changed
+- Isolating a node does not remove the blacklist items of type Hide
 
 ### Removed
 
