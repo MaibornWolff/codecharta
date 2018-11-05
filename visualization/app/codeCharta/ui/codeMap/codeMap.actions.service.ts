@@ -24,16 +24,6 @@ export class CodeMapActionsService {
         }
     }
 
-    hideNode(node: CodeMapNode) {
-        this.pushItemToBlacklist({path: node.path, type: ExcludeType.hide});
-        this.apply();
-    }
-
-    showNode(node: CodeMapNode) {
-        this.removeBlacklistEntry({path: node.path, type: ExcludeType.hide});
-        this.apply();
-    }
-
     markFolder(node: CodeMapNode, color: string) {
         let startingColor = node.markingColor;
         let recFn = (current: CodeMapNode)=>{
@@ -62,6 +52,23 @@ export class CodeMapActionsService {
         this.apply();
     }
 
+    hideNode(node: CodeMapNode) {
+        this.pushItemToBlacklist({path: node.path, type: ExcludeType.hide});
+        this.apply();
+    }
+
+    showNode(node: CodeMapNode) {
+        this.removeBlacklistEntry({path: node.path, type: ExcludeType.hide});
+        this.apply();
+    }
+
+    showAllNodes() {
+        this.setVisibilityOfNodeAndDescendants(this.settingsService.settings.map.root, true);
+        this.removeAllBlacklistItemsOfType([ExcludeType.isolate, ExcludeType.hide]);
+        this.autoFit();
+        this.apply();
+    }
+
     isolateNode(node: CodeMapNode) {
         this.removeBlacklistEntry({path: node.path, type: ExcludeType.hide});
         this.removeAllBlacklistItemsOfType([ExcludeType.isolate]);
@@ -72,13 +79,6 @@ export class CodeMapActionsService {
 
     unisolateNode(node: CodeMapNode) {
         this.removeBlacklistEntry({path: node.path, type: ExcludeType.isolate});
-        this.autoFit();
-        this.apply();
-    }
-
-    showAllNodes() {
-        this.setVisibilityOfNodeAndDescendants(this.settingsService.settings.map.root, true);
-        this.removeAllBlacklistItemsOfType([ExcludeType.isolate, ExcludeType.hide]);
         this.autoFit();
         this.apply();
     }
@@ -103,34 +103,15 @@ export class CodeMapActionsService {
     }
 
     showDependentEdges(node: CodeMapNode) {
-        if (this.settingsService.settings.map.edges) {
-            this.settingsService.settings.map.edges.forEach((edge) => {
-                if (this.edgeContainsNode(edge, node)) {
-                    edge.visible = true;
-                }
-            });
-            this.apply();
-        }
+        this.changeEdgesVisibility(true, node);
     }
 
     hideDependentEdges(node: CodeMapNode) {
-        if (this.settingsService.settings.map.edges) {
-            this.settingsService.settings.map.edges.forEach((edge) => {
-                if (this.edgeContainsNode(edge, node)) {
-                    edge.visible = false;
-                }
-            });
-            this.apply();
-        }
+        this.changeEdgesVisibility(false, node);
     }
 
     hideAllEdges() {
-        if (this.settingsService.settings.map.edges) {
-            this.settingsService.settings.map.edges.forEach((edge) => {
-                edge.visible = false;
-            });
-            this.apply();
-        }
+        this.changeEdgesVisibility(false);
     }
 
     nodeIsIsolated(node: CodeMapNode) {
@@ -140,37 +121,27 @@ export class CodeMapActionsService {
         return foundItem.length == 1;
     }
 
-    nodeHasEdges(node: CodeMapNode) {
-        let nodeHasEdges = false;
-        this.settingsService.settings.map.edges.forEach((edge) => {
-            if(this.edgeContainsNode(edge, node)) {
-                nodeHasEdges = true;
-                return; // break forEach
-            }
-        });
-        return nodeHasEdges;
+    amountOfDependentEdges(node: CodeMapNode) {
+        return this.settingsService.settings.map.edges.filter(edge => this.edgeContainsNode(edge, node)).length;
     }
 
-    allDependentEdgesAreVisible(node: CodeMapNode) {
-        let allDependentEdgesAreVisible = true;
-        this.settingsService.settings.map.edges.forEach((edge) => {
-            if(!edge.visible && this.edgeContainsNode(edge, node)) {
-                allDependentEdgesAreVisible = false;
-                return; // break forEach
-            }
-        });
-        return allDependentEdgesAreVisible;
+    amountOfVisibleDependentEdges(node: CodeMapNode) {
+        return this.settingsService.settings.map.edges.filter(edge => this.edgeContainsNode(edge, node) && edge.visible).length;
     }
 
     anyEdgeIsVisible() {
-        let anyEdgeIsVisible = false;
-        this.settingsService.settings.map.edges.forEach((edge) => {
-            if(edge.visible) {
-                anyEdgeIsVisible = true;
-                return; // break forEach
-            }
-        });
-        return anyEdgeIsVisible;
+        return this.settingsService.settings.map.edges.filter(edge => edge.visible).length > 0;
+    }
+
+    private changeEdgesVisibility(visibility: boolean, node: CodeMapNode = null) {
+        if (this.settingsService.settings.map.edges) {
+            this.settingsService.settings.map.edges.forEach((edge) => {
+                if (node == null || this.edgeContainsNode(edge, node)) {
+                    edge.visible = visibility;
+                }
+            });
+            this.apply();
+        }
     }
 
     private removeBlacklistEntry(item) {
