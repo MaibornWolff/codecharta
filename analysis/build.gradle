@@ -30,6 +30,16 @@ allprojects {
     }
 }
 
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "de.maibornwolff.codecharta:analysis"
+        property "sonar.projectName", "CodeCharta Analysis"
+        property "sonar.sourceEncoding", "UTF-8"
+
+    }
+}
+
 subprojects {
     apply plugin: 'kotlin'
 

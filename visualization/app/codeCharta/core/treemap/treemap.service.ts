@@ -5,6 +5,7 @@ import * as d3 from "d3";
 import {hierarchy, HierarchyNode} from "d3";
 import {TreeMapUtils} from "./treemap.util";
 import {CodeMapUtilService} from "../../ui/codeMap/codeMap.util.service";
+import { settings } from "cluster";
 
 export interface ValuedCodeMapNode {
     data: CodeMapNode;
@@ -31,6 +32,7 @@ export interface TreeMapSettings {
     invertHeight: boolean;
     visibleEdges: Edge[];
     blacklist: Array<Exclude>;
+    fileName: string;
 }
 
 export class TreeMapService {
@@ -59,7 +61,7 @@ export class TreeMapService {
             .paddingOuter(s.margin * TreeMapService.PADDING_SCALING_FACTOR || 1)
             .paddingInner(s.margin * TreeMapService.PADDING_SCALING_FACTOR || 1);
 
-        return treeMap(root.sum((node) => this.calculateValue(node, edges, s.areaKey, s.blacklist))) as SquarifiedValuedCodeMapNode;
+        return treeMap(root.sum((node) => this.calculateValue(node, edges, s))) as SquarifiedValuedCodeMapNode;
     }
 
     private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, edges: Edge[], s: TreeMapSettings): node {
@@ -107,18 +109,31 @@ export class TreeMapService {
         return node;
     }
 
-    private calculateValue(node: CodeMapNode, edges: Edge[], key: string, blacklist: Array<Exclude>): number {
+    private isDeletedNodeFromComparisonMap(node: CodeMapNode, s: TreeMapSettings): boolean {
+        return node &&
+                node.deltas &&
+                node.origin !== s.fileName &&
+                node.deltas[s.heightKey] < 0 &&
+                node.attributes[s.areaKey] === 0;
+    }
+
+    private calculateValue(node: CodeMapNode, edges: Edge[], s: TreeMapSettings): number {
+
         let result = 0;
 
-        if(CodeMapUtilService.isBlacklisted(node, blacklist, ExcludeType.exclude)) {
+        if(CodeMapUtilService.isBlacklisted(node, s.blacklist, ExcludeType.exclude)) {
             return 0;
         }
 
+        if(this.isDeletedNodeFromComparisonMap(node, s)) {
+            return Math.abs(node.deltas[s.areaKey]);
+        }
+
         if ((!node.children || node.children.length === 0)) {
-            if(node.attributes && node.attributes[key]) {
-                result = node.attributes[key] || 0;
+            if(node.attributes && node.attributes[s.areaKey]) {
+                result = node.attributes[s.areaKey] || 0;
             } else {
-                result = this.getEdgeValue(node, edges, key);
+                result = this.getEdgeValue(node, edges, s.areaKey);
             }
         }
         return result;

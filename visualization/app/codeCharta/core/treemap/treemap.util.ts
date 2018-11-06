@@ -48,7 +48,7 @@ export class TreeMapUtils {
             attributes: squaredNode.data.attributes,
             deltas: squaredNode.data.deltas,
             parent: parent,
-            heightDelta: Math.abs(squaredNode.data.deltas && squaredNode.data.deltas[s.heightKey] ? heightScale * squaredNode.data.deltas[s.heightKey] : 0),
+            heightDelta: squaredNode.data.deltas && squaredNode.data.deltas[s.heightKey] ? heightScale * squaredNode.data.deltas[s.heightKey] : 0,
             visible: squaredNode.data.visible,
             path: squaredNode.data.path,
             origin: squaredNode.data.origin,

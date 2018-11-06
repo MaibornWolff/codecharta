@@ -75,6 +75,9 @@ export class DataService {
     }
 
     private processDeltas() {
+        if(this._data.renderMap) {
+            this.deltaCalculatorService.removeCrossOriginNodes(this._data.renderMap);
+        }
         if (this._deltasEnabled && this._data.renderMap && this._lastComparisonMap) {
             this.deltaCalculatorService.provideDeltas(this._data.renderMap,this._lastComparisonMap, this._data.metrics);
         }
@@ -90,6 +93,7 @@ export class DataService {
     public onDeactivateDeltas() {
         if (this._deltasEnabled) {
             this._deltasEnabled = false;
+
             this.setComparisonMap(this._lastReferenceIndex);
         }
     }

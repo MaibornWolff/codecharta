@@ -24,7 +24,8 @@ describe("treemap service", ()=> {
             margin: 0,
             invertHeight: false,
             visibleEdges: [],
-            blacklist:[]
+            blacklist:[],
+            fileName:"currentFile.json"
         };
     }
 
@@ -103,6 +104,36 @@ describe("treemap service", ()=> {
     });
 
     describe("CodeMap value calculation", ()=> {
+
+        it("if a node was deleted from previous revision it should still be visible and have positive width/length", ()=> {
+            
+            // given map with one node deleted in comparison to previous revision
+            let root = buildSimpleHierarchy().root;
+            root.attributes = {"myArea": 22, "myHeight": 12}
+            root.deltas = {};
+            root.children[0].attributes = {"myArea": 44, "myHeight": 63}
+            root.children[0].deltas = {"myArea": 20, "myHeight": 0}
+            root.children[0].origin = "file.json";
+            root.children[1].attributes = {"myArea": 0, "myHeight": 0}
+            root.children[1].deltas = {"myArea": -40, "myHeight": -80}
+            root.children[1].origin = "notfile.json";
+
+            // given settings
+            let settings = buildSampeTreemapSettings();
+            settings.fileName = "file.json";
+            settings.areaKey = "myArea";
+            settings.heightKey = "myHeight";
+            settings.size=1000;
+            
+            // when
+            let node: node = treeMapService.createTreemapNodes(root, settings, null);
+
+            //then
+            expect(node.children[1].name).toBe("secondChild");
+            expect(node.children[1].width).toBeGreaterThan(0);
+            expect(node.children[1].length).toBeGreaterThan(0);
+
+        });
 
         it("attribute exists, no children", ()=> {
             let { root } = buildSimpleHierarchy();
