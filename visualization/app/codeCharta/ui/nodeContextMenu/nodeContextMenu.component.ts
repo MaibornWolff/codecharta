@@ -11,7 +11,7 @@ export class NodeContextMenuComponent {
     public amountOfDependentEdges;
     public amountOfVisibleDependentEdges;
     public anyEdgeIsVisible;
-    public nodeIsIsolated;
+    public isNodeIsolated;
 
     private colors = highlightColors;
 
@@ -46,7 +46,7 @@ export class NodeContextMenuComponent {
             this.amountOfDependentEdges = this.codeMapActionsService.amountOfDependentEdges(this.contextMenuBuilding);
             this.amountOfVisibleDependentEdges = this.codeMapActionsService.amountOfVisibleDependentEdges(this.contextMenuBuilding);
             this.anyEdgeIsVisible = this.codeMapActionsService.anyEdgeIsVisible();
-            this.nodeIsIsolated = this.codeMapActionsService.isNodeIsolated(this.contextMenuBuilding);
+            this.isNodeIsolated = this.codeMapActionsService.isNodeIsolated(this.contextMenuBuilding);
 
             let w = this.$element[0].children[0].clientWidth;
             let h = this.$element[0].children[0].clientHeight;

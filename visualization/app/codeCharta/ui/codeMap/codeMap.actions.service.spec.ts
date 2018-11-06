@@ -263,10 +263,10 @@ describe("code map action service tests", ()=>{
             checkBlacklistItems(ExcludeType.exclude, simpleHiddenHierarchy, true);
         });
 
-        it("including node should remove blacklistExcluded item", ()=>{
+        it("removing node should remove blacklistExcluded item", ()=>{
             codeMapActionService.excludeNode(simpleHiddenHierarchy);
             checkBlacklistItems(ExcludeType.exclude, simpleHiddenHierarchy, true);
-            codeMapActionService.includeNode({path: "/root", type: ExcludeType.exclude});
+            codeMapActionService.removeBlacklistEntry({path: "/root", type: ExcludeType.exclude});
             checkBlacklistItems(ExcludeType.exclude, simpleHiddenHierarchy, false);
         });
 

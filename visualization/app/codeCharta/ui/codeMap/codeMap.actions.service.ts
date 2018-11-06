@@ -88,8 +88,12 @@ export class CodeMapActionsService {
         this.apply();
     }
 
-    includeNode(entry: Exclude) {
-        this.settingsService.settings.blacklist = this.settingsService.settings.blacklist.filter(obj => !this.isEqualObjects(obj, entry));
+    removeBlacklistEntry(entry: Exclude) {
+        this.settingsService.settings.blacklist = this.settingsService.settings.blacklist.filter(obj =>
+            !this.isEqualObjects(obj, entry));
+        if (entry.type == ExcludeType.isolate) {
+            this.autoFit();
+        }
         this.apply();
     }
 
@@ -144,7 +148,7 @@ export class CodeMapActionsService {
         }
     }
 
-    private removeBlacklistEntry(item) {
+    /*private removeBlacklistEntry(item) {
         if(this.settingsService.settings.blacklist) {
             var foundItem = this.settingsService.settings.blacklist.filter(obj => this.isEqualObjects(obj, item));
             if (foundItem.length != 0) {
@@ -154,7 +158,7 @@ export class CodeMapActionsService {
                 }
             }
         }
-    }
+    }*/
 
     private removeAllBlacklistItemsOfType(excludeTypeArray: ExcludeType[]) {
         var remainingItems = [];
