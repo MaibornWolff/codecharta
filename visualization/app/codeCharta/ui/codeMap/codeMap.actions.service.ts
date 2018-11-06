@@ -114,7 +114,7 @@ export class CodeMapActionsService {
         this.changeEdgesVisibility(false);
     }
 
-    nodeIsIsolated(node: CodeMapNode) {
+    isNodeIsolated(node: CodeMapNode) {
         var foundItem =  this.settingsService.settings.blacklist.filter(obj =>
             this.isEqualObjects(obj, {path: node.path, type: ExcludeType.isolate}));
 
