@@ -44,6 +44,7 @@ class CSVProjectBuilder(
         projectName: String,
         private val pathSeparator: Char,
         private val csvDelimiter: Char,
+        private val pathColumnName: String = "path",
         metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
 ) {
     private val logger = KotlinLogging.logger {}
@@ -56,7 +57,7 @@ class CSVProjectBuilder(
             inStream: InputStream
     ): ProjectBuilder {
         val parser = createParser(inStream)
-        val header = CSVHeader(parser.parseNext())
+        val header = CSVHeader(parser.parseNext(), pathColumnName = pathColumnName)
         parseContent(parser, header)
         parser.stopParsing()
         return projectBuilder

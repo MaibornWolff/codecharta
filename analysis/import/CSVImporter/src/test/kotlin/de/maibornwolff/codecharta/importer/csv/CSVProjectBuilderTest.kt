@@ -99,7 +99,7 @@ class CSVProjectBuilderTest : Spek({
 
     describe("CSVProjectBuilder for Sourcemonitor") {
         val csvProjectBuilder = CSVProjectBuilder("test", '\\', ',',
-                MetricNameTranslator(mapOf(Pair("File Name", "path"))))
+                metricNameTranslator = MetricNameTranslator(mapOf(Pair("File Name", "path"))))
 
         on("reading csv lines from Sourcemonitor") {
             val project = csvProjectBuilder

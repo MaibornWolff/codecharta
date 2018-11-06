@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.csv
 import mu.KotlinLogging
 import java.util.*
 
-class CSVHeader(header: Array<String?>) {
+class CSVHeader(private val header: Array<String?>, private val pathColumnName: String = "path") {
     private val logger = KotlinLogging.logger {}
 
     private val headerMap: MutableMap<Int, String>
@@ -12,7 +12,7 @@ class CSVHeader(header: Array<String?>) {
         get() = headerMap.keys
 
     val pathColumn: Int
-        get() = headerMap.keys.firstOrNull { i -> headerMap[i].equals("path", ignoreCase = true) }
+        get() = headerMap.keys.firstOrNull { i -> headerMap[i].equals(pathColumnName, ignoreCase = true) }
                 ?: headerMap.keys.first()
 
     init {

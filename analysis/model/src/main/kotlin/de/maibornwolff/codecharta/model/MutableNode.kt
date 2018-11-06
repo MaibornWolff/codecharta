@@ -66,7 +66,7 @@ class MutableNode constructor(
         if (recursive) {
             children.forEach { it.translateMetrics(metricNameTranslator, recursive) }
         }
-        attributes = attributes.mapKeys { metricNameTranslator.translate(it.key) }
+        attributes = attributes.mapKeys { metricNameTranslator.translate(it.key) }.filterKeys { it.isNotBlank() }
 
         return this
     }

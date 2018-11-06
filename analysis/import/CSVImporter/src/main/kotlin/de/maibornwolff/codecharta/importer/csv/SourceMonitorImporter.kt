@@ -27,7 +27,7 @@ class SourceMonitorImporter : Callable<Void> {
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        val csvProjectBuilder = CSVProjectBuilder(projectName, pathSeparator, csvDelimiter, sourceMonitorReplacement)
+        val csvProjectBuilder = CSVProjectBuilder(projectName, pathSeparator, csvDelimiter, "File Name", sourceMonitorReplacement)
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
         ProjectSerializer.serializeProject(project, writer())
@@ -43,7 +43,6 @@ class SourceMonitorImporter : Callable<Void> {
             replacementMap["Project Name"] = ""
             replacementMap["Checkpoint Name"] = ""
             replacementMap["Created On"] = ""
-            replacementMap["File Name"] = "path"
             replacementMap["Lines"] = "loc"
             replacementMap["Statements"] = "statements"
             replacementMap["Classes and Interfaces"] = "classes"
