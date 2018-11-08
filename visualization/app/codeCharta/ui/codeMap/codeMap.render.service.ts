@@ -101,6 +101,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             fileName: s.map.fileName
         };
 
+        this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, true);
+
         let nodes: node[] = this.collectNodesToArray(
             this.treeMapService.createTreemapNodes(s.map.root, treeMapSettings, s.map.edges)
         );
