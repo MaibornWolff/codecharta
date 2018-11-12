@@ -155,7 +155,7 @@ ribbon-bar-component {
                 vertical-align: top;
 
                 reset-settings-button-component .md-button {
-                    top: 150px;
+                    top: ($heightExpanded - 45) + px;
                     right: -5px;
                 }
 
