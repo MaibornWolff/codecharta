@@ -10,8 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 ### Removed
+- Isolate node functionality in the short term
 
 ### Fixed
+- Reshow hidden nodes from Treeview or Blacklist
 
 ## [1.19.0] - 2018-11-02
 ### Added
