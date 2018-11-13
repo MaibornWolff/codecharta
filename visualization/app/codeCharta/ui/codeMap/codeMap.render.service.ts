@@ -6,7 +6,7 @@ import {LabelManager} from "./rendering/labelManager";
 import {KindOfMap, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import {node} from "./rendering/node";
 import {ArrowManager} from "./rendering/arrowManager";
-import {Edge, ExcludeType} from "../../core/data/model/CodeMap";
+import {Edge} from "../../core/data/model/CodeMap";
 import {
     CodeMapBuildingTransition,
     CodeMapMouseEventService,
