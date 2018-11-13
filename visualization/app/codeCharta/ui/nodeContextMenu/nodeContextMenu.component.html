@@ -17,21 +17,24 @@
 
     <div class="button-group">
         <md-button ng-disabled="true">Node</md-button>
-        <md-button ng-click="$ctrl.hideNode()" title="Hide node and children-nodes, but keep an empty space"><i class="fa fa-eye-slash"></i> Hide</md-button>
-        <!--<md-button ng-click="$ctrl.isolateNode()" title="Only show selected nodes with children-nodes"><i class="fa fa-bullseye"></i> Isolate</md-button>-->
+        <md-button ng-if="$ctrl.contextMenuBuilding.visible" ng-click="$ctrl.hideNode()" title="Hide node and children-nodes, but keep an empty space"><i class="fa fa-eye-slash"></i> Hide</md-button>
+        <md-button ng-if="!$ctrl.contextMenuBuilding.visible" ng-click="$ctrl.showNode()" title="Show node and children-nodes"><i class="fa fa-eye"></i> Show</md-button>
+
+        <md-button ng-click="$ctrl.focusNode()" title="Only show selected nodes with children-nodes"><i class="fa fa-bullseye"></i> Focus</md-button>
+
         <md-button ng-click="$ctrl.showAllNodes()" title="Show all nodes and remove blacklist items of type 'Hide'"><i class="fa fa-eye"></i> Show all</md-button>
         <md-button ng-click="$ctrl.excludeNode()" title="Exclude node and children-nodes and reorder the CodeMap"><i class="fa fa-times"></i> Exclude</md-button>
     </div>
 
-    <div class="button-group" ng-if="$ctrl.nodeHasEdges || $ctrl.anyEdgeIsVisible">
+    <div class="button-group" ng-if="$ctrl.amountOfDependentEdges > 0 || $ctrl.anyEdgeIsVisible">
         <md-divider></md-divider>
         <md-button ng-disabled="true">Edges</md-button>
-        <md-button ng-if="$ctrl.nodeHasEdges && ! $ctrl.allDependentEdgesAreVisible"
+        <md-button ng-if="$ctrl.amountOfDependentEdges > 0 && $ctrl.amountOfVisibleDependentEdges < $ctrl.amountOfDependentEdges"
                    ng-click="$ctrl.showDependentEdges()"
                    title="Show edges which are connected to this node">
             <i class="fa fa-eye"></i> Show
         </md-button>
-        <md-button ng-if="$ctrl.nodeHasEdges && $ctrl.allDependentEdgesAreVisible"
+        <md-button ng-if="$ctrl.amountOfVisibleDependentEdges > 0"
                    ng-click="$ctrl.hideDependentEdges()"
                    title="Hide edges which are connected to this node">
             <i class="fa fa-eye-slash"></i> Hide

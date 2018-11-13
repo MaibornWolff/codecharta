@@ -2,6 +2,7 @@ import {CodeMapNode, Edge, Exclude, ExcludeType} from "../../core/data/model/Cod
 import {hierarchy} from "d3-hierarchy";
 import {SettingsService} from "../../core/settings/settings.service";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
+import angular from "angular";
 
 export class CodeMapActionsService {
 
@@ -21,16 +22,6 @@ export class CodeMapActionsService {
         } else {
             this.showNode(node);
         }
-    }
-
-    hideNode(node: CodeMapNode) {
-        this.settingsService.settings.blacklist.push({path: node.path, type: ExcludeType.hide});
-        this.apply();
-    }
-
-    showNode(node: CodeMapNode) {
-        this.removeBlacklistEntry({path: node.path, type: ExcludeType.hide});
-        this.apply();
     }
 
     markFolder(node: CodeMapNode, color: string) {
@@ -61,113 +52,110 @@ export class CodeMapActionsService {
         this.apply();
     }
 
-    isolateNode(node: CodeMapNode) {
-        this.setVisibilityOfNodeAndDescendants(this.settingsService.settings.map.root, false);
-        this.setVisibilityOfNodeAndDescendants(node, true);
-        this.autoFit();
+    hideNode(node: CodeMapNode) {
+        this.pushItemToBlacklist({path: node.path, type: ExcludeType.hide});
+        this.apply();
+    }
+
+    showNode(node: CodeMapNode) {
+        this.removeBlacklistEntry({path: node.path, type: ExcludeType.hide});
         this.apply();
     }
 
     showAllNodes() {
         this.setVisibilityOfNodeAndDescendants(this.settingsService.settings.map.root, true);
-        this.removeAllBlacklistItemsOfTypeHidden();
+        this.removeAllBlacklistItemsOfType([ExcludeType.hide]);
+        this.autoFit();
+        this.apply();
+    }
+
+    focusNode(node: CodeMapNode) {
+        if (node.path == this.settingsService.settings.map.root.path) {
+            this.removeFocusedNode()
+        } else {
+            this.settingsService.settings.focusedNodePath = node.path;
+            this.autoFit();
+            this.apply();
+        }
+    }
+
+    removeFocusedNode() {
+        this.settingsService.settings.focusedNodePath = null;
         this.autoFit();
         this.apply();
     }
 
     excludeNode(node: CodeMapNode) {
-        this.settingsService.settings.blacklist.push({path: node.path, type: ExcludeType.exclude});
+        this.pushItemToBlacklist({path: node.path, type: ExcludeType.exclude});
         this.apply();
     }
 
-    includeNode(entry: Exclude) {
-        this.settingsService.settings.blacklist = this.settingsService.settings.blacklist.filter(obj => obj !== entry);
+    removeBlacklistEntry(entry: Exclude) {
+        this.settingsService.settings.blacklist = this.settingsService.settings.blacklist.filter(obj =>
+            !this.isEqualObjects(obj, entry));
         this.apply();
+    }
+
+    pushItemToBlacklist(item: Exclude) {
+        var foundDuplicate = this.settingsService.settings.blacklist.filter(obj => {
+            return this.isEqualObjects(obj, item);
+        });
+        if (foundDuplicate.length == 0) {
+            this.settingsService.settings.blacklist.push(item);
+        }
     }
 
     showDependentEdges(node: CodeMapNode) {
-        if (this.settingsService.settings.map.edges) {
-            this.settingsService.settings.map.edges.forEach((edge) => {
-                if (this.edgeContainsNode(edge, node)) {
-                    edge.visible = true;
-                }
-            });
-            this.apply();
-        }
+        this.changeEdgesVisibility(true, node);
     }
 
     hideDependentEdges(node: CodeMapNode) {
+        this.changeEdgesVisibility(false, node);
+    }
+
+    hideAllEdges() {
+        this.changeEdgesVisibility(false);
+    }
+
+    amountOfDependentEdges(node: CodeMapNode) {
+        return this.settingsService.settings.map.edges.filter(edge => this.edgeContainsNode(edge, node)).length;
+    }
+
+    amountOfVisibleDependentEdges(node: CodeMapNode) {
+        return this.settingsService.settings.map.edges.filter(edge => this.edgeContainsNode(edge, node) && edge.visible).length;
+    }
+
+    anyEdgeIsVisible() {
+        return this.settingsService.settings.map.edges.filter(edge => edge.visible).length > 0;
+    }
+
+    private changeEdgesVisibility(visibility: boolean, node: CodeMapNode = null) {
         if (this.settingsService.settings.map.edges) {
             this.settingsService.settings.map.edges.forEach((edge) => {
-                if (this.edgeContainsNode(edge, node)) {
-                    edge.visible = false;
+                if (node == null || this.edgeContainsNode(edge, node)) {
+                    edge.visible = visibility;
                 }
             });
             this.apply();
         }
     }
 
-    hideAllEdges() {
-        if (this.settingsService.settings.map.edges) {
-            this.settingsService.settings.map.edges.forEach((edge) => {
-                edge.visible = false;
-            });
-            this.apply();
-        }
-    }
-
-    nodeHasEdges(node: CodeMapNode) {
-        let nodeHasEdges = false;
-        this.settingsService.settings.map.edges.forEach((edge) => {
-            if(this.edgeContainsNode(edge, node)) {
-                nodeHasEdges = true;
-                return; // break forEach
-            }
-        });
-        return nodeHasEdges;
-    }
-
-    allDependentEdgesAreVisible(node: CodeMapNode) {
-        let allDependentEdgesAreVisible = true;
-        this.settingsService.settings.map.edges.forEach((edge) => {
-            if(!edge.visible && this.edgeContainsNode(edge, node)) {
-                allDependentEdgesAreVisible = false;
-                return; // break forEach
-            }
-        });
-        return allDependentEdgesAreVisible;
-    }
-
-    anyEdgeIsVisible() {
-        let anyEdgeIsVisible = false;
-        this.settingsService.settings.map.edges.forEach((edge) => {
-            if(edge.visible) {
-                anyEdgeIsVisible = true;
-                return; // break forEach
-            }
-        });
-        return anyEdgeIsVisible;
-    }
-
-    private removeBlacklistEntry(item) {
-        if(this.settingsService.settings.blacklist) {
-            const indexToDelete = this.settingsService.settings.blacklist.indexOf(item);
-            this.settingsService.settings.blacklist.splice(indexToDelete, 1);
-        }
-    }
-
-    private removeAllBlacklistItemsOfTypeHidden() {
-        var onlyExcludeItems = [];
+    private removeAllBlacklistItemsOfType(excludeTypeArray: ExcludeType[]) {
+        var remainingItems = [];
         this.settingsService.settings.blacklist.forEach((item)=> {
-            if(item.type == ExcludeType.exclude) {
-                onlyExcludeItems.push(item);
+            if(!excludeTypeArray.includes(item.type)) {
+                remainingItems.push(item);
             }
         });
-        this.settingsService.settings.blacklist = onlyExcludeItems;
+        this.settingsService.settings.blacklist = remainingItems;
     }
 
     private edgeContainsNode(edge: Edge, node: CodeMapNode) {
         return (node.path == edge.fromNodeName || node.path == edge.toNodeName);
+    }
+
+    private isEqualObjects(obj1, obj2) {
+        return JSON.stringify(angular.toJson(obj1)) === JSON.stringify(angular.toJson(obj2))
     }
 
     private apply() {
