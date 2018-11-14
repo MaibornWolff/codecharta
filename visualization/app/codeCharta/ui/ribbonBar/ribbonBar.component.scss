@@ -155,8 +155,20 @@ ribbon-bar-component {
                 vertical-align: top;
 
                 reset-settings-button-component .md-button {
-                    top: 150px;
+                    top: ($heightExpanded - 45) + px;
                     right: -5px;
+                }
+
+                .margin-right-align {
+                    margin-right: 22px;
+                }
+
+                md-checkbox .md-label {
+                    margin-left: 25px;
+                }
+
+                .checkbox-space {
+                    margin-right: 10px;
                 }
             }
         }
