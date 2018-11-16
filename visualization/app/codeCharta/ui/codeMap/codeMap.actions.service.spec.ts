@@ -209,18 +209,6 @@ describe("code map action service tests", ()=>{
             checkBlacklistItems(ExcludeType.hide, nodeA, false);
         });
 
-        it("showing all nodes should remove all nodes of type blacklistHide", ()=>{
-            codeMapActionService.hideNode(nodeChildAa);
-            codeMapActionService.hideNode(nodeA);
-
-            checkBlacklistItems(ExcludeType.hide, nodeChildAa, true);
-            checkBlacklistItems(ExcludeType.hide, nodeA, true);
-
-            codeMapActionService.showAllNodes();
-            checkBlacklistItems(ExcludeType.hide, nodeChildAa, false);
-            checkBlacklistItems(ExcludeType.hide, nodeA, false);
-        });
-
         it("hiding node should create blacklistHide item", ()=>{
             codeMapActionService.hideNode(simpleHiddenHierarchy);
             checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy, true);
@@ -282,7 +270,7 @@ describe("code map action service tests", ()=>{
             expect(codeMapActionService.settingsService.settings.focusedNodePath).toBe(null);
         });
 
-        it("focusing root node should removeFocusedNode", ()=>{
+        it("focusing root node should overwrite focusedNode", ()=>{
             codeMapActionService.focusNode(nodeB);
             expect(codeMapActionService.settingsService.settings.focusedNodePath).toBe(nodeB.path);
 

@@ -95,11 +95,6 @@ export class NodeContextMenuComponent {
         this.codeMapActionsService.focusNode(this.contextMenuBuilding);
     }
 
-    showAllNodes() {
-        this.hideContextMenu();
-        this.codeMapActionsService.showAllNodes();
-    }
-
     hideContextMenu() {
         this.$timeout(() => {
             this.contextMenuBuilding = null;

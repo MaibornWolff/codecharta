@@ -62,13 +62,6 @@ export class CodeMapActionsService {
         this.apply();
     }
 
-    showAllNodes() {
-        this.setVisibilityOfNodeAndDescendants(this.settingsService.settings.map.root, true);
-        this.removeAllBlacklistItemsOfType([ExcludeType.hide]);
-        this.autoFit();
-        this.apply();
-    }
-
     focusNode(node: CodeMapNode) {
         if (node.path == this.settingsService.settings.map.root.path) {
             this.removeFocusedNode()
@@ -140,16 +133,6 @@ export class CodeMapActionsService {
         }
     }
 
-    private removeAllBlacklistItemsOfType(excludeTypeArray: ExcludeType[]) {
-        var remainingItems = [];
-        this.settingsService.settings.blacklist.forEach((item)=> {
-            if(!excludeTypeArray.includes(item.type)) {
-                remainingItems.push(item);
-            }
-        });
-        this.settingsService.settings.blacklist = remainingItems;
-    }
-
     private edgeContainsNode(edge: Edge, node: CodeMapNode) {
         return (node.path == edge.fromNodeName || node.path == edge.toNodeName);
     }
@@ -168,13 +151,6 @@ export class CodeMapActionsService {
         this.$timeout(() => {
             this.threeOrbitControlsService.autoFitTo();
         }, 250);
-    }
-
-    private setVisibilityOfNodeAndDescendants(node: CodeMapNode, visibility: boolean) {
-        node.visible = visibility;
-        hierarchy<CodeMapNode>(node).descendants().forEach((hierarchyNode) => {
-            hierarchyNode.data.visible = visibility;
-        });
     }
 
 }
