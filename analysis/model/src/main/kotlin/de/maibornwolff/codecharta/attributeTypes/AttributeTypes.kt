@@ -32,7 +32,6 @@ package de.maibornwolff.codecharta.attributeTypes
 import de.maibornwolff.codecharta.model.AttributeType
 
 
-open class AttributeTypes(
+data class AttributeTypes(
         val attributeTypes: Map<String, AttributeType>,
-        val type: String = "") {
-}
+        val type: String = "") 

@@ -38,7 +38,7 @@ class MutableNode constructor(
         var attributes: Map<String, Any> = mapOf(),
         val link: String? = "",
         childrenList: List<MutableNode> = listOf(),
-        @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeMaxAttributeMergerIgnoringChildren
+        @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeMaxAttributeMerger()
 ) : Tree<MutableNode>() {
 
     override val children = childrenList.toMutableList()
@@ -62,14 +62,32 @@ class MutableNode constructor(
         return nodeMergingStrategy.merge(this, nodes)
     }
 
-    fun translateMetrics(metricNameTranslator: MetricNameTranslator, recursive: Boolean) {
+    fun translateMetrics(metricNameTranslator: MetricNameTranslator, recursive: Boolean = false): MutableNode {
         if (recursive) {
             children.forEach { it.translateMetrics(metricNameTranslator, recursive) }
         }
-        attributes = attributes.mapKeys { metricNameTranslator.translate(it.key) }
+        attributes = attributes.mapKeys { metricNameTranslator.translate(it.key) }.filterKeys { it.isNotBlank() }
+
+        return this
     }
 
     fun toNode(): Node {
         return Node(name, type, attributes, link, children = children.map { it.toNode() }.toList())
+    }
+
+    val isEmptyFolder
+        get() = type == NodeType.Folder && children.isEmpty()
+
+    fun filterChildren(filterRule: (MutableNode) -> Boolean, recursive: Boolean = false): MutableNode? {
+        children.removeAll { !filterRule(it) }
+        if (recursive) {
+            children.forEach { it.filterChildren(filterRule, recursive) }
+        }
+        children.removeAll { !filterRule(it) }
+
+        return when {
+            children.isEmpty() && type == NodeType.Folder -> null
+            else -> this
+        }
     }
 }
