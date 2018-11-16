@@ -31,6 +31,7 @@ package de.maibornwolff.codecharta.model
 
 import de.maibornwolff.codecharta.attributeTypes.AttributeTypes
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
+import mu.KotlinLogging
 
 
 open class ProjectBuilder(
@@ -43,8 +44,13 @@ open class ProjectBuilder(
         if (nodes.size != 1) throw IllegalStateException("no root node present in project")
     }
 
+    private val logger = KotlinLogging.logger {}
+
     val rootNode: MutableNode
         get() = nodes[0]
+
+    val size: Int
+        get() = rootNode.size
 
     /**
      * Inserts the node as child of the element at the specified position in the tree.
@@ -64,27 +70,48 @@ open class ProjectBuilder(
 
     private var metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
 
+    private var filterRule: (MutableNode) -> Boolean = { true }
+
     fun withMetricTranslator(metricNameTranslator: MetricNameTranslator): ProjectBuilder {
         this.metricNameTranslator = metricNameTranslator
         return this
     }
 
+    fun withFilter(filterRule: (MutableNode) -> Boolean = { true }): ProjectBuilder {
+        this.filterRule = filterRule
+        return this
+    }
+
     fun build(): Project {
-        nodes.map { it.translateMetrics(metricNameTranslator, true) }
+        nodes.flatMap { it.nodes.values }
+                .mapNotNull { it.filterChildren(filterRule, false) }
+                .map { it.translateMetrics(metricNameTranslator, false) }
+
         edges.forEach { it.translateMetrics(metricNameTranslator) }
-        return Project(
+
+        filterEmptyFolders()
+
+        val project = Project(
                 projectName,
                 nodes.map { it.toNode() }.toList(),
                 edges = edges.toList(),
                 attributeTypes = attributeTypes.toMap()
         )
+
+        logger.info { "Created Project with ${project.size} leaves." }
+
+        return project
     }
 
-    fun addAttributeTypes(attributeTypes: AttributeTypes): ProjectBuilder {
-        if (!this.attributeTypes.containsKey(attributeTypes.type)) {
-            this.attributeTypes[attributeTypes.type] = mutableListOf(attributeTypes.attributeTypes)
+    private fun filterEmptyFolders() {
+        nodes.forEach { it.filterChildren({ !it.isEmptyFolder }, true) }
+    }
+
+    fun addAttributeTypes(attributeTypesToAdd: AttributeTypes): ProjectBuilder {
+        if (!attributeTypes.containsKey(attributeTypesToAdd.type)) {
+            attributeTypes[attributeTypesToAdd.type] = mutableListOf(attributeTypesToAdd.attributeTypes)
         } else {
-            this.attributeTypes[attributeTypes.type]!!.add(attributeTypes.attributeTypes)
+            attributeTypes[attributeTypesToAdd.type]!!.add(attributeTypesToAdd.attributeTypes)
         }
         return this
     }

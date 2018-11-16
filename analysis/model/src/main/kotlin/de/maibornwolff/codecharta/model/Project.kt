@@ -52,13 +52,8 @@ class Project(
     }
 
     override fun toString(): String {
-        return "Project{" +
-                "projectName='" + projectName + '\''.toString() +
-                ", apiVersion='" + apiVersion + '\''.toString() +
-                ", nodes=" + nodes +
-                ", edges=" + edges +
-                ", attributeTypes" + attributeTypes +
-                '}'.toString()
+        return "Project{projectName=$projectName, apiVersion=$apiVersion, nodes=$nodes, edges=$edges, " +
+                "attributeTypes$attributeTypes}"
     }
 
     companion object {

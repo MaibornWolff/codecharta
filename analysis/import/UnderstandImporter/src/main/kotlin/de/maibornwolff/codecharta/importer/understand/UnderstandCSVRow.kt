@@ -30,26 +30,25 @@
 package de.maibornwolff.codecharta.importer.understand
 
 import de.maibornwolff.codecharta.model.*
-import java.util.*
 import java.util.regex.Pattern
 
 class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: UnderstandCSVHeader, private val pathSeparator: Char) {
 
     init {
-        if (rawRow.size <= maxOf(header.fileColumn, header.nameColumn, header.nameColumn)) {
+        if (rawRow.size <= maxOf(header.fileColumn, header.nameColumn, header.kindColumn)) {
             throw IllegalArgumentException(
-                    "Row " + Arrays.toString(rawRow) + " does not contain the necessary hierarchical information.")
+                    "Row does not contain the necessary hierarchical information.")
         }
     }
 
     private val file =
-            if (rawRow[header.fileColumn] == null) throw IllegalArgumentException("Ignoring empty paths.")
+            if (rawRow[header.fileColumn] == null) throw IllegalArgumentException("Row has no path information.")
             else rawRow[header.fileColumn]!!
 
     private val name = rawRow[header.nameColumn] ?: ""
 
     private val kind =
-            if (rawRow[header.kindColumn] == null) throw IllegalArgumentException("Ignoring rows without kind information.")
+            if (rawRow[header.kindColumn] == null) throw IllegalArgumentException("Row has no kind information.")
             else rawRow[header.kindColumn]!!
 
     private val filename = file.substring(file.lastIndexOf(pathSeparator) + 1)
@@ -57,12 +56,17 @@ class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: U
     private val directoryContainingFile = file.substring(0, file.lastIndexOf(pathSeparator) + 1)
 
     private val floatPattern = Pattern.compile("\\d+[,.]?\\d*")
+    private val intPattern = Pattern.compile("\\d+")
 
     private fun validAttributeOfRow(i: Int) =
             i < rawRow.size && rawRow[i] != null && floatPattern.matcher(rawRow[i]).matches()
 
     private fun parseAttributeOfRow(i: Int) =
-            java.lang.Float.parseFloat(rawRow[i]!!.replace(',', '.'))
+            if (intPattern.matcher(rawRow[i]).matches()) {
+                rawRow[i]!!.toLong()
+            } else {
+                rawRow[i]!!.replace(',', '.').toDouble()
+            }
 
     private val attributes =
             header.columnNumbers
@@ -72,17 +76,16 @@ class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: U
                             { parseAttributeOfRow(it) }
                     )
 
-    val isFileRow = kind.equals("file", true)
+    private val isFileRow = kind.equals("File", true)
 
     private val nodeType =
-            mapOf(
-                    Pair("File", NodeType.File),
-                    Pair("Package", NodeType.Package),
-                    Pair("Class", NodeType.Class),
-                    Pair("Interface", NodeType.Interface),
-                    Pair("Method", NodeType.Method),
-                    Pair("Function", NodeType.Method)
-            )[kind] ?: NodeType.Unknown
+            when {
+                kind.endsWith("file", ignoreCase = true) -> NodeType.File
+                kind.endsWith("class", ignoreCase = true) -> NodeType.Class
+                kind.endsWith("interface", ignoreCase = true) -> NodeType.Class
+                kind.endsWith("enum type", ignoreCase = true) -> NodeType.Class
+                else -> NodeType.Unknown
+            }
 
 
     fun pathInTree(): Path {
@@ -95,7 +98,8 @@ class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: U
     fun asNode(): MutableNode {
         return when {
             isFileRow -> MutableNode(filename, nodeType, attributes)
-            else -> MutableNode(name, nodeType, attributes)
+            nodeType == NodeType.Unknown -> throw IllegalArgumentException("Kind $kind not supported, yet.")
+            else -> MutableNode(name, nodeType, attributes, nodeMergingStrategy = NodeMaxAttributeMerger(true))
         }
     }
 

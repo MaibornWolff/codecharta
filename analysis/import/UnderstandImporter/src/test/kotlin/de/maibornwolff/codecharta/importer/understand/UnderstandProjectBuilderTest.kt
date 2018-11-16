@@ -29,15 +29,16 @@
 
 package de.maibornwolff.codecharta.importer.understand
 
+import de.maibornwolff.codecharta.model.NodeType
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.hasItem
+import org.hamcrest.Matchers.*
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 
 class UnderstandProjectBuilderTest : Spek({
+
     describe("UnderstandProjectBuilder for Understand") {
         val understandProjectBuilder = UnderstandProjectBuilder("test", '/')
 
@@ -47,14 +48,44 @@ class UnderstandProjectBuilderTest : Spek({
                     .parseCSVStream(this.javaClass.classLoader.getResourceAsStream("understand.csv"))
                     .build()
 
-            it("has correct number of nodes") {
-                assertThat(project.size, `is`(223))
+            it("project has number number of files in csv") {
+                assertThat(project.size, greaterThanOrEqualTo(223))
             }
 
             it("leaf has file attributes") {
                 val attributes = project.rootNode.leafObjects.flatMap { it.attributes.keys }.distinct()
                 assertThat(attributes, hasItem("rloc"))
             }
+
+            it("leaf has class attributes") {
+                val attributes = project.rootNode.leafObjects.flatMap { it.attributes.keys }.distinct()
+                assertThat(attributes, hasItem("max_cbo"))
+            }
+
+            it("has no nodes other than files and folders") {
+                val nonFileNonFolderNodes = project.rootNode.nodes.values
+                        .filter { it.type != NodeType.Folder && it.type != NodeType.File }
+                assertThat(nonFileNonFolderNodes, hasSize(0))
+            }
+
+            it("has no folder nodes as leaves") {
+                val folderLeaves = project.rootNode.leafObjects
+                        .filter { it.type == NodeType.Folder }
+                assertThat(folderLeaves, hasSize(0))
+            }
         }
+
+        on("reading csv lines from Understand with LF breaks") {
+            val project = understandProjectBuilder
+                    .parseCSVStream(this.javaClass.classLoader.getResourceAsStream("understand_lf.csv"))
+                    .build()
+
+            it("project has number number of files in csv") {
+                assertThat(project.size, greaterThanOrEqualTo(223))
+            }
+
+        }
+
     }
+
 })

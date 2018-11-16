@@ -38,14 +38,15 @@ import mu.KotlinLogging
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
+import java.util.*
 
 class CSVProjectBuilder(
         projectName: String,
         private val pathSeparator: Char,
         private val csvDelimiter: Char,
+        private val pathColumnName: String = "path",
         metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
 ) {
-
     private val logger = KotlinLogging.logger {}
 
     private val includeRows: (Array<String>) -> Boolean = { true }
@@ -56,7 +57,7 @@ class CSVProjectBuilder(
             inStream: InputStream
     ): ProjectBuilder {
         val parser = createParser(inStream)
-        val header = CSVHeader(parser.parseNext())
+        val header = CSVHeader(parser.parseNext(), pathColumnName = pathColumnName)
         parseContent(parser, header)
         parser.stopParsing()
         return projectBuilder
@@ -79,6 +80,7 @@ class CSVProjectBuilder(
     private fun createParser(inStream: InputStream): CsvParser {
         val parserSettings = CsvParserSettings()
         parserSettings.format.delimiter = csvDelimiter
+        parserSettings.isLineSeparatorDetectionEnabled = true
 
         val parser = CsvParser(parserSettings)
         parser.beginParsing(InputStreamReader(inStream, StandardCharsets.UTF_8))
@@ -90,7 +92,7 @@ class CSVProjectBuilder(
             val row = CSVRow(rawRow, header, pathSeparator)
             projectBuilder.insertByPath(row.pathInTree(), row.asNode())
         } catch (e: IllegalArgumentException) {
-            logger.warn { "Ignoring row due to ${e.message}" }
+            logger.warn { "Ignoring row ${Arrays.toString(rawRow)} due to: ${e.message}" }
         }
     }
 }
