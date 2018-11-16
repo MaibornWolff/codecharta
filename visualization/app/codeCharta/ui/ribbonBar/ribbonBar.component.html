@@ -60,8 +60,9 @@
                 </md-input-container>
             </md-slider-container>
             <md-input-container class="md-block">
-                <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.invertHeight" ng-change="$ctrl.settingsService.onSettingsChanged()">
-                    Height
+                <span class="margin-right-align">Invert</span>
+                <md-checkbox class="md-primary checkbox-space" ng-model="$ctrl.settingsService.settings.invertHeight" ng-change="$ctrl.settingsService.onSettingsChanged()">
+                Height
                 </md-checkbox>
                 <md-checkbox class="md-primary" ng-if="$ctrl.settingsService.settings.mode == $ctrl.deltaMode" ng-model="$ctrl.settingsService.settings.deltaColorFlipped" ng-change="$ctrl.settingsService.onSettingsChanged()">
                     Colors
