@@ -33,9 +33,8 @@ import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import java.io.InputStreamReader
 
 class ProjectMergerTest : Spek({

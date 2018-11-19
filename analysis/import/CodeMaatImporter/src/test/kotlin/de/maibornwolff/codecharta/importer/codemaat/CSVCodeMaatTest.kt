@@ -1,25 +1,20 @@
 package de.maibornwolff.codecharta.importer.codemaat
 
-import de.maibornwolff.codecharta.attributeTypes.AttributeTypes
-import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.Edge
-import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.hamcrest.Matchers.`is`
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 
 
-class CSVCodeMaatTest : Spek ({
+class CSVCodeMaatTest : Spek({
 
     describe("CSVProjectBuilder for CodeMaat") {
         val csvProjectBuilder = CSVProjectBuilder("test", '\\', ',',
                 MetricNameTranslator(mapOf(Pair("File Name", "path"))))
 
-        on("reading csv lines from CodeMaat") {
+        context("reading csv lines from CodeMaat") {
             val project = csvProjectBuilder
                     .parseCSVStream(this.javaClass.classLoader.getResourceAsStream("coupling-codemaat.csv"))
                     .build()

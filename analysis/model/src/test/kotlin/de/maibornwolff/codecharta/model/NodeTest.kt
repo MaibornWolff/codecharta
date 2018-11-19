@@ -33,10 +33,8 @@ import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasItem
 import org.hamcrest.Matchers.hasSize
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import java.util.*
 import kotlin.test.assertFailsWith
 
@@ -48,7 +46,7 @@ class NodeTest : Spek({
         val child = MutableNode(childName)
         val root = MutableNode("root", NodeType.Folder, childrenList = Arrays.asList(child))
 
-        on("getPathOfChild of valid child") {
+        context("getPathOfChild of valid child") {
             val pathOfChild = root.getPathOfChild(child)
 
             it("should return path") {
@@ -58,7 +56,7 @@ class NodeTest : Spek({
             }
         }
 
-        on("getPathOfChild of invalid child") {
+        context("getPathOfChild of invalid child") {
 
             it("should throw an exception") {
 
@@ -68,15 +66,11 @@ class NodeTest : Spek({
             }
         }
 
-        on("pathsToLeafs") {
-
+        it("pathsToLeafs should return path of child") {
             val pathsToLeafs = root.pathsToLeaves
 
-            it("should return path of child") {
-
-                assertThat(pathsToLeafs, hasSize(1))
-                assertThat(pathsToLeafs, PathMatcher.containsPath(Path(childName)))
-            }
+            assertThat(pathsToLeafs, hasSize(1))
+            assertThat(pathsToLeafs, PathMatcher.containsPath(Path(childName)))
         }
 
     }
@@ -90,30 +84,22 @@ class NodeTest : Spek({
         val node2 = MutableNode("node2", NodeType.Folder, childrenList = Arrays.asList(node21))
         val root = MutableNode("root", NodeType.Folder, childrenList = Arrays.asList(node1, node2))
 
-        on("getLeafs") {
-
+        it("getLeafs should return leafs") {
             val leafs = root.leafObjects
 
-            it("should return leafs") {
-
-                assertThat(leafs, hasSize(3))
-                assertThat(leafs, hasItem(node11))
-                assertThat(leafs, hasItem(node12))
-                assertThat(leafs, hasItem(node21))
-            }
+            assertThat(leafs, hasSize(3))
+            assertThat(leafs, hasItem(node11))
+            assertThat(leafs, hasItem(node12))
+            assertThat(leafs, hasItem(node21))
         }
 
-        on("getPathsToLeafs") {
-
+        it("getPathsToLeafs should return paths of all leafs") {
             val pathsToLeafs = root.pathsToLeaves
 
-            it("should return paths of all leafs") {
-
-                assertThat(pathsToLeafs, hasSize(3))
-                assertThat(pathsToLeafs, PathMatcher.containsPath(Path("node1", "node11")))
-                assertThat(pathsToLeafs, PathMatcher.containsPath(Path("node1", "node12")))
-                assertThat(pathsToLeafs, PathMatcher.containsPath(Path("node2", "node21")))
-            }
+            assertThat(pathsToLeafs, hasSize(3))
+            assertThat(pathsToLeafs, PathMatcher.containsPath(Path("node1", "node11")))
+            assertThat(pathsToLeafs, PathMatcher.containsPath(Path("node1", "node12")))
+            assertThat(pathsToLeafs, PathMatcher.containsPath(Path("node2", "node21")))
         }
 
     }

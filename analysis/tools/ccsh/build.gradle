@@ -4,21 +4,21 @@ mainClassName = 'de.maibornwolff.codecharta.tools.ccsh.Ccsh'
 applicationName = 'ccsh'
 
 dependencies {
-    compile project(':import:CodeMaatImporter')
-    compile project(':import:CrococosmoImporter')
-    compile project(':import:CSVImporter')
-    compile project(':import:JasomeImporter')
-    compile project(':import:SCMLogParser')
-    compile project(':import:SonarImporter')
-    compile project(':import:SourceCodeParser')
-    compile project(':import:UnderstandImporter')
-    compile project(':filter:MergeFilter')
-    compile project(':filter:EdgeFilter')
-    compile project(':tools:ValidationTool')
-    compile project(':export:CSVExporter')
+    implementation project(':import:CodeMaatImporter')
+    implementation project(':import:CrococosmoImporter')
+    implementation project(':import:CSVImporter')
+    implementation project(':import:JasomeImporter')
+    implementation project(':import:SCMLogParser')
+    implementation project(':import:SonarImporter')
+    implementation project(':import:SourceCodeParser')
+    implementation project(':import:UnderstandImporter')
+    implementation project(':filter:MergeFilter')
+    implementation project(':filter:EdgeFilter')
+    implementation project(':tools:ValidationTool')
+    implementation project(':export:CSVExporter')
 
 
-    compile group: 'info.picocli', name: 'picocli', version: picocli_version
+    implementation group: 'info.picocli', name: 'picocli', version: picocli_version
 }
 
 jar {

@@ -31,16 +31,14 @@ package de.maibornwolff.codecharta.importer.jasome
 
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.hasSize
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 
 class JasomeDeserializerTest : Spek({
     describe("JasomeDeserializer adding big Jasome project") {
         val jasomeDeserializer = JasomeDeserializer()
 
-        on("deserializing a project ") {
+        context("deserializing a project ") {
             val jasomeProject = jasomeDeserializer.deserializeJasomeXML(
                     this.javaClass.classLoader.getResourceAsStream("jasome.xml")
             )
