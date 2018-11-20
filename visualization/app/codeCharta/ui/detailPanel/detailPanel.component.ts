@@ -2,7 +2,7 @@ import {KindOfMap, Settings, SettingsService, SettingsServiceSubscriber} from ".
 import {codeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
 import {KVObject} from "../../core/data/data.deltaCalculator.service";
 import {DataService} from "../../core/data/data.service";
-import "./detailPanel.scss";
+import "./detailPanel.component.scss";
 import {
     CodeMapBuildingTransition,
     CodeMapMouseEventService,
@@ -266,7 +266,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 
 export const detailPanelComponent = {
     selector: "detailPanelComponent",
-    template: require("./detailPanel.html"),
+    template: require("./detailPanel.component.html"),
     controller: DetailPanelController
 };
 
