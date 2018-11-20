@@ -1,5 +1,5 @@
 require("./detailPanel");
-import {DetailPanelController} from "./detailPanelComponent";
+import {DetailPanelController} from "./detailPanel.component";
 
 /**
  * @test {DetailPanelController}
