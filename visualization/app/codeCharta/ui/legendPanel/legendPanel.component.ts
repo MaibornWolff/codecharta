@@ -10,7 +10,7 @@ import $ from "jquery";
 import {MapColors} from "../codeMap/rendering/renderSettings";
 import {ITimeoutService} from "angular";
 import {STATISTIC_OPS} from "../../core/statistic/statistic.service";
-import "./legendPanel.scss";
+import "./legendPanel.component.scss";
 import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {hierarchy} from "d3-hierarchy";
 
@@ -277,7 +277,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
 
 export const legendPanelComponent = {
     selector: "legendPanelComponent",
-    template: require("./legendPanel.html"),
+    template: require("./legendPanel.component.html"),
     controller: LegendPanelController
 };
 
