@@ -172,7 +172,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         }
     }
 
-    getPackagePathPreview(mp: MarkingPackages) {
+    private getPackagePathPreview(mp: MarkingPackages) {
         const MAX_NAME_LENGTH = {
             lowerLimit: 24,
             upperLimit: 28,
