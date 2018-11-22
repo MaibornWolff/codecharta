@@ -8,27 +8,6 @@ module.exports = function (plop) {
     plop.setPrompt('directory', promptDirectory);
     plop.setPrompt('file', promptFile);
 
-    plop.setGenerator('service', {
-      description: 'an angular service and its corresponding jest unit test file',
-      prompts: [
-            {
-                type: 'directory',
-                name: 'directory',
-                message: 'Directory?',
-                basePath: appBase
-            },
-            {
-                type: 'input',
-                name: 'name',
-                message: 'Name?'
-            }   
-        ],
-        actions: [
-            buildAddAction(["{{camelCase name}}", "service", "ts"]),
-            buildAddAction(["{{camelCase name}}", "service", "spec", "ts"])
-        ]
-    });
-
     plop.setGenerator('core module with empty service', {
         description: 'a core module with an empty service for business logic with all necessary files and tests',
         prompts: [
