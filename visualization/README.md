@@ -64,7 +64,11 @@ adding ":auto" to run target will run the tests in watch mode
 
 #### Generate code
 
-`npm run g` runs the code generation via plop
+`npm run g` runs the code generation via plop.
+
+You can generate the following modules:
+ - "core module with empty service" - a core module with an empty service for business logic with all necessary files and tests
+ - "ui module with empty component" - an ui module with an empty component and all necessary files and tests
 
 ## URL Parameters used by the web application
 [[Back To Top]](#jump-to-section)
