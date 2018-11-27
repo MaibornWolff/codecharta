@@ -44,6 +44,8 @@ class SonarComponentProjectBuilder constructor(
 ) {
 
     private val projectBuilder = ProjectBuilder(name)
+    val size: Int
+        get() = projectBuilder.size
 
     fun build(): Project {
         return projectBuilder.build()

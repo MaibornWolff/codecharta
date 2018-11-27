@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
         maven {
             url 'https://plugins.gradle.org/m2/'
         }
@@ -26,6 +26,7 @@ allprojects {
 
     jacoco {
         toolVersion = '0.8.1'
+        reportsDir = file("$buildDir/reports")
     }
 }
 
@@ -43,8 +44,8 @@ subprojects {
     apply plugin: 'kotlin'
 
     dependencies {
-        compileOnly group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
-        testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
+        implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
+        testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
     }
 
     compileJava {

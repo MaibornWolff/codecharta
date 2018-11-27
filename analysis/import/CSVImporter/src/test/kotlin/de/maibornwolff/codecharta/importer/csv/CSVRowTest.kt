@@ -4,9 +4,8 @@ import de.maibornwolff.codecharta.model.Path
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasSize
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 
 private const val PATH_SEPARATOR = '\\'
@@ -64,7 +63,7 @@ class CSVRowTest : Spek({
         it("should have attribute for metric columns") {
             val rawRow = arrayOf<String?>("3,2", "2", "3", "file")
             val node = CSVRow(rawRow, header, PATH_SEPARATOR).asNode()
-            assertThat<Any>(node.attributes["head1"], `is`<Any>(3.2f))
+            assertThat(node.attributes["head1"] as Double, `is`<Double>(3.2))
         }
 
         it("should have NO attribute for non-metric columns") {

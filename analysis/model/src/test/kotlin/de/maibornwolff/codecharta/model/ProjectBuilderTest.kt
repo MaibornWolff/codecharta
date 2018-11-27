@@ -32,37 +32,56 @@ package de.maibornwolff.codecharta.model
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.hasSize
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.it
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 
 class ProjectBuilderTest : Spek({
 
-    it("should create root node if not present") {
-        // given
+    describe("ProjectBuilder without root node") {
         val projectBuilder = ProjectBuilder("someName")
-        val nodeForInsertion = MutableNode("someNode", NodeType.File)
 
-        // when
-        val project = projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion).build()
+        context("inserting new node") {
+            val nodeForInsertion = MutableNode("someNode", NodeType.File)
+            projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
 
-        // then
-        val root = project.rootNode
-        assertThat(root.children, hasSize(1))
-        assertThat(root.children[0], NodeMatcher.matchesNode(nodeForInsertion.toNode()))
+            it("has node as child of root") {
+                val root = projectBuilder.build().rootNode
+                assertThat(root.children, hasSize(1))
+                assertThat(root.children[0], NodeMatcher.matchesNode(nodeForInsertion.toNode()))
+            }
+        }
     }
 
-    it("should use root node if present") {
-        // given
+    describe("ProjectBuilder with root node") {
         val root = MutableNode("root", NodeType.Folder)
         val projectBuilder = ProjectBuilder("someName", listOf(root))
-        val nodeForInsertion = MutableNode("someNode", NodeType.File)
 
-        // when
-        val project = projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion).build()
+        context("inserting new node") {
+            val nodeForInsertion = MutableNode("someNode", NodeType.File)
+            projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
 
-        // then
-        assertThat(project.rootNode, NodeMatcher.matchesNode(root.toNode()))
-        assertThat(root.children, hasSize(1))
-        assertThat(root.children[0], Matchers.`is`(nodeForInsertion))
+            it("creates a Project with root node") {
+                val project = projectBuilder.build()
+                assertThat(project.rootNode, NodeMatcher.matchesNode(root.toNode()))
+                assertThat(root.children, hasSize(1))
+                assertThat(root.children[0], Matchers.`is`(nodeForInsertion))
+            }
+        }
+    }
+
+    describe("ProjectBuilder with empty folders") {
+        val projectBuilder = ProjectBuilder("someName")
+        val nodeForInsertion = MutableNode("someNode", NodeType.Folder)
+        projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
+
+        context("building") {
+            val project = projectBuilder.build()
+
+            it("should filter empty folders") {
+                val root = project.rootNode
+                assertThat(root.children, hasSize(0))
+            }
+        }
+
     }
 })

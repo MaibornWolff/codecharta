@@ -1,11 +1,11 @@
 dependencies {
-    compile project(':model')
+    implementation project(':model')
 
-    compile group: 'com.fasterxml.jackson', name: 'jackson-base', version: jackson_version
-    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: jackson_version
-    compile group: 'io.fastjson', name: 'boon', version: boon_version
-    compile group: 'info.picocli', name: 'picocli', version: picocli_version
+    implementation group: 'com.fasterxml.jackson', name: 'jackson-base', version: jackson_version
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: jackson_version
+    implementation group: 'io.fastjson', name: 'boon', version: boon_version
+    implementation group: 'info.picocli', name: 'picocli', version: picocli_version
 
-    testCompile group: 'junit', name: 'junit', version: junit4_version
-    testCompile project(path: ':model', configuration: 'testOutput')
+    testImplementation group: 'junit', name: 'junit', version: junit4_version
+    testImplementation project(path: ':model', configuration: 'testOutput')
 }
