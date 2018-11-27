@@ -273,6 +273,10 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         });
     }
 
+    public getMarkingPackages(): MarkingPackages[] {
+        return this.markingPackages;
+    }
+
 }
 
 export const legendPanelComponent = {

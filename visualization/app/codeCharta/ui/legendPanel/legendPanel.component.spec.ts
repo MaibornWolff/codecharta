@@ -60,6 +60,9 @@ describe("LegendPanelController", () => {
             expect(legendPanelController.encodeHex("#000000")).toBe("AAAAAP//");
             expect(legendPanelController.encodeHex("#ff0000")).toBe("AP8AAP//");
             expect(legendPanelController.encodeHex("#0000ff")).toBe("AAAA////");
+            expect(legendPanelController.encodeHex("#000")).toBe("AAAAAP//");
+            expect(legendPanelController.encodeHex("#f00")).toBe("AP8AAP//");
+            expect(legendPanelController.encodeHex("#00f")).toBe("AAAA////");
         });
 
         it("encode rgb to base64 color value", () => {
@@ -129,15 +132,18 @@ describe("LegendPanelController", () => {
         });
 
         it("set correct markingPackage in Legend", () => {
+
             let node = codeMapUtilService.getCodeMapNodeFromPath("/root", "Folder");
             node.markingColor = "0xff0000";
 
-            const markingPackage: MarkingPackages[] = [{
+            legendPanelController.onSettingsChanged(settingsServiceMock.settings);
+
+            const expectedMarkingPackages: MarkingPackages[] = [{
                 markingColor: "data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
                 packageItem: [{name: "/root", path: "/root"}]
             }];
-            legendPanelController.onSettingsChanged(settingsServiceMock.settings);
-            expect(legendPanelController.markingPackages).toEqual(markingPackage);
+
+            expect(legendPanelController.getMarkingPackages()).toEqual(expectedMarkingPackages);
 
         });
 
@@ -149,7 +155,7 @@ describe("LegendPanelController", () => {
 
             const shortenedPathname = "longNameToBe...enedInLegend";
             legendPanelController.onSettingsChanged(settingsServiceMock.settings);
-            expect(legendPanelController.markingPackages[0].packageItem[0].name).toEqual(shortenedPathname);
+            expect(legendPanelController.getMarkingPackages()[0].packageItem[0].name).toEqual(shortenedPathname);
         });
 
         it("shorten too long pathName at beginning of the string for legendPanel", () => {
@@ -160,7 +166,7 @@ describe("LegendPanelController", () => {
 
             const shortenedPathname = ".../andAnotherLongNameToShorten";
             legendPanelController.onSettingsChanged(settingsServiceMock.settings);
-            expect(legendPanelController.markingPackages[0].packageItem[0].name).toEqual(shortenedPathname);
+            expect(legendPanelController.getMarkingPackages()[0].packageItem[0].name).toEqual(shortenedPathname);
         });
     });
     
