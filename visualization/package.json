@@ -68,7 +68,8 @@
     "doc": "rimraf dist/docs && typedoc --module es2015 --target ES6 --exclude **/*.spec.ts --out dist/docs/ --name CodeCharta app/**/*.ts",
     "serve": "webpack --config ./conf/webpack.config.js --watch",
     "package": "rimraf dist/packages && build --concurrent --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --mirror https://dl.nwjs.io/ . && bestzip ./dist/packages/codecharta-visualization-$npm_package_version-web.zip ./dist/webpack",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "g": "plop"
   },
   "bin": {
     "codecharta-visualization": "cli.js"
@@ -159,6 +160,8 @@
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^2.30.1",
     "ignore": "^5.0.2",
+    "inquirer-directory": "^2.1.0",
+    "inquirer-file": "^1.0.1",
     "jest": "^22.4.3",
     "jest-serializer-html": "^5.0.0",
     "jquery": "^3.3.1",
@@ -169,6 +172,7 @@
     "ng-annotate-loader": "^0.6.1",
     "node-sass": "^4.8.2",
     "path": "^0.12.7",
+    "plop": "^2.1.0",
     "puppeteer": "^1.6.0",
     "resolve-url-loader": "^2.3.0",
     "rimraf": "^2.6.2",
