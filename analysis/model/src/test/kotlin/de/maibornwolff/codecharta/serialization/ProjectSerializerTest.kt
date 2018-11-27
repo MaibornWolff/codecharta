@@ -34,8 +34,8 @@ import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.it
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import java.io.File
 import java.io.IOException
 import kotlin.test.assertFailsWith
@@ -73,21 +73,27 @@ class ProjectSerializerTest : Spek({
         }
     }
 
-    it("should serialize project") {
-        val testProject = ProjectDeserializer.deserializeProject(EXAMPLE_JSON_PATH)
+    describe("ProjectSerializer") {
+        it("should serialize project") {
+            val testProject = ProjectDeserializer.deserializeProject(EXAMPLE_JSON_PATH)
 
-        ProjectSerializer.serializeProjectAndWriteToFile(testProject, filename)
+            ProjectSerializer.serializeProjectAndWriteToFile(testProject, filename)
 
-        val result = File(filename)
-        assertTrue(result.exists())
-        assertThat(result, matchesProjectFile(File(EXAMPLE_JSON_PATH)))
+            val result = File(filename)
+            assertTrue(result.exists())
+            assertThat(result, matchesProjectFile(File(EXAMPLE_JSON_PATH)))
+        }
     }
 
-    it("serialize with wrong path throws exception") {
-        val testProject = ProjectDeserializer.deserializeProject(EXAMPLE_JSON_PATH)
+    describe("ProjectSerializer") {
+        context("using non-existing path") {
+            it("should throw exception") {
+                val testProject = ProjectDeserializer.deserializeProject(EXAMPLE_JSON_PATH)
 
-        assertFailsWith(IOException::class) {
-            ProjectSerializer.serializeProjectAndWriteToFile(testProject, tempDir.absolutePath + "/someverystupidpath/out.json")
+                assertFailsWith(IOException::class) {
+                    ProjectSerializer.serializeProjectAndWriteToFile(testProject, tempDir.absolutePath + "/someverystupidpath/out.json")
+                }
+            }
         }
     }
 

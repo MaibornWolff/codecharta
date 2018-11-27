@@ -4,18 +4,18 @@ plugins {
 }
 
 dependencies {
-    compile project(':model')
+    implementation project(':model')
 
     antlr group: 'org.antlr', name:'antlr4', version: antlr_version
     errorprone group: 'com.google.errorprone', name:'error_prone_core', version: '2.3.1'
 
-    compile group: 'info.picocli', name: 'picocli', version: picocli_version
-    compile group: 'org.antlr', name:'antlr4-runtime', version: antlr_version
+    implementation group: 'info.picocli', name: 'picocli', version: picocli_version
+    implementation group: 'org.antlr', name:'antlr4-runtime', version: antlr_version
 
-    testCompile group: 'junit', name: 'junit', version: junit4_version
-    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.10.0'
-    testCompile group: 'com.tngtech.archunit', name: 'archunit', version: '0.8.2'
-    testCompile project(path: ':model', configuration: 'testOutput')
+    testImplementation group: 'junit', name: 'junit', version: junit4_version
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.10.0'
+    testImplementation group: 'com.tngtech.archunit', name: 'archunit', version: '0.8.2'
+    testImplementation project(path: ':model', configuration: 'testOutput')
 }
 
 tasks.withType(JavaCompile) {

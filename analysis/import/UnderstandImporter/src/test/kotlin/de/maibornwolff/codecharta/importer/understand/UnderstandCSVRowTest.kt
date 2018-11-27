@@ -33,10 +33,8 @@ import de.maibornwolff.codecharta.model.Path
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasSize
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 
 class UnderstandCSVRowTest : Spek({
@@ -45,7 +43,7 @@ class UnderstandCSVRowTest : Spek({
     describe("Using a valid header with path column") {
         val header = UnderstandCSVHeader(arrayOf("head1", "head2", "head3", "File", "Name", "Kind", "attrib", "attrib2", ""))
 
-        on("considering row of kind file") {
+        context("considering row of kind file") {
             it("name should be filename from this columnn") {
                 val nameExpectedFilenameMap = mapOf(
                         Pair("someNodeName", "someNodeName"),
@@ -74,7 +72,7 @@ class UnderstandCSVRowTest : Spek({
             }
         }
 
-        on("considering row of kind class") {
+        context("considering row of kind class") {
             val name = "class name"
             val rawRow: Array<String?> = arrayOf("projectName", "blubb2", "blubb3", "someDir\\anotherDir\\anotherName", name, "Class")
             val understandCSVRow = UnderstandCSVRow(rawRow, header, pathSeparator)
@@ -88,7 +86,7 @@ class UnderstandCSVRowTest : Spek({
             }
         }
 
-        on("considering row of unknown kind") {
+        context("considering row of unknown kind") {
             val rawRow: Array<String?> = arrayOf("projectName", "blubb2", "blubb3", "someDir\\anotherDir\\anotherName", "name", "someStupidKind")
             val understandCSVRow = UnderstandCSVRow(rawRow, header, pathSeparator)
 

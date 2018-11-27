@@ -38,9 +38,8 @@ import de.maibornwolff.codecharta.model.Path
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.MatcherAssert
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 
 class JasomeProjectBuilderTest : Spek({
     describe("JasomeProjectBuilder adding an empty Jasome Project") {

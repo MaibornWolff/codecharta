@@ -32,10 +32,8 @@ package de.maibornwolff.codecharta.importer.understand
 import de.maibornwolff.codecharta.model.NodeType
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 
 class UnderstandProjectBuilderTest : Spek({
 
@@ -43,7 +41,7 @@ class UnderstandProjectBuilderTest : Spek({
         val understandProjectBuilder = UnderstandProjectBuilder("test", '/')
 
 
-        on("reading csv lines from Understand") {
+        context("reading csv lines from Understand") {
             val project = understandProjectBuilder
                     .parseCSVStream(this.javaClass.classLoader.getResourceAsStream("understand.csv"))
                     .build()
@@ -75,7 +73,7 @@ class UnderstandProjectBuilderTest : Spek({
             }
         }
 
-        on("reading csv lines from Understand with LF breaks") {
+        context("reading csv lines from Understand with LF breaks") {
             val project = understandProjectBuilder
                     .parseCSVStream(this.javaClass.classLoader.getResourceAsStream("understand_lf.csv"))
                     .build()

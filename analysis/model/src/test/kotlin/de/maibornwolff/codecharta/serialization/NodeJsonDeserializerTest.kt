@@ -39,10 +39,8 @@ import io.mockk.mockk
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.nullValue
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 
 class NodeJsonDeserializerTest : Spek({
@@ -128,7 +126,7 @@ class NodeJsonDeserializerTest : Spek({
             childrenElement.add(createMinimalJsonObject())
             obj.add("children", childrenElement)
 
-            on("deserialize") {
+            context("deserializing") {
 
                 val node = deserializer.deserialize(obj, nodeClass, mockk())
 

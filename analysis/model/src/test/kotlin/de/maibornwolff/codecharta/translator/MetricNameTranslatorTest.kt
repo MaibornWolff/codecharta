@@ -31,9 +31,8 @@ package de.maibornwolff.codecharta.translator
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 
 class MetricNameTranslatorTest : Spek({
@@ -74,28 +73,35 @@ class MetricNameTranslatorTest : Spek({
         }
     }
 
-    it("should replaceMany") {
-        val original: Array<String?> = arrayOf("this", "that", "other", null)
-        val expected: Array<String?> = arrayOf("oooo", "iiii", "other", null)
+    describe("A replacer") {
         val replacer = MetricNameTranslator(mapOf(
                 Pair("this", "oooo"),
                 Pair("that", "iiii"),
                 Pair("bla", "blubb"))
         )
 
-        assertThat(replacer.translate(original), `is`(expected))
-    }
+        it("should replaceMany") {
+            val original: Array<String?> = arrayOf("this", "that", "other", null)
+            val expected: Array<String?> = arrayOf("oooo", "iiii", "other", null)
 
-    it("should not validate with same values") {
-        assertFailsWith(IllegalArgumentException::class) {
-            MetricNameTranslator(mapOf(Pair("this", "that"), Pair("these", "that")))
+            assertThat(replacer.translate(original), `is`(expected))
         }
     }
 
-    it("should validate with multiple empty values") {
-        val translator = MetricNameTranslator(mapOf(Pair("this", ""), Pair("these", "")))
+    describe("A translator with same values") {
+        it("should not validate") {
+            assertFailsWith(IllegalArgumentException::class) {
+                MetricNameTranslator(mapOf(Pair("this", "that"), Pair("these", "that")))
+            }
+        }
 
-        assertThat(translator.translate("this"), `is`(""))
-        assertThat(translator.translate("these"), `is`(""))
+        describe("A translator with multiple empty values") {
+            val translator = MetricNameTranslator(mapOf(Pair("this", ""), Pair("these", "")))
+
+            it("should validate") {
+                assertThat(translator.translate("this"), `is`(""))
+                assertThat(translator.translate("these"), `is`(""))
+            }
+        }
     }
 })

@@ -31,10 +31,9 @@ package de.maibornwolff.codecharta.tools.validation
 
 import de.maibornwolff.codecharta.tools.validation.ValidationTool.Companion.SCHEMA_PATH
 import org.everit.json.schema.ValidationException
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
 import org.json.JSONException
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 
 class EveritValidatorTest : Spek({
