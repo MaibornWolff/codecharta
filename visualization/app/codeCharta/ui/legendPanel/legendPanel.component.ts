@@ -10,7 +10,7 @@ import $ from "jquery";
 import {MapColors} from "../codeMap/rendering/renderSettings";
 import {ITimeoutService} from "angular";
 import {STATISTIC_OPS} from "../../core/statistic/statistic.service";
-import "./legendPanel.scss";
+import "./legendPanel.component.scss";
 import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {hierarchy} from "d3-hierarchy";
 
@@ -172,7 +172,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         }
     }
 
-    getPackagePathPreview(mp: MarkingPackages) {
+    private getPackagePathPreview(mp: MarkingPackages) {
         const MAX_NAME_LENGTH = {
             lowerLimit: 24,
             upperLimit: 28,
@@ -273,11 +273,15 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         });
     }
 
+    public getMarkingPackages(): MarkingPackages[] {
+        return this.markingPackages;
+    }
+
 }
 
 export const legendPanelComponent = {
     selector: "legendPanelComponent",
-    template: require("./legendPanel.html"),
+    template: require("./legendPanel.component.html"),
     controller: LegendPanelController
 };
 
