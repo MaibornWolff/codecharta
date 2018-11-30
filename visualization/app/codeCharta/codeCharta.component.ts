@@ -9,7 +9,7 @@ import "./codeCharta.component.scss";
 import {DialogService} from "./ui/dialog/dialog.service";
 import {queryParamDialog} from "./ui/dialog/queryParam.dialog";
 import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
-import {NodeContextMenuComponent} from "./ui/nodeContextMenu/nodeContextMenu.component";
+import {NodeContextMenuController} from "./ui/nodeContextMenu/nodeContextMenu.component";
 
 /**
  * This is the main controller of the CodeCharta application
@@ -38,7 +38,7 @@ export class CodeChartaController {
     }
 
     private initContextMenuCloseHandler() {
-        document.body.addEventListener('click', ()=>NodeContextMenuComponent.hide(this.$rootScope), true);
+        document.body.addEventListener('click', ()=>NodeContextMenuController.broadcastHideEvent(this.$rootScope), true);
     }
 
     private subscribeToLoadingEvents($rootScope: angular.IRootScopeService) {

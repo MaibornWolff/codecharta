@@ -12,7 +12,7 @@ import angular from "angular";
 import {SettingsService} from "../../core/settings/settings.service";
 import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
-import {NodeContextMenuComponent} from "../nodeContextMenu/nodeContextMenu.component";
+import {NodeContextMenuController} from "../nodeContextMenu/nodeContextMenu.component";
 
 export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
 
@@ -39,10 +39,10 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
     }
 
     onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
-        NodeContextMenuComponent.hide(this.$rootScope);
+        NodeContextMenuController.broadcastHideEvent(this.$rootScope);
         if (building) {
             const nodeType = (building.node.isLeaf) ? "File" : "Folder";
-            NodeContextMenuComponent.show(this.$rootScope, building.node.path, nodeType, x, y);
+            NodeContextMenuController.broadcastShowEvent(this.$rootScope, building.node.path, nodeType, x, y);
         }
     }
 

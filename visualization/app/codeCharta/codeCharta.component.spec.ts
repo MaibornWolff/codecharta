@@ -7,7 +7,7 @@ import {ScenarioService} from "./core/scenario/scenario.service";
 import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
 import {DataLoadingService} from "./core/data/data.loading.service";
 import {NameDataPair, UrlService} from "./core/url/url.service";
-import {NodeContextMenuComponent} from "./ui/nodeContextMenu/nodeContextMenu.component";
+import {NodeContextMenuController} from "./ui/nodeContextMenu/nodeContextMenu.component";
 
 jest.mock("./core/data/data.service");
 jest.mock("./ui/dialog/dialog.service");
@@ -206,11 +206,11 @@ describe("codecharta component", ()=>{
 
     it("should add click listener in order to hide context menu",()=>{
         expect(document.body.addEventListener).toHaveBeenCalledWith("click", expect.any(Function), expect.anything());
-        let oldHide = NodeContextMenuComponent.hide;
-        NodeContextMenuComponent.hide = jest.fn();
+        let oldHide = NodeContextMenuController.broadcastHideEvent;
+        NodeContextMenuController.broadcastHideEvent = jest.fn();
         (document.body.addEventListener as any).mock.calls[0][1]();
-        expect(NodeContextMenuComponent.hide).toHaveBeenCalledWith($rootScope);
-        NodeContextMenuComponent.hide = oldHide;
+        expect(NodeContextMenuController.broadcastHideEvent).toHaveBeenCalledWith($rootScope);
+        NodeContextMenuController.broadcastHideEvent = oldHide;
     });
 
     it("should subscribe to loading events and update view model correctly",()=>{

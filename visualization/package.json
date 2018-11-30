@@ -62,6 +62,7 @@
     "build": "webpack --config ./conf/webpack.config.js",
     "test": "jest .*\\.spec\\.ts --runInBand",
     "test:auto": "jest .*\\.spec\\.ts --watch",
+    "test:autoNoCoverage": "jest .*\\.spec\\.ts --watch --coverage false",
     "test:updateSnaps": "jest .*\\.spec\\.ts --updateSnapshot",
     "e2e": "jest .*\\.e2e\\.ts --runInBand --coverage false",
     "e2e:auto": "jest .*\\.e2e\\.ts --watch --coverage false",
