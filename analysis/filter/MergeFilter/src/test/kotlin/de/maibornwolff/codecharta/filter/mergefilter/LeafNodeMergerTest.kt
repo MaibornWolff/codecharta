@@ -35,16 +35,14 @@ import de.maibornwolff.codecharta.model.Path
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.hasSize
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 
 class LeafNodeMergerTest : Spek({
     describe("a fitting merger") {
         val fittingMerger = LeafNodeMergerStrategy(false)
 
-        on("merging nodes with same name") {
+        context("merging nodes with same name") {
             val node1 = MutableNode("Name", NodeType.File)
             val node2 = MutableNode("Name", NodeType.Folder)
 
@@ -55,7 +53,7 @@ class LeafNodeMergerTest : Spek({
             }
         }
 
-        on("merging nodes with children and with same name") {
+        context("merging nodes with children and with same name") {
             val child1 = MutableNode("child1", NodeType.File)
             val child2 = MutableNode("child2", NodeType.Folder)
             val child1_littleBitDifferent =
@@ -78,7 +76,7 @@ class LeafNodeMergerTest : Spek({
             }
         }
 
-        on("merging nodes with children and with same name") {
+        context("merging nodes with children and with same name") {
             // given
             val childA = MutableNode("A", NodeType.File, mapOf("a" to 0))
             val childB = MutableNode("B", NodeType.Folder, mapOf(), "", listOf(MutableNode("A", NodeType.File)))
@@ -115,7 +113,7 @@ class LeafNodeMergerTest : Spek({
             assertThat(newNode.children[0].type, `is`(child1.type))
         }
 
-        on("merging empty nodes") {
+        context("merging empty nodes") {
             val nodeList = fittingMerger.mergeNodeLists(listOf())
 
             it("should return empty node list") {
@@ -123,7 +121,7 @@ class LeafNodeMergerTest : Spek({
             }
         }
 
-        on("merging single node list") {
+        context("merging single node list") {
             val nodeList = listOf(MutableNode("node", NodeType.File, mapOf()))
             val actualNodeList = fittingMerger.mergeNodeLists(listOf(nodeList))
 
@@ -135,7 +133,7 @@ class LeafNodeMergerTest : Spek({
 
     describe("a misfitting merger") {
         val misfittingMerger = LeafNodeMergerStrategy(true)
-        on("merging nodes with children and with same name") {
+        context("merging nodes with children and with same name") {
             val child1 = MutableNode("child1", NodeType.File)
             val child2 = MutableNode("child2", NodeType.Folder)
             val child1_littleBitDifferent =

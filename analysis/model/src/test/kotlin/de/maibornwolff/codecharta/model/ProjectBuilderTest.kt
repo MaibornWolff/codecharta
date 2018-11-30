@@ -32,17 +32,15 @@ package de.maibornwolff.codecharta.model
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.hasSize
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 
 class ProjectBuilderTest : Spek({
 
     describe("ProjectBuilder without root node") {
         val projectBuilder = ProjectBuilder("someName")
 
-        on("inserting new node") {
+        context("inserting new node") {
             val nodeForInsertion = MutableNode("someNode", NodeType.File)
             projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
 
@@ -58,7 +56,7 @@ class ProjectBuilderTest : Spek({
         val root = MutableNode("root", NodeType.Folder)
         val projectBuilder = ProjectBuilder("someName", listOf(root))
 
-        on("inserting new node") {
+        context("inserting new node") {
             val nodeForInsertion = MutableNode("someNode", NodeType.File)
             projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
 
@@ -76,7 +74,7 @@ class ProjectBuilderTest : Spek({
         val nodeForInsertion = MutableNode("someNode", NodeType.Folder)
         projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
 
-        on("build") {
+        context("building") {
             val project = projectBuilder.build()
 
             it("should filter empty folders") {

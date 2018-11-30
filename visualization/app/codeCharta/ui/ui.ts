@@ -2,6 +2,7 @@
 
 import angular from "angular";
 
+// Plop: Append module import here
 import "./settingsPanel/index";
 import "./revisionChooser/revisionChooser";
 import "./legendPanel/legendPanel";
@@ -30,6 +31,7 @@ import "./multipleFilePanel/multipleFilePanel";
 angular.module(
     "app.codeCharta.ui",
     [
+        // Plop: Append component name here
         "app.codeCharta.ui.mapTreeView",
         "app.codeCharta.ui.ribbonBar",
         "app.codeCharta.ui.settingsPanel",

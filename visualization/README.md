@@ -6,7 +6,7 @@
 ## Jump to Section
 
 * [Installation](#installation)
-* [Grunt Tasks](#grunt-tasks)
+* [Tasks](#tasks)
 * [JSON structure](#json-structure)
 * [License](LICENSE.md)
 
@@ -37,7 +37,7 @@ Once you have installed the project, you can use all grunt tasks described in th
 * Download or build latest web version.
 * Copy all files (dist/app or the downloaded directory) to a served directory which is accessible from the internet.
 
-## Grunt Tasks
+## Tasks
 [[Back To Top]](#jump-to-section)
 
 #### Build
@@ -62,6 +62,13 @@ adding ":auto" to run target will run the tests in watch mode
 
 `npm run package` packages the nwjs app
 
+#### Generate code
+
+`npm run g` runs the code generation via plop.
+
+You can generate the following modules:
+ - "core module with empty service" - a core module with an empty service for business logic with all necessary files and tests
+ - "ui module with empty component" - an ui module with an empty component and all necessary files and tests
 
 ## URL Parameters used by the web application
 [[Back To Top]](#jump-to-section)

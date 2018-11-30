@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 - Appearing button to unfocus node 
 - NodeContectMenu: Option to only hide dependent edges
+- plop support
 
 ### Changed
 - Renaming 'isolate node' to 'focus node'
