@@ -223,6 +223,7 @@ describe("MapTreeViewLevelController", () => {
             expect(sortValue).toBe(0);
         });
 
+
         it("Sort not a leaf", () => {
 
             mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder");
@@ -234,17 +235,20 @@ describe("MapTreeViewLevelController", () => {
 
         it("Subscribe Hover", () => {
 
-            let subscriber: MapTreeViewHoverEventSubscriber;
+            let subscriber: MapTreeViewHoverEventSubscriber= {
+                onShouldHoverNode: jest.fn(),
+                onShouldUnhoverNode: jest.fn()
+
+            };
 
             MapTreeViewLevelController.subscribeToHoverEvents($rootScope, subscriber);
 
-            let hoverFunction = function(event, args){subscriber.onShouldHoverNode(args)};
-            let unhoverFunction = function(event, args){subscriber.onShouldUnhoverNode(args)};
-
             expect($rootScope.$on).toBeCalledWith("should-hover-node", expect.any(Function));
             expect($rootScope.$on).toBeCalledWith("should-unhover-node", expect.any(Function));
-
+            expect(subscriber.onShouldHoverNode).toBeCalled;
+            expect(subscriber.onShouldUnhoverNode).toBeCalled;
         });
+
 
     });
 
