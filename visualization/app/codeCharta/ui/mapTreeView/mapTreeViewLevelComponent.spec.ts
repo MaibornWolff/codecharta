@@ -3,12 +3,16 @@ import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {SettingsService} from "../../core/settings/settings.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
 import {CodeMapNode, ExcludeType} from "../../core/data/model/CodeMap";
+import {CodeMapMouseEventService} from "../codeMap/codeMap.mouseEvent.service";
+import {Tooltips, TOOLTIPS_CHANGED_EVENT_ID} from "../../core/tooltip/tooltip.service";
+import {IAngularEvent} from "angular";
 
 describe("MapTreeViewLevelController", () => {
 
     let mapTreeViewLevelController: MapTreeViewLevelController;
     let $rootScope;
     let $event;
+    let subscriber;
     let threeOrbitControlsService;
     let $timeout;
 
@@ -18,6 +22,15 @@ describe("MapTreeViewLevelController", () => {
     let simpleHierarchy: CodeMapNode;
 
     function mockEverything() {
+
+
+        const MockSubscriber = jest.fn<MapTreeViewHoverEventSubscriber>(()=>({
+            onShouldHoverNode: jest.fn(),
+            onShouldUnhoverNode: jest.fn()
+        }));
+
+
+        subscriber = new MockSubscriber();
 
         $rootScope = jest.fn();
 
@@ -197,17 +210,22 @@ describe("MapTreeViewLevelController", () => {
         });
 
         it("Subscribe Hover", () => {
-            let subscriber: MapTreeViewHoverEventSubscriber = {
-                onShouldHoverNode: jest.fn(),
-                onShouldUnhoverNode: jest.fn()
-            };
+
+
+            mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab/aba", "File");
 
             MapTreeViewLevelController.subscribeToHoverEvents($rootScope, subscriber);
 
             expect($rootScope.$on).toBeCalledWith("should-hover-node", expect.any(Function));
             expect($rootScope.$on).toBeCalledWith("should-unhover-node", expect.any(Function));
-            expect(subscriber.onShouldHoverNode).toBeCalled;
-            expect(subscriber.onShouldUnhoverNode).toBeCalled;
+
+            $rootScope.$on("should-hover-node", (event: IAngularEvent, node: CodeMapNode) => {
+                expect(node).toBe(mapTreeViewLevelController.node);
+            });
+
+            $rootScope.$on("should-unhover-node", (event: IAngularEvent, node: CodeMapNode) => {
+                expect(node).toBe(mapTreeViewLevelController.node);
+            });
         });
     });
 });
