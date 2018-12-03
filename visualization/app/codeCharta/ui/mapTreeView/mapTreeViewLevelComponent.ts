@@ -20,8 +20,7 @@ export class MapTreeViewLevelController {
     constructor(
         private $rootScope: IRootScopeService,
         private codeMapActionsService: CodeMapActionsService,
-        private settingsService: SettingsService,
-        private codeMapUtilService: CodeMapUtilService
+        private settingsService: SettingsService
     ) {
 
     }
