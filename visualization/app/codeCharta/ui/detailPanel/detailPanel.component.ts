@@ -105,18 +105,12 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
     onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
     }
 
-    /**
-     * Called when settings change. Applies them to the common details.
-     */
     onSettingsChanged(settings: Settings) {
         this.details.common.areaAttributeName = settings.areaMetric;
         this.details.common.heightAttributeName = settings.heightMetric;
         this.details.common.colorAttributeName = settings.colorMetric;
     }
 
-    /**
-     * called when a new/no building is selected.
-     */
     onSelect(data) {
         if (data.to && data.to.node) {
             this.setSelectedDetails(data.to.node);
@@ -125,9 +119,6 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         }
     }
 
-    /**
-     * called when a new/no building is hovered.
-     */
     onHover(data) {
         if (data.to && data.to.node) {
             this.setHoveredDetails(data.to.node);
@@ -136,9 +127,6 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         }
     }
 
-    /**
-     * Checks whether a a building is hovered
-     */
     isHovered() {
         if (this.details && this.details.hovered) {
             return this.details.hovered.name ? true : false;
@@ -147,10 +135,6 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         }
     }
 
-    /**
-     * Checks whether a a building is selected
-     * @return {boolean}
-     */
     isSelected() {
         if (this.details && this.details.selected) {
             return this.details.selected.name ? true : false;
@@ -159,10 +143,6 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         }
     }
 
-    /**
-     * Sets hovered details
-     * @param {object} hovered hovered building
-     */
     setHoveredDetails(hovered) {
         this.clearHoveredDetails();
         this.$timeout(function () {
@@ -196,10 +176,6 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         return result;
     }
 
-    /**
-     * Sets selected details
-     * @param {object} selected selected building
-     */
     setSelectedDetails(selected) {
         this.clearSelectedDetails();
         this.$timeout(function () {
@@ -222,43 +198,19 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         }.bind(this));
     }
 
-    /**
-     * clears hovered details
-     */
     clearHoveredDetails() {
         this.$timeout(function () {
-            this.details.hovered.name = null;
-            this.details.hovered.area = null;
-            this.details.hovered.height = null;
-            this.details.hovered.color = null;
-            this.details.hovered.heightDelta = null;
-            this.details.hovered.areaDelta = null;
-            this.details.hovered.colorDelta = null;
-            this.details.hovered.link = null;
-            this.details.hovered.origin = null;
-            this.details.hovered.path = null;
-            this.details.hovered.attributes = null;
-            this.details.hovered.deltas = null;
+            for(let key in this.details.hovered) {
+                this.details.hovered[key] = null;
+            }
         }.bind(this));
     }
 
-    /**
-     * clears selected details
-     */
     clearSelectedDetails() {
         this.$timeout(function () {
-            this.details.selected.name = null;
-            this.details.selected.area = null;
-            this.details.selected.height = null;
-            this.details.selected.color = null;
-            this.details.selected.heightDelta = null;
-            this.details.selected.areaDelta = null;
-            this.details.selected.colorDelta = null;
-            this.details.selected.link = null;
-            this.details.selected.origin = null;
-            this.details.selected.path = null;
-            this.details.selected.attributes = null;
-            this.details.selected.deltas = null;
+            for(let key in this.details.selected) {
+                this.details.selected[key] = null;
+            }
         }.bind(this));
     }
 
