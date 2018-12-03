@@ -32,7 +32,7 @@ describe("blacklistController", () => {
         settingsServiceMock = new SettingsServiceMock();
 
         const CodeMapActionsServiceMock = jest.fn<CodeMapActionsService>(() => ({
-            includeNode: jest.fn()
+            removeBlacklistEntry: jest.fn()
         }));
 
         codeMapActionsServiceMock = new CodeMapActionsServiceMock();
@@ -139,7 +139,7 @@ describe("blacklistController", () => {
         expect(getFilteredBlacklistBy({path: "/root", type: ExcludeType.exclude})).toHaveLength(1);
 
         blacklistPanelController.removeBlacklistEntry(viewModel);
-        expect(codeMapActionsServiceMock.includeNode).toHaveBeenCalledWith({"error": "", "itemPath": "/root", "itemType": "exclude"});
+        expect(codeMapActionsServiceMock.removeBlacklistEntry).toHaveBeenCalledWith({"error": "", "itemPath": "/root", "itemType": "exclude"});
     });
 
     it("update local blacklist with settingsService onSettingsChanged", () => {
