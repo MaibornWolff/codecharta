@@ -48,7 +48,7 @@ describe("detailPanelController", function() {
 
 
     // TODO: Update these three tests
-    /*
+
     describe("should react to events on its scope", ()=>{
 
         it("building hovered",(done)=>{
@@ -59,12 +59,11 @@ describe("detailPanelController", function() {
             $scope.$broadcast("building-hovered", "payload");
         });
 
-        it("building selected",(done)=>{
-            detailPanelController.onSelect = (payload)=>{
-                expect(payload).toBe("payload");
-                done();
-            };
+        // Why does this not work?
+        it("building selected",()=>{
+            detailPanelController.onSelect = jest.fn();
             $scope.$broadcast("building-selected", "payload");
+            expect(detailPanelController.onSelect).toHaveBeenCalled();
         });
 
         it("settings changed",(done)=>{
@@ -75,7 +74,7 @@ describe("detailPanelController", function() {
             $scope.$broadcast("settings-changed", "payload");
         });
 
-    });*/
+    });
 
     it("should set common attributes onSettingsChanged",() => {
         var settings = {
