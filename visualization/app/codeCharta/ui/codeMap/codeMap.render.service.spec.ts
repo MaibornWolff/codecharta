@@ -3,9 +3,13 @@ import {ThreeSceneService} from "./threeViewer/threeSceneService";
 import {SettingsService} from "../../core/settings/settings.service";
 import {TreeMapService} from "../../core/treemap/treemap.service";
 import {DataService} from "../../core/data/data.service";
-import {node} from "./rendering/node";
 import {CodeMapUtilService} from "./codeMap.util.service";
 import {CodeMapNode} from "../../core/data/model/CodeMap";
+import {LabelManager} from "./rendering/labelManager";
+import * as THREE from "three";
+import {Group} from "three";
+import sinon from "sinon";
+jest.mock("./threeViewer/threeSceneService");
 
 
 describe("renderService", () => {
@@ -19,16 +23,38 @@ describe("renderService", () => {
     let codeMapUtilService: CodeMapUtilService;
     let settingsServiceMock: SettingsService;
     let $rootScope;
-    let settingsService;//: SettingsService;
+    let settingsService;
 
     beforeEach(() => {
         mockEverything();
     });
 
 
+    function mockForGeometry(){
+        node=  codeMapUtilService.getCodeMapNodeFromPath("/root", "File");
+        let nodes =  renderService.collectNodesToArray(node);
+        nodes[0].isLeaf = true;
+        renderService.collectNodesToArray = jest.fn(x =>  nodes);
+
+        renderService.threeSceneService = new ThreeSceneService();
+
+        renderService.threeSceneService.labels = new Group();
+        renderService.labelManager = new LabelManager(renderService.threeSceneService.labels);
+
+
+        renderService.threeSceneService.edgeArrows = new Group();
+        renderService.arrowManager = new LabelManager(renderService.threeSceneService.edgeArrows);
+
+        renderService.threeSceneService.mapGeometry =  new THREE.Group();
+    }
+
     function mockEverything(){
         $rootScope = {
             $on: jest.fn()
+        };
+        treeMapService = {
+            setVisibilityOfNodeAndDescendants: jest.fn(),
+            createTreemapNodes: jest.fn()
         };
 
         settingsService = {
@@ -48,23 +74,34 @@ describe("renderService", () => {
             name: "root",
             type: "Folder",
             path: "/root",
+            height: 3,
+            visible: true,
+            length: 1,
+            width: 1,
             attributes: {},
             children: [
                 {
                     name: "a",
                     type: "Folder",
                     path: "/root/a",
+                    height: 2,
+                    visible: true,
+                    length: 1,
+                    width: 1,
                     attributes: {},
                     children: [
                         {
                             name: "ab",
                             type: "Folder",
                             path: "/root/a/ab",
+                            visible: true,
                             attributes: {},
                             children: [
                                 {
                                     name: "aba",
                                     path: "/root/a/ab/aba",
+                                    isLeaf: true,
+                                    visible: true,
                                     type: "File",
                                     attributes: {},
                                     children: []
@@ -84,10 +121,15 @@ describe("renderService", () => {
                 heightMetric: "heightMetric",
                 colorMetric: "colorMetric",
                 neutralColorRange: neutralColorRange,
+                amountOfTopLabels: 7,
                 invertHeight: true,
                 deltaColorFlipped: true,
+                enableEdgeArrows: true,
                 map: {
-                root: simpleHierarchy
+                root: simpleHierarchy,
+                edges : [{visible: true},
+                    {visible: true}
+                 ]
                 },
                 scaling: {
                     x: 1,
@@ -98,17 +140,61 @@ describe("renderService", () => {
         }));
 
         settingsServiceMock = new SettingsServiceMock();
-
-
-
         codeMapUtilService = new CodeMapUtilService(settingsServiceMock);
 
+        threeSceneService = new ThreeSceneService();
+        threeSceneService.mapGeometry = new Group();
 
-        renderService = new CodeMapRenderService(threeSceneService,treeMapService,$rootScope,settingsService)
+        renderService = new CodeMapRenderService(threeSceneService,treeMapService,$rootScope,settingsService);
     }
 
 
+
+
     describe("Building behaviour", () => {
+
+        it("Apply Settings", ()=>{
+            renderService.updateMapGeometry = jest.fn();
+            renderService.scaleMap = jest.fn();
+            let x = settingsServiceMock.settings.scaling.x;
+            let y = settingsServiceMock.settings.scaling.y;
+            let z = settingsServiceMock.settings.scaling.z;
+
+            renderService.applySettings(settingsServiceMock.settings);
+
+            expect(renderService.updateMapGeometry).toHaveBeenCalledWith(settingsServiceMock.settings);
+            expect(renderService.scaleMap).toHaveBeenCalledWith(x,y,z);
+        });
+
+        it("Three Scene Map Mesh", ()=>{
+            renderService.updateMapGeometry = jest.fn();
+            renderService.threeSceneService.getMapMesh = jest.fn(x => {renderService.mapMesh});
+
+            renderService.applySettings(settingsServiceMock.settings);
+
+            expect(renderService.threeSceneService.getMapMesh).toHaveBeenCalled();
+        });
+        it("Label scale", ()=>{
+            renderService.updateMapGeometry = jest.fn();
+            renderService.labelManager = {
+                scale: jest.fn()
+            };
+
+            renderService.applySettings(settingsServiceMock.settings);
+
+            expect(renderService.labelManager.scale).toHaveBeenCalled();
+        });
+
+        it("Arrow scale", ()=>{
+            renderService.updateMapGeometry = jest.fn();
+            renderService.arrowManager = {
+                scale: jest.fn()
+            };
+
+            renderService.applySettings(settingsServiceMock.settings);
+
+            expect(renderService.arrowManager.scale).toHaveBeenCalled();
+        });
 
         it("Collect nodes", ()=>{
              node=  codeMapUtilService.getCodeMapNodeFromPath("/root", "File");
@@ -119,20 +205,64 @@ describe("renderService", () => {
             expect(nodes[1]).toBe(node.children[0]);
         });
 
+        it("Apply settings", ()=>{
+            renderService.applySettings= jest.fn();
 
-        it("Update geometry", ()=>{
-            renderService.updateMapGeometry = jest.fn();
-            renderService.scaleMap = jest.fn();
-            let x = settingsServiceMock.settings.scaling.x;
-            let y = settingsServiceMock.settings.scaling.y;
-            let z = settingsServiceMock.settings.scaling.z;
+            renderService.onSettingsChanged(settingsServiceMock.settings,null);
 
-            renderService.applySettings(settingsServiceMock.settings);
+            expect(renderService.applySettings).toHaveBeenCalled();
 
-
-            expect(renderService.updateMapGeometry).toHaveBeenCalledWith(settingsServiceMock.settings);
-            expect(renderService.scaleMap).toHaveBeenCalledWith(x,y,z);
         });
+
     });
+
+    describe("Update geometry", () => {
+
+        beforeEach(() => {
+            mockForGeometry();
+        });
+
+        it("Nodes collected", ()=>{
+
+            renderService.updateMapGeometry(settingsServiceMock.settings);
+
+            expect(renderService.collectNodesToArray).toHaveBeenCalled();
+        });
+
+
+        it("Labels cleared", ()=>{
+
+            renderService.updateMapGeometry(settingsServiceMock.settings);
+            renderService.labelManager.clearLabels = sinon.spy();
+
+            expect(renderService.labelManager.clearLabels.CalledOnce);
+
+        });
+
+        it("Arrows cleared", ()=>{
+
+            renderService.updateMapGeometry(settingsServiceMock.settings);
+            renderService.labelManager.clearArrows = sinon.spy();
+
+            expect(renderService.labelManager.clearArrows.CalledOnce);
+
+        });
+
+        it("No visible edge", ()=>{
+            settingsServiceMock.settings.map.edges = null;
+            renderService.showCouplingArrows = sinon.spy();
+
+            renderService.updateMapGeometry(settingsServiceMock.settings);
+            expect(renderService.showCouplingArrows.CalledOnce);
+        });
+
+        it("MapMesh", ()=>{
+            let mapMesh = renderService.mapMesh;
+
+            expect(mapMesh).toBe(renderService._mapMesh);
+        });
+
+    });
+
 
 });

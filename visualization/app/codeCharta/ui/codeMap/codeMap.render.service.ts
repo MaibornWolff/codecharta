@@ -124,7 +124,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         this.labelManager.clearLabels();
         this.arrowManager = new ArrowManager(this.threeSceneService.edgeArrows);
         this.arrowManager.clearArrows();
-
         for (let i = 0, numAdded = 0; i < this.currentSortedNodes.length && numAdded < s.amountOfTopLabels; ++i) {
             if (this.currentSortedNodes[i].isLeaf) {
                 this.labelManager.addLabel(this.currentSortedNodes[i], this.currentRenderSettings);
