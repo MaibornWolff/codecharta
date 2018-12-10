@@ -147,6 +147,4 @@ describe("blacklistController", () => {
         blacklistPanelController.onSettingsChanged(settingsServiceMock.settings, null);
         expect(blacklistPanelController.blacklist).toEqual(settingsServiceMock.settings.blacklist);
     });
-
-
 });
