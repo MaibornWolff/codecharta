@@ -6,11 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- Appearing button to unfocus node 
+- NodeContectMenu: Option to only hide dependent edges
 - plop support
+
 ### Changed
+- Renaming 'isolate node' to 'focus node'
+- Focusing a node does not remove the blacklist items of type Hide
 
 ### Removed
-- Isolate node functionality in the short term
+- NodeContectMenu: Option to 'show all' nodes, which used to unhide all nodes
 
 ### Fixed
 - Reshow hidden nodes from Treeview or Blacklist

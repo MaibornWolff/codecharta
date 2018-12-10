@@ -46,6 +46,7 @@ export interface Settings {
     dynamicMargin: boolean;
     isWhiteBackground: boolean;
     blacklist: Array<Exclude>;
+    focusedNodePath: string;
 }
 
 export interface SettingsServiceSubscriber {
@@ -119,6 +120,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             dynamicMargin: true,
             isWhiteBackground: false,
             blacklist: [],
+            focusedNodePath: null,
         };
         return settings;
 
@@ -391,6 +393,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.dynamicMargin = settings.dynamicMargin;
         this._settings.isWhiteBackground = settings.isWhiteBackground;
         this._settings.blacklist = settings.blacklist;
+        this._settings.focusedNodePath = settings.focusedNodePath;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = settings.map || this.settings.map;
