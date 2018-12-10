@@ -4,13 +4,12 @@ import angular from "angular";
 import {highlightColors} from "../codeMap/rendering/renderSettings";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
-import {ExcludeType} from "../../core/data/model/CodeMap";
 
 export class NodeContextMenuController {
 
     private contextMenuBuilding;
-    public nodeHasEdges;
-    public allDependentEdgesAreVisible;
+    public amountOfDependentEdges;
+    public amountOfVisibleDependentEdges;
     public anyEdgeIsVisible;
 
     private colors = highlightColors;
@@ -44,8 +43,8 @@ export class NodeContextMenuController {
         this.$timeout(() => {
             this.contextMenuBuilding = this.codeMapUtilService.getCodeMapNodeFromPath(path, nodeType);
         }, 50).then(() => {
-            this.nodeHasEdges = this.codeMapActionsService.nodeHasEdges(this.contextMenuBuilding);
-            this.allDependentEdgesAreVisible = this.codeMapActionsService.allDependentEdgesAreVisible(this.contextMenuBuilding);
+            this.amountOfDependentEdges = this.codeMapActionsService.amountOfDependentEdges(this.contextMenuBuilding);
+            this.amountOfVisibleDependentEdges = this.codeMapActionsService.amountOfVisibleDependentEdges(this.contextMenuBuilding);
             this.anyEdgeIsVisible = this.codeMapActionsService.anyEdgeIsVisible();
             const {x, y} = this.calculatePosition(mouseX, mouseY);
             this.setPosition(x, y);
@@ -69,6 +68,11 @@ export class NodeContextMenuController {
     hideNode() {
         this.hide();
         this.codeMapActionsService.hideNode(this.contextMenuBuilding);
+    }
+
+    showNode() {
+        this.hide();
+        this.codeMapActionsService.showNode(this.contextMenuBuilding);
     }
 
     clickColor(color: string) {
@@ -96,14 +100,9 @@ export class NodeContextMenuController {
         this.codeMapActionsService.unmarkFolder(this.contextMenuBuilding);
     }
 
-    isolateNode() {
+    focusNode() {
         this.hide();
-        this.codeMapActionsService.isolateNode(this.contextMenuBuilding);
-    }
-
-    showAllNodes() {
-        this.hide();
-        this.codeMapActionsService.showAllNodes();
+        this.codeMapActionsService.focusNode(this.contextMenuBuilding);
     }
 
     hide() {

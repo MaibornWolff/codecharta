@@ -3,13 +3,12 @@ import {NameDataPair, UrlService} from "./core/url/url.service";
 import {SettingsService} from "./core/settings/settings.service";
 import {ScenarioService} from "./core/scenario/scenario.service";
 import {DataService} from "./core/data/data.service";
-import $ from "jquery";
 import {IRootScopeService} from "angular";
 import "./codeCharta.component.scss";
 import {DialogService} from "./ui/dialog/dialog.service";
-import {queryParamDialog} from "./ui/dialog/queryParam.dialog";
 import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
 import {NodeContextMenuController} from "./ui/nodeContextMenu/nodeContextMenu.component";
+import {CodeMapActionsService} from "./ui/codeMap/codeMap.actions.service";
 
 /**
  * This is the main controller of the CodeCharta application
@@ -30,7 +29,8 @@ export class CodeChartaController {
         private dataService: DataService,
         private threeOrbitControlsService: ThreeOrbitControlsService,
         private $rootScope: IRootScopeService,
-        private dialogService: DialogService
+        private dialogService: DialogService,
+        private codeMapActionsService: CodeMapActionsService
     ) {
         this.subscribeToLoadingEvents($rootScope);
         this.loadFileOrSample();
@@ -53,6 +53,10 @@ export class CodeChartaController {
 
     fitMapToView() {
         this.threeOrbitControlsService.autoFitTo();
+    }
+
+    removeFocusedNode() {
+        this.codeMapActionsService.removeFocusedNode();
     }
 
     loadFileOrSample() {

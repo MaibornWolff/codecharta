@@ -56,7 +56,7 @@ export class MapTreeViewLevelController {
     }
 
     onLabelClick() {
-        this.codeMapActionsService.isolateNode(this.node);
+        this.codeMapActionsService.focusNode(this.node);
     }
 
     onEyeClick() {
