@@ -70,19 +70,17 @@ describe("node context menu", () => {
     function withMockedCodeMapActionService() {
         services.codeMapActionsService = nodeContextMenuController["codeMapActionsService"] = jest.fn<CodeMapActionsService>(()=>{
             return {
-                nodeHasEdges: jest.fn(),
-                allDependentEdgesAreVisible: jest.fn(),
+                amountOfDependentEdges: jest.fn(),
+                amountOfVisibleDependentEdges: jest.fn(),
                 anyEdgeIsVisible: jest.fn(),
                 hideNode: jest.fn(),
                 markFolder: jest.fn(),
                 unmarkFolder: jest.fn(),
-                isolateNode: jest.fn(),
-                showAllNodes: jest.fn(),
+                focusNode: jest.fn(),
                 showDependentEdges: jest.fn(),
                 hideDependentEdges: jest.fn(),
                 hideAllEdges: jest.fn(),
                 excludeNode: jest.fn()
-
             }
         })();
     }
@@ -135,7 +133,7 @@ describe("node context menu", () => {
 
     describe("showing and hiding", ()=>{
 
-        it("hiding the context menu should should set the relevant building to null or undefined after angular digestion", ()=>{
+        it("hiding the context menu should set the relevant building to null or undefined after angular digestion", ()=>{
             nodeContextMenuController["contextMenuBuilding"] = true;
             nodeContextMenuController.hide();
             services.$timeout.flush();
@@ -151,17 +149,18 @@ describe("node context menu", () => {
             expect(nodeContextMenuController["contextMenuBuilding"]).toEqual({"attributes": {}, "name": "somepath", "type": "sometype"});
         });
 
-        it("showing the context menu should should set the edge fields after some timeout", ()=>{
+        it("showing the context menu should set the edge fields after some timeout", ()=>{
             withMockedCodeMapActionService();
             nodeContextMenuController.setPosition = jest.fn();
             services.codeMapUtilService.getCodeMapNodeFromPath = jest.fn();
-            services.codeMapActionsService.nodeHasEdges = jest.fn(()=>{return true;});
-            services.codeMapActionsService.allDependentEdgesAreVisible = jest.fn(()=>true);
+            services.codeMapActionsService.amountOfDependentEdges = jest.fn(()=>{return 42;});
+            services.codeMapActionsService.amountOfVisibleDependentEdges = jest.fn(() => 24);
             services.codeMapActionsService.anyEdgeIsVisible = jest.fn(()=>true);
             nodeContextMenuController.show("somepath", "sometype", 42, 24);
             services.$timeout.flush(100);
-            expect(nodeContextMenuController["nodeHasEdges"]).toBeTruthy();
-            expect(nodeContextMenuController["allDependentEdgesAreVisible"]).toBeTruthy();
+
+            expect(nodeContextMenuController["amountOfDependentEdges"]).toBe(42);
+            expect(nodeContextMenuController["amountOfVisibleDependentEdges"]).toBe(24);
             expect(nodeContextMenuController["anyEdgeIsVisible"]).toBeTruthy();
         });
 
@@ -204,8 +203,7 @@ describe("node context menu", () => {
             "hideNode", 
             "markFolder", 
             "unmarkFolder", 
-            "isolateNode", 
-            "showAllNodes", 
+            "focusNode",
             "showDependentEdges",
             "hideDependentEdges",
             "hideAllEdges",
@@ -230,7 +228,6 @@ describe("node context menu", () => {
                 expect(nodeContextMenuController["codeMapActionsService"][a]).toHaveBeenCalledTimes(1);
             });
         });
-
     });
 
     describe("marking color", ()=>{
