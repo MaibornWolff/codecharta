@@ -69,6 +69,13 @@ code-charta-component {
       margin: 4px 0 0 2px;
     }
 
+    .long-button {
+      width: inherit;
+      padding-left: 10px;
+      padding-right: 10px;
+      border-radius: 100px;
+    }
+
     > * {
        margin-left: 4px;
        margin-right: 4px;
