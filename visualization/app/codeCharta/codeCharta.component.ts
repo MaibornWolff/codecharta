@@ -7,7 +7,7 @@ import {IRootScopeService} from "angular";
 import "./codeCharta.component.scss";
 import {DialogService} from "./ui/dialog/dialog.service";
 import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
-import {NodeContextMenuComponent} from "./ui/nodeContextMenu/nodeContextMenu.component";
+import {NodeContextMenuController} from "./ui/nodeContextMenu/nodeContextMenu.component";
 import {CodeMapActionsService} from "./ui/codeMap/codeMap.actions.service";
 
 /**
@@ -38,7 +38,7 @@ export class CodeChartaController {
     }
 
     private initContextMenuCloseHandler() {
-        document.body.addEventListener('click', ()=>NodeContextMenuComponent.hide(this.$rootScope), true);
+        document.body.addEventListener('click', ()=>NodeContextMenuController.broadcastHideEvent(this.$rootScope), true);
     }
 
     private subscribeToLoadingEvents($rootScope: angular.IRootScopeService) {
