@@ -8,11 +8,13 @@ import {node} from "./rendering/node";
 import {ArrowManager} from "./rendering/arrowManager";
 import {Edge} from "../../core/data/model/CodeMap";
 import {
-    CodeMapBuildingTransition, CodeMapMouseEventService,
+    CodeMapBuildingTransition,
+    CodeMapMouseEventService,
     CodeMapMouseEventServiceSubscriber
 } from "./codeMap.mouseEvent.service";
 import {TreeMapSettings} from "../../core/treemap/treemap.service";
 import {codeMapBuilding} from "./rendering/codeMapBuilding";
+import {CodeMapUtilService} from "./codeMap.util.service";
 
 const mapSize = 500.0;
 
@@ -34,7 +36,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     constructor(private threeSceneService,
                 private treeMapService,
                 private $rootScope,
-                private settingsService: SettingsService) {
+                private settingsService: SettingsService,
+                private codeMapUtilService: CodeMapUtilService) {
         this.settingsService.subscribe(this);
         CodeMapMouseEventService.subscribe($rootScope, this);
     }
@@ -101,7 +104,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             fileName: s.map.fileName
         };
 
-        this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, true);
+        this.showAllOrOnlyFocusedNode(s);
 
         let nodes: node[] = this.collectNodesToArray(
             this.treeMapService.createTreemapNodes(s.map.root, treeMapSettings, s.map.edges)
@@ -138,6 +141,16 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         this._mapMesh = new CodeMapMesh(this.currentSortedNodes, this.currentRenderSettings);
 
         this.threeSceneService.setMapMesh(this._mapMesh, mapSize);
+    }
+
+    private showAllOrOnlyFocusedNode(s: Settings) {
+        if (s.focusedNodePath) {
+            var focusedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(s.focusedNodePath);
+            this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, false);
+            this.treeMapService.setVisibilityOfNodeAndDescendants(focusedNode, true);
+        } else {
+            this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, true);
+        }
     }
 
     private getVisibleEdges(s: Settings) {
