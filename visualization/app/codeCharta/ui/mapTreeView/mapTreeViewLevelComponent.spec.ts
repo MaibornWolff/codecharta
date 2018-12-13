@@ -5,7 +5,9 @@ import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
 import {CodeMapNode, ExcludeType} from "../../core/data/model/CodeMap";
 import {CodeMapMouseEventService} from "../codeMap/codeMap.mouseEvent.service";
 import {Tooltips, TOOLTIPS_CHANGED_EVENT_ID} from "../../core/tooltip/tooltip.service";
-import {IAngularEvent} from "angular";
+import {IAngularEvent, IRootScopeService} from "angular";
+import "./mapTreeView";
+import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper";
 
 describe("MapTreeViewLevelController", () => {
 
@@ -157,10 +159,10 @@ describe("MapTreeViewLevelController", () => {
 
         it("Label click", () => {
             mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/", "Folder");
-            mapTreeViewLevelController.codeMapActionsService.isolateNode = jest.fn();
+            mapTreeViewLevelController.codeMapActionsService.focusNode = jest.fn();
             mapTreeViewLevelController.onLabelClick();
 
-            expect(mapTreeViewLevelController.codeMapActionsService.isolateNode).toHaveBeenCalledWith(mapTreeViewLevelController.node);
+            expect(mapTreeViewLevelController.codeMapActionsService.focusNode).toHaveBeenCalledWith(mapTreeViewLevelController.node);
         });
 
         it("Eye click", () => {
@@ -211,21 +213,25 @@ describe("MapTreeViewLevelController", () => {
 
         it("Subscribe Hover", () => {
 
+            instantiateModule("app.codeCharta.ui.mapTreeView"); 
+
+            const services = {
+                $rootScope: getService<IRootScopeService>("$rootScope"),
+                settingsService: getService<SettingsService>("settingsService"),
+                codeMapActionsService: getService<CodeMapActionsService>("codeMapActionsService"),
+            };
+
+            mapTreeViewLevelController = new MapTreeViewLevelController(services.$rootScope, services.codeMapActionsService, services.settingsService);
 
             mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab/aba", "File");
+            MapTreeViewLevelController.subscribeToHoverEvents(services.$rootScope, subscriber);
+            mapTreeViewLevelController.onMouseEnter();
+            mapTreeViewLevelController.onMouseLeave();
+            services.$rootScope.$digest();
 
-            MapTreeViewLevelController.subscribeToHoverEvents($rootScope, subscriber);
+            expect(subscriber.onShouldHoverNode).toBeCalledWith(mapTreeViewLevelController.node);
+            expect(subscriber.onShouldUnhoverNode).toBeCalledWith(mapTreeViewLevelController.node);
 
-            expect($rootScope.$on).toBeCalledWith("should-hover-node", expect.any(Function));
-            expect($rootScope.$on).toBeCalledWith("should-unhover-node", expect.any(Function));
-
-            $rootScope.$on("should-hover-node", (event: IAngularEvent, node: CodeMapNode) => {
-                expect(node).toBe(mapTreeViewLevelController.node);
-            });
-
-            $rootScope.$on("should-unhover-node", (event: IAngularEvent, node: CodeMapNode) => {
-                expect(node).toBe(mapTreeViewLevelController.node);
-            });
         });
     });
 });

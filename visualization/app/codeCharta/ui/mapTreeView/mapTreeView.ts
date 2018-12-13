@@ -1,13 +1,13 @@
 import angular from "angular";
 import "../../core/core.module";
-import "../codeMap/threeViewer/threeViewer";
+import "../codeMap/codeMap";
 
 import "./mapTreeView.css";
 
 import {mapTreeViewComponent, MapTreeViewController} from "./mapTreeViewComponent";
 import {mapTreeViewLevelComponent} from "./mapTreeViewLevelComponent";
 
-angular.module("app.codeCharta.ui.mapTreeView", ["app.codeCharta.core", "app.codeCharta.ui.codeMap.threeViewer"])
+angular.module("app.codeCharta.ui.mapTreeView", ["app.codeCharta.core", "app.codeCharta.ui.codeMap"])
     .component(
         mapTreeViewComponent.selector, mapTreeViewComponent
     ).component(
