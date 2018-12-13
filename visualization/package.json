@@ -79,9 +79,13 @@
   "jest": {
     "collectCoverage": true,
     "coverageDirectory": "<rootDir>/dist/coverage",
+    "collectCoverageFrom": [
+      "<rootDir>/app/**/*.{ts,tsx}",
+      "!**/node_modules/**"
+    ],
     "coveragePathIgnorePatterns": [
       "(/__tests__/.*|\\.(spec|e2e))\\.(ts|tsx)$",
-      "<rootDir>/app/ng.mockhelper.ts"
+      "<rootDir>/app/puppeteer.helper.ts"
     ],
     "snapshotSerializers": [
       "jest-serializer-html"
