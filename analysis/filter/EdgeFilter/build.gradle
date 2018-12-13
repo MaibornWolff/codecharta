@@ -1,41 +1,33 @@
-buildscript {
-    repositories {
-        maven {
-            url 'https://plugins.gradle.org/m2/'
-        }
-    }
-    dependencies {
-        classpath group: 'org.junit.platform', name: 'junit-platform-gradle-plugin', version: junit_platform_gradle_plugin_version
-    }
-}
-
-apply plugin: 'org.junit.platform.gradle.plugin'
-
-junitPlatform {
-    filters {
-        engines {
-            include 'spek'
-        }
+repositories {
+    maven {
+        url 'https://dl.bintray.com/spekframework/spek-dev'
     }
 }
 
 dependencies {
-    compile project(':model')
+    implementation project(':model')
 
-    compile group: 'com.univocity', name: 'univocity-parsers', version: univocity_parsers_version
-    compile group: 'info.picocli', name: 'picocli', version: picocli_version
-    compile group: 'io.fastjson', name: 'boon', version: boon_version
-    compile group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
+    implementation group: 'com.univocity', name: 'univocity-parsers', version: univocity_parsers_version
+    implementation group: 'info.picocli', name: 'picocli', version: picocli_version
+    implementation group: 'io.fastjson', name: 'boon', version: boon_version
+    implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
 
     runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
-    testCompile group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
-    testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
-    testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
-    testCompile("org.jetbrains.spek:spek-api:$spek_version") {
+    testImplementation group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
+    testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
+    testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spek2_version") {
         exclude group: 'org.jetbrains.kotlin'
     }
-    testRuntime("org.jetbrains.spek:spek-junit-platform-engine:$spek_version") {
+
+    testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spek2_version") {
         exclude group: 'org.jetbrains.kotlin'
+    }
+    testRuntimeOnly group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
+}
+
+test {
+    useJUnitPlatform {
+        includeEngines 'spek2'
     }
 }

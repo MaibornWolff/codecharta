@@ -1,10 +1,8 @@
 import {CodeMapActionsService} from "./codeMap.actions.service";
-import {hierarchy, HierarchyNode} from "d3-hierarchy";
-import {CodeMapNode, Exclude, ExcludeType} from "../../core/data/model/CodeMap";
+import {CodeMapNode, Edge, Exclude, ExcludeType} from "../../core/data/model/CodeMap";
 
 import {SettingsService} from "../../core/settings/settings.service";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
-import {ColorKeywords} from "three";
 
 jest.mock("../../core/settings/settings.service");
 
@@ -18,16 +16,31 @@ describe("code map action service tests", ()=>{
     let hiddenNode: CodeMapNode;
     let simpleHiddenHierarchy: CodeMapNode;
     let blacklistItems: Array<Exclude>;
+    let edgeList: Array<Edge>;
 
-    function checkTreeVisibility(node: CodeMapNode, shouldBeVisible: boolean) {
-        hierarchy<CodeMapNode>(node).eachAfter((node: HierarchyNode<CodeMapNode>) => {
-            expect(node.data.visible).toBe(shouldBeVisible);
-        });
-    }
+    let nodeA: CodeMapNode;
+    let nodeB: CodeMapNode;
+    let nodeChildAa: CodeMapNode;
 
     function checkBlacklistItems(type: ExcludeType, node: CodeMapNode, shouldExist: boolean) {
-        const hasItems = blacklistItems.filter(b => b.type == type && b.path == node.path).length == 1;
-        expect(hasItems).toBe(shouldExist);
+        const amountOfFoundItems = codeMapActionService.settingsService.settings.blacklist.filter(b =>
+            b.type == type && b.path == node.path).length == 1;
+        expect(amountOfFoundItems).toBe(shouldExist);
+    }
+
+    function checkDependentEdgeVisibility(nodes: CodeMapNode[], visibility: boolean) {
+        expect(edgesHaveSameVisibility(getEdgesFromNode(nodes), visibility)).toBe(true);
+    }
+
+    function getEdgesFromNode(nodes: CodeMapNode[]) {
+        const nodePaths = nodes.map(node => node.path);
+
+        return codeMapActionService.settingsService.settings.map.edges.filter(edge =>
+            nodePaths.includes(edge.fromNodeName) || nodePaths.includes(edge.toNodeName));
+    }
+
+    function edgesHaveSameVisibility(edges: Edge[], visibility: boolean) {
+        return edges.filter(edge => edge.visible == visibility).length == edges.length;
     }
 
     beforeEach(()=>{
@@ -35,24 +48,28 @@ describe("code map action service tests", ()=>{
        hiddenNode = {name: "test", type: "File", attributes: {}, visible: false};
        simpleHiddenHierarchy = {
             name: "root",
+            path: "/root",
             type: "Folder",
             attributes: {},
             visible: false,
             children: [
                 {
                     name: "a",
+                    path: "/root/a",
                     type: "Folder",
                     attributes: {},
                     visible: false,
                     children: [
                         {
                             name: "aa",
+                            path: "/root/a/aa",
                             type: "File",
                             attributes: {},
                             visible: false
                         },
                         {
                             name: "ab",
+                            path: "/root/a/ab",
                             type: "File",
                             attributes: {},
                             visible: false
@@ -61,6 +78,7 @@ describe("code map action service tests", ()=>{
                 },
                 {
                     name: "b",
+                    path: "/root/b",
                     type: "File",
                     attributes: {},
                     visible: false
@@ -81,11 +99,41 @@ describe("code map action service tests", ()=>{
                 type: ExcludeType.hide
             }
         ];
+        edgeList = [
+            {
+                fromNodeName: "/root/a",
+                toNodeName: "/root/b",
+                attributes: {
+                    "attribute": 42,
+                },
+                visible: false
+            },
+            {
+                fromNodeName: "/root/a/aa",
+                toNodeName: "/root/b",
+                attributes: {
+                    "attribute": 42,
+                },
+                visible: false
+            },
+            {
+                fromNodeName: "/root/b",
+                toNodeName: "/root/a/ab",
+                attributes: {
+                    "attribute": 42,
+                },
+                visible: false
+            }
+        ];
         $timeout = jest.fn();
         codeMapActionService = new CodeMapActionsService(
             new SettingsService(),
             new ThreeOrbitControlsService(),
             $timeout);
+
+        nodeA = simpleHiddenHierarchy.children[0];
+        nodeB = simpleHiddenHierarchy.children[1];
+        nodeChildAa = simpleHiddenHierarchy.children[0].children[0];
     });
 
     describe("marking folders", ()=>{
@@ -142,7 +190,7 @@ describe("code map action service tests", ()=>{
 
     });
 
-    describe("node visibility", ()=>{
+    describe("blacklist items with node visibility", ()=>{
 
         beforeEach(()=>{
             codeMapActionService.settingsService.settings = {
@@ -153,20 +201,23 @@ describe("code map action service tests", ()=>{
             };
         });
 
-        it("showing all nodes should make all nodes visible", ()=>{
-            codeMapActionService.showAllNodes();
-            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy, false);
+        it("showing hidden node should remove blacklistHide item", ()=>{
+            codeMapActionService.hideNode(nodeA);
+            checkBlacklistItems(ExcludeType.hide, nodeA, true);
+
+            codeMapActionService.showNode(nodeA);
+            checkBlacklistItems(ExcludeType.hide, nodeA, false);
         });
 
-        it("isolationg node should show all descendants and hide all ascendants", ()=>{
-            simpleHiddenHierarchy.visible = true;
-            codeMapActionService.isolateNode(simpleHiddenHierarchy.children[0]);
-            expect(simpleHiddenHierarchy.visible).toBe(false);
-            checkTreeVisibility(simpleHiddenHierarchy.children[0], true);
-            checkTreeVisibility(simpleHiddenHierarchy.children[1], false);
+        it("hiding node should create blacklistHide item", ()=>{
+            codeMapActionService.hideNode(simpleHiddenHierarchy);
+            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy, true);
         });
 
-        it("hiding visible node should create blacklistHide item", ()=>{
+        it("hiding the same node again should not create blacklistHide item", ()=>{
+            codeMapActionService.hideNode(simpleHiddenHierarchy);
+            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy, true);
+
             codeMapActionService.hideNode(simpleHiddenHierarchy);
             checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy, true);
         });
@@ -176,17 +227,19 @@ describe("code map action service tests", ()=>{
             checkBlacklistItems(ExcludeType.exclude, simpleHiddenHierarchy, true);
         });
 
-        it("showing invisible node remove blacklistHide item", ()=>{
-            blacklistItems.push({path: "/root", type: ExcludeType.hide});
-            codeMapActionService.showNode(simpleHiddenHierarchy);
-            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy, false);
+        it("removing node should remove blacklistExcluded item", ()=>{
+            codeMapActionService.excludeNode(simpleHiddenHierarchy);
+            checkBlacklistItems(ExcludeType.exclude, simpleHiddenHierarchy, true);
+
+            codeMapActionService.removeBlacklistEntry({path: "/root", type: ExcludeType.exclude});
+            checkBlacklistItems(ExcludeType.exclude, simpleHiddenHierarchy, false);
         });
 
         it("toggling visible node should call hide method", ()=>{
             let tmp = codeMapActionService.hideNode;
             codeMapActionService.hideNode = jest.fn();
             codeMapActionService.toggleNodeVisibility(visibleNode);
-            expect(codeMapActionService.hideNode).toHaveBeenCalledWith(visibleNode)
+            expect(codeMapActionService.hideNode).toHaveBeenCalledWith(visibleNode);
             codeMapActionService.hideNode = tmp;
         });
 
@@ -194,11 +247,81 @@ describe("code map action service tests", ()=>{
             let tmp = codeMapActionService.showNode;
             codeMapActionService.showNode = jest.fn();
             codeMapActionService.toggleNodeVisibility(hiddenNode);
-            expect(codeMapActionService.showNode).toHaveBeenCalledWith(hiddenNode)
+            expect(codeMapActionService.showNode).toHaveBeenCalledWith(hiddenNode);
             codeMapActionService.showNode = tmp;
         });
-
-
     });
 
+    describe("focusing node", ()=>{
+
+        beforeEach(()=>{
+            codeMapActionService.settingsService.settings = {
+                map: {
+                    root: simpleHiddenHierarchy
+                }
+            };
+        });
+
+        it("focusing/unfocusing node should set/remove nodePath from settings attribute", ()=>{
+            codeMapActionService.focusNode(nodeB);
+            expect(codeMapActionService.settingsService.settings.focusedNodePath).toBe(nodeB.path);
+
+            codeMapActionService.removeFocusedNode();
+            expect(codeMapActionService.settingsService.settings.focusedNodePath).toBe(null);
+        });
+
+        it("focusing root node should overwrite focusedNode", ()=>{
+            codeMapActionService.focusNode(nodeB);
+            expect(codeMapActionService.settingsService.settings.focusedNodePath).toBe(nodeB.path);
+
+            codeMapActionService.focusNode(simpleHiddenHierarchy);
+            expect(codeMapActionService.settingsService.settings.focusedNodePath).toBe(null);
+        });
+    });
+
+    describe("edge visibility", ()=>{
+
+        beforeEach(()=>{
+            codeMapActionService.settingsService.settings = {
+                map: {
+                    root: simpleHiddenHierarchy,
+                    edges: edgeList
+                }
+            };
+        });
+
+        it("checks amountOfDependentEdges from node", ()=>{
+            const amountOfDependentEdges = codeMapActionService.amountOfDependentEdges(nodeB);
+            expect(amountOfDependentEdges).toBe(3);
+        });
+
+        it("checks amountOfVisibleDependentEdges from node", ()=>{
+            codeMapActionService.showDependentEdges(nodeB); // show 3 edges
+            checkDependentEdgeVisibility([nodeB], true);
+            codeMapActionService.hideDependentEdges(nodeA); // hide 1 edge
+            const amountOfVisibleDependentEdges = codeMapActionService.amountOfVisibleDependentEdges(nodeB);
+            expect(amountOfVisibleDependentEdges).toBe(2);
+        });
+
+        it("makes multiple edges visible and hide them all and check if any edge is visible", ()=>{
+            codeMapActionService.showDependentEdges(nodeA);
+            codeMapActionService.showDependentEdges(nodeB);
+            checkDependentEdgeVisibility([nodeA, nodeB], true);
+            expect(codeMapActionService.anyEdgeIsVisible()).toBe(true);
+
+            codeMapActionService.hideAllEdges();
+            checkDependentEdgeVisibility([nodeA, nodeB], false);
+            expect(codeMapActionService.anyEdgeIsVisible()).toBe(false);
+
+        });
+
+        it("makes multiple edges visible and hide one of them", ()=>{
+            codeMapActionService.showDependentEdges(nodeA);
+            codeMapActionService.showDependentEdges(nodeB);
+            checkDependentEdgeVisibility([nodeA, nodeB], true);
+
+            codeMapActionService.hideDependentEdges(nodeA);
+            checkDependentEdgeVisibility([nodeA], false);
+        });
+    });
 });

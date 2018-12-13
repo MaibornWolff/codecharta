@@ -34,16 +34,14 @@ import de.maibornwolff.codecharta.model.NodeType
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.hasSize
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 
 class RecursiveNodeMergerTest : Spek({
     describe("a recursive node merger") {
         val merger = RecursiveNodeMergerStrategy()
 
-        on("merging nodes with same name") {
+        context("merging nodes with same name") {
             val node1 = MutableNode("Name", NodeType.File)
             val node2 = MutableNode("Name", NodeType.Folder)
 
@@ -54,7 +52,7 @@ class RecursiveNodeMergerTest : Spek({
             }
         }
 
-        on("merging empty nodes") {
+        context("merging empty nodes") {
             val nodeList = merger.mergeNodeLists(listOf())
 
             it("should return empty node list") {
@@ -62,7 +60,7 @@ class RecursiveNodeMergerTest : Spek({
             }
         }
 
-        on("merging single node list") {
+        context("merging single node list") {
             val nodeList = listOf(MutableNode("node", NodeType.File, mapOf()))
             val actualNodeList = merger.mergeNodeLists(listOf(nodeList))
 
@@ -71,7 +69,7 @@ class RecursiveNodeMergerTest : Spek({
             }
         }
 
-        on("merging nodes with children and with same name") {
+        context("merging nodes with children and with same name") {
             val child1 = MutableNode("child1", NodeType.File)
             val child2 = MutableNode("child2", NodeType.Folder)
             val child1_littleBitDifferent =
@@ -94,7 +92,7 @@ class RecursiveNodeMergerTest : Spek({
             }
         }
 
-        on("merging node list with two root nodes") {
+        context("merging node list with two root nodes") {
             // given
             val node11 = MutableNode("Name1", NodeType.File)
             val node12 = MutableNode("Name2", NodeType.File)

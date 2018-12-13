@@ -32,15 +32,13 @@ package de.maibornwolff.codecharta.model
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasSize
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 
 class NodeMergerTest : Spek({
     describe("a node merger NodeMaxAttributeMerger") {
 
-        on("merging nodes with same name") {
+        context("merging nodes with same name") {
             val name = "Name"
             val type = NodeType.File
             val link = "node1"
@@ -68,7 +66,7 @@ class NodeMergerTest : Spek({
             }
         }
 
-        on("merging nodes with children") {
+        context("merging nodes with children") {
             val child1 = MutableNode("child1", NodeType.File)
             val child2 = MutableNode("child2", NodeType.Folder)
             val child1_littleBitDifferent = MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", listOf())
@@ -77,7 +75,6 @@ class NodeMergerTest : Spek({
 
             val newNode = node1.merge(listOf(node2))
 
-            // then
             it("should NOT merge children") {
                 assertThat(newNode.children, hasSize(0))
             }

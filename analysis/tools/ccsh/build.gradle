@@ -4,6 +4,8 @@ mainClassName = 'de.maibornwolff.codecharta.tools.ccsh.Ccsh'
 applicationName = 'ccsh'
 
 dependencies {
+    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
+
     compile project(':import:CodeMaatImporter')
     compile project(':import:CrococosmoImporter')
     compile project(':import:CSVImporter')

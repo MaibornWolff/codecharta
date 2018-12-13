@@ -33,10 +33,8 @@ import de.maibornwolff.codecharta.model.TreeCreator.createTree
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.hasItem
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import java.util.*
 import kotlin.test.assertFailsWith
 
@@ -44,39 +42,31 @@ class TreeTest : Spek({
     describe("a tree of depth 0") {
         val tree = createTree()
 
-        on("nodes") {
+        it("nodes should be only the tree itself") {
             val nodes = tree.nodes
-
-            it("should be only the tree itself") {
-                assertThat(nodes.size, `is`(1))
-                assertThat(nodes.keys, hasItem(Path.TRIVIAL))
-                assertThat(nodes.values, hasItem(tree))
-            }
+            assertThat(nodes.size, `is`(1))
+            assertThat(nodes.keys, hasItem(Path.TRIVIAL))
+            assertThat(nodes.values, hasItem(tree))
         }
 
-        on("leaves") {
+        it("leaves should be only the tree itself") {
             val leaves = tree.leaves
+            assertThat(leaves.size, `is`(1))
+            assertThat(leaves.keys, hasItem(Path.TRIVIAL))
+            assertThat(leaves.values, hasItem(tree))
+        }
 
-            it("should be only the tree itself") {
-                assertThat(leaves.size, `is`(1))
-                assertThat(leaves.keys, hasItem(Path.TRIVIAL))
-                assertThat(leaves.values, hasItem(tree))
+        it("getNodeBy should return same tree on trivial path") {
+            assertThat(tree.getNodeBy(Path.TRIVIAL), `is`(tree))
+        }
+
+        it("getNodeBy should throw exception on path not contained in tree") {
+            assertFailsWith(NoSuchElementException::class) {
+                tree.getNodeBy(Path("nonexistingpath"))
             }
         }
 
-        on("getNodeBy") {
-            it("should return same tree on trivial path") {
-                assertThat(tree.getNodeBy(Path.TRIVIAL), `is`(tree))
-            }
-
-            it("should throw exception on path not contained in tree") {
-                assertFailsWith(NoSuchElementException::class) {
-                    tree.getNodeBy(Path("nonexistingpath"))
-                }
-            }
-        }
-
-        on("merge") {
+        context("when merging") {
             tree.merge(listOf(createTree().asTreeNode()))
 
             it("should do nothing by default") {
@@ -94,41 +84,35 @@ class TreeTest : Spek({
         val pathToInnerTree = Path("bla")
         val tree = createTree(pathToInnerTree, innerTree)
 
-        on("nodes") {
+        it("nodes should contain exactly itself and the subtree") {
             val nodes = tree.nodes
 
-            it("should contain exactly itself and the subtree") {
-                assertThat(nodes.size, `is`(2))
-                assertThat(nodes.keys, hasItem(Path.TRIVIAL))
-                assertThat(nodes.keys, hasItem(pathToInnerTree))
-                assertThat(nodes.values, hasItem(tree))
-                assertThat(nodes.values, hasItem(innerTree))
-            }
+            assertThat(nodes.size, `is`(2))
+            assertThat(nodes.keys, hasItem(Path.TRIVIAL))
+            assertThat(nodes.keys, hasItem(pathToInnerTree))
+            assertThat(nodes.values, hasItem(tree))
+            assertThat(nodes.values, hasItem(innerTree))
         }
 
-        on("leaves") {
+        it("leaves should return the inner tree") {
             val leaves = tree.leaves
 
-            it("should return the inner tree") {
-                assertThat(leaves.size, `is`(1))
-                assertThat(leaves.keys, hasItem(pathToInnerTree))
-                assertThat(leaves.values, hasItem(innerTree))
-            }
+            assertThat(leaves.size, `is`(1))
+            assertThat(leaves.keys, hasItem(pathToInnerTree))
+            assertThat(leaves.values, hasItem(innerTree))
         }
 
-        on("getNodeBy") {
-            it("should return same tree on trivial path") {
-                assertThat(tree.getNodeBy(Path.TRIVIAL), `is`(tree))
-            }
+        it("getNodeBy should return same tree on trivial path") {
+            assertThat(tree.getNodeBy(Path.TRIVIAL), `is`(tree))
+        }
 
-            it("should return inner tree on pathToInnerTree") {
-                assertThat(tree.getNodeBy(pathToInnerTree), `is`(innerTree))
-            }
+        it("getNodeBy should return inner tree on pathToInnerTree") {
+            assertThat(tree.getNodeBy(pathToInnerTree), `is`(innerTree))
+        }
 
-            it("should throw exception on path not contained in tree") {
-                assertFailsWith(NoSuchElementException::class) {
-                    tree.getNodeBy(Path("nonexistingpath"))
-                }
+        it("getNodeBy should throw exception on path not contained in tree") {
+            assertFailsWith(NoSuchElementException::class) {
+                tree.getNodeBy(Path("nonexistingpath"))
             }
         }
     }

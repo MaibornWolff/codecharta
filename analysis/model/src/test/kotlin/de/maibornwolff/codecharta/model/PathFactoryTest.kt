@@ -32,9 +32,8 @@ package de.maibornwolff.codecharta.model
 import de.maibornwolff.codecharta.model.PathMatcher.matchesPath
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -52,13 +51,15 @@ class PathFactoryTest : Spek({
         }
     }
 
-    it("leading slash should devine same hierarchical position") {
-        val pathsWithoutSlash = listOf(
-                "file", "subdir/file", "subdir/subdir/file", "subdir/othersubdir/file"
-        )
+    describe("paths with leading slash") {
+        it("should produce same hierarchical position") {
+            val pathsWithoutSlash = listOf(
+                    "file", "subdir/file", "subdir/subdir/file", "subdir/othersubdir/file"
+            )
 
-        for (path in pathsWithoutSlash) {
-            assertThat(PathFactory.fromFileSystemPath(path), `is`(PathFactory.fromFileSystemPath("/$path")))
+            for (path in pathsWithoutSlash) {
+                assertThat(PathFactory.fromFileSystemPath(path), `is`(PathFactory.fromFileSystemPath("/$path")))
+            }
         }
     }
 
