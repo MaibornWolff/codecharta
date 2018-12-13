@@ -1,79 +1,74 @@
-import {SettingsService} from "../../core/settings/settings.service";
+import "./detailPanel";
+
+import {SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import {DetailPanelController} from "./detailPanel.component";
 import {DataService} from "../../core/data/data.service";
+import {getService, instantiateModule} from "../../../../mocks/ng.mockhelper";
+import {IRootScopeService, ITimeoutService} from "angular";
 
 
 describe("detailPanelController", function() {
 
-    let detailPanelController;
-    let $timeout;
-    let $scope;
-    let settingsServiceMock: SettingsService;
-    let dataServiceMock: DataService;
-
-    function rebuildSUT() {
-        detailPanelController = new DetailPanelController($scope, settingsServiceMock, dataServiceMock, $timeout);
-    }
-
-    function mockEverything() {
-
-        $timeout = jest.fn();
-
-        $scope = {
-            $on: jest.fn(),
-            $broadcast: jest.fn()
-        };
-
-        const SettingsServiceMock = jest.fn<SettingsService>(() => ({
-            subscribe: jest.fn(),
-            applySettings: jest.fn(),
-            settings: jest.fn()
-        }));
-
-        settingsServiceMock = new SettingsServiceMock();
-
-        const DataServiceMock = jest.fn<DataService>(() => ({
-            subscribe: jest.fn()
-        }));
-
-        dataServiceMock = new DataServiceMock();
-
-        rebuildSUT();
-
-    }
+    let services, subscriber, detailPanelController: DetailPanelController;
 
     beforeEach(function() {
-        mockEverything();
+        restartSystem();
+        rebuildController();
+        withMockedEventMethods();
     });
 
+    function restartSystem() {
 
-    // TODO: Update these three tests
+        instantiateModule("app.codeCharta.ui.detailPanel");
 
-    describe("should react to events on its scope", ()=>{
+        services = {
+            $rootScope: getService<IRootScopeService>("$rootScope"),
+            settingsService: getService<SettingsService>("settingsService"),
+            dataService: getService<DataService>("dataService"),
+            $timeout: getService<ITimeoutService>("$timeout")
+        };
 
-        it("building hovered",(done)=>{
-            detailPanelController.onHover = (payload)=>{
-                expect(payload).toBe("payload");
-                done();
-            };
-            $scope.$broadcast("building-hovered", "payload");
+        const SettingsServiceSubscriberMock = jest.fn<SettingsServiceSubscriber>(()=>({
+            onSettingsChanged: jest.fn()
+        }));
+
+        subscriber = new SettingsServiceSubscriberMock();
+
+    }
+
+    function rebuildController() {
+        detailPanelController = new DetailPanelController(
+            services.$rootScope,
+            services.settingsService,
+            services.dataService,
+            services.$timeout
+        );
+    }
+
+    function withMockedEventMethods() {
+        services.$rootScope.$on = detailPanelController["$rootScope"].$on = jest.fn();
+        services.$rootScope.$broadcast = detailPanelController["$rootScope"].$broadcast = jest.fn();
+    }
+
+    afterEach(()=>{
+        jest.resetAllMocks();
+    });
+
+    describe("should react to method calls", ()=>{
+
+        it("should call onHover when onBuildingHovered called",()=>{
+            detailPanelController.onHover = jest.fn();
+            detailPanelController.onBuildingHovered("data", "event");
+
+            expect(detailPanelController.onHover).toBeCalledWith("data")
         });
 
-        // Why does this not work?
-        it("building selected",()=>{
+        it("should call onSelect when onBuildingSelected called",()=>{
             detailPanelController.onSelect = jest.fn();
-            $scope.$broadcast("building-selected", "payload");
-            expect(detailPanelController.onSelect).toHaveBeenCalled();
-        });
+            detailPanelController.onBuildingSelected("data", "event");
 
-        it("settings changed",(done)=>{
-            detailPanelController.onSettingsChanged = (payload)=>{
-                expect(payload).toBe("payload");
-                done();
-            };
-            $scope.$broadcast("settings-changed", "payload");
+            expect(detailPanelController.onSelect).toBeCalledWith("data")
         });
-
     });
 
     it("should set common attributes onSettingsChanged",() => {
