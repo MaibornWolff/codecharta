@@ -2,9 +2,8 @@ package de.maibornwolff.codecharta.importer.csv
 
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 
 class CSVHeaderTest : Spek({

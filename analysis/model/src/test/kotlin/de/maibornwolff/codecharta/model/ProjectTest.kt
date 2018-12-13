@@ -30,25 +30,25 @@
 package de.maibornwolff.codecharta.model
 
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.hasSize
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.it
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 
 class ProjectTest : Spek({
 
-    it("should be compatible with same API Version") {
-        assertThat(Project.isAPIVersionCompatible(Project.API_VERSION), `is`(true))
-    }
+    describe("Project API version") {
+        it("should be compatible with same API Version") {
+            assertThat(Project.isAPIVersionCompatible(Project.API_VERSION), `is`(true))
+        }
 
 
-    it("should be compatible with same major Version") {
-        assertThat(Project.isAPIVersionCompatible("1.2"), `is`(true))
-    }
+        it("should be compatible with same major Version") {
+            assertThat(Project.isAPIVersionCompatible("1.2"), `is`(true))
+        }
 
 
-    it("should not be compatible with different major version") {
-        assertThat(Project.isAPIVersionCompatible("2.0"), `is`(false))
+        it("should not be compatible with different major version") {
+            assertThat(Project.isAPIVersionCompatible("2.0"), `is`(false))
+        }
     }
 })

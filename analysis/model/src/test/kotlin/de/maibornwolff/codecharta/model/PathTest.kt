@@ -33,9 +33,8 @@ import de.maibornwolff.codecharta.model.PathMatcher.matchesPath
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.not
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 

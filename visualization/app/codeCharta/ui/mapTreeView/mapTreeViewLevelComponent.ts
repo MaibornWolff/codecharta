@@ -1,7 +1,7 @@
 import {SettingsService} from "../../core/settings/settings.service";
 import {IRootScopeService} from "angular";
 import {CodeMapNode, ExcludeType} from "../../core/data/model/CodeMap";
-import {NodeContextMenuComponent} from "../nodeContextMenu/nodeContextMenu.component";
+import {NodeContextMenuController} from "../nodeContextMenu/nodeContextMenu.component";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
 
@@ -20,8 +20,7 @@ export class MapTreeViewLevelController {
     constructor(
         private $rootScope: IRootScopeService,
         private codeMapActionsService: CodeMapActionsService,
-        private settingsService: SettingsService,
-        private codeMapUtilService: CodeMapUtilService
+        private settingsService: SettingsService
     ) {
 
     }
@@ -47,8 +46,8 @@ export class MapTreeViewLevelController {
     }
 
     onRightClick($event) {
-        NodeContextMenuComponent.hide(this.$rootScope);
-        NodeContextMenuComponent.show(this.$rootScope, this.node.path, this.node.type, $event.clientX, $event.clientY);
+        NodeContextMenuController.broadcastHideEvent(this.$rootScope);
+        NodeContextMenuController.broadcastShowEvent(this.$rootScope, this.node.path, this.node.type, $event.clientX, $event.clientY);
     }
 
     onFolderClick() {
@@ -56,7 +55,7 @@ export class MapTreeViewLevelController {
     }
 
     onLabelClick() {
-        this.codeMapActionsService.isolateNode(this.node);
+        this.codeMapActionsService.focusNode(this.node);
     }
 
     onEyeClick() {

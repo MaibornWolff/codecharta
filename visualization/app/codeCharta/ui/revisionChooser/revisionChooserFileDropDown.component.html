@@ -1,0 +1,25 @@
+<md-input-container class="md-block"
+                    ng-class="{half: $ctrl.settingsService.settings.mode == 'Delta'}"
+                    ng-if="$ctrl.settingsService.settings.mode != 'Multiple'">
+    <i class="fa fa-folder-open"></i>
+    <i class="fa fa-download"></i>
+
+    <md-select ng-model="$ctrl.ui.chosenReference" ng-change="$ctrl.onReferenceChange($ctrl.ui.chosenReference)">
+        <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
+            <md-truncate>{{::value.fileName}}</md-truncate>
+        </md-option>
+    </md-select>
+</md-input-container>
+
+<md-input-container class="md-block second"
+                    ng-class="{half: $ctrl.settingsService.settings.mode == 'Delta'}"
+                    ng-if="$ctrl.settingsService.settings.mode == 'Delta'">
+    <md-select ng-model="$ctrl.ui.chosenComparison" ng-change="$ctrl.onComparisonChange($ctrl.ui.chosenComparison)">
+        <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
+            <md-truncate>{{::value.fileName}}</md-truncate>
+        </md-option>
+    </md-select>
+</md-input-container>
+
+<multiple-file-panel-component ng-if="$ctrl.settingsService.settings.mode == 'Multiple'"></multiple-file-panel-component>
+

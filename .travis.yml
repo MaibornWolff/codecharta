@@ -44,6 +44,7 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+    - ./visualization/node_modules/nwjs-builder-phoenix/caches/
 
 # runs the script which copies all needed ressources into the gh-pages directory
 before_deploy:

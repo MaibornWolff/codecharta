@@ -2,7 +2,7 @@ import angular from "angular";
 import "../../core/core.module";
 import "../codeMap/codeMap";
 
-import {legendPanelComponent} from "./legendPanelComponent";
+import {legendPanelComponent} from "./legendPanel.component";
 
 angular.module("app.codeCharta.ui.legendPanel",["app.codeCharta.core.settings", "app.codeCharta.ui.codeMap"]);
 

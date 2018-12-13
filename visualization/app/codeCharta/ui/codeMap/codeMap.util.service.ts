@@ -34,6 +34,15 @@ export class CodeMapUtilService {
         return ig.ignores(CodeMapUtilService.transformPath(node.path));
     }
 
+    getAnyCodeMapNodeFromPath(path: string) {
+        var firstTryNode = this.getCodeMapNodeFromPath(path, "File");
+        if(!firstTryNode) {
+            return this.getCodeMapNodeFromPath(path, "Folder");
+        }
+        return firstTryNode;
+
+    }
+
     getCodeMapNodeFromPath(path: string, nodeType: string) {
         let res = null;
         const rootNode = this.settingsService.settings.map.root;
