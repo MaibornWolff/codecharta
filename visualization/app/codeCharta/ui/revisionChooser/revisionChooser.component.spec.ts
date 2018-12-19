@@ -1,4 +1,4 @@
-import {revisionChooserComponent, RevisionChooserController} from "./revisionChooserComponent";
+import {RevisionChooserController} from "./revisionChooser.component";
 import {DataService} from "../../core/data/data.service";
 import {SettingsService} from "../../core/settings/settings.service";
 
@@ -38,9 +38,7 @@ describe("RevisionChooserController", () => {
 
         dataServiceMock = new DataServiceMock();
 
-        const SettingsServiceMock = jest.fn<SettingsService>(() => ({
-
-        }));
+        const SettingsServiceMock = jest.fn<SettingsService>(() => ({}));
 
         settingsServiceMock = new SettingsServiceMock();
 

@@ -35,7 +35,7 @@ export class BlacklistPanelController implements SettingsServiceSubscriber{
     }
 
     removeBlacklistEntry(entry: Exclude){
-        this.codeMapActionsService.includeNode(entry);
+        this.codeMapActionsService.removeBlacklistEntry(entry);
         this.onChange();
     }
 

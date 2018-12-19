@@ -1,8 +1,8 @@
 import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/data.service";
 import {KindOfMap, Settings, SettingsService} from "../../core/settings/settings.service";
 import {CodeMap} from "../../core/data/model/CodeMap";
-import "./revisionChooser.scss";
-import "./revisionChooserFileDropDown.scss";
+import "./revisionChooser.component.scss";
+import "./revisionChooserFileDropDown.component.scss";
 
 /**
  * Controls the RevisionChooser
@@ -65,12 +65,12 @@ export class RevisionChooserController implements DataServiceSubscriber{
 
 export const revisionChooserComponent = {
     selector: "revisionChooserComponent",
-    template: require("./revisionChooser.html"),
+    template: require("./revisionChooser.component.html"),
     controller: RevisionChooserController
 };
 export const revisionChooserFileDropDownComponent = {
     selector: "revisionChooserFileDropDownComponent",
-    template: require("./revisionChooserFileDropDown.html"),
+    template: require("./revisionChooserFileDropDown.component.html"),
     controller: RevisionChooserController
 };
 
