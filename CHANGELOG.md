@@ -13,6 +13,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+## [1.20.1] - 2018-12-19
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
 ## [1.20.0] - 2018-12-19
 ### Added
 - button to unfocus node 
