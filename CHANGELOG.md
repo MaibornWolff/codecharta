@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.20.0] - 2018-12-19
+### Added
 - button to unfocus node 
 - NodeContextMenu: Option to only hide dependent edges
 - plop support
