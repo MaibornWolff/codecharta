@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
+- MergeFilter to merge unique blacklist entries
+- MergeFilter to only merge unique attributeType entries
 
 ### Removed
 
