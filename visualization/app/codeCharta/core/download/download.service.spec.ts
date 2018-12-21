@@ -2,6 +2,7 @@ import "./download.module";
 import {getService, instantiateModule} from "../../../../mocks/ng.mockhelper";
 import {SettingsService} from "../settings/settings.service";
 import {DownloadService} from "./download.service";
+import { stubDate } from '../../../../mocks/dateMock.helper';
 
 describe("app.codeCharta.core.download", function() {
 
@@ -79,6 +80,8 @@ describe("app.codeCharta.core.download", function() {
     });
 
     describe("", ()=> {
+
+        stubDate(new Date('2018-12-14T09:39:59'));
 
         it("should add json extension to given string", function() {
             expect(downloadService.addJsonFileEndingIfNecessary("abc")).toBe("abc.json");
