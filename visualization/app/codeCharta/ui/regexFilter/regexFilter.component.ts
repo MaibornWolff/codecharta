@@ -81,9 +81,9 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
     }
 
     private updateMapRoot(map: CodeMap) {
-        if(map && map.root) {
+        if(map && map.nodes) {
             this.$timeout(()=>{
-                this.mapRoot = map.root;
+                this.mapRoot = map.nodes;
             }, RegexFilterController.TIMEOUT_DELAY_MS);
         }
     }

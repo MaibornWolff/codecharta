@@ -49,7 +49,7 @@ export class BlacklistPanelController implements SettingsServiceSubscriber{
     }
 
     private isValidNode() {
-        const nodes = d3.hierarchy(this.settingsService.settings.map.root).descendants().map(d=>d.data);
+        const nodes = d3.hierarchy(this.settingsService.settings.map.nodes).descendants().map(d=>d.data);
 
         if (this.viewModel.itemPath.length == 0) {
             this.viewModel.error = "Invalid empty pattern";

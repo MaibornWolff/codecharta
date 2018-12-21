@@ -69,7 +69,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
      */
     applySettings(s: Settings) {
 
-        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.root && s.neutralColorRange && s.deltaColorFlipped != undefined && s.invertHeight != undefined) {
+        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.nodes && s.neutralColorRange && s.deltaColorFlipped != undefined && s.invertHeight != undefined) {
             this.updateMapGeometry(s);
         }
 
@@ -107,7 +107,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         this.showAllOrOnlyFocusedNode(s);
 
         let nodes: node[] = this.collectNodesToArray(
-            this.treeMapService.createTreemapNodes(s.map.root, treeMapSettings, s.map.edges)
+            this.treeMapService.createTreemapNodes(s.map.nodes, treeMapSettings, s.map.edges)
         );
 
         let filtered = nodes.filter(node => node.visible && node.length > 0 && node.width > 0);
@@ -146,10 +146,10 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     private showAllOrOnlyFocusedNode(s: Settings) {
         if (s.focusedNodePath) {
             var focusedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(s.focusedNodePath);
-            this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, false);
+            this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.nodes, false);
             this.treeMapService.setVisibilityOfNodeAndDescendants(focusedNode, true);
         } else {
-            this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, true);
+            this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.nodes, true);
         }
     }
 

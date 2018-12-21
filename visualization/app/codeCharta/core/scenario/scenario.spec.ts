@@ -19,40 +19,40 @@ describe("app.codeCharta.core.scenarioService", function () {
         settingsService: SettingsService;
 
     const filteredScenario: Scenario[] = [{
-        "name": "Average Complexity*",
-        "settings":
-            {"amountOfTopLabels": 1,
-                "areaMetric": "unary",
-                "camera":
-                    {"x": 0,
-                        "y": 300,
-                        "z": 1000
+        name: "Average Complexity*",
+        settings:
+            {amountOfTopLabels: 1,
+                areaMetric: "unary",
+                camera:
+                    {x: 0,
+                        y: 300,
+                        z: 1000
                     },
-                "colorMetric": "Average Complexity*",
-                "deltaColorFlipped": false,
-                "mode": "KindOfMap.Single",
-                "heightMetric": "Average Complexity*",
-                "margin": 1,
-                "maximizeDetailPanel": false,
-                "neutralColorRange":
-                    {"flipped": false,
-                        "from": 20,
-                        "to": 40
+                colorMetric: "Average Complexity*",
+                deltaColorFlipped: false,
+                mode: "KindOfMap.Single",
+                heightMetric: "Average Complexity*",
+                margin: 1,
+                maximizeDetailPanel: false,
+                neutralColorRange:
+                    {flipped: false,
+                        from: 20,
+                        to: 40
                     },
-                "scaling":
+                scaling:
                     {
-                        "x": 1,
-                        "y": 1,
-                        "z": 1
+                        x: 1,
+                        y: 1,
+                        z: 1
                     },
-                "enableEdgeArrows": true,
-                "invertHeight": false,
-                "dynamicMargin": true,
-                "isWhiteBackground": false,
-                "blacklist": []
+                enableEdgeArrows: true,
+                invertHeight: false,
+                dynamicMargin: true,
+                isWhiteBackground: false,
+                blacklist: []
             },
 
-        "autoFitCamera": true
+        autoFitCamera: true
     }];
 
     //noinspection TypeScriptUnresolvedVariable

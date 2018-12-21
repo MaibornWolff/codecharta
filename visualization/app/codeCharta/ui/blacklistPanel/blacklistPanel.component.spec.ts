@@ -23,7 +23,7 @@ describe("blacklistController", () => {
             onSettingsChanged: jest.fn(),
             settings: {
                 map: {
-                    root: []
+                    nodes: []
                 },
                 blacklist: []
             }
@@ -88,7 +88,7 @@ describe("blacklistController", () => {
             ]
         };
         blacklistPanelController.viewModel = viewModel;
-        settingsServiceMock.settings.map.root = simpleHierarchy;
+        settingsServiceMock.settings.map.nodes = simpleHierarchy;
     }
 
     function getFilteredBlacklistBy(blacklistItem) {

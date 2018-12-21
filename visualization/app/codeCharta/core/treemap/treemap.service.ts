@@ -48,23 +48,23 @@ export class TreeMapService {
 
     public createTreemapNodes(data: CodeMapNode, s: TreeMapSettings, edges: Edge[]): node {
         const squarified: SquarifiedValuedCodeMapNode = this.squarify(data, s, edges);
-        const heighted = this.addMapScaledHeightDimensionAndFinalizeFromRoot(squarified, edges, s);
+        const heighted = this.addMapScaledHeightDimensionAndFinalizeFromRoot(squarified, s);
         return heighted;
     }
 
     private squarify(data: CodeMapNode, s: TreeMapSettings, edges: Edge[]): SquarifiedValuedCodeMapNode {
-        let root: HierarchyNode<CodeMapNode> = d3.hierarchy<CodeMapNode>(data);
-        const blacklisted = CodeMapUtilService.numberOfBlacklistedNodes(root.descendants().map(d=>d.data), s.blacklist);
-        let nodesPerSide = 2 * Math.sqrt(root.descendants().length - blacklisted);
+        let nodes: HierarchyNode<CodeMapNode> = d3.hierarchy<CodeMapNode>(data);
+        const blacklisted = CodeMapUtilService.numberOfBlacklistedNodes(nodes.descendants().map(d=>d.data), s.blacklist);
+        let nodesPerSide = 2 * Math.sqrt(nodes.descendants().length - blacklisted);
         let treeMap = d3.treemap<CodeMapNode>()
             .size([s.size + nodesPerSide*s.margin, s.size + nodesPerSide*s.margin])
             .paddingOuter(s.margin * TreeMapService.PADDING_SCALING_FACTOR || 1)
             .paddingInner(s.margin * TreeMapService.PADDING_SCALING_FACTOR || 1);
 
-        return treeMap(root.sum((node) => this.calculateValue(node, edges, s))) as SquarifiedValuedCodeMapNode;
+        return treeMap(nodes.sum((node) => this.calculateValue(node, edges, s))) as SquarifiedValuedCodeMapNode;
     }
 
-    private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, edges: Edge[], s: TreeMapSettings): node {
+    private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): node {
         const heightScale = s.size / TreeMapService.HEIGHT_DIVISOR / this.dataService.getMaxMetricInAllRevisions(s.heightKey);
 
         const maxHeight = this.dataService.getMaxMetricInAllRevisions(s.heightKey);

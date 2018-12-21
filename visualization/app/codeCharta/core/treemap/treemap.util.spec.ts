@@ -25,7 +25,7 @@ describe("treemap utils", () => {
                 path: "/root/Anode",
                 type: "File",
                 attributes: {}
-            }
+            };
 
             squaredNode = {
                 data: codeMapNode,
@@ -34,7 +34,7 @@ describe("treemap utils", () => {
                 y0: 0,
                 x1: 400,
                 y1: 400
-            }
+            };
 
             treeMapSettings = {
                 size: 1,
@@ -44,7 +44,7 @@ describe("treemap utils", () => {
                 invertHeight: false,
                 visibleEdges: [],
                 blacklist: []
-            }
+            };
 
         });
 

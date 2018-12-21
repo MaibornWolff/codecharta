@@ -63,7 +63,7 @@ export class CodeMapActionsService {
     }
 
     focusNode(node: CodeMapNode) {
-        if (node.path == this.settingsService.settings.map.root.path) {
+        if (node.path == this.settingsService.settings.map.nodes.path) {
             this.removeFocusedNode()
         } else {
             this.settingsService.settings.focusedNodePath = node.path;

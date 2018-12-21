@@ -126,11 +126,11 @@ describe("renderService", () => {
                 deltaColorFlipped: true,
                 enableEdgeArrows: true,
                 map: {
-                root: simpleHierarchy,
-                edges : [
-                    {visible: true},
-                    {visible: true}
-                 ]
+                    nodes: simpleHierarchy,
+                    edges : [
+                        {visible: true},
+                        {visible: true}
+                    ]
                 },
                 scaling: {
                     x: 1,

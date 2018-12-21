@@ -26,8 +26,8 @@ export class DownloadService {
         return fileName;
     }
 
-    private removeVisibleAttribute(root: CodeMapNode) {
-        let copy = JSON.parse(JSON.stringify(root));
+    private removeVisibleAttribute(nodes: CodeMapNode) {
+        let copy = JSON.parse(JSON.stringify(nodes));
         d3.hierarchy(copy).each((node)=>{
             delete node.data.visible;
         });
@@ -45,7 +45,7 @@ export class DownloadService {
             fileName: resultingFileName,
             projectName: map.projectName,
             apiVersion: map.apiVersion,
-            nodes: [this.removeVisibleAttribute(map.root)],
+            nodes: [this.removeVisibleAttribute(map.nodes)],
             edges: map.edges,
             attributeTypes: map.attributeTypes,
             blacklist: settings.blacklist,
