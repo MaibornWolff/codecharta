@@ -31,6 +31,7 @@ export interface TreeMapSettings {
     margin: number;
     invertHeight: boolean;
     visibleEdges: Edge[];
+    searchedNodePaths: string[];
     blacklist: Array<Exclude>;
     fileName: string;
 }

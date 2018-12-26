@@ -101,6 +101,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             margin: s.margin,
             invertHeight: s.invertHeight,
             visibleEdges: visibleEdges,
+            searchedNodePaths: s.searchedNodePaths,
             blacklist: s.blacklist,
             fileName: s.map.fileName
         };
@@ -150,21 +151,18 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, false);
             this.treeMapService.setVisibilityOfNodeAndDescendants(focusedNode, true);
         } else {
-            if (s.searchedNodePaths && s.searchedNodePaths.length != 0) {
-                this.showSearchedNodes(s);
-            } else {
-                this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, true);
-            }
+            this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, true);
         }
     }
 
-    private showSearchedNodes(s) {
+    private showSearchedNodes(s: Settings) {
         this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, false);
 
         d3.hierarchy(s.map.root).descendants().map(d => d.data)
             .filter(node => s.searchedNodePaths.includes(CodeMapUtilService.resolvePath(node.path)))
             .forEach(node => node.visible = true);
     }
+
 
     private getVisibleEdges(s: Settings) {
         if (s.map && s.map.edges) {

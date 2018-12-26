@@ -50,9 +50,8 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
         const searchedNodes = CodeMapUtilService.getNodesByGitignorePath(nodes, this.viewModel.search);
         s.searchedNodePaths = searchedNodes.map(n => n.path);
 
-
-        this.viewModel.fileCount = searchedNodes.filter(node => node.children && node.children.length != 0).length;
-        this.viewModel.folderCount = searchedNodes.length - this.viewModel.fileCount;
+        this.viewModel.folderCount = searchedNodes.filter(node => node.children && node.children.length != 0).length;
+        this.viewModel.fileCount = searchedNodes.length - this.viewModel.folderCount;
         this.settingsService.applySettings(s);
     }
 
