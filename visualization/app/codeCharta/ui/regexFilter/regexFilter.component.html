@@ -1,5 +1,17 @@
-<md-input-container class="md-block">
-    <label>Filter by regex</label>
-    <input type='text' ng-model="$ctrl.viewModel.filter" ng-change="$ctrl.onFilterChange($ctrl.viewModel.filter)">
-    <div ng-messages="$ctrl.viewModel.error">{{$ctrl.viewModel.error}}</div>
-</md-input-container>
+<md-list>
+    <md-list-item>
+        <md-input-container class="md-block">
+            <label>Search by gitignore style</label>
+            <input type='text' ng-model="$ctrl.viewModel.search" ng-change="$ctrl.onFilterChange($ctrl.viewModel.search)">
+            <div ng-messages="$ctrl.viewModel.error">{{$ctrl.viewModel.error}}</div>
+            <div ng-messages="$ctrl.viewModel.folderCount">Found:
+                <span>{{$ctrl.viewModel.fileCount}} Files, </span>
+                <span>{{$ctrl.viewModel.folderCount}} Folders</span>
+            </div>
+        </md-input-container>
+
+        <md-button class="round-button" ng-click="console.log('Doesn work');">
+            <i class="fa fa-question-circle" title="Help"></i>
+        </md-button>
+    </md-list-item>
+</md-list>

@@ -3,8 +3,8 @@ import {ITimeoutService} from "angular";
 import {CodeMap, CodeMapNode} from "../../core/data/model/CodeMap";
 import "./regexFilter.component.scss";
 import * as d3 from "d3";
-import {HierarchyNode} from "d3-hierarchy";
 import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/data.service";
+import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
 
 export class RegexFilterController implements SettingsServiceSubscriber, DataServiceSubscriber {
 
@@ -13,8 +13,10 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
     public mapRoot: CodeMapNode = null;
 
     public viewModel = {
-        filter: "",
-        error: ""
+        search: "",
+        error: "",
+        fileCount: 0,
+        folderCount: 0,
     };
 
     /* @ngInject */
@@ -26,11 +28,10 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
         this.settingsService.subscribe(this);
         this.dataService.subscribe(this);
         this.updateMapRoot(this.settingsService.settings.map);
-
     }
 
     onDataChanged(data: DataModel, event) {
-        this.viewModel.filter = "";
+        this.viewModel.search = "";
         this.viewModel.error = "";
     }
 
@@ -40,44 +41,19 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
 
     onFilterChange() {
         this.viewModel.error = "";
-        this.updateVisibilities();
+        this.setSearchedNodePathnames();
     }
 
-    private updateVisibilities(mapRoot: CodeMapNode = this.mapRoot) {
-        try {
-            if (mapRoot) {
-                let h = d3.hierarchy<CodeMapNode>(mapRoot);
-                h.each((node: HierarchyNode<CodeMapNode>) => {
+    private setSearchedNodePathnames() {
+        const s = this.settingsService.settings;
+        const nodes = d3.hierarchy(s.map.root).descendants().map(d => d.data);
+        const searchedNodes = CodeMapUtilService.getNodesByGitignorePath(nodes, this.viewModel.search);
+        s.searchedNodePaths = searchedNodes.map(n => n.path);
 
-                    this.updateVisibilityForEachNode(node);
-                });
-                this.settingsService.onSettingsChanged();
-            }
-        } catch (e) {
-            this.viewModel.error = e;
-        }
-    }
 
-    private updateVisibilityForEachNode(node: HierarchyNode<CodeMapNode>) {
-
-        let nodePath = (node.data.path).toLowerCase();
-        let regexFilter = this.viewModel.filter.toLowerCase();
-        let isRegexMatch = nodePath.match(regexFilter) !== null;
-
-        if (isRegexMatch) {
-            node.data.visible = true;
-            this.showParentNodes(node);
-        } else {
-            node.data.visible = false;
-        }
-    }
-
-    private showParentNodes(node: HierarchyNode<CodeMapNode>) {
-        node.data.visible = true;
-
-        if (node.parent !== null) {
-            this.showParentNodes(node.parent);
-        }
+        this.viewModel.fileCount = searchedNodes.filter(node => node.children && node.children.length != 0).length;
+        this.viewModel.folderCount = searchedNodes.length - this.viewModel.fileCount;
+        this.settingsService.applySettings(s);
     }
 
     private updateMapRoot(map: CodeMap) {
@@ -87,7 +63,6 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
             }, RegexFilterController.TIMEOUT_DELAY_MS);
         }
     }
-
 }
 
 export const regexFilterComponent = {

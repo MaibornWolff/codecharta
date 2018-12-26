@@ -15,6 +15,7 @@ import {
 import {TreeMapSettings} from "../../core/treemap/treemap.service";
 import {codeMapBuilding} from "./rendering/codeMapBuilding";
 import {CodeMapUtilService} from "./codeMap.util.service";
+import * as d3 from "d3";
 
 const mapSize = 500.0;
 
@@ -145,12 +146,24 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
 
     private showAllOrOnlyFocusedNode(s: Settings) {
         if (s.focusedNodePath) {
-            var focusedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(s.focusedNodePath);
+            const focusedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(s.focusedNodePath);
             this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, false);
             this.treeMapService.setVisibilityOfNodeAndDescendants(focusedNode, true);
         } else {
-            this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, true);
+            if (s.searchedNodePaths && s.searchedNodePaths.length != 0) {
+                this.showSearchedNodes(s);
+            } else {
+                this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, true);
+            }
         }
+    }
+
+    private showSearchedNodes(s) {
+        this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, false);
+
+        d3.hierarchy(s.map.root).descendants().map(d => d.data)
+            .filter(node => s.searchedNodePaths.includes(CodeMapUtilService.resolvePath(node.path)))
+            .forEach(node => node.visible = true);
     }
 
     private getVisibleEdges(s: Settings) {
