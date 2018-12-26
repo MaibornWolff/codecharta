@@ -5,7 +5,7 @@
         <span ng-click="$ctrl.onFolderClick()">
             <span role="img" ng-if="!$ctrl.isLeaf() && $ctrl.collapsed" class="fa fa-folder" ng-style="{'color': $ctrl.node.markingColor.replace('0x','#') }" aria-hidden="true"></span>
             <span role="img" ng-if="!$ctrl.isLeaf() && !$ctrl.collapsed" class="fa fa-folder-open" ng-style="{'color': $ctrl.node.markingColor.replace('0x','#') }" aria-hidden="true"></span>
-            <span role="img" ng-if="::$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></span>
+            <span role="img" ng-if="$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></span>
         </span>
 
         <span ng-click="$ctrl.onEyeClick()">
