@@ -1,8 +1,7 @@
 <md-input-container class="md-block">
     <label>Search by gitignore style</label>
     <input type='text' ng-model="$ctrl.viewModel.search" ng-change="$ctrl.onFilterChange($ctrl.viewModel.search)">
-    <div ng-messages="$ctrl.viewModel.error">{{$ctrl.viewModel.error}}</div>
-    <br>
+    <br><br>
     <div ng-messages="$ctrl.viewModel.folderCount">
         Found:
         {{$ctrl.viewModel.fileCount}} <i class="fa fa-file"></i>

@@ -14,7 +14,6 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
 
     public viewModel = {
         search: "",
-        error: "",
         fileCount: 0,
         folderCount: 0,
     };
@@ -32,7 +31,6 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
 
     onDataChanged(data: DataModel, event) {
         this.viewModel.search = "";
-        this.viewModel.error = "";
     }
 
     onSettingsChanged(s: Settings) {
@@ -40,7 +38,6 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
     }
 
     onFilterChange() {
-        this.viewModel.error = "";
         this.setSearchedNodePathnames();
     }
 
