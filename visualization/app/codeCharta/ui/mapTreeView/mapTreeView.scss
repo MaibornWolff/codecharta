@@ -1,0 +1,19 @@
+map-tree-view-component {
+    .tree-root {
+        overflow-y: hidden;
+    }
+
+    .tree-root div{
+        margin:0;
+        padding:0;
+    }
+
+    .tree-root .tree-element-children {
+        margin-left: 22px;
+    }
+
+    .tree-element-label:hover {
+        background-color: #efefef;
+    }
+}
+
