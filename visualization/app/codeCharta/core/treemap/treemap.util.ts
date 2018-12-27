@@ -27,12 +27,14 @@ export class TreeMapUtils {
                                 minHeight: number,
                                 folderHeight: number): node {
 
+        let flattened = false;
+
         if (s.invertHeight) {
             heightValue = (maxHeight - heightValue);
         }
 
         if (s.visibleEdges && s.visibleEdges.length > 0) {
-            heightValue = this.getEdgesHeight(squaredNode, s, heightValue);
+            flattened = this.nodeHasVisibleEdge(squaredNode, s);
         }
 
         return {
@@ -54,22 +56,16 @@ export class TreeMapUtils {
             origin: squaredNode.data.origin,
             link: squaredNode.data.link,
             children: [],
-            markingColor: parseInt(squaredNode.data.markingColor)
+            markingColor: parseInt(squaredNode.data.markingColor),
+            flat: flattened,
         };
 
     }
 
-    private static getEdgesHeight(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings, heightValue: number) {
-
-        const NON_EDGE_HEIGHT = 0;
-
-        for (var edge of s.visibleEdges) {
-
-            if (squaredNode.data.path === edge.fromNodeName ||
-                squaredNode.data.path === edge.toNodeName) {
-                return heightValue;
-            }
-        }
-        return NON_EDGE_HEIGHT;
+    private static nodeHasVisibleEdge(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): boolean {
+        const nodeHasVisibleEdge = s.visibleEdges.filter(edge =>
+            squaredNode.data.path === edge.fromNodeName ||
+            squaredNode.data.path === edge.toNodeName).length == 1;
+        return !nodeHasVisibleEdge;
     }
 }
