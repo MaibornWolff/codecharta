@@ -2,7 +2,7 @@ import angular from "angular";
 import "../../core/core.module";
 import "../codeMap/codeMap";
 
-import "./mapTreeView.css";
+import "./mapTreeView.scss";
 
 import {mapTreeViewComponent, MapTreeViewController} from "./mapTreeViewComponent";
 import {mapTreeViewLevelComponent} from "./mapTreeViewLevelComponent";
