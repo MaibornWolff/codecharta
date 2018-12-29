@@ -115,6 +115,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         this.currentSortedNodes = filtered.sort((a, b) => {
             return b.height - a.height;
         });
+
         this.currentRenderSettings = {
             heightKey: s.heightMetric,
             colorKey: s.colorMetric,
@@ -128,7 +129,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         this.setArrows(s);
 
         this._mapMesh = new CodeMapMesh(this.currentSortedNodes, this.currentRenderSettings);
-
         this.threeSceneService.setMapMesh(this._mapMesh, mapSize);
     }
 
@@ -162,10 +162,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     }
 
     private getVisibleEdges(s: Settings) {
-        if (s.map && s.map.edges) {
-            return s.map.edges.filter(edge => edge.visible === true);
-        }
-        return [];
+        return (s.map && s.map.edges) ? s.map.edges.filter(edge => edge.visible === true) : [];
     }
 
     private showCouplingArrows(deps: Edge[]) {
