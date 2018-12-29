@@ -163,15 +163,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         }
     }
 
-    private showSearchedNodes(s: Settings) {
-        this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, false);
-
-        d3.hierarchy(s.map.root).descendants().map(d => d.data)
-            .filter(node => s.searchedNodePaths.includes(CodeMapUtilService.resolvePath(node.path)))
-            .forEach(node => node.visible = true);
-    }
-
-
     private getVisibleEdges(s: Settings) {
         return (s.map && s.map.edges) ? s.map.edges.filter(edge => edge.visible === true) : [];
     }
