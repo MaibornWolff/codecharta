@@ -1,5 +1,7 @@
 import {SquarifiedValuedCodeMapNode, TreeMapSettings} from "./treemap.service";
 import {node} from "../../ui/codeMap/rendering/node";
+import {min} from "d3-array";
+import {CodeMapUtilService} from "../../ui/codeMap/codeMap.util.service";
 
 export class TreeMapUtils {
 
@@ -33,12 +35,9 @@ export class TreeMapUtils {
             heightValue = (maxHeight - heightValue);
         }
 
-        if (s.visibleEdges && s.visibleEdges.length > 0) {
-            heightValue = this.flattenNodesWithVisibleEdges(squaredNode, s, heightValue);
-        }
-
-        if (s.searchedNodePaths && s.searchedNodePaths.length > 0) {
-            heightValue = this.flattenSearchedNodes(squaredNode, s, heightValue);
+        const flattened = TreeMapUtils.isNodeToBeFlat(s, squaredNode);
+        if (flattened) {
+            heightValue = minHeight;
         }
 
         return {
@@ -60,20 +59,31 @@ export class TreeMapUtils {
             origin: squaredNode.data.origin,
             link: squaredNode.data.link,
             children: [],
-            markingColor: parseInt(squaredNode.data.markingColor)
+            markingColor: parseInt(squaredNode.data.markingColor),
+            flat: flattened,
         };
 
     }
 
-    private static flattenNodesWithVisibleEdges(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings, heightValue: number) {
-        const nodeHasVisibleEdge = s.visibleEdges.filter(edge =>
-            squaredNode.data.path === edge.fromNodeName ||
-            squaredNode.data.path === edge.toNodeName).length == 1;
-        return nodeHasVisibleEdge ? heightValue : TreeMapUtils.FLAT_HEIGHT;
+    private static isNodeToBeFlat(s: TreeMapSettings, squaredNode): boolean {
+        let flattened = false;
+        if (s.visibleEdges && s.visibleEdges.length > 0) {
+            flattened = !this.nodeHasVisibleEdge(squaredNode, s);
+        }
+        if (s.searchedNodePaths && s.searchedNodePaths.length > 0) {
+            flattened = !this.isNodeSearched(squaredNode, s);
+        }
+        return flattened;
     }
 
-    private static flattenSearchedNodes(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings, heightValue: number) {
-        const isNodeSearched = s.searchedNodePaths.filter(path => path == squaredNode.data.path).length > 0;
-        return isNodeSearched ? heightValue : TreeMapUtils.FLAT_HEIGHT;
+    private static nodeHasVisibleEdge(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): boolean {
+        return s.visibleEdges.filter(edge =>
+            squaredNode.data.path === edge.fromNodeName ||
+            squaredNode.data.path === edge.toNodeName).length > 0;
+    }
+
+    private static isNodeSearched(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): boolean {
+        return s.searchedNodePaths.filter(path =>
+            path == squaredNode.data.path).length > 0;
     }
 }

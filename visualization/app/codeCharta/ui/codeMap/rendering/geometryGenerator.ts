@@ -43,8 +43,7 @@ export class geometryGenerator {
 
             if (!n.isLeaf) {
                 this.addFloor(data, n, i, desc, settings);
-            }
-            else {
+            } else {
                 this.addBuilding(data, n, i, desc, settings);
             }
         }
@@ -66,11 +65,8 @@ export class geometryGenerator {
         };
     }
 
-    private ensureMinHeightIfUnlessDeltaNegative(x: number, d: number): number {
-        if (d <= 0) {
-            return x;
-        }
-        return Math.max(x, geometryGenerator.MINIMAL_BUILDING_HEIGHT);
+    private ensureMinHeightIfUnlessDeltaNegative(height: number, delta: number): number {
+        return (delta <= 0) ? height : Math.max(height, geometryGenerator.MINIMAL_BUILDING_HEIGHT);
     }
 
     private addFloor(data: intermediateVertexData, n: node, idx: number, desc: codeMapGeometricDescription, settings: renderSettings) {
@@ -97,12 +93,7 @@ export class geometryGenerator {
     }
 
     private nodeHasSuitableDeltas(n: node, heightKey: string): boolean {
-        if (n.deltas && n.deltas[heightKey]) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return (n.deltas && n.deltas[heightKey]) ? true : false;
     }
 
     private addBuilding(data: intermediateVertexData, n: node, idx: number, desc: codeMapGeometricDescription, settings: renderSettings): void {
@@ -119,7 +110,6 @@ export class geometryGenerator {
             if (renderDelta < 0) {
                 measures.height += Math.abs(renderDelta);
             }
-
         }
 
         desc.add(
@@ -155,9 +145,7 @@ export class geometryGenerator {
             else {
                 color = MapColors.neutral;
             }
-
-        }
-        else {
+        } else {
             color = MapColors.base;
         }
 
