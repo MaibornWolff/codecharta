@@ -1,5 +1,6 @@
 import {SquarifiedValuedCodeMapNode, TreeMapSettings} from "./treemap.service";
 import {node} from "../../ui/codeMap/rendering/node";
+import {min} from "d3-array";
 
 export class TreeMapUtils {
 
@@ -37,6 +38,10 @@ export class TreeMapUtils {
             flattened = this.nodeHasVisibleEdge(squaredNode, s);
         }
 
+        if (flattened) {
+            heightValue = minHeight;
+        }
+
         return {
             name: squaredNode.data.name,
             width: squaredNode.x1 - squaredNode.x0,
@@ -65,7 +70,7 @@ export class TreeMapUtils {
     private static nodeHasVisibleEdge(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): boolean {
         const nodeHasVisibleEdge = s.visibleEdges.filter(edge =>
             squaredNode.data.path === edge.fromNodeName ||
-            squaredNode.data.path === edge.toNodeName).length == 1;
+            squaredNode.data.path === edge.toNodeName).length > 0;
         return !nodeHasVisibleEdge;
     }
 }
