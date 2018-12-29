@@ -73,12 +73,16 @@ export class MapTreeViewLevelController {
         return false;
     }
 
-    sortByFolder(node: CodeMapNode) {
-        if(!(node && node.children && node.children.length > 0)){
-            return 0;
-        } else {
-            return 1;
+    isSearched(node: CodeMapNode): boolean {
+        if (node != null) {
+            return this.settingsService.settings.searchedNodePaths.filter(path =>
+                path == node.path).length > 0;
         }
+        return false;
+    }
+
+    sortByFolder(node: CodeMapNode) {
+        return (node && node.children && node.children.length > 0) ? 1 : 0;
     }
 
 }
