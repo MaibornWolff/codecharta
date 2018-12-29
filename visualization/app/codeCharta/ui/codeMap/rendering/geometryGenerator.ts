@@ -100,7 +100,7 @@ export class geometryGenerator {
         let measures: boxMeasures = this.mapNodeToLocalBox(n);
         measures.height = this.ensureMinHeightIfUnlessDeltaNegative(n.height, n.heightDelta);
 
-        let color: number = this.estimateColorForBuilding(n, settings.colorKey, settings.colorRange, settings.renderDeltas);
+        let color: number = this.estimateColorForBuilding(n, settings);
 
         let renderDelta: number = 0.0;
 
@@ -127,20 +127,23 @@ export class geometryGenerator {
         boxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, idx, renderDelta);
     }
 
-    private estimateColorForBuilding(n: node, colorKey: string, range: colorRange, deltasEnabled: boolean): number {
+    private estimateColorForBuilding(n: node, s: renderSettings): number {
         let color: number = MapColors.defaultC;
 
-        if (!deltasEnabled) {
-            const val: number = n.attributes[colorKey];
+        if (!s.renderDeltas) {
+            const val: number = n.attributes[s.colorKey];
 
             if (val === undefined || val === null) {
                 color = MapColors.base;
             }
-            else if (val < range.from) {
-                color = range.flipped ? MapColors.negative : MapColors.positive;
+            else if (n.flat && s.enableFlatBuildingsToBeGrey) {
+                color = MapColors.flat;
             }
-            else if (val > range.to) {
-                color = range.flipped ? MapColors.positive : MapColors.negative;
+            else if (val < s.colorRange.from) {
+                color = s.colorRange.flipped ? MapColors.negative : MapColors.positive;
+            }
+            else if (val > s.colorRange.to) {
+                color = s.colorRange.flipped ? MapColors.positive : MapColors.negative;
             }
             else {
                 color = MapColors.neutral;

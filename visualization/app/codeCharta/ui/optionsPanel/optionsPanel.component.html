@@ -5,6 +5,12 @@
 </md-input-container>
 
 <md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.enableFlatBuildingsToBeGrey" ng-change="$ctrl.settingsService.onSettingsChanged()">
+        Enable Flat White Buildings
+    </md-checkbox>
+</md-input-container>
+
+<md-input-container class="md-block">
     <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.maximizeDetailPanel" ng-change="$ctrl.settingsService.onSettingsChanged()">
         Maximize Detail Panel
     </md-checkbox>

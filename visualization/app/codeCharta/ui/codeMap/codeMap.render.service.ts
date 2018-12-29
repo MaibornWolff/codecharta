@@ -122,6 +122,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             heightKey: s.heightMetric,
             colorKey: s.colorMetric,
             renderDeltas: s.mode == KindOfMap.Delta,
+            enableFlatBuildingsToBeGrey: s.enableFlatBuildingsToBeGrey,
             colorRange: s.neutralColorRange,
             mapSize: mapSize,
             deltaColorFlipped: s.deltaColorFlipped

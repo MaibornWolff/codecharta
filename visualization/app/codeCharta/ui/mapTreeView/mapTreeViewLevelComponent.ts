@@ -74,7 +74,7 @@ export class MapTreeViewLevelController {
     }
 
     isSearched(node: CodeMapNode): boolean {
-        if (node != null) {
+        if (node != null && this.settingsService.settings.searchedNodePaths) {
             return this.settingsService.settings.searchedNodePaths.filter(path =>
                 path == node.path).length > 0;
         }
