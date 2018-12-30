@@ -13,7 +13,7 @@
             <span role="img" ng-if="!$ctrl.node.visible" class="fa fa-eye-slash" aria-hidden="true"></span>
         </span>
 
-        <span ng-click="$ctrl.onLabelClick()" ng-style="{'color': $ctrl.isSearched($ctrl.node) ? 'rgb(0, 191, 165)' : 'inherit'}">
+        <span ng-click="$ctrl.onLabelClick()" ng-style="{'color': $ctrl.isSearched($ctrl.node) ? $ctrl.angularGreen : 'inherit'}">
             {{::$ctrl.node.name}}
         </span>
     </div>

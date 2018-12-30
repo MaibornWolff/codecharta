@@ -32,6 +32,10 @@ export enum MapColors {
     flat = 0xffffff,
 }
 
+export enum AngularColors {
+    green = "#00bfa5",
+}
+
 export interface renderSettings {
     heightKey : string;
     colorKey : string;
