@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import {node} from "./node";
-import {renderSettings} from "./renderSettings";
+import {AngularColors, renderSettings} from "./renderSettings";
 
 interface internalLabel {
     sprite : THREE.Sprite;
@@ -77,9 +77,10 @@ export class LabelManager {
         
         //bg
         ctx!.fillStyle = "rgba(255,255,255,1)";
-        ctx!.strokeStyle = "rgba(0,0,255,1)";
+        ctx!.strokeStyle = AngularColors.green;
         ctx!.lineJoin = "round";
         ctx!.lineCap = "round";
+        ctx!.lineWidth = 5;
         ctx!.fillRect(0,0, canvas.width, canvas.height);
         ctx!.strokeRect(0,0, canvas.width, canvas.height);
         
@@ -107,7 +108,7 @@ export class LabelManager {
 
     private makeLine(x: number, y: number, z: number): THREE.Line {
         const material = new THREE.LineBasicMaterial({
-            color: 0x0000ff,
+            color: AngularColors.green,
             linewidth: 2
         });
 
