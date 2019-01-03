@@ -17,31 +17,20 @@ export class LabelManager {
         this.labels = new Array<internalLabel>();
     }
 
-    addLabel(node : node, settings : renderSettings) : void {
+    addLabel(node: node, settings: renderSettings) : void {
         if(node.attributes && node.attributes[settings.heightKey]){
 
-            let x : number = node.x0 - settings.mapSize * 0.5;
-            let y : number = node.z0;
-            let z : number = node.y0 - settings.mapSize * 0.5;
+            const x: number = node.x0 - settings.mapSize * 0.5;
+            const y: number = node.z0;
+            const z: number = node.y0 - settings.mapSize * 0.5;
 
-            let w : number = node.width;
-            let h : number = node.height;
-            let l : number = node.length;
+            const labelX: number = x + node.width / 2;
+            const labelY: number = y + node.height;
+            const labelZ: number = z + node.length / 2;
 
             let label : internalLabel = this.makeText(node.name + ": " + node.attributes[settings.heightKey], 30);
-            label.sprite.position.set(x+w/2,y+60+h + label.heightValue/2,z+l/2);
-
-            const material = new THREE.LineBasicMaterial({
-                color: 0x0000ff
-            });
-        
-            const geometry = new THREE.Geometry();
-            geometry.vertices.push(
-                new THREE.Vector3(x + w / 2, y + h, z + l / 2),
-                new THREE.Vector3(x + w / 2, y + h + 60, z + l / 2)
-            );
-        
-            label.line = new THREE.Line(geometry, material);
+            label.sprite.position.set(labelX,labelY + 60 + label.heightValue / 2,labelZ);
+            label.line = this.makeLine(labelX, labelY, labelZ);
 
             this.parentObjectInScene.add(label.sprite);
             this.parentObjectInScene.add(label.line);
@@ -56,8 +45,8 @@ export class LabelManager {
             this.parentObjectInScene.children.pop();
         }
     }
-        
-    scale(x : number, y : number, z : number) {
+
+    scale(x: number, y: number, z: number) {
         for(let label of this.labels) {
             label.sprite.position.x *= x;
             label.sprite.position.y *= y;
@@ -74,34 +63,28 @@ export class LabelManager {
             (<any>label.line!.geometry).vertices[1].z = label.sprite.position.z;
         }
     }
-        
-    /**
-    * Returns a text sprite
-    * @param {string} message
-    * @param {number} fontsize
-    * @returns {THREE.Sprite}
-    */
-    private makeText(message : string, fontsize : number) : internalLabel {
+
+    private makeText(message: string, fontsize: number) : internalLabel {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
-        ctx!.font = fontsize + "px Arial";
+        ctx!.font = fontsize + "px Helvetica Neue";
     
-        const margin = 10;
+        const margin = 20;
     
         // setting canvas width/height before ctx draw, else canvas is empty
-        const w = ctx!.measureText(message).width;
-        const h = fontsize;
-        canvas.width = w + margin;
-        canvas.height = h + margin; // fontsize * 1.5
+        canvas.width = ctx!.measureText(message).width + margin;
+        canvas.height = fontsize + margin;
         
         //bg
         ctx!.fillStyle = "rgba(255,255,255,1)";
         ctx!.strokeStyle = "rgba(0,0,255,1)";
-        ctx!.fillRect(0,0,canvas.width, canvas.height);
-        ctx!.strokeRect(0,0,canvas.width, canvas.height);
+        ctx!.lineJoin = "round";
+        ctx!.lineCap = "round";
+        ctx!.fillRect(0,0, canvas.width, canvas.height);
+        ctx!.strokeRect(0,0, canvas.width, canvas.height);
         
         // after setting the canvas width/height we have to re-set font to apply!?! looks like ctx reset
-        ctx!.font = h + "px Arial";
+        ctx!.font = fontsize + "px Helvetica Neue";
         ctx!.fillStyle = "rgba(0,0,0,1)";
         ctx!.textAlign = "center";
         ctx!.textBaseline = "middle";
@@ -113,12 +96,27 @@ export class LabelManager {
         
         const spriteMaterial = new THREE.SpriteMaterial({map : texture});
         const sprite = new THREE.Sprite(spriteMaterial);
-        sprite.scale.set(canvas.width,canvas.height,1);
+        sprite.scale.set(canvas.width, canvas.height, 1);
 
         return {
-            "sprite" : sprite,
-            "heightValue" : canvas.height,
-            "line" : null
+            sprite: sprite,
+            heightValue: canvas.height,
+            line: null
         };
+    }
+
+    private makeLine(x: number, y: number, z: number): THREE.Line {
+        const material = new THREE.LineBasicMaterial({
+            color: 0x0000ff,
+            linewidth: 2
+        });
+
+        const geometry = new THREE.Geometry();
+        geometry.vertices.push(
+            new THREE.Vector3(x, y, z),
+            new THREE.Vector3(x, y + 60, z)
+        );
+
+        return new THREE.Line(geometry, material);
     }
 }
