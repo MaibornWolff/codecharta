@@ -15,6 +15,8 @@ import {
 import {TreeMapSettings} from "../../core/treemap/treemap.service";
 import {codeMapBuilding} from "./rendering/codeMapBuilding";
 import {CodeMapUtilService} from "./codeMap.util.service";
+import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
+import {ThreeCameraService} from "./threeViewer/threeCameraService";
 
 const mapSize = 500.0;
 
@@ -37,7 +39,9 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
                 private treeMapService,
                 private $rootScope,
                 private settingsService: SettingsService,
-                private codeMapUtilService: CodeMapUtilService) {
+                private codeMapUtilService: CodeMapUtilService,
+                private threeOrbitControlsService: ThreeOrbitControlsService,
+                private threeCameraService: ThreeCameraService) {
         this.settingsService.subscribe(this);
         CodeMapMouseEventService.subscribe($rootScope, this);
     }
@@ -123,7 +127,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             deltaColorFlipped: s.deltaColorFlipped
         };
 
-        this.labelManager = new LabelManager(this.threeSceneService.labels);
+        this.labelManager = new LabelManager(this.threeSceneService.labels, this.threeOrbitControlsService, this.threeSceneService.mapGeometry, this.threeCameraService.camera);
         this.labelManager.clearLabels();
         this.arrowManager = new ArrowManager(this.threeSceneService.edgeArrows);
         this.arrowManager.clearArrows();

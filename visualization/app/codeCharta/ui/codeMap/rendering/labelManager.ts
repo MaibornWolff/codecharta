@@ -1,6 +1,9 @@
 import * as THREE from "three";
 import {node} from "./node";
 import {AngularColors, renderSettings} from "./renderSettings";
+import {CameraChangeSubscriber, ThreeOrbitControlsService} from "../threeViewer/threeOrbitControlsService";
+import {PerspectiveCamera, Sprite} from "three";
+import {Group} from "three";
 
 interface internalLabel {
     sprite : THREE.Sprite;
@@ -8,13 +11,24 @@ interface internalLabel {
     heightValue : number;
 }
 
-export class LabelManager {
+export class LabelManager implements CameraChangeSubscriber {
     private parentObjectInScene : THREE.Object3D;
     private labels : internalLabel[];
+    private LABEL_WIDTH_DIVISOR: number = 2600; // empirically gathered
+    private LABEL_HEIGHT_DIVISOR: number = 50; // empirically gathered
+    private camera: PerspectiveCamera;
+    private mapGeometry: Group;
 
-    constructor(argParentObjectInScene : THREE.Object3D) {
-        this.parentObjectInScene = argParentObjectInScene;
+    constructor(parentObjectInScene: THREE.Object3D,
+                threeOrbitControlsService: ThreeOrbitControlsService,
+                camera: PerspectiveCamera,
+                mapGeometry: Group) {
+
+        this.parentObjectInScene = parentObjectInScene;
         this.labels = new Array<internalLabel>();
+        this.camera = camera;
+        this.mapGeometry = mapGeometry;
+        threeOrbitControlsService.subscribe(this);
     }
 
     addLabel(node: node, settings: renderSettings) : void {
@@ -64,6 +78,12 @@ export class LabelManager {
         }
     }
 
+    onCameraChanged(camera: PerspectiveCamera, event: angular.IAngularEvent) {
+        for (let label of this.labels) {
+            this.setLabelSize(label.sprite);
+        }
+    }
+
     private makeText(message: string, fontsize: number) : internalLabel {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
@@ -97,13 +117,19 @@ export class LabelManager {
         
         const spriteMaterial = new THREE.SpriteMaterial({map : texture});
         const sprite = new THREE.Sprite(spriteMaterial);
-        sprite.scale.set(canvas.width, canvas.height, 1);
+        this.setLabelSize(sprite, canvas.width);
 
         return {
             sprite: sprite,
             heightValue: canvas.height,
             line: null
         };
+    }
+
+    private setLabelSize(sprite: Sprite, currentLabelWidth: number = undefined) {
+        const distance = this.camera.position.distanceTo(this.mapGeometry.position);
+        currentLabelWidth = (!currentLabelWidth) ? sprite.material.map.image.width : currentLabelWidth;
+        sprite.scale.set(distance / this.LABEL_WIDTH_DIVISOR * currentLabelWidth,distance / this.LABEL_HEIGHT_DIVISOR,1);
     }
 
     private makeLine(x: number, y: number, z: number): THREE.Line {
