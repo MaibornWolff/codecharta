@@ -59,6 +59,13 @@ code-charta-component {
     }
   }
 
+  view-cube-component {
+    position: fixed;
+    z-index: 1;
+    bottom: 0px;
+    left: 250px;
+  }
+
   #actionButtons {
     position: fixed;
     bottom: 2em;
