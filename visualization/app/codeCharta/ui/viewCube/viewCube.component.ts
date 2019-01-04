@@ -107,12 +107,12 @@ export class ViewCubeController {
 
   private initCamera() {
     this.camera = new THREE.PerspectiveCamera(
-      75,
+      45,
       this.width / this.height,
       0.1,
       1000
     );
-    this.camera.position.z = 1.5;
+    this.camera.position.z = 4;
   }
 
   private isCubeIntersectedByMouse(event: MouseEvent) {
