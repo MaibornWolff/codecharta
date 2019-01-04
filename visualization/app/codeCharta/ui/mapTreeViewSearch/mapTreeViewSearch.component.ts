@@ -1,12 +1,12 @@
 import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settings.service";
 import {ITimeoutService} from "angular";
 import {CodeMap, CodeMapNode} from "../../core/data/model/CodeMap";
-import "./regexFilter.component.scss";
+import "./mapTreeViewSearch.component.scss";
 import * as d3 from "d3";
 import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/data.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
 
-export class RegexFilterController implements SettingsServiceSubscriber, DataServiceSubscriber {
+export class MapTreeViewSearchController implements SettingsServiceSubscriber, DataServiceSubscriber {
 
     private static TIMEOUT_DELAY_MS = 100;
 
@@ -56,15 +56,15 @@ export class RegexFilterController implements SettingsServiceSubscriber, DataSer
         if(map && map.root) {
             this.$timeout(()=>{
                 this.mapRoot = map.root;
-            }, RegexFilterController.TIMEOUT_DELAY_MS);
+            }, MapTreeViewSearchController.TIMEOUT_DELAY_MS);
         }
     }
 }
 
-export const regexFilterComponent = {
-    selector: "regexFilterComponent",
-    template: require("./regexFilter.component.html"),
-    controller: RegexFilterController
+export const mapTreeViewSearchComponent = {
+    selector: "mapTreeViewSearchComponent",
+    template: require("./mapTreeViewSearch.component.html"),
+    controller: MapTreeViewSearchController
 };
 
 

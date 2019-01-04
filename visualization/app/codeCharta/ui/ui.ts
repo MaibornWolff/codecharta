@@ -16,7 +16,7 @@ import "./rangeSlider/rangeSlider";
 import "./colorSettingsPanel/colorSettingsPanel";
 import "./displaySettingsPanel/displaySettingsPanel";
 import "./experimentalSettingsPanel/experimentalSettingsPanel";
-import "./regexFilter/regexFilter";
+import "./mapTreeViewSearch/mapTreeViewSearch";
 import "./resetSettingsButton/resetSettingsButton";
 import "./dialog/dialog";
 import "./nodeContextMenu/nodeContextMenu";
