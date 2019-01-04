@@ -1,3 +1,14 @@
 map-tree-view-search-component {
+  md-input-container {
+    height: 45px !important;
+  }
 
+  .found-nodes {
+    margin-left: 3px;
+    float: left;
+  }
+  .menu-button {
+    margin-top: -8px !important;
+    float: right;
+  }
 }
