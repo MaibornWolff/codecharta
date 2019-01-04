@@ -1,4 +1,4 @@
-import {MapTreeViewHoverEventSubscriber, MapTreeViewLevelController} from "./mapTreeViewLevelComponent";
+import {MapTreeViewHoverEventSubscriber, MapTreeViewLevelController} from "./mapTreeView.level.component";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {SettingsService} from "../../core/settings/settings.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";

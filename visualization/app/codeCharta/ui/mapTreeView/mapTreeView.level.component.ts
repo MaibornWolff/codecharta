@@ -91,7 +91,7 @@ export class MapTreeViewLevelController {
 
 export const mapTreeViewLevelComponent = {
     selector: "mapTreeViewLevelComponent",
-    template: require("./mapTreeViewLevel.html"),
+    template: require("./mapTreeView.level.component.html"),
     controller: MapTreeViewLevelController,
     bindings: {
         node: "<",

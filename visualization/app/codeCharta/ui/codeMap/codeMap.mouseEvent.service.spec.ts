@@ -18,7 +18,7 @@ jest.mock("./threeViewer/threeViewerService");
 import {CodeMapRenderService} from "./codeMap.render.service";
 jest.mock("./codeMap.render.service");
 
-import {MapTreeViewLevelController} from "../mapTreeView/mapTreeViewLevelComponent";
+import {MapTreeViewLevelController} from "../mapTreeView/mapTreeView.level.component";
 jest.mock("../mapTreeView/mapTreeViewLevelComponent");
 
 describe("mouseEventService", () => {
