@@ -1,6 +1,6 @@
 import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settings.service";
 import {ITimeoutService} from "angular";
-import {CodeMap, CodeMapNode} from "../../core/data/model/CodeMap";
+import {CodeMap, CodeMapNode, ExcludeType} from "../../core/data/model/CodeMap";
 import "./mapTreeViewSearch.component.scss";
 import * as d3 from "d3";
 import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/data.service";
@@ -13,9 +13,10 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
     public mapRoot: CodeMapNode = null;
 
     public viewModel = {
-        search: "",
+        searchPattern: "",
         fileCount: 0,
         folderCount: 0,
+        blacklistType: ExcludeType.hide,
     };
 
     /* @ngInject */
@@ -30,7 +31,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
     }
 
     onDataChanged(data: DataModel, event) {
-        this.viewModel.search = "";
+        this.viewModel.searchPattern = "";
     }
 
     onSettingsChanged(s: Settings) {
@@ -41,12 +42,30 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
         this.setSearchedNodePathnames();
     }
 
+    onClickBlacklistPattern(blacklistType: ExcludeType) {
+        this.viewModel.blacklistType = blacklistType;
+
+        if (!this.isPatternBlacklisted()) {
+            this.settingsService.settings.blacklist.push(
+                {path: this.viewModel.searchPattern, type: this.viewModel.blacklistType}
+            );
+            this.settingsService.applySettings();
+        }
+    }
+
+    private isPatternBlacklisted() {
+        return this.settingsService.settings.blacklist.filter(item => {
+            return this.viewModel.searchPattern == item.path &&
+                this.viewModel.blacklistType == item.type
+        }).length != 0;
+    }
+
     private setSearchedNodePathnames() {
         const s = this.settingsService.settings;
         const nodes = d3.hierarchy(s.map.root).descendants().map(d => d.data);
-        const searchedNodes = CodeMapUtilService.getNodesByGitignorePath(nodes, this.viewModel.search);
-        s.searchedNodePaths = searchedNodes.map(n => n.path);
+        const searchedNodes = CodeMapUtilService.getNodesByGitignorePath(nodes, this.viewModel.searchPattern);
 
+        s.searchedNodePaths = searchedNodes.map(n => n.path);
         this.viewModel.folderCount = searchedNodes.filter(node => node.children && node.children.length != 0).length;
         this.viewModel.fileCount = searchedNodes.length - this.viewModel.folderCount;
         this.settingsService.applySettings(s);
