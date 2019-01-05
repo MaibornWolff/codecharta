@@ -16,7 +16,8 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
         searchPattern: "",
         fileCount: 0,
         folderCount: 0,
-        blacklistType: ExcludeType.hide,
+        isPatternExcluded: true,
+        isPatternHidden: true
     };
 
     /* @ngInject */
@@ -36,27 +37,29 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
 
     onSettingsChanged(s: Settings) {
         this.updateMapRoot(this.settingsService.settings.map);
+        this.updateViewModel();
     }
 
-    onFilterChange() {
+    onSearchChange() {
         this.setSearchedNodePathnames();
+        this.updateViewModel();
     }
 
     onClickBlacklistPattern(blacklistType: ExcludeType) {
-        this.viewModel.blacklistType = blacklistType;
-
-        if (!this.isPatternBlacklisted()) {
-            this.settingsService.settings.blacklist.push(
-                {path: this.viewModel.searchPattern, type: this.viewModel.blacklistType}
-            );
-            this.settingsService.applySettings();
-        }
+        this.settingsService.settings.blacklist.push(
+            {path: this.viewModel.searchPattern, type: blacklistType}
+        );
+        this.settingsService.applySettings();
     }
 
-    private isPatternBlacklisted() {
+    private updateViewModel() {
+        this.viewModel.isPatternExcluded = this.isPatternBlacklisted(ExcludeType.exclude);
+        this.viewModel.isPatternHidden = this.isPatternBlacklisted(ExcludeType.hide);
+    }
+
+    private isPatternBlacklisted(blacklistType: ExcludeType) {
         return this.settingsService.settings.blacklist.filter(item => {
-            return this.viewModel.searchPattern == item.path &&
-                this.viewModel.blacklistType == item.type
+            return this.viewModel.searchPattern == item.path && blacklistType == item.type
         }).length != 0;
     }
 
