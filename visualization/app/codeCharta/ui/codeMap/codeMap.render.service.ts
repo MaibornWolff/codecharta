@@ -104,7 +104,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             visibleEdges: this.visibleEdges,
             searchedNodePaths: s.searchedNodePaths,
             blacklist: s.blacklist,
-            fileName: s.map.fileName
+            fileName: s.map.fileName,
+            searchPattern: s.searchPattern,
         };
 
         this.showAllOrOnlyFocusedNode(s);

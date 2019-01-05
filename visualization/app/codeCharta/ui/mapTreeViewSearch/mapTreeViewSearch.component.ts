@@ -65,6 +65,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
         const nodes = d3.hierarchy(s.map.root).descendants().map(d => d.data);
         const searchedNodes = CodeMapUtilService.getNodesByGitignorePath(nodes, this.viewModel.searchPattern);
 
+        s.searchPattern = this.viewModel.searchPattern;
         s.searchedNodePaths = searchedNodes.map(n => n.path);
         this.viewModel.folderCount = searchedNodes.filter(node => node.children && node.children.length != 0).length;
         this.viewModel.fileCount = searchedNodes.length - this.viewModel.folderCount;
