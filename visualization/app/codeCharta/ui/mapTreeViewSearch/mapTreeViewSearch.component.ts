@@ -13,7 +13,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
     public mapRoot: CodeMapNode = null;
 
     public viewModel = {
-        search: "",
+        searchPattern: "",
         fileCount: 0,
         folderCount: 0,
     };
@@ -30,7 +30,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
     }
 
     onDataChanged(data: DataModel, event) {
-        this.viewModel.search = "";
+        this.viewModel.searchPattern = "";
     }
 
     onSettingsChanged(s: Settings) {
@@ -44,9 +44,10 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
     private setSearchedNodePathnames() {
         const s = this.settingsService.settings;
         const nodes = d3.hierarchy(s.map.root).descendants().map(d => d.data);
-        const searchedNodes = CodeMapUtilService.getNodesByGitignorePath(nodes, this.viewModel.search);
-        s.searchedNodePaths = searchedNodes.map(n => n.path);
+        const searchedNodes = CodeMapUtilService.getNodesByGitignorePath(nodes, this.viewModel.searchPattern);
 
+        s.searchPattern = this.viewModel.searchPattern;
+        s.searchedNodePaths = searchedNodes.map(n => n.path);
         this.viewModel.folderCount = searchedNodes.filter(node => node.children && node.children.length != 0).length;
         this.viewModel.fileCount = searchedNodes.length - this.viewModel.folderCount;
         this.settingsService.applySettings(s);

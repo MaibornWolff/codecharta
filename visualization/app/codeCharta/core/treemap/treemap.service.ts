@@ -34,6 +34,7 @@ export interface TreeMapSettings {
     searchedNodePaths: string[];
     blacklist: Array<Exclude>;
     fileName: string;
+    searchPattern: string;
 }
 
 export class TreeMapService {

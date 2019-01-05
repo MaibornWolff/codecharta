@@ -1,11 +1,7 @@
 import {SquarifiedValuedCodeMapNode, TreeMapSettings} from "./treemap.service";
 import {node} from "../../ui/codeMap/rendering/node";
-import {min} from "d3-array";
-import {CodeMapUtilService} from "../../ui/codeMap/codeMap.util.service";
 
 export class TreeMapUtils {
-
-    private static FLAT_HEIGHT = 1;
 
     public static countNodes(node: { children?: any }): number {
         let count = 1;
@@ -70,8 +66,8 @@ export class TreeMapUtils {
         if (s.visibleEdges && s.visibleEdges.length > 0) {
             flattened = !this.nodeHasVisibleEdge(squaredNode, s);
         }
-        if (s.searchedNodePaths && s.searchedNodePaths.length > 0) {
-            flattened = !this.isNodeSearched(squaredNode, s);
+        if (s.searchedNodePaths && s.searchPattern && s.searchPattern.length > 0) {
+            flattened = (s.searchedNodePaths.length == 0) ? true : !this.isNodeSearched(squaredNode, s);
         }
         return flattened;
     }

@@ -49,6 +49,7 @@ export interface Settings {
     blacklist: Array<Exclude>;
     focusedNodePath: string;
     searchedNodePaths: Array<string>;
+    searchPattern: string;
 }
 
 export interface SettingsServiceSubscriber {
@@ -125,6 +126,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             blacklist: [],
             focusedNodePath: null,
             searchedNodePaths: [],
+            searchPattern: null
         };
         return settings;
 
@@ -401,6 +403,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.blacklist = settings.blacklist;
         this._settings.focusedNodePath = settings.focusedNodePath;
         this._settings.searchedNodePaths = settings.searchedNodePaths;
+        this._settings.searchPattern = settings.searchPattern;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = settings.map || this.settings.map;
