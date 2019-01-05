@@ -70,8 +70,13 @@ export class TreeMapUtils {
         if (s.visibleEdges && s.visibleEdges.length > 0) {
             flattened = !this.nodeHasVisibleEdge(squaredNode, s);
         }
-        if (s.searchedNodePaths && s.searchedNodePaths.length > 0) {
-            flattened = !this.isNodeSearched(squaredNode, s);
+        console.log(s.searchPattern, s.searchedNodePaths);
+        if (s.searchedNodePaths && s.searchPattern && s.searchPattern.length > 0) {
+            if (s.searchedNodePaths.length == 0) {
+                flattened = true;
+            } else {
+                flattened = !this.isNodeSearched(squaredNode, s);
+            }
         }
         return flattened;
     }
