@@ -2,7 +2,7 @@ import {MapTreeViewHoverEventSubscriber, MapTreeViewLevelController} from "./map
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {SettingsService} from "../../core/settings/settings.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
-import {CodeMapNode, ExcludeType} from "../../core/data/model/CodeMap";
+import {CodeMapNode, BlacklistType} from "../../core/data/model/CodeMap";
 import {CodeMapMouseEventService} from "../codeMap/codeMap.mouseEvent.service";
 import {Tooltips, TOOLTIPS_CHANGED_EVENT_ID} from "../../core/tooltip/tooltip.service";
 import {IAngularEvent, IRootScopeService} from "angular";
@@ -190,7 +190,7 @@ describe("MapTreeViewLevelController", () => {
             mapTreeViewLevelController.isBlacklisted(mapTreeViewLevelController.node);
 
             expect(CodeMapUtilService.isBlacklisted).toHaveBeenCalledWith(
-                mapTreeViewLevelController.node, settingsServiceMock.settings.blacklist, ExcludeType.exclude);
+                mapTreeViewLevelController.node, settingsServiceMock.settings.blacklist, BlacklistType.exclude);
         });
 
         it("Not blacklisted, not exist", () => {

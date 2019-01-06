@@ -1,4 +1,4 @@
-import {CodeMapNode, Exclude, ExcludeType} from "../../core/data/model/CodeMap";
+import {CodeMapNode, BlacklistItem, BlacklistType} from "../../core/data/model/CodeMap";
 import {hierarchy} from "d3-hierarchy";
 import {SettingsService} from "../../core/settings/settings.service";
 import ignore from 'ignore';
@@ -28,7 +28,7 @@ export class CodeMapUtilService {
         return matchingNodes;
     }
 
-    public static numberOfBlacklistedNodes(nodes: Array<CodeMapNode>, blacklist: Array<Exclude>): number {
+    public static numberOfBlacklistedNodes(nodes: Array<CodeMapNode>, blacklist: Array<BlacklistItem>): number {
         if (blacklist) {
             const ig = ignore().add(blacklist.map(ex => CodeMapUtilService.transformPath(ex.path)));
             const filteredNodes = ig.filter(nodes.map(n => CodeMapUtilService.transformPath(n.path)));
@@ -38,7 +38,7 @@ export class CodeMapUtilService {
         }
     }
 
-    public static isBlacklisted(node: CodeMapNode, blacklist: Array<Exclude>, type: ExcludeType): boolean {
+    public static isBlacklisted(node: CodeMapNode, blacklist: Array<BlacklistItem>, type: BlacklistType): boolean {
         const ig = ignore().add(blacklist
             .filter(b => b.type == type)
             .map(ex => CodeMapUtilService.transformPath(ex.path)));

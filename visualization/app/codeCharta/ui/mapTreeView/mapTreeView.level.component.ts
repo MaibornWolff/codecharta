@@ -1,6 +1,6 @@
 import {SettingsService} from "../../core/settings/settings.service";
 import {IRootScopeService} from "angular";
-import {CodeMapNode, ExcludeType} from "../../core/data/model/CodeMap";
+import {CodeMapNode, BlacklistType} from "../../core/data/model/CodeMap";
 import {NodeContextMenuController} from "../nodeContextMenu/nodeContextMenu.component";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
@@ -70,7 +70,7 @@ export class MapTreeViewLevelController {
 
     isBlacklisted(node: CodeMapNode): boolean {
         if (node != null) {
-            return CodeMapUtilService.isBlacklisted(node, this.settingsService.settings.blacklist, ExcludeType.exclude)
+            return CodeMapUtilService.isBlacklisted(node, this.settingsService.settings.blacklist, BlacklistType.exclude)
         }
         return false;
     }

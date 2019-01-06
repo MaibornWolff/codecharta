@@ -1,4 +1,4 @@
-import {CodeMapNode, Edge, Exclude, ExcludeType} from "../data/model/CodeMap";
+import {CodeMapNode, Edge, BlacklistItem, BlacklistType} from "../data/model/CodeMap";
 import {node} from "../../ui/codeMap/rendering/node";
 import {DataService} from "../data/data.service";
 import * as d3 from "d3";
@@ -32,7 +32,7 @@ export interface TreeMapSettings {
     invertHeight: boolean;
     visibleEdges: Edge[];
     searchedNodePaths: string[];
-    blacklist: Array<Exclude>;
+    blacklist: Array<BlacklistItem>;
     fileName: string;
     searchPattern: string;
 }
@@ -86,7 +86,7 @@ export class TreeMapService {
             heightValue = TreeMapService.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND;
         }
 
-        if (CodeMapUtilService.isBlacklisted(squaredNode.data, s.blacklist, ExcludeType.hide)) {
+        if (CodeMapUtilService.isBlacklisted(squaredNode.data, s.blacklist, BlacklistType.hide)) {
             squaredNode.data = this.setVisibilityOfNodeAndDescendants(squaredNode.data, false);
         }
 
@@ -123,7 +123,7 @@ export class TreeMapService {
 
         let result = 0;
 
-        if(CodeMapUtilService.isBlacklisted(node, s.blacklist, ExcludeType.exclude)) {
+        if(CodeMapUtilService.isBlacklisted(node, s.blacklist, BlacklistType.exclude)) {
             return 0;
         }
 
