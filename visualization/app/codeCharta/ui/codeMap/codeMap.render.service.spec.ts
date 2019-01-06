@@ -8,7 +8,7 @@ import * as THREE from "three";
 import {Group} from "three";
 import sinon from "sinon";
 import {CodeMapLabelService} from "./codeMap.label.service";
-import {ArrowManager} from "./rendering/arrowManager";
+import {CodeMapArrowService} from "./codeMap.arrow.service";
 jest.mock("./threeViewer/threeSceneService");
 
 
@@ -46,8 +46,7 @@ describe("renderService", () => {
         }));
 
         renderService.codeMapLabelService = new CodeMapLabelServiceMock;
-
-        renderService.arrowManager = new ArrowManager(renderService.threeSceneService.edgeArrows);
+        renderService.codeMapArrowService = new CodeMapArrowService(renderService.threeSceneService);
     }
 
     function mockEverything(){
@@ -193,13 +192,13 @@ describe("renderService", () => {
         });
 
         it("Arrow scale", ()=>{
-            renderService.arrowManager = {
+            renderService.codeMapArrowService = {
                 scale: jest.fn()
             };
 
             renderService.applySettings(settingsServiceMock.settings);
 
-            expect(renderService.arrowManager.scale).toHaveBeenCalled();
+            expect(renderService.codeMapArrowService.scale).toHaveBeenCalled();
         });
 
         it("Collect nodes", ()=>{
@@ -246,9 +245,9 @@ describe("renderService", () => {
 
 
             renderService.updateMapGeometry(settingsServiceMock.settings);
-            renderService.codeMapLabelService.clearArrows = sinon.spy();
+            renderService.codeMapArrowService.clearArrows = sinon.spy();
 
-            expect(renderService.codeMapLabelService.clearArrows.CalledOnce);
+            expect(renderService.codeMapArrowService.clearArrows.CalledOnce);
 
         });
 
