@@ -1,9 +1,10 @@
 import * as THREE from "three";
-import {node} from "./node";
-import {AngularColors, renderSettings} from "./renderSettings";
-import {CameraChangeSubscriber, ThreeOrbitControlsService} from "../threeViewer/threeOrbitControlsService";
+import {node} from "./rendering/node";
+import {AngularColors, renderSettings} from "./rendering/renderSettings";
+import {CameraChangeSubscriber, ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera, Sprite} from "three";
-import {Group} from "three";
+import {ThreeCameraService} from "./threeViewer/threeCameraService";
+import {ThreeSceneService} from "./threeViewer/threeSceneService";
 
 interface internalLabel {
     sprite : THREE.Sprite;
@@ -11,23 +12,19 @@ interface internalLabel {
     heightValue : number;
 }
 
-export class LabelManager implements CameraChangeSubscriber {
-    private parentObjectInScene : THREE.Object3D;
+export class CodeMapLabelService implements CameraChangeSubscriber {
+
+    public static SELECTOR = "codeMapLabelService";
+
     private labels : internalLabel[];
     private LABEL_WIDTH_DIVISOR: number = 2600; // empirically gathered
     private LABEL_HEIGHT_DIVISOR: number = 50; // empirically gathered
-    private camera: PerspectiveCamera;
-    private mapGeometry: Group;
 
-    constructor(parentObjectInScene: THREE.Object3D,
-                threeOrbitControlsService: ThreeOrbitControlsService,
-                camera: PerspectiveCamera,
-                mapGeometry: Group) {
+    constructor(private threeOrbitControlsService: ThreeOrbitControlsService,
+                private threeCameraService: ThreeCameraService,
+                private threeSceneService: ThreeSceneService) {
 
-        this.parentObjectInScene = parentObjectInScene;
         this.labels = new Array<internalLabel>();
-        this.camera = camera;
-        this.mapGeometry = mapGeometry;
         threeOrbitControlsService.subscribe(this);
     }
 
@@ -46,8 +43,8 @@ export class LabelManager implements CameraChangeSubscriber {
             label.sprite.position.set(labelX,labelY + 60 + label.heightValue / 2,labelZ);
             label.line = this.makeLine(labelX, labelY, labelZ);
 
-            this.parentObjectInScene.add(label.sprite);
-            this.parentObjectInScene.add(label.line);
+            this.threeSceneService.labels.add(label.sprite);
+            this.threeSceneService.labels.add(label.line);
 
             this.labels.push(label);
         }
@@ -55,8 +52,8 @@ export class LabelManager implements CameraChangeSubscriber {
 
     clearLabels() {
         this.labels = [];
-        while (this.parentObjectInScene.children.length > 0) {
-            this.parentObjectInScene.children.pop();
+        while (this.threeSceneService.labels.children.length > 0) {
+            this.threeSceneService.labels.children.pop();
         }
     }
 
@@ -127,7 +124,7 @@ export class LabelManager implements CameraChangeSubscriber {
     }
 
     private setLabelSize(sprite: Sprite, currentLabelWidth: number = undefined) {
-        const distance = this.camera.position.distanceTo(this.mapGeometry.position);
+        const distance = this.threeCameraService.camera.position.distanceTo(this.threeSceneService.mapGeometry.position);
         currentLabelWidth = (!currentLabelWidth) ? sprite.material.map.image.width : currentLabelWidth;
         sprite.scale.set(distance / this.LABEL_WIDTH_DIVISOR * currentLabelWidth,distance / this.LABEL_HEIGHT_DIVISOR,1);
     }
