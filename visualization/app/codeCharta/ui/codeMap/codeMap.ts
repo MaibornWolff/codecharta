@@ -9,6 +9,7 @@ import {CodeMapRenderService} from "./codeMap.render.service";
 import {CodeMapActionsService} from "./codeMap.actions.service";
 import {CodeMapUtilService} from "./codeMap.util.service";
 import {CodeMapLabelService} from "./codeMap.label.service";
+import {CodeMapArrowService} from "./codeMap.arrow.service";
 
 angular.module("app.codeCharta.ui.codeMap",["app.codeCharta.ui.codeMap.threeViewer", "app.codeCharta.core"])
 .component(
@@ -29,4 +30,7 @@ angular.module("app.codeCharta.ui.codeMap",["app.codeCharta.ui.codeMap.threeView
 ).service(
     CodeMapLabelService.SELECTOR,
     CodeMapLabelService
+).service(
+    CodeMapArrowService.SELECTOR,
+    CodeMapArrowService
 );
