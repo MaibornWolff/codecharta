@@ -2,7 +2,6 @@
 
 import {CodeMapMesh} from "./rendering/codeMapMesh";
 import {renderSettings} from "./rendering/renderSettings";
-import {LabelManager} from "./rendering/labelManager";
 import {KindOfMap, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import {node} from "./rendering/node";
 import {ArrowManager} from "./rendering/arrowManager";
@@ -12,11 +11,11 @@ import {
     CodeMapMouseEventService,
     CodeMapMouseEventServiceSubscriber
 } from "./codeMap.mouseEvent.service";
-import {TreeMapSettings} from "../../core/treemap/treemap.service";
+import {TreeMapService, TreeMapSettings} from "../../core/treemap/treemap.service";
 import {codeMapBuilding} from "./rendering/codeMapBuilding";
 import {CodeMapUtilService} from "./codeMap.util.service";
-import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
-import {ThreeCameraService} from "./threeViewer/threeCameraService";
+import {CodeMapLabelService} from "./codeMap.label.service";
+import {ThreeSceneService} from "./threeViewer/threeSceneService";
 
 const mapSize = 500.0;
 
@@ -28,20 +27,18 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     public static SELECTOR = "codeMapRenderService";
 
     private _mapMesh: CodeMapMesh = null;
-    private labelManager: LabelManager = null;
     private arrowManager: ArrowManager = null;
 
     public currentSortedNodes: node[];
     private currentRenderSettings: renderSettings;
 
     /* @ngInject */
-    constructor(private threeSceneService,
-                private treeMapService,
+    constructor(private threeSceneService: ThreeSceneService,
+                private treeMapService: TreeMapService,
                 private $rootScope,
                 private settingsService: SettingsService,
                 private codeMapUtilService: CodeMapUtilService,
-                private threeOrbitControlsService: ThreeOrbitControlsService,
-                private threeCameraService: ThreeCameraService) {
+                private codeMapLabelService: CodeMapLabelService) {
         this.settingsService.subscribe(this);
         CodeMapMouseEventService.subscribe($rootScope, this);
     }
@@ -127,13 +124,12 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             deltaColorFlipped: s.deltaColorFlipped
         };
 
-        this.labelManager = new LabelManager(this.threeSceneService.labels, this.threeOrbitControlsService, this.threeSceneService.mapGeometry, this.threeCameraService.camera);
-        this.labelManager.clearLabels();
+        this.codeMapLabelService.clearLabels();
         this.arrowManager = new ArrowManager(this.threeSceneService.edgeArrows);
         this.arrowManager.clearArrows();
         for (let i = 0, numAdded = 0; i < this.currentSortedNodes.length && numAdded < s.amountOfTopLabels; ++i) {
             if (this.currentSortedNodes[i].isLeaf) {
-                this.labelManager.addLabel(this.currentSortedNodes[i], this.currentRenderSettings);
+                this.codeMapLabelService.addLabel(this.currentSortedNodes[i], this.currentRenderSettings);
                 ++numAdded;
             }
         }
@@ -196,8 +192,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             this.threeSceneService.getMapMesh().setScale(x, y, z);
         }
 
-        if (this.labelManager) {
-            this.labelManager.scale(x, y, z);
+        if (this.codeMapLabelService) {
+            this.codeMapLabelService.scale(x, y, z);
         }
 
         if (this.arrowManager) {

@@ -1,8 +1,6 @@
-import {LabelManager} from "./labelManager";
 import * as THREE from "three";
-import {node, nodeAttributes} from "./node";
-import {colorRange, renderSettings} from "./renderSettings";
-import {Vector3} from "three";
+import {node} from "./node";
+import {renderSettings} from "./renderSettings";
 import {ArrowManager} from "./arrowManager";
 
 describe("ArrowManager", () => {
