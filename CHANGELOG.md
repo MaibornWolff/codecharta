@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
-
+- Label size keeps readable for large maps or a high distance between camera and map #237
 ### Removed
 
 ### Fixed
