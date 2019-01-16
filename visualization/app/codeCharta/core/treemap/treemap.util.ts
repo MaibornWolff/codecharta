@@ -31,7 +31,7 @@ export class TreeMapUtils {
             heightValue = (maxHeight - heightValue);
         }
 
-        const flattened = TreeMapUtils.isNodeToBeFlat(s, squaredNode);
+        const flattened = TreeMapUtils.isNodeToBeFlat(squaredNode, s);
         if (flattened) {
             heightValue = minHeight;
         }
@@ -50,7 +50,7 @@ export class TreeMapUtils {
             deltas: squaredNode.data.deltas,
             parent: parent,
             heightDelta: squaredNode.data.deltas && squaredNode.data.deltas[s.heightKey] ? heightScale * squaredNode.data.deltas[s.heightKey] : 0,
-            visible: squaredNode.data.visible,
+            visible: squaredNode.data.visible && !TreeMapUtils.isNodeToBeInvisible(squaredNode, s),
             path: squaredNode.data.path,
             origin: squaredNode.data.origin,
             link: squaredNode.data.link,
@@ -61,13 +61,10 @@ export class TreeMapUtils {
 
     }
 
-    private static isNodeToBeFlat(s: TreeMapSettings, squaredNode): boolean {
+    private static isNodeToBeFlat(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): boolean {
         let flattened = false;
         if (s.visibleEdges && s.visibleEdges.length > 0) {
             flattened = !this.nodeHasVisibleEdge(squaredNode, s);
-        }
-        if (s.searchedNodePaths && s.searchPattern && s.searchPattern.length > 0) {
-            flattened = (s.searchedNodePaths.length == 0) ? true : !this.isNodeSearched(squaredNode, s);
         }
         return flattened;
     }
@@ -76,6 +73,17 @@ export class TreeMapUtils {
         return s.visibleEdges.filter(edge =>
             squaredNode.data.path === edge.fromNodeName ||
             squaredNode.data.path === edge.toNodeName).length > 0;
+    }
+
+    private static isNodeToBeInvisible(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings, ): boolean {
+        let invisible = false;
+        if (!TreeMapUtils.isNodeLeaf(squaredNode)) {
+            return invisible;
+        }
+        if (s.searchedNodePaths && s.searchPattern && s.searchPattern.length > 0) {
+            invisible = (s.searchedNodePaths.length == 0) ? true : !this.isNodeSearched(squaredNode, s);
+        }
+        return invisible;
     }
 
     private static isNodeSearched(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): boolean {
