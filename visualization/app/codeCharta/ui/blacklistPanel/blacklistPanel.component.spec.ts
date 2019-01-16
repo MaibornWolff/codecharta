@@ -9,7 +9,7 @@ describe("blacklistController", () => {
     let settingsServiceMock: SettingsService;
     let codeMapActionsServiceMock: CodeMapActionsService;
     let simpleHierarchy: CodeMapNode;
-    let viewModel;
+    let blacklistItem;
 
     function rebuildSUT() {
         blacklistPanelController = new BlacklistPanelController(settingsServiceMock, codeMapActionsServiceMock);
@@ -38,12 +38,6 @@ describe("blacklistController", () => {
         codeMapActionsServiceMock = new CodeMapActionsServiceMock();
 
         rebuildSUT();
-
-        viewModel = {
-            itemPath: "/root",
-            itemType: ExcludeType.exclude,
-            error: ""
-        };
 
         simpleHierarchy = {
             name: "root",
@@ -87,7 +81,7 @@ describe("blacklistController", () => {
                 }
             ]
         };
-        blacklistPanelController.viewModel = viewModel;
+        blacklistItem = {path: "/root", type: ExcludeType.exclude};
         settingsServiceMock.settings.map.root = simpleHierarchy;
     }
 
@@ -105,45 +99,16 @@ describe("blacklistController", () => {
         mockEverything();
     });
 
-    it("add single blacklist entry", () => {
-        blacklistPanelController.addBlacklistEntry();
-        expect(getFilteredBlacklistBy({path: "/root", type: ExcludeType.exclude})).toHaveLength(1);
-    });
-
-    it("add only unique blacklist Entries", () => {
-        blacklistPanelController.addBlacklistEntry();
-        blacklistPanelController.addBlacklistEntry();
-
-        expect(getFilteredBlacklistBy({path: "/root", type: ExcludeType.exclude})).toHaveLength(1);
-        expect(blacklistPanelController.viewModel.error).toBe("Pattern already blacklisted");
-    });
-
-    it("not add invalid node to blacklist", () => {
-        blacklistPanelController.viewModel.itemPath = "/notanode";
-        blacklistPanelController.addBlacklistEntry();
-
-        expect(settingsServiceMock.settings.blacklist).toHaveLength(0);
-        expect(blacklistPanelController.viewModel.error).toBe("Pattern not found");
-    });
-
-    it("not add invalid node with empty path", () => {
-        blacklistPanelController.viewModel.itemPath = "";
-        blacklistPanelController.addBlacklistEntry();
-
-        expect(settingsServiceMock.settings.blacklist).toHaveLength(0);
-        expect(blacklistPanelController.viewModel.error).toBe("Invalid empty pattern");
-    });
-
     it("add and call includingNode function when removing blacklist entry", () => {
-        blacklistPanelController.addBlacklistEntry();
+        settingsServiceMock.settings.blacklist.push(blacklistItem);
         expect(getFilteredBlacklistBy({path: "/root", type: ExcludeType.exclude})).toHaveLength(1);
 
-        blacklistPanelController.removeBlacklistEntry(viewModel);
-        expect(codeMapActionsServiceMock.removeBlacklistEntry).toHaveBeenCalledWith({"error": "", "itemPath": "/root", "itemType": "exclude"});
+        blacklistPanelController.removeBlacklistEntry(blacklistItem);
+        expect(codeMapActionsServiceMock.removeBlacklistEntry).toHaveBeenCalledWith({path: "/root", type: "exclude"});
     });
 
     it("update local blacklist with settingsService onSettingsChanged", () => {
-        settingsServiceMock.settings.blacklist = [{path: viewModel.itemPath, type: viewModel.itemType}];
+        settingsServiceMock.settings.blacklist = [blacklistItem];
         blacklistPanelController.onSettingsChanged(settingsServiceMock.settings, null);
         expect(blacklistPanelController.blacklist).toEqual(settingsServiceMock.settings.blacklist);
     });
