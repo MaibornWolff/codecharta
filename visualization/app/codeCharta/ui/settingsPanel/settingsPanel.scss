@@ -1,6 +1,9 @@
 
 settings-panel-component {
 
+    $angularGreen: #00bfa5;
+    $angularLightGreen: #00DFC5;
+
     @import "~angular-material-expansion-panel/dist/md-expansion-panel.css";
 
     md-expansion-panel-collapsed:hover,
@@ -40,18 +43,41 @@ settings-panel-component {
         display: none;
     }
 
+    .md-title {
+        margin: 0 4px;
+        transition: 0.5s;
+    }
+
     .beta-symbol {
-        display: inline-block;
         border: 1px solid orange;
         color: orange;
+    }
+
+    .item-counter {
+        border: 1px solid $angularLightGreen;
+        background: $angularLightGreen;
+        color: white;
+        font-weight: bold !important;
+        transition: 0.5s;
+    }
+
+    md-expansion-panel.highlight {
+        .md-title {
+            color: $angularGreen;
+        }
+    }
+
+    .beta-symbol,
+    .item-counter {
+        display: inline-block;
         font-weight: normal;
         line-height: 17px;
         font-size: 10pt;
         margin-top: 2px;
         padding: 0 2px 0 2px;
-        width: 34px;
+        min-width: 20px;
         border-radius: 4px;
+        text-align: center;
     }
-
 }
 

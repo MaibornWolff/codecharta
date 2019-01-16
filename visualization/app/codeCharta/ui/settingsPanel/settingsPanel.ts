@@ -1,17 +1,24 @@
 "use strict";
 import "./settingsPanel.scss";
+import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import $ from "jQuery";
 
 /**
  * Controls the settingsPanel
  */
-export class SettingsPanelController {
+export class SettingsPanelController implements SettingsServiceSubscriber {
 
-    public showEdgePanel : boolean = false;
+    public viewModel = {
+        blacklistLength: 0
+    };
 
     /* @ngInject */
     constructor(
         private $scope,
-        private $timeout) {
+        private $timeout,
+        private settingsService: SettingsService) {
+
+        settingsService.subscribe(this);
     }
 
     /**
@@ -24,6 +31,23 @@ export class SettingsPanelController {
             this.$scope.$broadcast("rzSliderForceRender");
         },50);
     }
+
+    onSettingsChanged(settings: Settings, event: Event) {
+        if (settings.blacklist.length != this.viewModel.blacklistLength) {
+            this.highlightCounterIcon();
+        }
+        this.viewModel.blacklistLength = settings.blacklist.length;
+    }
+
+    highlightCounterIcon() {
+        const panelElement = $(".item-counter").closest("md-expansion-panel");
+        panelElement.addClass("highlight");
+
+        this.$timeout(() => {
+            panelElement.removeClass("highlight");
+        },500);
+    }
+
 }
 
 export const settingsPanelComponent = {
