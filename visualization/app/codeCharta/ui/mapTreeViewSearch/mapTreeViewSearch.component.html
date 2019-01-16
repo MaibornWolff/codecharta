@@ -12,9 +12,8 @@
 
 <md-menu>
     <md-button class="menu-button round-button" ng-click="$mdMenu.open($event)"
-               title="Add to Blacklist..."
-               ng-disabled="$ctrl.viewModel.folderCount + $ctrl.viewModel.fileCount == 0">
-        <i class="fa fa-list"></i>
+               title="Add to Blacklist...">
+        <i class="fa fa-ellipsis-h"></i>
     </md-button>
     <md-menu-content width="2">
         <md-menu-item style="min-height: 20px; height: 20px;">
@@ -22,10 +21,10 @@
         </md-menu-item>
         <md-divider></md-divider>
         <md-menu-item>
-            <md-button ng-disabled="$ctrl.viewModel.isPatternExcluded" ng-click="$ctrl.onClickBlacklistPattern('exclude')"><i class="fa fa-ban"></i> Exclude</md-button>
+            <md-button ng-disabled="$ctrl.viewModel.folderCount + $ctrl.viewModel.fileCount == 0 || $ctrl.viewModel.isPatternExcluded" ng-click="$ctrl.onClickBlacklistPattern('exclude')"><i class="fa fa-ban"></i> Exclude</md-button>
         </md-menu-item>
         <md-menu-item>
-            <md-button ng-disabled="$ctrl.viewModel.isPatternHidden" ng-click="$ctrl.onClickBlacklistPattern('hide')"><i class="fa fa-eye-slash"></i> Hide</md-button>
+            <md-button ng-disabled="$ctrl.viewModel.folderCount + $ctrl.viewModel.fileCount == 0 || $ctrl.viewModel.isPatternHidden" ng-click="$ctrl.onClickBlacklistPattern('hide')"><i class="fa fa-eye-slash"></i> Hide</md-button>
         </md-menu-item>
     </md-menu-content>
 </md-menu>
