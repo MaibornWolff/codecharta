@@ -49,7 +49,8 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
         this.settingsService.settings.blacklist.push(
             {path: this.viewModel.searchPattern, type: blacklistType}
         );
-        this.settingsService.applySettings();
+        this.viewModel.searchPattern = "";
+        this.onSearchChange();
     }
 
     private updateViewModel() {
