@@ -19,8 +19,8 @@ export class ViewCubeController
     private camera: THREE.PerspectiveCamera;
     private renderer: THREE.WebGLRenderer;
     private scene: THREE.Scene;
-    private width = 250;
-    private height = 250;
+    private WIDTH = 250;
+    private HEIGHT = 250;
     private hoverInfo = { cube: null, originalMaterial: null };
 
     private cubeDefinition = {
@@ -37,8 +37,6 @@ export class ViewCubeController
         private viewCubeMouseEventsService: ViewCubeMouseEventsService
     ) {
         this.initCamera();
-        this.threeOrbitControlsService.subscribe(this);
-        ViewCubeMouseEventsService.subscribeToHoverEvents($rootScope, this);
         this.initLights();
         this.initRenderer(this.$element);
         this.initScene();
@@ -49,6 +47,12 @@ export class ViewCubeController
             this.camera,
             this.renderer
         );
+
+        this.threeOrbitControlsService.subscribe(this);
+        ViewCubeMouseEventsService.subscribeToHoverEvents($rootScope, this);
+
+        const axesHelper = new THREE.AxesHelper(5);
+        this.scene.add(axesHelper);
     }
 
     private initCube() {
@@ -65,7 +69,27 @@ export class ViewCubeController
     }
 
     public onCameraChanged(camera: PerspectiveCamera) {
-        this.setCameraPosition(camera.position);
+        const newCameraPosition = this.calculateCameraPosition(camera);
+        this.setCameraPositionAndAngle(newCameraPosition);
+    }
+
+    private setCameraPositionAndAngle(newCameraPosition: THREE.Vector3) {
+        this.camera.position.set(
+            newCameraPosition.x,
+            newCameraPosition.y,
+            newCameraPosition.z
+        );
+        this.camera.lookAt(0, 0, 0);
+        this.camera.updateProjectionMatrix();
+    }
+
+    private calculateCameraPosition(camera: THREE.PerspectiveCamera) {
+        const codeMapTargetVector = this.threeOrbitControlsService.controls.target.clone();
+        const codeMapCameraPosition = camera.position.clone();
+        return codeMapCameraPosition
+            .sub(codeMapTargetVector)
+            .normalize()
+            .multiplyScalar(3);
     }
 
     private startAnimation() {
@@ -74,44 +98,6 @@ export class ViewCubeController
             this.onAnimationFrame();
         };
         animate();
-    }
-
-    private setCameraPosition(position: { x: number; y: number; z: number }) {
-        this.setCameraToNormalizedPosition(position);
-        this.setCameraViewToBottomCenter();
-
-        // TODO the following line fixes gimbal lock but prevents map moving
-        // this.controls.target.set(t.x, t.y, t.z);
-
-        this.camera.updateProjectionMatrix();
-    }
-
-    private setCameraViewToBottomCenter() {
-        const boundingSphere = new THREE.Box3()
-            .setFromObject(this.cubeGroup)
-            .getBoundingSphere();
-        const center = boundingSphere.center.clone();
-        center.setY(0);
-        this.camera.lookAt(center);
-    }
-
-    private setCameraToNormalizedPosition(position: {
-        x: number;
-        y: number;
-        z: number;
-    }) {
-        const normalizedPosition = new THREE.Vector3(
-            position.x,
-            position.y,
-            position.z
-        )
-            .normalize()
-            .multiplyScalar(3);
-        this.camera.position.set(
-            normalizedPosition.x,
-            normalizedPosition.y,
-            normalizedPosition.z
-        );
     }
 
     private onAnimationFrame() {
@@ -125,7 +111,7 @@ export class ViewCubeController
 
     private initRenderer($element: any) {
         this.renderer = new THREE.WebGLRenderer({ alpha: true });
-        this.renderer.setSize(this.width, this.height);
+        this.renderer.setSize(this.WIDTH, this.HEIGHT);
         this.renderer.setClearColor(0x000000, 0.2);
         $element[0].appendChild(this.renderer.domElement);
     }
@@ -133,7 +119,7 @@ export class ViewCubeController
     private initCamera() {
         this.camera = new THREE.PerspectiveCamera(
             45,
-            this.width / this.height,
+            this.WIDTH / this.HEIGHT,
             0.1,
             1000
         );

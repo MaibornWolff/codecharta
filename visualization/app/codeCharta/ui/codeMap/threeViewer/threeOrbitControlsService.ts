@@ -25,21 +25,25 @@ class ThreeOrbitControlsService {
         private $rootScope: IRootScopeService
     ) {}
 
-    setFrontView(
-        x: number,
-        y: number,
-        z: number,
-        obj = this.threeSceneService.mapGeometry
-    ) {
+    setFrontView(x, y, z) {
         const boundingSphere = new THREE.Box3()
-            .setFromObject(obj)
+            .setFromObject(this.threeSceneService.mapGeometry)
             .getBoundingSphere();
 
-        const t = boundingSphere.center.clone();
-        t.setY(0);
+        const pivotVector = boundingSphere.center.clone();
+        pivotVector.setY(0);
 
-        this.threeCameraService.camera.position.set(x, y, z);
-        this.threeCameraService.camera.lookAt(t);
+        const pivotGroup = new THREE.Group();
+        pivotGroup.position.set(pivotVector.x, pivotVector.y, pivotVector.z);
+        pivotGroup.add(this.threeCameraService.camera);
+        console.log("CAMERA BEFORE: ", this.threeCameraService.camera);
+        pivotGroup.rotation.set(0, 0, 0);
+        pivotGroup.updateMatrixWorld(true);
+
+        console.log("CAMERA AFTER: ", this.threeCameraService.camera);
+
+        /*this.threeCameraService.camera.position.set(x, y, z);
+        this.threeCameraService.camera.lookAt(pivotVector);*/
         this.threeCameraService.camera.updateProjectionMatrix();
     }
 
