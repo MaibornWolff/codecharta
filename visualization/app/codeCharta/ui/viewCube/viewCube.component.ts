@@ -158,10 +158,10 @@ export class ViewCubeController
     public onCubeClicked(cube: THREE.Mesh) {
         switch (cube) {
             case this.cubeDefinition.front.middle.middle:
-                this.threeOrbitControlsService.setFrontView(0, 45, 0);
+                this.threeOrbitControlsService.setCameraViewToAngle(0, 45, 0);
                 break;
             case this.cubeDefinition.back.middle.middle:
-                this.threeOrbitControlsService.setFrontView(0, 45, 0);
+                this.threeOrbitControlsService.setCameraViewToAngle(0, 45, 0);
                 break;
         }
     }

@@ -27,7 +27,7 @@ class ThreeOrbitControlsService {
         private $rootScope: IRootScopeService
     ) {}
 
-    setFrontView(x: number, y: number, z: number) {
+    setCameraViewToAngle(x: number, y: number, z: number) {
         const DEGREE_TO_RAD_SCALE = Math.PI / 180;
 
         this.pivot.rotateX(x * DEGREE_TO_RAD_SCALE);
