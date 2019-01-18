@@ -50,7 +50,7 @@ export class TreeMapService {
 
     public createTreemapNodes(data: CodeMapNode, s: TreeMapSettings, edges: Edge[]): node {
         const squarified: SquarifiedValuedCodeMapNode = this.squarify(data, s, edges);
-        const heighted = this.addMapScaledHeightDimensionAndFinalizeFromRoot(squarified, edges, s);
+        const heighted = this.addMapScaledHeightDimensionAndFinalizeFromRoot(squarified, s);
         return heighted;
     }
 
@@ -66,10 +66,9 @@ export class TreeMapService {
         return treeMap(root.sum((node) => this.calculateValue(node, edges, s))) as SquarifiedValuedCodeMapNode;
     }
 
-    private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, edges: Edge[], s: TreeMapSettings): node {
-        const heightScale = s.size / TreeMapService.HEIGHT_DIVISOR / this.dataService.getMaxMetricInAllRevisions(s.heightKey);
-
+    private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): node {
         const maxHeight = this.dataService.getMaxMetricInAllRevisions(s.heightKey);
+        const heightScale = s.size / TreeMapService.HEIGHT_DIVISOR / maxHeight;
         return this.addHeightDimensionAndFinalize(squaredNode, s, heightScale, maxHeight);
     }
 
@@ -77,10 +76,6 @@ export class TreeMapService {
 
         let attr = squaredNode.data.attributes || {};
         let heightValue = attr[s.heightKey];
-
-        if (heightValue === undefined || heightValue === null) {
-            heightValue = TreeMapService.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND;
-        }
 
         if (heightValue === undefined || heightValue === null) {
             heightValue = TreeMapService.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND;
