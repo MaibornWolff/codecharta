@@ -96,7 +96,6 @@ describe("detailPanelController", function() {
     });
 
     it("should clearSelectedDetails when invalid node is selected",() => {
-
         const data = {
             to: {
                 notanode: "somenode"
@@ -120,14 +119,11 @@ describe("detailPanelController", function() {
         expect(detailPanelController.clearSelectedDetails).toHaveBeenCalled();
     });
 
-    it("should clearSelectedDetails when invalid or no node is selected",() => {
-
-        detailPanelController.clearSelectedDetails = jest.fn();
-
+    it("should clearSelectedDetails when no node is selected",() => {
         const data = {};
+        detailPanelController.clearSelectedDetails = jest.fn();
         detailPanelController.onSelect(data);
         expect(detailPanelController.clearSelectedDetails).toHaveBeenCalled();
-
     });
 
     it("should setHoveredDetails when valid node is hovered",() => {
