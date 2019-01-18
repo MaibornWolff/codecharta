@@ -26,7 +26,7 @@
         <md-expansion-panel-collapsed>
             <div><i class="fa fa-ban"></i>
                 <span class="md-title">Blacklist</span>
-                <div class="item-counter">{{ $ctrl.viewModel.blacklistLength }}</div>
+                <div class="item-counter" ng-if="$ctrl.viewModel.blacklistLength > 0">{{ $ctrl.viewModel.blacklistLength }}</div>
             </div>
             <div flex></div>
             <md-expansion-panel-icon></md-expansion-panel-icon>
@@ -36,7 +36,7 @@
             <md-expansion-panel-header ng-click="$panel.collapse()">
                 <div><i class="fa fa-ban"></i>
                     <span class="md-title">Blacklist</span>
-                    <div class="item-counter">{{ $ctrl.viewModel.blacklistLength }}</div>
+                    <div class="item-counter" ng-if="$ctrl.viewModel.blacklistLength > 0">{{ $ctrl.viewModel.blacklistLength }}</div>
                 </div>
                 <div flex></div>
                 <md-expansion-panel-icon></md-expansion-panel-icon>
