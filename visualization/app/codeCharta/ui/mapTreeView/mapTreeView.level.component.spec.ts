@@ -3,9 +3,7 @@ import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {SettingsService} from "../../core/settings/settings.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
 import {CodeMapNode, BlacklistType} from "../../core/data/model/CodeMap";
-import {CodeMapMouseEventService} from "../codeMap/codeMap.mouseEvent.service";
-import {Tooltips, TOOLTIPS_CHANGED_EVENT_ID} from "../../core/tooltip/tooltip.service";
-import {IAngularEvent, IRootScopeService} from "angular";
+import {IRootScopeService} from "angular";
 import "./mapTreeView";
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper";
 
@@ -197,6 +195,20 @@ describe("MapTreeViewLevelController", () => {
             CodeMapUtilService.isBlacklisted = jest.fn();
             let blacklisted = mapTreeViewLevelController.isBlacklisted(mapTreeViewLevelController.node);
             expect(blacklisted).toBeFalsy();
+        });
+
+        it("Is searched", () => {
+            mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder");
+            mapTreeViewLevelController.settingsService.settings.searchedNodePaths = ["/root/a", "/root/a/ab"];
+            let searched = mapTreeViewLevelController.isSearched(mapTreeViewLevelController.node);
+            expect(searched).toBeTruthy();
+        });
+
+        it("Is not searched", () => {
+            mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder");
+            mapTreeViewLevelController.settingsService.settings.searchedNodePaths = ["/root/a"];
+            let searched = mapTreeViewLevelController.isSearched(mapTreeViewLevelController.node);
+            expect(searched).toBeFalsy();
         });
 
         it("Sort leaf", () => {
