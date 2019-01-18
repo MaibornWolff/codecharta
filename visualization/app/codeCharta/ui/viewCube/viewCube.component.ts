@@ -49,7 +49,10 @@ export class ViewCubeController
         );
 
         this.threeOrbitControlsService.subscribe(this);
-        ViewCubeMouseEventsService.subscribeToHoverEvents($rootScope, this);
+        ViewCubeMouseEventsService.subscribeToHoverEvents(
+            this.$rootScope,
+            this
+        );
 
         const axesHelper = new THREE.AxesHelper(5);
         this.scene.add(axesHelper);
@@ -155,10 +158,10 @@ export class ViewCubeController
     public onCubeClicked(cube: THREE.Mesh) {
         switch (cube) {
             case this.cubeDefinition.front.middle.middle:
-                this.threeOrbitControlsService.setFrontView(127, 0, 2300);
+                this.threeOrbitControlsService.setFrontView(0, 45, 0);
                 break;
             case this.cubeDefinition.back.middle.middle:
-                this.threeOrbitControlsService.setFrontView(165, 0, -2000);
+                this.threeOrbitControlsService.setFrontView(0, 45, 0);
                 break;
         }
     }

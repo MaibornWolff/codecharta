@@ -1,7 +1,7 @@
 "use strict";
 import { ThreeCameraService } from "./threeCameraService";
 import { IRootScopeService, IAngularEvent } from "angular";
-import { Object3D, OrbitControls, PerspectiveCamera } from "three";
+import { OrbitControls, PerspectiveCamera } from "three";
 import * as THREE from "three";
 import { ThreeSceneService } from "./threeSceneService";
 
@@ -17,6 +17,8 @@ class ThreeOrbitControlsService {
     public static CAMERA_CHANGED_EVENT_NAME = "camera-changed";
 
     controls: OrbitControls;
+    pivotVector: THREE.Vector3;
+    pivot: THREE.Group;
 
     /* ngInject */
     constructor(
@@ -25,25 +27,13 @@ class ThreeOrbitControlsService {
         private $rootScope: IRootScopeService
     ) {}
 
-    setFrontView(x, y, z) {
-        const boundingSphere = new THREE.Box3()
-            .setFromObject(this.threeSceneService.mapGeometry)
-            .getBoundingSphere();
+    setFrontView(x: number, y: number, z: number) {
+        const DEGREE_TO_RAD_SCALE = Math.PI / 180;
 
-        const pivotVector = boundingSphere.center.clone();
-        pivotVector.setY(0);
+        this.pivot.rotateX(x * DEGREE_TO_RAD_SCALE);
+        this.pivot.rotateY(y * DEGREE_TO_RAD_SCALE);
+        this.pivot.rotateZ(z * DEGREE_TO_RAD_SCALE);
 
-        const pivotGroup = new THREE.Group();
-        pivotGroup.position.set(pivotVector.x, pivotVector.y, pivotVector.z);
-        pivotGroup.add(this.threeCameraService.camera);
-        console.log("CAMERA BEFORE: ", this.threeCameraService.camera);
-        pivotGroup.rotation.set(0, 0, 0);
-        pivotGroup.updateMatrixWorld(true);
-
-        console.log("CAMERA AFTER: ", this.threeCameraService.camera);
-
-        /*this.threeCameraService.camera.position.set(x, y, z);
-        this.threeCameraService.camera.lookAt(pivotVector);*/
         this.threeCameraService.camera.updateProjectionMatrix();
     }
 
@@ -95,6 +85,24 @@ class ThreeOrbitControlsService {
         this.controls.addEventListener("change", function() {
             ctx.onInput(ctx.threeCameraService.camera);
         });
+
+        this.initPivot();
+    }
+
+    private initPivot() {
+        const boundingSphere = new THREE.Box3()
+            .setFromObject(this.threeSceneService.mapGeometry)
+            .getBoundingSphere();
+        this.pivotVector = boundingSphere.center.clone();
+        this.pivotVector.setY(0);
+        this.pivot = new THREE.Group();
+        this.pivot.position.set(
+            this.pivotVector.x,
+            this.pivotVector.y,
+            this.pivotVector.z
+        );
+        this.pivot.add(this.threeCameraService.camera);
+        this.threeSceneService.scene.add(this.pivot);
     }
 
     /**

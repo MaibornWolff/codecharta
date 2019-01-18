@@ -3,31 +3,40 @@ import { IRootScopeService } from "angular";
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService";
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service";
 import { ViewCubeController } from "./viewCube.component";
+import { ViewCubemeshGenerator } from "./viewCube.meshGenerator";
 
 describe("ViewCubeController", () => {
     let rootScopeServiceMock: IRootScopeService;
     let threeOrbitControlsServiceMock: ThreeOrbitControlsService;
     let viewCubeMouseEventsServiceMock: ViewCubeMouseEventsService;
+    let viewCubeController: ViewCubeController;
+    let $element;
 
     afterEach(() => {
         jest.resetAllMocks();
     });
 
     beforeEach(() => {
-        restartSystem();
+        mockDependencies();
+        buildController();
     });
 
-    function restartSystem() {
+    function mockDependencies() {
         instantiateModule("app.codeCharta.ui.viewCube");
 
-        rootScopeServiceMock = getService("rootScopeService");
-        threeOrbitControlsServiceMock = getService("threeOrbitControlsService");
-        viewCubeMouseEventsServiceMock = getService(
+        rootScopeServiceMock = getService<IRootScopeService>(
+            "rootScopeService"
+        );
+        threeOrbitControlsServiceMock = getService<ThreeOrbitControlsService>(
+            "threeOrbitControlsService"
+        );
+        viewCubeMouseEventsServiceMock = getService<ViewCubeMouseEventsService>(
             "viewCubeMouseEventsService"
         );
+        $element = [];
     }
 
-    function rebuildController() {
+    function buildController() {
         viewCubeController = new ViewCubeController(
             $element,
             rootScopeServiceMock,
@@ -35,4 +44,19 @@ describe("ViewCubeController", () => {
             viewCubeMouseEventsServiceMock
         );
     }
+
+    it("initCube should add a cubeGroup to the scene", () => {
+        ViewCubemeshGenerator.buildCube = jest.fn(() => {
+            return {
+                group: "group",
+                front: "front",
+                middle: "middle",
+                back: "back"
+            };
+        });
+
+        // viewCubeController["initCube"]();
+
+        expect(ViewCubemeshGenerator.buildCube).toBeCalled();
+    });
 });
