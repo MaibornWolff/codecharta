@@ -39,7 +39,7 @@ interface Details {
 
 export class DetailPanelController implements SettingsServiceSubscriber, CodeMapMouseEventServiceSubscriber {
 
-    private details: Details;
+    public details: Details;
     private settings: Settings;
 
     /* @ngInject */

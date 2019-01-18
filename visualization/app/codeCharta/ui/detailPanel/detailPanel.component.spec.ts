@@ -1,10 +1,11 @@
 import "./detailPanel";
 
-import {SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {SettingsService, SettingsServiceSubscriber, Settings} from "../../core/settings/settings.service";
 import {DetailPanelController} from "./detailPanel.component";
 import {DataService} from "../../core/data/data.service";
 import {getService, instantiateModule} from "../../../../mocks/ng.mockhelper";
-import {IRootScopeService, ITimeoutService} from "angular";
+import {IRootScopeService, ITimeoutService, IAngularEvent} from "angular";
+import { CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service";
 
 
 describe("detailPanelController", function() {
@@ -58,25 +59,25 @@ describe("detailPanelController", function() {
 
         it("should call onHover when onBuildingHovered called",()=>{
             detailPanelController.onHover = jest.fn();
-            detailPanelController.onBuildingHovered("data", "event");
+            detailPanelController.onBuildingHovered("data" as any as CodeMapBuildingTransition, "event" as any as IAngularEvent);
 
             expect(detailPanelController.onHover).toBeCalledWith("data")
         });
 
         it("should call onSelect when onBuildingSelected called",()=>{
             detailPanelController.onSelect = jest.fn();
-            detailPanelController.onBuildingSelected("data", "event");
+            detailPanelController.onBuildingSelected("data" as any as CodeMapBuildingTransition, "event" as any as IAngularEvent);
 
             expect(detailPanelController.onSelect).toBeCalledWith("data")
         });
     });
 
     it("should set common attributes onSettingsChanged",() => {
-        var settings = {
+        const settings = {
             areaMetric: "a",
             colorMetric: "b",
             heightMetric: "c"
-        };
+        } as Settings;
         detailPanelController.onSettingsChanged(settings);
         expect(detailPanelController.details.common.areaAttributeName).toBe("a");
         expect(detailPanelController.details.common.colorAttributeName).toBe("b");
@@ -94,9 +95,9 @@ describe("detailPanelController", function() {
         expect(detailPanelController.setSelectedDetails).toHaveBeenCalledWith("somenode");
     });
 
-    it("should clearSelectedDetails when invalid or no node is selected",() => {
+    it("should clearSelectedDetails when invalid node is selected",() => {
 
-        var data = {
+        const data = {
             to: {
                 notanode: "somenode"
             }
@@ -104,16 +105,26 @@ describe("detailPanelController", function() {
         detailPanelController.clearSelectedDetails = jest.fn();
         detailPanelController.onSelect(data);
         expect(detailPanelController.clearSelectedDetails).toHaveBeenCalled();
+    });
 
-        data = {
+    it("should clearSelectedDetails when invalid transition is given",() => {
+
+        detailPanelController.clearSelectedDetails = jest.fn();
+
+        const data = {
             notato: {
                 node: "somenode"
             }
         };
         detailPanelController.onSelect(data);
         expect(detailPanelController.clearSelectedDetails).toHaveBeenCalled();
+    });
 
-        data = {};
+    it("should clearSelectedDetails when invalid or no node is selected",() => {
+
+        detailPanelController.clearSelectedDetails = jest.fn();
+
+        const data = {};
         detailPanelController.onSelect(data);
         expect(detailPanelController.clearSelectedDetails).toHaveBeenCalled();
 
@@ -130,8 +141,8 @@ describe("detailPanelController", function() {
         expect(detailPanelController.setHoveredDetails).toHaveBeenCalledWith("somenode");
     });
 
-    it("should clearHoveredDetails when invalid or no node is hovered",() => {
-        var data = {
+    it("should clearHoveredDetails when node is invalid",() => {
+        const data = {
             to: {
                 notanode: "somenode"
             }
@@ -139,16 +150,23 @@ describe("detailPanelController", function() {
         detailPanelController.clearHoveredDetails = jest.fn();
         detailPanelController.onHover(data);
         expect(detailPanelController.clearHoveredDetails).toHaveBeenCalled();
+    });
 
-        data = {
+    it("should clearHoveredDetails when transition is invalid",() => {
+        detailPanelController.clearHoveredDetails = jest.fn();
+
+        const data = {
             notato: {
                 node: "somenode"
             }
         };
         detailPanelController.onHover(data);
         expect(detailPanelController.clearHoveredDetails).toHaveBeenCalled();
+    });
 
-        data = {};
+    it("should clearHoveredDetails when no node is hovered",() => {
+        detailPanelController.clearHoveredDetails = jest.fn();
+        const data = {};
         detailPanelController.onHover(data);
         expect(detailPanelController.clearHoveredDetails).toHaveBeenCalled();
     });
@@ -156,7 +174,7 @@ describe("detailPanelController", function() {
     describe("isHovered and isSelected should evaluate the respective nodes name to determine the result", ()=>{
 
         it("empty details should result in false",()=>{
-            detailPanelController.details = {};
+            detailPanelController.details = {} as any;
             expect(detailPanelController.isHovered()).toBe(false);
             expect(detailPanelController.isSelected()).toBe(false);
         });
@@ -165,7 +183,7 @@ describe("detailPanelController", function() {
             detailPanelController.details = {
                 hovered: null,
                 selected: null
-            };
+            } as any;
             expect(detailPanelController.isHovered()).toBe(false);
             expect(detailPanelController.isSelected()).toBe(false);
         });
@@ -174,11 +192,11 @@ describe("detailPanelController", function() {
             detailPanelController.details = {
                 hovered: {
                     name: "some name"
-                },
+                } as any,
                 selected: {
                     name: "some name"
-                }
-            };
+                } as any
+            } as any;
             expect(detailPanelController.isHovered()).toBe(true);
             expect(detailPanelController.isSelected()).toBe(true);
         });
