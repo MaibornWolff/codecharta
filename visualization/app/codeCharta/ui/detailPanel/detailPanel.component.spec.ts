@@ -94,8 +94,7 @@ describe("detailPanelController", function() {
         expect(detailPanelController.setSelectedDetails).toHaveBeenCalledWith("somenode");
     });
 
-    it("should clearSelectedDetails when invalid or no node is selected",() => {
-
+    it("should clearSelectedDetails when invalid node is selected",() => {
         var data = {
             to: {
                 notanode: "somenode"
@@ -105,18 +104,21 @@ describe("detailPanelController", function() {
         detailPanelController.onSelect(data);
         expect(detailPanelController.clearSelectedDetails).toHaveBeenCalled();
 
-        data = {
+        var data = {
             notato: {
                 node: "somenode"
             }
         };
         detailPanelController.onSelect(data);
         expect(detailPanelController.clearSelectedDetails).toHaveBeenCalled();
+    });
 
-        data = {};
+    it("should clearSelectedDetails when no node is selected",() => {
+        var data = {};
+        detailPanelController.clearSelectedDetails = jest.fn();
+
         detailPanelController.onSelect(data);
         expect(detailPanelController.clearSelectedDetails).toHaveBeenCalled();
-
     });
 
     it("should setHoveredDetails when valid node is hovered",() => {
@@ -130,7 +132,7 @@ describe("detailPanelController", function() {
         expect(detailPanelController.setHoveredDetails).toHaveBeenCalledWith("somenode");
     });
 
-    it("should clearHoveredDetails when invalid or no node is hovered",() => {
+    it("should clearHoveredDetails when no node is hovered",() => {
         var data = {
             to: {
                 notanode: "somenode"
@@ -147,8 +149,11 @@ describe("detailPanelController", function() {
         };
         detailPanelController.onHover(data);
         expect(detailPanelController.clearHoveredDetails).toHaveBeenCalled();
+    });
 
-        data = {};
+    it("should clearHoveredDetails when invalid node is hovered",() => {
+        var data = {};
+        detailPanelController.clearHoveredDetails = jest.fn();
         detailPanelController.onHover(data);
         expect(detailPanelController.clearHoveredDetails).toHaveBeenCalled();
     });
