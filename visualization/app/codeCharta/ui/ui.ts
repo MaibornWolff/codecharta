@@ -50,7 +50,7 @@ angular.module(
         "app.codeCharta.ui.dialog",
         "app.codeCharta.ui.nodeContextMenu",
         "app.codeCharta.ui.layoutSwitcher",
-        "app.codeCharta.ui.regexFilter",
+        "app.codeCharta.ui.mapTreeViewSearch",
         "app.codeCharta.ui.optionsPanel",
         "app.codeCharta.ui.sidenav",
         "app.codeCharta.ui.blacklistPanel",

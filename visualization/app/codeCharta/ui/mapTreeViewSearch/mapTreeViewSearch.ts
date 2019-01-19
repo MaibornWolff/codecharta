@@ -4,7 +4,7 @@ import "../../core/core.module";
 
 import {mapTreeViewSearchComponent} from "./mapTreeViewSearch.component";
 
-angular.module("app.codeCharta.ui.regexFilter", ["app.codeCharta.core", "ngMessages"])
+angular.module("app.codeCharta.ui.mapTreeViewSearch", ["app.codeCharta.core", "ngMessages"])
     .component(
         mapTreeViewSearchComponent.selector, mapTreeViewSearchComponent
     );
