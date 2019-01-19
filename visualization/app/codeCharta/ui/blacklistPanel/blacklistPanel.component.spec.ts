@@ -1,7 +1,7 @@
 import {SettingsService} from "../../core/settings/settings.service";
 import {BlacklistPanelController} from "./blacklistPanel.component";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
-import {CodeMapNode, ExcludeType} from "../../core/data/model/CodeMap";
+import {CodeMapNode, BlacklistType} from "../../core/data/model/CodeMap";
 
 describe("blacklistController", () => {
 
@@ -81,7 +81,7 @@ describe("blacklistController", () => {
                 }
             ]
         };
-        blacklistItem = {path: "/root", type: ExcludeType.exclude};
+        blacklistItem = {path: "/root", type: BlacklistType.exclude};
         settingsServiceMock.settings.map.root = simpleHierarchy;
     }
 
@@ -101,7 +101,7 @@ describe("blacklistController", () => {
 
     it("add and call includingNode function when removing blacklist entry", () => {
         settingsServiceMock.settings.blacklist.push(blacklistItem);
-        expect(getFilteredBlacklistBy({path: "/root", type: ExcludeType.exclude})).toHaveLength(1);
+        expect(getFilteredBlacklistBy({path: "/root", type: BlacklistType.exclude})).toHaveLength(1);
 
         blacklistPanelController.removeBlacklistEntry(blacklistItem);
         expect(codeMapActionsServiceMock.removeBlacklistEntry).toHaveBeenCalledWith({path: "/root", type: "exclude"});

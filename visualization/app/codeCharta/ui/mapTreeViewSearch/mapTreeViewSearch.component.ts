@@ -1,6 +1,6 @@
 import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settings.service";
 import {ITimeoutService} from "angular";
-import {CodeMap, CodeMapNode, ExcludeType} from "../../core/data/model/CodeMap";
+import {CodeMap, CodeMapNode, BlacklistType} from "../../core/data/model/CodeMap";
 import "./mapTreeViewSearch.component.scss";
 import * as d3 from "d3";
 import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/data.service";
@@ -45,7 +45,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
         this.updateViewModel();
     }
 
-    onClickBlacklistPattern(blacklistType: ExcludeType) {
+    onClickBlacklistPattern(blacklistType: BlacklistType) {
         this.settingsService.settings.blacklist.push(
             {path: this.viewModel.searchPattern, type: blacklistType}
         );
@@ -54,11 +54,11 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
     }
 
     private updateViewModel() {
-        this.viewModel.isPatternExcluded = this.isPatternBlacklisted(ExcludeType.exclude);
-        this.viewModel.isPatternHidden = this.isPatternBlacklisted(ExcludeType.hide);
+        this.viewModel.isPatternExcluded = this.isPatternBlacklisted(BlacklistType.exclude);
+        this.viewModel.isPatternHidden = this.isPatternBlacklisted(BlacklistType.hide);
     }
 
-    private isPatternBlacklisted(blacklistType: ExcludeType) {
+    private isPatternBlacklisted(blacklistType: BlacklistType) {
         return this.settingsService.settings.blacklist.filter(item => {
             return this.viewModel.searchPattern == item.path && blacklistType == item.type
         }).length != 0;

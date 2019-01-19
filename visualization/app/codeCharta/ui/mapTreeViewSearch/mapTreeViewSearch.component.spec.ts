@@ -1,23 +1,24 @@
 import {SettingsService} from "../../core/settings/settings.service";
+import {ITimeoutService} from "angular";
+import "./mapTreeViewSearch";
+import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper";
 import {MapTreeViewSearchController} from "./mapTreeViewSearch.component";
-import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {DataService} from "../../core/data/data.service";
-import {getService, instantiateModule} from "../../../../mocks/ng.mockhelper";
-import {ITimeoutService, } from "angular";
+import {CodeMapNode} from "../../core/data/model/CodeMap";
+import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
 
-describe("mapTreeViewSearchController", () => {
+describe("MapTreeViewSearchController", () => {
 
-    let services, mapTreeViewSearchController: MapTreeViewSearchController;
+    let services, viewModel, simpleHierarchy: CodeMapNode, mapTreeViewSearchController: MapTreeViewSearchController;
 
     beforeEach(() => {
         restartSystem();
         rebuildController();
-        withMockedSettingsService();
         withMockedMapTreeViewSearch();
+        withMockedSettingsService();
     });
 
     function restartSystem() {
-
         instantiateModule("app.codeCharta.ui.mapTreeViewSearch");
 
         services = {
@@ -35,8 +36,18 @@ describe("mapTreeViewSearchController", () => {
         );
     }
 
+    function withMockedMapTreeViewSearch() {
+        viewModel = {
+            searchPattern: "",
+            fileCount: 0,
+            folderCount: 0,
+        };
+
+        mapTreeViewSearchController.viewModel = viewModel;
+    }
+
     function withMockedSettingsService() {
-        let simpleHierarchy: CodeMapNode = {
+        simpleHierarchy = {
             name: "root",
             type: "Folder",
             path: "/root",
@@ -48,12 +59,6 @@ describe("mapTreeViewSearchController", () => {
                     path: "/root/a",
                     attributes: {},
                     children: [
-                        {
-                            name: "aa",
-                            type: "File",
-                            path: "/root/a/aa",
-                            attributes: {},
-                        },
                         {
                             name: "ab",
                             type: "Folder",
@@ -68,49 +73,39 @@ describe("mapTreeViewSearchController", () => {
                                 }
                             ]
                         },
+                        {
+                            name: "ab",
+                            path: "/root/a/ab",
+                            type: "File",
+                            attributes: {},
+                        }
                     ]
-                },
-                {
-                    name: "b",
-                    type: "File",
-                    path: "/root/b",
-                    attributes: {},
                 }
             ]
         };
 
-        services.settingsService = mapTreeViewSearchController["settingsService"] = jest.fn<SettingsService>(()=>{
-            return {
-                subscribe: jest.fn(),
-                applySettings: jest.fn(),
-                onSettingsChanged: jest.fn(),
-                settings: {
-                    map: {
-                        root: simpleHierarchy
-                    },
-                    blacklist: []
-                }
-            }
-        })();
+        mapTreeViewSearchController.settingsService.settings.map = {
+            root: simpleHierarchy,
+        }
     }
 
-    function withMockedMapTreeViewSearch() {
-        let viewModel = {
-            searchPattern: "",
-            fileCount: 0,
-            folderCount: 0,
-            isPatternExcluded: true,
-            isPatternHidden: true
-        };
+    it("should set searchPattern in settings", () => {
+        mapTreeViewSearchController.viewModel.searchPattern = "*abc";
+        mapTreeViewSearchController.setSearchedNodePathnames();
+        expect(mapTreeViewSearchController.settingsService.settings.searchPattern).toBe(mapTreeViewSearchController.viewModel.searchPattern);
+    });
 
-        mapTreeViewSearchController.viewModel = viewModel;
-    }
+    it("should get correct searchedNodePaths with folderCount and fileCount", () => {
+        CodeMapUtilService.getNodesByGitignorePath = jest.fn(() => {
+            return [simpleHierarchy.children[0], simpleHierarchy.children[0].children[0]];
+        });
+        mapTreeViewSearchController.settingsService.applySettings = jest.fn();
 
-    it("onSearchChange", () => {
-        mapTreeViewSearchController.viewModel.searchPattern = "aba";
-        mapTreeViewSearchController.onSearchChange();
+        mapTreeViewSearchController.setSearchedNodePathnames();
 
-        expect(mapTreeViewSearchController.settingsService.settings.searchPattern).toBe("aba");
-        expect(mapTreeViewSearchController.settingsService.settings.searchedNodePaths.includes("/root/a/ab/aba")).toBeTruthy();
+        expect(mapTreeViewSearchController.settingsService.settings.searchedNodePaths).toEqual(["/root/a", "/root/a/ab"]);
+        expect(mapTreeViewSearchController.viewModel.folderCount).toBe(2);
+        expect(mapTreeViewSearchController.viewModel.fileCount).toBe(0);
+        expect(mapTreeViewSearchController.settingsService.applySettings).toHaveBeenCalled();
     });
 });

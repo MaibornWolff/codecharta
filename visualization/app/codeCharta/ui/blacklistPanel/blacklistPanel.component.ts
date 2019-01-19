@@ -1,11 +1,11 @@
 import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import "./blacklistPanel.component.scss";
-import {Exclude, ExcludeType} from "../../core/data/model/CodeMap";
+import {BlacklistItem, BlacklistType} from "../../core/data/model/CodeMap";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 
 export class BlacklistPanelController implements SettingsServiceSubscriber{
 
-    public blacklist: Array<Exclude>;
+    public blacklist: Array<BlacklistItem>;
 
     constructor(private settingsService: SettingsService,
                 private codeMapActionsService: CodeMapActionsService) {
@@ -23,13 +23,13 @@ export class BlacklistPanelController implements SettingsServiceSubscriber{
         }
     }
 
-    removeBlacklistEntry(entry: Exclude){
+    removeBlacklistEntry(entry: BlacklistItem){
         this.codeMapActionsService.removeBlacklistEntry(entry);
         this.onChange();
     }
 
-    sortByExcludes(item: Exclude) {
-        return (item && item.type == ExcludeType.exclude) ? 0 : 1;
+    sortByExcludes(item: BlacklistItem) {
+        return (item && item.type == BlacklistType.exclude) ? 0 : 1;
     }
 }
 

@@ -5,7 +5,7 @@ import {
 } from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera} from "three";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
-import {CodeMap, CodeMapNode, Exclude, ExcludeType} from "../data/model/CodeMap";
+import {CodeMap, CodeMapNode, BlacklistItem} from "../data/model/CodeMap";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 
 export interface Range {
@@ -46,7 +46,7 @@ export interface Settings {
     invertHeight: boolean;
     dynamicMargin: boolean;
     isWhiteBackground: boolean;
-    blacklist: Array<Exclude>;
+    blacklist: Array<BlacklistItem>;
     focusedNodePath: string;
     searchedNodePaths: Array<string>;
     searchPattern: string;
