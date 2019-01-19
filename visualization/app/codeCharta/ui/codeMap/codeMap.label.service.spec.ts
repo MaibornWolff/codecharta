@@ -149,7 +149,7 @@ describe("CodeMapLabelService", () => {
     it("addLabel should calculate correct height without delta", ()=>{
         codeMapLabelService.addLabel(sampleLeaf, sampleRenderSettings);
         let positionWithoutDelta: Vector3 = codeMapLabelService.labels[0].sprite.position;
-        expect(positionWithoutDelta.y).toBe(88);
+        expect(positionWithoutDelta.y).toBe(93);
     });
 
     it("clearLabel should clear parent in scene and internal labels", ()=>{
