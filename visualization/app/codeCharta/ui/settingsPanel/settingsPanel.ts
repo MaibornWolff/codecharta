@@ -1,7 +1,7 @@
 "use strict";
 import "./settingsPanel.scss";
 import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
-import $ from "jQuery";
+import $ from "jquery";
 
 /**
  * Controls the settingsPanel
