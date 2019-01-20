@@ -68,12 +68,14 @@ export class MultipleFileService {
 
     private setAttributeTypesByUniqueKey(inputMap) {
         const types = inputMap.attributeTypes;
-        if(types && types.edges && types.nodes){
-            for(let key in types.edges){
-                this.attributeTypesEdge[key] = types.edges[key];
-            }
+        if(types && types.nodes) {
             for(let key in types.nodes){
                 this.attributeTypesNode[key] = types.nodes[key];
+            }
+        }
+        if(types && types.edges){
+            for (let key in types.edges) {
+                this.attributeTypesEdge[key] = types.edges[key];
             }
         }
     }

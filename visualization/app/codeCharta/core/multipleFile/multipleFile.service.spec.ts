@@ -1,6 +1,6 @@
 import "./multipleFile.module";
 import {NGMock} from "../../../../mocks/ng.mockhelper";
-import {AttributeType, CodeMap} from "../data/model/CodeMap";
+import {AttributeType, CodeMap, ExcludeType} from "../data/model/CodeMap";
 
 describe("app.codeCharta.core.multiple", function() {
 
@@ -64,193 +64,6 @@ describe("app.codeCharta.core.multiple", function() {
         }
     };
 
-    const file_aggregation_two: CodeMap = {
-        fileName: "Aggregation of following files: file1, file2",
-        projectName: "Aggregation of following projects: Sample Project, Sample Project",
-        edges: [],
-        attributeTypes: {edges: {}, nodes: {}},
-        root: {
-            name: "root",
-            type: "Folder",
-            attributes: {},
-            origin: "Aggregation of following files: file1, file2",
-            visible: true,
-            path: "/root",
-            children: [
-                {
-                    name: "file1",
-                    type: "Folder",
-                    attributes: {},
-                    children: [
-                        {
-                            name: "big leaf",
-                            type: "File",
-                            attributes: {"rloc": 100, "functions": 10, "mcc": 1},
-                            link: "http://www.google.de"
-                        },
-                        {
-                            name: "Parent Leaf",
-                            type: "Folder",
-                            attributes: {},
-                            children: [
-                                {
-                                    name: "other small leaf",
-                                    type: "File",
-                                    attributes: {"rloc": 70, "functions": 1000, "mcc": 10}
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-
-                    name: "file2",
-                    type: "Folder",
-                    attributes: {},
-                    children: [
-                        {
-                            name: "big leaf",
-                            type: "File",
-                            attributes: {"rloc": 200, "functions": 20, "mcc": 2},
-                            link: "http://www.google.de"
-                        },
-                        {
-                            name: "Parent Leaf",
-                            type: "Folder",
-                            attributes: {},
-                            children: [
-                                {
-                                    name: "small leaf",
-                                    type: "File",
-                                    attributes: {"rloc": 60, "functions": 200, "mcc": 200}
-                                }
-                            ]
-                        }
-                    ]
-                }
-
-            ]
-        }
-    };
-
-    const file_aggregation_four: CodeMap = {
-        fileName: "Aggregation of following files: file1, file2, file1, file2",
-        projectName: "Aggregation of following projects: Sample Project, Sample Project, Sample Project, Sample Project",
-        edges: [],
-        attributeTypes: {edges: {}, nodes: {}},
-        root: {
-            name: "root",
-            type: "Folder",
-            attributes: {},
-            origin: "Aggregation of following files: file1, file2, file1, file2",
-            visible: true,
-            path: "/root",
-            children: [{
-                name: "file1",
-                type: "Folder",
-                attributes: {},
-                children: [
-                    {
-                        name: "big leaf",
-                        type: "File",
-                        attributes: {"rloc": 100, "functions": 10, "mcc": 1},
-                        link: "http://www.google.de"
-                    },
-                    {
-                        name: "Parent Leaf",
-                        type: "Folder",
-                        attributes: {},
-                        children: [
-                            {
-                                name: "other small leaf",
-                                type: "File",
-                                attributes: {"rloc": 70, "functions": 1000, "mcc": 10}
-                            }
-                        ]
-                    }
-                ]
-            },
-                {
-
-                    name: "file2",
-                    type: "Folder",
-                    attributes: {},
-                    children: [
-                        {
-                            name: "big leaf",
-                            type: "File",
-                            attributes: {"rloc": 200, "functions": 20, "mcc": 2},
-                            link: "http://www.google.de"
-                        },
-                        {
-                            name: "Parent Leaf",
-                            type: "Folder",
-                            attributes: {},
-                            children: [
-                                {
-                                    name: "small leaf",
-                                    type: "File",
-                                    attributes: {"rloc": 60, "functions": 200, "mcc": 200}
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    name: "file1",
-                    type: "Folder",
-                    attributes: {},
-                    children: [
-                        {
-                            name: "big leaf",
-                            type: "File",
-                            attributes: {"rloc": 100, "functions": 10, "mcc": 1},
-                            link: "http://www.google.de"
-                        },
-                        {
-                            name: "Parent Leaf",
-                            type: "Folder",
-                            attributes: {},
-                            children: [
-                                {
-                                    name: "other small leaf",
-                                    type: "File",
-                                    attributes: {"rloc": 70, "functions": 1000, "mcc": 10}
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-
-                    name: "file2",
-                    type: "Folder",
-                    attributes: {},
-                    children: [
-                        {
-                            name: "big leaf",
-                            type: "File",
-                            attributes: {"rloc": 200, "functions": 20, "mcc": 2},
-                            link: "http://www.google.de"
-                        },
-                        {
-                            name: "Parent Leaf",
-                            type: "Folder",
-                            attributes: {},
-                            children: [
-                                {
-                                    name: "small leaf",
-                                    type: "File",
-                                    attributes: {"rloc": 60, "functions": 200, "mcc": 200}
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    };
-
     beforeEach(NGMock.mock.module("app.codeCharta.core.multiple"));
 
     describe("multipleService", function() {
@@ -262,23 +75,23 @@ describe("app.codeCharta.core.multiple", function() {
         it("aggregation of two maps", NGMock.mock.inject(function (multipleFileService) {
             let multiple: CodeMap;
             multiple = multipleFileService.aggregateMaps([file1, file2]);
-            expect(multiple).toEqual(file_aggregation_two);
+            expect(multiple).toMatchSnapshot();
         }));
 
         it("aggregation of four maps", NGMock.mock.inject(function (multipleFileService) {
             let multiple: CodeMap;
             multiple = multipleFileService.aggregateMaps([file1, file2, file1, file2]);
-            expect(multiple).toEqual(file_aggregation_four);
+            expect(multiple).toMatchSnapshot();
         }));
 
         it("aggregation one map", NGMock.mock.inject(function (multipleFileService) {
             let multiple: CodeMap;
             multiple = multipleFileService.aggregateMaps([file1]);
-            expect(multiple).toEqual(file1);
+            expect(multiple).toMatchSnapshot();
         }));
     });
 
-    describe("edges", ()=> {
+    describe("edges merge", ()=> {
 
         const edges1 = [
             {
@@ -302,25 +115,6 @@ describe("app.codeCharta.core.multiple", function() {
             }
         ];
 
-        const aggEdges = [
-            {
-                fromNodeName: "/root/file1/big leaf",
-                toNodeName: "/root/file1/Parent Leaf/small leaf",
-                attributes: {
-                    pairingRate: 9,
-                    avgCommits: 4
-                }
-            },
-            {
-                fromNodeName: "/root/file2/big leaf",
-                toNodeName: "/root/file2/Parent Leaf/small leaf",
-                attributes: {
-                    pairingRate: 89,
-                    avgCommits: 34
-                }
-            }
-        ];
-
         it("aggregation of two maps with empty edges should result in empty edges",NGMock.mock.inject(function(multipleFileService){
             file1.edges = [];
             file2.edges = [];
@@ -332,43 +126,29 @@ describe("app.codeCharta.core.multiple", function() {
             file1.edges = edges1;
             file2.edges = edges2;
             let multiple = multipleFileService.aggregateMaps([file1,file2]);
-            expect(multiple.edges).toEqual(aggEdges);
+            expect(multiple.edges).toMatchSnapshot();
         }));
 
         it("aggregation of one map with edges and other without should result in merged edges",NGMock.mock.inject(function(multipleFileService){
             file1.edges = [edges1[0], edges2[0]];
             file2.edges = null;
-            const expectedEdges = aggEdges;
-            expectedEdges[1].fromNodeName = "/root/file1/big leaf";
-            expectedEdges[1].toNodeName = "/root/file1/Parent Leaf/small leaf";
             let multiple = multipleFileService.aggregateMaps([file1,file2]);
-            expect(multiple.edges).toEqual(expectedEdges);
+            expect(multiple.edges).toMatchSnapshot();
         }));
 
     });
 
 
-    describe("AttributeTypes", ()=> {
+    describe("AttributeTypes merge", ()=> {
 
-         const attribute1 = {
+        const attribute1 = {
             nodes: {
                 ["key1"]: AttributeType.absolute
             },
             edges: {
                 ["key2"]: AttributeType.relative
             }
-         };
-
-        const attribute_reverse1 = {
-            nodes: {
-                ["key1"]: AttributeType.relative
-
-            },
-            edges: {
-                ["key2"]: AttributeType.absolute
-            }
         };
-
 
         const attribute2 = {
             nodes: {
@@ -379,33 +159,51 @@ describe("app.codeCharta.core.multiple", function() {
             }
         };
 
-
-        const aggAttributes = {
-            nodes: {
-                ["key1"]: AttributeType.absolute,
-
-                ["key1_2"]: AttributeType.absolute
-            },
-            edges: {
-                ["key2"]: AttributeType.relative,
-
-                ["key2_2"]: AttributeType.relative
-            }
-        };
-
         it("aggregation of two maps with different key attributes should result in all keys aggregated map",NGMock.mock.inject(function(multipleFileService){
             file1.attributeTypes = attribute1;
             file2.attributeTypes = attribute2;
             let multiple = multipleFileService.aggregateMaps([file1,file2]);
-            expect(multiple.attributeTypes).toEqual(aggAttributes);
+            expect(multiple.attributeTypes).toMatchSnapshot();
         }));
 
         it("aggregation of one map with attributes and other without should result in merged with same attributes as the one with them",NGMock.mock.inject(function(multipleFileService){
             file1.attributeTypes = attribute1;
             file2.attributeTypes = {};
             let multiple = multipleFileService.aggregateMaps([file1,file2]);
-            expect(multiple.attributeTypes).toEqual(attribute1);
+            expect(multiple.attributeTypes).toMatchSnapshot();
         }));
 
+    });
+
+    describe("Blacklist merge", ()=> {
+
+        const blacklist1 = [
+            {
+                path: "/root/node/equalPath",
+                type: ExcludeType.exclude
+            },
+            {
+                path: "/another/third/path",
+                type: ExcludeType.hide
+            }
+        ];
+
+        const blacklist2 = [
+            {
+                path: "/root/node/equalPath",
+                type: ExcludeType.exclude
+            },
+            {
+                path: "*another/path",
+                type: ExcludeType.hide
+            }
+        ];
+
+        it("aggregation of two maps with different key attributes should result in all keys aggregated map",NGMock.mock.inject(function(multipleFileService){
+            file1.blacklist = blacklist1;
+            file2.blacklist = blacklist2;
+            let multiple = multipleFileService.aggregateMaps([file1,file2]);
+            expect(multiple.blacklist).toMatchSnapshot();
+        }));
     });
 });
