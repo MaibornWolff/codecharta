@@ -1,4 +1,4 @@
-import {AttributeType, CodeMap, CodeMapNode, Edge} from "../data/model/CodeMap";
+import {AttributeType, CodeMap, CodeMapNode, Edge, Exclude} from "../data/model/CodeMap";
 
 
 export class MultipleFileService {
@@ -7,6 +7,7 @@ export class MultipleFileService {
     private projectNameArray = [];
     private fileNameArray = [];
     private edges: Edge[] = [];
+    private blacklist: Exclude[] = [];
     private attributeTypesEdge:{[key: string]: AttributeType} = {};
     private attributeTypesNode:{[key: string]: AttributeType} = {};
 
@@ -21,6 +22,7 @@ export class MultipleFileService {
             this.fileNameArray.push(inputMap.fileName);
             this.setConvertedEdges(inputMap);
             this.setAttributeTypesByUniqueKey(inputMap);
+            this.setConvertedBlacklist(inputMap);
         }
         return this.getNewAggregatedMap(inputMaps);
     }
@@ -28,15 +30,40 @@ export class MultipleFileService {
     private setConvertedEdges(inputMap) {
         if(!inputMap.edges) return;
 
-        for(let currentEdge of inputMap.edges){
+        for(let oldEdge of inputMap.edges){
             let edge: Edge = {
-                fromNodeName: this.getUpdatedPathName(inputMap.fileName, currentEdge.fromNodeName),
-                toNodeName: this.getUpdatedPathName(inputMap.fileName, currentEdge.toNodeName),
-                attributes:  currentEdge.attributes,
-                visible: currentEdge.visible
+                fromNodeName: this.getUpdatedPath(inputMap.fileName, oldEdge.fromNodeName),
+                toNodeName: this.getUpdatedPath(inputMap.fileName, oldEdge.toNodeName),
+                attributes:  oldEdge.attributes,
+                visible: oldEdge.visible
             };
-            this.edges.push(edge);
+            const equalEdgeItems = this.edges.filter(e => e.fromNodeName == edge.fromNodeName && e.toNodeName == edge.toNodeName);
+            if(equalEdgeItems.length == 0) {
+                this.edges.push(edge);
+            }
         }
+    }
+
+    private setConvertedBlacklist(inputMap) {
+        if(!inputMap.blacklist) return;
+
+        for(let oldBlacklistItem of inputMap.blacklist){
+            let blacklistItem: Exclude = {
+                path: this.getUpdatedBlacklistItemPath(inputMap.fileName, oldBlacklistItem.path),
+                type: oldBlacklistItem.type
+            };
+            const equalBlacklistItems = this.blacklist.filter(b => b.path == blacklistItem.path && b.type == blacklistItem.type);
+            if(equalBlacklistItems.length == 0) {
+                this.blacklist.push(blacklistItem);
+            }
+        }
+    }
+
+    private getUpdatedBlacklistItemPath(fileName, path) {
+        if (path.substring(0,6) == "/root/") {
+            return this.getUpdatedPath(fileName, path);
+        }
+        return path;
     }
 
     private setAttributeTypesByUniqueKey(inputMap) {
@@ -65,6 +92,7 @@ export class MultipleFileService {
                 visible: true
             },
             edges: this.edges,
+            blacklist: this.blacklist,
             attributeTypes: {
                 nodes: this.attributeTypesNode,
                 edges: this.attributeTypesEdge
@@ -84,7 +112,7 @@ export class MultipleFileService {
         } as CodeMapNode;
 
         if (inputCodeMap.root.path) {
-            outputNode.path = this.getUpdatedPathName(inputCodeMap.fileName, inputCodeMap.root.path);
+            outputNode.path = this.getUpdatedPath(inputCodeMap.fileName, inputCodeMap.root.path);
         }
 
         for(let key in inputCodeMap.root){
@@ -99,7 +127,7 @@ export class MultipleFileService {
     private updatePathOfAllChildren(fileName, children: CodeMapNode[]) {
         for(let i = 0; i < children.length; i++) {
             if(children[i].path){
-                children[i].path = this.getUpdatedPathName(fileName, children[i].path);
+                children[i].path = this.getUpdatedPath(fileName, children[i].path);
             }
 
             if(children[i].children) {
@@ -108,7 +136,7 @@ export class MultipleFileService {
         }
     }
 
-    private getUpdatedPathName(fileName, path) {
+    private getUpdatedPath(fileName, path) {
         const subPath = path.substring(6, path.length);
         const slash = (subPath.length > 0) ? "/" : "";
         return "/root/" + fileName + slash + subPath;
