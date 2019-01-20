@@ -1,10 +1,10 @@
 import {SettingsService} from "../../core/settings/settings.service";
 import {ITimeoutService} from "angular";
 import "./mapTreeViewSearch";
-import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper";
+import {getService, instantiateModule} from "../../../../mocks/ng.mockhelper";
 import {MapTreeViewSearchController} from "./mapTreeViewSearch.component";
 import {DataService} from "../../core/data/data.service";
-import {CodeMapNode} from "../../core/data/model/CodeMap";
+import {BlacklistType, CodeMapNode} from "../../core/data/model/CodeMap";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
 
 describe("MapTreeViewSearchController", () => {
@@ -108,4 +108,44 @@ describe("MapTreeViewSearchController", () => {
         expect(mapTreeViewSearchController.viewModel.fileCount).toBe(0);
         expect(mapTreeViewSearchController.settingsService.applySettings).toHaveBeenCalled();
     });
+
+    it("should add new blacklist entry and clear searchPattern", () => {
+        const blacklistItem = {path: "/root/node/path", type: BlacklistType.exclude};
+        mapTreeViewSearchController.viewModel.searchPattern = blacklistItem.path;
+        mapTreeViewSearchController.onClickBlacklistPattern(blacklistItem.type);
+        expect(mapTreeViewSearchController.settingsService.settings.blacklist).toContainEqual(blacklistItem);
+        expect(mapTreeViewSearchController.viewModel.searchPattern).toBe("");
+    });
+
+    it("should updateViewModel when pattern not blacklisted", () => {
+        mapTreeViewSearchController.settingsService.settings.blacklist = [];
+        mapTreeViewSearchController.viewModel.searchPattern = "/root/node/path";
+
+        mapTreeViewSearchController.updateViewModel();
+        expect(mapTreeViewSearchController.viewModel.isPatternHidden).toBeFalsy();
+        expect(mapTreeViewSearchController.viewModel.isPatternExcluded).toBeFalsy();
+    });
+
+    it("should updateViewModel when pattern excluded", () => {
+        const blacklistItem = {path: "/root/node/path", type: BlacklistType.exclude};
+        const anotherBlacklistItem = {path: "/root/another/node/path", type: BlacklistType.exclude};
+        mapTreeViewSearchController.settingsService.settings.blacklist = [blacklistItem, anotherBlacklistItem];
+        mapTreeViewSearchController.viewModel.searchPattern = "/root/node/path";
+
+        mapTreeViewSearchController.updateViewModel();
+        expect(mapTreeViewSearchController.viewModel.isPatternHidden).toBeFalsy();
+        expect(mapTreeViewSearchController.viewModel.isPatternExcluded).toBeTruthy();
+    });
+
+    it("should updateViewModel when pattern hidden and excluded", () => {
+        const blacklistItemExcluded = {path: "/root/node/path", type: BlacklistType.exclude};
+        const blacklistItemHidden = {path: "/root/node/path", type: BlacklistType.hide};
+        mapTreeViewSearchController.settingsService.settings.blacklist = [blacklistItemExcluded, blacklistItemHidden];
+        mapTreeViewSearchController.viewModel.searchPattern = "/root/node/path";
+
+        mapTreeViewSearchController.updateViewModel();
+        expect(mapTreeViewSearchController.viewModel.isPatternHidden).toBeTruthy();
+        expect(mapTreeViewSearchController.viewModel.isPatternExcluded).toBeTruthy();
+    });
+
 });
