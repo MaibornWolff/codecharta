@@ -4,7 +4,7 @@ import "./mapTreeViewSearch";
 import {getService, instantiateModule} from "../../../../mocks/ng.mockhelper";
 import {MapTreeViewSearchController} from "./mapTreeViewSearch.component";
 import {DataService} from "../../core/data/data.service";
-import {BlacklistType, CodeMapNode} from "../../core/data/model/CodeMap";
+import {BlacklistItem, BlacklistType, CodeMapNode} from "../../core/data/model/CodeMap";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
 
 describe("MapTreeViewSearchController", () => {
@@ -74,8 +74,8 @@ describe("MapTreeViewSearchController", () => {
                             ]
                         },
                         {
-                            name: "ab",
-                            path: "/root/a/ab",
+                            name: "abc",
+                            path: "/root/a/abc",
                             type: "File",
                             attributes: {},
                         }
@@ -93,20 +93,6 @@ describe("MapTreeViewSearchController", () => {
         mapTreeViewSearchController.viewModel.searchPattern = "*abc";
         mapTreeViewSearchController.setSearchedNodePathnames();
         expect(mapTreeViewSearchController.settingsService.settings.searchPattern).toBe(mapTreeViewSearchController.viewModel.searchPattern);
-    });
-
-    it("should get correct searchedNodePaths with folderCount and fileCount", () => {
-        CodeMapUtilService.getNodesByGitignorePath = jest.fn(() => {
-            return [simpleHierarchy.children[0], simpleHierarchy.children[0].children[0]];
-        });
-        mapTreeViewSearchController.settingsService.applySettings = jest.fn();
-
-        mapTreeViewSearchController.setSearchedNodePathnames();
-
-        expect(mapTreeViewSearchController.settingsService.settings.searchedNodePaths).toEqual(["/root/a", "/root/a/ab"]);
-        expect(mapTreeViewSearchController.viewModel.folderCount).toBe(2);
-        expect(mapTreeViewSearchController.viewModel.fileCount).toBe(0);
-        expect(mapTreeViewSearchController.settingsService.applySettings).toHaveBeenCalled();
     });
 
     it("should add new blacklist entry and clear searchPattern", () => {
@@ -148,4 +134,45 @@ describe("MapTreeViewSearchController", () => {
         expect(mapTreeViewSearchController.viewModel.isPatternExcluded).toBeTruthy();
     });
 
+
+    describe("Update ViewModel with blacklist count", () => {
+
+        let file1, file2, folder1;
+
+        beforeEach(() => {
+            CodeMapUtilService.getNodesByGitignorePath = jest.fn(() => {
+                return [file1, file2, folder1];
+            });
+
+            file1 = simpleHierarchy.children[0].children[0].children[0];
+            file2 = simpleHierarchy.children[0].children[1];
+            folder1 = simpleHierarchy.children[0].children[0];
+        });
+
+        it("should get correct searchedNodePaths with searchedFiles.length", () => {
+            mapTreeViewSearchController.settingsService.applySettings = jest.fn();
+
+            mapTreeViewSearchController.setSearchedNodePathnames();
+
+            expect(mapTreeViewSearchController.settingsService.settings.searchedNodePaths).toEqual(["/root/a/ab/aba", "/root/a/abc", "/root/a/ab"]);
+            expect(mapTreeViewSearchController.searchedFiles.length).toBe(2);
+            expect(mapTreeViewSearchController.settingsService.applySettings).toHaveBeenCalled();
+        });
+
+        it("should get correct fileCount, hideCOunt and excludeCount", () => {
+            const blacklist: BlacklistItem[] = [
+                {path: file1.path, type: BlacklistType.hide},
+                {path: file1.path, type: BlacklistType.exclude},
+                {path: folder1.path, type: BlacklistType.hide},
+                {path: file2.path, type: BlacklistType.exclude}
+            ];
+            mapTreeViewSearchController.settingsService.settings.blacklist = blacklist;
+
+            mapTreeViewSearchController.setSearchedNodePathnames();
+
+            expect(mapTreeViewSearchController.viewModel.fileCount).toBe(2);
+            expect(mapTreeViewSearchController.viewModel.hideCount).toBe(1);
+            expect(mapTreeViewSearchController.viewModel.excludeCount).toBe(2);
+        });
+    });
 });
