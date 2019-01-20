@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- Merge blacklist in multipleFile view and convert paths
 
 ## [1.20.1] - 2018-12-19
 ### Added
