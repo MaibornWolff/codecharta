@@ -1,8 +1,8 @@
 
 settings-panel-component {
 
-    $angularGreen: #00bfa5;
-    $angularLightGreen: #00DFC5;
+    $lightGreen: #00DFC5;
+    $darkGreen: #00694F;
 
     @import "~angular-material-expansion-panel/dist/md-expansion-panel.css";
 
@@ -45,7 +45,6 @@ settings-panel-component {
 
     .md-title {
         margin: 0 4px;
-        transition: 0.5s;
     }
 
     .beta-symbol {
@@ -54,16 +53,17 @@ settings-panel-component {
     }
 
     .item-counter {
-        border: 1px solid $angularLightGreen;
-        background: $angularLightGreen;
+        border: 1px solid $lightGreen;
+        background: $lightGreen;
         color: white;
         font-weight: bold !important;
-        transition: 0.5s;
+        transition: 0.2s;
     }
 
     md-expansion-panel.highlight {
-        .md-title {
-            color: $angularGreen;
+        .item-counter {
+            background: $darkGreen;
+            border: 1px solid $darkGreen;
         }
     }
 

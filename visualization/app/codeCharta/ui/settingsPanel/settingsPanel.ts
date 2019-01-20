@@ -19,6 +19,7 @@ export class SettingsPanelController implements SettingsServiceSubscriber {
         private settingsService: SettingsService) {
 
         settingsService.subscribe(this);
+        this.onSettingsChanged(this.settingsService.settings, null);
     }
 
     /**
@@ -45,7 +46,7 @@ export class SettingsPanelController implements SettingsServiceSubscriber {
 
         this.$timeout(() => {
             panelElement.removeClass("highlight");
-        },500);
+        },200);
     }
 
 }
