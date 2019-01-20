@@ -278,41 +278,41 @@ describe("app.codeCharta.core.multiple", function() {
 
         const edges1 = [
             {
-                "fromNodeName": "/root/big leaf",
-                "toNodeName": "/root/Parent Leaf/small leaf",
-                "attributes": {
-                    "pairingRate": 9,
-                    "avgCommits": 4
+                fromNodeName: "/root/big leaf",
+                toNodeName: "/root/Parent Leaf/small leaf",
+                attributes: {
+                    pairingRate: 9,
+                    avgCommits: 4
                 }
             }
         ];
 
         const edges2 = [
             {
-                "fromNodeName": "/root/big leaf",
-                "toNodeName": "/root/Parent Leaf/small leaf",
-                "attributes": {
-                    "pairingRate": 89,
-                    "avgCommits": 34
+                fromNodeName: "/root/big leaf",
+                toNodeName: "/root/Parent Leaf/small leaf",
+                attributes: {
+                    pairingRate: 89,
+                    avgCommits: 34
                 }
             }
         ];
 
         const aggEdges = [
             {
-                "fromNodeName": "/root/file1/big leaf",
-                "toNodeName": "/root/file1/Parent Leaf/small leaf",
-                "attributes": {
-                    "pairingRate": 9,
-                    "avgCommits": 4
+                fromNodeName: "/root/file1/big leaf",
+                toNodeName: "/root/file1/Parent Leaf/small leaf",
+                attributes: {
+                    pairingRate: 9,
+                    avgCommits: 4
                 }
             },
             {
-                "fromNodeName": "/root/file2/big leaf",
-                "toNodeName": "/root/file2/Parent Leaf/small leaf",
-                "attributes": {
-                    "pairingRate": 89,
-                    "avgCommits": 34
+                fromNodeName: "/root/file2/big leaf",
+                toNodeName: "/root/file2/Parent Leaf/small leaf",
+                attributes: {
+                    pairingRate: 89,
+                    avgCommits: 34
                 }
             }
         ];
