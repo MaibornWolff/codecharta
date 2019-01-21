@@ -47,6 +47,7 @@ settings-panel-component {
         margin: 0 4px;
     }
 
+    /* currently unused */
     .beta-symbol {
         border: 1px solid orange;
         color: orange;
@@ -67,8 +68,7 @@ settings-panel-component {
         }
     }
 
-    .beta-symbol,
-    .item-counter {
+    .box-rounded {
         display: inline-block;
         font-weight: normal;
         line-height: 17px;
