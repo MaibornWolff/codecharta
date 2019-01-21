@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 ### Removed
+- Remove invertHeight checkbox in delta-view #306
 
 ### Fixed
 
