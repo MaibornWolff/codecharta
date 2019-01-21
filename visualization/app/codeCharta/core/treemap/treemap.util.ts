@@ -50,7 +50,7 @@ export class TreeMapUtils {
             deltas: squaredNode.data.deltas,
             parent: parent,
             heightDelta: squaredNode.data.deltas && squaredNode.data.deltas[s.heightKey] ? heightScale * squaredNode.data.deltas[s.heightKey] : 0,
-            visible: squaredNode.data.visible && !TreeMapUtils.isNodeToBeHidden(squaredNode, s),
+            visible: squaredNode.data.visible && !(TreeMapUtils.isNodeLeaf(squaredNode) && s.hideFlatBuildings && flattened),
             path: squaredNode.data.path,
             origin: squaredNode.data.origin,
             link: squaredNode.data.link,
@@ -62,20 +62,21 @@ export class TreeMapUtils {
     }
 
     private static isNodeToBeFlat(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): boolean {
-        return (s.visibleEdges && s.visibleEdges.length > 0) ? this.nodeHasNoVisibleEdges(squaredNode, s) : false;
+        let flattened = false;
+        if (s.visibleEdges && s.visibleEdges.length > 0) {
+            flattened = this.nodeHasNoVisibleEdges(squaredNode, s);
+        }
+
+        if (s.searchedNodePaths && s.searchPattern && s.searchPattern.length > 0) {
+            flattened = (s.searchedNodePaths.length == 0) ? true : this.isNodeNonSearched(squaredNode, s);
+        }
+        return flattened;
     }
 
     private static nodeHasNoVisibleEdges(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): boolean {
         return s.visibleEdges.filter(edge =>
             squaredNode.data.path === edge.fromNodeName ||
             squaredNode.data.path === edge.toNodeName).length == 0;
-    }
-
-    private static isNodeToBeHidden(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings, ): boolean {
-        if (TreeMapUtils.isNodeLeaf(squaredNode) && s.searchedNodePaths && s.searchPattern && s.searchPattern.length > 0) {
-            return (s.searchedNodePaths.length == 0) ? true : this.isNodeNonSearched(squaredNode, s);
-        }
-        return false;
     }
 
     private static isNodeNonSearched(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): boolean {

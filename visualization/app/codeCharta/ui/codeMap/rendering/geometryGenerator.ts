@@ -136,7 +136,7 @@ export class geometryGenerator {
             if (val === undefined || val === null) {
                 color = MapColors.base;
             }
-            else if (n.flat && s.enableFlatBuildingsToBeGrey) {
+            else if (n.flat) {
                 color = MapColors.flat;
             }
             else if (val < s.colorRange.from) {

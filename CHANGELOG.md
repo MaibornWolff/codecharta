@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 ### Added
 - Color searched node names green in TreeView #225
-- Option checkbox 'Enable White Flat Buildings' #225
-- Hide non-searched buildings #225
-- Hide all buildings, if searchPattern can't find any matching nodes #225
+- Option checkbox 'Hide Flattened Buildings' #225
+- Hide/Flatten non-searched buildings #225
+- Hide/Flatten all buildings, if searchPattern can't find any matching nodes #225
 
 ### Changed
 - Update TreeView filter with search field #225

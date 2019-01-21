@@ -41,7 +41,7 @@ export interface Settings {
     operation: STATISTIC_OPS;
     deltaColorFlipped: boolean;
     enableEdgeArrows: boolean;
-    enableFlatBuildingsToBeGrey: boolean;
+    hideFlatBuildings: boolean;
     maximizeDetailPanel: boolean;
     invertHeight: boolean;
     dynamicMargin: boolean;
@@ -118,7 +118,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
             enableEdgeArrows: true,
-            enableFlatBuildingsToBeGrey: true,
+            hideFlatBuildings: true,
             maximizeDetailPanel: false,
             invertHeight: false,
             dynamicMargin: true,
@@ -395,7 +395,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.operation = settings.operation;
         this._settings.deltaColorFlipped = settings.deltaColorFlipped;
         this._settings.enableEdgeArrows = settings.enableEdgeArrows;
-        this._settings.enableFlatBuildingsToBeGrey = settings.enableFlatBuildingsToBeGrey;
+        this._settings.hideFlatBuildings = settings.hideFlatBuildings;
         this._settings.maximizeDetailPanel = settings.maximizeDetailPanel;
         this._settings.invertHeight = settings.invertHeight;
         this._settings.dynamicMargin = settings.dynamicMargin;

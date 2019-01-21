@@ -106,6 +106,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             blacklist: s.blacklist,
             fileName: s.map.fileName,
             searchPattern: s.searchPattern,
+            hideFlatBuildings: s.hideFlatBuildings,
         };
 
         this.showAllOrOnlyFocusedNode(s);
@@ -123,7 +124,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             heightKey: s.heightMetric,
             colorKey: s.colorMetric,
             renderDeltas: s.mode == KindOfMap.Delta,
-            enableFlatBuildingsToBeGrey: s.enableFlatBuildingsToBeGrey,
+            hideFlatBuildings: s.hideFlatBuildings,
             colorRange: s.neutralColorRange,
             mapSize: mapSize,
             deltaColorFlipped: s.deltaColorFlipped

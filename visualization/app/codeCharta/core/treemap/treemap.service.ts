@@ -35,6 +35,7 @@ export interface TreeMapSettings {
     blacklist: Array<BlacklistItem>;
     fileName: string;
     searchPattern: string;
+    hideFlatBuildings: boolean;
 }
 
 export class TreeMapService {

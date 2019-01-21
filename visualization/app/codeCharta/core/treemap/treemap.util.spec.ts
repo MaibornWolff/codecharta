@@ -220,22 +220,22 @@ describe("treemapUtils", () => {
             expect(TreeMapUtils.isNodeToBeFlat(squaredNode, treeMapSettings)).toBeFalsy();
         });
 
-        it("should not be a hidden node, because its searched for", () => {
+        it("should not be a flat node, because its searched for", () => {
             treeMapSettings.searchedNodePaths = ["/root/Anode"];
             treeMapSettings.searchPattern = "Anode";
-            expect(TreeMapUtils.isNodeToBeHidden(squaredNode, treeMapSettings)).toBeFalsy();
+            expect(TreeMapUtils.isNodeToBeFlat(squaredNode, treeMapSettings)).toBeFalsy();
         });
 
-        it("should be a hidden node, because other nodes are searched for", () => {
+        it("should be a flat node, because other nodes are searched for", () => {
             treeMapSettings.searchedNodePaths = ["/root/anotherNode", "/root/anotherNode2"];
             treeMapSettings.searchPattern = "Anode";
-            expect(TreeMapUtils.isNodeToBeHidden(squaredNode, treeMapSettings)).toBeTruthy();
+            expect(TreeMapUtils.isNodeToBeFlat(squaredNode, treeMapSettings)).toBeTruthy();
         });
 
-        it("should not be hidden a node when searchPattern is empty", () => {
+        it("should not be a flat node when searchPattern is empty", () => {
             treeMapSettings.searchedNodePaths = ["/root/anotherNode", "/root/anotherNode2"];
             treeMapSettings.searchPattern = "";
-            expect(TreeMapUtils.isNodeToBeHidden(squaredNode, treeMapSettings)).toBeFalsy();
+            expect(TreeMapUtils.isNodeToBeFlat(squaredNode, treeMapSettings)).toBeFalsy();
         });
 
     });
