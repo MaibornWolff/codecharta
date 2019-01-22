@@ -69,7 +69,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     constructor(private urlService, private dataService: DataService, private $rootScope,
                 private threeOrbitControlsService: ThreeOrbitControlsService) {
 
-        this._settings = this.getInitialSettings(dataService.data.renderMap, dataService.data.metrics);
+        this._settings = this.getInitialSettings(dataService.data.renderMap, dataService.getMetricNames());
 
         this.numberOfCalls = 0;
         dataService.subscribe(this);
@@ -142,23 +142,25 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      */
     public onDataChanged(data: DataModel) {
 
-        if(data.metrics && data.renderMap && data.revisions) {
+        let metricNames = this.dataService.getMetricNames();
+
+        if(metricNames && data.renderMap && data.revisions) {
             this._settings.map = data.renderMap; // reference map is always the map which should be drawn
             this._settings.blacklist = data.renderMap.blacklist;
 
-            if (data.metrics.indexOf(this._settings.areaMetric) === -1) {
+            if (metricNames.indexOf(this._settings.areaMetric) === -1) {
                 //area metric is not set or not in the new metrics and needs to be chosen
-                this._settings.areaMetric = this.getMetricByIdOrLast(0, data.metrics);
+                this._settings.areaMetric = this.getMetricByIdOrLast(0, metricNames);
             }
 
-            if (data.metrics.indexOf(this._settings.heightMetric) === -1) {
+            if (metricNames.indexOf(this._settings.heightMetric) === -1) {
                 //height metric is not set or not in the new metrics and needs to be chosen
-                this._settings.heightMetric = this.getMetricByIdOrLast(1, data.metrics);
+                this._settings.heightMetric = this.getMetricByIdOrLast(1, metricNames);
             }
 
-            if (data.metrics.indexOf(this._settings.colorMetric) === -1) {
+            if (metricNames.indexOf(this._settings.colorMetric) === -1) {
                 //color metric is not set or not in the new metrics and needs to be chosen
-                this._settings.colorMetric = this.getMetricByIdOrLast(2, data.metrics);
+                this._settings.colorMetric = this.getMetricByIdOrLast(2, metricNames);
             }
 
             this.onSettingsChanged();
@@ -424,9 +426,9 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     private correctSettings(settings) {
         const result = settings;
         result.map = this._settings.map; //do not change the map
-        result.areaMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.areaMetric, this.getMetricByIdOrLast(0, this.dataService.data.metrics));
-        result.heightMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.heightMetric, this.getMetricByIdOrLast(1, this.dataService.data.metrics));
-        result.colorMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.colorMetric, this.getMetricByIdOrLast(2, this.dataService.data.metrics));
+        result.areaMetric = this.getMetricOrDefault(this.dataService.getMetricNames(), settings.areaMetric, this.getMetricByIdOrLast(0, this.dataService.getMetricNames()));
+        result.heightMetric = this.getMetricOrDefault(this.dataService.getMetricNames(), settings.heightMetric, this.getMetricByIdOrLast(1, this.dataService.getMetricNames()));
+        result.colorMetric = this.getMetricOrDefault(this.dataService.getMetricNames(), settings.colorMetric, this.getMetricByIdOrLast(2, this.dataService.getMetricNames()));
         return result;
     }
 

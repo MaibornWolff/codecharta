@@ -1,19 +1,22 @@
 "use strict";
 
 import * as d3 from "d3";
-import {CodeMap, CodeMapNode, Edge} from "./model/CodeMap";
+import {CodeMap, CodeMapNode} from "./model/CodeMap";
 import {IRootScopeService, IAngularEvent} from "angular";
 import {DeltaCalculatorService} from "./data.deltaCalculator.service";
 import {DataDecoratorService} from "./data.decorator.service";
 import {HierarchyNode} from "d3-hierarchy";
-import {SettingsService} from "../settings/settings.service";
+
+export interface MetricData {
+    name: string;
+    maxValue: number;
+}
 
 export interface DataModel {
 
     revisions: CodeMap[];
-    metrics: string[];
+    metricData: MetricData[];
     renderMap: CodeMap;
-
 }
 
 export interface DataServiceSubscriber {
@@ -37,7 +40,7 @@ export class DataService {
 
         this._data = {
             revisions: [],
-            metrics: [],
+            metricData: [],
             renderMap: null
         };
 
@@ -50,8 +53,8 @@ export class DataService {
         this.dataDecoratorService.decorateMapWithVisibleAttribute(this._data.revisions[revision]);
         this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.revisions[revision]);
         this.updateMetrics();
-        this.dataDecoratorService.decorateLeavesWithMissingMetrics(this._data.revisions, this._data.metrics);
-        this.dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren(this._data.revisions, this._data.metrics);
+        this.dataDecoratorService.decorateLeavesWithMissingMetrics(this._data.revisions, this.getMetricNames());
+        this.dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren(this._data.revisions, this.getMetricNames());
         this.setReferenceMap(revision);
     }
 
@@ -79,7 +82,7 @@ export class DataService {
             this.deltaCalculatorService.removeCrossOriginNodes(this._data.renderMap);
         }
         if (this._deltasEnabled && this._data.renderMap && this._lastComparisonMap) {
-            this.deltaCalculatorService.provideDeltas(this._data.renderMap,this._lastComparisonMap, this._data.metrics);
+            this.deltaCalculatorService.provideDeltas(this._data.renderMap,this._lastComparisonMap, this.getMetricNames());
         }
     }
 
@@ -113,7 +116,9 @@ export class DataService {
         this.$rootScope.$broadcast("data-changed", this._data);
     }
 
-
+    public getMetricNames(): string[] {
+        return this._data.metricData.map(m => m.name);
+    }
 
     public getReferenceMapName(): string {
         return this._data.renderMap.fileName;
@@ -146,7 +151,7 @@ export class DataService {
     public updateMetrics() {
 
         if(this._data.revisions.length <= 0){
-            this._data.metrics = [];
+            this._data.metricData = [];
             return; //we cannot reduce if there are no maps
         }
 
@@ -166,7 +171,13 @@ export class DataService {
             }));
         });
 
-        this._data.metrics = attributes;
+        let metricData: MetricData[] = [];
+
+        for(const attribute of attributes) {
+            metricData.push({name: attribute, maxValue: this.getMaxMetricInAllRevisions(attribute)})
+        }
+
+        this._data.metricData = metricData;
     }
 
     /**
@@ -174,7 +185,7 @@ export class DataService {
      */
     public resetMaps() {
         this._data.revisions = [];
-        this._data.metrics = [];
+        this._data.metricData = [];
         this._lastComparisonMap = null;
         this._data.renderMap = null;
         this.notify();
