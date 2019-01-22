@@ -55,8 +55,8 @@ export class DataService {
         this.dataDecoratorService.decorateMapWithVisibleAttribute(this._data.revisions[revision]);
         this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.revisions[revision]);
         this.updateMetrics();
-        this.dataDecoratorService.decorateLeavesWithMissingMetrics(this._data.revisions, this.data.metrics);
-        this.dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren(this._data.revisions, this.data.metrics);
+        this.dataDecoratorService.decorateLeavesWithMissingMetrics(this._data.revisions, this._data.metrics);
+        this.dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren(this._data.revisions, this._data.metrics);
         this.setReferenceMap(revision);
     }
 
@@ -84,7 +84,7 @@ export class DataService {
             this.deltaCalculatorService.removeCrossOriginNodes(this._data.renderMap);
         }
         if (this._deltasEnabled && this._data.renderMap && this._lastComparisonMap) {
-            this.deltaCalculatorService.provideDeltas(this._data.renderMap,this._lastComparisonMap, this.data.metrics);
+            this.deltaCalculatorService.provideDeltas(this._data.renderMap,this._lastComparisonMap, this._data.metrics);
         }
     }
 
@@ -149,6 +149,7 @@ export class DataService {
     public updateMetrics() {
 
         if(this._data.revisions.length <= 0){
+            this._data.metrics = [];
             this._data.metricData = [];
             return; //we cannot reduce if there are no maps
         }
@@ -187,6 +188,7 @@ export class DataService {
      */
     public resetMaps() {
         this._data.revisions = [];
+        this._data.metrics = [];
         this._data.metricData = [];
         this._lastComparisonMap = null;
         this._data.renderMap = null;
