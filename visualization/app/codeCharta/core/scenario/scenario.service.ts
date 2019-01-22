@@ -57,7 +57,7 @@ export class ScenarioService {
      * @returns {Scenario[]} all scenarios
      */
     public getScenarios(): Scenario[] {
-        return this.scenarios.filter(s => this.isScenarioPossible(s, this.dataService.getMetricNames()));
+        return this.scenarios.filter(s => this.isScenarioPossible(s, this.dataService.data.metrics));
     }
 
     public isScenarioPossible(scenario: Scenario, metrics: string[]) {

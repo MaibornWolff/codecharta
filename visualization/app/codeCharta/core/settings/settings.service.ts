@@ -69,7 +69,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     constructor(private urlService, private dataService: DataService, private $rootScope,
                 private threeOrbitControlsService: ThreeOrbitControlsService) {
 
-        this._settings = this.getInitialSettings(dataService.data.renderMap, dataService.getMetricNames());
+        this._settings = this.getInitialSettings(dataService.data.renderMap, dataService.data.metrics);
 
         this.numberOfCalls = 0;
         dataService.subscribe(this);
@@ -142,7 +142,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      */
     public onDataChanged(data: DataModel) {
 
-        let metricNames = this.dataService.getMetricNames();
+        let metricNames = this.dataService.data.metrics;
 
         if(metricNames && data.renderMap && data.revisions) {
             this._settings.map = data.renderMap; // reference map is always the map which should be drawn
@@ -426,9 +426,9 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     private correctSettings(settings) {
         const result = settings;
         result.map = this._settings.map; //do not change the map
-        result.areaMetric = this.getMetricOrDefault(this.dataService.getMetricNames(), settings.areaMetric, this.getMetricByIdOrLast(0, this.dataService.getMetricNames()));
-        result.heightMetric = this.getMetricOrDefault(this.dataService.getMetricNames(), settings.heightMetric, this.getMetricByIdOrLast(1, this.dataService.getMetricNames()));
-        result.colorMetric = this.getMetricOrDefault(this.dataService.getMetricNames(), settings.colorMetric, this.getMetricByIdOrLast(2, this.dataService.getMetricNames()));
+        result.areaMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.areaMetric, this.getMetricByIdOrLast(0, this.dataService.data.metrics));
+        result.heightMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.heightMetric, this.getMetricByIdOrLast(1, this.dataService.data.metrics));
+        result.colorMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.colorMetric, this.getMetricByIdOrLast(2, this.dataService.data.metrics));
         return result;
     }
 

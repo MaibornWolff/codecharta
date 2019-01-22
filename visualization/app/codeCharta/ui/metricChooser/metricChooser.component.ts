@@ -45,7 +45,7 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
     }
 
     onDataChanged(data: DataModel, event: IAngularEvent) {
-        this.metricData = data.metricData.sort((a,b) => (a.name > b.name) ? 1 : 0);
+        this.metricData =  data.metricData.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
     }
 
     public notify() {
