@@ -56,6 +56,18 @@ describe("app.codeCharta.core.data.dataService", function() {
         expect(dataService.data.metrics).toEqual(["RLOC", "Functions", "MCC", "unary"]);
     });
 
+    it("set metrics should set metricData correctly", ()=>{
+        dataService.setMap(data, 0);
+        dataService.updateMetrics();
+        const expectedMetricData = [
+            {"maxValue": 100, "name": "RLOC"},
+            {"maxValue": 1000, "name": "Functions"},
+            {"maxValue": 100, "name": "MCC"},
+            {"maxValue": 1, "name": "unary"}
+        ];
+        expect(dataService.data.metricData).toEqual(expectedMetricData);
+    });
+
     it("set metrics should set metrics correctly with multiple maps", ()=>{
         dataService.setMap(data, 0);
         let data2 = JSON.parse(JSON.stringify(data));
@@ -69,6 +81,7 @@ describe("app.codeCharta.core.data.dataService", function() {
         dataService._data.revisions = [];
         dataService.updateMetrics();
         expect(dataService.data.metrics).toEqual([]);
+        expect(dataService.data.metricData).toEqual([]);
     });
 
     it("resetting map should clear everything", () => {
