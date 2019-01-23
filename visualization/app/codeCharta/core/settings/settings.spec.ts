@@ -4,7 +4,6 @@ import DoneCallback = jest.DoneCallback;
 import sinon from "sinon";
 import {KindOfMap, SettingsService} from "./settings.service";
 import {CodeMap} from "../data/model/CodeMap";
-import {MetricData} from "../data/data.service";
 
 /**
  * @test {SettingsService}
@@ -192,6 +191,7 @@ describe("settings.service", function() {
     it("should react to data-changed events and set metrics correctly", NGMock.mock.inject(function(settingsService, $rootScope){
 
         settingsService.onSettingsChanged = sinon.spy();
+
         $rootScope.$broadcast("data-changed", {renderMap: validData, metrics: ["a", "b"], revisions: [validData, validData]});
 
         expect(settingsService.settings.map.fileName).toBe("file");
