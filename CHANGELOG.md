@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- Show maxValue of each metric in metricChooser select list #204
 
 ### Changed
 
