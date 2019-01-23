@@ -142,7 +142,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      */
     public onDataChanged(data: DataModel) {
 
-        let metricNames = this.dataService.data.metrics;
+        let metricNames = data.metrics;
 
         if(metricNames && data.renderMap && data.revisions) {
             this._settings.map = data.renderMap; // reference map is always the map which should be drawn
