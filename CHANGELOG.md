@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- Colored color-slider inside the RibbonBar #318
 
 ### Changed
 
