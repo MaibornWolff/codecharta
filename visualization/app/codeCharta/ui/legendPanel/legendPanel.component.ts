@@ -223,6 +223,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
 
     getImageDataUri(hex: number): string {
         let hexS: string = "#" + hex.toString(16);
+        console.log("legend", hex, hexS);
         let color: string = this.encodeHex(hexS);
         return this.generatePixel(color);
     }
