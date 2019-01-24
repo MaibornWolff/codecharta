@@ -2,10 +2,10 @@ import angular from "angular";
 import "../../core/core.module";
 import "../codeMap/codeMap";
 
-import "./mapTreeView.css";
+import "./mapTreeView.component.scss";
 
-import {mapTreeViewComponent, MapTreeViewController} from "./mapTreeViewComponent";
-import {mapTreeViewLevelComponent} from "./mapTreeViewLevelComponent";
+import {mapTreeViewComponent, MapTreeViewController} from "./mapTreeView.component";
+import {mapTreeViewLevelComponent} from "./mapTreeView.level.component";
 
 angular.module("app.codeCharta.ui.mapTreeView", ["app.codeCharta.core", "app.codeCharta.ui.codeMap"])
     .component(
