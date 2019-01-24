@@ -1,6 +1,6 @@
 import "./multipleFile.module";
 import {NGMock} from "../../../../mocks/ng.mockhelper";
-import {AttributeType, CodeMap, ExcludeType} from "../data/model/CodeMap";
+import {AttributeType, BlacklistType, CodeMap} from "../data/model/CodeMap";
 
 describe("app.codeCharta.core.multiple", function() {
 
@@ -180,22 +180,22 @@ describe("app.codeCharta.core.multiple", function() {
         const blacklist1 = [
             {
                 path: "/root/node/equalPath",
-                type: ExcludeType.exclude
+                type: BlacklistType.exclude
             },
             {
                 path: "/another/third/path",
-                type: ExcludeType.hide
+                type: BlacklistType.hide
             }
         ];
 
         const blacklist2 = [
             {
                 path: "/root/node/equalPath",
-                type: ExcludeType.exclude
+                type: BlacklistType.exclude
             },
             {
                 path: "*another/path",
-                type: ExcludeType.hide
+                type: BlacklistType.hide
             }
         ];
 

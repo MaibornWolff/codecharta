@@ -1,4 +1,4 @@
-import {AttributeType, CodeMap, CodeMapNode, Edge, Exclude} from "../data/model/CodeMap";
+import {AttributeType, CodeMap, CodeMapNode, Edge, BlacklistItem} from "../data/model/CodeMap";
 
 
 export class MultipleFileService {
@@ -7,7 +7,7 @@ export class MultipleFileService {
     private projectNameArray = [];
     private fileNameArray = [];
     private edges: Edge[] = [];
-    private blacklist: Exclude[] = [];
+    private blacklist: BlacklistItem[] = [];
     private attributeTypesEdge:{[key: string]: AttributeType} = {};
     private attributeTypesNode:{[key: string]: AttributeType} = {};
 
@@ -48,7 +48,7 @@ export class MultipleFileService {
         if(!inputMap.blacklist) return;
 
         for(let oldBlacklistItem of inputMap.blacklist){
-            let blacklistItem: Exclude = {
+            let blacklistItem: BlacklistItem = {
                 path: this.getUpdatedBlacklistItemPath(inputMap.fileName, oldBlacklistItem.path),
                 type: oldBlacklistItem.type
             };
