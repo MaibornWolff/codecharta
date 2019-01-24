@@ -12,18 +12,30 @@ range-slider-component {
   .rzslider {
     width: 150px;
     margin: -10px 0 15px 0 !important;
-  }
 
-  .rzslider .rz-pointer, .rzslider .rz-selection {
-    background: #26a69a !important;
-  }
+    .rz-bar {
+      background: #a3a3a3;
+      height: 5px;
+      margin-top: -1.5px;
+    }
 
-  .rzslider .rz-pointer {
-    top: -6px;
-    width: 14px;
-    height: 14px;
-    cursor: pointer;
-    border-radius: 16px;
+    .rz-pointer,
+    .rz-selection {
+      background: #26a69a !important;
+    }
+
+    .rz-pointer {
+      top: -6px;
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+      border-radius: 16px;
+    }
+
+    .rz-bar-wrapper:nth-child(2) {
+      visibility: visible !important;
+    }
+
   }
 
   .rz-bubble, .rz-limit {
@@ -35,11 +47,6 @@ range-slider-component {
 
   .rz-active:after {
     display: none;
-  }
-
-  .rzslider .rz-bar {
-    background: #a3a3a3;
-    height: 2px;
   }
 
   .small-input-field {
