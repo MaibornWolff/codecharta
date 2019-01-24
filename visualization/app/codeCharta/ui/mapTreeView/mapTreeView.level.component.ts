@@ -1,9 +1,10 @@
 import {SettingsService} from "../../core/settings/settings.service";
 import {IRootScopeService} from "angular";
-import {CodeMapNode, ExcludeType} from "../../core/data/model/CodeMap";
+import {CodeMapNode, BlacklistType} from "../../core/data/model/CodeMap";
 import {NodeContextMenuController} from "../nodeContextMenu/nodeContextMenu.component";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
+import {AngularColors} from "../codeMap/rendering/renderSettings";
 
 export interface MapTreeViewHoverEventSubscriber {
     onShouldHoverNode(node: CodeMapNode);
@@ -15,6 +16,7 @@ export class MapTreeViewLevelController {
     public node: CodeMapNode = null;
     public depth: number = 0;
     public collapsed: boolean = true;
+    public angularGreen: string = AngularColors.green;
 
     /* @ngInject */
     constructor(
@@ -68,24 +70,28 @@ export class MapTreeViewLevelController {
 
     isBlacklisted(node: CodeMapNode): boolean {
         if (node != null) {
-            return CodeMapUtilService.isBlacklisted(node, this.settingsService.settings.blacklist, ExcludeType.exclude)
+            return CodeMapUtilService.isBlacklisted(node, this.settingsService.settings.blacklist, BlacklistType.exclude)
+        }
+        return false;
+    }
+
+    isSearched(node: CodeMapNode): boolean {
+        if (node != null && this.settingsService.settings.searchedNodePaths) {
+            return this.settingsService.settings.searchedNodePaths.filter(path =>
+                path == node.path).length > 0;
         }
         return false;
     }
 
     sortByFolder(node: CodeMapNode) {
-        if(!(node && node.children && node.children.length > 0)){
-            return 0;
-        } else {
-            return 1;
-        }
+        return (node && node.children && node.children.length > 0) ? 1 : 0;
     }
 
 }
 
 export const mapTreeViewLevelComponent = {
     selector: "mapTreeViewLevelComponent",
-    template: require("./mapTreeViewLevel.html"),
+    template: require("./mapTreeView.level.component.html"),
     controller: MapTreeViewLevelController,
     bindings: {
         node: "<",

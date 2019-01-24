@@ -22,4 +22,5 @@ export interface node {
     origin : string;
     link : string;
     markingColor: number;
+    flat: boolean;
 }

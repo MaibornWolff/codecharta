@@ -1,8 +1,8 @@
 import {TreeMapUtils} from "./treemap.util";
 import {SquarifiedValuedCodeMapNode, TreeMapSettings} from "./treemap.service";
-import {CodeMapNode, Edge} from "../data/model/CodeMap";
-import {node} from "../../ui/codeMap/rendering/node";
-describe("treemap utils", () => {
+import {CodeMapNode} from "../data/model/CodeMap";
+
+describe("treemapUtils", () => {
 
     describe("build node", () => {
 
@@ -25,7 +25,7 @@ describe("treemap utils", () => {
                 path: "/root/Anode",
                 type: "File",
                 attributes: {}
-            };
+            } as CodeMapNode;
 
             squaredNode = {
                 data: codeMapNode,
@@ -34,7 +34,7 @@ describe("treemap utils", () => {
                 y0: 0,
                 x1: 400,
                 y1: 400
-            };
+            } as SquarifiedValuedCodeMapNode;
 
             treeMapSettings = {
                 size: 1,
@@ -44,7 +44,7 @@ describe("treemap utils", () => {
                 invertHeight: false,
                 visibleEdges: [],
                 blacklist: []
-            };
+            } as TreeMapSettings;
 
         });
 
@@ -161,4 +161,83 @@ describe("treemap utils", () => {
 
     });
 
-}
+    describe("isNodeToBeFlat", () => {
+
+        var codeMapNode: CodeMapNode;
+        var squaredNode: SquarifiedValuedCodeMapNode;
+        var treeMapSettings: TreeMapSettings;
+
+        beforeEach(() => {
+
+            codeMapNode = {
+                name: "Anode",
+                path: "/root/Anode",
+                type: "File",
+                attributes: {}
+            } as CodeMapNode;
+
+            squaredNode = {
+                data: codeMapNode,
+                value: 42,
+                x0: 0,
+                y0: 0,
+                x1: 400,
+                y1: 400
+            } as SquarifiedValuedCodeMapNode;
+
+            treeMapSettings = {
+                size: 1,
+                areaKey: "theArea",
+                heightKey: "theHeight",
+                margin: 15,
+                invertHeight: false,
+                visibleEdges: [],
+                blacklist: []
+            } as TreeMapSettings;
+
+        });
+
+        it("should not be a flat node when no visibleEdges", () => {
+            treeMapSettings.visibleEdges = [];
+            expect(TreeMapUtils.isNodeToBeFlat(squaredNode, treeMapSettings)).toBeFalsy();
+        });
+
+        it("should be a flat node when other edges are visible", () => {
+            treeMapSettings.visibleEdges = [{
+                fromNodeName: "/root/anotherNode",
+                toNodeName: "/root/anotherNode2",
+                attributes: {}
+            }];
+            expect(TreeMapUtils.isNodeToBeFlat(squaredNode, treeMapSettings)).toBeTruthy();
+        });
+
+        it("should not be a flat node when it contains edges", () => {
+            treeMapSettings.visibleEdges = [{
+                fromNodeName: "/root/Anode",
+                toNodeName: "/root/anotherNode",
+                attributes: {}
+            }];
+            expect(TreeMapUtils.isNodeToBeFlat(squaredNode, treeMapSettings)).toBeFalsy();
+        });
+
+        it("should not be a flat node, because its searched for", () => {
+            treeMapSettings.searchedNodePaths = ["/root/Anode"];
+            treeMapSettings.searchPattern = "Anode";
+            expect(TreeMapUtils.isNodeToBeFlat(squaredNode, treeMapSettings)).toBeFalsy();
+        });
+
+        it("should be a flat node, because other nodes are searched for", () => {
+            treeMapSettings.searchedNodePaths = ["/root/anotherNode", "/root/anotherNode2"];
+            treeMapSettings.searchPattern = "Anode";
+            expect(TreeMapUtils.isNodeToBeFlat(squaredNode, treeMapSettings)).toBeTruthy();
+        });
+
+        it("should not be a flat node when searchPattern is empty", () => {
+            treeMapSettings.searchedNodePaths = ["/root/anotherNode", "/root/anotherNode2"];
+            treeMapSettings.searchPattern = "";
+            expect(TreeMapUtils.isNodeToBeFlat(squaredNode, treeMapSettings)).toBeFalsy();
+        });
+
+    });
+
+});

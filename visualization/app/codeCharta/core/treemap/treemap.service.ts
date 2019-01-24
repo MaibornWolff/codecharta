@@ -1,4 +1,4 @@
-import {CodeMapNode, Edge, Exclude, ExcludeType} from "../data/model/CodeMap";
+import {CodeMapNode, Edge, BlacklistItem, BlacklistType} from "../data/model/CodeMap";
 import {node} from "../../ui/codeMap/rendering/node";
 import {DataService} from "../data/data.service";
 import * as d3 from "d3";
@@ -31,8 +31,11 @@ export interface TreeMapSettings {
     margin: number;
     invertHeight: boolean;
     visibleEdges: Edge[];
-    blacklist: Array<Exclude>;
+    searchedNodePaths: string[];
+    blacklist: Array<BlacklistItem>;
     fileName: string;
+    searchPattern: string;
+    hideFlatBuildings: boolean;
 }
 
 export class TreeMapService {
@@ -65,9 +68,8 @@ export class TreeMapService {
     }
 
     private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): node {
-        const heightScale = s.size / TreeMapService.HEIGHT_DIVISOR / this.dataService.getMaxMetricInAllRevisions(s.heightKey);
-
         const maxHeight = this.dataService.getMaxMetricInAllRevisions(s.heightKey);
+        const heightScale = s.size / TreeMapService.HEIGHT_DIVISOR / maxHeight;
         return this.addHeightDimensionAndFinalize(squaredNode, s, heightScale, maxHeight);
     }
 
@@ -80,11 +82,7 @@ export class TreeMapService {
             heightValue = TreeMapService.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND;
         }
 
-        if (heightValue === undefined || heightValue === null) {
-            heightValue = TreeMapService.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND;
-        }
-
-        if (CodeMapUtilService.isBlacklisted(squaredNode.data, s.blacklist, ExcludeType.hide)) {
+        if (CodeMapUtilService.isBlacklisted(squaredNode.data, s.blacklist, BlacklistType.hide)) {
             squaredNode.data = this.setVisibilityOfNodeAndDescendants(squaredNode.data, false);
         }
 
@@ -121,7 +119,7 @@ export class TreeMapService {
 
         let result = 0;
 
-        if(CodeMapUtilService.isBlacklisted(node, s.blacklist, ExcludeType.exclude)) {
+        if(CodeMapUtilService.isBlacklisted(node, s.blacklist, BlacklistType.exclude)) {
             return 0;
         }
 

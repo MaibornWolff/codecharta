@@ -1,5 +1,5 @@
 import {CodeMapActionsService} from "./codeMap.actions.service";
-import {CodeMapNode, Edge, Exclude, ExcludeType} from "../../core/data/model/CodeMap";
+import {CodeMapNode, Edge, BlacklistItem, BlacklistType} from "../../core/data/model/CodeMap";
 
 import {SettingsService} from "../../core/settings/settings.service";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
@@ -15,14 +15,14 @@ describe("code map action service tests", ()=>{
     let visibleNode: CodeMapNode;
     let hiddenNode: CodeMapNode;
     let simpleHiddenHierarchy: CodeMapNode;
-    let blacklistItems: Array<Exclude>;
+    let blacklistItems: Array<BlacklistItem>;
     let edgeList: Array<Edge>;
 
     let nodeA: CodeMapNode;
     let nodeB: CodeMapNode;
     let nodeChildAa: CodeMapNode;
 
-    function checkBlacklistItems(type: ExcludeType, node: CodeMapNode, shouldExist: boolean) {
+    function checkBlacklistItems(type: BlacklistType, node: CodeMapNode, shouldExist: boolean) {
         const amountOfFoundItems = codeMapActionService.settingsService.settings.blacklist.filter(b =>
             b.type == type && b.path == node.path).length == 1;
         expect(amountOfFoundItems).toBe(shouldExist);
@@ -88,15 +88,15 @@ describe("code map action service tests", ()=>{
         blacklistItems = [
             {
                 path: "/root/a/aa",
-                type: ExcludeType.exclude
+                type: BlacklistType.exclude
             },
             {
                 path: "/root/a/ab",
-                type: ExcludeType.hide
+                type: BlacklistType.hide
             },
             {
                 path: "/root/b",
-                type: ExcludeType.hide
+                type: BlacklistType.hide
             }
         ];
         edgeList = [
@@ -203,36 +203,36 @@ describe("code map action service tests", ()=>{
 
         it("showing hidden node should remove blacklistHide item", ()=>{
             codeMapActionService.hideNode(nodeA);
-            checkBlacklistItems(ExcludeType.hide, nodeA, true);
+            checkBlacklistItems(BlacklistType.hide, nodeA, true);
 
             codeMapActionService.showNode(nodeA);
-            checkBlacklistItems(ExcludeType.hide, nodeA, false);
+            checkBlacklistItems(BlacklistType.hide, nodeA, false);
         });
 
         it("hiding node should create blacklistHide item", ()=>{
             codeMapActionService.hideNode(simpleHiddenHierarchy);
-            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy, true);
+            checkBlacklistItems(BlacklistType.hide, simpleHiddenHierarchy, true);
         });
 
         it("hiding the same node again should not create blacklistHide item", ()=>{
             codeMapActionService.hideNode(simpleHiddenHierarchy);
-            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy, true);
+            checkBlacklistItems(BlacklistType.hide, simpleHiddenHierarchy, true);
 
             codeMapActionService.hideNode(simpleHiddenHierarchy);
-            checkBlacklistItems(ExcludeType.hide, simpleHiddenHierarchy, true);
+            checkBlacklistItems(BlacklistType.hide, simpleHiddenHierarchy, true);
         });
 
         it("excluding node should create blacklistExcluded item", ()=>{
             codeMapActionService.excludeNode(simpleHiddenHierarchy);
-            checkBlacklistItems(ExcludeType.exclude, simpleHiddenHierarchy, true);
+            checkBlacklistItems(BlacklistType.exclude, simpleHiddenHierarchy, true);
         });
 
         it("removing node should remove blacklistExcluded item", ()=>{
             codeMapActionService.excludeNode(simpleHiddenHierarchy);
-            checkBlacklistItems(ExcludeType.exclude, simpleHiddenHierarchy, true);
+            checkBlacklistItems(BlacklistType.exclude, simpleHiddenHierarchy, true);
 
-            codeMapActionService.removeBlacklistEntry({path: "/root", type: ExcludeType.exclude});
-            checkBlacklistItems(ExcludeType.exclude, simpleHiddenHierarchy, false);
+            codeMapActionService.removeBlacklistEntry({path: "/root", type: BlacklistType.exclude});
+            checkBlacklistItems(BlacklistType.exclude, simpleHiddenHierarchy, false);
         });
 
         it("toggling visible node should call hide method", ()=>{

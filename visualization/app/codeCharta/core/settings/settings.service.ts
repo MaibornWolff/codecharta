@@ -5,7 +5,7 @@ import {
 } from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera} from "three";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
-import {CodeMap, CodeMapNode, Exclude, ExcludeType} from "../data/model/CodeMap";
+import {CodeMap, CodeMapNode, BlacklistItem, BlacklistType} from "../data/model/CodeMap";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 
 export interface Range {
@@ -41,12 +41,15 @@ export interface Settings {
     operation: STATISTIC_OPS;
     deltaColorFlipped: boolean;
     enableEdgeArrows: boolean;
+    hideFlatBuildings: boolean;
     maximizeDetailPanel: boolean;
     invertHeight: boolean;
     dynamicMargin: boolean;
     isWhiteBackground: boolean;
-    blacklist: Array<Exclude>;
+    blacklist: Array<BlacklistItem>;
     focusedNodePath: string;
+    searchedNodePaths: Array<string>;
+    searchPattern: string;
 }
 
 export interface SettingsServiceSubscriber {
@@ -115,12 +118,15 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
             enableEdgeArrows: true,
+            hideFlatBuildings: true,
             maximizeDetailPanel: false,
             invertHeight: false,
             dynamicMargin: true,
             isWhiteBackground: false,
             blacklist: [],
             focusedNodePath: null,
+            searchedNodePaths: [],
+            searchPattern: null
         };
         return settings;
 
@@ -386,12 +392,16 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.mode = settings.mode;
         this._settings.operation = settings.operation;
         this._settings.deltaColorFlipped = settings.deltaColorFlipped;
+        this._settings.enableEdgeArrows = settings.enableEdgeArrows;
+        this._settings.hideFlatBuildings = settings.hideFlatBuildings;
         this._settings.maximizeDetailPanel = settings.maximizeDetailPanel;
         this._settings.invertHeight = settings.invertHeight;
         this._settings.dynamicMargin = settings.dynamicMargin;
         this._settings.isWhiteBackground = settings.isWhiteBackground;
         this._settings.blacklist = settings.blacklist;
         this._settings.focusedNodePath = settings.focusedNodePath;
+        this._settings.searchedNodePaths = settings.searchedNodePaths;
+        this._settings.searchPattern = settings.searchPattern;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = settings.map || this.settings.map;

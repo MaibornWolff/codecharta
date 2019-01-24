@@ -29,7 +29,7 @@ export class MapTreeViewController implements SettingsServiceSubscriber {
 
 export const mapTreeViewComponent = {
     selector: "mapTreeViewComponent",
-    template: require("./mapTreeView.html"),
+    template: require("./mapTreeView.component.html"),
     controller: MapTreeViewController
 };
 
