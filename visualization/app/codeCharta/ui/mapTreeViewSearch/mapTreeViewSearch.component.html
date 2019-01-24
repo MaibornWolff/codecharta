@@ -1,0 +1,10 @@
+<md-input-container class="md-block">
+    <label>Search by gitignore style: *.js or **/service/*</label>
+    <input type='text' ng-model="$ctrl.viewModel.searchPattern" ng-change="$ctrl.onFilterChange($ctrl.viewModel.searchPattern)">
+    <br><br>
+    <div ng-messages="$ctrl.viewModel.folderCount">
+        Found:
+        {{$ctrl.viewModel.folderCount}} <i class="fa fa-folder"></i>
+        {{$ctrl.viewModel.fileCount}} <i class="fa fa-file"></i>
+    </div>
+</md-input-container>
