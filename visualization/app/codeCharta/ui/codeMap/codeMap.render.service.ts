@@ -127,7 +127,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             hideFlatBuildings: s.hideFlatBuildings,
             colorRange: s.neutralColorRange,
             mapSize: mapSize,
-            deltaColorFlipped: s.deltaColorFlipped
+            deltaColorFlipped: s.deltaColorFlipped,
+            whiteColorBuildings: s.whiteColorBuildings,
         };
 
         this.setLabels(s);

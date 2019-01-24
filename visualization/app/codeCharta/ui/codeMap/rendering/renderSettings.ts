@@ -28,6 +28,7 @@ export enum MapColors {
     defaultC = 0x89ACB4,
     positiveDelta = 0x69ff40,
     negativeDelta = 0xff0E0E,
+    positiveWhite = 0xffffff,
     base = 0x666666,
     flat = 0xaaaaaa,
 }
@@ -44,4 +45,5 @@ export interface renderSettings {
     colorRange : colorRange;
     mapSize : number;
     deltaColorFlipped: boolean;
+    whiteColorBuildings: boolean;
 }

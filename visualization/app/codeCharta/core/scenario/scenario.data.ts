@@ -34,6 +34,7 @@ export function createDefaultScenario(map: CodeMap, margin: number): Scenario {
             invertHeight: false,
             dynamicMargin: true,
             isWhiteBackground: false,
+            whiteColorBuildings: true,
             blacklist:[],
             searchPattern: ""
         },
