@@ -159,7 +159,7 @@ describe("MapTreeViewSearchController", () => {
             expect(mapTreeViewSearchController.settingsService.applySettings).toHaveBeenCalled();
         });
 
-        it("should get correct fileCount, hideCOunt and excludeCount", () => {
+        xit("should get correct fileCount, hideCOunt and excludeCount", () => {
             const blacklist: BlacklistItem[] = [
                 {path: file1.path, type: BlacklistType.hide},
                 {path: file1.path, type: BlacklistType.exclude},
