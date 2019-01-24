@@ -30,7 +30,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
     }
 
     initSliderOptions(settings: Settings = this.settingsService.settings) {
-        this.maxMetricValue = this.dataService.getMaxMetricInAllRevisions(settings.colorMetric)
+        this.maxMetricValue = this.dataService.getMaxMetricInAllRevisions(settings.colorMetric);
         this.sliderOptions = {
             ceil: this.maxMetricValue,
             onChange: this.onSliderChange.bind(this),

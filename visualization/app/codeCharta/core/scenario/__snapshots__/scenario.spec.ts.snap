@@ -35,6 +35,7 @@ Array [
         "y": 1,
         "z": 1,
       },
+      "whiteColorBuildings": true,
     },
   },
 ]
