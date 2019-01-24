@@ -29,7 +29,7 @@ export function createDefaultScenario(map: CodeMap, margin: number): Scenario {
             operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
             enableEdgeArrows: true,
-            enableFlatBuildingsToBeGrey: true,
+            hideFlatBuildings: true,
             maximizeDetailPanel: false,
             invertHeight: false,
             dynamicMargin: true,
