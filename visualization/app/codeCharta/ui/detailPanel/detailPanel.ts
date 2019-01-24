@@ -3,7 +3,7 @@ import angular from "angular";
 import "../../core/core.module";
 import "../codeMap/codeMap";
 
-import {detailPanelComponent} from "./detailPanelComponent";
+import {detailPanelComponent} from "./detailPanel.component";
 
 angular.module(
     "app.codeCharta.ui.detailPanel",

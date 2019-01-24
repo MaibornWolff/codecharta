@@ -1,5 +1,7 @@
 # {Meaningful title}
 
+closes #{Issue number}
+
 ## Description
 
 {Descriptive pull request text}
