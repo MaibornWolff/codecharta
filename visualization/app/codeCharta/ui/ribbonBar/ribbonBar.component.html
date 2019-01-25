@@ -64,12 +64,7 @@
                     Invert Height
                 </md-checkbox>
             </md-input-container>
-            <md-input-container class="md-block" ng-if="$ctrl.settingsService.settings.mode == $ctrl.deltaMode" >
-                <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.deltaColorFlipped" ng-change="$ctrl.settingsService.onSettingsChanged()">
-                    Invert Colors
-                </md-checkbox>
-            </md-input-container>
-            <reset-settings-button-component settings-names="amountOfTopLabels, scaling.y, invertHeight, deltaColorFlipped"></reset-settings-button-component>
+            <reset-settings-button-component settings-names="amountOfTopLabels, scaling.y, invertHeight"></reset-settings-button-component>
         </div>
     </div>
 
@@ -80,7 +75,7 @@
         <span class="section-title">Color</span>
         <div class="section-body">
             <color-settings-panel-component></color-settings-panel-component>
-            <reset-settings-button-component settings-names="neutralColorRange.flipped, neutralColorRange.from, neutralColorRange.to"></reset-settings-button-component>
+            <reset-settings-button-component settings-names="neutralColorRange.flipped, neutralColorRange.from, neutralColorRange.to, deltaColorFlipped"></reset-settings-button-component>
         </div>
     </div>
 
