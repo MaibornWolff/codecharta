@@ -31,6 +31,7 @@ export enum MapColors {
     positiveWhite = 0xFFFFFF,
     base = 0x666666,
     flat = 0xAAAAAA,
+    lightGrey = 0xDDDDDD,
 }
 
 export enum AngularColors {

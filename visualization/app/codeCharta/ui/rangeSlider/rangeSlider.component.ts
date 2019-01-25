@@ -66,8 +66,21 @@ export class RangeSliderController implements SettingsServiceSubscriber {
     }
 
     private updateSliderColors() {
+        const rangeFromPercentage = 100 / this.maxMetricValue * this.settingsService.settings.neutralColorRange.from;
+        let rangeColors = this.sliderOptions.disabled ? this.getGreyRangeColors() : this.getColoredRangeColors();
+        this.applyCssSettings(rangeColors, rangeFromPercentage);
+    }
+
+    private getGreyRangeColors() {
+        return {
+            left: MapColors.lightGrey,
+            middle: MapColors.lightGrey,
+            right: MapColors.lightGrey,
+        };
+    }
+
+    private getColoredRangeColors() {
         const s = this.settingsService.settings;
-        const rangeFromPercentage = 100 / this.maxMetricValue * s.neutralColorRange.from;
         let mapColorPositive = s.whiteColorBuildings ? MapColors.positiveWhite : MapColors.positive;
 
         let rangeColors = {
@@ -75,15 +88,13 @@ export class RangeSliderController implements SettingsServiceSubscriber {
             middle: MapColors.neutral,
             right: s.neutralColorRange.flipped ? mapColorPositive : MapColors.negative
         };
-
-        rangeColors = this.updateWhiteColorsToGreyToMakeItVisible(rangeColors);
-        this.applyCssSettings(rangeColors, rangeFromPercentage);
+        return this.updateWhiteColorsToGreyToMakeItVisible(rangeColors);
     }
 
     private updateWhiteColorsToGreyToMakeItVisible(rangeColors) {
         for(let property of Object.keys(rangeColors)) {
             if (rangeColors[property] == MapColors.positiveWhite) {
-                rangeColors[property] = 0xDDDDDD;
+                rangeColors[property] = MapColors.lightGrey;
             }
         }
         return rangeColors;
