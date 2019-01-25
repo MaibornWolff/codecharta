@@ -62,6 +62,7 @@ export class TreeMapUtils {
     }
 
     private static isNodeToBeFlat(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): boolean {
+
         let flattened = false;
         if (s.visibleEdges && s.visibleEdges.length > 0) {
             flattened = this.nodeHasNoVisibleEdges(squaredNode, s);

@@ -1,27 +1,16 @@
 import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import "./blacklistPanel.component.scss";
 import {BlacklistItem, BlacklistType} from "../../core/data/model/CodeMap";
-import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
-import * as d3 from "d3";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 
 export class BlacklistPanelController implements SettingsServiceSubscriber{
 
     public blacklist: Array<BlacklistItem>;
 
-    public viewModel = {
-        itemPath: "",
-        itemType: BlacklistType.exclude,
-        error: "",
-    };
-
     constructor(private settingsService: SettingsService,
                 private codeMapActionsService: CodeMapActionsService) {
         settingsService.subscribe(this);
-
-        if(settingsService.settings.blacklist) {
-            this.blacklist = settingsService.settings.blacklist;
-        }
+        this.onSettingsChanged(settingsService.settings, null);
     }
 
     onChange() {
@@ -37,38 +26,6 @@ export class BlacklistPanelController implements SettingsServiceSubscriber{
     removeBlacklistEntry(entry: BlacklistItem){
         this.codeMapActionsService.removeBlacklistEntry(entry);
         this.onChange();
-    }
-
-    addBlacklistEntry(){
-        if (this.isValidNode()) {
-            this.settingsService.settings.blacklist.push(
-                {path: this.viewModel.itemPath, type: this.viewModel.itemType}
-            );
-            this.onChange()
-        }
-    }
-
-    private isValidNode() {
-        const nodes = d3.hierarchy(this.settingsService.settings.map.root).descendants().map(d=>d.data);
-
-        if (this.viewModel.itemPath.length == 0) {
-            this.viewModel.error = "Invalid empty pattern";
-        } else if (CodeMapUtilService.numberOfBlacklistedNodes(nodes, [{path: this.viewModel.itemPath, type: BlacklistType.exclude}]) === 0) {
-            this.viewModel.error = "Pattern not found";
-        } else if (this.isAlreadyBlacklistedNode()) {
-            this.viewModel.error = "Pattern already blacklisted";
-        } else {
-            this.viewModel.error = "";
-            return true;
-        }
-        return false;
-    }
-
-    private isAlreadyBlacklistedNode() {
-        return this.blacklist.filter(item => {
-            return this.viewModel.itemPath == item.path &&
-                    this.viewModel.itemType == item.type
-        }).length != 0;
     }
 
     sortByExcludes(item: BlacklistItem) {

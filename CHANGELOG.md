@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 ### Added
 - Color searched node names green in TreeView #225
+- Add option buttons (three dots) in TreeViewSearch to `Hide` or `Exclude` matching nodes #298
+- Show blacklist entry counter in blacklistPanel header #298
 - Option checkbox 'Hide Flattened Buildings' #225
 - Hide/Flatten non-searched buildings #225
 - Hide/Flatten all buildings, if searchPattern can't find any matching nodes #225
+- Show maxValue of each metric in metricChooser select list #204
 - Colored color-slider inside the RibbonBar #318
 
 ### Changed
@@ -18,10 +21,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 =======
 - Update TreeView filter with search field #225
 - Use 'gitignore' style matching in TreeViewSearch #225
+- Reorder `Focus`, `Hide` and `Exclude` buttons in nodeContextMenu #298
+- Reorder sidebarPanels (BlacklistPanel beneath TreeViewSearchPanel) #298
+- Use `fa-ban`-icon as symbols for blacklistPanel (instead of `fa-list`) #298
+- Use `fa-ban`-icon as symbols for blacklistType `Exclude` (instead of `fa-times`) #298
 
 >>>>>>> master
 ### Removed
 - Remove invertHeight checkbox in delta-view #306
+- Removed option to add blacklist entries from inside the blacklistPanel #298
 
 ### Fixed
 
