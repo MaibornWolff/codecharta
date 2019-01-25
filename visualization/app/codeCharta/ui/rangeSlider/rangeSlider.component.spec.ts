@@ -1,4 +1,4 @@
-import {rangeSliderComponent, RangeSliderController} from "./rangeSlider.component";
+import {RangeSliderController} from "./rangeSlider.component";
 import {SettingsService} from "../../core/settings/settings.service";
 import { DataService } from "../../core/data/data.service";
 import {MapColors} from "../codeMap/rendering/renderSettings";
