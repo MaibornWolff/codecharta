@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 - Renaming 'isolate node' to 'focus node'
 - Focusing a node does not remove the blacklist items of type Hide
+- updated dependencies to fix vulnerabilities
 
 ### Removed
 - NodeContectMenu: Option to 'show all' nodes, which used to unhide all nodes
