@@ -30,6 +30,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
 
     public currentSortedNodes: node[];
     private currentRenderSettings: renderSettings;
+    private visibleEdges: Edge[];
 
     /* @ngInject */
     constructor(private threeSceneService: ThreeSceneService,
@@ -92,7 +93,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
 
     updateMapGeometry(s: Settings) {
 
-        let visibleEdges = this.getVisibleEdges(s);
+        this.visibleEdges = this.getVisibleEdges(s);
 
         const treeMapSettings: TreeMapSettings = {
             size: mapSize,
@@ -100,9 +101,12 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             heightKey: s.heightMetric,
             margin: s.margin,
             invertHeight: s.invertHeight,
-            visibleEdges: visibleEdges,
+            visibleEdges: this.visibleEdges,
+            searchedNodePaths: s.searchedNodePaths,
             blacklist: s.blacklist,
-            fileName: s.map.fileName
+            fileName: s.map.fileName,
+            searchPattern: s.searchPattern,
+            hideFlatBuildings: s.hideFlatBuildings,
         };
 
         this.showAllOrOnlyFocusedNode(s);
@@ -115,36 +119,44 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         this.currentSortedNodes = filtered.sort((a, b) => {
             return b.height - a.height;
         });
+
         this.currentRenderSettings = {
             heightKey: s.heightMetric,
             colorKey: s.colorMetric,
             renderDeltas: s.mode == KindOfMap.Delta,
+            hideFlatBuildings: s.hideFlatBuildings,
             colorRange: s.neutralColorRange,
             mapSize: mapSize,
             deltaColorFlipped: s.deltaColorFlipped
         };
 
+        this.setLabels(s);
+        this.setArrows(s);
+
+        this._mapMesh = new CodeMapMesh(this.currentSortedNodes, this.currentRenderSettings);
+        this.threeSceneService.setMapMesh(this._mapMesh, mapSize);
+    }
+
+    private setLabels(s: Settings) {
         this.codeMapLabelService.clearLabels();
-        this.codeMapArrowService.clearArrows();
         for (let i = 0, numAdded = 0; i < this.currentSortedNodes.length && numAdded < s.amountOfTopLabels; ++i) {
             if (this.currentSortedNodes[i].isLeaf) {
                 this.codeMapLabelService.addLabel(this.currentSortedNodes[i], this.currentRenderSettings);
                 ++numAdded;
             }
         }
+    }
 
-        if (visibleEdges.length > 0 && s.enableEdgeArrows) {
-            this.showCouplingArrows(visibleEdges);
+    private setArrows(s: Settings) {
+        this.codeMapArrowService.clearArrows();
+        if (this.visibleEdges.length > 0 && s.enableEdgeArrows) {
+            this.showCouplingArrows(this.visibleEdges);
         }
-
-        this._mapMesh = new CodeMapMesh(this.currentSortedNodes, this.currentRenderSettings);
-
-        this.threeSceneService.setMapMesh(this._mapMesh, mapSize);
     }
 
     private showAllOrOnlyFocusedNode(s: Settings) {
         if (s.focusedNodePath) {
-            var focusedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(s.focusedNodePath);
+            const focusedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(s.focusedNodePath);
             this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, false);
             this.treeMapService.setVisibilityOfNodeAndDescendants(focusedNode, true);
         } else {
@@ -153,13 +165,10 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     }
 
     private getVisibleEdges(s: Settings) {
-        if (s.map && s.map.edges) {
-            return s.map.edges.filter(edge => edge.visible === true);
-        }
-        return [];
+        return (s.map && s.map.edges) ? s.map.edges.filter(edge => edge.visible === true) : [];
     }
 
-    showCouplingArrows(deps: Edge[]) {
+    private showCouplingArrows(deps: Edge[]) {
         this.codeMapArrowService.clearArrows();
 
         if (deps && this.currentRenderSettings) {

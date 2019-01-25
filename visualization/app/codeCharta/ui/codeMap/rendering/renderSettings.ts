@@ -28,7 +28,12 @@ export enum MapColors {
     defaultC = 0x89ACB4,
     positiveDelta = 0x69ff40,
     negativeDelta = 0xff0E0E,
-    base = 0x666666
+    base = 0x666666,
+    flat = 0xaaaaaa,
+}
+
+export enum AngularColors {
+    green = "#00bfa5",
 }
 
 export enum AngularColors {
@@ -39,6 +44,7 @@ export interface renderSettings {
     heightKey : string;
     colorKey : string;
     renderDeltas : boolean;
+    hideFlatBuildings: boolean;
     colorRange : colorRange;
     mapSize : number;
     deltaColorFlipped: boolean;

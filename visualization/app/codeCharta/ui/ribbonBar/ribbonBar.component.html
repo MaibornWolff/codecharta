@@ -59,16 +59,12 @@
                     <input flex step="0.1" min="0.1" max="5" type="number" ng-model="$ctrl.settingsService.settings.scaling.y" ng-change="$ctrl.settingsService.applySettings()" aria-controls="y-scale-slider">
                 </md-input-container>
             </md-slider-container>
-            <md-input-container class="md-block">
-                <span class="margin-right-align">Invert</span>
-                <md-checkbox class="md-primary checkbox-space" ng-model="$ctrl.settingsService.settings.invertHeight" ng-change="$ctrl.settingsService.onSettingsChanged()">
-                Height
-                </md-checkbox>
-                <md-checkbox class="md-primary" ng-if="$ctrl.settingsService.settings.mode == $ctrl.deltaMode" ng-model="$ctrl.settingsService.settings.deltaColorFlipped" ng-change="$ctrl.settingsService.onSettingsChanged()">
-                    Colors
+            <md-input-container class="md-block" ng-if="$ctrl.settingsService.settings.mode != $ctrl.deltaMode">
+                <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.invertHeight" ng-change="$ctrl.settingsService.onSettingsChanged()">
+                    Invert Height
                 </md-checkbox>
             </md-input-container>
-            <reset-settings-button-component settings-names="amountOfTopLabels, scaling.y, invertHeight, deltaColorFlipped"></reset-settings-button-component>
+            <reset-settings-button-component settings-names="amountOfTopLabels, scaling.y, invertHeight"></reset-settings-button-component>
         </div>
     </div>
 
@@ -79,7 +75,7 @@
         <span class="section-title">Color</span>
         <div class="section-body">
             <color-settings-panel-component></color-settings-panel-component>
-            <reset-settings-button-component settings-names="neutralColorRange.flipped, neutralColorRange.from, neutralColorRange.to"></reset-settings-button-component>
+            <reset-settings-button-component settings-names="neutralColorRange.flipped, neutralColorRange.from, neutralColorRange.to, deltaColorFlipped"></reset-settings-button-component>
         </div>
     </div>
 
