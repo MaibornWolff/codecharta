@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`treemap utils build node deltas 1`] = `
+exports[`treemapUtils build node deltas 1`] = `
 Object {
   "attributes": Object {},
   "children": Array [],
@@ -8,6 +8,7 @@ Object {
     "theHeight": 33,
   },
   "depth": 0,
+  "flat": false,
   "height": 100,
   "heightDelta": 33,
   "isLeaf": true,
@@ -26,12 +27,13 @@ Object {
 }
 `;
 
-exports[`treemap utils build node invertHeight 1`] = `
+exports[`treemapUtils build node invertHeight 1`] = `
 Object {
   "attributes": Object {},
   "children": Array [],
   "deltas": undefined,
   "depth": 0,
+  "flat": false,
   "height": 1900,
   "heightDelta": 0,
   "isLeaf": true,
@@ -50,12 +52,13 @@ Object {
 }
 `;
 
-exports[`treemap utils build node is leaf 1`] = `
+exports[`treemapUtils build node is leaf 1`] = `
 Object {
   "attributes": Object {},
   "children": Array [],
   "deltas": undefined,
   "depth": 0,
+  "flat": false,
   "height": 100,
   "heightDelta": 0,
   "isLeaf": true,
@@ -74,12 +77,13 @@ Object {
 }
 `;
 
-exports[`treemap utils build node minimal 1`] = `
+exports[`treemapUtils build node minimal 1`] = `
 Object {
   "attributes": Object {},
   "children": Array [],
   "deltas": undefined,
   "depth": 0,
+  "flat": false,
   "height": 100,
   "heightDelta": 0,
   "isLeaf": true,
@@ -98,12 +102,13 @@ Object {
 }
 `;
 
-exports[`treemap utils build node should set lowest possible height caused by other visible edge pairs 1`] = `
+exports[`treemapUtils build node should set lowest possible height caused by other visible edge pairs 1`] = `
 Object {
   "attributes": Object {},
   "children": Array [],
   "deltas": undefined,
   "depth": 0,
+  "flat": true,
   "height": 1,
   "heightDelta": 0,
   "isLeaf": true,

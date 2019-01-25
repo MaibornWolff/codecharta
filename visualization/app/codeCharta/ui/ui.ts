@@ -16,7 +16,7 @@ import "./rangeSlider/rangeSlider";
 import "./colorSettingsPanel/colorSettingsPanel";
 import "./displaySettingsPanel/displaySettingsPanel";
 import "./experimentalSettingsPanel/experimentalSettingsPanel";
-import "./regexFilter/regexFilter";
+import "./mapTreeViewSearch/mapTreeViewSearch";
 import "./resetSettingsButton/resetSettingsButton";
 import "./dialog/dialog";
 import "./nodeContextMenu/nodeContextMenu";
@@ -50,7 +50,7 @@ angular.module(
         "app.codeCharta.ui.dialog",
         "app.codeCharta.ui.nodeContextMenu",
         "app.codeCharta.ui.layoutSwitcher",
-        "app.codeCharta.ui.regexFilter",
+        "app.codeCharta.ui.mapTreeViewSearch",
         "app.codeCharta.ui.optionsPanel",
         "app.codeCharta.ui.sidenav",
         "app.codeCharta.ui.blacklistPanel",
