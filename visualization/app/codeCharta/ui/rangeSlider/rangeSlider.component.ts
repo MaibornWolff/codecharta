@@ -64,18 +64,27 @@ export class RangeSliderController implements SettingsServiceSubscriber {
     }
 
     private updateSliderColors() {
+        const s = this.settingsService.settings;
+        const rangeFromPercentage = 100 / this.maxMetricValue * s.neutralColorRange.from;
+
+        let rangeColors = {
+            left: s.neutralColorRange.flipped ? MapColors.negative : MapColors.positive,
+            middle: MapColors.neutral,
+            right: s.neutralColorRange.flipped ? MapColors.positive : MapColors.negative
+        };
+
+        this.applyCssSettings(rangeColors, rangeFromPercentage);
+    }
+
+    private applyCssSettings(rangeColors, rangeFromPercentage) {
         const slider = $("range-slider-component .rzslider");
         const leftSection = slider.find(".rz-bar-wrapper:nth-child(3) .rz-bar");
         const middleSection = slider.find(".rz-selection");
         const rightSection = slider.find(".rz-right-out-selection .rz-bar");
-        const fromPercentage = 100 / this.maxMetricValue * this.settingsService.settings.neutralColorRange.from;
 
-        const leftColor = this.settingsService.settings.neutralColorRange.flipped ? MapColors.negative : MapColors.positive;
-        const rightColor = this.settingsService.settings.neutralColorRange.flipped ? MapColors.positive : MapColors.negative;
-
-        leftSection.css("cssText", "background: #" + leftColor.toString(16) + " !important; width: " + fromPercentage + "%;");
-        middleSection.css("cssText", "background: #" + MapColors.neutral.toString(16) + " !important;");
-        rightSection.css("cssText", "background: #" + rightColor.toString(16) + ";");
+        leftSection.css("cssText", "background: #" + rangeColors.left.toString(16) + " !important; width: " + rangeFromPercentage + "%;");
+        middleSection.css("cssText", "background: #" + rangeColors.middle.toString(16) + " !important;");
+        rightSection.css("cssText", "background: #" + rangeColors.right.toString(16) + ";");
     }
 
 }
