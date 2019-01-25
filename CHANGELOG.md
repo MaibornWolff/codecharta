@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Use `fa-ban`-icon as symbols for blacklistType `Exclude` (instead of `fa-times`) #298
 
 ### Removed
+- Remove invertHeight checkbox in delta-view #306
 - Removed option to add blacklist entries from inside the blacklistPanel #298
 
 ### Fixed
