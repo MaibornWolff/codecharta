@@ -169,9 +169,11 @@ export class DataService {
             return d.data.attributes ? Object.keys(d.data.attributes) : [];
         });
 
-        return attributeList.reduce(function (left: string[], right: string[]) {
+        let attributes: string[] = attributeList.reduce(function (left: string[], right: string[]) {
             return left.concat(right.filter(el => left.indexOf(el) === -1));
         });
+
+        return attributes.sort();
     }
 
     private getMetricNamesWithMaxValue() {
@@ -180,7 +182,11 @@ export class DataService {
         for(const attribute of this._data.metrics) {
             metricData.push({name: attribute, maxValue: this.getMaxMetricInAllRevisions(attribute)})
         }
-        return metricData;
+        return this.sortByAttributeName(metricData);
+    }
+
+    private sortByAttributeName(metricData: MetricData[]): MetricData[] {
+        return metricData.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
     }
 
     /**
