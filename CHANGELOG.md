@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Option checkbox 'Hide Flattened Buildings' #225
 - Hide/Flatten non-searched buildings #225
 - Hide/Flatten all buildings, if searchPattern can't find any matching nodes #225
+- Colored color-slider inside the RibbonBar #318
 
 ### Changed
 - Update TreeView filter with search field #225

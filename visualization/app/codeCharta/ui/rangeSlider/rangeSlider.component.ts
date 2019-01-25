@@ -1,11 +1,13 @@
-import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/data.service";
+import {DataService} from "../../core/data/data.service";
 import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
-import {IAngularEvent} from "angular";
+import $ from "jquery";
 import "./rangeSlider.component.scss";
+import {MapColors} from "../codeMap/rendering/renderSettings";
 
 export class RangeSliderController implements SettingsServiceSubscriber {
 
     public sliderOptions: any;
+    private maxMetricValue: number;
 
     /* @ngInject */
     constructor(private settingsService: SettingsService,
@@ -23,11 +25,13 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 
     onSettingsChanged(settings: Settings) {
         this.initSliderOptions(settings);
+        this.updateSliderColors();
     }
 
     initSliderOptions(settings: Settings = this.settingsService.settings) {
+        this.maxMetricValue = this.dataService.getMaxMetricInAllRevisions(settings.colorMetric)
         this.sliderOptions = {
-            ceil: this.dataService.getMaxMetricInAllRevisions(settings.colorMetric),
+            ceil: this.maxMetricValue,
             onChange: this.onSliderChange.bind(this),
             pushRange: true,
             onToChange: this.onToSliderChange.bind(this),
@@ -57,6 +61,30 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 
     private onSliderChange() {
         this.settingsService.applySettings();
+    }
+
+    private updateSliderColors() {
+        const s = this.settingsService.settings;
+        const rangeFromPercentage = 100 / this.maxMetricValue * s.neutralColorRange.from;
+
+        let rangeColors = {
+            left: s.neutralColorRange.flipped ? MapColors.negative : MapColors.positive,
+            middle: MapColors.neutral,
+            right: s.neutralColorRange.flipped ? MapColors.positive : MapColors.negative
+        };
+
+        this.applyCssSettings(rangeColors, rangeFromPercentage);
+    }
+
+    private applyCssSettings(rangeColors, rangeFromPercentage) {
+        const slider = $("range-slider-component .rzslider");
+        const leftSection = slider.find(".rz-bar-wrapper:nth-child(3) .rz-bar");
+        const middleSection = slider.find(".rz-selection");
+        const rightSection = slider.find(".rz-right-out-selection .rz-bar");
+
+        leftSection.css("cssText", "background: #" + rangeColors.left.toString(16) + " !important; width: " + rangeFromPercentage + "%;");
+        middleSection.css("cssText", "background: #" + rangeColors.middle.toString(16) + " !important;");
+        rightSection.css("cssText", "background: #" + rangeColors.right.toString(16) + ";");
     }
 
 }
