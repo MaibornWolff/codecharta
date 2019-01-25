@@ -22,8 +22,6 @@ describe("ViewCubeController", () => {
     });
 
     function mockDependencies() {
-        instantiateModule("app.codeCharta.ui.viewCube");
-
         rootScopeServiceMock = getService<IRootScopeService>(
             "rootScopeService"
         );
@@ -33,6 +31,7 @@ describe("ViewCubeController", () => {
         viewCubeMouseEventsServiceMock = getService<ViewCubeMouseEventsService>(
             "viewCubeMouseEventsService"
         );
+        // Vermutlich falscher Weg $element zu mocken
         $element = [];
     }
 
@@ -55,7 +54,7 @@ describe("ViewCubeController", () => {
             };
         });
 
-        // viewCubeController["initCube"]();
+        viewCubeController["initCube"]();
 
         expect(ViewCubemeshGenerator.buildCube).toBeCalled();
     });

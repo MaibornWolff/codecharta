@@ -27,14 +27,85 @@ class ThreeOrbitControlsService {
         private $rootScope: IRootScopeService
     ) {}
 
-    setCameraViewToAngle(x: number, y: number, z: number) {
-        const DEGREE_TO_RAD_SCALE = Math.PI / 180;
+    public setCameraViewAngle(x: number, y: number, z: number) {
+        const oldZoom = this.distanceVector(
+            this.threeCameraService.camera.position,
+            new THREE.Vector3(0, 0, 0)
+        );
 
-        this.pivot.rotateX(x * DEGREE_TO_RAD_SCALE);
-        this.pivot.rotateY(y * DEGREE_TO_RAD_SCALE);
-        this.pivot.rotateZ(z * DEGREE_TO_RAD_SCALE);
+        this.initStandardCameraPosition();
+        this.rotateCameraByAngle(x, y);
+        this.applyOldZoom(oldZoom);
 
         this.threeCameraService.camera.updateProjectionMatrix();
+    }
+
+    private applyOldZoom(oldZoom: number) {
+        const newZoom = this.distanceVector(
+            this.threeCameraService.camera.position,
+            new THREE.Vector3(0, 0, 0)
+        );
+        const scale = oldZoom / newZoom;
+        this.threeCameraService.camera.position.multiplyScalar(scale);
+    }
+
+    private distanceVector(v1: THREE.Vector3, v2: THREE.Vector3) {
+        const dx = v1.x - v2.x;
+        const dy = v1.y - v2.y;
+        const dz = v1.z - v2.z;
+
+        return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
+    private initStandardCameraPosition() {
+        const STANDARD_CAMERA_POSITION = { x: 121.33, y: 1.8, z: 2293 };
+
+        this.threeCameraService.camera.position.set(
+            STANDARD_CAMERA_POSITION.x,
+            STANDARD_CAMERA_POSITION.y,
+            STANDARD_CAMERA_POSITION.z
+        );
+    }
+
+    private rotateCameraByAngle(x: number, y: number) {
+        const DEGREE_TO_RAD_SCALE = Math.PI / 180;
+        const xRad = x * DEGREE_TO_RAD_SCALE;
+        const yRad = y * DEGREE_TO_RAD_SCALE;
+
+        const rotatationMatrixX = new THREE.Matrix3().set(
+            1,
+            0,
+            0,
+            0,
+            Math.cos(xRad),
+            -Math.sin(xRad),
+            0,
+            Math.sin(xRad),
+            Math.cos(xRad)
+        );
+
+        const rotatationMatrixY = new THREE.Matrix3().set(
+            Math.cos(yRad),
+            0,
+            Math.sin(yRad),
+            0,
+            1,
+            0,
+            -Math.sin(yRad),
+            0,
+            Math.cos(yRad)
+        );
+
+        const rotatedX = this.threeCameraService.camera
+            .getWorldPosition()
+            .applyMatrix3(rotatationMatrixX);
+        const rotatedY = rotatedX.applyMatrix3(rotatationMatrixY);
+
+        this.threeCameraService.camera.position.set(
+            rotatedY.x,
+            rotatedY.y,
+            rotatedY.z
+        );
     }
 
     autoFitTo(obj = this.threeSceneService.mapGeometry) {
@@ -85,24 +156,6 @@ class ThreeOrbitControlsService {
         this.controls.addEventListener("change", function() {
             ctx.onInput(ctx.threeCameraService.camera);
         });
-
-        this.initPivot();
-    }
-
-    private initPivot() {
-        const boundingSphere = new THREE.Box3()
-            .setFromObject(this.threeSceneService.mapGeometry)
-            .getBoundingSphere();
-        this.pivotVector = boundingSphere.center.clone();
-        this.pivotVector.setY(0);
-        this.pivot = new THREE.Group();
-        this.pivot.position.set(
-            this.pivotVector.x,
-            this.pivotVector.y,
-            this.pivotVector.z
-        );
-        this.pivot.add(this.threeCameraService.camera);
-        this.threeSceneService.scene.add(this.pivot);
     }
 
     /**

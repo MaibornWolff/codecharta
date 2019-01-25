@@ -1,9 +1,7 @@
 import * as THREE from "three";
-import { LabelManager } from "./../rendering/labelManager";
-import { Scene, Object3D } from "three";
+import { Scene } from "three";
 import { Group } from "three";
 import { CodeMapMesh } from "../rendering/codeMapMesh";
-import { ArrowManager } from "../rendering/arrowManager";
 
 /**
  * A service which manages the Three.js scene in an angular way.
@@ -32,10 +30,6 @@ class ThreeSceneService {
         this.scene.add(this.lights);
         this.scene.add(this.edgeArrows);
         this.scene.add(this.labels);
-
-        // AXIS
-        const axesHelper = new THREE.AxesHelper(2000);
-        this.scene.add(axesHelper);
     }
 
     initLights() {
