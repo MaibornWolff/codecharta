@@ -1,7 +1,7 @@
 import {SettingsService} from "../../core/settings/settings.service";
 import {BlacklistPanelController} from "./blacklistPanel.component";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
-import {CodeMapNode, ExcludeType} from "../../core/data/model/CodeMap";
+import {CodeMapNode, BlacklistType} from "../../core/data/model/CodeMap";
 
 describe("blacklistController", () => {
 
@@ -41,7 +41,7 @@ describe("blacklistController", () => {
 
         viewModel = {
             itemPath: "/root",
-            itemType: ExcludeType.exclude,
+            itemType: BlacklistType.exclude,
             error: ""
         };
 
@@ -107,14 +107,14 @@ describe("blacklistController", () => {
 
     it("add single blacklist entry", () => {
         blacklistPanelController.addBlacklistEntry();
-        expect(getFilteredBlacklistBy({path: "/root", type: ExcludeType.exclude})).toHaveLength(1);
+        expect(getFilteredBlacklistBy({path: "/root", type: BlacklistType.exclude})).toHaveLength(1);
     });
 
     it("add only unique blacklist Entries", () => {
         blacklistPanelController.addBlacklistEntry();
         blacklistPanelController.addBlacklistEntry();
 
-        expect(getFilteredBlacklistBy({path: "/root", type: ExcludeType.exclude})).toHaveLength(1);
+        expect(getFilteredBlacklistBy({path: "/root", type: BlacklistType.exclude})).toHaveLength(1);
         expect(blacklistPanelController.viewModel.error).toBe("Pattern already blacklisted");
     });
 
@@ -136,7 +136,7 @@ describe("blacklistController", () => {
 
     it("add and call includingNode function when removing blacklist entry", () => {
         blacklistPanelController.addBlacklistEntry();
-        expect(getFilteredBlacklistBy({path: "/root", type: ExcludeType.exclude})).toHaveLength(1);
+        expect(getFilteredBlacklistBy({path: "/root", type: BlacklistType.exclude})).toHaveLength(1);
 
         blacklistPanelController.removeBlacklistEntry(viewModel);
         expect(codeMapActionsServiceMock.removeBlacklistEntry).toHaveBeenCalledWith({"error": "", "itemPath": "/root", "itemType": "exclude"});

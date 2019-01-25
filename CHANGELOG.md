@@ -6,9 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- Color searched node names green in TreeView #225
+- Option checkbox 'Hide Flattened Buildings' #225
+- Hide/Flatten non-searched buildings #225
+- Hide/Flatten all buildings, if searchPattern can't find any matching nodes #225
 - Colored color-slider inside the RibbonBar #318
 
 ### Changed
+- Update TreeView filter with search field #225
+- Use 'gitignore' style matching in TreeViewSearch #225
 
 ### Removed
 
@@ -42,6 +48,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [1.19.0] - 2018-11-02
 ### Added
 - Deleted files in delta view use their previous area value in order to be visible #254
+
 ### Changed
 
 ### Removed
