@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Use 'gitignore' style matching in TreeViewSearch #225
 
 ### Removed
+- Remove invertHeight checkbox in delta-view #306
 
 ### Fixed
 
