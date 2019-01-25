@@ -16,17 +16,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Colored color-slider inside the RibbonBar #318
 
 ### Changed
-<<<<<<< HEAD
-- Label size keeps readable for large maps or a high distance between camera and map #237
-=======
 - Update TreeView filter with search field #225
 - Use 'gitignore' style matching in TreeViewSearch #225
 - Reorder `Focus`, `Hide` and `Exclude` buttons in nodeContextMenu #298
 - Reorder sidebarPanels (BlacklistPanel beneath TreeViewSearchPanel) #298
 - Use `fa-ban`-icon as symbols for blacklistPanel (instead of `fa-list`) #298
 - Use `fa-ban`-icon as symbols for blacklistType `Exclude` (instead of `fa-times`) #298
+- Label size keeps readable for large maps or a high distance between camera and map #237
 
->>>>>>> master
 ### Removed
 - Remove invertHeight checkbox in delta-view #306
 - Removed option to add blacklist entries from inside the blacklistPanel #298
