@@ -1,14 +1,12 @@
-import {LabelManager} from "./labelManager";
-import * as THREE from "three";
-import {node, nodeAttributes} from "./node";
-import {colorRange, renderSettings} from "./renderSettings";
-import {Vector3} from "three";
-import {ArrowManager} from "./arrowManager";
+import {node} from "./rendering/node";
+import {renderSettings} from "./rendering/renderSettings";
+import {CodeMapArrowService} from "./codeMap.arrow.service";
+import {ThreeSceneService} from "./threeViewer/threeSceneService";
 
-describe("ArrowManager", () => {
+describe("CodeMapArrowService", () => {
 
-    let arrowManager: ArrowManager;
-    let parent: THREE.Object3D;
+    let codeMapArrowService: CodeMapArrowService;
+    let threeSceneService: ThreeSceneService;
     let createElementOrigin;
 
     let sampleRenderSettings: renderSettings;
@@ -64,8 +62,8 @@ describe("ArrowManager", () => {
         };
 
 
-        parent = new THREE.Object3D();
-        arrowManager = new ArrowManager(parent);
+        threeSceneService = new ThreeSceneService();
+        codeMapArrowService = new CodeMapArrowService(threeSceneService);
 
         canvasCtxMock = {
             font: "",
@@ -94,52 +92,52 @@ describe("ArrowManager", () => {
     });
 
     it("should have no arrows stored after construction", ()=>{
-        expect(arrowManager.arrows.length).toBe(0);
+        expect(codeMapArrowService.arrows.length).toBe(0);
     });
 
     it("should get correct path from node", ()=>{
-        expect(arrowManager.getPathFromNode(sampleLeaf)).toBe("/sample");
+        expect(codeMapArrowService.getPathFromNode(sampleLeaf)).toBe("/sample");
         sampleLeaf.parent = sampleLeaf2;
-        expect(arrowManager.getPathFromNode(sampleLeaf)).toBe("/sample2/sample");
+        expect(codeMapArrowService.getPathFromNode(sampleLeaf)).toBe("/sample2/sample");
     });
 
     it("should add no arrows when there are no edges", ()=>{
-        arrowManager.addEdgeArrows([sampleLeaf], [], sampleRenderSettings);
-        expect(arrowManager.arrows.length).toBe(0);
+        codeMapArrowService.addEdgeArrows([sampleLeaf], [], sampleRenderSettings);
+        expect(codeMapArrowService.arrows.length).toBe(0);
     });
 
     it("should add no arrows when there are no resolvable edges", ()=>{
-        arrowManager.addEdgeArrows([sampleLeaf, sampleLeaf2], [{fromNodeName:"a", toNodeName: "b"}], sampleRenderSettings);
-        expect(arrowManager.arrows.length).toBe(0);
+        codeMapArrowService.addEdgeArrows([sampleLeaf, sampleLeaf2], [{fromNodeName:"a", toNodeName: "b"}], sampleRenderSettings);
+        expect(codeMapArrowService.arrows.length).toBe(0);
     });
 
     it("should add arrows only from origin when there are resolvable edges", ()=>{
-        arrowManager.addEdgeArrowsFromOrigin(sampleLeaf, [sampleLeaf, sampleLeaf2], [{fromNodeName:"/sample", toNodeName: "/sample2"}, {fromNodeName:"/sample2", toNodeName: "/sample2"}], sampleRenderSettings);
-        expect(arrowManager.arrows.length).toBe(1);
+        codeMapArrowService.addEdgeArrowsFromOrigin(sampleLeaf, [sampleLeaf, sampleLeaf2], [{fromNodeName:"/sample", toNodeName: "/sample2"}, {fromNodeName:"/sample2", toNodeName: "/sample2"}], sampleRenderSettings);
+        expect(codeMapArrowService.arrows.length).toBe(1);
     });
 
     it("should add arrows when there are resolvable edges", ()=>{
-        arrowManager.addEdgeArrows([sampleLeaf, sampleLeaf2], [{fromNodeName:"/sample", toNodeName: "/sample2"}], sampleRenderSettings);
-        expect(arrowManager.arrows.length).toBe(1);
+        codeMapArrowService.addEdgeArrows([sampleLeaf, sampleLeaf2], [{fromNodeName:"/sample", toNodeName: "/sample2"}], sampleRenderSettings);
+        expect(codeMapArrowService.arrows.length).toBe(1);
     });
 
     it("should clear all arrows", ()=>{
-        arrowManager.addEdgeArrows([sampleLeaf, sampleLeaf2], [{fromNodeName:"/sample", toNodeName: "/sample2"}], sampleRenderSettings);
-        expect(arrowManager.arrows.length).toBe(1);
-        arrowManager.clearArrows();
-        expect(arrowManager.arrows.length).toBe(0);
+        codeMapArrowService.addEdgeArrows([sampleLeaf, sampleLeaf2], [{fromNodeName:"/sample", toNodeName: "/sample2"}], sampleRenderSettings);
+        expect(codeMapArrowService.arrows.length).toBe(1);
+        codeMapArrowService.clearArrows();
+        expect(codeMapArrowService.arrows.length).toBe(0);
     });
 
     it("addArrow should add arrow if node has a height attribute mentioned in renderSettings", ()=>{
-        arrowManager.addArrow(sampleLeaf, sampleLeaf, sampleRenderSettings);
-        expect(arrowManager.arrows.length).toBe(1);
+        codeMapArrowService.addArrow(sampleLeaf, sampleLeaf, sampleRenderSettings);
+        expect(codeMapArrowService.arrows.length).toBe(1);
     });
 
     it("addArrow should not add arrow if node has not a height attribute mentioned in renderSettings", ()=>{
         sampleLeaf.attributes = {"notsome": 0};
         sampleRenderSettings.heightKey = "some";
-        arrowManager.addArrow(sampleLeaf, sampleLeaf, sampleRenderSettings);
-        expect(arrowManager.arrows.length).toBe(0);
+        codeMapArrowService.addArrow(sampleLeaf, sampleLeaf, sampleRenderSettings);
+        expect(codeMapArrowService.arrows.length).toBe(0);
     });
 
 
