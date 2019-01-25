@@ -1,5 +1,5 @@
 import {DataService} from "../../core/data/data.service";
-import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {KindOfMap, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import "./rangeSlider.component.scss";
 import {MapColors} from "../codeMap/rendering/renderSettings";
 import $ from "jquery";
@@ -36,7 +36,8 @@ export class RangeSliderController implements SettingsServiceSubscriber {
             onChange: this.onSliderChange.bind(this),
             pushRange: true,
             onToChange: this.onToSliderChange.bind(this),
-            onFromChange: this.onFromSliderChange.bind(this)
+            onFromChange: this.onFromSliderChange.bind(this),
+            disabled: this.settingsService.settings.mode == KindOfMap.Delta,
         };
     }
 
@@ -81,7 +82,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 
     private updateWhiteColorsToGreyToMakeItVisible(rangeColors) {
         for(let property of Object.keys(rangeColors)) {
-            if (rangeColors[property] == 0xFFFFFF) {
+            if (rangeColors[property] == MapColors.positiveWhite) {
                 rangeColors[property] = 0xDDDDDD;
             }
         }
