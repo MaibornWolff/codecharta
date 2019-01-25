@@ -5,3 +5,9 @@
         Invert Colors
     </md-checkbox>
 </md-input-container>
+
+<md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.whiteColorBuildings" ng-change="$ctrl.settingsService.onSettingsChanged()">
+        White Positive Buildings
+    </md-checkbox>
+</md-input-container>

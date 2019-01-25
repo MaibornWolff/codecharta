@@ -30,6 +30,7 @@
       "invertHeight": false,
       "dynamicMargin": true,
       "isWhiteBackground": false,
+      "whiteColorBuildings": true,
       "blacklist":[]
     },
     "autoFitCamera": true
@@ -65,6 +66,7 @@
       "invertHeight": false,
       "dynamicMargin": true,
       "isWhiteBackground": false,
+      "whiteColorBuildings": true,
       "blacklist":[]
     },
     "autoFitCamera": true
@@ -100,6 +102,7 @@
       "invertHeight": false,
       "dynamicMargin": true,
       "isWhiteBackground": false,
+      "whiteColorBuildings": true,
       "blacklist":[]
     },
     "autoFitCamera": true
@@ -135,6 +138,7 @@
       "invertHeight": false,
       "dynamicMargin": true,
       "isWhiteBackground": false,
+      "whiteColorBuildings": true,
       "blacklist":[]
     },
     "autoFitCamera": true

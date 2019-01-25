@@ -1,6 +1,7 @@
 import {rangeSliderComponent, RangeSliderController} from "./rangeSlider.component";
 import {SettingsService} from "../../core/settings/settings.service";
 import { DataService } from "../../core/data/data.service";
+import {MapColors} from "../codeMap/rendering/renderSettings";
 
 describe("RangeSliderController", () => {
 
@@ -27,7 +28,10 @@ describe("RangeSliderController", () => {
             subscribe: jest.fn(),
             applySettings: jest.fn(),
             settings: {
-                colorMetric: "something"
+                colorMetric: "something",
+                neutralColorRange: {
+                    from: 30,
+                }
             }
         }));
 
@@ -69,4 +73,37 @@ describe("RangeSliderController", () => {
         expect(settingsServiceMock.applySettings).toHaveBeenCalled();
     });
 
+    describe("Coloring the slider", () => {
+
+        let fromPercentage;
+
+        beforeEach(()=>{
+            rangeSliderController.applyCssSettings = jest.fn();
+            rangeSliderController.maxMetricValue = 200;
+            fromPercentage = 100 / rangeSliderController.maxMetricValue * settingsServiceMock.settings.neutralColorRange.from;
+
+        });
+
+        it("sliderColor should get set correctly with positiveGreen color", () => {
+            rangeSliderController.settingsService.settings.whiteColorBuildings = false;
+            const rangeColors = {"left": MapColors.positive, "middle": MapColors.neutral, "right": MapColors.negative};
+            rangeSliderController.updateSliderColors();
+            expect(rangeSliderController.applyCssSettings).toHaveBeenCalledWith(rangeColors, fromPercentage);
+        });
+
+        it("sliderColor should get set correctly with positiveWhite color", () => {
+            rangeSliderController.settingsService.settings.whiteColorBuildings = true;
+            const rangeColors = {"left": 0xDDDDDD, "middle": MapColors.neutral, "right": MapColors.negative};
+            rangeSliderController.updateSliderColors();
+            expect(rangeSliderController.applyCssSettings).toHaveBeenCalledWith(rangeColors, fromPercentage);
+        });
+
+        it("sliderColor should get set correctly with deltaFlipped colors", () => {
+            rangeSliderController.settingsService.settings.whiteColorBuildings = false;
+            rangeSliderController.settingsService.settings.neutralColorRange.flipped = true;
+            const rangeColors = {"left": MapColors.negative, "middle": MapColors.neutral, "right": MapColors.positive};
+            rangeSliderController.updateSliderColors();
+            expect(rangeSliderController.applyCssSettings).toHaveBeenCalledWith(rangeColors, fromPercentage);
+        });
+    });
 });
