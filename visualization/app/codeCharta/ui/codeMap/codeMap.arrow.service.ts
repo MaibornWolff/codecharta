@@ -1,21 +1,23 @@
 import * as THREE from "three";
-import {node} from "./node";
-import {renderSettings} from "./renderSettings";
-import {Edge} from "../../../core/data/model/CodeMap";
+import {node} from "./rendering/node";
+import {renderSettings} from "./rendering/renderSettings";
+import {Edge} from "../../core/data/model/CodeMap";
+import {ThreeSceneService} from "./threeViewer/threeSceneService";
 
-export class ArrowManager {
-    private parentObjectInScene: THREE.Object3D;
+export class CodeMapArrowService {
+
+    public static SELECTOR = "codeMapArrowService";
+
     private arrows: THREE.Object3D[];
 
-    constructor(argParentObjectInScene: THREE.Object3D) {
-        this.parentObjectInScene = argParentObjectInScene;
+    constructor(private threeSceneService: ThreeSceneService) {
         this.arrows = new Array<THREE.Object3D>();
     }
 
     public clearArrows() {
         this.arrows = [];
-        while (this.parentObjectInScene.children.length > 0) {
-            this.parentObjectInScene.children.pop();
+        while (this.threeSceneService.edgeArrows.children.length > 0) {
+            this.threeSceneService.edgeArrows.children.pop();
         }
     }
 
@@ -93,7 +95,7 @@ export class ArrowManager {
 
             let arrow: THREE.Object3D = this.makeArrowFromBezier(curve);
 
-            this.parentObjectInScene.add(arrow);
+            this.threeSceneService.edgeArrows.add(arrow);
             this.arrows.push(arrow);
         }
     }

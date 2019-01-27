@@ -38,4 +38,13 @@ color-metric-chooser-component {
     float: right;
   }
 
+  .md-select-value .metric-max-value {
+    display: none;
+  }
+
+}
+
+.metric-max-value {
+  color: #ccc !important;
+  font-size: smaller !important;
 }

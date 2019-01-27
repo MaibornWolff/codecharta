@@ -4,10 +4,11 @@ import {SettingsService} from "../../core/settings/settings.service";
 import {TreeMapService} from "../../core/treemap/treemap.service";
 import {CodeMapUtilService} from "./codeMap.util.service";
 import {CodeMapNode} from "../../core/data/model/CodeMap";
-import {LabelManager} from "./rendering/labelManager";
 import * as THREE from "three";
 import {Group} from "three";
 import sinon from "sinon";
+import {CodeMapLabelService} from "./codeMap.label.service";
+import {CodeMapArrowService} from "./codeMap.arrow.service";
 jest.mock("./threeViewer/threeSceneService");
 
 
@@ -32,18 +33,20 @@ describe("renderService", () => {
         node = codeMapUtilService.getCodeMapNodeFromPath("/root", "File");
         let nodes = renderService.collectNodesToArray(node);
         nodes[0].isLeaf = true;
+
         renderService.collectNodesToArray = jest.fn(x =>  nodes);
-
         renderService.threeSceneService = new ThreeSceneService();
-
         renderService.threeSceneService.labels = new Group();
-        renderService.labelManager = new LabelManager(renderService.threeSceneService.labels);
-
-
         renderService.threeSceneService.edgeArrows = new Group();
-        renderService.arrowManager = new LabelManager(renderService.threeSceneService.edgeArrows);
-
         renderService.threeSceneService.mapGeometry =  new THREE.Group();
+
+        const CodeMapLabelServiceMock = jest.fn<CodeMapLabelService>(() => ({
+            clearLabels: jest.fn(),
+            addLabel: jest.fn()
+        }));
+
+        renderService.codeMapLabelService = new CodeMapLabelServiceMock;
+        renderService.codeMapArrowService = new CodeMapArrowService(renderService.threeSceneService);
     }
 
     function mockEverything(){
@@ -146,7 +149,7 @@ describe("renderService", () => {
         threeSceneService = new ThreeSceneService();
         threeSceneService.mapGeometry = new Group();
 
-        renderService = new CodeMapRenderService(threeSceneService, treeMapService, $rootScope, settingsService);
+        renderService = new CodeMapRenderService(threeSceneService, treeMapService, $rootScope, settingsService, codeMapUtilService);
     }
 
 
@@ -179,23 +182,23 @@ describe("renderService", () => {
         });
 
         it("Label scale", ()=>{
-            renderService.labelManager = {
+            renderService.codeMapLabelService = {
                 scale: jest.fn()
             };
 
             renderService.applySettings(settingsServiceMock.settings);
 
-            expect(renderService.labelManager.scale).toHaveBeenCalled();
+            expect(renderService.codeMapLabelService.scale).toHaveBeenCalled();
         });
 
         it("Arrow scale", ()=>{
-            renderService.arrowManager = {
+            renderService.codeMapArrowService = {
                 scale: jest.fn()
             };
 
             renderService.applySettings(settingsServiceMock.settings);
 
-            expect(renderService.arrowManager.scale).toHaveBeenCalled();
+            expect(renderService.codeMapArrowService.scale).toHaveBeenCalled();
         });
 
         it("Collect nodes", ()=>{
@@ -232,9 +235,9 @@ describe("renderService", () => {
 
         it("Labels cleared", ()=>{
             renderService.updateMapGeometry(settingsServiceMock.settings);
-            renderService.labelManager.clearLabels = sinon.spy();
+            renderService.codeMapLabelService.clearLabels = sinon.spy();
 
-            expect(renderService.labelManager.clearLabels.CalledOnce);
+            expect(renderService.codeMapLabelService.clearLabels.CalledOnce);
 
         });
 
@@ -242,9 +245,9 @@ describe("renderService", () => {
 
 
             renderService.updateMapGeometry(settingsServiceMock.settings);
-            renderService.labelManager.clearArrows = sinon.spy();
+            renderService.codeMapArrowService.clearArrows = sinon.spy();
 
-            expect(renderService.labelManager.clearArrows.CalledOnce);
+            expect(renderService.codeMapArrowService.clearArrows.CalledOnce);
 
         });
 
