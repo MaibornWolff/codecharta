@@ -1,5 +1,8 @@
 # {Meaningful title}
 
+closes #{Issue number}
+Merge permission: {CC-Member | @member}
+
 ## Description
 
 {Descriptive pull request text}

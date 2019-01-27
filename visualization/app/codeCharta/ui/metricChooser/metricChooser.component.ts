@@ -1,4 +1,4 @@
-import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/data.service";
+import {DataServiceSubscriber, DataService, DataModel, MetricData} from "../../core/data/data.service";
 import {SettingsService} from "../../core/settings/settings.service";
 import {IAngularEvent, IRootScopeService} from "angular";
 import "./metricChooser.component.scss";
@@ -10,7 +10,7 @@ import {codeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
 
 export class MetricChooserController implements DataServiceSubscriber, CodeMapMouseEventServiceSubscriber{
 
-    public metrics: string[];
+    public metricData: MetricData[];
 
     public hoveredAreaValue: number;
     public hoveredHeightValue: number;
@@ -30,7 +30,7 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
         private $rootScope: IRootScopeService
 
     ) {
-        this.metrics = dataService.data.metrics.sort();
+        this.onDataChanged(dataService.data, null);
         this.dataService.subscribe(this);
         CodeMapMouseEventService.subscribe($rootScope, this);
         this.optionsWithoutStart = {
@@ -45,7 +45,7 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
     }
 
     onDataChanged(data: DataModel, event: IAngularEvent) {
-        this.metrics = data.metrics.sort();
+        this.metricData =  data.metricData.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
     }
 
     public notify() {

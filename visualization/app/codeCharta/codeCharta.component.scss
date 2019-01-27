@@ -33,6 +33,11 @@ code-charta-component {
     }
   }
 
+  .small-info {
+    color: rgba(0,0,0,0.38);
+    font-size: 9pt;
+  }
+
   #title {
     position: fixed;
     z-index: 2;
@@ -83,6 +88,14 @@ code-charta-component {
     }
   }
 
+  .md-button.round-button {
+    margin-right: 0 !important;
+    float: right;
+    min-width: 36px;
+    width: 36px;
+    border-radius: 50%;
+  }
+
   #loading-indicator {
     position: fixed;
     left: 0;
@@ -117,5 +130,9 @@ code-charta-component {
     #toggle-ribbon-bar-fab {
       transition: all $animationDuration + s ease;
     }
+  }
+
+  .angular-green {
+    color: #00bfa5;
   }
 }
