@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Use `fa-ban`-icon as symbols for blacklistPanel (instead of `fa-list`) #298
 - Use `fa-ban`-icon as symbols for blacklistType `Exclude` (instead of `fa-times`) #298
 - Label size keeps readable for large maps or a high distance between camera and map #237
+- updated dependencies to fix vulnerabilities
 
 ### Removed
 - Remove invertHeight checkbox in delta-view #306
@@ -47,7 +48,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 - Renaming 'isolate node' to 'focus node'
-- Focusing a node does not remove the blacklist items of type 'hide'
+- Focusing a node does not remove the blacklist items of type Hide
 
 ### Removed
 - NodeContextMenu: Option to 'show all' nodes, which used to unhide all nodes
