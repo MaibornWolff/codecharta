@@ -32,7 +32,8 @@ describe("MetricChooserController", () => {
             },
             data: {
                 revisions: [],
-                metrics: []
+                metrics: [],
+                metricData: [],
             },
             notify: ()=>{
                 metricChooserController.onDataChanged(dataServiceMock.data);
@@ -69,17 +70,21 @@ describe("MetricChooserController", () => {
     });
 
     it("should get metrics from data service on startup", () => {
-        dataServiceMock.data.metrics = ["Some Metric"];
+        dataServiceMock.data.metricData = [{name: "Some Metric", maxValue: 1}];
         rebuildSUT();
-        expect(metricChooserController.metrics).toBe(dataServiceMock.data.metrics);
+        expect(metricChooserController.metricData).toBe(dataServiceMock.data.metricData);
     });
 
     it("onDataChanged should refresh metrics and sort them", () => {
-        const metrics = ["some", "revisions", "a"];
-        metricChooserController.onDataChanged({metrics: metrics});
-        expect(metricChooserController.metrics).toEqual(metrics);
-        expect(metricChooserController.metrics[0]).toEqual("a");
-        expect(metricChooserController.metrics[1]).toEqual("revisions");
+        const metricData = [
+            {name: "some", maxValue: 2},
+            {name: "revisions", maxValue: 3},
+            {name: "a", maxValue: 4}
+        ];
+        metricChooserController.onDataChanged({metricData: metricData});
+        expect(metricChooserController.metricData).toEqual(metricData);
+        expect(metricChooserController.metricData[0]).toEqual(metricData[0]);
+        expect(metricChooserController.metricData[1]).toEqual(metricData[1]);
     });
 
     it("onDataChanged should be called when dataService.notify is called", () => {
