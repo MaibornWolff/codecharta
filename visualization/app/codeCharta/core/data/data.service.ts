@@ -12,6 +12,11 @@ export interface MetricData {
     maxValue: number;
 }
 
+export interface MinMaxValue {
+    min: number;
+    max: number;
+}
+
 export interface DataModel {
 
     revisions: CodeMap[];
@@ -208,6 +213,27 @@ export class DataService {
         });
 
         return maxValue;
+    }
+
+    getMinAndMaxMetricInAllRevisions(metric: string): MinMaxValue {
+        let value = {
+            min: Number.MAX_VALUE,
+            max: Number.MIN_VALUE,
+        };
+
+        this.data.revisions.forEach((rev)=> {
+            let nodes = d3.hierarchy(rev.root).leaves();
+            nodes.forEach((node: any)=> {
+                if (node.data.attributes[metric] > value.max) {
+                    value.max = node.data.attributes[metric];
+                }
+                else if (node.data.attributes[metric] < value.min) {
+                    value.min = node.data.attributes[metric];
+                }
+            });
+        });
+
+        return value;
     }
 
 }

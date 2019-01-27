@@ -194,6 +194,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     public onSettingsChanged() {
 
         this.settings.margin = this.computeMargin();
+        this.settings.neutralColorRange = this.getAdaptedRange();
 
         if (this._lastDeltaState && this._settings.mode != KindOfMap.Delta) {
             this._lastDeltaState = false;
@@ -298,6 +299,20 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         return margin;
     }
+
+    private getAdaptedRange(): Range {
+       const metricValue =  this.dataService.getMinAndMaxMetricInAllRevisions(this.settings.colorMetric);
+       const distance = metricValue.max - metricValue.min;
+       const firstThird = distance / 3;
+       const secondThird = firstThird * 2;
+
+       return {
+           flipped: this.settings.neutralColorRange.flipped,
+           from: firstThird,
+           to: secondThird,
+       }
+    }
+
 
     /**
      * Updates query params to current settings
