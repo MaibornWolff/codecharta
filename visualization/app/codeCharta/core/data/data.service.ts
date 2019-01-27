@@ -201,39 +201,30 @@ export class DataService {
     }
 
     getMaxMetricInAllRevisions(metric: string) {
-        let maxValue = 0;
-
-        this.data.revisions.forEach((rev)=> {
-            let nodes = d3.hierarchy(rev.root).leaves();
-            nodes.forEach((node: any)=> {
-                if (node.data.attributes[metric] > maxValue) {
-                    maxValue = node.data.attributes[metric];
-                }
-            });
-        });
-
-        return maxValue;
+        return this.getMinAndMaxMetricInAllRevisions(metric).max;
     }
 
     getMinAndMaxMetricInAllRevisions(metric: string): MinMaxValue {
-        let value = {
+        let values = {
             min: Number.MAX_VALUE,
             max: Number.MIN_VALUE,
         };
 
         this.data.revisions.forEach((rev)=> {
             let nodes = d3.hierarchy(rev.root).leaves();
+
             nodes.forEach((node: any)=> {
-                if (node.data.attributes[metric] > value.max) {
-                    value.max = node.data.attributes[metric];
-                }
-                else if (node.data.attributes[metric] < value.min) {
-                    value.min = node.data.attributes[metric];
+                const currentValue = node.data.attributes[metric];
+
+                if (currentValue > values.max) {
+                    values.max = currentValue;
+                } else if (currentValue < values.min) {
+                    values.min = currentValue;
                 }
             });
         });
 
-        return value;
+        return values;
     }
 
 }
