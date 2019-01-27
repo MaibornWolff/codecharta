@@ -6,17 +6,52 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
-- Appearing button to unfocus node 
-- NodeContectMenu: Option to only hide dependent edges
+- Color searched node names green in TreeView #225
+- Add option buttons (three dots) in TreeViewSearch to `Hide` or `Exclude` matching nodes #298
+- Show blacklist entry counter in blacklistPanel header #298
+- Option checkbox 'Hide Flattened Buildings' #225
+- Hide/Flatten non-searched buildings #225
+- Hide/Flatten all buildings, if searchPattern can't find any matching nodes #225
+- Show maxValue of each metric in metricChooser select list #204
+- Colored color-slider inside the RibbonBar #318
+
+### Changed
+- Update TreeView filter with search field #225
+- Use 'gitignore' style matching in TreeViewSearch #225
+- Reorder `Focus`, `Hide` and `Exclude` buttons in nodeContextMenu #298
+- Reorder sidebarPanels (BlacklistPanel beneath TreeViewSearchPanel) #298
+- Use `fa-ban`-icon as symbols for blacklistPanel (instead of `fa-list`) #298
+- Use `fa-ban`-icon as symbols for blacklistType `Exclude` (instead of `fa-times`) #298
+- Label size keeps readable for large maps or a high distance between camera and map #237
+- updated dependencies to fix vulnerabilities
+
+### Removed
+- Remove invertHeight checkbox in delta-view #306
+- Removed option to add blacklist entries from inside the blacklistPanel #298
+
+### Fixed
+
+## [1.20.1] - 2018-12-19
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.20.0] - 2018-12-19
+### Added
+- button to unfocus node 
+- NodeContextMenu: Option to only hide dependent edges
 - plop support
 
 ### Changed
 - Renaming 'isolate node' to 'focus node'
 - Focusing a node does not remove the blacklist items of type Hide
-- updated dependencies to fix vulnerabilities
 
 ### Removed
-- NodeContectMenu: Option to 'show all' nodes, which used to unhide all nodes
+- NodeContextMenu: Option to 'show all' nodes, which used to unhide all nodes
 
 ### Fixed
 - Reshow hidden nodes from Treeview or Blacklist
@@ -24,6 +59,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [1.19.0] - 2018-11-02
 ### Added
 - Deleted files in delta view use their previous area value in order to be visible #254
+
 ### Changed
 
 ### Removed

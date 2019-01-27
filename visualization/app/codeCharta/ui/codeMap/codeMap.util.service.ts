@@ -1,4 +1,4 @@
-import {CodeMapNode, Exclude, ExcludeType} from "../../core/data/model/CodeMap";
+import {CodeMapNode, BlacklistItem, BlacklistType} from "../../core/data/model/CodeMap";
 import {hierarchy} from "d3-hierarchy";
 import {SettingsService} from "../../core/settings/settings.service";
 import ignore from 'ignore';
@@ -13,24 +13,35 @@ export class CodeMapUtilService {
     ) {
     }
 
-    private static transformPath(toTransform): string {
+    public static transformPath(toTransform): string {
         return path.relative('/', toTransform);
     }
 
-    public static numberOfBlacklistedNodes(nodes: Array<CodeMapNode>, blacklist: Array<Exclude>): number {
+    public static resolvePath(toResolve): string {
+        return path.resolve(toResolve);
+    }
+
+    public static getNodesByGitignorePath(nodes: Array<CodeMapNode>, gitignorePath: string): CodeMapNode[] {
+        const ig = ignore().add(CodeMapUtilService.transformPath(gitignorePath));
+        const ignoredNodePaths: string[] =  ig.filter(nodes.map(n => CodeMapUtilService.transformPath(n.path)));
+        const matchingNodes: CodeMapNode[] =  nodes.filter(n => !ignoredNodePaths.includes(CodeMapUtilService.transformPath(n.path)));
+        return matchingNodes;
+    }
+
+    public static numberOfBlacklistedNodes(nodes: Array<CodeMapNode>, blacklist: Array<BlacklistItem>): number {
         if (blacklist) {
-            const ig = ignore().add(blacklist.map(ex=>CodeMapUtilService.transformPath(ex.path)));
-            const filteredNodes = ig.filter(nodes.map(n=>CodeMapUtilService.transformPath(n.path)));
+            const ig = ignore().add(blacklist.map(ex => CodeMapUtilService.transformPath(ex.path)));
+            const filteredNodes = ig.filter(nodes.map(n => CodeMapUtilService.transformPath(n.path)));
             return nodes.length - filteredNodes.length;
         } else {
             return 0;
         }
     }
 
-    public static isBlacklisted(node: CodeMapNode, blacklist: Array<Exclude>, type: ExcludeType): boolean {
+    public static isBlacklisted(node: CodeMapNode, blacklist: Array<BlacklistItem>, type: BlacklistType): boolean {
         const ig = ignore().add(blacklist
             .filter(b => b.type == type)
-            .map(ex=>CodeMapUtilService.transformPath(ex.path)));
+            .map(ex => CodeMapUtilService.transformPath(ex.path)));
         return ig.ignores(CodeMapUtilService.transformPath(node.path));
     }
 
@@ -40,7 +51,6 @@ export class CodeMapUtilService {
             return this.getCodeMapNodeFromPath(path, "Folder");
         }
         return firstTryNode;
-
     }
 
     getCodeMapNodeFromPath(path: string, nodeType: string) {

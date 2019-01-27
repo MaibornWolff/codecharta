@@ -24,6 +24,7 @@ describe("treemap service", ()=> {
             margin: 0,
             invertHeight: false,
             visibleEdges: [],
+            searchedNodePaths: [],
             blacklist:[],
             fileName:"currentFile.json"
         };
