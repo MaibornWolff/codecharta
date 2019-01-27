@@ -26,7 +26,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Removed
 - Remove invertHeight checkbox in delta-view #306
-- Removed option to add blacklist entries from inside the blacklistPanel #298
+- Remove option to add blacklist entries from inside the blacklistPanel #298
+- Remove statistic functions in Experimental panel #308
 
 ### Fixed
 
