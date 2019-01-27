@@ -33,6 +33,11 @@ code-charta-component {
     }
   }
 
+  .small-info {
+    color: rgba(0,0,0,0.38);
+    font-size: 9pt;
+  }
+
   #title {
     position: fixed;
     z-index: 2;
@@ -125,5 +130,9 @@ code-charta-component {
     #toggle-ribbon-bar-fab {
       transition: all $animationDuration + s ease;
     }
+  }
+
+  .angular-green {
+    color: #00bfa5;
   }
 }

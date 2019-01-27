@@ -1,19 +1,23 @@
 "use strict";
 
 import * as d3 from "d3";
-import {CodeMap, CodeMapNode, Edge} from "./model/CodeMap";
+import {CodeMap, CodeMapNode} from "./model/CodeMap";
 import {IRootScopeService, IAngularEvent} from "angular";
 import {DeltaCalculatorService} from "./data.deltaCalculator.service";
 import {DataDecoratorService} from "./data.decorator.service";
 import {HierarchyNode} from "d3-hierarchy";
-import {SettingsService} from "../settings/settings.service";
+
+export interface MetricData {
+    name: string;
+    maxValue: number;
+}
 
 export interface DataModel {
 
     revisions: CodeMap[];
-    metrics: string[];
+    metrics: string[],
+    metricData: MetricData[];
     renderMap: CodeMap;
-
 }
 
 export interface DataServiceSubscriber {
@@ -38,6 +42,7 @@ export class DataService {
         this._data = {
             revisions: [],
             metrics: [],
+            metricData: [],
             renderMap: null
         };
 
@@ -113,8 +118,6 @@ export class DataService {
         this.$rootScope.$broadcast("data-changed", this._data);
     }
 
-
-
     public getReferenceMapName(): string {
         return this._data.renderMap.fileName;
     }
@@ -147,26 +150,37 @@ export class DataService {
 
         if(this._data.revisions.length <= 0){
             this._data.metrics = [];
+            this._data.metricData = [];
             return; //we cannot reduce if there are no maps
         }
 
+        this._data.metrics = this.getUniqueMetricNames();
+        this._data.metricData = this.getMetricNamesWithMaxValue();
+    }
+
+    private getUniqueMetricNames(): string[] {
         let leaves: HierarchyNode<CodeMapNode>[] = [];
 
         this._data.revisions.forEach((map)=>{
             leaves = leaves.concat(d3.hierarchy<CodeMapNode>(map.root).leaves());
         });
 
-        let attributeList = leaves.map(function (d: HierarchyNode<CodeMapNode>) {
+        let attributeList: string[][] = leaves.map(function (d: HierarchyNode<CodeMapNode>) {
             return d.data.attributes ? Object.keys(d.data.attributes) : [];
         });
 
-        let attributes: string[] = attributeList.reduce(function (left: string[], right: string[]) {
-            return left.concat(right.filter(function (el: string) {
-                return left.indexOf(el) === -1;
-            }));
+        return attributeList.reduce(function (left: string[], right: string[]) {
+            return left.concat(right.filter(el => left.indexOf(el) === -1));
         });
+    }
 
-        this._data.metrics = attributes;
+    private getMetricNamesWithMaxValue() {
+        let metricData: MetricData[] = [];
+
+        for(const attribute of this._data.metrics) {
+            metricData.push({name: attribute, maxValue: this.getMaxMetricInAllRevisions(attribute)})
+        }
+        return metricData;
     }
 
     /**
@@ -175,6 +189,7 @@ export class DataService {
     public resetMaps() {
         this._data.revisions = [];
         this._data.metrics = [];
+        this._data.metricData = [];
         this._lastComparisonMap = null;
         this._data.renderMap = null;
         this.notify();
