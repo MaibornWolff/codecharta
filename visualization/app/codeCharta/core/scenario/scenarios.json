@@ -31,8 +31,8 @@
     "name": "Coverage",
     "settings": {
       "neutralColorRange": {
-        "from": 50,
-        "to": 75,
+        "from": 20,
+        "to": 80,
         "flipped": true
       },
       "areaMetric": "rloc",
