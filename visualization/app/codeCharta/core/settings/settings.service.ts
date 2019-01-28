@@ -253,7 +253,10 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         };
 
         iterateProperties(this._settings, "");
+
+
         this.onSettingsChanged();
+
     }
 
     /**
