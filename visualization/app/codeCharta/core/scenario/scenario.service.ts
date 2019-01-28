@@ -38,12 +38,9 @@ export class ScenarioService {
         }
     }
 
-    /**
-     * Applies a given scenario to the current codecharta session.
-     * @param {Scenario} scenario
-     */
     public applyScenario(scenario: Scenario) {
-        this.settingsService.applySettings(scenario.settings);
+        const allSettings = this.updateSettingsUsingScenario(this.settingsService.settings, scenario.settings);
+        this.settingsService.applySettings(allSettings);
         if(scenario.autoFitCamera){
             let _this = this;
             setTimeout(function(){
@@ -52,10 +49,23 @@ export class ScenarioService {
         }
     }
 
-    /**
-     * Returns an array of all scenarios.
-     * @returns {Scenario[]} all scenarios
-     */
+    private updateSettingsUsingScenario(settings, scenarioSettings): any {
+        if (settings) {
+            for(let key of Object.keys(settings)) {
+                if (scenarioSettings.hasOwnProperty(key)) {
+                    if(key == "map") continue;
+
+                    if(typeof settings[key] === "object") {
+                        settings[key] = this.updateSettingsUsingScenario(settings[key], scenarioSettings[key]);
+                    } else {
+                        settings[key] = scenarioSettings[key];
+                    }
+                }
+            }
+        }
+        return settings;
+    }
+
     public getScenarios(): Scenario[] {
         return this.scenarios.filter(s => this.isScenarioPossible(s, this.dataService._data.metrics));
     }
@@ -69,12 +79,8 @@ export class ScenarioService {
         metrics.filter(x => x === scenario.settings.colorMetric).length > 0);
     }
 
-    /**
-     * Returns the default scenario.
-     * @returns {Scenario} the scenario
-     */
     public getDefaultScenario(): Scenario {
-        return createDefaultScenario(this.settingsService.settings.map, this.settingsService.computeMargin());
+        return createDefaultScenario();
     }
 
 }
