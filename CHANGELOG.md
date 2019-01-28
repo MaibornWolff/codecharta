@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Use `fa-ban`-icon as symbols for blacklistType `Exclude` (instead of `fa-times`) #298
 - Label size keeps readable for large maps or a high distance between camera and map #237
 - updated dependencies to fix vulnerabilities
+- Scenarios only update settings which exist in Scenario and not all #224
 
 ### Removed
 - Remove invertHeight checkbox in delta-view #306
