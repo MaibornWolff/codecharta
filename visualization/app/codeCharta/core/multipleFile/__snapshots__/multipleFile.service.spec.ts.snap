@@ -91,8 +91,7 @@ Object {
   "blacklist": Array [],
   "edges": Array [],
   "fileName": "Aggregation of following files: file1, file2, file1, file2",
-  "projectName": "Aggregation of following projects: Sample Project, Sample Project, Sample Project, Sample Project",
-  "root": Object {
+  "nodes": Object {
     "attributes": Object {},
     "children": Array [
       Object {
@@ -234,6 +233,7 @@ Object {
     "type": "Folder",
     "visible": true,
   },
+  "projectName": "Aggregation of following projects: Sample Project, Sample Project, Sample Project, Sample Project",
 }
 `;
 
@@ -246,8 +246,7 @@ Object {
   "blacklist": Array [],
   "edges": Array [],
   "fileName": "Aggregation of following files: file1, file2",
-  "projectName": "Aggregation of following projects: Sample Project, Sample Project",
-  "root": Object {
+  "nodes": Object {
     "attributes": Object {},
     "children": Array [
       Object {
@@ -323,14 +322,14 @@ Object {
     "type": "Folder",
     "visible": true,
   },
+  "projectName": "Aggregation of following projects: Sample Project, Sample Project",
 }
 `;
 
 exports[`app.codeCharta.core.multiple multipleService aggregation one map 1`] = `
 Object {
   "fileName": "file1",
-  "projectName": "Sample Project",
-  "root": Object {
+  "nodes": Object {
     "attributes": Object {},
     "children": Array [
       Object {
@@ -363,5 +362,6 @@ Object {
     "name": "root",
     "type": "Folder",
   },
+  "projectName": "Sample Project",
 }
 `;

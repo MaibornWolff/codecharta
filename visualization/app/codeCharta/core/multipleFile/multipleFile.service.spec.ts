@@ -1,13 +1,13 @@
 import "./multipleFile.module";
 import {NGMock} from "../../../../mocks/ng.mockhelper";
-import {AttributeType, BlacklistType, CodeMap} from "../data/model/CodeMap";
+import {AttributeType, BlacklistType, CodeMap, Edge} from "../data/model/CodeMap";
 
 describe("app.codeCharta.core.multiple", function() {
 
     const file1: CodeMap = {
         fileName: "file1",
         projectName: "Sample Project",
-        root: {
+        nodes: {
             name: "root",
             type: "Folder",
             attributes: {},
@@ -37,7 +37,7 @@ describe("app.codeCharta.core.multiple", function() {
     const file2: CodeMap = {
         fileName: "file2",
         projectName: "Sample Project",
-        root: {
+        nodes: {
             name: "root",
             type: "Folder",
             attributes: {},
@@ -93,7 +93,7 @@ describe("app.codeCharta.core.multiple", function() {
 
     describe("edges merge", ()=> {
 
-        const edges1 = [
+        const edges1: Edge = [
             {
                 fromNodeName: "/root/big leaf",
                 toNodeName: "/root/Parent Leaf/small leaf",
@@ -104,7 +104,7 @@ describe("app.codeCharta.core.multiple", function() {
             }
         ];
 
-        const edges2 = [
+        const edges2: Edge = [
             {
                 fromNodeName: "/root/big leaf",
                 toNodeName: "/root/Parent Leaf/small leaf",
