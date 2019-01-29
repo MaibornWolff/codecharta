@@ -30,9 +30,6 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     private pd: string;
     private nd: string;
     private range: Range;
-    private areaMetric: string;
-    private heightMetric: string;
-    private colorMetric: string;
     private positive: string;
     private neutral: string;
     private negative: string;
@@ -199,9 +196,6 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
 
     onSettingsChanged(s: Settings) {
         this.range = s.neutralColorRange;
-        this.areaMetric = s.areaMetric;
-        this.heightMetric = s.heightMetric;
-        this.colorMetric = s.colorMetric;
         this.deltaColorsFlipped = s.deltaColorFlipped;
         this.deltas = s.mode == KindOfMap.Delta;
 
