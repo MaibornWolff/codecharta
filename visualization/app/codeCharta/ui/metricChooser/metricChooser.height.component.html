@@ -2,8 +2,9 @@
     <i class='fa fa-arrows-v'></i>
 
     <md-select ng-model="$ctrl.settingsService.settings.heightMetric" ng-change="$ctrl.settingsService.applySettings()">
-        <md-option ng-repeat="metric in $ctrl.metrics" value="{{::metric}}">
-            {{::metric}}
+        <md-option ng-repeat="metric in $ctrl.metricData" value="{{::metric.name}}">
+            {{::metric.name}}
+            <span class="metric-max-value">({{::metric.maxValue}})</span>
         </md-option>
     </md-select>
 
