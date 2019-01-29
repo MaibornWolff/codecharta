@@ -26,7 +26,7 @@ describe("app.codeCharta.core.data.dataService", () => {
 
         it("leaves should have all metrics", ()=>{
             dataDecoratorService.decorateLeavesWithMissingMetrics([a, b],["some", "metrics", "rloc", "functions", "mcc"]);
-            let h = d3.hierarchy(a.root);
+            let h = d3.hierarchy(a.nodes);
             h.leaves().forEach((node)=>{
                 expect(node.data.attributes).toBeDefined();
                 expect(node.data.attributes.some).toBe(0);
@@ -38,9 +38,9 @@ describe("app.codeCharta.core.data.dataService", () => {
         });
 
         it("leaves should have all metrics even if some attributesLists are undefined", ()=>{
-            a.root.children[0].attributes = undefined;
+            a.nodes.children[0].attributes = undefined;
             dataDecoratorService.decorateLeavesWithMissingMetrics([a, b],["some", "metrics", "rloc", "functions", "mcc"]);
-            let h = d3.hierarchy(a.root);
+            let h = d3.hierarchy(a.nodes);
             h.leaves().forEach((node)=>{
                 expect(node.data.attributes).toBeDefined();
                 expect(node.data.attributes.some).toBe(0);
@@ -56,7 +56,7 @@ describe("app.codeCharta.core.data.dataService", () => {
     describe("compact middle packages",() => {
 
         it("should compact from root", ()=>{
-            a.root.children = [{
+            a.nodes.children = [{
                 name: "middle",
                 type: "Folder",
                 attributes: {},
@@ -75,15 +75,15 @@ describe("app.codeCharta.core.data.dataService", () => {
                 ]
             }];
             dataDecoratorService.decorateMapWithCompactMiddlePackages(a);
-            expect(a.root.name).toBe("root/middle");
-            expect(a.root.children.length).toBe(2);
-            expect(a.root.children[0].name).toBe("a");
-            expect(a.root.children[1].name).toBe("b");
+            expect(a.nodes.name).toBe("root/middle");
+            expect(a.nodes.children.length).toBe(2);
+            expect(a.nodes.children[0].name).toBe("a");
+            expect(a.nodes.children[1].name).toBe("b");
         });
 
         it("should collect links correctly", ()=>{
-            a.root.link = "link0";
-            a.root.children = [{
+            a.nodes.link = "link0";
+            a.nodes.children = [{
                 name: "middle",
                 type: "File",
                 attributes: {},
@@ -102,12 +102,12 @@ describe("app.codeCharta.core.data.dataService", () => {
                 ]
             }];
             dataDecoratorService.decorateMapWithCompactMiddlePackages(a);
-            expect(a.root.link).toBe("link1");
+            expect(a.nodes.link).toBe("link1");
         });
 
         it("should collect paths correctly", ()=>{
-            a.root.path = "/root";
-            a.root.children = [{
+            a.nodes.path = "/root";
+            a.nodes.children = [{
                 name: "middle",
                 path: "/root/middle",
                 type: "Folder",
@@ -128,11 +128,11 @@ describe("app.codeCharta.core.data.dataService", () => {
                 ]
             }];
             dataDecoratorService.decorateMapWithCompactMiddlePackages(a);
-            expect(a.root.path).toBe("/root/middle");
+            expect(a.nodes.path).toBe("/root/middle");
         });
 
         it("should not compact with single leaves", ()=>{
-            a.root.children = [{
+            a.nodes.children = [{
                 name: "middle",
                 type: "Folder",
                 attributes: {},
@@ -145,13 +145,13 @@ describe("app.codeCharta.core.data.dataService", () => {
                 ]
             }];
             dataDecoratorService.decorateMapWithCompactMiddlePackages(a);
-            expect(a.root.name).toBe("root/middle");
-            expect(a.root.children.length).toBe(1);
-            expect(a.root.children[0].name).toBe("singleLeaf");
+            expect(a.nodes.name).toBe("root/middle");
+            expect(a.nodes.children.length).toBe(1);
+            expect(a.nodes.children[0].name).toBe("singleLeaf");
         });
 
         it("should compact intermediate middle packages", ()=>{
-            a.root.children = [{
+            a.nodes.children = [{
                 name: "start",
                 type: "Folder",
                 attributes: {},
@@ -188,13 +188,13 @@ describe("app.codeCharta.core.data.dataService", () => {
                 ]
             }];
             dataDecoratorService.decorateMapWithCompactMiddlePackages(a);
-            expect(a.root.name).toBe("root/start");
-            expect(a.root.children.length).toBe(2);
-            expect(a.root.children[0].name).toBe("middle/middle2");
-            expect(a.root.children[1].name).toBe("c");
-            expect(a.root.children[0].children.length).toBe(2);
-            expect(a.root.children[0].children[0].name).toBe("a");
-            expect(a.root.children[0].children[1].name).toBe("b");
+            expect(a.nodes.name).toBe("root/start");
+            expect(a.nodes.children.length).toBe(2);
+            expect(a.nodes.children[0].name).toBe("middle/middle2");
+            expect(a.nodes.children[1].name).toBe("c");
+            expect(a.nodes.children[0].children.length).toBe(2);
+            expect(a.nodes.children[0].children[0].name).toBe("a");
+            expect(a.nodes.children[0].children[1].name).toBe("b");
         });
 
     });
@@ -202,11 +202,11 @@ describe("app.codeCharta.core.data.dataService", () => {
     describe("decorateParentNodesWithSumAttributesOfChildren",() => {
 
         it("all nodes should have an attribute list with all possible metrics", ()=>{
-            a.root.children[0].attributes = undefined;
-            a.root.children[1].attributes = { "some": 1 };
+            a.nodes.children[0].attributes = undefined;
+            a.nodes.children[1].attributes = { "some": 1 };
             dataDecoratorService.decorateLeavesWithMissingMetrics([a],["some", "metrics", "rloc", "functions", "mcc"]);
             dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren([a], ["some", "metrics", "rloc", "functions", "mcc"]);
-            let h = d3.hierarchy(a.root);
+            let h = d3.hierarchy(a.nodes);
             h.each((node)=>{
                 expect(node.data.attributes).toBeDefined();
                 expect(node.data.attributes.some).toBeDefined();
@@ -217,7 +217,7 @@ describe("app.codeCharta.core.data.dataService", () => {
         it("all nodes should have an attribute list with listed and available metrics", ()=>{
             dataDecoratorService.decorateLeavesWithMissingMetrics([a],["rloc", "functions"]);
             dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren([a], ["rloc", "functions"]);
-            let h = d3.hierarchy(a.root);
+            let h = d3.hierarchy(a.nodes);
             h.each((node)=>{
                 expect(node.data.attributes).toBeDefined();
                 expect(node.data.attributes["rloc"]).toBeDefined();
@@ -228,7 +228,7 @@ describe("app.codeCharta.core.data.dataService", () => {
         it("folders should have sum attributes of children", ()=>{
             dataDecoratorService.decorateLeavesWithMissingMetrics([a],["rloc", "functions"]);
             dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren([a], ["rloc", "functions"]);
-            let h = d3.hierarchy(a.root);
+            let h = d3.hierarchy(a.nodes);
             expect(h.data.attributes["rloc"]).toBe(200);
             expect(h.children[0].data.attributes["rloc"]).toBe(100);
             expect(h.data.attributes["functions"]).toBe(1110);
@@ -239,9 +239,9 @@ describe("app.codeCharta.core.data.dataService", () => {
     describe("decorateMapWithOriginAttribute",() => {
 
         it("all nodes should have an origin", ()=>{
-            a.root.children[0].origin = undefined;
+            a.nodes.children[0].origin = undefined;
             dataDecoratorService.decorateMapWithOriginAttribute(a);
-            let h = d3.hierarchy(a.root);
+            let h = d3.hierarchy(a.nodes);
             h.each((node)=>{
                 expect(node.data.origin).toBeDefined();
             });
@@ -256,7 +256,7 @@ describe("app.codeCharta.core.data.dataService", () => {
             let cm: CodeMap = {
                 fileName: "a",
                 projectName: "b",
-                root: {
+                nodes: {
                     name: "a node",
                     type: "File",
                     attributes: {}
@@ -265,7 +265,7 @@ describe("app.codeCharta.core.data.dataService", () => {
 
             dataDecoratorService.decorateMapWithUnaryMetric(cm);
 
-            let h = d3.hierarchy(cm.root);
+            let h = d3.hierarchy(cm.nodes);
 
             h.each((node)=>{
                 expect(node.data.attributes["unary"]).toBeDefined();
@@ -274,9 +274,9 @@ describe("app.codeCharta.core.data.dataService", () => {
         });
 
         it("all nodes should have a unary attribute", ()=>{
-            a.root.children[0].attributes = {};
+            a.nodes.children[0].attributes = {};
             dataDecoratorService.decorateMapWithUnaryMetric(a);
-            let h = d3.hierarchy(a.root);
+            let h = d3.hierarchy(a.nodes);
             h.each((node)=>{
                 expect(node.data.attributes["unary"]).toBeDefined();
             });
@@ -292,7 +292,7 @@ describe("app.codeCharta.core.data.dataService", () => {
             let cm: CodeMap = {
                 fileName: "a",
                 projectName: "b",
-                root: {
+                nodes: {
                     name: "a node",
                     type: "Folder",
                     attributes: {},
@@ -320,14 +320,14 @@ describe("app.codeCharta.core.data.dataService", () => {
 
             dataDecoratorService.decorateMapWithPathAttribute(cm);
 
-            let h = d3.hierarchy(cm.root);
+            let h = d3.hierarchy(cm.nodes);
 
             h.each((node)=>{
                 expect(node.data.path).toBeDefined();
             });
 
-            expect(cm.root.path).toBe("/a node");
-            expect(cm.root.children[1].children[0].path).toBe("/a node/c node/d node");
+            expect(cm.nodes.path).toBe("/a node");
+            expect(cm.nodes.children[1].children[0].path).toBe("/a node/c node/d node");
 
         });
 
