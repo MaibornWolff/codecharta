@@ -38,8 +38,8 @@ export class DataDecoratorService {
             }
         };
 
-        if (map && map.root) {
-            rec(map.root);
+        if (map && map.nodes) {
+            rec(map.nodes);
         }
 
     }
@@ -50,9 +50,9 @@ export class DataDecoratorService {
      */
     public decorateMapWithUnaryMetric(map: CodeMap) {
 
-        if (map && map.root) {
+        if (map && map.nodes) {
 
-            let root = d3.hierarchy<CodeMapNode>(map.root);
+            let root = d3.hierarchy<CodeMapNode>(map.nodes);
             let descendants: HierarchyNode<CodeMapNode>[] = root.descendants();
 
             for (let j = 0; j < descendants.length; j++) {
@@ -67,9 +67,9 @@ export class DataDecoratorService {
 
     public decorateMapWithVisibleAttribute(map: CodeMap) {
 
-        if (map && map.root) {
+        if (map && map.nodes) {
 
-            let root = d3.hierarchy<CodeMapNode>(map.root);
+            let root = d3.hierarchy<CodeMapNode>(map.nodes);
             root.each((node) => {
                 node.data.visible = true;
             });
@@ -79,9 +79,9 @@ export class DataDecoratorService {
 
     public decorateMapWithOriginAttribute(map: CodeMap) {
 
-        if (map && map.root) {
+        if (map && map.nodes) {
 
-            let root = d3.hierarchy<CodeMapNode>(map.root);
+            let root = d3.hierarchy<CodeMapNode>(map.nodes);
             root.each((node) => {
                 node.data.origin = map.fileName;
             });
@@ -90,8 +90,8 @@ export class DataDecoratorService {
     }
 
     public decorateMapWithPathAttribute(map: CodeMap) {
-        if (map && map.root) {
-            let root = d3.hierarchy<CodeMapNode>(map.root);
+        if (map && map.nodes) {
+            let root = d3.hierarchy<CodeMapNode>(map.nodes);
             root.each((node) => {
                 let path = root.path(node);
                 let pathString = "";
@@ -106,9 +106,9 @@ export class DataDecoratorService {
     public decorateLeavesWithMissingMetrics(maps: CodeMap[], metrics: string[]) {
 
         maps.forEach((map) => {
-            if (map && map.root) {
+            if (map && map.nodes) {
 
-                let root = d3.hierarchy<CodeMapNode>(map.root);
+                let root = d3.hierarchy<CodeMapNode>(map.nodes);
                 root.leaves().forEach((node) => {
 
                     //make sure attributes exist
@@ -132,9 +132,9 @@ export class DataDecoratorService {
     public decorateParentNodesWithSumAttributesOfChildren(maps: CodeMap[], metrics: string[]) {
 
         maps.forEach((map) => {
-            if (map && map.root) {
+            if (map && map.nodes) {
 
-                let root = d3.hierarchy<CodeMapNode>(map.root);
+                let root = d3.hierarchy<CodeMapNode>(map.nodes);
                 root.each((node) => {
                     this.decorateNodeWithChildrenSumMetrics(node, metrics);
 

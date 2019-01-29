@@ -61,7 +61,7 @@ describe("codeMapUtil", () => {
             ]
         };
 
-        codeMapUtilService.settingsService.settings.map.root = simpleHierarchy;
+        codeMapUtilService.settingsService.settings.map.nodes = simpleHierarchy;
 
     });
 
