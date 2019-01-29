@@ -5,7 +5,7 @@ import {
 } from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera} from "three";
 import {STATISTIC_OPS} from "../statistic/statistic.service";
-import {CodeMap, CodeMapNode, BlacklistItem} from "../data/model/CodeMap";
+import {CodeMap, CodeMapNode, BlacklistItem, KeyValuePair} from "../data/model/CodeMap";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 
 export interface Range {
@@ -24,6 +24,12 @@ export enum KindOfMap {
     Single = "Single",
     Multiple = "Multiple",
     Delta = "Delta"
+}
+
+export interface PackageColor {
+    path: string,
+    color: string,
+    meta: KeyValuePair
 }
 
 export interface Settings {
@@ -47,6 +53,7 @@ export interface Settings {
     dynamicMargin: boolean;
     isWhiteBackground: boolean;
     blacklist: Array<BlacklistItem>;
+    packageColor: Array<PackageColor>;
     focusedNodePath: string;
     searchedNodePaths: Array<string>;
     searchPattern: string;
@@ -124,6 +131,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             dynamicMargin: true,
             isWhiteBackground: false,
             blacklist: [],
+            packageColor: [],
             focusedNodePath: null,
             searchedNodePaths: [],
             searchPattern: null
@@ -401,6 +409,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.dynamicMargin = settings.dynamicMargin;
         this._settings.isWhiteBackground = settings.isWhiteBackground;
         this._settings.blacklist = settings.blacklist;
+        this._settings.packageColor = settings.packageColor;
         this._settings.focusedNodePath = settings.focusedNodePath;
         this._settings.searchedNodePaths = settings.searchedNodePaths;
         this._settings.searchPattern = settings.searchPattern;
