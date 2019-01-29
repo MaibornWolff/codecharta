@@ -271,9 +271,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         let margin: number;
         if (map !== null && dynamicMargin) {
-            let root: CodeMapNode = map.root;
-
-            let leaves = hierarchy<CodeMapNode>(root).leaves();
+            let leaves = hierarchy<CodeMapNode>(map.nodes).leaves();
             let numberOfBuildings = 0;
             let totalArea = 0;
             leaves.forEach((c: HierarchyNode<CodeMapNode>) => {

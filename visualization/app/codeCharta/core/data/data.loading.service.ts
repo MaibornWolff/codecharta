@@ -31,7 +31,7 @@ export class DataLoadingService {
                         fileName: fileName, 
                         projectName: fileContent.projectName,
                         apiVersion: fileContent.apiVersion,
-                        root: fileContent.nodes[0],
+                        nodes: fileContent.nodes[0],
                         edges: fileContent.edges || [],
                         attributeTypes: fileContent.attributeTypes || {},
                         blacklist: fileContent.blacklist || [],

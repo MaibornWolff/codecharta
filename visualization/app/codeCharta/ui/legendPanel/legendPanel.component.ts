@@ -83,7 +83,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     private setMarkingPackagesIntoLegend() {
         this.markingPackages = [];
         if (this.settingsService.settings.map) {
-            var rootNode: CodeMapNode = this.settingsService.settings.map.root;
+            var rootNode: CodeMapNode = this.settingsService.settings.map.nodes;
 
             hierarchy<CodeMapNode>(rootNode).descendants().forEach((hierarchyNode) => {
                 const node: CodeMapNode = hierarchyNode.data;
@@ -189,7 +189,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         } else {
             const from = Math.max(packagePath.length - MAX_NAME_LENGTH.lowerLimit, 0);
             const previewPackagePath = packagePath.substring(from);
-            const rootNode = this.settingsService.settings.map.root;
+            const rootNode = this.settingsService.settings.map.nodes;
             const startingDots = (previewPackagePath.startsWith(rootNode.path)) ? "" : "...";
             return startingDots + previewPackagePath;
         }
