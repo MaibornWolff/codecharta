@@ -195,7 +195,7 @@ describe("code map action service tests", ()=>{
         beforeEach(()=>{
             codeMapActionService.settingsService.settings = {
                 map: {
-                    root: simpleHiddenHierarchy
+                    nodes: simpleHiddenHierarchy
                 },
                 blacklist: blacklistItems
             };
@@ -257,7 +257,7 @@ describe("code map action service tests", ()=>{
         beforeEach(()=>{
             codeMapActionService.settingsService.settings = {
                 map: {
-                    root: simpleHiddenHierarchy
+                    nodes: simpleHiddenHierarchy
                 }
             };
         });
@@ -284,7 +284,7 @@ describe("code map action service tests", ()=>{
         beforeEach(()=>{
             codeMapActionService.settingsService.settings = {
                 map: {
-                    root: simpleHiddenHierarchy,
+                    nodes: simpleHiddenHierarchy,
                     edges: edgeList
                 }
             };

@@ -119,7 +119,7 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
         );
     });
 
-    it("should reject if root is not a node and therefore has no name or id", (done: DoneCallback)=> {
+    it("should reject if nodes is not a node and therefore has no name or id", (done: DoneCallback)=> {
         file.nodes[0] = {
             something: "something"
         };

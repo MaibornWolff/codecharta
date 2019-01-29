@@ -23,7 +23,7 @@ describe("blacklistController", () => {
             onSettingsChanged: jest.fn(),
             settings: {
                 map: {
-                    root: []
+                    nodes: []
                 },
                 blacklist: []
             }
@@ -81,8 +81,9 @@ describe("blacklistController", () => {
                 }
             ]
         };
+
         blacklistItem = {path: "/root", type: BlacklistType.exclude};
-        settingsServiceMock.settings.map.root = simpleHierarchy;
+        settingsServiceMock.settings.map.nodes = simpleHierarchy;
     }
 
     function getFilteredBlacklistBy(blacklistItem) {
