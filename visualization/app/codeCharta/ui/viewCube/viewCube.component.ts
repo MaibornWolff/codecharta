@@ -36,12 +36,12 @@ export class ViewCubeController
         private threeOrbitControlsService: ThreeOrbitControlsService,
         private viewCubeMouseEventsService: ViewCubeMouseEventsService
     ) {
-        this.initCamera();
+        this.initScene();
         this.initLights();
         this.initRenderer(this.$element);
-        this.initScene();
         this.initCube();
         this.initAxesHelper();
+        this.initCamera();
         this.startAnimation();
         this.viewCubeMouseEventsService.init(
             this.cubeGroup,
@@ -50,17 +50,19 @@ export class ViewCubeController
         );
 
         this.threeOrbitControlsService.subscribe(this);
-        ViewCubeMouseEventsService.subscribeToHoverEvents(
+        ViewCubeMouseEventsService.subscribeToViewCubeMouseEvents(
             this.$rootScope,
             this
         );
     }
 
     private initAxesHelper() {
+        //TODO Wie war das nochmal mit Scene-Größe -1 bis 1
         const axesHelper = new THREE.AxesHelper(1.3);
         axesHelper.position.x += -0.51;
         axesHelper.position.y += -0.51;
         axesHelper.position.z += -0.51;
+
         this.scene.add(axesHelper);
     }
 
@@ -85,10 +87,10 @@ export class ViewCubeController
 
     public onCameraChanged(camera: PerspectiveCamera) {
         const newCameraPosition = this.calculateCameraPosition(camera);
-        this.setCameraPositionAndAngle(newCameraPosition);
+        this.setCameraPosition(newCameraPosition);
     }
 
-    private setCameraPositionAndAngle(cameraPosition: THREE.Vector3) {
+    private setCameraPosition(cameraPosition: THREE.Vector3) {
         this.camera.position.set(
             cameraPosition.x,
             cameraPosition.y,
@@ -121,7 +123,6 @@ export class ViewCubeController
 
     private initScene() {
         this.scene = new THREE.Scene();
-        this.scene.add(this.lights);
     }
 
     private initRenderer($element: any) {
@@ -130,7 +131,6 @@ export class ViewCubeController
             antialias: true
         });
         this.renderer.setSize(this.WIDTH, this.HEIGHT);
-        this.renderer.setClearColor(0x000000, 0);
         $element[0].appendChild(this.renderer.domElement);
     }
 
@@ -142,13 +142,15 @@ export class ViewCubeController
             1000
         );
         this.camera.position.z = 4;
-        const pointLight = new THREE.PointLight(0xffffff);
+
+        //TODO Adrian fragen
+        /*const pointLight = new THREE.PointLight(0xffffff);
         pointLight.position.set(
             this.camera.position.x,
             this.camera.position.y,
             this.camera.position.z
         );
-        this.camera.add(pointLight);
+        this.camera.add(pointLight);*/
     }
 
     public onCubeHovered(cube: THREE.Mesh) {
@@ -287,6 +289,8 @@ export class ViewCubeController
         this.lights.add(ambilight);
         this.lights.add(light1);
         this.lights.add(light2);
+
+        this.scene.add(this.lights);
     }
 }
 

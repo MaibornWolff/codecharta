@@ -111,8 +111,8 @@ export class CodeMapMouseEventService
         );
     }
 
-    onViewCubeEventPropagation(type: string, event: MouseEvent) {
-        switch (type) {
+    onViewCubeEventPropagation(eventType: string, event: MouseEvent) {
+        switch (eventType) {
             case "mousemove":
                 this.onDocumentMouseMove(event);
                 break;

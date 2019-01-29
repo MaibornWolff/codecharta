@@ -4,7 +4,7 @@ import $ from "jquery";
 import { hierarchy } from "d3";
 
 export interface ViewCubeEventPropagationSubscriber {
-    onViewCubeEventPropagation(type: string, event: MouseEvent);
+    onViewCubeEventPropagation(eventType: string, event: MouseEvent);
 }
 
 export interface ViewCubeEventSubscriber {
@@ -25,6 +25,7 @@ export class ViewCubeMouseEventsService {
     private renderer: THREE.WebGLRenderer;
     private currentlyHovered: THREE.Mesh | null = null;
 
+    //TODO Warum nicht init in constructor
     constructor(private $rootScope: IRootScopeService) {}
 
     public init(
@@ -145,7 +146,7 @@ export class ViewCubeMouseEventsService {
         );
     }
 
-    public static subscribeToHoverEvents(
+    public static subscribeToViewCubeMouseEvents(
         $rootScope: IRootScopeService,
         subscriber: ViewCubeEventSubscriber
     ) {

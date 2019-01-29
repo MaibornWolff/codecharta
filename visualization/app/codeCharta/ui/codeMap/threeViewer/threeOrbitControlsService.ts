@@ -28,10 +28,7 @@ class ThreeOrbitControlsService {
     ) {}
 
     public setCameraViewAngle(x: number, y: number, z: number) {
-        const oldZoom = this.distanceVector(
-            this.threeCameraService.camera.position,
-            new THREE.Vector3(0, 0, 0)
-        );
+        const oldZoom = this.getZoom();
 
         this.initStandardCameraPosition();
         this.rotateCameraByAngle(x, y);
@@ -40,24 +37,20 @@ class ThreeOrbitControlsService {
         this.threeCameraService.camera.updateProjectionMatrix();
     }
 
-    private applyOldZoom(oldZoom: number) {
-        const newZoom = this.distanceVector(
-            this.threeCameraService.camera.position,
+    private getZoom() {
+        return this.threeCameraService.camera.position.distanceTo(
             new THREE.Vector3(0, 0, 0)
         );
+    }
+
+    private applyOldZoom(oldZoom: number) {
+        const newZoom = this.getZoom();
         const scale = oldZoom / newZoom;
         this.threeCameraService.camera.position.multiplyScalar(scale);
     }
 
-    private distanceVector(v1: THREE.Vector3, v2: THREE.Vector3) {
-        const dx = v1.x - v2.x;
-        const dy = v1.y - v2.y;
-        const dz = v1.z - v2.z;
-
-        return Math.sqrt(dx * dx + dy * dy + dz * dz);
-    }
-
     private initStandardCameraPosition() {
+        //TODO Was passiert wenn CodeMap größer ist?!
         const STANDARD_CAMERA_POSITION = { x: 121.33, y: 1.8, z: 2293 };
 
         this.threeCameraService.camera.position.set(
