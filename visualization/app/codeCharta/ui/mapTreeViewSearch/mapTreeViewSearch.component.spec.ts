@@ -85,7 +85,7 @@ describe("MapTreeViewSearchController", () => {
         };
 
         mapTreeViewSearchController.settingsService.settings.map = {
-            root: simpleHierarchy,
+            nodes: simpleHierarchy,
         }
     }
 
