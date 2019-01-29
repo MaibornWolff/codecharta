@@ -73,7 +73,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
 
     private setSearchedNodePathnames() {
         const s = this.settingsService.settings;
-        const nodes = d3.hierarchy(s.map.root).descendants().map(d => d.data);
+        const nodes = d3.hierarchy(s.map.nodes).descendants().map(d => d.data);
         const searchedNodes = CodeMapUtilService.getNodesByGitignorePath(nodes, this.viewModel.searchPattern);
 
         this.searchedFiles = searchedNodes.filter(node => !(node.children && node.children.length > 0));
@@ -84,9 +84,9 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
     }
 
     private updateMapRoot(map: CodeMap) {
-        if(map && map.root) {
+        if(map && map.nodes) {
             this.$timeout(()=>{
-                this.mapRoot = map.root;
+                this.mapRoot = map.nodes;
             }, MapTreeViewSearchController.TIMEOUT_DELAY_MS);
         }
     }
