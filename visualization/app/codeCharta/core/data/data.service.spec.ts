@@ -70,8 +70,8 @@ describe("app.codeCharta.core.data.dataService", function() {
 
     it("set metrics should set metrics correctly with multiple maps", ()=>{
         dataService.setMap(data, 0);
-        let data2 = JSON.parse(JSON.stringify(data));
-        data2.root.children[0].attributes["test"] = 0;
+        let data2: CodeMap = JSON.parse(JSON.stringify(data));
+        data2.nodes.children[0].attributes["test"] = 0;
         dataService.setMap(data2, 0);
         dataService.updateMetrics();
         expect(dataService.data.metrics).toEqual(["Functions", "MCC", "RLOC", "test", "unary"]);
@@ -99,7 +99,7 @@ describe("app.codeCharta.core.data.dataService", function() {
 
     it("setting a map should set it as render map and add the origin attribute", () => {
         dataService.setMap(data, 0);
-        expect(dataService.data.renderMap.root.origin).toBe(dataService.data.renderMap.fileName);
+        expect(dataService.data.renderMap.nodes.origin).toBe(dataService.data.renderMap.fileName);
     });
 
     it("setting a comparison map should do nothing if map at index does not exist", () => {
@@ -110,7 +110,7 @@ describe("app.codeCharta.core.data.dataService", function() {
 
     it("setting a map should set it as render map and every node should have attributes", () => {
         dataService.setMap(data, 0);
-        let root = d3.hierarchy<CodeMapNode>(dataService.data.renderMap.root);
+        let root = d3.hierarchy<CodeMapNode>(dataService.data.renderMap.nodes);
         root.each((node) => {
             expect(node.data.attributes).toBeDefined();
         });
@@ -166,7 +166,7 @@ describe("app.codeCharta.core.data.dataService", function() {
         dataService.onDeactivateDeltas();
 
         const renderMap = dataService.data.renderMap;
-        d3.hierarchy<CodeMapNode>(renderMap.root).each((node) => {
+        d3.hierarchy<CodeMapNode>(renderMap.nodes).each((node) => {
             expect(node.data.origin).toBe(renderMap.fileName);
         });
     });

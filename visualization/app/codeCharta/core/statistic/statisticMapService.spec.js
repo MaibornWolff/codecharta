@@ -313,11 +313,11 @@ xdescribe("app.codeCharta.core.statistic", function() {
         settings.operation = STATISTIC_OPS.FASHION;
         const resultingMapFashion = statisticMapService.unifyMaps(data, settings);
 
-        expect(resultingMapMean.root).to.deep.equal(file1.root);
-        expect(resultingMapMedian.root).to.deep.equal(file1.root);
-        expect(resultingMapMax.root).to.deep.equal(file1.root);
-        expect(resultingMapMin.root).to.deep.equal(file1.root);
-        expect(resultingMapFashion.root).to.deep.equal(file1.root);
+        expect(resultingMapMean.nodes).to.deep.equal(file1.nodes);
+        expect(resultingMapMedian.nodes).to.deep.equal(file1.nodes);
+        expect(resultingMapMax.nodes).to.deep.equal(file1.nodes);
+        expect(resultingMapMin.nodes).to.deep.equal(file1.nodes);
+        expect(resultingMapFashion.nodes).to.deep.equal(file1.nodes);
     }));
 
     /**

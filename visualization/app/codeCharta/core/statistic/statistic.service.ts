@@ -42,23 +42,23 @@ export class StatisticMapService {
         }
 
         let accumulated = {} as CodeMap;//Map that contains an array of every value of every map given in maps array
-        accumulated.root = {} as CodeMapNode;
+        accumulated.nodes = {} as CodeMapNode;
         let unified: CodeMap;
         accumulated.fileName = operation+"";
         for(let i: number=0; i<maps.length; i++){//Loop through every CodeMap of the input array and get all of them in accumulated
             //Only leaf have attributes and no child.
-            //A CodeMap contains fileName, projectName and root. Here filename is added to accumulated
+            //A CodeMap contains fileName, projectName and nodes. Here filename is added to accumulated
             accumulated.fileName= accumulated.fileName+"_"+maps[i].fileName;
             //Here projectName is added
             if(!accumulated.projectName || accumulated.projectName.length === 0){
                 accumulated.projectName= maps[i].projectName;
             }
             //Create an empty map which contains every different leaf and node of every map in the input
-            accumulated.root = this.createArrayMap(maps[i].root, accumulated.root, maps.length);
+            accumulated.nodes = this.createArrayMap(maps[i].nodes, accumulated.nodes, maps.length);
         }
         for(let i: number=0; i<maps.length; i++){
             //The empty accumulated map gets fulfilled with the values of every map in the maps array
-            accumulated.root=this.fulfillMap(maps[i].root,accumulated.root, i);
+            accumulated.nodes=this.fulfillMap(maps[i].nodes,accumulated.nodes, i);
         }
         unified = JSON.parse(JSON.stringify(accumulated));
         unified = this.emptyMap(unified);//The map is copied, before emptying it in order not to modify accumulated
@@ -74,7 +74,7 @@ export class StatisticMapService {
     createArrayMap(input: CodeMapNode, output: CodeMapNode, length: number): CodeMapNode{
         let childExist: boolean= false;
         for(let value in input){
-            if(value!=="children"&&value!=="attributes"&&value!=="root"&&value!=="$$hashKey"){
+            if(value!=="children"&&value!=="attributes"&&value!=="nodes"&&value!=="$$hashKey"){
                 output[value]=input[value];
             }
             else if (value=="attributes"&&!output[value]){
@@ -146,8 +146,8 @@ export class StatisticMapService {
     *  Returns a map which contains the same structure as the input map but contains no metric
     */
     emptyMap(output: any){
-        if(output.root){
-            output.root=this.emptyMap(output.root);
+        if(output.nodes){
+            output.nodes = this.emptyMap(output.nodes);
         }
         else if(output.children&&output.children.length!=0){
             for(let i=0;i<output.children.length;i++){
@@ -165,7 +165,7 @@ export class StatisticMapService {
      * input but with a function applied to the values of the same attribute array for every attribute.
      * This function is determinated by the string in operation
      */
-    applyStatistics(input: any,output: any, operation: STATISTIC_OPS): any{
+    applyStatistics(input: any, output: any, operation: STATISTIC_OPS): any{
         //If the input has attributes, a function is applied to every metric and the returned value is given in output
         if(input.attributes&&Object.keys(input.attributes).length!=0){
             for(let metric in input.attributes){
@@ -178,8 +178,8 @@ export class StatisticMapService {
                 output.children[i]= this.applyStatistics(input.children[i],output.children[i],operation);
             }
         }
-        else if (input.root){
-            output.root= this.applyStatistics(input.root,output.root,operation);
+        else if (input.nodes){
+            output.nodes = this.applyStatistics(input.nodes, output.nodes, operation);
         }
         return output;
     }

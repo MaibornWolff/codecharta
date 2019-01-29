@@ -1,6 +1,6 @@
 import "./multipleFile.module";
 import {NGMock} from "../../../../mocks/ng.mockhelper";
-import {AttributeType, CodeMap} from "../data/model/CodeMap";
+import {AttributeType, CodeMap, Edge} from "../data/model/CodeMap";
 
 
 /**
@@ -11,7 +11,7 @@ describe("app.codeCharta.core.multiple", function() {
     const file1: CodeMap = {
         fileName: "file1",
         projectName: "Sample Project",
-        root: {
+        nodes: {
             name: "root",
             type: "Folder",
             attributes: {},
@@ -41,7 +41,7 @@ describe("app.codeCharta.core.multiple", function() {
     const file2: CodeMap = {
         fileName: "file2",
         projectName: "Sample Project",
-        root: {
+        nodes: {
             name: "root",
             type: "Folder",
             attributes: {},
@@ -71,7 +71,7 @@ describe("app.codeCharta.core.multiple", function() {
     const file_aggregation_two: CodeMap = {
         fileName: "Aggregation of following files: file1, file2",
         projectName: "Aggregation of following projects: Sample Project, Sample Project",
-        root: {
+        nodes: {
             name: "root",
             type: "Folder",
             attributes: {},
@@ -138,7 +138,7 @@ describe("app.codeCharta.core.multiple", function() {
     const file_aggregation_four: CodeMap = {
         fileName: "Aggregation of following files: file1, file2, file1, file2",
         projectName: "Aggregation of following projects: Sample Project, Sample Project, Sample Project, Sample Project",
-        root: {
+        nodes: {
             name: "root",
             type: "Folder",
             attributes: {},
@@ -292,43 +292,43 @@ describe("app.codeCharta.core.multiple", function() {
 
     describe("edges", ()=> {
 
-        const edges1 = [
+        const edges1: Edge = [
             {
-                "fromNodeName": "/root/big leaf",
-                "toNodeName": "/root/Parent Leaf/small leaf",
-                "attributes": {
-                    "pairingRate": 9,
-                    "avgCommits": 4
+                fromNodeName: "/root/big leaf",
+                toNodeName: "/root/Parent Leaf/small leaf",
+                attributes: {
+                    pairingRate: 9,
+                    avgCommits: 4
                 }
             }
         ];
 
-        const edges2 = [
+        const edges2: Edge = [
             {
-                "fromNodeName": "/root/big leaf",
-                "toNodeName": "/root/Parent Leaf/small leaf",
-                "attributes": {
-                    "pairingRate": 89,
-                    "avgCommits": 34
+                fromNodeName: "/root/big leaf",
+                toNodeName: "/root/Parent Leaf/small leaf",
+                attributes: {
+                    pairingRate: 89,
+                    avgCommits: 34
                 }
             }
         ];
 
-        const aggEdges = [
+        const aggEdges: Edge[] = [
             {
-                "fromNodeName": "/root/file1/big leaf",
-                "toNodeName": "/root/file1/Parent Leaf/small leaf",
-                "attributes": {
-                    "pairingRate": 9,
-                    "avgCommits": 4
+                fromNodeName: "/root/file1/big leaf",
+                toNodeName: "/root/file1/Parent Leaf/small leaf",
+                attributes: {
+                    pairingRate: 9,
+                    avgCommits: 4
                 }
             },
             {
-                "fromNodeName": "/root/file2/big leaf",
-                "toNodeName": "/root/file2/Parent Leaf/small leaf",
-                "attributes": {
-                    "pairingRate": 89,
-                    "avgCommits": 34
+                fromNodeName: "/root/file2/big leaf",
+                toNodeName: "/root/file2/Parent Leaf/small leaf",
+                attributes: {
+                    pairingRate: 89,
+                    avgCommits: 34
                 }
             }
         ];

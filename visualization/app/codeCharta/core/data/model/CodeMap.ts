@@ -19,7 +19,7 @@ export interface CodeMap {
     fileName: string;
     apiVersion?: string;
     projectName: string;
-    root: CodeMapNode;
+    nodes: CodeMapNode;
     edges?: Edge[];
     attributeTypes?: AttributeTypes;
     blacklist?: Array<BlacklistItem>;

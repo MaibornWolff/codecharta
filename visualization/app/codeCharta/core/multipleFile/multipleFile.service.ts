@@ -61,7 +61,7 @@ export class MultipleFileService {
         let outputMap: CodeMap = {
             projectName: "Aggregation of following projects: " + projectNameArray.join(", "),
             fileName: "Aggregation of following files: " + fileNameArray.join(", "),
-            root: {
+            nodes: {
                 name: "root",
                 type: "Folder",
                 children: [] as CodeMapNode[],
@@ -83,7 +83,7 @@ export class MultipleFileService {
         }
 
         for(let inputMap of inputMaps){
-            outputMap.root.children.push(this.convertMapToNode(inputMap));
+            outputMap.nodes.children.push(this.convertMapToNode(inputMap));
         }
         return outputMap;
     }
@@ -93,16 +93,16 @@ export class MultipleFileService {
         let outputNode: CodeMapNode = {} as CodeMapNode;
         outputNode["name"]= inputCodeMap.fileName;
 
-        for(let property in inputCodeMap.root){
+        for(let property in inputCodeMap.nodes){
 
             if(property == "children"){
-                outputNode[property] = JSON.parse(JSON.stringify(inputCodeMap.root.children));
+                outputNode[property] = JSON.parse(JSON.stringify(inputCodeMap.nodes.children));
             }
             else if(property == "path"){
-                outputNode[property] = this.updatePath(inputCodeMap.fileName, inputCodeMap.root.path);
+                outputNode[property] = this.updatePath(inputCodeMap.fileName, inputCodeMap.nodes.path);
             }
             else if(property != "name"){
-                outputNode[property] =  inputCodeMap.root[property];
+                outputNode[property] =  inputCodeMap.nodes[property];
             }
         }
 

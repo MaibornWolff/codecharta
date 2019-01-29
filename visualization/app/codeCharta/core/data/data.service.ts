@@ -162,7 +162,7 @@ export class DataService {
         let leaves: HierarchyNode<CodeMapNode>[] = [];
 
         this._data.revisions.forEach((map)=>{
-            leaves = leaves.concat(d3.hierarchy<CodeMapNode>(map.root).leaves());
+            leaves = leaves.concat(d3.hierarchy<CodeMapNode>(map.nodes).leaves());
         });
 
         let attributeList: string[][] = leaves.map(function (d: HierarchyNode<CodeMapNode>) {
@@ -205,7 +205,7 @@ export class DataService {
         let maxValue = 0;
 
         this.data.revisions.forEach((rev)=> {
-            let nodes = d3.hierarchy(rev.root).leaves();
+            let nodes = d3.hierarchy(rev.nodes).leaves();
             nodes.forEach((node: any)=> {
                 if (node.data.attributes[metric] > maxValue) {
                     maxValue = node.data.attributes[metric];

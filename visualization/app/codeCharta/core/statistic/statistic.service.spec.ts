@@ -14,7 +14,7 @@ describe("app.codeCharta.core.statistic", function() {
     const file1: CodeMap = {
         fileName: "file",
         projectName: "Sample Project",
-        root: {
+        nodes: {
             name: "root",
             type: "Folder",
             attributes: {},
@@ -44,7 +44,7 @@ describe("app.codeCharta.core.statistic", function() {
     const file2: CodeMap = {
         fileName: "file",
         projectName: "Sample Project",
-        root: {
+        nodes: {
             name: "root",
             type: "Folder",
             attributes: {},
@@ -74,7 +74,7 @@ describe("app.codeCharta.core.statistic", function() {
     const file_mean: CodeMap = {
         fileName: "MEAN_file_file",
         projectName: "Sample Project",
-        root: {
+        nodes: {
             name: "root",
             type: "Folder",
             attributes: {},
@@ -109,7 +109,7 @@ describe("app.codeCharta.core.statistic", function() {
     const file_median: CodeMap = {
         fileName: "MEDIAN_file_file",
         projectName: "Sample Project",
-        root: {
+        nodes: {
             name: "root",
             type: "Folder",
             attributes: {},
@@ -144,7 +144,7 @@ describe("app.codeCharta.core.statistic", function() {
     const file_max: CodeMap = {
         fileName: "MAX_file_file",
         projectName: "Sample Project",
-        root: {
+        nodes: {
             name:"root",
             type: "Folder",
             attributes:{},
@@ -179,7 +179,7 @@ describe("app.codeCharta.core.statistic", function() {
     const file_min: CodeMap = {
         fileName: "MIN_file_file",
         projectName: "Sample Project",
-        root: {
+        nodes: {
             name: "root",
             type: "Folder",
             attributes: {},
@@ -214,7 +214,7 @@ describe("app.codeCharta.core.statistic", function() {
     const file_fashion: CodeMap = {
         fileName: "FASHION_file_file",
         projectName: "Sample Project",
-        root: {
+        nodes: {
             name: "root",
             type: "Folder",
             attributes: {},
@@ -349,11 +349,11 @@ describe("app.codeCharta.core.statistic", function() {
         settings.operation = STATISTIC_OPS.FASHION;
         const resultingMapFashion = statisticMapService.unifyMaps(data, settings);
 
-        expect(resultingMapMean.root).toEqual(file1.root);
-        expect(resultingMapMedian.root).toEqual(file1.root);
-        expect(resultingMapMax.root).toEqual(file1.root);
-        expect(resultingMapMin.root).toEqual(file1.root);
-        expect(resultingMapFashion.root).toEqual(file1.root);
+        expect(resultingMapMean.nodes).toEqual(file1.nodes);
+        expect(resultingMapMedian.nodes).toEqual(file1.nodes);
+        expect(resultingMapMax.nodes).toEqual(file1.nodes);
+        expect(resultingMapMin.nodes).toEqual(file1.nodes);
+        expect(resultingMapFashion.nodes).toEqual(file1.nodes);
     }));
 
 });
