@@ -7,7 +7,7 @@ export class RibbonBarController {
 
     private collapsingElements = $("code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab");
     private isExpanded: boolean = false;
-    deltaMode = KindOfMap.Delta;
+    private deltaMode = KindOfMap.Delta;
 
     /* @ngInject */
     constructor(
