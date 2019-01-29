@@ -101,7 +101,7 @@ describe("app.codeCharta.core.download", function() {
         it("should remove visible attribute from settings.map", function() {
             withSettingsServiceMock();
             const rootNode = services.settingsService.settings.map.nodes;
-            expect(downloadService.removeVisibleAttribute(rootNode)).toMatchSnapshot();
+            expect(downloadService.removeJsonHashkeysAndVisibleAttribute(rootNode)).toMatchSnapshot();
         });
 
         it("should return correct project json content", function() {
