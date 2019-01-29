@@ -130,7 +130,7 @@ export class geometryGenerator {
     private estimateColorForBuilding(n: node, s: renderSettings): number {
         let color: number = MapColors.defaultC;
 
-        let mapColorPositive = s.whiteColorBuildings ? MapColors.positiveWhite : MapColors.positive;
+        let mapColorPositive = s.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive;
         if (!s.renderDeltas) {
             const val: number = n.attributes[s.colorKey];
 

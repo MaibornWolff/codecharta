@@ -81,22 +81,13 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 
     private getColoredRangeColors() {
         const s = this.settingsService.settings;
-        let mapColorPositive = s.whiteColorBuildings ? MapColors.positiveWhite : MapColors.positive;
+        let mapColorPositive = s.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive;
 
         let rangeColors = {
             left: s.neutralColorRange.flipped ? MapColors.negative : mapColorPositive,
             middle: MapColors.neutral,
             right: s.neutralColorRange.flipped ? mapColorPositive : MapColors.negative
         };
-        return this.updateWhiteColorsToGreyToMakeItVisible(rangeColors);
-    }
-
-    private updateWhiteColorsToGreyToMakeItVisible(rangeColors) {
-        for(let property of Object.keys(rangeColors)) {
-            if (rangeColors[property] == MapColors.positiveWhite) {
-                rangeColors[property] = MapColors.lightGrey;
-            }
-        }
         return rangeColors;
     }
 
