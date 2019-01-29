@@ -2,12 +2,8 @@ export interface CodeMapNode {
     name: string;
     type: string;
     children?: CodeMapNode[];
-    attributes: {
-        [key: string]: number
-    };
-    deltas?: {
-        [key: string]: number
-    };
+    attributes: KeyValuePair;
+    deltas?: KeyValuePair;
     link?: string;
     origin?: string;
     visible?: boolean;
@@ -28,9 +24,7 @@ export interface CodeMap {
 export interface Edge {
     fromNodeName: string;
     toNodeName: string;
-    attributes: {
-        [key: string]: number
-    };
+    attributes: KeyValuePair;
     visible?: boolean;
 }
 
@@ -55,4 +49,8 @@ export interface BlacklistItem {
 export enum BlacklistType {
     hide = "hide",
     exclude = "exclude"
+}
+
+export interface KeyValuePair {
+    [key: string]: number;
 }
