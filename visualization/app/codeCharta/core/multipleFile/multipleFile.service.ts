@@ -110,7 +110,7 @@ export class MultipleFileService {
     private convertMapToNode(inputCodeMap: CodeMap): CodeMapNode {
         let outputNode: CodeMapNode = {
             name: inputCodeMap.fileName,
-            children: JSON.parse(JSON.stringify(inputCodeMap.root.children))
+            children: inputCodeMap.root.children
         } as CodeMapNode;
 
         if (inputCodeMap.root.path) {
