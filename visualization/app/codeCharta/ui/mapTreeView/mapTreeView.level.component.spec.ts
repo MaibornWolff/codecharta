@@ -51,7 +51,7 @@ describe("MapTreeViewLevelController", () => {
             applySettings: jest.fn(),
             settings: {
                 map: {
-                    root: null,
+                    nodes: null,
                     blacklist: {},
                 }
             }
@@ -91,7 +91,7 @@ describe("MapTreeViewLevelController", () => {
         };
 
         codeMapUtilService = new CodeMapUtilService(settingsServiceMock);
-        settingsServiceMock.settings.map.root = simpleHierarchy;
+        settingsServiceMock.settings.map.nodes = simpleHierarchy;
         codeMapActionsService = new CodeMapActionsService(settingsServiceMock, threeOrbitControlsService, $timeout);
         mapTreeViewLevelController = new MapTreeViewLevelController($rootScope, codeMapActionsService, settingsServiceMock);
     }

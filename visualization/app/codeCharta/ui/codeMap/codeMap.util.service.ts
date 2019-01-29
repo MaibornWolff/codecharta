@@ -55,7 +55,7 @@ export class CodeMapUtilService {
 
     getCodeMapNodeFromPath(path: string, nodeType: string) {
         let res = null;
-        const rootNode = this.settingsService.settings.map.root;
+        const rootNode = this.settingsService.settings.map.nodes;
 
         if (path == rootNode.path) {
             return rootNode;

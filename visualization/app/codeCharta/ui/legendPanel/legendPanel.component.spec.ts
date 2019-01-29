@@ -25,7 +25,7 @@ describe("LegendPanelController", () => {
             applySettings: jest.fn(),
             settings: {
                 map: {
-                    root: null
+                    nodes: null
                 }
             }
         }));
@@ -128,7 +128,7 @@ describe("LegendPanelController", () => {
             };
 
             codeMapUtilService = new CodeMapUtilService(settingsServiceMock);
-            settingsServiceMock.settings.map.root = simpleHierarchy;
+            settingsServiceMock.settings.map.nodes = simpleHierarchy;
         });
 
         it("set correct markingPackage in Legend", () => {

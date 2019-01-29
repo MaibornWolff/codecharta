@@ -33,7 +33,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
 
     it("golden test", ()=>{
 
-        a.root.children.push({
+        a.nodes.children.push({
             name: "onlyA",
             type: "Folder",
             attributes: {},
@@ -56,7 +56,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
             ]
         });
 
-        b.root.children.push({
+        b.nodes.children.push({
             name: "onlyA",
             type: "Folder",
             attributes: {},
@@ -84,18 +84,18 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
 
         deltaCalculatorService.provideDeltas(a,b);
 
-        expect(a.root.children[2].children[0].children[0].attributes["special"]).toBe(42);
-        expect(a.root.children[2].children[0].children[1].attributes["monster"]).toBe(0);
-        expect(b.root.children[3].children[0].children[0].attributes["monster"]).toBe(666);
-        expect(b.root.children[3].children[0].children[1].attributes["special"]).toBe(0);
+        expect(a.nodes.children[2].children[0].children[0].attributes["special"]).toBe(42);
+        expect(a.nodes.children[2].children[0].children[1].attributes["monster"]).toBe(0);
+        expect(b.nodes.children[3].children[0].children[0].attributes["monster"]).toBe(666);
+        expect(b.nodes.children[3].children[0].children[1].attributes["special"]).toBe(0);
     });
 
 
     it("should remove all nodes with other origin than itself", ()=>{
-        a.root.children[0].origin = "something else"
-        a.root.children[1].origin = a.fileName;
+        a.nodes.children[0].origin = "something else"
+        a.nodes.children[1].origin = a.fileName;
         deltaCalculatorService.removeCrossOriginNodes(a);
-        let h = d3.hierarchy(a.root);
+        let h = d3.hierarchy(a.nodes);
         h.each((node)=>{
             expect(node.data.origin === a.fileName);
         });
@@ -119,7 +119,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
         decorate(a);
         decorate(b);
 
-        a.root = null;
+        a.nodes = null;
         let na = JSON.parse(JSON.stringify(a));
         let nb = JSON.parse(JSON.stringify(b));
 
@@ -134,15 +134,15 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
         decorate(a);
         decorate(b);
 
-        a.root.children[0].origin = "hallo";
+        a.nodes.children[0].origin = "hallo";
 
         deltaCalculatorService.provideDeltas(a, b);
 
-        expect(a.root.children[2].name).toBe("additional leaf");
-        expect(b.root.children[1].name).toBe("additional leaf");
+        expect(a.nodes.children[2].name).toBe("additional leaf");
+        expect(b.nodes.children[1].name).toBe("additional leaf");
 
-        expect(a.root.children[2].attributes.rloc).toBe(0);
-        expect(b.root.children[1].attributes.rloc).toBe(10);
+        expect(a.nodes.children[2].attributes.rloc).toBe(0);
+        expect(b.nodes.children[1].attributes.rloc).toBe(10);
 
     });
 
@@ -152,16 +152,16 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
 
         deltaCalculatorService.provideDeltas(a, b);
 
-        expect(a.root.children[0].deltas["rloc"]).toBe(80);
-        expect(b.root.children[0].deltas["rloc"]).toBe(-80);
+        expect(a.nodes.children[0].deltas["rloc"]).toBe(80);
+        expect(b.nodes.children[0].deltas["rloc"]).toBe(-80);
 
-        expect(a.root.children[1].children[0].deltas["more"]).toBe(undefined);
-        expect(b.root.children[2].children[0].deltas["more"]).toBe(20);
+        expect(a.nodes.children[1].children[0].deltas["more"]).toBe(undefined);
+        expect(b.nodes.children[2].children[0].deltas["more"]).toBe(20);
 
-        expect(b.root.children[2].children[1].deltas["mcc"]).toBe(undefined);
-        expect(a.root.children[1].children[1].deltas["mcc"]).toBe(10);
+        expect(b.nodes.children[2].children[1].deltas["mcc"]).toBe(undefined);
+        expect(a.nodes.children[1].children[1].deltas["mcc"]).toBe(10);
 
-        expect(b.root.children[2].deltas).toBe(undefined);
+        expect(b.nodes.children[2].deltas).toBe(undefined);
 
     });
 
