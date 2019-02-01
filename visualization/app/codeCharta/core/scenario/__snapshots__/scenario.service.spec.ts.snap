@@ -47,7 +47,6 @@ Object {
     "from": 123,
     "to": 456,
   },
-  "operation": "NOTHING",
   "scaling": Object {
     "x": 1,
     "y": 1,
