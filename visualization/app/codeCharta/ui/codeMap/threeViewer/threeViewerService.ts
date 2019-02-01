@@ -54,6 +54,8 @@ export class ThreeViewerService {
 
         // handles resizing the renderer when the window is resized
         window.addEventListener("resize", this.onWindowResize.bind(this), false);
+        window.addEventListener("focusin", this.onFocusIn.bind(this), false);
+        window.addEventListener("focusout", this.onFocusOut.bind(this), false);
     }
 
     /**
@@ -65,6 +67,18 @@ export class ThreeViewerService {
         this.threeRendererService.renderer.setSize(window.innerWidth, window.innerHeight);
         this.threeCameraService.camera.aspect = window.innerWidth / window.innerHeight;
         this.threeCameraService.camera.updateProjectionMatrix();
+    }
+
+    onFocusIn(event) {
+        if(event.target.nodeName == "INPUT") {
+            this.threeOrbitControlsService.controls.enableKeys = false;
+        }
+    }
+
+    onFocusOut(event) {
+        if(event.target.nodeName == "INPUT") {
+            this.threeOrbitControlsService.controls.enableKeys = true;
+        }
     }
 
     /**

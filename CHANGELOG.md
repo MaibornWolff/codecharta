@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Remove statistic functions in Experimental panel #308
 
 ### Fixed
+- CodeMap does not move anymore when navigating in text-fields #307
 
 ## [1.20.1] - 2018-12-19
 ### Added
