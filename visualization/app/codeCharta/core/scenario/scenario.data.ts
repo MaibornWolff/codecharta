@@ -1,6 +1,5 @@
 import {Scenario} from "./scenario.service";
 import {CodeMap} from "../data/model/CodeMap";
-import {STATISTIC_OPS} from "../statistic/statistic.service";
 import {KindOfMap} from "../settings/settings.service";
 
 export function createDefaultScenario(): Scenario {

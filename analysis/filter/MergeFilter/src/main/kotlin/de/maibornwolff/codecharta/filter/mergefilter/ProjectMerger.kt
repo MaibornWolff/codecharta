@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, MaibornWolff GmbH
+ * Copyright (c) 2018, MaibornWolff GmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,16 +37,46 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         return projects.map { p -> p.projectName }.first()
     }
 
-
     fun merge(): Project {
-        val name = extractProjectName()
         return when {
-            areAllAPIVersionsCompatible() -> ProjectBuilder(name, mergeProjectNodes(), getEdges(), getAttributeTypes()).build()
+            areAllAPIVersionsCompatible() -> ProjectBuilder(
+                    extractProjectName(),
+                    mergeProjectNodes(),
+                    mergeEdges(),
+                    mergeAttributeTypes(),
+                    mergeBlacklist()
+            ).build()
             else -> throw MergeException("API versions not supported.")
         }
     }
 
-    private fun getAttributeTypes(): MutableMap<String, MutableList<Map<String, AttributeType>>> {
+    private fun areAllAPIVersionsCompatible(): Boolean {
+        val unsupportedAPIVersions = projects
+                .map { it.apiVersion }
+                .filter { !Project.isAPIVersionCompatible(it) }
+
+        return !unsupportedAPIVersions.isNotEmpty()
+    }
+
+    private fun mergeProjectNodes(): List<MutableNode> {
+        return nodeMerger.mergeNodeLists(projects.map { listOf(it.rootNode.toMutableNode()) })
+    }
+
+    private fun mergeEdges(): MutableList<Edge> {
+        if (nodeMerger.javaClass.simpleName == "RecursiveNodeMergerStrategy") {
+            return getMergedEdges()
+        } else {
+            return mutableListOf()
+        }
+    }
+
+    private fun getMergedEdges(): MutableList<Edge> {
+        val mergedEdges = mutableListOf<Edge>()
+        projects.forEach { it.edges.forEach { mergedEdges.add(it) } }
+        return mergedEdges.distinctBy { listOf(it.fromNodeName, it.toNodeName)}.toMutableList()
+    }
+
+    private fun mergeAttributeTypes(): MutableMap<String, MutableList<Map<String, AttributeType>>> {
         val mergedAttributeTypes: MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf()
 
         projects.forEach {
@@ -66,34 +96,9 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         return mergedAttributeTypes
     }
 
-    private fun areAllAPIVersionsCompatible(): Boolean {
-        val unsupportedAPIVersions = projects
-                .map { it.apiVersion }
-                .filter { !Project.isAPIVersionCompatible(it) }
-
-        return !unsupportedAPIVersions.isNotEmpty()
-    }
-
-    private fun mergeProjectNodes(): List<MutableNode> {
-        return nodeMerger.mergeNodeLists(projects.map { listOf(it.rootNode.toMutableNode()) })
-    }
-
-    private fun getEdges(): MutableList<Edge> {
-        if (nodeMerger.javaClass.simpleName == "RecursiveNodeMergerStrategy") {
-            return mergeProjectEdges()
-        } else {
-            return mutableListOf()
-        }
-    }
-
-    private fun mergeProjectEdges(): MutableList<Edge> {
-        val mergedDependencies = mutableListOf<Edge>()
-
-        projects.forEach {
-            it.edges.forEach {
-                mergedDependencies.add(it)
-            }
-        }
-        return mergedDependencies
+    private fun mergeBlacklist(): MutableList<BlacklistItem> {
+        val mergedBlacklist = mutableListOf<BlacklistItem>()
+        projects.forEach {it.blacklist.forEach { mergedBlacklist.add(it) } }
+        return mergedBlacklist.distinctBy { it.toString() }.toMutableList()
     }
 }

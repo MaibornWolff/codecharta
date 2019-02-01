@@ -1,8 +1,0 @@
-<md-input-container class="md-block">
-    <label>Statistic Fuction over all maps</label>
-    <md-select ng-model="$ctrl.settingsService.settings.operation" ng-change="$ctrl.onStatisticsChange()">
-        <md-option ng-repeat="op in $ctrl.STATISTIC_OPS" value="{{::op}}">
-            {{::$ctrl.toLowerCaseButFirst(op)}}
-        </md-option>
-    </md-select>
-</md-input-container>
