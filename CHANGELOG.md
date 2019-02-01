@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Use `fa-ban`-icon as symbols for blacklistType `Exclude` (instead of `fa-times`) #298
 - Label size keeps readable for large maps or a high distance between camera and map #237
 - updated dependencies to fix vulnerabilities
+- MergeFilter to merge unique blacklist entries
+- MergeFilter to only merge unique attributeType entries
 
 ### Removed
 - Remove invertHeight checkbox in delta-view #306
