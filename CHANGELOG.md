@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Removed option to add blacklist entries from inside the blacklistPanel #298
 
 ### Fixed
+- CodeMap does not move anymore when navigating in text-fields #307
 
 ## [1.20.1] - 2018-12-19
 ### Added
