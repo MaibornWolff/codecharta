@@ -31,7 +31,7 @@ package de.maibornwolff.codecharta.model
 
 class BlacklistItem constructor(
         val path: String,
-        val type: String
+        val type: BlacklistType
 ) {
 
     override fun toString(): String {
