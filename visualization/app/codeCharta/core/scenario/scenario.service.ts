@@ -39,31 +39,14 @@ export class ScenarioService {
     }
 
     public applyScenario(scenario: Scenario) {
-        const allSettings = this.updateSettingsUsingScenario(this.settingsService.settings, scenario.settings);
-        this.settingsService.applySettings(allSettings);
+        const updatedSettingsUsingScenario = {...this.settingsService.settings, ...scenario.settings};
+        this.settingsService.applySettings(updatedSettingsUsingScenario);
         if(scenario.autoFitCamera){
             let _this = this;
             setTimeout(function(){
                 _this.threeOrbitControlsService.autoFitTo();
             },10);
         }
-    }
-
-    private updateSettingsUsingScenario(settings, scenarioSettings): Settings {
-        if (settings) {
-            for(let key of Object.keys(settings)) {
-                if (scenarioSettings.hasOwnProperty(key)) {
-                    if(key == "map") continue;
-
-                    if(typeof settings[key] === "object") {
-                        settings[key] = this.updateSettingsUsingScenario(settings[key], scenarioSettings[key]);
-                    } else {
-                        settings[key] = scenarioSettings[key];
-                    }
-                }
-            }
-        }
-        return settings;
     }
 
     public getScenarios(): Scenario[] {
