@@ -1,6 +1,5 @@
 import {AttributeType, CodeMap, CodeMapNode, Edge, BlacklistItem} from "../data/model/CodeMap";
 
-
 export class MultipleFileService {
 
     public static SELECTOR = "multipleFileService";
@@ -17,17 +16,19 @@ export class MultipleFileService {
     public aggregateMaps(inputMaps: CodeMap[]): CodeMap {
         if(inputMaps.length == 1) return inputMaps[0];
 
+        this.resetVariables();
+
         for(let inputMap of inputMaps){
             this.projectNameArray.push(inputMap.projectName);
             this.fileNameArray.push(inputMap.fileName);
-            this.setConvertedEdges(inputMap);
+            this.setEdgesWithUpdatedPath(inputMap);
             this.setAttributeTypesByUniqueKey(inputMap);
-            this.setConvertedBlacklist(inputMap);
+            this.setBlacklistWithUpdatedPath(inputMap);
         }
         return this.getNewAggregatedMap(inputMaps);
     }
 
-    private setConvertedEdges(inputMap) {
+    private setEdgesWithUpdatedPath(inputMap) {
         if(!inputMap.edges) return;
 
         for(let oldEdge of inputMap.edges){
@@ -44,7 +45,7 @@ export class MultipleFileService {
         }
     }
 
-    private setConvertedBlacklist(inputMap) {
+    private setBlacklistWithUpdatedPath(inputMap) {
         if(!inputMap.blacklist) return;
 
         for(let oldBlacklistItem of inputMap.blacklist){
@@ -60,10 +61,14 @@ export class MultipleFileService {
     }
 
     private getUpdatedBlacklistItemPath(fileName, path) {
-        if (path.substring(0,6) == "/root/") {
+        if (this.isAbsoluteRootPath(path)) {
             return this.getUpdatedPath(fileName, path);
         }
         return path;
+    }
+
+    private isAbsoluteRootPath(path: string) {
+        return path.startsWith("/root/");
     }
 
     private setAttributeTypesByUniqueKey(inputMap) {
@@ -102,12 +107,12 @@ export class MultipleFileService {
         };
 
         for(let inputMap of inputMaps){
-            outputMap.nodes.children.push(this.convertMapToNode(inputMap));
+            outputMap.nodes.children.push(this.extractNodeFromMap(inputMap));
         }
         return outputMap;
     }
 
-    private convertMapToNode(inputCodeMap: CodeMap): CodeMapNode {
+    private extractNodeFromMap(inputCodeMap: CodeMap): CodeMapNode {
         let outputNode: CodeMapNode = {
             name: inputCodeMap.fileName,
             children: inputCodeMap.nodes.children
@@ -139,8 +144,17 @@ export class MultipleFileService {
     }
 
     private getUpdatedPath(fileName, path) {
-        const subPath = path.substring(6, path.length);
-        const slash = (subPath.length > 0) ? "/" : "";
-        return "/root/" + fileName + slash + subPath;
+        const folderArray = path.split("/");
+        folderArray.splice(2, 0, fileName);
+        return folderArray.join("/");
+    }
+
+    private resetVariables() {
+        this.projectNameArray = [];
+        this.fileNameArray = [];
+        this.edges = [];
+        this.blacklist = [];
+        this.attributeTypesEdge = {};
+        this.attributeTypesNode = {};
     }
 }
