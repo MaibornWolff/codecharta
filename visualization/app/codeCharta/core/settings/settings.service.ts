@@ -4,7 +4,6 @@ import {
     ThreeOrbitControlsService
 } from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera} from "three";
-import {STATISTIC_OPS} from "../statistic/statistic.service";
 import {CodeMap, CodeMapNode, BlacklistItem} from "../data/model/CodeMap";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 
@@ -38,7 +37,6 @@ export interface Settings {
     scaling: Scale;
     camera: Scale;
     margin: number;
-    operation: STATISTIC_OPS;
     deltaColorFlipped: boolean;
     enableEdgeArrows: boolean;
     hideFlatBuildings: boolean;
@@ -116,7 +114,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             scaling: s,
             camera: c,
             margin: 15,
-            operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
             enableEdgeArrows: true,
             hideFlatBuildings: true,
@@ -392,7 +389,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.amountOfTopLabels = settings.amountOfTopLabels;
         this._settings.margin = settings.margin;
         this._settings.mode = settings.mode;
-        this._settings.operation = settings.operation;
         this._settings.deltaColorFlipped = settings.deltaColorFlipped;
         this._settings.enableEdgeArrows = settings.enableEdgeArrows;
         this._settings.hideFlatBuildings = settings.hideFlatBuildings;

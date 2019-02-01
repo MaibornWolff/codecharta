@@ -1,6 +1,5 @@
 import {Scenario} from "./scenario.service";
 import {CodeMap} from "../data/model/CodeMap";
-import {STATISTIC_OPS} from "../statistic/statistic.service";
 import {KindOfMap} from "../settings/settings.service";
 
 export function createDefaultScenario(map: CodeMap, margin: number): Scenario {
@@ -26,7 +25,6 @@ export function createDefaultScenario(map: CodeMap, margin: number): Scenario {
                 x: 0, y: 300, z: 1000
             },
             margin: margin,
-            operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
             enableEdgeArrows: true,
             hideFlatBuildings: true,
