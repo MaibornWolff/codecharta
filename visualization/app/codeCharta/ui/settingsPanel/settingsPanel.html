@@ -2,20 +2,21 @@
 
     <md-expansion-panel>
         <md-expansion-panel-collapsed>
-            <div class="md-title"><i class="fa fa-tree"></i> Treeview</div>
+            <div><i class="fa fa-search"></i><span class="md-title">Treeview Search</span></div>
             <div flex></div>
             <md-expansion-panel-icon></md-expansion-panel-icon>
         </md-expansion-panel-collapsed>
 
         <md-expansion-panel-expanded>
             <md-expansion-panel-header ng-click="$panel.collapse()">
-                <div class="md-title"><i class="fa fa-tree"></i> Treeview</div>
+                <div><i class="fa fa-search"></i><span class="md-title">Treeview Search</span></div>
                 <div flex></div>
                 <md-expansion-panel-icon></md-expansion-panel-icon>
             </md-expansion-panel-header>
 
             <md-expansion-panel-content>
-                <regex-filter-component></regex-filter-component>
+                <map-tree-view-search-component></map-tree-view-search-component>
+                <br>
                 <map-tree-view-component></map-tree-view-component>
             </md-expansion-panel-content>
         </md-expansion-panel-expanded>
@@ -23,14 +24,40 @@
 
     <md-expansion-panel>
         <md-expansion-panel-collapsed>
-            <div class="md-title"><i class="fa fa-cog"></i> Options</div>
+            <div><i class="fa fa-ban"></i>
+                <span class="md-title">Blacklist</span>
+                <div class="item-counter box-rounded" ng-if="$ctrl.viewModel.blacklistLength > 0">{{ $ctrl.viewModel.blacklistLength }}</div>
+            </div>
             <div flex></div>
             <md-expansion-panel-icon></md-expansion-panel-icon>
         </md-expansion-panel-collapsed>
 
         <md-expansion-panel-expanded>
             <md-expansion-panel-header ng-click="$panel.collapse()">
-                <div class="md-title"><i class="fa fa-cog"></i> Options</div>
+                <div><i class="fa fa-ban"></i>
+                    <span class="md-title">Blacklist</span>
+                    <div class="item-counter box-rounded" ng-if="$ctrl.viewModel.blacklistLength > 0">{{ $ctrl.viewModel.blacklistLength }}</div>
+                </div>
+                <div flex></div>
+                <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
+
+            <md-expansion-panel-content>
+                <blacklist-panel-component></blacklist-panel-component>
+            </md-expansion-panel-content>
+        </md-expansion-panel-expanded>
+    </md-expansion-panel>
+
+    <md-expansion-panel>
+        <md-expansion-panel-collapsed>
+            <div><i class="fa fa-cog"></i><span class="md-title">Options</span></div>
+            <div flex></div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+        </md-expansion-panel-collapsed>
+
+        <md-expansion-panel-expanded>
+            <md-expansion-panel-header ng-click="$panel.collapse()">
+                <div><i class="fa fa-cog"></i><span class="md-title">Options</span></div>
                 <div flex></div>
                 <md-expansion-panel-icon></md-expansion-panel-icon>
             </md-expansion-panel-header>
@@ -43,14 +70,14 @@
 
     <md-expansion-panel>
         <md-expansion-panel-collapsed>
-            <div class="md-title"><i class="fa fa-external-link"></i> Weblinks</div>
+            <div><i class="fa fa-external-link"></i><span class="md-title">Weblinks</span></div>
             <div flex></div>
             <md-expansion-panel-icon></md-expansion-panel-icon>
         </md-expansion-panel-collapsed>
 
         <md-expansion-panel-expanded>
             <md-expansion-panel-header ng-click="$panel.collapse()">
-                <div class="md-title"><i class="fa fa-external-link"></i> Weblinks</div>
+                <div><i class="fa fa-external-link"></i><span class="md-title">Weblinks</span></div>
                 <div flex></div>
                 <md-expansion-panel-icon></md-expansion-panel-icon>
             </md-expansion-panel-header>
@@ -62,36 +89,16 @@
     </md-expansion-panel>
 
     <md-expansion-panel>
+
         <md-expansion-panel-collapsed>
-            <div class="md-title"><i class="fa fa-list"></i> Blacklist</div>
+            <div><i class="fa fa-flask"></i><span class="md-title">Experimental</span></div>
             <div flex></div>
             <md-expansion-panel-icon></md-expansion-panel-icon>
         </md-expansion-panel-collapsed>
 
         <md-expansion-panel-expanded>
             <md-expansion-panel-header ng-click="$panel.collapse()">
-                <div class="md-title"><i class="fa fa-list"></i> Blacklist</div>
-                <div flex></div>
-                <md-expansion-panel-icon></md-expansion-panel-icon>
-            </md-expansion-panel-header>
-
-            <md-expansion-panel-content>
-                <blacklist-panel-component></blacklist-panel-component>
-            </md-expansion-panel-content>
-        </md-expansion-panel-expanded>
-    </md-expansion-panel>
-
-    <md-expansion-panel>
-
-        <md-expansion-panel-collapsed>
-            <div class="md-title"><i class="fa fa-flask"></i> Experimental</div>
-            <div flex></div>
-            <md-expansion-panel-icon></md-expansion-panel-icon>
-        </md-expansion-panel-collapsed>
-
-        <md-expansion-panel-expanded>
-            <md-expansion-panel-header ng-click="$panel.collapse()">
-                <div class="md-title"><i class="fa fa-flask"></i> Experimental</div>
+                <div><i class="fa fa-flask"></i><span class="md-title">Experimental</span></div>
                 <div flex></div>
                 <md-expansion-panel-icon></md-expansion-panel-icon>
             </md-expansion-panel-header>

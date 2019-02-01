@@ -26,8 +26,8 @@ export class DownloadService {
         return fileName;
     }
 
-    private removeVisibleAttribute(root: CodeMapNode) {
-        let copy = JSON.parse(JSON.stringify(root));
+    private removeJsonHashkeysAndVisibleAttribute(nodes: CodeMapNode) {
+        let copy = JSON.parse(JSON.stringify(nodes));
         d3.hierarchy(copy).each((node)=>{
             delete node.data.visible;
         });
@@ -35,22 +35,29 @@ export class DownloadService {
     }
 
     public downloadCurrentMap() {
-        var settings: Settings = this.settingsService.settings;
-        var map: CodeMap = settings.map;
+        const data = this.getProjectDataAsCCJsonFormat();
+        this.downloadData(data, this.getNewFileName());
+    }
 
-        const datedFileName = this.addDateToFileName(map.fileName);
-        const resultingFileName = this.addJsonFileEndingIfNecessary(datedFileName);
+    private getProjectDataAsCCJsonFormat() {
+        let settings: Settings = this.settingsService.settings;
+        let map: CodeMap = settings.map;
+        let newFileName = this.getNewFileName();
 
-        let data = {
-            fileName: resultingFileName,
+        return {
+            fileName: newFileName,
             projectName: map.projectName,
             apiVersion: map.apiVersion,
-            nodes: [this.removeVisibleAttribute(map.root)],
+            nodes: [this.removeJsonHashkeysAndVisibleAttribute(map.nodes)],
             edges: map.edges,
             attributeTypes: map.attributeTypes,
             blacklist: settings.blacklist,
         };
-        this.downloadData(data, resultingFileName);
+    }
+
+    private getNewFileName() {
+        const datedFileName = this.addDateToFileName(this.settingsService.settings.map.fileName);
+        return this.addJsonFileEndingIfNecessary(datedFileName);
     }
 
     private downloadData(data, fileName) {

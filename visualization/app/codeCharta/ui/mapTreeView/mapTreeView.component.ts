@@ -20,8 +20,8 @@ export class MapTreeViewController implements SettingsServiceSubscriber {
     }
 
     private updateMapRoot(map: CodeMap) {
-        if(map && map.root) {
-            this.mapRoot = map.root;
+        if(map && map.nodes) {
+            this.mapRoot = map.nodes;
         }
     }
 
@@ -29,7 +29,7 @@ export class MapTreeViewController implements SettingsServiceSubscriber {
 
 export const mapTreeViewComponent = {
     selector: "mapTreeViewComponent",
-    template: require("./mapTreeView.html"),
+    template: require("./mapTreeView.component.html"),
     controller: MapTreeViewController
 };
 

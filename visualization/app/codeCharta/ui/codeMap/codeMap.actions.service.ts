@@ -1,5 +1,4 @@
-import {CodeMapNode, Edge, Exclude, ExcludeType} from "../../core/data/model/CodeMap";
-import {hierarchy} from "d3-hierarchy";
+import {CodeMapNode, Edge, BlacklistItem, BlacklistType} from "../../core/data/model/CodeMap";
 import {SettingsService} from "../../core/settings/settings.service";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 import angular from "angular";
@@ -53,17 +52,17 @@ export class CodeMapActionsService {
     }
 
     hideNode(node: CodeMapNode) {
-        this.pushItemToBlacklist({path: node.path, type: ExcludeType.hide});
+        this.pushItemToBlacklist({path: node.path, type: BlacklistType.hide});
         this.apply();
     }
 
     showNode(node: CodeMapNode) {
-        this.removeBlacklistEntry({path: node.path, type: ExcludeType.hide});
+        this.removeBlacklistEntry({path: node.path, type: BlacklistType.hide});
         this.apply();
     }
 
     focusNode(node: CodeMapNode) {
-        if (node.path == this.settingsService.settings.map.root.path) {
+        if (node.path == this.settingsService.settings.map.nodes.path) {
             this.removeFocusedNode()
         } else {
             this.settingsService.settings.focusedNodePath = node.path;
@@ -79,17 +78,17 @@ export class CodeMapActionsService {
     }
 
     excludeNode(node: CodeMapNode) {
-        this.pushItemToBlacklist({path: node.path, type: ExcludeType.exclude});
+        this.pushItemToBlacklist({path: node.path, type: BlacklistType.exclude});
         this.apply();
     }
 
-    removeBlacklistEntry(entry: Exclude) {
+    removeBlacklistEntry(entry: BlacklistItem) {
         this.settingsService.settings.blacklist = this.settingsService.settings.blacklist.filter(obj =>
             !this.isEqualObjects(obj, entry));
         this.apply();
     }
 
-    pushItemToBlacklist(item: Exclude) {
+    pushItemToBlacklist(item: BlacklistItem) {
         var foundDuplicate = this.settingsService.settings.blacklist.filter(obj => {
             return this.isEqualObjects(obj, item);
         });
