@@ -5,7 +5,7 @@ import {ThreeOrbitControlsService} from "../../ui/codeMap/threeViewer/threeOrbit
 
 export interface Scenario {
     name: string;
-    settings: Settings;
+    settings: Partial<Settings>;
     autoFitCamera: boolean;
 }
 
@@ -49,7 +49,7 @@ export class ScenarioService {
         }
     }
 
-    private updateSettingsUsingScenario(settings, scenarioSettings): any {
+    private updateSettingsUsingScenario(settings, scenarioSettings): Settings {
         if (settings) {
             for(let key of Object.keys(settings)) {
                 if (scenarioSettings.hasOwnProperty(key)) {

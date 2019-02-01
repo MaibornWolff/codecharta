@@ -18,6 +18,6 @@ export function createDefaultScenario(): Scenario {
             colorMetric: "mcc"
         },
         autoFitCamera: true
-    } as Scenario;
+    };
 
 }
