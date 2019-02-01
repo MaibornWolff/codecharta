@@ -37,6 +37,6 @@ class BlacklistItem constructor(
     override fun toString(): String {
         return "BlacklistItem(" +
                 "path=$path," +
-                "type=$type"
+                "type=$type)"
     }
 }

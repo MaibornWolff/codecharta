@@ -119,6 +119,6 @@ open class ProjectBuilder(
     }
 
     override fun toString(): String {
-        return "Project{projectName='$projectName', nodes=$nodes, edges=$edges, attributeTypes=$attributeTypes), blacklist=$blacklist"
+        return "Project{projectName='$projectName', nodes=$nodes, edges=$edges, attributeTypes=$attributeTypes, blacklist=$blacklist}"
     }
 }
