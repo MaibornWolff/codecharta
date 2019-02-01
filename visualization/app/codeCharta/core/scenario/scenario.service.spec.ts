@@ -89,12 +89,12 @@ describe("app.codeCharta.core.scenarioService", function () {
     });
 
     it("should update only settings, which exist in given the scenario", () => {
-        const scenarioSettings = scenarioService.getDefaultScenario().settings;
-        scenarioSettings.neutralColorRange.from = 123;
-        scenarioSettings.neutralColorRange.to = 456;
-        scenarioSettings.colorMetric = "myTestMetric";
-        const updatedSettings = scenarioService.updateSettingsUsingScenario(scenarioService.settingsService.settings, scenarioSettings);
-        expect(updatedSettings).toMatchSnapshot();
+        const scenario = scenarioService.getDefaultScenario();
+        scenario.settings.neutralColorRange.from = 123;
+        scenario.settings.neutralColorRange.to = 456;
+        scenario.settings.colorMetric = "myTestMetric";
+        scenarioService.applyScenario(scenario);
+        expect(scenarioService.settingsService.settings).toMatchSnapshot();
     });
 
 });
