@@ -96,53 +96,42 @@
   }],
   "edges": [
     {
-      "fromNodeName": "visualization/file2",
-      "toNodeName": "visualization/file3",
+      "fromNodeName": "/root/file1",
+      "toNodeName": "/root/visualization/file2",
+      "attributes": {
+        "pairingRate": 90,
+        "avgCommits": 5,
+        "anotherMetric": 25
+      }
+    },
+    {
+      "fromNodeName": "/root/visualization/file2",
+      "toNodeName": "/root/visualization/file3",
       "attributes": {
         "pairingRate": 80,
         "avgCommits": 3
-      }
-    },
-    {
-      "fromNodeName": "file4",
-      "toNodeName": "visualization/file3",
-      "attributes": {
-        "pairingRate": 70,
-        "avgCommits": 5
-      }
-    },
-    {
-      "fromNodeName": "visualization/file3",
-      "toNodeName": "file4",
-      "attributes": {
-        "pairingRate": 90,
-        "avgCommits": 4
-      }
-    },
-    {
-      "fromNodeName": "visualization/file2",
-      "toNodeName": "file1",
-      "attributes": {
-        "pairingRate": 100,
-        "avgCommits": 5
       }
     }
   ],
   "attributeTypes": {
     "nodes": [
-      {"number_of_authors": "absolute"},
-      {"number_of_commits": "absolute"},
-      {"range_of_weeks_with_commits": "absolute"},
-      {"successive_weeks_with_commits": "absolute"},
-      {"weeks_with_commits": "absolute"},
-      {"highly_coupled_files": "absolute"},
-      {"median_coupled_files": "absolute"},
-      {"abs_coupled_churn": "absolute"},
-      {"avg_code_churn": "absolute"}
+      {"attributeA": "absolute"},
+      {"attributeB": "absolute"},
+      {"attributeZ": "absolute"}
     ],
     "edges": [
-      {"pairingRate": "absolute"},
-      {"avgCommits": "relative"}
+      {"attributeD": "absolute"},
+      {"attributeE": "relative"}
     ]
-  }
+  },
+  "blacklist": [
+    {
+      "path": "/root/file1",
+      "type": "hide"
+    },
+    {
+      "path": "/root/visualization/file2",
+      "type": "exclude"
+    }
+  ]
 }

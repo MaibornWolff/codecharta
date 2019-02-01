@@ -38,7 +38,8 @@ open class ProjectBuilder(
         val projectName: String,
         private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
         private var edges: MutableList<Edge> = mutableListOf(),
-        private var attributeTypes: MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf()
+        private var attributeTypes: MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf(),
+        private var blacklist: MutableList<BlacklistItem> = mutableListOf()
 ) {
     init {
         if (nodes.size != 1) throw IllegalStateException("no root node present in project")
@@ -95,7 +96,8 @@ open class ProjectBuilder(
                 projectName,
                 nodes.map { it.toNode() }.toList(),
                 edges = edges.toList(),
-                attributeTypes = attributeTypes.toMap()
+                attributeTypes = attributeTypes.toMap(),
+                blacklist = blacklist.toList()
         )
 
         logger.info { "Created Project with ${project.size} leaves." }
@@ -117,6 +119,6 @@ open class ProjectBuilder(
     }
 
     override fun toString(): String {
-        return "Project{projectName='$projectName', nodes=$nodes, edges=$edges, attributeTypes=$attributeTypes)"
+        return "Project{projectName='$projectName', nodes=$nodes, edges=$edges, attributeTypes=$attributeTypes, blacklist=$blacklist}"
     }
 }
