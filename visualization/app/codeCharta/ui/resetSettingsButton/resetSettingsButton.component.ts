@@ -1,6 +1,5 @@
 import {SettingsService} from "../../core/settings/settings.service";
 import "./resetSettingsButton.component.scss";
-import {ScenarioService} from "../../core/scenario/scenario.service";
 import {DataService} from "../../core/data/data.service";
 
 export class ResetSettingsButtonController {
@@ -10,7 +9,6 @@ export class ResetSettingsButtonController {
     /* @ngInject */
     constructor(
         private settingsService: SettingsService,
-        private scenarioService: ScenarioService,
         private dataService: DataService
     ) {
 
@@ -44,7 +42,7 @@ export class ResetSettingsButtonController {
                     }
                 });
             } else {
-                this.settingsService.settings[token] = this.settingsService.getDefaultSettings(settings.map, this.dataService.data.metrics)[token];
+                this.settingsService.settings[token] = defaultSettings[token];
             }
         });
 
