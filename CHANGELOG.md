@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed
 - CodeMap does not move anymore when navigating in text-fields #307
 - Merge blacklist in multipleFile view and convert paths #275
+- Show logo in NW.js standalone application #233
 
 ## [1.20.1] - 2018-12-19
 ### Added
