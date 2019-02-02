@@ -203,7 +203,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         this.deltaColorsFlipped = s.deltaColorFlipped;
         this.deltas = s.mode == KindOfMap.Delta;
 
-        this.positive = this.getImageDataUri(MapColors.positive);
+        this.positive = this.getImageDataUri((s.whiteColorBuildings) ? MapColors.lightGrey : MapColors.positive);
         this.neutral = this.getImageDataUri(MapColors.neutral);
         this.negative = this.getImageDataUri(MapColors.negative);
         this.select = this.getImageDataUri(MapColors.selected);

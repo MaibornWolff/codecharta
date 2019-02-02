@@ -44,6 +44,7 @@ export interface Settings {
     invertHeight: boolean;
     dynamicMargin: boolean;
     isWhiteBackground: boolean;
+    whiteColorBuildings: boolean;
     blacklist: Array<BlacklistItem>;
     focusedNodePath: string;
     searchedNodePaths: Array<string>;
@@ -120,6 +121,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             invertHeight: false,
             dynamicMargin: true,
             isWhiteBackground: false,
+            whiteColorBuildings: true,
             blacklist: [],
             focusedNodePath: null,
             searchedNodePaths: [],
@@ -409,6 +411,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.invertHeight = settings.invertHeight;
         this._settings.dynamicMargin = settings.dynamicMargin;
         this._settings.isWhiteBackground = settings.isWhiteBackground;
+        this._settings.whiteColorBuildings = settings.whiteColorBuildings;
         this._settings.blacklist = settings.blacklist;
         this._settings.focusedNodePath = settings.focusedNodePath;
         this._settings.searchedNodePaths = settings.searchedNodePaths;
