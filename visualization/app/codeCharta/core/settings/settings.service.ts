@@ -26,10 +26,10 @@ export enum KindOfMap {
     Delta = "Delta"
 }
 
-export interface PackageColor {
+export interface MarkedPackage {
     path: string,
     color: string,
-    meta: KeyValuePair
+    attributes: {[key: string]: any}
 }
 
 export interface Settings {
@@ -53,7 +53,7 @@ export interface Settings {
     dynamicMargin: boolean;
     isWhiteBackground: boolean;
     blacklist: Array<BlacklistItem>;
-    packageColor: Array<PackageColor>;
+    markedPackages: Array<MarkedPackage>;
     focusedNodePath: string;
     searchedNodePaths: Array<string>;
     searchPattern: string;
@@ -131,7 +131,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             dynamicMargin: true,
             isWhiteBackground: false,
             blacklist: [],
-            packageColor: [],
+            markedPackages: [],
             focusedNodePath: null,
             searchedNodePaths: [],
             searchPattern: null
@@ -200,6 +200,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      * @emits {settings-changed} on call
      */
     public onSettingsChanged() {
+        console.log(this.settings.markedPackages);
 
         this.settings.margin = this.computeMargin();
 
@@ -409,7 +410,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.dynamicMargin = settings.dynamicMargin;
         this._settings.isWhiteBackground = settings.isWhiteBackground;
         this._settings.blacklist = settings.blacklist;
-        this._settings.packageColor = settings.packageColor;
+        this._settings.markedPackages = settings.markedPackages;
         this._settings.focusedNodePath = settings.focusedNodePath;
         this._settings.searchedNodePaths = settings.searchedNodePaths;
         this._settings.searchPattern = settings.searchPattern;
