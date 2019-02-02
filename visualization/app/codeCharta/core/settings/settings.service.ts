@@ -70,7 +70,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     constructor(private urlService, private dataService: DataService, private $rootScope,
                 private threeOrbitControlsService: ThreeOrbitControlsService) {
 
-        this._settings = this.getInitialSettings(dataService.data.renderMap, dataService.data.metrics);
+        this._settings = this.getDefaultSettings(dataService.data.renderMap, dataService.data.metrics);
 
         this.numberOfCalls = 0;
         dataService.subscribe(this);
@@ -84,19 +84,19 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         });
     }
 
-    private getInitialSettings(renderMap: any, metrics: string[]): Settings {
+    public getDefaultSettings(renderMap: any, metrics: string[]): Settings {
 
         let r: Range = {
-            from: 10,
-            to: 20,
+            from: 20,
+            to: 40,
             flipped: false
         };
 
-        let s: Scale = {
+        let scaling: Scale = {
             x: 1, y: 1, z: 1
         };
 
-        let c: Scale = {
+        let camera: Scale = {
             x: 0, y: 300, z: 1000
         };
 
@@ -110,8 +110,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             colorMetric: this.getMetricByIdOrLast(2, metrics),
             mode: KindOfMap.Single,
             amountOfTopLabels: 1,
-            scaling: s,
-            camera: c,
+            scaling: scaling,
+            camera: camera,
             margin: 15,
             deltaColorFlipped: false,
             enableEdgeArrows: true,

@@ -1,6 +1,7 @@
 import {SettingsService} from "../../core/settings/settings.service";
 import "./resetSettingsButton.component.scss";
 import {ScenarioService} from "../../core/scenario/scenario.service";
+import {DataService} from "../../core/data/data.service";
 
 export class ResetSettingsButtonController {
 
@@ -9,7 +10,8 @@ export class ResetSettingsButtonController {
     /* @ngInject */
     constructor(
         private settingsService: SettingsService,
-        private scenarioService: ScenarioService
+        private scenarioService: ScenarioService,
+        private dataService: DataService
     ) {
 
     }
@@ -22,35 +24,29 @@ export class ResetSettingsButtonController {
         settingsList = settingsList.replace(/ /g,"");
         settingsList = settingsList.replace(/\n/g,"");
         let tokens: string[] = settingsList.split(",");
+        let settings = this.settingsService.settings;
+        let defaultSettings = this.settingsService.getDefaultSettings(settings.map, this.dataService.data.metrics);
 
         tokens.forEach((token) => {
-
             let steps = token.split(".");
 
             if (steps.length > 1) {
-
-                let writeSettingsPointer = this.settingsService.settings;
-                let readSettingsPointer = this.scenarioService.getDefaultScenario().settings;
-
                 steps.forEach((step, index) => {
 
-                    if (writeSettingsPointer[step] != null && readSettingsPointer[step] != null) {
+                    if (settings[step] != null && defaultSettings[step] != null) {
 
                         if (index === steps.length - 1) {
-                            writeSettingsPointer[step] = readSettingsPointer[step];
+                            settings[step] = defaultSettings[step];
                         } else {
-                            writeSettingsPointer = writeSettingsPointer[step];
-                            readSettingsPointer = readSettingsPointer[step];
+                            settings = settings[step];
+                            defaultSettings = defaultSettings[step];
                         }
                     }
                 });
-
             } else {
-                this.settingsService.settings[token] = this.scenarioService.getDefaultScenario().settings[token];
+                this.settingsService.settings[token] = this.settingsService.getDefaultSettings(settings.map, this.dataService.data.metrics)[token];
             }
-
         });
-
 
         this.settingsService.applySettings();
 
