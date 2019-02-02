@@ -94,7 +94,11 @@ describe("app.codeCharta.core.scenarioService", function () {
         scenario.settings.neutralColorRange.to = 456;
         scenario.settings.colorMetric = "myTestMetric";
         scenarioService.applyScenario(scenario);
-        expect(scenarioService.settingsService.settings).toMatchSnapshot();
+
+        const s = scenarioService.settingsService.settings;
+        expect(s.neutralColorRange.from).toBe(scenario.settings.neutralColorRange.from);
+        expect(s.neutralColorRange.to).toBe(scenario.settings.neutralColorRange.to);
+        expect(s.colorMetric).toBe(scenario.settings.colorMetric);
     });
 
 });

@@ -130,6 +130,7 @@ export class geometryGenerator {
     private estimateColorForBuilding(n: node, s: renderSettings): number {
         let color: number = MapColors.defaultC;
 
+        let mapColorPositive = s.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive;
         if (!s.renderDeltas) {
             const val: number = n.attributes[s.colorKey];
 
@@ -140,10 +141,10 @@ export class geometryGenerator {
                 color = MapColors.flat;
             }
             else if (val < s.colorRange.from) {
-                color = s.colorRange.flipped ? MapColors.negative : MapColors.positive;
+                color = s.colorRange.flipped ? MapColors.negative : mapColorPositive;
             }
             else if (val > s.colorRange.to) {
-                color = s.colorRange.flipped ? MapColors.positive : MapColors.negative;
+                color = s.colorRange.flipped ? mapColorPositive : MapColors.negative;
             }
             else {
                 color = MapColors.neutral;

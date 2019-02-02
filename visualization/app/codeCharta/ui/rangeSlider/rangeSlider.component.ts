@@ -1,8 +1,8 @@
 import {DataService} from "../../core/data/data.service";
-import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
-import $ from "jquery";
+import {KindOfMap, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import "./rangeSlider.component.scss";
 import {MapColors} from "../codeMap/rendering/renderSettings";
+import $ from "jquery";
 
 export class RangeSliderController implements SettingsServiceSubscriber {
 
@@ -29,13 +29,15 @@ export class RangeSliderController implements SettingsServiceSubscriber {
     }
 
     initSliderOptions(settings: Settings = this.settingsService.settings) {
-        this.maxMetricValue = this.dataService.getMaxMetricInAllRevisions(settings.colorMetric)
+        this.maxMetricValue = this.dataService.getMaxMetricInAllRevisions(settings.colorMetric);
+
         this.sliderOptions = {
             ceil: this.maxMetricValue,
             onChange: this.onSliderChange.bind(this),
             pushRange: true,
             onToChange: this.onToSliderChange.bind(this),
-            onFromChange: this.onFromSliderChange.bind(this)
+            onFromChange: this.onFromSliderChange.bind(this),
+            disabled: this.settingsService.settings.mode == KindOfMap.Delta,
         };
     }
 
@@ -64,16 +66,29 @@ export class RangeSliderController implements SettingsServiceSubscriber {
     }
 
     private updateSliderColors() {
+        const rangeFromPercentage = 100 / this.maxMetricValue * this.settingsService.settings.neutralColorRange.from;
+        let rangeColors = this.sliderOptions.disabled ? this.getGreyRangeColors() : this.getColoredRangeColors();
+        this.applyCssSettings(rangeColors, rangeFromPercentage);
+    }
+
+    private getGreyRangeColors() {
+        return {
+            left: MapColors.lightGrey,
+            middle: MapColors.lightGrey,
+            right: MapColors.lightGrey,
+        };
+    }
+
+    private getColoredRangeColors() {
         const s = this.settingsService.settings;
-        const rangeFromPercentage = 100 / this.maxMetricValue * s.neutralColorRange.from;
+        let mapColorPositive = s.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive;
 
         let rangeColors = {
-            left: s.neutralColorRange.flipped ? MapColors.negative : MapColors.positive,
+            left: s.neutralColorRange.flipped ? MapColors.negative : mapColorPositive,
             middle: MapColors.neutral,
-            right: s.neutralColorRange.flipped ? MapColors.positive : MapColors.negative
+            right: s.neutralColorRange.flipped ? mapColorPositive : MapColors.negative
         };
-
-        this.applyCssSettings(rangeColors, rangeFromPercentage);
+        return rangeColors;
     }
 
     private applyCssSettings(rangeColors, rangeFromPercentage) {
