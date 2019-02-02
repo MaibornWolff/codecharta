@@ -9,7 +9,6 @@ import {
 import $ from "jquery";
 import {MapColors} from "../codeMap/rendering/renderSettings";
 import {ITimeoutService} from "angular";
-import {STATISTIC_OPS} from "../../core/statistic/statistic.service";
 import "./legendPanel.component.scss";
 import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {hierarchy} from "d3-hierarchy";
@@ -37,7 +36,6 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     private neutral: string;
     private negative: string;
     private select: string;
-    private operation: string;
     private deltaColorsFlipped: boolean;
     private markingPackages: MarkingPackages[];
 
@@ -85,7 +83,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     private setMarkingPackagesIntoLegend() {
         this.markingPackages = [];
         if (this.settingsService.settings.map) {
-            var rootNode: CodeMapNode = this.settingsService.settings.map.root;
+            var rootNode: CodeMapNode = this.settingsService.settings.map.nodes;
 
             hierarchy<CodeMapNode>(rootNode).descendants().forEach((hierarchyNode) => {
                 const node: CodeMapNode = hierarchyNode.data;
@@ -191,7 +189,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         } else {
             const from = Math.max(packagePath.length - MAX_NAME_LENGTH.lowerLimit, 0);
             const previewPackagePath = packagePath.substring(from);
-            const rootNode = this.settingsService.settings.map.root;
+            const rootNode = this.settingsService.settings.map.nodes;
             const startingDots = (previewPackagePath.startsWith(rootNode.path)) ? "" : "...";
             return startingDots + previewPackagePath;
         }
@@ -209,7 +207,6 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         this.neutral = this.getImageDataUri(MapColors.neutral);
         this.negative = this.getImageDataUri(MapColors.negative);
         this.select = this.getImageDataUri(MapColors.selected);
-        this.operation = this.setOperation(s.operation);
 
         $("#green").attr("src", this.positive);
         $("#yellow").attr("src", this.neutral);
@@ -252,13 +249,6 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
 
     generatePixel(color: string): string {
         return "data:image/gif;base64,R0lGODlhAQABAPAA" + color + "/yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
-    }
-
-    setOperation(operation: STATISTIC_OPS): string{
-        if(operation=== STATISTIC_OPS.NOTHING || !operation){
-            return "";
-        }
-        return (<string>operation).replace("_", " ").toLowerCase();
     }
 
     private initAnimations() {

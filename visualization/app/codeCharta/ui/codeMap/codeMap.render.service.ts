@@ -2,20 +2,20 @@
 
 import {CodeMapMesh} from "./rendering/codeMapMesh";
 import {renderSettings} from "./rendering/renderSettings";
-import {LabelManager} from "./rendering/labelManager";
 import {KindOfMap, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import {node} from "./rendering/node";
-import {ArrowManager} from "./rendering/arrowManager";
 import {Edge} from "../../core/data/model/CodeMap";
 import {
     CodeMapBuildingTransition,
     CodeMapMouseEventService,
     CodeMapMouseEventServiceSubscriber
 } from "./codeMap.mouseEvent.service";
-import {TreeMapSettings} from "../../core/treemap/treemap.service";
+import {TreeMapService, TreeMapSettings} from "../../core/treemap/treemap.service";
 import {codeMapBuilding} from "./rendering/codeMapBuilding";
 import {CodeMapUtilService} from "./codeMap.util.service";
-import * as d3 from "d3";
+import {CodeMapLabelService} from "./codeMap.label.service";
+import {ThreeSceneService} from "./threeViewer/threeSceneService";
+import {CodeMapArrowService} from "./codeMap.arrow.service";
 
 const mapSize = 500.0;
 
@@ -27,19 +27,19 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     public static SELECTOR = "codeMapRenderService";
 
     private _mapMesh: CodeMapMesh = null;
-    private labelManager: LabelManager = null;
-    private arrowManager: ArrowManager = null;
 
     public currentSortedNodes: node[];
     private currentRenderSettings: renderSettings;
     private visibleEdges: Edge[];
 
     /* @ngInject */
-    constructor(private threeSceneService,
-                private treeMapService,
+    constructor(private threeSceneService: ThreeSceneService,
+                private treeMapService: TreeMapService,
                 private $rootScope,
                 private settingsService: SettingsService,
-                private codeMapUtilService: CodeMapUtilService) {
+                private codeMapUtilService: CodeMapUtilService,
+                private codeMapLabelService: CodeMapLabelService,
+                private codeMapArrowService: CodeMapArrowService) {
         this.settingsService.subscribe(this);
         CodeMapMouseEventService.subscribe($rootScope, this);
     }
@@ -71,7 +71,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
      */
     applySettings(s: Settings) {
 
-        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.root && s.neutralColorRange && s.deltaColorFlipped != undefined && s.invertHeight != undefined) {
+        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.nodes && s.neutralColorRange && s.deltaColorFlipped != undefined && s.invertHeight != undefined) {
             this.updateMapGeometry(s);
         }
 
@@ -112,7 +112,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         this.showAllOrOnlyFocusedNode(s);
 
         let nodes: node[] = this.collectNodesToArray(
-            this.treeMapService.createTreemapNodes(s.map.root, treeMapSettings, s.map.edges)
+            this.treeMapService.createTreemapNodes(s.map.nodes, treeMapSettings, s.map.edges)
         );
 
         let filtered = nodes.filter(node => node.visible && node.length > 0 && node.width > 0);
@@ -139,19 +139,17 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     }
 
     private setLabels(s: Settings) {
-        this.labelManager = new LabelManager(this.threeSceneService.labels);
-        this.labelManager.clearLabels();
+        this.codeMapLabelService.clearLabels();
         for (let i = 0, numAdded = 0; i < this.currentSortedNodes.length && numAdded < s.amountOfTopLabels; ++i) {
             if (this.currentSortedNodes[i].isLeaf) {
-                this.labelManager.addLabel(this.currentSortedNodes[i], this.currentRenderSettings);
+                this.codeMapLabelService.addLabel(this.currentSortedNodes[i], this.currentRenderSettings);
                 ++numAdded;
             }
         }
     }
 
     private setArrows(s: Settings) {
-        this.arrowManager = new ArrowManager(this.threeSceneService.edgeArrows);
-        this.arrowManager.clearArrows();
+        this.codeMapArrowService.clearArrows();
         if (this.visibleEdges.length > 0 && s.enableEdgeArrows) {
             this.showCouplingArrows(this.visibleEdges);
         }
@@ -160,10 +158,10 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     private showAllOrOnlyFocusedNode(s: Settings) {
         if (s.focusedNodePath) {
             const focusedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(s.focusedNodePath);
-            this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, false);
+            this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.nodes, false);
             this.treeMapService.setVisibilityOfNodeAndDescendants(focusedNode, true);
         } else {
-            this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.root, true);
+            this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.nodes, true);
         }
     }
 
@@ -172,11 +170,11 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     }
 
     private showCouplingArrows(deps: Edge[]) {
-        this.arrowManager.clearArrows();
+        this.codeMapArrowService.clearArrows();
 
         if (deps && this.currentRenderSettings) {
-            this.arrowManager.addEdgeArrows(this.currentSortedNodes, deps, this.currentRenderSettings);
-            this.arrowManager.scale(
+            this.codeMapArrowService.addEdgeArrows(this.currentSortedNodes, deps, this.currentRenderSettings);
+            this.codeMapArrowService.scale(
                 this.threeSceneService.mapGeometry.scale.x,
                 this.threeSceneService.mapGeometry.scale.y,
                 this.threeSceneService.mapGeometry.scale.z,
@@ -203,12 +201,12 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             this.threeSceneService.getMapMesh().setScale(x, y, z);
         }
 
-        if (this.labelManager) {
-            this.labelManager.scale(x, y, z);
+        if (this.codeMapLabelService) {
+            this.codeMapLabelService.scale(x, y, z);
         }
 
-        if (this.arrowManager) {
-            this.arrowManager.scale(x, y, z);
+        if (this.codeMapArrowService) {
+            this.codeMapArrowService.scale(x, y, z);
         }
     }
 }

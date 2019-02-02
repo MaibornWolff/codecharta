@@ -7,7 +7,6 @@ import "./treemap/treemap.module";
 import "./scenario/scenario.module";
 import "./tooltip/tooltip.module";
 import "./download/download.module";
-import "./statistic/statistic.module";
 
 import angular from "angular";
 
@@ -22,7 +21,6 @@ angular.module(
         "app.codeCharta.core.treemap",
         "app.codeCharta.core.scenario",
         "app.codeCharta.core.tooltip",
-        "app.codeCharta.core.download",
-        "app.codeCharta.core.statistic"
+        "app.codeCharta.core.download"
     ]
 );
