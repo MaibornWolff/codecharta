@@ -9,28 +9,7 @@
       },
       "areaMetric": "rloc",
       "heightMetric": "mcc",
-      "colorMetric": "mcc",
-      "mode": "KindOfMap.Single",
-      "amountOfTopLabels": 1,
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "camera": {
-        "x": 0,
-        "y": 300,
-        "z": 1000
-      },
-      "margin": 1,
-      "deltaColorFlipped": false,
-      "enableEdgeArrows": true,
-      "hideFlatBuildings": true,
-      "maximizeDetailPanel": false,
-      "invertHeight": false,
-      "dynamicMargin": true,
-      "isWhiteBackground": false,
-      "blacklist":[]
+      "colorMetric": "mcc"
     },
     "autoFitCamera": true
   },
@@ -44,28 +23,7 @@
       },
       "areaMetric": "unary",
       "heightMetric": "Average Complexity*",
-      "colorMetric": "Average Complexity*",
-      "mode": "KindOfMap.Single",
-      "amountOfTopLabels": 1,
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "camera": {
-        "x": 0,
-        "y": 300,
-        "z": 1000
-      },
-      "margin": 1,
-      "deltaColorFlipped": false,
-      "enableEdgeArrows": true,
-      "hideFlatBuildings": true,
-      "maximizeDetailPanel": false,
-      "invertHeight": false,
-      "dynamicMargin": true,
-      "isWhiteBackground": false,
-      "blacklist":[]
+      "colorMetric": "Average Complexity*"
     },
     "autoFitCamera": true
   },
@@ -73,34 +31,13 @@
     "name": "Coverage",
     "settings": {
       "neutralColorRange": {
-        "from": 50,
-        "to": 75,
+        "from": 20,
+        "to": 80,
         "flipped": true
       },
       "areaMetric": "rloc",
       "heightMetric": "mcc",
-      "colorMetric": "line_coverage",
-      "mode": "KindOfMap.Single",
-      "amountOfTopLabels": 1,
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "camera": {
-        "x": 0,
-        "y": 300,
-        "z": 1000
-      },
-      "margin": 1,
-      "deltaColorFlipped": false,
-      "enableEdgeArrows": true,
-      "hideFlatBuildings": true,
-      "maximizeDetailPanel": false,
-      "invertHeight": false,
-      "dynamicMargin": true,
-      "isWhiteBackground": false,
-      "blacklist":[]
+      "colorMetric": "line_coverage"
     },
     "autoFitCamera": true
   },
@@ -114,28 +51,7 @@
       },
       "areaMetric": "rloc",
       "heightMetric": "abs_code_churn",
-      "colorMetric": "weeks_with_commits",
-      "mode": "KindOfMap.Single",
-      "amountOfTopLabels": 1,
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "camera": {
-        "x": 0,
-        "y": 300,
-        "z": 1000
-      },
-      "margin": 1,
-      "deltaColorFlipped": false,
-      "enableEdgeArrows": true,
-      "hideFlatBuildings": true,
-      "maximizeDetailPanel": false,
-      "invertHeight": false,
-      "dynamicMargin": true,
-      "isWhiteBackground": false,
-      "blacklist":[]
+      "colorMetric": "weeks_with_commits"
     },
     "autoFitCamera": true
   }

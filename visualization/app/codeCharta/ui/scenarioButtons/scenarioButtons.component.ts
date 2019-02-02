@@ -3,7 +3,6 @@
 import {IScope} from "angular";
 import {TooltipService, TooltipServiceSubscriber, Tooltips} from "../../core/tooltip/tooltip.service";
 import {ScenarioService, Scenario} from "../../core/scenario/scenario.service";
-import $ from "jquery";
 import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/data.service";
 import "./scenarioDropDown.component.scss";
@@ -14,14 +13,7 @@ export class ScenarioButtonsController implements TooltipServiceSubscriber, Data
     private key;
     private visible: boolean = false;
     public  scenario: Scenario;
-    /* @ngInject */
-    /**
-     *
-     * @param {Scenario} scenarioService
-     * @param {TooltipService} tooltipService
-     * @param {Scope} $rootScope
-     * @param {Scope} $scope
-     */
+
     constructor(private scenarioService: ScenarioService,
                 private tooltipService: TooltipService,
                 private settingsService: SettingsService,
@@ -49,19 +41,10 @@ export class ScenarioButtonsController implements TooltipServiceSubscriber, Data
         this.$scope.$apply();
     }
 
-    /**
-     * returns the tooltip description related to the given key
-     * @param {String} key
-     * @returns {String} tooltip
-     */
     getScenarioTooltipTextByKey(key: string) {
         return this.tooltipService.getTooltipTextByKey(key);
     }
 
-    /**
-     * called when a scenario button is clicked, applies the linked scenario
-     * @param {Scenario} value
-     */
     onclick(value: Scenario) {
         this.scenarioService.applyScenario(value);
     }

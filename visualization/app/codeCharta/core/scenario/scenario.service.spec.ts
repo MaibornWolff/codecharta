@@ -1,14 +1,10 @@
 import {NGMock} from "../../../../mocks/ng.mockhelper";
-
 import "./scenario.module";
 import {Scenario, ScenarioService} from "./scenario.service";
-import {KindOfMap, SettingsService} from "../settings/settings.service";
+import {SettingsService} from "../settings/settings.service";
 import {createDefaultScenario} from "./scenario.data";
 import {DataService} from "../data/data.service";
 
-/**
- * @test {ScenatioService}
- */
 describe("app.codeCharta.core.scenarioService", function () {
 
     let scenarioService: ScenarioService,
@@ -28,7 +24,7 @@ describe("app.codeCharta.core.scenarioService", function () {
         dataService = _dataService_;
         $scope = _$rootScope_;
         scenario = {name: "testScenario", settings: settingsService.settings};
-        defaultScenario = createDefaultScenario(settingsService.settings.map);
+        defaultScenario = createDefaultScenario();
     }));
 
     it("should apply the settings from a given scenario", () => {
@@ -90,6 +86,15 @@ describe("app.codeCharta.core.scenarioService", function () {
             expect(scenarioService.isScenarioPossible(null, null)).toBe(false);
         });
 
+    });
+
+    it("should update only settings, which exist in given the scenario", () => {
+        const scenario = scenarioService.getDefaultScenario();
+        scenario.settings.neutralColorRange.from = 123;
+        scenario.settings.neutralColorRange.to = 456;
+        scenario.settings.colorMetric = "myTestMetric";
+        scenarioService.applyScenario(scenario);
+        expect(scenarioService.settingsService.settings).toMatchSnapshot();
     });
 
 });
