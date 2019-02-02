@@ -100,7 +100,7 @@ describe("settings.service", function() {
         settingsService.settings.camera.x = "2";
         expect(settingsService.getQueryParamString()).toContain("areaMetric=areaStuff");
         expect(settingsService.getQueryParamString()).toContain("camera.x=2");
-        expect(settingsService.getQueryParamString()).toContain("neutralColorRange.from=10");
+        expect(settingsService.getQueryParamString()).toContain("neutralColorRange.from=20");
     }));
 
     //noinspection TypeScriptUnresolvedVariable
