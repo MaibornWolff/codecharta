@@ -5,7 +5,7 @@ import {ThreeOrbitControlsService} from "../../ui/codeMap/threeViewer/threeOrbit
 
 export interface Scenario {
     name: string;
-    settings: any;
+    settings: Partial<Settings>;
     autoFitCamera: boolean;
 }
 
@@ -38,12 +38,9 @@ export class ScenarioService {
         }
     }
 
-    /**
-     * Applies a given scenario to the current codecharta session.
-     * @param {Scenario} scenario
-     */
     public applyScenario(scenario: Scenario) {
-        this.settingsService.applySettings(scenario.settings);
+        const updatedSettingsUsingScenario = {...this.settingsService.settings, ...scenario.settings};
+        this.settingsService.applySettings(updatedSettingsUsingScenario);
         if(scenario.autoFitCamera){
             let _this = this;
             setTimeout(function(){
@@ -52,10 +49,6 @@ export class ScenarioService {
         }
     }
 
-    /**
-     * Returns an array of all scenarios.
-     * @returns {Scenario[]} all scenarios
-     */
     public getScenarios(): Scenario[] {
         return this.scenarios.filter(s => this.isScenarioPossible(s, this.dataService._data.metrics));
     }
@@ -69,12 +62,8 @@ export class ScenarioService {
         metrics.filter(x => x === scenario.settings.colorMetric).length > 0);
     }
 
-    /**
-     * Returns the default scenario.
-     * @returns {Scenario} the scenario
-     */
     public getDefaultScenario(): Scenario {
-        return createDefaultScenario(this.settingsService.settings.map, this.settingsService.computeMargin());
+        return createDefaultScenario();
     }
 
 }
