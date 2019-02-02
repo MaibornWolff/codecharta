@@ -21,23 +21,28 @@ export class ResetSettingsButtonController {
     public updateSettings(settingsList: string = this.settingsNames) {
         settingsList = settingsList.replace(/ /g,"");
         settingsList = settingsList.replace(/\n/g,"");
-        let tokens: string[] = settingsList.split(",");
-        let settings = this.settingsService.settings;
-        let defaultSettings = this.settingsService.getDefaultSettings(settings.map, this.dataService.data.metrics);
+        const tokens: string[] = settingsList.split(",");
+        const settings = this.settingsService.settings;
+        const defaultSettings = this.settingsService.getDefaultSettings(settings.map, this.dataService.data.metrics);
 
         tokens.forEach((token) => {
+
             let steps = token.split(".");
 
             if (steps.length > 1) {
+
+                let writeSettingsPointer = settings;
+                let readSettingsPointer = defaultSettings;
+
                 steps.forEach((step, index) => {
 
-                    if (settings[step] != null && defaultSettings[step] != null) {
+                    if (writeSettingsPointer[step] != null && readSettingsPointer[step] != null) {
 
                         if (index === steps.length - 1) {
-                            settings[step] = defaultSettings[step];
+                            writeSettingsPointer[step] = readSettingsPointer[step];
                         } else {
-                            settings = settings[step];
-                            defaultSettings = defaultSettings[step];
+                            writeSettingsPointer = writeSettingsPointer[step];
+                            readSettingsPointer = readSettingsPointer[step];
                         }
                     }
                 });
@@ -45,12 +50,8 @@ export class ResetSettingsButtonController {
                 this.settingsService.settings[token] = defaultSettings[token];
             }
         });
-
         this.settingsService.applySettings();
-
     }
-
-
 }
 
 export const resetSettingsButtonComponent = {
