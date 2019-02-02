@@ -1,7 +1,7 @@
 import {NGMock} from "../../../../mocks/ng.mockhelper";
 import "./scenario.module";
 import {Scenario, ScenarioService} from "./scenario.service";
-import {SettingsService} from "../settings/settings.service";
+import {Settings, SettingsService} from "../settings/settings.service";
 import {createDefaultScenario} from "./scenario.data";
 import {DataService} from "../data/data.service";
 
@@ -14,10 +14,8 @@ describe("app.codeCharta.core.scenarioService", function () {
         dataService: DataService,
         settingsService: SettingsService;
 
-    //noinspection TypeScriptUnresolvedVariable
     beforeEach(NGMock.mock.module("app.codeCharta.core.scenario"));
 
-    //noinspection TypeScriptUnresolvedVariable
     beforeEach(NGMock.mock.inject((_scenarioService_, _settingsService_, _$rootScope_, _dataService_) => {
         scenarioService = _scenarioService_;
         settingsService = _settingsService_;
@@ -88,17 +86,29 @@ describe("app.codeCharta.core.scenarioService", function () {
 
     });
 
-    it("should update only settings, which exist in given the scenario", () => {
-        const scenario = scenarioService.getDefaultScenario();
-        scenario.settings.neutralColorRange.from = 123;
-        scenario.settings.neutralColorRange.to = 456;
-        scenario.settings.colorMetric = "myTestMetric";
+    it("should update only settings, which exist in given scenario", () => {
+        const defaultSettings: Settings = scenarioService.settingsService.getDefaultSettings(settingsService.settings.map, dataService.data.metrics);
+        const scenario: Scenario = {
+            name: "myScenario",
+            settings: {
+                areaMetric: "myTestAreaMetric",
+                colorMetric: "myTestColorMetric",
+                heightMetric: "myTestHeightMetric",
+                amountOfTopLabels: 42
+            },
+            autoFitCamera: true
+        };
+
         scenarioService.applyScenario(scenario);
 
-        const s = scenarioService.settingsService.settings;
-        expect(s.neutralColorRange.from).toBe(scenario.settings.neutralColorRange.from);
-        expect(s.neutralColorRange.to).toBe(scenario.settings.neutralColorRange.to);
+        const s = settingsService.settings;
+        expect(s.areaMetric).toBe(scenario.settings.areaMetric);
         expect(s.colorMetric).toBe(scenario.settings.colorMetric);
+        expect(s.heightMetric).toBe(scenario.settings.heightMetric);
+        expect(s.amountOfTopLabels).toBe(scenario.settings.amountOfTopLabels);
+        expect(s.whiteColorBuildings).toBe(defaultSettings.whiteColorBuildings);
+        expect(s.isWhiteBackground).toBe(defaultSettings.isWhiteBackground);
+
     });
 
 });
