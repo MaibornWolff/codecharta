@@ -8,7 +8,6 @@ export interface CodeMapNode {
     origin?: string;
     visible?: boolean;
     path?: string;
-    markingColor?: string;
 }
 
 export interface CodeMap {
