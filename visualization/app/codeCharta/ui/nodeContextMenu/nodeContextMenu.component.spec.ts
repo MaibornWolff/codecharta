@@ -258,13 +258,19 @@ describe("node context menu", () => {
         });
 
         it("current folder is marked when building's marking color (0x hex notation) is the same as the given one (html hex notation)", () => {
-            nodeContextMenuController["contextMenuBuilding"] = { markingColor: "0x123FDE" };            
+            nodeContextMenuController["contextMenuBuilding"] = { path: "/root/node/path" };
+            nodeContextMenuController.settingsService.settings.markedPackages = [{
+                path: "/root/node/path", color: "0x123FDE"
+            }];
             const result = nodeContextMenuController.currentFolderIsMarkedWithColor("#123FDE");
             expect(result).toBeTruthy();
         });      
 
         it("current folder is not marked when building's marking color (0x hex notation) is not the same as the given one (html hex notation)", () => {
-            nodeContextMenuController["contextMenuBuilding"] = { markingColor: "0x123ABC" };            
+            nodeContextMenuController["contextMenuBuilding"] = { path: "/root/node/path"  };
+            nodeContextMenuController.settingsService.settings.markedPackages = [{
+                path: "/root/node/path", color: "0x123ABC"
+            }];
             const result = nodeContextMenuController.currentFolderIsMarkedWithColor("#123FDE");
             expect(result).toBeFalsy();
         });      

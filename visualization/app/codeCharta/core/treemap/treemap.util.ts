@@ -88,7 +88,7 @@ export class TreeMapUtils {
     private static getMarkingColor(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): number {
         let markingColor = "";
 
-        if (!this.isNodeLeaf(squaredNode)) {
+        if (!this.isNodeLeaf(squaredNode) && s.markedPackages) {
             let markedParentPackages = s.markedPackages.filter(mp => squaredNode.data.path.includes(mp.path));
 
             if (markedParentPackages.length > 0) {
