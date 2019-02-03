@@ -162,16 +162,18 @@ export class DataService {
         let leaves: HierarchyNode<CodeMapNode>[] = [];
 
         this._data.revisions.forEach((map)=>{
-            leaves = leaves.concat(d3.hierarchy<CodeMapNode>(map.root).leaves());
+            leaves = leaves.concat(d3.hierarchy<CodeMapNode>(map.nodes).leaves());
         });
 
         let attributeList: string[][] = leaves.map(function (d: HierarchyNode<CodeMapNode>) {
             return d.data.attributes ? Object.keys(d.data.attributes) : [];
         });
 
-        return attributeList.reduce(function (left: string[], right: string[]) {
+        let attributes: string[] = attributeList.reduce(function (left: string[], right: string[]) {
             return left.concat(right.filter(el => left.indexOf(el) === -1));
         });
+
+        return attributes.sort();
     }
 
     private getMetricNamesWithMaxValue() {
@@ -180,7 +182,11 @@ export class DataService {
         for(const attribute of this._data.metrics) {
             metricData.push({name: attribute, maxValue: this.getMaxMetricInAllRevisions(attribute)})
         }
-        return metricData;
+        return this.sortByAttributeName(metricData);
+    }
+
+    private sortByAttributeName(metricData: MetricData[]): MetricData[] {
+        return metricData.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
     }
 
     /**
@@ -199,7 +205,7 @@ export class DataService {
         let maxValue = 0;
 
         this.data.revisions.forEach((rev)=> {
-            let nodes = d3.hierarchy(rev.root).leaves();
+            let nodes = d3.hierarchy(rev.nodes).leaves();
             nodes.forEach((node: any)=> {
                 if (node.data.attributes[metric] > maxValue) {
                     maxValue = node.data.attributes[metric];

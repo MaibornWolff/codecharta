@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Hide/Flatten all buildings, if searchPattern can't find any matching nodes #225
 - Show maxValue of each metric in metricChooser select list #204
 - Colored color-slider inside the RibbonBar #318
+- Color positive buildings white and set as default option #311
 
 ### Changed
 - Update TreeView filter with search field #225
@@ -24,12 +25,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Use `fa-ban`-icon as symbols for blacklistType `Exclude` (instead of `fa-times`) #298
 - Label size keeps readable for large maps or a high distance between camera and map #237
 - updated dependencies to fix vulnerabilities
+- Scenarios only update settings which exist in Scenario and not all #224
+- MergeFilter to merge unique blacklist entries #275
+- MergeFilter to only merge unique attributeType entries #275
 
 ### Removed
 - Remove invertHeight checkbox in delta-view #306
-- Removed option to add blacklist entries from inside the blacklistPanel #298
+- Remove option to add blacklist entries from inside the blacklistPanel #298
+- Remove statistic functions in Experimental panel #308
 
 ### Fixed
+- CodeMap does not move anymore when navigating in text-fields #307
+- Merge blacklist in multipleFile view and convert paths #275
+- Show logo in NW.js standalone application #233
 
 ## [1.20.1] - 2018-12-19
 ### Added

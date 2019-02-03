@@ -53,16 +53,16 @@ describe("app.codeCharta.core.data.dataService", function() {
     it("set metrics should set metrics correctly", ()=>{
         dataService.setMap(data, 0);
         dataService.updateMetrics();
-        expect(dataService.data.metrics).toEqual(["RLOC", "Functions", "MCC", "unary"]);
+        expect(dataService.data.metrics).toEqual(["Functions", "MCC", "RLOC", "unary"]);
     });
 
     it("set metrics should set metricData correctly", ()=>{
         dataService.setMap(data, 0);
         dataService.updateMetrics();
         const expectedMetricData = [
-            {"maxValue": 100, "name": "RLOC"},
             {"maxValue": 1000, "name": "Functions"},
             {"maxValue": 100, "name": "MCC"},
+            {"maxValue": 100, "name": "RLOC"},
             {"maxValue": 1, "name": "unary"}
         ];
         expect(dataService.data.metricData).toEqual(expectedMetricData);
@@ -70,11 +70,11 @@ describe("app.codeCharta.core.data.dataService", function() {
 
     it("set metrics should set metrics correctly with multiple maps", ()=>{
         dataService.setMap(data, 0);
-        let data2 = JSON.parse(JSON.stringify(data));
-        data2.root.children[0].attributes["test"] = 0;
+        let data2: CodeMap = JSON.parse(JSON.stringify(data));
+        data2.nodes.children[0].attributes["test"] = 0;
         dataService.setMap(data2, 0);
         dataService.updateMetrics();
-        expect(dataService.data.metrics).toEqual(["RLOC", "Functions", "MCC", "unary", "test"]);
+        expect(dataService.data.metrics).toEqual(["Functions", "MCC", "RLOC", "test", "unary"]);
     });
 
     it("set metrics should not set metrics when all maps are null", ()=>{
@@ -99,7 +99,7 @@ describe("app.codeCharta.core.data.dataService", function() {
 
     it("setting a map should set it as render map and add the origin attribute", () => {
         dataService.setMap(data, 0);
-        expect(dataService.data.renderMap.root.origin).toBe(dataService.data.renderMap.fileName);
+        expect(dataService.data.renderMap.nodes.origin).toBe(dataService.data.renderMap.fileName);
     });
 
     it("setting a comparison map should do nothing if map at index does not exist", () => {
@@ -110,7 +110,7 @@ describe("app.codeCharta.core.data.dataService", function() {
 
     it("setting a map should set it as render map and every node should have attributes", () => {
         dataService.setMap(data, 0);
-        let root = d3.hierarchy<CodeMapNode>(dataService.data.renderMap.root);
+        let root = d3.hierarchy<CodeMapNode>(dataService.data.renderMap.nodes);
         root.each((node) => {
             expect(node.data.attributes).toBeDefined();
         });
@@ -166,7 +166,7 @@ describe("app.codeCharta.core.data.dataService", function() {
         dataService.onDeactivateDeltas();
 
         const renderMap = dataService.data.renderMap;
-        d3.hierarchy<CodeMapNode>(renderMap.root).each((node) => {
+        d3.hierarchy<CodeMapNode>(renderMap.nodes).each((node) => {
             expect(node.data.origin).toBe(renderMap.fileName);
         });
     });
@@ -196,7 +196,7 @@ describe("app.codeCharta.core.data.dataService", function() {
 
         dataService.processDeltas();
 
-        expect(dataService.deltaCalculatorService.provideDeltas).toHaveBeenCalledWith(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, ["rloc", "functions", "mcc", "unary", "more"]);
+        expect(dataService.deltaCalculatorService.provideDeltas).toHaveBeenCalledWith(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, ["functions", "mcc", "more", "rloc", "unary"]);
     });
 
     it("only calculate deltas when two maps exist and deltas are enabled", () => {

@@ -85,12 +85,21 @@ describe("RangeSliderController", () => {
         });
 
         it("sliderColor should get set correctly with positiveGreen color", () => {
+            rangeSliderController.settingsService.settings.whiteColorBuildings = false;
             const rangeColors = {"left": MapColors.positive, "middle": MapColors.neutral, "right": MapColors.negative};
             rangeSliderController.updateSliderColors();
             expect(rangeSliderController.applyCssSettings).toHaveBeenCalledWith(rangeColors, fromPercentage);
         });
 
+        it("sliderColor should get set correctly with lightGrey color", () => {
+            rangeSliderController.settingsService.settings.whiteColorBuildings = true;
+            const rangeColors = {"left": 0xDDDDDD, "middle": MapColors.neutral, "right": MapColors.negative};
+            rangeSliderController.updateSliderColors();
+            expect(rangeSliderController.applyCssSettings).toHaveBeenCalledWith(rangeColors, fromPercentage);
+        });
+
         it("sliderColor should get set correctly with deltaFlipped colors", () => {
+            rangeSliderController.settingsService.settings.whiteColorBuildings = false;
             rangeSliderController.settingsService.settings.neutralColorRange.flipped = true;
             const rangeColors = {"left": MapColors.negative, "middle": MapColors.neutral, "right": MapColors.positive};
             rangeSliderController.updateSliderColors();

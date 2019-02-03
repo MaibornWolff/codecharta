@@ -120,7 +120,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         } else {
             const from = Math.max(mp.path.length - MAX_NAME_LENGTH.lowerLimit, 0);
             const previewPackagePath = mp.path.substring(from);
-            const rootNode = this.settingsService.settings.map.root;
+            const rootNode = this.settingsService.settings.map.nodes;
             const startingDots = (previewPackagePath.startsWith(rootNode.path)) ? "" : "...";
             return startingDots + previewPackagePath;
         }
@@ -136,7 +136,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         this.deltaColorsFlipped = s.deltaColorFlipped;
         this.deltas = s.mode == KindOfMap.Delta;
 
-        this.positive = this.colorService.getImageDataUri(MapColors.positive);
+        this.positive = this.colorService.getImageDataUri((s.whiteColorBuildings) ? MapColors.lightGrey : MapColors.positive);
         this.neutral = this.colorService.getImageDataUri(MapColors.neutral);
         this.negative = this.colorService.getImageDataUri(MapColors.negative);
         this.select = this.colorService.getImageDataUri(MapColors.selected);
