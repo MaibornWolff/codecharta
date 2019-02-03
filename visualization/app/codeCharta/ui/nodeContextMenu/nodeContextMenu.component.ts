@@ -93,8 +93,10 @@ export class NodeContextMenuController {
     currentFolderIsMarkedWithColor(color: string) {
         return color
         && this.contextMenuBuilding
-        && this.contextMenuBuilding.markingColor
-        && color.substring(1) === this.contextMenuBuilding.markingColor.substring(2);
+        && this.settingsService.settings.markedPackages
+                .filter(mp => mp.path == this.contextMenuBuilding.path
+                    && mp.color == this.colorService.convertHashtagTo0xString(color)
+                ).length == 1;
     }
 
     markFolder(color: string) {
