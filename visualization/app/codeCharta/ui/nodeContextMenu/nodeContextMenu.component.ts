@@ -4,6 +4,7 @@ import angular from "angular";
 import {highlightColors} from "../codeMap/rendering/renderSettings";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
+import {ColorService} from "../../core/color/color.service";
 
 export class NodeContextMenuController {
 
@@ -12,7 +13,7 @@ export class NodeContextMenuController {
     public amountOfVisibleDependentEdges;
     public anyEdgeIsVisible;
 
-    private colors = highlightColors;
+    private markingColors = [];
 
     /* @ngInject */
     constructor(private $element: Element,
@@ -21,7 +22,8 @@ export class NodeContextMenuController {
                 private $rootScope,
                 private settingsService: SettingsService,
                 private codeMapActionsService: CodeMapActionsService,
-                private codeMapUtilService: CodeMapUtilService) {
+                private codeMapUtilService: CodeMapUtilService,
+                private colorService: ColorService) {
 
         this.$rootScope.$on("show-node-context-menu", (e, data) => {
             this.show(data.path, data.type, data.x, data.y)
@@ -46,9 +48,14 @@ export class NodeContextMenuController {
             this.amountOfDependentEdges = this.codeMapActionsService.amountOfDependentEdges(this.contextMenuBuilding);
             this.amountOfVisibleDependentEdges = this.codeMapActionsService.amountOfVisibleDependentEdges(this.contextMenuBuilding);
             this.anyEdgeIsVisible = this.codeMapActionsService.anyEdgeIsVisible();
+            this.markingColors = this.getConvertedMarkingColor();
             const {x, y} = this.calculatePosition(mouseX, mouseY);
             this.setPosition(x, y);
         });
+    }
+
+    getConvertedMarkingColor(): string[] {
+        return highlightColors.map(color => this.colorService.convertFromNumberToHex(color));
     }
 
     calculatePosition(mouseX: number, mouseY: number) {

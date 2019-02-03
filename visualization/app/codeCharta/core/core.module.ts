@@ -1,4 +1,5 @@
 // Plop: Append module import here
+import "./color/color.module";
 import "./multipleFile/multipleFile.module";
 import "./data/data.module";
 import "./settings/settings.module";
@@ -15,6 +16,7 @@ angular.module(
     "app.codeCharta.core",
     [
         // Plop: Append component name here
+		"app.codeCharta.core.color",
         "app.codeCharta.core.multiple",
         "app.codeCharta.core.data",
         "app.codeCharta.core.settings",

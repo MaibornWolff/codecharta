@@ -6,7 +6,7 @@ import { SettingsService } from "../../core/settings/settings.service";
 import { CodeMapUtilService } from "../codeMap/codeMap.util.service";
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service";
 import { NodeContextMenuController } from "./nodeContextMenu.component";
-import angular from "angular";
+import {ColorService} from "../../core/color/color.service";
 
 describe("node context menu", () => {
 
@@ -29,6 +29,7 @@ describe("node context menu", () => {
             settingsService: getService<SettingsService>("settingsService"),
             codeMapActionsService: getService<CodeMapActionsService>("codeMapActionsService"),
             codeMapUtilService: getService<CodeMapUtilService>("codeMapUtilService"),
+            colorService: getService<ColorService>("colorService"),
         };
 
     }
@@ -58,7 +59,8 @@ describe("node context menu", () => {
             services.$rootScope,
             services.settingsService,
             services.codeMapActionsService,
-            services.codeMapUtilService
+            services.codeMapUtilService,
+            services.colorService
         );
     }
 

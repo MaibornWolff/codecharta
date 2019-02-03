@@ -200,8 +200,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      * @emits {settings-changed} on call
      */
     public onSettingsChanged() {
-        console.log(this.settings.markedPackages);
-
         this.settings.margin = this.computeMargin();
 
         if (this._lastDeltaState && this._settings.mode != KindOfMap.Delta) {

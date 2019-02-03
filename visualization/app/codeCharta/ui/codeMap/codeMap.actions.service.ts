@@ -2,6 +2,7 @@ import {CodeMapNode, Edge, BlacklistItem, BlacklistType} from "../../core/data/m
 import {MarkedPackage, Settings, SettingsService} from "../../core/settings/settings.service";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 import angular from "angular";
+import {ColorService} from "../../core/color/color.service";
 
 export class CodeMapActionsService {
 
@@ -10,7 +11,8 @@ export class CodeMapActionsService {
     constructor(
         private settingsService: SettingsService,
         private threeOrbitControlsService: ThreeOrbitControlsService,
-        private $timeout
+        private $timeout,
+        private colorService: ColorService
     ) {
 
     }
@@ -23,9 +25,9 @@ export class CodeMapActionsService {
         }
     }
 
-    markFolder(node: CodeMapNode, newColor: string) {
+    markFolder(node: CodeMapNode, color: string) {
         let s = this.settingsService.settings;
-        let newMarkedPackage: MarkedPackage = this.getNewMarkedPackage(node.path, newColor);
+        let newMarkedPackage: MarkedPackage = this.getNewMarkedPackage(node.path, color);
 
         if (!s.markedPackages || s.markedPackages == []) {
             this.addFirstPackageToSettings(newMarkedPackage, s);
@@ -47,7 +49,7 @@ export class CodeMapActionsService {
         } else if (matchingPackagesByPathAndColor.length == 0) {
             this.removeMarkedPackage(matchingPackagesByPath[0], s);
 
-            if (markedParentPackagesSorted.length == 0 || markedParentPackagesSorted[0].color != newColor) {
+            if (markedParentPackagesSorted.length == 0 || markedParentPackagesSorted[0].color != newMarkedPackage.color) {
                 this.addMarkedPackage(newMarkedPackage, s);
             }
             this.settingsService.applySettings(s);
@@ -179,7 +181,7 @@ export class CodeMapActionsService {
     private getNewMarkedPackage(path: string, color: string, name: string = undefined): MarkedPackage {
         let coloredPackage: MarkedPackage = {
             path: path,
-            color: color,
+            color: this.colorService.convertHashtagTo0xString(color),
             attributes: {}
         };
         if (name) {

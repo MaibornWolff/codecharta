@@ -12,12 +12,12 @@ export function getFloorGradient(nodes: node[]): number[] {
 }
 
 export const highlightColors = [
-    "#FF1D8E",
-    "#1d8eff",
-    "#1DFFFF",
-    "#8eff1d",
-    "#8e1dff",
-    "#FFFF1D",
+    0xFF1D8E,
+    0x1d8eff,
+    0x1DFFFF,
+    0x8eff1d,
+    0x8e1dff,
+    0xFFFF1D,
 ];
 
 export enum MapColors {
