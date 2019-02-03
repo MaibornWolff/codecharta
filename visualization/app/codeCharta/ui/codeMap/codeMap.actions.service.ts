@@ -39,10 +39,6 @@ export class CodeMapActionsService {
         const markedParentPackagesSorted = this.getSortedMarkedParentPackages(newMarkedPackage, s);
         const markedChildrenPackages = this.getMarkedChildrenPackages(newMarkedPackage, s);
 
-        if (markedChildrenPackages.length > 0) {
-            this.removeMarkedChildrenPackagesWithSameColor(markedChildrenPackages, newMarkedPackage, s);
-        }
-
         if (matchingPackagesByPath.length == 0 && (markedParentPackagesSorted.length == 0 || markedParentPackagesSorted[0].color != newMarkedPackage.color)) {
             this.addMarkedPackage(newMarkedPackage, s);
 
@@ -54,6 +50,10 @@ export class CodeMapActionsService {
             }
             this.settingsService.applySettings(s);
         }
+
+        if (markedChildrenPackages.length > 0) {
+            this.removeMarkedChildrenPackagesWithSameColor(markedChildrenPackages, s);
+        }
     }
 
     unmarkFolder(node: CodeMapNode) {
@@ -63,9 +63,10 @@ export class CodeMapActionsService {
         this.settingsService.applySettings(s);
     }
 
-    private removeMarkedChildrenPackagesWithSameColor(markedChildrenPackages: MarkedPackage[], newMarkedPackage: MarkedPackage, s: Settings) {
+    private removeMarkedChildrenPackagesWithSameColor(markedChildrenPackages: MarkedPackage[], s: Settings) {
         markedChildrenPackages.forEach(childPackage => {
-            if(childPackage.color == newMarkedPackage.color) {
+            const markedParentPackagesSorted = this.getSortedMarkedParentPackages(childPackage, s);
+            if(markedParentPackagesSorted.length > 0 && markedParentPackagesSorted[0].color == childPackage.color) {
                 this.removeMarkedPackage(childPackage, s);
             }
         });
@@ -75,7 +76,7 @@ export class CodeMapActionsService {
     private getSortedMarkedParentPackages(newMarkedPackage: MarkedPackage, s: Settings) {
         return s.markedPackages
             .filter(p => newMarkedPackage.path.includes(p.path) && p.path != newMarkedPackage.path)
-            .sort((a, b) => this.sortByDirectoryLevels(a, b));
+            .sort((a, b) => a.path.length > b.path.length ? 0 : 1);
     }
 
     private getMarkedChildrenPackages(newMarkedPackage: MarkedPackage, s: Settings) {
@@ -98,14 +99,6 @@ export class CodeMapActionsService {
         if (indexToRemove > -1) {
             s.markedPackages.splice(indexToRemove, 1);
         }
-    }
-
-    private sortByDirectoryLevels(a: MarkedPackage, b: MarkedPackage) {
-        return (this.getAmountOfDirectoryLevels(a) > this.getAmountOfDirectoryLevels(b)) ? 0 : 1;
-    }
-
-    private getAmountOfDirectoryLevels(p: MarkedPackage) {
-        p.path.split("/").length;
     }
 
     hideNode(node: CodeMapNode) {

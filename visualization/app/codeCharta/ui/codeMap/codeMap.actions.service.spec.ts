@@ -213,6 +213,21 @@ describe("CodeMapActionService", ()=>{
             markedPackageListContains([markedRoot, markedNodeA]);
         });
 
+        it("marking a packages in parentOrder: red, yellow, red", ()=>{
+            const markedRoot: MarkedPackage = getMarkedPackage(root.path, colorRed);
+            const markedNodeA: MarkedPackage = getMarkedPackage(nodeA.path, colorYellow);
+            const markedNodeAChildA: MarkedPackage = getMarkedPackage(nodeAChildA.path, colorRed);
+
+            codeMapActionService.markFolder(nodeAChildA, colorRed);
+            markedPackageListContains([markedNodeAChildA]);
+
+            codeMapActionService.markFolder(nodeA, colorYellow);
+            markedPackageListContains([markedNodeAChildA, markedNodeA]);
+
+            codeMapActionService.markFolder(root, colorRed);
+            markedPackageListContains([markedNodeAChildA, markedNodeA, markedRoot]);
+        });
+
         it("marking a marked package with a different color", ()=>{
             const markedRootYellow: MarkedPackage = getMarkedPackage(root.path, colorYellow);
             const markedRootRed: MarkedPackage = getMarkedPackage(root.path, colorRed);
