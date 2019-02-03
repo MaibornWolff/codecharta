@@ -63,44 +63,6 @@ export class CodeMapActionsService {
         this.settingsService.applySettings(s);
     }
 
-    private removeMarkedChildrenPackagesWithSameColor(markedChildrenPackages: MarkedPackage[], s: Settings) {
-        markedChildrenPackages.forEach(childPackage => {
-            const markedParentPackagesSorted = this.getSortedMarkedParentPackages(childPackage, s);
-            if(markedParentPackagesSorted.length > 0 && markedParentPackagesSorted[0].color == childPackage.color) {
-                this.removeMarkedPackage(childPackage, s);
-            }
-        });
-        this.settingsService.applySettings(s);
-    }
-
-    private getSortedMarkedParentPackages(newMarkedPackage: MarkedPackage, s: Settings) {
-        return s.markedPackages
-            .filter(p => newMarkedPackage.path.includes(p.path) && p.path != newMarkedPackage.path)
-            .sort((a, b) => a.path.length > b.path.length ? 0 : 1);
-    }
-
-    private getMarkedChildrenPackages(newMarkedPackage: MarkedPackage, s: Settings) {
-        return s.markedPackages.filter(p =>
-            p.path.includes(newMarkedPackage.path) && p.path != newMarkedPackage.path);
-    }
-
-    private addFirstPackageToSettings(markedPackage: MarkedPackage, s: Settings) {
-        s.markedPackages = [];
-        this.addMarkedPackage(markedPackage, s);
-    }
-
-    private addMarkedPackage(markedPackage: MarkedPackage, s: Settings) {
-        s.markedPackages.push(markedPackage);
-        this.settingsService.applySettings(s);
-    }
-
-    private removeMarkedPackage(markedPackage: MarkedPackage, s: Settings) {
-        const indexToRemove = s.markedPackages.indexOf(markedPackage);
-        if (indexToRemove > -1) {
-            s.markedPackages.splice(indexToRemove, 1);
-        }
-    }
-
     hideNode(node: CodeMapNode) {
         this.pushItemToBlacklist({path: node.path, type: BlacklistType.hide});
         this.apply();
@@ -181,6 +143,44 @@ export class CodeMapActionsService {
             coloredPackage.attributes.name = name;
         }
         return coloredPackage;
+    }
+
+    private removeMarkedChildrenPackagesWithSameColor(markedChildrenPackages: MarkedPackage[], s: Settings) {
+        markedChildrenPackages.forEach(childPackage => {
+            const markedParentPackagesSorted = this.getSortedMarkedParentPackages(childPackage, s);
+            if(markedParentPackagesSorted.length > 0 && markedParentPackagesSorted[0].color == childPackage.color) {
+                this.removeMarkedPackage(childPackage, s);
+            }
+        });
+        this.settingsService.applySettings(s);
+    }
+
+    private getSortedMarkedParentPackages(newMarkedPackage: MarkedPackage, s: Settings) {
+        return s.markedPackages
+            .filter(p => newMarkedPackage.path.includes(p.path) && p.path != newMarkedPackage.path)
+            .sort((a, b) => b.path.length - a.path.length);
+    }
+
+    private getMarkedChildrenPackages(newMarkedPackage: MarkedPackage, s: Settings) {
+        return s.markedPackages.filter(p =>
+            p.path.includes(newMarkedPackage.path) && p.path != newMarkedPackage.path);
+    }
+
+    private addFirstPackageToSettings(markedPackage: MarkedPackage, s: Settings) {
+        s.markedPackages = [];
+        this.addMarkedPackage(markedPackage, s);
+    }
+
+    private addMarkedPackage(markedPackage: MarkedPackage, s: Settings) {
+        s.markedPackages.push(markedPackage);
+        this.settingsService.applySettings(s);
+    }
+
+    private removeMarkedPackage(markedPackage: MarkedPackage, s: Settings) {
+        const indexToRemove = s.markedPackages.indexOf(markedPackage);
+        if (indexToRemove > -1) {
+            s.markedPackages.splice(indexToRemove, 1);
+        }
     }
 
     private changeEdgesVisibility(visibility: boolean, node: CodeMapNode = null) {
