@@ -1,5 +1,6 @@
 import {SquarifiedValuedCodeMapNode, TreeMapSettings} from "./treemap.service";
 import {node} from "../../ui/codeMap/rendering/node";
+import {MarkedPackage} from "../settings/settings.service";
 
 export class TreeMapUtils {
 
@@ -55,7 +56,7 @@ export class TreeMapUtils {
             origin: squaredNode.data.origin,
             link: squaredNode.data.link,
             children: [],
-            markingColor: parseInt(squaredNode.data.markingColor),
+            markingColor: parseInt(this.getMarkingColor(squaredNode, s)),
             flat: flattened,
         };
 
@@ -83,5 +84,26 @@ export class TreeMapUtils {
     private static isNodeNonSearched(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): boolean {
         return s.searchedNodePaths.filter(path =>
             path == squaredNode.data.path).length == 0;
+    }
+
+    private static getMarkingColor(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): string {
+        let markingColor = "";
+
+        if (!this.isNodeLeaf(squaredNode)) {
+            let markedParentPackages = s.markedPackages.filter(mp => squaredNode.data.path.includes(mp.path));
+
+            if (markedParentPackages.length > 0) {
+                let sortedMarkedParentPackages = markedParentPackages.sort((a, b) => a.path.length > b.path.length ? 0 : 1);
+                console.log(
+                    squaredNode.data.path,
+                    s.markedPackages,
+                    markedParentPackages,
+                    sortedMarkedParentPackages,
+                    sortedMarkedParentPackages[0],
+                );
+                markingColor = sortedMarkedParentPackages[0].color;
+            }
+        }
+        return markingColor;
     }
 }
