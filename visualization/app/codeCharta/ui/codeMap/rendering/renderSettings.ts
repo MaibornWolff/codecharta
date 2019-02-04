@@ -31,10 +31,7 @@ export enum MapColors {
     base = 0x666666,
     flat = 0xAAAAAA,
     lightGrey = 0xDDDDDD,
-}
-
-export enum AngularColors {
-    green = "#00BFA5",
+    angularGreen = 0x00BFA5
 }
 
 export interface renderSettings {

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import {node} from "./rendering/node";
-import {AngularColors, renderSettings} from "./rendering/renderSettings";
+import {MapColors, renderSettings} from "./rendering/renderSettings";
 import {CameraChangeSubscriber, ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera, Sprite} from "three";
 import {ThreeCameraService} from "./threeViewer/threeCameraService";
@@ -94,7 +94,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
         
         //bg
         ctx!.fillStyle = "rgba(255,255,255,1)";
-        ctx!.strokeStyle = AngularColors.green;
+        ctx!.strokeStyle = MapColors.angularGreen;
         ctx!.lineJoin = "round";
         ctx!.lineCap = "round";
         ctx!.lineWidth = 5;
@@ -131,7 +131,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
     private makeLine(x: number, y: number, z: number): THREE.Line {
         const material = new THREE.LineBasicMaterial({
-            color: AngularColors.green,
+            color: MapColors.angularGreen,
             linewidth: 2
         });
 

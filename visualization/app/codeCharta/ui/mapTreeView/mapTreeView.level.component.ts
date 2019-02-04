@@ -4,7 +4,6 @@ import {CodeMapNode, BlacklistType} from "../../core/data/model/CodeMap";
 import {NodeContextMenuController} from "../nodeContextMenu/nodeContextMenu.component";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
-import {AngularColors} from "../codeMap/rendering/renderSettings";
 import {ColorService} from "../../core/color/color.service";
 
 export interface MapTreeViewHoverEventSubscriber {
@@ -17,7 +16,6 @@ export class MapTreeViewLevelController {
     public node: CodeMapNode = null;
     public depth: number = 0;
     public collapsed: boolean = true;
-    public angularGreen: string = AngularColors.green;
 
     /* @ngInject */
     constructor(
