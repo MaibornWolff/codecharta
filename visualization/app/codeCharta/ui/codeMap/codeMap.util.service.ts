@@ -48,7 +48,7 @@ export class CodeMapUtilService {
 
 
     public static getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]): string {
-        let markingColor = "";
+        let markingColor = null;
 
         if (markedPackages) {
             let markedParentPackages = markedPackages.filter(mp => node.path.includes(mp.path));

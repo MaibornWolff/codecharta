@@ -35,11 +35,13 @@ export class MapTreeViewLevelController {
     }
 
     getMarkingColor() {
+        let defaultColor = "#000";
+
         if(!this.node || this.node.type == "File") {
-            return "#000";
+            return defaultColor;
         }
         const markingColor = CodeMapUtilService.getMarkingColor(this.node, this.settingsService.settings.markedPackages);
-        return this.colorService.convert0xStringToHex(markingColor);
+        return markingColor ? this.colorService.convert0xStringToHex(markingColor) : defaultColor;
     }
 
     onMouseEnter() {

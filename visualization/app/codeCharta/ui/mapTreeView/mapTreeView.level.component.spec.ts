@@ -6,6 +6,9 @@ import {CodeMapNode, BlacklistType} from "../../core/data/model/CodeMap";
 import {IRootScopeService} from "angular";
 import "./mapTreeView";
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper";
+import * as marked from "marked";
+import Code = marked.Tokens.Code;
+import {ColorService} from "../../core/color/color.service";
 
 describe("MapTreeViewLevelController", () => {
 
@@ -19,6 +22,7 @@ describe("MapTreeViewLevelController", () => {
     let codeMapActionsService: CodeMapActionsService;
     let settingsServiceMock: SettingsService;
     let codeMapUtilService: CodeMapUtilService;
+    let colorService: ColorService;
     let simpleHierarchy: CodeMapNode;
 
     function mockEverything() {
@@ -93,28 +97,33 @@ describe("MapTreeViewLevelController", () => {
         codeMapUtilService = new CodeMapUtilService(settingsServiceMock);
         settingsServiceMock.settings.map.nodes = simpleHierarchy;
         codeMapActionsService = new CodeMapActionsService(settingsServiceMock, threeOrbitControlsService, $timeout);
-        mapTreeViewLevelController = new MapTreeViewLevelController($rootScope, codeMapActionsService, settingsServiceMock);
+        colorService = new ColorService();
+        mapTreeViewLevelController = new MapTreeViewLevelController($rootScope, codeMapActionsService, settingsServiceMock, colorService);
     }
 
     beforeEach(function() {
         mockEverything();
     });
 
-    describe("Folder Color", () => {
+    describe("MarkingColor", () => {
 
         it("Black color if no folder", () => {
-            expect(mapTreeViewLevelController.getFolderColor()).toBe("#000");
+            mapTreeViewLevelController.node = { path: "/root/node/path", type: "File" };
+            expect(mapTreeViewLevelController.getMarkingColor()).toBe("#000");
         });
 
-        it("Return the color defined in the folder", () => {
-            mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder");
-            mapTreeViewLevelController.node.markingColor = "0xff3210";
-            expect(mapTreeViewLevelController.getFolderColor()).toBe("#ff3210");
+        it("Return the markinColor if the matching markedPackage", () => {
+            mapTreeViewLevelController.node = { path: "/root/node/path", type: "Folder" };
+            mapTreeViewLevelController.settingsService.settings.markedPackages = [{
+                path: "/root/node/path", color: "0x123FDE"
+            }];
+            expect(mapTreeViewLevelController.getMarkingColor()).toBe("#123FDE");
         });
 
         it("Return black if no markingColor in node", () => {
-            mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder");
-            expect(mapTreeViewLevelController.getFolderColor()).toBe("#000");
+            mapTreeViewLevelController.node = { path: "/root/node/path", type: "Folder" };
+            mapTreeViewLevelController.settingsService.settings.markedPackages = [];
+            expect(mapTreeViewLevelController.getMarkingColor()).toBe("#000");
         });
     });
 
