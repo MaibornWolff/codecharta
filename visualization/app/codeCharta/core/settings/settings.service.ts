@@ -27,7 +27,7 @@ export enum KindOfMap {
 
 export interface MarkedPackage {
     path: string,
-    color: string,
+    color: string, // saved as "0xFFFFFF"
     attributes: {[key: string]: any}
 }
 

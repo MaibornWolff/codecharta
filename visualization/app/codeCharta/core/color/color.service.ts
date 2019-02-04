@@ -5,16 +5,20 @@ export class ColorService {
 
     }
 
-    public convertFromHexToNumber(hexString: string): number {
-        return Number(this.convertHashtagTo0xString(hexString));
+    public convertHexToNumber(hexString: string): number {
+        return Number("0x" + hexString.substring(1));
     }
 
-    public convertHashtagTo0xString(hexString: string): string {
-        return "0x" + hexString.substring(1, 7);
+    public convertNumberToHex(colorNumber: number): string {
+        return "#" + colorNumber.toString(16);
     }
 
-    public convertFromNumberToHex(hexNumber: number): string {
-        return "#" + hexNumber.toString(16);
+    public convertHexTo0xString(hexString: string): string {
+        return hexString.replace("#","0x");
+    }
+
+    public convert0xStringToHex(hex0xString: string): string {
+        return hex0xString.replace("0x","#");
     }
 
     public getImageDataUri(hex: number): string {

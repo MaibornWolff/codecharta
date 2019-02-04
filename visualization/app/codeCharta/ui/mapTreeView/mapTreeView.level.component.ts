@@ -5,6 +5,7 @@ import {NodeContextMenuController} from "../nodeContextMenu/nodeContextMenu.comp
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
 import {AngularColors} from "../codeMap/rendering/renderSettings";
+import {ColorService} from "../../core/color/color.service";
 
 export interface MapTreeViewHoverEventSubscriber {
     onShouldHoverNode(node: CodeMapNode);
@@ -22,7 +23,8 @@ export class MapTreeViewLevelController {
     constructor(
         private $rootScope: IRootScopeService,
         private codeMapActionsService: CodeMapActionsService,
-        private settingsService: SettingsService
+        private settingsService: SettingsService,
+        private colorService: ColorService
     ) {
 
     }
@@ -32,11 +34,12 @@ export class MapTreeViewLevelController {
         $rootScope.$on("should-unhover-node", (event, args)=>subscriber.onShouldUnhoverNode(args));
     }
 
-    getFolderColor() {
-        if(!this.node) {
+    getMarkingColor() {
+        if(!this.node || this.node.type == "File") {
             return "#000";
         }
-        return this.node.markingColor ? "#" + this.node.markingColor.substr(2) : "#000";
+        const markingColor = CodeMapUtilService.getMarkingColor(this.node, this.settingsService.settings.markedPackages);
+        return this.colorService.convert0xStringToHex(markingColor);
     }
 
     onMouseEnter() {

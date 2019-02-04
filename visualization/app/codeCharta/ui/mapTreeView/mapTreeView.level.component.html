@@ -3,8 +3,8 @@
     <div class="tree-element-label-{{::$ctrl.depth?$ctrl.depth:0}} tree-element-label ng-mouseenter="$ctrl.onMouseEnter()" ng-mouseleave="$ctrl.onMouseLeave()" ng-right-click="$ctrl.onRightClick($event)">
 
         <span ng-click="$ctrl.onFolderClick()">
-            <span role="img" ng-if="!$ctrl.isLeaf() && $ctrl.collapsed" class="fa fa-folder cursor-pointer" ng-style="{'color': $ctrl.node.markingColor.replace('0x','#') }" aria-hidden="true"></span>
-            <span role="img" ng-if="!$ctrl.isLeaf() && !$ctrl.collapsed" class="fa fa-folder-open cursor-pointer" ng-style="{'color': $ctrl.node.markingColor.replace('0x','#') }" aria-hidden="true"></span>
+            <span role="img" ng-if="!$ctrl.isLeaf() && $ctrl.collapsed" class="fa fa-folder cursor-pointer" ng-style="{'color': $ctrl.getMarkingColor() }" aria-hidden="true"></span>
+            <span role="img" ng-if="!$ctrl.isLeaf() && !$ctrl.collapsed" class="fa fa-folder-open cursor-pointer" ng-style="{'color': $ctrl.getMarkingColor() }" aria-hidden="true"></span>
             <span role="img" ng-if="$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></span>
         </span>
 

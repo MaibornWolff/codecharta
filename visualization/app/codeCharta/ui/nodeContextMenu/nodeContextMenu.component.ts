@@ -55,7 +55,7 @@ export class NodeContextMenuController {
     }
 
     getConvertedMarkingColor(): string[] {
-        return highlightColors.map(color => this.colorService.convertFromNumberToHex(color));
+        return highlightColors.map(color => this.colorService.convertNumberToHex(color));
     }
 
     calculatePosition(mouseX: number, mouseY: number) {
@@ -95,7 +95,7 @@ export class NodeContextMenuController {
         && this.contextMenuBuilding
         && this.settingsService.settings.markedPackages
                 .filter(mp => mp.path == this.contextMenuBuilding.path
-                    && mp.color == this.colorService.convertHashtagTo0xString(color)
+                    && mp.color == this.colorService.convertHexTo0xString(color)
                 ).length == 1;
     }
 

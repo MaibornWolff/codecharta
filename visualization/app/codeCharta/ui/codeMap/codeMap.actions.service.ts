@@ -136,7 +136,7 @@ export class CodeMapActionsService {
     private getNewMarkedPackage(path: string, color: string, name: string = undefined): MarkedPackage {
         let coloredPackage: MarkedPackage = {
             path: path,
-            color: this.colorService.convertHashtagTo0xString(color),
+            color: this.colorService.convertHexTo0xString(color),
             attributes: {}
         };
         if (name) {

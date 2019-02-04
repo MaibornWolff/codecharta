@@ -8,6 +8,16 @@ describe("ColorService", () => {
         colorService = new ColorService();
     });
 
+    describe("Convert hex and decimal", () => {
+        it("convert hex to decimal", () => {
+            expect(colorService.convertHexToNumber("#ABABAB")).toEqual(0xABABAB);
+        });
+
+        it("convert decimal to hex", () => {
+            expect(colorService.convertNumberToHex(0xABABAB)).toEqual("#ababab");
+        });
+    });
+
     describe("Color to pixel image", () => {
         it("generate pixel in base64", () => {
             expect(colorService.generatePixel("some color value")).toBe("data:image/gif;base64,R0lGODlhAQABAPAAsome color value/yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==");

@@ -158,7 +158,7 @@ describe("CodeMapActionService", ()=>{
         let nodeAChildB: CodeMapNode;
 
         function getMarkedPackage(path: string, color: string): MarkedPackage {
-            color = codeMapActionService.colorService.convertHashtagTo0xString(color);
+            color = codeMapActionService.colorService.convertHexTo0xString(color);
             return {path: path, color: color, attributes: {}};
         }
 
