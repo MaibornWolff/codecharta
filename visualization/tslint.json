@@ -8,7 +8,7 @@
         "no-eval": true,
         "no-conditional-assignment": true,
         "new-parens": true,
-        "no-unused-variable": true,
+        "no-unused-variable": [true, {"ignore-pattern": "^_"}],
         "no-console": {
             "severity": "warning",
             "options": ["debug", "info", "log", "time", "timeEnd", "trace"]
