@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Show maxValue of each metric in metricChooser select list #204
 - Colored color-slider inside the RibbonBar #318
 - Color positive buildings white and set as default option #311
+- Adding prettier formatter
 
 ### Changed
 - Update TreeView filter with search field #225
