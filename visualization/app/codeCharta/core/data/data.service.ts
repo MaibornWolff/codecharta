@@ -29,6 +29,11 @@ export interface DataServiceSubscriber {
  */
 export class DataService {
 
+
+    get data(): DataModel {
+        return this._data;
+    }
+
     private _data: DataModel;
     private _lastReferenceIndex = 0;
     private _lastComparisonMap = null;
@@ -79,15 +84,6 @@ export class DataService {
         }
     }
 
-    private processDeltas() {
-        if(this._data.renderMap) {
-            this.deltaCalculatorService.removeCrossOriginNodes(this._data.renderMap);
-        }
-        if (this._deltasEnabled && this._data.renderMap && this._lastComparisonMap) {
-            this.deltaCalculatorService.provideDeltas(this._data.renderMap,this._lastComparisonMap, this._data.metrics);
-        }
-    }
-
     public onActivateDeltas() {
         if (!this._deltasEnabled) {
             this._deltasEnabled = true;
@@ -101,11 +97,6 @@ export class DataService {
 
             this.setComparisonMap(this._lastReferenceIndex);
         }
-    }
-
-
-    get data(): DataModel {
-        return this._data;
     }
 
     public subscribe(subscriber: DataServiceSubscriber) {
@@ -158,6 +149,42 @@ export class DataService {
         this._data.metricData = this.getMetricNamesWithMaxValue();
     }
 
+    /**
+     * resets all maps (deletes them)
+     */
+    public resetMaps() {
+        this._data.revisions = [];
+        this._data.metrics = [];
+        this._data.metricData = [];
+        this._lastComparisonMap = null;
+        this._data.renderMap = null;
+        this.notify();
+    }
+
+    public getMaxMetricInAllRevisions(metric: string) {
+        let maxValue = 0;
+
+        this.data.revisions.forEach((rev)=> {
+            let nodes = d3.hierarchy(rev.nodes).leaves();
+            nodes.forEach((node: any)=> {
+                if (node.data.attributes[metric] > maxValue) {
+                    maxValue = node.data.attributes[metric];
+                }
+            });
+        });
+
+        return maxValue;
+    }
+
+    private processDeltas() {
+        if(this._data.renderMap) {
+            this.deltaCalculatorService.removeCrossOriginNodes(this._data.renderMap);
+        }
+        if (this._deltasEnabled && this._data.renderMap && this._lastComparisonMap) {
+            this.deltaCalculatorService.provideDeltas(this._data.renderMap,this._lastComparisonMap, this._data.metrics);
+        }
+    }
+
     private getUniqueMetricNames(): string[] {
         let leaves: HierarchyNode<CodeMapNode>[] = [];
 
@@ -187,33 +214,6 @@ export class DataService {
 
     private sortByAttributeName(metricData: MetricData[]): MetricData[] {
         return metricData.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
-    }
-
-    /**
-     * resets all maps (deletes them)
-     */
-    public resetMaps() {
-        this._data.revisions = [];
-        this._data.metrics = [];
-        this._data.metricData = [];
-        this._lastComparisonMap = null;
-        this._data.renderMap = null;
-        this.notify();
-    }
-
-    public getMaxMetricInAllRevisions(metric: string) {
-        let maxValue = 0;
-
-        this.data.revisions.forEach((rev)=> {
-            let nodes = d3.hierarchy(rev.nodes).leaves();
-            nodes.forEach((node: any)=> {
-                if (node.data.attributes[metric] > maxValue) {
-                    maxValue = node.data.attributes[metric];
-                }
-            });
-        });
-
-        return maxValue;
     }
 
 }

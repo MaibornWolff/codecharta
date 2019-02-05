@@ -27,11 +27,6 @@ export class MapTreeViewLevelController {
 
     }
 
-    public static subscribeToHoverEvents($rootScope: IRootScopeService, subscriber: MapTreeViewHoverEventSubscriber){
-        $rootScope.$on("should-hover-node", (event, args)=>subscriber.onShouldHoverNode(args));
-        $rootScope.$on("should-unhover-node", (event, args)=>subscriber.onShouldUnhoverNode(args));
-    }
-
     public getFolderColor() {
         if(!this.node) {
             return "#000";
@@ -85,6 +80,11 @@ export class MapTreeViewLevelController {
 
     public sortByFolder(node: CodeMapNode) {
         return (node && node.children && node.children.length > 0) ? 1 : 0;
+    }
+
+    public static subscribeToHoverEvents($rootScope: IRootScopeService, subscriber: MapTreeViewHoverEventSubscriber){
+        $rootScope.$on("should-hover-node", (event, args)=>subscriber.onShouldHoverNode(args));
+        $rootScope.$on("should-unhover-node", (event, args)=>subscriber.onShouldUnhoverNode(args));
     }
 
 }

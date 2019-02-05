@@ -11,6 +11,11 @@ export class DownloadService {
     constructor(private settingsService: SettingsService) {
     }
 
+    public downloadCurrentMap() {
+        const data = this.getProjectDataAsCCJsonFormat();
+        this.downloadData(data, this.getNewFileName());
+    }
+
     private addDateToFileName(fileName) {
         const date = new Date();
         const dateString = date.getDate() + "_" + (date.getMonth() + 1)  + "_" + date.getFullYear();
@@ -32,11 +37,6 @@ export class DownloadService {
             delete node.data.visible;
         });
         return copy;
-    }
-
-    public downloadCurrentMap() {
-        const data = this.getProjectDataAsCCJsonFormat();
-        this.downloadData(data, this.getNewFileName());
     }
 
     private getProjectDataAsCCJsonFormat() {

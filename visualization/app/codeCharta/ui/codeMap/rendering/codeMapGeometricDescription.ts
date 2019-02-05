@@ -7,6 +7,10 @@ export interface IntersectionResult {
 }
 
 export class CodeMapGeometricDescription {
+
+    get buildings(): CodeMapBuilding[] {
+        return this._buildings;
+    }
     private _buildings: CodeMapBuilding[];
     private mapSize: number;
     private scales: THREE.Vector3;
@@ -17,32 +21,12 @@ export class CodeMapGeometricDescription {
         this.scales = new THREE.Vector3(1, 1, 1);
     }
 
-    get buildings(): CodeMapBuilding[] {
-        return this._buildings;
-    }
-
     public add(building: CodeMapBuilding): void {
         this._buildings.push(building);
     }
 
     public setScales(scales: THREE.Vector3) {
         this.scales = scales;
-    }
-
-    private rayIntersectsAxisAlignedBoundingBox(ray: THREE.Ray, box: THREE.Box3): boolean {
-        let tx1 = (box.min.x - ray.origin.x) * (1 / ray.direction.x);
-        let tx2 = (box.max.x - ray.origin.x) * (1 / ray.direction.x);
-
-        let tmin = Math.min(tx1, tx2);
-        let tmax = Math.max(tx1, tx2);
-
-        let ty1 = (box.min.y - ray.origin.y) * (1 / ray.direction.y);
-        let ty2 = (box.max.y - ray.origin.y) * (1 / ray.direction.y);
-
-        tmin = Math.max(tmin, Math.min(ty1, ty2));
-        tmax = Math.min(tmax, Math.max(ty1, ty2));
-
-        return tmax >= tmin;
     }
 
     public intersect(ray: THREE.Ray): IntersectionResult {
@@ -95,5 +79,21 @@ export class CodeMapGeometricDescription {
                 intersectionFound: false
             };
         }
+    }
+
+    private rayIntersectsAxisAlignedBoundingBox(ray: THREE.Ray, box: THREE.Box3): boolean {
+        let tx1 = (box.min.x - ray.origin.x) * (1 / ray.direction.x);
+        let tx2 = (box.max.x - ray.origin.x) * (1 / ray.direction.x);
+
+        let tmin = Math.min(tx1, tx2);
+        let tmax = Math.max(tx1, tx2);
+
+        let ty1 = (box.min.y - ray.origin.y) * (1 / ray.direction.y);
+        let ty2 = (box.max.y - ray.origin.y) * (1 / ray.direction.y);
+
+        tmin = Math.max(tmin, Math.min(ty1, ty2));
+        tmax = Math.min(tmax, Math.max(ty1, ty2));
+
+        return tmax >= tmin;
     }
 }

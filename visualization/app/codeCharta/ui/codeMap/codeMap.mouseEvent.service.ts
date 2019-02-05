@@ -43,22 +43,6 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
         MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this);
     }
 
-    public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapMouseEventServiceSubscriber) {
-
-        $rootScope.$on("building-hovered", (e, data: CodeMapBuildingTransition) => {
-            subscriber.onBuildingHovered(data, e);
-        });
-
-        $rootScope.$on("building-selected", (e, data: CodeMapBuildingTransition) => {
-            subscriber.onBuildingSelected(data, e);
-        });
-
-        $rootScope.$on("building-right-clicked", (e, data) => {
-            subscriber.onBuildingRightClicked(data.building, data.x, data.y, e);
-        });
-
-    }
-
     public start() {
         this.threeRendererService.renderer.domElement.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
         this.threeRendererService.renderer.domElement.addEventListener("mouseup", this.onDocumentMouseUp.bind(this), false);
@@ -195,6 +179,22 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
     public onShouldUnhoverNode(node: CodeMapNode) {
         this.onBuildingHovered(this.hovered, null);
+    }
+
+    public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapMouseEventServiceSubscriber) {
+
+        $rootScope.$on("building-hovered", (e, data: CodeMapBuildingTransition) => {
+            subscriber.onBuildingHovered(data, e);
+        });
+
+        $rootScope.$on("building-selected", (e, data: CodeMapBuildingTransition) => {
+            subscriber.onBuildingSelected(data, e);
+        });
+
+        $rootScope.$on("building-right-clicked", (e, data) => {
+            subscriber.onBuildingRightClicked(data.building, data.x, data.y, e);
+        });
+
     }
 
 }

@@ -5,11 +5,11 @@ import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
 
 export class NodeContextMenuController {
-
-    private contextMenuBuilding;
     public amountOfDependentEdges;
     public amountOfVisibleDependentEdges;
     public anyEdgeIsVisible;
+
+    private contextMenuBuilding;
 
     private _colors = highlightColors;
 
@@ -27,14 +27,6 @@ export class NodeContextMenuController {
         this.$rootScope.$on("hide-node-context-menu", () => {
             this.hide()
         });
-    }
-
-    public static broadcastShowEvent($rootScope, path: string, type: string, x, y) {
-        $rootScope.$broadcast("show-node-context-menu", {path: path, type: type, x: x, y: y});
-    }
-
-    public static broadcastHideEvent($rootScope) {
-        $rootScope.$broadcast("hide-node-context-menu");
     }
 
     public show(path: string, nodeType: string, mouseX: number, mouseY: number) {
@@ -131,6 +123,14 @@ export class NodeContextMenuController {
 
     public nodeIsFolder() {
         return this.contextMenuBuilding && this.contextMenuBuilding.children && this.contextMenuBuilding.children.length > 0;
+    }
+
+    public static broadcastShowEvent($rootScope, path: string, type: string, x, y) {
+        $rootScope.$broadcast("show-node-context-menu", {path: path, type: type, x: x, y: y});
+    }
+
+    public static broadcastHideEvent($rootScope) {
+        $rootScope.$broadcast("hide-node-context-menu");
     }
 
 }

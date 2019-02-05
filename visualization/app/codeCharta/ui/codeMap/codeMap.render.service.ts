@@ -24,11 +24,15 @@ const mapSize = 500.0;
  */
 export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapMouseEventServiceSubscriber {
 
+    get mapMesh(): CodeMapMesh {
+        return this._mapMesh;
+    }
+
     public static SELECTOR = "codeMapRenderService";
 
-    private _mapMesh: CodeMapMesh = null;
-
     public currentSortedNodes: Node[];
+
+    private _mapMesh: CodeMapMesh = null;
     private currentRenderSettings: RenderSettings;
     private visibleEdges: Edge[];
 
@@ -50,10 +54,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
 
     public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
 
-    }
-
-    get mapMesh(): CodeMapMesh {
-        return this._mapMesh;
     }
 
     public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
@@ -138,6 +138,34 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         this.threeSceneService.setMapMesh(this._mapMesh, mapSize);
     }
 
+    /**
+     * scales the scene by the given values
+     * @param {number} x
+     * @param {number} y
+     * @param {number} z
+     */
+    public scaleMap(x, y, z) {
+        this.threeSceneService.mapGeometry.scale.x = x;
+        this.threeSceneService.mapGeometry.scale.y = y;
+        this.threeSceneService.mapGeometry.scale.z = z;
+
+        this.threeSceneService.mapGeometry.position.x = -mapSize / 2.0 * x;
+        this.threeSceneService.mapGeometry.position.y = 0.0;
+        this.threeSceneService.mapGeometry.position.z = -mapSize / 2.0 * z;
+
+        if (this.threeSceneService.getMapMesh()) {
+            this.threeSceneService.getMapMesh().setScale(x, y, z);
+        }
+
+        if (this.codeMapLabelService) {
+            this.codeMapLabelService.scale(x, y, z);
+        }
+
+        if (this.codeMapArrowService) {
+            this.codeMapArrowService.scale(x, y, z);
+        }
+    }
+
     private setLabels(s: Settings) {
         this.codeMapLabelService.clearLabels();
         for (let i = 0, numAdded = 0; i < this.currentSortedNodes.length && numAdded < s.amountOfTopLabels; ++i) {
@@ -179,34 +207,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
                 this.threeSceneService.mapGeometry.scale.y,
                 this.threeSceneService.mapGeometry.scale.z,
             );
-        }
-    }
-
-    /**
-     * scales the scene by the given values
-     * @param {number} x
-     * @param {number} y
-     * @param {number} z
-     */
-    public scaleMap(x, y, z) {
-        this.threeSceneService.mapGeometry.scale.x = x;
-        this.threeSceneService.mapGeometry.scale.y = y;
-        this.threeSceneService.mapGeometry.scale.z = z;
-
-        this.threeSceneService.mapGeometry.position.x = -mapSize / 2.0 * x;
-        this.threeSceneService.mapGeometry.position.y = 0.0;
-        this.threeSceneService.mapGeometry.position.z = -mapSize / 2.0 * z;
-
-        if (this.threeSceneService.getMapMesh()) {
-            this.threeSceneService.getMapMesh().setScale(x, y, z);
-        }
-
-        if (this.codeMapLabelService) {
-            this.codeMapLabelService.scale(x, y, z);
-        }
-
-        if (this.codeMapArrowService) {
-            this.codeMapArrowService.scale(x, y, z);
         }
     }
 }

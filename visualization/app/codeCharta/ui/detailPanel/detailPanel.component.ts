@@ -160,16 +160,6 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         });
     }
 
-    private getPathFromCodeMapBuilding(b: CodeMapBuilding): string {
-        let current = b;
-        let result = "";
-        while(current) {
-            result = "/" + current.name + result;
-            current = current.parent;
-        }
-        return result;
-    }
-
     public setSelectedDetails(selected) {
         this.clearSelectedDetails();
         this.$timeout(() => {
@@ -206,6 +196,16 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
                 this.details.selected[key] = null;
             }
         });
+    }
+
+    private getPathFromCodeMapBuilding(b: CodeMapBuilding): string {
+        let current = b;
+        let result = "";
+        while(current) {
+            result = "/" + current.name + result;
+            current = current.parent;
+        }
+        return result;
     }
 
 }

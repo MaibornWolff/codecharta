@@ -57,13 +57,18 @@ export interface SettingsServiceSubscriber {
 
 export class SettingsService implements DataServiceSubscriber, CameraChangeSubscriber {
 
+    //TODO return new copy ? this would need a change listener for angular...
+    get settings(): Settings {
+        return this._settings;
+    }
+
     public static SELECTOR = "settingsService";
     public static MIN_MARGIN = 15;
     public static MARGIN_FACTOR = 4;
 
-    private _settings: Settings;
-
     public numberOfCalls: number;
+
+    private _settings: Settings;
 
     private _lastDeltaState = false;
 
@@ -83,60 +88,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this.$rootScope.$on("settings-changed", (event, data) => {
             subscriber.onSettingsChanged(data, event);
         });
-    }
-
-    private getInitialSettings(renderMap: any, metrics: string[]): Settings {
-
-        let r: Range = {
-            from: 10,
-            to: 20,
-            flipped: false
-        };
-
-        let s: Scale = {
-            x: 1, y: 1, z: 1
-        };
-
-        let c: Scale = {
-            x: 0, y: 300, z: 1000
-        };
-
-        this._lastDeltaState = false;
-
-        let settings: Settings = {
-            map: renderMap,
-            neutralColorRange: r,
-            areaMetric: this.getMetricByIdOrLast(0, metrics),
-            heightMetric: this.getMetricByIdOrLast(1, metrics),
-            colorMetric: this.getMetricByIdOrLast(2, metrics),
-            mode: KindOfMap.Single,
-            amountOfTopLabels: 1,
-            scaling: s,
-            camera: c,
-            margin: 15,
-            deltaColorFlipped: false,
-            enableEdgeArrows: true,
-            hideFlatBuildings: true,
-            maximizeDetailPanel: false,
-            invertHeight: false,
-            dynamicMargin: true,
-            isWhiteBackground: false,
-            whiteColorBuildings: true,
-            blacklist: [],
-            focusedNodePath: null,
-            searchedNodePaths: [],
-            searchPattern: null
-        };
-        return settings;
-
-    }
-
-    private onActivateDeltas() {
-        this.dataService.onActivateDeltas();
-    }
-
-    private onDeactivateDeltas() {
-        this.dataService.onDeactivateDeltas();
     }
 
     /**
@@ -365,6 +316,60 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         }
     }
 
+    private getInitialSettings(renderMap: any, metrics: string[]): Settings {
+
+        let r: Range = {
+            from: 10,
+            to: 20,
+            flipped: false
+        };
+
+        let s: Scale = {
+            x: 1, y: 1, z: 1
+        };
+
+        let c: Scale = {
+            x: 0, y: 300, z: 1000
+        };
+
+        this._lastDeltaState = false;
+
+        let settings: Settings = {
+            map: renderMap,
+            neutralColorRange: r,
+            areaMetric: this.getMetricByIdOrLast(0, metrics),
+            heightMetric: this.getMetricByIdOrLast(1, metrics),
+            colorMetric: this.getMetricByIdOrLast(2, metrics),
+            mode: KindOfMap.Single,
+            amountOfTopLabels: 1,
+            scaling: s,
+            camera: c,
+            margin: 15,
+            deltaColorFlipped: false,
+            enableEdgeArrows: true,
+            hideFlatBuildings: true,
+            maximizeDetailPanel: false,
+            invertHeight: false,
+            dynamicMargin: true,
+            isWhiteBackground: false,
+            whiteColorBuildings: true,
+            blacklist: [],
+            focusedNodePath: null,
+            searchedNodePaths: [],
+            searchPattern: null
+        };
+        return settings;
+
+    }
+
+    private onActivateDeltas() {
+        this.dataService.onActivateDeltas();
+    }
+
+    private onDeactivateDeltas() {
+        this.dataService.onDeactivateDeltas();
+    }
+
     /**
      * Applies given settings. ignores map. this ensures to copy settings object and prevent side effects
      * @param {Settings} settings
@@ -407,11 +412,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         this.onSettingsChanged();
 
-    }
-
-    //TODO return new copy ? this would need a change listener for angular...
-    get settings(): Settings {
-        return this._settings;
     }
 
     /**

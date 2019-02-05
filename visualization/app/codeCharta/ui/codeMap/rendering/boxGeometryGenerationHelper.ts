@@ -31,6 +31,18 @@ const numSides : number = 6;
 const verticesPerSide : number = 4;
 
 export class BoxGeometryGenerationHelper {
+
+    public static addBoxToVertexData(data : IntermediateVertexData, measures : BoxMeasures, color : number, subGeomIdx : number, delta : number) : void
+    {
+        let minPos : THREE.Vector3 = new THREE.Vector3(measures.x, measures.y, measures.z);
+        let maxPos : THREE.Vector3 = new THREE.Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth);
+
+        let uvs : THREE.Vector2[] = new Array<THREE.Vector2>();
+        let positions : THREE.Vector3[] = new Array<THREE.Vector3>();
+
+        BoxGeometryGenerationHelper.createPositionsUVs(minPos, maxPos, positions, uvs);
+        BoxGeometryGenerationHelper.createVerticesAndFaces(minPos, maxPos, color, delta, subGeomIdx, positions, uvs, data);
+    }
     private static createPositionsUVs(minPos : THREE.Vector3, maxPos : THREE.Vector3, positions : THREE.Vector3[], uvs : THREE.Vector2[]) : void
     {
         //Left Vertices
@@ -152,17 +164,5 @@ export class BoxGeometryGenerationHelper {
                 data.addFace(indexBottomLeft, indexTopRight, indexBottomRight);
             }
         }
-    }
-
-    public static addBoxToVertexData(data : IntermediateVertexData, measures : BoxMeasures, color : number, subGeomIdx : number, delta : number) : void
-    {
-        let minPos : THREE.Vector3 = new THREE.Vector3(measures.x, measures.y, measures.z);
-        let maxPos : THREE.Vector3 = new THREE.Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth);
-
-        let uvs : THREE.Vector2[] = new Array<THREE.Vector2>();
-        let positions : THREE.Vector3[] = new Array<THREE.Vector3>();
-
-        BoxGeometryGenerationHelper.createPositionsUVs(minPos, maxPos, positions, uvs);
-        BoxGeometryGenerationHelper.createVerticesAndFaces(minPos, maxPos, color, delta, subGeomIdx, positions, uvs, data);
     }
 }

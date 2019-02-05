@@ -11,7 +11,6 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
     private static TIMEOUT_DELAY_MS = 100;
 
     public mapRoot: CodeMapNode = null;
-    private searchedFiles: CodeMapNode[] = [];
 
     public viewModel = {
         searchPattern: "",
@@ -21,6 +20,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
         isPatternExcluded: true,
         isPatternHidden: true
     };
+    private searchedFiles: CodeMapNode[] = [];
 
     /* @ngInject */
     constructor(private $timeout: ITimeoutService,

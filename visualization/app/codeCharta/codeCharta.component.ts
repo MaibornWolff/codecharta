@@ -37,20 +37,6 @@ export class CodeChartaController {
         this.initContextMenuCloseHandler();
     }
 
-    private initContextMenuCloseHandler() {
-        document.body.addEventListener('click', ()=>NodeContextMenuController.broadcastHideEvent(this.$rootScope), true);
-    }
-
-    private subscribeToLoadingEvents($rootScope: angular.IRootScopeService) {
-        $rootScope.$on("add-loading-task", () => {
-            this.viewModel.numberOfLoadingTasks++;
-        });
-
-        $rootScope.$on("remove-loading-task", () => {
-            this.viewModel.numberOfLoadingTasks--;
-        });
-    }
-
     public fitMapToView() {
         this.threeOrbitControlsService.autoFitTo();
     }
@@ -116,6 +102,20 @@ export class CodeChartaController {
 
     public printErrors(errors: Object) {
         this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"));
+    }
+
+    private initContextMenuCloseHandler() {
+        document.body.addEventListener('click', ()=>NodeContextMenuController.broadcastHideEvent(this.$rootScope), true);
+    }
+
+    private subscribeToLoadingEvents($rootScope: angular.IRootScopeService) {
+        $rootScope.$on("add-loading-task", () => {
+            this.viewModel.numberOfLoadingTasks++;
+        });
+
+        $rootScope.$on("remove-loading-task", () => {
+            this.viewModel.numberOfLoadingTasks--;
+        });
     }
 
 }

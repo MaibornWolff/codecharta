@@ -11,10 +11,10 @@ class ThreeSceneService {
     public static SELECTOR = "threeSceneService";
 
     public scene: Scene;
-    private lights: Group;
     public labels: Group;
     public edgeArrows: Group;
     public mapGeometry: Group;
+    private lights: Group;
     private mapMesh: CodeMapMesh;
 
     constructor() {

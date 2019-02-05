@@ -54,6 +54,14 @@ export class TreeMapService {
         return heighted;
     }
 
+    public setVisibilityOfNodeAndDescendants(node: CodeMapNode, visibility: boolean) {
+        node.visible = visibility;
+        hierarchy<CodeMapNode>(node).descendants().forEach((hierarchyNode) => {
+            hierarchyNode.data.visible = visibility;
+        });
+        return node;
+    }
+
     private squarify(data: CodeMapNode, s: TreeMapSettings, edges: Edge[]): SquarifiedValuedCodeMapNode {
         let nodes: HierarchyNode<CodeMapNode> = d3.hierarchy<CodeMapNode>(data);
         const blacklisted = CodeMapUtilService.numberOfBlacklistedNodes(nodes.descendants().map(d=>d.data), s.blacklist);
@@ -96,14 +104,6 @@ export class TreeMapService {
         }
         return finalNode;
 
-    }
-
-    public setVisibilityOfNodeAndDescendants(node: CodeMapNode, visibility: boolean) {
-        node.visible = visibility;
-        hierarchy<CodeMapNode>(node).descendants().forEach((hierarchyNode) => {
-            hierarchyNode.data.visible = visibility;
-        });
-        return node;
     }
 
     private isDeletedNodeFromComparisonMap(node: CodeMapNode, s: TreeMapSettings): boolean {

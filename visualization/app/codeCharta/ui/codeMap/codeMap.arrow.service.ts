@@ -46,26 +46,6 @@ export class CodeMapArrowService {
 
     }
 
-    private getNodepathMap(nodes: Node[]): Map<string, Node> {
-        let map = new Map<string, Node>();
-
-        for (let node of nodes) {
-            map.set(this.getPathFromNode(node), node);
-        }
-
-        return map;
-    }
-
-    private getPathFromNode(node: Node): string {
-        let current: Node = node;
-        let path = "";
-        while (current) {
-            path = "/" + current.name + path;
-            current = current.parent;
-        }
-        return path;
-    }
-
     public addArrow(arrowTargetNode: Node, arrowOriginNode: Node, settings: RenderSettings): void {
 
         if (arrowTargetNode.attributes && arrowTargetNode.attributes[settings.heightKey] && arrowOriginNode.attributes && arrowOriginNode.attributes[settings.heightKey]) {
@@ -100,6 +80,34 @@ export class CodeMapArrowService {
         }
     }
 
+    public scale(x: number, y: number, z: number) {
+        for (let arrow of this.arrows) {
+            arrow.scale.x = x;
+            arrow.scale.y = y;
+            arrow.scale.z = z;
+        }
+    }
+
+    private getNodepathMap(nodes: Node[]): Map<string, Node> {
+        let map = new Map<string, Node>();
+
+        for (let node of nodes) {
+            map.set(this.getPathFromNode(node), node);
+        }
+
+        return map;
+    }
+
+    private getPathFromNode(node: Node): string {
+        let current: Node = node;
+        let path = "";
+        while (current) {
+            path = "/" + current.name + path;
+            current = current.parent;
+        }
+        return path;
+    }
+
     private makeArrowFromBezier(bezier: THREE.CubicBezierCurve3,
                                 hex: number = 0,
                                 headLength: number = 10,
@@ -123,14 +131,6 @@ export class CodeMapArrowService {
         //combine
         curveObject.add(arrowHelper);
         return curveObject;
-    }
-
-    public scale(x: number, y: number, z: number) {
-        for (let arrow of this.arrows) {
-            arrow.scale.x = x;
-            arrow.scale.y = y;
-            arrow.scale.z = z;
-        }
     }
 
 }

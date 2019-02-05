@@ -8,10 +8,10 @@ import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/dat
 import "./scenarioDropDown.component.scss";
 
 export class ScenarioButtonsController implements TooltipServiceSubscriber, DataServiceSubscriber, SettingsServiceSubscriber {
+    public  scenario: Scenario;
 
     private scenarios: Scenario[];
     private key;
-    public  scenario: Scenario;
 
     constructor(private scenarioService: ScenarioService,
                 private tooltipService: TooltipService,

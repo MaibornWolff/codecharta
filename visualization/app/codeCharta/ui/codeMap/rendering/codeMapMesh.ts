@@ -34,6 +34,8 @@ export interface MousePos {
 }
 
 export class CodeMapMesh {
+
+    public settings : RenderSettings;
     private threeMesh : THREE.Mesh;
     private material : THREE.ShaderMaterial;
     private geomGen : GeometryGenerator;
@@ -43,8 +45,6 @@ export class CodeMapMesh {
 
     private currentlyHighlighted : CodeMapBuilding[] | null;
     private currentlySelected : CodeMapBuilding[] | null;
-
-    public settings : RenderSettings;
 
     private lightingParams : CodeMapLightingParams = {
         numHighlights : {type : "f", value : 0.0},
@@ -74,38 +74,6 @@ export class CodeMapMesh {
         this.mapGeomDesc = buildRes.desc;
 
         this.settings = settings;
-    }
-
-    private initMaterial(settings : RenderSettings) : void
-    {
-
-        if(settings.deltaColorFlipped) {
-            this.setDeltaColorsFlipped();
-        } else {
-            this.setDeltaColorsUnflipped();
-        }
-
-        let uniforms = THREE.UniformsUtils.merge([THREE.UniformsLib["lights"], this.lightingParams]);
-
-        let shaderCode : CodeMapShaderStrings = new CodeMapShaderStrings();
-
-        this.material =  new THREE.ShaderMaterial({
-            vertexShader: shaderCode.vertexShaderCode,
-            fragmentShader: shaderCode.fragmentShaderCode,
-            lights : true,
-            uniforms : uniforms
-        });
-    }
-
-    private setDeltaColorsFlipped() {
-        this.lightingParams.deltaColorPositive = {type : "v3", value : RenderingUtil.colorToVec3(MapColors.negativeDelta)};
-        this.lightingParams.deltaColorNegative = {type : "v3", value : RenderingUtil.colorToVec3(MapColors.positiveDelta)};
-    }
-
-
-    private setDeltaColorsUnflipped() {
-        this.lightingParams.deltaColorPositive = {type : "v3", value : RenderingUtil.colorToVec3(MapColors.positiveDelta)};
-        this.lightingParams.deltaColorNegative = {type : "v3", value : RenderingUtil.colorToVec3(MapColors.negativeDelta)};
     }
 
     public getThreeMesh() : THREE.Mesh {
@@ -169,16 +137,6 @@ export class CodeMapMesh {
         return this.mapGeomDesc;
     }
 
-    private calculatePickingRay(mouse : MousePos, camera : THREE.Camera) : THREE.Ray
-    {
-
-        let ray : THREE.Ray = new THREE.Ray();
-        ray.origin.setFromMatrixPosition(camera.matrixWorld);
-        ray.direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(ray.origin).normalize();
-
-        return ray;
-    }
-
     public checkMouseRayMeshIntersection(mouse : MousePos, camera : THREE.Camera) : IntersectionResult
     {
         let ray : THREE.Ray = this.calculatePickingRay(mouse, camera);
@@ -188,5 +146,47 @@ export class CodeMapMesh {
     public setScale(x : number, y : number, z : number)
     {
         this.mapGeomDesc.setScales(new THREE.Vector3(x, y, z));
+    }
+
+    private initMaterial(settings : RenderSettings) : void
+    {
+
+        if(settings.deltaColorFlipped) {
+            this.setDeltaColorsFlipped();
+        } else {
+            this.setDeltaColorsUnflipped();
+        }
+
+        let uniforms = THREE.UniformsUtils.merge([THREE.UniformsLib["lights"], this.lightingParams]);
+
+        let shaderCode : CodeMapShaderStrings = new CodeMapShaderStrings();
+
+        this.material =  new THREE.ShaderMaterial({
+            vertexShader: shaderCode.vertexShaderCode,
+            fragmentShader: shaderCode.fragmentShaderCode,
+            lights : true,
+            uniforms : uniforms
+        });
+    }
+
+    private setDeltaColorsFlipped() {
+        this.lightingParams.deltaColorPositive = {type : "v3", value : RenderingUtil.colorToVec3(MapColors.negativeDelta)};
+        this.lightingParams.deltaColorNegative = {type : "v3", value : RenderingUtil.colorToVec3(MapColors.positiveDelta)};
+    }
+
+
+    private setDeltaColorsUnflipped() {
+        this.lightingParams.deltaColorPositive = {type : "v3", value : RenderingUtil.colorToVec3(MapColors.positiveDelta)};
+        this.lightingParams.deltaColorNegative = {type : "v3", value : RenderingUtil.colorToVec3(MapColors.negativeDelta)};
+    }
+
+    private calculatePickingRay(mouse : MousePos, camera : THREE.Camera) : THREE.Ray
+    {
+
+        let ray : THREE.Ray = new THREE.Ray();
+        ray.origin.setFromMatrixPosition(camera.matrixWorld);
+        ray.direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(ray.origin).normalize();
+
+        return ray;
     }
 }

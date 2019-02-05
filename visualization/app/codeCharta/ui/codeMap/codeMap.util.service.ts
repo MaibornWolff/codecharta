@@ -13,6 +13,30 @@ export class CodeMapUtilService {
     ) {
     }
 
+    public getAnyCodeMapNodeFromPath(path: string) {
+        const firstTryNode = this.getCodeMapNodeFromPath(path, "File");
+        if(!firstTryNode) {
+            return this.getCodeMapNodeFromPath(path, "Folder");
+        }
+        return firstTryNode;
+    }
+
+    public getCodeMapNodeFromPath(path: string, nodeType: string) {
+        let res = null;
+        const rootNode = this.settingsService.settings.map.nodes;
+
+        if (path == rootNode.path) {
+            return rootNode;
+        }
+
+        hierarchy<CodeMapNode>(rootNode).each((hierarchyNode) => {
+            if (hierarchyNode.data.path === path && hierarchyNode.data.type === nodeType) {
+                res = hierarchyNode.data;
+            }
+        });
+        return res;
+    }
+
     public static transformPath(toTransform): string {
         return path.relative('/', toTransform);
     }
@@ -43,29 +67,5 @@ export class CodeMapUtilService {
             .filter(b => b.type == type)
             .map(ex => CodeMapUtilService.transformPath(ex.path)));
         return ig.ignores(CodeMapUtilService.transformPath(node.path));
-    }
-
-    public getAnyCodeMapNodeFromPath(path: string) {
-        const firstTryNode = this.getCodeMapNodeFromPath(path, "File");
-        if(!firstTryNode) {
-            return this.getCodeMapNodeFromPath(path, "Folder");
-        }
-        return firstTryNode;
-    }
-
-    public getCodeMapNodeFromPath(path: string, nodeType: string) {
-        let res = null;
-        const rootNode = this.settingsService.settings.map.nodes;
-
-        if (path == rootNode.path) {
-            return rootNode;
-        }
-
-        hierarchy<CodeMapNode>(rootNode).each((hierarchyNode) => {
-            if (hierarchyNode.data.path === path && hierarchyNode.data.type === nodeType) {
-                res = hierarchyNode.data;
-            }
-        });
-        return res;
     }
 }
