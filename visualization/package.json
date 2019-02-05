@@ -70,7 +70,8 @@
     "serve": "webpack --config ./conf/webpack.config.js --watch",
     "package": "rimraf dist/packages && build --concurrent --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --mirror https://dl.nwjs.io/ . && bestzip ./dist/packages/codecharta-visualization-$npm_package_version-web.zip ./dist/webpack",
     "prepare": "npm run build",
-    "g": "plop"
+    "g": "plop",
+    "lint": "tslint -c \"tslint.json\" \"app/**/*.ts\""
   },
   "bin": {
     "codecharta-visualization": "cli.js"
@@ -192,8 +193,7 @@
     "three-text2d": "^0.3.4",
     "ts-jest": "^21.1.3",
     "ts-loader": "^2.3.6",
-    "tslint": "^5.9.1",
-    "tslint-loader": "^3.6.0",
+    "tslint": "^5.12.1",
     "typedoc": "^0.9.0",
     "typescript": "^2.7.2",
     "webpack": "^3.11.0",
