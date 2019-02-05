@@ -3,6 +3,7 @@
         "class-name": true,        
         "no-var-keyword": true,
         "no-empty": [true, "allow-empty-catch", "allow-empty-functions"],
+        "no-arg": true,
         "no-eval": true
     }
 }
