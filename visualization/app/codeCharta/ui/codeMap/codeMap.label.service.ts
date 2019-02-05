@@ -125,8 +125,8 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
     private setLabelSize(sprite: Sprite, currentLabelWidth: number = undefined) {
         const distance = this.threeCameraService.camera.position.distanceTo(this.threeSceneService.mapGeometry.position);
-        currentLabelWidth = (!currentLabelWidth) ? sprite.material.map.image.width : currentLabelWidth;
-        sprite.scale.set(distance / this.LABEL_WIDTH_DIVISOR * currentLabelWidth,distance / this.LABEL_HEIGHT_DIVISOR,1);
+        const resultingLabelWidth = (!currentLabelWidth) ? sprite.material.map.image.width : currentLabelWidth;
+        sprite.scale.set(distance / this.LABEL_WIDTH_DIVISOR * resultingLabelWidth, distance / this.LABEL_HEIGHT_DIVISOR,1);
     }
 
     private makeLine(x: number, y: number, z: number): THREE.Line {

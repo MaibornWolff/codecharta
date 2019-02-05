@@ -34,12 +34,9 @@ export class UrlService {
      * @param {string} [url=current location]
      * @returns {string} url parameter value
      */
-    public getParameterByName(name: string, url?: string): string {
-        if (!url) {
-            url = this.getUrl();
-        }
-        name = name.replace(/[\[\]]/g, "\\$&");
-        let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+    public getParameterByName(name: string, url: string = this.getUrl()): string {
+        const sanitizedName = name.replace(/[\[\]]/g, "\\$&");
+        let regex = new RegExp("[?&]" + sanitizedName + "(=([^&#]*)|&|#|$)"),
             results = regex.exec(url);
         if (!results) {
             return null;

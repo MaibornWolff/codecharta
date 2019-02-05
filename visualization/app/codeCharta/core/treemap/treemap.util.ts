@@ -27,19 +27,20 @@ export class TreeMapUtils {
                                 minHeight: number,
                                 folderHeight: number): Node {
 
+        let calculatedHeightValue = heightValue;                            
         if (s.invertHeight) {
-            heightValue = (maxHeight - heightValue);
+            calculatedHeightValue = (maxHeight - heightValue);
         }
 
         const flattened = TreeMapUtils.isNodeToBeFlat(squaredNode, s);
         if (flattened) {
-            heightValue = minHeight;
+            calculatedHeightValue = minHeight;
         }
 
         return {
             name: squaredNode.data.name,
             width: squaredNode.x1 - squaredNode.x0,
-            height: Math.abs(TreeMapUtils.isNodeLeaf(squaredNode) ? Math.max(heightScale * heightValue, minHeight) : folderHeight),
+            height: Math.abs(TreeMapUtils.isNodeLeaf(squaredNode) ? Math.max(heightScale * calculatedHeightValue, minHeight) : folderHeight),
             length: squaredNode.y1 - squaredNode.y0,
             depth: depth,
             x0: squaredNode.x0,

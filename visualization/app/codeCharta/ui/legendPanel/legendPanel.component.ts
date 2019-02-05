@@ -102,12 +102,12 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     }
 
     public encodeHex(s: string): string {
-        s = s.substring(1, 7);
-        if (s.length < 6) {
-            s = s[0] + s[0] + s[1] + s[1] + s[2] + s[2];
+        let substr = s.substring(1, 7);
+        if (substr.length < 6) {
+            substr = substr[0] + substr[0] + substr[1] + substr[1] + substr[2] + substr[2];
         }
         return this.encodeRGB(
-            parseInt(s[0] + s[1], 16), parseInt(s[2] + s[3], 16), parseInt(s[4] + s[5], 16));
+            parseInt(substr[0] + substr[1], 16), parseInt(substr[2] + substr[3], 16), parseInt(substr[4] + substr[5], 16));
     }
 
     public encodeRGB(r: number, g: number, b: number): string {

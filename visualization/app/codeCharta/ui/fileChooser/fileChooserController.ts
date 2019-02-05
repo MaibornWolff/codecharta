@@ -63,7 +63,8 @@ class FileChooserController {
         //$("#fileChooserPanel").modal("close");
 
         try {
-            data = JSON.parse(data);
+            const parsed = JSON.parse(data);
+            this.setNewData(name, parsed, revision);
         }
         catch (e) {
             this.dialogService.showErrorDialog("Error parsing JSON!" + e);
@@ -72,8 +73,6 @@ class FileChooserController {
         }
 
         this.$rootScope.$broadcast("remove-loading-task");
-        this.setNewData(name, data, revision);
-
     }
 
     /**
