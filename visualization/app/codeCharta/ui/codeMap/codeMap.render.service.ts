@@ -1,9 +1,9 @@
 "use strict";
 
 import {CodeMapMesh} from "./rendering/codeMapMesh";
-import {renderSettings} from "./rendering/renderSettings";
+import {RenderSettings} from "./rendering/renderSettings";
 import {KindOfMap, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
-import {node} from "./rendering/node";
+import {Node} from "./rendering/node";
 import {Edge} from "../../core/data/model/CodeMap";
 import {
     CodeMapBuildingTransition,
@@ -11,7 +11,7 @@ import {
     CodeMapMouseEventServiceSubscriber
 } from "./codeMap.mouseEvent.service";
 import {TreeMapService, TreeMapSettings} from "../../core/treemap/treemap.service";
-import {codeMapBuilding} from "./rendering/codeMapBuilding";
+import {CodeMapBuilding} from "./rendering/codeMapBuilding";
 import {CodeMapUtilService} from "./codeMap.util.service";
 import {CodeMapLabelService} from "./codeMap.label.service";
 import {ThreeSceneService} from "./threeViewer/threeSceneService";
@@ -28,8 +28,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
 
     private _mapMesh: CodeMapMesh = null;
 
-    public currentSortedNodes: node[];
-    private currentRenderSettings: renderSettings;
+    public currentSortedNodes: Node[];
+    private currentRenderSettings: RenderSettings;
     private visibleEdges: Edge[];
 
     /* @ngInject */
@@ -44,7 +44,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         CodeMapMouseEventService.subscribe($rootScope, this);
     }
 
-    onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
+    onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
 
     }
 
@@ -80,7 +80,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         }
     }
 
-    public collectNodesToArray(node: node): node[] {
+    public collectNodesToArray(node: Node): Node[] {
         let nodes = [node];
         for (let i = 0; i < node.children.length; i++) {
             let collected = this.collectNodesToArray(node.children[i]);
@@ -111,7 +111,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
 
         this.showAllOrOnlyFocusedNode(s);
 
-        let nodes: node[] = this.collectNodesToArray(
+        let nodes: Node[] = this.collectNodesToArray(
             this.treeMapService.createTreemapNodes(s.map.nodes, treeMapSettings, s.map.edges)
         );
 

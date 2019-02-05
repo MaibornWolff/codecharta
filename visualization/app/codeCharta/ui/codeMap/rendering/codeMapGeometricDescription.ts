@@ -1,27 +1,27 @@
-import {codeMapBuilding} from "./codeMapBuilding";
+import {CodeMapBuilding} from "./codeMapBuilding";
 import * as THREE from "three";
 
-export interface intersectionResult {
+export interface IntersectionResult {
     intersectionFound: boolean;
-    building?: codeMapBuilding;
+    building?: CodeMapBuilding;
 }
 
-export class codeMapGeometricDescription {
-    private _buildings: codeMapBuilding[];
+export class CodeMapGeometricDescription {
+    private _buildings: CodeMapBuilding[];
     private mapSize: number;
     private scales: THREE.Vector3;
 
     constructor(mapSize: number) {
-        this._buildings = new Array<codeMapBuilding>();
+        this._buildings = new Array<CodeMapBuilding>();
         this.mapSize = mapSize;
         this.scales = new THREE.Vector3(1, 1, 1);
     }
 
-    get buildings(): codeMapBuilding[] {
+    get buildings(): CodeMapBuilding[] {
         return this._buildings;
     }
 
-    add(building: codeMapBuilding): void {
+    add(building: CodeMapBuilding): void {
         this._buildings.push(building);
     }
 
@@ -45,9 +45,9 @@ export class codeMapGeometricDescription {
         return tmax >= tmin;
     }
 
-    intersect(ray: THREE.Ray): intersectionResult {
+    intersect(ray: THREE.Ray): IntersectionResult {
 
-        let intersectedBuilding: codeMapBuilding | null = null;
+        let intersectedBuilding: CodeMapBuilding | null = null;
         let leastIntersectedDistance: number = Infinity;
 
         let boxTranslation = new THREE.Vector3(-this.mapSize * this.scales.x * 0.5, 0.0, -this.mapSize * this.scales.z * 0.5);

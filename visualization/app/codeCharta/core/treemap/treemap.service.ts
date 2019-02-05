@@ -1,5 +1,5 @@
 import {CodeMapNode, Edge, BlacklistItem, BlacklistType} from "../data/model/CodeMap";
-import {node} from "../../ui/codeMap/rendering/node";
+import {Node} from "../../ui/codeMap/rendering/node";
 import {DataService} from "../data/data.service";
 import * as d3 from "d3";
 import {hierarchy, HierarchyNode} from "d3";
@@ -49,7 +49,7 @@ export class TreeMapService {
     /* @ngInject */
     constructor(private dataService: DataService) {}
 
-    public createTreemapNodes(data: CodeMapNode, s: TreeMapSettings, edges: Edge[]): node {
+    public createTreemapNodes(data: CodeMapNode, s: TreeMapSettings, edges: Edge[]): Node {
         const squarified: SquarifiedValuedCodeMapNode = this.squarify(data, s, edges);
         const heighted = this.addMapScaledHeightDimensionAndFinalizeFromRoot(squarified, s);
         return heighted;
@@ -67,13 +67,13 @@ export class TreeMapService {
         return treeMap(nodes.sum((node) => this.calculateValue(node, edges, s))) as SquarifiedValuedCodeMapNode;
     }
 
-    private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): node {
+    private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): Node {
         const maxHeight = this.dataService.getMaxMetricInAllRevisions(s.heightKey);
         const heightScale = s.size / TreeMapService.HEIGHT_DIVISOR / maxHeight;
         return this.addHeightDimensionAndFinalize(squaredNode, s, heightScale, maxHeight);
     }
 
-    private addHeightDimensionAndFinalize(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings, heightScale: number, maxHeight: number, depth = 0, parent: node = null): node {
+    private addHeightDimensionAndFinalize(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings, heightScale: number, maxHeight: number, depth = 0, parent: Node = null): Node {
 
         let attr = squaredNode.data.attributes || {};
         let heightValue = attr[s.heightKey];
@@ -89,7 +89,7 @@ export class TreeMapService {
         const finalNode = TreeMapUtils.buildNodeFrom(squaredNode, heightScale, heightValue, maxHeight, depth, parent, s, TreeMapService.MIN_BUILDING_HEIGHT, TreeMapService.FOLDER_HEIGHT);
 
         if (squaredNode.children && squaredNode.children.length > 0) {
-            const finalChildren: node[] = [];
+            const finalChildren: Node[] = [];
             for (let i = 0; i < squaredNode.children.length; i++) {
                 finalChildren.push(this.addHeightDimensionAndFinalize(squaredNode.children[i], s, heightScale, maxHeight, depth + 1, finalNode));
             }

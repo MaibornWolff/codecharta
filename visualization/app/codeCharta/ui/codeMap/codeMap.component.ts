@@ -1,4 +1,4 @@
-import {codeMapBuilding} from "./rendering/codeMapBuilding";
+import {CodeMapBuilding} from "./rendering/codeMapBuilding";
 import {ThreeViewerService} from "./threeViewer/threeViewerService";
 import {
     CodeMapBuildingTransition, CodeMapMouseEventService,
@@ -38,7 +38,7 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
         this.codeMapMouseEventService.start();
     }
 
-    onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
+    onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
         NodeContextMenuController.broadcastHideEvent(this.$rootScope);
         if (building) {
             const nodeType = (building.node.isLeaf) ? "File" : "Folder";

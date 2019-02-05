@@ -1,5 +1,5 @@
 import {KindOfMap, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
-import {codeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
+import {CodeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
 import {KVObject} from "../../core/data/data.deltaCalculator.service";
 import {DataService} from "../../core/data/data.service";
 import "./detailPanel.component.scss";
@@ -102,7 +102,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         this.onSelect(data);
     }
 
-    onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
+    onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
     }
 
     onSettingsChanged(settings: Settings) {
@@ -166,7 +166,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         }.bind(this));
     }
 
-    private getPathFromCodeMapBuilding(b: codeMapBuilding): string {
+    private getPathFromCodeMapBuilding(b: CodeMapBuilding): string {
         let current = b;
         let result = "";
         while(current) {

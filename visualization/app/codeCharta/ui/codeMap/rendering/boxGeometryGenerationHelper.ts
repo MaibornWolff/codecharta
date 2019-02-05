@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import {intermediateVertexData} from "./intermediateVertexData";
-import {boxMeasures} from "./geometryGenerator";
+import {IntermediateVertexData} from "./intermediateVertexData";
+import {BoxMeasures} from "./geometryGenerator";
 
 enum sides {
     left = 0,
@@ -30,7 +30,7 @@ const normals : THREE.Vector3[] = [
 const numSides : number = 6;
 const verticesPerSide : number = 4;
 
-export class boxGeometryGenerationHelper {
+export class BoxGeometryGenerationHelper {
     private static createPositionsUVs(minPos : THREE.Vector3, maxPos : THREE.Vector3, positions : THREE.Vector3[], uvs : THREE.Vector2[]) : void
     {
         //Left Vertices
@@ -63,7 +63,7 @@ export class boxGeometryGenerationHelper {
         uvs[sides.back * verticesPerSide + vertexLocation.topRight] = new THREE.Vector2(1.0, 1.0);
         uvs[sides.back * verticesPerSide + vertexLocation.bottomRight] = new THREE.Vector2(0.0, 1.0);
 
-        boxGeometryGenerationHelper.createFrontFacingPositionsUVsFromBackFacingData(minPos, maxPos, positions, uvs);
+        BoxGeometryGenerationHelper.createFrontFacingPositionsUVsFromBackFacingData(minPos, maxPos, positions, uvs);
     }
 
     private static createFrontFacingPositionsUVsFromBackFacingData(minPos : THREE.Vector3, maxPos : THREE.Vector3, positions : THREE.Vector3[], uvs : THREE.Vector2[]) : void
@@ -116,7 +116,7 @@ export class boxGeometryGenerationHelper {
         subGeomIdx : number,
         positions : THREE.Vector3[],
         uvs : THREE.Vector2[],
-        data : intermediateVertexData
+        data : IntermediateVertexData
     ) : void
     {
         let deltaRelativeToHeight : number = delta / (maxPos.y - minPos.y);
@@ -154,7 +154,7 @@ export class boxGeometryGenerationHelper {
         }
     }
 
-    public static addBoxToVertexData(data : intermediateVertexData, measures : boxMeasures, color : number, subGeomIdx : number, delta : number) : void
+    public static addBoxToVertexData(data : IntermediateVertexData, measures : BoxMeasures, color : number, subGeomIdx : number, delta : number) : void
     {
         let minPos : THREE.Vector3 = new THREE.Vector3(measures.x, measures.y, measures.z);
         let maxPos : THREE.Vector3 = new THREE.Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth);
@@ -162,7 +162,7 @@ export class boxGeometryGenerationHelper {
         let uvs : THREE.Vector2[] = new Array<THREE.Vector2>();
         let positions : THREE.Vector3[] = new Array<THREE.Vector3>();
 
-        boxGeometryGenerationHelper.createPositionsUVs(minPos, maxPos, positions, uvs);
-        boxGeometryGenerationHelper.createVerticesAndFaces(minPos, maxPos, color, delta, subGeomIdx, positions, uvs, data);
+        BoxGeometryGenerationHelper.createPositionsUVs(minPos, maxPos, positions, uvs);
+        BoxGeometryGenerationHelper.createVerticesAndFaces(minPos, maxPos, color, delta, subGeomIdx, positions, uvs, data);
     }
 }

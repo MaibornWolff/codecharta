@@ -1,10 +1,10 @@
 import * as THREE from "three";
-import {node} from "./node";
+import {Node} from "./node";
 
-export class renderingUtil {
+export class RenderingUtil {
 
 
-    static getMaxNodeDepth(nodes: node[]): number {
+    static getMaxNodeDepth(nodes: Node[]): number {
         let max = 0;
         nodes.forEach((node)=>{
             max = Math.max(node.depth, max);

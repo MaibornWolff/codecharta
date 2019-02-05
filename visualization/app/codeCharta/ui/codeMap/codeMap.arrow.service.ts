@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import {node} from "./rendering/node";
-import {renderSettings} from "./rendering/renderSettings";
+import {Node} from "./rendering/node";
+import {RenderSettings} from "./rendering/renderSettings";
 import {Edge} from "../../core/data/model/CodeMap";
 import {ThreeSceneService} from "./threeViewer/threeSceneService";
 
@@ -21,7 +21,7 @@ export class CodeMapArrowService {
         }
     }
 
-    public addEdgeArrowsFromOrigin(origin: node, nodes: node[], deps: Edge[], settings: renderSettings) {
+    public addEdgeArrowsFromOrigin(origin: Node, nodes: Node[], deps: Edge[], settings: RenderSettings) {
         let resDeps: Edge[] = [];
         let originPath = this.getPathFromNode(origin);
         for (var dep of deps) {
@@ -32,13 +32,13 @@ export class CodeMapArrowService {
         this.addEdgeArrows(nodes, resDeps, settings);
     }
 
-    public addEdgeArrows(nodes: node[], deps: Edge[], settings: renderSettings) {
+    public addEdgeArrows(nodes: Node[], deps: Edge[], settings: RenderSettings) {
 
         let map = this.getNodepathMap(nodes);
 
         for (var dep of deps) {
-            let originNode: node = map.get(dep.fromNodeName);
-            let targetNode: node = map.get(dep.toNodeName);
+            let originNode: Node = map.get(dep.fromNodeName);
+            let targetNode: Node = map.get(dep.toNodeName);
             if (originNode && targetNode) {
                 this.addArrow(targetNode, originNode, settings);
             }
@@ -46,8 +46,8 @@ export class CodeMapArrowService {
 
     }
 
-    private getNodepathMap(nodes: node[]): Map<string, node> {
-        let map = new Map<string, node>();
+    private getNodepathMap(nodes: Node[]): Map<string, Node> {
+        let map = new Map<string, Node>();
 
         for (let node of nodes) {
             map.set(this.getPathFromNode(node), node);
@@ -56,8 +56,8 @@ export class CodeMapArrowService {
         return map;
     }
 
-    private getPathFromNode(node: node): string {
-        let current: node = node;
+    private getPathFromNode(node: Node): string {
+        let current: Node = node;
         let path = "";
         while (current) {
             path = "/" + current.name + path;
@@ -66,7 +66,7 @@ export class CodeMapArrowService {
         return path;
     }
 
-    public addArrow(arrowTargetNode: node, arrowOriginNode: node, settings: renderSettings): void {
+    public addArrow(arrowTargetNode: Node, arrowOriginNode: Node, settings: RenderSettings): void {
 
         if (arrowTargetNode.attributes && arrowTargetNode.attributes[settings.heightKey] && arrowOriginNode.attributes && arrowOriginNode.attributes[settings.heightKey]) {
 

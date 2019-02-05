@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-export class intermediateVertexData {
+export class IntermediateVertexData {
     public positions : THREE.Vector3[];
     public normals : THREE.Vector3[];
     public uvs : THREE.Vector2[];

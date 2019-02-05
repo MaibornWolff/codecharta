@@ -1,16 +1,16 @@
 import * as THREE from "three";
 import {MapColors} from "./renderSettings";
-import {node} from "./node";
+import {Node} from "./node";
 
-export class codeMapBuilding {
+export class CodeMapBuilding {
     public id : number;
     public boundingBox : THREE.Box3;
     public color : number;
-    public node : node;
-    public parent?: codeMapBuilding;
+    public node : Node;
+    public parent?: CodeMapBuilding;
     public name?: string;
 
-    constructor(id : number, box : THREE.Box3, node : node, color? : number)
+    constructor(id : number, box : THREE.Box3, node : Node, color? : number)
     {
         this.id = id;
         this.boundingBox = box;

@@ -3,7 +3,7 @@ import {ThreeCameraService} from "./threeViewer/threeCameraService";
 import {ThreeViewerService} from "./threeViewer/threeViewerService";
 import {IAngularEvent, IRootScopeService} from "angular";
 import {CodeMapNode} from "../../core/data/model/CodeMap";
-import {codeMapBuilding} from "./rendering/codeMapBuilding";
+import {CodeMapBuilding} from "./rendering/codeMapBuilding";
 import {CodeMapRenderService} from "./codeMap.render.service";
 import $ from "jquery";
 
@@ -13,14 +13,14 @@ interface Coordinates {
 }
 
 export interface CodeMapBuildingTransition {
-    from: codeMapBuilding;
-    to: codeMapBuilding;
+    from: CodeMapBuilding;
+    to: CodeMapBuilding;
 }
 
 export interface CodeMapMouseEventServiceSubscriber {
     onBuildingHovered(data: CodeMapBuildingTransition, event: IAngularEvent);
     onBuildingSelected(data: CodeMapBuildingTransition, event: IAngularEvent);
-    onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: IAngularEvent);
+    onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent);
 }
 
 export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber {
@@ -152,7 +152,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
         }
     }
 
-    onBuildingHovered(from: codeMapBuilding, to: codeMapBuilding) {
+    onBuildingHovered(from: CodeMapBuilding, to: CodeMapBuilding) {
         /*
          if the hovered node does not have useful data, then we should look at its parent. If the parent has useful data
          then this parent is a delta node which is made of two seperate, data-free nodes. This quick fix helps us to
@@ -175,7 +175,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
         }
     }
 
-    onBuildingSelected(from: codeMapBuilding, to: codeMapBuilding) {
+    onBuildingSelected(from: CodeMapBuilding, to: CodeMapBuilding) {
         this.$rootScope.$broadcast("building-selected", {to: to, from: from});
 
         if (to !== null) {
@@ -187,7 +187,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
     }
 
     onShouldHoverNode(node: CodeMapNode) {
-        let buildings: codeMapBuilding[] = this.codeMapRenderService.mapMesh.getMeshDescription().buildings;
+        let buildings: CodeMapBuilding[] = this.codeMapRenderService.mapMesh.getMeshDescription().buildings;
         buildings.forEach((building) => {
             if (building.node.path === node.path) {
                 this.onBuildingHovered(this.hovered, building);
