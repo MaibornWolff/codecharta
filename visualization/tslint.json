@@ -10,6 +10,7 @@
         "new-parens": true,
         "no-unused-variable": [true, {"ignore-pattern": "^_"}],
         "member-access": true,
+        "member-ordering": [true, {"order": "instance-sandwich"}],
         "no-console": {
             "severity": "warning",
             "options": ["debug", "info", "log", "time", "timeEnd", "trace"]
