@@ -28,7 +28,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
         this.threeOrbitControlsService.subscribe(this);
     }
 
-    addLabel(node: Node, settings: RenderSettings) : void {
+    public addLabel(node: Node, settings: RenderSettings) : void {
         if(node.attributes && node.attributes[settings.heightKey]){
 
             const x: number = node.x0 - settings.mapSize * 0.5;
@@ -50,14 +50,14 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
         }
     }
 
-    clearLabels() {
+    public clearLabels() {
         this.labels = [];
         while (this.threeSceneService.labels.children.length > 0) {
             this.threeSceneService.labels.children.pop();
         }
     }
 
-    scale(x: number, y: number, z: number) {
+    public scale(x: number, y: number, z: number) {
         for(let label of this.labels) {
             label.sprite.position.x *= x;
             label.sprite.position.y *= y;
@@ -75,7 +75,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
         }
     }
 
-    onCameraChanged(camera: PerspectiveCamera, event: angular.IAngularEvent) {
+    public onCameraChanged(camera: PerspectiveCamera, event: angular.IAngularEvent) {
         for (let label of this.labels) {
             this.setLabelSize(label.sprite);
         }

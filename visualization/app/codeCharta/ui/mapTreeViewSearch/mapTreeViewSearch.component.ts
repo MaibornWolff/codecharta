@@ -33,21 +33,21 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
         this.updateMapRoot(this.settingsService.settings.map);
     }
 
-    onDataChanged(data: DataModel, event) {
+    public onDataChanged(data: DataModel, event) {
         this.viewModel.searchPattern = "";
     }
 
-    onSettingsChanged(s: Settings) {
+    public onSettingsChanged(s: Settings) {
         this.updateMapRoot(this.settingsService.settings.map);
         this.updateViewModel();
     }
 
-    onSearchChange() {
+    public onSearchChange() {
         this.setSearchedNodePathnames();
         this.updateViewModel();
     }
 
-    onClickBlacklistPattern(blacklistType: BlacklistType) {
+    public onClickBlacklistPattern(blacklistType: BlacklistType) {
         this.settingsService.settings.blacklist.push(
             {path: this.viewModel.searchPattern, type: blacklistType}
         );

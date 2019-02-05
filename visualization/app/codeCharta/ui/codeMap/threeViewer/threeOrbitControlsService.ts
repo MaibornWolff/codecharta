@@ -17,7 +17,7 @@ class ThreeOrbitControlsService {
     public static SELECTOR = "threeOrbitControlsService";
     public static CAMERA_CHANGED_EVENT_NAME = "camera-changed";
 
-    controls: OrbitControls;
+    public controls: OrbitControls;
 
     /* ngInject */
     constructor(
@@ -26,7 +26,7 @@ class ThreeOrbitControlsService {
         private $rootScope: IRootScopeService
     ) {}
 
-    autoFitTo( obj = this.threeSceneService.mapGeometry) {
+    public autoFitTo( obj = this.threeSceneService.mapGeometry) {
 
         const boundingSphere = new THREE.Box3().setFromObject( obj ).getBoundingSphere();
 
@@ -47,7 +47,7 @@ class ThreeOrbitControlsService {
 
     }
 
-    subscribe(subscriber: CameraChangeSubscriber) {
+    public subscribe(subscriber: CameraChangeSubscriber) {
         this.$rootScope.$on(ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME, (event: IAngularEvent, camera: PerspectiveCamera) => {
             subscriber.onCameraChanged(camera, event);
         });
@@ -57,7 +57,7 @@ class ThreeOrbitControlsService {
      * Inits the controls on the given DOM Element
      * @param domElement Element with the canvas on it
      */
-    init(domElement){
+    public init(domElement){
         const OrbitControls = require("three-orbit-controls")(require("three"));
         this.controls = new OrbitControls(this.threeCameraService.camera, domElement);
         let ctx= this;
@@ -70,7 +70,7 @@ class ThreeOrbitControlsService {
      * Called when the orbit controls receive an user input
      * @param {Camera} camera
      */
-    onInput(camera: PerspectiveCamera) {
+    public onInput(camera: PerspectiveCamera) {
         this.$rootScope.$broadcast(ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME, camera);
     }
 

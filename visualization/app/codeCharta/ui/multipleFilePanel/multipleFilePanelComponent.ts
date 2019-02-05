@@ -27,7 +27,7 @@ export class MultipleFilePanelController implements DataServiceSubscriber, Setti
         this.updateSelectedMapIndices();
     }
 
-    onMultipleChange(){
+    public onMultipleChange(){
 
         this.selectMapsToAggregate();
 
@@ -39,17 +39,17 @@ export class MultipleFilePanelController implements DataServiceSubscriber, Setti
         this.settingsService.applySettings(this.settings);
     }
 
-    onDataChanged(data: DataModel) {
+    public onDataChanged(data: DataModel) {
         this.data = data;
         this.revisions = data.revisions;
         this.updateSelectedMapIndices();
     }
 
-    onSettingsChanged(settings: Settings, event: Event) {
+    public onSettingsChanged(settings: Settings, event: Event) {
         this.settings = settings;
     }
 
-    updateSelectedMapIndices(){
+    public updateSelectedMapIndices(){
         this.selectedMapIndices = [];
         let indexOfReferenceMap = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
         this.selectedMapIndices.push(indexOfReferenceMap);

@@ -14,7 +14,7 @@ export class ResetSettingsButtonController {
 
     }
 
-    onClick() {
+    public onClick() {
         this.updateSettings(this.settingsNames);
     }
 

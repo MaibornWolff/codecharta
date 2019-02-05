@@ -25,13 +25,13 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
         CodeMapMouseEventService.subscribe($rootScope, this);
     }
 
-    $postLink() {
+    public $postLink() {
         this.threeViewerService.init(this.$element[0].children[0]);
         this.threeViewerService.animate();
         this.codeMapMouseEventService.start();
     }
 
-    onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
+    public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
         NodeContextMenuController.broadcastHideEvent(this.$rootScope);
         if (building) {
             const nodeType = (building.node.isLeaf) ? "File" : "Folder";
@@ -39,10 +39,10 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
         }
     }
 
-    onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+    public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
     }
 
-    onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+    public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
     }
 
 }

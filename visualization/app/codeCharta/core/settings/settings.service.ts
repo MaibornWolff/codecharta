@@ -171,7 +171,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
     }
 
-    onCameraChanged(camera: PerspectiveCamera) {
+    public onCameraChanged(camera: PerspectiveCamera) {
         if (
             this._settings.camera.x !== camera.position.x ||
             this._settings.camera.y !== camera.position.y ||

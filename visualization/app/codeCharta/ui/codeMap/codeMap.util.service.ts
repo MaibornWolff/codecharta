@@ -45,7 +45,7 @@ export class CodeMapUtilService {
         return ig.ignores(CodeMapUtilService.transformPath(node.path));
     }
 
-    getAnyCodeMapNodeFromPath(path: string) {
+    public getAnyCodeMapNodeFromPath(path: string) {
         const firstTryNode = this.getCodeMapNodeFromPath(path, "File");
         if(!firstTryNode) {
             return this.getCodeMapNodeFromPath(path, "Folder");
@@ -53,7 +53,7 @@ export class CodeMapUtilService {
         return firstTryNode;
     }
 
-    getCodeMapNodeFromPath(path: string, nodeType: string) {
+    public getCodeMapNodeFromPath(path: string, nodeType: string) {
         let res = null;
         const rootNode = this.settingsService.settings.map.nodes;
 

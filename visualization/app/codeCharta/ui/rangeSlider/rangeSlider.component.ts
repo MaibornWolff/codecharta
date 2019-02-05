@@ -23,12 +23,12 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 
     }
 
-    onSettingsChanged(settings: Settings) {
+    public onSettingsChanged(settings: Settings) {
         this.initSliderOptions(settings);
         this.updateSliderColors();
     }
 
-    initSliderOptions(settings: Settings = this.settingsService.settings) {
+    public initSliderOptions(settings: Settings = this.settingsService.settings) {
         this.maxMetricValue = this.dataService.getMaxMetricInAllRevisions(settings.colorMetric);
 
         this.sliderOptions = {

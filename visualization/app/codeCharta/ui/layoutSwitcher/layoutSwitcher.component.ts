@@ -28,7 +28,7 @@ export class LayoutSwitcherController {
 
     }
 
-    onLayoutChange(state: string) {
+    public onLayoutChange(state: string) {
         this.stateService.go(state);
     }
 

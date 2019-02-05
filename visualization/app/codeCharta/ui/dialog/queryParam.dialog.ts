@@ -8,7 +8,7 @@ export class QueryParamDialogController {
         this._queryParams = settingsService.getQueryParamString().replace(new RegExp("&", "g"),"\n&");
     }
 
-    hide() {
+    public hide() {
         this.$mdDialog.hide();
     }
 

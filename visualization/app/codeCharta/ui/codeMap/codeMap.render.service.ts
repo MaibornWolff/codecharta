@@ -44,11 +44,11 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         CodeMapMouseEventService.subscribe(this.$rootScope, this);
     }
 
-    onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
+    public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
 
     }
 
-    onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+    public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
 
     }
 
@@ -56,11 +56,11 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         return this._mapMesh;
     }
 
-    onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+    public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
 
     }
 
-    onSettingsChanged(settings: Settings, event: Event) {
+    public onSettingsChanged(settings: Settings, event: Event) {
         this.applySettings(settings);
     }
 
@@ -69,7 +69,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
      * @param {Settings} s
      * @listens {settings-changed}
      */
-    applySettings(s: Settings) {
+    public applySettings(s: Settings) {
 
         if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.nodes && s.neutralColorRange && s.deltaColorFlipped != undefined && s.invertHeight != undefined) {
             this.updateMapGeometry(s);
@@ -91,7 +91,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         return nodes;
     }
 
-    updateMapGeometry(s: Settings) {
+    public updateMapGeometry(s: Settings) {
 
         this.visibleEdges = this.getVisibleEdges(s);
 
@@ -188,7 +188,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
      * @param {number} y
      * @param {number} z
      */
-    scaleMap(x, y, z) {
+    public scaleMap(x, y, z) {
         this.threeSceneService.mapGeometry.scale.x = x;
         this.threeSceneService.mapGeometry.scale.y = y;
         this.threeSceneService.mapGeometry.scale.z = z;

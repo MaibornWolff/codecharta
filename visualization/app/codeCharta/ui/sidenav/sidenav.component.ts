@@ -11,11 +11,11 @@ export class SidenavController {
     ) {
     }
 
-    showUrlParams() {
+    public showUrlParams() {
         this.dialogService.showQueryParamDialog();
     }
 
-    toggleSidenav(navID) {
+    public toggleSidenav(navID) {
         this.$mdSidenav(navID).toggle();
     }
 }

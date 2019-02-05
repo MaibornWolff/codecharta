@@ -56,14 +56,14 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         this.initAnimations();
     }
 
-    onDataChanged(data: DataModel) {
+    public onDataChanged(data: DataModel) {
         if (data && data.revisions && data.revisions.length > 1) {
             this._deltas = true;
             this.refreshDeltaColors();
         }
     }
 
-    refreshDeltaColors() {
+    public refreshDeltaColors() {
         if(this.deltaColorsFlipped){
             this.pd = this.getImageDataUri(MapColors.negativeDelta);
             this.nd = this.getImageDataUri(MapColors.positiveDelta);
@@ -191,7 +191,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         }
     }
 
-    onSettingsChanged(s: Settings) {
+    public onSettingsChanged(s: Settings) {
         this._range = s.neutralColorRange;
         this.deltaColorsFlipped = s.deltaColorFlipped;
         this._deltas = s.mode == KindOfMap.Delta;
@@ -211,13 +211,13 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         this.combineMarkingPackagesByColors();
     }
 
-    getImageDataUri(hex: number): string {
+    public getImageDataUri(hex: number): string {
         let hexS: string = "#" + hex.toString(16);
         let color: string = this.encodeHex(hexS);
         return this.generatePixel(color);
     }
 
-    encodeHex(s: string): string {
+    public encodeHex(s: string): string {
         s = s.substring(1, 7);
         if (s.length < 6) {
             s = s[0] + s[0] + s[1] + s[1] + s[2] + s[2];
@@ -226,11 +226,11 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
             parseInt(s[0] + s[1], 16), parseInt(s[2] + s[3], 16), parseInt(s[4] + s[5], 16));
     }
 
-    encodeRGB(r: number, g: number, b: number): string {
+    public encodeRGB(r: number, g: number, b: number): string {
         return this.encodeTriplet(0, r, g) + this.encodeTriplet(b, 255, 255);
     }
 
-    encodeTriplet(e1: number, e2: number, e3: number): string {
+    public encodeTriplet(e1: number, e2: number, e3: number): string {
         let keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
         let enc1 = e1 >> 2;
         let enc2 = ((e1 & 3) << 4) | (e2 >> 4);
@@ -240,7 +240,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     }
 
 
-    generatePixel(color: string): string {
+    public generatePixel(color: string): string {
         return "data:image/gif;base64,R0lGODlhAQABAPAA" + color + "/yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
     }
 

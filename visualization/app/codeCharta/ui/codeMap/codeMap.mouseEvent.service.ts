@@ -43,7 +43,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
         MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this);
     }
 
-    static subscribe($rootScope: IRootScopeService, subscriber: CodeMapMouseEventServiceSubscriber) {
+    public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapMouseEventServiceSubscriber) {
 
         $rootScope.$on("building-hovered", (e, data: CodeMapBuildingTransition) => {
             subscriber.onBuildingHovered(data, e);
@@ -59,14 +59,14 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
     }
 
-    start() {
+    public start() {
         this.threeRendererService.renderer.domElement.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
         this.threeRendererService.renderer.domElement.addEventListener("mouseup", this.onDocumentMouseUp.bind(this), false);
         this.threeRendererService.renderer.domElement.addEventListener("mousedown", this.onDocumentMouseDown.bind(this), false);
         this.threeRendererService.renderer.domElement.addEventListener("dblclick", this.onDocumentDoubleClick.bind(this), false);
     }
 
-    update() {
+    public update() {
         this.threeCameraService.camera.updateMatrixWorld(false);
 
         if (this.threeSceneService.getMapMesh() != null) {
@@ -89,14 +89,14 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
         }
     }
 
-    onDocumentMouseMove(event) {
+    public onDocumentMouseMove(event) {
         const topOffset = $(this.threeRendererService.renderer.domElement).offset().top - $(window).scrollTop();
         this.mouse.x = ( event.clientX / this.threeRendererService.renderer.domElement.width ) * 2 - 1;
         this.mouse.y = -( (event.clientY - topOffset) / this.threeRendererService.renderer.domElement.height ) * 2 + 1;
         this.dragOrClickFlag = 1;
     }
 
-    onDocumentMouseUp() {
+    public onDocumentMouseUp() {
 
         if (this.dragOrClickFlag === 0) {
 
@@ -118,7 +118,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
     }
 
-    onDocumentMouseDown(event) {
+    public onDocumentMouseDown(event) {
         if (event.button === 0) {
             this.onLeftClick(event);
         } else if (event.button === 2) {
@@ -126,7 +126,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
         }
     }
 
-    onRightClick(event) {
+    public onRightClick(event) {
         this.$rootScope.$broadcast("building-right-clicked", {
             building: this.hovered,
             x: event.clientX,
@@ -135,11 +135,11 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
         });
     }
 
-    onLeftClick(event) {
+    public onLeftClick(event) {
         this.dragOrClickFlag = 0;
     }
 
-    onDocumentDoubleClick(event) {
+    public onDocumentDoubleClick(event) {
         if (!this.hovered) {
             return;
         }
@@ -150,7 +150,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
         }
     }
 
-    onBuildingHovered(from: CodeMapBuilding, to: CodeMapBuilding) {
+    public onBuildingHovered(from: CodeMapBuilding, to: CodeMapBuilding) {
         /*
          if the hovered node does not have useful data, then we should look at its parent. If the parent has useful data
          then this parent is a delta node which is made of two seperate, data-free nodes. This quick fix helps us to
@@ -173,7 +173,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
         }
     }
 
-    onBuildingSelected(from: CodeMapBuilding, to: CodeMapBuilding) {
+    public onBuildingSelected(from: CodeMapBuilding, to: CodeMapBuilding) {
         this.$rootScope.$broadcast("building-selected", {to: to, from: from});
 
         if (to !== null) {
@@ -184,7 +184,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
         }
     }
 
-    onShouldHoverNode(node: CodeMapNode) {
+    public onShouldHoverNode(node: CodeMapNode) {
         let buildings: CodeMapBuilding[] = this.codeMapRenderService.mapMesh.getMeshDescription().buildings;
         buildings.forEach((building) => {
             if (building.node.path === node.path) {
@@ -193,7 +193,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
         });
     }
 
-    onShouldUnhoverNode(node: CodeMapNode) {
+    public onShouldUnhoverNode(node: CodeMapNode) {
         this.onBuildingHovered(this.hovered, null);
     }
 

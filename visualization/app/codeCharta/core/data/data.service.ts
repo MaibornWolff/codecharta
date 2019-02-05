@@ -201,7 +201,7 @@ export class DataService {
         this.notify();
     }
 
-    getMaxMetricInAllRevisions(metric: string) {
+    public getMaxMetricInAllRevisions(metric: string) {
         let maxValue = 0;
 
         this.data.revisions.forEach((rev)=> {

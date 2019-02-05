@@ -44,7 +44,7 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
         this.sliderPositions = [20, 80];
     }
 
-    onDataChanged(data: DataModel, event: IAngularEvent) {
+    public onDataChanged(data: DataModel, event: IAngularEvent) {
         this.metricData =  data.metricData;
     }
 
@@ -52,10 +52,10 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
         this.settingsService.applySettings();
     }
 
-    onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent) {
+    public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent) {
     }
 
-    onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+    public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
 
         if(data && data.to && data.to.node && data.to.node.attributes) {
             this.hoveredAreaValue = data.to.node.attributes[this.settingsService.settings.areaMetric];
@@ -86,7 +86,7 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
         }
     }
 
-    onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+    public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
     }
 
     private getHoveredDeltaColor() {

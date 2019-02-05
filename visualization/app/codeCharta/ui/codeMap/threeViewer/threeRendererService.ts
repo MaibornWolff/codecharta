@@ -34,7 +34,7 @@ export class ThreeRendererService implements SettingsServiceSubscriber {
     /**
      * Inits the renderer.
      */
-    init(containerWidth: number, containerHeight: number){
+    public init(containerWidth: number, containerHeight: number){
         this.renderer = new THREE.WebGLRenderer(ThreeRendererService.RENDER_OPTIONS);
         this.settingsService.subscribe(this);
         this.onSettingsChanged(this.settingsService.settings, null);
@@ -51,7 +51,7 @@ export class ThreeRendererService implements SettingsServiceSubscriber {
         }
     }
 
-    onSettingsChanged(settings: Settings, event) {
+    public onSettingsChanged(settings: Settings, event) {
         this.setCurrentClearColorFromSettings(settings);
         this.renderer.setClearColor(ThreeRendererService.CLEAR_COLOR, ThreeRendererService.CLEAR_ALPHA);
     }

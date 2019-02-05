@@ -13,7 +13,7 @@ export class MapTreeViewController implements SettingsServiceSubscriber {
 
     }
 
-    onSettingsChanged(s: Settings) {
+    public onSettingsChanged(s: Settings) {
         this.updateMapRoot(this.settingsService.settings.map);
     }
 

@@ -21,11 +21,11 @@ export class CodeMapGeometricDescription {
         return this._buildings;
     }
 
-    add(building: CodeMapBuilding): void {
+    public add(building: CodeMapBuilding): void {
         this._buildings.push(building);
     }
 
-    setScales(scales: THREE.Vector3) {
+    public setScales(scales: THREE.Vector3) {
         this.scales = scales;
     }
 
@@ -45,7 +45,7 @@ export class CodeMapGeometricDescription {
         return tmax >= tmin;
     }
 
-    intersect(ray: THREE.Ray): IntersectionResult {
+    public intersect(ray: THREE.Ray): IntersectionResult {
 
         let intersectedBuilding: CodeMapBuilding | null = null;
         let leastIntersectedDistance: number = Infinity;

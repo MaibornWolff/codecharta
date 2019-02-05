@@ -51,15 +51,15 @@ export class CodeChartaController {
         });
     }
 
-    fitMapToView() {
+    public fitMapToView() {
         this.threeOrbitControlsService.autoFitTo();
     }
 
-    removeFocusedNode() {
+    public removeFocusedNode() {
         this.codeMapActionsService.removeFocusedNode();
     }
 
-    loadFileOrSample() {
+    public loadFileOrSample() {
         this.viewModel.numberOfLoadingTasks++;
         return this.urlService.getFileDataFromQueryParam().then(
             (data: NameDataPair[])=>{
@@ -73,7 +73,7 @@ export class CodeChartaController {
         );
     }
 
-    tryLoadingFiles(nameDataPairs: NameDataPair[], applyScenarioOnce = true) {
+    public tryLoadingFiles(nameDataPairs: NameDataPair[], applyScenarioOnce = true) {
 
         let tasks = [];
 
@@ -103,7 +103,7 @@ export class CodeChartaController {
 
     }
 
-    tryLoadingSampleFiles() {
+    public tryLoadingSampleFiles() {
         if(this.urlService.getParam("file")){
             this.dialogService.showErrorDialog("One or more files from the given file URL parameter could not be loaded. Loading sample files instead.");
         }
@@ -114,7 +114,7 @@ export class CodeChartaController {
 
     }
 
-    printErrors(errors: Object) {
+    public printErrors(errors: Object) {
         this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"));
     }
 

@@ -32,7 +32,7 @@ class FileChooserController {
      * called when the selected file changed
      * @param {object} element dom input element
      */
-    fileChanged(element) {
+    public fileChanged(element) {
         let ctx = this;
         this.$rootScope.$broadcast("add-loading-task");
         this.$scope.$apply(function() {
@@ -58,7 +58,7 @@ class FileChooserController {
      * @param {number} revision the revision number
      * @param {string} name the filename
      */
-    onNewFileLoaded(data, revision, name, element){
+    public onNewFileLoaded(data, revision, name, element){
         element.value = "";
         //$("#fileChooserPanel").modal("close");
 
@@ -82,7 +82,7 @@ class FileChooserController {
      * @param {object} parsedData
      * @param {number} revision the revision number
      */
-    setNewData(name, parsedData, revision){
+    public setNewData(name, parsedData, revision){
         let ctx = this;
         return this.dataLoadingService.loadMapFromFileContent(name, parsedData, revision).then(
             () => {
@@ -106,7 +106,7 @@ class FileChooserController {
      * prints errors
      * @param {object} result
      */
-    printErrors(result){
+    public printErrors(result){
         this.dialogService.showErrorDialog(JSON.stringify(result, null, "\t"));
     }
     

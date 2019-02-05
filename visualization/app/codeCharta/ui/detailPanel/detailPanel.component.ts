@@ -88,24 +88,24 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 
     }
 
-    onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+    public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
         this.onHover(data);
     }
 
-    onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+    public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
         this.onSelect(data);
     }
 
-    onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
+    public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
     }
 
-    onSettingsChanged(settings: Settings) {
+    public onSettingsChanged(settings: Settings) {
         this.details.common.areaAttributeName = settings.areaMetric;
         this.details.common.heightAttributeName = settings.heightMetric;
         this.details.common.colorAttributeName = settings.colorMetric;
     }
 
-    onSelect(data) {
+    public onSelect(data) {
         if (data.to && data.to.node) {
             this.setSelectedDetails(data.to.node);
         } else {
@@ -113,7 +113,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         }
     }
 
-    onHover(data) {
+    public onHover(data) {
         if (data.to && data.to.node) {
             this.setHoveredDetails(data.to.node);
         } else {
@@ -121,7 +121,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         }
     }
 
-    isHovered() {
+    public isHovered() {
         if (this.details && this.details.hovered) {
             return this.details.hovered.name ? true : false;
         } else {
@@ -129,7 +129,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         }
     }
 
-    isSelected() {
+    public isSelected() {
         if (this.details && this.details.selected) {
             return this.details.selected.name ? true : false;
         } else {
@@ -137,7 +137,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         }
     }
 
-    setHoveredDetails(hovered) {
+    public setHoveredDetails(hovered) {
         this.clearHoveredDetails();
         this.$timeout(() => {
             this.details.hovered.name = hovered.name;
@@ -170,7 +170,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         return result;
     }
 
-    setSelectedDetails(selected) {
+    public setSelectedDetails(selected) {
         this.clearSelectedDetails();
         this.$timeout(() => {
             this.details.selected.name = selected.name;
@@ -192,7 +192,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         });
     }
 
-    clearHoveredDetails() {
+    public clearHoveredDetails() {
         this.$timeout(() => {
             for(let key in this.details.hovered) {
                 this.details.hovered[key] = null;
@@ -200,7 +200,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         });
     }
 
-    clearSelectedDetails() {
+    public clearSelectedDetails() {
         this.$timeout(() => {
             for(let key in this.details.selected) {
                 this.details.selected[key] = null;

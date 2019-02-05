@@ -17,13 +17,13 @@ export class DisplaySettingsPanelController {
         this.settingsService.subscribe(this);
     }
 
-    onSettingsChanged(settings: Settings, event) {
+    public onSettingsChanged(settings: Settings, event) {
         this.viewModel.flipped = settings.neutralColorRange.flipped;
         this.viewModel.deltas = settings.mode == KindOfMap.Delta;
         this.viewModel.deltaColorFlipped = settings.deltaColorFlipped;
     }
 
-    apply() {
+    public apply() {
         this.settingsService.settings.neutralColorRange.flipped = this.viewModel.flipped;
         this.settingsService.settings.deltaColorFlipped = this.viewModel.deltaColorFlipped;
         this.settingsService.onSettingsChanged();

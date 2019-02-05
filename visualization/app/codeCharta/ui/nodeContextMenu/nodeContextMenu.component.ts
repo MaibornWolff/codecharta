@@ -37,7 +37,7 @@ export class NodeContextMenuController {
         $rootScope.$broadcast("hide-node-context-menu");
     }
 
-    show(path: string, nodeType: string, mouseX: number, mouseY: number) {
+    public show(path: string, nodeType: string, mouseX: number, mouseY: number) {
         this.$timeout(() => {
             this.contextMenuBuilding = this.codeMapUtilService.getCodeMapNodeFromPath(path, nodeType);
         }, 50).then(() => {
@@ -49,7 +49,7 @@ export class NodeContextMenuController {
         });
     }
 
-    calculatePosition(mouseX: number, mouseY: number) {
+    public calculatePosition(mouseX: number, mouseY: number) {
         const w = this.$element[0].children[0].clientWidth;
         const h = this.$element[0].children[0].clientHeight;
         return {
@@ -58,22 +58,22 @@ export class NodeContextMenuController {
         }
     }
 
-    setPosition(x: number, y: number) {
+    public setPosition(x: number, y: number) {
         angular.element(this.$element[0].children[0]).css("top", y + "px");
         angular.element(this.$element[0].children[0]).css("left", x + "px");
     }
 
-    hideNode() {
+    public hideNode() {
         this.hide();
         this.codeMapActionsService.hideNode(this.contextMenuBuilding);
     }
 
-    showNode() {
+    public showNode() {
         this.hide();
         this.codeMapActionsService.showNode(this.contextMenuBuilding);
     }
 
-    clickColor(color: string) {
+    public clickColor(color: string) {
         if (this.currentFolderIsMarkedWithColor(color)) {
             this.unmarkFolder();
         } else {
@@ -81,55 +81,55 @@ export class NodeContextMenuController {
         }
     }
 
-    currentFolderIsMarkedWithColor(color: string) {
+    public currentFolderIsMarkedWithColor(color: string) {
         return color
         && this.contextMenuBuilding
         && this.contextMenuBuilding.markingColor
         && color.substring(1) === this.contextMenuBuilding.markingColor.substring(2);
     }
 
-    markFolder(color: string) {
+    public markFolder(color: string) {
         this.hide();
         this.codeMapActionsService.markFolder(this.contextMenuBuilding, color);
     }
 
-    unmarkFolder() {
+    public unmarkFolder() {
         this.hide();
         this.codeMapActionsService.unmarkFolder(this.contextMenuBuilding);
     }
 
-    focusNode() {
+    public focusNode() {
         this.hide();
         this.codeMapActionsService.focusNode(this.contextMenuBuilding);
     }
 
-    hide() {
+    public hide() {
         this.$timeout(() => {
             this.contextMenuBuilding = null;
         }, 0);
     }
 
-    showDependentEdges() {
+    public showDependentEdges() {
         this.hide();
         this.codeMapActionsService.showDependentEdges(this.contextMenuBuilding);
     }
 
-    hideDependentEdges() {
+    public hideDependentEdges() {
         this.hide();
         this.codeMapActionsService.hideDependentEdges(this.contextMenuBuilding);
     }
 
-    hideAllEdges() {
+    public hideAllEdges() {
         this.hide();
         this.codeMapActionsService.hideAllEdges();
     }
 
-    excludeNode() {
+    public excludeNode() {
         this.hide();
         this.codeMapActionsService.excludeNode(this.contextMenuBuilding)
     }
 
-    nodeIsFolder() {
+    public nodeIsFolder() {
         return this.contextMenuBuilding && this.contextMenuBuilding.children && this.contextMenuBuilding.children.length > 0;
     }
 
