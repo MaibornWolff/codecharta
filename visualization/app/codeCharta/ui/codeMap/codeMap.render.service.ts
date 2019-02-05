@@ -28,9 +28,6 @@ import { IRootScopeService } from "angular";
 
 const MAP_SIZE = 500.0;
 
-/**
- * Main service to manage the state of the rendered code map
- */
 export class CodeMapRenderService implements SettingsServiceSubscriber {
     public static SELECTOR = "codeMapRenderService";
 
@@ -60,11 +57,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
         this.applySettings(settings);
     }
 
-    /**
-     * Applies the given settings and redraws the scene
-     * @param {Settings} s
-     * @listens {settings-changed}
-     */
     applySettings(s: Settings) {
         if (
             s.areaMetric &&
@@ -80,7 +72,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
         }
 
         if (s.scaling && s.scaling.x && s.scaling.y && s.scaling.z) {
-            //    this.scaleMap(s.scaling.x, s.scaling.y, s.scaling.z);
+            this.scaleMap(s.scaling.x, s.scaling.y, s.scaling.z);
         }
     }
 

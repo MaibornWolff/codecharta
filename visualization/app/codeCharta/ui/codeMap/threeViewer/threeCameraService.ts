@@ -6,12 +6,8 @@ import {
     Settings,
     SettingsService
 } from "../../../core/settings/settings.service";
-import { Object3D, PerspectiveCamera } from "three";
-import { ThreeOrbitControlsService } from "./threeOrbitControlsService";
+import { PerspectiveCamera } from "three";
 
-/**
- * Manages the three js camera in an angular way.
- */
 class ThreeCameraService implements SettingsServiceSubscriber {
     public static SELECTOR = "threeCameraService";
 
@@ -24,21 +20,13 @@ class ThreeCameraService implements SettingsServiceSubscriber {
     constructor() {}
 
     onSettingsChanged(settings: Settings, event: Event) {
-        /*this.setPosition(
+        this.setPosition(
             settings.camera.x,
             settings.camera.y,
             settings.camera.z
-        );*/
+        );
     }
 
-    /**
-     * Inits the camera with a specific container width and height
-     * @param {number} containerWidth initial width
-     * @param {number} containerHeight initial height
-     * @param {number} x camera position component x
-     * @param {number} y camera position component y
-     * @param {number} z camera position component z
-     */
     init(
         settingsService: SettingsService,
         containerWidth: number,
