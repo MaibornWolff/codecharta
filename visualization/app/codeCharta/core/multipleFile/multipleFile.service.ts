@@ -10,9 +10,6 @@ export class MultipleFileService {
     private attributeTypesEdge:{[key: string]: AttributeType} = {};
     private attributeTypesNode:{[key: string]: AttributeType} = {};
 
-    constructor() {
-    }
-
     public aggregateMaps(inputMaps: CodeMap[]): CodeMap {
         if(inputMaps.length == 1) return inputMaps[0];
 

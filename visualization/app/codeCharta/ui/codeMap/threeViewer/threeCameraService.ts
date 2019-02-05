@@ -18,10 +18,6 @@ class ThreeCameraService implements SettingsServiceSubscriber {
 
     public camera: PerspectiveCamera;
 
-    constructor() {
-
-    }
-
     onSettingsChanged(settings: Settings, event: Event) {
         this.setPosition(settings.camera.x, settings.camera.y, settings.camera.z);
     }

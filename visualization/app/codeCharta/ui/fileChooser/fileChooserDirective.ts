@@ -13,8 +13,6 @@ export class FileChooserDirective{
     bindToController = true;
     uniqueId = 0;
 
-    constructor() {}
-
     /**
      * Links the uniqe id to the scope id and increments it
      * @param {Scope} $scope

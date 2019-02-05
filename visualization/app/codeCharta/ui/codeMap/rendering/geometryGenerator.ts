@@ -29,9 +29,6 @@ export class GeometryGenerator {
 
     private floorGradient: number[];
 
-    constructor() {
-    }
-
     public build(nodes: Node[], material: THREE.Material, settings: RenderSettings): BuildResult {
         let data: IntermediateVertexData = new IntermediateVertexData();
         let desc: CodeMapGeometricDescription = new CodeMapGeometricDescription(settings.mapSize);

@@ -7,9 +7,6 @@ export class ThreeUpdateCycleService {
 
     private updatables: Function[] = [];
 
-    constructor() {
-    }
-
     register(onUpdate: Function) {
         this.updatables.push(onUpdate);
     }

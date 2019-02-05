@@ -6,15 +6,6 @@ import {CodeMapNode} from "./model/CodeMap";
  */
 export class DataValidatorService {
 
-    /* @ngInject */
-
-    /**
-     * @constructor
-     */
-    constructor() {
-
-    }
-
     /**
      * Checks if a nodes children are unique in name+type
      * @param {Object} node
