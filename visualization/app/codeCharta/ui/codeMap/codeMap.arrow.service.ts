@@ -24,7 +24,7 @@ export class CodeMapArrowService {
     public addEdgeArrowsFromOrigin(origin: Node, nodes: Node[], deps: Edge[], settings: RenderSettings) {
         let resDeps: Edge[] = [];
         let originPath = this.getPathFromNode(origin);
-        for (var dep of deps) {
+        for (let dep of deps) {
             if (dep.fromNodeName === originPath) {
                 resDeps.push(dep);
             }
@@ -36,7 +36,7 @@ export class CodeMapArrowService {
 
         let map = this.getNodepathMap(nodes);
 
-        for (var dep of deps) {
+        for (let dep of deps) {
             let originNode: Node = map.get(dep.fromNodeName);
             let targetNode: Node = map.get(dep.toNodeName);
             if (originNode && targetNode) {

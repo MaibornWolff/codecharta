@@ -89,7 +89,7 @@ export class CodeMapActionsService {
     }
 
     pushItemToBlacklist(item: BlacklistItem) {
-        var foundDuplicate = this.settingsService.settings.blacklist.filter(obj => {
+        const foundDuplicate = this.settingsService.settings.blacklist.filter(obj => {
             return this.isEqualObjects(obj, item);
         });
         if (foundDuplicate.length == 0) {

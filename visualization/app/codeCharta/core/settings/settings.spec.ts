@@ -209,8 +209,8 @@ describe("settings.service", function() {
      */
     it("should return last value when id is bigger than or equal to metrics length", NGMock.mock.inject(function(settingsService, $rootScope){
 
-        var arr = ["a", "b", "c"];
-        var result = settingsService.getMetricByIdOrLast(32, arr);
+        const arr = ["a", "b", "c"];
+        let result = settingsService.getMetricByIdOrLast(32, arr);
         expect(result).toBe("c");
 
         result = settingsService.getMetricByIdOrLast(3, arr);
@@ -224,8 +224,8 @@ describe("settings.service", function() {
      */
     it("should return correct value when id is smaller than metrics length", NGMock.mock.inject(function(settingsService, $rootScope){
 
-        var arr = ["a", "b", "c"];
-        var result = settingsService.getMetricByIdOrLast(1, arr);
+        const arr = ["a", "b", "c"];
+        const result = settingsService.getMetricByIdOrLast(1, arr);
         expect(result).toBe("b");
 
     }));

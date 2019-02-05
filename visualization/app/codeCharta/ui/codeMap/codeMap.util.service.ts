@@ -46,7 +46,7 @@ export class CodeMapUtilService {
     }
 
     getAnyCodeMapNodeFromPath(path: string) {
-        var firstTryNode = this.getCodeMapNodeFromPath(path, "File");
+        const firstTryNode = this.getCodeMapNodeFromPath(path, "File");
         if(!firstTryNode) {
             return this.getCodeMapNodeFromPath(path, "Folder");
         }

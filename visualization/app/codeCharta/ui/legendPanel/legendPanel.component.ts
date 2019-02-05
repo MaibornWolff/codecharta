@@ -83,7 +83,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     private setMarkingPackagesIntoLegend() {
         this.markingPackages = [];
         if (this.settingsService.settings.map) {
-            var rootNode: CodeMapNode = this.settingsService.settings.map.nodes;
+            const rootNode: CodeMapNode = this.settingsService.settings.map.nodes;
 
             hierarchy<CodeMapNode>(rootNode).descendants().forEach((hierarchyNode) => {
                 const node: CodeMapNode = hierarchyNode.data;
@@ -116,7 +116,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     }
 
     private handleMarkingPackageWithExistingColor(mp: MarkingPackages) {
-        var addMP = true;
+        let addMP = true;
         const packagesWithSameMarkingColor: MarkingPackages[] = this.getPackagesWithSameMarkingColor(mp);
         if (packagesWithSameMarkingColor != []) {
             for (const mpWithSameColor of packagesWithSameMarkingColor) {
@@ -133,7 +133,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     }
 
     private getPackagesWithSameMarkingColor(mp: MarkingPackages) {
-        var packagesWithSameMarkingColor: MarkingPackages[] = [];
+        const packagesWithSameMarkingColor: MarkingPackages[] = [];
         for(const otherMP of this.markingPackages) {
             if (otherMP.markingColor == mp.markingColor) {
                 packagesWithSameMarkingColor.push(otherMP);
@@ -150,8 +150,8 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         const allMP = this.markingPackages;
         this.markingPackages = [];
         if (allMP) {
-            for (var i = 0; i < allMP.length; i++) {
-                var markingPackage: MarkingPackages = {
+            for (let i = 0; i < allMP.length; i++) {
+                let markingPackage: MarkingPackages = {
                     markingColor: this.getImageDataUri(Number(allMP[i].markingColor)),
                     packageItem: [{
                         name: this.getPackagePathPreview(allMP[i]),
