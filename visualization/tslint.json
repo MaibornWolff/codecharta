@@ -6,6 +6,7 @@
         "no-empty": [true, "allow-empty-catch", "allow-empty-functions"],
         "no-arg": true,
         "no-eval": true,
+        "no-conditional-assignment": true,
         "no-console": {
             "severity": "warning",
             "options": ["debug", "info", "log", "time", "timeEnd", "trace"]
