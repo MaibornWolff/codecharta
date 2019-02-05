@@ -17,7 +17,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
         this.settingsService.subscribe(this);
         this.initSliderOptions();
 
-        $timeout(function() {
+        $timeout(() => {
             $scope.$broadcast('rzSliderForceRender')
         })
 

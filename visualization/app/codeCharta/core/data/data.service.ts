@@ -192,11 +192,11 @@ export class DataService {
             leaves = leaves.concat(d3.hierarchy<CodeMapNode>(map.nodes).leaves());
         });
 
-        let attributeList: string[][] = leaves.map(function (d: HierarchyNode<CodeMapNode>) {
+        let attributeList: string[][] = leaves.map((d: HierarchyNode<CodeMapNode>) => {
             return d.data.attributes ? Object.keys(d.data.attributes) : [];
         });
 
-        let attributes: string[] = attributeList.reduce(function (left: string[], right: string[]) {
+        let attributes: string[] = attributeList.reduce((left: string[], right: string[]) => {
             return left.concat(right.filter(el => left.indexOf(el) === -1));
         });
 

@@ -33,16 +33,15 @@ class FileChooserController {
      * @param {object} element dom input element
      */
     public fileChanged(element) {
-        let ctx = this;
         this.$rootScope.$broadcast("add-loading-task");
-        this.$scope.$apply(function() {
-            ctx.dataService.resetMaps();
+        this.$scope.$apply(() => {
+            this.dataService.resetMaps();
             for (let i = 0; i < element.files.length; i++) {
-                (function(file, i) {
+                ((file, i) => {
                     let name = file.name;
                     let reader = new FileReader();
-                    reader.onload = function(e) {
-                        ctx.onNewFileLoaded((<any>e.target).result, i, name, element);
+                    reader.onload = (e) => {
+                        this.onNewFileLoaded((<any>e.target).result, i, name, element);
                     };
                     reader.readAsText(file, "UTF-8");
                 })(element.files[i], i);

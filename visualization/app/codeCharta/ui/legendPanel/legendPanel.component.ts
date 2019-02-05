@@ -249,11 +249,11 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     }
 
     private initAnimations() {
-        $(document).ready(function(){
+        $(document).ready(() => {
             let start = 40;
             let target = -500;
             let visible = false;
-            $("legend-panel-component .panel-button").click(function(){
+            $("legend-panel-component .panel-button").click(() => {
                 $("legend-panel-component .block-wrapper").animate({left: visible ? target+"px" : start+"px"}, "fast");
                 visible = !visible;
             });

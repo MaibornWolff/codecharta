@@ -161,7 +161,7 @@ export class DataDecoratorService {
     private defineAttributeAsSumMethod(node, metric: string) {
         Object.defineProperty(node.data.attributes, metric, {
             enumerable: true,
-            get: function () {
+            get: () => {
                 let sum = 0;
                 let l = node.leaves();
                 for (let count = 0; count < l.length; count++) {

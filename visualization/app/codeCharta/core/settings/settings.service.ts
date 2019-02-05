@@ -162,9 +162,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      */
     public updateSettingsFromUrl() {
 
-        let ctx = this;
-
-        let iterateProperties = function (obj, prefix) {
+        let iterateProperties = (obj, prefix) => {
             for (let i in obj) {
                 if (obj.hasOwnProperty(i) && i !== "map" && i) {
 
@@ -174,7 +172,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
                         iterateProperties(obj[i], i + ".");
                     }
 
-                    const res = ctx.urlService.getParam(prefix + i);
+                    const res = this.urlService.getParam(prefix + i);
 
                     if (res) {
 
@@ -254,7 +252,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         let result = "";
 
-        let iterateProperties = function (obj, prefix) {
+        let iterateProperties = (obj, prefix) => {
             for (let i in obj) {
                 if (obj.hasOwnProperty(i) && i !== "map" && i) {
 

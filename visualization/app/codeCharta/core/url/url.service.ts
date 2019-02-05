@@ -93,16 +93,14 @@ export class UrlService {
 
             if (file && file.length > 0) {
                 this.$http.get(file).then(
-                    function (response: IHttpResponse<Object>) {
+                    (response: IHttpResponse<Object>) => {
                         if (response.status === UrlService.OK_CODE) {
                             Object.assign(response.data, {fileName: file});
                             resolve({name: file, data:response.data});
                         } else {
                             reject();
                         }
-                    }, function () {
-                        reject();
-                    }
+                    }, reject
                 );
             } else {
                 reject();

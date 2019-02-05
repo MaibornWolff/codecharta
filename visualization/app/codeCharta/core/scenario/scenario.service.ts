@@ -42,9 +42,8 @@ export class ScenarioService {
         const updatedSettingsUsingScenario = {...this.settingsService.settings, ...scenario.settings};
         this.settingsService.applySettings(updatedSettingsUsingScenario);
         if(scenario.autoFitCamera){
-            let _this = this;
-            setTimeout(function(){
-                _this.threeOrbitControlsService.autoFitTo();
+            setTimeout(() => {
+                this.threeOrbitControlsService.autoFitTo();
             },10);
         }
     }

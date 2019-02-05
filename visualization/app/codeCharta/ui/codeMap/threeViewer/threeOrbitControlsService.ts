@@ -60,9 +60,8 @@ class ThreeOrbitControlsService {
     public init(domElement){
         const OrbitControls = require("three-orbit-controls")(require("three"));
         this.controls = new OrbitControls(this.threeCameraService.camera, domElement);
-        let ctx= this;
-        this.controls.addEventListener( "change", function () {
-            ctx.onInput(ctx.threeCameraService.camera);
+        this.controls.addEventListener( "change", () => {
+            this.onInput(this.threeCameraService.camera);
         });
     }
 
