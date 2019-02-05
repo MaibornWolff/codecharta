@@ -1,199 +1,187 @@
-import {CodeMapMouseEventService, CodeMapMouseEventServiceSubscriber} from "./codeMap.mouseEvent.service";
+import { CodeMapMouseEventService, CodeMapMouseEventServiceSubscriber } from "./codeMap.mouseEvent.service"
 
-import {ThreeCameraService} from "./threeViewer/threeCameraService";
-jest.mock("./threeViewer/threeCameraService");
+import { ThreeCameraService } from "./threeViewer/threeCameraService"
+jest.mock("./threeViewer/threeCameraService")
 
-import {ThreeRendererService} from "./threeViewer/threeRendererService";
-jest.mock("./threeViewer/threeRendererService");
+import { ThreeRendererService } from "./threeViewer/threeRendererService"
+jest.mock("./threeViewer/threeRendererService")
 
-import {ThreeSceneService} from "./threeViewer/threeSceneService";
-jest.mock("./threeViewer/threeSceneService");
+import { ThreeSceneService } from "./threeViewer/threeSceneService"
+jest.mock("./threeViewer/threeSceneService")
 
-import {ThreeUpdateCycleService} from "./threeViewer/threeUpdateCycleService";
-jest.mock("./threeViewer/threeUpdateCycleService");
+import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
+jest.mock("./threeViewer/threeUpdateCycleService")
 
-import {ThreeViewerService} from "./threeViewer/threeViewerService";
-jest.mock("./threeViewer/threeViewerService");
+import { ThreeViewerService } from "./threeViewer/threeViewerService"
+jest.mock("./threeViewer/threeViewerService")
 
-import {CodeMapRenderService} from "./codeMap.render.service";
-jest.mock("./codeMap.render.service");
+import { CodeMapRenderService } from "./codeMap.render.service"
+jest.mock("./codeMap.render.service")
 
-import {MapTreeViewLevelController} from "../mapTreeView/mapTreeView.level.component";
-jest.mock("../mapTreeView/mapTreeView.level.component");
+import { MapTreeViewLevelController } from "../mapTreeView/mapTreeView.level.component"
+jest.mock("../mapTreeView/mapTreeView.level.component")
 
 describe("mouseEventService", () => {
+	let sut: CodeMapMouseEventService
 
-    let sut: CodeMapMouseEventService;
+	let $rootScope = {
+		$on: jest.fn()
+	}
 
-    let $rootScope = {
-        $on: jest.fn()
-    };
+	let $window = {}
 
-    let $window = {};
+	beforeEach(() => {
+		clear()
+		rebuild()
+	})
 
-    beforeEach(() => {
-        clear();
-        rebuild();
-    });
+	function clear() {
+		ThreeCameraService.mockClear()
+		ThreeRendererService.mockClear()
+		ThreeSceneService.mockClear()
+		ThreeUpdateCycleService.mockClear()
+		ThreeViewerService.mockClear()
+		CodeMapRenderService.mockClear()
+	}
 
-    function clear() {
-        ThreeCameraService.mockClear();
-        ThreeRendererService.mockClear();
-        ThreeSceneService.mockClear();
-        ThreeUpdateCycleService.mockClear();
-        ThreeViewerService.mockClear();
-        CodeMapRenderService.mockClear();
-    }
+	function rebuild() {
+		sut = new CodeMapMouseEventService(
+			$rootScope,
+			$window,
+			new ThreeCameraService(),
+			new ThreeRendererService(),
+			new ThreeSceneService(),
+			new ThreeUpdateCycleService(),
+			new ThreeViewerService(),
+			new CodeMapRenderService()
+		)
+	}
 
-    function rebuild() {
-        sut = new CodeMapMouseEventService(
-            $rootScope,
-            $window,
-            new ThreeCameraService(),
-            new ThreeRendererService(),
-            new ThreeSceneService(),
-            new ThreeUpdateCycleService(),
-            new ThreeViewerService(),
-            new CodeMapRenderService()
-        );
-    }
+	it("constructor should subscribe to services", () => {
+		expect(sut.threeUpdateCycleService.register).toHaveBeenCalled()
+		expect(MapTreeViewLevelController.subscribeToHoverEvents).toHaveBeenCalled()
+	})
 
-    it("constructor should subscribe to services", ()=>{
-        expect(sut.threeUpdateCycleService.register).toHaveBeenCalled()
-        expect(MapTreeViewLevelController.subscribeToHoverEvents).toHaveBeenCalled();
-    });
+	it("subscribe should bind listener to given events", () => {
+		const listener: CodeMapMouseEventServiceSubscriber = {
+			onBuildingHovered: () => {},
+			onBuildingSelected: () => {}
+		}
+		CodeMapMouseEventService.subscribe($rootScope, listener)
+		expect($rootScope.$on).toHaveBeenCalledWith("building-selected", expect.any(Function))
+		expect($rootScope.$on).toHaveBeenCalledWith("building-hovered", expect.any(Function))
+	})
 
-    it("subscribe should bind listener to given events", ()=>{
-        const listener: CodeMapMouseEventServiceSubscriber = {
-            onBuildingHovered: ()=>{},
-            onBuildingSelected: ()=>{}
-        };
-        CodeMapMouseEventService.subscribe($rootScope, listener);
-        expect($rootScope.$on).toHaveBeenCalledWith("building-selected", expect.any(Function));
-        expect($rootScope.$on).toHaveBeenCalledWith("building-hovered", expect.any(Function));
-    });
+	it("start should bind event listener", () => {
+		sut.threeRendererService.renderer = {
+			domElement: {
+				addEventListener: jest.fn()
+			}
+		}
+		const adder = sut.threeRendererService.renderer.domElement.addEventListener
+		sut.start()
+		expect(adder).toHaveBeenCalledWith("mouseup", expect.any(Function), false)
+		expect(adder).toHaveBeenCalledWith("mousedown", expect.any(Function), false)
+		expect(adder).toHaveBeenCalledWith("mousemove", expect.any(Function), false)
+		expect(adder).toHaveBeenCalledWith("dblclick", expect.any(Function), false)
+	})
 
-    it("start should bind event listener", ()=>{
-        sut.threeRendererService.renderer = {
-            domElement: {
-                addEventListener: jest.fn()
-            }
-        };
-        const adder = sut.threeRendererService.renderer.domElement.addEventListener;
-        sut.start();
-        expect(adder).toHaveBeenCalledWith("mouseup", expect.any(Function), false);
-        expect(adder).toHaveBeenCalledWith("mousedown", expect.any(Function), false);
-        expect(adder).toHaveBeenCalledWith("mousemove", expect.any(Function), false);
-        expect(adder).toHaveBeenCalledWith("dblclick", expect.any(Function), false);
-    });
+	it("onShouldHoverNode should not call onBuildingHovered when no buildings exist", () => {
+		// given
+		sut.onBuildingHovered = jest.fn()
 
-    it("onShouldHoverNode should not call onBuildingHovered when no buildings exist", ()=>{
+		sut.codeMapRenderService.mapMesh = {
+			getMeshDescription: jest.fn()
+		}
 
-        // given
-        sut.onBuildingHovered = jest.fn();
+		sut.codeMapRenderService.mapMesh.getMeshDescription.mockImplementation(() => {
+			return {
+				buildings: []
+			}
+		})
 
-        sut.codeMapRenderService.mapMesh = {
-            getMeshDescription: jest.fn()
-        }
+		// when
+		sut.onShouldHoverNode({ path: "some path" })
 
-        sut.codeMapRenderService.mapMesh.getMeshDescription.mockImplementation(() => {
-            return {
-                buildings: []
-            };
-        })
+		// then
+		expect(sut.onBuildingHovered).not.toHaveBeenCalled()
+	})
 
-        // when
-        sut.onShouldHoverNode({ path: "some path"} );
+	it("onShouldHoverNode should call onBuildingHovered when a building exists and the its path is equal to the nodes path", () => {
+		// given
 
-        // then
-        expect(sut.onBuildingHovered).not.toHaveBeenCalled();
+		const building = {
+			node: {
+				path: "some path"
+			}
+		}
 
-    });
+		sut.onBuildingHovered = jest.fn()
 
-    it("onShouldHoverNode should call onBuildingHovered when a building exists and the its path is equal to the nodes path", ()=>{
+		sut.hovered = null
 
-        // given
+		sut.codeMapRenderService.mapMesh = {
+			getMeshDescription: jest.fn()
+		}
 
-        const building = {
-            node: {
-                path: "some path"
-            }
-        }
+		sut.codeMapRenderService.mapMesh.getMeshDescription.mockImplementation(() => {
+			return {
+				buildings: [building]
+			}
+		})
 
-        sut.onBuildingHovered = jest.fn();
+		// when
+		sut.onShouldHoverNode({ path: "some path" })
 
-        sut.hovered = null;
+		// then
+		expect(sut.onBuildingHovered).toHaveBeenCalledWith(null, building)
+	})
 
-        sut.codeMapRenderService.mapMesh = {
-            getMeshDescription: jest.fn()
-        }
+	it("onShouldHoverNode should not call onBuildingHovered when a building exists and the its path is not equal to the nodes path", () => {
+		// given
 
-        sut.codeMapRenderService.mapMesh.getMeshDescription.mockImplementation(() => {
-            return {
-                buildings: [building]
-            };
-        })
+		const building = {
+			node: {
+				path: "some other path"
+			}
+		}
 
-        // when
-        sut.onShouldHoverNode({ path: "some path"} );
+		sut.onBuildingHovered = jest.fn()
 
-        // then
-        expect(sut.onBuildingHovered).toHaveBeenCalledWith(null, building);
+		sut.codeMapRenderService.mapMesh = {
+			getMeshDescription: jest.fn()
+		}
 
-    });
+		sut.codeMapRenderService.mapMesh.getMeshDescription.mockImplementation(() => {
+			return {
+				buildings: [building]
+			}
+		})
 
-    it("onShouldHoverNode should not call onBuildingHovered when a building exists and the its path is not equal to the nodes path", ()=>{
+		// when
+		sut.onShouldHoverNode({ path: "some path" })
 
-        // given
+		// then
+		expect(sut.onBuildingHovered).not.toHaveBeenCalled()
+	})
 
-        const building = {
-            node: {
-                path: "some other path"
-            }
-        }
+	it("onShouldUnhoverNode should always call onBuildingHovered(something, null)", () => {
+		// given
 
-        sut.onBuildingHovered = jest.fn();
+		const building = {
+			node: {
+				path: "some other path"
+			}
+		}
 
-        sut.codeMapRenderService.mapMesh = {
-            getMeshDescription: jest.fn()
-        }
+		sut.hovered = building
 
-        sut.codeMapRenderService.mapMesh.getMeshDescription.mockImplementation(() => {
-            return {
-                buildings: [building]
-            };
-        })
+		sut.onBuildingHovered = jest.fn()
 
-        // when
-        sut.onShouldHoverNode({ path: "some path"} );
+		// when
+		sut.onShouldUnhoverNode({ path: "some path" })
 
-        // then
-        expect(sut.onBuildingHovered).not.toHaveBeenCalled();
-
-    });
-
-
-    it("onShouldUnhoverNode should always call onBuildingHovered(something, null)", ()=>{
-
-        // given
-
-        const building = {
-            node: {
-                path: "some other path"
-            }
-        }
-
-        sut.hovered = building;
-
-        sut.onBuildingHovered = jest.fn();
-
-        // when
-        sut.onShouldUnhoverNode({ path: "some path"} );
-
-        // then
-        expect(sut.onBuildingHovered).toHaveBeenCalledWith(building, null);
-
-    });
-
-
-});
+		// then
+		expect(sut.onBuildingHovered).toHaveBeenCalledWith(building, null)
+	})
+})

@@ -2,27 +2,22 @@
  * This service allows other parts of the application to hook into the update cycle and get called on each cycle.
  */
 export class ThreeUpdateCycleService {
+	public static SELECTOR = "threeUpdateCycleService"
 
-    public static SELECTOR = "threeUpdateCycleService";
+	private updatables: Function[] = []
 
-    private updatables: Function[] = [];
+	constructor() {}
 
-    constructor() {
-    }
+	register(onUpdate: Function) {
+		this.updatables.push(onUpdate)
+	}
 
-    register(onUpdate: Function) {
-        this.updatables.push(onUpdate);
-    }
-
-    /**
-     * Updates all registered callback functions
-     */
-    update() {
-        this.updatables.forEach((u: Function)=> {
-            u();
-        });
-    }
-
+	/**
+	 * Updates all registered callback functions
+	 */
+	update() {
+		this.updatables.forEach((u: Function) => {
+			u()
+		})
+	}
 }
-
-

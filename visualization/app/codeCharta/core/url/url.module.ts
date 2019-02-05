@@ -1,13 +1,7 @@
-"use strict";
+"use strict"
 
-import angular from "angular";
+import angular from "angular"
 
-import {UrlService} from "./url.service";
+import { UrlService } from "./url.service"
 
-angular.module(
-    "app.codeCharta.core.url",
-    []
-).service(
-    UrlService.SELECTOR,
-    UrlService
-);
+angular.module("app.codeCharta.core.url", []).service(UrlService.SELECTOR, UrlService)

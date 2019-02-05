@@ -1,148 +1,126 @@
-import {NGMock} from "../../../../mocks/ng.mockhelper";
-import {IRootScopeService, ILocationService, IHttpBackendService} from "angular";
-import DoneCallback = jest.DoneCallback;
+import { NGMock } from "../../../../mocks/ng.mockhelper"
+import { IRootScopeService, ILocationService, IHttpBackendService } from "angular"
+import DoneCallback = jest.DoneCallback
 
-import {NameDataPair, UrlService} from "./url.service";
-import "./url.module";
-import {VALID_TEST_DATA} from "./url.mocks";
-import {CodeMap} from "../data/model/CodeMap";
+import { NameDataPair, UrlService } from "./url.service"
+import "./url.module"
+import { VALID_TEST_DATA } from "./url.mocks"
+import { CodeMap } from "../data/model/CodeMap"
 
-describe("url.service", ()=>{
+describe("url.service", () => {
+	let urlService: UrlService
+	let $rootScope: IRootScopeService
+	let $location: ILocationService
+	let $httpBackend: IHttpBackendService
 
-    let urlService: UrlService;
-    let $rootScope: IRootScopeService;
-    let $location: ILocationService;
-    let $httpBackend: IHttpBackendService;
+	let data: CodeMap
 
-    let data: CodeMap;
+	beforeEach(NGMock.mock.module("app.codeCharta.core.url"))
 
-    beforeEach(NGMock.mock.module("app.codeCharta.core.url"));
+	beforeEach(
+		NGMock.mock.inject((_urlService_, _$rootScope_, _$location_, _$httpBackend_) => {
+			urlService = _urlService_
+			$rootScope = _$rootScope_
+			$location = _$location_
+			$httpBackend = _$httpBackend_
+		})
+	)
 
-    beforeEach(NGMock.mock.inject((_urlService_, _$rootScope_, _$location_, _$httpBackend_) => {
-        urlService = _urlService_;
-        $rootScope = _$rootScope_;
-        $location = _$location_;
-        $httpBackend = _$httpBackend_;
-    }));
+	beforeEach(() => {
+		data = VALID_TEST_DATA
+	})
 
-    beforeEach(()=>{
-        data = VALID_TEST_DATA;
-    });
+	it("file parameter should correctly resolve to a file", (done: DoneCallback) => {
+		// mocks + values
+		let url = "http://testurl?file=valid.json"
 
-    it("file parameter should correctly resolve to a file", (done: DoneCallback) => {
+		$httpBackend.when("GET", "valid.json").respond(200, data)
 
-        // mocks + values
-        let url = "http://testurl?file=valid.json";
+		$location.url(url)
 
-        $httpBackend
-            .when("GET", "valid.json")
-            .respond(200, data);
+		urlService.getFileDataFromQueryParam().then((data: NameDataPair[]) => {
+			expect(data.length).toBe(1)
+			expect(data[0].name).toBe("valid.json")
+			done()
+		})
 
-        $location.url(url);
+		$httpBackend.flush()
+	})
 
-        urlService.getFileDataFromQueryParam().then(
-            (data: NameDataPair[]) => {
-                expect(data.length).toBe(1);
-                expect(data[0].name).toBe("valid.json");
-                done();
-            }
-        );
+	it("file parameter should correctly resolve to multiple files", (done: DoneCallback) => {
+		// mocks + values
+		let url = "http://testurl?file=valid.json&file=other.json"
 
-        $httpBackend.flush();
+		$httpBackend.when("GET", "valid.json").respond(200, data)
 
-    });
+		let otherData = VALID_TEST_DATA
+		otherData.fileName = "other.json"
 
+		$httpBackend.when("GET", "other.json").respond(200, otherData)
 
-    it("file parameter should correctly resolve to multiple files", (done: DoneCallback) => {
+		$location.url(url)
 
-        // mocks + values
-        let url = "http://testurl?file=valid.json&file=other.json";
+		urlService.getFileDataFromQueryParam().then((data: NameDataPair[]) => {
+			expect(data.length).toBe(2)
+			expect(data[0].name).toBe("valid.json")
+			expect(data[1].name).toBe("other.json")
+			done()
+		})
 
-        $httpBackend
-            .when("GET", "valid.json")
-            .respond(200, data);
+		$httpBackend.flush()
+	})
 
-        let otherData = VALID_TEST_DATA;
-        otherData.fileName = "other.json";
+	it("getFileDataFromQueryParam should allow URL's", (done: DoneCallback) => {
+		// mocks + values
+		let url = "http://testurl.de/?file=http://someurl.com/some.json"
 
-        $httpBackend
-            .when("GET", "other.json")
-            .respond(200, otherData);
+		$httpBackend.when("GET", "http://someurl.com/some.json").respond(200, data)
 
-        $location.url(url);
+		$location.url(url)
 
-        urlService.getFileDataFromQueryParam().then(
-            (data: NameDataPair[]) => {
-                expect(data.length).toBe(2);
-                expect(data[0].name).toBe("valid.json");
-                expect(data[1].name).toBe("other.json");
-                done();
-            }
-        );
+		urlService.getFileDataFromQueryParam().then(
+			(data: NameDataPair[]) => {
+				expect(data[0].name).toBe("http://someurl.com/some.json")
+				done()
+			},
+			() => {
+				done.fail("should succeed")
+			}
+		)
 
-        $httpBackend.flush();
+		$httpBackend.flush()
+	})
 
-    });
+	it("query parameter(s) should be recognized from static url and location mock", () => {
+		let invalidParam = "invalid"
+		let param1 = "param1"
+		let value1 = "value1"
+		let param2 = "param2"
+		let value2 = "value2"
+		let url1 = "http://testurl?" + param1 + "=" + value1
+		let url2 = "http://testurl?" + param1 + "=" + value1 + "&" + param2 + "=" + value2
 
-    it("getFileDataFromQueryParam should allow URL's", (done: DoneCallback) => {
+		$location.url(url1)
 
-        // mocks + values
-        let url = "http://testurl.de/?file=http://someurl.com/some.json";
+		expect(urlService.getParameterByName(param1)).toBe(value1)
+		expect(urlService.getParameterByName(invalidParam)).toBe(null)
 
-        $httpBackend
-            .when("GET", "http://someurl.com/some.json")
-            .respond(200, data);
+		expect(urlService.getParameterByName(param1, url1)).toBe(value1)
+		expect(urlService.getParameterByName(invalidParam, url1)).toBe(null)
 
-        $location.url(url);
+		$location.url(url2)
 
-        urlService.getFileDataFromQueryParam().then(
-            (data: NameDataPair[]) => {
-                expect(data[0].name).toBe("http://someurl.com/some.json");
-                done();
-            },() => {
-                done.fail("should succeed");
-            }
-        );
+		expect(urlService.getParameterByName(param1)).toBe(value1)
+		expect(urlService.getParameterByName(param2)).toBe(value2)
+		expect(urlService.getParameterByName(invalidParam)).toBe(null)
 
-        $httpBackend.flush();
+		expect(urlService.getParameterByName(param1, url2)).toBe(value1)
+		expect(urlService.getParameterByName(param2, url2)).toBe(value2)
+		expect(urlService.getParameterByName(invalidParam, url2)).toBe(null)
+	})
 
-    });
-
-    it("query parameter(s) should be recognized from static url and location mock", () => {
-
-        let invalidParam ="invalid";
-        let param1 = "param1";
-        let value1 = "value1";
-        let param2 = "param2";
-        let value2 = "value2";
-        let url1 = "http://testurl?"+param1+"="+value1;
-        let url2 = "http://testurl?"+param1+"="+value1+"&"+param2+"="+value2;
-
-        $location.url(url1);
-
-        expect(urlService.getParameterByName(param1)).toBe(value1);
-        expect(urlService.getParameterByName(invalidParam)).toBe(null);
-
-        expect(urlService.getParameterByName(param1, url1)).toBe(value1);
-        expect(urlService.getParameterByName(invalidParam, url1)).toBe(null);
-
-        $location.url(url2);
-
-        expect(urlService.getParameterByName(param1)).toBe(value1);
-        expect(urlService.getParameterByName(param2)).toBe(value2);
-        expect(urlService.getParameterByName(invalidParam)).toBe(null);
-
-        expect(urlService.getParameterByName(param1, url2)).toBe(value1);
-        expect(urlService.getParameterByName(param2, url2)).toBe(value2);
-        expect(urlService.getParameterByName(invalidParam, url2)).toBe(null);
-
-    });
-
-    it("url should be location's url", ()=>{
-        $location.url("somePath.html");
-        expect(urlService.getUrl()).toBe($location.absUrl());
-    });
-
-});
-
-
+	it("url should be location's url", () => {
+		$location.url("somePath.html")
+		expect(urlService.getUrl()).toBe($location.absUrl())
+	})
+})

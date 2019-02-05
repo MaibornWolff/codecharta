@@ -1,12 +1,7 @@
-"use strict";
+"use strict"
 
-import {TooltipService} from "./tooltip.service";
+import { TooltipService } from "./tooltip.service"
 
-import angular from "angular";
+import angular from "angular"
 
-angular.module("app.codeCharta.core.tooltip", [])
-    .service(
-        TooltipService.SELECTOR, TooltipService
-    );
-
-
+angular.module("app.codeCharta.core.tooltip", []).service(TooltipService.SELECTOR, TooltipService)

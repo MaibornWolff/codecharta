@@ -1,13 +1,8 @@
-"use strict";
+"use strict"
 
-import {DownloadService} from "./download.service";
-import "../settings/settings.module";
+import { DownloadService } from "./download.service"
+import "../settings/settings.module"
 
-import angular from "angular";
+import angular from "angular"
 
-angular.module("app.codeCharta.core.download", ["app.codeCharta.core.settings"])
-    .service(
-        DownloadService.SELECTOR, DownloadService
-    );
-
-
+angular.module("app.codeCharta.core.download", ["app.codeCharta.core.settings"]).service(DownloadService.SELECTOR, DownloadService)

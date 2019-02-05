@@ -1,94 +1,89 @@
-"use strict";
-import {ThreeSceneService} from "./threeSceneService";
-import {ThreeCameraService} from "./threeCameraService";
-import {ThreeOrbitControlsService} from "./threeOrbitControlsService";
-import {ThreeRendererService} from "./threeRendererService";
-import {ThreeUpdateCycleService} from "./threeUpdateCycleService";
-import {SettingsService} from "../../../core/settings/settings.service";
+"use strict"
+import { ThreeSceneService } from "./threeSceneService"
+import { ThreeCameraService } from "./threeCameraService"
+import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
+import { ThreeRendererService } from "./threeRendererService"
+import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
+import { SettingsService } from "../../../core/settings/settings.service"
 
 /**
  * A service to angularize the Three.js canvas.
  */
 export class ThreeViewerService {
+	public static SELECTOR = "threeViewerService"
 
-    public static SELECTOR = "threeViewerService";
+	/* ngInject */
+	constructor(
+		private threeSceneService: ThreeSceneService,
+		private threeCameraService: ThreeCameraService,
+		private threeOrbitControlsService: ThreeOrbitControlsService,
+		private threeRendererService: ThreeRendererService,
+		private threeUpdateCycleService: ThreeUpdateCycleService,
+		private settingsService: SettingsService
+	) {}
 
-    /* ngInject */
-    constructor(
-        private threeSceneService: ThreeSceneService,
-        private threeCameraService: ThreeCameraService,
-        private threeOrbitControlsService: ThreeOrbitControlsService,
-        private threeRendererService: ThreeRendererService,
-        private threeUpdateCycleService: ThreeUpdateCycleService,
-        private settingsService: SettingsService
-    ) {
+	/**
+	 * Initializes the canvas and all necessary services.
+	 * @param {Object} element DOM Element which should be the canvas
+	 */
+	init(element: Element) {
+		this.threeCameraService.init(
+			this.settingsService,
+			window.innerWidth,
+			window.innerHeight,
+			this.settingsService.settings.camera.x,
+			this.settingsService.settings.camera.y,
+			this.settingsService.settings.camera.z
+		)
 
-    }
+		this.threeCameraService.camera.lookAt(this.threeSceneService.scene.position)
+		this.threeSceneService.scene.add(this.threeCameraService.camera)
 
-    /**
-     * Initializes the canvas and all necessary services.
-     * @param {Object} element DOM Element which should be the canvas
-     */
-    init(element: Element) {
+		// create the renderer
+		this.threeRendererService.init(window.innerWidth, window.innerHeight)
 
-        this.threeCameraService.init(
-            this.settingsService,
-            window.innerWidth,
-            window.innerHeight,
-            this.settingsService.settings.camera.x,
-            this.settingsService.settings.camera.y,
-            this.settingsService.settings.camera.z
-        );
+		// set up the controls with the camera and renderer
+		this.threeOrbitControlsService.init(this.threeRendererService.renderer.domElement)
 
-        this.threeCameraService.camera.lookAt(this.threeSceneService.scene.position);
-        this.threeSceneService.scene.add(this.threeCameraService.camera);
+		// add renderer to DOM
+		element.appendChild(this.threeRendererService.renderer.domElement)
 
-        // create the renderer
-        this.threeRendererService.init(window.innerWidth, window.innerHeight);
+		// handles resizing the renderer when the window is resized
+		window.addEventListener("resize", this.onWindowResize.bind(this), false)
+		window.addEventListener("focusin", this.onFocusIn.bind(this), false)
+		window.addEventListener("focusout", this.onFocusOut.bind(this), false)
+	}
 
-        // set up the controls with the camera and renderer
-        this.threeOrbitControlsService.init(this.threeRendererService.renderer.domElement);
+	/**
+	 * Applies transformations on window resize.
+	 */
+	onWindowResize() {
+		this.threeSceneService.scene.updateMatrixWorld(false)
 
-        // add renderer to DOM
-        element.appendChild(this.threeRendererService.renderer.domElement);
+		this.threeRendererService.renderer.setSize(window.innerWidth, window.innerHeight)
+		this.threeCameraService.camera.aspect = window.innerWidth / window.innerHeight
+		this.threeCameraService.camera.updateProjectionMatrix()
+	}
 
-        // handles resizing the renderer when the window is resized
-        window.addEventListener("resize", this.onWindowResize.bind(this), false);
-        window.addEventListener("focusin", this.onFocusIn.bind(this), false);
-        window.addEventListener("focusout", this.onFocusOut.bind(this), false);
-    }
+	onFocusIn(event) {
+		if (event.target.nodeName == "INPUT") {
+			this.threeOrbitControlsService.controls.enableKeys = false
+		}
+	}
 
-    /**
-     * Applies transformations on window resize.
-     */
-    onWindowResize() {
-        this.threeSceneService.scene.updateMatrixWorld(false);
+	onFocusOut(event) {
+		if (event.target.nodeName == "INPUT") {
+			this.threeOrbitControlsService.controls.enableKeys = true
+		}
+	}
 
-        this.threeRendererService.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.threeCameraService.camera.aspect = window.innerWidth / window.innerHeight;
-        this.threeCameraService.camera.updateProjectionMatrix();
-    }
-
-    onFocusIn(event) {
-        if(event.target.nodeName == "INPUT") {
-            this.threeOrbitControlsService.controls.enableKeys = false;
-        }
-    }
-
-    onFocusOut(event) {
-        if(event.target.nodeName == "INPUT") {
-            this.threeOrbitControlsService.controls.enableKeys = true;
-        }
-    }
-
-    /**
-     * Calls the animation loop.
-     */
-    animate() {
-        requestAnimationFrame(this.animate.bind(this));
-        this.threeRendererService.renderer.render(this.threeSceneService.scene, this.threeCameraService.camera);
-        this.threeOrbitControlsService.controls.update();
-        this.threeUpdateCycleService.update();
-    }
-
+	/**
+	 * Calls the animation loop.
+	 */
+	animate() {
+		requestAnimationFrame(this.animate.bind(this))
+		this.threeRendererService.renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
+		this.threeOrbitControlsService.controls.update()
+		this.threeUpdateCycleService.update()
+	}
 }

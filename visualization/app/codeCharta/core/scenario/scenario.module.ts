@@ -1,18 +1,12 @@
-"use strict";
+"use strict"
 
-import angular from "angular";
+import angular from "angular"
 
-import "../settings/settings.module";
-import "../data/data.module";
+import "../settings/settings.module"
+import "../data/data.module"
 
-import {ScenarioService} from "./scenario.service";
+import { ScenarioService } from "./scenario.service"
 
-angular.module(
-    "app.codeCharta.core.scenario",
-    ["app.codeCharta.core.settings", "app.codeCharta.core.data"]
-);
+angular.module("app.codeCharta.core.scenario", ["app.codeCharta.core.settings", "app.codeCharta.core.data"])
 
-angular.module("app.codeCharta.core.scenario").service(
-    "scenarioService", ScenarioService
-);
-
+angular.module("app.codeCharta.core.scenario").service("scenarioService", ScenarioService)

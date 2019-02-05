@@ -1,36 +1,28 @@
-"use strict";
-import "./sidenav.component.scss";
-import { DialogService } from "../dialog/dialog.service";
+"use strict"
+import "./sidenav.component.scss"
+import { DialogService } from "../dialog/dialog.service"
 
 export class SidenavController {
+	/* @ngInject */
+	constructor(private dialogService: DialogService, private $mdSidenav: any) {}
 
-    /* @ngInject */
-    constructor(
-        private dialogService: DialogService,
-        private $mdSidenav: any
-    ) {
-    }
+	showUrlParams() {
+		this.dialogService.showQueryParamDialog()
+	}
 
-    showUrlParams() {
-        this.dialogService.showQueryParamDialog();
-    }
-
-    toggleSidenav(navID) {
-        this.$mdSidenav(navID).toggle();
-    }
+	toggleSidenav(navID) {
+		this.$mdSidenav(navID).toggle()
+	}
 }
 
 export const sidenavComponent = {
-    selector: "sidenavComponent",
-    template: require("./sidenav.component.html"),
-    controller: SidenavController
-};
+	selector: "sidenavComponent",
+	template: require("./sidenav.component.html"),
+	controller: SidenavController
+}
 
 export const sidenavToggleComponent = {
-    selector: "sidenavToggleComponent",
-    template: require("./sidenav.toggle.component.html"),
-    controller: SidenavController
-};
-
-
-
+	selector: "sidenavToggleComponent",
+	template: require("./sidenav.toggle.component.html"),
+	controller: SidenavController
+}

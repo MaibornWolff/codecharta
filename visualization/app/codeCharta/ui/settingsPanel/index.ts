@@ -1,16 +1,15 @@
-"use strict";
+"use strict"
 
-import "../../ui/ui";
-import "../../core/core.module";
-import "../codeMap/codeMap";
+import "../../ui/ui"
+import "../../core/core.module"
+import "../codeMap/codeMap"
 
-import "angular-material-expansion-panel";
+import "angular-material-expansion-panel"
 
-import angular from "angular";
+import angular from "angular"
 
-import {settingsPanelComponent} from "./settingsPanel";
+import { settingsPanelComponent } from "./settingsPanel"
 
-angular.module("app.codeCharta.ui.settingsPanel", ["app.codeCharta.ui", "app.codeCharta.core", "material.components.expansionPanels"])
-    .component(settingsPanelComponent.selector, settingsPanelComponent);
-
-
+angular
+	.module("app.codeCharta.ui.settingsPanel", ["app.codeCharta.ui", "app.codeCharta.core", "material.components.expansionPanels"])
+	.component(settingsPanelComponent.selector, settingsPanelComponent)

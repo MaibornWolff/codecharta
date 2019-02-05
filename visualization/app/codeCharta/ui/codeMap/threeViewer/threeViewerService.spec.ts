@@ -1,152 +1,159 @@
-import "./threeViewer";
-import {NG} from "../../../../../mocks/ng.mockhelper";
-import sinon from "sinon";
-import angular from "angular";
-import {ThreeUpdateCycleService} from "./threeUpdateCycleService";
-import {ThreeRendererService} from "./threeRendererService";
-import {ThreeCameraService} from "./threeCameraService";
-import {ThreeSceneService} from "./threeSceneService";
-import {SettingsService} from "../../core/settings/settings.service";
-import {ThreeOrbitControlsService} from "./threeOrbitControlsService";
-import {ThreeViewerService} from "./threeViewerService";
-import * as THREE from "three";
+import "./threeViewer"
+import { NG } from "../../../../../mocks/ng.mockhelper"
+import sinon from "sinon"
+import angular from "angular"
+import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
+import { ThreeRendererService } from "./threeRendererService"
+import { ThreeCameraService } from "./threeCameraService"
+import { ThreeSceneService } from "./threeSceneService"
+import { SettingsService } from "../../core/settings/settings.service"
+import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
+import { ThreeViewerService } from "./threeViewerService"
+import * as THREE from "three"
 
 /**
  * @test {ThreeUpdateCycleService}
  */
-describe("app.codeCharta.ui.codeMap.threeViewer.threeViewerService", function () {
+describe("app.codeCharta.ui.codeMap.threeViewer.threeViewerService", function() {
+	//noinspection TypeScriptUnresolvedVariable
+	beforeEach(angular.mock.module("app.codeCharta.ui.codeMap.threeViewer"))
 
+	//noinspection TypeScriptUnresolvedVariable
+	it(
+		"should retrieve the angular service instance",
+		NG.mock.inject(function(threeViewerService: ThreeViewerService) {
+			expect(threeViewerService).not.toBe(undefined)
+		})
+	)
 
-    //noinspection TypeScriptUnresolvedVariable
-    beforeEach(angular.mock.module("app.codeCharta.ui.codeMap.threeViewer"));
+	it(
+		"on window resize",
+		NG.mock.inject(function(
+			threeSceneService: ThreeSceneService,
+			threeCameraService: ThreeCameraService,
+			threeOrbitControlsService: ThreeOrbitControlsService,
+			threeRendererService: ThreeRendererService,
+			threeUpdateCycleService: ThreeUpdateCycleService,
+			settingsService: SettingsService
+		) {
+			threeSceneService.scene = {
+				updateMatrixWorld: jest.fn()
+			}
 
-    //noinspection TypeScriptUnresolvedVariable
-    it("should retrieve the angular service instance", NG.mock.inject(function (threeViewerService: ThreeViewerService) {
-        expect(threeViewerService).not.toBe(undefined);
-    }));
+			threeRendererService.renderer = {
+				setSize: jest.fn()
+			}
 
-    it("on window resize", NG.mock.inject(function (threeSceneService: ThreeSceneService,
-                                                    threeCameraService: ThreeCameraService,
-                                                    threeOrbitControlsService: ThreeOrbitControlsService,
-                                                    threeRendererService: ThreeRendererService,
-                                                    threeUpdateCycleService: ThreeUpdateCycleService,
-                                                    settingsService: SettingsService) {
-        threeSceneService.scene = {
-            updateMatrixWorld: jest.fn()
-        };
+			threeCameraService.camera = {
+				aspect: 0,
+				updateProjectionMatrix: jest.fn()
+			}
 
-        threeRendererService.renderer = {
-            setSize: jest.fn()
-        }
+			window.innerHeight = 800
+			window.innerWidth = 42
 
-        threeCameraService.camera = {
-            aspect: 0,
-            updateProjectionMatrix: jest.fn()
-        }
+			let service = new ThreeViewerService(
+				threeSceneService,
+				threeCameraService,
+				threeOrbitControlsService,
+				threeRendererService,
+				threeUpdateCycleService,
+				settingsService
+			)
 
-        window.innerHeight = 800;
-        window.innerWidth = 42;
+			service.onWindowResize()
 
-        let service = new ThreeViewerService(
-            threeSceneService,
-            threeCameraService,
-            threeOrbitControlsService,
-            threeRendererService,
-            threeUpdateCycleService,
-            settingsService
-        );
+			expect(threeSceneService.scene.updateMatrixWorld).toHaveBeenCalledWith(false)
+			expect(threeRendererService.renderer.setSize).toHaveBeenCalledWith(window.innerWidth, window.innerHeight)
+			expect(threeCameraService.camera.updateProjectionMatrix).toHaveBeenCalled()
+			expect(threeCameraService.camera.aspect).toBe(0.0525)
+		})
+	)
 
-        service.onWindowResize();
+	it(
+		"animate should update all updatables, controls, renderer and request an animation frame",
+		NG.mock.inject(function(
+			threeSceneService: ThreeSceneService,
+			threeCameraService: ThreeCameraService,
+			threeOrbitControlsService: ThreeOrbitControlsService,
+			threeRendererService: ThreeRendererService,
+			threeUpdateCycleService: ThreeUpdateCycleService,
+			settingsService: SettingsService
+		) {
+			window.requestAnimationFrame = jest.fn()
 
-        expect(threeSceneService.scene.updateMatrixWorld).toHaveBeenCalledWith(false);
-        expect(threeRendererService.renderer.setSize).toHaveBeenCalledWith(window.innerWidth, window.innerHeight);
-        expect(threeCameraService.camera.updateProjectionMatrix).toHaveBeenCalled();
-        expect(threeCameraService.camera.aspect).toBe(0.0525);
+			threeRendererService.renderer = {
+				render: jest.fn()
+			}
 
-    }));
+			threeOrbitControlsService.controls = {
+				update: jest.fn()
+			}
 
-    it("animate should update all updatables, controls, renderer and request an animation frame", NG.mock.inject(function (threeSceneService: ThreeSceneService,
-                                                                                                                           threeCameraService: ThreeCameraService,
-                                                                                                                           threeOrbitControlsService: ThreeOrbitControlsService,
-                                                                                                                           threeRendererService: ThreeRendererService,
-                                                                                                                           threeUpdateCycleService: ThreeUpdateCycleService,
-                                                                                                                           settingsService: SettingsService) {
+			threeUpdateCycleService.update = jest.fn()
 
-        window.requestAnimationFrame = jest.fn();
+			threeSceneService.scene = "some scene"
+			threeCameraService.camera = "some camera"
 
-        threeRendererService.renderer = {
-            render: jest.fn()
-        }
+			let service = new ThreeViewerService(
+				threeSceneService,
+				threeCameraService,
+				threeOrbitControlsService,
+				threeRendererService,
+				threeUpdateCycleService,
+				settingsService
+			)
 
-        threeOrbitControlsService.controls = {
-            update: jest.fn()
-        }
+			service.animate()
 
-        threeUpdateCycleService.update = jest.fn();
+			expect(requestAnimationFrame).toHaveBeenCalled()
+			expect(threeRendererService.renderer.render).toHaveBeenCalledWith(threeSceneService.scene, threeCameraService.camera)
+			expect(threeOrbitControlsService.controls.update).toHaveBeenCalled()
+			expect(threeUpdateCycleService.update).toHaveBeenCalled()
+		})
+	)
 
-        threeSceneService.scene = "some scene";
-        threeCameraService.camera = "some camera";
+	it(
+		"should initialize correctly",
+		NG.mock.inject(function(
+			threeSceneService: ThreeSceneService,
+			threeCameraService: ThreeCameraService,
+			threeOrbitControlsService: ThreeOrbitControlsService,
+			threeRendererService: ThreeRendererService,
+			threeUpdateCycleService: ThreeUpdateCycleService,
+			settingsService: SettingsService
+		) {
+			threeCameraService.init = jest.fn()
+			threeCameraService.camera = new THREE.Object3D()
+			threeCameraService.camera.lookAt = jest.fn()
 
-        let service = new ThreeViewerService(
-            threeSceneService,
-            threeCameraService,
-            threeOrbitControlsService,
-            threeRendererService,
-            threeUpdateCycleService,
-            settingsService
-        );
+			threeRendererService.init = jest.fn()
+			threeRendererService.renderer = {
+				domElement: {}
+			}
 
-        service.animate();
+			threeOrbitControlsService.init = jest.fn()
 
-        expect(requestAnimationFrame).toHaveBeenCalled();
-        expect(threeRendererService.renderer.render).toHaveBeenCalledWith(threeSceneService.scene, threeCameraService.camera);
-        expect(threeOrbitControlsService.controls.update).toHaveBeenCalled();
-        expect(threeUpdateCycleService.update).toHaveBeenCalled();
+			let element = {
+				appendChild: jest.fn()
+			}
 
+			let service = new ThreeViewerService(
+				threeSceneService,
+				threeCameraService,
+				threeOrbitControlsService,
+				threeRendererService,
+				threeUpdateCycleService,
+				settingsService
+			)
 
-    }));
+			service.init(element)
 
-
-    it("should initialize correctly", NG.mock.inject(function (threeSceneService: ThreeSceneService,
-                                                               threeCameraService: ThreeCameraService,
-                                                               threeOrbitControlsService: ThreeOrbitControlsService,
-                                                               threeRendererService: ThreeRendererService,
-                                                               threeUpdateCycleService: ThreeUpdateCycleService,
-                                                               settingsService: SettingsService) {
-
-        threeCameraService.init = jest.fn();
-        threeCameraService.camera = new THREE.Object3D();
-        threeCameraService.camera.lookAt = jest.fn();
-
-        threeRendererService.init = jest.fn();
-        threeRendererService.renderer = {
-            domElement: {}
-        };
-
-        threeOrbitControlsService.init = jest.fn();
-
-        let element = {
-            appendChild: jest.fn()
-        };
-
-        let service = new ThreeViewerService(
-            threeSceneService,
-            threeCameraService,
-            threeOrbitControlsService,
-            threeRendererService,
-            threeUpdateCycleService,
-            settingsService
-        );
-
-        service.init(element);
-
-        expect(threeCameraService.init).toHaveBeenCalled();
-        expect(threeOrbitControlsService.init).toHaveBeenCalled();
-        expect(threeRendererService.init).toHaveBeenCalled();
-        expect(threeCameraService.camera.lookAt).toHaveBeenCalled();
-        expect(element.appendChild).toHaveBeenCalled();
-
-    }));
-
-
-});
+			expect(threeCameraService.init).toHaveBeenCalled()
+			expect(threeOrbitControlsService.init).toHaveBeenCalled()
+			expect(threeRendererService.init).toHaveBeenCalled()
+			expect(threeCameraService.camera.lookAt).toHaveBeenCalled()
+			expect(element.appendChild).toHaveBeenCalled()
+		})
+	)
+})
