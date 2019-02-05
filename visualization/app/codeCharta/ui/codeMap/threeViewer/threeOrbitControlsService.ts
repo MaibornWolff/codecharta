@@ -27,78 +27,48 @@ class ThreeOrbitControlsService {
         private $rootScope: IRootScopeService
     ) {}
 
-    public setCameraViewAngle(x: number, y: number, z: number) {
-        const oldZoom = this.getZoom();
+    public rotateCameraInVectorDirection(x: number, y: number, z: number) {
+        const zoom = this.getZoom();
+        this.lookAtDirectionFromTarget(x, y, z);
+        this.applyOldZoom(zoom);
+    }
 
-        this.initStandardCameraPosition();
-        this.rotateCameraByAngle(x, y);
-        this.applyOldZoom(oldZoom);
+    private lookAtDirectionFromTarget(x: number, y: number, z: number) {
+        this.threeCameraService.camera.position.set(
+            this.controls.target.x,
+            this.controls.target.y,
+            this.controls.target.z
+        );
 
-        this.threeCameraService.camera.updateProjectionMatrix();
+        const alignmentCube = new THREE.Mesh(
+            new THREE.CubeGeometry(20, 20, 20),
+            new THREE.MeshNormalMaterial()
+        );
+
+        this.threeSceneService.scene.add(alignmentCube);
+
+        alignmentCube.position.set(
+            this.controls.target.x,
+            this.controls.target.y,
+            this.controls.target.z
+        );
+
+        alignmentCube.translateX(x);
+        alignmentCube.translateY(y);
+        alignmentCube.translateZ(z);
+
+        this.threeCameraService.camera.lookAt(alignmentCube.getWorldPosition());
+        this.threeSceneService.scene.remove(alignmentCube);
     }
 
     private getZoom() {
         return this.threeCameraService.camera.position.distanceTo(
-            new THREE.Vector3(0, 0, 0)
+            this.controls.target
         );
     }
 
     private applyOldZoom(oldZoom: number) {
-        const newZoom = this.getZoom();
-        const scale = oldZoom / newZoom;
-        this.threeCameraService.camera.position.multiplyScalar(scale);
-    }
-
-    private initStandardCameraPosition() {
-        //TODO Was passiert wenn CodeMap größer ist?!
-        const STANDARD_CAMERA_POSITION = { x: 121.33, y: 1.8, z: 2293 };
-
-        this.threeCameraService.camera.position.set(
-            STANDARD_CAMERA_POSITION.x,
-            STANDARD_CAMERA_POSITION.y,
-            STANDARD_CAMERA_POSITION.z
-        );
-    }
-
-    private rotateCameraByAngle(x: number, y: number) {
-        const DEGREE_TO_RAD_SCALE = Math.PI / 180;
-        const xRad = x * DEGREE_TO_RAD_SCALE;
-        const yRad = y * DEGREE_TO_RAD_SCALE;
-
-        const rotatationMatrixX = new THREE.Matrix3().set(
-            1,
-            0,
-            0,
-            0,
-            Math.cos(xRad),
-            -Math.sin(xRad),
-            0,
-            Math.sin(xRad),
-            Math.cos(xRad)
-        );
-
-        const rotatationMatrixY = new THREE.Matrix3().set(
-            Math.cos(yRad),
-            0,
-            Math.sin(yRad),
-            0,
-            1,
-            0,
-            -Math.sin(yRad),
-            0,
-            Math.cos(yRad)
-        );
-
-        const rotatedX = this.threeCameraService.camera
-            .getWorldPosition()
-            .applyMatrix3(rotatationMatrixX);
-        const rotatedY = rotatedX.applyMatrix3(rotatationMatrixY);
-
-        this.threeCameraService.camera.position.set(
-            rotatedY.x,
-            rotatedY.y,
-            rotatedY.z
-        );
+        this.threeCameraService.camera.translateZ(oldZoom);
     }
 
     autoFitTo(obj = this.threeSceneService.mapGeometry) {
@@ -135,10 +105,6 @@ class ThreeOrbitControlsService {
         );
     }
 
-    /**
-     * Inits the controls on the given DOM Element
-     * @param domElement Element with the canvas on it
-     */
     init(domElement) {
         const OrbitControls = require("three-orbit-controls")(require("three"));
         this.controls = new OrbitControls(
@@ -151,10 +117,6 @@ class ThreeOrbitControlsService {
         });
     }
 
-    /**
-     * Called when the orbit controls receive an user input
-     * @param {Camera} camera
-     */
     onInput(camera: PerspectiveCamera) {
         this.$rootScope.$broadcast(
             ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME,

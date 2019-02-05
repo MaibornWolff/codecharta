@@ -80,7 +80,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
         }
 
         if (s.scaling && s.scaling.x && s.scaling.y && s.scaling.z) {
-            this.scaleMap(s.scaling.x, s.scaling.y, s.scaling.z);
+            //    this.scaleMap(s.scaling.x, s.scaling.y, s.scaling.z);
         }
     }
 

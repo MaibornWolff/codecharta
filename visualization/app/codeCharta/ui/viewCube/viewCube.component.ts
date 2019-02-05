@@ -142,15 +142,6 @@ export class ViewCubeController
             1000
         );
         this.camera.position.z = 4;
-
-        //TODO Adrian fragen
-        /*const pointLight = new THREE.PointLight(0xffffff);
-        pointLight.position.set(
-            this.camera.position.x,
-            this.camera.position.y,
-            this.camera.position.z
-        );
-        this.camera.add(pointLight);*/
     }
 
     public onCubeHovered(cube: THREE.Mesh) {
@@ -175,90 +166,194 @@ export class ViewCubeController
     public onCubeClicked(cube: THREE.Mesh) {
         switch (cube) {
             case this.cubeDefinition.front.top.middle:
-                this.threeOrbitControlsService.setCameraViewAngle(-45, 0, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    0,
+                    -1,
+                    -1
+                );
                 break;
             case this.cubeDefinition.front.top.left:
-                this.threeOrbitControlsService.setCameraViewAngle(-45, -45, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    1,
+                    -1,
+                    -1
+                );
                 break;
             case this.cubeDefinition.front.top.right:
-                this.threeOrbitControlsService.setCameraViewAngle(-45, 45, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    -1,
+                    -1,
+                    -1
+                );
                 break;
 
             case this.cubeDefinition.front.middle.middle:
-                this.threeOrbitControlsService.setCameraViewAngle(0, 0, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    0,
+                    0,
+                    0
+                );
                 break;
             case this.cubeDefinition.front.middle.left:
-                this.threeOrbitControlsService.setCameraViewAngle(0, -45, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    1,
+                    0,
+                    -1
+                );
                 break;
             case this.cubeDefinition.front.middle.right:
-                this.threeOrbitControlsService.setCameraViewAngle(0, 45, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    -1,
+                    0,
+                    -1
+                );
                 break;
 
             case this.cubeDefinition.front.bottom.middle:
-                this.threeOrbitControlsService.setCameraViewAngle(45, 0, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    0,
+                    1,
+                    -1
+                );
                 break;
             case this.cubeDefinition.front.bottom.left:
-                this.threeOrbitControlsService.setCameraViewAngle(45, -45, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    1,
+                    1,
+                    -1
+                );
                 break;
             case this.cubeDefinition.front.bottom.right:
-                this.threeOrbitControlsService.setCameraViewAngle(45, 45, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    -1,
+                    1,
+                    -1
+                );
                 break;
 
             case this.cubeDefinition.middle.middle.right:
-                this.threeOrbitControlsService.setCameraViewAngle(0, 90, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    -1,
+                    0,
+                    0
+                );
                 break;
             case this.cubeDefinition.middle.top.right:
-                this.threeOrbitControlsService.setCameraViewAngle(-45, 90, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    -1,
+                    -1,
+                    0
+                );
                 break;
             case this.cubeDefinition.middle.bottom.right:
-                this.threeOrbitControlsService.setCameraViewAngle(45, 90, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    -1,
+                    1,
+                    0
+                );
                 break;
 
             case this.cubeDefinition.middle.middle.left:
-                this.threeOrbitControlsService.setCameraViewAngle(0, -90, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    1,
+                    0,
+                    0
+                );
                 break;
             case this.cubeDefinition.middle.top.left:
-                this.threeOrbitControlsService.setCameraViewAngle(-45, -90, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    1,
+                    -1,
+                    0
+                );
                 break;
             case this.cubeDefinition.middle.bottom.left:
-                this.threeOrbitControlsService.setCameraViewAngle(45, -90, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    1,
+                    1,
+                    0
+                );
                 break;
 
             case this.cubeDefinition.middle.top.middle:
-                this.threeOrbitControlsService.setCameraViewAngle(-90, 0, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    0,
+                    -1,
+                    0
+                );
                 break;
             case this.cubeDefinition.middle.bottom.middle:
-                this.threeOrbitControlsService.setCameraViewAngle(90, 0, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    0,
+                    1,
+                    0
+                );
                 break;
 
             case this.cubeDefinition.back.top.middle:
-                this.threeOrbitControlsService.setCameraViewAngle(-45, 180, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    0,
+                    -1,
+                    1
+                );
                 break;
             case this.cubeDefinition.back.top.left:
-                this.threeOrbitControlsService.setCameraViewAngle(-45, 225, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    1,
+                    -1,
+                    1
+                );
                 break;
             case this.cubeDefinition.back.top.right:
-                this.threeOrbitControlsService.setCameraViewAngle(-45, 135, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    -1,
+                    -1,
+                    1
+                );
                 break;
 
             case this.cubeDefinition.back.middle.middle:
-                this.threeOrbitControlsService.setCameraViewAngle(0, 180, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    0,
+                    0,
+                    1
+                );
                 break;
             case this.cubeDefinition.back.middle.left:
-                this.threeOrbitControlsService.setCameraViewAngle(0, 135, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    -1,
+                    0,
+                    1
+                );
                 break;
             case this.cubeDefinition.back.middle.right:
-                this.threeOrbitControlsService.setCameraViewAngle(0, 225, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    1,
+                    0,
+                    1
+                );
                 break;
 
             case this.cubeDefinition.back.bottom.middle:
-                this.threeOrbitControlsService.setCameraViewAngle(45, 180, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    0,
+                    1,
+                    1
+                );
                 break;
             case this.cubeDefinition.back.bottom.left:
-                this.threeOrbitControlsService.setCameraViewAngle(45, 225, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    -1,
+                    1,
+                    1
+                );
                 break;
             case this.cubeDefinition.back.bottom.right:
-                this.threeOrbitControlsService.setCameraViewAngle(45, 135, 0);
+                this.threeOrbitControlsService.rotateCameraInVectorDirection(
+                    1,
+                    1,
+                    1
+                );
                 break;
         }
     }
