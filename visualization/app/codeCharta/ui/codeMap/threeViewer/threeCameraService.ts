@@ -2,8 +2,7 @@
 
 import * as THREE from "three";
 import {SettingsServiceSubscriber, Settings, SettingsService} from "../../../core/settings/settings.service";
-import {Object3D, PerspectiveCamera} from "three";
-import {ThreeOrbitControlsService} from "./threeOrbitControlsService";
+import {PerspectiveCamera} from "three";
 
 /**
  * Manages the three js camera in an angular way.

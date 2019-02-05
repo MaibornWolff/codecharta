@@ -1,7 +1,7 @@
 "use strict";
 
 import * as d3 from "d3";
-import {CodeMap, CodeMapNode, Edge} from "./model/CodeMap";
+import {CodeMap, CodeMapNode} from "./model/CodeMap";
 import {HierarchyNode} from "d3-hierarchy";
 
 /**

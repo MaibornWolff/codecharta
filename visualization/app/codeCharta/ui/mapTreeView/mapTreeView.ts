@@ -4,7 +4,7 @@ import "../codeMap/codeMap";
 
 import "./mapTreeView.component.scss";
 
-import {mapTreeViewComponent, MapTreeViewController} from "./mapTreeView.component";
+import {mapTreeViewComponent} from "./mapTreeView.component";
 import {mapTreeViewLevelComponent} from "./mapTreeView.level.component";
 
 angular.module("app.codeCharta.ui.mapTreeView", ["app.codeCharta.core", "app.codeCharta.ui.codeMap"])

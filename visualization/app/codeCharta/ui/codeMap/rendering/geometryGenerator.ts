@@ -3,7 +3,6 @@ import {Node} from "./node";
 import {CodeMapGeometricDescription} from "./codeMapGeometricDescription";
 import {CodeMapBuilding} from "./codeMapBuilding";
 import {getFloorGradient, MapColors} from "./renderSettings";
-import {ColorRange} from "./renderSettings";
 import {RenderSettings} from "./renderSettings";
 import {RenderingUtil} from "./renderingUtil";
 import {IntermediateVertexData} from "./intermediateVertexData";

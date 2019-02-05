@@ -5,7 +5,6 @@ import * as d3 from "d3";
 import {hierarchy, HierarchyNode} from "d3";
 import {TreeMapUtils} from "./treemap.util";
 import {CodeMapUtilService} from "../../ui/codeMap/codeMap.util.service";
-import { settings } from "cluster";
 
 export interface ValuedCodeMapNode {
     data: CodeMapNode;

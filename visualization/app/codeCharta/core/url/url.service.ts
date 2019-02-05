@@ -1,6 +1,5 @@
 "use strict";
 import {ILocationService, IHttpService, IHttpResponse} from "angular";
-import {CodeMap} from "../data/model/CodeMap";
 
 export interface NameDataPair {
     name: string;

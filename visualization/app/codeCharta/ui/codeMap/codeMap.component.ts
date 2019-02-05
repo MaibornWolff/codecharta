@@ -9,25 +9,18 @@ import {CodeMapRenderService} from "./codeMap.render.service";
 import "./codeMap.component.scss";
 
 import angular from "angular";
-import {SettingsService} from "../../core/settings/settings.service";
-import {CodeMapNode} from "../../core/data/model/CodeMap";
-import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 import {NodeContextMenuController} from "../nodeContextMenu/nodeContextMenu.component";
 
 export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
-
-    private contextMenuBuilding: CodeMapNode;
 
     /* @ngInject */
     constructor(private threeViewerService: ThreeViewerService,
                 private $element: Element,
                 private $rootScope,
-                private $timeout,
-                private $window,
-                private settingsService: SettingsService,
                 private codeMapMouseEventService: CodeMapMouseEventService,
-                private threeOrbitControlsService: ThreeOrbitControlsService,
-                private codeMapRenderService: CodeMapRenderService, //we need to call this service somewhere.
+                // we need to inject this service to instantiate it
+                // tslint:disable-next-line:no-unused-variable
+                private codeMapRenderService: CodeMapRenderService, 
     ) {
         CodeMapMouseEventService.subscribe($rootScope, this);
     }

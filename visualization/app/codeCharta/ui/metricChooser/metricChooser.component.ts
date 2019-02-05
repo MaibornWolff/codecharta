@@ -32,7 +32,7 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
     ) {
         this.onDataChanged(dataService.data, null);
         this.dataService.subscribe(this);
-        CodeMapMouseEventService.subscribe($rootScope, this);
+        CodeMapMouseEventService.subscribe(this.$rootScope, this);
         this.optionsWithoutStart = {
             connect: true,
             range: {

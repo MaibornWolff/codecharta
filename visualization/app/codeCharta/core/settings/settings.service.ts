@@ -71,11 +71,11 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     constructor(private urlService, private dataService: DataService, private $rootScope,
                 private threeOrbitControlsService: ThreeOrbitControlsService) {
 
-        this._settings = this.getInitialSettings(dataService.data.renderMap, dataService.data.metrics);
+        this._settings = this.getInitialSettings(this.dataService.data.renderMap, this.dataService.data.metrics);
 
         this.numberOfCalls = 0;
-        dataService.subscribe(this);
-        threeOrbitControlsService.subscribe(this);
+        this.dataService.subscribe(this);
+        this.threeOrbitControlsService.subscribe(this);
 
     }
 
@@ -423,36 +423,5 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     private getMetricByIdOrLast(id: number, metrics: string[]): string {
         return metrics[Math.min(id, metrics.length - 1)];
     }
-
-    /**
-     * corrects settings, if the chosen metric is not available in the current map, the first three metrics are chosen as a default.
-     * @param {Settings} settings
-     */
-    private correctSettings(settings) {
-        const result = settings;
-        result.map = this._settings.map; //do not change the map
-        result.areaMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.areaMetric, this.getMetricByIdOrLast(0, this.dataService.data.metrics));
-        result.heightMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.heightMetric, this.getMetricByIdOrLast(1, this.dataService.data.metrics));
-        result.colorMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.colorMetric, this.getMetricByIdOrLast(2, this.dataService.data.metrics));
-        return result;
-    }
-
-    /**
-     * Checks if the given metricName is in the metricsArray. If it is in there, we return it, else we return the defaultValue.
-     * @param {String[]} metricsArray an array of metric names
-     * @param {String} metricName a metric name to look for
-     * @param {String} defaultValue a default name in case metricName was not found
-     */
-    private getMetricOrDefault(metricsArray, metricName, defaultValue) {
-        let result = defaultValue;
-        metricsArray.forEach((metric) => {
-            if (metric + "" === metricName + "") {
-                result = metric;
-            }
-        });
-
-        return result;
-    }
-
 
 }

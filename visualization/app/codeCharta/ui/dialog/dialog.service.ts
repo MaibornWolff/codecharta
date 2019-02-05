@@ -1,4 +1,3 @@
-import angular, {IAngularEvent} from "angular";
 import {queryParamDialog} from "./queryParam.dialog";
 
 export class DialogService {
@@ -6,7 +5,7 @@ export class DialogService {
     public static SELECTOR = "dialogService";
 
     /* @ngInject */
-    constructor(private $rootScope, private $mdDialog) {
+    constructor(private $mdDialog) {
     }
 
     showQueryParamDialog() {

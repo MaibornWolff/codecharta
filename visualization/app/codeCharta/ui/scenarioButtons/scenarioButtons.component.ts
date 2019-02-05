@@ -11,7 +11,6 @@ export class ScenarioButtonsController implements TooltipServiceSubscriber, Data
 
     private scenarios: Scenario[];
     private key;
-    private visible: boolean = false;
     public  scenario: Scenario;
 
     constructor(private scenarioService: ScenarioService,

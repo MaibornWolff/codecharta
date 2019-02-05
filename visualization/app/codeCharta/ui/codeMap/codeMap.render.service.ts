@@ -41,7 +41,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
                 private codeMapLabelService: CodeMapLabelService,
                 private codeMapArrowService: CodeMapArrowService) {
         this.settingsService.subscribe(this);
-        CodeMapMouseEventService.subscribe($rootScope, this);
+        CodeMapMouseEventService.subscribe(this.$rootScope, this);
     }
 
     onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {

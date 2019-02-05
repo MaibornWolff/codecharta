@@ -3,7 +3,6 @@ import "./multipleFilePanel.component.scss";
 import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/data.service";
 import {CodeMap} from "../../core/data/model/CodeMap";
 import {MultipleFileService} from "../../core/multipleFile/multipleFile.service";
-import {IRootScopeService} from "angular";
 
 export class MultipleFilePanelController implements DataServiceSubscriber, SettingsServiceSubscriber{
 
@@ -15,7 +14,6 @@ export class MultipleFilePanelController implements DataServiceSubscriber, Setti
 
     /* @ngInject */
     constructor(
-        private $rootScope: IRootScopeService,
         private settingsService: SettingsService,
         private dataService: DataService,
         private multipleFileService: MultipleFileService,

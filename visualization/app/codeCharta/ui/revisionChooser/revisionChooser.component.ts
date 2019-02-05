@@ -34,7 +34,7 @@ export class RevisionChooserController implements DataServiceSubscriber{
         this.ui.chosenComparison = this.dataService.getIndexOfMap(this.dataService.getComparisonMap(), this.revisions);
         this.ui.chosenReference = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
         dataService.subscribe(this);
-        $rootScope.$on("revision-mode-changed", (event, data)=>{
+        this.$rootScope.$on("revision-mode-changed", (event, data)=>{
             this.show = data;
         });
 

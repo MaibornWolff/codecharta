@@ -1,5 +1,4 @@
 import "./nodeContextMenu.component.scss";
-import {SettingsService} from "../../core/settings/settings.service";
 import angular from "angular";
 import {highlightColors} from "../codeMap/rendering/renderSettings";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
@@ -12,14 +11,13 @@ export class NodeContextMenuController {
     public amountOfVisibleDependentEdges;
     public anyEdgeIsVisible;
 
-    private colors = highlightColors;
+    private _colors = highlightColors;
 
     /* @ngInject */
     constructor(private $element: Element,
                 private $timeout,
                 private $window,
                 private $rootScope,
-                private settingsService: SettingsService,
                 private codeMapActionsService: CodeMapActionsService,
                 private codeMapUtilService: CodeMapUtilService) {
 

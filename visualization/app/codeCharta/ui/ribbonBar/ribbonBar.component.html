@@ -59,7 +59,7 @@
                     <input flex step="0.1" min="0.1" max="5" type="number" ng-model="$ctrl.settingsService.settings.scaling.y" ng-change="$ctrl.settingsService.applySettings()" aria-controls="y-scale-slider">
                 </md-input-container>
             </md-slider-container>
-            <md-input-container class="md-block" ng-if="$ctrl.settingsService.settings.mode != $ctrl.deltaMode">
+            <md-input-container class="md-block" ng-if="$ctrl.settingsService.settings.mode != $ctrl._deltaMode">
                 <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.invertHeight" ng-change="$ctrl.settingsService.onSettingsChanged()">
                     Invert Height
                 </md-checkbox>

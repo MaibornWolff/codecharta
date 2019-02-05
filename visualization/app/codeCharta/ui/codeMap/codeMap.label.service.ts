@@ -25,7 +25,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
                 private threeSceneService: ThreeSceneService) {
 
         this.labels = new Array<InternalLabel>();
-        threeOrbitControlsService.subscribe(this);
+        this.threeOrbitControlsService.subscribe(this);
     }
 
     addLabel(node: Node, settings: RenderSettings) : void {

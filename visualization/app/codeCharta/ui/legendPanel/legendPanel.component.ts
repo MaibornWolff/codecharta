@@ -25,13 +25,10 @@ export interface PackageItem {
 
 export class LegendPanelController implements DataServiceSubscriber, SettingsServiceSubscriber {
 
-    private deltas: boolean;
+    private _deltas: boolean;
     private pd: string;
     private nd: string;
-    private range: Range;
-    private areaMetric: string;
-    private heightMetric: string;
-    private colorMetric: string;
+    private _range: Range;
     private positive: string;
     private neutral: string;
     private negative: string;
@@ -42,8 +39,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     /* @ngInject */
     constructor(private $timeout: ITimeoutService,
                 private settingsService: SettingsService,
-                private dataService: DataService,
-                private $element: Element) {
+                private dataService: DataService) {
         let ctx = this;
 
         $timeout(()=> {
@@ -62,7 +58,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
 
     onDataChanged(data: DataModel) {
         if (data && data.revisions && data.revisions.length > 1) {
-            this.deltas = true;
+            this._deltas = true;
             this.refreshDeltaColors();
         }
     }
@@ -196,12 +192,9 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     }
 
     onSettingsChanged(s: Settings) {
-        this.range = s.neutralColorRange;
-        this.areaMetric = s.areaMetric;
-        this.heightMetric = s.heightMetric;
-        this.colorMetric = s.colorMetric;
+        this._range = s.neutralColorRange;
         this.deltaColorsFlipped = s.deltaColorFlipped;
-        this.deltas = s.mode == KindOfMap.Delta;
+        this._deltas = s.mode == KindOfMap.Delta;
 
         this.positive = this.getImageDataUri((s.whiteColorBuildings) ? MapColors.lightGrey : MapColors.positive);
         this.neutral = this.getImageDataUri(MapColors.neutral);

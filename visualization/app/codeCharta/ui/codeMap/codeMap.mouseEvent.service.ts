@@ -1,6 +1,5 @@
 import {MapTreeViewHoverEventSubscriber, MapTreeViewLevelController} from "../mapTreeView/mapTreeView.level.component";
 import {ThreeCameraService} from "./threeViewer/threeCameraService";
-import {ThreeViewerService} from "./threeViewer/threeViewerService";
 import {IAngularEvent, IRootScopeService} from "angular";
 import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {CodeMapBuilding} from "./rendering/codeMapBuilding";
@@ -39,9 +38,8 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
                 private threeRendererService,
                 private threeSceneService,
                 private threeUpdateCycleService,
-                private threeViewerService: ThreeViewerService,
                 private codeMapRenderService: CodeMapRenderService) {
-        threeUpdateCycleService.register(this.update.bind(this));
+        this.threeUpdateCycleService.register(this.update.bind(this));
         MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this);
     }
 
