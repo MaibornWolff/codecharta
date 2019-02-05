@@ -61,12 +61,12 @@ export class DownloadService {
     }
 
     private downloadData(data, fileName) {
-        let d = data;
+        let dataJson = data;
         if (typeof data === "object") {
-            d = angular.toJson(data, 4);
+            dataJson = angular.toJson(data, 4);
         }
 
-        const blob = new Blob([d], {type: "text/json"});
+        const blob = new Blob([dataJson], {type: "text/json"});
         const e = document.createEvent("MouseEvents");
         const a = document.createElement("a");
 
