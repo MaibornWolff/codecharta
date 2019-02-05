@@ -1,7 +1,7 @@
-import {intermediateVertexData} from "./intermediateVertexData";
+import {IntermediateVertexData} from "./intermediateVertexData";
 import * as THREE from "three";
-import {codeMapShaderStrings} from "./codeMapShaderStrings";
-import {codeMapBuilding} from "./codeMapBuilding";
+import {CodeMapShaderStrings} from "./codeMapShaderStrings";
+import {CodeMapBuilding} from "./codeMapBuilding";
 import {MapColors} from "./renderSettings";
 
 describe("common rendering tests", () => {
@@ -9,7 +9,7 @@ describe("common rendering tests", () => {
     describe("codeMapBuilding", () => {
 
         it("init", () => {
-            let cmb: codeMapBuilding = new codeMapBuilding(0, new THREE.Box3(), {});
+            let cmb: CodeMapBuilding = new CodeMapBuilding(0, new THREE.Box3(), {});
             expect(cmb.color).toBe(MapColors.defaultC);
         });
 
@@ -18,7 +18,7 @@ describe("common rendering tests", () => {
     describe("shader strings", () => {
 
         it("init", () => {
-            let cmss: codeMapShaderStrings = new codeMapShaderStrings();
+            let cmss: CodeMapShaderStrings = new CodeMapShaderStrings();
             expect(cmss.fragmentShaderCode).toMatchSnapshot();
             expect(cmss.vertexShaderCode).toMatchSnapshot();
         });
@@ -29,7 +29,7 @@ describe("common rendering tests", () => {
     describe("intermediate vertex data", () => {
 
         it("addFace", () => {
-            let ivd: intermediateVertexData = new intermediateVertexData();
+            let ivd: IntermediateVertexData = new IntermediateVertexData();
             ivd.addFace(0, 1, 2);
             expect(ivd.indices.length).toBe(3);
             expect(ivd.indices).toEqual([0, 1, 2]);
@@ -39,7 +39,7 @@ describe("common rendering tests", () => {
         });
 
         it("addVertex", () => {
-            let ivd: intermediateVertexData = new intermediateVertexData();
+            let ivd: IntermediateVertexData = new IntermediateVertexData();
             let res = ivd.addVertex(
                 new THREE.Vector3(0, 0, 0),
                 new THREE.Vector3(1, 0, 0),
