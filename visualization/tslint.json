@@ -1,5 +1,7 @@
 {
     "rules": {
-        "class-name": true
+        "class-name": true,        
+        "no-var-keyword": true,
+        "no-eval": true
     }
 }
