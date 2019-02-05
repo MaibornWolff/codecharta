@@ -15,7 +15,6 @@ class ThreeSceneService {
     public edgeArrows: Group;
     public mapGeometry: Group;
     private mapMesh: CodeMapMesh;
-    public targetHelper: THREE.Mesh;
 
     constructor() {
         this.scene = new THREE.Scene();
@@ -31,33 +30,6 @@ class ThreeSceneService {
         this.scene.add(this.edgeArrows);
         this.scene.add(this.labels);
         this.scene.add(this.lights);
-
-        /*const cubeGeometry = new THREE.BoxGeometry(500, 500, 500);
-        const cube = new THREE.Mesh(
-            cubeGeometry,
-            new THREE.MeshLambertMaterial({
-                color: 0x000000,
-                transparent: true,
-                opacity: 0.8
-            })
-        );
-
-        this.targetHelper = new THREE.Mesh(new THREE.BoxGeometry(5, 5, 5));
-
-        const cubeBoundingBox = new THREE.BoxHelper(
-            cube,
-            new THREE.Color(0x000000)
-        );
-
-        this.scene.add(this.targetHelper);
-
-        this.scene.add(cubeBoundingBox);*/
-
-        const axesHelper = new THREE.AxesHelper(2000);
-
-        this.scene.add(axesHelper);
-
-        //this.scene.add(cube);
     }
 
     initLights() {

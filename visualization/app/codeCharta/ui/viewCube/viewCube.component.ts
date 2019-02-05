@@ -57,7 +57,6 @@ export class ViewCubeController
     }
 
     private initAxesHelper() {
-        //TODO Wie war das nochmal mit Scene-Größe -1 bis 1
         const axesHelper = new THREE.AxesHelper(1.3);
         axesHelper.position.x += -0.51;
         axesHelper.position.y += -0.51;
