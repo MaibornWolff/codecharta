@@ -13,16 +13,16 @@ export class DataValidatorService {
      */
     hasUniqueChildren(node: CodeMapNode) {
 
-        if(!node.children || node.children.length == 0) return true;
+        if(!node.children || node.children.length == 0) { return true; }
 
         let names = {};
         for(let child of node.children) {
             names[child.name + child.type] = true;
         }
-        if(Object.keys(names).length !== node.children.length) return false;
+        if(Object.keys(names).length !== node.children.length) { return false; }
 
         for(let child of node.children){
-            if(!this.hasUniqueChildren(child)) return false;
+            if(!this.hasUniqueChildren(child)) { return false; }
         }
         return true;
     }
