@@ -9,6 +9,7 @@
         "no-conditional-assignment": true,
         "new-parens": true,
         "no-parameter-reassignment": true,
+        "no-reference": true,
         "no-unused-variable": [true, {"ignore-pattern": "^_"}],
         "member-access": true,
         "member-ordering": [true, {"order": "instance-sandwich"}],
