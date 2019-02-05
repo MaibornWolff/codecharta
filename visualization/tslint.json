@@ -7,6 +7,7 @@
         "no-arg": true,
         "no-eval": true,
         "no-conditional-assignment": true,
+        "new-parens": true,
         "no-console": {
             "severity": "warning",
             "options": ["debug", "info", "log", "time", "timeEnd", "trace"]
