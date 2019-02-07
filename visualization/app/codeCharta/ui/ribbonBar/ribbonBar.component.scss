@@ -155,6 +155,10 @@ ribbon-bar-component {
                     background-color: #00897b;
                     color: #ffffff;
                 }
+
+                &:focus{
+                    outline: none;
+                }
     
                 &.toggle-hovered{
                     background-color: #00897b;
