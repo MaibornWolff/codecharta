@@ -7,7 +7,6 @@ export class RibbonBarController {
 
     private collapsingElements = $("code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab");
     private toggleElements = $("ribbon-bar-component .section-title");
-    //private toggleElements = angular.element(document.getElementsByClassName("section-title"));
     private deltaMode = KindOfMap.Delta;
     private isExpanded: boolean = false;
 
@@ -46,7 +45,6 @@ export class RibbonBarController {
     }
 
     public hoverToggle() {
-        console.log(this.toggleElements)
         this.toggleElements.addClass("toggle-hovered")
     }
 

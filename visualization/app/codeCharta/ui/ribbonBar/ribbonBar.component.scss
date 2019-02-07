@@ -140,6 +140,8 @@ ribbon-bar-component {
                 width: 100%;
                 color: gray;
                 text-align: center;
+                transition: color 1s;
+                transition: background-color 0.5s;
 
                 .first {
                     padding-right: 50px;
@@ -147,6 +149,11 @@ ribbon-bar-component {
 
                 .second {
                     padding-left: 50px;
+                }
+
+                &:hover{
+                    background-color: #00897b;
+                    color: #ffffff;
                 }
     
                 &.toggle-hovered{
