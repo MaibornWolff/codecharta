@@ -85,7 +85,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         });
     }
 
-    public getDefaultSettings(renderMap: any, metrics: string[]): Settings {
+    public getDefaultSettings(renderMap: CodeMap, metrics: string[]): Settings {
 
         let r: Range = {
             from: 20,
