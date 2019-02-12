@@ -25,8 +25,6 @@ import { CodeMapLabelService } from "./codeMap.label.service";
 import { ThreeSceneService } from "./threeViewer/threeSceneService";
 import { CodeMapArrowService } from "./codeMap.arrow.service";
 
-const mapSize = 500.0;
-
 const MAP_SIZE = 500.0;
 
 export class CodeMapRenderService implements SettingsServiceSubscriber {
@@ -129,7 +127,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
             renderDeltas: s.mode == KindOfMap.Delta,
             hideFlatBuildings: s.hideFlatBuildings,
             colorRange: s.neutralColorRange,
-            mapSize: mapSize,
+            mapSize: MAP_SIZE,
             deltaColorFlipped: s.deltaColorFlipped,
             whiteColorBuildings: s.whiteColorBuildings
         };
@@ -141,7 +139,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
             this.currentSortedNodes,
             this.currentRenderSettings
         );
-        this.threeSceneService.setMapMesh(this._mapMesh, mapSize);
+        this.threeSceneService.setMapMesh(this._mapMesh, MAP_SIZE);
     }
 
     private setLabels(s: Settings) {
