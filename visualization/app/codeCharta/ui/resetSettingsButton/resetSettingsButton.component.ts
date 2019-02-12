@@ -50,7 +50,7 @@ export class ResetSettingsButtonController {
                 this.settingsService.settings[token] = defaultSettings[token];
             }
         });
-        this.settingsService.applySettings();
+        this.settingsService.onSettingsChanged();
     }
 }
 

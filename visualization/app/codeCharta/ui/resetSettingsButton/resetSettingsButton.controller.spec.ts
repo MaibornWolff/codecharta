@@ -11,7 +11,7 @@ describe("resetButtonController", ()=>{
     beforeEach(()=>{
 
         settingsService = {
-            applySettings: jest.fn(),
+            onSettingsChanged: jest.fn(),
             getDefaultSettings: jest.fn(),
             settings: {
                 neutralColorRange: {
@@ -41,10 +41,10 @@ describe("resetButtonController", ()=>{
         expect(resetSettingsButtonController.updateSettings).toHaveBeenCalledWith("HELLO");
     });
 
-    it("updateSettings should call its applySettings", ()=>{
+    it("updateSettings should call its onSettingsChanged", ()=>{
         settingsService.getDefaultSettings.mockReturnValue({});
         resetSettingsButtonController.updateSettings();
-        expect(settingsService.applySettings).toHaveBeenCalled();
+        expect(settingsService.onSettingsChanged).toHaveBeenCalled();
     });
 
     it(",,?", ()=>{
