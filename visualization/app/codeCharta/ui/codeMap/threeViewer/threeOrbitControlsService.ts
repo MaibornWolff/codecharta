@@ -71,7 +71,7 @@ class ThreeOrbitControlsService {
         this.threeCameraService.camera.translateZ(oldZoom);
     }
 
-    autoFitTo(obj = this.threeSceneService.mapGeometry) {
+    public autoFitTo(obj = this.threeSceneService.mapGeometry) {
         const boundingSphere = new THREE.Box3()
             .setFromObject(obj)
             .getBoundingSphere();
@@ -96,7 +96,7 @@ class ThreeOrbitControlsService {
         this.threeCameraService.camera.updateProjectionMatrix();
     }
 
-    subscribe(subscriber: CameraChangeSubscriber) {
+    public subscribe(subscriber: CameraChangeSubscriber) {
         this.$rootScope.$on(
             ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME,
             (event: IAngularEvent, camera: PerspectiveCamera) => {
@@ -105,7 +105,7 @@ class ThreeOrbitControlsService {
         );
     }
 
-    init(domElement) {
+    public init(domElement) {
         const OrbitControls = require("three-orbit-controls")(require("three"));
         this.controls = new OrbitControls(
             this.threeCameraService.camera,
@@ -117,7 +117,7 @@ class ThreeOrbitControlsService {
         });
     }
 
-    onInput(camera: PerspectiveCamera) {
+    public onInput(camera: PerspectiveCamera) {
         this.$rootScope.$broadcast(
             ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME,
             camera
