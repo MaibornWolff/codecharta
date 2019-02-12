@@ -3,59 +3,50 @@ import { IRootScopeService } from "angular";
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService";
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service";
 import { ViewCubeController } from "./viewCube.component";
-import { ViewCubemeshGenerator } from "./viewCube.meshGenerator";
+import * as THREE from "three";
 
 describe("ViewCubeController", () => {
-    let rootScopeServiceMock: IRootScopeService;
-    let threeOrbitControlsServiceMock: ThreeOrbitControlsService;
-    let viewCubeMouseEventsServiceMock: ViewCubeMouseEventsService;
+    let rootScopeService: IRootScopeService;
+    let threeOrbitControlsService: ThreeOrbitControlsService;
+    let viewCubeMouseEventsService: ViewCubeMouseEventsService;
     let viewCubeController: ViewCubeController;
     let $element;
+
+    beforeEach(() => {
+        getDependencies();
+        buildController();
+    });
 
     afterEach(() => {
         jest.resetAllMocks();
     });
 
-    beforeEach(() => {
-        mockDependencies();
-        buildController();
-    });
-
-    function mockDependencies() {
-        rootScopeServiceMock = getService<IRootScopeService>(
-            "rootScopeService"
-        );
-        threeOrbitControlsServiceMock = getService<ThreeOrbitControlsService>(
+    function getDependencies() {
+        rootScopeService = getService<IRootScopeService>("rootScopeService");
+        threeOrbitControlsService = getService<ThreeOrbitControlsService>(
             "threeOrbitControlsService"
         );
-        viewCubeMouseEventsServiceMock = getService<ViewCubeMouseEventsService>(
+        viewCubeMouseEventsService = getService<ViewCubeMouseEventsService>(
             "viewCubeMouseEventsService"
         );
-        // Vermutlich falscher Weg $element zu mocken
-        $element = [];
     }
 
     function buildController() {
         viewCubeController = new ViewCubeController(
             $element,
-            rootScopeServiceMock,
-            threeOrbitControlsServiceMock,
-            viewCubeMouseEventsServiceMock
+            rootScopeService,
+            threeOrbitControlsService,
+            viewCubeMouseEventsService
         );
     }
 
-    it("initCube should add a cubeGroup to the scene", () => {
-        ViewCubemeshGenerator.buildCube = jest.fn(() => {
-            return {
-                group: "group",
-                front: "front",
-                middle: "middle",
-                back: "back"
-            };
-        });
+    it("onCameraChanged should be triggered", () => {
+        const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera();
+        camera.position.set(10, 20, 30);
+        const expected = new THREE.Vector3(1, 2, 3);
 
-        viewCubeController["initCube"]();
+        viewCubeController.onCameraChanged(camera);
 
-        expect(ViewCubemeshGenerator.buildCube).toBeCalled();
+        expect(viewCubeController["camera"].position).toBe(expected);
     });
 });
