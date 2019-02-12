@@ -74,16 +74,16 @@
   }],
   "edges": [
     {
-      "fromNodeName": "file1",
-      "toNodeName": "visualization/file2",
+      "fromNodeName": "/root/file1",
+      "toNodeName": "/root/visualization/file2",
       "attributes": {
         "pairingRate": 100,
         "avgCommits": 5
       }
     },
     {
-      "fromNodeName": "file1",
-      "toNodeName": "visualization/file3",
+      "fromNodeName": "/root/file1",
+      "toNodeName": "/root/visualization/file3",
       "attributes": {
         "pairingRate": 90,
         "avgCommits": 4
@@ -92,13 +92,27 @@
   ],
   "attributeTypes": {
     "nodes": [
-      {"abs_code_churn": "absolute"},
-      {"added_lines": "absolute"},
-      {"deleted_lines": "absolute"}
+      {"attributeA": "absolute"},
+      {"attributeB": "absolute"},
+      {"attributeC": "absolute"}
     ],
     "edges": [
-      {"pairingRate": "absolute"},
-      {"avgCommits": "relative"}
+      {"attributeD": "absolute"},
+      {"attributeE": "relative"}
     ]
-  }
+  },
+  "blacklist": [
+    {
+      "path": "/root/file1",
+      "type": "hide"
+    },
+    {
+      "path": "/root/visualization/file2",
+      "type": "hide"
+    },
+    {
+      "path": "/root/visualization/file3",
+      "type": "exclude"
+    }
+  ]
 }

@@ -4,8 +4,7 @@ import {
     ThreeOrbitControlsService
 } from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera} from "three";
-import {STATISTIC_OPS} from "../statistic/statistic.service";
-import {CodeMap, CodeMapNode, Exclude, ExcludeType} from "../data/model/CodeMap";
+import {CodeMap, CodeMapNode, BlacklistItem} from "../data/model/CodeMap";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 
 export interface Range {
@@ -38,15 +37,18 @@ export interface Settings {
     scaling: Scale;
     camera: Scale;
     margin: number;
-    operation: STATISTIC_OPS;
     deltaColorFlipped: boolean;
     enableEdgeArrows: boolean;
+    hideFlatBuildings: boolean;
     maximizeDetailPanel: boolean;
     invertHeight: boolean;
     dynamicMargin: boolean;
     isWhiteBackground: boolean;
-    blacklist: Array<Exclude>;
+    whiteColorBuildings: boolean;
+    blacklist: Array<BlacklistItem>;
     focusedNodePath: string;
+    searchedNodePaths: Array<string>;
+    searchPattern: string;
 }
 
 export interface SettingsServiceSubscriber {
@@ -112,15 +114,18 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             scaling: s,
             camera: c,
             margin: 15,
-            operation: STATISTIC_OPS.NOTHING,
             deltaColorFlipped: false,
             enableEdgeArrows: true,
+            hideFlatBuildings: true,
             maximizeDetailPanel: false,
             invertHeight: false,
             dynamicMargin: true,
             isWhiteBackground: false,
+            whiteColorBuildings: true,
             blacklist: [],
             focusedNodePath: null,
+            searchedNodePaths: [],
+            searchPattern: null
         };
         return settings;
 
@@ -268,9 +273,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         let margin: number;
         if (map !== null && dynamicMargin) {
-            let root: CodeMapNode = map.root;
-
-            let leaves = hierarchy<CodeMapNode>(root).leaves();
+            let leaves = hierarchy<CodeMapNode>(map.nodes).leaves();
             let numberOfBuildings = 0;
             let totalArea = 0;
             leaves.forEach((c: HierarchyNode<CodeMapNode>) => {
@@ -386,14 +389,18 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.amountOfTopLabels = settings.amountOfTopLabels;
         this._settings.margin = settings.margin;
         this._settings.mode = settings.mode;
-        this._settings.operation = settings.operation;
         this._settings.deltaColorFlipped = settings.deltaColorFlipped;
+        this._settings.enableEdgeArrows = settings.enableEdgeArrows;
+        this._settings.hideFlatBuildings = settings.hideFlatBuildings;
         this._settings.maximizeDetailPanel = settings.maximizeDetailPanel;
         this._settings.invertHeight = settings.invertHeight;
         this._settings.dynamicMargin = settings.dynamicMargin;
         this._settings.isWhiteBackground = settings.isWhiteBackground;
+        this._settings.whiteColorBuildings = settings.whiteColorBuildings;
         this._settings.blacklist = settings.blacklist;
         this._settings.focusedNodePath = settings.focusedNodePath;
+        this._settings.searchedNodePaths = settings.searchedNodePaths;
+        this._settings.searchPattern = settings.searchPattern;
 
         //TODO what to do with map ? should it even be a part of settings ? deep copy of map ?
         this._settings.map = settings.map || this.settings.map;

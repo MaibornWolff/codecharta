@@ -1,14 +1,10 @@
 import {NGMock} from "../../../../mocks/ng.mockhelper";
-
 import "./scenario.module";
 import {Scenario, ScenarioService} from "./scenario.service";
-import {KindOfMap, SettingsService} from "../settings/settings.service";
+import {SettingsService} from "../settings/settings.service";
 import {createDefaultScenario} from "./scenario.data";
 import {DataService} from "../data/data.service";
 
-/**
- * @test {ScenatioService}
- */
 describe("app.codeCharta.core.scenarioService", function () {
 
     let scenarioService: ScenarioService,
@@ -17,43 +13,6 @@ describe("app.codeCharta.core.scenarioService", function () {
         defaultScenario: Scenario,
         dataService: DataService,
         settingsService: SettingsService;
-
-    const filteredScenario: Scenario[] = [{
-        "name": "Average Complexity*",
-        "settings":
-            {"amountOfTopLabels": 1,
-                "areaMetric": "unary",
-                "camera":
-                    {"x": 0,
-                        "y": 300,
-                        "z": 1000
-                    },
-                "colorMetric": "Average Complexity*",
-                "deltaColorFlipped": false,
-                "mode": "KindOfMap.Single",
-                "heightMetric": "Average Complexity*",
-                "margin": 1,
-                "maximizeDetailPanel": false,
-                "neutralColorRange":
-                    {"flipped": false,
-                        "from": 20,
-                        "to": 40
-                    },
-                "scaling":
-                    {
-                        "x": 1,
-                        "y": 1,
-                        "z": 1
-                    },
-                "enableEdgeArrows": true,
-                "invertHeight": false,
-                "dynamicMargin": true,
-                "isWhiteBackground": false,
-                "blacklist": []
-            },
-
-        "autoFitCamera": true
-    }];
 
     //noinspection TypeScriptUnresolvedVariable
     beforeEach(NGMock.mock.module("app.codeCharta.core.scenario"));
@@ -65,7 +24,7 @@ describe("app.codeCharta.core.scenarioService", function () {
         dataService = _dataService_;
         $scope = _$rootScope_;
         scenario = {name: "testScenario", settings: settingsService.settings};
-        defaultScenario = createDefaultScenario(settingsService.settings.map);
+        defaultScenario = createDefaultScenario();
     }));
 
     it("should apply the settings from a given scenario", () => {
@@ -94,7 +53,7 @@ describe("app.codeCharta.core.scenarioService", function () {
 
     it("scenarios should be filtered when not all metrics are set", () => {
         dataService.data.metrics = ["unary", "Average Complexity*"];
-        expect(scenarioService.getScenarios()).toEqual(filteredScenario);
+        expect(scenarioService.getScenarios()).toMatchSnapshot();
     });
 
     describe("isScenarioPossible", ()=>{
@@ -127,6 +86,19 @@ describe("app.codeCharta.core.scenarioService", function () {
             expect(scenarioService.isScenarioPossible(null, null)).toBe(false);
         });
 
+    });
+
+    it("should update only settings, which exist in given the scenario", () => {
+        const scenario = scenarioService.getDefaultScenario();
+        scenario.settings.neutralColorRange.from = 123;
+        scenario.settings.neutralColorRange.to = 456;
+        scenario.settings.colorMetric = "myTestMetric";
+        scenarioService.applyScenario(scenario);
+
+        const s = scenarioService.settingsService.settings;
+        expect(s.neutralColorRange.from).toBe(scenario.settings.neutralColorRange.from);
+        expect(s.neutralColorRange.to).toBe(scenario.settings.neutralColorRange.to);
+        expect(s.colorMetric).toBe(scenario.settings.colorMetric);
     });
 
 });

@@ -1,5 +1,7 @@
 <md-input-container class="small-input-field">
-    <input type='number' ng-model="$ctrl.settingsService.settings.neutralColorRange.from" min=0 step="1" ng-change="$ctrl.sliderOptions.onFromChange()">
+    <input type='number' ng-model="$ctrl.settingsService.settings.neutralColorRange.from"
+           ng-disabled="$ctrl.sliderOptions.disabled"
+           min=0 step="1" ng-change="$ctrl.sliderOptions.onFromChange()">
 </md-input-container>
 
 <md-input-container class="md-block">
@@ -9,5 +11,7 @@
 </md-input-container>
 
 <md-input-container class="small-input-field">
-    <input type='number' ng-model="$ctrl.settingsService.settings.neutralColorRange.to" min=0 step="1" ng-change="$ctrl.sliderOptions.onToChange()">
+    <input type='number' ng-model="$ctrl.settingsService.settings.neutralColorRange.to"
+           ng-disabled="$ctrl.sliderOptions.disabled"
+           min=0 step="1" ng-change="$ctrl.sliderOptions.onToChange()">
 </md-input-container>

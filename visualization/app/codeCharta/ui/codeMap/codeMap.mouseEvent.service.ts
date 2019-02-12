@@ -1,7 +1,7 @@
 import {
     MapTreeViewHoverEventSubscriber,
     MapTreeViewLevelController
-} from "../mapTreeView/mapTreeViewLevelComponent";
+} from "../mapTreeView/mapTreeView.level.component";
 import { ThreeCameraService } from "./threeViewer/threeCameraService";
 import { ThreeViewerService } from "./threeViewer/threeViewerService";
 import { IAngularEvent, IRootScopeService } from "angular";

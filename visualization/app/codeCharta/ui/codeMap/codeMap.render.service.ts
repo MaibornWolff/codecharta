@@ -1,5 +1,6 @@
 "use strict";
 
+<<<<<<< HEAD
 import { CodeMapMesh } from "./rendering/codeMapMesh";
 import { renderSettings } from "./rendering/renderSettings";
 import { LabelManager } from "./rendering/labelManager";
@@ -12,11 +13,19 @@ import {
 import { node } from "./rendering/node";
 import { ArrowManager } from "./rendering/arrowManager";
 import { Edge } from "../../core/data/model/CodeMap";
+=======
+import {CodeMapMesh} from "./rendering/codeMapMesh";
+import {renderSettings} from "./rendering/renderSettings";
+import {KindOfMap, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {node} from "./rendering/node";
+import {Edge} from "../../core/data/model/CodeMap";
+>>>>>>> master
 import {
     CodeMapBuildingTransition,
     CodeMapMouseEventService,
     CodeMapMouseEventServiceSubscriber
 } from "./codeMap.mouseEvent.service";
+<<<<<<< HEAD
 import {
     TreeMapSettings,
     TreeMapService
@@ -25,6 +34,16 @@ import { codeMapBuilding } from "./rendering/codeMapBuilding";
 import { CodeMapUtilService } from "./codeMap.util.service";
 import { ThreeSceneService } from "./threeViewer/threeSceneService";
 import { IRootScopeService } from "angular";
+=======
+import {TreeMapService, TreeMapSettings} from "../../core/treemap/treemap.service";
+import {codeMapBuilding} from "./rendering/codeMapBuilding";
+import {CodeMapUtilService} from "./codeMap.util.service";
+import {CodeMapLabelService} from "./codeMap.label.service";
+import {ThreeSceneService} from "./threeViewer/threeSceneService";
+import {CodeMapArrowService} from "./codeMap.arrow.service";
+
+const mapSize = 500.0;
+>>>>>>> master
 
 const MAP_SIZE = 500.0;
 
@@ -32,13 +51,13 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
     public static SELECTOR = "codeMapRenderService";
 
     private _mapMesh: CodeMapMesh = null;
-    private labelManager: LabelManager = null;
-    private arrowManager: ArrowManager = null;
 
     public currentSortedNodes: node[];
     private currentRenderSettings: renderSettings;
+    private visibleEdges: Edge[];
 
     /* @ngInject */
+<<<<<<< HEAD
     constructor(
         private threeSceneService: ThreeSceneService,
         private treeMapService: TreeMapService,
@@ -46,6 +65,15 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
         private settingsService: SettingsService,
         private codeMapUtilService: CodeMapUtilService
     ) {
+=======
+    constructor(private threeSceneService: ThreeSceneService,
+                private treeMapService: TreeMapService,
+                private $rootScope,
+                private settingsService: SettingsService,
+                private codeMapUtilService: CodeMapUtilService,
+                private codeMapLabelService: CodeMapLabelService,
+                private codeMapArrowService: CodeMapArrowService) {
+>>>>>>> master
         this.settingsService.subscribe(this);
     }
 
@@ -58,6 +86,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
     }
 
     applySettings(s: Settings) {
+<<<<<<< HEAD
         if (
             s.areaMetric &&
             s.heightMetric &&
@@ -68,6 +97,10 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
             s.deltaColorFlipped != undefined &&
             s.invertHeight != undefined
         ) {
+=======
+
+        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.nodes && s.neutralColorRange && s.deltaColorFlipped != undefined && s.invertHeight != undefined) {
+>>>>>>> master
             this.updateMapGeometry(s);
         }
 
@@ -88,7 +121,12 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
     }
 
     updateMapGeometry(s: Settings) {
+<<<<<<< HEAD
         let visibleEdges = this.getVisibleEdges(s);
+=======
+
+        this.visibleEdges = this.getVisibleEdges(s);
+>>>>>>> master
 
         const treeMapSettings: TreeMapSettings = {
             size: MAP_SIZE,
@@ -96,19 +134,26 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
             heightKey: s.heightMetric,
             margin: s.margin,
             invertHeight: s.invertHeight,
-            visibleEdges: visibleEdges,
+            visibleEdges: this.visibleEdges,
+            searchedNodePaths: s.searchedNodePaths,
             blacklist: s.blacklist,
-            fileName: s.map.fileName
+            fileName: s.map.fileName,
+            searchPattern: s.searchPattern,
+            hideFlatBuildings: s.hideFlatBuildings,
         };
 
         this.showAllOrOnlyFocusedNode(s);
 
         let nodes: node[] = this.collectNodesToArray(
+<<<<<<< HEAD
             this.treeMapService.createTreemapNodes(
                 s.map.root,
                 treeMapSettings,
                 s.map.edges
             )
+=======
+            this.treeMapService.createTreemapNodes(s.map.nodes, treeMapSettings, s.map.edges)
+>>>>>>> master
         );
 
         let filtered = nodes.filter(
@@ -117,11 +162,14 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
         this.currentSortedNodes = filtered.sort((a, b) => {
             return b.height - a.height;
         });
+
         this.currentRenderSettings = {
             heightKey: s.heightMetric,
             colorKey: s.colorMetric,
             renderDeltas: s.mode == KindOfMap.Delta,
+            hideFlatBuildings: s.hideFlatBuildings,
             colorRange: s.neutralColorRange,
+<<<<<<< HEAD
             mapSize: MAP_SIZE,
             deltaColorFlipped: s.deltaColorFlipped
         };
@@ -141,13 +189,36 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
                     this.currentSortedNodes[i],
                     this.currentRenderSettings
                 );
+=======
+            mapSize: mapSize,
+            deltaColorFlipped: s.deltaColorFlipped,
+            whiteColorBuildings: s.whiteColorBuildings,
+        };
+
+        this.setLabels(s);
+        this.setArrows(s);
+
+        this._mapMesh = new CodeMapMesh(this.currentSortedNodes, this.currentRenderSettings);
+        this.threeSceneService.setMapMesh(this._mapMesh, mapSize);
+    }
+
+    private setLabels(s: Settings) {
+        this.codeMapLabelService.clearLabels();
+        for (let i = 0, numAdded = 0; i < this.currentSortedNodes.length && numAdded < s.amountOfTopLabels; ++i) {
+            if (this.currentSortedNodes[i].isLeaf) {
+                this.codeMapLabelService.addLabel(this.currentSortedNodes[i], this.currentRenderSettings);
+>>>>>>> master
                 ++numAdded;
             }
         }
+    }
 
-        if (visibleEdges.length > 0 && s.enableEdgeArrows) {
-            this.showCouplingArrows(visibleEdges);
+    private setArrows(s: Settings) {
+        this.codeMapArrowService.clearArrows();
+        if (this.visibleEdges.length > 0 && s.enableEdgeArrows) {
+            this.showCouplingArrows(this.visibleEdges);
         }
+<<<<<<< HEAD
 
         this._mapMesh = new CodeMapMesh(
             this.currentSortedNodes,
@@ -155,10 +226,13 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
         );
 
         this.threeSceneService.setMapMesh(this._mapMesh, MAP_SIZE);
+=======
+>>>>>>> master
     }
 
     private showAllOrOnlyFocusedNode(s: Settings) {
         if (s.focusedNodePath) {
+<<<<<<< HEAD
             var focusedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(
                 s.focusedNodePath
             );
@@ -175,26 +249,35 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
                 s.map.root,
                 true
             );
+=======
+            const focusedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(s.focusedNodePath);
+            this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.nodes, false);
+            this.treeMapService.setVisibilityOfNodeAndDescendants(focusedNode, true);
+        } else {
+            this.treeMapService.setVisibilityOfNodeAndDescendants(s.map.nodes, true);
+>>>>>>> master
         }
     }
 
     private getVisibleEdges(s: Settings) {
-        if (s.map && s.map.edges) {
-            return s.map.edges.filter(edge => edge.visible === true);
-        }
-        return [];
+        return (s.map && s.map.edges) ? s.map.edges.filter(edge => edge.visible === true) : [];
     }
 
-    showCouplingArrows(deps: Edge[]) {
-        this.arrowManager.clearArrows();
+    private showCouplingArrows(deps: Edge[]) {
+        this.codeMapArrowService.clearArrows();
 
         if (deps && this.currentRenderSettings) {
+<<<<<<< HEAD
             this.arrowManager.addEdgeArrows(
                 this.currentSortedNodes,
                 deps,
                 this.currentRenderSettings
             );
             this.arrowManager.scale(
+=======
+            this.codeMapArrowService.addEdgeArrows(this.currentSortedNodes, deps, this.currentRenderSettings);
+            this.codeMapArrowService.scale(
+>>>>>>> master
                 this.threeSceneService.mapGeometry.scale.x,
                 this.threeSceneService.mapGeometry.scale.y,
                 this.threeSceneService.mapGeometry.scale.z
@@ -221,12 +304,12 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
             this.threeSceneService.getMapMesh().setScale(x, y, z);
         }
 
-        if (this.labelManager) {
-            this.labelManager.scale(x, y, z);
+        if (this.codeMapLabelService) {
+            this.codeMapLabelService.scale(x, y, z);
         }
 
-        if (this.arrowManager) {
-            this.arrowManager.scale(x, y, z);
+        if (this.codeMapArrowService) {
+            this.codeMapArrowService.scale(x, y, z);
         }
     }
 }

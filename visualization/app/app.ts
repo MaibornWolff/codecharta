@@ -37,6 +37,9 @@ angular.module("app")
             template: "<test-ville-component>Loading testVille...</test-ville-component>"
         });
 
-    }).run(function($state) {
+    }).config(['$compileProvider', function($compileProvider) {
+        $compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob|chrome-extension):|data:image\/)/);
+        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file|chrome-extension):/);
+    }]).run(function($state) {
         $state.go("CodeCharta");
     });

@@ -36,6 +36,8 @@ export class MultipleFilePanelController implements DataServiceSubscriber, Setti
         let newMap = this.multipleFileService.aggregateMaps(JSON.parse(JSON.stringify(this.mapsToAggregate)));
 
         this.settings.map = newMap;
+        this.settings.blacklist = newMap.blacklist;
+
         this.settingsService.applySettings(this.settings);
     }
 

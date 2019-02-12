@@ -35,7 +35,8 @@ class Project(
         private val nodes: List<Node> = listOf(Node("root", NodeType.Folder)),
         val apiVersion: String = API_VERSION,
         val edges: List<Edge> = listOf(),
-        val attributeTypes: Map<String, List<Map<String, AttributeType>>> = mapOf()
+        val attributeTypes: Map<String, List<Map<String, AttributeType>>> = mapOf(),
+        var blacklist: List<BlacklistItem> = listOf()
 ) {
     init {
         if (nodes.size != 1) throw IllegalStateException("no root node present in project")
@@ -51,9 +52,13 @@ class Project(
         return edges.size
     }
 
+    fun sizeOfBlacklist(): Int {
+        return blacklist.size
+    }
+
     override fun toString(): String {
         return "Project{projectName=$projectName, apiVersion=$apiVersion, nodes=$nodes, edges=$edges, " +
-                "attributeTypes$attributeTypes}"
+                "attributeTypes=$attributeTypes, blacklist=$blacklist}"
     }
 
     companion object {

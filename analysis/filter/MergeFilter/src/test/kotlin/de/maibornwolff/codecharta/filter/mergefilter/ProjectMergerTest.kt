@@ -146,8 +146,12 @@ class ProjectMergerTest : Spek({
                 assertThat(project == originalProject2, CoreMatchers.`is`(false))
             }
 
-            it("should have correct number of dependencies") {
-                assertThat(project.sizeOfEdges(), CoreMatchers.`is`(6))
+            it("should have correct number of edges") {
+                assertThat(project.sizeOfEdges(), CoreMatchers.`is`(3))
+            }
+
+            it("should have correct number of blacklist items") {
+                assertThat(project.sizeOfBlacklist(), CoreMatchers.`is`(4))
             }
 
             it("should have correct number of files") {
@@ -156,7 +160,7 @@ class ProjectMergerTest : Spek({
 
             it("should have correct number of attributeTypes") {
                 assertThat(project.attributeTypes["edges"]!!.size, CoreMatchers.`is`(2))
-                assertThat(project.attributeTypes["nodes"]!!.size, CoreMatchers.`is`(12))
+                assertThat(project.attributeTypes["nodes"]!!.size, CoreMatchers.`is`(4))
             }
 
             it("should have correct number of attributes") {
@@ -189,7 +193,6 @@ class ProjectMergerTest : Spek({
 
             it("should have correct number of attributes") {
                 assertThat(project.rootNode.children.first().attributes.size, CoreMatchers.`is`(11))
-
             }
         }
     }

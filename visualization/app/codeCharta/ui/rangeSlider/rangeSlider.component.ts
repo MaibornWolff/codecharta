@@ -1,11 +1,13 @@
-import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/data.service";
-import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
-import {IAngularEvent} from "angular";
+import {DataService} from "../../core/data/data.service";
+import {KindOfMap, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import "./rangeSlider.component.scss";
+import {MapColors} from "../codeMap/rendering/renderSettings";
+import $ from "jquery";
 
 export class RangeSliderController implements SettingsServiceSubscriber {
 
     public sliderOptions: any;
+    private maxMetricValue: number;
 
     /* @ngInject */
     constructor(private settingsService: SettingsService,
@@ -23,15 +25,19 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 
     onSettingsChanged(settings: Settings) {
         this.initSliderOptions(settings);
+        this.updateSliderColors();
     }
 
     initSliderOptions(settings: Settings = this.settingsService.settings) {
+        this.maxMetricValue = this.dataService.getMaxMetricInAllRevisions(settings.colorMetric);
+
         this.sliderOptions = {
-            ceil: this.dataService.getMaxMetricInAllRevisions(settings.colorMetric),
+            ceil: this.maxMetricValue,
             onChange: this.onSliderChange.bind(this),
             pushRange: true,
             onToChange: this.onToSliderChange.bind(this),
-            onFromChange: this.onFromSliderChange.bind(this)
+            onFromChange: this.onFromSliderChange.bind(this),
+            disabled: this.settingsService.settings.mode == KindOfMap.Delta,
         };
     }
 
@@ -57,6 +63,43 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 
     private onSliderChange() {
         this.settingsService.applySettings();
+    }
+
+    private updateSliderColors() {
+        const rangeFromPercentage = 100 / this.maxMetricValue * this.settingsService.settings.neutralColorRange.from;
+        let rangeColors = this.sliderOptions.disabled ? this.getGreyRangeColors() : this.getColoredRangeColors();
+        this.applyCssSettings(rangeColors, rangeFromPercentage);
+    }
+
+    private getGreyRangeColors() {
+        return {
+            left: MapColors.lightGrey,
+            middle: MapColors.lightGrey,
+            right: MapColors.lightGrey,
+        };
+    }
+
+    private getColoredRangeColors() {
+        const s = this.settingsService.settings;
+        let mapColorPositive = s.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive;
+
+        let rangeColors = {
+            left: s.neutralColorRange.flipped ? MapColors.negative : mapColorPositive,
+            middle: MapColors.neutral,
+            right: s.neutralColorRange.flipped ? mapColorPositive : MapColors.negative
+        };
+        return rangeColors;
+    }
+
+    private applyCssSettings(rangeColors, rangeFromPercentage) {
+        const slider = $("range-slider-component .rzslider");
+        const leftSection = slider.find(".rz-bar-wrapper:nth-child(3) .rz-bar");
+        const middleSection = slider.find(".rz-selection");
+        const rightSection = slider.find(".rz-right-out-selection .rz-bar");
+
+        leftSection.css("cssText", "background: #" + rangeColors.left.toString(16) + " !important; width: " + rangeFromPercentage + "%;");
+        middleSection.css("cssText", "background: #" + rangeColors.middle.toString(16) + " !important;");
+        rightSection.css("cssText", "background: #" + rangeColors.right.toString(16) + ";");
     }
 
 }
