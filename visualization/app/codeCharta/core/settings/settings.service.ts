@@ -58,8 +58,9 @@ export interface SettingsServiceSubscriber {
 export class SettingsService implements DataServiceSubscriber, CameraChangeSubscriber {
 
     public static SELECTOR = "settingsService";
-    public static MIN_MARGIN = 15;
     public static MARGIN_FACTOR = 4;
+    private static MIN_MARGIN = 15;
+    private static MAX_MARGIN = 100;
 
     private _settings: Settings;
 
@@ -113,7 +114,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             amountOfTopLabels: 1,
             scaling: scaling,
             camera: camera,
-            margin: 15,
+            margin: this.computeMargin(),
             deltaColorFlipped: false,
             enableEdgeArrows: true,
             hideFlatBuildings: true,
@@ -259,41 +260,28 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     }
 
     /**
-     * @returns {number}
-     *
-     * Function that computes the margin applied to a scenario related the square root of (the area divided
+     * Computes the margin applied to a scenario related the square root of (the area divided
      * by the number of buildings)
      */
-    public computeMargin(
-        map: CodeMap = this.dataService.data.renderMap,
-        areaMetric: string = this.settings.areaMetric,
-        settingsMargin: number = this.settings.margin,
-        dynamicMargin: boolean = this.settings.dynamicMargin
-    ): number {
-
+    public computeMargin(): number {
         let margin: number;
-        if (map !== null && dynamicMargin) {
-            let leaves = hierarchy<CodeMapNode>(map.nodes).leaves();
+        if (this.dataService.data.renderMap !== null && this.settings.dynamicMargin) {
+            let leaves = hierarchy<CodeMapNode>(this.dataService.data.renderMap.nodes).leaves();
             let numberOfBuildings = 0;
             let totalArea = 0;
-            leaves.forEach((c: HierarchyNode<CodeMapNode>) => {
+
+            leaves.forEach((node: HierarchyNode<CodeMapNode>) => {
                 numberOfBuildings++;
-                if(c.data.attributes && c.data.attributes[areaMetric]){
-                    totalArea += c.data.attributes[areaMetric];
+                if(node.data.attributes && node.data.attributes[this.settings.areaMetric]){
+                    totalArea += node.data.attributes[this.settings.areaMetric];
                 }
             });
 
-            margin = SettingsService.MARGIN_FACTOR * Math.round(Math.sqrt(
-                (totalArea / numberOfBuildings)));
-
-            margin = Math.min(100,Math.max(SettingsService.MIN_MARGIN, margin));
+            margin = SettingsService.MARGIN_FACTOR * Math.round(Math.sqrt((totalArea / numberOfBuildings)));
+            return Math.min(SettingsService.MAX_MARGIN, Math.max(SettingsService.MIN_MARGIN, margin));
+        } else {
+            return this.settings ? this.settings.margin : SettingsService.MIN_MARGIN;
         }
-
-        else {
-            margin = settingsMargin || SettingsService.MIN_MARGIN;
-        }
-
-        return margin;
     }
 
     /**

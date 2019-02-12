@@ -1,19 +1,25 @@
 import "./settings.module";
-import {NGMock} from "../../../../mocks/ng.mockhelper";
-import DoneCallback = jest.DoneCallback;
+import {getService, instantiateModule, NGMock} from "../../../../mocks/ng.mockhelper";
 import sinon from "sinon";
 import {KindOfMap, SettingsService} from "./settings.service";
 import {CodeMap} from "../data/model/CodeMap";
+import {DataService} from "../data/data.service";
+import {UrlService} from "../url/url.service";
+import {ThreeOrbitControlsService} from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
+import {IRootScopeService} from "angular";
 
-/**
- * @test {SettingsService}
- */
-describe("settings.service", function() {
+describe("app.codeCharta.core.settings", function() {
 
-    let validData: CodeMap;
+    let validCodeMap: CodeMap, settingsService: SettingsService, services;
 
-    beforeEach(()=>{
-        validData = {
+    function setMockValues(areaMetric: string, dynamicMargin: boolean) {
+        services.dataService.data.renderMap = validCodeMap;
+        settingsService.settings.areaMetric = areaMetric;
+        settingsService.settings.dynamicMargin = dynamicMargin;
+    }
+
+    function setValidCodeMapData() {
+        validCodeMap = {
             fileName: "file",
             projectName: "project",
             nodes: {
@@ -49,240 +55,197 @@ describe("settings.service", function() {
                 ]
             }
         };
+    }
+
+    beforeEach(() => {
+        setValidCodeMapData();
+        restartSystem();
+        rebuildService();
     });
 
-    //noinspection TypeScriptUnresolvedVariable
-    beforeEach(NGMock.mock.module("app.codeCharta.core.settings"));
+    function restartSystem() {
+        instantiateModule("app.codeCharta.core.settings");
 
-    it("compute margin should compute correct margins for this map", NGMock.mock.inject(function(settingsService: SettingsService){
-        let computedA = settingsService.computeMargin(validData, "rloc", 2, true);
-        let computedB = settingsService.computeMargin(validData, "mcc", 2, true);
-        let computedC = settingsService.computeMargin(validData, "functions", 2, true);
-        expect(computedA).toBe(32);
-        expect(computedB).toBe(24);
-        expect(computedC).toBe(76);
-    }));
+        services = {
+            urlService: getService<UrlService>("urlService"),
+            dataService: getService<DataService>("dataService"),
+            $rootScope: getService<IRootScopeService>("$rootScope"),
+            threeOrbitControlsService: getService<ThreeOrbitControlsService>("threeOrbitControlsService")
+        };
+    }
 
-    it("compute margin should compute correct margins for this map if dynamicMargin is off", NGMock.mock.inject(function(settingsService: SettingsService){
-        let computedA = settingsService.computeMargin(validData, "rloc", 2, false);
-        let computedB = settingsService.computeMargin(validData, "mcc", 2, false);
-        let computedC = settingsService.computeMargin(validData, "functions", 2, false);
-        expect(computedA).toBe(2);
-        expect(computedB).toBe(2);
-        expect(computedC).toBe(2);
-    }));
+    function rebuildService() {
+        settingsService = new SettingsService(
+            services.urlService,
+            services.dataService,
+            services.$rootScope,
+            services.threeOrbitControlsService
+        );
+    }
 
-    it("compute margin should return default margin if metric does not exist", NGMock.mock.inject(function(settingsService: SettingsService){
-        let computed = settingsService.computeMargin(validData, "nonExistant", 2, true);
-        expect(computed).toBe(SettingsService.MIN_MARGIN);
-    }));
-
-    it("compute margin should return 100 as margin if computed margin bigger als 100 is", NGMock.mock.inject(function(settingsService: SettingsService){
-        let computed = settingsService.computeMargin(validData, "extremeMetric", 2, true);
-        expect(computed).toBe(100);
-    }));
-    
-    //noinspection TypeScriptUnresolvedVariable
-    /**
-     * @test {SettingsService#constructor}
-     */
-    it("should retrieve the angular service instance with disabled delta cubes and no details selected", NGMock.mock.inject(function(settingsService){
+    it("should retrieve the angular service instance with disabled delta cubes and no details selected", () => {
         expect(settingsService).not.toBe(undefined);
         expect(settingsService.settings.mode).toBe(KindOfMap.Single);
-    }));
+    });
 
-    //noinspection TypeScriptUnresolvedVariable
-    /**
-     * @test {SettingsService#getQueryParamString}
-     */
-    it("should retrieve the correct query param strings", NGMock.mock.inject(function(settingsService){
-        settingsService.settings.areaMetric = "areaStuff";
-        settingsService.settings.camera.x = "2";
-        expect(settingsService.getQueryParamString()).toContain("areaMetric=areaStuff");
-        expect(settingsService.getQueryParamString()).toContain("camera.x=2");
-        expect(settingsService.getQueryParamString()).toContain("neutralColorRange.from=20");
-    }));
+    describe("computeMargin", function() {
 
-    //noinspection TypeScriptUnresolvedVariable
-    /**
-     * @test {SettingsService#updateSettingsFromUrl}
-     */
-    it("should update settings from url", NGMock.mock.inject(function(settingsService, $location){
-        $location.url("http://something.de?scaling.x=42&areaMetric=myMetric&scaling.y=0.32");
-        settingsService.updateSettingsFromUrl();
-        expect(settingsService.settings.scaling.x).toBe(42);
-        expect(settingsService.settings.scaling.y).toBe(0.32);
-        expect(settingsService.settings.areaMetric).toBe("myMetric");
-    }));
+        it("compute margin should compute correct margins for this map", () => {
+            setMockValues("rloc", true);
+            expect(settingsService.computeMargin()).toBe(32);
 
-    //noinspection TypeScriptUnresolvedVariable
-    /**
-     * @test {SettingsService#updateSettingsFromUrl}
-     */
-    it("should not update settings.map from url", NGMock.mock.inject(function(settingsService, $location){
-        $location.url("http://something.de?map=aHugeMap");
-        settingsService.settings.map="correctMap";
-        settingsService.updateSettingsFromUrl();
-        expect(settingsService.settings.map).toBe("correctMap");
-    }));
+            setMockValues("mcc", true);
+            expect(settingsService.computeMargin()).toBe(24);
 
-    //noinspection TypeScriptUnresolvedVariable
-    /**
-     * @test {SettingsService#onSettingsChanged}
-     * @test {SettingsService#constructor}
-     */
-    it("should react to data-changed events", NGMock.mock.inject(function(settingsService, $rootScope){
+            setMockValues("functions", true);
+            expect(settingsService.computeMargin()).toBe(76);
+        });
 
-        settingsService.onSettingsChanged = jest.fn();
+        it("compute margin should compute correct margins for this map if dynamicMargin is off", () => {
+            settingsService.settings.margin = 2;
+            setMockValues("rloc", false);
+            expect(settingsService.computeMargin()).toBe(2);
 
-        //enough metrics
-        $rootScope.$broadcast("data-changed", {renderMap: validData, metrics: ["a","b","c"], revisions: [validData, validData]});
+            setMockValues("mcc", false);
+            expect(settingsService.computeMargin()).toBe(2);
 
-        expect(settingsService.settings.map.fileName).toBe("file");
-        expect(settingsService.settings.areaMetric).toBe("a");
-        expect(settingsService.settings.heightMetric).toBe("b");
-        expect(settingsService.settings.colorMetric).toBe("c");
+            setMockValues("functions", false);
+            expect(settingsService.computeMargin()).toBe(2);
+        });
 
-        //not enough metrics
-        validData.fileName = "file2";
-        $rootScope.$broadcast("data-changed", {renderMap: validData, metrics: ["a"], revisions: [validData, validData]});
+        it("compute margin should return default margin if metric does not exist", () => {
+            setMockValues("nonExistant", true);
+            expect(settingsService.computeMargin()).toBe(SettingsService.MIN_MARGIN);
+        });
 
-        expect(settingsService.settings.map.fileName).toBe("file2");
-        expect(settingsService.settings.areaMetric).toBe("a");
-        expect(settingsService.settings.heightMetric).toBe("a");
-        expect(settingsService.settings.colorMetric).toBe("a");
+        it("compute margin should return 100 as margin if computed margin bigger als 100 is", () => {
+            setMockValues("extremeMetric", true);
+            expect(settingsService.computeMargin()).toBe(100);
+        });
+    });
 
-        expect(settingsService.onSettingsChanged).toHaveBeenCalledTimes(2);
+    describe("Get and set url parameter", function() {
 
-    }));
+        it("should retrieve the correct query param strings", () => {
+            settingsService.settings.areaMetric = "areaStuff";
+            settingsService.settings.camera.x = "2";
+            expect(settingsService.getQueryParamString()).toContain("areaMetric=areaStuff");
+            expect(settingsService.getQueryParamString()).toContain("camera.x=2");
+            expect(settingsService.getQueryParamString()).toContain("neutralColorRange.from=20");
+        });
 
-    //noinspection TypeScriptUnresolvedVariable
-    /**
-     * @test {SettingsService#onCameraChanged}
-     * @test {SettingsService#constructor}
-     */
-    it("should react to camera-changed events", NGMock.mock.inject(function(settingsService, $rootScope){
+        it("should update settings from url", NGMock.mock.inject(function ($location) {
+            $location.url("http://something.de?scaling.x=42&areaMetric=myMetric&scaling.y=0.32");
+            settingsService.updateSettingsFromUrl();
+            expect(settingsService.settings.scaling.x).toBe(42);
+            expect(settingsService.settings.scaling.y).toBe(0.32);
+            expect(settingsService.settings.areaMetric).toBe("myMetric");
+        }));
 
-        settingsService.onCameraChanged = sinon.spy();
+        it("should not update settings.map from url", NGMock.mock.inject(function ($location) {
+            $location.url("http://something.de?map=aHugeMap");
+            settingsService.settings.map = "correctMap";
+            settingsService.updateSettingsFromUrl();
+            expect(settingsService.settings.map).toBe("correctMap");
+        }));
+    });
 
-        $rootScope.$broadcast("camera-changed", {});
+    describe("onSettingsChanged", function() {
 
-        expect(settingsService.onCameraChanged.calledOnce);
+        it("should react to data-changed events", () => {
+            settingsService.onSettingsChanged = jest.fn();
 
-    }));
+            //enough metrics
+            services.$rootScope.$broadcast("data-changed", {
+                renderMap: validCodeMap,
+                metrics: ["a", "b", "c"],
+                revisions: [validCodeMap, validCodeMap]
+            });
 
-    //noinspection TypeScriptUnresolvedVariable
-    /**
-     * @test {SettingsService#onCameraChanged}
-     */
-    it("onCameraChanged should update settings object but not call onSettingsChanged to ensure performance", NGMock.mock.inject(function(settingsService){
-        settingsService.onSettingsChanged = sinon.spy();
-        settingsService.onCameraChanged({position: {x:0, y:0, z: 42}});
-        expect(!settingsService.onSettingsChanged.called);
-        expect(settingsService.settings.camera.z).toBe(42);
-    }));
+            expect(settingsService.settings.map.fileName).toBe("file");
+            expect(settingsService.settings.areaMetric).toBe("a");
+            expect(settingsService.settings.heightMetric).toBe("b");
+            expect(settingsService.settings.colorMetric).toBe("c");
 
+            //not enough metrics
+            validCodeMap.fileName = "file2";
+            services.$rootScope.$broadcast("data-changed", {
+                renderMap: validCodeMap,
+                metrics: ["a"],
+                revisions: [validCodeMap, validCodeMap]
+            });
 
-    //noinspection TypeScriptUnresolvedVariable
-    /**
-     * @test {SettingsService#onSettingsChanged}
-     * @test {SettingsService#constructor}
-     */
-    it("should react to data-changed events and set metrics correctly", NGMock.mock.inject(function(settingsService, $rootScope){
+            expect(settingsService.settings.map.fileName).toBe("file2");
+            expect(settingsService.settings.areaMetric).toBe("a");
+            expect(settingsService.settings.heightMetric).toBe("a");
+            expect(settingsService.settings.colorMetric).toBe("a");
 
-        settingsService.onSettingsChanged = sinon.spy();
+            expect(settingsService.onSettingsChanged).toHaveBeenCalledTimes(2);
+        });
 
-        $rootScope.$broadcast("data-changed", {renderMap: validData, metrics: ["a", "b"], revisions: [validData, validData]});
+        it("should react to camera-changed events", () => {
+            settingsService.onCameraChanged = sinon.spy();
+            services.$rootScope.$broadcast("camera-changed", {});
+            expect(settingsService.onCameraChanged.calledOnce);
+        });
 
-        expect(settingsService.settings.map.fileName).toBe("file");
-        expect(settingsService.settings.areaMetric).toBe("a");
-        expect(settingsService.settings.heightMetric).toBe("b");
-        expect(settingsService.settings.colorMetric).toBe("b");
+        it("onCameraChanged should update settings object but not call onSettingsChanged to ensure performance", () => {
+            settingsService.onSettingsChanged = sinon.spy();
+            settingsService.onCameraChanged({position: {x: 0, y: 0, z: 42}});
+            expect(!settingsService.onSettingsChanged.called);
+            expect(settingsService.settings.camera.z).toBe(42);
+        });
 
-        expect(settingsService.onSettingsChanged.calledOnce);
+        it("should react to data-changed events and set metrics correctly", () => {
+            settingsService.onSettingsChanged = sinon.spy();
 
-    }));
+            services.$rootScope.$broadcast("data-changed", {
+                renderMap: validCodeMap,
+                metrics: ["a", "b"],
+                revisions: [validCodeMap, validCodeMap]
+            });
 
-    //noinspection TypeScriptUnresolvedVariable
-    /**
-     * @test {SettingsService#getMetricByIdOrLast}
-     */
-    it("should return last value when id is bigger than or equal to metrics length", NGMock.mock.inject(function(settingsService, $rootScope){
+            expect(settingsService.settings.map.fileName).toBe("file");
+            expect(settingsService.settings.areaMetric).toBe("a");
+            expect(settingsService.settings.heightMetric).toBe("b");
+            expect(settingsService.settings.colorMetric).toBe("b");
+            expect(settingsService.onSettingsChanged.calledOnce);
+        });
+    });
 
-        var arr = ["a", "b", "c"];
-        var result = settingsService.getMetricByIdOrLast(32, arr);
-        expect(result).toBe("c");
+    describe("getMetricByIdOrLast", function() {
 
-        result = settingsService.getMetricByIdOrLast(3, arr);
-        expect(result).toBe("c");
+        it("should return last value when id is bigger than or equal to metrics length", () => {
+            var arr = ["a", "b", "c"];
+            var result = settingsService.getMetricByIdOrLast(32, arr);
+            expect(result).toBe("c");
 
-    }));
+            result = settingsService.getMetricByIdOrLast(3, arr);
+            expect(result).toBe("c");
+        });
 
-    //noinspection TypeScriptUnresolvedVariable
-    /**
-     * @test {SettingsService#getMetricByIdOrLast}
-     */
-    it("should return correct value when id is smaller than metrics length", NGMock.mock.inject(function(settingsService, $rootScope){
+        it("should return correct value when id is smaller than metrics length", () => {
+            var arr = ["a", "b", "c"];
+            var result = settingsService.getMetricByIdOrLast(1, arr);
+            expect(result).toBe("b");
+        });
 
-        var arr = ["a", "b", "c"];
-        var result = settingsService.getMetricByIdOrLast(1, arr);
-        expect(result).toBe("b");
+        it("should return defaultValue when metric is not in array", () => {
+            const arr = ["a", "b", "c"];
+            const name = "lookingForThis";
+            const defaultValue = "default";
 
-    }));
+            const result = settingsService.getMetricOrDefault(arr, name, defaultValue);
+            expect(result).toBe(defaultValue);
+        });
 
-    //noinspection TypeScriptUnresolvedVariable
-    /**
-      * @test {SettingsService#getMetricOrDefault}
-      */
-    it("should return defaultValue when metric is not in array", NGMock.mock.inject(function(settingsService){
-        
-        const arr = ["a", "b", "c"];
-        const name = "lookingForThis";
-        const defaultValue = "default";
-        
-        const result = settingsService.getMetricOrDefault(arr, name, defaultValue);
+        it("should return the searched value when metric is in array", () => {
+            const arr = ["a", "b", "lookingForThis"];
+            const name = "lookingForThis";
+            const defaultValue = "default";
 
-        expect(result).toBe(defaultValue);
-        
-    }));
-
-    //noinspection TypeScriptUnresolvedVariable
-    /**
-     * @test {SettingsService#getMetricOrDefault}
-     */
-    it("should return the searched value when metric is in array", NGMock.mock.inject(function(settingsService){
-                
-        const arr = ["a", "b", "lookingForThis"];
-        const name = "lookingForThis";
-        const defaultValue = "default";
-                
-        const result = settingsService.getMetricOrDefault(arr, name, defaultValue);
-                
-        expect(result).toBe(name);
-                
-    }));
-
-    //noinspection TypeScriptUnresolvedVariable
-    /**
-     * @test {SettingsService#correctSettings}
-     */
-    it("should replace metric with default if metric is not available", NGMock.mock.inject(function(settingsService, dataService){
-        dataService.data.metrics = ["a", "f", "g", "h"];
-        const settings = {areaMetric:"a", heightMetric:"b", colorMetric:"c"};
-        const expected = {areaMetric: "a", heightMetric:"f", colorMetric:"g"};
-        const result = settingsService.correctSettings(settings);
-        expect(result.areaMetric).toBe(expected.areaMetric);
-        expect(result.heightMetric).toBe(expected.heightMetric);
-        expect(result.colorMetric).toBe(expected.colorMetric);
-    }));
-
-    //noinspection TypeScriptUnresolvedVariable
-    /**
-     * @test {SettingsService#correctSettings}
-     */
-    it("should return input if metrics are available", NGMock.mock.inject(function(settingsService){
-        const settings = {areaMetric:"a", heightMetric:"b", colorMetric:"c"};
-        const result = settingsService.correctSettings(settings);
-        expect(result).toEqual(settings);
-    }));
+            const result = settingsService.getMetricOrDefault(arr, name, defaultValue);
+            expect(result).toBe(name);
+        });
+    });
 });
