@@ -91,12 +91,21 @@ export class NodeContextMenuController {
     }
 
     currentFolderIsMarkedWithColor(color: string) {
-        return color
-        && this.contextMenuBuilding
-        && this.settingsService.settings.markedPackages
-                .filter(mp => mp.path == this.contextMenuBuilding.path
-                    && mp.color == this.colorService.convertHexTo0xString(color)
-                ).length == 1;
+        if (!color || !this.contextMenuBuilding) { return false; }
+
+        let s = this.settingsService.settings;
+        const firstMarkedParentPackage = this.codeMapActionsService.getFirstMarkedParentPackage(this.contextMenuBuilding.path, s);
+        const convertedColor = this.colorService.convertHexTo0xString(color);
+
+        const thisBuildingIsMarked = s.markedPackages.filter(mp => mp.path == this.contextMenuBuilding.path).length == 1;
+        const colorMatchesThisBuilding = s.markedPackages.filter(mp => mp.path == this.contextMenuBuilding.path && mp.color == convertedColor);
+        const colorMatchesParentBuilding = s.markedPackages.filter(mp => firstMarkedParentPackage && mp.path == firstMarkedParentPackage.path && mp.color == convertedColor);
+
+        if (thisBuildingIsMarked) {
+            return colorMatchesThisBuilding.length == 1;
+        } else {
+            return colorMatchesParentBuilding.length == 1;
+        }
     }
 
     markFolder(color: string) {
