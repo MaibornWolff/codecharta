@@ -93,16 +93,20 @@ ribbon-bar-component {
         display: block;
         height: ($heightCollapsed + 8) + px;
         overflow: hidden;
+        font-size: 0;
 
         .section {
             display: inline-block;
+            margin-left: 0 px;
             height: 100%;
             width: auto;
-            padding: $padding + px;
+            padding-top: $padding + px;
+            padding-bottom: $padding + px;
             margin-bottom: 6px;
             border-right: $border;
             vertical-align: top;
             position: relative;
+            font-size: 12pt;
 
             md-input-container,
             md-button {
@@ -118,6 +122,8 @@ ribbon-bar-component {
                 color: $headerColor;
                 text-align: center;
                 overflow: hidden;
+                padding-right: $padding + px;
+                padding-left: $padding + px;
 
                 &.bordered {
                     border-bottom: $border-thin;
@@ -131,15 +137,27 @@ ribbon-bar-component {
                 display: block;
                 position: absolute;
                 bottom: 0;
-                left: 42%;
+                width: 100%;
                 color: gray;
+                text-align: center;
+                transition: background-color 0.4s;
 
-                &.first {
-                    left: 63px;
+                .first {
+                    padding-left: 8px;
                 }
 
-                &.second {
-                    left: 168px;
+                .second {
+                    padding-left: 85px;
+                }
+
+                &:hover,
+                &.toggle-hovered {
+                    background-color: #E0E0E0;
+                    cursor: pointer;
+                }
+
+                &:focus{
+                    outline: none;
                 }
             }
 
@@ -147,12 +165,14 @@ ribbon-bar-component {
                 margin-top: 0;
                 height: 0;
                 padding-top: $padding + px;
+                padding-right: $padding + px;
+                padding-left: 2*$padding + px;
                 overflow: hidden;
                 border-top: $border;
                 font-size: $bodySize;
                 text-align: left;
                 vertical-align: top;
-
+                
                 reset-settings-button-component .md-button {
                     top: ($heightExpanded - 45) + px;
                     right: -5px;
