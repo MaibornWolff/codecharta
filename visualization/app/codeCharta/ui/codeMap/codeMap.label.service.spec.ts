@@ -7,6 +7,7 @@ import {ThreeCameraService} from "./threeViewer/threeCameraService";
 import {ThreeSceneService} from "./threeViewer/threeSceneService";
 import {IRootScopeService} from "angular";
 import {getService} from "../../../../mocks/ng.mockhelper";
+import {ColorService} from "../../core/color/color.service";
 
 describe("CodeMapLabelService", () => {
 
@@ -30,7 +31,8 @@ describe("CodeMapLabelService", () => {
             $rootScope: getService<IRootScopeService>("$rootScope"),
             threeCameraService: new ThreeCameraService(),
             threeSceneService: new ThreeSceneService(),
-            threeOrbitControlsService: ThreeOrbitControlsService
+            threeOrbitControlsService: ThreeOrbitControlsService,
+            colorService: new ColorService()
         };
 
         services.threeOrbitControlsService = new ThreeOrbitControlsService(services.threeCameraService, services.threeSceneService, services.$rootScope);
@@ -40,7 +42,8 @@ describe("CodeMapLabelService", () => {
         codeMapLabelService = new CodeMapLabelService(
             services.threeOrbitControlsService,
             services.threeCameraService,
-            services.threeSceneService
+            services.threeSceneService,
+            services.colorService
         );
     }
 

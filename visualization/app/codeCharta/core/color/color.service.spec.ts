@@ -28,12 +28,21 @@ describe("ColorService", () => {
         });
 
         it("encode hex to rgb", () => {
-            expect(colorService.encodeHex("#000000")).toBe("AAAAAP//");
-            expect(colorService.encodeHex("#ff0000")).toBe("AP8AAP//");
-            expect(colorService.encodeHex("#0000ff")).toBe("AAAA////");
-            expect(colorService.encodeHex("#000")).toBe("AAAAAP//");
-            expect(colorService.encodeHex("#f00")).toBe("AP8AAP//");
-            expect(colorService.encodeHex("#00f")).toBe("AAAA////");
+            expect(colorService.encodeHex("#000000")).toEqual([0,0,0]);
+            expect(colorService.encodeHex("#ff0000")).toEqual([255,0,0]);
+            expect(colorService.encodeHex("#0000ff")).toEqual([0,0,255]);
+            expect(colorService.encodeHex("#000")).toEqual([0,0,0]);
+            expect(colorService.encodeHex("#f00")).toEqual([255,0,0]);
+            expect(colorService.encodeHex("#00f")).toEqual([0,0,255]);
+        });
+
+        it("encode rgb to encodeRGB", () => {
+            expect(colorService.encodeRGB(0,0,0)).toBe("AAAAAP//");
+            expect(colorService.encodeRGB(255,0,0)).toBe("AP8AAP//");
+            expect(colorService.encodeRGB(0,0,255)).toBe("AAAA////");
+            expect(colorService.encodeRGB(0,0,0)).toBe("AAAAAP//");
+            expect(colorService.encodeRGB(255,0,0)).toBe("AP8AAP//");
+            expect(colorService.encodeRGB(0,0,255)).toBe("AAAA////");
         });
 
         it("encode rgb to base64 color value", () => {
