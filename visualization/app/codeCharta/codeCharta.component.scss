@@ -38,32 +38,9 @@ code-charta-component {
         width: 100%;
     }
 
-    h2 {
-        text-transform: uppercase;
-        color: #5a585a;
-        font-family: Roboto, sans-serif;
-        font-weight: 500;
-        font-size: 9pt;
-        text-align: center;
-        margin: 0;
-        z-index: -1;
-    }
-
     .small-info {
         color: rgba(0, 0, 0, 0.38);
         font-size: 9pt;
-    }
-
-    #title {
-        position: fixed;
-        z-index: 2;
-        width: 100%;
-    }
-
-    ribbon-bar-component {
-        position: fixed;
-        z-index: 10;
-        width: 100%;
     }
 
     #codeMap {
@@ -73,6 +50,7 @@ code-charta-component {
         left: 0;
         width: 100%;
         height: 100%;
+        transition: all $animationDuration + s ease;
 
         &.expanded {
             top: 195px;
@@ -135,30 +113,16 @@ code-charta-component {
         border-radius: 50%;
     }
 
-    #loading-indicator {
+    ribbon-bar-component {
         position: fixed;
-        left: 0;
-        top: 0;
+        z-index: 10;
         width: 100%;
-        height: 100%;
-        z-index: 2000;
-        background-color: rgba(255, 255, 255, 0.8);
-        display: block;
-        text-align: center;
 
-        md-progress-circular {
-            display: block;
-            margin: 0 auto;
-            margin-top: 22%;
-        }
-
-        ribbon-bar-component {
-            #header,
-            #header .section .section-header,
-            #header .section .section-body,
-            #toggle-ribbon-bar-fab {
-                transition: all $animationDuration + s ease;
-            }
+        #header,
+        #header .section .section-header,
+        #header .section .section-body,
+        #toggle-ribbon-bar-fab {
+            transition: all $animationDuration + s ease;
         }
     }
 
