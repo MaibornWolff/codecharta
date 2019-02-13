@@ -90,8 +90,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     public getDefaultSettings(renderMap: CodeMap, metrics: string[]): Settings {
 
         let r: Range = {
-            from: 20,
-            to: 40,
+            from: null,
+            to: null,
             flipped: false
         };
 
@@ -129,6 +129,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             searchedNodePaths: [],
             searchPattern: null
         };
+
+        settings.neutralColorRange = this.getAdaptedRange(settings);
         return settings;
 
     }
@@ -285,16 +287,17 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         }
     }
 
-    private getAdaptedRange(): Range {
-       const maxMetricValue =  this.dataService.getMaxMetricInAllRevisions(this.settings.colorMetric);
-       const firstThird = Math.round((maxMetricValue / 3) * 100) / 100;
-       const secondThird = Math.round(firstThird * 2 * 100) / 100;
+    private getAdaptedRange(s: Settings): Range {
+        s = this.settings ? this.settings : s;
+        const maxMetricValue =  this.dataService.getMaxMetricInAllRevisions(s.colorMetric);
+        const firstThird = Math.round((maxMetricValue / 3) * 100) / 100;
+        const secondThird = Math.round(firstThird * 2 * 100) / 100;
 
-       return {
-           flipped: this.settings.neutralColorRange.flipped,
+        return {
+           flipped: s.neutralColorRange.flipped,
            from: firstThird,
            to: secondThird,
-       }
+        }
     }
 
 
@@ -367,7 +370,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     private eventuallyUpdateColorRange(s: Settings) {
         if (this._lastColorMetric != s.colorMetric) {
             this._lastColorMetric = s.colorMetric;
-            this._settings.neutralColorRange = this.getAdaptedRange();
+            this._settings.neutralColorRange = this.getAdaptedRange(s);
         }
     }
 
