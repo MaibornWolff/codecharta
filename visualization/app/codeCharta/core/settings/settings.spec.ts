@@ -13,7 +13,7 @@ describe("app.codeCharta.core.settings", function() {
     let validCodeMap: CodeMap, settingsService: SettingsService, services;
 
     function setMockValues(areaMetric: string, dynamicMargin: boolean) {
-        services.dataService.data.renderMap = validCodeMap;
+        settingsService.settings.map = validCodeMap;
         settingsService.settings.areaMetric = areaMetric;
         settingsService.settings.dynamicMargin = dynamicMargin;
     }
@@ -92,35 +92,35 @@ describe("app.codeCharta.core.settings", function() {
 
         it("compute margin should compute correct margins for this map", () => {
             setMockValues("rloc", true);
-            expect(settingsService.computeMargin()).toBe(32);
+            expect(settingsService.computeMargin(settingsService.settings)).toBe(32);
 
             setMockValues("mcc", true);
-            expect(settingsService.computeMargin()).toBe(24);
+            expect(settingsService.computeMargin(settingsService.settings)).toBe(24);
 
             setMockValues("functions", true);
-            expect(settingsService.computeMargin()).toBe(76);
+            expect(settingsService.computeMargin(settingsService.settings)).toBe(76);
         });
 
         it("compute margin should compute correct margins for this map if dynamicMargin is off", () => {
             settingsService.settings.margin = 2;
             setMockValues("rloc", false);
-            expect(settingsService.computeMargin()).toBe(2);
+            expect(settingsService.computeMargin(settingsService.settings)).toBe(2);
 
             setMockValues("mcc", false);
-            expect(settingsService.computeMargin()).toBe(2);
+            expect(settingsService.computeMargin(settingsService.settings)).toBe(2);
 
             setMockValues("functions", false);
-            expect(settingsService.computeMargin()).toBe(2);
+            expect(settingsService.computeMargin(settingsService.settings)).toBe(2);
         });
 
         it("compute margin should return default margin if metric does not exist", () => {
             setMockValues("nonExistant", true);
-            expect(settingsService.computeMargin()).toBe(SettingsService.MIN_MARGIN);
+            expect(settingsService.computeMargin(settingsService.settings)).toBe(SettingsService.MIN_MARGIN);
         });
 
         it("compute margin should return 100 as margin if computed margin bigger als 100 is", () => {
             setMockValues("extremeMetric", true);
-            expect(settingsService.computeMargin()).toBe(100);
+            expect(settingsService.computeMargin(settingsService.settings)).toBe(100);
         });
     });
 
@@ -129,7 +129,7 @@ describe("app.codeCharta.core.settings", function() {
         it("getAdaptedRange in thirds for common metricValues", () => {
             settingsService.settings.colorMetric = "rloc";
             services.dataService.data.revisions[0] = validCodeMap;
-            expect(settingsService.getAdaptedRange()).toEqual({flipped: false, from: 33.33, to: 66.66});
+            expect(settingsService.getAdaptedRange(settingsService.settings)).toEqual({flipped: false, from: 33.33, to: 66.66});
         });
     });
 
@@ -140,7 +140,7 @@ describe("app.codeCharta.core.settings", function() {
             settingsService.settings.camera.x = "2";
             expect(settingsService.getQueryParamString()).toContain("areaMetric=areaStuff");
             expect(settingsService.getQueryParamString()).toContain("camera.x=2");
-            expect(settingsService.getQueryParamString()).toContain("neutralColorRange.from=20");
+            expect(settingsService.getQueryParamString()).toContain("neutralColorRange.from=0");
         });
 
         it("should update settings from url", NGMock.mock.inject(function ($location) {
