@@ -67,6 +67,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     public numberOfCalls: number;
 
     private _lastDeltaState = false;
+    private _lastColorMetric = "";
 
     /* ngInject */
     constructor(private urlService, private dataService: DataService, private $rootScope,
@@ -194,7 +195,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     public onSettingsChanged() {
 
         this.settings.margin = this.computeMargin();
-        this.settings.neutralColorRange = this.getAdaptedRange();
 
         if (this._lastDeltaState && this._settings.mode != KindOfMap.Delta) {
             this._lastDeltaState = false;
@@ -286,10 +286,9 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     }
 
     private getAdaptedRange(): Range {
-       const metricValue =  this.dataService.getMinAndMaxMetricInAllRevisions(this.settings.colorMetric);
-       const distance = metricValue.max - metricValue.min;
-       const firstThird = distance / 3;
-       const secondThird = firstThird * 2;
+       const maxMetricValue =  this.dataService.getMaxMetricInAllRevisions(this.settings.colorMetric);
+       const firstThird = Math.round((maxMetricValue / 3) * 100) / 100;
+       const secondThird = Math.round(firstThird * 2 * 100) / 100;
 
        return {
            flipped: this.settings.neutralColorRange.flipped,
@@ -342,18 +341,16 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      * @param {Settings} settings
      */
     public applySettings(settings?: Settings) {
-
         if (settings) {
             this.updateSettings(settings);
-        }
-
-        else {
+            this.eventuallyUpdateColorRange(settings);
+        } else {
+            this.eventuallyUpdateColorRange(this._settings);
             this.numberOfCalls++;
             if (this.numberOfCalls > 4) {
                 this.numberOfCalls = 0;
                 this.onSettingsChanged();
-            }
-            else {
+            } else {
                 let currentCalls = this.numberOfCalls;
                 let _this = this;
 
@@ -362,9 +359,15 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
                         this.numberOfCalls = 0;
                         _this.onSettingsChanged();
                     }
-
                 }, 400);
             }
+        }
+    }
+
+    private eventuallyUpdateColorRange(s: Settings) {
+        if (this._lastColorMetric != s.colorMetric) {
+            this._lastColorMetric = s.colorMetric;
+            this._settings.neutralColorRange = this.getAdaptedRange();
         }
     }
 

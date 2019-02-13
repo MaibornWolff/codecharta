@@ -12,13 +12,7 @@ export interface MetricData {
     maxValue: number;
 }
 
-export interface MinMaxValue {
-    min: number;
-    max: number;
-}
-
 export interface DataModel {
-
     revisions: CodeMap[];
     metrics: string[],
     metricData: MetricData[];
@@ -194,9 +188,6 @@ export class DataService {
         return metricData.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
     }
 
-    /**
-     * resets all maps (deletes them)
-     */
     public resetMaps() {
         this._data.revisions = [];
         this._data.metrics = [];
@@ -206,30 +197,20 @@ export class DataService {
         this.notify();
     }
 
-    getMaxMetricInAllRevisions(metric: string) {
-        return this.getMinAndMaxMetricInAllRevisions(metric).max;
-    }
-
-    getMinAndMaxMetricInAllRevisions(metric: string): MinMaxValue {
-        let values = {
-            min: Number.MAX_VALUE,
-            max: Number.MIN_VALUE,
-        };
+    getMaxMetricInAllRevisions(metric: string): number {
+        let maxValue = 0;
 
         this.data.revisions.forEach((rev)=> {
             let nodes = d3.hierarchy(rev.nodes).leaves();
             nodes.forEach((node: any)=> {
                 const currentValue = node.data.attributes[metric];
 
-                if (currentValue > values.max) {
-                    values.max = currentValue;
-                } else if (currentValue < values.min) {
-                    values.min = currentValue;
+                if (currentValue > maxValue) {
+                    maxValue = currentValue;
                 }
             });
         });
 
-        return values;
+        return maxValue;
     }
-
 }

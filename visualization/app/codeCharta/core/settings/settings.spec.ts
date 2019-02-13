@@ -124,6 +124,15 @@ describe("app.codeCharta.core.settings", function() {
         });
     });
 
+    describe("getAdaptedRange in thirds", function() {
+
+        it("getAdaptedRange in thirds for common metricValues", () => {
+            settingsService.settings.colorMetric = "rloc";
+            services.dataService.data.revisions[0] = validCodeMap;
+            expect(settingsService.getAdaptedRange()).toEqual({flipped: false, from: 33.33, to: 66.66});
+        });
+    });
+
     describe("Get and set url parameter", function() {
 
         it("should retrieve the correct query param strings", () => {
