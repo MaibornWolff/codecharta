@@ -132,6 +132,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         settings.margin = this.computeMargin(settings);
         settings.neutralColorRange = this.getAdaptedRange(settings);
+        settings.neutralColorRange.flipped = false;
         return settings;
     }
 
