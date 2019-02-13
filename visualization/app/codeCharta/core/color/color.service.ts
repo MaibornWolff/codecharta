@@ -10,7 +10,12 @@ export class ColorService {
     }
 
     public convertNumberToHex(colorNumber: number): string {
-        return "#" + colorNumber.toString(16);
+        const hexColor = colorNumber.toString(16);
+        let zeros: string = "";
+        for (let i = 0; i < 6 - hexColor.length; i++) {
+            zeros += "0"
+        }
+        return "#" + zeros + hexColor;
     }
 
     public convertHexTo0xString(hexString: string): string {
@@ -21,19 +26,29 @@ export class ColorService {
         return hex0xString.replace("0x","#");
     }
 
-    public getImageDataUri(hex: number): string {
-        let hexS: string = "#" + hex.toString(16);
-        let color: string = this.encodeHex(hexS);
-        return this.generatePixel(color);
+    public convertNumberToRgba(colorNumber: number): string {
+        const hexString: string = this.convertNumberToHex(colorNumber);
+        return this.convertHexToRgba(hexString);
     }
 
-    private encodeHex(s: string): string {
+    public convertHexToRgba(hexString: string, opacity: number = 1) : string {
+        const rgbColor: number[] = this.encodeHex(hexString);
+        return "rgba(" + rgbColor.join(",") + "," + opacity + ")";
+    }
+
+    public getImageDataUri(hex: number): string {
+        let hexS: string = this.convertNumberToHex(hex);
+        let rgbColor: number[] = this.encodeHex(hexS);
+        let encodedRGBColor: string  = this.encodeRGB(rgbColor[0], rgbColor[1], rgbColor[2]);
+        return this.generatePixel(encodedRGBColor);
+    }
+
+    private encodeHex(s: string): number[] {
         s = s.substring(1, 7);
         if (s.length < 6) {
             s = s[0] + s[0] + s[1] + s[1] + s[2] + s[2];
         }
-        return this.encodeRGB(
-            parseInt(s[0] + s[1], 16), parseInt(s[2] + s[3], 16), parseInt(s[4] + s[5], 16));
+        return [parseInt(s[0] + s[1], 16), parseInt(s[2] + s[3], 16), parseInt(s[4] + s[5], 16)];
     }
 
     private encodeRGB(r: number, g: number, b: number): string {
@@ -48,7 +63,6 @@ export class ColorService {
         let enc4 = e3 & 63;
         return keyStr.charAt(enc1) + keyStr.charAt(enc2) + keyStr.charAt(enc3) + keyStr.charAt(enc4);
     }
-
 
     private generatePixel(color: string): string {
         return "data:image/gif;base64,R0lGODlhAQABAPAA" + color + "/yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";

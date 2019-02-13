@@ -5,6 +5,7 @@ import {CameraChangeSubscriber, ThreeOrbitControlsService} from "./threeViewer/t
 import {PerspectiveCamera, Sprite} from "three";
 import {ThreeCameraService} from "./threeViewer/threeCameraService";
 import {ThreeSceneService} from "./threeViewer/threeSceneService";
+import {ColorService} from "../../core/color/color.service";
 
 interface internalLabel {
     sprite : THREE.Sprite;
@@ -22,7 +23,8 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
     constructor(private threeOrbitControlsService: ThreeOrbitControlsService,
                 private threeCameraService: ThreeCameraService,
-                private threeSceneService: ThreeSceneService) {
+                private threeSceneService: ThreeSceneService,
+                private colorService: ColorService) {
 
         this.labels = new Array<internalLabel>();
         threeOrbitControlsService.subscribe(this);
@@ -94,7 +96,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
         
         //bg
         ctx!.fillStyle = "rgba(255,255,255,1)";
-        ctx!.strokeStyle = MapColors.angularGreen;
+        ctx!.strokeStyle = this.colorService.convertNumberToRgba(MapColors.angularGreen);
         ctx!.lineJoin = "round";
         ctx!.lineCap = "round";
         ctx!.lineWidth = 5;
