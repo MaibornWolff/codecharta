@@ -73,7 +73,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     constructor(private urlService, private dataService: DataService, private $rootScope,
                 private threeOrbitControlsService: ThreeOrbitControlsService) {
 
-        this._settings = this.getDefaultSettings(dataService.data.renderMap, dataService.data.metrics);
+        this._settings = this.getDefaultSettings();
 
         this.numberOfCalls = 0;
         dataService.subscribe(this);
@@ -87,9 +87,9 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         });
     }
 
-    public getDefaultSettings(renderMap: CodeMap, metrics: string[]): Settings {
+    public getDefaultSettings(): Settings {
 
-        let r: Range = {
+        let range: Range = {
             from: null,
             to: null,
             flipped: false
@@ -106,16 +106,16 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._lastDeltaState = false;
 
         let settings: Settings = {
-            map: renderMap,
-            neutralColorRange: r,
-            areaMetric: this.getMetricByIdOrLast(0, metrics),
-            heightMetric: this.getMetricByIdOrLast(1, metrics),
-            colorMetric: this.getMetricByIdOrLast(2, metrics),
+            map: this.dataService.data.renderMap,
+            neutralColorRange: range,
+            areaMetric: this.getMetricByIdOrLast(0, this.dataService.data.metrics),
+            heightMetric: this.getMetricByIdOrLast(1, this.dataService.data.metrics),
+            colorMetric: this.getMetricByIdOrLast(2, this.dataService.data.metrics),
             mode: KindOfMap.Single,
             amountOfTopLabels: 1,
             scaling: scaling,
             camera: camera,
-            margin: this.computeMargin(),
+            margin: null,
             deltaColorFlipped: false,
             enableEdgeArrows: true,
             hideFlatBuildings: true,
@@ -130,9 +130,9 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             searchPattern: null
         };
 
+        settings.margin = this.computeMargin(settings);
         settings.neutralColorRange = this.getAdaptedRange(settings);
         return settings;
-
     }
 
     private onActivateDeltas() {
@@ -194,9 +194,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      * Broadcasts a settings-changed event with the new {Settings} object as a payload
      * @emits {settings-changed} on call
      */
-    public onSettingsChanged() {
-
-        this.settings.margin = this.computeMargin();
+    private onSettingsChanged() {
 
         if (this._lastDeltaState && this._settings.mode != KindOfMap.Delta) {
             this._lastDeltaState = false;
@@ -266,17 +264,18 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      * Computes the margin applied to a scenario related the square root of (the area divided
      * by the number of buildings)
      */
-    public computeMargin(): number {
+    public computeMargin(s: Settings): number {
+        s = this.settings ? this.settings : s;
         let margin: number;
-        if (this.dataService.data.renderMap !== null && this.settings.dynamicMargin) {
-            let leaves = hierarchy<CodeMapNode>(this.dataService.data.renderMap.nodes).leaves();
+        if (s.map !== null && s.dynamicMargin) {
+            let leaves = hierarchy<CodeMapNode>(s.map.nodes).leaves();
             let numberOfBuildings = 0;
             let totalArea = 0;
 
             leaves.forEach((node: HierarchyNode<CodeMapNode>) => {
                 numberOfBuildings++;
-                if(node.data.attributes && node.data.attributes[this.settings.areaMetric]){
-                    totalArea += node.data.attributes[this.settings.areaMetric];
+                if(node.data.attributes && node.data.attributes[s.areaMetric]){
+                    totalArea += node.data.attributes[s.areaMetric];
                 }
             });
 
@@ -347,8 +346,11 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         if (settings) {
             this.updateSettings(settings);
             this.eventuallyUpdateColorRange(settings);
+            this._settings.margin = this.computeMargin(settings);
+
         } else {
             this.eventuallyUpdateColorRange(this._settings);
+            this._settings.margin = this.computeMargin(this._settings);
             this.numberOfCalls++;
             if (this.numberOfCalls > 4) {
                 this.numberOfCalls = 0;

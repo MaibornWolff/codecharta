@@ -1,6 +1,5 @@
 import {SettingsService} from "../../core/settings/settings.service";
 import "./resetSettingsButton.component.scss";
-import {DataService} from "../../core/data/data.service";
 
 export class ResetSettingsButtonController {
 
@@ -8,8 +7,7 @@ export class ResetSettingsButtonController {
 
     /* @ngInject */
     constructor(
-        private settingsService: SettingsService,
-        private dataService: DataService
+        private settingsService: SettingsService
     ) {
 
     }
@@ -23,7 +21,7 @@ export class ResetSettingsButtonController {
         settingsList = settingsList.replace(/\n/g,"");
         const tokens: string[] = settingsList.split(",");
         const settings = this.settingsService.settings;
-        const defaultSettings = this.settingsService.getDefaultSettings(settings.map, this.dataService.data.metrics);
+        const defaultSettings = this.settingsService.getDefaultSettings();
 
         tokens.forEach((token) => {
 
@@ -50,7 +48,7 @@ export class ResetSettingsButtonController {
                 this.settingsService.settings[token] = defaultSettings[token];
             }
         });
-        this.settingsService.onSettingsChanged();
+        this.settingsService.applySettings();
     }
 }
 

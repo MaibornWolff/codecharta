@@ -87,7 +87,7 @@ describe("app.codeCharta.core.scenarioService", function () {
     });
 
     it("should update only settings, which exist in given scenario", () => {
-        const defaultSettings: Settings = scenarioService.settingsService.getDefaultSettings(settingsService.settings.map, dataService.data.metrics);
+        const defaultSettings: Settings = scenarioService.settingsService.getDefaultSettings();
         const scenario: Scenario = {
             name: "myScenario",
             settings: {

@@ -26,7 +26,7 @@ export class DisplaySettingsPanelController {
     apply() {
         this.settingsService.settings.neutralColorRange.flipped = this.viewModel.flipped;
         this.settingsService.settings.deltaColorFlipped = this.viewModel.deltaColorFlipped;
-        this.settingsService.onSettingsChanged();
+        this.settingsService.applySettings();
     }
 
     public changeMargin(){
