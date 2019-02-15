@@ -13,7 +13,6 @@ export interface MetricData {
 }
 
 export interface DataModel {
-
     revisions: CodeMap[];
     metrics: string[],
     metricData: MetricData[];
@@ -149,33 +148,6 @@ export class DataService {
         this._data.metricData = this.getMetricNamesWithMaxValue();
     }
 
-    /**
-     * resets all maps (deletes them)
-     */
-    public resetMaps() {
-        this._data.revisions = [];
-        this._data.metrics = [];
-        this._data.metricData = [];
-        this._lastComparisonMap = null;
-        this._data.renderMap = null;
-        this.notify();
-    }
-
-    public getMaxMetricInAllRevisions(metric: string) {
-        let maxValue = 0;
-
-        this.data.revisions.forEach((rev)=> {
-            let nodes = d3.hierarchy(rev.nodes).leaves();
-            nodes.forEach((node: any)=> {
-                if (node.data.attributes[metric] > maxValue) {
-                    maxValue = node.data.attributes[metric];
-                }
-            });
-        });
-
-        return maxValue;
-    }
-
     private processDeltas() {
         if(this._data.renderMap) {
             this.deltaCalculatorService.removeCrossOriginNodes(this._data.renderMap);
@@ -216,4 +188,29 @@ export class DataService {
         return metricData.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
     }
 
+    public resetMaps() {
+        this._data.revisions = [];
+        this._data.metrics = [];
+        this._data.metricData = [];
+        this._lastComparisonMap = null;
+        this._data.renderMap = null;
+        this.notify();
+    }
+
+    public getMaxMetricInAllRevisions(metric: string): number {
+        let maxValue = 0;
+
+        this.data.revisions.forEach((rev)=> {
+            let nodes = d3.hierarchy(rev.nodes).leaves();
+            nodes.forEach((node: any)=> {
+                const currentValue = node.data.attributes[metric];
+
+                if (currentValue > maxValue) {
+                    maxValue = currentValue;
+                }
+            });
+        });
+
+        return maxValue;
+    }
 }

@@ -15,7 +15,6 @@ import "./codeMap/codeMap";
 import "./metricChooser/metricChooser";
 import "./rangeSlider/rangeSlider";
 import "./colorSettingsPanel/colorSettingsPanel";
-import "./displaySettingsPanel/displaySettingsPanel";
 import "./experimentalSettingsPanel/experimentalSettingsPanel";
 import "./mapTreeViewSearch/mapTreeViewSearch";
 import "./resetSettingsButton/resetSettingsButton";
@@ -45,7 +44,6 @@ angular.module(
         "app.codeCharta.ui.codeMap",
         "app.codeCharta.ui.metricChooser",
         "app.codeCharta.ui.colorSettingsPanel",
-        "app.codeCharta.ui.displaySettingsPanel",
         "app.codeCharta.ui.experimentalSettingsPanel",
         "app.codeCharta.ui.rangeSlider",
         "app.codeCharta.ui.resetSettingsButton",

@@ -142,7 +142,7 @@ export class CodeMapActionsService {
 
     private apply() {
         this.$timeout(() => {
-            this.settingsService.onSettingsChanged();
+            this.settingsService.applySettings();
         }, 50);
     }
 

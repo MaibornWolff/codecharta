@@ -63,20 +63,22 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     }
 
     public static SELECTOR = "settingsService";
-    public static MIN_MARGIN = 15;
     public static MARGIN_FACTOR = 4;
+    private static MIN_MARGIN = 15;
+    private static MAX_MARGIN = 100;
 
     public numberOfCalls: number;
 
     private _settings: Settings;
 
     private _lastDeltaState = false;
+    private _lastColorMetric = "";
 
     /* ngInject */
     constructor(private urlService, private dataService: DataService, private $rootScope,
                 private threeOrbitControlsService: ThreeOrbitControlsService) {
 
-        this._settings = this.getInitialSettings(this.dataService.data.renderMap, this.dataService.data.metrics);
+        this._settings = this.getDefaultSettings();
 
         this.numberOfCalls = 0;
         this.dataService.subscribe(this);
@@ -88,6 +90,63 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this.$rootScope.$on("settings-changed", (event, data) => {
             subscriber.onSettingsChanged(data, event);
         });
+    }
+
+    public getDefaultSettings(): Settings {
+
+        let range: Range = {
+            from: null,
+            to: null,
+            flipped: false
+        };
+
+        let scaling: Scale = {
+            x: 1, y: 1, z: 1
+        };
+
+        let camera: Scale = {
+            x: 0, y: 300, z: 1000
+        };
+
+        this._lastDeltaState = false;
+
+        let settings: Settings = {
+            map: this.dataService.data.renderMap,
+            neutralColorRange: range,
+            areaMetric: this.getMetricByIdOrLast(0, this.dataService.data.metrics),
+            heightMetric: this.getMetricByIdOrLast(1, this.dataService.data.metrics),
+            colorMetric: this.getMetricByIdOrLast(2, this.dataService.data.metrics),
+            mode: KindOfMap.Single,
+            amountOfTopLabels: 1,
+            scaling: scaling,
+            camera: camera,
+            margin: SettingsService.MIN_MARGIN,
+            deltaColorFlipped: false,
+            enableEdgeArrows: true,
+            hideFlatBuildings: true,
+            maximizeDetailPanel: false,
+            invertHeight: false,
+            dynamicMargin: true,
+            isWhiteBackground: false,
+            whiteColorBuildings: true,
+            blacklist: [],
+            focusedNodePath: null,
+            searchedNodePaths: [],
+            searchPattern: null
+        };
+
+        settings.margin = this.computeMargin(settings);
+        settings.neutralColorRange = this.getAdaptedRange(settings);
+        settings.neutralColorRange.flipped = false;
+        return settings;
+    }
+
+    private onActivateDeltas() {
+        this.dataService.onActivateDeltas();
+    }
+
+    private onDeactivateDeltas() {
+        this.dataService.onDeactivateDeltas();
     }
 
     /**
@@ -141,9 +200,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      * Broadcasts a settings-changed event with the new {Settings} object as a payload
      * @emits {settings-changed} on call
      */
-    public onSettingsChanged() {
-
-        this.settings.margin = this.computeMargin();
+    private onSettingsChanged() {
 
         if (this._lastDeltaState && this._settings.mode != KindOfMap.Delta) {
             this._lastDeltaState = false;
@@ -208,42 +265,41 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     }
 
     /**
-     * @returns {number}
-     *
-     * Function that computes the margin applied to a scenario related the square root of (the area divided
+     * Computes the margin applied to a scenario related the square root of (the area divided
      * by the number of buildings)
      */
-    public computeMargin(
-        map: CodeMap = this.dataService.data.renderMap,
-        areaMetric: string = this.settings.areaMetric,
-        settingsMargin: number = this.settings.margin,
-        dynamicMargin: boolean = this.settings.dynamicMargin
-    ): number {
-
-        let margin: number;
-        if (map !== null && dynamicMargin) {
-            let leaves = hierarchy<CodeMapNode>(map.nodes).leaves();
+    public computeMargin(s: Settings = this.settings): number {
+        if (s.map !== null && s.dynamicMargin) {
+            let leaves = hierarchy<CodeMapNode>(s.map.nodes).leaves();
             let numberOfBuildings = 0;
             let totalArea = 0;
-            leaves.forEach((c: HierarchyNode<CodeMapNode>) => {
+
+            leaves.forEach((node: HierarchyNode<CodeMapNode>) => {
                 numberOfBuildings++;
-                if(c.data.attributes && c.data.attributes[areaMetric]){
-                    totalArea += c.data.attributes[areaMetric];
+                if(node.data.attributes && node.data.attributes[s.areaMetric]){
+                    totalArea += node.data.attributes[s.areaMetric];
                 }
             });
 
-            margin = SettingsService.MARGIN_FACTOR * Math.round(Math.sqrt(
-                (totalArea / numberOfBuildings)));
-
-            margin = Math.min(100,Math.max(SettingsService.MIN_MARGIN, margin));
+            let margin: number = SettingsService.MARGIN_FACTOR * Math.round(Math.sqrt((totalArea / numberOfBuildings)));
+            return Math.min(SettingsService.MAX_MARGIN, Math.max(SettingsService.MIN_MARGIN, margin));
+        } else {
+            return s.margin;
         }
-
-        else {
-            margin = settingsMargin || SettingsService.MIN_MARGIN;
-        }
-
-        return margin;
     }
+
+    private getAdaptedRange(s: Settings = this.settings): Range {
+        const maxMetricValue =  this.dataService.getMaxMetricInAllRevisions(s.colorMetric);
+        const firstThird = Math.round((maxMetricValue / 3) * 100) / 100;
+        const secondThird = Math.round(firstThird * 2 * 100) / 100;
+
+        return {
+           flipped: s.neutralColorRange.flipped,
+           from: firstThird,
+           to: secondThird,
+        }
+    }
+
 
     /**
      * Updates query params to current settings
@@ -288,18 +344,19 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      * @param {Settings} settings
      */
     public applySettings(settings?: Settings) {
-
         if (settings) {
+            this.potentiallyUpdateColorRange(settings);
+            this._settings.margin = this.computeMargin(settings);
             this.updateSettings(settings);
-        }
 
-        else {
+        } else {
+            this.potentiallyUpdateColorRange();
+            this._settings.margin = this.computeMargin();
             this.numberOfCalls++;
             if (this.numberOfCalls > 4) {
                 this.numberOfCalls = 0;
                 this.onSettingsChanged();
-            }
-            else {
+            } else {
                 let currentCalls = this.numberOfCalls;
                 let _this = this;
 
@@ -308,64 +365,16 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
                         this.numberOfCalls = 0;
                         _this.onSettingsChanged();
                     }
-
                 }, 400);
             }
         }
     }
 
-    private getInitialSettings(renderMap: any, metrics: string[]): Settings {
-
-        let r: Range = {
-            from: 10,
-            to: 20,
-            flipped: false
-        };
-
-        let s: Scale = {
-            x: 1, y: 1, z: 1
-        };
-
-        let c: Scale = {
-            x: 0, y: 300, z: 1000
-        };
-
-        this._lastDeltaState = false;
-
-        let settings: Settings = {
-            map: renderMap,
-            neutralColorRange: r,
-            areaMetric: this.getMetricByIdOrLast(0, metrics),
-            heightMetric: this.getMetricByIdOrLast(1, metrics),
-            colorMetric: this.getMetricByIdOrLast(2, metrics),
-            mode: KindOfMap.Single,
-            amountOfTopLabels: 1,
-            scaling: s,
-            camera: c,
-            margin: 15,
-            deltaColorFlipped: false,
-            enableEdgeArrows: true,
-            hideFlatBuildings: true,
-            maximizeDetailPanel: false,
-            invertHeight: false,
-            dynamicMargin: true,
-            isWhiteBackground: false,
-            whiteColorBuildings: true,
-            blacklist: [],
-            focusedNodePath: null,
-            searchedNodePaths: [],
-            searchPattern: null
-        };
-        return settings;
-
-    }
-
-    private onActivateDeltas() {
-        this.dataService.onActivateDeltas();
-    }
-
-    private onDeactivateDeltas() {
-        this.dataService.onDeactivateDeltas();
+    private potentiallyUpdateColorRange(s: Settings = this.settings) {
+        if (this._lastColorMetric != s.colorMetric) {
+            this._lastColorMetric = s.colorMetric;
+            this._settings.neutralColorRange = this.getAdaptedRange(s);
+        }
     }
 
     /**

@@ -14,7 +14,7 @@ export class BlacklistPanelController implements SettingsServiceSubscriber{
     }
 
     public onChange() {
-        this.settingsService.onSettingsChanged();
+        this.settingsService.applySettings();
     }
 
     public onSettingsChanged(settings: Settings, event: Event) {

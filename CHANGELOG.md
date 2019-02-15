@@ -8,19 +8,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 
 ### Added
-- Color searched node names green in TreeView #225
-- Add option buttons (three dots) in TreeViewSearch to `Hide` or `Exclude` matching nodes #298
-- Show blacklist entry counter in blacklistPanel header #298
-- Option checkbox 'Hide Flattened Buildings' #225
-- Hide/Flatten non-searched buildings #225
-- Hide/Flatten all buildings, if searchPattern can't find any matching nodes #225
-- Show maxValue of each metric in metricChooser select list #204
-- Colored color-slider inside the RibbonBar #318
-- Color positive buildings white and set as default option #311
-- Clicking the ribbonBar section-titles toggles the ribbonBar #324
-- Adding Linter
-- View-Cube displayed in top right corner #274
-- Adding prettier formatter
+
+-   Color searched node names green in TreeView #225
+-   Add option buttons (three dots) in TreeViewSearch to `Hide` or `Exclude` matching nodes #298
+-   Show blacklist entry counter in blacklistPanel header #298
+-   Option checkbox 'Hide Flattened Buildings' #225
+-   Hide/Flatten non-searched buildings #225
+-   Hide/Flatten all buildings, if searchPattern can't find any matching nodes #225
+-   Show maxValue of each metric in metricChooser select list #204
+-   Colored color-slider inside the RibbonBar #318
+-   Color positive buildings white and set as default option #311
+-   Clicking the ribbonBar section-titles toggles the ribbonBar #324
+-   View-Cube displayed in top right corner #274
+-   Adding prettier formatter
+-   Adapt colorRange when changing colorMetric #330
 
 ### Changed
 
