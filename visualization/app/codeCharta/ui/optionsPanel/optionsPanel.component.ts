@@ -3,13 +3,10 @@ import "./optionsPanel.component.scss";
 
 export class OptionsPanelController {
 
-    private _settingsService: SettingsService;
-
     /* @ngInject */
     constructor(
-        settingsService: SettingsService
+        private _settingsService_: SettingsService
     ) {
-        this._settingsService = settingsService;
     }
 
 }
