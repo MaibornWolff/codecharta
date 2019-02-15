@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Clicking the ribbonBar section-titles toggles the ribbonBar #324
 -   View-Cube displayed in top right corner #274
 -   Adding prettier formatter
+-   Adapt colorRange when changing colorMetric #330
 
 ### Changed
 

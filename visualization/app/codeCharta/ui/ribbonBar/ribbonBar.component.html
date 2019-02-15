@@ -31,7 +31,7 @@
                 </md-input-container>
             </md-slider-container>
             <md-input-container class="md-block">
-                <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.dynamicMargin" ng-change="$ctrl.settingsService.onSettingsChanged()">
+                <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.dynamicMargin" ng-change="$ctrl.settingsService.applySettings()">
                     Dynamic Margin
                 </md-checkbox>
             </md-input-container>
@@ -62,7 +62,7 @@
                 </md-input-container>
             </md-slider-container>
             <md-input-container class="md-block" ng-if="$ctrl.settingsService.settings.mode != $ctrl.deltaMode">
-                <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.invertHeight" ng-change="$ctrl.settingsService.onSettingsChanged()">
+                <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.invertHeight" ng-change="$ctrl.settingsService.applySettings()">
                     Invert Height
                 </md-checkbox>
             </md-input-container>
