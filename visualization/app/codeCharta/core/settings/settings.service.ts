@@ -57,14 +57,19 @@ export interface SettingsServiceSubscriber {
 
 export class SettingsService implements DataServiceSubscriber, CameraChangeSubscriber {
 
+    //TODO return new copy ? this would need a change listener for angular...
+    get settings(): Settings {
+        return this._settings;
+    }
+
     public static SELECTOR = "settingsService";
     public static MARGIN_FACTOR = 4;
     private static MIN_MARGIN = 15;
     private static MAX_MARGIN = 100;
 
-    private _settings: Settings;
-
     public numberOfCalls: number;
+
+    private _settings: Settings;
 
     private _lastDeltaState = false;
     private _lastColorMetric = "";
@@ -76,8 +81,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings = this.getDefaultSettings();
 
         this.numberOfCalls = 0;
-        dataService.subscribe(this);
-        threeOrbitControlsService.subscribe(this);
+        this.dataService.subscribe(this);
+        this.threeOrbitControlsService.subscribe(this);
 
     }
 
@@ -176,7 +181,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
     }
 
-    onCameraChanged(camera: PerspectiveCamera) {
+    public onCameraChanged(camera: PerspectiveCamera) {
         if (
             this._settings.camera.x !== camera.position.x ||
             this._settings.camera.y !== camera.position.y ||
@@ -214,9 +219,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      */
     public updateSettingsFromUrl() {
 
-        let ctx = this;
-
-        let iterateProperties = function (obj, prefix) {
+        let iterateProperties = (obj, prefix) => {
             for (let i in obj) {
                 if (obj.hasOwnProperty(i) && i !== "map" && i) {
 
@@ -226,7 +229,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
                         iterateProperties(obj[i], i + ".");
                     }
 
-                    const res = ctx.urlService.getParam(prefix + i);
+                    const res = this.urlService.getParam(prefix + i);
 
                     if (res) {
 
@@ -305,7 +308,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
         let result = "";
 
-        let iterateProperties = function (obj, prefix) {
+        let iterateProperties = (obj, prefix) => {
             for (let i in obj) {
                 if (obj.hasOwnProperty(i) && i !== "map" && i) {
 
@@ -418,11 +421,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 
     }
 
-    //TODO return new copy ? this would need a change listener for angular...
-    get settings(): Settings {
-        return this._settings;
-    }
-
     /**
      * Returns a metric from the metrics object. If it is not found the last possible metric will be returned.
      * @param id id
@@ -432,36 +430,5 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     private getMetricByIdOrLast(id: number, metrics: string[]): string {
         return metrics[Math.min(id, metrics.length - 1)];
     }
-
-    /**
-     * corrects settings, if the chosen metric is not available in the current map, the first three metrics are chosen as a default.
-     * @param {Settings} settings
-     */
-    private correctSettings(settings) {
-        const result = settings;
-        result.map = this._settings.map; //do not change the map
-        result.areaMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.areaMetric, this.getMetricByIdOrLast(0, this.dataService.data.metrics));
-        result.heightMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.heightMetric, this.getMetricByIdOrLast(1, this.dataService.data.metrics));
-        result.colorMetric = this.getMetricOrDefault(this.dataService.data.metrics, settings.colorMetric, this.getMetricByIdOrLast(2, this.dataService.data.metrics));
-        return result;
-    }
-
-    /**
-     * Checks if the given metricName is in the metricsArray. If it is in there, we return it, else we return the defaultValue.
-     * @param {String[]} metricsArray an array of metric names
-     * @param {String} metricName a metric name to look for
-     * @param {String} defaultValue a default name in case metricName was not found
-     */
-    private getMetricOrDefault(metricsArray, metricName, defaultValue) {
-        let result = defaultValue;
-        metricsArray.forEach((metric) => {
-            if (metric + "" === metricName + "") {
-                result = metric;
-            }
-        });
-
-        return result;
-    }
-
 
 }

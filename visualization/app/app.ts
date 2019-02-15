@@ -11,21 +11,21 @@ import "./testVille/testVille";
 angular.module("app", ["app.codeCharta", "ngMaterial", "ui.router", "app.testVille"]);
 
 angular.module("app")
-    .config(["$locationProvider", function ($locationProvider) {
+    .config(["$locationProvider", ($locationProvider) => {
         $locationProvider.hashPrefix("");
         $locationProvider.html5Mode({
             enabled: true,
             requireBase: false
         });
     }])
-    .config(function ($mdThemingProvider) {
+    .config(($mdThemingProvider) => {
         $mdThemingProvider.theme("default")
             .primaryPalette("teal")
             .warnPalette("teal")
             .accentPalette("teal");
-    }).config(function($mdAriaProvider) {
+    }).config(($mdAriaProvider) => {
         $mdAriaProvider.disableWarnings();
-    }).config(function($stateProvider) {
+    }).config(($stateProvider) => {
 
         $stateProvider.state({
             name: "CodeCharta",
@@ -37,9 +37,9 @@ angular.module("app")
             template: "<test-ville-component>Loading testVille...</test-ville-component>"
         });
 
-    }).config(['$compileProvider', function($compileProvider) {
+    }).config(['$compileProvider', ($compileProvider) => {
         $compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob|chrome-extension):|data:image\/)/);
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file|chrome-extension):/);
-    }]).run(function($state) {
+    }]).run(($state) => {
         $state.go("CodeCharta");
     });

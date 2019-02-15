@@ -26,21 +26,21 @@ export class SettingsPanelController implements SettingsServiceSubscriber {
      * This is necessary to update the rzSlider on panel expansion
      * @param $panel
      */
-    collapseAndUpdateChildRzSlider($panel) {
+    public collapseAndUpdateChildRzSlider($panel) {
         $panel.collapse();
         this.$timeout(() => {
             this.$scope.$broadcast("rzSliderForceRender");
         },50);
     }
 
-    onSettingsChanged(settings: Settings, event: Event) {
+    public onSettingsChanged(settings: Settings, event: Event) {
         if (settings.blacklist.length != this.viewModel.blacklistLength) {
             this.highlightCounterIcon();
         }
         this.viewModel.blacklistLength = settings.blacklist.length;
     }
 
-    highlightCounterIcon() {
+    public highlightCounterIcon() {
         const panelElement = $(".item-counter").closest("md-expansion-panel");
         panelElement.addClass("highlight");
 

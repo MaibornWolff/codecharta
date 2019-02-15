@@ -1,13 +1,6 @@
-import {SettingsService} from "../../core/settings/settings.service";
 import "./experimentalSettingsPanel.component.scss";
 
 export class ExperimentalSettingsPanelController {
-
-    /* @ngInject */
-    constructor(
-        private settingsService: SettingsService
-    ) {
-    }
 
 }
 

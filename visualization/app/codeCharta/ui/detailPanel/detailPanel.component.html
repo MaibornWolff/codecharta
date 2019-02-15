@@ -89,7 +89,7 @@
                 <th ng-hide="!$ctrl.isSelected()" id="selectedHeader">Selected</th>
                 <th ng-hide="!$ctrl.isHovered()" id="hoveredHeader">Hovered</th>
             </tr>
-            <tr ng-repeat="metric in $ctrl.dataService.data.metrics">
+            <tr ng-repeat="metric in $ctrl._dataService_.data.metrics">
                 <td></td>
                 <td>{{metric}}</td>
                 <td ng-if="$ctrl.isSelected()">{{$ctrl.details.selected.attributes[metric] | number: 2}} <span

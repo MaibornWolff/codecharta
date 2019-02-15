@@ -163,9 +163,9 @@ describe("treemapUtils", () => {
 
     describe("isNodeToBeFlat", () => {
 
-        var codeMapNode: CodeMapNode;
-        var squaredNode: SquarifiedValuedCodeMapNode;
-        var treeMapSettings: TreeMapSettings;
+        let codeMapNode: CodeMapNode;
+        let squaredNode: SquarifiedValuedCodeMapNode;
+        let treeMapSettings: TreeMapSettings;
 
         beforeEach(() => {
 

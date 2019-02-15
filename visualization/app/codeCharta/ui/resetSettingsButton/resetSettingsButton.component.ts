@@ -12,14 +12,13 @@ export class ResetSettingsButtonController {
 
     }
 
-    onClick() {
+    public onClick() {
         this.updateSettings(this.settingsNames);
     }
 
     public updateSettings(settingsList: string = this.settingsNames) {
-        settingsList = settingsList.replace(/ /g,"");
-        settingsList = settingsList.replace(/\n/g,"");
-        const tokens: string[] = settingsList.split(",");
+        const sanitizedSettingsList = settingsList.replace(/ /g,"").replace(/\n/g,"");
+        const tokens: string[] = sanitizedSettingsList.split(",");
         const settings = this.settingsService.settings;
         const defaultSettings = this.settingsService.getDefaultSettings();
 

@@ -94,7 +94,7 @@ describe("app.codeCharta.core.download", function() {
 
         it("should add date string before json extension", function() {
             const filenameWithDate = downloadService.addDateToFileName("abc.json");
-            var regexp = new RegExp('^abc\.\\d{2}_\\d{2}_\\d{4}\.json$');
+            const regexp = new RegExp('^abc\.\\d{2}_\\d{2}_\\d{4}\.json$');
             expect(regexp.test(filenameWithDate)).toBeTruthy();
         });
 

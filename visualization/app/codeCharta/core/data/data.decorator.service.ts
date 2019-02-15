@@ -1,7 +1,7 @@
 "use strict";
 
 import * as d3 from "d3";
-import {CodeMap, CodeMapNode, Edge} from "./model/CodeMap";
+import {CodeMap, CodeMapNode} from "./model/CodeMap";
 import {HierarchyNode} from "d3-hierarchy";
 
 /**
@@ -161,7 +161,7 @@ export class DataDecoratorService {
     private defineAttributeAsSumMethod(node, metric: string) {
         Object.defineProperty(node.data.attributes, metric, {
             enumerable: true,
-            get: function () {
+            get: () => {
                 let sum = 0;
                 let l = node.leaves();
                 for (let count = 0; count < l.length; count++) {

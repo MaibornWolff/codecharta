@@ -1,12 +1,8 @@
 "use strict";
 
 import * as THREE from "three";
-import {
-    SettingsServiceSubscriber,
-    Settings,
-    SettingsService
-} from "../../../core/settings/settings.service";
-import { PerspectiveCamera } from "three";
+import {SettingsServiceSubscriber, Settings, SettingsService} from "../../../core/settings/settings.service";
+import {PerspectiveCamera} from "three";
 
 class ThreeCameraService implements SettingsServiceSubscriber {
     public static SELECTOR = "threeCameraService";
@@ -17,24 +13,19 @@ class ThreeCameraService implements SettingsServiceSubscriber {
 
     public camera: PerspectiveCamera;
 
-    constructor() {}
-
-    onSettingsChanged(settings: Settings, event: Event) {
-        this.setPosition(
-            settings.camera.x,
-            settings.camera.y,
-            settings.camera.z
-        );
+    public onSettingsChanged(settings: Settings, event: Event) {
+        this.setPosition(settings.camera.x, settings.camera.y, settings.camera.z);
     }
 
-    init(
-        settingsService: SettingsService,
-        containerWidth: number,
-        containerHeight: number,
-        x: number,
-        y: number,
-        z: number
-    ) {
+    /**
+     * Inits the camera with a specific container width and height
+     * @param {number} containerWidth initial width
+     * @param {number} containerHeight initial height
+     * @param {number} x camera position component x
+     * @param {number} y camera position component y
+     * @param {number} z camera position component z
+     */
+    public init(settingsService: SettingsService, containerWidth: number, containerHeight: number, x: number, y: number, z: number) {
         const aspect = containerWidth / containerHeight;
         this.camera = new THREE.PerspectiveCamera(
             ThreeCameraService.VIEW_ANGLE,
@@ -46,7 +37,7 @@ class ThreeCameraService implements SettingsServiceSubscriber {
         settingsService.subscribe(this);
     }
 
-    setPosition(x: number, y: number, z: number) {
+    public setPosition(x: number, y: number, z: number) {
         this.camera.position.set(x, y, z);
     }
 }

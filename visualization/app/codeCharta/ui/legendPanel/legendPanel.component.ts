@@ -25,13 +25,10 @@ export interface PackageItem {
 
 export class LegendPanelController implements DataServiceSubscriber, SettingsServiceSubscriber {
 
-    private deltas: boolean;
+    private _deltas: boolean;
     private pd: string;
     private nd: string;
-    private range: Range;
-    private areaMetric: string;
-    private heightMetric: string;
-    private colorMetric: string;
+    private _range: Range;
     private positive: string;
     private neutral: string;
     private negative: string;
@@ -42,8 +39,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     /* @ngInject */
     constructor(private $timeout: ITimeoutService,
                 private settingsService: SettingsService,
-                private dataService: DataService,
-                private $element: Element) {
+                private dataService: DataService) {
         let ctx = this;
 
         $timeout(()=> {
@@ -60,14 +56,14 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         this.initAnimations();
     }
 
-    onDataChanged(data: DataModel) {
+    public onDataChanged(data: DataModel) {
         if (data && data.revisions && data.revisions.length > 1) {
-            this.deltas = true;
+            this._deltas = true;
             this.refreshDeltaColors();
         }
     }
 
-    refreshDeltaColors() {
+    public refreshDeltaColors() {
         if(this.deltaColorsFlipped){
             this.pd = this.getImageDataUri(MapColors.negativeDelta);
             this.nd = this.getImageDataUri(MapColors.positiveDelta);
@@ -79,11 +75,68 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         this.$timeout(()=>$("#negativeDelta").attr("src", this.nd), 200);
     }
 
+    public onSettingsChanged(s: Settings) {
+        this._range = s.neutralColorRange;
+        this.deltaColorsFlipped = s.deltaColorFlipped;
+        this._deltas = s.mode == KindOfMap.Delta;
+
+        this.positive = this.getImageDataUri((s.whiteColorBuildings) ? MapColors.lightGrey : MapColors.positive);
+        this.neutral = this.getImageDataUri(MapColors.neutral);
+        this.negative = this.getImageDataUri(MapColors.negative);
+        this.select = this.getImageDataUri(MapColors.selected);
+
+        $("#green").attr("src", this.positive);
+        $("#yellow").attr("src", this.neutral);
+        $("#red").attr("src", this.negative);
+        $("#select").attr("src", this.select);
+
+        this.refreshDeltaColors();
+        this.setMarkingPackagesIntoLegend();
+        this.combineMarkingPackagesByColors();
+    }
+
+    public getImageDataUri(hex: number): string {
+        let hexS: string = "#" + hex.toString(16);
+        let color: string = this.encodeHex(hexS);
+        return this.generatePixel(color);
+    }
+
+    public encodeHex(s: string): string {
+        let substr = s.substring(1, 7);
+        if (substr.length < 6) {
+            substr = substr[0] + substr[0] + substr[1] + substr[1] + substr[2] + substr[2];
+        }
+        return this.encodeRGB(
+            parseInt(substr[0] + substr[1], 16), parseInt(substr[2] + substr[3], 16), parseInt(substr[4] + substr[5], 16));
+    }
+
+    public encodeRGB(r: number, g: number, b: number): string {
+        return this.encodeTriplet(0, r, g) + this.encodeTriplet(b, 255, 255);
+    }
+
+    public encodeTriplet(e1: number, e2: number, e3: number): string {
+        let keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+        let enc1 = e1 >> 2;
+        let enc2 = ((e1 & 3) << 4) | (e2 >> 4);
+        let enc3 = ((e2 & 15) << 2) | (e3 >> 6);
+        let enc4 = e3 & 63;
+        return keyStr.charAt(enc1) + keyStr.charAt(enc2) + keyStr.charAt(enc3) + keyStr.charAt(enc4);
+    }
+
+
+    public generatePixel(color: string): string {
+        return "data:image/gif;base64,R0lGODlhAQABAPAA" + color + "/yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
+    }
+
+    public getMarkingPackages(): MarkingPackages[] {
+        return this.markingPackages;
+    }
+
 
     private setMarkingPackagesIntoLegend() {
         this.markingPackages = [];
         if (this.settingsService.settings.map) {
-            var rootNode: CodeMapNode = this.settingsService.settings.map.nodes;
+            const rootNode: CodeMapNode = this.settingsService.settings.map.nodes;
 
             hierarchy<CodeMapNode>(rootNode).descendants().forEach((hierarchyNode) => {
                 const node: CodeMapNode = hierarchyNode.data;
@@ -116,7 +169,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     }
 
     private handleMarkingPackageWithExistingColor(mp: MarkingPackages) {
-        var addMP = true;
+        let addMP = true;
         const packagesWithSameMarkingColor: MarkingPackages[] = this.getPackagesWithSameMarkingColor(mp);
         if (packagesWithSameMarkingColor != []) {
             for (const mpWithSameColor of packagesWithSameMarkingColor) {
@@ -133,7 +186,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     }
 
     private getPackagesWithSameMarkingColor(mp: MarkingPackages) {
-        var packagesWithSameMarkingColor: MarkingPackages[] = [];
+        const packagesWithSameMarkingColor: MarkingPackages[] = [];
         for(const otherMP of this.markingPackages) {
             if (otherMP.markingColor == mp.markingColor) {
                 packagesWithSameMarkingColor.push(otherMP);
@@ -150,8 +203,8 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         const allMP = this.markingPackages;
         this.markingPackages = [];
         if (allMP) {
-            for (var i = 0; i < allMP.length; i++) {
-                var markingPackage: MarkingPackages = {
+            for (let i = 0; i < allMP.length; i++) {
+                let markingPackage: MarkingPackages = {
                     markingColor: this.getImageDataUri(Number(allMP[i].markingColor)),
                     packageItem: [{
                         name: this.getPackagePathPreview(allMP[i]),
@@ -195,76 +248,16 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         }
     }
 
-    onSettingsChanged(s: Settings) {
-        this.range = s.neutralColorRange;
-        this.areaMetric = s.areaMetric;
-        this.heightMetric = s.heightMetric;
-        this.colorMetric = s.colorMetric;
-        this.deltaColorsFlipped = s.deltaColorFlipped;
-        this.deltas = s.mode == KindOfMap.Delta;
-
-        this.positive = this.getImageDataUri((s.whiteColorBuildings) ? MapColors.lightGrey : MapColors.positive);
-        this.neutral = this.getImageDataUri(MapColors.neutral);
-        this.negative = this.getImageDataUri(MapColors.negative);
-        this.select = this.getImageDataUri(MapColors.selected);
-
-        $("#green").attr("src", this.positive);
-        $("#yellow").attr("src", this.neutral);
-        $("#red").attr("src", this.negative);
-        $("#select").attr("src", this.select);
-
-        this.refreshDeltaColors();
-        this.setMarkingPackagesIntoLegend();
-        this.combineMarkingPackagesByColors();
-    }
-
-    getImageDataUri(hex: number): string {
-        let hexS: string = "#" + hex.toString(16);
-        let color: string = this.encodeHex(hexS);
-        return this.generatePixel(color);
-    }
-
-    encodeHex(s: string): string {
-        s = s.substring(1, 7);
-        if (s.length < 6) {
-            s = s[0] + s[0] + s[1] + s[1] + s[2] + s[2];
-        }
-        return this.encodeRGB(
-            parseInt(s[0] + s[1], 16), parseInt(s[2] + s[3], 16), parseInt(s[4] + s[5], 16));
-    }
-
-    encodeRGB(r: number, g: number, b: number): string {
-        return this.encodeTriplet(0, r, g) + this.encodeTriplet(b, 255, 255);
-    }
-
-    encodeTriplet(e1: number, e2: number, e3: number): string {
-        let keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-        let enc1 = e1 >> 2;
-        let enc2 = ((e1 & 3) << 4) | (e2 >> 4);
-        let enc3 = ((e2 & 15) << 2) | (e3 >> 6);
-        let enc4 = e3 & 63;
-        return keyStr.charAt(enc1) + keyStr.charAt(enc2) + keyStr.charAt(enc3) + keyStr.charAt(enc4);
-    }
-
-
-    generatePixel(color: string): string {
-        return "data:image/gif;base64,R0lGODlhAQABAPAA" + color + "/yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
-    }
-
     private initAnimations() {
-        $(document).ready(function(){
+        $(document).ready(() => {
             let start = 40;
             let target = -500;
             let visible = false;
-            $("legend-panel-component .panel-button").click(function(){
+            $("legend-panel-component .panel-button").click(() => {
                 $("legend-panel-component .block-wrapper").animate({left: visible ? target+"px" : start+"px"}, "fast");
                 visible = !visible;
             });
         });
-    }
-
-    public getMarkingPackages(): MarkingPackages[] {
-        return this.markingPackages;
     }
 
 }

@@ -11,7 +11,6 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
     private static TIMEOUT_DELAY_MS = 100;
 
     public mapRoot: CodeMapNode = null;
-    private searchedFiles: CodeMapNode[] = [];
 
     public viewModel = {
         searchPattern: "",
@@ -21,6 +20,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
         isPatternExcluded: true,
         isPatternHidden: true
     };
+    private searchedFiles: CodeMapNode[] = [];
 
     /* @ngInject */
     constructor(private $timeout: ITimeoutService,
@@ -33,21 +33,21 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, D
         this.updateMapRoot(this.settingsService.settings.map);
     }
 
-    onDataChanged(data: DataModel, event) {
+    public onDataChanged(data: DataModel, event) {
         this.viewModel.searchPattern = "";
     }
 
-    onSettingsChanged(s: Settings) {
+    public onSettingsChanged(s: Settings) {
         this.updateMapRoot(this.settingsService.settings.map);
         this.updateViewModel();
     }
 
-    onSearchChange() {
+    public onSearchChange() {
         this.setSearchedNodePathnames();
         this.updateViewModel();
     }
 
-    onClickBlacklistPattern(blacklistType: BlacklistType) {
+    public onClickBlacklistPattern(blacklistType: BlacklistType) {
         this.settingsService.settings.blacklist.push(
             {path: this.viewModel.searchPattern, type: blacklistType}
         );

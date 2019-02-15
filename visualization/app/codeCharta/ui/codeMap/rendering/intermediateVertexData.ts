@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-export class intermediateVertexData {
+export class IntermediateVertexData {
     public positions : THREE.Vector3[];
     public normals : THREE.Vector3[];
     public uvs : THREE.Vector2[];
@@ -22,7 +22,7 @@ export class intermediateVertexData {
         this.indices = new Array<number>();
     }
 
-    addVertex(pos : THREE.Vector3, normal : THREE.Vector3, uv : THREE.Vector2, color : number, subGeomIdx : number, delta : number) : number {
+    public addVertex(pos : THREE.Vector3, normal : THREE.Vector3, uv : THREE.Vector2, color : number, subGeomIdx : number, delta : number) : number {
         this.positions.push(pos);
         this.normals.push(normal);
         this.uvs.push(uv);
@@ -33,7 +33,7 @@ export class intermediateVertexData {
         return this.positions.length - 1;
     }
 
-    addFace(i0 : number, i1 : number, i2 : number) : void
+    public addFace(i0 : number, i1 : number, i2 : number) : void
     {
         this.indices.push(i0, i1, i2);
     }

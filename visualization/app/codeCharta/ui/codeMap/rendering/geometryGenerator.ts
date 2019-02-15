@@ -1,15 +1,14 @@
 import * as THREE from "three";
-import {node} from "./node";
-import {codeMapGeometricDescription} from "./codeMapGeometricDescription";
-import {codeMapBuilding} from "./codeMapBuilding";
+import {Node} from "./node";
+import {CodeMapGeometricDescription} from "./codeMapGeometricDescription";
+import {CodeMapBuilding} from "./codeMapBuilding";
 import {getFloorGradient, MapColors} from "./renderSettings";
-import {colorRange} from "./renderSettings";
-import {renderSettings} from "./renderSettings";
-import {renderingUtil} from "./renderingUtil";
-import {intermediateVertexData} from "./intermediateVertexData";
-import {boxGeometryGenerationHelper} from "./boxGeometryGenerationHelper";
+import {RenderSettings} from "./renderSettings";
+import {RenderingUtil} from "./renderingUtil";
+import {IntermediateVertexData} from "./intermediateVertexData";
+import {BoxGeometryGenerationHelper} from "./boxGeometryGenerationHelper";
 
-export interface boxMeasures {
+export interface BoxMeasures {
     x: number;
     y: number;
     z: number;
@@ -18,28 +17,25 @@ export interface boxMeasures {
     depth: number;
 }
 
-export interface buildResult {
+export interface BuildResult {
     mesh: THREE.Mesh;
-    desc: codeMapGeometricDescription;
+    desc: CodeMapGeometricDescription;
 }
 
-export class geometryGenerator {
+export class GeometryGenerator {
 
     private static MINIMAL_BUILDING_HEIGHT = 1.0;
 
     private floorGradient: number[];
 
-    constructor() {
-    }
-
-    public build(nodes: node[], material: THREE.Material, settings: renderSettings): buildResult {
-        let data: intermediateVertexData = new intermediateVertexData();
-        let desc: codeMapGeometricDescription = new codeMapGeometricDescription(settings.mapSize);
+    public build(nodes: Node[], material: THREE.Material, settings: RenderSettings): BuildResult {
+        let data: IntermediateVertexData = new IntermediateVertexData();
+        let desc: CodeMapGeometricDescription = new CodeMapGeometricDescription(settings.mapSize);
 
         this.floorGradient = getFloorGradient(nodes);
 
         for (let i: number = 0; i < nodes.length; ++i) {
-            let n: node = nodes[i];
+            let n: Node = nodes[i];
 
             if (!n.isLeaf) {
                 this.addFloor(data, n, i, desc, settings);
@@ -54,7 +50,7 @@ export class geometryGenerator {
         };
     }
 
-    private mapNodeToLocalBox(n: node): boxMeasures {
+    private mapNodeToLocalBox(n: Node): BoxMeasures {
         return {
             x: n.x0,
             y: n.z0,
@@ -66,19 +62,19 @@ export class geometryGenerator {
     }
 
     private ensureMinHeightIfUnlessDeltaNegative(height: number, delta: number): number {
-        return (delta <= 0) ? height : Math.max(height, geometryGenerator.MINIMAL_BUILDING_HEIGHT);
+        return (delta <= 0) ? height : Math.max(height, GeometryGenerator.MINIMAL_BUILDING_HEIGHT);
     }
 
-    private addFloor(data: intermediateVertexData, n: node, idx: number, desc: codeMapGeometricDescription, settings: renderSettings) {
+    private addFloor(data: IntermediateVertexData, n: Node, idx: number, desc: CodeMapGeometricDescription, settings: RenderSettings) {
         //let color: number = ((n.markingColor? n.markingColor  & (n.depth % 2 === 0?0xdddddd:0xffffff): this.floorGradient[n.depth]));
         let color: number = (
             n.markingColor ? n.markingColor & (n.depth % 2 === 0 ? 0xdddddd : 0xffffff) :
                 this.floorGradient[n.depth]
         );
-        let measures: boxMeasures = this.mapNodeToLocalBox(n);
+        let measures: BoxMeasures = this.mapNodeToLocalBox(n);
 
         desc.add(
-            new codeMapBuilding(
+            new CodeMapBuilding(
                 idx,
                 new THREE.Box3(
                     new THREE.Vector3(measures.x, measures.y, measures.z),
@@ -89,15 +85,15 @@ export class geometryGenerator {
             )
         );
 
-        boxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, idx, 0.0);
+        BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, idx, 0.0);
     }
 
-    private nodeHasSuitableDeltas(n: node, heightKey: string): boolean {
+    private nodeHasSuitableDeltas(n: Node, heightKey: string): boolean {
         return (n.deltas && n.deltas[heightKey]) ? true : false;
     }
 
-    private addBuilding(data: intermediateVertexData, n: node, idx: number, desc: codeMapGeometricDescription, settings: renderSettings): void {
-        let measures: boxMeasures = this.mapNodeToLocalBox(n);
+    private addBuilding(data: IntermediateVertexData, n: Node, idx: number, desc: CodeMapGeometricDescription, settings: RenderSettings): void {
+        let measures: BoxMeasures = this.mapNodeToLocalBox(n);
         measures.height = this.ensureMinHeightIfUnlessDeltaNegative(n.height, n.heightDelta);
 
         let color: number = this.estimateColorForBuilding(n, settings);
@@ -113,7 +109,7 @@ export class geometryGenerator {
         }
 
         desc.add(
-            new codeMapBuilding(
+            new CodeMapBuilding(
                 idx,
                 new THREE.Box3(
                     new THREE.Vector3(measures.x, measures.y, measures.z),
@@ -124,10 +120,10 @@ export class geometryGenerator {
             )
         );
 
-        boxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, idx, renderDelta);
+        BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, idx, renderDelta);
     }
 
-    private estimateColorForBuilding(n: node, s: renderSettings): number {
+    private estimateColorForBuilding(n: Node, s: RenderSettings): number {
         let color: number = MapColors.defaultC;
 
         let mapColorPositive = s.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive;
@@ -156,7 +152,7 @@ export class geometryGenerator {
         return color;
     }
 
-    private buildMeshFromIntermediateVertexData(data: intermediateVertexData, material: THREE.Material): THREE.Mesh {
+    private buildMeshFromIntermediateVertexData(data: IntermediateVertexData, material: THREE.Material): THREE.Mesh {
         let numVertices: number = data.positions.length;
         const dimension: number = 3;
         const uvDimension: number = 2;
@@ -180,7 +176,7 @@ export class geometryGenerator {
             uvs[i * uvDimension + 0] = data.uvs[i].x;
             uvs[i * uvDimension + 1] = data.uvs[i].y;
 
-            let color: THREE.Vector3 = renderingUtil.colorToVec3(data.colors[i]);
+            let color: THREE.Vector3 = RenderingUtil.colorToVec3(data.colors[i]);
 
             colors[i * dimension + 0] = color.x;
             colors[i * dimension + 1] = color.y;

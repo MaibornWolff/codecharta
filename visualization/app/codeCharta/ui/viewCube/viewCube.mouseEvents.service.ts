@@ -133,6 +133,35 @@ export class ViewCubeMouseEventsService {
         }
     }
 
+    private triggerViewCubeEventPropagation(type: string, event: MouseEvent) {
+        this.$rootScope.$broadcast(
+            ViewCubeMouseEventsService.VIEW_CUBE_EVENT_PROPAGATION_EVENT_NAME,
+            { e: event, type: type }
+        );
+    }
+
+    private triggerViewCubeHoverEvent(cube: THREE.Mesh) {
+        this.currentlyHovered = cube;
+        this.$rootScope.$broadcast(
+            ViewCubeMouseEventsService.VIEW_CUBE_HOVER_EVENT_NAME,
+            { cube }
+        );
+    }
+
+    private triggerViewCubeUnhoverEvent() {
+        this.currentlyHovered = null;
+        this.$rootScope.$broadcast(
+            ViewCubeMouseEventsService.VIEW_CUBE_UNHOVER_EVENT_NAME
+        );
+    }
+
+    private triggerViewCubeClickEvent(cube: THREE.Mesh) {
+        this.$rootScope.$broadcast(
+            ViewCubeMouseEventsService.VIEW_CUBE_CLICK_EVENT_NAME,
+            { cube }
+        );
+    }
+
     public static subscribeToEventPropagation(
         $rootScope: IRootScopeService,
         subscriber: ViewCubeEventPropagationSubscriber
@@ -171,32 +200,4 @@ export class ViewCubeMouseEventsService {
         );
     }
 
-    private triggerViewCubeEventPropagation(type: string, event: MouseEvent) {
-        this.$rootScope.$broadcast(
-            ViewCubeMouseEventsService.VIEW_CUBE_EVENT_PROPAGATION_EVENT_NAME,
-            { e: event, type: type }
-        );
-    }
-
-    private triggerViewCubeHoverEvent(cube: THREE.Mesh) {
-        this.currentlyHovered = cube;
-        this.$rootScope.$broadcast(
-            ViewCubeMouseEventsService.VIEW_CUBE_HOVER_EVENT_NAME,
-            { cube }
-        );
-    }
-
-    private triggerViewCubeUnhoverEvent() {
-        this.currentlyHovered = null;
-        this.$rootScope.$broadcast(
-            ViewCubeMouseEventsService.VIEW_CUBE_UNHOVER_EVENT_NAME
-        );
-    }
-
-    private triggerViewCubeClickEvent(cube: THREE.Mesh) {
-        this.$rootScope.$broadcast(
-            ViewCubeMouseEventsService.VIEW_CUBE_CLICK_EVENT_NAME,
-            { cube }
-        );
-    }
 }

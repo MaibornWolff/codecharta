@@ -1,27 +1,27 @@
 <div class="block-wrapper dark_shadow_opacity">
-    <div class="legend-block" ng-show="!$ctrl.deltas">
+    <div class="legend-block" ng-show="!$ctrl._deltas">
         <img id="green" alt="green color">
-        <span ng-if="!$ctrl.range.flipped">0 to &lt; {{$ctrl.range.from}}</span>
-        <span ng-if="$ctrl.range.flipped">&gt; {{$ctrl.range.to}} to Infinite</span>
+        <span ng-if="!$ctrl._range.flipped">0 to &lt; {{$ctrl._range.from}}</span>
+        <span ng-if="$ctrl._range.flipped">&gt; {{$ctrl._range.to}} to Infinite</span>
     </div>
-    <div class="legend-block" ng-show="!$ctrl.deltas">
+    <div class="legend-block" ng-show="!$ctrl._deltas">
         <img id="yellow" alt="yellow color">
-        &ge; {{$ctrl.range.from}} to &le; {{$ctrl.range.to}}
+        &ge; {{$ctrl._range.from}} to &le; {{$ctrl._range.to}}
     </div>
-    <div class="legend-block" ng-show="!$ctrl.deltas">
+    <div class="legend-block" ng-show="!$ctrl._deltas">
         <img id="red" alt="red color">
-        <span ng-if="!$ctrl.range.flipped">&gt; {{$ctrl.range.to}} to Infinite</span>
-        <span ng-if="$ctrl.range.flipped">0 to &lt; {{$ctrl.range.from}}</span>
+        <span ng-if="!$ctrl._range.flipped">&gt; {{$ctrl._range.to}} to Infinite</span>
+        <span ng-if="$ctrl._range.flipped">0 to &lt; {{$ctrl._range.from}}</span>
     </div>
     <div class="legend-block">
         <img id="select" alt="selected color">
         selected
     </div>
-    <div class="legend-block" ng-show="$ctrl.deltas">
+    <div class="legend-block" ng-show="$ctrl._deltas">
         <img id="positiveDelta" alt="positive delta color">
         +&Delta;
     </div>
-    <div class="legend-block" ng-show="$ctrl.deltas">
+    <div class="legend-block" ng-show="$ctrl._deltas">
         <img id="negativeDelta" alt="negative delta color">
         -&Delta;
     </div>

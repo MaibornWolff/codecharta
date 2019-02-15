@@ -1,7 +1,7 @@
 "use strict";
-import { ThreeCameraService } from "./threeCameraService";
-import { IRootScopeService, IAngularEvent } from "angular";
-import { OrbitControls, PerspectiveCamera } from "three";
+import {ThreeCameraService} from "./threeCameraService";
+import {IRootScopeService, IAngularEvent} from "angular";
+import {OrbitControls, PerspectiveCamera} from "three";
 import * as THREE from "three";
 import { ThreeSceneService } from "./threeSceneService";
 
@@ -16,9 +16,9 @@ class ThreeOrbitControlsService {
     public static SELECTOR = "threeOrbitControlsService";
     public static CAMERA_CHANGED_EVENT_NAME = "camera-changed";
 
-    controls: OrbitControls;
-    pivotVector: THREE.Vector3;
-    pivot: THREE.Group;
+    public controls: OrbitControls;
+    public pivotVector: THREE.Vector3;
+    public pivot: THREE.Group;
 
     /* ngInject */
     constructor(
@@ -111,9 +111,8 @@ class ThreeOrbitControlsService {
             this.threeCameraService.camera,
             domElement
         );
-        let ctx = this;
-        this.controls.addEventListener("change", function() {
-            ctx.onInput(ctx.threeCameraService.camera);
+        this.controls.addEventListener("change", () => {
+            this.onInput(this.threeCameraService.camera);
         });
     }
 
