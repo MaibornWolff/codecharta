@@ -7,7 +7,7 @@ export class ColorSettingsPanelController {
 
     /* @ngInject */
     constructor(
-        _settingsService_: SettingsService
+        private _settingsService_: SettingsService
     ) {
     }
 
