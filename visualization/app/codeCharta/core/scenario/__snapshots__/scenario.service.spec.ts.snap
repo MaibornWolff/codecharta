@@ -11,8 +11,6 @@ Array [
       "heightMetric": "Average Complexity*",
       "neutralColorRange": Object {
         "flipped": false,
-        "from": 20,
-        "to": 40,
       },
     },
   },

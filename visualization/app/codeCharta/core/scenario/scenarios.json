@@ -3,8 +3,6 @@
     "name": "Complexity",
     "settings": {
       "neutralColorRange": {
-        "from": 20,
-        "to": 40,
         "flipped": false
       },
       "areaMetric": "rloc",
@@ -17,8 +15,6 @@
     "name": "Average Complexity*",
     "settings": {
       "neutralColorRange": {
-        "from": 20,
-        "to": 40,
         "flipped": false
       },
       "areaMetric": "unary",
@@ -31,8 +27,6 @@
     "name": "Coverage",
     "settings": {
       "neutralColorRange": {
-        "from": 20,
-        "to": 80,
         "flipped": true
       },
       "areaMetric": "rloc",
@@ -45,8 +39,6 @@
     "name": "Code Churn",
     "settings": {
       "neutralColorRange": {
-        "from": 10,
-        "to": 30,
         "flipped": false
       },
       "areaMetric": "rloc",

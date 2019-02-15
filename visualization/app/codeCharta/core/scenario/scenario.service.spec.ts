@@ -2,7 +2,6 @@ import {NGMock} from "../../../../mocks/ng.mockhelper";
 import "./scenario.module";
 import {Scenario, ScenarioService} from "./scenario.service";
 import {Settings, SettingsService} from "../settings/settings.service";
-import {createDefaultScenario} from "./scenario.data";
 import {DataService} from "../data/data.service";
 
 describe("app.codeCharta.core.scenarioService", function () {
@@ -22,7 +21,7 @@ describe("app.codeCharta.core.scenarioService", function () {
         dataService = _dataService_;
         $scope = _$rootScope_;
         scenario = {name: "testScenario", settings: settingsService.settings};
-        defaultScenario = createDefaultScenario();
+        defaultScenario = _scenarioService_.getDefaultScenario();
     }));
 
     it("should apply the settings from a given scenario", () => {
