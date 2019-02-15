@@ -344,11 +344,11 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
     public applySettings(settings?: Settings) {
         if (settings) {
             this.updateSettings(settings);
-            this.eventuallyUpdateColorRange(settings);
+            this.potentiallyUpdateColorRange(settings);
             this._settings.margin = this.computeMargin(settings);
 
         } else {
-            this.eventuallyUpdateColorRange();
+            this.potentiallyUpdateColorRange();
             this._settings.margin = this.computeMargin();
             this.numberOfCalls++;
             if (this.numberOfCalls > 4) {
@@ -368,7 +368,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         }
     }
 
-    private eventuallyUpdateColorRange(s: Settings = this.settings) {
+    private potentiallyUpdateColorRange(s: Settings = this.settings) {
         if (this._lastColorMetric != s.colorMetric) {
             this._lastColorMetric = s.colorMetric;
             this._settings.neutralColorRange = this.getAdaptedRange(s);
