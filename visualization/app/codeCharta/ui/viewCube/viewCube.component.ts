@@ -22,7 +22,7 @@ export class ViewCubeController
     private scene: THREE.Scene;
     private WIDTH = 200;
     private HEIGHT = 200;
-    private LENGTH_VIEWCUBE = 0.5;
+    private LENGTH_VIEWCUBE = 1;
 
     private hoverInfo = { cube: null, originalMaterial: null };
 
