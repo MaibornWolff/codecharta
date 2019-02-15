@@ -12,6 +12,7 @@ import {
     ViewCubeEventSubscriber
 } from "./viewCube.mouseEvents.service";
 
+
 export class ViewCubeController
     implements CameraChangeSubscriber, ViewCubeEventSubscriber {
     private lights: THREE.Group;
@@ -21,6 +22,8 @@ export class ViewCubeController
     private scene: THREE.Scene;
     private WIDTH = 200;
     private HEIGHT = 200;
+    private LENGTH_VIEWCUBE = 0.5;
+
     private hoverInfo = { cube: null, originalMaterial: null };
 
     private cubeDefinition = {
@@ -58,9 +61,10 @@ export class ViewCubeController
 
     private initAxesHelper() {
         const axesHelper = new THREE.AxesHelper(1.3);
-        axesHelper.position.x += -0.51;
-        axesHelper.position.y += -0.51;
-        axesHelper.position.z += -0.51;
+        const centerOffset = -(this.LENGTH_VIEWCUBE / 2) + 0.01;
+        axesHelper.position.x += centerOffset;
+        axesHelper.position.y += centerOffset;
+        axesHelper.position.z += centerOffset;
 
         this.scene.add(axesHelper);
     }
