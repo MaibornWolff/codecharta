@@ -9,7 +9,6 @@ import {
     ViewCubeEventPropagationSubscriber,
     ViewCubeMouseEventsService
 } from "../viewCube/viewCube.mouseEvents.service";
-import { ThreeViewerService } from "./threeViewer/threeViewerService";
 
 interface Coordinates {
     x: number;
@@ -46,10 +45,9 @@ export class CodeMapMouseEventService
         private threeRendererService,
         private threeSceneService,
         private threeUpdateCycleService,
-        private threeViewerService: ThreeViewerService,
         private codeMapRenderService: CodeMapRenderService
     ) {
-        threeUpdateCycleService.register(this.update.bind(this));
+        this.threeUpdateCycleService.register(this.update.bind(this));
         MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this);
     }
 

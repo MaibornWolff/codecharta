@@ -40,9 +40,11 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
     }
 
     public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+        // unused
     }
 
     public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+        // unused    
     }
 
 }

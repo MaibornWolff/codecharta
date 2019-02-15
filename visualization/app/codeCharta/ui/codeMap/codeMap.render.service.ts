@@ -51,15 +51,15 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     }
 
     public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
-    
+        // unused
     }
 
     public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
-
+        // unused
     }
 
     public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
-
+        // unused
     }
 
     public onSettingsChanged(settings: Settings, event: Event) {

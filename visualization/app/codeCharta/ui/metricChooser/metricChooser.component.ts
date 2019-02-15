@@ -53,6 +53,7 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
     }
 
     public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent) {
+        // unused
     }
 
     public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
@@ -87,6 +88,7 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
     }
 
     public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+        // unused
     }
 
     private getHoveredDeltaColor() {
