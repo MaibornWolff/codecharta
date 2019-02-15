@@ -3,6 +3,7 @@ import {CodeChartaController} from "./codeCharta.component";
 import {DataService} from "./core/data/data.service";
 import {DialogService} from "./ui/dialog/dialog.service";
 import {SettingsService} from "./core/settings/settings.service";
+import {ScenarioService} from "./core/scenario/scenario.service";
 import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
 import {DataLoadingService} from "./core/data/data.loading.service";
 import {NameDataPair, UrlService} from "./core/url/url.service";
@@ -11,6 +12,7 @@ import {NodeContextMenuController} from "./ui/nodeContextMenu/nodeContextMenu.co
 jest.mock("./core/data/data.service");
 jest.mock("./ui/dialog/dialog.service");
 jest.mock("./core/settings/settings.service");
+jest.mock("./core/scenario/scenario.service");
 jest.mock("./ui/codeMap/threeViewer/threeOrbitControlsService");
 jest.mock("./core/data/data.loading.service");
 jest.mock("./core/url/url.service");
@@ -21,6 +23,7 @@ describe("codecharta component", ()=>{
     let dataLoadingService: DataLoadingService;
     let urlService: UrlService;
     let settingsService: SettingsService;
+    let scenarioService: ScenarioService;
     let dataService: DataService;
     let threeOrbitControlsService: ThreeOrbitControlsService;
     let $rootScope: any;
@@ -38,6 +41,7 @@ describe("codecharta component", ()=>{
         urlService = new UrlService();
         urlService.getFileDataFromQueryParam = jest.fn(() => Promise.resolve({}));
         settingsService = new SettingsService();
+        scenarioService = new ScenarioService();
         dataService = new DataService();
         threeOrbitControlsService = new ThreeOrbitControlsService();
         $rootScope = {
@@ -48,6 +52,7 @@ describe("codecharta component", ()=>{
             dataLoadingService,
             urlService,
             settingsService,
+            scenarioService,
             dataService,
             threeOrbitControlsService,
             $rootScope,
@@ -65,6 +70,19 @@ describe("codecharta component", ()=>{
             dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
             await cc.tryLoadingFiles(singleNameDataPair);
             expect(dataLoadingService.loadMapFromFileContent).toHaveBeenCalledWith("a", expect.anything(), 0);
+        });
+
+        it("should apply scenario ONCE when map is loaded",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
+            await cc.tryLoadingFiles(singleNameDataPair);
+            expect(scenarioService.applyScenarioOnce).toHaveBeenCalled();
+        });
+
+        it("should apply scenario NOT ONCE when map is loaded and flag is set",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
+            await cc.tryLoadingFiles(singleNameDataPair, false);
+            expect(scenarioService.applyScenarioOnce).not.toHaveBeenCalled();
+            expect(scenarioService.applyScenario).toHaveBeenCalled();
         });
 
         it("should update settings by url params when map is loaded",async ()=>{
@@ -109,6 +127,12 @@ describe("codecharta component", ()=>{
             await cc.tryLoadingSampleFiles();
             expect(dataLoadingService.loadMapFromFileContent).toHaveBeenCalledWith("sample1.json", expect.anything(), 0);
             expect(dataLoadingService.loadMapFromFileContent).toHaveBeenCalledWith("sample2.json", expect.anything(), 1);
+        });
+
+        it("should apply scenario when sample maps are loaded",async ()=>{
+            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
+            await cc.tryLoadingSampleFiles();
+            expect(scenarioService.applyScenario).toHaveBeenCalled();
         });
 
         it("should update settings by url params when sample maps are loaded",async ()=>{
@@ -158,7 +182,7 @@ describe("codecharta component", ()=>{
             expect(cc.tryLoadingFiles).toHaveBeenCalledWith([
                 { name: "sample1.json", data: require("./assets/sample1.json") },
                 { name: "sample2.json", data: require("./assets/sample2.json") },
-            ]);
+            ], false);
         });
 
         it("should try setting given data if file in url is valid",async ()=>{

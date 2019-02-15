@@ -1,6 +1,7 @@
 import {DataLoadingService} from "./core/data/data.loading.service";
 import {NameDataPair, UrlService} from "./core/url/url.service";
 import {SettingsService} from "./core/settings/settings.service";
+import {ScenarioService} from "./core/scenario/scenario.service";
 import {DataService} from "./core/data/data.service";
 import {IRootScopeService} from "angular";
 import "./codeCharta.component.scss";
@@ -24,6 +25,7 @@ export class CodeChartaController {
         private dataLoadingService: DataLoadingService,
         private urlService: UrlService,
         private settingsService: SettingsService,
+        private scenarioService: ScenarioService,
         private dataService: DataService,
         private threeOrbitControlsService: ThreeOrbitControlsService,
         private $rootScope: IRootScopeService,
@@ -71,7 +73,7 @@ export class CodeChartaController {
         );
     }
 
-    tryLoadingFiles(nameDataPairs: NameDataPair[]) {
+    tryLoadingFiles(nameDataPairs: NameDataPair[], applyScenarioOnce = true) {
 
         let tasks = [];
 
@@ -83,6 +85,11 @@ export class CodeChartaController {
 
         return Promise.all(tasks).then(
             () => {
+                if(applyScenarioOnce) {
+                    this.scenarioService.applyScenarioOnce(this.scenarioService.getDefaultScenario());
+                } else {
+                    this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
+                }
                 this.dataService.setComparisonMap(0);
                 this.dataService.setReferenceMap(0);
                 this.settingsService.updateSettingsFromUrl();
@@ -103,7 +110,7 @@ export class CodeChartaController {
         return this.tryLoadingFiles([
             { name: "sample1.json", data: require("./assets/sample1.json") },
             { name: "sample2.json", data: require("./assets/sample2.json") },
-        ]);
+        ], false);
 
     }
 
