@@ -5,6 +5,11 @@ import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {CodeMapBuilding} from "./rendering/codeMapBuilding";
 import {CodeMapRenderService} from "./codeMap.render.service";
 import $ from "jquery";
+import {
+    ViewCubeEventPropagationSubscriber,
+    ViewCubeMouseEventsService
+} from "../viewCube/viewCube.mouseEvents.service";
+import { ThreeViewerService } from "./threeViewer/threeViewerService";
 
 interface Coordinates {
     x: number;
@@ -22,47 +27,93 @@ export interface CodeMapMouseEventServiceSubscriber {
     onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent);
 }
 
-export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber {
-
+export class CodeMapMouseEventService
+    implements
+        MapTreeViewHoverEventSubscriber,
+        ViewCubeEventPropagationSubscriber {
     public static SELECTOR = "codeMapMouseEventService";
 
     private hovered = null;
     private selected = null;
-    private mouse: Coordinates = {x: 0, y: 0};
+    private mouse: Coordinates = { x: 0, y: 0 };
     private dragOrClickFlag = 0;
 
     /* @ngInject */
-    constructor(private $rootScope: IRootScopeService,
-                private $window,
-                private threeCameraService: ThreeCameraService,
-                private threeRendererService,
-                private threeSceneService,
-                private threeUpdateCycleService,
-                private codeMapRenderService: CodeMapRenderService) {
-        this.threeUpdateCycleService.register(this.update.bind(this));
+    constructor(
+        private $rootScope: IRootScopeService,
+        private $window,
+        private threeCameraService: ThreeCameraService,
+        private threeRendererService,
+        private threeSceneService,
+        private threeUpdateCycleService,
+        private threeViewerService: ThreeViewerService,
+        private codeMapRenderService: CodeMapRenderService
+    ) {
+        threeUpdateCycleService.register(this.update.bind(this));
         MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this);
     }
 
     public start() {
-        this.threeRendererService.renderer.domElement.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
-        this.threeRendererService.renderer.domElement.addEventListener("mouseup", this.onDocumentMouseUp.bind(this), false);
-        this.threeRendererService.renderer.domElement.addEventListener("mousedown", this.onDocumentMouseDown.bind(this), false);
-        this.threeRendererService.renderer.domElement.addEventListener("dblclick", this.onDocumentDoubleClick.bind(this), false);
+        this.threeRendererService.renderer.domElement.addEventListener(
+            "mousemove",
+            this.onDocumentMouseMove.bind(this),
+            false
+        );
+        this.threeRendererService.renderer.domElement.addEventListener(
+            "mouseup",
+            this.onDocumentMouseUp.bind(this),
+            false
+        );
+        this.threeRendererService.renderer.domElement.addEventListener(
+            "mousedown",
+            this.onDocumentMouseDown.bind(this),
+            false
+        );
+        this.threeRendererService.renderer.domElement.addEventListener(
+            "dblclick",
+            this.onDocumentDoubleClick.bind(this),
+            false
+        );
+        ViewCubeMouseEventsService.subscribeToEventPropagation(
+            this.$rootScope,
+            this
+        );
+    }
+
+    public onViewCubeEventPropagation(eventType: string, event: MouseEvent) {
+        switch (eventType) {
+            case "mousemove":
+                this.onDocumentMouseMove(event);
+                break;
+            case "mouseup":
+                this.onDocumentMouseUp();
+                break;
+            case "mousedown":
+                this.onDocumentMouseDown(event);
+                break;
+            case "dblclick":
+                this.onDocumentDoubleClick(event);
+                break;
+        }
     }
 
     public update() {
         this.threeCameraService.camera.updateMatrixWorld(false);
 
         if (this.threeSceneService.getMapMesh() != null) {
-            let intersectionResult = this.threeSceneService.getMapMesh().checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera);
+            let intersectionResult = this.threeSceneService
+                .getMapMesh()
+                .checkMouseRayMeshIntersection(
+                    this.mouse,
+                    this.threeCameraService.camera
+                );
 
             let from = this.hovered;
             let to = null;
 
             if (intersectionResult.intersectionFound == true) {
                 to = intersectionResult.building;
-            }
-            else {
+            } else {
                 to = null;
             }
 
@@ -83,7 +134,6 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
     public onDocumentMouseUp() {
 
         if (this.dragOrClickFlag === 0) {
-
             let from = this.selected;
 
             if (this.hovered) {
@@ -95,11 +145,9 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
                 this.selected = null;
                 this.onBuildingSelected(from, null);
             }
-
         } else if (this.dragOrClickFlag === 1) {
             //drag
         }
-
     }
 
     public onDocumentMouseDown(event) {
@@ -147,12 +195,11 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
             }
         }
 
-        this.$rootScope.$broadcast("building-hovered", {to: to, from: from});
+        this.$rootScope.$broadcast("building-hovered", { to: to, from: from });
 
         if (to !== null) {
             this.threeSceneService.getMapMesh().setHighlighted([to]);
-        }
-        else {
+        } else {
             this.threeSceneService.getMapMesh().clearHighlight();
         }
     }
@@ -162,8 +209,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
         if (to !== null) {
             this.threeSceneService.getMapMesh().setSelected([to]);
-        }
-        else {
+        } else {
             this.threeSceneService.getMapMesh().clearSelected();
         }
     }

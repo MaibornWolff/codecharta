@@ -1,138 +1,132 @@
 @import "../mixins.scss";
 
 code-charta-component {
+    $animationDuration: 0.5;
 
-  $animationDuration: 0.5;
+    #mw-logo {
+        .logo {
+            width: 160px;
+            height: 100px;
+            position: absolute;
+            left: 0;
+            bottom: 30px;
+            z-index: 29;
+        }
 
-  #mw-logo{
-    .logo {
+        a,
+        img {
+            width: 5em;
+            display: block;
+            margin: auto !important;
+        }
 
-      width: 160px;
-      height: 100px;
-      position: absolute;
-      left: 0;
-      bottom: 30px;
-      z-index: 29;
+        h2 {
+            text-transform: uppercase;
+            color: #5a585a;
+            font-family: Roboto, sans-serif;
+            font-weight: 500;
+            font-size: 9pt;
+            text-align: center;
+            margin: 0;
+            z-index: -1;
+        }
     }
 
-    a, img {
-      width: 5em;
-      display: block;
-      margin: auto !important;
+    #title {
+        position: fixed;
+        z-index: 2;
+        width: 100%;
     }
 
-    h2 {
-      text-transform: uppercase;
-      color: #5A585A;
-      font-family: Roboto, sans-serif;
-      font-weight: 500;
-      font-size: 9pt;
-      text-align: center;
-      margin: 0;
-      z-index: -1;
-    }
-  }
-
-  .small-info {
-    color: rgba(0,0,0,0.38);
-    font-size: 9pt;
-  }
-
-  #title {
-    position: fixed;
-    z-index: 2;
-    width: 100%;
-  }
-
-  ribbon-bar-component {
-    position: fixed;
-    z-index: 10;
-    width: 100%;
-  }
-
-  #codeMap {
-    position: fixed;
-    z-index: 0;
-    top: 46px;
-    left: 0;
-    width: 100%;
-    height: 100%;
-
-    &.expanded {
-      top: 195px;
-      height: calc(100% - 170px);
-    }
-  }
-
-  #actionButtons {
-    position: fixed;
-    bottom: 2em;
-    right: 2em;
-    z-index: 60;
-
-    i.fa-folder-open {
-      margin: 4px 0 0 2px;
+    .small-info {
+        color: rgba(0, 0, 0, 0.38);
+        font-size: 9pt;
     }
 
-    .long-button {
-      width: inherit;
-      padding-left: 10px;
-      padding-right: 10px;
-      border-radius: 100px;
+    #codeMap {
+        position: fixed;
+        z-index: 0;
+        top: 46px;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transition: all $animationDuration + s ease;
+
+        &.expanded {
+            top: 195px;
+            height: calc(100% - 170px);
+        }
     }
 
-    > * {
-       margin-left: 4px;
-       margin-right: 4px;
-       z-index: 60;
+    #actionButtons {
+        position: fixed;
+        bottom: 2em;
+        right: 2em;
+        z-index: 60;
+
+        i.fa-folder-open {
+            margin: 4px 0 0 2px;
+        }
+
+        .long-button {
+            width: inherit;
+            padding-left: 10px;
+            padding-right: 10px;
+            border-radius: 100px;
+        }
+
+        > * {
+            margin-left: 4px;
+            margin-right: 4px;
+            z-index: 60;
+        }
     }
-  }
 
-  .md-button.round-button {
-    margin-right: 0 !important;
-    float: right;
-    min-width: 36px;
-    width: 36px;
-    border-radius: 50%;
-  }
+    #loading-indicator {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2000;
+        background-color: rgba(255, 255, 255, 0.8);
+        display: block;
+        text-align: center;
 
-  #loading-indicator {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2000;
-    background-color: rgba(255, 255, 255, 0.8);
-    display: block;
-    text-align: center;
-
-    md-progress-circular {
-      display: block;
-      margin: 0 auto;
-      margin-top: 22%;
+        md-progress-circular {
+            display: block;
+            margin: 0 auto;
+            margin-top: 22%;
+        }
     }
-  }
 
-  .dark_shadow_opacity {
-    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2) !important;
-    opacity: 0.97;
-  }
-
-  #codeMap {
-    transition: all $animationDuration + s ease;
-  }
-
-  ribbon-bar-component {
-    #header,
-    #header .section .section-header,
-    #header .section .section-body,
-    #toggle-ribbon-bar-fab {
-      transition: all $animationDuration + s ease;
+    .dark_shadow_opacity {
+        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2) !important;
+        opacity: 0.97;
     }
-  }
 
-  .angular-green {
-    color: #00bfa5;
-  }
+    .md-button.round-button {
+        margin-right: 0 !important;
+        float: right;
+        min-width: 36px;
+        width: 36px;
+        border-radius: 50%;
+    }
+
+    ribbon-bar-component {
+        position: fixed;
+        z-index: 10;
+        width: 100%;
+
+        #header,
+        #header .section .section-header,
+        #header .section .section-body,
+        #toggle-ribbon-bar-fab {
+            transition: all $animationDuration + s ease;
+        }
+    }
+
+    .angular-green {
+        color: #00bfa5;
+    }
 }

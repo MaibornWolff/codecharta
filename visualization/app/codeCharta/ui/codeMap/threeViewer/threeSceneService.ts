@@ -1,13 +1,12 @@
 import * as THREE from "three";
-import {Scene} from "three";
-import {Group} from "three";
-import {CodeMapMesh} from "../rendering/codeMapMesh";
+import { Scene } from "three";
+import { Group } from "three";
+import { CodeMapMesh } from "../rendering/codeMapMesh";
 
 /**
  * A service which manages the Three.js scene in an angular way.
  */
 class ThreeSceneService {
-
     public static SELECTOR = "threeSceneService";
 
     public scene: Scene;
@@ -18,7 +17,6 @@ class ThreeSceneService {
     private mapMesh: CodeMapMesh;
 
     constructor() {
-
         this.scene = new THREE.Scene();
 
         this.mapGeometry = new THREE.Group();
@@ -29,10 +27,9 @@ class ThreeSceneService {
         this.initLights();
 
         this.scene.add(this.mapGeometry);
-        this.scene.add(this.lights);
         this.scene.add(this.edgeArrows);
         this.scene.add(this.labels);
-
+        this.scene.add(this.lights);
     }
 
     public initLights() {
@@ -66,16 +63,14 @@ class ThreeSceneService {
         this.mapMesh = mesh;
 
         while (this.mapGeometry.children.length > 0) {
-            this.mapGeometry.remove(
-                this.mapGeometry.children[0]
-            );
+            this.mapGeometry.remove(this.mapGeometry.children[0]);
         }
-
-        this.mapGeometry.add(this.mapMesh.getThreeMesh());
 
         this.mapGeometry.position.x = -size / 2.0;
         this.mapGeometry.position.y = 0.0;
         this.mapGeometry.position.z = -size / 2.0;
+
+        this.mapGeometry.add(this.mapMesh.getThreeMesh());
     }
 
     public getMapMesh(): CodeMapMesh {
@@ -83,5 +78,4 @@ class ThreeSceneService {
     }
 }
 
-export {ThreeSceneService};
-
+export { ThreeSceneService };

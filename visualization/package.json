@@ -71,8 +71,12 @@
     "package": "rimraf dist/packages && build --concurrent --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --mirror https://dl.nwjs.io/ . && bestzip ./dist/packages/codecharta-visualization-$npm_package_version-web.zip ./dist/webpack",
     "prepare": "npm run build",
     "g": "plop",
+<<<<<<< HEAD
     "lint": "tslint -c \"tslint.json\" \"app/**/*.ts\" --project tsconfig.json",
     "lint:fix": "tslint -c \"tslint.json\" \"app/**/*.ts\" --fix --project tsconfig.json"
+=======
+    "format": "prettier --write \"./app/**/*.ts\""
+>>>>>>> origin/master
   },
   "bin": {
     "codecharta-visualization": "cli.js"
@@ -180,6 +184,7 @@
     "node-sass": "^4.11.0",
     "path": "^0.12.7",
     "plop": "^2.1.0",
+    "prettier": "^1.16.4",
     "puppeteer": "^1.6.0",
     "resolve-url-loader": "^2.3.0",
     "rimraf": "^2.6.2",
