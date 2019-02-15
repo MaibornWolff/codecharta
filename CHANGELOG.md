@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Color positive buildings white and set as default option #311
 -   Clicking the ribbonBar section-titles toggles the ribbonBar #324
 -   View-Cube displayed in top right corner #274
+-   Adding prettier formatter
 
 ### Changed
 
