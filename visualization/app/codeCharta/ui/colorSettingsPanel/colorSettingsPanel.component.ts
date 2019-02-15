@@ -4,13 +4,11 @@ import "./colorSettingsPanel.component.scss";
 export class ColorSettingsPanelController {
 
     private _deltaMode = KindOfMap.Delta;
-    private _settingsService: SettingsService;
 
     /* @ngInject */
     constructor(
-        settingsService: SettingsService
+        _settingsService_: SettingsService
     ) {
-        this._settingsService = settingsService;
     }
 
 }
