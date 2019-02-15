@@ -6,6 +6,12 @@ with the additional ones */
 
 /*jshint loopfunc:true */
 
+import {SettingsService} from "../../core/settings/settings.service";
+import {DialogService} from "../dialog/dialog.service";
+import {DataService} from "../../core/data/data.service";
+import {ScenarioService} from "../../core/scenario/scenario.service";
+import {DataLoadingService} from "../../core/data/data.loading.service";
+
 /**
  * Controls the FileChooser
  */
@@ -13,18 +19,14 @@ class FileChooserController {
 
     /* @ngInject */
 
-    /**
-     * @constructor
-     * @param {Scope} $scope
-     * @param {DataLoadingService} dataLoadingService
-     */
     constructor(
         private $scope,
-        private dataLoadingService,
-        private scenarioService,
-        private dataService,
+        private dataLoadingService: DataLoadingService,
+        private scenarioService: ScenarioService,
+        private dataService: DataService,
         private $rootScope,
-        private dialogService
+        private dialogService: DialogService,
+        private settingsService: SettingsService,
     ){
     }
 
@@ -90,6 +92,7 @@ class FileChooserController {
                 ctx.scenarioService.applyScenarioOnce(this.scenarioService.getDefaultScenario());
                 ctx.dataService.setComparisonMap(revision);
                 ctx.dataService.setReferenceMap(revision);
+                ctx.settingsService.applySettings();
 
                 if(!ctx.$scope.$$phase || !ctx.$scope.$root.$$phase) {
                     ctx.$scope.$digest();
