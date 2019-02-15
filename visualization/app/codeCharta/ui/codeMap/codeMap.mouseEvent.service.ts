@@ -1,11 +1,18 @@
-import {MapTreeViewHoverEventSubscriber, MapTreeViewLevelController} from "../mapTreeView/mapTreeView.level.component";
-import {ThreeCameraService} from "./threeViewer/threeCameraService";
-import {ThreeViewerService} from "./threeViewer/threeViewerService";
-import {IAngularEvent, IRootScopeService} from "angular";
-import {CodeMapNode} from "../../core/data/model/CodeMap";
-import {codeMapBuilding} from "./rendering/codeMapBuilding";
-import {CodeMapRenderService} from "./codeMap.render.service";
+import {
+    MapTreeViewHoverEventSubscriber,
+    MapTreeViewLevelController
+} from "../mapTreeView/mapTreeView.level.component";
+import { ThreeCameraService } from "./threeViewer/threeCameraService";
+import { ThreeViewerService } from "./threeViewer/threeViewerService";
+import { IAngularEvent, IRootScopeService } from "angular";
+import { CodeMapNode } from "../../core/data/model/CodeMap";
+import { codeMapBuilding } from "./rendering/codeMapBuilding";
+import { CodeMapRenderService } from "./codeMap.render.service";
 import $ from "jquery";
+import {
+    ViewCubeEventPropagationSubscriber,
+    ViewCubeMouseEventsService
+} from "../viewCube/viewCube.mouseEvents.service";
 
 interface Coordinates {
     x: number;
@@ -20,67 +27,124 @@ export interface CodeMapBuildingTransition {
 export interface CodeMapMouseEventServiceSubscriber {
     onBuildingHovered(data: CodeMapBuildingTransition, event: IAngularEvent);
     onBuildingSelected(data: CodeMapBuildingTransition, event: IAngularEvent);
-    onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: IAngularEvent);
+    onBuildingRightClicked(
+        building: codeMapBuilding,
+        x: number,
+        y: number,
+        event: IAngularEvent
+    );
 }
 
-export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber {
-
+export class CodeMapMouseEventService
+    implements
+        MapTreeViewHoverEventSubscriber,
+        ViewCubeEventPropagationSubscriber {
     public static SELECTOR = "codeMapMouseEventService";
 
     private hovered = null;
     private selected = null;
-    private mouse: Coordinates = {x: 0, y: 0};
+    private mouse: Coordinates = { x: 0, y: 0 };
     private dragOrClickFlag = 0;
 
     /* @ngInject */
-    constructor(private $rootScope: IRootScopeService,
-                private $window,
-                private threeCameraService: ThreeCameraService,
-                private threeRendererService,
-                private threeSceneService,
-                private threeUpdateCycleService,
-                private threeViewerService: ThreeViewerService,
-                private codeMapRenderService: CodeMapRenderService) {
+    constructor(
+        private $rootScope: IRootScopeService,
+        private $window,
+        private threeCameraService: ThreeCameraService,
+        private threeRendererService,
+        private threeSceneService,
+        private threeUpdateCycleService,
+        private threeViewerService: ThreeViewerService,
+        private codeMapRenderService: CodeMapRenderService
+    ) {
         threeUpdateCycleService.register(this.update.bind(this));
         MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this);
     }
 
-    static subscribe($rootScope: IRootScopeService, subscriber: CodeMapMouseEventServiceSubscriber) {
+    static subscribe(
+        $rootScope: IRootScopeService,
+        subscriber: CodeMapMouseEventServiceSubscriber
+    ) {
+        $rootScope.$on(
+            "building-hovered",
+            (e, data: CodeMapBuildingTransition) => {
+                subscriber.onBuildingHovered(data, e);
+            }
+        );
 
-        $rootScope.$on("building-hovered", (e, data: CodeMapBuildingTransition) => {
-            subscriber.onBuildingHovered(data, e);
-        });
-
-        $rootScope.$on("building-selected", (e, data: CodeMapBuildingTransition) => {
-            subscriber.onBuildingSelected(data, e);
-        });
+        $rootScope.$on(
+            "building-selected",
+            (e, data: CodeMapBuildingTransition) => {
+                subscriber.onBuildingSelected(data, e);
+            }
+        );
 
         $rootScope.$on("building-right-clicked", (e, data) => {
             subscriber.onBuildingRightClicked(data.building, data.x, data.y, e);
         });
-
     }
 
     start() {
-        this.threeRendererService.renderer.domElement.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
-        this.threeRendererService.renderer.domElement.addEventListener("mouseup", this.onDocumentMouseUp.bind(this), false);
-        this.threeRendererService.renderer.domElement.addEventListener("mousedown", this.onDocumentMouseDown.bind(this), false);
-        this.threeRendererService.renderer.domElement.addEventListener("dblclick", this.onDocumentDoubleClick.bind(this), false);
+        this.threeRendererService.renderer.domElement.addEventListener(
+            "mousemove",
+            this.onDocumentMouseMove.bind(this),
+            false
+        );
+        this.threeRendererService.renderer.domElement.addEventListener(
+            "mouseup",
+            this.onDocumentMouseUp.bind(this),
+            false
+        );
+        this.threeRendererService.renderer.domElement.addEventListener(
+            "mousedown",
+            this.onDocumentMouseDown.bind(this),
+            false
+        );
+        this.threeRendererService.renderer.domElement.addEventListener(
+            "dblclick",
+            this.onDocumentDoubleClick.bind(this),
+            false
+        );
+        ViewCubeMouseEventsService.subscribeToEventPropagation(
+            this.$rootScope,
+            this
+        );
+    }
+
+    onViewCubeEventPropagation(eventType: string, event: MouseEvent) {
+        switch (eventType) {
+            case "mousemove":
+                this.onDocumentMouseMove(event);
+                break;
+            case "mouseup":
+                this.onDocumentMouseUp();
+                break;
+            case "mousedown":
+                this.onDocumentMouseDown(event);
+                break;
+            case "dblclick":
+                this.onDocumentDoubleClick(event);
+                break;
+        }
     }
 
     update() {
         this.threeCameraService.camera.updateMatrixWorld(false);
 
         if (this.threeSceneService.getMapMesh() != null) {
-            let intersectionResult = this.threeSceneService.getMapMesh().checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera);
+            let intersectionResult = this.threeSceneService
+                .getMapMesh()
+                .checkMouseRayMeshIntersection(
+                    this.mouse,
+                    this.threeCameraService.camera
+                );
 
             let from = this.hovered;
             let to = null;
 
             if (intersectionResult.intersectionFound == true) {
                 to = intersectionResult.building;
-            }
-            else {
+            } else {
                 to = null;
             }
 
@@ -92,16 +156,26 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
     }
 
     onDocumentMouseMove(event) {
-        const topOffset = $(this.threeRendererService.renderer.domElement).offset().top - $(window).scrollTop();
-        this.mouse.x = ( event.clientX / this.threeRendererService.renderer.domElement.width ) * 2 - 1;
-        this.mouse.y = -( (event.clientY - topOffset) / this.threeRendererService.renderer.domElement.height ) * 2 + 1;
+        const topOffset =
+            $(this.threeRendererService.renderer.domElement).offset().top -
+            $(window).scrollTop();
+        this.mouse.x =
+            (event.clientX /
+                this.threeRendererService.renderer.domElement.width) *
+                2 -
+            1;
+        this.mouse.y =
+            -(
+                (event.clientY - topOffset) /
+                this.threeRendererService.renderer.domElement.height
+            ) *
+                2 +
+            1;
         this.dragOrClickFlag = 1;
     }
 
     onDocumentMouseUp() {
-
         if (this.dragOrClickFlag === 0) {
-
             let from = this.selected;
 
             if (this.hovered) {
@@ -113,11 +187,9 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
                 this.selected = null;
                 this.onBuildingSelected(from, null);
             }
-
         } else if (this.dragOrClickFlag === 1) {
             //drag
         }
-
     }
 
     onDocumentMouseDown(event) {
@@ -165,30 +237,29 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
             }
         }
 
-        this.$rootScope.$broadcast("building-hovered", {to: to, from: from});
+        this.$rootScope.$broadcast("building-hovered", { to: to, from: from });
 
         if (to !== null) {
             this.threeSceneService.getMapMesh().setHighlighted([to]);
-        }
-        else {
+        } else {
             this.threeSceneService.getMapMesh().clearHighlight();
         }
     }
 
     onBuildingSelected(from: codeMapBuilding, to: codeMapBuilding) {
-        this.$rootScope.$broadcast("building-selected", {to: to, from: from});
+        this.$rootScope.$broadcast("building-selected", { to: to, from: from });
 
         if (to !== null) {
             this.threeSceneService.getMapMesh().setSelected([to]);
-        }
-        else {
+        } else {
             this.threeSceneService.getMapMesh().clearSelected();
         }
     }
 
     onShouldHoverNode(node: CodeMapNode) {
-        let buildings: codeMapBuilding[] = this.codeMapRenderService.mapMesh.getMeshDescription().buildings;
-        buildings.forEach((building) => {
+        let buildings: codeMapBuilding[] = this.codeMapRenderService.mapMesh.getMeshDescription()
+            .buildings;
+        buildings.forEach(building => {
             if (building.node.path === node.path) {
                 this.onBuildingHovered(this.hovered, building);
             }
@@ -198,5 +269,4 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
     onShouldUnhoverNode(node: CodeMapNode) {
         this.onBuildingHovered(this.hovered, null);
     }
-
 }
