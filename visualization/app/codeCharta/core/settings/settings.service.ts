@@ -342,9 +342,9 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      */
     public applySettings(settings?: Settings) {
         if (settings) {
-            this.updateSettings(settings);
             this.potentiallyUpdateColorRange(settings);
             this._settings.margin = this.computeMargin(settings);
+            this.updateSettings(settings);
 
         } else {
             this.potentiallyUpdateColorRange();
