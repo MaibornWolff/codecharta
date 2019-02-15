@@ -110,7 +110,7 @@ export class ViewCubeController
 
     private startAnimation() {
         const animate = () => {
-            requestAnimationFrame(animate.bind(this));
+            requestAnimationFrame(animate);
             this.onAnimationFrame();
         };
         animate();
