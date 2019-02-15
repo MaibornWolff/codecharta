@@ -25,7 +25,6 @@ export class ViewCubeMouseEventsService {
     private renderer: THREE.WebGLRenderer;
     private currentlyHovered: THREE.Mesh | null = null;
 
-    //TODO Warum nicht init in constructor
     constructor(private $rootScope: IRootScopeService) {}
 
     public init(
