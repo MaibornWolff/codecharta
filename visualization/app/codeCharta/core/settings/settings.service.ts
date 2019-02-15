@@ -115,7 +115,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             amountOfTopLabels: 1,
             scaling: scaling,
             camera: camera,
-            margin: null,
+            margin: SettingsService.MIN_MARGIN,
             deltaColorFlipped: false,
             enableEdgeArrows: true,
             hideFlatBuildings: true,
@@ -266,7 +266,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      * by the number of buildings)
      */
     public computeMargin(s: Settings = this.settings): number {
-        let margin: number;
         if (s.map !== null && s.dynamicMargin) {
             let leaves = hierarchy<CodeMapNode>(s.map.nodes).leaves();
             let numberOfBuildings = 0;
@@ -279,10 +278,10 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
                 }
             });
 
-            margin = SettingsService.MARGIN_FACTOR * Math.round(Math.sqrt((totalArea / numberOfBuildings)));
+            let margin: number = SettingsService.MARGIN_FACTOR * Math.round(Math.sqrt((totalArea / numberOfBuildings)));
             return Math.min(SettingsService.MAX_MARGIN, Math.max(SettingsService.MIN_MARGIN, margin));
         } else {
-            return this.settings ? this.settings.margin : SettingsService.MIN_MARGIN;
+            return s.margin;
         }
     }
 

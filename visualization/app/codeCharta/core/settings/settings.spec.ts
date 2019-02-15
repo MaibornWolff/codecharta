@@ -92,35 +92,35 @@ describe("app.codeCharta.core.settings", function() {
 
         it("compute margin should compute correct margins for this map", () => {
             setMockValues("rloc", true);
-            expect(settingsService.computeMargin(settingsService.settings)).toBe(32);
+            expect(settingsService.computeMargin()).toBe(32);
 
             setMockValues("mcc", true);
-            expect(settingsService.computeMargin(settingsService.settings)).toBe(24);
+            expect(settingsService.computeMargin()).toBe(24);
 
             setMockValues("functions", true);
-            expect(settingsService.computeMargin(settingsService.settings)).toBe(76);
+            expect(settingsService.computeMargin()).toBe(76);
         });
 
         it("compute margin should compute correct margins for this map if dynamicMargin is off", () => {
             settingsService.settings.margin = 2;
             setMockValues("rloc", false);
-            expect(settingsService.computeMargin(settingsService.settings)).toBe(2);
+            expect(settingsService.computeMargin()).toBe(2);
 
             setMockValues("mcc", false);
-            expect(settingsService.computeMargin(settingsService.settings)).toBe(2);
+            expect(settingsService.computeMargin()).toBe(2);
 
             setMockValues("functions", false);
-            expect(settingsService.computeMargin(settingsService.settings)).toBe(2);
+            expect(settingsService.computeMargin()).toBe(2);
         });
 
         it("compute margin should return default margin if metric does not exist", () => {
             setMockValues("nonExistant", true);
-            expect(settingsService.computeMargin(settingsService.settings)).toBe(SettingsService.MIN_MARGIN);
+            expect(settingsService.computeMargin()).toBe(SettingsService.MIN_MARGIN);
         });
 
         it("compute margin should return 100 as margin if computed margin bigger als 100 is", () => {
             setMockValues("extremeMetric", true);
-            expect(settingsService.computeMargin(settingsService.settings)).toBe(100);
+            expect(settingsService.computeMargin()).toBe(100);
         });
     });
 
