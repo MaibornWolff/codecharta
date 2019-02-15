@@ -172,11 +172,11 @@ export class ViewCubemeshGenerator {
             cubeFaceGeometry,
             cubeEdgeGeometry
         );
-        const blueFaceCenterTop = new THREE.Mesh(
+        const faceCenterTop = new THREE.Mesh(
             cubeFaceGeometry,
             getBaseMaterialFace()
         );
-        const blueFaceCenterBottom = new THREE.Mesh(
+        const faceCenterBottom = new THREE.Mesh(
             cubeFaceGeometry,
             getBaseMaterialFace()
         );
@@ -189,25 +189,25 @@ export class ViewCubemeshGenerator {
         middleFaceRight.position.x += offset;
         middleFaceRight.rotation.x = Math.PI / 2;
         middleFaceRight.rotation.y = Math.PI / 2;
-        blueFaceCenterBottom.position.y -= offset;
-        blueFaceCenterBottom.rotation.x = Math.PI / 2;
-        blueFaceCenterTop.position.y += offset;
-        blueFaceCenterTop.rotation.x = Math.PI / 2;
+        faceCenterBottom.position.y -= offset;
+        faceCenterBottom.rotation.x = Math.PI / 2;
+        faceCenterTop.position.y += offset;
+        faceCenterTop.rotation.x = Math.PI / 2;
         const group = new THREE.Group();
         group.add(middleFaceLeft);
         group.add(middleFaceRight);
-        group.add(blueFaceCenterBottom);
-        group.add(blueFaceCenterTop);
+        group.add(faceCenterBottom);
+        group.add(faceCenterTop);
 
         return {
             group,
             topLeftMiddle: topLeftMiddle,
-            topMiddleMiddle: blueFaceCenterTop,
+            topMiddleMiddle: faceCenterTop,
             topRightMiddle: topRightMiddle,
             middleLeftMiddle: middleLeftMiddle,
             middleRightMiddle: middleRightMiddle,
             bottomLeftMiddle: bottomLeftMiddle,
-            bottomMiddleMiddle: blueFaceCenterBottom,
+            bottomMiddleMiddle: faceCenterBottom,
             bottomRightMiddle: bottomRightMiddle
         };
     }
@@ -272,33 +272,33 @@ export class ViewCubemeshGenerator {
         cubeFaceGeometry: THREE.BoxGeometry,
         cubeEdgeGeometry: THREE.BoxGeometry
     ) {
-        const blueFaceCenter = new THREE.Mesh(
+        const faceCenter = new THREE.Mesh(
             cubeFaceGeometry,
             getBaseMaterialFace()
         );
-        const greenEdgeLeft = new THREE.Mesh(
+        const edgeLeft = new THREE.Mesh(
             cubeEdgeGeometry,
             getBaseMaterialEdge()
         );
-        const greenEdgeRight = new THREE.Mesh(
+        const edgeRight = new THREE.Mesh(
             cubeEdgeGeometry,
             getBaseMaterialEdge()
         );
         const offset =
             cubeFaceGeometry.parameters.height / 2 +
             cubeEdgeGeometry.parameters.height / 2;
-        greenEdgeLeft.position.y -= offset;
-        greenEdgeRight.position.y += offset;
+        edgeLeft.position.y -= offset;
+        edgeRight.position.y += offset;
         const group = new THREE.Group();
         group.rotation.z = Math.PI / 2;
-        group.add(blueFaceCenter);
-        group.add(greenEdgeLeft);
-        group.add(greenEdgeRight);
+        group.add(faceCenter);
+        group.add(edgeLeft);
+        group.add(edgeRight);
         return {
             group,
-            left: greenEdgeLeft,
-            right: greenEdgeRight,
-            center: blueFaceCenter
+            left: edgeLeft,
+            right: edgeRight,
+            center: faceCenter
         };
     }
 
@@ -306,32 +306,32 @@ export class ViewCubemeshGenerator {
         cubeEdgeGeometry: THREE.BoxGeometry,
         cubeVerticeGeometry: THREE.BoxGeometry
     ) {
-        const greenEdgeCenter = new THREE.Mesh(
+        const edgeCenter = new THREE.Mesh(
             cubeEdgeGeometry,
             getBaseMaterialEdge()
         );
-        const redVerticeLeft = new THREE.Mesh(
+        const verticeLeft = new THREE.Mesh(
             cubeVerticeGeometry,
             getBaseMaterialVertices()
         );
-        const redVerticeRight = new THREE.Mesh(
+        const verticeRight = new THREE.Mesh(
             cubeVerticeGeometry,
             getBaseMaterialVertices()
         );
         const offset =
             cubeEdgeGeometry.parameters.width / 2 +
             cubeVerticeGeometry.parameters.width / 2;
-        redVerticeLeft.position.x -= offset;
-        redVerticeRight.position.x += offset;
+        verticeLeft.position.x -= offset;
+        verticeRight.position.x += offset;
         const group = new THREE.Group();
-        group.add(greenEdgeCenter);
-        group.add(redVerticeLeft);
-        group.add(redVerticeRight);
+        group.add(edgeCenter);
+        group.add(verticeLeft);
+        group.add(verticeRight);
         return {
             group,
-            left: redVerticeLeft,
-            right: redVerticeRight,
-            center: greenEdgeCenter
+            left: verticeLeft,
+            right: verticeRight,
+            center: edgeCenter
         };
     }
 }
