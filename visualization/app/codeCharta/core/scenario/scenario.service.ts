@@ -1,6 +1,5 @@
 "use strict";
 import {Settings, SettingsService} from "../settings/settings.service";
-import {createDefaultScenario} from "./scenario.data";
 import {ThreeOrbitControlsService} from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 
 export interface Scenario {
@@ -22,20 +21,6 @@ export class ScenarioService {
                 private dataService,
                 private threeOrbitControlsService:ThreeOrbitControlsService) {
         this.scenarios = require("./scenarios.json");
-    }
-
-    /**
-     * Applies a given scenario to the current codecharta session only once.
-     * This method remembers how often it was called and applies the scenario only once in session.
-     * This method is mainly called by file loading operation in order to keep already changed settings
-     * when a new file is loaded.
-     * @param {Scenario} scenario
-     */
-    public applyScenarioOnce(scenario: Scenario) {
-        if(!this.calledOnce) {
-            this.applyScenario(scenario);
-            this.calledOnce = true;
-        }
     }
 
     public applyScenario(scenario: Scenario) {
@@ -61,9 +46,4 @@ export class ScenarioService {
         metrics.filter(x => x === scenario.settings.heightMetric).length > 0 &&
         metrics.filter(x => x === scenario.settings.colorMetric).length > 0);
     }
-
-    public getDefaultScenario(): Scenario {
-        return createDefaultScenario();
-    }
-
 }

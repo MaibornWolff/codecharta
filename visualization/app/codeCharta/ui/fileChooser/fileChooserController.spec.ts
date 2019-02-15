@@ -40,7 +40,6 @@ describe("file chooser controller", ()=>{
         settingsService = new SettingsService();
         dataService = new DataService();
         scenarioService = new ScenarioService(settingsService, dataService, threeOrbitControlsService);
-        scenarioService.getDefaultScenario = jest.fn();
         scenarioService.applyScenario = jest.fn();
         dialogService = new DialogService();
 
@@ -73,15 +72,6 @@ describe("file chooser controller", ()=>{
     });
 
     describe("#onNewFileLoaded",()=>{
-
-        it("should call apply settings only once",async ()=>{
-            const element = {value: [blob, blob]};
-            dataLoadingService.loadMapFromFileContent = jest.fn(()=>Promise.resolve());
-            await fcc.onNewFileLoaded('{ "name":"John", "age":30, "city":"New York"}', 0, "someFile.json", element);
-            await fcc.onNewFileLoaded('{ "name":"John", "age":30, "city":"New York"}', 1, "someOtherFile.json", element);
-            await fcc.onNewFileLoaded('{ "name":"John", "age":30, "city":"New York"}', 0, "someFile.json", element);
-            expect(scenarioService.applyScenario).toHaveBeenCalledTimes(1);
-        });
 
         it("should set set the elements value to ''",()=>{
             const element = {value: [blob, blob]};
@@ -124,14 +114,6 @@ describe("file chooser controller", ()=>{
             await fcc.setNewData("aName", {}, 0);
             expect(dialogService.showErrorDialog).toHaveBeenCalled();
         });
-
-        it("should apply the scenario once, set comparison and reference map when given valid data",async ()=>{
-            dataLoadingService.loadMapFromFileContent = jest.fn(()=> Promise.resolve());
-            scenarioService.applyScenarioOnce = jest.fn();
-            await fcc.setNewData("aName", {}, 0);
-            expect(scenarioService.applyScenarioOnce).toHaveBeenCalled();
-        });
-
     });
 
     it("should delegate errors to dialog service",()=>{
