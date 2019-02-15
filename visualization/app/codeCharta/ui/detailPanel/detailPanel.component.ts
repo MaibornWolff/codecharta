@@ -7,6 +7,7 @@ import {
     CodeMapMouseEventService,
     CodeMapMouseEventServiceSubscriber
 } from "../codeMap/codeMap.mouseEvent.service";
+import {DataService} from "../../core/data/data.service";
 
 interface CommonDetails {
     areaAttributeName: string | null;
@@ -43,7 +44,8 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
     /* @ngInject */
     constructor(private $rootScope,
                 private settingsService: SettingsService,
-                private $timeout) {
+                private $timeout,
+                private _dataService_: DataService) {
 
         this.details = {
             common: {
