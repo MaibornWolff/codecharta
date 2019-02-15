@@ -265,8 +265,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
      * Computes the margin applied to a scenario related the square root of (the area divided
      * by the number of buildings)
      */
-    public computeMargin(s: Settings): number {
-        s = this.settings ? this.settings : s;
+    public computeMargin(s: Settings = this.settings): number {
         let margin: number;
         if (s.map !== null && s.dynamicMargin) {
             let leaves = hierarchy<CodeMapNode>(s.map.nodes).leaves();
@@ -287,8 +286,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         }
     }
 
-    private getAdaptedRange(s: Settings): Range {
-        s = this.settings ? this.settings : s;
+    private getAdaptedRange(s: Settings = this.settings): Range {
         const maxMetricValue =  this.dataService.getMaxMetricInAllRevisions(s.colorMetric);
         const firstThird = Math.round((maxMetricValue / 3) * 100) / 100;
         const secondThird = Math.round(firstThird * 2 * 100) / 100;
@@ -350,8 +348,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             this._settings.margin = this.computeMargin(settings);
 
         } else {
-            this.eventuallyUpdateColorRange(this._settings);
-            this._settings.margin = this.computeMargin(this._settings);
+            this.eventuallyUpdateColorRange();
+            this._settings.margin = this.computeMargin();
             this.numberOfCalls++;
             if (this.numberOfCalls > 4) {
                 this.numberOfCalls = 0;
@@ -370,7 +368,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         }
     }
 
-    private eventuallyUpdateColorRange(s: Settings) {
+    private eventuallyUpdateColorRange(s: Settings = this.settings) {
         if (this._lastColorMetric != s.colorMetric) {
             this._lastColorMetric = s.colorMetric;
             this._settings.neutralColorRange = this.getAdaptedRange(s);
