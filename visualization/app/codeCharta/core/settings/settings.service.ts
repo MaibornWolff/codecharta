@@ -128,7 +128,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             invertHeight: false,
             dynamicMargin: true,
             isWhiteBackground: false,
-            whiteColorBuildings: true,
+            whiteColorBuildings: false,
             blacklist: [],
             focusedNodePath: null,
             searchedNodePaths: [],
