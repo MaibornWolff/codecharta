@@ -57,7 +57,7 @@ export class TreeMapUtils {
             origin: squaredNode.data.origin,
             link: squaredNode.data.link,
             children: [],
-            markingColor: parseInt(CodeMapUtilService.getMarkingColor(squaredNode.data, s.markedPackages)),
+            markingColor: CodeMapUtilService.getMarkingColor(squaredNode.data, s.markedPackages),
             flat: flattened,
         };
 

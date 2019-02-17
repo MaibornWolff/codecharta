@@ -33,8 +33,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     /* @ngInject */
     constructor(private $timeout: ITimeoutService,
                 private settingsService: SettingsService,
-                private dataService: DataService,
-                private colorService: ColorService) {
+                private dataService: DataService) {
         let ctx = this;
 
         $timeout(()=> {
@@ -63,10 +62,10 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         this.deltaColorsFlipped = s.deltaColorFlipped;
         this._deltas = s.mode == KindOfMap.Delta;
 
-        this.positive = this.colorService.getImageDataUri((s.whiteColorBuildings) ? MapColors.lightGrey : MapColors.positive);
-        this.neutral = this.colorService.getImageDataUri(MapColors.neutral);
-        this.negative = this.colorService.getImageDataUri(MapColors.negative);
-        this.select = this.colorService.getImageDataUri(MapColors.selected);
+        this.positive = ColorService.getImageDataUri((s.whiteColorBuildings) ? MapColors.lightGrey : MapColors.positive);
+        this.neutral = ColorService.getImageDataUri(MapColors.neutral);
+        this.negative = ColorService.getImageDataUri(MapColors.negative);
+        this.select = ColorService.getImageDataUri(MapColors.selected);
 
         $("#green").attr("src", this.positive);
         $("#yellow").attr("src", this.neutral);
@@ -79,11 +78,11 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
 
     public refreshDeltaColors() {
         if(this.deltaColorsFlipped){
-            this.pd = this.colorService.getImageDataUri(MapColors.negativeDelta);
-            this.nd = this.colorService.getImageDataUri(MapColors.positiveDelta);
+            this.pd = ColorService.getImageDataUri(MapColors.negativeDelta);
+            this.nd = ColorService.getImageDataUri(MapColors.positiveDelta);
         } else {
-            this.pd = this.colorService.getImageDataUri(MapColors.positiveDelta);
-            this.nd = this.colorService.getImageDataUri(MapColors.negativeDelta);
+            this.pd = ColorService.getImageDataUri(MapColors.positiveDelta);
+            this.nd = ColorService.getImageDataUri(MapColors.negativeDelta);
         }
         this.$timeout(()=>$("#positiveDelta").attr("src", this.pd), 200);
         this.$timeout(()=>$("#negativeDelta").attr("src", this.nd), 200);
@@ -98,7 +97,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     }
 
     private handleMarkedPackage(mp: MarkedPackage) {
-        const colorPixel = this.colorService.getImageDataUri(Number(mp.color));
+        const colorPixel = ColorService.getImageDataUri(mp.color);
 
         if (!mp.attributes["name"]) {
             mp.attributes["name"] = this.getPackagePathPreview(mp);

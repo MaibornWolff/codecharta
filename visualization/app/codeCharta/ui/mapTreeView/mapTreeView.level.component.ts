@@ -4,7 +4,6 @@ import {CodeMapNode, BlacklistType} from "../../core/data/model/CodeMap";
 import {NodeContextMenuController} from "../nodeContextMenu/nodeContextMenu.component";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
-import {ColorService} from "../../core/color/color.service";
 
 export interface MapTreeViewHoverEventSubscriber {
     onShouldHoverNode(node: CodeMapNode);
@@ -21,8 +20,7 @@ export class MapTreeViewLevelController {
     constructor(
         private $rootScope: IRootScopeService,
         private codeMapActionsService: CodeMapActionsService,
-        private settingsService: SettingsService,
-        private colorService: ColorService
+        private settingsService: SettingsService
     ) {
 
     }
@@ -34,7 +32,7 @@ export class MapTreeViewLevelController {
             return defaultColor;
         }
         const markingColor = CodeMapUtilService.getMarkingColor(this.node, this.settingsService.settings.markedPackages);
-        return markingColor ? this.colorService.convert0xStringToHex(markingColor) : defaultColor;
+        return markingColor ? markingColor : defaultColor;
     }
 
     public onMouseEnter() {

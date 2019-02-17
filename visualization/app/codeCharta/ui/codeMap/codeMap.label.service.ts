@@ -23,8 +23,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
     constructor(private threeOrbitControlsService: ThreeOrbitControlsService,
                 private threeCameraService: ThreeCameraService,
-                private threeSceneService: ThreeSceneService,
-                private colorService: ColorService) {
+                private threeSceneService: ThreeSceneService) {
 
         this.labels = new Array<InternalLabel>();
         this.threeOrbitControlsService.subscribe(this);
@@ -96,7 +95,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
         
         //bg
         ctx!.fillStyle = "rgba(255,255,255,1)";
-        ctx!.strokeStyle = this.colorService.convertNumberToRgba(MapColors.angularGreen);
+        ctx!.strokeStyle = ColorService.convertHexToRgba(MapColors.angularGreen);
         ctx!.lineJoin = "round";
         ctx!.lineCap = "round";
         ctx!.lineWidth = 5;

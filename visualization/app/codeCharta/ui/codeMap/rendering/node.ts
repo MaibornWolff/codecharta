@@ -21,6 +21,6 @@ export interface Node {
     path : string;
     origin : string;
     link : string;
-    markingColor: number;
+    markingColor: string;
     flat: boolean;
 }

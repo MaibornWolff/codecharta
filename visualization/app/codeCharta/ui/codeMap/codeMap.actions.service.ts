@@ -2,7 +2,6 @@ import {CodeMapNode, Edge, BlacklistItem, BlacklistType} from "../../core/data/m
 import {MarkedPackage, Settings, SettingsService} from "../../core/settings/settings.service";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 import angular from "angular";
-import {ColorService} from "../../core/color/color.service";
 
 export class CodeMapActionsService {
 
@@ -11,8 +10,7 @@ export class CodeMapActionsService {
     constructor(
         private settingsService: SettingsService,
         private threeOrbitControlsService: ThreeOrbitControlsService,
-        private $timeout,
-        private colorService: ColorService
+        private $timeout
     ) {
 
     }
@@ -149,7 +147,7 @@ export class CodeMapActionsService {
     private getNewMarkedPackage(path: string, color: string, name: string = undefined): MarkedPackage {
         let coloredPackage: MarkedPackage = {
             path: path,
-            color: this.colorService.convertHexTo0xString(color),
+            color: color,
             attributes: {}
         };
         if (name) {

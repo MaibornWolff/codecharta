@@ -3,7 +3,6 @@ import angular from "angular";
 import {highlightColors} from "../codeMap/rendering/renderSettings";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
-import {ColorService} from "../../core/color/color.service";
 import {SettingsService} from "../../core/settings/settings.service";
 
 export class NodeContextMenuController {
@@ -12,7 +11,7 @@ export class NodeContextMenuController {
     public anyEdgeIsVisible;
 
     private contextMenuBuilding;
-    private _markingColors = [];
+    private _markingColors = highlightColors;
 
     /* @ngInject */
     constructor(private $element: Element,
@@ -21,7 +20,6 @@ export class NodeContextMenuController {
                 private $rootScope,
                 private codeMapActionsService: CodeMapActionsService,
                 private codeMapUtilService: CodeMapUtilService,
-                private colorService: ColorService,
                 private settingsService: SettingsService) {
 
         this.$rootScope.$on("show-node-context-menu", (e, data) => {
@@ -39,7 +37,6 @@ export class NodeContextMenuController {
             this.amountOfDependentEdges = this.codeMapActionsService.amountOfDependentEdges(this.contextMenuBuilding);
             this.amountOfVisibleDependentEdges = this.codeMapActionsService.amountOfVisibleDependentEdges(this.contextMenuBuilding);
             this.anyEdgeIsVisible = this.codeMapActionsService.anyEdgeIsVisible();
-            this._markingColors = this.getConvertedMarkingColor();
             const {x, y} = this.calculatePosition(mouseX, mouseY);
             this.setPosition(x, y);
         });
@@ -84,11 +81,10 @@ export class NodeContextMenuController {
 
         let s = this.settingsService.settings;
         const firstMarkedParentPackage = this.codeMapActionsService.getFirstMarkedParentPackage(this.contextMenuBuilding.path, s);
-        const convertedColor = this.colorService.convertHexTo0xString(color);
 
         const thisBuildingIsMarked = s.markedPackages.filter(mp => mp.path == this.contextMenuBuilding.path).length == 1;
-        const colorMatchesThisBuilding = s.markedPackages.filter(mp => mp.path == this.contextMenuBuilding.path && mp.color == convertedColor);
-        const colorMatchesParentBuilding = s.markedPackages.filter(mp => firstMarkedParentPackage && mp.path == firstMarkedParentPackage.path && mp.color == convertedColor);
+        const colorMatchesThisBuilding = s.markedPackages.filter(mp => mp.path == this.contextMenuBuilding.path && mp.color == color);
+        const colorMatchesParentBuilding = s.markedPackages.filter(mp => firstMarkedParentPackage && mp.path == firstMarkedParentPackage.path && mp.color == color);
 
         if (thisBuildingIsMarked) {
             return colorMatchesThisBuilding.length == 1;
@@ -140,10 +136,6 @@ export class NodeContextMenuController {
 
     public nodeIsFolder() {
         return this.contextMenuBuilding && this.contextMenuBuilding.children && this.contextMenuBuilding.children.length > 0;
-    }
-
-    private getConvertedMarkingColor(): string[] {
-        return highlightColors.map(color => this.colorService.convertNumberToHex(color));
     }
 
     public static broadcastShowEvent($rootScope, path: string, type: string, x, y) {

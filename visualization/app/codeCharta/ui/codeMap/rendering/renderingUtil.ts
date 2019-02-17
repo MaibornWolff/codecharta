@@ -12,12 +12,14 @@ export class RenderingUtil {
         return max;
     }
 
-    public static colorToVec3(color : number) : THREE.Vector3
+    public static colorToVec3(color : string) : THREE.Vector3
     {
+        const convertedColor = Number(color.replace("#", "0x"));
+
         return new THREE.Vector3(
-            ((color  >> 16) & 0xFF) / 255.0,
-            ((color >> 8) & 0xFF) / 255.0,
-            (color & 0xFF) / 255.0
+            ((convertedColor  >> 16) & 0xFF) / 255.0,
+            ((convertedColor >> 8) & 0xFF) / 255.0,
+            (convertedColor & 0xFF) / 255.0
         );
     }
 

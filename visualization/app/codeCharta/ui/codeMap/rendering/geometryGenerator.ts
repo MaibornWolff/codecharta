@@ -2,11 +2,12 @@ import * as THREE from "three";
 import {Node} from "./node";
 import {CodeMapGeometricDescription} from "./codeMapGeometricDescription";
 import {CodeMapBuilding} from "./codeMapBuilding";
-import {getFloorGradient, MapColors} from "./renderSettings";
+import {MapColors} from "./renderSettings";
 import {RenderSettings} from "./renderSettings";
 import {RenderingUtil} from "./renderingUtil";
 import {IntermediateVertexData} from "./intermediateVertexData";
 import {BoxGeometryGenerationHelper} from "./boxGeometryGenerationHelper";
+import {ColorService} from "../../../core/color/color.service";
 
 export interface BoxMeasures {
     x: number;
@@ -26,13 +27,13 @@ export class GeometryGenerator {
 
     private static MINIMAL_BUILDING_HEIGHT = 1.0;
 
-    private floorGradient: number[];
+    private floorGradient: string[];
 
     public build(nodes: Node[], material: THREE.Material, settings: RenderSettings): BuildResult {
         let data: IntermediateVertexData = new IntermediateVertexData();
         let desc: CodeMapGeometricDescription = new CodeMapGeometricDescription(settings.mapSize);
 
-        this.floorGradient = getFloorGradient(nodes);
+        this.floorGradient = this.getFloorGradient(nodes);
 
         for (let i: number = 0; i < nodes.length; ++i) {
             let n: Node = nodes[i];
@@ -48,6 +49,17 @@ export class GeometryGenerator {
             mesh: this.buildMeshFromIntermediateVertexData(data, material),
             desc: desc
         };
+    }
+
+    private getFloorGradient(nodes: Node[]): string[] {
+        return RenderingUtil.gradient("#333333", "#DDDDDD", RenderingUtil.getMaxNodeDepth(nodes))
+            .map(g => this.convertNumberToHex(g));
+    }
+
+    private convertNumberToHex(colorNumber: number): string {
+        const hexColor = colorNumber.toString(16);
+        let zeros: string = "0".repeat(6 - hexColor.length);
+        return "#" + zeros + hexColor;
     }
 
     private mapNodeToLocalBox(n: Node): BoxMeasures {
@@ -66,11 +78,7 @@ export class GeometryGenerator {
     }
 
     private addFloor(data: IntermediateVertexData, n: Node, idx: number, desc: CodeMapGeometricDescription, settings: RenderSettings) {
-        //let color: number = ((n.markingColor? n.markingColor  & (n.depth % 2 === 0?0xdddddd:0xffffff): this.floorGradient[n.depth]));
-        let color: number = (
-            n.markingColor ? n.markingColor & (n.depth % 2 === 0 ? 0xdddddd : 0xffffff) :
-                this.floorGradient[n.depth]
-        );
+        let color = this.getMarkingColorWithGradient(n);
         let measures: BoxMeasures = this.mapNodeToLocalBox(n);
 
         desc.add(
@@ -88,6 +96,16 @@ export class GeometryGenerator {
         BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, idx, 0.0);
     }
 
+    private getMarkingColorWithGradient(n: Node) {
+        if (n.markingColor) {
+            const markingColorAsNumebr = ColorService.convertHexToNumber(n.markingColor);
+            const markingColorWithGradient = markingColorAsNumebr & (n.depth % 2 === 0 ? 0xDDDDDD : 0xFFFFFF);
+            return ColorService.convertNumberToHex(markingColorWithGradient);
+        } else {
+            return this.floorGradient[n.depth]
+        }
+    }
+
     private nodeHasSuitableDeltas(n: Node, heightKey: string): boolean {
         return (n.deltas && n.deltas[heightKey]) ? true : false;
     }
@@ -96,7 +114,7 @@ export class GeometryGenerator {
         let measures: BoxMeasures = this.mapNodeToLocalBox(n);
         measures.height = this.ensureMinHeightIfUnlessDeltaNegative(n.height, n.heightDelta);
 
-        let color: number = this.estimateColorForBuilding(n, settings);
+        let color: string = this.estimateColorForBuilding(n, settings);
 
         let renderDelta: number = 0.0;
 
@@ -123,8 +141,8 @@ export class GeometryGenerator {
         BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, idx, renderDelta);
     }
 
-    private estimateColorForBuilding(n: Node, s: RenderSettings): number {
-        let color: number = MapColors.defaultC;
+    private estimateColorForBuilding(n: Node, s: RenderSettings): string {
+        let color: string = MapColors.defaultC;
 
         let mapColorPositive = s.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive;
         if (!s.renderDeltas) {
