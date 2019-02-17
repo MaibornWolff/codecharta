@@ -17,18 +17,18 @@ export class RangeSliderController implements SettingsServiceSubscriber {
         this.settingsService.subscribe(this);
         this.initSliderOptions();
 
-        $timeout(function() {
+        $timeout(() => {
             $scope.$broadcast('rzSliderForceRender')
         })
 
     }
 
-    onSettingsChanged(settings: Settings) {
+    public onSettingsChanged(settings: Settings) {
         this.initSliderOptions(settings);
         this.updateSliderColors();
     }
 
-    initSliderOptions(settings: Settings = this.settingsService.settings) {
+    public initSliderOptions(settings: Settings = this.settingsService.settings) {
         this.maxMetricValue = this.dataService.getMaxMetricInAllRevisions(settings.colorMetric);
 
         this.sliderOptions = {

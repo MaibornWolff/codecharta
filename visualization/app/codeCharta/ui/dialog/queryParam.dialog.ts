@@ -2,13 +2,13 @@ import {SettingsService} from "../../core/settings/settings.service";
 
 export class QueryParamDialogController {
 
-    private queryParams: string;
+    private _queryParams: string;
 
-    constructor(private settingsService: SettingsService, private $mdDialog) {
-        this.queryParams = settingsService.getQueryParamString().replace(new RegExp("&", "g"),"\n&");
+    constructor(settingsService: SettingsService, private $mdDialog) {
+        this._queryParams = settingsService.getQueryParamString().replace(new RegExp("&", "g"),"\n&");
     }
 
-    hide() {
+    public hide() {
         this.$mdDialog.hide();
     }
 
@@ -16,7 +16,7 @@ export class QueryParamDialogController {
 
 export const queryParamDialog = {
     clickOutsideToClose: true,
-    title: "HELLO",
+    title: "Query Parameters",
     template: require("./queryParam.dialog.html"),
     controller: QueryParamDialogController,
     controllerAs: "$ctrl"

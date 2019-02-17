@@ -19,10 +19,10 @@ export interface PackageList {
 
 export class LegendPanelController implements DataServiceSubscriber, SettingsServiceSubscriber {
 
-    private deltas: boolean;
+    private _deltas: boolean;
     private pd: string;
     private nd: string;
-    private range: Range;
+    private _range: Range;
     private positive: string;
     private neutral: string;
     private negative: string;
@@ -51,14 +51,33 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         this.initAnimations();
     }
 
-    onDataChanged(data: DataModel) {
+    public onDataChanged(data: DataModel) {
         if (data && data.revisions && data.revisions.length > 1) {
-            this.deltas = true;
+            this._deltas = true;
             this.refreshDeltaColors();
         }
     }
 
-    refreshDeltaColors() {
+    public onSettingsChanged(s: Settings) {
+        this._range = s.neutralColorRange;
+        this.deltaColorsFlipped = s.deltaColorFlipped;
+        this._deltas = s.mode == KindOfMap.Delta;
+
+        this.positive = this.colorService.getImageDataUri((s.whiteColorBuildings) ? MapColors.lightGrey : MapColors.positive);
+        this.neutral = this.colorService.getImageDataUri(MapColors.neutral);
+        this.negative = this.colorService.getImageDataUri(MapColors.negative);
+        this.select = this.colorService.getImageDataUri(MapColors.selected);
+
+        $("#green").attr("src", this.positive);
+        $("#yellow").attr("src", this.neutral);
+        $("#red").attr("src", this.negative);
+        $("#select").attr("src", this.select);
+
+        this.refreshDeltaColors();
+        this.setMarkedPackageLists();
+    }
+
+    public refreshDeltaColors() {
         if(this.deltaColorsFlipped){
             this.pd = this.colorService.getImageDataUri(MapColors.negativeDelta);
             this.nd = this.colorService.getImageDataUri(MapColors.positiveDelta);
@@ -131,31 +150,12 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         return pathArray[pathArray.length - 1];
     }
 
-    onSettingsChanged(s: Settings) {
-        this.range = s.neutralColorRange;
-        this.deltaColorsFlipped = s.deltaColorFlipped;
-        this.deltas = s.mode == KindOfMap.Delta;
-
-        this.positive = this.colorService.getImageDataUri((s.whiteColorBuildings) ? MapColors.lightGrey : MapColors.positive);
-        this.neutral = this.colorService.getImageDataUri(MapColors.neutral);
-        this.negative = this.colorService.getImageDataUri(MapColors.negative);
-        this.select = this.colorService.getImageDataUri(MapColors.selected);
-
-        $("#green").attr("src", this.positive);
-        $("#yellow").attr("src", this.neutral);
-        $("#red").attr("src", this.negative);
-        $("#select").attr("src", this.select);
-
-        this.refreshDeltaColors();
-        this.setMarkedPackageLists();
-    }
-
     private initAnimations() {
-        $(document).ready(function(){
+        $(document).ready(() => {
             let start = 40;
             let target = -500;
             let visible = false;
-            $("legend-panel-component .panel-button").click(function(){
+            $("legend-panel-component .panel-button").click(() => {
                 $("legend-panel-component .block-wrapper").animate({left: visible ? target+"px" : start+"px"}, "fast");
                 visible = !visible;
             });

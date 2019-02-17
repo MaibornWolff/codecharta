@@ -9,11 +9,11 @@ import { CodeMapMesh } from "../rendering/codeMapMesh";
 class ThreeSceneService {
     public static SELECTOR = "threeSceneService";
 
-    scene: Scene;
-    private lights: Group;
+    public scene: Scene;
     public labels: Group;
     public edgeArrows: Group;
     public mapGeometry: Group;
+    private lights: Group;
     private mapMesh: CodeMapMesh;
 
     constructor() {
@@ -32,7 +32,7 @@ class ThreeSceneService {
         this.scene.add(this.lights);
     }
 
-    initLights() {
+    public initLights() {
         const ambilight = new THREE.AmbientLight(0x707070); // soft white light
         const light1 = new THREE.DirectionalLight(0xe0e0e0, 1);
         light1.position.set(50, 10, 8).normalize();
@@ -59,7 +59,7 @@ class ThreeSceneService {
         this.lights.add(light2);
     }
 
-    setMapMesh(mesh: CodeMapMesh, size: number) {
+    public setMapMesh(mesh: CodeMapMesh, size: number) {
         this.mapMesh = mesh;
 
         while (this.mapGeometry.children.length > 0) {
@@ -73,7 +73,7 @@ class ThreeSceneService {
         this.mapGeometry.add(this.mapMesh.getThreeMesh());
     }
 
-    getMapMesh(): CodeMapMesh {
+    public getMapMesh(): CodeMapMesh {
         return this.mapMesh;
     }
 }

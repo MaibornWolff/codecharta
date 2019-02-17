@@ -1,39 +1,39 @@
 "use strict";
 
-import { CodeMapMesh } from "./rendering/codeMapMesh";
-import { renderSettings } from "./rendering/renderSettings";
-import {
-    KindOfMap,
-    Settings,
-    SettingsService,
-    SettingsServiceSubscriber
-} from "../../core/settings/settings.service";
-import { node } from "./rendering/node";
-import { Edge } from "../../core/data/model/CodeMap";
+import {CodeMapMesh} from "./rendering/codeMapMesh";
+import {RenderSettings} from "./rendering/renderSettings";
+import {KindOfMap, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {Node} from "./rendering/node";
+import {Edge} from "../../core/data/model/CodeMap";
 import {
     CodeMapBuildingTransition,
     CodeMapMouseEventService,
     CodeMapMouseEventServiceSubscriber
 } from "./codeMap.mouseEvent.service";
-import {
-    TreeMapService,
-    TreeMapSettings
-} from "../../core/treemap/treemap.service";
-import { codeMapBuilding } from "./rendering/codeMapBuilding";
-import { CodeMapUtilService } from "./codeMap.util.service";
-import { CodeMapLabelService } from "./codeMap.label.service";
-import { ThreeSceneService } from "./threeViewer/threeSceneService";
-import { CodeMapArrowService } from "./codeMap.arrow.service";
+import {TreeMapService, TreeMapSettings} from "../../core/treemap/treemap.service";
+import {CodeMapBuilding} from "./rendering/codeMapBuilding";
+import {CodeMapUtilService} from "./codeMap.util.service";
+import {CodeMapLabelService} from "./codeMap.label.service";
+import {ThreeSceneService} from "./threeViewer/threeSceneService";
+import {CodeMapArrowService} from "./codeMap.arrow.service";
 
 const MAP_SIZE = 500.0;
 
-export class CodeMapRenderService implements SettingsServiceSubscriber {
+/**
+ * Main service to manage the state of the rendered code map
+ */
+export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapMouseEventServiceSubscriber {
+
+    get mapMesh(): CodeMapMesh {
+        return this._mapMesh;
+    }
+
     public static SELECTOR = "codeMapRenderService";
 
-    private _mapMesh: CodeMapMesh = null;
+    public currentSortedNodes: Node[];
 
-    public currentSortedNodes: node[];
-    private currentRenderSettings: renderSettings;
+    private _mapMesh: CodeMapMesh = null;
+    private currentRenderSettings: RenderSettings;
     private visibleEdges: Edge[];
 
     /* @ngInject */
@@ -47,27 +47,33 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
         private codeMapArrowService: CodeMapArrowService
     ) {
         this.settingsService.subscribe(this);
+        CodeMapMouseEventService.subscribe(this.$rootScope, this);
     }
 
-    get mapMesh(): CodeMapMesh {
-        return this._mapMesh;
+    public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
+        // unused
     }
 
-    onSettingsChanged(settings: Settings, event: Event) {
+    public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+        // unused
+    }
+
+    public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+        // unused
+    }
+
+    public onSettingsChanged(settings: Settings, event: Event) {
         this.applySettings(settings);
     }
 
-    applySettings(s: Settings) {
-        if (
-            s.areaMetric &&
-            s.heightMetric &&
-            s.colorMetric &&
-            s.map &&
-            s.map.nodes &&
-            s.neutralColorRange &&
-            s.deltaColorFlipped != undefined &&
-            s.invertHeight != undefined
-        ) {
+    /**
+     * Applies the given settings and redraws the scene
+     * @param {Settings} s
+     * @listens {settings-changed}
+     */
+    public applySettings(s: Settings) {
+
+        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.nodes && s.neutralColorRange && s.deltaColorFlipped != undefined && s.invertHeight != undefined) {
             this.updateMapGeometry(s);
         }
 
@@ -76,7 +82,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
         }
     }
 
-    public collectNodesToArray(node: node): node[] {
+    public collectNodesToArray(node: Node): Node[] {
         let nodes = [node];
         for (let i = 0; i < node.children.length; i++) {
             let collected = this.collectNodesToArray(node.children[i]);
@@ -87,7 +93,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
         return nodes;
     }
 
-    updateMapGeometry(s: Settings) {
+    public updateMapGeometry(s: Settings) {
+
         this.visibleEdges = this.getVisibleEdges(s);
 
         const treeMapSettings: TreeMapSettings = {
@@ -107,12 +114,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
 
         this.showAllOrOnlyFocusedNode(s);
 
-        let nodes: node[] = this.collectNodesToArray(
-            this.treeMapService.createTreemapNodes(
-                s.map.nodes,
-                treeMapSettings,
-                s.map.edges
-            )
+        let nodes: Node[] = this.collectNodesToArray(
+            this.treeMapService.createTreemapNodes(s.map.nodes, treeMapSettings, s.map.edges)
         );
 
         let filtered = nodes.filter(
@@ -141,6 +144,34 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
             this.currentRenderSettings
         );
         this.threeSceneService.setMapMesh(this._mapMesh, MAP_SIZE);
+    }
+
+    /**
+     * scales the scene by the given values
+     * @param {number} x
+     * @param {number} y
+     * @param {number} z
+     */
+    public scaleMap(x, y, z) {
+        this.threeSceneService.mapGeometry.scale.x = x;
+        this.threeSceneService.mapGeometry.scale.y = y;
+        this.threeSceneService.mapGeometry.scale.z = z;
+
+        this.threeSceneService.mapGeometry.position.x = -MAP_SIZE / 2.0 * x;
+        this.threeSceneService.mapGeometry.position.y = 0.0;
+        this.threeSceneService.mapGeometry.position.z = -MAP_SIZE / 2.0 * z;
+
+        if (this.threeSceneService.getMapMesh()) {
+            this.threeSceneService.getMapMesh().setScale(x, y, z);
+        }
+
+        if (this.codeMapLabelService) {
+            this.codeMapLabelService.scale(x, y, z);
+        }
+
+        if (this.codeMapArrowService) {
+            this.codeMapArrowService.scale(x, y, z);
+        }
     }
 
     private setLabels(s: Settings) {
@@ -212,31 +243,4 @@ export class CodeMapRenderService implements SettingsServiceSubscriber {
         }
     }
 
-    /**
-     * scales the scene by the given values
-     * @param {number} x
-     * @param {number} y
-     * @param {number} z
-     */
-    scaleMap(x, y, z) {
-        this.threeSceneService.mapGeometry.scale.x = x;
-        this.threeSceneService.mapGeometry.scale.y = y;
-        this.threeSceneService.mapGeometry.scale.z = z;
-
-        this.threeSceneService.mapGeometry.position.x = (-MAP_SIZE / 2.0) * x;
-        this.threeSceneService.mapGeometry.position.y = 0.0;
-        this.threeSceneService.mapGeometry.position.z = (-MAP_SIZE / 2.0) * z;
-
-        if (this.threeSceneService.getMapMesh()) {
-            this.threeSceneService.getMapMesh().setScale(x, y, z);
-        }
-
-        if (this.codeMapLabelService) {
-            this.codeMapLabelService.scale(x, y, z);
-        }
-
-        if (this.codeMapArrowService) {
-            this.codeMapArrowService.scale(x, y, z);
-        }
-    }
 }

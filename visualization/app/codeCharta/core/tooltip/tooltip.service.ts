@@ -80,7 +80,7 @@ class TooltipService {
      * @param {String} p1 first regex group
      * @returns {String}
      */
-    replaceString(match, p1) {
+    public replaceString(match, p1) {
         return this.getTooltipTextByKey(p1);
     }
 

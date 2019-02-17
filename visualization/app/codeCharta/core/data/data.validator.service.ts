@@ -6,32 +6,23 @@ import {CodeMapNode} from "./model/CodeMap";
  */
 export class DataValidatorService {
 
-    /* @ngInject */
-
-    /**
-     * @constructor
-     */
-    constructor() {
-
-    }
-
     /**
      * Checks if a nodes children are unique in name+type
      * @param {Object} node
      * @returns {boolean} true if the node has unique children
      */
-    hasUniqueChildren(node: CodeMapNode) {
+    public hasUniqueChildren(node: CodeMapNode) {
 
-        if(!node.children || node.children.length == 0) return true;
+        if(!node.children || node.children.length == 0) { return true; }
 
         let names = {};
         for(let child of node.children) {
             names[child.name + child.type] = true;
         }
-        if(Object.keys(names).length !== node.children.length) return false;
+        if(Object.keys(names).length !== node.children.length) { return false; }
 
         for(let child of node.children){
-            if(!this.hasUniqueChildren(child)) return false;
+            if(!this.hasUniqueChildren(child)) { return false; }
         }
         return true;
     }
@@ -41,7 +32,7 @@ export class DataValidatorService {
      * @param {Object} well formed fileContent (schema.json)
      * @returns {Promise} which resolves when the filecontent is valid, rejects with errors otherwise
      */
-    validate(data): Promise<void> {
+    public validate(data): Promise<void> {
 
         return new Promise((resolve, reject) => {
 

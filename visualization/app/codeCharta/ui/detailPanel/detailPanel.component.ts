@@ -1,13 +1,13 @@
 import {KindOfMap, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
-import {codeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
+import {CodeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
 import {KVObject} from "../../core/data/data.deltaCalculator.service";
-import {DataService} from "../../core/data/data.service";
 import "./detailPanel.component.scss";
 import {
     CodeMapBuildingTransition,
     CodeMapMouseEventService,
     CodeMapMouseEventServiceSubscriber
 } from "../codeMap/codeMap.mouseEvent.service";
+import {DataService} from "../../core/data/data.service";
 
 interface CommonDetails {
     areaAttributeName: string | null;
@@ -40,13 +40,12 @@ interface Details {
 export class DetailPanelController implements SettingsServiceSubscriber, CodeMapMouseEventServiceSubscriber {
 
     public details: Details;
-    private settings: Settings;
 
     /* @ngInject */
     constructor(private $rootScope,
                 private settingsService: SettingsService,
-                private dataService: DataService,
-                private $timeout) {
+                private $timeout,
+                private _dataService_: DataService) {
 
         this.details = {
             common: {
@@ -84,34 +83,32 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
             }
         };
 
-        this.settings = settingsService.settings;
-
-        // we can use watches here again... we try to keep watches as shallow and small as possible
         this.onSettingsChanged(settingsService.settings);
 
         this.settingsService.subscribe(this);
-        CodeMapMouseEventService.subscribe($rootScope, this);
+        CodeMapMouseEventService.subscribe(this.$rootScope, this);
 
     }
 
-    onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+    public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
         this.onHover(data);
     }
 
-    onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+    public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
         this.onSelect(data);
     }
 
-    onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
+    public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
+        // unused
     }
 
-    onSettingsChanged(settings: Settings) {
+    public onSettingsChanged(settings: Settings) {
         this.details.common.areaAttributeName = settings.areaMetric;
         this.details.common.heightAttributeName = settings.heightMetric;
         this.details.common.colorAttributeName = settings.colorMetric;
     }
 
-    onSelect(data) {
+    public onSelect(data) {
         if (data.to && data.to.node) {
             this.setSelectedDetails(data.to.node);
         } else {
@@ -119,7 +116,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         }
     }
 
-    onHover(data) {
+    public onHover(data) {
         if (data.to && data.to.node) {
             this.setHoveredDetails(data.to.node);
         } else {
@@ -127,7 +124,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         }
     }
 
-    isHovered() {
+    public isHovered() {
         if (this.details && this.details.hovered) {
             return this.details.hovered.name ? true : false;
         } else {
@@ -135,7 +132,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         }
     }
 
-    isSelected() {
+    public isSelected() {
         if (this.details && this.details.selected) {
             return this.details.selected.name ? true : false;
         } else {
@@ -143,11 +140,11 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
         }
     }
 
-    setHoveredDetails(hovered) {
+    public setHoveredDetails(hovered) {
         this.clearHoveredDetails();
-        this.$timeout(function () {
+        this.$timeout(() => {
             this.details.hovered.name = hovered.name;
-            if(hovered.mode != undefined && this.settings.mode == KindOfMap.Delta){
+            if(hovered.mode != undefined && this.settingsService.settings.mode == KindOfMap.Delta){
                 this.details.hovered.heightDelta = hovered.deltas ? hovered.deltas[this.details.common.heightAttributeName] : null;
                 this.details.hovered.areaDelta = hovered.deltas ? hovered.deltas[this.details.common.areaAttributeName] : null;
                 this.details.hovered.colorDelta = hovered.deltas ? hovered.deltas[this.details.common.colorAttributeName] : null;
@@ -163,22 +160,12 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
             this.details.hovered.link = hovered.link;
             this.details.hovered.origin = hovered.origin;
             this.details.hovered.path = this.getPathFromCodeMapBuilding(hovered);
-        }.bind(this));
+        });
     }
 
-    private getPathFromCodeMapBuilding(b: codeMapBuilding): string {
-        let current = b;
-        let result = "";
-        while(current) {
-            result = "/" + current.name + result;
-            current = current.parent;
-        }
-        return result;
-    }
-
-    setSelectedDetails(selected) {
+    public setSelectedDetails(selected) {
         this.clearSelectedDetails();
-        this.$timeout(function () {
+        this.$timeout(() => {
             this.details.selected.name = selected.name;
             if(selected.attributes != undefined) {
                 this.details.selected.area = selected.attributes ? selected.attributes[this.details.common.areaAttributeName] : null;
@@ -186,7 +173,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
                 this.details.selected.color = selected.attributes ? selected.attributes[this.details.common.colorAttributeName] : null;
                 this.details.selected.attributes = selected.attributes;
             }
-            if(selected.deltas != undefined && this.settings.mode == KindOfMap.Delta) {
+            if(selected.deltas != undefined && this.settingsService.settings.mode == KindOfMap.Delta) {
                 this.details.selected.heightDelta = selected.deltas ? selected.deltas[this.details.common.heightAttributeName] : null;
                 this.details.selected.areaDelta = selected.deltas ? selected.deltas[this.details.common.areaAttributeName] : null;
                 this.details.selected.colorDelta = selected.deltas ? selected.deltas[this.details.common.colorAttributeName] : null;
@@ -195,23 +182,33 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
             this.details.selected.link = selected.link;
             this.details.selected.origin = selected.origin;
             this.details.selected.path = this.getPathFromCodeMapBuilding(selected);
-        }.bind(this));
+        });
     }
 
-    clearHoveredDetails() {
-        this.$timeout(function () {
+    public clearHoveredDetails() {
+        this.$timeout(() => {
             for(let key in this.details.hovered) {
                 this.details.hovered[key] = null;
             }
-        }.bind(this));
+        });
     }
 
-    clearSelectedDetails() {
-        this.$timeout(function () {
+    public clearSelectedDetails() {
+        this.$timeout(() => {
             for(let key in this.details.selected) {
                 this.details.selected[key] = null;
             }
-        }.bind(this));
+        });
+    }
+
+    private getPathFromCodeMapBuilding(b: CodeMapBuilding): string {
+        let current = b;
+        let result = "";
+        while(current) {
+            result = "/" + current.name + result;
+            current = current.parent;
+        }
+        return result;
     }
 
 }

@@ -45,7 +45,7 @@ describe("renderService", () => {
             addLabel: jest.fn()
         }));
 
-        renderService.codeMapLabelService = new CodeMapLabelServiceMock;
+        renderService.codeMapLabelService = new CodeMapLabelServiceMock();
         renderService.codeMapArrowService = new CodeMapArrowService(renderService.threeSceneService);
     }
 

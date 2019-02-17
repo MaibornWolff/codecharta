@@ -17,7 +17,7 @@ export class CodeMapActionsService {
 
     }
 
-    toggleNodeVisibility(node: CodeMapNode) {
+    public toggleNodeVisibility(node: CodeMapNode) {
         if(node.visible){
             this.hideNode(node);
         } else {
@@ -25,7 +25,7 @@ export class CodeMapActionsService {
         }
     }
 
-    markFolder(node: CodeMapNode, color: string) {
+    public markFolder(node: CodeMapNode, color: string) {
         let s = this.settingsService.settings;
         let newMarkedPackage: MarkedPackage = this.getNewMarkedPackage(node.path, color);
 
@@ -56,7 +56,7 @@ export class CodeMapActionsService {
         }
     }
 
-    unmarkFolder(node: CodeMapNode) {
+    public unmarkFolder(node: CodeMapNode) {
         let s = this.settingsService.settings;
         const firstMarkedParentPackage = this.getFirstMarkedParentPackage(node.path, s);
         let  matchingPackagesByPath = s.markedPackages.filter(p => p.path == node.path);
@@ -68,17 +68,17 @@ export class CodeMapActionsService {
         this.settingsService.applySettings(s);
     }
 
-    hideNode(node: CodeMapNode) {
+    public hideNode(node: CodeMapNode) {
         this.pushItemToBlacklist({path: node.path, type: BlacklistType.hide});
         this.apply();
     }
 
-    showNode(node: CodeMapNode) {
+    public showNode(node: CodeMapNode) {
         this.removeBlacklistEntry({path: node.path, type: BlacklistType.hide});
         this.apply();
     }
 
-    focusNode(node: CodeMapNode) {
+    public focusNode(node: CodeMapNode) {
         if (node.path == this.settingsService.settings.map.nodes.path) {
             this.removeFocusedNode()
         } else {
@@ -88,25 +88,25 @@ export class CodeMapActionsService {
         }
     }
 
-    removeFocusedNode() {
+    public removeFocusedNode() {
         this.settingsService.settings.focusedNodePath = null;
         this.autoFit();
         this.apply();
     }
 
-    excludeNode(node: CodeMapNode) {
+    public excludeNode(node: CodeMapNode) {
         this.pushItemToBlacklist({path: node.path, type: BlacklistType.exclude});
         this.apply();
     }
 
-    removeBlacklistEntry(entry: BlacklistItem) {
+    public removeBlacklistEntry(entry: BlacklistItem) {
         this.settingsService.settings.blacklist = this.settingsService.settings.blacklist.filter(obj =>
             !this.isEqualObjects(obj, entry));
         this.apply();
     }
 
-    pushItemToBlacklist(item: BlacklistItem) {
-        var foundDuplicate = this.settingsService.settings.blacklist.filter(obj => {
+    public pushItemToBlacklist(item: BlacklistItem) {
+        const foundDuplicate = this.settingsService.settings.blacklist.filter(obj => {
             return this.isEqualObjects(obj, item);
         });
         if (foundDuplicate.length == 0) {
@@ -114,27 +114,27 @@ export class CodeMapActionsService {
         }
     }
 
-    showDependentEdges(node: CodeMapNode) {
+    public showDependentEdges(node: CodeMapNode) {
         this.changeEdgesVisibility(true, node);
     }
 
-    hideDependentEdges(node: CodeMapNode) {
+    public hideDependentEdges(node: CodeMapNode) {
         this.changeEdgesVisibility(false, node);
     }
 
-    hideAllEdges() {
+    public hideAllEdges() {
         this.changeEdgesVisibility(false);
     }
 
-    amountOfDependentEdges(node: CodeMapNode) {
+    public amountOfDependentEdges(node: CodeMapNode) {
         return this.settingsService.settings.map.edges.filter(edge => this.edgeContainsNode(edge, node)).length;
     }
 
-    amountOfVisibleDependentEdges(node: CodeMapNode) {
+    public amountOfVisibleDependentEdges(node: CodeMapNode) {
         return this.settingsService.settings.map.edges.filter(edge => this.edgeContainsNode(edge, node) && edge.visible).length;
     }
 
-    anyEdgeIsVisible() {
+    public anyEdgeIsVisible() {
         return this.settingsService.settings.map.edges.filter(edge => edge.visible).length > 0;
     }
 

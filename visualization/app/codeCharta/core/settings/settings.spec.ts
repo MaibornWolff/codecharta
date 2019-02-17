@@ -8,7 +8,7 @@ import {UrlService} from "../url/url.service";
 import {ThreeOrbitControlsService} from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 import {IRootScopeService} from "angular";
 
-describe("app.codeCharta.core.settings", function() {
+describe("app.codeCharta.core.settings", () => {
 
     let validCodeMap: CodeMap, settingsService: SettingsService, services;
 
@@ -88,7 +88,7 @@ describe("app.codeCharta.core.settings", function() {
         expect(settingsService.settings.mode).toBe(KindOfMap.Single);
     });
 
-    describe("computeMargin", function() {
+    describe("computeMargin", () => {
 
         it("compute margin should compute correct margins for this map", () => {
             setMockValues("rloc", true);
@@ -124,7 +124,7 @@ describe("app.codeCharta.core.settings", function() {
         });
     });
 
-    describe("getAdaptedRange in thirds", function() {
+    describe("getAdaptedRange in thirds", () => {
 
         it("getAdaptedRange in thirds for common metricValues", () => {
             settingsService.settings.colorMetric = "rloc";
@@ -133,17 +133,17 @@ describe("app.codeCharta.core.settings", function() {
         });
     });
 
-    describe("Get and set url parameter", function() {
+    describe("Get and set url parameter", () => {
 
         it("should retrieve the correct query param strings", () => {
             settingsService.settings.areaMetric = "areaStuff";
-            settingsService.settings.camera.x = "2";
+            settingsService.settings.camera.x = 2;
             expect(settingsService.getQueryParamString()).toContain("areaMetric=areaStuff");
             expect(settingsService.getQueryParamString()).toContain("camera.x=2");
             expect(settingsService.getQueryParamString()).toContain("neutralColorRange.from=0");
         });
 
-        it("should update settings from url", NGMock.mock.inject(function ($location) {
+        it("should update settings from url", NGMock.mock.inject(($location) => {
             $location.url("http://something.de?scaling.x=42&areaMetric=myMetric&scaling.y=0.32");
             settingsService.updateSettingsFromUrl();
             expect(settingsService.settings.scaling.x).toBe(42);
@@ -151,15 +151,15 @@ describe("app.codeCharta.core.settings", function() {
             expect(settingsService.settings.areaMetric).toBe("myMetric");
         }));
 
-        it("should not update settings.map from url", NGMock.mock.inject(function ($location) {
+        it("should not update settings.map from url", NGMock.mock.inject(($location) => {
             $location.url("http://something.de?map=aHugeMap");
-            settingsService.settings.map = "correctMap";
+            settingsService.settings.map = "correctMap" as any as CodeMap;
             settingsService.updateSettingsFromUrl();
             expect(settingsService.settings.map).toBe("correctMap");
         }));
     });
 
-    describe("onSettingsChanged", function() {
+    describe("onSettingsChanged", () => {
 
         it("should react to data-changed events", () => {
             settingsService.onSettingsChanged = jest.fn();
@@ -222,11 +222,11 @@ describe("app.codeCharta.core.settings", function() {
         });
     });
 
-    describe("getMetricByIdOrLast", function() {
+    describe("getMetricByIdOrLast", () => {
 
         it("should return last value when id is bigger than or equal to metrics length", () => {
-            var arr = ["a", "b", "c"];
-            var result = settingsService.getMetricByIdOrLast(32, arr);
+            const arr = ["a", "b", "c"];
+            let result = settingsService.getMetricByIdOrLast(32, arr);
             expect(result).toBe("c");
 
             result = settingsService.getMetricByIdOrLast(3, arr);
@@ -234,27 +234,10 @@ describe("app.codeCharta.core.settings", function() {
         });
 
         it("should return correct value when id is smaller than metrics length", () => {
-            var arr = ["a", "b", "c"];
-            var result = settingsService.getMetricByIdOrLast(1, arr);
+            const arr = ["a", "b", "c"];
+            const result = settingsService.getMetricByIdOrLast(1, arr);
             expect(result).toBe("b");
         });
 
-        it("should return defaultValue when metric is not in array", () => {
-            const arr = ["a", "b", "c"];
-            const name = "lookingForThis";
-            const defaultValue = "default";
-
-            const result = settingsService.getMetricOrDefault(arr, name, defaultValue);
-            expect(result).toBe(defaultValue);
-        });
-
-        it("should return the searched value when metric is in array", () => {
-            const arr = ["a", "b", "lookingForThis"];
-            const name = "lookingForThis";
-            const defaultValue = "default";
-
-            const result = settingsService.getMetricOrDefault(arr, name, defaultValue);
-            expect(result).toBe(name);
-        });
     });
 });

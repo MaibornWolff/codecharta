@@ -26,7 +26,8 @@ export class ThreeViewerService {
      * Initializes the canvas and all necessary services.
      * @param {Object} element DOM Element which should be the canvas
      */
-    init(element: Element) {
+    public init(element: Element) {
+
         this.threeCameraService.init(
             this.settingsService,
             window.innerWidth,
@@ -65,7 +66,7 @@ export class ThreeViewerService {
     /**
      * Applies transformations on window resize.
      */
-    onWindowResize() {
+    public onWindowResize() {
         this.threeSceneService.scene.updateMatrixWorld(false);
 
         this.threeRendererService.renderer.setSize(
@@ -77,14 +78,14 @@ export class ThreeViewerService {
         this.threeCameraService.camera.updateProjectionMatrix();
     }
 
-    onFocusIn(event) {
-        if (event.target.nodeName == "INPUT") {
+    public onFocusIn(event) {
+        if(event.target.nodeName == "INPUT") {
             this.threeOrbitControlsService.controls.enableKeys = false;
         }
     }
 
-    onFocusOut(event) {
-        if (event.target.nodeName == "INPUT") {
+    public onFocusOut(event) {
+        if(event.target.nodeName == "INPUT") {
             this.threeOrbitControlsService.controls.enableKeys = true;
         }
     }
@@ -92,7 +93,7 @@ export class ThreeViewerService {
     /**
      * Calls the animation loop.
      */
-    animate() {
+    public animate() {
         requestAnimationFrame(this.animate.bind(this));
         this.threeRendererService.renderer.render(
             this.threeSceneService.scene,

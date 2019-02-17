@@ -1,14 +1,14 @@
-import {renderingUtil} from "./renderingUtil";
-import {node} from "./node";
+import {RenderingUtil} from "./renderingUtil";
+import {Node} from "./node";
 
-export interface colorRange {
+export interface ColorRange {
     from : number;
     to : number;
     flipped : boolean;
 }
 
-export function getFloorGradient(nodes: node[]): number[] {
-    return renderingUtil.gradient("#333333", "#dddddd", renderingUtil.getMaxNodeDepth(nodes));
+export function getFloorGradient(nodes: Node[]): number[] {
+    return RenderingUtil.gradient("#333333", "#dddddd", RenderingUtil.getMaxNodeDepth(nodes));
 }
 
 export const highlightColors = [
@@ -34,12 +34,12 @@ export enum MapColors {
     angularGreen = 0x00BFA5
 }
 
-export interface renderSettings {
+export interface RenderSettings {
     heightKey : string;
     colorKey : string;
     renderDeltas : boolean;
     hideFlatBuildings: boolean;
-    colorRange : colorRange;
+    colorRange : ColorRange;
     mapSize : number;
     deltaColorFlipped: boolean;
     whiteColorBuildings: boolean;

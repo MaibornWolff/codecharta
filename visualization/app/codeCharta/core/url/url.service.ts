@@ -1,6 +1,5 @@
 "use strict";
 import {ILocationService, IHttpService, IHttpResponse} from "angular";
-import {CodeMap} from "../data/model/CodeMap";
 
 export interface NameDataPair {
     name: string;
@@ -35,12 +34,9 @@ export class UrlService {
      * @param {string} [url=current location]
      * @returns {string} url parameter value
      */
-    public getParameterByName(name: string, url?: string): string {
-        if (!url) {
-            url = this.getUrl();
-        }
-        name = name.replace(/[\[\]]/g, "\\$&");
-        let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+    public getParameterByName(name: string, url: string = this.getUrl()): string {
+        const sanitizedName = name.replace(/[\[\]]/g, "\\$&");
+        let regex = new RegExp("[?&]" + sanitizedName + "(=([^&#]*)|&|#|$)"),
             results = regex.exec(url);
         if (!results) {
             return null;
@@ -97,16 +93,14 @@ export class UrlService {
 
             if (file && file.length > 0) {
                 this.$http.get(file).then(
-                    function (response: IHttpResponse<Object>) {
+                    (response: IHttpResponse<Object>) => {
                         if (response.status === UrlService.OK_CODE) {
                             Object.assign(response.data, {fileName: file});
                             resolve({name: file, data:response.data});
                         } else {
                             reject();
                         }
-                    }, function () {
-                        reject();
-                    }
+                    }, reject
                 );
             } else {
                 reject();

@@ -1,53 +1,37 @@
-import {codeMapBuilding} from "./codeMapBuilding";
+import {CodeMapBuilding} from "./codeMapBuilding";
 import * as THREE from "three";
 
-export interface intersectionResult {
+export interface IntersectionResult {
     intersectionFound: boolean;
-    building?: codeMapBuilding;
+    building?: CodeMapBuilding;
 }
 
-export class codeMapGeometricDescription {
-    private _buildings: codeMapBuilding[];
+export class CodeMapGeometricDescription {
+
+    get buildings(): CodeMapBuilding[] {
+        return this._buildings;
+    }
+    private _buildings: CodeMapBuilding[];
     private mapSize: number;
     private scales: THREE.Vector3;
 
     constructor(mapSize: number) {
-        this._buildings = new Array<codeMapBuilding>();
+        this._buildings = new Array<CodeMapBuilding>();
         this.mapSize = mapSize;
         this.scales = new THREE.Vector3(1, 1, 1);
     }
 
-    get buildings(): codeMapBuilding[] {
-        return this._buildings;
-    }
-
-    add(building: codeMapBuilding): void {
+    public add(building: CodeMapBuilding): void {
         this._buildings.push(building);
     }
 
-    setScales(scales: THREE.Vector3) {
+    public setScales(scales: THREE.Vector3) {
         this.scales = scales;
     }
 
-    private rayIntersectsAxisAlignedBoundingBox(ray: THREE.Ray, box: THREE.Box3): boolean {
-        let tx1 = (box.min.x - ray.origin.x) * (1 / ray.direction.x);
-        let tx2 = (box.max.x - ray.origin.x) * (1 / ray.direction.x);
+    public intersect(ray: THREE.Ray): IntersectionResult {
 
-        let tmin = Math.min(tx1, tx2);
-        let tmax = Math.max(tx1, tx2);
-
-        let ty1 = (box.min.y - ray.origin.y) * (1 / ray.direction.y);
-        let ty2 = (box.max.y - ray.origin.y) * (1 / ray.direction.y);
-
-        tmin = Math.max(tmin, Math.min(ty1, ty2));
-        tmax = Math.min(tmax, Math.max(ty1, ty2));
-
-        return tmax >= tmin;
-    }
-
-    intersect(ray: THREE.Ray): intersectionResult {
-
-        let intersectedBuilding: codeMapBuilding | null = null;
+        let intersectedBuilding: CodeMapBuilding | null = null;
         let leastIntersectedDistance: number = Infinity;
 
         let boxTranslation = new THREE.Vector3(-this.mapSize * this.scales.x * 0.5, 0.0, -this.mapSize * this.scales.z * 0.5);
@@ -95,5 +79,21 @@ export class codeMapGeometricDescription {
                 intersectionFound: false
             };
         }
+    }
+
+    private rayIntersectsAxisAlignedBoundingBox(ray: THREE.Ray, box: THREE.Box3): boolean {
+        let tx1 = (box.min.x - ray.origin.x) * (1 / ray.direction.x);
+        let tx2 = (box.max.x - ray.origin.x) * (1 / ray.direction.x);
+
+        let tmin = Math.min(tx1, tx2);
+        let tmax = Math.max(tx1, tx2);
+
+        let ty1 = (box.min.y - ray.origin.y) * (1 / ray.direction.y);
+        let ty2 = (box.max.y - ray.origin.y) * (1 / ray.direction.y);
+
+        tmin = Math.max(tmin, Math.min(ty1, ty2));
+        tmax = Math.min(tmax, Math.max(ty1, ty2));
+
+        return tmax >= tmin;
     }
 }

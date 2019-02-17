@@ -1,10 +1,10 @@
 import * as THREE from "three";
-import {node} from "./node";
+import {Node} from "./node";
 
-export class renderingUtil {
+export class RenderingUtil {
 
 
-    static getMaxNodeDepth(nodes: node[]): number {
+    public static getMaxNodeDepth(nodes: Node[]): number {
         let max = 0;
         nodes.forEach((node)=>{
             max = Math.max(node.depth, max);
@@ -12,7 +12,7 @@ export class renderingUtil {
         return max;
     }
 
-    static colorToVec3(color : number) : THREE.Vector3
+    public static colorToVec3(color : number) : THREE.Vector3
     {
         return new THREE.Vector3(
             ((color  >> 16) & 0xFF) / 255.0,
@@ -21,12 +21,12 @@ export class renderingUtil {
         );
     }
 
-    static rgbToHexNumber(r: number, g: number, b: number):number  {
+    public static rgbToHexNumber(r: number, g: number, b: number):number  {
         return parseInt(Math.round(r).toString(16) + '' + Math.round(g).toString(16) + '' + Math.round(b).toString(16), 16);
     }
 
 
-    static gradient(startColor: string, endColor: string, steps: number): number[] {
+    public static gradient(startColor: string, endColor: string, steps: number): number[] {
         let start = {
             'Hex'   : startColor,
             'R'     : parseInt(startColor.slice(1,3), 16),

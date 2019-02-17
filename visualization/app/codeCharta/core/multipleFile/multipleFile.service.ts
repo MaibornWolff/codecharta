@@ -10,11 +10,8 @@ export class MultipleFileService {
     private attributeTypesEdge:{[key: string]: AttributeType} = {};
     private attributeTypesNode:{[key: string]: AttributeType} = {};
 
-    constructor() {
-    }
-
     public aggregateMaps(inputMaps: CodeMap[]): CodeMap {
-        if(inputMaps.length == 1) return inputMaps[0];
+        if(inputMaps.length == 1) { return inputMaps[0]; }
 
         this.resetVariables();
 
@@ -29,7 +26,7 @@ export class MultipleFileService {
     }
 
     private setEdgesWithUpdatedPath(inputMap) {
-        if(!inputMap.edges) return;
+        if(!inputMap.edges) { return; }
 
         for(let oldEdge of inputMap.edges){
             let edge: Edge = {
@@ -46,7 +43,7 @@ export class MultipleFileService {
     }
 
     private setBlacklistWithUpdatedPath(inputMap) {
-        if(!inputMap.blacklist) return;
+        if(!inputMap.blacklist) { return; }
 
         for(let oldBlacklistItem of inputMap.blacklist){
             let blacklistItem: BlacklistItem = {

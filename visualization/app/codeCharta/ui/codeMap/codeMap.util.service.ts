@@ -14,6 +14,30 @@ export class CodeMapUtilService {
     ) {
     }
 
+    public getAnyCodeMapNodeFromPath(path: string) {
+        const firstTryNode = this.getCodeMapNodeFromPath(path, "File");
+        if(!firstTryNode) {
+            return this.getCodeMapNodeFromPath(path, "Folder");
+        }
+        return firstTryNode;
+    }
+
+    public getCodeMapNodeFromPath(path: string, nodeType: string) {
+        let res = null;
+        const rootNode = this.settingsService.settings.map.nodes;
+
+        if (path == rootNode.path) {
+            return rootNode;
+        }
+
+        hierarchy<CodeMapNode>(rootNode).each((hierarchyNode) => {
+            if (hierarchyNode.data.path === path && hierarchyNode.data.type === nodeType) {
+                res = hierarchyNode.data;
+            }
+        });
+        return res;
+    }
+
     public static transformPath(toTransform): string {
         return path.relative('/', toTransform);
     }
@@ -46,7 +70,6 @@ export class CodeMapUtilService {
         return ig.ignores(CodeMapUtilService.transformPath(node.path));
     }
 
-
     public static getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]): string {
         let markingColor = null;
 
@@ -59,29 +82,5 @@ export class CodeMapUtilService {
             }
         }
         return markingColor;
-    }
-
-    getAnyCodeMapNodeFromPath(path: string): CodeMapNode {
-        var firstTryNode = this.getCodeMapNodeFromPath(path, "File");
-        if(!firstTryNode) {
-            return this.getCodeMapNodeFromPath(path, "Folder");
-        }
-        return firstTryNode;
-    }
-
-    getCodeMapNodeFromPath(path: string, nodeType: string): CodeMapNode {
-        let res = null;
-        const rootNode = this.settingsService.settings.map.nodes;
-
-        if (path == rootNode.path) {
-            return rootNode;
-        }
-
-        hierarchy<CodeMapNode>(rootNode).each((hierarchyNode) => {
-            if (hierarchyNode.data.path === path && hierarchyNode.data.type === nodeType) {
-                res = hierarchyNode.data;
-            }
-        });
-        return res;
     }
 }

@@ -37,29 +37,15 @@ export class CodeChartaController {
         this.initContextMenuCloseHandler();
     }
 
-    private initContextMenuCloseHandler() {
-        document.body.addEventListener('click', ()=>NodeContextMenuController.broadcastHideEvent(this.$rootScope), true);
-    }
-
-    private subscribeToLoadingEvents($rootScope: angular.IRootScopeService) {
-        $rootScope.$on("add-loading-task", () => {
-            this.viewModel.numberOfLoadingTasks++;
-        });
-
-        $rootScope.$on("remove-loading-task", () => {
-            this.viewModel.numberOfLoadingTasks--;
-        });
-    }
-
-    fitMapToView() {
+    public fitMapToView() {
         this.threeOrbitControlsService.autoFitTo();
     }
 
-    removeFocusedNode() {
+    public removeFocusedNode() {
         this.codeMapActionsService.removeFocusedNode();
     }
 
-    loadFileOrSample() {
+    public loadFileOrSample() {
         this.viewModel.numberOfLoadingTasks++;
         return this.urlService.getFileDataFromQueryParam().then(
             (data: NameDataPair[])=>{
@@ -73,7 +59,7 @@ export class CodeChartaController {
         );
     }
 
-    tryLoadingFiles(nameDataPairs: NameDataPair[], applyScenarioOnce = true) {
+    public tryLoadingFiles(nameDataPairs: NameDataPair[], applyScenarioOnce = true) {
 
         let tasks = [];
 
@@ -103,7 +89,7 @@ export class CodeChartaController {
 
     }
 
-    tryLoadingSampleFiles() {
+    public tryLoadingSampleFiles() {
         if(this.urlService.getParam("file")){
             this.dialogService.showErrorDialog("One or more files from the given file URL parameter could not be loaded. Loading sample files instead.");
         }
@@ -114,8 +100,22 @@ export class CodeChartaController {
 
     }
 
-    printErrors(errors: Object) {
+    public printErrors(errors: Object) {
         this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"));
+    }
+
+    private initContextMenuCloseHandler() {
+        document.body.addEventListener('click', ()=>NodeContextMenuController.broadcastHideEvent(this.$rootScope), true);
+    }
+
+    private subscribeToLoadingEvents($rootScope: angular.IRootScopeService) {
+        $rootScope.$on("add-loading-task", () => {
+            this.viewModel.numberOfLoadingTasks++;
+        });
+
+        $rootScope.$on("remove-loading-task", () => {
+            this.viewModel.numberOfLoadingTasks--;
+        });
     }
 
 }

@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.21.0] - 2019-02-16
 
 ### Added
 
@@ -17,7 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Hide/Flatten all buildings, if searchPattern can't find any matching nodes #225
 -   Show maxValue of each metric in metricChooser select list #204
 -   Colored color-slider inside the RibbonBar #318
--   Color positive buildings white and set as default option #311
+-   Option to color positive buildings white #311
 -   Clicking the ribbonBar section-titles toggles the ribbonBar #324
 -   View-Cube displayed in top right corner #274
 -   Adding prettier formatter
