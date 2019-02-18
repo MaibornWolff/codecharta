@@ -1,16 +1,10 @@
-import {CC_URL, puppeteer} from "./puppeteer.helper";
+import {CC_URL, puppeteer, delay} from "./puppeteer.helper";
 
 jest.setTimeout(10000);
 
 describe("app",()=>{
 
     let browser, page;
-
-    function delay(timeout) {
-        return new Promise((resolve) => {
-            setTimeout(resolve, timeout);
-        });
-    }
 
     beforeAll(async ()=>{
         browser = await puppeteer.launch();

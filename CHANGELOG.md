@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
-
+-   Folders can no longer be colored in the CodeMap or TreeView #359
 ## [1.21.0] - 2019-02-16
 
 ### Added
