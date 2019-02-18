@@ -38,7 +38,7 @@ export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubsc
     }
 
     public onBuildingHovered(data: CodeMapBuildingTransition, event: IAngularEvent) {
-        if(data.to && data.to.node.path === this.node.path) {
+        if(data.to && data.to.node && this.node && this.node.path && data.to.node.path === this.node.path) {
             this._isHoveredInCodeMap = true;
         } else {
             this._isHoveredInCodeMap = false;
