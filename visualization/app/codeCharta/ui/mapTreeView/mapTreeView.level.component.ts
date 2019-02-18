@@ -1,18 +1,21 @@
 import {SettingsService} from "../../core/settings/settings.service";
-import {IRootScopeService} from "angular";
+import {IRootScopeService, IAngularEvent} from "angular";
 import {CodeMapNode, BlacklistType} from "../../core/data/model/CodeMap";
 import {NodeContextMenuController} from "../nodeContextMenu/nodeContextMenu.component";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
 import {AngularColors} from "../codeMap/rendering/renderSettings";
+import { CodeMapMouseEventServiceSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service";
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding";
 
 export interface MapTreeViewHoverEventSubscriber {
     onShouldHoverNode(node: CodeMapNode);
     onShouldUnhoverNode(node: CodeMapNode);
 }
 
-export class MapTreeViewLevelController {
+export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubscriber{
 
+    public _isHoveredInCodeMap: boolean = false;
     public node: CodeMapNode = null;
     public depth: number = 0;
     public collapsed: boolean = true;
@@ -24,7 +27,7 @@ export class MapTreeViewLevelController {
         private codeMapActionsService: CodeMapActionsService,
         private settingsService: SettingsService
     ) {
-
+        CodeMapMouseEventService.subscribe(this.$rootScope, this);
     }
 
     public getFolderColor() {
@@ -32,6 +35,20 @@ export class MapTreeViewLevelController {
             return "#000";
         }
         return this.node.markingColor ? "#" + this.node.markingColor.substr(2) : "#000";
+    }
+
+    public onBuildingHovered(data: CodeMapBuildingTransition, event: IAngularEvent) {
+        if(data.to && data.to.node.path === this.node.path) {
+            this._isHoveredInCodeMap = true;
+        } else {
+            this._isHoveredInCodeMap = false;
+        }
+    }
+    public onBuildingSelected(data: CodeMapBuildingTransition, event: IAngularEvent) {
+        // unused
+    }
+    public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent) {
+        // unused
     }
 
     public onMouseEnter() {
