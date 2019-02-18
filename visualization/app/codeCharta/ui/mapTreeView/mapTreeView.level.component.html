@@ -1,6 +1,6 @@
 <div ng-if="!$ctrl.isBlacklisted($ctrl.node)" class="{{::$ctrl.depth?'':'tree-root'}} tree-element-{{::$ctrl.depth?$ctrl.depth:0}} {{::$ctrl.isLeaf()?'tree-leaf':'tree-parent'}}">
 
-    <div class="tree-element-label-{{::$ctrl.depth?$ctrl.depth:0}} tree-element-label ng-mouseenter="$ctrl.onMouseEnter()" ng-mouseleave="$ctrl.onMouseLeave()" ng-right-click="$ctrl.onRightClick($event)">
+    <div class="tree-element-label-{{::$ctrl.depth?$ctrl.depth:0}} tree-element-label" ng-mouseenter="$ctrl.onMouseEnter()" ng-mouseleave="$ctrl.onMouseLeave()" ng-right-click="$ctrl.onRightClick($event)">
 
         <span ng-click="$ctrl.onFolderClick()">
             <span role="img" ng-if="!$ctrl.isLeaf() && $ctrl.collapsed" class="fa fa-folder cursor-pointer" ng-style="{'color': $ctrl.node.markingColor.replace('0x','#') }" aria-hidden="true"></span>
