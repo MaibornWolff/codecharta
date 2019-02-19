@@ -25,9 +25,8 @@ export class CodeChartaController {
 		private codeMapActionsService: CodeMapActionsService,
 		private codeChartaService: CodeChartaService
 	) {
-		this.subscribeToLoadingEvents($rootScope)
+		this.subscribeToLoadingEvents(this.$rootScope)
 		this.loadFileOrSample()
-		this.initContextMenuCloseHandler()
 	}
 
 	public fitMapToView() {
@@ -76,10 +75,6 @@ export class CodeChartaController {
 
 	public printErrors(errors: Object) {
 		this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))
-	}
-
-	private initContextMenuCloseHandler() {
-		document.body.addEventListener("click", () => NodeContextMenuController.broadcastHideEvent(this.$rootScope), true)
 	}
 
 	private subscribeToLoadingEvents($rootScope: angular.IRootScopeService) {

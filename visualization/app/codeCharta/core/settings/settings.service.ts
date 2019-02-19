@@ -12,24 +12,22 @@ export class SettingsService {
     private static SETTINGS_CHANGED_EVENT = "settings-changed";
 	private static MIN_MARGIN = 15
 
-	public settings: Settings //TODO private
+	private settings: Settings 
+	throttledBroadcast: ()=>void;
 
 	constructor(private $rootScope) {
 		this.settings = this.getDefaultSettings()
+		this.throttledBroadcast = _.throttle(() => this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, this.settings), 400)
 	}
 
 	public getSettings(): Settings {
 		return this.settings
 	}
 
-	public applySettings(): any {
-        // TODO remove
-    }
-
 	public updateSettings(update: RecursivePartial<Settings>) {
 		// TODO wo und wann this.settings.margin = this.computeMargin(settings); ?
 		this.settings = _.merge(this.settings, update)
-		this.notifySubscribers()
+		this.throttledBroadcast()
 	}
 
 	/* TODO this needs to be called at other places, this cannot be here
@@ -39,11 +37,6 @@ export class SettingsService {
 		}
 		return update
 	}*/
-
-	private notifySubscribers() {
-		const throttledBroadcast = _.throttle(() => this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, this.settings), 400)
-		throttledBroadcast()
-	}
 
 	public getDefaultSettings(): Settings {
 		const mapColors: MapColors = {

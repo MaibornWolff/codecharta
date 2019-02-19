@@ -27,6 +27,9 @@ export class NodeContextMenuController {
         this.$rootScope.$on("hide-node-context-menu", () => {
             this.hide()
         });
+
+        document.body.addEventListener("click", () => NodeContextMenuController.broadcastHideEvent(this.$rootScope), true)
+
     }
 
     public show(path: string, nodeType: string, mouseX: number, mouseY: number) {
