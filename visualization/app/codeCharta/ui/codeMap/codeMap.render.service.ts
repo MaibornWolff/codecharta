@@ -15,6 +15,14 @@ const MAP_SIZE = 500.0
 /**
  * Main service to manage the state of the rendered code map
  */
+
+export interface RenderData {
+	renderMap: CodeMapNode
+	fileName: string
+	importedFiles: CCFile[]
+	settings: Settings
+}
+
 export class CodeMapRenderService {
 	public static SELECTOR = "codeMapRenderService"
 
@@ -24,6 +32,8 @@ export class CodeMapRenderService {
 	private currentRenderSettings: RenderSettings
 	private visibleEdges: Edge[]
 
+	private lastRender: RenderData
+
 	constructor(
 		private threeSceneService: ThreeSceneService,
 		private treeMapService: TreeMapService,
@@ -32,12 +42,22 @@ export class CodeMapRenderService {
 		private codeMapArrowService: CodeMapArrowService
 	) {}
 
-	public render(renderMap: CodeMapNode, fileName: string, importedFiles: CCFile[],  settings: Settings) {
-		this.updateMapGeometry(renderMap, fileName, importedFiles, settings)
-		this.scaleMap(settings.appSettings.scaling.x, settings.appSettings.scaling.y, settings.appSettings.scaling.z)
+	public rerenderWithNewSettings(settings: Settings) {
+		this.lastRender.settings = settings
+		this.render(this.lastRender)
 	}
 
-	private updateMapGeometry(map: CodeMapNode, fileName: string, importedFiles: CCFile[],  s: Settings) {
+	public render(renderData: RenderData) {
+		this.lastRender = renderData
+		this.updateMapGeometry(renderData.renderMap, renderData.fileName, renderData.importedFiles, renderData.settings)
+		this.scaleMap(
+			renderData.settings.appSettings.scaling.x,
+			renderData.settings.appSettings.scaling.y,
+			renderData.settings.appSettings.scaling.z
+		)
+	}
+
+	private updateMapGeometry(map: CodeMapNode, fileName: string, importedFiles: CCFile[], s: Settings) {
 		this.visibleEdges = this.getVisibleEdges(map, s)
 
 		const treeMapSettings: TreeMapSettings = {
@@ -56,7 +76,9 @@ export class CodeMapRenderService {
 
 		this.showAllOrOnlyFocusedNode(map, s)
 
-		let nodes: Node[] = this.collectNodesToArray(this.treeMapService.createTreemapNodes(map, importedFiles, treeMapSettings, s.mapSettings.edges))
+		let nodes: Node[] = this.collectNodesToArray(
+			this.treeMapService.createTreemapNodes(map, importedFiles, treeMapSettings, s.mapSettings.edges)
+		)
 
 		let filtered = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		this.currentSortedNodes = filtered.sort((a, b) => {
@@ -92,7 +114,7 @@ export class CodeMapRenderService {
 		return nodes
 	}
 
-	public scaleMap(x, y, z) {
+	private scaleMap(x, y, z) {
 		this.threeSceneService.mapGeometry.scale.x = x
 		this.threeSceneService.mapGeometry.scale.y = y
 		this.threeSceneService.mapGeometry.scale.z = z
@@ -133,7 +155,7 @@ export class CodeMapRenderService {
 
 	private showAllOrOnlyFocusedNode(map: CodeMapNode, s: Settings) {
 		if (s.mapSettings.focusedNodePath) {
-			const focusedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(s.mapSettings.focusedNodePath)
+			const focusedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(s.mapSettings.focusedNodePath, map)
 			this.treeMapService.setVisibilityOfNodeAndDescendants(map, false)
 			this.treeMapService.setVisibilityOfNodeAndDescendants(focusedNode, true)
 		} else {

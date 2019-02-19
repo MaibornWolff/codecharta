@@ -3,6 +3,7 @@ import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsServi
 import angular from "angular"
 import { CodeMapNode, BlacklistType, BlacklistItem, Edge } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
+import { CodeMapRenderService } from "./codeMap.render.service";
 
 export class CodeMapActionsService {
 	public static SELECTOR = "codeMapActionsService"
@@ -10,6 +11,7 @@ export class CodeMapActionsService {
 	constructor(
 		private settingsService: SettingsService,
 		private codeChartaService: CodeChartaService,
+		private codeMapRenderService: CodeMapRenderService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private $timeout
 	) {}
@@ -33,7 +35,7 @@ export class CodeMapActionsService {
 			}
 		}
 		recFn(node)
-		//this.apply()
+		this.apply()
 	}
 
 	public unmarkFolder(node: CodeMapNode) {
@@ -47,38 +49,38 @@ export class CodeMapActionsService {
 			}
 		}
 		recFn(node)
-		//this.apply()
+		this.apply()
 	}
 
 	public hideNode(node: CodeMapNode) {
 		this.pushItemToBlacklist({ path: node.path, type: BlacklistType.hide })
-		//this.apply()
+		this.apply()
 	}
 
 	public showNode(node: CodeMapNode) {
 		this.removeBlacklistEntry({ path: node.path, type: BlacklistType.hide })
-		//this.apply()
+		this.apply()
 	}
 
 	public focusNode(node: CodeMapNode) {
-		if (node.path == this.codeChartaService.getRenderMap().nodes.path) {
+		if (node.path == this.codeChartaService.getRenderMap().path) {
 			this.removeFocusedNode()
 		} else {
 			this.settingsService.updateSettings({ mapSettings: { focusedNodePath: node.path } })
 			this.autoFit()
-			//this.apply()
+			this.apply()
 		}
 	}
 
 	public removeFocusedNode() {
 		this.settingsService.updateSettings({ mapSettings: { focusedNodePath: null } })
 		this.autoFit()
-		//this.apply()
+		this.apply()
 	}
 
 	public excludeNode(node: CodeMapNode) {
 		this.pushItemToBlacklist({ path: node.path, type: BlacklistType.exclude })
-		//this.apply()
+		this.apply()
 	}
 
 	public removeBlacklistEntry(entry: BlacklistItem) {
@@ -133,7 +135,7 @@ export class CodeMapActionsService {
 					edge.visible = visibility
 				}
 			})
-			//this.apply()
+			this.apply()
 		}
 	}
 
@@ -145,11 +147,13 @@ export class CodeMapActionsService {
 		return JSON.stringify(angular.toJson(obj1)) === JSON.stringify(angular.toJson(obj2))
 	}
 
-	/*private apply() {
-		this.$timeout(() => {
-			this.settingsService.applySettings()
-		}, 50)
-	}*/
+	private apply() {
+		//this.$timeout(() => {
+		//	this.settingsService.applySettings()
+		//}, 50)
+		// TODO 
+		this.codeMapRenderService.rerenderWithNewSettings(this.settingsService.getSettings())
+	}
 
 	private autoFit() {
 		this.$timeout(() => {

@@ -181,7 +181,12 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 
 		this.settingsService.updateSettings(settingsUpdate)
 
-		this.codeMapRenderService.render(this.renderMap, "fileName", this.importedFiles, this.settingsService.getSettings())
+		this.codeMapRenderService.render({
+			renderMap: this.renderMap,
+			fileName: "fileName", //TODO
+			importedFiles: this.importedFiles,
+			settings: this.settingsService.getSettings()
+		})
 	}
 
 	private getMetricByIndexElseLast(index: number, metrics: string[]): string {

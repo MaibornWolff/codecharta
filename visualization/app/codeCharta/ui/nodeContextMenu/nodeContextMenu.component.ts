@@ -3,6 +3,7 @@ import angular from "angular";
 import {highlightColors} from "../codeMap/rendering/renderSettings";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
+import { CodeChartaService } from "../../codeCharta.service";
 
 export class NodeContextMenuController {
     public amountOfDependentEdges;
@@ -19,6 +20,7 @@ export class NodeContextMenuController {
                 private $window,
                 private $rootScope,
                 private codeMapActionsService: CodeMapActionsService,
+                private codeChartaService: CodeChartaService,
                 private codeMapUtilService: CodeMapUtilService) {
 
         this.$rootScope.$on("show-node-context-menu", (e, data) => {
@@ -34,7 +36,7 @@ export class NodeContextMenuController {
 
     public show(path: string, nodeType: string, mouseX: number, mouseY: number) {
         this.$timeout(() => {
-            this.contextMenuBuilding = this.codeMapUtilService.getCodeMapNodeFromPath(path, nodeType);
+            this.contextMenuBuilding = this.codeMapUtilService.getCodeMapNodeFromPath(path, nodeType, this.codeChartaService.getRenderMap());
         }, 50).then(() => {
             this.amountOfDependentEdges = this.codeMapActionsService.amountOfDependentEdges(this.contextMenuBuilding);
             this.amountOfVisibleDependentEdges = this.codeMapActionsService.amountOfVisibleDependentEdges(this.contextMenuBuilding);
