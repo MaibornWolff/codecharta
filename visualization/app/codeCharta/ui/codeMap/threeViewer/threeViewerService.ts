@@ -32,9 +32,9 @@ export class ThreeViewerService {
             this.settingsService,
             window.innerWidth,
             window.innerHeight,
-            this.settingsService.settings.camera.x,
-            this.settingsService.settings.camera.y,
-            this.settingsService.settings.camera.z
+            this.settingsService.getSettings().appSettings.camera.x,
+            this.settingsService.getSettings().appSettings.camera.y,
+            this.settingsService.getSettings().appSettings.camera.z
         );
 
         this.threeCameraService.camera.lookAt(

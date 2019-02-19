@@ -1,14 +1,15 @@
 import "./ribbonBar.component.scss";
 import $ from "jquery";
-import {KindOfMap, SettingsService} from "../../core/settings/settings.service";
+import {SettingsService} from "../../core/settings/settings.service";
 import { DownloadService } from "../../core/download/download.service";
+import { RenderMode } from "../../codeCharta.model";
 
 export class RibbonBarController {
 
     private collapsingElements = $("code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab");
     private toggleElements = $("ribbon-bar-component .section-title");
     private isExpanded: boolean = false;
-    private _deltaMode = KindOfMap.Delta;
+    private _deltaMode = RenderMode.Delta;
 
     /* @ngInject */
     constructor(
@@ -22,7 +23,7 @@ export class RibbonBarController {
     }
 
     public changeMargin(){
-        this.settingsService.settings.dynamicMargin = false;
+        this.settingsService.settings.appSettings.dynamicMargin = false;
         this.settingsService.applySettings();
     }
 

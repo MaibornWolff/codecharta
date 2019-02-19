@@ -1,8 +1,6 @@
-import { Settings, ColorRange, Vector3d, RenderMode, MapColors, RecursivePartial } from "../../codeCharta.model"
+import { Settings, Vector3d, RenderMode, MapColors, RecursivePartial } from "../../codeCharta.model"
 import _ from "lodash"
 import { IRootScopeService, IAngularEvent } from "angular";
-import { CodeChartaService } from "../../codeCharta.service";
-import { MetricCalculator } from "../../MetricCalculator";
 
 export interface SettingsServiceSubscriber {
 	onSettingsChanged(settings: Settings, event: IAngularEvent)
@@ -16,7 +14,7 @@ export class SettingsService {
 
 	public settings: Settings //TODO private
 
-	constructor(private $rootScope, private codeChartaService: CodeChartaService) {
+	constructor(private $rootScope) {
 		this.settings = this.getDefaultSettings()
 	}
 
@@ -29,18 +27,18 @@ export class SettingsService {
     }
 
 	public updateSettings(update: RecursivePartial<Settings>) {
-		const updateWithColorRange = this.potentiallyUpdateColorRange(update)
 		// TODO wo und wann this.settings.margin = this.computeMargin(settings); ?
-		this.settings = _.assign(this.settings, updateWithColorRange)
+		this.settings = _.merge(this.settings, update)
 		this.notifySubscribers()
 	}
 
+	/* TODO this needs to be called at other places, this cannot be here
 	private potentiallyUpdateColorRange(update: RecursivePartial<Settings>): RecursivePartial<Settings> {
 		if (update.mapSettings.colorMetric) {
 			update.appSettings.neutralColorRange = this.getAdaptedRange(update.mapSettings.colorMetric)
 		}
 		return update
-	}
+	}*/
 
 	private notifySubscribers() {
 		const throttledBroadcast = _.throttle(() => this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, this.settings), 400)
@@ -78,9 +76,9 @@ export class SettingsService {
 		let settings: Settings = {
 			mapSettings: {
 				renderMode: RenderMode.Single,
-				areaMetric: this.getMetricByIndexElseLast(0, this.codeChartaService.getMetrics()),
-				heightMetric: this.getMetricByIndexElseLast(1, this.codeChartaService.getMetrics()),
-				colorMetric: this.getMetricByIndexElseLast(2, this.codeChartaService.getMetrics()),
+				areaMetric: "",
+				heightMetric: "",
+				colorMetric: "",
 				focusedNodePath: null,
 				searchedNodePaths: [],
 				searchPattern: null,
@@ -106,27 +104,7 @@ export class SettingsService {
 			}
 		}
 
-		settings.appSettings.neutralColorRange = this.getAdaptedRange(settings.mapSettings.colorMetric)
-		settings.appSettings.neutralColorRange.flipped = false
-
 		return settings
-	}
-
-	// TODO should stay here ?
-	private getAdaptedRange(colorMetric: string): ColorRange {
-		const maxMetricValue = MetricCalculator.getMaxMetricInAllRevisions(this.codeChartaService.getImportedFiles(), colorMetric)
-		const firstThird = Math.round((maxMetricValue / 3) * 100) / 100
-		const secondThird = Math.round(firstThird * 2 * 100) / 100
-
-		return {
-			flipped: this.settings.appSettings.neutralColorRange.flipped,
-			from: firstThird,
-			to: secondThird
-		}
-	}
-
-	private getMetricByIndexElseLast(index: number, metrics: string[]): string {
-		return metrics[Math.min(index, metrics.length - 1)]
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: SettingsServiceSubscriber) {

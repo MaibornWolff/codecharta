@@ -17,7 +17,7 @@ export class MetricCalculator {
 	private static getUniqueMetricNames(importedFiles: CCFile[]): string[] {
 		let leaves: HierarchyNode<CodeMapNode>[] = [];
 		importedFiles.forEach((file: CCFile) => {
-			leaves = leaves.concat(hierarchy<CodeMapNode>(file.map.nodes).leaves());
+			leaves = leaves.concat(hierarchy<CodeMapNode>(file.map).leaves());
 		});
 		let attributeList: string[][] = leaves.map((d: HierarchyNode<CodeMapNode>) => {
 			return d.data.attributes ? Object.keys(d.data.attributes) : [];
@@ -37,7 +37,7 @@ export class MetricCalculator {
 	public static getMaxMetricInAllRevisions(importedFiles: CCFile[], metric: string): number {
 		let maxValue = 0;
 		importedFiles.forEach((file) => {
-			let nodes = hierarchy(file.map.nodes).leaves();
+			let nodes = hierarchy(file.map).leaves();
 			nodes.forEach((node: any) => {
 				const currentValue = node.data.attributes[metric];
 				if (currentValue > maxValue) {

@@ -1,5 +1,5 @@
 export interface CCFile {
-  map: CodeMap;
+  map: CodeMapNode;
   settings: {
       mapSettings: Partial<MapSettings>
   };
@@ -18,10 +18,6 @@ export interface MetricData {
 export interface Scenario {
   name: string;
   settings: Partial<Settings>;
-}
-
-export interface CodeMap {
-  readonly nodes: CodeMapNode;
 }
 
 export interface CodeMapNode {

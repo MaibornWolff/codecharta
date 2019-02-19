@@ -1,20 +1,20 @@
-import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settings.service";
-import {CodeMap} from "../../core/data/model/CodeMap";
+import {SettingsServiceSubscriber, SettingsService} from "../../core/settings/settings.service";
+import { IRootScopeService } from "angular";
+import { CodeMap, Settings } from "../../codeCharta.model";
+import { CodeChartaService } from "../../codeCharta.service";
 
 export class MapTreeViewController implements SettingsServiceSubscriber {
 
     public mapRoot = null;
 
     /* @ngInject */
-    constructor(private settingsService: SettingsService) {
-
-        this.settingsService.subscribe(this);
-        this.updateMapRoot(this.settingsService.settings.map);
-
+    constructor(private settingsService: SettingsService, private codeChartaService: CodeChartaService, private $rootScope: IRootScopeService) {
+        SettingsService.subscribe(this.$rootScope, this);
+        this.updateMapRoot(this.codeChartaService.getRenderMap());
     }
 
     public onSettingsChanged(s: Settings) {
-        this.updateMapRoot(this.settingsService.settings.map);
+        this.updateMapRoot(this.codeChartaService.getRenderMap());
     }
 
     private updateMapRoot(map: CodeMap) {

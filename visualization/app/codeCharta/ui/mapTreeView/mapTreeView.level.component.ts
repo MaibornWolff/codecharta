@@ -1,12 +1,12 @@
 import {SettingsService} from "../../core/settings/settings.service";
 import {IRootScopeService, IAngularEvent} from "angular";
-import {CodeMapNode, BlacklistType} from "../../core/data/model/CodeMap";
 import {NodeContextMenuController} from "../nodeContextMenu/nodeContextMenu.component";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
 import {AngularColors} from "../codeMap/rendering/renderSettings";
 import { CodeMapMouseEventServiceSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service";
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding";
+import { CodeMapNode, BlacklistType } from "../../codeCharta.model";
 
 export interface MapTreeViewHoverEventSubscriber {
     onShouldHoverNode(node: CodeMapNode);
@@ -82,14 +82,14 @@ export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubsc
 
     public isBlacklisted(node: CodeMapNode): boolean {
         if (node != null) {
-            return CodeMapUtilService.isBlacklisted(node, this.settingsService.settings.blacklist, BlacklistType.exclude)
+            return CodeMapUtilService.isBlacklisted(node, this.settingsService.settings.mapSettings.blacklist, BlacklistType.exclude)
         }
         return false;
     }
 
     public isSearched(node: CodeMapNode): boolean {
-        if (node != null && this.settingsService.settings.searchedNodePaths) {
-            return this.settingsService.settings.searchedNodePaths.filter(path =>
+        if (node != null && this.settingsService.settings.mapSettings.searchedNodePaths) {
+            return this.settingsService.settings.mapSettings.searchedNodePaths.filter(path =>
                 path == node.path).length > 0;
         }
         return false;

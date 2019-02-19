@@ -3,8 +3,7 @@ import * as d3 from "d3";
 import {hierarchy, HierarchyNode} from "d3";
 import {TreeMapUtils} from "./treemap.util";
 import {CodeMapUtilService} from "../../ui/codeMap/codeMap.util.service";
-import { CodeMapNode, BlacklistItem, Edge, BlacklistType } from "../../codeCharta.model";
-import { CodeChartaService } from "../../codeCharta.service";
+import { CodeMapNode, BlacklistItem, Edge, BlacklistType, CCFile } from "../../codeCharta.model";
 import { MetricCalculator } from "../../MetricCalculator";
 
 export interface ValuedCodeMapNode {
@@ -47,11 +46,11 @@ export class TreeMapService {
     private static PADDING_SCALING_FACTOR = 0.4;
 
     /* @ngInject */
-    constructor(private codeChartaService: CodeChartaService) {}
+    constructor() {}
 
-    public createTreemapNodes(data: CodeMapNode, s: TreeMapSettings, edges: Edge[]): Node {
+    public createTreemapNodes(data: CodeMapNode, importedFiles: CCFile[], s: TreeMapSettings, edges: Edge[]): Node {
         const squarified: SquarifiedValuedCodeMapNode = this.squarify(data, s, edges);
-        const heighted = this.addMapScaledHeightDimensionAndFinalizeFromRoot(squarified, s);
+        const heighted = this.addMapScaledHeightDimensionAndFinalizeFromRoot(squarified, importedFiles, s);
         return heighted;
     }
 
@@ -75,8 +74,8 @@ export class TreeMapService {
         return treeMap(nodes.sum((node) => this.calculateValue(node, edges, s))) as SquarifiedValuedCodeMapNode;
     }
 
-    private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): Node {
-        const maxHeight = MetricCalculator.getMaxMetricInAllRevisions(this.codeChartaService.getImportedFiles(), s.heightKey);
+    private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, importedFiles: CCFile[], s: TreeMapSettings): Node {
+        const maxHeight = MetricCalculator.getMaxMetricInAllRevisions(importedFiles, s.heightKey);
         const heightScale = s.size / TreeMapService.HEIGHT_DIVISOR / maxHeight;
         return this.addHeightDimensionAndFinalize(squaredNode, s, heightScale, maxHeight);
     }

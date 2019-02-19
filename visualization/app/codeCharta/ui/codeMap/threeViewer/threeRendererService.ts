@@ -2,13 +2,11 @@ import * as THREE from "three";
 import { WebGLRenderer } from "three";
 import {
     SettingsService,
-    Settings,
     SettingsServiceSubscriber
 } from "../../../core/settings/settings.service";
+import { Settings } from "../../../codeCharta.model";
+import { IRootScopeService } from "angular";
 
-/**
- * A service which manages the Three.js renderer in an angular way.
- */
 export class ThreeRendererService implements SettingsServiceSubscriber {
     public static SELECTOR = "threeRendererService";
 
@@ -28,15 +26,11 @@ export class ThreeRendererService implements SettingsServiceSubscriber {
 
     public renderer: WebGLRenderer;
 
-    /* @ngInject */
-    constructor(private settingsService: SettingsService) {}
+    constructor(private settingsService: SettingsService, private $rootScope: IRootScopeService) {}
 
-    /**
-     * Inits the renderer.
-     */
     public init(containerWidth: number, containerHeight: number){
         this.renderer = new THREE.WebGLRenderer(ThreeRendererService.RENDER_OPTIONS);
-        this.settingsService.subscribe(this);
+        SettingsService.subscribe(this.$rootScope, this);
         this.onSettingsChanged(this.settingsService.settings, null);
         this.setCurrentClearColorFromSettings(this.settingsService.settings);
         this.renderer.setSize(containerWidth, containerHeight);
@@ -47,7 +41,7 @@ export class ThreeRendererService implements SettingsServiceSubscriber {
     }
 
     public setCurrentClearColorFromSettings(settings: Settings) {
-        if (settings.isWhiteBackground) {
+        if (settings.appSettings.isWhiteBackground) {
             ThreeRendererService.CLEAR_COLOR =
                 ThreeRendererService.BACKGROUND_COLOR.white;
         } else {

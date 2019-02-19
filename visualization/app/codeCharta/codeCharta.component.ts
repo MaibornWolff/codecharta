@@ -68,7 +68,8 @@ export class CodeChartaController {
         )
         .then(() => this.viewModel.numberOfLoadingTasks--)
         .catch(e => {
-            this.viewModel.numberOfLoadingTasks--
+			this.viewModel.numberOfLoadingTasks--
+			console.error(e);
             this.printErrors(e)
         })
     }

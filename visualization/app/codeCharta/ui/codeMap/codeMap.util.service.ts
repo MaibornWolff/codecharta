@@ -1,8 +1,8 @@
-import {CodeMapNode, BlacklistItem, BlacklistType} from "../../core/data/model/CodeMap";
 import {hierarchy} from "d3-hierarchy";
 import {SettingsService} from "../../core/settings/settings.service";
 import ignore from 'ignore';
 import * as path from 'path';
+import { CodeMapNode, BlacklistItem, BlacklistType } from "../../codeCharta.model";
 
 export class CodeMapUtilService {
 
@@ -13,23 +13,22 @@ export class CodeMapUtilService {
     ) {
     }
 
-    public getAnyCodeMapNodeFromPath(path: string) {
-        const firstTryNode = this.getCodeMapNodeFromPath(path, "File");
+    public getAnyCodeMapNodeFromPath(path: string, root: CodeMapNode) {
+        const firstTryNode = this.getCodeMapNodeFromPath(path, "File", root);
         if(!firstTryNode) {
-            return this.getCodeMapNodeFromPath(path, "Folder");
+            return this.getCodeMapNodeFromPath(path, "Folder", root);
         }
         return firstTryNode;
     }
 
-    public getCodeMapNodeFromPath(path: string, nodeType: string) {
+    public getCodeMapNodeFromPath(path: string, nodeType: string, root: CodeMapNode) {
         let res = null;
-        const rootNode = this.settingsService.settings.map.nodes;
 
-        if (path == rootNode.path) {
-            return rootNode;
+        if (path == root.path) {
+            return root;
         }
 
-        hierarchy<CodeMapNode>(rootNode).each((hierarchyNode) => {
+        hierarchy<CodeMapNode>(root).each((hierarchyNode) => {
             if (hierarchyNode.data.path === path && hierarchyNode.data.type === nodeType) {
                 res = hierarchyNode.data;
             }

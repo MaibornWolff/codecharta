@@ -1,4 +1,3 @@
-import {DataServiceSubscriber, DataService, DataModel, MetricData} from "../../core/data/data.service";
 import {SettingsService} from "../../core/settings/settings.service";
 import {IAngularEvent, IRootScopeService} from "angular";
 import "./metricChooser.component.scss";
@@ -7,8 +6,10 @@ import {
     CodeMapMouseEventServiceSubscriber
 } from "../codeMap/codeMap.mouseEvent.service";
 import {CodeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
+import { ImportedFilesChangedSubscriber, CodeChartaService } from "../../codeCharta.service";
+import { MetricData, CCFile } from "../../codeCharta.model";
 
-export class MetricChooserController implements DataServiceSubscriber, CodeMapMouseEventServiceSubscriber{
+export class MetricChooserController implements ImportedFilesChangedSubscriber, CodeMapMouseEventServiceSubscriber{
 
     public metricData: MetricData[];
 
@@ -25,13 +26,12 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
 
     /* @ngInject */
     constructor(
-        private dataService: DataService,
         private settingsService: SettingsService,
         private $rootScope: IRootScopeService
 
     ) {
-        this.onDataChanged(dataService.data, null);
-        this.dataService.subscribe(this);
+        //this.onDataChanged(dataService.data, null);
+        CodeChartaService.subscribe(this.$rootScope, this);
         CodeMapMouseEventService.subscribe(this.$rootScope, this);
         this.optionsWithoutStart = {
             connect: true,
@@ -44,8 +44,8 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
         this.sliderPositions = [20, 80];
     }
 
-    public onDataChanged(data: DataModel, event: IAngularEvent) {
-        this.metricData =  data.metricData;
+    public onImportedFilesChanged(importedFiles: CCFile[], metrics: string[], metricData: MetricData[]) {
+        this.metricData =  metricData;
     }
 
     public notify() {
@@ -59,15 +59,15 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
     public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
 
         if(data && data.to && data.to.node && data.to.node.attributes) {
-            this.hoveredAreaValue = data.to.node.attributes[this.settingsService.settings.areaMetric];
-            this.hoveredColorValue = data.to.node.attributes[this.settingsService.settings.colorMetric];
-            this.hoveredHeightValue = data.to.node.attributes[this.settingsService.settings.heightMetric];
+            this.hoveredAreaValue = data.to.node.attributes[this.settingsService.settings.mapSettings.areaMetric];
+            this.hoveredColorValue = data.to.node.attributes[this.settingsService.settings.mapSettings.colorMetric];
+            this.hoveredHeightValue = data.to.node.attributes[this.settingsService.settings.mapSettings.heightMetric];
 
             if(data.to.node.deltas){
 
-                this.hoveredAreaDelta = data.to.node.deltas[this.settingsService.settings.areaMetric];
-                this.hoveredColorDelta = data.to.node.deltas[this.settingsService.settings.colorMetric];
-                this.hoveredHeightDelta = data.to.node.deltas[this.settingsService.settings.heightMetric];
+                this.hoveredAreaDelta = data.to.node.deltas[this.settingsService.settings.mapSettings.areaMetric];
+                this.hoveredColorDelta = data.to.node.deltas[this.settingsService.settings.mapSettings.colorMetric];
+                this.hoveredHeightDelta = data.to.node.deltas[this.settingsService.settings.mapSettings.heightMetric];
 
                 this.hoveredDeltaColor = this.getHoveredDeltaColor();
             }
@@ -98,9 +98,9 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
         };
 
         if (this.hoveredHeightDelta > 0) {
-            return colors[Number(this.settingsService.settings.deltaColorFlipped)];
+            return colors[Number(this.settingsService.settings.appSettings.deltaColorFlipped)];
         } else if (this.hoveredHeightDelta < 0) {
-            return colors[Number(!this.settingsService.settings.deltaColorFlipped)];
+            return colors[Number(!this.settingsService.settings.appSettings.deltaColorFlipped)];
         } else {
             return "inherit";
         }
