@@ -1,4 +1,3 @@
-import angular, {IAngularEvent} from "angular";
 import {queryParamDialog} from "./queryParam.dialog";
 
 export class DialogService {
@@ -6,20 +5,20 @@ export class DialogService {
     public static SELECTOR = "dialogService";
 
     /* @ngInject */
-    constructor(private $rootScope, private $mdDialog) {
+    constructor(private $mdDialog) {
     }
 
-    showQueryParamDialog() {
+    public showQueryParamDialog() {
         this.showCustomDialog(queryParamDialog);
     }
 
-    showCustomDialog(dialog) {
+    public showCustomDialog(dialog) {
         this.$mdDialog.show(
             dialog
         );
     }
 
-    showErrorDialog(
+    public showErrorDialog(
         msg: string = "An error occured.",
         title: string = "Error",
         button: string = "Ok",
@@ -33,7 +32,7 @@ export class DialogService {
         );
     }
 
-    showPromptDialog(
+    public showPromptDialog(
         msg: string,
         initial: string,
         placeholder: string = initial,

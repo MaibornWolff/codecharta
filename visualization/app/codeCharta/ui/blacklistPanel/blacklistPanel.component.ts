@@ -13,22 +13,22 @@ export class BlacklistPanelController implements SettingsServiceSubscriber{
         this.onSettingsChanged(settingsService.settings, null);
     }
 
-    onChange() {
-        this.settingsService.onSettingsChanged();
+    public onChange() {
+        this.settingsService.applySettings();
     }
 
-    onSettingsChanged(settings: Settings, event: Event) {
+    public onSettingsChanged(settings: Settings, event: Event) {
         if(settings.blacklist) {
             this.blacklist = settings.blacklist;
         }
     }
 
-    removeBlacklistEntry(entry: BlacklistItem){
+    public removeBlacklistEntry(entry: BlacklistItem){
         this.codeMapActionsService.removeBlacklistEntry(entry);
         this.onChange();
     }
 
-    sortByExcludes(item: BlacklistItem) {
+    public sortByExcludes(item: BlacklistItem) {
         return (item && item.type == BlacklistType.exclude) ? 0 : 1;
     }
 }

@@ -20,6 +20,52 @@ export class DeltaCalculatorService {
 
     }
 
+    public provideDeltas(leftMap: CodeMap, rightMap: CodeMap, metrics: string[]) {
+
+        //null checks
+        if(!leftMap || !rightMap || !leftMap.nodes || !rightMap.nodes){
+            return;
+        }
+
+        //remove cross origin nodes from maps
+        this.removeCrossOriginNodes(leftMap);
+        this.removeCrossOriginNodes(rightMap);
+
+        //build hash maps for fast search indices
+        let firstLeafHashMap = new Map<string, CodeMapNode>();
+        d3.hierarchy(leftMap.nodes).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
+            firstLeafHashMap.set(node.data.path, node.data);
+        });
+
+        let secondLeafHashMap = new Map<string, CodeMapNode>();
+        d3.hierarchy(rightMap.nodes).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
+            secondLeafHashMap.set(node.data.path, node.data);
+        });
+
+        //insert nodes from the other map
+        this.insertNodesIntoMapsAndHashmaps(firstLeafHashMap, secondLeafHashMap, leftMap, rightMap, metrics);
+        this.insertNodesIntoMapsAndHashmaps(secondLeafHashMap, firstLeafHashMap, rightMap, leftMap, metrics);
+
+        //calculate deltas between leaves
+        firstLeafHashMap.forEach((node, path) => {
+            let otherNode = secondLeafHashMap.get(path);
+            otherNode.deltas = this.calculateAttributeListDelta(node.attributes, otherNode.attributes);
+            node.deltas = this.calculateAttributeListDelta(otherNode.attributes, node.attributes);
+        });
+
+    }
+
+    public removeCrossOriginNodes(map: CodeMap) {
+
+            let root = d3.hierarchy<CodeMapNode>(map.nodes);
+            root.each((node) => {
+                if (node.data.children) {
+                    node.data.children = node.data.children.filter(x => (x.origin === map.fileName));
+                }
+            });
+
+    }
+
     private insertNodesIntoMapsAndHashmaps(firstLeafHashMap: Map<string, CodeMapNode>, secondLeafHashMap: Map<string, CodeMapNode>, firstMap: CodeMap, secondMap: CodeMap, metrics: string[]) {
         firstLeafHashMap.forEach((node, path) => {
             if (!secondLeafHashMap.has(path)) {
@@ -92,52 +138,6 @@ export class DeltaCalculatorService {
             current.children = [];
         }
         current.children.push(node);
-
-    }
-
-    public provideDeltas(leftMap: CodeMap, rightMap: CodeMap, metrics: string[]) {
-
-        //null checks
-        if(!leftMap || !rightMap || !leftMap.nodes || !rightMap.nodes){
-            return;
-        }
-
-        //remove cross origin nodes from maps
-        this.removeCrossOriginNodes(leftMap);
-        this.removeCrossOriginNodes(rightMap);
-
-        //build hash maps for fast search indices
-        let firstLeafHashMap = new Map<string, CodeMapNode>();
-        d3.hierarchy(leftMap.nodes).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
-            firstLeafHashMap.set(node.data.path, node.data);
-        });
-
-        let secondLeafHashMap = new Map<string, CodeMapNode>();
-        d3.hierarchy(rightMap.nodes).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
-            secondLeafHashMap.set(node.data.path, node.data);
-        });
-
-        //insert nodes from the other map
-        this.insertNodesIntoMapsAndHashmaps(firstLeafHashMap, secondLeafHashMap, leftMap, rightMap, metrics);
-        this.insertNodesIntoMapsAndHashmaps(secondLeafHashMap, firstLeafHashMap, rightMap, leftMap, metrics);
-
-        //calculate deltas between leaves
-        firstLeafHashMap.forEach((node, path) => {
-            let otherNode = secondLeafHashMap.get(path);
-            otherNode.deltas = this.calculateAttributeListDelta(node.attributes, otherNode.attributes);
-            node.deltas = this.calculateAttributeListDelta(otherNode.attributes, node.attributes);
-        });
-
-    }
-
-    public removeCrossOriginNodes(map: CodeMap) {
-
-            let root = d3.hierarchy<CodeMapNode>(map.nodes);
-            root.each((node) => {
-                if (node.data.children) {
-                    node.data.children = node.data.children.filter(x => (x.origin === map.fileName));
-                }
-            });
 
     }
 

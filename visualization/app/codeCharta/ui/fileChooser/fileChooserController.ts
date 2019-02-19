@@ -6,6 +6,12 @@ with the additional ones */
 
 /*jshint loopfunc:true */
 
+import {SettingsService} from "../../core/settings/settings.service";
+import {DialogService} from "../dialog/dialog.service";
+import {DataService} from "../../core/data/data.service";
+import {ScenarioService} from "../../core/scenario/scenario.service";
+import {DataLoadingService} from "../../core/data/data.loading.service";
+
 /**
  * Controls the FileChooser
  */
@@ -13,18 +19,14 @@ class FileChooserController {
 
     /* @ngInject */
 
-    /**
-     * @constructor
-     * @param {Scope} $scope
-     * @param {DataLoadingService} dataLoadingService
-     */
     constructor(
         private $scope,
-        private dataLoadingService,
-        private scenarioService,
-        private dataService,
+        private dataLoadingService: DataLoadingService,
+        private scenarioService: ScenarioService,
+        private dataService: DataService,
         private $rootScope,
-        private dialogService
+        private dialogService: DialogService,
+        private settingsService: SettingsService,
     ){
     }
 
@@ -32,17 +34,16 @@ class FileChooserController {
      * called when the selected file changed
      * @param {object} element dom input element
      */
-    fileChanged(element) {
-        let ctx = this;
+    public fileChanged(element) {
         this.$rootScope.$broadcast("add-loading-task");
-        this.$scope.$apply(function() {
-            ctx.dataService.resetMaps();
+        this.$scope.$apply(() => {
+            this.dataService.resetMaps();
             for (let i = 0; i < element.files.length; i++) {
-                (function(file, i) {
+                ((file, i) => {
                     let name = file.name;
                     let reader = new FileReader();
-                    reader.onload = function(e) {
-                        ctx.onNewFileLoaded((<any>e.target).result, i, name, element);
+                    reader.onload = (e) => {
+                        this.onNewFileLoaded((<any>e.target).result, i, name, element);
                     };
                     reader.readAsText(file, "UTF-8");
                 })(element.files[i], i);
@@ -58,12 +59,13 @@ class FileChooserController {
      * @param {number} revision the revision number
      * @param {string} name the filename
      */
-    onNewFileLoaded(data, revision, name, element){
+    public onNewFileLoaded(data, revision, name, element){
         element.value = "";
         //$("#fileChooserPanel").modal("close");
 
         try {
-            data = JSON.parse(data);
+            const parsed = JSON.parse(data);
+            this.setNewData(name, parsed, revision);
         }
         catch (e) {
             this.dialogService.showErrorDialog("Error parsing JSON!" + e);
@@ -72,8 +74,6 @@ class FileChooserController {
         }
 
         this.$rootScope.$broadcast("remove-loading-task");
-        this.setNewData(name, data, revision);
-
     }
 
     /**
@@ -82,7 +82,7 @@ class FileChooserController {
      * @param {object} parsedData
      * @param {number} revision the revision number
      */
-    setNewData(name, parsedData, revision){
+    public setNewData(name, parsedData, revision){
         let ctx = this;
         return this.dataLoadingService.loadMapFromFileContent(name, parsedData, revision).then(
             () => {
@@ -90,6 +90,7 @@ class FileChooserController {
                 ctx.scenarioService.applyScenarioOnce(this.scenarioService.getDefaultScenario());
                 ctx.dataService.setComparisonMap(revision);
                 ctx.dataService.setReferenceMap(revision);
+                ctx.settingsService.applySettings();
 
                 if(!ctx.$scope.$$phase || !ctx.$scope.$root.$$phase) {
                     ctx.$scope.$digest();
@@ -106,7 +107,7 @@ class FileChooserController {
      * prints errors
      * @param {object} result
      */
-    printErrors(result){
+    public printErrors(result){
         this.dialogService.showErrorDialog(JSON.stringify(result, null, "\t"));
     }
     

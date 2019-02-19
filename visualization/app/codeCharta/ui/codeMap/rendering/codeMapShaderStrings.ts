@@ -1,6 +1,6 @@
 declare function require(name:string): string;
 
-export class codeMapShaderStrings {
+export class CodeMapShaderStrings {
 
     public vertexShaderCode: string;
     public fragmentShaderCode: string;

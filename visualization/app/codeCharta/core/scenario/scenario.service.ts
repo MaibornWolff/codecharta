@@ -1,6 +1,5 @@
 "use strict";
 import {Settings, SettingsService} from "../settings/settings.service";
-import {createDefaultScenario} from "./scenario.data";
 import {ThreeOrbitControlsService} from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
 
 export interface Scenario {
@@ -39,14 +38,31 @@ export class ScenarioService {
     }
 
     public applyScenario(scenario: Scenario) {
-        const updatedSettingsUsingScenario = {...this.settingsService.settings, ...scenario.settings};
+        const updatedSettingsUsingScenario = this.updateSettingsUsingScenario(this.settingsService.settings, scenario.settings);
         this.settingsService.applySettings(updatedSettingsUsingScenario);
         if(scenario.autoFitCamera){
-            let _this = this;
-            setTimeout(function(){
-                _this.threeOrbitControlsService.autoFitTo();
+            setTimeout(() => {
+                this.threeOrbitControlsService.autoFitTo();
             },10);
         }
+    }
+
+    private updateSettingsUsingScenario(settings: Settings, scenarioSettings: Partial<Settings>): Settings {
+        let updatedSettings: Settings = settings;
+        if (updatedSettings) {
+            for(let key of Object.keys(updatedSettings)) {
+                if (scenarioSettings.hasOwnProperty(key)) {
+                    if(key == "map") { continue; }
+
+                    if(typeof settings[key] === "object") {
+                        updatedSettings[key] = this.updateSettingsUsingScenario(updatedSettings[key], scenarioSettings[key]);
+                    } else {
+                        updatedSettings[key] = scenarioSettings[key];
+                    }
+                }
+            }
+        }
+        return updatedSettings;
     }
 
     public getScenarios(): Scenario[] {
@@ -63,7 +79,7 @@ export class ScenarioService {
     }
 
     public getDefaultScenario(): Scenario {
-        return createDefaultScenario();
+        return this.scenarios.find(s => s.name == "Complexity");
     }
 
 }

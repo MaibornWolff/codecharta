@@ -5,7 +5,7 @@ export class OptionsPanelController {
 
     /* @ngInject */
     constructor(
-        private settingsService: SettingsService
+        private _settingsService_: SettingsService
     ) {
     }
 

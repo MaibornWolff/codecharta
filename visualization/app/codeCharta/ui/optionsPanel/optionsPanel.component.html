@@ -1,26 +1,26 @@
 <md-input-container class="md-block">
-    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.enableEdgeArrows" ng-change="$ctrl.settingsService.onSettingsChanged()">
+    <md-checkbox class="md-primary" ng-model="$ctrl._settingsService_.settings.enableEdgeArrows" ng-change="$ctrl._settingsService_.applySettings()">
         Enable Edge Arrows
     </md-checkbox>
 </md-input-container>
 
 <md-input-container class="md-block">
-    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.hideFlatBuildings" ng-change="$ctrl.settingsService.onSettingsChanged()">
+    <md-checkbox class="md-primary" ng-model="$ctrl._settingsService_.settings.hideFlatBuildings" ng-change="$ctrl._settingsService_.applySettings()">
         Hide Flattened Buildings
     </md-checkbox>
 </md-input-container>
 
 <md-input-container class="md-block">
-    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.maximizeDetailPanel" ng-change="$ctrl.settingsService.onSettingsChanged()">
+    <md-checkbox class="md-primary" ng-model="$ctrl._settingsService_.settings.maximizeDetailPanel" ng-change="$ctrl._settingsService_.applySettings()">
         Maximize Detail Panel
     </md-checkbox>
 </md-input-container>
 
 <md-input-container class="md-block">
-    <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.isWhiteBackground" ng-change="$ctrl.settingsService.onSettingsChanged()">
+    <md-checkbox class="md-primary" ng-model="$ctrl._settingsService_.settings.isWhiteBackground" ng-change="$ctrl._settingsService_.applySettings()">
         White Background
     </md-checkbox>
 </md-input-container>
 
-<reset-settings-button-component settings-names="showDependencies, maximizeDetailPanel, isWhiteBackground"></reset-settings-button-component>
+<reset-settings-button-component settings-names="enableEdgeArrows, hideFlatBuildings, maximizeDetailPanel, isWhiteBackground"></reset-settings-button-component>
 

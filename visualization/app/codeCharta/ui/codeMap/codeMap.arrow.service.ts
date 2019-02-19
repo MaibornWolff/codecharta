@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import {node} from "./rendering/node";
-import {renderSettings} from "./rendering/renderSettings";
+import {Node} from "./rendering/node";
+import {RenderSettings} from "./rendering/renderSettings";
 import {Edge} from "../../core/data/model/CodeMap";
 import {ThreeSceneService} from "./threeViewer/threeSceneService";
 
@@ -21,10 +21,10 @@ export class CodeMapArrowService {
         }
     }
 
-    public addEdgeArrowsFromOrigin(origin: node, nodes: node[], deps: Edge[], settings: renderSettings) {
+    public addEdgeArrowsFromOrigin(origin: Node, nodes: Node[], deps: Edge[], settings: RenderSettings) {
         let resDeps: Edge[] = [];
         let originPath = this.getPathFromNode(origin);
-        for (var dep of deps) {
+        for (let dep of deps) {
             if (dep.fromNodeName === originPath) {
                 resDeps.push(dep);
             }
@@ -32,13 +32,13 @@ export class CodeMapArrowService {
         this.addEdgeArrows(nodes, resDeps, settings);
     }
 
-    public addEdgeArrows(nodes: node[], deps: Edge[], settings: renderSettings) {
+    public addEdgeArrows(nodes: Node[], deps: Edge[], settings: RenderSettings) {
 
         let map = this.getNodepathMap(nodes);
 
-        for (var dep of deps) {
-            let originNode: node = map.get(dep.fromNodeName);
-            let targetNode: node = map.get(dep.toNodeName);
+        for (let dep of deps) {
+            let originNode: Node = map.get(dep.fromNodeName);
+            let targetNode: Node = map.get(dep.toNodeName);
             if (originNode && targetNode) {
                 this.addArrow(targetNode, originNode, settings);
             }
@@ -46,27 +46,7 @@ export class CodeMapArrowService {
 
     }
 
-    private getNodepathMap(nodes: node[]): Map<string, node> {
-        let map = new Map<string, node>();
-
-        for (let node of nodes) {
-            map.set(this.getPathFromNode(node), node);
-        }
-
-        return map;
-    }
-
-    private getPathFromNode(node: node): string {
-        let current: node = node;
-        let path = "";
-        while (current) {
-            path = "/" + current.name + path;
-            current = current.parent;
-        }
-        return path;
-    }
-
-    public addArrow(arrowTargetNode: node, arrowOriginNode: node, settings: renderSettings): void {
+    public addArrow(arrowTargetNode: Node, arrowOriginNode: Node, settings: RenderSettings): void {
 
         if (arrowTargetNode.attributes && arrowTargetNode.attributes[settings.heightKey] && arrowOriginNode.attributes && arrowOriginNode.attributes[settings.heightKey]) {
 
@@ -100,6 +80,34 @@ export class CodeMapArrowService {
         }
     }
 
+    public scale(x: number, y: number, z: number) {
+        for (let arrow of this.arrows) {
+            arrow.scale.x = x;
+            arrow.scale.y = y;
+            arrow.scale.z = z;
+        }
+    }
+
+    private getNodepathMap(nodes: Node[]): Map<string, Node> {
+        let map = new Map<string, Node>();
+
+        for (let node of nodes) {
+            map.set(this.getPathFromNode(node), node);
+        }
+
+        return map;
+    }
+
+    private getPathFromNode(node: Node): string {
+        let current: Node = node;
+        let path = "";
+        while (current) {
+            path = "/" + current.name + path;
+            current = current.parent;
+        }
+        return path;
+    }
+
     private makeArrowFromBezier(bezier: THREE.CubicBezierCurve3,
                                 hex: number = 0,
                                 headLength: number = 10,
@@ -123,14 +131,6 @@ export class CodeMapArrowService {
         //combine
         curveObject.add(arrowHelper);
         return curveObject;
-    }
-
-    public scale(x: number, y: number, z: number) {
-        for (let arrow of this.arrows) {
-            arrow.scale.x = x;
-            arrow.scale.y = y;
-            arrow.scale.z = z;
-        }
     }
 
 }

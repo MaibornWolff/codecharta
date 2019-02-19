@@ -85,7 +85,7 @@ describe("detailPanelController", function() {
     });
 
     it("should setSelectedDetails when valid node is selected",() => {
-        var data = {
+        const data = {
             to: {
                 node: "somenode"
             }
@@ -127,7 +127,7 @@ describe("detailPanelController", function() {
     });
 
     it("should setHoveredDetails when valid node is hovered",() => {
-        var data = {
+        const data = {
             to: {
                 node: "somenode"
             }

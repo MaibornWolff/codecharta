@@ -1,6 +1,5 @@
 import {SettingsService} from "../../core/settings/settings.service";
 import "./resetSettingsButton.component.scss";
-import {ScenarioService} from "../../core/scenario/scenario.service";
 
 export class ResetSettingsButtonController {
 
@@ -8,20 +7,20 @@ export class ResetSettingsButtonController {
 
     /* @ngInject */
     constructor(
-        private settingsService: SettingsService,
-        private scenarioService: ScenarioService
+        private settingsService: SettingsService
     ) {
 
     }
 
-    onClick() {
+    public onClick() {
         this.updateSettings(this.settingsNames);
     }
 
     public updateSettings(settingsList: string = this.settingsNames) {
-        settingsList = settingsList.replace(/ /g,"");
-        settingsList = settingsList.replace(/\n/g,"");
-        let tokens: string[] = settingsList.split(",");
+        const sanitizedSettingsList = settingsList.replace(/ /g,"").replace(/\n/g,"");
+        const tokens: string[] = sanitizedSettingsList.split(",");
+        const settings = this.settingsService.settings;
+        const defaultSettings = this.settingsService.getDefaultSettings();
 
         tokens.forEach((token) => {
 
@@ -29,8 +28,8 @@ export class ResetSettingsButtonController {
 
             if (steps.length > 1) {
 
-                let writeSettingsPointer = this.settingsService.settings;
-                let readSettingsPointer = this.scenarioService.getDefaultScenario().settings;
+                let writeSettingsPointer = settings;
+                let readSettingsPointer = defaultSettings;
 
                 steps.forEach((step, index) => {
 
@@ -44,19 +43,12 @@ export class ResetSettingsButtonController {
                         }
                     }
                 });
-
             } else {
-                this.settingsService.settings[token] = this.scenarioService.getDefaultScenario().settings[token];
+                this.settingsService.settings[token] = defaultSettings[token];
             }
-
         });
-
-
         this.settingsService.applySettings();
-
     }
-
-
 }
 
 export const resetSettingsButtonComponent = {

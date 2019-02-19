@@ -2,12 +2,12 @@ export class LayoutSwitcherController {
 
     private static TIMEOUT_IN_MS = 200;
 
-    private layouts = "";
-
     public viewModel = {
         states: [],
         selectedState: ""
     };
+
+    private layouts = "";
 
     private stateService;
 
@@ -28,7 +28,7 @@ export class LayoutSwitcherController {
 
     }
 
-    onLayoutChange(state: string) {
+    public onLayoutChange(state: string) {
         this.stateService.go(state);
     }
 

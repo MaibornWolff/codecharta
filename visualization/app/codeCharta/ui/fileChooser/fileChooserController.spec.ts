@@ -52,7 +52,8 @@ describe("file chooser controller", ()=>{
             scenarioService,
             dataService,
             $rootScope,
-            dialogService
+            dialogService,
+            settingsService
         );
     });
 

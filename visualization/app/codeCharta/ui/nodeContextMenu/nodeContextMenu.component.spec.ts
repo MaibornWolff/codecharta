@@ -6,7 +6,6 @@ import { SettingsService } from "../../core/settings/settings.service";
 import { CodeMapUtilService } from "../codeMap/codeMap.util.service";
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service";
 import { NodeContextMenuController } from "./nodeContextMenu.component";
-import angular from "angular";
 
 describe("node context menu", () => {
 
@@ -56,7 +55,6 @@ describe("node context menu", () => {
             services.$timeout,
             services.$window,
             services.$rootScope,
-            services.settingsService,
             services.codeMapActionsService,
             services.codeMapUtilService
         );

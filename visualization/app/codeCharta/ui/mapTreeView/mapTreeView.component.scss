@@ -17,7 +17,7 @@ map-tree-view-component {
         margin-left: 22px;
     }
 
-    .tree-element-label:hover {
+    .tree-element-label:hover, .tree-element-label.hovered {
         background-color: #efefef;
     }
 

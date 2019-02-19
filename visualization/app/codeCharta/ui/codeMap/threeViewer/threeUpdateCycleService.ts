@@ -7,17 +7,14 @@ export class ThreeUpdateCycleService {
 
     private updatables: Function[] = [];
 
-    constructor() {
-    }
-
-    register(onUpdate: Function) {
+    public register(onUpdate: Function) {
         this.updatables.push(onUpdate);
     }
 
     /**
      * Updates all registered callback functions
      */
-    update() {
+    public update() {
         this.updatables.forEach((u: Function)=> {
             u();
         });

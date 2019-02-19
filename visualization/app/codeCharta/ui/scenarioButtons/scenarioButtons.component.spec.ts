@@ -91,7 +91,7 @@ describe("ScenarioButtonsController", () => {
         tooltipServiceMock.getTooltipTextByKey.mockImplementation((key) => {
             if(key === tooltipKey) {
                 return tooltipValue;
-            } else return "";
+            } else { return ""; }
         });
         expect(scenarioButtonsController.getScenarioTooltipTextByKey(tooltipKey)).toBe(tooltipValue);
         expect(scenarioButtonsController.getScenarioTooltipTextByKey("another")).toBe("");

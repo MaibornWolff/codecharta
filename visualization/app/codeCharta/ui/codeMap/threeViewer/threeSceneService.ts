@@ -1,24 +1,22 @@
 import * as THREE from "three";
-import {Scene} from "three";
-import {Group} from "three";
-import {CodeMapMesh} from "../rendering/codeMapMesh";
+import { Scene } from "three";
+import { Group } from "three";
+import { CodeMapMesh } from "../rendering/codeMapMesh";
 
 /**
  * A service which manages the Three.js scene in an angular way.
  */
 class ThreeSceneService {
-
     public static SELECTOR = "threeSceneService";
 
-    scene: Scene;
-    private lights: Group;
+    public scene: Scene;
     public labels: Group;
     public edgeArrows: Group;
     public mapGeometry: Group;
+    private lights: Group;
     private mapMesh: CodeMapMesh;
 
     constructor() {
-
         this.scene = new THREE.Scene();
 
         this.mapGeometry = new THREE.Group();
@@ -29,13 +27,12 @@ class ThreeSceneService {
         this.initLights();
 
         this.scene.add(this.mapGeometry);
-        this.scene.add(this.lights);
         this.scene.add(this.edgeArrows);
         this.scene.add(this.labels);
-
+        this.scene.add(this.lights);
     }
 
-    initLights() {
+    public initLights() {
         const ambilight = new THREE.AmbientLight(0x707070); // soft white light
         const light1 = new THREE.DirectionalLight(0xe0e0e0, 1);
         light1.position.set(50, 10, 8).normalize();
@@ -62,26 +59,23 @@ class ThreeSceneService {
         this.lights.add(light2);
     }
 
-    setMapMesh(mesh: CodeMapMesh, size: number) {
+    public setMapMesh(mesh: CodeMapMesh, size: number) {
         this.mapMesh = mesh;
 
         while (this.mapGeometry.children.length > 0) {
-            this.mapGeometry.remove(
-                this.mapGeometry.children[0]
-            );
+            this.mapGeometry.remove(this.mapGeometry.children[0]);
         }
-
-        this.mapGeometry.add(this.mapMesh.getThreeMesh());
 
         this.mapGeometry.position.x = -size / 2.0;
         this.mapGeometry.position.y = 0.0;
         this.mapGeometry.position.z = -size / 2.0;
+
+        this.mapGeometry.add(this.mapMesh.getThreeMesh());
     }
 
-    getMapMesh(): CodeMapMesh {
+    public getMapMesh(): CodeMapMesh {
         return this.mapMesh;
     }
 }
 
-export {ThreeSceneService};
-
+export { ThreeSceneService };

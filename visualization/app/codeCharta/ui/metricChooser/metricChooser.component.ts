@@ -6,7 +6,7 @@ import {
     CodeMapBuildingTransition, CodeMapMouseEventService,
     CodeMapMouseEventServiceSubscriber
 } from "../codeMap/codeMap.mouseEvent.service";
-import {codeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
+import {CodeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
 
 export class MetricChooserController implements DataServiceSubscriber, CodeMapMouseEventServiceSubscriber{
 
@@ -32,7 +32,7 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
     ) {
         this.onDataChanged(dataService.data, null);
         this.dataService.subscribe(this);
-        CodeMapMouseEventService.subscribe($rootScope, this);
+        CodeMapMouseEventService.subscribe(this.$rootScope, this);
         this.optionsWithoutStart = {
             connect: true,
             range: {
@@ -44,7 +44,7 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
         this.sliderPositions = [20, 80];
     }
 
-    onDataChanged(data: DataModel, event: IAngularEvent) {
+    public onDataChanged(data: DataModel, event: IAngularEvent) {
         this.metricData =  data.metricData;
     }
 
@@ -52,10 +52,11 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
         this.settingsService.applySettings();
     }
 
-    onBuildingRightClicked(building: codeMapBuilding, x: number, y: number, event: IAngularEvent) {
+    public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent) {
+        // unused
     }
 
-    onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+    public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
 
         if(data && data.to && data.to.node && data.to.node.attributes) {
             this.hoveredAreaValue = data.to.node.attributes[this.settingsService.settings.areaMetric];
@@ -86,7 +87,8 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
         }
     }
 
-    onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+    public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+        // unused
     }
 
     private getHoveredDeltaColor() {

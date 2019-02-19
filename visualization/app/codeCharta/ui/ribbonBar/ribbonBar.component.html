@@ -5,9 +5,11 @@
             <file-chooser-directive></file-chooser-directive>
             <revision-chooser-file-drop-down-component></revision-chooser-file-drop-down-component>
         </div>
-        <span class="section-title" ng-if="$ctrl.settingsService.settings.mode != 'Delta'">File</span>
-        <span class="section-title first" ng-if="$ctrl.settingsService.settings.mode  == 'Delta'">File</span>
-        <span class="section-title second" ng-if="$ctrl.settingsService.settings.mode  == 'Delta'">Compare</span>
+        <span class="section-title" id="section-title" ng-click="$ctrl.toggle()">
+            <span ng-if="$ctrl.settingsService.settings.mode != 'Delta'">File</span>
+            <span ng-if="$ctrl.settingsService.settings.mode == 'Delta'" class="first">File</span> 
+            <span ng-if="$ctrl.settingsService.settings.mode == 'Delta'" class="second">Compare</span>
+        </span>
         <div class="section-body">
             <revision-chooser-component></revision-chooser-component>
             <scenario-drop-down-component></scenario-drop-down-component>
@@ -18,7 +20,7 @@
         <div class="section-header">
             <area-metric-chooser-component></area-metric-chooser-component>
         </div>
-        <span class="section-title">Size</span>
+        <span class="section-title" ng-click="$ctrl.toggle()">Size</span>
         <div class="section-body">
             <md-slider-container class="md-block">
                 <span>Margin</span>
@@ -29,7 +31,7 @@
                 </md-input-container>
             </md-slider-container>
             <md-input-container class="md-block">
-                <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.dynamicMargin" ng-change="$ctrl.settingsService.onSettingsChanged()">
+                <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.dynamicMargin" ng-change="$ctrl.settingsService.applySettings()">
                     Dynamic Margin
                 </md-checkbox>
             </md-input-container>
@@ -41,7 +43,7 @@
         <div class="section-header">
             <height-metric-chooser-component></height-metric-chooser-component>
         </div>
-        <span class="section-title">Height</span>
+        <span class="section-title" ng-click="$ctrl.toggle()">Height</span>
         <div class="section-body">
             <md-slider-container class="md-block">
                 <span>Labels</span>
@@ -60,7 +62,7 @@
                 </md-input-container>
             </md-slider-container>
             <md-input-container class="md-block" ng-if="$ctrl.settingsService.settings.mode != $ctrl.deltaMode">
-                <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.invertHeight" ng-change="$ctrl.settingsService.onSettingsChanged()">
+                <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.invertHeight" ng-change="$ctrl.settingsService.applySettings()">
                     Invert Height
                 </md-checkbox>
             </md-input-container>
@@ -72,7 +74,7 @@
         <div class="section-header">
             <color-metric-chooser-component></color-metric-chooser-component>
         </div>
-        <span class="section-title">Color</span>
+        <span class="section-title" ng-click="$ctrl.toggle()">Color</span>
         <div class="section-body">
             <color-settings-panel-component></color-settings-panel-component>
             <reset-settings-button-component settings-names="neutralColorRange.flipped, neutralColorRange.from, neutralColorRange.to, deltaColorFlipped, whiteColorBuildings"></reset-settings-button-component>
@@ -92,6 +94,6 @@
     </div>
 </md-card>
 
-<md-button id="toggle-ribbon-bar-fab" class="md-fab md-primary" aria-label="Toggle Ribbon Bar" ng-click="$ctrl.toggle()">
+<md-button id="toggle-ribbon-bar-fab" class="md-fab md-primary" aria-label="Toggle Ribbon Bar" ng-click="$ctrl.toggle()" ng-mouseover="$ctrl.hoverToggle()" ng-mouseleave="$ctrl.unhoverToggle()">
     <i class="fa fa-angle-down"></i>
 </md-button>

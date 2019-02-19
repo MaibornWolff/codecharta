@@ -1,74 +1,74 @@
 import * as THREE from "three";
 
-import {codeMapShaderStrings} from "./codeMapShaderStrings";
-import {geometryGenerator, buildResult} from "./geometryGenerator";
-import {codeMapGeometricDescription} from "./codeMapGeometricDescription";
-import {intersectionResult} from "./codeMapGeometricDescription";
-import {codeMapBuilding} from "./codeMapBuilding";
-import {renderingUtil} from "./renderingUtil";
-import {node} from "./node";
+import {CodeMapShaderStrings} from "./codeMapShaderStrings";
+import {GeometryGenerator, BuildResult} from "./geometryGenerator";
+import {CodeMapGeometricDescription} from "./codeMapGeometricDescription";
+import {IntersectionResult} from "./codeMapGeometricDescription";
+import {CodeMapBuilding} from "./codeMapBuilding";
+import {RenderingUtil} from "./renderingUtil";
+import {Node} from "./node";
 
 import {MapColors} from "./renderSettings";
-import {renderSettings} from "./renderSettings";
+import {RenderSettings} from "./renderSettings";
 
-interface threeUniform {
+interface ThreeUniform {
     type : string;
     value : any;
 }
 
-interface codeMapLightingParams {
-    numHighlights : threeUniform;
-    numSelections : threeUniform;
-    highlightColor : threeUniform;
-    highlightedIndices : threeUniform;
-    selectedColor : threeUniform;
-    selectedIndices : threeUniform;
-    emissive : threeUniform;
-    deltaColorPositive : threeUniform;
-    deltaColorNegative : threeUniform;
+interface CodeMapLightingParams {
+    numHighlights : ThreeUniform;
+    numSelections : ThreeUniform;
+    highlightColor : ThreeUniform;
+    highlightedIndices : ThreeUniform;
+    selectedColor : ThreeUniform;
+    selectedIndices : ThreeUniform;
+    emissive : ThreeUniform;
+    deltaColorPositive : ThreeUniform;
+    deltaColorNegative : ThreeUniform;
 }
 
-export interface mousePos {
+export interface MousePos {
     x : number;
     y : number;
 }
 
 export class CodeMapMesh {
+
+    public settings : RenderSettings;
     private threeMesh : THREE.Mesh;
     private material : THREE.ShaderMaterial;
-    private geomGen : geometryGenerator;
-    private mapGeomDesc : codeMapGeometricDescription;
+    private geomGen : GeometryGenerator;
+    private mapGeomDesc : CodeMapGeometricDescription;
 
-    private nodes : node[];
+    private nodes : Node[];
 
-    private currentlyHighlighted : codeMapBuilding[] | null;
-    private currentlySelected : codeMapBuilding[] | null;
+    private currentlyHighlighted : CodeMapBuilding[] | null;
+    private currentlySelected : CodeMapBuilding[] | null;
 
-    public settings : renderSettings;
-
-    private lightingParams : codeMapLightingParams = {
+    private lightingParams : CodeMapLightingParams = {
         numHighlights : {type : "f", value : 0.0},
-        highlightColor : {type : "v3", value : renderingUtil.colorToVec3(0x666666)},
+        highlightColor : {type : "v3", value : RenderingUtil.colorToVec3(0x666666)},
         highlightedIndices : {type : "fv1", value : []},
 
         numSelections : {type : "f", value : 0.0},
-        selectedColor : {type : "f", value : renderingUtil.colorToVec3(MapColors.selected)},
+        selectedColor : {type : "f", value : RenderingUtil.colorToVec3(MapColors.selected)},
         selectedIndices : {type : "fv1", value : []},
 
-        deltaColorPositive : {type : "v3", value : renderingUtil.colorToVec3(MapColors.positiveDelta)},
-        deltaColorNegative : {type : "v3", value : renderingUtil.colorToVec3(MapColors.negativeDelta)},
+        deltaColorPositive : {type : "v3", value : RenderingUtil.colorToVec3(MapColors.positiveDelta)},
+        deltaColorNegative : {type : "v3", value : RenderingUtil.colorToVec3(MapColors.negativeDelta)},
 
         emissive : {type : "v3", value : new THREE.Vector3(0.0, 0.0, 0.0)}
     };
 
-    constructor(nodes : node[], settings : renderSettings)
+    constructor(nodes : Node[], settings : RenderSettings)
     {
         this.nodes = nodes;
 
         this.initMaterial(settings);
 
-        this.geomGen = new geometryGenerator();
-        let buildRes : buildResult = this.geomGen.build(this.nodes, this.material, settings);
+        this.geomGen = new GeometryGenerator();
+        let buildRes : BuildResult = this.geomGen.build(this.nodes, this.material, settings);
 
         this.threeMesh = buildRes.mesh;
         this.mapGeomDesc = buildRes.desc;
@@ -76,76 +76,44 @@ export class CodeMapMesh {
         this.settings = settings;
     }
 
-    private initMaterial(settings : renderSettings) : void
-    {
-
-        if(settings.deltaColorFlipped) {
-            this.setDeltaColorsFlipped();
-        } else {
-            this.setDeltaColorsUnflipped();
-        }
-
-        let uniforms = THREE.UniformsUtils.merge([THREE.UniformsLib["lights"], this.lightingParams]);
-
-        let shaderCode : codeMapShaderStrings = new codeMapShaderStrings();
-
-        this.material =  new THREE.ShaderMaterial({
-            vertexShader: shaderCode.vertexShaderCode,
-            fragmentShader: shaderCode.fragmentShaderCode,
-            lights : true,
-            uniforms : uniforms
-        });
-    }
-
-    private setDeltaColorsFlipped() {
-        this.lightingParams.deltaColorPositive = {type : "v3", value : renderingUtil.colorToVec3(MapColors.negativeDelta)};
-        this.lightingParams.deltaColorNegative = {type : "v3", value : renderingUtil.colorToVec3(MapColors.positiveDelta)};
-    }
-
-
-    private setDeltaColorsUnflipped() {
-        this.lightingParams.deltaColorPositive = {type : "v3", value : renderingUtil.colorToVec3(MapColors.positiveDelta)};
-        this.lightingParams.deltaColorNegative = {type : "v3", value : renderingUtil.colorToVec3(MapColors.negativeDelta)};
-    }
-
     public getThreeMesh() : THREE.Mesh {
         return this.threeMesh;
     }
 
-    public setHighlighted(buildings : codeMapBuilding[], color? : number)
+    public setHighlighted(buildings : CodeMapBuilding[], color? : number)
     {
         //noinspection TypeScriptUnresolvedVariable
-        this.material.uniforms.highlightedIndices.value = buildings.map((b : codeMapBuilding) => {return b.id;});
+        this.material.uniforms.highlightedIndices.value = buildings.map((b : CodeMapBuilding) => {return b.id;});
         //noinspection TypeScriptUnresolvedVariable
         this.material.uniforms.numHighlights.value = buildings.length;
 
         if (color) {
-            this.lightingParams.highlightColor.value = renderingUtil.colorToVec3(color);
+            this.lightingParams.highlightColor.value = RenderingUtil.colorToVec3(color);
         }
 
         this.currentlyHighlighted = buildings;
     }
 
-    public setSelected(buildings : codeMapBuilding[], color? : number)
+    public setSelected(buildings : CodeMapBuilding[], color? : number)
     {
         //noinspection TypeScriptUnresolvedVariable
-        this.material.uniforms.selectedIndices.value = buildings.map((b : codeMapBuilding) => {return b.id;});
+        this.material.uniforms.selectedIndices.value = buildings.map((b : CodeMapBuilding) => {return b.id;});
         //noinspection TypeScriptUnresolvedVariable
         this.material.uniforms.numSelections.value  = buildings.length;
         
         if (color) {
-            this.lightingParams.selectedColor.value = renderingUtil.colorToVec3(color);
+            this.lightingParams.selectedColor.value = RenderingUtil.colorToVec3(color);
         }
 
         this.currentlySelected = buildings;
     }
 
-    public getCurrentlyHighlighted() : codeMapBuilding[] | null
+    public getCurrentlyHighlighted() : CodeMapBuilding[] | null
     {
         return this.currentlyHighlighted;
     }
 
-    public getCurrentlySelected() : codeMapBuilding[] | null
+    public getCurrentlySelected() : CodeMapBuilding[] | null
     {
         return this.currentlySelected;
     }
@@ -164,22 +132,12 @@ export class CodeMapMesh {
         this.currentlySelected = null;
     }
 
-    public getMeshDescription() : codeMapGeometricDescription
+    public getMeshDescription() : CodeMapGeometricDescription
     {
         return this.mapGeomDesc;
     }
 
-    private calculatePickingRay(mouse : mousePos, camera : THREE.Camera) : THREE.Ray
-    {
-
-        let ray : THREE.Ray = new THREE.Ray();
-        ray.origin.setFromMatrixPosition(camera.matrixWorld);
-        ray.direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(ray.origin).normalize();
-
-        return ray;
-    }
-
-    public checkMouseRayMeshIntersection(mouse : mousePos, camera : THREE.Camera) : intersectionResult
+    public checkMouseRayMeshIntersection(mouse : MousePos, camera : THREE.Camera) : IntersectionResult
     {
         let ray : THREE.Ray = this.calculatePickingRay(mouse, camera);
         return this.getMeshDescription().intersect(ray);
@@ -188,5 +146,47 @@ export class CodeMapMesh {
     public setScale(x : number, y : number, z : number)
     {
         this.mapGeomDesc.setScales(new THREE.Vector3(x, y, z));
+    }
+
+    private initMaterial(settings : RenderSettings) : void
+    {
+
+        if(settings.deltaColorFlipped) {
+            this.setDeltaColorsFlipped();
+        } else {
+            this.setDeltaColorsUnflipped();
+        }
+
+        let uniforms = THREE.UniformsUtils.merge([THREE.UniformsLib["lights"], this.lightingParams]);
+
+        let shaderCode : CodeMapShaderStrings = new CodeMapShaderStrings();
+
+        this.material =  new THREE.ShaderMaterial({
+            vertexShader: shaderCode.vertexShaderCode,
+            fragmentShader: shaderCode.fragmentShaderCode,
+            lights : true,
+            uniforms : uniforms
+        });
+    }
+
+    private setDeltaColorsFlipped() {
+        this.lightingParams.deltaColorPositive = {type : "v3", value : RenderingUtil.colorToVec3(MapColors.negativeDelta)};
+        this.lightingParams.deltaColorNegative = {type : "v3", value : RenderingUtil.colorToVec3(MapColors.positiveDelta)};
+    }
+
+
+    private setDeltaColorsUnflipped() {
+        this.lightingParams.deltaColorPositive = {type : "v3", value : RenderingUtil.colorToVec3(MapColors.positiveDelta)};
+        this.lightingParams.deltaColorNegative = {type : "v3", value : RenderingUtil.colorToVec3(MapColors.negativeDelta)};
+    }
+
+    private calculatePickingRay(mouse : MousePos, camera : THREE.Camera) : THREE.Ray
+    {
+
+        let ray : THREE.Ray = new THREE.Ray();
+        ray.origin.setFromMatrixPosition(camera.matrixWorld);
+        ray.direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(ray.origin).normalize();
+
+        return ray;
     }
 }

@@ -6,8 +6,9 @@ import { DownloadService } from "../../core/download/download.service";
 export class RibbonBarController {
 
     private collapsingElements = $("code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab");
+    private toggleElements = $("ribbon-bar-component .section-title");
     private isExpanded: boolean = false;
-    private deltaMode = KindOfMap.Delta;
+    private _deltaMode = KindOfMap.Delta;
 
     /* @ngInject */
     constructor(
@@ -25,7 +26,7 @@ export class RibbonBarController {
         this.settingsService.applySettings();
     }
 
-    toggle() {
+    public toggle() {
         if (!this.isExpanded) {
             this.expand();
         } else {
@@ -41,6 +42,14 @@ export class RibbonBarController {
     public collapse() {
         this.isExpanded = false;
         this.collapsingElements.removeClass("expanded");
+    }
+
+    public hoverToggle() {
+        this.toggleElements.addClass("toggle-hovered")
+    }
+
+    public unhoverToggle() {
+        this.toggleElements.removeClass("toggle-hovered")
     }
 
 }
