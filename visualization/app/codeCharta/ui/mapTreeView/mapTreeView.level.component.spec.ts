@@ -6,9 +6,6 @@ import {CodeMapNode, BlacklistType} from "../../core/data/model/CodeMap";
 import {IRootScopeService} from "angular";
 import "./mapTreeView";
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper";
-import * as marked from "marked";
-import Code = marked.Tokens.Code;
-import {ColorService} from "../../core/color/color.service";
 
 describe("MapTreeViewLevelController", () => {
 
@@ -22,7 +19,6 @@ describe("MapTreeViewLevelController", () => {
     let codeMapActionsService: CodeMapActionsService;
     let settingsServiceMock: SettingsService;
     let codeMapUtilService: CodeMapUtilService;
-    let colorService: ColorService;
     let simpleHierarchy: CodeMapNode;
 
     function mockEverything() {
@@ -97,8 +93,7 @@ describe("MapTreeViewLevelController", () => {
         codeMapUtilService = new CodeMapUtilService(settingsServiceMock);
         settingsServiceMock.settings.map.nodes = simpleHierarchy;
         codeMapActionsService = new CodeMapActionsService(settingsServiceMock, threeOrbitControlsService, $timeout);
-        colorService = new ColorService();
-        mapTreeViewLevelController = new MapTreeViewLevelController($rootScope, codeMapActionsService, settingsServiceMock, colorService);
+        mapTreeViewLevelController = new MapTreeViewLevelController($rootScope, codeMapActionsService, settingsServiceMock);
     }
 
     beforeEach(function() {
@@ -115,7 +110,7 @@ describe("MapTreeViewLevelController", () => {
         it("Return the markinColor if the matching markedPackage", () => {
             mapTreeViewLevelController.node = { path: "/root/node/path", type: "Folder" };
             mapTreeViewLevelController.settingsService.settings.markedPackages = [{
-                path: "/root/node/path", color: "0x123FDE"
+                path: "/root/node/path", color: "#123FDE"
             }];
             expect(mapTreeViewLevelController.getMarkingColor()).toBe("#123FDE");
         });

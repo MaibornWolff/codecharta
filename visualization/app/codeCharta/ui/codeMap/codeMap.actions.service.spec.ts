@@ -2,7 +2,6 @@ import {CodeMapActionsService} from "./codeMap.actions.service";
 import {CodeMapNode, Edge, BlacklistItem, BlacklistType} from "../../core/data/model/CodeMap";
 import {MarkedPackage, SettingsService} from "../../core/settings/settings.service";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
-import {ColorService} from "../../core/color/color.service";
 
 jest.mock("../../core/settings/settings.service");
 
@@ -139,8 +138,7 @@ describe("CodeMapActionService", ()=>{
         codeMapActionService = new CodeMapActionsService(
             settingsService,
             new ThreeOrbitControlsService(),
-            $timeout,
-            new ColorService());
+            $timeout);
 
         nodeA = simpleHiddenHierarchy.children[0];
         nodeB = simpleHiddenHierarchy.children[1];
@@ -158,7 +156,6 @@ describe("CodeMapActionService", ()=>{
         let nodeAChildB: CodeMapNode;
 
         function getMarkedPackage(path: string, color: string): MarkedPackage {
-            color = codeMapActionService.colorService.convertHexTo0xString(color);
             return {path: path, color: color, attributes: {}};
         }
 

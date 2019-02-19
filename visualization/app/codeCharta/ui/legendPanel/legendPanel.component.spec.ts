@@ -3,7 +3,6 @@ import {SettingsService} from "../../core/settings/settings.service";
 import {DataService} from "../../core/data/data.service";
 import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
-import {ColorService} from "../../core/color/color.service";
 
 describe("LegendPanelController", () => {
 
@@ -12,10 +11,9 @@ describe("LegendPanelController", () => {
     let settingsServiceMock: SettingsService;
     let dataServiceMock: DataService;
     let simpleHierarchy: CodeMapNode;
-    let colorService: ColorService;
 
     function rebuildSUT() {
-        legendPanelController = new LegendPanelController($timeout, settingsServiceMock, dataServiceMock, colorService);
+        legendPanelController = new LegendPanelController($timeout, settingsServiceMock, dataServiceMock);
     }
 
     function mockEverything() {
@@ -40,8 +38,6 @@ describe("LegendPanelController", () => {
         }));
 
         dataServiceMock = new DataServiceMock();
-
-        colorService = new ColorService();
 
         rebuildSUT();
     }
@@ -104,10 +100,10 @@ describe("LegendPanelController", () => {
         });
 
         it("set correct markingPackage in Legend", () => {
-            settingsServiceMock.settings.markedPackages = [{color: 0xff0000, path: "/root", attributes: {}}];
+            settingsServiceMock.settings.markedPackages = [{color: "#FF0000", path: "/root", attributes: {}}];
             const expectedPackageLists: PackageList[] = [{
                 colorPixel: "data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
-                markedPackages: [{color: 0xff0000, path: "/root", attributes: {name: "/root"}}]
+                markedPackages: [{color: "#FF0000", path: "/root", attributes: {name: "/root"}}]
             }];
 
             legendPanelController.onSettingsChanged(settingsServiceMock.settings);
@@ -116,7 +112,7 @@ describe("LegendPanelController", () => {
         });
 
         it("shorten too long pathName in middle of the string for legendPanel", () => {
-            settingsServiceMock.settings.markedPackages = [{color: 0xff0000, path: "/root/a/longNameToBeShortenedInLegend", attributes: {}}];
+            settingsServiceMock.settings.markedPackages = [{color: "#FF0000", path: "/root/a/longNameToBeShortenedInLegend", attributes: {}}];
             const shortenedPathname = "longNameToBe...enedInLegend";
 
             legendPanelController.onSettingsChanged(settingsServiceMock.settings);
@@ -124,7 +120,7 @@ describe("LegendPanelController", () => {
         });
 
         it("shorten too long pathName at beginning of the string for legendPanel", () => {
-            settingsServiceMock.settings.markedPackages = [{color: 0xff0000, path: "/root/a/andAnotherLongNameToShorten", attributes: {}}];
+            settingsServiceMock.settings.markedPackages = [{color: "#FF0000", path: "/root/a/andAnotherLongNameToShorten", attributes: {}}];
             const shortenedPathname = ".../andAnotherLongNameToShorten";
 
             legendPanelController.onSettingsChanged(settingsServiceMock.settings);

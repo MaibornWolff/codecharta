@@ -6,7 +6,6 @@ import { SettingsService } from "../../core/settings/settings.service";
 import { CodeMapUtilService } from "../codeMap/codeMap.util.service";
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service";
 import { NodeContextMenuController } from "./nodeContextMenu.component";
-import { ColorService } from "../../core/color/color.service";
 
 describe("node context menu", () => {
 
@@ -17,7 +16,6 @@ describe("node context menu", () => {
         mockElement();
         rebuildController();
         withMockedCodeMapUtilService();
-        withMockedColorService();
     });
 
     function restartSystem() {
@@ -31,7 +29,6 @@ describe("node context menu", () => {
             settingsService: getService<SettingsService>("settingsService"),
             codeMapActionsService: getService<CodeMapActionsService>("codeMapActionsService"),
             codeMapUtilService: getService<CodeMapUtilService>("codeMapUtilService"),
-            colorService: getService<ColorService>("colorService"),
         };
 
     }
@@ -61,8 +58,7 @@ describe("node context menu", () => {
             services.$rootScope,
             services.settingsService,
             services.codeMapActionsService,
-            services.codeMapUtilService,
-            services.colorService
+            services.codeMapUtilService
         );
     }
 
@@ -85,15 +81,6 @@ describe("node context menu", () => {
         services.codeMapUtilService = nodeContextMenuController["codeMapUtilService"] = jest.fn<CodeMapUtilService>(()=>{
             return {
                 getCodeMapNodeFromPath: jest.fn()
-            }
-        })();
-    }
-
-    function withMockedColorService() {
-        services.colorService = nodeContextMenuController["colorService"] = jest.fn<ColorService>(()=>{
-            return {
-                convertHexTo0xString: jest.fn(),
-                convertNumberToHex: jest.fn()
             }
         })();
     }
@@ -288,27 +275,25 @@ describe("node context menu", () => {
 
         });
 
-        it("current folder is marked when building's marking color (0x hex notation) is the same as the given one (html hex notation)", () => {
+        it("current folder is marked when building's marking color is the same as the given one", () => {
             withMockedCodeMapActionService();
             nodeContextMenuController["contextMenuBuilding"] = { path: "/root/node/path" };
             nodeContextMenuController.settingsService.settings.markedPackages = [{
-                path: "/root/node/path", color: "0x123FDE"
+                path: "/root/node/path", color: "#123FDE"
             }];
             const result = nodeContextMenuController.currentFolderIsMarkedWithColor("#123FDE");
             expect(result).toBeTruthy();
         });      
 
-        it("current folder is not marked when building's marking color (0x hex notation) is not the same as the given one (html hex notation)", () => {
+        it("current folder is not marked when building's marking color is not the same as the given one", () => {
             withMockedCodeMapActionService();
             nodeContextMenuController["contextMenuBuilding"] = { path: "/root/node/path"  };
             nodeContextMenuController.settingsService.settings.markedPackages = [{
-                path: "/root/node/path", color: "0x123ABC"
+                path: "/root/node/path", color: "#123ABC"
             }];
             const result = nodeContextMenuController.currentFolderIsMarkedWithColor("#123FDE");
             expect(result).toBeFalsy();
-        });      
-
-
+        });
     });
 
     describe("node is folder", ()=>{

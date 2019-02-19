@@ -53,13 +53,7 @@ export class GeometryGenerator {
 
     private getFloorGradient(nodes: Node[]): string[] {
         return RenderingUtil.gradient("#333333", "#DDDDDD", RenderingUtil.getMaxNodeDepth(nodes))
-            .map(g => this.convertNumberToHex(g));
-    }
-
-    private convertNumberToHex(colorNumber: number): string {
-        const hexColor = colorNumber.toString(16);
-        let zeros: string = "0".repeat(6 - hexColor.length);
-        return "#" + zeros + hexColor;
+            .map(g => ColorService.convertNumberToHex(g));
     }
 
     private mapNodeToLocalBox(n: Node): BoxMeasures {
@@ -194,11 +188,13 @@ export class GeometryGenerator {
             uvs[i * uvDimension + 0] = data.uvs[i].x;
             uvs[i * uvDimension + 1] = data.uvs[i].y;
 
-            let color: THREE.Vector3 = RenderingUtil.colorToVec3(data.colors[i]);
+            if (data.colors[i]) {
+                let color: THREE.Vector3 = RenderingUtil.colorToVec3(data.colors[i]);
 
-            colors[i * dimension + 0] = color.x;
-            colors[i * dimension + 1] = color.y;
-            colors[i * dimension + 2] = color.z;
+                colors[i * dimension + 0] = color.x;
+                colors[i * dimension + 1] = color.y;
+                colors[i * dimension + 2] = color.z;
+            }
 
             ids[i] = data.subGeometryIdx[i];
             deltas[i] = data.deltas[i];
