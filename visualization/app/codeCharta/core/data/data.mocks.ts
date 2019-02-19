@@ -1,4 +1,4 @@
-import {CodeMap, CodeMapNode, Edge} from "./model/CodeMap";
+import { CodeMapNode, Edge, CodeMap } from "../../codeCharta.model";
 
 export const VALID_NODE: CodeMapNode = {
     name: "root",

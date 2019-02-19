@@ -4,12 +4,44 @@ export class QueryParamDialogController {
 
     private _queryParams: string;
 
-    constructor(settingsService: SettingsService, private $mdDialog) {
-        this._queryParams = settingsService.getQueryParamString().replace(new RegExp("&", "g"),"\n&");
+    constructor(private settingsService: SettingsService, private $mdDialog) {
+        this._queryParams = this.getQueryParamString().replace(new RegExp("&", "g"),"\n&");
     }
 
     public hide() {
         this.$mdDialog.hide();
+    }
+
+    private getQueryParamString() {
+
+        let result = "";
+
+        let iterateProperties = (obj, prefix) => {
+            for (let i in obj) {
+                if (obj.hasOwnProperty(i) && i !== "map" && i) {
+
+                    if (typeof obj[i] === "string" || obj[i] instanceof String) {
+                        //do not iterate over strings
+                    } else {
+                        iterateProperties(obj[i], i + ".");
+                    }
+
+                    if (typeof obj[i] === "object" || obj[i] instanceof Object) {
+                        //do not print objects in string
+                    } else {
+                        result += "&" + prefix + i + "=" + obj[i];
+                    }
+
+                }
+
+            }
+
+        };
+
+        iterateProperties(this.settingsService.getSettings(), "");
+
+        return "?" + result.substring(1);
+
     }
 
 }

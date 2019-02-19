@@ -3,11 +3,24 @@
 import * as d3 from "d3";
 import {CodeMap, CodeMapNode} from "./model/CodeMap";
 import {HierarchyNode} from "d3-hierarchy";
+import { CCFile } from "../../codeCharta.model";
 
 /**
  * Decorates the data structure with artificial metrics
  */
 export class DataDecoratorService {
+
+    public preDecorateFile(map: CodeMap): CodeMap {
+        this.decorateMapWithOriginAttribute(map);
+		this.decorateMapWithPathAttribute(map);
+		this.decorateMapWithVisibleAttribute(map);
+		this.decorateMapWithUnaryMetric(map);
+    }
+
+    public postDecorateFiles(maps: CodeMap[], metrics: string[]): CodeMap {
+		this.decorateLeavesWithMissingMetrics(maps, metrics);
+		this.decorateParentNodesWithSumAttributesOfChildren(maps, metrics);
+    }
 
     public decorateMapWithCompactMiddlePackages(map: CodeMap) {
 

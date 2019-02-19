@@ -6,6 +6,8 @@ import "./ui/ui";
 import {codeChartaComponent} from "./codeCharta.component";
 
 import angular from "angular";
+import { CodeChartaService } from "./codeCharta.service";
+import _ from "lodash";
 
 angular.module(
     "app.codeCharta",
@@ -15,6 +17,9 @@ angular.module(
 angular.module("app.codeCharta").component(
     codeChartaComponent.selector,
     codeChartaComponent
+).service(
+    _.camelCase(CodeChartaService.name),
+    CodeChartaService
 );
 
 

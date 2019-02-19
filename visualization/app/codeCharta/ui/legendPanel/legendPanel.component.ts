@@ -1,8 +1,4 @@
-import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/data.service";
 import {
-    KindOfMap,
-    Range,
-    Settings,
     SettingsService,
     SettingsServiceSubscriber
 } from "../../core/settings/settings.service";
@@ -10,7 +6,6 @@ import $ from "jquery";
 import {MapColors} from "../codeMap/rendering/renderSettings";
 import {ITimeoutService} from "angular";
 import "./legendPanel.component.scss";
-import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {hierarchy} from "d3-hierarchy";
 
 export interface MarkingPackages {

@@ -8,9 +8,8 @@ with the additional ones */
 
 import {SettingsService} from "../../core/settings/settings.service";
 import {DialogService} from "../dialog/dialog.service";
-import {DataService} from "../../core/data/data.service";
 import {ScenarioService} from "../../core/scenario/scenario.service";
-import {DataLoadingService} from "../../core/data/data.loading.service";
+import { CodeChartaService } from "../../codeCharta.service";
 
 /**
  * Controls the FileChooser
@@ -21,12 +20,11 @@ class FileChooserController {
 
     constructor(
         private $scope,
-        private dataLoadingService: DataLoadingService,
         private scenarioService: ScenarioService,
-        private dataService: DataService,
         private $rootScope,
         private dialogService: DialogService,
         private settingsService: SettingsService,
+        private codeChartaService: CodeChartaService
     ){
     }
 
@@ -37,7 +35,7 @@ class FileChooserController {
     public fileChanged(element) {
         this.$rootScope.$broadcast("add-loading-task");
         this.$scope.$apply(() => {
-            this.dataService.resetMaps();
+            this.codeChartaService.resetMaps();
             for (let i = 0; i < element.files.length; i++) {
                 ((file, i) => {
                     let name = file.name;
@@ -76,30 +74,25 @@ class FileChooserController {
         this.$rootScope.$broadcast("remove-loading-task");
     }
 
-    /**
-     * Sets the new data in dataService
-     * @param {string} name the filename
-     * @param {object} parsedData
-     * @param {number} revision the revision number
-     */
     public setNewData(name, parsedData, revision){
         let ctx = this;
-        return this.dataLoadingService.loadMapFromFileContent(name, parsedData, revision).then(
-            () => {
-
-                ctx.scenarioService.applyScenarioOnce(this.scenarioService.getDefaultScenario());
-                ctx.dataService.setComparisonMap(revision);
-                ctx.dataService.setReferenceMap(revision);
-                ctx.settingsService.applySettings();
-
-                if(!ctx.$scope.$$phase || !ctx.$scope.$root.$$phase) {
-                    ctx.$scope.$digest();
-                }
-            },
-            (r) => {
-                ctx.printErrors(r);
-            }
-        );
+        throw new Error("not implemented")
+        //return this.codeChartaService.loadMap(name, parsedData, revision).then(
+        //    () => {
+//
+        //        ctx.scenarioService.applyScenarioOnce(this.scenarioService.getDefaultScenario());
+        //        ctx.dataService.setComparisonMap(revision);
+        //        ctx.dataService.setReferenceMap(revision);
+        //        ctx.settingsService.applySettings();
+//
+        //        if(!ctx.$scope.$$phase || !ctx.$scope.$root.$$phase) {
+        //            ctx.$scope.$digest();
+        //        }
+        //    },
+        //    (r) => {
+        //        ctx.printErrors(r);
+        //    }
+        //);
 
     }
 

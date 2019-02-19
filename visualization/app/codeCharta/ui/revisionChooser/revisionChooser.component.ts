@@ -40,6 +40,7 @@ export class RevisionChooserController implements DataServiceSubscriber{
 
     }
 
+    //TODO listen to on imported files changed
     public onDataChanged(data: DataModel) {
         this.revisions = data.revisions;
         this.ui.chosenComparison= this.dataService.getIndexOfMap(this.dataService.getComparisonMap(), this.revisions);

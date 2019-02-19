@@ -1,7 +1,9 @@
 "use strict";
 import "./settingsPanel.scss";
-import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import $ from "jquery";
+import { Settings } from "../../codeCharta.model";
+import { IAngularEvent } from "angular";
 
 /**
  * Controls the settingsPanel
@@ -18,7 +20,7 @@ export class SettingsPanelController implements SettingsServiceSubscriber {
         private $timeout,
         private settingsService: SettingsService) {
 
-        settingsService.subscribe(this);
+        SettingsService.subscribe($scope, this);
         this.onSettingsChanged(this.settingsService.settings, null);
     }
 
@@ -33,11 +35,11 @@ export class SettingsPanelController implements SettingsServiceSubscriber {
         },50);
     }
 
-    public onSettingsChanged(settings: Settings, event: Event) {
-        if (settings.blacklist.length != this.viewModel.blacklistLength) {
+    public onSettingsChanged(settings: Settings, event: IAngularEvent) {
+        if (settings.mapSettings.blacklist.length != this.viewModel.blacklistLength) {
             this.highlightCounterIcon();
         }
-        this.viewModel.blacklistLength = settings.blacklist.length;
+        this.viewModel.blacklistLength = settings.mapSettings.blacklist.length;
     }
 
     public highlightCounterIcon() {

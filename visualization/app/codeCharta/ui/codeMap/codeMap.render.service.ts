@@ -2,9 +2,8 @@
 
 import {CodeMapMesh} from "./rendering/codeMapMesh";
 import {RenderSettings} from "./rendering/renderSettings";
-import {KindOfMap, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import {Node} from "./rendering/node";
-import {Edge} from "../../core/data/model/CodeMap";
 import {
     CodeMapBuildingTransition,
     CodeMapMouseEventService,
@@ -16,6 +15,8 @@ import {CodeMapUtilService} from "./codeMap.util.service";
 import {CodeMapLabelService} from "./codeMap.label.service";
 import {ThreeSceneService} from "./threeViewer/threeSceneService";
 import {CodeMapArrowService} from "./codeMap.arrow.service";
+import { Edge, Settings } from "../../codeCharta.model";
+import { IAngularEvent } from "angular";
 
 const MAP_SIZE = 500.0;
 
@@ -46,7 +47,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         private codeMapLabelService: CodeMapLabelService,
         private codeMapArrowService: CodeMapArrowService
     ) {
-        this.settingsService.subscribe(this);
+        SettingsService.subscribe(this.$rootScope, this);
         CodeMapMouseEventService.subscribe(this.$rootScope, this);
     }
 
@@ -62,7 +63,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
         // unused
     }
 
-    public onSettingsChanged(settings: Settings, event: Event) {
+    public onSettingsChanged(settings: Settings, event: IAngularEvent) {
         this.applySettings(settings);
     }
 
@@ -73,13 +74,13 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
      */
     public applySettings(s: Settings) {
 
-        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.nodes && s.neutralColorRange && s.deltaColorFlipped != undefined && s.invertHeight != undefined) {
-            this.updateMapGeometry(s);
-        }
+     //  if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.nodes && s.neutralColorRange && s.deltaColorFlipped != undefined && s.invertHeight != undefined) {
+     //      this.updateMapGeometry(s);
+     //  }
 
-        if (s.scaling && s.scaling.x && s.scaling.y && s.scaling.z) {
-            this.scaleMap(s.scaling.x, s.scaling.y, s.scaling.z);
-        }
+     //  if (s.scaling && s.scaling.x && s.scaling.y && s.scaling.z) {
+     //      this.scaleMap(s.scaling.x, s.scaling.y, s.scaling.z);
+     //  }
     }
 
     public collectNodesToArray(node: Node): Node[] {
@@ -95,54 +96,54 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
 
     public updateMapGeometry(s: Settings) {
 
-        this.visibleEdges = this.getVisibleEdges(s);
-
-        const treeMapSettings: TreeMapSettings = {
-            size: MAP_SIZE,
-            areaKey: s.areaMetric,
-            heightKey: s.heightMetric,
-            margin: s.margin,
-            invertHeight: s.invertHeight,
-            visibleEdges: this.visibleEdges,
-            searchedNodePaths: s.searchedNodePaths,
-            blacklist: s.blacklist,
-            fileName: s.map.fileName,
-            searchPattern: s.searchPattern,
-            hideFlatBuildings: s.hideFlatBuildings
-        };
-
-        this.showAllOrOnlyFocusedNode(s);
-
-        let nodes: Node[] = this.collectNodesToArray(
-            this.treeMapService.createTreemapNodes(s.map.nodes, treeMapSettings, s.map.edges)
-        );
-
-        let filtered = nodes.filter(
-            node => node.visible && node.length > 0 && node.width > 0
-        );
-        this.currentSortedNodes = filtered.sort((a, b) => {
-            return b.height - a.height;
-        });
-
-        this.currentRenderSettings = {
-            heightKey: s.heightMetric,
-            colorKey: s.colorMetric,
-            renderDeltas: s.mode == KindOfMap.Delta,
-            hideFlatBuildings: s.hideFlatBuildings,
-            colorRange: s.neutralColorRange,
-            mapSize: MAP_SIZE,
-            deltaColorFlipped: s.deltaColorFlipped,
-            whiteColorBuildings: s.whiteColorBuildings
-        };
-
-        this.setLabels(s);
-        this.setArrows(s);
-
-        this._mapMesh = new CodeMapMesh(
-            this.currentSortedNodes,
-            this.currentRenderSettings
-        );
-        this.threeSceneService.setMapMesh(this._mapMesh, MAP_SIZE);
+     //   this.visibleEdges = this.getVisibleEdges(s);
+//
+     //   const treeMapSettings: TreeMapSettings = {
+     //       size: MAP_SIZE,
+     //       areaKey: s.areaMetric,
+     //       heightKey: s.heightMetric,
+     //       margin: s.margin,
+     //       invertHeight: s.invertHeight,
+     //       visibleEdges: this.visibleEdges,
+     //       searchedNodePaths: s.searchedNodePaths,
+     //       blacklist: s.blacklist,
+     //       fileName: s.map.fileName,
+     //       searchPattern: s.searchPattern,
+     //       hideFlatBuildings: s.hideFlatBuildings
+     //   };
+//
+     //   this.showAllOrOnlyFocusedNode(s);
+//
+     //   let nodes: Node[] = this.collectNodesToArray(
+     //       this.treeMapService.createTreemapNodes(s.map.nodes, treeMapSettings, s.map.edges)
+     //   );
+//
+     //   let filtered = nodes.filter(
+     //       node => node.visible && node.length > 0 && node.width > 0
+     //   );
+     //   this.currentSortedNodes = filtered.sort((a, b) => {
+     //       return b.height - a.height;
+     //   });
+//
+     //   this.currentRenderSettings = {
+     //       heightKey: s.heightMetric,
+     //       colorKey: s.colorMetric,
+     //       renderDeltas: s.mode == KindOfMap.Delta,
+     //       hideFlatBuildings: s.hideFlatBuildings,
+     //       colorRange: s.neutralColorRange,
+     //       mapSize: MAP_SIZE,
+     //       deltaColorFlipped: s.deltaColorFlipped,
+     //       whiteColorBuildings: s.whiteColorBuildings
+     //   };
+//
+     //   this.setLabels(s);
+     //   this.setArrows(s);
+//
+     //   this._mapMesh = new CodeMapMesh(
+     //       this.currentSortedNodes,
+     //       this.currentRenderSettings
+     //   );
+     //   this.threeSceneService.setMapMesh(this._mapMesh, MAP_SIZE);
     }
 
     /**
@@ -174,55 +175,55 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
     }
 
     private setLabels(s: Settings) {
-        this.codeMapLabelService.clearLabels();
-        for (
-            let i = 0, numAdded = 0;
-            i < this.currentSortedNodes.length &&
-            numAdded < s.amountOfTopLabels;
-            ++i
-        ) {
-            if (this.currentSortedNodes[i].isLeaf) {
-                this.codeMapLabelService.addLabel(
-                    this.currentSortedNodes[i],
-                    this.currentRenderSettings
-                );
-                ++numAdded;
-            }
-        }
+     //   this.codeMapLabelService.clearLabels();
+     //   for (
+     //       let i = 0, numAdded = 0;
+     //       i < this.currentSortedNodes.length &&
+     //       numAdded < s.amountOfTopLabels;
+     //       ++i
+     //   ) {
+     //       if (this.currentSortedNodes[i].isLeaf) {
+     //           this.codeMapLabelService.addLabel(
+     //               this.currentSortedNodes[i],
+     //               this.currentRenderSettings
+     //           );
+     //           ++numAdded;
+     //       }
+     //   }
     }
 
     private setArrows(s: Settings) {
-        this.codeMapArrowService.clearArrows();
-        if (this.visibleEdges.length > 0 && s.enableEdgeArrows) {
-            this.showCouplingArrows(this.visibleEdges);
-        }
+      //  this.codeMapArrowService.clearArrows();
+      //  if (this.visibleEdges.length > 0 && s.enableEdgeArrows) {
+      //      this.showCouplingArrows(this.visibleEdges);
+      //  }
     }
 
     private showAllOrOnlyFocusedNode(s: Settings) {
-        if (s.focusedNodePath) {
-            const focusedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(
-                s.focusedNodePath
-            );
-            this.treeMapService.setVisibilityOfNodeAndDescendants(
-                s.map.nodes,
-                false
-            );
-            this.treeMapService.setVisibilityOfNodeAndDescendants(
-                focusedNode,
-                true
-            );
-        } else {
-            this.treeMapService.setVisibilityOfNodeAndDescendants(
-                s.map.nodes,
-                true
-            );
-        }
+      //  if (s.focusedNodePath) {
+      //      const focusedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(
+      //          s.focusedNodePath
+      //      );
+      //      this.treeMapService.setVisibilityOfNodeAndDescendants(
+      //          s.map.nodes,
+      //          false
+      //      );
+      //      this.treeMapService.setVisibilityOfNodeAndDescendants(
+      //          focusedNode,
+      //          true
+      //      );
+      //  } else {
+      //      this.treeMapService.setVisibilityOfNodeAndDescendants(
+      //          s.map.nodes,
+      //          true
+      //      );
+      //  }
     }
 
     private getVisibleEdges(s: Settings) {
-        return s.map && s.map.edges
-            ? s.map.edges.filter(edge => edge.visible === true)
-            : [];
+     //   return s.map && s.map.edges
+     //       ? s.map.edges.filter(edge => edge.visible === true)
+     //       : [];
     }
 
     private showCouplingArrows(deps: Edge[]) {

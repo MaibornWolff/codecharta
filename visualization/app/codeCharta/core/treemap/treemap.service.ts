@@ -1,10 +1,11 @@
-import {CodeMapNode, Edge, BlacklistItem, BlacklistType} from "../data/model/CodeMap";
 import {Node} from "../../ui/codeMap/rendering/node";
-import {DataService} from "../data/data.service";
 import * as d3 from "d3";
 import {hierarchy, HierarchyNode} from "d3";
 import {TreeMapUtils} from "./treemap.util";
 import {CodeMapUtilService} from "../../ui/codeMap/codeMap.util.service";
+import { CodeMapNode, BlacklistItem, Edge, BlacklistType } from "../../codeCharta.model";
+import { CodeChartaService } from "../../codeCharta.service";
+import { MetricCalculator } from "../../MetricCalculator";
 
 export interface ValuedCodeMapNode {
     data: CodeMapNode;
@@ -46,7 +47,7 @@ export class TreeMapService {
     private static PADDING_SCALING_FACTOR = 0.4;
 
     /* @ngInject */
-    constructor(private dataService: DataService) {}
+    constructor(private codeChartaService: CodeChartaService) {}
 
     public createTreemapNodes(data: CodeMapNode, s: TreeMapSettings, edges: Edge[]): Node {
         const squarified: SquarifiedValuedCodeMapNode = this.squarify(data, s, edges);
@@ -75,7 +76,7 @@ export class TreeMapService {
     }
 
     private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): Node {
-        const maxHeight = this.dataService.getMaxMetricInAllRevisions(s.heightKey);
+        const maxHeight = MetricCalculator.getMaxMetricInAllRevisions(this.codeChartaService.getImportedFiles(), s.heightKey);
         const heightScale = s.size / TreeMapService.HEIGHT_DIVISOR / maxHeight;
         return this.addHeightDimensionAndFinalize(squaredNode, s, heightScale, maxHeight);
     }

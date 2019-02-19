@@ -1,10 +1,10 @@
 "use strict";
 
 import * as d3 from "d3";
-import {CodeMap, CodeMapNode} from "./model/CodeMap";
 import {HierarchyNode} from "d3-hierarchy";
 import * as deepcopy from "deepcopy";
 import {DataDecoratorService} from "./data.decorator.service";
+import { CodeMap, CodeMapNode, CCFile } from "../../codeCharta.model";
 
 export interface KVObject {
     [key: string]: number;
@@ -20,7 +20,10 @@ export class DeltaCalculatorService {
 
     }
 
-    public provideDeltas(leftMap: CodeMap, rightMap: CodeMap, metrics: string[]) {
+    public provideDeltas(leftFile: CCFile, rightFile: CCFile, metrics: string[]) {
+
+        const leftMap = leftFile.map;
+        const rightMap = rightFile.map;
 
         //null checks
         if(!leftMap || !rightMap || !leftMap.nodes || !rightMap.nodes){
@@ -28,8 +31,8 @@ export class DeltaCalculatorService {
         }
 
         //remove cross origin nodes from maps
-        this.removeCrossOriginNodes(leftMap);
-        this.removeCrossOriginNodes(rightMap);
+        this.removeCrossOriginNodes(leftFile);
+        this.removeCrossOriginNodes(rightFile);
 
         //build hash maps for fast search indices
         let firstLeafHashMap = new Map<string, CodeMapNode>();
@@ -55,12 +58,12 @@ export class DeltaCalculatorService {
 
     }
 
-    public removeCrossOriginNodes(map: CodeMap) {
+    public removeCrossOriginNodes(file: CCFile) {
 
-            let root = d3.hierarchy<CodeMapNode>(map.nodes);
+            let root = d3.hierarchy<CodeMapNode>(file.map.nodes);
             root.each((node) => {
                 if (node.data.children) {
-                    node.data.children = node.data.children.filter(x => (x.origin === map.fileName));
+                    node.data.children = node.data.children.filter(x => (x.origin === file.fileMeta.fileName));
                 }
             });
 

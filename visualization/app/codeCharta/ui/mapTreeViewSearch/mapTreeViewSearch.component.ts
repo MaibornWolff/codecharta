@@ -1,10 +1,9 @@
-import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import {ITimeoutService} from "angular";
-import {BlacklistType, CodeMap, CodeMapNode} from "../../core/data/model/CodeMap";
 import "./mapTreeViewSearch.component.scss";
 import * as d3 from "d3";
-import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/data.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
+import { CodeMapNode, BlacklistType, CodeMap, Settings } from "../../codeCharta.model";
 
 export class MapTreeViewSearchController implements SettingsServiceSubscriber, DataServiceSubscriber {
 

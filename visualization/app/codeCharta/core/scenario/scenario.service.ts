@@ -1,10 +1,12 @@
 "use strict";
-import {Settings, SettingsService} from "../settings/settings.service";
+import {SettingsService} from "../settings/settings.service";
 import {ThreeOrbitControlsService} from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
+import { RecursivePartial, Settings } from "../../codeCharta.model";
+import { CodeChartaService } from "../../codeCharta.service";
 
 export interface Scenario {
     name: string;
-    settings: Partial<Settings>;
+    settings: RecursivePartial<Settings>;
     autoFitCamera: boolean;
 }
 
@@ -18,7 +20,7 @@ export class ScenarioService {
 
     /* ngInject */
     constructor(private settingsService: SettingsService,
-                private dataService,
+                private codeChartaService: CodeChartaService,
                 private threeOrbitControlsService:ThreeOrbitControlsService) {
         this.scenarios = require("./scenarios.json");
     }
@@ -39,7 +41,7 @@ export class ScenarioService {
 
     public applyScenario(scenario: Scenario) {
         const updatedSettingsUsingScenario = this.updateSettingsUsingScenario(this.settingsService.settings, scenario.settings);
-        this.settingsService.applySettings(updatedSettingsUsingScenario);
+        this.settingsService.updateSettings(updatedSettingsUsingScenario);
         if(scenario.autoFitCamera){
             setTimeout(() => {
                 this.threeOrbitControlsService.autoFitTo();
@@ -47,7 +49,7 @@ export class ScenarioService {
         }
     }
 
-    private updateSettingsUsingScenario(settings: Settings, scenarioSettings: Partial<Settings>): Settings {
+    private updateSettingsUsingScenario(settings: Settings, scenarioSettings: RecursivePartial<Settings>): Settings {
         let updatedSettings: Settings = settings;
         if (updatedSettings) {
             for(let key of Object.keys(updatedSettings)) {
@@ -66,16 +68,16 @@ export class ScenarioService {
     }
 
     public getScenarios(): Scenario[] {
-        return this.scenarios.filter(s => this.isScenarioPossible(s, this.dataService._data.metrics));
+        return this.scenarios.filter(s => this.isScenarioPossible(s, this.codeChartaService.getMetrics()));
     }
 
     public isScenarioPossible(scenario: Scenario, metrics: string[]) {
         if(!scenario || !metrics) {
             return false;
         }
-        return (metrics.filter(x => x === scenario.settings.areaMetric).length > 0 &&
-        metrics.filter(x => x === scenario.settings.heightMetric).length > 0 &&
-        metrics.filter(x => x === scenario.settings.colorMetric).length > 0);
+        return (metrics.filter(x => x === scenario.settings.mapSettings.areaMetric).length > 0 &&
+        metrics.filter(x => x === scenario.settings.mapSettings.heightMetric).length > 0 &&
+        metrics.filter(x => x === scenario.settings.mapSettings.colorMetric).length > 0);
     }
 
     public getDefaultScenario(): Scenario {
