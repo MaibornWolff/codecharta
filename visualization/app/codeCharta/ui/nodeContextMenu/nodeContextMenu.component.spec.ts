@@ -90,7 +90,7 @@ describe("node context menu", () => {
             return {
                 amountOfDependentEdges: jest.fn(),
                 amountOfVisibleDependentEdges: jest.fn(),
-                getFirstMarkedParentPackage: jest.fn(),
+                getParentMP: jest.fn(),
                 anyEdgeIsVisible: jest.fn(),
                 hideNode: jest.fn(),
                 markFolder: jest.fn(),

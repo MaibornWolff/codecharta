@@ -25,44 +25,42 @@ export class CodeMapActionsService {
 
     public markFolder(node: CodeMapNode, color: string) {
         let s = this.settingsService.settings;
-        let newMarkedPackage: MarkedPackage = this.getNewMarkedPackage(node.path, color);
+        const newMP: MarkedPackage = this.getNewMarkedPackage(node.path, color);
+        const clickedMP: MarkedPackage = s.markedPackages.find(p => p.path == newMP.path);
+        const parentMP: MarkedPackage = this.getParentMP(newMP.path, s);
 
-        if (!s.markedPackages || s.markedPackages == []) {
-            this.addFirstPackageToSettings(newMarkedPackage, s);
-            return;
-        }
+        this.handleUpdatingMarkedPackages(s, newMP, clickedMP, parentMP);
+        this.settingsService.applySettings(s);
+    }
 
-        const matchingPackagesByPath = s.markedPackages.filter(p => p.path == newMarkedPackage.path);
-        const matchingPackagesByPathAndColor = matchingPackagesByPath.filter(p => p.color == newMarkedPackage.color);
-        const firstMarkedParentPackage = this.getFirstMarkedParentPackage(newMarkedPackage.path, s);
-        const markedChildrenPackages = this.getMarkedChildrenPackages(newMarkedPackage.path, s);
+    private handleUpdatingMarkedPackages(s: Settings, newMP: MarkedPackage, clickedMP: MarkedPackage, parentMP: MarkedPackage): void {
+        if (!clickedMP && this.packagesHaveDifferentColor(parentMP, newMP)) {
+            this.addMarkedPackage(newMP, s);
 
-        if (matchingPackagesByPath.length == 0 && (!firstMarkedParentPackage || firstMarkedParentPackage.color != newMarkedPackage.color)) {
-            this.addMarkedPackage(newMarkedPackage, s);
+        } else if (this.packagesHaveDifferentColor(clickedMP, newMP)) {
+            this.removeMarkedPackage(clickedMP, s);
 
-        } else if (matchingPackagesByPathAndColor.length == 0) {
-            this.removeMarkedPackage(matchingPackagesByPath[0], s);
-
-            if (!firstMarkedParentPackage || firstMarkedParentPackage.color != newMarkedPackage.color) {
-                this.addMarkedPackage(newMarkedPackage, s);
+            if (this.packagesHaveDifferentColor(parentMP, newMP)) {
+                this.addMarkedPackage(newMP, s);
             }
-            this.settingsService.applySettings(s);
         }
+        this.removeChildrenMPWithSameColor(newMP, s);
+    }
 
-        if (markedChildrenPackages.length > 0) {
-            this.removeMarkedChildrenPackagesWithSameColor(markedChildrenPackages, s);
-        }
+    private packagesHaveDifferentColor(mp1: MarkedPackage, mp2: MarkedPackage): boolean {
+        return !(mp1 && mp2 && mp1.color == mp2.color);
     }
 
     public unmarkFolder(node: CodeMapNode) {
         let s = this.settingsService.settings;
-        const firstMarkedParentPackage = this.getFirstMarkedParentPackage(node.path, s);
-        let  matchingPackagesByPath = s.markedPackages.filter(p => p.path == node.path);
+        let clickedMP: MarkedPackage = s.markedPackages.find(p => p.path == node.path);
 
-        if (matchingPackagesByPath.length == 0) {
-            matchingPackagesByPath = s.markedPackages.filter(p => firstMarkedParentPackage && p.path == firstMarkedParentPackage.path);
+        if (clickedMP) {
+            this.removeMarkedPackage(clickedMP, s);
+        } else {
+            const parentMP: MarkedPackage = this.getParentMP(node.path, s);
+            this.removeMarkedPackage(parentMP, s);
         }
-        this.removeMarkedPackage(matchingPackagesByPath[0], s);
         this.settingsService.applySettings(s);
     }
 
@@ -136,12 +134,12 @@ export class CodeMapActionsService {
         return this.settingsService.settings.map.edges.filter(edge => edge.visible).length > 0;
     }
 
-    public getFirstMarkedParentPackage(path: string, s: Settings): MarkedPackage {
-        const sortedMarkedParentPackages = s.markedPackages
+    public getParentMP(path: string, s: Settings): MarkedPackage {
+        const sortedParentMP = s.markedPackages
             .filter(p => path.includes(p.path) && p.path != path)
             .sort((a, b) => b.path.length - a.path.length);
 
-        return sortedMarkedParentPackages.length > 0 ? sortedMarkedParentPackages[0] : null;
+        return sortedParentMP.length > 0 ? sortedParentMP[0] : null;
     }
 
     private getNewMarkedPackage(path: string, color: string, name: string = undefined): MarkedPackage {
@@ -156,24 +154,21 @@ export class CodeMapActionsService {
         return coloredPackage;
     }
 
-    private removeMarkedChildrenPackagesWithSameColor(markedChildrenPackages: MarkedPackage[], s: Settings) {
-        markedChildrenPackages.forEach(childPackage => {
-            const firstMarkedParentPackage = this.getFirstMarkedParentPackage(childPackage.path, s);
-            if(firstMarkedParentPackage && firstMarkedParentPackage.color == childPackage.color) {
-                this.removeMarkedPackage(childPackage, s);
-            }
-        });
-        this.settingsService.applySettings(s);
+    private removeChildrenMPWithSameColor(newMP: MarkedPackage, s: Settings) {
+        const allChildrenMP: MarkedPackage[] = this.getAllChildrenMP(newMP.path, s);
+        if (allChildrenMP.length > 0) {
+            allChildrenMP.forEach(childPackage => {
+                const parentMP = this.getParentMP(childPackage.path, s);
+                if (parentMP && parentMP.color == childPackage.color) {
+                    this.removeMarkedPackage(childPackage, s);
+                }
+            });
+        }
     }
 
-    private getMarkedChildrenPackages(path: string, s: Settings): MarkedPackage[] {
+    private getAllChildrenMP(path: string, s: Settings): MarkedPackage[] {
         return s.markedPackages.filter(p =>
             p.path.includes(path) && p.path != path);
-    }
-
-    private addFirstPackageToSettings(markedPackage: MarkedPackage, s: Settings) {
-        s.markedPackages = [];
-        this.addMarkedPackage(markedPackage, s);
     }
 
     private addMarkedPackage(markedPackage: MarkedPackage, s: Settings) {
