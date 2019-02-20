@@ -90,7 +90,9 @@ class FileChooserController {
                 ctx.scenarioService.applyScenarioOnce(this.scenarioService.getDefaultScenario());
                 ctx.dataService.setComparisonMap(revision);
                 ctx.dataService.setReferenceMap(revision);
-                ctx.settingsService.settings.markedPackages = [];
+                if (ctx.settingsService.settings) {
+                    ctx.settingsService.settings.markedPackages = [];
+                }
                 ctx.settingsService.applySettings(ctx.settingsService.settings);
 
                 if(!ctx.$scope.$$phase || !ctx.$scope.$root.$$phase) {
