@@ -10,6 +10,10 @@ describe("ColorService", () => {
         it("convert decimal to hex", () => {
             expect(ColorService.convertNumberToHex(0xABABAB)).toEqual("#ababab");
         });
+
+        it("convert hex to rgba", () => {
+            expect(ColorService.convertHexToRgba("#ABABAB")).toEqual("rgba(171,171,171,1)");
+        });
     });
 
     describe("Color to pixel image", () => {
