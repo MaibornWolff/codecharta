@@ -68,7 +68,10 @@ export class SettingsService {
 
 		let settings: Settings = {
 		    fileSettings: {
-
+				attributeTypes: {},
+				blacklist: [],
+				edges: [],
+				markedPackages: []
             },
 			dynamicSettings: {
 				renderMode: RenderMode.Single,
@@ -78,17 +81,13 @@ export class SettingsService {
 				focusedNodePath: null,
 				searchedNodePaths: [],
 				searchPattern: null,
-				attributeTypes: {},
-				blacklist: [],
-				markedPackages: [],
-				edges: []
+				margin: SettingsService.MIN_MARGIN,
+				neutralColorRange: null,
 			},
 			appSettings: {
 				amountOfTopLabels: 1,
 				scaling: scaling,
 				camera: camera,
-				margin: SettingsService.MIN_MARGIN,
-				neutralColorRange: null,
 				deltaColorFlipped: false,
 				enableEdgeArrows: true,
 				hideFlatBuildings: true,

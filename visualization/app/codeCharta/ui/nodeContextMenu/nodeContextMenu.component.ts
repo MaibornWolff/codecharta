@@ -4,7 +4,6 @@ import {highlightColors} from "../codeMap/rendering/renderSettings";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
 import {CodeChartaService} from "../../codeCharta.service";
-import { CodeChartaService } from "../../codeCharta.service";
 import {SettingsService} from "../../core/settings/settings.service";
 
 export class NodeContextMenuController {

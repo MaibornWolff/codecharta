@@ -1,7 +1,7 @@
 export interface CCFile {
   map: CodeMapNode;
   settings: {
-      mapSettings: RecursivePartial<Settings>
+      fileSettings: RecursivePartial<Settings>
   };
   fileMeta: FileMeta;
 }
@@ -36,7 +36,10 @@ export interface Settings {
 }
 
 export interface FileSettings {
-
+    attributeTypes: AttributeTypes;
+    blacklist: Array<BlacklistItem>;
+    edges: Edge[];
+    markedPackages: MarkedPackages[];
 }
 
 export interface DynamicSettings {
@@ -49,18 +52,6 @@ export interface DynamicSettings {
     searchPattern: string;
     margin: number;
     neutralColorRange: ColorRange;
-    attributeTypes: AttributeTypes;
-    blacklist: Array<BlacklistItem>;
-    edges: Edge[];
-    markedPackages: MarkedPackages[];
-}
-
-export interface MarkedPackages {
-    path: string,
-    color: string,
-    attributes: {
-        [key: string]: any
-    }
 }
 
 export interface AppSettings {
@@ -136,6 +127,14 @@ export interface BlacklistItem {
 export enum BlacklistType {
     hide = "hide",
     exclude = "exclude"
+}
+
+export interface MarkedPackages {
+    path: string,
+    color: string,
+    attributes: {
+        [key: string]: any
+    }
 }
 
 export enum RenderMode {

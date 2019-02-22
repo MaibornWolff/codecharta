@@ -90,9 +90,7 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 						dynamicSettings: {
 							areaMetric: this.getMetricByIndexElseLast(0, this.metrics),
 							heightMetric: this.getMetricByIndexElseLast(1, this.metrics),
-							colorMetric: this.getMetricByIndexElseLast(2, this.metrics)
-						},
-						appSettings: {
+							colorMetric: this.getMetricByIndexElseLast(2, this.metrics),
 							neutralColorRange: this.getAdaptedRange(this.getMetricByIndexElseLast(2, this.metrics), false)
 						}
 					})
@@ -214,10 +212,10 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 				apiVersion: fileContent.apiVersion
 			},
 			settings: {
-				mapSettings: {
+				fileSettings: {
 					edges: fileContent.edges || [],
 					attributeTypes: fileContent.attributeTypes || {},
-					blacklist: fileContent.blacklist || []
+					blacklist: fileContent.blacklist || [],
 				}
 			},
 			map: fileContent.nodes[0]
