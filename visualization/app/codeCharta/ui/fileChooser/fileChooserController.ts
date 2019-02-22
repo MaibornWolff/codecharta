@@ -85,6 +85,12 @@ class FileChooserController {
         //        ctx.dataService.setReferenceMap(revision);
         //        ctx.settingsService.applySettings();
 //
+        // TODO: Reset fileSettings, dynamicSettings etc... markedPackages
+
+        //            if (ctx.settingsService.settings) {
+        //                ctx.settingsService.settings.markedPackages = [];
+        //            }
+        //            ctx.settingsService.applySettings(ctx.settingsService.settings);
         //        if(!ctx.$scope.$$phase || !ctx.$scope.$root.$$phase) {
         //            ctx.$scope.$digest();
         //        }
@@ -93,6 +99,7 @@ class FileChooserController {
         //        ctx.printErrors(r);
         //    }
         //);
+
 
     }
 

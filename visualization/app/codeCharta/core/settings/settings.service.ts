@@ -12,7 +12,7 @@ export class SettingsService {
     private static SETTINGS_CHANGED_EVENT = "settings-changed";
 	private static MIN_MARGIN = 15
 
-	private settings: Settings 
+	private settings: Settings
 	throttledBroadcast: ()=>void;
 
 	constructor(private $rootScope) {
@@ -67,6 +67,9 @@ export class SettingsService {
 		}
 
 		let settings: Settings = {
+		    fileSettings: {
+
+            },
 			dynamicSettings: {
 				renderMode: RenderMode.Single,
 				areaMetric: "",
@@ -77,6 +80,7 @@ export class SettingsService {
 				searchPattern: null,
 				attributeTypes: {},
 				blacklist: [],
+				markedPackages: [],
 				edges: []
 			},
 			appSettings: {
@@ -146,7 +150,7 @@ export class SettingsService {
         }
     }*/
 
-	/* TODO move 
+	/* TODO move
     public updateSettingsFromUrl() {
 
         let iterateProperties = (obj, prefix) => {

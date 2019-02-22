@@ -1,5 +1,5 @@
 import {hierarchy} from "d3-hierarchy";
-import {SettingsService} from "../../core/settings/settings.service";
+import {MarkedPackage} from "../../core/settings/settings.service";
 import ignore from 'ignore';
 import * as path from 'path';
 import { CodeMapNode, BlacklistItem, BlacklistType } from "../../codeCharta.model";
@@ -8,9 +8,7 @@ export class CodeMapUtilService {
 
     public static SELECTOR = "codeMapUtilService";
 
-    constructor(
-        private settingsService: SettingsService
-    ) {
+    constructor() {
     }
 
     public getAnyCodeMapNodeFromPath(path: string, root: CodeMapNode) {
@@ -66,5 +64,19 @@ export class CodeMapUtilService {
             .filter(b => b.type == type)
             .map(ex => CodeMapUtilService.transformPath(ex.path)));
         return ig.ignores(CodeMapUtilService.transformPath(node.path));
+    }
+
+    public static getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]): string {
+        let markingColor = null;
+
+        if (markedPackages) {
+            let markedParentPackages = markedPackages.filter(mp => node.path.includes(mp.path));
+
+            if (markedParentPackages.length > 0) {
+                let sortedMarkedParentPackages = markedParentPackages.sort((a, b) => b.path.length - a.path.length);
+                markingColor = sortedMarkedParentPackages[0].color;
+            }
+        }
+        return markingColor;
     }
 }

@@ -64,15 +64,16 @@ export class CodeMapRenderService {
 			size: MAP_SIZE,
 			areaKey: s.dynamicSettings.areaMetric,
 			heightKey: s.dynamicSettings.heightMetric,
-			margin: s.appSettings.margin,
+			margin: s.dynamicSettings.margin,
 			invertHeight: s.appSettings.invertHeight,
 			visibleEdges: this.visibleEdges,
 			searchedNodePaths: s.dynamicSettings.searchedNodePaths,
 			blacklist: s.dynamicSettings.blacklist,
 			fileName: fileName,
 			searchPattern: s.dynamicSettings.searchPattern,
-			hideFlatBuildings: s.appSettings.hideFlatBuildings
-		}
+			hideFlatBuildings: s.appSettings.hideFlatBuildings,
+            markedPackages: s.dynamicSettings.markedPackages
+        }
 
 		this.showAllOrOnlyFocusedNode(map, s)
 
@@ -90,7 +91,7 @@ export class CodeMapRenderService {
 			colorKey: s.dynamicSettings.colorMetric,
 			renderDeltas: s.dynamicSettings.renderMode == RenderMode.Delta,
 			hideFlatBuildings: s.appSettings.hideFlatBuildings,
-			colorRange: s.appSettings.neutralColorRange,
+			colorRange: s.dynamicSettings.neutralColorRange,
 			mapSize: MAP_SIZE,
 			deltaColorFlipped: s.appSettings.deltaColorFlipped,
 			whiteColorBuildings: s.appSettings.whiteColorBuildings

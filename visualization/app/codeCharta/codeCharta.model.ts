@@ -36,9 +36,7 @@ export interface Settings {
 }
 
 export interface FileSettings {
-    attributeTypes: AttributeTypes;
-    blacklist: Array<BlacklistItem>;
-    edges: Edge[];
+
 }
 
 export interface DynamicSettings {
@@ -51,6 +49,18 @@ export interface DynamicSettings {
     searchPattern: string;
     margin: number;
     neutralColorRange: ColorRange;
+    attributeTypes: AttributeTypes;
+    blacklist: Array<BlacklistItem>;
+    edges: Edge[];
+    markedPackages: MarkedPackages[];
+}
+
+export interface MarkedPackages {
+    path: string,
+    color: string,
+    attributes: {
+        [key: string]: any
+    }
 }
 
 export interface AppSettings {

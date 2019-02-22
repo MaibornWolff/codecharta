@@ -5,6 +5,7 @@ import {TreeMapUtils} from "./treemap.util";
 import {CodeMapUtilService} from "../../ui/codeMap/codeMap.util.service";
 import { CodeMapNode, BlacklistItem, Edge, BlacklistType, CCFile } from "../../codeCharta.model";
 import { MetricCalculator } from "../../MetricCalculator";
+import {MarkedPackage} from "../settings/settings.service";
 
 export interface ValuedCodeMapNode {
     data: CodeMapNode;
@@ -35,6 +36,7 @@ export interface TreeMapSettings {
     fileName: string;
     searchPattern: string;
     hideFlatBuildings: boolean;
+    markedPackages: MarkedPackage[]
 }
 
 export class TreeMapService {

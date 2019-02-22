@@ -4,6 +4,10 @@ import angular from "angular"
 import { CodeMapNode, BlacklistType, BlacklistItem, Edge } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { CodeMapRenderService } from "./codeMap.render.service";
+import {CodeMapNode, Edge, BlacklistItem, BlacklistType} from "../../core/data/model/CodeMap";
+import {MarkedPackage, Settings, SettingsService} from "../../core/settings/settings.service";
+import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
+import angular from "angular";
 
 export class CodeMapActionsService {
 	public static SELECTOR = "codeMapActionsService"
@@ -24,33 +28,46 @@ export class CodeMapActionsService {
 		}
 	}
 
-	public markFolder(node: CodeMapNode, color: string) {
-		let startingColor = node.markingColor
-		let recFn = (current: CodeMapNode) => {
-			if (!current.markingColor || current.markingColor === startingColor) {
-				current.markingColor = "0x" + color.substr(1)
-				if (current.children) {
-					current.children.forEach(recFn)
-				}
-			}
-		}
-		recFn(node)
-		this.apply()
-	}
+    public markFolder(node: CodeMapNode, color: string) {
+        let s = this.settingsService.settings;
+        const newMP: MarkedPackage = this.getNewMarkedPackage(node.path, color);
+        const clickedMP: MarkedPackage = s.markedPackages.find(p => p.path == newMP.path);
+        const parentMP: MarkedPackage = this.getParentMP(newMP.path, s);
 
-	public unmarkFolder(node: CodeMapNode) {
-		let startingColor = node.markingColor
-		let recFn = (current: CodeMapNode) => {
-			if (current.markingColor === startingColor) {
-				current.markingColor = null
-				if (current.children) {
-					current.children.forEach(recFn)
-				}
-			}
-		}
-		recFn(node)
-		this.apply()
-	}
+        this.handleUpdatingMarkedPackages(s, newMP, clickedMP, parentMP);
+        this.settingsService.applySettings(s);
+    }
+
+    private handleUpdatingMarkedPackages(s: Settings, newMP: MarkedPackage, clickedMP: MarkedPackage, parentMP: MarkedPackage): void {
+        if (!clickedMP && this.packagesHaveDifferentColor(parentMP, newMP)) {
+            this.addMarkedPackage(newMP, s);
+
+        } else if (this.packagesHaveDifferentColor(clickedMP, newMP)) {
+            this.removeMarkedPackage(clickedMP, s);
+
+            if (this.packagesHaveDifferentColor(parentMP, newMP)) {
+                this.addMarkedPackage(newMP, s);
+            }
+        }
+        this.removeChildrenMPWithSameColor(newMP, s);
+    }
+
+    private packagesHaveDifferentColor(mp1: MarkedPackage, mp2: MarkedPackage): boolean {
+        return !(mp1 && mp2 && mp1.color == mp2.color);
+    }
+
+    public unmarkFolder(node: CodeMapNode) {
+        let s = this.settingsService.settings;
+        let clickedMP: MarkedPackage = s.markedPackages.find(p => p.path == node.path);
+
+        if (clickedMP) {
+            this.removeMarkedPackage(clickedMP, s);
+        } else {
+            const parentMP: MarkedPackage = this.getParentMP(node.path, s);
+            this.removeMarkedPackage(parentMP, s);
+        }
+        this.settingsService.applySettings(s);
+    }
 
 	public hideNode(node: CodeMapNode) {
 		this.pushItemToBlacklist({ path: node.path, type: BlacklistType.hide })
@@ -128,6 +145,55 @@ export class CodeMapActionsService {
 		return this.settingsService.getSettings().dynamicSettings.edges.filter(edge => edge.visible).length > 0
 	}
 
+    public getParentMP(path: string, s: Settings): MarkedPackage {
+        const sortedParentMP = s.markedPackages
+            .filter(p => path.includes(p.path) && p.path != path)
+            .sort((a, b) => b.path.length - a.path.length);
+
+        return sortedParentMP.length > 0 ? sortedParentMP[0] : null;
+    }
+
+    private getNewMarkedPackage(path: string, color: string, name: string = undefined): MarkedPackage {
+        let coloredPackage: MarkedPackage = {
+            path: path,
+            color: color,
+            attributes: {}
+        };
+        if (name) {
+            coloredPackage.attributes.name = name;
+        }
+        return coloredPackage;
+    }
+
+    private removeChildrenMPWithSameColor(newMP: MarkedPackage, s: Settings) {
+        const allChildrenMP: MarkedPackage[] = this.getAllChildrenMP(newMP.path, s);
+        if (allChildrenMP.length > 0) {
+            allChildrenMP.forEach(childPackage => {
+                const parentMP = this.getParentMP(childPackage.path, s);
+                if (parentMP && parentMP.color == childPackage.color) {
+                    this.removeMarkedPackage(childPackage, s);
+                }
+            });
+        }
+    }
+
+    private getAllChildrenMP(path: string, s: Settings): MarkedPackage[] {
+        return s.markedPackages.filter(p =>
+            p.path.includes(path) && p.path != path);
+    }
+
+    private addMarkedPackage(markedPackage: MarkedPackage, s: Settings) {
+        s.markedPackages.push(markedPackage);
+        this.settingsService.applySettings(s);
+    }
+
+    private removeMarkedPackage(markedPackage: MarkedPackage, s: Settings) {
+        const indexToRemove = s.markedPackages.indexOf(markedPackage);
+        if (indexToRemove > -1) {
+            s.markedPackages.splice(indexToRemove, 1);
+        }
+    }
+
 	private changeEdgesVisibility(visibility: boolean, node: CodeMapNode = null) {
 		if (this.settingsService.getSettings().dynamicSettings.edges) {
 			this.settingsService.getSettings().dynamicSettings.edges.forEach(edge => {
@@ -139,11 +205,11 @@ export class CodeMapActionsService {
 		}
 	}
 
-	private edgeContainsNode(edge: Edge, node: CodeMapNode) {
+	private edgeContainsNode(edge: Edge, node: CodeMapNode): boolean {
 		return node.path == edge.fromNodeName || node.path == edge.toNodeName
 	}
 
-	private isEqualObjects(obj1, obj2) {
+	private isEqualObjects(obj1, obj2): boolean {
 		return JSON.stringify(angular.toJson(obj1)) === JSON.stringify(angular.toJson(obj2))
 	}
 
@@ -151,7 +217,7 @@ export class CodeMapActionsService {
 		//this.$timeout(() => {
 		//	this.settingsService.applySettings()
 		//}, 50)
-		// TODO 
+		// TODO
 		this.codeMapRenderService.rerenderWithNewSettings(this.settingsService.getSettings())
 	}
 

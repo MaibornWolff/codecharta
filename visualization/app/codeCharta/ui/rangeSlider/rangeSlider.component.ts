@@ -122,10 +122,11 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		const middleSection = slider.find(".rz-selection")
 		const rightSection = slider.find(".rz-right-out-selection .rz-bar")
 
-		leftSection.css("cssText", "background: #" + rangeColors.left.toString(16) + " !important; width: " + rangeFromPercentage + "%;")
-		middleSection.css("cssText", "background: #" + rangeColors.middle.toString(16) + " !important;")
-		rightSection.css("cssText", "background: #" + rangeColors.right.toString(16) + ";")
-	}
+        leftSection.css("cssText", "background: " + rangeColors.left + " !important; width: " + rangeFromPercentage + "%;");
+        middleSection.css("cssText", "background: " + rangeColors.middle + " !important;");
+        rightSection.css("cssText", "background: " + rangeColors.right + ";");
+    }
+
 }
 
 export const rangeSliderComponent = {
