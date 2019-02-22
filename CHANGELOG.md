@@ -6,14 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
+
 ### Added
+
+-   Hovering a node in the map also hovers it in the tree view #351
 
 ### Changed
 
 ### Removed
 
 ### Fixed
+
+-   Fixing sync between treeview hovering and map hovering #351
 -   Folders can no longer be colored in the CodeMap or TreeView #359
+
 ## [1.21.0] - 2019-02-16
 
 ### Added
