@@ -188,13 +188,11 @@ export class GeometryGenerator {
             uvs[i * uvDimension + 0] = data.uvs[i].x;
             uvs[i * uvDimension + 1] = data.uvs[i].y;
 
-            if (data.colors[i]) {
-                let color: THREE.Vector3 = RenderingUtil.colorToVec3(data.colors[i]);
+            let color: THREE.Vector3 = RenderingUtil.colorToVec3(data.colors[i]);
 
-                colors[i * dimension + 0] = color.x;
-                colors[i * dimension + 1] = color.y;
-                colors[i * dimension + 2] = color.z;
-            }
+            colors[i * dimension + 0] = color.x;
+            colors[i * dimension + 1] = color.y;
+            colors[i * dimension + 2] = color.z;
 
             ids[i] = data.subGeometryIdx[i];
             deltas[i] = data.deltas[i];
