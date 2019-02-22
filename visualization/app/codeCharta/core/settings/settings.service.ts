@@ -32,8 +32,8 @@ export class SettingsService {
 
 	/* TODO this needs to be called at other places, this cannot be here
 	private potentiallyUpdateColorRange(update: RecursivePartial<Settings>): RecursivePartial<Settings> {
-		if (update.mapSettings.colorMetric) {
-			update.appSettings.neutralColorRange = this.getAdaptedRange(update.mapSettings.colorMetric)
+		if (update.dynamicSettings.colorMetric) {
+			update.appSettings.neutralColorRange = this.getAdaptedRange(update.dynamicSettings.colorMetric)
 		}
 		return update
 	}*/
@@ -67,7 +67,7 @@ export class SettingsService {
 		}
 
 		let settings: Settings = {
-			mapSettings: {
+			dynamicSettings: {
 				renderMode: RenderMode.Single,
 				areaMetric: "",
 				heightMetric: "",

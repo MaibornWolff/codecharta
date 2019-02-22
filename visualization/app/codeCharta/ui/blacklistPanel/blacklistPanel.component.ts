@@ -21,8 +21,8 @@ export class BlacklistPanelController implements SettingsServiceSubscriber {
 	}
 
 	public onSettingsChanged(settings: Settings, event: IAngularEvent) {
-		if (settings.mapSettings.blacklist) {
-			this.blacklist = settings.mapSettings.blacklist
+		if (settings.dynamicSettings.blacklist) {
+			this.blacklist = settings.dynamicSettings.blacklist
 		}
 	}
 

@@ -54,10 +54,10 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 
 	public onSettingsChanged(settings: Settings, event: IAngularEvent) {
 		// TODO schleife ?
-		if (this._lastDeltaState && settings.mapSettings.renderMode != RenderMode.Delta) {
+		if (this._lastDeltaState && settings.dynamicSettings.renderMode != RenderMode.Delta) {
 			this._lastDeltaState = false
 			this.onDeactivateDeltas()
-		} else if (!this._lastDeltaState && settings.mapSettings.renderMode == RenderMode.Delta) {
+		} else if (!this._lastDeltaState && settings.dynamicSettings.renderMode == RenderMode.Delta) {
 			this._lastDeltaState = true
 			this.onActivateDeltas()
 		}
@@ -87,7 +87,7 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 					this.metrics = metricResult.metrics
 					this.metricData = metricResult.data
 					this.settingsService.updateSettings({
-						mapSettings: {
+						dynamicSettings: {
 							areaMetric: this.getMetricByIndexElseLast(0, this.metrics),
 							heightMetric: this.getMetricByIndexElseLast(1, this.metrics),
 							colorMetric: this.getMetricByIndexElseLast(2, this.metrics)
@@ -157,9 +157,9 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 			metricData: this.metricData
 		})
 
-		const mapSettings = this.settingsService.getSettings().mapSettings
+		const mapSettings = this.settingsService.getSettings().dynamicSettings
 		const settingsUpdate: RecursivePartial<Settings> = {
-			mapSettings: {
+			dynamicSettings: {
 				// TODO blacklist: this.renderMap.blacklist
 				areaMetric: mapSettings.areaMetric,
 				heightMetric: mapSettings.heightMetric,
@@ -168,15 +168,15 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 		}
 
 		if (this.isMetricNotAvailable(mapSettings.areaMetric)) {
-			settingsUpdate.mapSettings.areaMetric = this.getMetricByIndexElseLast(0, this.metrics)
+			settingsUpdate.dynamicSettings.areaMetric = this.getMetricByIndexElseLast(0, this.metrics)
 		}
 
 		if (this.isMetricNotAvailable(mapSettings.heightMetric)) {
-			settingsUpdate.mapSettings.heightMetric = this.getMetricByIndexElseLast(1, this.metrics)
+			settingsUpdate.dynamicSettings.heightMetric = this.getMetricByIndexElseLast(1, this.metrics)
 		}
 
 		if (this.isMetricNotAvailable(mapSettings.colorMetric)) {
-			settingsUpdate.mapSettings.colorMetric = this.getMetricByIndexElseLast(2, this.metrics)
+			settingsUpdate.dynamicSettings.colorMetric = this.getMetricByIndexElseLast(2, this.metrics)
 		}
 
 		this.settingsService.updateSettings(settingsUpdate)
@@ -235,7 +235,7 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 	/*
 	onChangeRenderMode() {
 		this.resetMapRelatedSettings()
-		const usedFiles: File[] = this.importedFiles.filter(f => f.settings.mapSettings.renderMode)
+		const usedFiles: File[] = this.importedFiles.filter(f => f.settings.dynamicSettings.renderMode)
 		const mergedSettings: Settings = this.settingsService.mergeMapRelatedSettings(usedFiles)
 		this.updateRenderSettings(mergedSettings)
 		this.updateRenderSettings(this.urlData.settings)

@@ -62,22 +62,22 @@ export class CodeMapRenderService {
 
 		const treeMapSettings: TreeMapSettings = {
 			size: MAP_SIZE,
-			areaKey: s.mapSettings.areaMetric,
-			heightKey: s.mapSettings.heightMetric,
+			areaKey: s.dynamicSettings.areaMetric,
+			heightKey: s.dynamicSettings.heightMetric,
 			margin: s.appSettings.margin,
 			invertHeight: s.appSettings.invertHeight,
 			visibleEdges: this.visibleEdges,
-			searchedNodePaths: s.mapSettings.searchedNodePaths,
-			blacklist: s.mapSettings.blacklist,
+			searchedNodePaths: s.dynamicSettings.searchedNodePaths,
+			blacklist: s.dynamicSettings.blacklist,
 			fileName: fileName,
-			searchPattern: s.mapSettings.searchPattern,
+			searchPattern: s.dynamicSettings.searchPattern,
 			hideFlatBuildings: s.appSettings.hideFlatBuildings
 		}
 
 		this.showAllOrOnlyFocusedNode(map, s)
 
 		let nodes: Node[] = this.collectNodesToArray(
-			this.treeMapService.createTreemapNodes(map, importedFiles, treeMapSettings, s.mapSettings.edges)
+			this.treeMapService.createTreemapNodes(map, importedFiles, treeMapSettings, s.dynamicSettings.edges)
 		)
 
 		let filtered = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
@@ -86,9 +86,9 @@ export class CodeMapRenderService {
 		})
 
 		this.currentRenderSettings = {
-			heightKey: s.mapSettings.heightMetric,
-			colorKey: s.mapSettings.colorMetric,
-			renderDeltas: s.mapSettings.renderMode == RenderMode.Delta,
+			heightKey: s.dynamicSettings.heightMetric,
+			colorKey: s.dynamicSettings.colorMetric,
+			renderDeltas: s.dynamicSettings.renderMode == RenderMode.Delta,
 			hideFlatBuildings: s.appSettings.hideFlatBuildings,
 			colorRange: s.appSettings.neutralColorRange,
 			mapSize: MAP_SIZE,
@@ -154,8 +154,8 @@ export class CodeMapRenderService {
 	}
 
 	private showAllOrOnlyFocusedNode(map: CodeMapNode, s: Settings) {
-		if (s.mapSettings.focusedNodePath) {
-			const focusedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(s.mapSettings.focusedNodePath, map)
+		if (s.dynamicSettings.focusedNodePath) {
+			const focusedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(s.dynamicSettings.focusedNodePath, map)
 			this.treeMapService.setVisibilityOfNodeAndDescendants(map, false)
 			this.treeMapService.setVisibilityOfNodeAndDescendants(focusedNode, true)
 		} else {
@@ -164,7 +164,7 @@ export class CodeMapRenderService {
 	}
 
 	private getVisibleEdges(map: CodeMapNode, s: Settings) {
-		return map && s.mapSettings.edges ? s.mapSettings.edges.filter(edge => edge.visible === true) : []
+		return map && s.dynamicSettings.edges ? s.dynamicSettings.edges.filter(edge => edge.visible === true) : []
 	}
 
 	private showCouplingArrows(deps: Edge[]) {

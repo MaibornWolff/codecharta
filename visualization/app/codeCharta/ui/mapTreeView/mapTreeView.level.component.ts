@@ -82,14 +82,14 @@ export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubsc
 
     public isBlacklisted(node: CodeMapNode): boolean {
         if (node != null) {
-            return CodeMapUtilService.isBlacklisted(node, this.settingsService.settings.mapSettings.blacklist, BlacklistType.exclude)
+            return CodeMapUtilService.isBlacklisted(node, this.settingsService.settings.dynamicSettings.blacklist, BlacklistType.exclude)
         }
         return false;
     }
 
     public isSearched(node: CodeMapNode): boolean {
-        if (node != null && this.settingsService.settings.mapSettings.searchedNodePaths) {
-            return this.settingsService.settings.mapSettings.searchedNodePaths.filter(path =>
+        if (node != null && this.settingsService.settings.dynamicSettings.searchedNodePaths) {
+            return this.settingsService.settings.dynamicSettings.searchedNodePaths.filter(path =>
                 path == node.path).length > 0;
         }
         return false;

@@ -74,8 +74,8 @@ describe("MapTreeViewSearchController", () => {
                             ]
                         },
                         {
-                            name: "abc",
-                            path: "/root/a/abc",
+                            name: "fileSettings",
+                            path: "/root/a/fileSettings",
                             type: "File",
                             attributes: {},
                         }
@@ -90,7 +90,7 @@ describe("MapTreeViewSearchController", () => {
     }
 
     it("should set searchPattern in settings", () => {
-        mapTreeViewSearchController.viewModel.searchPattern = "*abc";
+        mapTreeViewSearchController.viewModel.searchPattern = "*fileSettings";
         mapTreeViewSearchController.setSearchedNodePathnames();
         expect(mapTreeViewSearchController.settingsService.settings.searchPattern).toBe(mapTreeViewSearchController.viewModel.searchPattern);
     });
@@ -154,7 +154,7 @@ describe("MapTreeViewSearchController", () => {
 
             mapTreeViewSearchController.setSearchedNodePathnames();
 
-            expect(mapTreeViewSearchController.settingsService.settings.searchedNodePaths).toEqual(["/root/a/ab/aba", "/root/a/abc", "/root/a/ab"]);
+            expect(mapTreeViewSearchController.settingsService.settings.searchedNodePaths).toEqual(["/root/a/ab/aba", "/root/a/fileSettings", "/root/a/ab"]);
             expect(mapTreeViewSearchController.searchedFiles.length).toBe(2);
             expect(mapTreeViewSearchController.settingsService.applySettings).toHaveBeenCalled();
         });

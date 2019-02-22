@@ -36,10 +36,10 @@ export class SettingsPanelController implements SettingsServiceSubscriber {
     }
 
     public onSettingsChanged(settings: Settings, event: IAngularEvent) {
-        if (settings.mapSettings.blacklist.length != this.viewModel.blacklistLength) {
+        if (settings.dynamicSettings.blacklist.length != this.viewModel.blacklistLength) {
             this.highlightCounterIcon();
         }
-        this.viewModel.blacklistLength = settings.mapSettings.blacklist.length;
+        this.viewModel.blacklistLength = settings.dynamicSettings.blacklist.length;
     }
 
     public highlightCounterIcon() {

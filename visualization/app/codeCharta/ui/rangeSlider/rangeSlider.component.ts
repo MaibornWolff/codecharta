@@ -29,7 +29,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	public initSliderOptions(settings: Settings = this.settingsService.settings) {
 		this.maxMetricValue = MetricCalculator.getMaxMetricInAllRevisions(
 			this.codeChartaService.getImportedFiles(),
-			settings.mapSettings.colorMetric
+			settings.dynamicSettings.colorMetric
 		)
 
 		this.sliderOptions = {
@@ -38,7 +38,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 			pushRange: true,
 			onToChange: this.onToSliderChange.bind(this),
 			onFromChange: this.onFromSliderChange.bind(this),
-			disabled: this.settingsService.settings.mapSettings.renderMode == RenderMode.Delta
+			disabled: this.settingsService.settings.dynamicSettings.renderMode == RenderMode.Delta
 		}
 	}
 
@@ -49,7 +49,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 					to: Math.min(
 						MetricCalculator.getMaxMetricInAllRevisions(
 							this.codeChartaService.getImportedFiles(),
-							this.settingsService.settings.mapSettings.colorMetric
+							this.settingsService.settings.dynamicSettings.colorMetric
 						),
 						Math.max(1, this.settingsService.getSettings().appSettings.neutralColorRange.to)
 					),
@@ -75,7 +75,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 					from: Math.min(
 						MetricCalculator.getMaxMetricInAllRevisions(
 							this.codeChartaService.getImportedFiles(),
-							this.settingsService.settings.mapSettings.colorMetric
+							this.settingsService.settings.dynamicSettings.colorMetric
 						) - 1,
 						this.settingsService.settings.appSettings.neutralColorRange.from
 					)

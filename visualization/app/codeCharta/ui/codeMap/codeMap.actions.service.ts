@@ -66,14 +66,14 @@ export class CodeMapActionsService {
 		if (node.path == this.codeChartaService.getRenderMap().path) {
 			this.removeFocusedNode()
 		} else {
-			this.settingsService.updateSettings({ mapSettings: { focusedNodePath: node.path } })
+			this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: node.path } })
 			this.autoFit()
 			this.apply()
 		}
 	}
 
 	public removeFocusedNode() {
-		this.settingsService.updateSettings({ mapSettings: { focusedNodePath: null } })
+		this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: null } })
 		this.autoFit()
 		this.apply()
 	}
@@ -85,20 +85,20 @@ export class CodeMapActionsService {
 
 	public removeBlacklistEntry(entry: BlacklistItem) {
 		this.settingsService.updateSettings({
-			mapSettings: {
-				blacklist: this.settingsService.getSettings().mapSettings.blacklist.filter(obj => !this.isEqualObjects(obj, entry))
+			dynamicSettings: {
+				blacklist: this.settingsService.getSettings().dynamicSettings.blacklist.filter(obj => !this.isEqualObjects(obj, entry))
 			}
 		})
 	}
 
 	public pushItemToBlacklist(item: BlacklistItem) {
-		const foundDuplicate = this.settingsService.getSettings().mapSettings.blacklist.filter(obj => {
+		const foundDuplicate = this.settingsService.getSettings().dynamicSettings.blacklist.filter(obj => {
 			return this.isEqualObjects(obj, item)
 		})
 		if (foundDuplicate.length == 0) {
             this.settingsService.updateSettings({
-                mapSettings: {
-                    blacklist: [...this.settingsService.getSettings().mapSettings.blacklist, item]
+                dynamicSettings: {
+                    blacklist: [...this.settingsService.getSettings().dynamicSettings.blacklist, item]
                 }
             })
 		}
@@ -117,20 +117,20 @@ export class CodeMapActionsService {
 	}
 
 	public amountOfDependentEdges(node: CodeMapNode) {
-		return this.settingsService.getSettings().mapSettings.edges.filter(edge => this.edgeContainsNode(edge, node)).length
+		return this.settingsService.getSettings().dynamicSettings.edges.filter(edge => this.edgeContainsNode(edge, node)).length
 	}
 
 	public amountOfVisibleDependentEdges(node: CodeMapNode) {
-		return this.settingsService.getSettings().mapSettings.edges.filter(edge => this.edgeContainsNode(edge, node) && edge.visible).length
+		return this.settingsService.getSettings().dynamicSettings.edges.filter(edge => this.edgeContainsNode(edge, node) && edge.visible).length
 	}
 
 	public anyEdgeIsVisible() {
-		return this.settingsService.getSettings().mapSettings.edges.filter(edge => edge.visible).length > 0
+		return this.settingsService.getSettings().dynamicSettings.edges.filter(edge => edge.visible).length > 0
 	}
 
 	private changeEdgesVisibility(visibility: boolean, node: CodeMapNode = null) {
-		if (this.settingsService.getSettings().mapSettings.edges) {
-			this.settingsService.getSettings().mapSettings.edges.forEach(edge => {
+		if (this.settingsService.getSettings().dynamicSettings.edges) {
+			this.settingsService.getSettings().dynamicSettings.edges.forEach(edge => {
 				if (node == null || this.edgeContainsNode(edge, node)) {
 					edge.visible = visibility
 				}

@@ -106,9 +106,9 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 	}
 
 	public onSettingsChanged(settings: Settings) {
-		this.details.common.areaAttributeName = settings.mapSettings.areaMetric
-		this.details.common.heightAttributeName = settings.mapSettings.heightMetric
-		this.details.common.colorAttributeName = settings.mapSettings.colorMetric
+		this.details.common.areaAttributeName = settings.dynamicSettings.areaMetric
+		this.details.common.heightAttributeName = settings.dynamicSettings.heightMetric
+		this.details.common.colorAttributeName = settings.dynamicSettings.colorMetric
 	}
 
 	public onSelect(data) {
@@ -147,7 +147,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 		this.clearHoveredDetails()
 		this.$timeout(() => {
 			this.details.hovered.name = hovered.name
-			if (hovered.mode != undefined && this.settingsService.settings.mapSettings.renderMode == RenderMode.Delta) {
+			if (hovered.mode != undefined && this.settingsService.settings.dynamicSettings.renderMode == RenderMode.Delta) {
 				this.details.hovered.heightDelta = hovered.deltas ? hovered.deltas[this.details.common.heightAttributeName] : null
 				this.details.hovered.areaDelta = hovered.deltas ? hovered.deltas[this.details.common.areaAttributeName] : null
 				this.details.hovered.colorDelta = hovered.deltas ? hovered.deltas[this.details.common.colorAttributeName] : null
@@ -175,7 +175,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 				this.details.selected.color = selected.attributes ? selected.attributes[this.details.common.colorAttributeName] : null
 				this.details.selected.attributes = selected.attributes
 			}
-			if (selected.deltas != undefined && this.settingsService.settings.mapSettings.renderMode == RenderMode.Delta) {
+			if (selected.deltas != undefined && this.settingsService.settings.dynamicSettings.renderMode == RenderMode.Delta) {
 				this.details.selected.heightDelta = selected.deltas ? selected.deltas[this.details.common.heightAttributeName] : null
 				this.details.selected.areaDelta = selected.deltas ? selected.deltas[this.details.common.areaAttributeName] : null
 				this.details.selected.colorDelta = selected.deltas ? selected.deltas[this.details.common.colorAttributeName] : null

@@ -59,15 +59,15 @@ export class MetricChooserController implements ImportedFilesChangedSubscriber, 
     public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
 
         if(data && data.to && data.to.node && data.to.node.attributes) {
-            this.hoveredAreaValue = data.to.node.attributes[this.settingsService.settings.mapSettings.areaMetric];
-            this.hoveredColorValue = data.to.node.attributes[this.settingsService.settings.mapSettings.colorMetric];
-            this.hoveredHeightValue = data.to.node.attributes[this.settingsService.settings.mapSettings.heightMetric];
+            this.hoveredAreaValue = data.to.node.attributes[this.settingsService.settings.dynamicSettings.areaMetric];
+            this.hoveredColorValue = data.to.node.attributes[this.settingsService.settings.dynamicSettings.colorMetric];
+            this.hoveredHeightValue = data.to.node.attributes[this.settingsService.settings.dynamicSettings.heightMetric];
 
             if(data.to.node.deltas){
 
-                this.hoveredAreaDelta = data.to.node.deltas[this.settingsService.settings.mapSettings.areaMetric];
-                this.hoveredColorDelta = data.to.node.deltas[this.settingsService.settings.mapSettings.colorMetric];
-                this.hoveredHeightDelta = data.to.node.deltas[this.settingsService.settings.mapSettings.heightMetric];
+                this.hoveredAreaDelta = data.to.node.deltas[this.settingsService.settings.dynamicSettings.areaMetric];
+                this.hoveredColorDelta = data.to.node.deltas[this.settingsService.settings.dynamicSettings.colorMetric];
+                this.hoveredHeightDelta = data.to.node.deltas[this.settingsService.settings.dynamicSettings.heightMetric];
 
                 this.hoveredDeltaColor = this.getHoveredDeltaColor();
             }

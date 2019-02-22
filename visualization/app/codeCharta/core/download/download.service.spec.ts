@@ -84,17 +84,17 @@ describe("app.codeCharta.core.download", function() {
         stubDate(new Date('2018-12-14T09:39:59'));
 
         it("should add json extension to given string", function() {
-            expect(downloadService.addJsonFileEndingIfNecessary("abc")).toBe("abc.json");
+            expect(downloadService.addJsonFileEndingIfNecessary("fileSettings")).toBe("fileSettings.json");
         });
 
         it("should keep json extension with given string", function() {
-            expect(downloadService.addJsonFileEndingIfNecessary("abc.json")).toBe("abc.json");
+            expect(downloadService.addJsonFileEndingIfNecessary("fileSettings.json")).toBe("fileSettings.json");
         });
 
 
         it("should add date string before json extension", function() {
-            const filenameWithDate = downloadService.addDateToFileName("abc.json");
-            const regexp = new RegExp('^abc\.\\d{2}_\\d{2}_\\d{4}\.json$');
+            const filenameWithDate = downloadService.addDateToFileName("fileSettings.json");
+            const regexp = new RegExp('^fileSettings\.\\d{2}_\\d{2}_\\d{4}\.json$');
             expect(regexp.test(filenameWithDate)).toBeTruthy();
         });
 

@@ -75,9 +75,9 @@ export class ScenarioService {
         if(!scenario || !metrics) {
             return false;
         }
-        return (metrics.filter(x => x === scenario.settings.mapSettings.areaMetric).length > 0 &&
-        metrics.filter(x => x === scenario.settings.mapSettings.heightMetric).length > 0 &&
-        metrics.filter(x => x === scenario.settings.mapSettings.colorMetric).length > 0);
+        return (metrics.filter(x => x === scenario.settings.dynamicSettings.areaMetric).length > 0 &&
+        metrics.filter(x => x === scenario.settings.dynamicSettings.heightMetric).length > 0 &&
+        metrics.filter(x => x === scenario.settings.dynamicSettings.colorMetric).length > 0);
     }
 
     public getDefaultScenario(): Scenario {
