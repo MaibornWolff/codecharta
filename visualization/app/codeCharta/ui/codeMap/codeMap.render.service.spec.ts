@@ -18,7 +18,7 @@ describe("renderService", () => {
     let node: CodeMapNode;
     let threeSceneService: ThreeSceneService;
     let treeMapService: TreeMapService;
-    let simpleHierarchy: CodeMapNode;
+    let simpleHierarchy: Node;
     let codeMapUtilService: CodeMapUtilService;
     let settingsServiceMock: SettingsService;
     let $rootScope;
@@ -78,6 +78,7 @@ describe("renderService", () => {
             type: "Folder",
             path: "/root",
             height: 3,
+            depth: 0,
             visible: true,
             length: 1,
             width: 1,
@@ -88,6 +89,7 @@ describe("renderService", () => {
                     type: "Folder",
                     path: "/root/a",
                     height: 2,
+                    depth: 1,
                     visible: true,
                     length: 1,
                     width: 1,
@@ -98,6 +100,7 @@ describe("renderService", () => {
                             type: "Folder",
                             path: "/root/a/ab",
                             visible: true,
+                            depth: 2,
                             attributes: {},
                             children: [
                                 {
@@ -105,6 +108,7 @@ describe("renderService", () => {
                                     path: "/root/a/ab/aba",
                                     isLeaf: true,
                                     visible: true,
+                                    depth: 3,
                                     type: "File",
                                     attributes: {},
                                     children: []
@@ -224,6 +228,7 @@ describe("renderService", () => {
 
         beforeEach(() => {
             mockForGeometry();
+
         });
 
         it("Nodes collected", ()=>{
@@ -234,18 +239,16 @@ describe("renderService", () => {
 
 
         it("Labels cleared", ()=>{
-            renderService.updateMapGeometry(settingsServiceMock.settings);
             renderService.codeMapLabelService.clearLabels = sinon.spy();
+            renderService.updateMapGeometry(settingsServiceMock.settings);
 
             expect(renderService.codeMapLabelService.clearLabels.CalledOnce);
 
         });
 
         it("Arrows cleared", ()=>{
-
-
-            renderService.updateMapGeometry(settingsServiceMock.settings);
             renderService.codeMapArrowService.clearArrows = sinon.spy();
+            renderService.updateMapGeometry(settingsServiceMock.settings);
 
             expect(renderService.codeMapArrowService.clearArrows.CalledOnce);
 

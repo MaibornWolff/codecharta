@@ -8,7 +8,7 @@ import "./mapTreeView"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { Node } from "../codeMap/rendering/node"
-import { CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import { CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
@@ -131,33 +131,25 @@ describe("MapTreeViewLevelController", () => {
 			expect(mapTreeViewLevelController._isHoveredInCodeMap).toBe(false)
 		})
 
-		it("should set _isHoveredInCodeMap initially to false", () => {
-			expect(mapTreeViewLevelController._isHoveredInCodeMap).toBe(false)
-		})
+        it("Black color if no folder", () => {
+            mapTreeViewLevelController.node = { path: "/root/node/path", type: "File" };
+            expect(mapTreeViewLevelController.getMarkingColor()).toBe("#000");
+        });
 
-		it("should subscribe itself to events", () => {
-			CodeMapMouseEventService.subscribe = jest.fn()
-			mockEverything()
-			expect(CodeMapMouseEventService.subscribe).toBeCalledWith(expect.any($rootScope.constructor), mapTreeViewLevelController)
-		})
-	})
+        it("Return the markinColor if the matching markedPackage", () => {
+            mapTreeViewLevelController.node = { path: "/root/node/path", type: "Folder" };
+            mapTreeViewLevelController.settingsService.settings.markedPackages = [{
+                path: "/root/node/path", color: "#123FDE"
+            }];
+            expect(mapTreeViewLevelController.getMarkingColor()).toBe("#123FDE");
+        });
 
-	describe("Folder Color", () => {
-		it("Black color if no folder", () => {
-			expect(mapTreeViewLevelController.getFolderColor()).toBe("#000")
-		})
-
-		it("Return the color defined in the folder", () => {
-			mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder")
-			mapTreeViewLevelController.node.markingColor = "0xff3210"
-			expect(mapTreeViewLevelController.getFolderColor()).toBe("#ff3210")
-		})
-
-		it("Return black if no markingColor in node", () => {
-			mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder")
-			expect(mapTreeViewLevelController.getFolderColor()).toBe("#000")
-		})
-	})
+        it("Return black if no markingColor in node", () => {
+            mapTreeViewLevelController.node = { path: "/root/node/path", type: "Folder" };
+            mapTreeViewLevelController.settingsService.settings.markedPackages = [];
+            expect(mapTreeViewLevelController.getMarkingColor()).toBe("#000");
+        });
+    });
 
 	describe("Mouse movement", () => {
 		it("Mouse enter", () => {
