@@ -10,7 +10,7 @@ import $ from "jquery";
 import {MapColors} from "../codeMap/rendering/renderSettings";
 import {ITimeoutService} from "angular";
 import "./legendPanel.component.scss";
-import {ColorService} from "../../core/color/color.service";
+import {ColorService} from "../../core/colorService";
 
 export interface PackageList {
     colorPixel: string,

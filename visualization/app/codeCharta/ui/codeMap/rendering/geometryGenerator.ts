@@ -7,7 +7,7 @@ import {RenderSettings} from "./renderSettings";
 import {RenderingUtil} from "./renderingUtil";
 import {IntermediateVertexData} from "./intermediateVertexData";
 import {BoxGeometryGenerationHelper} from "./boxGeometryGenerationHelper";
-import {ColorService} from "../../../core/color/color.service";
+import {ColorService} from "../../../core/colorService";
 
 export interface BoxMeasures {
     x: number;

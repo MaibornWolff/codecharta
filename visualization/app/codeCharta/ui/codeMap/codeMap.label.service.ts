@@ -5,7 +5,7 @@ import {CameraChangeSubscriber, ThreeOrbitControlsService} from "./threeViewer/t
 import {PerspectiveCamera, Sprite} from "three";
 import {ThreeCameraService} from "./threeViewer/threeCameraService";
 import {ThreeSceneService} from "./threeViewer/threeSceneService";
-import {ColorService} from "../../core/color/color.service";
+import {ColorService} from "../../core/colorService";
 
 interface InternalLabel {
     sprite : THREE.Sprite;
