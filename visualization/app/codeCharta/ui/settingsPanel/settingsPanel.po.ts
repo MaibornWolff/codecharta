@@ -17,7 +17,7 @@ export class SettingsPanelPageObject {
 
 	public async rightClickRootNodeInTreeViewSearchPanel() {
 		await this.page.click(
-			"#codeMap > sidenav-component > md-sidenav > md-content > settings-panel-component > md-expansion-panel-group > md-expansion-panel:nth-child(1) > md-expansion-panel-expanded > md-expansion-panel-content > map-tree-view-component > map-tree-view-level-component > div > div.tree-element-label-0",
+			"sidenav-component map-tree-view-level-component > div > div.tree-element-label-0",
 			{ button: "right" }
 		)
 		await delay(500)
