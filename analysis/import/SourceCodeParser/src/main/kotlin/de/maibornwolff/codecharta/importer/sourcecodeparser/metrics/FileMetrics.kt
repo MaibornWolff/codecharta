@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.metrics
 
 import java.io.Serializable
 
-class FileMetrics() {
+class FileMetrics {
 
     private var metricsMap: MutableMap<String, Serializable> = HashMap()
 
@@ -12,6 +12,10 @@ class FileMetrics() {
 
     fun get(key: String) : Serializable?{
         return metricsMap[key]
+    }
+
+    fun getMap() : MutableMap<String, Serializable>{
+        return metricsMap
     }
 
 

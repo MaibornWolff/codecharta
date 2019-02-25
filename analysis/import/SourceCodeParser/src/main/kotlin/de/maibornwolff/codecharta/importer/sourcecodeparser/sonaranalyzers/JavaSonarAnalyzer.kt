@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers
 
-import com.sun.xml.bind.v2.ContextFactory.createContext
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetrics
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
@@ -56,7 +55,7 @@ class JavaSonarAnalyzer(path:String) : SonarAnalyzer(path){
     }
 
     override fun scanFiles(fileList: List<String>) : Map<String, FileMetrics>{
-        var metricsMap: MutableMap<String, FileMetrics> = HashMap()
+        val metricsMap: MutableMap<String, FileMetrics> = HashMap()
         for (file in fileList){
             createContext()
             buildSonarComponents()

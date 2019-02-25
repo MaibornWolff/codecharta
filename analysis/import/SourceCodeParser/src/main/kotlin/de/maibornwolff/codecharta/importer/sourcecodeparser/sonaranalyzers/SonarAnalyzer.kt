@@ -59,7 +59,7 @@ open abstract class SonarAnalyzer(path: String) {
 
     protected abstract fun createContext()
     protected abstract fun buildSonarComponents()
-    protected abstract fun addFileToContext(file: String)
+    protected abstract fun addFileToContext(fileName: String)
     protected abstract fun executeScan()
 
 }

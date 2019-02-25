@@ -26,16 +26,16 @@ class ProjectTraverser(root: File) {
             if (!this.analyzerFileLists!!.containsKey(fileExtension)) {
                 val fileListForType: MutableList<String> = mutableListOf()
                 fileListForType.add(fileName)
-                this.analyzerFileLists!![fileExtension] = fileListForType
+                this.analyzerFileLists[fileExtension] = fileListForType
             } else {
-                this.analyzerFileLists!![fileExtension]!!.add(fileName)
+                this.analyzerFileLists[fileExtension]!!.add(fileName)
             }
         }
     }
 
     fun getFileListByExtension(type: String): List<String> {
         return if (this.analyzerFileLists!!.containsKey(type)) {
-            this.analyzerFileLists!![type] ?: listOf()
+            this.analyzerFileLists[type] ?: listOf()
         } else {
             ArrayList()
         }

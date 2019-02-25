@@ -6,7 +6,6 @@ import java.io.File
 import java.util.ArrayList
 
 import org.assertj.core.api.Assertions.assertThat
-import java.io.Serializable
 
 class JavaSonarAnalyzerTest {
 

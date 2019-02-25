@@ -7,8 +7,8 @@ import java.io.File
 import java.io.Writer
 
 class ProjectParser {
-    private var metricTypes: MutableSet<String> = HashSet()
-    private var projectMetrics: MutableMap<String, FileMetrics> = HashMap()
+    var metricKinds: MutableSet<String> = HashSet()
+    var projectMetrics: MutableMap<String, FileMetrics> = HashMap()
     private var sonarAnalyzers: MutableList<SonarAnalyzer> = mutableListOf()
 
     private fun setUpAnalyzers(root: File) {
@@ -22,9 +22,20 @@ class ProjectParser {
         projectTraverser.traverse()
 
         for(analyzer in sonarAnalyzers){
-            var files = projectTraverser.getFileListByExtension(analyzer.FILE_EXTENSION)
+            val files = projectTraverser.getFileListByExtension(analyzer.FILE_EXTENSION)
             println(analyzer.scanFiles(files))
-            projectMetrics.putAll(analyzer.scanFiles(files))
+            val metricsForKind = analyzer.scanFiles(files)
+            projectMetrics.putAll(metricsForKind)
+            updateMetricKinds(metricsForKind)
         }
     }
+
+    private fun updateMetricKinds(metricsMap: Map<String, FileMetrics>){
+        if(metricsMap.isEmpty()) return
+
+        val sampleFile = metricsMap.keys.iterator().next()
+        val fileMetrics = metricsMap[sampleFile]!!.getMap()
+        metricKinds.addAll(fileMetrics.keys)
+    }
+
 }
