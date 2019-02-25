@@ -29,6 +29,8 @@ import java.nio.charset.StandardCharsets
 
 class JavaSonarAnalyzer(path:String) : SonarAnalyzer(path){
 
+    override val FILE_EXTENSION = "java"
+
     // Minimal rules init
     private var activeRules = ActiveRulesBuilder().build()
     private var mapSettings = MapSettings()
@@ -43,7 +45,7 @@ class JavaSonarAnalyzer(path:String) : SonarAnalyzer(path){
         javaClasspath = JavaClasspath(mapSettings.asConfig(), sensorContext.fileSystem())
     }
 
-    private fun buildSonarComponents(){
+    override fun buildSonarComponents(){
         val checkFactory = CheckFactory(this.activeRules)
         val javaTestClasspath = JavaTestClasspath(mapSettings.asConfig(), sensorContext.fileSystem())
         val fileLinesContext = mock(FileLinesContext::class.java)

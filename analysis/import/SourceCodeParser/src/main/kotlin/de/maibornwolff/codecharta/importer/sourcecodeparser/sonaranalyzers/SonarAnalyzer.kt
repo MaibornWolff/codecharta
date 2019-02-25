@@ -17,12 +17,15 @@ open abstract class SonarAnalyzer(path: String) {
     protected lateinit var sensorContext: SensorContextTester
     var baseDir: File = File(path).absoluteFile
 
+    abstract val FILE_EXTENSION: String
+
     open fun scanFiles(fileList: List<String>) : Map<String, FileMetrics>{
 
         createContext()
         for(file in fileList){
             addFileToContext(file)
         }
+        buildSonarComponents()
         executeScan()
 
         var metricsMap: MutableMap<String, FileMetrics> = HashMap()
@@ -55,6 +58,7 @@ open abstract class SonarAnalyzer(path: String) {
     }
 
     protected abstract fun createContext()
+    protected abstract fun buildSonarComponents()
     protected abstract fun addFileToContext(file: String)
     protected abstract fun executeScan()
 
