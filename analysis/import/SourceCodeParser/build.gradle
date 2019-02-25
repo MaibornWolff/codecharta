@@ -7,7 +7,7 @@ dependencies {
     implementation project(':model')
 
     antlr group: 'org.antlr', name:'antlr4', version: antlr_version
-    errorprone group: 'com.google.errorprone', name:'error_prone_core', version: '2.3.1'
+    errorprone group: 'com.google.errorprone', name:'error_prone_core', version: '2.3.3'
 
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'org.antlr', name:'antlr4-runtime', version: antlr_version
