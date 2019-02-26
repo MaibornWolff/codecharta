@@ -51,8 +51,10 @@ export class MultipleFilePanelController implements DataServiceSubscriber, Setti
 
     public updateSelectedMapIndices(){
         this.selectedMapIndices = [];
-        let indexOfReferenceMap = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
-        this.selectedMapIndices.push(indexOfReferenceMap);
+        this.selectedMapIndices.push(this.revisions.length-1);
+        for(let i=0; i<this.revisions.length; i++){
+            this.selectedMapIndices.push(i)
+        }
     }
 
 
