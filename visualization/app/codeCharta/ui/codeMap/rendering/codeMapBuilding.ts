@@ -5,12 +5,12 @@ import {Node} from "./node";
 export class CodeMapBuilding {
     public id : number;
     public boundingBox : THREE.Box3;
-    public color : number;
+    public color : string;
     public node : Node;
     public parent?: CodeMapBuilding;
     public name?: string;
 
-    constructor(id : number, box : THREE.Box3, node : Node, color? : number)
+    constructor(id : number, box : THREE.Box3, node : Node, color? : string)
     {
         this.id = id;
         this.boundingBox = box;

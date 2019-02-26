@@ -30,7 +30,7 @@ describe("CodeMapLabelService", () => {
             $rootScope: getService<IRootScopeService>("$rootScope"),
             threeCameraService: new ThreeCameraService(),
             threeSceneService: new ThreeSceneService(),
-            threeOrbitControlsService: ThreeOrbitControlsService
+            threeOrbitControlsService: ThreeOrbitControlsService,
         };
 
         services.threeOrbitControlsService = new ThreeOrbitControlsService(services.threeCameraService, services.threeSceneService, services.$rootScope);

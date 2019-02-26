@@ -106,6 +106,25 @@ describe("treemapUtils", () => {
             expect(buildNode()).toMatchSnapshot();
         });
 
+        it("should set markingColor according to markedPackages", () => {
+            const color = "#FF0000";
+            treeMapSettings.markedPackages = [{
+                path: "/root/Anode",
+                color: color,
+                attributes: {},
+            }];
+            expect(buildNode().markingColor).toEqual(color);
+        });
+
+        it("should set no markingColor according to markedPackages", () => {
+            const color = "#FF0000";
+            treeMapSettings.markedPackages = [{
+                path: "/root/AnotherNode",
+                color: color,
+                attributes: {},
+            }];
+            expect(buildNode().markingColor).toEqual(null);
+        });
     });
 
     describe("detect leaves", () => {

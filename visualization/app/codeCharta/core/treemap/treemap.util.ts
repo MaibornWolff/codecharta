@@ -1,5 +1,6 @@
 import {SquarifiedValuedCodeMapNode, TreeMapSettings} from "./treemap.service";
 import {Node} from "../../ui/codeMap/rendering/node";
+import {CodeMapUtilService} from "../../ui/codeMap/codeMap.util.service";
 
 export class TreeMapUtils {
 
@@ -56,7 +57,7 @@ export class TreeMapUtils {
             origin: squaredNode.data.origin,
             link: squaredNode.data.link,
             children: [],
-            markingColor: parseInt(squaredNode.data.markingColor),
+            markingColor: CodeMapUtilService.getMarkingColor(squaredNode.data, s.markedPackages),
             flat: flattened,
         };
 
