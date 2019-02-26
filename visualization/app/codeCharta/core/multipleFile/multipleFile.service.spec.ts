@@ -92,7 +92,7 @@ describe("app.codeCharta.core.multiple", function() {
         it("aggregate two aggregated maps should aggregate the attributes to root",  NGMock.mock.inject(function (multipleFileService) {
             let multiple: CodeMap;
             multiple = multipleFileService.aggregateMaps([file1, file2]);
-            expect(multiple.nodes.attributes.rloc).toBe(420)
+            expect(multiple.nodes.attributes.rloc).toBe(430)
             expect(multiple.nodes.attributes.functions).toBe(1230)
             expect(multiple.nodes.attributes.mcc).toBe(213)
             expect(multiple.nodes.attributes.customMetric).toBe(7)
