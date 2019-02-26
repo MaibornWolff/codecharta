@@ -1,4 +1,7 @@
+import * as d3 from "d3";
+
 import {AttributeType, CodeMap, CodeMapNode, Edge, BlacklistItem} from "../data/model/CodeMap";
+import { codeMapComponent } from "../../ui/codeMap/codeMap.component";
 
 export class MultipleFileService {
 
@@ -106,7 +109,20 @@ export class MultipleFileService {
         for(let inputMap of inputMaps){
             outputMap.nodes.children.push(this.extractNodeFromMap(inputMap));
         }
+        this.aggregateRootAttributes(outputMap)
         return outputMap;
+    }
+
+    private aggregateRootAttributes(map: CodeMap){
+        map.nodes.children.forEach(child => {
+            let attributes = child.attributes
+            for(let key in attributes){
+                if(!(key in map.nodes.attributes)){
+                    map.nodes.attributes[key] = 0
+                }
+                map.nodes.attributes[key] += attributes[key]
+            }
+        })
     }
 
     private extractNodeFromMap(inputCodeMap: CodeMap): CodeMapNode {
