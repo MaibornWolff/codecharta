@@ -48,7 +48,7 @@ export class CodeMapMesh {
 
     private lightingParams : CodeMapLightingParams = {
         numHighlights : {type : "f", value : 0.0},
-        highlightColor : {type : "v3", value : RenderingUtil.colorToVec3(0x666666)},
+        highlightColor : {type : "v3", value : RenderingUtil.colorToVec3("#666666")},
         highlightedIndices : {type : "fv1", value : []},
 
         numSelections : {type : "f", value : 0.0},
@@ -80,7 +80,7 @@ export class CodeMapMesh {
         return this.threeMesh;
     }
 
-    public setHighlighted(buildings : CodeMapBuilding[], color? : number)
+    public setHighlighted(buildings : CodeMapBuilding[], color? : string)
     {
         //noinspection TypeScriptUnresolvedVariable
         this.material.uniforms.highlightedIndices.value = buildings.map((b : CodeMapBuilding) => {return b.id;});
@@ -94,7 +94,7 @@ export class CodeMapMesh {
         this.currentlyHighlighted = buildings;
     }
 
-    public setSelected(buildings : CodeMapBuilding[], color? : number)
+    public setSelected(buildings : CodeMapBuilding[], color? : string)
     {
         //noinspection TypeScriptUnresolvedVariable
         this.material.uniforms.selectedIndices.value = buildings.map((b : CodeMapBuilding) => {return b.id;});
