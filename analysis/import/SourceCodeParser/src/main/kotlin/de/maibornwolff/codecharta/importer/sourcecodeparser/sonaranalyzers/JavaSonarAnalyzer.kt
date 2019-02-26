@@ -5,26 +5,27 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.sonar.api.SonarQubeSide
-import org.sonar.api.batch.fs.InputFile
+import org.sonar.api.batch.rule.CheckFactory
 import org.sonar.api.batch.rule.internal.ActiveRulesBuilder
 import org.sonar.api.batch.sensor.internal.SensorContextTester
-import org.sonar.api.batch.fs.internal.TestInputFileBuilder
-import org.sonar.api.batch.rule.CheckFactory
 import org.sonar.api.config.internal.MapSettings
 import org.sonar.api.internal.SonarRuntimeImpl
+import org.sonar.java.JavaClasspath
+import org.sonar.java.JavaTestClasspath
+import org.sonar.java.SonarComponents
+import org.sonar.api.batch.fs.InputFile
+import org.sonar.api.batch.fs.internal.TestInputFileBuilder
 import org.sonar.api.issue.NoSonarFilter
 import org.sonar.api.measures.FileLinesContext
 import org.sonar.api.measures.FileLinesContextFactory
 import org.sonar.api.utils.Version
 import org.sonar.java.DefaultJavaResourceLocator
-import org.sonar.java.JavaClasspath
-import org.sonar.java.JavaTestClasspath
-import org.sonar.java.SonarComponents
 import org.sonar.java.filters.PostAnalysisIssueFilter
 import org.sonar.plugins.java.Java
 import org.sonar.plugins.java.JavaSquidSensor
 import java.io.File
 import java.nio.charset.StandardCharsets
+
 
 class JavaSonarAnalyzer(path:String) : SonarAnalyzer(path){
 
@@ -47,9 +48,10 @@ class JavaSonarAnalyzer(path:String) : SonarAnalyzer(path){
     override fun buildSonarComponents(){
         val checkFactory = CheckFactory(this.activeRules)
         val javaTestClasspath = JavaTestClasspath(mapSettings.asConfig(), sensorContext.fileSystem())
+        //val fileLinesContextFactory = DefaultFileLinesContextFactory(null, null, null)
         val fileLinesContext = mock(FileLinesContext::class.java)
         val fileLinesContextFactory = mock(FileLinesContextFactory::class.java)
-        `when`(fileLinesContextFactory.createFor(any(InputFile::class.java))).thenReturn(fileLinesContext)
+        `when`<FileLinesContext>(fileLinesContextFactory.createFor(any<InputFile>(InputFile::class.java))).thenReturn(fileLinesContext)
         sonarComponents = SonarComponents(fileLinesContextFactory, sensorContext.fileSystem(), javaClasspath, javaTestClasspath, checkFactory)
         sonarComponents.setSensorContext(this.sensorContext)
     }
