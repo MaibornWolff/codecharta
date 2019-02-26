@@ -32,7 +32,7 @@ const verticesPerSide : number = 4;
 
 export class BoxGeometryGenerationHelper {
 
-    public static addBoxToVertexData(data : IntermediateVertexData, measures : BoxMeasures, color : number, subGeomIdx : number, delta : number) : void
+    public static addBoxToVertexData(data : IntermediateVertexData, measures : BoxMeasures, color : string, subGeomIdx : number, delta : number) : void
     {
         let minPos : THREE.Vector3 = new THREE.Vector3(measures.x, measures.y, measures.z);
         let maxPos : THREE.Vector3 = new THREE.Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth);
@@ -123,7 +123,7 @@ export class BoxGeometryGenerationHelper {
     private static createVerticesAndFaces(
         minPos : THREE.Vector3,
         maxPos : THREE.Vector3,
-        color : number,
+        color : string,
         delta : number,
         subGeomIdx : number,
         positions : THREE.Vector3[],
