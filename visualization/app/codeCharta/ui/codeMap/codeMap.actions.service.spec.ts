@@ -1,14 +1,13 @@
 import {CodeMapActionsService} from "./codeMap.actions.service";
 import {CodeMapNode, Edge, BlacklistItem, BlacklistType} from "../../core/data/model/CodeMap";
-
-import {SettingsService} from "../../core/settings/settings.service";
+import {MarkedPackage, SettingsService} from "../../core/settings/settings.service";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 
 jest.mock("../../core/settings/settings.service");
 
 jest.mock("./threeViewer/threeOrbitControlsService");
 
-describe("code map action service tests", ()=>{
+describe("CodeMapActionService", ()=>{
 
     let codeMapActionService: CodeMapActionsService;
     let $timeout;
@@ -44,8 +43,8 @@ describe("code map action service tests", ()=>{
     }
 
     beforeEach(()=>{
-       visibleNode = {name: "test", type: "File", attributes: {}, visible: true};
-       hiddenNode = {name: "test", type: "File", attributes: {}, visible: false};
+       visibleNode = {name: "test", path: "/root/test", type: "File", attributes: {}, visible: true};
+       hiddenNode = {name: "test", path: "/root/test", type: "File", attributes: {}, visible: false};
        simpleHiddenHierarchy = {
             name: "root",
             path: "/root",
@@ -126,8 +125,18 @@ describe("code map action service tests", ()=>{
             }
         ];
         $timeout = jest.fn();
+
+        const settingsService = jest.fn<SettingsService>(()=>{
+            return {
+                settings: {
+                    markedPackages: []
+                },
+                applySettings: jest.fn()
+            }
+        })();
+
         codeMapActionService = new CodeMapActionsService(
-            new SettingsService(),
+            settingsService,
             new ThreeOrbitControlsService(),
             $timeout);
 
@@ -136,56 +145,127 @@ describe("code map action service tests", ()=>{
         nodeChildAa = simpleHiddenHierarchy.children[0].children[0];
     });
 
-    describe("marking folders", ()=>{
+    describe("marking packages", ()=>{
 
-        let markedNode: CodeMapNode;
-        let unmarkedNode: CodeMapNode;
-        let simpleUnmarkedHierarchy: CodeMapNode;
+        let colorYellow: string;
+        let colorRed: string;
+        let root: CodeMapNode;
+        let nodeA: CodeMapNode;
+        let nodeB: CodeMapNode;
+        let nodeAChildA: CodeMapNode;
+        let nodeAChildB: CodeMapNode;
+
+        function getMarkedPackage(path: string, color: string): MarkedPackage {
+            return {path: path, color: color, attributes: {}};
+        }
+
+        function markedPackageListContains(markedPackages: MarkedPackage[]) {
+            expect(codeMapActionService.settingsService.settings.markedPackages).toEqual(markedPackages);
+        }
 
         beforeEach(()=>{
-            markedNode = visibleNode;
-            markedNode.markingColor = "0x000FFF";
-            unmarkedNode = visibleNode;
-            simpleUnmarkedHierarchy = simpleHiddenHierarchy;
+            colorYellow = "#FFF000";
+            colorRed = "#FF0000";
+
+            root = simpleHiddenHierarchy;
+            nodeA = root.children[0];
+            nodeB = root.children[1];
+            nodeAChildA = nodeA.children[0];
+            nodeAChildB = nodeA.children[1];
         });
 
-        it("marking an unmarked folder should mark it", ()=>{
-            codeMapActionService.markFolder(unmarkedNode, "#FFF000");
-            expect(unmarkedNode.markingColor).toBe("0xFFF000");
+        it("marking the first package in a map", ()=>{
+            codeMapActionService.markFolder(nodeA, colorYellow);
+            const markedPackage: MarkedPackage = getMarkedPackage(nodeA.path, colorYellow);
+            expect(codeMapActionService.settingsService.settings.markedPackages).toContainEqual(markedPackage);
         });
 
-        it("marking an marked folder should update its color", ()=>{
-            expect(unmarkedNode.markingColor).not.toBe("0xFFF000");
-            codeMapActionService.markFolder(markedNode, "#FFF000");
-            expect(unmarkedNode.markingColor).toBe("0xFFF000");
+        it("marking a package which has no marked parent with same color", ()=>{
+            const markedRoot: MarkedPackage = getMarkedPackage(root.path, colorYellow);
+            const markedNodeA: MarkedPackage = getMarkedPackage(nodeA.path, colorRed);
+            const markedNodeAChildA: MarkedPackage = getMarkedPackage(nodeAChildA.path, colorYellow);
+
+            codeMapActionService.markFolder(root, colorYellow);
+            markedPackageListContains([markedRoot]);
+
+            codeMapActionService.markFolder(nodeA, colorRed);
+            markedPackageListContains([markedRoot, markedNodeA]);
+
+            codeMapActionService.markFolder(nodeAChildA, colorYellow);
+            markedPackageListContains([markedRoot, markedNodeA, markedNodeAChildA]);
         });
 
-        it("marking an unmarked folder should mark its unmarked children but should not overwrite marked childrens colors", ()=>{
-            simpleUnmarkedHierarchy.children[1].markingColor="0x330033";
-            codeMapActionService.markFolder(simpleUnmarkedHierarchy, "#FFF000");
-            expect(simpleUnmarkedHierarchy.children[1].markingColor).toBe("0x330033");
-            expect(simpleUnmarkedHierarchy.children[0].markingColor).toBe("0xFFF000");
-            expect(simpleUnmarkedHierarchy.children[0].children[0].markingColor).toBe("0xFFF000");
-            expect(simpleUnmarkedHierarchy.children[0].children[1].markingColor).toBe("0xFFF000");
-            expect(simpleUnmarkedHierarchy.markingColor).toBe("0xFFF000");
+
+        it("marking a package does nothing if the closest marked parent is marked with the same color", ()=>{
+            const markedRoot: MarkedPackage = getMarkedPackage(root.path, colorRed);
+            const markedNodeA: MarkedPackage = getMarkedPackage(nodeA.path, colorYellow);
+
+            codeMapActionService.markFolder(root, colorRed);
+            markedPackageListContains([markedRoot]);
+
+            codeMapActionService.markFolder(nodeA, colorYellow);
+            markedPackageListContains([markedRoot, markedNodeA]);
+
+            codeMapActionService.markFolder(nodeAChildA, colorYellow);
+            markedPackageListContains([markedRoot, markedNodeA]);
         });
 
-        it("unmarking an marked folder should unmark it", ()=>{
-            expect(markedNode.markingColor).not.toBeFalsy();
-            codeMapActionService.unmarkFolder(markedNode);
-            expect(markedNode.markingColor).toBeFalsy();
+        it("marking a packages in parentOrder: red, yellow, red", ()=>{
+            const markedRoot: MarkedPackage = getMarkedPackage(root.path, colorRed);
+            const markedNodeA: MarkedPackage = getMarkedPackage(nodeA.path, colorYellow);
+            const markedNodeAChildA: MarkedPackage = getMarkedPackage(nodeAChildA.path, colorRed);
+
+            codeMapActionService.markFolder(nodeAChildA, colorRed);
+            markedPackageListContains([markedNodeAChildA]);
+
+            codeMapActionService.markFolder(nodeA, colorYellow);
+            markedPackageListContains([markedNodeAChildA, markedNodeA]);
+
+            codeMapActionService.markFolder(root, colorRed);
+            markedPackageListContains([markedNodeAChildA, markedNodeA, markedRoot]);
         });
 
-        it("unmarking an marked folder should unmark its marked children as long as they have the same color", ()=>{
-            simpleUnmarkedHierarchy.markingColor="0x330033";
-            simpleUnmarkedHierarchy.children[0].markingColor="0x330033";
-            simpleUnmarkedHierarchy.children[1].markingColor="0x777777";
-            codeMapActionService.unmarkFolder(simpleUnmarkedHierarchy);
-            expect(simpleUnmarkedHierarchy.markingColor).toBeFalsy();
-            expect(simpleUnmarkedHierarchy.children[0].markingColor).toBeFalsy();
-            expect(simpleUnmarkedHierarchy.children[1].markingColor).toBe("0x777777");
-            expect(simpleUnmarkedHierarchy.children[0].children[0].markingColor).toBeFalsy();
-            expect(simpleUnmarkedHierarchy.children[0].children[1].markingColor).toBeFalsy();
+        it("marking a marked package with a different color", ()=>{
+            const markedRootYellow: MarkedPackage = getMarkedPackage(root.path, colorYellow);
+            const markedRootRed: MarkedPackage = getMarkedPackage(root.path, colorRed);
+
+            codeMapActionService.markFolder(root, colorYellow);
+            markedPackageListContains([markedRootYellow]);
+
+            codeMapActionService.markFolder(root, colorRed);
+            markedPackageListContains([markedRootRed]);
+        });
+
+        it("marking a parent package with children of same markedColor should remove children from markedPackageList", ()=>{
+            const markedNodeA: MarkedPackage = getMarkedPackage(nodeA.path, colorYellow);
+            const markedNodeAChildA: MarkedPackage = getMarkedPackage(nodeAChildA.path, colorYellow);
+            const markedNodeAChildB: MarkedPackage = getMarkedPackage(nodeAChildB.path, colorYellow);
+            const markedNodeB: MarkedPackage = getMarkedPackage(nodeB.path, colorRed);
+
+            codeMapActionService.markFolder(nodeAChildA, colorYellow);
+            codeMapActionService.markFolder(nodeAChildB, colorYellow);
+            markedPackageListContains([markedNodeAChildA, markedNodeAChildB]);
+
+            codeMapActionService.markFolder(nodeB, colorRed);
+            markedPackageListContains([markedNodeAChildA, markedNodeAChildB, markedNodeB]);
+
+            codeMapActionService.markFolder(nodeA, colorYellow);
+            markedPackageListContains([markedNodeB, markedNodeA]);
+        });
+
+        it("unmark a package should remove markedPackage", ()=>{
+            const markedNodeAChildA: MarkedPackage = getMarkedPackage(nodeAChildA.path, colorYellow);
+            const markedNodeAChildB: MarkedPackage = getMarkedPackage(nodeAChildB.path, colorYellow);
+            const markedNodeB: MarkedPackage = getMarkedPackage(nodeB.path, colorRed);
+
+            codeMapActionService.markFolder(nodeAChildA, colorYellow);
+            codeMapActionService.markFolder(nodeAChildB, colorYellow);
+            codeMapActionService.markFolder(nodeB, colorRed);
+            markedPackageListContains([markedNodeAChildA, markedNodeAChildB, markedNodeB]);
+
+            codeMapActionService.unmarkFolder(nodeAChildB);
+            markedPackageListContains([markedNodeAChildA, markedNodeB]);
+
         });
 
     });
