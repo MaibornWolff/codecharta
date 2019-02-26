@@ -108,7 +108,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapM
             blacklist: s.blacklist,
             fileName: s.map.fileName,
             searchPattern: s.searchPattern,
-            hideFlatBuildings: s.hideFlatBuildings
+            hideFlatBuildings: s.hideFlatBuildings,
+            markedPackages: s.markedPackages,
         };
 
         this.showAllOrOnlyFocusedNode(s);
