@@ -91,6 +91,7 @@ export class MultipleFileService {
 		let outputMap: CodeMap = {
 			projectName: "Aggregation of following projects: " + this.projectNameArray.join(", "),
 			fileName: "Aggregation of following files: " + this.fileNameArray.join(", "),
+			apiVersion: "1.0",
 			nodes: {
 				name: "root",
 				type: "Folder",
