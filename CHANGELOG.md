@@ -6,7 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
+
 ### Added
+
+-   Fixing non-existent metric aggregation on root-level when using multiple Files
 
 ### Changed
 
