@@ -1,6 +1,6 @@
 import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/data.service";
 import {
-    KindOfMap,
+    KindOfMap, MarkedPackage,
     Range,
     Settings,
     SettingsService,
@@ -10,17 +10,11 @@ import $ from "jquery";
 import {MapColors} from "../codeMap/rendering/renderSettings";
 import {ITimeoutService} from "angular";
 import "./legendPanel.component.scss";
-import {CodeMapNode} from "../../core/data/model/CodeMap";
-import {hierarchy} from "d3-hierarchy";
+import {ColorService} from "../../core/colorService";
 
-export interface MarkingPackages {
-    markingColor: string,
-    packageItem: PackageItem[],
-}
-
-export interface PackageItem {
-    name: string,
-    path: string,
+export interface PackageList {
+    colorPixel: string,
+    markedPackages: MarkedPackage[],
 }
 
 export class LegendPanelController implements DataServiceSubscriber, SettingsServiceSubscriber {
@@ -34,7 +28,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     private negative: string;
     private select: string;
     private deltaColorsFlipped: boolean;
-    private markingPackages: MarkingPackages[];
+    private packageLists: PackageList[];
 
     /* @ngInject */
     constructor(private $timeout: ITimeoutService,
@@ -63,27 +57,15 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         }
     }
 
-    public refreshDeltaColors() {
-        if(this.deltaColorsFlipped){
-            this.pd = this.getImageDataUri(MapColors.negativeDelta);
-            this.nd = this.getImageDataUri(MapColors.positiveDelta);
-        } else {
-            this.pd = this.getImageDataUri(MapColors.positiveDelta);
-            this.nd = this.getImageDataUri(MapColors.negativeDelta);
-        }
-        this.$timeout(()=>$("#positiveDelta").attr("src", this.pd), 200);
-        this.$timeout(()=>$("#negativeDelta").attr("src", this.nd), 200);
-    }
-
     public onSettingsChanged(s: Settings) {
         this._range = s.neutralColorRange;
         this.deltaColorsFlipped = s.deltaColorFlipped;
         this._deltas = s.mode == KindOfMap.Delta;
 
-        this.positive = this.getImageDataUri((s.whiteColorBuildings) ? MapColors.lightGrey : MapColors.positive);
-        this.neutral = this.getImageDataUri(MapColors.neutral);
-        this.negative = this.getImageDataUri(MapColors.negative);
-        this.select = this.getImageDataUri(MapColors.selected);
+        this.positive = ColorService.getImageDataUri((s.whiteColorBuildings) ? MapColors.lightGrey : MapColors.positive);
+        this.neutral = ColorService.getImageDataUri(MapColors.neutral);
+        this.negative = ColorService.getImageDataUri(MapColors.negative);
+        this.select = ColorService.getImageDataUri(MapColors.selected);
 
         $("#green").attr("src", this.positive);
         $("#yellow").attr("src", this.neutral);
@@ -91,145 +73,59 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         $("#select").attr("src", this.select);
 
         this.refreshDeltaColors();
-        this.setMarkingPackagesIntoLegend();
-        this.combineMarkingPackagesByColors();
+        this.setMarkedPackageLists();
     }
 
-    public getImageDataUri(hex: number): string {
-        let hexS: string = "#" + hex.toString(16);
-        let color: string = this.encodeHex(hexS);
-        return this.generatePixel(color);
-    }
-
-    public encodeHex(s: string): string {
-        let substr = s.substring(1, 7);
-        if (substr.length < 6) {
-            substr = substr[0] + substr[0] + substr[1] + substr[1] + substr[2] + substr[2];
-        }
-        return this.encodeRGB(
-            parseInt(substr[0] + substr[1], 16), parseInt(substr[2] + substr[3], 16), parseInt(substr[4] + substr[5], 16));
-    }
-
-    public encodeRGB(r: number, g: number, b: number): string {
-        return this.encodeTriplet(0, r, g) + this.encodeTriplet(b, 255, 255);
-    }
-
-    public encodeTriplet(e1: number, e2: number, e3: number): string {
-        let keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-        let enc1 = e1 >> 2;
-        let enc2 = ((e1 & 3) << 4) | (e2 >> 4);
-        let enc3 = ((e2 & 15) << 2) | (e3 >> 6);
-        let enc4 = e3 & 63;
-        return keyStr.charAt(enc1) + keyStr.charAt(enc2) + keyStr.charAt(enc3) + keyStr.charAt(enc4);
-    }
-
-
-    public generatePixel(color: string): string {
-        return "data:image/gif;base64,R0lGODlhAQABAPAA" + color + "/yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
-    }
-
-    public getMarkingPackages(): MarkingPackages[] {
-        return this.markingPackages;
-    }
-
-
-    private setMarkingPackagesIntoLegend() {
-        this.markingPackages = [];
-        if (this.settingsService.settings.map) {
-            const rootNode: CodeMapNode = this.settingsService.settings.map.nodes;
-
-            hierarchy<CodeMapNode>(rootNode).descendants().forEach((hierarchyNode) => {
-                const node: CodeMapNode = hierarchyNode.data;
-                if (node.markingColor) {
-                    const mp = this.getNewMarkingPackageFromNode(node);
-                    if (this.legendContainsMarkingPackages()) {
-                        this.handleMarkingPackageWithExistingColor(mp);
-                    } else {
-                        this.markingPackages = [mp];
-                    }
-                }
-            });
-        }
-    }
-
-    private legendContainsMarkingPackages() {
-        return this.markingPackages &&
-            this.markingPackages.length > 0 &&
-            this.markingPackages != [];
-    }
-
-    private getNewMarkingPackageFromNode(node: CodeMapNode) {
-        return {
-            markingColor: node.markingColor,
-            packageItem: [{
-                name: node.name.split('/').slice(-1)[0],
-                path: node.path
-            }]
-        };
-    }
-
-    private handleMarkingPackageWithExistingColor(mp: MarkingPackages) {
-        let addMP = true;
-        const packagesWithSameMarkingColor: MarkingPackages[] = this.getPackagesWithSameMarkingColor(mp);
-        if (packagesWithSameMarkingColor != []) {
-            for (const mpWithSameColor of packagesWithSameMarkingColor) {
-                if (this.isPartOfSecondPackage(mp, mpWithSameColor)) {
-                    addMP = false;
-                }
-            }
+    public refreshDeltaColors() {
+        if(this.deltaColorsFlipped){
+            this.pd = ColorService.getImageDataUri(MapColors.negativeDelta);
+            this.nd = ColorService.getImageDataUri(MapColors.positiveDelta);
         } else {
-            addMP = true;
+            this.pd = ColorService.getImageDataUri(MapColors.positiveDelta);
+            this.nd = ColorService.getImageDataUri(MapColors.negativeDelta);
         }
-        if (addMP) {
-            this.markingPackages.push(mp);
-        }
+        this.$timeout(()=>$("#positiveDelta").attr("src", this.pd), 200);
+        this.$timeout(()=>$("#negativeDelta").attr("src", this.nd), 200);
     }
 
-    private getPackagesWithSameMarkingColor(mp: MarkingPackages) {
-        const packagesWithSameMarkingColor: MarkingPackages[] = [];
-        for(const otherMP of this.markingPackages) {
-            if (otherMP.markingColor == mp.markingColor) {
-                packagesWithSameMarkingColor.push(otherMP);
-            }
-        }
-        return packagesWithSameMarkingColor;
-    }
-
-    private isPartOfSecondPackage(mp1: MarkingPackages, mp2: MarkingPackages) {
-        return mp1.packageItem[0].path.indexOf(mp2.packageItem[0].path) >= 0;
-    }
-
-    private combineMarkingPackagesByColors() {
-        const allMP = this.markingPackages;
-        this.markingPackages = [];
-        if (allMP) {
-            for (let i = 0; i < allMP.length; i++) {
-                let markingPackage: MarkingPackages = {
-                    markingColor: this.getImageDataUri(Number(allMP[i].markingColor)),
-                    packageItem: [{
-                        name: this.getPackagePathPreview(allMP[i]),
-                        path: allMP[i].packageItem[0].path,
-                    }],
-                };
-
-                const markingPackageWithSameColor = this.getPackagesWithSameMarkingColor(markingPackage);
-                if (markingPackageWithSameColor != [] && markingPackageWithSameColor.length > 0) {
-                    const index = this.markingPackages.indexOf(markingPackageWithSameColor[0]);
-                    this.markingPackages[index].packageItem.push(markingPackage.packageItem[0]);
-                } else {
-                    this.markingPackages.push(markingPackage);
-                }
-            }
+    private setMarkedPackageLists() {
+        const markedPackages: MarkedPackage[] = this.settingsService.settings.markedPackages;
+        if (markedPackages) {
+            this.packageLists = [];
+            markedPackages.forEach(mp => this.handleMarkedPackage(mp));
         }
     }
 
-    private getPackagePathPreview(mp: MarkingPackages) {
-        const MAX_NAME_LENGTH = {
-            lowerLimit: 24,
-            upperLimit: 28,
-        };
-        const packageName = mp.packageItem[0].name;
-        const packagePath = mp.packageItem[0].path;
+    private handleMarkedPackage(mp: MarkedPackage) {
+        const colorPixel = ColorService.getImageDataUri(mp.color);
+
+        if (!mp.attributes["name"]) {
+            mp.attributes["name"] = this.getPackagePathPreview(mp);
+        }
+
+        if (this.isColorPixelInPackageLists(colorPixel)) {
+            this.insertMPIntoPackageList(mp, colorPixel);
+        } else {
+            const packageList: PackageList = {colorPixel: colorPixel, markedPackages: [mp]};
+            this.addNewPackageList(packageList);
+        }
+    }
+
+    private addNewPackageList(packageList: PackageList) {
+        this.packageLists.push(packageList);
+    }
+
+    private insertMPIntoPackageList(mp: MarkedPackage, colorPixel: string) {
+        this.packageLists.filter(packageList => packageList.colorPixel == colorPixel)[0].markedPackages.push(mp);
+    }
+
+    private isColorPixelInPackageLists(colorPixel: string) {
+        return this.packageLists.filter(mpList => mpList.colorPixel == colorPixel).length > 0;
+    }
+
+    private getPackagePathPreview(mp: MarkedPackage): string {
+        const MAX_NAME_LENGTH = { lowerLimit: 24, upperLimit: 28 };
+        const packageName = this.getPackageNameFromPath(mp.path);
 
         if (packageName.length > MAX_NAME_LENGTH.lowerLimit && packageName.length < MAX_NAME_LENGTH.upperLimit) {
             return ".../" + packageName;
@@ -240,12 +136,17 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
             return firstPart + "..." + secondPart;
 
         } else {
-            const from = Math.max(packagePath.length - MAX_NAME_LENGTH.lowerLimit, 0);
-            const previewPackagePath = packagePath.substring(from);
+            const from = Math.max(mp.path.length - MAX_NAME_LENGTH.lowerLimit, 0);
+            const previewPackagePath = mp.path.substring(from);
             const rootNode = this.settingsService.settings.map.nodes;
             const startingDots = (previewPackagePath.startsWith(rootNode.path)) ? "" : "...";
             return startingDots + previewPackagePath;
         }
+    }
+
+    private getPackageNameFromPath(path: string): string {
+        const pathArray = path.split("/");
+        return pathArray[pathArray.length - 1];
     }
 
     private initAnimations() {
@@ -259,7 +160,6 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
             });
         });
     }
-
 }
 
 export const legendPanelComponent = {

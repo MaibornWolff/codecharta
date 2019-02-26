@@ -10,7 +10,7 @@ describe("app.codeCharta.core.multiple", function() {
         nodes: {
             name: "root",
             type: "Folder",
-            attributes: {},
+            attributes: {"rloc": 170, "functions": 1010, "mcc": 11},
             children: [
                 {
                     name: "big leaf",
@@ -21,7 +21,7 @@ describe("app.codeCharta.core.multiple", function() {
                 {
                     name: "Parent Leaf",
                     type: "Folder",
-                    attributes: {},
+                    attributes: {"rloc": 70, "functions": 1000, "mcc": 10},
                     children: [
                         {
                             name: "other small leaf",
@@ -40,7 +40,7 @@ describe("app.codeCharta.core.multiple", function() {
         nodes: {
             name: "root",
             type: "Folder",
-            attributes: {},
+            attributes: {"rloc" : 260, "functions": 220, "mcc" : 202, "customMetric" : 7},
             children: [
                 {
                     name: "big leaf",
@@ -51,7 +51,7 @@ describe("app.codeCharta.core.multiple", function() {
                 {
                     name: "Parent Leaf",
                     type: "Folder",
-                    attributes: {},
+                    attributes: {"rloc": 60, "functions": 200, "mcc": 200},
                     children: [
                         {
                             name: "small leaf",
@@ -88,6 +88,14 @@ describe("app.codeCharta.core.multiple", function() {
             let multiple: CodeMap;
             multiple = multipleFileService.aggregateMaps([file1]);
             expect(multiple).toMatchSnapshot();
+        }));
+        it("aggregate two aggregated maps should aggregate the attributes to root",  NGMock.mock.inject(function (multipleFileService) {
+            let multiple: CodeMap;
+            multiple = multipleFileService.aggregateMaps([file1, file2]);
+            expect(multiple.nodes.attributes.rloc).toBe(430)
+            expect(multiple.nodes.attributes.functions).toBe(1230)
+            expect(multiple.nodes.attributes.mcc).toBe(213)
+            expect(multiple.nodes.attributes.customMetric).toBe(7)
         }));
     });
 
