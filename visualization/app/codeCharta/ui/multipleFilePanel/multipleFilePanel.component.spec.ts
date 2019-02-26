@@ -1,6 +1,6 @@
 import "./multipleFilePanel"
 
-import { MultipleFilePanelController } from "./multipleFilePanelComponent"
+import { MultipleFilePanelController } from "./multipleFilePanel.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { DataService, DataModel } from "../../core/data/data.service"
 import { SettingsService, SettingsServiceSubscriber, Settings } from "../../core/settings/settings.service"
