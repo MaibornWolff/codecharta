@@ -93,7 +93,7 @@ describe("RangeSliderController", () => {
 
         it("sliderColor should get set correctly with lightGrey color", () => {
             rangeSliderController.settingsService.settings.whiteColorBuildings = true;
-            const rangeColors = {"left": 0xDDDDDD, "middle": MapColors.neutral, "right": MapColors.negative};
+            const rangeColors = {"left": "#DDDDDD", "middle": MapColors.neutral, "right": MapColors.negative};
             rangeSliderController.updateSliderColors();
             expect(rangeSliderController.applyCssSettings).toHaveBeenCalledWith(rangeColors, fromPercentage);
         });

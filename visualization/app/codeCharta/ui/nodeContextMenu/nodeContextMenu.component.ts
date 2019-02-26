@@ -3,6 +3,7 @@ import angular from "angular";
 import {highlightColors} from "../codeMap/rendering/renderSettings";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
+import {Settings, SettingsService} from "../../core/settings/settings.service";
 
 export class NodeContextMenuController {
     public amountOfDependentEdges;
@@ -10,8 +11,7 @@ export class NodeContextMenuController {
     public anyEdgeIsVisible;
 
     private contextMenuBuilding;
-
-    private _colors = highlightColors;
+    private _markingColors = highlightColors;
 
     /* @ngInject */
     constructor(private $element: Element,
@@ -19,7 +19,8 @@ export class NodeContextMenuController {
                 private $window,
                 private $rootScope,
                 private codeMapActionsService: CodeMapActionsService,
-                private codeMapUtilService: CodeMapUtilService) {
+                private codeMapUtilService: CodeMapUtilService,
+                private settingsService: SettingsService) {
 
         this.$rootScope.$on("show-node-context-menu", (e, data) => {
             this.show(data.path, data.type, data.x, data.y)
@@ -73,11 +74,33 @@ export class NodeContextMenuController {
         }
     }
 
-    public currentFolderIsMarkedWithColor(color: string) {
-        return color
-        && this.contextMenuBuilding
-        && this.contextMenuBuilding.markingColor
-        && color.substring(1) === this.contextMenuBuilding.markingColor.substring(2);
+    public currentFolderIsMarkedWithColor(color: string): boolean {
+        if (!color || !this.contextMenuBuilding) {
+            return false;
+        }
+
+        if (this.packageIsMarked()) {
+            return this.packageMatchesColor(color);
+        } else {
+            return this.packageMatchesColorOfParentMP(color);
+        }
+    }
+
+    private packageIsMarked(): boolean {
+        return !!this.settingsService.settings.markedPackages.find(mp =>
+            mp.path == this.contextMenuBuilding.path)
+    }
+
+    private packageMatchesColor(color: string): boolean {
+        return !!this.settingsService.settings.markedPackages.find(mp =>
+            mp.path == this.contextMenuBuilding.path && mp.color == color)
+    }
+
+    private packageMatchesColorOfParentMP(color: string): boolean {
+        const s = this.settingsService.settings;
+        const parentMP = this.codeMapActionsService.getParentMP(this.contextMenuBuilding.path, s);
+        return !!s.markedPackages.find(mp =>
+            parentMP && mp.path == parentMP.path && mp.color == color)
     }
 
     public markFolder(color: string) {

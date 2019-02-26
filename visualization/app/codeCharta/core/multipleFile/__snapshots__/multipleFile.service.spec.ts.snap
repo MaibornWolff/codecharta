@@ -92,10 +92,19 @@ Object {
   "edges": Array [],
   "fileName": "Aggregation of following files: file1, file2, file1, file2",
   "nodes": Object {
-    "attributes": Object {},
+    "attributes": Object {
+      "customMetric": 14,
+      "functions": 2460,
+      "mcc": 426,
+      "rloc": 860,
+    },
     "children": Array [
       Object {
-        "attributes": Object {},
+        "attributes": Object {
+          "functions": 1010,
+          "mcc": 11,
+          "rloc": 170,
+        },
         "children": Array [
           Object {
             "attributes": Object {
@@ -108,7 +117,11 @@ Object {
             "type": "File",
           },
           Object {
-            "attributes": Object {},
+            "attributes": Object {
+              "functions": 1000,
+              "mcc": 10,
+              "rloc": 70,
+            },
             "children": Array [
               Object {
                 "attributes": Object {
@@ -128,7 +141,12 @@ Object {
         "type": "Folder",
       },
       Object {
-        "attributes": Object {},
+        "attributes": Object {
+          "customMetric": 7,
+          "functions": 220,
+          "mcc": 202,
+          "rloc": 260,
+        },
         "children": Array [
           Object {
             "attributes": Object {
@@ -141,7 +159,11 @@ Object {
             "type": "File",
           },
           Object {
-            "attributes": Object {},
+            "attributes": Object {
+              "functions": 200,
+              "mcc": 200,
+              "rloc": 60,
+            },
             "children": Array [
               Object {
                 "attributes": Object {
@@ -161,7 +183,11 @@ Object {
         "type": "Folder",
       },
       Object {
-        "attributes": Object {},
+        "attributes": Object {
+          "functions": 1010,
+          "mcc": 11,
+          "rloc": 170,
+        },
         "children": Array [
           Object {
             "attributes": Object {
@@ -174,7 +200,11 @@ Object {
             "type": "File",
           },
           Object {
-            "attributes": Object {},
+            "attributes": Object {
+              "functions": 1000,
+              "mcc": 10,
+              "rloc": 70,
+            },
             "children": Array [
               Object {
                 "attributes": Object {
@@ -194,7 +224,12 @@ Object {
         "type": "Folder",
       },
       Object {
-        "attributes": Object {},
+        "attributes": Object {
+          "customMetric": 7,
+          "functions": 220,
+          "mcc": 202,
+          "rloc": 260,
+        },
         "children": Array [
           Object {
             "attributes": Object {
@@ -207,7 +242,11 @@ Object {
             "type": "File",
           },
           Object {
-            "attributes": Object {},
+            "attributes": Object {
+              "functions": 200,
+              "mcc": 200,
+              "rloc": 60,
+            },
             "children": Array [
               Object {
                 "attributes": Object {
@@ -247,10 +286,19 @@ Object {
   "edges": Array [],
   "fileName": "Aggregation of following files: file1, file2",
   "nodes": Object {
-    "attributes": Object {},
+    "attributes": Object {
+      "customMetric": 7,
+      "functions": 1230,
+      "mcc": 213,
+      "rloc": 430,
+    },
     "children": Array [
       Object {
-        "attributes": Object {},
+        "attributes": Object {
+          "functions": 1010,
+          "mcc": 11,
+          "rloc": 170,
+        },
         "children": Array [
           Object {
             "attributes": Object {
@@ -263,7 +311,11 @@ Object {
             "type": "File",
           },
           Object {
-            "attributes": Object {},
+            "attributes": Object {
+              "functions": 1000,
+              "mcc": 10,
+              "rloc": 70,
+            },
             "children": Array [
               Object {
                 "attributes": Object {
@@ -283,7 +335,12 @@ Object {
         "type": "Folder",
       },
       Object {
-        "attributes": Object {},
+        "attributes": Object {
+          "customMetric": 7,
+          "functions": 220,
+          "mcc": 202,
+          "rloc": 260,
+        },
         "children": Array [
           Object {
             "attributes": Object {
@@ -296,7 +353,11 @@ Object {
             "type": "File",
           },
           Object {
-            "attributes": Object {},
+            "attributes": Object {
+              "functions": 200,
+              "mcc": 200,
+              "rloc": 60,
+            },
             "children": Array [
               Object {
                 "attributes": Object {
@@ -330,7 +391,11 @@ exports[`app.codeCharta.core.multiple multipleService aggregation one map 1`] = 
 Object {
   "fileName": "file1",
   "nodes": Object {
-    "attributes": Object {},
+    "attributes": Object {
+      "functions": 1010,
+      "mcc": 11,
+      "rloc": 170,
+    },
     "children": Array [
       Object {
         "attributes": Object {
@@ -343,7 +408,11 @@ Object {
         "type": "File",
       },
       Object {
-        "attributes": Object {},
+        "attributes": Object {
+          "functions": 1000,
+          "mcc": 10,
+          "rloc": 70,
+        },
         "children": Array [
           Object {
             "attributes": Object {
