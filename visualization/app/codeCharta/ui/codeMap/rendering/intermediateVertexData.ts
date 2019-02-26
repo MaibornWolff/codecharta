@@ -4,7 +4,7 @@ export class IntermediateVertexData {
     public positions : THREE.Vector3[];
     public normals : THREE.Vector3[];
     public uvs : THREE.Vector2[];
-    public colors : number[];
+    public colors : string[];
     public subGeometryIdx : number[];
     public deltas : number[];
 
@@ -15,14 +15,14 @@ export class IntermediateVertexData {
         this.positions = new Array<THREE.Vector3>();
         this.normals = new Array<THREE.Vector3>();
         this.uvs = new Array<THREE.Vector2>();
-        this.colors = new Array<number>();
+        this.colors = new Array<string>();
         this.subGeometryIdx = new Array<number>();
         this.deltas = new Array<number>();
 
         this.indices = new Array<number>();
     }
 
-    public addVertex(pos : THREE.Vector3, normal : THREE.Vector3, uv : THREE.Vector2, color : number, subGeomIdx : number, delta : number) : number {
+    public addVertex(pos : THREE.Vector3, normal : THREE.Vector3, uv : THREE.Vector2, color : string, subGeomIdx : number, delta : number) : number {
         this.positions.push(pos);
         this.normals.push(normal);
         this.uvs.push(uv);
