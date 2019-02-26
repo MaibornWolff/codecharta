@@ -1,7 +1,7 @@
 import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {CodeMapUtilService} from "./codeMap.util.service";
 
-import {SettingsService} from "../../core/settings/settings.service";
+import {MarkedPackage, SettingsService} from "../../core/settings/settings.service";
 jest.mock("../../core/settings/settings.service");
 
 describe("codeMapUtil", () => {
@@ -87,5 +87,28 @@ describe("codeMapUtil", () => {
         const expectedMatchingNode = simpleHierarchy.children[0].children[0];
         const matchingNode = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder");
         expect(matchingNode).toBe(expectedMatchingNode);
+    });
+
+    it("should get markingColor of given building", () => {
+        const color = "#ABABAB";
+        const markedPackages: MarkedPackage[] = [{
+            path: "/root/a",
+            color: color,
+            attributes: {}
+        }];
+        const node = simpleHierarchy.children[0];
+        const markingColor = CodeMapUtilService.getMarkingColor(node, markedPackages);
+        expect(markingColor).toBe(color);
+    });
+
+    it("should get null if given building has no markingColor", () => {
+        const markedPackages = [{
+            path: "/root/notThisNode",
+            color: "#ABABAB",
+            attributes: {}
+        }];
+        const node = simpleHierarchy.children[0];
+        const markingColor = CodeMapUtilService.getMarkingColor(node, markedPackages);
+        expect(markingColor).toBe(null);
     });
 });
