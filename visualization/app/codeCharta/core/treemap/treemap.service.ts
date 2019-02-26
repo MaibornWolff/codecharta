@@ -5,6 +5,7 @@ import * as d3 from "d3";
 import {hierarchy, HierarchyNode} from "d3";
 import {TreeMapUtils} from "./treemap.util";
 import {CodeMapUtilService} from "../../ui/codeMap/codeMap.util.service";
+import {MarkedPackage} from "../settings/settings.service";
 
 export interface ValuedCodeMapNode {
     data: CodeMapNode;
@@ -35,6 +36,7 @@ export interface TreeMapSettings {
     fileName: string;
     searchPattern: string;
     hideFlatBuildings: boolean;
+    markedPackages: MarkedPackage[]
 }
 
 export class TreeMapService {

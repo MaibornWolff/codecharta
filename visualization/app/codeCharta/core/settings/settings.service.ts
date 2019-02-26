@@ -25,6 +25,12 @@ export enum KindOfMap {
     Delta = "Delta"
 }
 
+export interface MarkedPackage {
+    path: string,
+    color: string, // saved as "#FFFFFF"
+    attributes: {[key: string]: any}
+}
+
 export interface Settings {
 
     map: CodeMap;
@@ -46,6 +52,7 @@ export interface Settings {
     isWhiteBackground: boolean;
     whiteColorBuildings: boolean;
     blacklist: Array<BlacklistItem>;
+    markedPackages: Array<MarkedPackage>;
     focusedNodePath: string;
     searchedNodePaths: Array<string>;
     searchPattern: string;
@@ -130,6 +137,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
             isWhiteBackground: false,
             whiteColorBuildings: false,
             blacklist: [],
+            markedPackages: [],
             focusedNodePath: null,
             searchedNodePaths: [],
             searchPattern: null
@@ -410,6 +418,7 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
         this._settings.isWhiteBackground = settings.isWhiteBackground;
         this._settings.whiteColorBuildings = settings.whiteColorBuildings;
         this._settings.blacklist = settings.blacklist;
+        this._settings.markedPackages = settings.markedPackages;
         this._settings.focusedNodePath = settings.focusedNodePath;
         this._settings.searchedNodePaths = settings.searchedNodePaths;
         this._settings.searchPattern = settings.searchPattern;
