@@ -69,6 +69,7 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 			this._lastDeltaState = true
 			this.onActivateDeltas()
 		}
+		this.codeMapRenderService.rerenderWithNewSettings(settings)
 	}
 
 	private getAdaptedRange(colorMetric: string, flipped: boolean): ColorRange {
@@ -186,7 +187,10 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 		}
 
 		this.settingsService.updateSettings(settingsUpdate)
+		this.firstRendering()
+	}
 
+	private firstRendering() {
 		this.codeMapRenderService.render({
 			renderMap: this.renderMap,
 			fileName: "fileName", //TODO

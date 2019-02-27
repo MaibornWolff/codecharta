@@ -1,19 +1,19 @@
 <range-slider-component></range-slider-component>
 
-<md-input-container class="md-block" ng-if="$ctrl._settingsService_.settings.mode != $ctrl._deltaMode">
-    <md-checkbox class="md-primary" ng-model="$ctrl._settingsService_.settings.neutralColorRange.flipped" ng-change="$ctrl._settingsService_.applySettings()">
+<md-input-container class="md-block" ng-if="$ctrl._viewModel.mode != $ctrl._deltaMode">
+    <md-checkbox class="md-primary" ng-model="$ctrl._viewModel.neutralColorRangeFlipped" ng-change="$ctrl.applySettings()">
         Invert Colors
     </md-checkbox>
 </md-input-container>
 
 <md-input-container class="md-block" ng-if="$ctrl.settingsService.settings.mode == $ctrl._deltaMode" >
-    <md-checkbox class="md-primary" ng-model="$ctrl._settingsService_.settings.deltaColorFlipped" ng-change="$ctrl._settingsService_.applySettings()">
+    <md-checkbox class="md-primary" ng-model="$ctrl._viewModel.deltaColorFlipped" ng-change="$ctrl.applySettings()">
         Invert Colors
     </md-checkbox>
 </md-input-container>
 
 <md-input-container class="md-block">
-    <md-checkbox class="md-primary" ng-model="$ctrl._settingsService_.settings.whiteColorBuildings" ng-change="$ctrl._settingsService_.applySettings()">
+    <md-checkbox class="md-primary" ng-model="$ctrl._viewModel.whiteColorBuildings" ng-change="$ctrl.applySettings()">
         White Positive Buildings
     </md-checkbox>
 </md-input-container>

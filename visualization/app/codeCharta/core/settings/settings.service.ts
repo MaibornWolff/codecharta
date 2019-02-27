@@ -13,7 +13,7 @@ export class SettingsService {
 	public static readonly MIN_MARGIN = 15
 
 	private settings: Settings
-	throttledBroadcast: ()=>void;
+	private throttledBroadcast: ()=>void;
 
 	constructor(private $rootScope) {
 		this.settings = this.getDefaultSettings()
