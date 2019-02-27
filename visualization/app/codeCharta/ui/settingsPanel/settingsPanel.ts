@@ -21,7 +21,7 @@ export class SettingsPanelController implements SettingsServiceSubscriber {
         private settingsService: SettingsService) {
 
         SettingsService.subscribe($scope, this);
-        this.onSettingsChanged(this.settingsService.settings, null);
+        this.onSettingsChanged(this.settingsService.getSettings(), null);
     }
 
     /**
@@ -36,10 +36,10 @@ export class SettingsPanelController implements SettingsServiceSubscriber {
     }
 
     public onSettingsChanged(settings: Settings, event: IAngularEvent) {
-        if (settings.dynamicSettings.blacklist.length != this.viewModel.blacklistLength) {
+        if (settings.fileSettings.blacklist.length != this.viewModel.blacklistLength) {
             this.highlightCounterIcon();
         }
-        this.viewModel.blacklistLength = settings.dynamicSettings.blacklist.length;
+        this.viewModel.blacklistLength = settings.fileSettings.blacklist.length;
     }
 
     public highlightCounterIcon() {

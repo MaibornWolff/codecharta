@@ -1,8 +1,7 @@
 import {NGMock} from "../../../../mocks/ng.mockhelper";
 import "./scenario.module";
 import {Scenario, ScenarioService} from "./scenario.service";
-import {Settings, SettingsService} from "../settings/settings.service";
-import {DataService} from "../data/data.service";
+import {SettingsService} from "../settings/settings.service";
 
 describe("app.codeCharta.core.scenarioService", function () {
 

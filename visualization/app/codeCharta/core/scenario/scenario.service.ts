@@ -40,7 +40,7 @@ export class ScenarioService {
     }
 
     public applyScenario(scenario: Scenario) {
-        const updatedSettingsUsingScenario = this.updateSettingsUsingScenario(this.settingsService.settings, scenario.settings);
+        const updatedSettingsUsingScenario = this.updateSettingsUsingScenario(this.settingsService.getSettings(), scenario.settings);
         this.settingsService.updateSettings(updatedSettingsUsingScenario);
         if(scenario.autoFitCamera){
             setTimeout(() => {
@@ -54,8 +54,6 @@ export class ScenarioService {
         if (updatedSettings) {
             for(let key of Object.keys(updatedSettings)) {
                 if (scenarioSettings.hasOwnProperty(key)) {
-                    if(key == "map") { continue; }
-
                     if(typeof settings[key] === "object") {
                         updatedSettings[key] = this.updateSettingsUsingScenario(updatedSettings[key], scenarioSettings[key]);
                     } else {

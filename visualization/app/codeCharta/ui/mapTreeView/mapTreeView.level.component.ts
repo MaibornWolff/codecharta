@@ -34,7 +34,7 @@ export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubsc
         if(!this.node || this.node.type == "File") {
             return defaultColor;
         }
-        const markingColor = CodeMapUtilService.getMarkingColor(this.node, this.settingsService.settings.markedPackages);
+        const markingColor = CodeMapUtilService.getMarkingColor(this.node, this.settingsService.getSettings().fileSettings.markedPackages);
         return markingColor ? markingColor : defaultColor;
     }
 
@@ -83,14 +83,14 @@ export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubsc
 
     public isBlacklisted(node: CodeMapNode): boolean {
         if (node != null) {
-            return CodeMapUtilService.isBlacklisted(node, this.settingsService.settings.dynamicSettings.blacklist, BlacklistType.exclude)
+            return CodeMapUtilService.isBlacklisted(node, this.settingsService.getSettings().fileSettings.blacklist, BlacklistType.exclude)
         }
         return false;
     }
 
     public isSearched(node: CodeMapNode): boolean {
-        if (node != null && this.settingsService.settings.dynamicSettings.searchedNodePaths) {
-            return this.settingsService.settings.dynamicSettings.searchedNodePaths.filter(path =>
+        if (node != null && this.settingsService.getSettings().dynamicSettings.searchedNodePaths) {
+            return this.settingsService.getSettings().dynamicSettings.searchedNodePaths.filter(path =>
                 path == node.path).length > 0;
         }
         return false;

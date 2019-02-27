@@ -49,9 +49,9 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, I
 
 	public onClickBlacklistPattern(blacklistType: BlacklistType) {
 		this.settingsService.updateSettings({
-			dynamicSettings: {
+			fileSettings: {
 				blacklist: [
-					...this.settingsService.getSettings().dynamicSettings.blacklist,
+					...this.settingsService.getSettings().fileSettings.blacklist,
 					{ path: this.viewModel.searchPattern, type: blacklistType }
 				]
 			}
@@ -61,7 +61,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, I
 	}
 
 	private updateViewModel() {
-		const blacklist = this.settingsService.getSettings().dynamicSettings.blacklist
+		const blacklist = this.settingsService.getSettings().fileSettings.blacklist
 		this.viewModel.isPatternExcluded = this.isPatternBlacklisted(BlacklistType.exclude)
 		this.viewModel.isPatternHidden = this.isPatternBlacklisted(BlacklistType.hide)
 
@@ -76,7 +76,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, I
 
 	private isPatternBlacklisted(blacklistType: BlacklistType) {
 		return (
-			this.settingsService.getSettings().dynamicSettings.blacklist.filter(item => {
+			this.settingsService.getSettings().fileSettings.blacklist.filter(item => {
 				return this.viewModel.searchPattern == item.path && blacklistType == item.type
 			}).length != 0
 		)

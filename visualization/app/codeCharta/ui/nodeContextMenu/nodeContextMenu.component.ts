@@ -92,19 +92,19 @@ export class NodeContextMenuController {
     }
 
     private packageIsMarked(): boolean {
-        return !!this.settingsService.getSettings().dynamicSettings.markedPackages.find(mp =>
+        return !!this.settingsService.getSettings().fileSettings.markedPackages.find(mp =>
             mp.path == this.contextMenuBuilding.path)
     }
 
     private packageMatchesColor(color: string): boolean {
-        return !!this.settingsService.getSettings().dynamicSettings.markedPackages.find(mp =>
+        return !!this.settingsService.getSettings().fileSettings.markedPackages.find(mp =>
             mp.path == this.contextMenuBuilding.path && mp.color == color)
     }
 
     private packageMatchesColorOfParentMP(color: string): boolean {
         const s = this.settingsService.getSettings();
         const parentMP = this.codeMapActionsService.getParentMP(this.contextMenuBuilding.path, s);
-        return !!s.dynamicSettings.markedPackages.find(mp =>
+        return !!s.fileSettings.markedPackages.find(mp =>
             parentMP && mp.path == parentMP.path && mp.color == color)
     }
 

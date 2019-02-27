@@ -1,29 +1,22 @@
-import {DataServiceSubscriber, DataService, DataModel} from "../../core/data/data.service";
-import {KindOfMap, Settings, SettingsService} from "../../core/settings/settings.service";
-import {CodeMap} from "../../core/data/model/CodeMap";
+import {SettingsService} from "../../core/settings/settings.service";
 import "./revisionChooser.component.scss";
 import "./revisionChooserFileDropDown.component.scss";
+import {RenderMode} from "../../codeCharta.model";
 
 /**
  * Controls the RevisionChooser
  */
-export class RevisionChooserController implements DataServiceSubscriber{
+export class RevisionChooserController {
 
-    public revisions: CodeMap[];
+    public revisions: CodeMapNode[];
     public settings: Settings;
     public ui = {
         chosenReference: null,
         chosenComparison: null,
     };
-    public show = KindOfMap;
+    public show = RenderMode;
 
     /* @ngInject */
-
-    /**
-     * @listens {data-changed}
-     * @constructor
-     * @param {DataService} dataService
-     */
     constructor(
         private dataService: DataService,
         private settingsService: SettingsService,

@@ -1,5 +1,13 @@
 import { FileValidator } from "./core/data/FileValidator"
-import { CCFile, MetricData, RecursivePartial, Settings, RenderMode, ColorRange, CodeMapNode } from "./codeCharta.model"
+import {
+	CCFile,
+	MetricData,
+	RecursivePartial,
+	Settings,
+	RenderMode,
+	ColorRange,
+	CodeMapNode
+} from "./codeCharta.model"
 import { DataDecoratorService } from "./core/data/data.decorator.service"
 import { NameDataPair } from "./core/url/url.service"
 import { SettingsService, SettingsServiceSubscriber } from "./core/settings/settings.service"

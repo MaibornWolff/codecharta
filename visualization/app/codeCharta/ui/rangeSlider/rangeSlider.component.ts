@@ -26,7 +26,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		this.updateSliderColors()
 	}
 
-	public initSliderOptions(settings: Settings = this.settingsService.settings) {
+	public initSliderOptions(settings: Settings = this.settingsService.getSettings()) {
 		this.maxMetricValue = MetricCalculator.getMaxMetricInAllRevisions(
 			this.codeChartaService.getImportedFiles(),
 			settings.dynamicSettings.colorMetric
@@ -38,24 +38,24 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 			pushRange: true,
 			onToChange: this.onToSliderChange.bind(this),
 			onFromChange: this.onFromSliderChange.bind(this),
-			disabled: this.settingsService.settings.dynamicSettings.renderMode == RenderMode.Delta
+			disabled: this.settingsService.getSettings().dynamicSettings.renderMode == RenderMode.Delta
 		}
 	}
 
 	private onToSliderChange() {
 		const update: RecursivePartial<Settings> = {
-			appSettings: {
+			dynamicSettings: {
 				neutralColorRange: {
 					to: Math.min(
 						MetricCalculator.getMaxMetricInAllRevisions(
 							this.codeChartaService.getImportedFiles(),
-							this.settingsService.settings.dynamicSettings.colorMetric
+							this.settingsService.getSettings().dynamicSettings.colorMetric
 						),
-						Math.max(1, this.settingsService.getSettings().appSettings.neutralColorRange.to)
+						Math.max(1, this.settingsService.getSettings().dynamicSettings.neutralColorRange.to)
 					),
 					from: Math.min(
-						this.settingsService.settings.appSettings.neutralColorRange.to - 1,
-						this.settingsService.settings.appSettings.neutralColorRange.from
+						this.settingsService.getSettings().dynamicSettings.neutralColorRange.to - 1,
+						this.settingsService.getSettings().dynamicSettings.neutralColorRange.from
 					)
 				}
 			}
@@ -66,18 +66,18 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 
 	private onFromSliderChange() {
 		const update: RecursivePartial<Settings> = {
-			appSettings: {
+			dynamicSettings: {
 				neutralColorRange: {
 					to: Math.max(
-						this.settingsService.settings.appSettings.neutralColorRange.to,
-						this.settingsService.settings.appSettings.neutralColorRange.from + 1
+						this.settingsService.getSettings().dynamicSettings.neutralColorRange.to,
+						this.settingsService.getSettings().dynamicSettings.neutralColorRange.from + 1
 					),
 					from: Math.min(
 						MetricCalculator.getMaxMetricInAllRevisions(
 							this.codeChartaService.getImportedFiles(),
-							this.settingsService.settings.dynamicSettings.colorMetric
+							this.settingsService.getSettings().dynamicSettings.colorMetric
 						) - 1,
-						this.settingsService.settings.appSettings.neutralColorRange.from
+						this.settingsService.getSettings().dynamicSettings.neutralColorRange.from
 					)
 				}
 			}
@@ -91,7 +91,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	}
 
 	private updateSliderColors() {
-		const rangeFromPercentage = (100 / this.maxMetricValue) * this.settingsService.settings.appSettings.neutralColorRange.from
+		const rangeFromPercentage = (100 / this.maxMetricValue) * this.settingsService.getSettings().dynamicSettings.neutralColorRange.from
 		let rangeColors = this.sliderOptions.disabled ? this.getGreyRangeColors() : this.getColoredRangeColors()
 		this.applyCssSettings(rangeColors, rangeFromPercentage)
 	}
@@ -109,9 +109,9 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		let mapColorPositive = s.appSettings.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive
 
 		let rangeColors = {
-			left: s.appSettings.neutralColorRange.flipped ? MapColors.negative : mapColorPositive,
+			left: s.dynamicSettings.neutralColorRange.flipped ? MapColors.negative : mapColorPositive,
 			middle: MapColors.neutral,
-			right: s.appSettings.neutralColorRange.flipped ? mapColorPositive : MapColors.negative
+			right: s.dynamicSettings.neutralColorRange.flipped ? mapColorPositive : MapColors.negative
 		}
 		return rangeColors
 	}

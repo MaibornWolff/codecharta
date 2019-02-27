@@ -1,27 +1,26 @@
 import {
-    KindOfMap, MarkedPackage,
-    Range,
-    Settings,
     SettingsService,
     SettingsServiceSubscriber
 } from "../../core/settings/settings.service";
 import $ from "jquery";
 import {MapColors} from "../codeMap/rendering/renderSettings";
-import {ITimeoutService} from "angular";
+import {IRootScopeService, ITimeoutService} from "angular";
 import "./legendPanel.component.scss";
 import {ColorService} from "../../core/colorService";
+import {ColorRange, MarkedPackage, RenderMode, Settings} from "../../codeCharta.model";
+import {CodeChartaService} from "../../codeCharta.service";
 
 export interface PackageList {
     colorPixel: string,
     markedPackages: MarkedPackage[],
 }
 
-export class LegendPanelController implements DataServiceSubscriber, SettingsServiceSubscriber {
+export class LegendPanelController implements SettingsServiceSubscriber {
 
     private _deltas: boolean;
     private pd: string;
     private nd: string;
-    private _range: Range;
+    private _range: ColorRange;
     private positive: string;
     private neutral: string;
     private negative: string;
@@ -30,38 +29,35 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     private packageLists: PackageList[];
 
     /* @ngInject */
-    constructor(private $timeout: ITimeoutService,
+    constructor(private $rootScope: IRootScopeService,
+                private $timeout: ITimeoutService,
                 private settingsService: SettingsService,
-                private dataService: DataService) {
+                private codeChartaService: CodeChartaService) {
         let ctx = this;
 
         $timeout(()=> {
-            ctx.onDataChanged(dataService.data);
-        });
-        $timeout(()=> {
-            ctx.onSettingsChanged(settingsService.settings);
+            ctx.onSettingsChanged(settingsService.getSettings());
         });
 
-        this.settingsService.subscribe(this);
-
-        this.dataService.subscribe(this);
+        SettingsService.subscribe(this.$rootScope, this);
 
         this.initAnimations();
     }
 
+    /* TODO: Change deltaColors
     public onDataChanged(data: DataModel) {
         if (data && data.revisions && data.revisions.length > 1) {
             this._deltas = true;
             this.refreshDeltaColors();
         }
-    }
+    }*/
 
     public onSettingsChanged(s: Settings) {
-        this._range = s.neutralColorRange;
-        this.deltaColorsFlipped = s.deltaColorFlipped;
-        this._deltas = s.mode == KindOfMap.Delta;
+        this._range = s.dynamicSettings.neutralColorRange;
+        this.deltaColorsFlipped = s.appSettings.deltaColorFlipped;
+        this._deltas = s.dynamicSettings.renderMode == RenderMode.Delta;
 
-        this.positive = ColorService.getImageDataUri((s.whiteColorBuildings) ? MapColors.lightGrey : MapColors.positive);
+        this.positive = ColorService.getImageDataUri((s.appSettings.whiteColorBuildings) ? MapColors.lightGrey : MapColors.positive);
         this.neutral = ColorService.getImageDataUri(MapColors.neutral);
         this.negative = ColorService.getImageDataUri(MapColors.negative);
         this.select = ColorService.getImageDataUri(MapColors.selected);
@@ -88,7 +84,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
     }
 
     private setMarkedPackageLists() {
-        const markedPackages: MarkedPackage[] = this.settingsService.settings.markedPackages;
+        const markedPackages: MarkedPackage[] = this.settingsService.getSettings().fileSettings.markedPackages;
         if (markedPackages) {
             this.packageLists = [];
             markedPackages.forEach(mp => this.handleMarkedPackage(mp));
@@ -137,7 +133,7 @@ export class LegendPanelController implements DataServiceSubscriber, SettingsSer
         } else {
             const from = Math.max(mp.path.length - MAX_NAME_LENGTH.lowerLimit, 0);
             const previewPackagePath = mp.path.substring(from);
-            const rootNode = this.settingsService.settings.map.nodes;
+            const rootNode = this.codeChartaService.getRenderMap();
             const startingDots = (previewPackagePath.startsWith(rootNode.path)) ? "" : "...";
             return startingDots + previewPackagePath;
         }

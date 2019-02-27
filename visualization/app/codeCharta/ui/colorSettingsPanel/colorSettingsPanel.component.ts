@@ -1,9 +1,10 @@
-import {KindOfMap, SettingsService} from "../../core/settings/settings.service";
+import {SettingsService} from "../../core/settings/settings.service";
 import "./colorSettingsPanel.component.scss";
+import {RenderMode} from "../../codeCharta.model";
 
 export class ColorSettingsPanelController {
 
-    private _deltaMode = KindOfMap.Delta;
+    private _deltaMode = RenderMode.Delta;
 
     /* @ngInject */
     constructor(

@@ -1,7 +1,7 @@
 export interface CCFile {
   map: CodeMapNode;
   settings: {
-      fileSettings: RecursivePartial<Settings>
+      fileSettings: RecursivePartial<FileSettings>
   };
   fileMeta: FileMeta;
 }
@@ -39,7 +39,7 @@ export interface FileSettings {
     attributeTypes: AttributeTypes;
     blacklist: Array<BlacklistItem>;
     edges: Edge[];
-    markedPackages: MarkedPackages[];
+    markedPackages: MarkedPackage[];
 }
 
 export interface DynamicSettings {
@@ -129,7 +129,7 @@ export enum BlacklistType {
     exclude = "exclude"
 }
 
-export interface MarkedPackages {
+export interface MarkedPackage {
     path: string,
     color: string,
     attributes: {

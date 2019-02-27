@@ -1,38 +1,33 @@
 "use strict";
 
-import {IScope} from "angular";
+import {IAngularEvent, IRootScopeService, IScope} from "angular";
 import {TooltipService, TooltipServiceSubscriber, Tooltips} from "../../core/tooltip/tooltip.service";
 import {ScenarioService, Scenario} from "../../core/scenario/scenario.service";
-import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
-import {DataModel, DataService, DataServiceSubscriber} from "../../core/data/data.service";
+import {SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import "./scenarioDropDown.component.scss";
+import {Settings} from "../../codeCharta.model";
 
-export class ScenarioButtonsController implements TooltipServiceSubscriber, DataServiceSubscriber, SettingsServiceSubscriber {
+export class ScenarioButtonsController implements TooltipServiceSubscriber, SettingsServiceSubscriber {
     public  scenario: Scenario;
 
     private scenarios: Scenario[];
     private key;
 
-    constructor(private scenarioService: ScenarioService,
+    constructor(private $rootScope: IRootScopeService,
+                private scenarioService: ScenarioService,
                 private tooltipService: TooltipService,
                 private settingsService: SettingsService,
-                private dataService: DataService,
                 private $scope: IScope) {
         this.updateScenarios();
         this.tooltipService.subscribe(this);
-        this.settingsService.subscribe(this);
-        this.dataService.subscribe(this);
+        SettingsService.subscribe(this.$rootScope, this);
     }
 
     public updateScenarios() {
         this.scenarios = this.scenarioService.getScenarios();
     }
 
-    public onDataChanged(data: DataModel, event: angular.IAngularEvent) {
-        this.updateScenarios();
-    }
-
-    public onSettingsChanged(settings: Settings, event: Event) {
+    public onSettingsChanged(settings: Settings, event: IAngularEvent) {
         this.updateScenarios();
     }
 

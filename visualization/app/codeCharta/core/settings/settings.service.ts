@@ -10,7 +10,7 @@ export class SettingsService {
 
     public static SELECTOR = "settingsService"
     private static SETTINGS_CHANGED_EVENT = "settings-changed";
-	private static MIN_MARGIN = 15
+	public static readonly MIN_MARGIN = 15
 
 	private settings: Settings
 	throttledBroadcast: ()=>void;
@@ -198,26 +198,5 @@ export class SettingsService {
     }
     */
 
-    /* TODO move
-    	//private static MAX_MARGIN = 100
 
-    public computeMargin(s: Settings = this.settings): number {
-        if (s.map !== null && s.dynamicMargin) {
-            let leaves = hierarchy<CodeMapNode>(s.map.nodes).leaves();
-            let numberOfBuildings = 0;
-            let totalArea = 0;
-
-            leaves.forEach((node: HierarchyNode<CodeMapNode>) => {
-                numberOfBuildings++;
-                if(node.data.attributes && node.data.attributes[s.areaMetric]){
-                    totalArea += node.data.attributes[s.areaMetric];
-                }
-            });
-
-            let margin: number = SettingsService.MARGIN_FACTOR * Math.round(Math.sqrt((totalArea / numberOfBuildings)));
-            return Math.min(SettingsService.MAX_MARGIN, Math.max(SettingsService.MIN_MARGIN, margin));
-        } else {
-            return s.margin;
-        }
-    }*/
 }

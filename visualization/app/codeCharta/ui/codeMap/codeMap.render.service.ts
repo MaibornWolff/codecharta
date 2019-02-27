@@ -68,17 +68,17 @@ export class CodeMapRenderService {
 			invertHeight: s.appSettings.invertHeight,
 			visibleEdges: this.visibleEdges,
 			searchedNodePaths: s.dynamicSettings.searchedNodePaths,
-			blacklist: s.dynamicSettings.blacklist,
+			blacklist: s.fileSettings.blacklist,
 			fileName: fileName,
 			searchPattern: s.dynamicSettings.searchPattern,
 			hideFlatBuildings: s.appSettings.hideFlatBuildings,
-            markedPackages: s.dynamicSettings.markedPackages
+            markedPackages: s.fileSettings.markedPackages
         }
 
 		this.showAllOrOnlyFocusedNode(map, s)
 
 		let nodes: Node[] = this.collectNodesToArray(
-			this.treeMapService.createTreemapNodes(map, importedFiles, treeMapSettings, s.dynamicSettings.edges)
+			this.treeMapService.createTreemapNodes(map, importedFiles, treeMapSettings, s.fileSettings.edges)
 		)
 
 		let filtered = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
@@ -165,7 +165,7 @@ export class CodeMapRenderService {
 	}
 
 	private getVisibleEdges(map: CodeMapNode, s: Settings) {
-		return map && s.dynamicSettings.edges ? s.dynamicSettings.edges.filter(edge => edge.visible === true) : []
+		return map && s.fileSettings.edges ? s.fileSettings.edges.filter(edge => edge.visible === true) : []
 	}
 
 	private showCouplingArrows(deps: Edge[]) {

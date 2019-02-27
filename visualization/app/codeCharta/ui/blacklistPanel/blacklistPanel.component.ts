@@ -13,22 +13,17 @@ export class BlacklistPanelController implements SettingsServiceSubscriber {
 		$rootScope: IRootScopeService
 	) {
 		SettingsService.subscribe($rootScope, this)
-		this.onSettingsChanged(settingsService.settings, null)
-	}
-
-	public onChange() {
-		this.settingsService.applySettings()
+		this.onSettingsChanged(settingsService.getSettings(), null)
 	}
 
 	public onSettingsChanged(settings: Settings, event: IAngularEvent) {
-		if (settings.dynamicSettings.blacklist) {
-			this.blacklist = settings.dynamicSettings.blacklist
+		if (settings.fileSettings.blacklist) {
+			this.blacklist = settings.fileSettings.blacklist
 		}
 	}
 
 	public removeBlacklistEntry(entry: BlacklistItem) {
 		this.codeMapActionsService.removeBlacklistEntry(entry)
-		this.onChange()
 	}
 
 	public sortByExcludes(item: BlacklistItem) {
