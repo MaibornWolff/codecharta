@@ -1,17 +1,17 @@
 <md-input-container class="small-input-field">
-    <input type='number' ng-model="$ctrl.settingsService.getSettings().dynamicSettings.neutralColorRange.from"
+    <input type='number' ng-model="$ctrl._viewModel.colorRangeFrom"
            ng-disabled="$ctrl.sliderOptions.disabled"
            min=0 step="1" ng-change="$ctrl.sliderOptions.onFromChange()">
 </md-input-container>
 
 <md-input-container class="md-block">
-    <rzslider id="colorSlider" rz-slider-model="$ctrl.settingsService.getSettings().dynamicSettings.neutralColorRange.from"
-              rz-slider-high="$ctrl.settingsService.settings.neutralColorRange.to"
+    <rzslider id="colorSlider" rz-slider-model="$ctrl._viewModel.colorRangeFrom"
+              rz-slider-high="$ctrl._viewModel.colorRangeTo"
               rz-slider-options="$ctrl.sliderOptions"></rzslider>
 </md-input-container>
 
 <md-input-container class="small-input-field">
-    <input type='number' ng-model="$ctrl.settingsService.getSettings().dynamicSettings.neutralColorRange.to"
+    <input type='number' ng-model="$ctrl._viewModel.colorRangeTo"
            ng-disabled="$ctrl.sliderOptions.disabled"
            min=0 step="1" ng-change="$ctrl.sliderOptions.onToChange()">
 </md-input-container>

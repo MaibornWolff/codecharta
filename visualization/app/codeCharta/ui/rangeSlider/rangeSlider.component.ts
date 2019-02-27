@@ -10,6 +10,11 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	public sliderOptions: any
 	private maxMetricValue: number
 
+	private _viewModel = {
+		colorRangeFrom: null,
+		colorRangeTo: null
+	}
+
 	/* @ngInject */
 	constructor(private settingsService: SettingsService, private codeChartaService: CodeChartaService, $timeout, $scope) {
 		SettingsService.subscribe($scope, this)
@@ -23,7 +28,13 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	public onSettingsChanged(settings: Settings) {
 		// TODO circle ?
 		this.initSliderOptions(settings)
+		this.updateViewModel(settings)
 		this.updateSliderColors()
+	}
+
+	private updateViewModel(settings: Settings) {
+		this._viewModel.colorRangeFrom = settings.dynamicSettings.neutralColorRange.from
+		this._viewModel.colorRangeTo = settings.dynamicSettings.neutralColorRange.to
 	}
 
 	public initSliderOptions(settings: Settings = this.settingsService.getSettings()) {
@@ -51,16 +62,14 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 							this.codeChartaService.getImportedFiles(),
 							this.settingsService.getSettings().dynamicSettings.colorMetric
 						),
-						Math.max(1, this.settingsService.getSettings().dynamicSettings.neutralColorRange.to)
+						Math.max(1, this._viewModel.colorRangeTo)
 					),
-					from: Math.min(
-						this.settingsService.getSettings().dynamicSettings.neutralColorRange.to - 1,
-						this.settingsService.getSettings().dynamicSettings.neutralColorRange.from
-					)
+					from: Math.min(this._viewModel.colorRangeTo - 1, this._viewModel.colorRangeFrom)
 				}
 			}
 		}
 
+		console.log("hi");
 		this.settingsService.updateSettings(update)
 	}
 
@@ -68,16 +77,13 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		const update: RecursivePartial<Settings> = {
 			dynamicSettings: {
 				neutralColorRange: {
-					to: Math.max(
-						this.settingsService.getSettings().dynamicSettings.neutralColorRange.to,
-						this.settingsService.getSettings().dynamicSettings.neutralColorRange.from + 1
-					),
+					to: Math.max(this._viewModel.colorRangeTo, this._viewModel.colorRangeFrom + 1),
 					from: Math.min(
 						MetricCalculator.getMaxMetricInAllRevisions(
 							this.codeChartaService.getImportedFiles(),
 							this.settingsService.getSettings().dynamicSettings.colorMetric
 						) - 1,
-						this.settingsService.getSettings().dynamicSettings.neutralColorRange.from
+						this._viewModel.colorRangeFrom
 					)
 				}
 			}
@@ -87,13 +93,20 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	}
 
 	private onSliderChange() {
-		//TODO noch nötig ? this.settingsService.applySettings()
+		this.settingsService.updateSettings({
+			dynamicSettings: {
+				neutralColorRange: {
+					to: this._viewModel.colorRangeTo,
+					from: this._viewModel.colorRangeFrom
+				}
+			}
+		})
 	}
 
 	private updateSliderColors() {
-		const rangeFromPercentage = (100 / this.maxMetricValue) * this.settingsService.getSettings().dynamicSettings.neutralColorRange.from
+		const rangeFromPercentage = (100 / this.maxMetricValue) * this._viewModel.colorRangeFrom
 		let rangeColors = this.sliderOptions.disabled ? this.getGreyRangeColors() : this.getColoredRangeColors()
-		this.applyCssSettings(rangeColors, rangeFromPercentage)
+		this.applyCssColors(rangeColors, rangeFromPercentage)
 	}
 
 	private getGreyRangeColors() {
@@ -116,7 +129,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		return rangeColors
 	}
 
-	private applyCssSettings(rangeColors, rangeFromPercentage) {
+	private applyCssColors(rangeColors, rangeFromPercentage) {
 		const slider = $("range-slider-component .rzslider")
 		const leftSection = slider.find(".rz-bar-wrapper:nth-child(3) .rz-bar")
 		const middleSection = slider.find(".rz-selection")
