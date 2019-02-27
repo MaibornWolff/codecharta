@@ -1,4 +1,4 @@
-import {SettingsService} from "../../core/settings/settings.service";
+import {SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import {IAngularEvent, IRootScopeService} from "angular";
 import "./metricChooser.component.scss";
 import {
@@ -7,9 +7,9 @@ import {
 } from "../codeMap/codeMap.mouseEvent.service";
 import {CodeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
 import { ImportedFilesChangedSubscriber, CodeChartaService } from "../../codeCharta.service";
-import { MetricData, CCFile } from "../../codeCharta.model";
+import {MetricData, CCFile, Settings} from "../../codeCharta.model";
 
-export class MetricChooserController implements ImportedFilesChangedSubscriber, CodeMapMouseEventServiceSubscriber{
+export class MetricChooserController implements ImportedFilesChangedSubscriber, CodeMapMouseEventServiceSubscriber, SettingsServiceSubscriber {
 
     public metricData: MetricData[];
 
@@ -23,6 +23,12 @@ export class MetricChooserController implements ImportedFilesChangedSubscriber, 
     public optionsWithoutStart;
     public sliderPositions;
 
+    public _viewModel = {
+        areaMetric: null,
+        colorMetric: null,
+        heightMetric: null
+    }
+
 
     /* @ngInject */
     constructor(
@@ -32,6 +38,7 @@ export class MetricChooserController implements ImportedFilesChangedSubscriber, 
     ) {
         //this.onDataChanged(dataService.data, null);
         CodeChartaService.subscribe(this.$rootScope, this);
+        SettingsService.subscribe(this.$rootScope, this);
         CodeMapMouseEventService.subscribe(this.$rootScope, this);
         this.optionsWithoutStart = {
             connect: true,
@@ -44,12 +51,29 @@ export class MetricChooserController implements ImportedFilesChangedSubscriber, 
         this.sliderPositions = [20, 80];
     }
 
-    public onImportedFilesChanged(importedFiles: CCFile[], metrics: string[], metricData: MetricData[]) {
-        this.metricData =  metricData;
+
+    public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
+        this.updateViewModel(settings)
     }
 
-    public notify() {
-        this.settingsService.applySettings();
+    private updateViewModel(settings: Settings) {
+        this._viewModel.areaMetric = settings.dynamicSettings.areaMetric
+        this._viewModel.colorMetric = settings.dynamicSettings.colorMetric
+        this._viewModel.heightMetric = settings.dynamicSettings.heightMetric
+    }
+
+    public applySettings() {
+        this.settingsService.updateSettings({
+            dynamicSettings: {
+                areaMetric: this._viewModel.areaMetric,
+                colorMetric: this._viewModel.colorMetric,
+                heightMetric: this._viewModel.heightMetric
+            }
+        })
+    }
+
+    public onImportedFilesChanged(importedFiles: CCFile[], metrics: string[], metricData: MetricData[]) {
+        this.metricData =  metricData;
     }
 
     public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent) {
@@ -59,15 +83,15 @@ export class MetricChooserController implements ImportedFilesChangedSubscriber, 
     public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
 
         if(data && data.to && data.to.node && data.to.node.attributes) {
-            this.hoveredAreaValue = data.to.node.attributes[this.settingsService.settings.dynamicSettings.areaMetric];
-            this.hoveredColorValue = data.to.node.attributes[this.settingsService.settings.dynamicSettings.colorMetric];
-            this.hoveredHeightValue = data.to.node.attributes[this.settingsService.settings.dynamicSettings.heightMetric];
+            this.hoveredAreaValue = data.to.node.attributes[this._viewModel.areaMetric];
+            this.hoveredColorValue = data.to.node.attributes[this._viewModel.colorMetric];
+            this.hoveredHeightValue = data.to.node.attributes[this._viewModel.heightMetric];
 
             if(data.to.node.deltas){
 
-                this.hoveredAreaDelta = data.to.node.deltas[this.settingsService.settings.dynamicSettings.areaMetric];
-                this.hoveredColorDelta = data.to.node.deltas[this.settingsService.settings.dynamicSettings.colorMetric];
-                this.hoveredHeightDelta = data.to.node.deltas[this.settingsService.settings.dynamicSettings.heightMetric];
+                this.hoveredAreaDelta = data.to.node.deltas[this._viewModel.areaMetric];
+                this.hoveredColorDelta = data.to.node.deltas[this._viewModel.colorMetric];
+                this.hoveredHeightDelta = data.to.node.deltas[this._viewModel.heightMetric];
 
                 this.hoveredDeltaColor = this.getHoveredDeltaColor();
             }
@@ -98,9 +122,9 @@ export class MetricChooserController implements ImportedFilesChangedSubscriber, 
         };
 
         if (this.hoveredHeightDelta > 0) {
-            return colors[Number(this.settingsService.settings.appSettings.deltaColorFlipped)];
+            return colors[Number(this.settingsService.getSettings().appSettings.deltaColorFlipped)];
         } else if (this.hoveredHeightDelta < 0) {
-            return colors[Number(!this.settingsService.settings.appSettings.deltaColorFlipped)];
+            return colors[Number(!this.settingsService.getSettings().appSettings.deltaColorFlipped)];
         } else {
             return "inherit";
         }

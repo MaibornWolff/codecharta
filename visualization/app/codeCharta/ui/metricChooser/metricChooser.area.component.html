@@ -1,7 +1,7 @@
 <md-input-container>
     <i class='fa fa-arrows-alt'></i>
 
-    <md-select ng-model="$ctrl.settingsService.settings.areaMetric" ng-change="$ctrl.settingsService.applySettings()">
+    <md-select ng-model="$ctrl._viewModel.areaMetric" ng-change="$ctrl.applySettings()">
         <md-option ng-repeat="metric in $ctrl.metricData" value="{{::metric.name}}">
             {{::metric.name}}
             <span class="metric-max-value">({{::metric.maxValue}})</span>
