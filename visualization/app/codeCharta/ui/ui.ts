@@ -3,6 +3,7 @@
 import angular from "angular";
 
 // Plop: Append module import here
+import "./heightSettingsPanel/heightSettingsPanel.module.ts";
 import "./settingsPanel/index";
 import "./viewCube/viewCube.module";
 import "./revisionChooser/revisionChooser";
@@ -32,6 +33,7 @@ angular.module(
     "app.codeCharta.ui",
     [
         // Plop: Append component name here
+		"app.codeCharta.ui.heightSettingsPanel",
         "app.codeCharta.ui.viewCube",
         "app.codeCharta.ui.mapTreeView",
         "app.codeCharta.ui.ribbonBar",

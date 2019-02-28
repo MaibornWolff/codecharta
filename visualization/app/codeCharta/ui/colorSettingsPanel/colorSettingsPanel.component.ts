@@ -10,7 +10,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber {
         neutralColorRangeFlipped: null,
         deltaColorFlipped: null,
         whiteColorBuildings: null,
-        mode: null
+        renderMode: null
     };
 
     /* @ngInject */
@@ -25,7 +25,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber {
         this._viewModel.neutralColorRangeFlipped = settings.dynamicSettings.neutralColorRange.flipped;
         this._viewModel.deltaColorFlipped = settings.appSettings.deltaColorFlipped;
         this._viewModel.whiteColorBuildings = settings.appSettings.whiteColorBuildings;
-        this._viewModel.mode = settings.dynamicSettings.renderMode;
+        this._viewModel.renderMode = settings.dynamicSettings.renderMode;
     }
 
     public applySettings() {
