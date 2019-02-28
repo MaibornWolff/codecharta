@@ -1,40 +1,49 @@
-import {SettingsService} from "../../core/settings/settings.service";
+import {SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import "./revisionChooser.component.scss";
 import "./revisionChooserFileDropDown.component.scss";
-import {RenderMode} from "../../codeCharta.model";
+import {CCFile, CodeMapNode, RenderMode, Settings} from "../../codeCharta.model";
+import {CodeChartaService} from "../../codeCharta.service";
+import {IRootScopeService} from "angular";
 
 /**
  * Controls the RevisionChooser
  */
-export class RevisionChooserController {
+export class RevisionChooserController implements SettingsServiceSubscriber {
 
-    public revisions: CodeMapNode[];
+    public importedFiles: CCFile[];
     public settings: Settings;
-    public ui = {
+    private _viewModel = {
+        allRenderModes: RenderMode,
+        renderMode: null,
         chosenReference: null,
-        chosenComparison: null,
-    };
-    public show = RenderMode;
+        chosenComparison: null
+    }
 
     /* @ngInject */
     constructor(
-        private dataService: DataService,
+        private codeChartaService: CodeChartaService,
         private settingsService: SettingsService,
-        private $rootScope
+        private $rootScope: IRootScopeService
     ) {
-        this.revisions = dataService.data.revisions;
-        this.settings = settingsService.settings;
-        this.ui.chosenComparison = this.dataService.getIndexOfMap(this.dataService.getComparisonMap(), this.revisions);
-        this.ui.chosenReference = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
-        dataService.subscribe(this);
+        this.importedFiles = this.codeChartaService.getImportedFiles();
+        this.settings = this.settingsService.getSettings();
+
+        // TODO: Set comparisonMap
+        //this._viewModel.chosenComparison = this.dataService.getIndexOfMap(this.dataService.getComparisonMap(), this.importedFiles);
+        //this._viewModel.chosenReference = this.dataService.getIndexOfMap(this.codeChartaService.getRenderMap(), this.importedFiles);
         this.$rootScope.$on("revision-mode-changed", (event, data)=>{
-            this.show = data;
+            this._viewModel.allRenderModes = data;
         });
+        SettingsService.subscribe(this.$rootScope, this)
 
     }
 
+    public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
+        this._viewModel.renderMode = settings.dynamicSettings.renderMode;
+    }
+
     //TODO listen to on imported files changed
-    public onDataChanged(data: DataModel) {
+    /*public onDataChanged(data: DataModel) {
         this.revisions = data.revisions;
         this.ui.chosenComparison= this.dataService.getIndexOfMap(this.dataService.getComparisonMap(), this.revisions);
         this.ui.chosenReference = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
@@ -46,14 +55,16 @@ export class RevisionChooserController {
 
     public onComparisonChange(mapIndex: number) {
         this.dataService.setComparisonMap(mapIndex);
-    }
+    }*/
 
 
 
-    public onShowChange(settings: Settings){
-        this.settings = settings;
-        this.settingsService.applySettings();
-
+    public onShowChange(){
+        this.settingsService.updateSettings({
+            dynamicSettings: {
+                renderMode: this._viewModel.renderMode
+            }
+        });
      }
 }
 

@@ -1,7 +1,7 @@
 <md-input-container class="md-block">
-    <md-radio-group ng-model="$ctrl.settingsService.settings.mode" ng-change="$ctrl.onShowChange($ctrl.settingsService.settings)">
-        <md-radio-button ng-model="$ctrl.show" ng-repeat="kind in $ctrl.show" value="{{::kind}}">
-            {{::kind}}
+    <md-radio-group ng-model="$ctrl._viewModel.renderMode" ng-change="$ctrl.onShowChange()">
+        <md-radio-button ng-model="$ctrl._viewModel.allRenderModes" ng-repeat="renderMode in $ctrl._viewModel.allRenderModes" value="{{::renderMode}}">
+            {{::renderMode}}
         </md-radio-button>
     </md-radio-group>
 </md-input-container>

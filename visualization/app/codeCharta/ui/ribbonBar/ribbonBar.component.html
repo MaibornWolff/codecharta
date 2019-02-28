@@ -1,20 +1,20 @@
 <md-card id="header" class="dark_shadow_opacity">
 
-    <!--div class="section">
+    <div class="section">
         <div class="section-header">
             <file-chooser-directive></file-chooser-directive>
             <revision-chooser-file-drop-down-component></revision-chooser-file-drop-down-component>
         </div>
         <span class="section-title" id="section-title" ng-click="$ctrl.toggle()">
-            <span ng-if="$ctrl.settingsService.settings.mode != 'Delta'">File</span>
-            <span ng-if="$ctrl.settingsService.settings.mode == 'Delta'" class="first">File</span> 
-            <span ng-if="$ctrl.settingsService.settings.mode == 'Delta'" class="second">Compare</span>
+            <span ng-if="$ctrl._viewModel.renderMode != 'Delta'">File</span>
+            <span ng-if="$ctrl._viewModel.renderMode == 'Delta'" class="first">File</span>
+            <span ng-if="$ctrl._viewModel.renderMode == 'Delta'" class="second">Compare</span>
         </span>
         <div class="section-body">
             <revision-chooser-component></revision-chooser-component>
             <scenario-drop-down-component></scenario-drop-down-component>
         </div>
-    </div>-->
+    </div>
 
     <div class="section">
         <div class="section-header">
