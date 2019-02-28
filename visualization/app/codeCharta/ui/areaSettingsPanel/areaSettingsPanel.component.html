@@ -1,0 +1,18 @@
+<md-slider-container class="md-block">
+    <span>Margin</span>
+    <md-slider flex step="1" min="1" max="100" ng-model="$ctrl._viewModel.margin" id="margin-slider" ng-change="$ctrl.applySettingsMargin()" class="md-primary">
+    </md-slider>
+    <md-input-container>
+        <input flex step="1" min="1" max="100" type="number" ng-model="$ctrl._viewModel.margin" ng-change="$ctrl.applySettingsMargin()" aria-controls="margin-slider">
+    </md-input-container>
+</md-slider-container>
+
+<md-input-container class="md-block">
+    <md-checkbox class="md-primary" ng-model="$ctrl._viewModel.dynamicMargin" ng-change="$ctrl.applySettings()">
+        Dynamic Margin
+    </md-checkbox>
+</md-input-container>
+
+<reset-settings-button-component settings-names="margin, dynamicMargin"></reset-settings-button-component>
+
+
