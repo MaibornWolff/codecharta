@@ -93,9 +93,6 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 					const ccFile = this.getCCFile(nameDataPair.name, nameDataPair.data)
 					this.importedFiles.push(ccFile)
 					this.dataDecoratorService.preDecorateFile(ccFile)
-					const metricResult = MetricCalculator.calculateMetrics(this.importedFiles)
-					this.metrics = metricResult.metrics
-					this.metricData = metricResult.data
 					this.settingsService.updateSettings({
 						dynamicSettings: {
 							areaMetric: this.getMetricByIndexElseLast(0, this.metrics),
@@ -110,6 +107,11 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 					reject(errors)
 				}
 			})
+
+
+			const metricResult = MetricCalculator.calculateMetrics(this.importedFiles)
+			this.metrics = metricResult.metrics
+			this.metricData = metricResult.data
 
 			// TODO #136
 			//if(applyScenarioOnce) {
