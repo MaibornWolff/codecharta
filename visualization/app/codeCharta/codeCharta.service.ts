@@ -87,27 +87,27 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 
 	public loadFiles(nameDataPairs: NameDataPair[]): Promise<void> {
 		return new Promise((resolve, reject) => {
-			nameDataPairs.forEach((nameDataPair, revision) => {
+			nameDataPairs.forEach((nameDataPair) => {
 				const errors = FileValidator.validate(nameDataPair.data as any)
 				if (errors.length === 0) {
 					const ccFile = this.getCCFile(nameDataPair.name, nameDataPair.data)
 					this.importedFiles.push(ccFile)
 					this.dataDecoratorService.preDecorateFile(ccFile)
-					this.settingsService.updateSettings({
-						dynamicSettings: {
-							areaMetric: this.getMetricByIndexElseLast(0, this.metrics),
-							heightMetric: this.getMetricByIndexElseLast(1, this.metrics),
-							colorMetric: this.getMetricByIndexElseLast(2, this.metrics),
-							neutralColorRange: this.getAdaptedRange(this.getMetricByIndexElseLast(2, this.metrics), false)
-						}
-					})
-					this.dataDecoratorService.postDecorateFiles(this.importedFiles, this.metrics)
-					this.setReferenceMap(revision)
 				} else {
 					reject(errors)
 				}
 			})
 
+			this.settingsService.updateSettings({
+				dynamicSettings: {
+					areaMetric: this.getMetricByIndexElseLast(0, this.metrics),
+					heightMetric: this.getMetricByIndexElseLast(1, this.metrics),
+					colorMetric: this.getMetricByIndexElseLast(2, this.metrics),
+					neutralColorRange: this.getAdaptedRange(this.getMetricByIndexElseLast(2, this.metrics), false)
+				}
+			})
+			
+			this.dataDecoratorService.postDecorateFiles(this.importedFiles, this.metrics)
 
 			const metricResult = MetricCalculator.calculateMetrics(this.importedFiles)
 			this.metrics = metricResult.metrics
