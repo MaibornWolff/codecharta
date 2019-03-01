@@ -14,6 +14,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+## [1.21.2] - 2019-02-26
+
+### Added
+
+-	When entering Multiple Mode, all Maps/revisions are preselected
+
+### Changed
+
+### Removed
+
+### Fixed
+
+-   Fixing non-existent metric aggregation on root-level when using multiple Files
+
 ## [1.21.1] - 2019-02-22
 
 ### Added
