@@ -7,11 +7,6 @@ import { CodeMapNode, BlacklistType, Settings, CCFile } from "../../codeCharta.m
 import { ImportedFilesChangedSubscriber, CodeChartaService } from "../../codeCharta.service"
 
 export class MapTreeViewSearchController implements SettingsServiceSubscriber, ImportedFilesChangedSubscriber {
-	private static TIMEOUT_DELAY_MS = 100
-
-	// TODO is this used here ? 
-	private mapRoot: CodeMapNode = null
-
 	private _viewModel = {
 		searchPattern: "",
 		fileCount: 0,
@@ -25,14 +20,12 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, I
 
 	/* @ngInject */
 	constructor(
-		private $timeout: ITimeoutService,
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
 		private codeChartaService: CodeChartaService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
 		CodeChartaService.subscribe(this.$rootScope, this)
-		this.updateMapRoot()
 	}
 
 	public onImportedFilesChanged(importedFiles: CCFile[], metrics: string[]) {
@@ -40,7 +33,6 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, I
 	}
 
 	public onSettingsChanged(s: Settings) {
-		this.updateMapRoot()
 		this.updateViewModel()
 	}
 
@@ -99,14 +91,6 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, I
 				searchPattern: this._viewModel.searchPattern
 			}
 		})
-	}
-
-	private updateMapRoot(map: CodeMapNode = this.codeChartaService.getRenderMap()) {
-		if (map) {
-			this.$timeout(() => {
-				this.mapRoot = map
-			}, MapTreeViewSearchController.TIMEOUT_DELAY_MS)
-		}
 	}
 }
 

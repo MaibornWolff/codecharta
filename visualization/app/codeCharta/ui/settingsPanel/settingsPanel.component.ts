@@ -16,10 +16,10 @@ export class SettingsPanelController implements SettingsServiceSubscriber {
 
 	public collapseAndUpdateChildRzSlider($panel) {
 		$panel.collapse()
-		this.$timeout(() => {
-            //TODO maybe this should be a trigger method of the component where the slider is
-			this.$scope.$broadcast("rzSliderForceRender")
-		}, 50)
+		//this.$timeout(() => {
+        //    //TODO maybe this should be a trigger method of the component where the slider is
+		//	this.$scope.$broadcast("rzSliderForceRender")
+		//}, 50)
 	}
 
 	public onSettingsChanged(settings: Settings, event: IAngularEvent) {
