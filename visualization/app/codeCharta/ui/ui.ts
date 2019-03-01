@@ -5,7 +5,7 @@ import angular from "angular";
 // Plop: Append module import here
 import "./areaSettingsPanel/areaSettingsPanel.module.ts";
 import "./heightSettingsPanel/heightSettingsPanel.module.ts";
-import "./settingsPanel/index";
+import "./settingsPanel/settingsPanel.module";
 import "./viewCube/viewCube.module";
 import "./revisionChooser/revisionChooser";
 import "./legendPanel/legendPanel";
