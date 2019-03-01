@@ -6,6 +6,12 @@ export interface CCFile {
   fileMeta: FileMeta;
 }
 
+export interface FileMode {
+    id: number;
+    filename: string;
+    mode: RenderMode;
+}
+
 export interface CodeMapNode {
     name: string;
     type: string;
@@ -141,6 +147,14 @@ export enum RenderMode {
   Single = "Single",
   Multiple = "Multiple",
   Delta = "Delta",
+}
+
+export enum FileSelectionState {
+    Single,
+    Reference,
+    Comparison,
+    Partial,
+    None
 }
 
 export interface MetricData {

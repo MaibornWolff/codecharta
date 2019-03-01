@@ -6,7 +6,7 @@ import {
 	Settings,
 	RenderMode,
 	ColorRange,
-	CodeMapNode
+	CodeMapNode, FileMode, FileSelectionState
 } from "./codeCharta.model"
 import { DataDecoratorService } from "./core/data/data.decorator.service"
 import { NameDataPair } from "./core/url/url.service"
@@ -18,6 +18,50 @@ import { CodeMapRenderService } from "./ui/codeMap/codeMap.render.service"
 
 export interface ImportedFilesChangedSubscriber {
 	onImportedFilesChanged(importedFiles: CCFile[], metrics: string[], metricData: MetricData[])
+}
+
+export class FileStateService {
+	private files: Array<{ file: CCFile, selectedAs: FileSelectionState }> = []
+
+
+	constructor() {}
+
+	public addFile(file: CCFile) {
+		this.files.push({file: file, selectedAs: FileSelectionState.None})
+	}
+
+	public getFiles(): Array<{ file: CCFile, selectedAs: FileSelectionState }> {
+		return this.files
+	}
+
+	public setSingle(file: CCFile) {
+		this.resetSelectionStates()
+		const matchedFile = this.files.find(x => x.file == file)
+		if (matchedFile) {
+			matchedFile.selectedAs = FileSelectionState.Single
+		}
+	}
+
+	public setDelta(reference: CCFile, comparison: CCFile) {
+		this.resetSelectionStates()
+		const matchedReferenceFile = this.files.find(x => x.file == reference)
+		const matchedComparisonFile = this.files.find(x => x.file == comparison)
+
+		if (matchedReferenceFile && matchedComparisonFile) {
+			matchedReferenceFile.selectedAs = FileSelectionState.Reference
+			matchedComparisonFile.selectedAs = FileSelectionState.Comparison
+		}
+	}
+
+	public setMultiple(multipleFiles: CCFile[]) {
+		this.resetSelectionStates()
+		this.files.filter(x => multipleFiles.indexOf(x.file) !== -1)
+			.forEach(x => x.selectedAs = FileSelectionState.Partial)
+	}
+
+	private resetSelectionStates() {
+		this.files.forEach(file => file.selectedAs = FileSelectionState.None)
+	}
 }
 
 export class CodeChartaService implements SettingsServiceSubscriber {
