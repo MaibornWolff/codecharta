@@ -25,7 +25,7 @@ import "./nodeContextMenu/nodeContextMenu";
 import "./ribbonBar/ribbonBar.module";
 import "./layoutSwitcher/layoutSwitcher";
 import "./optionsPanel/optionsPanel";
-import "./weblinksPanel/weblinksPanel";
+import "./weblinksPanel/weblinksPanel.module";
 import "./sidenav/sidenav.module";
 import "./blacklistPanel/blacklistPanel";
 import "./multipleFilePanel/multipleFilePanel";
