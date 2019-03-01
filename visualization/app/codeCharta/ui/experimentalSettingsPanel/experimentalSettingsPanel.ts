@@ -1,5 +1,5 @@
 import "../../core/core.module";
-import "../layoutSwitcher/layoutSwitcher";
+import "../layoutSwitcher/layoutSwitcher.module";
 
 import angular from "angular";
 

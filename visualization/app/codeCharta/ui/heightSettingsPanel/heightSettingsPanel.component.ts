@@ -5,7 +5,8 @@ import {RenderMode, Settings} from "../../codeCharta.model";
 
 export class HeightSettingsPanelController {
 
-    private _deltaMode = RenderMode.Delta;
+    private _deltaModeConstant = RenderMode.Delta;
+
     private _viewModel = {
         amountOfTopLabels: null,
         scalingY: null,

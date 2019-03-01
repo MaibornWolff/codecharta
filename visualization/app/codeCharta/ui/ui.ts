@@ -23,7 +23,7 @@ import "./resetSettingsButton/resetSettingsButton";
 import "./dialog/dialog";
 import "./nodeContextMenu/nodeContextMenu";
 import "./ribbonBar/ribbonBar.module";
-import "./layoutSwitcher/layoutSwitcher";
+import "./layoutSwitcher/layoutSwitcher.module";
 import "./optionsPanel/optionsPanel.module";
 import "./weblinksPanel/weblinksPanel.module";
 import "./sidenav/sidenav.module";
