@@ -21,14 +21,16 @@ export interface ImportedFilesChangedSubscriber {
 }
 
 export class CodeChartaService implements SettingsServiceSubscriber {
-	private importedFiles: CCFile[] = []
-	private metrics: string[] = []
-	private metricData: MetricData[] = []
+	public importedFiles: CCFile[] = []
+	public metrics: string[] = []
+	public metricData: MetricData[] = []
+
 	private _lastReferenceIndex = 0
 	private _lastComparisonMap: CodeMapNode = null
 	private _deltasEnabled = false
 	private _lastDeltaState = false
 	private renderMap: CodeMapNode
+
 	//private importedScenarios: Scenario[]
 	//private urlData: UrlData
 
@@ -69,7 +71,6 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 			this._lastDeltaState = true
 			this.onActivateDeltas()
 		}
-		this.codeMapRenderService.rerenderWithNewSettings(settings)
 	}
 
 	private getAdaptedRange(colorMetric: string, flipped: boolean): ColorRange {

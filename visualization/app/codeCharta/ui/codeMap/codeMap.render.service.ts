@@ -9,6 +9,8 @@ import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { Edge, Settings, CodeMapNode, RenderMode, CCFile } from "../../codeCharta.model"
+import {SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {IRootScopeService} from "angular";
 
 const MAP_SIZE = 500.0
 
@@ -23,7 +25,7 @@ export interface RenderData {
 	settings: Settings
 }
 
-export class CodeMapRenderService {
+export class CodeMapRenderService implements SettingsServiceSubscriber{
 	public static SELECTOR = "codeMapRenderService"
 
 	public currentSortedNodes: Node[]
@@ -35,14 +37,18 @@ export class CodeMapRenderService {
 	private lastRender: RenderData
 
 	constructor(
+		private $rootScope: IRootScopeService,
 		private threeSceneService: ThreeSceneService,
 		private treeMapService: TreeMapService,
 		private codeMapUtilService: CodeMapUtilService,
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService
-	) {}
+	) {
+		SettingsService.subscribe(this.$rootScope, this)
+	}
 
-	public rerenderWithNewSettings(settings: Settings) {
+	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
+	//public rerenderWithNewSettings(settings: Settings) {
 		this.lastRender.settings = settings
 		this.render(this.lastRender)
 	}
