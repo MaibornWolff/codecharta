@@ -8,7 +8,8 @@ import {
 	CodeMapMouseEventServiceSubscriber
 } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeChartaService } from "../../codeCharta.service"
-import { Settings, RenderMode } from "../../codeCharta.model";
+import {Settings, RenderMode} from "../../codeCharta.model";
+import {Node} from "../codeMap/rendering/node";
 
 interface CommonDetails {
 	areaAttributeName: string | null
@@ -49,7 +50,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 		private codeChartaService: CodeChartaService
 	) {
 
-        this.metrics = codeChartaService.getMetrics();
+        this.metrics = this.codeChartaService.getMetrics();
 
 		this.details = {
 			common: {
@@ -87,7 +88,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 			}
 		}
 
-		this.onSettingsChanged(settingsService.settings)
+		this.onSettingsChanged(settingsService.getSettings())
 
 		SettingsService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribe(this.$rootScope, this)
@@ -111,7 +112,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 		this.details.common.colorAttributeName = settings.dynamicSettings.colorMetric
 	}
 
-	public onSelect(data) {
+	public onSelect(data: CodeMapBuildingTransition) {
 		if (data.to && data.to.node) {
 			this.setSelectedDetails(data.to.node)
 		} else {
@@ -119,7 +120,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 		}
 	}
 
-	public onHover(data) {
+	public onHover(data: CodeMapBuildingTransition) {
 		if (data.to && data.to.node) {
 			this.setHoveredDetails(data.to.node)
 		} else {
@@ -129,7 +130,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 
 	public isHovered() {
 		if (this.details && this.details.hovered) {
-			return this.details.hovered.name ? true : false
+			return !!this.details.hovered.name
 		} else {
 			return false
 		}
@@ -137,17 +138,17 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 
 	public isSelected() {
 		if (this.details && this.details.selected) {
-			return this.details.selected.name ? true : false
+			return !!this.details.selected.name
 		} else {
 			return false
 		}
 	}
 
-	public setHoveredDetails(hovered) {
+	public setHoveredDetails(hovered: Node) {
 		this.clearHoveredDetails()
 		this.$timeout(() => {
 			this.details.hovered.name = hovered.name
-			if (hovered.mode != undefined && this.settingsService.settings.dynamicSettings.renderMode == RenderMode.Delta) {
+			if (hovered.mode != undefined && this.settingsService.getSettings().dynamicSettings.renderMode == RenderMode.Delta) {
 				this.details.hovered.heightDelta = hovered.deltas ? hovered.deltas[this.details.common.heightAttributeName] : null
 				this.details.hovered.areaDelta = hovered.deltas ? hovered.deltas[this.details.common.areaAttributeName] : null
 				this.details.hovered.colorDelta = hovered.deltas ? hovered.deltas[this.details.common.colorAttributeName] : null
@@ -161,11 +162,11 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 			}
 			this.details.hovered.link = hovered.link
 			this.details.hovered.origin = hovered.origin
-			this.details.hovered.path = this.getPathFromCodeMapBuilding(hovered)
+			this.details.hovered.path = hovered.path
 		})
 	}
 
-	public setSelectedDetails(selected) {
+	public setSelectedDetails(selected: Node) {
 		this.clearSelectedDetails()
 		this.$timeout(() => {
 			this.details.selected.name = selected.name
@@ -175,7 +176,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 				this.details.selected.color = selected.attributes ? selected.attributes[this.details.common.colorAttributeName] : null
 				this.details.selected.attributes = selected.attributes
 			}
-			if (selected.deltas != undefined && this.settingsService.settings.dynamicSettings.renderMode == RenderMode.Delta) {
+			if (selected.deltas != undefined && this.settingsService.getSettings().dynamicSettings.renderMode == RenderMode.Delta) {
 				this.details.selected.heightDelta = selected.deltas ? selected.deltas[this.details.common.heightAttributeName] : null
 				this.details.selected.areaDelta = selected.deltas ? selected.deltas[this.details.common.areaAttributeName] : null
 				this.details.selected.colorDelta = selected.deltas ? selected.deltas[this.details.common.colorAttributeName] : null
@@ -183,7 +184,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 			}
 			this.details.selected.link = selected.link
 			this.details.selected.origin = selected.origin
-			this.details.selected.path = this.getPathFromCodeMapBuilding(selected)
+			this.details.selected.path = selected.path
 		})
 	}
 
@@ -201,16 +202,6 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 				this.details.selected[key] = null
 			}
 		})
-	}
-
-	private getPathFromCodeMapBuilding(b: CodeMapBuilding): string {
-		let current = b
-		let result = ""
-		while (current) {
-			result = "/" + current.name + result
-			current = current.parent
-		}
-		return result
 	}
 }
 
