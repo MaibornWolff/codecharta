@@ -4,11 +4,11 @@ import {ThreeCameraService} from "./threeCameraService";
 import {ThreeOrbitControlsService} from "./threeOrbitControlsService";
 import {ThreeRendererService} from "./threeRendererService";
 import {ThreeUpdateCycleService} from "./threeUpdateCycleService";
-import "../../../core/settings/settings.module";
+import "../../../state/state.module";
 
 import angular from "angular";
 
-angular.module("app.codeCharta.ui.codeMap.threeViewer", ["app.codeCharta.core.settings"])
+angular.module("app.codeCharta.ui.codeMap.threeViewer", ["app.codeCharta.state"])
     .service(
         ThreeViewerService.SELECTOR,
         ThreeViewerService

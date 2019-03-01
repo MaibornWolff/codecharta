@@ -1,6 +1,6 @@
 import "./detailPanel";
 
-import {SettingsService, SettingsServiceSubscriber, Settings} from "../../core/settings/settings.service";
+import {SettingsService, SettingsServiceSubscriber, Settings} from "../../state/settings.service";
 import {DetailPanelController} from "./detailPanel.component";
 import {DataService} from "../../core/data/data.service";
 import {getService, instantiateModule} from "../../../../mocks/ng.mockhelper";

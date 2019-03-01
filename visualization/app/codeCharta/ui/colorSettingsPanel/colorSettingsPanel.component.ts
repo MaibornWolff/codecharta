@@ -1,4 +1,4 @@
-import {SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import "./colorSettingsPanel.component.scss";
 import {RenderMode, Settings} from "../../codeCharta.model";
 import {IRootScopeService} from "angular";

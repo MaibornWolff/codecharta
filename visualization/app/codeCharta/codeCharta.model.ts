@@ -1,15 +1,22 @@
+export interface FileState {
+    file: CCFile,
+    selectedAs: FileSelectionState
+}
+
+export enum FileSelectionState {
+    Single,
+    Reference,
+    Comparison,
+    Partial,
+    None
+}
+
 export interface CCFile {
   map: CodeMapNode;
   settings: {
       fileSettings: RecursivePartial<FileSettings>
   };
   fileMeta: FileMeta;
-}
-
-export interface FileMode {
-    id: number;
-    filename: string;
-    mode: RenderMode;
 }
 
 export interface CodeMapNode {
@@ -19,14 +26,7 @@ export interface CodeMapNode {
     attributes: {
         [key: string]: number
     };
-    deltas?: {
-        [key: string]: number
-    };
     link?: string;
-    origin?: string;
-    visible?: boolean;
-    path?: string;
-    markingColor?: string;
 }
 
 export interface FileMeta {
@@ -147,14 +147,6 @@ export enum RenderMode {
   Single = "Single",
   Multiple = "Multiple",
   Delta = "Delta",
-}
-
-export enum FileSelectionState {
-    Single,
-    Reference,
-    Comparison,
-    Partial,
-    None
 }
 
 export interface MetricData {

@@ -1,5 +1,5 @@
 import {RangeSliderController} from "./rangeSlider.component";
-import {SettingsService} from "../../core/settings/settings.service";
+import {SettingsService} from "../../state/settings.service";
 import { DataService } from "../../core/data/data.service";
 import {MapColors} from "../codeMap/rendering/renderSettings";
 

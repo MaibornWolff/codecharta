@@ -2,12 +2,12 @@
 
 import angular from "angular";
 
-import {UrlService} from "./url.service";
+import {UrlUtils} from "../../util/urlUtils";
 
 angular.module(
     "app.codeCharta.core.url",
     []
 ).service(
-    UrlService.SELECTOR,
-    UrlService
+    UrlUtils.SELECTOR,
+    UrlUtils
 );

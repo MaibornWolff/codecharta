@@ -1,4 +1,4 @@
-import {SettingsService} from "../../../core/settings/settings.service";
+import {SettingsService} from "../../../state/settings.service";
 
 jest.mock("../../../core/settings/settings.service");
 

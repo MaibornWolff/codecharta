@@ -1,15 +1,15 @@
-import {NGMock} from "../../../../mocks/ng.mockhelper";
+import {NGMock} from "../../../mocks/ng.mockhelper";
 import {IRootScopeService, ILocationService, IHttpBackendService} from "angular";
 import DoneCallback = jest.DoneCallback;
 
-import {NameDataPair, UrlService} from "./url.service";
-import "./url.module";
+import {NameDataPair, UrlUtils} from "./urlUtils";
+import "../core/url/url.module";
 import {VALID_TEST_DATA} from "./url.mocks";
 import {CodeMap} from "../data/model/CodeMap";
 
 describe("url.service", ()=>{
 
-    let urlService: UrlService;
+    let urlService: UrlUtils;
     let $rootScope: IRootScopeService;
     let $location: ILocationService;
     let $httpBackend: IHttpBackendService;

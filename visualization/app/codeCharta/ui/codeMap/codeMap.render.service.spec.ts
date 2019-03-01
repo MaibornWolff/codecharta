@@ -1,6 +1,6 @@
 import {CodeMapRenderService} from "./codeMap.render.service";
 import {ThreeSceneService} from "./threeViewer/threeSceneService";
-import {SettingsService} from "../../core/settings/settings.service";
+import {SettingsService} from "../../state/settings.service";
 import {TreeMapService} from "../../core/treemap/treemap.service";
 import {CodeMapUtilService} from "./codeMap.util.service";
 import {CodeMapNode} from "../../core/data/model/CodeMap";

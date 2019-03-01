@@ -1,4 +1,4 @@
-import {SettingsService} from "../../core/settings/settings.service";
+import {SettingsService} from "../../state/settings.service";
 import {ITimeoutService} from "angular";
 import "./mapTreeViewSearch";
 import {getService, instantiateModule} from "../../../../mocks/ng.mockhelper";

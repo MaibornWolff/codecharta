@@ -3,7 +3,7 @@ import { WebGLRenderer } from "three";
 import {
     SettingsService,
     SettingsServiceSubscriber
-} from "../../../core/settings/settings.service";
+} from "../../../state/settings.service";
 import { Settings } from "../../../codeCharta.model";
 import { IRootScopeService } from "angular";
 

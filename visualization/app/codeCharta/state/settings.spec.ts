@@ -1,4 +1,3 @@
-import "./settings.module";
 import {getService, instantiateModule, NGMock} from "../../../../mocks/ng.mockhelper";
 import sinon from "sinon";
 import {KindOfMap, SettingsService} from "./settings.service";

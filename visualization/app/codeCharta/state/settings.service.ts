@@ -1,4 +1,4 @@
-import { Settings, Vector3d, RenderMode, MapColors, RecursivePartial } from "../../codeCharta.model"
+import { Settings, Vector3d, RenderMode, MapColors, RecursivePartial } from "../codeCharta.model"
 import _ from "lodash"
 import { IRootScopeService, IAngularEvent } from "angular";
 
@@ -27,6 +27,7 @@ export class SettingsService {
 	public updateSettings(update: RecursivePartial<Settings>) {
 		// TODO wo und wann this.settings.margin = this.computeMargin(settings); ?
 		this.settings = _.merge(this.settings, update)
+		console.log(this.settings);
 		this.throttledBroadcast()
 	}
 

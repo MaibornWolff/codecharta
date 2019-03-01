@@ -2,11 +2,11 @@ import {CodeChartaController} from "./codeCharta.component";
 
 import {DataService} from "./core/data/data.service";
 import {DialogService} from "./ui/dialog/dialog.service";
-import {SettingsService} from "./core/settings/settings.service";
+import {SettingsService} from "./state/settings.service";
 import {ScenarioService} from "./core/scenario/scenario.service";
 import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
 import {DataLoadingService} from "./core/data/data.loading.service";
-import {NameDataPair, UrlService} from "./core/url/url.service";
+import {NameDataPair, UrlUtils} from "./util/urlUtils";
 import {NodeContextMenuController} from "./ui/nodeContextMenu/nodeContextMenu.component";
 
 jest.mock("./core/data/data.service");
@@ -21,7 +21,7 @@ describe("codecharta component", ()=>{
    
     let cc: CodeChartaController;
     let dataLoadingService: DataLoadingService;
-    let urlService: UrlService;
+    let urlService: UrlUtils;
     let settingsService: SettingsService;
     let scenarioService: ScenarioService;
     let dataService: DataService;
@@ -38,7 +38,7 @@ describe("codecharta component", ()=>{
         document.body.addEventListener = jest.fn();
 
         dataLoadingService = new DataLoadingService();
-        urlService = new UrlService();
+        urlService = new UrlUtils();
         urlService.getFileDataFromQueryParam = jest.fn(() => Promise.resolve({}));
         settingsService = new SettingsService();
         scenarioService = new ScenarioService();

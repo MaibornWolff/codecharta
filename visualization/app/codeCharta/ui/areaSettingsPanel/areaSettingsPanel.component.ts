@@ -1,6 +1,6 @@
 import "./areaSettingsPanel.component.scss";
 import {IRootScopeService} from "angular";
-import {SettingsService} from "../../core/settings/settings.service";
+import {SettingsService} from "../../state/settings.service";
 import {CodeMapNode, Settings} from "../../codeCharta.model";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 import {CodeChartaService} from "../../codeCharta.service";

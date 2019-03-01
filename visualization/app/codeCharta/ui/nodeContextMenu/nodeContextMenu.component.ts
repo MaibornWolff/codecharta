@@ -4,7 +4,7 @@ import {highlightColors} from "../codeMap/rendering/renderSettings";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
 import {CodeChartaService} from "../../codeCharta.service";
-import {SettingsService} from "../../core/settings/settings.service";
+import {SettingsService} from "../../state/settings.service";
 
 export class NodeContextMenuController {
     public amountOfDependentEdges;

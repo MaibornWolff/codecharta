@@ -1,5 +1,5 @@
 import {ResetSettingsButtonController} from "./resetSettingsButton.component";
-import {KindOfMap, SettingsService} from "../../core/settings/settings.service";
+import {KindOfMap, SettingsService} from "../../state/settings.service";
 import {DataService} from "../../core/data/data.service";
 
 describe("resetButtonController", ()=>{

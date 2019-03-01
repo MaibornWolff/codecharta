@@ -1,4 +1,4 @@
-import { SettingsService, SettingsServiceSubscriber } from "../../core/settings/settings.service"
+import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import "./optionsPanel.component.scss"
 import { IRootScopeService } from "angular"
 import { Settings, RecursivePartial, AppSettings } from "../../codeCharta.model"

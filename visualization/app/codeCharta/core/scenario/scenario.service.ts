@@ -1,6 +1,5 @@
 "use strict";
-import {SettingsService} from "../settings/settings.service";
-import {ThreeOrbitControlsService} from "../../ui/codeMap/threeViewer/threeOrbitControlsService";
+import {SettingsService} from "../../state/settings.service";
 import { RecursivePartial, Settings } from "../../codeCharta.model";
 import { CodeChartaService } from "../../codeCharta.service";
 
@@ -20,8 +19,7 @@ export class ScenarioService {
 
     /* ngInject */
     constructor(private settingsService: SettingsService,
-                private codeChartaService: CodeChartaService,
-                private threeOrbitControlsService:ThreeOrbitControlsService) {
+                private codeChartaService: CodeChartaService) {
         this.scenarios = require("./scenarios.json");
     }
 
@@ -42,11 +40,13 @@ export class ScenarioService {
     public applyScenario(scenario: Scenario) {
         const updatedSettingsUsingScenario = this.updateSettingsUsingScenario(this.settingsService.getSettings(), scenario.settings);
         this.settingsService.updateSettings(updatedSettingsUsingScenario);
+
+        /* TODO: autoFit somewhere else
         if(scenario.autoFitCamera){
             setTimeout(() => {
                 this.threeOrbitControlsService.autoFitTo();
             },10);
-        }
+        }*/
     }
 
     private updateSettingsUsingScenario(settings: Settings, scenarioSettings: RecursivePartial<Settings>): Settings {

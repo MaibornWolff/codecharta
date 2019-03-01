@@ -1,8 +1,6 @@
-import { NameDataPair, UrlService } from "./core/url/url.service"
-import { IRootScopeService } from "angular"
+import { NameDataPair, UrlUtils } from "./util/urlUtils"
+import {IHttpService, ILocationService, IRootScopeService} from "angular"
 import "./codeCharta.component.scss"
-import { DialogService } from "./ui/dialog/dialog.service"
-import { ThreeOrbitControlsService } from "./ui/codeMap/threeViewer/threeOrbitControlsService"
 import { NodeContextMenuController } from "./ui/nodeContextMenu/nodeContextMenu.component"
 import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
 import { CodeChartaService } from "./codeCharta.service"
@@ -15,31 +13,34 @@ export class CodeChartaController {
 		version: require("../../package.json").version,
 		numberOfLoadingTasks: 0
 	}
+	private urlUtils: UrlUtils
 
 	/* @ngInject */
 	constructor(
-		private urlService: UrlService,
-		private threeOrbitControlsService: ThreeOrbitControlsService,
+		//private threeOrbitControlsService: ThreeOrbitControlsService,
 		private $rootScope: IRootScopeService,
-		private dialogService: DialogService,
-		private codeMapActionsService: CodeMapActionsService,
-		private codeChartaService: CodeChartaService
+		//private dialogService: DialogService,
+		//private codeMapActionsService: CodeMapActionsService,
+		private codeChartaService: CodeChartaService,
+		private $location: ILocationService,
+		private $http: IHttpService
 	) {
+		this.urlUtils = new UrlUtils(this.$location, this.$http)
 		this.subscribeToLoadingEvents(this.$rootScope)
 		this.loadFileOrSample()
 	}
 
 	public fitMapToView() {
-		this.threeOrbitControlsService.autoFitTo()
+		// this.threeOrbitControlsService.autoFitTo()
 	}
 
 	public removeFocusedNode() {
-		this.codeMapActionsService.removeFocusedNode()
+		//this.codeMapActionsService.removeFocusedNode()
 	}
 
 	public loadFileOrSample() {
 		this.viewModel.numberOfLoadingTasks++
-		return this.urlService.getFileDataFromQueryParam().then((data: NameDataPair[]) => {
+		return this.urlUtils.getFileDataFromQueryParam().then((data: NameDataPair[]) => {
 			if (data.length > 0) {
 				this.tryLoadingFiles(data)
 			} else {
@@ -49,10 +50,10 @@ export class CodeChartaController {
 	}
 
 	public tryLoadingSampleFiles() {
-		if (this.urlService.getParam("file")) {
-			this.dialogService.showErrorDialog(
+		if (this.urlUtils.getParam("file")) {
+			/*this.dialogService.showErrorDialog(
 				"One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
-			)
+			)*/
 		}
 		this.tryLoadingFiles([
             { name: "sample1.json", data: require("./assets/sample1.json") },
@@ -74,7 +75,7 @@ export class CodeChartaController {
     }
 
 	public printErrors(errors: Object) {
-		this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))
+		//this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))
 	}
 
 	private subscribeToLoadingEvents($rootScope: angular.IRootScopeService) {

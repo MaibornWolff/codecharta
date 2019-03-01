@@ -1,4 +1,4 @@
-import { SettingsService } from "../../core/settings/settings.service"
+import { SettingsService } from "../../state/settings.service"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { CodeMapNode, BlacklistType, BlacklistItem, Edge } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
@@ -13,7 +13,6 @@ export class CodeMapActionsService {
 		private settingsService: SettingsService,
 		private codeChartaService: CodeChartaService,
 		private codeMapRenderService: CodeMapRenderService,
-		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private $timeout
 	) {}
 
@@ -230,9 +229,9 @@ export class CodeMapActionsService {
 		this.codeMapRenderService.rerenderWithNewSettings(this.settingsService.getSettings())
 	}
 
-	private autoFit() {
+	/*private autoFit() {
 		this.$timeout(() => {
 			this.threeOrbitControlsService.autoFitTo()
 		}, 250)
-	}
+	}*/
 }

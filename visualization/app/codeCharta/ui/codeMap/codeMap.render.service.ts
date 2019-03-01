@@ -8,9 +8,12 @@ import { CodeMapUtilService } from "./codeMap.util.service"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { Edge, Settings, CodeMapNode, RenderMode, CCFile } from "../../codeCharta.model"
-import {SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {Edge, Settings, CodeMapNode, RenderMode, CCFile, FileState, FileSelectionState} from "../../codeCharta.model"
+import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import {IRootScopeService} from "angular";
+import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
+import _ from "lodash"
+import * as d3 from "d3";
 
 const MAP_SIZE = 500.0
 
@@ -25,7 +28,7 @@ export interface RenderData {
 	settings: Settings
 }
 
-export class CodeMapRenderService implements SettingsServiceSubscriber{
+export class CodeMapRenderService implements SettingsServiceSubscriber, FileStateServiceSubscriber {
 	public static SELECTOR = "codeMapRenderService"
 
 	public currentSortedNodes: Node[]
@@ -34,7 +37,12 @@ export class CodeMapRenderService implements SettingsServiceSubscriber{
 	private currentRenderSettings: RenderSettings
 	private visibleEdges: Edge[]
 
-	private lastRender: RenderData
+	private lastRender: RenderData = {
+		renderMap: null,
+		fileName: null,
+		importedFiles: null,
+		settings: null
+	}
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -45,12 +53,47 @@ export class CodeMapRenderService implements SettingsServiceSubscriber{
 		private codeMapArrowService: CodeMapArrowService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
+		FileStateService.subscribe(this.$rootScope, this)
+	}
+
+	public init() {
+		SettingsService.subscribe(this.$rootScope, this)
 	}
 
 	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
-	//public rerenderWithNewSettings(settings: Settings) {
 		this.lastRender.settings = settings
-		this.render(this.lastRender)
+		console.log("lastRender", this.lastRender);
+
+		if (_.values(this.lastRender).every(x => (x !== null))) {
+			this.render(this.lastRender)
+		}
+
+	}
+
+	private decorateMapWithPathAttribute(map: CodeMapNode) {
+		if (map) {
+			let root = d3.hierarchy<CodeMapNode>(map)
+			root.each((node: any) => {
+				let path = root.path(node)
+				let pathString = ""
+				path.forEach(pnode => {
+					pathString += "/" + pnode.data.name
+				})
+				node.data.path = pathString
+			})
+		}
+	}
+
+	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+		this.lastRender.renderMap = fileStates.find(x => x.selectedAs == FileSelectionState.Single).file.map
+		this.lastRender.importedFiles = fileStates.map(x => x.file)
+		this.lastRender.fileName = fileStates.find(x => x.selectedAs == FileSelectionState.Single).file.fileMeta.fileName
+		this.decorateMapWithPathAttribute(this.lastRender.renderMap)
+
+		console.log("lastRender", this.lastRender);
+		if (_.values(this.lastRender).every(x => (x !== null))) {
+			this.render(this.lastRender)
+		}
 	}
 
 	public render(renderData: RenderData) {

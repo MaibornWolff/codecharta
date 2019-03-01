@@ -1,6 +1,6 @@
 import {CodeMapActionsService} from "./codeMap.actions.service";
 import {CodeMapNode, Edge, BlacklistItem, BlacklistType} from "../../core/data/model/CodeMap";
-import {MarkedPackage, SettingsService} from "../../core/settings/settings.service";
+import {MarkedPackage, SettingsService} from "../../state/settings.service";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 
 jest.mock("../../core/settings/settings.service");

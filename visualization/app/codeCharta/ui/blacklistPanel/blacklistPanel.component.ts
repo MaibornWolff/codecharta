@@ -1,4 +1,4 @@
-import { SettingsService, SettingsServiceSubscriber } from "../../core/settings/settings.service"
+import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import "./blacklistPanel.component.scss"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { Settings, BlacklistItem, BlacklistType } from "../../codeCharta.model"

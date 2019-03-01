@@ -1,4 +1,4 @@
-import { SettingsService, Settings } from "../settings/settings.service";
+import { SettingsService, Settings } from "../../state/settings.service";
 import angular from "angular";
 import { CodeMap, CodeMapNode } from "../data/model/CodeMap";
 import * as d3 from "d3";

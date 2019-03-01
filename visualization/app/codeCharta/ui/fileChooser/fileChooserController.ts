@@ -6,7 +6,7 @@ with the additional ones */
 
 /*jshint loopfunc:true */
 
-import {SettingsService} from "../../core/settings/settings.service";
+import {SettingsService} from "../../state/settings.service";
 import {DialogService} from "../dialog/dialog.service";
 import {ScenarioService} from "../../core/scenario/scenario.service";
 import { CodeChartaService } from "../../codeCharta.service";

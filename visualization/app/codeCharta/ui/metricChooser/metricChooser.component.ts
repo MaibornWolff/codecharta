@@ -1,4 +1,4 @@
-import {SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import {IAngularEvent, IRootScopeService} from "angular";
 import "./metricChooser.component.scss";
 import {

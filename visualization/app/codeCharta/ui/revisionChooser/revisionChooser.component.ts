@@ -1,4 +1,4 @@
-import {SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import "./revisionChooser.component.scss";
 import "./revisionChooserFileDropDown.component.scss";
 import {CCFile, CodeMapNode, RenderMode, Settings} from "../../codeCharta.model";

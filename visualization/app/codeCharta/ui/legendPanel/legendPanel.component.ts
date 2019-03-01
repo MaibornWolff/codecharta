@@ -1,4 +1,4 @@
-import {SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import $ from "jquery";
 import {MapColors} from "../codeMap/rendering/renderSettings";
 import {IRootScopeService, ITimeoutService} from "angular";

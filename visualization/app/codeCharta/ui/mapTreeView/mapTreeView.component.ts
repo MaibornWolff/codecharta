@@ -1,4 +1,4 @@
-import {SettingsServiceSubscriber, SettingsService} from "../../core/settings/settings.service";
+import {SettingsServiceSubscriber, SettingsService} from "../../state/settings.service";
 import { IRootScopeService } from "angular";
 import { CodeMap, Settings } from "../../codeCharta.model";
 import { CodeChartaService } from "../../codeCharta.service";

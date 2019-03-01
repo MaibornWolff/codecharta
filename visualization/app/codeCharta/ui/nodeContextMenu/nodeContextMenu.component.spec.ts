@@ -2,7 +2,7 @@ import "./nodeContextMenu";
 
 import { IRootScopeService, IWindowService, ITimeoutService } from "angular";
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper";
-import { SettingsService } from "../../core/settings/settings.service";
+import { SettingsService } from "../../state/settings.service";
 import { CodeMapUtilService } from "../codeMap/codeMap.util.service";
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service";
 import { NodeContextMenuController } from "./nodeContextMenu.component";

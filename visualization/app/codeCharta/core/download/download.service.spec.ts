@@ -1,6 +1,6 @@
 import "./download.module";
 import {getService, instantiateModule} from "../../../../mocks/ng.mockhelper";
-import {SettingsService} from "../settings/settings.service";
+import {SettingsService} from "../../state/settings.service";
 import {DownloadService} from "./download.service";
 import { stubDate } from '../../../../mocks/dateMock.helper';
 

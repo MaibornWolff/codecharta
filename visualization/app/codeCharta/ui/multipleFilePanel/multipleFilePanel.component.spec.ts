@@ -3,7 +3,7 @@ import "./multipleFilePanel"
 import { MultipleFilePanelController } from "./multipleFilePanel.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { DataService, DataModel } from "../../core/data/data.service"
-import { SettingsService, SettingsServiceSubscriber, Settings } from "../../core/settings/settings.service"
+import { SettingsService, SettingsServiceSubscriber, Settings } from "../../state/settings.service"
 import { MultipleFileService } from "../../core/multipleFile/multipleFile.service"
 import { CodeMap } from "../../core/data/model/CodeMap"
 

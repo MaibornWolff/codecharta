@@ -1,5 +1,5 @@
 import {LegendPanelController, PackageList} from "./legendPanel.component";
-import {SettingsService} from "../../core/settings/settings.service";
+import {SettingsService} from "../../state/settings.service";
 import {DataService} from "../../core/data/data.service";
 import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {CodeMapUtilService} from "../codeMap/codeMap.util.service";

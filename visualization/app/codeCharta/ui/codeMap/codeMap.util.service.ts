@@ -1,5 +1,5 @@
 import {hierarchy} from "d3-hierarchy";
-import {MarkedPackage} from "../../core/settings/settings.service";
+import {MarkedPackage} from "../../state/settings.service";
 import ignore from 'ignore';
 import * as path from 'path';
 import { CodeMapNode, BlacklistItem, BlacklistType } from "../../codeCharta.model";

@@ -9,13 +9,12 @@ export interface NameDataPair {
 /**
  * This service offers an application specific url API.
  */
-export class UrlService {
+export class UrlUtils {
 
     public static SELECTOR = "urlService";
 
     private static OK_CODE = 200;
 
-    /* @ngInject */
     constructor(private $location: ILocationService, private $http: IHttpService) {
     }
 
@@ -94,7 +93,7 @@ export class UrlService {
             if (file && file.length > 0) {
                 this.$http.get(file).then(
                     (response: IHttpResponse<Object>) => {
-                        if (response.status === UrlService.OK_CODE) {
+                        if (response.status === UrlUtils.OK_CODE) {
                             Object.assign(response.data, {fileName: file});
                             resolve({name: file, data:response.data});
                         } else {

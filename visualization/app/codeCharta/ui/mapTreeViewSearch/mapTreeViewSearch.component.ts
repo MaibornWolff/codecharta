@@ -1,4 +1,4 @@
-import { SettingsService, SettingsServiceSubscriber } from "../../core/settings/settings.service"
+import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import { ITimeoutService, IRootScopeService } from "angular"
 import "./mapTreeViewSearch.component.scss"
 import * as d3 from "d3"

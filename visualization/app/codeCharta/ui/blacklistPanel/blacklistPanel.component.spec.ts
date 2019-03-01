@@ -1,4 +1,4 @@
-import {SettingsService} from "../../core/settings/settings.service";
+import {SettingsService} from "../../state/settings.service";
 import {BlacklistPanelController} from "./blacklistPanel.component";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapNode, BlacklistType} from "../../core/data/model/CodeMap";

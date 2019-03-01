@@ -1,6 +1,6 @@
 import "./ribbonBar.component.scss";
 import $ from "jquery";
-import {SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
+import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import { DownloadService } from "../../core/download/download.service";
 import {IRootScopeService} from "angular";
 import {Settings} from "../../codeCharta.model";

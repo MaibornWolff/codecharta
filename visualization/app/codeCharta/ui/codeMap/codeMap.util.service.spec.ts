@@ -1,7 +1,7 @@
 import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {CodeMapUtilService} from "./codeMap.util.service";
 
-import {MarkedPackage, SettingsService} from "../../core/settings/settings.service";
+import {MarkedPackage, SettingsService} from "../../state/settings.service";
 jest.mock("../../core/settings/settings.service");
 
 describe("codeMapUtil", () => {

@@ -1,6 +1,6 @@
 import "./heightSettingsPanel.component.scss";
 import {IRootScopeService} from "angular";
-import {SettingsService} from "../../core/settings/settings.service";
+import {SettingsService} from "../../state/settings.service";
 import {RenderMode, Settings} from "../../codeCharta.model";
 
 export class HeightSettingsPanelController {

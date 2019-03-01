@@ -5,7 +5,7 @@ import {TreeMapUtils} from "./treemap.util";
 import {CodeMapUtilService} from "../../ui/codeMap/codeMap.util.service";
 import { CodeMapNode, BlacklistItem, Edge, BlacklistType, CCFile } from "../../codeCharta.model";
 import { MetricCalculator } from "../../MetricCalculator";
-import {MarkedPackage} from "../settings/settings.service";
+import {MarkedPackage} from "../../state/settings.service";
 
 export interface ValuedCodeMapNode {
     data: CodeMapNode;

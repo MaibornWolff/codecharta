@@ -6,66 +6,23 @@ import {
 	Settings,
 	RenderMode,
 	ColorRange,
-	CodeMapNode, FileMode, FileSelectionState
+	CodeMapNode
 } from "./codeCharta.model"
 import { DataDecoratorService } from "./core/data/data.decorator.service"
-import { NameDataPair } from "./core/url/url.service"
-import { SettingsService, SettingsServiceSubscriber } from "./core/settings/settings.service"
+import { NameDataPair } from "./util/urlUtils"
+import { SettingsService, SettingsServiceSubscriber } from "./state/settings.service"
 import { DeltaCalculatorService } from "./core/data/data.deltaCalculator.service"
-import { IRootScopeService, IAngularEvent } from "angular"
+import {IRootScopeService, IAngularEvent, ILocationService, IHttpService} from "angular"
 import { MetricCalculator } from "./MetricCalculator"
 import { CodeMapRenderService } from "./ui/codeMap/codeMap.render.service"
+import {FileStateService} from "./state/fileState.service";
 
 export interface ImportedFilesChangedSubscriber {
 	onImportedFilesChanged(importedFiles: CCFile[], metrics: string[], metricData: MetricData[])
 }
 
-export class FileStateService {
-	private files: Array<{ file: CCFile, selectedAs: FileSelectionState }> = []
-
-
-	constructor() {}
-
-	public addFile(file: CCFile) {
-		this.files.push({file: file, selectedAs: FileSelectionState.None})
-	}
-
-	public getFiles(): Array<{ file: CCFile, selectedAs: FileSelectionState }> {
-		return this.files
-	}
-
-	public setSingle(file: CCFile) {
-		this.resetSelectionStates()
-		const matchedFile = this.files.find(x => x.file == file)
-		if (matchedFile) {
-			matchedFile.selectedAs = FileSelectionState.Single
-		}
-	}
-
-	public setDelta(reference: CCFile, comparison: CCFile) {
-		this.resetSelectionStates()
-		const matchedReferenceFile = this.files.find(x => x.file == reference)
-		const matchedComparisonFile = this.files.find(x => x.file == comparison)
-
-		if (matchedReferenceFile && matchedComparisonFile) {
-			matchedReferenceFile.selectedAs = FileSelectionState.Reference
-			matchedComparisonFile.selectedAs = FileSelectionState.Comparison
-		}
-	}
-
-	public setMultiple(multipleFiles: CCFile[]) {
-		this.resetSelectionStates()
-		this.files.filter(x => multipleFiles.indexOf(x.file) !== -1)
-			.forEach(x => x.selectedAs = FileSelectionState.Partial)
-	}
-
-	private resetSelectionStates() {
-		this.files.forEach(file => file.selectedAs = FileSelectionState.None)
-	}
-}
-
 export class CodeChartaService implements SettingsServiceSubscriber {
-	public importedFiles: CCFile[] = []
+	//public importedFiles: CCFile[] = []
 	public metrics: string[] = []
 	public metricData: MetricData[] = []
 
@@ -82,10 +39,11 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 		//private codeMapRenderService: CodeMapRenderService,
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
-		//private urlService: UrlService,
-		private dataDecoratorService: DataDecoratorService,
-		private deltaCalculatorService: DeltaCalculatorService,
-		private codeMapRenderService: CodeMapRenderService
+		//private urlService: UrlUtils,
+		//private dataDecoratorService: DataDecoratorService,
+		//private deltaCalculatorService: DeltaCalculatorService,
+		//private codeMapRenderService: CodeMapRenderService,
+		private fileStateService: FileStateService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
 	}
@@ -99,7 +57,7 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 	}
 
 	public getImportedFiles(): CCFile[] {
-		return this.importedFiles
+		return this.fileStateService.getCCFiles()
 	}
 
 	public getMetrics(): string[] {
@@ -110,15 +68,15 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 		// TODO schleife ?
 		if (this._lastDeltaState && settings.dynamicSettings.renderMode != RenderMode.Delta) {
 			this._lastDeltaState = false
-			this.onDeactivateDeltas()
+			//this.onDeactivateDeltas()
 		} else if (!this._lastDeltaState && settings.dynamicSettings.renderMode == RenderMode.Delta) {
 			this._lastDeltaState = true
-			this.onActivateDeltas()
+			//this.onActivateDeltas()
 		}
 	}
 
 	private getAdaptedRange(colorMetric: string, flipped: boolean): ColorRange {
-		const maxMetricValue = MetricCalculator.getMaxMetricInAllRevisions(this.importedFiles, colorMetric)
+		const maxMetricValue = MetricCalculator.getMaxMetricInAllRevisions(this.fileStateService.getCCFiles(), colorMetric)
 		const firstThird = Math.round((maxMetricValue / 3) * 100) / 100
 		const secondThird = Math.round(firstThird * 2 * 100) / 100
 
@@ -135,27 +93,27 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 				const errors = FileValidator.validate(nameDataPair.data as any)
 				if (errors.length === 0) {
 					const ccFile = this.getCCFile(nameDataPair.name, nameDataPair.data)
-					this.importedFiles.push(ccFile)
-					this.dataDecoratorService.preDecorateFile(ccFile)
+					this.fileStateService.addFile(ccFile)
+					//this.dataDecoratorService.preDecorateFile(ccFile)
 				} else {
 					reject(errors)
 				}
 			})
 
-			this.settingsService.updateSettings({
+			/*this.settingsService.updateSettings({
 				dynamicSettings: {
 					areaMetric: this.getMetricByIndexElseLast(0, this.metrics),
 					heightMetric: this.getMetricByIndexElseLast(1, this.metrics),
 					colorMetric: this.getMetricByIndexElseLast(2, this.metrics),
 					neutralColorRange: this.getAdaptedRange(this.getMetricByIndexElseLast(2, this.metrics), false)
 				}
-			})
+			})*/
 			
-			this.dataDecoratorService.postDecorateFiles(this.importedFiles, this.metrics)
+			//this.dataDecoratorService.postDecorateFiles(this.fileStateService.getCCFiles(), this.metrics)
 
-			const metricResult = MetricCalculator.calculateMetrics(this.importedFiles)
+			/*const metricResult = MetricCalculator.calculateMetrics(this.fileStateService.getCCFiles())
 			this.metrics = metricResult.metrics
-			this.metricData = metricResult.data
+			this.metricData = metricResult.data*/
 
 			// TODO #136
 			//if(applyScenarioOnce) {
@@ -164,18 +122,19 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 			//    this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
 			//}
 
-			this.setComparisonMap(0)
-			this.setReferenceMap(0)
+			this.fileStateService.setSingle(this.fileStateService.getCCFiles()[0])
+			this.settingsService.updateSettings(this.settingsService.getDefaultSettings())
+
 			// TODO this.settingsService.updateSettingsFromUrl();
 			resolve()
 		})
 	}
 
-	public setComparisonMap(index: number) {
+	/*public setComparisonMap(index: number) {
 		if (this.importedFiles[index] != null) {
 			this._lastComparisonMap = this.importedFiles[index].map
 			this.processDeltas()
-			this.dataDecoratorService.decorateMapWithCompactMiddlePackages(this.importedFiles[index]) // TODO not sure if this is the correct file
+			//this.dataDecoratorService.decorateMapWithCompactMiddlePackages(this.importedFiles[index]) // TODO not sure if this is the correct file
 			this.callOthers()
 		}
 	}
@@ -185,7 +144,7 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 			this._lastReferenceIndex = index
 			this.renderMap = this.importedFiles[index].map
 			this.processDeltas()
-			this.dataDecoratorService.decorateMapWithCompactMiddlePackages(this.importedFiles[index])
+			//this.dataDecoratorService.decorateMapWithCompactMiddlePackages(this.importedFiles[index])
 			this.callOthers()
 		}
 	}
@@ -202,15 +161,18 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 			this._deltasEnabled = false
 			this.setComparisonMap(this._lastReferenceIndex)
 		}
-	}
+	}*/
 
-	private callOthers() {
+	/*private callOthers() {
+
+		// TODO remove event completely
 		this.$rootScope.$broadcast("imported-files-changed", {
-			importedFiles: this.importedFiles,
+			importedFiles: this.fileStateService.getCCFiles(),
 			metrics: this.metrics,
 			metricData: this.metricData
 		})
 
+		// TODO: somewhere else, maybe metricChooser?
 		const mapSettings = this.settingsService.getSettings().dynamicSettings
 		const settingsUpdate: RecursivePartial<Settings> = {
 			dynamicSettings: {
@@ -235,15 +197,15 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 
 		this.settingsService.updateSettings(settingsUpdate)
 		this.firstRendering()
-	}
+	}*/
 
 	private firstRendering() {
-		this.codeMapRenderService.render({
+		/*this.codeMapRenderService.render({
 			renderMap: this.renderMap,
 			fileName: "fileName", //TODO
 			importedFiles: this.importedFiles,
 			settings: this.settingsService.getSettings()
-		})
+		})*/
 	}
 
 	private getMetricByIndexElseLast(index: number, metrics: string[]): string {

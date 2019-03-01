@@ -1,6 +1,6 @@
 import {RevisionChooserController} from "./revisionChooser.component";
 import {DataService} from "../../core/data/data.service";
-import {SettingsService} from "../../core/settings/settings.service";
+import {SettingsService} from "../../state/settings.service";
 
 describe("RevisionChooserController", () => {
 
