@@ -18,16 +18,16 @@ import "./metricChooser/metricChooser";
 import "./rangeSlider/rangeSlider";
 import "./colorSettingsPanel/colorSettingsPanel";
 import "./experimentalSettingsPanel/experimentalSettingsPanel";
-import "./mapTreeViewSearch/mapTreeViewSearch";
+import "./mapTreeViewSearch/mapTreeViewSearch.module";
 import "./resetSettingsButton/resetSettingsButton";
 import "./dialog/dialog";
 import "./nodeContextMenu/nodeContextMenu";
 import "./ribbonBar/ribbonBar.module";
 import "./layoutSwitcher/layoutSwitcher";
-import "./optionsPanel/optionsPanel";
+import "./optionsPanel/optionsPanel.module";
 import "./weblinksPanel/weblinksPanel.module";
 import "./sidenav/sidenav.module";
-import "./blacklistPanel/blacklistPanel";
+import "./blacklistPanel/blacklistPanel.module";
 import "./multipleFilePanel/multipleFilePanel";
 
 angular.module(

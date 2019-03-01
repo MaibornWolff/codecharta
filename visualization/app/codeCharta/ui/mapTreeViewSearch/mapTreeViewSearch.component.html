@@ -1,13 +1,13 @@
 
 <md-input-container class="md-block">
     <label>Search by gitignore style: *.js or **/service/*</label>
-    <input type='text' ng-model="$ctrl.viewModel.searchPattern" ng-change="$ctrl.onSearchChange($ctrl.viewModel.searchPattern)">
+    <input type='text' ng-model="$ctrl._viewModel.searchPattern" ng-change="$ctrl.onSearchChange($ctrl._viewModel.searchPattern)">
 </md-input-container>
 
 <div class="found-nodes angular-green">
-    <span class="box-rounded node-count">{{$ctrl.viewModel.fileCount}}<i class="fa fa-file"></i></span>
-    <span class="box-rounded node-count">{{$ctrl.viewModel.hideCount}}<i class="fa fa-eye-slash"></i></span>
-    <span class="box-rounded node-count">{{$ctrl.viewModel.excludeCount}}<i class="fa fa-ban"></i></span>
+    <span class="box-rounded node-count">{{$ctrl._viewModel.fileCount}}<i class="fa fa-file"></i></span>
+    <span class="box-rounded node-count">{{$ctrl._viewModel.hideCount}}<i class="fa fa-eye-slash"></i></span>
+    <span class="box-rounded node-count">{{$ctrl._viewModel.excludeCount}}<i class="fa fa-ban"></i></span>
 </div>
 
 <md-menu>
@@ -21,10 +21,10 @@
         </md-menu-item>
         <md-divider></md-divider>
         <md-menu-item>
-            <md-button ng-disabled="$ctrl.viewModel.folderCount + $ctrl.viewModel.fileCount == 0 || $ctrl.viewModel.isPatternHidden" ng-click="$ctrl.onClickBlacklistPattern('hide')"><i class="fa fa-eye-slash"></i> Hide</md-button>
+            <md-button ng-disabled="$ctrl._viewModel.folderCount + $ctrl._viewModel.fileCount == 0 || $ctrl._viewModel.isPatternHidden" ng-click="$ctrl.onClickBlacklistPattern('hide')"><i class="fa fa-eye-slash"></i> Hide</md-button>
         </md-menu-item>
         <md-menu-item>
-            <md-button ng-disabled="$ctrl.viewModel.folderCount + $ctrl.viewModel.fileCount == 0 || $ctrl.viewModel.isPatternExcluded" ng-click="$ctrl.onClickBlacklistPattern('exclude')"><i class="fa fa-ban"></i> Exclude</md-button>
+            <md-button ng-disabled="$ctrl._viewModel.folderCount + $ctrl._viewModel.fileCount == 0 || $ctrl._viewModel.isPatternExcluded" ng-click="$ctrl.onClickBlacklistPattern('exclude')"><i class="fa fa-ban"></i> Exclude</md-button>
         </md-menu-item>
     </md-menu-content>
 </md-menu>

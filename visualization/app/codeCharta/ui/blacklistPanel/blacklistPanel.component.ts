@@ -2,23 +2,27 @@ import { SettingsService, SettingsServiceSubscriber } from "../../core/settings/
 import "./blacklistPanel.component.scss"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { Settings, BlacklistItem, BlacklistType } from "../../codeCharta.model"
-import { IAngularEvent, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 
 export class BlacklistPanelController implements SettingsServiceSubscriber {
-	public blacklist: Array<BlacklistItem>
+
+	private _viewModel: {
+		blacklist: Array<BlacklistItem>
+	} = {
+		blacklist: []
+	}
 
 	constructor(
-		private settingsService: SettingsService,
 		private codeMapActionsService: CodeMapActionsService,
 		$rootScope: IRootScopeService
 	) {
 		SettingsService.subscribe($rootScope, this)
-		this.onSettingsChanged(settingsService.getSettings(), null)
+		// TODO this.onSettingsChanged(settingsService.getSettings(), null)
 	}
 
-	public onSettingsChanged(settings: Settings, event: IAngularEvent) {
+	public onSettingsChanged(settings: Settings) {
 		if (settings.fileSettings.blacklist) {
-			this.blacklist = settings.fileSettings.blacklist
+			this._viewModel.blacklist = settings.fileSettings.blacklist
 		}
 	}
 

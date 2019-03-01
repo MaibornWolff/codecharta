@@ -3,15 +3,16 @@ import { ITimeoutService, IRootScopeService } from "angular"
 import "./mapTreeViewSearch.component.scss"
 import * as d3 from "d3"
 import { CodeMapUtilService } from "../codeMap/codeMap.util.service"
-import { CodeMapNode, BlacklistType, Settings, CCFile, RecursivePartial } from "../../codeCharta.model"
+import { CodeMapNode, BlacklistType, Settings, CCFile } from "../../codeCharta.model"
 import { ImportedFilesChangedSubscriber, CodeChartaService } from "../../codeCharta.service"
 
 export class MapTreeViewSearchController implements SettingsServiceSubscriber, ImportedFilesChangedSubscriber {
 	private static TIMEOUT_DELAY_MS = 100
 
-	public mapRoot: CodeMapNode = null
+	// TODO is this used here ? 
+	private mapRoot: CodeMapNode = null
 
-	public viewModel = {
+	private _viewModel = {
 		searchPattern: "",
 		fileCount: 0,
 		hideCount: 0,
@@ -19,6 +20,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, I
 		isPatternExcluded: true,
 		isPatternHidden: true
 	}
+
 	private searchedFiles: CodeMapNode[] = []
 
 	/* @ngInject */
@@ -34,7 +36,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, I
 	}
 
 	public onImportedFilesChanged(importedFiles: CCFile[], metrics: string[]) {
-		this.viewModel.searchPattern = ""
+		this._viewModel.searchPattern = ""
 	}
 
 	public onSettingsChanged(s: Settings) {
@@ -52,24 +54,24 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, I
 			fileSettings: {
 				blacklist: [
 					...this.settingsService.getSettings().fileSettings.blacklist,
-					{ path: this.viewModel.searchPattern, type: blacklistType }
+					{ path: this._viewModel.searchPattern, type: blacklistType }
 				]
 			}
 		})
-		this.viewModel.searchPattern = ""
+		this._viewModel.searchPattern = ""
 		this.onSearchChange()
 	}
 
 	private updateViewModel() {
 		const blacklist = this.settingsService.getSettings().fileSettings.blacklist
-		this.viewModel.isPatternExcluded = this.isPatternBlacklisted(BlacklistType.exclude)
-		this.viewModel.isPatternHidden = this.isPatternBlacklisted(BlacklistType.hide)
+		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(BlacklistType.exclude)
+		this._viewModel.isPatternHidden = this.isPatternBlacklisted(BlacklistType.hide)
 
-		this.viewModel.fileCount = this.searchedFiles.length
-		this.viewModel.hideCount = this.searchedFiles.filter(node =>
+		this._viewModel.fileCount = this.searchedFiles.length
+		this._viewModel.hideCount = this.searchedFiles.filter(node =>
 			CodeMapUtilService.isBlacklisted(node, blacklist, BlacklistType.hide)
 		).length
-		this.viewModel.excludeCount = this.searchedFiles.filter(node =>
+		this._viewModel.excludeCount = this.searchedFiles.filter(node =>
 			CodeMapUtilService.isBlacklisted(node, blacklist, BlacklistType.exclude)
 		).length
 	}
@@ -77,7 +79,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, I
 	private isPatternBlacklisted(blacklistType: BlacklistType) {
 		return (
 			this.settingsService.getSettings().fileSettings.blacklist.filter(item => {
-				return this.viewModel.searchPattern == item.path && blacklistType == item.type
+				return this._viewModel.searchPattern == item.path && blacklistType == item.type
 			}).length != 0
 		)
 	}
@@ -87,14 +89,14 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, I
 			.hierarchy(this.codeChartaService.getRenderMap())
 			.descendants()
 			.map(d => d.data)
-		const searchedNodes = CodeMapUtilService.getNodesByGitignorePath(nodes, this.viewModel.searchPattern)
+		const searchedNodes = CodeMapUtilService.getNodesByGitignorePath(nodes, this._viewModel.searchPattern)
 
 		this.searchedFiles = searchedNodes.filter(node => !(node.children && node.children.length > 0))
 
 		this.settingsService.updateSettings({
 			dynamicSettings: {
 				searchedNodePaths: searchedNodes.map(n => n.path),
-				searchPattern: this.viewModel.searchPattern
+				searchPattern: this._viewModel.searchPattern
 			}
 		})
 	}
