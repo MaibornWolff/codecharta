@@ -1,7 +1,4 @@
-import {
-    SettingsService,
-    SettingsServiceSubscriber
-} from "../../core/settings/settings.service";
+import {SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
 import $ from "jquery";
 import {MapColors} from "../codeMap/rendering/renderSettings";
 import {IRootScopeService, ITimeoutService} from "angular";
@@ -17,27 +14,21 @@ export interface PackageList {
 
 export class LegendPanelController implements SettingsServiceSubscriber {
 
-    private _deltas: boolean;
-    private pd: string;
-    private nd: string;
-    private _range: ColorRange;
-    private positive: string;
-    private neutral: string;
-    private negative: string;
-    private select: string;
-    private deltaColorsFlipped: boolean;
-    private packageLists: PackageList[];
+    private _viewModel: {
+        isDeltaMode: boolean;
+        range: ColorRange;
+        packageLists: PackageList[];
+    } = {
+        isDeltaMode: null,
+        range: null,
+        packageLists: null
+    }
 
     /* @ngInject */
     constructor(private $rootScope: IRootScopeService,
                 private $timeout: ITimeoutService,
                 private settingsService: SettingsService,
                 private codeChartaService: CodeChartaService) {
-        let ctx = this;
-
-        $timeout(()=> {
-            ctx.onSettingsChanged(settingsService.getSettings());
-        });
 
         SettingsService.subscribe(this.$rootScope, this);
 
@@ -52,41 +43,41 @@ export class LegendPanelController implements SettingsServiceSubscriber {
         }
     }*/
 
-    public onSettingsChanged(s: Settings) {
-        this._range = s.dynamicSettings.neutralColorRange;
-        this.deltaColorsFlipped = s.appSettings.deltaColorFlipped;
-        this._deltas = s.dynamicSettings.renderMode == RenderMode.Delta;
+    public onSettingsChanged(s: Settings, event: angular.IAngularEvent) {
+        this._viewModel.range = s.dynamicSettings.neutralColorRange;
+        this._viewModel.isDeltaMode = s.dynamicSettings.renderMode == RenderMode.Delta;
 
-        this.positive = ColorService.getImageDataUri((s.appSettings.whiteColorBuildings) ? MapColors.lightGrey : MapColors.positive);
-        this.neutral = ColorService.getImageDataUri(MapColors.neutral);
-        this.negative = ColorService.getImageDataUri(MapColors.negative);
-        this.select = ColorService.getImageDataUri(MapColors.selected);
+        const select = ColorService.getImageDataUri(MapColors.selected);
+        $("#select").attr("src", select);
 
-        $("#green").attr("src", this.positive);
-        $("#yellow").attr("src", this.neutral);
-        $("#red").attr("src", this.negative);
-        $("#select").attr("src", this.select);
-
-        this.refreshDeltaColors();
-        this.setMarkedPackageLists();
-    }
-
-    public refreshDeltaColors() {
-        if(this.deltaColorsFlipped){
-            this.pd = ColorService.getImageDataUri(MapColors.negativeDelta);
-            this.nd = ColorService.getImageDataUri(MapColors.positiveDelta);
+        if (this._viewModel.isDeltaMode) {
+            this.refreshDeltaColors(s);
         } else {
-            this.pd = ColorService.getImageDataUri(MapColors.positiveDelta);
-            this.nd = ColorService.getImageDataUri(MapColors.negativeDelta);
+            this.refreshNormalColors(s);
         }
-        this.$timeout(()=>$("#positiveDelta").attr("src", this.pd), 200);
-        this.$timeout(()=>$("#negativeDelta").attr("src", this.nd), 200);
+        this.setMarkedPackageLists(s);
     }
 
-    private setMarkedPackageLists() {
-        const markedPackages: MarkedPackage[] = this.settingsService.getSettings().fileSettings.markedPackages;
+    private refreshNormalColors(s: Settings) {
+        const positive = ColorService.getImageDataUri(s.appSettings.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive);
+        const neutral = ColorService.getImageDataUri(MapColors.neutral);
+        const negative = ColorService.getImageDataUri(MapColors.negative);
+        $("#green").attr("src", positive);
+        $("#yellow").attr("src", neutral);
+        $("#red").attr("src", negative);
+    }
+
+    private refreshDeltaColors(s: Settings) {
+        const positiveDeltaPixel = ColorService.getImageDataUri(s.appSettings.deltaColorFlipped ? MapColors.negativeDelta : MapColors.positiveDelta);
+        const negativeDeltaPixel = ColorService.getImageDataUri(s.appSettings.deltaColorFlipped ? MapColors.positiveDelta : MapColors.negativeDelta);
+        $("#positiveDelta").attr("src", positiveDeltaPixel);
+        $("#negativeDelta").attr("src", negativeDeltaPixel);
+    }
+
+    private setMarkedPackageLists(s: Settings) {
+        const markedPackages: MarkedPackage[] = s.fileSettings.markedPackages;
         if (markedPackages) {
-            this.packageLists = [];
+            this._viewModel.packageLists = [];
             markedPackages.forEach(mp => this.handleMarkedPackage(mp));
         }
     }
@@ -107,15 +98,15 @@ export class LegendPanelController implements SettingsServiceSubscriber {
     }
 
     private addNewPackageList(packageList: PackageList) {
-        this.packageLists.push(packageList);
+        this._viewModel.packageLists.push(packageList);
     }
 
     private insertMPIntoPackageList(mp: MarkedPackage, colorPixel: string) {
-        this.packageLists.filter(packageList => packageList.colorPixel == colorPixel)[0].markedPackages.push(mp);
+        this._viewModel.packageLists.filter(packageList => packageList.colorPixel == colorPixel)[0].markedPackages.push(mp);
     }
 
     private isColorPixelInPackageLists(colorPixel: string) {
-        return this.packageLists.filter(mpList => mpList.colorPixel == colorPixel).length > 0;
+        return this._viewModel.packageLists.filter(mpList => mpList.colorPixel == colorPixel).length > 0;
     }
 
     private getPackagePathPreview(mp: MarkedPackage): string {

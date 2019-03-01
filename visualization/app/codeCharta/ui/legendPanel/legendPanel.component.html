@@ -1,32 +1,39 @@
 <div class="block-wrapper dark_shadow_opacity">
-    <div class="legend-block" ng-show="!$ctrl._deltas">
-        <img id="green" alt="green color">
-        <span ng-if="!$ctrl._range.flipped">0 to &lt; {{$ctrl._range.from}}</span>
-        <span ng-if="$ctrl._range.flipped">&gt; {{$ctrl._range.to}} to Infinite</span>
+    <div ng-if="!$ctrl._viewModel.isDeltaMode">
+        <div class="legend-block">
+            <img id="green" alt="green color">
+            <span ng-if="!$ctrl._viewModel.range.flipped">0 to &lt; {{$ctrl._viewModel.range.from}}</span>
+            <span ng-if="$ctrl._viewModel.range.flipped">&gt; {{$ctrl._viewModel.range.to}} to Infinite</span>
+        </div>
+        <div class="legend-block">
+            <img id="yellow" alt="yellow color">
+            &ge; {{$ctrl._viewModel.range.from}} to &le; {{$ctrl._viewModel.range.to}}
+        </div>
+        <div class="legend-block">
+            <img id="red" alt="red color">
+            <span ng-if="!$ctrl._viewModel.range.flipped">&gt; {{$ctrl._viewModel.range.to}} to Infinite</span>
+            <span ng-if="$ctrl._viewModel.range.flipped">0 to &lt; {{$ctrl._viewModel.range.from}}</span>
+        </div>
     </div>
-    <div class="legend-block" ng-show="!$ctrl._deltas">
-        <img id="yellow" alt="yellow color">
-        &ge; {{$ctrl._range.from}} to &le; {{$ctrl._range.to}}
+
+    <div ng-if="$ctrl._viewModel.isDeltaMode">
+        <div class="legend-block" >
+            <img id="positiveDelta" alt="positive delta color">
+            +&Delta;
+        </div>
+        <div class="legend-block">
+            <img id="negativeDelta" alt="negative delta color">
+            -&Delta;
+        </div>
     </div>
-    <div class="legend-block" ng-show="!$ctrl._deltas">
-        <img id="red" alt="red color">
-        <span ng-if="!$ctrl._range.flipped">&gt; {{$ctrl._range.to}} to Infinite</span>
-        <span ng-if="$ctrl._range.flipped">0 to &lt; {{$ctrl._range.from}}</span>
-    </div>
+
     <div class="legend-block">
         <img id="select" alt="selected color">
         selected
     </div>
-    <div class="legend-block" ng-show="$ctrl._deltas">
-        <img id="positiveDelta" alt="positive delta color">
-        +&Delta;
-    </div>
-    <div class="legend-block" ng-show="$ctrl._deltas">
-        <img id="negativeDelta" alt="negative delta color">
-        -&Delta;
-    </div>
-    <hr ng-show="$ctrl.packageLists[0]">
-    <div class="legend-block" ng-show="$ctrl.packageLists" ng-repeat="packageList in $ctrl.packageLists">
+
+    <hr ng-show="$ctrl._viewModel.packageLists[0]">
+    <div class="legend-block" ng-show="$ctrl._viewModel.packageLists" ng-repeat="packageList in $ctrl._viewModel.packageLists">
         <img ng-src="{{::packageList.colorPixel}}">
         <span class="{{$first ? '' : 'set-left-margin'}}" ng-repeat="item in packageList.markedPackages" title="{{::item.path}}">
             {{::item.attributes.name}}{{$last ? '' : ',&nbsp;'}}
