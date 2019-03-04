@@ -198,4 +198,46 @@ describe("multipleFilePanelController", function() {
 			expect(multipleFilePanelController.selectedMapIndices).toEqual([0, 1])
 		})
 	})
+
+	describe("selectAllRevisions", () => {
+		it("should select all Revisions", () => {
+			multipleFilePanelController.revisions = [file1, file2]
+			multipleFilePanelController.selectedMapIndices = []
+
+			multipleFilePanelController.selectAllRevisions()
+
+			expect(multipleFilePanelController.selectedMapIndices).toEqual([0, 1])
+		})
+	})
+
+	describe("selectNoRevisions", () => {
+		it("should unselect all Revisions", () => {
+			multipleFilePanelController.revisions = [file1, file2, file1]
+			multipleFilePanelController.selectedMapIndices = [1, 2]
+
+			multipleFilePanelController.selectNoRevisions()
+
+			expect(multipleFilePanelController.selectedMapIndices).toEqual([])
+		})
+
+		it("should unselect all Revisions", () => {
+			multipleFilePanelController.revisions = [file1, file2]
+			multipleFilePanelController.selectedMapIndices = [0, 1]
+
+			multipleFilePanelController.selectNoRevisions()
+
+			expect(multipleFilePanelController.selectedMapIndices).toEqual([])
+		})
+	})
+
+	describe("invertRevisionSelection", () => {
+		it("should invert all revision selections", () => {
+			multipleFilePanelController.revisions = [file1, file2, file1]
+			multipleFilePanelController.selectedMapIndices = [1]
+
+			multipleFilePanelController.intertRevisionSelection()
+
+			expect(multipleFilePanelController.selectedMapIndices).toEqual([0, 2])
+		})
+	})
 })
