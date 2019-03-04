@@ -3,6 +3,7 @@ import "./multipleFilePanel.component.scss"
 import { DataModel, DataService, DataServiceSubscriber } from "../../core/data/data.service"
 import { CodeMap } from "../../core/data/model/CodeMap"
 import { MultipleFileService } from "../../core/multipleFile/multipleFile.service"
+import { type } from "os"
 
 export class MultipleFilePanelController implements DataServiceSubscriber, SettingsServiceSubscriber {
 	public settings: Settings
@@ -45,6 +46,30 @@ export class MultipleFilePanelController implements DataServiceSubscriber, Setti
 
 	public onSettingsChanged(settings: Settings, event: Event) {
 		this.settings = settings
+	}
+
+	public selectAllRevisions() {
+		this.selectedMapIndices = []
+		for (let i = 0; i < this.revisions.length; i++) {
+			this.selectedMapIndices.push(i)
+		}
+		this.onMultipleChange()
+	}
+
+	public selectNoRevisions() {
+		this.selectedMapIndices = []
+		this.onMultipleChange()
+	}
+
+	public intertRevisionSelection() {
+		const oldRevisions = this.selectedMapIndices.map(Number)
+		this.selectedMapIndices = []
+		for (let i = 0; i < this.revisions.length; i++) {
+			if (!oldRevisions.includes(i)) {
+				this.selectedMapIndices.push(i)
+			}
+		}
+		this.onMultipleChange()
 	}
 
 	private updateSelectedMapIndices() {
