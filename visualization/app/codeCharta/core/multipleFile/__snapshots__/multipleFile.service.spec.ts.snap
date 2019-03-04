@@ -84,7 +84,7 @@ Array [
 
 exports[`app.codeCharta.core.multiple multipleService aggregation of four maps 1`] = `
 Object {
-  "apiVersion": "1.0",
+  "apiVersion": "1.1",
   "attributeTypes": Object {
     "edges": Object {},
     "nodes": Object {},
@@ -279,7 +279,7 @@ Object {
 
 exports[`app.codeCharta.core.multiple multipleService aggregation of two maps 1`] = `
 Object {
-  "apiVersion": "1.0",
+  "apiVersion": "1.1",
   "attributeTypes": Object {
     "edges": Object {},
     "nodes": Object {},
