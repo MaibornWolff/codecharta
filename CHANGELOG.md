@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 ### Added
 
+-	Added buttons to select all/none/inversion of revisions/maps in multiple mode #391
+
 ### Changed
 
 ### Removed

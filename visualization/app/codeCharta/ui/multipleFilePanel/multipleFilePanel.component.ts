@@ -3,7 +3,6 @@ import "./multipleFilePanel.component.scss"
 import { DataModel, DataService, DataServiceSubscriber } from "../../core/data/data.service"
 import { CodeMap } from "../../core/data/model/CodeMap"
 import { MultipleFileService } from "../../core/multipleFile/multipleFile.service"
-import { type } from "os"
 
 export class MultipleFilePanelController implements DataServiceSubscriber, SettingsServiceSubscriber {
 	public settings: Settings
