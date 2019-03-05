@@ -42,7 +42,7 @@ class MergeFilter : Callable<Void?> {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
-    @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["files to merge"])
+    @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE or FOLDER", description = ["files to merge"])
     private var sources: Array<File> = arrayOf()
 
     @CommandLine.Option(names = ["-a", "--add-missing"], description = ["enable adding missing nodes to reference"])
@@ -68,6 +68,12 @@ class MergeFilter : Callable<Void?> {
                     else -> throw IllegalArgumentException("Only one merging strategy must be set")
                 }
 
+        for(source in sources){
+            if(source.isDirectory){
+                sources += getFilesInFolder(source)
+            }
+        }
+
         val srcProjects = sources
                 .map { it.bufferedReader() }
                 .map { ProjectDeserializer.deserializeProject(it) }
@@ -78,6 +84,11 @@ class MergeFilter : Callable<Void?> {
         ProjectSerializer.serializeProject(mergedProject, writer)
 
         return null
+    }
+
+    private fun getFilesInFolder(folder: File): Array<File>{
+        val files =  folder.walk().filter{ !it.name.startsWith(".")}
+        return files.toList().toTypedArray()
     }
 
     companion object {
