@@ -34,6 +34,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
 import java.io.File
 import java.util.concurrent.Callable
+import mu.KotlinLogging
 
 @CommandLine.Command(name = "merge",
         description = ["merges multiple cc.json files"],
@@ -60,6 +61,8 @@ class MergeFilter : Callable<Void?> {
     @CommandLine.Option(names = ["--ignore-case"], description = ["ignores case when checking node names"])
     private var ignoreCase = false
 
+    private val logger = KotlinLogging.logger {}
+
     override fun call(): Void? {
         val nodeMergerStrategy =
                 when {
@@ -68,15 +71,25 @@ class MergeFilter : Callable<Void?> {
                     else -> throw IllegalArgumentException("Only one merging strategy must be set")
                 }
 
+        val sourceFiles = mutableListOf<File>()
         for(source in sources){
             if(source.isDirectory){
-                sources += getFilesInFolder(source)
+                sourceFiles.addAll(getFilesInFolder(source))
+            } else {
+                sourceFiles.add(source)
             }
         }
 
-        val srcProjects = sources
-                .map { it.bufferedReader() }
-                .map { ProjectDeserializer.deserializeProject(it) }
+        val srcProjects = sourceFiles
+                .mapNotNull {
+                    val bufferedReader = it.bufferedReader()
+                    try {
+                        ProjectDeserializer.deserializeProject(bufferedReader)
+                    } catch (e: Exception){
+                        logger.warn("${it.name} is not a valid project file and is therefore skipped.")
+                        null
+                    }
+                }
 
         val mergedProject = ProjectMerger(srcProjects, nodeMergerStrategy).merge()
 
@@ -86,9 +99,9 @@ class MergeFilter : Callable<Void?> {
         return null
     }
 
-    private fun getFilesInFolder(folder: File): Array<File>{
-        val files =  folder.walk().filter{ !it.name.startsWith(".")}
-        return files.toList().toTypedArray()
+    private fun getFilesInFolder(folder: File): List<File>{
+        val files =  folder.walk().filter{ !it.name.startsWith(".") && !it.isDirectory}
+        return files.toList()
     }
 
     companion object {
