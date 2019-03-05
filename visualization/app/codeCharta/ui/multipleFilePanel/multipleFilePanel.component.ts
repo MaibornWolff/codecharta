@@ -47,6 +47,30 @@ export class MultipleFilePanelController implements DataServiceSubscriber, Setti
 		this.settings = settings
 	}
 
+	public selectAllRevisions() {
+		this.selectedMapIndices = []
+		for (let i = 0; i < this.revisions.length; i++) {
+			this.selectedMapIndices.push(i)
+		}
+		this.onMultipleChange()
+	}
+
+	public selectNoRevisions() {
+		this.selectedMapIndices = []
+		this.onMultipleChange()
+	}
+
+	public intertRevisionSelection() {
+		const oldRevisions = this.selectedMapIndices.map(Number)
+		this.selectedMapIndices = []
+		for (let i = 0; i < this.revisions.length; i++) {
+			if (!oldRevisions.includes(i)) {
+				this.selectedMapIndices.push(i)
+			}
+		}
+		this.onMultipleChange()
+	}
+
 	private updateSelectedMapIndices() {
 		this.selectedMapIndices = []
 		for (let i = 0; i < this.revisions.length; i++) {
