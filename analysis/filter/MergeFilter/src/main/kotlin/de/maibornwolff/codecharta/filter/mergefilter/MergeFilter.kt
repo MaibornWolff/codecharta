@@ -73,11 +73,7 @@ class MergeFilter : Callable<Void?> {
 
         val sourceFiles = mutableListOf<File>()
         for(source in sources){
-            if(source.isDirectory){
-                sourceFiles.addAll(getFilesInFolder(source))
-            } else {
-                sourceFiles.add(source)
-            }
+            sourceFiles.addAll(getFilesInFolder(source))
         }
 
         val srcProjects = sourceFiles
