@@ -6,11 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
+
 ### Added
 
--	Added buttons to select all/none/inversion of revisions/maps in multiple mode #391
+-   Added buttons to select all/none/inversion of revisions/maps in multiple mode #391
 
 ### Changed
+
+-   Updated dependencies for visualisation
 
 ### Removed
 
@@ -20,7 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
--	When entering Multiple Mode, all Maps/revisions are preselected
+-   When entering Multiple Mode, all Maps/revisions are preselected
 
 ### Changed
 
