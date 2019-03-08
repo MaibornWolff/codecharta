@@ -91,7 +91,7 @@ export class MultipleFileService {
 		let outputMap: CodeMap = {
 			projectName: "Aggregation of following projects: " + this.projectNameArray.join(", "),
 			fileName: "Aggregation of following files: " + this.fileNameArray.join(", "),
-			apiVersion: require("../../../../package.json").de_maibornwolff.apiVersion,
+			apiVersion: require("../../../../package.json").codecharta.apiVersion,
 			nodes: {
 				name: "root",
 				type: "Folder",

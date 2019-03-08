@@ -29,9 +29,9 @@
     "tsconfig.webpack.json",
     "cli.js"
   ],
-	"de_maibornwolff": {
-		"apiVersion": "1.1"
-	},
+  "codecharta": {
+    "apiVersion": "1.1"
+  },
   "window": {
     "icon": "app/icon.png",
     "toolbar": true,
