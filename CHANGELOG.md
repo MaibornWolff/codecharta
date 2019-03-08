@@ -9,12 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
-<<<<<<< HEAD
--	Added buttons to select all/none/inversion of revisions/maps in multiple mode #391
--	Merge filter can merge all files of folders #392
-=======
 -   Added buttons to select all/none/inversion of revisions/maps in multiple mode #391
->>>>>>> master
+-   Merge filter can merge all files of folders #392
 
 ### Changed
 
@@ -24,7 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
--	Fixed bug that code map was not re-loaded when changing from multiple to single revision mode #396
+-   Fixed bug that code map was not re-loaded when changing from multiple to single revision mode #396
 
 ## [1.21.2] - 2019-02-26
 
