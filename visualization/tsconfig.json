@@ -1,29 +1,22 @@
 {
-    "compileOnSave": true,
-    "compilerOptions": {
-        "allowSyntheticDefaultImports": true,
-        "lib": [
-            "dom",
-            "es2015",
-            "es2016"
-        ],
-        "jsx": "preserve",
-        "target": "es2016",
-        "module": "es2015",
-        "moduleResolution": "node",
-        "noImplicitAny": false,
-        "noUnusedLocals": false,
-        "noUnusedParameters": false,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "sourceMap": true,
-        "skipLibCheck": true,
-        "allowJs": false,
-        "strictNullChecks": false,
-        "declaration": false
-    },
-    "exclude": [
-        "node_modules",
-        "**/*.spec.ts"
-    ]
+	"compileOnSave": true,
+	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
+		"lib": ["dom", "es2015", "es2016"],
+		"jsx": "preserve",
+		"target": "es2016",
+		"module": "es2015",
+		"moduleResolution": "node",
+		"noImplicitAny": false,
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"removeComments": true,
+		"preserveConstEnums": true,
+		"sourceMap": true,
+		"skipLibCheck": true,
+		"allowJs": false,
+		"strictNullChecks": false,
+		"declaration": false
+	},
+	"exclude": ["node_modules", "**/*.spec.ts"]
 }

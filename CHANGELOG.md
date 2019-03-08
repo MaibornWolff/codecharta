@@ -6,21 +6,27 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
+
 ### Added
 
+-   Added buttons to select all/none/inversion of revisions/maps in multiple mode #391
+
 ### Changed
+
+-   Updated dependencies for visualisation
 
 ### Removed
 
 ### Fixed
 
--	Fixed missing apiVersion in aggregated map #398
+-	  Fixed bug that code map was not re-loaded when changing from multiple to single revision mode #396
+-	  Fixed missing apiVersion in aggregated map #398
 
 ## [1.21.2] - 2019-02-26
 
 ### Added
 
--	When entering Multiple Mode, all Maps/revisions are preselected
+-   When entering Multiple Mode, all Maps/revisions are preselected
 
 ### Changed
 
