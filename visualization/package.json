@@ -29,6 +29,9 @@
     "tsconfig.webpack.json",
     "cli.js"
   ],
+  "codecharta": {
+    "apiVersion": "1.1"
+  },
   "window": {
     "icon": "app/icon.png",
     "toolbar": true,
