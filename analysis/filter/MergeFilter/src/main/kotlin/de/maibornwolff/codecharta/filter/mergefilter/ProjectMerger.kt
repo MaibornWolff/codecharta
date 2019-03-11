@@ -31,9 +31,10 @@ package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.model.*
 
-class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
+class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy, private val projectName: String? = null) {
 
     fun extractProjectName(): String {
+        if(projectName != null) return projectName
         return projects.map { p -> p.projectName }.first()
     }
 

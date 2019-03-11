@@ -65,6 +65,20 @@ class ProjectMergerTest : Spek({
             }
         }
 
+        context("merging project providing a project name"){
+            val projectName = "arbitraryString"
+            val projects = listOf(
+                    Project("test1"),
+                    Project("test2")
+            )
+
+            it("project should have provided project name"){
+                val projectNameMerge = ProjectMerger(projects, nodeMergerStrategy, projectName).extractProjectName()
+                assertThat(projectNameMerge, CoreMatchers.`is`(projectName))
+            }
+
+        }
+
         context("merging project with same API major versions") {
             val projectName = "test"
             val projects = listOf(
