@@ -19,7 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
--	Fixed bug that code map was not re-loaded when changing from multiple to single revision mode #396
+-	  Fixed bug that code map was not re-loaded when changing from multiple to single revision mode #396
+-	  Fixed missing apiVersion in aggregated map #398
 
 ## [1.21.2] - 2019-02-26
 
