@@ -1,10 +1,13 @@
 <md-input-container class="md-block">
-    <i class="fa fa-folder-open"></i>
-    <i class="fa fa-download"></i>
+	<i class="fa fa-folder-open"></i>
+	<i class="fa fa-download"></i>
 
-    <md-select ng-model="$ctrl.selectedMapIndices" multiple="{{true}}" ng-change="$ctrl.onMultipleChange()">
-        <md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
-            {{::value.fileName}}
-        </md-option>
-    </md-select>
+	<md-select ng-model="$ctrl.selectedMapIndices" multiple="{{ true }}" ng-change="$ctrl.onMultipleChange()">
+		<md-button ng-click="$ctrl.selectAllRevisions()">All</md-button>
+		<md-button ng-click="$ctrl.selectNoRevisions()">None</md-button>
+		<md-button ng-click="$ctrl.intertRevisionSelection()">Invert</md-button>
+		<md-option ng-repeat="(key, value) in $ctrl.revisions" value="{{::key}}">
+			{{::value.fileName}}
+		</md-option>
+	</md-select>
 </md-input-container>

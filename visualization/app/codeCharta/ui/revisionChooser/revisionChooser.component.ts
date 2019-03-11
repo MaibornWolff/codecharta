@@ -1,7 +1,8 @@
-import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
-import "./revisionChooser.component.scss";
-import "./revisionChooserFileDropDown.component.scss";
-import {CCFile, CodeMapNode, RenderMode, Settings} from "../../codeCharta.model";
+import { SettingsService } from "../../state/settings.service"
+import "./revisionChooser.component.scss"
+import "./revisionChooserFileDropDown.component.scss"
+import {CCFile, RenderMode, Settings} from "../../codeCharta.model";
+import {SettingsServiceSubscriber} from "../../state/settings.service";
 import {CodeChartaService} from "../../codeCharta.service";
 import {IRootScopeService} from "angular";
 
@@ -69,15 +70,12 @@ export class RevisionChooserController implements SettingsServiceSubscriber {
 }
 
 export const revisionChooserComponent = {
-    selector: "revisionChooserComponent",
-    template: require("./revisionChooser.component.html"),
-    controller: RevisionChooserController
-};
+	selector: "revisionChooserComponent",
+	template: require("./revisionChooser.component.html"),
+	controller: RevisionChooserController
+}
 export const revisionChooserFileDropDownComponent = {
-    selector: "revisionChooserFileDropDownComponent",
-    template: require("./revisionChooserFileDropDown.component.html"),
-    controller: RevisionChooserController
-};
-
-
-
+	selector: "revisionChooserFileDropDownComponent",
+	template: require("./revisionChooserFileDropDown.component.html"),
+	controller: RevisionChooserController
+}
