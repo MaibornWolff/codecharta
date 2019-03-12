@@ -8,9 +8,10 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	public sliderOptions: any
 	private maxMetricValue: number
 
-	private DIGIT_LENGTH: number = 10
-	private STANDARD_WIDTH_RANGE_INPUT: number = 42
-	private FULL_WIDTH_SLIDER: number = 234
+	private DIGIT_WIDTH: number = 11
+	private MIN_DIGITS: number = 4
+	private MAX_DIGITS: number = 6
+	private FULL_WIDTH_SLIDER: number = 235
 
 	/* @ngInject */
 	constructor(private settingsService: SettingsService, private dataService: DataService, $timeout, $scope) {
@@ -71,10 +72,10 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	}
 
 	private updateInputFieldWidth() {
-		let fromLength = this.settingsService.settings.neutralColorRange.from.toFixed().toString().length
-		let toLength = this.settingsService.settings.neutralColorRange.to.toFixed().toString().length
-		let fromWidth = Math.max((fromLength + 1) * this.DIGIT_LENGTH, this.STANDARD_WIDTH_RANGE_INPUT)
-		let toWidth = Math.max((toLength + 1) * this.DIGIT_LENGTH, this.STANDARD_WIDTH_RANGE_INPUT)
+		let fromLength = this.settingsService.settings.neutralColorRange.from.toFixed().toString().length + 1
+		let toLength = this.settingsService.settings.neutralColorRange.to.toFixed().toString().length + 1
+		let fromWidth = Math.min(Math.max(this.MIN_DIGITS, fromLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
+		let toWidth = Math.min(Math.max(this.MIN_DIGITS, toLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 
 		$("range-slider-component #rangeFromInputField").css("width", fromWidth + "px")
 		$("range-slider-component #rangeToInputField").css("width", toWidth + "px")
