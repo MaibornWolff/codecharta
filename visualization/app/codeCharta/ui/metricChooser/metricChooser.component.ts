@@ -6,10 +6,11 @@ import {
     CodeMapMouseEventServiceSubscriber
 } from "../codeMap/codeMap.mouseEvent.service";
 import {CodeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
-import { ImportedFilesChangedSubscriber, CodeChartaService } from "../../codeCharta.service";
-import {MetricData, CCFile, Settings} from "../../codeCharta.model";
+import {MetricData, CCFile, Settings, FileState, ColorRange, FileSelectionState} from "../../codeCharta.model";
+import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
+import {MetricCalculator} from "../../MetricCalculator";
 
-export class MetricChooserController implements ImportedFilesChangedSubscriber, CodeMapMouseEventServiceSubscriber, SettingsServiceSubscriber {
+export class MetricChooserController implements FileStateServiceSubscriber, CodeMapMouseEventServiceSubscriber, SettingsServiceSubscriber {
 
     public metricData: MetricData[];
 
@@ -37,7 +38,7 @@ export class MetricChooserController implements ImportedFilesChangedSubscriber, 
 
     ) {
         //this.onDataChanged(dataService.data, null);
-        CodeChartaService.subscribe(this.$rootScope, this);
+        FileStateService.subscribe(this.$rootScope, this);
         SettingsService.subscribe(this.$rootScope, this);
         CodeMapMouseEventService.subscribe(this.$rootScope, this);
         this.optionsWithoutStart = {
@@ -56,6 +57,47 @@ export class MetricChooserController implements ImportedFilesChangedSubscriber, 
         this.updateViewModel(settings)
     }
 
+
+    public onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
+        // unused
+    }
+
+    public onImportedFilesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
+        console.log("metricData", metricData)
+
+        const metrics = metricData.map(x => x.name)
+        this.metricData =  metricData;
+
+        this.settingsService.updateSettings({
+            dynamicSettings: {
+                areaMetric: this.getMetricByIndexElseLast(0, metrics),
+                heightMetric: this.getMetricByIndexElseLast(1, metrics),
+                colorMetric: this.getMetricByIndexElseLast(2, metrics),
+                neutralColorRange: this.getAdaptedRange(
+                    fileStates.map(x => x.file),
+                    this.getMetricByIndexElseLast( 2, metrics),
+                    false)
+            }
+        })
+    }
+
+    // TODO: move getAdaptedRange into colorSettingsPanel and check if colorMetric changed
+    private getAdaptedRange(files: CCFile[], colorMetric: string, flipped: boolean): ColorRange {
+        const maxMetricValue = MetricCalculator.getMaxMetricInAllRevisions(files, colorMetric)
+        const firstThird = Math.round((maxMetricValue / 3) * 100) / 100
+        const secondThird = Math.round(firstThird * 2 * 100) / 100
+
+        return {
+            flipped: flipped,
+            from: firstThird,
+            to: secondThird
+        }
+    }
+
+    private getMetricByIndexElseLast(index: number, metrics: string[]): string {
+        return metrics[Math.min(index, metrics.length - 1)]
+    }
+
     private updateViewModel(settings: Settings) {
         this._viewModel.areaMetric = settings.dynamicSettings.areaMetric
         this._viewModel.colorMetric = settings.dynamicSettings.colorMetric
@@ -70,10 +112,6 @@ export class MetricChooserController implements ImportedFilesChangedSubscriber, 
                 heightMetric: this._viewModel.heightMetric
             }
         })
-    }
-
-    public onImportedFilesChanged(importedFiles: CCFile[], metrics: string[], metricData: MetricData[]) {
-        this.metricData =  metricData;
     }
 
     public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent) {

@@ -1,12 +1,19 @@
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import { ITimeoutService, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 import "./mapTreeViewSearch.component.scss"
 import * as d3 from "d3"
 import { CodeMapUtilService } from "../codeMap/codeMap.util.service"
-import { CodeMapNode, BlacklistType, Settings, CCFile } from "../../codeCharta.model"
-import { ImportedFilesChangedSubscriber, CodeChartaService } from "../../codeCharta.service"
+import {
+	CodeMapNode,
+	BlacklistType,
+	Settings,
+	MetricData,
+	FileState,
+	FileSelectionState
+} from "../../codeCharta.model"
+import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
 
-export class MapTreeViewSearchController implements SettingsServiceSubscriber, ImportedFilesChangedSubscriber {
+export class MapTreeViewSearchController implements SettingsServiceSubscriber, FileStateServiceSubscriber {
 	private _viewModel = {
 		searchPattern: "",
 		fileCount: 0,
@@ -22,14 +29,19 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, I
 	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
-		private codeChartaService: CodeChartaService
+		private fileStateService: FileStateService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
-		CodeChartaService.subscribe(this.$rootScope, this)
+		FileStateService.subscribe(this.$rootScope, this)
 	}
 
-	public onImportedFilesChanged(importedFiles: CCFile[], metrics: string[]) {
+
+	public onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
 		this._viewModel.searchPattern = ""
+	}
+
+	public onImportedFilesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
+		// unused
 	}
 
 	public onSettingsChanged(s: Settings) {
@@ -37,7 +49,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, I
 	}
 
 	public onSearchChange() {
-		this.setSearchedNodePathnames()
+		// TODO: this.setSearchedNodePathnames()
 		this.updateViewModel()
 	}
 
@@ -76,9 +88,9 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, I
 		)
 	}
 
-	private setSearchedNodePathnames() {
+	/*private setSearchedNodePathnames() {
 		const nodes = d3
-			.hierarchy(this.codeChartaService.getRenderMap())
+			.hierarchy(this.fileStateService.getRenderMap())
 			.descendants()
 			.map(d => d.data)
 		const searchedNodes = CodeMapUtilService.getNodesByGitignorePath(nodes, this._viewModel.searchPattern)
@@ -91,7 +103,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, I
 				searchPattern: this._viewModel.searchPattern
 			}
 		})
-	}
+	}*/
 }
 
 export const mapTreeViewSearchComponent = {

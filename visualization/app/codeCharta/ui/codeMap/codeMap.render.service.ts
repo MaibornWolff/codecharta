@@ -7,7 +7,7 @@ import {CodeMapUtilService} from "./codeMap.util.service"
 import {CodeMapLabelService} from "./codeMap.label.service"
 import {ThreeSceneService} from "./threeViewer/threeSceneService"
 import {CodeMapArrowService} from "./codeMap.arrow.service"
-import {CCFile, CodeMapNode, Edge, FileSelectionState, FileState, Settings,} from "../../codeCharta.model"
+import {CCFile, CodeMapNode, Edge, FileSelectionState, FileState, MetricData, Settings,} from "../../codeCharta.model"
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import {IRootScopeService} from "angular";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
@@ -62,15 +62,21 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		this.renderIfRenderObjectIsComplete()
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
 		// TODO: calculate metrics everytime, access from codeChartaService or somewhere else?
-		this.codeMapNodeDecoratorService.decorateFiles(fileStates.map(x => x.file), MetricCalculator.calculateMetrics(fileStates.map(x => x.file)).metrics)
+		this.codeMapNodeDecoratorService.decorateFiles(
+			fileStates.map(x => x.file),
+			metricData.map(x => x.name))
 
 		this.lastRender.renderMap = this.getSelectedFilesAsUnifiedMap(fileStates)
 		this.lastRender.files = fileStates.map(x => x.file)
 		this.lastRender.fileName = fileStates.find(x => x.selectedAs == FileSelectionState.Single).file.fileMeta.fileName
-		this.lastRender.renderState = FileStateService.getRenderState(fileStates)
+		this.lastRender.renderState = renderState
 		this.renderIfRenderObjectIsComplete()
+	}
+
+	public onImportedFilesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
+		// unused
 	}
 
 	private getSelectedFilesAsUnifiedMap(fileStates: FileState[]): CodeMapNode {
@@ -110,10 +116,17 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 
 		this.showAllOrOnlyFocusedNode(map, s)
 
-		const treeMapNode: Node = this.treeMapService.createTreemapNodes(map, importedFiles, s)
+		const treeMapNode: Node = this.treeMapService.createTreemapNodes(map, importedFiles, s, fileName)
+		//console.log("treeMapNode", treeMapNode);
+
 		const nodes: Node[] = this.collectNodesToArray(treeMapNode)
-		const filteredNodes = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
+		//console.log("nodes", nodes);
+
+		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
+		//console.log("filteredNodes", filteredNodes);
+
 		this.currentSortedNodes = filteredNodes.sort((a, b) => b.height - a.height)
+		//console.log("sortedNodes", this.currentSortedNodes)
 
 		this.setLabels(s)
 		this.setArrows(s)
@@ -129,6 +142,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 			for (let j = 0; j < collected.length; j++) {
 				nodes.push(collected[j])
 			}
+			//console.log(i, collected.length, collected);
 		}
 		return nodes
 	}

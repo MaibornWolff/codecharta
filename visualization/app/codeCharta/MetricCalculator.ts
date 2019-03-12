@@ -1,19 +1,17 @@
 import { CCFile, MetricData, CodeMapNode } from "./codeCharta.model";
 import { HierarchyNode, hierarchy } from "d3";
+
 export class MetricCalculator {
-	public static calculateMetrics(importedFiles: CCFile[]): {
-		metrics: string[];
-		data: MetricData[];
-	} {
+
+	public static calculateMetrics(importedFiles: CCFile[]): MetricData[] {
 		if (importedFiles.length <= 0) {
-			return { metrics: [], data: [] };
-		}
-		else {
+			return []
+		} else {
 			const metrics = MetricCalculator.getUniqueMetricNames(importedFiles);
-			const data = MetricCalculator.getMetricNamesWithMaxValue(importedFiles, metrics);
-			return { metrics: metrics, data: data };
+			return MetricCalculator.getMetricNamesWithMaxValue(importedFiles, metrics);
 		}
 	}
+
 	private static getUniqueMetricNames(importedFiles: CCFile[]): string[] {
 		let leaves: HierarchyNode<CodeMapNode>[] = [];
 		importedFiles.forEach((file: CCFile) => {
@@ -27,6 +25,7 @@ export class MetricCalculator {
 		});
 		return attributes.sort();
 	}
+
 	private static getMetricNamesWithMaxValue(importedFiles: CCFile[], metrics: string[]) {
 		let metricData: MetricData[] = [];
 		for (const attribute of metrics) {
@@ -34,6 +33,7 @@ export class MetricCalculator {
 		}
 		return this.sortByAttributeName(metricData);
 	}
+
 	public static getMaxMetricInAllRevisions(importedFiles: CCFile[], metric: string): number {
 		let maxValue = 0;
 		importedFiles.forEach((file) => {
@@ -47,6 +47,7 @@ export class MetricCalculator {
 		});
 		return maxValue;
 	}
+
 	private static sortByAttributeName(metricData: MetricData[]): MetricData[] {
 		return metricData.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
 	}

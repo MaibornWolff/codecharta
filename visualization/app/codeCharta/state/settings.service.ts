@@ -25,9 +25,10 @@ export class SettingsService {
 	}
 
 	public updateSettings(update: RecursivePartial<Settings>) {
-		// TODO wo und wann this.settings.margin = this.computeMargin(settings); ?
+		console.log(update, this.getSettings().dynamicSettings)
+		// TODO where and when this.settings.margin = this.computeMargin(settings); ?
 		this.settings = _.merge(this.settings, update)
-		console.log(this.settings);
+		console.log("settings", this.settings);
 		this.throttledBroadcast()
 	}
 

@@ -26,6 +26,8 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber {
         this._viewModel.deltaColorFlipped = settings.appSettings.deltaColorFlipped;
         this._viewModel.whiteColorBuildings = settings.appSettings.whiteColorBuildings;
         this._viewModel.renderMode = settings.dynamicSettings.renderMode;
+
+
     }
 
     public applySettings() {

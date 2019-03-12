@@ -5,6 +5,7 @@ import $ from "jquery"
 import { Settings, RenderMode, RecursivePartial } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { MetricCalculator } from "../../MetricCalculator";
+import {FileStateService} from "../../state/fileState.service";
 
 export class RangeSliderController implements SettingsServiceSubscriber {
 	public sliderOptions: any
@@ -16,7 +17,11 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	}
 
 	/* @ngInject */
-	constructor(private settingsService: SettingsService, private codeChartaService: CodeChartaService, $timeout, $scope) {
+	constructor(
+		private settingsService: SettingsService,
+		private fileStateService: FileStateService,
+		private codeChartaService: CodeChartaService,
+		$timeout, $scope) {
 		SettingsService.subscribe($scope, this)
 		this.initSliderOptions()
 
@@ -39,7 +44,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 
 	public initSliderOptions(settings: Settings = this.settingsService.getSettings()) {
 		this.maxMetricValue = MetricCalculator.getMaxMetricInAllRevisions(
-			this.codeChartaService.getImportedFiles(),
+			this.fileStateService.getCCFiles(),
 			settings.dynamicSettings.colorMetric
 		)
 
@@ -59,7 +64,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 				neutralColorRange: {
 					to: Math.min(
 						MetricCalculator.getMaxMetricInAllRevisions(
-							this.codeChartaService.getImportedFiles(),
+							this.fileStateService.getCCFiles(),
 							this.settingsService.getSettings().dynamicSettings.colorMetric
 						),
 						Math.max(1, this._viewModel.colorRangeTo)
@@ -69,7 +74,6 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 			}
 		}
 
-		console.log("hi");
 		this.settingsService.updateSettings(update)
 	}
 
@@ -80,7 +84,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 					to: Math.max(this._viewModel.colorRangeTo, this._viewModel.colorRangeFrom + 1),
 					from: Math.min(
 						MetricCalculator.getMaxMetricInAllRevisions(
-							this.codeChartaService.getImportedFiles(),
+							this.fileStateService.getCCFiles(),
 							this.settingsService.getSettings().dynamicSettings.colorMetric
 						) - 1,
 						this._viewModel.colorRangeFrom

@@ -1,10 +1,10 @@
 import { SettingsService } from "../../state/settings.service"
 import "./revisionChooser.component.scss"
 import "./revisionChooserFileDropDown.component.scss"
-import {CCFile, RenderMode, Settings} from "../../codeCharta.model";
+import {CCFile, Settings} from "../../codeCharta.model";
 import {SettingsServiceSubscriber} from "../../state/settings.service";
-import {CodeChartaService} from "../../codeCharta.service";
 import {IRootScopeService} from "angular";
+import {FileStateService} from "../../state/fileState.service";
 
 /**
  * Controls the RevisionChooser
@@ -22,11 +22,11 @@ export class RevisionChooserController implements SettingsServiceSubscriber {
 
     /* @ngInject */
     constructor(
-        private codeChartaService: CodeChartaService,
+        private fileStateService: FileStateService,
         private settingsService: SettingsService,
         private $rootScope: IRootScopeService
     ) {
-        this.files = this.codeChartaService.getImportedFiles();
+        this.files = this.fileStateService.getCCFiles();
         this.settings = this.settingsService.getSettings();
 
         // TODO: Set comparisonMap

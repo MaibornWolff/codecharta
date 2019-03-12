@@ -28,10 +28,9 @@ export class TreeMapService {
     /* @ngInject */
     constructor() {}
 
-    public createTreemapNodes(map: CodeMapNode, importedFiles: CCFile[], s: Settings): Node {
-        const squarified: SquarifiedValuedCodeMapNode = this.squarify(map, s);
-        const heighted = this.addMapScaledHeightDimensionAndFinalizeFromRoot(squarified, importedFiles, s);
-        return heighted;
+    public createTreemapNodes(map: CodeMapNode, importedFiles: CCFile[], s: Settings, fileName: string): Node {
+        const squaredNode: SquarifiedValuedCodeMapNode = this.squarify(map, s, fileName);
+        return this.addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode, importedFiles, s);
     }
 
     public setVisibilityOfNodeAndDescendants(node: CodeMapNode, visibility: boolean) {
@@ -42,7 +41,7 @@ export class TreeMapService {
         return node;
     }
 
-    private squarify(map: CodeMapNode, s: Settings): SquarifiedValuedCodeMapNode {
+    private squarify(map: CodeMapNode, s: Settings, fileName: string): SquarifiedValuedCodeMapNode {
         let nodes: HierarchyNode<CodeMapNode> = d3.hierarchy<CodeMapNode>(map);
         const blacklisted = CodeMapUtilService.numberOfBlacklistedNodes(nodes.descendants().map(d => d.data), s.fileSettings.blacklist);
         let nodesPerSide = 2 * Math.sqrt(nodes.descendants().length - blacklisted);
@@ -51,7 +50,7 @@ export class TreeMapService {
             .paddingOuter(s.dynamicSettings.margin * TreeMapService.PADDING_SCALING_FACTOR || 1)
             .paddingInner(s.dynamicSettings.margin * TreeMapService.PADDING_SCALING_FACTOR || 1);
 
-        return treeMap(nodes.sum((node) => this.calculateValue(node, s))) as SquarifiedValuedCodeMapNode;
+        return treeMap(nodes.sum((node) => this.calculateValue(node, s, fileName))) as SquarifiedValuedCodeMapNode;
     }
 
     private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, importedFiles: CCFile[], s: Settings): Node {
@@ -86,17 +85,17 @@ export class TreeMapService {
 
     }
 
-    /* TODO: isDeletedNodeFromComparisonMap necessary? filename needed..
-    private isDeletedNodeFromComparisonMap(node: CodeMapNode, s: Settings): boolean {
+    // TODO: isDeletedNodeFromComparisonMap necessary? filename needed..
+    private isDeletedNodeFromComparisonMap(node: CodeMapNode, s: Settings, fileName: string): boolean {
         return node &&
                 node.deltas &&
-                node.origin !== s.treeMapSettings.fileName &&
+                node.origin !== fileName &&
                 node.deltas[s.dynamicSettings.heightMetric] < 0 &&
                 node.attributes[s.dynamicSettings.areaMetric] === 0;
     }
-    */
 
-    private calculateValue(node: CodeMapNode, s: Settings): number {
+
+    private calculateValue(node: CodeMapNode, s: Settings, fileName: string): number {
 
         let result = 0;
 
@@ -104,9 +103,9 @@ export class TreeMapService {
             return 0;
         }
 
-        /*if(this.isDeletedNodeFromComparisonMap(node, s)) {
+        if(this.isDeletedNodeFromComparisonMap(node, s, fileName)) {
             return Math.abs(node.deltas[s.dynamicSettings.areaMetric]);
-        }*/
+        }
 
         if ((!node.children || node.children.length === 0)) {
             if(node.attributes && node.attributes[s.dynamicSettings.areaMetric]) {
