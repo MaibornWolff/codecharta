@@ -3,13 +3,10 @@ import { KindOfMap, Settings, SettingsService, SettingsServiceSubscriber } from 
 import "./rangeSlider.component.scss"
 import { MapColors } from "../codeMap/rendering/renderSettings"
 import $ from "jquery"
-import { style } from "d3"
 
 export class RangeSliderController implements SettingsServiceSubscriber {
 	public sliderOptions: any
 	private maxMetricValue: number
-	private rangeFromInputField = document.getElementById("rangeFromInputField")
-	private rangeToInputField = document.getElementById("rangeToInputField")
 
 	private DIGIT_LENGTH: number = 10
 	private STANDARD_WIDTH_RANGE_INPUT: number = 42
@@ -78,9 +75,10 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		let toLength = this.settingsService.settings.neutralColorRange.to.toFixed().toString().length
 		let fromWidth = Math.max((fromLength + 1) * this.DIGIT_LENGTH, this.STANDARD_WIDTH_RANGE_INPUT)
 		let toWidth = Math.max((toLength + 1) * this.DIGIT_LENGTH, this.STANDARD_WIDTH_RANGE_INPUT)
-		this.rangeFromInputField.style.width = fromWidth + "px"
-		this.rangeToInputField.style.width = toWidth + "px"
-		document.getElementById("colorSlider").style.width = this.FULL_WIDTH_SLIDER - fromWidth - toWidth + "px"
+
+		$("range-slider-component #rangeFromInputField").css("width", fromWidth + "px")
+		$("range-slider-component #rangeToInputField").css("width", toWidth + "px")
+		$("range-slider-component #colorSlider").css("width", this.FULL_WIDTH_SLIDER - fromWidth - toWidth + "px")
 	}
 
 	private updateSliderColors() {

@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -	  Fixed bug that code map was not re-loaded when changing from multiple to single revision mode #396
 -	  Fixed missing apiVersion in aggregated map #398
+-         Input Fields of color sliders adjust width according to content #409
 
 ## [1.21.2] - 2019-02-26
 
