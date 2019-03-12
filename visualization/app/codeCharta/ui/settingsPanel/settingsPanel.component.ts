@@ -11,7 +11,7 @@ export class SettingsPanelController implements SettingsServiceSubscriber {
 
 	constructor(private $scope, private $timeout) {
 		SettingsService.subscribe($scope, this)
-		// TODO not sure if we really need this this.onSettingsChanged(this.settingsService.getSettings(), null);
+		// TODO: not sure if we really need this this.onSettingsChanged(this.settingsService.getSettings(), null);
 	}
 
 	public collapseAndUpdateChildRzSlider($panel) {

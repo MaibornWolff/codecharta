@@ -13,7 +13,7 @@ export class SettingsService {
 	public static readonly MIN_MARGIN = 15
 
 	private settings: Settings
-	private throttledBroadcast: ()=>void;
+	private readonly throttledBroadcast: ()=>void;
 
 	constructor(private $rootScope) {
 		this.settings = this.getDefaultSettings()
@@ -25,7 +25,6 @@ export class SettingsService {
 	}
 
 	public updateSettings(update: RecursivePartial<Settings>) {
-		// TODO where and when this.settings.margin = this.computeMargin(settings); ?
 		this.settings = _.merge(this.settings, update)
 		console.log("settings", update, this.settings);
 		this.throttledBroadcast()

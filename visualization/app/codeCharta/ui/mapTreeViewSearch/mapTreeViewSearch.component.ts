@@ -41,7 +41,6 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 	}
 
 	public onImportedFilesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
-		// unused
 	}
 
 	public onSettingsChanged(s: Settings) {

@@ -70,6 +70,7 @@ export class MetricChooserController implements FileStateServiceSubscriber, Code
 
     public onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
         this._viewModel.metricData = metricData
+        console.log("onFileSelectionStatesChanged");
         this.potentiallyUpdateChosenMetrics(metricData)
     }
 
@@ -89,7 +90,16 @@ export class MetricChooserController implements FileStateServiceSubscriber, Code
             const metricValue: string = this.settingsService.getSettings().dynamicSettings[metricKey]
             const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps)
 
-            if (!!availableMetrics.filter(x => x.name == metricValue)) {
+
+            console.log(metricKey,
+                metricValue,
+                availableMetrics.map(x => x.name),
+                availableMetrics.filter(x => x.name == metricValue).map(x => x.name),
+                Math.min(metricSelectionIndex, availableMetrics.length - 1),
+                availableMetrics[Math.min(metricSelectionIndex, availableMetrics.length - 1)].name
+            )
+
+            if (metricValue == "" || !availableMetrics.filter(x => x.name == metricValue)) {
                 this.settingsService.updateSettings({
                     dynamicSettings: {
                         [metricKey]: availableMetrics[Math.min(metricSelectionIndex++, availableMetrics.length - 1)].name

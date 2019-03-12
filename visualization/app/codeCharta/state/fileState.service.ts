@@ -94,6 +94,7 @@ export class FileStateService {
     }
 
     private notifyFileImport() {
+        // TODO: Update metricData with new availableInVisibleMaps attribute
         this.$rootScope.$broadcast(FileStateService.IMPORTED_FILES_CHANGED_EVENT,
             {fileStates: this.fileStates, metricData: this.metricData, renderState: FileStateService.getRenderState(this.fileStates)})
     }

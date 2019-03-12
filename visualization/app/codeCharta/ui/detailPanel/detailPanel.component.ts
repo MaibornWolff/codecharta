@@ -103,7 +103,6 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 	}
 
 	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
-		// unused
 	}
 
 	public onSettingsChanged(settings: Settings) {

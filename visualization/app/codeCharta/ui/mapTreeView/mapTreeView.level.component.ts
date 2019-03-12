@@ -46,10 +46,8 @@ export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubsc
         }
     }
     public onBuildingSelected(data: CodeMapBuildingTransition, event: IAngularEvent) {
-        // unused
     }
     public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent) {
-        // unused
     }
 
     public onMouseEnter() {
