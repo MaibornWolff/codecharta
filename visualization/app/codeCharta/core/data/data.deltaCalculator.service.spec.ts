@@ -4,7 +4,7 @@ import DoneCallback = jest.DoneCallback;
 import {CodeMap} from "./model/CodeMap";
 import {TEST_FILE_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B} from "./data.mocks";
 import {DeltaCalculatorService} from "./data.deltaCalculator.service";
-import {DataDecoratorService} from "./data.decorator.service";
+import {CodeMapNodeDecoratorService} from "../../ui/codeMap/codeMap.nodeDecorator.service";
 import * as d3 from "d3";
 
 /**
@@ -26,7 +26,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
     });
 
     function decorate(map: CodeMap) {
-        let dds = new DataDecoratorService();
+        let dds = new CodeMapNodeDecoratorService();
         dds.decorateMapWithPathAttribute(map);
         dds.decorateMapWithOriginAttribute(map);
     }

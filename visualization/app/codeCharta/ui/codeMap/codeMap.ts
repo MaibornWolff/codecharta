@@ -11,6 +11,7 @@ import {CodeMapActionsService} from "./codeMap.actions.service";
 import {CodeMapUtilService} from "./codeMap.util.service";
 import {CodeMapLabelService} from "./codeMap.label.service";
 import {CodeMapArrowService} from "./codeMap.arrow.service";
+import {CodeMapNodeDecoratorService} from "./codeMap.nodeDecorator.service";
 
 angular.module("app.codeCharta.ui.codeMap",["app.codeCharta.state", "app.codeCharta.core.treemap", "app.codeCharta.ui.codeMap.threeViewer"])
 .component(
@@ -34,4 +35,7 @@ angular.module("app.codeCharta.ui.codeMap",["app.codeCharta.state", "app.codeCha
 ).service(
     CodeMapArrowService.SELECTOR,
     CodeMapArrowService
+).service(
+    CodeMapNodeDecoratorService.SELECTOR,
+    CodeMapNodeDecoratorService
 );

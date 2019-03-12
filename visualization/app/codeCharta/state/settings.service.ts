@@ -1,6 +1,6 @@
-import { Settings, Vector3d, RenderMode, MapColors, RecursivePartial } from "../codeCharta.model"
+import {FileSelectionState, MapColors, RecursivePartial, Settings, Vector3d} from "../codeCharta.model"
 import _ from "lodash"
-import { IRootScopeService, IAngularEvent } from "angular";
+import {IAngularEvent, IRootScopeService} from "angular";
 
 export interface SettingsServiceSubscriber {
 	onSettingsChanged(settings: Settings, event: IAngularEvent)
@@ -30,14 +30,6 @@ export class SettingsService {
 		console.log(this.settings);
 		this.throttledBroadcast()
 	}
-
-	/* TODO this needs to be called at other places, this cannot be here
-	private potentiallyUpdateColorRange(update: RecursivePartial<Settings>): RecursivePartial<Settings> {
-		if (update.dynamicSettings.colorMetric) {
-			update.appSettings.neutralColorRange = this.getAdaptedRange(update.dynamicSettings.colorMetric)
-		}
-		return update
-	}*/
 
 	public getDefaultSettings(): Settings {
 		const mapColors: MapColors = {
@@ -75,7 +67,6 @@ export class SettingsService {
 				markedPackages: []
             },
 			dynamicSettings: {
-				renderMode: RenderMode.Single,
 				areaMetric: "",
 				heightMetric: "",
 				colorMetric: "",
@@ -86,6 +77,7 @@ export class SettingsService {
 				neutralColorRange: null,
 			},
 			appSettings: {
+		    	renderState: FileSelectionState.None,
 				amountOfTopLabels: 1,
 				scaling: scaling,
 				camera: camera,
@@ -98,6 +90,9 @@ export class SettingsService {
 				isWhiteBackground: false,
 				whiteColorBuildings: false,
 				mapColors: mapColors
+			},
+			treeMapSettings: {
+		    	mapSize: 500
 			}
 		}
 
@@ -109,6 +104,14 @@ export class SettingsService {
 			subscriber.onSettingsChanged(data, event)
 		})
 	}
+
+	/* TODO this needs to be called at other places, this cannot be here
+	private potentiallyUpdateColorRange(update: RecursivePartial<Settings>): RecursivePartial<Settings> {
+		if (update.dynamicSettings.colorMetric) {
+			update.appSettings.neutralColorRange = this.getAdaptedRange(update.dynamicSettings.colorMetric)
+		}
+		return update
+	}*/
 
 	/* TODO someone else does this
     public onDataChanged(data: DataModel) {

@@ -1,5 +1,5 @@
 import {hierarchy} from "d3-hierarchy";
-import {MarkedPackage} from "../../state/settings.service";
+import { MarkedPackage } from "../../codeCharta.model";
 import ignore from 'ignore';
 import * as path from 'path';
 import { CodeMapNode, BlacklistItem, BlacklistType } from "../../codeCharta.model";
@@ -34,13 +34,13 @@ export class CodeMapUtilService {
         return res;
     }
 
-    public static transformPath(toTransform): string {
+    public static transformPath(toTransform: string): string {
         return path.relative('/', toTransform);
     }
 
-    public static resolvePath(toResolve): string {
+    /*public static resolvePath(toResolve: string): string {
         return path.resolve(toResolve);
-    }
+    }*/
 
     public static getNodesByGitignorePath(nodes: Array<CodeMapNode>, gitignorePath: string): CodeMapNode[] {
         const ig = ignore().add(CodeMapUtilService.transformPath(gitignorePath));

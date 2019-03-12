@@ -8,7 +8,7 @@ export interface FileStateServiceSubscriber {
 export class FileStateService {
 
     private fileStates: Array<FileState> = []
-    private static FILESTATE_CHANGED_EVENT = "file-selection-states-changed";
+    private static FILE_STATE_CHANGED_EVENT = "file-selection-states-changed";
 
 
     /* @ngInject */
@@ -61,12 +61,19 @@ export class FileStateService {
     }
 
     private notify() {
-        console.log(this.fileStates)
-        this.$rootScope.$broadcast(FileStateService.FILESTATE_CHANGED_EVENT, this.fileStates)
+        this.$rootScope.$broadcast(FileStateService.FILE_STATE_CHANGED_EVENT, this.fileStates)
+    }
+
+    public static getRenderState(fileStates: FileState[]): FileSelectionState {
+        const firstFoundFileState: FileSelectionState = fileStates
+            .map(x => x.selectedAs)
+            .filter(state => state != FileSelectionState.None)[0]
+
+        return (firstFoundFileState == FileSelectionState.Reference) ? FileSelectionState.Comparison : firstFoundFileState
     }
 
     public static subscribe($rootScope: IRootScopeService, subscriber: FileStateServiceSubscriber) {
-        $rootScope.$on(FileStateService.FILESTATE_CHANGED_EVENT, (event, data) => {
+        $rootScope.$on(FileStateService.FILE_STATE_CHANGED_EVENT, (event, data) => {
             subscriber.onFileSelectionStatesChanged(data, event)
         })
     }

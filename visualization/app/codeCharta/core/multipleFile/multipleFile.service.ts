@@ -1,40 +1,40 @@
-import { AttributeType, CodeMap, CodeMapNode, Edge, BlacklistItem } from "../data/model/CodeMap"
+import {AttributeType, CodeMapNode, Edge, BlacklistItem, CCFile} from "../../codeCharta.model"
 
 export class MultipleFileService {
 	public static SELECTOR = "multipleFileService"
-	private projectNameArray = []
-	private fileNameArray = []
-	private edges: Edge[] = []
-	private blacklist: BlacklistItem[] = []
-	private attributeTypesEdge: { [key: string]: AttributeType } = {}
-	private attributeTypesNode: { [key: string]: AttributeType } = {}
+	private static projectNameArray = []
+	private static fileNameArray = []
+	private static edges: Edge[] = []
+	private static blacklist: BlacklistItem[] = []
+	private static attributeTypesEdge: { [key: string]: AttributeType } = {}
+	private static attributeTypesNode: { [key: string]: AttributeType } = {}
 
-	public aggregateMaps(inputMaps: CodeMap[]): CodeMap {
-		if (inputMaps.length == 1) {
-			return inputMaps[0]
+	public static aggregateMaps(inputFiles: CCFile[]): CCFile {
+		if (inputFiles.length == 1) {
+			return inputFiles[0]
 		}
 
 		this.resetVariables()
 
-		for (let inputMap of inputMaps) {
-			this.projectNameArray.push(inputMap.projectName)
-			this.fileNameArray.push(inputMap.fileName)
-			this.setEdgesWithUpdatedPath(inputMap)
-			this.setAttributeTypesByUniqueKey(inputMap)
-			this.setBlacklistWithUpdatedPath(inputMap)
+		for (let inputFile of inputFiles) {
+			this.projectNameArray.push(inputFile.fileMeta.projectName)
+			this.fileNameArray.push(inputFile.fileMeta.fileName)
+			this.setEdgesWithUpdatedPath(inputFile)
+			this.setAttributeTypesByUniqueKey(inputFile)
+			this.setBlacklistWithUpdatedPath(inputFile)
 		}
-		return this.getNewAggregatedMap(inputMaps)
+		return this.getNewAggregatedMap(inputFiles)
 	}
 
-	private setEdgesWithUpdatedPath(inputMap) {
-		if (!inputMap.edges) {
+	private static setEdgesWithUpdatedPath(inputFile: CCFile) {
+		if (!inputFile.settings.fileSettings.edges) {
 			return
 		}
 
-		for (let oldEdge of inputMap.edges) {
+		for (let oldEdge of inputFile.settings.fileSettings.edges as Edge[]) {
 			let edge: Edge = {
-				fromNodeName: this.getUpdatedPath(inputMap.fileName, oldEdge.fromNodeName),
-				toNodeName: this.getUpdatedPath(inputMap.fileName, oldEdge.toNodeName),
+				fromNodeName: this.getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.fromNodeName),
+				toNodeName: this.getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.toNodeName),
 				attributes: oldEdge.attributes,
 				visible: oldEdge.visible
 			}
@@ -45,14 +45,14 @@ export class MultipleFileService {
 		}
 	}
 
-	private setBlacklistWithUpdatedPath(inputMap) {
-		if (!inputMap.blacklist) {
+	private static setBlacklistWithUpdatedPath(inputFile: CCFile) {
+		if (!inputFile.settings.fileSettings.blacklist) {
 			return
 		}
 
-		for (let oldBlacklistItem of inputMap.blacklist) {
+		for (let oldBlacklistItem of inputFile.settings.fileSettings.blacklist as BlacklistItem[]) {
 			let blacklistItem: BlacklistItem = {
-				path: this.getUpdatedBlacklistItemPath(inputMap.fileName, oldBlacklistItem.path),
+				path: this.getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldBlacklistItem.path),
 				type: oldBlacklistItem.type
 			}
 			const equalBlacklistItems = this.blacklist.filter(b => b.path == blacklistItem.path && b.type == blacklistItem.type)
@@ -62,19 +62,19 @@ export class MultipleFileService {
 		}
 	}
 
-	private getUpdatedBlacklistItemPath(fileName, path) {
+	private static getUpdatedBlacklistItemPath(fileName: string, path: string): string {
 		if (this.isAbsoluteRootPath(path)) {
 			return this.getUpdatedPath(fileName, path)
 		}
 		return path
 	}
 
-	private isAbsoluteRootPath(path: string) {
+	private static isAbsoluteRootPath(path: string): boolean {
 		return path.startsWith("/root/")
 	}
 
-	private setAttributeTypesByUniqueKey(inputMap) {
-		const types = inputMap.attributeTypes
+	private static setAttributeTypesByUniqueKey(inputFile: CCFile) {
+		const types = inputFile.settings.fileSettings.attributeTypes
 		if (types && types.nodes) {
 			for (let key in types.nodes) {
 				this.attributeTypesNode[key] = types.nodes[key]
@@ -87,12 +87,14 @@ export class MultipleFileService {
 		}
 	}
 
-	private getNewAggregatedMap(inputMaps): CodeMap {
-		let outputMap: CodeMap = {
-			projectName: "Aggregation of following projects: " + this.projectNameArray.join(", "),
-			fileName: "Aggregation of following files: " + this.fileNameArray.join(", "),
-			apiVersion: require("../../../../package.json").codecharta.apiVersion,
-			nodes: {
+	private static getNewAggregatedMap(inputFiles: CCFile[]): CCFile {
+		let outputFile: CCFile = {
+			fileMeta: {
+				projectName: "Aggregation of following projects: " + this.projectNameArray.join(", "),
+				fileName: "Aggregation of following files: " + this.fileNameArray.join(", "),
+				apiVersion: require("../../../../package.json").codecharta.apiVersion
+			},
+			map: {
 				name: "root",
 				type: "Folder",
 				children: [] as CodeMapNode[],
@@ -101,53 +103,57 @@ export class MultipleFileService {
 				path: "/root",
 				visible: true
 			},
-			edges: this.edges,
-			blacklist: this.blacklist,
-			attributeTypes: {
-				nodes: this.attributeTypesNode,
-				edges: this.attributeTypesEdge
+			settings: {
+				fileSettings: {
+					edges: this.edges,
+					blacklist: this.blacklist,
+					attributeTypes: {
+						nodes: this.attributeTypesNode,
+						edges: this.attributeTypesEdge
+					}
+				}
 			}
 		}
 
-		for (let inputMap of inputMaps) {
-			outputMap.nodes.children.push(this.extractNodeFromMap(inputMap))
+		for (let inputMap of inputFiles) {
+			outputFile.map.children.push(this.extractNodeFromMap(inputMap))
 		}
-		this.aggregateRootAttributes(outputMap)
-		return outputMap
+		this.aggregateRootAttributes(outputFile)
+		return outputFile
 	}
 
-	private aggregateRootAttributes(map: CodeMap) {
-		map.nodes.children.forEach(child => {
+	private static aggregateRootAttributes(outputFile: CCFile) {
+		outputFile.map.children.forEach(child => {
 			let attributes = child.attributes
 			for (let key in attributes) {
-				if (!(key in map.nodes.attributes)) {
-					map.nodes.attributes[key] = 0
+				if (!(key in outputFile.map.attributes)) {
+					outputFile.map.attributes[key] = 0
 				}
-				map.nodes.attributes[key] += attributes[key]
+				outputFile.map.attributes[key] += attributes[key]
 			}
 		})
 	}
 
-	private extractNodeFromMap(inputCodeMap: CodeMap): CodeMapNode {
+	private static extractNodeFromMap(inputMap: CCFile): CodeMapNode {
 		let outputNode: CodeMapNode = {
-			name: inputCodeMap.fileName,
-			children: inputCodeMap.nodes.children
+			name: inputMap.fileMeta.fileName,
+			children: inputMap.map.children
 		} as CodeMapNode
 
-		if (inputCodeMap.nodes.path) {
-			outputNode.path = this.getUpdatedPath(inputCodeMap.fileName, inputCodeMap.nodes.path)
+		if (inputMap.map.path) {
+			outputNode.path = this.getUpdatedPath(inputMap.fileMeta.fileName, inputMap.map.path)
 		}
 
-		for (let key in inputCodeMap.nodes) {
+		for (let key in inputMap.map) {
 			if (!["name", "path", "children"].includes(key)) {
-				outputNode[key] = inputCodeMap.nodes[key]
+				outputNode[key] = inputMap.map[key]
 			}
 		}
-		this.updatePathOfAllChildren(inputCodeMap.fileName, outputNode.children)
+		this.updatePathOfAllChildren(inputMap.fileMeta.fileName, outputNode.children)
 		return outputNode
 	}
 
-	private updatePathOfAllChildren(fileName, children: CodeMapNode[]) {
+	private static updatePathOfAllChildren(fileName: string, children: CodeMapNode[]) {
 		for (let i = 0; i < children.length; i++) {
 			if (children[i].path) {
 				children[i].path = this.getUpdatedPath(fileName, children[i].path)
@@ -159,13 +165,13 @@ export class MultipleFileService {
 		}
 	}
 
-	private getUpdatedPath(fileName, path) {
+	private static getUpdatedPath(fileName: string, path: string): string {
 		const folderArray = path.split("/")
 		folderArray.splice(2, 0, fileName)
 		return folderArray.join("/")
 	}
 
-	private resetVariables() {
+	private static resetVariables() {
 		this.projectNameArray = []
 		this.fileNameArray = []
 		this.edges = []

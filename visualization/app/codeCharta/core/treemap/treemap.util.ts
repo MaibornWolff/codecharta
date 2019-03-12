@@ -1,6 +1,7 @@
-import {SquarifiedValuedCodeMapNode, TreeMapSettings} from "./treemap.service";
+import {SquarifiedValuedCodeMapNode} from "./treemap.service";
 import {Node} from "../../ui/codeMap/rendering/node";
 import {CodeMapUtilService} from "../../ui/codeMap/codeMap.util.service";
+import {Settings} from "../../codeCharta.model";
 
 export class TreeMapUtils {
 
@@ -24,12 +25,12 @@ export class TreeMapUtils {
                                 maxHeight: number,
                                 depth: number,
                                 parent: Node,
-                                s: TreeMapSettings,
+                                s: Settings,
                                 minHeight: number,
                                 folderHeight: number): Node {
 
         let calculatedHeightValue = heightValue;                            
-        if (s.invertHeight) {
+        if (s.appSettings.invertHeight) {
             calculatedHeightValue = (maxHeight - heightValue);
         }
 
@@ -51,39 +52,40 @@ export class TreeMapUtils {
             attributes: squaredNode.data.attributes,
             deltas: squaredNode.data.deltas,
             parent: parent,
-            heightDelta: squaredNode.data.deltas && squaredNode.data.deltas[s.heightKey] ? heightScale * squaredNode.data.deltas[s.heightKey] : 0,
-            visible: squaredNode.data.visible && !(TreeMapUtils.isNodeLeaf(squaredNode) && s.hideFlatBuildings && flattened),
+            heightDelta: squaredNode.data.deltas && squaredNode.data.deltas[s.dynamicSettings.heightMetric] ? heightScale * squaredNode.data.deltas[s.dynamicSettings.heightMetric] : 0,
+            visible: squaredNode.data.visible && !(TreeMapUtils.isNodeLeaf(squaredNode) && s.appSettings.hideFlatBuildings && flattened),
             path: squaredNode.data.path,
             origin: squaredNode.data.origin,
             link: squaredNode.data.link,
             children: [],
-            markingColor: CodeMapUtilService.getMarkingColor(squaredNode.data, s.markedPackages),
+            markingColor: CodeMapUtilService.getMarkingColor(squaredNode.data, s.fileSettings.markedPackages),
             flat: flattened,
         };
 
     }
 
-    private static isNodeToBeFlat(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): boolean {
+    private static isNodeToBeFlat(squaredNode: SquarifiedValuedCodeMapNode, s: Settings): boolean {
 
         let flattened = false;
-        if (s.visibleEdges && s.visibleEdges.length > 0) {
+        if (s.fileSettings.edges && s.fileSettings.edges.filter(edge => edge.visible).length > 0) {
             flattened = this.nodeHasNoVisibleEdges(squaredNode, s);
         }
 
-        if (s.searchedNodePaths && s.searchPattern && s.searchPattern.length > 0) {
-            flattened = (s.searchedNodePaths.length == 0) ? true : this.isNodeNonSearched(squaredNode, s);
+        if (s.dynamicSettings.searchedNodePaths && s.dynamicSettings.searchPattern && s.dynamicSettings.searchPattern.length > 0) {
+            flattened = (s.dynamicSettings.searchedNodePaths.length == 0) ? true : this.isNodeNonSearched(squaredNode, s);
         }
         return flattened;
     }
 
-    private static nodeHasNoVisibleEdges(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): boolean {
-        return s.visibleEdges.filter(edge =>
+    private static nodeHasNoVisibleEdges(squaredNode: SquarifiedValuedCodeMapNode, s: Settings): boolean {
+        return s.fileSettings.edges.filter(edge =>
+            edge.visible && (
             squaredNode.data.path === edge.fromNodeName ||
-            squaredNode.data.path === edge.toNodeName).length == 0;
+            squaredNode.data.path === edge.toNodeName)).length == 0;
     }
 
-    private static isNodeNonSearched(squaredNode: SquarifiedValuedCodeMapNode, s: TreeMapSettings): boolean {
-        return s.searchedNodePaths.filter(path =>
+    private static isNodeNonSearched(squaredNode: SquarifiedValuedCodeMapNode, s: Settings): boolean {
+        return s.dynamicSettings.searchedNodePaths.filter(path =>
             path == squaredNode.data.path).length == 0;
     }
 }

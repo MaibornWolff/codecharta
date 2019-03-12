@@ -75,33 +75,28 @@ export class CodeMapActionsService {
 
 	public hideNode(node: CodeMapNode) {
 		this.pushItemToBlacklist({ path: node.path, type: BlacklistType.hide })
-		this.apply()
 	}
 
 	public showNode(node: CodeMapNode) {
 		this.removeBlacklistEntry({ path: node.path, type: BlacklistType.hide })
-		this.apply()
 	}
 
 	public focusNode(node: CodeMapNode) {
-		if (node.path == this.codeChartaService.getRenderMap().path) {
+		if (node.path == CodeChartaService.ROOT_PATH) {
 			this.removeFocusedNode()
 		} else {
 			this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: node.path } })
-			this.autoFit()
-			this.apply()
+			// TODO: this.autoFit()
 		}
 	}
 
 	public removeFocusedNode() {
 		this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: null } })
-		this.autoFit()
-		this.apply()
+		// TODO: this.autoFit()
 	}
 
 	public excludeNode(node: CodeMapNode) {
 		this.pushItemToBlacklist({ path: node.path, type: BlacklistType.exclude })
-		this.apply()
 	}
 
 	public removeBlacklistEntry(entry: BlacklistItem) {
@@ -203,13 +198,18 @@ export class CodeMapActionsService {
     }
 
 	private changeEdgesVisibility(visibility: boolean, node: CodeMapNode = null) {
-		if (this.settingsService.getSettings().fileSettings.edges) {
-			this.settingsService.getSettings().fileSettings.edges.forEach(edge => {
+		let edges = this.settingsService.getSettings().fileSettings.edges
+		if (edges) {
+			edges.forEach(edge => {
 				if (node == null || this.edgeContainsNode(edge, node)) {
 					edge.visible = visibility
 				}
 			})
-			this.apply()
+			this.settingsService.updateSettings({
+				fileSettings: {
+					edges: edges
+				}
+			})
 		}
 	}
 
@@ -221,14 +221,7 @@ export class CodeMapActionsService {
 		return JSON.stringify(angular.toJson(obj1)) === JSON.stringify(angular.toJson(obj2))
 	}
 
-	private apply() {
-		//this.$timeout(() => {
-		//	this.settingsService.applySettings()
-		//}, 50)
-		// TODO
-		this.codeMapRenderService.rerenderWithNewSettings(this.settingsService.getSettings())
-	}
-
+	// TODO: auto fit after (un)focusing node
 	/*private autoFit() {
 		this.$timeout(() => {
 			this.threeOrbitControlsService.autoFitTo()

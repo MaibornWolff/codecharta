@@ -3,11 +3,11 @@ import {Node} from "./node";
 import {CodeMapGeometricDescription} from "./codeMapGeometricDescription";
 import {CodeMapBuilding} from "./codeMapBuilding";
 import {MapColors} from "./renderSettings";
-import {RenderSettings} from "./renderSettings";
 import {RenderingUtil} from "./renderingUtil";
 import {IntermediateVertexData} from "./intermediateVertexData";
 import {BoxGeometryGenerationHelper} from "./boxGeometryGenerationHelper";
 import {ColorService} from "../../../core/colorService";
+import {FileSelectionState, Settings} from "../../../codeCharta.model";
 
 export interface BoxMeasures {
     x: number;
@@ -29,9 +29,9 @@ export class GeometryGenerator {
 
     private floorGradient: string[];
 
-    public build(nodes: Node[], material: THREE.Material, settings: RenderSettings): BuildResult {
+    public build(nodes: Node[], material: THREE.Material, settings: Settings, renderState: FileSelectionState): BuildResult {
         let data: IntermediateVertexData = new IntermediateVertexData();
-        let desc: CodeMapGeometricDescription = new CodeMapGeometricDescription(settings.mapSize);
+        let desc: CodeMapGeometricDescription = new CodeMapGeometricDescription(settings.treeMapSettings.mapSize);
 
         this.floorGradient = this.getFloorGradient(nodes);
 
@@ -39,9 +39,9 @@ export class GeometryGenerator {
             let n: Node = nodes[i];
 
             if (!n.isLeaf) {
-                this.addFloor(data, n, i, desc, settings);
+                this.addFloor(data, n, i, desc);
             } else {
-                this.addBuilding(data, n, i, desc, settings);
+                this.addBuilding(data, n, i, desc, settings, renderState);
             }
         }
 
@@ -71,7 +71,7 @@ export class GeometryGenerator {
         return (delta <= 0) ? height : Math.max(height, GeometryGenerator.MINIMAL_BUILDING_HEIGHT);
     }
 
-    private addFloor(data: IntermediateVertexData, n: Node, idx: number, desc: CodeMapGeometricDescription, settings: RenderSettings) {
+    private addFloor(data: IntermediateVertexData, n: Node, idx: number, desc: CodeMapGeometricDescription) {
         let color = this.getMarkingColorWithGradient(n);
         let measures: BoxMeasures = this.mapNodeToLocalBox(n);
 
@@ -92,27 +92,23 @@ export class GeometryGenerator {
 
     private getMarkingColorWithGradient(n: Node) {
         if (n.markingColor) {
-            const markingColorAsNumebr = ColorService.convertHexToNumber(n.markingColor);
-            const markingColorWithGradient = markingColorAsNumebr & (n.depth % 2 === 0 ? 0xDDDDDD : 0xFFFFFF);
+            const markingColorAsNumber = ColorService.convertHexToNumber(n.markingColor);
+            const markingColorWithGradient = markingColorAsNumber & (n.depth % 2 === 0 ? 0xDDDDDD : 0xFFFFFF);
             return ColorService.convertNumberToHex(markingColorWithGradient);
         } else {
             return this.floorGradient[n.depth]
         }
     }
 
-    private nodeHasSuitableDeltas(n: Node, heightKey: string): boolean {
-        return (n.deltas && n.deltas[heightKey]) ? true : false;
-    }
-
-    private addBuilding(data: IntermediateVertexData, n: Node, idx: number, desc: CodeMapGeometricDescription, settings: RenderSettings): void {
+    private addBuilding(data: IntermediateVertexData, n: Node, idx: number, desc: CodeMapGeometricDescription, settings: Settings, renderState: FileSelectionState): void {
         let measures: BoxMeasures = this.mapNodeToLocalBox(n);
         measures.height = this.ensureMinHeightIfUnlessDeltaNegative(n.height, n.heightDelta);
 
-        let color: string = this.estimateColorForBuilding(n, settings);
+        let color: string = this.estimateColorForBuilding(n, settings, renderState);
 
         let renderDelta: number = 0.0;
 
-        if (settings.renderDeltas && this.nodeHasSuitableDeltas(n, settings.heightKey) && n.heightDelta) {
+        if (renderState == FileSelectionState.Comparison && n.deltas && n.deltas[settings.dynamicSettings.heightMetric] && n.heightDelta) {
             renderDelta = n.heightDelta; //set the transformed render delta
 
             if (renderDelta < 0) {
@@ -135,12 +131,12 @@ export class GeometryGenerator {
         BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, idx, renderDelta);
     }
 
-    private estimateColorForBuilding(n: Node, s: RenderSettings): string {
+    private estimateColorForBuilding(n: Node, s: Settings, renderState: FileSelectionState): string {
         let color: string = MapColors.defaultC;
 
-        let mapColorPositive = s.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive;
-        if (!s.renderDeltas) {
-            const val: number = n.attributes[s.colorKey];
+        let mapColorPositive = s.appSettings.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive;
+        if (renderState != FileSelectionState.Comparison) {
+            const val: number = n.attributes[s.dynamicSettings.colorMetric];
 
             if (val === undefined || val === null) {
                 color = MapColors.base;
@@ -148,11 +144,11 @@ export class GeometryGenerator {
             else if (n.flat) {
                 color = MapColors.flat;
             }
-            else if (val < s.colorRange.from) {
-                color = s.colorRange.flipped ? MapColors.negative : mapColorPositive;
+            else if (val < s.dynamicSettings.neutralColorRange.from) {
+                color = s.dynamicSettings.neutralColorRange.flipped ? MapColors.negative : mapColorPositive;
             }
-            else if (val > s.colorRange.to) {
-                color = s.colorRange.flipped ? mapColorPositive : MapColors.negative;
+            else if (val > s.dynamicSettings.neutralColorRange.to) {
+                color = s.dynamicSettings.neutralColorRange.flipped ? mapColorPositive : MapColors.negative;
             }
             else {
                 color = MapColors.neutral;

@@ -1,11 +1,12 @@
 import * as THREE from "three";
 import {Node} from "./rendering/node";
-import {MapColors, RenderSettings} from "./rendering/renderSettings";
+import {MapColors} from "./rendering/renderSettings";
 import {CameraChangeSubscriber, ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 import {PerspectiveCamera, Sprite} from "three";
 import {ThreeCameraService} from "./threeViewer/threeCameraService";
 import {ThreeSceneService} from "./threeViewer/threeSceneService";
 import {ColorService} from "../../core/colorService";
+import {Settings} from "../../codeCharta.model";
 
 interface InternalLabel {
     sprite : THREE.Sprite;
@@ -29,18 +30,18 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
         this.threeOrbitControlsService.subscribe(this);
     }
 
-    public addLabel(node: Node, settings: RenderSettings) : void {
-        if(node.attributes && node.attributes[settings.heightKey]){
+    public addLabel(node: Node, settings: Settings) : void {
+        if(node.attributes && node.attributes[settings.dynamicSettings.heightMetric]){
 
-            const x: number = node.x0 - settings.mapSize * 0.5;
+            const x: number = node.x0 - settings.treeMapSettings.mapSize * 0.5;
             const y: number = node.z0;
-            const z: number = node.y0 - settings.mapSize * 0.5;
+            const z: number = node.y0 - settings.treeMapSettings.mapSize * 0.5;
 
             const labelX: number = x + node.width / 2;
             const labelY: number = y + node.height;
             const labelZ: number = z + node.length / 2;
 
-            let label : InternalLabel = this.makeText(node.name + ": " + node.attributes[settings.heightKey], 30);
+            let label : InternalLabel = this.makeText(node.name + ": " + node.attributes[settings.dynamicSettings.heightMetric], 30);
             label.sprite.position.set(labelX,labelY + 60 + label.heightValue / 2,labelZ);
             label.line = this.makeLine(labelX, labelY, labelZ);
 

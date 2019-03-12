@@ -27,6 +27,12 @@ export interface CodeMapNode {
         [key: string]: number
     };
     link?: string;
+    origin?: string;
+    path?: string;
+    visible?: boolean;
+    deltas?: {
+        [key: string]: number
+    }
 }
 
 export interface FileMeta {
@@ -39,6 +45,7 @@ export interface Settings {
     fileSettings: FileSettings;
     dynamicSettings: DynamicSettings;
     appSettings: AppSettings;
+    treeMapSettings: TreeMapSettings
 }
 
 export interface FileSettings {
@@ -49,7 +56,6 @@ export interface FileSettings {
 }
 
 export interface DynamicSettings {
-    renderMode: RenderMode; // TODO remove from settings ?
     areaMetric: string;
     heightMetric: string;
     colorMetric: string;
@@ -61,6 +67,7 @@ export interface DynamicSettings {
 }
 
 export interface AppSettings {
+    renderState: FileSelectionState;
     amountOfTopLabels: number;
     scaling: Vector3d;
     camera: Vector3d;
@@ -73,6 +80,10 @@ export interface AppSettings {
     isWhiteBackground: boolean;
     mapColors: MapColors;
     whiteColorBuildings: boolean;
+}
+
+export interface TreeMapSettings {
+    mapSize: number;
 }
 
 export interface MapColors {
@@ -141,12 +152,6 @@ export interface MarkedPackage {
     attributes: {
         [key: string]: any
     }
-}
-
-export enum RenderMode {
-  Single = "Single",
-  Multiple = "Multiple",
-  Delta = "Delta",
 }
 
 export interface MetricData {

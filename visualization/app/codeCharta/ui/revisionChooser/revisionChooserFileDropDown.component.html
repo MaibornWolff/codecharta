@@ -5,7 +5,7 @@
     <i class="fa fa-download"></i>
 
     <md-select ng-model="$ctrl._viewModel.chosenReference" ng-change="$ctrl.onReferenceChange($ctrl._viewModel.chosenReference)">
-        <md-option ng-repeat="file in $ctrl.importedFiles" value="{{::key}}">
+        <md-option ng-repeat="file in $ctrl.files" value="{{::key}}">
             <md-truncate>{{::file.fileMeta.fileName}}</md-truncate>
         </md-option>
     </md-select>
@@ -15,7 +15,7 @@
                     ng-class="{half: $ctrl._viewModel.renderMode == 'Delta'}"
                     ng-if="$ctrl._viewModel.renderMode == 'Delta'">
     <md-select ng-model="$ctrl._viewModel.chosenComparison" ng-change="$ctrl.onComparisonChange($ctrl._viewModel.chosenComparison)">
-        <md-option ng-repeat="file in $ctrl.importedFiles" value="{{::key}}">
+        <md-option ng-repeat="file in $ctrl.files" value="{{::key}}">
             <md-truncate>{{::file.fileMeta.fileName}}</md-truncate>
         </md-option>
     </md-select>

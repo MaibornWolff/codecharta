@@ -2,58 +2,42 @@ import { FileValidator } from "./core/data/FileValidator"
 import {
 	CCFile,
 	MetricData,
-	RecursivePartial,
-	Settings,
-	RenderMode,
 	ColorRange,
-	CodeMapNode
 } from "./codeCharta.model"
-import { DataDecoratorService } from "./core/data/data.decorator.service"
 import { NameDataPair } from "./util/urlUtils"
-import { SettingsService, SettingsServiceSubscriber } from "./state/settings.service"
-import { DeltaCalculatorService } from "./core/data/data.deltaCalculator.service"
-import {IRootScopeService, IAngularEvent, ILocationService, IHttpService} from "angular"
+import { SettingsService } from "./state/settings.service"
+import { IRootScopeService } from "angular"
 import { MetricCalculator } from "./MetricCalculator"
-import { CodeMapRenderService } from "./ui/codeMap/codeMap.render.service"
-import {FileStateService} from "./state/fileState.service";
+import { FileStateService } from "./state/fileState.service";
 
 export interface ImportedFilesChangedSubscriber {
 	onImportedFilesChanged(importedFiles: CCFile[], metrics: string[], metricData: MetricData[])
 }
 
-export class CodeChartaService implements SettingsServiceSubscriber {
-	//public importedFiles: CCFile[] = []
+export class CodeChartaService {
+
+	public static ROOT_NAME = "root"
+	public static ROOT_PATH =  "/" + CodeChartaService.ROOT_NAME
+	private static IMPORTED_FILES_CHANGED_EVENT = "imported-files-changed";
+
 	public metrics: string[] = []
 	public metricData: MetricData[] = []
-
-	private _lastReferenceIndex = 0
-	private _lastComparisonMap: CodeMapNode = null
-	private _deltasEnabled = false
-	private _lastDeltaState = false
-	private renderMap: CodeMapNode
 
 	//private importedScenarios: Scenario[]
 	//private urlData: UrlData
 
 	constructor(
-		//private codeMapRenderService: CodeMapRenderService,
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
 		//private urlService: UrlUtils,
-		//private dataDecoratorService: DataDecoratorService,
+		//private dataDecoratorService: CodeMapNodeDecoratorService,
 		//private deltaCalculatorService: DeltaCalculatorService,
-		//private codeMapRenderService: CodeMapRenderService,
 		private fileStateService: FileStateService
 	) {
-		SettingsService.subscribe(this.$rootScope, this)
 	}
 
 	public resetMaps(): any {
 		throw new Error("Method not implemented.")
-	}
-
-	public getRenderMap(): CodeMapNode {
-		return this.renderMap
 	}
 
 	public getImportedFiles(): CCFile[] {
@@ -62,17 +46,6 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 
 	public getMetrics(): string[] {
 		return this.metrics
-	}
-
-	public onSettingsChanged(settings: Settings, event: IAngularEvent) {
-		// TODO schleife ?
-		if (this._lastDeltaState && settings.dynamicSettings.renderMode != RenderMode.Delta) {
-			this._lastDeltaState = false
-			//this.onDeactivateDeltas()
-		} else if (!this._lastDeltaState && settings.dynamicSettings.renderMode == RenderMode.Delta) {
-			this._lastDeltaState = true
-			//this.onActivateDeltas()
-		}
 	}
 
 	private getAdaptedRange(colorMetric: string, flipped: boolean): ColorRange {
@@ -94,11 +67,12 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 				if (errors.length === 0) {
 					const ccFile = this.getCCFile(nameDataPair.name, nameDataPair.data)
 					this.fileStateService.addFile(ccFile)
-					//this.dataDecoratorService.preDecorateFile(ccFile)
 				} else {
 					reject(errors)
 				}
 			})
+
+			this.saveMetricsFromAllMaps()
 
 			/*this.settingsService.updateSettings({
 				dynamicSettings: {
@@ -108,12 +82,6 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 					neutralColorRange: this.getAdaptedRange(this.getMetricByIndexElseLast(2, this.metrics), false)
 				}
 			})*/
-			
-			//this.dataDecoratorService.postDecorateFiles(this.fileStateService.getCCFiles(), this.metrics)
-
-			/*const metricResult = MetricCalculator.calculateMetrics(this.fileStateService.getCCFiles())
-			this.metrics = metricResult.metrics
-			this.metricData = metricResult.data*/
 
 			// TODO #136
 			//if(applyScenarioOnce) {
@@ -130,21 +98,52 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 		})
 	}
 
+	private saveMetricsFromAllMaps() {
+		const metricResult = MetricCalculator.calculateMetrics(this.fileStateService.getCCFiles())
+		this.metrics = metricResult.metrics
+		this.metricData = metricResult.data
+	}
+
+
+	private getCCFile(fileName: string, fileContent: any): CCFile {
+		return {
+			fileMeta: {
+				fileName: fileName,
+				projectName: fileContent.projectName,
+				apiVersion: fileContent.apiVersion
+			},
+			settings: {
+				fileSettings: {
+					edges: fileContent.edges || [],
+					attributeTypes: fileContent.attributeTypes || {},
+					blacklist: fileContent.blacklist || [],
+				}
+			},
+			map: fileContent.nodes[0]
+		}
+	}
+
+	public static subscribe($rootScope: IRootScopeService, subscriber: ImportedFilesChangedSubscriber) {
+		$rootScope.$on(CodeChartaService.IMPORTED_FILES_CHANGED_EVENT, (event, data) => {
+			subscriber.onImportedFilesChanged(data.files, data.metrics, data.metricData)
+		})
+	}
+
 	/*public setComparisonMap(index: number) {
-		if (this.importedFiles[index] != null) {
-			this._lastComparisonMap = this.importedFiles[index].map
+		if (this.files[index] != null) {
+			this._lastComparisonMap = this.files[index].map
 			this.processDeltas()
-			//this.dataDecoratorService.decorateMapWithCompactMiddlePackages(this.importedFiles[index]) // TODO not sure if this is the correct file
+			//this.dataDecoratorService.decorateMapWithCompactMiddlePackages(this.files[index])
 			this.callOthers()
 		}
 	}
 
 	public setReferenceMap(index: number) {
-		if (this.importedFiles[index] != null) {
+		if (this.files[index] != null) {
 			this._lastReferenceIndex = index
-			this.renderMap = this.importedFiles[index].map
+			this.renderMap = this.files[index].map
 			this.processDeltas()
-			//this.dataDecoratorService.decorateMapWithCompactMiddlePackages(this.importedFiles[index])
+			//this.dataDecoratorService.decorateMapWithCompactMiddlePackages(this.files[index])
 			this.callOthers()
 		}
 	}
@@ -161,13 +160,13 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 			this._deltasEnabled = false
 			this.setComparisonMap(this._lastReferenceIndex)
 		}
-	}*/
+	}
 
-	/*private callOthers() {
+	private callOthers() {
 
 		// TODO remove event completely
-		this.$rootScope.$broadcast("imported-files-changed", {
-			importedFiles: this.fileStateService.getCCFiles(),
+		this.$rootScope.$broadcast(CodeChartaService.IMPORTED_FILES_CHANGED_EVENT, {
+			files: this.fileStateService.getCCFiles(),
 			metrics: this.metrics,
 			metricData: this.metricData
 		})
@@ -196,16 +195,6 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 		}
 
 		this.settingsService.updateSettings(settingsUpdate)
-		this.firstRendering()
-	}*/
-
-	private firstRendering() {
-		/*this.codeMapRenderService.render({
-			renderMap: this.renderMap,
-			fileName: "fileName", //TODO
-			importedFiles: this.importedFiles,
-			settings: this.settingsService.getSettings()
-		})*/
 	}
 
 	private getMetricByIndexElseLast(index: number, metrics: string[]): string {
@@ -217,69 +206,11 @@ export class CodeChartaService implements SettingsServiceSubscriber {
 	}
 
 	private processDeltas() {
-		//if (this.renderMap) {
-		//	this.deltaCalculatorService.removeCrossOriginNodes(this.renderMap)
-		//}
-		//if (this._deltasEnabled && this.renderMap && this._lastComparisonMap) {
-		//	this.deltaCalculatorService.provideDeltas(this.renderMap, this._lastComparisonMap, this.metrics)
-		//}
-	}
-
-	private getCCFile(fileName: string, fileContent: any): CCFile {
-		return {
-			fileMeta: {
-				fileName: fileName,
-				projectName: fileContent.projectName,
-				apiVersion: fileContent.apiVersion
-			},
-			settings: {
-				fileSettings: {
-					edges: fileContent.edges || [],
-					attributeTypes: fileContent.attributeTypes || {},
-					blacklist: fileContent.blacklist || [],
-				}
-			},
-			map: fileContent.nodes[0]
+		if (this.renderMap) {
+			this.deltaCalculatorService.removeCrossOriginNodes(this.renderMap)
 		}
-	}
-
-	public static subscribe($rootScope: IRootScopeService, subscriber: ImportedFilesChangedSubscriber) {
-		$rootScope.$on("imported-files-changed", (event, data) => {
-			subscriber.onImportedFilesChanged(data.importedFiles, data.metrics, data.metricData)
-		})
-	}
-
-	/*
-
-	/*
-	onChangeRenderMode() {
-		this.resetMapRelatedSettings()
-		const usedFiles: File[] = this.importedFiles.filter(f => f.settings.dynamicSettings.renderMode)
-		const mergedSettings: Settings = this.settingsService.mergeMapRelatedSettings(usedFiles)
-		this.updateRenderSettings(mergedSettings)
-		this.updateRenderSettings(this.urlData.settings)
-		this.renderMap()
-	}
-
-	onSelectScenario(scenarioName: string) {
-		const scenario: Scenario[] = this.importedScenarios.filter(scenario => scenario.name == scenarioName)
-		this.updateRenderSettings(scenario[0].settings)
-		this.renderMap()
-	}
-
-	onLoad() {
-		this.setRenderSettings(this.getDefaultSettings())
-		this.updateRenderSettings(this.importedFiles[0].settings)
-		this.updateRenderSettings(this.urlData.settings)
-		this.renderMap()
-	}
-
-	updateRenderSettings(partialSettings: Partial<Settings>) {
-		this.renderSettings = {...this.renderSettings, ...partialSettings}
-	}
-
-	renderMap() {
-		this.codeMapRenderService.updateMapGeometry(this.renderSettings, this.importedFiles)
-	}
-*/
+		if (this._deltasEnabled && this.renderMap && this._lastComparisonMap) {
+			this.deltaCalculatorService.provideDeltas(this.renderMap, this._lastComparisonMap, this.metrics)
+		}
+	} */
 }

@@ -4,7 +4,7 @@ import DoneCallback = jest.DoneCallback;
 import {CodeMap} from "./model/CodeMap";
 import {TEST_FILE_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B} from "./data.mocks";
 import {DeltaCalculatorService} from "./data.deltaCalculator.service";
-import {DataDecoratorService} from "./data.decorator.service";
+import {CodeMapNodeDecoratorService} from "../../ui/codeMap/codeMap.nodeDecorator.service";
 import * as d3 from "d3";
 
 /**
@@ -14,12 +14,12 @@ describe("app.codeCharta.core.data.dataService", () => {
 
     let a: CodeMap;
     let b: CodeMap;
-    let dataDecoratorService: DataDecoratorService;
+    let dataDecoratorService: CodeMapNodeDecoratorService;
 
     beforeEach(function() {
         a = JSON.parse(JSON.stringify(TEST_DELTA_MAP_A));
         b = JSON.parse(JSON.stringify(TEST_DELTA_MAP_B));
-        dataDecoratorService = new DataDecoratorService();
+        dataDecoratorService = new CodeMapNodeDecoratorService();
     });
 
     describe("decorateLeavesWithMissingMetrics", () => {

@@ -11,7 +11,7 @@ import {IRootScopeService} from "angular";
  */
 export class RevisionChooserController implements SettingsServiceSubscriber {
 
-    public importedFiles: CCFile[];
+    public files: CCFile[];
     public settings: Settings;
     private _viewModel = {
         allRenderModes: RenderMode,
@@ -26,12 +26,12 @@ export class RevisionChooserController implements SettingsServiceSubscriber {
         private settingsService: SettingsService,
         private $rootScope: IRootScopeService
     ) {
-        this.importedFiles = this.codeChartaService.getImportedFiles();
+        this.files = this.codeChartaService.getImportedFiles();
         this.settings = this.settingsService.getSettings();
 
         // TODO: Set comparisonMap
-        //this._viewModel.chosenComparison = this.dataService.getIndexOfMap(this.dataService.getComparisonMap(), this.importedFiles);
-        //this._viewModel.chosenReference = this.dataService.getIndexOfMap(this.codeChartaService.getRenderMap(), this.importedFiles);
+        //this._viewModel.chosenComparison = this.dataService.getIndexOfMap(this.dataService.getComparisonMap(), this.files);
+        //this._viewModel.chosenReference = this.dataService.getIndexOfMap(this.codeChartaService.getRenderMap(), this.files);
         this.$rootScope.$on("revision-mode-changed", (event, data)=>{
             this._viewModel.allRenderModes = data;
         });
