@@ -19,7 +19,7 @@ export class ResetSettingsButtonController {
     public updateSettings(settingsList: string = this.settingsNames) {
         const sanitizedSettingsList = settingsList.replace(/ /g,"").replace(/\n/g,"");
         const tokens: string[] = sanitizedSettingsList.split(",");
-        const settings = this.settingsService.settings;
+        const settings = this.settingsService.getSettings();
         const defaultSettings = this.settingsService.getDefaultSettings();
 
         tokens.forEach((token) => {

@@ -2,10 +2,11 @@ import { SettingsService, SettingsServiceSubscriber } from "../../state/settings
 import "./rangeSlider.component.scss"
 import { MapColors } from "../codeMap/rendering/renderSettings"
 import $ from "jquery"
-import { Settings, RenderMode, RecursivePartial } from "../../codeCharta.model"
+import {Settings, RecursivePartial, FileSelectionState} from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { MetricCalculator } from "../../MetricCalculator";
 import {FileStateService} from "../../state/fileState.service";
+import {ITimeoutService} from "angular";
 
 export class RangeSliderController implements SettingsServiceSubscriber {
 	public sliderOptions: any
@@ -21,12 +22,14 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		private settingsService: SettingsService,
 		private fileStateService: FileStateService,
 		private codeChartaService: CodeChartaService,
-		$timeout, $scope) {
+		private $timeout: ITimeoutService,
+		private $scope
+	) {
 		SettingsService.subscribe($scope, this)
 		this.initSliderOptions()
 
-		$timeout(() => {
-			$scope.$broadcast("rzSliderForceRender")
+		this.$timeout(() => {
+			this.$scope.$broadcast("rzSliderForceRender")
 		})
 	}
 
@@ -54,7 +57,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 			pushRange: true,
 			onToChange: this.onToSliderChange.bind(this),
 			onFromChange: this.onFromSliderChange.bind(this),
-			disabled: this.settingsService.getSettings().dynamicSettings.renderMode == RenderMode.Delta
+			disabled: FileStateService.getRenderState(this.fileStateService.getFileStates()) == FileSelectionState.Comparison
 		}
 	}
 

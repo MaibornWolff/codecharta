@@ -2,7 +2,7 @@
     <i class='fa fa-arrows-v'></i>
 
     <md-select ng-model="$ctrl._viewModel.heightMetric" ng-change="$ctrl.applySettings()">
-        <md-option ng-repeat="metric in $ctrl.metricData" value="{{::metric.name}}">
+        <md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
             {{::metric.name}}
             <span class="metric-max-value">({{::metric.maxValue}})</span>
         </md-option>

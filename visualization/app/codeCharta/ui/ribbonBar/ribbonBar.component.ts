@@ -1,11 +1,12 @@
 import "./ribbonBar.component.scss";
 import $ from "jquery";
-import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
-import { DownloadService } from "../../core/download/download.service";
+import {SettingsService} from "../../state/settings.service";
+//import { DownloadService } from "../../core/download/download.service";
 import {IRootScopeService} from "angular";
-import {Settings} from "../../codeCharta.model";
+import {FileSelectionState, FileState, MetricData} from "../../codeCharta.model";
+import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
 
-export class RibbonBarController implements SettingsServiceSubscriber {
+export class RibbonBarController implements FileStateServiceSubscriber {
 
     private collapsingElements = $("code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab")
     private toggleElements = $("ribbon-bar-component .section-title")
@@ -18,17 +19,21 @@ export class RibbonBarController implements SettingsServiceSubscriber {
     constructor(
         private $rootScope: IRootScopeService,
         private settingsService: SettingsService,
-        private downloadService: DownloadService
+        //private downloadService: DownloadService
     ) {
-        SettingsService.subscribe(this.$rootScope, this)
+        FileStateService.subscribe(this.$rootScope, this)
     }
 
-    public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
-        this._viewModel.renderMode = settings.dynamicSettings.renderMode
+    onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
+        this._viewModel.renderMode = FileStateService.getRenderState(fileStates)
+    }
+
+    onImportedFilesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
+
     }
 
     public downloadFile() {
-        this.downloadService.downloadCurrentMap()
+        //this.downloadService.downloadCurrentMap()
     }
 
     public toggle() {

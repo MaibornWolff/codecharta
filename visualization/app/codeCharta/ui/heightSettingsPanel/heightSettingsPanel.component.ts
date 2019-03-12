@@ -1,17 +1,23 @@
 import "./heightSettingsPanel.component.scss";
 import {IRootScopeService} from "angular";
-import {SettingsService} from "../../state/settings.service";
-import {RenderMode, Settings} from "../../codeCharta.model";
+import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
+import {FileSelectionState, FileState, MetricData, Settings} from "../../codeCharta.model";
+import {FileStateService} from "../../state/fileState.service";
 
-export class HeightSettingsPanelController {
+export class HeightSettingsPanelController implements SettingsServiceSubscriber {
 
-    private _deltaModeConstant = RenderMode.Delta;
-
-    private _viewModel = {
+    private _viewModel: {
+        amountOfTopLabels: number,
+        scalingY: number,
+        invertHeight: boolean,
+        renderState: FileSelectionState,
+        comparisonState: FileSelectionState
+    } = {
         amountOfTopLabels: null,
         scalingY: null,
         invertHeight: null,
-        renderMode: null
+        renderState: null,
+        comparisonState: FileSelectionState.Comparison
     }
 
     /* @ngInject */
@@ -26,7 +32,14 @@ export class HeightSettingsPanelController {
         this._viewModel.amountOfTopLabels = settings.appSettings.amountOfTopLabels;
         this._viewModel.scalingY = settings.appSettings.scaling.y;
         this._viewModel.invertHeight = settings.appSettings.invertHeight;
-        this._viewModel.renderMode = settings.dynamicSettings.renderMode;
+    }
+
+    public onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
+        this._viewModel.renderState = FileStateService.getRenderState(fileStates);
+    }
+
+    public onImportedFilesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
+
     }
 
     public applySettings() {

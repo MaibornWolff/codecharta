@@ -1,23 +1,23 @@
 import { SettingsService } from "../../state/settings.service"
 import "./revisionChooser.component.scss"
 import "./revisionChooserFileDropDown.component.scss"
-import {CCFile, Settings} from "../../codeCharta.model";
-import {SettingsServiceSubscriber} from "../../state/settings.service";
+import {FileSelectionState, FileState, MetricData} from "../../codeCharta.model";
 import {IRootScopeService} from "angular";
-import {FileStateService} from "../../state/fileState.service";
+import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
 
 /**
  * Controls the RevisionChooser
  */
-export class RevisionChooserController implements SettingsServiceSubscriber {
+export class RevisionChooserController implements FileStateServiceSubscriber {
 
-    public files: CCFile[];
-    public settings: Settings;
-    private _viewModel = {
-        allRenderModes: RenderMode,
-        renderMode: null,
-        chosenReference: null,
-        chosenComparison: null
+    private _viewModel: {
+        renderState: FileSelectionState,
+        fileStates: FileState[],
+        referenceFileState: FileState
+    } = {
+        renderState: null,
+        fileStates: [],
+        referenceFileState: null
     }
 
     /* @ngInject */
@@ -26,47 +26,36 @@ export class RevisionChooserController implements SettingsServiceSubscriber {
         private settingsService: SettingsService,
         private $rootScope: IRootScopeService
     ) {
-        this.files = this.fileStateService.getCCFiles();
-        this.settings = this.settingsService.getSettings();
-
-        // TODO: Set comparisonMap
-        //this._viewModel.chosenComparison = this.dataService.getIndexOfMap(this.dataService.getComparisonMap(), this.files);
-        //this._viewModel.chosenReference = this.dataService.getIndexOfMap(this.codeChartaService.getRenderMap(), this.files);
-        this.$rootScope.$on("revision-mode-changed", (event, data)=>{
-            this._viewModel.allRenderModes = data;
-        });
-        SettingsService.subscribe(this.$rootScope, this)
-
+        FileStateService.subscribe(this.$rootScope, this)
     }
 
-    public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
-        this._viewModel.renderMode = settings.dynamicSettings.renderMode;
+    public onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
+
+        this._viewModel.renderState = FileStateService.getRenderState(fileStates)
+
+        if (renderState == FileSelectionState.Comparison) {
+            fileStates.filter(x => x.selectedAs == FileSelectionState.Comparison || x.selectedAs == FileSelectionState.Reference)
+
+        } else if (renderState == FileSelectionState.Partial){
+            fileStates.filter(x => x.selectedAs == FileSelectionState.Partial)
+
+        } else {
+            this._viewModel.referenceFileState = fileStates.find(x => x.selectedAs == FileSelectionState.Single)
+        }
     }
 
-    //TODO listen to on imported files changed
-    /*public onDataChanged(data: DataModel) {
-        this.revisions = data.revisions;
-        this.ui.chosenComparison= this.dataService.getIndexOfMap(this.dataService.getComparisonMap(), this.revisions);
-        this.ui.chosenReference = this.dataService.getIndexOfMap(this.dataService.getReferenceMap(), this.revisions);
+    public onImportedFilesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
+        this._viewModel.fileStates = fileStates
     }
 
-    public onReferenceChange(mapIndex: number) {
-        this.dataService.setReferenceMap(mapIndex);
+    public onReferenceChange(fileName: string) {
+        const matchingFileState = this.fileStateService.getFileStateByFileName(fileName)
+        this.fileStateService.setSingle(matchingFileState.file)
     }
-
-    public onComparisonChange(mapIndex: number) {
-        this.dataService.setComparisonMap(mapIndex);
-    }*/
-
-
 
     public onShowChange(){
-        this.settingsService.updateSettings({
-            dynamicSettings: {
-                renderMode: this._viewModel.renderMode
-            }
-        });
-     }
+
+    }
 }
 
 export const revisionChooserComponent = {

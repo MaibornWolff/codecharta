@@ -63,7 +63,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
-		// TODO: calculate metrics everytime, access from codeChartaService or somewhere else?
 		this.codeMapNodeDecoratorService.decorateFiles(
 			fileStates.map(x => x.file),
 			metricData.map(x => x.name))
@@ -76,19 +75,22 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	public onImportedFilesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
-		// unused
 	}
 
 	private getSelectedFilesAsUnifiedMap(fileStates: FileState[]): CodeMapNode {
+
+		// TODO: set combined fileSettings from CCFile into settingsService.settings
 		if (this.lastRender.renderState == FileSelectionState.Comparison) {
 			/*return fileStates
 				.filter(x => x.selectedAs == FileSelectionState.Comparison || x.selectedAs == FileSelectionState.Reference)
 				.map(x => x.file)*/
+
 		} else if (this.lastRender.renderState == FileSelectionState.Partial){
 			const partialFiles = fileStates
 				.filter(x => x.selectedAs == FileSelectionState.Partial)
 				.map(x => x.file)
 			return MultipleFileService.aggregateMaps(partialFiles).map
+
 		} else {
 			return fileStates.find(x => x.selectedAs == FileSelectionState.Single).file.map
 		}
@@ -117,16 +119,9 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		this.showAllOrOnlyFocusedNode(map, s)
 
 		const treeMapNode: Node = this.treeMapService.createTreemapNodes(map, importedFiles, s, fileName)
-		//console.log("treeMapNode", treeMapNode);
-
 		const nodes: Node[] = this.collectNodesToArray(treeMapNode)
-		//console.log("nodes", nodes);
-
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
-		//console.log("filteredNodes", filteredNodes);
-
 		this.currentSortedNodes = filteredNodes.sort((a, b) => b.height - a.height)
-		//console.log("sortedNodes", this.currentSortedNodes)
 
 		this.setLabels(s)
 		this.setArrows(s)
@@ -142,7 +137,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 			for (let j = 0; j < collected.length; j++) {
 				nodes.push(collected[j])
 			}
-			//console.log(i, collected.length, collected);
 		}
 		return nodes
 	}

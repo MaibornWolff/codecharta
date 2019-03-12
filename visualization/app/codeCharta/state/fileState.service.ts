@@ -31,16 +31,27 @@ export class FileStateService {
 
     public addFile(file: CCFile) {
         this.fileStates.push({file: file, selectedAs: FileSelectionState.None})
-        this.metricData = MetricCalculator.calculateMetrics(this.fileStates.map(x => x.file))
         this.notifyFileImport()
+    }
+
+    public getCCFiles(): CCFile[] {
+        return this.fileStates.map(x => x.file)
     }
 
     public getFileStates(): FileState[] {
         return this.fileStates
     }
 
-    public getCCFiles(): CCFile[] {
-        return this.fileStates.map(x => x.file)
+    public getVisibleFiles(): CCFile[] {
+        return this.fileStates.filter(x => x.selectedAs != FileSelectionState.None).map(x => x.file)
+    }
+
+    public getVisibleFileStates(): FileState[] {
+        return this.fileStates.filter(x => x.selectedAs != FileSelectionState.None)
+    }
+
+    public getFileStateByFileName(fileName: string): FileState {
+        return this.fileStates.find(x => x.file.fileMeta.fileName == fileName)
     }
 
     public setSingle(file: CCFile) {
@@ -76,16 +87,19 @@ export class FileStateService {
     }
 
     private notifySelectionChange() {
-        this.$rootScope.$broadcast(FileStateService.FILE_STATE_CHANGED_EVENT, {fileStates: this.fileStates, metricData: this.metricData, renderState: this.getRenderState()})
+        this.metricData = MetricCalculator.calculateMetrics(this.fileStates, this.getVisibleFileStates())
+
+        this.$rootScope.$broadcast(FileStateService.FILE_STATE_CHANGED_EVENT,
+            {fileStates: this.fileStates, metricData: this.metricData, renderState: FileStateService.getRenderState(this.fileStates)})
     }
 
     private notifyFileImport() {
-        console.log("notifyFileImport")
-        this.$rootScope.$broadcast(FileStateService.IMPORTED_FILES_CHANGED_EVENT, {fileStates: this.fileStates, metricData: this.metricData, renderState: this.getRenderState()})
+        this.$rootScope.$broadcast(FileStateService.IMPORTED_FILES_CHANGED_EVENT,
+            {fileStates: this.fileStates, metricData: this.metricData, renderState: FileStateService.getRenderState(this.fileStates)})
     }
 
-    public getRenderState(): FileSelectionState {
-        const firstFoundFileState: FileSelectionState = this.fileStates
+    public static getRenderState(fileStates: FileState[]): FileSelectionState {
+        const firstFoundFileState: FileSelectionState = fileStates
             .map(x => x.selectedAs)
             .filter(state => state != FileSelectionState.None)[0]
 

@@ -6,13 +6,18 @@ import {
     CodeMapMouseEventServiceSubscriber
 } from "../codeMap/codeMap.mouseEvent.service";
 import {CodeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
-import {MetricData, CCFile, Settings, FileState, ColorRange, FileSelectionState} from "../../codeCharta.model";
+import {
+    MetricData,
+    Settings,
+    FileState,
+    ColorRange,
+    FileSelectionState,
+    DynamicSettings, CCFile
+} from "../../codeCharta.model";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
 import {MetricCalculator} from "../../MetricCalculator";
 
 export class MetricChooserController implements FileStateServiceSubscriber, CodeMapMouseEventServiceSubscriber, SettingsServiceSubscriber {
-
-    public metricData: MetricData[];
 
     public hoveredAreaValue: number;
     public hoveredHeightValue: number;
@@ -24,7 +29,13 @@ export class MetricChooserController implements FileStateServiceSubscriber, Code
     public optionsWithoutStart;
     public sliderPositions;
 
-    public _viewModel = {
+    public _viewModel: {
+        metricData: MetricData[],
+        areaMetric: string,
+        colorMetric: string,
+        heightMetric: string
+    } = {
+        metricData: [],
         areaMetric: null,
         colorMetric: null,
         heightMetric: null
@@ -37,7 +48,6 @@ export class MetricChooserController implements FileStateServiceSubscriber, Code
         private $rootScope: IRootScopeService
 
     ) {
-        //this.onDataChanged(dataService.data, null);
         FileStateService.subscribe(this.$rootScope, this);
         SettingsService.subscribe(this.$rootScope, this);
         CodeMapMouseEventService.subscribe(this.$rootScope, this);
@@ -59,43 +69,34 @@ export class MetricChooserController implements FileStateServiceSubscriber, Code
 
 
     public onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
-        // unused
+        this._viewModel.metricData = metricData
+        this.potentiallyUpdateChosenMetrics(metricData)
     }
 
     public onImportedFilesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
-        console.log("metricData", metricData)
 
-        const metrics = metricData.map(x => x.name)
-        this.metricData =  metricData;
-
-        this.settingsService.updateSettings({
-            dynamicSettings: {
-                areaMetric: this.getMetricByIndexElseLast(0, metrics),
-                heightMetric: this.getMetricByIndexElseLast(1, metrics),
-                colorMetric: this.getMetricByIndexElseLast(2, metrics),
-                neutralColorRange: this.getAdaptedRange(
-                    fileStates.map(x => x.file),
-                    this.getMetricByIndexElseLast( 2, metrics),
-                    false)
-            }
-        })
     }
 
-    // TODO: move getAdaptedRange into colorSettingsPanel and check if colorMetric changed
-    private getAdaptedRange(files: CCFile[], colorMetric: string, flipped: boolean): ColorRange {
-        const maxMetricValue = MetricCalculator.getMaxMetricInAllRevisions(files, colorMetric)
-        const firstThird = Math.round((maxMetricValue / 3) * 100) / 100
-        const secondThird = Math.round(firstThird * 2 * 100) / 100
-
-        return {
-            flipped: flipped,
-            from: firstThird,
-            to: secondThird
+    private potentiallyUpdateChosenMetrics(metricData: MetricData[]) {
+        const metricKeys: Partial<DynamicSettings> = {
+            areaMetric: "areaMetric",
+            heightMetric: "heightMetric",
+            colorMetric: "colorMetric"
         }
-    }
 
-    private getMetricByIndexElseLast(index: number, metrics: string[]): string {
-        return metrics[Math.min(index, metrics.length - 1)]
+        let metricSelectionIndex = 0
+        for (const metricKey in metricKeys) {
+            const metricValue: string = this.settingsService.getSettings().dynamicSettings[metricKey]
+            const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps)
+
+            if (!!availableMetrics.filter(x => x.name == metricValue)) {
+                this.settingsService.updateSettings({
+                    dynamicSettings: {
+                        [metricKey]: availableMetrics[Math.min(metricSelectionIndex++, availableMetrics.length - 1)].name
+                    }
+                })
+            }
+        }
     }
 
     private updateViewModel(settings: Settings) {

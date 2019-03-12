@@ -9,7 +9,11 @@ export class AreaSettingsPanelController {
 
     private static MAX_MARGIN = 100
     private static MARGIN_FACTOR = 4
-    private _viewModel = {
+
+    private _viewModel: {
+        margin: number,
+        dynamicMargin: boolean
+    } = {
         margin: null,
         dynamicMargin: null
     }
@@ -30,7 +34,8 @@ export class AreaSettingsPanelController {
 
     public applySettings() {
         if (this._viewModel.dynamicMargin) {
-            this._viewModel.margin = this.computeMargin()
+            // TODO: rectivate computeMargin() and need to get renderMap
+            //this._viewModel.margin = this.computeMargin()
         }
 
         this.settingsService.updateSettings({
@@ -48,7 +53,7 @@ export class AreaSettingsPanelController {
         this.applySettings()
     }
 
-    private computeMargin(): number {
+    /*private computeMargin(): number {
         const s: Settings = this.settingsService.getSettings()
         const renderMap: CodeMapNode = this.codeChartaService.getRenderMap()
         if (renderMap !== null && this._viewModel.dynamicMargin) {
@@ -68,7 +73,7 @@ export class AreaSettingsPanelController {
         } else {
             return this._viewModel.margin
         }
-    }
+    }*/
 
 }
 

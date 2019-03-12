@@ -109,39 +109,7 @@ export class CodeChartaService {
 		}
 	}
 
-	private callOthers() {
 
-		// TODO: somewhere else, maybe metricChooser?
-		const mapSettings = this.settingsService.getSettings().dynamicSettings
-		const settingsUpdate: RecursivePartial<Settings> = {
-			dynamicSettings: {
-				// TODO blacklist: this.renderMap.blacklist
-				areaMetric: mapSettings.areaMetric,
-				heightMetric: mapSettings.heightMetric,
-				colorMetric: mapSettings.colorMetric
-			}
-		}
-
-		if (this.isMetricNotAvailable(mapSettings.areaMetric)) {
-			settingsUpdate.dynamicSettings.areaMetric = this.getMetricByIndexElseLast(0, this.metrics)
-		}
-
-		if (this.isMetricNotAvailable(mapSettings.heightMetric)) {
-			settingsUpdate.dynamicSettings.heightMetric = this.getMetricByIndexElseLast(1, this.metrics)
-		}
-
-		if (this.isMetricNotAvailable(mapSettings.colorMetric)) {
-			settingsUpdate.dynamicSettings.colorMetric = this.getMetricByIndexElseLast(2, this.metrics)
-		}
-
-		this.settingsService.updateSettings(settingsUpdate)
-	}
-
-
-
-	private isMetricNotAvailable(metric: string) {
-		return this.metrics.indexOf(metric) === -1
-	}
 
 	private processDeltas() {
 		if (this.renderMap) {

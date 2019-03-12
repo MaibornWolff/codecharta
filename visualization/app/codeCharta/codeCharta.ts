@@ -1,19 +1,18 @@
 "use strict";
 
-import "./core/core.module";
+import angular from "angular";
+import _ from "lodash";
+
 import "./ui/ui";
 import "./state/state.module";
-import "./ui/codeMap/codeMap";
 
 import {codeChartaComponent} from "./codeCharta.component";
-
-import angular from "angular";
 import { CodeChartaService } from "./codeCharta.service";
-import _ from "lodash";
 
 angular.module(
     "app.codeCharta",
-    ["app.codeCharta.state", "app.codeCharta.ui.codeMap"]
+    ["app.codeCharta.state",
+            "app.codeCharta.ui"]
 );
 
 angular.module("app.codeCharta").component(

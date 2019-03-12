@@ -1,17 +1,17 @@
 <md-input-container class="md-block"
-                    ng-class="{half: $ctrl._viewModel.renderMode == 'Delta'}"
-                    ng-if="$ctrl._viewModel.renderMode != 'Multiple'">
+                    ng-class="{half: $ctrl._viewModel.renderState == 'Comparison'}"
+                    ng-if="$ctrl._viewModel.renderState != 'Partial'">
     <i class="fa fa-folder-open"></i>
     <i class="fa fa-download"></i>
 
-    <md-select ng-model="$ctrl._viewModel.chosenReference" ng-change="$ctrl.onReferenceChange($ctrl._viewModel.chosenReference)">
-        <md-option ng-repeat="file in $ctrl.files" value="{{::key}}">
-            <md-truncate>{{::file.fileMeta.fileName}}</md-truncate>
+    <md-select ng-model="$ctrl._viewModel.referenceFileState" ng-change="$ctrl.onReferenceChange($ctrl._viewModel.referenceFileState)">
+        <md-option ng-repeat="fileState in $ctrl._viewModel.fileStates" value="{{::fileState.file.fileMeta.fileName}}">
+            <md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
         </md-option>
     </md-select>
 </md-input-container>
 
-<md-input-container class="md-block second"
+<!--<md-input-container class="md-block second"
                     ng-class="{half: $ctrl._viewModel.renderMode == 'Delta'}"
                     ng-if="$ctrl._viewModel.renderMode == 'Delta'">
     <md-select ng-model="$ctrl._viewModel.chosenComparison" ng-change="$ctrl.onComparisonChange($ctrl._viewModel.chosenComparison)">
@@ -21,5 +21,5 @@
     </md-select>
 </md-input-container>
 
-<multiple-file-panel-component ng-if="$ctrl._viewModel.renderMode == 'Multiple'"></multiple-file-panel-component>
+<multiple-file-panel-component ng-if="$ctrl._viewModel.renderMode == 'Multiple'"></multiple-file-panel-component>-->
 
