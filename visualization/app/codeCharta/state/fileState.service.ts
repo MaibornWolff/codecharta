@@ -37,7 +37,6 @@ export class FileStateService {
     }
 
     public setSingle(file: CCFile) {
-        console.log("setSingle", file);
         this.resetSelectionStates()
         const matchedFile = this.fileStates.find(x => x.file == file)
         if (matchedFile) {
@@ -70,7 +69,6 @@ export class FileStateService {
     }
 
     private notifySelectionChange() {
-        console.log("notifySelectionChange")
         this.$rootScope.$broadcast(FileStateService.FILE_STATE_CHANGED_EVENT, this.fileStates)
     }
 

@@ -2,7 +2,7 @@
 import angular from "angular";
 import {FileStateService} from "./fileState.service";
 import {SettingsService} from "./settings.service";
-import {MetricSateService} from "./metricState.service";
+import {MetricStateService} from "./metricState.service";
 
 angular.module(
     "app.codeCharta.state", []
@@ -11,5 +11,5 @@ angular.module(
 ).service(
     "settingsService", SettingsService
 ).service(
-    "metricStateService", MetricSateService
+    "metricStateService", MetricStateService
 );

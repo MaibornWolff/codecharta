@@ -47,8 +47,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		private codeMapUtilService: CodeMapUtilService,
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService,
-		private codeMapNodeDecoratorService: CodeMapNodeDecoratorService,
-		private metricStateService: MetricStateService
+		private codeMapNodeDecoratorService: CodeMapNodeDecoratorService
 	) {
 		//SettingsService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
@@ -107,7 +106,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	private render(renderData: RenderData) {
-		renderData.renderFile = this.codeMapNodeDecoratorService.decorateFiles(renderData.renderFile, this.metricStateService.getMetrics())
+		// TODO: give parameter MetricData and adapt decorateFiles methods
+		renderData.renderFile = this.codeMapNodeDecoratorService.decorateFiles(renderData.renderFile, renderData.metricData.map(x => x.name))
 		this.updateMapGeometry(renderData.renderFile, renderData.fileStates, renderData.settings, renderData.metricData)
 		this.scaleMap(
 			renderData.settings.appSettings.scaling.x,

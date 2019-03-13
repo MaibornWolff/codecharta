@@ -37,8 +37,9 @@ export class MetricStateService implements FileStateServiceSubscriber {
 		return this.metricData
 	}
 
-	public getMaxMetricByMetricName(metricName: string) {
-		return this.metricData.find(x => x.name == metricName).maxValue
+	public getMaxMetricByMetricName(metricName: string): number {
+		const metric: MetricData = this.metricData.find(x => x.name == metricName)
+		return metric ? metric.maxValue : undefined
 	}
 
 	public getMaxMetricInAllRevisions(files: CCFile[], metric: string): number {

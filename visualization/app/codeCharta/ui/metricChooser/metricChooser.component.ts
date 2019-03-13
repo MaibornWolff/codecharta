@@ -11,7 +11,7 @@ import {
     Settings,
     DynamicSettings
 } from "../../codeCharta.model";
-import {MetricStateServiceSubscriber} from "../../state/metricState.service";
+import {MetricStateService, MetricStateServiceSubscriber} from "../../state/metricState.service";
 
 export class MetricChooserController implements MetricStateServiceSubscriber, CodeMapMouseEventServiceSubscriber, SettingsServiceSubscriber {
 
@@ -46,6 +46,7 @@ export class MetricChooserController implements MetricStateServiceSubscriber, Co
     ) {
         SettingsService.subscribe(this.$rootScope, this);
         CodeMapMouseEventService.subscribe(this.$rootScope, this);
+        MetricStateService.subscribe(this.$rootScope, this)
         this.initSliderOptions()
     }
 
