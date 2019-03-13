@@ -1,4 +1,4 @@
-import "./multipleFile.module";
+import "../core/multipleFile/multipleFile.module";
 import {NGMock} from "../../../../mocks/ng.mockhelper";
 import {AttributeType, BlacklistType, CodeMap, Edge} from "../data/model/CodeMap";
 

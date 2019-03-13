@@ -1,7 +1,7 @@
-import "./download.module";
+import "../core/download/download.module";
 import {getService, instantiateModule} from "../../../../mocks/ng.mockhelper";
 import {SettingsService} from "../../state/settings.service";
-import {DownloadService} from "./download.service";
+import {DownloadService} from "../../util/download.service";
 import { stubDate } from '../../../../mocks/dateMock.helper';
 
 describe("app.codeCharta.core.download", function() {

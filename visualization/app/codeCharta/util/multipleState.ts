@@ -1,6 +1,6 @@
-import {AttributeType, CodeMapNode, Edge, BlacklistItem, CCFile} from "../../codeCharta.model"
+import {AttributeType, CodeMapNode, Edge, BlacklistItem, CCFile} from "../codeCharta.model"
 
-export class MultipleFileService {
+export class MultipleState {
 	public static SELECTOR = "multipleFileService"
 	private static projectNameArray = []
 	private static fileNameArray = []
@@ -92,7 +92,7 @@ export class MultipleFileService {
 			fileMeta: {
 				projectName: "Aggregation of following projects: " + this.projectNameArray.join(", "),
 				fileName: "Aggregation of following files: " + this.fileNameArray.join(", "),
-				apiVersion: require("../../../../package.json").codecharta.apiVersion
+				apiVersion: require("../../../package.json").codecharta.apiVersion
 			},
 			map: {
 				name: "root",

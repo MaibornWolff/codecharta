@@ -4,7 +4,7 @@ import { MapColors } from "../codeMap/rendering/renderSettings"
 import $ from "jquery"
 import {Settings, RecursivePartial, FileSelectionState} from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
-import { MetricCalculator } from "../../MetricCalculator";
+import { MetricCalculator } from "../../util/metricCalculator";
 import {FileStateService} from "../../state/fileState.service";
 import {ITimeoutService} from "angular";
 

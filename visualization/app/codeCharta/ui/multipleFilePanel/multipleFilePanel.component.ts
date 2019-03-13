@@ -2,7 +2,7 @@ import { Settings, SettingsService, SettingsServiceSubscriber } from "../../stat
 import "./multipleFilePanel.component.scss"
 import { DataModel, DataService, DataServiceSubscriber } from "../../core/data/data.service"
 import { CodeMap } from "../../core/data/model/CodeMap"
-import { MultipleFileService } from "../../core/multipleFile/multipleFile.service"
+import { MultipleState } from "../../util/multipleState"
 
 export class MultipleFilePanelController implements DataServiceSubscriber, SettingsServiceSubscriber {
 	public settings: Settings
@@ -15,7 +15,7 @@ export class MultipleFilePanelController implements DataServiceSubscriber, Setti
 	constructor(
 		private settingsService: SettingsService,
 		private dataService: DataService,
-		private multipleFileService: MultipleFileService
+		private multipleFileService: MultipleState
 	) {
 		this.revisions = dataService.data.revisions
 		this.settings = settingsService.settings

@@ -1,10 +1,10 @@
-import {Node} from "../../ui/codeMap/rendering/node";
+import {Node} from "../rendering/node";
 import * as d3 from "d3";
 import {hierarchy, HierarchyNode} from "d3";
 import {TreeMapUtils} from "./treemap.util";
-import {CodeMapUtilService} from "../../ui/codeMap/codeMap.util.service";
-import {CodeMapNode, BlacklistType, CCFile, Settings} from "../../codeCharta.model";
-import { MetricCalculator } from "../../MetricCalculator";
+import {CodeMapUtilService} from "../codeMap.util.service";
+import {CodeMapNode, BlacklistType, CCFile, Settings} from "../../../codeCharta.model";
+import { MetricCalculator } from "../../../util/metricCalculator";
 
 export interface SquarifiedValuedCodeMapNode {
     data: CodeMapNode;

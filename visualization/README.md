@@ -91,4 +91,4 @@ It provides a simple way to customize your links with query parameters.
 
 [Example Data](/visualization/app/codeCharta/sample.json)
 
-[JSON Schema](/visualization/app/codeCharta/core/data/schema.json)
+[JSON Schema](/visualization/app/codeCharta/util/schema.json)

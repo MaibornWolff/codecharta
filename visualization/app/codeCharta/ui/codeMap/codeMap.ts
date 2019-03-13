@@ -2,7 +2,7 @@ import angular from "angular";
 
 import "./threeViewer/threeViewer";
 import "../../state/state.module";
-import "../../core/treemap/treemap.module";
+import "./treemap/treemap.module";
 
 import {codeMapComponent} from "./codeMap.component";
 import {CodeMapMouseEventService} from "./codeMap.mouseEvent.service";
@@ -13,8 +13,11 @@ import {CodeMapLabelService} from "./codeMap.label.service";
 import {CodeMapArrowService} from "./codeMap.arrow.service";
 import {CodeMapNodeDecoratorService} from "./codeMap.nodeDecorator.service";
 
-angular.module("app.codeCharta.ui.codeMap",["app.codeCharta.state", "app.codeCharta.core.treemap", "app.codeCharta.ui.codeMap.threeViewer"])
-.component(
+angular.module("app.codeCharta.ui.codeMap", [
+    "app.codeCharta.state",
+    "app.codeCharta.ui.codeMap.threeViewer",
+    "app.codeCharta.ui.codeMap.treemap"]
+).component(
     codeMapComponent.selector,
     codeMapComponent
 ).service(

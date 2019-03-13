@@ -4,7 +4,7 @@ import DoneCallback = jest.DoneCallback;
 
 import {NameDataPair, UrlUtils} from "./urlUtils";
 import "../core/url/url.module";
-import {VALID_TEST_DATA} from "./url.mocks";
+import {VALID_TEST_DATA} from "./urlUtils.mocks";
 import {CodeMap} from "../data/model/CodeMap";
 
 describe("url.service", ()=>{

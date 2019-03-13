@@ -1,4 +1,4 @@
-export class ColorService {
+export class ColorConvertion {
 
     public static convertHexToNumber(hex: string): number {
         return Number(hex.replace("#","0x"));

@@ -1,4 +1,4 @@
-import { CodeMapNode } from "../../codeCharta.model"
+import { CodeMapNode } from "../codeCharta.model"
 
 export class FileValidator {
 	private static hasUniqueChildren(node: CodeMapNode) {

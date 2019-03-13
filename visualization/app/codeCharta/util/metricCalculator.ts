@@ -1,4 +1,4 @@
-import {CCFile, CodeMapNode, FileSelectionState, FileState, MetricData} from "./codeCharta.model";
+import {CCFile, CodeMapNode, FileSelectionState, FileState, MetricData} from "../codeCharta.model";
 import {hierarchy, HierarchyNode} from "d3";
 
 export class MetricCalculator {

@@ -4,11 +4,11 @@ import { MultipleFilePanelController } from "./multipleFilePanel.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { DataService, DataModel } from "../../core/data/data.service"
 import { SettingsService, SettingsServiceSubscriber, Settings } from "../../state/settings.service"
-import { MultipleFileService } from "../../core/multipleFile/multipleFile.service"
+import { MultipleState } from "../../util/multipleState"
 import { CodeMap } from "../../core/data/model/CodeMap"
 
 describe("multipleFilePanelController", function() {
-	let multipleFileServiceMock: MultipleFileService,
+	let multipleFileServiceMock: MultipleState,
 		settingsServiceMock: SettingsService,
 		dataServiceMock: DataService,
 		multipleFilePanelController: MultipleFilePanelController
@@ -42,7 +42,7 @@ describe("multipleFilePanelController", function() {
 
 		dataServiceMock = new DataServiceMock()
 
-		const MultipleFileServiceMock = jest.fn<MultipleFileService>(() => ({
+		const MultipleFileServiceMock = jest.fn<MultipleState>(() => ({
 			aggregateMaps: jest.fn(() => {
 				return file1
 			})

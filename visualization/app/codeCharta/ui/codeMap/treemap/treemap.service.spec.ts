@@ -1,6 +1,6 @@
 import {TreeMapService, TreeMapSettings} from "./treemap.service";
 import {CodeMapNode} from "../data/model/CodeMap";
-import {node} from "../../ui/codeMap/rendering/node";
+import {node} from "../rendering/node";
 import {DataService} from "../data/data.service";
 
 describe("treemap service", ()=> {

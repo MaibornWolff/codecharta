@@ -1,4 +1,4 @@
-import { FileValidator } from "./core/data/FileValidator"
+import { FileValidator } from "./util/fileValidator"
 import { CCFile } from "./codeCharta.model"
 import { NameDataPair } from "./util/urlUtils"
 import { SettingsService } from "./state/settings.service"
@@ -7,6 +7,7 @@ import { FileStateService } from "./state/fileState.service";
 
 export class CodeChartaService {
 
+	// TODO: use ROOT_NAME and ROOT_PATH everywhere in project
 	public static ROOT_NAME = "root"
 	public static ROOT_PATH =  "/" + CodeChartaService.ROOT_NAME
 
@@ -17,8 +18,6 @@ export class CodeChartaService {
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
 		//private urlService: UrlUtils,
-		//private dataDecoratorService: CodeMapNodeDecoratorService,
-		//private deltaCalculatorService: DeltaCalculatorService,
 		private fileStateService: FileStateService
 	) {
 	}
@@ -43,11 +42,13 @@ export class CodeChartaService {
 			})
 
 			// TODO #136
-			//if(applyScenarioOnce) {
-			//    this.scenarioService.applyScenarioOnce(this.scenarioService.getDefaultScenario());
-			//} else {
-			//    this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
-			//}
+			/*
+			if(applyScenarioOnce) {
+			    this.scenarioService.applyScenarioOnce(this.scenarioService.getDefaultScenario());
+			} else {
+			    this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
+			}
+			*/
 
 			this.fileStateService.setSingle(this.fileStateService.getCCFiles()[0])
 
@@ -74,49 +75,4 @@ export class CodeChartaService {
 			map: fileContent.nodes[0]
 		}
 	}
-
-
-	/*public setComparisonMap(index: number) {
-		if (this.files[index] != null) {
-			this._lastComparisonMap = this.files[index].map
-			this.processDeltas()
-			//this.dataDecoratorService.decorateMapWithCompactMiddlePackages(this.files[index])
-			this.callOthers()
-		}
-	}
-
-	public setReferenceMap(index: number) {
-		if (this.files[index] != null) {
-			this._lastReferenceIndex = index
-			this.renderMap = this.files[index].map
-			this.processDeltas()
-			//this.dataDecoratorService.decorateMapWithCompactMiddlePackages(this.files[index])
-			this.callOthers()
-		}
-	}
-
-	public onActivateDeltas() {
-		if (!this._deltasEnabled) {
-			this._deltasEnabled = true
-			this.setComparisonMap(this._lastReferenceIndex)
-		}
-	}
-
-	public onDeactivateDeltas() {
-		if (this._deltasEnabled) {
-			this._deltasEnabled = false
-			this.setComparisonMap(this._lastReferenceIndex)
-		}
-	}
-
-
-
-	private processDeltas() {
-		if (this.renderMap) {
-			this.deltaCalculatorService.removeCrossOriginNodes(this.renderMap)
-		}
-		if (this._deltasEnabled && this.renderMap && this._lastComparisonMap) {
-			this.deltaCalculatorService.provideDeltas(this.renderMap, this._lastComparisonMap, this.metrics)
-		}
-	} */
 }

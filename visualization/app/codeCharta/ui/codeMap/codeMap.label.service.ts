@@ -5,7 +5,7 @@ import {CameraChangeSubscriber, ThreeOrbitControlsService} from "./threeViewer/t
 import {PerspectiveCamera, Sprite} from "three";
 import {ThreeCameraService} from "./threeViewer/threeCameraService";
 import {ThreeSceneService} from "./threeViewer/threeSceneService";
-import {ColorService} from "../../core/colorService";
+import {ColorConvertion} from "../../util/colorConvertion";
 import {Settings} from "../../codeCharta.model";
 
 interface InternalLabel {
@@ -96,7 +96,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
         
         //bg
         ctx!.fillStyle = "rgba(255,255,255,1)";
-        ctx!.strokeStyle = ColorService.convertHexToRgba(MapColors.angularGreen);
+        ctx!.strokeStyle = ColorConvertion.convertHexToRgba(MapColors.angularGreen);
         ctx!.lineJoin = "round";
         ctx!.lineCap = "round";
         ctx!.lineWidth = 5;

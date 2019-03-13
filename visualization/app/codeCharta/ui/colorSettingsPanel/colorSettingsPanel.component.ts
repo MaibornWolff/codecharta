@@ -3,7 +3,7 @@ import "./colorSettingsPanel.component.scss";
 import {CCFile, FileSelectionState, FileState, MetricData, Settings} from "../../codeCharta.model";
 import {IRootScopeService} from "angular";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
-import {MetricCalculator} from "../../MetricCalculator";
+import {MetricCalculator} from "../../util/metricCalculator";
 
 export class ColorSettingsPanelController implements SettingsServiceSubscriber, FileStateServiceSubscriber {
 

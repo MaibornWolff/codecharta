@@ -2,7 +2,7 @@
 
 import {CodeMapMesh} from "./rendering/codeMapMesh"
 import {Node} from "./rendering/node"
-import {TreeMapService} from "../../core/treemap/treemap.service"
+import {TreeMapService} from "./treemap/treemap.service"
 import {CodeMapUtilService} from "./codeMap.util.service"
 import {CodeMapLabelService} from "./codeMap.label.service"
 import {ThreeSceneService} from "./threeViewer/threeSceneService"
@@ -13,8 +13,7 @@ import {IRootScopeService} from "angular";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
 import _ from "lodash"
 import {CodeMapNodeDecoratorService} from "./codeMap.nodeDecorator.service";
-import {MetricCalculator} from "../../MetricCalculator";
-import {MultipleFileService} from "../../core/multipleFile/multipleFile.service";
+import {MultipleState} from "../../util/multipleState";
 
 export interface RenderData {
 	renderMap: CodeMapNode
@@ -63,11 +62,11 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
-		this.codeMapNodeDecoratorService.decorateFiles(
-			fileStates.map(x => x.file),
-			metricData.map(x => x.name))
+		const renderFile = this.getSelectedFilesAsUnifiedMap(fileStates)
+		this.codeMapNodeDecoratorService.decorateFiles([renderFile], metricData.map(x => x.name))
 
-		this.lastRender.renderMap = this.getSelectedFilesAsUnifiedMap(fileStates)
+		console.log("fileStates", fileStates);
+		this.lastRender.renderMap = renderFile.map
 		this.lastRender.files = fileStates.map(x => x.file)
 		this.lastRender.fileName = fileStates.find(x => x.selectedAs == FileSelectionState.Single).file.fileMeta.fileName
 		this.lastRender.renderState = renderState
@@ -77,22 +76,25 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	public onImportedFilesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
 	}
 
-	private getSelectedFilesAsUnifiedMap(fileStates: FileState[]): CodeMapNode {
+	private getSelectedFilesAsUnifiedMap(fileStates: FileState[]): CCFile {
 
-		// TODO: set combined fileSettings from CCFile into settingsService.settings
 		if (this.lastRender.renderState == FileSelectionState.Comparison) {
-			/*return fileStates
-				.filter(x => x.selectedAs == FileSelectionState.Comparison || x.selectedAs == FileSelectionState.Reference)
-				.map(x => x.file)*/
+			// TODO: set combined fileSettings from CCFile into settingsService.settings
+			/*
+			const referenceFile =  fileStates.filter(x => x.selectedAs == FileSelectionState.Reference)
+			const comparisonFile =  fileStates.filter(x => x.selectedAs == FileSelectionState.Comparison)
+			this.deltaCalculatorService.removeCrossOriginNodes(referenceFile)
+			this.deltaCalculatorService.provideDeltas(referenceFile, comparisonFile, metrics)
+			*/
 
 		} else if (this.lastRender.renderState == FileSelectionState.Partial){
 			const partialFiles = fileStates
 				.filter(x => x.selectedAs == FileSelectionState.Partial)
 				.map(x => x.file)
-			return MultipleFileService.aggregateMaps(partialFiles).map
+			return MultipleState.aggregateMaps(partialFiles)
 
 		} else {
-			return fileStates.find(x => x.selectedAs == FileSelectionState.Single).file.map
+			return fileStates.find(x => x.selectedAs == FileSelectionState.Single).file
 		}
 	}
 

@@ -1,10 +1,10 @@
 import "./ribbonBar.component.scss";
 import $ from "jquery";
 import {SettingsService} from "../../state/settings.service";
-//import { DownloadService } from "../../core/download/download.service";
 import {IRootScopeService} from "angular";
 import {FileSelectionState, FileState, MetricData} from "../../codeCharta.model";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
+import {DownloadService} from "../../util/download.service";
 
 export class RibbonBarController implements FileStateServiceSubscriber {
 
@@ -19,7 +19,7 @@ export class RibbonBarController implements FileStateServiceSubscriber {
     constructor(
         private $rootScope: IRootScopeService,
         private settingsService: SettingsService,
-        //private downloadService: DownloadService
+        private fileStateService: FileStateService
     ) {
         FileStateService.subscribe(this.$rootScope, this)
     }
@@ -33,7 +33,8 @@ export class RibbonBarController implements FileStateServiceSubscriber {
     }
 
     public downloadFile() {
-        //this.downloadService.downloadCurrentMap()
+        // TODO: get renderedFile
+        //DownloadService.downloadCurrentMap(this.settingsService.getSettings(), this.fileStateService.getRenderFile())
     }
 
     public toggle() {

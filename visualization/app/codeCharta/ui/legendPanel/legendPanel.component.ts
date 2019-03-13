@@ -3,7 +3,7 @@ import $ from "jquery";
 import {MapColors} from "../codeMap/rendering/renderSettings";
 import {IRootScopeService, ITimeoutService} from "angular";
 import "./legendPanel.component.scss";
-import {ColorService} from "../../core/colorService";
+import {ColorConvertion} from "../../util/colorConvertion";
 import {ColorRange, MarkedPackage, RenderMode, Settings} from "../../codeCharta.model";
 import {CodeChartaService} from "../../codeCharta.service";
 
@@ -47,7 +47,7 @@ export class LegendPanelController implements SettingsServiceSubscriber {
         this._viewModel.range = s.dynamicSettings.neutralColorRange;
         this._viewModel.isDeltaMode = s.dynamicSettings.renderMode == RenderMode.Delta;
 
-        const select = ColorService.getImageDataUri(MapColors.selected);
+        const select = ColorConvertion.getImageDataUri(MapColors.selected);
         $("#select").attr("src", select);
 
         if (this._viewModel.isDeltaMode) {
@@ -59,17 +59,17 @@ export class LegendPanelController implements SettingsServiceSubscriber {
     }
 
     private refreshNormalColors(s: Settings) {
-        const positive = ColorService.getImageDataUri(s.appSettings.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive);
-        const neutral = ColorService.getImageDataUri(MapColors.neutral);
-        const negative = ColorService.getImageDataUri(MapColors.negative);
+        const positive = ColorConvertion.getImageDataUri(s.appSettings.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive);
+        const neutral = ColorConvertion.getImageDataUri(MapColors.neutral);
+        const negative = ColorConvertion.getImageDataUri(MapColors.negative);
         $("#green").attr("src", positive);
         $("#yellow").attr("src", neutral);
         $("#red").attr("src", negative);
     }
 
     private refreshDeltaColors(s: Settings) {
-        const positiveDeltaPixel = ColorService.getImageDataUri(s.appSettings.deltaColorFlipped ? MapColors.negativeDelta : MapColors.positiveDelta);
-        const negativeDeltaPixel = ColorService.getImageDataUri(s.appSettings.deltaColorFlipped ? MapColors.positiveDelta : MapColors.negativeDelta);
+        const positiveDeltaPixel = ColorConvertion.getImageDataUri(s.appSettings.deltaColorFlipped ? MapColors.negativeDelta : MapColors.positiveDelta);
+        const negativeDeltaPixel = ColorConvertion.getImageDataUri(s.appSettings.deltaColorFlipped ? MapColors.positiveDelta : MapColors.negativeDelta);
         $("#positiveDelta").attr("src", positiveDeltaPixel);
         $("#negativeDelta").attr("src", negativeDeltaPixel);
     }
@@ -83,7 +83,7 @@ export class LegendPanelController implements SettingsServiceSubscriber {
     }
 
     private handleMarkedPackage(mp: MarkedPackage) {
-        const colorPixel = ColorService.getImageDataUri(mp.color);
+        const colorPixel = ColorConvertion.getImageDataUri(mp.color);
 
         if (!mp.attributes["name"]) {
             mp.attributes["name"] = this.getPackagePathPreview(mp);

@@ -10,12 +10,10 @@ import {
     MetricData,
     Settings,
     FileState,
-    ColorRange,
     FileSelectionState,
-    DynamicSettings, CCFile
+    DynamicSettings
 } from "../../codeCharta.model";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
-import {MetricCalculator} from "../../MetricCalculator";
 
 export class MetricChooserController implements FileStateServiceSubscriber, CodeMapMouseEventServiceSubscriber, SettingsServiceSubscriber {
 
@@ -70,7 +68,6 @@ export class MetricChooserController implements FileStateServiceSubscriber, Code
 
     public onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
         this._viewModel.metricData = metricData
-        console.log("onFileSelectionStatesChanged");
         this.potentiallyUpdateChosenMetrics(metricData)
     }
 
@@ -89,15 +86,6 @@ export class MetricChooserController implements FileStateServiceSubscriber, Code
         for (const metricKey in metricKeys) {
             const metricValue: string = this.settingsService.getSettings().dynamicSettings[metricKey]
             const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps)
-
-
-            console.log(metricKey,
-                metricValue,
-                availableMetrics.map(x => x.name),
-                availableMetrics.filter(x => x.name == metricValue).map(x => x.name),
-                Math.min(metricSelectionIndex, availableMetrics.length - 1),
-                availableMetrics[Math.min(metricSelectionIndex, availableMetrics.length - 1)].name
-            )
 
             if (metricValue == "" || !availableMetrics.filter(x => x.name == metricValue)) {
                 this.settingsService.updateSettings({

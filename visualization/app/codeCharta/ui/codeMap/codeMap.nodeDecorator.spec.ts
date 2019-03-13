@@ -1,4 +1,4 @@
-import "./data.module";
+import "../../core/data/data.module";
 import {NGMock} from "../../../../mocks/ng.mockhelper";
 import DoneCallback = jest.DoneCallback;
 import {CodeMap} from "./model/CodeMap";

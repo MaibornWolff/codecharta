@@ -1,6 +1,6 @@
 import {CCFile, FileSelectionState, FileState, MetricData} from "../codeCharta.model";
 import {IAngularEvent, IRootScopeService} from "angular";
-import {MetricCalculator} from "../MetricCalculator";
+import {MetricCalculator} from "../util/metricCalculator";
 
 export interface FileStateServiceSubscriber {
     onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: IAngularEvent)
@@ -94,7 +94,6 @@ export class FileStateService {
     }
 
     private notifyFileImport() {
-        // TODO: Update metricData with new availableInVisibleMaps attribute
         this.$rootScope.$broadcast(FileStateService.IMPORTED_FILES_CHANGED_EVENT,
             {fileStates: this.fileStates, metricData: this.metricData, renderState: FileStateService.getRenderState(this.fileStates)})
     }
