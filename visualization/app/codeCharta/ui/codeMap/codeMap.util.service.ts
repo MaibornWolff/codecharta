@@ -8,9 +8,6 @@ export class CodeMapUtilService {
 
     public static SELECTOR = "codeMapUtilService";
 
-    constructor() {
-    }
-
     public getAnyCodeMapNodeFromPath(path: string, root: CodeMapNode) {
         const firstTryNode = this.getCodeMapNodeFromPath(path, "File", root);
         if(!firstTryNode) {
@@ -37,10 +34,6 @@ export class CodeMapUtilService {
     public static transformPath(toTransform: string): string {
         return path.relative('/', toTransform);
     }
-
-    /*public static resolvePath(toResolve: string): string {
-        return path.resolve(toResolve);
-    }*/
 
     public static getNodesByGitignorePath(nodes: Array<CodeMapNode>, gitignorePath: string): CodeMapNode[] {
         const ig = ignore().add(CodeMapUtilService.transformPath(gitignorePath));

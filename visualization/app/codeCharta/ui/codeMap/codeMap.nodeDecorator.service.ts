@@ -7,9 +7,12 @@ export class CodeMapNodeDecoratorService {
 
 	public static SELECTOR = "codeMapNodeDecoratorService"
 
-	public decorateFiles(files: CCFile[], metrics: string[]) {
-		files.forEach(file => this.preDecorateFile(file))
-		this.postDecorateFiles(files, metrics)
+	public decorateFiles(file: CCFile, metrics: string[]): CCFile {
+		let decoratedFile: CCFile = file
+		this.preDecorateFile(decoratedFile)
+		//this.postDecorateFiles(files, metrics)
+
+		return decoratedFile
 	}
 
 	public preDecorateFile(file: CCFile) {

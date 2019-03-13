@@ -48,7 +48,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		private codeMapArrowService: CodeMapArrowService,
 		private codeMapNodeDecoratorService: CodeMapNodeDecoratorService
 	) {
-		SettingsService.subscribe(this.$rootScope, this)
+		//SettingsService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
@@ -58,12 +58,13 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 
 	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
 		this.lastRender.settings = settings
+		console.log("lastSettings", settings)
 		this.renderIfRenderObjectIsComplete()
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
-		const renderFile = this.getSelectedFilesAsUnifiedMap(fileStates)
-		this.codeMapNodeDecoratorService.decorateFiles([renderFile], metricData.map(x => x.name))
+		let renderFile: CCFile = this.getSelectedFilesAsUnifiedMap(fileStates)
+		renderFile = this.codeMapNodeDecoratorService.decorateFiles(renderFile, metricData.map(x => x.name))
 
 		console.log("fileStates", fileStates);
 		this.lastRender.renderMap = renderFile.map

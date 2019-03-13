@@ -82,19 +82,19 @@ export class MetricChooserController implements FileStateServiceSubscriber, Code
             colorMetric: "colorMetric"
         }
 
+        let settingsUpdate = {dynamicSettings: {}}
+
         let metricSelectionIndex = 0
         for (const metricKey in metricKeys) {
             const metricValue: string = this.settingsService.getSettings().dynamicSettings[metricKey]
             const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps)
 
-            if (metricValue == "" || !availableMetrics.filter(x => x.name == metricValue)) {
-                this.settingsService.updateSettings({
-                    dynamicSettings: {
-                        [metricKey]: availableMetrics[Math.min(metricSelectionIndex++, availableMetrics.length - 1)].name
-                    }
-                })
+            if (!availableMetrics.find(x => x.name == metricValue)) {
+                settingsUpdate.dynamicSettings[metricKey] = availableMetrics[Math.min(metricSelectionIndex, availableMetrics.length - 1)].name
             }
+            metricSelectionIndex++
         }
+        this.settingsService.updateSettings(settingsUpdate)
     }
 
     private updateViewModel(settings: Settings) {

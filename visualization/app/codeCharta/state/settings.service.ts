@@ -66,9 +66,9 @@ export class SettingsService {
 				markedPackages: []
             },
 			dynamicSettings: {
-				areaMetric: "",
-				heightMetric: "",
-				colorMetric: "",
+				areaMetric: null,
+				heightMetric: null,
+				colorMetric: null,
 				focusedNodePath: null,
 				searchedNodePaths: [],
 				searchPattern: null,

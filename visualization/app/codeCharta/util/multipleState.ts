@@ -1,7 +1,7 @@
 import {AttributeType, CodeMapNode, Edge, BlacklistItem, CCFile} from "../codeCharta.model"
 
 export class MultipleState {
-	public static SELECTOR = "multipleFileService"
+
 	private static projectNameArray = []
 	private static fileNameArray = []
 	private static edges: Edge[] = []
