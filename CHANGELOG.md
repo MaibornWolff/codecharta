@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 -   Added buttons to select all/none/inversion of revisions/maps in multiple mode #391
+-   Merge filter can merge all files of folders #392
 
 ### Changed
 
