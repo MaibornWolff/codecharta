@@ -1,5 +1,5 @@
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
-import {IAngularEvent, IRootScopeService} from "angular";
+import {IAngularEvent, IRootScopeService, ITimeoutService} from "angular";
 import "./metricChooser.component.scss";
 import {
     CodeMapBuildingTransition, CodeMapMouseEventService,
@@ -9,13 +9,11 @@ import {CodeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
 import {
     MetricData,
     Settings,
-    FileState,
-    FileSelectionState,
     DynamicSettings
 } from "../../codeCharta.model";
-import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
+import {MetricStateServiceSubscriber} from "../../state/metricState.service";
 
-export class MetricChooserController implements FileStateServiceSubscriber, CodeMapMouseEventServiceSubscriber, SettingsServiceSubscriber {
+export class MetricChooserController implements MetricStateServiceSubscriber, CodeMapMouseEventServiceSubscriber, SettingsServiceSubscriber {
 
     public hoveredAreaValue: number;
     public hoveredHeightValue: number;
@@ -27,7 +25,7 @@ export class MetricChooserController implements FileStateServiceSubscriber, Code
     public optionsWithoutStart;
     public sliderPositions;
 
-    public _viewModel: {
+    private _viewModel: {
         metricData: MetricData[],
         areaMetric: string,
         colorMetric: string,
@@ -46,9 +44,12 @@ export class MetricChooserController implements FileStateServiceSubscriber, Code
         private $rootScope: IRootScopeService
 
     ) {
-        FileStateService.subscribe(this.$rootScope, this);
         SettingsService.subscribe(this.$rootScope, this);
         CodeMapMouseEventService.subscribe(this.$rootScope, this);
+        this.initSliderOptions()
+    }
+
+    private initSliderOptions() {
         this.optionsWithoutStart = {
             connect: true,
             range: {
@@ -60,19 +61,13 @@ export class MetricChooserController implements FileStateServiceSubscriber, Code
         this.sliderPositions = [20, 80];
     }
 
-
     public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
         this.updateViewModel(settings)
     }
 
-
-    public onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
+    public onMetricDataChanged(metricData: MetricData[], event: angular.IAngularEvent) {
         this._viewModel.metricData = metricData
         this.potentiallyUpdateChosenMetrics(metricData)
-    }
-
-    public onImportedFilesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
-
     }
 
     private potentiallyUpdateChosenMetrics(metricData: MetricData[]) {

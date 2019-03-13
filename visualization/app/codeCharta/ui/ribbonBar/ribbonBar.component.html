@@ -6,9 +6,9 @@
             <revision-chooser-file-drop-down-component></revision-chooser-file-drop-down-component>
         </div>
         <span class="section-title" id="section-title" ng-click="$ctrl.toggle()">
-            <span ng-if="$ctrl._viewModel.renderMode != 'Delta'">File</span>
-            <span ng-if="$ctrl._viewModel.renderMode == 'Delta'" class="first">File</span>
-            <span ng-if="$ctrl._viewModel.renderMode == 'Delta'" class="second">Compare</span>
+            <span ng-if="!$ctrl._viewModel.isDeltaState">File</span>
+            <span ng-if="$ctrl._viewModel.isDeltaState" class="first">File</span>
+            <span ng-if="$ctrl._viewModel.isDeltaState" class="second">Compare</span>
         </span>
         <div class="section-body">
             <revision-chooser-component></revision-chooser-component>

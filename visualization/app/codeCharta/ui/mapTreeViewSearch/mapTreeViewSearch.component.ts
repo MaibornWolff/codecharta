@@ -1,20 +1,26 @@
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import { IRootScopeService } from "angular"
 import "./mapTreeViewSearch.component.scss"
-import * as d3 from "d3"
 import { CodeMapUtilService } from "../codeMap/codeMap.util.service"
 import {
 	CodeMapNode,
 	BlacklistType,
 	Settings,
-	MetricData,
-	FileState,
-	FileSelectionState
+	FileState
 } from "../../codeCharta.model"
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
+import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 
 export class MapTreeViewSearchController implements SettingsServiceSubscriber, FileStateServiceSubscriber {
-	private _viewModel = {
+
+	private _viewModel: {
+		searchPattern: string,
+		fileCount: number,
+		hideCount: number,
+		excludeCount: number,
+		isPatternExcluded: boolean,
+		isPatternHidden: boolean
+	} = {
 		searchPattern: "",
 		fileCount: 0,
 		hideCount: 0,
@@ -29,18 +35,18 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
-		private fileStateService: FileStateService
+		private codeMapActionsService: CodeMapActionsService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
+	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 		this._viewModel.searchPattern = ""
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
+	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 	}
 
 	public onSettingsChanged(s: Settings) {
@@ -53,14 +59,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 	}
 
 	public onClickBlacklistPattern(blacklistType: BlacklistType) {
-		this.settingsService.updateSettings({
-			fileSettings: {
-				blacklist: [
-					...this.settingsService.getSettings().fileSettings.blacklist,
-					{ path: this._viewModel.searchPattern, type: blacklistType }
-				]
-			}
-		})
+		this.codeMapActionsService.pushItemToBlacklist({ path: this._viewModel.searchPattern, type: blacklistType })
 		this._viewModel.searchPattern = ""
 		this.onSearchChange()
 	}
@@ -87,6 +86,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 		)
 	}
 
+	// TODO: setSearchedNodePathnames()
 	/*private setSearchedNodePathnames() {
 		const nodes = d3
 			.hierarchy(this.fileStateService.getRenderMap())

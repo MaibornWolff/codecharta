@@ -1,12 +1,12 @@
 <range-slider-component></range-slider-component>
 
-<md-input-container class="md-block" ng-if="$ctrl._viewModel.renderState != $ctrl._viewModel.comparisonState">
+<md-input-container class="md-block" ng-if="!$ctrl._viewModel.isDeltaState">
     <md-checkbox class="md-primary" ng-model="$ctrl._viewModel.neutralColorRangeFlipped" ng-change="$ctrl.applySettings()">
         Invert Colors
     </md-checkbox>
 </md-input-container>
 
-<md-input-container class="md-block" ng-if="$ctrl._viewModel.renderState == $ctrl._viewModel.comparisonState" >
+<md-input-container class="md-block" ng-if="$ctrl._viewModel.isDeltaState" >
     <md-checkbox class="md-primary" ng-model="$ctrl._viewModel.deltaColorFlipped" ng-change="$ctrl.applySettings()">
         Invert Colors
     </md-checkbox>

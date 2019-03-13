@@ -1,9 +1,10 @@
 import { SettingsService } from "../../state/settings.service"
 import "./revisionChooser.component.scss"
 import "./revisionChooserFileDropDown.component.scss"
-import {FileSelectionState, FileState, MetricData} from "../../codeCharta.model";
+import {FileSelectionState, FileState, CCFile} from "../../codeCharta.model";
 import {IRootScopeService} from "angular";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
+import {FileStateHelper} from "../../util/fileStateHelper";
 
 /**
  * Controls the RevisionChooser
@@ -11,13 +12,15 @@ import {FileStateService, FileStateServiceSubscriber} from "../../state/fileStat
 export class RevisionChooserController implements FileStateServiceSubscriber {
 
     private _viewModel: {
-        renderState: FileSelectionState,
+        isDeltaState: boolean,
+        isPartialState: boolean,
         fileStates: FileState[],
-        referenceFileState: FileState
+        referenceFileName: string
     } = {
-        renderState: null,
+        isDeltaState: null,
+        isPartialState: null,
         fileStates: [],
-        referenceFileState: null
+        referenceFileName: null
     }
 
     /* @ngInject */
@@ -29,28 +32,30 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
         FileStateService.subscribe(this.$rootScope, this)
     }
 
-    public onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
+    // TODO: get renderFile from codeMapRenderService
+    public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 
-        this._viewModel.renderState = FileStateService.getRenderState(fileStates)
+        this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
+        this._viewModel.isPartialState = FileStateHelper.isPartialState(fileStates)
 
-        if (renderState == FileSelectionState.Comparison) {
+        if (this._viewModel.isDeltaState) {
             fileStates.filter(x => x.selectedAs == FileSelectionState.Comparison || x.selectedAs == FileSelectionState.Reference)
 
-        } else if (renderState == FileSelectionState.Partial){
+        } else if (this._viewModel.isDeltaState){
             fileStates.filter(x => x.selectedAs == FileSelectionState.Partial)
 
         } else {
-            this._viewModel.referenceFileState = fileStates.find(x => x.selectedAs == FileSelectionState.Single)
+            this._viewModel.referenceFileName = fileStates.find(x => x.selectedAs == FileSelectionState.Single).file.fileMeta.fileName
         }
     }
 
-    public onImportedFilesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
+    public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
         this._viewModel.fileStates = fileStates
     }
 
     public onReferenceChange(fileName: string) {
-        const matchingFileState = this.fileStateService.getFileStateByFileName(fileName)
-        this.fileStateService.setSingle(matchingFileState.file)
+        const matchingFile: CCFile = this.fileStateService.getFileStateByFileName(fileName).file
+        this.fileStateService.setSingle(matchingFile)
     }
 
     public onShowChange(){

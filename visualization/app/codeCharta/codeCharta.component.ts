@@ -1,8 +1,6 @@
 import { NameDataPair, UrlUtils } from "./util/urlUtils"
 import {IHttpService, ILocationService, IRootScopeService} from "angular"
 import "./codeCharta.component.scss"
-import { NodeContextMenuController } from "./ui/nodeContextMenu/nodeContextMenu.component"
-import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
 import { CodeChartaService } from "./codeCharta.service"
 
 /**

@@ -7,23 +7,24 @@ import {CodeMapUtilService} from "./codeMap.util.service"
 import {CodeMapLabelService} from "./codeMap.label.service"
 import {ThreeSceneService} from "./threeViewer/threeSceneService"
 import {CodeMapArrowService} from "./codeMap.arrow.service"
-import {CCFile, CodeMapNode, Edge, FileSelectionState, FileState, MetricData, Settings,} from "../../codeCharta.model"
+import {CCFile, CodeMapNode, Edge, FileState, MetricData, Settings,} from "../../codeCharta.model"
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import {IRootScopeService} from "angular";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
 import _ from "lodash"
 import {CodeMapNodeDecoratorService} from "./codeMap.nodeDecorator.service";
 import {MultipleState} from "../../util/multipleState";
+import {MetricStateService, MetricStateServiceSubscriber} from "../../state/metricState.service";
+import {FileStateHelper} from "../../util/fileStateHelper";
 
 export interface RenderData {
-	renderMap: CodeMapNode
-	fileName: string
-	files: CCFile[]
-	settings: Settings
-	renderState: FileSelectionState
+	renderFile: CCFile
+	fileStates: FileState[]
+	settings: Settings,
+	metricData: MetricData[]
 }
 
-export class CodeMapRenderService implements SettingsServiceSubscriber, FileStateServiceSubscriber {
+export class CodeMapRenderService implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricStateServiceSubscriber {
 	public static SELECTOR = "codeMapRenderService"
 
 	public currentSortedNodes: Node[]
@@ -31,12 +32,12 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	private _mapMesh: CodeMapMesh = null
 	private visibleEdges: Edge[]
 
+	// TODO: getter method to getLastRenderMap()
 	private lastRender: RenderData = {
-		renderMap: null,
-		fileName: null,
-		files: null,
+		renderFile: null,
+		fileStates: null,
 		settings: null,
-		renderState: null
+		metricData: null
 	}
 
 	constructor(
@@ -46,10 +47,12 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		private codeMapUtilService: CodeMapUtilService,
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService,
-		private codeMapNodeDecoratorService: CodeMapNodeDecoratorService
+		private codeMapNodeDecoratorService: CodeMapNodeDecoratorService,
+		private metricStateService: MetricStateService
 	) {
 		//SettingsService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
+		MetricStateService.subscribe(this.$rootScope, this)
 	}
 
 	public init() {
@@ -62,40 +65,37 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		this.renderIfRenderObjectIsComplete()
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
-		let renderFile: CCFile = this.getSelectedFilesAsUnifiedMap(fileStates)
-		renderFile = this.codeMapNodeDecoratorService.decorateFiles(renderFile, metricData.map(x => x.name))
-
+	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 		console.log("fileStates", fileStates);
-		this.lastRender.renderMap = renderFile.map
-		this.lastRender.files = fileStates.map(x => x.file)
-		this.lastRender.fileName = fileStates.find(x => x.selectedAs == FileSelectionState.Single).file.fileMeta.fileName
-		this.lastRender.renderState = renderState
+		this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(fileStates)
+		this.lastRender.fileStates = fileStates
 		this.renderIfRenderObjectIsComplete()
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
+	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 	}
 
-	private getSelectedFilesAsUnifiedMap(fileStates: FileState[]): CCFile {
+	public onMetricDataChanged(metricData: MetricData[], event: angular.IAngularEvent) {
+		this.lastRender.metricData = metricData
+		this.renderIfRenderObjectIsComplete()
+	}
 
-		if (this.lastRender.renderState == FileSelectionState.Comparison) {
-			// TODO: set combined fileSettings from CCFile into settingsService.settings
-			/*
-			const referenceFile =  fileStates.filter(x => x.selectedAs == FileSelectionState.Reference)
-			const comparisonFile =  fileStates.filter(x => x.selectedAs == FileSelectionState.Comparison)
+
+
+	private getSelectedFilesAsUnifiedMap(fileStates: FileState[]): CCFile {
+		const visibleFileStates: FileState[] = FileStateHelper.getVisibleFileStates(fileStates)
+		if (FileStateHelper.isDeltaState(fileStates)) {
+			/* TODO: set combined fileSettings from CCFile into settingsService.settings
+			const referenceFile = visibleFileStates.filter(x => x.selectedAs == FileSelectionState.Reference)
+			const comparisonFile = visibleFileStates.filter(x => x.selectedAs == FileSelectionState.Comparison)
 			this.deltaCalculatorService.removeCrossOriginNodes(referenceFile)
 			this.deltaCalculatorService.provideDeltas(referenceFile, comparisonFile, metrics)
 			*/
 
-		} else if (this.lastRender.renderState == FileSelectionState.Partial){
-			const partialFiles = fileStates
-				.filter(x => x.selectedAs == FileSelectionState.Partial)
-				.map(x => x.file)
-			return MultipleState.aggregateMaps(partialFiles)
-
+		} else if (FileStateHelper.isPartialState(fileStates)){
+			return MultipleState.aggregateMaps(visibleFileStates.map(x => x.file))
 		} else {
-			return fileStates.find(x => x.selectedAs == FileSelectionState.Single).file
+			return visibleFileStates[0].file
 		}
 	}
 
@@ -107,7 +107,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	private render(renderData: RenderData) {
-		this.updateMapGeometry(renderData.renderMap, renderData.fileName, renderData.files, renderData.settings, renderData.renderState)
+		renderData.renderFile = this.codeMapNodeDecoratorService.decorateFiles(renderData.renderFile, this.metricStateService.getMetrics())
+		this.updateMapGeometry(renderData.renderFile, renderData.fileStates, renderData.settings, renderData.metricData)
 		this.scaleMap(
 			renderData.settings.appSettings.scaling.x,
 			renderData.settings.appSettings.scaling.y,
@@ -116,12 +117,12 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		)
 	}
 
-	private updateMapGeometry(map: CodeMapNode, fileName: string, importedFiles: CCFile[], s: Settings, renderState: FileSelectionState) {
-		this.visibleEdges = this.getVisibleEdges(map, s)
+	private updateMapGeometry(renderFile: CCFile, fileStates: FileState[], s: Settings, metricData: MetricData[]) {
+		this.visibleEdges = this.getVisibleEdges(renderFile.map, s)
 
-		this.showAllOrOnlyFocusedNode(map, s)
+		this.showAllOrOnlyFocusedNode(renderFile.map, s)
 
-		const treeMapNode: Node = this.treeMapService.createTreemapNodes(map, importedFiles, s, fileName)
+		const treeMapNode: Node = this.treeMapService.createTreemapNodes(renderFile, s, metricData)
 		const nodes: Node[] = this.collectNodesToArray(treeMapNode)
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		this.currentSortedNodes = filteredNodes.sort((a, b) => b.height - a.height)
@@ -129,7 +130,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		this.setLabels(s)
 		this.setArrows(s)
 
-		this._mapMesh = new CodeMapMesh(this.currentSortedNodes, s, renderState)
+		this._mapMesh = new CodeMapMesh(this.currentSortedNodes, s, FileStateHelper.isDeltaState(fileStates))
 		this.threeSceneService.setMapMesh(this._mapMesh, s.treeMapSettings.mapSize)
 	}
 

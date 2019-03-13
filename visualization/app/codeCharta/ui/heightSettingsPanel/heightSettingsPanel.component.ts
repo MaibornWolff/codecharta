@@ -1,23 +1,22 @@
 import "./heightSettingsPanel.component.scss";
 import {IRootScopeService} from "angular";
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
-import {FileSelectionState, FileState, MetricData, Settings} from "../../codeCharta.model";
-import {FileStateService} from "../../state/fileState.service";
+import {FileState, Settings} from "../../codeCharta.model";
+import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
+import {FileStateHelper} from "../../util/fileStateHelper";
 
-export class HeightSettingsPanelController implements SettingsServiceSubscriber {
+export class HeightSettingsPanelController implements SettingsServiceSubscriber, FileStateServiceSubscriber {
 
     private _viewModel: {
         amountOfTopLabels: number,
         scalingY: number,
         invertHeight: boolean,
-        renderState: FileSelectionState,
-        comparisonState: FileSelectionState
+        isDeltaState: boolean,
     } = {
         amountOfTopLabels: null,
         scalingY: null,
         invertHeight: null,
-        renderState: null,
-        comparisonState: FileSelectionState.Comparison
+        isDeltaState: null,
     }
 
     /* @ngInject */
@@ -26,6 +25,7 @@ export class HeightSettingsPanelController implements SettingsServiceSubscriber 
         private settingsService: SettingsService
     ) {
         SettingsService.subscribe(this.$rootScope, this);
+        FileStateService.subscribe(this.$rootScope, this);
     }
 
     public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
@@ -34,12 +34,11 @@ export class HeightSettingsPanelController implements SettingsServiceSubscriber 
         this._viewModel.invertHeight = settings.appSettings.invertHeight;
     }
 
-    public onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
-        this._viewModel.renderState = FileStateService.getRenderState(fileStates);
+    public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+        this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
     }
 
-    public onImportedFilesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
-
+    public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
     }
 
     public applySettings() {

@@ -61,14 +61,14 @@ export class CodeMapMesh {
         emissive : {type : "v3", value : new THREE.Vector3(0.0, 0.0, 0.0)}
     };
 
-    constructor(nodes: Node[], settings: Settings, renderState: FileSelectionState)
+    constructor(nodes: Node[], settings: Settings, isDeltaState: boolean)
     {
         this.nodes = nodes;
 
         this.initMaterial(settings);
 
         this.geomGen = new GeometryGenerator();
-        let buildRes : BuildResult = this.geomGen.build(this.nodes, this.material, settings, renderState);
+        let buildRes : BuildResult = this.geomGen.build(this.nodes, this.material, settings, isDeltaState);
 
         this.threeMesh = buildRes.mesh;
         this.mapGeomDesc = buildRes.desc;

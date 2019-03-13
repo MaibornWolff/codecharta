@@ -1,40 +1,39 @@
 import "./ribbonBar.component.scss";
 import $ from "jquery";
-import {SettingsService} from "../../state/settings.service";
 import {IRootScopeService} from "angular";
-import {FileSelectionState, FileState, MetricData} from "../../codeCharta.model";
+import {FileState} from "../../codeCharta.model";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
-import {DownloadService} from "../../util/download.service";
+import {FileStateHelper} from "../../util/fileStateHelper";
 
 export class RibbonBarController implements FileStateServiceSubscriber {
 
     private collapsingElements = $("code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab")
     private toggleElements = $("ribbon-bar-component .section-title")
     private isExpanded: boolean = false;
-    private _viewModel = {
-        renderMode: null
+
+    private _viewModel: {
+        isDeltaState: boolean
+    } = {
+        isDeltaState: null
     }
 
     /* @ngInject */
     constructor(
-        private $rootScope: IRootScopeService,
-        private settingsService: SettingsService,
-        private fileStateService: FileStateService
+        private $rootScope: IRootScopeService
     ) {
         FileStateService.subscribe(this.$rootScope, this)
     }
 
-    onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
-        this._viewModel.renderMode = FileStateService.getRenderState(fileStates)
+    public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+        this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
     }
 
-    onImportedFilesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
-
+    public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
     }
 
     public downloadFile() {
         // TODO: get renderedFile
-        //DownloadService.downloadCurrentMap(this.settingsService.getSettings(), this.fileStateService.getRenderFile())
+        //DownloadFile.downloadCurrentMap(this.settingsService.getSettings(), this.fileStateService.getRenderFile())
     }
 
     public toggle() {

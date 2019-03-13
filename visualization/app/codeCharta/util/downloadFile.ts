@@ -2,7 +2,7 @@ import angular from "angular";
 import * as d3 from "d3";
 import {CCFile, CodeMapNode, Settings} from "../codeCharta.model";
 
-export class DownloadService {
+export class DownloadFile {
 
     public static downloadCurrentMap(settings: Settings, file: CCFile) {
         const data = this.getProjectDataAsCCJsonFormat(settings, file);

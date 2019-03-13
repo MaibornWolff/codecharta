@@ -34,7 +34,7 @@ export class AreaSettingsPanelController {
 
     public applySettings() {
         if (this._viewModel.dynamicMargin) {
-            // TODO: rectivate computeMargin() and need to get renderMap
+            // TODO: rectivate computeMargin() and need to get renderFile
             //this._viewModel.margin = this.computeMargin()
         }
 
@@ -55,9 +55,9 @@ export class AreaSettingsPanelController {
 
     /*private computeMargin(): number {
         const s: Settings = this.settingsService.getSettings()
-        const renderMap: CodeMapNode = this.codeChartaService.getRenderMap()
-        if (renderMap !== null && this._viewModel.dynamicMargin) {
-            let leaves = hierarchy<CodeMapNode>(renderMap).leaves()
+        const renderFile: CodeMapNode = this.codeChartaService.getRenderMap()
+        if (renderFile !== null && this._viewModel.dynamicMargin) {
+            let leaves = hierarchy<CodeMapNode>(renderFile).leaves()
             let numberOfBuildings = 0
             let totalArea = 0
 

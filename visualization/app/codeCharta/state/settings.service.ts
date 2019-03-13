@@ -115,9 +115,9 @@ export class SettingsService {
 	/* TODO someone else does this
     public onDataChanged(data: DataModel) {
 
-        if(data.metrics && data.renderMap && data.revisions) {
-            this.settings.map = data.renderMap;
-            this.settings.blacklist = data.renderMap.blacklist;
+        if(data.metrics && data.renderFile && data.revisions) {
+            this.settings.map = data.renderFile;
+            this.settings.blacklist = data.renderFile.blacklist;
 
             if (data.metrics.indexOf(this.settings.areaMetric) === -1) {
                 this.settings.areaMetric = this.getMetricByIdOrLast(0, data.metrics);

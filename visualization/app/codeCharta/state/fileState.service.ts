@@ -1,10 +1,9 @@
-import {CCFile, FileSelectionState, FileState, MetricData} from "../codeCharta.model";
+import {CCFile, FileSelectionState, FileState} from "../codeCharta.model";
 import {IAngularEvent, IRootScopeService} from "angular";
-import {MetricCalculator} from "../util/metricCalculator";
 
 export interface FileStateServiceSubscriber {
-    onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: IAngularEvent)
-    onImportedFilesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: IAngularEvent)
+    onFileSelectionStatesChanged(fileStates: FileState[], event: IAngularEvent)
+    onImportedFilesChanged(fileStates: FileState[], event: IAngularEvent)
 }
 
 export class FileStateService {
@@ -13,20 +12,11 @@ export class FileStateService {
     private static IMPORTED_FILES_CHANGED_EVENT = "imported-files-changed";
 
     private fileStates: Array<FileState> = []
-    private metricData: MetricData[] = []
 
 
     /* @ngInject */
-    constructor(private $rootScope: IRootScopeService){
-
-    }
-
-    public getMetrics(): string[] {
-        return this.metricData.map(x => x.name)
-    }
-
-    public getMetricData(): MetricData[] {
-        return this.metricData
+    constructor(
+        private $rootScope: IRootScopeService){
     }
 
     public addFile(file: CCFile) {
@@ -42,19 +32,12 @@ export class FileStateService {
         return this.fileStates
     }
 
-    public getVisibleFiles(): CCFile[] {
-        return this.fileStates.filter(x => x.selectedAs != FileSelectionState.None).map(x => x.file)
-    }
-
-    public getVisibleFileStates(): FileState[] {
-        return this.fileStates.filter(x => x.selectedAs != FileSelectionState.None)
-    }
-
     public getFileStateByFileName(fileName: string): FileState {
         return this.fileStates.find(x => x.file.fileMeta.fileName == fileName)
     }
 
     public setSingle(file: CCFile) {
+        console.log("setSingle", file);
         this.resetSelectionStates()
         const matchedFile = this.fileStates.find(x => x.file == file)
         if (matchedFile) {
@@ -87,31 +70,20 @@ export class FileStateService {
     }
 
     private notifySelectionChange() {
-        this.metricData = MetricCalculator.calculateMetrics(this.fileStates, this.getVisibleFileStates())
-
-        this.$rootScope.$broadcast(FileStateService.FILE_STATE_CHANGED_EVENT,
-            {fileStates: this.fileStates, metricData: this.metricData, renderState: FileStateService.getRenderState(this.fileStates)})
+        console.log("notifySelectionChange")
+        this.$rootScope.$broadcast(FileStateService.FILE_STATE_CHANGED_EVENT, this.fileStates)
     }
 
     private notifyFileImport() {
-        this.$rootScope.$broadcast(FileStateService.IMPORTED_FILES_CHANGED_EVENT,
-            {fileStates: this.fileStates, metricData: this.metricData, renderState: FileStateService.getRenderState(this.fileStates)})
-    }
-
-    public static getRenderState(fileStates: FileState[]): FileSelectionState {
-        const firstFoundFileState: FileSelectionState = fileStates
-            .map(x => x.selectedAs)
-            .filter(state => state != FileSelectionState.None)[0]
-
-        return (firstFoundFileState == FileSelectionState.Reference) ? FileSelectionState.Comparison : firstFoundFileState
+        this.$rootScope.$broadcast(FileStateService.IMPORTED_FILES_CHANGED_EVENT, this.fileStates)
     }
 
     public static subscribe($rootScope: IRootScopeService, subscriber: FileStateServiceSubscriber) {
         $rootScope.$on(FileStateService.FILE_STATE_CHANGED_EVENT, (event, data) => {
-            subscriber.onFileSelectionStatesChanged(data.fileStates, data.metricData, data.renderState, event)
+            subscriber.onFileSelectionStatesChanged(data, event)
         })
         $rootScope.$on(FileStateService.IMPORTED_FILES_CHANGED_EVENT, (event, data) => {
-            subscriber.onImportedFilesChanged(data.fileStates, data.metricData, data.renderState, event)
+            subscriber.onImportedFilesChanged(data, event)
         })
     }
 

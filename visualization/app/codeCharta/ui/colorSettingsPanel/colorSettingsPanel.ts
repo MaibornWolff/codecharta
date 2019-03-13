@@ -1,5 +1,3 @@
-import "../rangeSlider/rangeSlider";
-import "../resetSettingsButton/resetSettingsButton";
 import "../../state/state.module";
 
 import angular from "angular";

@@ -4,9 +4,10 @@ import { MapColors } from "../codeMap/rendering/renderSettings"
 import $ from "jquery"
 import {Settings, RecursivePartial, FileSelectionState} from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
-import { MetricCalculator } from "../../util/metricCalculator";
+import { MetricStateService } from "../../state/metricState.service";
 import {FileStateService} from "../../state/fileState.service";
 import {ITimeoutService} from "angular";
+import {FileStateHelper} from "../../util/fileStateHelper";
 
 export class RangeSliderController implements SettingsServiceSubscriber {
 	public sliderOptions: any
@@ -22,6 +23,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		private settingsService: SettingsService,
 		private fileStateService: FileStateService,
 		private codeChartaService: CodeChartaService,
+		private metricStateService: MetricStateService,
 		private $timeout: ITimeoutService,
 		private $scope
 	) {
@@ -46,10 +48,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	}
 
 	public initSliderOptions(settings: Settings = this.settingsService.getSettings()) {
-		this.maxMetricValue = MetricCalculator.getMaxMetricInAllRevisions(
-			this.fileStateService.getCCFiles(),
-			settings.dynamicSettings.colorMetric
-		)
+		this.maxMetricValue = this.metricStateService.getMaxMetricByMetricName(settings.dynamicSettings.colorMetric)
 
 		this.sliderOptions = {
 			ceil: this.maxMetricValue,
@@ -57,21 +56,17 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 			pushRange: true,
 			onToChange: this.onToSliderChange.bind(this),
 			onFromChange: this.onFromSliderChange.bind(this),
-			disabled: FileStateService.getRenderState(this.fileStateService.getFileStates()) == FileSelectionState.Comparison
+			disabled: FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 		}
 	}
 
 	private onToSliderChange() {
+		const colorMaxValue = this.metricStateService.getMaxMetricByMetricName(
+			this.settingsService.getSettings().dynamicSettings.colorMetric)
 		const update: RecursivePartial<Settings> = {
 			dynamicSettings: {
 				neutralColorRange: {
-					to: Math.min(
-						MetricCalculator.getMaxMetricInAllRevisions(
-							this.fileStateService.getCCFiles(),
-							this.settingsService.getSettings().dynamicSettings.colorMetric
-						),
-						Math.max(1, this._viewModel.colorRangeTo)
-					),
+					to: Math.min(colorMaxValue, Math.max(1, this._viewModel.colorRangeTo)),
 					from: Math.min(this._viewModel.colorRangeTo - 1, this._viewModel.colorRangeFrom)
 				}
 			}
@@ -81,17 +76,13 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	}
 
 	private onFromSliderChange() {
+		const colorMaxValue = this.metricStateService.getMaxMetricByMetricName(
+			this.settingsService.getSettings().dynamicSettings.colorMetric)
 		const update: RecursivePartial<Settings> = {
 			dynamicSettings: {
 				neutralColorRange: {
 					to: Math.max(this._viewModel.colorRangeTo, this._viewModel.colorRangeFrom + 1),
-					from: Math.min(
-						MetricCalculator.getMaxMetricInAllRevisions(
-							this.fileStateService.getCCFiles(),
-							this.settingsService.getSettings().dynamicSettings.colorMetric
-						) - 1,
-						this._viewModel.colorRangeFrom
-					)
+					from: Math.min(colorMaxValue - 1, this._viewModel.colorRangeFrom)
 				}
 			}
 		}

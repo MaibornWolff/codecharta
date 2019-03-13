@@ -1,9 +1,10 @@
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import "./colorSettingsPanel.component.scss";
-import {CCFile, FileSelectionState, FileState, MetricData, Settings} from "../../codeCharta.model";
+import {FileState, Settings} from "../../codeCharta.model";
 import {IRootScopeService} from "angular";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
-import {MetricCalculator} from "../../util/metricCalculator";
+import {MetricStateService} from "../../state/metricState.service";
+import {FileStateHelper} from "../../util/fileStateHelper";
 
 export class ColorSettingsPanelController implements SettingsServiceSubscriber, FileStateServiceSubscriber {
 
@@ -13,21 +14,20 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
         neutralColorRangeFlipped: boolean,
         deltaColorFlipped: boolean,
         whiteColorBuildings: boolean,
-        renderState: FileSelectionState,
-        comparisonState: FileSelectionState
+        isDeltaState: boolean,
     } = {
         neutralColorRangeFlipped: null,
         deltaColorFlipped: null,
         whiteColorBuildings: null,
-        renderState: null,
-        comparisonState: FileSelectionState.Comparison
+        isDeltaState: null,
     };
 
     /* @ngInject */
     constructor(
         private $rootScope: IRootScopeService,
         private settingsService: SettingsService,
-        private fileStateService: FileStateService
+        private fileStateService: FileStateService,
+        private metricStateService: MetricStateService
     ) {
         SettingsService.subscribe(this.$rootScope, this);
         FileStateService.subscribe(this.$rootScope, this);
@@ -45,12 +45,11 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
         }
     }
 
-    public onFileSelectionStatesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
-        this._viewModel.renderState = FileStateService.getRenderState(fileStates);
+    public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+        this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
     }
 
-    public onImportedFilesChanged(fileStates: FileState[], metricData: MetricData[], renderState: FileSelectionState, event: angular.IAngularEvent) {
-
+    public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
     }
 
     public applySettings() {
@@ -68,10 +67,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
     }
 
     private adaptedColorRange(s: Settings) {
-        const maxMetricValue = MetricCalculator.getMaxMetricInAllRevisions(
-            this.fileStateService.getVisibleFiles(),
-            s.dynamicSettings.colorMetric
-        )
+        const maxMetricValue = this.metricStateService.getMaxMetricByMetricName(s.dynamicSettings.colorMetric)
 
         const flipped = (s.dynamicSettings.neutralColorRange) ? s.dynamicSettings.neutralColorRange.flipped : false
         const firstThird = Math.round((maxMetricValue / 3) * 100) / 100

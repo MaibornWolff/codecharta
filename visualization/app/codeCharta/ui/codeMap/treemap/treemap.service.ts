@@ -3,8 +3,8 @@ import * as d3 from "d3";
 import {hierarchy, HierarchyNode} from "d3";
 import {TreeMapUtils} from "./treemap.util";
 import {CodeMapUtilService} from "../codeMap.util.service";
-import {CodeMapNode, BlacklistType, CCFile, Settings} from "../../../codeCharta.model";
-import { MetricCalculator } from "../../../util/metricCalculator";
+import {CodeMapNode, BlacklistType, CCFile, Settings, FileState, MetricData} from "../../../codeCharta.model";
+import { MetricStateService } from "../../../state/metricState.service";
 
 export interface SquarifiedValuedCodeMapNode {
     data: CodeMapNode;
@@ -28,9 +28,9 @@ export class TreeMapService {
     /* @ngInject */
     constructor() {}
 
-    public createTreemapNodes(map: CodeMapNode, importedFiles: CCFile[], s: Settings, fileName: string): Node {
-        const squaredNode: SquarifiedValuedCodeMapNode = this.squarify(map, s, fileName);
-        return this.addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode, importedFiles, s);
+    public createTreemapNodes(renderFile: CCFile, s: Settings, metricData: MetricData[]): Node {
+        const squaredNode: SquarifiedValuedCodeMapNode = this.squarify(renderFile, s);
+        return this.addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode, s, metricData);
     }
 
     public setVisibilityOfNodeAndDescendants(node: CodeMapNode, visibility: boolean) {
@@ -41,8 +41,8 @@ export class TreeMapService {
         return node;
     }
 
-    private squarify(map: CodeMapNode, s: Settings, fileName: string): SquarifiedValuedCodeMapNode {
-        let nodes: HierarchyNode<CodeMapNode> = d3.hierarchy<CodeMapNode>(map);
+    private squarify(renderFile: CCFile, s: Settings): SquarifiedValuedCodeMapNode {
+        let nodes: HierarchyNode<CodeMapNode> = d3.hierarchy<CodeMapNode>(renderFile.map);
         const blacklisted = CodeMapUtilService.numberOfBlacklistedNodes(nodes.descendants().map(d => d.data), s.fileSettings.blacklist);
         let nodesPerSide = 2 * Math.sqrt(nodes.descendants().length - blacklisted);
         let treeMap = d3.treemap<CodeMapNode>()
@@ -50,11 +50,11 @@ export class TreeMapService {
             .paddingOuter(s.dynamicSettings.margin * TreeMapService.PADDING_SCALING_FACTOR || 1)
             .paddingInner(s.dynamicSettings.margin * TreeMapService.PADDING_SCALING_FACTOR || 1);
 
-        return treeMap(nodes.sum((node) => this.calculateValue(node, s, fileName))) as SquarifiedValuedCodeMapNode;
+        return treeMap(nodes.sum((node) => this.calculateValue(node, s, renderFile.fileMeta.fileName))) as SquarifiedValuedCodeMapNode;
     }
 
-    private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, importedFiles: CCFile[], s: Settings): Node {
-        const maxHeight = MetricCalculator.getMaxMetricInAllRevisions(importedFiles, s.dynamicSettings.heightMetric);
+    private addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode: SquarifiedValuedCodeMapNode, s: Settings, metricData: MetricData[]): Node {
+        const maxHeight = metricData.find(x => x.name == s.dynamicSettings.heightMetric).maxValue;
         const heightScale = s.treeMapSettings.mapSize / TreeMapService.HEIGHT_DIVISOR / maxHeight;
         return this.addHeightDimensionAndFinalize(squaredNode, s, heightScale, maxHeight);
     }

@@ -16,7 +16,8 @@ import {CodeMapNodeDecoratorService} from "./codeMap.nodeDecorator.service";
 angular.module("app.codeCharta.ui.codeMap", [
     "app.codeCharta.state",
     "app.codeCharta.ui.codeMap.threeViewer",
-    "app.codeCharta.ui.codeMap.treemap"]
+    "app.codeCharta.ui.codeMap.treemap"
+    ]
 ).component(
     codeMapComponent.selector,
     codeMapComponent

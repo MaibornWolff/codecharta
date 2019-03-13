@@ -39,13 +39,13 @@ angular.module(
         "app.codeCharta.ui.metricChooser",
         "app.codeCharta.ui.resetSettingsButton",
         "app.codeCharta.ui.rangeSlider",
-        "app.codeCharta.ui.colorSettingsPanel",
+        //"app.codeCharta.ui.colorSettingsPanel",
         "app.codeCharta.ui.heightSettingsPanel",
         "app.codeCharta.ui.areaSettingsPanel",
         "app.codeCharta.ui.revisionChooser",
 
-        /*
-        "app.codeCharta.ui.viewCube",
+
+        /*"app.codeCharta.ui.viewCube",
         "app.codeCharta.ui.mapTreeView",
         "app.codeCharta.ui.settingsPanel",
         "app.codeCharta.ui.legendPanel",
