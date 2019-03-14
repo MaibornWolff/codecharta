@@ -23,9 +23,7 @@ export interface CodeMapNode {
     name: string;
     type: string;
     children?: CodeMapNode[];
-    attributes: {
-        [key: string]: number
-    };
+    attributes: KeyValuePair;
     link?: string;
     origin?: string;
     path?: string;
@@ -130,9 +128,7 @@ export enum AttributeType {
 export interface Edge {
     fromNodeName: string;
     toNodeName: string;
-    attributes: {
-        [key: string]: number
-    };
+    attributes: KeyValuePair;
     visible?: boolean;
 }
 
@@ -173,3 +169,7 @@ export interface UrlData {
 export type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>;
 };
+
+export interface KeyValuePair {
+    [key: string]: number;
+}

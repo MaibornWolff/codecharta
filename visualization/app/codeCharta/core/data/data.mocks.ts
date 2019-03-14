@@ -1,4 +1,4 @@
-import { CodeMapNode, Edge, CodeMap } from "../../codeCharta.model";
+import {CodeMapNode, Edge, CCFile} from "../../codeCharta.model";
 
 export const VALID_NODE: CodeMapNode = {
     name: "root",
@@ -50,25 +50,40 @@ export const VALID_EDGE: Edge[] = [
     }
 ];
 
-export const TEST_FILE_CONTENT = {
-    projectName: "Sample Map",
-    apiVersion: "1.1",
-    nodes: [VALID_NODE]
+export const TEST_FILE_CONTENT: CCFile = {
+    fileMeta: {
+        fileName: "noFileName",
+        projectName: "Sample Map",
+        apiVersion: "1.1",
+    },
+    map: VALID_NODE,
+    settings: {
+        fileSettings: {}
+    }
+
 };
 
-export const TEST_FILE_DATA: CodeMap = {
-    fileName: "file",
-    projectName: "Sample Map",
-    apiVersion: "1.1",
-    nodes: VALID_NODE,
-    edges: VALID_EDGE
+export const TEST_FILE_DATA: CCFile = {
+    fileMeta: {
+        fileName: "file",
+        projectName: "Sample Map",
+        apiVersion: "1.1",
+    },
+    map: VALID_NODE,
+    settings: {
+        fileSettings: {
+            edges: VALID_EDGE
+        }
+    }
 };
 
-export const TEST_DELTA_MAP_A: CodeMap = {
-    fileName: "fileA",
-    projectName: "Sample Project",
-    apiVersion: "1.1",
-    nodes: {
+export const TEST_DELTA_MAP_A: CCFile = {
+    fileMeta : {
+        fileName: "fileA",
+        projectName: "Sample Project",
+        apiVersion: "1.1",
+    },
+    map: {
         name: "root",
         type: "Folder",
         attributes: {},
@@ -97,14 +112,19 @@ export const TEST_DELTA_MAP_A: CodeMap = {
                 ]
             }
         ]
+    },
+    settings: {
+        fileSettings: {}
     }
 };
 
-export const TEST_DELTA_MAP_B: CodeMap = {
-    fileName: "fileB",
-    projectName: "Sample Project",
-    apiVersion: "1.1",
-    nodes: {
+export const TEST_DELTA_MAP_B: CCFile = {
+    fileMeta: {
+        fileName: "fileB",
+        projectName: "Sample Project",
+        apiVersion: "1.1",
+    },
+    map: {
         name: "root",
         type: "Folder",
         attributes: {},
@@ -145,5 +165,8 @@ export const TEST_DELTA_MAP_B: CodeMap = {
                 ]
             }
         ]
+    },
+    settings: {
+        fileSettings: {}
     }
 };

@@ -7,7 +7,7 @@ import {CodeMapUtilService} from "./codeMap.util.service"
 import {CodeMapLabelService} from "./codeMap.label.service"
 import {ThreeSceneService} from "./threeViewer/threeSceneService"
 import {CodeMapArrowService} from "./codeMap.arrow.service"
-import {CCFile, CodeMapNode, Edge, FileState, MetricData, Settings,} from "../../codeCharta.model"
+import {CCFile, CodeMapNode, Edge, FileSelectionState, FileState, MetricData, Settings,} from "../../codeCharta.model"
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import {IRootScopeService} from "angular";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
@@ -16,6 +16,7 @@ import {CodeMapNodeDecoratorService} from "./codeMap.nodeDecorator.service";
 import {MultipleState} from "../../util/multipleState";
 import {MetricStateService, MetricStateServiceSubscriber} from "../../state/metricState.service";
 import {FileStateHelper} from "../../util/fileStateHelper";
+import {DeltaCalculator} from "../../util/deltaCalculator";
 
 export interface RenderData {
 	renderFile: CCFile
@@ -87,12 +88,10 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		const visibleFileStates: FileState[] = FileStateHelper.getVisibleFileStates(fileStates)
 		if (FileStateHelper.isDeltaState(fileStates)) {
 			console.log("Delta State")
-			/* TODO: set combined fileSettings from CCFile into settingsService.settings
-			const referenceFile = visibleFileStates.filter(x => x.selectedAs == FileSelectionState.Reference)
-			const comparisonFile = visibleFileStates.filter(x => x.selectedAs == FileSelectionState.Comparison)
-			this.deltaCalculatorService.removeCrossOriginNodes(referenceFile)
-			this.deltaCalculatorService.provideDeltas(referenceFile, comparisonFile, metrics)
-			*/
+			// TODO: set combined fileSettings from CCFile into settingsService.settings
+			const referenceFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Reference).file
+			const comparisonFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Comparison).file
+			return DeltaCalculator.combineFilesWithDeltas(referenceFile, comparisonFile)
 
 		} else if (FileStateHelper.isPartialState(fileStates)){
 			console.log("Partial State")

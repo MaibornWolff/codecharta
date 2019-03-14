@@ -1,86 +1,71 @@
-"use strict";
-
 import * as d3 from "d3";
 import {HierarchyNode} from "d3-hierarchy";
 import * as deepcopy from "deepcopy";
-import {CodeMapNodeDecoratorService} from "../../ui/codeMap/codeMap.nodeDecorator.service";
-import { CodeMapNode, CCFile } from "../../codeCharta.model";
+import {CodeMapNode, CCFile, KeyValuePair} from "../codeCharta.model";
 
-export interface KVObject {
-    [key: string]: number;
-}
+export class DeltaCalculator {
 
-/**
- * Calculates the deltas between given maps and modifies the data structure
- */
-export class DeltaCalculatorService {
-
-    /* @ngInject */
-    constructor(private dataDecoratorService: CodeMapNodeDecoratorService) {
-
+    public static combineFilesWithDeltas(referenceFile: CCFile, comparisonFile: CCFile): CCFile {
+        referenceFile = this.removeCrossOriginNodes(referenceFile)
+        return this.provideDeltas(referenceFile, comparisonFile)
     }
 
-    public provideDeltas(leftFile: CCFile, rightFile: CCFile, metrics: string[]) {
+    private static provideDeltas(referenceFile: CCFile, comparisonFile: CCFile): CCFile {
 
-        const leftMap = leftFile.map;
-        const rightMap = rightFile.map;
-
-        //null checks
-        if(!leftMap || !rightMap){
+        if(!referenceFile.map || !comparisonFile.map){
             return;
         }
 
-        //remove cross origin nodes from maps
-        this.removeCrossOriginNodes(leftFile);
-        this.removeCrossOriginNodes(rightFile);
+        this.removeCrossOriginNodes(referenceFile);
+        this.removeCrossOriginNodes(comparisonFile);
 
         //build hash maps for fast search indices
-        let firstLeafHashMap = new Map<string, CodeMapNode>();
-        d3.hierarchy(leftMap).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
-            firstLeafHashMap.set(node.data.path, node.data);
+        let referenceHashMap = new Map<string, CodeMapNode>();
+        d3.hierarchy(referenceFile.map).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
+            referenceHashMap.set(node.data.path, node.data);
         });
 
-        let secondLeafHashMap = new Map<string, CodeMapNode>();
-        d3.hierarchy(rightMap).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
-            secondLeafHashMap.set(node.data.path, node.data);
+        let comparisonHashMap = new Map<string, CodeMapNode>();
+        d3.hierarchy(comparisonFile.map).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
+            comparisonHashMap.set(node.data.path, node.data);
         });
 
         //insert nodes from the other map
-        this.insertNodesIntoMapsAndHashmaps(firstLeafHashMap, secondLeafHashMap, leftMap, rightMap, metrics);
-        this.insertNodesIntoMapsAndHashmaps(secondLeafHashMap, firstLeafHashMap, rightMap, leftMap, metrics);
+        this.insertNodesIntoMapsAndHashMaps(referenceHashMap, comparisonHashMap, referenceFile.map, comparisonFile.map);
+        this.insertNodesIntoMapsAndHashMaps(comparisonHashMap, referenceHashMap, comparisonFile.map, referenceFile.map);
 
         //calculate deltas between leaves
-        firstLeafHashMap.forEach((node, path) => {
-            let otherNode = secondLeafHashMap.get(path);
-            otherNode.deltas = this.calculateAttributeListDelta(node.attributes, otherNode.attributes);
-            node.deltas = this.calculateAttributeListDelta(otherNode.attributes, node.attributes);
+        referenceHashMap.forEach((referenceNode, path) => {
+            let comparisonNode = comparisonHashMap.get(path);
+            comparisonNode.deltas = this.calculateAttributeListDelta(referenceNode.attributes, comparisonNode.attributes);
+            referenceNode.deltas = this.calculateAttributeListDelta(comparisonNode.attributes, referenceNode.attributes);
         });
+        return referenceFile
 
     }
 
-    public removeCrossOriginNodes(file: CCFile) {
-
-            let root = d3.hierarchy<CodeMapNode>(file.map);
-            root.each((node) => {
-                if (node.data.children) {
-                    node.data.children = node.data.children.filter(x => (x.origin === file.fileMeta.fileName));
-                }
-            });
-
+    private static removeCrossOriginNodes(file: CCFile): CCFile {
+        let root = d3.hierarchy<CodeMapNode>(file.map);
+        root.each((node) => {
+            if (node.data.children) {
+                node.data.children = node.data.children.filter(x => (x.origin === file.fileMeta.fileName));
+            }
+        });
+        return file
     }
 
-    private insertNodesIntoMapsAndHashmaps(firstLeafHashMap: Map<string, CodeMapNode>, secondLeafHashMap: Map<string, CodeMapNode>, firstMap: CodeMapNode, secondMap: CodeMapNode, metrics: string[]) {
+    private static insertNodesIntoMapsAndHashMaps(firstLeafHashMap: Map<string, CodeMapNode>, secondLeafHashMap: Map<string, CodeMapNode>, firstMap: CodeMapNode, secondMap: CodeMapNode) {
         firstLeafHashMap.forEach((node, path) => {
             if (!secondLeafHashMap.has(path)) {
                 // insert node into secondHashMap and secondMap
                 let addedNode = this.deepcopy(node);
                 secondLeafHashMap.set(path, addedNode);
-                this.insertNodeIntoMapByPath(addedNode, secondMap, metrics);
+                this.insertNodeIntoMapByPath(addedNode, secondMap);
             }
         });
     }
 
-    private insertNodeIntoMapByPath(node: CodeMapNode, insertMap: CodeMapNode, metrics: string[]) {
+    private static insertNodeIntoMapByPath(node: CodeMapNode, insertMap: CodeMapNode) {
 
         let pathArray: string[] = node.path.split("/");
 
@@ -124,9 +109,7 @@ export class DeltaCalculatorService {
                     attributes: {}
                 };
 
-                // TODO: delta -> decorateNodeWithChildrenSumMetrics()
-                //this.dataDecoratorService.decorateNodeWithChildrenSumMetrics(d3.hierarchy(folder), metrics);
-                folder.attributes["unary"] = 1;
+                folder.attributes["unary"] = 1; // TODO: do we need this, if we decorate afterwards nevertheless?
 
                 current.children.push(folder);
                 current = folder;
@@ -145,7 +128,7 @@ export class DeltaCalculatorService {
 
     }
 
-    private deepcopy(root:CodeMapNode): CodeMapNode {
+    private static deepcopy(root:CodeMapNode): CodeMapNode {
 
         //deepcopy
         let h = d3.hierarchy(root);
@@ -174,7 +157,7 @@ export class DeltaCalculatorService {
 
     }
 
-    private calculateAttributeListDelta(first: KVObject, second: KVObject) {
+    private static calculateAttributeListDelta(first: KeyValuePair, second: KeyValuePair) {
         let deltas = {};
         for (let key in second) {
             if (key) {
@@ -186,5 +169,4 @@ export class DeltaCalculatorService {
         }
         return deltas;
     }
-
 }

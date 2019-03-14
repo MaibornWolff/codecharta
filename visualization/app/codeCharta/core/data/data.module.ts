@@ -1,6 +1,6 @@
 "use strict";
 
-import {DeltaCalculatorService} from "./data.deltaCalculator.service";
+import {DeltaCalculator} from "../../util/deltaCalculator";
 import {CodeMapNodeDecoratorService} from "../../ui/codeMap/codeMap.nodeDecorator.service";
 
 import angular from "angular";
@@ -12,6 +12,6 @@ angular.module("app.codeCharta.core.data").service(
 );
 
 angular.module("app.codeCharta.core.data").service(
-    "deltaCalculatorService", DeltaCalculatorService
+    "deltaCalculatorService", DeltaCalculator
 );
 
