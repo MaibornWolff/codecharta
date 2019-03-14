@@ -2,14 +2,14 @@ import angular from "angular";
 import * as d3 from "d3";
 import {CCFile, CodeMapNode, Settings} from "../codeCharta.model";
 
-export class DownloadFile {
+export class FileDownloader {
 
-    public static downloadCurrentMap(settings: Settings, file: CCFile) {
-        const data = this.getProjectDataAsCCJsonFormat(settings, file);
+    public static downloadCurrentMap(file: CCFile) {
+        const data = this.getProjectDataAsCCJsonFormat(file);
         this.downloadData(data, this.getNewFileName(file));
     }
 
-    private static getProjectDataAsCCJsonFormat(settings: Settings, file: CCFile) {
+    private static getProjectDataAsCCJsonFormat(file: CCFile) {
         let newFileName = this.getNewFileName(file);
 
         return {
@@ -17,9 +17,9 @@ export class DownloadFile {
             projectName: file.fileMeta.projectName,
             apiVersion: file.fileMeta.apiVersion,
             nodes: [this.removeJsonHashkeysAndVisibleAttribute(file.map)],
-            edges: settings.fileSettings.edges,
-            attributeTypes: settings.fileSettings.attributeTypes,
-            blacklist: settings.fileSettings.blacklist,
+            edges: file.settings.fileSettings.edges,
+            attributeTypes: file.settings.fileSettings.attributeTypes,
+            blacklist: file.settings.fileSettings.blacklist,
         };
     }
 

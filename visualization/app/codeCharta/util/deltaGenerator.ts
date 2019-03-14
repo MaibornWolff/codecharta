@@ -3,7 +3,7 @@ import {HierarchyNode} from "d3-hierarchy";
 import * as deepcopy from "deepcopy";
 import {CodeMapNode, CCFile, KeyValuePair} from "../codeCharta.model";
 
-export class DeltaCalculator {
+export class DeltaGenerator {
 
     public static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile): CCFile {
         // TODO: set combined settings.fileSettings from both CCFiles into settingsService.settings

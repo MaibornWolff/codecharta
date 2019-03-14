@@ -1,6 +1,6 @@
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { KVObject } from "../../util/deltaCalculator"
+import { KVObject } from "../../util/deltaGenerator"
 import "./detailPanel.component.scss"
 import {
 	CodeMapBuildingTransition,

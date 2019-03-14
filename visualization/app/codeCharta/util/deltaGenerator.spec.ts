@@ -1,5 +1,5 @@
 import "../core/data/data.module";
-import {DeltaCalculator} from "./deltaCalculator";
+import {DeltaGenerator} from "./deltaGenerator";
 import {TEST_DELTA_MAP_A, TEST_DELTA_MAP_B} from "../core/data/data.mocks";
 import {CCFile} from "../codeCharta.model";
 
@@ -61,7 +61,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
             ]
         });
 
-        DeltaCalculator.getDeltaFile(fileA, fileB);
+        DeltaGenerator.getDeltaFile(fileA, fileB);
 
         expect(fileA.map.children[2].children[0].children[0].attributes["special"]).toBe(42);
         expect(fileA.map.children[2].children[0].children[1].attributes["monster"]).toBe(0);
@@ -73,7 +73,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
         let na = null;
         let nb = JSON.parse(JSON.stringify(fileB));
 
-        DeltaCalculator.getDeltaFile(na, nb);
+        DeltaGenerator.getDeltaFile(na, nb);
 
         expect(na).toBe(null);
         expect(nb).toEqual(fileB);
@@ -84,7 +84,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
         let na = JSON.parse(JSON.stringify(fileA));
         let nb = JSON.parse(JSON.stringify(fileB));
 
-        DeltaCalculator.getDeltaFile(na, nb);
+        DeltaGenerator.getDeltaFile(na, nb);
 
         expect(na).toEqual(fileA);
         expect(nb).toEqual(fileB);
@@ -93,7 +93,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
     it("additionalLeaf from fileB should exist in a after calling getDeltaFile, metrics should be 0", ()=>{
         fileA.map.children[0].origin = "hallo";
 
-        DeltaCalculator.getDeltaFile(fileA, fileB);
+        DeltaGenerator.getDeltaFile(fileA, fileB);
 
         expect(fileA.map.children[2].name).toBe("additional leaf");
         expect(fileB.map.children[1].name).toBe("additional leaf");
@@ -103,7 +103,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
     });
 
     it("getDeltaFile should result in expected deltaFiles", ()=>{
-        DeltaCalculator.getDeltaFile(fileA, fileB);
+        DeltaGenerator.getDeltaFile(fileA, fileB);
 
         expect(fileA.map.children[0].deltas["rloc"]).toBe(80);
         expect(fileB.map.children[0].deltas["rloc"]).toBe(-80);
@@ -124,23 +124,23 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
         let d = {"a":110,"b":11};
         let e = {"d":110,"e":11};
 
-        let ab: any = DeltaCalculator.calculateAttributeListDelta(a,b);
+        let ab: any = DeltaGenerator.calculateAttributeListDelta(a,b);
         expect(ab.a).toBe(b.a-a.a);
         expect(ab.b).toBe(b.b-a.b);
         expect(ab.c).toBe(b.c-a.c);
 
-        let ac: any = DeltaCalculator.calculateAttributeListDelta(a,c);
+        let ac: any = DeltaGenerator.calculateAttributeListDelta(a,c);
         expect(ac.a).toBe(c.a-a.a);
         expect(ac.b).toBe(c.b-a.b);
         expect(ac.c).toBe(c.c-a.c);
         expect(ac.d).toBe(c.d);
 
-        let ad: any = DeltaCalculator.calculateAttributeListDelta(a,d);
+        let ad: any = DeltaGenerator.calculateAttributeListDelta(a,d);
         expect(ad.a).toBe(d.a-a.a);
         expect(ad.b).toBe(d.b-a.b);
         expect(ad.c).toBe(undefined);
 
-        let ae: any = DeltaCalculator.calculateAttributeListDelta(a,e);
+        let ae: any = DeltaGenerator.calculateAttributeListDelta(a,e);
         expect(ae.a).toBe(undefined);
         expect(ae.b).toBe(undefined);
         expect(ae.c).toBe(undefined);

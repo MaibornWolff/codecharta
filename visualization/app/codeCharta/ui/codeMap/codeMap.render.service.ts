@@ -13,10 +13,10 @@ import {IRootScopeService} from "angular";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
 import _ from "lodash"
 import {CodeMapNodeDecoratorService} from "./codeMap.nodeDecorator.service";
-import {MultipleState} from "../../util/multipleState";
+import {AggregationGenerator} from "../../util/aggregationGenerator";
 import {MetricStateService, MetricStateServiceSubscriber} from "../../state/metricState.service";
 import {FileStateHelper} from "../../util/fileStateHelper";
-import {DeltaCalculator} from "../../util/deltaCalculator";
+import {DeltaGenerator} from "../../util/deltaGenerator";
 
 export interface RenderData {
 	renderFile: CCFile
@@ -92,13 +92,13 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 			console.log("Delta State")
 			const referenceFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Reference).file
 			const comparisonFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Comparison).file
-			const deltaFile = DeltaCalculator.getDeltaFile(referenceFile, comparisonFile)
+			const deltaFile = DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
 			console.log("deltaFile", deltaFile)
 			return deltaFile
 
 		} else if (FileStateHelper.isPartialState(fileStates)){
 			console.log("Partial State")
-			return MultipleState.getAggregationFile(visibleFileStates.map(x => x.file))
+			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
 		} else {
 			console.log("Single State")
 			return visibleFileStates[0].file

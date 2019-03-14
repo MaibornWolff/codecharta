@@ -33,7 +33,7 @@ export class RibbonBarController implements FileStateServiceSubscriber {
 
     public downloadFile() {
         // TODO: get renderedFile
-        //DownloadFile.downloadCurrentMap(this.settingsService.getSettings(), this.fileStateService.getRenderFile())
+        //FileDownloader.downloadCurrentMap(this.fileStateService.getRenderFile())
     }
 
     public toggle() {

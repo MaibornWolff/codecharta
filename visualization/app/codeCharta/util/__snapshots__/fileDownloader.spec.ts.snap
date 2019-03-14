@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`app.codeCharta.core.fileDownloader should remove visible attribute from settings.map 1`] = `
+Object {
+  "attributes": Object {},
+  "children": Array [
+    Object {
+      "attributes": Object {},
+      "children": Array [
+        Object {
+          "attributes": Object {},
+          "name": "aa",
+          "path": "/root/a/aa",
+          "type": "File",
+        },
+      ],
+      "name": "a",
+      "path": "/root/a",
+      "type": "Folder",
+    },
+    Object {
+      "attributes": Object {},
+      "name": "b",
+      "path": "/root/b",
+      "type": "File",
+    },
+  ],
+  "name": "root",
+  "path": "/root",
+  "type": "Folder",
+}
+`;

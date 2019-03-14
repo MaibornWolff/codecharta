@@ -1,6 +1,6 @@
 import {AttributeType, CodeMapNode, Edge, BlacklistItem, CCFile} from "../codeCharta.model"
 
-export class MultipleState {
+export class AggregationGenerator {
 
 	private static projectNameArray = []
 	private static fileNameArray = []

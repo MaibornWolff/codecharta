@@ -6,7 +6,7 @@ import {MapColors} from "./renderSettings";
 import {RenderingUtil} from "./renderingUtil";
 import {IntermediateVertexData} from "./intermediateVertexData";
 import {BoxGeometryGenerationHelper} from "./boxGeometryGenerationHelper";
-import {ColorConvertion} from "../../../util/colorConvertion";
+import {ColorConverter} from "../../../util/colorConverter";
 import {FileSelectionState, Settings} from "../../../codeCharta.model";
 
 export interface BoxMeasures {
@@ -53,7 +53,7 @@ export class GeometryGenerator {
 
     private getFloorGradient(nodes: Node[]): string[] {
         return RenderingUtil.gradient("#333333", "#DDDDDD", RenderingUtil.getMaxNodeDepth(nodes))
-            .map(g => ColorConvertion.convertNumberToHex(g));
+            .map(g => ColorConverter.convertNumberToHex(g));
     }
 
     private mapNodeToLocalBox(n: Node): BoxMeasures {
@@ -92,9 +92,9 @@ export class GeometryGenerator {
 
     private getMarkingColorWithGradient(n: Node) {
         if (n.markingColor) {
-            const markingColorAsNumber = ColorConvertion.convertHexToNumber(n.markingColor);
+            const markingColorAsNumber = ColorConverter.convertHexToNumber(n.markingColor);
             const markingColorWithGradient = markingColorAsNumber & (n.depth % 2 === 0 ? 0xDDDDDD : 0xFFFFFF);
-            return ColorConvertion.convertNumberToHex(markingColorWithGradient);
+            return ColorConverter.convertNumberToHex(markingColorWithGradient);
         } else {
             return this.floorGradient[n.depth]
         }
