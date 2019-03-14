@@ -6,11 +6,6 @@ import {CodeMapNode, CCFile, KeyValuePair} from "../codeCharta.model";
 export class DeltaCalculator {
 
     public static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile): CCFile {
-
-        if(!referenceFile || !comparisonFile) {
-            return;
-        }
-
         // TODO: set combined settings.fileSettings from both CCFiles into settingsService.settings
 
         //build hash maps for fast search indices
@@ -25,8 +20,8 @@ export class DeltaCalculator {
         });
 
         //insert nodes from the other map
-        this.insertNodesIntoMapsAndHashMaps(referenceHashMap, comparisonHashMap, referenceFile.map, comparisonFile.map);
-        this.insertNodesIntoMapsAndHashMaps(comparisonHashMap, referenceHashMap, comparisonFile.map, referenceFile.map);
+        this.insertNodesIntoMapsAndHashMaps(referenceHashMap, comparisonHashMap, comparisonFile.map);
+        this.insertNodesIntoMapsAndHashMaps(comparisonHashMap, referenceHashMap, referenceFile.map);
 
         //calculate deltas between leaves
         referenceHashMap.forEach((referenceNode, path) => {
@@ -35,13 +30,11 @@ export class DeltaCalculator {
             referenceNode.deltas = this.calculateAttributeListDelta(comparisonNode.attributes, referenceNode.attributes);
         });
         return referenceFile
-
     }
 
-    private static insertNodesIntoMapsAndHashMaps(firstLeafHashMap: Map<string, CodeMapNode>, secondLeafHashMap: Map<string, CodeMapNode>, firstMap: CodeMapNode, secondMap: CodeMapNode) {
+    private static insertNodesIntoMapsAndHashMaps(firstLeafHashMap: Map<string, CodeMapNode>, secondLeafHashMap: Map<string, CodeMapNode>, secondMap: CodeMapNode) {
         firstLeafHashMap.forEach((node, path) => {
             if (!secondLeafHashMap.has(path)) {
-                // insert node into secondHashMap and secondMap
                 let addedNode = this.deepcopy(node);
                 secondLeafHashMap.set(path, addedNode);
                 this.insertNodeIntoMapByPath(addedNode, secondMap);

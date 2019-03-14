@@ -82,10 +82,12 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		this.renderIfRenderObjectIsComplete()
 	}
 
-
-
 	private getSelectedFilesAsUnifiedMap(fileStates: FileState[]): CCFile {
-		const visibleFileStates: FileState[] = FileStateHelper.getVisibleFileStates(fileStates)
+		let visibleFileStates: FileState[] = FileStateHelper.getVisibleFileStates(fileStates)
+		visibleFileStates.forEach(fileState => {
+			fileState.file = this.codeMapNodeDecoratorService.preDecorateFile(fileState.file)
+		})
+
 		if (FileStateHelper.isDeltaState(fileStates)) {
 			console.log("Delta State")
 			const referenceFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Reference).file
@@ -111,8 +113,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	private render(renderData: RenderData) {
-		// TODO: give parameter MetricData and adapt decorateFiles methods
-		renderData.renderFile = this.codeMapNodeDecoratorService.decorateFiles(renderData.renderFile, renderData.metricData.map(x => x.name))
+		renderData.renderFile = this.codeMapNodeDecoratorService.decorateFile(renderData.renderFile, renderData.metricData)
 		console.log("decorated renderFile", renderData.renderFile)
 		this.updateMapGeometry(renderData.renderFile, renderData.fileStates, renderData.settings, renderData.metricData)
 		this.scaleMap(
