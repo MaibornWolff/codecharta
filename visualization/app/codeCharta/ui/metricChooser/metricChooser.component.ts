@@ -9,7 +9,7 @@ import {CodeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
 import {
     MetricData,
     Settings,
-    DynamicSettings
+    DynamicSettings, RecursivePartial
 } from "../../codeCharta.model";
 import {MetricStateService, MetricStateServiceSubscriber} from "../../state/metricState.service";
 
@@ -77,7 +77,13 @@ export class MetricChooserController implements MetricStateServiceSubscriber, Co
             heightMetric: "heightMetric",
             colorMetric: "colorMetric"
         }
+        let settingsUpdate: RecursivePartial<Settings> = this.prepareSettingsUpdateWithMetrics(metricKeys, metricData)
+        if (Object.keys(settingsUpdate.dynamicSettings).length !== 0) {
+            this.settingsService.updateSettings(settingsUpdate)
+        }
+    }
 
+    private prepareSettingsUpdateWithMetrics(metricKeys: Partial<DynamicSettings>, metricData: MetricData[]): RecursivePartial<Settings>  {
         let settingsUpdate = {dynamicSettings: {}}
 
         let metricSelectionIndex = 0
@@ -90,7 +96,7 @@ export class MetricChooserController implements MetricStateServiceSubscriber, Co
             }
             metricSelectionIndex++
         }
-        this.settingsService.updateSettings(settingsUpdate)
+        return settingsUpdate
     }
 
     private updateViewModel(settings: Settings) {
@@ -110,7 +116,6 @@ export class MetricChooserController implements MetricStateServiceSubscriber, Co
     }
 
     public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent) {
-        // unused
     }
 
     public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
@@ -145,7 +150,6 @@ export class MetricChooserController implements MetricStateServiceSubscriber, Co
     }
 
     public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
-        // unused
     }
 
     private getHoveredDeltaColor() {

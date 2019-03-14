@@ -59,6 +59,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
+		// TODO: for whatever reason this onSettingsChanged() always gets called twice
 		this.lastRender.settings = settings
 		console.log("lastSettings", settings)
 		this.renderIfRenderObjectIsComplete()
@@ -67,6 +68,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 		console.log("fileStates", fileStates);
 		this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(fileStates)
+		// TODO: this renderFile has to be undecorated at this stage (doesnt work really)
 		this.lastRender.fileStates = fileStates
 		this.renderIfRenderObjectIsComplete()
 	}
@@ -84,6 +86,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	private getSelectedFilesAsUnifiedMap(fileStates: FileState[]): CCFile {
 		const visibleFileStates: FileState[] = FileStateHelper.getVisibleFileStates(fileStates)
 		if (FileStateHelper.isDeltaState(fileStates)) {
+			console.log("Delta State")
 			/* TODO: set combined fileSettings from CCFile into settingsService.settings
 			const referenceFile = visibleFileStates.filter(x => x.selectedAs == FileSelectionState.Reference)
 			const comparisonFile = visibleFileStates.filter(x => x.selectedAs == FileSelectionState.Comparison)
@@ -92,8 +95,10 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 			*/
 
 		} else if (FileStateHelper.isPartialState(fileStates)){
+			console.log("Partial State")
 			return MultipleState.aggregateMaps(visibleFileStates.map(x => x.file))
 		} else {
+			console.log("Single State")
 			return visibleFileStates[0].file
 		}
 	}
@@ -108,6 +113,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	private render(renderData: RenderData) {
 		// TODO: give parameter MetricData and adapt decorateFiles methods
 		renderData.renderFile = this.codeMapNodeDecoratorService.decorateFiles(renderData.renderFile, renderData.metricData.map(x => x.name))
+		console.log("decorated renderFile", renderData.renderFile)
 		this.updateMapGeometry(renderData.renderFile, renderData.fileStates, renderData.settings, renderData.metricData)
 		this.scaleMap(
 			renderData.settings.appSettings.scaling.x,

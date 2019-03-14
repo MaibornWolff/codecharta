@@ -44,12 +44,6 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
         this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
         this._viewModel.isPartialState = FileStateHelper.isPartialState(fileStates)
 
-        console.log(
-            "isDelta", this._viewModel.isDeltaState,
-            "isPartial", this._viewModel.isPartialState,
-            "isSingle", FileStateHelper.isSingleState(fileStates)
-        )
-
         if (FileStateHelper.isSingleState(fileStates)) {
             this._viewModel.renderState = FileSelectionState.Single
             this._viewModel.referenceFileName = fileStates.find(x => x.selectedAs == FileSelectionState.Single).file.fileMeta.fileName
