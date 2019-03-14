@@ -4,12 +4,11 @@ import {revisionChooserComponent, revisionChooserFileDropDownComponent} from "./
 
 angular.module("app.codeCharta.ui.revisionChooser",["app.codeCharta.state"]);
 
-angular.module("app.codeCharta.ui.revisionChooser").component(
-    revisionChooserComponent.selector,
-    revisionChooserComponent
-);
-
-angular.module("app.codeCharta.ui.revisionChooser").component(
-    revisionChooserFileDropDownComponent.selector,
-    revisionChooserFileDropDownComponent
+angular.module("app.codeCharta.ui.revisionChooser")
+    .component(
+        revisionChooserComponent.selector,
+        revisionChooserComponent
+    ).component(
+        revisionChooserFileDropDownComponent.selector,
+        revisionChooserFileDropDownComponent
 );

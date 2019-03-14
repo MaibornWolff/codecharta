@@ -100,7 +100,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 
 	private renderIfRenderObjectIsComplete() {
 		console.log("lastRender", this.lastRender);
-		if (_.values(this.lastRender).every(x => (x !== null))) {
+		if (_.values(this.lastRender).every(x => (x !== null)) && this.lastRender.settings.dynamicSettings.neutralColorRange) {
 			this.render(this.lastRender)
 		}
 	}

@@ -32,10 +32,6 @@ export class FileStateService {
         return this.fileStates
     }
 
-    public getFileStateByFileName(fileName: string): FileState {
-        return this.fileStates.find(x => x.file.fileMeta.fileName == fileName)
-    }
-
     public setSingle(file: CCFile) {
         this.resetSelectionStates()
         const matchedFile = this.fileStates.find(x => x.file == file)

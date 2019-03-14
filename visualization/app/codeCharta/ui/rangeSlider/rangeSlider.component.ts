@@ -43,8 +43,10 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	}
 
 	private updateViewModel(settings: Settings) {
-		this._viewModel.colorRangeFrom = settings.dynamicSettings.neutralColorRange.from
-		this._viewModel.colorRangeTo = settings.dynamicSettings.neutralColorRange.to
+		if (settings.dynamicSettings.neutralColorRange) {
+			this._viewModel.colorRangeFrom = settings.dynamicSettings.neutralColorRange.from
+			this._viewModel.colorRangeTo = settings.dynamicSettings.neutralColorRange.to
+		}
 	}
 
 	public initSliderOptions(settings: Settings = this.settingsService.getSettings()) {

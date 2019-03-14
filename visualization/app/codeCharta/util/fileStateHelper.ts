@@ -10,6 +10,15 @@ export class FileStateHelper {
         return fileStates.filter(x => x.selectedAs != FileSelectionState.None)
     }
 
+    public static getFileByFileName(fileName: string, fileStates): CCFile {
+        const matchingFileState: FileState =  fileStates.find(x => x.file.fileMeta.fileName == fileName)
+        return matchingFileState ? matchingFileState.file : undefined
+    }
+
+    public static getRenderState(fileStates: FileState[]): FileSelectionState[] {
+        return fileStates.filter(x => x.selectedAs != FileSelectionState.None).map(x => x.selectedAs)
+    }
+
     public static isSingleState(fileStates: FileState[]): boolean {
         const firstFoundFileState: FileSelectionState = this.getFirstFoundFileState(fileStates)
         return firstFoundFileState == FileSelectionState.Single
