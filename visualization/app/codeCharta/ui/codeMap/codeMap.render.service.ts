@@ -88,14 +88,15 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		const visibleFileStates: FileState[] = FileStateHelper.getVisibleFileStates(fileStates)
 		if (FileStateHelper.isDeltaState(fileStates)) {
 			console.log("Delta State")
-			// TODO: set combined fileSettings from CCFile into settingsService.settings
 			const referenceFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Reference).file
 			const comparisonFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Comparison).file
-			return DeltaCalculator.combineFilesWithDeltas(referenceFile, comparisonFile)
+			const deltaFile = DeltaCalculator.getDeltaFile(referenceFile, comparisonFile)
+			console.log("deltaFile", deltaFile)
+			return deltaFile
 
 		} else if (FileStateHelper.isPartialState(fileStates)){
 			console.log("Partial State")
-			return MultipleState.aggregateMaps(visibleFileStates.map(x => x.file))
+			return MultipleState.getAggregationFile(visibleFileStates.map(x => x.file))
 		} else {
 			console.log("Single State")
 			return visibleFileStates[0].file

@@ -128,8 +128,8 @@ describe("multipleFilePanelController", function() {
 			multipleFilePanelController.onMultipleChange()
 
 			expect(multipleFilePanelController.mapsToAggregate).toEqual(expected)
-			expect(multipleFileServiceMock.aggregateMaps).toBeCalledWith(expected)
-			expect(multipleFileServiceMock.aggregateMaps).toHaveBeenCalledTimes(1)
+			expect(multipleFileServiceMock.getAggregationFile).toBeCalledWith(expected)
+			expect(multipleFileServiceMock.getAggregationFile).toHaveBeenCalledTimes(1)
 			expect(multipleFilePanelController.settings.map).toEqual(file1)
 			expect(multipleFilePanelController.settings.blacklist).toEqual(file1.blacklist)
 			expect(settingsServiceMock.applySettings).toBeCalledWith(multipleFilePanelController.settings)
@@ -144,8 +144,8 @@ describe("multipleFilePanelController", function() {
 			multipleFilePanelController.onMultipleChange()
 
 			expect(multipleFilePanelController.mapsToAggregate).toEqual(expected)
-			expect(multipleFileServiceMock.aggregateMaps).toBeCalledWith(expected)
-			expect(multipleFileServiceMock.aggregateMaps).toHaveBeenCalledTimes(1)
+			expect(multipleFileServiceMock.getAggregationFile).toBeCalledWith(expected)
+			expect(multipleFileServiceMock.getAggregationFile).toHaveBeenCalledTimes(1)
 			expect(multipleFilePanelController.settings.map).toEqual(file1)
 			expect(multipleFilePanelController.settings.blacklist).toEqual(file1.blacklist)
 			expect(settingsServiceMock.applySettings).toBeCalledWith(multipleFilePanelController.settings)
@@ -162,8 +162,8 @@ describe("multipleFilePanelController", function() {
 			multipleFilePanelController.onMultipleChange()
 
 			expect(multipleFilePanelController.mapsToAggregate).toEqual(expected)
-			expect(multipleFileServiceMock.aggregateMaps).toBeCalledWith(expected)
-			expect(multipleFileServiceMock.aggregateMaps).toHaveBeenCalledTimes(1)
+			expect(multipleFileServiceMock.getAggregationFile).toBeCalledWith(expected)
+			expect(multipleFileServiceMock.getAggregationFile).toHaveBeenCalledTimes(1)
 			expect(multipleFilePanelController.settings.map).toEqual(file1)
 			expect(multipleFilePanelController.settings.blacklist).toEqual(file1.blacklist)
 			expect(settingsServiceMock.applySettings).toBeCalledWith(multipleFilePanelController.settings)

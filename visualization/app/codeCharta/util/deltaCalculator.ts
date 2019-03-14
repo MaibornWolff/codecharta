@@ -5,19 +5,13 @@ import {CodeMapNode, CCFile, KeyValuePair} from "../codeCharta.model";
 
 export class DeltaCalculator {
 
-    public static combineFilesWithDeltas(referenceFile: CCFile, comparisonFile: CCFile): CCFile {
-        referenceFile = this.removeCrossOriginNodes(referenceFile)
-        return this.provideDeltas(referenceFile, comparisonFile)
-    }
+    public static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile): CCFile {
 
-    private static provideDeltas(referenceFile: CCFile, comparisonFile: CCFile): CCFile {
-
-        if(!referenceFile.map || !comparisonFile.map){
+        if(!referenceFile || !comparisonFile) {
             return;
         }
 
-        this.removeCrossOriginNodes(referenceFile);
-        this.removeCrossOriginNodes(comparisonFile);
+        // TODO: set combined settings.fileSettings from both CCFiles into settingsService.settings
 
         //build hash maps for fast search indices
         let referenceHashMap = new Map<string, CodeMapNode>();
@@ -44,16 +38,6 @@ export class DeltaCalculator {
 
     }
 
-    private static removeCrossOriginNodes(file: CCFile): CCFile {
-        let root = d3.hierarchy<CodeMapNode>(file.map);
-        root.each((node) => {
-            if (node.data.children) {
-                node.data.children = node.data.children.filter(x => (x.origin === file.fileMeta.fileName));
-            }
-        });
-        return file
-    }
-
     private static insertNodesIntoMapsAndHashMaps(firstLeafHashMap: Map<string, CodeMapNode>, secondLeafHashMap: Map<string, CodeMapNode>, firstMap: CodeMapNode, secondMap: CodeMapNode) {
         firstLeafHashMap.forEach((node, path) => {
             if (!secondLeafHashMap.has(path)) {
@@ -65,6 +49,7 @@ export class DeltaCalculator {
         });
     }
 
+    // TODO: insertByPath not possible, because path doesnt exist yet (not decorated)
     private static insertNodeIntoMapByPath(node: CodeMapNode, insertMap: CodeMapNode) {
 
         let pathArray: string[] = node.path.split("/");
@@ -141,7 +126,7 @@ export class DeltaCalculator {
             }
         }
 
-        copy.data.attributes.unary = 1;
+        copy.data.attributes.unary = 1; // TODO: do we need this, if we decorate afterwards nevertheless?
 
         ////make all ancestors attributes 0
         copy.each((node) => {

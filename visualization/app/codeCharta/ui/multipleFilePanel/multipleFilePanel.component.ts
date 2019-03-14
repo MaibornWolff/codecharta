@@ -29,7 +29,7 @@ export class MultipleFilePanelController implements DataServiceSubscriber, Setti
 	public onMultipleChange() {
 		this.selectMapsToAggregate()
 
-		let newMap = this.multipleFileService.aggregateMaps(JSON.parse(JSON.stringify(this.mapsToAggregate)))
+		let newMap = this.multipleFileService.getAggregationFile(JSON.parse(JSON.stringify(this.mapsToAggregate)))
 
 		this.settings.map = newMap
 		this.settings.blacklist = newMap.blacklist

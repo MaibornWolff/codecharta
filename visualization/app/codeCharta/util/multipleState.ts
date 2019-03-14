@@ -9,7 +9,7 @@ export class MultipleState {
 	private static attributeTypesEdge: { [key: string]: AttributeType } = {}
 	private static attributeTypesNode: { [key: string]: AttributeType } = {}
 
-	public static aggregateMaps(inputFiles: CCFile[]): CCFile {
+	public static getAggregationFile(inputFiles: CCFile[]): CCFile {
 		if (inputFiles.length == 1) {
 			return inputFiles[0]
 		}

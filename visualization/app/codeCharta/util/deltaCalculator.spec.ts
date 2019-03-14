@@ -1,6 +1,5 @@
 import "../core/data/data.module";
 import {DeltaCalculator} from "./deltaCalculator";
-import * as d3 from "d3";
 import {TEST_DELTA_MAP_A, TEST_DELTA_MAP_B} from "../core/data/data.mocks";
 import {CCFile} from "../codeCharta.model";
 
@@ -12,7 +11,6 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
     beforeEach(function() {
         fileA = JSON.parse(JSON.stringify(TEST_DELTA_MAP_A));
         fileB = JSON.parse(JSON.stringify(TEST_DELTA_MAP_B));
-        console.log(fileA)
     });
 
     it("golden test", ()=>{
@@ -63,7 +61,7 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
             ]
         });
 
-        DeltaCalculator.provideDeltas(fileA,fileB);
+        DeltaCalculator.getDeltaFile(fileA, fileB);
 
         expect(fileA.map.children[2].children[0].children[0].attributes["special"]).toBe(42);
         expect(fileA.map.children[2].children[0].children[1].attributes["monster"]).toBe(0);
@@ -71,42 +69,31 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
         expect(fileB.map.children[3].children[0].children[1].attributes["special"]).toBe(0);
     });
 
-
-    it("should remove all nodes with other origin than itself", ()=>{
-        fileA.map.children[0].origin = "something else"
-        fileA.map.children[1].origin = fileA.fileMeta.fileName;
-        DeltaCalculator.removeCrossOriginNodes(fileA);
-        let h = d3.hierarchy(fileA.map);
-        h.each((node)=>{
-            expect(node.data.origin === fileA.fileMeta.fileName);
-        });
-    });
-
-    it("fill maps should return input maps when a map does not exist", ()=>{
+    it("getDeltaFile should return input files if a file does not exist", ()=>{
         let na = null;
         let nb = JSON.parse(JSON.stringify(fileB));
 
-        DeltaCalculator.provideDeltas(na, nb);
+        DeltaCalculator.getDeltaFile(na, nb);
 
         expect(na).toBe(null);
         expect(nb).toEqual(fileB);
     });
 
-    it("fill maps should return input maps when a map has no root", ()=>{
+    it("getDeltaFile should return input files if a file has no root", ()=>{
         fileA.map = null;
         let na = JSON.parse(JSON.stringify(fileA));
         let nb = JSON.parse(JSON.stringify(fileB));
 
-        DeltaCalculator.provideDeltas(na, nb);
+        DeltaCalculator.getDeltaFile(na, nb);
 
         expect(na).toEqual(fileA);
         expect(nb).toEqual(fileB);
     });
 
-    it("additionalLeaf from map b should exist in a after calling fillMapsWithNonExistingNodesFromOtherMap, metrics should be 0", ()=>{
+    it("additionalLeaf from fileB should exist in a after calling getDeltaFile, metrics should be 0", ()=>{
         fileA.map.children[0].origin = "hallo";
 
-        DeltaCalculator.provideDeltas(fileA, fileB);
+        DeltaCalculator.getDeltaFile(fileA, fileB);
 
         expect(fileA.map.children[2].name).toBe("additional leaf");
         expect(fileB.map.children[1].name).toBe("additional leaf");
@@ -115,8 +102,8 @@ describe("app.codeCharta.core.data.deltaCalculatorService", function() {
         expect(fileB.map.children[1].attributes.rloc).toBe(10);
     });
 
-    it("should result in expected delta maps", ()=>{
-        DeltaCalculator.provideDeltas(fileA, fileB);
+    it("getDeltaFile should result in expected deltaFiles", ()=>{
+        DeltaCalculator.getDeltaFile(fileA, fileB);
 
         expect(fileA.map.children[0].deltas["rloc"]).toBe(80);
         expect(fileB.map.children[0].deltas["rloc"]).toBe(-80);
