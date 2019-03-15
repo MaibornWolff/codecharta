@@ -1,5 +1,5 @@
 import {ScenarioButtonsController} from "./scenarioButtons.component";
-import {ScenarioService} from "../../core/scenario/scenario.service";
+import {ScenarioService} from "../../state/scenario.service";
 import {TooltipService} from "../../core/tooltip/tooltip.service";
 import {IScope} from "angular";
 import {SettingsService} from "../../state/settings.service";

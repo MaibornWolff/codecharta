@@ -3,7 +3,7 @@ import {CodeChartaController} from "./codeCharta.component";
 import {DataService} from "./core/data/data.service";
 import {DialogService} from "./ui/dialog/dialog.service";
 import {SettingsService} from "./state/settings.service";
-import {ScenarioService} from "./core/scenario/scenario.service";
+import {ScenarioService} from "./state/scenario.service";
 import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
 import {DataLoadingService} from "./core/data/data.loading.service";
 import {NameDataPair, UrlUtils} from "./util/urlUtils";

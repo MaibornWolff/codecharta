@@ -1,27 +1,32 @@
-import {NGMock} from "../../../../mocks/ng.mockhelper";
-import "./scenario.module";
+import {getService, instantiateModule} from "../../../mocks/ng.mockhelper";
 import {Scenario, ScenarioService} from "./scenario.service";
-import {SettingsService} from "../../state/settings.service";
+import {SettingsService} from "./settings.service";
+import {MetricStateService} from "./metricState.service";
 
-describe("app.codeCharta.core.scenarioService", function () {
+describe("app.codeCharta.state.scenarioService", function () {
 
-    let scenarioService: ScenarioService,
-        $scope,
-        scenario: Scenario,
-        defaultScenario: Scenario,
-        dataService: DataService,
-        settingsService: SettingsService;
+    let services, scenarioService: ScenarioService, defaultScenario, scenario
 
-    beforeEach(NGMock.mock.module("app.codeCharta.core.scenario"));
+    beforeEach(() => {
+        restartSystem();
+        rebuildService();
+    });
 
-    beforeEach(NGMock.mock.inject((_scenarioService_, _settingsService_, _$rootScope_, _dataService_) => {
-        scenarioService = _scenarioService_;
-        settingsService = _settingsService_;
-        dataService = _dataService_;
-        $scope = _$rootScope_;
-        scenario = {name: "testScenario", settings: settingsService.settings};
-        defaultScenario = _scenarioService_.getDefaultScenario();
-    }));
+    function restartSystem() {
+        instantiateModule("app.codeCharta.state");
+
+        services = {
+            settingsService: getService<SettingsService>("settingsService"),
+            metricStateService: getService<MetricStateService>("metricStateService"),
+        };
+    }
+
+    function rebuildService() {
+        scenarioService = new ScenarioService(
+            services.settingsService,
+            services.metricStateService,
+        );
+    }
 
     it("should apply the settings from a given scenario", () => {
         scenarioService.applyScenario(scenario);

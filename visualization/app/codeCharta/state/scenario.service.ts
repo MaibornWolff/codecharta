@@ -1,7 +1,7 @@
 "use strict";
-import {SettingsService} from "../../state/settings.service";
-import { RecursivePartial, Settings } from "../../codeCharta.model";
-import { CodeChartaService } from "../../codeCharta.service";
+import {SettingsService} from "./settings.service";
+import { RecursivePartial, Settings } from "../codeCharta.model";
+import {MetricStateService} from "./metricState.service";
 
 export interface Scenario {
     name: string;
@@ -9,9 +9,6 @@ export interface Scenario {
     autoFitCamera: boolean;
 }
 
-/**
- * Applies and manages scenarios.
- */
 export class ScenarioService {
 
     private scenarios: Scenario[];
@@ -19,8 +16,8 @@ export class ScenarioService {
 
     /* ngInject */
     constructor(private settingsService: SettingsService,
-                private codeChartaService: CodeChartaService) {
-        this.scenarios = require("./scenarios.json");
+                private metricStateService: MetricStateService) {
+        this.scenarios = require("../assets/scenarios.json");
     }
 
     /**
@@ -66,7 +63,7 @@ export class ScenarioService {
     }
 
     public getScenarios(): Scenario[] {
-        return this.scenarios.filter(s => this.isScenarioPossible(s, this.codeChartaService.getMetrics()));
+        return this.scenarios.filter(s => this.isScenarioPossible(s, this.metricStateService.getMetrics()));
     }
 
     public isScenarioPossible(scenario: Scenario, metrics: string[]) {

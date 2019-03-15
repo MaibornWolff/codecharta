@@ -1,6 +1,6 @@
 import {FileChooserController} from "./fileChooserController";
 import {DataLoadingService} from "../../core/data/data.loading.service";
-import {ScenarioService} from "../../core/scenario/scenario.service";
+import {ScenarioService} from "../../state/scenario.service";
 import {DialogService} from "../dialog/dialog.service";
 import {DataService} from "../../core/data/data.service";
 import {SettingsService} from "../../state/settings.service";

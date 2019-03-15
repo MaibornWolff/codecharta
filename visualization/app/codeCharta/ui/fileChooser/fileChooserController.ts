@@ -8,7 +8,7 @@ with the additional ones */
 
 import {SettingsService} from "../../state/settings.service";
 import {DialogService} from "../dialog/dialog.service";
-import {ScenarioService} from "../../core/scenario/scenario.service";
+import {ScenarioService} from "../../state/scenario.service";
 import { CodeChartaService } from "../../codeCharta.service";
 
 /**

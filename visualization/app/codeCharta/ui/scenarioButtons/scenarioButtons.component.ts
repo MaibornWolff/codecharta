@@ -2,7 +2,7 @@
 
 import {IAngularEvent, IRootScopeService, IScope} from "angular";
 import {TooltipService, TooltipServiceSubscriber, Tooltips} from "../../core/tooltip/tooltip.service";
-import {ScenarioService, Scenario} from "../../core/scenario/scenario.service";
+import {ScenarioService, Scenario} from "../../state/scenario.service";
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import "./scenarioDropDown.component.scss";
 import {Settings} from "../../codeCharta.model";
