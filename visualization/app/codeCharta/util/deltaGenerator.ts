@@ -42,7 +42,6 @@ export class DeltaGenerator {
         });
     }
 
-    // TODO: insertByPath not possible, because path doesnt exist yet (not decorated)
     private static insertNodeIntoMapByPath(node: CodeMapNode, insertMap: CodeMapNode) {
 
         let pathArray: string[] = node.path.split("/");

@@ -1,12 +1,11 @@
 "use strict"
-
 import * as d3 from "d3"
 import {CCFile, CodeMapNode, MetricData} from "../codeCharta.model"
 
 export class NodeDecorator {
 
 	public static decorateFile(file: CCFile, metricData: MetricData[]): CCFile {
-		let decoratedFile: CCFile = file
+		let decoratedFile: CCFile = this.deepCopy(file)
 		this.decorateMapWithMissingObjects(decoratedFile)
 		this.decorateMapWithCompactMiddlePackages(decoratedFile)
 		this.decorateLeavesWithMissingMetrics(decoratedFile, metricData)
@@ -14,7 +13,12 @@ export class NodeDecorator {
 		return decoratedFile
 	}
 
+	private static deepCopy(file: CCFile): CCFile {
+		return JSON.parse(JSON.stringify(file))
+	}
+
 	public static preDecorateFile(file: CCFile): CCFile {
+		// TODO: predecorate origin as well? so in multiple mode the files keep its original origin attribute
 		return this.decorateMapWithPathAttribute(file)
 	}
 
