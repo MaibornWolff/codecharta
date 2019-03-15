@@ -14,19 +14,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Updated dependencies for visualisation
-
 ### Removed
 
 ### Fixed
 
--	  Fixed bug that code map was not re-loaded when changing from multiple to single revision mode #396
--	  Fixed missing apiVersion in aggregated map #398
--         Input Fields of color sliders adjust width according to content #409
+-   Fixed bug that code map was not re-loaded when changing from multiple to single revision mode #396
+-   Fixed missing apiVersion in aggregated map #398
+-   Input Fields of color sliders adjust width according to content #409
 
 ### Chore
 
-- Bump nouislider from 11.1.0 to 13.1.1 in /visualization
+-   Bump nouislider from 11.1.0 to 13.1.1 in /visualization
+-   Bump typescript from 2.7.2 to 3.3.3333 in /visualization
 
 ## [1.21.2] - 2019-02-26
 
