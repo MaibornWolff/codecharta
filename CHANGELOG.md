@@ -24,6 +24,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -	  Fixed missing apiVersion in aggregated map #398
 -         Input Fields of color sliders adjust width according to content #409
 
+### Chore
+
+- Bump nouislider from 11.1.0 to 13.1.1 in /visualization
+
 ## [1.21.2] - 2019-02-26
 
 ### Added
