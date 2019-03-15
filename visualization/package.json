@@ -139,7 +139,7 @@
 		"@types/jest": "^21.1.10",
 		"@types/node": "^8.9.5",
 		"@types/sinon": "^2.3.5",
-		"@types/three": "^0.89.12",
+		"@types/three": "^0.93.26",
 		"@uirouter/angularjs": "^1.0.16",
 		"ajv": "^5.5.2",
 		"angular": "^1.6.9",
