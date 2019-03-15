@@ -12,16 +12,18 @@ import {FileStateHelper} from "../../util/fileStateHelper";
 export class RevisionChooserController implements FileStateServiceSubscriber {
 
     private _viewModel: {
-        isDeltaState: boolean,
+        isSingleState: boolean
         isPartialState: boolean,
+        isDeltaState: boolean,
         fileStates: FileState[],
         renderState: FileSelectionState,
         referenceFileName: string,
         comparisonFileName: string,
         partialFileNames: string[]
     } = {
-        isDeltaState: null,
+        isSingleState: null,
         isPartialState: null,
+        isDeltaState: null,
         fileStates: [],
         renderState: null,
         referenceFileName: null,
@@ -41,10 +43,11 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
     // TODO: get renderFile from codeMapRenderService
     public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 
-        this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
+        this._viewModel.isSingleState = FileStateHelper.isSingleState(fileStates)
         this._viewModel.isPartialState = FileStateHelper.isPartialState(fileStates)
+        this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
 
-        if (FileStateHelper.isSingleState(fileStates)) {
+        if (this._viewModel.isSingleState){
             this._viewModel.renderState = FileSelectionState.Single
             this._viewModel.referenceFileName = fileStates.find(x => x.selectedAs == FileSelectionState.Single).file.fileMeta.fileName
 

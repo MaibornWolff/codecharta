@@ -91,7 +91,7 @@ export class MetricChooserController implements MetricStateServiceSubscriber, Co
             const metricValue: string = this.settingsService.getSettings().dynamicSettings[metricKey]
             const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps)
 
-            if (!availableMetrics.find(x => x.name == metricValue)) {
+            if (availableMetrics && !availableMetrics.find(x => x.name == metricValue)) {
                 settingsUpdate.dynamicSettings[metricKey] = availableMetrics[Math.min(metricSelectionIndex, availableMetrics.length - 1)].name
             }
             metricSelectionIndex++

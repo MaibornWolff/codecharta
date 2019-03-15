@@ -1,6 +1,6 @@
 <md-input-container class="md-block"
                     ng-class="{half: $ctrl._viewModel.isDeltaState}"
-                    ng-if="!$ctrl._viewModel.isPartialState">
+                    ng-if="$ctrl._viewModel.isSingleState || $ctrl._viewModel.isDeltaState">
     <i class="fa fa-folder-open"></i>
     <i class="fa fa-download"></i>
 

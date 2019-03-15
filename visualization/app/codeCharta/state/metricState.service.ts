@@ -67,17 +67,21 @@ export class MetricStateService implements FileStateServiceSubscriber {
 	}
 
 	private getUniqueMetricNames(fileStates: FileState[]): string[] {
-		let leaves: HierarchyNode<CodeMapNode>[] = [];
-		fileStates.forEach((fileState: FileState) => {
-			leaves = leaves.concat(hierarchy<CodeMapNode>(fileState.file.map).leaves());
-		});
-		let attributeList: string[][] = leaves.map((d: HierarchyNode<CodeMapNode>) => {
-			return d.data.attributes ? Object.keys(d.data.attributes) : [];
-		});
-		let attributes: string[] = attributeList.reduce((left: string[], right: string[]) => {
-			return left.concat(right.filter(el => left.indexOf(el) === -1));
-		});
-		return attributes.sort();
+		if (fileStates.length == 0) {
+			return []
+		} else {
+			let leaves: HierarchyNode<CodeMapNode>[] = [];
+			fileStates.forEach((fileState: FileState) => {
+				leaves = leaves.concat(hierarchy<CodeMapNode>(fileState.file.map).leaves());
+			});
+			let attributeList: string[][] = leaves.map((d: HierarchyNode<CodeMapNode>) => {
+				return d.data.attributes ? Object.keys(d.data.attributes) : [];
+			});
+			let attributes: string[] = attributeList.reduce((left: string[], right: string[]) => {
+				return left.concat(right.filter(el => left.indexOf(el) === -1));
+			});
+			return attributes.sort();
+		}
 	}
 
 	private calculateMetricData(fileStates: FileState[], allMetrics: string[], metricsFromVisibleMaps: string[]) {

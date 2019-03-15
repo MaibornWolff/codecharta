@@ -31,12 +31,12 @@ export class FileStateHelper {
 
     public static isPartialState(fileStates: FileState[]): boolean {
         const firstFoundFileState: FileSelectionState = this.getFirstFoundFileState(fileStates)
-        return firstFoundFileState == FileSelectionState.Partial
+        return firstFoundFileState == undefined || firstFoundFileState == FileSelectionState.Partial
     }
 
     private static getFirstFoundFileState(fileStates: FileState[]): FileSelectionState {
         return fileStates
             .map(x => x.selectedAs)
-            .filter(state => state != FileSelectionState.None)[0]
+            .find(state => state != FileSelectionState.None)
     }
 }
