@@ -189,7 +189,7 @@
     "resolve-url-loader": "^2.3.0",
     "rimraf": "^2.6.2",
     "roboto-fontface": "^0.9.0",
-    "sass-loader": "^6.0.7",
+    "sass-loader": "^7.1.0",
     "script-loader": "^0.7.0",
     "sinon": "^4.4.10",
     "string-loader": "0.0.1",
