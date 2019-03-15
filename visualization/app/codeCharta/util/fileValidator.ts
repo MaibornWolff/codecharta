@@ -22,12 +22,12 @@ export class FileValidator {
 		return true
 	}
 
-	public static validate(data: { nodes: CodeMapNode[] }): Array<{ message: string; dataPath: string }> {
+	public static validate(file: { nodes: CodeMapNode[] }): Array<{ message: string; dataPath: string }> {
 		let ajv = require("ajv")()
 		let compare = ajv.compile(require("./schema.json"))
-		let valid = compare(data)
+		let valid = compare(file)
 
-		if (!FileValidator.hasUniqueChildren(data.nodes[0])) {
+		if (!FileValidator.hasUniqueChildren(file.nodes[0])) {
 			return [
 				{
 					message: "names or ids are not unique",

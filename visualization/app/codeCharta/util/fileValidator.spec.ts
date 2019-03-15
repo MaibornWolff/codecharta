@@ -1,52 +1,33 @@
-import "../core/data/data.module";
-import {NGMock} from "../../../../mocks/ng.mockhelper";
-import DoneCallback = jest.DoneCallback;
-import {DataValidatorService} from "./data.validator.service";
-import {TEST_FILE_CONTENT, TEST_FILE_DATA} from "./data.mocks";
-import {CodeMap} from "./model/CodeMap";
+import {FileValidator} from "./fileValidator";
+import {TEST_FILE_CONTENT} from "./dataMocks";
 
-/**
- * @test {DataValidatorService}
- */
-describe("app.codeCharta.core.data.dataValidatorService", function () {
+describe("app.codeCharta.util.fileValidator", function () {
 
-    let dataValidatorService: DataValidatorService;
-    let file: CodeMap;
-
-    //noinspection TypeScriptUnresolvedVariable
-    beforeEach(NGMock.mock.module("app.codeCharta.core.data"));
-
-    //noinspection TypeScriptUnresolvedVariable
-    beforeEach(NGMock.mock.inject(function (_dataValidatorService_) {
-        dataValidatorService = _dataValidatorService_;}));
+    let file;
 
     beforeEach(()=> {
         file = TEST_FILE_CONTENT;
     });
 
-    it("should reject null", (done: DoneCallback)=> {
-        dataValidatorService.validate(null).then(
-            ()=> {
-                done.fail("should not accept null");
-            },
-            ()=> {
-                done();
-            }
-        );
+    function expectFileToBeValid(errors) {
+        expect(errors.length).toBe(0)
+    }
+
+    function expectFileToBeInvalid(errors) {
+        expect(errors.length).toBeGreaterThan(0)
+    }
+
+    it("should reject null", ()=> {
+        const errors = FileValidator.validate(null)
+        expectFileToBeInvalid(errors)
     });
 
-    it("should reject string", (done: DoneCallback)=> {
-        dataValidatorService.validate("").then(
-            ()=> {
-                done.fail("should not accept string");
-            },
-            ()=> {
-                done();
-            }
-        );
+    it("should reject string", ()=> {
+        const errors = FileValidator.validate("" as any);
+        expectFileToBeInvalid(errors)
     });
 
-    it("should not reject a file with edges", (done: DoneCallback)=> {
+    it("should not reject a file with edges", () => {
         file.edges = [
             {
                 fromNodeName: "a",
@@ -58,107 +39,60 @@ describe("app.codeCharta.core.data.dataValidatorService", function () {
                 visible: false
             }
         ];
-        dataValidatorService.validate(file).then(
-            ()=> {
-                done();
-            },
-            ()=> {
-                done.fail("should accept with edges");
-            }
-        );
+        const errors = FileValidator.validate(file);
+        expectFileToBeValid(errors)
     });
 
-    it("should not reject a file without edges", (done: DoneCallback)=> {
-        file.edges = undefined;
-        dataValidatorService.validate(file).then(
-            ()=> {
-                done();
-            },
-            ()=> {
-                done.fail("should accept without edges");
-            }
-        );
+    it("should not reject a file without edges", ()=> {
+        file.settings.fileSettings.edges = undefined;
+        const errors = FileValidator.validate(file);
+        expectFileToBeValid(errors)
     });
 
-    it("should not reject a file when numbers are floating point values", (done: DoneCallback)=> {
-        file.nodes[0].children[0].attributes["RLOC"] = 333.4;
-        dataValidatorService.validate(file).then(
-            ()=> {
-                done();
-            },
-            ()=> {
-                done.fail("should accept floats");
-            }
-        );
+    it("should not reject a file when numbers are floating point values", ()=> {
+        file.map.children[0].attributes["RLOC"] = 333.4;
+        const errors = FileValidator.validate(file);
+        expectFileToBeValid(errors)
     });
 
-    it("should reject when children are not unique in name+type", (done: DoneCallback)=> {
-        file.nodes[0].children[0].name = "same";
-        file.nodes[0].children[0].type = "File";
-        file.nodes[0].children[1].name = "same";
-        file.nodes[0].children[1].type = "File";
-        dataValidatorService.validate(file).then(
-            ()=> {
-                done.fail("should reject")
-            },
-            ()=> {
-                done();
-            }
-        );
+    it("should reject when children are not unique in name+type", ()=> {
+        file.map.children[0].name = "same";
+        file.map.children[0].type = "File";
+        file.map.children[1].name = "same";
+        file.map.children[1].type = "File";
+        const errors = FileValidator.validate(file);
+        expectFileToBeInvalid(errors)
     });
 
-    it("should reject when nodes are empty", (done: DoneCallback)=> {
-        file.nodes = [];
-        dataValidatorService.validate(file).then(
-            ()=> {
-                done.fail("should reject")
-            },
-            ()=> {
-                done();
-            }
-        );
+    it("should reject when nodes are empty", ()=> {
+        file.map = [];
+        const errors = FileValidator.validate(file);
+        expectFileToBeInvalid(errors)
     });
 
-    it("should reject if nodes is not a node and therefore has no name or id", (done: DoneCallback)=> {
-        file.nodes[0] = {
+    it("should reject if nodes is not a node and therefore has no name or id", ()=> {
+        file.map = {
             something: "something"
         };
-        dataValidatorService.validate(file).then(
-            ()=> {
-                done.fail("should reject");
-            },
-            ()=> {
-                done();
-            }
-        );
+        const errors = FileValidator.validate(file);
+        expectFileToBeInvalid(errors)
     });
 
-    it("attributes should not allow whitespaces", (done: DoneCallback)=> {
-        file.nodes[0].attributes = {
+    it("attributes should not allow whitespaces", ()=> {
+        file.map.attributes = {
             "tes t1": 0
         };
-        dataValidatorService.validate(file).then(
-            ()=> {
-                done.fail("should reject");
-            },
-            ()=> {
-                done();
-            }
-        );
+        const errors = FileValidator.validate(file);
+        expectFileToBeInvalid(errors)
     });
 
-    it("attributes should not allow special characters", (done: DoneCallback)=> {
-        file.nodes[0].attributes = {
+    it("attributes should not allow special characters", ()=> {
+        file.map.attributes = {
             "tes)t1": 0
         };
-        dataValidatorService.validate(file).then(
-            ()=> {
-                done.fail("should reject");
-            },
-            ()=> {
-                done();
-            }
-        );
+
+        const errors = FileValidator.validate(file);
+        expectFileToBeInvalid(errors)
     });
 
 });

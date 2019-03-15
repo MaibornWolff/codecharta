@@ -1,6 +1,5 @@
-import "../core/data/data.module";
 import {DeltaGenerator} from "./deltaGenerator";
-import {TEST_DELTA_MAP_A, TEST_DELTA_MAP_B} from "../core/data/data.mocks";
+import {TEST_DELTA_MAP_A, TEST_DELTA_MAP_B} from "./dataMocks";
 import {CCFile} from "../codeCharta.model";
 
 describe("app.codeCharta.core.data.deltaCalculatorService", function() {

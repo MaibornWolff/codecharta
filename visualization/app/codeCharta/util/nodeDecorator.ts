@@ -1,13 +1,11 @@
 "use strict"
 
 import * as d3 from "d3"
-import {CCFile, CodeMapNode, MetricData} from "../../codeCharta.model"
+import {CCFile, CodeMapNode, MetricData} from "../codeCharta.model"
 
-export class CodeMapNodeDecoratorService {
+export class NodeDecorator {
 
-	public static SELECTOR = "codeMapNodeDecoratorService"
-
-	public decorateFile(file: CCFile, metricData: MetricData[]): CCFile {
+	public static decorateFile(file: CCFile, metricData: MetricData[]): CCFile {
 		let decoratedFile: CCFile = file
 		this.decorateMapWithMissingObjects(decoratedFile)
 		this.decorateMapWithCompactMiddlePackages(decoratedFile)
@@ -16,11 +14,11 @@ export class CodeMapNodeDecoratorService {
 		return decoratedFile
 	}
 
-	public preDecorateFile(file: CCFile): CCFile {
+	public static preDecorateFile(file: CCFile): CCFile {
 		return this.decorateMapWithPathAttribute(file)
 	}
 
-	private decorateMapWithCompactMiddlePackages(file: CCFile) {
+	private static decorateMapWithCompactMiddlePackages(file: CCFile) {
 		const isEmptyMiddlePackage = current => {
 			return (
 				current &&
@@ -55,7 +53,7 @@ export class CodeMapNodeDecoratorService {
 		}
 	}
 
-	private decorateMapWithPathAttribute(file: CCFile) {
+	private static decorateMapWithPathAttribute(file: CCFile) {
 		if (file && file.map) {
 			let root = d3.hierarchy<CodeMapNode>(file.map)
 			root.each(node => {
@@ -65,7 +63,7 @@ export class CodeMapNodeDecoratorService {
 		return file
 	}
 
-	private decorateMapWithMissingObjects(file: CCFile) {
+	private static decorateMapWithMissingObjects(file: CCFile) {
 		if (file && file.map) {
 			let root = d3.hierarchy<CodeMapNode>(file.map)
 			root.each(node => {
@@ -77,7 +75,7 @@ export class CodeMapNodeDecoratorService {
 		}
 	}
 
-	private decorateLeavesWithMissingMetrics(file: CCFile, metricData: MetricData[]) {
+	private static decorateLeavesWithMissingMetrics(file: CCFile, metricData: MetricData[]) {
 		if (file && file.map && metricData) {
 			let root = d3.hierarchy<CodeMapNode>(file.map)
 			root.leaves().forEach(node => {
@@ -90,7 +88,7 @@ export class CodeMapNodeDecoratorService {
 		}
 	}
 
-	private decorateParentNodesWithSumAttributesOfChildren(file: CCFile, metricData: MetricData[]) {
+	private static decorateParentNodesWithSumAttributesOfChildren(file: CCFile, metricData: MetricData[]) {
 		if (file && file.map) {
 			let root = d3.hierarchy<CodeMapNode>(file.map)
 			root.each(node => {
@@ -99,7 +97,7 @@ export class CodeMapNodeDecoratorService {
 		}
 	}
 
-	private decorateNodeWithChildrenSumMetrics(node, metricData: MetricData[]) {
+	private static decorateNodeWithChildrenSumMetrics(node, metricData: MetricData[]) {
 		metricData.forEach(metric => {
 			if (!node.data.attributes.hasOwnProperty(metric.name) && node.data.children && node.data.children.length > 0) {
 				this.defineAttributeAsSumMethod(node, metric.name)
@@ -107,7 +105,7 @@ export class CodeMapNodeDecoratorService {
 		})
 	}
 
-	private defineAttributeAsSumMethod(node, metric: string) {
+	private static defineAttributeAsSumMethod(node, metric: string) {
 		Object.defineProperty(node.data.attributes, metric, {
 			enumerable: true,
 			get: () => {

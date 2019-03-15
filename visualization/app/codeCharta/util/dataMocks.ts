@@ -1,4 +1,4 @@
-import {CodeMapNode, Edge, CCFile} from "../../codeCharta.model";
+import {CodeMapNode, Edge, CCFile} from "../codeCharta.model";
 
 export const VALID_NODE: CodeMapNode = {
     name: "root",
@@ -50,17 +50,11 @@ export const VALID_EDGE: Edge[] = [
     }
 ];
 
-export const TEST_FILE_CONTENT: CCFile = {
-    fileMeta: {
-        fileName: "noFileName",
-        projectName: "Sample Map",
-        apiVersion: "1.1",
-    },
-    map: VALID_NODE,
-    settings: {
-        fileSettings: {}
-    }
-
+export const TEST_FILE_CONTENT = {
+    fileName: "noFileName",
+    projectName: "Sample Map",
+    apiVersion: "1.1",
+    nodes: [VALID_NODE],
 };
 
 export const TEST_FILE_DATA: CCFile = {

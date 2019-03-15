@@ -28,7 +28,6 @@ import "./optionsPanel/optionsPanel.module";
 import "./weblinksPanel/weblinksPanel.module";
 import "./sidenav/sidenav.module";
 import "./blacklistPanel/blacklistPanel.module";
-import "./multipleFilePanel/multipleFilePanel";
 
 angular.module(
     "app.codeCharta.ui",
@@ -60,8 +59,7 @@ angular.module(
         "app.codeCharta.ui.optionsPanel",
         "app.codeCharta.ui.sidenav",
         "app.codeCharta.ui.blacklistPanel",
-        "app.codeCharta.ui.weblinksPanel",
-        "app.codeCharta.ui.multipleFilePanel"*/
+        "app.codeCharta.ui.weblinksPanel"*/
 
     ]);
 

@@ -12,7 +12,7 @@ import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.s
 import {IRootScopeService} from "angular";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
 import _ from "lodash"
-import {CodeMapNodeDecoratorService} from "./codeMap.nodeDecorator.service";
+import {NodeDecorator} from "../../util/nodeDecorator";
 import {AggregationGenerator} from "../../util/aggregationGenerator";
 import {MetricStateService, MetricStateServiceSubscriber} from "../../state/metricState.service";
 import {FileStateHelper} from "../../util/fileStateHelper";
@@ -47,8 +47,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		private treeMapService: TreeMapService,
 		private codeMapUtilService: CodeMapUtilService,
 		private codeMapLabelService: CodeMapLabelService,
-		private codeMapArrowService: CodeMapArrowService,
-		private codeMapNodeDecoratorService: CodeMapNodeDecoratorService
+		private codeMapArrowService: CodeMapArrowService
 	) {
 		//SettingsService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
@@ -85,7 +84,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	private getSelectedFilesAsUnifiedMap(fileStates: FileState[]): CCFile {
 		let visibleFileStates: FileState[] = FileStateHelper.getVisibleFileStates(fileStates)
 		visibleFileStates.forEach(fileState => {
-			fileState.file = this.codeMapNodeDecoratorService.preDecorateFile(fileState.file)
+			fileState.file = NodeDecorator.preDecorateFile(fileState.file)
 		})
 
 		if (FileStateHelper.isSingleState(fileStates)) {
@@ -105,15 +104,16 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	private renderIfRenderObjectIsComplete() {
-		console.log("lastRender", this.lastRender);
+		console.log("lastRender1", this.lastRender);
 		if (_.values(this.lastRender).every(x => (x !== null)) && this.lastRender.settings.dynamicSettings.neutralColorRange) {
 			this.render(this.lastRender)
 		}
 	}
 
 	private render(renderData: RenderData) {
-		renderData.renderFile = this.codeMapNodeDecoratorService.decorateFile(renderData.renderFile, renderData.metricData)
+		renderData.renderFile = NodeDecorator.decorateFile(renderData.renderFile, renderData.metricData)
 		console.log("decorated renderFile", renderData.renderFile)
+		console.log("lastRender2", this.lastRender);
 		this.updateMapGeometry(renderData.renderFile, renderData.fileStates, renderData.settings, renderData.metricData)
 		this.scaleMap(
 			renderData.settings.appSettings.scaling.x,
