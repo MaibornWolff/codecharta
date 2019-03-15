@@ -174,7 +174,7 @@
     "inquirer-directory": "^2.1.0",
     "inquirer-file": "^1.0.1",
     "jest": "^22.4.3",
-    "jest-serializer-html": "^5.0.0",
+    "jest-serializer-html": "^6.0.0",
     "jquery": "^3.3.1",
     "json-loader": "^0.5.7",
     "load-grunt-tasks": "^3.5.2",
