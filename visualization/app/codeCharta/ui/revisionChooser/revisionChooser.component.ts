@@ -16,7 +16,8 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
         isPartialState: boolean,
         isDeltaState: boolean,
         fileStates: FileState[],
-        renderState: FileSelectionState,
+        renderState: string,
+        allRenderStates: string[]
         referenceFileName: string,
         comparisonFileName: string,
         partialFileNames: string[]
@@ -26,6 +27,7 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
         isDeltaState: null,
         fileStates: [],
         renderState: null,
+        allRenderStates: null,
         referenceFileName: null,
         comparisonFileName: null,
         partialFileNames: null
@@ -38,6 +40,7 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
         private $rootScope: IRootScopeService
     ) {
         FileStateService.subscribe(this.$rootScope, this)
+        this.initAllRenderStates()
     }
 
     // TODO: get renderFile from codeMapRenderService
@@ -48,15 +51,15 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
         this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
 
         if (this._viewModel.isSingleState){
-            this._viewModel.renderState = FileSelectionState.Single
+            this._viewModel.renderState = this.getEnumAsString(FileSelectionState.Single)
             this._viewModel.referenceFileName = fileStates.find(x => x.selectedAs == FileSelectionState.Single).file.fileMeta.fileName
 
         } else if (this._viewModel.isPartialState){
-            this._viewModel.renderState = FileSelectionState.Partial
+            this._viewModel.renderState = this.getEnumAsString(FileSelectionState.Partial)
             this._viewModel.partialFileNames = fileStates.filter(x => x.selectedAs == FileSelectionState.Partial).map(x => x.file.fileMeta.fileName)
 
         } else if(this._viewModel.isDeltaState) {
-            this._viewModel.renderState = FileSelectionState.Comparison
+            this._viewModel.renderState = this.getEnumAsString(FileSelectionState.Comparison)
             this._viewModel.referenceFileName = fileStates.find(x => x.selectedAs == FileSelectionState.Reference).file.fileMeta.fileName
             this._viewModel.comparisonFileName = fileStates.find(x => x.selectedAs == FileSelectionState.Comparison).file.fileMeta.fileName
 
@@ -90,13 +93,14 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
     }
 
     public onRenderStateChange(renderState: string){
-        console.log(renderState)
         if (renderState == this.getEnumAsString(FileSelectionState.Single)) {
             this.onReferenceChange(this._viewModel.referenceFileName)
+
         } else if (renderState == this.getEnumAsString(FileSelectionState.Partial)) {
             this.selectAllPartialFiles()
+
         } else if (renderState == this.getEnumAsString(FileSelectionState.Comparison)) {
-            this.onComparisonChange(this._viewModel.referenceFileName)
+            this.onComparisonChange(null)
         }
     }
 
@@ -116,6 +120,15 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
             .map(x => x.file.fileMeta.fileName)
 
         this.onPartialChange(invertedFileNames)
+    }
+
+    private initAllRenderStates() {
+        this._viewModel.allRenderStates = [
+            this.getEnumAsString(FileSelectionState.Single),
+            this.getEnumAsString(FileSelectionState.Partial),
+            this.getEnumAsString(FileSelectionState.Comparison)
+        ]
+
     }
 
     private getEnumAsString(renderState: FileSelectionState): string {

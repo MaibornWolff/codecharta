@@ -88,18 +88,15 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		})
 
 		if (FileStateHelper.isSingleState(fileStates)) {
-			console.log("Single State")
 			return visibleFileStates[0].file
+
 		} else if (FileStateHelper.isPartialState(fileStates)){
-			console.log("Partial State")
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
+
 		} else if (FileStateHelper.isDeltaState(fileStates)) {
-			console.log("Delta State")
 			const referenceFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Reference).file
 			const comparisonFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Comparison).file
-			const deltaFile = DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
-			console.log("deltaFile", deltaFile)
-			return deltaFile
+			return DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
 		}
 	}
 

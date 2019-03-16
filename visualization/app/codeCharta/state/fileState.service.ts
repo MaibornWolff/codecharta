@@ -46,8 +46,11 @@ export class FileStateService {
         const matchedReferenceFile = this.fileStates.find(x => x.file == reference)
         const matchedComparisonFile = this.fileStates.find(x => x.file == comparison)
 
-        if (matchedReferenceFile && matchedComparisonFile) {
+        if (matchedReferenceFile) {
             matchedReferenceFile.selectedAs = FileSelectionState.Reference
+        }
+
+        if (matchedComparisonFile) {
             matchedComparisonFile.selectedAs = FileSelectionState.Comparison
         }
         this.notifySelectionChange()
