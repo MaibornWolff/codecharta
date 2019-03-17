@@ -4,11 +4,11 @@ export interface FileState {
 }
 
 export enum FileSelectionState {
-    Single,
-    Reference,
-    Comparison,
-    Partial,
-    None
+    Single = "Single",
+    Reference = "Reference",
+    Comparison = "Comparison",
+    Partial = "Partial",
+    None = "None"
 }
 
 export interface CCFile {

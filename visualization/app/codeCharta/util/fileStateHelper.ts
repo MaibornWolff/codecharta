@@ -15,10 +15,6 @@ export class FileStateHelper {
         return matchingFileState ? matchingFileState.file : undefined
     }
 
-    public static getRenderState(fileStates: FileState[]): FileSelectionState[] {
-        return fileStates.filter(x => x.selectedAs != FileSelectionState.None).map(x => x.selectedAs)
-    }
-
     public static isSingleState(fileStates: FileState[]): boolean {
         const firstFoundFileState: FileSelectionState = this.getFirstFoundFileState(fileStates)
         return firstFoundFileState == FileSelectionState.Single

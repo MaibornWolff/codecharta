@@ -73,15 +73,15 @@ describe("RevisionChooserController", () => {
 		expect(dataServiceMock.getReferenceMap).toHaveBeenCalledTimes(1)
 	})
 
-	it("onReferenceChange should set the referenceMap", () => {
-		revisionChooserController.onReferenceChange(42)
+	it("onDeltaReferenceFileChange should set the referenceMap", () => {
+		revisionChooserController.onDeltaReferenceFileChange(42)
 
 		expect(dataServiceMock.setReferenceMap).toBeCalledWith(42)
 		expect(dataServiceMock.setReferenceMap).toHaveBeenCalledTimes(1)
 	})
 
-	it("onComparisonChange should set the comparisonMap", () => {
-		revisionChooserController.onComparisonChange(42)
+	it("onDeltaComparisonFileChange should set the comparisonMap", () => {
+		revisionChooserController.onDeltaComparisonFileChange(42)
 
 		expect(dataServiceMock.setComparisonMap).toBeCalledWith(42)
 		expect(dataServiceMock.setComparisonMap).toHaveBeenCalledTimes(1)
