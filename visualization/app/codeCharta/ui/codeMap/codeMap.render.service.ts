@@ -66,9 +66,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-		console.log("fileStates", fileStates);
+		console.log("lastFileStates", fileStates);
 		this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(fileStates)
-		// TODO: this renderFile has to be undecorated at this stage (doesnt work really)
 		this.lastRender.fileStates = fileStates
 		this.renderIfRenderObjectIsComplete()
 	}
@@ -94,9 +93,15 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
 
 		} else if (FileStateHelper.isDeltaState(fileStates)) {
-			const referenceFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Reference).file
-			const comparisonFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Comparison).file
-			return DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
+			if (visibleFileStates.length == 2) {
+				const referenceFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Reference).file
+				const comparisonFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Comparison).file
+				return DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
+			} else {
+				const referenceFile = visibleFileStates[0].file
+				const comparisonFile = visibleFileStates[0].file
+				return DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
+			}
 		}
 	}
 

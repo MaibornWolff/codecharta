@@ -50,19 +50,26 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
         this._viewModel.isPartialState = FileStateHelper.isPartialState(fileStates)
         this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
 
+        const visibleFileStates = FileStateHelper.getVisibleFileStates(fileStates)
+
         if (this._viewModel.isSingleState){
             this._viewModel.renderState = this.getEnumAsString(FileSelectionState.Single)
-            this._viewModel.referenceFileName = fileStates.find(x => x.selectedAs == FileSelectionState.Single).file.fileMeta.fileName
+            this._viewModel.referenceFileName = visibleFileStates[0].file.fileMeta.fileName
 
         } else if (this._viewModel.isPartialState){
             this._viewModel.renderState = this.getEnumAsString(FileSelectionState.Partial)
-            this._viewModel.partialFileNames = fileStates.filter(x => x.selectedAs == FileSelectionState.Partial).map(x => x.file.fileMeta.fileName)
+            this._viewModel.partialFileNames = visibleFileStates.map(x => x.file.fileMeta.fileName)
 
         } else if(this._viewModel.isDeltaState) {
             this._viewModel.renderState = this.getEnumAsString(FileSelectionState.Comparison)
-            this._viewModel.referenceFileName = fileStates.find(x => x.selectedAs == FileSelectionState.Reference).file.fileMeta.fileName
-            this._viewModel.comparisonFileName = fileStates.find(x => x.selectedAs == FileSelectionState.Comparison).file.fileMeta.fileName
 
+            if (visibleFileStates.length == 2) {
+                this._viewModel.referenceFileName = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Reference).file.fileMeta.fileName
+                this._viewModel.comparisonFileName = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Comparison).file.fileMeta.fileName
+            } else {
+                this._viewModel.referenceFileName = visibleFileStates[0].file.fileMeta.fileName
+                this._viewModel.comparisonFileName = visibleFileStates[0].file.fileMeta.fileName
+            }
         }
     }
 
