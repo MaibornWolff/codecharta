@@ -4,7 +4,7 @@ import {hierarchy, HierarchyNode} from "d3";
 import {TreeMapUtils} from "./treemap.util";
 import {CodeMapUtilService} from "../codeMap.util.service";
 import {CodeMapNode, BlacklistType, CCFile, Settings, FileState, MetricData} from "../../../codeCharta.model";
-import { MetricStateService } from "../../../state/metricState.service";
+import { MetricService } from "../../../state/metric.service";
 
 export interface SquarifiedValuedCodeMapNode {
     data: CodeMapNode;

@@ -5,11 +5,11 @@ import {FileStateHelper} from "../util/fileStateHelper";
 import {IAngularEvent, IRootScopeService} from "angular";
 
 
-export interface MetricStateServiceSubscriber {
+export interface MetricServiceSubscriber {
 	onMetricDataChanged(metricData: MetricData[], event: IAngularEvent)
 }
 
-export class MetricStateService implements FileStateServiceSubscriber {
+export class MetricService implements FileStateServiceSubscriber {
 
 	private static METRIC_DATA_CHANGED_EVENT = "metric-data-changed";
 
@@ -101,11 +101,11 @@ export class MetricStateService implements FileStateServiceSubscriber {
 	}
 
 	private notifySubscriber() {
-		this.$rootScope.$broadcast(MetricStateService.METRIC_DATA_CHANGED_EVENT, this.metricData)
+		this.$rootScope.$broadcast(MetricService.METRIC_DATA_CHANGED_EVENT, this.metricData)
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: MetricStateServiceSubscriber) {
-		$rootScope.$on(MetricStateService.METRIC_DATA_CHANGED_EVENT, (event, data) => {
+	public static subscribe($rootScope: IRootScopeService, subscriber: MetricServiceSubscriber) {
+		$rootScope.$on(MetricService.METRIC_DATA_CHANGED_EVENT, (event, data) => {
 			subscriber.onMetricDataChanged(data, event)
 		})
 	}

@@ -2,7 +2,7 @@
 import angular from "angular";
 import {FileStateService} from "./fileState.service";
 import {SettingsService} from "./settings.service";
-import {MetricStateService} from "./metricState.service";
+import {MetricService} from "./metric.service";
 import {ScenarioService} from "./scenario.service";
 
 angular.module(
@@ -12,7 +12,7 @@ angular.module(
 ).service(
     "settingsService", SettingsService
 ).service(
-    "metricStateService", MetricStateService
+    "metricService", MetricService
 ).service(
     "scenarioService", ScenarioService
 );

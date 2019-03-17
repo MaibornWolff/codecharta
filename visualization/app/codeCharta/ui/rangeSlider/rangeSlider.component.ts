@@ -4,7 +4,7 @@ import { MapColors } from "../codeMap/rendering/renderSettings"
 import $ from "jquery"
 import {Settings} from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
-import { MetricStateService } from "../../state/metricState.service";
+import { MetricService } from "../../state/metric.service";
 import {FileStateService} from "../../state/fileState.service";
 import {ITimeoutService} from "angular";
 import {FileStateHelper} from "../../util/fileStateHelper";
@@ -32,7 +32,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		private settingsService: SettingsService,
 		private fileStateService: FileStateService,
 		private codeChartaService: CodeChartaService,
-		private metricStateService: MetricStateService,
+		private metricService: MetricService,
 		private $timeout: ITimeoutService,
 		private $scope
 	) {
@@ -60,7 +60,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	}
 
 	public initSliderOptions(settings: Settings = this.settingsService.getSettings()) {
-		this.maxMetricValue = this.metricStateService.getMaxMetricByMetricName(settings.dynamicSettings.colorMetric)
+		this.maxMetricValue = this.metricService.getMaxMetricByMetricName(settings.dynamicSettings.colorMetric)
 
 		this._viewModel.sliderOptions = {
 			ceil: this.maxMetricValue,

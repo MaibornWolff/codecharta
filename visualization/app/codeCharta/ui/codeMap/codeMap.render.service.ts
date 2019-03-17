@@ -14,7 +14,7 @@ import {FileStateService, FileStateServiceSubscriber} from "../../state/fileStat
 import _ from "lodash"
 import {NodeDecorator} from "../../util/nodeDecorator";
 import {AggregationGenerator} from "../../util/aggregationGenerator";
-import {MetricStateService, MetricStateServiceSubscriber} from "../../state/metricState.service";
+import {MetricService, MetricServiceSubscriber} from "../../state/metric.service";
 import {FileStateHelper} from "../../util/fileStateHelper";
 import {DeltaGenerator} from "../../util/deltaGenerator";
 
@@ -25,7 +25,7 @@ export interface RenderData {
 	metricData: MetricData[]
 }
 
-export class CodeMapRenderService implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricStateServiceSubscriber {
+export class CodeMapRenderService implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricServiceSubscriber {
 	public static SELECTOR = "codeMapRenderService"
 
 	public currentSortedNodes: Node[]
@@ -51,7 +51,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	) {
 		//SettingsService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
-		MetricStateService.subscribe(this.$rootScope, this)
+		MetricService.subscribe(this.$rootScope, this)
 	}
 
 	public init() {

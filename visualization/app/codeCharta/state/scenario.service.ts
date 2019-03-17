@@ -1,7 +1,7 @@
 "use strict";
 import {SettingsService} from "./settings.service";
 import { RecursivePartial, Settings } from "../codeCharta.model";
-import {MetricStateService} from "./metricState.service";
+import {MetricService} from "./metric.service";
 
 export interface Scenario {
     name: string;
@@ -16,7 +16,7 @@ export class ScenarioService {
 
     /* ngInject */
     constructor(private settingsService: SettingsService,
-                private metricStateService: MetricStateService) {
+                private metricService: MetricService) {
         this.scenarios = require("../assets/scenarios.json");
     }
 
@@ -63,7 +63,7 @@ export class ScenarioService {
     }
 
     public getScenarios(): Scenario[] {
-        return this.scenarios.filter(s => this.isScenarioPossible(s, this.metricStateService.getMetrics()));
+        return this.scenarios.filter(s => this.isScenarioPossible(s, this.metricService.getMetrics()));
     }
 
     public isScenarioPossible(scenario: Scenario, metrics: string[]) {

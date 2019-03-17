@@ -3,7 +3,7 @@ import "./colorSettingsPanel.component.scss";
 import {FileState, Settings} from "../../codeCharta.model";
 import {IRootScopeService} from "angular";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
-import {MetricStateService} from "../../state/metricState.service";
+import {MetricService} from "../../state/metric.service";
 import {FileStateHelper} from "../../util/fileStateHelper";
 
 export class ColorSettingsPanelController implements SettingsServiceSubscriber, FileStateServiceSubscriber {
@@ -27,7 +27,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
         private $rootScope: IRootScopeService,
         private settingsService: SettingsService,
         private fileStateService: FileStateService,
-        private metricStateService: MetricStateService
+        private metricService: MetricService
     ) {
         SettingsService.subscribe(this.$rootScope, this);
         FileStateService.subscribe(this.$rootScope, this);
@@ -67,7 +67,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
     }
 
     private adaptedColorRange(s: Settings) {
-        const maxMetricValue = this.metricStateService.getMaxMetricByMetricName(s.dynamicSettings.colorMetric)
+        const maxMetricValue = this.metricService.getMaxMetricByMetricName(s.dynamicSettings.colorMetric)
 
         const flipped = (s.dynamicSettings.neutralColorRange) ? s.dynamicSettings.neutralColorRange.flipped : false
         const firstThird = Math.round((maxMetricValue / 3) * 100) / 100

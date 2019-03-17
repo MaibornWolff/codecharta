@@ -11,9 +11,9 @@ import {
     Settings,
     DynamicSettings, RecursivePartial
 } from "../../codeCharta.model";
-import {MetricStateService, MetricStateServiceSubscriber} from "../../state/metricState.service";
+import {MetricService, MetricServiceSubscriber} from "../../state/metric.service";
 
-export class MetricChooserController implements MetricStateServiceSubscriber, CodeMapMouseEventServiceSubscriber, SettingsServiceSubscriber {
+export class MetricChooserController implements MetricServiceSubscriber, CodeMapMouseEventServiceSubscriber, SettingsServiceSubscriber {
 
     public hoveredAreaValue: number;
     public hoveredHeightValue: number;
@@ -46,7 +46,7 @@ export class MetricChooserController implements MetricStateServiceSubscriber, Co
     ) {
         SettingsService.subscribe(this.$rootScope, this);
         CodeMapMouseEventService.subscribe(this.$rootScope, this);
-        MetricStateService.subscribe(this.$rootScope, this)
+        MetricService.subscribe(this.$rootScope, this)
         this.initSliderOptions()
     }
 

@@ -1,7 +1,7 @@
 import {getService, instantiateModule} from "../../../mocks/ng.mockhelper";
 import {Scenario, ScenarioService} from "./scenario.service";
 import {SettingsService} from "./settings.service";
-import {MetricStateService} from "./metricState.service";
+import {MetricService} from "./metric.service";
 
 describe("app.codeCharta.state.scenarioService", function () {
 
@@ -17,14 +17,14 @@ describe("app.codeCharta.state.scenarioService", function () {
 
         services = {
             settingsService: getService<SettingsService>("settingsService"),
-            metricStateService: getService<MetricStateService>("metricStateService"),
+            metricService: getService<MetricService>("metricService"),
         };
     }
 
     function rebuildService() {
         scenarioService = new ScenarioService(
             services.settingsService,
-            services.metricStateService,
+            services.metricService,
         );
     }
 
