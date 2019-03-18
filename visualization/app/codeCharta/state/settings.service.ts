@@ -72,7 +72,7 @@ export class SettingsService {
 				colorMetric: null,
 				focusedNodePath: null,
 				searchedNodePaths: [],
-				searchPattern: null,
+				searchPattern: "",
 				margin: SettingsService.MIN_MARGIN,
 				neutralColorRange: null,
 			},
@@ -101,13 +101,15 @@ export class SettingsService {
 
 	private updateSettingsUsingPartialSettings(settings: Settings, update: RecursivePartial<Settings>): Settings {
 		for(let key of Object.keys(settings)) {
-			if (update.hasOwnProperty(key) && typeof settings[key] === "object") {
-				if (this.containsArrayObject(update[key])) {
-					settings[key] = this.updateSettingsUsingPartialSettings(settings[key], update[key]);
-				} else if(this.isArray(settings[key])) {
-					settings[key] = update[key]
+			if (update.hasOwnProperty(key)) {
+				if (this.isObject(settings[key]) && !this.isArray(settings[key])) {
+					if (this.containsArrayObject(update[key])) {
+						settings[key] = this.updateSettingsUsingPartialSettings(settings[key], update[key]);
+					} else {
+						settings[key] = _.merge(settings[key], update[key])
+					}
 				} else {
-					settings[key] = _.merge(settings[key], update[key])
+					settings[key] = update[key]
 				}
 			}
 		}
@@ -131,6 +133,10 @@ export class SettingsService {
 
 	private isArray(obj: object) {
 		return Object.prototype.toString.call(obj) === "[object Array]"
+	}
+
+	private isObject(obj: object) {
+		return typeof obj === "object"
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: SettingsServiceSubscriber) {

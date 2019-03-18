@@ -10,6 +10,8 @@ import {
 } from "../../codeCharta.model"
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
+import {CodeMapRenderService} from "../codeMap/codeMap.render.service";
+import * as d3 from "d3"
 
 export class MapTreeViewSearchController implements SettingsServiceSubscriber, FileStateServiceSubscriber {
 
@@ -35,7 +37,8 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
-		private codeMapActionsService: CodeMapActionsService
+		private codeMapActionsService: CodeMapActionsService,
+		private codeMapRenderService: CodeMapRenderService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
@@ -54,7 +57,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 	}
 
 	public onSearchChange() {
-		// TODO: this.setSearchedNodePathnames()
+		this.setSearchedNodePathNames()
 		this.updateViewModel()
 	}
 
@@ -86,10 +89,9 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 		)
 	}
 
-	// TODO: setSearchedNodePathnames()
-	/*private setSearchedNodePathnames() {
+	private setSearchedNodePathNames() {
 		const nodes = d3
-			.hierarchy(this.fileStateService.getRenderMap())
+			.hierarchy(this.codeMapRenderService.getRenderFile().map)
 			.descendants()
 			.map(d => d.data)
 		const searchedNodes = CodeMapUtilService.getNodesByGitignorePath(nodes, this._viewModel.searchPattern)
@@ -102,7 +104,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 				searchPattern: this._viewModel.searchPattern
 			}
 		})
-	}*/
+	}
 }
 
 export const mapTreeViewSearchComponent = {

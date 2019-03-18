@@ -52,6 +52,8 @@ angular.module(
         "app.codeCharta.ui.detailPanel",
         "app.codeCharta.ui.optionsPanel",
         "app.codeCharta.ui.blacklistPanel",
+        "app.codeCharta.ui.weblinksPanel",
+        "app.codeCharta.ui.mapTreeViewSearch",
 
         //"app.codeCharta.ui.mapTreeView",
         /*
@@ -59,8 +61,6 @@ angular.module(
         "app.codeCharta.ui.scenarioButtons",
         "app.codeCharta.ui.experimentalSettingsPanel",
         "app.codeCharta.ui.layoutSwitcher",
-        "app.codeCharta.ui.mapTreeViewSearch",
-        "app.codeCharta.ui.weblinksPanel",
         "app.codeCharta.ui.tooltip"*/
 
     ]);
