@@ -50,18 +50,16 @@ angular.module(
         "app.codeCharta.ui.nodeContextMenu",
         "app.codeCharta.ui.legendPanel",
         "app.codeCharta.ui.detailPanel",
+        "app.codeCharta.ui.optionsPanel",
+        "app.codeCharta.ui.blacklistPanel",
 
         //"app.codeCharta.ui.mapTreeView",
         /*
         "app.codeCharta.ui.fileChooser",
         "app.codeCharta.ui.scenarioButtons",
         "app.codeCharta.ui.experimentalSettingsPanel",
-
         "app.codeCharta.ui.layoutSwitcher",
         "app.codeCharta.ui.mapTreeViewSearch",
-        "app.codeCharta.ui.optionsPanel",
-
-        "app.codeCharta.ui.blacklistPanel",
         "app.codeCharta.ui.weblinksPanel",
         "app.codeCharta.ui.tooltip"*/
 

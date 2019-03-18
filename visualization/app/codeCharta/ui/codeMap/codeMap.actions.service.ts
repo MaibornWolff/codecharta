@@ -1,5 +1,4 @@
 import { SettingsService } from "../../state/settings.service"
-import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { CodeMapNode, BlacklistType, BlacklistItem, Edge } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { CodeMapRenderService } from "./codeMap.render.service";

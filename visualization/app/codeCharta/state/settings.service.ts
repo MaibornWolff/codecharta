@@ -25,7 +25,8 @@ export class SettingsService {
 	}
 
 	public updateSettings(update: RecursivePartial<Settings>) {
-		this.settings = _.merge(this.settings, update)
+		// _.merge(this.settings, update) didnt work with arrays like blacklist
+		this.settings = this.updateSettingsUsingPartialSettings(this.settings, update)
 		console.log("settings", update, this.settings);
 		this.throttledBroadcast()
 	}
@@ -96,6 +97,40 @@ export class SettingsService {
 		}
 
 		return settings
+	}
+
+	private updateSettingsUsingPartialSettings(settings: Settings, update: RecursivePartial<Settings>): Settings {
+		for(let key of Object.keys(settings)) {
+			if (update.hasOwnProperty(key) && typeof settings[key] === "object") {
+				if (this.containsArrayObject(update[key])) {
+					settings[key] = this.updateSettingsUsingPartialSettings(settings[key], update[key]);
+				} else if(this.isArray(settings[key])) {
+					settings[key] = update[key]
+				} else {
+					settings[key] = _.merge(settings[key], update[key])
+				}
+			}
+		}
+		return settings;
+	}
+
+	private containsArrayObject(obj: Object): boolean {
+		if (obj) {
+			for (let key of Object.keys(obj)) {
+				if (typeof obj[key] === "object") {
+					if (Object.prototype.toString.call(obj[key]) === "[object Array]") {
+						return true
+					} else {
+						return this.containsArrayObject(obj[key]);
+					}
+				}
+			}
+		}
+		return false
+	}
+
+	private isArray(obj: object) {
+		return Object.prototype.toString.call(obj) === "[object Array]"
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: SettingsServiceSubscriber) {

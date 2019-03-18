@@ -17,7 +17,6 @@ export class BlacklistPanelController implements SettingsServiceSubscriber {
 		$rootScope: IRootScopeService
 	) {
 		SettingsService.subscribe($rootScope, this)
-		// TODO this.onSettingsChanged(settingsService.getSettings(), null)
 	}
 
 	public onSettingsChanged(settings: Settings) {
