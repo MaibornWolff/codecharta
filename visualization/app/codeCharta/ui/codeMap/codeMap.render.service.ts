@@ -62,6 +62,10 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		return this._mapMesh;
 	}
 
+	public getRenderFile(): CCFile {
+		return this.lastRender.renderFile
+	}
+
 	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
 		// TODO: for whatever reason this onSettingsChanged() always gets called twice
 		this.lastRender.settings = settings
