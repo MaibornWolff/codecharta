@@ -1,6 +1,5 @@
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { KVObject } from "../../util/deltaGenerator"
 import "./detailPanel.component.scss"
 import {
 	CodeMapBuildingTransition,
@@ -8,28 +7,31 @@ import {
 	CodeMapMouseEventServiceSubscriber
 } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeChartaService } from "../../codeCharta.service"
-import {Settings, RenderMode} from "../../codeCharta.model";
+import {Settings, KeyValuePair, MetricData} from "../../codeCharta.model";
 import {Node} from "../codeMap/rendering/node";
+import {MetricService, MetricServiceSubscriber} from "../../state/metric.service";
+import {FileStateService} from "../../state/fileState.service";
+import {FileStateHelper} from "../../util/fileStateHelper";
 
 interface CommonDetails {
-	areaAttributeName: string | null
-	heightAttributeName: string | null
-	colorAttributeName: string | null
+	areaAttributeName: string
+	heightAttributeName: string
+	colorAttributeName: string
 }
 
 interface SpecificDetails {
-	name: string | null
-	area: number | null
-	height: number | null
-	color: number | null
-	heightDelta: number | null
-	areaDelta: number | null
-	colorDelta: number | null
-	link: string | null
-	origin: string | null
-	path: string | null
-	attributes: KVObject | null
-	deltas: KVObject | null
+	name: string
+	area: number
+	height: number
+	color: number
+	heightDelta: number
+	areaDelta: number
+	colorDelta: number
+	link: string
+	origin: string
+	path: string
+	attributes: KeyValuePair
+	deltas: KeyValuePair
 }
 
 interface Details {
@@ -38,21 +40,16 @@ interface Details {
 	selected: SpecificDetails
 }
 
-export class DetailPanelController implements SettingsServiceSubscriber, CodeMapMouseEventServiceSubscriber {
-	public details: Details
-	public metrics: string[]
+export class DetailPanelController implements SettingsServiceSubscriber, CodeMapMouseEventServiceSubscriber, MetricServiceSubscriber {
 
-	/* @ngInject */
-	constructor(
-		private $rootScope,
-		private settingsService: SettingsService,
-		private $timeout,
-		private codeChartaService: CodeChartaService
-	) {
-
-        this.metrics = this.codeChartaService.getMetrics();
-
-		this.details = {
+	private _viewModel: {
+		maximizeDetailPanel: boolean,
+		metrics: string[],
+		details: Details
+	} = {
+		maximizeDetailPanel: null,
+		metrics: [],
+		details: {
 			common: {
 				areaAttributeName: null,
 				heightAttributeName: null,
@@ -87,11 +84,25 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 				deltas: null
 			}
 		}
+	}
 
-		this.onSettingsChanged(settingsService.getSettings())
+	/* @ngInject */
+	constructor(
+		private $rootScope,
+		private settingsService: SettingsService,
+		private $timeout,
+		private codeChartaService: CodeChartaService,
+		private metricService: MetricService,
+		private fileStateService: FileStateService
+	) {
 
+		MetricService.subscribe(this.$rootScope, this)
 		SettingsService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribe(this.$rootScope, this)
+	}
+
+	public onMetricDataChanged(metricData: MetricData[], event: angular.IAngularEvent) {
+		this._viewModel.metrics = metricData.map(x => x.name);
 	}
 
 	public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
@@ -106,9 +117,10 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 	}
 
 	public onSettingsChanged(settings: Settings) {
-		this.details.common.areaAttributeName = settings.dynamicSettings.areaMetric
-		this.details.common.heightAttributeName = settings.dynamicSettings.heightMetric
-		this.details.common.colorAttributeName = settings.dynamicSettings.colorMetric
+		this._viewModel.details.common.areaAttributeName = settings.dynamicSettings.areaMetric
+		this._viewModel.details.common.heightAttributeName = settings.dynamicSettings.heightMetric
+		this._viewModel.details.common.colorAttributeName = settings.dynamicSettings.colorMetric
+		this._viewModel.maximizeDetailPanel = settings.appSettings.maximizeDetailPanel
 	}
 
 	public onSelect(data: CodeMapBuildingTransition) {
@@ -128,16 +140,16 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 	}
 
 	public isHovered() {
-		if (this.details && this.details.hovered) {
-			return !!this.details.hovered.name
+		if (this._viewModel.details && this._viewModel.details.hovered) {
+			return !!this._viewModel.details.hovered.name
 		} else {
 			return false
 		}
 	}
 
 	public isSelected() {
-		if (this.details && this.details.selected) {
-			return !!this.details.selected.name
+		if (this._viewModel.details && this._viewModel.details.selected) {
+			return !!this._viewModel.details.selected.name
 		} else {
 			return false
 		}
@@ -146,59 +158,69 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 	public setHoveredDetails(hovered: Node) {
 		this.clearHoveredDetails()
 		this.$timeout(() => {
-			this.details.hovered.name = hovered.name
-			if (hovered.mode != undefined && this.settingsService.getSettings().dynamicSettings.renderMode == RenderMode.Delta) {
-				this.details.hovered.heightDelta = hovered.deltas ? hovered.deltas[this.details.common.heightAttributeName] : null
-				this.details.hovered.areaDelta = hovered.deltas ? hovered.deltas[this.details.common.areaAttributeName] : null
-				this.details.hovered.colorDelta = hovered.deltas ? hovered.deltas[this.details.common.colorAttributeName] : null
-				this.details.hovered.deltas = hovered.deltas
+			this._viewModel.details.hovered.name = hovered.name
+			if (hovered.attributes) {
+				this._viewModel.details.hovered.area = hovered.attributes[this._viewModel.details.common.areaAttributeName]
+				this._viewModel.details.hovered.height = hovered.attributes[this._viewModel.details.common.heightAttributeName]
+				this._viewModel.details.hovered.color = hovered.attributes[this._viewModel.details.common.colorAttributeName]
+				this._viewModel.details.hovered.attributes = hovered.attributes
 			}
-			if (hovered.attributes != undefined) {
-				this.details.hovered.area = hovered.attributes ? hovered.attributes[this.details.common.areaAttributeName] : null
-				this.details.hovered.height = hovered.attributes ? hovered.attributes[this.details.common.heightAttributeName] : null
-				this.details.hovered.color = hovered.attributes ? hovered.attributes[this.details.common.colorAttributeName] : null
-				this.details.hovered.attributes = hovered.attributes
+
+			if (hovered.deltas && FileStateHelper.isDeltaState(this.fileStateService.getFileStates())) {
+				this._viewModel.details.hovered.heightDelta = hovered.deltas[this._viewModel.details.common.heightAttributeName]
+				this._viewModel.details.hovered.areaDelta = hovered.deltas[this._viewModel.details.common.areaAttributeName]
+				this._viewModel.details.hovered.colorDelta = hovered.deltas[this._viewModel.details.common.colorAttributeName]
+				this._viewModel.details.hovered.deltas = hovered.deltas
 			}
-			this.details.hovered.link = hovered.link
-			this.details.hovered.origin = hovered.origin
-			this.details.hovered.path = hovered.path
+
+			this._viewModel.details.hovered.link = hovered.link
+			this._viewModel.details.hovered.origin = hovered.origin
+			this._viewModel.details.hovered.path = hovered.path
 		})
 	}
 
 	public setSelectedDetails(selected: Node) {
 		this.clearSelectedDetails()
 		this.$timeout(() => {
-			this.details.selected.name = selected.name
-			if (selected.attributes != undefined) {
-				this.details.selected.area = selected.attributes ? selected.attributes[this.details.common.areaAttributeName] : null
-				this.details.selected.height = selected.attributes ? selected.attributes[this.details.common.heightAttributeName] : null
-				this.details.selected.color = selected.attributes ? selected.attributes[this.details.common.colorAttributeName] : null
-				this.details.selected.attributes = selected.attributes
+			this._viewModel.details.selected.name = selected.name
+			if (selected.attributes) {
+				this._viewModel.details.selected.area = selected.attributes[this._viewModel.details.common.areaAttributeName]
+				this._viewModel.details.selected.height = selected.attributes[this._viewModel.details.common.heightAttributeName]
+				this._viewModel.details.selected.color = selected.attributes[this._viewModel.details.common.colorAttributeName]
+				this._viewModel.details.selected.attributes = selected.attributes
 			}
-			if (selected.deltas != undefined && this.settingsService.getSettings().dynamicSettings.renderMode == RenderMode.Delta) {
-				this.details.selected.heightDelta = selected.deltas ? selected.deltas[this.details.common.heightAttributeName] : null
-				this.details.selected.areaDelta = selected.deltas ? selected.deltas[this.details.common.areaAttributeName] : null
-				this.details.selected.colorDelta = selected.deltas ? selected.deltas[this.details.common.colorAttributeName] : null
-				this.details.selected.deltas = selected.deltas
+			if (selected.deltas && FileStateHelper.isDeltaState(this.fileStateService.getFileStates())) {
+				this._viewModel.details.selected.heightDelta = selected.deltas[this._viewModel.details.common.heightAttributeName]
+				this._viewModel.details.selected.areaDelta = selected.deltas[this._viewModel.details.common.areaAttributeName]
+				this._viewModel.details.selected.colorDelta = selected.deltas[this._viewModel.details.common.colorAttributeName]
+				this._viewModel.details.selected.deltas = selected.deltas
 			}
-			this.details.selected.link = selected.link
-			this.details.selected.origin = selected.origin
-			this.details.selected.path = selected.path
+			this._viewModel.details.selected.link = selected.link
+			this._viewModel.details.selected.origin = selected.origin
+			this._viewModel.details.selected.path = selected.path
 		})
 	}
 
 	public clearHoveredDetails() {
 		this.$timeout(() => {
-			for (let key in this.details.hovered) {
-				this.details.hovered[key] = null
+			for (let key in this._viewModel.details.hovered) {
+				this._viewModel.details.hovered[key] = null
 			}
 		})
 	}
 
 	public clearSelectedDetails() {
 		this.$timeout(() => {
-			for (let key in this.details.selected) {
-				this.details.selected[key] = null
+			for (let key in this._viewModel.details.selected) {
+				this._viewModel.details.selected[key] = null
+			}
+		})
+	}
+
+	public toggleDetailPanel() {
+		this.settingsService.updateSettings({
+			appSettings: {
+				maximizeDetailPanel: !this._viewModel.maximizeDetailPanel
 			}
 		})
 	}

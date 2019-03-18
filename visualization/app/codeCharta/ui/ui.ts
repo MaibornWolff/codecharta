@@ -47,12 +47,13 @@ angular.module(
         "app.codeCharta.ui.dialog",
         "app.codeCharta.ui.sidenav",
         "app.codeCharta.ui.settingsPanel",
-            "app.codeCharta.ui.nodeContextMenu",
-            "app.codeCharta.ui.legendPanel",
-            //"app.codeCharta.ui.mapTreeView",
+        "app.codeCharta.ui.nodeContextMenu",
+        "app.codeCharta.ui.legendPanel",
+        "app.codeCharta.ui.detailPanel",
+
+        //"app.codeCharta.ui.mapTreeView",
         /*
         "app.codeCharta.ui.fileChooser",
-        "app.codeCharta.ui.detailPanel",
         "app.codeCharta.ui.scenarioButtons",
         "app.codeCharta.ui.experimentalSettingsPanel",
 
