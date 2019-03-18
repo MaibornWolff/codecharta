@@ -43,9 +43,9 @@ angular.module(
         "app.codeCharta.ui.heightSettingsPanel",
         "app.codeCharta.ui.areaSettingsPanel",
         "app.codeCharta.ui.revisionChooser",
-
-
-        //"app.codeCharta.ui.viewCube",
+        "app.codeCharta.ui.viewCube",
+            "app.codeCharta.ui.dialog",
+            "app.codeCharta.ui.sidenav",
         //"app.codeCharta.ui.mapTreeView",
         //"app.codeCharta.ui.settingsPanel",
         /*"app.codeCharta.ui.legendPanel",
@@ -53,12 +53,12 @@ angular.module(
         "app.codeCharta.ui.detailPanel",
         "app.codeCharta.ui.scenarioButtons",
         "app.codeCharta.ui.experimentalSettingsPanel",
-        "app.codeCharta.ui.dialog",
+
         "app.codeCharta.ui.nodeContextMenu",
         "app.codeCharta.ui.layoutSwitcher",
         "app.codeCharta.ui.mapTreeViewSearch",
         "app.codeCharta.ui.optionsPanel",
-        "app.codeCharta.ui.sidenav",
+
         "app.codeCharta.ui.blacklistPanel",
         "app.codeCharta.ui.weblinksPanel",
         "app.codeCharta.ui.tooltip"*/

@@ -7,43 +7,30 @@ export class QueryParamDialogController {
     }
 
     constructor(private settingsService: SettingsService, private $mdDialog) {
-        this._viewModel.queryParams = this.getQueryParamString().replace(new RegExp("&", "g"),"\n&");
+        this._viewModel.queryParams = this.getSettingsAsUrlParameterString();
     }
 
     public hide() {
         this.$mdDialog.hide();
     }
 
-    private getQueryParamString() {
+    private getSettingsAsUrlParameterString(): string {
 
         let result = "";
 
         let iterateProperties = (obj, prefix) => {
-            for (let i in obj) {
-                if (obj.hasOwnProperty(i) && i !== "map" && i) {
-
-                    if (typeof obj[i] === "string" || obj[i] instanceof String) {
-                        //do not iterate over strings
-                    } else {
-                        iterateProperties(obj[i], i + ".");
-                    }
-
-                    if (typeof obj[i] === "object" || obj[i] instanceof Object) {
-                        //do not print objects in string
-                    } else {
-                        result += "&" + prefix + i + "=" + obj[i];
-                    }
-
+            for(let key in obj) {
+                if(typeof obj[key] === "object") {
+                    iterateProperties(obj[key], prefix + key + ".");
+                } else {
+                    result += "&" + prefix + key + "=" + obj[key];
                 }
-
             }
-
         };
 
         iterateProperties(this.settingsService.getSettings(), "");
 
-        return "?" + result.substring(1);
-
+        return "?" + result.substring(1).replace(new RegExp("&", "g"),"\n&");
     }
 
 }
