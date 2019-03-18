@@ -54,14 +54,14 @@ angular.module(
         "app.codeCharta.ui.blacklistPanel",
         "app.codeCharta.ui.weblinksPanel",
         "app.codeCharta.ui.mapTreeViewSearch",
-
-        //"app.codeCharta.ui.mapTreeView",
+        "app.codeCharta.ui.mapTreeView",
         /*
         "app.codeCharta.ui.fileChooser",
         "app.codeCharta.ui.scenarioButtons",
         "app.codeCharta.ui.experimentalSettingsPanel",
         "app.codeCharta.ui.layoutSwitcher",
-        "app.codeCharta.ui.tooltip"*/
+        "app.codeCharta.ui.tooltip"
+        */
 
     ]);
 

@@ -14,10 +14,18 @@ export interface MapTreeViewHoverEventSubscriber {
 
 export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubscriber{
 
-    public _isHoveredInCodeMap: boolean = false;
-    public node: CodeMapNode = null;
-    public depth: number = 0;
-    public collapsed: boolean = true;
+    private _viewModel: {
+        isHoveredInCodeMap: boolean,
+        node: CodeMapNode,
+        depth: number,
+        collapsed: boolean
+    } = {
+        isHoveredInCodeMap: false,
+        node: null,
+        depth: 0,
+        collapsed: true
+    }
+
 
     /* @ngInject */
     constructor(
@@ -31,18 +39,18 @@ export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubsc
     public getMarkingColor() {
         let defaultColor = "#000";
 
-        if(!this.node || this.node.type == "File") {
+        if(!this._viewModel.node || this._viewModel.node.type == "File") {
             return defaultColor;
         }
-        const markingColor = CodeMapUtilService.getMarkingColor(this.node, this.settingsService.getSettings().fileSettings.markedPackages);
+        const markingColor = CodeMapUtilService.getMarkingColor(this._viewModel.node, this.settingsService.getSettings().fileSettings.markedPackages);
         return markingColor ? markingColor : defaultColor;
     }
 
     public onBuildingHovered(data: CodeMapBuildingTransition, event: IAngularEvent) {
-        if(data.to && data.to.node && this.node && this.node.path && data.to.node.path === this.node.path) {
-            this._isHoveredInCodeMap = true;
+        if(data.to && data.to.node && this._viewModel.node && this._viewModel.node.path && data.to.node.path === this._viewModel.node.path) {
+            this._viewModel.isHoveredInCodeMap = true;
         } else {
-            this._isHoveredInCodeMap = false;
+            this._viewModel.isHoveredInCodeMap = false;
         }
     }
     public onBuildingSelected(data: CodeMapBuildingTransition, event: IAngularEvent) {
@@ -51,36 +59,36 @@ export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubsc
     }
 
     public onMouseEnter() {
-        this.$rootScope.$broadcast("should-hover-node", this.node);
+        this.$rootScope.$broadcast("should-hover-node", this._viewModel.node);
     }
 
     public onMouseLeave() {
-        this.$rootScope.$broadcast("should-unhover-node", this.node);
+        this.$rootScope.$broadcast("should-unhover-node", this._viewModel.node);
     }
 
     public onRightClick($event) {
         NodeContextMenuController.broadcastHideEvent(this.$rootScope);
-        NodeContextMenuController.broadcastShowEvent(this.$rootScope, this.node.path, this.node.type, $event.clientX, $event.clientY);
+        NodeContextMenuController.broadcastShowEvent(this.$rootScope, this._viewModel.node.path, this._viewModel.node.type, $event.clientX, $event.clientY);
     }
 
     public onFolderClick() {
-        this.collapsed = !this.collapsed;
+        this._viewModel.collapsed = !this._viewModel.collapsed;
     }
 
     public onLabelClick() {
-        this.codeMapActionsService.focusNode(this.node);
+        this.codeMapActionsService.focusNode(this._viewModel.node);
     }
 
     public onEyeClick() {
-        this.codeMapActionsService.toggleNodeVisibility(this.node);
+        this.codeMapActionsService.toggleNodeVisibility(this._viewModel.node);
     }
 
-    public isLeaf(node: CodeMapNode = this.node): boolean {
+    public isLeaf(node: CodeMapNode = this._viewModel.node): boolean {
         return !(node && node.children && node.children.length > 0);
     }
 
     public isBlacklisted(node: CodeMapNode): boolean {
-        if (node != null) {
+        if (node) {
             return CodeMapUtilService.isBlacklisted(node, this.settingsService.getSettings().fileSettings.blacklist, BlacklistType.exclude)
         }
         return false;
@@ -88,8 +96,8 @@ export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubsc
 
     public isSearched(node: CodeMapNode): boolean {
         if (node != null && this.settingsService.getSettings().dynamicSettings.searchedNodePaths) {
-            return this.settingsService.getSettings().dynamicSettings.searchedNodePaths.filter(path =>
-                path == node.path).length > 0;
+            return this.settingsService.getSettings().dynamicSettings.searchedNodePaths
+                .filter(path => path == node.path).length > 0;
         }
         return false;
     }

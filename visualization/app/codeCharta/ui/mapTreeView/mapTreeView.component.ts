@@ -1,28 +1,31 @@
-import {SettingsServiceSubscriber, SettingsService} from "../../state/settings.service";
 import { IRootScopeService } from "angular";
-import { CodeMap, Settings } from "../../codeCharta.model";
-import { CodeChartaService } from "../../codeCharta.service";
+import {CodeMapNode, FileState} from "../../codeCharta.model";
+import { CodeMapRenderService } from "../codeMap/codeMap.render.service";
+import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
 
-export class MapTreeViewController implements SettingsServiceSubscriber {
+export class MapTreeViewController implements FileStateServiceSubscriber {
 
-    public mapRoot = null;
+    private _viewModel: {
+        rootNode: CodeMapNode
+    } = {
+        rootNode: null
+    };
 
     /* @ngInject */
-    constructor(private settingsService: SettingsService, private codeChartaService: CodeChartaService, private $rootScope: IRootScopeService) {
-        SettingsService.subscribe(this.$rootScope, this);
-        this.updateMapRoot(this.codeChartaService.getRenderMap());
+    constructor(
+        private $rootScope: IRootScopeService,
+        private codeMapRenderService: CodeMapRenderService
+    ) {
+        FileStateService.subscribe(this.$rootScope, this);
     }
 
-    public onSettingsChanged(s: Settings) {
-        this.updateMapRoot(this.codeChartaService.getRenderMap());
+    public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+        this._viewModel.rootNode = this.codeMapRenderService.getRenderFile().map
+        console.log(this._viewModel.rootNode)
     }
 
-    private updateMapRoot(map: CodeMap) {
-        if(map && map.nodes) {
-            this.mapRoot = map.nodes;
-        }
+    public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
     }
-
 }
 
 export const mapTreeViewComponent = {
