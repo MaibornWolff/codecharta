@@ -4,8 +4,10 @@ import {MapColors} from "../codeMap/rendering/renderSettings";
 import {IRootScopeService, ITimeoutService} from "angular";
 import "./legendPanel.component.scss";
 import {ColorConverter} from "../../util/colorConverter";
-import {ColorRange, MarkedPackage, RenderMode, Settings} from "../../codeCharta.model";
+import {ColorRange, MarkedPackage, Settings} from "../../codeCharta.model";
 import {CodeChartaService} from "../../codeCharta.service";
+import {FileStateService} from "../../state/fileState.service";
+import {FileStateHelper} from "../../util/fileStateHelper";
 
 export interface PackageList {
     colorPixel: string,
@@ -15,12 +17,12 @@ export interface PackageList {
 export class LegendPanelController implements SettingsServiceSubscriber {
 
     private _viewModel: {
-        isDeltaMode: boolean;
-        range: ColorRange;
+        isDeltaState: boolean;
+        colorRange: ColorRange;
         packageLists: PackageList[];
     } = {
-        isDeltaMode: null,
-        range: null,
+        isDeltaState: null,
+        colorRange: null,
         packageLists: null
     }
 
@@ -28,29 +30,21 @@ export class LegendPanelController implements SettingsServiceSubscriber {
     constructor(private $rootScope: IRootScopeService,
                 private $timeout: ITimeoutService,
                 private settingsService: SettingsService,
-                private codeChartaService: CodeChartaService) {
+                private codeChartaService: CodeChartaService,
+                private fileStateService: FileStateService) {
 
         SettingsService.subscribe(this.$rootScope, this);
-
         this.initAnimations();
     }
 
-    /* TODO: Change deltaColors
-    public onDataChanged(data: DataModel) {
-        if (data && data.revisions && data.revisions.length > 1) {
-            this._deltas = true;
-            this.refreshDeltaColors();
-        }
-    }*/
-
     public onSettingsChanged(s: Settings, event: angular.IAngularEvent) {
-        this._viewModel.range = s.dynamicSettings.neutralColorRange;
-        this._viewModel.isDeltaMode = s.dynamicSettings.renderMode == RenderMode.Delta;
+        this._viewModel.colorRange = s.dynamicSettings.neutralColorRange;
+        this._viewModel.isDeltaState = FileStateHelper.isDeltaState(this.fileStateService.getFileStates());
 
         const select = ColorConverter.getImageDataUri(MapColors.selected);
         $("#select").attr("src", select);
 
-        if (this._viewModel.isDeltaMode) {
+        if (this._viewModel.isDeltaState) {
             this.refreshDeltaColors(s);
         } else {
             this.refreshNormalColors(s);
@@ -124,8 +118,7 @@ export class LegendPanelController implements SettingsServiceSubscriber {
         } else {
             const from = Math.max(mp.path.length - MAX_NAME_LENGTH.lowerLimit, 0);
             const previewPackagePath = mp.path.substring(from);
-            const rootNode = this.codeChartaService.getRenderMap();
-            const startingDots = (previewPackagePath.startsWith(rootNode.path)) ? "" : "...";
+            const startingDots = (previewPackagePath.startsWith(CodeChartaService.ROOT_PATH)) ? "" : "...";
             return startingDots + previewPackagePath;
         }
     }

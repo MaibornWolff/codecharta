@@ -48,8 +48,9 @@ angular.module(
         "app.codeCharta.ui.sidenav",
         "app.codeCharta.ui.settingsPanel",
             "app.codeCharta.ui.nodeContextMenu",
+            "app.codeCharta.ui.legendPanel",
             //"app.codeCharta.ui.mapTreeView",
-        /*"app.codeCharta.ui.legendPanel",
+        /*
         "app.codeCharta.ui.fileChooser",
         "app.codeCharta.ui.detailPanel",
         "app.codeCharta.ui.scenarioButtons",
