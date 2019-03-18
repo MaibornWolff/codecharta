@@ -1,5 +1,5 @@
 import angular from "angular";
-import "../../core/tooltip/tooltip.module";
+import "../tooltip/tooltip.module";
 import {scenarioButtonsComponent, scenarioDropDownComponent} from "./scenarioButtons.component";
 
 angular.module("app.codeCharta.ui.scenarioButtons",["app.codeCharta.core.tooltip"])

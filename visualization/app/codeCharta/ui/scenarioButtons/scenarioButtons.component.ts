@@ -1,7 +1,7 @@
 "use strict";
 
 import {IAngularEvent, IRootScopeService, IScope} from "angular";
-import {TooltipService, TooltipServiceSubscriber, Tooltips} from "../../core/tooltip/tooltip.service";
+import {TooltipService, TooltipServiceSubscriber, Tooltips} from "../tooltip/tooltip.service";
 import {ScenarioService, Scenario} from "../../state/scenario.service";
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import "./scenarioDropDown.component.scss";

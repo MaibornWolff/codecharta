@@ -1,7 +1,6 @@
 import {MapTreeViewHoverEventSubscriber, MapTreeViewLevelController} from "../mapTreeView/mapTreeView.level.component";
 import {ThreeCameraService} from "./threeViewer/threeCameraService";
 import {IAngularEvent, IRootScopeService} from "angular";
-import {CodeMapNode} from "../../core/data/model/CodeMap";
 import {CodeMapBuilding} from "./rendering/codeMapBuilding";
 import {CodeMapRenderService} from "./codeMap.render.service";
 import $ from "jquery";
@@ -9,6 +8,7 @@ import {
     ViewCubeEventPropagationSubscriber,
     ViewCubeMouseEventsService
 } from "../viewCube/viewCube.mouseEvents.service";
+import {CodeMapNode} from "../../codeCharta.model";
 
 interface Coordinates {
     x: number;

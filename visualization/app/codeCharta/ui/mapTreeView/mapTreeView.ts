@@ -1,5 +1,5 @@
 import angular from "angular";
-import "../../core/core.module";
+import "../../state/state.module";
 import "../codeMap/codeMap";
 
 import "./mapTreeView.component.scss";
@@ -7,7 +7,7 @@ import "./mapTreeView.component.scss";
 import {mapTreeViewComponent} from "./mapTreeView.component";
 import {mapTreeViewLevelComponent} from "./mapTreeView.level.component";
 
-angular.module("app.codeCharta.ui.mapTreeView", ["app.codeCharta.core", "app.codeCharta.ui.codeMap"])
+angular.module("app.codeCharta.ui.mapTreeView", ["app.codeCharta.state", "app.codeCharta.ui.codeMap"])
     .component(
         mapTreeViewComponent.selector, mapTreeViewComponent
     ).component(

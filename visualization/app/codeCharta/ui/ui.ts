@@ -28,6 +28,7 @@ import "./optionsPanel/optionsPanel.module";
 import "./weblinksPanel/weblinksPanel.module";
 import "./sidenav/sidenav.module";
 import "./blacklistPanel/blacklistPanel.module";
+import "./tooltip/tooltip.module"
 
 angular.module(
     "app.codeCharta.ui",
@@ -44,10 +45,10 @@ angular.module(
         "app.codeCharta.ui.revisionChooser",
 
 
-        /*"app.codeCharta.ui.viewCube",
-        "app.codeCharta.ui.mapTreeView",
-        "app.codeCharta.ui.settingsPanel",
-        "app.codeCharta.ui.legendPanel",
+        //"app.codeCharta.ui.viewCube",
+        //"app.codeCharta.ui.mapTreeView",
+        //"app.codeCharta.ui.settingsPanel",
+        /*"app.codeCharta.ui.legendPanel",
         "app.codeCharta.ui.fileChooser",
         "app.codeCharta.ui.detailPanel",
         "app.codeCharta.ui.scenarioButtons",
@@ -59,7 +60,8 @@ angular.module(
         "app.codeCharta.ui.optionsPanel",
         "app.codeCharta.ui.sidenav",
         "app.codeCharta.ui.blacklistPanel",
-        "app.codeCharta.ui.weblinksPanel"*/
+        "app.codeCharta.ui.weblinksPanel",
+        "app.codeCharta.ui.tooltip"*/
 
     ]);
 
