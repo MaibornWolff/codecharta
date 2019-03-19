@@ -37,25 +37,25 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		private $rootScope: IRootScopeService
 	) {
 		SettingsService.subscribe($rootScope, this)
-		this.initSliderOptions()
 
 		this.$timeout(() => {
 			this.$rootScope.$broadcast("rzSliderForceRender")
 		})
 	}
 
-	public onSettingsChanged(settings: Settings) {
+	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
 		this.initSliderOptions(settings)
-		this.updateViewModel(settings)
-		this.updateSliderColors()
-		this.updateInputFieldWidth()
+
+		if (settings.dynamicSettings.neutralColorRange) {
+			this.updateViewModel(settings)
+			this.updateSliderColors(settings)
+			this.updateInputFieldWidth(settings)
+		}
 	}
 
 	private updateViewModel(settings: Settings) {
-		if (settings.dynamicSettings.neutralColorRange) {
-			this._viewModel.colorRangeFrom = settings.dynamicSettings.neutralColorRange.from
-			this._viewModel.colorRangeTo = settings.dynamicSettings.neutralColorRange.to
-		}
+		this._viewModel.colorRangeFrom = settings.dynamicSettings.neutralColorRange.from
+		this._viewModel.colorRangeTo = settings.dynamicSettings.neutralColorRange.to
 	}
 
 	public initSliderOptions(settings: Settings = this.settingsService.getSettings()) {
@@ -94,9 +94,9 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		})
 	}
 
-	private updateInputFieldWidth() {
-		let fromLength = this.settingsService.getSettings().dynamicSettings.neutralColorRange.from.toFixed().toString().length + 1
-		let toLength = this.settingsService.getSettings().dynamicSettings.neutralColorRange.to.toFixed().toString().length + 1
+	private updateInputFieldWidth(s: Settings) {
+		let fromLength = s.dynamicSettings.neutralColorRange.from.toFixed().toString().length + 1
+		let toLength = s.dynamicSettings.neutralColorRange.to.toFixed().toString().length + 1
 		let fromWidth = Math.min(Math.max(this.MIN_DIGITS, fromLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 		let toWidth = Math.min(Math.max(this.MIN_DIGITS, toLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 
@@ -105,9 +105,9 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		$("range-slider-component #colorSlider").css("width", this.FULL_WIDTH_SLIDER - fromWidth - toWidth + "px")
 	}
 
-	private updateSliderColors() {
+	private updateSliderColors(s: Settings) {
 		const rangeFromPercentage = (100 / this.maxMetricValue) * this._viewModel.colorRangeFrom
-		let rangeColors = this._viewModel.sliderOptions.disabled ? this.getGreyRangeColors() : this.getColoredRangeColors()
+		let rangeColors = this._viewModel.sliderOptions.disabled ? this.getGreyRangeColors() : this.getColoredRangeColors(s)
 		this.applyCssColors(rangeColors, rangeFromPercentage)
 	}
 
@@ -119,8 +119,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		}
 	}
 
-	private getColoredRangeColors() {
-		const s = this.settingsService.getSettings()
+	private getColoredRangeColors(s: Settings) {
 		let mapColorPositive = s.appSettings.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive
 
 		let rangeColors = {

@@ -40,7 +40,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
         if (this.lastColorMetric != settings.dynamicSettings.colorMetric) {
             this.lastColorMetric = settings.dynamicSettings.colorMetric
             this.adaptedColorRange(settings)
-        } else {
+        } else if (settings.dynamicSettings.neutralColorRange) {
             this._viewModel.neutralColorRangeFlipped = settings.dynamicSettings.neutralColorRange.flipped;
         }
     }

@@ -19,7 +19,7 @@ export class BlacklistPanelController implements SettingsServiceSubscriber {
 		SettingsService.subscribe($rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings) {
+	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
 		if (settings.fileSettings.blacklist) {
 			this._viewModel.blacklist = settings.fileSettings.blacklist
 		}

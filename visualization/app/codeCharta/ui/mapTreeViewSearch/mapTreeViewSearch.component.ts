@@ -52,13 +52,12 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 	}
 
-	public onSettingsChanged(s: Settings) {
-		this.updateViewModel()
+	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
+		this.updateViewModel(settings)
 	}
 
 	public onSearchChange() {
 		this.setSearchedNodePathNames()
-		this.updateViewModel()
 	}
 
 	public onClickBlacklistPattern(blacklistType: BlacklistType) {
@@ -67,10 +66,10 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 		this.onSearchChange()
 	}
 
-	private updateViewModel() {
-		const blacklist = this.settingsService.getSettings().fileSettings.blacklist
-		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(BlacklistType.exclude)
-		this._viewModel.isPatternHidden = this.isPatternBlacklisted(BlacklistType.hide)
+	private updateViewModel(s: Settings = this.settingsService.getSettings()) {
+		const blacklist = s.fileSettings.blacklist
+		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(s, BlacklistType.exclude)
+		this._viewModel.isPatternHidden = this.isPatternBlacklisted(s, BlacklistType.hide)
 
 		this._viewModel.fileCount = this.searchedFiles.length
 		this._viewModel.hideCount = this.searchedFiles.filter(node =>
@@ -81,12 +80,10 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 		).length
 	}
 
-	private isPatternBlacklisted(blacklistType: BlacklistType) {
-		return (
-			this.settingsService.getSettings().fileSettings.blacklist.filter(item => {
-				return this._viewModel.searchPattern == item.path && blacklistType == item.type
-			}).length != 0
-		)
+	private isPatternBlacklisted(s: Settings, blacklistType: BlacklistType) {
+		return (s.fileSettings.blacklist.filter(item => {
+			return this._viewModel.searchPattern == item.path && blacklistType == item.type
+		}).length != 0)
 	}
 
 	private setSearchedNodePathNames() {
