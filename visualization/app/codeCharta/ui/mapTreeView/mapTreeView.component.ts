@@ -19,6 +19,7 @@ export class MapTreeViewController implements FileStateServiceSubscriber {
         FileStateService.subscribe(this.$rootScope, this);
     }
 
+    // TODO: Listen to lastRender.renderFile changed from codeMap.render.service
     public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
         this._viewModel.rootNode = this.codeMapRenderService.getRenderFile().map
         console.log(this._viewModel.rootNode)

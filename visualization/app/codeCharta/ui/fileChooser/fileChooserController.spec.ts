@@ -1,6 +1,6 @@
 import {FileChooserController} from "./fileChooserController";
 import {DataLoadingService} from "../../core/data/data.loading.service";
-import {ScenarioService} from "../../state/scenario.service";
+import {ScenarioHelper} from "../../util/scenarioHelper";
 import {DialogService} from "../dialog/dialog.service";
 import {DataService} from "../../core/data/data.service";
 import {SettingsService} from "../../state/settings.service";
@@ -39,7 +39,7 @@ describe("file chooser controller", ()=>{
         dataLoadingService = new DataLoadingService();
         settingsService = new SettingsService();
         dataService = new DataService();
-        scenarioService = new ScenarioService(settingsService, dataService, threeOrbitControlsService);
+        scenarioService = new ScenarioHelper(settingsService, dataService, threeOrbitControlsService);
         scenarioService.getDefaultScenario = jest.fn();
         scenarioService.applyScenario = jest.fn();
         dialogService = new DialogService();

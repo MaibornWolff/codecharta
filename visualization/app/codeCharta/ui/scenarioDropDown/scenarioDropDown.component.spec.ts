@@ -1,26 +1,26 @@
-import {ScenarioButtonsController} from "./scenarioButtons.component";
-import {ScenarioService} from "../../state/scenario.service";
+import {ScenarioDropDownController} from "./scenarioDropDown.component";
+import {ScenarioHelper} from "../../util/scenarioHelper";
 import {TooltipService} from "../tooltip/tooltip.service";
 import {IScope} from "angular";
 import {SettingsService} from "../../state/settings.service";
 import {DataService} from "../../core/data/data.service";
 
-describe("ScenarioButtonsController", () => {
+describe("ScenarioDropDownController", () => {
 
-    let scenarioServiceMock: ScenarioService;
+    let scenarioServiceMock: ScenarioHelper;
     let settingsServiceMock: SettingsService;
     let dataServiceMock: DataService;
     let tooltipServiceMock: TooltipService;
     let scopeMock: IScope;
-    let scenarioButtonsController: ScenarioButtonsController;
+    let scenarioButtonsController: ScenarioDropDownController;
 
     function rebuildSUT() {
-        scenarioButtonsController = new ScenarioButtonsController(scenarioServiceMock, tooltipServiceMock, settingsServiceMock, dataServiceMock, scopeMock);
+        scenarioButtonsController = new ScenarioDropDownController(scenarioServiceMock, tooltipServiceMock, settingsServiceMock, dataServiceMock, scopeMock);
     }
 
     function mockEverything() {
 
-        const ScenarioServiceMock = jest.fn<ScenarioService>(() => ({
+        const ScenarioServiceMock = jest.fn<ScenarioHelper>(() => ({
             getScenarios: jest.fn(),
             applyScenario: jest.fn()
         }));

@@ -2,6 +2,8 @@ import { NameDataPair, UrlUtils } from "./util/urlUtils"
 import {IHttpService, ILocationService, IRootScopeService} from "angular"
 import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
+import {SettingsService} from "./state/settings.service";
+import {ScenarioHelper} from "./util/scenarioHelper";
 
 /**
  * This is the main controller of the CodeCharta application
@@ -19,6 +21,7 @@ export class CodeChartaController {
 		private $rootScope: IRootScopeService,
 		//private dialogService: DialogService,
 		//private codeMapActionsService: CodeMapActionsService,
+		private settingsService: SettingsService,
 		private codeChartaService: CodeChartaService,
 		private $location: ILocationService,
 		private $http: IHttpService
@@ -64,7 +67,10 @@ export class CodeChartaController {
         .loadFiles(
             values
         )
-        .then(() => this.viewModel.numberOfLoadingTasks--)
+        .then(() => {
+        	this.viewModel.numberOfLoadingTasks--
+			this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
+		})
         .catch(e => {
 			this.viewModel.numberOfLoadingTasks--
 			console.error(e);

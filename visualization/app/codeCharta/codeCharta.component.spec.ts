@@ -3,7 +3,7 @@ import {CodeChartaController} from "./codeCharta.component";
 import {DataService} from "./core/data/data.service";
 import {DialogService} from "./ui/dialog/dialog.service";
 import {SettingsService} from "./state/settings.service";
-import {ScenarioService} from "./state/scenario.service";
+import {ScenarioHelper} from "./util/scenarioHelper";
 import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
 import {DataLoadingService} from "./core/data/data.loading.service";
 import {NameDataPair, UrlUtils} from "./util/urlUtils";
@@ -23,7 +23,7 @@ describe("codecharta component", ()=>{
     let dataLoadingService: DataLoadingService;
     let urlService: UrlUtils;
     let settingsService: SettingsService;
-    let scenarioService: ScenarioService;
+    let scenarioService: ScenarioHelper;
     let dataService: DataService;
     let threeOrbitControlsService: ThreeOrbitControlsService;
     let $rootScope: any;
@@ -41,7 +41,7 @@ describe("codecharta component", ()=>{
         urlService = new UrlUtils();
         urlService.getFileDataFromQueryParam = jest.fn(() => Promise.resolve({}));
         settingsService = new SettingsService();
-        scenarioService = new ScenarioService();
+        scenarioService = new ScenarioHelper();
         dataService = new DataService();
         threeOrbitControlsService = new ThreeOrbitControlsService();
         $rootScope = {

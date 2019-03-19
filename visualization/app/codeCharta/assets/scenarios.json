@@ -10,8 +10,7 @@
         "heightMetric": "mcc",
         "colorMetric": "mcc"
       }
-    },
-    "autoFitCamera": true
+    }
   },
   {
     "name": "Average Complexity*",
@@ -24,8 +23,7 @@
         "heightMetric": "Average Complexity*",
         "colorMetric": "Average Complexity*"
       }
-    },
-    "autoFitCamera": true
+    }
   },
   {
     "name": "Coverage",
@@ -38,8 +36,7 @@
         "heightMetric": "mcc",
         "colorMetric": "line_coverage"
       }
-    },
-    "autoFitCamera": true
+    }
   },
   {
     "name": "Code Churn",
@@ -52,7 +49,6 @@
         "heightMetric": "abs_code_churn",
         "colorMetric": "weeks_with_commits"
       }
-    },
-    "autoFitCamera": true
+    }
   }
 ]

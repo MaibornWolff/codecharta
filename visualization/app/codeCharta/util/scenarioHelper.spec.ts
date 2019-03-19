@@ -1,11 +1,11 @@
 import {getService, instantiateModule} from "../../../mocks/ng.mockhelper";
-import {Scenario, ScenarioService} from "./scenario.service";
-import {SettingsService} from "./settings.service";
-import {MetricService} from "./metric.service";
+import {Scenario, ScenarioHelper} from "./scenarioHelper";
+import {SettingsService} from "../state/settings.service";
+import {MetricService} from "../state/metric.service";
 
 describe("app.codeCharta.state.scenarioService", function () {
 
-    let services, scenarioService: ScenarioService, defaultScenario, scenario
+    let services, scenarioService: ScenarioHelper, defaultScenario, scenario
 
     beforeEach(() => {
         restartSystem();
@@ -22,7 +22,7 @@ describe("app.codeCharta.state.scenarioService", function () {
     }
 
     function rebuildService() {
-        scenarioService = new ScenarioService(
+        scenarioService = new ScenarioHelper(
             services.settingsService,
             services.metricService,
         );

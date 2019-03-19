@@ -8,7 +8,7 @@ with the additional ones */
 
 import {SettingsService} from "../../state/settings.service";
 import {DialogService} from "../dialog/dialog.service";
-import {ScenarioService} from "../../state/scenario.service";
+import {ScenarioHelper} from "../../util/scenarioHelper";
 import { CodeChartaService } from "../../codeCharta.service";
 
 /**
@@ -20,7 +20,7 @@ class FileChooserController {
 
     constructor(
         private $scope,
-        private scenarioService: ScenarioService,
+        private scenarioService: ScenarioHelper,
         private $rootScope,
         private dialogService: DialogService,
         private settingsService: SettingsService,

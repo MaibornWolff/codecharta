@@ -11,7 +11,7 @@ import "./revisionChooser/revisionChooser";
 import "./legendPanel/legendPanel";
 import "./fileChooser/fileChooser";
 import "./detailPanel/detailPanel";
-import "./scenarioButtons/scenarioButtons";
+import "./scenarioDropDown/scenarioDropDown.module";
 import "./mapTreeView/mapTreeView";
 import "./codeMap/codeMap";
 import "./metricChooser/metricChooser";
@@ -55,9 +55,10 @@ angular.module(
         "app.codeCharta.ui.weblinksPanel",
         "app.codeCharta.ui.mapTreeViewSearch",
         "app.codeCharta.ui.mapTreeView",
+        "app.codeCharta.ui.scenarioDropDown",
+
         /*
         "app.codeCharta.ui.fileChooser",
-        "app.codeCharta.ui.scenarioButtons",
         "app.codeCharta.ui.experimentalSettingsPanel",
         "app.codeCharta.ui.layoutSwitcher",
         "app.codeCharta.ui.tooltip"
