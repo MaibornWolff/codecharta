@@ -2,9 +2,9 @@
 
 import * as THREE from "three"
 import { SettingsServiceSubscriber, SettingsService } from "../../../state/settings.service"
-import { PerspectiveCamera } from "three"
+import {PerspectiveCamera} from "three"
 import { IAngularEvent, IRootScopeService } from "angular"
-import { Settings } from "../../../codeCharta.model"
+import {Settings, Vector3d} from "../../../codeCharta.model"
 
 class ThreeCameraService implements SettingsServiceSubscriber {
 	public static SELECTOR = "threeCameraService"
@@ -14,11 +14,15 @@ class ThreeCameraService implements SettingsServiceSubscriber {
 	public static FAR = 200000 //TODO optimize renderer for far objects
 
 	public camera: PerspectiveCamera
+	private lastCameraVector: Vector3d = {x: 0,y: 0,z: 0}
 
 	constructor(private $rootScope: IRootScopeService) {}
 
 	public onSettingsChanged(settings: Settings, event: IAngularEvent) {
-		this.setPosition(settings.appSettings.camera.x, settings.appSettings.camera.y, settings.appSettings.camera.z)
+		if (settings.appSettings.camera.toString() != this.lastCameraVector.toString()) {
+			this.lastCameraVector = settings.appSettings.camera
+		 	this.setPosition(settings.appSettings.camera.x, settings.appSettings.camera.y, settings.appSettings.camera.z)
+		}
 	}
 
 	public init(settingsService: SettingsService, containerWidth: number, containerHeight: number, x: number, y: number, z: number) {

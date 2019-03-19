@@ -17,6 +17,8 @@ import {AggregationGenerator} from "../../util/aggregationGenerator";
 import {MetricService, MetricServiceSubscriber} from "../../state/metric.service";
 import {FileStateHelper} from "../../util/fileStateHelper";
 import {DeltaGenerator} from "../../util/deltaGenerator";
+import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
+import {ThreeCameraService} from "./threeViewer/threeCameraService";
 
 export interface RenderData {
 	renderFile: CCFile
@@ -32,6 +34,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 
 	private _mapMesh: CodeMapMesh = null
 	private visibleEdges: Edge[]
+	private autoFitToMap: boolean = false
 
 	// TODO: getter method to getLastRenderMap()
 	private lastRender: RenderData = {
@@ -44,6 +47,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	constructor(
 		private $rootScope: IRootScopeService,
 		private threeSceneService: ThreeSceneService,
+		private threeOrbitControlsService: ThreeOrbitControlsService,
+		private threeCameraService: ThreeCameraService,
 		private treeMapService: TreeMapService,
 		private codeMapUtilService: CodeMapUtilService,
 		private codeMapLabelService: CodeMapLabelService,
@@ -77,6 +82,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		console.log("lastFileStates", fileStates);
 		this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(fileStates)
 		this.lastRender.fileStates = fileStates
+		this.autoFitToMap = true
 		this.renderIfRenderObjectIsComplete()
 	}
 
@@ -114,9 +120,13 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	private renderIfRenderObjectIsComplete() {
-		console.log("lastRender", this.lastRender);
+		console.log("render", this.lastRender);
 		if (_.values(this.lastRender).every(x => (x !== null)) && this.lastRender.settings.dynamicSettings.neutralColorRange) {
 			this.render(this.lastRender)
+			if (this.autoFitToMap) {
+				this.threeOrbitControlsService.autoFitTo();
+				this.autoFitToMap = false
+			}
 		}
 	}
 
@@ -124,11 +134,8 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		renderData.renderFile = NodeDecorator.decorateFile(renderData.renderFile, renderData.metricData)
 		console.log("lastRender decorate", this.lastRender);
 		this.updateMapGeometry(renderData.renderFile, renderData.fileStates, renderData.settings, renderData.metricData)
-		this.scaleMap(
-			renderData.settings.appSettings.scaling.x,
-			renderData.settings.appSettings.scaling.y,
-			renderData.settings.appSettings.scaling.z,
-			renderData.settings.treeMapSettings.mapSize
+		const scale = renderData.settings.appSettings.scaling
+		this.scaleMap(scale.x, scale.y, scale.z, renderData.settings.treeMapSettings.mapSize
 		)
 	}
 

@@ -15,7 +15,8 @@ export class CodeChartaService {
 	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
-		private fileStateService: FileStateService
+		private fileStateService: FileStateService,
+		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {
 	}
 

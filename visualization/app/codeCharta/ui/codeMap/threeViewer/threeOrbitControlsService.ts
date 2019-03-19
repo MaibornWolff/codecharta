@@ -4,8 +4,6 @@ import {IRootScopeService, IAngularEvent} from "angular";
 import {OrbitControls, PerspectiveCamera} from "three";
 import * as THREE from "three";
 import { ThreeSceneService } from "./threeSceneService";
-import {FileStateService, FileStateServiceSubscriber} from "../../../state/fileState.service";
-import {FileState} from "../../../codeCharta.model";
 
 export interface CameraChangeSubscriber {
     onCameraChanged(camera: PerspectiveCamera, event: IAngularEvent);
@@ -14,7 +12,7 @@ export interface CameraChangeSubscriber {
 /**
  * Service to manage the three orbit controls in an angular way.
  */
-class ThreeOrbitControlsService implements FileStateServiceSubscriber {
+class ThreeOrbitControlsService {
     public static SELECTOR = "threeOrbitControlsService";
     public static CAMERA_CHANGED_EVENT_NAME = "camera-changed";
 
@@ -28,14 +26,6 @@ class ThreeOrbitControlsService implements FileStateServiceSubscriber {
         private threeSceneService: ThreeSceneService,
         private $rootScope: IRootScopeService
     ) {
-        FileStateService.subscribe(this.$rootScope, this)
-    }
-
-    public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-        this.autoFitTo()
-    }
-
-    public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
     }
 
     public rotateCameraInVectorDirection(x: number, y: number, z: number) {
