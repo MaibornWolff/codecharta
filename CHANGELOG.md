@@ -8,8 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 
 ### Added
+-   Project Name can be specified for merge filter #394
 
 ### Changed
+-   Throw a MergeException if project names do not match in MergeFilter #394 
 
 ### Removed
 

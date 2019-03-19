@@ -31,10 +31,16 @@ package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.model.*
 
-class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
+class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy, private val projectName: String? = null) {
 
     fun extractProjectName(): String {
-        return projects.map { p -> p.projectName }.first()
+        if(projectName != null) return projectName
+
+        val projectNames = projects.map { p -> p.projectName }
+        if (!projectNames.all { p -> p == projectNames.first() }){
+            throw MergeException("Project Names do not match. If files with different project names should be merged, a new project name must be provided using -p.")
+        }
+        return projectNames.first()
     }
 
     fun merge(): Project {
