@@ -35,7 +35,12 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
 
     fun extractProjectName(): String {
         if(projectName != null) return projectName
-        return projects.map { p -> p.projectName }.first()
+
+        val projectNames = projects.map { p -> p.projectName }
+        if (!projectNames.all { p -> p == projectNames.first() }){
+            throw MergeException("Project Names do not match. If files with different project names should be merged, a new project name must be provided using -p.")
+        }
+        return projectNames.first()
     }
 
     fun merge(): Project {
