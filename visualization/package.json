@@ -193,7 +193,7 @@
 		"script-loader": "^0.7.0",
 		"sinon": "^4.4.10",
 		"string-loader": "0.0.1",
-		"style-loader": "^0.18.2",
+		"style-loader": "^0.23.1",
 		"three": "^0.89.0",
 		"three-orbit-controls": "^82.1.0",
 		"three-text2d": "^0.5.0",
