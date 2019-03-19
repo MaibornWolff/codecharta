@@ -3,7 +3,7 @@ import {IRootScopeService} from "angular";
 import {SettingsService} from "../../state/settings.service";
 import {CodeMapNode, Settings} from "../../codeCharta.model";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
-import {CodeChartaService} from "../../codeCharta.service";
+import {CodeMapRenderService} from "../codeMap/codeMap.render.service";
 
 export class AreaSettingsPanelController {
 
@@ -22,22 +22,20 @@ export class AreaSettingsPanelController {
     constructor(
         private $rootScope: IRootScopeService,
         private settingsService: SettingsService,
-        private codeChartaService: CodeChartaService
+        private codeMapRenderService: CodeMapRenderService
     ) {
         SettingsService.subscribe(this.$rootScope, this)
     }
 
     public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
-        this._viewModel.margin = settings.dynamicSettings.margin
         this._viewModel.dynamicMargin = settings.appSettings.dynamicMargin
+
+        // TODO: cycle potentiallyUpdateMargin()
+        this.potentiallyUpdateMargin()
     }
 
     public applySettings() {
-        if (this._viewModel.dynamicMargin) {
-            // TODO: rectivate computeMargin() and need to get renderFile
-            //this._viewModel.margin = this.computeMargin()
-        }
-
+        this.potentiallyUpdateMargin()
         this.settingsService.updateSettings({
             dynamicSettings: {
                 margin: this._viewModel.margin
@@ -53,9 +51,15 @@ export class AreaSettingsPanelController {
         this.applySettings()
     }
 
-    /*private computeMargin(): number {
+    private potentiallyUpdateMargin() {
+        if (this._viewModel.dynamicMargin) {
+            this._viewModel.margin = this.computeMargin()
+        }
+    }
+
+    private computeMargin(): number {
         const s: Settings = this.settingsService.getSettings()
-        const renderFile: CodeMapNode = this.codeChartaService.getRenderMap()
+        const renderFile: CodeMapNode = this.codeMapRenderService.getRenderFile().map
         if (renderFile !== null && this._viewModel.dynamicMargin) {
             let leaves = hierarchy<CodeMapNode>(renderFile).leaves()
             let numberOfBuildings = 0
@@ -73,7 +77,7 @@ export class AreaSettingsPanelController {
         } else {
             return this._viewModel.margin
         }
-    }*/
+    }
 
 }
 
