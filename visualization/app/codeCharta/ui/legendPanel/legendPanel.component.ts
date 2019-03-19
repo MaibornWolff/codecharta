@@ -1,7 +1,7 @@
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import $ from "jquery";
 import {MapColors} from "../codeMap/rendering/renderSettings";
-import {IRootScopeService, ITimeoutService} from "angular";
+import {IRootScopeService} from "angular";
 import "./legendPanel.component.scss";
 import {ColorConverter} from "../../util/colorConverter";
 import {ColorRange, MarkedPackage, Settings} from "../../codeCharta.model";
@@ -28,7 +28,6 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 
     /* @ngInject */
     constructor(private $rootScope: IRootScopeService,
-                private $timeout: ITimeoutService,
                 private settingsService: SettingsService,
                 private codeChartaService: CodeChartaService,
                 private fileStateService: FileStateService) {

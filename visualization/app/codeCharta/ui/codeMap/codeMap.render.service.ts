@@ -9,7 +9,7 @@ import {ThreeSceneService} from "./threeViewer/threeSceneService"
 import {CodeMapArrowService} from "./codeMap.arrow.service"
 import {CCFile, CodeMapNode, Edge, FileSelectionState, FileState, MetricData, Settings,} from "../../codeCharta.model"
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
-import {IRootScopeService} from "angular";
+import {IAngularEvent, IRootScopeService} from "angular";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
 import _ from "lodash"
 import {NodeDecorator} from "../../util/nodeDecorator";
@@ -27,8 +27,13 @@ export interface RenderData {
 	metricData: MetricData[]
 }
 
+export interface CodeMapRenderServiceSubscriber {
+	onRenderFileChanged(renderFile: CCFile, event: IAngularEvent)
+}
+
 export class CodeMapRenderService implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricServiceSubscriber {
 	public static SELECTOR = "codeMapRenderService"
+	private static RENDER_FILE_CHANGED_EVENT = "render-file-changed";
 
 	public currentSortedNodes: Node[]
 
@@ -54,7 +59,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService
 	) {
-		//SettingsService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 		MetricService.subscribe(this.$rootScope, this)
 	}
@@ -72,7 +76,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
-		// TODO: for whatever reason this onSettingsChanged() always gets called twice
 		this.lastRender.settings = settings
 		console.log("lastSettings", settings)
 		this.renderIfRenderObjectIsComplete()
@@ -127,6 +130,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 				this.threeOrbitControlsService.autoFitTo();
 				this.autoFitToMap = false
 			}
+			this.notifySubscriber()
 		}
 	}
 
@@ -231,5 +235,15 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 				this.threeSceneService.mapGeometry.scale.z
 			)
 		}
+	}
+
+	private notifySubscriber() {
+		this.$rootScope.$broadcast(CodeMapRenderService.RENDER_FILE_CHANGED_EVENT, this.lastRender.renderFile)
+	}
+
+	public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapRenderServiceSubscriber) {
+		$rootScope.$on(CodeMapRenderService.RENDER_FILE_CHANGED_EVENT, (event, data) => {
+			subscriber.onRenderFileChanged(data, event)
+		})
 	}
 }

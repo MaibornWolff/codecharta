@@ -1,11 +1,11 @@
 import "./areaSettingsPanel.component.scss";
 import {IRootScopeService} from "angular";
-import {SettingsService} from "../../state/settings.service";
-import {CodeMapNode, Settings} from "../../codeCharta.model";
+import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
+import {CCFile, CodeMapNode, Settings} from "../../codeCharta.model";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
-import {CodeMapRenderService} from "../codeMap/codeMap.render.service";
+import {CodeMapRenderService, CodeMapRenderServiceSubscriber} from "../codeMap/codeMap.render.service";
 
-export class AreaSettingsPanelController {
+export class AreaSettingsPanelController implements SettingsServiceSubscriber, CodeMapRenderServiceSubscriber {
 
     private static MAX_MARGIN = 100
     private static MARGIN_FACTOR = 4
@@ -25,17 +25,42 @@ export class AreaSettingsPanelController {
         private codeMapRenderService: CodeMapRenderService
     ) {
         SettingsService.subscribe(this.$rootScope, this)
+        CodeMapRenderService.subscribe(this.$rootScope, this)
     }
 
     public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
         this._viewModel.dynamicMargin = settings.appSettings.dynamicMargin
+        this._viewModel.margin = settings.dynamicSettings.margin
+    }
 
-        // TODO: cycle potentiallyUpdateMargin()
+    public onRenderFileChanged(renderFile: CCFile, event: angular.IAngularEvent) {
+        if (this._viewModel.dynamicMargin) {
+            const newMargin = this.computeMargin()
+            if (newMargin != this._viewModel.margin) {
+                this._viewModel.margin = newMargin
+                this.applySettings()
+            }
+        }
+    }
+
+    public onChangeMarginSlider(){
+        this._viewModel.dynamicMargin = false
         this.potentiallyUpdateMargin()
+        this.applySettings()
+    }
+
+    public onClickDynamicMargin() {
+        this.potentiallyUpdateMargin()
+        this.applySettings()
+    }
+
+    private potentiallyUpdateMargin() {
+        if (this._viewModel.dynamicMargin) {
+            this._viewModel.margin = this.computeMargin()
+        }
     }
 
     public applySettings() {
-        this.potentiallyUpdateMargin()
         this.settingsService.updateSettings({
             dynamicSettings: {
                 margin: this._viewModel.margin
@@ -46,37 +71,22 @@ export class AreaSettingsPanelController {
         })
     }
 
-    public applySettingsMargin(){
-        this._viewModel.dynamicMargin = false
-        this.applySettings()
-    }
-
-    private potentiallyUpdateMargin() {
-        if (this._viewModel.dynamicMargin) {
-            this._viewModel.margin = this.computeMargin()
-        }
-    }
-
     private computeMargin(): number {
         const s: Settings = this.settingsService.getSettings()
-        const renderFile: CodeMapNode = this.codeMapRenderService.getRenderFile().map
-        if (renderFile !== null && this._viewModel.dynamicMargin) {
-            let leaves = hierarchy<CodeMapNode>(renderFile).leaves()
-            let numberOfBuildings = 0
-            let totalArea = 0
+        const renderMap: CodeMapNode = this.codeMapRenderService.getRenderFile().map
+        let leaves = hierarchy<CodeMapNode>(renderMap).leaves()
+        let numberOfBuildings = 0
+        let totalArea = 0
 
-            leaves.forEach((node: HierarchyNode<CodeMapNode>) => {
-                numberOfBuildings++
-                if(node.data.attributes && node.data.attributes[s.dynamicSettings.areaMetric]){
-                    totalArea += node.data.attributes[s.dynamicSettings.areaMetric]
-                }
-            });
+        leaves.forEach((node: HierarchyNode<CodeMapNode>) => {
+            numberOfBuildings++
+            if(node.data.attributes && node.data.attributes[s.dynamicSettings.areaMetric]){
+                totalArea += node.data.attributes[s.dynamicSettings.areaMetric]
+            }
+        });
 
-            let margin: number = AreaSettingsPanelController.MARGIN_FACTOR * Math.round(Math.sqrt((totalArea / numberOfBuildings)))
-            return Math.min(AreaSettingsPanelController.MAX_MARGIN, Math.max(SettingsService.MIN_MARGIN, margin))
-        } else {
-            return this._viewModel.margin
-        }
+        let margin: number = AreaSettingsPanelController.MARGIN_FACTOR * Math.round(Math.sqrt((totalArea / numberOfBuildings)))
+        return Math.min(AreaSettingsPanelController.MAX_MARGIN, Math.max(SettingsService.MIN_MARGIN, margin))
     }
 
 }

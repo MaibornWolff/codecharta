@@ -6,7 +6,7 @@ import {Settings} from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { MetricService } from "../../state/metric.service";
 import {FileStateService} from "../../state/fileState.service";
-import {ITimeoutService} from "angular";
+import {IRootScopeService, ITimeoutService} from "angular";
 import {FileStateHelper} from "../../util/fileStateHelper";
 
 export class RangeSliderController implements SettingsServiceSubscriber {
@@ -34,18 +34,17 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		private codeChartaService: CodeChartaService,
 		private metricService: MetricService,
 		private $timeout: ITimeoutService,
-		private $scope
+		private $rootScope: IRootScopeService
 	) {
-		SettingsService.subscribe($scope, this)
+		SettingsService.subscribe($rootScope, this)
 		this.initSliderOptions()
 
 		this.$timeout(() => {
-			this.$scope.$broadcast("rzSliderForceRender")
+			this.$rootScope.$broadcast("rzSliderForceRender")
 		})
 	}
 
 	public onSettingsChanged(settings: Settings) {
-		// TODO circle ?
 		this.initSliderOptions(settings)
 		this.updateViewModel(settings)
 		this.updateSliderColors()

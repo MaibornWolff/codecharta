@@ -27,6 +27,7 @@ export class SettingsService {
 	public updateSettings(update: RecursivePartial<Settings>) {
 		// _.merge(this.settings, update) didnt work with arrays like blacklist
 		this.settings = this.updateSettingsUsingPartialSettings(this.settings, update)
+		console.log("settingsUpdate", update, this.settings)
 		this.throttledBroadcast()
 	}
 
