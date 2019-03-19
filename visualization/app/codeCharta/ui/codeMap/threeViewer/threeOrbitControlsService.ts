@@ -4,6 +4,8 @@ import {IRootScopeService, IAngularEvent} from "angular";
 import {OrbitControls, PerspectiveCamera} from "three";
 import * as THREE from "three";
 import { ThreeSceneService } from "./threeSceneService";
+import {FileStateService, FileStateServiceSubscriber} from "../../../state/fileState.service";
+import {FileState} from "../../../codeCharta.model";
 
 export interface CameraChangeSubscriber {
     onCameraChanged(camera: PerspectiveCamera, event: IAngularEvent);
@@ -12,7 +14,7 @@ export interface CameraChangeSubscriber {
 /**
  * Service to manage the three orbit controls in an angular way.
  */
-class ThreeOrbitControlsService {
+class ThreeOrbitControlsService implements FileStateServiceSubscriber {
     public static SELECTOR = "threeOrbitControlsService";
     public static CAMERA_CHANGED_EVENT_NAME = "camera-changed";
 
@@ -25,7 +27,16 @@ class ThreeOrbitControlsService {
         private threeCameraService: ThreeCameraService,
         private threeSceneService: ThreeSceneService,
         private $rootScope: IRootScopeService
-    ) {}
+    ) {
+        FileStateService.subscribe(this.$rootScope, this)
+    }
+
+    public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+        this.autoFitTo()
+    }
+
+    public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+    }
 
     public rotateCameraInVectorDirection(x: number, y: number, z: number) {
         const zoom = this.getZoom();
@@ -77,13 +88,9 @@ class ThreeOrbitControlsService {
             .getBoundingSphere();
 
         const scale = 1.4; // object size / display size
-        const objectAngularSize =
-            ((this.threeCameraService.camera.fov * Math.PI) / 180) * scale;
-        const distanceToCamera =
-            boundingSphere.radius / Math.tan(objectAngularSize / 2);
-        const len = Math.sqrt(
-            Math.pow(distanceToCamera, 2) + Math.pow(distanceToCamera, 2)
-        );
+        const objectAngularSize = ((this.threeCameraService.camera.fov * Math.PI) / 180) * scale;
+        const distanceToCamera = boundingSphere.radius / Math.tan(objectAngularSize / 2);
+        const len = Math.sqrt(Math.pow(distanceToCamera, 2) + Math.pow(distanceToCamera, 2));
 
         this.threeCameraService.camera.position.set(len, len, len);
         this.controls.update();

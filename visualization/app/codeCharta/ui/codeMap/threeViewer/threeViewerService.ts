@@ -54,11 +54,7 @@ export class ThreeViewerService {
         element.appendChild(this.threeRendererService.renderer.domElement);
 
         // handles resizing the renderer when the window is resized
-        window.addEventListener(
-            "resize",
-            this.onWindowResize.bind(this),
-            false
-        );
+        window.addEventListener("resize", this.onWindowResize.bind(this), false);
         window.addEventListener("focusin", this.onFocusIn.bind(this), false);
         window.addEventListener("focusout", this.onFocusOut.bind(this), false);
     }

@@ -114,7 +114,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	private renderIfRenderObjectIsComplete() {
-		console.log("lastRender1", this.lastRender);
+		console.log("lastRender", this.lastRender);
 		if (_.values(this.lastRender).every(x => (x !== null)) && this.lastRender.settings.dynamicSettings.neutralColorRange) {
 			this.render(this.lastRender)
 		}
@@ -122,8 +122,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 
 	private render(renderData: RenderData) {
 		renderData.renderFile = NodeDecorator.decorateFile(renderData.renderFile, renderData.metricData)
-		console.log("decorated renderFile", renderData.renderFile)
-		console.log("lastRender2", this.lastRender);
+		console.log("lastRender decorate", this.lastRender);
 		this.updateMapGeometry(renderData.renderFile, renderData.fileStates, renderData.settings, renderData.metricData)
 		this.scaleMap(
 			renderData.settings.appSettings.scaling.x,

@@ -6,9 +6,9 @@ import {SettingsService} from "../../state/settings.service";
 import {MetricService, MetricServiceSubscriber} from "../../state/metric.service";
 import {MetricData} from "../../codeCharta.model";
 import {IRootScopeService} from "angular";
+import {ThreeOrbitControlsService} from "../codeMap/threeViewer/threeOrbitControlsService";
 
 export class ScenarioDropDownController implements MetricServiceSubscriber {
-    public  scenario: Scenario;
 
     private _viewModel: {
         scenarios: Scenario[],
@@ -20,7 +20,8 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 
     constructor(
         private $rootScope: IRootScopeService,
-        private settingsService: SettingsService
+        private settingsService: SettingsService,
+        private threeOrbitControlsService: ThreeOrbitControlsService
     ) {
         MetricService.subscribe(this.$rootScope, this)
     }
@@ -36,6 +37,7 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
     public applySettings(){
         this.settingsService.updateSettings(this._viewModel.scenarios[this._viewModel.key].settings);
         this._viewModel.key = null;
+        this.threeOrbitControlsService.autoFitTo()
     }
 
 

@@ -4,6 +4,7 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { CodeMapRenderService } from "./codeMap.render.service";
 import { MarkedPackage, Settings} from "../../codeCharta.model";
 import angular from "angular";
+import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 
 export class CodeMapActionsService {
 	public static SELECTOR = "codeMapActionsService"
@@ -12,7 +13,7 @@ export class CodeMapActionsService {
 		private settingsService: SettingsService,
 		private codeChartaService: CodeChartaService,
 		private codeMapRenderService: CodeMapRenderService,
-		private $timeout
+		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}
 
 	public toggleNodeVisibility(node: CodeMapNode) {
@@ -85,13 +86,13 @@ export class CodeMapActionsService {
 			this.removeFocusedNode()
 		} else {
 			this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: node.path } })
-			// TODO: this.autoFit()
+			this.autoFit()
 		}
 	}
 
 	public removeFocusedNode() {
 		this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: null } })
-		// TODO: this.autoFit()
+		this.autoFit()
 	}
 
 	public excludeNode(node: CodeMapNode) {
@@ -220,10 +221,7 @@ export class CodeMapActionsService {
 		return JSON.stringify(angular.toJson(obj1)) === JSON.stringify(angular.toJson(obj2))
 	}
 
-	// TODO: auto fit after (un)focusing node
-	/*private autoFit() {
-		this.$timeout(() => {
-			this.threeOrbitControlsService.autoFitTo()
-		}, 250)
-	}*/
+	private autoFit() {
+		this.threeOrbitControlsService.autoFitTo()
+	}
 }
