@@ -158,7 +158,7 @@
 		"babel-register": "^6.18.0",
 		"bestzip": "^2.1.2",
 		"browser-sync": "^2.26.3",
-		"browser-sync-webpack-plugin": "^1.2.0",
+		"browser-sync-webpack-plugin": "^2.2.2",
 		"clean-webpack-plugin": "^0.1.19",
 		"css-loader": "^0.28.10",
 		"d3": "^4.13.0",
