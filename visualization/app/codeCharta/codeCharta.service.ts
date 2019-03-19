@@ -31,10 +31,10 @@ export class CodeChartaService {
 
 			this.settingsService.updateSettings(this.settingsService.getDefaultSettings())
 
-			nameDataPairs.forEach((nameDataPair) => {
-				const errors = FileValidator.validate(nameDataPair.data as any)
+			nameDataPairs.forEach((nameDataPair: NameDataPair) => {
+				const errors = FileValidator.validate(nameDataPair.content as any)
 				if (errors.length === 0) {
-					const ccFile = this.getCCFile(nameDataPair.name, nameDataPair.data)
+					const ccFile = this.getCCFile(nameDataPair.fileName, nameDataPair.content)
 					this.fileStateService.addFile(ccFile)
 				} else {
 					reject(errors)

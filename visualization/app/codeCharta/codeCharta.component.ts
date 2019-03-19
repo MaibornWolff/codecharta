@@ -2,46 +2,61 @@ import { NameDataPair, UrlUtils } from "./util/urlUtils"
 import {IHttpService, ILocationService, IRootScopeService} from "angular"
 import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
-import {SettingsService} from "./state/settings.service";
+import {SettingsService, SettingsServiceSubscriber} from "./state/settings.service";
 import {ScenarioHelper} from "./util/scenarioHelper";
 import {DialogService} from "./ui/dialog/dialog.service";
+import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
+import {CodeMapActionsService} from "./ui/codeMap/codeMap.actions.service";
+import {Settings} from "./codeCharta.model";
 
 /**
  * This is the main controller of the CodeCharta application
  */
-export class CodeChartaController {
-	public viewModel = {
+export class CodeChartaController implements SettingsServiceSubscriber {
+
+	private _viewModel: {
+		version: string,
+		numberOfLoadingTasks: number,
+		focusedNodePath: string
+	} = {
 		version: require("../../package.json").version,
-		numberOfLoadingTasks: 0
+		numberOfLoadingTasks: 0,
+		focusedNodePath: ""
 	}
+
 	private urlUtils: UrlUtils
 
 	/* @ngInject */
 	constructor(
-		//private threeOrbitControlsService: ThreeOrbitControlsService,
+		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private $rootScope: IRootScopeService,
 		private dialogService: DialogService,
-		//private codeMapActionsService: CodeMapActionsService,
+		private codeMapActionsService: CodeMapActionsService,
 		private settingsService: SettingsService,
 		private codeChartaService: CodeChartaService,
 		private $location: ILocationService,
 		private $http: IHttpService
 	) {
+		SettingsService.subscribe(this.$rootScope, this)
 		this.urlUtils = new UrlUtils(this.$location, this.$http)
 		this.subscribeToLoadingEvents(this.$rootScope)
 		this.loadFileOrSample()
 	}
 
+	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
+		this._viewModel.focusedNodePath = settings.dynamicSettings.focusedNodePath
+	}
+
 	public fitMapToView() {
-		// this.threeOrbitControlsService.autoFitTo()
+		this.threeOrbitControlsService.autoFitTo()
 	}
 
 	public removeFocusedNode() {
-		//this.codeMapActionsService.removeFocusedNode()
+		this.codeMapActionsService.removeFocusedNode()
 	}
 
 	public loadFileOrSample() {
-		this.viewModel.numberOfLoadingTasks++
+		this._viewModel.numberOfLoadingTasks++
 		return this.urlUtils.getFileDataFromQueryParam().then((data: NameDataPair[]) => {
 			if (data.length > 0) {
 				this.tryLoadingFiles(data)
@@ -69,27 +84,27 @@ export class CodeChartaController {
             values
         )
         .then(() => {
-        	this.viewModel.numberOfLoadingTasks--
+        	this._viewModel.numberOfLoadingTasks--
 			this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
-		})
+        })
         .catch(e => {
-			this.viewModel.numberOfLoadingTasks--
+			this._viewModel.numberOfLoadingTasks--
 			console.error(e);
             this.printErrors(e)
         })
     }
 
 	private printErrors(errors: Object) {
-		//this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))
+		this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))
 	}
 
 	private subscribeToLoadingEvents($rootScope: angular.IRootScopeService) {
 		$rootScope.$on("add-loading-task", () => {
-			this.viewModel.numberOfLoadingTasks++
+			this._viewModel.numberOfLoadingTasks++
 		})
 
 		$rootScope.$on("remove-loading-task", () => {
-			this.viewModel.numberOfLoadingTasks--
+			this._viewModel.numberOfLoadingTasks--
 		})
 	}
 }
