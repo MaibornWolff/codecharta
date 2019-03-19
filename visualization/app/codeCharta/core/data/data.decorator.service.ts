@@ -1,180 +1,176 @@
-"use strict";
+"use strict"
 
-import * as d3 from "d3";
-import {CodeMap, CodeMapNode} from "./model/CodeMap";
-import {HierarchyNode} from "d3-hierarchy";
+import * as d3 from "d3"
+import { CodeMap, CodeMapNode, BlacklistItem } from "./model/CodeMap"
+import { HierarchyNode } from "d3-hierarchy"
 
 /**
  * Decorates the data structure with artificial metrics
  */
 export class DataDecoratorService {
+	public decorateMapWithCompactMiddlePackages(map: CodeMap) {
+		const isEmptyMiddlePackage = current => {
+			return (
+				current &&
+				current.children &&
+				current.children.length === 1 &&
+				current.children[0].children &&
+				current.children[0].children.length > 0
+			)
+		}
 
-    public decorateMapWithCompactMiddlePackages(map: CodeMap) {
+		const rec = current => {
+			if (isEmptyMiddlePackage(current)) {
+				let child = current.children[0]
+				current.children = child.children
+				current.name += "/" + child.name
+				current.path += "/" + child.name
+				if (child.link) {
+					current.link = child.link
+				}
+				current.attributes = child.attributes
+				current.deltas = child.deltas
+				rec(current)
+			} else if (current && current.children && current.children.length > 1) {
+				for (let i = 0; i < current.children.length; i++) {
+					rec(current.children[i])
+				}
+			}
+		}
 
-        const isEmptyMiddlePackage = (current) => {
-            return current
-                && current.children
-                && current.children.length === 1
-                && current.children[0].children
-                && current.children[0].children.length > 0;
-        };
+		if (map && map.nodes) {
+			rec(map.nodes)
+		}
+	}
 
-        const rec = (current) => {
-            if (isEmptyMiddlePackage(current)) {
-                let child = current.children[0];
-                current.children = child.children;
-                current.name += "/" + child.name;
-                current.path += "/" + child.name;
-                if(child.link) {
-                    current.link = child.link;
-                }
-                current.attributes = child.attributes;
-                current.deltas = child.deltas;
-                rec(current);
-            } else if (current && current.children && current.children.length > 1) {
-                for (let i=0; i<current.children.length; i++) {
-                    rec(current.children[i]);
-                }
-            }
-        };
+	/**
+	 * Decorates the map with the unary metric. This metric is always 1 to allow the same area on all buildings.
+	 * @param {CodeMap} map
+	 */
+	public decorateMapWithUnaryMetric(map: CodeMap) {
+		if (map && map.nodes) {
+			let root = d3.hierarchy<CodeMapNode>(map.nodes)
+			let descendants: HierarchyNode<CodeMapNode>[] = root.descendants()
 
-        if (map && map.nodes) {
-            rec(map.nodes);
-        }
+			for (let j = 0; j < descendants.length; j++) {
+				if (!descendants[j].data.attributes) {
+					descendants[j].data.attributes = {}
+				}
+				Object.assign(descendants[j].data.attributes, { unary: 1 })
+			}
+		}
+	}
 
-    }
+	public decorateMapWithVisibleAttribute(map: CodeMap) {
+		if (map && map.nodes) {
+			let root = d3.hierarchy<CodeMapNode>(map.nodes)
+			root.each(node => {
+				node.data.visible = true
+			})
+		}
+	}
 
-    /**
-     * Decorates the map with the unary metric. This metric is always 1 to allow the same area on all buildings.
-     * @param {CodeMap} map
-     */
-    public decorateMapWithUnaryMetric(map: CodeMap) {
+	public decorateMapWithOriginAttribute(map: CodeMap) {
+		if (map && map.nodes) {
+			let root = d3.hierarchy<CodeMapNode>(map.nodes)
+			root.each(node => {
+				node.data.origin = map.fileName
+			})
+		}
+	}
 
-        if (map && map.nodes) {
+	public decorateMapWithPathAttribute(map: CodeMap) {
+		if (map && map.nodes) {
+			let root = d3.hierarchy<CodeMapNode>(map.nodes)
+			root.each(node => {
+				let path = root.path(node)
+				let pathString = ""
+				path.forEach(pnode => {
+					pathString += "/" + pnode.data.name
+				})
+				node.data.path = pathString
+			})
+		}
+	}
 
-            let root = d3.hierarchy<CodeMapNode>(map.nodes);
-            let descendants: HierarchyNode<CodeMapNode>[] = root.descendants();
+	public decorateLeavesWithMissingMetrics(maps: CodeMap[], metrics: string[]) {
+		maps.forEach(map => {
+			if (map && map.nodes) {
+				let root = d3.hierarchy<CodeMapNode>(map.nodes)
+				root.leaves().forEach(node => {
+					//make sure attributes exist
+					this.createAttributesIfNecessary(node)
 
-            for (let j = 0; j < descendants.length; j++) {
-                if (!descendants[j].data.attributes) {
-                    descendants[j].data.attributes = {};
-                }
-                Object.assign(descendants[j].data.attributes, {unary: 1});
-            }
+					//create Metrics
+					for (let i = 0; i < metrics.length; i++) {
+						let metric = metrics[i]
+						if (!node.data.attributes.hasOwnProperty(metric)) {
+							node.data.attributes[metric] = 0
+						}
+					}
+				})
+			}
+		})
+	}
 
-        }
-    }
+	public decorateParentNodesWithSumAttributesOfChildren(maps: CodeMap[], metrics: string[]) {
+		maps.forEach(map => {
+			if (map && map.nodes) {
+				let root = d3.hierarchy<CodeMapNode>(map.nodes)
+				root.each(node => {
+					this.decorateNodeWithChildrenSumMetrics(node, metrics, map.blacklist)
+				})
+			}
+		})
+	}
 
-    public decorateMapWithVisibleAttribute(map: CodeMap) {
+	public decorateNodeWithChildrenSumMetrics(node: any, metrics: string[], blacklist: Array<BlacklistItem>) {
+		//make sure attributes exist
+		this.createAttributesIfNecessary(node)
 
-        if (map && map.nodes) {
+		//if attributes is empty define property for each possible metric as a sum function of child metrics
+		for (let i = 0; i < metrics.length; i++) {
+			let metric = metrics[i]
+			if (!node.data.attributes.hasOwnProperty(metric) && node.data.children && node.data.children.length > 0) {
+				this.defineAttributeAsSumMethod(node, metric, blacklist)
+			}
+		}
+	}
 
-            let root = d3.hierarchy<CodeMapNode>(map.nodes);
-            root.each((node) => {
-                node.data.visible = true;
-            });
+	private isBlacklisted(node: any, blacklist: Array<BlacklistItem>) {
+		let filtered: Array<BlacklistItem>
+		if (!blacklist) {
+			return false
+		} else if (blacklist.length === 0) {
+			return false
+		} else {
+			filtered = blacklist.filter((item: BlacklistItem) => {
+				return item.path === node.data.path
+			})
+		}
+		return filtered.length === 1
+	}
 
-        }
-    }
+	private defineAttributeAsSumMethod(node: any, metric: string, blacklist: Array<BlacklistItem>) {
+		Object.defineProperty(node.data.attributes, metric, {
+			enumerable: true,
+			get: () => {
+				let sum = 0
+				let l = node.leaves()
+				for (let count = 0; count < l.length; count++) {
+					if (!this.isBlacklisted(l[count], blacklist)) {
+						sum += l[count].data.attributes[metric]
+					}
+				}
 
-    public decorateMapWithOriginAttribute(map: CodeMap) {
+				return sum
+			}
+		})
+	}
 
-        if (map && map.nodes) {
-
-            let root = d3.hierarchy<CodeMapNode>(map.nodes);
-            root.each((node) => {
-                node.data.origin = map.fileName;
-            });
-
-        }
-    }
-
-    public decorateMapWithPathAttribute(map: CodeMap) {
-        if (map && map.nodes) {
-            let root = d3.hierarchy<CodeMapNode>(map.nodes);
-            root.each((node) => {
-                let path = root.path(node);
-                let pathString = "";
-                path.forEach((pnode) => {
-                    pathString += "/" + pnode.data.name;
-                });
-                node.data.path = pathString;
-            });
-        }
-    }
-
-    public decorateLeavesWithMissingMetrics(maps: CodeMap[], metrics: string[]) {
-
-        maps.forEach((map) => {
-            if (map && map.nodes) {
-
-                let root = d3.hierarchy<CodeMapNode>(map.nodes);
-                root.leaves().forEach((node) => {
-
-                    //make sure attributes exist
-                    this.createAttributesIfNecessary(node);
-
-                    //create Metrics
-                    for (let i = 0; i < metrics.length; i++) {
-                        let metric = metrics[i];
-                        if (!node.data.attributes.hasOwnProperty(metric)) {
-                            node.data.attributes[metric] = 0;
-                        }
-                    }
-
-                });
-
-            }
-        });
-
-    }
-
-    public decorateParentNodesWithSumAttributesOfChildren(maps: CodeMap[], metrics: string[]) {
-
-        maps.forEach((map) => {
-            if (map && map.nodes) {
-
-                let root = d3.hierarchy<CodeMapNode>(map.nodes);
-                root.each((node) => {
-                    this.decorateNodeWithChildrenSumMetrics(node, metrics);
-
-                });
-
-            }
-        });
-    }
-
-    public decorateNodeWithChildrenSumMetrics(node, metrics: string[]) {
-        //make sure attributes exist
-        this.createAttributesIfNecessary(node);
-
-        //if attributes is empty define property for each possible metric as a sum function of child metrics
-        for (let i = 0; i < metrics.length; i++) {
-            let metric = metrics[i];
-            if (!node.data.attributes.hasOwnProperty(metric) && node.data.children && node.data.children.length > 0) {
-                this.defineAttributeAsSumMethod(node, metric);
-            }
-        }
-
-    }
-
-    private defineAttributeAsSumMethod(node, metric: string) {
-        Object.defineProperty(node.data.attributes, metric, {
-            enumerable: true,
-            get: () => {
-                let sum = 0;
-                let l = node.leaves();
-                for (let count = 0; count < l.length; count++) {
-                    sum += l[count].data.attributes[metric];
-                }
-                return sum;
-            }
-        });
-    }
-
-    private createAttributesIfNecessary(node) {
-        if (!node.data.attributes) {
-            node.data.attributes = {};
-        }
-    }
+	private createAttributesIfNecessary(node) {
+		if (!node.data.attributes) {
+			node.data.attributes = {}
+		}
+	}
 }
