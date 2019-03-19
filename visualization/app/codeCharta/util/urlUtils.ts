@@ -2,37 +2,17 @@
 import {ILocationService, IHttpService, IHttpResponse} from "angular";
 
 export interface NameDataPair {
-    name: string;
-    data: Object;
+    fileName: string;
+    content: Object;
 }
 
-/**
- * This service offers an application specific url API.
- */
 export class UrlUtils {
-
-    public static SELECTOR = "urlService";
 
     private static OK_CODE = 200;
 
     constructor(private $location: ILocationService, private $http: IHttpService) {
     }
 
-    /**
-     * returns an url parameter value by its key.
-     * @param {string} key
-     * @returns {string} url parameter value
-     */
-    public getParam(key: string): string {
-        return this.getParameterByName(key);
-    }
-
-    /**
-     * returns an url parameter value by its name/key.
-     * @param {string} name
-     * @param {string} [url=current location]
-     * @returns {string} url parameter value
-     */
     public getParameterByName(name: string, url: string = this.getUrl()): string {
         const sanitizedName = name.replace(/[\[\]]/g, "\\$&");
         let regex = new RegExp("[?&]" + sanitizedName + "(=([^&#]*)|&|#|$)"),
@@ -46,18 +26,10 @@ export class UrlUtils {
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 
-    /**
-     * returns the current locations url
-     * @returns {string} url
-     */
     public getUrl(): string {
         return this.$location.absUrl();
     }
 
-    /**
-     * returns the files contents specified in the 'file' url parameter
-     * @returns {Promise} which returns the files content on resolution
-     */
     public getFileDataFromQueryParam(): Promise<NameDataPair[]> {
 
         let fileNames = this.$location.search().file;
@@ -82,10 +54,6 @@ export class UrlUtils {
 
     }
 
-    /**
-     * returns the files content specified in the 'file' parameter
-     * @returns {Promise} which returns the files content on resolution
-     */
     public getFileDataFromFile(file: string): Promise<NameDataPair> {
 
         return new Promise((resolve, reject) => {
@@ -95,7 +63,7 @@ export class UrlUtils {
                     (response: IHttpResponse<Object>) => {
                         if (response.status === UrlUtils.OK_CODE) {
                             Object.assign(response.data, {fileName: file});
-                            resolve({name: file, data:response.data});
+                            resolve({fileName: file, content: response.data});
                         } else {
                             reject();
                         }

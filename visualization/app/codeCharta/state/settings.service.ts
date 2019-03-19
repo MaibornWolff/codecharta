@@ -27,7 +27,6 @@ export class SettingsService {
 	public updateSettings(update: RecursivePartial<Settings>) {
 		// _.merge(this.settings, update) didnt work with arrays like blacklist
 		this.settings = this.updateSettingsUsingPartialSettings(this.settings, update)
-		console.log("settings", update, this.settings);
 		this.throttledBroadcast()
 	}
 
@@ -152,30 +151,6 @@ export class SettingsService {
 		}
 		return update
 	}*/
-
-	/* TODO someone else does this
-    public onDataChanged(data: DataModel) {
-
-        if(data.metrics && data.renderFile && data.revisions) {
-            this.settings.map = data.renderFile;
-            this.settings.blacklist = data.renderFile.blacklist;
-
-            if (data.metrics.indexOf(this.settings.areaMetric) === -1) {
-                this.settings.areaMetric = this.getMetricByIdOrLast(0, data.metrics);
-            }
-
-            if (data.metrics.indexOf(this.settings.heightMetric) === -1) {
-                this.settings.heightMetric = this.getMetricByIdOrLast(1, data.metrics);
-            }
-
-            if (data.metrics.indexOf(this.settings.colorMetric) === -1) {
-                this.settings.colorMetric = this.getMetricByIdOrLast(2, data.metrics);
-            }
-
-            this.onSettingsChanged();
-        }
-
-    }*/
 
 	/* TODO someone else does this, updateSettingsMethod should offer silent flag (no event triggered)
     public onCameraChanged(camera: PerspectiveCamera) {

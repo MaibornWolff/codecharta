@@ -4,6 +4,7 @@ import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
 import {SettingsService} from "./state/settings.service";
 import {ScenarioHelper} from "./util/scenarioHelper";
+import {DialogService} from "./ui/dialog/dialog.service";
 
 /**
  * This is the main controller of the CodeCharta application
@@ -19,7 +20,7 @@ export class CodeChartaController {
 	constructor(
 		//private threeOrbitControlsService: ThreeOrbitControlsService,
 		private $rootScope: IRootScopeService,
-		//private dialogService: DialogService,
+		private dialogService: DialogService,
 		//private codeMapActionsService: CodeMapActionsService,
 		private settingsService: SettingsService,
 		private codeChartaService: CodeChartaService,
@@ -51,14 +52,14 @@ export class CodeChartaController {
 	}
 
 	public tryLoadingSampleFiles() {
-		if (this.urlUtils.getParam("file")) {
-			/*this.dialogService.showErrorDialog(
+		if (this.urlUtils.getParameterByName("file")) {
+			this.dialogService.showErrorDialog(
 				"One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
-			)*/
+			)
 		}
 		this.tryLoadingFiles([
-            { name: "sample1.json", data: require("./assets/sample1.json") },
-            { name: "sample2.json", data: require("./assets/sample2.json") }
+            { fileName: "sample1.json", content: require("./assets/sample1.json") },
+            { fileName: "sample2.json", content: require("./assets/sample2.json") }
         ]);
     }
     
@@ -78,7 +79,7 @@ export class CodeChartaController {
         })
     }
 
-	public printErrors(errors: Object) {
+	private printErrors(errors: Object) {
 		//this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))
 	}
 
