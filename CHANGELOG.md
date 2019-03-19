@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
+
 ### Added
 
 ### Changed
@@ -15,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed
 
 ### Chore
+
+-   Bump browser-sync-webpack-plugin from 1.2.0 to 2.2.2 in /visualization
+-   Bump @types/node from 8.10.19 to 11.11.3 in /visualization
+-   Bump html-webpack-plugin from 2.30.1 to 3.2.0 in /visualization
 
 ## [1.22.0] - 2019-03-15
 
