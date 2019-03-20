@@ -113,12 +113,18 @@ export class DataDecoratorService {
 		})
 	}
 
-	public decorateParentNodesWithSumAttributesOfChildren(maps: CodeMap[], metrics: string[]) {
+	/**
+	 * @requires decorateMapWithPathAttribute to be called earlier
+	 */
+	public decorateParentNodesWithSumAttributesOfChildren(maps: CodeMap[], metrics: string[], blacklist: Array<BlacklistItem>) {
+		console.log("DECORATE WITH: ", blacklist)
+		console.log("map: ", maps[0])
+		console.log("metrics: ", metrics)
 		maps.forEach(map => {
 			if (map && map.nodes) {
 				let root = d3.hierarchy<CodeMapNode>(map.nodes)
 				root.each(node => {
-					this.decorateNodeWithChildrenSumMetrics(node, metrics, map.blacklist)
+					this.decorateNodeWithChildrenSumMetrics(node, metrics, blacklist)
 				})
 			}
 		})
@@ -152,6 +158,7 @@ export class DataDecoratorService {
 	}
 
 	private defineAttributeAsSumMethod(node: any, metric: string, blacklist: Array<BlacklistItem>) {
+		console.log("is this called")
 		Object.defineProperty(node.data.attributes, metric, {
 			enumerable: true,
 			get: () => {

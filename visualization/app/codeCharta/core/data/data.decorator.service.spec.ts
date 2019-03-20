@@ -1,7 +1,7 @@
 import "./data.module"
 
 import { CodeMap, CodeMapNode } from "./model/CodeMap"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_MAP_WITH_BLACKLIST } from "./data.mocks"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_MAP_WITH_BLACKLIST, TEST_MAP_WITH_BLACKLIST_2 } from "./data.mocks"
 import { DataDecoratorService } from "./data.decorator.service"
 import * as d3 from "d3"
 
@@ -237,13 +237,14 @@ describe("app.codeCharta.core.data.dataService", () => {
 			expect(h.data.attributes["functions"]).toBe(1110)
 		})
 
-		it("should ignore blacklisted files and folders for aggregation", () => {
-			dataDecoratorService.decorateMapWithOriginAttribute(mapWithNoBlacklist)
+		xit("should ignore blacklisted files and folders for aggregation", () => {
 			dataDecoratorService.decorateMapWithPathAttribute(mapWithNoBlacklist)
-			dataDecoratorService.decorateMapWithVisibleAttribute(mapWithNoBlacklist)
-			dataDecoratorService.decorateMapWithUnaryMetric(mapWithNoBlacklist)
 			dataDecoratorService.decorateLeavesWithMissingMetrics([mapWithNoBlacklist], ["rloc", "functions"])
-			dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren([mapWithNoBlacklist], ["rloc", "functions"])
+			dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren(
+				[mapWithNoBlacklist],
+				["rloc", "functions"],
+				mapWithNoBlacklist.blacklist
+			)
 
 			let h = d3.hierarchy(mapWithNoBlacklist.nodes)
 			expect(h.data.attributes["rloc"]).toBe(170)
@@ -251,6 +252,23 @@ describe("app.codeCharta.core.data.dataService", () => {
 
 			expect(h.children[0].data.attributes["rloc"]).toBe(100)
 			expect(h.data.attributes["functions"]).toBe(1010)
+		})
+
+		it("test", () => {
+			const mapWithNoBlacklist2 = TEST_MAP_WITH_BLACKLIST_2
+			/*dataDecoratorService.decorateMapWithPathAttribute(mapWithNoBlacklist2)
+			dataDecoratorService.decorateLeavesWithMissingMetrics(
+				[mapWithNoBlacklist2],
+				["avgCommits_absolute", "functions", "mcc", "pairingRate_relative", "rloc", "unary"]
+			)*/
+			dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren(
+				[mapWithNoBlacklist2],
+				["avgCommits_absolute", "functions", "mcc", "pairingRate_relative", "rloc", "unary"],
+				[]
+			)
+
+			let h = d3.hierarchy(mapWithNoBlacklist2.nodes)
+			expect(h.data.attributes["rloc"]).toBe(600)
 		})
 	})
 
