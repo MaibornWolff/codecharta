@@ -20,13 +20,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
--	  Fixed bug that code map was not re-loaded when changing from multiple to single revision mode #396
--	  Fixed missing apiVersion in aggregated map #398
--         Input Fields of color sliders adjust width according to content #409
+-   Fixed bug that code map was not re-loaded when changing from multiple to single revision mode #396
+-   Fixed missing apiVersion in aggregated map #398
+-             Input Fields of color sliders adjust width according to content #409
 
 ### Chore
 
-- Bump nouislider from 11.1.0 to 13.1.1 in /visualization
+-   Bump nouislider from 11.1.0 to 13.1.1 in /visualization
 
 ## [1.21.2] - 2019-02-26
 
@@ -41,6 +41,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed
 
 -   Fixing non-existent metric aggregation on root-level when using multiple Files
+-   Excluded buildings are no longer used for aggregated metric calculation #352
 
 ## [1.21.1] - 2019-02-22
 
