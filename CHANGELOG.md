@@ -6,13 +6,58 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
+
 ### Added
+-   Project Name can be specified for merge filter #394
+
+### Changed
+-   Throw a MergeException if project names do not match in MergeFilter #394 
+
+### Removed
+
+### Fixed
+
+### Chore
+
+-   Bump browser-sync-webpack-plugin from 1.2.0 to 2.2.2 in /visualization
+-   Bump @types/node from 8.10.19 to 11.11.3 in /visualization
+-   Bump html-webpack-plugin from 2.30.1 to 3.2.0 in /visualization
+
+## [1.22.0] - 2019-03-15
+
+### Added
+
+-   Added buttons to select all/none/inversion of revisions/maps in multiple mode #391
+-   Merge filter can merge all files of folders #392
 
 ### Changed
 
 ### Removed
 
 ### Fixed
+
+-   Fixed bug that code map was not re-loaded when changing from multiple to single revision mode #396
+-   Fixed missing apiVersion in aggregated map #398
+-   Input Fields of color sliders adjust width according to content #409
+
+### Chore
+
+-   Bump nouislider from 11.1.0 to 13.1.1 in /visualization
+-   Bump typescript from 2.7.2 to 3.3.3333 in /visualization
+
+## [1.21.2] - 2019-02-26
+
+### Added
+
+-   When entering Multiple Mode, all Maps/revisions are preselected
+
+### Changed
+
+### Removed
+
+### Fixed
+
+-   Fixing non-existent metric aggregation on root-level when using multiple Files
 
 ## [1.21.1] - 2019-02-22
 
