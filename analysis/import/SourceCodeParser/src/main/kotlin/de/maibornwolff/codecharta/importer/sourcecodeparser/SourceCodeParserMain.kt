@@ -1,5 +1,8 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
+import de.maibornwolff.codecharta.importer.sourcecodeparser.exporters.CSVExporter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.exporters.Exporter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.exporters.JSONExporter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.AntlrJavaCodeTagProvider
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.*
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.infrastructure.FileSystemDetailedSourceProvider
@@ -38,28 +41,23 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
             outputStream.println("Could not find " + files[0])
             return null
         }
-        val sourceCodeParserEntryPoint = getSourceCodeParserEntryPoint()
+        //val sourceCodeParserEntryPoint = getSourceCodeParserEntryPoint()
+        val projectParser = ProjectParser()
 
-        if (files.size == 1 && files[0].isFile) {
-            sourceCodeParserEntryPoint.printDetailedMetrics(FileSystemDetailedSourceProvider(files[0]))
-        } else {
-            sourceCodeParserEntryPoint.printOverviewMetrics(FileSystemOverviewSourceProvider(files))
-        }
+        // TODO: Support multiple in file/folders
+        projectParser.scanProject(files[0], OutputStreamWriter(outputStream))
+
+        val writer = getPrinter()
+        writer.generate(projectParser.projectMetrics, projectParser.metricKinds)
 
         return null
     }
 
-    private fun getSourceCodeParserEntryPoint(): SourceCodeParserEntryPoint {
-        return SourceCodeParserEntryPoint(
-                MetricCalculator(AntlrJavaCodeTagProvider(System.err)),
-                getPrinter()
-        )
-    }
-
-    private fun getPrinter(): MetricWriter {
+    // TODO: i think it does not switch...
+    private fun getPrinter(): Exporter {
         return when (outputFormat) {
-            OutputFormat.JSON -> JsonMetricWriter(getWriter(), projectName)
-            OutputFormat.TABLE -> TableMetricWriter(getWriter())
+            OutputFormat.JSON -> JSONExporter(projectName, getWriter())
+            OutputFormat.TABLE -> CSVExporter(getWriter())
         }
     }
 

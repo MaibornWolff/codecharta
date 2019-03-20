@@ -23,7 +23,6 @@ class ProjectParser {
 
         for(analyzer in sonarAnalyzers){
             val files = projectTraverser.getFileListByExtension(analyzer.FILE_EXTENSION)
-            println(analyzer.scanFiles(files))
             val metricsForKind = analyzer.scanFiles(files)
             projectMetrics.putAll(metricsForKind)
             updateMetricKinds(metricsForKind)

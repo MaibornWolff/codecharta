@@ -16,6 +16,7 @@ class JsonBuilder(projectName: String) {
     }
 
     fun addComponentAsNode(metricTableSum: DetailedMetricTableSum): JsonBuilder {
+      println(metricTableSum.sourceDescriptor.location)
         val node = MutableNode(metricTableSum.sourceDescriptor.name, attributes = hashMapOf(
                 "lines_of_code" to metricTableSum[OverviewMetricType.LoC],
                 "rloc" to metricTableSum[OverviewMetricType.RLoc],

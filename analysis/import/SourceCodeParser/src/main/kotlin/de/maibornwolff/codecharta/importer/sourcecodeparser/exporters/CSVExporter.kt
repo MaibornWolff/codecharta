@@ -1,8 +1,9 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.exporters
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetrics
+import java.io.Writer
 
-class CSVExporter: Exporter {
+class CSVExporter(private val writer: Writer): Exporter {
 
     override fun generate(metricsMap: MutableMap<String, FileMetrics>, allMetrics: Set<String>) : String{
         val csvOutput = StringBuilder()
@@ -18,6 +19,8 @@ class CSVExporter: Exporter {
             }
             csvOutput.append("\n")
         }
+        writer.write(csvOutput.toString())
+        // TODO: what should this return
         return csvOutput.toString()
     }
 
