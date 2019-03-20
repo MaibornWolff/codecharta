@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.importer.sourcecodeparser
+package de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.JSONMetricWriter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.ProjectParser
 
 import org.junit.Test
 import java.io.File

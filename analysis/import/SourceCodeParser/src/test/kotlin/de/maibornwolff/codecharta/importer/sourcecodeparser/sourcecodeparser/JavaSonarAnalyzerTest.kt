@@ -8,10 +8,21 @@ import java.util.ArrayList
 import org.assertj.core.api.Assertions.assertThat
 
 class JavaSonarAnalyzerTest {
+    private val path = File("src/test/resources/de/maibornwolff/codecharta/importer/sourcecodeparser/projects_for_tests/miniJavaProject/mini").toString()
 
     @Test
-    fun metricsForMultipleFiles() {
-        val path = File("src/test/resources/de/maibornwolff/codecharta/importer/sourcecodeparser/projects_for_tests/miniJavaProject/mini").toString()
+    fun `single file is correctly analyzed`() {
+        val fileList = ArrayList<String>()
+        fileList.add("RealLinesShort.java")
+
+        val javaSourceCodeAnalyzer = JavaSonarAnalyzer(path)
+        val metrics = javaSourceCodeAnalyzer.scanFiles(fileList)
+
+        assertThat(metrics).containsKey("RealLinesShort.java")
+    }
+
+    @Test
+    fun `multiple files are analyzed`() {
         val fileList = ArrayList<String>()
         fileList.add("RealLinesShort.java")
         fileList.add("Annotation.java")
@@ -24,9 +35,20 @@ class JavaSonarAnalyzerTest {
     }
 
     @Test
-    fun metricsAreCorrect(){
+    fun `multiple analyzed files have metrics`() {
+        val fileList = ArrayList<String>()
+        fileList.add("RealLinesShort.java")
+        fileList.add("Annotation.java")
 
-        val path = File("src/test/resources/de/maibornwolff/codecharta/importer/sourcecodeparser/projects_for_tests/miniJavaProject/mini").toString()
+        val javaSourceCodeAnalyzer = JavaSonarAnalyzer(path)
+        val metrics = javaSourceCodeAnalyzer.scanFiles(fileList)
+
+        assertThat(metrics["Annotation.java"]?.getMap()).isNotEmpty
+        assertThat(metrics["RealLinesShort.java"]?.getMap()).isNotEmpty
+    }
+
+    @Test
+    fun `correct metrics are retrieved`(){
         val fileList = ArrayList<String>()
         fileList.add("RealLinesShort.java")
 
