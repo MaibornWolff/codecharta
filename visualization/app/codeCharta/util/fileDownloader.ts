@@ -1,6 +1,6 @@
 import angular from "angular";
 import * as d3 from "d3";
-import {CCFile, CodeMapNode, Settings} from "../codeCharta.model";
+import {CCFile, CodeMapNode} from "../codeCharta.model";
 
 export class FileDownloader {
 
