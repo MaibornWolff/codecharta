@@ -79,19 +79,18 @@ export class CodeChartaController implements SettingsServiceSubscriber {
     }
     
     private tryLoadingFiles(values: NameDataPair[]) {
-        this.codeChartaService
-        .loadFiles(
-            values
-        )
-        .then(() => {
-        	this._viewModel.numberOfLoadingTasks--
-			this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
-        })
-        .catch(e => {
-			this._viewModel.numberOfLoadingTasks--
-			console.error(e);
-            this.printErrors(e)
-        })
+		this.settingsService.updateSettings(this.settingsService.getDefaultSettings())
+
+		this.codeChartaService.loadFiles(values)
+			.then(() => {
+				this._viewModel.numberOfLoadingTasks--
+				this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
+			})
+			.catch(e => {
+				this._viewModel.numberOfLoadingTasks--
+				console.error(e);
+				this.printErrors(e)
+			})
     }
 
 	private printErrors(errors: Object) {

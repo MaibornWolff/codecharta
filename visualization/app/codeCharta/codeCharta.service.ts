@@ -4,7 +4,6 @@ import { NameDataPair } from "./util/urlUtils"
 import { SettingsService } from "./state/settings.service"
 import { IRootScopeService } from "angular"
 import { FileStateService } from "./state/fileState.service";
-import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
 
 export class CodeChartaService {
 
@@ -15,20 +14,12 @@ export class CodeChartaService {
 	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
-		private fileStateService: FileStateService,
-		private threeOrbitControlsService: ThreeOrbitControlsService
+		private fileStateService: FileStateService
 	) {
-	}
-
-	public resetMaps(): any {
-		throw new Error("Method not implemented.")
 	}
 
 	public loadFiles(nameDataPairs: NameDataPair[]): Promise<void> {
 		return new Promise((resolve, reject) => {
-
-			this.settingsService.updateSettings(this.settingsService.getDefaultSettings())
-
 			nameDataPairs.forEach((nameDataPair: NameDataPair) => {
 				const errors = FileValidator.validate(nameDataPair.content as any)
 				if (errors.length === 0) {
@@ -40,7 +31,7 @@ export class CodeChartaService {
 			})
 
 			this.fileStateService.setSingle(this.fileStateService.getCCFiles()[0])
-			// TODO this.settingsService.updateSettingsFromUrl();
+			// TODO shouldn't this be inside the codeCharta.component this.settingsService.updateSettingsFromUrl();
 			resolve()
 		})
 	}

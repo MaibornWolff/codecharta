@@ -19,6 +19,10 @@ export class FileStateService {
         private $rootScope: IRootScopeService){
     }
 
+    public resetMaps() {
+        this.fileStates = []
+    }
+
     public addFile(file: CCFile) {
         this.fileStates.push({file: file, selectedAs: FileSelectionState.None})
         this.notifyFileImport()
@@ -83,5 +87,4 @@ export class FileStateService {
             subscriber.onImportedFilesChanged(data, event)
         })
     }
-
 }

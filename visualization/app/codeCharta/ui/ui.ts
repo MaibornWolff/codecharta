@@ -56,13 +56,9 @@ angular.module(
         "app.codeCharta.ui.mapTreeViewSearch",
         "app.codeCharta.ui.mapTreeView",
         "app.codeCharta.ui.scenarioDropDown",
-
-        /*
         "app.codeCharta.ui.fileChooser",
         "app.codeCharta.ui.experimentalSettingsPanel",
         "app.codeCharta.ui.layoutSwitcher",
         "app.codeCharta.ui.tooltip"
-        */
-
     ]);
 

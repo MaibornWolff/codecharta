@@ -8,109 +8,76 @@ with the additional ones */
 
 import {SettingsService} from "../../state/settings.service";
 import {DialogService} from "../dialog/dialog.service";
-import {ScenarioHelper} from "../../util/scenarioHelper";
-import { CodeChartaService } from "../../codeCharta.service";
+import {CodeChartaService} from "../../codeCharta.service";
+import {FileStateService} from "../../state/fileState.service";
+import {NameDataPair} from "../../util/urlUtils";
+import {IRootScopeService} from "angular";
 
-/**
- * Controls the FileChooser
- */
 class FileChooserController {
 
     /* @ngInject */
-
     constructor(
         private $scope,
-        private scenarioService: ScenarioHelper,
-        private $rootScope,
+        private $rootScope: IRootScopeService,
         private dialogService: DialogService,
         private settingsService: SettingsService,
-        private codeChartaService: CodeChartaService
+        private codeChartaService: CodeChartaService,
+        private fileStateService: FileStateService
     ){
     }
 
-    /**
-     * called when the selected file changed
-     * @param {object} element dom input element
-     */
+    // TODO: import doesnt work yet
     public fileChanged(element) {
         this.$rootScope.$broadcast("add-loading-task");
         this.$scope.$apply(() => {
-            this.codeChartaService.resetMaps();
+            let nameDataPairs: NameDataPair[] = []
+
             for (let i = 0; i < element.files.length; i++) {
                 ((file, i) => {
-                    let name = file.name;
                     let reader = new FileReader();
                     reader.onload = (e) => {
-                        this.onNewFileLoaded((<any>e.target).result, i, name, element);
+                        console.log("jo")
+                        nameDataPairs.push({
+                            fileName: file.name,
+                            content: JSON.parse((<any>event.target).result)
+                        })
+                        console.log("NameDataPairs1", nameDataPairs)
                     };
                     reader.readAsText(file, "UTF-8");
                 })(element.files[i], i);
             }
 
+            /*for (let file of element.files) {
+                let reader = new FileReader()
+                console.log("reader", reader)
+
+                reader.onload = (event) => {
+
+
+                };
+                //reader.readAsText(file, "UTF-8");
+            }*/
+            console.log("NameDataPairs2", nameDataPairs)
+
+            this.fileStateService.resetMaps()
+            // TODO: Reset fileSettings, dynamicSettings etc... markedPackages
+            this.codeChartaService.loadFiles(nameDataPairs)
+                .then(() => {
+                    this.$rootScope.$broadcast("remove-loading-task");
+                })
+                .catch(e => {
+                    this.$rootScope.$broadcast("remove-loading-task");
+                    console.error(e);
+                    this.printErrors(e)
+                })
+
         });
     }
 
-    /**
-     * called when the new file was loaded
-     *
-     * @param {object} data map data
-     * @param {number} revision the revision number
-     * @param {string} name the filename
-     */
-    public onNewFileLoaded(data, revision, name, element){
-        element.value = "";
-        //$("#fileChooserPanel").modal("close");
-
-        try {
-            const parsed = JSON.parse(data);
-            this.setNewData(name, parsed, revision);
-        }
-        catch (e) {
-            this.dialogService.showErrorDialog("Error parsing JSON!" + e);
-            this.$rootScope.$broadcast("remove-loading-task");
-            return;
-        }
-
-        this.$rootScope.$broadcast("remove-loading-task");
+    private printErrors(errors: Object) {
+        this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))
     }
 
-    public setNewData(name, parsedData, revision){
-        let ctx = this;
-        throw new Error("not implemented")
-        //return this.codeChartaService.loadMap(name, parsedData, revision).then(
-        //    () => {
-//
-        //        ctx.scenarioService.applyScenarioOnce(this.scenarioService.getDefaultScenario());
-        //        ctx.dataService.setComparisonMap(revision);
-        //        ctx.dataService.setReferenceMap(revision);
-        //        ctx.settingsService.applySettings();
-//
-        // TODO: Reset fileSettings, dynamicSettings etc... markedPackages
-
-        //            if (ctx.settingsService.settings) {
-        //                ctx.settingsService.settings.markedPackages = [];
-        //            }
-        //            ctx.settingsService.applySettings(ctx.settingsService.settings);
-        //        if(!ctx.$scope.$$phase || !ctx.$scope.$root.$$phase) {
-        //            ctx.$scope.$digest();
-        //        }
-        //    },
-        //    (r) => {
-        //        ctx.printErrors(r);
-        //    }
-        //);
-
-
-    }
-
-    /**
-     * prints errors
-     * @param {object} result
-     */
-    public printErrors(result){
-        this.dialogService.showErrorDialog(JSON.stringify(result, null, "\t"));
-    }
-    
 }
 
 export {FileChooserController};
