@@ -1,9 +1,8 @@
 import { IRootScopeService } from "angular";
-import {CodeMapNode, FileState} from "../../codeCharta.model";
-import { CodeMapRenderService } from "../codeMap/codeMap.render.service";
-import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
+import {CCFile, CodeMapNode } from "../../codeCharta.model";
+import {CodeMapRenderService, CodeMapRenderServiceSubscriber} from "../codeMap/codeMap.render.service";
 
-export class MapTreeViewController implements FileStateServiceSubscriber {
+export class MapTreeViewController implements CodeMapRenderServiceSubscriber {
 
     private _viewModel: {
         rootNode: CodeMapNode
@@ -13,18 +12,13 @@ export class MapTreeViewController implements FileStateServiceSubscriber {
 
     /* @ngInject */
     constructor(
-        private $rootScope: IRootScopeService,
-        private codeMapRenderService: CodeMapRenderService
+        private $rootScope: IRootScopeService
     ) {
-        FileStateService.subscribe(this.$rootScope, this);
+        CodeMapRenderService.subscribe(this.$rootScope, this);
     }
 
-    // TODO: Listen to lastRender.renderFile changed from codeMap.render.service
-    public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-        this._viewModel.rootNode = this.codeMapRenderService.getRenderFile().map
-    }
-
-    public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+    public onRenderFileChanged(renderFile: CCFile, event: angular.IAngularEvent) {
+        this._viewModel.rootNode = renderFile.map
     }
 }
 

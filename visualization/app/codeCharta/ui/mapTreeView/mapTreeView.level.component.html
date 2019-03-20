@@ -1,27 +1,27 @@
-<div ng-if="!$ctrl.isBlacklisted($ctrl._viewModel.node)" class="{{::$ctrl._viewModel.depth?'':'tree-root'}} tree-element-{{::$ctrl._viewModel.depth?$ctrl._viewModel.depth:0}} {{::$ctrl.isLeaf()?'tree-leaf':'tree-parent'}}">
+<div ng-if="!$ctrl.isBlacklisted($ctrl.node)" class="{{::$ctrl.depth?'':'tree-root'}} tree-element-{{::$ctrl.depth?$ctrl.depth:0}} {{::$ctrl.isLeaf()?'tree-leaf':'tree-parent'}}">
 
-    <div class="tree-element-label-{{::$ctrl._viewModel.depth?$ctrl._viewModel.depth:0}} tree-element-label {{$ctrl._viewModel.isHoveredInCodeMap ? 'hovered':''}}" ng-mouseenter="$ctrl.onMouseEnter()" ng-mouseleave="$ctrl.onMouseLeave()" ng-right-click="$ctrl.onRightClick($event)">
+    <div class="tree-element-label-{{::$ctrl.depth?$ctrl.depth:0}} tree-element-label {{$ctrl._viewModel.isHoveredInCodeMap ? 'hovered':''}}" ng-mouseenter="$ctrl.onMouseEnter()" ng-mouseleave="$ctrl.onMouseLeave()" ng-right-click="$ctrl.onRightClick($event)">
 
-        <span ng-click="$ctrl.onFolderClick()">
+        <span class="no-outline" ng-click="$ctrl.onFolderClick()">
             <span role="img" ng-if="!$ctrl.isLeaf() && $ctrl._viewModel.collapsed" class="fa fa-folder cursor-pointer" ng-style="{'color': $ctrl.getMarkingColor() }" aria-hidden="true"></span>
             <span role="img" ng-if="!$ctrl.isLeaf() && !$ctrl._viewModel.collapsed" class="fa fa-folder-open cursor-pointer" ng-style="{'color': $ctrl.getMarkingColor() }" aria-hidden="true"></span>
             <span role="img" ng-if="$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></span>
         </span>
 
-        <span class="cursor-pointer" ng-click="$ctrl.onEyeClick()">
-            <span role="img" ng-if="$ctrl._viewModel.node.visible" class="fa fa-eye" aria-hidden="true"></span>
-            <span role="img" ng-if="!$ctrl._viewModel.node.visible" class="fa fa-eye-slash" aria-hidden="true"></span>
+        <span class="cursor-pointer no-outline" ng-click="$ctrl.onEyeClick()">
+            <span role="img" ng-if="$ctrl.node.visible" class="fa fa-eye" aria-hidden="true"></span>
+            <span role="img" ng-if="!$ctrl.node.visible" class="fa fa-eye-slash" aria-hidden="true"></span>
         </span>
 
-        <span class="cursor-pointer {{$ctrl.isSearched($ctrl._viewModel.node)?'angular-green':''}}" ng-click="$ctrl.onLabelClick()">
-            {{::$ctrl._viewModel.node.name}}
+        <span class="cursor-pointer no-outline {{$ctrl.isSearched($ctrl.node)?'angular-green':''}}" ng-click="$ctrl.onLabelClick()">
+            {{::$ctrl.node.name}}
         </span>
     </div>
 
-    <div class="tree-element-children tree-element-children-{{::$ctrl._viewModel.depth?$ctrl._viewModel.depth:0}}">
+    <div class="tree-element-children tree-element-children-{{::$ctr.depth?$ctrl.depth:0}}">
 
         <div ng-if="!$ctrl._viewModel.collapsed"
-             ng-repeat="node in $ctrl._viewModel.node.children | orderBy: [$ctrl.sortByFolder,'name'] ">
+             ng-repeat="node in $ctrl.node.children | orderBy: [$ctrl.sortByFolder,'name'] ">
             <map-tree-view-level-component node="::node" depth="::$ctrl.depth+1"></map-tree-view-level-component>
         </div>
 

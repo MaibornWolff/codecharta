@@ -14,15 +14,14 @@ export interface MapTreeViewHoverEventSubscriber {
 
 export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubscriber{
 
+    private node: CodeMapNode = null
+    private depth: number = 0
+
     private _viewModel: {
         isHoveredInCodeMap: boolean,
-        node: CodeMapNode,
-        depth: number,
         collapsed: boolean
     } = {
         isHoveredInCodeMap: false,
-        node: null,
-        depth: 0,
         collapsed: true
     }
 
@@ -37,38 +36,40 @@ export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubsc
     }
 
     public getMarkingColor() {
-        let defaultColor = "#000";
+        let defaultColor = "#000000";
 
         if(!this._viewModel.node || this._viewModel.node.type == "File") {
             return defaultColor;
         }
-        const markingColor = CodeMapUtilService.getMarkingColor(this._viewModel.node, this.settingsService.getSettings().fileSettings.markedPackages);
+        const markingColor = CodeMapUtilService.getMarkingColor(this.node, this.settingsService.getSettings().fileSettings.markedPackages);
         return markingColor ? markingColor : defaultColor;
     }
 
     public onBuildingHovered(data: CodeMapBuildingTransition, event: IAngularEvent) {
-        if(data.to && data.to.node && this._viewModel.node && this._viewModel.node.path && data.to.node.path === this._viewModel.node.path) {
+        if(data.to && data.to.node && this.node && this.node.path && data.to.node.path === this.node.path) {
             this._viewModel.isHoveredInCodeMap = true;
         } else {
             this._viewModel.isHoveredInCodeMap = false;
         }
     }
+
     public onBuildingSelected(data: CodeMapBuildingTransition, event: IAngularEvent) {
     }
+
     public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent) {
     }
 
     public onMouseEnter() {
-        this.$rootScope.$broadcast("should-hover-node", this._viewModel.node);
+        this.$rootScope.$broadcast("should-hover-node", this.node);
     }
 
     public onMouseLeave() {
-        this.$rootScope.$broadcast("should-unhover-node", this._viewModel.node);
+        this.$rootScope.$broadcast("should-unhover-node", this.node);
     }
 
     public onRightClick($event) {
         NodeContextMenuController.broadcastHideEvent(this.$rootScope);
-        NodeContextMenuController.broadcastShowEvent(this.$rootScope, this._viewModel.node.path, this._viewModel.node.type, $event.clientX, $event.clientY);
+        NodeContextMenuController.broadcastShowEvent(this.$rootScope, this.node.path, this.node.type, $event.clientX, $event.clientY);
     }
 
     public onFolderClick() {
@@ -76,14 +77,14 @@ export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubsc
     }
 
     public onLabelClick() {
-        this.codeMapActionsService.focusNode(this._viewModel.node);
+        this.codeMapActionsService.focusNode(this.node);
     }
 
     public onEyeClick() {
-        this.codeMapActionsService.toggleNodeVisibility(this._viewModel.node);
+        this.codeMapActionsService.toggleNodeVisibility(this.node);
     }
 
-    public isLeaf(node: CodeMapNode = this._viewModel.node): boolean {
+    public isLeaf(node: CodeMapNode = this.node): boolean {
         return !(node && node.children && node.children.length > 0);
     }
 

@@ -19,7 +19,6 @@ import {FileStateHelper} from "../../util/fileStateHelper";
 import {DeltaGenerator} from "../../util/deltaGenerator";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 import {ThreeCameraService} from "./threeViewer/threeCameraService";
-import {Vector3} from "three";
 
 export interface RenderData {
 	renderFile: CCFile
