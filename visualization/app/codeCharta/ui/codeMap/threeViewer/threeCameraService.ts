@@ -21,7 +21,7 @@ class ThreeCameraService implements SettingsServiceSubscriber {
 	public onSettingsChanged(settings: Settings, event: IAngularEvent) {
 		if (settings.appSettings.camera.toString() != this.lastCameraVector.toString()) {
 			this.lastCameraVector = settings.appSettings.camera
-		 	this.setPosition(settings.appSettings.camera.x, settings.appSettings.camera.y, settings.appSettings.camera.z)
+			this.setPosition(this.lastCameraVector.x, this.lastCameraVector.y, this.lastCameraVector.z)
 		}
 	}
 

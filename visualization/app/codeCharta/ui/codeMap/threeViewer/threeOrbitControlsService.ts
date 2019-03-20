@@ -1,7 +1,7 @@
 "use strict";
 import {ThreeCameraService} from "./threeCameraService";
 import {IRootScopeService, IAngularEvent} from "angular";
-import {OrbitControls, PerspectiveCamera} from "three";
+import {OrbitControls, PerspectiveCamera, Vector3} from "three";
 import * as THREE from "three";
 import { ThreeSceneService } from "./threeSceneService";
 
@@ -85,7 +85,7 @@ class ThreeOrbitControlsService {
         this.threeCameraService.camera.position.set(len, len, len);
         this.controls.update();
 
-        let t = boundingSphere.center.clone();
+        let t: Vector3 = boundingSphere.center.clone();
         t.setY(0);
         this.threeCameraService.camera.lookAt(t);
         this.controls.target.set(t.x, t.y, t.z);

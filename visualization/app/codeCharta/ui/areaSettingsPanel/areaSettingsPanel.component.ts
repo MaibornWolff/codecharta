@@ -1,15 +1,17 @@
 import "./areaSettingsPanel.component.scss";
 import {IRootScopeService, ITimeoutService} from "angular";
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
-import {CCFile, CodeMapNode, Settings} from "../../codeCharta.model";
+import {CCFile, CodeMapNode, FileState, Settings} from "../../codeCharta.model";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 import {CodeMapRenderService, CodeMapRenderServiceSubscriber} from "../codeMap/codeMap.render.service";
 import {ThreeOrbitControlsService} from "../codeMap/threeViewer/threeOrbitControlsService";
+import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
 
-export class AreaSettingsPanelController implements SettingsServiceSubscriber, CodeMapRenderServiceSubscriber {
+export class AreaSettingsPanelController implements SettingsServiceSubscriber, CodeMapRenderServiceSubscriber, FileStateServiceSubscriber {
 
     private static MAX_MARGIN = 100
     private static MARGIN_FACTOR = 4
+    private makeAutoFit: boolean = false
 
     private _viewModel: {
         margin: number,
@@ -29,6 +31,8 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
     ) {
         SettingsService.subscribe(this.$rootScope, this)
         CodeMapRenderService.subscribe(this.$rootScope, this)
+        FileStateService.subscribe(this.$rootScope, this)
+
     }
 
     public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
@@ -37,14 +41,23 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
     }
 
     public onRenderFileChanged(renderFile: CCFile, event: angular.IAngularEvent) {
-        if (this._viewModel.dynamicMargin) {
+        if (this._viewModel.dynamicMargin && this.makeAutoFit) {
             const newMargin = this.computeMargin()
             if (newMargin != this._viewModel.margin) {
                 this._viewModel.margin = newMargin
                 this.applySettings()
                 this.autoFit()
+                this.makeAutoFit = false
             }
         }
+    }
+
+    public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+        this.makeAutoFit = true
+    }
+
+    public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+
     }
 
     public onChangeMarginSlider(){

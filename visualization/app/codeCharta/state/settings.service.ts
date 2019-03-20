@@ -145,15 +145,7 @@ export class SettingsService {
 		})
 	}
 
-	/* TODO this needs to be called at other places, this cannot be here
-	private potentiallyUpdateColorRange(update: RecursivePartial<Settings>): RecursivePartial<Settings> {
-		if (update.dynamicSettings.colorMetric) {
-			update.appSettings.neutralColorRange = this.getAdaptedRange(update.dynamicSettings.colorMetric)
-		}
-		return update
-	}*/
-
-	/* TODO someone else does this, updateSettingsMethod should offer silent flag (no event triggered)
+	/* TODO move onCameraChanged(), updateSettings() should offer silent flag (no event triggered)
     public onCameraChanged(camera: PerspectiveCamera) {
         if (
             this.settings.camera.x !== camera.position.x ||
@@ -169,7 +161,7 @@ export class SettingsService {
         }
     }*/
 
-	/* TODO move
+	/* TODO move updateSettingsFromUrl() to urlUtils
     public updateSettingsFromUrl() {
 
         let iterateProperties = (obj, prefix) => {
