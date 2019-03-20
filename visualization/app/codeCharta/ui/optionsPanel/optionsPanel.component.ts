@@ -6,14 +6,22 @@ import _ from "lodash"
 
 export class OptionsPanelController implements SettingsServiceSubscriber {
 	private _viewModel: {
-		enableEdgeArrows: boolean
-		hideFlatBuildings: boolean
-		maximizeDetailPanel: boolean
+		enableEdgeArrows: boolean,
+		hideFlatBuildings: boolean,
+		maximizeDetailPanel: boolean,
 		isWhiteBackground: boolean
+	} = {
+		enableEdgeArrows: null,
+		hideFlatBuildings: null,
+		maximizeDetailPanel: null,
+		isWhiteBackground: null
 	}
 
-	constructor($rootScope: IRootScopeService, private settingsService: SettingsService) {
-		SettingsService.subscribe($rootScope, this)
+	constructor(
+		private $rootScope: IRootScopeService,
+		private settingsService: SettingsService
+	) {
+		SettingsService.subscribe(this.$rootScope, this)
 	}
 
 	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
@@ -22,7 +30,7 @@ export class OptionsPanelController implements SettingsServiceSubscriber {
 		_.assign(this._viewModel, viewModelUpdate)
 	}
 
-	public updateSettings(update: RecursivePartial<AppSettings> = this._viewModel) {
+	public applySettings(update: RecursivePartial<AppSettings> = this._viewModel) {
 		this.settingsService.updateSettings({
 			appSettings: update
 		})
