@@ -7,7 +7,7 @@ import {CodeMapUtilService} from "./codeMap.util.service"
 import {CodeMapLabelService} from "./codeMap.label.service"
 import {ThreeSceneService} from "./threeViewer/threeSceneService"
 import {CodeMapArrowService} from "./codeMap.arrow.service"
-import {CCFile, CodeMapNode, Edge, FileSelectionState, FileState, MetricData, Settings,} from "../../codeCharta.model"
+import {CCFile, CodeMapNode, Edge, FileSelectionState, FileState, MetricData, Settings } from "../../codeCharta.model"
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import {IAngularEvent, IRootScopeService} from "angular";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
@@ -19,6 +19,7 @@ import {FileStateHelper} from "../../util/fileStateHelper";
 import {DeltaGenerator} from "../../util/deltaGenerator";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 import {ThreeCameraService} from "./threeViewer/threeCameraService";
+import {Vector3} from "three";
 
 export interface RenderData {
 	renderFile: CCFile
@@ -35,13 +36,9 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	public static SELECTOR = "codeMapRenderService"
 	private static RENDER_FILE_CHANGED_EVENT = "render-file-changed";
 
-	public currentSortedNodes: Node[]
-
 	private _mapMesh: CodeMapMesh = null
-	private visibleEdges: Edge[]
-	private autoFitToMap: boolean = false
+	private autoFitMap: boolean = false
 
-	// TODO: getter method to getLastRenderMap()
 	private lastRender: RenderData = {
 		renderFile: null,
 		fileStates: null,
@@ -85,7 +82,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		console.log("lastFileStates", fileStates);
 		this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(fileStates)
 		this.lastRender.fileStates = fileStates
-		this.autoFitToMap = true
+		this.autoFitMap = true
 		this.renderIfRenderObjectIsComplete()
 	}
 
@@ -126,9 +123,9 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		console.log("render", this.lastRender);
 		if (_.values(this.lastRender).every(x => (x !== null)) && this.lastRender.settings.dynamicSettings.neutralColorRange) {
 			this.render(this.lastRender)
-			if (this.autoFitToMap) {
+			if (this.autoFitMap) {
 				this.threeOrbitControlsService.autoFitTo();
-				this.autoFitToMap = false
+				this.autoFitMap = false
 			}
 			this.notifySubscriber()
 		}
@@ -139,24 +136,21 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		console.log("lastRender decorate", this.lastRender);
 		this.updateMapGeometry(renderData.renderFile, renderData.fileStates, renderData.settings, renderData.metricData)
 		const scale = renderData.settings.appSettings.scaling
-		this.scaleMap(scale.x, scale.y, scale.z, renderData.settings.treeMapSettings.mapSize
-		)
+		this.scaleMap(scale.x, scale.y, scale.z, renderData.settings.treeMapSettings.mapSize)
 	}
 
 	private updateMapGeometry(renderFile: CCFile, fileStates: FileState[], s: Settings, metricData: MetricData[]) {
-		this.visibleEdges = this.getVisibleEdges(renderFile.map, s)
-
 		this.showAllOrOnlyFocusedNode(renderFile.map, s)
 
 		const treeMapNode: Node = this.treeMapService.createTreemapNodes(renderFile, s, metricData)
 		const nodes: Node[] = this.collectNodesToArray(treeMapNode)
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
-		this.currentSortedNodes = filteredNodes.sort((a, b) => b.height - a.height)
+		const sortedNodes: Node[] = filteredNodes.sort((a, b) => b.height - a.height)
 
-		this.setLabels(s)
-		this.setArrows(s)
+		this.setLabels(sortedNodes, s)
+		this.setArrows(sortedNodes, s)
 
-		this._mapMesh = new CodeMapMesh(this.currentSortedNodes, s, FileStateHelper.isDeltaState(fileStates))
+		this._mapMesh = new CodeMapMesh(sortedNodes, s, FileStateHelper.isDeltaState(fileStates))
 		this.threeSceneService.setMapMesh(this._mapMesh, s.treeMapSettings.mapSize)
 	}
 
@@ -172,41 +166,31 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	private scaleMap(x: number, y: number, z: number, mapSize: number) {
-		this.threeSceneService.mapGeometry.scale.x = x
-		this.threeSceneService.mapGeometry.scale.y = y
-		this.threeSceneService.mapGeometry.scale.z = z
-
-		this.threeSceneService.mapGeometry.position.x = (- mapSize / 2.0) * x
-		this.threeSceneService.mapGeometry.position.y = 0.0
-		this.threeSceneService.mapGeometry.position.z = (- mapSize / 2.0) * z
+		this.threeSceneService.mapGeometry.scale.set(x, y, z)
+		this.threeSceneService.mapGeometry.position.set((- mapSize / 2.0) * x, 0.0, (- mapSize / 2.0) * z)
 
 		if (this.threeSceneService.getMapMesh()) {
 			this.threeSceneService.getMapMesh().setScale(x, y, z)
 		}
-
-		if (this.codeMapLabelService) {
-			this.codeMapLabelService.scale(x, y, z)
-		}
-
-		if (this.codeMapArrowService) {
-			this.codeMapArrowService.scale(x, y, z)
-		}
+		this.codeMapLabelService.scale(x, y, z)
+		this.codeMapArrowService.scale(x, y, z)
 	}
 
-	private setLabels(s: Settings) {
+	private setLabels(sortedNodes: Node[], s: Settings) {
 		this.codeMapLabelService.clearLabels()
-		for (let i = 0, numAdded = 0; i < this.currentSortedNodes.length && numAdded < s.appSettings.amountOfTopLabels; ++i) {
-			if (this.currentSortedNodes[i].isLeaf) {
-				this.codeMapLabelService.addLabel(this.currentSortedNodes[i], s)
+		for (let i = 0, numAdded = 0; i < sortedNodes.length && numAdded < s.appSettings.amountOfTopLabels; ++i) {
+			if (sortedNodes[i].isLeaf) {
+				this.codeMapLabelService.addLabel(sortedNodes[i], s)
 				++numAdded
 			}
 		}
 	}
 
-	private setArrows(s: Settings) {
+	private setArrows(sortedNodes: Node[], s: Settings) {
 		this.codeMapArrowService.clearArrows()
-		if (this.visibleEdges.length > 0 && s.appSettings.enableEdgeArrows) {
-			this.showCouplingArrows(this.visibleEdges, s)
+		const visibleEdges = s.fileSettings.edges.filter(x => x.visible)
+		if (visibleEdges.length > 0 && s.appSettings.enableEdgeArrows) {
+			this.showCouplingArrows(sortedNodes, visibleEdges, s)
 		}
 	}
 
@@ -220,15 +204,11 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		}
 	}
 
-	private getVisibleEdges(map: CodeMapNode, s: Settings) {
-		return map && s.fileSettings.edges ? s.fileSettings.edges.filter(edge => edge.visible === true) : []
-	}
-
-	private showCouplingArrows(edges: Edge[], s: Settings) {
+	private showCouplingArrows(sortedNodes: Node[], edges: Edge[], s: Settings) {
 		this.codeMapArrowService.clearArrows()
 
 		if (edges && s) {
-			this.codeMapArrowService.addEdgeArrows(this.currentSortedNodes, edges, s)
+			this.codeMapArrowService.addEdgeArrows(sortedNodes, edges, s)
 			this.codeMapArrowService.scale(
 				this.threeSceneService.mapGeometry.scale.x,
 				this.threeSceneService.mapGeometry.scale.y,

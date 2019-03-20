@@ -1,9 +1,10 @@
 import "./areaSettingsPanel.component.scss";
-import {IRootScopeService} from "angular";
+import {IRootScopeService, ITimeoutService} from "angular";
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import {CCFile, CodeMapNode, Settings} from "../../codeCharta.model";
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 import {CodeMapRenderService, CodeMapRenderServiceSubscriber} from "../codeMap/codeMap.render.service";
+import {ThreeOrbitControlsService} from "../codeMap/threeViewer/threeOrbitControlsService";
 
 export class AreaSettingsPanelController implements SettingsServiceSubscriber, CodeMapRenderServiceSubscriber {
 
@@ -21,8 +22,10 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
     /* @ngInject */
     constructor(
         private $rootScope: IRootScopeService,
+        private $timeout: ITimeoutService,
         private settingsService: SettingsService,
-        private codeMapRenderService: CodeMapRenderService
+        private codeMapRenderService: CodeMapRenderService,
+        private threeOrbitControlsService: ThreeOrbitControlsService
     ) {
         SettingsService.subscribe(this.$rootScope, this)
         CodeMapRenderService.subscribe(this.$rootScope, this)
@@ -39,13 +42,13 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
             if (newMargin != this._viewModel.margin) {
                 this._viewModel.margin = newMargin
                 this.applySettings()
+                this.autoFit()
             }
         }
     }
 
     public onChangeMarginSlider(){
         this._viewModel.dynamicMargin = false
-        this.potentiallyUpdateMargin()
         this.applySettings()
     }
 
@@ -87,6 +90,12 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
 
         let margin: number = AreaSettingsPanelController.MARGIN_FACTOR * Math.round(Math.sqrt((totalArea / numberOfBuildings)))
         return Math.min(AreaSettingsPanelController.MAX_MARGIN, Math.max(SettingsService.MIN_MARGIN, margin))
+    }
+
+    private autoFit() {
+        this.$timeout(() => {
+            this.threeOrbitControlsService.autoFitTo()
+        }, 500)
     }
 
 }
