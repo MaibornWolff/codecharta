@@ -1,12 +1,8 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.exporters.CSVExporter
-import de.maibornwolff.codecharta.importer.sourcecodeparser.exporters.Exporter
-import de.maibornwolff.codecharta.importer.sourcecodeparser.exporters.JSONExporter
-import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.infrastructure.antlr.java.AntlrJavaCodeTagProvider
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application.*
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.infrastructure.FileSystemDetailedSourceProvider
-import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.infrastructure.FileSystemOverviewSourceProvider
+import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.CSVMetricWriter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.MetricWriter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.JSONMetricWriter
 import picocli.CommandLine.*
 import java.io.*
 import java.nio.file.Paths
@@ -41,7 +37,6 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
             outputStream.println("Could not find " + files[0])
             return null
         }
-        //val sourceCodeParserEntryPoint = getSourceCodeParserEntryPoint()
         val projectParser = ProjectParser()
 
         // TODO: Support multiple in file/folders
@@ -53,11 +48,10 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
         return null
     }
 
-    // TODO: i think it does not switch...
-    private fun getPrinter(): Exporter {
+    private fun getPrinter(): MetricWriter {
         return when (outputFormat) {
-            OutputFormat.JSON -> JSONExporter(projectName, getWriter())
-            OutputFormat.TABLE -> CSVExporter(getWriter())
+            OutputFormat.JSON -> JSONMetricWriter(projectName, getWriter())
+            OutputFormat.TABLE -> CSVMetricWriter(getWriter())
         }
     }
 
