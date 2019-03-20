@@ -3,7 +3,7 @@ import { CodeMapNode, Edge, BlacklistItem, BlacklistType } from "../../core/data
 import { MarkedPackage, SettingsService } from "../../core/settings/settings.service"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { DataService } from "../../core/data/data.service"
-import { DataDecoratorService } from "../../core/data/data.decorator.service"
+import { DataDecorator } from "../../core/data/data.decorator"
 
 jest.mock("../../core/settings/settings.service")
 
@@ -137,13 +137,7 @@ describe("CodeMapActionService", () => {
 			}
 		})()
 
-		codeMapActionService = new CodeMapActionsService(
-			settingsService,
-			new ThreeOrbitControlsService(),
-			$timeout,
-			new DataService(),
-			new DataDecoratorService()
-		)
+		codeMapActionService = new CodeMapActionsService(settingsService, new ThreeOrbitControlsService(), $timeout, new DataService())
 
 		nodeA = simpleHiddenHierarchy.children[0]
 		nodeB = simpleHiddenHierarchy.children[1]

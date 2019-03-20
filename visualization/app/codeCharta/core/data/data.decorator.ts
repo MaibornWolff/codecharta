@@ -7,8 +7,10 @@ import { HierarchyNode } from "d3-hierarchy"
 /**
  * Decorates the data structure with artificial metrics
  */
-export class DataDecoratorService {
-	public decorateMapWithCompactMiddlePackages(map: CodeMap) {
+export class DataDecorator {
+	public static blackList: Array<BlacklistItem>
+
+	public static decorateMapWithCompactMiddlePackages(map: CodeMap) {
 		const isEmptyMiddlePackage = current => {
 			return (
 				current &&
@@ -47,7 +49,7 @@ export class DataDecoratorService {
 	 * Decorates the map with the unary metric. This metric is always 1 to allow the same area on all buildings.
 	 * @param {CodeMap} map
 	 */
-	public decorateMapWithUnaryMetric(map: CodeMap) {
+	public static decorateMapWithUnaryMetric(map: CodeMap) {
 		if (map && map.nodes) {
 			let root = d3.hierarchy<CodeMapNode>(map.nodes)
 			let descendants: HierarchyNode<CodeMapNode>[] = root.descendants()
@@ -61,7 +63,7 @@ export class DataDecoratorService {
 		}
 	}
 
-	public decorateMapWithVisibleAttribute(map: CodeMap) {
+	public static decorateMapWithVisibleAttribute(map: CodeMap) {
 		if (map && map.nodes) {
 			let root = d3.hierarchy<CodeMapNode>(map.nodes)
 			root.each(node => {
@@ -70,7 +72,7 @@ export class DataDecoratorService {
 		}
 	}
 
-	public decorateMapWithOriginAttribute(map: CodeMap) {
+	public static decorateMapWithOriginAttribute(map: CodeMap) {
 		if (map && map.nodes) {
 			let root = d3.hierarchy<CodeMapNode>(map.nodes)
 			root.each(node => {
@@ -79,7 +81,7 @@ export class DataDecoratorService {
 		}
 	}
 
-	public decorateMapWithPathAttribute(map: CodeMap) {
+	public static decorateMapWithPathAttribute(map: CodeMap) {
 		if (map && map.nodes) {
 			let root = d3.hierarchy<CodeMapNode>(map.nodes)
 			root.each(node => {
@@ -93,7 +95,7 @@ export class DataDecoratorService {
 		}
 	}
 
-	public decorateLeavesWithMissingMetrics(maps: CodeMap[], metrics: string[]) {
+	public static decorateLeavesWithMissingMetrics(maps: CodeMap[], metrics: string[]) {
 		maps.forEach(map => {
 			if (map && map.nodes) {
 				let root = d3.hierarchy<CodeMapNode>(map.nodes)
@@ -116,21 +118,18 @@ export class DataDecoratorService {
 	/**
 	 * @requires decorateMapWithPathAttribute to be called earlier
 	 */
-	public decorateParentNodesWithSumAttributesOfChildren(maps: CodeMap[], metrics: string[], blacklist: Array<BlacklistItem>) {
-		console.log("DECORATE WITH: ", blacklist)
-		console.log("map: ", maps[0])
-		console.log("metrics: ", metrics)
+	public static decorateParentNodesWithSumAttributesOfChildren(maps: CodeMap[], metrics: string[]) {
 		maps.forEach(map => {
 			if (map && map.nodes) {
 				let root = d3.hierarchy<CodeMapNode>(map.nodes)
 				root.each(node => {
-					this.decorateNodeWithChildrenSumMetrics(node, metrics, blacklist)
+					this.decorateNodeWithChildrenSumMetrics(node, metrics)
 				})
 			}
 		})
 	}
 
-	public decorateNodeWithChildrenSumMetrics(node: any, metrics: string[], blacklist: Array<BlacklistItem>) {
+	public static decorateNodeWithChildrenSumMetrics(node: any, metrics: string[]) {
 		//make sure attributes exist
 		this.createAttributesIfNecessary(node)
 
@@ -138,12 +137,12 @@ export class DataDecoratorService {
 		for (let i = 0; i < metrics.length; i++) {
 			let metric = metrics[i]
 			if (!node.data.attributes.hasOwnProperty(metric) && node.data.children && node.data.children.length > 0) {
-				this.defineAttributeAsSumMethod(node, metric, blacklist)
+				this.defineAttributeAsSumMethod(node, metric)
 			}
 		}
 	}
 
-	private isBlacklisted(node: any, blacklist: Array<BlacklistItem>) {
+	private static isBlacklisted(node: any, blacklist: Array<BlacklistItem>) {
 		let filtered: Array<BlacklistItem>
 		if (!blacklist) {
 			return false
@@ -157,15 +156,14 @@ export class DataDecoratorService {
 		return filtered.length === 1
 	}
 
-	private defineAttributeAsSumMethod(node: any, metric: string, blacklist: Array<BlacklistItem>) {
-		console.log("is this called")
+	private static defineAttributeAsSumMethod(node: any, metric: string) {
 		Object.defineProperty(node.data.attributes, metric, {
 			enumerable: true,
 			get: () => {
 				let sum = 0
 				let l = node.leaves()
 				for (let count = 0; count < l.length; count++) {
-					if (!this.isBlacklisted(l[count], blacklist)) {
+					if (!this.isBlacklisted(l[count], this.blackList)) {
 						sum += l[count].data.attributes[metric]
 					}
 				}
@@ -175,7 +173,7 @@ export class DataDecoratorService {
 		})
 	}
 
-	private createAttributesIfNecessary(node) {
+	private static createAttributesIfNecessary(node) {
 		if (!node.data.attributes) {
 			node.data.attributes = {}
 		}

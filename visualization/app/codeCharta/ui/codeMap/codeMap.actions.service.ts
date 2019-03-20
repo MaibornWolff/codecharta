@@ -3,7 +3,6 @@ import { MarkedPackage, Settings, SettingsService } from "../../core/settings/se
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import angular from "angular"
 import { DataService } from "../../core/data/data.service"
-import { DataDecoratorService } from "../../core/data/data.decorator.service"
 
 export class CodeMapActionsService {
 	public static SELECTOR = "codeMapActionsService"
@@ -12,8 +11,7 @@ export class CodeMapActionsService {
 		private settingsService: SettingsService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private $timeout,
-		private dataService: DataService,
-		private dataDecoratorService: DataDecoratorService
+		private dataService: DataService
 	) {}
 
 	public toggleNodeVisibility(node: CodeMapNode) {

@@ -3,6 +3,7 @@ import { CameraChangeSubscriber, ThreeOrbitControlsService } from "../../ui/code
 import { PerspectiveCamera } from "three"
 import { CodeMap, CodeMapNode, BlacklistItem } from "../data/model/CodeMap"
 import { hierarchy, HierarchyNode } from "d3-hierarchy"
+import { DataDecorator } from "../data/data.decorator"
 
 export interface Range {
 	from: number
@@ -207,7 +208,6 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 	 * @emits {settings-changed} on call
 	 */
 	private onSettingsChanged() {
-		console.log("settings: ", this._settings)
 		if (this._lastDeltaState && this._settings.mode != KindOfMap.Delta) {
 			this._lastDeltaState = false
 			this.onDeactivateDeltas()
@@ -215,6 +215,8 @@ export class SettingsService implements DataServiceSubscriber, CameraChangeSubsc
 			this._lastDeltaState = true
 			this.onActivateDeltas()
 		}
+
+		DataDecorator.blackList = this._settings.blacklist
 
 		this.$rootScope.$broadcast("settings-changed", this._settings)
 	}

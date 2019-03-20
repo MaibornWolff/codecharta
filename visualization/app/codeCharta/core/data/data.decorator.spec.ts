@@ -1,8 +1,8 @@
 import "./data.module"
 
-import { CodeMap, CodeMapNode } from "./model/CodeMap"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_MAP_WITH_BLACKLIST, TEST_MAP_WITH_BLACKLIST_2 } from "./data.mocks"
-import { DataDecoratorService } from "./data.decorator.service"
+import { CodeMap } from "./model/CodeMap"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_MAP_WITH_BLACKLIST } from "./data.mocks"
+import { DataDecorator } from "./data.decorator"
 import * as d3 from "d3"
 
 /**
@@ -12,18 +12,16 @@ describe("app.codeCharta.core.data.dataService", () => {
 	let a: CodeMap
 	let b: CodeMap
 	let mapWithNoBlacklist: CodeMap
-	let dataDecoratorService: DataDecoratorService
 
 	beforeEach(function() {
 		a = JSON.parse(JSON.stringify(TEST_DELTA_MAP_A))
 		b = JSON.parse(JSON.stringify(TEST_DELTA_MAP_B))
 		mapWithNoBlacklist = JSON.parse(JSON.stringify(TEST_MAP_WITH_BLACKLIST))
-		dataDecoratorService = new DataDecoratorService()
 	})
 
 	describe("decorateLeavesWithMissingMetrics", () => {
 		it("leaves should have all metrics", () => {
-			dataDecoratorService.decorateLeavesWithMissingMetrics([a, b], ["some", "metrics", "rloc", "functions", "mcc"])
+			DataDecorator.decorateLeavesWithMissingMetrics([a, b], ["some", "metrics", "rloc", "functions", "mcc"])
 			let h = d3.hierarchy(a.nodes)
 			h.leaves().forEach(node => {
 				expect(node.data.attributes).toBeDefined()
@@ -37,7 +35,7 @@ describe("app.codeCharta.core.data.dataService", () => {
 
 		it("leaves should have all metrics even if some attributesLists are undefined", () => {
 			a.nodes.children[0].attributes = undefined
-			dataDecoratorService.decorateLeavesWithMissingMetrics([a, b], ["some", "metrics", "rloc", "functions", "mcc"])
+			DataDecorator.decorateLeavesWithMissingMetrics([a, b], ["some", "metrics", "rloc", "functions", "mcc"])
 			let h = d3.hierarchy(a.nodes)
 			h.leaves().forEach(node => {
 				expect(node.data.attributes).toBeDefined()
@@ -71,7 +69,7 @@ describe("app.codeCharta.core.data.dataService", () => {
 					]
 				}
 			]
-			dataDecoratorService.decorateMapWithCompactMiddlePackages(a)
+			DataDecorator.decorateMapWithCompactMiddlePackages(a)
 			expect(a.nodes.name).toBe("root/middle")
 			expect(a.nodes.children.length).toBe(2)
 			expect(a.nodes.children[0].name).toBe("a")
@@ -100,7 +98,7 @@ describe("app.codeCharta.core.data.dataService", () => {
 					]
 				}
 			]
-			dataDecoratorService.decorateMapWithCompactMiddlePackages(a)
+			DataDecorator.decorateMapWithCompactMiddlePackages(a)
 			expect(a.nodes.link).toBe("link1")
 		})
 
@@ -128,7 +126,7 @@ describe("app.codeCharta.core.data.dataService", () => {
 					]
 				}
 			]
-			dataDecoratorService.decorateMapWithCompactMiddlePackages(a)
+			DataDecorator.decorateMapWithCompactMiddlePackages(a)
 			expect(a.nodes.path).toBe("/root/middle")
 		})
 
@@ -147,7 +145,7 @@ describe("app.codeCharta.core.data.dataService", () => {
 					]
 				}
 			]
-			dataDecoratorService.decorateMapWithCompactMiddlePackages(a)
+			DataDecorator.decorateMapWithCompactMiddlePackages(a)
 			expect(a.nodes.name).toBe("root/middle")
 			expect(a.nodes.children.length).toBe(1)
 			expect(a.nodes.children[0].name).toBe("singleLeaf")
@@ -192,7 +190,7 @@ describe("app.codeCharta.core.data.dataService", () => {
 					]
 				}
 			]
-			dataDecoratorService.decorateMapWithCompactMiddlePackages(a)
+			DataDecorator.decorateMapWithCompactMiddlePackages(a)
 			expect(a.nodes.name).toBe("root/start")
 			expect(a.nodes.children.length).toBe(2)
 			expect(a.nodes.children[0].name).toBe("middle/middle2")
@@ -204,11 +202,11 @@ describe("app.codeCharta.core.data.dataService", () => {
 	})
 
 	describe("decorateParentNodesWithSumAttributesOfChildren", () => {
-		xit("all nodes should have an attribute list with all possible metrics", () => {
+		it("all nodes should have an attribute list with all possible metrics", () => {
 			a.nodes.children[0].attributes = undefined
 			a.nodes.children[1].attributes = { some: 1 }
-			dataDecoratorService.decorateLeavesWithMissingMetrics([a], ["some", "metrics", "rloc", "functions", "mcc"])
-			dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren([a], ["some", "metrics", "rloc", "functions", "mcc"])
+			DataDecorator.decorateLeavesWithMissingMetrics([a], ["some", "metrics", "rloc", "functions", "mcc"])
+			DataDecorator.decorateParentNodesWithSumAttributesOfChildren([a], ["some", "metrics", "rloc", "functions", "mcc"])
 			let h = d3.hierarchy(a.nodes)
 			h.each(node => {
 				expect(node.data.attributes).toBeDefined()
@@ -217,9 +215,9 @@ describe("app.codeCharta.core.data.dataService", () => {
 			})
 		})
 
-		xit("all nodes should have an attribute list with listed and available metrics", () => {
-			dataDecoratorService.decorateLeavesWithMissingMetrics([a], ["rloc", "functions"])
-			dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren([a], ["rloc", "functions"])
+		it("all nodes should have an attribute list with listed and available metrics", () => {
+			DataDecorator.decorateLeavesWithMissingMetrics([a], ["rloc", "functions"])
+			DataDecorator.decorateParentNodesWithSumAttributesOfChildren([a], ["rloc", "functions"])
 			let h = d3.hierarchy(a.nodes)
 			h.each(node => {
 				expect(node.data.attributes).toBeDefined()
@@ -228,23 +226,20 @@ describe("app.codeCharta.core.data.dataService", () => {
 			})
 		})
 
-		xit("folders should have sum attributes of children", () => {
-			dataDecoratorService.decorateLeavesWithMissingMetrics([a], ["rloc", "functions"])
-			dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren([a], ["rloc", "functions"])
+		it("folders should have sum attributes of children", () => {
+			DataDecorator.decorateLeavesWithMissingMetrics([a], ["rloc", "functions"])
+			DataDecorator.decorateParentNodesWithSumAttributesOfChildren([a], ["rloc", "functions"])
 			let h = d3.hierarchy(a.nodes)
 			expect(h.data.attributes["rloc"]).toBe(200)
 			expect(h.children[0].data.attributes["rloc"]).toBe(100)
 			expect(h.data.attributes["functions"]).toBe(1110)
 		})
 
-		xit("should ignore blacklisted files and folders for aggregation", () => {
-			dataDecoratorService.decorateMapWithPathAttribute(mapWithNoBlacklist)
-			dataDecoratorService.decorateLeavesWithMissingMetrics([mapWithNoBlacklist], ["rloc", "functions"])
-			dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren(
-				[mapWithNoBlacklist],
-				["rloc", "functions"],
-				mapWithNoBlacklist.blacklist
-			)
+		it("should ignore blacklisted files and folders for aggregation", () => {
+			DataDecorator.blackList = mapWithNoBlacklist.blacklist
+			DataDecorator.decorateMapWithPathAttribute(mapWithNoBlacklist)
+			DataDecorator.decorateLeavesWithMissingMetrics([mapWithNoBlacklist], ["rloc", "functions"])
+			DataDecorator.decorateParentNodesWithSumAttributesOfChildren([mapWithNoBlacklist], ["rloc", "functions"])
 
 			let h = d3.hierarchy(mapWithNoBlacklist.nodes)
 			expect(h.data.attributes["rloc"]).toBe(170)
@@ -253,29 +248,12 @@ describe("app.codeCharta.core.data.dataService", () => {
 			expect(h.children[0].data.attributes["rloc"]).toBe(100)
 			expect(h.data.attributes["functions"]).toBe(1010)
 		})
-
-		it("test", () => {
-			const mapWithNoBlacklist2 = TEST_MAP_WITH_BLACKLIST_2
-			/*dataDecoratorService.decorateMapWithPathAttribute(mapWithNoBlacklist2)
-			dataDecoratorService.decorateLeavesWithMissingMetrics(
-				[mapWithNoBlacklist2],
-				["avgCommits_absolute", "functions", "mcc", "pairingRate_relative", "rloc", "unary"]
-			)*/
-			dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren(
-				[mapWithNoBlacklist2],
-				["avgCommits_absolute", "functions", "mcc", "pairingRate_relative", "rloc", "unary"],
-				[]
-			)
-
-			let h = d3.hierarchy(mapWithNoBlacklist2.nodes)
-			expect(h.data.attributes["rloc"]).toBe(600)
-		})
 	})
 
 	describe("decorateMapWithOriginAttribute", () => {
 		it("all nodes should have an origin", () => {
 			a.nodes.children[0].origin = undefined
-			dataDecoratorService.decorateMapWithOriginAttribute(a)
+			DataDecorator.decorateMapWithOriginAttribute(a)
 			let h = d3.hierarchy(a.nodes)
 			h.each(node => {
 				expect(node.data.origin).toBeDefined()
@@ -295,7 +273,7 @@ describe("app.codeCharta.core.data.dataService", () => {
 				}
 			}
 
-			dataDecoratorService.decorateMapWithUnaryMetric(cm)
+			DataDecorator.decorateMapWithUnaryMetric(cm)
 
 			let h = d3.hierarchy(cm.nodes)
 
@@ -306,7 +284,7 @@ describe("app.codeCharta.core.data.dataService", () => {
 
 		it("all nodes should have a unary attribute", () => {
 			a.nodes.children[0].attributes = {}
-			dataDecoratorService.decorateMapWithUnaryMetric(a)
+			DataDecorator.decorateMapWithUnaryMetric(a)
 			let h = d3.hierarchy(a.nodes)
 			h.each(node => {
 				expect(node.data.attributes["unary"]).toBeDefined()
@@ -345,7 +323,7 @@ describe("app.codeCharta.core.data.dataService", () => {
 				}
 			}
 
-			dataDecoratorService.decorateMapWithPathAttribute(cm)
+			DataDecorator.decorateMapWithPathAttribute(cm)
 
 			let h = d3.hierarchy(cm.nodes)
 

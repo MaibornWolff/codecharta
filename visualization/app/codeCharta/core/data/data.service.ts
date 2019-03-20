@@ -4,7 +4,7 @@ import * as d3 from "d3"
 import { CodeMap, CodeMapNode } from "./model/CodeMap"
 import { IRootScopeService, IAngularEvent } from "angular"
 import { DeltaCalculatorService } from "./data.deltaCalculator.service"
-import { DataDecoratorService } from "./data.decorator.service"
+import { DataDecorator } from "./data.decorator"
 import { HierarchyNode } from "d3-hierarchy"
 
 export interface MetricData {
@@ -37,11 +37,7 @@ export class DataService {
 	private _deltasEnabled = false
 
 	/* @ngInject */
-	constructor(
-		private $rootScope: IRootScopeService,
-		private deltaCalculatorService: DeltaCalculatorService,
-		private dataDecoratorService: DataDecoratorService
-	) {
+	constructor(private $rootScope: IRootScopeService, private deltaCalculatorService: DeltaCalculatorService) {
 		this._data = {
 			revisions: [],
 			metrics: [],
@@ -52,17 +48,13 @@ export class DataService {
 
 	public setMap(map: CodeMap, revision: number) {
 		this._data.revisions[revision] = map
-		this.dataDecoratorService.decorateMapWithOriginAttribute(this._data.revisions[revision])
-		this.dataDecoratorService.decorateMapWithPathAttribute(this._data.revisions[revision])
-		this.dataDecoratorService.decorateMapWithVisibleAttribute(this._data.revisions[revision])
-		this.dataDecoratorService.decorateMapWithUnaryMetric(this._data.revisions[revision])
+		DataDecorator.decorateMapWithOriginAttribute(this._data.revisions[revision])
+		DataDecorator.decorateMapWithPathAttribute(this._data.revisions[revision])
+		DataDecorator.decorateMapWithVisibleAttribute(this._data.revisions[revision])
+		DataDecorator.decorateMapWithUnaryMetric(this._data.revisions[revision])
 		this.updateMetrics()
-		this.dataDecoratorService.decorateLeavesWithMissingMetrics(this._data.revisions, this._data.metrics)
-		this.dataDecoratorService.decorateParentNodesWithSumAttributesOfChildren(
-			this._data.revisions,
-			this._data.metrics,
-			this._data.revisions[revision].blacklist
-		)
+		DataDecorator.decorateLeavesWithMissingMetrics(this._data.revisions, this._data.metrics)
+		DataDecorator.decorateParentNodesWithSumAttributesOfChildren(this._data.revisions, this._data.metrics)
 		this.setReferenceMap(revision)
 	}
 
@@ -71,7 +63,7 @@ export class DataService {
 			this._lastReferenceIndex = index
 			this._data.renderMap = this._data.revisions[index]
 			this.processDeltas()
-			this.dataDecoratorService.decorateMapWithCompactMiddlePackages(this._data.renderMap)
+			DataDecorator.decorateMapWithCompactMiddlePackages(this._data.renderMap)
 			this.notify()
 		}
 	}
@@ -80,7 +72,7 @@ export class DataService {
 		if (this._data.revisions[index] != null) {
 			this._lastComparisonMap = this._data.revisions[index]
 			this.processDeltas()
-			this.dataDecoratorService.decorateMapWithCompactMiddlePackages(this._data.renderMap)
+			DataDecorator.decorateMapWithCompactMiddlePackages(this._data.renderMap)
 			this.notify()
 		}
 	}

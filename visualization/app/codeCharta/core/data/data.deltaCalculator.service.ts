@@ -1,10 +1,10 @@
 "use strict"
 
 import * as d3 from "d3"
-import { CodeMap, CodeMapNode, BlacklistItem } from "./model/CodeMap"
+import { CodeMap, CodeMapNode } from "./model/CodeMap"
 import { HierarchyNode } from "d3-hierarchy"
 import * as deepcopy from "deepcopy"
-import { DataDecoratorService } from "./data.decorator.service"
+import { DataDecorator } from "./data.decorator"
 
 export interface KVObject {
 	[key: string]: number
@@ -14,9 +14,6 @@ export interface KVObject {
  * Calculates the deltas between given maps and modifies the data structure
  */
 export class DeltaCalculatorService {
-	/* @ngInject */
-	constructor(private dataDecoratorService: DataDecoratorService) {}
-
 	public provideDeltas(leftMap: CodeMap, rightMap: CodeMap, metrics: string[]) {
 		//null checks
 		if (!leftMap || !rightMap || !leftMap.nodes || !rightMap.nodes) {
@@ -75,33 +72,12 @@ export class DeltaCalculatorService {
 				// insert node into secondHashMap and secondMap
 				let addedNode = this.deepcopy(node)
 				secondLeafHashMap.set(path, addedNode)
-				const mergedBlacklist = this.mergeBlacklist(firstMap, secondMap)
-				this.insertNodeIntoMapByPath(addedNode, secondMap, metrics, mergedBlacklist)
+				this.insertNodeIntoMapByPath(addedNode, secondMap, metrics)
 			}
 		})
 	}
 
-	private mergeBlacklist(codemap1: CodeMap, codemap2: CodeMap): Array<BlacklistItem> {
-		if (!codemap1.blacklist) {
-			codemap1.blacklist = []
-		}
-
-		if (!codemap2.blacklist) {
-			codemap2.blacklist = []
-		}
-
-		const mergedBlacklist = codemap1.blacklist
-
-		for (let i = 0; i < codemap2.blacklist.length; i++) {
-			if (!mergedBlacklist.includes(codemap2.blacklist[i])) {
-				mergedBlacklist.push(codemap2.blacklist[i])
-			}
-		}
-
-		return mergedBlacklist
-	}
-
-	private insertNodeIntoMapByPath(node: CodeMapNode, insertMap: CodeMap, metrics: string[], mergedBlacklist: Array<BlacklistItem>) {
+	private insertNodeIntoMapByPath(node: CodeMapNode, insertMap: CodeMap, metrics: string[]) {
 		let pathArray: string[] = node.path.split("/")
 
 		let insertPathArray: string[] = pathArray.slice(2, pathArray.length - 1)
@@ -140,8 +116,7 @@ export class DeltaCalculatorService {
 					attributes: {}
 				}
 
-				// GET BLACKLIST
-				this.dataDecoratorService.decorateNodeWithChildrenSumMetrics(d3.hierarchy(folder), metrics, mergedBlacklist)
+				DataDecorator.decorateNodeWithChildrenSumMetrics(d3.hierarchy(folder), metrics)
 				folder.attributes["unary"] = 1
 
 				current.children.push(folder)
