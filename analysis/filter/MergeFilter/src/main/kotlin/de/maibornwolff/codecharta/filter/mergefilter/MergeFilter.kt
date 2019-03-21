@@ -58,6 +58,9 @@ class MergeFilter : Callable<Void?> {
     @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
+    @CommandLine.Option(names = ["-p", "--project-name"], description = ["Specify project name for merged file"])
+    private var projectName: String? = null
+
     @CommandLine.Option(names = ["--ignore-case"], description = ["ignores case when checking node names"])
     private var ignoreCase = false
 
@@ -87,7 +90,7 @@ class MergeFilter : Callable<Void?> {
                     }
                 }
 
-        val mergedProject = ProjectMerger(srcProjects, nodeMergerStrategy).merge()
+        val mergedProject = ProjectMerger(srcProjects, nodeMergerStrategy, projectName).merge()
 
         val writer = outputFile?.bufferedWriter() ?: System.out.bufferedWriter()
         ProjectSerializer.serializeProject(mergedProject, writer)
