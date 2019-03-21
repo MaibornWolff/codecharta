@@ -134,7 +134,7 @@
 	"devDependencies": {
 		"@types/angular": "^1.6.43",
 		"@types/angular-mocks": "^1.5.11",
-		"@types/d3": "^4.13.0",
+		"@types/d3": "^5.7.1",
 		"@types/d3-hierarchy": "^1.1.0",
 		"@types/jest": "^21.1.10",
 		"@types/node": "^11.11.3",
@@ -188,7 +188,7 @@
 		"puppeteer": "^1.6.0",
 		"resolve-url-loader": "^2.3.0",
 		"rimraf": "^2.6.2",
-		"roboto-fontface": "^0.9.0",
+		"roboto-fontface": "^0.10.0",
 		"sass-loader": "^7.1.0",
 		"script-loader": "^0.7.0",
 		"sinon": "^4.4.10",
