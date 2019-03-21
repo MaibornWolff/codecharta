@@ -1,341 +1,302 @@
-import * as d3 from "d3";
-import {TEST_DELTA_MAP_A, TEST_DELTA_MAP_B} from "./dataMocks";
-import {CCFile} from "../codeCharta.model";
-import {NodeDecorator} from "./nodeDecorator";
+import * as d3 from "d3"
+import { TEST_DELTA_MAP_A } from "./dataMocks"
+import { CCFile, MetricData } from "../codeCharta.model"
+import { NodeDecorator } from "./nodeDecorator"
 
-describe("app.codeCharta.util.nodeDecorator", () => {
+describe("nodeDecorator", () => {
+	let fileA: CCFile
+	let metricData: MetricData[]
 
-    let fileA: CCFile;
-    let fileB: CCFile;
+	beforeEach(function() {
+		fileA = JSON.parse(JSON.stringify(TEST_DELTA_MAP_A))
+		metricData = [
+			{ name: "rloc", maxValue: 999999, availableInVisibleMaps: true },
+			{ name: "functions", maxValue: 999999, availableInVisibleMaps: true },
+			{ name: "mcc", maxValue: 999999, availableInVisibleMaps: true }
+		]
+	})
 
-    beforeEach(function() {
-        fileA = JSON.parse(JSON.stringify(TEST_DELTA_MAP_A));
-        fileB = JSON.parse(JSON.stringify(TEST_DELTA_MAP_B));
-    });
+	describe("decorateFile", () => {
+		it("should aggregate given metrics correctly", () => {
+			const result = NodeDecorator.decorateFile(fileA, metricData)
 
-    describe("decorateLeavesWithMissingMetrics", () => {
+			expect(result.map.attributes["rloc"]).toBe(200)
+			expect(result.map.attributes["functions"]).toBe(1110)
+			expect(result.map.attributes["mcc"]).toBe(111)
+		})
 
-        it("leaves should have all metrics", ()=>{
-            NodeDecorator.decorateLeavesWithMissingMetrics(fileA, ["some", "metrics", "rloc", "functions", "mcc"]);
-            let h = d3.hierarchy(fileA.map);
-            h.leaves().forEach((node)=>{
-                expect(node.data.attributes).toBeDefined();
-                expect(node.data.attributes.some).toBe(0);
-                expect(node.data.attributes.metrics).toBe(0);
-                expect(node.data.attributes.rloc).toBeDefined();
-                expect(node.data.attributes.functions).toBeDefined();
-                expect(node.data.attributes.mcc).toBeDefined();
-            });
-        });
+		it("should aggregate missing metrics correctly", () => {
+			metricData.push({ name: "some", maxValue: 999999, availableInVisibleMaps: true })
+			const result = NodeDecorator.decorateFile(fileA, metricData)
 
-        it("leaves should have all metrics even if some attributesLists are undefined", ()=>{
-            fileA.map.children[0].attributes = undefined;
-            NodeDecorator.decorateLeavesWithMissingMetrics(fileA,["some", "metrics", "rloc", "functions", "mcc"]);
-            let h = d3.hierarchy(fileA.map);
-            h.leaves().forEach((node)=>{
-                expect(node.data.attributes).toBeDefined();
-                expect(node.data.attributes.some).toBe(0);
-                expect(node.data.attributes.metrics).toBe(0);
-                expect(node.data.attributes.rloc).toBeDefined();
-                expect(node.data.attributes.functions).toBeDefined();
-                expect(node.data.attributes.mcc).toBeDefined();
-            });
-        });
+			expect(result.map.attributes["rloc"]).toBe(200)
+			expect(result.map.attributes["some"]).toBe(0)
+			expect(result.map.attributes["some other attribute"]).not.toBeDefined()
+		})
 
-    });
+		it("leaves should have all metrics", () => {
+			metricData.push({ name: "some", maxValue: 999999, availableInVisibleMaps: true })
+			const result = NodeDecorator.decorateFile(fileA, metricData)
 
-    describe("compact middle packages",() => {
+			let h = d3.hierarchy(result.map)
+			h.leaves().forEach(node => {
+				expect(node.data.attributes).toBeDefined()
+				expect(node.data.attributes.some).toBe(0)
+				expect(node.data.attributes.rloc).toBeDefined()
+				expect(node.data.attributes.functions).toBeDefined()
+				expect(node.data.attributes.mcc).toBeDefined()
+			})
+		})
 
-        it("should compact from root", ()=>{
-            fileA.map.children = [{
-                name: "middle",
-                type: "Folder",
-                attributes: {},
-                children: [
-                    {
-                        name: "a",
-                        type: "File",
-                        attributes: {}
-                    },
-                    {
-                        name: "b",
-                        type: "File",
-                        attributes: {}
+		it("leaves should have all metrics even if some attributesLists are undefined", () => {
+			fileA.map.children[0].attributes = undefined
+			metricData.push({ name: "some", maxValue: 999999, availableInVisibleMaps: true })
 
-                    }
-                ]
-            }];
-            NodeDecorator.decorateMapWithCompactMiddlePackages(fileA);
-            expect(fileA.map.name).toBe("root/middle");
-            expect(fileA.map.children.length).toBe(2);
-            expect(fileA.map.children[0].name).toBe("a");
-            expect(fileA.map.children[1].name).toBe("b");
-        });
+			const result = NodeDecorator.decorateFile(fileA, metricData)
+			let h = d3.hierarchy(result.map)
+			h.leaves().forEach(node => {
+				expect(node.data.attributes).toBeDefined()
+				expect(node.data.attributes.some).toBe(0)
+				expect(node.data.attributes.rloc).toBeDefined()
+				expect(node.data.attributes.functions).toBeDefined()
+				expect(node.data.attributes.mcc).toBeDefined()
+			})
+		})
 
-        it("should collect links correctly", ()=>{
-            fileA.map.link = "link0";
-            fileA.map.children = [{
-                name: "middle",
-                type: "File",
-                attributes: {},
-                link: "link1",
-                children: [
-                    {
-                        name: "a",
-                        type: "File",
-                        attributes: {}
-                    },
-                    {
-                        name: "b",
-                        type: "File",
-                        attributes: {}
-                    }
-                ]
-            }];
-            NodeDecorator.decorateMapWithCompactMiddlePackages(fileA);
-            expect(fileA.map.link).toBe("link1");
-        });
+		it("should compact from root", () => {
+			fileA.map.children = [
+				{
+					name: "middle",
+					type: "Folder",
+					attributes: {},
+					children: [
+						{
+							name: "a",
+							type: "File",
+							attributes: {}
+						},
+						{
+							name: "b",
+							type: "File",
+							attributes: {}
+						}
+					]
+				}
+			]
+			const result = NodeDecorator.decorateFile(fileA, metricData)
+			expect(result.map.name).toBe("root/middle")
+			expect(result.map.children.length).toBe(2)
+			expect(result.map.children[0].name).toBe("a")
+			expect(result.map.children[1].name).toBe("b")
+		})
 
-        it("should collect paths correctly", ()=>{
-            fileA.map.path = "/root";
-            fileA.map.children = [{
-                name: "middle",
-                path: "/root/middle",
-                type: "Folder",
-                attributes: {},
-                children: [
-                    {
-                        name: "a",
-                        type: "File",
-                        path: "/root/middle/a",
-                        attributes: {}
-                    },
-                    {
-                        name: "b",
-                        type: "File",
-                        path: "/root/middle/b",
-                        attributes: {}
-                    }
-                ]
-            }];
-            NodeDecorator.decorateMapWithCompactMiddlePackages(fileA);
-            expect(fileA.map.path).toBe("/root/middle");
-        });
+		it("should collect links correctly", () => {
+			fileA.map.link = "link0"
+			fileA.map.children = [
+				{
+					name: "middle",
+					type: "File",
+					attributes: {},
+					link: "link1",
+					children: [
+						{
+							name: "a",
+							type: "File",
+							attributes: {}
+						},
+						{
+							name: "b",
+							type: "File",
+							attributes: {}
+						}
+					]
+				}
+			]
+			const result = NodeDecorator.decorateFile(fileA, metricData)
+			expect(result.map.link).toBe("link1")
+		})
 
-        it("should not compact with single leaves", ()=>{
-            fileA.map.children = [{
-                name: "middle",
-                type: "Folder",
-                attributes: {},
-                children: [
-                    {
-                        name: "singleLeaf",
-                        type: "File",
-                        attributes: {}
-                    }
-                ]
-            }];
-            NodeDecorator.decorateMapWithCompactMiddlePackages(fileA);
-            expect(fileA.map.name).toBe("root/middle");
-            expect(fileA.map.children.length).toBe(1);
-            expect(fileA.map.children[0].name).toBe("singleLeaf");
-        });
+		it("should collect paths correctly", () => {
+			fileA.map.path = "/root"
+			fileA.map.children = [
+				{
+					name: "middle",
+					path: "/root/middle",
+					type: "Folder",
+					attributes: {},
+					children: [
+						{
+							name: "a",
+							type: "File",
+							path: "/root/middle/a",
+							attributes: {}
+						},
+						{
+							name: "b",
+							type: "File",
+							path: "/root/middle/b",
+							attributes: {}
+						}
+					]
+				}
+			]
+			const result = NodeDecorator.decorateFile(fileA, metricData)
+			expect(result.map.path).toBe("/root/middle")
+		})
 
-        it("should compact intermediate middle packages", ()=>{
-            fileA.map.children = [{
-                name: "start",
-                type: "Folder",
-                attributes: {},
-                children: [
-                    {
-                        name: "middle",
-                        type: "Folder",
-                        attributes: {},
-                        children: [
-                            {
-                                name: "middle2",
-                                type: "Folder",
-                                attributes: {},
-                                children: [
-                                    {
-                                        name: "a",
-                                        type: "File",
-                                        attributes: {}
-                                    },
-                                    {
-                                        name: "b",
-                                        type: "File",
-                                        attributes: {}
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        name: "c",
-                        type: "File",
-                        attributes: {}
-                    }
-                ]
-            }];
-            NodeDecorator.decorateMapWithCompactMiddlePackages(fileA);
-            expect(fileA.map.name).toBe("root/start");
-            expect(fileA.map.children.length).toBe(2);
-            expect(fileA.map.children[0].name).toBe("middle/middle2");
-            expect(fileA.map.children[1].name).toBe("c");
-            expect(fileA.map.children[0].children.length).toBe(2);
-            expect(fileA.map.children[0].children[0].name).toBe("a");
-            expect(fileA.map.children[0].children[1].name).toBe("b");
-        });
+		it("should not compact with single leaves", () => {
+			fileA.map.children = [
+				{
+					name: "middle",
+					type: "Folder",
+					attributes: {},
+					children: [
+						{
+							name: "singleLeaf",
+							type: "File",
+							attributes: {}
+						}
+					]
+				}
+			]
+			const result = NodeDecorator.decorateFile(fileA, metricData)
+			expect(result.map.name).toBe("root/middle")
+			expect(result.map.children.length).toBe(1)
+			expect(result.map.children[0].name).toBe("singleLeaf")
+		})
 
-    });
+		it("should compact intermediate middle packages", () => {
+			fileA.map.children = [
+				{
+					name: "start",
+					type: "Folder",
+					attributes: {},
+					children: [
+						{
+							name: "middle",
+							type: "Folder",
+							attributes: {},
+							children: [
+								{
+									name: "middle2",
+									type: "Folder",
+									attributes: {},
+									children: [
+										{
+											name: "a",
+											type: "File",
+											attributes: {}
+										},
+										{
+											name: "b",
+											type: "File",
+											attributes: {}
+										}
+									]
+								}
+							]
+						},
+						{
+							name: "c",
+							type: "File",
+							attributes: {}
+						}
+					]
+				}
+			]
+			const result = NodeDecorator.decorateFile(fileA, metricData)
+			expect(result.map.name).toBe("root/start")
+			expect(result.map.children.length).toBe(2)
+			expect(result.map.children[0].name).toBe("middle/middle2")
+			expect(result.map.children[1].name).toBe("c")
+			expect(result.map.children[0].children.length).toBe(2)
+			expect(result.map.children[0].children[0].name).toBe("a")
+			expect(result.map.children[0].children[1].name).toBe("b")
+		})
+	})
 
-    describe("decorateParentNodesWithSumAttributesOfChildren",() => {
+	describe("preDecorateFile", () => {
+		it("should decorate nodes with the correct path", () => {
+			const result = NodeDecorator.preDecorateFile(TEST_DELTA_MAP_A)
 
-        it("all nodes should have an attribute list with all possible metrics", ()=>{
-            fileA.map.children[0].attributes = undefined;
-            fileA.map.children[1].attributes = { "some": 1 };
-            NodeDecorator.decorateLeavesWithMissingMetrics([fileA],["some", "metrics", "rloc", "functions", "mcc"]);
-            NodeDecorator.decorateParentNodesWithSumAttributesOfChildren([fileA], ["some", "metrics", "rloc", "functions", "mcc"]);
-            let h = d3.hierarchy(fileA.map);
-            h.each((node)=>{
-                expect(node.data.attributes).toBeDefined();
-                expect(node.data.attributes.some).toBeDefined();
-                expect(node.data.attributes.metrics).toBeDefined();
-            });
-        });
+			let h = d3.hierarchy(result.map)
+			h.each(node => {
+				expect(node.data.path).toBeDefined()
+			})
 
-        it("all nodes should have an attribute list with listed and available metrics", ()=>{
-            NodeDecorator.decorateLeavesWithMissingMetrics([fileA],["rloc", "functions"]);
-            NodeDecorator.decorateParentNodesWithSumAttributesOfChildren([fileA], ["rloc", "functions"]);
-            let h = d3.hierarchy(fileA.map);
-            h.each((node)=>{
-                expect(node.data.attributes).toBeDefined();
-                expect(node.data.attributes["rloc"]).toBeDefined();
-                expect(node.data.attributes["functions"]).toBeDefined();
-            });
-        });
+			expect(result.map.path).toBe("/root")
+			expect(result.map.children[1].children[0].path).toBe("/root/Parent Leaf/small leaf")
+		})
 
-        it("folders should have sum attributes of children", ()=>{
-            NodeDecorator.decorateLeavesWithMissingMetrics([fileA],["rloc", "functions"]);
-            NodeDecorator.decorateParentNodesWithSumAttributesOfChildren([fileA], ["rloc", "functions"]);
-            let h = d3.hierarchy(fileA.map);
-            expect(h.data.attributes["rloc"]).toBe(200);
-            expect(h.children[0].data.attributes["rloc"]).toBe(100);
-            expect(h.data.attributes["functions"]).toBe(1110);
-        });
+		it("should decorate nodes with the correct path inplace", () => {
+			NodeDecorator.preDecorateFile(TEST_DELTA_MAP_A)
 
-    });
+			let h = d3.hierarchy(TEST_DELTA_MAP_A.map)
+			h.each(node => {
+				expect(node.data.path).toBeDefined()
+			})
 
-    describe("decorateMapWithOriginAttribute",() => {
+			expect(TEST_DELTA_MAP_A.map.path).toBe("/root")
+			expect(TEST_DELTA_MAP_A.map.children[1].children[0].path).toBe("/root/Parent Leaf/small leaf")
+		})
 
-        it("all nodes should have an origin", ()=>{
-            fileA.map.children[0].origin = undefined;
-            NodeDecorator.decorateMapWithOriginAttribute(fileA);
-            let h = d3.hierarchy(fileA.map);
-            h.each((node)=>{
-                expect(node.data.origin).toBeDefined();
-            });
-        });
+		it("all nodes should have an attribute list with all possible metrics", () => {
+			fileA.map.children[0].attributes = undefined
+			fileA.map.children[1].attributes = { some: 1 }
+			metricData.push({ name: "some", maxValue: 999999, availableInVisibleMaps: true })
 
-    });
+			const result = NodeDecorator.decorateFile(fileA, metricData)
+			let h = d3.hierarchy(result.map)
+			h.each(node => {
+				expect(node.data.attributes).toBeDefined()
+				expect(node.data.attributes.some).toBeDefined()
+			})
+		})
 
-    describe("decorateMapWithUnaryMetric",() => {
+		it("all nodes should have an attribute list with listed and available metrics", () => {
+			const result = NodeDecorator.decorateFile(fileA, metricData)
+			let h = d3.hierarchy(result.map)
+			h.each(node => {
+				expect(node.data.attributes).toBeDefined()
+				expect(node.data.attributes["rloc"]).toBeDefined()
+				expect(node.data.attributes["functions"]).toBeDefined()
+			})
+		})
 
-        it("maps with no attribute nodes should be accepted and an attributes member added", ()=>{
+		it("folders should have sum attributes of children", () => {
+			const result = NodeDecorator.decorateFile(fileA, metricData)
+			let h = d3.hierarchy(result.map)
+			expect(h.data.attributes["rloc"]).toBe(200)
+			expect(h.children[0].data.attributes["rloc"]).toBe(100)
+			expect(h.data.attributes["functions"]).toBe(1110)
+		})
 
-            let cm: CCFile = {
-                fileMeta: {
-                    fileName: "a",
-                    projectName: "b",
-                    apiVersion: "1.1"
-                },
-                map: {
-                    name: "a node",
-                    type: "File",
-                    attributes: {}
-                },
-                settings: {
-                    fileSettings: {}
-                }
-            };
+		it("all nodes should have an origin", () => {
+			fileA.map.children[0].origin = undefined
+			const result = NodeDecorator.decorateFile(fileA, metricData)
+			let h = d3.hierarchy(result.map)
+			h.each(node => {
+				expect(node.data.origin).toBeDefined()
+			})
+		})
 
-            NodeDecorator.decorateMapWithUnaryMetric(cm);
+		it("maps with no attribute nodes should be accepted and an attributes member added", () => {
+			const result = NodeDecorator.decorateFile(TEST_DELTA_MAP_A, metricData)
 
-            let h = d3.hierarchy(cm.map);
+			let h = d3.hierarchy(result.map)
 
-            h.each((node)=>{
-                expect(node.data.attributes["unary"]).toBeDefined();
-            });
+			h.each(node => {
+				expect(node.data.attributes["unary"]).toBeDefined()
+			})
+		})
 
-        });
-
-        it("all nodes should have a unary attribute", ()=>{
-            fileA.map.children[0].attributes = {};
-            NodeDecorator.decorateMapWithUnaryMetric(fileA);
-            let h = d3.hierarchy(fileA.map);
-            h.each((node)=>{
-                expect(node.data.attributes["unary"]).toBeDefined();
-            });
-        });
-
-    });
-
-
-    describe("decorateMapWithPathAttribute",() => {
-
-        it("should have the correct path", ()=>{
-
-            let cm: CCFile = {
-                fileMeta: {
-                    fileName: "a",
-                    projectName: "b",
-                    apiVersion: "1.1"
-                },
-                map: {
-                    name: "a node",
-                    type: "Folder",
-                    attributes: {},
-                    children: [
-                        {
-                            name: "b node",
-                            type: "File",
-                            attributes: {}
-                        },
-                        {
-                            name: "c node",
-                            type: "Folder",
-                            attributes: {},
-                            children: [
-                                {
-                                    name: "d node",
-                                    type: "File",
-                                    attributes: {}
-                                }
-                            ]
-                        }
-                    ]
-                },
-                settings: {
-                    fileSettings: {}
-                }
-            };
-
-            NodeDecorator.decorateMapWithPathAttribute(cm);
-
-            let h = d3.hierarchy(cm.map);
-
-            h.each((node)=>{
-                expect(node.data.path).toBeDefined();
-            });
-
-            expect(cm.map.path).toBe("/a node");
-            expect(cm.map.children[1].children[0].path).toBe("/a node/c node/d node");
-
-        });
-
-
-    });
-
-});
-
+		it("all nodes should have a unary attribute", () => {
+			fileA.map.children[0].attributes = {}
+			const result = NodeDecorator.decorateFile(fileA, metricData)
+			let h = d3.hierarchy(result.map)
+			h.each(node => {
+				expect(node.data.attributes["unary"]).toBeDefined()
+			})
+		})
+	})
+})

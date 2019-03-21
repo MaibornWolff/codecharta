@@ -1,9 +1,8 @@
 "use strict"
 import * as d3 from "d3"
-import {CCFile, CodeMapNode, MetricData} from "../codeCharta.model"
+import { CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
 
 export class NodeDecorator {
-
 	public static decorateFile(file: CCFile, metricData: MetricData[]): CCFile {
 		let decoratedFile: CCFile = this.deepCopy(file)
 		this.decorateMapWithMissingObjects(decoratedFile)
@@ -61,7 +60,12 @@ export class NodeDecorator {
 		if (file && file.map) {
 			let root = d3.hierarchy<CodeMapNode>(file.map)
 			root.each(node => {
-				node.data.path = "/" + root.path(node).map(x => x.data.name).join("/")
+				node.data.path =
+					"/" +
+					root
+						.path(node)
+						.map(x => x.data.name)
+						.join("/")
 			})
 		}
 		return file
@@ -73,7 +77,7 @@ export class NodeDecorator {
 			root.each(node => {
 				node.data.visible = true
 				node.data.origin = file.fileMeta.fileName
-				node.data.attributes = (!node.data.attributes) ? {} : node.data.attributes
+				node.data.attributes = !node.data.attributes ? {} : node.data.attributes
 				Object.assign(node.data.attributes, { unary: 1 })
 			})
 		}
@@ -113,7 +117,8 @@ export class NodeDecorator {
 		Object.defineProperty(node.data.attributes, metric, {
 			enumerable: true,
 			get: () => {
-				return node.leaves()
+				return node
+					.leaves()
 					.map(x => x.data.attributes[metric])
 					.reduce((partialSum, a) => partialSum + a)
 			}
