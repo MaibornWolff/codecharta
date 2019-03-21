@@ -49,7 +49,7 @@ describe("scenarioHelper", () => {
 		})
 	})
 
-	describe("isScenarioPossible", () => {
+	xdescribe("isScenarioPossible", () => {
 		it("should return true for a possible scenario", () => {
 			const result = ScenarioHelper.isScenarioPossible(scenarios[0], metricData)
 
