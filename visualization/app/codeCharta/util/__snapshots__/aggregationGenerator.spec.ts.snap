@@ -1,0 +1,456 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`app.codeCharta.util.aggregationGenerator AttributeTypes merge aggregation of one map with attributes and other without should result in merged with same attributes as the one with them 1`] = `
+Object {
+  "edges": Object {
+    "key2": 1,
+  },
+  "nodes": Object {
+    "key1": 0,
+  },
+}
+`;
+
+exports[`app.codeCharta.util.aggregationGenerator AttributeTypes merge aggregation of two maps with different key attributes should result in all keys aggregated map 1`] = `
+Object {
+  "edges": Object {
+    "key2": 1,
+    "key2_2": 1,
+  },
+  "nodes": Object {
+    "key1": 0,
+    "key1_2": 0,
+  },
+}
+`;
+
+exports[`app.codeCharta.util.aggregationGenerator Blacklist merge aggregation of two maps with different key attributes should result in all keys aggregated map 1`] = `
+Array [
+  Object {
+    "path": "/root/file1/node/equalPath",
+    "type": "exclude",
+  },
+  Object {
+    "path": "/another/third/path",
+    "type": "hide",
+  },
+  Object {
+    "path": "/root/file2/node/equalPath",
+    "type": "exclude",
+  },
+  Object {
+    "path": "*another/path",
+    "type": "hide",
+  },
+]
+`;
+
+exports[`app.codeCharta.util.aggregationGenerator edges merge aggregation of one map with edges and other without should result in merged edges 1`] = `
+Array [
+  Object {
+    "attributes": Object {
+      "avgCommits": 4,
+      "pairingRate": 9,
+    },
+    "fromNodeName": "/root/file1/big leaf",
+    "toNodeName": "/root/file1/Parent Leaf/small leaf",
+    "visible": undefined,
+  },
+]
+`;
+
+exports[`app.codeCharta.util.aggregationGenerator edges merge aggregation of two maps with given edges should result in summarized edges 1`] = `
+Array [
+  Object {
+    "attributes": Object {
+      "avgCommits": 4,
+      "pairingRate": 9,
+    },
+    "fromNodeName": "/root/file1/big leaf",
+    "toNodeName": "/root/file1/Parent Leaf/small leaf",
+    "visible": undefined,
+  },
+  Object {
+    "attributes": Object {
+      "avgCommits": 34,
+      "pairingRate": 89,
+    },
+    "fromNodeName": "/root/file2/big leaf",
+    "toNodeName": "/root/file2/Parent Leaf/small leaf",
+    "visible": undefined,
+  },
+]
+`;
+
+exports[`app.codeCharta.util.aggregationGenerator multipleService aggregation of four maps 1`] = `
+Object {
+  "fileMeta": Object {
+    "apiVersion": "1.1",
+    "fileName": "Aggregation of following files: file1, file2, file1, file2",
+    "projectName": "Aggregation of following projects: Sample Project, Sample Project, Sample Project, Sample Project",
+  },
+  "map": Object {
+    "attributes": Object {
+      "customMetric": 14,
+      "functions": 2460,
+      "mcc": 426,
+      "rloc": 860,
+    },
+    "children": Array [
+      Object {
+        "attributes": Object {
+          "functions": 1010,
+          "mcc": 11,
+          "rloc": 170,
+        },
+        "children": Array [
+          Object {
+            "attributes": Object {
+              "functions": 10,
+              "mcc": 1,
+              "rloc": 100,
+            },
+            "link": "http://www.google.de",
+            "name": "big leaf",
+            "type": "File",
+          },
+          Object {
+            "attributes": Object {
+              "functions": 1000,
+              "mcc": 10,
+              "rloc": 70,
+            },
+            "children": Array [
+              Object {
+                "attributes": Object {
+                  "functions": 1000,
+                  "mcc": 10,
+                  "rloc": 70,
+                },
+                "name": "other small leaf",
+                "type": "File",
+              },
+            ],
+            "name": "Parent Leaf",
+            "type": "Folder",
+          },
+        ],
+        "name": "file1",
+        "type": "Folder",
+      },
+      Object {
+        "attributes": Object {
+          "customMetric": 7,
+          "functions": 220,
+          "mcc": 202,
+          "rloc": 260,
+        },
+        "children": Array [
+          Object {
+            "attributes": Object {
+              "functions": 20,
+              "mcc": 2,
+              "rloc": 200,
+            },
+            "link": "http://www.google.de",
+            "name": "big leaf",
+            "type": "File",
+          },
+          Object {
+            "attributes": Object {
+              "functions": 200,
+              "mcc": 200,
+              "rloc": 60,
+            },
+            "children": Array [
+              Object {
+                "attributes": Object {
+                  "functions": 200,
+                  "mcc": 200,
+                  "rloc": 60,
+                },
+                "name": "small leaf",
+                "type": "File",
+              },
+            ],
+            "name": "Parent Leaf",
+            "type": "Folder",
+          },
+        ],
+        "name": "file2",
+        "type": "Folder",
+      },
+      Object {
+        "attributes": Object {
+          "functions": 1010,
+          "mcc": 11,
+          "rloc": 170,
+        },
+        "children": Array [
+          Object {
+            "attributes": Object {
+              "functions": 10,
+              "mcc": 1,
+              "rloc": 100,
+            },
+            "link": "http://www.google.de",
+            "name": "big leaf",
+            "type": "File",
+          },
+          Object {
+            "attributes": Object {
+              "functions": 1000,
+              "mcc": 10,
+              "rloc": 70,
+            },
+            "children": Array [
+              Object {
+                "attributes": Object {
+                  "functions": 1000,
+                  "mcc": 10,
+                  "rloc": 70,
+                },
+                "name": "other small leaf",
+                "type": "File",
+              },
+            ],
+            "name": "Parent Leaf",
+            "type": "Folder",
+          },
+        ],
+        "name": "file1",
+        "type": "Folder",
+      },
+      Object {
+        "attributes": Object {
+          "customMetric": 7,
+          "functions": 220,
+          "mcc": 202,
+          "rloc": 260,
+        },
+        "children": Array [
+          Object {
+            "attributes": Object {
+              "functions": 20,
+              "mcc": 2,
+              "rloc": 200,
+            },
+            "link": "http://www.google.de",
+            "name": "big leaf",
+            "type": "File",
+          },
+          Object {
+            "attributes": Object {
+              "functions": 200,
+              "mcc": 200,
+              "rloc": 60,
+            },
+            "children": Array [
+              Object {
+                "attributes": Object {
+                  "functions": 200,
+                  "mcc": 200,
+                  "rloc": 60,
+                },
+                "name": "small leaf",
+                "type": "File",
+              },
+            ],
+            "name": "Parent Leaf",
+            "type": "Folder",
+          },
+        ],
+        "name": "file2",
+        "type": "Folder",
+      },
+    ],
+    "name": "root",
+    "origin": "Aggregation of following files: file1, file2, file1, file2",
+    "path": "/root",
+    "type": "Folder",
+    "visible": true,
+  },
+  "settings": Object {
+    "fileSettings": Object {
+      "attributeTypes": Object {
+        "edges": Object {},
+        "nodes": Object {},
+      },
+      "blacklist": Array [],
+      "edges": Array [],
+    },
+  },
+}
+`;
+
+exports[`app.codeCharta.util.aggregationGenerator multipleService aggregation of two maps 1`] = `
+Object {
+  "fileMeta": Object {
+    "apiVersion": "1.1",
+    "fileName": "Aggregation of following files: file1, file2",
+    "projectName": "Aggregation of following projects: Sample Project, Sample Project",
+  },
+  "map": Object {
+    "attributes": Object {
+      "customMetric": 7,
+      "functions": 1230,
+      "mcc": 213,
+      "rloc": 430,
+    },
+    "children": Array [
+      Object {
+        "attributes": Object {
+          "functions": 1010,
+          "mcc": 11,
+          "rloc": 170,
+        },
+        "children": Array [
+          Object {
+            "attributes": Object {
+              "functions": 10,
+              "mcc": 1,
+              "rloc": 100,
+            },
+            "link": "http://www.google.de",
+            "name": "big leaf",
+            "type": "File",
+          },
+          Object {
+            "attributes": Object {
+              "functions": 1000,
+              "mcc": 10,
+              "rloc": 70,
+            },
+            "children": Array [
+              Object {
+                "attributes": Object {
+                  "functions": 1000,
+                  "mcc": 10,
+                  "rloc": 70,
+                },
+                "name": "other small leaf",
+                "type": "File",
+              },
+            ],
+            "name": "Parent Leaf",
+            "type": "Folder",
+          },
+        ],
+        "name": "file1",
+        "type": "Folder",
+      },
+      Object {
+        "attributes": Object {
+          "customMetric": 7,
+          "functions": 220,
+          "mcc": 202,
+          "rloc": 260,
+        },
+        "children": Array [
+          Object {
+            "attributes": Object {
+              "functions": 20,
+              "mcc": 2,
+              "rloc": 200,
+            },
+            "link": "http://www.google.de",
+            "name": "big leaf",
+            "type": "File",
+          },
+          Object {
+            "attributes": Object {
+              "functions": 200,
+              "mcc": 200,
+              "rloc": 60,
+            },
+            "children": Array [
+              Object {
+                "attributes": Object {
+                  "functions": 200,
+                  "mcc": 200,
+                  "rloc": 60,
+                },
+                "name": "small leaf",
+                "type": "File",
+              },
+            ],
+            "name": "Parent Leaf",
+            "type": "Folder",
+          },
+        ],
+        "name": "file2",
+        "type": "Folder",
+      },
+    ],
+    "name": "root",
+    "origin": "Aggregation of following files: file1, file2",
+    "path": "/root",
+    "type": "Folder",
+    "visible": true,
+  },
+  "settings": Object {
+    "fileSettings": Object {
+      "attributeTypes": Object {
+        "edges": Object {},
+        "nodes": Object {},
+      },
+      "blacklist": Array [],
+      "edges": Array [],
+    },
+  },
+}
+`;
+
+exports[`app.codeCharta.util.aggregationGenerator multipleService aggregation one map 1`] = `
+Object {
+  "fileMeta": Object {
+    "apiVersion": "1.1",
+    "fileName": "file1",
+    "projectName": "Sample Project",
+  },
+  "map": Object {
+    "attributes": Object {
+      "functions": 1010,
+      "mcc": 11,
+      "rloc": 170,
+    },
+    "children": Array [
+      Object {
+        "attributes": Object {
+          "functions": 10,
+          "mcc": 1,
+          "rloc": 100,
+        },
+        "link": "http://www.google.de",
+        "name": "big leaf",
+        "type": "File",
+      },
+      Object {
+        "attributes": Object {
+          "functions": 1000,
+          "mcc": 10,
+          "rloc": 70,
+        },
+        "children": Array [
+          Object {
+            "attributes": Object {
+              "functions": 1000,
+              "mcc": 10,
+              "rloc": 70,
+            },
+            "name": "other small leaf",
+            "type": "File",
+          },
+        ],
+        "name": "Parent Leaf",
+        "type": "Folder",
+      },
+    ],
+    "name": "root",
+    "type": "Folder",
+  },
+  "settings": Object {
+    "fileSettings": Object {},
+  },
+}
+`;

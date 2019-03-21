@@ -2,7 +2,7 @@ import { CodeMapNode } from "../codeCharta.model"
 
 export class FileValidator {
 	private static hasUniqueChildren(node: CodeMapNode) {
-		if (!node.children || node.children.length == 0) {
+		if (!node.children || node.children.length === 0) {
 			return true
 		}
 
@@ -23,6 +23,9 @@ export class FileValidator {
 	}
 
 	public static validate(file: { nodes: CodeMapNode[] }): Array<{ message: string; dataPath: string }> {
+		if (!file) {
+			return [{ message: "file is empty or invalid", dataPath: "empty or invalid file" }]
+		}
 		let ajv = require("ajv")()
 		let compare = ajv.compile(require("./schema.json"))
 		let valid = compare(file)
