@@ -26,58 +26,48 @@ class FileChooserController {
     ){
     }
 
-    // TODO: import doesnt work yet
     public fileChanged(element) {
         this.$rootScope.$broadcast("add-loading-task");
         this.$scope.$apply(() => {
-            let nameDataPairs: NameDataPair[] = []
-
-            for (let i = 0; i < element.files.length; i++) {
-                ((file, i) => {
-                    let reader = new FileReader();
-                    reader.onload = (e) => {
-                        console.log("jo")
-                        nameDataPairs.push({
-                            fileName: file.name,
-                            content: JSON.parse((<any>event.target).result)
-                        })
-                        console.log("NameDataPairs1", nameDataPairs)
-                    };
-                    reader.readAsText(file, "UTF-8");
-                })(element.files[i], i);
-            }
-
-            /*for (let file of element.files) {
-                let reader = new FileReader()
-                console.log("reader", reader)
-
-                reader.onload = (event) => {
-
-
-                };
-                //reader.readAsText(file, "UTF-8");
-            }*/
-            console.log("NameDataPairs2", nameDataPairs)
-
             this.fileStateService.resetMaps()
-            // TODO: Reset fileSettings, dynamicSettings etc... markedPackages
-            this.codeChartaService.loadFiles(nameDataPairs)
-                .then(() => {
-                    this.$rootScope.$broadcast("remove-loading-task");
-                })
-                .catch(e => {
-                    this.$rootScope.$broadcast("remove-loading-task");
-                    console.error(e);
-                    this.printErrors(e)
-                })
-
+            for(let file of element.files) {
+                let reader = new FileReader()
+                reader.onload = (event) => {
+                    this.onNewFileLoaded(file.name, (<any>event.target).result)
+                };
+                reader.readAsText(file, "UTF-8");
+            }
         });
+    }
+
+    public onNewFileLoaded(fileName: string, content: string){
+        try {
+            this.setNewData({
+                fileName: fileName,
+                content: JSON.parse(content)
+            })
+        }
+        catch (error) {
+            this.dialogService.showErrorDialog("Error parsing JSON!" + error)
+            this.$rootScope.$broadcast("remove-loading-task")
+        }
+    }
+
+    public setNewData(nameDataPair: NameDataPair){
+        this.codeChartaService.loadFiles([nameDataPair])
+            .then(() => {
+                this.$rootScope.$broadcast("remove-loading-task")
+            })
+            .catch(e => {
+                this.$rootScope.$broadcast("remove-loading-task")
+                console.error(e)
+                this.printErrors(e)
+            })
     }
 
     private printErrors(errors: Object) {
         this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))
     }
-
 }
 
 export {FileChooserController};
