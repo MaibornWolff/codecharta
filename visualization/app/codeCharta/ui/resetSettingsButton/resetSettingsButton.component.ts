@@ -38,7 +38,8 @@ export class ResetSettingsButtonController {
 				this.settingsService.settings[token] = defaultSettings[token]
 			}
 		})
-		// Seems like we dont need this call anymore this.settingsService.applySettings()
+		//TODO: Seems like we dont need this call anymore
+		// this.settingsService.applySettings()
 	}
 }
 
