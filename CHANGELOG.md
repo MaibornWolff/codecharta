@@ -8,10 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 
 ### Added
+
 -   Project Name can be specified for merge filter #394
 
 ### Changed
--   Throw a MergeException if project names do not match in MergeFilter #394 
+
+-   Throw a MergeException if project names do not match in MergeFilter #394
 
 ### Removed
 
@@ -44,6 +46,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Bump nouislider from 11.1.0 to 13.1.1 in /visualization
 -   Bump typescript from 2.7.2 to 3.3.3333 in /visualization
+-   Bump @types/d3 from 4.13.0 to 5.7.1 in /visualization
 
 ## [1.21.2] - 2019-02-26
 
