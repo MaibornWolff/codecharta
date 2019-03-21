@@ -1,19 +1,18 @@
-import {FileSelectionState, MapColors, RecursivePartial, Settings, Vector3d} from "../codeCharta.model"
+import { FileSelectionState, MapColors, RecursivePartial, Settings, Vector3d } from "../codeCharta.model"
 import _ from "lodash"
-import {IAngularEvent, IRootScopeService} from "angular";
+import { IAngularEvent, IRootScopeService } from "angular"
 
 export interface SettingsServiceSubscriber {
 	onSettingsChanged(settings: Settings, event: IAngularEvent)
 }
 
 export class SettingsService {
-
-    public static SELECTOR = "settingsService"
-    private static SETTINGS_CHANGED_EVENT = "settings-changed";
+	public static SELECTOR = "settingsService"
+	private static SETTINGS_CHANGED_EVENT = "settings-changed"
 	public static readonly MIN_MARGIN = 15
 
-	private settings: Settings
-	private readonly throttledBroadcast: ()=>void;
+	public settings: Settings
+	private readonly throttledBroadcast: () => void
 
 	constructor(private $rootScope) {
 		this.settings = this.getDefaultSettings()
@@ -60,12 +59,12 @@ export class SettingsService {
 		}
 
 		let settings: Settings = {
-		    fileSettings: {
+			fileSettings: {
 				attributeTypes: {},
 				blacklist: [],
 				edges: [],
 				markedPackages: []
-            },
+			},
 			dynamicSettings: {
 				areaMetric: null,
 				heightMetric: null,
@@ -74,10 +73,10 @@ export class SettingsService {
 				searchedNodePaths: [],
 				searchPattern: "",
 				margin: SettingsService.MIN_MARGIN,
-				neutralColorRange: null,
+				neutralColorRange: null
 			},
 			appSettings: {
-		    	renderState: FileSelectionState.None,
+				renderState: FileSelectionState.None,
 				amountOfTopLabels: 1,
 				scaling: scaling,
 				camera: camera,
@@ -92,7 +91,7 @@ export class SettingsService {
 				mapColors: mapColors
 			},
 			treeMapSettings: {
-		    	mapSize: 500
+				mapSize: 500
 			}
 		}
 
@@ -100,11 +99,11 @@ export class SettingsService {
 	}
 
 	private updateSettingsUsingPartialSettings(settings: Settings, update: RecursivePartial<Settings>): Settings {
-		for(let key of Object.keys(settings)) {
+		for (let key of Object.keys(settings)) {
 			if (update.hasOwnProperty(key)) {
 				if (this.isObject(settings[key]) && !this.isArray(settings[key])) {
 					if (this.containsArrayObject(update[key])) {
-						settings[key] = this.updateSettingsUsingPartialSettings(settings[key], update[key]);
+						settings[key] = this.updateSettingsUsingPartialSettings(settings[key], update[key])
 					} else {
 						settings[key] = _.merge(settings[key], update[key])
 					}
@@ -113,7 +112,7 @@ export class SettingsService {
 				}
 			}
 		}
-		return settings;
+		return settings
 	}
 
 	private containsArrayObject(obj: Object): boolean {
@@ -123,7 +122,7 @@ export class SettingsService {
 					if (Object.prototype.toString.call(obj[key]) === "[object Array]") {
 						return true
 					} else {
-						return this.containsArrayObject(obj[key]);
+						return this.containsArrayObject(obj[key])
 					}
 				}
 			}
@@ -209,6 +208,4 @@ export class SettingsService {
 
     }
     */
-
-
 }
