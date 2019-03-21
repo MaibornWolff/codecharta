@@ -1,117 +1,78 @@
-import {getService, instantiateModule} from "../../../mocks/ng.mockhelper";
-import {Scenario, ScenarioHelper} from "./scenarioHelper";
-import {SettingsService} from "../state/settings.service";
-import {MetricService} from "../state/metric.service";
+import { ScenarioHelper } from "./scenarioHelper"
+import { MetricData, Scenario } from "../codeCharta.model"
 
-describe("app.codeCharta.state.scenarioService", function () {
+describe("scenarioHelper", () => {
+	let metricData: MetricData[]
+	const scenarios: Scenario[] = require("../assets/scenarios.json")
 
-    let services, scenarioService: ScenarioHelper, defaultScenario, scenario
+	afterEach(() => {
+		jest.resetAllMocks()
+	})
 
-    beforeEach(() => {
-        restartSystem();
-        rebuildService();
-    });
+	beforeEach(() => {
+		metricData = [
+			{ name: "rloc", maxValue: 999999, availableInVisibleMaps: true },
+			{ name: "functions", maxValue: 999999, availableInVisibleMaps: true },
+			{ name: "mcc", maxValue: 999999, availableInVisibleMaps: true }
+		]
+	})
 
-    function restartSystem() {
-        instantiateModule("app.codeCharta.state");
+	describe("getScenarios", () => {
+		it("should get all scenarios", () => {
+			ScenarioHelper.isScenarioPossible = jest.fn((scenario: Scenario, metricData: MetricData[]) => {
+				return true
+			})
 
-        services = {
-            settingsService: getService<SettingsService>("settingsService"),
-            metricService: getService<MetricService>("metricService"),
-        };
-    }
+			const result = ScenarioHelper.getScenarios(metricData)
+			const expected = scenarios
 
-    function rebuildService() {
-        scenarioService = new ScenarioHelper(
-            services.settingsService,
-            services.metricService,
-        );
-    }
+			expect(result).toEqual(expected)
+			scenarios.forEach((scenario: Scenario) => {
+				expect(ScenarioHelper.isScenarioPossible).toBeCalledWith(scenario, metricData)
+			})
+			expect(ScenarioHelper.isScenarioPossible).toHaveBeenCalledTimes(scenarios.length)
+		})
 
-    it("should apply the settings from a given scenario", () => {
-        scenarioService.applyScenario(scenario);
-        expect(settingsService.settings).toBe(scenario.settings);
-    });
+		it("should get no scenarios", () => {
+			ScenarioHelper.isScenarioPossible = jest.fn((scenario: Scenario, metricData: MetricData[]) => {
+				return false
+			})
 
-    it("should apply the settings from a given scenario once when applyScenarioOnce is called", () => {
-        scenarioService.applyScenario = jest.fn();
-        scenarioService.applyScenarioOnce(scenario);
-        scenarioService.applyScenarioOnce(scenario);
-        expect(scenarioService.applyScenario).toHaveBeenCalledTimes(1);
-    });
+			const result = ScenarioHelper.getScenarios(metricData)
+			const expected = []
 
-    it("default scenario should be rloc/mcc/mcc", () => {
-        let scenario = scenarioService.getDefaultScenario();
-        expect(scenario.settings.areaMetric).toBe(defaultScenario.settings.areaMetric);
-        expect(scenario.settings.heightMetric).toBe(defaultScenario.settings.heightMetric);
-        expect(scenario.settings.colorMetric).toBe(defaultScenario.settings.colorMetric);
-    });
+			expect(result).toEqual(expected)
+			scenarios.forEach((scenario: Scenario) => {
+				expect(ScenarioHelper.isScenarioPossible).toBeCalledWith(scenario, metricData)
+			})
+			expect(ScenarioHelper.isScenarioPossible).toHaveBeenCalledTimes(scenarios.length)
+		})
+	})
 
-    it("scenarios should be scenarios from json file when all metrics are set", () => {
-        dataService.data.metrics = ["rloc", "mcc", "unary", "Average Complexity*", "line_coverage", "abs_code_churn", "weeks_with_commits"];
-        expect(scenarioService.getScenarios()).toEqual(require("./scenarios.json"));
-    });
+	describe("isScenarioPossible", () => {
+		it("should return true for a possible scenario", () => {
+			const result = ScenarioHelper.isScenarioPossible(scenarios[0], metricData)
 
-    it("scenarios should be filtered when not all metrics are set", () => {
-        dataService.data.metrics = ["unary", "Average Complexity*"];
-        expect(scenarioService.getScenarios()).toMatchSnapshot();
-    });
+			expect(result).toBeTruthy()
+		})
 
-    describe("isScenarioPossible", ()=>{
+		it("should return false for an impossible scenario", () => {
+			metricData = [
+				{ name: "some", maxValue: 999999, availableInVisibleMaps: true },
+				{ name: "weird", maxValue: 999999, availableInVisibleMaps: true },
+				{ name: "metrics", maxValue: 999999, availableInVisibleMaps: true }
+			]
+			const result = ScenarioHelper.isScenarioPossible(scenarios[0], metricData)
 
-        it("should be possible", () => {
-            let metrics = ["unary", "stuff"];
-            let scenario = {
-                settings: {
-                    areaMetric: "unary",
-                    heightMetric: "stuff",
-                    colorMetric: "unary"
-                }
-            };
-            expect(scenarioService.isScenarioPossible(scenario, metrics)).toBe(true);
-        });
+			expect(result).toBeFalsy()
+		})
+	})
 
-        it("should be impossible", () => {
-            let metrics = ["unary", "stuff"];
-            let scenario = {
-                settings: {
-                    areaMetric: "unary",
-                    heightMetric: "stuff",
-                    colorMetric: "mcc"
-                }
-            };
-            expect(scenarioService.isScenarioPossible(scenario, metrics)).toBe(false);
-        });
+	describe("getDefaultScenario", () => {
+		it("should get the first scenario in scenario.json", () => {
+			const result = ScenarioHelper.getDefaultScenario()
 
-        it("should be impossible when params are null", () => {
-            expect(scenarioService.isScenarioPossible(null, null)).toBe(false);
-        });
-
-    });
-
-    it("should update only settings, which exist in given scenario", () => {
-        const defaultSettings: Settings = scenarioService.settingsService.getDefaultSettings();
-        const scenario: Scenario = {
-            name: "myScenario",
-            settings: {
-                areaMetric: "myTestAreaMetric",
-                colorMetric: "myTestColorMetric",
-                heightMetric: "myTestHeightMetric",
-                amountOfTopLabels: 42
-            },
-            autoFitCamera: true
-        };
-
-        scenarioService.applyScenario(scenario);
-
-        const s = settingsService.settings;
-        expect(s.areaMetric).toBe(scenario.settings.areaMetric);
-        expect(s.colorMetric).toBe(scenario.settings.colorMetric);
-        expect(s.heightMetric).toBe(scenario.settings.heightMetric);
-        expect(s.amountOfTopLabels).toBe(scenario.settings.amountOfTopLabels);
-        expect(s.whiteColorBuildings).toBe(defaultSettings.whiteColorBuildings);
-        expect(s.isWhiteBackground).toBe(defaultSettings.isWhiteBackground);
-
-    });
-
-});
+			expect(result).toEqual(scenarios[0])
+		})
+	})
+})
