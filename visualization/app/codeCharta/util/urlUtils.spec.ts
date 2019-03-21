@@ -1,148 +1,145 @@
-import {NGMock} from "../../../mocks/ng.mockhelper";
-import {IRootScopeService, ILocationService, IHttpBackendService} from "angular";
-import DoneCallback = jest.DoneCallback;
+import { getService } from "../../../mocks/ng.mockhelper"
+import { ILocationService, IHttpService } from "angular"
+import { UrlUtils } from "./urlUtils"
 
-import {NameDataPair, UrlUtils} from "./urlUtils";
-import "../core/url/url.module";
-import {VALID_TEST_DATA} from "./urlUtils.mocks";
-import {CodeMap} from "../data/model/CodeMap";
+describe("urlUtils", () => {
+	let urlUtils: UrlUtils
+	let $location: ILocationService
+	let $http: IHttpService
 
-describe("url.service", ()=>{
+	beforeEach(() => {
+		restartSystem()
+		withMockedMethods()
+		rebuildController()
+	})
 
-    let urlService: UrlUtils;
-    let $rootScope: IRootScopeService;
-    let $location: ILocationService;
-    let $httpBackend: IHttpBackendService;
+	function restartSystem() {
+		$location = getService<ILocationService>("$location")
+		$http = getService<IHttpService>("$http")
+	}
 
-    let data: CodeMap;
+	function rebuildController() {
+		urlUtils = new UrlUtils($location, $http)
+	}
 
-    beforeEach(NGMock.mock.module("app.codeCharta.core.url"));
+	function withMockedMethods() {
+		$location.absUrl = jest.fn(() => {
+			return "http://testurl?file=valid.json"
+		})
 
-    beforeEach(NGMock.mock.inject((_urlService_, _$rootScope_, _$location_, _$httpBackend_) => {
-        urlService = _urlService_;
-        $rootScope = _$rootScope_;
-        $location = _$location_;
-        $httpBackend = _$httpBackend_;
-    }));
+		$http.get = jest.fn(file => {
+			return new Promise((resolve, reject) => {
+				resolve({ data: "some data", status: 200 })
+			})
+		})
+	}
 
-    beforeEach(()=>{
-        data = VALID_TEST_DATA;
-    });
+	afterEach(() => {
+		jest.resetAllMocks()
+	})
 
-    it("file parameter should correctly resolve to a file", (done: DoneCallback) => {
+	//TODO: Figure out what getParameterByName does
+	describe("getParameterByName", () => {
+		it("should ", () => {
+			const result = urlUtils.getParameterByName("http://testurl?file=valid.json")
 
-        // mocks + values
-        let url = "http://testurl?file=valid.json";
+			expect(result).toBe(null)
+		})
+	})
 
-        $httpBackend
-            .when("GET", "valid.json")
-            .respond(200, data);
+	describe("getUrl", () => {
+		it("should return the mocked url", () => {
+			const result = urlUtils.getUrl()
+			const expected = "http://testurl?file=valid.json"
 
-        $location.url(url);
+			expect(result).toBe(expected)
+		})
+	})
 
-        urlService.getFileDataFromQueryParam().then(
-            (data: NameDataPair[]) => {
-                expect(data.length).toBe(1);
-                expect(data[0].name).toBe("valid.json");
-                done();
-            }
-        );
+	describe("getFileDataFromQueryParam", () => {
+		it("should return an empty array when file is undefined", async () => {
+			$location.search = jest.fn(() => {
+				return {}
+			})
 
-        $httpBackend.flush();
+			const result = await urlUtils.getFileDataFromQueryParam()
+			const expected = []
 
-    });
+			expect(result).toEqual(expected)
+		})
 
+		it("should create an array when file is defined but not as an array", async () => {
+			$location.search = jest.fn(() => {
+				return { file: { data: "some data" } }
+			})
+			urlUtils.getFileDataFromFile = jest.fn(fileName => {
+				return new Promise((resolve, reject) => {
+					resolve(fileName)
+				})
+			})
 
-    it("file parameter should correctly resolve to multiple files", (done: DoneCallback) => {
+			const result = await urlUtils.getFileDataFromQueryParam()
+			const expected = [{ data: "some data" }]
 
-        // mocks + values
-        let url = "http://testurl?file=valid.json&file=other.json";
+			expect(result).toEqual(expected)
+			expect(urlUtils.getFileDataFromFile).toHaveBeenCalledTimes(1)
+			expect(urlUtils.getFileDataFromFile).toHaveBeenCalledWith({ data: "some data" })
+		})
 
-        $httpBackend
-            .when("GET", "valid.json")
-            .respond(200, data);
+		it("should return an array of resolved file data", () => {
+			$location.search = jest.fn(() => {
+				return { file: ["some data", "some more"] }
+			})
 
-        let otherData = VALID_TEST_DATA;
-        otherData.fileName = "other.json";
+			urlUtils.getFileDataFromFile = jest.fn(fileName => {
+				return new Promise((resolve, reject) => {
+					resolve(fileName)
+				})
+			})
 
-        $httpBackend
-            .when("GET", "other.json")
-            .respond(200, otherData);
+			const expected = ["some data", "some more"]
 
-        $location.url(url);
+			return expect(urlUtils.getFileDataFromQueryParam()).resolves.toEqual(expected)
+		})
 
-        urlService.getFileDataFromQueryParam().then(
-            (data: NameDataPair[]) => {
-                expect(data.length).toBe(2);
-                expect(data[0].name).toBe("valid.json");
-                expect(data[1].name).toBe("other.json");
-                done();
-            }
-        );
+		it("should return the first filename rejected", () => {
+			$location.search = jest.fn(() => {
+				return { file: ["some data", "some more"] }
+			})
 
-        $httpBackend.flush();
+			urlUtils.getFileDataFromFile = jest.fn(fileName => {
+				return new Promise((resolve, reject) => {
+					reject(fileName)
+				})
+			})
 
-    });
+			const expected = "some data"
 
-    it("getFileDataFromQueryParam should allow URL's", (done: DoneCallback) => {
+			return expect(urlUtils.getFileDataFromQueryParam()).rejects.toMatch(expected)
+		})
+	})
 
-        // mocks + values
-        let url = "http://testurl.de/?file=http://someurl.com/some.json";
+	describe("getFileDataFromFile", () => {
+		it("should reject if file is not existing ", () => {
+			return expect(urlUtils.getFileDataFromFile(null)).rejects.toEqual(undefined)
+		})
 
-        $httpBackend
-            .when("GET", "http://someurl.com/some.json")
-            .respond(200, data);
+		it("should reject if file length is 0 ", () => {
+			return expect(urlUtils.getFileDataFromFile("")).rejects.toEqual(undefined)
+		})
 
-        $location.url(url);
+		it("should resolve data and return an object with content and fileName", () => {
+			const expected = { content: "some data", fileName: "test.json" }
+			return expect(urlUtils.getFileDataFromFile("test.json")).resolves.toEqual(expected)
+		})
 
-        urlService.getFileDataFromQueryParam().then(
-            (data: NameDataPair[]) => {
-                expect(data[0].name).toBe("http://someurl.com/some.json");
-                done();
-            },() => {
-                done.fail("should succeed");
-            }
-        );
-
-        $httpBackend.flush();
-
-    });
-
-    it("query parameter(s) should be recognized from static url and location mock", () => {
-
-        let invalidParam ="invalid";
-        let param1 = "param1";
-        let value1 = "value1";
-        let param2 = "param2";
-        let value2 = "value2";
-        let url1 = "http://testurl?"+param1+"="+value1;
-        let url2 = "http://testurl?"+param1+"="+value1+"&"+param2+"="+value2;
-
-        $location.url(url1);
-
-        expect(urlService.getParameterByName(param1)).toBe(value1);
-        expect(urlService.getParameterByName(invalidParam)).toBe(null);
-
-        expect(urlService.getParameterByName(param1, url1)).toBe(value1);
-        expect(urlService.getParameterByName(invalidParam, url1)).toBe(null);
-
-        $location.url(url2);
-
-        expect(urlService.getParameterByName(param1)).toBe(value1);
-        expect(urlService.getParameterByName(param2)).toBe(value2);
-        expect(urlService.getParameterByName(invalidParam)).toBe(null);
-
-        expect(urlService.getParameterByName(param1, url2)).toBe(value1);
-        expect(urlService.getParameterByName(param2, url2)).toBe(value2);
-        expect(urlService.getParameterByName(invalidParam, url2)).toBe(null);
-
-    });
-
-    it("url should be location's url", ()=>{
-        $location.url("somePath.html");
-        expect(urlService.getUrl()).toBe($location.absUrl());
-    });
-
-});
-
-
+		it("should reject if statuscode is not 200", async () => {
+			$http.get = jest.fn(file => {
+				return new Promise((resolve, reject) => {
+					resolve({ data: "some data", status: 201 })
+				})
+			})
+			return expect(urlUtils.getFileDataFromFile("test.json")).rejects.toEqual(undefined)
+		})
+	})
+})

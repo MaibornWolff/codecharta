@@ -1,80 +1,74 @@
-"use strict";
-import {ILocationService, IHttpService, IHttpResponse} from "angular";
+"use strict"
+import { ILocationService, IHttpService, IHttpResponse } from "angular"
 
 export interface NameDataPair {
-    fileName: string;
-    content: Object;
+	fileName: string
+	content: Object
 }
 
 export class UrlUtils {
+	private static OK_CODE = 200
 
-    private static OK_CODE = 200;
+	// TODO: Why is this no longer IHttpBackendService
+	constructor(private $location: ILocationService, private $http: IHttpService) {}
 
-    constructor(private $location: ILocationService, private $http: IHttpService) {
-    }
+	// TODO: What does this method do?
+	public getParameterByName(name: string, url: string = this.getUrl()): string {
+		const sanitizedName = name.replace(/[\[\]]/g, "\\$&")
+		let regex = new RegExp("[?&]" + sanitizedName + "(=([^&#]*)|&|#|$)"),
+			results = regex.exec(url)
 
-    public getParameterByName(name: string, url: string = this.getUrl()): string {
-        const sanitizedName = name.replace(/[\[\]]/g, "\\$&");
-        let regex = new RegExp("[?&]" + sanitizedName + "(=([^&#]*)|&|#|$)"),
-            results = regex.exec(url);
-        if (!results) {
-            return null;
-        }
-        if (!results[2]) {
-            return "";
-        }
-        return decodeURIComponent(results[2].replace(/\+/g, " "));
-    }
+		if (!results) {
+			return null
+		}
+		if (!results[2]) {
+			return ""
+		}
+		return decodeURIComponent(results[2].replace(/\+/g, " "))
+	}
 
-    public getUrl(): string {
-        return this.$location.absUrl();
-    }
+	public getUrl(): string {
+		return this.$location.absUrl()
+	}
 
-    public getFileDataFromQueryParam(): Promise<NameDataPair[]> {
+	public getFileDataFromQueryParam(): Promise<NameDataPair[]> {
+		let fileNames = this.$location.search().file
 
-        let fileNames = this.$location.search().file;
+		if (!fileNames) {
+			fileNames = []
+		}
 
-        if(!fileNames) {
-            fileNames = [];
-        }
+		if (fileNames.push === undefined) {
+			fileNames = [fileNames]
+		}
 
-        if(fileNames.push === undefined) {
-            fileNames = [fileNames];
-        }
+		let fileReadingTasks = []
 
-        let fileReadingTasks = [];
+		fileNames.forEach(fileName => {
+			fileReadingTasks.push(
+				new Promise((resolve, reject) => {
+					this.getFileDataFromFile(fileName).then(resolve, reject)
+				})
+			)
+		})
 
-        fileNames.forEach((fileName)=>{
-            fileReadingTasks.push(new Promise((resolve, reject) => {
-                this.getFileDataFromFile(fileName).then(resolve, reject);
-            }));
-        });
+		return Promise.all(fileReadingTasks)
+	}
 
-        return Promise.all(fileReadingTasks);
-
-    }
-
-    public getFileDataFromFile(file: string): Promise<NameDataPair> {
-
-        return new Promise((resolve, reject) => {
-
-            if (file && file.length > 0) {
-                this.$http.get(file).then(
-                    (response: IHttpResponse<Object>) => {
-                        if (response.status === UrlUtils.OK_CODE) {
-                            Object.assign(response.data, {fileName: file});
-                            resolve({fileName: file, content: response.data});
-                        } else {
-                            reject();
-                        }
-                    }, reject
-                );
-            } else {
-                reject();
-            }
-
-        });
-
-    }
-
+	public getFileDataFromFile(file: string): Promise<NameDataPair> {
+		return new Promise((resolve, reject) => {
+			if (file && file.length > 0) {
+				this.$http.get(file).then((response: IHttpResponse<Object>) => {
+					if (response.status === UrlUtils.OK_CODE) {
+						Object.assign(response.data, { fileName: file })
+						resolve({ fileName: file, content: response.data })
+					} else {
+						reject()
+					}
+				}, reject)
+			} else {
+				reject()
+			}
+		})
+	}
 }
