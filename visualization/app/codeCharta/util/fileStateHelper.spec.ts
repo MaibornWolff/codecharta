@@ -107,7 +107,8 @@ describe("fileStateHelper", () => {
             expect(result).toBeFalsy()
         })
 
-        it("should return false even if a fileSelectionState is SINGLE if it's not the first one", () => {
+        it("should return false even if a fileSelectionState is SINGLE if it's not the first found one", () => {
+            fileStates.push({file : TEST_DELTA_MAP_B, selectedAs: FileSelectionState.Partial })
             fileStates.push({file: TEST_DELTA_MAP_A, selectedAs : FileSelectionState.Single})
 
             const result = FileStateHelper.isSingleState(fileStates)
@@ -125,13 +126,22 @@ describe("fileStateHelper", () => {
             expect(result).toBeTruthy()
         })
 
+        it("should return true if the first fileSelectionState is REFERENCE", () => {
+            fileStates.unshift({file: TEST_DELTA_MAP_A, selectedAs : FileSelectionState.Reference})
+
+            const result = FileStateHelper.isDeltaState(fileStates)
+
+            expect(result).toBeTruthy()
+        })
+
         it("should return false if the first fileSelectionState is not COMPARISON", () => {
             const result = FileStateHelper.isDeltaState(fileStates)
 
             expect(result).toBeFalsy()
         })
 
-        it("should return false even if a fileSelectionState is DELTA if it's not the first one", () => {
+        it("should return false even if a fileSelectionState is DELTA if it's not the first found one", () => {
+            fileStates.push({file : TEST_DELTA_MAP_B, selectedAs: FileSelectionState.Single })
             fileStates.push({file: TEST_DELTA_MAP_A, selectedAs : FileSelectionState.Comparison})
 
             const result = FileStateHelper.isDeltaState(fileStates)
@@ -149,13 +159,22 @@ describe("fileStateHelper", () => {
             expect(result).toBeTruthy()
         })
 
-        it("should return false if the first fileSelectionState is not PARTIAL", () => {
+        it("should return true if the first fileSelectionState is undefined", () => {
+            const result = FileStateHelper.isPartialState(fileStates)
+
+            expect(result).toBeTruthy()
+        })
+
+        it("should return false if the first fileSelectionState is not PARTIAL or undefined", () => {
+            fileStates.unshift({file : TEST_DELTA_MAP_B, selectedAs: FileSelectionState.Single })
+
             const result = FileStateHelper.isPartialState(fileStates)
 
             expect(result).toBeFalsy()
         })
 
-        it("should return false even if a fileSelectionState is DELTA if it's not the first one", () => {
+        it("should return false even if a fileSelectionState is DELTA if it's not the first found one", () => {
+            fileStates.push({file : TEST_DELTA_MAP_B, selectedAs: FileSelectionState.Single })
             fileStates.push({file: TEST_DELTA_MAP_A, selectedAs : FileSelectionState.Partial})
 
             const result = FileStateHelper.isPartialState(fileStates)
