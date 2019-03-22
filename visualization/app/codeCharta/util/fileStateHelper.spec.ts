@@ -1,0 +1,166 @@
+import { FileStateHelper } from "./fileStateHelper"
+import { FileState, FileSelectionState, CCFile } from "../codeCharta.model";
+import {TEST_DELTA_MAP_A, TEST_DELTA_MAP_B} from "./dataMocks"
+
+describe("fileStateHelper", () => {
+    let fileStates : FileState[]
+
+    beforeEach(() => {
+        fileStates = []
+        fileStates.push({file : TEST_DELTA_MAP_A, selectedAs: FileSelectionState.None })
+        fileStates.push({file : TEST_DELTA_MAP_B, selectedAs: FileSelectionState.None })
+    })
+
+    describe("getVisibleFiles", () => {
+        it("should return an empty array when no files are selected", () => {
+            const result = FileStateHelper.getVisibleFiles(fileStates);
+
+            expect(result).toEqual([])
+            expect(result.length).toBe(0)
+        }) 
+
+        it("should return an array when all files are selected", () => {
+            fileStates[0].selectedAs = FileSelectionState.Partial;
+            fileStates[1].selectedAs = FileSelectionState.Single;
+
+            const result = FileStateHelper.getVisibleFiles(fileStates);
+
+            expect(result[0]).toEqual(TEST_DELTA_MAP_A)
+            expect(result[1]).toEqual(TEST_DELTA_MAP_B)
+            expect(result.length).toBe(2)
+        }) 
+
+        it("should return an array when only some files are selected", () => {
+            fileStates[0].selectedAs = FileSelectionState.Partial;
+
+            const result = FileStateHelper.getVisibleFiles(fileStates);
+
+            expect(result[0]).toEqual(TEST_DELTA_MAP_A)
+            expect(result.length).toBe(1)
+        }) 
+    })
+
+    describe("getVisibleFileStates", () => {
+        it("should return an empty array when no files are selected", () => {
+            const result = FileStateHelper.getVisibleFileStates(fileStates);
+            
+            expect(result).toEqual([])
+            expect(result.length).toBe(0)
+        }) 
+
+        it("should return an array when all files are selected", () => {
+            fileStates[0].selectedAs = FileSelectionState.Partial;
+            fileStates[1].selectedAs = FileSelectionState.Single;
+
+            const result = FileStateHelper.getVisibleFileStates(fileStates);
+
+            expect(result[0]).toEqual(fileStates[0])
+            expect(result[1]).toEqual(fileStates[1])
+            expect(result.length).toBe(2)
+        }) 
+
+        it("should return an array when only some files are selected", () => {
+            fileStates[0].selectedAs = FileSelectionState.Partial;
+
+            const result = FileStateHelper.getVisibleFileStates(fileStates);
+
+            expect(result[0]).toEqual(fileStates[0])
+            expect(result.length).toBe(1)
+        }) 
+    })
+
+    describe("getFileByFileName", () => {
+        it("should return undefined if no files match the fileName", () => {
+            const result = FileStateHelper.getFileByFileName("fileC", fileStates)
+
+            expect(result).not.toBeDefined()
+        })
+
+        it("should return the fileState if a file matches the fileName", () => {
+            const result = FileStateHelper.getFileByFileName("fileA", fileStates)
+
+            expect(result).toEqual(TEST_DELTA_MAP_A)
+        })
+
+        it("should return the first fileState found if multiple files match the fileName", () => {
+            const otherMap =  {...TEST_DELTA_MAP_A, fileMeta: { ...TEST_DELTA_MAP_A.fileMeta, projectName : "Not a Sample Project"}}
+            fileStates.push({file: otherMap, selectedAs : FileSelectionState.Partial})
+
+            const result = FileStateHelper.getFileByFileName("fileA", fileStates)
+
+            expect(result).toEqual(TEST_DELTA_MAP_A)
+        })
+    })
+
+    describe("isSingleState", () => {
+        it("should return true if the first fileSelectionState is SINGLE", () => {
+            fileStates.unshift({file: TEST_DELTA_MAP_A, selectedAs : FileSelectionState.Single})
+
+            const result = FileStateHelper.isSingleState(fileStates)
+
+            expect(result).toBeTruthy()
+        })
+
+        it("should return false if the first fileSelectionState is not SINGLE", () => {
+            const result = FileStateHelper.isSingleState(fileStates)
+
+            expect(result).toBeFalsy()
+        })
+
+        it("should return false even if a fileSelectionState is SINGLE if it's not the first one", () => {
+            fileStates.push({file: TEST_DELTA_MAP_A, selectedAs : FileSelectionState.Single})
+
+            const result = FileStateHelper.isSingleState(fileStates)
+
+            expect(result).toBeFalsy()
+        })
+    })
+
+    describe("isDeltaState", () => {
+        it("should return true if the first fileSelectionState is COMPARISON", () => {
+            fileStates.unshift({file: TEST_DELTA_MAP_A, selectedAs : FileSelectionState.Comparison})
+
+            const result = FileStateHelper.isDeltaState(fileStates)
+
+            expect(result).toBeTruthy()
+        })
+
+        it("should return false if the first fileSelectionState is not COMPARISON", () => {
+            const result = FileStateHelper.isDeltaState(fileStates)
+
+            expect(result).toBeFalsy()
+        })
+
+        it("should return false even if a fileSelectionState is DELTA if it's not the first one", () => {
+            fileStates.push({file: TEST_DELTA_MAP_A, selectedAs : FileSelectionState.Comparison})
+
+            const result = FileStateHelper.isDeltaState(fileStates)
+
+            expect(result).toBeFalsy()
+        })
+    })
+
+    describe("isPartialState", () => {
+        it("should return true if the first fileSelectionState is PARTIAL", () => {
+            fileStates.unshift({file: TEST_DELTA_MAP_A, selectedAs : FileSelectionState.Partial})
+
+            const result = FileStateHelper.isPartialState(fileStates)
+
+            expect(result).toBeTruthy()
+        })
+
+        it("should return false if the first fileSelectionState is not PARTIAL", () => {
+            const result = FileStateHelper.isPartialState(fileStates)
+
+            expect(result).toBeFalsy()
+        })
+
+        it("should return false even if a fileSelectionState is DELTA if it's not the first one", () => {
+            fileStates.push({file: TEST_DELTA_MAP_A, selectedAs : FileSelectionState.Partial})
+
+            const result = FileStateHelper.isPartialState(fileStates)
+
+            expect(result).toBeFalsy()
+        })
+    })
+})

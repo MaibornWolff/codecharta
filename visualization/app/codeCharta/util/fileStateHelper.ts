@@ -10,7 +10,7 @@ export class FileStateHelper {
         return fileStates.filter(x => x.selectedAs != FileSelectionState.None)
     }
 
-    public static getFileByFileName(fileName: string, fileStates): CCFile {
+    public static getFileByFileName(fileName: string, fileStates: FileState[]): CCFile {
         const matchingFileState: FileState =  fileStates.find(x => x.file.fileMeta.fileName == fileName)
         return matchingFileState ? matchingFileState.file : undefined
     }
