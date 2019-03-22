@@ -1,6 +1,6 @@
 import angular from "angular";
 import "../../state/state.module";
-import "../codeMap/codeMap";
+import "../codeMap/codeMap.module";
 
 import "./mapTreeView.component.scss";
 

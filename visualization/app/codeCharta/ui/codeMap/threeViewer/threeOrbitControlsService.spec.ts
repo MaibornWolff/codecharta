@@ -1,4 +1,4 @@
-import "./threeViewer";
+import "./threeViewer.module";
 import { NG, getService } from "../../../../../mocks/ng.mockhelper";
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService";
 import { ThreeCameraService } from "./threeCameraService";

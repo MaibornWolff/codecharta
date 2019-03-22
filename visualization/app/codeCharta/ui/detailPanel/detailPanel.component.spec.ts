@@ -1,4 +1,4 @@
-import "./detailPanel";
+import "./detailPanel.module";
 
 import {SettingsService, SettingsServiceSubscriber, Settings} from "../../state/settings.service";
 import {DetailPanelController} from "./detailPanel.component";

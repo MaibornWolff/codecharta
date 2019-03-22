@@ -1,4 +1,4 @@
-import "./nodeContextMenu";
+import "./nodeContextMenu.module";
 
 import { IRootScopeService, IWindowService, ITimeoutService } from "angular";
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper";

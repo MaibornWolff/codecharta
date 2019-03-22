@@ -1,6 +1,6 @@
 import angular from "angular";
 
-import "./threeViewer/threeViewer";
+import "./threeViewer/threeViewer.module";
 import "../../state/state.module";
 import "./treemap/treemap.module";
 

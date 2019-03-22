@@ -1,7 +1,7 @@
 import angular from "angular";
 import {ribbonBarComponent} from "./ribbonBar.component";
 import "../../state/state.module";
-import "../../ui/colorSettingsPanel/colorSettingsPanel";
+import "../colorSettingsPanel/colorSettingsPanel.module";
 
 angular.module(
     "app.codeCharta.ui.ribbonBar",

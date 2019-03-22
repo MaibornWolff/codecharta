@@ -1,4 +1,4 @@
-import "../rangeSlider/rangeSlider";
+import "../rangeSlider/rangeSlider.module";
 import "../../state/state.module";
 
 import angular from "angular";

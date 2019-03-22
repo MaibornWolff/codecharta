@@ -1,7 +1,7 @@
 "use strict";
 import angular from "angular";
 import "../../state/state.module";
-import "../../ui/dialog/dialog";
+import "../dialog/dialog.module";
 import {FileChooserDirective} from "./fileChooser.directive";
 import {fileChooserComponent} from "./fileChooser.component";
 

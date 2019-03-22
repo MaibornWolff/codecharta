@@ -1,7 +1,7 @@
 "use strict";
 
 import "../ui";
-import "../codeMap/codeMap";
+import "../codeMap/codeMap.module";
 
 import "angular-material-expansion-panel";
 

@@ -22,7 +22,7 @@ class TooltipService {
 
     /* @ngInject */
     constructor(private $rootScope) {
-        this.tooltips = require("./tooltips.json");
+        this.tooltips = require("../../assets/tooltips.json");
     }
 
     public subscribe(subscriber: TooltipServiceSubscriber) {

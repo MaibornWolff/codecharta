@@ -1,7 +1,7 @@
 import angular from "angular";
 
 import "../../state/state.module";
-import "../codeMap/codeMap";
+import "../codeMap/codeMap.module";
 
 import {detailPanelComponent} from "./detailPanel.component";
 

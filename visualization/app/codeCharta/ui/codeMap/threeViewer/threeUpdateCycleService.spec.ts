@@ -1,4 +1,4 @@
-import "./threeViewer";
+import "./threeViewer.module";
 import {NG} from "../../../../../mocks/ng.mockhelper";
 import sinon from "sinon";
 import angular from "angular";

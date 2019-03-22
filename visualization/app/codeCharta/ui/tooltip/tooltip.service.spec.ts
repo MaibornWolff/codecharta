@@ -57,7 +57,7 @@ describe("tooltip.service", ()=> {
     });
 
     it("default tooltips should be tooltips from json file", ()=> {
-        expect(tooltipService.tooltips).toBe(require("./tooltips.json"));
+        expect(tooltipService.tooltips).toBe(require("../../assets/tooltips.json"));
     });
 
     it("Should return the correct description of the given metric", () => {
