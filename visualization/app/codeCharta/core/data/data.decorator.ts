@@ -1,8 +1,8 @@
 "use strict"
 
 import * as d3 from "d3"
-import { CodeMap, CodeMapNode, BlacklistItem } from "./model/CodeMap"
-import { HierarchyNode } from "d3-hierarchy"
+import {BlacklistItem, BlacklistType, CodeMap, CodeMapNode} from "./model/CodeMap"
+import {HierarchyNode} from "d3-hierarchy"
 
 /**
  * Decorates the data structure with artificial metrics
@@ -150,7 +150,7 @@ export class DataDecorator {
 			return false
 		} else {
 			filtered = blacklist.filter((item: BlacklistItem) => {
-				return item.path === node.data.path
+				return item.path === node.data.path && item.type == BlacklistType.exclude
 			})
 		}
 		return filtered.length === 1
