@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+-   Excluded buildings are no longer used for aggregated metric calculation #352
+
 ### Chore
 
 -   Bump browser-sync-webpack-plugin from 1.2.0 to 2.2.2 in /visualization
