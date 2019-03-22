@@ -29,6 +29,7 @@ class FileChooserController {
     public onImportNewFiles(element) {
         this.$rootScope.$broadcast("add-loading-task");
         this.$scope.$apply(() => {
+            this.$rootScope.$broadcast("add-loading-task");
             this.fileStateService.resetMaps()
             for(let file of element.files) {
                 let reader = new FileReader()
@@ -51,6 +52,7 @@ class FileChooserController {
             this.dialogService.showErrorDialog("Error parsing JSON!" + error)
             this.$rootScope.$broadcast("remove-loading-task")
         }
+        this.$rootScope.$broadcast("remove-loading-task")
     }
 
     public setNewData(nameDataPair: NameDataPair){
