@@ -9,12 +9,32 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+-   Project Name can be specified for merge filter #394
+
+### Changed
+
+-   Throw a MergeException if project names do not match in MergeFilter #394
+
+### Removed
+
+### Fixed
+
+-   Excluded buildings are no longer used for aggregated metric calculation #352
+
+### Chore
+
+-   Bump browser-sync-webpack-plugin from 1.2.0 to 2.2.2 in /visualization
+-   Bump @types/node from 8.10.19 to 11.11.3 in /visualization
+-   Bump html-webpack-plugin from 2.30.1 to 3.2.0 in /visualization
+
+## [1.22.0] - 2019-03-15
+
+### Added
+
 -   Added buttons to select all/none/inversion of revisions/maps in multiple mode #391
 -   Merge filter can merge all files of folders #392
 
 ### Changed
-
--   Updated dependencies for visualisation
 
 ### Removed
 
@@ -22,11 +42,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Fixed bug that code map was not re-loaded when changing from multiple to single revision mode #396
 -   Fixed missing apiVersion in aggregated map #398
--             Input Fields of color sliders adjust width according to content #409
+-   Input Fields of color sliders adjust width according to content #409
 
 ### Chore
 
 -   Bump nouislider from 11.1.0 to 13.1.1 in /visualization
+-   Bump typescript from 2.7.2 to 3.3.3333 in /visualization
+-   Bump @types/d3 from 4.13.0 to 5.7.1 in /visualization
 
 ## [1.21.2] - 2019-02-26
 
@@ -41,7 +63,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed
 
 -   Fixing non-existent metric aggregation on root-level when using multiple Files
--   Excluded buildings are no longer used for aggregated metric calculation #352
 
 ## [1.21.1] - 2019-02-22
 
