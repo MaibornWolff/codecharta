@@ -1,58 +1,29 @@
 import {stubDate} from "../../../mocks/dateMock.helper";
 import {FileDownloader} from "./fileDownloader";
 import {CCFile} from "../codeCharta.model";
+import {TEST_FILE_DATA, TEST_FILE_DATA_DOWNLOADED} from "./dataMocks"
 
-describe("app.codeCharta.core.fileDownloader", function() {
+describe("fileDownloader", () => {
+    let file : CCFile;
 
-    const file: CCFile = {
-        fileMeta: {
-            projectName: "myProjectName",
-            fileName: "myFilename",
-            apiVersion: "1.1.1",
-        },
-        map: {
-            name: "root",
-            type: "Folder",
-            path: "/root",
-            visible: true,
-            attributes: {},
-            children: [
-                {
-                    name: "a",
-                    type: "Folder",
-                    path: "/root/a",
-                    visible: false,
-                    attributes: {},
-                    children: [
-                        {
-                            name: "aa",
-                            type: "File",
-                            path: "/root/a/aa",
-                            visible: true,
-                            attributes: {},
-                        }
-                    ]
-                },
-                {
-                    name: "b",
-                    type: "File",
-                    path: "/root/b",
-                    visible: false,
-                    attributes: {},
-                }
-            ]
-        },
-        settings: {
-            fileSettings: {
-                edges: "myEdges",
-                attributeTypes: "myAttributeTypes",
-            }
-        }
-    }
+    beforeEach(() => {
+        file = TEST_FILE_DATA
 
-    stubDate(new Date('2018-12-14T09:39:59'));
+        FileDownloader["downloadData"] = jest.fn()
+    })
 
-    it("should add json extension to given string", function() {
+    describe("downloadCurrentMap", () => {
+        it("should", () => {
+            stubDate(new Date('2018-12-14T09:39:59'));
+
+            FileDownloader.downloadCurrentMap(file)
+
+            expect(FileDownloader["downloadData"]).toHaveBeenCalledTimes(1)
+            expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(TEST_FILE_DATA_DOWNLOADED, TEST_FILE_DATA_DOWNLOADED.fileName)
+        })
+    })
+
+    /*it("should add json extension to given string", function() {
         expect(FileDownloader.addJsonFileEndingIfNecessary("fileSettings")).toBe("fileSettings.json");
     });
 
@@ -73,6 +44,6 @@ describe("app.codeCharta.core.fileDownloader", function() {
     it("should return correct project json content", function() {
         FileDownloader.downloadData = jest.fn(function() {return true;});
         expect(FileDownloader.getProjectDataAsCCJsonFormat(file)).toMatchSnapshot();
-    });
+    });*/
 
 });

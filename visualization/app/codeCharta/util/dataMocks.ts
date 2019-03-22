@@ -164,3 +164,38 @@ export const TEST_DELTA_MAP_B: CCFile = {
 		fileSettings: {}
 	}
 }
+
+export const TEST_FILE_DATA_DOWNLOADED = {
+	apiVersion: "1.1",
+	attributeTypes: undefined,
+	blacklist: undefined,
+	edges: [
+		{ attributes: { avgCommits: 34, pairingRate: 89 }, fromNodeName: "/root/big leaf", toNodeName: "/root/Parent Leaf/small leaf" },
+		{
+			attributes: { avgCommits: 34, pairingRate: 89 },
+			fromNodeName: "/root/sample1 only leaf",
+			toNodeName: "/root/Parent Leaf/small leaf"
+		}
+	],
+	fileName: "file.22_3_2019.json",
+	nodes: [
+		{
+			attributes: {},
+			children: [
+				{ attributes: { Functions: 10, MCC: 1, RLOC: 100 }, link: "http://www.google.de", name: "big leaf", type: "File" },
+				{
+					attributes: {},
+					children: [
+						{ attributes: { Functions: 100, MCC: 100, RLOC: 30 }, name: "small leaf", type: "File" },
+						{ attributes: { Functions: 1000, MCC: 10, RLOC: 70 }, name: "other small leaf", type: "File" }
+					],
+					name: "Parent Leaf",
+					type: "Folder"
+				}
+			],
+			name: "root",
+			type: "Folder"
+		}
+	],
+	projectName: "Sample Map"
+}
