@@ -56,7 +56,7 @@ describe("colorConverter", () => {
         })
 
         it("should convert a hex to rgba with hex size smaller than 6", () => {
-            const result = ColorConverter.convertHexToRgba("#12345")
+            const result = ColorConverter.convertHexToRgba("#123")
             const expected = "rgba(17,34,51,1)"
 
             expect(result).toBe(expected)
@@ -86,7 +86,7 @@ describe("colorConverter", () => {
         })
 
         it("should return a generated pixel of midrange input value with less than 6 digits", () => {
-            const result = ColorConverter.getImageDataUri("#12345")
+            const result = ColorConverter.getImageDataUri("#123")
             const expected = "data:image/gif;base64,R0lGODlhAQABAPAAABEiM////yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="
 
             expect(result).toBe(expected)
