@@ -38,7 +38,7 @@ export class FileStateService {
 
     public setSingle(file: CCFile) {
         this.resetSelectionStates()
-        const matchedFile = this.fileStates.find(x => x.file == file)
+        const matchedFile = this.fileStates.find(x => x.file === file)
         if (matchedFile) {
             matchedFile.selectedAs = FileSelectionState.Single
         }
@@ -47,8 +47,8 @@ export class FileStateService {
 
     public setDelta(reference: CCFile, comparison: CCFile) {
         this.resetSelectionStates()
-        const matchedReferenceFile = this.fileStates.find(x => x.file == reference)
-        const matchedComparisonFile = this.fileStates.find(x => x.file == comparison)
+        const matchedReferenceFile = this.fileStates.find(x => x.file === reference)
+        const matchedComparisonFile = this.fileStates.find(x => x.file === comparison)
 
         if (matchedReferenceFile) {
             matchedReferenceFile.selectedAs = FileSelectionState.Reference

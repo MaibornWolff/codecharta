@@ -67,7 +67,7 @@ export class MetricService implements FileStateServiceSubscriber {
 	}
 
 	private getUniqueMetricNames(fileStates: FileState[]): string[] {
-		if (fileStates.length == 0) {
+		if (fileStates.length === 0) {
 			return []
 		} else {
 			let leaves: HierarchyNode<CodeMapNode>[] = [];
@@ -90,7 +90,7 @@ export class MetricService implements FileStateServiceSubscriber {
 			metricData.push({
 				name: metricName,
 				maxValue: this.getMaxMetricInAllRevisions(fileStates.map(x => x.file), metricName),
-				availableInVisibleMaps: !!metricsFromVisibleMaps.find(metric => metric == metricName)
+				availableInVisibleMaps: !!metricsFromVisibleMaps.find(metric => metric === metricName)
 			});
 		}
 		return this.sortByAttributeName(metricData);

@@ -3,11 +3,11 @@ import {CCFile, FileSelectionState, FileState} from "../codeCharta.model";
 export class FileStateHelper {
 
     public static getVisibleFiles(fileStates: FileState[]): CCFile[] {
-        return fileStates.filter(x => x.selectedAs != FileSelectionState.None).map(x => x.file)
+        return fileStates.filter(x => x.selectedAs !== FileSelectionState.None).map(x => x.file)
     }
 
     public static getVisibleFileStates(fileStates: FileState[]): FileState[] {
-        return fileStates.filter(x => x.selectedAs != FileSelectionState.None)
+        return fileStates.filter(x => x.selectedAs !== FileSelectionState.None)
     }
 
     public static getFileByFileName(fileName: string, fileStates: FileState[]): CCFile {
@@ -17,22 +17,22 @@ export class FileStateHelper {
 
     public static isSingleState(fileStates: FileState[]): boolean {
         const firstFoundFileState: FileSelectionState = this.getFirstFoundFileState(fileStates)
-        return firstFoundFileState == FileSelectionState.Single
+        return firstFoundFileState === FileSelectionState.Single
     }
 
     public static isDeltaState(fileStates: FileState[]): boolean {
         const firstFoundFileState: FileSelectionState = this.getFirstFoundFileState(fileStates)
-        return firstFoundFileState == FileSelectionState.Reference || firstFoundFileState == FileSelectionState.Comparison
+        return firstFoundFileState === FileSelectionState.Reference || firstFoundFileState === FileSelectionState.Comparison
     }
 
     public static isPartialState(fileStates: FileState[]): boolean {
         const firstFoundFileState: FileSelectionState = this.getFirstFoundFileState(fileStates)
-        return firstFoundFileState == undefined || firstFoundFileState == FileSelectionState.Partial
+        return firstFoundFileState === undefined || firstFoundFileState === FileSelectionState.Partial
     }
 
     private static getFirstFoundFileState(fileStates: FileState[]): FileSelectionState {
         return fileStates
             .map(x => x.selectedAs)
-            .find(state => state != FileSelectionState.None)
+            .find(state => state !== FileSelectionState.None)
     }
 }
