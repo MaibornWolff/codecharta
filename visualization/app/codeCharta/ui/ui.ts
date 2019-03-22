@@ -9,7 +9,7 @@ import "./settingsPanel/settingsPanel.module";
 import "./viewCube/viewCube.module";
 import "./revisionChooser/revisionChooser";
 import "./legendPanel/legendPanel";
-import "./fileChooser/fileChooser";
+import "./fileChooser/fileChooser.module";
 import "./detailPanel/detailPanel";
 import "./scenarioDropDown/scenarioDropDown.module";
 import "./mapTreeView/mapTreeView";

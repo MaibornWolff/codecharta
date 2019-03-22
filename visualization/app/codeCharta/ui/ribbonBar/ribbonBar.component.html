@@ -2,7 +2,6 @@
 
     <div class="section">
         <div class="section-header">
-            <file-chooser-directive></file-chooser-directive>
             <revision-chooser-file-drop-down-component></revision-chooser-file-drop-down-component>
         </div>
         <span class="section-title" id="section-title" ng-click="$ctrl.toggle()">
@@ -47,9 +46,7 @@
     </div>
 
     <div class="file-chooser-btn">
-        <md-button class="md-fab md-primary dark_shadow_opacity" onclick="document.getElementById('input-file-id').click();">
-            <i class="fa fa-folder-open"></i>
-        </md-button>
+        <file-chooser-directive></file-chooser-directive>
     </div>
 
     <div class="save-btn">

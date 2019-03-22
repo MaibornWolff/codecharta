@@ -26,7 +26,7 @@ class FileChooserController {
     ){
     }
 
-    public fileChanged(element) {
+    public onImportNewFiles(element) {
         this.$rootScope.$broadcast("add-loading-task");
         this.$scope.$apply(() => {
             this.fileStateService.resetMaps()
@@ -70,6 +70,9 @@ class FileChooserController {
     }
 }
 
-export {FileChooserController};
-
+export const fileChooserComponent = {
+    selector: "fileChooserComponent",
+    template: require("./fileChooser.component.html"),
+    controller: FileChooserController
+};
 

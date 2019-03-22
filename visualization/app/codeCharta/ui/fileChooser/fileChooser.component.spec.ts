@@ -1,4 +1,4 @@
-import {FileChooserController} from "./fileChooserController";
+import {FileChooserComponent} from "./fileChooser.component";
 import {SettingsService} from "../../state/settings.service";
 import {getService, instantiateModule} from "../../../../mocks/ng.mockhelper";
 import {IRootScopeService} from "angular";
@@ -6,15 +6,9 @@ import {CodeChartaService} from "../../codeCharta.service";
 import {FileStateService} from "../../state/fileState.service";
 import {DialogService} from "../dialog/dialog.service";
 
-jest.mock("../../core/data/data.loading.service");
-jest.mock("../../core/settings/settings.service");
-jest.mock("../dialog/dialog.service");
-jest.mock("../../core/data/data.service");
-jest.mock("../codeMap/threeViewer/threeOrbitControlsService");
-
 describe("file chooser controller", ()=>{
 
-    let services, fileChooserController: FileChooserController;
+    let services, fileChooserController: FileChooserComponent;
 
     beforeEach(() => {
         restartSystem();
@@ -38,7 +32,7 @@ describe("file chooser controller", ()=>{
     }
 
     function rebuildController() {
-        fileChooserController = new FileChooserController(
+        fileChooserController = new FileChooserComponent(
             services.$scope,
             services.$rootScope,
             services.dialogService,
@@ -48,23 +42,23 @@ describe("file chooser controller", ()=>{
         );
     }
 
-    describe("#fileChanged",()=>{
+    describe("onImportNewFiles",()=>{
 
         //TODO FileRader mocks + tests
 
         it("should reset maps",()=>{
-            fileChooserController.fileChanged({files: []});
+            fileChooserController.onImportNewFiles({files: []});
             expect(services.dataService.resetMaps).toBeCalled();
         });
 
         it("should broadcast a loading task",()=>{
-            fileChooserController.fileChanged({files: []});
+            fileChooserController.onImportNewFiles({files: []});
             expect(services.$rootScope.$broadcast).toBeCalledWith("add-loading-task");
         });
 
     });
 
-    describe("#onNewFileLoaded",()=>{
+    describe("onNewFileLoaded",()=>{
 
         it("should call apply settings only once", async ()=>{
             services.dataLoadingService.loadMapFromFileContent = jest.fn(()=>Promise.resolve());
@@ -95,30 +89,21 @@ describe("file chooser controller", ()=>{
             expect(services.dialogService.showErrorDialog).toBeCalled();
             expect(services.$rootScope.$broadcast).toBeCalledWith("remove-loading-task");
         });
-
     });
 
-    describe("#setNewData",()=>{
+    describe("setNewData",()=>{
 
         it("should trigger a digestion cycle if necessary when given valid data",async ()=>{
-            services.dataLoadingService.loadMapFromFileContent = jest.fn(()=> Promise.resolve());
+            services.codeChartaService.loadFiles = jest.fn(()=> Promise.resolve());
             await fileChooserController.setNewData({fileName: "aName", content: {}});
             expect(services.$scope.$digest).toHaveBeenCalled();
         });
 
         it("should print errors when given invalid data",async ()=>{
-            services.dataLoadingService.loadMapFromFileContent = jest.fn(()=> Promise.reject());
+            services.codeChartaService.loadFiles = jest.fn(()=> Promise.reject());
             await fileChooserController.setNewData({fileName: "aName", content: {}});
             expect(services.dialogService.showErrorDialog).toHaveBeenCalled();
         });
-
-        it("should apply the scenario once, set comparison and reference map when given valid data",async ()=>{
-            services.dataLoadingService.loadMapFromFileContent = jest.fn(()=> Promise.resolve());
-            services.scenarioService.applyScenarioOnce = jest.fn();
-            await fileChooserController.setNewData({fileName: "aName", content: {}});
-            expect(services.scenarioService.applyScenarioOnce).toHaveBeenCalled();
-        });
-
     });
 
     it("should delegate errors to dialog service",()=>{
