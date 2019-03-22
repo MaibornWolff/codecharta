@@ -177,7 +177,7 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 			toNodeName: "/root/Parent Leaf/small leaf"
 		}
 	],
-	fileName: "file.22_3_2019.json",
+	fileName: "file.14_12_2018.json",
 	nodes: [
 		{
 			attributes: {},
