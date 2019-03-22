@@ -177,7 +177,7 @@
 		"jest-serializer-html": "^6.0.0",
 		"jquery": "^3.3.1",
 		"json-loader": "^0.5.7",
-		"load-grunt-tasks": "^3.5.2",
+		"load-grunt-tasks": "^4.0.0",
 		"makeshift": "^1.1.0",
 		"minimatch": "^3.0.4",
 		"ng-annotate-loader": "^0.6.1",
