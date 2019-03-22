@@ -228,18 +228,6 @@ describe("nodeDecorator", () => {
 			expect(result.map.children[1].children[0].path).toBe("/root/Parent Leaf/small leaf")
 		})
 
-		it("should decorate nodes with the correct path inplace", () => {
-			NodeDecorator.preDecorateFile(TEST_DELTA_MAP_A)
-
-			let h = d3.hierarchy(TEST_DELTA_MAP_A.map)
-			h.each(node => {
-				expect(node.data.path).toBeDefined()
-			})
-
-			expect(TEST_DELTA_MAP_A.map.path).toBe("/root")
-			expect(TEST_DELTA_MAP_A.map.children[1].children[0].path).toBe("/root/Parent Leaf/small leaf")
-		})
-
 		it("all nodes should have an attribute list with all possible metrics", () => {
 			fileA.map.children[0].attributes = undefined
 			fileA.map.children[1].attributes = { some: 1 }

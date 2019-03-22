@@ -18,7 +18,9 @@ export class NodeDecorator {
 
 	public static preDecorateFile(file: CCFile): CCFile {
 		// TODO: predecorate origin as well? so in multiple mode the files keep its original origin attribute
-		return this.decorateMapWithPathAttribute(file)
+		let decoratedFile: CCFile = this.deepCopy(file)
+		this.decorateMapWithPathAttribute(decoratedFile)
+		return decoratedFile
 	}
 
 	private static decorateMapWithCompactMiddlePackages(file: CCFile) {
