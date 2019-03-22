@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Bump browser-sync-webpack-plugin from 1.2.0 to 2.2.2 in /visualization
 -   Bump @types/node from 8.10.19 to 11.11.3 in /visualization
 -   Bump html-webpack-plugin from 2.30.1 to 3.2.0 in /visualization
+-   Bump load-grunt-tasks from 3.5.2 to 4.0.0 in /visualization #444
+-   Bump ajv from 5.5.2 to 6.10.0 in /visualization #447
+-   Bump resolve-url-loader from 2.3.0 to 3.0.1 in /visualization #448
+
 
 ## [1.22.0] - 2019-03-15
 
