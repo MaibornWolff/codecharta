@@ -42,20 +42,6 @@ export class MetricService implements FileStateServiceSubscriber {
 		return metric ? metric.maxValue : undefined
 	}
 
-	public getMaxMetricInAllRevisions(files: CCFile[], metric: string): number {
-		let maxValue = 0;
-		files.forEach((file: CCFile) => {
-			let nodes: HierarchyNode<CodeMapNode>[] = hierarchy(file.map).leaves();
-			nodes.forEach((node: any) => {
-				const currentValue = node.data.attributes[metric];
-				if (currentValue > maxValue) {
-					maxValue = currentValue;
-				}
-			});
-		});
-		return maxValue;
-	}
-
 	public calculateMetrics(fileStates: FileState[], visibleFileStates: FileState[]): MetricData[] {
 		if (fileStates.length <= 0) {
 			return []
@@ -94,6 +80,20 @@ export class MetricService implements FileStateServiceSubscriber {
 			});
 		}
 		return this.sortByAttributeName(metricData);
+	}
+
+	private getMaxMetricInAllRevisions(files: CCFile[], metric: string): number {
+		let maxValue = 0;
+		files.forEach((file: CCFile) => {
+			let nodes: HierarchyNode<CodeMapNode>[] = hierarchy(file.map).leaves();
+			nodes.forEach((node: any) => {
+				const currentValue = node.data.attributes[metric];
+				if (currentValue > maxValue) {
+					maxValue = currentValue;
+				}
+			});
+		});
+		return maxValue;
 	}
 
 	private sortByAttributeName(metricData: MetricData[]): MetricData[] {

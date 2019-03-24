@@ -13,8 +13,10 @@ export class ResetSettingsButtonController {
 	}
 
 	public updateSettings() {
-		const sanitizedSettingsList = this.settingsNames.replace(/ /g, "").replace(/\n/g, "")
-		const tokens: string[] = sanitizedSettingsList.split(",")
+		const tokens: string[] = this.settingsNames
+			.replace(/ /g, "")
+			.replace(/\n/g, "")
+			.split(",")
 		const defaultSettings = this.settingsService.getDefaultSettings()
 		const updatedSettings: RecursivePartial<Settings> = {}
 

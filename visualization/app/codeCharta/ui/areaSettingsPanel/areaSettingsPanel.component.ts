@@ -37,7 +37,15 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
 
     public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
         this._viewModel.dynamicMargin = settings.appSettings.dynamicMargin
-        this._viewModel.margin = settings.dynamicSettings.margin
+        if (this._viewModel.dynamicMargin) {
+            const newMargin = this.computeMargin()
+            if (newMargin != this._viewModel.margin) {
+                this._viewModel.margin = newMargin
+                this.applySettings()
+            }
+        } else {
+            this._viewModel.margin = settings.dynamicSettings.margin
+        }
     }
 
     public onRenderFileChanged(renderFile: CCFile, event: angular.IAngularEvent) {
@@ -57,7 +65,6 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
     }
 
     public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-
     }
 
     public onChangeMarginSlider(){
@@ -66,14 +73,10 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
     }
 
     public onClickDynamicMargin() {
-        this.potentiallyUpdateMargin()
-        this.applySettings()
-    }
-
-    private potentiallyUpdateMargin() {
         if (this._viewModel.dynamicMargin) {
             this._viewModel.margin = this.computeMargin()
         }
+        this.applySettings()
     }
 
     public applySettings() {
