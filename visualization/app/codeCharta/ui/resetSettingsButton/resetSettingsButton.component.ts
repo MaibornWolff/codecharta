@@ -1,5 +1,6 @@
 import { SettingsService } from "../../state/settings.service"
 import "./resetSettingsButton.component.scss"
+import {RecursivePartial, Settings} from "../../codeCharta.model";
 
 export class ResetSettingsButtonController {
 	private settingsNames: string = ""
@@ -8,38 +9,37 @@ export class ResetSettingsButtonController {
 	constructor(private settingsService: SettingsService) {}
 
 	public onClick() {
-		this.updateSettings(this.settingsNames)
+		this.updateSettings()
 	}
 
-	public updateSettings(settingsList: string = this.settingsNames) {
-		const sanitizedSettingsList = settingsList.replace(/ /g, "").replace(/\n/g, "")
+	public updateSettings() {
+		const sanitizedSettingsList = this.settingsNames.replace(/ /g, "").replace(/\n/g, "")
 		const tokens: string[] = sanitizedSettingsList.split(",")
-		const settings = this.settingsService.getSettings()
 		const defaultSettings = this.settingsService.getDefaultSettings()
+		const updatedSettings: RecursivePartial<Settings> = {}
 
 		tokens.forEach(token => {
 			let steps = token.split(".")
 
-			if (steps.length > 1) {
-				let writeSettingsPointer = settings
-				let readSettingsPointer = defaultSettings
+			let defaultSettingsPointer = defaultSettings
+			let updatedSettingsPointer = updatedSettings
 
-				steps.forEach((step, index) => {
-					if (writeSettingsPointer[step] != null && readSettingsPointer[step] != null) {
-						if (index === steps.length - 1) {
-							writeSettingsPointer[step] = readSettingsPointer[step]
-						} else {
-							writeSettingsPointer = writeSettingsPointer[step]
-							readSettingsPointer = readSettingsPointer[step]
-						}
+			steps.forEach((step, index) => {
+				if (defaultSettingsPointer[step] !== undefined) {
+					if (!updatedSettingsPointer[step]) {
+						Object.assign(updatedSettingsPointer, {[step]: {}})
 					}
-				})
-			} else {
-				this.settingsService.settings[token] = defaultSettings[token]
-			}
+					if (index === steps.length - 1) {
+						updatedSettingsPointer[step] = defaultSettingsPointer[step]
+					} else {
+						defaultSettingsPointer = defaultSettingsPointer[step]
+						updatedSettingsPointer = updatedSettingsPointer[step]
+					}
+				}
+			})
 		})
-		//TODO: Seems like we dont need this call anymore
-		// this.settingsService.applySettings()
+
+		this.settingsService.updateSettings(updatedSettings)
 	}
 }
 
