@@ -3,20 +3,19 @@ import { CCFile } from "./codeCharta.model"
 import { NameDataPair } from "./util/urlUtils"
 import { SettingsService } from "./state/settings.service"
 import { IRootScopeService } from "angular"
-import { FileStateService } from "./state/fileState.service";
+import { FileStateService } from "./state/fileState.service"
 
 export class CodeChartaService {
-
 	// TODO: use ROOT_NAME and ROOT_PATH everywhere in project instead of individual strings
 	public static ROOT_NAME = "root"
-	public static ROOT_PATH =  "/" + CodeChartaService.ROOT_NAME
+	public static ROOT_PATH = "/" + CodeChartaService.ROOT_NAME
+	public static SELECTOR = "codeChartaService"
 
 	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
 		private fileStateService: FileStateService
-	) {
-	}
+	) {}
 
 	public loadFiles(nameDataPairs: NameDataPair[]): Promise<void> {
 		return new Promise((resolve, reject) => {
@@ -36,7 +35,6 @@ export class CodeChartaService {
 		})
 	}
 
-
 	private getCCFile(fileName: string, fileContent: any): CCFile {
 		return {
 			fileMeta: {
@@ -48,7 +46,7 @@ export class CodeChartaService {
 				fileSettings: {
 					edges: fileContent.edges || [],
 					attributeTypes: fileContent.attributeTypes || {},
-					blacklist: fileContent.blacklist || [],
+					blacklist: fileContent.blacklist || []
 				}
 			},
 			map: fileContent.nodes[0]

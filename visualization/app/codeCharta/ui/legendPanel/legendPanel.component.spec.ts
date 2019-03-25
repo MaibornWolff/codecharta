@@ -1,132 +1,156 @@
-import {LegendPanelController, PackageList} from "./legendPanel.component";
-import {SettingsService} from "../../state/settings.service";
-import {DataService} from "../../core/data/data.service";
-import {CodeMapNode} from "../../core/data/model/CodeMap";
-import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
+import "./legendPanel.module"
+
+import { LegendPanelController, PackageList } from "./legendPanel.component"
+import { SettingsService } from "../../state/settings.service"
+import { CodeMapUtilService } from "../codeMap/codeMap.util.service"
+import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
+import { CodeChartaService } from "../../codeCharta.service"
+import { FileStateService } from "../../state/fileState.service"
+import { IRootScopeService } from "angular"
 
 describe("LegendPanelController", () => {
+	let services, legendPanelController: LegendPanelController
 
-    let legendPanelController: LegendPanelController;
-    let $timeout;
-    let settingsServiceMock: SettingsService;
-    let dataServiceMock: DataService;
-    let simpleHierarchy: CodeMapNode;
+	beforeEach(() => {
+		restartSystem()
+		//mockElement();
+		rebuildController()
+		//withMockedCodeMapUtilService();
+	})
 
-    function rebuildSUT() {
-        legendPanelController = new LegendPanelController($timeout, settingsServiceMock, dataServiceMock);
-    }
+	function restartSystem() {
+		instantiateModule("app.codeCharta.ui.legendPanel")
 
-    function mockEverything() {
+		const CodeChartaServiceMock = jest.fn<CodeChartaService>(() => ({}))
 
-        $timeout = jest.fn();
+		services = {
+			$rootScope: getService<IRootScopeService>("$rootScope"),
+			settingsService: getService<SettingsService>("settingsService"),
+			codeChartaService: getService<CodeChartaService>("codeChartaService"),
+			fileStateService: getService<FileStateService>("fileStateService"),
+			codeMapUtilService: getService<CodeMapUtilService>("codeMapUtilService")
+		}
+	}
 
-        const SettingsServiceMock = jest.fn<SettingsService>(() => ({
-            subscribe: jest.fn(),
-            applySettings: jest.fn(),
-            settings: {
-                map: {
-                    nodes: null
-                }
-            }
-        }));
+	function rebuildController() {
+		legendPanelController = new LegendPanelController(
+			services.$rootScope,
+			services.settingsService,
+			services.codeChartaService,
+			services.fileStateService
+		)
+	}
 
-        settingsServiceMock = new SettingsServiceMock();
+	/*function mockEverything() {
+		$timeout = jest.fn()
 
-        const DataServiceMock = jest.fn<DataService>(() => ({
-            subscribe: jest.fn(),
-            getMaxMetricInAllRevisions: jest.fn()
-        }));
+		const SettingsServiceMock = jest.fn<SettingsService>(() => ({
+			subscribe: jest.fn(),
+			applySettings: jest.fn(),
+			settings: {
+				map: {
+					nodes: null
+				}
+			}
+		}))
 
-        dataServiceMock = new DataServiceMock();
+		settingsServiceMock = new SettingsServiceMock()
 
-        rebuildSUT();
-    }
+		const DataServiceMock = jest.fn<DataService>(() => ({
+			subscribe: jest.fn(),
+			getMaxMetricInAllRevisions: jest.fn()
+		}))
 
-    beforeEach(function() {
-        mockEverything();
-    });
+		dataServiceMock = new DataServiceMock()
 
-    describe("MarkingColor in Legend", () => {
+		rebuildSUT()
+    }*/
 
-        let codeMapUtilService: CodeMapUtilService;
-        beforeEach(function() {
-            mockEverything();
+	describe("MarkingColor in Legend", () => {
+		let codeMapUtilService: CodeMapUtilService
+		beforeEach(function() {
+			//this.beforeEach()
 
-            simpleHierarchy = {
-                name: "root",
-                type: "Folder",
-                path: "/root",
-                attributes: {},
-                children: [
-                    {
-                        name: "a",
-                        type: "Folder",
-                        path: "/root/a",
-                        attributes: {},
-                        children: [
-                            {
-                                name: "aa",
-                                type: "File",
-                                path: "/root/a/aa",
-                                attributes: {},
-                            },
-                            {
-                                name: "ab",
-                                type: "Folder",
-                                path: "/root/a/ab",
-                                attributes: {},
-                                children: [
-                                    {
-                                        name: "aba",
-                                        path: "/root/a/ab/aba",
-                                        type: "File",
-                                        attributes: {},
-                                    }
-                                ]
-                            },
-                        ]
-                    },
-                    {
-                        name: "b",
-                        type: "File",
-                        path: "/root/b",
-                        attributes: {},
-                    }
-                ]
-            };
+			let simpleHierarchy = {
+				name: "root",
+				type: "Folder",
+				path: "/root",
+				attributes: {},
+				children: [
+					{
+						name: "a",
+						type: "Folder",
+						path: "/root/a",
+						attributes: {},
+						children: [
+							{
+								name: "aa",
+								type: "File",
+								path: "/root/a/aa",
+								attributes: {}
+							},
+							{
+								name: "ab",
+								type: "Folder",
+								path: "/root/a/ab",
+								attributes: {},
+								children: [
+									{
+										name: "aba",
+										path: "/root/a/ab/aba",
+										type: "File",
+										attributes: {}
+									}
+								]
+							}
+						]
+					},
+					{
+						name: "b",
+						type: "File",
+						path: "/root/b",
+						attributes: {}
+					}
+				]
+			}
 
-            codeMapUtilService = new CodeMapUtilService(settingsServiceMock);
-            settingsServiceMock.settings.map.nodes = simpleHierarchy;
-        });
+			//codeMapUtilService = new CodeMapUtilService(settingsServiceMock)
+			//services.settingsService.settings.map.nodes = simpleHierarchy
+			services.fileStateService.fileStates.push({ file: simpleHierarchy, selectedAs: null })
+		})
 
-        it("set correct markingPackage in Legend", () => {
-            settingsServiceMock.settings.markedPackages = [{color: "#FF0000", path: "/root", attributes: {}}];
-            const expectedPackageLists: PackageList[] = [{
-                colorPixel: "data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
-                markedPackages: [{color: "#FF0000", path: "/root", attributes: {name: "/root"}}]
-            }];
+		it("set correct markingPackage in Legend", () => {
+			services.settingsService.settings.fileSettings.markedPackages = [{ color: "#FF0000", path: "/root", attributes: {} }]
+			const expectedPackageLists: PackageList[] = [
+				{
+					colorPixel: "data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+					markedPackages: [{ color: "#FF0000", path: "/root", attributes: { name: "/root" } }]
+				}
+			]
 
-            legendPanelController.onSettingsChanged(settingsServiceMock.settings);
+			legendPanelController.onSettingsChanged(services.settingsService.settings, null)
 
-            expect(legendPanelController.packageLists).toEqual(expectedPackageLists);
-        });
+			expect(legendPanelController["_viewModel"].packageLists).toEqual(expectedPackageLists)
+		})
 
-        it("shorten too long pathName in middle of the string for legendPanel", () => {
-            settingsServiceMock.settings.markedPackages = [{color: "#FF0000", path: "/root/a/longNameToBeShortenedInLegend", attributes: {}}];
-            const shortenedPathname = "longNameToBe...enedInLegend";
+		it("shorten too long pathName in middle of the string for legendPanel", () => {
+			services.settingsService.settings.fileSettings.markedPackages = [
+				{ color: "#FF0000", path: "/root/a/longNameToBeShortenedInLegend", attributes: {} }
+			]
+			const shortenedPathname = "longNameToBe...enedInLegend"
 
-            legendPanelController.onSettingsChanged(settingsServiceMock.settings);
-            expect(legendPanelController.packageLists[0].markedPackages[0].attributes["name"]).toEqual(shortenedPathname);
-        });
+			legendPanelController.onSettingsChanged(services.settingsService.settings, null)
+			expect(legendPanelController["_viewModel"].packageLists[0].markedPackages[0].attributes["name"]).toEqual(shortenedPathname)
+		})
 
-        it("shorten too long pathName at beginning of the string for legendPanel", () => {
-            settingsServiceMock.settings.markedPackages = [{color: "#FF0000", path: "/root/a/andAnotherLongNameToShorten", attributes: {}}];
-            const shortenedPathname = ".../andAnotherLongNameToShorten";
+		it("shorten too long pathName at beginning of the string for legendPanel", () => {
+			services.settingsService.settings.fileSettings.markedPackages = [
+				{ color: "#FF0000", path: "/root/a/andAnotherLongNameToShorten", attributes: {} }
+			]
+			const shortenedPathname = ".../andAnotherLongNameToShorten"
 
-            legendPanelController.onSettingsChanged(settingsServiceMock.settings);
-            expect(legendPanelController.packageLists[0].markedPackages[0].attributes["name"]).toEqual(shortenedPathname);
-        });
-    });
-    
-    
-});
+			legendPanelController.onSettingsChanged(services.settingsService.settings, null)
+			expect(legendPanelController["_viewModel"].packageLists[0].markedPackages[0].attributes["name"]).toEqual(shortenedPathname)
+		})
+	})
+})

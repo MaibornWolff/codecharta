@@ -1,150 +1,149 @@
-import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
-import $ from "jquery";
-import {MapColors} from "../codeMap/rendering/renderSettings";
-import {IRootScopeService} from "angular";
-import "./legendPanel.component.scss";
-import {ColorConverter} from "../../util/colorConverter";
-import {ColorRange, MarkedPackage, Settings} from "../../codeCharta.model";
-import {CodeChartaService} from "../../codeCharta.service";
-import {FileStateService} from "../../state/fileState.service";
-import {FileStateHelper} from "../../util/fileStateHelper";
+import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import $ from "jquery"
+import { MapColors } from "../codeMap/rendering/renderSettings"
+import { IRootScopeService } from "angular"
+import "./legendPanel.component.scss"
+import { ColorConverter } from "../../util/colorConverter"
+import { ColorRange, MarkedPackage, Settings } from "../../codeCharta.model"
+import { CodeChartaService } from "../../codeCharta.service"
+import { FileStateService } from "../../state/fileState.service"
+import { FileStateHelper } from "../../util/fileStateHelper"
 
 export interface PackageList {
-    colorPixel: string,
-    markedPackages: MarkedPackage[],
+	colorPixel: string
+	markedPackages: MarkedPackage[]
 }
 
 export class LegendPanelController implements SettingsServiceSubscriber {
+	private _viewModel: {
+		isDeltaState: boolean
+		colorRange: ColorRange
+		packageLists: PackageList[]
+	} = {
+		isDeltaState: null,
+		colorRange: null,
+		packageLists: null
+	}
 
-    private _viewModel: {
-        isDeltaState: boolean;
-        colorRange: ColorRange;
-        packageLists: PackageList[];
-    } = {
-        isDeltaState: null,
-        colorRange: null,
-        packageLists: null
-    }
+	/* @ngInject */
+	constructor(
+		private $rootScope: IRootScopeService,
+		private settingsService: SettingsService,
+		private codeChartaService: CodeChartaService,
+		private fileStateService: FileStateService
+	) {
+		SettingsService.subscribe(this.$rootScope, this)
+		this.initAnimations()
+	}
 
-    /* @ngInject */
-    constructor(private $rootScope: IRootScopeService,
-                private settingsService: SettingsService,
-                private codeChartaService: CodeChartaService,
-                private fileStateService: FileStateService) {
+	public onSettingsChanged(s: Settings, event: angular.IAngularEvent) {
+		this._viewModel.colorRange = s.dynamicSettings.neutralColorRange
+		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 
-        SettingsService.subscribe(this.$rootScope, this);
-        this.initAnimations();
-    }
+		const select = ColorConverter.getImageDataUri(MapColors.selected)
+		$("#select").attr("src", select)
 
-    public onSettingsChanged(s: Settings, event: angular.IAngularEvent) {
-        this._viewModel.colorRange = s.dynamicSettings.neutralColorRange;
-        this._viewModel.isDeltaState = FileStateHelper.isDeltaState(this.fileStateService.getFileStates());
+		if (this._viewModel.isDeltaState) {
+			this.refreshDeltaColors(s)
+		} else {
+			this.refreshNormalColors(s)
+		}
+		this.setMarkedPackageLists(s)
+	}
 
-        const select = ColorConverter.getImageDataUri(MapColors.selected);
-        $("#select").attr("src", select);
+	private refreshNormalColors(s: Settings) {
+		const positive = ColorConverter.getImageDataUri(s.appSettings.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive)
+		const neutral = ColorConverter.getImageDataUri(MapColors.neutral)
+		const negative = ColorConverter.getImageDataUri(MapColors.negative)
+		$("#green").attr("src", positive)
+		$("#yellow").attr("src", neutral)
+		$("#red").attr("src", negative)
+	}
 
-        if (this._viewModel.isDeltaState) {
-            this.refreshDeltaColors(s);
-        } else {
-            this.refreshNormalColors(s);
-        }
-        this.setMarkedPackageLists(s);
-    }
+	private refreshDeltaColors(s: Settings) {
+		const positiveDeltaPixel = ColorConverter.getImageDataUri(
+			s.appSettings.deltaColorFlipped ? MapColors.negativeDelta : MapColors.positiveDelta
+		)
+		const negativeDeltaPixel = ColorConverter.getImageDataUri(
+			s.appSettings.deltaColorFlipped ? MapColors.positiveDelta : MapColors.negativeDelta
+		)
+		$("#positiveDelta").attr("src", positiveDeltaPixel)
+		$("#negativeDelta").attr("src", negativeDeltaPixel)
+	}
 
-    private refreshNormalColors(s: Settings) {
-        const positive = ColorConverter.getImageDataUri(s.appSettings.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive);
-        const neutral = ColorConverter.getImageDataUri(MapColors.neutral);
-        const negative = ColorConverter.getImageDataUri(MapColors.negative);
-        $("#green").attr("src", positive);
-        $("#yellow").attr("src", neutral);
-        $("#red").attr("src", negative);
-    }
+	private setMarkedPackageLists(s: Settings) {
+		const markedPackages: MarkedPackage[] = s.fileSettings.markedPackages
+		if (markedPackages) {
+			this._viewModel.packageLists = []
+			markedPackages.forEach(mp => this.handleMarkedPackage(mp))
+		}
+	}
 
-    private refreshDeltaColors(s: Settings) {
-        const positiveDeltaPixel = ColorConverter.getImageDataUri(s.appSettings.deltaColorFlipped ? MapColors.negativeDelta : MapColors.positiveDelta);
-        const negativeDeltaPixel = ColorConverter.getImageDataUri(s.appSettings.deltaColorFlipped ? MapColors.positiveDelta : MapColors.negativeDelta);
-        $("#positiveDelta").attr("src", positiveDeltaPixel);
-        $("#negativeDelta").attr("src", negativeDeltaPixel);
-    }
+	private handleMarkedPackage(mp: MarkedPackage) {
+		const colorPixel = ColorConverter.getImageDataUri(mp.color)
 
-    private setMarkedPackageLists(s: Settings) {
-        const markedPackages: MarkedPackage[] = s.fileSettings.markedPackages;
-        if (markedPackages) {
-            this._viewModel.packageLists = [];
-            markedPackages.forEach(mp => this.handleMarkedPackage(mp));
-        }
-    }
+		if (!mp.attributes["name"]) {
+			mp.attributes["name"] = this.getPackagePathPreview(mp)
+		}
 
-    private handleMarkedPackage(mp: MarkedPackage) {
-        const colorPixel = ColorConverter.getImageDataUri(mp.color);
+		if (this.isColorPixelInPackageLists(colorPixel)) {
+			this.insertMPIntoPackageList(mp, colorPixel)
+		} else {
+			const packageList: PackageList = { colorPixel: colorPixel, markedPackages: [mp] }
+			this.addNewPackageList(packageList)
+		}
+	}
 
-        if (!mp.attributes["name"]) {
-            mp.attributes["name"] = this.getPackagePathPreview(mp);
-        }
+	private addNewPackageList(packageList: PackageList) {
+		this._viewModel.packageLists.push(packageList)
+	}
 
-        if (this.isColorPixelInPackageLists(colorPixel)) {
-            this.insertMPIntoPackageList(mp, colorPixel);
-        } else {
-            const packageList: PackageList = {colorPixel: colorPixel, markedPackages: [mp]};
-            this.addNewPackageList(packageList);
-        }
-    }
+	private insertMPIntoPackageList(mp: MarkedPackage, colorPixel: string) {
+		this._viewModel.packageLists.filter(packageList => packageList.colorPixel == colorPixel)[0].markedPackages.push(mp)
+	}
 
-    private addNewPackageList(packageList: PackageList) {
-        this._viewModel.packageLists.push(packageList);
-    }
+	private isColorPixelInPackageLists(colorPixel: string) {
+		return this._viewModel.packageLists.filter(mpList => mpList.colorPixel == colorPixel).length > 0
+	}
 
-    private insertMPIntoPackageList(mp: MarkedPackage, colorPixel: string) {
-        this._viewModel.packageLists.filter(packageList => packageList.colorPixel == colorPixel)[0].markedPackages.push(mp);
-    }
+	private getPackagePathPreview(mp: MarkedPackage): string {
+		const MAX_NAME_LENGTH = { lowerLimit: 24, upperLimit: 28 }
+		const packageName = this.getPackageNameFromPath(mp.path)
 
-    private isColorPixelInPackageLists(colorPixel: string) {
-        return this._viewModel.packageLists.filter(mpList => mpList.colorPixel == colorPixel).length > 0;
-    }
+		if (packageName.length > MAX_NAME_LENGTH.lowerLimit && packageName.length < MAX_NAME_LENGTH.upperLimit) {
+			return ".../" + packageName
+		} else if (packageName.length > MAX_NAME_LENGTH.upperLimit) {
+			const firstPart = packageName.substr(0, MAX_NAME_LENGTH.lowerLimit / 2)
+			const secondPart = packageName.substr(packageName.length - MAX_NAME_LENGTH.lowerLimit / 2)
+			return firstPart + "..." + secondPart
+		} else {
+			const from = Math.max(mp.path.length - MAX_NAME_LENGTH.lowerLimit, 0)
+			const previewPackagePath = mp.path.substring(from)
+			const startingDots = previewPackagePath.startsWith(CodeChartaService.ROOT_PATH) ? "" : "..."
+			return startingDots + previewPackagePath
+		}
+	}
 
-    private getPackagePathPreview(mp: MarkedPackage): string {
-        const MAX_NAME_LENGTH = { lowerLimit: 24, upperLimit: 28 };
-        const packageName = this.getPackageNameFromPath(mp.path);
+	private getPackageNameFromPath(path: string): string {
+		const pathArray = path.split("/")
+		return pathArray[pathArray.length - 1]
+	}
 
-        if (packageName.length > MAX_NAME_LENGTH.lowerLimit && packageName.length < MAX_NAME_LENGTH.upperLimit) {
-            return ".../" + packageName;
-
-        } else if (packageName.length > MAX_NAME_LENGTH.upperLimit) {
-            const firstPart = packageName.substr(0, MAX_NAME_LENGTH.lowerLimit / 2);
-            const secondPart = packageName.substr(packageName.length - MAX_NAME_LENGTH.lowerLimit / 2);
-            return firstPart + "..." + secondPart;
-
-        } else {
-            const from = Math.max(mp.path.length - MAX_NAME_LENGTH.lowerLimit, 0);
-            const previewPackagePath = mp.path.substring(from);
-            const startingDots = (previewPackagePath.startsWith(CodeChartaService.ROOT_PATH)) ? "" : "...";
-            return startingDots + previewPackagePath;
-        }
-    }
-
-    private getPackageNameFromPath(path: string): string {
-        const pathArray = path.split("/");
-        return pathArray[pathArray.length - 1];
-    }
-
-    private initAnimations() {
-        $(document).ready(() => {
-            let start = 40;
-            let target = -500;
-            let visible = false;
-            $("legend-panel-component .panel-button").click(() => {
-                $("legend-panel-component .block-wrapper").animate({left: visible ? target+"px" : start+"px"}, "fast");
-                visible = !visible;
-            });
-        });
-    }
+	private initAnimations() {
+		$(document).ready(() => {
+			let start = 40
+			let target = -500
+			let visible = false
+			$("legend-panel-component .panel-button").click(() => {
+				$("legend-panel-component .block-wrapper").animate({ left: visible ? target + "px" : start + "px" }, "fast")
+				visible = !visible
+			})
+		})
+	}
 }
 
 export const legendPanelComponent = {
-    selector: "legendPanelComponent",
-    template: require("./legendPanel.component.html"),
-    controller: LegendPanelController
-};
-
-
-
+	selector: "legendPanelComponent",
+	template: require("./legendPanel.component.html"),
+	controller: LegendPanelController
+}
