@@ -38,13 +38,8 @@ export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubsc
 	}
 
 	public getMarkingColor() {
+		// TODO: set a 'black' color in settings.mapColors ?
 		let defaultColor = "#000000"
-
-		/* TODO: Something needs to be done here because viewModel no longer has node propery
-        if(!this._viewModel.node || this._viewModel.node.type == "File") {
-            return defaultColor;
-        }*/
-
 		const markingColor = CodeMapUtilService.getMarkingColor(this.node, this.settingsService.getSettings().fileSettings.markedPackages)
 		return markingColor ? markingColor : defaultColor
 	}
