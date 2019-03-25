@@ -22,8 +22,6 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
     public hoveredAreaDelta: number;
     public hoveredColorDelta: number;
     public hoveredDeltaColor: string;
-    public optionsWithoutStart;
-    public sliderPositions;
 
     private _viewModel: {
         metricData: MetricData[],
@@ -47,19 +45,6 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
         SettingsService.subscribe(this.$rootScope, this);
         CodeMapMouseEventService.subscribe(this.$rootScope, this);
         MetricService.subscribe(this.$rootScope, this)
-        this.initSliderOptions()
-    }
-
-    private initSliderOptions() {
-        this.optionsWithoutStart = {
-            connect: true,
-            range: {
-                min: 0,
-                max: 100,
-            },
-        };
-
-        this.sliderPositions = [20, 80];
     }
 
     public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
