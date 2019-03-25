@@ -1,116 +1,67 @@
-import {SettingsService} from "../../state/settings.service";
-import {BlacklistPanelController} from "./blacklistPanel.component";
-import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
-import {CodeMapNode, BlacklistType} from "../../core/data/model/CodeMap";
+import "./blacklistPanel.module"
+
+import { SettingsService } from "../../state/settings.service"
+import { BlacklistPanelController } from "./blacklistPanel.component"
+import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
+import { BlacklistType, BlacklistItem } from "../../codeCharta.model"
+import { IRootScopeService } from "angular"
+import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 
 describe("blacklistController", () => {
+	let blacklistPanelController: BlacklistPanelController
+	let blacklistItem: BlacklistItem
 
-    let blacklistPanelController: BlacklistPanelController;
-    let settingsServiceMock: SettingsService;
-    let codeMapActionsServiceMock: CodeMapActionsService;
-    let simpleHierarchy: CodeMapNode;
-    let blacklistItem;
+	let services
 
-    function rebuildSUT() {
-        blacklistPanelController = new BlacklistPanelController(settingsServiceMock, codeMapActionsServiceMock);
-    }
+	beforeEach(() => {
+		restartSystem()
+		mockBlacklistElement()
+		rebuildController()
+	})
 
-    function mockEverything() {
+	function restartSystem() {
+		instantiateModule("app.codeCharta.ui.blacklistPanel")
 
-        const SettingsServiceMock = jest.fn<SettingsService>(() => ({
-            subscribe: jest.fn(),
-            applySettings: jest.fn(),
-            onSettingsChanged: jest.fn(),
-            settings: {
-                map: {
-                    nodes: []
-                },
-                blacklist: []
-            }
-        }));
+		const CodeMapActionsServiceMock = jest.fn<CodeMapActionsService>(() => ({
+			removeBlacklistEntry: jest.fn()
+		}))
 
-        settingsServiceMock = new SettingsServiceMock();
+		services = {
+			$rootScope: getService<IRootScopeService>("$rootScope"),
+			settingsService: getService<SettingsService>("settingsService"),
+			codeMapActionsService: new CodeMapActionsServiceMock()
+		}
+	}
 
-        const CodeMapActionsServiceMock = jest.fn<CodeMapActionsService>(() => ({
-            removeBlacklistEntry: jest.fn()
-        }));
+	function mockBlacklistElement() {
+		blacklistItem = { path: "/root", type: BlacklistType.exclude }
+	}
 
-        codeMapActionsServiceMock = new CodeMapActionsServiceMock();
+	function rebuildController() {
+		blacklistPanelController = new BlacklistPanelController(services.codeMapActionsService, services.$rootScope)
+	}
 
-        rebuildSUT();
+	function getFilteredBlacklistBy(blacklistItem) {
+		if (services.settingsService.settings.fileSettings.blacklist) {
+			return services.settingsService.settings.fileSettings.blacklist.filter(item => {
+				return item.path == blacklistItem.path && item.type == blacklistItem.type
+			})
+		} else {
+			return []
+		}
+	}
 
-        simpleHierarchy = {
-            name: "root",
-            type: "Folder",
-            path: "/root",
-            attributes: {},
-            children: [
-                {
-                    name: "a",
-                    type: "Folder",
-                    path: "/root/a",
-                    attributes: {},
-                    children: [
-                        {
-                            name: "aa",
-                            type: "File",
-                            path: "/root/a/aa",
-                            attributes: {},
-                        },
-                        {
-                            name: "ab",
-                            type: "Folder",
-                            path: "/root/a/ab",
-                            attributes: {},
-                            children: [
-                                {
-                                    name: "aba",
-                                    path: "/root/a/ab/aba",
-                                    type: "File",
-                                    attributes: {},
-                                }
-                            ]
-                        },
-                    ]
-                },
-                {
-                    name: "b",
-                    type: "File",
-                    path: "/root/b",
-                    attributes: {},
-                }
-            ]
-        };
+	it("add and call includingNode function when removing blacklist entry", () => {
+		services.settingsService.settings.fileSettings.blacklist.push(blacklistItem)
+		expect(getFilteredBlacklistBy({ path: "/root", type: BlacklistType.exclude })).toHaveLength(1)
 
-        blacklistItem = {path: "/root", type: BlacklistType.exclude};
-        settingsServiceMock.settings.map.nodes = simpleHierarchy;
-    }
+		blacklistPanelController.removeBlacklistEntry(blacklistItem)
+		expect(services.codeMapActionsService.removeBlacklistEntry).toHaveBeenCalledWith({ path: "/root", type: "exclude" })
+	})
 
-    function getFilteredBlacklistBy(blacklistItem) {
-        if (settingsServiceMock.settings.blacklist) {
-            return settingsServiceMock.settings.blacklist.filter((item) => {
-                return item.path == blacklistItem.path && item.type == blacklistItem.type
-            });
-        } else {
-            return [];
-        }
-    }
-
-    beforeEach(()=>{
-        mockEverything();
-    });
-
-    it("add and call includingNode function when removing blacklist entry", () => {
-        settingsServiceMock.settings.blacklist.push(blacklistItem);
-        expect(getFilteredBlacklistBy({path: "/root", type: BlacklistType.exclude})).toHaveLength(1);
-
-        blacklistPanelController.removeBlacklistEntry(blacklistItem);
-        expect(codeMapActionsServiceMock.removeBlacklistEntry).toHaveBeenCalledWith({path: "/root", type: "exclude"});
-    });
-
-    it("update local blacklist with settingsService onSettingsChanged", () => {
-        settingsServiceMock.settings.blacklist = [blacklistItem];
-        blacklistPanelController.onSettingsChanged(settingsServiceMock.settings, null);
-        expect(blacklistPanelController.blacklist).toEqual(settingsServiceMock.settings.blacklist);
-    });
-});
+	it("update local blacklist with settingsService onSettingsChanged", () => {
+		services.settingsService.settings.fileSettings.blacklist = [blacklistItem]
+		blacklistPanelController.onSettingsChanged(services.settingsService.settings, null)
+		expect(blacklistPanelController["_viewModel"].blacklist).toEqual(services.settingsService.settings.fileSettings.blacklist)
+	})
+})
