@@ -16,7 +16,7 @@ class ProjectParser {
         sonarAnalyzers.add(JavaSonarAnalyzer(baseDir))
     }
 
-    fun scanProject(root: File, writer: Writer?) {
+    fun scanProject(root: File) {
         setUpAnalyzers(root)
         val projectTraverser = ProjectTraverser(root)
         projectTraverser.traverse()

@@ -9,7 +9,7 @@ class ProjectParserTest{
     @Test
     fun metricsAreFound(){
         val projectParser = ProjectParser()
-        projectParser.scanProject(File("src/test/resources").absoluteFile, null)
+        projectParser.scanProject(File("src/test/resources").absoluteFile)
 
         assertThat(projectParser.metricKinds.toString()).contains("functions")
         assertThat(projectParser.metricKinds.toString()).contains("ncloc")

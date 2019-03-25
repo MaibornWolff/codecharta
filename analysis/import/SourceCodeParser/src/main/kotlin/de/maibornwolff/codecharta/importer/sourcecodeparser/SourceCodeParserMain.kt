@@ -40,7 +40,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
         val projectParser = ProjectParser()
 
         // TODO: Support multiple in file/folders
-        projectParser.scanProject(files[0], OutputStreamWriter(outputStream))
+        projectParser.scanProject(files[0])
 
         val writer = getPrinter()
         writer.generate(projectParser.projectMetrics, projectParser.metricKinds)

@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetrics
 import org.sonar.api.batch.sensor.internal.SensorContextTester
 import org.sonar.api.measures.CoreMetrics
-import org.sonar.api.measures.Metric
 import org.sonar.api.batch.sensor.measure.Measure
 import java.io.File
 import java.io.IOException
@@ -12,7 +11,7 @@ import java.lang.IllegalStateException
 import java.nio.charset.Charset
 import java.nio.file.Files
 
-open abstract class SonarAnalyzer(path: String) {
+abstract class SonarAnalyzer(path: String) {
 
     protected lateinit var sensorContext: SensorContextTester
     var baseDir: File = File(path).absoluteFile
@@ -28,7 +27,7 @@ open abstract class SonarAnalyzer(path: String) {
         buildSonarComponents()
         executeScan()
 
-        var metricsMap: MutableMap<String, FileMetrics> = HashMap()
+        val metricsMap: MutableMap<String, FileMetrics> = HashMap()
         for(file in fileList){
             metricsMap[file] = retrieveMetrics(file)
         }
@@ -37,7 +36,7 @@ open abstract class SonarAnalyzer(path: String) {
 
     protected open fun retrieveMetrics(fileName: String): FileMetrics{
         val key = "moduleKey:$fileName"
-        var fileMetrics = FileMetrics()
+        val fileMetrics = FileMetrics()
 
         val metrics = CoreMetrics.getMetrics()
         for(metric in metrics){
