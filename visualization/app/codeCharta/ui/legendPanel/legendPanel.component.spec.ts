@@ -13,9 +13,7 @@ describe("LegendPanelController", () => {
 
 	beforeEach(() => {
 		restartSystem()
-		//mockElement();
 		rebuildController()
-		//withMockedCodeMapUtilService();
 	})
 
 	function restartSystem() {
@@ -41,36 +39,9 @@ describe("LegendPanelController", () => {
 		)
 	}
 
-	/*function mockEverything() {
-		$timeout = jest.fn()
-
-		const SettingsServiceMock = jest.fn<SettingsService>(() => ({
-			subscribe: jest.fn(),
-			applySettings: jest.fn(),
-			settings: {
-				map: {
-					nodes: null
-				}
-			}
-		}))
-
-		settingsServiceMock = new SettingsServiceMock()
-
-		const DataServiceMock = jest.fn<DataService>(() => ({
-			subscribe: jest.fn(),
-			getMaxMetricInAllRevisions: jest.fn()
-		}))
-
-		dataServiceMock = new DataServiceMock()
-
-		rebuildSUT()
-    }*/
-
 	describe("MarkingColor in Legend", () => {
 		let codeMapUtilService: CodeMapUtilService
 		beforeEach(function() {
-			//this.beforeEach()
-
 			let simpleHierarchy = {
 				name: "root",
 				type: "Folder",
@@ -114,8 +85,6 @@ describe("LegendPanelController", () => {
 				]
 			}
 
-			//codeMapUtilService = new CodeMapUtilService(settingsServiceMock)
-			//services.settingsService.settings.map.nodes = simpleHierarchy
 			services.fileStateService.fileStates.push({ file: simpleHierarchy, selectedAs: null })
 		})
 
