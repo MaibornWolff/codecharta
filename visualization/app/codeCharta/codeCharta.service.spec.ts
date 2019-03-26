@@ -8,7 +8,7 @@ import { FileStateService } from "./state/fileState.service"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
 import { CCFile } from "./codeCharta.model"
 
-describe("codeChartaService", function() {
+describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
 	let validFileContent
 	let $rootScope: IRootScopeService
