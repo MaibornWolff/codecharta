@@ -191,7 +191,7 @@
 		"roboto-fontface": "^0.10.0",
 		"sass-loader": "^7.1.0",
 		"script-loader": "^0.7.0",
-		"sinon": "^4.4.10",
+		"sinon": "^7.3.0",
 		"string-loader": "0.0.1",
 		"style-loader": "^0.23.1",
 		"three": "^0.89.0",
