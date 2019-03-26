@@ -13,6 +13,7 @@ import { CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { CodeMapNode, BlacklistType, MarkedPackage } from "../../codeCharta.model"
 import { FileStateService } from "../../state/fileState.service"
+import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
@@ -56,45 +57,6 @@ describe("MapTreeViewLevelController", () => {
 		services.$rootScope.$digest = jest.fn()
 		services.$rootScope.$on = jest.fn()
 	}
-
-	let simpleHierarchy: CodeMapNode
-
-	function mockEverything() {
-		simpleHierarchy = {
-			name: "root",
-			type: "Folder",
-			path: "/root",
-			attributes: {},
-			children: [
-				{
-					name: "a",
-					type: "Folder",
-					path: "/root/a",
-					attributes: {},
-					children: [
-						{
-							name: "ab",
-							type: "Folder",
-							path: "/root/a/ab",
-							attributes: {},
-							children: [
-								{
-									name: "aba",
-									path: "/root/a/ab/aba",
-									type: "File",
-									attributes: {}
-								}
-							]
-						}
-					]
-				}
-			]
-		} as CodeMapNode
-	}
-
-	beforeEach(function() {
-		mockEverything()
-	})
 
 	describe("Listen to code map hovering", () => {
 		function buildNodeAt(path: string): CodeMapNode {
@@ -165,7 +127,11 @@ describe("MapTreeViewLevelController", () => {
 
 	describe("Clicks behaviour", () => {
 		it("Right click", () => {
-			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder", simpleHierarchy)
+			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+				"/root/Parent Leaf",
+				"Folder",
+				VALID_NODE_WITH_PATH
+			)
 			let context = {
 				path: mapTreeViewLevelController["node"].path,
 				type: mapTreeViewLevelController["node"].type,
@@ -191,7 +157,11 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Label click", () => {
-			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath("/root/a/", "Folder", simpleHierarchy)
+			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+				"/root/Parent Leaf",
+				"Folder",
+				VALID_NODE_WITH_PATH
+			)
 			mapTreeViewLevelController["codeMapActionsService"].focusNode = jest.fn()
 			mapTreeViewLevelController.onLabelClick()
 
@@ -199,7 +169,11 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Eye click", () => {
-			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath("/root/a/", "Folder", simpleHierarchy)
+			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+				"/root/Parent Leaf",
+				"Folder",
+				VALID_NODE_WITH_PATH
+			)
 			mapTreeViewLevelController["codeMapActionsService"].toggleNodeVisibility = jest.fn()
 			mapTreeViewLevelController.onEyeClick()
 
@@ -210,20 +184,28 @@ describe("MapTreeViewLevelController", () => {
 
 		it("Is leaf", () => {
 			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
-				"/root/a/ab/aba",
+				"/root/Parent Leaf/small leaf",
 				"File",
-				simpleHierarchy
+				VALID_NODE_WITH_PATH
 			)
 			expect(mapTreeViewLevelController.isLeaf()).toBeTruthy()
 		})
 
 		it("Is not leaf", () => {
-			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder", simpleHierarchy)
+			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+				"/root/Parent Leaf",
+				"Folder",
+				VALID_NODE_WITH_PATH
+			)
 			expect(mapTreeViewLevelController.isLeaf(mapTreeViewLevelController["node"])).toBeFalsy()
 		})
 
 		it("Is blacklisted", () => {
-			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder", simpleHierarchy)
+			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+				"/root/Parent Leaf/empty folder",
+				"Folder",
+				VALID_NODE_WITH_PATH
+			)
 
 			CodeMapUtilService.isBlacklisted = jest.fn()
 			mapTreeViewLevelController.isBlacklisted(mapTreeViewLevelController["node"])
@@ -242,31 +224,46 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Is searched", () => {
-			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder", simpleHierarchy)
-			mapTreeViewLevelController["settingsService"].settings.dynamicSettings.searchedNodePaths = ["/root/a", "/root/a/ab"]
+			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+				"/root/Parent Leaf/empty folder",
+				"Folder",
+				VALID_NODE_WITH_PATH
+			)
+			mapTreeViewLevelController["settingsService"].settings.dynamicSettings.searchedNodePaths = [
+				"/root/Parent Leaf/",
+				"/root/Parent Leaf/empty folder"
+			]
 			let searched = mapTreeViewLevelController.isSearched(mapTreeViewLevelController["node"])
 			expect(searched).toBeTruthy()
 		})
 
 		it("Is not searched", () => {
-			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder", simpleHierarchy)
-			mapTreeViewLevelController["settingsService"].settings.dynamicSettings.searchedNodePaths = ["/root/a"]
+			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+				"/root/Parent Leaf/empty folder",
+				"Folder",
+				VALID_NODE_WITH_PATH
+			)
+			mapTreeViewLevelController["settingsService"].settings.dynamicSettings.searchedNodePaths = ["/root/Parent Leaf"]
 			let searched = mapTreeViewLevelController.isSearched(mapTreeViewLevelController["node"])
 			expect(searched).toBeFalsy()
 		})
 
 		it("Sort leaf", () => {
 			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
-				"/root/a/ab/aba",
+				"/root/Parent Leaf/small leaf",
 				"File",
-				simpleHierarchy
+				VALID_NODE_WITH_PATH
 			)
 			let sortValue = mapTreeViewLevelController.sortByFolder(mapTreeViewLevelController["node"])
 			expect(sortValue).toBe(0)
 		})
 
 		it("Sort not a leaf", () => {
-			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder", simpleHierarchy)
+			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+				"/root/Parent Leaf",
+				"Folder",
+				VALID_NODE_WITH_PATH
+			)
 			let sortValue = mapTreeViewLevelController.sortByFolder(mapTreeViewLevelController["node"])
 			expect(sortValue).toBe(1)
 		})
