@@ -248,6 +248,11 @@ describe("MapTreeViewLevelController", () => {
 			expect(searched).toBeFalsy()
 		})
 
+		it("Is not searched with null parameter", () => {
+			let searched = mapTreeViewLevelController.isSearched(null)
+			expect(searched).toBeFalsy()
+		})
+
 		it("Sort leaf", () => {
 			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
 				"/root/Parent Leaf/small leaf",
