@@ -5,11 +5,10 @@ import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { SettingsService } from "../../state/settings.service"
 import { CodeMapUtilService } from "../codeMap/codeMap.util.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { NodeContextMenuController, nodeContextMenuComponent } from "./nodeContextMenu.component"
+import { NodeContextMenuController } from "./nodeContextMenu.component"
 import { CodeChartaService } from "../../codeCharta.service"
 import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
-import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATHS } from "../../util/dataMocks"
-import { MarkedPackage } from "../../codeCharta.model"
+import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 
 describe("nodeContextMenuController", () => {
 	let element: Element
@@ -309,7 +308,7 @@ describe("nodeContextMenuController", () => {
 			const markedPackages = [{ path: "/root", color: "color" }]
 			settingsService.getSettings = jest.fn().mockReturnValue({ fileSettings: { markedPackages } })
 
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATHS
+			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH
 
 			const result = nodeContextMenuController.currentFolderIsMarkedWithColor("color")
 
@@ -321,7 +320,7 @@ describe("nodeContextMenuController", () => {
 			const markedPackages = [{ path: "/root", color: "color" }]
 			settingsService.getSettings = jest.fn().mockReturnValue({ fileSettings: { markedPackages } })
 
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATHS
+			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH
 
 			const result = nodeContextMenuController.currentFolderIsMarkedWithColor("another color")
 
@@ -334,7 +333,7 @@ describe("nodeContextMenuController", () => {
 			settingsService.getSettings = jest.fn().mockReturnValue({ fileSettings: { markedPackages } })
 			codeMapActionsService.getParentMP = jest.fn().mockReturnValue({path: "/another root" , color:  "color"})
 
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATHS
+			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH
 
 			const result = nodeContextMenuController.currentFolderIsMarkedWithColor("color")
 
@@ -433,7 +432,7 @@ describe("nodeContextMenuController", () => {
 
 	describe("nodeIsFolder", () => {
 		it("should return true, if contextMenuBuilding is a folder", () => {
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATHS;
+			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH;
 			const result = nodeContextMenuController.nodeIsFolder();
 
 			expect(result).toBeTruthy()
@@ -454,14 +453,14 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should return false, if contextMenuBuilding has no children property", () => {
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATHS.children[0];
+			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH.children[0];
 			const result = nodeContextMenuController.nodeIsFolder();
 
 			expect(result).toBeFalsy()
 		})
 
 		it("should return false, if contextMenuBuilding has children property but no children", () => {
-			const VALID_NODE_WITHOUT_CHILDREN = VALID_NODE_WITH_PATHS;
+			const VALID_NODE_WITHOUT_CHILDREN = VALID_NODE_WITH_PATH;
 			VALID_NODE_WITHOUT_CHILDREN.children[0].children = [];
 
 			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITHOUT_CHILDREN[0];
@@ -473,7 +472,7 @@ describe("nodeContextMenuController", () => {
 
 	describe("hide", () => {
 		it("should set contextMenuBuilding to null after flush", () => {
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATHS
+			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH
 			nodeContextMenuController.hide();
 			$timeout.flush();
 
