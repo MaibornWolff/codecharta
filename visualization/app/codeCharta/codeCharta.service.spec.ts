@@ -1,78 +1,122 @@
-import {CodeChartaService} from "./codeCharta.service";
-import {IRootScopeService} from "angular";
-import {SettingsService} from "./state/settings.service";
-import {getService, instantiateModule} from "../../mocks/ng.mockhelper";
-import {FileStateService} from "./state/fileState.service";
-import {TEST_FILE_CONTENT} from "./util/dataMocks";
+import "./codeCharta"
 
-describe("app.codeCharta", function () {
+import { CodeChartaService } from "./codeCharta.service"
+import { IRootScopeService } from "angular"
+import { SettingsService } from "./state/settings.service"
+import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
+import { FileStateService } from "./state/fileState.service"
+import { TEST_FILE_CONTENT } from "./util/dataMocks"
+import { CCFile } from "./codeCharta.model"
 
-	let services, codeChartaService: CodeChartaService, validFileContent
+describe("codeChartaService", function() {
+	let codeChartaService: CodeChartaService
+	let validFileContent
+	let $rootScope: IRootScopeService
+	let settingsService: SettingsService
+	let fileStateService: FileStateService
 
 	beforeEach(() => {
-		restartSystem();
-		rebuildService();
-		validFileContent = TEST_FILE_CONTENT;
-	});
+		restartSystem()
+		rebuildService()
+		validFileContent = TEST_FILE_CONTENT
+	})
 
 	function restartSystem() {
-		instantiateModule("app.codeCharta");
-
-		services = {
-			$rootScope: getService<IRootScopeService>("$rootScope"),
-			settingsService: getService<SettingsService>("settingsService"),
-			fileStateService: getService<FileStateService>("fileStateService"),
-		};
+		instantiateModule("app.codeCharta")
+		$rootScope = getService<IRootScopeService>("$rootScope")
+		settingsService = getService<SettingsService>("settingsService")
+		fileStateService = getService<FileStateService>("fileStateService")
 	}
 
 	function rebuildService() {
-		codeChartaService = new CodeChartaService(
-			services.$rootScope,
-			services.settingsService,
-			services.fileStateService,
-		);
+		codeChartaService = new CodeChartaService($rootScope, settingsService, fileStateService)
 	}
 
-	// TODO: adapt tests (old data.loading.ts file)
-	it("should load a file without edges", ()=> {
-		validFileContent.edges = undefined;
-		return codeChartaService.loadMapFromFileContent("file.json", validFileContent, 0);
-	});
+	describe("loadFiles", () => {
+		const expected: CCFile = {
+			fileMeta: { apiVersion: "1.1", fileName: "noFileName", projectName: "Sample Map" },
+			map: {
+				attributes: {},
+				children: [
+					{ attributes: { Functions: 10, MCC: 1, RLOC: 100 }, link: "http://www.google.de", name: "big leaf", type: "File" },
+					{
+						attributes: {},
+						children: [
+							{ attributes: { Functions: 100, MCC: 100, RLOC: 30 }, name: "small leaf", type: "File" },
+							{ attributes: { Functions: 1000, MCC: 10, RLOC: 70 }, name: "other small leaf", type: "File" }
+						],
+						name: "Parent Leaf",
+						type: "Folder"
+					}
+				],
+				name: "root",
+				type: "Folder"
+			},
+			settings: { fileSettings: { attributeTypes: {}, blacklist: [], edges: [] } }
+		}
 
-	it("should load a file without edges if no revision index given", ()=> {
-		validFileContent.edges = undefined;
-		return codeChartaService.loadMapFromFileContent("file.json", validFileContent);
-	});
+		beforeEach(() => {
+			fileStateService.addFile = jest.fn()
+			fileStateService.setSingle = jest.fn()
+		})
 
-	it("should resolve valid file", ()=> {
-		return codeChartaService.loadMapFromFileContent("file.json", validFileContent, 0);
-	});
+		function letTestFail() {
+			expect(true).toBeFalsy()
+		}
 
-	it("should reject null", (done)=> {
-		codeChartaService.loadMapFromFileContent("file.json", null, 0).then(()=>{}, ()=>{
-			done();
-		}).catch(()=>{
-			done()
-		});
-	});
+		it("should load a file without edges", done => {
+			validFileContent.edges = undefined
 
-	it("should reject string", (done)=> {
-		codeChartaService.loadMapFromFileContent("file.json", "string", 0).then(()=>{}, ()=>{
-			done();
-		}).catch(()=>{
-			done()
-		});
-	});
+			codeChartaService.loadFiles([{ fileName: validFileContent.fileName, content: validFileContent }]).then(() => {
+				expect(fileStateService.addFile).toHaveBeenCalledWith(expected)
+				expect(fileStateService.setSingle).toHaveBeenCalled()
+				done()
+			})
+		})
 
-	it("should reject or catch invalid file", (done)=> {
-		let invalidFileContent = validFileContent;
-		delete invalidFileContent.projectName;
-		codeChartaService.loadMapFromFileContent("file.json", invalidFileContent, 0).then(()=>{}, ()=>{
-			done();
-		}).catch(()=>{
-			done()
-		});
-	});
+		it("should resolve valid file", done => {
+			codeChartaService.loadFiles([{ fileName: validFileContent.fileName, content: validFileContent }]).then(() => {
+				expect(fileStateService.addFile).toHaveBeenCalledWith(expected)
+				expect(fileStateService.setSingle).toHaveBeenCalled()
+				done()
+			})
+		})
 
-});
+		it("should reject null", done => {
+			codeChartaService
+				.loadFiles([{ fileName: validFileContent.fileName, content: null }])
+				.then(() => {
+					letTestFail()
+				})
+				.catch(err => {
+					expect(err).toEqual([{ dataPath: "empty or invalid file", message: "file is empty or invalid" }])
+					done()
+				})
+		})
 
+		it("should reject string", done => {
+			codeChartaService
+				.loadFiles([{ fileName: validFileContent.fileName, content: "string" }])
+				.then(() => {
+					letTestFail()
+				})
+				.catch(() => {
+					done()
+				})
+		})
+
+		it("should reject or catch invalid file", done => {
+			let invalidFileContent = validFileContent
+			delete invalidFileContent.projectName
+			codeChartaService
+				.loadFiles([{ fileName: validFileContent.fileName, content: null }])
+				.then(() => {
+					letTestFail()
+				})
+				.catch(err => {
+					expect(err).toEqual([{ dataPath: "empty or invalid file", message: "file is empty or invalid" }])
+					done()
+				})
+		})
+	})
+})
