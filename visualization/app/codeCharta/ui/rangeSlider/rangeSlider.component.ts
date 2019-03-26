@@ -24,7 +24,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	} = {
 		colorRangeFrom: null,
 		colorRangeTo: null,
-		sliderOptions: null
+		sliderOptions: {disabled : false}
 	}
 
 	/* @ngInject */

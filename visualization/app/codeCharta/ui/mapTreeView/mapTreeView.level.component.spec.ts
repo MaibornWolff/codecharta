@@ -1,11 +1,10 @@
 import "./mapTreeView.module"
 
-import { MapTreeViewHoverEventSubscriber, MapTreeViewLevelController } from "./mapTreeView.level.component"
+import { MapTreeViewLevelController } from "./mapTreeView.level.component"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { SettingsService } from "../../state/settings.service"
 import { CodeMapUtilService } from "../codeMap/codeMap.util.service"
 import { IRootScopeService, ITimeoutService } from "angular"
-import "./mapTreeView.module"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { Node } from "../codeMap/rendering/node"

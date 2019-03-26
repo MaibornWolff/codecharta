@@ -1,109 +1,147 @@
-import {RangeSliderController} from "./rangeSlider.component";
-import {SettingsService} from "../../state/settings.service";
-import { DataService } from "../../core/data/data.service";
-import {MapColors} from "../codeMap/rendering/renderSettings";
+import "./rangeSlider.module"
+
+import { RangeSliderController } from "./rangeSlider.component"
+import { SettingsService } from "../../state/settings.service"
+import { CodeChartaService } from "../../codeCharta.service"
+import { MetricService } from "../../state/metric.service"
+import { FileStateService } from "../../state/fileState.service"
+import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { ITimeoutService, IRootScopeService } from "angular"
+import { Settings } from "../../codeCharta.model"
+import { SETTINGS } from "../../util/dataMocks"
+import { FileStateHelper } from "../../util/fileStateHelper";
 
 describe("RangeSliderController", () => {
+	let settingsService: SettingsService
+	let fileStateService: FileStateService
+	let codeChartaService: CodeChartaService
+	let metricService: MetricService
+	let $timeout: ITimeoutService
+	let $rootScope: IRootScopeService
+	let rangeSliderController: RangeSliderController
 
-    let dataServiceMock: DataService;
-    let settingsServiceMock: SettingsService;
-    let rangeSliderController: RangeSliderController;
-    let $timeout;
-    let $scope;
+	function rebuildController() {
+		rangeSliderController = new RangeSliderController(
+			settingsService,
+			fileStateService,
+			codeChartaService,
+			metricService,
+			$timeout,
+			$rootScope
+		)
+	}
 
+	function restartSystem() {
+		instantiateModule("app.codeCharta.ui.rangeSlider")
 
-    function rebuildSUT() {
-        rangeSliderController = new RangeSliderController(settingsServiceMock, dataServiceMock, $timeout, $scope);
-    }
+		settingsService = getService<SettingsService>("settingsService")
+		fileStateService = getService<FileStateService>("fileStateService")
+		codeChartaService = getService<CodeChartaService>("codeChartaService")
+		metricService = getService<MetricService>("metricService")
+		$timeout = getService<ITimeoutService>("$timeout")
+		$rootScope = getService<IRootScopeService>("$rootScope")
+	}
 
-    function mockEverything() {
+	beforeEach(() => {
+		restartSystem()
+		rebuildController()
+    })
+    
+    afterEach(() => {
+        jest.resetAllMocks()
+    })
 
-        $timeout = jest.fn();
+	describe("onSettingsChanged", () => {
+		it("should only call initSliderOptions when settings.dynamicSettings.neutralColorRange is undefined", () => {
+			rangeSliderController.initSliderOptions = jest.fn()
+			rangeSliderController["updateViewModel"] = jest.fn()
 
-        $scope = {
-            $broadcast: jest.fn()
-        };
+			const settings = { dynamicSettings: { neutralColorRange: undefined } } as Settings
 
-        const SettingsServiceMock = jest.fn<SettingsService>(() => ({
-            subscribe: jest.fn(),
-            applySettings: jest.fn(),
-            settings: {
-                colorMetric: "something",
-                neutralColorRange: {
-                    from: 30,
-                }
-            }
-        }));
+			rangeSliderController.onSettingsChanged(settings, undefined)
 
-        settingsServiceMock = new SettingsServiceMock();
+			expect(rangeSliderController.initSliderOptions).toHaveBeenCalledWith(settings)
+			expect(rangeSliderController["updateViewModel"]).not.toHaveBeenCalled()
+		})
 
-        const DataServiceMock = jest.fn<DataService>(() => ({
-            getMaxMetricInAllRevisions: jest.fn()
-        }));
+		it("should only call initSliderOptions when settings.dynamicSettings.neutralColorRange is null", () => {
+			rangeSliderController.initSliderOptions = jest.fn()
+			rangeSliderController["updateViewModel"] = jest.fn()
 
-        dataServiceMock = new DataServiceMock();
+			const settings = { dynamicSettings: { neutralColorRange: null } } as Settings
 
-        rebuildSUT();
+			rangeSliderController.onSettingsChanged(settings, undefined)
 
-    }
+			expect(rangeSliderController.initSliderOptions).toHaveBeenCalledWith(settings)
+			expect(rangeSliderController["updateViewModel"]).not.toHaveBeenCalled()
+		})
 
-    beforeEach(()=>{
-        mockEverything();
-    });
+		it("should call initSliderOptions and update the viewModel, set colored range colors and inputfield width", () => {
+			rangeSliderController.initSliderOptions = jest.fn()
 
-    it("should broadcast rzslider event in order to load values correctly on startup", () => {
-        rebuildSUT();
-        $timeout.mock.calls[0][0]();
-        expect($scope.$broadcast).toHaveBeenCalledWith("rzSliderForceRender");
-    });
+			rangeSliderController.onSettingsChanged(SETTINGS, undefined)
 
-    it("should subscribe to settingsService on construction", () => {
-        expect(settingsServiceMock.subscribe).toHaveBeenCalledWith(rangeSliderController);
-    });
+			expect(rangeSliderController.initSliderOptions).toHaveBeenCalledWith(SETTINGS)
+			expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(SETTINGS.dynamicSettings.neutralColorRange.from)
+			expect(rangeSliderController["_viewModel"].colorRangeTo).toBe(SETTINGS.dynamicSettings.neutralColorRange.to)
+		})
 
-    it("initSliderOptions should use treemapService for ceil calculation", () => {
-        dataServiceMock.getMaxMetricInAllRevisions.mockReturnValueOnce(42);
-        rangeSliderController.initSliderOptions();
-        expect(rangeSliderController.sliderOptions.ceil).toBe(42);
-    });
+		it("should call initSliderOptions and update the viewModel, set grey range colors and inputfield width", () => {
+			rangeSliderController.initSliderOptions = jest.fn()
 
-    it("slider should applySettings on change", () => {
-        rangeSliderController.initSliderOptions();
-        rangeSliderController.sliderOptions.onChange();
-        expect(settingsServiceMock.applySettings).toHaveBeenCalled();
-    });
+			rangeSliderController["_viewModel"].sliderOptions.disabled = true
+			rangeSliderController.onSettingsChanged(SETTINGS, undefined)
 
-    describe("Coloring the slider", () => {
+			expect(rangeSliderController.initSliderOptions).toHaveBeenCalledWith(SETTINGS)
+			expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(SETTINGS.dynamicSettings.neutralColorRange.from)
+			expect(rangeSliderController["_viewModel"].colorRangeTo).toBe(SETTINGS.dynamicSettings.neutralColorRange.to)
+		})
+	})
 
-        let fromPercentage;
+	describe("initSliderOptions", () => {
+        it("should init the slider options correctly", () => {
+            FileStateHelper.isDeltaState = jest.fn().mockReturnValue(true)
 
-        beforeEach(()=>{
-            rangeSliderController.applyCssSettings = jest.fn();
-            rangeSliderController.maxMetricValue = 200;
-            fromPercentage = 100 / rangeSliderController.maxMetricValue * settingsServiceMock.settings.neutralColorRange.from;
+            const expected = {ceil : rangeSliderController["maxMetricValue"], pushRange: true, disabled: true }
 
-        });
+            rangeSliderController.initSliderOptions(SETTINGS)
 
-        it("sliderColor should get set correctly with positiveGreen color", () => {
-            rangeSliderController.settingsService.settings.whiteColorBuildings = false;
-            const rangeColors = {"left": MapColors.positive, "middle": MapColors.neutral, "right": MapColors.negative};
-            rangeSliderController.updateSliderColors();
-            expect(rangeSliderController.applyCssSettings).toHaveBeenCalledWith(rangeColors, fromPercentage);
-        });
+            expect(rangeSliderController["_viewModel"].sliderOptions.ceil).toEqual(expected.ceil)
+            expect(rangeSliderController["_viewModel"].sliderOptions.pushRange).toBeTruthy()
+            expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toBeTruthy()
+            expect(rangeSliderController["_viewModel"].sliderOptions.onChange).not.toBeUndefined()
+            expect(rangeSliderController["_viewModel"].sliderOptions.onToChange).not.toBeUndefined()
+            expect(rangeSliderController["_viewModel"].sliderOptions.onFromChange).not.toBeUndefined()
+        })
+       
+        it("should be able to call onFromChange and set the color range correctly", () => {
+            settingsService.updateSettings = jest.fn()
+            metricService.getMaxMetricByMetricName = jest.fn().mockReturnValue(100)
 
-        it("sliderColor should get set correctly with lightGrey color", () => {
-            rangeSliderController.settingsService.settings.whiteColorBuildings = true;
-            const rangeColors = {"left": "#DDDDDD", "middle": MapColors.neutral, "right": MapColors.negative};
-            rangeSliderController.updateSliderColors();
-            expect(rangeSliderController.applyCssSettings).toHaveBeenCalledWith(rangeColors, fromPercentage);
-        });
+            rangeSliderController.onSettingsChanged(SETTINGS, undefined);
 
-        it("sliderColor should get set correctly with deltaFlipped colors", () => {
-            rangeSliderController.settingsService.settings.whiteColorBuildings = false;
-            rangeSliderController.settingsService.settings.neutralColorRange.flipped = true;
-            const rangeColors = {"left": MapColors.negative, "middle": MapColors.neutral, "right": MapColors.positive};
-            rangeSliderController.updateSliderColors();
-            expect(rangeSliderController.applyCssSettings).toHaveBeenCalledWith(rangeColors, fromPercentage);
-        });
-    });
-});
+            rangeSliderController["_viewModel"].sliderOptions.onFromChange();
+
+            expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(19)
+            expect(rangeSliderController["_viewModel"].colorRangeTo).toBe(67)
+            expect(metricService.getMaxMetricByMetricName).toBeCalledWith(SETTINGS.dynamicSettings.colorMetric)
+
+            expect(settingsService.updateSettings).toHaveBeenCalled()
+        })
+
+        it("should be able to call onToChange and set the color range correctly", () => {
+            settingsService.updateSettings = jest.fn()
+            metricService.getMaxMetricByMetricName = jest.fn().mockReturnValue(100)
+
+            rangeSliderController.onSettingsChanged(SETTINGS, undefined);
+
+            rangeSliderController["_viewModel"].sliderOptions.onToChange();
+
+            expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(19)
+            expect(rangeSliderController["_viewModel"].colorRangeTo).toBe(67)
+            expect(metricService.getMaxMetricByMetricName).toBeCalledWith(SETTINGS.dynamicSettings.colorMetric)
+
+            expect(settingsService.updateSettings).toHaveBeenCalled()
+        })
+	})
+})
