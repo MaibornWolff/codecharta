@@ -1,25 +1,25 @@
-import angular from "angular";
-import "../../state/state.module";
-import "../codeMap/codeMap.module";
+import angular from "angular"
+import "../../state/state.module"
+import "../codeMap/codeMap.module"
+import "../../codeCharta"
 
-import "./mapTreeView.component.scss";
+import "./mapTreeView.component.scss"
 
-import {mapTreeViewComponent} from "./mapTreeView.component";
-import {mapTreeViewLevelComponent} from "./mapTreeView.level.component";
+import { mapTreeViewComponent } from "./mapTreeView.component"
+import { mapTreeViewLevelComponent } from "./mapTreeView.level.component"
 
-angular.module("app.codeCharta.ui.mapTreeView", ["app.codeCharta.state", "app.codeCharta.ui.codeMap"])
-    .component(
-        mapTreeViewComponent.selector, mapTreeViewComponent
-    ).component(
-        mapTreeViewLevelComponent.selector, mapTreeViewLevelComponent
-    ).directive('ngRightClick', ($parse) => {
-        return (scope, element, attrs) => {
-            let fn = $parse(attrs.ngRightClick);
-            element.bind('contextmenu', (event) => {
-                scope.$apply(() => {
-                    event.preventDefault();
-                    fn(scope, {$event:event});
-                });
-            });
-        };
-    });
+angular
+	.module("app.codeCharta.ui.mapTreeView", ["app.codeCharta.state", "app.codeCharta.ui.codeMap", "app.codeCharta"])
+	.component(mapTreeViewComponent.selector, mapTreeViewComponent)
+	.component(mapTreeViewLevelComponent.selector, mapTreeViewLevelComponent)
+	.directive("ngRightClick", $parse => {
+		return (scope, element, attrs) => {
+			let fn = $parse(attrs.ngRightClick)
+			element.bind("contextmenu", event => {
+				scope.$apply(() => {
+					event.preventDefault()
+					fn(scope, { $event: event })
+				})
+			})
+		}
+	})

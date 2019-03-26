@@ -1,63 +1,65 @@
+import "./mapTreeView.module"
+
 import { MapTreeViewHoverEventSubscriber, MapTreeViewLevelController } from "./mapTreeView.level.component"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { SettingsService } from "../../state/settings.service"
 import { CodeMapUtilService } from "../codeMap/codeMap.util.service"
-import { CodeMapNode, BlacklistType } from "../../core/data/model/CodeMap"
-import { IRootScopeService } from "angular"
+import { IRootScopeService, ITimeoutService } from "angular"
 import "./mapTreeView.module"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { Node } from "../codeMap/rendering/node"
 import { CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
+import { CodeMapNode, BlacklistType, MarkedPackage } from "../../codeCharta.model"
+import { FileStateService } from "../../state/fileState.service"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
-	let $rootScope
-	let $event
-	let subscriber
-	let threeOrbitControlsService
-	let $timeout
+	let $event, services
 
-	let codeMapActionsService: CodeMapActionsService
-	let settingsServiceMock: SettingsService
-	let codeMapUtilService: CodeMapUtilService
-	let simpleHierarchy: CodeMapNode
+	beforeEach(() => {
+		restartSystem()
+		rebuildController()
+		withMockedEventMethods()
+	})
 
-	function mockEverything() {
-		const MockSubscriber = jest.fn<MapTreeViewHoverEventSubscriber>(() => ({
-			onShouldHoverNode: jest.fn(),
-			onShouldUnhoverNode: jest.fn()
-		}))
+	function restartSystem() {
+		instantiateModule("app.codeCharta.ui.mapTreeView")
 
-		subscriber = new MockSubscriber()
-
-		$rootScope = jest.fn()
-
-		$timeout = jest.fn()
-
-		$rootScope = {
-			$broadcast: jest.fn(),
-			$on: jest.fn()
+		services = {
+			$rootScope: getService<IRootScopeService>("$rootScope"),
+			$timeout: getService<ITimeoutService>("$timeout"),
+			threeOrbitControlsService: getService<ThreeOrbitControlsService>("threeOrbitControlsService"),
+			codeMapActionsService: getService<CodeMapActionsService>("codeMapActionsService"),
+			settingsService: getService<SettingsService>("settingsService"),
+			codeMapUtilService: getService<CodeMapUtilService>("codeMapUtilService"),
+			fileStateService: getService<FileStateService>("fileStateService")
 		}
 
 		$event = {
 			clientX: jest.fn(),
 			clientY: jest.fn()
 		}
+	}
 
-		const SettingsServiceMock = jest.fn<SettingsService>(() => ({
-			subscribe: jest.fn(),
-			applySettings: jest.fn(),
-			settings: {
-				map: {
-					nodes: null,
-					blacklist: {}
-				}
-			}
-		}))
+	function rebuildController() {
+		mapTreeViewLevelController = new MapTreeViewLevelController(
+			services.$rootScope,
+			services.codeMapActionsService,
+			services.settingsService
+		)
+	}
 
-		settingsServiceMock = new SettingsServiceMock()
+	function withMockedEventMethods() {
+		services.$rootScope.$broadcast = jest.fn()
+		services.$rootScope.$digest = jest.fn()
+		services.$rootScope.$on = jest.fn()
+	}
 
+	let simpleHierarchy: CodeMapNode
+
+	function mockEverything() {
 		simpleHierarchy = {
 			name: "root",
 			type: "Folder",
@@ -87,12 +89,7 @@ describe("MapTreeViewLevelController", () => {
 					]
 				}
 			]
-		}
-
-		codeMapUtilService = new CodeMapUtilService(settingsServiceMock)
-		settingsServiceMock.settings.map.nodes = simpleHierarchy
-		codeMapActionsService = new CodeMapActionsService(settingsServiceMock, threeOrbitControlsService, $timeout)
-		mapTreeViewLevelController = new MapTreeViewLevelController($rootScope, codeMapActionsService, settingsServiceMock)
+		} as CodeMapNode
 	}
 
 	beforeEach(function() {
@@ -112,180 +109,178 @@ describe("MapTreeViewLevelController", () => {
 		it("should set _isHoveredInCodeMap to true if hovered node path from the event is the same as the node path assigned to this controller", () => {
 			const controllerNode: CodeMapNode = buildNodeAt("somePath")
 			const transition: CodeMapBuildingTransition = buildTransitionTo("somePath")
-			mapTreeViewLevelController.node = controllerNode
+			mapTreeViewLevelController["node"] = controllerNode
 			mapTreeViewLevelController.onBuildingHovered(transition, null)
-			expect(mapTreeViewLevelController._isHoveredInCodeMap).toBe(true)
+			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(true)
 		})
 
 		it("should set _isHoveredInCodeMap to false if hovered node path from the event is not the same as the node path assigned to this controller", () => {
 			const controllerNode: CodeMapNode = buildNodeAt("somePath")
 			const transition: CodeMapBuildingTransition = buildTransitionTo("someOtherPath")
-			mapTreeViewLevelController.node = controllerNode
+			mapTreeViewLevelController["node"] = controllerNode
 			mapTreeViewLevelController.onBuildingHovered(transition, null)
-			expect(mapTreeViewLevelController._isHoveredInCodeMap).toBe(false)
+			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(false)
 		})
 
 		it("should set _isHoveredInCodeMap to false if hovered node is null", () => {
 			const transition: CodeMapBuildingTransition = { from: null, to: null }
 			mapTreeViewLevelController.onBuildingHovered(transition, null)
-			expect(mapTreeViewLevelController._isHoveredInCodeMap).toBe(false)
+			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(false)
 		})
 
-        it("Black color if no folder", () => {
-            mapTreeViewLevelController.node = { path: "/root/node/path", type: "File" };
-            expect(mapTreeViewLevelController.getMarkingColor()).toBe("#000");
-        });
+		it("Black color if no folder", () => {
+			mapTreeViewLevelController["node"] = { path: "/root/node/path", type: "File" } as CodeMapNode
+			expect(mapTreeViewLevelController.getMarkingColor()).toBe("#000000")
+		})
 
-        it("Return the markinColor if the matching markedPackage", () => {
-            mapTreeViewLevelController.node = { path: "/root/node/path", type: "Folder" };
-            mapTreeViewLevelController.settingsService.settings.markedPackages = [{
-                path: "/root/node/path", color: "#123FDE"
-            }];
-            expect(mapTreeViewLevelController.getMarkingColor()).toBe("#123FDE");
-        });
+		it("Return the markinColor if the matching markedPackage", () => {
+			mapTreeViewLevelController["node"] = { path: "/root/node/path", type: "Folder" } as CodeMapNode
+			mapTreeViewLevelController["settingsService"].settings.fileSettings.markedPackages = [
+				{
+					path: "/root/node/path",
+					color: "#123FDE"
+				} as MarkedPackage
+			]
+			expect(mapTreeViewLevelController.getMarkingColor()).toBe("#123FDE")
+		})
 
-        it("Return black if no markingColor in node", () => {
-            mapTreeViewLevelController.node = { path: "/root/node/path", type: "Folder" };
-            mapTreeViewLevelController.settingsService.settings.markedPackages = [];
-            expect(mapTreeViewLevelController.getMarkingColor()).toBe("#000");
-        });
-    });
+		it("Return black if no markingColor in node", () => {
+			mapTreeViewLevelController["node"] = { path: "/root/node/path", type: "Folder" } as CodeMapNode
+			mapTreeViewLevelController["settingsService"].settings.fileSettings.markedPackages = []
+			expect(mapTreeViewLevelController.getMarkingColor()).toBe("#000000")
+		})
+	})
 
 	describe("Mouse movement", () => {
 		it("Mouse enter", () => {
 			mapTreeViewLevelController.onMouseEnter()
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("should-hover-node", mapTreeViewLevelController.node)
+			expect(services.$rootScope.$broadcast).toHaveBeenCalledWith("should-hover-node", mapTreeViewLevelController["node"])
 		})
 
 		it("Mouse leave", () => {
 			mapTreeViewLevelController.onMouseLeave()
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("should-unhover-node", mapTreeViewLevelController.node)
+			expect(services.$rootScope.$broadcast).toHaveBeenCalledWith("should-unhover-node", mapTreeViewLevelController["node"])
 		})
 	})
 
 	describe("Clicks behaviour", () => {
 		it("Right click", () => {
-			mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder")
+			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder", simpleHierarchy)
 			let context = {
-				path: mapTreeViewLevelController.node.path,
-				type: mapTreeViewLevelController.node.type,
+				path: mapTreeViewLevelController["node"].path,
+				type: mapTreeViewLevelController["node"].type,
 				x: $event.clientX,
 				y: $event.clientY
 			}
 			mapTreeViewLevelController.onRightClick($event)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("hide-node-context-menu")
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("show-node-context-menu", context)
+			expect(services.$rootScope.$broadcast).toHaveBeenCalledWith("hide-node-context-menu")
+			expect(services.$rootScope.$broadcast).toHaveBeenCalledWith("show-node-context-menu", context)
 		})
 
 		it("Folder click collapse", () => {
-			mapTreeViewLevelController.collapsed = true
+			mapTreeViewLevelController["_viewModel"].collapsed = true
 			mapTreeViewLevelController.onFolderClick()
-			expect(mapTreeViewLevelController.collapsed).toBeFalsy()
+			expect(mapTreeViewLevelController["_viewModel"].collapsed).toBeFalsy()
 		})
 
 		it("Folder click uncollapse", () => {
-			mapTreeViewLevelController.collapsed = false
+			mapTreeViewLevelController["_viewModel"].collapsed = false
 			mapTreeViewLevelController.onFolderClick()
-			expect(mapTreeViewLevelController.collapsed).toBeTruthy()
+			expect(mapTreeViewLevelController["_viewModel"].collapsed).toBeTruthy()
 		})
 
 		it("Label click", () => {
-			mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/", "Folder")
-			mapTreeViewLevelController.codeMapActionsService.focusNode = jest.fn()
+			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath("/root/a/", "Folder", simpleHierarchy)
+			mapTreeViewLevelController["codeMapActionsService"].focusNode = jest.fn()
 			mapTreeViewLevelController.onLabelClick()
 
-			expect(mapTreeViewLevelController.codeMapActionsService.focusNode).toHaveBeenCalledWith(mapTreeViewLevelController.node)
+			expect(mapTreeViewLevelController["codeMapActionsService"].focusNode).toHaveBeenCalledWith(mapTreeViewLevelController["node"])
 		})
 
 		it("Eye click", () => {
-			mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/", "Folder")
-			mapTreeViewLevelController.codeMapActionsService.toggleNodeVisibility = jest.fn()
+			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath("/root/a/", "Folder", simpleHierarchy)
+			mapTreeViewLevelController["codeMapActionsService"].toggleNodeVisibility = jest.fn()
 			mapTreeViewLevelController.onEyeClick()
 
-			expect(mapTreeViewLevelController.codeMapActionsService.toggleNodeVisibility).toHaveBeenCalledWith(
-				mapTreeViewLevelController.node
+			expect(mapTreeViewLevelController["codeMapActionsService"].toggleNodeVisibility).toHaveBeenCalledWith(
+				mapTreeViewLevelController["node"]
 			)
 		})
 
 		it("Is leaf", () => {
-			mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab/aba", "File")
+			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+				"/root/a/ab/aba",
+				"File",
+				simpleHierarchy
+			)
 			expect(mapTreeViewLevelController.isLeaf()).toBeTruthy()
 		})
 
 		it("Is not leaf", () => {
-			mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder")
-			expect(mapTreeViewLevelController.isLeaf(mapTreeViewLevelController.node)).toBeFalsy()
+			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder", simpleHierarchy)
+			expect(mapTreeViewLevelController.isLeaf(mapTreeViewLevelController["node"])).toBeFalsy()
 		})
 
 		it("Is blacklisted", () => {
-			mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder")
+			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder", simpleHierarchy)
 
 			CodeMapUtilService.isBlacklisted = jest.fn()
-			mapTreeViewLevelController.isBlacklisted(mapTreeViewLevelController.node)
+			mapTreeViewLevelController.isBlacklisted(mapTreeViewLevelController["node"])
 
 			expect(CodeMapUtilService.isBlacklisted).toHaveBeenCalledWith(
-				mapTreeViewLevelController.node,
-				settingsServiceMock.settings.blacklist,
+				mapTreeViewLevelController["node"],
+				services.settingsService.settings.fileSettings.blacklist,
 				BlacklistType.exclude
 			)
 		})
 
 		it("Not blacklisted, not exist", () => {
 			CodeMapUtilService.isBlacklisted = jest.fn()
-			let blacklisted = mapTreeViewLevelController.isBlacklisted(mapTreeViewLevelController.node)
+			let blacklisted = mapTreeViewLevelController.isBlacklisted(mapTreeViewLevelController["node"])
 			expect(blacklisted).toBeFalsy()
 		})
 
 		it("Is searched", () => {
-			mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder")
-			mapTreeViewLevelController.settingsService.settings.searchedNodePaths = ["/root/a", "/root/a/ab"]
-			let searched = mapTreeViewLevelController.isSearched(mapTreeViewLevelController.node)
+			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder", simpleHierarchy)
+			mapTreeViewLevelController["settingsService"].settings.dynamicSettings.searchedNodePaths = ["/root/a", "/root/a/ab"]
+			let searched = mapTreeViewLevelController.isSearched(mapTreeViewLevelController["node"])
 			expect(searched).toBeTruthy()
 		})
 
 		it("Is not searched", () => {
-			mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder")
-			mapTreeViewLevelController.settingsService.settings.searchedNodePaths = ["/root/a"]
-			let searched = mapTreeViewLevelController.isSearched(mapTreeViewLevelController.node)
+			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder", simpleHierarchy)
+			mapTreeViewLevelController["settingsService"].settings.dynamicSettings.searchedNodePaths = ["/root/a"]
+			let searched = mapTreeViewLevelController.isSearched(mapTreeViewLevelController["node"])
 			expect(searched).toBeFalsy()
 		})
 
 		it("Sort leaf", () => {
-			mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab/aba", "File")
-			let sortValue = mapTreeViewLevelController.sortByFolder(mapTreeViewLevelController.node)
+			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+				"/root/a/ab/aba",
+				"File",
+				simpleHierarchy
+			)
+			let sortValue = mapTreeViewLevelController.sortByFolder(mapTreeViewLevelController["node"])
 			expect(sortValue).toBe(0)
 		})
 
 		it("Sort not a leaf", () => {
-			mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder")
-			let sortValue = mapTreeViewLevelController.sortByFolder(mapTreeViewLevelController.node)
+			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab", "Folder", simpleHierarchy)
+			let sortValue = mapTreeViewLevelController.sortByFolder(mapTreeViewLevelController["node"])
 			expect(sortValue).toBe(1)
 		})
 
-		it("Subscribe Hover", () => {
-			instantiateModule("app.codeCharta.ui.mapTreeView")
-
-			const services = {
-				$rootScope: getService<IRootScopeService>("$rootScope"),
-				settingsService: getService<SettingsService>("settingsService"),
-				codeMapActionsService: getService<CodeMapActionsService>("codeMapActionsService")
-			}
-
-			mapTreeViewLevelController = new MapTreeViewLevelController(
-				services.$rootScope,
-				services.codeMapActionsService,
-				services.settingsService
-			)
-
-			mapTreeViewLevelController.node = codeMapUtilService.getCodeMapNodeFromPath("/root/a/ab/aba", "File")
-			MapTreeViewLevelController.subscribeToHoverEvents(services.$rootScope, subscriber)
+		it("Hover", () => {
 			mapTreeViewLevelController.onMouseEnter()
-			mapTreeViewLevelController.onMouseLeave()
-			services.$rootScope.$digest()
 
-			expect(subscriber.onShouldHoverNode).toBeCalledWith(mapTreeViewLevelController.node)
-			expect(subscriber.onShouldUnhoverNode).toBeCalledWith(mapTreeViewLevelController.node)
+			expect(services.$rootScope.$on).toHaveBeenCalled
+		})
+
+		it("Unhover", () => {
+			mapTreeViewLevelController.onMouseLeave()
+
+			expect(services.$rootScope.$on).toHaveBeenCalled
 		})
 	})
 })
