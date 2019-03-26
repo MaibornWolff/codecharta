@@ -31,6 +31,42 @@ export const VALID_NODE: CodeMapNode = {
 	]
 }
 
+export const VALID_NODE_WITH_PATHS : CodeMapNode = {
+	name: "root",
+	path: "/root",
+	attributes: {},
+	type: "Folder",
+	children: [
+		{
+			name: "big leaf",
+			path: "/root/big leaf",
+			type: "File",
+			attributes: { RLOC: 100, Functions: 10, MCC: 1 },
+			link: "http://www.google.de"
+		},
+		{
+			name: "Parent Leaf",
+			path: "/root/Parent Leaf",
+			type: "Folder",
+			attributes: {},
+			children: [
+				{
+					name: "small leaf",
+					path: "/root/Parent Leaf/small leaf",
+					type: "File",
+					attributes: { RLOC: 30, Functions: 100, MCC: 100 }
+				},
+				{
+					name: "other small leaf",
+					path: "/root/Parent Leaf/other small leaf",
+					type: "File",
+					attributes: { RLOC: 70, Functions: 1000, MCC: 10 }
+				}
+			]
+		}
+	]
+}
+
 export const VALID_EDGE: Edge[] = [
 	{
 		fromNodeName: "/root/big leaf",
