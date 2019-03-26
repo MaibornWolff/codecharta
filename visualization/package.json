@@ -161,7 +161,7 @@
 		"browser-sync-webpack-plugin": "^2.2.2",
 		"clean-webpack-plugin": "^0.1.19",
 		"css-loader": "^0.28.10",
-		"d3": "^4.13.0",
+		"d3": "^5.9.2",
 		"deepcopy": "^0.6.3",
 		"es6-shim": "^0.35.3",
 		"file-api": "^0.10.4",
