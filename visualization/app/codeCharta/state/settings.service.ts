@@ -76,7 +76,6 @@ export class SettingsService {
 				neutralColorRange: null
 			},
 			appSettings: {
-				renderState: FileSelectionState.None,
 				amountOfTopLabels: 1,
 				scaling: scaling,
 				camera: camera,
