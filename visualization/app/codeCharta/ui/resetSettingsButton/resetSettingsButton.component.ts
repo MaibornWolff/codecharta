@@ -8,11 +8,7 @@ export class ResetSettingsButtonController {
 	/* @ngInject */
 	constructor(private settingsService: SettingsService) {}
 
-	public onClick() {
-		this.updateSettings()
-	}
-
-	public updateSettings() {
+	public applyDefaultSettings() {
 		const tokens: string[] = this.settingsNames
 			.replace(/ /g, "")
 			.replace(/\n/g, "")
@@ -41,7 +37,9 @@ export class ResetSettingsButtonController {
 			})
 		})
 
-		this.settingsService.updateSettings(updatedSettings)
+		if (Object.keys(updatedSettings).length > 0) {
+			this.settingsService.updateSettings(updatedSettings)
+		}
 	}
 }
 

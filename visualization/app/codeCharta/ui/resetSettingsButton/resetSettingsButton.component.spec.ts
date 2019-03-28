@@ -3,6 +3,7 @@ import "./resetSettingsButton.module"
 import { ResetSettingsButtonController } from "./resetSettingsButton.component"
 import { SettingsService } from "../../state/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { RecursivePartial, Settings } from "../../codeCharta.model";
 
 describe("resetSettingsButtonController", () => {
 	let settingsService: SettingsService
@@ -28,149 +29,70 @@ describe("resetSettingsButtonController", () => {
 			return {
 				updateSettings: jest.fn(),
 				getDefaultSettings: jest.fn(() => {
-					return { treeMapSettings: { mapSize: 700 } }
-				})
+					return {
+						appSettings: { maximizeDetailPanel: false, enableEdgeArrows: true },
+					}
+				}),
+				getSettings: jest.fn()
 			}
 		})()
 	}
 
-	describe("onClick", () => {
-		it("should call updateSettings", () => {
-			resetSettingsButtonController.updateSettings = jest.fn()
-
-			resetSettingsButtonController.onClick()
-
-			expect(resetSettingsButtonController.updateSettings).toHaveBeenCalledTimes(1)
-		})
-	})
-
-	describe("updateSettings", () => {
-		it("should do something, but always returns an empty object", () => {
+	describe("applyDefaultSettings", () => {
+		it("should call updateSettings with available default settings objects", () => {
 			resetSettingsButtonController["settingsNames"] =
-				"appSettings.enableEdgeArrows, appSettings.hideFlatBuildings, appSettings.maximizeDetailPanel, appSettings.isWhiteBackground"
-			resetSettingsButtonController.updateSettings()
+				"appSettings.enableEdgeArrows, appSettings.maximizeDetailPanel, appSettings.notInAppSettings, notInSettings.something"
+			resetSettingsButtonController.applyDefaultSettings()
 
 			expect(settingsService.getDefaultSettings).toHaveBeenCalledTimes(1)
 			expect(settingsService.updateSettings).toHaveBeenCalledTimes(1)
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({})
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({appSettings: {enableEdgeArrows: true, maximizeDetailPanel: false}})
 		})
-	})
 
-	xit(",,?", () => {
-		settingsService.settings.mode = KindOfMap.Single
-		resetSettingsButtonController.settingsNames = ",,"
-		settingsService.getDefaultSettings.mockReturnValue({
-			mode: KindOfMap.Delta
+		it("settingsNames should allow blank-space", () => {
+			resetSettingsButtonController["settingsNames"] = "appSettings.enableEdgeArrows, appSettings.maximizeDetailPanel"
+			resetSettingsButtonController.applyDefaultSettings()
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({appSettings: {enableEdgeArrows: true, maximizeDetailPanel: false}})
 		})
-		resetSettingsButtonController.updateSettings()
-		expect(settingsService.settings.mode).toBe(KindOfMap.Single)
-	})
 
-	xit(" ?", () => {
-		settingsService.settings.mode = KindOfMap.Single
-		resetSettingsButtonController.settingsNames = " "
-		settingsService.getDefaultSettings.mockReturnValue({
-			mode: KindOfMap.Delta
+		it("settingsNames should allow newline", () => {
+			resetSettingsButtonController["settingsNames"] = "appSettings.enableEdgeArrows,\nappSettings.maximizeDetailPanel"
+			resetSettingsButtonController.applyDefaultSettings()
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({appSettings: {enableEdgeArrows: true, maximizeDetailPanel: false}})
 		})
-		resetSettingsButtonController.updateSettings()
-		expect(settingsService.settings.mode).toBe(KindOfMap.Single)
-	})
 
-	xit("settingsName not in settingsservice?", () => {
-		settingsService.settings.mode = {}
-		resetSettingsButtonController.settingsNames = "deltas.something.bla"
-		settingsService.getDefaultSettings.mockReturnValue({
-			mode: KindOfMap.Delta
+		it("should do nothing if settingsNames only contains comma characters", () => {
+			resetSettingsButtonController["settingsNames"] = ",,"
+			resetSettingsButtonController.applyDefaultSettings()
+			expect(settingsService.updateSettings).not.toHaveBeenCalled()
 		})
-		resetSettingsButtonController.updateSettings()
-		expect(settingsService.settings.mode).toEqual({})
-	})
 
-	xit("settingsName not directly in settingsservice?", () => {
-		settingsService.settings.mode = {
-			hello: {
-				notBla: 12
+		it("should do nothing if settingsNames only contains space characters", () => {
+			resetSettingsButtonController["settingsNames"] = " "
+			resetSettingsButtonController.applyDefaultSettings()
+			expect(settingsService.updateSettings).not.toHaveBeenCalled()
+		})
+
+		it("should do nothing if settingsName not in defaultSettings", () => {
+			resetSettingsButtonController["settingsNames"] = "deltas.something.bla"
+			resetSettingsButtonController.applyDefaultSettings()
+			expect(settingsService.updateSettings).not.toHaveBeenCalled()
+		})
+
+		it("should update nested settings in service", () => {
+			const newSettings: RecursivePartial<Settings> = {
+				appSettings: {scaling: {x: 42, y: 42, z: 42}}
 			}
-		}
-		resetSettingsButtonController.settingsNames = "deltas.hello.bla"
-		settingsService.getDefaultSettings.mockReturnValue({
-			mode: {
-				hello: {}
-			}
-		})
-		resetSettingsButtonController.updateSettings()
-		expect(settingsService.settings.mode).toEqual({
-			hello: {
-				notBla: 12
-			}
-		})
-	})
 
-	xit("updateSettings should update setting in service", () => {
-		settingsService.settings.mode = KindOfMap.Single
-		resetSettingsButtonController.settingsNames = "mode"
-		settingsService.getDefaultSettings.mockReturnValue({
-			mode: KindOfMap.Delta
-		})
-		resetSettingsButtonController.updateSettings()
-		expect(resetSettingsButtonController.settingsService.settings.mode).toBe(KindOfMap.Delta)
-	})
+			settingsService.updateSettings({
+				appSettings: {scaling: {x: 1, y: 1, z: 1}}
+			})
 
-	xit("updateSettings should update settings in service", () => {
-		settingsService.settings.mode = KindOfMap.Single
-		settingsService.settings.something = 13
-		resetSettingsButtonController.settingsNames = "mode,something"
-		settingsService.getDefaultSettings.mockReturnValue({
-			mode: KindOfMap.Delta,
-			something: 32
-		})
-		resetSettingsButtonController.updateSettings()
-		expect(settingsService.settings.something).toBe(32)
-	})
+			resetSettingsButtonController["settingsNames"] = "appSettings.scaling.x, appSettings.scaling.y, appSettings.scaling.z"
+			settingsService.getDefaultSettings = jest.fn(() => newSettings)
 
-	xit("updateSettings should update nested settings in service", () => {
-		settingsService.settings.something = {
-			neutralColorRange: {
-				from: 1,
-				to: 1,
-				flipped: false
-			}
-		}
-		resetSettingsButtonController.settingsNames = "neutralColorRange.from, neutralColorRange.to, neutralColorRange.flipped"
-		settingsService.getDefaultSettings.mockReturnValue({
-			neutralColorRange: {
-				from: 11,
-				to: 12,
-				flipped: false
-			}
+			resetSettingsButtonController.applyDefaultSettings()
+			expect(settingsService.updateSettings).toHaveBeenCalledWith(newSettings)
 		})
-		resetSettingsButtonController.updateSettings()
-		expect(settingsService.settings.neutralColorRange.from).toBe(11)
-		expect(settingsService.settings.neutralColorRange.to).toBe(12)
-		expect(settingsService.settings.neutralColorRange.flipped).toBe(false)
-	})
-
-	xit("updateSettings should allow blankspace", () => {
-		settingsService.settings.mode = KindOfMap.Single
-		settingsService.settings.something = 13
-		resetSettingsButtonController.settingsNames = "mode, something"
-		settingsService.getDefaultSettings.mockReturnValue({
-			mode: KindOfMap.Delta,
-			something: 32
-		})
-		resetSettingsButtonController.updateSettings()
-		expect(settingsService.settings.something).toBe(32)
-	})
-
-	xit("updateSettings should allow nl", () => {
-		settingsService.settings.mode = KindOfMap.Single
-		settingsService.settings.something = 13
-		resetSettingsButtonController.settingsNames = "mode,\nsomething"
-		settingsService.getDefaultSettings.mockReturnValue({
-			mode: KindOfMap.Delta,
-			something: 32
-		})
-		resetSettingsButtonController.updateSettings()
-		expect(settingsService.settings.something).toBe(32)
 	})
 })
