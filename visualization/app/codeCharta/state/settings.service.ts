@@ -11,7 +11,7 @@ export class SettingsService {
 	private static SETTINGS_CHANGED_EVENT = "settings-changed"
 	public static readonly MIN_MARGIN = 15
 
-	public settings: Settings
+	private settings: Settings
 	private readonly throttledBroadcast: () => void
 
 	constructor(private $rootScope) {
