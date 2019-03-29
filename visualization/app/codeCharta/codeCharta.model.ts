@@ -65,7 +65,6 @@ export interface DynamicSettings {
 }
 
 export interface AppSettings {
-    renderState: FileSelectionState;
     amountOfTopLabels: number;
     scaling: Vector3d;
     camera: Vector3d;

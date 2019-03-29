@@ -11,7 +11,7 @@ export class SettingsService {
 	private static SETTINGS_CHANGED_EVENT = "settings-changed"
 	public static readonly MIN_MARGIN = 15
 
-	public settings: Settings
+	private settings: Settings
 	private readonly throttledBroadcast: () => void
 
 	constructor(private $rootScope) {
@@ -76,7 +76,6 @@ export class SettingsService {
 				neutralColorRange: null
 			},
 			appSettings: {
-				renderState: FileSelectionState.None,
 				amountOfTopLabels: 1,
 				scaling: scaling,
 				camera: camera,
@@ -101,7 +100,7 @@ export class SettingsService {
 	private updateSettingsUsingPartialSettings(settings: Settings, update: RecursivePartial<Settings>): Settings {
 		for (let key of Object.keys(settings)) {
 			if (update.hasOwnProperty(key)) {
-				if (this.isObject(settings[key]) && !this.isArray(settings[key])) {
+				if (_.isObject(settings[key]) && !_.isArray(settings[key])) {
 					if (this.containsArrayObject(update[key])) {
 						settings[key] = this.updateSettingsUsingPartialSettings(settings[key], update[key])
 					} else {
@@ -119,7 +118,7 @@ export class SettingsService {
 		if (obj) {
 			for (let key of Object.keys(obj)) {
 				if (typeof obj[key] === "object") {
-					if (Object.prototype.toString.call(obj[key]) === "[object Array]") {
+					if (_.isArray(obj[key])) {
 						return true
 					} else {
 						return this.containsArrayObject(obj[key])
@@ -128,14 +127,6 @@ export class SettingsService {
 			}
 		}
 		return false
-	}
-
-	private isArray(obj: object) {
-		return Object.prototype.toString.call(obj) === "[object Array]"
-	}
-
-	private isObject(obj: object) {
-		return typeof obj === "object"
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: SettingsServiceSubscriber) {

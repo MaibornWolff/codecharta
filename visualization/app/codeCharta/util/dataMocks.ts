@@ -1,4 +1,4 @@
-import { CodeMapNode, Edge, CCFile } from "../codeCharta.model"
+import { CodeMapNode, Edge, CCFile, Settings, FileSelectionState } from "../codeCharta.model"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -294,4 +294,47 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 		}
 	],
 	projectName: "Sample Map"
+}
+
+export const SETTINGS: Settings = {
+	fileSettings: { attributeTypes: {}, blacklist: [], edges: [], markedPackages: [] },
+	dynamicSettings: {
+		areaMetric: "rloc",
+		heightMetric: "mcc",
+		colorMetric: "mcc",
+		focusedNodePath: null,
+		searchedNodePaths: [],
+		searchPattern: "",
+		margin: 48,
+		neutralColorRange: { flipped: false, from: 19, to: 67 }
+	},
+	appSettings: {
+		renderState: FileSelectionState.None,
+		amountOfTopLabels: 31,
+		scaling: { x: 1, y: 1.8, z: 1 },
+		camera: { x: 0, y: 300, z: 1000 },
+		deltaColorFlipped: false,
+		enableEdgeArrows: true,
+		hideFlatBuildings: true,
+		maximizeDetailPanel: false,
+		invertHeight: true,
+		dynamicMargin: true,
+		isWhiteBackground: false,
+		whiteColorBuildings: true,
+		mapColors: {
+			positive: "#69AE40",
+			neutral: "#ddcc00",
+			negative: "#820E0E",
+			selected: "#EB8319",
+			defaultC: "#89ACB4",
+			positiveDelta: "#69FF40",
+			negativeDelta: "#ff0E0E",
+			base: "#666666",
+			flat: "#AAAAAA",
+			lightGrey: "#DDDDDD",
+			angularGreen: "#00BFA5",
+			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"]
+		}
+	},
+	treeMapSettings: { mapSize: 500 }
 }
