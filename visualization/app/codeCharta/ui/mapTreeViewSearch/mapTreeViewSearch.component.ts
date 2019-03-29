@@ -2,25 +2,19 @@ import { SettingsService, SettingsServiceSubscriber } from "../../state/settings
 import { IRootScopeService } from "angular"
 import "./mapTreeViewSearch.component.scss"
 import { CodeMapUtilService } from "../codeMap/codeMap.util.service"
-import {
-	CodeMapNode,
-	BlacklistType,
-	Settings,
-	FileState
-} from "../../codeCharta.model"
-import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
-import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
-import {CodeMapRenderService} from "../codeMap/codeMap.render.service";
+import { CodeMapNode, BlacklistType, Settings, FileState } from "../../codeCharta.model"
+import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
+import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
+import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
 import * as d3 from "d3"
 
 export class MapTreeViewSearchController implements SettingsServiceSubscriber, FileStateServiceSubscriber {
-
 	private _viewModel: {
-		searchPattern: string,
-		fileCount: number,
-		hideCount: number,
-		excludeCount: number,
-		isPatternExcluded: boolean,
+		searchPattern: string
+		fileCount: number
+		hideCount: number
+		excludeCount: number
+		isPatternExcluded: boolean
 		isPatternHidden: boolean
 	} = {
 		searchPattern: "",
@@ -44,13 +38,11 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
-
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 		this._viewModel.searchPattern = ""
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-	}
+	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
 
 	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
 		this.updateViewModel(settings)
@@ -81,9 +73,11 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 	}
 
 	private isPatternBlacklisted(s: Settings, blacklistType: BlacklistType) {
-		return (s.fileSettings.blacklist.filter(item => {
-			return this._viewModel.searchPattern == item.path && blacklistType == item.type
-		}).length != 0)
+		return (
+			s.fileSettings.blacklist.filter(item => {
+				return this._viewModel.searchPattern == item.path && blacklistType == item.type
+			}).length != 0
+		)
 	}
 
 	private setSearchedNodePathNames() {
