@@ -114,6 +114,59 @@ export const TEST_FILE_DATA: CCFile = {
 	}
 }
 
+export const TEST_FILE_WITH_PATHS: CCFile = {
+	fileMeta: {
+		fileName: "fileA",
+		projectName: "Sample Project",
+		apiVersion: "1.1"
+	},
+	map: {
+		name: "root",
+		type: "Folder",
+		path: "/root",
+		attributes: {},
+		children: [
+			{
+				name: "big leaf",
+				type: "File",
+				path: "/root/big leaf",
+				attributes: { rloc: 100, functions: 10, mcc: 1 },
+				link: "http://www.google.de"
+			},
+			{
+				name: "Parent Leaf",
+				type: "Folder",
+				attributes: {},
+				path: "/root/Parent Leaf",
+				children: [
+					{
+						name: "small leaf",
+						type: "File",
+						path: "/root/Parent Leaf/small leaf",
+						attributes: { rloc: 30, functions: 100, mcc: 100 }
+					},
+					{
+						name: "other small leaf",
+						type: "File",
+						path: "/root/Parent Leaf/other small leaf",
+						attributes: { rloc: 70, functions: 1000, mcc: 10 }
+					},
+					{
+						name: "empty folder",
+						type: "Folder",
+						path: "/root/Parent Leaf/empty folder",
+						attributes: {},
+						children: []
+					}
+				]
+			}
+		]
+	},
+	settings: {
+		fileSettings: {}
+	}
+}
+
 export const TEST_DELTA_MAP_A: CCFile = {
 	fileMeta: {
 		fileName: "fileA",
