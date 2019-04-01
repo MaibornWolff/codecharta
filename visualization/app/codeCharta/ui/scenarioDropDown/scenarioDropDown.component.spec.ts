@@ -1,106 +1,98 @@
-import {ScenarioDropDownController} from "./scenarioDropDown.component";
-import {ScenarioHelper} from "../../util/scenarioHelper";
-import {TooltipService} from "../tooltip/tooltip.service";
-import {IScope} from "angular";
-import {SettingsService} from "../../state/settings.service";
-import {DataService} from "../../core/data/data.service";
+import "./scenarioDropDown.module"
+import "../codeMap/threeViewer/threeViewer.module"
+import { ScenarioDropDownController } from "./scenarioDropDown.component"
+import { IRootScopeService } from "angular"
+import { SettingsService } from "../../state/settings.service"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
+import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { MetricService } from "../../state/metric.service"
+import { ScenarioHelper } from "../../util/scenarioHelper";
+import { MetricData } from "../../codeCharta.model";
+import { settings } from "cluster";
+import { SETTINGS } from "../../util/dataMocks";
 
 describe("ScenarioDropDownController", () => {
+	let $rootScope: IRootScopeService
+	let settingsService: SettingsService
+	let threeOrbitControlsService: ThreeOrbitControlsService
+    let scenarioButtonsController: ScenarioDropDownController
+    let metricData : MetricData[]
 
-    let scenarioServiceMock: ScenarioHelper;
-    let settingsServiceMock: SettingsService;
-    let dataServiceMock: DataService;
-    let tooltipServiceMock: TooltipService;
-    let scopeMock: IScope;
-    let scenarioButtonsController: ScenarioDropDownController;
+	function rebuildController() {
+		scenarioButtonsController = new ScenarioDropDownController($rootScope, settingsService, threeOrbitControlsService)
+	}
 
-    function rebuildSUT() {
-        scenarioButtonsController = new ScenarioDropDownController(scenarioServiceMock, tooltipServiceMock, settingsServiceMock, dataServiceMock, scopeMock);
+	function restartSystem() {
+		instantiateModule("app.codeCharta.ui.scenarioDropDown")
+
+		$rootScope = getService<IRootScopeService>("$rootScope")
+		settingsService = getService<SettingsService>("settingsService")
+        threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
+        
+        metricData = [
+			{ name: "rloc", maxValue: 999999, availableInVisibleMaps: true },
+			{ name: "functions", maxValue: 999999, availableInVisibleMaps: true },
+			{ name: "mcc", maxValue: 999999, availableInVisibleMaps: true }
+		]
+    }
+    
+    function withMockedSettingsService() {
+        settingsService = scenarioButtonsController["settingsService"] = jest.fn(() => {
+            return {
+                updateSettings : jest.fn()
+            }
+        })()
     }
 
-    function mockEverything() {
-
-        const ScenarioServiceMock = jest.fn<ScenarioHelper>(() => ({
-            getScenarios: jest.fn(),
-            applyScenario: jest.fn()
-        }));
-
-        scenarioServiceMock = new ScenarioServiceMock();
-
-        const SettingsServiceMock = jest.fn<SettingsService>(() => ({
-            subscribe: jest.fn()
-        }));
-
-        settingsServiceMock = new SettingsServiceMock();
-
-        const DataServiceMock = jest.fn<DataService>(() => ({
-            subscribe: jest.fn()
-        }));
-
-        dataServiceMock = new DataServiceMock();
-
-        const TooltipServiceMock = jest.fn<TooltipService>(() => ({
-            getTooltipTextByKey: jest.fn(),
-            subscribe: jest.fn()
-        }));
-
-        tooltipServiceMock = new TooltipServiceMock();
-
-        const ScopeMock = jest.fn<IScope>(()=>({
-            $apply: jest.fn()
-        }));
-
-        scopeMock = new ScopeMock();
-
-        rebuildSUT();
-
+    function withMockedThreeOrbitControlsService() {
+        threeOrbitControlsService = scenarioButtonsController["threeOrbitControlsService"] = jest.fn(() => {
+            return {
+                autoFitTo : jest.fn()
+            }
+        })()
     }
 
-    beforeEach(()=>{
-        mockEverything();
-    });
+	beforeEach(() => {
+		restartSystem()
+        rebuildController()
+        withMockedSettingsService()
+        withMockedThreeOrbitControlsService()
+	})
 
-    it("should subscribe to services on construction", () => {
-        expect(tooltipServiceMock.subscribe).toHaveBeenCalledWith(scenarioButtonsController);
-        expect(dataServiceMock.subscribe).toHaveBeenCalledWith(scenarioButtonsController);
-        expect(settingsServiceMock.subscribe).toHaveBeenCalledWith(scenarioButtonsController);
-    });
+	afterEach(() => {
+		jest.clearAllMocks()
+	})
 
-    it("should update scenarios on data or settings change", () => {
-        scenarioButtonsController.updateScenarios = jest.fn();
-        scenarioButtonsController.onDataChanged(null, null);
-        scenarioButtonsController.onSettingsChanged(null, null);
-        expect(scenarioButtonsController.updateScenarios).toHaveBeenCalledTimes(2);
-    });
+	describe("constructor", () => {
+		it("should subscribe to MetricService on construction", () => {
+			MetricService.subscribe = jest.fn()
 
-    it("should get scenarios from scenario service on startup", () => {
-        const scenarios = ["a", "nice", "scenario"];
-        scenarioServiceMock.getScenarios.mockReturnValue(scenarios);
-        rebuildSUT();
-        expect(scenarioButtonsController.scenarios).toBe(scenarios);
-    });
+			scenarioButtonsController = new ScenarioDropDownController($rootScope, settingsService, threeOrbitControlsService)
 
-    it("tooltips change should apply the scope", ()=>{
-        scenarioButtonsController.onTooltipsChanged(null, null);
-        expect(scopeMock.$apply).toHaveBeenCalled();
-    });
+			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, scenarioButtonsController)
+		})
+    })
+    
+    describe("onMetricDataChanged", () => {
+        it("should call getScenarios and set the scenarios in viewmodel correctly", () => {
+            ScenarioHelper.getScenarios = jest.fn().mockReturnValue([{name : "scenario", settings: {}}])
 
-    it("getScenarioTooltipTextByKey should delegate to tooltipService", ()=>{
-        const tooltipValue = "a nice tooltip";
-        const tooltipKey = "nice alias";
-        tooltipServiceMock.getTooltipTextByKey.mockImplementation((key) => {
-            if(key === tooltipKey) {
-                return tooltipValue;
-            } else { return ""; }
-        });
-        expect(scenarioButtonsController.getScenarioTooltipTextByKey(tooltipKey)).toBe(tooltipValue);
-        expect(scenarioButtonsController.getScenarioTooltipTextByKey("another")).toBe("");
-    });
+            scenarioButtonsController.onMetricDataChanged(metricData, undefined)
+            
+            expect(ScenarioHelper.getScenarios).toHaveBeenCalledWith(metricData)
+            expect(scenarioButtonsController["_viewModel"].scenarios).toEqual([{name : "scenario", settings: {}}])
+        })
+    })
 
-    it("onclick with a scenario should apply scenario", ()=>{
-        const scenario = "scenario";
-        scenarioButtonsController.onclick(scenario);
-        expect(scenarioServiceMock.applyScenario).toHaveBeenCalledWith(scenario);
-    });
+    describe("applySettings", () => {
+        it("should call getScenarios and set the scenarios in viewmodel correctly", () => {
+            scenarioButtonsController.applySettings()
 
-});
+            scenarioButtonsController["_viewModel"].key = "key"
+            scenarioButtonsController["_viewModel"].scenarios = [{name: "key", settings: SETTINGS}]
+            
+            expect(scenarioButtonsController["_viewModel"].key).toBeNull()
+            expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
+        })
+    })
+})

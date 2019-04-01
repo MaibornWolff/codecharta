@@ -35,6 +35,7 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
     }
 
     public applySettings(){
+        //TODO: array[STRING] ??
         this.settingsService.updateSettings(this._viewModel.scenarios[this._viewModel.key].settings);
         this._viewModel.key = null;
         this.threeOrbitControlsService.autoFitTo()
