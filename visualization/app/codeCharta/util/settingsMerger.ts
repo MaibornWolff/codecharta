@@ -5,6 +5,7 @@ import {
 	CCFile,
 	FileSettings
 } from "../codeCharta.model"
+import {CodeChartaService} from "../codeCharta.service";
 
 export class SettingsMerger {
 
@@ -13,13 +14,9 @@ export class SettingsMerger {
 	private static attributeTypesEdge: { [key: string]: AttributeType } = {}
 	private static attributeTypesNode: { [key: string]: AttributeType } = {}
 
-	public static getMergedFileSettings(inputFiles: CCFile[], withUpdatedPath: boolean): FileSettings {
+	public static getMergedFileSettings(inputFiles: CCFile[], withUpdatedPath: boolean = false): FileSettings {
 		if (inputFiles.length == 1) {
-			if (inputFiles[0].settings.fileSettings) {
-				return inputFiles[0].settings.fileSettings
-			} else {
-				return null
-			}
+			return inputFiles[0].settings.fileSettings ? inputFiles[0].settings.fileSettings : null
 		}
 
 		this.resetVariables()
@@ -28,6 +25,7 @@ export class SettingsMerger {
 			this.setEdges(inputFile, withUpdatedPath)
 			this.setAttributeTypesByUniqueKey(inputFile)
 			this.setBlacklist(inputFile, withUpdatedPath)
+			// TODO: Merge markedPackages
 		}
 		return this.getNewFileSettings()
 	}
@@ -44,8 +42,13 @@ export class SettingsMerger {
 				attributes: oldEdge.attributes,
 				visible: oldEdge.visible
 			}
-			const equalEdgeItems = this.edges.filter(e => e.fromNodeName == edge.fromNodeName && e.toNodeName == edge.toNodeName)
-			if (equalEdgeItems.length == 0) {
+			const equalEdgeItem = this.edges.find(e => e.fromNodeName == edge.fromNodeName && e.toNodeName == edge.toNodeName)
+
+			if (equalEdgeItem) {
+				for(let key in edge.attributes) {
+					equalEdgeItem.attributes[key] = edge.attributes[key]
+				}
+			} else {
 				this.edges.push(edge)
 			}
 		}
@@ -61,7 +64,9 @@ export class SettingsMerger {
 				path: withUpdatedPath ? this.getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldBlacklistItem.path) : oldBlacklistItem.path,
 				type: oldBlacklistItem.type
 			}
-			const equalBlacklistItems = this.blacklist.filter(b => b.path == blacklistItem.path && b.type == blacklistItem.type)
+			const equalBlacklistItems = this.blacklist.filter(b =>
+				b.path == blacklistItem.path &&
+				b.type == blacklistItem.type)
 			if (equalBlacklistItems.length == 0) {
 				this.blacklist.push(blacklistItem)
 			}
@@ -76,7 +81,7 @@ export class SettingsMerger {
 	}
 
 	private static isAbsoluteRootPath(path: string): boolean {
-		return path.startsWith("/root/")
+		return path.startsWith(CodeChartaService.ROOT_PATH + "/")
 	}
 
 	private static setAttributeTypesByUniqueKey(inputFile: CCFile) {
@@ -101,7 +106,7 @@ export class SettingsMerger {
 				nodes: this.attributeTypesNode,
 				edges: this.attributeTypesEdge
 			},
-			markedPackages: [] // TODO: Merge markedPackages
+			markedPackages: []
 		}
 	}
 

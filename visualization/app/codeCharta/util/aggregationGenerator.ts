@@ -2,8 +2,8 @@ import {CodeMapNode, CCFile} from "../codeCharta.model"
 
 export class AggregationGenerator {
 
-	private static projectNameArray = []
-	private static fileNameArray = []
+	private static projectNameArray: string[] = []
+	private static fileNameArray: string[] = []
 
 	public static getAggregationFile(inputFiles: CCFile[]): CCFile {
 		if (inputFiles.length == 1) {
