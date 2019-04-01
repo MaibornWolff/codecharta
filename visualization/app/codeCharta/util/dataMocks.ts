@@ -309,7 +309,6 @@ export const SETTINGS: Settings = {
 		neutralColorRange: { flipped: false, from: 19, to: 67 }
 	},
 	appSettings: {
-		renderState: FileSelectionState.None,
 		amountOfTopLabels: 31,
 		scaling: { x: 1, y: 1.8, z: 1 },
 		camera: { x: 0, y: 300, z: 1000 },
