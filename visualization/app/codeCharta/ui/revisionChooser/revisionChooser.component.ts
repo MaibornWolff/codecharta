@@ -75,11 +75,11 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
             this._viewModel.renderState = FileSelectionState.Comparison
 
             this._viewModel.selectedFileNames.delta.reference = (visibleFileStates.length == 2)
-                ? visibleFileStates.find(x => x.selectedAs == FileSelectionState.Reference).file.fileMeta.fileName
+                ? visibleFileStates.find(x => x.selectedAs === FileSelectionState.Reference).file.fileMeta.fileName
                 : visibleFileStates[0].file.fileMeta.fileName
 
             this._viewModel.selectedFileNames.delta.comparison = (visibleFileStates.length == 2)
-                ? visibleFileStates.find(x => x.selectedAs == FileSelectionState.Comparison).file.fileMeta.fileName
+                ? visibleFileStates.find(x => x.selectedAs === FileSelectionState.Comparison).file.fileMeta.fileName
                 : visibleFileStates[0].file.fileMeta.fileName
         }
     }
@@ -107,7 +107,7 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
     }
 
     public onPartialFilesChange(partialFileNames: string[]) {
-        let partialFiles: CCFile[] = []
+        const partialFiles: CCFile[] = []
 
         partialFileNames.forEach(fileName => {
             partialFiles.push(FileStateHelper.getFileByFileName(fileName, this.fileStateService.getFileStates()))
@@ -117,14 +117,15 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
     }
 
     public onRenderStateChange(renderState: FileSelectionState) {
-        if (renderState == FileSelectionState.Single) {
+        if (renderState === FileSelectionState.Single) {
             this._viewModel.selectedFileNames.single = this.getLastVisibleFileName()
             this.onSingleFileChange(this._viewModel.selectedFileNames.single)
 
-        } else if (renderState == FileSelectionState.Partial) {
+        } else if (renderState === FileSelectionState.Partial) {
             this.selectAllPartialFiles()
 
-        } else if (renderState == FileSelectionState.Comparison) {
+        } else if (renderState === FileSelectionState.Comparison) {
+            //TODO: What does this do?
             this._viewModel.selectedFileNames.delta.reference = this.getLastVisibleFileName()
             this.onDeltaComparisonFileChange(null)
         }
@@ -142,17 +143,18 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
 
     public invertPartialFileSelection() {
         const invertedFileNames: string[] = this.fileStateService.getFileStates()
-            .filter(x => x.selectedAs == FileSelectionState.None)
+            .filter(x => x.selectedAs === FileSelectionState.None)
             .map(x => x.file.fileMeta.fileName)
 
         this.onPartialFilesChange(invertedFileNames)
     }
 
     private getLastVisibleFileName(): string {
-        if (this.lastRenderState == FileSelectionState.Single) {
+        if (this.lastRenderState === FileSelectionState.Single) {
             return this._viewModel.selectedFileNames.single
 
-        } else if (this.lastRenderState == FileSelectionState.Partial) {
+            //TODO: dead code?
+        } else if (this.lastRenderState === FileSelectionState.Partial) {
             const visibleFileStates = FileStateHelper.getVisibleFileStates(this._viewModel.fileStates)
             if (FileStateHelper.getVisibleFileStates(this._viewModel.fileStates).length > 0) {
                 return visibleFileStates[0].file.fileMeta.fileName
@@ -160,7 +162,7 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
                 return this._viewModel.fileStates[0].file.fileMeta.fileName
             }
 
-        } else if (this.lastRenderState == FileSelectionState.Comparison) {
+        } else if (this.lastRenderState === FileSelectionState.Comparison) {
             return this._viewModel.selectedFileNames.delta.reference
         }
     }

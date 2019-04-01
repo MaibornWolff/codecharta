@@ -1,106 +1,315 @@
+import "./revisionChooser.module"
 import { RevisionChooserController } from "./revisionChooser.component"
-import { DataService, DataModel } from "../../core/data/data.service"
-import { SettingsService, Settings } from "../../core/settings/settings.service"
-import { CodeMap } from "../../core/data/model/CodeMap"
+import { FileStateService } from "../../state/fileState.service"
+import { IRootScopeService } from "angular"
+import { SettingsService } from "../../state/settings.service"
+import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
+import { FileState, FileSelectionState } from "../../codeCharta.model"
+import { FileStateHelper } from "../../util/fileStateHelper"
 
 describe("RevisionChooserController", () => {
-	let dataServiceMock: DataService
-	let settingsServiceMock: SettingsService
+	let fileStateService: FileStateService
+	let settingsService: SettingsService
+	let $rootScope: IRootScopeService
 	let revisionChooserController: RevisionChooserController
-	const revs = [{ fileName: "java" } as CodeMap, { fileName: "kotlin" } as CodeMap]
+	let fileStates: FileState[]
+
+	function restartSystem() {
+		instantiateModule("app.codeCharta.ui.revisionChooser")
+		fileStateService = getService<FileStateService>("fileStateService")
+		settingsService = getService<SettingsService>("settingsService")
+		$rootScope = getService<IRootScopeService>("$rootScope")
+		fileStates = [
+			{ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.Reference },
+			{ file: TEST_DELTA_MAP_B, selectedAs: FileSelectionState.Comparison }
+		]
+	}
 
 	function buildController() {
-		revisionChooserController = new RevisionChooserController(dataServiceMock, settingsServiceMock, {
-			$on: jest.fn(),
-			$broadcast: jest.fn()
-		})
+		revisionChooserController = new RevisionChooserController(fileStateService, settingsService, $rootScope)
 	}
 
-	function mockEverything() {
-		const DataServiceMock = jest.fn<DataService>(() => ({
-			setComparisonMap: jest.fn(),
-			setReferenceMap: jest.fn(),
-			subscribe: jest.fn(),
-			getComparisonMap: jest.fn(),
-			getReferenceMap: jest.fn(),
-			getIndexOfMap: jest.fn(),
-			$rootScope: {
-				$on: jest.fn(),
-				$broadcast: jest.fn()
-			},
-			data: {
-				revisions: revs
-			},
-			notify: () => {
-				revisionChooserController.onDataChanged(dataServiceMock.data)
+	function withMockedFileStateService() {
+		fileStateService = revisionChooserController["fileStateService"] = jest.fn<FileStateService>(() => {
+			return {
+				getFileStates: jest.fn().mockReturnValue([]),
+				setSingle: jest.fn(),
+				setDelta: jest.fn(),
+				setMultiple: jest.fn(),
+				resetMaps: jest.fn(),
+				addFile: jest.fn(),
+				getCCFiles: jest.fn(),
+				subscribe: jest.fn()
 			}
-		}))
-
-		dataServiceMock = new DataServiceMock()
-
-		const SettingsServiceMock = jest.fn<SettingsService>(() => ({ applySettings: jest.fn() }))
-
-		settingsServiceMock = new SettingsServiceMock()
+		})()
 	}
 
-	beforeAll(() => {
-		mockEverything()
-		buildController()
-	})
+	function withMockedSettingsService() {
+		settingsService = revisionChooserController["settingsService"] = jest.fn<SettingsService>(() => {
+			return {
+				applySettings: jest.fn()
+			}
+		})()
+	}
+
+	function withMockedEventMethods() {
+		$rootScope.$on = jest.fn()
+		$rootScope.$broadcast = jest.fn()
+	}
 
 	beforeEach(() => {
+		restartSystem()
+		buildController()
+		withMockedFileStateService()
+		withMockedSettingsService()
+		withMockedEventMethods()
+	})
+
+	afterEach(() => {
 		jest.resetAllMocks()
 	})
 
-	it("should subscribe to dataService on construction", () => {
-		const revisionChooserController = new RevisionChooserController(dataServiceMock, settingsServiceMock, {
-			$on: jest.fn(),
-			$broadcast: jest.fn()
+	it("should subscribe to FileStateService on construction", () => {
+		FileStateService.subscribe = jest.fn()
+
+		const revisionChooserController = new RevisionChooserController(fileStateService, settingsService, $rootScope)
+
+		expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, revisionChooserController)
+	})
+
+	describe("onFileSelectionStatesChanged", () => {
+		beforeEach(() => {
+			FileStateHelper.isSingleState = jest.fn().mockReturnValue(true)
+			FileStateHelper.isPartialState = jest.fn().mockReturnValue(true)
+			FileStateHelper.isDeltaState = jest.fn().mockReturnValue(true)
+			FileStateHelper.getVisibleFileStates = jest.fn().mockReturnValue(fileStates)
 		})
-		expect(dataServiceMock.subscribe).toHaveBeenCalledWith(revisionChooserController)
+
+		it("should set the viewmodel and lastRenderState correctly", () => {
+			revisionChooserController.onFileSelectionStatesChanged(fileStates, undefined)
+
+			expect(FileStateHelper.isSingleState).toHaveBeenCalledWith(fileStates)
+			expect(revisionChooserController["_viewModel"].isSingleState).toBeTruthy()
+			expect(FileStateHelper.isPartialState).toHaveBeenCalledWith(fileStates)
+			expect(revisionChooserController["_viewModel"].isPartialState).toBeTruthy()
+			expect(FileStateHelper.isDeltaState).toHaveBeenCalledWith(fileStates)
+			expect(revisionChooserController["_viewModel"].isDeltaState).toBeTruthy()
+			expect(revisionChooserController["lastRenderState"]).toEqual(revisionChooserController["_viewModel"].renderState)
+		})
+
+		it("should update selected filenames in viewmodel correctly if single mode is active", () => {
+			revisionChooserController.onFileSelectionStatesChanged(fileStates, undefined)
+
+			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
+			expect(revisionChooserController["_viewModel"].renderState).toEqual(FileSelectionState.Single)
+			expect(revisionChooserController["_viewModel"].selectedFileNames.single).toEqual(fileStates[0].file.fileMeta.fileName)
+		})
+
+		it("should update selected filenames in viewmodel correctly if partial mode is active", () => {
+			FileStateHelper.isSingleState = jest.fn().mockReturnValue(false)
+
+			revisionChooserController.onFileSelectionStatesChanged(fileStates, undefined)
+
+			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
+			expect(revisionChooserController["_viewModel"].renderState).toEqual(FileSelectionState.Partial)
+			expect(revisionChooserController["_viewModel"].selectedFileNames.partial).toEqual([
+				TEST_DELTA_MAP_A.fileMeta.fileName,
+				TEST_DELTA_MAP_B.fileMeta.fileName
+			])
+		})
+
+		it("should update selected filenames in viewmodel correctly if delta mode is active with two files", () => {
+			FileStateHelper.isSingleState = jest.fn().mockReturnValue(false)
+			FileStateHelper.isPartialState = jest.fn().mockReturnValue(false)
+
+			revisionChooserController.onFileSelectionStatesChanged(fileStates, undefined)
+
+			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
+			expect(revisionChooserController["_viewModel"].renderState).toEqual(FileSelectionState.Comparison)
+			expect(revisionChooserController["_viewModel"].selectedFileNames.delta.reference).toEqual(fileStates[0].file.fileMeta.fileName)
+			expect(revisionChooserController["_viewModel"].selectedFileNames.delta.comparison).toEqual(fileStates[1].file.fileMeta.fileName)
+		})
+
+		it("should update selected filenames in viewmodel correctly if delta mode is active with only one file", () => {
+			FileStateHelper.isSingleState = jest.fn().mockReturnValue(false)
+			FileStateHelper.isPartialState = jest.fn().mockReturnValue(false)
+
+			fileStates.pop()
+
+			revisionChooserController.onFileSelectionStatesChanged(fileStates, undefined)
+
+			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
+			expect(revisionChooserController["_viewModel"].renderState).toEqual(FileSelectionState.Comparison)
+			expect(revisionChooserController["_viewModel"].selectedFileNames.delta.reference).toEqual(fileStates[0].file.fileMeta.fileName)
+			expect(revisionChooserController["_viewModel"].selectedFileNames.delta.comparison).toEqual(fileStates[0].file.fileMeta.fileName)
+		})
+
+		it("should not set anything if no mode is active", () => {
+			FileStateHelper.isSingleState = jest.fn().mockReturnValue(false)
+			FileStateHelper.isPartialState = jest.fn().mockReturnValue(false)
+			FileStateHelper.isDeltaState = jest.fn().mockReturnValue(false)
+
+			revisionChooserController.onFileSelectionStatesChanged(fileStates, undefined)
+
+			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
+			expect(revisionChooserController["_viewModel"].renderState).toBeNull()
+			expect(revisionChooserController["_viewModel"].selectedFileNames.delta.reference).toBeNull()
+			expect(revisionChooserController["_viewModel"].selectedFileNames.delta.comparison).toBeNull()
+			expect(revisionChooserController["_viewModel"].selectedFileNames.partial).toBeNull()
+			expect(revisionChooserController["_viewModel"].selectedFileNames.single).toBeNull()
+		})
 	})
 
-	it("should get revisions from data service on startup", () => {
-		expect(revisionChooserController.revisions).toBe(dataServiceMock.data.revisions)
+	describe("onImportedFileChange", () => {
+		it("should update viewmodel with new filestates", () => {
+			revisionChooserController.onImportedFilesChanged(fileStates, undefined)
+
+			expect(revisionChooserController["_viewModel"].fileStates).toEqual(fileStates)
+		})
 	})
 
-	it("onDataChanged should refresh revisions", () => {
-		revisionChooserController.onDataChanged({ revisions: revs } as DataModel)
+	describe("onSingleFileChange", () => {
+		it("should set singleFile in fileStateService correctly", () => {
+			FileStateHelper.getFileByFileName = jest.fn().mockReturnValue(TEST_DELTA_MAP_A)
+			revisionChooserController.onSingleFileChange("fileA")
 
-		expect(revisionChooserController.revisions).toBe(revs)
-		expect(dataServiceMock.getIndexOfMap).toHaveBeenCalledTimes(2)
-		expect(dataServiceMock.getComparisonMap).toHaveBeenCalledTimes(1)
-		expect(dataServiceMock.getReferenceMap).toHaveBeenCalledTimes(1)
+			expect(fileStateService.getFileStates).toHaveBeenCalled()
+			expect(FileStateHelper.getFileByFileName).toHaveBeenCalledWith("fileA", [])
+			expect(fileStateService.setSingle).toHaveBeenCalledWith(TEST_DELTA_MAP_A)
+		})
 	})
 
-	it("onDeltaReferenceFileChange should set the referenceMap", () => {
-		revisionChooserController.onDeltaReferenceFileChange(42)
+	describe("onDeltaReferenceFileChange", () => {
+		it("should set referenceFile in fileStateService correctly", () => {
+			FileStateHelper.getFileByFileName = jest.fn().mockReturnValue(TEST_DELTA_MAP_A)
 
-		expect(dataServiceMock.setReferenceMap).toBeCalledWith(42)
-		expect(dataServiceMock.setReferenceMap).toHaveBeenCalledTimes(1)
+			revisionChooserController["_viewModel"].selectedFileNames.delta.comparison = "fileB"
+
+			revisionChooserController.onDeltaReferenceFileChange("fileA")
+
+			expect(fileStateService.getFileStates).toHaveBeenCalledTimes(2)
+			expect(FileStateHelper.getFileByFileName).toHaveBeenCalledTimes(2)
+			expect(FileStateHelper.getFileByFileName).toHaveBeenCalledWith("fileA", [])
+			expect(FileStateHelper.getFileByFileName).toHaveBeenCalledWith("fileB", [])
+			expect(fileStateService.setDelta).toHaveBeenCalledWith(TEST_DELTA_MAP_A, TEST_DELTA_MAP_A)
+		})
 	})
 
-	it("onDeltaComparisonFileChange should set the comparisonMap", () => {
-		revisionChooserController.onDeltaComparisonFileChange(42)
+	describe("onDeltaComparisonFileChange", () => {
+		it("should set comparisonFile in fileStateService correctly", () => {
+			FileStateHelper.getFileByFileName = jest.fn().mockReturnValue(TEST_DELTA_MAP_A)
 
-		expect(dataServiceMock.setComparisonMap).toBeCalledWith(42)
-		expect(dataServiceMock.setComparisonMap).toHaveBeenCalledTimes(1)
+			revisionChooserController["_viewModel"].selectedFileNames.delta.reference = "fileB"
+
+			revisionChooserController.onDeltaComparisonFileChange("fileA")
+
+			expect(fileStateService.getFileStates).toHaveBeenCalledTimes(2)
+			expect(FileStateHelper.getFileByFileName).toHaveBeenCalledTimes(2)
+			expect(FileStateHelper.getFileByFileName).toHaveBeenCalledWith("fileA", [])
+			expect(FileStateHelper.getFileByFileName).toHaveBeenCalledWith("fileB", [])
+			expect(fileStateService.setDelta).toHaveBeenCalledWith(TEST_DELTA_MAP_A, TEST_DELTA_MAP_A)
+		})
 	})
 
-	it("onShowChange should update the settings and set the referenceMap", () => {
-		const expected = { areaMetric: "rloc" } as Settings
+	describe("onPartialFileChange", () => {
+		it("should set fileStates in fileStateService correctly for multiple mode when filenames are given", () => {
+			FileStateHelper.getFileByFileName = jest.fn().mockReturnValue(TEST_DELTA_MAP_A)
 
-		revisionChooserController.onShowChange(expected)
+			revisionChooserController.onPartialFilesChange(["fileA"])
 
-		expect(revisionChooserController.settings).toBe(expected)
-		expect(settingsServiceMock.applySettings).toHaveBeenCalledTimes(1)
-		expect(dataServiceMock.setReferenceMap).toHaveBeenCalledTimes(1)
-		expect(dataServiceMock.setReferenceMap).toBeCalledWith(revisionChooserController.ui.chosenReference)
+			expect(fileStateService.getFileStates).toHaveBeenCalledTimes(1)
+			expect(FileStateHelper.getFileByFileName).toHaveBeenCalledTimes(1)
+			expect(FileStateHelper.getFileByFileName).toHaveBeenCalledWith("fileA", [])
+			expect(fileStateService.setMultiple).toHaveBeenCalledWith([TEST_DELTA_MAP_A])
+		})
+
+		it("should set fileStates in fileStateService to empty array for multiple mode when no filenames are given", () => {
+			revisionChooserController.onPartialFilesChange([])
+
+			expect(fileStateService.setMultiple).toHaveBeenCalledWith([])
+		})
 	})
 
-	it("onDataChanged should be called when dataService.notify is called", () => {
-		revisionChooserController.onDataChanged = jest.fn()
-		dataServiceMock.notify()
-		expect(revisionChooserController.onDataChanged).toHaveBeenCalled()
+	describe("onRenderStateChange", () => {
+		it("should update the viewmodel with the last visible filename and call onSingleFileChange if single mode is active", () => {
+			revisionChooserController.onSingleFileChange = jest.fn()
+
+			revisionChooserController["lastRenderState"] = FileSelectionState.Single
+			revisionChooserController["_viewModel"].selectedFileNames.single = "fileA"
+
+			revisionChooserController.onRenderStateChange(FileSelectionState.Single)
+
+			expect(revisionChooserController["_viewModel"].selectedFileNames.single).toEqual("fileA")
+			expect(revisionChooserController.onSingleFileChange).toHaveBeenCalledWith("fileA")
+		})
+
+		it("should update the viewmodel with the last visible filename and call selectAllPartialFiles if partial mode is active", () => {
+			revisionChooserController.selectAllPartialFiles = jest.fn()
+
+			revisionChooserController.onRenderStateChange(FileSelectionState.Partial)
+
+			expect(revisionChooserController.selectAllPartialFiles).toHaveBeenCalled()
+		})
+
+		it("should update the viewmodel with the last visible filename and call onDeltaComparisonFileChange with null if comparison mode is active", () => {
+			revisionChooserController.onDeltaComparisonFileChange = jest.fn()
+
+			revisionChooserController["lastRenderState"] = FileSelectionState.Comparison
+			revisionChooserController["_viewModel"].selectedFileNames.delta.reference = "fileA"
+
+			revisionChooserController.onRenderStateChange(FileSelectionState.Comparison)
+
+			expect(revisionChooserController["_viewModel"].selectedFileNames.delta.reference).toEqual("fileA")
+			expect(revisionChooserController.onDeltaComparisonFileChange).toHaveBeenCalledWith(null)
+		})
+
+		it("should not do anything if renderState is reference", () => {
+			revisionChooserController.onDeltaComparisonFileChange = jest.fn()
+			revisionChooserController.selectAllPartialFiles = jest.fn()
+			revisionChooserController.onSingleFileChange = jest.fn()
+
+			revisionChooserController.onRenderStateChange(FileSelectionState.Reference)
+
+			expect(revisionChooserController.onDeltaComparisonFileChange).not.toHaveBeenCalled()
+			expect(revisionChooserController.selectAllPartialFiles).not.toHaveBeenCalled()
+			expect(revisionChooserController.onSingleFileChange).not.toHaveBeenCalled()
+		})
+	})
+
+	describe("selectAllPartialFiles", () => {
+		it("should call onPartialFilesChange with an array of fileNames", () => {
+			revisionChooserController.onPartialFilesChange = jest.fn()
+			fileStateService.getFileStates = jest.fn().mockReturnValue(fileStates)
+
+			const expected = [TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName]
+
+			revisionChooserController.selectAllPartialFiles();
+
+			expect(revisionChooserController.onPartialFilesChange).toHaveBeenCalledWith(expected)
+		})
+	})
+
+	describe("selectZeroPartialFiles", () => {
+		it("should call onPartialFilesChange with an empty array", () => {
+			revisionChooserController.onPartialFilesChange = jest.fn()
+
+			revisionChooserController.selectZeroPartialFiles();
+
+			expect(revisionChooserController.onPartialFilesChange).toHaveBeenCalledWith([])
+		})
+	})
+
+	describe("invertPartialFileSelection", () => {
+		it("should call onPartialFilesChange with an array of fileNames", () => {
+			revisionChooserController.onPartialFilesChange = jest.fn()
+			fileStates[0].selectedAs = FileSelectionState.None
+			fileStateService.getFileStates = jest.fn().mockReturnValue(fileStates)
+
+			const expected = [fileStates[0].file.fileMeta.fileName]
+			revisionChooserController.invertPartialFileSelection();
+
+			expect(revisionChooserController.onPartialFilesChange).toHaveBeenCalledWith(expected)
+		})
 	})
 })
