@@ -14,7 +14,7 @@ export enum FileSelectionState {
 export interface CCFile {
   map: CodeMapNode;
   settings: {
-      fileSettings: RecursivePartial<FileSettings>
+      fileSettings: FileSettings
   };
   fileMeta: FileMeta;
 }
