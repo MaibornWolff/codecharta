@@ -74,7 +74,7 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
 	]
 }
 
-export const VALID_EDGE: Edge[] = [
+export const VALID_EDGES: Edge[] = [
 	{
 		fromNodeName: "/root/big leaf",
 		toNodeName: "/root/Parent Leaf/small leaf",
@@ -93,6 +93,15 @@ export const VALID_EDGE: Edge[] = [
 	}
 ]
 
+export const VALID_EDGE: Edge = {
+	fromNodeName: "/root/big leaf",
+	toNodeName: "/root/Parent Leaf/small leaf",
+	attributes: {
+		pairingRate: 89,
+		avgCommits: 34
+	}
+}
+
 export const TEST_FILE_CONTENT = {
 	fileName: "noFileName",
 	projectName: "Sample Map",
@@ -109,7 +118,7 @@ export const TEST_FILE_DATA: CCFile = {
 	map: VALID_NODE,
 	settings: {
 		fileSettings: {
-			edges: VALID_EDGE
+			edges: VALID_EDGES
 		}
 	}
 }

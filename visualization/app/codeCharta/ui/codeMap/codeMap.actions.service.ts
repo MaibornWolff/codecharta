@@ -27,7 +27,7 @@ export class CodeMapActionsService {
     public markFolder(node: CodeMapNode, color: string) {
         let s = this.settingsService.getSettings();
         const newMP: MarkedPackage = this.getNewMarkedPackage(node.path, color);
-        const clickedMP: MarkedPackage = s.fileSettings.markedPackages.find(p => p.path == newMP.path);
+        const clickedMP: MarkedPackage = s.fileSettings.markedPackages.find(p => p.path === newMP.path);
         const parentMP: MarkedPackage = this.getParentMP(newMP.path, s);
 
         this.handleUpdatingMarkedPackages(s, newMP, clickedMP, parentMP);
@@ -53,12 +53,12 @@ export class CodeMapActionsService {
     }
 
     private packagesHaveDifferentColor(mp1: MarkedPackage, mp2: MarkedPackage): boolean {
-        return !(mp1 && mp2 && mp1.color == mp2.color);
+        return !(mp1 && mp2 && mp1.color === mp2.color);
     }
 
     public unmarkFolder(node: CodeMapNode) {
         let s = this.settingsService.getSettings();
-        let clickedMP: MarkedPackage = s.fileSettings.markedPackages.find(p => p.path == node.path);
+        let clickedMP: MarkedPackage = s.fileSettings.markedPackages.find(p => p.path === node.path);
 
         if (clickedMP) {
             this.removeMarkedPackage(clickedMP, s);
@@ -82,7 +82,7 @@ export class CodeMapActionsService {
 	}
 
 	public focusNode(node: CodeMapNode) {
-		if (node.path == CodeChartaService.ROOT_PATH) {
+		if (node.path === CodeChartaService.ROOT_PATH) {
 			this.removeFocusedNode()
 		} else {
 			this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: node.path } })
@@ -111,7 +111,7 @@ export class CodeMapActionsService {
 		const foundDuplicate = this.settingsService.getSettings().fileSettings.blacklist.filter(obj => {
 			return this.isEqualObjects(obj, item)
 		})
-		if (foundDuplicate.length == 0) {
+		if (foundDuplicate.length === 0) {
             this.settingsService.updateSettings({
 				fileSettings: {
                     blacklist: [...this.settingsService.getSettings().fileSettings.blacklist, item]
@@ -140,36 +140,37 @@ export class CodeMapActionsService {
 		return this.settingsService.getSettings().fileSettings.edges.filter(edge => this.edgeContainsNode(edge, node) && edge.visible).length
 	}
 
+	//TODO: rename to isAnyEdgeVisible
 	public anyEdgeIsVisible() {
 		return this.settingsService.getSettings().fileSettings.edges.filter(edge => edge.visible).length > 0
 	}
 
     public getParentMP(path: string, s: Settings): MarkedPackage {
         const sortedParentMP = s.fileSettings.markedPackages
-            .filter(p => path.includes(p.path) && p.path != path)
+            .filter(p => path.includes(p.path) && p.path !== path)
             .sort((a, b) => b.path.length - a.path.length);
 
+        console.log("SORTED: ", sortedParentMP)
         return sortedParentMP.length > 0 ? sortedParentMP[0] : null;
     }
 
-    private getNewMarkedPackage(path: string, color: string, name: string = undefined): MarkedPackage {
+    private getNewMarkedPackage(path: string, color: string): MarkedPackage {
         let coloredPackage: MarkedPackage = {
             path: path,
             color: color,
             attributes: {}
         };
-        if (name) {
-            coloredPackage.attributes.name = name;
-        }
+
         return coloredPackage;
     }
 
     private removeChildrenMPWithSameColor(newMP: MarkedPackage, s: Settings) {
         const allChildrenMP: MarkedPackage[] = this.getAllChildrenMP(newMP.path, s);
+        //TODO: remove unnecessary if
         if (allChildrenMP.length > 0) {
             allChildrenMP.forEach(childPackage => {
                 const parentMP = this.getParentMP(childPackage.path, s);
-                if (parentMP && parentMP.color == childPackage.color) {
+                if (parentMP && parentMP.color === childPackage.color) {
                     this.removeMarkedPackage(childPackage, s);
                 }
             });
@@ -201,7 +202,7 @@ export class CodeMapActionsService {
 		let edges = this.settingsService.getSettings().fileSettings.edges
 		if (edges) {
 			edges.forEach(edge => {
-				if (node == null || this.edgeContainsNode(edge, node)) {
+				if (node === null || this.edgeContainsNode(edge, node)) {
 					edge.visible = visibility
 				}
 			})

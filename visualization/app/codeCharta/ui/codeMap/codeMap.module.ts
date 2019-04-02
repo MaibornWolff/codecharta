@@ -14,6 +14,7 @@ import {CodeMapArrowService} from "./codeMap.arrow.service";
 
 angular.module("app.codeCharta.ui.codeMap", [
     "app.codeCharta.state",
+    "app.codeCharta",
     "app.codeCharta.ui.codeMap.threeViewer",
     "app.codeCharta.ui.codeMap.treemap"
     ]
