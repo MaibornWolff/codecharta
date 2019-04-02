@@ -28,7 +28,7 @@ describe("CodeMapLabelService", () => {
 	function setServices() {
 		services = {
 			$rootScope: getService<IRootScopeService>("$rootScope"),
-			threeCameraService: new ThreeCameraService(),
+			threeCameraService: new ThreeCameraService(null),
 			threeSceneService: new ThreeSceneService(),
 			threeOrbitControlsService: ThreeOrbitControlsService
 		}
@@ -80,7 +80,7 @@ describe("CodeMapLabelService", () => {
 	function setCanvasRenderSettings() {
 		sampleRenderSettings = SETTINGS
 
-		sampleLeaf = {
+		sampleLeaf = ({
 			name: "sample",
 			width: 1,
 			height: 2,
@@ -92,9 +92,8 @@ describe("CodeMapLabelService", () => {
 			isLeaf: true,
 			deltas: { a: 1, b: 2 },
 			attributes: { a: 20, b: 15, mcc: 99 },
-			children: [],
-			isDelta: false
-		}
+			children: []
+		} as undefined) as Node
 
 		canvasCtxMock = {
 			font: "",
@@ -106,13 +105,13 @@ describe("CodeMapLabelService", () => {
 
 		createElementOrigin = document.createElement
 
-		document.createElement = () => {
+		document.createElement = jest.fn(() => {
 			return {
 				getContext: () => {
 					return canvasCtxMock
 				}
 			}
-		}
+		})
 
 		canvasCtxMock.measureText.mockReturnValue({ width: 10 })
 	}
@@ -122,31 +121,30 @@ describe("CodeMapLabelService", () => {
 	})
 
 	it("should have no labels stored after construction", () => {
-		expect(codeMapLabelService.labels.length).toBe(0)
+		expect(codeMapLabelService["labels"].length).toBe(0)
 	})
 
 	it("addLabel should add label if node has a height attribute mentioned in renderSettings", () => {
 		codeMapLabelService.addLabel(sampleLeaf, sampleRenderSettings)
-		expect(codeMapLabelService.labels.length).toBe(1)
+		expect(codeMapLabelService["labels"].length).toBe(1)
 	})
 
 	it("addLabel should not add label if node has not a height attribute mentioned in renderSettings", () => {
 		sampleLeaf.attributes = { notsome: 0 }
-		sampleRenderSettings.heightKey = "some"
 		codeMapLabelService.addLabel(sampleLeaf, sampleRenderSettings)
-		expect(codeMapLabelService.labels.length).toBe(0)
+		expect(codeMapLabelService["labels"].length).toBe(0)
 	})
 
 	it("addLabel should calculate correct height without delta", () => {
 		codeMapLabelService.addLabel(sampleLeaf, sampleRenderSettings)
-		let positionWithoutDelta: Vector3 = codeMapLabelService.labels[0].sprite.position
+		let positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 		expect(positionWithoutDelta.y).toBe(93)
 	})
 
 	it("clearLabel should clear parent in scene and internal labels", () => {
 		codeMapLabelService.clearLabels()
-		expect(codeMapLabelService.threeSceneService.labels.children.length).toBe(0)
-		expect(codeMapLabelService.labels.length).toBe(0)
+		expect(codeMapLabelService["threeSceneService"].labels.children.length).toBe(0)
+		expect(codeMapLabelService["labels"].length).toBe(0)
 	})
 
 	it("scaling existing labels should scale their position correctly", () => {
@@ -158,21 +156,21 @@ describe("CodeMapLabelService", () => {
 		codeMapLabelService.addLabel(sampleLeaf, sampleRenderSettings)
 
 		const scaleBeforeA: Vector3 = new Vector3(
-			codeMapLabelService.labels[0].sprite.position.x,
-			codeMapLabelService.labels[0].sprite.position.y,
-			codeMapLabelService.labels[0].sprite.position.z
+			codeMapLabelService["labels"][0].sprite.position.x,
+			codeMapLabelService["labels"][0].sprite.position.y,
+			codeMapLabelService["labels"][0].sprite.position.z
 		)
 
 		const scaleBeforeB: Vector3 = new Vector3(
-			codeMapLabelService.labels[1].sprite.position.x,
-			codeMapLabelService.labels[1].sprite.position.y,
-			codeMapLabelService.labels[1].sprite.position.z
+			codeMapLabelService["labels"][1].sprite.position.x,
+			codeMapLabelService["labels"][1].sprite.position.y,
+			codeMapLabelService["labels"][1].sprite.position.z
 		)
 
 		codeMapLabelService.scale(SX, SY, SZ)
 
-		const scaleAfterA: Vector3 = codeMapLabelService.labels[0].sprite.position
-		const scaleAfterB: Vector3 = codeMapLabelService.labels[1].sprite.position
+		const scaleAfterA: Vector3 = codeMapLabelService["labels"][0].sprite.position
+		const scaleAfterB: Vector3 = codeMapLabelService["labels"][1].sprite.position
 
 		expect(scaleAfterA.x).toBe(scaleBeforeA.x * SX)
 		expect(scaleAfterA.y).toBe(scaleBeforeA.y * SY)
