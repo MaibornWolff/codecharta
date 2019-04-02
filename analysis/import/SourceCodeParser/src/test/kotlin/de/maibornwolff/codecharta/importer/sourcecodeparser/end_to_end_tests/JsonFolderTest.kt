@@ -29,11 +29,4 @@ class JsonFolderTest {
         )
     }
 
-    @Test
-    fun `json output contains the path relative to the source path`() {
-        assertThat(output).contains(
-                """"name":"de"""",
-                """"name":"foo""""
-        )
-    }
 }
