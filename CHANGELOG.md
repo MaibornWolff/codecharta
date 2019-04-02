@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore
 
+-   Bump d3 from 4.13.0 to 5.9.2 in /visualization
+-   Bump sinon from 4.5.0 to 7.3.1 in /visualization
+
 ## [1.23.0] - 2019-03-22
 
 ### Added
