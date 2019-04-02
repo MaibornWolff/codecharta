@@ -1,12 +1,22 @@
-import { FileSelectionState, MapColors, RecursivePartial, Settings, Vector3d } from "../codeCharta.model"
+import {
+	FileSettings,
+	FileState,
+	MapColors,
+	RecursivePartial,
+	Settings,
+	Vector3d
+} from "../codeCharta.model"
 import _ from "lodash"
 import { IAngularEvent, IRootScopeService } from "angular"
+import {FileStateService, FileStateServiceSubscriber} from "./fileState.service";
+import {FileStateHelper} from "../util/fileStateHelper";
+import {SettingsMerger} from "../util/settingsMerger";
 
 export interface SettingsServiceSubscriber {
 	onSettingsChanged(settings: Settings, event: IAngularEvent)
 }
 
-export class SettingsService {
+export class SettingsService implements FileStateServiceSubscriber {
 	public static SELECTOR = "settingsService"
 	private static SETTINGS_CHANGED_EVENT = "settings-changed"
 	public static readonly MIN_MARGIN = 15
@@ -17,6 +27,16 @@ export class SettingsService {
 	constructor(private $rootScope) {
 		this.settings = this.getDefaultSettings()
 		this.throttledBroadcast = _.throttle(() => this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, this.settings), 400)
+		FileStateService.subscribe(this.$rootScope, this)
+	}
+
+	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+		this.updateSettings({
+			fileSettings: this.getNewFileSettings(fileStates)
+		})
+	}
+
+	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 	}
 
 	public getSettings(): Settings {
@@ -95,6 +115,12 @@ export class SettingsService {
 		}
 
 		return settings
+	}
+
+	private getNewFileSettings(fileStates: FileState[]): FileSettings {
+		let withUpdatedPath = !!FileStateHelper.isPartialState(fileStates)
+		let visibleFiles = FileStateHelper.getVisibleFileStates(fileStates).map(x => x.file)
+		return SettingsMerger.getMergedFileSettings(visibleFiles, withUpdatedPath)
 	}
 
 	private updateSettingsUsingPartialSettings(settings: Settings, update: RecursivePartial<Settings>): Settings {

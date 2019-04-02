@@ -1,13 +1,9 @@
-import {AttributeType, CodeMapNode, Edge, BlacklistItem, CCFile} from "../codeCharta.model"
+import {CodeMapNode, CCFile} from "../codeCharta.model"
 
 export class AggregationGenerator {
 
-	private static projectNameArray = []
-	private static fileNameArray = []
-	private static edges: Edge[] = []
-	private static blacklist: BlacklistItem[] = []
-	private static attributeTypesEdge: { [key: string]: AttributeType } = {}
-	private static attributeTypesNode: { [key: string]: AttributeType } = {}
+	private static projectNameArray: string[] = []
+	private static fileNameArray: string[] = []
 
 	public static getAggregationFile(inputFiles: CCFile[]): CCFile {
 		if (inputFiles.length == 1) {
@@ -19,72 +15,8 @@ export class AggregationGenerator {
 		for (let inputFile of inputFiles) {
 			this.projectNameArray.push(inputFile.fileMeta.projectName)
 			this.fileNameArray.push(inputFile.fileMeta.fileName)
-			this.setEdgesWithUpdatedPath(inputFile)
-			this.setAttributeTypesByUniqueKey(inputFile)
-			this.setBlacklistWithUpdatedPath(inputFile)
 		}
 		return this.getNewAggregatedMap(inputFiles)
-	}
-
-	private static setEdgesWithUpdatedPath(inputFile: CCFile) {
-		if (!inputFile.settings.fileSettings.edges) {
-			return
-		}
-
-		for (let oldEdge of inputFile.settings.fileSettings.edges as Edge[]) {
-			let edge: Edge = {
-				fromNodeName: this.getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.fromNodeName),
-				toNodeName: this.getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.toNodeName),
-				attributes: oldEdge.attributes,
-				visible: oldEdge.visible
-			}
-			const equalEdgeItems = this.edges.filter(e => e.fromNodeName == edge.fromNodeName && e.toNodeName == edge.toNodeName)
-			if (equalEdgeItems.length == 0) {
-				this.edges.push(edge)
-			}
-		}
-	}
-
-	private static setBlacklistWithUpdatedPath(inputFile: CCFile) {
-		if (!inputFile.settings.fileSettings.blacklist) {
-			return
-		}
-
-		for (let oldBlacklistItem of inputFile.settings.fileSettings.blacklist as BlacklistItem[]) {
-			let blacklistItem: BlacklistItem = {
-				path: this.getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldBlacklistItem.path),
-				type: oldBlacklistItem.type
-			}
-			const equalBlacklistItems = this.blacklist.filter(b => b.path == blacklistItem.path && b.type == blacklistItem.type)
-			if (equalBlacklistItems.length == 0) {
-				this.blacklist.push(blacklistItem)
-			}
-		}
-	}
-
-	private static getUpdatedBlacklistItemPath(fileName: string, path: string): string {
-		if (this.isAbsoluteRootPath(path)) {
-			return this.getUpdatedPath(fileName, path)
-		}
-		return path
-	}
-
-	private static isAbsoluteRootPath(path: string): boolean {
-		return path.startsWith("/root/")
-	}
-
-	private static setAttributeTypesByUniqueKey(inputFile: CCFile) {
-		const types = inputFile.settings.fileSettings.attributeTypes
-		if (types && types.nodes) {
-			for (let key in types.nodes) {
-				this.attributeTypesNode[key] = types.nodes[key]
-			}
-		}
-		if (types && types.edges) {
-			for (let key in types.edges) {
-				this.attributeTypesEdge[key] = types.edges[key]
-			}
-		}
 	}
 
 	private static getNewAggregatedMap(inputFiles: CCFile[]): CCFile {
@@ -105,12 +37,10 @@ export class AggregationGenerator {
 			},
 			settings: {
 				fileSettings: {
-					edges: this.edges,
-					blacklist: this.blacklist,
-					attributeTypes: {
-						nodes: this.attributeTypesNode,
-						edges: this.attributeTypesEdge
-					}
+					edges: [],
+					blacklist: [],
+					attributeTypes: {},
+					markedPackages: []
 				}
 			}
 		}
@@ -174,9 +104,5 @@ export class AggregationGenerator {
 	private static resetVariables() {
 		this.projectNameArray = []
 		this.fileNameArray = []
-		this.edges = []
-		this.blacklist = []
-		this.attributeTypesEdge = {}
-		this.attributeTypesNode = {}
 	}
 }

@@ -7,7 +7,16 @@ import {CodeMapUtilService} from "./codeMap.util.service"
 import {CodeMapLabelService} from "./codeMap.label.service"
 import {ThreeSceneService} from "./threeViewer/threeSceneService"
 import {CodeMapArrowService} from "./codeMap.arrow.service"
-import {CCFile, CodeMapNode, Edge, FileSelectionState, FileState, MetricData, Settings } from "../../codeCharta.model"
+import {
+	CCFile,
+	CodeMapNode,
+	Edge,
+	FileSelectionState,
+	FileSettings,
+	FileState,
+	MetricData,
+	Settings
+} from "../../codeCharta.model"
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import {IAngularEvent, IRootScopeService} from "angular";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
@@ -19,6 +28,7 @@ import {FileStateHelper} from "../../util/fileStateHelper";
 import {DeltaGenerator} from "../../util/deltaGenerator";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 import {ThreeCameraService} from "./threeViewer/threeCameraService";
+import {SettingsMerger} from "../../util/settingsMerger";
 
 export interface RenderData {
 	renderFile: CCFile
