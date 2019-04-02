@@ -118,7 +118,10 @@ export const TEST_FILE_DATA: CCFile = {
 	map: VALID_NODE,
 	settings: {
 		fileSettings: {
-			edges: VALID_EDGES
+			attributeTypes: {},
+			blacklist: [],
+			edges: VALID_EDGES,
+			markedPackages: []
 		}
 	}
 }
@@ -172,7 +175,12 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
 		]
 	},
 	settings: {
-		fileSettings: {}
+		fileSettings: {
+			attributeTypes: {},
+			blacklist: [],
+			edges: VALID_EDGES,
+			markedPackages: []
+		}
 	}
 }
 
@@ -213,7 +221,12 @@ export const TEST_DELTA_MAP_A: CCFile = {
 		]
 	},
 	settings: {
-		fileSettings: {}
+		fileSettings: {
+			attributeTypes: {},
+			blacklist: [],
+			edges: VALID_EDGES,
+			markedPackages: []
+		}
 	}
 }
 
@@ -266,7 +279,12 @@ export const TEST_DELTA_MAP_B: CCFile = {
 		]
 	},
 	settings: {
-		fileSettings: {}
+		fileSettings: {
+			attributeTypes: {},
+			blacklist: [],
+			edges: VALID_EDGES,
+			markedPackages: []
+		}
 	}
 }
 
