@@ -150,7 +150,6 @@ export class CodeMapActionsService {
             .filter(p => path.includes(p.path) && p.path !== path)
             .sort((a, b) => b.path.length - a.path.length);
 
-        console.log("SORTED: ", sortedParentMP)
         return sortedParentMP.length > 0 ? sortedParentMP[0] : null;
     }
 
