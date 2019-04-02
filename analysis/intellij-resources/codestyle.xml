@@ -49,7 +49,6 @@
         <option name="BLANK_LINES_AFTER_CLASS_HEADER" value="1"/>
         <option name="ALIGN_MULTILINE_BINARY_OPERATION" value="true"/>
         <option name="ALIGN_MULTILINE_EXTENDS_LIST" value="true"/>
-        <option name="ALIGN_MULTILINE_METHOD_BRACKETS" value="true"/>
         <option name="CALL_PARAMETERS_WRAP" value="1"/>
         <option name="METHOD_PARAMETERS_WRAP" value="1"/>
         <option name="EXTENDS_LIST_WRAP" value="1"/>
