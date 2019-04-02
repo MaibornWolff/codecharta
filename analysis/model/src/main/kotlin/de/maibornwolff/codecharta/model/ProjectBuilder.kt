@@ -33,7 +33,6 @@ import de.maibornwolff.codecharta.attributeTypes.AttributeTypes
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import mu.KotlinLogging
 
-
 open class ProjectBuilder(
         val projectName: String,
         private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
@@ -41,6 +40,7 @@ open class ProjectBuilder(
         private var attributeTypes: MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf(),
         private var blacklist: MutableList<BlacklistItem> = mutableListOf()
 ) {
+
     init {
         if (nodes.size != 1) throw IllegalStateException("no root node present in project")
     }

@@ -1,7 +1,9 @@
 package de.maibornwolff.codecharta.importer.csv
 
-import de.maibornwolff.codecharta.model.*
-import java.util.*
+import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.NodeType
+import de.maibornwolff.codecharta.model.Path
+import de.maibornwolff.codecharta.model.PathFactory
 import java.util.regex.Pattern
 
 class CSVRow(private val row: Array<String?>, private val header: CSVHeader, private val pathSeparator: Char) {
@@ -44,5 +46,4 @@ class CSVRow(private val row: Array<String?>, private val header: CSVHeader, pri
                             { header.getColumnName(it) },
                             { parseAttributeOfRow(it) }
                     )
-
 }

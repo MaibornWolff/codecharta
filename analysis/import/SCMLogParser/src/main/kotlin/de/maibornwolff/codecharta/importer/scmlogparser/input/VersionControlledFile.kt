@@ -21,12 +21,12 @@ class VersionControlledFile internal constructor(
     val metricsMap: Map<String, Number>
         get() = metrics.associateBy({ it.metricName() }, { it.value() })
 
-    constructor(filename: String, metricsFactory: MetricsFactory) : this(filename, metricsFactory.createMetrics())
+    constructor(filename: String, metricsFactory: MetricsFactory): this(filename, metricsFactory.createMetrics())
 
     internal constructor(
             filename: String,
             vararg metrics: Metric
-    ) : this(filename, Arrays.asList<Metric>(*metrics))
+    ): this(filename, Arrays.asList<Metric>(*metrics))
 
     init {
         this.filename = filename
@@ -52,7 +52,7 @@ class VersionControlledFile internal constructor(
         when (type) {
             Modification.Type.DELETE -> markedDeleted = true
             Modification.Type.RENAME -> filename = modification.oldFilename
-            else -> {
+            else                     -> {
             }
         }
         metrics.forEach { it.registerModification(modification) }

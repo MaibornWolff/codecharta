@@ -35,7 +35,7 @@ import org.hamcrest.Matchers.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-class UnderstandProjectBuilderTest : Spek({
+class UnderstandProjectBuilderTest: Spek({
 
     describe("UnderstandProjectBuilder for Understand") {
         val understandProjectBuilder = UnderstandProjectBuilder("test", '/')

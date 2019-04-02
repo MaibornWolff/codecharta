@@ -29,7 +29,8 @@ class SCMLogProjectCreatorTest(
         @Parameterized.Parameters(name = "{index}: {0}")
         fun data(): Collection<Array<Any>> {
             return Arrays.asList(
-                    arrayOf("--numstat --raw", GitLogNumstatRawParserStrategy(), "codecharta_git_numstat_raw.log", 358L),
+                    arrayOf("--numstat --raw", GitLogNumstatRawParserStrategy(), "codecharta_git_numstat_raw.log",
+                            358L),
                     arrayOf("--numstat", GitLogNumstatParserStrategy(), "codecharta_git_numstat.log", 472L))
         }
     }

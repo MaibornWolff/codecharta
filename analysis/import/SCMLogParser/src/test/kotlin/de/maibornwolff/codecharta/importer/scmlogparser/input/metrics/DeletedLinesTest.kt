@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
-
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -29,7 +28,6 @@ class DeletedLinesTest {
         // then
         assertThat(metric.value()).isEqualTo(0L)
     }
-
 
     @Test
     fun should_ncrease_by_single_modification_if_more_deletes() {

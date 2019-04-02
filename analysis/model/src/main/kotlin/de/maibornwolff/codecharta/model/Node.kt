@@ -38,7 +38,7 @@ class Node constructor(
         val attributes: Map<String, Any> = mapOf(),
         val link: String? = "",
         override val children: List<Node> = listOf()
-) : Tree<Node>() {
+): Tree<Node>() {
 
     override fun getPathOfChild(child: Tree<Node>): Path {
         if (!children.contains(child)) {

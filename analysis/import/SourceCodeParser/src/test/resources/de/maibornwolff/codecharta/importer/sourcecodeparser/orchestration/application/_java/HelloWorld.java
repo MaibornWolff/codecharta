@@ -3,6 +3,7 @@
  */
 
 public class HelloWorld {
+
     public static void main(String[] args) {
         /* The following line is equivalent to:
            System.out.println("Hello World!");
@@ -62,7 +63,7 @@ public class HelloWorld {
             doSomething();
         }
 
-        for (;;) {
+        for (; ; ) {
             doSomething();
         }
 
@@ -146,12 +147,11 @@ public class HelloWorld {
         }
 
         // try-with-resources statement
-        try (FileOutputStream fos = new FileOutputStream("filename");
-             XMLEncoder xEnc = new XMLEncoder(fos))
-        {
+        try (FileOutputStream fos = new FileOutputStream("filename"); XMLEncoder xEnc = new XMLEncoder(fos)) {
             xEnc.writeObject(object);
         } catch (IOException ex) {
-            Logger.getLogger(Serializer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Serializer.class.getName())
+                    .log(Level.SEVERE, null, ex);
         }
 
         // throw
@@ -183,7 +183,7 @@ public class HelloWorld {
 
         // Initializers -------------------
         // Long syntax
-        int[] numbers = new int[] {20, 1, 42, 15, 34};
+        int[] numbers = new int[]{20, 1, 42, 15, 34};
         // Short syntax
         int[] numbers2 = {20, 1, 42, 15, 34};
 

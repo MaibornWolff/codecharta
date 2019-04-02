@@ -29,7 +29,6 @@
 
 package de.maibornwolff.codecharta.importer.sonar
 
-
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -47,7 +46,7 @@ import java.util.concurrent.Callable
         description = ["generates cc.json from metric data from SonarQube"],
         footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
 )
-class SonarImporterMain : Callable<Void> {
+class SonarImporterMain: Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -55,7 +54,8 @@ class SonarImporterMain : Callable<Void> {
     @CommandLine.Parameters(index = "0", paramLabel = "URL", description = ["url of sonarqube server"])
     private var baseUrl: URL = URL("http://localhost")
 
-    @CommandLine.Parameters(index = "1", arity = "1..1", paramLabel = "PROJECT_ID", description = ["sonarqube project id"])
+    @CommandLine.Parameters(index = "1", arity = "1..1", paramLabel = "PROJECT_ID",
+            description = ["sonarqube project id"])
     private var projectId = ""
 
     @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])

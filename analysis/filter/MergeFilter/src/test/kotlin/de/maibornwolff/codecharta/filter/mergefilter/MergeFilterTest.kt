@@ -1,15 +1,14 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.containsString
+import org.hamcrest.Matchers.not
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import java.io.PrintStream
 import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 
-
-
-class MergeFilterTest : Spek({
+class MergeFilterTest: Spek({
     val outContent = ByteArrayOutputStream()
     val originalOut = System.out
     val errContent = ByteArrayOutputStream()
@@ -37,12 +36,12 @@ class MergeFilterTest : Spek({
                 assertThat(outContent.toString(), containsString(valueInFile2))
             }
 
-            it("should warn about skipped files"){
+            it("should warn about skipped files") {
                 assertThat(errContent.toString(), containsString(invalidFile))
             }
         }
 
-        context("merging files"){
+        context("merging files") {
             System.setOut(PrintStream(outContent))
             MergeFilter.main(
                     arrayOf(

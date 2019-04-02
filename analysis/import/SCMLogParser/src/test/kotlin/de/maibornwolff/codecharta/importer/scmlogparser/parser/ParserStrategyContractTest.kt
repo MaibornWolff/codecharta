@@ -35,7 +35,8 @@ abstract class ParserStrategyContractTest {
         val parser = LogLineParser(logParserStrategy, metricsFactory)
         val commit = parser.parseCommit(fullCommit)
         assertThat(commit)
-                .extracting(java.util.function.Function<Commit, Any> { it.author }, java.util.function.Function<Commit, Any> { it.commitDate })
+                .extracting(java.util.function.Function<Commit, Any> { it.author },
+                        java.util.function.Function<Commit, Any> { it.commitDate })
                 .containsExactly("TheAuthor", OffsetDateTime.of(2017, 5, 9, 19, 57, 57, 0, ZONE_OFFSET))
         assertThat(commit.filenames)
                 .containsExactlyInAnyOrder("src/Added.java", "src/Modified.java", "src/Deleted.java")
@@ -69,7 +70,6 @@ abstract class ParserStrategyContractTest {
         assertThat(commits).hasSize(2)
     }
 
-
     @Test
     fun accumulatesCommitFiles() {
         val parser = LogLineParser(logParserStrategy, metricsFactory)
@@ -78,7 +78,9 @@ abstract class ParserStrategyContractTest {
         val files = parser.parse(logLines)
         assertThat(files)
                 .extracting(java.util.function.Function<VersionControlledFile, Any> { it.filename },
-                        java.util.function.Function<VersionControlledFile, Any> { f -> f.getMetricValue("number_of_commits") },
+                        java.util.function.Function<VersionControlledFile, Any> { f ->
+                            f.getMetricValue("number_of_commits")
+                        },
                         java.util.function.Function<VersionControlledFile, Any> { it.authors })
                 .containsExactlyInAnyOrder(
                         tuple("src/Deleted.java", 2L, setOf("TheAuthor")),

@@ -14,7 +14,8 @@ class FolderParsePerformanceTest {
         val total20Real13Count = 20
         val total20Real14Mcc1Nl1Count = 20
         val totalReal = (2 * total2Real2Count) + (13 * total20Real13Count) + (14 * total20Real14Mcc1Nl1Count)
-        val locationResolverStub = GeneratedOverviewSourceProvider(total2Real2Count, total20Real13Count, total20Real14Mcc1Nl1Count)
+        val locationResolverStub =
+                GeneratedOverviewSourceProvider(total2Real2Count, total20Real13Count, total20Real14Mcc1Nl1Count)
 
         val multiMetrics = calculateOverviewMetricsWithFailOnParseError(locationResolverStub)
 

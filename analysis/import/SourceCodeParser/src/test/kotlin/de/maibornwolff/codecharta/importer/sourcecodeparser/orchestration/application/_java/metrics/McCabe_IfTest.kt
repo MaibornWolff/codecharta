@@ -79,6 +79,4 @@ public class Foo {
         Object z = a == null ? (b ==  null ? c : d) : e;
     }
 }""".lines()
-
-
 }

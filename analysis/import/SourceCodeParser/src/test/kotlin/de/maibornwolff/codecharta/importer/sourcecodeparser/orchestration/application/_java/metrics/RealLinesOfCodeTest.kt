@@ -20,7 +20,8 @@ class RealLinesOfCodeTest {
 
         val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
-        Assertions.assertThatExceptionOfType(IndexOutOfBoundsException::class.java).isThrownBy { detailedMetricTable[0] }
+        Assertions.assertThatExceptionOfType(IndexOutOfBoundsException::class.java)
+                .isThrownBy { detailedMetricTable[0] }
     }
 
     @Test
@@ -206,5 +207,4 @@ public class Foo {
     }
 }
 """.trim().lines()
-
 }

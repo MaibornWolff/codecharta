@@ -35,7 +35,5 @@ class ErrorResponseFilterTest {
     @Test
     @Throws(Exception::class)
     fun filter() {
-
     }
-
 }
