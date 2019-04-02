@@ -39,7 +39,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 
         if (this.lastColorMetric != settings.dynamicSettings.colorMetric) {
             this.lastColorMetric = settings.dynamicSettings.colorMetric
-            this.adaptedColorRange(settings)
+            this.adaptColorRange(settings)
         } else if (settings.dynamicSettings.neutralColorRange) {
             this._viewModel.neutralColorRangeFlipped = settings.dynamicSettings.neutralColorRange.flipped;
         }
@@ -66,7 +66,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
         })
     }
 
-    private adaptedColorRange(s: Settings) {
+    private adaptColorRange(s: Settings) {
         const maxMetricValue = this.metricService.getMaxMetricByMetricName(s.dynamicSettings.colorMetric)
 
         const flipped = (s.dynamicSettings.neutralColorRange) ? s.dynamicSettings.neutralColorRange.flipped : false
