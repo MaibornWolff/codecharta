@@ -1,134 +1,215 @@
-import {metricChooserComponent, MetricChooserController} from "./metricChooser.component";
-import {DataService} from "../../core/data/data.service";
+import './metricChooser.module'
+
+import {MetricChooserController} from "./metricChooser.component";
 import {SettingsService} from "../../state/settings.service";
-
-import {CodeMapMouseEventService} from "../codeMap/codeMap.mouseEvent.service";
-jest.mock("../codeMap/codeMap.mouseEvent.service");
-
+import {CodeMapBuildingTransition} from "../codeMap/codeMap.mouseEvent.service";
+import { getService, instantiateModule } from '../../../../mocks/ng.mockhelper';
+import { IRootScopeService } from 'angular';
+import { Settings } from '../../codeCharta.model';
+import { SETTINGS } from '../../util/dataMocks';
 
 describe("MetricChooserController", () => {
 
-    let dataServiceMock: DataService;
-    let settingsServiceMock: SettingsService;
     let metricChooserController: MetricChooserController;
-    let $rootScope = {};
+    let services
+    let dataDelta, dataNotDelta
 
-    function rebuildSUT() {
-        metricChooserController = new MetricChooserController(dataServiceMock, settingsServiceMock, $rootScope);
+    function rebuildController() {
+		metricChooserController = new MetricChooserController(
+            services.SettingsService,
+            services.$rootScope
+		)
+	}
+
+	function restartSystem() {
+        instantiateModule("app.codeCharta.ui.metricChooser")
+        
+        services = {
+            settingsService: getService<SettingsService>("settingsService"),
+            $rootScope: getService<IRootScopeService>("$rootScope"),
+        }		
+    }
+    
+    function withMockedSettingsService() {
+		services.settingsService = metricChooserController["settingsService"] = jest.fn(() => {
+			return {
+                subscribe: jest.fn(),
+				updateSettings: jest.fn(),
+				getSettings: jest.fn().mockReturnValue(SETTINGS)
+			}
+		})()
+    }
+    
+    function withMockedBuildingTransitions() {
+        dataDelta = {to:{node:{
+            attributes: {area: 10, height: 20, color: 30},
+            deltas: {area: 40, height: 50, color: 60}
+        }}} as unknown as CodeMapBuildingTransition
+
+        dataNotDelta = {to:{node:{
+            attributes: {area: 10, height: 20, color: 30},
+        }}} as unknown as CodeMapBuildingTransition
     }
 
-    function mockEverything() {
+	beforeEach(() => {
+		restartSystem()
+        rebuildController()
+        withMockedSettingsService()
+    })
 
-        CodeMapMouseEventService.mockClear();
+    it("should uptate height/area/color metric on settings changed", () => {
+        let settings = { dynamicSettings: { areaMetric: "foo", heightMetric: "bar", colorMetric: "foobar"}} as Settings
 
-        const DataServiceMock = jest.fn<DataService>(() => ({
-            setComparisonMap: jest.fn(),
-            setReferenceMap: jest.fn(),
-            subscribe: jest.fn(),
-            getComparisonMap: jest.fn(),
-            getReferenceMap: jest.fn(),
-            $rootScope: {
-                $on: jest.fn()
-            },
-            data: {
-                revisions: [],
-                metrics: [],
-                metricData: [],
-            },
-            notify: ()=>{
-                metricChooserController.onDataChanged(dataServiceMock.data);
-            }
-        }));
+        metricChooserController.onSettingsChanged(settings, null)
 
-        dataServiceMock = new DataServiceMock();
+        expect(metricChooserController["_viewModel"].areaMetric).toEqual("foo")
+        expect(metricChooserController["_viewModel"].heightMetric).toEqual("bar")
+        expect(metricChooserController["_viewModel"].colorMetric).toEqual("foobar")
+    })
 
-        const SettingsServiceMock = jest.fn<SettingsService>(() => ({
-            applySettings: jest.fn(),
-            settings: {
-                areaMetric: "area",
-                heightMetric: "height",
-                colorMetric: "color",
-            }
-        }));
+    it("metric data should be updated", () => {
+        let metricData = [{name: "a", maxValue: 1, availableInVisibleMaps: true}, {name: "b", maxValue: 2, availableInVisibleMaps: false}]
 
-        settingsServiceMock = new SettingsServiceMock();
+        metricChooserController.onMetricDataChanged(metricData, null)
 
-        rebuildSUT();
+        expect(metricChooserController["_viewModel"].metricData).toEqual(metricData)
+    })
+    
 
-    }
+    it("settings are updated if selected metrics are not available", () => {
+        let metricData = [
+            {name: "a", maxValue: 1, availableInVisibleMaps: true}, 
+            {name: "b", maxValue: 2, availableInVisibleMaps: true}, 
+            {name: "c", maxValue: 2, availableInVisibleMaps: true}
+        ]
+        
+        metricChooserController.onMetricDataChanged(metricData, null)
 
-    beforeEach(()=>{
-        mockEverything();
-    });
+        expect(services.settingsService.updateSettings).toHaveBeenCalledWith({"dynamicSettings": {"areaMetric": "a", "colorMetric": "c", "heightMetric": "b"}})
+    })
 
-    it("should subscribe to dataService on construction", () => {
-        expect(dataServiceMock.subscribe).toHaveBeenCalledWith(metricChooserController);
-    });
+    it("same metric is selected multiple times if less than 3 metrics available", () => {
+        let metricData = [
+                {name: "a", maxValue: 1, availableInVisibleMaps: true},
+                {name: "b", maxValue: 1, availableInVisibleMaps: false}
+            ]
+        
+        metricChooserController.onMetricDataChanged(metricData, null)
 
-    it("should subscribe to CodeMapMouseEventService on construction", () => {
-        expect(CodeMapMouseEventService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController);
-    });
+        expect(services.settingsService.updateSettings).toHaveBeenCalledWith({"dynamicSettings": {"areaMetric": "a", "colorMetric": "a", "heightMetric": "a"}})
+    })
 
-    it("should get metrics from data service on startup", () => {
-        dataServiceMock.data.metricData = [{name: "Some Metric", maxValue: 1}];
-        rebuildSUT();
-        expect(metricChooserController.metricData).toBe(dataServiceMock.data.metricData);
-    });
+    it("settings are not updated if selected metrics are available", () => {
+        let metricData = [
+            {name: "mcc", maxValue: 1, availableInVisibleMaps: true}, 
+            {name: "rloc", maxValue: 2, availableInVisibleMaps: true}
+        ]
 
-    it("onDataChanged should refresh metrics and sort them", () => {
-        const metricData = [
-            {name: "some", maxValue: 2},
-            {name: "revisions", maxValue: 3},
-            {name: "a", maxValue: 4}
-        ];
-        metricChooserController.onDataChanged({metricData: metricData});
-        expect(metricChooserController.metricData).toEqual(metricData);
-        expect(metricChooserController.metricData[0]).toEqual(metricData[0]);
-        expect(metricChooserController.metricData[1]).toEqual(metricData[1]);
-    });
+        metricChooserController.onMetricDataChanged(metricData, null)
+        
+        expect(services.settingsService.updateSettings).not.toBeCalled()
+    })
 
-    it("onDataChanged should be called when dataService.notify is called", () => {
-        metricChooserController.onDataChanged = jest.fn();
-        dataServiceMock.notify();
-        expect(metricChooserController.onDataChanged).toHaveBeenCalled();
-    });
+    it("no metrics available, should not update settings", () => {
+        let metricData = [{name: "b", maxValue: 2, availableInVisibleMaps: false}]
 
-    it("notify should be call applySettings", () => {
-        metricChooserController.notify();
-        expect(settingsServiceMock.applySettings).toHaveBeenCalled();
-    });
+        metricChooserController.onMetricDataChanged(metricData, null)
 
-    it("onBuildingHovered should reset values if data, data.to, data.to.node or data.to.node.attributes are non existant", () => {
-        metricChooserController.hoveredAreaValue = 30;
-        metricChooserController.onBuildingHovered(null, null);
-        expect(metricChooserController.hoveredAreaValue).not.toBeTruthy();
-        metricChooserController.hoveredAreaValue = 30;
-        metricChooserController.onBuildingHovered({to: null}, null);
-        expect(metricChooserController.hoveredAreaValue).not.toBeTruthy();
-        metricChooserController.hoveredAreaValue = 30;
-        metricChooserController.onBuildingHovered({to: {node: null}}, null);
-        expect(metricChooserController.hoveredAreaValue).not.toBeTruthy();
-        metricChooserController.hoveredAreaValue = 30;
-        metricChooserController.onBuildingHovered({to:{node:{attributes: null}}}, null);
-        expect(metricChooserController.hoveredAreaValue).not.toBeTruthy();
-    });
+        expect(services.settingsService.updateSettings).not.toBeCalled()
+    })
 
-    it("onBuildingHovered should not get values if data.to.node.attributes is existant but empty", () => {
-        metricChooserController.hoveredAreaValue = 30;
-        metricChooserController.onBuildingHovered({to:{node:{attributes: {}}}}, null);
-        expect(metricChooserController.hoveredAreaValue).not.toBeTruthy();
-    });
+    it("apply settings updates settings", () => {
+        metricChooserController["_viewModel"].areaMetric = "a"
+        metricChooserController["_viewModel"].heightMetric = "b"
+        metricChooserController["_viewModel"].colorMetric = "c"
 
-    it("onBuildingHovered should get values if data.to.node.attributes is existant and filled with correct values", () => {
-        metricChooserController.hoveredAreaValue = 30;
-        metricChooserController.onBuildingHovered({to:{node:{attributes: {area: 10}}}}, null);
-        expect(metricChooserController.hoveredAreaValue).toBe(10);
-    });
+        metricChooserController.applySettings()
 
-    it("onBuildingHovered should not get values if data.to.node.attributes is existant and filled with incorrect values", () => {
-        metricChooserController.hoveredAreaValue = 30;
-        metricChooserController.onBuildingHovered({to:{node:{attributes: {somearea: 10}}}}, null);
-        expect(metricChooserController.hoveredAreaValue).not.toBeTruthy();
-    });
+        expect(services.settingsService.updateSettings).toBeCalledWith({"dynamicSettings": {"areaMetric": "a", "colorMetric": "c", "heightMetric": "b"}})
+    })
 
-});
+    it("should set values and deltas to null if data incomplete", () => {
+        let data = {from: {}, to: {}} as CodeMapBuildingTransition
+
+        metricChooserController.onBuildingHovered(data, null)
+
+        expect(metricChooserController.hoveredAreaDelta).toBe(null)
+        expect(metricChooserController.hoveredAreaValue).toBe(null)
+        expect(metricChooserController.hoveredColorDelta).toBe(null)
+        expect(metricChooserController.hoveredColorValue).toBe(null)
+        expect(metricChooserController.hoveredHeightValue).toBe(null)
+        expect(metricChooserController.hoveredHeightDelta).toBe(null)
+    })
+
+    it("should set hovered values and set hovered deltas to null if not delta", () => {
+        withMockedBuildingTransitions()
+        metricChooserController["_viewModel"].areaMetric = "area"
+        metricChooserController["_viewModel"].heightMetric = "height"
+        metricChooserController["_viewModel"].colorMetric = "color"
+
+        metricChooserController.onBuildingHovered(dataNotDelta, null)
+
+        expect(metricChooserController.hoveredAreaDelta).toBe(null)
+        expect(metricChooserController.hoveredAreaValue).toBe(10)
+        expect(metricChooserController.hoveredColorDelta).toBe(null)
+        expect(metricChooserController.hoveredColorValue).toBe(30)
+        expect(metricChooserController.hoveredHeightValue).toBe(20)
+        expect(metricChooserController.hoveredHeightDelta).toBe(null)
+    })
+
+    it("should set hovered values and deltas if delta", () => {
+        withMockedBuildingTransitions()
+        metricChooserController["_viewModel"].areaMetric = "area"
+        metricChooserController["_viewModel"].heightMetric = "height"
+        metricChooserController["_viewModel"].colorMetric = "color"
+
+        metricChooserController.onBuildingHovered(dataDelta, null)
+
+        expect(metricChooserController.hoveredAreaDelta).toBe(40)
+        expect(metricChooserController.hoveredAreaValue).toBe(10)
+        expect(metricChooserController.hoveredColorDelta).toBe(60)
+        expect(metricChooserController.hoveredColorValue).toBe(30)
+        expect(metricChooserController.hoveredHeightValue).toBe(20)
+        expect(metricChooserController.hoveredHeightDelta).toBe(50)
+    })
+
+    it("hovered delta color should be null if not delta", () => {
+        withMockedBuildingTransitions()
+        metricChooserController.hoveredDeltaColor = "foo"
+
+        metricChooserController.onBuildingHovered(dataNotDelta, null)
+
+        expect(metricChooserController.hoveredDeltaColor).toBe(null)
+    })
+
+    it("hovered delta color should be inherited if hoveredHeigtDelta is 0", () => {
+        withMockedBuildingTransitions()
+        metricChooserController.hoveredHeightDelta = 0
+
+        metricChooserController.onBuildingHovered(dataDelta, null)
+
+        expect(metricChooserController.hoveredDeltaColor).toBe("inherit")
+    })
+
+    it("hovered delta color should be set correctly", () => {
+        withMockedBuildingTransitions()
+        metricChooserController["_viewModel"].heightMetric = "height"
+        metricChooserController.hoveredHeightDelta = 2
+
+        metricChooserController.onBuildingHovered(dataDelta, null)
+
+        expect(metricChooserController.hoveredDeltaColor).toBe("green")
+    })
+
+    it("hovered delta color should be set correctly if reversed colors", () => {
+        withMockedBuildingTransitions()
+        metricChooserController["_viewModel"].heightMetric = "height"
+        metricChooserController.hoveredHeightDelta = 2
+        services.settingsService.getSettings = jest.fn(() => {return {appSettings: {deltaColorFlipped: true}}})
+
+        metricChooserController.onBuildingHovered(dataDelta, null)
+
+        expect(metricChooserController.hoveredDeltaColor).toBe("red")
+    })
+
+})

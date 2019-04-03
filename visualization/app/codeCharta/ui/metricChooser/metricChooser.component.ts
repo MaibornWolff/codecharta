@@ -76,7 +76,7 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
             const metricValue: string = this.settingsService.getSettings().dynamicSettings[metricKey]
             const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps)
 
-            if (availableMetrics && !availableMetrics.find(x => x.name == metricValue)) {
+            if (availableMetrics.length>0 && !availableMetrics.find(x => x.name == metricValue)) { // metric value is "rloc" if not found in available, then gogogo
                 settingsUpdate.dynamicSettings[metricKey] = availableMetrics[Math.min(metricSelectionIndex, availableMetrics.length - 1)].name
             }
             metricSelectionIndex++
