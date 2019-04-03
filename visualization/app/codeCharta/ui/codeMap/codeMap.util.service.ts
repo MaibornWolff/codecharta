@@ -19,7 +19,7 @@ export class CodeMapUtilService {
     public getCodeMapNodeFromPath(path: string, nodeType: string, root: CodeMapNode) {
         let res = null;
 
-        if (path == root.path) {
+        if (path === root.path) {
             return root;
         }
 
@@ -54,7 +54,7 @@ export class CodeMapUtilService {
 
     public static isBlacklisted(node: CodeMapNode, blacklist: Array<BlacklistItem>, type: BlacklistType): boolean {
         const ig = ignore().add(blacklist
-            .filter(b => b.type == type)
+            .filter(b => b.type === type)
             .map(ex => CodeMapUtilService.transformPath(ex.path)));
         return ig.ignores(CodeMapUtilService.transformPath(node.path));
     }
