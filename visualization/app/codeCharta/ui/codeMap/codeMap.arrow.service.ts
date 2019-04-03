@@ -38,6 +38,7 @@ export class CodeMapArrowService {
         for (let edge of edges) {
             let originNode: Node = map.get(edge.fromNodeName);
             let targetNode: Node = map.get(edge.toNodeName);
+
             if (originNode && targetNode) {
                 this.addArrow(targetNode, originNode, settings);
             }

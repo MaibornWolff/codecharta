@@ -1,4 +1,5 @@
-import { CodeMapNode, Edge, CCFile, Settings, FileSelectionState } from "../codeCharta.model"
+import { CodeMapNode, Edge, CCFile, Settings, KeyValuePair } from "../codeCharta.model"
+import { Node } from "../../codeCharta/ui/codeMap/rendering/node"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -293,7 +294,11 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 	attributeTypes: undefined,
 	blacklist: undefined,
 	edges: [
-		{ attributes: { avgCommits: 34, pairingRate: 89 }, fromNodeName: "/root/big leaf", toNodeName: "/root/Parent Leaf/small leaf" },
+		{
+			attributes: { avgCommits: 34, pairingRate: 89 },
+			fromNodeName: "/root/big leaf",
+			toNodeName: "/root/Parent Leaf/small leaf"
+		},
 		{
 			attributes: { avgCommits: 34, pairingRate: 89 },
 			fromNodeName: "/root/sample1 only leaf",
@@ -305,7 +310,12 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 		{
 			attributes: {},
 			children: [
-				{ attributes: { Functions: 10, MCC: 1, RLOC: 100 }, link: "http://www.google.de", name: "big leaf", type: "File" },
+				{
+					attributes: { Functions: 10, MCC: 1, RLOC: 100 },
+					link: "http://www.google.de",
+					name: "big leaf",
+					type: "File"
+				},
 				{
 					attributes: {},
 					children: [
@@ -363,4 +373,50 @@ export const SETTINGS: Settings = {
 		}
 	},
 	treeMapSettings: { mapSize: 500 }
+}
+
+export const TEST_NODE_ROOT: Node = {
+	name: "root",
+	width: 1,
+	height: 2,
+	length: 3,
+	depth: 4,
+	x0: 5,
+	z0: 6,
+	y0: 7,
+	isLeaf: true,
+	deltas: { "a": 1, "b": 2 },
+	attributes: { "a": 20, "b": 15 },
+	children: [],
+	parent: undefined,
+	heightDelta: 10,
+	visible: true,
+	path: "root",
+	origin: "root",
+	link: "NO_LINK",
+	markingColor: "0x000000",
+	flat: false
+}
+
+export const TEST_NODE_LEAF: Node = {
+	name: "root/big leaf",
+	width: 1,
+	height: 2,
+	length: 3,
+	depth: 4,
+	x0: 5,
+	z0: 6,
+	y0: 7,
+	isLeaf: true,
+	deltas: { "a": 1, "b": 2 },
+	attributes: { "a": 20, "b": 15 },
+	children: [],
+	parent: undefined,
+	heightDelta: 20,
+	visible: true,
+	path: "root/big leaf",
+	origin: "root",
+	link: "NO_LINK",
+	markingColor: "0xFFFFFF",
+	flat: false
 }
