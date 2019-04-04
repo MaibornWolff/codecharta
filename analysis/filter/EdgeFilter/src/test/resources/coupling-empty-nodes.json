@@ -61,13 +61,23 @@
   ],
   "attributeTypes": {
     "nodes": [
-      {"rloc": "absolute"},
-      {"functions": "absolute"},
-      {"mcc": "absolute"}
+      {
+        "rloc": "absolute"
+      },
+      {
+        "functions": "absolute"
+      },
+      {
+        "mcc": "absolute"
+      }
     ],
     "edges": [
-      {"pairingRate": "relative"},
-      {"avgCommits": "absolute"}
+      {
+        "pairingRate": "relative"
+      },
+      {
+        "avgCommits": "absolute"
+      }
     ]
   }
 }

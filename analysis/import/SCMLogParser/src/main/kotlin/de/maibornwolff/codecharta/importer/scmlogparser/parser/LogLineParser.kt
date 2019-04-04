@@ -16,7 +16,6 @@ class LogLineParser(private val parserStrategy: LogParserStrategy, private val m
                 .collect(CommitCollector.create(metricsFactory))
     }
 
-
     internal fun parseCommit(commitLines: List<String>): Commit {
         val author = parserStrategy.parseAuthor(commitLines)
         val commitDate = parserStrategy.parseDate(commitLines)

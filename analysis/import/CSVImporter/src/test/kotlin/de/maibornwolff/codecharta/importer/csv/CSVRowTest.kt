@@ -10,7 +10,7 @@ import kotlin.test.assertFailsWith
 
 private const val PATH_SEPARATOR = '\\'
 
-class CSVRowTest : Spek({
+class CSVRowTest: Spek({
 
     describe("Using a header with path column") {
         val header = CSVHeader(arrayOf("head1", "head2", "head3", "path", "attrib", "attrib2", ""))

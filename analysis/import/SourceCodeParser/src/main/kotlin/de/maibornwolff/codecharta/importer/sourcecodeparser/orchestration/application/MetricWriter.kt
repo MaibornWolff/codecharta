@@ -7,5 +7,4 @@ interface MetricWriter {
 
     fun printDetails(detailedMetricTable: DetailedMetricTable)
     fun printOverview(overviewMetric: OverviewMetric)
-
 }

@@ -6,11 +6,11 @@ plugins {
 dependencies {
     implementation project(':model')
 
-    antlr group: 'org.antlr', name:'antlr4', version: antlr_version
-    errorprone group: 'com.google.errorprone', name:'error_prone_core', version: '2.3.3'
+    antlr group: 'org.antlr', name: 'antlr4', version: antlr_version
+    errorprone group: 'com.google.errorprone', name: 'error_prone_core', version: '2.3.3'
 
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
-    implementation group: 'org.antlr', name:'antlr4-runtime', version: antlr_version
+    implementation group: 'org.antlr', name: 'antlr4-runtime', version: antlr_version
 
     testImplementation group: 'junit', name: 'junit', version: junit4_version
     testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.10.0'
@@ -20,7 +20,7 @@ dependencies {
 
 tasks.withType(JavaCompile) {
     // errorprone should ignore generated code
-    options.compilerArgs += ['-XepExcludedPaths:.*/src/generated/.*', '-Xep:DeadException:WARN' ]
+    options.compilerArgs += ['-XepExcludedPaths:.*/src/generated/.*', '-Xep:DeadException:WARN']
 }
 
 
@@ -42,6 +42,6 @@ sourceSets {
 
 compileJava.source sourceSets.main.java
 
-clean{
+clean {
     delete 'src/generated'
 }

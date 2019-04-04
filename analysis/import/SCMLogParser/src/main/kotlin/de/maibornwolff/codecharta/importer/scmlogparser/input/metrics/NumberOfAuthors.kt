@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 
-class NumberOfAuthors : Metric {
+class NumberOfAuthors: Metric {
     private val authors = mutableSetOf<String>()
 
     override fun description(): String {

@@ -19,7 +19,8 @@
                 <Metric description="Total Lines of Code" name="TLOC" value="131"/>
             </Metrics>
             <Classes>
-                <Class name="CommandLineExecutive" sourceFile="./main/java/org/jasome/executive/CommandLineExecutive.java">
+                <Class name="CommandLineExecutive"
+                       sourceFile="./main/java/org/jasome/executive/CommandLineExecutive.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -31,7 +32,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="6,333333333"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="1"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="2"/>
@@ -55,14 +57,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="1"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="2"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="149"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="87"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="8"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="true" lineEnd="159" lineStart="136" name="public CommandLineExecutive ExcludeTestsFilter(File baseDir)">
+                        <Method constructor="true" lineEnd="159" lineStart="136"
+                                name="public CommandLineExecutive ExcludeTestsFilter(File baseDir)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -79,7 +83,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="112" lineStart="25" name="public static void main(String[] args) throws IOException, ParseException">
+                        <Method constructor="false" lineEnd="112" lineStart="25"
+                                name="public static void main(String[] args) throws IOException, ParseException">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="4,333333333"/>
                                 <Metric description="Data Complexity" name="Di" value="0,333333333"/>
@@ -98,7 +103,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="CommandLineExecutive.ExcludeTestsFilter" sourceFile="./main/java/org/jasome/executive/CommandLineExecutive.java">
+                <Class name="CommandLineExecutive.ExcludeTestsFilter"
+                       sourceFile="./main/java/org/jasome/executive/CommandLineExecutive.java">
                     <Metrics>
                         <Metric description="Attribute Hiding Factor" name="AHF" value="0,0"/>
                         <Metric description="Attribute Inheritance Factor" name="AIF" value="0,0"/>
@@ -112,7 +118,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="7,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="1"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Lack of Cohesion Methods (H-S)" name="LCOM*" value="0,666666667"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
@@ -137,14 +144,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="3"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="57"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="17"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="5"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="true" lineEnd="159" lineStart="136" name="public ExcludeTestsFilter ExcludeTestsFilter(File baseDir)">
+                        <Method constructor="true" lineEnd="159" lineStart="136"
+                                name="public ExcludeTestsFilter ExcludeTestsFilter(File baseDir)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -161,7 +170,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="3"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="169" lineStart="166" name="public boolean accept(File dir, String name)">
+                        <Method constructor="false" lineEnd="169" lineStart="166"
+                                name="public boolean accept(File dir, String name)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="3,0"/>
                                 <Metric description="Data Complexity" name="Di" value="3,0"/>
@@ -178,7 +188,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="164" lineStart="161" name="public boolean accept(File file)">
+                        <Method constructor="false" lineEnd="164" lineStart="161"
+                                name="public boolean accept(File file)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -209,7 +220,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="1,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="1"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="1"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="0,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -233,7 +245,8 @@
                         <Metric description="Number of Static Methods" name="NSM" value="1"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="0"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="39"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="27"/>
@@ -290,7 +303,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="36,233333333"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="1"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="7"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Lack of Cohesion Methods (H-S)" name="LCOM*" value="0,861538462"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="0,5"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
@@ -316,7 +330,8 @@
                         <Metric description="Polymorphism Factor" name="PF" value="0,0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,5"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="7"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="80"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="62"/>
@@ -340,7 +355,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="78" lineStart="76" name="protected Set&lt;Code&gt; getChildren()">
+                        <Method constructor="false" lineEnd="78" lineStart="76"
+                                name="protected Set&lt;Code&gt; getChildren()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -357,7 +373,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="87" lineStart="84" name="protected void addChild(Code child)">
+                        <Method constructor="false" lineEnd="87" lineStart="84"
+                                name="protected void addChild(Code child)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -391,7 +408,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="38" lineStart="36" name="public Map&lt;String, String&gt; getAttributes()">
+                        <Method constructor="false" lineEnd="38" lineStart="36"
+                                name="public Map&lt;String, String&gt; getAttributes()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -408,7 +426,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="34" lineStart="32" name="public Optional&lt;Metric&gt; getMetric(String name)">
+                        <Method constructor="false" lineEnd="34" lineStart="32"
+                                name="public Optional&lt;Metric&gt; getMetric(String name)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -425,7 +444,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="30" lineStart="28" name="public Set&lt;Metric&gt; getMetrics()">
+                        <Method constructor="false" lineEnd="30" lineStart="28"
+                                name="public Set&lt;Metric&gt; getMetrics()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -493,7 +513,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="62" lineStart="60" name="synchronized void addAttribute(String key, String value)">
+                        <Method constructor="false" lineEnd="62" lineStart="60"
+                                name="synchronized void addAttribute(String key, String value)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -510,7 +531,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="58" lineStart="56" name="synchronized void addMetric(Metric metric)">
+                        <Method constructor="false" lineEnd="58" lineStart="56"
+                                name="synchronized void addMetric(Metric metric)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,5"/>
                                 <Metric description="Data Complexity" name="Di" value="0,5"/>
@@ -527,7 +549,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="66" lineStart="64" name="void addAttribute(Map.Entry&lt;String, String&gt; attribute)">
+                        <Method constructor="false" lineEnd="66" lineStart="64"
+                                name="void addAttribute(Map.Entry&lt;String, String&gt; attribute)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -544,7 +567,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="72" lineStart="68" name="void addMetrics(Set&lt;Metric&gt; metrics)">
+                        <Method constructor="false" lineEnd="72" lineStart="68"
+                                name="void addMetrics(Set&lt;Metric&gt; metrics)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -577,7 +601,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="7,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="1"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="1"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="1"/>
                         <Metric description="Lack of Cohesion Methods (H-S)" name="LCOM*" value="0,666666667"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="0,75"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,2"/>
@@ -603,14 +628,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="1"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,6"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="3"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="64"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="35"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="7"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="79" lineStart="58" name="private static Collection&lt;File&gt; gatherFilesFrom(File file, IOFileFilter filter)">
+                        <Method constructor="false" lineEnd="79" lineStart="58"
+                                name="private static Collection&lt;File&gt; gatherFilesFrom(File file, IOFileFilter filter)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="3,0"/>
                                 <Metric description="Data Complexity" name="Di" value="3,0"/>
@@ -627,7 +654,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="4"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="true" lineEnd="27" lineStart="25" name="public FileScanner FileScanner(File scanDir)">
+                        <Method constructor="true" lineEnd="27" lineStart="25"
+                                name="public FileScanner FileScanner(File scanDir)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -661,7 +689,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="56" lineStart="54" name="public void setFilter(IOFileFilter filter)">
+                        <Method constructor="false" lineEnd="56" lineStart="54"
+                                name="public void setFilter(IOFileFilter filter)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -694,7 +723,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="7,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="1"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="3"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="3"/>
                         <Metric description="Lack of Cohesion Methods (H-S)" name="LCOM*" value="0,875"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="0,8"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,736842105"/>
@@ -720,7 +750,8 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,578947368"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="4"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="7"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="7"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="28"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="21"/>
@@ -744,7 +775,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="true" lineEnd="18" lineStart="15" name="public Method Method(MethodDeclaration declaration)">
+                        <Method constructor="true" lineEnd="18" lineStart="15"
+                                name="public Method Method(MethodDeclaration declaration)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -761,7 +793,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="22" lineStart="20" name="public MethodDeclaration getSource()">
+                        <Method constructor="false" lineEnd="22" lineStart="20"
+                                name="public MethodDeclaration getSource()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -828,7 +861,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="10,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="3"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="3"/>
                         <Metric description="Lack of Cohesion Methods (H-S)" name="LCOM*" value="0,6"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,7"/>
@@ -854,14 +888,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,65"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="6"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="7"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="7"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="35"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="27"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="7"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="41" lineStart="35" name="public Optional&lt;Type&gt; lookupTypeByName(String typeName)">
+                        <Method constructor="false" lineEnd="41" lineStart="35"
+                                name="public Optional&lt;Type&gt; lookupTypeByName(String typeName)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -878,7 +914,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="2"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="true" lineEnd="14" lineStart="11" name="public Package Package(String name)">
+                        <Method constructor="true" lineEnd="14" lineStart="11"
+                                name="public Package Package(String name)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -895,7 +932,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="28" lineStart="26" name="public Project getParentProject()">
+                        <Method constructor="false" lineEnd="28" lineStart="26"
+                                name="public Project getParentProject()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,5"/>
                                 <Metric description="Data Complexity" name="Di" value="0,5"/>
@@ -912,7 +950,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="19" lineStart="16" name="public Set&lt;Type&gt; getTypes()">
+                        <Method constructor="false" lineEnd="19" lineStart="16"
+                                name="public Set&lt;Type&gt; getTypes()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,5"/>
                                 <Metric description="Data Complexity" name="Di" value="0,5"/>
@@ -979,7 +1018,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="54,125"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="1"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Lack of Cohesion Methods (H-S)" name="LCOM*" value="0,6"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
@@ -1004,7 +1044,8 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="6"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="84"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="29"/>
@@ -1028,7 +1069,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="94" lineStart="41" name="public void process(Project project)">
+                        <Method constructor="false" lineEnd="94" lineStart="41"
+                                name="public void process(Project project)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="49,125"/>
                                 <Metric description="Data Complexity" name="Di" value="0,125"/>
@@ -1045,7 +1087,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="39" lineStart="37" name="public void registerMethodCalculator(Calculator&lt;Method&gt; calculator)">
+                        <Method constructor="false" lineEnd="39" lineStart="37"
+                                name="public void registerMethodCalculator(Calculator&lt;Method&gt; calculator)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -1062,7 +1105,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="31" lineStart="29" name="public void registerPackageCalculator(Calculator&lt;Package&gt; calculator)">
+                        <Method constructor="false" lineEnd="31" lineStart="29"
+                                name="public void registerPackageCalculator(Calculator&lt;Package&gt; calculator)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -1079,7 +1123,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="27" lineStart="25" name="public void registerProjectCalculator(Calculator&lt;Project&gt; calculator)">
+                        <Method constructor="false" lineEnd="27" lineStart="25"
+                                name="public void registerProjectCalculator(Calculator&lt;Project&gt; calculator)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -1096,7 +1141,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="35" lineStart="33" name="public void registerTypeCalculator(Calculator&lt;Type&gt; calculator)">
+                        <Method constructor="false" lineEnd="35" lineStart="33"
+                                name="public void registerTypeCalculator(Calculator&lt;Type&gt; calculator)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -1129,7 +1175,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="15,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="3"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="3"/>
                         <Metric description="Lack of Cohesion Methods (H-S)" name="LCOM*" value="0,851851852"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,545454545"/>
@@ -1155,14 +1202,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,681818182"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="10"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="5"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="5"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="62"/>
                         <Metric description="Specialization Index" name="SIX" value="0,4"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="45"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="13"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="60" lineStart="58" name="public JavaSymbolSolver getSymbolSolver()">
+                        <Method constructor="false" lineEnd="60" lineStart="58"
+                                name="public JavaSymbolSolver getSymbolSolver()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -1179,7 +1228,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="72" lineStart="62" name="public Optional&lt;Package&gt; lookupPackageByName(String packageName)">
+                        <Method constructor="false" lineEnd="72" lineStart="62"
+                                name="public Optional&lt;Package&gt; lookupPackageByName(String packageName)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -1196,7 +1246,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="4"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="true" lineEnd="22" lineStart="18" name="public Project Project(String name)">
+                        <Method constructor="true" lineEnd="22" lineStart="18"
+                                name="public Project Project(String name)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -1213,7 +1264,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="31" lineStart="29" name="public ProjectMetadata getMetadata()">
+                        <Method constructor="false" lineEnd="31" lineStart="29"
+                                name="public ProjectMetadata getMetadata()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -1230,7 +1282,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="27" lineStart="24" name="public Set&lt;Package&gt; getPackages()">
+                        <Method constructor="false" lineEnd="27" lineStart="24"
+                                name="public Set&lt;Package&gt; getPackages()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,5"/>
                                 <Metric description="Data Complexity" name="Di" value="0,5"/>
@@ -1298,7 +1351,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="36" lineStart="33" name="public void addPackage(Package aPackage)">
+                        <Method constructor="false" lineEnd="36" lineStart="33"
+                                name="public void addPackage(Package aPackage)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,5"/>
                                 <Metric description="Data Complexity" name="Di" value="0,5"/>
@@ -1315,7 +1369,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="56" lineStart="54" name="public void setSymbolSolver(JavaSymbolSolver symbolSolver)">
+                        <Method constructor="false" lineEnd="56" lineStart="54"
+                                name="public void setSymbolSolver(JavaSymbolSolver symbolSolver)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -1346,7 +1401,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="8,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="1"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="3"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="0,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="3"/>
@@ -1371,14 +1427,16 @@
                         <Metric description="Polymorphism Factor" name="PF" value="0,0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="0"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="152"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="97"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="5"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="137" lineStart="88" name="private JavaSymbolSolver configureParserAndResolver(Collection&lt;Pair&lt;String, Map&lt;String, String&gt;&gt;&gt; sourceCode, String projectPath)">
+                        <Method constructor="false" lineEnd="137" lineStart="88"
+                                name="private JavaSymbolSolver configureParserAndResolver(Collection&lt;Pair&lt;String, Map&lt;String, String&gt;&gt;&gt; sourceCode, String projectPath)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="3,0"/>
                                 <Metric description="Data Complexity" name="Di" value="3,0"/>
@@ -1395,7 +1453,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="2"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="170" lineStart="140" name="private Map&lt;String, List&lt;Pair&lt;ClassOrInterfaceDeclaration, Map&lt;String, String&gt;&gt;&gt;&gt; gatherPackages(Collection&lt;Pair&lt;String, Map&lt;String, String&gt;&gt;&gt; sourcesAndAttributes)">
+                        <Method constructor="false" lineEnd="170" lineStart="140"
+                                name="private Map&lt;String, List&lt;Pair&lt;ClassOrInterfaceDeclaration, Map&lt;String, String&gt;&gt;&gt;&gt; gatherPackages(Collection&lt;Pair&lt;String, Map&lt;String, String&gt;&gt;&gt; sourcesAndAttributes)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -1412,7 +1471,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="2"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="86" lineStart="23" name="protected Project doScan(Collection&lt;Pair&lt;String, Map&lt;String, String&gt;&gt;&gt; sourceCode, String projectPath)">
+                        <Method constructor="false" lineEnd="86" lineStart="23"
+                                name="protected Project doScan(Collection&lt;Pair&lt;String, Map&lt;String, String&gt;&gt;&gt; sourceCode, String projectPath)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="3,0"/>
                                 <Metric description="Data Complexity" name="Di" value="3,0"/>
@@ -1445,7 +1505,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="13,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="1"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="3"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="3"/>
                         <Metric description="Lack of Cohesion Methods (H-S)" name="LCOM*" value="0,785714286"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="0,875"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,636363636"/>
@@ -1471,14 +1532,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="1"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,636363636"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="7"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="7"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="7"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="54"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="42"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="11"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="36" lineStart="25" name="private static String getClassNameFromDeclaration(ClassOrInterfaceDeclaration classDefinition)">
+                        <Method constructor="false" lineEnd="36" lineStart="25"
+                                name="private static String getClassNameFromDeclaration(ClassOrInterfaceDeclaration classDefinition)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -1495,7 +1558,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="3"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="23" lineStart="21" name="public ClassOrInterfaceDeclaration getSource()">
+                        <Method constructor="false" lineEnd="23" lineStart="21"
+                                name="public ClassOrInterfaceDeclaration getSource()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -1512,7 +1576,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="63" lineStart="57" name="public Optional&lt;Method&gt; lookupMethodBySignature(String methodSignature)">
+                        <Method constructor="false" lineEnd="63" lineStart="57"
+                                name="public Optional&lt;Method&gt; lookupMethodBySignature(String methodSignature)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -1529,7 +1594,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="2"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="50" lineStart="48" name="public Package getParentPackage()">
+                        <Method constructor="false" lineEnd="50" lineStart="48"
+                                name="public Package getParentPackage()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,5"/>
                                 <Metric description="Data Complexity" name="Di" value="0,5"/>
@@ -1546,7 +1612,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="41" lineStart="38" name="public Set&lt;Method&gt; getMethods()">
+                        <Method constructor="false" lineEnd="41" lineStart="38"
+                                name="public Set&lt;Method&gt; getMethods()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,5"/>
                                 <Metric description="Data Complexity" name="Di" value="0,5"/>
@@ -1580,7 +1647,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="true" lineEnd="19" lineStart="15" name="public Type Type(ClassOrInterfaceDeclaration declaration)">
+                        <Method constructor="true" lineEnd="19" lineStart="15"
+                                name="public Type Type(ClassOrInterfaceDeclaration declaration)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -1597,7 +1665,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="46" lineStart="43" name="public void addMethod(Method method)">
+                        <Method constructor="false" lineEnd="46" lineStart="43"
+                                name="public void addMethod(Method method)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,5"/>
                                 <Metric description="Data Complexity" name="Di" value="0,5"/>
@@ -1645,7 +1714,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="2,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="1"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="0"/>
                         <Metric description="Number of Methods Defined" name="Md" value="0"/>
                         <Metric description="Number of Methods Inherited and Not Overridden" name="Mi" value="0"/>
@@ -1666,7 +1736,8 @@
                         <Metric description="Number of Static Attributes" name="NSF" value="0"/>
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="0"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="5"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="3"/>
@@ -1706,7 +1777,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="22,5"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="1"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="1"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Lack of Cohesion Methods (H-S)" name="LCOM*" value="0,6"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="0,909090909"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
@@ -1731,14 +1803,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="3"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,909090909"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="10"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="59"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="47"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="15"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="true" lineEnd="15" lineStart="11" name="protected Metric Metric(String name, String description, NumericValue value)">
+                        <Method constructor="true" lineEnd="15" lineStart="11"
+                                name="protected Metric Metric(String name, String description, NumericValue value)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="4,0"/>
                                 <Metric description="Data Complexity" name="Di" value="4,0"/>
@@ -1789,7 +1863,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="63" lineStart="61" name="public String getFormattedValue()">
+                        <Method constructor="false" lineEnd="63" lineStart="61"
+                                name="public String getFormattedValue()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,5"/>
                                 <Metric description="Data Complexity" name="Di" value="0,5"/>
@@ -1874,7 +1949,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="19" lineStart="17" name="public static Metric of(String name, String description, NumericValue value)">
+                        <Method constructor="false" lineEnd="19" lineStart="17"
+                                name="public static Metric of(String name, String description, NumericValue value)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="4,0"/>
                                 <Metric description="Data Complexity" name="Di" value="4,0"/>
@@ -1891,7 +1967,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="27" lineStart="25" name="public static Metric of(String name, String description, double value)">
+                        <Method constructor="false" lineEnd="27" lineStart="25"
+                                name="public static Metric of(String name, String description, double value)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="3,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -1908,7 +1985,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="23" lineStart="21" name="public static Metric of(String name, String description, long value)">
+                        <Method constructor="false" lineEnd="23" lineStart="21"
+                                name="public static Metric of(String name, String description, long value)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="3,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -1944,7 +2022,8 @@
                 <Metric description="Total Lines of Code" name="TLOC" value="696"/>
             </Metrics>
             <Classes>
-                <Class name="ClassInheritanceCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/ClassInheritanceCalculator.java">
+                <Class name="ClassInheritanceCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/ClassInheritanceCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -1956,7 +2035,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="16,4"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -1980,14 +2060,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="38"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="26"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="3"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="49" lineStart="14" name="public Set&lt;Metric&gt; calculate(Type type)">
+                        <Method constructor="false" lineEnd="49" lineStart="14"
+                                name="public Set&lt;Metric&gt; calculate(Type type)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="16,4"/>
                                 <Metric description="Data Complexity" name="Di" value="0,4"/>
@@ -2006,7 +2088,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="CouplingFactorCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/CouplingFactorCalculator.java">
+                <Class name="CouplingFactorCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/CouplingFactorCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -2018,7 +2101,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="169,142857143"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -2042,14 +2126,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="24"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="14"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="2"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="34" lineStart="13" name="public Set&lt;Metric&gt; calculate(Type type)">
+                        <Method constructor="false" lineEnd="34" lineStart="13"
+                                name="public Set&lt;Metric&gt; calculate(Type type)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="169,142857143"/>
                                 <Metric description="Data Complexity" name="Di" value="0,142857143"/>
@@ -2068,7 +2154,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="CyclomaticComplexityCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/CyclomaticComplexityCalculator.java">
+                <Class name="CyclomaticComplexityCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/CyclomaticComplexityCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -2080,7 +2167,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="64,222222222"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -2104,14 +2192,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="29"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="14"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="1"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="46" lineStart="20" name="public Set&lt;Metric&gt; calculate(Method method)">
+                        <Method constructor="false" lineEnd="46" lineStart="20"
+                                name="public Set&lt;Metric&gt; calculate(Method method)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="64,222222222"/>
                                 <Metric description="Data Complexity" name="Di" value="0,222222222"/>
@@ -2142,7 +2232,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="121,166666667"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -2166,14 +2257,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="46"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="24"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="2"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="58" lineStart="17" name="public synchronized Set&lt;Metric&gt; calculate(Method method)">
+                        <Method constructor="false" lineEnd="58" lineStart="17"
+                                name="public synchronized Set&lt;Metric&gt; calculate(Method method)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="121,166666667"/>
                                 <Metric description="Data Complexity" name="Di" value="0,166666667"/>
@@ -2192,7 +2285,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="LackOfCohesionMethodsCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/LackOfCohesionMethodsCalculator.java">
+                <Class name="LackOfCohesionMethodsCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/LackOfCohesionMethodsCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -2204,7 +2298,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="9,5"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -2228,14 +2323,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="45"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="30"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="2"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="62" lineStart="21" name="public Set&lt;Metric&gt; calculate(Type type)">
+                        <Method constructor="false" lineEnd="62" lineStart="21"
+                                name="public Set&lt;Metric&gt; calculate(Type type)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="9,5"/>
                                 <Metric description="Data Complexity" name="Di" value="0,5"/>
@@ -2254,7 +2351,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="LinkCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/LinkCalculator.java">
+                <Class name="LinkCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/LinkCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -2266,7 +2364,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="16,4"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -2290,14 +2389,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="14"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="7"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="1"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="23" lineStart="13" name="public Set&lt;Metric&gt; calculate(Type type)">
+                        <Method constructor="false" lineEnd="23" lineStart="13"
+                                name="public Set&lt;Metric&gt; calculate(Type type)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="16,4"/>
                                 <Metric description="Data Complexity" name="Di" value="0,4"/>
@@ -2316,7 +2417,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="McclureCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/McclureCalculator.java">
+                <Class name="McclureCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/McclureCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -2328,7 +2430,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="2,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -2352,14 +2455,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="45"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="15"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="2"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="62" lineStart="20" name="public Set&lt;Metric&gt; calculate(Method method)">
+                        <Method constructor="false" lineEnd="62" lineStart="20"
+                                name="public Set&lt;Metric&gt; calculate(Method method)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -2378,7 +2483,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="MethodAndAttributeInheritanceCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/MethodAndAttributeInheritanceCalculator.java">
+                <Class name="MethodAndAttributeInheritanceCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/MethodAndAttributeInheritanceCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -2390,7 +2496,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="1528,05"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="1"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="0,666666667"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="3"/>
@@ -2414,14 +2521,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,666666667"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="2"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="230"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="106"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="19"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="200" lineStart="186" name="private Set&lt;Attribute&gt; getFlattenedAttributes(Type type)">
+                        <Method constructor="false" lineEnd="200" lineStart="186"
+                                name="private Set&lt;Attribute&gt; getFlattenedAttributes(Type type)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -2438,7 +2547,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="true" lineEnd="214" lineStart="209" name="public MethodAndAttributeInheritanceCalculator Attribute(Type parentType, EnumSet&lt;Modifier&gt; modifiers, com.github.javaparser.ast.type.Type variableType, SimpleName name)">
+                        <Method constructor="true" lineEnd="214" lineStart="209"
+                                name="public MethodAndAttributeInheritanceCalculator Attribute(Type parentType, EnumSet&lt;Modifier&gt; modifiers, com.github.javaparser.ast.type.Type variableType, SimpleName name)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="5,0"/>
                                 <Metric description="Data Complexity" name="Di" value="5,0"/>
@@ -2455,7 +2565,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="184" lineStart="24" name="public Set&lt;Metric&gt; calculate(Type type)">
+                        <Method constructor="false" lineEnd="184" lineStart="24"
+                                name="public Set&lt;Metric&gt; calculate(Type type)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1521,05"/>
                                 <Metric description="Data Complexity" name="Di" value="0,05"/>
@@ -2474,7 +2585,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="MethodAndAttributeInheritanceCalculator.Attribute" sourceFile="./main/java/org/jasome/metrics/calculators/MethodAndAttributeInheritanceCalculator.java">
+                <Class name="MethodAndAttributeInheritanceCalculator.Attribute"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/MethodAndAttributeInheritanceCalculator.java">
                     <Metrics>
                         <Metric description="Attribute Hiding Factor" name="AHF" value="0,0"/>
                         <Metric description="Attribute Inheritance Factor" name="AIF" value="0,0"/>
@@ -2488,7 +2600,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="13,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="1"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Lack of Cohesion Methods (H-S)" name="LCOM*" value="0,678571429"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
@@ -2513,14 +2626,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="8"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="48"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="40"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="13"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="true" lineEnd="214" lineStart="209" name="public Attribute Attribute(Type parentType, EnumSet&lt;Modifier&gt; modifiers, com.github.javaparser.ast.type.Type variableType, SimpleName name)">
+                        <Method constructor="true" lineEnd="214" lineStart="209"
+                                name="public Attribute Attribute(Type parentType, EnumSet&lt;Modifier&gt; modifiers, com.github.javaparser.ast.type.Type variableType, SimpleName name)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="5,0"/>
                                 <Metric description="Data Complexity" name="Di" value="5,0"/>
@@ -2554,7 +2669,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="239" lineStart="232" name="public boolean equals(Object o)">
+                        <Method constructor="false" lineEnd="239" lineStart="232"
+                                name="public boolean equals(Object o)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -2658,7 +2774,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="NestedBlockDepthCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/NestedBlockDepthCalculator.java">
+                <Class name="NestedBlockDepthCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/NestedBlockDepthCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -2670,7 +2787,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="9,5"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -2694,14 +2812,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="50"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="11"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="14"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="66" lineStart="19" name="public Set&lt;Metric&gt; calculate(Method method)">
+                        <Method constructor="false" lineEnd="66" lineStart="19"
+                                name="public Set&lt;Metric&gt; calculate(Method method)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="9,5"/>
                                 <Metric description="Data Complexity" name="Di" value="0,5"/>
@@ -2720,7 +2840,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="NumberOfClassesCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/NumberOfClassesCalculator.java">
+                <Class name="NumberOfClassesCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/NumberOfClassesCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -2732,7 +2853,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="2,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -2756,14 +2878,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="7"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="5"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="1"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="21" lineStart="18" name="public Set&lt;Metric&gt; calculate(Package aPackage)">
+                        <Method constructor="false" lineEnd="21" lineStart="18"
+                                name="public Set&lt;Metric&gt; calculate(Package aPackage)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -2782,7 +2906,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="NumberOfFieldsCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/NumberOfFieldsCalculator.java">
+                <Class name="NumberOfFieldsCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/NumberOfFieldsCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -2794,7 +2919,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="2,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -2818,14 +2944,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="25"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="12"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="1"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="50" lineStart="29" name="public Set&lt;Metric&gt; calculate(Type type)">
+                        <Method constructor="false" lineEnd="50" lineStart="29"
+                                name="public Set&lt;Metric&gt; calculate(Type type)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -2844,7 +2972,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="NumberOfParametersCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/NumberOfParametersCalculator.java">
+                <Class name="NumberOfParametersCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/NumberOfParametersCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -2856,7 +2985,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="2,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -2880,14 +3010,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="6"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="5"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="1"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="20" lineStart="17" name="public Set&lt;Metric&gt; calculate(Method method)">
+                        <Method constructor="false" lineEnd="20" lineStart="17"
+                                name="public Set&lt;Metric&gt; calculate(Method method)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -2906,7 +3038,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="PackageAggregatorCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/PackageAggregatorCalculator.java">
+                <Class name="PackageAggregatorCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/PackageAggregatorCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -2918,7 +3051,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="86,2"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="2"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="0,333333333"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="3"/>
@@ -2942,14 +3076,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,333333333"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="46"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="16"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="5"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="60" lineStart="51" name="private Stream&lt;NumericValue&gt; methodMetrics(Stream&lt;Method&gt; methods, String metricName)">
+                        <Method constructor="false" lineEnd="60" lineStart="51"
+                                name="private Stream&lt;NumericValue&gt; methodMetrics(Stream&lt;Method&gt; methods, String metricName)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,5"/>
                                 <Metric description="Data Complexity" name="Di" value="1,5"/>
@@ -2966,7 +3102,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="2"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="49" lineStart="40" name="private Stream&lt;NumericValue&gt; typeMetrics(Stream&lt;Type&gt; types, String metricName)">
+                        <Method constructor="false" lineEnd="49" lineStart="40"
+                                name="private Stream&lt;NumericValue&gt; typeMetrics(Stream&lt;Type&gt; types, String metricName)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,5"/>
                                 <Metric description="Data Complexity" name="Di" value="1,5"/>
@@ -2983,7 +3120,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="2"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="38" lineStart="17" name="public Set&lt;Metric&gt; calculate(Package aPackage)">
+                        <Method constructor="false" lineEnd="38" lineStart="17"
+                                name="public Set&lt;Metric&gt; calculate(Package aPackage)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="81,2"/>
                                 <Metric description="Data Complexity" name="Di" value="0,2"/>
@@ -3002,7 +3140,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="RawTotalLinesOfCodeCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/RawTotalLinesOfCodeCalculator.java">
+                <Class name="RawTotalLinesOfCodeCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/RawTotalLinesOfCodeCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -3014,7 +3153,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="2,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -3038,14 +3178,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="16"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="14"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="3"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="36" lineStart="24" name="public Set&lt;Metric&gt; calculate(Type type)">
+                        <Method constructor="false" lineEnd="36" lineStart="24"
+                                name="public Set&lt;Metric&gt; calculate(Type type)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -3064,7 +3206,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="RobertMartinCouplingCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/RobertMartinCouplingCalculator.java">
+                <Class name="RobertMartinCouplingCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/RobertMartinCouplingCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -3076,7 +3219,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="289,111111111"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -3100,14 +3244,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="110"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="39"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="12"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="126" lineStart="19" name="public Set&lt;Metric&gt; calculate(Package aPackage)">
+                        <Method constructor="false" lineEnd="126" lineStart="19"
+                                name="public Set&lt;Metric&gt; calculate(Package aPackage)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="289,111111111"/>
                                 <Metric description="Data Complexity" name="Di" value="0,111111111"/>
@@ -3126,7 +3272,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="SpecializationIndexCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/SpecializationIndexCalculator.java">
+                <Class name="SpecializationIndexCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/SpecializationIndexCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -3138,7 +3285,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="42,066666667"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="4"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="0,2"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="5"/>
@@ -3162,14 +3310,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,2"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="98"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="56"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="8"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="85" lineStart="54" name="private Pair&lt;Integer, Integer&gt; calculateOverloadedAndInheritedOperations(Type type)">
+                        <Method constructor="false" lineEnd="85" lineStart="54"
+                                name="private Pair&lt;Integer, Integer&gt; calculateOverloadedAndInheritedOperations(Type type)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="4,666666667"/>
                                 <Metric description="Data Complexity" name="Di" value="0,666666667"/>
@@ -3186,7 +3336,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="3"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="98" lineStart="95" name="private Set&lt;Type&gt; getParentTypes(Type type)">
+                        <Method constructor="false" lineEnd="98" lineStart="95"
+                                name="private Set&lt;Type&gt; getParentTypes(Type type)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="16,4"/>
                                 <Metric description="Data Complexity" name="Di" value="0,4"/>
@@ -3203,7 +3354,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="93" lineStart="87" name="private Triple&lt;com.github.javaparser.ast.type.Type, String, List&lt;com.github.javaparser.ast.type.Type&gt;&gt; getMethodSignatureData(Method method)">
+                        <Method constructor="false" lineEnd="93" lineStart="87"
+                                name="private Triple&lt;com.github.javaparser.ast.type.Type, String, List&lt;com.github.javaparser.ast.type.Type&gt;&gt; getMethodSignatureData(Method method)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="9,5"/>
                                 <Metric description="Data Complexity" name="Di" value="0,5"/>
@@ -3220,7 +3372,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="114" lineStart="100" name="private int calculateInheritanceDepth(Type type)">
+                        <Method constructor="false" lineEnd="114" lineStart="100"
+                                name="private int calculateInheritanceDepth(Type type)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -3237,7 +3390,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="52" lineStart="23" name="public Set&lt;Metric&gt; calculate(Type type)">
+                        <Method constructor="false" lineEnd="52" lineStart="23"
+                                name="public Set&lt;Metric&gt; calculate(Type type)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="9,5"/>
                                 <Metric description="Data Complexity" name="Di" value="0,5"/>
@@ -3256,7 +3410,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="TotalLinesOfCodeCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/TotalLinesOfCodeCalculator.java">
+                <Class name="TotalLinesOfCodeCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/TotalLinesOfCodeCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -3268,7 +3423,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="2,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="1"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="1"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="0,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -3292,14 +3448,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="1"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="0"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="177"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="208"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="40"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="261" lineStart="133" name="private static NumericValue performCalculation(Stack&lt;Node&gt; nodeStack)">
+                        <Method constructor="false" lineEnd="261" lineStart="133"
+                                name="private static NumericValue performCalculation(Stack&lt;Node&gt; nodeStack)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -3318,7 +3476,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="TotalLinesOfCodeCalculator.MethodCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/TotalLinesOfCodeCalculator.java">
+                <Class name="TotalLinesOfCodeCalculator.MethodCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/TotalLinesOfCodeCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -3330,7 +3489,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="2,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -3354,14 +3514,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="11"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="8"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="1"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="130" lineStart="123" name="public Set&lt;Metric&gt; calculate(Method method)">
+                        <Method constructor="false" lineEnd="130" lineStart="123"
+                                name="public Set&lt;Metric&gt; calculate(Method method)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -3380,7 +3542,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="TotalLinesOfCodeCalculator.PackageCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/TotalLinesOfCodeCalculator.java">
+                <Class name="TotalLinesOfCodeCalculator.PackageCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/TotalLinesOfCodeCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -3392,7 +3555,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="4,666666667"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -3416,14 +3580,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="9"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="6"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="1"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="106" lineStart="101" name="public Set&lt;Metric&gt; calculate(Package aPackage)">
+                        <Method constructor="false" lineEnd="106" lineStart="101"
+                                name="public Set&lt;Metric&gt; calculate(Package aPackage)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="4,666666667"/>
                                 <Metric description="Data Complexity" name="Di" value="0,666666667"/>
@@ -3442,7 +3608,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="TotalLinesOfCodeCalculator.ProjectCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/TotalLinesOfCodeCalculator.java">
+                <Class name="TotalLinesOfCodeCalculator.ProjectCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/TotalLinesOfCodeCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -3454,7 +3621,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="4,666666667"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -3478,14 +3646,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="9"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="6"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="1"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="96" lineStart="91" name="public Set&lt;Metric&gt; calculate(Project aProject)">
+                        <Method constructor="false" lineEnd="96" lineStart="91"
+                                name="public Set&lt;Metric&gt; calculate(Project aProject)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="4,666666667"/>
                                 <Metric description="Data Complexity" name="Di" value="0,666666667"/>
@@ -3504,7 +3674,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="TotalLinesOfCodeCalculator.TypeCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/TotalLinesOfCodeCalculator.java">
+                <Class name="TotalLinesOfCodeCalculator.TypeCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/TotalLinesOfCodeCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -3516,7 +3687,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="2,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -3540,14 +3712,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="11"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="8"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="1"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="118" lineStart="111" name="public Set&lt;Metric&gt; calculate(Type type)">
+                        <Method constructor="false" lineEnd="118" lineStart="111"
+                                name="public Set&lt;Metric&gt; calculate(Type type)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -3566,7 +3740,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="TypeAggregatorCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/TypeAggregatorCalculator.java">
+                <Class name="TypeAggregatorCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/TypeAggregatorCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -3578,7 +3753,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="38,785714286"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="1"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="0,5"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="2"/>
@@ -3602,14 +3778,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,5"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="42"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="20"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="5"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="55" lineStart="46" name="private Stream&lt;NumericValue&gt; methodMetrics(Set&lt;Method&gt; methods, String metricName)">
+                        <Method constructor="false" lineEnd="55" lineStart="46"
+                                name="private Stream&lt;NumericValue&gt; methodMetrics(Set&lt;Method&gt; methods, String metricName)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,5"/>
                                 <Metric description="Data Complexity" name="Di" value="1,5"/>
@@ -3626,7 +3804,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="2"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="44" lineStart="16" name="public Set&lt;Metric&gt; calculate(Type type)">
+                        <Method constructor="false" lineEnd="44" lineStart="16"
+                                name="public Set&lt;Metric&gt; calculate(Type type)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="36,285714286"/>
                                 <Metric description="Data Complexity" name="Di" value="0,285714286"/>
@@ -3645,7 +3824,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="WeightedMethodsCalculator" sourceFile="./main/java/org/jasome/metrics/calculators/WeightedMethodsCalculator.java">
+                <Class name="WeightedMethodsCalculator"
+                       sourceFile="./main/java/org/jasome/metrics/calculators/WeightedMethodsCalculator.java">
                     <Metrics>
                         <Metric description="Number of Attributes (All)" name="Aa" value="0"/>
                         <Metric description="Number of Attributes Defined" name="Ad" value="0"/>
@@ -3657,7 +3837,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="4,666666667"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="2"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="1"/>
@@ -3681,14 +3862,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="8"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="6"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="1"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="17" lineStart="12" name="public Set&lt;Metric&gt; calculate(Type method)">
+                        <Method constructor="false" lineEnd="17" lineStart="12"
+                                name="public Set&lt;Metric&gt; calculate(Type method)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="4,666666667"/>
                                 <Metric description="Data Complexity" name="Di" value="0,666666667"/>
@@ -3736,7 +3919,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="6,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="1"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="1,0"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="3"/>
@@ -3760,14 +3944,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="3"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="1,0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="3"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="15"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="13"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="3"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="10" lineStart="8" name="public static Rational toRational(LargeInteger i)">
+                        <Method constructor="false" lineEnd="10" lineStart="8"
+                                name="public static Rational toRational(LargeInteger i)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -3784,7 +3970,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="14" lineStart="12" name="public static Real toReal(LargeInteger value)">
+                        <Method constructor="false" lineEnd="14" lineStart="12"
+                                name="public static Real toReal(LargeInteger value)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -3801,7 +3988,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="20" lineStart="16" name="public static Real toReal(Rational value)">
+                        <Method constructor="false" lineEnd="20" lineStart="16"
+                                name="public static Real toReal(Rational value)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -3834,7 +4022,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="47,5"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="1"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="2"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Lack of Cohesion Methods (H-S)" name="LCOM*" value="0,864583333"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="0,92"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
@@ -3859,14 +4048,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="8"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,92"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="23"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="291"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="298"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="86"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="true" lineEnd="60" lineStart="57" name="private NumericValue NumericValue(Number value)">
+                        <Method constructor="true" lineEnd="60" lineStart="57"
+                                name="private NumericValue NumericValue(Number value)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -3883,7 +4074,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="272" lineStart="267" name="private int compareReals(Real left, Real right)">
+                        <Method constructor="false" lineEnd="272" lineStart="267"
+                                name="private int compareReals(Real left, Real right)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="3,0"/>
                                 <Metric description="Data Complexity" name="Di" value="3,0"/>
@@ -3917,7 +4109,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="2"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="182" lineStart="149" name="public NumericValue divide(NumericValue that)">
+                        <Method constructor="false" lineEnd="182" lineStart="149"
+                                name="public NumericValue divide(NumericValue that)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -3934,7 +4127,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="13"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="112" lineStart="109" name="public NumericValue minus(NumericValue that)">
+                        <Method constructor="false" lineEnd="112" lineStart="109"
+                                name="public NumericValue minus(NumericValue that)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -3968,7 +4162,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="4"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="95" lineStart="62" name="public NumericValue plus(NumericValue that)">
+                        <Method constructor="false" lineEnd="95" lineStart="62"
+                                name="public NumericValue plus(NumericValue that)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -3985,7 +4180,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="13"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="186" lineStart="184" name="public NumericValue pow(int exp)">
+                        <Method constructor="false" lineEnd="186" lineStart="184"
+                                name="public NumericValue pow(int exp)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -4002,7 +4198,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="147" lineStart="114" name="public NumericValue times(NumericValue that)">
+                        <Method constructor="false" lineEnd="147" lineStart="114"
+                                name="public NumericValue times(NumericValue that)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -4036,7 +4233,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="2"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="198" lineStart="188" name="public boolean equals(Object o)">
+                        <Method constructor="false" lineEnd="198" lineStart="188"
+                                name="public boolean equals(Object o)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -4053,7 +4251,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="6"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="305" lineStart="303" name="public boolean isGreaterThan(NumericValue other)">
+                        <Method constructor="false" lineEnd="305" lineStart="303"
+                                name="public boolean isGreaterThan(NumericValue other)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -4070,7 +4269,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="309" lineStart="307" name="public boolean isLessThan(NumericValue other)">
+                        <Method constructor="false" lineEnd="309" lineStart="307"
+                                name="public boolean isLessThan(NumericValue other)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -4104,7 +4304,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="265" lineStart="232" name="public int compareTo(NumericValue that)">
+                        <Method constructor="false" lineEnd="265" lineStart="232"
+                                name="public int compareTo(NumericValue that)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -4155,7 +4356,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="301" lineStart="274" name="public static Collector&lt;? super NumericValue, NumericValueSummaryStatistics, NumericValueSummaryStatistics&gt; summarizingCollector()">
+                        <Method constructor="false" lineEnd="301" lineStart="274"
+                                name="public static Collector&lt;? super NumericValue, NumericValueSummaryStatistics, NumericValueSummaryStatistics&gt; summarizingCollector()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -4172,7 +4374,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="225" lineStart="222" name="public static NumericValue max(NumericValue left, NumericValue right)">
+                        <Method constructor="false" lineEnd="225" lineStart="222"
+                                name="public static NumericValue max(NumericValue left, NumericValue right)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="3,0"/>
                                 <Metric description="Data Complexity" name="Di" value="3,0"/>
@@ -4189,7 +4392,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="2"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="230" lineStart="227" name="public static NumericValue min(NumericValue left, NumericValue right)">
+                        <Method constructor="false" lineEnd="230" lineStart="227"
+                                name="public static NumericValue min(NumericValue left, NumericValue right)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="3,0"/>
                                 <Metric description="Data Complexity" name="Di" value="3,0"/>
@@ -4206,7 +4410,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="2"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="50" lineStart="48" name="public static NumericValue of(BigInteger value)">
+                        <Method constructor="false" lineEnd="50" lineStart="48"
+                                name="public static NumericValue of(BigInteger value)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -4223,7 +4428,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="55" lineStart="52" name="public static NumericValue of(Number n)">
+                        <Method constructor="false" lineEnd="55" lineStart="52"
+                                name="public static NumericValue of(Number n)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -4240,7 +4446,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="46" lineStart="44" name="public static NumericValue of(double d)">
+                        <Method constructor="false" lineEnd="46" lineStart="44"
+                                name="public static NumericValue of(double d)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -4257,7 +4464,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="38" lineStart="36" name="public static NumericValue of(long l)">
+                        <Method constructor="false" lineEnd="38" lineStart="36"
+                                name="public static NumericValue of(long l)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -4274,7 +4482,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="42" lineStart="40" name="public static NumericValue ofRational(long numerator, long denominator)">
+                        <Method constructor="false" lineEnd="42" lineStart="40"
+                                name="public static NumericValue ofRational(long numerator, long denominator)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="3,0"/>
                                 <Metric description="Data Complexity" name="Di" value="3,0"/>
@@ -4293,7 +4502,8 @@
                         </Method>
                     </Methods>
                 </Class>
-                <Class name="NumericValueSummaryStatistics" sourceFile="./main/java/org/jasome/metrics/value/NumericValueSummaryStatistics.java">
+                <Class name="NumericValueSummaryStatistics"
+                       sourceFile="./main/java/org/jasome/metrics/value/NumericValueSummaryStatistics.java">
                     <Metrics>
                         <Metric description="Attribute Hiding Factor" name="AHF" value="0,0"/>
                         <Metric description="Attribute Inheritance Factor" name="AIF" value="0,0"/>
@@ -4307,7 +4517,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="19,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="1"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="1"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Lack of Cohesion Methods (H-S)" name="LCOM*" value="0,65"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="0,909090909"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
@@ -4332,14 +4543,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="3"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,909090909"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="10"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="83"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="62"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="16"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="68" lineStart="46" name="private void add(NumericValue numericValue)">
+                        <Method constructor="false" lineEnd="68" lineStart="46"
+                                name="private void add(NumericValue numericValue)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -4441,7 +4654,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="true" lineEnd="33" lineStart="31" name="public NumericValueSummaryStatistics NumericValueSummaryStatistics()">
+                        <Method constructor="true" lineEnd="33" lineStart="31"
+                                name="public NumericValueSummaryStatistics NumericValueSummaryStatistics()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -4458,7 +4672,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="true" lineEnd="40" lineStart="35" name="public NumericValueSummaryStatistics NumericValueSummaryStatistics(NumericValue total, NumericValue count, NumericValue max, NumericValue min)">
+                        <Method constructor="true" lineEnd="40" lineStart="35"
+                                name="public NumericValueSummaryStatistics NumericValueSummaryStatistics(NumericValue total, NumericValue count, NumericValue max, NumericValue min)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="5,0"/>
                                 <Metric description="Data Complexity" name="Di" value="5,0"/>
@@ -4475,7 +4690,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="80" lineStart="70" name="public static NumericValueSummaryStatistics combine(NumericValueSummaryStatistics left, NumericValueSummaryStatistics right)">
+                        <Method constructor="false" lineEnd="80" lineStart="70"
+                                name="public static NumericValueSummaryStatistics combine(NumericValueSummaryStatistics left, NumericValueSummaryStatistics right)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="3,0"/>
                                 <Metric description="Data Complexity" name="Di" value="3,0"/>
@@ -4492,7 +4708,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="3"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="84" lineStart="82" name="public static NumericValueSummaryStatistics finish(NumericValueSummaryStatistics numericValueSummaryStatistics)">
+                        <Method constructor="false" lineEnd="84" lineStart="82"
+                                name="public static NumericValueSummaryStatistics finish(NumericValueSummaryStatistics numericValueSummaryStatistics)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -4509,7 +4726,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="44" lineStart="42" name="public static void accumulate(NumericValueSummaryStatistics numericValueSummaryStatistics, NumericValue numericValue)">
+                        <Method constructor="false" lineEnd="44" lineStart="42"
+                                name="public static void accumulate(NumericValueSummaryStatistics numericValueSummaryStatistics, NumericValue numericValue)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -4557,7 +4775,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="2,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="1"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="0"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="0"/>
                         <Metric description="Number of Methods Defined" name="Md" value="0"/>
                         <Metric description="Number of Methods Inherited and Not Overridden" name="Mi" value="0"/>
@@ -4578,7 +4797,8 @@
                         <Metric description="Number of Static Attributes" name="NSF" value="0"/>
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="0"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="3"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="3"/>
@@ -4616,7 +4836,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="79,380952381"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="1"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="3"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="0,25"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
                         <Metric description="Number of Methods (All)" name="Ma" value="4"/>
@@ -4640,14 +4861,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,25"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="93"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="64"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="4"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="84" lineStart="76" name="private List&lt;T&gt; sortChildren(Collection&lt;T&gt; children)">
+                        <Method constructor="false" lineEnd="84" lineStart="76"
+                                name="private List&lt;T&gt; sortChildren(Collection&lt;T&gt; children)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="4,666666667"/>
                                 <Metric description="Data Complexity" name="Di" value="0,666666667"/>
@@ -4664,7 +4887,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="90" lineStart="86" name="private void addAttributes(Code classNode, Element classElement)">
+                        <Method constructor="false" lineEnd="90" lineStart="86"
+                                name="private void addAttributes(Code classNode, Element classElement)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="1,0"/>
@@ -4681,7 +4905,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="107" lineStart="92" name="private void addMetricsForNode(Document doc, Node parentElement, Code node)">
+                        <Method constructor="false" lineEnd="107" lineStart="92"
+                                name="private void addMetricsForNode(Document doc, Node parentElement, Code node)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="36,428571429"/>
                                 <Metric description="Data Complexity" name="Di" value="0,428571429"/>
@@ -4698,7 +4923,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="74" lineStart="19" name="public Document output(Project project)">
+                        <Method constructor="false" lineEnd="74" lineStart="19"
+                                name="public Document output(Project project)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="36,285714286"/>
                                 <Metric description="Data Complexity" name="Di" value="0,285714286"/>
@@ -4748,7 +4974,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="5,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="1"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="1"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Lack of Cohesion Methods (H-S)" name="LCOM*" value="2,0"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="0,5"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
@@ -4773,14 +5000,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="2"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,5"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="1"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="150"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="27"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="5"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="120" lineStart="103" name="private static List&lt;BlockStmt&gt; getAllVariableDefinitionScopesBetweenMethodDefinitionAndNode(Node theNode)">
+                        <Method constructor="false" lineEnd="120" lineStart="103"
+                                name="private static List&lt;BlockStmt&gt; getAllVariableDefinitionScopesBetweenMethodDefinitionAndNode(Node theNode)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -4797,7 +5026,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="4"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="179" lineStart="171" name="public static Optional&lt;Type&gt; lookupType(Project parentProject, ResolvedReferenceType refType)">
+                        <Method constructor="false" lineEnd="179" lineStart="171"
+                                name="public static Optional&lt;Type&gt; lookupType(Project parentProject, ResolvedReferenceType refType)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="3,0"/>
                                 <Metric description="Data Complexity" name="Di" value="3,0"/>
@@ -4830,7 +5060,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="8,0"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="1"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="1"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Lack of Cohesion Methods (H-S)" name="LCOM*" value="0,25"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="0,8"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
@@ -4855,14 +5086,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="1"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,8"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="4"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="30"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="23"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="6"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="true" lineEnd="20" lineStart="18" name="private Distinct Distinct(T wrapped)">
+                        <Method constructor="true" lineEnd="20" lineStart="18"
+                                name="private Distinct Distinct(T wrapped)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -4930,7 +5163,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="24" lineStart="22" name="public static Distinct&lt;T&gt; of(T toWrap)">
+                        <Method constructor="false" lineEnd="24" lineStart="22"
+                                name="public static Distinct&lt;T&gt; of(T toWrap)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -4963,7 +5197,8 @@
                         <Metric description="Class Total System Complexity" name="ClTCi" value="38,283333333"/>
                         <Metric description="Depth of Inheritance Tree" name="DIT" value="1"/>
                         <Metric description="Number of Hidden Methods Defined" name="HMd" value="4"/>
-                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi" value="0"/>
+                        <Metric description="Number of Hidden Methods Inherited and Not Overridden" name="HMi"
+                                value="0"/>
                         <Metric description="Lack of Cohesion Methods (H-S)" name="LCOM*" value="0,857142857"/>
                         <Metric description="Method Hiding Factor" name="MHF" value="0,5"/>
                         <Metric description="Method Inheritance Factor" name="MIF" value="0,0"/>
@@ -4988,14 +5223,16 @@
                         <Metric description="Number of Static Methods" name="NSM" value="0"/>
                         <Metric description="Public Methods Ratio" name="PMR" value="0,5"/>
                         <Metric description="Number of Public Methods Defined" name="PMd" value="4"/>
-                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi" value="0"/>
+                        <Metric description="Number of Public Methods Inherited and Not Overridden" name="PMi"
+                                value="0"/>
                         <Metric description="Raw Total Lines of Code" name="RTLOC" value="225"/>
                         <Metric description="Specialization Index" name="SIX" value="0,0"/>
                         <Metric description="Total Lines of Code" name="TLOC" value="124"/>
                         <Metric description="Weighted methods per Class" name="WMC" value="19"/>
                     </Metrics>
                     <Methods>
-                        <Method constructor="false" lineEnd="163" lineStart="103" name="private Graph&lt;Type&gt; buildClientGraph()">
+                        <Method constructor="false" lineEnd="163" lineStart="103"
+                                name="private Graph&lt;Type&gt; buildClientGraph()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="9,25"/>
                                 <Metric description="Data Complexity" name="Di" value="0,25"/>
@@ -5012,7 +5249,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="3"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="88" lineStart="46" name="private Graph&lt;Type&gt; buildInheritanceGraph()">
+                        <Method constructor="false" lineEnd="88" lineStart="46"
+                                name="private Graph&lt;Type&gt; buildInheritanceGraph()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="16,2"/>
                                 <Metric description="Data Complexity" name="Di" value="0,2"/>
@@ -5029,7 +5267,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="1"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="227" lineStart="178" name="private Network&lt;Method, Distinct&lt;Expression&gt;&gt; buildCallNetwork()">
+                        <Method constructor="false" lineEnd="227" lineStart="178"
+                                name="private Network&lt;Method, Distinct&lt;Expression&gt;&gt; buildCallNetwork()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="4,333333333"/>
                                 <Metric description="Data Complexity" name="Di" value="0,333333333"/>
@@ -5046,7 +5285,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="2"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="248" lineStart="230" name="private Optional&lt;Method&gt; getMethodCalledByMethodExpression(MethodCallExpr methodCall)">
+                        <Method constructor="false" lineEnd="248" lineStart="230"
+                                name="private Optional&lt;Method&gt; getMethodCalledByMethodExpression(MethodCallExpr methodCall)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>
@@ -5063,7 +5303,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="3"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="101" lineStart="92" name="public Graph&lt;Type&gt; getClientGraph()">
+                        <Method constructor="false" lineEnd="101" lineStart="92"
+                                name="public Graph&lt;Type&gt; getClientGraph()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,5"/>
                                 <Metric description="Data Complexity" name="Di" value="0,5"/>
@@ -5080,7 +5321,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="3"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="44" lineStart="35" name="public Graph&lt;Type&gt; getInheritanceGraph()">
+                        <Method constructor="false" lineEnd="44" lineStart="35"
+                                name="public Graph&lt;Type&gt; getInheritanceGraph()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,5"/>
                                 <Metric description="Data Complexity" name="Di" value="0,5"/>
@@ -5097,7 +5339,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="3"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="false" lineEnd="176" lineStart="167" name="public Network&lt;Method, Distinct&lt;Expression&gt;&gt; getCallNetwork()">
+                        <Method constructor="false" lineEnd="176" lineStart="167"
+                                name="public Network&lt;Method, Distinct&lt;Expression&gt;&gt; getCallNetwork()">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="1,5"/>
                                 <Metric description="Data Complexity" name="Di" value="0,5"/>
@@ -5114,7 +5357,8 @@
                                 <Metric description="McCabe Cyclomatic Complexity" name="VG" value="3"/>
                             </Metrics>
                         </Method>
-                        <Method constructor="true" lineEnd="31" lineStart="29" name="public ProjectMetadata ProjectMetadata(Project project)">
+                        <Method constructor="true" lineEnd="31" lineStart="29"
+                                name="public ProjectMetadata ProjectMetadata(Project project)">
                             <Metrics>
                                 <Metric description="System Complexity" name="Ci" value="2,0"/>
                                 <Metric description="Data Complexity" name="Di" value="2,0"/>

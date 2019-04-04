@@ -13,13 +13,12 @@ import java.nio.file.Files
 /**
  * @sourceLocation only an actual FILE is allowed here, FOLDERs are handled by FileSystemOverviewSourceProvider
  */
-class FileSystemDetailedSourceProvider(private val sourceLocation: File) : DetailedSourceProvider {
+class FileSystemDetailedSourceProvider(private val sourceLocation: File): DetailedSourceProvider {
 
     override fun readSource() = resolveOneFile(sourceLocation, sourceLocation)
-
 }
 
-class FileSystemOverviewSourceProvider(private val sourceLocations: List<File>) : OverviewSourceProvider {
+class FileSystemOverviewSourceProvider(private val sourceLocations: List<File>): OverviewSourceProvider {
 
     override fun readSources() = resolvePath(sourceLocations[0])
 

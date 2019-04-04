@@ -7,8 +7,7 @@ import org.hamcrest.Matchers.`is`
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-
-class CSVCodeMaatTest : Spek({
+class CSVCodeMaatTest: Spek({
 
     describe("CSVProjectBuilder for CodeMaat") {
         val csvProjectBuilder = CSVProjectBuilder("test", '\\', ',',
@@ -28,7 +27,8 @@ class CSVCodeMaatTest : Spek({
             }
 
             it("specific edge exists and has correct attribute values") {
-                val edge = getChildByName(project.edges, "/root/analysis/build.gradle", "/root/analysis/model/build.gradle")
+                val edge = getChildByName(project.edges, "/root/analysis/build.gradle",
+                        "/root/analysis/model/build.gradle")
                 val pairingRate = getAttributeValue(edge.attributes, "degree")
                 val avgCommits = getAttributeValue(edge.attributes, "average-revs")
 

@@ -10,7 +10,7 @@ import java.util.function.Predicate
 import java.util.stream.Collector
 import java.util.stream.Stream
 
-class GitLogRawParserStrategy : LogParserStrategy {
+class GitLogRawParserStrategy: LogParserStrategy {
 
     override fun creationCommand(): String {
         return "git log --raw --topo-order"
@@ -25,7 +25,6 @@ class GitLogRawParserStrategy : LogParserStrategy {
                 .filter { commitLine -> commitLine.startsWith(AUTHOR_ROW_INDICATOR) }
                 .map { AuthorParser.parseAuthor(it) }
                 .first()
-
     }
 
     override fun parseModifications(commitLines: List<String>): List<Modification> {
@@ -56,9 +55,9 @@ class GitLogRawParserStrategy : LogParserStrategy {
             val status = Status.byCharacter(lineParts[4].trim({ it <= ' ' })[0])
 
             return if (status == Status.RENAMED) {
-                Modification(lineParts[6].trim({ it <= ' ' }), lineParts[5].trim({ it <= ' ' }), status.toModificationType())
+                Modification(lineParts[6].trim({ it <= ' ' }), lineParts[5].trim({ it <= ' ' }),
+                        status.toModificationType())
             } else Modification(lineParts[5].trim({ it <= ' ' }), status.toModificationType())
-
         }
     }
 }

@@ -6,7 +6,6 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.retriev
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
-
 class JsonFileTest {
 
     private val resource = "src/test/resources/$end2EndFolder/miniJavaProject/mini/RealLinesShort.java"
@@ -39,6 +38,4 @@ class JsonFileTest {
     fun `json output has correct complexity`() {
         assertThat(outputStream).containsOnlyOnce("""mcc":1""")
     }
-
-
 }

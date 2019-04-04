@@ -34,7 +34,7 @@ import org.hamcrest.Matchers.`is`
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-class ProjectTest : Spek({
+class ProjectTest: Spek({
 
     describe("Project API version") {
         it("should be compatible with same API Version") {

@@ -39,7 +39,7 @@ import org.spekframework.spek2.style.specification.describe
 import java.io.InputStreamReader
 import kotlin.test.assertFailsWith
 
-class ProjectMergerTest : Spek({
+class ProjectMergerTest: Spek({
     describe("using a recursive node merger strategy") {
         val nodeMergerStrategy = RecursiveNodeMergerStrategy()
 
@@ -66,14 +66,14 @@ class ProjectMergerTest : Spek({
             }
         }
 
-        context("merging project providing a project name"){
+        context("merging project providing a project name") {
             val projectName = "arbitraryString"
             val projects = listOf(
                     Project("test1"),
                     Project("test2")
             )
 
-            it("project should have provided project name"){
+            it("project should have provided project name") {
                 val projectNameMerge = ProjectMerger(projects, nodeMergerStrategy, projectName).extractProjectName()
                 assertThat(projectNameMerge, CoreMatchers.`is`(projectName))
             }
@@ -134,8 +134,10 @@ class ProjectMergerTest : Spek({
         }
 
         context("merging two projects") {
-            val originalProject1 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_JSON_FILE)))
-            val originalProject2 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_JSON_FILE2)))
+            val originalProject1 = ProjectDeserializer.deserializeProject(
+                    InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_JSON_FILE)))
+            val originalProject2 = ProjectDeserializer.deserializeProject(
+                    InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_JSON_FILE2)))
             val projectList = listOf(originalProject1, originalProject2)
 
             it("should return different project") {
@@ -150,8 +152,10 @@ class ProjectMergerTest : Spek({
         val TEST_EDGES_JSON_FILE2 = "testEdges2.json"
 
         context("merging two projects with edges") {
-            val originalProject1 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE)))
-            val originalProject2 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE2)))
+            val originalProject1 = ProjectDeserializer.deserializeProject(
+                    InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE)))
+            val originalProject2 = ProjectDeserializer.deserializeProject(
+                    InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE2)))
             val projectList = listOf(originalProject1, originalProject2)
 
             val project = ProjectMerger(projectList, nodeMergerStrategy).merge()
@@ -185,8 +189,10 @@ class ProjectMergerTest : Spek({
 
 
         context("merging two projects with edges with leafNodeMergingStrategy") {
-            val originalProject1 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE)))
-            val originalProject2 = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE2)))
+            val originalProject1 = ProjectDeserializer.deserializeProject(
+                    InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE)))
+            val originalProject2 = ProjectDeserializer.deserializeProject(
+                    InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE2)))
             val projectList = listOf(originalProject1, originalProject2)
 
             val nodeMergerStrategy: NodeMergerStrategy = LeafNodeMergerStrategy(false)
