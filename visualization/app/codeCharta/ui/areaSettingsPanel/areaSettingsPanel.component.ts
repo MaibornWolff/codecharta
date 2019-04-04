@@ -39,7 +39,7 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
         this._viewModel.dynamicMargin = settings.appSettings.dynamicMargin
         if (this._viewModel.dynamicMargin) {
             const newMargin = this.computeMargin()
-            if (newMargin != this._viewModel.margin) {
+            if (newMargin !== this._viewModel.margin) {
                 this._viewModel.margin = newMargin
                 this.applySettings()
             }
@@ -51,7 +51,7 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
     public onRenderFileChanged(renderFile: CCFile, event: angular.IAngularEvent) {
         if (this._viewModel.dynamicMargin && this.makeAutoFit) {
             const newMargin = this.computeMargin()
-            if (newMargin != this._viewModel.margin) {
+            if (newMargin !== this._viewModel.margin) {
                 this._viewModel.margin = newMargin
                 this.applySettings()
                 this.autoFit()
