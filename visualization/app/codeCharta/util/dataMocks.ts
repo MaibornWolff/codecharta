@@ -341,7 +341,7 @@ export const SETTINGS: Settings = {
 		areaMetric: "rloc",
 		heightMetric: "mcc",
 		colorMetric: "mcc",
-		focusedNodePath: null,
+		focusedNodePath: "/root",
 		searchedNodePaths: [],
 		searchPattern: "",
 		margin: 48,
