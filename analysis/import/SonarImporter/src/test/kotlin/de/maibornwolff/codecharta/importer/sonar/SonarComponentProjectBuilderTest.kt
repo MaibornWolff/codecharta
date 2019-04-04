@@ -75,7 +75,6 @@ class SonarComponentProjectBuilderTest {
         assertThat(actualNode.name, `is`(id))
     }
 
-
     @Test
     fun should_insert_a_node_from_file_component() {
         // given
@@ -111,7 +110,6 @@ class SonarComponentProjectBuilderTest {
 
         // when
         val project = projectBuilder.addComponentAsNode(component).build()
-
 
         // then
         assertThat(project.rootNode.children, hasSize(1))
@@ -167,7 +165,8 @@ class SonarComponentProjectBuilderTest {
         // given
         val path = "someFileName"
         val component = Component("id", "key", "name", path, Qualifier.FIL)
-        val projectBuilder = SonarComponentProjectBuilder("project", SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL, true)
+        val projectBuilder =
+                SonarComponentProjectBuilder("project", SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL, true)
 
         // when
         val project = projectBuilder.addComponentAsNode(component).build()
@@ -177,6 +176,5 @@ class SonarComponentProjectBuilderTest {
         val actualNode = project.rootNode.children[0]
         assertThat(actualNode.name, `is`(path))
         assertThat(actualNode.type, `is`(NodeType.File))
-
     }
 }

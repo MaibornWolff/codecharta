@@ -35,7 +35,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import java.io.StringReader
 
-class ProjectDeserializerTest : Spek({
+class ProjectDeserializerTest: Spek({
     val EXAMPLE_CC_JSON = "example.cc.json"
 
     describe("A ProjectDeserializer") {

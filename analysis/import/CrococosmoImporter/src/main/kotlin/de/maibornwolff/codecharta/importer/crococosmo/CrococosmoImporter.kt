@@ -39,7 +39,7 @@ import java.util.concurrent.Callable
         description = ["generates cc.json from crococosmo xml file"],
         footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
 )
-class CrococosmoImporter : Callable<Void> {
+class CrococosmoImporter: Callable<Void> {
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["file to parse"])
     private var file: File? = null
@@ -50,25 +50,25 @@ class CrococosmoImporter : Callable<Void> {
     @CommandLine.Option(names = ["-p", "--projectName"], description = ["project name"])
     private var projectName = "CrococosmoImporter"
 
-    @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File or prefix for File (or empty for stdout)"])
+    @CommandLine.Option(names = ["-o", "--outputFile"],
+            description = ["output File or prefix for File (or empty for stdout)"])
     private var outputFile: String? = null
 
     override fun call(): Void? {
         val graph = CrococosmoDeserializer().deserializeCrococosmoXML(file!!.inputStream())
         val projects = CrococosmoConverter().convertToProjectsMap(projectName, graph)
         projects.forEach {
-            val suffix = if (projects.isNotEmpty())  "_" + it.key else ""
+            val suffix = if (projects.isNotEmpty()) "_" + it.key else ""
             ProjectSerializer.serializeProject(it.value, writer(suffix))
         }
 
         return null
     }
 
-
     private fun writer(name: String = "") =
             when {
                 outputFile.isNullOrEmpty() -> System.out.bufferedWriter()
-                else -> File(outputFile + name).bufferedWriter()
+                else                       -> File(outputFile + name).bufferedWriter()
             }
 
     companion object {

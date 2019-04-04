@@ -39,13 +39,12 @@ import picocli.CommandLine
 import java.io.*
 import java.util.concurrent.Callable
 
-
 @CommandLine.Command(
         name = "csvexport",
         description = ["generates csv file with header"],
         footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
 )
-class CSVExporter : Callable<Void> {
+class CSVExporter: Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -106,8 +105,9 @@ class CSVExporter : Callable<Void> {
 
         return when {
             values.distinct().none { !it.isBlank() } -> listOf()
-            dirs.size < maxHierarchy -> rowWithoutDirs.plus(dirs).plus(List(maxHierarchy - dirs.size, { "" }))
-            else -> rowWithoutDirs.plus(dirs.subList(0, maxHierarchy))
+            dirs.size < maxHierarchy                 -> rowWithoutDirs.plus(dirs).plus(
+                    List(maxHierarchy - dirs.size, { "" }))
+            else                                     -> rowWithoutDirs.plus(dirs.subList(0, maxHierarchy))
         }
     }
 

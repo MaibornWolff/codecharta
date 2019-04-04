@@ -41,16 +41,15 @@ import java.io.IOException
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
-class ProjectSerializerTest : Spek({
+class ProjectSerializerTest: Spek({
     val EXAMPLE_JSON_PATH = this.javaClass.classLoader.getResource("example.cc.json").file
 
     val tempDir = createTempDir()
 
     val filename = tempDir.absolutePath + "test.cc.json"
 
-
     fun matchesProjectFile(expectedProjectFile: File): Matcher<File> {
-        return object : BaseMatcher<File>() {
+        return object: BaseMatcher<File>() {
 
             override fun describeTo(description: Description) {
                 description.appendText("should be ").appendValue(expectedProjectFile.readLines())
@@ -91,7 +90,8 @@ class ProjectSerializerTest : Spek({
                 val testProject = ProjectDeserializer.deserializeProject(EXAMPLE_JSON_PATH)
 
                 assertFailsWith(IOException::class) {
-                    ProjectSerializer.serializeProjectAndWriteToFile(testProject, tempDir.absolutePath + "/someverystupidpath/out.json")
+                    ProjectSerializer.serializeProjectAndWriteToFile(testProject,
+                            tempDir.absolutePath + "/someverystupidpath/out.json")
                 }
             }
         }

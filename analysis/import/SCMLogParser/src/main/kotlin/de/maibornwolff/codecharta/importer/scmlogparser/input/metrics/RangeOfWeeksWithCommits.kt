@@ -1,10 +1,9 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
+import java.util.*
 
-import java.util.TreeSet
-
-class RangeOfWeeksWithCommits : Metric {
+class RangeOfWeeksWithCommits: Metric {
 
     private val weeksWithCommits = TreeSet<CalendarWeek>()
 
@@ -24,6 +23,5 @@ class RangeOfWeeksWithCommits : Metric {
         return if (weeksWithCommits.size < 1) {
             0
         } else 1 + CalendarWeek.numberOfWeeksBetween(weeksWithCommits.last(), weeksWithCommits.first())
-
     }
 }

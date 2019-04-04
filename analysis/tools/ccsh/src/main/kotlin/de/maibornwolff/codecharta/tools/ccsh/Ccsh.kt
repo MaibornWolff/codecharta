@@ -67,9 +67,10 @@ import java.util.concurrent.Callable
         versionProvider = Ccsh.ManifestVersionProvider::class,
         footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
 )
-class Ccsh : Callable<Void?> {
+class Ccsh: Callable<Void?> {
 
-    @CommandLine.Option(names = ["-v", "--version"], versionHelp = true, description = ["prints version info and exits"])
+    @CommandLine.Option(names = ["-v", "--version"], versionHelp = true,
+            description = ["prints version info and exits"])
     var versionRequested: Boolean = false
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exit"])
@@ -86,24 +87,23 @@ class Ccsh : Callable<Void?> {
         fun main(args: Array<String>) {
             val commandLine = CommandLine(Ccsh())
             commandLine.parseWithHandler(CommandLine.RunAll(), System.out, *args)
-
         }
     }
 
-    object ManifestVersionProvider : CommandLine.IVersionProvider {
+    object ManifestVersionProvider: CommandLine.IVersionProvider {
         override fun getVersion(): Array<String> {
             return arrayOf(
                     Ccsh::class.java.`package`.implementationTitle + "\n"
-                            + "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n"
-                            + "Copyright(c) 2018, MaibornWolff GmbH"
+                    + "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n"
+                    + "Copyright(c) 2018, MaibornWolff GmbH"
             )
         }
-
     }
 }
 
 @CommandLine.Command(name = "install", description = ["[deprecated]: does nothing"])
-class Installer : Callable<Void?> {
+class Installer: Callable<Void?> {
+
     override fun call(): Void? {
         println("[deprecated]: does nothing")
         return null
