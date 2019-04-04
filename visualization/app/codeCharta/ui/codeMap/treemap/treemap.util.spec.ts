@@ -1,6 +1,7 @@
 import {TreeMapUtils} from "./treemap.util";
-import {SquarifiedValuedCodeMapNode, TreeMapSettings} from "./treemap.service";
-import {CodeMapNode} from "../data/model/CodeMap";
+import {SquarifiedValuedCodeMapNode} from "./treemap.service";
+import {CodeMapNode, Settings} from "../../../codeCharta.model";
+import {SETTINGS} from '../../../util/dataMocks'
 
 describe("treemapUtils", () => {
 
@@ -8,7 +9,7 @@ describe("treemapUtils", () => {
 
         let codeMapNode: CodeMapNode;
         let squaredNode: SquarifiedValuedCodeMapNode;
-        let treeMapSettings: TreeMapSettings;
+        let settings
 
         let heightScale = 1;
         let heightValue = 100;
@@ -36,15 +37,10 @@ describe("treemapUtils", () => {
                 y1: 400
             } as SquarifiedValuedCodeMapNode;
 
-            treeMapSettings = {
-                size: 1,
-                areaKey: "theArea",
-                heightKey: "theHeight",
-                margin: 15,
-                invertHeight: false,
-                visibleEdges: [],
-                blacklist: []
-            } as TreeMapSettings;
+            settings = SETTINGS
+            settings.treeMapSettings.mapSize = 1
+            settings.dynamicSettings.margin = 15
+            settings.appSettings.invertHeight = false
 
         });
 
@@ -56,7 +52,7 @@ describe("treemapUtils", () => {
                 maxHeight,
                 depth,
                 parent,
-                treeMapSettings,
+                settings,
                 minHeight,
                 folderHeight
             );
@@ -67,34 +63,34 @@ describe("treemapUtils", () => {
         });
 
         it("invertHeight", () => {
-            treeMapSettings.invertHeight = true;
+            settings.appSettings.invertHeight = true;
             expect(buildNode()).toMatchSnapshot();
         });
 
         it("deltas", () => {
             squaredNode.data.deltas = {};
-            squaredNode.data.deltas[treeMapSettings.heightKey] = 33;
+            settings.dynamicSettings.heightMetric = "theHeight"
+            squaredNode.data.deltas[settings.dynamicSettings.heightMetric] = 33;
             expect(buildNode()).toMatchSnapshot();
             squaredNode.data.deltas = undefined;
         });
 
         it("given negative deltas the resulting heightDelta also should be negative", () => {
             squaredNode.data.deltas = {};
-            squaredNode.data.deltas[treeMapSettings.heightKey] = -33;
+            squaredNode.data.deltas[settings.dynamicSettings.heightMetric] = -33;
             expect(buildNode().heightDelta).toBe(-33);
             squaredNode.data.deltas = undefined;
         });
 
         it("is leaf", () => {
             let tmp = TreeMapUtils.isNodeLeaf;
-            TreeMapUtils.isNodeLeaf = jest.fn();
-            TreeMapUtils.isNodeLeaf.mockReturnValue(true);
+            TreeMapUtils.isNodeLeaf = jest.fn(() => {return true});
             expect(buildNode()).toMatchSnapshot();
             TreeMapUtils.isNodeLeaf = tmp;
         });
 
         it("should set lowest possible height caused by other visible edge pairs", () => {
-            treeMapSettings.visibleEdges = [{
+            settings.fileSettings.edges = [{
                 fromNodeName: "/root/AnotherNode1",
                 toNodeName: "/root/AnotherNode2",
                 attributes: {
@@ -108,7 +104,7 @@ describe("treemapUtils", () => {
 
         it("should set markingColor according to markedPackages", () => {
             const color = "#FF0000";
-            treeMapSettings.markedPackages = [{
+            settings.fileSettings.markedPackages = [{
                 path: "/root/Anode",
                 color: color,
                 attributes: {},
@@ -118,7 +114,7 @@ describe("treemapUtils", () => {
 
         it("should set no markingColor according to markedPackages", () => {
             const color = "#FF0000";
-            treeMapSettings.markedPackages = [{
+            settings.fileSettings.markedPackages = [{
                 path: "/root/AnotherNode",
                 color: color,
                 attributes: {},
@@ -184,7 +180,7 @@ describe("treemapUtils", () => {
 
         let codeMapNode: CodeMapNode;
         let squaredNode: SquarifiedValuedCodeMapNode;
-        let treeMapSettings: TreeMapSettings;
+        let treeMapSettings: Settings
 
         beforeEach(() => {
 
@@ -204,57 +200,52 @@ describe("treemapUtils", () => {
                 y1: 400
             } as SquarifiedValuedCodeMapNode;
 
-            treeMapSettings = {
-                size: 1,
-                areaKey: "theArea",
-                heightKey: "theHeight",
-                margin: 15,
-                invertHeight: false,
-                visibleEdges: [],
-                blacklist: []
-            } as TreeMapSettings;
+            treeMapSettings = SETTINGS
+            treeMapSettings.treeMapSettings.mapSize = 1
+            treeMapSettings.dynamicSettings.margin = 15
 
         });
 
         it("should not be a flat node when no visibleEdges", () => {
-            treeMapSettings.visibleEdges = [];
-            expect(TreeMapUtils.isNodeToBeFlat(squaredNode, treeMapSettings)).toBeFalsy();
+            treeMapSettings.fileSettings.edges = [];
+            expect(TreeMapUtils["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeFalsy();
         });
 
         it("should be a flat node when other edges are visible", () => {
-            treeMapSettings.visibleEdges = [{
+            treeMapSettings.fileSettings.edges = [{
                 fromNodeName: "/root/anotherNode",
                 toNodeName: "/root/anotherNode2",
-                attributes: {}
+                attributes: {},
+                visible: true
             }];
-            expect(TreeMapUtils.isNodeToBeFlat(squaredNode, treeMapSettings)).toBeTruthy();
+            expect(TreeMapUtils["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeTruthy();
         });
 
         it("should not be a flat node when it contains edges", () => {
-            treeMapSettings.visibleEdges = [{
+            treeMapSettings.fileSettings.edges = [{
                 fromNodeName: "/root/Anode",
                 toNodeName: "/root/anotherNode",
                 attributes: {}
             }];
-            expect(TreeMapUtils.isNodeToBeFlat(squaredNode, treeMapSettings)).toBeFalsy();
+            expect(TreeMapUtils["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeFalsy();
         });
 
         it("should not be a flat node, because its searched for", () => {
-            treeMapSettings.searchedNodePaths = ["/root/Anode"];
-            treeMapSettings.searchPattern = "Anode";
-            expect(TreeMapUtils.isNodeToBeFlat(squaredNode, treeMapSettings)).toBeFalsy();
+            treeMapSettings.dynamicSettings.searchedNodePaths = ["/root/Anode"];
+            treeMapSettings.dynamicSettings.searchPattern = "Anode";
+            expect(TreeMapUtils["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeFalsy();
         });
 
         it("should be a flat node, because other nodes are searched for", () => {
-            treeMapSettings.searchedNodePaths = ["/root/anotherNode", "/root/anotherNode2"];
-            treeMapSettings.searchPattern = "Anode";
-            expect(TreeMapUtils.isNodeToBeFlat(squaredNode, treeMapSettings)).toBeTruthy();
+            treeMapSettings.dynamicSettings.searchedNodePaths = ["/root/anotherNode", "/root/anotherNode2"];
+            treeMapSettings.dynamicSettings.searchPattern = "Anode";
+            expect(TreeMapUtils["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeTruthy();
         });
 
         it("should not be a flat node when searchPattern is empty", () => {
-            treeMapSettings.searchedNodePaths = ["/root/anotherNode", "/root/anotherNode2"];
-            treeMapSettings.searchPattern = "";
-            expect(TreeMapUtils.isNodeToBeFlat(squaredNode, treeMapSettings)).toBeFalsy();
+            treeMapSettings.dynamicSettings.searchedNodePaths = ["/root/anotherNode", "/root/anotherNode2"];
+            treeMapSettings.dynamicSettings.searchPattern = "";
+            expect(TreeMapUtils["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeFalsy();
         });
 
     });
