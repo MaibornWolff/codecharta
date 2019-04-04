@@ -1,5 +1,7 @@
 import { CodeMapNode, Edge, CCFile, Settings, KeyValuePair } from "../codeCharta.model"
 import { Node } from "../../codeCharta/ui/codeMap/rendering/node"
+import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
+import * as THREE from "three"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -420,3 +422,5 @@ export const TEST_NODE_LEAF: Node = {
 	markingColor: "0xFFFFFF",
 	flat: false
 }
+
+export const CODE_MAP_BUILDING : CodeMapBuilding = new CodeMapBuilding(1, new THREE.Box3(), TEST_NODE_ROOT)

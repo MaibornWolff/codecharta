@@ -1,19 +1,27 @@
 import "./detailPanel.module"
+import "../codeMap/codeMap.module"
+import "../../state/state.module"
+import "../../codeCharta"
 
-import { SettingsService, Settings } from "../../state/settings.service"
+import { SettingsService } from "../../state/settings.service"
 import { DetailPanelController } from "./detailPanel.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService, IAngularEvent } from "angular"
 import { CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
-import { services } from "@uirouter/core"
 import { CodeChartaService } from "../../codeCharta.service"
 import { MetricService } from "../../state/metric.service"
 import { FileStateService } from "../../state/fileState.service"
+import { Settings } from "../../codeCharta.model"
+import { CODE_MAP_BUILDING, SETTINGS } from "../../util/dataMocks"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
-describe("detailPanelController", function() {
+describe("detailPanelController", () => {
 	let services, detailPanelController: DetailPanelController
 
-	beforeEach(function() {
+	let settings: Settings
+	let codeMapBuilding: CodeMapBuilding
+
+	beforeEach(() => {
 		restartSystem()
 		rebuildController()
 		withMockedEventMethods()
@@ -34,6 +42,9 @@ describe("detailPanelController", function() {
 			metricService: getService<MetricService>("metricService"),
 			fileStateService: getService<FileStateService>("fileStateService")
 		}
+
+		settings = JSON.parse(JSON.stringify(SETTINGS))
+		codeMapBuilding = JSON.parse(JSON.stringify(CODE_MAP_BUILDING))
 	}
 
 	function rebuildController() {
@@ -73,41 +84,30 @@ describe("detailPanelController", function() {
 	})
 
 	it("should set common attributes onSettingsChanged", () => {
-		const settings = {
-			dynamicSettings: {
-				areaMetric: "a",
-				colorMetric: "b",
-				heightMetric: "c"
-			},
-			appSettings: {
-				maximizeDetailPanel: true
-			}
-		} as Settings
 		detailPanelController.onSettingsChanged(settings)
-		expect(detailPanelController["_viewModel"].details.common.areaAttributeName).toBe("a")
-		expect(detailPanelController["_viewModel"].details.common.colorAttributeName).toBe("b")
-		expect(detailPanelController["_viewModel"].details.common.heightAttributeName).toBe("c")
-		expect(detailPanelController["_viewModel"].maximizeDetailPanel).toBe(true)
+		expect(detailPanelController["_viewModel"].details.common.areaAttributeName).toBe("rloc")
+		expect(detailPanelController["_viewModel"].details.common.colorAttributeName).toBe("mcc")
+		expect(detailPanelController["_viewModel"].details.common.heightAttributeName).toBe("mcc")
+		expect(detailPanelController["_viewModel"].maximizeDetailPanel).toBe(false)
 	})
 
 	it("should setSelectedDetails when valid node is selected", () => {
 		const data = {
 			from: null,
-			to: {
-				node: "somenode"
-			}
+			to: codeMapBuilding
 		}
+
 		detailPanelController.setSelectedDetails = jest.fn()
 		detailPanelController.onSelect(data)
-		expect(detailPanelController.setSelectedDetails).toHaveBeenCalledWith("somenode")
+		expect(detailPanelController.setSelectedDetails).toHaveBeenCalledWith(codeMapBuilding.node)
 	})
 
 	it("should clearSelectedDetails when invalid node is selected", () => {
 		const data = {
 			from: null,
-			to: {
-				notanode: "somenode"
-			}
+			to:
+			codeMapBuilding
+
 		}
 		detailPanelController.clearSelectedDetails = jest.fn()
 		detailPanelController.onSelect(data)
@@ -141,21 +141,17 @@ describe("detailPanelController", function() {
 	it("should setHoveredDetails when valid node is hovered", () => {
 		const data = {
 			from: null,
-			to: {
-				node: "somenode"
-			}
+			to: codeMapBuilding
 		}
 		detailPanelController.setHoveredDetails = jest.fn()
 		detailPanelController.onHover(data)
-		expect(detailPanelController.setHoveredDetails).toHaveBeenCalledWith("somenode")
+		expect(detailPanelController.setHoveredDetails).toHaveBeenCalledWith(codeMapBuilding.node)
 	})
 
 	it("should clearHoveredDetails when node is invalid", () => {
 		const data = {
 			from: null,
-			to: {
-				notanode: "somenode"
-			}
+			to: codeMapBuilding
 		}
 		detailPanelController.clearHoveredDetails = jest.fn()
 		detailPanelController.onHover(data)
