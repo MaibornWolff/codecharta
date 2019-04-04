@@ -2,7 +2,7 @@ import {SettingsService} from "./settings.service";
 import {IRootScopeService} from "angular";
 import {getService, instantiateModule, NGMock} from "../../../mocks/ng.mockhelper";
 
-describe("app.codeCharta.core.settings", () => {
+xdescribe("app.codeCharta.core.settings", () => {
 
     let validCodeMap: CodeMap
     let settingsService: SettingsService
