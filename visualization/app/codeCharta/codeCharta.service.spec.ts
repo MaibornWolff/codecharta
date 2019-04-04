@@ -52,7 +52,7 @@ describe("codeChartaService", () => {
 				name: "root",
 				type: "Folder"
 			},
-			settings: { fileSettings: { attributeTypes: {}, blacklist: [], edges: [] } }
+			settings: { fileSettings: { attributeTypes: {}, blacklist: [], edges: [], markedPackages: [] } }
 		}
 
 		beforeEach(() => {

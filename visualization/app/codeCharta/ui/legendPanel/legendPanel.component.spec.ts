@@ -19,8 +19,6 @@ describe("LegendPanelController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.legendPanel")
 
-		const CodeChartaServiceMock = jest.fn<CodeChartaService>(() => ({}))
-
 		services = {
 			$rootScope: getService<IRootScopeService>("$rootScope"),
 			settingsService: getService<SettingsService>("settingsService"),
@@ -40,8 +38,7 @@ describe("LegendPanelController", () => {
 	}
 
 	describe("MarkingColor in Legend", () => {
-		let codeMapUtilService: CodeMapUtilService
-		beforeEach(function() {
+		beforeEach(() => {
 			let simpleHierarchy = {
 				name: "root",
 				type: "Folder",

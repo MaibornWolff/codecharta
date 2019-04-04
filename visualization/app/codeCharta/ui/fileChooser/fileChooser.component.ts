@@ -13,7 +13,7 @@ import {FileStateService} from "../../state/fileState.service";
 import {NameDataPair} from "../../util/urlUtils";
 import {IRootScopeService} from "angular";
 
-class FileChooserController {
+export class FileChooserController {
 
     /* @ngInject */
     constructor(

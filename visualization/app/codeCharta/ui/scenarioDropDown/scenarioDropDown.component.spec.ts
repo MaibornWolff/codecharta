@@ -8,7 +8,6 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { MetricService } from "../../state/metric.service"
 import { ScenarioHelper } from "../../util/scenarioHelper";
 import { MetricData } from "../../codeCharta.model";
-import { settings } from "cluster";
 import { SETTINGS } from "../../util/dataMocks";
 
 describe("ScenarioDropDownController", () => {

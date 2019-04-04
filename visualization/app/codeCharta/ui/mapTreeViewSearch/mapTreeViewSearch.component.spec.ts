@@ -4,7 +4,7 @@ import { SettingsService } from "../../state/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { MapTreeViewSearchController } from "./mapTreeViewSearch.component"
 import { FileStateService } from "../../state/fileState.service"
-import { BlacklistItem, BlacklistType, Settings } from "../../codeCharta.model"
+import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
 import { CodeMapUtilService } from "../codeMap/codeMap.util.service"
 import { IRootScopeService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
@@ -55,7 +55,7 @@ describe("MapTreeViewSearchController", () => {
 
 	it("should set searchPattern in settings", () => {
 		mapTreeViewSearchController["_viewModel"].searchPattern = "*fileSettings"
-		mapTreeViewSearchController.setSearchedNodePathNames()
+		mapTreeViewSearchController["setSearchedNodePathNames"]()
 		expect(services.settingsService.settings.dynamicSettings.searchPattern).toBe(
 			mapTreeViewSearchController["_viewModel"].searchPattern
 		)
@@ -73,7 +73,7 @@ describe("MapTreeViewSearchController", () => {
 		services.settingsService.settings.fileSettings.blacklist = []
 		mapTreeViewSearchController["_viewModel"].searchPattern = "/root/node/path"
 
-		mapTreeViewSearchController.updateViewModel()
+		mapTreeViewSearchController["updateViewModel"]()
 		expect(mapTreeViewSearchController["_viewModel"].isPatternHidden).toBeFalsy()
 		expect(mapTreeViewSearchController["_viewModel"].isPatternExcluded).toBeFalsy()
 	})
@@ -84,7 +84,7 @@ describe("MapTreeViewSearchController", () => {
 		services.settingsService.settings.fileSettings.blacklist = [blacklistItem, anotherBlacklistItem]
 		mapTreeViewSearchController["_viewModel"].searchPattern = "/root/node/path"
 
-		mapTreeViewSearchController.updateViewModel()
+		mapTreeViewSearchController["updateViewModel"]()
 		expect(mapTreeViewSearchController["_viewModel"].isPatternHidden).toBeFalsy()
 		expect(mapTreeViewSearchController["_viewModel"].isPatternExcluded).toBeTruthy()
 	})
@@ -95,7 +95,7 @@ describe("MapTreeViewSearchController", () => {
 		services.settingsService.settings.fileSettings.blacklist = [blacklistItemExcluded, blacklistItemHidden]
 		mapTreeViewSearchController["_viewModel"].searchPattern = "/root/node/path"
 
-		mapTreeViewSearchController.updateViewModel()
+		mapTreeViewSearchController["updateViewModel"]()
 		expect(mapTreeViewSearchController["_viewModel"].isPatternHidden).toBeTruthy()
 		expect(mapTreeViewSearchController["_viewModel"].isPatternExcluded).toBeTruthy()
 	})
@@ -121,7 +121,7 @@ describe("MapTreeViewSearchController", () => {
 		})
 
 		it("should get correct searchedNodePaths with searchedFiles.length", () => {
-			mapTreeViewSearchController.setSearchedNodePathNames()
+			mapTreeViewSearchController["setSearchedNodePathNames"]()
 
 			expect(services.settingsService.settings.dynamicSettings.searchedNodePaths).toEqual([
 				"/root/Parent Leaf/small leaf",
@@ -134,7 +134,7 @@ describe("MapTreeViewSearchController", () => {
 		it("should have correct fileCount", () => {
 			services.settingsService.settings.fileSettings.blacklist = blacklist
 
-			mapTreeViewSearchController.setSearchedNodePathNames()
+			mapTreeViewSearchController["setSearchedNodePathNames"]()
 
 			expect(mapTreeViewSearchController["_viewModel"].fileCount).toBe(3)
 		})
@@ -151,7 +151,7 @@ describe("MapTreeViewSearchController", () => {
 			})
 			CodeMapUtilService.isBlacklisted = isBlacklisted.bind(CodeMapUtilService)
 
-			mapTreeViewSearchController.setSearchedNodePathNames()
+			mapTreeViewSearchController["setSearchedNodePathNames"]()
 
 			expect(mapTreeViewSearchController["_viewModel"].hideCount).toBe(1)
 			expect(mapTreeViewSearchController["_viewModel"].excludeCount).toBe(2)

@@ -1,14 +1,16 @@
-import {FileChooserComponent} from "./fileChooser.component";
+import "./fileChooser.module"
+import "../../codeCharta"
 import {SettingsService} from "../../state/settings.service";
 import {getService, instantiateModule} from "../../../../mocks/ng.mockhelper";
-import {IRootScopeService} from "angular";
+import { IRootScopeService, IScope } from "angular"
 import {CodeChartaService} from "../../codeCharta.service";
 import {FileStateService} from "../../state/fileState.service";
 import {DialogService} from "../dialog/dialog.service";
+import { FileChooserController } from "./fileChooser.component"
 
 describe("file chooser controller", ()=>{
 
-    let services, fileChooserController: FileChooserComponent;
+    let services, fileChooserController: FileChooserController;
 
     beforeEach(() => {
         restartSystem();
@@ -21,7 +23,7 @@ describe("file chooser controller", ()=>{
 
         // TODO: why is $scope same as $rootScope here? See VCS history for older file versions
         services = {
-            $scope: getService<IRootScopeService>("$rootScope"),
+            $scope: getService<IScope>("$scope"),
             $rootScope: getService<IRootScopeService>("$rootScope"),
             dialogService: getService<DialogService>("dialogService"),
             settingsService: getService<SettingsService>("settingsService"),
@@ -32,7 +34,7 @@ describe("file chooser controller", ()=>{
     }
 
     function rebuildController() {
-        fileChooserController = new FileChooserComponent(
+        fileChooserController = new FileChooserController(
             services.$scope,
             services.$rootScope,
             services.dialogService,
@@ -105,10 +107,4 @@ describe("file chooser controller", ()=>{
             expect(services.dialogService.showErrorDialog).toHaveBeenCalled();
         });
     });
-
-    it("should delegate errors to dialog service",()=>{
-        fileChooserController.printErrors("a result");
-        expect(services.dialogService.showErrorDialog).toBeCalled();
-    });
-
 });

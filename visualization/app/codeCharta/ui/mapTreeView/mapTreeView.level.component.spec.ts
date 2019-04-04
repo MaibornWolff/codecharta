@@ -96,7 +96,7 @@ describe("MapTreeViewLevelController", () => {
 
 		it("Return the markinColor if the matching markedPackage", () => {
 			mapTreeViewLevelController["node"] = { path: "/root/node/path", type: "Folder" } as CodeMapNode
-			mapTreeViewLevelController["settingsService"].settings.fileSettings.markedPackages = [
+			mapTreeViewLevelController["settingsService"]["settings"].fileSettings.markedPackages = [
 				{
 					path: "/root/node/path",
 					color: "#123FDE"
@@ -107,7 +107,7 @@ describe("MapTreeViewLevelController", () => {
 
 		it("Return black if no markingColor in node", () => {
 			mapTreeViewLevelController["node"] = { path: "/root/node/path", type: "Folder" } as CodeMapNode
-			mapTreeViewLevelController["settingsService"].settings.fileSettings.markedPackages = []
+			mapTreeViewLevelController["settingsService"]["settings"].fileSettings.markedPackages = []
 			expect(mapTreeViewLevelController.getMarkingColor()).toBe("#000000")
 		})
 	})
@@ -228,7 +228,7 @@ describe("MapTreeViewLevelController", () => {
 				"Folder",
 				VALID_NODE_WITH_PATH
 			)
-			mapTreeViewLevelController["settingsService"].settings.dynamicSettings.searchedNodePaths = [
+			mapTreeViewLevelController["settingsService"]["settings"].dynamicSettings.searchedNodePaths = [
 				"/root/Parent Leaf/",
 				"/root/Parent Leaf/empty folder"
 			]
@@ -242,7 +242,7 @@ describe("MapTreeViewLevelController", () => {
 				"Folder",
 				VALID_NODE_WITH_PATH
 			)
-			mapTreeViewLevelController["settingsService"].settings.dynamicSettings.searchedNodePaths = ["/root/Parent Leaf"]
+			mapTreeViewLevelController["settingsService"]["settings"].dynamicSettings.searchedNodePaths = ["/root/Parent Leaf"]
 			let searched = mapTreeViewLevelController.isSearched(mapTreeViewLevelController["node"])
 			expect(searched).toBeFalsy()
 		})
