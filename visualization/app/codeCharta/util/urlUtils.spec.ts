@@ -47,15 +47,6 @@ describe("urlUtils", () => {
 		})
 	})
 
-	describe("getUrl", () => {
-		it("should return the mocked url", () => {
-			const result = urlUtils.getUrl()
-			const expected = "http://testurl?file=valid.json"
-
-			expect(result).toBe(expected)
-		})
-	})
-
 	describe("getFileDataFromQueryParam", () => {
 		it("should return an empty array when file is undefined", async () => {
 			$location.search = jest.fn(() => {
