@@ -1,9 +1,9 @@
 import { getService } from "../../../mocks/ng.mockhelper"
 import { ILocationService, IHttpService } from "angular"
-import { UrlUtils } from "./urlUtils"
+import { UrlExtractor } from "./urlExtractor"
 
-describe("urlUtils", () => {
-	let urlUtils: UrlUtils
+describe("urlExtractor", () => {
+	let urlExtractor: UrlExtractor
 	let $location: ILocationService
 	let $http: IHttpService
 
@@ -19,7 +19,7 @@ describe("urlUtils", () => {
 	}
 
 	function rebuildController() {
-		urlUtils = new UrlUtils($location, $http)
+		urlExtractor = new UrlExtractor($location, $http)
 	}
 
 	function withMockedMethods() {
@@ -38,12 +38,18 @@ describe("urlUtils", () => {
 		jest.resetAllMocks()
 	})
 
-	//TODO: Figure out what getParameterByName does
 	describe("getParameterByName", () => {
-		it("should ", () => {
-			const result = urlUtils.getParameterByName("http://testurl?file=valid.json")
+		it("should return fileName for given parameter name 'file'", () => {
+			const result = urlExtractor.getParameterByName("file")
+			expect(result).toBe("valid.json")
+		})
 
-			expect(result).toBe(null)
+		it("should return renderMode for given parameter name 'mode'", () => {
+			$location.absUrl = jest.fn(() => {
+				return "http://testurl?file=valid.json&mode=Delta"
+			})
+			const result = urlExtractor.getParameterByName("mode")
+			expect(result).toBe("Delta")
 		})
 	})
 
@@ -53,7 +59,7 @@ describe("urlUtils", () => {
 				return {}
 			})
 
-			const result = await urlUtils.getFileDataFromQueryParam()
+			const result = await urlExtractor.getFileDataFromQueryParam()
 			const expected = []
 
 			expect(result).toEqual(expected)
@@ -63,18 +69,18 @@ describe("urlUtils", () => {
 			$location.search = jest.fn(() => {
 				return { file: { data: "some data" } }
 			})
-			urlUtils.getFileDataFromFile = jest.fn(fileName => {
+			urlExtractor.getFileDataFromFile = jest.fn(fileName => {
 				return new Promise((resolve, reject) => {
 					resolve(fileName)
 				})
 			})
 
-			const result = await urlUtils.getFileDataFromQueryParam()
+			const result = await urlExtractor.getFileDataFromQueryParam()
 			const expected = [{ data: "some data" }]
 
 			expect(result).toEqual(expected)
-			expect(urlUtils.getFileDataFromFile).toHaveBeenCalledTimes(1)
-			expect(urlUtils.getFileDataFromFile).toHaveBeenCalledWith({ data: "some data" })
+			expect(urlExtractor.getFileDataFromFile).toHaveBeenCalledTimes(1)
+			expect(urlExtractor.getFileDataFromFile).toHaveBeenCalledWith({ data: "some data" })
 		})
 
 		it("should return an array of resolved file data", () => {
@@ -82,7 +88,7 @@ describe("urlUtils", () => {
 				return { file: ["some data", "some more"] }
 			})
 
-			urlUtils.getFileDataFromFile = jest.fn(fileName => {
+			urlExtractor.getFileDataFromFile = jest.fn(fileName => {
 				return new Promise((resolve, reject) => {
 					resolve(fileName)
 				})
@@ -90,7 +96,7 @@ describe("urlUtils", () => {
 
 			const expected = ["some data", "some more"]
 
-			return expect(urlUtils.getFileDataFromQueryParam()).resolves.toEqual(expected)
+			return expect(urlExtractor.getFileDataFromQueryParam()).resolves.toEqual(expected)
 		})
 
 		it("should return the first filename rejected", () => {
@@ -98,7 +104,7 @@ describe("urlUtils", () => {
 				return { file: ["some data", "some more"] }
 			})
 
-			urlUtils.getFileDataFromFile = jest.fn(fileName => {
+			urlExtractor.getFileDataFromFile = jest.fn(fileName => {
 				return new Promise((resolve, reject) => {
 					reject(fileName)
 				})
@@ -106,22 +112,22 @@ describe("urlUtils", () => {
 
 			const expected = "some data"
 
-			return expect(urlUtils.getFileDataFromQueryParam()).rejects.toMatch(expected)
+			return expect(urlExtractor.getFileDataFromQueryParam()).rejects.toMatch(expected)
 		})
 	})
 
 	describe("getFileDataFromFile", () => {
 		it("should reject if file is not existing ", () => {
-			return expect(urlUtils.getFileDataFromFile(null)).rejects.toEqual(undefined)
+			return expect(urlExtractor.getFileDataFromFile(null)).rejects.toEqual(undefined)
 		})
 
 		it("should reject if file length is 0 ", () => {
-			return expect(urlUtils.getFileDataFromFile("")).rejects.toEqual(undefined)
+			return expect(urlExtractor.getFileDataFromFile("")).rejects.toEqual(undefined)
 		})
 
 		it("should resolve data and return an object with content and fileName", () => {
 			const expected = { content: "some data", fileName: "test.json" }
-			return expect(urlUtils.getFileDataFromFile("test.json")).resolves.toEqual(expected)
+			return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
 		})
 
 		it("should reject if statuscode is not 200", async () => {
@@ -130,7 +136,7 @@ describe("urlUtils", () => {
 					resolve({ data: "some data", status: 201 })
 				})
 			})
-			return expect(urlUtils.getFileDataFromFile("test.json")).rejects.toEqual(undefined)
+			return expect(urlExtractor.getFileDataFromFile("test.json")).rejects.toEqual(undefined)
 		})
 	})
 })

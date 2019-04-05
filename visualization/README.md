@@ -75,8 +75,8 @@ You can generate the following modules:
 [[Back To Top]](#jump-to-section)
 
 The web application allows the usage of two query parameters in the URL.
-* `file` parameter can be used multiple times. Each accepts a file location, that must be reachable through XHR. 
-With multiple `file` you can load more than one map e.g. `http://localhost:3000/?file=firefox.json&file=firefox_comparison.json`
+* `file` parameter can be used multiple times. Each accepts a file location, which must be reachable through XHR. 
+With multiple `file` parameters you can load more than one map e.g. `http://localhost:3000/?file=firefox.json&file=firefox_comparison.json`
 * `mode` parameter can be used to set one of the three different modes: `Single`, `Delta` or `Multiple`.
   * `Single` will only show the first imported files
   * `Delta` will show the first two imported files

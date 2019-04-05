@@ -2,14 +2,12 @@
 import { ILocationService, IHttpService, IHttpResponse } from "angular"
 import {NameDataPair} from "../codeCharta.model";
 
-export class UrlUtils {
+export class UrlExtractor {
 	private static OK_CODE = 200
 
-	// TODO: Why is this no longer IHttpBackendService
 	constructor(private $location: ILocationService, private $http: IHttpService) {}
 
 	public getParameterByName(name: string): string {
-		console.log();
 		const sanitizedName = name.replace(/[\[\]]/g, "\\$&")
 		let regex = new RegExp("[?&]" + sanitizedName + "(=([^&#]*)|&|#|$)"),
 			results = regex.exec(this.$location.absUrl())
@@ -51,7 +49,7 @@ export class UrlUtils {
 		return new Promise((resolve, reject) => {
 			if (file && file.length > 0) {
 				this.$http.get(file).then((response: IHttpResponse<Object>) => {
-					if (response.status === UrlUtils.OK_CODE) {
+					if (response.status === UrlExtractor.OK_CODE) {
 						Object.assign(response.data, { fileName: file })
 						resolve({ fileName: file, content: response.data })
 					} else {

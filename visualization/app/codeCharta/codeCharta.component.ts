@@ -1,4 +1,4 @@
-import { UrlUtils } from "./util/urlUtils"
+import { UrlExtractor } from "./util/urlExtractor"
 import {IHttpService, ILocationService, IRootScopeService} from "angular"
 import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
@@ -22,7 +22,7 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 		focusedNodePath: ""
 	}
 
-	private urlUtils: UrlUtils
+	private urlUtils: UrlExtractor
 
 	/* @ngInject */
 	constructor(
@@ -37,7 +37,7 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 		private $http: IHttpService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
-		this.urlUtils = new UrlUtils(this.$location, this.$http)
+		this.urlUtils = new UrlExtractor(this.$location, this.$http)
 		this.subscribeToLoadingEvents(this.$rootScope)
 		this.loadFileOrSample()
 	}
@@ -56,15 +56,20 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 
 	public loadFileOrSample() {
 		this._viewModel.numberOfLoadingTasks++
-		return this.urlUtils.getFileDataFromQueryParam().then((data: NameDataPair[]) => {
-			console.log("nameDataPair", data);
-			if (data.length > 0) {
-				this.tryLoadingFiles(data)
-				this.setRenderStateFromUrl();
-			} else {
-				this.tryLoadingSampleFiles()
-			}
-		}, this.tryLoadingSampleFiles.bind(this))
+		return this.urlUtils.getFileDataFromQueryParam()
+			.then((data: NameDataPair[]) => {
+				if (data.length > 0) {
+					this.tryLoadingFiles(data)
+					this.setRenderStateFromUrl();
+				} else {
+					this.tryLoadingSampleFiles()
+				}
+			})
+			.catch(
+				() => {
+					this.tryLoadingSampleFiles()
+				}
+			)
 	}
 
 	public tryLoadingSampleFiles() {
