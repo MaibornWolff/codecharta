@@ -29,7 +29,6 @@ export class ThreeViewerService {
     public init(element: Element) {
 
         this.threeCameraService.init(
-            this.settingsService,
             window.innerWidth,
             window.innerHeight,
             this.settingsService.getSettings().appSettings.camera.x,

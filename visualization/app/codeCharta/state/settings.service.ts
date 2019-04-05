@@ -3,14 +3,14 @@ import {
 	FileState,
 	MapColors,
 	RecursivePartial,
-	Settings,
-	Vector3d
+	Settings
 } from "../codeCharta.model"
 import _ from "lodash"
 import { IAngularEvent, IRootScopeService } from "angular"
 import {FileStateService, FileStateServiceSubscriber} from "./fileState.service";
 import {FileStateHelper} from "../util/fileStateHelper";
 import {SettingsMerger} from "../util/settingsMerger";
+import { Vector3 } from "three"
 
 export interface SettingsServiceSubscriber {
 	onSettingsChanged(settings: Settings, event: IAngularEvent)
@@ -66,17 +66,9 @@ export class SettingsService implements FileStateServiceSubscriber {
 			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"]
 		}
 
-		const scaling: Vector3d = {
-			x: 1,
-			y: 1,
-			z: 1
-		}
+		const scaling: Vector3 = new Vector3(1,1,1)
 
-		const camera: Vector3d = {
-			x: 0,
-			y: 300,
-			z: 1000
-		}
+		const camera: Vector3 = new Vector3(0, 300, 1000)
 
 		let settings: Settings = {
 			fileSettings: {

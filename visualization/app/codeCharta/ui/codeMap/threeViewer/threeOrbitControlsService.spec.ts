@@ -31,7 +31,7 @@ describe("ThreeOrbitControlsService", () => {
     });
 
     function buildService() {
-        threeCameraService = new ThreeCameraService();
+        threeCameraService = new ThreeCameraService($rootScope);
         threeSceneService = new ThreeSceneService();
         $rootScope = getService<IRootScopeService>("$rootScope");
     }
@@ -77,7 +77,7 @@ describe("ThreeOrbitControlsService", () => {
     //noinspection TypeScriptUnresolvedVariable
     it(
         "should retrieve the angular service instance",
-        NG.mock.inject(function(threeOrbitControlsService) {
+        NG.mock.inject((threeOrbitControlsService) => {
             expect(threeOrbitControlsService).not.toBe(undefined);
         })
     );

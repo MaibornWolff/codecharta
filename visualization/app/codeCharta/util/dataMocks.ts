@@ -349,8 +349,8 @@ export const SETTINGS: Settings = {
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
-		scaling: { x: 1, y: 1.8, z: 1 },
-		camera: { x: 0, y: 300, z: 1000 },
+		scaling: new THREE.Vector3(1, 1.8, 1),
+		camera: new THREE.Vector3(0, 300, 1000),
 		deltaColorFlipped: false,
 		enableEdgeArrows: true,
 		hideFlatBuildings: true,

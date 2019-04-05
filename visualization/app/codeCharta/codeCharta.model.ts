@@ -1,3 +1,5 @@
+import { Vector3 } from "three"
+
 export interface FileState {
     file: CCFile,
     selectedAs: FileSelectionState
@@ -66,8 +68,8 @@ export interface DynamicSettings {
 
 export interface AppSettings {
     amountOfTopLabels: number;
-    scaling: Vector3d;
-    camera: Vector3d;
+    scaling: Vector3;
+    camera: Vector3;
     deltaColorFlipped: boolean;
     enableEdgeArrows: boolean;
     hideFlatBuildings: boolean;
@@ -102,12 +104,6 @@ export interface ColorRange {
     from: number;
     to: number;
     flipped: boolean;
-}
-
-export interface Vector3d {
-    x: number;
-    y: number;
-    z: number;
 }
 
 export interface AttributeTypes {

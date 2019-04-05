@@ -2,9 +2,9 @@
 
 import * as THREE from "three"
 import { SettingsServiceSubscriber, SettingsService } from "../../../state/settings.service"
-import {PerspectiveCamera} from "three"
+import { PerspectiveCamera, Vector3 } from "three"
 import { IAngularEvent, IRootScopeService } from "angular"
-import {Settings, Vector3d} from "../../../codeCharta.model"
+import {Settings} from "../../../codeCharta.model"
 
 class ThreeCameraService implements SettingsServiceSubscriber {
 	public static SELECTOR = "threeCameraService"
@@ -14,18 +14,18 @@ class ThreeCameraService implements SettingsServiceSubscriber {
 	public static FAR = 200000 //TODO optimize renderer for far objects
 
 	public camera: PerspectiveCamera
-	private lastCameraVector: Vector3d = {x: 0,y: 0,z: 0}
+	private lastCameraVector: Vector3 = new Vector3(0,0 ,0)
 
 	constructor(private $rootScope: IRootScopeService) {}
 
 	public onSettingsChanged(settings: Settings, event: IAngularEvent) {
-		if (settings.appSettings.camera.toString() != this.lastCameraVector.toString()) {
+		if (JSON.stringify(settings.appSettings.camera) !== JSON.stringify(this.lastCameraVector)) {
 			this.lastCameraVector = settings.appSettings.camera
 			this.setPosition(this.lastCameraVector.x, this.lastCameraVector.y, this.lastCameraVector.z)
 		}
 	}
 
-	public init(settingsService: SettingsService, containerWidth: number, containerHeight: number, x: number, y: number, z: number) {
+	public init(containerWidth: number, containerHeight: number, x: number, y: number, z: number) {
 		const aspect = containerWidth / containerHeight
 		this.camera = new THREE.PerspectiveCamera(ThreeCameraService.VIEW_ANGLE, aspect, ThreeCameraService.NEAR, ThreeCameraService.FAR)
 		this.setPosition(x, y, z)

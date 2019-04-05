@@ -6,31 +6,31 @@ import {ThreeUpdateCycleService} from "./threeUpdateCycleService";
 import {ThreeRendererService} from "./threeRendererService";
 import {ThreeCameraService} from "./threeCameraService";
 import {ThreeSceneService} from "./threeSceneService";
-import {SettingsService} from "../../core/settings/settings.service";
 import {ThreeOrbitControlsService} from "./threeOrbitControlsService";
 import {ThreeViewerService} from "./threeViewerService";
 import * as THREE from "three";
+import { SettingsService } from "../../../state/settings.service"
 
 /**
  * @test {ThreeUpdateCycleService}
  */
-describe("app.codeCharta.ui.codeMap.threeViewer.threeViewerService", function () {
+describe("app.codeCharta.ui.codeMap.threeViewer.threeViewerService",  () => {
 
 
     //noinspection TypeScriptUnresolvedVariable
     beforeEach(angular.mock.module("app.codeCharta.ui.codeMap.threeViewer"));
 
     //noinspection TypeScriptUnresolvedVariable
-    it("should retrieve the angular service instance", NG.mock.inject(function (threeViewerService: ThreeViewerService) {
+    it("should retrieve the angular service instance", NG.mock.inject( (threeViewerService: ThreeViewerService) => {
         expect(threeViewerService).not.toBe(undefined);
     }));
 
-    it("on window resize", NG.mock.inject(function (threeSceneService: ThreeSceneService,
+    it("on window resize", NG.mock.inject((threeSceneService: ThreeSceneService,
                                                     threeCameraService: ThreeCameraService,
                                                     threeOrbitControlsService: ThreeOrbitControlsService,
                                                     threeRendererService: ThreeRendererService,
                                                     threeUpdateCycleService: ThreeUpdateCycleService,
-                                                    settingsService: SettingsService) {
+                                                    settingsService: SettingsService) =>  {
         threeSceneService.scene = {
             updateMatrixWorld: jest.fn()
         };
