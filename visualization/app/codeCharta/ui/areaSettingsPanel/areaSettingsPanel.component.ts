@@ -37,7 +37,7 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
 
     public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
         this._viewModel.dynamicMargin = settings.appSettings.dynamicMargin
-        if (this._viewModel.dynamicMargin) {
+        if (this._viewModel.dynamicMargin && this.codeMapRenderService.getRenderFile()) {
             const newMargin = this.computeMargin()
             if (newMargin !== this._viewModel.margin) {
                 this._viewModel.margin = newMargin
