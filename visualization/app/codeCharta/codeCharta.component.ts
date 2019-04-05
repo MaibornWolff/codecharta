@@ -56,14 +56,20 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 
 	public loadFileOrSample() {
 		this._viewModel.numberOfLoadingTasks++
-		return this.urlUtils.getFileDataFromQueryParam().then((data: NameDataPair[]) => {
-			if (data.length > 0) {
-				this.tryLoadingFiles(data)
-				this.setRenderStateFromUrl();
-			} else {
-				this.tryLoadingSampleFiles()
-			}
-		}, this.tryLoadingSampleFiles.bind(this))
+		return this.urlUtils.getFileDataFromQueryParam()
+			.then((data: NameDataPair[]) => {
+				if (data.length > 0) {
+					this.tryLoadingFiles(data)
+					this.setRenderStateFromUrl();
+				} else {
+					this.tryLoadingSampleFiles()
+				}
+			})
+			.catch(
+				() => {
+					this.tryLoadingSampleFiles()
+				}
+			)
 	}
 
 	public tryLoadingSampleFiles() {
