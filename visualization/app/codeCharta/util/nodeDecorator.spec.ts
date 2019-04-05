@@ -1,24 +1,31 @@
 import * as d3 from "d3"
-import { TEST_DELTA_MAP_A } from "./dataMocks"
-import { CCFile, MetricData } from "../codeCharta.model"
+import { SETTINGS, TEST_DELTA_MAP_A } from "./dataMocks"
+import { CCFile, Settings, MetricData } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
+import { CodeMapHelper } from "./codeMapHelper"
 
 describe("nodeDecorator", () => {
 	let fileA: CCFile
 	let metricData: MetricData[]
+	let settings : Settings
 
-	beforeEach(function() {
+	beforeEach(() => {
 		fileA = JSON.parse(JSON.stringify(TEST_DELTA_MAP_A))
 		metricData = [
 			{ name: "rloc", maxValue: 999999, availableInVisibleMaps: true },
 			{ name: "functions", maxValue: 999999, availableInVisibleMaps: true },
 			{ name: "mcc", maxValue: 999999, availableInVisibleMaps: true }
 		]
+		settings = JSON.parse(JSON.stringify(SETTINGS))
 	})
 
 	describe("decorateFile", () => {
+		beforeEach(() => {
+			CodeMapHelper.isBlacklisted = jest.fn()
+		})
+
 		it("should aggregate given metrics correctly", () => {
-			const result = NodeDecorator.decorateFile(fileA, metricData)
+			const result = NodeDecorator.decorateFile(fileA, settings, metricData)
 
 			expect(result.map.attributes["rloc"]).toBe(200)
 			expect(result.map.attributes["functions"]).toBe(1110)
@@ -27,7 +34,7 @@ describe("nodeDecorator", () => {
 
 		it("should aggregate missing metrics correctly", () => {
 			metricData.push({ name: "some", maxValue: 999999, availableInVisibleMaps: true })
-			const result = NodeDecorator.decorateFile(fileA, metricData)
+			const result = NodeDecorator.decorateFile(fileA, settings,metricData)
 
 			expect(result.map.attributes["rloc"]).toBe(200)
 			expect(result.map.attributes["some"]).toBe(0)
@@ -36,7 +43,7 @@ describe("nodeDecorator", () => {
 
 		it("leaves should have all metrics", () => {
 			metricData.push({ name: "some", maxValue: 999999, availableInVisibleMaps: true })
-			const result = NodeDecorator.decorateFile(fileA, metricData)
+			const result = NodeDecorator.decorateFile(fileA, settings,metricData)
 
 			let h = d3.hierarchy(result.map)
 			h.leaves().forEach(node => {
@@ -52,7 +59,7 @@ describe("nodeDecorator", () => {
 			fileA.map.children[0].attributes = undefined
 			metricData.push({ name: "some", maxValue: 999999, availableInVisibleMaps: true })
 
-			const result = NodeDecorator.decorateFile(fileA, metricData)
+			const result = NodeDecorator.decorateFile(fileA,settings, metricData)
 			let h = d3.hierarchy(result.map)
 			h.leaves().forEach(node => {
 				expect(node.data.attributes).toBeDefined()
@@ -83,7 +90,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			const result = NodeDecorator.decorateFile(fileA, metricData)
+			const result = NodeDecorator.decorateFile(fileA, settings,metricData)
 			expect(result.map.name).toBe("root/middle")
 			expect(result.map.children.length).toBe(2)
 			expect(result.map.children[0].name).toBe("a")
@@ -112,7 +119,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			const result = NodeDecorator.decorateFile(fileA, metricData)
+			const result = NodeDecorator.decorateFile(fileA, settings,metricData)
 			expect(result.map.link).toBe("link1")
 		})
 
@@ -140,7 +147,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			const result = NodeDecorator.decorateFile(fileA, metricData)
+			const result = NodeDecorator.decorateFile(fileA,settings, metricData)
 			expect(result.map.path).toBe("/root/middle")
 		})
 
@@ -159,7 +166,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			const result = NodeDecorator.decorateFile(fileA, metricData)
+			const result = NodeDecorator.decorateFile(fileA, settings,metricData)
 			expect(result.map.name).toBe("root/middle")
 			expect(result.map.children.length).toBe(1)
 			expect(result.map.children[0].name).toBe("singleLeaf")
@@ -204,7 +211,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			const result = NodeDecorator.decorateFile(fileA, metricData)
+			const result = NodeDecorator.decorateFile(fileA,settings, metricData)
 			expect(result.map.name).toBe("root/start")
 			expect(result.map.children.length).toBe(2)
 			expect(result.map.children[0].name).toBe("middle/middle2")
@@ -233,7 +240,7 @@ describe("nodeDecorator", () => {
 			fileA.map.children[1].attributes = { some: 1 }
 			metricData.push({ name: "some", maxValue: 999999, availableInVisibleMaps: true })
 
-			const result = NodeDecorator.decorateFile(fileA, metricData)
+			const result = NodeDecorator.decorateFile(fileA,settings, metricData)
 			let h = d3.hierarchy(result.map)
 			h.each(node => {
 				expect(node.data.attributes).toBeDefined()
@@ -242,7 +249,7 @@ describe("nodeDecorator", () => {
 		})
 
 		it("all nodes should have an attribute list with listed and available metrics", () => {
-			const result = NodeDecorator.decorateFile(fileA, metricData)
+			const result = NodeDecorator.decorateFile(fileA,settings, metricData)
 			let h = d3.hierarchy(result.map)
 			h.each(node => {
 				expect(node.data.attributes).toBeDefined()
@@ -252,7 +259,7 @@ describe("nodeDecorator", () => {
 		})
 
 		it("folders should have sum attributes of children", () => {
-			const result = NodeDecorator.decorateFile(fileA, metricData)
+			const result = NodeDecorator.decorateFile(fileA, settings,metricData)
 			let h = d3.hierarchy(result.map)
 			expect(h.data.attributes["rloc"]).toBe(200)
 			expect(h.children[0].data.attributes["rloc"]).toBe(100)
@@ -261,7 +268,7 @@ describe("nodeDecorator", () => {
 
 		it("all nodes should have an origin", () => {
 			fileA.map.children[0].origin = undefined
-			const result = NodeDecorator.decorateFile(fileA, metricData)
+			const result = NodeDecorator.decorateFile(fileA, settings,metricData)
 			let h = d3.hierarchy(result.map)
 			h.each(node => {
 				expect(node.data.origin).toBeDefined()
@@ -269,7 +276,7 @@ describe("nodeDecorator", () => {
 		})
 
 		it("maps with no attribute nodes should be accepted and an attributes member added", () => {
-			const result = NodeDecorator.decorateFile(TEST_DELTA_MAP_A, metricData)
+			const result = NodeDecorator.decorateFile(TEST_DELTA_MAP_A, settings,metricData)
 
 			let h = d3.hierarchy(result.map)
 
@@ -280,7 +287,7 @@ describe("nodeDecorator", () => {
 
 		it("all nodes should have a unary attribute", () => {
 			fileA.map.children[0].attributes = {}
-			const result = NodeDecorator.decorateFile(fileA, metricData)
+			const result = NodeDecorator.decorateFile(fileA, settings,metricData)
 			let h = d3.hierarchy(result.map)
 			h.each(node => {
 				expect(node.data.attributes["unary"]).toBeDefined()
