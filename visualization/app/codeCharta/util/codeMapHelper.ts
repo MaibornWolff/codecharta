@@ -1,12 +1,10 @@
 import {hierarchy} from "d3-hierarchy";
-import { MarkedPackage } from "../../codeCharta.model";
+import { MarkedPackage } from "../codeCharta.model";
 import ignore from 'ignore';
 import * as path from 'path';
-import { CodeMapNode, BlacklistItem, BlacklistType } from "../../codeCharta.model";
+import { CodeMapNode, BlacklistItem, BlacklistType } from "../codeCharta.model";
 
-export class CodeMapUtilService {
-
-    public static SELECTOR = "codeMapUtilService";
+export class CodeMapHelper {
 
     public static getAnyCodeMapNodeFromPath(path: string, root: CodeMapNode): CodeMapNode {
         const firstTryNode = this.getCodeMapNodeFromPath(path, "File", root);
@@ -23,9 +21,6 @@ export class CodeMapUtilService {
             return root;
         }
 
-        console.log(path, root.path)
-
-
         hierarchy<CodeMapNode>(root).each((hierarchyNode) => {
             if (hierarchyNode.data.path === path && hierarchyNode.data.type === nodeType) {
                 res = hierarchyNode.data;
@@ -39,16 +34,16 @@ export class CodeMapUtilService {
     }
 
     public static getNodesByGitignorePath(nodes: Array<CodeMapNode>, gitignorePath: string): CodeMapNode[] {
-        const ig = ignore().add(CodeMapUtilService.transformPath(gitignorePath));
-        const ignoredNodePaths: string[] =  ig.filter(nodes.map(n => CodeMapUtilService.transformPath(n.path)));
-        const matchingNodes: CodeMapNode[] =  nodes.filter(n => !ignoredNodePaths.includes(CodeMapUtilService.transformPath(n.path)));
+        const ig = ignore().add(CodeMapHelper.transformPath(gitignorePath));
+        const ignoredNodePaths: string[] =  ig.filter(nodes.map(n => CodeMapHelper.transformPath(n.path)));
+        const matchingNodes: CodeMapNode[] =  nodes.filter(n => !ignoredNodePaths.includes(CodeMapHelper.transformPath(n.path)));
         return matchingNodes;
     }
 
     public static numberOfBlacklistedNodes(nodes: Array<CodeMapNode>, blacklist: Array<BlacklistItem>): number {
         if (blacklist) {
-            const ig = ignore().add(blacklist.map(ex => CodeMapUtilService.transformPath(ex.path)));
-            const filteredNodes = ig.filter(nodes.map(n => CodeMapUtilService.transformPath(n.path)));
+            const ig = ignore().add(blacklist.map(ex => CodeMapHelper.transformPath(ex.path)));
+            const filteredNodes = ig.filter(nodes.map(n => CodeMapHelper.transformPath(n.path)));
             return nodes.length - filteredNodes.length;
         } else {
             return 0;
@@ -58,8 +53,8 @@ export class CodeMapUtilService {
     public static isBlacklisted(node: CodeMapNode, blacklist: Array<BlacklistItem>, type: BlacklistType): boolean {
         const ig = ignore().add(blacklist
             .filter(b => b.type === type)
-            .map(ex => CodeMapUtilService.transformPath(ex.path)));
-        return ig.ignores(CodeMapUtilService.transformPath(node.path));
+            .map(ex => CodeMapHelper.transformPath(ex.path)));
+        return ig.ignores(CodeMapHelper.transformPath(node.path));
     }
 
     public static getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]): string {

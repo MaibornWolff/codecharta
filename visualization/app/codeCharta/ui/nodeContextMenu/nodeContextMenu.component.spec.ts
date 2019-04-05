@@ -3,7 +3,7 @@ import "./nodeContextMenu.module"
 import { IRootScopeService, IWindowService, ITimeoutService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { SettingsService } from "../../state/settings.service"
-import { CodeMapUtilService } from "../codeMap/codeMap.util.service"
+import { CodeMapHelper } from "../../util/codeMapHelper"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { NodeContextMenuController } from "./nodeContextMenu.component"
 import { CodeChartaService } from "../../codeCharta.service"
@@ -166,7 +166,7 @@ describe("nodeContextMenuController", () => {
 			withMockedCodeMapRenderService()
 			nodeContextMenuController.setPosition = jest.fn()
 			nodeContextMenuController.calculatePosition = jest.fn().mockReturnValue({ x: 1, y: 2 })
-			CodeMapUtilService.getCodeMapNodeFromPath = jest.fn().mockReturnValue(TEST_DELTA_MAP_A.map)
+			CodeMapHelper.getCodeMapNodeFromPath = jest.fn().mockReturnValue(TEST_DELTA_MAP_A.map)
 			codeMapActionsService.amountOfDependentEdges = jest.fn().mockReturnValue({})
 			codeMapActionsService.amountOfVisibleDependentEdges = jest.fn().mockReturnValue({})
 			codeMapActionsService.anyEdgeIsVisible = jest.fn().mockReturnValue({})
@@ -179,7 +179,7 @@ describe("nodeContextMenuController", () => {
 			nodeContextMenuController.show("/root", "Folder", 42, 24)
 			$timeout.flush(100)
 			expect(nodeContextMenuController["_viewModel"].contextMenuBuilding).toEqual(TEST_DELTA_MAP_A.map)
-			expect(CodeMapUtilService.getCodeMapNodeFromPath).toHaveBeenCalledWith(path, nodeType, TEST_DELTA_MAP_A.map)
+			expect(CodeMapHelper.getCodeMapNodeFromPath).toHaveBeenCalledWith(path, nodeType, TEST_DELTA_MAP_A.map)
 			expect(codeMapActionsService.amountOfDependentEdges).toHaveBeenCalledWith(
 				nodeContextMenuController["_viewModel"].contextMenuBuilding
 			)

@@ -2,7 +2,7 @@ import { SettingsService } from "../../state/settings.service"
 import { IRootScopeService, IAngularEvent } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { CodeMapUtilService } from "../codeMap/codeMap.util.service"
+import { CodeMapHelper } from "../../util/codeMapHelper"
 import {
 	CodeMapMouseEventServiceSubscriber,
 	CodeMapBuildingTransition,
@@ -40,7 +40,7 @@ export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubsc
 	public getMarkingColor() {
 		// TODO: set a 'black' color in settings.mapColors ?
 		let defaultColor = "#000000"
-		const markingColor = CodeMapUtilService.getMarkingColor(this.node, this.settingsService.getSettings().fileSettings.markedPackages)
+		const markingColor = CodeMapHelper.getMarkingColor(this.node, this.settingsService.getSettings().fileSettings.markedPackages)
 		return markingColor ? markingColor : defaultColor
 	}
 
@@ -87,7 +87,7 @@ export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubsc
 
 	public isBlacklisted(node: CodeMapNode): boolean {
 		if (node) {
-			return CodeMapUtilService.isBlacklisted(node, this.settingsService.getSettings().fileSettings.blacklist, BlacklistType.exclude)
+			return CodeMapHelper.isBlacklisted(node, this.settingsService.getSettings().fileSettings.blacklist, BlacklistType.exclude)
 		}
 		return false
 	}

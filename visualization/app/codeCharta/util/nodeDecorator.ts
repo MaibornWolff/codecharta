@@ -2,7 +2,7 @@
 import * as d3 from "d3"
 import {HierarchyNode} from "d3"
 import {BlacklistType, CCFile, CodeMapNode, MetricData, Settings} from "../codeCharta.model"
-import {CodeMapUtilService} from "../ui/codeMap/codeMap.util.service";
+import {CodeMapHelper} from "./codeMapHelper";
 import _ from "lodash"
 
 export class NodeDecorator {
@@ -116,7 +116,7 @@ export class NodeDecorator {
 
 	private static getMetricSumOfLeaves(node: HierarchyNode<CodeMapNode>, settings: Settings, metric: string): number {
 		return node.leaves()
-			.filter(x => !CodeMapUtilService.isBlacklisted(x.data, settings.fileSettings.blacklist, BlacklistType.exclude))
+			.filter(x => !CodeMapHelper.isBlacklisted(x.data, settings.fileSettings.blacklist, BlacklistType.exclude))
 			.map(x => x.data.attributes[metric])
 			.reduce((partialSum, a) => partialSum + a)
 	}
