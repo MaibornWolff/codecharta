@@ -5,7 +5,7 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { MapTreeViewSearchController } from "./mapTreeViewSearch.component"
 import { FileStateService } from "../../state/fileState.service"
 import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
-import { CodeMapUtilService } from "../codeMap/codeMap.util.service"
+import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
@@ -108,7 +108,7 @@ describe("MapTreeViewSearchController", () => {
 			file2 = VALID_NODE_WITH_PATH.children[0]
 			folder1 = VALID_NODE_WITH_PATH.children[1].children[2]
 			folder2 = VALID_NODE_WITH_PATH.children[1]
-			CodeMapUtilService.getNodesByGitignorePath = jest.fn(() => {
+			CodeMapHelper.getNodesByGitignorePath = jest.fn(() => {
 				return [file1, file2, folder1]
 			})
 
@@ -149,7 +149,7 @@ describe("MapTreeViewSearchController", () => {
 					return true
 				return false
 			})
-			CodeMapUtilService.isBlacklisted = isBlacklisted.bind(CodeMapUtilService)
+			CodeMapHelper.isBlacklisted = isBlacklisted.bind(CodeMapHelper)
 
 			mapTreeViewSearchController["setSearchedNodePathNames"]()
 

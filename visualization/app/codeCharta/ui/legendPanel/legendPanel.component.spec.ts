@@ -2,7 +2,6 @@ import "./legendPanel.module"
 
 import { LegendPanelController, PackageList } from "./legendPanel.component"
 import { SettingsService } from "../../state/settings.service"
-import { CodeMapUtilService } from "../codeMap/codeMap.util.service"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { CodeChartaService } from "../../codeCharta.service"
 import { FileStateService } from "../../state/fileState.service"
@@ -24,7 +23,6 @@ describe("LegendPanelController", () => {
 			settingsService: getService<SettingsService>("settingsService"),
 			codeChartaService: getService<CodeChartaService>("codeChartaService"),
 			fileStateService: getService<FileStateService>("fileStateService"),
-			codeMapUtilService: getService<CodeMapUtilService>("codeMapUtilService")
 		}
 	}
 

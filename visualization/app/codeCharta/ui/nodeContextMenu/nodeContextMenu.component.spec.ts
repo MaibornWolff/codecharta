@@ -3,7 +3,7 @@ import "./nodeContextMenu.module"
 import { IRootScopeService, IWindowService, ITimeoutService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { SettingsService } from "../../state/settings.service"
-import { CodeMapUtilService } from "../codeMap/codeMap.util.service"
+import { CodeMapHelper } from "../../util/codeMapHelper"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { NodeContextMenuController } from "./nodeContextMenu.component"
 import { CodeChartaService } from "../../codeCharta.service"
@@ -18,7 +18,6 @@ describe("nodeContextMenuController", () => {
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
 	let codeMapActionsService: CodeMapActionsService
-	let codeMapUtilService: CodeMapUtilService
 	let codeChartaService: CodeChartaService
 	let codeMapRenderService: CodeMapRenderService
 
@@ -27,7 +26,6 @@ describe("nodeContextMenuController", () => {
 		mockElement()
 		mockWindow()
 		rebuildController()
-		withMockedCodeMapUtilService()
 	})
 
 	function restartSystem() {
@@ -38,7 +36,6 @@ describe("nodeContextMenuController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
-		codeMapUtilService = getService<CodeMapUtilService>("codeMapUtilService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 	}
@@ -75,7 +72,6 @@ describe("nodeContextMenuController", () => {
 			$rootScope,
 			codeMapActionsService,
 			codeChartaService,
-			codeMapUtilService,
 			settingsService,
 			codeMapRenderService
 		)
@@ -84,14 +80,6 @@ describe("nodeContextMenuController", () => {
 	function withMockedEventMethods() {
 		$rootScope.$on = nodeContextMenuController["$rootScope"].$on = jest.fn()
 		$rootScope.$broadcast = nodeContextMenuController["$rootScope"].$broadcast = jest.fn()
-	}
-
-	function withMockedCodeMapUtilService() {
-		codeMapUtilService = nodeContextMenuController["codeMapUtilService"] = jest.fn<CodeMapUtilService>(() => {
-			return {
-				getCodeMapNodeFromPath: jest.fn()
-			}
-		})()
 	}
 
 	function withMockedCodeMapActionService() {
@@ -178,7 +166,7 @@ describe("nodeContextMenuController", () => {
 			withMockedCodeMapRenderService()
 			nodeContextMenuController.setPosition = jest.fn()
 			nodeContextMenuController.calculatePosition = jest.fn().mockReturnValue({ x: 1, y: 2 })
-			codeMapUtilService.getCodeMapNodeFromPath = jest.fn().mockReturnValue(TEST_DELTA_MAP_A.map)
+			CodeMapHelper.getCodeMapNodeFromPath = jest.fn().mockReturnValue(TEST_DELTA_MAP_A.map)
 			codeMapActionsService.amountOfDependentEdges = jest.fn().mockReturnValue({})
 			codeMapActionsService.amountOfVisibleDependentEdges = jest.fn().mockReturnValue({})
 			codeMapActionsService.anyEdgeIsVisible = jest.fn().mockReturnValue({})
@@ -191,7 +179,7 @@ describe("nodeContextMenuController", () => {
 			nodeContextMenuController.show("/root", "Folder", 42, 24)
 			$timeout.flush(100)
 			expect(nodeContextMenuController["_viewModel"].contextMenuBuilding).toEqual(TEST_DELTA_MAP_A.map)
-			expect(codeMapUtilService.getCodeMapNodeFromPath).toHaveBeenCalledWith(path, nodeType, TEST_DELTA_MAP_A.map)
+			expect(CodeMapHelper.getCodeMapNodeFromPath).toHaveBeenCalledWith(path, nodeType, TEST_DELTA_MAP_A.map)
 			expect(codeMapActionsService.amountOfDependentEdges).toHaveBeenCalledWith(
 				nodeContextMenuController["_viewModel"].contextMenuBuilding
 			)

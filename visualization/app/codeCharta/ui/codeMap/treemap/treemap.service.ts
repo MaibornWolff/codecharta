@@ -2,7 +2,7 @@ import {Node} from "../rendering/node";
 import * as d3 from "d3";
 import {hierarchy, HierarchyNode} from "d3";
 import {TreeMapUtils} from "./treemap.util";
-import {CodeMapUtilService} from "../codeMap.util.service";
+import {CodeMapHelper} from "../../../util/codeMapHelper";
 import {CodeMapNode, BlacklistType, CCFile, Settings, FileState, MetricData} from "../../../codeCharta.model";
 import { MetricService } from "../../../state/metric.service";
 
@@ -43,7 +43,7 @@ export class TreeMapService {
 
     private squarify(renderFile: CCFile, s: Settings): SquarifiedValuedCodeMapNode {
         let map: HierarchyNode<CodeMapNode> = d3.hierarchy<CodeMapNode>(renderFile.map);
-        const blacklisted = CodeMapUtilService.numberOfBlacklistedNodes(map.descendants().map(d => d.data), s.fileSettings.blacklist);
+        const blacklisted = CodeMapHelper.numberOfBlacklistedNodes(map.descendants().map(d => d.data), s.fileSettings.blacklist);
         let nodesPerSide = 2 * Math.sqrt(map.descendants().length - blacklisted);
         let treeMap = d3.treemap<CodeMapNode>()
             .size([s.treeMapSettings.mapSize + nodesPerSide * s.dynamicSettings.margin, s.treeMapSettings.mapSize + nodesPerSide * s.dynamicSettings.margin])
@@ -68,7 +68,7 @@ export class TreeMapService {
             heightValue = TreeMapService.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND;
         }
 
-        if (CodeMapUtilService.isBlacklisted(squaredNode.data, s.fileSettings.blacklist, BlacklistType.hide)) {
+        if (CodeMapHelper.isBlacklisted(squaredNode.data, s.fileSettings.blacklist, BlacklistType.hide)) {
             squaredNode.data = this.setVisibilityOfNodeAndDescendants(squaredNode.data, false);
         }
 
@@ -99,7 +99,7 @@ export class TreeMapService {
 
         let result = 0;
 
-        if(CodeMapUtilService.isBlacklisted(node, s.fileSettings.blacklist, BlacklistType.exclude)) {
+        if(CodeMapHelper.isBlacklisted(node, s.fileSettings.blacklist, BlacklistType.exclude)) {
             return 0;
         }
 

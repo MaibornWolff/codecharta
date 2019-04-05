@@ -1,4 +1,4 @@
-import { NameDataPair, UrlUtils } from "./util/urlUtils"
+import { UrlUtils } from "./util/urlUtils"
 import {IHttpService, ILocationService, IRootScopeService} from "angular"
 import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
@@ -7,11 +7,9 @@ import {ScenarioHelper} from "./util/scenarioHelper";
 import {DialogService} from "./ui/dialog/dialog.service";
 import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
 import {CodeMapActionsService} from "./ui/codeMap/codeMap.actions.service";
-import {Settings} from "./codeCharta.model";
+import {Settings, NameDataPair} from "./codeCharta.model";
+import {FileStateService} from "./state/fileState.service";
 
-/**
- * This is the main controller of the CodeCharta application
- */
 export class CodeChartaController implements SettingsServiceSubscriber {
 
 	private _viewModel: {
@@ -34,6 +32,7 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 		private codeMapActionsService: CodeMapActionsService,
 		private settingsService: SettingsService,
 		private codeChartaService: CodeChartaService,
+		private fileStateService: FileStateService,
 		private $location: ILocationService,
 		private $http: IHttpService
 	) {
@@ -58,8 +57,10 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 	public loadFileOrSample() {
 		this._viewModel.numberOfLoadingTasks++
 		return this.urlUtils.getFileDataFromQueryParam().then((data: NameDataPair[]) => {
+			console.log("nameDataPair", data);
 			if (data.length > 0) {
 				this.tryLoadingFiles(data)
+				this.setRenderStateFromUrl();
 			} else {
 				this.tryLoadingSampleFiles()
 			}
@@ -92,6 +93,21 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 				this.printErrors(e)
 			})
     }
+
+    private setRenderStateFromUrl() {
+		const renderState: string = this.urlUtils.getParameterByName("mode")
+		const files = this.fileStateService.getCCFiles()
+
+		if (renderState === "Delta" && files.length >= 2) {
+			this.fileStateService.setDelta(files[0], files[1])
+
+		} else if (renderState === "Multiple") {
+			this.fileStateService.setMultiple(files)
+
+		} else {
+			this.fileStateService.setSingle(files[0])
+		}
+	}
 
 	private printErrors(errors: Object) {
 		this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))

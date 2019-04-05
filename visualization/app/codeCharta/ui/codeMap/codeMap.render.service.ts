@@ -3,7 +3,7 @@
 import {CodeMapMesh} from "./rendering/codeMapMesh"
 import {Node} from "./rendering/node"
 import {TreeMapService} from "./treemap/treemap.service"
-import {CodeMapUtilService} from "./codeMap.util.service"
+import {CodeMapHelper} from "../../util/codeMapHelper"
 import {CodeMapLabelService} from "./codeMap.label.service"
 import {ThreeSceneService} from "./threeViewer/threeSceneService"
 import {CodeMapArrowService} from "./codeMap.arrow.service"
@@ -59,7 +59,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private threeCameraService: ThreeCameraService,
 		private treeMapService: TreeMapService,
-		private codeMapUtilService: CodeMapUtilService,
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService
 	) {
@@ -203,7 +202,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 
 	private showAllOrOnlyFocusedNode(map: CodeMapNode, s: Settings) {
 		if (s.dynamicSettings.focusedNodePath) {
-			const focusedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(s.dynamicSettings.focusedNodePath, map)
+			const focusedNode = CodeMapHelper.getAnyCodeMapNodeFromPath(s.dynamicSettings.focusedNodePath, map)
 			this.treeMapService.setVisibilityOfNodeAndDescendants(map, false)
 			this.treeMapService.setVisibilityOfNodeAndDescendants(focusedNode, true)
 		} else {

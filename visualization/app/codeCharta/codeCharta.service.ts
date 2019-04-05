@@ -1,6 +1,5 @@
 import { FileValidator } from "./util/fileValidator"
-import { CCFile } from "./codeCharta.model"
-import { NameDataPair } from "./util/urlUtils"
+import {CCFile, NameDataPair} from "./codeCharta.model"
 import { SettingsService } from "./state/settings.service"
 import { IRootScopeService } from "angular"
 import { FileStateService } from "./state/fileState.service"
@@ -30,7 +29,6 @@ export class CodeChartaService {
 			})
 
 			this.fileStateService.setSingle(this.fileStateService.getCCFiles()[0])
-			// TODO shouldn't this be inside the codeCharta.component this.settingsService.updateSettingsFromUrl();
 			resolve()
 		})
 	}

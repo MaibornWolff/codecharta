@@ -1,7 +1,7 @@
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import { IRootScopeService } from "angular"
 import "./mapTreeViewSearch.component.scss"
-import { CodeMapUtilService } from "../codeMap/codeMap.util.service"
+import { CodeMapHelper } from "../../util/codeMapHelper"
 import { CodeMapNode, BlacklistType, Settings, FileState } from "../../codeCharta.model"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
@@ -65,10 +65,10 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 
 		this._viewModel.fileCount = this.searchedFiles.length
 		this._viewModel.hideCount = this.searchedFiles.filter(node =>
-			CodeMapUtilService.isBlacklisted(node, blacklist, BlacklistType.hide)
+			CodeMapHelper.isBlacklisted(node, blacklist, BlacklistType.hide)
 		).length
 		this._viewModel.excludeCount = this.searchedFiles.filter(node =>
-			CodeMapUtilService.isBlacklisted(node, blacklist, BlacklistType.exclude)
+			CodeMapHelper.isBlacklisted(node, blacklist, BlacklistType.exclude)
 		).length
 	}
 
@@ -85,7 +85,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 			.hierarchy(this.codeMapRenderService.getRenderFile().map)
 			.descendants()
 			.map(d => d.data)
-		const searchedNodes = CodeMapUtilService.getNodesByGitignorePath(nodes, this._viewModel.searchPattern)
+		const searchedNodes = CodeMapHelper.getNodesByGitignorePath(nodes, this._viewModel.searchPattern)
 
 		this.searchedFiles = searchedNodes.filter(node => !(node.children && node.children.length > 0))
 

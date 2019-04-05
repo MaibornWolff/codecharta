@@ -1,5 +1,10 @@
 import { Vector3 } from "three"
 
+export interface NameDataPair {
+    fileName: string
+    content: Object
+}
+
 export interface FileState {
     file: CCFile,
     selectedAs: FileSelectionState

@@ -3,7 +3,7 @@ import "./mapTreeView.module"
 import { MapTreeViewLevelController } from "./mapTreeView.level.component"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { SettingsService } from "../../state/settings.service"
-import { CodeMapUtilService } from "../codeMap/codeMap.util.service"
+import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
@@ -33,7 +33,6 @@ describe("MapTreeViewLevelController", () => {
 			threeOrbitControlsService: getService<ThreeOrbitControlsService>("threeOrbitControlsService"),
 			codeMapActionsService: getService<CodeMapActionsService>("codeMapActionsService"),
 			settingsService: getService<SettingsService>("settingsService"),
-			codeMapUtilService: getService<CodeMapUtilService>("codeMapUtilService"),
 			fileStateService: getService<FileStateService>("fileStateService")
 		}
 
@@ -126,7 +125,7 @@ describe("MapTreeViewLevelController", () => {
 
 	describe("Clicks behaviour", () => {
 		it("Right click", () => {
-			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
 				"/root/Parent Leaf",
 				"Folder",
 				VALID_NODE_WITH_PATH
@@ -156,7 +155,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Label click", () => {
-			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
 				"/root/Parent Leaf",
 				"Folder",
 				VALID_NODE_WITH_PATH
@@ -168,7 +167,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Eye click", () => {
-			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
 				"/root/Parent Leaf",
 				"Folder",
 				VALID_NODE_WITH_PATH
@@ -182,7 +181,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Is leaf", () => {
-			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
 				"/root/Parent Leaf/small leaf",
 				"File",
 				VALID_NODE_WITH_PATH
@@ -191,7 +190,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Is not leaf", () => {
-			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
 				"/root/Parent Leaf",
 				"Folder",
 				VALID_NODE_WITH_PATH
@@ -200,16 +199,16 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Is blacklisted", () => {
-			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
 				"/root/Parent Leaf/empty folder",
 				"Folder",
 				VALID_NODE_WITH_PATH
 			)
 
-			CodeMapUtilService.isBlacklisted = jest.fn()
+			CodeMapHelper.isBlacklisted = jest.fn()
 			mapTreeViewLevelController.isBlacklisted(mapTreeViewLevelController["node"])
 
-			expect(CodeMapUtilService.isBlacklisted).toHaveBeenCalledWith(
+			expect(CodeMapHelper.isBlacklisted).toHaveBeenCalledWith(
 				mapTreeViewLevelController["node"],
 				services.settingsService.settings.fileSettings.blacklist,
 				BlacklistType.exclude
@@ -217,13 +216,13 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Not blacklisted, not exist", () => {
-			CodeMapUtilService.isBlacklisted = jest.fn()
+			CodeMapHelper.isBlacklisted = jest.fn()
 			let blacklisted = mapTreeViewLevelController.isBlacklisted(mapTreeViewLevelController["node"])
 			expect(blacklisted).toBeFalsy()
 		})
 
 		it("Is searched", () => {
-			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
 				"/root/Parent Leaf/empty folder",
 				"Folder",
 				VALID_NODE_WITH_PATH
@@ -237,7 +236,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Is not searched", () => {
-			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
 				"/root/Parent Leaf/empty folder",
 				"Folder",
 				VALID_NODE_WITH_PATH
@@ -253,7 +252,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Sort leaf", () => {
-			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
 				"/root/Parent Leaf/small leaf",
 				"File",
 				VALID_NODE_WITH_PATH
@@ -263,7 +262,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Sort not a leaf", () => {
-			mapTreeViewLevelController["node"] = services.codeMapUtilService.getCodeMapNodeFromPath(
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
 				"/root/Parent Leaf",
 				"Folder",
 				VALID_NODE_WITH_PATH

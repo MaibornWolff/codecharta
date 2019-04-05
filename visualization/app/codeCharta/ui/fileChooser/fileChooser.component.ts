@@ -10,8 +10,8 @@ import {SettingsService} from "../../state/settings.service";
 import {DialogService} from "../dialog/dialog.service";
 import {CodeChartaService} from "../../codeCharta.service";
 import {FileStateService} from "../../state/fileState.service";
-import {NameDataPair} from "../../util/urlUtils";
 import {IRootScopeService} from "angular";
+import {NameDataPair} from "../../codeCharta.model";
 
 export class FileChooserController {
 
