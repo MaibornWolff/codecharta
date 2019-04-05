@@ -49,7 +49,6 @@ export class UrlExtractor {
 		return new Promise((resolve, reject) => {
 			if (file && file.length > 0) {
 				this.$http.get(file).then((response: IHttpResponse<Object>) => {
-					console.log("response", response)
 					if (response.status === UrlExtractor.OK_CODE) {
 						Object.assign(response.data, { fileName: file })
 						resolve({ fileName: file, content: response.data })
