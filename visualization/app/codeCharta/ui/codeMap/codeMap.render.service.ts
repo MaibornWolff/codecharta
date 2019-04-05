@@ -59,7 +59,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private threeCameraService: ThreeCameraService,
 		private treeMapService: TreeMapService,
-		private codeMapUtilService: CodeMapUtilService,
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService
 	) {
@@ -203,7 +202,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 
 	private showAllOrOnlyFocusedNode(map: CodeMapNode, s: Settings) {
 		if (s.dynamicSettings.focusedNodePath) {
-			const focusedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(s.dynamicSettings.focusedNodePath, map)
+			const focusedNode = CodeMapUtilService.getAnyCodeMapNodeFromPath(s.dynamicSettings.focusedNodePath, map)
 			this.treeMapService.setVisibilityOfNodeAndDescendants(map, false)
 			this.treeMapService.setVisibilityOfNodeAndDescendants(focusedNode, true)
 		} else {

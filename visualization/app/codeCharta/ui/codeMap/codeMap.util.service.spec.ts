@@ -1,14 +1,13 @@
 import "./codeMap.module"
 import "../../codeCharta"
 import { CodeMapUtilService } from "./codeMap.util.service"
-import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage } from "../../codeCharta.model"
 import { TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
 import * as path from "path"
+import {instantiateModule} from "../../../../mocks/ng.mockhelper";
 
 describe("codeMapUtilService", () => {
 
-    let codeMapUtilService: CodeMapUtilService;
     let testRoot: CodeMapNode
     let blacklist : BlacklistItem[]
 
@@ -23,7 +22,6 @@ describe("codeMapUtilService", () => {
     function restartSystem() {
         instantiateModule("app.codeCharta.ui.codeMap")
 
-        codeMapUtilService = getService<CodeMapUtilService>("codeMapUtilService")
         testRoot = JSON.parse(JSON.stringify(TEST_FILE_WITH_PATHS.map))
     }
 
@@ -37,26 +35,26 @@ describe("codeMapUtilService", () => {
 
     describe("getAnyCodeMapNodeFromPath", () => {
         it("should call getCodeMapNodeFromPath with type File at the beginning of call", () => {
-            codeMapUtilService.getCodeMapNodeFromPath = jest.fn()
+            CodeMapUtilService.getCodeMapNodeFromPath = jest.fn()
 
-            codeMapUtilService.getAnyCodeMapNodeFromPath("/root", testRoot)
+            CodeMapUtilService.getAnyCodeMapNodeFromPath("/root", testRoot)
 
-            expect(codeMapUtilService.getCodeMapNodeFromPath).toHaveBeenCalledWith("/root", "File", testRoot)
+            expect(CodeMapUtilService.getCodeMapNodeFromPath).toHaveBeenCalledWith("/root", "File", testRoot)
         })
 
         it("should call getCodeMapNodeFromPath with type Folder when no file was found and return null", () => {
-            codeMapUtilService.getCodeMapNodeFromPath = jest.fn().mockReturnValue(null)
+            CodeMapUtilService.getCodeMapNodeFromPath = jest.fn().mockReturnValue(null)
 
-            const result = codeMapUtilService.getAnyCodeMapNodeFromPath("/root", testRoot)
+            const result = CodeMapUtilService.getAnyCodeMapNodeFromPath("/root", testRoot)
 
-            expect(codeMapUtilService.getCodeMapNodeFromPath).toHaveBeenCalledWith("/root", "Folder", testRoot)
+            expect(CodeMapUtilService.getCodeMapNodeFromPath).toHaveBeenCalledWith("/root", "Folder", testRoot)
             expect(result).toBeNull()
         })
 
         it("should return the first file found by getCodeMapNodeFromPath", () => {
-            codeMapUtilService.getCodeMapNodeFromPath = jest.fn().mockReturnValue(testRoot)
+            CodeMapUtilService.getCodeMapNodeFromPath = jest.fn().mockReturnValue(testRoot)
 
-            const result = codeMapUtilService.getAnyCodeMapNodeFromPath("/root", testRoot)
+            const result = CodeMapUtilService.getAnyCodeMapNodeFromPath("/root", testRoot)
 
             expect(result).toEqual(testRoot)
         })
@@ -66,7 +64,7 @@ describe("codeMapUtilService", () => {
         it("should return the root if path matches path of root", () => {
             const expected = testRoot
 
-            const result = codeMapUtilService.getCodeMapNodeFromPath("/root", "Folder", testRoot)
+            const result = CodeMapUtilService.getCodeMapNodeFromPath("/root", "Folder", testRoot)
 
             expect(result).toEqual(expected)
         })
@@ -74,19 +72,19 @@ describe("codeMapUtilService", () => {
         it("should return the node that matches path and type", () => {
             const expected = testRoot.children[1]
 
-            const result = codeMapUtilService.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", testRoot)
+            const result = CodeMapUtilService.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", testRoot)
 
             expect(result).toEqual(expected)
         })
 
         it("should return null if no node matches path and type", () => {
-            const result = codeMapUtilService.getCodeMapNodeFromPath("/root/Uncle Leaf", "Folder", testRoot)
+            const result = CodeMapUtilService.getCodeMapNodeFromPath("/root/Uncle Leaf", "Folder", testRoot)
 
             expect(result).toBeNull()
         })
 
         it("should return null if a node only matches path", () => {
-            const result = codeMapUtilService.getCodeMapNodeFromPath("/root/Parent Leaf", "File", testRoot)
+            const result = CodeMapUtilService.getCodeMapNodeFromPath("/root/Parent Leaf", "File", testRoot)
 
             expect(result).toBeNull()
         })

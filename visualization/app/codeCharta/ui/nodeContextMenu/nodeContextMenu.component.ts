@@ -31,7 +31,6 @@ export class NodeContextMenuController {
                 private $rootScope,
                 private codeMapActionsService: CodeMapActionsService,
                 private codeChartaService: CodeChartaService,
-                private codeMapUtilService: CodeMapUtilService,
                 private settingsService: SettingsService,
                 private codeMapRenderService: CodeMapRenderService) {
 
@@ -48,7 +47,7 @@ export class NodeContextMenuController {
 
     public show(path: string, nodeType: string, mouseX: number, mouseY: number) {
         this.$timeout(() => {
-            this._viewModel.contextMenuBuilding = this.codeMapUtilService.getCodeMapNodeFromPath(path, nodeType, this.codeMapRenderService.getRenderFile().map);
+            this._viewModel.contextMenuBuilding = CodeMapUtilService.getCodeMapNodeFromPath(path, nodeType, this.codeMapRenderService.getRenderFile().map);
         }, 50).then(() => {
             this._viewModel.amountOfDependentEdges = this.codeMapActionsService.amountOfDependentEdges(this._viewModel.contextMenuBuilding);
             this._viewModel.amountOfVisibleDependentEdges = this.codeMapActionsService.amountOfVisibleDependentEdges(this._viewModel.contextMenuBuilding);

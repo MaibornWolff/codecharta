@@ -8,7 +8,7 @@ export class CodeMapUtilService {
 
     public static SELECTOR = "codeMapUtilService";
 
-    public getAnyCodeMapNodeFromPath(path: string, root: CodeMapNode) {
+    public static getAnyCodeMapNodeFromPath(path: string, root: CodeMapNode): CodeMapNode {
         const firstTryNode = this.getCodeMapNodeFromPath(path, "File", root);
         if(!firstTryNode) {
             return this.getCodeMapNodeFromPath(path, "Folder", root);
@@ -16,12 +16,15 @@ export class CodeMapUtilService {
         return firstTryNode;
     }
 
-    public getCodeMapNodeFromPath(path: string, nodeType: string, root: CodeMapNode) {
+    public static getCodeMapNodeFromPath(path: string, nodeType: string, root: CodeMapNode): CodeMapNode {
         let res = null;
 
         if (path === root.path) {
             return root;
         }
+
+        console.log(path, root.path)
+
 
         hierarchy<CodeMapNode>(root).each((hierarchyNode) => {
             if (hierarchyNode.data.path === path && hierarchyNode.data.type === nodeType) {

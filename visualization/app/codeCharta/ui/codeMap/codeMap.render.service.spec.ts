@@ -26,7 +26,6 @@ describe("codeMapRenderService", () => {
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let threeCameraService: ThreeCameraService
 	let treeMapService: TreeMapService
-	let codeMapUtilService: CodeMapUtilService
 	let codeMapLabelService: CodeMapLabelService
 	let codeMapArrowService: CodeMapArrowService
 
@@ -54,7 +53,6 @@ describe("codeMapRenderService", () => {
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		treeMapService = getService<TreeMapService>("treeMapService")
-		codeMapUtilService = getService<CodeMapUtilService>("codeMapUtilService")
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		codeMapArrowService = getService<CodeMapArrowService>("codeMapArrowService")
 
@@ -64,7 +62,7 @@ describe("codeMapRenderService", () => {
 
 	function rebuildService() {
 		codeMapRenderService = new CodeMapRenderService($rootScope, threeSceneService, threeOrbitControlsService,
-			threeCameraService, treeMapService, codeMapUtilService, codeMapLabelService, codeMapArrowService)
+			threeCameraService, treeMapService, codeMapLabelService, codeMapArrowService)
 	}
 
 	function withMockedCodeMapMesh() {
@@ -94,14 +92,14 @@ describe("codeMapRenderService", () => {
 
 		it("should call subscribe for FileStateService", () => {
 			codeMapRenderService = new CodeMapRenderService($rootScope, threeSceneService, threeOrbitControlsService,
-				threeCameraService, treeMapService, codeMapUtilService, codeMapLabelService, codeMapArrowService)
+				threeCameraService, treeMapService, codeMapLabelService, codeMapArrowService)
 
 			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, codeMapRenderService)
 		})
 
 		it("should call subscribe for MetricService", () => {
 			codeMapRenderService = new CodeMapRenderService($rootScope, threeSceneService, threeOrbitControlsService,
-				threeCameraService, treeMapService, codeMapUtilService, codeMapLabelService, codeMapArrowService)
+				threeCameraService, treeMapService, codeMapLabelService, codeMapArrowService)
 
 			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, codeMapRenderService)
 		})
