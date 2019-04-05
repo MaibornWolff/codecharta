@@ -1,24 +1,23 @@
 "use strict"
 import * as d3 from "d3"
-import { CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
+import {HierarchyNode} from "d3"
+import {BlacklistType, CCFile, CodeMapNode, MetricData, Settings} from "../codeCharta.model"
+import {CodeMapUtilService} from "../ui/codeMap/codeMap.util.service";
+import _ from "lodash"
 
 export class NodeDecorator {
-	public static decorateFile(file: CCFile, metricData: MetricData[]): CCFile {
-		let decoratedFile: CCFile = this.deepCopy(file)
+	public static decorateFile(file: CCFile, settings: Settings, metricData: MetricData[]): CCFile {
+		let decoratedFile: CCFile = _.cloneDeep(file)
 		this.decorateMapWithMissingObjects(decoratedFile)
 		this.decorateMapWithCompactMiddlePackages(decoratedFile)
 		this.decorateLeavesWithMissingMetrics(decoratedFile, metricData)
-		this.decorateParentNodesWithSumAttributesOfChildren(decoratedFile, metricData)
+		this.decorateParentNodesWithSumAttributesOfChildren(decoratedFile, settings, metricData)
 		return decoratedFile
-	}
-
-	private static deepCopy(file: CCFile): CCFile {
-		return JSON.parse(JSON.stringify(file))
 	}
 
 	public static preDecorateFile(file: CCFile): CCFile {
 		// TODO: predecorate origin as well? so in multiple mode the files keep its original origin attribute
-		let decoratedFile: CCFile = this.deepCopy(file)
+		let decoratedFile: CCFile = _.cloneDeep(file)
 		this.decorateMapWithPathAttribute(decoratedFile)
 		return decoratedFile
 	}
@@ -98,32 +97,27 @@ export class NodeDecorator {
 		}
 	}
 
-	private static decorateParentNodesWithSumAttributesOfChildren(file: CCFile, metricData: MetricData[]) {
+	private static decorateParentNodesWithSumAttributesOfChildren(file: CCFile, settings: Settings, metricData: MetricData[]) {
 		if (file && file.map) {
 			let root = d3.hierarchy<CodeMapNode>(file.map)
-			root.each(node => {
-				this.decorateNodeWithChildrenSumMetrics(node, metricData)
+			root.each((node: HierarchyNode<CodeMapNode>) => {
+				this.decorateNodeWithChildrenSumMetrics(node, settings, metricData)
 			})
 		}
 	}
 
-	private static decorateNodeWithChildrenSumMetrics(node, metricData: MetricData[]) {
+	private static decorateNodeWithChildrenSumMetrics(node: HierarchyNode<CodeMapNode>, settings: Settings, metricData: MetricData[]) {
 		metricData.forEach(metric => {
 			if (!node.data.attributes.hasOwnProperty(metric.name) && node.data.children && node.data.children.length > 0) {
-				this.defineAttributeAsSumMethod(node, metric.name)
+				node.data.attributes[metric.name] = this.getMetricSumOfLeaves(node, settings, metric.name)
 			}
 		})
 	}
 
-	private static defineAttributeAsSumMethod(node, metric: string) {
-		Object.defineProperty(node.data.attributes, metric, {
-			enumerable: true,
-			get: () => {
-				return node
-					.leaves()
-					.map(x => x.data.attributes[metric])
-					.reduce((partialSum, a) => partialSum + a)
-			}
-		})
+	private static getMetricSumOfLeaves(node: HierarchyNode<CodeMapNode>, settings: Settings, metric: string): number {
+		return node.leaves()
+			.filter(x => !CodeMapUtilService.isBlacklisted(x.data, settings.fileSettings.blacklist, BlacklistType.exclude))
+			.map(x => x.data.attributes[metric])
+			.reduce((partialSum, a) => partialSum + a)
 	}
 }
