@@ -76,7 +76,6 @@ export class ThreeViewerService {
 
     public onFocusIn(event) {
         if(event.target.nodeName == "INPUT") {
-            console.log("WADASDSAAD")
             this.threeOrbitControlsService.controls.enableKeys = false;
         }
     }
