@@ -39,6 +39,7 @@ export class ThreeViewerService {
         this.threeCameraService.camera.lookAt(
             this.threeSceneService.scene.position
         );
+
         this.threeSceneService.scene.add(this.threeCameraService.camera);
 
         // create the renderer
@@ -75,6 +76,7 @@ export class ThreeViewerService {
 
     public onFocusIn(event) {
         if(event.target.nodeName == "INPUT") {
+            console.log("WADASDSAAD")
             this.threeOrbitControlsService.controls.enableKeys = false;
         }
     }
