@@ -81,6 +81,9 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 
 	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
 		this.lastRender.settings = settings
+		if (this.lastRender.fileStates) {
+			this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
+		}
 		console.log("lastSettings", settings)
 		this.renderIfRenderObjectIsComplete()
 	}
