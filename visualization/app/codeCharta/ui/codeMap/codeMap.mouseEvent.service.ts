@@ -101,7 +101,7 @@ export class CodeMapMouseEventService
     public update() {
         this.threeCameraService.camera.updateMatrixWorld(false);
 
-        if (this.threeSceneService.getMapMesh() !== null) {
+        if (this.threeSceneService.getMapMesh() != null) {
             let intersectionResult = this.threeSceneService
                 .getMapMesh()
                 .checkMouseRayMeshIntersection(
