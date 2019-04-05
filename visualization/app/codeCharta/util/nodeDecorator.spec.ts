@@ -234,7 +234,9 @@ describe("nodeDecorator", () => {
 			expect(result.map.path).toBe("/root")
 			expect(result.map.children[1].children[0].path).toBe("/root/Parent Leaf/small leaf")
 		})
+	})
 
+	describe("decorateFile", () => {
 		it("all nodes should have an attribute list with all possible metrics", () => {
 			fileA.map.children[0].attributes = undefined
 			fileA.map.children[1].attributes = { some: 1 }
