@@ -12,7 +12,6 @@ import {
 	CodeMapNode,
 	Edge,
 	FileSelectionState,
-	FileSettings,
 	FileState,
 	MetricData,
 	Settings
@@ -28,7 +27,6 @@ import {FileStateHelper} from "../../util/fileStateHelper";
 import {DeltaGenerator} from "../../util/deltaGenerator";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 import {ThreeCameraService} from "./threeViewer/threeCameraService";
-import {SettingsMerger} from "../../util/settingsMerger";
 
 export interface RenderData {
 	renderFile: CCFile
@@ -110,7 +108,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		})
 
 		if (FileStateHelper.isSingleState(fileStates)) {
-			return visibleFileStates[0].file
+			return _.cloneDeep(visibleFileStates[0].file)
 
 		} else if (FileStateHelper.isPartialState(fileStates)){
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
@@ -141,26 +139,23 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	private render(renderData: RenderData) {
-		renderData.renderFile = NodeDecorator.decorateFile(renderData.renderFile, renderData.metricData)
+		renderData.renderFile = NodeDecorator.decorateFile(renderData.renderFile, renderData.settings, renderData.metricData)
 		console.log("lastRender decorate", this.lastRender);
-		this.updateMapGeometry(renderData.renderFile, renderData.fileStates, renderData.settings, renderData.metricData)
-		const scale = renderData.settings.appSettings.scaling
-		this.scaleMap(scale.x, scale.y, scale.z, renderData.settings.treeMapSettings.mapSize)
-	}
 
-	private updateMapGeometry(renderFile: CCFile, fileStates: FileState[], s: Settings, metricData: MetricData[]) {
-		this.showAllOrOnlyFocusedNode(renderFile.map, s)
+		this.showAllOrOnlyFocusedNode(renderData.renderFile.map, renderData.settings)
 
-		const treeMapNode: Node = this.treeMapService.createTreemapNodes(renderFile, s, metricData)
+		const treeMapNode: Node = this.treeMapService.createTreemapNodes(renderData.renderFile, renderData.settings, renderData.metricData)
 		const nodes: Node[] = this.collectNodesToArray(treeMapNode)
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		const sortedNodes: Node[] = filteredNodes.sort((a, b) => b.height - a.height)
 
-		this.setLabels(sortedNodes, s)
-		this.setArrows(sortedNodes, s)
+		this._mapMesh = new CodeMapMesh(sortedNodes, renderData.settings, FileStateHelper.isDeltaState(renderData.fileStates))
+		this.threeSceneService.setMapMesh(this._mapMesh, renderData.settings.treeMapSettings.mapSize)
 
-		this._mapMesh = new CodeMapMesh(sortedNodes, s, FileStateHelper.isDeltaState(fileStates))
-		this.threeSceneService.setMapMesh(this._mapMesh, s.treeMapSettings.mapSize)
+		const scale = renderData.settings.appSettings.scaling
+		this.scaleMap(scale.x, scale.y, scale.z, renderData.settings.treeMapSettings.mapSize)
+		this.setLabels(sortedNodes, renderData.settings)
+		this.setArrows(sortedNodes, renderData.settings)
 	}
 
 	private collectNodesToArray(node: Node): Node[] {
