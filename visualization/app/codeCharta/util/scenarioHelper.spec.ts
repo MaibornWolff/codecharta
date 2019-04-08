@@ -17,38 +17,6 @@ describe("scenarioHelper", () => {
 		]
 	})
 
-	describe("getScenarios", () => {
-		it("should get all scenarios", () => {
-			ScenarioHelper.isScenarioPossible = jest.fn((scenario: Scenario, metricData: MetricData[]) => {
-				return true
-			})
-
-			const result = ScenarioHelper.getScenarios(metricData)
-			const expected = scenarios
-
-			expect(result).toEqual(expected)
-			scenarios.forEach((scenario: Scenario) => {
-				expect(ScenarioHelper.isScenarioPossible).toBeCalledWith(scenario, metricData)
-			})
-			expect(ScenarioHelper.isScenarioPossible).toHaveBeenCalledTimes(scenarios.length)
-		})
-
-		it("should get no scenarios", () => {
-			ScenarioHelper.isScenarioPossible = jest.fn((scenario: Scenario, metricData: MetricData[]) => {
-				return false
-			})
-
-			const result = ScenarioHelper.getScenarios(metricData)
-			const expected = []
-
-			expect(result).toEqual(expected)
-			scenarios.forEach((scenario: Scenario) => {
-				expect(ScenarioHelper.isScenarioPossible).toBeCalledWith(scenario, metricData)
-			})
-			expect(ScenarioHelper.isScenarioPossible).toHaveBeenCalledTimes(scenarios.length)
-		})
-	})
-
 	describe("isScenarioPossible", () => {
 		it("should return true for a possible scenario", () => {
 			const result = ScenarioHelper.isScenarioPossible(scenarios[0], metricData)
@@ -65,6 +33,34 @@ describe("scenarioHelper", () => {
 			const result = ScenarioHelper.isScenarioPossible(scenarios[0], metricData)
 
 			expect(result).toBeFalsy()
+		})
+	})
+
+	describe("getScenarios", () => {
+		it("should get all scenarios", () => {
+			ScenarioHelper.isScenarioPossible = jest.fn().mockReturnValue(true)
+
+			const result = ScenarioHelper.getScenarios(metricData)
+			const expected = scenarios
+
+			expect(result).toEqual(expected)
+			scenarios.forEach((scenario: Scenario) => {
+				expect(ScenarioHelper.isScenarioPossible).toBeCalledWith(scenario, metricData)
+			})
+			expect(ScenarioHelper.isScenarioPossible).toHaveBeenCalledTimes(scenarios.length)
+		})
+
+		it("should get no scenarios", () => {
+			ScenarioHelper.isScenarioPossible = jest.fn().mockReturnValue(false)
+
+			const result = ScenarioHelper.getScenarios(metricData)
+			const expected = []
+
+			expect(result).toEqual(expected)
+			scenarios.forEach((scenario: Scenario) => {
+				expect(ScenarioHelper.isScenarioPossible).toBeCalledWith(scenario, metricData)
+			})
+			expect(ScenarioHelper.isScenarioPossible).toHaveBeenCalledTimes(scenarios.length)
 		})
 	})
 

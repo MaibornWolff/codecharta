@@ -31,33 +31,6 @@ describe("codeMapHelper", () => {
         blacklist.push({path: testRoot.children[0].path, type : BlacklistType.exclude})
     }
 
-    describe("getAnyCodeMapNodeFromPath", () => {
-        it("should call getCodeMapNodeFromPath with type File at the beginning of call", () => {
-            CodeMapHelper.getCodeMapNodeFromPath = jest.fn()
-
-            CodeMapHelper.getAnyCodeMapNodeFromPath("/root", testRoot)
-
-            expect(CodeMapHelper.getCodeMapNodeFromPath).toHaveBeenCalledWith("/root", "File", testRoot)
-        })
-
-        it("should call getCodeMapNodeFromPath with type Folder when no file was found and return null", () => {
-            CodeMapHelper.getCodeMapNodeFromPath = jest.fn().mockReturnValue(null)
-
-            const result = CodeMapHelper.getAnyCodeMapNodeFromPath("/root", testRoot)
-
-            expect(CodeMapHelper.getCodeMapNodeFromPath).toHaveBeenCalledWith("/root", "Folder", testRoot)
-            expect(result).toBeNull()
-        })
-
-        it("should return the first file found by getCodeMapNodeFromPath", () => {
-            CodeMapHelper.getCodeMapNodeFromPath = jest.fn().mockReturnValue(testRoot)
-
-            const result = CodeMapHelper.getAnyCodeMapNodeFromPath("/root", testRoot)
-
-            expect(result).toEqual(testRoot)
-        })
-    })
-
     describe("getCodeMapNodeFromPath", () => {
         it("should return the root if path matches path of root", () => {
             const expected = testRoot
@@ -85,6 +58,33 @@ describe("codeMapHelper", () => {
             const result = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "File", testRoot)
 
             expect(result).toBeNull()
+        })
+    })
+
+    describe("getAnyCodeMapNodeFromPath", () => {
+        it("should call getCodeMapNodeFromPath with type File at the beginning of call", () => {
+            CodeMapHelper.getCodeMapNodeFromPath = jest.fn()
+
+            CodeMapHelper.getAnyCodeMapNodeFromPath("/root", testRoot)
+
+            expect(CodeMapHelper.getCodeMapNodeFromPath).toHaveBeenCalledWith("/root", "File", testRoot)
+        })
+
+        it("should call getCodeMapNodeFromPath with type Folder when no file was found and return null", () => {
+            CodeMapHelper.getCodeMapNodeFromPath = jest.fn().mockReturnValue(null)
+
+            const result = CodeMapHelper.getAnyCodeMapNodeFromPath("/root", testRoot)
+
+            expect(CodeMapHelper.getCodeMapNodeFromPath).toHaveBeenCalledWith("/root", "Folder", testRoot)
+            expect(result).toBeNull()
+        })
+
+        it("should return the first file found by getCodeMapNodeFromPath", () => {
+            CodeMapHelper.getCodeMapNodeFromPath = jest.fn().mockReturnValue(testRoot)
+
+            const result = CodeMapHelper.getAnyCodeMapNodeFromPath("/root", testRoot)
+
+            expect(result).toEqual(testRoot)
         })
     })
 

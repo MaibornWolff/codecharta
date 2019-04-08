@@ -17,11 +17,12 @@ import { SettingsService } from "../../state/settings.service"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
 import { NodeDecorator } from "../../util/nodeDecorator"
+import { FileStateHelper } from "../../util/fileStateHelper"
 
 //TODO: Increase coverage later on and fix suite
 describe("codeMapRenderService", () => {
 	let codeMapRenderService: CodeMapRenderService
-	let $rootScope
+	let $rootScope: IRootScopeService
 	let threeSceneService: ThreeSceneService
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let threeCameraService: ThreeCameraService
@@ -70,12 +71,8 @@ describe("codeMapRenderService", () => {
 	}
 
 	function withMockedEventMethods() {
-		$rootScope = codeMapRenderService["$rootScope"] = jest.fn(() => {
-			return {
-				$on: jest.fn(),
-				$broadcast: jest.fn()
-			}
-		})()
+		$rootScope.$on = codeMapRenderService["$rootScope"].$on = jest.fn()
+		$rootScope.$broadcast = codeMapRenderService["$rootScope"].$broadcast = jest.fn()
 	}
 
 	function withMockedThreeOrbitControlsService() {
@@ -141,28 +138,11 @@ describe("codeMapRenderService", () => {
 
 			expect(codeMapRenderService["lastRender"].settings).toEqual(settings)
 		})
-
-		it("should call decorateFile", () => {
-			NodeDecorator.decorateFile = jest.fn()
-
-			codeMapRenderService.onSettingsChanged(settings, undefined)
-
-			expect(NodeDecorator.decorateFile).toHaveBeenCalledWith(codeMapRenderService["lastRender"].renderFile,
-				codeMapRenderService["lastRender"].metricData)
-		})
-
-		it("should call autoFitTo if autoFitMap is true", () => {
-			codeMapRenderService["autoFitMap"] = true
-
-			codeMapRenderService.onSettingsChanged(settings, undefined)
-
-			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
-		})
 	})
 
 	describe("subscribe", () => {
 		it("should call $on", () => {
-			CodeMapRenderService.subscribe(undefined, undefined)
+			CodeMapRenderService.subscribe($rootScope, undefined)
 
 			expect($rootScope.$on).toHaveBeenCalled()
 		})

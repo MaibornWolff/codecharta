@@ -83,12 +83,10 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		if (this.lastRender.fileStates) {
 			this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
 		}
-		console.log("lastSettings", settings)
 		this.renderIfRenderObjectIsComplete()
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-		console.log("lastFileStates", fileStates);
 		this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(fileStates)
 		this.lastRender.fileStates = fileStates
 		this.autoFitMap = true
@@ -129,7 +127,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	private renderIfRenderObjectIsComplete() {
-		console.log("render", this.lastRender);
 		if (_.values(this.lastRender).every(x => (x !== null)) && this.lastRender.settings.dynamicSettings.neutralColorRange) {
 			this.render(this.lastRender)
 			if (this.autoFitMap) {
@@ -142,7 +139,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 
 	private render(renderData: RenderData) {
 		renderData.renderFile = NodeDecorator.decorateFile(renderData.renderFile, renderData.settings, renderData.metricData)
-		console.log("lastRender decorate", this.lastRender);
 
 		this.showAllOrOnlyFocusedNode(renderData.renderFile.map, renderData.settings)
 

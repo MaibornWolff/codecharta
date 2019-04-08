@@ -40,8 +40,6 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
         this._viewModel.key = null;
         this.threeOrbitControlsService.autoFitTo()
     }
-
-
 }
 
 export const scenarioDropDownComponent = {
