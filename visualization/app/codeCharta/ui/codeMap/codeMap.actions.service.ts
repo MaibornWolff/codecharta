@@ -140,8 +140,7 @@ export class CodeMapActionsService {
 		return this.settingsService.getSettings().fileSettings.edges.filter(edge => this.edgeContainsNode(edge, node) && edge.visible).length
 	}
 
-	//TODO: rename to isAnyEdgeVisible
-	public anyEdgeIsVisible() {
+	public isAnyEdgeVisible() {
 		return this.settingsService.getSettings().fileSettings.edges.filter(edge => edge.visible).length > 0
 	}
 

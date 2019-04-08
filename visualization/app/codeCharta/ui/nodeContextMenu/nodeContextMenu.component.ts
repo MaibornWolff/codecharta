@@ -51,7 +51,7 @@ export class NodeContextMenuController {
         }, 50).then(() => {
             this._viewModel.amountOfDependentEdges = this.codeMapActionsService.amountOfDependentEdges(this._viewModel.contextMenuBuilding);
             this._viewModel.amountOfVisibleDependentEdges = this.codeMapActionsService.amountOfVisibleDependentEdges(this._viewModel.contextMenuBuilding);
-            this._viewModel.anyEdgeIsVisible = this.codeMapActionsService.anyEdgeIsVisible();
+            this._viewModel.anyEdgeIsVisible = this.codeMapActionsService.isAnyEdgeVisible();
             const {x, y} = this.calculatePosition(mouseX, mouseY);
             this.setPosition(x, y);
         });
