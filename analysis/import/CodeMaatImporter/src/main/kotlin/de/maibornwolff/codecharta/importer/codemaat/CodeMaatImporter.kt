@@ -8,8 +8,9 @@ import picocli.CommandLine
 import java.io.*
 import java.util.concurrent.Callable
 
-@CommandLine.Command(name = "codemaatimport", description = ["generates cc.json from codemaat coupling csv"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
-class CodeMaatImporter : Callable<Void> {
+@CommandLine.Command(name = "codemaatimport", description = ["generates cc.json from codemaat coupling csv"],
+        footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
+class CodeMaatImporter: Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -29,7 +30,8 @@ class CodeMaatImporter : Callable<Void> {
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        val csvProjectBuilder = CSVProjectBuilder(projectName, pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes)
+        val csvProjectBuilder =
+                CSVProjectBuilder(projectName, pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes)
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
 
@@ -37,7 +39,6 @@ class CodeMaatImporter : Callable<Void> {
 
         return null
     }
-
 
     private val codemaatReplacement: MetricNameTranslator
         get() {

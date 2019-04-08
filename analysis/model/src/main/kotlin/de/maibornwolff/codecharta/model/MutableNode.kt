@@ -39,7 +39,7 @@ class MutableNode constructor(
         val link: String? = "",
         childrenList: List<MutableNode> = listOf(),
         @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeMaxAttributeMerger()
-) : Tree<MutableNode>() {
+): Tree<MutableNode>() {
 
     override val children = childrenList.toMutableList()
 
@@ -87,7 +87,7 @@ class MutableNode constructor(
 
         return when {
             children.isEmpty() && type == NodeType.Folder -> null
-            else -> this
+            else                                          -> this
         }
     }
 }

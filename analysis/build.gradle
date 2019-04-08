@@ -87,7 +87,7 @@ distributions {
             }
 
             // deprecated ccsh
-            from {'dist/ccsh'}
+            from { 'dist/ccsh' }
         }
     }
 }

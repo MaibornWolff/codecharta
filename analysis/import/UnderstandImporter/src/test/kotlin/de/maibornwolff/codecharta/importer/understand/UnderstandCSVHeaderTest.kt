@@ -35,7 +35,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 
-class UnderstandCSVHeaderTest : Spek({
+class UnderstandCSVHeaderTest: Spek({
     describe("an empty header") {
         val headerLine = arrayOf<String?>()
         it("should throw exception") {

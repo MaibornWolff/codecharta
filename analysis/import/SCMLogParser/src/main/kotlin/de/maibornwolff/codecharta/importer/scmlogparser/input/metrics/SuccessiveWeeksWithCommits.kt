@@ -1,10 +1,9 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
+import java.util.*
 
-import java.util.TreeSet
-
-class SuccessiveWeeksWithCommits : Metric {
+class SuccessiveWeeksWithCommits: Metric {
 
     private val weeksWithCommits = TreeSet<CalendarWeek>()
 

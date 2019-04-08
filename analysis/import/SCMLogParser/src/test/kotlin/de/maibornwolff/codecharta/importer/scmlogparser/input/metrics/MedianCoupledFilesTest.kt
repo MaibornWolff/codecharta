@@ -47,7 +47,6 @@ class MedianCoupledFilesTest {
         assertThat(metric.value()).isEqualTo(1.0)
     }
 
-
     @Test
     fun should_increase_by_two_modification() {
         // given

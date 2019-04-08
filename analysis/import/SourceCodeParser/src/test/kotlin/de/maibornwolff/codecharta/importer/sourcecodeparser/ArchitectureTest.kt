@@ -7,7 +7,6 @@ import com.tngtech.archunit.library.GeneralCodingRules
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices
 import org.junit.Test
 
-
 class ArchitectureTest {
     private val classes = ClassFileImporter()
             .withImportOption(ImportOption.Predefined.DONT_INCLUDE_TESTS)

@@ -9,7 +9,7 @@ import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
 
-class CSVProjectBuilderTest : Spek({
+class CSVProjectBuilderTest: Spek({
     fun toInputStream(content: String): InputStream {
         return ByteArrayInputStream(content.toByteArray(StandardCharsets.UTF_8))
     }
@@ -64,7 +64,8 @@ class CSVProjectBuilderTest : Spek({
             val attValFloat = 0.1
 
             val project = csvProjectBuilder.parseCSVStream(
-                    toInputStream("head1,path,head3,head4,$attribName\nprojectName,\"9900,01\",\"blubb\",1.0,$attribVal\n")
+                    toInputStream(
+                            "head1,path,head3,head4,$attribName\nprojectName,\"9900,01\",\"blubb\",1.0,$attribVal\n")
             )
                     .build()
 

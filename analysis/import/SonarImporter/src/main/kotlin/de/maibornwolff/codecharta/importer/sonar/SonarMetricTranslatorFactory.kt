@@ -51,6 +51,5 @@ internal object SonarMetricTranslatorFactory {
         replacementMap["statements"] = "statements"
 
         return MetricNameTranslator(replacementMap.toMap(), prefix)
-
     }
 }

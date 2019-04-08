@@ -48,7 +48,6 @@ class AbsoluteCoupledChurnTest {
         assertThat(metric.value()).isEqualTo(4L)
     }
 
-
     @Test
     fun should_increase_by_multiple_modification() {
         // given
@@ -70,8 +69,8 @@ class AbsoluteCoupledChurnTest {
         assertThat(metric.value()).isEqualTo(9L)
     }
 
-
-    private fun registerModifications(metric: Metric, modification: Modification, vararg otherModifications: Modification) {
+    private fun registerModifications(metric: Metric, modification: Modification,
+                                      vararg otherModifications: Modification) {
         val modificationList = ArrayList(Arrays.asList(*otherModifications))
         modificationList.add(modification)
 
