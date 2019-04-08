@@ -374,6 +374,49 @@ export const SETTINGS: Settings = {
 	treeMapSettings: { mapSize: 500 }
 }
 
+export const DEFAULT_SETTINGS: Settings = {
+	"appSettings": {
+		"amountOfTopLabels": 1,
+		"camera": new THREE.Vector3(0, 300, 1000),
+		"deltaColorFlipped": false,
+		"dynamicMargin": true,
+		"enableEdgeArrows": true,
+		"hideFlatBuildings": true,
+		"invertHeight": false,
+		"isWhiteBackground": false,
+		"mapColors": {
+			"angularGreen": "#00BFA5",
+			"base": "#666666",
+			"defaultC": "#89ACB4",
+			"flat": "#AAAAAA",
+			"lightGrey": "#DDDDDD",
+			"markingColors": ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"],
+			"negative": "#820E0E",
+			"negativeDelta": "#ff0E0E",
+			"neutral": "#ddcc00",
+			"positive": "#69AE40",
+			"positiveDelta": "#69FF40",
+			"selected": "#EB8319"
+		},
+		"maximizeDetailPanel": false,
+		"scaling": new THREE.Vector3(1, 1, 1),
+		"whiteColorBuildings": false
+	},
+	"dynamicSettings": {
+		"areaMetric": null,
+		"colorMetric": null,
+		"focusedNodePath": null,
+		"heightMetric": null,
+		"margin": 15,
+		"neutralColorRange": null,
+		"searchPattern": "",
+		"searchedNodePaths": []
+	},
+	"fileSettings": { "attributeTypes": {}, "blacklist": [], "edges": [], "markedPackages": [] },
+	"treeMapSettings": { "mapSize": 500 }
+}
+
+
 export const TEST_NODE_ROOT: Node = {
 	name: "root",
 	width: 1,

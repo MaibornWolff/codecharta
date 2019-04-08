@@ -1,7 +1,7 @@
 import {AttributeType, BlacklistItem, BlacklistType, CCFile, Edge, FileSettings, Settings} from "../codeCharta.model";
 import {SettingsMerger} from "./settingsMerger";
 
-describe("SettingsMerger", function() {
+describe("SettingsMerger", () => {
 
     const file1: CCFile = {
         fileMeta: {
