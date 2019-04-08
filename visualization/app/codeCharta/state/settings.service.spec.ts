@@ -1,88 +1,115 @@
-import {SettingsService} from "./settings.service";
-import {IRootScopeService} from "angular";
-import {getService, instantiateModule} from "../../../mocks/ng.mockhelper";
+import "./state.module"
+import { SettingsService } from "./settings.service"
+import { IRootScopeService } from "angular"
+import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
+import { DEFAULT_SETTINGS, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../util/dataMocks"
+import { FileSelectionState, FileState, Settings } from "../codeCharta.model"
+import { FileStateService } from "./fileState.service"
+import { FileStateHelper } from "../util/fileStateHelper"
+import { SettingsMerger } from "../util/settingsMerger"
 
-xdescribe("settingService", () => {
+describe("settingService", () => {
+	let settingsService: SettingsService
+	let $rootScope: IRootScopeService
 
-    let validCodeMap: CodeMap
-    let settingsService: SettingsService
-    let $rootScope: IRootScopeService
+	let settings: Settings
+	let fileStates: FileState[]
 
-    beforeEach(() => {
-        restartSystem();
-        rebuildService();
-    });
+	beforeEach(() => {
+		restartSystem()
+		rebuildService()
+		withMockedEventMethods()
+	})
 
-    function restartSystem() {
-        instantiateModule("app.codeCharta.state.settings");
+	function restartSystem() {
+		instantiateModule("app.codeCharta.state")
 
-        $rootScope = getService<IRootScopeService>("$rootScope")
-    }
+		$rootScope = getService<IRootScopeService>("$rootScope")
 
-    function rebuildService() {
-        settingsService = new SettingsService($rootScope)
-    }
+		settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS))
+		fileStates = [{ file: JSON.parse(JSON.stringify(TEST_DELTA_MAP_A)), selectedAs: FileSelectionState.Comparison },
+			{ file: JSON.parse(JSON.stringify(TEST_DELTA_MAP_B)), selectedAs: FileSelectionState.Reference }]
+	}
 
-    describe("onSettingsChanged", () => {
+	function rebuildService() {
+		settingsService = new SettingsService($rootScope)
+	}
 
-        it("should react to data-changed events", () => {
-            settingsService.onSettingsChanged = jest.fn();
+	function withMockedEventMethods() {
+		$rootScope.$on = settingsService["$rootScope"].$on = jest.fn()
+	}
 
-            //enough metrics
-            $rootScope.$broadcast("data-changed", {
-                renderMap: validCodeMap,
-                metrics: ["a", "b", "c"],
-                revisions: [validCodeMap, validCodeMap]
-            });
+	describe("constructor", () => {
+		it("should set settings to default settings", () => {
+			rebuildService()
 
-            expect(settingsService.settings.map.fileName).toBe("file");
-            expect(settingsService.settings.areaMetric).toBe("a");
-            expect(settingsService.settings.heightMetric).toBe("b");
-            expect(settingsService.settings.colorMetric).toBe("c");
+			expect(settingsService.getSettings()).toEqual(settings)
+		})
 
-            //not enough metrics
-            validCodeMap.fileName = "file2";
-            $rootScope.$broadcast("data-changed", {
-                renderMap: validCodeMap,
-                metrics: ["a"],
-                revisions: [validCodeMap, validCodeMap]
-            });
+		it("should subscribe to FileStateService", () => {
+			FileStateService.subscribe = jest.fn()
 
-            expect(settingsService.settings.map.fileName).toBe("file2");
-            expect(settingsService.settings.areaMetric).toBe("a");
-            expect(settingsService.settings.heightMetric).toBe("a");
-            expect(settingsService.settings.colorMetric).toBe("a");
+			rebuildService()
 
-            expect(settingsService.onSettingsChanged).toHaveBeenCalledTimes(2);
-        });
+			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, settingsService)
+		})
+	})
 
-        it("should react to camera-changed events", () => {
-            settingsService.onCameraChanged = sinon.spy();
-            $rootScope.$broadcast("camera-changed", {});
-            expect(settingsService.onCameraChanged.calledOnce);
-        });
+	describe("onFileSelectionStateChanged", () => {
+		beforeEach(() => {
+			settingsService.updateSettings = jest.fn()
+			FileStateHelper.isPartialState = jest.fn().mockReturnValue(false)
+			FileStateHelper.getVisibleFileStates = jest.fn().mockReturnValue(fileStates)
+			SettingsMerger.getMergedFileSettings = jest.fn().mockReturnValue(DEFAULT_SETTINGS)
+		})
 
-        it("onCameraChanged should update settings object but not call onSettingsChanged to ensure performance", () => {
-            settingsService.onSettingsChanged = sinon.spy();
-            settingsService.onCameraChanged({position: {x: 0, y: 0, z: 42}});
-            expect(!settingsService.onSettingsChanged.called);
-            expect(settingsService.settings.camera.z).toBe(42);
-        });
+		it("should call updateSettings with newFileSettings", () => {
+			settingsService.onFileSelectionStatesChanged(fileStates, undefined)
 
-        it("should react to data-changed events and set metrics correctly", () => {
-            settingsService.onSettingsChanged = sinon.spy();
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({fileSettings: DEFAULT_SETTINGS})
+		})
 
-            $rootScope.$broadcast("data-changed", {
-                renderMap: validCodeMap,
-                metrics: ["a", "b"],
-                revisions: [validCodeMap, validCodeMap]
-            });
+		it("should call isPartialState with fileStates", () => {
+			settingsService.onFileSelectionStatesChanged(fileStates, undefined)
 
-            expect(settingsService.settings.map.fileName).toBe("file");
-            expect(settingsService.settings.areaMetric).toBe("a");
-            expect(settingsService.settings.heightMetric).toBe("b");
-            expect(settingsService.settings.colorMetric).toBe("b");
-            expect(settingsService.onSettingsChanged.calledOnce);
-        });
-    });
-});
+			expect(FileStateHelper.isPartialState).toHaveBeenCalledWith(fileStates)
+		})
+
+		it("should call getVisibleFileStates with fileStates", () => {
+			settingsService.onFileSelectionStatesChanged(fileStates, undefined)
+
+			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
+		})
+
+		it("should call getMergedFileStates with visibleFiles and withUpdatedPath", () => {
+			settingsService.onFileSelectionStatesChanged(fileStates, undefined)
+			const visibleFiles = [fileStates[0].file, fileStates[1].file]
+
+			expect(SettingsMerger.getMergedFileSettings).toHaveBeenCalledWith(visibleFiles, false)
+		})
+	})
+
+	describe("updateSettings", () => {
+		it("should set settings correctly", () => {
+			const expected = {...DEFAULT_SETTINGS, appSettings: { ...DEFAULT_SETTINGS.appSettings, invertHeight: true } }
+
+			settingsService.updateSettings({appSettings : { invertHeight: true }})
+
+			expect(settingsService.getSettings()).toEqual(expected)
+		})
+	})
+
+	describe("getDefaultSettings", () => {
+		it("should match snapshot", () => {
+			expect(settingsService.getDefaultSettings()).toMatchSnapshot()
+		})
+	})
+
+	describe("subscribe", () => {
+		it("should setup one event listener", () => {
+			SettingsService.subscribe($rootScope, undefined)
+
+			expect($rootScope.$on).toHaveBeenCalledTimes(1)
+		})
+	})
+})
