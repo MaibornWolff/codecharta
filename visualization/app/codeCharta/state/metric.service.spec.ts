@@ -35,28 +35,32 @@ describe("MetricService", () => {
 	}
 
 	function withMockedEventMethods() {
-		$rootScope.$broadcast = metricService["$rootScope"].$broadcast = jest.fn((event, data) => {})
+		$rootScope.$broadcast = metricService["$rootScope"].$broadcast = jest.fn((event, data) => {
+		})
 	}
 
 	describe("onFileSelectionStatesChanged", () => {
-		it("should set calculated metrics and trigger METRIC_DATA_CHANGED_EVENT", () => {
-			metricService.calculateMetrics = jest.fn((fileStates: FileState[], visibleFileStates: FileState[]) => {
-				return []
-			})
+		beforeEach(() => {
+			metricService.calculateMetrics = jest.fn().mockReturnValue([])
+		})
+
+		it("should set unary metric into metricData", () => {
+			metricService.onFileSelectionStatesChanged(fileStates, undefined)
+
+			expect(metricService.getMetrics()).toContain("unary")
+			const unary: MetricData = metricService.getMetricData().find(x => x.name == "unary")
+			expect(unary.maxValue).toBe(1)
+			expect(unary.availableInVisibleMaps).toBe(true)
+		})
+
+		it("should trigger METRIC_DATA_CHANGED_EVENT", () => {
+			const expected =  [{"availableInVisibleMaps": true, "maxValue": 1, "name": "unary"}]
 
 			metricService.onFileSelectionStatesChanged(fileStates, undefined)
 
-			const result = metricService.getMetricData()
-
-			expect(result).toEqual([])
-			expect(result.length).toBe(0)
 			expect($rootScope.$broadcast).toHaveBeenCalledTimes(1)
-			expect($rootScope.$broadcast).toHaveBeenCalledWith(MetricService["METRIC_DATA_CHANGED_EVENT"], result)
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(MetricService["METRIC_DATA_CHANGED_EVENT"], expected)
 		})
-	})
-
-	describe("onImportedFilesChanged", () => {
-		it("should ", () => {})
 	})
 
 	describe("getMetrics", () => {
@@ -88,22 +92,6 @@ describe("MetricService", () => {
 			const result = metricService.getMaxMetricByMetricName("some metric")
 
 			expect(result).not.toBeDefined()
-		})
-	})
-
-	describe("getMaxMetricInAllRevisions", () => {
-		it("should return the highest value of a metric found in the leaves of some CCFiles", () => {
-			const result = metricService.getMaxMetricInAllRevisions(files, "rloc")
-			const expected = 100
-
-			expect(result).toBe(expected)
-		})
-
-		it("should return 0 if metric is not found in a leaf of some CCFiles", () => {
-			const result = metricService.getMaxMetricInAllRevisions(files, "some metric")
-			const expected = 0
-
-			expect(result).toBe(expected)
 		})
 	})
 
@@ -139,17 +127,6 @@ describe("MetricService", () => {
 			]
 
 			expect(result).toEqual(expected)
-		})
-	})
-
-	describe("addUnaryMetric", () => {
-		it("should set unary metric into metricData", () => {
-			metricService.addUnaryMetric()
-
-			expect(metricService.getMetrics()).toContain("unary")
-			const unary: MetricData = metricService.getMetricData().find(x => x.name == "unary")
-			expect(unary.maxValue).toBe(1)
-			expect(unary.availableInVisibleMaps).toBe(true)
 		})
 	})
 })
