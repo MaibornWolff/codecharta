@@ -7,28 +7,29 @@ export class DeltaGenerator {
 
     public static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile): CCFile {
         // TODO: set combined settings.fileSettings from both CCFiles into settingsService.settings
+        if(referenceFile && comparisonFile && referenceFile.map && comparisonFile.map) {
+            //build hash maps for fast search indices
+            let referenceHashMap = new Map<string, CodeMapNode>();
+            d3.hierarchy(referenceFile.map).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
+                referenceHashMap.set(node.data.path, node.data);
+            });
 
-        //build hash maps for fast search indices
-        let referenceHashMap = new Map<string, CodeMapNode>();
-        d3.hierarchy(referenceFile.map).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
-            referenceHashMap.set(node.data.path, node.data);
-        });
+            let comparisonHashMap = new Map<string, CodeMapNode>();
+            d3.hierarchy(comparisonFile.map).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
+                comparisonHashMap.set(node.data.path, node.data);
+            });
 
-        let comparisonHashMap = new Map<string, CodeMapNode>();
-        d3.hierarchy(comparisonFile.map).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
-            comparisonHashMap.set(node.data.path, node.data);
-        });
+            //insert nodes from the other map
+            this.insertNodesIntoMapsAndHashMaps(referenceHashMap, comparisonHashMap, comparisonFile.map);
+            this.insertNodesIntoMapsAndHashMaps(comparisonHashMap, referenceHashMap, referenceFile.map);
 
-        //insert nodes from the other map
-        this.insertNodesIntoMapsAndHashMaps(referenceHashMap, comparisonHashMap, comparisonFile.map);
-        this.insertNodesIntoMapsAndHashMaps(comparisonHashMap, referenceHashMap, referenceFile.map);
-
-        //calculate deltas between leaves
-        referenceHashMap.forEach((referenceNode, path) => {
-            let comparisonNode = comparisonHashMap.get(path);
-            comparisonNode.deltas = this.calculateAttributeListDelta(referenceNode.attributes, comparisonNode.attributes);
-            referenceNode.deltas = this.calculateAttributeListDelta(comparisonNode.attributes, referenceNode.attributes);
-        });
+            //calculate deltas between leaves
+            referenceHashMap.forEach((referenceNode, path) => {
+                let comparisonNode = comparisonHashMap.get(path);
+                comparisonNode.deltas = this.calculateAttributeListDelta(referenceNode.attributes, comparisonNode.attributes);
+                referenceNode.deltas = this.calculateAttributeListDelta(comparisonNode.attributes, referenceNode.attributes);
+            });
+        }
         return referenceFile
     }
 
