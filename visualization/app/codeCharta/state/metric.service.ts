@@ -23,6 +23,7 @@ export class MetricService implements FileStateServiceSubscriber {
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates))
+		this.addUnaryMetric()
 		this.notifySubscriber()
 	}
 
@@ -98,6 +99,14 @@ export class MetricService implements FileStateServiceSubscriber {
 
 	private sortByAttributeName(metricData: MetricData[]): MetricData[] {
 		return metricData.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
+	}
+
+	private addUnaryMetric() {
+		this.metricData.push({
+			name: "unary",
+			maxValue: 1,
+			availableInVisibleMaps: true
+		})
 	}
 
 	private notifySubscriber() {

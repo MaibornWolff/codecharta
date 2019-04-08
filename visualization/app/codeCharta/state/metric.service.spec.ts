@@ -141,4 +141,15 @@ describe("MetricService", () => {
 			expect(result).toEqual(expected)
 		})
 	})
+
+	describe("addUnaryMetric", () => {
+		it("should set unary metric into metricData", () => {
+			metricService.addUnaryMetric()
+
+			expect(metricService.getMetrics()).toContain("unary")
+			const unary: MetricData = metricService.getMetricData().find(x => x.name == "unary")
+			expect(unary.maxValue).toBe(1)
+			expect(unary.availableInVisibleMaps).toBe(true)
+		})
+	})
 })
