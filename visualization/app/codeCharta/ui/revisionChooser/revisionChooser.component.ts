@@ -120,12 +120,9 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
         if (renderState === FileSelectionState.Single) {
             this._viewModel.selectedFileNames.single = this.getLastVisibleFileName()
             this.onSingleFileChange(this._viewModel.selectedFileNames.single)
-
         } else if (renderState === FileSelectionState.Partial) {
             this.selectAllPartialFiles()
-
         } else if (renderState === FileSelectionState.Comparison) {
-            //TODO: What does this do?
             this._viewModel.selectedFileNames.delta.reference = this.getLastVisibleFileName()
             this.onDeltaComparisonFileChange(null)
         }
@@ -152,8 +149,6 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
     private getLastVisibleFileName(): string {
         if (this.lastRenderState === FileSelectionState.Single) {
             return this._viewModel.selectedFileNames.single
-
-            //TODO: dead code?
         } else if (this.lastRenderState === FileSelectionState.Partial) {
             const visibleFileStates = FileStateHelper.getVisibleFileStates(this._viewModel.fileStates)
             if (FileStateHelper.getVisibleFileStates(this._viewModel.fileStates).length > 0) {
@@ -161,7 +156,6 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
             } else {
                 return this._viewModel.fileStates[0].file.fileMeta.fileName
             }
-
         } else if (this.lastRenderState === FileSelectionState.Comparison) {
             return this._viewModel.selectedFileNames.delta.reference
         }
