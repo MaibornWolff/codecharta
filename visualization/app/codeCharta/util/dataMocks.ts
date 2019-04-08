@@ -1,4 +1,4 @@
-import { CodeMapNode, Edge, CCFile, Settings, KeyValuePair } from "../codeCharta.model"
+import { CodeMapNode, Edge, CCFile, Settings, KeyValuePair, MetricData } from "../codeCharta.model"
 import { Node } from "../../codeCharta/ui/codeMap/rendering/node"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import * as THREE from "three"
@@ -292,44 +292,55 @@ export const TEST_DELTA_MAP_B: CCFile = {
 }
 
 export const TEST_FILE_DATA_DOWNLOADED = {
-	"apiVersion": "1.1",
-	"attributeTypes": {},
-	"blacklist": [],
-	"edges": [{
-		"attributes": { "avgCommits": 34, "pairingRate": 89 },
-		"fromNodeName": "/root/big leaf",
-		"toNodeName": "/root/Parent Leaf/small leaf"
-	}, {
-		"attributes": { "avgCommits": 34, "pairingRate": 89 },
-		"fromNodeName": "/root/sample1 only leaf",
-		"toNodeName": "/root/Parent Leaf/small leaf"
-	}],
-	"fileName": "file.14_12_2018.json",
-	"nodes": [{
-		"attributes": {},
-		"children": [{
-			"attributes": { "Functions": 10, "MCC": 1, "RLOC": 100 },
-			"link": "http://www.google.de",
-			"name": "big leaf",
-			"type": "File"
-		}, {
-			"attributes": {},
-			"children": [{
-				"attributes": { "Functions": 100, "MCC": 100, "RLOC": 30 },
-				"name": "small leaf",
-				"type": "File"
-			}, {
-				"attributes": { "Functions": 1000, "MCC": 10, "RLOC": 70 },
-				"name": "other small leaf",
-				"type": "File"
-			}],
-			"name": "Parent Leaf",
-			"type": "Folder"
-		}],
-		"name": "root",
-		"type": "Folder"
-	}],
-	"projectName": "Sample Map"
+	apiVersion: "1.1",
+	attributeTypes: {},
+	blacklist: [],
+	edges: [
+		{
+			attributes: { avgCommits: 34, pairingRate: 89 },
+			fromNodeName: "/root/big leaf",
+			toNodeName: "/root/Parent Leaf/small leaf"
+		},
+		{
+			attributes: { avgCommits: 34, pairingRate: 89 },
+			fromNodeName: "/root/sample1 only leaf",
+			toNodeName: "/root/Parent Leaf/small leaf"
+		}
+	],
+	fileName: "file.14_12_2018.json",
+	nodes: [
+		{
+			attributes: {},
+			children: [
+				{
+					attributes: { Functions: 10, MCC: 1, RLOC: 100 },
+					link: "http://www.google.de",
+					name: "big leaf",
+					type: "File"
+				},
+				{
+					attributes: {},
+					children: [
+						{
+							attributes: { Functions: 100, MCC: 100, RLOC: 30 },
+							name: "small leaf",
+							type: "File"
+						},
+						{
+							attributes: { Functions: 1000, MCC: 10, RLOC: 70 },
+							name: "other small leaf",
+							type: "File"
+						}
+					],
+					name: "Parent Leaf",
+					type: "Folder"
+				}
+			],
+			name: "root",
+			type: "Folder"
+		}
+	],
+	projectName: "Sample Map"
 }
 
 export const SETTINGS: Settings = {
@@ -427,8 +438,8 @@ export const TEST_NODE_ROOT: Node = {
 	z0: 6,
 	y0: 7,
 	isLeaf: true,
-	deltas: { "a": 1, "b": 2 },
-	attributes: { "a": 20, "b": 15 },
+	deltas: { a: 1, b: 2 },
+	attributes: { a: 20, b: 15 },
 	children: [],
 	parent: undefined,
 	heightDelta: 10,
@@ -450,8 +461,8 @@ export const TEST_NODE_LEAF: Node = {
 	z0: 6,
 	y0: 7,
 	isLeaf: true,
-	deltas: { "a": 1, "b": 2 },
-	attributes: { "a": 20, "b": 15 },
+	deltas: { a: 1, b: 2 },
+	attributes: { a: 20, b: 15 },
 	children: [],
 	parent: undefined,
 	heightDelta: 20,
@@ -464,3 +475,8 @@ export const TEST_NODE_LEAF: Node = {
 }
 
 export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(1, new THREE.Box3(), TEST_NODE_ROOT)
+
+export const METRIC_DATA: MetricData[] = [
+	{ name: "mcc", maxValue: 1, availableInVisibleMaps: true },
+	{ name: "rloc", maxValue: 2, availableInVisibleMaps: true }
+]
