@@ -1,172 +1,147 @@
-import {TreeMapService, TreeMapSettings} from "./treemap.service";
-import {CodeMapNode} from "../data/model/CodeMap";
-import {node} from "../rendering/node";
-import {DataService} from "../data/data.service";
+import { Node } from "../rendering/node"
+import { CCFile, Settings, MetricData } from "../../../codeCharta.model"
+import { CodeMapNode } from "../../../codeCharta.model"
+import { TreeMapService } from "./treemap.service"
+import { SETTINGS, METRIC_DATA, TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH, VALID_EDGES } from "../../../util/dataMocks"
 
-describe("treemap service", ()=> {
+describe("treemap service", () => {
+	let treeMapService: TreeMapService
+	let renderFile: CCFile, settings: Settings, metricData: MetricData[], codemapNode: CodeMapNode
 
-    let treeMapService: TreeMapService;
-    let dataServiceMock: DataService;
+	beforeEach(() => {
+		restartSystem()
+		rebuildService()
+	})
 
-    beforeEach(()=>{
-        dataServiceMock = {
-            getMaxMetricInAllRevisions: jest.fn()
-        };
-        dataServiceMock.getMaxMetricInAllRevisions.mockReturnValue(1000);
-        treeMapService = new TreeMapService(dataServiceMock);
-    });
+	function restartSystem() {
+		renderFile = JSON.parse(JSON.stringify(TEST_FILE_WITH_PATHS))
+		settings = JSON.parse(JSON.stringify(SETTINGS))
+		codemapNode = JSON.parse(JSON.stringify(VALID_NODE_WITH_PATH))
+		metricData = METRIC_DATA
+	}
 
-    function buildSampeTreemapSettings(): TreeMapSettings {
-        return {
-            size: 200,
-            areaKey: "mcc",
-            heightKey: "fun",
-            margin: 0,
-            invertHeight: false,
-            visibleEdges: [],
-            searchedNodePaths: [],
-            blacklist:[],
-            fileName:"currentFile.json"
-        };
-    }
+	function rebuildService() {
+		treeMapService = new TreeMapService()
+	}
 
-    function buildSampleAttributes() {
-        return {
-            "mcc": 1,
-            "fun": 10,
-            "lin": 100,
-        };
-    }
+	describe("create Treemap nodes", () => {})
 
-    function buildSimpleHierarchy() {
-        let root: CodeMapNode = {
-            name: "root",
-            path: "/root",
-            attributes: {},
-            type: "Folder"
-        };
-        let firstChild: CodeMapNode = {
-            name: "firstChild",
-            path: root.path + "/firstChild",
-            attributes: {},
-            type: "File"
-        };
-        let secondChild: CodeMapNode = {
-            name: "secondChild",
-            path: root.path + "/secondChild",
-            attributes: {},
-            type: "File"
-        };
-        root.children = [firstChild, secondChild];
-        return { root, firstChild, secondChild };
-    }
+	it("only root node", () => {
+		renderFile.map.children = []
 
-    function buildComplexHierarchy() {
-        let { root, firstChild, secondChild } = buildSimpleHierarchy();
-        firstChild.type = "Folder"
-        let firstGrandChild = { 
-            name: "firstGrandChild", 
-            path: firstChild.path+"/firstGrandChild", 
-            attributes: root.attributes,
-            type: "File"
-        };
+		let node: Node = treeMapService.createTreemapNodes(renderFile, settings, metricData)
 
-        let secondGrandChild = { 
-            name: "secondGrandChild", 
-            path: firstChild.path+"/secondGrandChild", 
-            attributes: root.attributes,
-            type: "File" 
-        };
+		expect(node).toMatchSnapshot()
+	})
 
-        firstChild.children = [firstGrandChild, secondGrandChild];
-        return { root, firstChild, secondChild , firstGrandChild, secondGrandChild};
-    }
+	it("root node with two direct children", () => {
+		renderFile.map.children[1].children = []
 
-    it("only root node", ()=> {
-        let { root } = buildSimpleHierarchy();
-        root.attributes = buildSampleAttributes();
-        root.children = [];
-        let node: node = treeMapService.createTreemapNodes(root, buildSampeTreemapSettings(), null);
-        expect(node).toMatchSnapshot();
-    });
+		let node: Node = treeMapService.createTreemapNodes(renderFile, settings, metricData)
 
-    it("root node with two direct children", ()=> {
-        let { root, firstChild, secondChild } = buildSimpleHierarchy();
-        root.attributes = firstChild.attributes = secondChild.attributes = buildSampleAttributes();
-        let node: node = treeMapService.createTreemapNodes(root, buildSampeTreemapSettings(), null);
-        expect(node).toMatchSnapshot();
-    });
+		expect(node).toMatchSnapshot()
+	})
 
-    it("root node with two direct children and some grand children", ()=> {
-        let { root, firstChild, secondChild, firstGrandChild, secondGrandChild } = buildComplexHierarchy();
-        root.attributes = firstChild.attributes = secondChild.attributes = firstGrandChild.attributes = secondGrandChild.attributes = buildSampleAttributes();
-        let node: node = treeMapService.createTreemapNodes(root, buildSampeTreemapSettings(), null);
-        expect(node).toMatchSnapshot();
-    });
+	it("root node with two direct children and some grand children", () => {
+		let node: Node = treeMapService.createTreemapNodes(renderFile, settings, metricData)
 
-    describe("CodeMap value calculation", ()=> {
+		expect(node).toMatchSnapshot()
+	})
 
-        it("if a node was deleted from previous revision it should still be visible and have positive width/length", ()=> {
-            
-            // given map with one node deleted in comparison to previous revision
-            let root = buildSimpleHierarchy().root;
-            root.attributes = {"myArea": 22, "myHeight": 12}
-            root.deltas = {};
-            root.children[0].attributes = {"myArea": 44, "myHeight": 63}
-            root.children[0].deltas = {"myArea": 20, "myHeight": 0}
-            root.children[0].origin = "file.json";
-            root.children[1].attributes = {"myArea": 0, "myHeight": 0}
-            root.children[1].deltas = {"myArea": -40, "myHeight": -80}
-            root.children[1].origin = "notfile.json";
+	describe("CodeMap value calculation", () => {
+		it("if a node was deleted from previous revision it should still be visible and have positive width/length", () => {
+			// given map with one node deleted in comparison to previous revision
+			renderFile.map.attributes = { myArea: 22, myHeight: 12 }
+			renderFile.map.deltas = {}
+			renderFile.map.children[0].attributes = { myArea: 44, myHeight: 63 }
+			renderFile.map.children[0].deltas = { myArea: 20, myHeight: 0 }
+			renderFile.map.children[0].origin = "file.json"
+			renderFile.map.children[1].attributes = { myArea: 0, myHeight: 0 }
+			renderFile.map.children[1].deltas = { myArea: -40, myHeight: -80 }
+			renderFile.map.children[1].origin = "notfile.json"
 
-            // given settings
-            let settings = buildSampeTreemapSettings();
-            settings.fileName = "file.json";
-            settings.areaKey = "myArea";
-            settings.heightKey = "myHeight";
-            settings.size=1000;
-            
-            // when
-            let node: node = treeMapService.createTreemapNodes(root, settings, null);
+			renderFile.fileMeta.fileName = "file.json"
+			settings.dynamicSettings.areaMetric = "myArea"
+			settings.dynamicSettings.heightMetric = "myHeight"
+			settings.treeMapSettings.mapSize = 1000
+			metricData = [
+				{ name: "myArea", maxValue: 42, availableInVisibleMaps: true },
+				{ name: "myHeight", maxValue: 99, availableInVisibleMaps: true }
+			]
 
-            //then
-            expect(node.children[1].name).toBe("secondChild");
-            expect(node.children[1].width).toBeGreaterThan(0);
-            expect(node.children[1].length).toBeGreaterThan(0);
+			let node: Node = treeMapService.createTreemapNodes(renderFile, settings, metricData)
 
-        });
+			expect(node.children[1].name).toBe("Parent Leaf")
+			expect(node.children[1].width).toBeGreaterThan(0)
+			expect(node.children[1].length).toBeGreaterThan(0)
+		})
 
-        it("attribute exists, no children", ()=> {
-            let { root } = buildSimpleHierarchy();
-            root.children = [];
-            root.attributes = {a:100};
-            let node: node = treeMapService.createTreemapNodes(root, buildSampeTreemapSettings(), null);
-            expect(node.attributes["a"]).toBe(100);
-        });
+		it("attribute exists, no children", () => {
+			renderFile.map.children = []
+			renderFile.map.attributes = { a: 100 }
 
-        it("attribute do not exists, no children", ()=> {
-            let { root } = buildSimpleHierarchy();
-            root.children = [];
-            let node: node = treeMapService.createTreemapNodes(root, buildSampeTreemapSettings(), null);
-            expect(node.attributes["b"]).toBe(undefined);
-        });
+			let node: Node = treeMapService.createTreemapNodes(renderFile, settings, metricData)
 
-        it("attribute do not exists, multiple children with non existant attributes", ()=> {
-            let { root  } = buildSimpleHierarchy();
-            let treemapSettings = buildSampeTreemapSettings();
-            treemapSettings.heightKey = "b";
-            treemapSettings.areaKey = "b";
-            let node: node = treeMapService.createTreemapNodes(root, treemapSettings, null);
-            expect(node.attributes["b"]).toBe(undefined);
-        });
+			expect(node.attributes["a"]).toBe(100)
+		})
 
-        it("attribute do not exists, multiple children with existant attributes. should be undefined since it is not the job of the treemap service to add non existant attributes", ()=> {
-            let { root } = buildSimpleHierarchy();
-            expect(root.attributes["a"]).toBe(undefined);
-        });
+		it("attribute do not exists, no children", () => {
+			renderFile.map.children = []
 
-    });
+			let node: Node = treeMapService.createTreemapNodes(renderFile, settings, metricData)
 
+			expect(node.attributes["b"]).toBe(undefined)
+		})
 
-});
+		it("attribute do not exists, multiple children with non existant attributes", () => {
+			settings.dynamicSettings.heightMetric = "b"
+			settings.dynamicSettings.areaMetric = "b"
+			metricData = [
+				{ name: "a", maxValue: 42, availableInVisibleMaps: true },
+				{ name: "b", maxValue: 99, availableInVisibleMaps: true }
+			]
 
+			let node: Node = treeMapService.createTreemapNodes(renderFile, settings, metricData)
+
+			expect(node.attributes["b"]).toBe(undefined)
+		})
+
+		it("filtered Edge Attributes are obtained, giving positive width and length", () => {
+			settings.dynamicSettings.areaMetric = "pairingRate"
+			settings.dynamicSettings.heightMetric = "pairingRate"
+			settings.fileSettings.edges = VALID_EDGES
+			metricData = [{ name: "pairingRate", maxValue: 100, availableInVisibleMaps: true }]
+
+			let node: Node = treeMapService.createTreemapNodes(renderFile, settings, metricData)
+
+			expect(node.children[1].width).toBeGreaterThan(0)
+			expect(node.children[1].length).toBeGreaterThan(0)
+		})
+
+		it("area should be zero if metric does not exist", () => {
+			settings.dynamicSettings.areaMetric = "unknown"
+			settings.dynamicSettings.heightMetric = "unknown"
+			settings.fileSettings.edges = VALID_EDGES
+			metricData = [{ name: "unknown", maxValue: 100, availableInVisibleMaps: true }]
+
+			let node: Node = treeMapService.createTreemapNodes(renderFile, settings, metricData)
+
+			expect(node.children[1].width * node.children[1].length).toEqual(0)
+		})
+	})
+
+	describe("setVisibilityOfNodeAndDescendants", () => {
+		it("node visibility should be adjusted", () => {
+			let result = treeMapService.setVisibilityOfNodeAndDescendants(codemapNode, false)
+
+			expect(result.visible).toBeFalsy
+		})
+
+		it("node children visibility should be adjusted", () => {
+			let result = treeMapService.setVisibilityOfNodeAndDescendants(codemapNode, false)
+
+			expect(result.children[0].visible).toBeFalsy
+			expect(result.children[1].visible).toBeFalsy
+		})
+	})
+})
