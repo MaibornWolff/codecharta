@@ -52,9 +52,11 @@ export class FileChooserController {
             this.dialogService.showErrorDialog("Error parsing JSON!" + error)
             this.$rootScope.$broadcast("remove-loading-task")
         }
+        //TODO: Why broadcasting 2 remove-loading tasks when error is caught?
         this.$rootScope.$broadcast("remove-loading-task")
     }
 
+    //TODO Remove-loading-tasks once at the end?
     public setNewData(nameDataPair: NameDataPair){
         this.codeChartaService.loadFiles([nameDataPair])
             .then(() => {

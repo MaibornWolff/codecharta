@@ -5,7 +5,7 @@ import "../dialog/dialog.module";
 import {FileChooserDirective} from "./fileChooser.directive";
 import {fileChooserComponent} from "./fileChooser.component";
 
-angular.module("app.codeCharta.ui.fileChooser",["app.codeCharta.state", "app.codeCharta.ui.dialog"]);
+angular.module("app.codeCharta.ui.fileChooser",["app.codeCharta", "app.codeCharta.ui.dialog"]);
 
 angular.module("app.codeCharta.ui.fileChooser")
     .component(fileChooserComponent.selector, fileChooserComponent);
