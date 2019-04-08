@@ -164,15 +164,12 @@ export class CodeMapActionsService {
 
     private removeChildrenMPWithSameColor(newMP: MarkedPackage, s: Settings) {
         const allChildrenMP: MarkedPackage[] = this.getAllChildrenMP(newMP.path, s);
-        //TODO: remove unnecessary if
-        if (allChildrenMP.length > 0) {
             allChildrenMP.forEach(childPackage => {
                 const parentMP = this.getParentMP(childPackage.path, s);
                 if (parentMP && parentMP.color === childPackage.color) {
                     this.removeMarkedPackage(childPackage, s);
                 }
             });
-        }
     }
 
     private getAllChildrenMP(path: string, s: Settings): MarkedPackage[] {

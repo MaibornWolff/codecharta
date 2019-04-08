@@ -169,7 +169,7 @@ describe("nodeContextMenuController", () => {
 			CodeMapHelper.getCodeMapNodeFromPath = jest.fn().mockReturnValue(TEST_DELTA_MAP_A.map)
 			codeMapActionsService.amountOfDependentEdges = jest.fn().mockReturnValue({})
 			codeMapActionsService.amountOfVisibleDependentEdges = jest.fn().mockReturnValue({})
-			codeMapActionsService.anyEdgeIsVisible = jest.fn().mockReturnValue({})
+			codeMapActionsService.isAnyEdgeVisible = jest.fn().mockReturnValue({})
 		})
 
 		it("should set the correct building after some timeout", () => {

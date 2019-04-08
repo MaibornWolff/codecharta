@@ -411,20 +411,20 @@ describe("CodeMapActionService", () => {
 	describe("isAnyEdgeVisible", () => {
 		it("should return false if no edge is visible", () =>  {
 			settings.fileSettings.edges[0].visible = false
-			const result = codeMapActionsService.anyEdgeIsVisible()
+			const result = codeMapActionsService.isAnyEdgeVisible()
 
 			expect(result).toBeFalsy()
 		})
 
 		it("should return false if visible property is undefined", () =>  {
-			const result = codeMapActionsService.anyEdgeIsVisible()
+			const result = codeMapActionsService.isAnyEdgeVisible()
 
 			expect(result).toBeFalsy()
 		})
 
 		it("should return true if one edge is visible", () =>  {
 			settings.fileSettings.edges[0].visible = true
-			const result = codeMapActionsService.anyEdgeIsVisible()
+			const result = codeMapActionsService.isAnyEdgeVisible()
 
 			expect(result).toBeTruthy()
 		})
