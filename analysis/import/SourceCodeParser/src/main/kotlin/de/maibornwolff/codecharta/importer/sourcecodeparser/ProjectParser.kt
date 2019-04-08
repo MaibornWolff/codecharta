@@ -8,7 +8,7 @@ import java.io.Writer
 
 class ProjectParser {
     var metricKinds: MutableSet<String> = HashSet()
-    var projectMetrics: MutableMap<String, FileMetrics> = HashMap()
+    var projectMetrics: MutableMap<String, FileMetrics> = hashMapOf()
     private var sonarAnalyzers: MutableList<SonarAnalyzer> = mutableListOf()
 
     private fun setUpAnalyzers(root: File) {
