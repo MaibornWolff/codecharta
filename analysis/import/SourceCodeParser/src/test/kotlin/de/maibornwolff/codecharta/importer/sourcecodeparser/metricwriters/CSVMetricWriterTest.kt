@@ -1,16 +1,17 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters
 
-import org.junit.Test
-import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetrics
-
+import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetricMap
 import org.assertj.core.api.Assertions.assertThat
-import java.io.*
+import org.junit.Test
+import java.io.ByteArrayOutputStream
+import java.io.OutputStreamWriter
+import java.io.PrintStream
 
 class CSVMetricWriterTest {
 
   @Test
   fun `empty project no metrics nor files`() {
-    val metrics = hashMapOf<String, FileMetrics>()
+    val metrics = hashMapOf<String, FileMetricMap>()
     val result = ByteArrayOutputStream()
 
     CSVMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
@@ -20,9 +21,9 @@ class CSVMetricWriterTest {
 
   @Test
   fun `paths for files are correct`() {
-    val metrics = mutableMapOf<String, FileMetrics>()
-    metrics["myFile.java"] = FileMetrics()
-    metrics["foo/bar/myFile.java"] = FileMetrics()
+    val metrics = mutableMapOf<String, FileMetricMap>()
+    metrics["myFile.java"] = FileMetricMap()
+    metrics["foo/bar/myFile.java"] = FileMetricMap()
     val result = ByteArrayOutputStream()
 
     CSVMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
@@ -32,7 +33,7 @@ class CSVMetricWriterTest {
 
   @Test
   fun `header of csv is correct`() {
-    val metrics = mutableMapOf<String, FileMetrics>()
+    val metrics = mutableMapOf<String, FileMetricMap>()
     val result = ByteArrayOutputStream()
     val allMetrics = setOf("foo", "bar")
 
@@ -43,9 +44,9 @@ class CSVMetricWriterTest {
 
   @Test
   fun `metrics are written correct`() {
-    val fileMetrics1 = FileMetrics().add("mcc", 2).add("rloc", 3)
-    val fileMetrics2 = FileMetrics().add("mcc", 1).add("rloc", 4)
-    val metrics = mutableMapOf<String, FileMetrics>()
+    val fileMetrics1 = FileMetricMap().add("mcc", 2).add("rloc", 3)
+    val fileMetrics2 = FileMetricMap().add("mcc", 1).add("rloc", 4)
+    val metrics = mutableMapOf<String, FileMetricMap>()
     metrics["foo"] = fileMetrics1
     metrics["bar"] = fileMetrics2
     val result = ByteArrayOutputStream()
@@ -58,8 +59,8 @@ class CSVMetricWriterTest {
 
   @Test
   fun `missing metrics lead to empty fields in csv`() {
-    val metrics = mutableMapOf<String, FileMetrics>()
-    metrics.put("bla", FileMetrics())
+    val metrics = mutableMapOf<String, FileMetricMap>()
+    metrics.put("bla", FileMetricMap())
     val allMetrics = setOf("foo","bar")
     val result = ByteArrayOutputStream()
 

@@ -1,21 +1,21 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.NullFileLinesContextFactory
-import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetricMap
 import org.sonar.api.SonarQubeSide
+import org.sonar.api.batch.fs.InputFile
+import org.sonar.api.batch.fs.internal.TestInputFileBuilder
 import org.sonar.api.batch.rule.CheckFactory
 import org.sonar.api.batch.rule.internal.ActiveRulesBuilder
 import org.sonar.api.batch.sensor.internal.SensorContextTester
 import org.sonar.api.config.internal.MapSettings
 import org.sonar.api.internal.SonarRuntimeImpl
-import org.sonar.java.JavaClasspath
-import org.sonar.java.JavaTestClasspath
-import org.sonar.java.SonarComponents
-import org.sonar.api.batch.fs.InputFile
-import org.sonar.api.batch.fs.internal.TestInputFileBuilder
 import org.sonar.api.issue.NoSonarFilter
 import org.sonar.api.utils.Version
 import org.sonar.java.DefaultJavaResourceLocator
+import org.sonar.java.JavaClasspath
+import org.sonar.java.JavaTestClasspath
+import org.sonar.java.SonarComponents
 import org.sonar.java.filters.PostAnalysisIssueFilter
 import org.sonar.plugins.java.Java
 import org.sonar.plugins.java.JavaSquidSensor
@@ -57,8 +57,8 @@ class JavaSonarAnalyzer(path: String) : SonarAnalyzer(path) {
     sonarComponents.setSensorContext(this.sensorContext)
   }
 
-  override fun scanFiles(fileList: List<String>): Map<String, FileMetrics> {
-    val metricsMap: MutableMap<String, FileMetrics> = HashMap()
+  override fun scanFiles(fileList: List<String>): Map<String, FileMetricMap> {
+    val metricsMap: MutableMap<String, FileMetricMap> = HashMap()
 
     val originalOut = System.out
     System.setOut(PrintStream(ByteArrayOutputStream()))

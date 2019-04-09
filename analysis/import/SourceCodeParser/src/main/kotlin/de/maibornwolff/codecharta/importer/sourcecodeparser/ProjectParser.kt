@@ -1,15 +1,14 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetricMap
 import de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers.JavaSonarAnalyzer
 import de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers.SonarAnalyzer
 import java.io.File
-import java.io.Writer
 
 class ProjectParser {
     var metricKinds: MutableSet<String> = HashSet()
-    var projectMetrics: MutableMap<String, FileMetrics> = hashMapOf()
-    private var sonarAnalyzers: MutableList<SonarAnalyzer> = mutableListOf()
+    var projectMetrics: MutableMap<String, FileMetricMap> = hashMapOf()
+    protected var sonarAnalyzers: MutableList<SonarAnalyzer> = mutableListOf()
 
     private fun setUpAnalyzers(root: File) {
         val baseDir = root.toString()
@@ -29,11 +28,11 @@ class ProjectParser {
         }
     }
 
-    private fun updateMetricKinds(metricsMap: Map<String, FileMetrics>){
+    private fun updateMetricKinds(metricsMap: Map<String, FileMetricMap>) {
         if(metricsMap.isEmpty()) return
 
         val sampleFile = metricsMap.keys.iterator().next()
-        val fileMetrics = metricsMap[sampleFile]!!.getMap()
+        val fileMetrics = metricsMap[sampleFile]!!.fileMetrics
         metricKinds.addAll(fileMetrics.keys)
     }
 

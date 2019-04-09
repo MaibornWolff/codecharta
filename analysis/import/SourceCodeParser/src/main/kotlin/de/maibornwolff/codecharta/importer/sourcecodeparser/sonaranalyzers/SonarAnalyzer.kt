@@ -1,13 +1,12 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetricMap
 import org.sonar.api.batch.sensor.internal.SensorContextTester
-import org.sonar.api.measures.CoreMetrics
 import org.sonar.api.batch.sensor.measure.Measure
+import org.sonar.api.measures.CoreMetrics
 import java.io.File
 import java.io.IOException
 import java.io.Serializable
-import java.lang.IllegalStateException
 import java.nio.charset.Charset
 import java.nio.file.Files
 
@@ -18,7 +17,7 @@ abstract class SonarAnalyzer(path: String) {
 
     abstract val FILE_EXTENSION: String
 
-    open fun scanFiles(fileList: List<String>) : Map<String, FileMetrics>{
+    open fun scanFiles(fileList: List<String>): Map<String, FileMetricMap> {
 
         createContext()
         for(file in fileList){
@@ -27,23 +26,25 @@ abstract class SonarAnalyzer(path: String) {
         buildSonarComponents()
         executeScan()
 
-        val metricsMap: MutableMap<String, FileMetrics> = HashMap()
+        val metricsMap: MutableMap<String, FileMetricMap> = HashMap()
         for(file in fileList){
             metricsMap[file] = retrieveMetrics(file)
         }
         return metricsMap
     }
 
-    protected open fun retrieveMetrics(fileName: String): FileMetrics{
+    protected open fun retrieveMetrics(fileName: String): FileMetricMap {
         val key = "moduleKey:$fileName"
-        val fileMetrics = FileMetrics()
+        val fileMetrics = FileMetricMap()
 
         val metrics = CoreMetrics.getMetrics()
         for(metric in metrics){
             val metricKey: String = metric.key
             val measure: Measure<Serializable> = sensorContext.measure(key, metricKey) ?: continue
             val metricValue = measure.value()
-            fileMetrics.add(metricKey, metricValue)
+            if (metricValue is Number) {
+                fileMetrics.add(metricKey, metricValue)
+            }
         }
         return fileMetrics
     }

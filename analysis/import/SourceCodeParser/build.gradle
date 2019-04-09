@@ -21,6 +21,7 @@ dependencies {
     testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.10.0'
     testImplementation group: 'com.tngtech.archunit', name: 'archunit', version: '0.8.2'
     testImplementation group: 'io.github.json-snapshot', name: 'json-snapshot', version: '1.0.17'
+    testCompile group: 'com.nhaarman', name: 'mockito-kotlin', version: '1.6.0'
     testImplementation project(path: ':model', configuration: 'testOutput')
 }
 
