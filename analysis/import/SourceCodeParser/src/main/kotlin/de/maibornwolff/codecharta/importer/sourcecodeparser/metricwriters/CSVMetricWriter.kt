@@ -1,14 +1,14 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetricMap
+import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
 import java.io.Writer
 
 class CSVMetricWriter(private val writer: Writer) : de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.MetricWriter {
 
-  override fun generate(metricsMap: MutableMap<String, FileMetricMap>, allMetrics: Set<String>) {
+  override fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>) {
     val csvOutput = StringBuilder()
       .append(generateHeader(allMetrics))
-    for (entry in metricsMap) {
+    for (entry in projectMetrics.projectMetrics) {
       val fileName = entry.key
       val fileMetrics = entry.value.fileMetrics
 

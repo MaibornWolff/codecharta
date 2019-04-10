@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetricMap
+import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
 
 interface MetricWriter {
-    fun generate(metricsMap: MutableMap<String, FileMetricMap>, allMetrics: Set<String>)
+    fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>)
 }

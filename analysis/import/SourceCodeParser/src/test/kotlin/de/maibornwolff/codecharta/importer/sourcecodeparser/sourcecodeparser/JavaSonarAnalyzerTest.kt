@@ -17,7 +17,7 @@ class JavaSonarAnalyzerTest {
         val javaSourceCodeAnalyzer = JavaSonarAnalyzer(path)
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList)
 
-        assertThat(metrics).containsKey("RealLinesShort.java")
+        assertThat(metrics.projectMetrics).containsKey("RealLinesShort.java")
     }
 
     @Test
@@ -29,8 +29,8 @@ class JavaSonarAnalyzerTest {
         val javaSourceCodeAnalyzer = JavaSonarAnalyzer(path)
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList)
 
-        assertThat(metrics).containsKey("RealLinesShort.java")
-        assertThat(metrics).containsKey("Annotation.java")
+        assertThat(metrics.projectMetrics).containsKey("RealLinesShort.java")
+        assertThat(metrics.projectMetrics).containsKey("Annotation.java")
     }
 
     @Test
@@ -42,8 +42,8 @@ class JavaSonarAnalyzerTest {
         val javaSourceCodeAnalyzer = JavaSonarAnalyzer(path)
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList)
 
-        assertThat(metrics["Annotation.java"]?.fileMetrics).isNotEmpty
-        assertThat(metrics["RealLinesShort.java"]?.fileMetrics).isNotEmpty
+        assertThat(metrics.getFileMetricMap("Annotation.java")?.fileMetrics).isNotEmpty
+        assertThat(metrics.getFileMetricMap("RealLinesShort.java")?.fileMetrics).isNotEmpty
     }
 
     @Test
@@ -54,12 +54,12 @@ class JavaSonarAnalyzerTest {
         val javaSourceCodeAnalyzer = JavaSonarAnalyzer(path)
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList)
 
-        assertThat(metrics["RealLinesShort.java"]?.getMetricValue("ncloc")).isEqualTo(6)
-        assertThat(metrics["RealLinesShort.java"]?.getMetricValue("functions")).isEqualTo(1)
-        assertThat(metrics["RealLinesShort.java"]?.getMetricValue("statements")).isEqualTo(0)
-        assertThat(metrics["RealLinesShort.java"]?.getMetricValue("classes")).isEqualTo(1)
-        assertThat(metrics["RealLinesShort.java"]?.getMetricValue("complexity")).isEqualTo(1)
-        assertThat(metrics["RealLinesShort.java"]?.getMetricValue("comment_lines")).isEqualTo(0)
+        assertThat(metrics.getFileMetricMap("RealLinesShort.java")?.getMetricValue("ncloc")).isEqualTo(6)
+        assertThat(metrics.getFileMetricMap("RealLinesShort.java")?.getMetricValue("functions")).isEqualTo(1)
+        assertThat(metrics.getFileMetricMap("RealLinesShort.java")?.getMetricValue("statements")).isEqualTo(0)
+        assertThat(metrics.getFileMetricMap("RealLinesShort.java")?.getMetricValue("classes")).isEqualTo(1)
+        assertThat(metrics.getFileMetricMap("RealLinesShort.java")?.getMetricValue("complexity")).isEqualTo(1)
+        assertThat(metrics.getFileMetricMap("RealLinesShort.java")?.getMetricValue("comment_lines")).isEqualTo(0)
 
     }
 

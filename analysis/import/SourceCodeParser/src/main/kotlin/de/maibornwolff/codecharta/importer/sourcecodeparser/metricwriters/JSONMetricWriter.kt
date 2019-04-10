@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetricMap
+import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
@@ -11,9 +12,9 @@ class JSONMetricWriter(private val projectName: String, private val writer: Writ
   de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.MetricWriter {
   private val projectBuilder = ProjectBuilder(this.projectName)
 
-  override fun generate(metricsMap: MutableMap<String, FileMetricMap>, allMetrics: Set<String>) {
+  override fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>) {
 
-    metricsMap.forEach { addAsNode(it) }
+    projectMetrics.projectMetrics.forEach { addAsNode(it) }
     ProjectSerializer.serializeProject(projectBuilder.build(), writer)
 
   }
@@ -23,7 +24,6 @@ class JSONMetricWriter(private val projectName: String, private val writer: Writ
     val directory = metrics.key.substringBeforeLast("/")
     val fileName = metrics.key.substringAfterLast("/")
 
-    // TODO: Should we put non-numeric metrics here?
     val node = MutableNode(
             fileName, attributes = metrics.value.fileMetrics
     )

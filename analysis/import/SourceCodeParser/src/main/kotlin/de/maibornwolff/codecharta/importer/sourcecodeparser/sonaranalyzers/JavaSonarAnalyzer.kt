@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.NullFileLinesContextFactory
-import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetricMap
+import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
 import org.sonar.api.SonarQubeSide
 import org.sonar.api.batch.fs.InputFile
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder
@@ -57,8 +57,8 @@ class JavaSonarAnalyzer(path: String) : SonarAnalyzer(path) {
     sonarComponents.setSensorContext(this.sensorContext)
   }
 
-  override fun scanFiles(fileList: List<String>): Map<String, FileMetricMap> {
-    val metricsMap: MutableMap<String, FileMetricMap> = HashMap()
+    override fun scanFiles(fileList: List<String>): ProjectMetrics {
+        val projectMetrics = ProjectMetrics()
 
     val originalOut = System.out
     System.setOut(PrintStream(ByteArrayOutputStream()))
@@ -68,12 +68,12 @@ class JavaSonarAnalyzer(path: String) : SonarAnalyzer(path) {
       buildSonarComponents()
       addFileToContext(file)
       executeScan()
-      val metrics = retrieveMetrics(file)
-      metricsMap[file] = metrics
+        val fileMetrics = retrieveMetrics(file)
+        projectMetrics.addFileMetricMap(file, fileMetrics)
     }
 
     System.setOut(originalOut)
-    return metricsMap
+        return projectMetrics
   }
 
   override fun addFileToContext(fileName: String) {

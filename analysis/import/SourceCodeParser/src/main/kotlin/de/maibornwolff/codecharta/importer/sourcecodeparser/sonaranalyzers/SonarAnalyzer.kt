@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetricMap
+import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
 import org.sonar.api.batch.sensor.internal.SensorContextTester
 import org.sonar.api.batch.sensor.measure.Measure
 import org.sonar.api.measures.CoreMetrics
@@ -17,7 +18,7 @@ abstract class SonarAnalyzer(path: String) {
 
     abstract val FILE_EXTENSION: String
 
-    open fun scanFiles(fileList: List<String>): Map<String, FileMetricMap> {
+    open fun scanFiles(fileList: List<String>): ProjectMetrics {
 
         createContext()
         for(file in fileList){
@@ -26,11 +27,11 @@ abstract class SonarAnalyzer(path: String) {
         buildSonarComponents()
         executeScan()
 
-        val metricsMap: MutableMap<String, FileMetricMap> = HashMap()
+        val projectMetrics = ProjectMetrics()
         for(file in fileList){
-            metricsMap[file] = retrieveMetrics(file)
+            projectMetrics.addFileMetricMap(file, retrieveMetrics(file))
         }
-        return metricsMap
+        return projectMetrics
     }
 
     protected open fun retrieveMetrics(fileName: String): FileMetricMap {

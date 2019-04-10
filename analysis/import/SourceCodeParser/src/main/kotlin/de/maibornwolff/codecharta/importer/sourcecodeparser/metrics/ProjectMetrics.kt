@@ -19,4 +19,13 @@ class ProjectMetrics {
     fun getFileMetricMap(file: String): FileMetricMap? {
         return projectMetrics[file]
     }
+
+    fun merge(newProjectMetrics: ProjectMetrics): ProjectMetrics {
+        projectMetrics.putAll(newProjectMetrics.projectMetrics)
+        return this
+    }
+
+    fun getRandomFileName(): String? {
+        return this.projectMetrics.keys.iterator().next()
+    }
 }
