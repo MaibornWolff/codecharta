@@ -8,8 +8,7 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import java.io.Writer
 
-class JSONMetricWriter(private val projectName: String, private val writer: Writer) :
-  de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.MetricWriter {
+class JSONMetricWriter(private val projectName: String, private val writer: Writer) : MetricWriter {
   private val projectBuilder = ProjectBuilder(this.projectName)
 
   override fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>) {

@@ -24,7 +24,8 @@ class JSONMetricWriterTest {
         val result = ByteArrayOutputStream()
         val projectName = "foo"
 
-        JSONMetricWriter(projectName, OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
+        val metricWriter = JSONMetricWriter(projectName, OutputStreamWriter(PrintStream(result)))
+        metricWriter.generate(metrics, setOf())
 
         Assertions.assertThat(result.toString()).contains("\"projectName\":\"foo\"")
     }
@@ -45,7 +46,7 @@ class JSONMetricWriterTest {
         val parser = JsonParser()
         val expectedJson = parser.parse(expectedResultFile.reader()).toString()
 
-        Assertions.assertThat(resultJSON == expectedJson).isTrue()
+        Assertions.assertThat(resultJSON).isEqualTo(expectedJson)
     }
 
     @Test

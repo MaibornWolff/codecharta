@@ -8,13 +8,14 @@ class ProjectTraverserTest {
 
     @Test
     fun `should find correct number of files`() {
-        val projectTraverser = ProjectTraverser(File("src/test/resources").absoluteFile)
+        val projectTraverser = ProjectTraverser(File("src/test/resources/sampleproject").absoluteFile)
         projectTraverser.traverse()
         val javaFiles = projectTraverser.getFileListByExtension("java")
-        val markdownFiles = projectTraverser.getFileListByExtension("md")
+        val pythonFiles = projectTraverser.getFileListByExtension("py")
 
-        assertThat(javaFiles.size).isEqualTo(12)
-        assertThat(markdownFiles.size).isEqualTo(2)
+        println(javaFiles)
+        assertThat(javaFiles.size).isEqualTo(3)
+        assertThat(pythonFiles.size).isEqualTo(1)
     }
 
     @Test
@@ -24,7 +25,7 @@ class ProjectTraverserTest {
         projectTraverser.traverse()
         val javaFiles = projectTraverser.getFileListByExtension("java")
 
-        assertThat(javaFiles).contains("de/maibornwolff/codecharta/importer/sourcecodeparser/oop/infrastructure/antlr/java/SourceCodeSimple.java")
+        assertThat(javaFiles).contains("sampleproject/bar/foo.java", "ScriptShellSample.java")
     }
 
     @Test

@@ -1,4 +1,5 @@
-package none;
+package sampleproject;
+import foo;
 
 @Annotation
 public class Foo {

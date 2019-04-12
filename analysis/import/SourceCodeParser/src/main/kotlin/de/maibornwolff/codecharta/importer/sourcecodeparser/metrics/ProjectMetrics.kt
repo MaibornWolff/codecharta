@@ -26,6 +26,7 @@ class ProjectMetrics {
     }
 
     fun getRandomFileName(): String? {
+        if (this.projectMetrics.isEmpty()) return null
         return this.projectMetrics.keys.iterator().next()
     }
 }

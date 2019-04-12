@@ -14,7 +14,7 @@ class FileMetricsTest {
     }
 
     @Test
-    fun add() {
+    fun `Add single metric`() {
         fileMetricMap.add("foo", 1)
         fileMetricMap.add("bar", 2)
 
@@ -23,7 +23,7 @@ class FileMetricsTest {
     }
 
     @Test
-    fun getMetricValue() {
+    fun `Get single metric`() {
         fileMetricMap.add("foo", 1)
         fileMetricMap.add("bar", 2)
 

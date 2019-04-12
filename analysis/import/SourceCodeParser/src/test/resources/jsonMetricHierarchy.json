@@ -10,15 +10,7 @@
               "link": "",
               "attributes": {},
               "type": "File"
-            }
-          ],
-          "name": "foo3",
-          "link": "",
-          "attributes": {},
-          "type": "Folder"
-        },
-        {
-          "children": [
+            },
             {
               "children": [
                 {
@@ -33,7 +25,15 @@
               "link": "",
               "attributes": {},
               "type": "Folder"
-            },
+            }
+          ],
+          "name": "foo",
+          "link": "",
+          "attributes": {},
+          "type": "Folder"
+        },
+        {
+          "children": [
             {
               "children": [],
               "name": "bar.java",
@@ -42,7 +42,7 @@
               "type": "File"
             }
           ],
-          "name": "foo",
+          "name": "foo3",
           "link": "",
           "attributes": {},
           "type": "Folder"

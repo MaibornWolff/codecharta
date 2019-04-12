@@ -1,76 +1,81 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.times
-import com.nhaarman.mockito_kotlin.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Ignore
 import org.junit.Test
 import java.io.File
 
 class ProjectParserTest{
 
-    @Test
-    @Ignore
-    fun metricsAreFound(){
-        val projectParser = ProjectParser()
-        projectParser.scanProject(File("src/test/resources").absoluteFile)
+    // TODO: Maybe mock result from SonarAnalyzers.
+    // Once more than Sonar Java these tests should be adjusted to make sure results from multiple parsers are
+    // combined correctly
 
-        assertThat(projectParser.metricKinds.toString()).contains("functions")
-        assertThat(projectParser.metricKinds.toString()).contains("ncloc")
-    }
 
     @Test
-    @Ignore
-    fun `metrics are added to metricKinds`() {
-
-    }
-
-    @Test
-    @Ignore
-    fun `files are added to project metrics`() {
-
-    }
-
-    @Test
-    @Ignore
-    fun `project metrics for files are correct`() {
-
-    }
-
-    /*@Test @Ignore
-    fun `sonar analyzers are initialized`() {
-        val rootFile = File("foo").absoluteFile
-        val mockJavaSonarAnalyzer = mock(JavaSonarAnalyzer::class.java)
+    fun `paths and file names are correct`() {
+        val testProjectPath = "src/test/resources/sampleproject"
 
         val projectParser = ProjectParser()
+        projectParser.scanProject(File(testProjectPath).absoluteFile)
 
-        projectParser.scanProject(rootFile)
-
-        verify(mockJavaSonarAnalyzer, times(1)).scanFiles(listOf())
-    }*/
-
-    @Test
-    @Ignore
-    fun `project Traverser is set up with correct root dir`() {
-        val rootFile = File("foo").absoluteFile
-        //val mockProjectTraverser = mock(ProjectTraverser::class.java)
-        //when(mockProjectTraverser.createFor())
-
+        val projectMetricsMap = projectParser.projectMetrics.projectMetrics
+        assertThat(projectMetricsMap).containsKey("foo.java")
+        assertThat(projectMetricsMap).containsKey("bar/foo.java")
+        assertThat(projectMetricsMap).containsKey("bar/hello.java")
     }
 
     @Test
-    @Ignore
-    fun `analyzers are started with the correct files`() {
-        val rootFile = File("src/test/resources").absoluteFile
-        val mockProjectTraverser = mock<ProjectTraverser> {
-            on { getFileListByExtension("java") } doReturn listOf("foo", "bar")
-        }
+    fun `file metrics are added`() {
+        val testProjectPath = "src/test/resources/sampleproject"
 
         val projectParser = ProjectParser()
-        //projectParser.projectTraverser =
+        projectParser.scanProject(File(testProjectPath).absoluteFile)
 
-        verify(mockProjectTraverser, times(1)).getFileListByExtension("java")
+        val projectMetricsMap = projectParser.projectMetrics.projectMetrics
+        assertThat(projectMetricsMap["foo.java"]!!.fileMetrics).containsKeys("functions", "ncloc")
+        assertThat(projectMetricsMap["bar/foo.java"]!!.fileMetrics).containsKeys("functions", "ncloc")
+        assertThat(projectMetricsMap["bar/hello.java"]!!.fileMetrics).containsKeys("functions", "ncloc")
     }
+
+    @Test
+    fun `files that were not analyzed are not added`() {
+        val testProjectPath = "src/test/resources/sampleproject"
+
+        val projectParser = ProjectParser()
+        projectParser.scanProject(File(testProjectPath).absoluteFile)
+
+        val projectMetricsMap = projectParser.projectMetrics.projectMetrics
+        assertThat(projectMetricsMap).doesNotContainKey("foo.py")
+    }
+
+    @Test
+    fun `file metrics are correct`() {
+        val testProjectPath = "src/test/resources/sampleproject"
+
+        val projectParser = ProjectParser()
+        projectParser.scanProject(File(testProjectPath).absoluteFile)
+
+        val fooMetrics = projectParser.projectMetrics.projectMetrics["foo.java"]!!.fileMetrics
+        val barFooMetrics = projectParser.projectMetrics.projectMetrics["bar/foo.java"]!!.fileMetrics
+        val barHelloMetrics = projectParser.projectMetrics.projectMetrics["bar/hello.java"]!!.fileMetrics
+        assertThat(fooMetrics["functions"]).isEqualTo(4)
+        assertThat(barFooMetrics["functions"]).isEqualTo(7)
+        assertThat(barHelloMetrics["functions"]).isEqualTo(1)
+
+        assertThat(fooMetrics["ncloc"]).isEqualTo(31)
+        assertThat(barFooMetrics["ncloc"]).isEqualTo(44)
+        assertThat(barHelloMetrics["ncloc"]).isEqualTo(6)
+
+    }
+
+    @Test
+    fun `project metric set is correct`() {
+        val testProjectPath = "src/test/resources/sampleproject"
+
+        val projectParser = ProjectParser()
+        projectParser.scanProject(File(testProjectPath).absoluteFile)
+
+        assertThat(projectParser.metricKinds.toString()).contains("functions", "complexity", "ncloc", "classes")
+    }
+
 }
