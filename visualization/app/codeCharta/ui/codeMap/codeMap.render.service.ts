@@ -126,7 +126,9 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	private renderIfRenderObjectIsComplete() {
-		if (_.values(this.lastRender).every(x => (x !== null)) && this.lastRender.settings.dynamicSettings.neutralColorRange) {
+		if (_.values(this.lastRender).every(x => (x !== null)) &&
+			_.values(this.lastRender.settings.dynamicSettings).every(x => (x !== null))
+		) {
 			this.render(this.lastRender)
 			if (this.autoFitMap) {
 				this.threeOrbitControlsService.autoFitTo();
@@ -196,7 +198,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	private showAllOrOnlyFocusedNode(map: CodeMapNode, s: Settings) {
-		if (s.dynamicSettings.focusedNodePath) {
+		if (s.dynamicSettings.focusedNodePath.length > 0) {
 			const focusedNode = CodeMapHelper.getAnyCodeMapNodeFromPath(s.dynamicSettings.focusedNodePath, map)
 			this.treeMapService.setVisibilityOfNodeAndDescendants(map, false)
 			this.treeMapService.setVisibilityOfNodeAndDescendants(focusedNode, true)

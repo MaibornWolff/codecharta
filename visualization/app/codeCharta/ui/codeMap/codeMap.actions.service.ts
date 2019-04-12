@@ -88,7 +88,7 @@ export class CodeMapActionsService {
 	}
 
 	public removeFocusedNode() {
-		this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: null } })
+		this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: "" } })
 		this.autoFit()
 	}
 

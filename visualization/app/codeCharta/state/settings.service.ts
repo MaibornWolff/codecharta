@@ -44,6 +44,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 	}
 
 	public updateSettings(update: RecursivePartial<Settings>) {
+		console.log("UPDATE", update)
 		// _.merge(this.settings, update) didnt work with arrays like blacklist
 		this.settings = this.updateSettingsUsingPartialSettings(this.settings, update)
 		this.throttledBroadcast()
@@ -80,10 +81,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 				areaMetric: null,
 				heightMetric: null,
 				colorMetric: null,
-				focusedNodePath: null,
+				focusedNodePath: "",
 				searchedNodePaths: [],
 				searchPattern: "",
-				margin: SettingsService.MIN_MARGIN,
+				margin: null,
 				neutralColorRange: null
 			},
 			appSettings: {

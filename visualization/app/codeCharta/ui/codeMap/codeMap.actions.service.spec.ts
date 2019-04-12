@@ -245,8 +245,8 @@ describe("CodeMapActionService", () => {
 	})
 
 	describe("removeFocusedNode", () => {
-		it("should call autoFitTo and updateSettings with focusedNodePath null", () => {
-			const expected = { dynamicSettings: { focusedNodePath: null } }
+		it("should call autoFitTo and updateSettings with focusedNodePath empty", () => {
+			const expected = { dynamicSettings: { focusedNodePath: "" } }
 
 			codeMapActionsService.removeFocusedNode()
 
