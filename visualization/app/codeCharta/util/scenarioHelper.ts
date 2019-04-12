@@ -13,7 +13,7 @@ export class ScenarioHelper {
 		return this.scenarios.filter(x => this.isScenarioPossible(x, metricData))
 	}
 
-	public static isScenarioPossible(scenario: Scenario, metricData: MetricData[]) {
+	public static isScenarioPossible(scenario: Scenario, metricData: MetricData[]): boolean {
 		const metrics = metricData.map(x => x.name)
 		return (
 			metrics.includes(scenario.settings.dynamicSettings.areaMetric) &&
@@ -24,5 +24,9 @@ export class ScenarioHelper {
 
 	public static getDefaultScenario(): Scenario {
 		return this.scenarios.find(s => s.name == "Complexity")
+	}
+
+	public static getScenarioSettingsByName(name: string): RecursivePartial<Settings> {
+		return this.scenarios.find(s => s.name == name).settings
 	}
 }

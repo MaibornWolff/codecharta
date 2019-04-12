@@ -12,10 +12,10 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 
     private _viewModel: {
         scenarios: Scenario[],
-        key: string
+        selectedName: string
     } = {
         scenarios: null,
-        key: null
+        selectedName: null
     };
 
     constructor(
@@ -35,9 +35,8 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
     }
 
     public applySettings(){
-        //TODO: array[STRING] ??
-        this.settingsService.updateSettings(this._viewModel.scenarios[this._viewModel.key].settings);
-        this._viewModel.key = null;
+        this.settingsService.updateSettings(ScenarioHelper.getScenarioSettingsByName(this._viewModel.selectedName));
+        this._viewModel.selectedName = null;
         this.threeOrbitControlsService.autoFitTo()
     }
 }

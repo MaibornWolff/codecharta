@@ -8,7 +8,6 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { MetricService } from "../../state/metric.service"
 import { ScenarioHelper } from "../../util/scenarioHelper";
 import { MetricData } from "../../codeCharta.model";
-import { SETTINGS } from "../../util/dataMocks";
 
 describe("ScenarioDropDownController", () => {
 	let $rootScope: IRootScopeService
@@ -83,15 +82,16 @@ describe("ScenarioDropDownController", () => {
         })
     })
 
-	//TODO: see controller
-    xdescribe("applySettings", () => {
-        it("should call getScenarios and set the scenarios in viewmodel correctly", () => {
+    describe("applySettings", () => {
+        it("should call getScenrioSettingsByName and set call updateSettings with scenarioSettings", () => {
+            const mockScenarioSettings = {}
+            ScenarioHelper.getScenrioSettingsByName = jest.fn().mockReturnValue(mockScenarioSettings)
+            scenarioButtonsController["_viewModel"].selectedName = "scenario"
+
             scenarioButtonsController.applySettings()
 
-            scenarioButtonsController["_viewModel"].key = "key"
-            scenarioButtonsController["_viewModel"].scenarios = [{name: "key", settings: SETTINGS}]
-            
-            expect(scenarioButtonsController["_viewModel"].key).toBeNull()
+            expect(settingsService.updateSettings).toHaveBeenCalledWith(mockScenarioSettings)
+            expect(scenarioButtonsController["_viewModel"].selectedName).toBeNull()
             expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
         })
     })
