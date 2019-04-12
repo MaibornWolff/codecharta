@@ -22,11 +22,11 @@ export class ColorConverter {
     }
 
     private static encodeHex(s: string): number[] {
-        s = s.substring(1, 7);
-        if (s.length < 6) {
-            s = s[0] + s[0] + s[1] + s[1] + s[2] + s[2];
+        let copy = s.substring(1, 7);
+        if (copy.length < 6) {
+            copy = copy[0] + copy[0] + copy[1] + copy[1] + copy[2] + copy[2];
         }
-        return [parseInt(s[0] + s[1], 16), parseInt(s[2] + s[3], 16), parseInt(s[4] + s[5], 16)];
+        return [parseInt(copy[0] + copy[1], 16), parseInt(copy[2] + copy[3], 16), parseInt(copy[4] + copy[5], 16)];
     }
 
     private static encodeRGB(r: number, g: number, b: number): string {

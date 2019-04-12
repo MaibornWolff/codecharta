@@ -24,7 +24,6 @@ describe("RangeSliderController", () => {
 		rangeSliderController = new RangeSliderController(
 			settingsService,
 			fileStateService,
-			codeChartaService,
 			metricService,
 			$timeout,
 			$rootScope

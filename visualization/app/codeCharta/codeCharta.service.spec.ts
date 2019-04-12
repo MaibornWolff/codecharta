@@ -11,8 +11,6 @@ import { CCFile } from "./codeCharta.model"
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
 	let validFileContent
-	let $rootScope: IRootScopeService
-	let settingsService: SettingsService
 	let fileStateService: FileStateService
 
 	beforeEach(() => {
@@ -23,13 +21,11 @@ describe("codeChartaService", () => {
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		settingsService = getService<SettingsService>("settingsService")
 		fileStateService = getService<FileStateService>("fileStateService")
 	}
 
 	function rebuildService() {
-		codeChartaService = new CodeChartaService($rootScope, settingsService, fileStateService)
+		codeChartaService = new CodeChartaService(fileStateService)
 	}
 
 	describe("loadFiles", () => {

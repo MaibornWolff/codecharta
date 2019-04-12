@@ -6,7 +6,6 @@ import { SettingsService } from "../../state/settings.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { NodeContextMenuController } from "./nodeContextMenu.component"
-import { CodeChartaService } from "../../codeCharta.service"
 import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
 import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 
@@ -18,7 +17,6 @@ describe("nodeContextMenuController", () => {
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
 	let codeMapActionsService: CodeMapActionsService
-	let codeChartaService: CodeChartaService
 	let codeMapRenderService: CodeMapRenderService
 
 	beforeEach(() => {
@@ -36,7 +34,6 @@ describe("nodeContextMenuController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
-		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 	}
 
@@ -71,7 +68,6 @@ describe("nodeContextMenuController", () => {
 			$window,
 			$rootScope,
 			codeMapActionsService,
-			codeChartaService,
 			settingsService,
 			codeMapRenderService
 		)

@@ -53,7 +53,6 @@ describe("fileChooserController", () => {
 			$scope,
 			$rootScope,
 			dialogService,
-			settingsService,
 			codeChartaService,
 			fileStateService
 		)

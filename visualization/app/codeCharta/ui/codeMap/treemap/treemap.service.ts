@@ -3,8 +3,7 @@ import * as d3 from "d3"
 import { hierarchy, HierarchyNode } from "d3"
 import { TreeMapUtils } from "./treemap.util"
 import { CodeMapHelper } from "../../../util/codeMapHelper"
-import { CodeMapNode, BlacklistType, CCFile, Settings, FileState, MetricData } from "../../../codeCharta.model"
-import { MetricService } from "../../../state/metric.service"
+import { CodeMapNode, BlacklistType, CCFile, Settings, MetricData } from "../../../codeCharta.model"
 
 export interface SquarifiedValuedCodeMapNode {
 	data: CodeMapNode
@@ -23,9 +22,6 @@ export class TreeMapService {
 	private static MIN_BUILDING_HEIGHT = 2
 	private static HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND = 0
 	private static PADDING_SCALING_FACTOR = 0.4
-
-	/* @ngInject */
-	constructor() {}
 
 	public createTreemapNodes(renderFile: CCFile, s: Settings, metricData: MetricData[]): Node {
 		const squaredNode: SquarifiedValuedCodeMapNode = this.squarify(renderFile, s)

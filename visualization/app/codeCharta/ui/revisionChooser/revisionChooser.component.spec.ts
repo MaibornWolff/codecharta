@@ -2,7 +2,6 @@ import "./revisionChooser.module"
 import { RevisionChooserController } from "./revisionChooser.component"
 import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { FileState, FileSelectionState } from "../../codeCharta.model"
@@ -10,7 +9,6 @@ import { FileStateHelper } from "../../util/fileStateHelper"
 
 describe("RevisionChooserController", () => {
 	let fileStateService: FileStateService
-	let settingsService: SettingsService
 	let $rootScope: IRootScopeService
 	let revisionChooserController: RevisionChooserController
 	let fileStates: FileState[]
@@ -18,7 +16,6 @@ describe("RevisionChooserController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.revisionChooser")
 		fileStateService = getService<FileStateService>("fileStateService")
-		settingsService = getService<SettingsService>("settingsService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		fileStates = [
 			{ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.Reference },
@@ -27,7 +24,7 @@ describe("RevisionChooserController", () => {
 	}
 
 	function buildController() {
-		revisionChooserController = new RevisionChooserController(fileStateService, settingsService, $rootScope)
+		revisionChooserController = new RevisionChooserController(fileStateService, $rootScope)
 	}
 
 	function withMockedFileStateService() {
@@ -45,13 +42,6 @@ describe("RevisionChooserController", () => {
 		})()
 	}
 
-	function withMockedSettingsService() {
-		settingsService = revisionChooserController["settingsService"] = jest.fn<SettingsService>(() => {
-			return {
-				applySettings: jest.fn()
-			}
-		})()
-	}
 
 	function withMockedEventMethods() {
 		$rootScope.$on = jest.fn()
@@ -62,7 +52,6 @@ describe("RevisionChooserController", () => {
 		restartSystem()
 		buildController()
 		withMockedFileStateService()
-		withMockedSettingsService()
 		withMockedEventMethods()
 	})
 
@@ -73,7 +62,7 @@ describe("RevisionChooserController", () => {
 	it("should subscribe to FileStateService on construction", () => {
 		FileStateService.subscribe = jest.fn()
 
-		const revisionChooserController = new RevisionChooserController(fileStateService, settingsService, $rootScope)
+		const revisionChooserController = new RevisionChooserController(fileStateService, $rootScope)
 
 		expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, revisionChooserController)
 	})

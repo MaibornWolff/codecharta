@@ -25,7 +25,6 @@ describe("codeMapRenderService", () => {
 	let $rootScope: IRootScopeService
 	let threeSceneService: ThreeSceneService
 	let threeOrbitControlsService: ThreeOrbitControlsService
-	let threeCameraService: ThreeCameraService
 	let treeMapService: TreeMapService
 	let codeMapLabelService: CodeMapLabelService
 	let codeMapArrowService: CodeMapArrowService
@@ -52,7 +51,6 @@ describe("codeMapRenderService", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
-		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		treeMapService = getService<TreeMapService>("treeMapService")
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		codeMapArrowService = getService<CodeMapArrowService>("codeMapArrowService")
@@ -63,7 +61,7 @@ describe("codeMapRenderService", () => {
 
 	function rebuildService() {
 		codeMapRenderService = new CodeMapRenderService($rootScope, threeSceneService, threeOrbitControlsService,
-			threeCameraService, treeMapService, codeMapLabelService, codeMapArrowService)
+			treeMapService, codeMapLabelService, codeMapArrowService)
 	}
 
 	function withMockedCodeMapMesh() {
@@ -88,15 +86,13 @@ describe("codeMapRenderService", () => {
 		})
 
 		it("should call subscribe for FileStateService", () => {
-			codeMapRenderService = new CodeMapRenderService($rootScope, threeSceneService, threeOrbitControlsService,
-				threeCameraService, treeMapService, codeMapLabelService, codeMapArrowService)
+			rebuildService()
 
 			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, codeMapRenderService)
 		})
 
 		it("should call subscribe for MetricService", () => {
-			codeMapRenderService = new CodeMapRenderService($rootScope, threeSceneService, threeOrbitControlsService,
-				threeCameraService, treeMapService, codeMapLabelService, codeMapArrowService)
+			rebuildService()
 
 			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, codeMapRenderService)
 		})

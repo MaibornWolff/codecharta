@@ -6,10 +6,8 @@ import { SettingsService } from "../../state/settings.service"
 import { FileStateService } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { TEST_FILE_DATA, SETTINGS } from "../../util/dataMocks"
+import { SETTINGS } from "../../util/dataMocks"
 import { Settings, FileSelectionState, FileState } from "../../codeCharta.model"
-import { services } from "@uirouter/core"
-import { settings } from "cluster"
 
 describe("ColorSettingsPanelController", () => {
 	let colorSettingsPanelController: ColorSettingsPanelController
@@ -42,7 +40,7 @@ describe("ColorSettingsPanelController", () => {
 	}
 
 	function rebuildController() {
-		colorSettingsPanelController = new ColorSettingsPanelController($rootScope, settingsService, fileStateService, metricService)
+		colorSettingsPanelController = new ColorSettingsPanelController($rootScope, settingsService, metricService)
 	}
 
 	it("set delta color flipped flag", () => {

@@ -9,7 +9,7 @@ import {RenderingUtil} from "./renderingUtil";
 import {Node} from "./node";
 
 import {MapColors} from "./renderSettings";
-import {FileSelectionState, Settings} from "../../../codeCharta.model";
+import {Settings} from "../../../codeCharta.model";
 
 interface ThreeUniform {
     type : string;

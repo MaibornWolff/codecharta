@@ -18,7 +18,6 @@ export interface MapTreeViewHoverEventSubscriber {
 
 export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubscriber {
 	private node: CodeMapNode = null
-	private depth: number = 0
 
 	private _viewModel: {
 		isHoveredInCodeMap: boolean

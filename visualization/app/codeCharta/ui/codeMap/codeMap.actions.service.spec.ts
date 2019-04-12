@@ -13,8 +13,6 @@ import {SETTINGS, VALID_EDGE, VALID_NODE_WITH_PATH} from "../../util/dataMocks";
 describe("CodeMapActionService", () => {
 	let codeMapActionsService: CodeMapActionsService
 	let settingsService: SettingsService
-	let codeChartaService: CodeChartaService
-	let codeMapRenderService: CodeMapRenderService
 	let threeOrbitControlsService: ThreeOrbitControlsService
 
 	let nodeA: CodeMapNode
@@ -25,8 +23,6 @@ describe("CodeMapActionService", () => {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		settingsService = getService<SettingsService>("settingsService")
-		codeChartaService = getService<CodeChartaService>("codeChartaService")
-		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 
 		nodeA = JSON.parse(JSON.stringify(VALID_NODE_WITH_PATH))
@@ -38,8 +34,6 @@ describe("CodeMapActionService", () => {
 	function rebuildService() {
 		codeMapActionsService = new CodeMapActionsService(
 			settingsService,
-			codeChartaService,
-			codeMapRenderService,
 			threeOrbitControlsService
 		)
 	}

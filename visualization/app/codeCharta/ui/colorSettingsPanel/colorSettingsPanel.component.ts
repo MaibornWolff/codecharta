@@ -25,7 +25,6 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
-		private fileStateService: FileStateService,
 		private metricService: MetricService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)

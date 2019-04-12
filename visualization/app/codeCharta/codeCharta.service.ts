@@ -1,7 +1,5 @@
 import { FileValidator } from "./util/fileValidator"
 import {CCFile, NameDataPair} from "./codeCharta.model"
-import { SettingsService } from "./state/settings.service"
-import { IRootScopeService } from "angular"
 import { FileStateService } from "./state/fileState.service"
 
 export class CodeChartaService {
@@ -10,10 +8,7 @@ export class CodeChartaService {
 	public static ROOT_PATH = "/" + CodeChartaService.ROOT_NAME
 	public static SELECTOR = "codeChartaService"
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
-		private fileStateService: FileStateService
+	constructor(private fileStateService: FileStateService
 	) {}
 
 	public loadFiles(nameDataPairs: NameDataPair[]): Promise<void> {

@@ -28,8 +28,6 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
-		private codeChartaService: CodeChartaService,
 		private fileStateService: FileStateService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)

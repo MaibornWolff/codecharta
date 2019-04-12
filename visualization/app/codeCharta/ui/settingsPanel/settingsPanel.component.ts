@@ -13,7 +13,7 @@ export class SettingsPanelController implements SettingsServiceSubscriber {
 		private $rootScope: IRootScopeService,
 		private $timeout: ITimeoutService
 	) {
-		SettingsService.subscribe($rootScope, this)
+		SettingsService.subscribe(this.$rootScope, this)
 	}
 
 	public collapseAndUpdateChildRzSlider($panel) {

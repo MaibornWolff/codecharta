@@ -1,4 +1,4 @@
-import { CodeMapNode, Edge, CCFile, Settings, KeyValuePair, MetricData } from "../codeCharta.model"
+import { CodeMapNode, Edge, CCFile, Settings, MetricData } from "../codeCharta.model"
 import { Node } from "../../codeCharta/ui/codeMap/rendering/node"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import * as THREE from "three"

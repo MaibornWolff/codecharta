@@ -6,7 +6,6 @@ import {
 	CodeMapMouseEventService,
 	CodeMapMouseEventServiceSubscriber
 } from "../codeMap/codeMap.mouseEvent.service"
-import { CodeChartaService } from "../../codeCharta.service"
 import {Settings, KeyValuePair, MetricData} from "../../codeCharta.model";
 import {Node} from "../codeMap/rendering/node";
 import {MetricService, MetricServiceSubscriber} from "../../state/metric.service";
@@ -91,8 +90,6 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 		private $rootScope,
 		private settingsService: SettingsService,
 		private $timeout,
-		private codeChartaService: CodeChartaService,
-		private metricService: MetricService,
 		private fileStateService: FileStateService
 	) {
 

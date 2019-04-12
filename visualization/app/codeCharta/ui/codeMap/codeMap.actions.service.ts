@@ -1,7 +1,6 @@
 import { SettingsService } from "../../state/settings.service"
 import { CodeMapNode, BlacklistType, BlacklistItem, Edge } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
-import { CodeMapRenderService } from "./codeMap.render.service";
 import { MarkedPackage, Settings} from "../../codeCharta.model";
 import angular from "angular";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
@@ -11,8 +10,6 @@ export class CodeMapActionsService {
 
 	constructor(
 		private settingsService: SettingsService,
-		private codeChartaService: CodeChartaService,
-		private codeMapRenderService: CodeMapRenderService,
 		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {}
 

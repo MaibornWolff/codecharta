@@ -1,4 +1,3 @@
-import {SettingsService} from "../../state/settings.service"
 import "./revisionChooser.component.scss"
 import "./revisionChooserFileDropDown.component.scss"
 import {CCFile, FileSelectionState, FileState} from "../../codeCharta.model";
@@ -45,7 +44,6 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
     /* @ngInject */
     constructor(
         private fileStateService: FileStateService,
-        private settingsService: SettingsService,
         private $rootScope: IRootScopeService
     ) {
         FileStateService.subscribe(this.$rootScope, this)

@@ -3,7 +3,6 @@ import "./rangeSlider.component.scss"
 import { MapColors } from "../codeMap/rendering/renderSettings"
 import $ from "jquery"
 import {Settings} from "../../codeCharta.model"
-import { CodeChartaService } from "../../codeCharta.service"
 import { MetricService } from "../../state/metric.service";
 import {FileStateService} from "../../state/fileState.service";
 import {IRootScopeService, ITimeoutService} from "angular";
@@ -31,7 +30,6 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	constructor(
 		private settingsService: SettingsService,
 		private fileStateService: FileStateService,
-		private codeChartaService: CodeChartaService,
 		private metricService: MetricService,
 		private $timeout: ITimeoutService,
 		private $rootScope: IRootScopeService

@@ -3,7 +3,6 @@ import angular from "angular";
 import {highlightColors} from "../codeMap/rendering/renderSettings";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapHelper} from "../../util/codeMapHelper";
-import {CodeChartaService} from "../../codeCharta.service";
 import {SettingsService} from "../../state/settings.service";
 import {CodeMapRenderService} from "../codeMap/codeMap.render.service";
 import {CodeMapNode} from "../../codeCharta.model";
@@ -30,7 +29,6 @@ export class NodeContextMenuController {
                 private $window,
                 private $rootScope,
                 private codeMapActionsService: CodeMapActionsService,
-                private codeChartaService: CodeChartaService,
                 private settingsService: SettingsService,
                 private codeMapRenderService: CodeMapRenderService) {
 

@@ -8,8 +8,6 @@ import { DetailPanelController } from "./detailPanel.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService, IAngularEvent } from "angular"
 import { CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
-import { CodeChartaService } from "../../codeCharta.service"
-import { MetricService } from "../../state/metric.service"
 import { FileStateService } from "../../state/fileState.service"
 import { Settings } from "../../codeCharta.model"
 import { CODE_MAP_BUILDING, SETTINGS } from "../../util/dataMocks"
@@ -30,16 +28,10 @@ describe("detailPanelController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.detailPanel")
 
-		const CodeChartaServiceMock = jest.fn<CodeChartaService>(() => ({
-			removeBlacklistEntry: jest.fn()
-		}))
-
 		services = {
 			$rootScope: getService<IRootScopeService>("$rootScope"),
 			settingsService: getService<SettingsService>("settingsService"),
 			$timeout: getService<ITimeoutService>("$timeout"),
-			codeChartaService: CodeChartaServiceMock,
-			metricService: getService<MetricService>("metricService"),
 			fileStateService: getService<FileStateService>("fileStateService")
 		}
 
@@ -52,8 +44,6 @@ describe("detailPanelController", () => {
 			services.$rootScope,
 			services.settingsService,
 			services.$timeout,
-			services.codeChartaService,
-			services.metricService,
 			services.fileStateService
 		)
 	}

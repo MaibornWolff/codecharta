@@ -7,7 +7,7 @@ import {RenderingUtil} from "./renderingUtil";
 import {IntermediateVertexData} from "./intermediateVertexData";
 import {BoxGeometryGenerationHelper} from "./boxGeometryGenerationHelper";
 import {ColorConverter} from "../../../util/colorConverter";
-import {FileSelectionState, Settings} from "../../../codeCharta.model";
+import {Settings} from "../../../codeCharta.model";
 
 export interface BoxMeasures {
     x: number;

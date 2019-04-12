@@ -6,7 +6,6 @@ with the additional ones */
 
 /*jshint loopfunc:true */
 
-import {SettingsService} from "../../state/settings.service";
 import {DialogService} from "../dialog/dialog.service";
 import {CodeChartaService} from "../../codeCharta.service";
 import {FileStateService} from "../../state/fileState.service";
@@ -20,7 +19,6 @@ export class FileChooserController {
         private $scope,
         private $rootScope: IRootScopeService,
         private dialogService: DialogService,
-        private settingsService: SettingsService,
         private codeChartaService: CodeChartaService,
         private fileStateService: FileStateService
     ){

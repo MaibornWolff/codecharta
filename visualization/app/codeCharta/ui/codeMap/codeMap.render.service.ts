@@ -26,7 +26,6 @@ import {MetricService, MetricServiceSubscriber} from "../../state/metric.service
 import {FileStateHelper} from "../../util/fileStateHelper";
 import {DeltaGenerator} from "../../util/deltaGenerator";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
-import {ThreeCameraService} from "./threeViewer/threeCameraService";
 
 export interface RenderData {
 	renderFile: CCFile
@@ -57,7 +56,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		private $rootScope: IRootScopeService,
 		private threeSceneService: ThreeSceneService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
-		private threeCameraService: ThreeCameraService,
 		private treeMapService: TreeMapService,
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService
