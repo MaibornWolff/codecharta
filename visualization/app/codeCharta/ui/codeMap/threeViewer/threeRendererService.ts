@@ -31,7 +31,6 @@ export class ThreeRendererService implements SettingsServiceSubscriber {
     public init(containerWidth: number, containerHeight: number){
         this.renderer = new THREE.WebGLRenderer(ThreeRendererService.RENDER_OPTIONS);
         SettingsService.subscribe(this.$rootScope, this);
-        // TODO: necessary? this.onSettingsChanged(this.settingsService.getSettings(), null);
         this.setCurrentClearColorFromSettings(this.settingsService.getSettings());
         this.renderer.setSize(containerWidth, containerHeight);
         this.renderer.setClearColor(

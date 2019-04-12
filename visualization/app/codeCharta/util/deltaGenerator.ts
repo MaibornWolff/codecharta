@@ -6,7 +6,6 @@ import {CodeMapNode, CCFile, KeyValuePair} from "../codeCharta.model";
 export class DeltaGenerator {
 
     public static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile): CCFile {
-        // TODO: set combined settings.fileSettings from both CCFiles into settingsService.settings
         if(referenceFile && comparisonFile && referenceFile.map && comparisonFile.map) {
             //build hash maps for fast search indices
             let referenceHashMap = new Map<string, CodeMapNode>();
