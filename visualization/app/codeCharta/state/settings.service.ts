@@ -44,7 +44,6 @@ export class SettingsService implements FileStateServiceSubscriber {
 	}
 
 	public updateSettings(update: RecursivePartial<Settings>) {
-		console.log("UPDATE", update)
 		// _.merge(this.settings, update) didnt work with arrays like blacklist
 		this.settings = this.updateSettingsUsingPartialSettings(this.settings, update)
 		this.throttledBroadcast()

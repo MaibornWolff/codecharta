@@ -62,9 +62,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	) {
 		FileStateService.subscribe(this.$rootScope, this)
 		MetricService.subscribe(this.$rootScope, this)
-	}
-
-	public init() {
 		SettingsService.subscribe(this.$rootScope, this)
 	}
 
