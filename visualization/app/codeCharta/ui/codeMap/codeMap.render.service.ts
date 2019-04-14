@@ -77,7 +77,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		this.lastRender.settings = settings
 		if (this.lastRender.fileStates) {
 			this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
-			this.lastRender.renderFile.settings = settings
+			this.lastRender.renderFile.settings.fileSettings = settings.fileSettings
 		}
 		this.renderIfRenderObjectIsComplete()
 	}
