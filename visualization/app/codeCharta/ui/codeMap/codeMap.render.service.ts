@@ -104,7 +104,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		})
 
 		if (FileStateHelper.isSingleState(fileStates)) {
-			return _.cloneDeep(visibleFileStates[0].file)
+			return visibleFileStates[0].file
 
 		} else if (FileStateHelper.isPartialState(fileStates)){
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
