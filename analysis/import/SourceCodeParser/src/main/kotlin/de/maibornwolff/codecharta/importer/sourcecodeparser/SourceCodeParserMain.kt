@@ -25,22 +25,21 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     @Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
-    @Parameters(arity = "1..*", paramLabel = "FOLDER or FILEs", description = ["single code folder or files"])
-    private var files: List<File> = mutableListOf()
+    @Parameters(arity = "1", paramLabel = "FOLDER or FILE", description = ["project folder or code file"])
+    private var file: File = File("")
 
     @Throws(IOException::class)
     override fun call(): Void? {
 
-        if (!files[0].exists()) {
+        if (!file.exists()) {
             val path = Paths.get("").toAbsolutePath().toString()
             outputStream.println("Current working directory = $path")
-            outputStream.println("Could not find " + files[0])
+            outputStream.println("Could not find $file")
             return null
         }
         val projectParser = ProjectParser()
 
-        // TODO: Support multiple in file/folders
-        projectParser.scanProject(files[0])
+        projectParser.scanProject(file)
 
         val writer = getPrinter()
         writer.generate(projectParser.projectMetrics, projectParser.metricKinds)
