@@ -14,7 +14,6 @@ import { MetricService } from "../../state/metric.service"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
 
-//TODO: Increase coverage later on and fix suite
 describe("codeMapRenderService", () => {
 	let codeMapRenderService: CodeMapRenderService
 	let $rootScope: IRootScopeService
