@@ -9,7 +9,11 @@ import java.util.HashMap
 class ProjectTraverser(root: File) {
     private var fileList: MutableList<File> = mutableListOf()
     private val analyzerFileLists: MutableMap<String, MutableList<String>>? = HashMap()
-    var root: File = root
+    var root: File
+
+    init{
+        this.root = root
+    }
 
     fun traverse() {
         File(root.toString()).walk().forEach {
