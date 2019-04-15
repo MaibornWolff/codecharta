@@ -9,9 +9,11 @@ import {FileStateService, FileStateServiceSubscriber} from "../../state/fileStat
 
 export class AreaSettingsPanelController implements SettingsServiceSubscriber, CodeMapRenderServiceSubscriber, FileStateServiceSubscriber {
 
+    private static MIN_MARGIN = 15
     private static MAX_MARGIN = 100
     private static MARGIN_FACTOR = 4
     private makeAutoFit: boolean = false
+
 
     private _viewModel: {
         margin: number,
@@ -105,7 +107,7 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
         });
 
         let margin: number = AreaSettingsPanelController.MARGIN_FACTOR * Math.round(Math.sqrt((totalArea / numberOfBuildings)))
-        return Math.min(AreaSettingsPanelController.MAX_MARGIN, Math.max(SettingsService.MIN_MARGIN, margin))
+        return Math.min(AreaSettingsPanelController.MAX_MARGIN, Math.max(AreaSettingsPanelController.MIN_MARGIN, margin))
     }
 
     private autoFit() {

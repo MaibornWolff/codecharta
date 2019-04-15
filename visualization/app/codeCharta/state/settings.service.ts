@@ -80,10 +80,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 				areaMetric: null,
 				heightMetric: null,
 				colorMetric: null,
-				focusedNodePath: null,
+				focusedNodePath: "",
 				searchedNodePaths: [],
 				searchPattern: "",
-				margin: SettingsService.MIN_MARGIN,
+				margin: null,
 				neutralColorRange: null
 			},
 			appSettings: {

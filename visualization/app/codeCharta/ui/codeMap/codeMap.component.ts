@@ -4,7 +4,6 @@ import {
     CodeMapBuildingTransition, CodeMapMouseEventService,
     CodeMapMouseEventServiceSubscriber
 } from "./codeMap.mouseEvent.service";
-import {CodeMapRenderService} from "./codeMap.render.service";
 
 import "./codeMap.component.scss";
 
@@ -18,10 +17,8 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
                 private $element: Element,
                 private $rootScope,
                 private codeMapMouseEventService: CodeMapMouseEventService,
-                private codeMapRenderService: CodeMapRenderService,
     ) {
         CodeMapMouseEventService.subscribe($rootScope, this);
-        this.codeMapRenderService.init();
     }
 
     public $postLink() {

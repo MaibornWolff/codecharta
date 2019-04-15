@@ -71,4 +71,12 @@ describe("scenarioHelper", () => {
 			expect(result).toEqual(scenarios[0])
 		})
 	})
+
+	describe("getScenarioSettingsByName", () => {
+		it("should get the first scenario in scenario.json", () => {
+			const result = ScenarioHelper.getScenarioSettingsByName("Complexity")
+
+			expect(result).toEqual(scenarios[0].settings)
+		})
+	})
 })

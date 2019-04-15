@@ -3,21 +3,16 @@ import "../../codeCharta"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { TreeMapService } from "./treemap/treemap.service"
-import { CodeMapHelper } from "../../util/codeMapHelper"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { CCFile, Settings } from "../../codeCharta.model"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
-import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { FileStateService } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
-import { SettingsService } from "../../state/settings.service"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
-import { NodeDecorator } from "../../util/nodeDecorator"
-import { FileStateHelper } from "../../util/fileStateHelper"
 
 //TODO: Increase coverage later on and fix suite
 describe("codeMapRenderService", () => {
@@ -95,16 +90,6 @@ describe("codeMapRenderService", () => {
 			rebuildService()
 
 			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, codeMapRenderService)
-		})
-	})
-
-	describe("init", () => {
-		it("should call subscribe for SettingsService", () => {
-			SettingsService.subscribe = jest.fn()
-
-			codeMapRenderService.init()
-
-			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, codeMapRenderService)
 		})
 	})
 

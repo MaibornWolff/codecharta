@@ -62,9 +62,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	) {
 		FileStateService.subscribe(this.$rootScope, this)
 		MetricService.subscribe(this.$rootScope, this)
-	}
-
-	public init() {
 		SettingsService.subscribe(this.$rootScope, this)
 	}
 
@@ -80,7 +77,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		this.lastRender.settings = settings
 		if (this.lastRender.fileStates) {
 			this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
-			this.lastRender.renderFile.settings = settings
+			this.lastRender.renderFile.settings.fileSettings = settings.fileSettings
 		}
 		this.renderIfRenderObjectIsComplete()
 	}
@@ -107,7 +104,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		})
 
 		if (FileStateHelper.isSingleState(fileStates)) {
-			return _.cloneDeep(visibleFileStates[0].file)
+			return visibleFileStates[0].file
 
 		} else if (FileStateHelper.isPartialState(fileStates)){
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
@@ -126,7 +123,9 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	private renderIfRenderObjectIsComplete() {
-		if (_.values(this.lastRender).every(x => (x !== null)) && this.lastRender.settings.dynamicSettings.neutralColorRange) {
+		if (_.values(this.lastRender).every(x => (x !== null)) &&
+			_.values(this.lastRender.settings.dynamicSettings).every(x => (x !== null))
+		) {
 			this.render(this.lastRender)
 			if (this.autoFitMap) {
 				this.threeOrbitControlsService.autoFitTo();
@@ -196,7 +195,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	private showAllOrOnlyFocusedNode(map: CodeMapNode, s: Settings) {
-		if (s.dynamicSettings.focusedNodePath) {
+		if (s.dynamicSettings.focusedNodePath.length > 0) {
 			const focusedNode = CodeMapHelper.getAnyCodeMapNodeFromPath(s.dynamicSettings.focusedNodePath, map)
 			this.treeMapService.setVisibilityOfNodeAndDescendants(map, false)
 			this.treeMapService.setVisibilityOfNodeAndDescendants(focusedNode, true)

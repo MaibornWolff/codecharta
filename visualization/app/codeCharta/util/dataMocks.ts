@@ -416,9 +416,9 @@ export const DEFAULT_SETTINGS: Settings = {
 	"dynamicSettings": {
 		"areaMetric": null,
 		"colorMetric": null,
-		"focusedNodePath": null,
+		"focusedNodePath": "",
 		"heightMetric": null,
-		"margin": 15,
+		"margin": null,
 		"neutralColorRange": null,
 		"searchPattern": "",
 		"searchedNodePaths": []
