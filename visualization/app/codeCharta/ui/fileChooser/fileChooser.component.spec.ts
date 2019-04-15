@@ -7,8 +7,8 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { FileStateService } from "../../state/fileState.service"
 import { DialogService } from "../dialog/dialog.service"
 import { FileChooserController } from "./fileChooser.component"
+import { TEST_FILE_CONTENT } from "../../util/dataMocks"
 
-//TODO: Fix skipped tests and check if we can test for whats in $apply
 describe("fileChooserController", () => {
 	let fileChooserController: FileChooserController
 	let $scope: IRootScopeService
@@ -18,8 +18,8 @@ describe("fileChooserController", () => {
 	let codeChartaService: CodeChartaService
 	let fileStateService: FileStateService
 
-	let fileName : string
-	let content : any
+	let fileName: string
+	let content: any
 
 	beforeEach(() => {
 		restartSystem()
@@ -27,7 +27,6 @@ describe("fileChooserController", () => {
 		withMockedEventMethods()
 		withMockedFileStateService()
 		withMockedDialogService()
-		withMockedCodeChartaService()
 	})
 
 	afterEach(() => {
@@ -41,11 +40,10 @@ describe("fileChooserController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		dialogService = getService<DialogService>("dialogService")
 		settingsService = getService<SettingsService>("settingsService")
-		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		fileStateService = getService<FileStateService>("fileStateService")
-
+		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		fileName = "someFile.json"
-		content = "{ \"name\":\"John\", \"age\":30, \"city\":\"New York\"}"
+		content = JSON.parse(JSON.stringify(TEST_FILE_CONTENT))
 	}
 
 	function rebuildController() {
@@ -69,25 +67,20 @@ describe("fileChooserController", () => {
 
 	function withMockedFileStateService() {
 		fileStateService = fileChooserController["fileStateService"] = jest.fn().mockReturnValue({
-			resetMaps : jest.fn()
+			resetMaps: jest.fn(),
+			setSingle: jest.fn()
 		})()
 	}
 
 	function withMockedDialogService() {
 		dialogService = fileChooserController["dialogService"] = jest.fn().mockReturnValue({
-			showErrorDialog : jest.fn()
-		})()
-	}
-
-	function withMockedCodeChartaService() {
-		codeChartaService = fileChooserController["codeChartaService"] = jest.fn().mockReturnValue({
-			loadFiles : jest.fn().mockReturnValue(Promise.resolve())
+			showErrorDialog: jest.fn()
 		})()
 	}
 
 	describe("onImportNewFiles", () => {
 		it("should call $apply", () => {
-			fileChooserController.onImportNewFiles({files: []})
+			fileChooserController.onImportNewFiles({ files: [] })
 
 			expect($scope.$apply).toHaveBeenCalled()
 		})
@@ -104,9 +97,12 @@ describe("fileChooserController", () => {
 		})
 
 		it("should call setNewData", () => {
-			fileChooserController.onNewFileLoaded(fileName, content)
+			fileChooserController.onNewFileLoaded(fileName, JSON.stringify(content))
 
-			expect(fileChooserController.setNewData).toHaveBeenCalledWith({fileName, content: {name : "John", age : 30, city: "New York"}})
+			expect(fileChooserController.setNewData).toHaveBeenCalledWith({
+				fileName,
+				content
+			})
 		})
 
 		it("should broadcast remove-loading-task event", () => {
@@ -121,55 +117,6 @@ describe("fileChooserController", () => {
 			fileChooserController.onNewFileLoaded(fileName, "content")
 
 			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(error)
-		})
-
-		it("should broadcast an additonal remove-loading-task event", () => {
-			fileChooserController.onNewFileLoaded(fileName, "content")
-
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("remove-loading-task")
-			expect($rootScope.$broadcast).toHaveBeenCalledTimes(2)
-		})
-	})
-
-	describe("setNewData", () => {
-		beforeEach(() => {
-			console.error = jest.fn()
-		})
-
-		it("should call loadFiles when promise resolves", () => {
-			fileChooserController.setNewData({fileName, content})
-
-			expect(codeChartaService.loadFiles).toHaveBeenCalledWith([{fileName, content}])
-		})
-
-		xit("should broadcast a remove-loading-task event when promise resolves", () => {
-			fileChooserController.setNewData({fileName, content})
-
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("remove-loading-task")
-		})
-
-		xit("should showErrorDialog when promise rejects", () => {
-			codeChartaService.loadFiles = jest.fn().mockReturnValue(Promise.reject())
-
-			fileChooserController.setNewData({fileName, content})
-
-			expect(dialogService.showErrorDialog).toHaveBeenCalledWith()
-		})
-
-		xit("should broadcast a remove-loading-task event when promise rejects", () => {
-			codeChartaService.loadFiles = jest.fn().mockReturnValue(Promise.reject())
-
-			fileChooserController.setNewData({fileName, content})
-
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("remove-loading-task")
-		})
-
-		xit("should print error to console when promise rejects", () => {
-			codeChartaService.loadFiles = jest.fn().mockReturnValue(Promise.reject())
-
-			fileChooserController.setNewData({fileName, content})
-
-			expect(console.error).toHaveBeenCalledWith("remove-loading-task")
 		})
 	})
 })
