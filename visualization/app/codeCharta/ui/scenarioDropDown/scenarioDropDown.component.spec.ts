@@ -83,9 +83,9 @@ describe("ScenarioDropDownController", () => {
     })
 
     describe("applySettings", () => {
-        it("should call getScenrioSettingsByName and set call updateSettings with scenarioSettings", () => {
+        it("should call getScenarioSettingsByName and set call updateSettings with scenarioSettings", () => {
             const mockScenarioSettings = {}
-            ScenarioHelper.getScenrioSettingsByName = jest.fn().mockReturnValue(mockScenarioSettings)
+            ScenarioHelper.getScenarioSettingsByName = jest.fn().mockReturnValue(mockScenarioSettings)
             scenarioButtonsController["_viewModel"].selectedName = "scenario"
 
             scenarioButtonsController.applySettings()

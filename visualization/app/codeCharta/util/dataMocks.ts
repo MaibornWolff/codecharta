@@ -418,7 +418,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		"colorMetric": null,
 		"focusedNodePath": "",
 		"heightMetric": null,
-		"margin": 15,
+		"margin": null,
 		"neutralColorRange": null,
 		"searchPattern": "",
 		"searchedNodePaths": []
