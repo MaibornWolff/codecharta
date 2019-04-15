@@ -90,22 +90,18 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
 
     public onSingleFileChange(singleFileName: string) {
         const singleFile: CCFile = FileStateHelper.getFileByFileName(singleFileName, this.fileStateService.getFileStates())
-        this.setDefaultDynamicSettings()
         this.fileStateService.setSingle(singleFile)
     }
 
     public onDeltaReferenceFileChange(referenceFileName: string) {
         const referenceFile: CCFile = FileStateHelper.getFileByFileName(referenceFileName, this.fileStateService.getFileStates())
         const comparisonFile: CCFile = FileStateHelper.getFileByFileName(this._viewModel.selectedFileNames.delta.comparison, this.fileStateService.getFileStates())
-        this.setDefaultDynamicSettings()
         this.fileStateService.setDelta(referenceFile, comparisonFile)
     }
 
     public onDeltaComparisonFileChange(comparisonFileName: string) {
         const referenceFile: CCFile = FileStateHelper.getFileByFileName(this._viewModel.selectedFileNames.delta.reference, this.fileStateService.getFileStates())
         const comparisonFile: CCFile = FileStateHelper.getFileByFileName(comparisonFileName, this.fileStateService.getFileStates())
-
-        this.setDefaultDynamicSettings()
         this.fileStateService.setDelta(referenceFile, comparisonFile)
     }
 
@@ -115,8 +111,6 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
         partialFileNames.forEach(fileName => {
             partialFiles.push(FileStateHelper.getFileByFileName(fileName, this.fileStateService.getFileStates()))
         })
-
-        this.setDefaultDynamicSettings()
         this.fileStateService.setMultiple(partialFiles)
     }
 
@@ -163,12 +157,6 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
         } else if (this.lastRenderState === FileSelectionState.Comparison) {
             return this._viewModel.selectedFileNames.delta.reference
         }
-    }
-
-    private setDefaultDynamicSettings() {
-        this.settingsService.updateSettings({
-            dynamicSettings: this.settingsService.getDefaultSettings().dynamicSettings
-        })
     }
 }
 
