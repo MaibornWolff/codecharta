@@ -25,9 +25,10 @@ import java.io.PrintStream
 import java.nio.charset.StandardCharsets
 
 
-class JavaSonarAnalyzer(path: String) : SonarAnalyzer(path) {
+class JavaSonarAnalyzer : SonarAnalyzer() {
 
   override val FILE_EXTENSION = "java"
+  override lateinit var baseDir: File
 
   // Minimal rules init
   private var activeRules = ActiveRulesBuilder().build()
@@ -57,23 +58,24 @@ class JavaSonarAnalyzer(path: String) : SonarAnalyzer(path) {
     sonarComponents.setSensorContext(this.sensorContext)
   }
 
-    override fun scanFiles(fileList: List<String>): ProjectMetrics {
-        val projectMetrics = ProjectMetrics()
+    override fun scanFiles(fileList: List<String>, root: File): ProjectMetrics {
+      baseDir = root.absoluteFile
+      val projectMetrics = ProjectMetrics()
 
-    val originalOut = System.out
-    System.setOut(PrintStream(ByteArrayOutputStream()))
+      val originalOut = System.out
+      System.setOut(PrintStream(ByteArrayOutputStream()))
 
-    for (file in fileList) {
-      createContext()
-      buildSonarComponents()
-      addFileToContext(file)
-      executeScan()
+      for (file in fileList) {
+        createContext()
+        buildSonarComponents()
+        addFileToContext(file)
+        executeScan()
         val fileMetrics = retrieveMetrics(file)
         projectMetrics.addFileMetricMap(file, fileMetrics)
-    }
+      }
 
-    System.setOut(originalOut)
-        return projectMetrics
+      System.setOut(originalOut)
+      return projectMetrics
   }
 
   override fun addFileToContext(fileName: String) {

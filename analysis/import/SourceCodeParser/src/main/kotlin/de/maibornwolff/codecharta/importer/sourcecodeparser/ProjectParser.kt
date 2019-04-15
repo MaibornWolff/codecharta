@@ -8,21 +8,19 @@ import java.io.File
 class ProjectParser {
     var metricKinds: MutableSet<String> = HashSet()
     var projectMetrics = ProjectMetrics()
-    protected var sonarAnalyzers: MutableList<SonarAnalyzer> = mutableListOf()
+    var sonarAnalyzers: MutableList<SonarAnalyzer> = mutableListOf()
 
-    private fun setUpAnalyzers(root: File) {
-        val baseDir = root.toString()
-        sonarAnalyzers.add(JavaSonarAnalyzer(baseDir))
+    fun setUpAnalyzers() {
+        sonarAnalyzers.add(JavaSonarAnalyzer())
     }
 
     fun scanProject(root: File) {
         val projectTraverser = ProjectTraverser(root)
         projectTraverser.traverse()
-        setUpAnalyzers(projectTraverser.root)
 
         for(analyzer in sonarAnalyzers){
             val files = projectTraverser.getFileListByExtension(analyzer.FILE_EXTENSION)
-            val metricsForKind = analyzer.scanFiles(files)
+            val metricsForKind = analyzer.scanFiles(files, projectTraverser.root)
             projectMetrics.merge(metricsForKind)
             updateMetricKinds(metricsForKind)
         }

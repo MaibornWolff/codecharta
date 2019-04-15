@@ -14,8 +14,8 @@ class JavaSonarAnalyzerTest {
         val fileList = ArrayList<String>()
         fileList.add("foo.java")
 
-        val javaSourceCodeAnalyzer = JavaSonarAnalyzer(path)
-        val metrics = javaSourceCodeAnalyzer.scanFiles(fileList)
+        val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
+        val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
         assertThat(metrics.projectMetrics).containsKey("foo.java")
     }
@@ -26,8 +26,8 @@ class JavaSonarAnalyzerTest {
         fileList.add("foo.java")
         fileList.add("bar/foo.java")
 
-        val javaSourceCodeAnalyzer = JavaSonarAnalyzer(path)
-        val metrics = javaSourceCodeAnalyzer.scanFiles(fileList)
+        val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
+        val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
         assertThat(metrics.projectMetrics).containsKey("foo.java")
         assertThat(metrics.projectMetrics).containsKey("bar/foo.java")
@@ -39,8 +39,8 @@ class JavaSonarAnalyzerTest {
         fileList.add("foo.java")
         fileList.add("bar/foo.java")
 
-        val javaSourceCodeAnalyzer = JavaSonarAnalyzer(path)
-        val metrics = javaSourceCodeAnalyzer.scanFiles(fileList)
+        val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
+        val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
         assertThat(metrics.getFileMetricMap("foo.java")?.fileMetrics).isNotEmpty
         assertThat(metrics.getFileMetricMap("bar/foo.java")?.fileMetrics).isNotEmpty
@@ -51,8 +51,8 @@ class JavaSonarAnalyzerTest {
         val fileList = ArrayList<String>()
         fileList.add("foo.java")
 
-        val javaSourceCodeAnalyzer = JavaSonarAnalyzer(path)
-        val metrics = javaSourceCodeAnalyzer.scanFiles(fileList)
+        val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
+        val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
         assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("ncloc")).isEqualTo(31)
         assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("functions")).isEqualTo(4)

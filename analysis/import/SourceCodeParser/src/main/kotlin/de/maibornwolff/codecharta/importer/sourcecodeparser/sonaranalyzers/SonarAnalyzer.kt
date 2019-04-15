@@ -11,14 +11,15 @@ import java.io.Serializable
 import java.nio.charset.Charset
 import java.nio.file.Files
 
-abstract class SonarAnalyzer(path: String) {
+abstract class SonarAnalyzer {
 
     protected lateinit var sensorContext: SensorContextTester
-    var baseDir: File = File(path).absoluteFile
+    open lateinit var baseDir: File
 
     abstract val FILE_EXTENSION: String
 
-    open fun scanFiles(fileList: List<String>): ProjectMetrics {
+    open fun scanFiles(fileList: List<String>, root: File): ProjectMetrics {
+        baseDir = root.absoluteFile
 
         createContext()
         for(file in fileList){

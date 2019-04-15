@@ -39,6 +39,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
         }
         val projectParser = ProjectParser()
 
+        projectParser.setUpAnalyzers()
         projectParser.scanProject(file)
 
         val writer = getPrinter()
