@@ -169,7 +169,6 @@ describe("codeChartaController", () => {
 		})
 	})
 
-	//TODO: Skipped due to weird mocking behaviour
 	describe("loadFileOrSample" , () => {
 		beforeEach(() => {
 			codeChartaController.tryLoadingSampleFiles = jest.fn()
