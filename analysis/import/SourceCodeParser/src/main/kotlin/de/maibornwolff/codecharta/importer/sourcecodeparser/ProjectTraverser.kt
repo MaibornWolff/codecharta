@@ -9,12 +9,14 @@ import java.util.HashMap
 class ProjectTraverser(root: File) {
     private var fileList: MutableList<File> = mutableListOf()
     private val analyzerFileLists: MutableMap<String, MutableList<String>>? = HashMap()
-    private var root: File = root
+    var root: File = root
 
     fun traverse() {
         File(root.toString()).walk().forEach {
             if(it.isFile) fileList.add(it)
         }
+
+        adjustRootFolderIfRootIsFile()
         assignFilesToAnalyzers()
     }
 
@@ -42,9 +44,16 @@ class ProjectTraverser(root: File) {
     }
 
     private fun getRelativeFile(fileName: String): String {
+
         return root.toPath()
                 .relativize(Paths.get(fileName))
                 .toString()
                 .replace('\\', '/')
+    }
+
+    private fun adjustRootFolderIfRootIsFile() {
+        if(fileList.size == 1 && fileList[0] == root){
+            root = root.parentFile
+        }
     }
 }

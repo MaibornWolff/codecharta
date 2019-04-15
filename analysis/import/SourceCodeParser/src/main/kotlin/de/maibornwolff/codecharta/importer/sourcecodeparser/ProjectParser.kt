@@ -16,9 +16,9 @@ class ProjectParser {
     }
 
     fun scanProject(root: File) {
-        setUpAnalyzers(root)
         val projectTraverser = ProjectTraverser(root)
         projectTraverser.traverse()
+        setUpAnalyzers(projectTraverser.root)
 
         for(analyzer in sonarAnalyzers){
             val files = projectTraverser.getFileListByExtension(analyzer.FILE_EXTENSION)
