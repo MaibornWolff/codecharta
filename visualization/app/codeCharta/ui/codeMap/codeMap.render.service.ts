@@ -26,6 +26,7 @@ import {MetricService, MetricServiceSubscriber} from "../../state/metric.service
 import {FileStateHelper} from "../../util/fileStateHelper";
 import {DeltaGenerator} from "../../util/deltaGenerator";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
+import {CodeChartaController} from "../../codeCharta.component";
 
 export interface RenderData {
 	renderFile: CCFile
@@ -227,6 +228,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	private notifySubscriber() {
+		this.$rootScope.$broadcast(CodeChartaController.LOADING_STATUS_EVENT, false)
 		this.$rootScope.$broadcast(CodeMapRenderService.RENDER_FILE_CHANGED_EVENT, this.lastRender.renderFile)
 	}
 

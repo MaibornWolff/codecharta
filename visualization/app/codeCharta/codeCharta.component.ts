@@ -1,5 +1,5 @@
 import { UrlExtractor } from "./util/urlExtractor"
-import {IHttpService, ILocationService, IRootScopeService} from "angular"
+import {IAngularEvent, IHttpService, ILocationService, IRootScopeService} from "angular"
 import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
 import {SettingsService, SettingsServiceSubscriber} from "./state/settings.service";
@@ -10,15 +10,22 @@ import {CodeMapActionsService} from "./ui/codeMap/codeMap.actions.service";
 import {Settings, NameDataPair} from "./codeCharta.model";
 import {FileStateService} from "./state/fileState.service";
 
-export class CodeChartaController implements SettingsServiceSubscriber {
+
+export interface CodeChartaControllerSubscriber {
+	onLoadingStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent)
+}
+
+export class CodeChartaController implements SettingsServiceSubscriber, CodeChartaControllerSubscriber {
+
+	public static readonly LOADING_STATUS_EVENT = "loading-status-changed"
 
 	private _viewModel: {
 		version: string,
-		numberOfLoadingTasks: number,
+		isLoadingFile: boolean,
 		focusedNodePath: string
 	} = {
 		version: require("../../package.json").version,
-		numberOfLoadingTasks: 0,
+		isLoadingFile: false,
 		focusedNodePath: ""
 	}
 
@@ -37,13 +44,19 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 		private $http: IHttpService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
+		CodeChartaController.subscribe(this.$rootScope, this)
+
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
-		this.subscribeToLoadingEvents(this.$rootScope)
+		this.onLoadingStatusChanged(true, undefined)
 		this.loadFileOrSample()
 	}
 
 	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
 		this._viewModel.focusedNodePath = settings.dynamicSettings.focusedNodePath
+	}
+
+	public onLoadingStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent) {
+		this._viewModel.isLoadingFile = isLoadingFile
 	}
 
 	public fitMapToView() {
@@ -55,7 +68,6 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 	}
 
 	public loadFileOrSample() {
-		this._viewModel.numberOfLoadingTasks++
 		return this.urlUtils.getFileDataFromQueryParam()
 			.then((data: NameDataPair[]) => {
 				if (data.length > 0) {
@@ -89,11 +101,9 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 
 		this.codeChartaService.loadFiles(values)
 			.then(() => {
-				this._viewModel.numberOfLoadingTasks--
 				this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
 			})
 			.catch(e => {
-				this._viewModel.numberOfLoadingTasks--
 				console.error(e);
 				this.printErrors(e)
 			})
@@ -118,13 +128,9 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 		this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))
 	}
 
-	private subscribeToLoadingEvents($rootScope: angular.IRootScopeService) {
-		$rootScope.$on("add-loading-task", () => {
-			this._viewModel.numberOfLoadingTasks++
-		})
-
-		$rootScope.$on("remove-loading-task", () => {
-			this._viewModel.numberOfLoadingTasks--
+	public static subscribe($rootScope: IRootScopeService, subscriber: CodeChartaControllerSubscriber) {
+		$rootScope.$on(CodeChartaController.LOADING_STATUS_EVENT, (event, data) => {
+			subscriber.onLoadingStatusChanged(data, event)
 		})
 	}
 }

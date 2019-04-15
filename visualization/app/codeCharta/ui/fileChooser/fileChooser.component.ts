@@ -11,6 +11,7 @@ import {CodeChartaService} from "../../codeCharta.service";
 import {FileStateService} from "../../state/fileState.service";
 import {IRootScopeService} from "angular";
 import {NameDataPair} from "../../codeCharta.model";
+import {CodeChartaController} from "../../codeCharta.component";
 
 export class FileChooserController {
 
@@ -25,9 +26,8 @@ export class FileChooserController {
     }
 
     public onImportNewFiles(element) {
-        this.$rootScope.$broadcast("add-loading-task");
+        this.$rootScope.$broadcast(CodeChartaController.LOADING_STATUS_EVENT, true)
         this.$scope.$apply(() => {
-            this.$rootScope.$broadcast("add-loading-task");
             this.fileStateService.resetMaps()
             for(let file of element.files) {
                 let reader = new FileReader()
@@ -49,16 +49,13 @@ export class FileChooserController {
         catch (error) {
             this.dialogService.showErrorDialog("Error parsing JSON!" + error)
         }
-        this.$rootScope.$broadcast("remove-loading-task")
     }
 
     public setNewData(nameDataPair: NameDataPair){
         this.codeChartaService.loadFiles([nameDataPair])
             .then(() => {
-                this.$rootScope.$broadcast("remove-loading-task")
             })
             .catch(e => {
-                this.$rootScope.$broadcast("remove-loading-task")
                 console.error(e)
                 this.printErrors(e)
             })
