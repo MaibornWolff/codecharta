@@ -43,5 +43,4 @@ class ComponentMap {
             components[component.key!!] = component
         }
     }
-
 }

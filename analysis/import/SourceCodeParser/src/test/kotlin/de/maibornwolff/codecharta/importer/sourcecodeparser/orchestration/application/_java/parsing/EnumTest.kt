@@ -65,5 +65,4 @@ public enum Season {
         String getDescription() {return "cooler";}
     };
 }""".trim().lines()
-
 }

@@ -88,11 +88,11 @@ class SonarMeasuresAPIImporterTest {
         every { measuresDS!!.getComponentMap(projectKey, metrics) } returns components
 
         // when
-        val project = sonar.getProjectFromMeasureAPI(projectKey, "componentShouldBeInsertedAccordingToComponentPath", metrics)
+        val project =
+                sonar.getProjectFromMeasureAPI(projectKey, "componentShouldBeInsertedAccordingToComponentPath", metrics)
 
         // then
         assertThat(project, not(nullValue()))
         assertThat(project.rootNode.children, hasSize(1))
     }
-
 }

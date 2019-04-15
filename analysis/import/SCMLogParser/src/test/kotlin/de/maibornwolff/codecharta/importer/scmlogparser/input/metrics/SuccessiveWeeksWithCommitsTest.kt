@@ -31,7 +31,6 @@ class SuccessiveWeeksWithCommitsTest {
         assertThat(metric.value()).isEqualTo(1)
     }
 
-
     @Test
     fun additional_modification_in_same_calendar_week() {
         // given

@@ -1,10 +1,10 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.oop.application
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricTable
+import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.OopMetricOverviewStrategy
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.tagging.TaggedSourceCode
 import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.OopMetricCalculationStrategy
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.OopMetricOverviewStrategy
 
 class OopEntryPoint(private val javaCodeTagProvider: JavaCodeTagProvider) {
 
@@ -15,5 +15,4 @@ class OopEntryPoint(private val javaCodeTagProvider: JavaCodeTagProvider) {
 
         return DetailedMetricTable(taggedSourceCode, OopMetricCalculationStrategy(), OopMetricOverviewStrategy())
     }
-
 }

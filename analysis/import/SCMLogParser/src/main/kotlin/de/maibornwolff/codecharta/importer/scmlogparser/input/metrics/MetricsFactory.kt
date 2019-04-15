@@ -15,7 +15,6 @@ class MetricsFactory {
         this.metricClasses = createAllMetrics()
                 .filter { m -> metricNames.contains(m.metricName()) }
                 .map { it.javaClass }
-
     }
 
     private fun createMetric(clazz: Class<out Metric>): Metric {
@@ -26,7 +25,6 @@ class MetricsFactory {
         } catch (e: IllegalAccessException) {
             throw IllegalArgumentException("metric $clazz not found.")
         }
-
     }
 
     private fun createAllMetrics(): List<Metric> {

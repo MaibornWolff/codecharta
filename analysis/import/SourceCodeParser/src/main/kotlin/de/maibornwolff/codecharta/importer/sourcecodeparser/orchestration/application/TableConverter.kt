@@ -15,22 +15,19 @@ fun overviewMetricToTable(folderMetrics: OverviewMetric): String {
     val rloc = folderMetrics.metricValue(OverviewMetricType.RLoc)
 
     return String.format(overviewMetricTableFormat, "Language", "Files", "LoC", "RLoC") + "\n" +
-            "-".repeat(40) + "\n" +
-            String.format(overviewMetricTableFormat, "Java", javaFiles, loc, rloc) + "\n" +
-            "-".repeat(40) + "\n" +
-            String.format(overviewMetricTableFormat, "SUM:", javaFiles, loc, rloc)
-
+           "-".repeat(40) + "\n" +
+           String.format(overviewMetricTableFormat, "Java", javaFiles, loc, rloc) + "\n" +
+           "-".repeat(40) + "\n" +
+           String.format(overviewMetricTableFormat, "SUM:", javaFiles, loc, rloc)
 }
 
 private const val detailedMetricTableFormat = "%-5s %-5s %-5s %-120s"
 
 fun detailedMetricToTable(detailedMetricTable: DetailedMetricTable): String {
     return String.format(detailedMetricTableFormat, "LoC", "RLoC", "MCC", "Code") + "\n" +
-            "-".repeat(40) + "\n" +
-            rowsAsText(detailedMetricTable)
-
+           "-".repeat(40) + "\n" +
+           rowsAsText(detailedMetricTable)
 }
-
 
 private fun rowsAsText(detailedMetricTable: DetailedMetricTable): String {
     var previousRow = DetailedMetricTableRow.NULL
@@ -46,7 +43,8 @@ private fun rowsAsText(detailedMetricTable: DetailedMetricTable): String {
     return result
 }
 
-private fun textToDisplay(detailedMetricTableRow: DetailedMetricTableRow, metricType: DetailedMetricType, previousMetricTableRow: DetailedMetricTableRow): String {
+private fun textToDisplay(detailedMetricTableRow: DetailedMetricTableRow, metricType: DetailedMetricType,
+                          previousMetricTableRow: DetailedMetricTableRow): String {
     return if (detailedMetricTableRow.metricWasIncremented(metricType, previousMetricTableRow)) {
         detailedMetricTableRow[metricType].toString()
     } else {

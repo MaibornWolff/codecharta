@@ -19,7 +19,8 @@ fun calculateDetailedMetricsWithFailOnParseError(detailedSourceProvider: Detaile
     val baOutputStream = ByteArrayOutputStream()
     val printStream = PrintStream(baOutputStream)
 
-    val result = MetricCalculator(AntlrJavaCodeTagProvider(printStream)).calculateDetailedMetrics(detailedSourceProvider)
+    val result =
+            MetricCalculator(AntlrJavaCodeTagProvider(printStream)).calculateDetailedMetrics(detailedSourceProvider)
 
     assertThat(baOutputStream.toString()).describedAs("\n" + detailedMetricToTable(result)).isEmpty()
 
@@ -37,7 +38,8 @@ fun calculateOverviewMetricsWithFailOnParseError(overviewSourceProvider: Overvie
     val baOutputStream = ByteArrayOutputStream()
     val printStream = PrintStream(baOutputStream)
 
-    val result = MetricCalculator(AntlrJavaCodeTagProvider(printStream)).calculateOverviewMetrics(overviewSourceProvider)
+    val result =
+            MetricCalculator(AntlrJavaCodeTagProvider(printStream)).calculateOverviewMetrics(overviewSourceProvider)
 
     assertThat(baOutputStream.toString()).isEmpty()
 

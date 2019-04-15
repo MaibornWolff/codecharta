@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.application
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.DetailedMetricType
-import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.OverviewMetricType
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.DetailedSourceProviderStub
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.assertWithPrintOnFail
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.calculateDetailedMetricsWithFailOnParseError
@@ -38,7 +37,8 @@ class DetailedMetricTableRowTest {
 
         assertWithPrintOnFail(singleMetrics) { it[1][DetailedMetricType.RLoc] }.isEqualTo(1)
         assertWithPrintOnFail(singleMetrics) { it[2][DetailedMetricType.RLoc] }.isEqualTo(1)
-        Assertions.assertThat(singleMetrics[2].metricWasIncremented(DetailedMetricType.RLoc, singleMetrics[1])).isFalse()
+        Assertions.assertThat(singleMetrics[2].metricWasIncremented(DetailedMetricType.RLoc, singleMetrics[1]))
+                .isFalse()
         Assertions.assertThat(singleMetrics[3][DetailedMetricType.RLoc]).isEqualTo(2)
         Assertions.assertThat(singleMetrics[3].metricWasIncremented(DetailedMetricType.RLoc, singleMetrics[2])).isTrue()
     }

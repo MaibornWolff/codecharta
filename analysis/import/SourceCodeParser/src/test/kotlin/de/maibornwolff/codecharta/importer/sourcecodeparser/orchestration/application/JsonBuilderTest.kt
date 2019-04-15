@@ -57,7 +57,8 @@ class JsonBuilderTest {
                 .addComponentAsNode(fileSummary)
                 .build()
 
-        assertThat(project.rootNode.children[0].attributes["lines_of_code"]).isEqualTo(fileSummary[OverviewMetricType.LoC])
+        assertThat(project.rootNode.children[0].attributes["lines_of_code"]).isEqualTo(
+                fileSummary[OverviewMetricType.LoC])
     }
 
     @Test
@@ -65,9 +66,12 @@ class JsonBuilderTest {
         val projectName = "CoolProject"
 
         val project = JsonBuilder(projectName)
-                .addComponentAsNode(DetailedMetricTableSum(SourceDescriptor("CoolComponent1", "", OopLanguage.JAVA), OverviewMetricMap()))
-                .addComponentAsNode(DetailedMetricTableSum(SourceDescriptor("CoolComponent2", "", OopLanguage.JAVA), OverviewMetricMap()))
-                .addComponentAsNode(DetailedMetricTableSum(SourceDescriptor("CoolComponent3", "", OopLanguage.JAVA), OverviewMetricMap()))
+                .addComponentAsNode(DetailedMetricTableSum(SourceDescriptor("CoolComponent1", "", OopLanguage.JAVA),
+                        OverviewMetricMap()))
+                .addComponentAsNode(DetailedMetricTableSum(SourceDescriptor("CoolComponent2", "", OopLanguage.JAVA),
+                        OverviewMetricMap()))
+                .addComponentAsNode(DetailedMetricTableSum(SourceDescriptor("CoolComponent3", "", OopLanguage.JAVA),
+                        OverviewMetricMap()))
                 .build()
 
         assertThat(filterFiles(project.rootNode).size).isEqualTo(3)
@@ -84,5 +88,4 @@ class JsonBuilderTest {
         }
         return files
     }
-
 }

@@ -34,12 +34,14 @@ import de.maibornwolff.codecharta.model.MutableNode
 /**
  * merges nodes recursively if their paths coincide
  */
-class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false) : NodeMergerStrategy {
+class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false): NodeMergerStrategy {
+
     private val mergeConditionSatisfied: (MutableNode, MutableNode) -> Boolean
 
     init {
-        mergeConditionSatisfied = if (ignoreCase) { n1: MutableNode, n2: MutableNode -> n1.name.toUpperCase() == n2.name.toUpperCase() }
-        else { n1: MutableNode, n2: MutableNode -> n1.name == n2.name }
+        mergeConditionSatisfied =
+                if (ignoreCase) { n1: MutableNode, n2: MutableNode -> n1.name.toUpperCase() == n2.name.toUpperCase() }
+                else { n1: MutableNode, n2: MutableNode -> n1.name == n2.name }
     }
 
     override fun mergeNodeLists(lists: List<List<MutableNode>>): List<MutableNode> {
@@ -50,7 +52,7 @@ class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false) : NodeMergerStrat
                 when {
                     t.filter { mergeConditionSatisfied(it, a) }.count() > 0 ->
                         t.map { if (mergeConditionSatisfied(it, a)) merge(it, a) else it }
-                    else -> t + a
+                    else                                                    -> t + a
                 }
             })
         }

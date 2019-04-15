@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.codemaat
 
-import de.maibornwolff.codecharta.model.*
+import de.maibornwolff.codecharta.model.Edge
 import java.util.*
 
 class CSVRow(private val row: Array<String?>, private val header: CSVHeader, private val pathSeparator: Char) {
@@ -8,7 +8,8 @@ class CSVRow(private val row: Array<String?>, private val header: CSVHeader, pri
     init {
         if (row.size <= header.pathColumn.size) {
             throw IllegalArgumentException(
-                    "Row " + Arrays.toString(row) + " has no column containing the file path. Should be in one of " + header.pathColumn + " columns.")
+                    "Row " + Arrays.toString(
+                            row) + " has no column containing the file path. Should be in one of " + header.pathColumn + " columns.")
         }
     }
 
@@ -41,6 +42,4 @@ class CSVRow(private val row: Array<String?>, private val header: CSVHeader, pri
 
     private fun isAttributeColumn(i: Int) =
             header.pathColumn.filter { pathColumnIndex -> i == pathColumnIndex }.isEmpty()
-
-
 }

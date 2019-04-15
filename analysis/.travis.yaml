@@ -1,6 +1,6 @@
 language: java
 jdk:
-   - oraclejdk9
+  - oraclejdk9
 install: true
 cache:
   directories:

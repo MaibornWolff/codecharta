@@ -10,7 +10,7 @@ import java.util.function.Predicate
 import java.util.stream.Collector
 import java.util.stream.Stream
 
-class GitLogParserStrategy : LogParserStrategy {
+class GitLogParserStrategy: LogParserStrategy {
 
     override fun creationCommand(): String {
         return "git log --name-status --topo-order"
@@ -25,7 +25,6 @@ class GitLogParserStrategy : LogParserStrategy {
                 .filter { commitLine -> commitLine.startsWith(AUTHOR_ROW_INDICATOR) }
                 .map { AuthorParser.parseAuthor(it) }
                 .first()
-
     }
 
     override fun parseModifications(commitLines: List<String>): List<Modification> {
@@ -51,7 +50,8 @@ class GitLogParserStrategy : LogParserStrategy {
         }
 
         private fun isFileLine(commitLine: String): Boolean {
-            return commitLine.length >= 3 && commitLine.matches(FILE_LINE_REGEX.toRegex()) && isStatusLetter(commitLine[0])
+            return commitLine.length >= 3 && commitLine.matches(FILE_LINE_REGEX.toRegex()) && isStatusLetter(
+                    commitLine[0])
         }
 
         internal fun parseModification(fileLine: String): Modification {
@@ -61,9 +61,9 @@ class GitLogParserStrategy : LogParserStrategy {
             val status = Status.byCharacter(fileLine[0])
             val lineParts = fileLine.split("\\s+".toRegex())
 
-            return if (status == Status.RENAMED) Modification(lineParts[2].trim(), lineParts[1].trim(), status.toModificationType())
+            return if (status == Status.RENAMED) Modification(lineParts[2].trim(), lineParts[1].trim(),
+                    status.toModificationType())
             else Modification(lineParts[1].trim(), status.toModificationType())
-
         }
     }
 }

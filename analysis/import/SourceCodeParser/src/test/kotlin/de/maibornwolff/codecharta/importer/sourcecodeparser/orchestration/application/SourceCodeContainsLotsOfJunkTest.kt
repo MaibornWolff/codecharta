@@ -8,7 +8,6 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.end2End
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.overviewSourceProviderFromResource
 import org.junit.Test
 
-
 class SourceCodeContainsLotsOfJunkTest {
 
     @Test
@@ -22,5 +21,4 @@ class SourceCodeContainsLotsOfJunkTest {
         assertWithPrintOnFail(singleMetrics) { it.metricValue(OverviewMetricType.LoC) }.isEqualTo(1)
         assertWithPrintOnFail(singleMetrics) { it.metricValue(OverviewMetricType.RLoc) }.isEqualTo(1)
     }
-
 }

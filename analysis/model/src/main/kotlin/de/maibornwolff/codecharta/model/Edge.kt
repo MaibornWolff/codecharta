@@ -39,9 +39,9 @@ class Edge constructor(
 
     override fun toString(): String {
         return "Edge(" +
-                "fromNodeName=$fromNodeName," +
-                "toNodeName=$toNodeName, " +
-                "attributes=$attributes)"
+               "fromNodeName=$fromNodeName," +
+               "toNodeName=$toNodeName, " +
+               "attributes=$attributes)"
     }
 
     fun translateMetrics(metricNameTranslator: MetricNameTranslator) {

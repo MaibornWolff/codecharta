@@ -30,5 +30,4 @@ class MetricsFactoryTest {
 
         assertThat(factory.createMetrics()).hasSize(12)
     }
-
 }

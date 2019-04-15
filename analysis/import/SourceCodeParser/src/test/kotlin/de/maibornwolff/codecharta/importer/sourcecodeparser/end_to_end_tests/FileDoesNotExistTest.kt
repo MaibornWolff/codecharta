@@ -6,7 +6,6 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.retriev
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
-
 class FileDoesNotExistTest {
 
     private val resource = "src/test/resources/$end2EndFolder/folder/does/not/exist/Foo.java"
@@ -20,5 +19,4 @@ class FileDoesNotExistTest {
         assertThat(outputStream.lines()[0]).contains("working directory")
         assertThat(outputStream.lines()[1]).contains("Could not find")
     }
-
 }

@@ -157,7 +157,6 @@ class SonarMetricsAPIDatasourceIntegrationTest {
         // then throw
     }
 
-
     @Test
     @Throws(Exception::class)
     fun getNumberOfPages_from_server() {
@@ -178,7 +177,9 @@ class SonarMetricsAPIDatasourceIntegrationTest {
 
     companion object {
 
-        private val METRIC_ARRAY = arrayOf("accessors", "blocker_violations", "public_api", "public_documented_api_density", "public_undocumented_api")
+        private val METRIC_ARRAY =
+                arrayOf("accessors", "blocker_violations", "public_api", "public_documented_api_density",
+                        "public_undocumented_api")
 
         private const val PORT = 8089
         private const val USERNAME = "somename"
@@ -193,7 +194,6 @@ class SonarMetricsAPIDatasourceIntegrationTest {
             } catch (e: MalformedURLException) {
                 throw RuntimeException(e)
             }
-
         }
     }
 }
