@@ -6,12 +6,14 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { FileState, FileSelectionState } from "../../codeCharta.model"
 import { FileStateHelper } from "../../util/fileStateHelper"
+import { SettingsService } from "../../state/settings.service";
 
 describe("RevisionChooserController", () => {
 	let fileStateService: FileStateService
 	let $rootScope: IRootScopeService
 	let revisionChooserController: RevisionChooserController
 	let fileStates: FileState[]
+	let settingsService: SettingsService
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.revisionChooser")
@@ -21,10 +23,11 @@ describe("RevisionChooserController", () => {
 			{ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.Reference },
 			{ file: TEST_DELTA_MAP_B, selectedAs: FileSelectionState.Comparison }
 		]
+		settingsService = getService<SettingsService>("settingsService")
 	}
 
 	function buildController() {
-		revisionChooserController = new RevisionChooserController(fileStateService, $rootScope)
+		revisionChooserController = new RevisionChooserController(fileStateService, $rootScope, settingsService)
 	}
 
 	function withMockedFileStateService() {
@@ -62,7 +65,7 @@ describe("RevisionChooserController", () => {
 	it("should subscribe to FileStateService on construction", () => {
 		FileStateService.subscribe = jest.fn()
 
-		const revisionChooserController = new RevisionChooserController(fileStateService, $rootScope)
+		const revisionChooserController = new RevisionChooserController(fileStateService, $rootScope, settingsService)
 
 		expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, revisionChooserController)
 	})

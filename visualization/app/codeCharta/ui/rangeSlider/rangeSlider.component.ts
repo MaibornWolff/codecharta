@@ -44,7 +44,8 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
 		this.initSliderOptions(settings)
 
-		if (settings.dynamicSettings.neutralColorRange) {
+		if (settings.dynamicSettings.neutralColorRange.from
+			&& settings.dynamicSettings.neutralColorRange.to) {
 			this.updateViewModel(settings)
 			this.updateSliderColors(settings)
 			this.updateInputFieldWidth(settings)

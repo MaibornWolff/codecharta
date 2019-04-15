@@ -1,4 +1,5 @@
 import {
+	ColorRange,
 	FileSettings,
 	FileState,
 	MapColors,
@@ -66,8 +67,8 @@ export class SettingsService implements FileStateServiceSubscriber {
 		}
 
 		const scaling: Vector3 = new Vector3(1,1,1)
-
 		const camera: Vector3 = new Vector3(0, 300, 1000)
+		const colorRange: ColorRange = {flipped: false, from: null, to: null}
 
 		let settings: Settings = {
 			fileSettings: {
@@ -84,7 +85,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 				searchedNodePaths: [],
 				searchPattern: "",
 				margin: null,
-				neutralColorRange: null
+				neutralColorRange: colorRange
 			},
 			appSettings: {
 				amountOfTopLabels: 1,

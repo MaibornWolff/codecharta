@@ -116,7 +116,7 @@ export class NodeDecorator {
 
 	private static getMetricSumOfLeaves(node: HierarchyNode<CodeMapNode>, settings: Settings, metric: string): number {
 		return node.leaves()
-			.filter(x => !CodeMapHelper.isBlacklisted(x.data, settings.fileSettings.blacklist, BlacklistType.exclude))
+			//.filter(x => !CodeMapHelper.isBlacklisted(x.data, settings.fileSettings.blacklist, BlacklistType.exclude))
 			.map(x => x.data.attributes[metric])
 			.reduce((partialSum, a) => partialSum + a)
 	}

@@ -123,9 +123,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	private renderIfRenderObjectIsComplete() {
-		if (_.values(this.lastRender).every(x => (x !== null)) &&
-			_.values(this.lastRender.settings.dynamicSettings).every(x => (x !== null))
-		) {
+		if (this.allNecessaryRenderDataAvailable()) {
 			this.render(this.lastRender)
 			if (this.autoFitMap) {
 				this.threeOrbitControlsService.autoFitTo();
@@ -133,6 +131,13 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 			}
 			this.notifySubscriber()
 		}
+	}
+
+	private allNecessaryRenderDataAvailable(): boolean {
+		return _.values(this.lastRender).every(x => (x !== null))
+			&& _.values(this.lastRender.settings.dynamicSettings).every(x => {
+				return x !== null && _.values(x).every(x => (x !== null))
+			})
 	}
 
 	private render(renderData: RenderData) {

@@ -50,7 +50,11 @@ Object {
     "focusedNodePath": "",
     "heightMetric": null,
     "margin": null,
-    "neutralColorRange": null,
+    "neutralColorRange": Object {
+      "flipped": false,
+      "from": null,
+      "to": null,
+    },
     "searchPattern": "",
     "searchedNodePaths": Array [],
   },
