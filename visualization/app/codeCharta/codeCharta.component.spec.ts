@@ -12,7 +12,6 @@ import { SETTINGS } from "./util/dataMocks"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { FileStateService } from "./state/fileState.service"
 
-//TODO: weird mock behavior. check test later on
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
 	let threeOrbitControlsService: ThreeOrbitControlsService
@@ -92,9 +91,7 @@ describe("codeChartaController", () => {
 
 	function withMockedUrlUtils() {
 		codeChartaController["urlUtils"] = jest.fn().mockReturnValue({
-			getFileDataFromQueryParam : jest.fn().mockReturnValue(new Promise((resolve, reject) => {
-					resolve([])
-			})),
+			getFileDataFromQueryParam : jest.fn().mockReturnValue(Promise.resolve([])),
 			getParameterByName : jest.fn().mockReturnValue(true)
 		})()
 	}
@@ -173,56 +170,38 @@ describe("codeChartaController", () => {
 	})
 
 	//TODO: Skipped due to weird mocking behaviour
-	xdescribe("loadFileOrSample" , () => {
+	describe("loadFileOrSample" , () => {
 		beforeEach(() => {
 			codeChartaController.tryLoadingSampleFiles = jest.fn()
 			codeChartaController["_viewModel"].numberOfLoadingTasks = 1
 		})
 
-		it("should increment numberOfLoadingTasks", () => {
-			codeChartaController.loadFileOrSample()
+		it("should increment numberOfLoadingTasks", async () => {
+			await codeChartaController.loadFileOrSample()
 
 			expect(codeChartaController["_viewModel"].numberOfLoadingTasks).toBe(2)
 		})
 
-		it("should call tryLoadingSampleFiles when data is an empty array", () => {
-			codeChartaController.loadFileOrSample()
+		it("should call tryLoadingSampleFiles when data is an empty array", async () => {
+			await codeChartaController.loadFileOrSample()
 
 			expect(codeChartaController.tryLoadingSampleFiles).toHaveBeenCalled()
 		})
 
-		it("should call loadFiles when data is not an empty array", () => {
-			codeChartaController.loadFileOrSample()
+		it("should call loadFiles when data is not an empty array", async () => {
+			codeChartaController["urlUtils"].getFileDataFromQueryParam = jest.fn().mockReturnValue(Promise.resolve([{}]))
 
-			expect(codeChartaService.loadFiles).toHaveBeenCalledWith([])
+			await codeChartaController.loadFileOrSample()
+
+			expect(codeChartaService.loadFiles).toHaveBeenCalledWith([{}])
 		})
 
-		it("should decrement numberOfLoadingTasks if loadFiles-Promise resolves", () => {
-			codeChartaController.loadFileOrSample()
+		it("should call updateSettings if loadFiles-Promise resolves", async () => {
+			codeChartaController["urlUtils"].getFileDataFromQueryParam = jest.fn().mockReturnValue(Promise.resolve([{}]))
 
-			expect(codeChartaController["_viewModel"].numberOfLoadingTasks).toBe(0)
-		})
-
-		it("should call updateSettings if loadFiles-Promise resolves", () => {
-			codeChartaController.loadFileOrSample()
+			await codeChartaController.loadFileOrSample()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(settings)
-		})
-
-		it("should decrement numberOfLoadingTasks if loadFiles-Promise rejects", () => {
-			codeChartaService.loadFiles = jest.fn().mockReturnValue(new Promise((resolve, reject) => { reject() }))
-
-			codeChartaController.loadFileOrSample()
-
-			expect(codeChartaController["_viewModel"].numberOfLoadingTasks).toBe(0)
-		})
-
-		it("should call showErrorDialog if loadFiles-Promise rejects", () => {
-			codeChartaService.loadFiles = jest.fn().mockReturnValue(new Promise((resolve, reject) => { reject() }))
-
-			codeChartaController.loadFileOrSample()
-
-			expect(dialogService.showErrorDialog).toHaveBeenCalledWith("")
 		})
 	})
 
