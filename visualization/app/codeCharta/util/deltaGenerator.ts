@@ -86,7 +86,6 @@ export class DeltaGenerator {
                     attributes: {}
                 };
 
-                folder.attributes["unary"] = 1; // TODO: do we need this, if we decorate afterwards nevertheless?
 
                 current.children.push(folder);
                 current = folder;
@@ -107,31 +106,25 @@ export class DeltaGenerator {
 
     private static deepcopy(root:CodeMapNode): CodeMapNode {
 
-        //deepcopy
-        let h = d3.hierarchy(root);
-        let copy: HierarchyNode<CodeMapNode> = deepcopy.default(h.copy()); //Hm this seems to be doing the right thing. First shallow copy then a deep copy ?!
+        let rootCopy: HierarchyNode<CodeMapNode> = deepcopy.default(d3.hierarchy(root).copy()); //Hm this seems to be doing the right thing. First shallow copy then a deep copy ?!
 
-        //make own attributes 0 (not unary)
-        for (let property in copy.data.attributes) {
-            if (copy.data.attributes.hasOwnProperty(property)) {
-                copy.data.attributes[property] = 0;
+        //make own attributes 0
+        for (let property in rootCopy.data.attributes) {
+            if (rootCopy.data.attributes.hasOwnProperty(property)) {
+                rootCopy.data.attributes[property] = 0;
             }
         }
 
-        copy.data.attributes.unary = 1; // TODO: do we need this, if we decorate afterwards nevertheless?
-
         ////make all ancestors attributes 0
-        copy.each((node) => {
+        rootCopy.each((node) => {
             for (let property in node.data.attributes) {
                 if (node.data.attributes.hasOwnProperty(property)) {
                     node.data.attributes[property] = 0;
                 }
             }
-            copy.data.attributes.unary = 1;
         });
 
-        return copy.data;
-
+        return rootCopy.data;
     }
 
     private static calculateAttributeListDelta(first: KeyValuePair, second: KeyValuePair) {
