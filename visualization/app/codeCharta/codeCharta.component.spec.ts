@@ -144,17 +144,10 @@ describe("codeChartaController", () => {
 			expect(codeChartaController["urlUtils"]).toBeDefined()
 		})
 
-		it("should setup one event listeners", () => {
-			withMockedEventMethods()
-
-			rebuildController()
-
-			expect($rootScope.$on).toHaveBeenCalled()
-		})
-
 		it("should set attribute isLoadingFile to true", () => {
 			rebuildController()
-			expect(codeChartaController["_viewModel"].isLoadingFile).toEqual(true)
+
+			expect(codeChartaController["_viewModel"].isLoadingFile).toBeTruthy()
 		})
 	})
 
