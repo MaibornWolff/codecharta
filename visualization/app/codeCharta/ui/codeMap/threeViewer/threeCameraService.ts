@@ -20,7 +20,7 @@ class ThreeCameraService implements SettingsServiceSubscriber, CameraChangeSubsc
 
 	private throttledCameraChange = _.throttle(() => {
 		this.settingsService.updateSettings({appSettings: {camera: new Vector3(this.camera.position.x, this.camera.position.y, this.camera.position.z) }})
-	}, 2000)
+	}, 400)
 
 	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {}
 
