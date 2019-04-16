@@ -8,7 +8,7 @@ import {Settings} from "../../../codeCharta.model"
 import _ from "lodash"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeOrbitControlsService"
 
-class ThreeCameraService implements SettingsServiceSubscriber, CameraChangeSubscriber {
+export class ThreeCameraService implements SettingsServiceSubscriber, CameraChangeSubscriber {
 	public static SELECTOR = "threeCameraService"
 
 	public static VIEW_ANGLE = 45
@@ -47,5 +47,3 @@ class ThreeCameraService implements SettingsServiceSubscriber, CameraChangeSubsc
 		this.camera.position.set(x, y, z)
 	}
 }
-
-export { ThreeCameraService }
