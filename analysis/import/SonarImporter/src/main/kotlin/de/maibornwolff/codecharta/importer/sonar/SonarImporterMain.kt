@@ -52,7 +52,7 @@ class SonarImporterMain: Callable<Void> {
     private var help = false
 
     @CommandLine.Parameters(index = "0", paramLabel = "URL", description = ["url of sonarqube server"])
-    private var baseUrl: URL = URL("http://localhost")
+    private var url: String = "http://localhost"
 
     @CommandLine.Parameters(index = "1", arity = "1..1", paramLabel = "PROJECT_ID",
             description = ["sonarqube project id"])
@@ -79,6 +79,8 @@ class SonarImporterMain: Callable<Void> {
     }
 
     private fun createMesauresAPIImporter(): SonarMeasuresAPIImporter {
+        if (url.endsWith("/")) url = url.substring(0, url.length - 1)
+        val baseUrl = URL(url)
         val ds = SonarMeasuresAPIDatasource(user, baseUrl)
         val metricsDS = SonarMetricsAPIDatasource(user, baseUrl)
         val sonarCodeURLLinker = SonarCodeURLLinker(baseUrl)
