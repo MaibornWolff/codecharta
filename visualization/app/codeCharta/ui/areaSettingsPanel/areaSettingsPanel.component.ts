@@ -14,7 +14,6 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
     private static MARGIN_FACTOR = 4
     private makeAutoFit: boolean = false
 
-
     private _viewModel: {
         margin: number,
         dynamicMargin: boolean
@@ -34,11 +33,11 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
         SettingsService.subscribe(this.$rootScope, this)
         CodeMapRenderService.subscribe(this.$rootScope, this)
         FileStateService.subscribe(this.$rootScope, this)
-
     }
 
     public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
         this._viewModel.dynamicMargin = settings.appSettings.dynamicMargin
+        this._viewModel.margin = settings.dynamicSettings.margin
         this.potentiallyUpdateMargin(this.codeMapRenderService.getRenderFile(), settings)
     }
 
@@ -89,8 +88,6 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
                     this.makeAutoFit = false
                 }
             }
-        } else {
-            this._viewModel.margin = settings.dynamicSettings.margin
         }
     }
 
