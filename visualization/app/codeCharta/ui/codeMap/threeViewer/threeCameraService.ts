@@ -40,7 +40,7 @@ export class ThreeCameraService implements SettingsServiceSubscriber, CameraChan
 		this.camera = new THREE.PerspectiveCamera(ThreeCameraService.VIEW_ANGLE, aspect, ThreeCameraService.NEAR, ThreeCameraService.FAR)
 		this.setPosition(x, y, z)
 		SettingsService.subscribe(this.$rootScope, this)
-		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
+		//ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
 	public setPosition(x: number, y: number, z: number) {
