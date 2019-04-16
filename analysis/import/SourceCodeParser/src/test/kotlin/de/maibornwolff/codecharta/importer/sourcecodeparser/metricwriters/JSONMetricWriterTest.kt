@@ -14,10 +14,6 @@ import java.io.PrintStream
 
 class JSONMetricWriterTest {
 
-    // TODO: The tests fail for some reason on Travis.
-    // TODO: Find a better way to test the JSON-string structure.
-    // TODO: Can we assume the order in JSON Array?
-
     @Test
     fun `project name is set correctly`() {
         val metrics = ProjectMetrics()
