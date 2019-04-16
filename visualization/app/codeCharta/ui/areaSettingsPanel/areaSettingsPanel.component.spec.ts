@@ -125,7 +125,7 @@ describe("AreaSettingsPanelController", () => {
 		})
 
 		it("should not call applySettings if margin and new calculated margin are the same", () => {
-			areaSettingsPanelController["_viewModel"].margin = 28
+			settings.dynamicSettings.margin = 28
 
 			areaSettingsPanelController.onSettingsChanged(settings, undefined)
 
@@ -138,19 +138,11 @@ describe("AreaSettingsPanelController", () => {
 			areaSettingsPanelController.applySettings = jest.fn()
 
 			areaSettingsPanelController["makeAutoFit"] = true
-			areaSettingsPanelController["_viewModel"].dynamicMargin = true
+			settings.appSettings.dynamicMargin = true
 		})
 
 		it("should not call applySettings if dynamicMargin is false", () => {
-			areaSettingsPanelController["_viewModel"].dynamicMargin = false
-
-			areaSettingsPanelController.onRenderFileChanged(file, undefined)
-
-			expect(areaSettingsPanelController.applySettings).not.toHaveBeenCalled()
-		})
-
-		it("should not call applySettings if makeAutoFit is false", () => {
-			areaSettingsPanelController["makeAutoFit"] = false
+			settings.appSettings.dynamicMargin = false
 
 			areaSettingsPanelController.onRenderFileChanged(file, undefined)
 
@@ -227,7 +219,7 @@ describe("AreaSettingsPanelController", () => {
 		})
 
 		it("should not set margin if dynamicMargin is false", () => {
-			areaSettingsPanelController["_viewModel"].dynamicMargin = false
+			settings.appSettings.dynamicMargin = false
 
 			areaSettingsPanelController.onClickDynamicMargin()
 
@@ -235,7 +227,7 @@ describe("AreaSettingsPanelController", () => {
 		})
 
 		it("should set margin correctly", () => {
-			areaSettingsPanelController["_viewModel"].dynamicMargin = true
+			settings.appSettings.dynamicMargin = true
 
 			areaSettingsPanelController.onClickDynamicMargin()
 
