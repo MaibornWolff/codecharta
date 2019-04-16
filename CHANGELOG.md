@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+-   Added SonarJava to Source code parser #343
 
 ### Changed
+-   Using Sonar Plugins for Source code parser, giving the Sonar Metrics #343
 
 ### Removed
 
