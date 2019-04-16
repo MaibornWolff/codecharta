@@ -1,6 +1,7 @@
 import {DeltaGenerator} from "./deltaGenerator";
 import {TEST_DELTA_MAP_A, TEST_DELTA_MAP_B} from "./dataMocks";
 import {CCFile} from "../codeCharta.model";
+import { NodeDecorator } from "./nodeDecorator"
 
 describe("deltaGenerator", () => {
 
@@ -12,7 +13,9 @@ describe("deltaGenerator", () => {
         fileB = JSON.parse(JSON.stringify(TEST_DELTA_MAP_B));
     });
 
-    it("golden test", ()=>{
+    it("golden test", () => {
+        fileA = NodeDecorator.preDecorateFile(fileA)
+        fileB = NodeDecorator.preDecorateFile(fileB)
 
         fileA.map.children.push({
             name: "onlyA",
@@ -89,10 +92,11 @@ describe("deltaGenerator", () => {
         expect(nb).toEqual(fileB);
     });
 
-    xit("additionalLeaf from fileB should exist in a after calling getDeltaFile, metrics should be 0", ()=>{
-        fileA.map.children[0].origin = "hallo";
+    it("additionalLeaf from fileB should exist in a after calling getDeltaFile, metrics should be 0", ()=>{
+        fileA = NodeDecorator.preDecorateFile(fileA)
+        fileB = NodeDecorator.preDecorateFile(fileB)
 
-        const result = DeltaGenerator.getDeltaFile(fileA, fileB);
+        DeltaGenerator.getDeltaFile(fileA, fileB);
 
         expect(fileA.map.children[2].name).toBe("additional leaf");
         expect(fileB.map.children[1].name).toBe("additional leaf");
@@ -101,7 +105,10 @@ describe("deltaGenerator", () => {
         expect(fileB.map.children[1].attributes.rloc).toBe(10);
     });
 
-    xit("getDeltaFile should result in expected deltaFiles", ()=>{
+    it("getDeltaFile should result in expected deltaFiles", ()=>{
+        fileA = NodeDecorator.preDecorateFile(fileA)
+        fileB = NodeDecorator.preDecorateFile(fileB)
+
         DeltaGenerator.getDeltaFile(fileA, fileB);
 
         expect(fileA.map.children[0].deltas["rloc"]).toBe(80);
