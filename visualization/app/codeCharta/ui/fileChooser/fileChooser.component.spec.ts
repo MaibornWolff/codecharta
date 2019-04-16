@@ -8,6 +8,7 @@ import { FileStateService } from "../../state/fileState.service"
 import { DialogService } from "../dialog/dialog.service"
 import { FileChooserController } from "./fileChooser.component"
 import { TEST_FILE_CONTENT } from "../../util/dataMocks"
+import {CodeChartaController} from "../../codeCharta.component";
 
 describe("fileChooserController", () => {
 	let fileChooserController: FileChooserController
@@ -85,9 +86,9 @@ describe("fileChooserController", () => {
 			expect($scope.$apply).toHaveBeenCalled()
 		})
 
-		it("should broadcast a loading task", () => {
+		it("should broadcast the loading-status-changed event", () => {
 			fileChooserController.onImportNewFiles({ files: [] })
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("add-loading-task")
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(CodeChartaController.LOADING_STATUS_EVENT, true)
 		})
 	})
 
@@ -103,12 +104,6 @@ describe("fileChooserController", () => {
 				fileName,
 				content
 			})
-		})
-
-		it("should broadcast remove-loading-task event", () => {
-			fileChooserController.onNewFileLoaded(fileName, content)
-
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("remove-loading-task")
 		})
 
 		it("should showErrorDialog on parsing error", () => {

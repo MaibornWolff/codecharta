@@ -1,4 +1,5 @@
 import {
+	ColorRange,
 	FileSettings,
 	FileState,
 	MapColors,
@@ -19,7 +20,6 @@ export interface SettingsServiceSubscriber {
 export class SettingsService implements FileStateServiceSubscriber {
 	public static SELECTOR = "settingsService"
 	private static SETTINGS_CHANGED_EVENT = "settings-changed"
-	public static readonly MIN_MARGIN = 15
 
 	private settings: Settings
 	private readonly throttledBroadcast: () => void
@@ -31,6 +31,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+		this.updateSettings(this.getDefaultDynamicSettingsWithoutMetrics())
 		this.updateSettings({
 			fileSettings: this.getNewFileSettings(fileStates)
 		})
@@ -66,8 +67,8 @@ export class SettingsService implements FileStateServiceSubscriber {
 		}
 
 		const scaling: Vector3 = new Vector3(1,1,1)
-
 		const camera: Vector3 = new Vector3(0, 300, 1000)
+		const colorRange: ColorRange = {flipped: false, from: null, to: null}
 
 		let settings: Settings = {
 			fileSettings: {
@@ -84,7 +85,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 				searchedNodePaths: [],
 				searchPattern: "",
 				margin: null,
-				neutralColorRange: null
+				neutralColorRange: colorRange
 			},
 			appSettings: {
 				amountOfTopLabels: 1,
@@ -106,6 +107,19 @@ export class SettingsService implements FileStateServiceSubscriber {
 		}
 
 		return settings
+	}
+
+	private getDefaultDynamicSettingsWithoutMetrics(): RecursivePartial<Settings> {
+		const defaultSettings = this.getDefaultSettings()
+		return {
+			dynamicSettings: {
+				focusedNodePath: defaultSettings.dynamicSettings.focusedNodePath,
+				searchedNodePaths: defaultSettings.dynamicSettings.searchedNodePaths,
+				searchPattern: defaultSettings.dynamicSettings.searchPattern,
+				margin: defaultSettings.dynamicSettings.margin,
+				neutralColorRange: defaultSettings.dynamicSettings.neutralColorRange
+			}
+		}
 	}
 
 	private getNewFileSettings(fileStates: FileState[]): FileSettings {

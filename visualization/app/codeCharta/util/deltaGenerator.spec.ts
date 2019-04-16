@@ -94,7 +94,6 @@ describe("deltaGenerator", () => {
 
         const result = DeltaGenerator.getDeltaFile(fileA, fileB);
 
-        console.log("result: ", result)
         expect(fileA.map.children[2].name).toBe("additional leaf");
         expect(fileB.map.children[1].name).toBe("additional leaf");
 

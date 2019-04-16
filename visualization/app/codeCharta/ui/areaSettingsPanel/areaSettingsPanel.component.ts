@@ -39,27 +39,12 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
 
     public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
         this._viewModel.dynamicMargin = settings.appSettings.dynamicMargin
-        if (this._viewModel.dynamicMargin && this.codeMapRenderService.getRenderFile()) {
-            const newMargin = this.computeMargin()
-            if (newMargin !== this._viewModel.margin) {
-                this._viewModel.margin = newMargin
-                this.applySettings()
-            }
-        } else {
-            this._viewModel.margin = settings.dynamicSettings.margin
-        }
+        this.potentiallyUpdateMargin(this.codeMapRenderService.getRenderFile(), settings)
     }
 
     public onRenderFileChanged(renderFile: CCFile, event: angular.IAngularEvent) {
-        if (this._viewModel.dynamicMargin && this.makeAutoFit) {
-            const newMargin = this.computeMargin()
-            if (newMargin !== this._viewModel.margin) {
-                this._viewModel.margin = newMargin
-                this.applySettings()
-                this.autoFit()
-                this.makeAutoFit = false
-            }
-        }
+        this._viewModel.dynamicMargin = this.settingsService.getSettings().appSettings.dynamicMargin
+        this.potentiallyUpdateMargin(renderFile, this.settingsService.getSettings())
     }
 
     public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
@@ -75,10 +60,7 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
     }
 
     public onClickDynamicMargin() {
-        if (this._viewModel.dynamicMargin) {
-            this._viewModel.margin = this.computeMargin()
-        }
-        this.applySettings()
+        this.potentiallyUpdateMargin(this.codeMapRenderService.getRenderFile(), this.settingsService.getSettings())
     }
 
     public applySettings() {
@@ -92,17 +74,35 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
         })
     }
 
-    private computeMargin(): number {
-        const s: Settings = this.settingsService.getSettings()
-        const renderMap: CodeMapNode = this.codeMapRenderService.getRenderFile().map
-        let leaves = hierarchy<CodeMapNode>(renderMap).leaves()
+    private potentiallyUpdateMargin(renderFile: CCFile, settings: Settings) {
+        if (settings.appSettings.dynamicMargin
+            && settings.dynamicSettings.areaMetric
+            && renderFile) {
+
+            const newMargin = this.computeMargin(settings.dynamicSettings.areaMetric, renderFile)
+            if (this._viewModel.margin !== newMargin) {
+                this._viewModel.margin = newMargin
+                this.applySettings()
+
+                if (this.makeAutoFit) {
+                    this.autoFit()
+                    this.makeAutoFit = false
+                }
+            }
+        } else {
+            this._viewModel.margin = settings.dynamicSettings.margin
+        }
+    }
+
+    private computeMargin(areaMetric: string, renderFile: CCFile): number {
+        let leaves = hierarchy<CodeMapNode>(renderFile.map).leaves()
         let numberOfBuildings = 0
         let totalArea = 0
 
         leaves.forEach((node: HierarchyNode<CodeMapNode>) => {
             numberOfBuildings++
-            if(node.data.attributes && node.data.attributes[s.dynamicSettings.areaMetric]){
-                totalArea += node.data.attributes[s.dynamicSettings.areaMetric]
+            if(node.data.attributes && node.data.attributes[areaMetric]){
+                totalArea += node.data.attributes[areaMetric]
             }
         });
 

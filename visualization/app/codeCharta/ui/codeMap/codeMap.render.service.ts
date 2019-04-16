@@ -26,6 +26,7 @@ import {MetricService, MetricServiceSubscriber} from "../../state/metric.service
 import {FileStateHelper} from "../../util/fileStateHelper";
 import {DeltaGenerator} from "../../util/deltaGenerator";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
+import {CodeChartaController} from "../../codeCharta.component";
 
 export interface RenderData {
 	renderFile: CCFile
@@ -110,22 +111,24 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
 
 		} else if (FileStateHelper.isDeltaState(fileStates)) {
-			if (visibleFileStates.length == 2) {
-				const referenceFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Reference).file
-				const comparisonFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Comparison).file
-				return DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
-			} else {
-				const referenceFile = visibleFileStates[0].file
-				const comparisonFile = visibleFileStates[0].file
-				return DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
-			}
+			return this.getDeltaFile(visibleFileStates)
+		}
+	}
+
+	private getDeltaFile(visibleFileStates: FileState[]): CCFile {
+		if (visibleFileStates.length == 2) {
+			const referenceFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Reference).file
+			const comparisonFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Comparison).file
+			return DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
+		} else {
+			const referenceFile = visibleFileStates[0].file
+			const comparisonFile = visibleFileStates[0].file
+			return DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
 		}
 	}
 
 	private renderIfRenderObjectIsComplete() {
-		if (_.values(this.lastRender).every(x => (x !== null)) &&
-			_.values(this.lastRender.settings.dynamicSettings).every(x => (x !== null))
-		) {
+		if (this.allNecessaryRenderDataAvailable()) {
 			this.render(this.lastRender)
 			if (this.autoFitMap) {
 				this.threeOrbitControlsService.autoFitTo();
@@ -133,6 +136,13 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 			}
 			this.notifySubscriber()
 		}
+	}
+
+	private allNecessaryRenderDataAvailable(): boolean {
+		return _.values(this.lastRender).every(x => (x !== null))
+			&& _.values(this.lastRender.settings.dynamicSettings).every(x => {
+				return x !== null && _.values(x).every(x => (x !== null))
+			})
 	}
 
 	private render(renderData: RenderData) {
@@ -218,6 +228,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	private notifySubscriber() {
+		this.$rootScope.$broadcast(CodeChartaController.LOADING_STATUS_EVENT, false)
 		this.$rootScope.$broadcast(CodeMapRenderService.RENDER_FILE_CHANGED_EVENT, this.lastRender.renderFile)
 	}
 

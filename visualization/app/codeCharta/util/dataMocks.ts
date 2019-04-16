@@ -419,7 +419,11 @@ export const DEFAULT_SETTINGS: Settings = {
 		"focusedNodePath": "",
 		"heightMetric": null,
 		"margin": null,
-		"neutralColorRange": null,
+		"neutralColorRange": {
+			"flipped": false,
+			"from": null,
+			"to": null
+		},
 		"searchPattern": "",
 		"searchedNodePaths": []
 	},

@@ -4,6 +4,7 @@ import {CCFile, FileSelectionState, FileState} from "../../codeCharta.model";
 import {IRootScopeService} from "angular";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
 import {FileStateHelper} from "../../util/fileStateHelper";
+import {SettingsService} from "../../state/settings.service";
 
 interface SelectedFileNames {
     single: string,
@@ -44,7 +45,8 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
     /* @ngInject */
     constructor(
         private fileStateService: FileStateService,
-        private $rootScope: IRootScopeService
+        private $rootScope: IRootScopeService,
+        private settingsService: SettingsService
     ) {
         FileStateService.subscribe(this.$rootScope, this)
     }
@@ -100,7 +102,6 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
     public onDeltaComparisonFileChange(comparisonFileName: string) {
         const referenceFile: CCFile = FileStateHelper.getFileByFileName(this._viewModel.selectedFileNames.delta.reference, this.fileStateService.getFileStates())
         const comparisonFile: CCFile = FileStateHelper.getFileByFileName(comparisonFileName, this.fileStateService.getFileStates())
-
         this.fileStateService.setDelta(referenceFile, comparisonFile)
     }
 
@@ -110,7 +111,6 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
         partialFileNames.forEach(fileName => {
             partialFiles.push(FileStateHelper.getFileByFileName(fileName, this.fileStateService.getFileStates()))
         })
-
         this.fileStateService.setMultiple(partialFiles)
     }
 

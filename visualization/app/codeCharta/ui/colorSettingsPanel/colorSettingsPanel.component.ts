@@ -5,6 +5,7 @@ import { IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
+import _ from "lodash"
 
 export class ColorSettingsPanelController implements SettingsServiceSubscriber, FileStateServiceSubscriber {
 	private lastColorMetric = null
@@ -35,7 +36,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 		this._viewModel.deltaColorFlipped = settings.appSettings.deltaColorFlipped
 		this._viewModel.whiteColorBuildings = settings.appSettings.whiteColorBuildings
 
-		if (this.lastColorMetric != settings.dynamicSettings.colorMetric) {
+		if (this.lastColorMetric != settings.dynamicSettings.colorMetric || !this.containsColorRangeValues(settings)) {
 			this.lastColorMetric = settings.dynamicSettings.colorMetric
 			this.adaptColorRange(settings)
 		} else if (settings.dynamicSettings.neutralColorRange) {
@@ -61,6 +62,10 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 				whiteColorBuildings: this._viewModel.whiteColorBuildings
 			}
 		})
+	}
+
+	private containsColorRangeValues(settings): boolean {
+		return _.values(settings.dynamicSettings.neutralColorRange).every(x => x != null)
 	}
 
 	private adaptColorRange(s: Settings) {

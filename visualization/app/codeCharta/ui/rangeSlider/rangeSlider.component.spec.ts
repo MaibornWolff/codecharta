@@ -55,7 +55,7 @@ describe("RangeSliderController", () => {
 			rangeSliderController.initSliderOptions = jest.fn()
 			rangeSliderController["updateViewModel"] = jest.fn()
 
-			const settings = { dynamicSettings: { neutralColorRange: undefined } } as Settings
+			const settings = { dynamicSettings: { neutralColorRange: {flipped: false, from: null, to: null} } } as Settings
 
 			rangeSliderController.onSettingsChanged(settings, undefined)
 
@@ -67,7 +67,7 @@ describe("RangeSliderController", () => {
 			rangeSliderController.initSliderOptions = jest.fn()
 			rangeSliderController["updateViewModel"] = jest.fn()
 
-			const settings = { dynamicSettings: { neutralColorRange: null } } as Settings
+			const settings = { dynamicSettings: { neutralColorRange: {flipped: false, from: null, to: null} } } as Settings
 
 			rangeSliderController.onSettingsChanged(settings, undefined)
 

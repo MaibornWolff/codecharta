@@ -130,18 +130,31 @@ describe("codeChartaController", () => {
 			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, codeChartaController)
 		})
 
+		it("should subscribe to CodeChartaController", () => {
+			CodeChartaController.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(CodeChartaController.subscribe).toHaveBeenCalledWith($rootScope, codeChartaController)
+		})
+
 		it("should set urlUtils", () => {
 			rebuildController()
 
 			expect(codeChartaController["urlUtils"]).toBeDefined()
 		})
 
-		it("should setup two event listeners", () => {
+		it("should setup one event listeners", () => {
 			withMockedEventMethods()
 
 			rebuildController()
 
-			expect($rootScope.$on).toHaveBeenCalledTimes(2)
+			expect($rootScope.$on).toHaveBeenCalled()
+		})
+
+		it("should set attribute isLoadingFile to true", () => {
+			rebuildController()
+			expect(codeChartaController["_viewModel"].isLoadingFile).toEqual(true)
 		})
 	})
 
@@ -172,13 +185,6 @@ describe("codeChartaController", () => {
 	describe("loadFileOrSample" , () => {
 		beforeEach(() => {
 			codeChartaController.tryLoadingSampleFiles = jest.fn()
-			codeChartaController["_viewModel"].numberOfLoadingTasks = 1
-		})
-
-		it("should increment numberOfLoadingTasks", async () => {
-			await codeChartaController.loadFileOrSample()
-
-			expect(codeChartaController["_viewModel"].numberOfLoadingTasks).toBe(2)
 		})
 
 		it("should call tryLoadingSampleFiles when data is an empty array", async () => {
