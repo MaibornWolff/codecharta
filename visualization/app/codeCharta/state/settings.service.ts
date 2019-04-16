@@ -166,19 +166,6 @@ export class SettingsService implements FileStateServiceSubscriber {
 		})
 	}
 
-	/* TODO move onCameraChanged(), updateSettings() should offer silent flag (no event triggered)
-    public onCameraChanged(camera: PerspectiveCamera) {
-        if (
-            this.settings.camera.x !== camera.position.x ||
-            this.settings.camera.y !== camera.position.y ||
-            this.settings.camera.z !== camera.position.z
-        ) {
-            this.settings.camera.x = camera.position.x;
-            this.settings.camera.y = camera.position.y;
-            this.settings.camera.z = camera.position.z;
-            // There is no component in CC which needs live updates when camera changes. Broadcasting an
-            // onSettingsChanged Event would cause big performance issues
-            // this.onSettingsChanged();
-        }
-    }*/
+	//TODO updateSettings() should offer silent flag (no event triggered)
+
 }

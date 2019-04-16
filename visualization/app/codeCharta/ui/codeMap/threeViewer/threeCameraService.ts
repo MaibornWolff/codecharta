@@ -16,7 +16,7 @@ class ThreeCameraService implements SettingsServiceSubscriber {
 	public camera: PerspectiveCamera
 	private lastCameraVector: Vector3 = new Vector3(0,0 ,0)
 
-	constructor(private $rootScope: IRootScopeService) {}
+	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {}
 
 	public onSettingsChanged(settings: Settings, event: IAngularEvent) {
 		if (JSON.stringify(settings.appSettings.camera) !== JSON.stringify(this.lastCameraVector)) {
@@ -34,6 +34,7 @@ class ThreeCameraService implements SettingsServiceSubscriber {
 
 	public setPosition(x: number, y: number, z: number) {
 		this.camera.position.set(x, y, z)
+		this.settingsService.updateSettings({appSettings: {camera: this.camera}})
 	}
 }
 

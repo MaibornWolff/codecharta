@@ -11,23 +11,32 @@ describe("ThreeCameraService", () => {
 
     let threeCameraService : ThreeCameraService
     let $rootScope : IRootScopeService
+    let settingsService : SettingsService
     let settings : Settings
 
     beforeEach(() => {
         restartSystem()
         rebuildService()
+        withMockedSettingsService()
     })
 
     function restartSystem() {
         instantiateModule("app.codeCharta.ui.codeMap.threeViewer")
 
         $rootScope = getService<IRootScopeService>("$rootScope")
+        settingsService = getService<SettingsService>("settingsService")
 
         settings = JSON.parse(JSON.stringify(SETTINGS))
     }
 
     function rebuildService() {
-        threeCameraService = new ThreeCameraService($rootScope)
+        threeCameraService = new ThreeCameraService($rootScope, settingsService)
+    }
+
+    function withMockedSettingsService() {
+        settingsService = threeCameraService["settingsService"] = jest.fn().mockReturnValue({
+            updateSettings : jest.fn()
+        })()
     }
 
     describe ("onSettingsChanged", () => {
@@ -83,12 +92,20 @@ describe("ThreeCameraService", () => {
     })
 
     describe ("setPosition", () => {
-        it("should set camera position correctly", () => {
+        beforeEach(() => {
             threeCameraService.camera = new PerspectiveCamera()
+        })
 
+        it("should set camera position correctly", () => {
             threeCameraService.setPosition(1, 2, 3)
 
             expect(threeCameraService.camera.position).toEqual({x: 1, y: 2, z: 3})
+        })
+
+        it("should call updateSettings with new camera position", () => {
+            threeCameraService.setPosition(1, 2, 3)
+
+            expect(settingsService.updateSettings).toHaveBeenCalledWith({appSettings: { camera: threeCameraService.camera }})
         })
     })
 })
