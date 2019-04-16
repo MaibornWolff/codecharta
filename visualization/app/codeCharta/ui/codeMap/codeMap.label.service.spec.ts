@@ -28,7 +28,7 @@ describe("CodeMapLabelService", () => {
 	function setServices() {
 		services = {
 			$rootScope: getService<IRootScopeService>("$rootScope"),
-			threeCameraService: new ThreeCameraService(null),
+			threeCameraService: new ThreeCameraService(null, null),
 			threeSceneService: new ThreeSceneService(),
 			threeOrbitControlsService: ThreeOrbitControlsService
 		}
@@ -41,7 +41,7 @@ describe("CodeMapLabelService", () => {
 	}
 
 	function rebuild() {
-		codeMapLabelService = new CodeMapLabelService(
+		codeMapLabelService = new CodeMapLabelService(services.$rootScope,
 			services.threeOrbitControlsService,
 			services.threeCameraService,
 			services.threeSceneService

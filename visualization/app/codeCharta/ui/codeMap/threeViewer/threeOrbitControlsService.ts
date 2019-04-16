@@ -35,11 +35,7 @@ class ThreeOrbitControlsService {
     }
 
     private lookAtDirectionFromTarget(x: number, y: number, z: number) {
-        this.threeCameraService.camera.position.set(
-            this.controls.target.x,
-            this.controls.target.y,
-            this.controls.target.z
-        );
+        this.threeCameraService.camera.position.set(this.controls.target.x, this.controls.target.y, this.controls.target.z)
 
         const alignmentCube = new THREE.Mesh(
             new THREE.CubeGeometry(20, 20, 20),
@@ -82,7 +78,7 @@ class ThreeOrbitControlsService {
         const distanceToCamera = boundingSphere.radius / Math.tan(objectAngularSize / 2);
         const len = Math.sqrt(Math.pow(distanceToCamera, 2) + Math.pow(distanceToCamera, 2));
 
-        this.threeCameraService.camera.position.set(len, len, len);
+        this.threeCameraService.camera.position.set(len, len, len)
         this.controls.update();
 
         let t: Vector3 = boundingSphere.center.clone();
@@ -91,15 +87,6 @@ class ThreeOrbitControlsService {
         this.controls.target.set(t.x, t.y, t.z);
 
         this.threeCameraService.camera.updateProjectionMatrix();
-    }
-
-    public subscribe(subscriber: CameraChangeSubscriber) {
-        this.$rootScope.$on(
-            ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME,
-            (event: IAngularEvent, camera: PerspectiveCamera) => {
-                subscriber.onCameraChanged(camera, event);
-            }
-        );
     }
 
     public init(domElement) {
@@ -117,6 +104,15 @@ class ThreeOrbitControlsService {
         this.$rootScope.$broadcast(
             ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME,
             camera
+        );
+    }
+
+    public static subscribe($rootScope: IRootScopeService, subscriber: CameraChangeSubscriber) {
+        $rootScope.$on(
+            ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME,
+            (event: IAngularEvent, camera: PerspectiveCamera) => {
+                subscriber.onCameraChanged(camera, event);
+            }
         );
     }
 }

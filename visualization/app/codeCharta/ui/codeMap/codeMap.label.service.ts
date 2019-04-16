@@ -7,6 +7,7 @@ import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ColorConverter } from "../../util/colorConverter"
 import { Settings } from "../../codeCharta.model"
+import { IRootScopeService } from "angular"
 
 interface InternalLabel {
 	sprite: THREE.Sprite
@@ -22,12 +23,13 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private LABEL_HEIGHT_DIVISOR: number = 50 // empirically gathered
 
 	constructor(
+		private $rootScope: IRootScopeService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService
 	) {
 		this.labels = new Array<InternalLabel>()
-		this.threeOrbitControlsService.subscribe(this)
+		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
 	public addLabel(node: Node, settings: Settings): void {

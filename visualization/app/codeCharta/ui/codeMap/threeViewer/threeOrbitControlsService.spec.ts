@@ -1,5 +1,5 @@
 import "./threeViewer.module";
-import { NG, getService } from "../../../../../mocks/ng.mockhelper";
+import { NG, getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService";
 import { ThreeCameraService } from "./threeCameraService";
 import { ThreeSceneService } from "./threeSceneService";
@@ -7,37 +7,33 @@ import { IRootScopeService } from "angular";
 import * as THREE from "three";
 import { OrbitControls } from "three";
 
-/**
- * @test {ThreeOrbitControlsService}
- */
 describe("ThreeOrbitControlsService", () => {
     let threeCameraService: ThreeCameraService;
     let threeSceneService: ThreeSceneService;
     let $rootScope: IRootScopeService;
     let threeOrbitControlsService: ThreeOrbitControlsService;
 
-    //noinspection TypeScriptUnresolvedVariable
-    beforeEach(NG.mock.module("app.codeCharta.ui.codeMap.threeViewer"));
-
     afterEach(() => {
         jest.resetAllMocks();
     });
 
     beforeEach(() => {
-        buildService();
+        restartSystem()
+        rebuildService();
         withMockedThreeCameraService();
         withMockedThreeSceneService();
-        rebuild();
     });
 
-    function buildService() {
-        threeCameraService = new ThreeCameraService($rootScope);
-        threeSceneService = new ThreeSceneService();
+    function restartSystem() {
+        instantiateModule("app.codeCharta.ui.codeMap.threeViewer")
+
+        threeCameraService = getService<ThreeCameraService>("threeCameraService")
+        threeSceneService = getService<ThreeSceneService>("threeSceneService")
         $rootScope = getService<IRootScopeService>("$rootScope");
     }
 
     function withMockedThreeCameraService() {
-        threeCameraService = jest.fn<ThreeCameraService>(() => {
+        threeCameraService = threeOrbitControlsService["threeCameraService"] = jest.fn<ThreeCameraService>(() => {
             return {
                 camera: {
                     position: {
@@ -56,7 +52,7 @@ describe("ThreeOrbitControlsService", () => {
     }
 
     function withMockedThreeSceneService() {
-        threeSceneService = jest.fn<ThreeSceneService>(() => {
+        threeSceneService = threeOrbitControlsService["threeSceneService"] = jest.fn<ThreeSceneService>(() => {
             return {
                 scene: {
                     add: jest.fn(),
@@ -66,7 +62,7 @@ describe("ThreeOrbitControlsService", () => {
         })();
     }
 
-    function rebuild() {
+    function rebuildService() {
         threeOrbitControlsService = new ThreeOrbitControlsService(
             threeCameraService,
             threeSceneService,

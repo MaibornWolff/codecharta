@@ -165,7 +165,4 @@ export class SettingsService implements FileStateServiceSubscriber {
 			subscriber.onSettingsChanged(data, event)
 		})
 	}
-
-	//TODO updateSettings() should offer silent flag (no event triggered)
-
 }

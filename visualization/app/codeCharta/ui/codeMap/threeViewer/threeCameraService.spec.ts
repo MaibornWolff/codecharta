@@ -6,6 +6,7 @@ import { Settings } from "../../../codeCharta.model"
 import { SETTINGS } from "../../../util/dataMocks"
 import { PerspectiveCamera, Vector3 } from "three"
 import { SettingsService } from "../../../state/settings.service"
+import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 
 describe("ThreeCameraService", () => {
 
@@ -31,6 +32,7 @@ describe("ThreeCameraService", () => {
 
     function rebuildService() {
         threeCameraService = new ThreeCameraService($rootScope, settingsService)
+        threeCameraService.camera = new PerspectiveCamera()
     }
 
     function withMockedSettingsService() {
@@ -66,10 +68,21 @@ describe("ThreeCameraService", () => {
         })
     })
 
+    describe("onCameraChanged", () => {
+        it("should call updateSettings", () => {
+            const cameraPosition = threeCameraService.camera.position
+
+            threeCameraService.onCameraChanged(null, null);
+
+            expect(settingsService.updateSettings).toHaveBeenCalledWith({appSettings: {camera: new Vector3(cameraPosition.x, cameraPosition.y, cameraPosition.z) }})
+        })
+    })
+
     describe ("init", () => {
         beforeEach(() => {
             threeCameraService.setPosition = jest.fn()
             SettingsService.subscribe = jest.fn()
+            ThreeOrbitControlsService.subscribe = jest.fn()
         })
 
         it("should set camera with a new aspect", () => {
@@ -89,23 +102,19 @@ describe("ThreeCameraService", () => {
 
             expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, threeCameraService)
         })
+
+        it("should subscribe to ThreeOrbitControlsService", () => {
+            threeCameraService.init(400, 200, 1, 2 ,3)
+
+            expect(ThreeOrbitControlsService.subscribe).toHaveBeenCalledWith($rootScope, threeCameraService)
+        })
     })
 
     describe ("setPosition", () => {
-        beforeEach(() => {
-            threeCameraService.camera = new PerspectiveCamera()
-        })
-
         it("should set camera position correctly", () => {
             threeCameraService.setPosition(1, 2, 3)
 
             expect(threeCameraService.camera.position).toEqual({x: 1, y: 2, z: 3})
-        })
-
-        it("should call updateSettings with new camera position", () => {
-            threeCameraService.setPosition(1, 2, 3)
-
-            expect(settingsService.updateSettings).toHaveBeenCalledWith({appSettings: { camera: threeCameraService.camera }})
         })
     })
 })
