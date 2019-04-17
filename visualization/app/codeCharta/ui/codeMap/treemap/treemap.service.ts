@@ -51,7 +51,7 @@ export class TreeMapService {
 			.paddingOuter(s.dynamicSettings.margin * TreeMapService.PADDING_SCALING_FACTOR || 1)
 			.paddingInner(s.dynamicSettings.margin * TreeMapService.PADDING_SCALING_FACTOR || 1)
 
-		return treeMap(map.sum(node => this.calculateValue(node, s, renderFile.fileMeta.fileName))) as SquarifiedValuedCodeMapNode
+		return treeMap(map.sum(node => this.calculateValue(node, s))) as SquarifiedValuedCodeMapNode
 	}
 
 	private addMapScaledHeightDimensionAndFinalizeFromRoot(
@@ -107,25 +107,23 @@ export class TreeMapService {
 		return finalNode
 	}
 
-	// TODO: isDeletedNodeFromComparisonMap necessary? filename needed..
-	private isDeletedNodeFromComparisonMap(node: CodeMapNode, s: Settings, fileName: string): boolean {
+	private isOnlyVisibleInComparisonMap(node: CodeMapNode, s: Settings): boolean {
 		return (
 			node &&
 			node.deltas &&
-			node.origin !== fileName &&
 			node.deltas[s.dynamicSettings.heightMetric] < 0 &&
 			node.attributes[s.dynamicSettings.areaMetric] === 0
 		)
 	}
 
-	private calculateValue(node: CodeMapNode, s: Settings, fileName: string): number {
+	private calculateValue(node: CodeMapNode, s: Settings): number {
 		let result = 0
 
 		if (CodeMapHelper.isBlacklisted(node, s.fileSettings.blacklist, BlacklistType.exclude)) {
 			return 0
 		}
 
-		if (this.isDeletedNodeFromComparisonMap(node, s, fileName)) {
+		if (this.isOnlyVisibleInComparisonMap(node, s)) {
 			return Math.abs(node.deltas[s.dynamicSettings.areaMetric])
 		}
 
