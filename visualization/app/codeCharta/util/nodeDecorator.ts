@@ -1,8 +1,8 @@
 "use strict"
 import * as d3 from "d3"
-import {HierarchyNode} from "d3"
-import {BlacklistType, CCFile, CodeMapNode, MetricData, Settings} from "../codeCharta.model"
-import {CodeMapHelper} from "./codeMapHelper";
+import { HierarchyNode } from "d3"
+import { BlacklistType, CCFile, CodeMapNode, MetricData, Settings } from "../codeCharta.model"
+import { CodeMapHelper } from "./codeMapHelper"
 import _ from "lodash"
 
 export class NodeDecorator {
@@ -119,7 +119,12 @@ export class NodeDecorator {
 	}
 
 	private static getMetricSumOfLeaves(leaves: HierarchyNode<CodeMapNode>[], metric: string): number {
-		return leaves.map(x => x.data.attributes[metric])
-			.reduce((partialSum, a) => partialSum + a)
+		const metricValues = leaves.map(x => x.data.attributes[metric])
+
+		if (metricValues.length > 0) {
+			return metricValues.reduce((partialSum, a) => partialSum + a)
+		}
+
+		return 0;
 	}
 }

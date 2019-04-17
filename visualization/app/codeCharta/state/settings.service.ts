@@ -44,10 +44,12 @@ export class SettingsService implements FileStateServiceSubscriber {
 		return this.settings
 	}
 
-	public updateSettings(update: RecursivePartial<Settings>) {
+	public updateSettings(update: RecursivePartial<Settings>, isSilent : boolean = false) {
 		// _.merge(this.settings, update) didnt work with arrays like blacklist
 		this.settings = this.updateSettingsUsingPartialSettings(this.settings, update)
-		this.throttledBroadcast()
+		if(!isSilent) {
+			this.throttledBroadcast()
+		}
 	}
 
 	public getDefaultSettings(): Settings {
