@@ -46,7 +46,7 @@ describe("ColorSettingsPanelController", () => {
 	it("set delta color flipped flag", () => {
 		let settings = { appSettings: { deltaColorFlipped: true }, dynamicSettings: {} } as Settings
 
-		colorSettingsPanelController.onSettingsChanged(settings, null)
+		colorSettingsPanelController.onSettingsChanged(settings, undefined,null)
 
 		expect(colorSettingsPanelController["_viewModel"].deltaColorFlipped).toBe(true)
 	})
@@ -54,7 +54,7 @@ describe("ColorSettingsPanelController", () => {
 	it("set white color buildings", () => {
 		let settings = { appSettings: { whiteColorBuildings: true }, dynamicSettings: {} } as Settings
 
-		colorSettingsPanelController.onSettingsChanged(settings, null)
+		colorSettingsPanelController.onSettingsChanged(settings, undefined,null)
 
 		expect(colorSettingsPanelController["_viewModel"].whiteColorBuildings).toBeTruthy()
 	})
@@ -62,7 +62,7 @@ describe("ColorSettingsPanelController", () => {
 	it("set neutralColorRangeFlipped", () => {
 		let settings = { dynamicSettings: { neutralColorRange: { flipped: true } }, appSettings: {} } as Settings
 
-		colorSettingsPanelController.onSettingsChanged(settings, null)
+		colorSettingsPanelController.onSettingsChanged(settings, undefined,null)
 
 		expect(colorSettingsPanelController["_viewModel"].neutralColorRangeFlipped).toBeTruthy()
 	})
@@ -114,8 +114,8 @@ describe("ColorSettingsPanelController", () => {
 		settingsService.updateSettings = jest.fn()
 		let settings = { dynamicSettings: { colorMetric: "foo" }, appSettings: {} } as Settings
 
-		colorSettingsPanelController.onSettingsChanged(settings, null)
-		colorSettingsPanelController.onSettingsChanged(settings, null)
+		colorSettingsPanelController.onSettingsChanged(settings, undefined,null)
+		colorSettingsPanelController.onSettingsChanged(settings, undefined,null)
 
 		expect(settingsService.updateSettings).toHaveBeenCalledTimes(1)
 		expect(colorSettingsPanelController["lastColorMetric"]).toBe("foo")
@@ -125,7 +125,7 @@ describe("ColorSettingsPanelController", () => {
 		metricService.getMaxMetricByMetricName = jest.fn()
 		let settings = { dynamicSettings: { colorMetric: "rloc" }, appSettings: {} } as Settings
 
-		colorSettingsPanelController.onSettingsChanged(settings, null)
+		colorSettingsPanelController.onSettingsChanged(settings, undefined,null)
 
 		expect(metricService.getMaxMetricByMetricName).toHaveBeenCalledWith("rloc")
 	})
@@ -134,7 +134,7 @@ describe("ColorSettingsPanelController", () => {
 		withMockedSettingsService()
 		metricService.getMaxMetricByMetricName = jest.fn(() => 100)
 
-		colorSettingsPanelController.onSettingsChanged(settingsService.getSettings(), null)
+		colorSettingsPanelController.onSettingsChanged(settingsService.getSettings(), undefined,null)
 
 		expect(settingsService.updateSettings).toHaveBeenCalledWith({
 			dynamicSettings: { neutralColorRange: { flipped: false, from: 33.33, to: 66.66 } }

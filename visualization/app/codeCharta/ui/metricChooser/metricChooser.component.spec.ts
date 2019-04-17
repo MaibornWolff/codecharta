@@ -60,7 +60,7 @@ describe("MetricChooserController", () => {
     it("should uptate height/area/color metric on settings changed", () => {
         let settings = { dynamicSettings: { areaMetric: "foo", heightMetric: "bar", colorMetric: "foobar"}} as Settings
 
-        metricChooserController.onSettingsChanged(settings, null)
+        metricChooserController.onSettingsChanged(settings, undefined,null)
 
         expect(metricChooserController["_viewModel"].areaMetric).toEqual("foo")
         expect(metricChooserController["_viewModel"].heightMetric).toEqual("bar")

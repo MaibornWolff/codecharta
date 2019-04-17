@@ -61,19 +61,19 @@ describe("HeightSettingsPanelController", () => {
 
 	describe("onSettingsChanged", () => {
 		it("should set amountOfTopTables in viewModel", () => {
-			heightSettingsPanelController.onSettingsChanged(settings, undefined)
+			heightSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
 
 			expect(heightSettingsPanelController["_viewModel"].amountOfTopLabels).toBe(31)
 		})
 
 		it("should set scalingY in viewModel", () => {
-			heightSettingsPanelController.onSettingsChanged(settings, undefined)
+			heightSettingsPanelController.onSettingsChanged(settings, undefined,undefined)
 
 			expect(heightSettingsPanelController["_viewModel"].scalingY).toBe(1.8)
 		})
 
 		it("should set invertHeight in viewModel", () => {
-			heightSettingsPanelController.onSettingsChanged(settings, undefined)
+			heightSettingsPanelController.onSettingsChanged(settings, undefined,undefined)
 
 			expect(heightSettingsPanelController["_viewModel"].invertHeight).toBeTruthy()
 		})

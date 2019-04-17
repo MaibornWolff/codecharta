@@ -50,19 +50,19 @@ describe("ThreeCameraService", () => {
             const vector = new Vector3(0, 300, 1000)
             threeCameraService["lastCameraVector"] = vector
 
-            threeCameraService.onSettingsChanged(settings, undefined)
+            threeCameraService.onSettingsChanged(settings, undefined,undefined)
 
             expect(threeCameraService.setPosition).not.toHaveBeenCalled()
         })
 
         it("should call setPosition if camera and lastCameraVector are not the same", () => {
-            threeCameraService.onSettingsChanged(settings, undefined)
+            threeCameraService.onSettingsChanged(settings, undefined,undefined)
 
             expect(threeCameraService.setPosition).toHaveBeenCalledWith(0, 300, 1000)
         })
 
         it("should set lastCameraVector if camera and lastCameraVector are not the same", () => {
-            threeCameraService.onSettingsChanged(settings, undefined)
+            threeCameraService.onSettingsChanged(settings, undefined,undefined)
 
             expect(threeCameraService["lastCameraVector"]).toEqual(new Vector3(0,300,1000))
         })

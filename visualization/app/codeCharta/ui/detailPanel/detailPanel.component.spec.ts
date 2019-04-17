@@ -74,7 +74,7 @@ describe("detailPanelController", () => {
 	})
 
 	it("should set common attributes onSettingsChanged", () => {
-		detailPanelController.onSettingsChanged(settings)
+		detailPanelController.onSettingsChanged(settings, undefined, undefined,)
 		expect(detailPanelController["_viewModel"].details.common.areaAttributeName).toBe("rloc")
 		expect(detailPanelController["_viewModel"].details.common.colorAttributeName).toBe("mcc")
 		expect(detailPanelController["_viewModel"].details.common.heightAttributeName).toBe("mcc")
