@@ -19,8 +19,8 @@ export class ThreeCameraService implements SettingsServiceSubscriber, CameraChan
 	private lastCameraVector: Vector3 = new Vector3(0,0 ,0)
 
 	private throttledCameraChange = _.throttle(() => {
-		this.settingsService.updateSettings({appSettings: {camera: new Vector3(this.camera.position.x, this.camera.position.y, this.camera.position.z) }})
-	}, 400)
+		this.settingsService.updateSettings({appSettings: {camera: new Vector3(this.camera.position.x, this.camera.position.y, this.camera.position.z) }}, true)
+	}, 1000)
 
 	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {}
 
@@ -40,7 +40,7 @@ export class ThreeCameraService implements SettingsServiceSubscriber, CameraChan
 		this.camera = new THREE.PerspectiveCamera(ThreeCameraService.VIEW_ANGLE, aspect, ThreeCameraService.NEAR, ThreeCameraService.FAR)
 		this.setPosition(x, y, z)
 		SettingsService.subscribe(this.$rootScope, this)
-		//ThreeOrbitControlsService.subscribe(this.$rootScope, this)
+		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
 	public setPosition(x: number, y: number, z: number) {
