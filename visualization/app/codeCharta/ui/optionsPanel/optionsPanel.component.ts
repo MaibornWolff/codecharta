@@ -24,7 +24,7 @@ export class OptionsPanelController implements SettingsServiceSubscriber {
 		SettingsService.subscribe(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		const interestingKeys = _.keys(this._viewModel)
 		const viewModelUpdate = _.pick(settings.appSettings, interestingKeys)
 		_.assign(this._viewModel, viewModelUpdate)

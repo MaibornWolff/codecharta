@@ -14,7 +14,7 @@ import {SettingsMerger} from "../util/settingsMerger";
 import { Vector3 } from "three"
 
 export interface SettingsServiceSubscriber {
-	onSettingsChanged(settings: Settings, event: IAngularEvent)
+	onSettingsChanged(settings: Settings, update : RecursivePartial<Settings>, event: IAngularEvent)
 }
 
 export class SettingsService implements FileStateServiceSubscriber {
@@ -22,11 +22,11 @@ export class SettingsService implements FileStateServiceSubscriber {
 	private static SETTINGS_CHANGED_EVENT = "settings-changed"
 
 	private settings: Settings
-	private readonly throttledBroadcast: () => void
+	private readonly throttledBroadcast: (update : RecursivePartial<Settings>) => void
 
 	constructor(private $rootScope) {
 		this.settings = this.getDefaultSettings()
-		this.throttledBroadcast = _.throttle(() => this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, this.settings), 400)
+		this.throttledBroadcast = _.throttle((update : RecursivePartial<Settings>) => this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, { settings: this.settings, update: update}), 400)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
@@ -48,7 +48,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 		// _.merge(this.settings, update) didnt work with arrays like blacklist
 		this.settings = this.updateSettingsUsingPartialSettings(this.settings, update)
 		if(!isSilent) {
-			this.throttledBroadcast()
+			this.throttledBroadcast(update)
 		}
 	}
 
@@ -164,7 +164,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: SettingsServiceSubscriber) {
 		$rootScope.$on(SettingsService.SETTINGS_CHANGED_EVENT, (event, data) => {
-			subscriber.onSettingsChanged(data, event)
+			subscriber.onSettingsChanged(data.settings, data.update, event)
 		})
 	}
 }

@@ -13,7 +13,7 @@ import {
 	Edge,
 	FileSelectionState,
 	FileState,
-	MetricData,
+	MetricData, RecursivePartial,
 	Settings
 } from "../../codeCharta.model"
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
@@ -74,18 +74,22 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		return this.lastRender.renderFile
 	}
 
-	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update : RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this.lastRender.settings = settings
-		if (this.lastRender.fileStates) {
+		if (this.lastRender.fileStates && update.fileSettings && update.fileSettings.blacklist
+		) {
 			this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
 			this.lastRender.renderFile.settings.fileSettings = settings.fileSettings
+			this.decorateIfPossible()
 		}
+
 		this.renderIfRenderObjectIsComplete()
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 		this.lastRender.fileStates = fileStates
 		this.autoFitMap = true
+		this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
 		this.renderIfRenderObjectIsComplete()
 	}
 
@@ -94,6 +98,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 
 	public onMetricDataChanged(metricData: MetricData[], event: angular.IAngularEvent) {
 		this.lastRender.metricData = metricData
+		this.decorateIfPossible()
 		this.renderIfRenderObjectIsComplete()
 	}
 
@@ -128,7 +133,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 
 	private renderIfRenderObjectIsComplete() {
 		if (this.allNecessaryRenderDataAvailable()) {
-			this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
 			this.render(this.lastRender)
 			if (this.autoFitMap) {
 				this.threeOrbitControlsService.autoFitTo();
@@ -147,9 +151,13 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 			})
 	}
 
-	private render(renderData: RenderData) {
-		renderData.renderFile = NodeDecorator.decorateFile(renderData.renderFile, renderData.settings, renderData.metricData)
+	private decorateIfPossible() {
+		if(this.lastRender.renderFile && this.lastRender.settings.fileSettings && this.lastRender.settings.fileSettings.blacklist && this.lastRender.metricData) {
+			this.lastRender.renderFile = NodeDecorator.decorateFile(this.lastRender.renderFile, this.lastRender.settings, this.lastRender.metricData)
+		}
+	}
 
+	private render(renderData: RenderData) {
 		this.showAllOrOnlyFocusedNode(renderData.renderFile.map, renderData.settings)
 
 		const treeMapNode: Node = this.treeMapService.createTreemapNodes(renderData.renderFile, renderData.settings, renderData.metricData)

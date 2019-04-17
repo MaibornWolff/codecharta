@@ -7,7 +7,7 @@ import {ScenarioHelper} from "./util/scenarioHelper";
 import {DialogService} from "./ui/dialog/dialog.service";
 import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
 import {CodeMapActionsService} from "./ui/codeMap/codeMap.actions.service";
-import {Settings, NameDataPair} from "./codeCharta.model";
+import { Settings, NameDataPair, RecursivePartial } from "./codeCharta.model"
 import {FileStateService} from "./state/fileState.service";
 
 
@@ -51,7 +51,7 @@ export class CodeChartaController implements SettingsServiceSubscriber, CodeChar
 		this.loadFileOrSample()
 	}
 
-	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this._viewModel.focusedNodePath = settings.dynamicSettings.focusedNodePath
 	}
 

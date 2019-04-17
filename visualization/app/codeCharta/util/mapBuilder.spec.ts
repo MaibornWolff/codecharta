@@ -23,8 +23,8 @@ describe("mapBuilder", () => {
 	})
 
 	it("getParentPath", () => {
-		expect(MapBuilder.getParentPath("/root/nodeA")).toEqual("/root")
-		expect(MapBuilder.getParentPath("/root/nodeA/nodeB")).toEqual("/root/nodeA")
+		expect(MapBuilder["getParentPath"]("/root/nodeA")).toEqual("/root")
+		expect(MapBuilder["getParentPath"]("/root/nodeA/nodeB")).toEqual("/root/nodeA")
 	})
 
 	describe("findNode", () => {
@@ -37,7 +37,7 @@ describe("mapBuilder", () => {
 				attributes: { RLOC: 100, Functions: 10, MCC: 1 },
 				link: "http://www.google.de"
 			}
-			expect(MapBuilder.findNode(rootNode, "/root/big leaf")).toEqual(expected)
+			expect(MapBuilder["findNode"](rootNode, "/root/big leaf")).toEqual(expected)
 		})
 
 		it("should find grand-child node", () => {
@@ -48,7 +48,7 @@ describe("mapBuilder", () => {
 				children: [],
 				attributes: { RLOC: 70, Functions: 1000, MCC: 10 }
 			}
-			expect(MapBuilder.findNode(rootNode, "/root/Parent Leaf/other small leaf")).toEqual(expected)
+			expect(MapBuilder["findNode"](rootNode, "/root/Parent Leaf/other small leaf")).toEqual(expected)
 		})
 	})
 });

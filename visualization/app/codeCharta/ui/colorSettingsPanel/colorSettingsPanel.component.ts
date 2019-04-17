@@ -1,6 +1,6 @@
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import "./colorSettingsPanel.component.scss"
-import { FileState, Settings } from "../../codeCharta.model"
+import { FileState, RecursivePartial, Settings } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
@@ -32,7 +32,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this._viewModel.deltaColorFlipped = settings.appSettings.deltaColorFlipped
 		this._viewModel.whiteColorBuildings = settings.appSettings.whiteColorBuildings
 

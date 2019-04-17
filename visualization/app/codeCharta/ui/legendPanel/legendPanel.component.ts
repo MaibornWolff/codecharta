@@ -4,7 +4,7 @@ import { MapColors } from "../codeMap/rendering/renderSettings"
 import { IRootScopeService } from "angular"
 import "./legendPanel.component.scss"
 import { ColorConverter } from "../../util/colorConverter"
-import { ColorRange, MarkedPackage, Settings } from "../../codeCharta.model"
+import { ColorRange, MarkedPackage, RecursivePartial, Settings } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { FileStateService } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
@@ -34,7 +34,7 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 		this.initAnimations()
 	}
 
-	public onSettingsChanged(s: Settings, event: angular.IAngularEvent) {
+	public onSettingsChanged(s: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this._viewModel.colorRange = s.dynamicSettings.neutralColorRange
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 

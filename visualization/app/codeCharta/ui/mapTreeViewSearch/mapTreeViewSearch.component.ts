@@ -2,7 +2,7 @@ import { SettingsService, SettingsServiceSubscriber } from "../../state/settings
 import { IRootScopeService } from "angular"
 import "./mapTreeViewSearch.component.scss"
 import { CodeMapHelper } from "../../util/codeMapHelper"
-import { CodeMapNode, BlacklistType, Settings, FileState } from "../../codeCharta.model"
+import { CodeMapNode, BlacklistType, Settings, FileState, RecursivePartial } from "../../codeCharta.model"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
@@ -44,7 +44,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 
 	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
 
-	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this.updateViewModel(settings)
 	}
 

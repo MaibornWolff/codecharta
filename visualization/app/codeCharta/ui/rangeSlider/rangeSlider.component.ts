@@ -2,7 +2,7 @@ import { SettingsService, SettingsServiceSubscriber } from "../../state/settings
 import "./rangeSlider.component.scss"
 import { MapColors } from "../codeMap/rendering/renderSettings"
 import $ from "jquery"
-import {Settings} from "../../codeCharta.model"
+import { RecursivePartial, Settings } from "../../codeCharta.model"
 import { MetricService } from "../../state/metric.service";
 import {FileStateService} from "../../state/fileState.service";
 import {IRootScopeService, ITimeoutService} from "angular";
@@ -41,7 +41,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		})
 	}
 
-	public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this.initSliderOptions(settings)
 
 		if (settings.dynamicSettings.neutralColorRange.from

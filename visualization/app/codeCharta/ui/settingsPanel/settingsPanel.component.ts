@@ -1,7 +1,7 @@
 import "./settingsPanel.component.scss"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import $ from "jquery"
-import { Settings } from "../../codeCharta.model"
+import { RecursivePartial, Settings } from "../../codeCharta.model"
 import {IAngularEvent, IRootScopeService, ITimeoutService} from "angular"
 
 export class SettingsPanelController implements SettingsServiceSubscriber {
@@ -20,7 +20,7 @@ export class SettingsPanelController implements SettingsServiceSubscriber {
 		$panel.collapse()
 	}
 
-	public onSettingsChanged(settings: Settings, event: IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>,  event: IAngularEvent) {
 		if (settings.fileSettings.blacklist.length != this._viewModel.blacklistLength) {
 			this.highlightCounterIcon()
 		}

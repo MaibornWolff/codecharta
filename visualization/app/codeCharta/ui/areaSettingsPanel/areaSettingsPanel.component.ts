@@ -1,7 +1,7 @@
 import "./areaSettingsPanel.component.scss";
 import {IRootScopeService, ITimeoutService} from "angular";
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
-import {CCFile, CodeMapNode, FileState, Settings} from "../../codeCharta.model";
+import { CCFile, CodeMapNode, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 import {CodeMapRenderService, CodeMapRenderServiceSubscriber} from "../codeMap/codeMap.render.service";
 import {ThreeOrbitControlsService} from "../codeMap/threeViewer/threeOrbitControlsService";
@@ -35,7 +35,7 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
         FileStateService.subscribe(this.$rootScope, this)
     }
 
-    public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
+    public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
         this._viewModel.dynamicMargin = settings.appSettings.dynamicMargin
         this._viewModel.margin = settings.dynamicSettings.margin
         this.potentiallyUpdateMargin(this.codeMapRenderService.getRenderFile(), settings)

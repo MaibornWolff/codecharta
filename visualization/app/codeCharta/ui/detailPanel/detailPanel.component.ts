@@ -6,7 +6,7 @@ import {
 	CodeMapMouseEventService,
 	CodeMapMouseEventServiceSubscriber
 } from "../codeMap/codeMap.mouseEvent.service"
-import {Settings, KeyValuePair, MetricData} from "../../codeCharta.model";
+import { Settings, KeyValuePair, MetricData, RecursivePartial } from "../../codeCharta.model"
 import {Node} from "../codeMap/rendering/node";
 import {MetricService, MetricServiceSubscriber} from "../../state/metric.service";
 import {FileStateService} from "../../state/fileState.service";
@@ -113,7 +113,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
 	}
 
-	public onSettingsChanged(settings: Settings) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this._viewModel.details.common.areaAttributeName = settings.dynamicSettings.areaMetric
 		this._viewModel.details.common.heightAttributeName = settings.dynamicSettings.heightMetric
 		this._viewModel.details.common.colorAttributeName = settings.dynamicSettings.colorMetric

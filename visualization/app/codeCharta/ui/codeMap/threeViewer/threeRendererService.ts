@@ -4,8 +4,8 @@ import {
     SettingsService,
     SettingsServiceSubscriber
 } from "../../../state/settings.service";
-import { Settings } from "../../../codeCharta.model";
-import { IRootScopeService } from "angular";
+import { RecursivePartial, Settings } from "../../../codeCharta.model"
+import { IAngularEvent, IRootScopeService } from "angular"
 
 export class ThreeRendererService implements SettingsServiceSubscriber {
     public static SELECTOR = "threeRendererService";
@@ -49,7 +49,7 @@ export class ThreeRendererService implements SettingsServiceSubscriber {
         }
     }
 
-    public onSettingsChanged(settings: Settings, event) {
+    public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event : angular.IAngularEvent) {
         this.setCurrentClearColorFromSettings(settings);
         this.renderer.setClearColor(
             ThreeRendererService.CLEAR_COLOR,

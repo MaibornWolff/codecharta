@@ -1,7 +1,7 @@
 import "./heightSettingsPanel.component.scss";
 import {IRootScopeService} from "angular";
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
-import {FileState, Settings} from "../../codeCharta.model";
+import { FileState, RecursivePartial, Settings } from "../../codeCharta.model"
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
 import {FileStateHelper} from "../../util/fileStateHelper";
 
@@ -28,7 +28,7 @@ export class HeightSettingsPanelController implements SettingsServiceSubscriber,
         FileStateService.subscribe(this.$rootScope, this);
     }
 
-    public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
+    public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
         this._viewModel.amountOfTopLabels = settings.appSettings.amountOfTopLabels;
         this._viewModel.scalingY = settings.appSettings.scaling.y;
         this._viewModel.invertHeight = settings.appSettings.invertHeight;

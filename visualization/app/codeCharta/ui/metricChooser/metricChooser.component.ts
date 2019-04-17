@@ -47,7 +47,7 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
         MetricService.subscribe(this.$rootScope, this)
     }
 
-    public onSettingsChanged(settings: Settings, event: angular.IAngularEvent) {
+    public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
         this.updateViewModel(settings)
     }
 
