@@ -152,8 +152,15 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	private decorateIfPossible() {
-		if(this.lastRender.renderFile && this.lastRender.settings.fileSettings && this.lastRender.settings.fileSettings.blacklist && this.lastRender.metricData) {
-			this.lastRender.renderFile = NodeDecorator.decorateFile(this.lastRender.renderFile, this.lastRender.settings, this.lastRender.metricData)
+		if(this.lastRender.renderFile
+			&& this.lastRender.settings.fileSettings
+			&& this.lastRender.settings.fileSettings.blacklist
+			&& this.lastRender.metricData
+		) {
+			this.lastRender.renderFile = NodeDecorator.decorateFile(
+				this.lastRender.renderFile,
+				this.lastRender.settings.fileSettings.blacklist,
+				this.lastRender.metricData)
 		}
 	}
 

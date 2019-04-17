@@ -1,18 +1,18 @@
 "use strict"
 import * as d3 from "d3"
 import { HierarchyNode } from "d3"
-import { BlacklistType, CCFile, CodeMapNode, MetricData, Settings } from "../codeCharta.model"
+import {BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData, Settings} from "../codeCharta.model"
 import { CodeMapHelper } from "./codeMapHelper"
 import _ from "lodash"
 
 export class NodeDecorator {
-	public static decorateFile(file: CCFile, settings: Settings, metricData: MetricData[]): CCFile {
+	public static decorateFile(file: CCFile, blacklist: BlacklistItem[], metricData: MetricData[]): CCFile {
 		const before = Date.now()
 		let decoratedFile: CCFile = _.cloneDeep(file)
 		this.decorateMapWithMissingObjects(decoratedFile)
 		this.decorateMapWithCompactMiddlePackages(decoratedFile)
 		this.decorateLeavesWithMissingMetrics(decoratedFile, metricData)
-		this.decorateParentNodesWithSumAttributesOfChildren(decoratedFile, settings, metricData)
+		this.decorateParentNodesWithSumAttributesOfChildren(decoratedFile, blacklist, metricData)
 		console.log("decorateFile took " + (Date.now() - before) + "ms")
 		return decoratedFile
 	}
@@ -99,17 +99,17 @@ export class NodeDecorator {
 		}
 	}
 
-	private static decorateParentNodesWithSumAttributesOfChildren(file: CCFile, settings: Settings, metricData: MetricData[]) {
+	private static decorateParentNodesWithSumAttributesOfChildren(file: CCFile, blacklist: BlacklistItem[], metricData: MetricData[]) {
 		if (file && file.map) {
 			let root = d3.hierarchy<CodeMapNode>(file.map)
 			root.each((node: HierarchyNode<CodeMapNode>) => {
-				this.decorateNodeWithChildrenSumMetrics(node, settings, metricData)
+				this.decorateNodeWithChildrenSumMetrics(node, blacklist, metricData)
 			})
 		}
 	}
 
-	private static decorateNodeWithChildrenSumMetrics(node: HierarchyNode<CodeMapNode>, settings: Settings, metricData: MetricData[]) {
-		const leaves = node.leaves().filter(x => !CodeMapHelper.isBlacklisted(x.data, settings.fileSettings.blacklist, BlacklistType.exclude))
+	private static decorateNodeWithChildrenSumMetrics(node: HierarchyNode<CodeMapNode>, blacklist: BlacklistItem[], metricData: MetricData[]) {
+		const leaves = node.leaves().filter(x => !CodeMapHelper.isBlacklisted(x.data, blacklist, BlacklistType.exclude))
 
 		metricData.forEach(metric => {
 			if (!node.data.attributes.hasOwnProperty(metric.name) && node.data.children && node.data.children.length > 0) {
