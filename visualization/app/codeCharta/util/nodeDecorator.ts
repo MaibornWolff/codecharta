@@ -7,11 +7,13 @@ import _ from "lodash"
 
 export class NodeDecorator {
 	public static decorateFile(file: CCFile, settings: Settings, metricData: MetricData[]): CCFile {
+		const before = Date.now()
 		let decoratedFile: CCFile = _.cloneDeep(file)
 		this.decorateMapWithMissingObjects(decoratedFile)
 		this.decorateMapWithCompactMiddlePackages(decoratedFile)
 		this.decorateLeavesWithMissingMetrics(decoratedFile, metricData)
 		this.decorateParentNodesWithSumAttributesOfChildren(decoratedFile, settings, metricData)
+		console.log("decorateFile took " + (Date.now() - before) + "ms")
 		return decoratedFile
 	}
 
@@ -107,18 +109,17 @@ export class NodeDecorator {
 	}
 
 	private static decorateNodeWithChildrenSumMetrics(node: HierarchyNode<CodeMapNode>, settings: Settings, metricData: MetricData[]) {
+		const leaves = node.leaves().filter(x => !CodeMapHelper.isBlacklisted(x.data, settings.fileSettings.blacklist, BlacklistType.exclude))
+
 		metricData.forEach(metric => {
 			if (!node.data.attributes.hasOwnProperty(metric.name) && node.data.children && node.data.children.length > 0) {
-				node.data.attributes[metric.name] = this.getMetricSumOfLeaves(node, settings, metric.name)
+				node.data.attributes[metric.name] = this.getMetricSumOfLeaves(leaves, metric.name)
 			}
 		})
 	}
 
-	private static getMetricSumOfLeaves(node: HierarchyNode<CodeMapNode>, settings: Settings, metric: string): number {
-		// TODO: Reactivate blacklist check
-		return node.leaves()
-			//.filter(x => !CodeMapHelper.isBlacklisted(x.data, settings.fileSettings.blacklist, BlacklistType.exclude))
-			.map(x => x.data.attributes[metric])
+	private static getMetricSumOfLeaves(leaves: HierarchyNode<CodeMapNode>[], metric: string): number {
+		return leaves.map(x => x.data.attributes[metric])
 			.reduce((partialSum, a) => partialSum + a)
 	}
 }
