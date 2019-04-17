@@ -7,13 +7,11 @@ import _ from "lodash"
 
 export class NodeDecorator {
 	public static decorateFile(file: CCFile, blacklist: BlacklistItem[], metricData: MetricData[]): CCFile {
-		const before = Date.now()
 		let decoratedFile: CCFile = _.cloneDeep(file)
 		this.decorateMapWithMissingObjects(decoratedFile)
 		this.decorateMapWithCompactMiddlePackages(decoratedFile)
 		this.decorateLeavesWithMissingMetrics(decoratedFile, metricData)
 		this.decorateParentNodesWithSumAttributesOfChildren(decoratedFile, blacklist, metricData)
-		console.log("decorateFile took " + (Date.now() - before) + "ms")
 		return decoratedFile
 	}
 
