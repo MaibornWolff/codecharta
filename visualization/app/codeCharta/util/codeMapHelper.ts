@@ -34,10 +34,10 @@ export class CodeMapHelper {
     }
 
     public static getNodesByGitignorePath(nodes: Array<CodeMapNode>, gitignorePath: string): CodeMapNode[] {
-        const ig = ignore().add(CodeMapHelper.transformPath(gitignorePath));
-        const ignoredNodePaths: string[] =  ig.filter(nodes.map(n => CodeMapHelper.transformPath(n.path)));
-        const matchingNodes: CodeMapNode[] =  nodes.filter(n => !ignoredNodePaths.includes(CodeMapHelper.transformPath(n.path)));
-        return matchingNodes;
+        const ignoredNodePaths = ignore()
+            .add(CodeMapHelper.transformPath(gitignorePath))
+            .filter(nodes.map(n => CodeMapHelper.transformPath(n.path)));
+        return nodes.filter(n => !ignoredNodePaths.includes(CodeMapHelper.transformPath(n.path)));
     }
 
     public static numberOfBlacklistedNodes(nodes: Array<CodeMapNode>, blacklist: Array<BlacklistItem>): number {
