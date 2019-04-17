@@ -6,7 +6,7 @@ import {CodeMapBuildingTransition} from "../codeMap/codeMap.mouseEvent.service";
 import { getService, instantiateModule } from '../../../../mocks/ng.mockhelper';
 import { IRootScopeService } from 'angular';
 import { Settings } from '../../codeCharta.model';
-import { SETTINGS } from '../../util/dataMocks';
+import {DEFAULT_SETTINGS, SETTINGS} from '../../util/dataMocks';
 
 describe("MetricChooserController", () => {
 
@@ -35,7 +35,8 @@ describe("MetricChooserController", () => {
 			return {
                 subscribe: jest.fn(),
 				updateSettings: jest.fn(),
-				getSettings: jest.fn().mockReturnValue(SETTINGS)
+				getSettings: jest.fn().mockReturnValue(SETTINGS),
+                getDefaultSettings: jest.fn().mockReturnValue(DEFAULT_SETTINGS)
 			}
 		})()
     }
@@ -118,14 +119,28 @@ describe("MetricChooserController", () => {
         expect(services.settingsService.updateSettings).not.toBeCalled()
     })
 
-    it("apply settings updates settings", () => {
+    it("apply settings area metric updates settings", () => {
         metricChooserController["_viewModel"].areaMetric = "a"
-        metricChooserController["_viewModel"].heightMetric = "b"
+
+        metricChooserController.applySettingsAreaMetric()
+
+        expect(services.settingsService.updateSettings).toBeCalledWith({dynamicSettings: {areaMetric: "a", margin: null}})
+    })
+
+    it("apply settings color metric updates settings", () => {
         metricChooserController["_viewModel"].colorMetric = "c"
 
-        metricChooserController.applySettings()
+        metricChooserController.applySettingsColorMetric()
 
-        expect(services.settingsService.updateSettings).toBeCalledWith({"dynamicSettings": {"areaMetric": "a", "colorMetric": "c", "heightMetric": "b"}})
+        expect(services.settingsService.updateSettings).toBeCalledWith({dynamicSettings: {colorMetric: "c", neutralColorRange: {flipped: false, from: null, to: null}}})
+    })
+
+    it("apply settings height metric updates settings", () => {
+        metricChooserController["_viewModel"].heightMetric = "b"
+
+        metricChooserController.applySettingsHeightMetric()
+
+        expect(services.settingsService.updateSettings).toBeCalledWith({dynamicSettings: {heightMetric: "b"}})
     })
 
     it("should set values and deltas to null if data incomplete", () => {

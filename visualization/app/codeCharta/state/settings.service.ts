@@ -26,7 +26,8 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 	constructor(private $rootScope) {
 		this.settings = this.getDefaultSettings()
-		this.throttledBroadcast = _.throttle((update : RecursivePartial<Settings>) => this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, { settings: this.settings, update: update}), 400)
+		this.throttledBroadcast = _.throttle((update : RecursivePartial<Settings>) =>
+			this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, { settings: this.settings, update: update}), 400)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 

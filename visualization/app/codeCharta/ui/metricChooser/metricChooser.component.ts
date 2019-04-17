@@ -90,12 +90,28 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
         this._viewModel.heightMetric = settings.dynamicSettings.heightMetric
     }
 
-    public applySettings() {
+    public applySettingsAreaMetric() {
         this.settingsService.updateSettings({
             dynamicSettings: {
                 areaMetric: this._viewModel.areaMetric,
+                margin: this.settingsService.getDefaultSettings().dynamicSettings.margin
+            }
+        })
+    }
+
+    public applySettingsColorMetric() {
+        this.settingsService.updateSettings({
+            dynamicSettings: {
                 colorMetric: this._viewModel.colorMetric,
-                heightMetric: this._viewModel.heightMetric
+                neutralColorRange: this.settingsService.getDefaultSettings().dynamicSettings.neutralColorRange
+            }
+        })
+    }
+
+    public applySettingsHeightMetric() {
+        this.settingsService.updateSettings({
+            dynamicSettings: {
+                heightMetric: this._viewModel.heightMetric,
             }
         })
     }
