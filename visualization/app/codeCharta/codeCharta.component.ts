@@ -104,6 +104,7 @@ export class CodeChartaController implements SettingsServiceSubscriber, CodeChar
 				this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
 			})
 			.catch(e => {
+				this.onLoadingStatusChanged(false, undefined)
 				console.error(e);
 				this.printErrors(e)
 			})

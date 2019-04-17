@@ -56,6 +56,7 @@ export class FileChooserController {
             .then(() => {
             })
             .catch(e => {
+                this.$rootScope.$broadcast(CodeChartaController.LOADING_STATUS_EVENT, false)
                 console.error(e)
                 this.printErrors(e)
             })
