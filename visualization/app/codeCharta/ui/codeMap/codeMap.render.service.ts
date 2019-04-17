@@ -84,7 +84,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-		this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(fileStates)
 		this.lastRender.fileStates = fileStates
 		this.autoFitMap = true
 		this.renderIfRenderObjectIsComplete()
@@ -129,6 +128,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 
 	private renderIfRenderObjectIsComplete() {
 		if (this.allNecessaryRenderDataAvailable()) {
+			this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
 			this.render(this.lastRender)
 			if (this.autoFitMap) {
 				this.threeOrbitControlsService.autoFitTo();
@@ -139,7 +139,9 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	}
 
 	private allNecessaryRenderDataAvailable(): boolean {
-		return _.values(this.lastRender).every(x => (x !== null))
+		return this.lastRender.fileStates !== null
+			&& this.lastRender.settings != null
+			&& this.lastRender.metricData != null
 			&& _.values(this.lastRender.settings.dynamicSettings).every(x => {
 				return x !== null && _.values(x).every(x => (x !== null))
 			})
