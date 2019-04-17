@@ -1,142 +1,96 @@
 import * as d3 from "d3";
-import {HierarchyNode} from "d3-hierarchy";
-import * as deepcopy from "deepcopy";
-import {CodeMapNode, CCFile, KeyValuePair} from "../codeCharta.model";
+import {CodeMapNode, CCFile, KeyValuePair, FileMeta} from "../codeCharta.model";
+import _ from "lodash"
+import {MapBuilder} from "./mapBuilder";
 
 export class DeltaGenerator {
 
     public static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile): CCFile {
-        if(referenceFile && comparisonFile && referenceFile.map && comparisonFile.map) {
-            //build hash maps for fast search indices
-            let referenceHashMap = new Map<string, CodeMapNode>();
-            d3.hierarchy(referenceFile.map).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
-                referenceHashMap.set(node.data.path, node.data);
-            });
+        let referenceHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(_.cloneDeep(referenceFile.map))
+        let comparisonHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(_.cloneDeep(comparisonFile.map))
+        let hashMapWithAllNodes: Map<string, CodeMapNode> = this.getHashMapWithAllNodes(referenceHashMap, comparisonHashMap)
 
-            let comparisonHashMap = new Map<string, CodeMapNode>();
-            d3.hierarchy(comparisonFile.map).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
-                comparisonHashMap.set(node.data.path, node.data);
-            });
-
-            //insert nodes from the other map
-            this.insertNodesIntoMapsAndHashMaps(referenceHashMap, comparisonHashMap, comparisonFile.map);
-            this.insertNodesIntoMapsAndHashMaps(comparisonHashMap, referenceHashMap, referenceFile.map);
-
-            //calculate deltas between leaves
-            referenceHashMap.forEach((referenceNode, path) => {
-                let comparisonNode = comparisonHashMap.get(path);
-                comparisonNode.deltas = this.calculateAttributeListDelta(referenceNode.attributes, comparisonNode.attributes);
-                referenceNode.deltas = this.calculateAttributeListDelta(comparisonNode.attributes, referenceNode.attributes);
-            });
-        }
-        return referenceFile
+        const fileMeta = this.getFileMetaData(referenceFile, comparisonFile)
+        const map = MapBuilder.createCodeMapFromHashMap(hashMapWithAllNodes)
+        return this.getNewCCFileWithDeltas(map, fileMeta)
     }
 
-    private static insertNodesIntoMapsAndHashMaps(firstLeafHashMap: Map<string, CodeMapNode>, secondLeafHashMap: Map<string, CodeMapNode>, secondMap: CodeMapNode) {
-        firstLeafHashMap.forEach((node, path) => {
-            if (!secondLeafHashMap.has(path)) {
-                let addedNode = this.deepcopy(node);
-                secondLeafHashMap.set(path, addedNode);
-                this.insertNodeIntoMapByPath(addedNode, secondMap);
-            }
-        });
+    private static getCodeMapNodesAsHashMap(rootNode: CodeMapNode): Map<string, CodeMapNode> {
+        let hashMap = new Map<string, CodeMapNode>()
+
+        d3.hierarchy(rootNode).descendants().map(x => x.data)
+            .forEach((node: CodeMapNode) => {
+                node.children = []
+                hashMap.set(node.path, node)
+            });
+        return hashMap
     }
 
-    private static insertNodeIntoMapByPath(node: CodeMapNode, insertMap: CodeMapNode) {
+    private static getHashMapWithAllNodes(referenceHashMap: Map<string, CodeMapNode>, comparisonHashMap: Map<string, CodeMapNode>): Map<string, CodeMapNode>  {
+        let hashMapWithAllNodes: Map<string, CodeMapNode> = new Map<string, CodeMapNode>()
 
-        let pathArray: string[] = node.path.split("/");
-
-        let insertPathArray: string[] = pathArray.slice(2, pathArray.length - 1);
-        let currentPathArray: string[] = pathArray.slice(0, 2);
-        let current = insertMap;
-
-
-        while (insertPathArray.length > 0) {
-
-            let childFoundSteppingIntoIt = false;
-
-            if (current.children) {
-
-                for (let i = 0; i < current.children.length && !childFoundSteppingIntoIt; i++) {
-                    let child = current.children[i];
-                    if (child.name === insertPathArray[0]) {
-                        // step into existing folder
-                        current = child;
-                        currentPathArray.push(insertPathArray[0]);
-                        insertPathArray = insertPathArray.slice(1);
-                        childFoundSteppingIntoIt = true;
-                    }
-                }
-
+        comparisonHashMap.forEach((comparisonNode: CodeMapNode, path: string) => {
+            const referenceNode: CodeMapNode = referenceHashMap.get(path)
+            if (referenceNode) {
+                const newNode = this.getNewDeltaNode(referenceNode, referenceNode.attributes, comparisonNode.attributes)
+                hashMapWithAllNodes.set(path, newNode)
             } else {
-                current.children = [];
-            }
-
-            if (!childFoundSteppingIntoIt) {
-                //create new folder and start again
-                currentPathArray.push(insertPathArray[0]);
-
-                let folder = {
-                    name: insertPathArray[0],
-                    path: currentPathArray.join("/"),
-                    type: "Folder",
-                    children: [],
-                    origin: node.origin,
-                    visible: true,
-                    attributes: {}
-                };
-
-
-                current.children.push(folder);
-                current = folder;
-
-
-                insertPathArray = insertPathArray.slice(1);
-            }
-
-        }
-
-        // insert node
-        if (!current.children) {
-            current.children = [];
-        }
-        current.children.push(node);
-
-    }
-
-    private static deepcopy(root:CodeMapNode): CodeMapNode {
-
-        let rootCopy: HierarchyNode<CodeMapNode> = deepcopy.default(d3.hierarchy(root).copy()); //Hm this seems to be doing the right thing. First shallow copy then a deep copy ?!
-
-        //make own attributes 0
-        for (let property in rootCopy.data.attributes) {
-            if (rootCopy.data.attributes.hasOwnProperty(property)) {
-                rootCopy.data.attributes[property] = 0;
-            }
-        }
-
-        ////make all ancestors attributes 0
-        rootCopy.each((node) => {
-            for (let property in node.data.attributes) {
-                if (node.data.attributes.hasOwnProperty(property)) {
-                    node.data.attributes[property] = 0;
-                }
+                const newNode = this.getNewDeltaNode(comparisonNode, {}, comparisonNode.attributes)
+                hashMapWithAllNodes.set(path, newNode)
             }
         });
 
-        return rootCopy.data;
+        referenceHashMap.forEach((referenceNode: CodeMapNode, path: string) => {
+            if (!comparisonHashMap.get(path)) {
+                const newNode = this.getNewDeltaNode(referenceNode, referenceNode.attributes, {})
+                hashMapWithAllNodes.set(newNode.path, newNode)
+            }
+        })
+        return hashMapWithAllNodes
     }
 
-    private static calculateAttributeListDelta(first: KeyValuePair, second: KeyValuePair) {
-        let deltas = {};
-        for (let key in second) {
-            if (key) {
-                let firstValue = first[key] ? first[key] : 0; //assume zero if no value in first
-                let secondValue = second[key];
-                let delta = secondValue - firstValue;
-                deltas[key] = delta;
+    private static getNewDeltaNode(node: CodeMapNode, referenceAttr: KeyValuePair, comparisonAttr: KeyValuePair): CodeMapNode {
+        node.children = []
+        node.deltas = this.getDeltaAttributeList(referenceAttr, comparisonAttr)
+        node.attributes = comparisonAttr
+        return node
+    }
+
+    private static getDeltaAttributeList(referenceAttr: KeyValuePair, comparisonAttr: KeyValuePair): KeyValuePair {
+        let deltaAttr = {};
+
+        _.keys(comparisonAttr).forEach((key: string) => {
+            deltaAttr[key] = (referenceAttr[key]) ? comparisonAttr[key] - referenceAttr[key] : comparisonAttr[key]
+        })
+
+        _.keys(referenceAttr).forEach((key: string) => {
+            if (!comparisonAttr[key]) {
+                deltaAttr[key] = - referenceAttr[key];
+            }
+        })
+        return deltaAttr;
+    }
+
+    private static getFileMetaData(referenceFile: CCFile, comparisonFile: CCFile): FileMeta {
+        return {
+            fileName: "Delta between " + referenceFile.fileMeta.fileName + ", " + comparisonFile.fileMeta.fileName,
+            apiVersion: require("../../../package.json").codecharta.apiVersion,
+            projectName: "Delta between " + referenceFile.fileMeta.projectName + ", " + comparisonFile.fileMeta.projectName,
+        }
+    }
+
+    private static getNewCCFileWithDeltas(rootNode: CodeMapNode, fileMeta: FileMeta): CCFile {
+        return {
+            map: rootNode,
+            fileMeta: fileMeta,
+            settings: {
+                fileSettings: {
+                    edges: [],
+                    blacklist: [],
+                    attributeTypes: {},
+                    markedPackages: []
+                }
             }
         }
-        return deltas;
     }
 }

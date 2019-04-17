@@ -63,15 +63,17 @@ describe("deltaGenerator", () => {
             ]
         });
 
-        DeltaGenerator.getDeltaFile(fileA, fileB);
+        const result = DeltaGenerator.getDeltaFile(fileA, fileB);
 
-        expect(fileA.map.children[2].children[0].children[0].attributes["special"]).toBe(42);
-        expect(fileA.map.children[2].children[0].children[1].attributes["monster"]).toBe(0);
-        expect(fileB.map.children[3].children[0].children[0].attributes["monster"]).toBe(666);
-        expect(fileB.map.children[3].children[0].children[1].attributes["special"]).toBe(0);
+        expect(result.map.children[0].children[0].children[0].attributes["monster"]).toBe(666);
+        expect(result.map.children[0].children[0].children[0].deltas["monster"]).toBe(666);
+        expect(result.map.children[0].children[0].children[1].attributes["special"]).toBe(undefined);
+        expect(result.map.children[0].children[0].children[1].deltas["special"]).toBe(-42);
     });
 
-    it("getDeltaFile should return input files if a file does not exist", ()=>{
+    // TODO: Why should there exist files without a map?
+    //  According to codeChartaService there will always be at least an empty map
+    xit("getDeltaFile should return input files if a file does not exist", ()=>{
         let na = null;
         let nb = JSON.parse(JSON.stringify(fileB));
 
@@ -81,7 +83,7 @@ describe("deltaGenerator", () => {
         expect(nb).toEqual(fileB);
     });
 
-    it("getDeltaFile should return input files if a file has no root", ()=>{
+    xit("getDeltaFile should return input files if a file has no root", ()=>{
         fileA.map = null;
         let na = JSON.parse(JSON.stringify(fileA));
         let nb = JSON.parse(JSON.stringify(fileB));
@@ -96,31 +98,23 @@ describe("deltaGenerator", () => {
         fileA = NodeDecorator.preDecorateFile(fileA)
         fileB = NodeDecorator.preDecorateFile(fileB)
 
-        DeltaGenerator.getDeltaFile(fileA, fileB);
+        const result = DeltaGenerator.getDeltaFile(fileA, fileB);
 
-        expect(fileA.map.children[2].name).toBe("additional leaf");
-        expect(fileB.map.children[1].name).toBe("additional leaf");
+        expect(result.map.children[2].name).toBe("additional leaf");
 
-        expect(fileA.map.children[2].attributes.rloc).toBe(0);
-        expect(fileB.map.children[1].attributes.rloc).toBe(10);
+        expect(result.map.children[2].attributes.rloc).toBe(10);
     });
 
     it("getDeltaFile should result in expected deltaFiles", ()=>{
         fileA = NodeDecorator.preDecorateFile(fileA)
         fileB = NodeDecorator.preDecorateFile(fileB)
 
-        DeltaGenerator.getDeltaFile(fileA, fileB);
+        const result = DeltaGenerator.getDeltaFile(fileA, fileB);
 
-        expect(fileA.map.children[0].deltas["rloc"]).toBe(80);
-        expect(fileB.map.children[0].deltas["rloc"]).toBe(-80);
-
-        expect(fileA.map.children[1].children[0].deltas["more"]).toBe(undefined);
-        expect(fileB.map.children[2].children[0].deltas["more"]).toBe(20);
-
-        expect(fileB.map.children[2].children[1].deltas["mcc"]).toBe(undefined);
-        expect(fileA.map.children[1].children[1].deltas["mcc"]).toBe(10);
-
-        expect(fileB.map.children[2].deltas).toBe(undefined);
+        expect(result.map.children[0].deltas["rloc"]).toBe(-80);
+        expect(result.map.children[1].children[1].deltas["more"]).toBe(20);
+        expect(result.map.children[1].children[2].deltas["mcc"]).toBe(-10);
+        expect(result.map.children[2].deltas["rloc"]).toBe(10);
     });
 
     it("checking delta calculation between two attribute lists", () => {
@@ -130,26 +124,26 @@ describe("deltaGenerator", () => {
         let d = {"a":110,"b":11};
         let e = {"d":110,"e":11};
 
-        let ab: any = DeltaGenerator["calculateAttributeListDelta"](a,b);
-        expect(ab.a).toBe(b.a-a.a);
-        expect(ab.b).toBe(b.b-a.b);
-        expect(ab.c).toBe(b.c-a.c);
+        let ab: any = DeltaGenerator["getDeltaAttributeList"](a,b);
+        expect(ab.a).toBe(b.a - a.a);
+        expect(ab.b).toBe(b.b - a.b);
+        expect(ab.c).toBe(b.c - a.c);
 
-        let ac: any = DeltaGenerator["calculateAttributeListDelta"](a,c);
-        expect(ac.a).toBe(c.a-a.a);
-        expect(ac.b).toBe(c.b-a.b);
-        expect(ac.c).toBe(c.c-a.c);
+        let ac: any = DeltaGenerator["getDeltaAttributeList"](a,c);
+        expect(ac.a).toBe(c.a - a.a);
+        expect(ac.b).toBe(c.b - a.b);
+        expect(ac.c).toBe(c.c - a.c);
         expect(ac.d).toBe(c.d);
 
-        let ad: any = DeltaGenerator["calculateAttributeListDelta"](a,d);
-        expect(ad.a).toBe(d.a-a.a);
-        expect(ad.b).toBe(d.b-a.b);
-        expect(ad.c).toBe(undefined);
+        let ad: any = DeltaGenerator["getDeltaAttributeList"](a,d);
+        expect(ad.a).toBe(d.a - a.a);
+        expect(ad.b).toBe(d.b - a.b);
+        expect(ad.c).toBe(- a.c);
 
-        let ae: any = DeltaGenerator["calculateAttributeListDelta"](a,e);
-        expect(ae.a).toBe(undefined);
-        expect(ae.b).toBe(undefined);
-        expect(ae.c).toBe(undefined);
+        let ae: any = DeltaGenerator["getDeltaAttributeList"](a,e);
+        expect(ae.a).toBe(- a.a);
+        expect(ae.b).toBe(- a.b);
+        expect(ae.c).toBe(- a.c);
         expect(ae.d).toBe(e.d);
         expect(ae.e).toBe(e.e);
     });
