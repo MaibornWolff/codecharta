@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`treemap service only root node 1`] = `
+exports[`treemapService only root node 1`] = `
 Object {
   "attributes": Object {},
   "children": Array [],
@@ -25,7 +25,7 @@ Object {
 }
 `;
 
-exports[`treemap service root node with two direct children 1`] = `
+exports[`treemapService root node with two direct children 1`] = `
 Object {
   "attributes": Object {},
   "children": Array [
@@ -99,7 +99,7 @@ Object {
 }
 `;
 
-exports[`treemap service root node with two direct children and some grand children 1`] = `
+exports[`treemapService root node with two direct children and some grand children 1`] = `
 Object {
   "attributes": Object {},
   "children": Array [

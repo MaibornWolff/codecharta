@@ -57,7 +57,6 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 		private $rootScope: IRootScopeService,
 		private threeSceneService: ThreeSceneService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
-		private treeMapService: TreeMapService,
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService
 	) {
@@ -167,7 +166,7 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	private render(renderData: RenderData) {
 		this.showAllOrOnlyFocusedNode(renderData.renderFile.map, renderData.settings)
 
-		const treeMapNode: Node = this.treeMapService.createTreemapNodes(renderData.renderFile, renderData.settings, renderData.metricData)
+		const treeMapNode: Node = TreeMapService.createTreemapNodes(renderData.renderFile, renderData.settings, renderData.metricData)
 		const nodes: Node[] = this.collectNodesToArray(treeMapNode)
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		const sortedNodes: Node[] = filteredNodes.sort((a, b) => b.height - a.height)
@@ -224,10 +223,10 @@ export class CodeMapRenderService implements SettingsServiceSubscriber, FileStat
 	private showAllOrOnlyFocusedNode(map: CodeMapNode, s: Settings) {
 		if (s.dynamicSettings.focusedNodePath.length > 0) {
 			const focusedNode = CodeMapHelper.getAnyCodeMapNodeFromPath(s.dynamicSettings.focusedNodePath, map)
-			this.treeMapService.setVisibilityOfNodeAndDescendants(map, false)
-			this.treeMapService.setVisibilityOfNodeAndDescendants(focusedNode, true)
+			TreeMapService.setVisibilityOfNodeAndDescendants(map, false)
+			TreeMapService.setVisibilityOfNodeAndDescendants(focusedNode, true)
 		} else {
-			this.treeMapService.setVisibilityOfNodeAndDescendants(map, true)
+			TreeMapService.setVisibilityOfNodeAndDescendants(map, true)
 		}
 	}
 

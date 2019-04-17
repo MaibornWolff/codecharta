@@ -2,7 +2,6 @@ import "./codeMap.module"
 import "../../codeCharta"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { TreeMapService } from "./treemap/treemap.service"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { CCFile, Settings } from "../../codeCharta.model"
@@ -19,7 +18,6 @@ describe("codeMapRenderService", () => {
 	let $rootScope: IRootScopeService
 	let threeSceneService: ThreeSceneService
 	let threeOrbitControlsService: ThreeOrbitControlsService
-	let treeMapService: TreeMapService
 	let codeMapLabelService: CodeMapLabelService
 	let codeMapArrowService: CodeMapArrowService
 
@@ -45,7 +43,6 @@ describe("codeMapRenderService", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
-		treeMapService = getService<TreeMapService>("treeMapService")
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		codeMapArrowService = getService<CodeMapArrowService>("codeMapArrowService")
 
@@ -54,8 +51,7 @@ describe("codeMapRenderService", () => {
 	}
 
 	function rebuildService() {
-		codeMapRenderService = new CodeMapRenderService($rootScope, threeSceneService, threeOrbitControlsService,
-			treeMapService, codeMapLabelService, codeMapArrowService)
+		codeMapRenderService = new CodeMapRenderService($rootScope, threeSceneService, threeOrbitControlsService, codeMapLabelService, codeMapArrowService)
 	}
 
 	function withMockedCodeMapMesh() {

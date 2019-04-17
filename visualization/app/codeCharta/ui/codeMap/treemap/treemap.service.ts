@@ -23,12 +23,12 @@ export class TreeMapService {
 	private static HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND = 0
 	private static PADDING_SCALING_FACTOR = 0.4
 
-	public createTreemapNodes(renderFile: CCFile, s: Settings, metricData: MetricData[]): Node {
+	public static createTreemapNodes(renderFile: CCFile, s: Settings, metricData: MetricData[]): Node {
 		const squaredNode: SquarifiedValuedCodeMapNode = this.squarify(renderFile, s)
 		return this.addMapScaledHeightDimensionAndFinalizeFromRoot(squaredNode, s, metricData)
 	}
 
-	public setVisibilityOfNodeAndDescendants(node: CodeMapNode, visibility: boolean) {
+	public static setVisibilityOfNodeAndDescendants(node: CodeMapNode, visibility: boolean) {
 		node.visible = visibility
 		hierarchy<CodeMapNode>(node)
 			.descendants()
@@ -38,7 +38,7 @@ export class TreeMapService {
 		return node
 	}
 
-	private squarify(renderFile: CCFile, s: Settings): SquarifiedValuedCodeMapNode {
+	private static squarify(renderFile: CCFile, s: Settings): SquarifiedValuedCodeMapNode {
 		let map: HierarchyNode<CodeMapNode> = d3.hierarchy<CodeMapNode>(renderFile.map)
 		const blacklisted = CodeMapHelper.numberOfBlacklistedNodes(map.descendants().map(d => d.data), s.fileSettings.blacklist)
 		let nodesPerSide = 2 * Math.sqrt(map.descendants().length - blacklisted)
@@ -54,7 +54,7 @@ export class TreeMapService {
 		return treeMap(map.sum(node => this.calculateValue(node, s))) as SquarifiedValuedCodeMapNode
 	}
 
-	private addMapScaledHeightDimensionAndFinalizeFromRoot(
+	private static addMapScaledHeightDimensionAndFinalizeFromRoot(
 		squaredNode: SquarifiedValuedCodeMapNode,
 		s: Settings,
 		metricData: MetricData[]
@@ -64,7 +64,7 @@ export class TreeMapService {
 		return this.addHeightDimensionAndFinalize(squaredNode, s, heightScale, maxHeight)
 	}
 
-	private addHeightDimensionAndFinalize(
+	private static addHeightDimensionAndFinalize(
 		squaredNode: SquarifiedValuedCodeMapNode,
 		s: Settings,
 		heightScale: number,
@@ -107,7 +107,7 @@ export class TreeMapService {
 		return finalNode
 	}
 
-	private isOnlyVisibleInComparisonMap(node: CodeMapNode, s: Settings): boolean {
+	private static isOnlyVisibleInComparisonMap(node: CodeMapNode, s: Settings): boolean {
 		return (
 			node &&
 			node.deltas &&
@@ -116,7 +116,7 @@ export class TreeMapService {
 		)
 	}
 
-	private calculateValue(node: CodeMapNode, s: Settings): number {
+	private static calculateValue(node: CodeMapNode, s: Settings): number {
 		let result = 0
 
 		if (CodeMapHelper.isBlacklisted(node, s.fileSettings.blacklist, BlacklistType.exclude)) {
@@ -137,7 +137,7 @@ export class TreeMapService {
 		return result
 	}
 
-	private getEdgeValue(node: CodeMapNode, s: Settings) {
+	private static getEdgeValue(node: CodeMapNode, s: Settings) {
 		let filteredEdgeAttributes: number[] = []
 
 		if (s.fileSettings.edges) {

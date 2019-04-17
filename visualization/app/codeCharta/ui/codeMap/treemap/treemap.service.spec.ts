@@ -4,13 +4,11 @@ import { CodeMapNode } from "../../../codeCharta.model"
 import { TreeMapService } from "./treemap.service"
 import { SETTINGS, METRIC_DATA, TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH, VALID_EDGES } from "../../../util/dataMocks"
 
-describe("treemap service", () => {
-	let treeMapService: TreeMapService
+describe("treemapService", () => {
 	let renderFile: CCFile, settings: Settings, metricData: MetricData[], codemapNode: CodeMapNode
 
 	beforeEach(() => {
 		restartSystem()
-		rebuildService()
 	})
 
 	function restartSystem() {
@@ -20,16 +18,12 @@ describe("treemap service", () => {
 		metricData = METRIC_DATA
 	}
 
-	function rebuildService() {
-		treeMapService = new TreeMapService()
-	}
-
 	describe("create Treemap nodes", () => {})
 
 	it("only root node", () => {
 		renderFile.map.children = []
 
-		let node: Node = treeMapService.createTreemapNodes(renderFile, settings, metricData)
+		let node: Node = TreeMapService.createTreemapNodes(renderFile, settings, metricData)
 
 		expect(node).toMatchSnapshot()
 	})
@@ -37,13 +31,13 @@ describe("treemap service", () => {
 	it("root node with two direct children", () => {
 		renderFile.map.children[1].children = []
 
-		let node: Node = treeMapService.createTreemapNodes(renderFile, settings, metricData)
+		let node: Node = TreeMapService.createTreemapNodes(renderFile, settings, metricData)
 
 		expect(node).toMatchSnapshot()
 	})
 
 	it("root node with two direct children and some grand children", () => {
-		let node: Node = treeMapService.createTreemapNodes(renderFile, settings, metricData)
+		let node: Node = TreeMapService.createTreemapNodes(renderFile, settings, metricData)
 
 		expect(node).toMatchSnapshot()
 	})
@@ -69,7 +63,7 @@ describe("treemap service", () => {
 				{ name: "myHeight", maxValue: 99, availableInVisibleMaps: true }
 			]
 
-			let node: Node = treeMapService.createTreemapNodes(renderFile, settings, metricData)
+			let node: Node = TreeMapService.createTreemapNodes(renderFile, settings, metricData)
 
 			expect(node.children[1].name).toBe("Parent Leaf")
 			expect(node.children[1].width).toBeGreaterThan(0)
@@ -80,7 +74,7 @@ describe("treemap service", () => {
 			renderFile.map.children = []
 			renderFile.map.attributes = { a: 100 }
 
-			let node: Node = treeMapService.createTreemapNodes(renderFile, settings, metricData)
+			let node: Node = TreeMapService.createTreemapNodes(renderFile, settings, metricData)
 
 			expect(node.attributes["a"]).toBe(100)
 		})
@@ -88,7 +82,7 @@ describe("treemap service", () => {
 		it("attribute do not exists, no children", () => {
 			renderFile.map.children = []
 
-			let node: Node = treeMapService.createTreemapNodes(renderFile, settings, metricData)
+			let node: Node = TreeMapService.createTreemapNodes(renderFile, settings, metricData)
 
 			expect(node.attributes["b"]).toBe(undefined)
 		})
@@ -101,7 +95,7 @@ describe("treemap service", () => {
 				{ name: "b", maxValue: 99, availableInVisibleMaps: true }
 			]
 
-			let node: Node = treeMapService.createTreemapNodes(renderFile, settings, metricData)
+			let node: Node = TreeMapService.createTreemapNodes(renderFile, settings, metricData)
 
 			expect(node.attributes["b"]).toBe(undefined)
 		})
@@ -112,7 +106,7 @@ describe("treemap service", () => {
 			settings.fileSettings.edges = VALID_EDGES
 			metricData = [{ name: "pairingRate", maxValue: 100, availableInVisibleMaps: true }]
 
-			let node: Node = treeMapService.createTreemapNodes(renderFile, settings, metricData)
+			let node: Node = TreeMapService.createTreemapNodes(renderFile, settings, metricData)
 
 			expect(node.children[1].width).toBeGreaterThan(0)
 			expect(node.children[1].length).toBeGreaterThan(0)
@@ -124,7 +118,7 @@ describe("treemap service", () => {
 			settings.fileSettings.edges = VALID_EDGES
 			metricData = [{ name: "unknown", maxValue: 100, availableInVisibleMaps: true }]
 
-			let node: Node = treeMapService.createTreemapNodes(renderFile, settings, metricData)
+			let node: Node = TreeMapService.createTreemapNodes(renderFile, settings, metricData)
 
 			expect(node.children[1].width * node.children[1].length).toEqual(0)
 		})
@@ -132,16 +126,16 @@ describe("treemap service", () => {
 
 	describe("setVisibilityOfNodeAndDescendants", () => {
 		it("node visibility should be adjusted", () => {
-			let result = treeMapService.setVisibilityOfNodeAndDescendants(codemapNode, false)
+			let result = TreeMapService.setVisibilityOfNodeAndDescendants(codemapNode, false)
 
-			expect(result.visible).toBeFalsy
+			expect(result.visible).toBeFalsy()
 		})
 
 		it("node children visibility should be adjusted", () => {
-			let result = treeMapService.setVisibilityOfNodeAndDescendants(codemapNode, false)
+			let result = TreeMapService.setVisibilityOfNodeAndDescendants(codemapNode, false)
 
-			expect(result.children[0].visible).toBeFalsy
-			expect(result.children[1].visible).toBeFalsy
+			expect(result.children[0].visible).toBeFalsy()
+			expect(result.children[1].visible).toBeFalsy()
 		})
 	})
 })
