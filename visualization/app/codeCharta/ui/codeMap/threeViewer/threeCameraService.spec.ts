@@ -74,7 +74,7 @@ describe("ThreeCameraService", () => {
 
             threeCameraService.onCameraChanged(null, null);
 
-            expect(settingsService.updateSettings).toHaveBeenCalledWith({appSettings: {camera: new Vector3(cameraPosition.x, cameraPosition.y, cameraPosition.z) }})
+            expect(settingsService.updateSettings).toHaveBeenCalledWith({appSettings: {camera: new Vector3(cameraPosition.x, cameraPosition.y, cameraPosition.z) }}, true)
         })
     })
 
