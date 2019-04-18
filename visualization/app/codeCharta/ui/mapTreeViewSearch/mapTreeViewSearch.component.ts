@@ -25,8 +25,6 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 		isPatternHidden: true
 	}
 
-	private searchedNodeLeaves: CodeMapNode[] = []
-
 	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -39,25 +37,19 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-		this._viewModel.searchPattern = ""
-		this.applySettingsSearchPattern()
+		this.resetSearchPattern()
 	}
 
 	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+		let searchedNodeLeaves: CodeMapNode[]  = []
 		if (update.dynamicSettings && update.dynamicSettings.searchPattern !== undefined) {
-			this.searchedNodeLeaves = (update.dynamicSettings.searchPattern.length == 0) ? [] : this.getSearchedNodeLeaves()
-			this.applySettingsSearchedNodePaths()
+			let searchedNodes = (update.dynamicSettings.searchPattern.length == 0) ? [] : this.getSearchedNodeLeaves()
+			searchedNodeLeaves = this.getOnlyNodeLeaves(searchedNodes)
+			this.applySettingsSearchedNodePaths(searchedNodes)
 		}
-		this.updateViewModel(settings)
-	}
-
-	private getSearchedNodeLeaves(): CodeMapNode[] {
-		const nodes = d3.hierarchy(this.codeMapRenderService.getRenderFile().map).descendants().map(d => d.data)
-		return CodeMapHelper.getNodesByGitignorePath(nodes, this._viewModel.searchPattern)
-			.filter(node => !(node.children && node.children.length > 0))
-
+		this.updateViewModel(searchedNodeLeaves, settings)
 	}
 
 	public onSearchChange() {
@@ -66,20 +58,30 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 
 	public onClickBlacklistPattern(blacklistType: BlacklistType) {
 		this.codeMapActionsService.pushItemToBlacklist({ path: this._viewModel.searchPattern, type: blacklistType })
+		this.resetSearchPattern()
+	}
+
+	private resetSearchPattern() {
 		this._viewModel.searchPattern = ""
 		this.applySettingsSearchPattern()
 	}
 
-	private updateViewModel(s: Settings) {
-		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(s, BlacklistType.exclude)
-		this._viewModel.isPatternHidden = this.isPatternBlacklisted(s, BlacklistType.hide)
-		this._viewModel.fileCount = this.searchedNodeLeaves.length
-		this._viewModel.hideCount = this.getBlacklistedFileCount(s, BlacklistType.hide)
-		this._viewModel.excludeCount = this.getBlacklistedFileCount(s, BlacklistType.exclude)
+	private getSearchedNodeLeaves(): CodeMapNode[] {
+		const nodes = d3.hierarchy(this.codeMapRenderService.getRenderFile().map).descendants().map(d => d.data)
+		return CodeMapHelper.getNodesByGitignorePath(nodes, this._viewModel.searchPattern)
 	}
 
-	private getBlacklistedFileCount(s: Settings, blacklistType: BlacklistType): number {
-		return this.searchedNodeLeaves.filter(node =>
+	private updateViewModel(searchedNodeLeaves: CodeMapNode[], s: Settings) {
+		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(s, BlacklistType.exclude)
+		this._viewModel.isPatternHidden = this.isPatternBlacklisted(s, BlacklistType.hide)
+
+		this._viewModel.fileCount = searchedNodeLeaves.length
+		this._viewModel.hideCount = this.getBlacklistedFileCount(searchedNodeLeaves, s, BlacklistType.hide)
+		this._viewModel.excludeCount = this.getBlacklistedFileCount(searchedNodeLeaves, s, BlacklistType.exclude)
+	}
+
+	private getBlacklistedFileCount(searchedNodeLeaves: CodeMapNode[], s: Settings, blacklistType: BlacklistType): number {
+		return searchedNodeLeaves.filter(node =>
 			CodeMapHelper.isBlacklisted(node, s.fileSettings.blacklist, blacklistType)
 		).length
 	}
@@ -88,7 +90,10 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 		return !!s.fileSettings.blacklist.find(x =>
 			this._viewModel.searchPattern == x.path && blacklistType == x.type
 		)
+	}
 
+	private getOnlyNodeLeaves(nodes: CodeMapNode[]): CodeMapNode[] {
+		return nodes.filter(node => !(node.children && node.children.length > 0))
 	}
 
 	private applySettingsSearchPattern() {
@@ -99,14 +104,10 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 		})
 	}
 
-	private applySettingsSearchedNodePaths() {
-		const searchedNodePaths: string[] = (this.searchedNodeLeaves.length == 0)
-			? []
-			: this.searchedNodeLeaves.map(x => x.path)
-
+	private applySettingsSearchedNodePaths(searchedNodes: CodeMapNode[]) {
 		this.settingsService.updateSettings({
 			dynamicSettings: {
-				searchedNodePaths: searchedNodePaths
+				searchedNodePaths: (searchedNodes.length == 0) ? [] : searchedNodes.map(x => x.path)
 			}
 		})
 	}
