@@ -1,7 +1,7 @@
 
 <md-input-container class="md-block">
     <label>Search by gitignore style: *.js or **/service/*</label>
-    <input type='text' ng-model="$ctrl._viewModel.searchPattern" ng-change="$ctrl.onSearchChange($ctrl._viewModel.searchPattern)">
+    <input type='text' ng-model="$ctrl._viewModel.searchPattern" ng-change="$ctrl.applySettingsSearchPattern()">
 </md-input-container>
 
 <div class="found-nodes angular-green">

@@ -12,51 +12,56 @@ import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
 import { TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 
 describe("MapTreeViewSearchController", () => {
-	let services, viewModel, mapTreeViewSearchController: MapTreeViewSearchController
+
+	let mapTreeViewSearchController: MapTreeViewSearchController
+	let $rootScope: IRootScopeService
+	let settingsService: SettingsService
+	let fileStateService: FileStateService
+	let codeMapActionsService: CodeMapActionsService
+	let codeMapRenderService: CodeMapRenderService
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
+		withMockedCodeMapRenderService()
 		withMockedMapTreeViewSearch()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.mapTreeViewSearch")
 
-		services = {
-			$rootScope: getService<IRootScopeService>("$rootScope"),
-			settingsService: getService<SettingsService>("settingsService"),
-			fileStateService: getService<FileStateService>("fileStateService"),
-			codeMapActionsService: getService<CodeMapActionsService>("codeMapActionsService"),
-			codeMapRenderService: getService<CodeMapRenderService>("codeMapRenderService")
-		}
-
-		services.codeMapRenderService.lastRender.renderFile = TEST_FILE_WITH_PATHS
+		$rootScope = getService<IRootScopeService>("$rootScope"),
+		settingsService = getService<SettingsService>("settingsService"),
+		fileStateService = getService<FileStateService>("fileStateService"),
+		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService"),
+		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 	}
 
 	function rebuildController() {
-		mapTreeViewSearchController = new MapTreeViewSearchController(
-			services.$rootScope,
-			services.settingsService,
-			services.codeMapActionsService,
-			services.codeMapRenderService
+		mapTreeViewSearchController = new MapTreeViewSearchController($rootScope, settingsService,
+			codeMapActionsService, codeMapRenderService
 		)
 	}
 
 	function withMockedMapTreeViewSearch() {
-		viewModel = {
+		mapTreeViewSearchController["_viewModel"] = {
 			searchPattern: "",
 			fileCount: 0,
-			folderCount: 0
+			excludeCount: 0,
+			hideCount: 0,
+			isPatternExcluded: false,
+			isPatternHidden: false
 		}
+	}
 
-		mapTreeViewSearchController["_viewModel"] = viewModel
+	function withMockedCodeMapRenderService() {
+		codeMapRenderService["lastRender"].renderFile = TEST_FILE_WITH_PATHS
 	}
 
 	it("should set searchPattern in settings", () => {
 		mapTreeViewSearchController["_viewModel"].searchPattern = "*fileSettings"
-		mapTreeViewSearchController["setSearchedNodePathNames"]()
-		expect(services.settingsService.settings.dynamicSettings.searchPattern).toBe(
+		mapTreeViewSearchController.applySettingsSearchPattern()
+		expect(settingsService.getSettings().dynamicSettings.searchPattern).toBe(
 			mapTreeViewSearchController["_viewModel"].searchPattern
 		)
 	})
@@ -64,13 +69,15 @@ describe("MapTreeViewSearchController", () => {
 	it("should add new blacklist entry and clear searchPattern", () => {
 		const blacklistItem = { path: "/root/node/path", type: BlacklistType.exclude }
 		mapTreeViewSearchController["_viewModel"].searchPattern = blacklistItem.path
+
 		mapTreeViewSearchController.onClickBlacklistPattern(blacklistItem.type)
-		expect(services.settingsService.settings.fileSettings.blacklist).toContainEqual(blacklistItem)
+
+		expect(settingsService.getSettings().fileSettings.blacklist).toContainEqual(blacklistItem)
 		expect(mapTreeViewSearchController["_viewModel"].searchPattern).toBe("")
 	})
 
 	it("should updateViewModel when pattern not blacklisted", () => {
-		services.settingsService.settings.fileSettings.blacklist = []
+		settingsService.settings.fileSettings.blacklist = []
 		mapTreeViewSearchController["_viewModel"].searchPattern = "/root/node/path"
 
 		mapTreeViewSearchController["updateViewModel"]()
@@ -81,7 +88,7 @@ describe("MapTreeViewSearchController", () => {
 	it("should updateViewModel when pattern excluded", () => {
 		const blacklistItem = { path: "/root/node/path", type: BlacklistType.exclude }
 		const anotherBlacklistItem = { path: "/root/another/node/path", type: BlacklistType.exclude }
-		services.settingsService.settings.fileSettings.blacklist = [blacklistItem, anotherBlacklistItem]
+		settingsService.settings.fileSettings.blacklist = [blacklistItem, anotherBlacklistItem]
 		mapTreeViewSearchController["_viewModel"].searchPattern = "/root/node/path"
 
 		mapTreeViewSearchController["updateViewModel"]()
@@ -92,7 +99,7 @@ describe("MapTreeViewSearchController", () => {
 	it("should updateViewModel when pattern hidden and excluded", () => {
 		const blacklistItemExcluded = { path: "/root/node/path", type: BlacklistType.exclude }
 		const blacklistItemHidden = { path: "/root/node/path", type: BlacklistType.hide }
-		services.settingsService.settings.fileSettings.blacklist = [blacklistItemExcluded, blacklistItemHidden]
+		settingsService.settings.fileSettings.blacklist = [blacklistItemExcluded, blacklistItemHidden]
 		mapTreeViewSearchController["_viewModel"].searchPattern = "/root/node/path"
 
 		mapTreeViewSearchController["updateViewModel"]()
@@ -123,7 +130,7 @@ describe("MapTreeViewSearchController", () => {
 		it("should get correct searchedNodePaths with searchedFiles.length", () => {
 			mapTreeViewSearchController["setSearchedNodePathNames"]()
 
-			expect(services.settingsService.settings.dynamicSettings.searchedNodePaths).toEqual([
+			expect(settingsService.settings.dynamicSettings.searchedNodePaths).toEqual([
 				"/root/Parent Leaf/small leaf",
 				"/root/big leaf",
 				"/root/Parent Leaf/empty folder"
@@ -132,7 +139,7 @@ describe("MapTreeViewSearchController", () => {
 		})
 
 		it("should have correct fileCount", () => {
-			services.settingsService.settings.fileSettings.blacklist = blacklist
+			settingsService.settings.fileSettings.blacklist = blacklist
 
 			mapTreeViewSearchController["setSearchedNodePathNames"]()
 
