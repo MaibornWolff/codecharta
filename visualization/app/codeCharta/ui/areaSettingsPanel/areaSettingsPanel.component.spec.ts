@@ -6,17 +6,17 @@ import { SettingsService } from "../../state/settings.service"
 import { SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
 import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CCFile, Settings } from "../../codeCharta.model"
+import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service";
 
 describe("AreaSettingsPanelController", () => {
 
 	let $rootScope: IRootScopeService
 	let $timeout: ITimeoutService
 	let settingsService: SettingsService
-	let codeMapRenderService: CodeMapRenderService
+	let codeMapPreRenderService: CodeMapPreRenderService
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let areaSettingsPanelController: AreaSettingsPanelController
 
@@ -27,7 +27,7 @@ describe("AreaSettingsPanelController", () => {
 		restartSystem()
 		rebuildController()
 		withMockedSettingsService()
-		withMockedCodeMapRenderService()
+		withMockedCodeMapPreRenderService()
 		withMockedThreeOrbitControlsService()
 	})
 
@@ -37,7 +37,7 @@ describe("AreaSettingsPanelController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		$timeout = getService<ITimeoutService>("$timeout")
 		settingsService = getService<SettingsService>("settingsService")
-		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
+		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 
 		settings = JSON.parse(JSON.stringify(SETTINGS))
@@ -45,7 +45,7 @@ describe("AreaSettingsPanelController", () => {
 	}
 
 	function rebuildController() {
-		areaSettingsPanelController = new AreaSettingsPanelController($rootScope, $timeout, settingsService, codeMapRenderService, threeOrbitControlsService)
+		areaSettingsPanelController = new AreaSettingsPanelController($rootScope, $timeout, settingsService, codeMapPreRenderService, threeOrbitControlsService)
 	}
 
 	function withMockedSettingsService() {
@@ -55,8 +55,8 @@ describe("AreaSettingsPanelController", () => {
 		})()
 	}
 
-	function withMockedCodeMapRenderService() {
-		codeMapRenderService = areaSettingsPanelController["codeMapRenderService"] = jest.fn().mockReturnValue({
+	function withMockedCodeMapPreRenderService() {
+		codeMapPreRenderService = areaSettingsPanelController["codeMapPreRenderService"] = jest.fn().mockReturnValue({
 			getRenderFile: jest.fn().mockReturnValue(file)
 		})()
 	}
@@ -70,7 +70,7 @@ describe("AreaSettingsPanelController", () => {
 	describe("constructor", () => {
 		beforeEach(() => {
 			SettingsService.subscribe = jest.fn()
-			CodeMapRenderService.subscribe = jest.fn()
+			CodeMapPreRenderService.subscribe = jest.fn()
 			FileStateService.subscribe = jest.fn()
 		})
 
@@ -80,10 +80,10 @@ describe("AreaSettingsPanelController", () => {
 			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 
-		it("should subscribe to CodeMapRenderService", () => {
+		it("should subscribe to CodeMapPreRenderService", () => {
 			rebuildController()
 
-			expect(CodeMapRenderService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
+			expect(CodeMapPreRenderService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 
 		it("should subscribe to FileStateService", () => {
@@ -213,31 +213,13 @@ describe("AreaSettingsPanelController", () => {
 		})
 	})
 
-	describe("onClickDynamicMargin", () => {
-		beforeEach(() => {
-			areaSettingsPanelController.applySettings = jest.fn()
-		})
+	describe("applySettingsDynamicMargin", () => {
+		it("should call updateSettings with new dynamicMargin value", () => {
+			areaSettingsPanelController["_viewModel"].dynamicMargin = false
 
-		it("should not set margin if dynamicMargin is false", () => {
-			settings.appSettings.dynamicMargin = false
+			areaSettingsPanelController.applySettingsDynamicMargin()
 
-			areaSettingsPanelController.onClickDynamicMargin()
-
-			expect(areaSettingsPanelController["_viewModel"].margin).toBeNull()
-		})
-
-		it("should set margin correctly", () => {
-			settings.appSettings.dynamicMargin = true
-
-			areaSettingsPanelController.onClickDynamicMargin()
-
-			expect(areaSettingsPanelController["_viewModel"].margin).toBe(28)
-		})
-
-		it("should call applySettings", () => {
-			areaSettingsPanelController.onClickDynamicMargin()
-
-			expect(areaSettingsPanelController.applySettings).toHaveBeenCalled()
+			expect(settingsService.updateSettings).toBeCalledWith({appSettings: {dynamicMargin: false}})
 		})
 	})
 

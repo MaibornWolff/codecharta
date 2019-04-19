@@ -3,11 +3,11 @@ import {IRootScopeService, ITimeoutService} from "angular";
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import { CCFile, CodeMapNode, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
-import {CodeMapRenderService, CodeMapRenderServiceSubscriber} from "../codeMap/codeMap.render.service";
+import {CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber} from "../codeMap/codeMap.preRender.service";
 import {ThreeOrbitControlsService} from "../codeMap/threeViewer/threeOrbitControlsService";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
 
-export class AreaSettingsPanelController implements SettingsServiceSubscriber, CodeMapRenderServiceSubscriber, FileStateServiceSubscriber {
+export class AreaSettingsPanelController implements SettingsServiceSubscriber, CodeMapPreRenderServiceSubscriber, FileStateServiceSubscriber {
 
     private static MIN_MARGIN = 15
     private static MAX_MARGIN = 100
@@ -27,18 +27,18 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
         private $rootScope: IRootScopeService,
         private $timeout: ITimeoutService,
         private settingsService: SettingsService,
-        private codeMapRenderService: CodeMapRenderService,
+        private codeMapPreRenderService: CodeMapPreRenderService,
         private threeOrbitControlsService: ThreeOrbitControlsService
     ) {
         SettingsService.subscribe(this.$rootScope, this)
-        CodeMapRenderService.subscribe(this.$rootScope, this)
+        CodeMapPreRenderService.subscribe(this.$rootScope, this)
         FileStateService.subscribe(this.$rootScope, this)
     }
 
     public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
         this._viewModel.dynamicMargin = settings.appSettings.dynamicMargin
         this._viewModel.margin = settings.dynamicSettings.margin
-        this.potentiallyUpdateMargin(this.codeMapRenderService.getRenderFile(), settings)
+        this.potentiallyUpdateMargin(this.codeMapPreRenderService.getRenderFile(), settings)
     }
 
     public onRenderFileChanged(renderFile: CCFile, event: angular.IAngularEvent) {
@@ -58,8 +58,12 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
         this.applySettings()
     }
 
-    public onClickDynamicMargin() {
-        this.potentiallyUpdateMargin(this.codeMapRenderService.getRenderFile(), this.settingsService.getSettings())
+    public applySettingsDynamicMargin() {
+        this.settingsService.updateSettings({
+            appSettings: {
+                dynamicMargin: this._viewModel.dynamicMargin
+            }
+        })
     }
 
     public applySettings() {
