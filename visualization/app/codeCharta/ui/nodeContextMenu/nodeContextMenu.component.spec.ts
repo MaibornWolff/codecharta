@@ -6,8 +6,8 @@ import { SettingsService } from "../../state/settings.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { NodeContextMenuController } from "./nodeContextMenu.component"
-import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
 import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
+import {CodeMapPreRenderService} from "../codeMap/codeMap.preRender.service";
 
 describe("nodeContextMenuController", () => {
 	let element: Element
@@ -17,7 +17,7 @@ describe("nodeContextMenuController", () => {
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
 	let codeMapActionsService: CodeMapActionsService
-	let codeMapRenderService: CodeMapRenderService
+	let codeMapPreRenderService: CodeMapPreRenderService
 
 	beforeEach(() => {
 		restartSystem()
@@ -34,7 +34,7 @@ describe("nodeContextMenuController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
-		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
+		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 	}
 
 	function mockElement() {
@@ -69,7 +69,7 @@ describe("nodeContextMenuController", () => {
 			$rootScope,
 			codeMapActionsService,
 			settingsService,
-			codeMapRenderService
+			codeMapPreRenderService
 		)
 	}
 
@@ -97,8 +97,8 @@ describe("nodeContextMenuController", () => {
 		})()
 	}
 
-	function withMockedCodeMapRenderService() {
-		codeMapRenderService = nodeContextMenuController["codeMapRenderService"] = jest.fn<CodeMapRenderService>(() => {
+	function withMockedCodeMapPreRenderService() {
+		codeMapPreRenderService = nodeContextMenuController["codeMapPreRenderService"] = jest.fn<CodeMapPreRenderService>(() => {
 			return {
 				getRenderFile: jest.fn(() => {
 					return TEST_DELTA_MAP_A
@@ -159,7 +159,7 @@ describe("nodeContextMenuController", () => {
 	describe("show", () => {
 		beforeEach(() => {
 			withMockedCodeMapActionService()
-			withMockedCodeMapRenderService()
+			withMockedCodeMapPreRenderService()
 			nodeContextMenuController.setPosition = jest.fn()
 			nodeContextMenuController.calculatePosition = jest.fn().mockReturnValue({ x: 1, y: 2 })
 			CodeMapHelper.getCodeMapNodeFromPath = jest.fn().mockReturnValue(TEST_DELTA_MAP_A.map)

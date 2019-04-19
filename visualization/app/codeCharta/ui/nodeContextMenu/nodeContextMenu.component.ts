@@ -4,8 +4,8 @@ import {highlightColors} from "../codeMap/rendering/renderSettings";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapHelper} from "../../util/codeMapHelper";
 import {SettingsService} from "../../state/settings.service";
-import {CodeMapRenderService} from "../codeMap/codeMap.render.service";
 import {CodeMapNode} from "../../codeCharta.model";
+import {CodeMapPreRenderService} from "../codeMap/codeMap.preRender.service";
 
 export class NodeContextMenuController {
 
@@ -30,7 +30,7 @@ export class NodeContextMenuController {
                 private $rootScope,
                 private codeMapActionsService: CodeMapActionsService,
                 private settingsService: SettingsService,
-                private codeMapRenderService: CodeMapRenderService) {
+                private codeMapPreRenderService: CodeMapPreRenderService) {
 
         this.$rootScope.$on("show-node-context-menu", (e, data) => {
             this.show(data.path, data.type, data.x, data.y)
@@ -45,7 +45,7 @@ export class NodeContextMenuController {
 
     public show(path: string, nodeType: string, mouseX: number, mouseY: number) {
         this.$timeout(() => {
-            this._viewModel.contextMenuBuilding = CodeMapHelper.getCodeMapNodeFromPath(path, nodeType, this.codeMapRenderService.getRenderFile().map);
+            this._viewModel.contextMenuBuilding = CodeMapHelper.getCodeMapNodeFromPath(path, nodeType, this.codeMapPreRenderService.getRenderFile().map);
         }, 50).then(() => {
             this._viewModel.amountOfDependentEdges = this.codeMapActionsService.amountOfDependentEdges(this._viewModel.contextMenuBuilding);
             this._viewModel.amountOfVisibleDependentEdges = this.codeMapActionsService.amountOfVisibleDependentEdges(this._viewModel.contextMenuBuilding);

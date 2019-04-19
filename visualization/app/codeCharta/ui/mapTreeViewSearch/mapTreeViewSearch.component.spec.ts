@@ -7,8 +7,8 @@ import { FileStateService } from "../../state/fileState.service"
 import { BlacklistItem, BlacklistType, CodeMapNode } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
 import { TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
+import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service";
 
 describe("MapTreeViewSearchController", () => {
 
@@ -17,12 +17,12 @@ describe("MapTreeViewSearchController", () => {
 	let settingsService: SettingsService
 	let fileStateService: FileStateService
 	let codeMapActionsService: CodeMapActionsService
-	let codeMapRenderService: CodeMapRenderService
+	let codeMapPreRenderService: CodeMapPreRenderService
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedCodeMapRenderService()
+		withMockedCodeMapPreRenderService()
 		withMockedMapTreeViewSearch()
 	})
 
@@ -33,12 +33,12 @@ describe("MapTreeViewSearchController", () => {
 		settingsService = getService<SettingsService>("settingsService"),
 		fileStateService = getService<FileStateService>("fileStateService"),
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService"),
-		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
+		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 	}
 
 	function rebuildController() {
 		mapTreeViewSearchController = new MapTreeViewSearchController($rootScope, settingsService,
-			codeMapActionsService, codeMapRenderService
+			codeMapActionsService, codeMapPreRenderService
 		)
 	}
 
@@ -53,8 +53,8 @@ describe("MapTreeViewSearchController", () => {
 		}
 	}
 
-	function withMockedCodeMapRenderService() {
-		codeMapRenderService["lastRender"].renderFile = TEST_FILE_WITH_PATHS
+	function withMockedCodeMapPreRenderService() {
+		codeMapPreRenderService["lastRender"].renderFile = TEST_FILE_WITH_PATHS
 	}
 
 

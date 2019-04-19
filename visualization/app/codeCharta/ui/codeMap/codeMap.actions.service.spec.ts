@@ -6,7 +6,6 @@ import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsServi
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CodeMapNode, Edge, BlacklistType, Settings } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
-import { CodeMapRenderService } from "./codeMap.render.service"
 import {SETTINGS, VALID_EDGE, VALID_NODE_WITH_PATH} from "../../util/dataMocks";
 
 

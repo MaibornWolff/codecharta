@@ -5,8 +5,8 @@ import {CodeMapHelper} from "../../util/codeMapHelper"
 import {BlacklistItem, BlacklistType, CodeMapNode, FileState, RecursivePartial, Settings} from "../../codeCharta.model"
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service"
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service"
-import {CodeMapRenderService} from "../codeMap/codeMap.render.service"
 import * as d3 from "d3"
+import {CodeMapPreRenderService} from "../codeMap/codeMap.preRender.service";
 
 export class MapTreeViewSearchController implements SettingsServiceSubscriber, FileStateServiceSubscriber {
 	private _viewModel: {
@@ -32,7 +32,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
 		private codeMapActionsService: CodeMapActionsService,
-		private codeMapRenderService: CodeMapRenderService
+		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
@@ -79,7 +79,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 		if (searchPattern.length == 0) {
 			return []
 		} else {
-			const nodes = d3.hierarchy(this.codeMapRenderService.getRenderFile().map).descendants().map(d => d.data)
+			const nodes = d3.hierarchy(this.codeMapPreRenderService.getRenderFile().map).descendants().map(d => d.data)
 			return CodeMapHelper.getNodesByGitignorePath(nodes, this._viewModel.searchPattern)
 		}
 	}

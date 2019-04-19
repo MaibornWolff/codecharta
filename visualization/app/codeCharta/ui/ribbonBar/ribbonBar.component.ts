@@ -4,8 +4,8 @@ import {IRootScopeService} from "angular";
 import {FileState} from "../../codeCharta.model";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
 import {FileStateHelper} from "../../util/fileStateHelper";
-import {CodeMapRenderService} from "../codeMap/codeMap.render.service";
 import {FileDownloader} from "../../util/fileDownloader";
+import {CodeMapPreRenderService} from "../codeMap/codeMap.preRender.service";
 
 export class RibbonBarController implements FileStateServiceSubscriber {
 
@@ -22,7 +22,7 @@ export class RibbonBarController implements FileStateServiceSubscriber {
     /* @ngInject */
     constructor(
         private $rootScope: IRootScopeService,
-        private codeMapRenderService: CodeMapRenderService
+        private codeMapPreRenderService: CodeMapPreRenderService
     ) {
         FileStateService.subscribe(this.$rootScope, this)
     }
@@ -35,7 +35,7 @@ export class RibbonBarController implements FileStateServiceSubscriber {
     }
 
     public downloadFile() {
-        FileDownloader.downloadCurrentMap(this.codeMapRenderService.getRenderFile())
+        FileDownloader.downloadCurrentMap(this.codeMapPreRenderService.getRenderFile())
     }
 
     public toggle() {

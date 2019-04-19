@@ -1,8 +1,8 @@
 import { IRootScopeService } from "angular";
 import {CCFile, CodeMapNode } from "../../codeCharta.model";
-import {CodeMapRenderService, CodeMapRenderServiceSubscriber} from "../codeMap/codeMap.render.service";
+import {CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber} from "../codeMap/codeMap.preRender.service";
 
-export class MapTreeViewController implements CodeMapRenderServiceSubscriber {
+export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber {
 
     private _viewModel: {
         rootNode: CodeMapNode
@@ -14,7 +14,7 @@ export class MapTreeViewController implements CodeMapRenderServiceSubscriber {
     constructor(
         private $rootScope: IRootScopeService
     ) {
-        CodeMapRenderService.subscribe(this.$rootScope, this);
+        CodeMapPreRenderService.subscribe(this.$rootScope, this);
     }
 
     public onRenderFileChanged(renderFile: CCFile, event: angular.IAngularEvent) {

@@ -9,6 +9,7 @@ import {CodeMapRenderService} from "./codeMap.render.service";
 import {CodeMapActionsService} from "./codeMap.actions.service";
 import {CodeMapLabelService} from "./codeMap.label.service";
 import {CodeMapArrowService} from "./codeMap.arrow.service";
+import {CodeMapPreRenderService} from "./codeMap.preRender.service";
 
 angular.module("app.codeCharta.ui.codeMap", [
     "app.codeCharta.state",
@@ -21,6 +22,9 @@ angular.module("app.codeCharta.ui.codeMap", [
 ).service(
     CodeMapRenderService.SELECTOR,
     CodeMapRenderService
+).service(
+    CodeMapPreRenderService.SELECTOR,
+    CodeMapPreRenderService
 ).service(
     CodeMapMouseEventService.SELECTOR,
     CodeMapMouseEventService
