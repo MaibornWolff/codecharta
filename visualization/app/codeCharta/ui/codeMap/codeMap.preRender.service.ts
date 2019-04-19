@@ -1,6 +1,5 @@
 "use strict"
 
-import {CodeMapMesh} from "./rendering/codeMapMesh"
 import {ThreeSceneService} from "./threeViewer/threeSceneService"
 import {
 	CCFile,

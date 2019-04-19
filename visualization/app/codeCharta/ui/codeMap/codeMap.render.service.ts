@@ -8,7 +8,6 @@ import {CodeMapLabelService} from "./codeMap.label.service"
 import {ThreeSceneService} from "./threeViewer/threeSceneService"
 import {CodeMapArrowService} from "./codeMap.arrow.service"
 import {CodeMapNode, Edge, Settings} from "../../codeCharta.model"
-import {IRootScopeService} from "angular";
 import {FileStateHelper} from "../../util/fileStateHelper";
 import {RenderData} from "./codeMap.preRender.service";
 
@@ -18,7 +17,6 @@ export class CodeMapRenderService {
 	private _mapMesh: CodeMapMesh = null
 
 	constructor(
-		private $rootScope: IRootScopeService,
 		private threeSceneService: ThreeSceneService,
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService

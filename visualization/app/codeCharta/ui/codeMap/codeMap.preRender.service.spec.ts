@@ -18,14 +18,12 @@ describe("codeMapPreRenderService", () => {
 	let threeSceneService: ThreeSceneService
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let codeMapRenderService: CodeMapRenderService
-	let codeMapMesh: CodeMapMesh
 	let settings: Settings
 	let file: CCFile
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedCodeMapMesh()
 		withMockedEventMethods()
 		withMockedThreeOrbitControlsService()
 	})
@@ -48,10 +46,6 @@ describe("codeMapPreRenderService", () => {
 
 	function rebuildService() {
 		codeMapPreRenderService = new CodeMapPreRenderService($rootScope, threeSceneService, threeOrbitControlsService, codeMapRenderService)
-	}
-
-	function withMockedCodeMapMesh() {
-		codeMapMesh = new CodeMapMesh([], settings, false)
 	}
 
 	function withMockedEventMethods() {
@@ -81,16 +75,6 @@ describe("codeMapPreRenderService", () => {
 			rebuildService()
 
 			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
-		})
-	})
-
-	describe("getMapMesh", () => {
-		it("should return _mapMesh via getter", () => {
-			codeMapPreRenderService["_mapMesh"] = codeMapMesh
-
-			const result = codeMapPreRenderService.mapMesh
-
-			expect(result).toEqual(codeMapMesh)
 		})
 	})
 
