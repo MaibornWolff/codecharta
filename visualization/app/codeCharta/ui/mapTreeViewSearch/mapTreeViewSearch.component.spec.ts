@@ -159,10 +159,10 @@ describe("MapTreeViewSearchController", () => {
 		})
 	})
 
-	describe("getOnlyNodeLeaves", () => {
+	describe("getSearchedNodeLeaves", () => {
 		it("should return array of nodes leaves", () => {
 			const rootNode = VALID_NODE_WITH_PATH
-			const allNodes = [
+			mapTreeViewSearchController["searchedNodes"] = [
 				rootNode,
 				rootNode.children[0],
 				rootNode.children[1].children[0],
@@ -175,7 +175,7 @@ describe("MapTreeViewSearchController", () => {
 				rootNode.children[1].children[1],
 				rootNode.children[1].children[2],
 			]
-			const result = mapTreeViewSearchController["getOnlyNodeLeaves"](allNodes)
+			const result = mapTreeViewSearchController["getSearchedNodeLeaves"]()
 
 			expect(result).toEqual(nodeLeaves)
 		})
