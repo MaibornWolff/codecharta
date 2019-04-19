@@ -4,8 +4,7 @@ import { SettingsService } from "../../state/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { MapTreeViewSearchController } from "./mapTreeViewSearch.component"
 import { FileStateService } from "../../state/fileState.service"
-import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
-import { CodeMapHelper } from "../../util/codeMapHelper"
+import { BlacklistItem, BlacklistType, CodeMapNode } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
@@ -58,110 +57,130 @@ describe("MapTreeViewSearchController", () => {
 		codeMapRenderService["lastRender"].renderFile = TEST_FILE_WITH_PATHS
 	}
 
-	it("should set searchPattern in settings", () => {
-		mapTreeViewSearchController["_viewModel"].searchPattern = "*fileSettings"
-		mapTreeViewSearchController.applySettingsSearchPattern()
-		expect(settingsService.getSettings().dynamicSettings.searchPattern).toBe(
-			mapTreeViewSearchController["_viewModel"].searchPattern
-		)
+
+	describe("onFileSelectionStatesChanged", () => {
+		it("should set empty searchPattern", () => {
+			mapTreeViewSearchController["_viewModel"].searchPattern = "*fileSettings"
+			mapTreeViewSearchController.onFileSelectionStatesChanged(null, null)
+
+			expect(mapTreeViewSearchController["_viewModel"].searchPattern).toBe("")
+			expect(settingsService.getSettings().dynamicSettings.searchPattern).toBe("")
+		})
 	})
 
-	it("should add new blacklist entry and clear searchPattern", () => {
-		const blacklistItem = { path: "/root/node/path", type: BlacklistType.exclude }
-		mapTreeViewSearchController["_viewModel"].searchPattern = blacklistItem.path
-
-		mapTreeViewSearchController.onClickBlacklistPattern(blacklistItem.type)
-
-		expect(settingsService.getSettings().fileSettings.blacklist).toContainEqual(blacklistItem)
-		expect(mapTreeViewSearchController["_viewModel"].searchPattern).toBe("")
+	describe("applySettingsSearchPattern", () => {
+		it("should set searchPattern in settings", () => {
+			mapTreeViewSearchController["_viewModel"].searchPattern = "*fileSettings"
+			mapTreeViewSearchController.applySettingsSearchPattern()
+			expect(settingsService.getSettings().dynamicSettings.searchPattern).toBe(
+				mapTreeViewSearchController["_viewModel"].searchPattern
+			)
+		})
 	})
 
-	it("should updateViewModel when pattern not blacklisted", () => {
-		settingsService.settings.fileSettings.blacklist = []
-		mapTreeViewSearchController["_viewModel"].searchPattern = "/root/node/path"
+	describe("onClickBlacklistPattern", () => {
+		it("should add new blacklist entry and clear searchPattern", () => {
+			const blacklistItem = {path: "/root/node/path", type: BlacklistType.exclude}
+			mapTreeViewSearchController["_viewModel"].searchPattern = blacklistItem.path
 
-		mapTreeViewSearchController["updateViewModel"]()
-		expect(mapTreeViewSearchController["_viewModel"].isPatternHidden).toBeFalsy()
-		expect(mapTreeViewSearchController["_viewModel"].isPatternExcluded).toBeFalsy()
+			mapTreeViewSearchController.onClickBlacklistPattern(blacklistItem.type)
+
+			expect(settingsService.getSettings().fileSettings.blacklist).toContainEqual(blacklistItem)
+			expect(mapTreeViewSearchController["_viewModel"].searchPattern).toBe("")
+		})
 	})
 
-	it("should updateViewModel when pattern excluded", () => {
-		const blacklistItem = { path: "/root/node/path", type: BlacklistType.exclude }
-		const anotherBlacklistItem = { path: "/root/another/node/path", type: BlacklistType.exclude }
-		settingsService.settings.fileSettings.blacklist = [blacklistItem, anotherBlacklistItem]
-		mapTreeViewSearchController["_viewModel"].searchPattern = "/root/node/path"
+	describe("isSearchPatternUpdated", () => {
+		it("should return true because searchPattern was updated in settings", () => {
+			const result = mapTreeViewSearchController["isSearchPatternUpdated"]({dynamicSettings: {searchPattern: "newPattern"}})
+			expect(result).toEqual(true)
+		})
 
-		mapTreeViewSearchController["updateViewModel"]()
-		expect(mapTreeViewSearchController["_viewModel"].isPatternHidden).toBeFalsy()
-		expect(mapTreeViewSearchController["_viewModel"].isPatternExcluded).toBeTruthy()
+		it("should return true because searchPattern was updated in settings with empty string", () => {
+			const result = mapTreeViewSearchController["isSearchPatternUpdated"]({dynamicSettings: {searchPattern: ""}})
+			expect(result).toEqual(true)
+		})
+
+		it("should return false because searchPattern was not updated in settings", () => {
+			const result = mapTreeViewSearchController["isSearchPatternUpdated"]({dynamicSettings: {margin: 42}})
+			expect(result).toEqual(false)
+		})
 	})
 
-	it("should updateViewModel when pattern hidden and excluded", () => {
-		const blacklistItemExcluded = { path: "/root/node/path", type: BlacklistType.exclude }
-		const blacklistItemHidden = { path: "/root/node/path", type: BlacklistType.hide }
-		settingsService.settings.fileSettings.blacklist = [blacklistItemExcluded, blacklistItemHidden]
-		mapTreeViewSearchController["_viewModel"].searchPattern = "/root/node/path"
-
-		mapTreeViewSearchController["updateViewModel"]()
-		expect(mapTreeViewSearchController["_viewModel"].isPatternHidden).toBeTruthy()
-		expect(mapTreeViewSearchController["_viewModel"].isPatternExcluded).toBeTruthy()
-	})
-
-	describe("Update ViewModel with blacklist count", () => {
-		let file1, file2, folder1, folder2, blacklist: BlacklistItem[]
-
+	describe("updateViewModel", () => {
+		let searchedNodeLeaves: CodeMapNode[]
+		let rootNode = VALID_NODE_WITH_PATH
 		beforeEach(() => {
-			file1 = VALID_NODE_WITH_PATH.children[1].children[0]
-			file2 = VALID_NODE_WITH_PATH.children[0]
-			folder1 = VALID_NODE_WITH_PATH.children[1].children[2]
-			folder2 = VALID_NODE_WITH_PATH.children[1]
-			CodeMapHelper.getNodesByGitignorePath = jest.fn(() => {
-				return [file1, file2, folder1]
-			})
+			mapTreeViewSearchController["_viewModel"].searchPattern = "/root/node/path"
+		})
 
-			blacklist = [
-				{ path: file1.path, type: BlacklistType.hide },
-				{ path: file1.path, type: BlacklistType.exclude },
-				{ path: folder2.path, type: BlacklistType.hide },
-				{ path: file2.path, type: BlacklistType.exclude }
+		it("should update ViewModel when pattern not blacklisted", () => {
+			const blacklist: BlacklistItem[] = []
+			mapTreeViewSearchController["updateViewModel"]([], blacklist)
+
+			expect(mapTreeViewSearchController["_viewModel"].isPatternHidden).toBeFalsy()
+			expect(mapTreeViewSearchController["_viewModel"].isPatternExcluded).toBeFalsy()
+		})
+
+		it("should update ViewModel when pattern excluded", () => {
+			const blacklist: BlacklistItem[] = [
+				{path: "/root/node/path", type: BlacklistType.exclude},
+				{path: "/root/another/node/path", type: BlacklistType.exclude}
 			]
+			mapTreeViewSearchController["updateViewModel"]([], blacklist)
+
+			expect(mapTreeViewSearchController["_viewModel"].isPatternHidden).toBeFalsy()
+			expect(mapTreeViewSearchController["_viewModel"].isPatternExcluded).toBeTruthy()
 		})
 
-		it("should get correct searchedNodePaths with searchedFiles.length", () => {
-			mapTreeViewSearchController["setSearchedNodePathNames"]()
+		it("should update ViewModel when pattern hidden and excluded", () => {
+			const blacklist: BlacklistItem[] = [
+				{path: "/root/node/path", type: BlacklistType.exclude},
+				{path: "/root/node/path", type: BlacklistType.hide}
+			]
+			mapTreeViewSearchController["updateViewModel"]([], blacklist)
 
-			expect(settingsService.settings.dynamicSettings.searchedNodePaths).toEqual([
-				"/root/Parent Leaf/small leaf",
-				"/root/big leaf",
-				"/root/Parent Leaf/empty folder"
-			])
-			expect(mapTreeViewSearchController["searchedFiles"].length).toBe(3)
+			expect(mapTreeViewSearchController["_viewModel"].isPatternHidden).toBeTruthy()
+			expect(mapTreeViewSearchController["_viewModel"].isPatternExcluded).toBeTruthy()
 		})
 
-		it("should have correct fileCount", () => {
-			settingsService.settings.fileSettings.blacklist = blacklist
+		it("should update ViewModel count Attributes when pattern hidden and excluded", () => {
+			searchedNodeLeaves = [rootNode]
+			searchedNodeLeaves[0].path = mapTreeViewSearchController["_viewModel"].searchPattern
+			const blacklist: BlacklistItem[] = [
+				{path: "/root/node/path", type: BlacklistType.exclude},
+				{path: "/root/node/path", type: BlacklistType.hide}
+			]
+			mapTreeViewSearchController["updateViewModel"](searchedNodeLeaves, blacklist)
 
-			mapTreeViewSearchController["setSearchedNodePathNames"]()
-
-			expect(mapTreeViewSearchController["_viewModel"].fileCount).toBe(3)
-		})
-
-		it("should calculate correct hideCount and excludeCount", () => {
-			rebuildController()
-
-			const isBlacklisted = jest.fn()
-			isBlacklisted.mockImplementation((node, blacklist, type) => {
-				if (type == BlacklistType.hide && node.path == "/root/big leaf") return true
-				if (type == BlacklistType.exclude && (node.path == "/root/big leaf" || node.path == "/root/Parent Leaf/small leaf"))
-					return true
-				return false
-			})
-			CodeMapHelper.isBlacklisted = isBlacklisted.bind(CodeMapHelper)
-
-			mapTreeViewSearchController["setSearchedNodePathNames"]()
-
-			expect(mapTreeViewSearchController["_viewModel"].hideCount).toBe(1)
-			expect(mapTreeViewSearchController["_viewModel"].excludeCount).toBe(2)
+			expect(mapTreeViewSearchController["_viewModel"].fileCount).toEqual(searchedNodeLeaves.length)
+			expect(mapTreeViewSearchController["_viewModel"].hideCount).toEqual(1)
+			expect(mapTreeViewSearchController["_viewModel"].excludeCount).toEqual(1)
 		})
 	})
+
+	describe("getOnlyNodeLeaves", () => {
+		it("should return array of nodes leaves", () => {
+			const rootNode = VALID_NODE_WITH_PATH
+			const allNodes = [
+				rootNode,
+				rootNode.children[0],
+				rootNode.children[1].children[0],
+				rootNode.children[1].children[1],
+				rootNode.children[1].children[2],
+			]
+			const nodeLeaves = [
+				rootNode.children[0],
+				rootNode.children[1].children[0],
+				rootNode.children[1].children[1],
+				rootNode.children[1].children[2],
+			]
+			const result = mapTreeViewSearchController["getOnlyNodeLeaves"](allNodes)
+
+			expect(result).toEqual(nodeLeaves)
+		})
+	})
+
+
+
 })

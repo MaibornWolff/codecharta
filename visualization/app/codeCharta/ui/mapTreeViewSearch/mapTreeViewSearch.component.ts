@@ -2,7 +2,7 @@ import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.s
 import {IRootScopeService} from "angular"
 import "./mapTreeViewSearch.component.scss"
 import {CodeMapHelper} from "../../util/codeMapHelper"
-import {BlacklistType, CodeMapNode, FileState, RecursivePartial, Settings} from "../../codeCharta.model"
+import {BlacklistItem, BlacklistType, CodeMapNode, FileState, RecursivePartial, Settings} from "../../codeCharta.model"
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service"
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service"
 import {CodeMapRenderService} from "../codeMap/codeMap.render.service"
@@ -49,7 +49,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 			this.applySettingsSearchedNodePaths(searchedNodes)
 		}
 		const searchedNodeLeaves: CodeMapNode[] = this.getOnlyNodeLeaves(searchedNodes)
-		this.updateViewModel(searchedNodeLeaves, settings)
+		this.updateViewModel(searchedNodeLeaves, settings.fileSettings.blacklist)
 	}
 
 	public onClickBlacklistPattern(blacklistType: BlacklistType) {
@@ -83,28 +83,28 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 		}
 	}
 
-	private updateViewModel(searchedNodeLeaves: CodeMapNode[], s: Settings) {
-		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(s, BlacklistType.exclude)
-		this._viewModel.isPatternHidden = this.isPatternBlacklisted(s, BlacklistType.hide)
+	private updateViewModel(searchedNodeLeaves: CodeMapNode[], blacklist: BlacklistItem[]) {
+		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(blacklist, BlacklistType.exclude)
+		this._viewModel.isPatternHidden = this.isPatternBlacklisted(blacklist, BlacklistType.hide)
 
 		this._viewModel.fileCount = searchedNodeLeaves.length
-		this._viewModel.hideCount = this.getBlacklistedFileCount(searchedNodeLeaves, s, BlacklistType.hide)
-		this._viewModel.excludeCount = this.getBlacklistedFileCount(searchedNodeLeaves, s, BlacklistType.exclude)
+		this._viewModel.hideCount = this.getBlacklistedFileCount(searchedNodeLeaves, blacklist, BlacklistType.hide)
+		this._viewModel.excludeCount = this.getBlacklistedFileCount(searchedNodeLeaves, blacklist, BlacklistType.exclude)
 	}
 
 	private getOnlyNodeLeaves(nodes: CodeMapNode[]): CodeMapNode[] {
 		return nodes.filter(node => !(node.children && node.children.length > 0))
 	}
 
-	private isPatternBlacklisted(s: Settings, blacklistType: BlacklistType): boolean {
-		return !!s.fileSettings.blacklist.find(x =>
+	private isPatternBlacklisted(blacklist: BlacklistItem[], blacklistType: BlacklistType): boolean {
+		return !!blacklist.find(x =>
 			this._viewModel.searchPattern == x.path && blacklistType == x.type
 		)
 	}
 
-	private getBlacklistedFileCount(searchedNodeLeaves: CodeMapNode[], s: Settings, blacklistType: BlacklistType): number {
+	private getBlacklistedFileCount(searchedNodeLeaves: CodeMapNode[], blacklist: BlacklistItem[], blacklistType: BlacklistType): number {
 		return searchedNodeLeaves.filter(node =>
-			CodeMapHelper.isBlacklisted(node, s.fileSettings.blacklist, blacklistType)
+			CodeMapHelper.isBlacklisted(node, blacklist, blacklistType)
 		).length
 	}
 
