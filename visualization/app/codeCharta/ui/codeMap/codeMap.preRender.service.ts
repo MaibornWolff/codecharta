@@ -37,7 +37,6 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	public static SELECTOR = "codeMapPreRenderService"
 	private static RENDER_FILE_CHANGED_EVENT = "render-file-changed";
 
-	private _mapMesh: CodeMapMesh = null
 	private autoFitMap: boolean = false
 
 	private lastRender: RenderData = {
@@ -58,10 +57,6 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		SettingsService.subscribe(this.$rootScope, this)
 	}
 
-	get mapMesh(): CodeMapMesh {
-		return this._mapMesh;
-	}
-
 	public getRenderFile(): CCFile {
 		return this.lastRender.renderFile
 	}
@@ -74,7 +69,6 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 			this.lastRender.renderFile.settings.fileSettings = settings.fileSettings
 			this.decorateIfPossible()
 		}
-
 		this.renderIfRenderObjectIsComplete()
 	}
 
@@ -82,7 +76,6 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		this.lastRender.fileStates = fileStates
 		this.autoFitMap = true
 		this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
-		this.renderIfRenderObjectIsComplete()
 	}
 
 	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
@@ -138,19 +131,19 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 
 	private renderIfRenderObjectIsComplete() {
 		if (this.allNecessaryRenderDataAvailable()) {
+			this.notifySubscriber()
 			this.codeMapRenderService.render(this.lastRender)
 			if (this.autoFitMap) {
 				this.threeOrbitControlsService.autoFitTo();
 				this.autoFitMap = false
 			}
-			this.notifySubscriber()
 		}
 	}
 
 	private allNecessaryRenderDataAvailable(): boolean {
 		return this.lastRender.fileStates !== null
-			&& this.lastRender.settings != null
-			&& this.lastRender.metricData != null
+			&& this.lastRender.settings !== null
+			&& this.lastRender.metricData !== null
 			&& _.values(this.lastRender.settings.dynamicSettings).every(x => {
 				return x !== null && _.values(x).every(x => (x !== null))
 			})

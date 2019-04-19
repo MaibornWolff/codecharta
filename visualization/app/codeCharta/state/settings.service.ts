@@ -1,5 +1,5 @@
 import {
-	ColorRange,
+	ColorRange, DynamicSettings,
 	FileSettings,
 	FileState,
 	MapColors,
@@ -11,7 +11,7 @@ import { IAngularEvent, IRootScopeService } from "angular"
 import {FileStateService, FileStateServiceSubscriber} from "./fileState.service";
 import {FileStateHelper} from "../util/fileStateHelper";
 import {SettingsMerger} from "../util/settingsMerger";
-import { Vector3 } from "three"
+import {DynamicBufferAttribute, Vector3} from "three"
 
 export interface SettingsServiceSubscriber {
 	onSettingsChanged(settings: Settings, update : RecursivePartial<Settings>, event: IAngularEvent)
@@ -32,7 +32,9 @@ export class SettingsService implements FileStateServiceSubscriber {
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-		this.updateSettings(this.getDefaultDynamicSettingsWithoutMetrics())
+		this.updateSettings({
+			dynamicSettings: this.getDefaultDynamicSettingsWithoutMetrics()
+		})
 		this.updateSettings({
 			fileSettings: this.getNewFileSettings(fileStates)
 		})
@@ -112,16 +114,14 @@ export class SettingsService implements FileStateServiceSubscriber {
 		return settings
 	}
 
-	private getDefaultDynamicSettingsWithoutMetrics(): RecursivePartial<Settings> {
+	private getDefaultDynamicSettingsWithoutMetrics(): RecursivePartial<DynamicSettings> {
 		const defaultSettings = this.getDefaultSettings()
 		return {
-			dynamicSettings: {
-				focusedNodePath: defaultSettings.dynamicSettings.focusedNodePath,
-				searchedNodePaths: defaultSettings.dynamicSettings.searchedNodePaths,
-				searchPattern: defaultSettings.dynamicSettings.searchPattern,
-				margin: defaultSettings.dynamicSettings.margin,
-				neutralColorRange: defaultSettings.dynamicSettings.neutralColorRange
-			}
+			focusedNodePath: defaultSettings.dynamicSettings.focusedNodePath,
+			searchedNodePaths: defaultSettings.dynamicSettings.searchedNodePaths,
+			searchPattern: defaultSettings.dynamicSettings.searchPattern,
+			margin: defaultSettings.dynamicSettings.margin,
+			neutralColorRange: defaultSettings.dynamicSettings.neutralColorRange
 		}
 	}
 

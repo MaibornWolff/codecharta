@@ -76,14 +76,14 @@ export class MetricService implements FileStateServiceSubscriber {
 		for (const metricName of allMetrics) {
 			metricData.push({
 				name: metricName,
-				maxValue: this.getMaxMetricInAllRevisions(fileStates.map(x => x.file), metricName),
+				maxValue: this.calculateMaxMetric(fileStates.map(x => x.file), metricName),
 				availableInVisibleMaps: !!metricsFromVisibleMaps.find(metric => metric === metricName)
 			});
 		}
 		return this.sortByAttributeName(metricData);
 	}
 
-	private getMaxMetricInAllRevisions(files: CCFile[], metric: string): number {
+	private calculateMaxMetric(files: CCFile[], metric: string): number {
 		let maxValue = 0;
 		files.forEach((file: CCFile) => {
 			let nodes: HierarchyNode<CodeMapNode>[] = hierarchy(file.map).leaves();
