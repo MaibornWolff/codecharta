@@ -24,7 +24,6 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	constructor(
 		private $rootScope: IRootScopeService,
-		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService
 	) {

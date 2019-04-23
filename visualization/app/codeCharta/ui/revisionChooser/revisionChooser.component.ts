@@ -4,7 +4,6 @@ import {CCFile, FileSelectionState, FileState} from "../../codeCharta.model";
 import {IRootScopeService} from "angular";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
 import {FileStateHelper} from "../../util/fileStateHelper";
-import {SettingsService} from "../../state/settings.service";
 
 interface SelectedFileNames {
     single: string,
@@ -46,7 +45,6 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
     constructor(
         private fileStateService: FileStateService,
         private $rootScope: IRootScopeService,
-        private settingsService: SettingsService
     ) {
         FileStateService.subscribe(this.$rootScope, this)
     }

@@ -33,7 +33,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		private metricService: MetricService,
 		private $rootScope: IRootScopeService
 	) {
-		SettingsService.subscribe($rootScope, this)
+		SettingsService.subscribe(this.$rootScope, this)
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {

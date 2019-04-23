@@ -1,21 +1,18 @@
 import "./codeMap.module"
 import "../../codeCharta"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CCFile, Settings } from "../../codeCharta.model"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { FileStateService } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
-import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service";
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let $rootScope: IRootScopeService
-	let threeSceneService: ThreeSceneService
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let codeMapRenderService: CodeMapRenderService
 	let settings: Settings
@@ -36,7 +33,6 @@ describe("codeMapPreRenderService", () => {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 
@@ -45,7 +41,7 @@ describe("codeMapPreRenderService", () => {
 	}
 
 	function rebuildService() {
-		codeMapPreRenderService = new CodeMapPreRenderService($rootScope, threeSceneService, threeOrbitControlsService, codeMapRenderService)
+		codeMapPreRenderService = new CodeMapPreRenderService($rootScope, threeOrbitControlsService, codeMapRenderService)
 	}
 
 	function withMockedEventMethods() {

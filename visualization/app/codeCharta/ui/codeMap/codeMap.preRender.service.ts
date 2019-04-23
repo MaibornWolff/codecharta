@@ -1,6 +1,5 @@
 "use strict"
 
-import {ThreeSceneService} from "./threeViewer/threeSceneService"
 import {
 	CCFile,
 	FileSelectionState,
@@ -47,7 +46,6 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 
 	constructor(
 		private $rootScope: IRootScopeService,
-		private threeSceneService: ThreeSceneService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private codeMapRenderService: CodeMapRenderService
 	) {

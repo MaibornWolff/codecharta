@@ -1,7 +1,6 @@
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { Node } from "./rendering/node"
 import { Vector3 } from "three"
-import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { IRootScopeService } from "angular"
@@ -30,19 +29,11 @@ describe("CodeMapLabelService", () => {
 			$rootScope: getService<IRootScopeService>("$rootScope"),
 			threeCameraService: new ThreeCameraService(null, null),
 			threeSceneService: new ThreeSceneService(),
-			threeOrbitControlsService: ThreeOrbitControlsService
 		}
-
-		services.threeOrbitControlsService = new ThreeOrbitControlsService(
-			services.threeCameraService,
-			services.threeSceneService,
-			services.$rootScope
-		)
 	}
 
 	function rebuild() {
 		codeMapLabelService = new CodeMapLabelService(services.$rootScope,
-			services.threeOrbitControlsService,
 			services.threeCameraService,
 			services.threeSceneService
 		)

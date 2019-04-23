@@ -75,10 +75,7 @@ describe("codeChartaController", () => {
 		jest.resetAllMocks()
 	})
 
-	function withMockedEventMethods() {
-		$rootScope.$on = codeChartaController["$rootScope"].$on = jest.fn()
-		$rootScope.$broadcast =  codeChartaController["$rootScope"].$broadcast = jest.fn()
-	}
+
 
 	function withMockedThreeOrbitControlsService() {
 		threeOrbitControlsService = codeChartaController["threeOrbitControlsService"] = jest.fn().mockReturnValue({
