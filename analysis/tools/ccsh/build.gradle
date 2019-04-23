@@ -6,21 +6,36 @@ applicationName = 'ccsh'
 dependencies {
     compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
 
-    compile project(':import:CodeMaatImporter')
-    compile project(':import:CrococosmoImporter')
-    compile project(':import:CSVImporter')
-    compile project(':import:JasomeImporter')
-    compile project(':import:SCMLogParser')
-    compile project(':import:SonarImporter')
-    compile project(':import:SourceCodeParser')
-    compile project(':import:UnderstandImporter')
-    compile project(':filter:MergeFilter')
-    compile project(':filter:EdgeFilter')
-    compile project(':tools:ValidationTool')
-    compile project(':export:CSVExporter')
+    def codeMaatImporter = project(':import:CodeMaatImporter')
+    def crococosmoImporter = project(':import:CrococosmoImporter')
+    def csvImporter = project(':import:CSVImporter')
+    def jasomeImporter = project(':import:JasomeImporter')
+    def scmlogParser = project(':import:SCMLogParser')
+    def sonarImporter = project(':import:SonarImporter')
+    def sourceCodeParser = project(':import:SourceCodeParser')
+    def understandImporter = project(':import:UnderstandImporter')
+    def mergeFilter = project(':filter:MergeFilter')
+    def edgeFilter = project(':filter:EdgeFilter')
+    def validationTool = project(':tools:ValidationTool')
+    def csvExporter = project(':export:CSVExporter')
 
+    // first compile is for dependency in main, testCompile is so our test suite can find all other tests
+    compile codeMaatImporter; testCompile codeMaatImporter.sourceSets.test.output
+    compile crococosmoImporter; testCompile crococosmoImporter.sourceSets.test.output
+    compile csvImporter; testCompile csvImporter.sourceSets.test.output
+    compile jasomeImporter; testCompile jasomeImporter.sourceSets.test.output
+    compile scmlogParser; testCompile scmlogParser.sourceSets.test.output
+    compile sonarImporter; testCompile sonarImporter.sourceSets.test.output
+    compile sourceCodeParser; testCompile sourceCodeParser.sourceSets.test.output
+    compile understandImporter; testCompile understandImporter.sourceSets.test.output
+    compile mergeFilter; testCompile mergeFilter.sourceSets.test.output
+    compile edgeFilter; testCompile edgeFilter.sourceSets.test.output
+    compile validationTool; testCompile validationTool.sourceSets.test.output
+    compile csvExporter; testCompile csvExporter.sourceSets.test.output
 
     compile group: 'info.picocli', name: 'picocli', version: picocli_version
+
+    testCompile("org.junit.platform:junit-platform-runner:$junit_platform_version")
 }
 
 jar {
