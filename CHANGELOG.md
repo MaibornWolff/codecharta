@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+-   Fixed issue with trailing slash in URL parameter of SonarImporter #356
 
 ### Chore
 
