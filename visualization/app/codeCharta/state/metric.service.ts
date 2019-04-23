@@ -102,11 +102,13 @@ export class MetricService implements FileStateServiceSubscriber {
 	}
 
 	private addUnaryMetric() {
-		this.metricData.push({
-			name: "unary",
-			maxValue: 1,
-			availableInVisibleMaps: true
-		})
+		if(!this.metricData.find(x => x.name === "unary")) {
+			this.metricData.push({
+				name: "unary",
+				maxValue: 1,
+				availableInVisibleMaps: true
+			})
+		}
 	}
 
 	private notifySubscriber() {
