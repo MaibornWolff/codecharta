@@ -36,7 +36,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	public static SELECTOR = "codeMapPreRenderService"
 	private static RENDER_FILE_CHANGED_EVENT = "render-file-changed";
 
-	private autoFitMap: boolean = false
+	private newFileLoaded: boolean = false
 
 	private lastRender: RenderData = {
 		renderFile: null,
@@ -73,7 +73,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 		this.lastRender.fileStates = fileStates
-		this.autoFitMap = true
+		this.newFileLoaded = true
 		this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
 	}
 
@@ -130,12 +130,13 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 
 	private renderIfRenderObjectIsComplete() {
 		if (this.allNecessaryRenderDataAvailable()) {
-			this.notifySubscriber()
-			this.codeMapRenderService.render(this.lastRender)
-			if (this.autoFitMap) {
+			this.notifyFileChanged()
+			if (this.newFileLoaded) {
+				this.notifyLoadingStatus()
 				this.threeOrbitControlsService.autoFitTo();
-				this.autoFitMap = false
+				this.newFileLoaded = false
 			}
+			this.codeMapRenderService.render(this.lastRender)
 		}
 	}
 
@@ -148,8 +149,11 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 			})
 	}
 
-	private notifySubscriber() {
+	private notifyLoadingStatus() {
 		this.$rootScope.$broadcast(CodeChartaController.LOADING_STATUS_EVENT, false)
+	}
+
+	private notifyFileChanged() {
 		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_FILE_CHANGED_EVENT, this.lastRender.renderFile)
 	}
 
