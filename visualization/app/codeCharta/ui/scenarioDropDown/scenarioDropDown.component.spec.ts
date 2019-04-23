@@ -71,11 +71,11 @@ describe("ScenarioDropDownController", () => {
 		})
     })
     
-    describe("onMetricDataChanged", () => {
+    describe("onMetricDataAdded", () => {
         it("should call getScenarios and set the scenarios in viewmodel correctly", () => {
             ScenarioHelper.getScenarios = jest.fn().mockReturnValue([{name : "scenario", settings: {}}])
 
-            scenarioButtonsController.onMetricDataChanged(metricData, undefined)
+            scenarioButtonsController.onMetricDataAdded(metricData, undefined)
             
             expect(ScenarioHelper.getScenarios).toHaveBeenCalledWith(metricData)
             expect(scenarioButtonsController["_viewModel"].scenarios).toEqual([{name : "scenario", settings: {}}])

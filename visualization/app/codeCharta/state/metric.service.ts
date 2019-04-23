@@ -6,12 +6,15 @@ import {IAngularEvent, IRootScopeService} from "angular";
 
 
 export interface MetricServiceSubscriber {
-	onMetricDataChanged(metricData: MetricData[], event: IAngularEvent)
+	onMetricDataAdded(metricData: MetricData[], event: IAngularEvent)
+	onMetricDataRemoved(event: IAngularEvent)
 }
 
 export class MetricService implements FileStateServiceSubscriber {
 
-	private static METRIC_DATA_CHANGED_EVENT = "metric-data-changed";
+	private static METRIC_DATA_ADDED_EVENT = "metric-data-added";
+	private static METRIC_DATA_REMOVED_EVENT = "metric-data-removed";
+
 
 	private metricData: MetricData[] = []
 
@@ -24,10 +27,12 @@ export class MetricService implements FileStateServiceSubscriber {
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates))
 		this.addUnaryMetric()
-		this.notifySubscriber()
+		this.notifyMetricDataAdded()
 	}
 
 	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+		this.metricData = null
+		this.notifyMetricDataRemoved()
 	}
 
 	public getMetrics(): string[] {
@@ -111,13 +116,21 @@ export class MetricService implements FileStateServiceSubscriber {
 		}
 	}
 
-	private notifySubscriber() {
-		this.$rootScope.$broadcast(MetricService.METRIC_DATA_CHANGED_EVENT, this.metricData)
+	private notifyMetricDataAdded() {
+		this.$rootScope.$broadcast(MetricService.METRIC_DATA_ADDED_EVENT, this.metricData)
+	}
+
+	private notifyMetricDataRemoved() {
+		this.$rootScope.$broadcast(MetricService.METRIC_DATA_REMOVED_EVENT, this.metricData)
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: MetricServiceSubscriber) {
-		$rootScope.$on(MetricService.METRIC_DATA_CHANGED_EVENT, (event, data) => {
-			subscriber.onMetricDataChanged(data, event)
+		$rootScope.$on(MetricService.METRIC_DATA_ADDED_EVENT, (event, data) => {
+			subscriber.onMetricDataAdded(data, event)
+		})
+
+		$rootScope.$on(MetricService.METRIC_DATA_REMOVED_EVENT, (event, data) => {
+			subscriber.onMetricDataRemoved(event)
 		})
 	}
 }

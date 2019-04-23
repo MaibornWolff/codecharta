@@ -98,8 +98,11 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 		CodeMapMouseEventService.subscribe(this.$rootScope, this)
 	}
 
-	public onMetricDataChanged(metricData: MetricData[], event: angular.IAngularEvent) {
+	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
 		this._viewModel.metrics = metricData.map(x => x.name);
+	}
+
+	public onMetricDataRemoved(event: angular.IAngularEvent) {
 	}
 
 	public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {

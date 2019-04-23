@@ -36,7 +36,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 		this._viewModel.deltaColorFlipped = settings.appSettings.deltaColorFlipped
 		this._viewModel.whiteColorBuildings = settings.appSettings.whiteColorBuildings
 
-		if (this.lastColorMetric != settings.dynamicSettings.colorMetric || !this.containsColorRangeValues(settings)) {
+		if ((this.lastColorMetric != settings.dynamicSettings.colorMetric || !this.containsColorRangeValues(settings)) && this.metricService.getMetricData()) {
 			this.lastColorMetric = settings.dynamicSettings.colorMetric
 			this.adaptColorRange(settings)
 		} else if (settings.dynamicSettings.neutralColorRange) {

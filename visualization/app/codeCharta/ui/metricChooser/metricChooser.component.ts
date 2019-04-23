@@ -51,9 +51,12 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
         this.updateViewModel(settings)
     }
 
-    public onMetricDataChanged(metricData: MetricData[], event: angular.IAngularEvent) {
+    public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
         this._viewModel.metricData = metricData
         this.potentiallyUpdateChosenMetrics(metricData)
+    }
+
+    public onMetricDataRemoved(event: angular.IAngularEvent) {
     }
 
     private potentiallyUpdateChosenMetrics(metricData: MetricData[]) {

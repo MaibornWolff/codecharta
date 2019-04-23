@@ -42,7 +42,10 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-		this.initSliderOptions(settings)
+
+		if (this.metricService.getMetricData()) {
+			this.initSliderOptions(settings)
+		}
 
 		if (settings.dynamicSettings.neutralColorRange.from
 			&& settings.dynamicSettings.neutralColorRange.to) {

@@ -71,7 +71,7 @@ describe("MetricChooserController", () => {
     it("metric data should be updated", () => {
         let metricData = [{name: "a", maxValue: 1, availableInVisibleMaps: true}, {name: "b", maxValue: 2, availableInVisibleMaps: false}]
 
-        metricChooserController.onMetricDataChanged(metricData, null)
+        metricChooserController.onMetricDataAdded(metricData, null)
 
         expect(metricChooserController["_viewModel"].metricData).toEqual(metricData)
     })
@@ -84,7 +84,7 @@ describe("MetricChooserController", () => {
             {name: "c", maxValue: 2, availableInVisibleMaps: true}
         ]
         
-        metricChooserController.onMetricDataChanged(metricData, null)
+        metricChooserController.onMetricDataAdded(metricData, null)
 
         expect(services.settingsService.updateSettings).toHaveBeenCalledWith({"dynamicSettings": {"areaMetric": "a", "colorMetric": "c", "heightMetric": "b"}})
     })
@@ -95,7 +95,7 @@ describe("MetricChooserController", () => {
                 {name: "b", maxValue: 1, availableInVisibleMaps: false}
             ]
         
-        metricChooserController.onMetricDataChanged(metricData, null)
+        metricChooserController.onMetricDataAdded(metricData, null)
 
         expect(services.settingsService.updateSettings).toHaveBeenCalledWith({"dynamicSettings": {"areaMetric": "a", "colorMetric": "a", "heightMetric": "a"}})
     })
@@ -106,7 +106,7 @@ describe("MetricChooserController", () => {
             {name: "rloc", maxValue: 2, availableInVisibleMaps: true}
         ]
 
-        metricChooserController.onMetricDataChanged(metricData, null)
+        metricChooserController.onMetricDataAdded(metricData, null)
         
         expect(services.settingsService.updateSettings).not.toBeCalled()
     })
@@ -114,7 +114,7 @@ describe("MetricChooserController", () => {
     it("no metrics available, should not update settings", () => {
         let metricData = [{name: "b", maxValue: 2, availableInVisibleMaps: false}]
 
-        metricChooserController.onMetricDataChanged(metricData, null)
+        metricChooserController.onMetricDataAdded(metricData, null)
 
         expect(services.settingsService.updateSettings).not.toBeCalled()
     })

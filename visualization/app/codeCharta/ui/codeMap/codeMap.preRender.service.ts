@@ -80,10 +80,14 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 	}
 
-	public onMetricDataChanged(metricData: MetricData[], event: angular.IAngularEvent) {
+	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
 		this.lastRender.metricData = metricData
 		this.decorateIfPossible()
 		this.renderIfRenderObjectIsComplete()
+	}
+
+	public onMetricDataRemoved(event: angular.IAngularEvent) {
+		this.lastRender.metricData = null
 	}
 
 	private decorateIfPossible() {
