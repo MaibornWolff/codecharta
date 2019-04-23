@@ -1,6 +1,6 @@
 import "./codeCharta"
 import { ThreeOrbitControlsService } from "./ui/codeMap/threeViewer/threeOrbitControlsService"
-import { IHttpService, ILocationService, IRootScopeService } from "angular"
+import { IHttpService, ILocationService, IRootScopeService, ITimeoutService } from "angular"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
 import { SettingsService } from "./state/settings.service"
@@ -23,6 +23,7 @@ describe("codeChartaController", () => {
 	let fileStateService: FileStateService
 	let $location: ILocationService
 	let $http: IHttpService
+	let $timeout: ITimeoutService
 
 	let settings : Settings
 
@@ -50,6 +51,7 @@ describe("codeChartaController", () => {
 		fileStateService = getService<FileStateService>("fileStateService")
 		$location = getService<ILocationService>("$location")
 		$http = getService<IHttpService>("$http")
+		$timeout = getService<ITimeoutService>("$timeout")
 
 		settings = JSON.parse(JSON.stringify(SETTINGS))
 	}
@@ -64,7 +66,8 @@ describe("codeChartaController", () => {
 			codeChartaService,
 			fileStateService,
 			$location,
-			$http
+			$http,
+			$timeout
 		)
 	}
 
