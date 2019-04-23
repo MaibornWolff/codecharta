@@ -4,7 +4,6 @@ import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.s
 import { CCFile, CodeMapNode, RecursivePartial, Settings } from "../../codeCharta.model"
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 import {CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber} from "../codeMap/codeMap.preRender.service";
-import {FileStateService} from "../../state/fileState.service";
 
 export class AreaSettingsPanelController implements SettingsServiceSubscriber, CodeMapPreRenderServiceSubscriber {
 

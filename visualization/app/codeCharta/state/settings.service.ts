@@ -11,7 +11,7 @@ import { IAngularEvent, IRootScopeService } from "angular"
 import {FileStateService, FileStateServiceSubscriber} from "./fileState.service";
 import {FileStateHelper} from "../util/fileStateHelper";
 import {SettingsMerger} from "../util/settingsMerger";
-import {DynamicBufferAttribute, Vector3} from "three"
+import {Vector3} from "three"
 
 export interface SettingsServiceSubscriber {
 	onSettingsChanged(settings: Settings, update : RecursivePartial<Settings>, event: IAngularEvent)

@@ -5,7 +5,7 @@ import {
     SettingsServiceSubscriber
 } from "../../../state/settings.service";
 import { RecursivePartial, Settings } from "../../../codeCharta.model"
-import { IAngularEvent, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 
 export class ThreeRendererService implements SettingsServiceSubscriber {
     public static SELECTOR = "threeRendererService";

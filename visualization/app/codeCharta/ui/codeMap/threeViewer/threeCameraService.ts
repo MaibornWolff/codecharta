@@ -3,7 +3,7 @@
 import * as THREE from "three"
 import { SettingsServiceSubscriber, SettingsService } from "../../../state/settings.service"
 import { PerspectiveCamera, Vector3 } from "three"
-import { IAngularEvent, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 import { RecursivePartial, Settings } from "../../../codeCharta.model"
 import _ from "lodash"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeOrbitControlsService"

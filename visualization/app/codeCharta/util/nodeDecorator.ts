@@ -1,7 +1,7 @@
 "use strict"
 import * as d3 from "d3"
 import { HierarchyNode } from "d3"
-import {BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData, Settings} from "../codeCharta.model"
+import {BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData} from "../codeCharta.model"
 import { CodeMapHelper } from "./codeMapHelper"
 import _ from "lodash"
 
