@@ -11,6 +11,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 ### Removed
+
+### Fixed
+
+### Chore
+
+## [1.24.0] - 2019-04-23
+### Added
+
+### Changed
+
+### Removed
 -   Settings as URL parameters #470
 
 ### Fixed
