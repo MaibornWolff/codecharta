@@ -71,29 +71,6 @@ describe("deltaGenerator", () => {
         expect(result.map.children[0].children[0].children[1].deltas["special"]).toBe(-42);
     });
 
-    // TODO: Why should there exist files without a map?
-    //  According to codeChartaService there will always be at least an empty map
-    xit("getDeltaFile should return input files if a file does not exist", ()=>{
-        let na = null;
-        let nb = JSON.parse(JSON.stringify(fileB));
-
-        DeltaGenerator.getDeltaFile(na, nb);
-
-        expect(na).toBe(null);
-        expect(nb).toEqual(fileB);
-    });
-
-    xit("getDeltaFile should return input files if a file has no root", ()=>{
-        fileA.map = null;
-        let na = JSON.parse(JSON.stringify(fileA));
-        let nb = JSON.parse(JSON.stringify(fileB));
-
-        DeltaGenerator.getDeltaFile(na, nb);
-
-        expect(na).toEqual(fileA);
-        expect(nb).toEqual(fileB);
-    });
-
     it("additionalLeaf from fileB should exist in a after calling getDeltaFile, metrics should be 0", ()=>{
         fileA = NodeDecorator.preDecorateFile(fileA)
         fileB = NodeDecorator.preDecorateFile(fileB)
