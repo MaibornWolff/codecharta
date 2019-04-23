@@ -41,10 +41,11 @@ abstract class SonarAnalyzer {
 
         val metrics = CoreMetrics.getMetrics()
         for(metric in metrics){
-            val metricKey: String = metric.key
+            var metricKey: String = metric.key
             val measure: Measure<Serializable> = sensorContext.measure(key, metricKey) ?: continue
             val metricValue = measure.value()
             if (metricValue is Number) {
+                metricKey = translateMetricNames(metricKey)
                 fileMetrics.add(metricKey, metricValue)
             }
         }
@@ -56,6 +57,17 @@ abstract class SonarAnalyzer {
             return String(Files.readAllBytes(file.toPath()), charset)
         } catch (e: IOException) {
             throw IllegalStateException("Cannot read $file", e)
+        }
+    }
+
+    protected open fun translateMetricNames(metricKey: String) : String {
+        return when (metricKey) {
+            "commented_out_code_lines" -> "commented_out_loc"
+            "complexity" -> "mcc"
+            "function_complexity" -> "average_function_mcc"
+            "lines" -> "loc"
+            "ncloc" -> "rloc"
+            else -> metricKey
         }
     }
 

@@ -15,7 +15,7 @@ class ParseFileToTable {
 
     @Test
     fun `table output has correct header`() {
-        assertThat(output.lines()[0]).contains("file", "complexity", "functions", "ncloc")
+        assertThat(output.lines()[0]).contains("file", "complexity", "functions", "rloc")
     }
 
     @Test

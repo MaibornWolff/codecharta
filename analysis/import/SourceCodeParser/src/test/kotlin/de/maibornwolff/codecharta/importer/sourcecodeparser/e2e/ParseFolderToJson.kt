@@ -38,9 +38,9 @@ class ParseFolderToJson {
     @Test
     fun `json output does contain file metrics`() {
         assertThat(output).contains(
-                """"ncloc":44""",
-                """"ncloc":6""",
-                """"ncloc":31"""
+                """"rloc":44""",
+                """"rloc":6""",
+                """"rloc":31"""
         )
     }
 }

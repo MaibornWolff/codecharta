@@ -15,7 +15,7 @@ class ParseFolderToTable {
 
     @Test
     fun tabular_output_for_folder_contains_correct_header() {
-        assertThat(output.lines()[0]).contains("file", "complexity", "functions", "ncloc")
+        assertThat(output.lines()[0]).contains("file", "complexity", "functions", "rloc")
     }
 
     @Test

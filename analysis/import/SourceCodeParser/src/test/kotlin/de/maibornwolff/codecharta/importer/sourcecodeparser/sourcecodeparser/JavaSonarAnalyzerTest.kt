@@ -54,11 +54,11 @@ class JavaSonarAnalyzerTest {
         val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
-        assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("ncloc")).isEqualTo(31)
+        assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("rloc")).isEqualTo(31)
         assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("functions")).isEqualTo(4)
         assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("statements")).isEqualTo(13)
         assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("classes")).isEqualTo(1)
-        assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("complexity")).isEqualTo(6)
+        assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("mcc")).isEqualTo(6)
         assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("comment_lines")).isEqualTo(3)
 
     }

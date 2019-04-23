@@ -25,12 +25,12 @@ class ParseFileToJson {
 
     @Test
     fun `json output has correct lines of code`() {
-        assertThat(outputStream).containsOnlyOnce("""ncloc":29""")
+        assertThat(outputStream).containsOnlyOnce("""rloc":29""")
     }
 
     @Test
     fun `json output has correct real lines of code`() {
-        assertThat(outputStream).containsOnlyOnce("""complexity":6""")
+        assertThat(outputStream).containsOnlyOnce("""mcc":6""")
     }
 
     @Test
