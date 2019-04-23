@@ -134,13 +134,14 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 
 	private renderIfRenderObjectIsComplete() {
 		if (this.allNecessaryRenderDataAvailable()) {
+			this.codeMapRenderService.render(this.lastRender)
+
 			this.notifyFileChanged()
 			if (this.newFileLoaded) {
 				this.notifyLoadingStatus()
 				this.threeOrbitControlsService.autoFitTo();
 				this.newFileLoaded = false
 			}
-			this.codeMapRenderService.render(this.lastRender)
 		}
 	}
 

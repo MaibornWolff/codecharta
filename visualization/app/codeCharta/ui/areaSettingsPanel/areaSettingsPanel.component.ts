@@ -1,18 +1,16 @@
 import "./areaSettingsPanel.component.scss";
-import {IRootScopeService, ITimeoutService} from "angular";
+import {IRootScopeService} from "angular";
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
-import { CCFile, CodeMapNode, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
+import { CCFile, CodeMapNode, RecursivePartial, Settings } from "../../codeCharta.model"
 import {hierarchy, HierarchyNode} from "d3-hierarchy";
 import {CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber} from "../codeMap/codeMap.preRender.service";
-import {ThreeOrbitControlsService} from "../codeMap/threeViewer/threeOrbitControlsService";
-import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
+import {FileStateService} from "../../state/fileState.service";
 
-export class AreaSettingsPanelController implements SettingsServiceSubscriber, CodeMapPreRenderServiceSubscriber, FileStateServiceSubscriber {
+export class AreaSettingsPanelController implements SettingsServiceSubscriber, CodeMapPreRenderServiceSubscriber {
 
     private static MIN_MARGIN = 15
     private static MAX_MARGIN = 100
     private static MARGIN_FACTOR = 4
-    private makeAutoFit: boolean = false
 
     private _viewModel: {
         margin: number,
@@ -25,14 +23,11 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
     /* @ngInject */
     constructor(
         private $rootScope: IRootScopeService,
-        private $timeout: ITimeoutService,
         private settingsService: SettingsService,
-        private codeMapPreRenderService: CodeMapPreRenderService,
-        private threeOrbitControlsService: ThreeOrbitControlsService
+        private codeMapPreRenderService: CodeMapPreRenderService
     ) {
         SettingsService.subscribe(this.$rootScope, this)
         CodeMapPreRenderService.subscribe(this.$rootScope, this)
-        FileStateService.subscribe(this.$rootScope, this)
     }
 
     public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
@@ -44,13 +39,6 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
     public onRenderFileChanged(renderFile: CCFile, event: angular.IAngularEvent) {
         this._viewModel.dynamicMargin = this.settingsService.getSettings().appSettings.dynamicMargin
         this.potentiallyUpdateMargin(renderFile, this.settingsService.getSettings())
-    }
-
-    public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-        this.makeAutoFit = true
-    }
-
-    public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
     }
 
     public onChangeMarginSlider(){
@@ -86,11 +74,6 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
             if (this._viewModel.margin !== newMargin) {
                 this._viewModel.margin = newMargin
                 this.applySettings()
-
-                if (this.makeAutoFit) {
-                    this.autoFit()
-                    this.makeAutoFit = false
-                }
             }
         }
     }
@@ -110,13 +93,6 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
         let margin: number = AreaSettingsPanelController.MARGIN_FACTOR * Math.round(Math.sqrt((totalArea / numberOfBuildings)))
         return Math.min(AreaSettingsPanelController.MAX_MARGIN, Math.max(AreaSettingsPanelController.MIN_MARGIN, margin))
     }
-
-    private autoFit() {
-        this.$timeout(() => {
-            this.threeOrbitControlsService.autoFitTo()
-        }, 500)
-    }
-
 }
 
 export const areaSettingsPanelComponent = {

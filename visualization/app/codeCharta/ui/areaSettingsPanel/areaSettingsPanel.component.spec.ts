@@ -5,8 +5,7 @@ import { AreaSettingsPanelController } from "./areaSettingsPanel.component"
 import { SettingsService } from "../../state/settings.service"
 import { SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
 import { FileStateService } from "../../state/fileState.service"
-import { IRootScopeService, ITimeoutService } from "angular"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
+import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CCFile, Settings } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service";
@@ -14,10 +13,8 @@ import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service";
 describe("AreaSettingsPanelController", () => {
 
 	let $rootScope: IRootScopeService
-	let $timeout: ITimeoutService
 	let settingsService: SettingsService
 	let codeMapPreRenderService: CodeMapPreRenderService
-	let threeOrbitControlsService: ThreeOrbitControlsService
 	let areaSettingsPanelController: AreaSettingsPanelController
 
 	let settings: Settings
@@ -28,24 +25,21 @@ describe("AreaSettingsPanelController", () => {
 		rebuildController()
 		withMockedSettingsService()
 		withMockedCodeMapPreRenderService()
-		withMockedThreeOrbitControlsService()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.areaSettingsPanel")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		$timeout = getService<ITimeoutService>("$timeout")
 		settingsService = getService<SettingsService>("settingsService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
-		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 
 		settings = JSON.parse(JSON.stringify(SETTINGS))
 		file = JSON.parse(JSON.stringify(TEST_FILE_WITH_PATHS))
 	}
 
 	function rebuildController() {
-		areaSettingsPanelController = new AreaSettingsPanelController($rootScope, $timeout, settingsService, codeMapPreRenderService, threeOrbitControlsService)
+		areaSettingsPanelController = new AreaSettingsPanelController($rootScope, settingsService, codeMapPreRenderService)
 	}
 
 	function withMockedSettingsService() {
@@ -58,12 +52,6 @@ describe("AreaSettingsPanelController", () => {
 	function withMockedCodeMapPreRenderService() {
 		codeMapPreRenderService = areaSettingsPanelController["codeMapPreRenderService"] = jest.fn().mockReturnValue({
 			getRenderFile: jest.fn().mockReturnValue(file)
-		})()
-	}
-
-	function withMockedThreeOrbitControlsService() {
-		threeOrbitControlsService = areaSettingsPanelController["threeOrbitControlsService"] = jest.fn().mockReturnValue({
-			autoFitTo: jest.fn()
 		})()
 	}
 
@@ -84,12 +72,6 @@ describe("AreaSettingsPanelController", () => {
 			rebuildController()
 
 			expect(CodeMapPreRenderService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
-		})
-
-		it("should subscribe to FileStateService", () => {
-			rebuildController()
-
-			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 	})
 
@@ -161,35 +143,12 @@ describe("AreaSettingsPanelController", () => {
 			expect(areaSettingsPanelController.applySettings).toHaveBeenCalled()
 		})
 
-		it("should call autoFitTo after flush after setting new margin", () => {
-			areaSettingsPanelController.onRenderFileChanged(file, undefined)
-			$timeout.flush()
-
-			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
-		})
-
-		it("should set makeAutoFit to false after setting new margin", () => {
-			areaSettingsPanelController.onRenderFileChanged(file, undefined)
-
-			expect(areaSettingsPanelController["makeAutoFit"]).toBeFalsy()
-		})
-
 		it("should not call applySettings if margin and new calculated margin are the same", () => {
 			areaSettingsPanelController["_viewModel"].margin = 28
 
 			areaSettingsPanelController.onRenderFileChanged(file, undefined)
 
 			expect(areaSettingsPanelController.applySettings).not.toHaveBeenCalled()
-		})
-	})
-
-	describe("onFileSelectionStateChanged", () => {
-		it("should set makeAutoFit to true", () => {
-			areaSettingsPanelController["makeAutoFit"] = false
-
-			areaSettingsPanelController.onFileSelectionStatesChanged(null, null)
-
-			expect(areaSettingsPanelController["makeAutoFit"]).toBeTruthy()
 		})
 	})
 
