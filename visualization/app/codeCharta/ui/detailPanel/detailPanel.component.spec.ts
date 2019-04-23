@@ -1,202 +1,204 @@
-import "./detailPanel";
+import "./detailPanel.module"
+import "../codeMap/codeMap.module"
+import "../../state/state.module"
+import "../../codeCharta"
 
-import {SettingsService, SettingsServiceSubscriber, Settings} from "../../core/settings/settings.service";
-import {DetailPanelController} from "./detailPanel.component";
-import {DataService} from "../../core/data/data.service";
-import {getService, instantiateModule} from "../../../../mocks/ng.mockhelper";
-import {IRootScopeService, ITimeoutService, IAngularEvent} from "angular";
-import { CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service";
+import { SettingsService } from "../../state/settings.service"
+import { DetailPanelController } from "./detailPanel.component"
+import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { IRootScopeService, ITimeoutService, IAngularEvent } from "angular"
+import { CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
+import { FileStateService } from "../../state/fileState.service"
+import { Settings } from "../../codeCharta.model"
+import { CODE_MAP_BUILDING, SETTINGS } from "../../util/dataMocks"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
+describe("detailPanelController", () => {
+	let services, detailPanelController: DetailPanelController
 
-describe("detailPanelController", function() {
+	let settings: Settings
+	let codeMapBuilding: CodeMapBuilding
 
-    let services, subscriber, detailPanelController: DetailPanelController;
+	beforeEach(() => {
+		restartSystem()
+		rebuildController()
+		withMockedEventMethods()
+	})
 
-    beforeEach(function() {
-        restartSystem();
-        rebuildController();
-        withMockedEventMethods();
-    });
+	function restartSystem() {
+		instantiateModule("app.codeCharta.ui.detailPanel")
 
-    function restartSystem() {
+		services = {
+			$rootScope: getService<IRootScopeService>("$rootScope"),
+			settingsService: getService<SettingsService>("settingsService"),
+			$timeout: getService<ITimeoutService>("$timeout"),
+			fileStateService: getService<FileStateService>("fileStateService")
+		}
 
-        instantiateModule("app.codeCharta.ui.detailPanel");
+		settings = JSON.parse(JSON.stringify(SETTINGS))
+		codeMapBuilding = JSON.parse(JSON.stringify(CODE_MAP_BUILDING))
+	}
 
-        services = {
-            $rootScope: getService<IRootScopeService>("$rootScope"),
-            settingsService: getService<SettingsService>("settingsService"),
-            dataService: getService<DataService>("dataService"),
-            $timeout: getService<ITimeoutService>("$timeout")
-        };
+	function rebuildController() {
+		detailPanelController = new DetailPanelController(
+			services.$rootScope,
+			services.settingsService,
+			services.$timeout,
+			services.fileStateService
+		)
+	}
 
-        const SettingsServiceSubscriberMock = jest.fn<SettingsServiceSubscriber>(()=>({
-            onSettingsChanged: jest.fn()
-        }));
+	function withMockedEventMethods() {
+		services.$rootScope.$on = detailPanelController["$rootScope"].$on = jest.fn()
+		services.$rootScope.$broadcast = detailPanelController["$rootScope"].$broadcast = jest.fn()
+	}
 
-        subscriber = new SettingsServiceSubscriberMock();
+	afterEach(() => {
+		jest.resetAllMocks()
+	})
 
-    }
+	describe("should react to method calls", () => {
+		it("should call onHover when onBuildingHovered called", () => {
+			detailPanelController.onHover = jest.fn()
+			detailPanelController.onBuildingHovered(("data" as any) as CodeMapBuildingTransition, ("event" as any) as IAngularEvent)
 
-    function rebuildController() {
-        detailPanelController = new DetailPanelController(
-            services.$rootScope,
-            services.settingsService,
-            services.dataService,
-            services.$timeout
-        );
-    }
+			expect(detailPanelController.onHover).toBeCalledWith("data")
+		})
 
-    function withMockedEventMethods() {
-        services.$rootScope.$on = detailPanelController["$rootScope"].$on = jest.fn();
-        services.$rootScope.$broadcast = detailPanelController["$rootScope"].$broadcast = jest.fn();
-    }
+		it("should call onSelect when onBuildingSelected called", () => {
+			detailPanelController.onSelect = jest.fn()
+			detailPanelController.onBuildingSelected(("data" as any) as CodeMapBuildingTransition, ("event" as any) as IAngularEvent)
 
-    afterEach(()=>{
-        jest.resetAllMocks();
-    });
+			expect(detailPanelController.onSelect).toBeCalledWith("data")
+		})
+	})
 
-    describe("should react to method calls", ()=>{
+	it("should set common attributes onSettingsChanged", () => {
+		detailPanelController.onSettingsChanged(settings, undefined, undefined,)
+		expect(detailPanelController["_viewModel"].details.common.areaAttributeName).toBe("rloc")
+		expect(detailPanelController["_viewModel"].details.common.colorAttributeName).toBe("mcc")
+		expect(detailPanelController["_viewModel"].details.common.heightAttributeName).toBe("mcc")
+		expect(detailPanelController["_viewModel"].maximizeDetailPanel).toBe(false)
+	})
 
-        it("should call onHover when onBuildingHovered called",()=>{
-            detailPanelController.onHover = jest.fn();
-            detailPanelController.onBuildingHovered("data" as any as CodeMapBuildingTransition, "event" as any as IAngularEvent);
+	it("should setSelectedDetails when valid node is selected", () => {
+		const data = {
+			from: null,
+			to: codeMapBuilding
+		}
 
-            expect(detailPanelController.onHover).toBeCalledWith("data")
-        });
+		detailPanelController.setSelectedDetails = jest.fn()
+		detailPanelController.onSelect(data)
+		expect(detailPanelController.setSelectedDetails).toHaveBeenCalledWith(codeMapBuilding.node)
+	})
 
-        it("should call onSelect when onBuildingSelected called",()=>{
-            detailPanelController.onSelect = jest.fn();
-            detailPanelController.onBuildingSelected("data" as any as CodeMapBuildingTransition, "event" as any as IAngularEvent);
+	it("should clearSelectedDetails when invalid node is selected", () => {
+		const data = {
+			from: null,
+			to:
+			codeMapBuilding
 
-            expect(detailPanelController.onSelect).toBeCalledWith("data")
-        });
-    });
+		}
+		detailPanelController.clearSelectedDetails = jest.fn()
+		detailPanelController.onSelect(data)
+		expect(detailPanelController.clearSelectedDetails).toHaveBeenCalled()
+	})
 
-    it("should set common attributes onSettingsChanged",() => {
-        const settings = {
-            areaMetric: "a",
-            colorMetric: "b",
-            heightMetric: "c"
-        } as Settings;
-        detailPanelController.onSettingsChanged(settings);
-        expect(detailPanelController.details.common.areaAttributeName).toBe("a");
-        expect(detailPanelController.details.common.colorAttributeName).toBe("b");
-        expect(detailPanelController.details.common.heightAttributeName).toBe("c");
-    });
+	it("should clearSelectedDetails when invalid transition is given", () => {
+		detailPanelController.clearSelectedDetails = jest.fn()
 
-    it("should setSelectedDetails when valid node is selected",() => {
-        const data = {
-            to: {
-                node: "somenode"
-            }
-        };
-        detailPanelController.setSelectedDetails = jest.fn();
-        detailPanelController.onSelect(data);
-        expect(detailPanelController.setSelectedDetails).toHaveBeenCalledWith("somenode");
-    });
+		const data = {
+			notato: {
+				node: "somenode"
+			},
+			from: null,
+			to: null
+		}
+		detailPanelController.onSelect(data)
+		expect(detailPanelController.clearSelectedDetails).toHaveBeenCalled()
+	})
 
-    it("should clearSelectedDetails when invalid node is selected",() => {
-        const data = {
-            to: {
-                notanode: "somenode"
-            }
-        };
-        detailPanelController.clearSelectedDetails = jest.fn();
-        detailPanelController.onSelect(data);
-        expect(detailPanelController.clearSelectedDetails).toHaveBeenCalled();
-    });
+	it("should clearSelectedDetails when no node is selected", () => {
+		const data = {
+			from: null,
+			to: null
+		}
+		detailPanelController.clearSelectedDetails = jest.fn()
+		detailPanelController.onSelect(data)
+		expect(detailPanelController.clearSelectedDetails).toHaveBeenCalled()
+	})
 
-    it("should clearSelectedDetails when invalid transition is given",() => {
+	it("should setHoveredDetails when valid node is hovered", () => {
+		const data = {
+			from: null,
+			to: codeMapBuilding
+		}
+		detailPanelController.setHoveredDetails = jest.fn()
+		detailPanelController.onHover(data)
+		expect(detailPanelController.setHoveredDetails).toHaveBeenCalledWith(codeMapBuilding.node)
+	})
 
-        detailPanelController.clearSelectedDetails = jest.fn();
+	it("should clearHoveredDetails when node is invalid", () => {
+		const data = {
+			from: null,
+			to: codeMapBuilding
+		}
+		detailPanelController.clearHoveredDetails = jest.fn()
+		detailPanelController.onHover(data)
+		expect(detailPanelController.clearHoveredDetails).toHaveBeenCalled()
+	})
 
-        const data = {
-            notato: {
-                node: "somenode"
-            }
-        };
-        detailPanelController.onSelect(data);
-        expect(detailPanelController.clearSelectedDetails).toHaveBeenCalled();
-    });
+	it("should clearHoveredDetails when transition is invalid", () => {
+		detailPanelController.clearHoveredDetails = jest.fn()
 
-    it("should clearSelectedDetails when no node is selected",() => {
-        const data = {};
-        detailPanelController.clearSelectedDetails = jest.fn();
-        detailPanelController.onSelect(data);
-        expect(detailPanelController.clearSelectedDetails).toHaveBeenCalled();
-    });
+		const data = {
+			notato: {
+				node: "somenode"
+			},
+			from: null,
+			to: null
+		}
+		detailPanelController.onHover(data)
+		expect(detailPanelController.clearHoveredDetails).toHaveBeenCalled()
+	})
 
-    it("should setHoveredDetails when valid node is hovered",() => {
-        const data = {
-            to: {
-                node: "somenode"
-            }
-        };
-        detailPanelController.setHoveredDetails = jest.fn();
-        detailPanelController.onHover(data);
-        expect(detailPanelController.setHoveredDetails).toHaveBeenCalledWith("somenode");
-    });
+	it("should clearHoveredDetails when no node is hovered", () => {
+		detailPanelController.clearHoveredDetails = jest.fn()
+		const data = {
+			from: null,
+			to: null
+		}
+		detailPanelController.onHover(data)
+		expect(detailPanelController.clearHoveredDetails).toHaveBeenCalled()
+	})
 
-    it("should clearHoveredDetails when node is invalid",() => {
-        const data = {
-            to: {
-                notanode: "somenode"
-            }
-        };
-        detailPanelController.clearHoveredDetails = jest.fn();
-        detailPanelController.onHover(data);
-        expect(detailPanelController.clearHoveredDetails).toHaveBeenCalled();
-    });
+	describe("isHovered and isSelected should evaluate the respective nodes name to determine the result", () => {
+		it("empty details should result in false", () => {
+			detailPanelController["_viewModel"].details = {} as any
+			expect(detailPanelController.isHovered()).toBe(false)
+			expect(detailPanelController.isSelected()).toBe(false)
+		})
 
-    it("should clearHoveredDetails when transition is invalid",() => {
-        detailPanelController.clearHoveredDetails = jest.fn();
+		it("empty nodes should result in false", () => {
+			detailPanelController["_viewModel"].details = {
+				hovered: null,
+				selected: null
+			} as any
+			expect(detailPanelController.isHovered()).toBe(false)
+			expect(detailPanelController.isSelected()).toBe(false)
+		})
 
-        const data = {
-            notato: {
-                node: "somenode"
-            }
-        };
-        detailPanelController.onHover(data);
-        expect(detailPanelController.clearHoveredDetails).toHaveBeenCalled();
-    });
-
-    it("should clearHoveredDetails when no node is hovered",() => {
-        detailPanelController.clearHoveredDetails = jest.fn();
-        const data = {};
-        detailPanelController.onHover(data);
-        expect(detailPanelController.clearHoveredDetails).toHaveBeenCalled();
-    });
-
-    describe("isHovered and isSelected should evaluate the respective nodes name to determine the result", ()=>{
-
-        it("empty details should result in false",()=>{
-            detailPanelController.details = {} as any;
-            expect(detailPanelController.isHovered()).toBe(false);
-            expect(detailPanelController.isSelected()).toBe(false);
-        });
-
-        it("empty nodes should result in false",()=>{
-            detailPanelController.details = {
-                hovered: null,
-                selected: null
-            } as any;
-            expect(detailPanelController.isHovered()).toBe(false);
-            expect(detailPanelController.isSelected()).toBe(false);
-        });
-
-        it("named nodes should result in true",()=>{
-            detailPanelController.details = {
-                hovered: {
-                    name: "some name"
-                } as any,
-                selected: {
-                    name: "some name"
-                } as any
-            } as any;
-            expect(detailPanelController.isHovered()).toBe(true);
-            expect(detailPanelController.isSelected()).toBe(true);
-        });
-
-    });
-
-});
+		it("named nodes should result in true", () => {
+			detailPanelController["_viewModel"].details = {
+				hovered: {
+					name: "some name"
+				} as any,
+				selected: {
+					name: "some name"
+				} as any
+			} as any
+			expect(detailPanelController.isHovered()).toBe(true)
+			expect(detailPanelController.isSelected()).toBe(true)
+		})
+	})
+})

@@ -18,6 +18,10 @@ describe("app", () => {
 
 	it("right clicking a folder should open a context menu with color options", async () => {
         await page.goto(CC_URL)
+		await page.evaluate(() => {
+			const loadingIndicator = document.querySelector("#loading-indicator")
+			loadingIndicator.parentNode.removeChild(loadingIndicator)
+		})
         const settingsPanel = new SettingsPanelPageObject(page);
 		await settingsPanel.open();
 		await settingsPanel.toggleTreeViewSearchPanel();

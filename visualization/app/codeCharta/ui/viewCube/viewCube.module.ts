@@ -1,5 +1,5 @@
 import angular from "angular";
-import "../codeMap/threeViewer/threeViewer";
+import "../codeMap/threeViewer/threeViewer.module";
 import { viewCubeComponent } from "./viewCube.component";
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service";
 

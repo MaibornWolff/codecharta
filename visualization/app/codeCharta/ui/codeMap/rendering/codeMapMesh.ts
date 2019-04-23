@@ -9,7 +9,7 @@ import {RenderingUtil} from "./renderingUtil";
 import {Node} from "./node";
 
 import {MapColors} from "./renderSettings";
-import {RenderSettings} from "./renderSettings";
+import {Settings} from "../../../codeCharta.model";
 
 interface ThreeUniform {
     type : string;
@@ -35,7 +35,7 @@ export interface MousePos {
 
 export class CodeMapMesh {
 
-    public settings : RenderSettings;
+    public settings : Settings;
     private threeMesh : THREE.Mesh;
     private material : THREE.ShaderMaterial;
     private geomGen : GeometryGenerator;
@@ -61,18 +61,17 @@ export class CodeMapMesh {
         emissive : {type : "v3", value : new THREE.Vector3(0.0, 0.0, 0.0)}
     };
 
-    constructor(nodes : Node[], settings : RenderSettings)
+    constructor(nodes: Node[], settings: Settings, isDeltaState: boolean)
     {
         this.nodes = nodes;
 
         this.initMaterial(settings);
 
         this.geomGen = new GeometryGenerator();
-        let buildRes : BuildResult = this.geomGen.build(this.nodes, this.material, settings);
+        let buildRes : BuildResult = this.geomGen.build(this.nodes, this.material, settings, isDeltaState);
 
         this.threeMesh = buildRes.mesh;
         this.mapGeomDesc = buildRes.desc;
-
         this.settings = settings;
     }
 
@@ -148,10 +147,10 @@ export class CodeMapMesh {
         this.mapGeomDesc.setScales(new THREE.Vector3(x, y, z));
     }
 
-    private initMaterial(settings : RenderSettings) : void
+    private initMaterial(settings: Settings) : void
     {
 
-        if(settings.deltaColorFlipped) {
+        if(settings.appSettings.deltaColorFlipped) {
             this.setDeltaColorsFlipped();
         } else {
             this.setDeltaColorsUnflipped();

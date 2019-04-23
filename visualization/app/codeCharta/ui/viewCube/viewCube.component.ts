@@ -52,7 +52,7 @@ export class ViewCubeController
             this.renderer
         );
 
-        this.threeOrbitControlsService.subscribe(this);
+        ThreeOrbitControlsService.subscribe($rootScope, this);
         ViewCubeMouseEventsService.subscribeToViewCubeMouseEvents(
             this.$rootScope,
             this

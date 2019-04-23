@@ -1,6 +1,4 @@
-export interface NodeAttributes {
-    readonly [key : string] : number;
-}
+import {KeyValuePair} from "../../../codeCharta.model";
 
 export interface Node {
     name : string;
@@ -12,8 +10,8 @@ export interface Node {
     z0 : number;
     y0 : number;
     isLeaf : boolean;
-    deltas : NodeAttributes;
-    attributes : NodeAttributes;
+    deltas : KeyValuePair;
+    attributes : KeyValuePair;
     children : Node[];
     parent : Node;
     heightDelta : number;

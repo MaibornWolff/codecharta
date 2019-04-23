@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import {Node} from "./node";
-import {ColorService} from "../../../core/colorService";
+import {ColorConverter} from "../../../util/colorConverter";
 
 export class RenderingUtil {
 
@@ -15,7 +15,7 @@ export class RenderingUtil {
 
     public static colorToVec3(color : string) : THREE.Vector3
     {
-        const convertedColor = ColorService.convertHexToNumber(color);
+        const convertedColor = ColorConverter.convertHexToNumber(color);
 
         return new THREE.Vector3(
             ((convertedColor  >> 16) & 0xFF) / 255.0,
