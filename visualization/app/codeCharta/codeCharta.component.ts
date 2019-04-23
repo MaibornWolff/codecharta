@@ -25,7 +25,7 @@ export class CodeChartaController implements SettingsServiceSubscriber, CodeChar
 		focusedNodePath: string
 	} = {
 		version: require("../../package.json").version,
-		isLoadingFile: false,
+		isLoadingFile: true,
 		focusedNodePath: ""
 	}
 
