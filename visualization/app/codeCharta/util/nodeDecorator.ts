@@ -110,7 +110,7 @@ export class NodeDecorator {
 		const leaves = node.leaves().filter(x => !CodeMapHelper.isBlacklisted(x.data, blacklist, BlacklistType.exclude))
 
 		metricData.forEach(metric => {
-			if (!node.data.attributes.hasOwnProperty(metric.name) && node.data.children && node.data.children.length > 0) {
+			if (node.data.children && node.data.children.length > 0) {
 				node.data.attributes[metric.name] = this.getMetricSumOfLeaves(leaves, metric.name)
 			}
 		})
