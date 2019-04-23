@@ -53,13 +53,13 @@ describe("MetricService", () => {
 			expect(unary.availableInVisibleMaps).toBe(true)
 		})
 
-		it("should trigger METRIC_DATA_CHANGED_EVENT", () => {
+		it("should trigger METRIC_DATA_ADDED_EVENT", () => {
 			const expected =  [{"availableInVisibleMaps": true, "maxValue": 1, "name": "unary"}]
 
 			metricService.onFileSelectionStatesChanged(fileStates, undefined)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledTimes(1)
-			expect($rootScope.$broadcast).toHaveBeenCalledWith(MetricService["METRIC_DATA_CHANGED_EVENT"], expected)
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(MetricService["METRIC_DATA_ADDED_EVENT"], expected)
 		})
 	})
 
