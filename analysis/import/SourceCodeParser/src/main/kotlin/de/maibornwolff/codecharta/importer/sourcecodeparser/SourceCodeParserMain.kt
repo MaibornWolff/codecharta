@@ -25,6 +25,9 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     @Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
+    @Option(names = ["-v", "--verbose"], description = ["display info messages from sonar plugins"])
+    private var verbose = false
+
     @Parameters(arity = "1", paramLabel = "FOLDER or FILE", description = ["project folder or code file"])
     private var file: File = File("")
 
@@ -37,7 +40,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
             outputStream.println("Could not find $file")
             return null
         }
-        val projectParser = ProjectParser()
+        val projectParser = ProjectParser(verbose)
 
         projectParser.setUpAnalyzers()
         projectParser.scanProject(file)

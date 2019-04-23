@@ -5,13 +5,13 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers.JavaS
 import de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers.SonarAnalyzer
 import java.io.File
 
-class ProjectParser {
+class ProjectParser(private val verbose: Boolean = false) {
     var metricKinds: MutableSet<String> = HashSet()
     var projectMetrics = ProjectMetrics()
     var sonarAnalyzers: MutableList<SonarAnalyzer> = mutableListOf()
 
     fun setUpAnalyzers() {
-        sonarAnalyzers.add(JavaSonarAnalyzer())
+        sonarAnalyzers.add(JavaSonarAnalyzer(verbose))
     }
 
     fun scanProject(root: File) {

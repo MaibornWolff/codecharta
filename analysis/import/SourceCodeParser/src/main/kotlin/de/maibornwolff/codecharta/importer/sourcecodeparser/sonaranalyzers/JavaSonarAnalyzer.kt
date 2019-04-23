@@ -24,8 +24,7 @@ import java.io.File
 import java.io.PrintStream
 import java.nio.charset.StandardCharsets
 
-
-class JavaSonarAnalyzer : SonarAnalyzer() {
+class JavaSonarAnalyzer(verbose: Boolean = false): SonarAnalyzer(verbose) {
 
   override val FILE_EXTENSION = "java"
   override lateinit var baseDir: File
@@ -63,7 +62,7 @@ class JavaSonarAnalyzer : SonarAnalyzer() {
       val projectMetrics = ProjectMetrics()
 
       val originalOut = System.out
-      System.setOut(PrintStream(ByteArrayOutputStream()))
+      if (!verbose) System.setOut(PrintStream(ByteArrayOutputStream()))
 
       for (file in fileList) {
         createContext()
