@@ -1,5 +1,5 @@
 import { UrlExtractor } from "./util/urlExtractor"
-import {IAngularEvent, IHttpService, ILocationService, IRootScopeService} from "angular"
+import { IAngularEvent, IHttpService, ILocationService, IRootScopeService, ITimeoutService } from "angular"
 import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
 import {SettingsService, SettingsServiceSubscriber} from "./state/settings.service";
@@ -41,7 +41,8 @@ export class CodeChartaController implements SettingsServiceSubscriber, CodeChar
 		private codeChartaService: CodeChartaService,
 		private fileStateService: FileStateService,
 		private $location: ILocationService,
-		private $http: IHttpService
+		private $http: IHttpService,
+		private $timeout: ITimeoutService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
 		CodeChartaController.subscribe(this.$rootScope, this)
@@ -57,6 +58,7 @@ export class CodeChartaController implements SettingsServiceSubscriber, CodeChar
 
 	public onLoadingStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent) {
 		this._viewModel.isLoadingFile = isLoadingFile
+		this.synchronizeAngularTwoWayBinding()
 	}
 
 	public fitMapToView() {
@@ -127,6 +129,10 @@ export class CodeChartaController implements SettingsServiceSubscriber, CodeChar
 
 	private printErrors(errors: Object) {
 		this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))
+	}
+
+	private synchronizeAngularTwoWayBinding() {
+		this.$timeout(() => {})
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CodeChartaControllerSubscriber) {
