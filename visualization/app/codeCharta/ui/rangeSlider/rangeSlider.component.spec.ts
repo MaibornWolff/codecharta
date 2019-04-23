@@ -6,7 +6,7 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { MetricService } from "../../state/metric.service"
 import { FileStateService } from "../../state/fileState.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { ITimeoutService, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 import { Settings } from "../../codeCharta.model"
 import { SETTINGS } from "../../util/dataMocks"
 import { FileStateHelper } from "../../util/fileStateHelper";
@@ -16,7 +16,6 @@ describe("RangeSliderController", () => {
 	let fileStateService: FileStateService
 	let codeChartaService: CodeChartaService
 	let metricService: MetricService
-	let $timeout: ITimeoutService
 	let $rootScope: IRootScopeService
 	let rangeSliderController: RangeSliderController
 
@@ -25,7 +24,6 @@ describe("RangeSliderController", () => {
 			settingsService,
 			fileStateService,
 			metricService,
-			$timeout,
 			$rootScope
 		)
 	}
@@ -37,7 +35,6 @@ describe("RangeSliderController", () => {
 		fileStateService = getService<FileStateService>("fileStateService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		metricService = getService<MetricService>("metricService")
-		$timeout = getService<ITimeoutService>("$timeout")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 	}
 

@@ -5,7 +5,7 @@ import $ from "jquery"
 import { RecursivePartial, Settings } from "../../codeCharta.model"
 import { MetricService } from "../../state/metric.service";
 import {FileStateService} from "../../state/fileState.service";
-import {IRootScopeService, ITimeoutService} from "angular";
+import {IRootScopeService} from "angular";
 import {FileStateHelper} from "../../util/fileStateHelper";
 
 export class RangeSliderController implements SettingsServiceSubscriber {
@@ -31,14 +31,9 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		private settingsService: SettingsService,
 		private fileStateService: FileStateService,
 		private metricService: MetricService,
-		private $timeout: ITimeoutService,
 		private $rootScope: IRootScopeService
 	) {
 		SettingsService.subscribe($rootScope, this)
-
-		this.$timeout(() => {
-			this.$rootScope.$broadcast("rzSliderForceRender")
-		})
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
