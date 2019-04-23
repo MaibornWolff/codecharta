@@ -46,6 +46,7 @@ subprojects {
     dependencies {
         implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
         testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
+        implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
     }
 
     compileJava {
