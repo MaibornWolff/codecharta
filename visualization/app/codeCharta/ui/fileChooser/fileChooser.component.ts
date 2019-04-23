@@ -53,8 +53,6 @@ export class FileChooserController {
 
     public setNewData(nameDataPair: NameDataPair){
         this.codeChartaService.loadFiles([nameDataPair])
-            .then(() => {
-            })
             .catch(e => {
                 this.$rootScope.$broadcast(CodeChartaController.LOADING_STATUS_EVENT, false)
                 console.error(e)
