@@ -11,7 +11,7 @@ import java.io.Serializable
 import java.nio.charset.Charset
 import java.nio.file.Files
 
-abstract class SonarAnalyzer(private val verbose: Boolean = false) {
+abstract class SonarAnalyzer(protected val verbose: Boolean = false) {
 
     protected lateinit var sensorContext: SensorContextTester
     open lateinit var baseDir: File
