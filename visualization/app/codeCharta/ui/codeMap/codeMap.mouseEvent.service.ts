@@ -1,7 +1,6 @@
 import {MapTreeViewHoverEventSubscriber, MapTreeViewLevelController} from "../mapTreeView/mapTreeView.level.component";
 import {ThreeCameraService} from "./threeViewer/threeCameraService";
-import {IAngularEvent, IRootScopeService} from "angular";
-import {CodeMapNode} from "../../core/data/model/CodeMap";
+import { IAngularEvent, IRootScopeService, IWindowService } from "angular"
 import {CodeMapBuilding} from "./rendering/codeMapBuilding";
 import {CodeMapRenderService} from "./codeMap.render.service";
 import $ from "jquery";
@@ -9,6 +8,10 @@ import {
     ViewCubeEventPropagationSubscriber,
     ViewCubeMouseEventsService
 } from "../viewCube/viewCube.mouseEvents.service";
+import {CodeMapNode} from "../../codeCharta.model";
+import { ThreeSceneService } from "./threeViewer/threeSceneService"
+import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
+import { ThreeRendererService } from "./threeViewer/threeRendererService"
 
 interface Coordinates {
     x: number;
@@ -40,11 +43,11 @@ export class CodeMapMouseEventService
     /* @ngInject */
     constructor(
         private $rootScope: IRootScopeService,
-        private $window,
-        private threeCameraService: ThreeCameraService,
-        private threeRendererService,
-        private threeSceneService,
-        private threeUpdateCycleService,
+        private $window : IWindowService,
+        private threeCameraService : ThreeCameraService,
+        private threeRendererService : ThreeRendererService,
+        private threeSceneService : ThreeSceneService,
+        private threeUpdateCycleService : ThreeUpdateCycleService,
         private codeMapRenderService: CodeMapRenderService
     ) {
         this.threeUpdateCycleService.register(this.update.bind(this));
@@ -109,13 +112,13 @@ export class CodeMapMouseEventService
             let from = this.hovered;
             let to = null;
 
-            if (intersectionResult.intersectionFound == true) {
+            if (intersectionResult.intersectionFound) {
                 to = intersectionResult.building;
             } else {
                 to = null;
             }
 
-            if (from != to) {
+            if (from !== to) {
                 this.onBuildingHovered(from, to);
                 this.hovered = to;
             }
@@ -130,7 +133,6 @@ export class CodeMapMouseEventService
     }
 
     public onDocumentMouseUp() {
-
         if (this.dragOrClickFlag === 0) {
             let from = this.selected;
 
@@ -143,8 +145,6 @@ export class CodeMapMouseEventService
                 this.selected = null;
                 this.onBuildingSelected(from, null);
             }
-        } else if (this.dragOrClickFlag === 1) {
-            //drag
         }
     }
 

@@ -1,17 +1,12 @@
-import {SettingsService} from "../../core/settings/settings.service";
 
 export class QueryParamDialogController {
 
-    private _queryParams: string;
-
-    constructor(settingsService: SettingsService, private $mdDialog) {
-        this._queryParams = settingsService.getQueryParamString().replace(new RegExp("&", "g"),"\n&");
+    constructor(private $mdDialog) {
     }
 
     public hide() {
         this.$mdDialog.hide();
     }
-
 }
 
 export const queryParamDialog = {

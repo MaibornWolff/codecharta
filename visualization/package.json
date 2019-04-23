@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.23.0",
+	"version": "1.24.0",
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
@@ -67,7 +67,7 @@
 		"test:auto": "jest .*\\.spec\\.ts --watch",
 		"test:autoNoCoverage": "jest .*\\.spec\\.ts --watch --coverage false",
 		"test:updateSnaps": "jest .*\\.spec\\.ts --updateSnapshot",
-		"e2e": "jest .*\\.e2e\\.ts --runInBand --coverage false",
+		"e2e": "jest .*\\.e2e\\.ts --coverage false",
 		"e2e:auto": "jest .*\\.e2e\\.ts --watch --coverage false",
 		"doc": "rimraf dist/docs && typedoc --module es2015 --target ES6 --exclude **/*.spec.ts --out dist/docs/ --name CodeCharta app/**/*.ts",
 		"serve": "webpack --config ./conf/webpack.config.js --watch",
@@ -137,6 +137,7 @@
 		"@types/d3": "^5.7.1",
 		"@types/d3-hierarchy": "^1.1.0",
 		"@types/jest": "^21.1.10",
+		"@types/lodash": "^4.14.123",
 		"@types/node": "^11.11.3",
 		"@types/sinon": "^2.3.5",
 		"@types/three": "^0.89.12",
@@ -177,6 +178,7 @@
 		"jest-serializer-html": "^6.0.0",
 		"jquery": "^3.3.1",
 		"json-loader": "^0.5.7",
+		"lodash": "^4.17.11",
 		"load-grunt-tasks": "^4.0.0",
 		"makeshift": "^1.1.0",
 		"minimatch": "^3.0.4",

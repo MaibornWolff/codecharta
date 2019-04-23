@@ -1,8 +1,8 @@
 <md-input-container class="md-block">
     <i class='fa fa-paint-brush'></i>
 
-    <md-select ng-model="$ctrl.settingsService.settings.colorMetric" ng-change="$ctrl.settingsService.applySettings()">
-        <md-option ng-repeat="metric in $ctrl.metricData" value="{{::metric.name}}">
+    <md-select ng-model="$ctrl._viewModel.colorMetric" ng-change="$ctrl.applySettingsColorMetric()">
+        <md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
             {{::metric.name}}
             <span class="metric-max-value">({{::metric.maxValue}})</span>
         </md-option>

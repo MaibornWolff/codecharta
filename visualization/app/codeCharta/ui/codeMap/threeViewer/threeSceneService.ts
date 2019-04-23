@@ -6,7 +6,7 @@ import { CodeMapMesh } from "../rendering/codeMapMesh";
 /**
  * A service which manages the Three.js scene in an angular way.
  */
-class ThreeSceneService {
+export class ThreeSceneService {
     public static SELECTOR = "threeSceneService";
 
     public scene: Scene;
@@ -59,16 +59,16 @@ class ThreeSceneService {
         this.lights.add(light2);
     }
 
-    public setMapMesh(mesh: CodeMapMesh, size: number) {
+    public setMapMesh(mesh: CodeMapMesh, mapSize: number) {
         this.mapMesh = mesh;
 
         while (this.mapGeometry.children.length > 0) {
             this.mapGeometry.remove(this.mapGeometry.children[0]);
         }
 
-        this.mapGeometry.position.x = -size / 2.0;
+        this.mapGeometry.position.x = -mapSize / 2.0;
         this.mapGeometry.position.y = 0.0;
-        this.mapGeometry.position.z = -size / 2.0;
+        this.mapGeometry.position.z = -mapSize / 2.0;
 
         this.mapGeometry.add(this.mapMesh.getThreeMesh());
     }
@@ -77,5 +77,3 @@ class ThreeSceneService {
         return this.mapMesh;
     }
 }
-
-export { ThreeSceneService };
