@@ -14,7 +14,7 @@ export class CodeChartaService {
 	public loadFiles(nameDataPairs: NameDataPair[]): Promise<void> {
 		return new Promise((resolve, reject) => {
 			nameDataPairs.forEach((nameDataPair: NameDataPair) => {
-				const errors = FileValidator.validate(nameDataPair.content as any)
+				const errors = FileValidator.validate(nameDataPair.content)
 				if (errors.length === 0) {
 					const ccFile = this.getCCFile(nameDataPair.fileName, nameDataPair.content)
 					this.fileStateService.addFile(ccFile)

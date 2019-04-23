@@ -9,6 +9,7 @@ import { DialogService } from "../dialog/dialog.service"
 import { FileChooserController } from "./fileChooser.component"
 import { TEST_FILE_CONTENT } from "../../util/dataMocks"
 import {CodeChartaController} from "../../codeCharta.component";
+import _ from "lodash"
 
 describe("fileChooserController", () => {
 	let fileChooserController: FileChooserController
@@ -28,6 +29,7 @@ describe("fileChooserController", () => {
 		withMockedEventMethods()
 		withMockedFileStateService()
 		withMockedDialogService()
+		withMockedCodeChartaService()
 	})
 
 	afterEach(() => {
@@ -44,7 +46,7 @@ describe("fileChooserController", () => {
 		fileStateService = getService<FileStateService>("fileStateService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		fileName = "someFile.json"
-		content = JSON.parse(JSON.stringify(TEST_FILE_CONTENT))
+		content = _.cloneDeep(TEST_FILE_CONTENT)
 	}
 
 	function rebuildController() {
@@ -79,6 +81,12 @@ describe("fileChooserController", () => {
 		})()
 	}
 
+	function withMockedCodeChartaService() {
+		codeChartaService = fileChooserController["codeChartaService"] = jest.fn().mockReturnValue({
+			loadFiles: jest.fn().mockReturnValue({catch : jest.fn()})
+		})()
+	}
+
 	describe("onImportNewFiles", () => {
 		it("should call $apply", () => {
 			fileChooserController.onImportNewFiles({ files: [] })
@@ -92,24 +100,20 @@ describe("fileChooserController", () => {
 		})
 	})
 
-	describe("onNewFileLoaded", () => {
-		beforeEach(() => {
-			fileChooserController.setNewData = jest.fn()
-		})
+	describe("setNewData", () => {
+		it("should call loadFiles", () => {
+			fileChooserController.setNewData(fileName, JSON.stringify(content))
 
-		it("should call setNewData", () => {
-			fileChooserController.onNewFileLoaded(fileName, JSON.stringify(content))
-
-			expect(fileChooserController.setNewData).toHaveBeenCalledWith({
-				fileName,
-				content
-			})
+			expect(codeChartaService.loadFiles).toHaveBeenCalledWith([{
+				fileName: fileName,
+				content: content
+			}])
 		})
 
 		it("should showErrorDialog on parsing error", () => {
 			const error = "Error parsing JSON!SyntaxError: Unexpected token c in JSON at position 0"
 
-			fileChooserController.onNewFileLoaded(fileName, "content")
+			fileChooserController.setNewData(fileName, "content")
 
 			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(error)
 		})

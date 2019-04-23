@@ -2,7 +2,7 @@ import { Vector3 } from "three"
 
 export interface NameDataPair {
     fileName: string
-    content: Object
+    content: any
 }
 
 export interface FileState {

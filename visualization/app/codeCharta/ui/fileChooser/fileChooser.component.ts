@@ -32,32 +32,34 @@ export class FileChooserController {
             for(let file of element.files) {
                 let reader = new FileReader()
                 reader.onload = (event) => {
-                    this.onNewFileLoaded(file.name, (<any>event.target).result)
+                    this.setNewData(file.name, (<any>event.target).result)
                 };
                 reader.readAsText(file, "UTF-8");
             }
         });
     }
 
-    public onNewFileLoaded(fileName: string, content: string){
-        try {
-            this.setNewData({
-                fileName: fileName,
-                content: JSON.parse(content)
-            })
+    public setNewData(fileName: string, content: string){
+        const nameDataPair: NameDataPair = {
+            fileName: fileName,
+            content: this.getParsedContent(content)
         }
-        catch (error) {
-            this.dialogService.showErrorDialog("Error parsing JSON!" + error)
-        }
-    }
 
-    public setNewData(nameDataPair: NameDataPair){
         this.codeChartaService.loadFiles([nameDataPair])
             .catch(e => {
                 this.$rootScope.$broadcast(CodeChartaController.LOADING_STATUS_EVENT, false)
                 console.error(e)
                 this.printErrors(e)
             })
+    }
+
+    private getParsedContent(content: string): any {
+        try {
+            return JSON.parse(content)
+        }
+        catch (error) {
+            this.dialogService.showErrorDialog("Error parsing JSON!" + error)
+        }
     }
 
     private printErrors(errors: Object) {
