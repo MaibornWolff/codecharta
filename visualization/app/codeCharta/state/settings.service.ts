@@ -7,7 +7,7 @@ import {
 	Settings
 } from "../codeCharta.model"
 import _ from "lodash"
-import { IAngularEvent, IRootScopeService } from "angular"
+import {IAngularEvent, IRootScopeService} from "angular"
 import {FileStateService, FileStateServiceSubscriber} from "./fileState.service";
 import {FileStateHelper} from "../util/fileStateHelper";
 import {SettingsMerger} from "../util/settingsMerger";
@@ -22,11 +22,11 @@ export class SettingsService implements FileStateServiceSubscriber {
 	private static SETTINGS_CHANGED_EVENT = "settings-changed"
 
 	private settings: Settings
-	private readonly throttledBroadcast: (update : RecursivePartial<Settings>) => void
+	private readonly debounceBroadcast: (update : RecursivePartial<Settings>) => void
 
-	constructor(private $rootScope) {
+	constructor(private $rootScope: IRootScopeService) {
 		this.settings = this.getDefaultSettings()
-		this.throttledBroadcast = _.throttle((update : RecursivePartial<Settings>) =>
+		this.debounceBroadcast = _.debounce((update : RecursivePartial<Settings>) =>
 			this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, { settings: this.settings, update: update}), 400)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
@@ -51,8 +51,9 @@ export class SettingsService implements FileStateServiceSubscriber {
 		// _.merge(this.settings, update) didnt work with arrays like blacklist
 		this.settings = this.updateSettingsUsingPartialSettings(this.settings, update)
 		if(!isSilent) {
-			this.throttledBroadcast(update)
+			this.debounceBroadcast(update)
 		}
+		this.$rootScope.$digest()
 	}
 
 	public getDefaultSettings(): Settings {
