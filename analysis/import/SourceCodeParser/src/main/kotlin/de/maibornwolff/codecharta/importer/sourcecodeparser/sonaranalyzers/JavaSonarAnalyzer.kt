@@ -36,6 +36,10 @@ class JavaSonarAnalyzer(verbose: Boolean = false): SonarAnalyzer(verbose) {
   private lateinit var javaClasspath: JavaClasspath
   private lateinit var sonarComponents: SonarComponents
 
+    private var totalFiles = 0
+    private var analyzedFiles = 0
+    private val originalOut = System.out
+
 
   override fun createContext() {
     sensorContext = SensorContextTester.create(baseDir)
@@ -61,10 +65,11 @@ class JavaSonarAnalyzer(verbose: Boolean = false): SonarAnalyzer(verbose) {
       baseDir = root.absoluteFile
       val projectMetrics = ProjectMetrics()
 
-      val originalOut = System.out
-      if (!verbose) System.setOut(PrintStream(ByteArrayOutputStream()))
+        analyzedFiles = 0
+        totalFiles = fileList.size
 
       for (file in fileList) {
+          printProgressBar(file)
         createContext()
         buildSonarComponents()
         addFileToContext(file)
@@ -99,4 +104,17 @@ class JavaSonarAnalyzer(verbose: Boolean = false): SonarAnalyzer(verbose) {
     )
     javaSquidSensor.execute(sensorContext)
   }
+
+    private fun printProgressBar(fileName: String) {
+        analyzedFiles += 1
+        val percentage = analyzedFiles.toFloat() / totalFiles * 100
+        val roundedPercentage = String.format("%.1f", percentage)
+        val currentFile = if (fileName.length > 30) ".." + fileName.takeLast(30) else fileName
+        val message = "\r Analyzing .java files... $roundedPercentage% ($currentFile)"
+
+        System.setOut(originalOut)
+        print(message)
+
+        if (!verbose) System.setOut(PrintStream(ByteArrayOutputStream()))
+    }
 }
