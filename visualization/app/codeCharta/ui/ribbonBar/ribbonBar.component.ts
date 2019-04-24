@@ -1,47 +1,59 @@
 import "./ribbonBar.component.scss";
 import $ from "jquery";
-import {KindOfMap, SettingsService} from "../../core/settings/settings.service";
-import { DownloadService } from "../../core/download/download.service";
+import {IRootScopeService} from "angular";
+import {FileState} from "../../codeCharta.model";
+import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
+import {FileStateHelper} from "../../util/fileStateHelper";
+import {FileDownloader} from "../../util/fileDownloader";
+import {CodeMapPreRenderService} from "../codeMap/codeMap.preRender.service";
 
-export class RibbonBarController {
+export class RibbonBarController implements FileStateServiceSubscriber {
 
-    private collapsingElements = $("code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab");
-    private toggleElements = $("ribbon-bar-component .section-title");
+    private collapsingElements = $("code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab")
+    private toggleElements = $("ribbon-bar-component .section-title")
     private isExpanded: boolean = false;
-    private _deltaMode = KindOfMap.Delta;
+
+    private _viewModel: {
+        isDeltaState: boolean
+    } = {
+        isDeltaState: null
+    }
 
     /* @ngInject */
     constructor(
-        private settingsService: SettingsService,
-        private downloadService: DownloadService
+        private $rootScope: IRootScopeService,
+        private codeMapPreRenderService: CodeMapPreRenderService
     ) {
+        FileStateService.subscribe(this.$rootScope, this)
+    }
+
+    public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+        this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
+    }
+
+    public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
     }
 
     public downloadFile() {
-        this.downloadService.downloadCurrentMap();
-    }
-
-    public changeMargin(){
-        this.settingsService.settings.dynamicMargin = false;
-        this.settingsService.applySettings();
+        FileDownloader.downloadCurrentMap(this.codeMapPreRenderService.getRenderFile())
     }
 
     public toggle() {
         if (!this.isExpanded) {
-            this.expand();
+            this.expand()
         } else {
-            this.collapse();
+            this.collapse()
         }
     }
 
     public expand() {
         this.isExpanded = true;
-        this.collapsingElements.addClass("expanded");
+        this.collapsingElements.addClass("expanded")
     }
 
     public collapse() {
-        this.isExpanded = false;
-        this.collapsingElements.removeClass("expanded");
+        this.isExpanded = false
+        this.collapsingElements.removeClass("expanded")
     }
 
     public hoverToggle() {

@@ -1,40 +1,41 @@
-import {Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
-import "./blacklistPanel.component.scss";
-import {BlacklistItem, BlacklistType} from "../../core/data/model/CodeMap";
-import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
+import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import "./blacklistPanel.component.scss"
+import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
+import { Settings, BlacklistItem, BlacklistType, RecursivePartial } from "../../codeCharta.model"
+import { IRootScopeService } from "angular"
 
-export class BlacklistPanelController implements SettingsServiceSubscriber{
+export class BlacklistPanelController implements SettingsServiceSubscriber {
 
-    public blacklist: Array<BlacklistItem>;
+	private _viewModel: {
+		blacklist: Array<BlacklistItem>
+	} = {
+		blacklist: []
+	}
 
-    constructor(private settingsService: SettingsService,
-                private codeMapActionsService: CodeMapActionsService) {
-        settingsService.subscribe(this);
-        this.onSettingsChanged(settingsService.settings, null);
-    }
+	constructor(
+		private codeMapActionsService: CodeMapActionsService,
+		$rootScope: IRootScopeService
+	) {
+		SettingsService.subscribe($rootScope, this)
+	}
 
-    public onChange() {
-        this.settingsService.applySettings();
-    }
+	public onSettingsChanged(settings: Settings, supdate: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+		if (settings.fileSettings.blacklist) {
+			this._viewModel.blacklist = settings.fileSettings.blacklist
+		}
+	}
 
-    public onSettingsChanged(settings: Settings, event: Event) {
-        if(settings.blacklist) {
-            this.blacklist = settings.blacklist;
-        }
-    }
+	public removeBlacklistEntry(entry: BlacklistItem) {
+		this.codeMapActionsService.removeBlacklistEntry(entry)
+	}
 
-    public removeBlacklistEntry(entry: BlacklistItem){
-        this.codeMapActionsService.removeBlacklistEntry(entry);
-        this.onChange();
-    }
-
-    public sortByExcludes(item: BlacklistItem) {
-        return (item && item.type == BlacklistType.exclude) ? 0 : 1;
-    }
+	public sortByExcludes(item: BlacklistItem) {
+		return item && item.type == BlacklistType.exclude ? 0 : 1
+	}
 }
 
 export const blacklistPanelComponent = {
-    selector: "blacklistPanelComponent",
-    template: require("./blacklistPanel.component.html"),
-    controller: BlacklistPanelController
-};
+	selector: "blacklistPanelComponent",
+	template: require("./blacklistPanel.component.html"),
+	controller: BlacklistPanelController
+}

@@ -1,79 +1,99 @@
-import { DataService } from "../../core/data/data.service"
-import { KindOfMap, Settings, SettingsService, SettingsServiceSubscriber } from "../../core/settings/settings.service"
+import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import "./rangeSlider.component.scss"
 import { MapColors } from "../codeMap/rendering/renderSettings"
 import $ from "jquery"
+import { RecursivePartial, Settings } from "../../codeCharta.model"
+import { MetricService } from "../../state/metric.service";
+import {FileStateService} from "../../state/fileState.service";
+import {IRootScopeService} from "angular";
+import {FileStateHelper} from "../../util/fileStateHelper";
 
 export class RangeSliderController implements SettingsServiceSubscriber {
-	public sliderOptions: any
-	private maxMetricValue: number
 
+	private maxMetricValue: number
 	private DIGIT_WIDTH: number = 11
 	private MIN_DIGITS: number = 4
 	private MAX_DIGITS: number = 6
 	private FULL_WIDTH_SLIDER: number = 235
 
+	private _viewModel: {
+		colorRangeFrom: number,
+		colorRangeTo: number,
+		sliderOptions: any
+	} = {
+		colorRangeFrom: null,
+		colorRangeTo: null,
+		sliderOptions: {disabled : false}
+	}
+
 	/* @ngInject */
-	constructor(private settingsService: SettingsService, private dataService: DataService, $timeout, $scope) {
-		this.settingsService.subscribe(this)
-		this.initSliderOptions()
-
-		$timeout(() => {
-			$scope.$broadcast("rzSliderForceRender")
-		})
+	constructor(
+		private settingsService: SettingsService,
+		private fileStateService: FileStateService,
+		private metricService: MetricService,
+		private $rootScope: IRootScopeService
+	) {
+		SettingsService.subscribe(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings) {
-		this.initSliderOptions(settings)
-		this.updateSliderColors()
-		this.updateInputFieldWidth()
-	}
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 
-	public initSliderOptions(settings: Settings = this.settingsService.settings) {
-		this.maxMetricValue = this.dataService.getMaxMetricInAllRevisions(settings.colorMetric)
+		if (this.metricService.getMetricData()) {
+			this.initSliderOptions(settings)
+		}
 
-		this.sliderOptions = {
-			ceil: this.maxMetricValue,
-			onChange: this.onSliderChange.bind(this),
-			pushRange: true,
-			onToChange: this.onToSliderChange.bind(this),
-			onFromChange: this.onFromSliderChange.bind(this),
-			disabled: this.settingsService.settings.mode == KindOfMap.Delta
+		if (settings.dynamicSettings.neutralColorRange.from
+			&& settings.dynamicSettings.neutralColorRange.to) {
+			this.updateViewModel(settings)
+			this.updateSliderColors(settings)
+			this.updateInputFieldWidth(settings)
 		}
 	}
 
-	private onToSliderChange() {
-		this.settingsService.settings.neutralColorRange.to = Math.max(1, this.settingsService.settings.neutralColorRange.to)
-		this.settingsService.settings.neutralColorRange.to = Math.min(
-			this.dataService.getMaxMetricInAllRevisions(this.settingsService.settings.colorMetric),
-			this.settingsService.settings.neutralColorRange.to
-		)
-		this.settingsService.settings.neutralColorRange.from = Math.min(
-			this.settingsService.settings.neutralColorRange.to - 1,
-			this.settingsService.settings.neutralColorRange.from
-		)
-		this.onSliderChange()
+	private updateViewModel(settings: Settings) {
+		this._viewModel.colorRangeFrom = settings.dynamicSettings.neutralColorRange.from
+		this._viewModel.colorRangeTo = settings.dynamicSettings.neutralColorRange.to
+	}
+
+	public initSliderOptions(settings: Settings = this.settingsService.getSettings()) {
+		this.maxMetricValue = this.metricService.getMaxMetricByMetricName(settings.dynamicSettings.colorMetric)
+
+		this._viewModel.sliderOptions = {
+			ceil: this.maxMetricValue,
+			onChange: this.applySettings.bind(this),
+			pushRange: true,
+			onToChange: this.onToSliderChange.bind(this),
+			onFromChange: this.onFromSliderChange.bind(this),
+			disabled: FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
+		}
 	}
 
 	private onFromSliderChange() {
-		this.settingsService.settings.neutralColorRange.from = Math.min(
-			this.dataService.getMaxMetricInAllRevisions(this.settingsService.settings.colorMetric) - 1,
-			this.settingsService.settings.neutralColorRange.from
-		)
-		this.settingsService.settings.neutralColorRange.to = Math.max(
-			this.settingsService.settings.neutralColorRange.to,
-			this.settingsService.settings.neutralColorRange.from + 1
-		)
-		this.onSliderChange()
+		this._viewModel.colorRangeFrom = Math.min(this.maxMetricValue - 1, this._viewModel.colorRangeFrom)
+		this._viewModel.colorRangeTo = Math.max(this._viewModel.colorRangeTo, this._viewModel.colorRangeFrom + 1)
+		this.applySettings()
 	}
 
-	private onSliderChange() {
-		this.settingsService.applySettings()
+	private onToSliderChange() {
+		this._viewModel.colorRangeFrom = Math.min(this._viewModel.colorRangeTo - 1, this._viewModel.colorRangeFrom)
+		this._viewModel.colorRangeTo = Math.min(this.maxMetricValue, Math.max(1, this._viewModel.colorRangeTo))
+		this.applySettings()
 	}
 
-	private updateInputFieldWidth() {
-		let fromLength = this.settingsService.settings.neutralColorRange.from.toFixed().toString().length + 1
-		let toLength = this.settingsService.settings.neutralColorRange.to.toFixed().toString().length + 1
+	private applySettings() {
+		this.settingsService.updateSettings({
+			dynamicSettings: {
+				neutralColorRange: {
+					to: this._viewModel.colorRangeTo,
+					from: this._viewModel.colorRangeFrom
+				}
+			}
+		})
+	}
+
+	private updateInputFieldWidth(s: Settings) {
+		let fromLength = s.dynamicSettings.neutralColorRange.from.toFixed().toString().length + 1
+		let toLength = s.dynamicSettings.neutralColorRange.to.toFixed().toString().length + 1
 		let fromWidth = Math.min(Math.max(this.MIN_DIGITS, fromLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 		let toWidth = Math.min(Math.max(this.MIN_DIGITS, toLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 
@@ -82,10 +102,10 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		$("range-slider-component #colorSlider").css("width", this.FULL_WIDTH_SLIDER - fromWidth - toWidth + "px")
 	}
 
-	private updateSliderColors() {
-		const rangeFromPercentage = (100 / this.maxMetricValue) * this.settingsService.settings.neutralColorRange.from
-		let rangeColors = this.sliderOptions.disabled ? this.getGreyRangeColors() : this.getColoredRangeColors()
-		this.applyCssSettings(rangeColors, rangeFromPercentage)
+	private updateSliderColors(s: Settings) {
+		const rangeFromPercentage = (100 / this.maxMetricValue) * this._viewModel.colorRangeFrom
+		let rangeColors = this._viewModel.sliderOptions.disabled ? this.getGreyRangeColors() : this.getColoredRangeColors(s)
+		this.applyCssColors(rangeColors, rangeFromPercentage)
 	}
 
 	private getGreyRangeColors() {
@@ -96,28 +116,28 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		}
 	}
 
-	private getColoredRangeColors() {
-		const s = this.settingsService.settings
-		let mapColorPositive = s.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive
+	private getColoredRangeColors(s: Settings) {
+		let mapColorPositive = s.appSettings.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive
 
 		let rangeColors = {
-			left: s.neutralColorRange.flipped ? MapColors.negative : mapColorPositive,
+			left: s.dynamicSettings.neutralColorRange.flipped ? MapColors.negative : mapColorPositive,
 			middle: MapColors.neutral,
-			right: s.neutralColorRange.flipped ? mapColorPositive : MapColors.negative
+			right: s.dynamicSettings.neutralColorRange.flipped ? mapColorPositive : MapColors.negative
 		}
 		return rangeColors
 	}
 
-	private applyCssSettings(rangeColors, rangeFromPercentage) {
+	private applyCssColors(rangeColors, rangeFromPercentage) {
 		const slider = $("range-slider-component .rzslider")
 		const leftSection = slider.find(".rz-bar-wrapper:nth-child(3) .rz-bar")
 		const middleSection = slider.find(".rz-selection")
 		const rightSection = slider.find(".rz-right-out-selection .rz-bar")
 
-		leftSection.css("cssText", "background: " + rangeColors.left + " !important; width: " + rangeFromPercentage + "%;")
-		middleSection.css("cssText", "background: " + rangeColors.middle + " !important;")
-		rightSection.css("cssText", "background: " + rangeColors.right + ";")
-	}
+        leftSection.css("cssText", "background: " + rangeColors.left + " !important; width: " + rangeFromPercentage + "%;")
+        middleSection.css("cssText", "background: " + rangeColors.middle + " !important;")
+        rightSection.css("cssText", "background: " + rangeColors.right + ";")
+    }
+
 }
 
 export const rangeSliderComponent = {

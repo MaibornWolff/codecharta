@@ -26,14 +26,3 @@ export enum MapColors {
     lightGrey = "#DDDDDD",
     angularGreen = "#00BFA5"
 }
-
-export interface RenderSettings {
-    heightKey : string;
-    colorKey : string;
-    renderDeltas : boolean;
-    hideFlatBuildings: boolean;
-    colorRange : ColorRange;
-    mapSize : number;
-    deltaColorFlipped: boolean;
-    whiteColorBuildings: boolean;
-}

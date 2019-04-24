@@ -1,132 +1,78 @@
-import {LegendPanelController, PackageList} from "./legendPanel.component";
-import {SettingsService} from "../../core/settings/settings.service";
-import {DataService} from "../../core/data/data.service";
-import {CodeMapNode} from "../../core/data/model/CodeMap";
-import {CodeMapUtilService} from "../codeMap/codeMap.util.service";
+import "./legendPanel.module"
+
+import { LegendPanelController, PackageList } from "./legendPanel.component"
+import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
+import { FileStateService } from "../../state/fileState.service"
+import { IRootScopeService } from "angular"
+import { CCFile, Settings } from "../../codeCharta.model"
+import { SETTINGS, TEST_FILE_DATA } from "../../util/dataMocks"
 
 describe("LegendPanelController", () => {
+	let legendPanelController: LegendPanelController
+	let $rootScope: IRootScopeService
+	let fileStateService: FileStateService
+	let settings: Settings
+	let file: CCFile
 
-    let legendPanelController: LegendPanelController;
-    let $timeout;
-    let settingsServiceMock: SettingsService;
-    let dataServiceMock: DataService;
-    let simpleHierarchy: CodeMapNode;
+	beforeEach(() => {
+		restartSystem()
+		rebuildController()
+	})
 
-    function rebuildSUT() {
-        legendPanelController = new LegendPanelController($timeout, settingsServiceMock, dataServiceMock);
-    }
+	function restartSystem() {
+		instantiateModule("app.codeCharta.ui.legendPanel")
 
-    function mockEverything() {
+		$rootScope = getService<IRootScopeService>("$rootScope")
+		fileStateService = getService<FileStateService>("fileStateService")
 
-        $timeout = jest.fn();
+		settings = JSON.parse(JSON.stringify(SETTINGS))
+		file = JSON.parse(JSON.stringify(TEST_FILE_DATA))
+	}
 
-        const SettingsServiceMock = jest.fn<SettingsService>(() => ({
-            subscribe: jest.fn(),
-            applySettings: jest.fn(),
-            settings: {
-                map: {
-                    nodes: null
-                }
-            }
-        }));
+	function rebuildController() {
+		legendPanelController = new LegendPanelController(
+			$rootScope,
+			fileStateService
+		)
+	}
 
-        settingsServiceMock = new SettingsServiceMock();
+	describe("MarkingColor in Legend", () => {
+		beforeEach(() => {
+			fileStateService["fileStates"].push({ file, selectedAs: null })
+		})
 
-        const DataServiceMock = jest.fn<DataService>(() => ({
-            subscribe: jest.fn(),
-            getMaxMetricInAllRevisions: jest.fn()
-        }));
+		it("set correct markingPackage in Legend", () => {
+			settings.fileSettings.markedPackages = [{ color: "#FF0000", path: "/root", attributes: {} }]
+			const expectedPackageLists: PackageList[] = [
+				{
+					colorPixel: "data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+					markedPackages: [{ color: "#FF0000", path: "/root", attributes: { name: "/root" } }]
+				}
+			]
 
-        dataServiceMock = new DataServiceMock();
+			legendPanelController.onSettingsChanged(settings, undefined,null)
 
-        rebuildSUT();
-    }
+			expect(legendPanelController["_viewModel"].packageLists).toEqual(expectedPackageLists)
+		})
 
-    beforeEach(function() {
-        mockEverything();
-    });
+		it("shorten too long pathName in middle of the string for legendPanel", () => {
+			settings.fileSettings.markedPackages = [
+				{ color: "#FF0000", path: "/root/a/longNameToBeShortenedInLegend", attributes: {} }
+			]
+			const shortenedPathname = "longNameToBe...enedInLegend"
 
-    describe("MarkingColor in Legend", () => {
+			legendPanelController.onSettingsChanged(settings, undefined,null)
+			expect(legendPanelController["_viewModel"].packageLists[0].markedPackages[0].attributes["name"]).toEqual(shortenedPathname)
+		})
 
-        let codeMapUtilService: CodeMapUtilService;
-        beforeEach(function() {
-            mockEverything();
+		it("shorten too long pathName at beginning of the string for legendPanel", () => {
+			settings.fileSettings.markedPackages = [
+				{ color: "#FF0000", path: "/root/a/andAnotherLongNameToShorten", attributes: {} }
+			]
+			const shortenedPathname = ".../andAnotherLongNameToShorten"
 
-            simpleHierarchy = {
-                name: "root",
-                type: "Folder",
-                path: "/root",
-                attributes: {},
-                children: [
-                    {
-                        name: "a",
-                        type: "Folder",
-                        path: "/root/a",
-                        attributes: {},
-                        children: [
-                            {
-                                name: "aa",
-                                type: "File",
-                                path: "/root/a/aa",
-                                attributes: {},
-                            },
-                            {
-                                name: "ab",
-                                type: "Folder",
-                                path: "/root/a/ab",
-                                attributes: {},
-                                children: [
-                                    {
-                                        name: "aba",
-                                        path: "/root/a/ab/aba",
-                                        type: "File",
-                                        attributes: {},
-                                    }
-                                ]
-                            },
-                        ]
-                    },
-                    {
-                        name: "b",
-                        type: "File",
-                        path: "/root/b",
-                        attributes: {},
-                    }
-                ]
-            };
-
-            codeMapUtilService = new CodeMapUtilService(settingsServiceMock);
-            settingsServiceMock.settings.map.nodes = simpleHierarchy;
-        });
-
-        it("set correct markingPackage in Legend", () => {
-            settingsServiceMock.settings.markedPackages = [{color: "#FF0000", path: "/root", attributes: {}}];
-            const expectedPackageLists: PackageList[] = [{
-                colorPixel: "data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
-                markedPackages: [{color: "#FF0000", path: "/root", attributes: {name: "/root"}}]
-            }];
-
-            legendPanelController.onSettingsChanged(settingsServiceMock.settings);
-
-            expect(legendPanelController.packageLists).toEqual(expectedPackageLists);
-        });
-
-        it("shorten too long pathName in middle of the string for legendPanel", () => {
-            settingsServiceMock.settings.markedPackages = [{color: "#FF0000", path: "/root/a/longNameToBeShortenedInLegend", attributes: {}}];
-            const shortenedPathname = "longNameToBe...enedInLegend";
-
-            legendPanelController.onSettingsChanged(settingsServiceMock.settings);
-            expect(legendPanelController.packageLists[0].markedPackages[0].attributes["name"]).toEqual(shortenedPathname);
-        });
-
-        it("shorten too long pathName at beginning of the string for legendPanel", () => {
-            settingsServiceMock.settings.markedPackages = [{color: "#FF0000", path: "/root/a/andAnotherLongNameToShorten", attributes: {}}];
-            const shortenedPathname = ".../andAnotherLongNameToShorten";
-
-            legendPanelController.onSettingsChanged(settingsServiceMock.settings);
-            expect(legendPanelController.packageLists[0].markedPackages[0].attributes["name"]).toEqual(shortenedPathname);
-        });
-    });
-    
-    
-});
+			legendPanelController.onSettingsChanged(settings, undefined,null)
+			expect(legendPanelController["_viewModel"].packageLists[0].markedPackages[0].attributes["name"]).toEqual(shortenedPathname)
+		})
+	})
+})
