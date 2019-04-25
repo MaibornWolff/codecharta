@@ -1,16 +1,17 @@
 import "./state.module"
-import { SettingsService } from "./settings.service"
-import { IRootScopeService } from "angular"
-import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
-import { DEFAULT_SETTINGS, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../util/dataMocks"
-import { FileSelectionState, FileState, Settings } from "../codeCharta.model"
-import { FileStateService } from "./fileState.service"
-import { FileStateHelper } from "../util/fileStateHelper"
-import { SettingsMerger } from "../util/settingsMerger"
+import {SettingsService} from "./settings.service"
+import {IRootScopeService, ITimeoutService} from "angular"
+import {getService, instantiateModule} from "../../../mocks/ng.mockhelper"
+import {DEFAULT_SETTINGS, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B} from "../util/dataMocks"
+import {FileSelectionState, FileState, Settings} from "../codeCharta.model"
+import {FileStateService} from "./fileState.service"
+import {FileStateHelper} from "../util/fileStateHelper"
+import {SettingsMerger} from "../util/settingsMerger"
 
 describe("settingService", () => {
 	let settingsService: SettingsService
 	let $rootScope: IRootScopeService
+	let $timeout: ITimeoutService
 
 	let settings: Settings
 	let fileStates: FileState[]
@@ -25,6 +26,7 @@ describe("settingService", () => {
 		instantiateModule("app.codeCharta.state")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
+		$timeout = getService<ITimeoutService>("$timeout")
 
 		settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS))
 		fileStates = [{ file: JSON.parse(JSON.stringify(TEST_DELTA_MAP_A)), selectedAs: FileSelectionState.Comparison },
@@ -32,7 +34,7 @@ describe("settingService", () => {
 	}
 
 	function rebuildService() {
-		settingsService = new SettingsService($rootScope)
+		settingsService = new SettingsService($rootScope, $timeout)
 	}
 
 	function withMockedEventMethods() {

@@ -1,25 +1,23 @@
-import { UrlExtractor } from "./util/urlExtractor"
-import { IHttpService, ILocationService, IRootScopeService, ITimeoutService } from "angular"
+import {UrlExtractor} from "./util/urlExtractor"
+import {IHttpService, ILocationService, IRootScopeService, ITimeoutService} from "angular"
 import "./codeCharta.component.scss"
-import { CodeChartaService } from "./codeCharta.service"
+import {CodeChartaService} from "./codeCharta.service"
 import {SettingsService, SettingsServiceSubscriber} from "./state/settings.service";
 import {ScenarioHelper} from "./util/scenarioHelper";
 import {DialogService} from "./ui/dialog/dialog.service";
 import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
 import {CodeMapActionsService} from "./ui/codeMap/codeMap.actions.service";
-import { Settings, NameDataPair, RecursivePartial } from "./codeCharta.model"
+import {NameDataPair, RecursivePartial, Settings} from "./codeCharta.model"
 import {FileStateService} from "./state/fileState.service";
 
 
 export interface CodeChartaControllerSubscriber {
 	onLoadingStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent)
-	onLoadingMapStatusChanged(isLoadingMap: boolean, event: angular.IAngularEvent)
 }
 
 export class CodeChartaController implements SettingsServiceSubscriber, CodeChartaControllerSubscriber {
 
 	public static readonly LOADING_STATUS_EVENT = "loading-status-changed"
-	public static readonly LOADING_MAP_STATUS_EVENT = "loading-map-status-changed"
 
 	private _viewModel: {
 		version: string,
@@ -62,11 +60,6 @@ export class CodeChartaController implements SettingsServiceSubscriber, CodeChar
 
 	public onLoadingStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent) {
 		this._viewModel.isLoadingFile = isLoadingFile
-		this.synchronizeAngularTwoWayBinding()
-	}
-
-	public onLoadingMapStatusChanged(isLoadingMap: boolean, event: angular.IAngularEvent) {
-		this._viewModel.isLoadingMap = isLoadingMap
 		this.synchronizeAngularTwoWayBinding()
 	}
 
@@ -147,9 +140,6 @@ export class CodeChartaController implements SettingsServiceSubscriber, CodeChar
 	public static subscribe($rootScope: IRootScopeService, subscriber: CodeChartaControllerSubscriber) {
 		$rootScope.$on(CodeChartaController.LOADING_STATUS_EVENT, (event, data) => {
 			subscriber.onLoadingStatusChanged(data, event)
-		})
-		$rootScope.$on(CodeChartaController.LOADING_MAP_STATUS_EVENT, (event, data) => {
-			subscriber.onLoadingMapStatusChanged(data, event)
 		})
 	}
 }

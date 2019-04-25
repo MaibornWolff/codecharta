@@ -1,5 +1,6 @@
 import {
-	ColorRange, DynamicSettings,
+	ColorRange,
+	DynamicSettings,
 	FileSettings,
 	FileState,
 	MapColors,
@@ -7,11 +8,12 @@ import {
 	Settings
 } from "../codeCharta.model"
 import _ from "lodash"
-import {IAngularEvent, IRootScopeService} from "angular"
+import {IAngularEvent, IRootScopeService, ITimeoutService} from "angular"
 import {FileStateService, FileStateServiceSubscriber} from "./fileState.service";
 import {FileStateHelper} from "../util/fileStateHelper";
 import {SettingsMerger} from "../util/settingsMerger";
 import {Vector3} from "three"
+import {RibbonBarController} from "../ui/ribbonBar/ribbonBar.component";
 
 export interface SettingsServiceSubscriber {
 	onSettingsChanged(settings: Settings, update : RecursivePartial<Settings>, event: IAngularEvent)
@@ -24,7 +26,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 	private settings: Settings
 	private readonly debounceBroadcast: (update : RecursivePartial<Settings>) => void
 
-	constructor(private $rootScope: IRootScopeService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private $timeout: ITimeoutService
+	) {
 		this.settings = this.getDefaultSettings()
 		this.debounceBroadcast = _.debounce((update : RecursivePartial<Settings>) =>
 			this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, { settings: this.settings, update: update}), 400)
@@ -51,9 +56,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 		// _.merge(this.settings, update) didnt work with arrays like blacklist
 		this.settings = this.updateSettingsUsingPartialSettings(this.settings, update)
 		if(!isSilent) {
+			this.$rootScope.$broadcast(RibbonBarController.LOADING_MAP_STATUS_EVENT, true)
 			this.debounceBroadcast(update)
 		}
-		this.$rootScope.$digest()
+		this.synchronizeAngularTwoWayBinding()
 	}
 
 	public getDefaultSettings(): Settings {
@@ -162,6 +168,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 			}
 		}
 		return false
+	}
+
+	private synchronizeAngularTwoWayBinding() {
+		this.$timeout(() => {})
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: SettingsServiceSubscriber) {
