@@ -85,6 +85,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 
 	private decorateIfPossible() {
 		if(this.lastRender.renderFile
+			&& this.lastRender.settings
 			&& this.lastRender.settings.fileSettings
 			&& this.lastRender.settings.fileSettings.blacklist
 			&& this.lastRender.metricData
