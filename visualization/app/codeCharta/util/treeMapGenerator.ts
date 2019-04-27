@@ -1,9 +1,9 @@
-import { Node } from "../rendering/node"
+import { Node } from "../ui/codeMap/rendering/node"
 import * as d3 from "d3"
 import { hierarchy, HierarchyNode } from "d3"
-import { TreeMapUtils } from "./treemap.util"
-import { CodeMapHelper } from "../../../util/codeMapHelper"
-import { CodeMapNode, BlacklistType, CCFile, Settings, MetricData } from "../../../codeCharta.model"
+import { TreeMapHelper } from "./treeMapHelper"
+import { CodeMapHelper } from "./codeMapHelper"
+import { CodeMapNode, BlacklistType, CCFile, Settings, MetricData } from "../codeCharta.model"
 
 export interface SquarifiedValuedCodeMapNode {
 	data: CodeMapNode
@@ -16,7 +16,7 @@ export interface SquarifiedValuedCodeMapNode {
 	y1: number
 }
 
-export class TreeMapService {
+export class TreeMapGenerator {
 	private static HEIGHT_DIVISOR = 1
 	private static FOLDER_HEIGHT = 2
 	private static MIN_BUILDING_HEIGHT = 2
@@ -48,8 +48,8 @@ export class TreeMapService {
 				s.treeMapSettings.mapSize + nodesPerSide * s.dynamicSettings.margin,
 				s.treeMapSettings.mapSize + nodesPerSide * s.dynamicSettings.margin
 			])
-			.paddingOuter(s.dynamicSettings.margin * TreeMapService.PADDING_SCALING_FACTOR || 1)
-			.paddingInner(s.dynamicSettings.margin * TreeMapService.PADDING_SCALING_FACTOR || 1)
+			.paddingOuter(s.dynamicSettings.margin * TreeMapGenerator.PADDING_SCALING_FACTOR || 1)
+			.paddingInner(s.dynamicSettings.margin * TreeMapGenerator.PADDING_SCALING_FACTOR || 1)
 
 		return treeMap(map.sum(node => this.calculateValue(node, s))) as SquarifiedValuedCodeMapNode
 	}
@@ -60,7 +60,7 @@ export class TreeMapService {
 		metricData: MetricData[]
 	): Node {
 		const maxHeight = metricData.find(x => x.name == s.dynamicSettings.heightMetric).maxValue
-		const heightScale = s.treeMapSettings.mapSize / TreeMapService.HEIGHT_DIVISOR / maxHeight
+		const heightScale = s.treeMapSettings.mapSize / TreeMapGenerator.HEIGHT_DIVISOR / maxHeight
 		return this.addHeightDimensionAndFinalize(squaredNode, s, heightScale, maxHeight)
 	}
 
@@ -76,14 +76,14 @@ export class TreeMapService {
 		let heightValue = attr[s.dynamicSettings.heightMetric]
 
 		if (heightValue === undefined || heightValue === null) {
-			heightValue = TreeMapService.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
+			heightValue = TreeMapGenerator.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
 		}
 
 		if (CodeMapHelper.isBlacklisted(squaredNode.data, s.fileSettings.blacklist, BlacklistType.hide)) {
 			squaredNode.data = this.setVisibilityOfNodeAndDescendants(squaredNode.data, false)
 		}
 
-		const finalNode = TreeMapUtils.buildNodeFrom(
+		const finalNode = TreeMapHelper.buildNodeFrom(
 			squaredNode,
 			heightScale,
 			heightValue,
@@ -91,8 +91,8 @@ export class TreeMapService {
 			depth,
 			parent,
 			s,
-			TreeMapService.MIN_BUILDING_HEIGHT,
-			TreeMapService.FOLDER_HEIGHT
+			TreeMapGenerator.MIN_BUILDING_HEIGHT,
+			TreeMapGenerator.FOLDER_HEIGHT
 		)
 
 		if (squaredNode.children && squaredNode.children.length > 0) {

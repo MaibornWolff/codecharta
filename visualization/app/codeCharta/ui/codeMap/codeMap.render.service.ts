@@ -2,7 +2,7 @@
 
 import {CodeMapMesh} from "./rendering/codeMapMesh"
 import {Node} from "./rendering/node"
-import {TreeMapService} from "./treemap/treemap.service"
+import {TreeMapGenerator} from "../../util/treeMapGenerator"
 import {CodeMapHelper} from "../../util/codeMapHelper"
 import {CodeMapLabelService} from "./codeMap.label.service"
 import {ThreeSceneService} from "./threeViewer/threeSceneService"
@@ -29,7 +29,7 @@ export class CodeMapRenderService {
 	public render(renderData: RenderData) {
 		this.showAllOrOnlyFocusedNode(renderData.renderFile.map, renderData.settings)
 
-		const treeMapNode: Node = TreeMapService.createTreemapNodes(renderData.renderFile, renderData.settings, renderData.metricData)
+		const treeMapNode: Node = TreeMapGenerator.createTreemapNodes(renderData.renderFile, renderData.settings, renderData.metricData)
 		const nodes: Node[] = this.collectNodesToArray(treeMapNode)
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		const sortedNodes: Node[] = filteredNodes.sort((a, b) => b.height - a.height)
@@ -86,10 +86,10 @@ export class CodeMapRenderService {
 	private showAllOrOnlyFocusedNode(map: CodeMapNode, s: Settings) {
 		if (s.dynamicSettings.focusedNodePath.length > 0) {
 			const focusedNode = CodeMapHelper.getAnyCodeMapNodeFromPath(s.dynamicSettings.focusedNodePath, map)
-			TreeMapService.setVisibilityOfNodeAndDescendants(map, false)
-			TreeMapService.setVisibilityOfNodeAndDescendants(focusedNode, true)
+			TreeMapGenerator.setVisibilityOfNodeAndDescendants(map, false)
+			TreeMapGenerator.setVisibilityOfNodeAndDescendants(focusedNode, true)
 		} else {
-			TreeMapService.setVisibilityOfNodeAndDescendants(map, true)
+			TreeMapGenerator.setVisibilityOfNodeAndDescendants(map, true)
 		}
 	}
 
