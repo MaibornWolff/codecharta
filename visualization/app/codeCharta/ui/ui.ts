@@ -26,7 +26,6 @@ import "./ribbonBar/ribbonBar.module";
 import "./scenarioDropDown/scenarioDropDown.module";
 import "./settingsPanel/settingsPanel.module";
 import "./sidenav/sidenav.module";
-import "./tooltip/tooltip.module"
 import "./viewCube/viewCube.module";
 import "./weblinksPanel/weblinksPanel.module";
 
@@ -57,7 +56,6 @@ angular.module(
         "app.codeCharta.ui.scenarioDropDown",
         "app.codeCharta.ui.settingsPanel",
         "app.codeCharta.ui.sidenav",
-        "app.codeCharta.ui.tooltip",
         "app.codeCharta.ui.viewCube",
         "app.codeCharta.ui.weblinksPanel",
     ]);
