@@ -1,13 +1,12 @@
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service"
 import $ from "jquery"
-import { MapColors } from "../codeMap/rendering/renderSettings"
-import { IRootScopeService } from "angular"
+import {IRootScopeService} from "angular"
 import "./legendPanel.component.scss"
-import { ColorConverter } from "../../util/colorConverter"
-import { ColorRange, MarkedPackage, RecursivePartial, Settings } from "../../codeCharta.model"
-import { CodeChartaService } from "../../codeCharta.service"
-import { FileStateService } from "../../state/fileState.service"
-import { FileStateHelper } from "../../util/fileStateHelper"
+import {ColorConverter} from "../../util/colorConverter"
+import {ColorRange, MarkedPackage, RecursivePartial, Settings} from "../../codeCharta.model"
+import {CodeChartaService} from "../../codeCharta.service"
+import {FileStateService} from "../../state/fileState.service"
+import {FileStateHelper} from "../../util/fileStateHelper"
 
 export interface PackageList {
 	colorPixel: string
@@ -38,7 +37,7 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 		this._viewModel.colorRange = s.dynamicSettings.neutralColorRange
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 
-		const select = ColorConverter.getImageDataUri(MapColors.selected)
+		const select = ColorConverter.getImageDataUri(s.appSettings.mapColors.selected)
 		$("#select").attr("src", select)
 
 		if (this._viewModel.isDeltaState) {
@@ -50,9 +49,9 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 	}
 
 	private refreshNormalColors(s: Settings) {
-		const positive = ColorConverter.getImageDataUri(s.appSettings.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive)
-		const neutral = ColorConverter.getImageDataUri(MapColors.neutral)
-		const negative = ColorConverter.getImageDataUri(MapColors.negative)
+		const positive = ColorConverter.getImageDataUri(s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive)
+		const neutral = ColorConverter.getImageDataUri(s.appSettings.mapColors.neutral)
+		const negative = ColorConverter.getImageDataUri(s.appSettings.mapColors.negative)
 		$("#green").attr("src", positive)
 		$("#yellow").attr("src", neutral)
 		$("#red").attr("src", negative)
@@ -60,10 +59,10 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 
 	private refreshDeltaColors(s: Settings) {
 		const positiveDeltaPixel = ColorConverter.getImageDataUri(
-			s.appSettings.deltaColorFlipped ? MapColors.negativeDelta : MapColors.positiveDelta
+			s.appSettings.deltaColorFlipped ? s.appSettings.mapColors.negativeDelta : s.appSettings.mapColors.positiveDelta
 		)
 		const negativeDeltaPixel = ColorConverter.getImageDataUri(
-			s.appSettings.deltaColorFlipped ? MapColors.positiveDelta : MapColors.negativeDelta
+			s.appSettings.deltaColorFlipped ? s.appSettings.mapColors.positiveDelta : s.appSettings.mapColors.negativeDelta
 		)
 		$("#positiveDelta").attr("src", positiveDeltaPixel)
 		$("#negativeDelta").attr("src", negativeDeltaPixel)
