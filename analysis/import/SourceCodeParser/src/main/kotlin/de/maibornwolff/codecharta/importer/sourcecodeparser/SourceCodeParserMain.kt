@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.CSVMetricWriter
-import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.MetricWriter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.JSONMetricWriter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.MetricWriter
 import picocli.CommandLine.*
 import java.io.*
 import java.nio.file.Paths
@@ -15,6 +15,9 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
 
     @Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
+
+    @Option(names = ["-i", "--noIssues"], description = ["do not search for sonar issues"])
+    private var findIssues = false
 
     @Option(names = ["-p", "--projectName"], description = ["project name"])
     private var projectName = "DefaultProjectName"
@@ -40,7 +43,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
             outputStream.println("Could not find $file")
             return null
         }
-        val projectParser = ProjectParser(verbose)
+        val projectParser = ProjectParser(verbose, findIssues)
 
         projectParser.setUpAnalyzers()
         projectParser.scanProject(file)
