@@ -1,9 +1,3 @@
-export interface ColorRange {
-    from : number;
-    to : number;
-    flipped : boolean;
-}
-
 export const highlightColors = [
     "#FF1D8E",
     "#1D8EFF",
