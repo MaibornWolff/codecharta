@@ -1,19 +1,8 @@
 import {IntermediateVertexData} from "./intermediateVertexData";
 import * as THREE from "three";
 import {CodeMapShaderStrings} from "./codeMapShaderStrings";
-import {CodeMapBuilding} from "./codeMapBuilding";
-import {MapColors} from "./renderSettings";
 
 describe("common rendering tests", () => {
-
-    describe("codeMapBuilding", () => {
-
-        it("init", () => {
-            let cmb: CodeMapBuilding = new CodeMapBuilding(0, new THREE.Box3(), {});
-            expect(cmb.color).toBe(MapColors.defaultC);
-        });
-
-    });
 
     describe("shader strings", () => {
 

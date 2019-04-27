@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import {MapColors} from "./renderSettings";
 import {Node} from "../../../codeCharta.model";
 
 export class CodeMapBuilding {
@@ -10,11 +9,11 @@ export class CodeMapBuilding {
     public parent?: CodeMapBuilding;
     public name?: string;
 
-    constructor(id : number, box : THREE.Box3, node : Node, color? : string)
+    constructor(id : number, box : THREE.Box3, node : Node, color : string)
     {
         this.id = id;
         this.boundingBox = box;
-        this.color = color ? color : MapColors.defaultC;
+        this.color = color
         this.node = node;
     }
 }
