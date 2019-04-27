@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import {MapColors} from "./renderSettings";
-import {Node} from "./node";
+import {Node} from "../../../codeCharta.model";
 
 export class CodeMapBuilding {
     public id : number;

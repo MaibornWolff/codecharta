@@ -1,5 +1,5 @@
 import * as THREE from "three"
-import { Node } from "./rendering/node"
+import { Node } from "../../codeCharta.model"
 import { MapColors } from "./rendering/renderSettings"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { PerspectiveCamera, Sprite } from "three"

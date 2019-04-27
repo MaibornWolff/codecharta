@@ -1,5 +1,5 @@
 import { CodeMapNode, Edge, CCFile, Settings, MetricData } from "../codeCharta.model"
-import { Node } from "../../codeCharta/ui/codeMap/rendering/node"
+import { Node } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import * as THREE from "three"
 

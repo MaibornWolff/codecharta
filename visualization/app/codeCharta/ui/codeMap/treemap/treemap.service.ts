@@ -1,4 +1,4 @@
-import { Node } from "../rendering/node"
+import { Node } from "../../../codeCharta.model"
 import * as d3 from "d3"
 import { hierarchy, HierarchyNode } from "d3"
 import { TreeMapUtils } from "./treemap.util"

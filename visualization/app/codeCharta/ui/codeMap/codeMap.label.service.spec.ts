@@ -1,5 +1,5 @@
 import { CodeMapLabelService } from "./codeMap.label.service"
-import { Node } from "./rendering/node"
+import { Node } from "../../codeCharta.model"
 import { Vector3 } from "three"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"

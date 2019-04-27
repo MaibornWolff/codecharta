@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import {Node} from "./node";
+import {Node} from "../../../codeCharta.model";
 import {CodeMapGeometricDescription} from "./codeMapGeometricDescription";
 import {CodeMapBuilding} from "./codeMapBuilding";
 import {MapColors} from "./renderSettings";

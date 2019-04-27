@@ -6,7 +6,7 @@ import {CodeMapGeometricDescription} from "./codeMapGeometricDescription";
 import {IntersectionResult} from "./codeMapGeometricDescription";
 import {CodeMapBuilding} from "./codeMapBuilding";
 import {RenderingUtil} from "./renderingUtil";
-import {Node} from "./node";
+import {Node} from "../../../codeCharta.model";
 
 import {MapColors} from "./renderSettings";
 import {Settings} from "../../../codeCharta.model";
