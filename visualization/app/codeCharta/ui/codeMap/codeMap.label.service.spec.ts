@@ -1,51 +1,64 @@
-import { CodeMapLabelService } from "./codeMap.label.service"
-import { Node } from "../../codeCharta.model"
-import { Vector3 } from "three"
-import { ThreeCameraService } from "./threeViewer/threeCameraService"
-import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { IRootScopeService } from "angular"
-import { getService } from "../../../../mocks/ng.mockhelper"
-import { SETTINGS } from "../../util/dataMocks"
-import { Settings } from "../../codeCharta.model"
+import "./codeMap.module"
+import "../../codeCharta"
+import {CodeMapLabelService} from "./codeMap.label.service"
+import {Node, Settings} from "../../codeCharta.model"
+import {Vector3} from "three"
+import {ThreeCameraService} from "./threeViewer/threeCameraService"
+import {ThreeSceneService} from "./threeViewer/threeSceneService"
+import {IRootScopeService} from "angular"
+import {getService, instantiateModule} from "../../../../mocks/ng.mockhelper"
+import {DEFAULT_SETTINGS, SETTINGS} from "../../util/dataMocks"
+import {SettingsService} from "../../state/settings.service";
 
 describe("CodeMapLabelService", () => {
-	let services, codeMapLabelService: CodeMapLabelService
+	let $rootScope: IRootScopeService
+	let settingsService: SettingsService
+	let threeCameraService: ThreeCameraService
+	let threeSceneService: ThreeSceneService
+	let codeMapLabelService: CodeMapLabelService
 	let createElementOrigin
-	let sampleRenderSettings: Settings
+	let sampleSettings: Settings
 	let sampleLeaf: Node
 	let canvasCtxMock
 
 	beforeEach(() => {
-		setServices()
+		restartSystem()
 		withMockedEventMethods()
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
+		withMockedSettingsService()
 		rebuild()
 		setCanvasRenderSettings()
 	})
 
-	function setServices() {
-		services = {
-			$rootScope: getService<IRootScopeService>("$rootScope"),
-			threeCameraService: new ThreeCameraService(null, null),
-			threeSceneService: new ThreeSceneService(),
-		}
+	function restartSystem() {
+		instantiateModule("app.codeCharta.ui.codeMap")
+
+		$rootScope = getService<IRootScopeService>("$rootScope")
+		settingsService = getService<SettingsService>("settingsService")
+		threeCameraService = getService<ThreeCameraService>("threeCameraService")
+		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 	}
 
 	function rebuild() {
-		codeMapLabelService = new CodeMapLabelService(services.$rootScope,
-			services.threeCameraService,
-			services.threeSceneService
+		codeMapLabelService = new CodeMapLabelService(
+			$rootScope,
+			settingsService,
+			threeCameraService,
+			threeSceneService
 		)
 	}
 
 	function withMockedEventMethods() {
-		services.$rootScope.$on = jest.fn()
-		services.$rootScope.$broadcast = jest.fn()
+
+		$rootScope.$on = jest.fn()
+
+		$rootScope.$broadcast = jest.fn()
 	}
 
 	function withMockedThreeCameraService() {
-		services.threeCameraService = jest.fn<ThreeCameraService>(() => {
+
+		threeCameraService = jest.fn<ThreeCameraService>(() => {
 			return {
 				camera: {
 					position: {
@@ -57,7 +70,8 @@ describe("CodeMapLabelService", () => {
 	}
 
 	function withMockedThreeSceneService() {
-		services.threeSceneService = jest.fn<ThreeSceneService>(() => {
+
+		threeSceneService = jest.fn<ThreeSceneService>(() => {
 			return {
 				mapGeometry: jest.fn(),
 				labels: {
@@ -68,8 +82,17 @@ describe("CodeMapLabelService", () => {
 		})()
 	}
 
+	function withMockedSettingsService() {
+
+		settingsService = jest.fn<SettingsService>(() => {
+			return {
+				getSettings: jest.fn().mockReturnValue(DEFAULT_SETTINGS)
+			}
+		})()
+	}
+
 	function setCanvasRenderSettings() {
-		sampleRenderSettings = SETTINGS
+		sampleSettings = SETTINGS
 
 		sampleLeaf = ({
 			name: "sample",
@@ -116,18 +139,18 @@ describe("CodeMapLabelService", () => {
 	})
 
 	it("addLabel should add label if node has a height attribute mentioned in renderSettings", () => {
-		codeMapLabelService.addLabel(sampleLeaf, sampleRenderSettings)
+		codeMapLabelService.addLabel(sampleLeaf, sampleSettings)
 		expect(codeMapLabelService["labels"].length).toBe(1)
 	})
 
 	it("addLabel should not add label if node has not a height attribute mentioned in renderSettings", () => {
 		sampleLeaf.attributes = { notsome: 0 }
-		codeMapLabelService.addLabel(sampleLeaf, sampleRenderSettings)
+		codeMapLabelService.addLabel(sampleLeaf, sampleSettings)
 		expect(codeMapLabelService["labels"].length).toBe(0)
 	})
 
 	it("addLabel should calculate correct height without delta", () => {
-		codeMapLabelService.addLabel(sampleLeaf, sampleRenderSettings)
+		codeMapLabelService.addLabel(sampleLeaf, sampleSettings)
 		let positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 		expect(positionWithoutDelta.y).toBe(93)
 	})
@@ -143,8 +166,8 @@ describe("CodeMapLabelService", () => {
 		const SY = 2
 		const SZ = 3
 
-		codeMapLabelService.addLabel(sampleLeaf, sampleRenderSettings)
-		codeMapLabelService.addLabel(sampleLeaf, sampleRenderSettings)
+		codeMapLabelService.addLabel(sampleLeaf, sampleSettings)
+		codeMapLabelService.addLabel(sampleLeaf, sampleSettings)
 
 		const scaleBeforeA: Vector3 = new Vector3(
 			codeMapLabelService["labels"][0].sprite.position.x,
