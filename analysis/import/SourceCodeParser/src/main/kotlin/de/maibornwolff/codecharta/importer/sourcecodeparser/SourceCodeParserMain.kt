@@ -17,7 +17,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     private var help = false
 
     @Option(names = ["-i", "--noIssues"], description = ["do not search for sonar issues"])
-    private var findIssues = false
+    private var findNoIssues = false
 
     @Option(names = ["-p", "--projectName"], description = ["project name"])
     private var projectName = "DefaultProjectName"
@@ -43,7 +43,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
             outputStream.println("Could not find $file")
             return null
         }
-        val projectParser = ProjectParser(verbose, findIssues)
+        val projectParser = ProjectParser(verbose, !findNoIssues)
 
         projectParser.setUpAnalyzers()
         projectParser.scanProject(file)
