@@ -1,12 +1,3 @@
-export const highlightColors = [
-    "#FF1D8E",
-    "#1D8EFF",
-    "#1DFFFF",
-    "#8EFF1D",
-    "#8E1DFF",
-    "#FFFF1D",
-];
-
 export enum MapColors {
     positive = "#69AE40",
     neutral = "#DDCC00",
