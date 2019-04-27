@@ -1,6 +1,5 @@
-import { CodeMapNode, Edge, CCFile, Settings, MetricData } from "../codeCharta.model"
-import { Node } from "../codeCharta.model"
-import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
+import {CCFile, CodeMapNode, Edge, MetricData, Node, Settings} from "../codeCharta.model"
+import {CodeMapBuilding} from "../ui/codeMap/rendering/codeMapBuilding"
 import * as THREE from "three"
 
 export const VALID_NODE: CodeMapNode = {
@@ -478,7 +477,7 @@ export const TEST_NODE_LEAF: Node = {
 	flat: false
 }
 
-export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(1, new THREE.Box3(), TEST_NODE_ROOT)
+export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(1, new THREE.Box3(), TEST_NODE_ROOT, DEFAULT_SETTINGS.appSettings.mapColors.neutral)
 
 export const METRIC_DATA: MetricData[] = [
 	{ name: "mcc", maxValue: 1, availableInVisibleMaps: true },
