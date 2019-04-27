@@ -63,4 +63,19 @@ class JavaSonarAnalyzerTest {
 
     }
 
+    @Test
+    fun `sonar issues are retrieved`() {
+        val path = File("src/test/resources").toString()
+        val fileList = ArrayList<String>()
+        fileList.add("sonar_issues_java/CodeSmell.java")
+
+        val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
+        val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
+
+        assertThat(
+                metrics.getFileMetricMap("sonar_issues_java/CodeSmell.java")?.getMetricValue("code_smell")).isEqualTo(1)
+        assertThat(metrics.getFileMetricMap("sonar_issues_java/CodeSmell.java")?.getMetricValue(
+                "security_hotspot")).isEqualTo(1)
+    }
+
 }
