@@ -1,13 +1,11 @@
 import * as THREE from "three";
-import {Node} from "../../../codeCharta.model";
+import {Node, Settings} from "../../../codeCharta.model";
 import {CodeMapGeometricDescription} from "./codeMapGeometricDescription";
 import {CodeMapBuilding} from "./codeMapBuilding";
-import {MapColors} from "./renderSettings";
 import {RenderingUtil} from "./renderingUtil";
 import {IntermediateVertexData} from "./intermediateVertexData";
 import {BoxGeometryGenerationHelper} from "./boxGeometryGenerationHelper";
 import {ColorConverter} from "../../../util/colorConverter";
-import {Settings} from "../../../codeCharta.model";
 
 export interface BoxMeasures {
     x: number;
@@ -132,29 +130,29 @@ export class GeometryGenerator {
     }
 
     private estimateColorForBuilding(n: Node, s: Settings, isDeltaState: boolean): string {
-        let color: string = MapColors.defaultC;
+        let color: string = s.appSettings.mapColors.defaultC;
 
-        let mapColorPositive = s.appSettings.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive;
+        let mapColorPositive = s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive;
         if (!isDeltaState) {
             const val: number = n.attributes[s.dynamicSettings.colorMetric];
 
             if (val === undefined || val === null) {
-                color = MapColors.base;
+                color = s.appSettings.mapColors.base;
             }
             else if (n.flat) {
-                color = MapColors.flat;
+                color = s.appSettings.mapColors.flat;
             }
             else if (val < s.dynamicSettings.neutralColorRange.from) {
-                color = s.dynamicSettings.neutralColorRange.flipped ? MapColors.negative : mapColorPositive;
+                color = s.dynamicSettings.neutralColorRange.flipped ? s.appSettings.mapColors.negative : mapColorPositive;
             }
             else if (val > s.dynamicSettings.neutralColorRange.to) {
-                color = s.dynamicSettings.neutralColorRange.flipped ? mapColorPositive : MapColors.negative;
+                color = s.dynamicSettings.neutralColorRange.flipped ? mapColorPositive : s.appSettings.mapColors.negative;
             }
             else {
-                color = MapColors.neutral;
+                color = s.appSettings.mapColors.neutral;
             }
         } else {
-            color = MapColors.base;
+            color = s.appSettings.mapColors.base;
         }
 
         return color;
