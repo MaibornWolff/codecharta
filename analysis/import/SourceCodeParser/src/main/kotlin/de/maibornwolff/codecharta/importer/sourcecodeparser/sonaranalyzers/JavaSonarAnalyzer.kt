@@ -107,6 +107,7 @@ class JavaSonarAnalyzer: SonarAnalyzer {
             addFileToContext(file)
             executeScan()
             val fileMetrics = retrieveMetrics(file)
+            retrieveAdditionalMetrics().forEach{ fileMetrics.add(it.key, it.value) }
             retrieveIssues().forEach { fileMetrics.add(it.key, it.value) }
             projectMetrics.addFileMetricMap(file, fileMetrics)
         }
@@ -143,7 +144,7 @@ class JavaSonarAnalyzer: SonarAnalyzer {
         sensorContext.allIssues().forEach {
             val ruleKey = it.ruleKey().rule()
             val type = issueRepository.rule(ruleKey)?.type().toString().toLowerCase()
-            println("Found: $type \n with message ${it.primaryLocation().message()}")
+            println("Found: $type ${it.ruleKey().rule()} \n with message ${it.primaryLocation().message()}")
             if (issues.containsKey(type)) {
                 issues[type] = issues[type]!! + 1
             } else {
@@ -151,6 +152,30 @@ class JavaSonarAnalyzer: SonarAnalyzer {
             }
         }
         return issues
+    }
+
+    private fun retrieveAdditionalMetrics(): HashMap<String, Int>{
+        val additionalMetrics: HashMap<String, Int> = hashMapOf()
+
+        var commentedOutCodeLines = 0
+
+        val commentedOutLineIssues = sensorContext.allIssues().filter {println(it.ruleKey().rule())
+            it.ruleKey().rule() == "CommentedOutCodeLine" }
+        val foo = commentedOutLineIssues.map{
+            it.primaryLocation()
+        }//.forEach{ it}//.primaryLocation()}
+
+        if(!foo.isEmpty()){
+            val a = foo[0].javaClass.getDeclaredField("primaryLocation").let{
+                it.isAccessible = true
+                return@let it.get()
+            }
+        }
+
+        //println( foo )
+
+
+        return additionalMetrics
     }
 
     private fun printProgressBar(fileName: String) {
