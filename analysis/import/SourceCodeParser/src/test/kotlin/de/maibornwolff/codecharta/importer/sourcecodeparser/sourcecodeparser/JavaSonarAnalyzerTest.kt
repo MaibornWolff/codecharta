@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.sourcecodeparser
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers.JavaSonarAnalyzer
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Ignore
 import org.junit.Test
 import java.io.File
 import java.util.*
@@ -47,7 +48,7 @@ class JavaSonarAnalyzerTest {
     }
 
     @Test
-    fun `correct metrics are retrieved`(){
+    fun `correct metrics are retrieved`() {
         val fileList = ArrayList<String>()
         fileList.add("foo.java")
 
@@ -60,7 +61,6 @@ class JavaSonarAnalyzerTest {
         assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("classes")).isEqualTo(1)
         assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("mcc")).isEqualTo(6)
         assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("comment_lines")).isEqualTo(3)
-
     }
 
     @Test
@@ -78,4 +78,44 @@ class JavaSonarAnalyzerTest {
                 "security_hotspot")).isEqualTo(1)
     }
 
+    @Test
+    fun `sonar issues are zero if nothing is found`() {
+        val path = File("src/test/resources/sonar_issues_java").toString()
+        val fileList = ArrayList<String>()
+        fileList.add("Clean.java")
+
+        val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
+        val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
+
+        assertThat(metrics.getFileMetricMap("Clean.java")?.getMetricValue("code_smell")).isEqualTo(0)
+        assertThat(metrics.getFileMetricMap("Clean.java")?.getMetricValue("security_hotspot")).isEqualTo(0)
+        assertThat(metrics.getFileMetricMap("Clean.java")?.getMetricValue("bug")).isEqualTo(0)
+    }
+
+    @Test
+    fun `commented out lines of code is zero if issue is not found`() {
+        val path = File("src/test/resources/sonar_issues_java").toString()
+        val fileList = ArrayList<String>()
+        fileList.add("Clean.java")
+
+        val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
+        val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
+
+        assertThat(metrics.getFileMetricMap("Clean.java")?.getMetricValue("commented_out_code_lines")).isEqualTo(0)
+    }
+
+    @Ignore
+    @Test
+    fun `commented out lines of code are correct if issues are found`() {
+        val path = File("src/test/resources/sonar_issues_java").toString()
+        val fileList = ArrayList<String>()
+        fileList.add("CommentedOutCode.java")
+
+        val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
+        val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
+
+        // two commented out code issues ( 9 + 3 = 12)
+        assertThat(metrics.getFileMetricMap("CommentedOutCode.java")?.getMetricValue(
+                "commented_out_code_lines")).isEqualTo(3)
+    }
 }

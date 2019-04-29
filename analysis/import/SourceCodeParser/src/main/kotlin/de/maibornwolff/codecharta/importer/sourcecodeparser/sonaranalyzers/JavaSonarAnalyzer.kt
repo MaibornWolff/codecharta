@@ -163,26 +163,13 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true):
     private fun retrieveAdditionalMetrics(): HashMap<String, Int> {
         val additionalMetrics: HashMap<String, Int> = hashMapOf()
 
-        var commentedOutCodeLines = 0
-
         val commentedOutLineIssues = sensorContext.allIssues().filter { it.ruleKey().rule() == "CommentedOutCodeLine" }
-        val primaryLocation = commentedOutLineIssues.map { it.primaryLocation() }
-
-        primaryLocation.forEach { entry ->
-            val component = entry.javaClass.getDeclaredField("component").let {
-                it.isAccessible = true
-                return@let it.get(entry)
-            }
-            val metadata = component.javaClass.getDeclaredField("metadata").let {
-                it.isAccessible = true
-                return@let it.get(component)
-            }
-            commentedOutCodeLines += metadata.javaClass.getDeclaredField("nonBlankLines").let {
-                it.isAccessible = true
-                return@let it.getInt(metadata)
-            }
+        val commentedOutLinesComponents = commentedOutLineIssues.map { entry ->
+            entry.primaryLocation().textRange()?.let {
+                return@let it.end().line() - it.start().line() + 1
+            } ?: 0
         }
-        additionalMetrics["commented_out_code_lines"] = commentedOutCodeLines
+        additionalMetrics["commented_out_code_lines"] = commentedOutLinesComponents.sum()
 
         return additionalMetrics
     }
