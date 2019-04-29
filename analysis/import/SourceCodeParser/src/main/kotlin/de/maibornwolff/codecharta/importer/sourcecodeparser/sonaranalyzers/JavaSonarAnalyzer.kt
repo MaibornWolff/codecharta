@@ -30,7 +30,7 @@ import java.io.File
 import java.io.PrintStream
 import java.nio.charset.StandardCharsets
 
-class JavaSonarAnalyzer: SonarAnalyzer {
+class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true): SonarAnalyzer(verbose, searchIssues) {
 
     override val FILE_EXTENSION = "java"
     override lateinit var baseDir: File
@@ -46,7 +46,7 @@ class JavaSonarAnalyzer: SonarAnalyzer {
     private var analyzedFiles = 0
     private val originalOut = System.out
 
-    constructor(verbose: Boolean = false, searchIssues: Boolean = true): super(verbose, searchIssues) {
+    init {
         if (searchIssues) {
             setActiveRules()
             createIssueRepository()
@@ -107,7 +107,7 @@ class JavaSonarAnalyzer: SonarAnalyzer {
             addFileToContext(file)
             executeScan()
             val fileMetrics = retrieveMetrics(file)
-            retrieveAdditionalMetrics().forEach{ fileMetrics.add(it.key, it.value) }
+            retrieveAdditionalMetrics().forEach { fileMetrics.add(it.key, it.value) }
             retrieveIssues().forEach { fileMetrics.add(it.key, it.value) }
             projectMetrics.addFileMetricMap(file, fileMetrics)
         }
@@ -140,7 +140,13 @@ class JavaSonarAnalyzer: SonarAnalyzer {
     }
 
     private fun retrieveIssues(): HashMap<String, Int> {
-        val issues: HashMap<String, Int> = hashMapOf()
+        val issues: HashMap<String, Int> = hashMapOf(
+                "bug" to 0,
+                "vulnerability" to 0,
+                "code_smell" to 0,
+                "security_hotspot" to 0,
+                "sonar_issue_other" to 0
+        )
         sensorContext.allIssues().forEach {
             val ruleKey = it.ruleKey().rule()
             val type = issueRepository.rule(ruleKey)?.type().toString().toLowerCase()
@@ -148,32 +154,35 @@ class JavaSonarAnalyzer: SonarAnalyzer {
             if (issues.containsKey(type)) {
                 issues[type] = issues[type]!! + 1
             } else {
-                issues[type] = 1
+                issues["sonar_issue_other"] = issues["sonar_issue_other"]!! + 1
             }
         }
         return issues
     }
 
-    private fun retrieveAdditionalMetrics(): HashMap<String, Int>{
+    private fun retrieveAdditionalMetrics(): HashMap<String, Int> {
         val additionalMetrics: HashMap<String, Int> = hashMapOf()
 
         var commentedOutCodeLines = 0
 
-        val commentedOutLineIssues = sensorContext.allIssues().filter {println(it.ruleKey().rule())
-            it.ruleKey().rule() == "CommentedOutCodeLine" }
-        val foo = commentedOutLineIssues.map{
-            it.primaryLocation()
-        }//.forEach{ it}//.primaryLocation()}
+        val commentedOutLineIssues = sensorContext.allIssues().filter { it.ruleKey().rule() == "CommentedOutCodeLine" }
+        val primaryLocation = commentedOutLineIssues.map { it.primaryLocation() }
 
-        if(!foo.isEmpty()){
-            val a = foo[0].javaClass.getDeclaredField("primaryLocation").let{
+        primaryLocation.forEach { entry ->
+            val component = entry.javaClass.getDeclaredField("component").let {
                 it.isAccessible = true
-                return@let it.get()
+                return@let it.get(entry)
+            }
+            val metadata = component.javaClass.getDeclaredField("metadata").let {
+                it.isAccessible = true
+                return@let it.get(component)
+            }
+            commentedOutCodeLines += metadata.javaClass.getDeclaredField("nonBlankLines").let {
+                it.isAccessible = true
+                return@let it.getInt(metadata)
             }
         }
-
-        //println( foo )
-
+        additionalMetrics["commented_out_code_lines"] = commentedOutCodeLines
 
         return additionalMetrics
     }
