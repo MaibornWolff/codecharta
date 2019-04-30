@@ -1,13 +1,13 @@
-import { UrlExtractor } from "./util/urlExtractor"
-import { IHttpService, ILocationService, IRootScopeService, ITimeoutService } from "angular"
+import {UrlExtractor} from "./util/urlExtractor"
+import {IHttpService, ILocationService, IRootScopeService, ITimeoutService} from "angular"
 import "./codeCharta.component.scss"
-import { CodeChartaService } from "./codeCharta.service"
+import {CodeChartaService} from "./codeCharta.service"
 import {SettingsService, SettingsServiceSubscriber} from "./state/settings.service";
 import {ScenarioHelper} from "./util/scenarioHelper";
 import {DialogService} from "./ui/dialog/dialog.service";
 import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
 import {CodeMapActionsService} from "./ui/codeMap/codeMap.actions.service";
-import { Settings, NameDataPair, RecursivePartial } from "./codeCharta.model"
+import {NameDataPair, RecursivePartial, Settings} from "./codeCharta.model"
 import {FileStateService} from "./state/fileState.service";
 
 
@@ -22,10 +22,12 @@ export class CodeChartaController implements SettingsServiceSubscriber, CodeChar
 	private _viewModel: {
 		version: string,
 		isLoadingFile: boolean,
+		isLoadingMap: boolean,
 		focusedNodePath: string
 	} = {
 		version: require("../../package.json").version,
 		isLoadingFile: true,
+		isLoadingMap: true,
 		focusedNodePath: ""
 	}
 

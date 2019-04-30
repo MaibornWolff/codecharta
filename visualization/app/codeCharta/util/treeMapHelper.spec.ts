@@ -1,9 +1,9 @@
-import {TreeMapUtils} from "./treemap.util";
-import {SquarifiedValuedCodeMapNode} from "./treemap.service";
-import {CodeMapNode, Settings} from "../../../codeCharta.model";
-import {SETTINGS} from '../../../util/dataMocks'
+import {TreeMapHelper} from "./treeMapHelper";
+import {SquarifiedValuedCodeMapNode} from "./treeMapGenerator";
+import {CodeMapNode, Settings} from "../codeCharta.model";
+import {SETTINGS} from './dataMocks'
 
-describe("treemapUtils", () => {
+describe("treeMapHelper", () => {
 
     describe("build node", () => {
 
@@ -45,7 +45,7 @@ describe("treemapUtils", () => {
         });
 
         function buildNode() {
-            return TreeMapUtils.buildNodeFrom(
+            return TreeMapHelper.buildNodeFrom(
                 squaredNode,
                 heightScale,
                 heightValue,
@@ -83,10 +83,10 @@ describe("treemapUtils", () => {
         });
 
         it("is leaf", () => {
-            let tmp = TreeMapUtils.isNodeLeaf;
-            TreeMapUtils.isNodeLeaf = jest.fn(() => {return true});
+            let tmp = TreeMapHelper.isNodeLeaf;
+            TreeMapHelper.isNodeLeaf = jest.fn(() => {return true});
             expect(buildNode()).toMatchSnapshot();
-            TreeMapUtils.isNodeLeaf = tmp;
+            TreeMapHelper.isNodeLeaf = tmp;
         });
 
         it("should set lowest possible height caused by other visible edge pairs", () => {
@@ -127,27 +127,27 @@ describe("treemapUtils", () => {
 
         it("root with no children is leaf", () => {
             const root = {};
-            expect(TreeMapUtils.isNodeLeaf(root)).toBeTruthy();
+            expect(TreeMapHelper.isNodeLeaf(root)).toBeTruthy();
         });
 
         it("root plus child should not be a leaf", () => {
             const root = {children: [{}]};
-            expect(TreeMapUtils.isNodeLeaf(root)).toBeFalsy();
-            expect(TreeMapUtils.isNodeLeaf(root.children[0])).toBeTruthy();
+            expect(TreeMapHelper.isNodeLeaf(root)).toBeFalsy();
+            expect(TreeMapHelper.isNodeLeaf(root.children[0])).toBeTruthy();
         });
 
         it("root plus child in child", () => {
             const root = {children: [{children: [{}]}]};
-            expect(TreeMapUtils.isNodeLeaf(root)).toBeFalsy();
-            expect(TreeMapUtils.isNodeLeaf(root.children[0])).toBeFalsy();
-            expect(TreeMapUtils.isNodeLeaf(root.children[0].children[0])).toBeTruthy();
+            expect(TreeMapHelper.isNodeLeaf(root)).toBeFalsy();
+            expect(TreeMapHelper.isNodeLeaf(root.children[0])).toBeFalsy();
+            expect(TreeMapHelper.isNodeLeaf(root.children[0].children[0])).toBeTruthy();
         });
 
         it("root plus two children", () => {
             const root = {children: [{}, {}]};
-            expect(TreeMapUtils.isNodeLeaf(root)).toBeFalsy();
-            expect(TreeMapUtils.isNodeLeaf(root.children[0])).toBeTruthy();
-            expect(TreeMapUtils.isNodeLeaf(root.children[1])).toBeTruthy();
+            expect(TreeMapHelper.isNodeLeaf(root)).toBeFalsy();
+            expect(TreeMapHelper.isNodeLeaf(root.children[0])).toBeTruthy();
+            expect(TreeMapHelper.isNodeLeaf(root.children[1])).toBeTruthy();
         });
 
     });
@@ -156,22 +156,22 @@ describe("treemapUtils", () => {
 
         it("root only should be 1", () => {
             const root = {};
-            expect(TreeMapUtils.countNodes(root)).toBe(1);
+            expect(TreeMapHelper.countNodes(root)).toBe(1);
         });
 
         it("root plus child should be 2", () => {
             const root = {children: [{}]};
-            expect(TreeMapUtils.countNodes(root)).toBe(2);
+            expect(TreeMapHelper.countNodes(root)).toBe(2);
         });
 
         it("root plus child in child should be 3", () => {
             const root = {children: [{children: [{}]}]};
-            expect(TreeMapUtils.countNodes(root)).toBe(3);
+            expect(TreeMapHelper.countNodes(root)).toBe(3);
         });
 
         it("root plus two children should be 3", () => {
             const root = {children: [{}, {}]};
-            expect(TreeMapUtils.countNodes(root)).toBe(3);
+            expect(TreeMapHelper.countNodes(root)).toBe(3);
         });
 
     });
@@ -208,7 +208,7 @@ describe("treemapUtils", () => {
 
         it("should not be a flat node when no visibleEdges", () => {
             treeMapSettings.fileSettings.edges = [];
-            expect(TreeMapUtils["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeFalsy();
+            expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeFalsy();
         });
 
         it("should be a flat node when other edges are visible", () => {
@@ -218,7 +218,7 @@ describe("treemapUtils", () => {
                 attributes: {},
                 visible: true
             }];
-            expect(TreeMapUtils["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeTruthy();
+            expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeTruthy();
         });
 
         it("should not be a flat node when it contains edges", () => {
@@ -227,25 +227,25 @@ describe("treemapUtils", () => {
                 toNodeName: "/root/anotherNode",
                 attributes: {}
             }];
-            expect(TreeMapUtils["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeFalsy();
+            expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeFalsy();
         });
 
         it("should not be a flat node, because its searched for", () => {
             treeMapSettings.dynamicSettings.searchedNodePaths = ["/root/Anode"];
             treeMapSettings.dynamicSettings.searchPattern = "Anode";
-            expect(TreeMapUtils["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeFalsy();
+            expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeFalsy();
         });
 
         it("should be a flat node, because other nodes are searched for", () => {
             treeMapSettings.dynamicSettings.searchedNodePaths = ["/root/anotherNode", "/root/anotherNode2"];
             treeMapSettings.dynamicSettings.searchPattern = "Anode";
-            expect(TreeMapUtils["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeTruthy();
+            expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeTruthy();
         });
 
         it("should not be a flat node when searchPattern is empty", () => {
             treeMapSettings.dynamicSettings.searchedNodePaths = ["/root/anotherNode", "/root/anotherNode2"];
             treeMapSettings.dynamicSettings.searchPattern = "";
-            expect(TreeMapUtils["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeFalsy();
+            expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeFalsy();
         });
 
     });
