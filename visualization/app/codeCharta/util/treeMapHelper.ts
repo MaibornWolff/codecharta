@@ -1,15 +1,14 @@
-import {SquarifiedValuedCodeMapNode} from "./treemap.service";
-import {Node} from "../../../codeCharta.model";
-import {CodeMapHelper} from "../../../util/codeMapHelper";
-import {Settings} from "../../../codeCharta.model";
+import {SquarifiedValuedCodeMapNode} from "./treeMapGenerator";
+import {CodeMapHelper} from "./codeMapHelper";
+import {Settings, Node} from "../codeCharta.model";
 
-export class TreeMapUtils {
+export class TreeMapHelper {
 
     public static countNodes(node: { children?: any }): number {
         let count = 1;
         if (node.children && node.children.length > 0) {
             for (let i = 0; i < node.children.length; i++) {
-                count += TreeMapUtils.countNodes(node.children[i]);
+                count += this.countNodes(node.children[i]);
             }
         }
         return count;
@@ -34,7 +33,7 @@ export class TreeMapUtils {
             calculatedHeightValue = (maxHeight - heightValue);
         }
 
-        const flattened = TreeMapUtils.isNodeToBeFlat(squaredNode, s);
+        const flattened = this.isNodeToBeFlat(squaredNode, s);
         if (flattened) {
             calculatedHeightValue = minHeight;
         }
@@ -42,18 +41,18 @@ export class TreeMapUtils {
         return {
             name: squaredNode.data.name,
             width: squaredNode.x1 - squaredNode.x0,
-            height: Math.abs(TreeMapUtils.isNodeLeaf(squaredNode) ? Math.max(heightScale * calculatedHeightValue, minHeight) : folderHeight),
+            height: Math.abs(this.isNodeLeaf(squaredNode) ? Math.max(heightScale * calculatedHeightValue, minHeight) : folderHeight),
             length: squaredNode.y1 - squaredNode.y0,
             depth: depth,
             x0: squaredNode.x0,
             z0: depth * folderHeight,
             y0: squaredNode.y0,
-            isLeaf: TreeMapUtils.isNodeLeaf(squaredNode),
+            isLeaf: this.isNodeLeaf(squaredNode),
             attributes: squaredNode.data.attributes,
             deltas: squaredNode.data.deltas,
             parent: parent,
             heightDelta: squaredNode.data.deltas && squaredNode.data.deltas[s.dynamicSettings.heightMetric] ? heightScale * squaredNode.data.deltas[s.dynamicSettings.heightMetric] : 0,
-            visible: squaredNode.data.visible && !(TreeMapUtils.isNodeLeaf(squaredNode) && s.appSettings.hideFlatBuildings && flattened),
+            visible: squaredNode.data.visible && !(this.isNodeLeaf(squaredNode) && s.appSettings.hideFlatBuildings && flattened),
             path: squaredNode.data.path,
             origin: squaredNode.data.origin,
             link: squaredNode.data.link,

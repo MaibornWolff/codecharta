@@ -45,6 +45,14 @@
         </div>
     </div>
 
+    <div class="section loading-gif">
+        <div class="section-header">
+            <div id="small-loading-indicator" ng-show="$ctrl._viewModel.isLoadingMap">
+                <md-progress-circular md-mode="indeterminate" md-diameter="24"></md-progress-circular>
+            </div>
+        </div>
+    </div>
+
     <div class="file-chooser-btn">
         <file-chooser-directive></file-chooser-directive>
     </div>

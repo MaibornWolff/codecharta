@@ -1,12 +1,6 @@
 "use strict"
 
-import {
-	CCFile,
-	FileSelectionState,
-	FileState,
-	MetricData, RecursivePartial,
-	Settings
-} from "../../codeCharta.model"
+import {CCFile, FileSelectionState, FileState, MetricData, RecursivePartial, Settings} from "../../codeCharta.model"
 import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import {IAngularEvent, IRootScopeService} from "angular";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
@@ -19,6 +13,7 @@ import {DeltaGenerator} from "../../util/deltaGenerator";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 import {CodeChartaController} from "../../codeCharta.component";
 import {CodeMapRenderService} from "./codeMap.render.service";
+import {RibbonBarController} from "../ribbonBar/ribbonBar.component";
 
 export interface RenderData {
 	renderFile: CCFile
@@ -90,6 +85,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 
 	private decorateIfPossible() {
 		if(this.lastRender.renderFile
+			&& this.lastRender.settings
 			&& this.lastRender.settings.fileSettings
 			&& this.lastRender.settings.fileSettings.blacklist
 			&& this.lastRender.metricData
@@ -134,9 +130,10 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		if (this.allNecessaryRenderDataAvailable()) {
 			this.codeMapRenderService.render(this.lastRender)
 
+			this.notifyLoadingMapStatus()
 			this.notifyFileChanged()
 			if (this.newFileLoaded) {
-				this.notifyLoadingStatus()
+				this.notifyLoadingFileStatus()
 				this.threeOrbitControlsService.autoFitTo();
 				this.newFileLoaded = false
 			}
@@ -152,8 +149,12 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 			})
 	}
 
-	private notifyLoadingStatus() {
+	private notifyLoadingFileStatus() {
 		this.$rootScope.$broadcast(CodeChartaController.LOADING_STATUS_EVENT, false)
+	}
+
+	private notifyLoadingMapStatus() {
+		this.$rootScope.$broadcast(RibbonBarController.LOADING_MAP_STATUS_EVENT, false)
 	}
 
 	private notifyFileChanged() {
