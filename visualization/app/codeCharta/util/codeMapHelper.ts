@@ -51,8 +51,22 @@ export class CodeMapHelper {
     }
 
     public static isBlacklisted(node: CodeMapNode, blacklist: Array<BlacklistItem>, type: BlacklistType): boolean {
+        if(blacklist.length === 0) {
+            return false
+        }
+
         const ig = ignore().add(blacklist
             .filter(b => b.type === type)
+            .map(ex => CodeMapHelper.transformPath(ex.path)));
+        return ig.ignores(CodeMapHelper.transformPath(node.path));
+    }
+
+    public static isHiddenOrExcluded(node: CodeMapNode, blacklist: Array<BlacklistItem>): boolean {
+        if (blacklist.length === 0) {
+            return false
+        }
+
+        const ig = ignore().add(blacklist
             .map(ex => CodeMapHelper.transformPath(ex.path)));
         return ig.ignores(CodeMapHelper.transformPath(node.path));
     }
