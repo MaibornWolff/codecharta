@@ -9,6 +9,7 @@ import { IRootScopeService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service";
+import { CodeMapHelper } from "../../util/codeMapHelper";
 
 describe("MapTreeViewSearchController", () => {
 
@@ -151,6 +152,15 @@ describe("MapTreeViewSearchController", () => {
 				{path: "/root/node/path", type: BlacklistType.exclude},
 				{path: "/root/node/path", type: BlacklistType.hide}
 			]
+
+			const isBlacklisted = jest.fn()
+			isBlacklisted.mockImplementation((node, blacklist, type) => {
+				if (type == BlacklistType.hide && node.path == "/root/node/path") return true
+				if (type == BlacklistType.exclude && node.path == "/root/node/path") return true
+				return false
+			})	
+			CodeMapHelper.isBlacklisted = isBlacklisted.bind(CodeMapHelper)
+
 			mapTreeViewSearchController["updateViewModel"](searchedNodeLeaves, blacklist)
 
 			expect(mapTreeViewSearchController["_viewModel"].fileCount).toEqual(searchedNodeLeaves.length)
