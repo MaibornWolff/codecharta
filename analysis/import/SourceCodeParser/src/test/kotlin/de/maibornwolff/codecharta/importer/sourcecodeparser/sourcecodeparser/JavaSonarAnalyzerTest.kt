@@ -93,7 +93,7 @@ class JavaSonarAnalyzerTest {
     }
 
     @Test
-    fun `commented out lines of code is zero if issue is not found`() {
+    fun `commented out blocks of code is zero if issue is not found`() {
         val path = File("src/test/resources/sonar_issues_java").toString()
         val fileList = ArrayList<String>()
         fileList.add("Clean.java")
@@ -101,12 +101,11 @@ class JavaSonarAnalyzerTest {
         val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
-        assertThat(metrics.getFileMetricMap("Clean.java")?.getMetricValue("commented_out_code_lines")).isEqualTo(0)
+        assertThat(metrics.getFileMetricMap("Clean.java")?.getMetricValue("commented_out_code_blocks")).isEqualTo(0)
     }
 
-    @Ignore
     @Test
-    fun `commented out lines of code are correct if issues are found`() {
+    fun `commented out blocks of code are correct if issues are found`() {
         val path = File("src/test/resources/sonar_issues_java").toString()
         val fileList = ArrayList<String>()
         fileList.add("CommentedOutCode.java")
@@ -114,8 +113,7 @@ class JavaSonarAnalyzerTest {
         val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
-        // two commented out code issues ( 9 + 3 = 12)
         assertThat(metrics.getFileMetricMap("CommentedOutCode.java")?.getMetricValue(
-                "commented_out_code_lines")).isEqualTo(3)
+                "commented_out_code_blocks")).isEqualTo(3)
     }
 }

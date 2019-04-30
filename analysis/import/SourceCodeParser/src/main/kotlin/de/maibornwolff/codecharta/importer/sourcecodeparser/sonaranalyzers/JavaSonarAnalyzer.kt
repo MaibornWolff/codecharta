@@ -30,10 +30,11 @@ import java.io.File
 import java.io.PrintStream
 import java.nio.charset.StandardCharsets
 
-class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true): SonarAnalyzer(verbose, searchIssues) {
+class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) : SonarAnalyzer(verbose, searchIssues) {
 
     override val FILE_EXTENSION = "java"
     override lateinit var baseDir: File
+    val MAX_FILE_NAME_PRINT_LENGTH = 30
 
     private lateinit var javaClasspath: JavaClasspath
     private lateinit var sonarComponents: SonarComponents
@@ -147,6 +148,7 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true):
                 "security_hotspot" to 0,
                 "sonar_issue_other" to 0
         )
+
         sensorContext.allIssues().forEach {
             val ruleKey = it.ruleKey().rule()
             val type = issueRepository.rule(ruleKey)?.type().toString().toLowerCase()
@@ -163,13 +165,8 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true):
     private fun retrieveAdditionalMetrics(): HashMap<String, Int> {
         val additionalMetrics: HashMap<String, Int> = hashMapOf()
 
-        val commentedOutLineIssues = sensorContext.allIssues().filter { it.ruleKey().rule() == "CommentedOutCodeLine" }
-        val commentedOutLinesComponents = commentedOutLineIssues.map { entry ->
-            entry.primaryLocation().textRange()?.let {
-                return@let it.end().line() - it.start().line() + 1
-            } ?: 0
-        }
-        additionalMetrics["commented_out_code_lines"] = commentedOutLinesComponents.sum()
+        val commentedOutBlocks = sensorContext.allIssues().filter { it.ruleKey().rule() == "CommentedOutCodeLine" }
+        additionalMetrics["commented_out_code_blocks"] = commentedOutBlocks.size
 
         return additionalMetrics
     }
@@ -178,7 +175,7 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true):
         analyzedFiles += 1
         val percentage = analyzedFiles.toFloat() / totalFiles * 100
         val roundedPercentage = String.format("%.1f", percentage)
-        val currentFile = if (fileName.length > 30) ".." + fileName.takeLast(30) else fileName
+        val currentFile = if (fileName.length > MAX_FILE_NAME_PRINT_LENGTH) ".." + fileName.takeLast(MAX_FILE_NAME_PRINT_LENGTH) else fileName
         val message = "\r Analyzing .java files... $roundedPercentage% ($currentFile)"
 
         System.setOut(originalOut)

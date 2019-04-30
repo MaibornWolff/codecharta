@@ -11,5 +11,8 @@ class CommentedOutCode {
         //}
 
         // System.out.println("Fizzbuzz");
+
+
+        int a;
     }
 }
