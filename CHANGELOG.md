@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+-	Prevent downloaded files from having multiple Timestamps #484
 
 ### Chore
 
