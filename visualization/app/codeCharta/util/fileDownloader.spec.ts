@@ -21,9 +21,8 @@ describe("fileDownloader", () => {
 			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(TEST_FILE_DATA_DOWNLOADED, TEST_FILE_DATA_DOWNLOADED.fileName)
 			expect(FileDownloader.downloadCurrentMap(file)).toMatchSnapshot()
 		})
-	})
-	describe("downloadCurrentMap", () => {
-		it("should", () => {
+
+		it("should not have multiple timestamps", () => {
 			file.fileMeta.fileName = "foo.2019-04-22_18-01.cc.json"
 			TEST_FILE_DATA_DOWNLOADED.fileName = "foo.2018-12-14_9-39.cc.json"
 
