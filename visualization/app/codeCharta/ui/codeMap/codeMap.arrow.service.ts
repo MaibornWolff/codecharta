@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import {Node} from "./rendering/node";
+import {Node} from "../../codeCharta.model";
 import {ThreeSceneService} from "./threeViewer/threeSceneService";
 import {Edge, Settings} from "../../codeCharta.model";
 

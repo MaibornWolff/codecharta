@@ -1,4 +1,4 @@
-import { Node } from "../rendering/node"
+import { Node } from "../../../codeCharta.model"
 import { CCFile, Settings, MetricData } from "../../../codeCharta.model"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { TreeMapService } from "./treemap.service"
