@@ -6,7 +6,7 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { Object3D } from "three"
 import { Edge, Settings } from "../../codeCharta.model"
 import { SETTINGS, TEST_NODE_LEAF, TEST_NODE_ROOT, VALID_EDGES } from "../../util/dataMocks"
-import { Node } from "./rendering/node"
+import { Node } from "../../codeCharta.model"
 
 describe("CodeMapArrowService", () => {
 

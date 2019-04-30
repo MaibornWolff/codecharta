@@ -1,6 +1,5 @@
 import "./nodeContextMenu.component.scss";
 import angular from "angular";
-import {highlightColors} from "../codeMap/rendering/renderSettings";
 import {CodeMapActionsService} from "../codeMap/codeMap.actions.service";
 import {CodeMapHelper} from "../../util/codeMapHelper";
 import {SettingsService} from "../../state/settings.service";
@@ -20,7 +19,7 @@ export class NodeContextMenuController {
         amountOfVisibleDependentEdges: null,
         anyEdgeIsVisible: null,
         contextMenuBuilding: null,
-        markingColors: highlightColors
+        markingColors: null
     }
 
     /* @ngInject */
@@ -40,7 +39,7 @@ export class NodeContextMenuController {
         });
 
         document.body.addEventListener("click", () => NodeContextMenuController.broadcastHideEvent(this.$rootScope), true)
-
+        this._viewModel.markingColors = this.settingsService.getSettings().appSettings.mapColors.markingColors
     }
 
     public show(path: string, nodeType: string, mouseX: number, mouseY: number) {

@@ -1,7 +1,7 @@
 "use strict"
 
 import {CodeMapMesh} from "./rendering/codeMapMesh"
-import {Node} from "./rendering/node"
+import {Node} from "../../codeCharta.model"
 import {TreeMapService} from "./treemap/treemap.service"
 import {CodeMapHelper} from "../../util/codeMapHelper"
 import {CodeMapLabelService} from "./codeMap.label.service"
