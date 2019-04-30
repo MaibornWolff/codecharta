@@ -1,5 +1,6 @@
 import {CCFile, FileSelectionState, FileState} from "../codeCharta.model";
 import {IAngularEvent, IRootScopeService} from "angular";
+import {RibbonBarController} from "../ui/ribbonBar/ribbonBar.component";
 
 export interface FileStateServiceSubscriber {
     onFileSelectionStatesChanged(fileStates: FileState[], event: IAngularEvent)
@@ -72,6 +73,7 @@ export class FileStateService {
     }
 
     private notifySelectionChange() {
+        this.$rootScope.$broadcast(RibbonBarController.LOADING_MAP_STATUS_EVENT, true)
         this.$rootScope.$broadcast(FileStateService.FILE_STATE_CHANGED_EVENT, this.fileStates)
     }
 
