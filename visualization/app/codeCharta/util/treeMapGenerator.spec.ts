@@ -1,6 +1,5 @@
-import { Node } from "../ui/codeMap/rendering/node"
 import { CCFile, Settings, MetricData } from "../codeCharta.model"
-import { CodeMapNode } from "../codeCharta.model"
+import { CodeMapNode, Node } from "../codeCharta.model"
 import { TreeMapGenerator } from "./treeMapGenerator"
 import { SETTINGS, METRIC_DATA, TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH, VALID_EDGES } from "./dataMocks"
 

@@ -1,7 +1,6 @@
 import {SquarifiedValuedCodeMapNode} from "./treeMapGenerator";
-import {Node} from "../ui/codeMap/rendering/node";
 import {CodeMapHelper} from "./codeMapHelper";
-import {Settings} from "../codeCharta.model";
+import {Settings, Node} from "../codeCharta.model";
 
 export class TreeMapHelper {
 

@@ -1,13 +1,12 @@
 "use strict"
 
 import {CodeMapMesh} from "./rendering/codeMapMesh"
-import {Node} from "./rendering/node"
 import {TreeMapGenerator} from "../../util/treeMapGenerator"
 import {CodeMapHelper} from "../../util/codeMapHelper"
 import {CodeMapLabelService} from "./codeMap.label.service"
 import {ThreeSceneService} from "./threeViewer/threeSceneService"
 import {CodeMapArrowService} from "./codeMap.arrow.service"
-import {CodeMapNode, Edge, Settings} from "../../codeCharta.model"
+import {CodeMapNode, Edge, Settings, Node} from "../../codeCharta.model"
 import {FileStateHelper} from "../../util/fileStateHelper";
 import {RenderData} from "./codeMap.preRender.service";
 
