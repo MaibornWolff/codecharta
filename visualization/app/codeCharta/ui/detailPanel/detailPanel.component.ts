@@ -7,7 +7,7 @@ import {
 	CodeMapMouseEventServiceSubscriber
 } from "../codeMap/codeMap.mouseEvent.service"
 import { Settings, KeyValuePair, MetricData, RecursivePartial } from "../../codeCharta.model"
-import {Node} from "../codeMap/rendering/node";
+import {Node} from "../../codeCharta.model";
 import {MetricService, MetricServiceSubscriber} from "../../state/metric.service";
 import {FileStateService} from "../../state/fileState.service";
 import {FileStateHelper} from "../../util/fileStateHelper";
