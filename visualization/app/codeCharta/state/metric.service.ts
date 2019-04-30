@@ -30,7 +30,8 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 
 	constructor(
 		private $rootScope: IRootScopeService,
-		private fileStateService: FileStateService
+		private fileStateService: FileStateService,
+		private settingsService: SettingsService
 	) {
 		FileStateService.subscribe(this.$rootScope, this)
 		SettingsService.subscribe(this.$rootScope, this)
@@ -51,6 +52,7 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 		if(update.fileSettings && update.fileSettings.blacklist) {
 			const fileStates = this.fileStateService.getFileStates()
 			this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), update.fileSettings.blacklist)
+			this.settingsService.updateSettings({dynamicSettings : { neutralColorRange : { from : 0, to: this.getMaxMetricByMetricName(settings.dynamicSettings.colorMetric)}}})
 			this.notifyMetricDataAdded()
 		}
 	}
