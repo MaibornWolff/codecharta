@@ -1,6 +1,6 @@
 plugins {
     id 'antlr'
-    id 'net.ltgt.errorprone' version '0.0.16'
+    id 'net.ltgt.errorprone' version '0.8'
 }
 
 dependencies {
