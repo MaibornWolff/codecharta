@@ -4,7 +4,6 @@ import {CodeMapShaderStrings} from "./codeMapShaderStrings";
 import {BuildResult, GeometryGenerator} from "./geometryGenerator";
 import {CodeMapGeometricDescription, IntersectionResult} from "./codeMapGeometricDescription";
 import {CodeMapBuilding} from "./codeMapBuilding";
-import {RenderingUtil} from "./renderingUtil";
 import {Node, Settings} from "../../../codeCharta.model";
 import {ColorConverter} from "../../../util/colorConverter";
 

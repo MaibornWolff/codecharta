@@ -2,7 +2,6 @@ import * as THREE from "three";
 import {Node, Settings} from "../../../codeCharta.model";
 import {CodeMapGeometricDescription} from "./codeMapGeometricDescription";
 import {CodeMapBuilding} from "./codeMapBuilding";
-import {RenderingUtil} from "./renderingUtil";
 import {IntermediateVertexData} from "./intermediateVertexData";
 import {BoxGeometryGenerationHelper} from "./boxGeometryGenerationHelper";
 import {ColorConverter} from "../../../util/colorConverter";
@@ -31,7 +30,7 @@ export class GeometryGenerator {
         let data: IntermediateVertexData = new IntermediateVertexData();
         let desc: CodeMapGeometricDescription = new CodeMapGeometricDescription(settings.treeMapSettings.mapSize);
 
-        this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", RenderingUtil.getMaxNodeDepth(nodes));
+        this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", this.getMaxNodeDepth(nodes));
 
         for (let i: number = 0; i < nodes.length; ++i) {
             let n: Node = nodes[i];
@@ -47,6 +46,14 @@ export class GeometryGenerator {
             mesh: this.buildMeshFromIntermediateVertexData(data, material),
             desc: desc
         };
+    }
+
+    private getMaxNodeDepth(nodes: Node[]): number {
+        let max = 0;
+        nodes.forEach((node) => {
+            max = Math.max(node.depth, max);
+        });
+        return max;
     }
 
     private mapNodeToLocalBox(n: Node): BoxMeasures {
