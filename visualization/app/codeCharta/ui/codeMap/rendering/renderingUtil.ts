@@ -1,6 +1,6 @@
 import {Node} from "../../../codeCharta.model";
 import {ColorConverter} from "../../../util/colorConverter";
-import {Color, Vector3} from "three";
+import {Color} from "three";
 
 export class RenderingUtil {
 
@@ -11,17 +11,6 @@ export class RenderingUtil {
             max = Math.max(node.depth, max);
         });
         return max;
-    }
-
-    public static colorToVec3(color: string): Vector3
-    {
-        const convertedColor = ColorConverter.convertHexToNumber(color);
-
-        return new Vector3(
-            ((convertedColor >> 16) & 0xFF) / 255.0,
-            ((convertedColor >> 8) & 0xFF) / 255.0,
-            (convertedColor & 0xFF) / 255.0
-        );
     }
 
     public static gradient(startColor: string, endColor: string, steps: number): string[] {

@@ -181,7 +181,7 @@ export class GeometryGenerator {
             uvs[i * uvDimension + 0] = data.uvs[i].x;
             uvs[i * uvDimension + 1] = data.uvs[i].y;
 
-            let color: THREE.Vector3 = RenderingUtil.colorToVec3(data.colors[i]);
+            let color: THREE.Vector3 = ColorConverter.colorToVector3(data.colors[i]);
 
             colors[i * dimension + 0] = color.x;
             colors[i * dimension + 1] = color.y;

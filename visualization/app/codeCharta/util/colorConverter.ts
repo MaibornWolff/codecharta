@@ -1,4 +1,4 @@
-import {Color} from "three";
+import {Color, Vector3} from "three";
 
 export class ColorConverter {
 
@@ -26,6 +26,16 @@ export class ColorConverter {
         return "#" + Math.round(colorObject.r).toString(16) + '' +
             Math.round(colorObject.g).toString(16) + '' +
             Math.round(colorObject.b).toString(16)
+    }
+
+    public static colorToVector3(color: string): Vector3
+    {
+        const convertedColor = ColorConverter.convertHexToNumber(color);
+        return new Vector3(
+            ((convertedColor >> 16) & 0xFF) / 255.0,
+            ((convertedColor >> 8) & 0xFF) / 255.0,
+            (convertedColor & 0xFF) / 255.0
+        );
     }
 
     public static getImageDataUri(hex: string): string {
