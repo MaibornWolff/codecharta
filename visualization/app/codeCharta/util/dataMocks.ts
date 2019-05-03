@@ -306,7 +306,7 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 			toNodeName: "/root/Parent Leaf/small leaf"
 		}
 	],
-	fileName: "file.2018-12-14_9-39.cc.json",
+	fileName: "file_2018-12-14_9-39.cc.json",
 	nodes: [
 		{
 			attributes: {},

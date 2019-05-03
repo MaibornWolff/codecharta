@@ -32,15 +32,30 @@ export class FileDownloader {
 	}
 
 	private static getNewFileName(file: CCFile) {
-		return this.addDateToFileName(file.fileMeta.fileName)
+		return this.addDateToFileName(file.fileMeta.fileName) + ".cc.json"
 	}
 
-	private static addDateToFileName(fileName) {
+	private static addDateToFileName(fileName: string) {
+		const dateRegex = /\_\d{4}\-\d{1,2}\-\d{1,2}\_\d{1,2}\-\d{1,2}\./
 		const date = new Date()
 		const dateString =
-			date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "_" + date.getHours() + "-" + date.getMinutes()
-		let firstToken = fileName.split(".")[0]
-		return firstToken + "." + dateString + ".cc.json"
+			"_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "_" + date.getHours() + "-" + date.getMinutes()
+
+		if (dateRegex.test(fileName)) {
+			return fileName.substring(0, dateRegex.exec(fileName).index) + dateString
+		} else {
+			return this.addTimestamp(fileName, dateString)
+		}
+	}
+
+	private static addTimestamp(fileName: string, dateString: string) {
+		if (fileName.includes(".cc.json")) {
+			return fileName.substring(0, fileName.search(".cc.json")) + dateString
+		} else if (fileName.includes(".json")) {
+			return fileName.substring(0, fileName.search(".json")) + dateString
+		} else {
+			return fileName + dateString
+		}
 	}
 
 	private static downloadData(data, fileName) {

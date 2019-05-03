@@ -23,8 +23,44 @@ describe("fileDownloader", () => {
 		})
 
 		it("should not have multiple timestamps", () => {
-			file.fileMeta.fileName = "foo.2019-04-22_18-01.cc.json"
-			TEST_FILE_DATA_DOWNLOADED.fileName = "foo.2018-12-14_9-39.cc.json"
+			file.fileMeta.fileName = "foo_2019-04-22_18-01.cc.json"
+			TEST_FILE_DATA_DOWNLOADED.fileName = "foo_2018-12-14_9-39.cc.json"
+
+			FileDownloader.downloadCurrentMap(file)
+
+			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(TEST_FILE_DATA_DOWNLOADED, TEST_FILE_DATA_DOWNLOADED.fileName)
+		})
+
+		it("should insert the valid date", () => {
+			file.fileMeta.fileName = "prefix.name.suffix.cc.json"
+			TEST_FILE_DATA_DOWNLOADED.fileName = "prefix.name.suffix_2018-12-14_9-39.cc.json"
+
+			FileDownloader.downloadCurrentMap(file)
+
+			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(TEST_FILE_DATA_DOWNLOADED, TEST_FILE_DATA_DOWNLOADED.fileName)
+		})
+
+		it("should insert the date and use .cc.json as ending instead of just .json", () => {
+			file.fileMeta.fileName = "prefix.name.suffix.json"
+			TEST_FILE_DATA_DOWNLOADED.fileName = "prefix.name.suffix_2018-12-14_9-39.cc.json"
+
+			FileDownloader.downloadCurrentMap(file)
+
+			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(TEST_FILE_DATA_DOWNLOADED, TEST_FILE_DATA_DOWNLOADED.fileName)
+		})
+
+		it("should replace the date with the valid one", () => {
+			file.fileMeta.fileName = "prefix.name.suffix_2000-01-01_01-01.cc.json"
+			TEST_FILE_DATA_DOWNLOADED.fileName = "prefix.name.suffix_2018-12-14_9-39.cc.json"
+
+			FileDownloader.downloadCurrentMap(file)
+
+			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(TEST_FILE_DATA_DOWNLOADED, TEST_FILE_DATA_DOWNLOADED.fileName)
+		})
+
+		it("should replace the date with the valid one and use .cc.json as ending instead of just .json", () => {
+			file.fileMeta.fileName = "prefix.name.suffix_2000-01-01_01-01.json"
+			TEST_FILE_DATA_DOWNLOADED.fileName = "prefix.name.suffix_2018-12-14_9-39.cc.json"
 
 			FileDownloader.downloadCurrentMap(file)
 
