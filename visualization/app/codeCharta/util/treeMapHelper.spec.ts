@@ -12,11 +12,8 @@ describe("treeMapHelper", () => {
         let settings
 
         let heightScale = 1;
-        let heightValue = 100;
         let depth = 0;
         let parent = null;
-        let minHeight = 1;
-        let folderHeight = 2;
         let maxHeight = 2000;
 
         beforeEach(() => {
@@ -25,7 +22,7 @@ describe("treeMapHelper", () => {
                 name: "Anode",
                 path: "/root/Anode",
                 type: "File",
-                attributes: {}
+                attributes: {"theHeight": 100}
             } as CodeMapNode;
 
             squaredNode = {
@@ -40,6 +37,7 @@ describe("treeMapHelper", () => {
             settings = SETTINGS
             settings.treeMapSettings.mapSize = 1
             settings.dynamicSettings.margin = 15
+            settings.dynamicSettings.heightMetric = "theHeight"
             settings.appSettings.invertHeight = false
 
         });
@@ -48,13 +46,10 @@ describe("treeMapHelper", () => {
             return TreeMapHelper.buildNodeFrom(
                 squaredNode,
                 heightScale,
-                heightValue,
                 maxHeight,
                 depth,
                 parent,
-                settings,
-                minHeight,
-                folderHeight
+                settings
             );
         }
 
@@ -80,13 +75,6 @@ describe("treeMapHelper", () => {
             squaredNode.data.deltas[settings.dynamicSettings.heightMetric] = -33;
             expect(buildNode().heightDelta).toBe(-33);
             squaredNode.data.deltas = undefined;
-        });
-
-        it("is leaf", () => {
-            let tmp = TreeMapHelper.isNodeLeaf;
-            TreeMapHelper.isNodeLeaf = jest.fn(() => {return true});
-            expect(buildNode()).toMatchSnapshot();
-            TreeMapHelper.isNodeLeaf = tmp;
         });
 
         it("should set lowest possible height caused by other visible edge pairs", () => {
@@ -121,35 +109,6 @@ describe("treeMapHelper", () => {
             }];
             expect(buildNode().markingColor).toEqual(null);
         });
-    });
-
-    describe("detect leaves", () => {
-
-        it("root with no children is leaf", () => {
-            const root = {};
-            expect(TreeMapHelper.isNodeLeaf(root)).toBeTruthy();
-        });
-
-        it("root plus child should not be a leaf", () => {
-            const root = {children: [{}]};
-            expect(TreeMapHelper.isNodeLeaf(root)).toBeFalsy();
-            expect(TreeMapHelper.isNodeLeaf(root.children[0])).toBeTruthy();
-        });
-
-        it("root plus child in child", () => {
-            const root = {children: [{children: [{}]}]};
-            expect(TreeMapHelper.isNodeLeaf(root)).toBeFalsy();
-            expect(TreeMapHelper.isNodeLeaf(root.children[0])).toBeFalsy();
-            expect(TreeMapHelper.isNodeLeaf(root.children[0].children[0])).toBeTruthy();
-        });
-
-        it("root plus two children", () => {
-            const root = {children: [{}, {}]};
-            expect(TreeMapHelper.isNodeLeaf(root)).toBeFalsy();
-            expect(TreeMapHelper.isNodeLeaf(root.children[0])).toBeTruthy();
-            expect(TreeMapHelper.isNodeLeaf(root.children[1])).toBeTruthy();
-        });
-
     });
 
     describe("count nodes", () => {
