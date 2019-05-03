@@ -1,3 +1,5 @@
+import {Color} from "three";
+
 export class ColorConverter {
 
     public static convertHexToNumber(hex: string): number {
@@ -13,6 +15,17 @@ export class ColorConverter {
     public static convertHexToRgba(hex: string, opacity: number = 1) : string {
         const rgbColor: number[] = this.encodeHex(hex);
         return "rgba(" + rgbColor.join(",") + "," + opacity + ")";
+    }
+
+    public static convertHexToColorObject(hex: string) : Color {
+        const rgbColor: number[] = this.encodeHex(hex);
+        return new Color(...rgbColor)
+    }
+
+    public static convertColorToHex(colorObject: Color): string {
+        return "#" + Math.round(colorObject.r).toString(16) + '' +
+            Math.round(colorObject.g).toString(16) + '' +
+            Math.round(colorObject.b).toString(16)
     }
 
     public static getImageDataUri(hex: string): string {

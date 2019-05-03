@@ -50,8 +50,7 @@ export class GeometryGenerator {
     }
 
     private getFloorGradient(nodes: Node[]): string[] {
-        return RenderingUtil.gradient("#333333", "#DDDDDD", RenderingUtil.getMaxNodeDepth(nodes))
-            .map(g => ColorConverter.convertNumberToHex(g));
+        return RenderingUtil.gradient("#333333", "#DDDDDD", RenderingUtil.getMaxNodeDepth(nodes));
     }
 
     private mapNodeToLocalBox(n: Node): BoxMeasures {
