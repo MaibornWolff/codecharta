@@ -153,6 +153,8 @@ describe("MapTreeViewSearchController", () => {
 				{path: "/root/node/path", type: BlacklistType.hide}
 			]
 
+			// On Windows 'ignore' generates paths with backslashes instead of slashes when executing
+			// the unit tests, and thus the test case fails without this mock.
 			const isBlacklisted = jest.fn()
 			isBlacklisted.mockImplementation((node, blacklist, type) => {
 				if (type == BlacklistType.hide && node.path == "/root/node/path") return true
