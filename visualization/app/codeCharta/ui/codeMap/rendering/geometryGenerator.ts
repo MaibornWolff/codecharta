@@ -31,7 +31,7 @@ export class GeometryGenerator {
         let data: IntermediateVertexData = new IntermediateVertexData();
         let desc: CodeMapGeometricDescription = new CodeMapGeometricDescription(settings.treeMapSettings.mapSize);
 
-        this.floorGradient = this.getFloorGradient(nodes);
+        this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", RenderingUtil.getMaxNodeDepth(nodes));
 
         for (let i: number = 0; i < nodes.length; ++i) {
             let n: Node = nodes[i];
@@ -47,10 +47,6 @@ export class GeometryGenerator {
             mesh: this.buildMeshFromIntermediateVertexData(data, material),
             desc: desc
         };
-    }
-
-    private getFloorGradient(nodes: Node[]): string[] {
-        return RenderingUtil.gradient("#333333", "#DDDDDD", RenderingUtil.getMaxNodeDepth(nodes));
     }
 
     private mapNodeToLocalBox(n: Node): BoxMeasures {

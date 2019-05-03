@@ -38,6 +38,20 @@ export class ColorConverter {
         );
     }
 
+    public static gradient(startColor: string, endColor: string, steps: number): string[] {
+        let start: Color = this.convertHexToColorObject(startColor)
+        let end: Color = this.convertHexToColorObject(endColor)
+        let diff: Color = end.sub(start)
+        let stepsArray = [];
+
+        for(let i = 0; i <= steps; i++) {
+            let stepDiff = diff.clone().multiplyScalar(1 / steps * i)
+            let step = start.clone().add(stepDiff)
+            stepsArray[i] = this.convertColorToHex(step)
+        }
+        return stepsArray
+    }
+
     public static getImageDataUri(hex: string): string {
         let rgbColor: number[] = this.encodeHex(hex);
         let encodedRGBColor: string  = this.encodeRGB(rgbColor[0], rgbColor[1], rgbColor[2]);
