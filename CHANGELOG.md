@@ -14,10 +14,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 -   Use debounced settings update instead of throttled
+-   Filename of downloaded file now contains time #484 
 
 ### Removed
 
 ### Fixed
+-	Prevent downloaded files from having multiple Timestamps #484
 
 ### Chore
 
