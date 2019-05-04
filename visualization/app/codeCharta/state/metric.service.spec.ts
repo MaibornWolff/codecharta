@@ -11,7 +11,6 @@ import { SettingsService } from "./settings.service"
 describe("MetricService", () => {
 	let metricService: MetricService
 	let $rootScope: IRootScopeService
-	let fileStateService : FileStateService
 	let fileStates: FileState[]
 	let files: CCFile[]
 
@@ -25,7 +24,6 @@ describe("MetricService", () => {
 		instantiateModule("app.codeCharta.state")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		fileStateService = getService<FileStateService>("fileStateService")
 
 		files = [TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]
 		fileStates = [
@@ -35,17 +33,17 @@ describe("MetricService", () => {
 	}
 
 	function rebuildService() {
-		metricService = new MetricService($rootScope, fileStateService)
+		metricService = new MetricService($rootScope)
 		metricService["metricData"] = [
 			{ name: "rloc", maxValue: 999999, availableInVisibleMaps: true },
 			{ name: "functions", maxValue: 999999, availableInVisibleMaps: true },
 			{ name: "mcc", maxValue: 999999, availableInVisibleMaps: true }
 		]
+		metricService["fileStates"] = fileStates
 	}
 
 	function withMockedEventMethods() {
-		$rootScope.$broadcast = metricService["$rootScope"].$broadcast = jest.fn((event, data) => {
-		})
+		$rootScope.$broadcast = metricService["$rootScope"].$broadcast = jest.fn((event, data) => {})
 	}
 
 	describe("constructor", () => {
@@ -69,7 +67,7 @@ describe("MetricService", () => {
 
 	describe("onFileSelectionStatesChanged", () => {
 		beforeEach(() => {
-			metricService.calculateMetrics = jest.fn().mockReturnValue([])
+			metricService["calculateMetrics"] = jest.fn().mockReturnValue([])
 		})
 
 		it("should set unary metric into metricData", () => {
@@ -93,20 +91,13 @@ describe("MetricService", () => {
 
 	describe("onSettingsChanged", () => {
 		beforeEach(() => {
-			fileStateService.getFileStates = jest.fn().mockReturnValue(fileStates)
-			metricService.calculateMetrics = jest.fn().mockReturnValue({})
-		})
-
-		it("should not call getFileStates when update object is not a blacklist", () => {
-			metricService.onSettingsChanged(null, {fileSettings : {blacklist: null} }, null)
-
-			expect(fileStateService.getFileStates).not.toHaveBeenCalled()
+			metricService["calculateMetrics"] = jest.fn().mockReturnValue({})
 		})
 
 		it("should call calculateMetrics", () => {
 			metricService.onSettingsChanged(null, {fileSettings : {blacklist: []} }, null)
 
-			expect(metricService.calculateMetrics).toHaveBeenCalledWith(fileStates, [], [])
+			expect(metricService["calculateMetrics"]).toHaveBeenCalledWith(fileStates, [], [])
 		})
 
 		it("should set metricData to new calculated metricData", () => {
@@ -156,7 +147,7 @@ describe("MetricService", () => {
 
 	describe("calculateMetrics", () => {
 		it("should return an empty array if there are no fileStates", () => {
-			const result = metricService.calculateMetrics([], [], [])
+			const result = metricService["calculateMetrics"]([], [], [])
 
 			expect(result).toEqual([])
 			expect(result.length).toBe(0)
@@ -164,7 +155,7 @@ describe("MetricService", () => {
 
 		it("should return an array of metricData sorted by name calculated from fileStats and visibleFileStates", () => {
 			const visibleFileStates = [fileStates[0]]
-			const result = metricService.calculateMetrics(fileStates, visibleFileStates, [])
+			const result = metricService["calculateMetrics"](fileStates, visibleFileStates, [])
 			const expected = [
 				{ availableInVisibleMaps: true, maxValue: 1000, name: "functions" },
 				{ availableInVisibleMaps: true, maxValue: 100, name: "mcc" },
@@ -177,7 +168,7 @@ describe("MetricService", () => {
 
 		it("should return an array of fileState metrics sorted by name", () => {
 			const visibleFileStates = []
-			const result = metricService.calculateMetrics(fileStates, visibleFileStates, [])
+			const result = metricService["calculateMetrics"](fileStates, visibleFileStates, [])
 			const expected = [
 				{ availableInVisibleMaps: false, maxValue: 1000, name: "functions" },
 				{ availableInVisibleMaps: false, maxValue: 100, name: "mcc" },

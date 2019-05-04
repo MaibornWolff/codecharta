@@ -1,5 +1,6 @@
 import {
 	BlacklistItem,
+	BlacklistType,
 	CCFile,
 	CodeMapNode,
 	FileState,
@@ -7,12 +8,12 @@ import {
 	RecursivePartial,
 	Settings
 } from "../codeCharta.model"
-import { hierarchy, HierarchyNode } from "d3"
-import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
-import { FileStateHelper } from "../util/fileStateHelper"
-import { IAngularEvent, IRootScopeService } from "angular"
-import { SettingsService, SettingsServiceSubscriber } from "./settings.service"
-import { CodeMapHelper } from "../util/codeMapHelper"
+import {hierarchy, HierarchyNode} from "d3"
+import {FileStateService, FileStateServiceSubscriber} from "./fileState.service"
+import {FileStateHelper} from "../util/fileStateHelper"
+import {IAngularEvent, IRootScopeService} from "angular"
+import {SettingsService, SettingsServiceSubscriber} from "./settings.service"
+import {CodeMapHelper} from "../util/codeMapHelper"
 
 
 export interface MetricServiceSubscriber {
@@ -27,17 +28,15 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 
 
 	private metricData: MetricData[] = []
+	private fileStates: FileState[] = []
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private fileStateService: FileStateService,
-		private settingsService: SettingsService
-	) {
+	constructor(private $rootScope: IRootScopeService) {
 		FileStateService.subscribe(this.$rootScope, this)
 		SettingsService.subscribe(this.$rootScope, this)
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+		this.fileStates = fileStates
 		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), [])
 		this.addUnaryMetric()
 		this.notifyMetricDataAdded()
@@ -50,9 +49,7 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		if(update.fileSettings && update.fileSettings.blacklist) {
-			const fileStates = this.fileStateService.getFileStates()
-			this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), update.fileSettings.blacklist)
-			this.settingsService.updateSettings({dynamicSettings : { neutralColorRange : { from : 0, to: this.getMaxMetricByMetricName(settings.dynamicSettings.colorMetric)}}})
+			this.metricData = this.calculateMetrics(this.fileStates, FileStateHelper.getVisibleFileStates(this.fileStates), update.fileSettings.blacklist)
 			this.notifyMetricDataAdded()
 		}
 	}
@@ -70,7 +67,7 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 		return metric ? metric.maxValue : undefined
 	}
 
-	public calculateMetrics(fileStates: FileState[], visibleFileStates: FileState[], blacklist: BlacklistItem[]): MetricData[] {
+	private calculateMetrics(fileStates: FileState[], visibleFileStates: FileState[], blacklist: BlacklistItem[]): MetricData[] {
 		if (fileStates.length <= 0) {
 			return []
 		} else {
@@ -85,10 +82,10 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 	private buildHashMapFromMetrics(fileStates: FileState[], blacklist: BlacklistItem[], metricsFromVisibleMaps) {
 		const hashMap = new Map()
 
-		fileStates.map((fileState: FileState) => fileState.file).forEach((file: CCFile) => {
-			let nodes: HierarchyNode<CodeMapNode>[] = hierarchy(file.map).leaves()
+		fileStates.forEach((fileState: FileState) => {
+			let nodes: HierarchyNode<CodeMapNode>[] = hierarchy(fileState.file.map).leaves()
 			nodes.forEach((node: HierarchyNode<CodeMapNode>) => {
-				if (node.data.path && !CodeMapHelper.isHiddenOrExcluded(node.data, blacklist)) {
+				if (node.data.path && !CodeMapHelper.isBlacklisted(node.data, blacklist, BlacklistType.exclude)) {
 					this.addMaxValueMetricsToHashMap(node, hashMap, metricsFromVisibleMaps)
 				}
 			})
@@ -97,21 +94,14 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 	}
 
 	private addMaxValueMetricsToHashMap(node: HierarchyNode<CodeMapNode>, hashMap, metricsFromVisibleMaps) {
-		const attributes = Object.keys(node.data.attributes)
+		const attributes: string[] = Object.keys(node.data.attributes)
 
 		attributes.forEach((metric: string) => {
-			if (!hashMap.has(metric)) {
+			if (!hashMap.has(metric) || hashMap.get(metric).maxValue <= node.data.attributes[metric]) {
 				hashMap.set(metric, {
 					maxValue: node.data.attributes[metric],
 					availableInVisibleMaps: this.isAvailableInVisibleMaps(metricsFromVisibleMaps, metric)
 				})
-			} else {
-				if (hashMap.get(metric).maxValue <= node.data.attributes[metric]) {
-					hashMap.set(metric, {
-						maxValue: node.data.attributes[metric],
-						availableInVisibleMaps: this.isAvailableInVisibleMaps(metricsFromVisibleMaps, metric)
-					})
-				}
 			}
 		})
 	}
