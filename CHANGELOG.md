@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 -   Show loading-gif in ribbonBar when rerendering map
+-   Merge markedPackages in multiple or delta view #478
 
 ### Changed
 
