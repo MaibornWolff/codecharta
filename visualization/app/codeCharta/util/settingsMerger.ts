@@ -3,13 +3,14 @@ import {
 	Edge,
 	BlacklistItem,
 	CCFile,
-	FileSettings
+	FileSettings, MarkedPackage
 } from "../codeCharta.model"
 import {CodeChartaService} from "../codeCharta.service";
 
 export class SettingsMerger {
 
 	private static edges: Edge[] = []
+	private static markedPackages: MarkedPackage[] = []
 	private static blacklist: BlacklistItem[] = []
 	private static attributeTypesEdge: { [key: string]: AttributeType } = {}
 	private static attributeTypesNode: { [key: string]: AttributeType } = {}
@@ -23,52 +24,68 @@ export class SettingsMerger {
 
 		for (let inputFile of inputFiles) {
 			this.setEdges(inputFile, withUpdatedPath)
+			this.setMarkedPackage(inputFile, withUpdatedPath)
 			this.setAttributeTypesByUniqueKey(inputFile)
 			this.setBlacklist(inputFile, withUpdatedPath)
-			// TODO: Merge markedPackages
 		}
 		return this.getNewFileSettings()
 	}
 
 	private static setEdges(inputFile: CCFile, withUpdatedPath: boolean) {
-		if (!inputFile.settings.fileSettings.edges) {
-			return
-		}
-
-		for (let oldEdge of inputFile.settings.fileSettings.edges as Edge[]) {
-			let edge: Edge = {
-				fromNodeName: withUpdatedPath ? this.getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.fromNodeName) : oldEdge.fromNodeName,
-				toNodeName: withUpdatedPath ? this.getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.toNodeName) : oldEdge.toNodeName,
-				attributes: oldEdge.attributes,
-				visible: oldEdge.visible
-			}
-			const equalEdgeItem = this.edges.find(e => e.fromNodeName == edge.fromNodeName && e.toNodeName == edge.toNodeName)
-
-			if (equalEdgeItem) {
-				for(let key in edge.attributes) {
-					equalEdgeItem.attributes[key] = edge.attributes[key]
+		if (inputFile.settings.fileSettings.edges) {
+			for (let oldEdge of inputFile.settings.fileSettings.edges as Edge[]) {
+				let edge: Edge = {
+					fromNodeName: withUpdatedPath ? this.getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.fromNodeName) : oldEdge.fromNodeName,
+					toNodeName: withUpdatedPath ? this.getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.toNodeName) : oldEdge.toNodeName,
+					attributes: oldEdge.attributes,
+					visible: oldEdge.visible
 				}
-			} else {
-				this.edges.push(edge)
+				const equalEdgeItem = this.edges.find(e => e.fromNodeName == edge.fromNodeName && e.toNodeName == edge.toNodeName)
+
+				if(equalEdgeItem) {
+					for(let key in edge.attributes) {
+						equalEdgeItem.attributes[key] = edge.attributes[key]
+					}
+				} else {
+					this.edges.push(edge)
+				}
+			}
+		}
+	}
+
+	private static setMarkedPackage(inputFile: CCFile, withUpdatedPath: boolean) {
+		if (inputFile.settings.fileSettings.markedPackages) {
+			for (let oldMarkedPackages of inputFile.settings.fileSettings.markedPackages as MarkedPackage[]) {
+				let markedPackage: MarkedPackage = {
+					path: withUpdatedPath ? this.getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldMarkedPackages.path) : oldMarkedPackages.path,
+					color: oldMarkedPackages.color,
+					attributes: oldMarkedPackages.attributes
+				}
+				const equalMarkedPackages = this.markedPackages.find(x => x.path == markedPackage.path && x.color == markedPackage.color)
+
+				if (equalMarkedPackages) {
+					for(let key in markedPackage.attributes) {
+						equalMarkedPackages.attributes[key] = markedPackage.attributes[key]
+					}
+				} else {
+					this.markedPackages.push(markedPackage)
+				}
 			}
 		}
 	}
 
 	private static setBlacklist(inputFile: CCFile, withUpdatedPath: boolean) {
-		if (!inputFile.settings.fileSettings.blacklist) {
-			return
-		}
+		if (inputFile.settings.fileSettings.blacklist) {
+			for (let oldBlacklistItem of inputFile.settings.fileSettings.blacklist as BlacklistItem[]) {
+				let blacklistItem: BlacklistItem = {
+					path: withUpdatedPath ? this.getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldBlacklistItem.path) : oldBlacklistItem.path,
+					type: oldBlacklistItem.type
+				}
+				const equalBlacklistItems =  this.blacklist.find(b => b.path == blacklistItem.path && b.type == blacklistItem.type)
 
-		for (let oldBlacklistItem of inputFile.settings.fileSettings.blacklist as BlacklistItem[]) {
-			let blacklistItem: BlacklistItem = {
-				path: withUpdatedPath ? this.getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldBlacklistItem.path) : oldBlacklistItem.path,
-				type: oldBlacklistItem.type
-			}
-			const equalBlacklistItems = this.blacklist.filter(b =>
-				b.path == blacklistItem.path &&
-				b.type == blacklistItem.type)
-			if (equalBlacklistItems.length == 0) {
-				this.blacklist.push(blacklistItem)
+				if (!equalBlacklistItems) {
+					this.blacklist.push(blacklistItem)
+				}
 			}
 		}
 	}
@@ -106,7 +123,7 @@ export class SettingsMerger {
 				nodes: this.attributeTypesNode,
 				edges: this.attributeTypesEdge
 			},
-			markedPackages: []
+			markedPackages: this.markedPackages
 		}
 	}
 
@@ -118,6 +135,7 @@ export class SettingsMerger {
 
 	private static resetVariables() {
 		this.edges = []
+		this.markedPackages = []
 		this.blacklist = []
 		this.attributeTypesEdge = {}
 		this.attributeTypesNode = {}
