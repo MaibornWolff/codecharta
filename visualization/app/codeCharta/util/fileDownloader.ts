@@ -1,9 +1,10 @@
 import angular from "angular"
 import * as d3 from "d3"
 import { CCFile, CodeMapNode } from "../codeCharta.model"
-import { Tokens } from "marked"
 
 export class FileDownloader {
+	private static CC_FILE_EXTENSION = ".cc.json"
+
 	public static downloadCurrentMap(file: CCFile) {
 		const data = this.getProjectDataAsCCJsonFormat(file)
 		this.downloadData(data, this.getNewFileName(file))
@@ -24,37 +25,42 @@ export class FileDownloader {
 	}
 
 	private static removeJsonHashkeysAndVisibleAttribute(map: CodeMapNode) {
-		let copy = JSON.parse(JSON.stringify(map))
+		let copy: CodeMapNode = JSON.parse(JSON.stringify(map))
 		d3.hierarchy(copy).each(node => {
 			delete node.data.visible
 		})
 		return copy
 	}
 
-	private static getNewFileName(file: CCFile) {
-		return this.addDateToFileName(file.fileMeta.fileName) + ".cc.json"
+	private static getNewFileName(file: CCFile): string {
+		return this.getFileNameWithoutTimestamp(file.fileMeta.fileName) +
+			this.getNewTimestamp() +
+			FileDownloader.CC_FILE_EXTENSION
 	}
 
-	private static addDateToFileName(fileName: string) {
-		const dateRegex = /\_\d{4}\-\d{1,2}\-\d{1,2}\_\d{1,2}\-\d{1,2}\./
-		const date = new Date()
-		const dateString =
-			"_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "_" + date.getHours() + "-" + date.getMinutes()
+	private static getNewTimestamp(): string {
+		const date: Date = new Date()
+		return "_" + date.getFullYear() +
+			"-" + (date.getMonth() + 1) +
+			"-" + date.getDate() +
+			"_" + date.getHours() +
+			"-" + date.getMinutes()
+	}
+
+	private static getFileNameWithoutTimestamp(fileName: string): string {
+		const dateRegex: RegExp = /\_\d{4}\-\d{1,2}\-\d{1,2}\_\d{1,2}\-\d{1,2}\./
 
 		if (dateRegex.test(fileName)) {
-			return fileName.substring(0, dateRegex.exec(fileName).index) + dateString
-		} else {
-			return this.addTimestamp(fileName, dateString)
-		}
-	}
+			return fileName.substring(0, dateRegex.exec(fileName).index)
 
-	private static addTimestamp(fileName: string, dateString: string) {
-		if (fileName.includes(".cc.json")) {
-			return fileName.substring(0, fileName.search(".cc.json")) + dateString
+		} else if (fileName.includes(FileDownloader.CC_FILE_EXTENSION)) {
+			return fileName.substring(0, fileName.search(FileDownloader.CC_FILE_EXTENSION))
+
 		} else if (fileName.includes(".json")) {
-			return fileName.substring(0, fileName.search(".json")) + dateString
+			return fileName.substring(0, fileName.search(".json"))
+
 		} else {
-			return fileName + dateString
+			return fileName
 		}
 	}
 
