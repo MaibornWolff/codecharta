@@ -13,7 +13,7 @@ export interface CameraChangeSubscriber {
  * Service to manage the three orbit controls in an angular way.
  */
 export class ThreeOrbitControlsService {
-    public static SELECTOR = "threeOrbitControlsService";
+
     public static CAMERA_CHANGED_EVENT_NAME = "camera-changed";
 
     public controls: OrbitControls;

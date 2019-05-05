@@ -8,7 +8,6 @@ import { RecursivePartial, Settings } from "../../../codeCharta.model"
 import { IRootScopeService } from "angular"
 
 export class ThreeRendererService implements SettingsServiceSubscriber {
-    public static SELECTOR = "threeRendererService";
 
     public static BACKGROUND_COLOR = {
         white: 0xffffff,

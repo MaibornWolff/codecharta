@@ -10,7 +10,6 @@ import { SettingsService } from "../../../state/settings.service";
  * A service to angularize the Three.js canvas.
  */
 export class ThreeViewerService {
-    public static SELECTOR = "threeViewerService";
 
     /* ngInject */
     constructor(
