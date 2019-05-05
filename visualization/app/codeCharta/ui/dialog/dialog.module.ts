@@ -3,10 +3,11 @@ import "angular-animate";
 import "angular-aria";
 import "angular-material";
 import {DialogService} from "./dialog.service";
+import _ from "lodash"
 
 angular.module("app.codeCharta.ui.dialog",["ngMaterial"]);
 
 angular.module("app.codeCharta.ui.dialog").service(
-    DialogService.SELECTOR,
+    _.camelCase(DialogService.name),
     DialogService
 );
