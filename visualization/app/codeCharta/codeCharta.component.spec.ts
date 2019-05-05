@@ -130,24 +130,10 @@ describe("codeChartaController", () => {
 			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, codeChartaController)
 		})
 
-		it("should subscribe to CodeChartaController", () => {
-			CodeChartaController.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(CodeChartaController.subscribe).toHaveBeenCalledWith($rootScope, codeChartaController)
-		})
-
 		it("should set urlUtils", () => {
 			rebuildController()
 
 			expect(codeChartaController["urlUtils"]).toBeDefined()
-		})
-
-		it("should set attribute isLoadingFile to true", () => {
-			rebuildController()
-
-			expect(codeChartaController["_viewModel"].isLoadingFile).toBeTruthy()
 		})
 	})
 

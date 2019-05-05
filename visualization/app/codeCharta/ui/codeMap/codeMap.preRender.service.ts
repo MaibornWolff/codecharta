@@ -14,6 +14,7 @@ import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService
 import {CodeChartaController} from "../../codeCharta.component";
 import {CodeMapRenderService} from "./codeMap.render.service";
 import {RibbonBarController} from "../ribbonBar/ribbonBar.component";
+import {LoadingGifController} from "../loadingGif/loadingGif.component";
 
 export interface RenderData {
 	renderFile: CCFile
@@ -150,7 +151,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	}
 
 	private notifyLoadingFileStatus() {
-		this.$rootScope.$broadcast(CodeChartaController.LOADING_STATUS_EVENT, false)
+		this.$rootScope.$broadcast(LoadingGifController.LOADING_STATUS_EVENT, false)
 	}
 
 	private notifyLoadingMapStatus() {

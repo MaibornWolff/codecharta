@@ -8,8 +8,8 @@ import { FileStateService } from "../../state/fileState.service"
 import { DialogService } from "../dialog/dialog.service"
 import { FileChooserController } from "./fileChooser.component"
 import { TEST_FILE_CONTENT } from "../../util/dataMocks"
-import {CodeChartaController} from "../../codeCharta.component";
 import _ from "lodash"
+import {LoadingGifController} from "../loadingGif/loadingGif.component";
 
 describe("fileChooserController", () => {
 	let fileChooserController: FileChooserController
@@ -96,7 +96,7 @@ describe("fileChooserController", () => {
 
 		it("should broadcast the loading-status-changed event", () => {
 			fileChooserController.onImportNewFiles({ files: [] })
-			expect($rootScope.$broadcast).toHaveBeenCalledWith(CodeChartaController.LOADING_STATUS_EVENT, true)
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(LoadingGifController.LOADING_STATUS_EVENT, true)
 		})
 	})
 

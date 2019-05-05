@@ -9,15 +9,9 @@ import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitCont
 import {CodeMapActionsService} from "./ui/codeMap/codeMap.actions.service";
 import {NameDataPair, RecursivePartial, Settings} from "./codeCharta.model"
 import {FileStateService} from "./state/fileState.service";
+import {LoadingGifController} from "./ui/loadingGif/loadingGif.component";
 
-
-export interface CodeChartaControllerSubscriber {
-	onLoadingStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent)
-}
-
-export class CodeChartaController implements SettingsServiceSubscriber, CodeChartaControllerSubscriber {
-
-	public static readonly LOADING_STATUS_EVENT = "loading-status-changed"
+export class CodeChartaController implements SettingsServiceSubscriber {
 
 	private _viewModel: {
 		version: string,
@@ -47,20 +41,14 @@ export class CodeChartaController implements SettingsServiceSubscriber, CodeChar
 		private $timeout: ITimeoutService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
-		CodeChartaController.subscribe(this.$rootScope, this)
 
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
-		this.onLoadingStatusChanged(true, undefined)
+		this.$rootScope.$broadcast(LoadingGifController.LOADING_STATUS_EVENT, true)
 		this.loadFileOrSample()
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this._viewModel.focusedNodePath = settings.dynamicSettings.focusedNodePath
-	}
-
-	public onLoadingStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent) {
-		this._viewModel.isLoadingFile = isLoadingFile
-		this.synchronizeAngularTwoWayBinding()
 	}
 
 	public fitMapToView() {
@@ -108,7 +96,7 @@ export class CodeChartaController implements SettingsServiceSubscriber, CodeChar
 				this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
 			})
 			.catch(e => {
-				this.onLoadingStatusChanged(false, undefined)
+				this.$rootScope.$broadcast(LoadingGifController.LOADING_STATUS_EVENT, false)
 				console.error(e);
 				this.printErrors(e)
 			})
@@ -131,16 +119,6 @@ export class CodeChartaController implements SettingsServiceSubscriber, CodeChar
 
 	private printErrors(errors: Object) {
 		this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))
-	}
-
-	private synchronizeAngularTwoWayBinding() {
-		this.$timeout(() => {})
-	}
-
-	public static subscribe($rootScope: IRootScopeService, subscriber: CodeChartaControllerSubscriber) {
-		$rootScope.$on(CodeChartaController.LOADING_STATUS_EVENT, (event, data) => {
-			subscriber.onLoadingStatusChanged(data, event)
-		})
 	}
 }
 

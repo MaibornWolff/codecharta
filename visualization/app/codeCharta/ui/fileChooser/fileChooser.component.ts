@@ -11,7 +11,7 @@ import {CodeChartaService} from "../../codeCharta.service";
 import {FileStateService} from "../../state/fileState.service";
 import {IRootScopeService} from "angular";
 import {NameDataPair} from "../../codeCharta.model";
-import {CodeChartaController} from "../../codeCharta.component";
+import {LoadingGifController} from "../loadingGif/loadingGif.component";
 
 export class FileChooserController {
 
@@ -26,7 +26,7 @@ export class FileChooserController {
     }
 
     public onImportNewFiles(element) {
-        this.$rootScope.$broadcast(CodeChartaController.LOADING_STATUS_EVENT, true)
+        this.$rootScope.$broadcast(LoadingGifController.LOADING_STATUS_EVENT, true)
         this.$scope.$apply(() => {
             this.fileStateService.resetMaps()
             for(let file of element.files) {
@@ -47,7 +47,7 @@ export class FileChooserController {
 
         this.codeChartaService.loadFiles([nameDataPair])
             .catch(e => {
-                this.$rootScope.$broadcast(CodeChartaController.LOADING_STATUS_EVENT, false)
+                this.$rootScope.$broadcast(LoadingGifController.LOADING_STATUS_EVENT, false)
                 console.error(e)
                 this.printErrors(e)
             })
