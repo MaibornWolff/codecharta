@@ -34,13 +34,13 @@ module.exports = function (plop) {
                 }]
     });
 
-   plop.setGenerator('ui module with empty component', {
+   plop.setGenerator('ui module', {
       description: 'an ui module with an empty component, all necessary files and tests',
       prompts: [
         {
             type: 'input',
             name: 'name',
-            message: 'Name?'
+            message: 'Name:'
         }
       ],
       actions: [
@@ -62,6 +62,21 @@ module.exports = function (plop) {
                 pattern: /(\/\/ Plop: Append module import here)/gi,
                 template: '$1\r\nimport "./{{camelCase name}}/{{camelCase name}}.module\";'
 			}]
+    });
+
+    plop.setGenerator('util static class', {
+        description: 'an empty static class with corresponding test file',
+        prompts: [
+            {
+                type: 'input',
+                name: 'name',
+                message: 'Name:'
+            }
+        ],
+        actions: [
+            buildAddAction(["{{camelCase name}}", "ts"], 'codeCharta/util', "util"),
+            buildAddAction(["{{camelCase name}}", "spec", "ts"], 'codeCharta/util', "util")
+        ]
     });
   
   };
