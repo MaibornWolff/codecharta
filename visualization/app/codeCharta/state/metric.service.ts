@@ -1,7 +1,6 @@
 import {
 	BlacklistItem,
 	BlacklistType,
-	CCFile,
 	CodeMapNode,
 	FileState,
 	MetricData,
@@ -28,15 +27,16 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 
 
 	private metricData: MetricData[] = []
-	private fileStates: FileState[] = []
 
-	constructor(private $rootScope: IRootScopeService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private fileStateService: FileStateService
+	) {
 		FileStateService.subscribe(this.$rootScope, this)
 		SettingsService.subscribe(this.$rootScope, this)
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-		this.fileStates = fileStates
 		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), [])
 		this.addUnaryMetric()
 		this.notifyMetricDataAdded()
@@ -49,7 +49,8 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		if(update.fileSettings && update.fileSettings.blacklist) {
-			this.metricData = this.calculateMetrics(this.fileStates, FileStateHelper.getVisibleFileStates(this.fileStates), update.fileSettings.blacklist)
+			const fileStates: FileState[] = this.fileStateService.getFileStates()
+			this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), update.fileSettings.blacklist)
 			this.notifyMetricDataAdded()
 		}
 	}
@@ -74,7 +75,6 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 			//TODO: keep track of these metrics in service
 			const metricsFromVisibleMaps = this.getUniqueMetricNames(visibleFileStates)
 			const hashMap = this.buildHashMapFromMetrics(fileStates, blacklist, metricsFromVisibleMaps)
-
 			return this.getMetricDataFromHashMap(hashMap)
 		}
 	}
@@ -116,7 +116,6 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 				availableInVisibleMaps: value.availableInVisibleMaps
 			})
 		})
-
 		return this.sortByAttributeName(metricData)
 	}
 

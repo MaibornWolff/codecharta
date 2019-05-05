@@ -11,6 +11,7 @@ import { SettingsService } from "./settings.service"
 describe("MetricService", () => {
 	let metricService: MetricService
 	let $rootScope: IRootScopeService
+	let fileStateService : FileStateService
 	let fileStates: FileState[]
 	let files: CCFile[]
 
@@ -24,6 +25,7 @@ describe("MetricService", () => {
 		instantiateModule("app.codeCharta.state")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
+		fileStateService = getService<FileStateService>("fileStateService")
 
 		files = [TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]
 		fileStates = [
@@ -33,7 +35,7 @@ describe("MetricService", () => {
 	}
 
 	function rebuildService() {
-		metricService = new MetricService($rootScope)
+		metricService = new MetricService($rootScope, fileStateService)
 		metricService["metricData"] = [
 			{ name: "rloc", maxValue: 999999, availableInVisibleMaps: true },
 			{ name: "functions", maxValue: 999999, availableInVisibleMaps: true },
@@ -91,7 +93,14 @@ describe("MetricService", () => {
 
 	describe("onSettingsChanged", () => {
 		beforeEach(() => {
+			fileStateService.getFileStates = jest.fn().mockReturnValue(fileStates)
 			metricService["calculateMetrics"] = jest.fn().mockReturnValue({})
+		})
+
+		it("should not call getFileStates when update object is not a blacklist", () => {
+			metricService.onSettingsChanged(null, {fileSettings : {blacklist: null} }, null)
+
+			expect(fileStateService.getFileStates).not.toHaveBeenCalled()
 		})
 
 		it("should call calculateMetrics", () => {
