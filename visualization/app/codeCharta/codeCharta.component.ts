@@ -95,8 +95,8 @@ export class CodeChartaController implements SettingsServiceSubscriber, CodeChar
 			)
 		}
 		this.tryLoadingFiles([
-            { fileName: "sample1.json", content: require("./assets/sample1.json") },
-            { fileName: "sample2.json", content: require("./assets/sample2.json") }
+            { fileName: "sample1.cc.json", content: require("./assets/sample1.cc.json") },
+            { fileName: "sample2.cc.json", content: require("./assets/sample2.cc.json") }
         ]);
     }
     
