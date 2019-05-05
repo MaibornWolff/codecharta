@@ -2,7 +2,7 @@ import angular from "angular";
 import "angular-animate";
 import "angular-aria";
 import "angular-material";
-import "./codeCharta/codeCharta";
+import "./codeCharta/codeCharta.module";
 import "./assets/icon.ico";
 import "./app.scss";
 import "@uirouter/angularjs";

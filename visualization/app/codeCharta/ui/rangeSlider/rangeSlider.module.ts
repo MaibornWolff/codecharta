@@ -1,6 +1,6 @@
 import angular from "angular";
 import "../../state/state.module";
-import "../../codeCharta"
+import "../../codeCharta.module"
 import {rangeSliderComponent} from "./rangeSlider.component";
 import "angularjs-slider";
 

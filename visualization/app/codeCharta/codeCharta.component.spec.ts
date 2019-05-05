@@ -1,4 +1,4 @@
-import "./codeCharta"
+import "./codeCharta.module"
 import { ThreeOrbitControlsService } from "./ui/codeMap/threeViewer/threeOrbitControlsService"
 import { IHttpService, ILocationService, IRootScopeService, ITimeoutService } from "angular"
 import { DialogService } from "./ui/dialog/dialog.service"

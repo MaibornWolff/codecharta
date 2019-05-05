@@ -1,7 +1,7 @@
 import "./detailPanel.module"
 import "../codeMap/codeMap.module"
 import "../../state/state.module"
-import "../../codeCharta"
+import "../../codeCharta.module"
 
 import { SettingsService } from "../../state/settings.service"
 import { DetailPanelController } from "./detailPanel.component"
