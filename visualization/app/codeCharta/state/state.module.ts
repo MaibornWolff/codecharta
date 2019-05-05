@@ -3,13 +3,14 @@ import angular from "angular";
 import {FileStateService} from "./fileState.service";
 import {SettingsService} from "./settings.service";
 import {MetricService} from "./metric.service";
+import _ from "lodash"
 
 angular.module(
     "app.codeCharta.state", []
 ).service(
-    "fileStateService", FileStateService
+    _.camelCase(FileStateService.name), FileStateService
 ).service(
-    "settingsService", SettingsService
+    _.camelCase(SettingsService.name), SettingsService
 ).service(
-    "metricService", MetricService
+    _.camelCase(MetricService.name), MetricService
 );

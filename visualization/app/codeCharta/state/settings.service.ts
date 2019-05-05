@@ -20,7 +20,7 @@ export interface SettingsServiceSubscriber {
 }
 
 export class SettingsService implements FileStateServiceSubscriber {
-	public static SELECTOR = "settingsService"
+
 	private static SETTINGS_CHANGED_EVENT = "settings-changed"
 
 	private settings: Settings
