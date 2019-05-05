@@ -5,11 +5,21 @@ describe("{{properCase name}}Service", () => {
     let {{camelCase name}}Service: {{properCase name}}Service
 
     beforeEach(function() {
+        restartSystem()
+        rebuildService()
+    })
+
+    function restartSystem() {
+        // initialise injected services and used variables
+    }
+
+    function rebuildService() {
         {{camelCase name}}Service = new {{properCase name}}Service()
-    })
+    }
 
-    it("should do something", ()=>{
-        
-    })
+    describe("someMethodName", () => {
+        it("should do something", ()=>{
 
+        })
+    })
 });
