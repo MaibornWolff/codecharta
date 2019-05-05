@@ -60,7 +60,7 @@ module.exports = function (plop) {
                 type: 'modify',
                 path: 'app/codeCharta/ui/ui.ts',
                 pattern: /(\/\/ Plop: Append module import here)/gi,
-                template: '$1\r\nimport "./{{camelCase name}}/{{camelCase name}}.module.ts\";'
+                template: '$1\r\nimport "./{{camelCase name}}/{{camelCase name}}.module\";'
 			}]
     });
   
