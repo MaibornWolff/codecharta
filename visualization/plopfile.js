@@ -8,30 +8,29 @@ module.exports = function (plop) {
     plop.setPrompt('directory', promptDirectory);
     plop.setPrompt('file', promptFile);
 
-    plop.setGenerator('core module with empty service', {
-        description: 'a core module with an empty service for business logic with all necessary files and tests',
+    plop.setGenerator('state service', {
+        description: 'an empty service with corresponding test file',
         prompts: [
           {
               type: 'input',
               name: 'name',
-              message: 'Name?'
+              message: 'Name (e.x. foo):'
           }
         ],
         actions: [
-                buildAddAction(["{{camelCase name}}", "service", "ts"], 'codeCharta/core/{{camelCase name}}'),
-                buildAddAction(["{{camelCase name}}", "service", "spec", "ts"], 'codeCharta/core/{{camelCase name}}'),
-                buildAddAction(["{{camelCase name}}", "module", "ts"], 'codeCharta/core/{{camelCase name}}', "core"),
+                buildAddAction(["{{camelCase name}}", "service", "ts"], 'codeCharta/state'),
+                buildAddAction(["{{camelCase name}}", "service", "spec", "ts"], 'codeCharta/state'),
                 {
                     type: 'modify',
-                    path: 'app/codeCharta/core/core.module.ts',
-                    pattern: /(\/\/ Plop: Append component name here)/gi,
-                    template: '$1\r\n\t\t\"app.codeCharta.core.{{camelCase name}}\",'
+                    path: 'app/codeCharta/state/state.module.ts',
+                    pattern: /(\/\/ Plop: Append service name here)/gi,
+                    template: '$1\r\n\t.service(_.camelCase({{properCase name}}Service.name), {{properCase name}}Service)'
                 },
                 {
                     type: 'modify',
-                    path: 'app/codeCharta/core/core.module.ts',
+                    path: 'app/codeCharta/state/state.module.ts',
                     pattern: /(\/\/ Plop: Append module import here)/gi,
-                    template: '$1\r\nimport "./{{camelCase name}}/{{camelCase name}}.module\";'
+                    template: '$1\r\nimport \{ {{properCase name}}Service \} from \"./{{camelCase name}}.service\"'
                 }]
     });
 
