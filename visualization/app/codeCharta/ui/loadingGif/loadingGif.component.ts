@@ -6,7 +6,7 @@ export interface LoadingGifComponentSubscriber {
     onLoadingMapStatusChanged(isLoadingMap: boolean, event: angular.IAngularEvent)
 }
 
-export class LoadingGifController implements LoadingGifComponentSubscriber{
+export class LoadingGifController implements LoadingGifComponentSubscriber {
 
     public static readonly LOADING_FILE_STATUS_EVENT = "loading-file-status-changed"
     public static readonly LOADING_MAP_STATUS_EVENT = "loading-map-status-changed"

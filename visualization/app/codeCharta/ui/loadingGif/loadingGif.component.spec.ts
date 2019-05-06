@@ -38,6 +38,35 @@ describe("LoadingGifController", () => {
             rebuildController()
 
             expect(loadingGifController["_viewModel"].isLoadingFile).toBeTruthy()
+            expect(loadingGifController["_viewModel"].isLoadingMap).toBeTruthy()
+        })
+    })
+
+    describe("onLoadingFileStatusChanged", () => {
+        it("should set isLoadingFile in viewModel", () => {
+            loadingGifController.onLoadingFileStatusChanged(true, undefined)
+
+            expect(loadingGifController["_viewModel"].isLoadingFile).toBe(true)
+        })
+
+        it("should set isLoadingFile in viewModel", () => {
+            loadingGifController.onLoadingFileStatusChanged(false, undefined)
+
+            expect(loadingGifController["_viewModel"].isLoadingFile).toBe(false)
+        })
+    })
+
+    describe("onLoadingMapStatusChanged", () => {
+        it("should set isLoadingMap in viewModel", () => {
+            loadingGifController.onLoadingMapStatusChanged(true, undefined)
+
+            expect(loadingGifController["_viewModel"].isLoadingMap).toBe(true)
+        })
+
+        it("should set isLoadingMap in viewModel", () => {
+            loadingGifController.onLoadingMapStatusChanged(false, undefined)
+
+            expect(loadingGifController["_viewModel"].isLoadingMap).toBe(false)
         })
     })
 
