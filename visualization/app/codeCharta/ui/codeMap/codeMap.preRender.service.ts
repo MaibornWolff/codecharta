@@ -11,9 +11,7 @@ import {MetricService, MetricServiceSubscriber} from "../../state/metric.service
 import {FileStateHelper} from "../../util/fileStateHelper";
 import {DeltaGenerator} from "../../util/deltaGenerator";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
-import {CodeChartaController} from "../../codeCharta.component";
 import {CodeMapRenderService} from "./codeMap.render.service";
-import {RibbonBarController} from "../ribbonBar/ribbonBar.component";
 import {LoadingGifController} from "../loadingGif/loadingGif.component";
 
 export interface RenderData {
@@ -151,11 +149,11 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	}
 
 	private notifyLoadingFileStatus() {
-		this.$rootScope.$broadcast(LoadingGifController.LOADING_STATUS_EVENT, false)
+		this.$rootScope.$broadcast(LoadingGifController.LOADING_FILE_STATUS_EVENT, false)
 	}
 
 	private notifyLoadingMapStatus() {
-		this.$rootScope.$broadcast(RibbonBarController.LOADING_MAP_STATUS_EVENT, false)
+		this.$rootScope.$broadcast(LoadingGifController.LOADING_MAP_STATUS_EVENT, false)
 	}
 
 	private notifyFileChanged() {

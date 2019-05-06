@@ -2,17 +2,21 @@ import "./loadingGif.component.scss"
 import {IRootScopeService, ITimeoutService} from "angular";
 
 export interface LoadingGifComponentSubscriber {
-    onLoadingStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent)
+    onLoadingFileStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent)
+    onLoadingMapStatusChanged(isLoadingMap: boolean, event: angular.IAngularEvent)
 }
 
-export class LoadingGifController {
+export class LoadingGifController implements LoadingGifComponentSubscriber{
 
-    public static readonly LOADING_STATUS_EVENT = "loading-status-changed"
+    public static readonly LOADING_FILE_STATUS_EVENT = "loading-file-status-changed"
+    public static readonly LOADING_MAP_STATUS_EVENT = "loading-map-status-changed"
 
     private _viewModel: {
         isLoadingFile: boolean,
+        isLoadingMap: boolean
     } = {
         isLoadingFile: true,
+        isLoadingMap: true
     }
 
     /* @ngInject */
@@ -23,8 +27,13 @@ export class LoadingGifController {
         LoadingGifController.subscribe(this.$rootScope, this)
     }
 
-    public onLoadingStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent) {
+    public onLoadingFileStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent) {
         this._viewModel.isLoadingFile = isLoadingFile
+        this.synchronizeAngularTwoWayBinding()
+    }
+
+    public onLoadingMapStatusChanged(isLoadingMap: boolean, event: angular.IAngularEvent) {
+        this._viewModel.isLoadingMap = isLoadingMap
         this.synchronizeAngularTwoWayBinding()
     }
 
@@ -33,15 +42,24 @@ export class LoadingGifController {
     }
 
     public static subscribe($rootScope: IRootScopeService, subscriber: LoadingGifComponentSubscriber) {
-        $rootScope.$on(LoadingGifController.LOADING_STATUS_EVENT, (event, data) => {
-            subscriber.onLoadingStatusChanged(data, event)
+        $rootScope.$on(LoadingGifController.LOADING_FILE_STATUS_EVENT, (event, data) => {
+            subscriber.onLoadingFileStatusChanged(data, event)
+        })
+        $rootScope.$on(LoadingGifController.LOADING_MAP_STATUS_EVENT, (event, data) => {
+            subscriber.onLoadingMapStatusChanged(data, event)
         })
     }
 }
 
-export const loadingGifComponent = {
-    selector: "loadingGifComponent",
-    template: require("./loadingGif.component.html"),
+export const loadingGifFileComponent = {
+    selector: "loadingGifFileComponent",
+    template: require("./loadingGif.file.component.html"),
+    controller: LoadingGifController
+}
+
+export const loadingGifMapComponent = {
+    selector: "loadingGifMapComponent",
+    template: require("./loadingGif.map.component.html"),
     controller: LoadingGifController
 }
 

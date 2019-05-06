@@ -43,7 +43,7 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 		SettingsService.subscribe(this.$rootScope, this)
 
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
-		this.$rootScope.$broadcast(LoadingGifController.LOADING_STATUS_EVENT, true)
+		this.$rootScope.$broadcast(LoadingGifController.LOADING_FILE_STATUS_EVENT, true)
 		this.loadFileOrSample()
 	}
 
@@ -96,7 +96,7 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 				this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
 			})
 			.catch(e => {
-				this.$rootScope.$broadcast(LoadingGifController.LOADING_STATUS_EVENT, false)
+				this.$rootScope.$broadcast(LoadingGifController.LOADING_FILE_STATUS_EVENT, false)
 				console.error(e);
 				this.printErrors(e)
 			})

@@ -96,7 +96,7 @@ describe("fileChooserController", () => {
 
 		it("should broadcast the loading-status-changed event", () => {
 			fileChooserController.onImportNewFiles({ files: [] })
-			expect($rootScope.$broadcast).toHaveBeenCalledWith(LoadingGifController.LOADING_STATUS_EVENT, true)
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(LoadingGifController.LOADING_FILE_STATUS_EVENT, true)
 		})
 	})
 

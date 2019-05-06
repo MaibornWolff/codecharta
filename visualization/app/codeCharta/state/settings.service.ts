@@ -13,7 +13,7 @@ import {FileStateService, FileStateServiceSubscriber} from "./fileState.service"
 import {FileStateHelper} from "../util/fileStateHelper";
 import {SettingsMerger} from "../util/settingsMerger";
 import {Vector3} from "three"
-import {RibbonBarController} from "../ui/ribbonBar/ribbonBar.component";
+import {LoadingGifController} from "../ui/loadingGif/loadingGif.component";
 
 export interface SettingsServiceSubscriber {
 	onSettingsChanged(settings: Settings, update : RecursivePartial<Settings>, event: IAngularEvent)
@@ -56,7 +56,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 		// _.merge(this.settings, update) didnt work with arrays like blacklist
 		this.settings = this.updateSettingsUsingPartialSettings(this.settings, update)
 		if(!isSilent) {
-			this.$rootScope.$broadcast(RibbonBarController.LOADING_MAP_STATUS_EVENT, true)
+			this.$rootScope.$broadcast(LoadingGifController.LOADING_MAP_STATUS_EVENT, true)
 			this.debounceBroadcast(update)
 		}
 		this.synchronizeAngularTwoWayBinding()
