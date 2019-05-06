@@ -20,7 +20,6 @@ import org.sonar.java.JavaClasspath
 import org.sonar.java.JavaTestClasspath
 import org.sonar.java.SonarComponents
 import org.sonar.java.checks.CheckList
-import org.sonar.java.filters.PostAnalysisIssueFilter
 import org.sonar.plugins.java.Java
 import org.sonar.plugins.java.JavaRulesDefinition
 import org.sonar.plugins.java.JavaSonarWayProfile
@@ -131,11 +130,10 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     override fun executeScan() {
         val javaSquidSensor = JavaSquidSensor(
                 sonarComponents,
-                sonarComponents.fileSystem,
-                DefaultJavaResourceLocator(sonarComponents.fileSystem, javaClasspath),
+                sensorContext.fileSystem(),
+                DefaultJavaResourceLocator(javaClasspath),
                 mapSettings,
-                NoSonarFilter(),
-                PostAnalysisIssueFilter(sonarComponents.fileSystem)
+                NoSonarFilter()
         )
         javaSquidSensor.execute(sensorContext)
     }
