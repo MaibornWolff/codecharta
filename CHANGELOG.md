@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 -	Prevent downloaded files from having multiple Timestamps #484
+-   Do not show loadingGif when cancelling the fileChooser #498
 
 ### Chore
 
