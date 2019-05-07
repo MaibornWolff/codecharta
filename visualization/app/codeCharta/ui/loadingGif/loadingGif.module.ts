@@ -2,6 +2,7 @@ import "../../state/state.module"
 import angular from "angular"
 import { loadingGifFileComponent, loadingGifMapComponent } from "./loadingGif.component"
 import { LoadingGifService } from "./loadingGif.service"
+import _ from "lodash"
 
 angular.module("app.codeCharta.ui.loadingGif",
 	["app.codeCharta.state"]
@@ -11,6 +12,6 @@ angular.module("app.codeCharta.ui.loadingGif",
 ).component(
 	loadingGifMapComponent.selector,
 	loadingGifMapComponent
-).service(LoadingGifService.SELECTOR, LoadingGifService)
+).service(_.camelCase(LoadingGifService.name), LoadingGifService)
 
 

@@ -10,7 +10,6 @@ export class LoadingGifService {
 
 	public static readonly LOADING_FILE_STATUS_EVENT = "loading-file-status-changed"
 	public static readonly LOADING_MAP_STATUS_EVENT = "loading-map-status-changed"
-	public static readonly SELECTOR = "loadingGifService"
 
 	private isLoadingFile: boolean = true
 	private isLoadingMap: boolean = true
