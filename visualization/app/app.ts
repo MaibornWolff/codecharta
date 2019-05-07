@@ -8,7 +8,7 @@ import "./app.scss";
 import "@uirouter/angularjs";
 import "./testVille/testVille";
 
-angular.module("app", ["app.codeCharta", "ngMaterial", "ui.router", "app.testVille"]);
+angular.module("app", ["app.codeCharta", "ngMaterial", "ui.router"]);
 
 angular.module("app")
     .config(["$locationProvider", ($locationProvider) => {

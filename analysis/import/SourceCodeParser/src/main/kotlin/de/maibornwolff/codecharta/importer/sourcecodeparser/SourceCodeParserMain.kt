@@ -9,10 +9,12 @@ import java.io.*
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 
-@Command(name = "sourcecodeparser", description = ["generates cc.JSON from source code"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
-class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Void> {
+@Command(name = "sourcecodeparser", description = ["generates cc.JSON from source code"],
+        footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
+class SourceCodeParserMain(private val outputStream: PrintStream): Callable<Void> {
+
     // we need this constructor because ccsh requires an empty constructor
-    constructor() : this(System.out)
+    constructor(): this(System.out)
 
     @Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -20,7 +22,8 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     @Option(names = ["-p", "--projectName"], description = ["project name"])
     private var projectName = "DefaultProjectName"
 
-    @Option(names = ["-f", "--format"], description = ["the format to output"], converter = [(OutputTypeConverter::class)])
+    @Option(names = ["-f", "--format"], description = ["the format to output"],
+            converter = [(OutputTypeConverter::class)])
     private var outputFormat = OutputFormat.JSON
 
     @Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
@@ -58,7 +61,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
 
     private fun getPrinter(): MetricWriter {
         return when (outputFormat) {
-            OutputFormat.JSON -> JsonMetricWriter(getWriter(), projectName)
+            OutputFormat.JSON  -> JsonMetricWriter(getWriter(), projectName)
             OutputFormat.TABLE -> TableMetricWriter(getWriter())
         }
     }

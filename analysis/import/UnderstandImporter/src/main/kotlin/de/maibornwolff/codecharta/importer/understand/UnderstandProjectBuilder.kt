@@ -46,6 +46,7 @@ class UnderstandProjectBuilder(
         projectName: String,
         private val pathSeparator: Char
 ) {
+
     private val logger = KotlinLogging.logger {}
     private val filterRule: (MutableNode) -> Boolean = { it.type == NodeType.File || it.type == NodeType.Folder }
 
@@ -175,7 +176,6 @@ class UnderstandProjectBuilder(
             replacementMap["MaxInheritanceTree"] = "max_dit"
             replacementMap["PercentLackOfCohesion"] = "max_lcom"
 
-
             // ignore following understand metrics
             replacementMap["Cyclomatic"] = ""
             replacementMap["CyclomaticModified"] = ""
@@ -197,12 +197,12 @@ class UnderstandProjectBuilder(
         return this
     }
 
-
     private fun isAggregationType(type: NodeType?): Boolean {
         return type != NodeType.Folder && type != NodeType.Unknown
     }
 
-    private fun MutableNode.addAggregatedAttributes(aggregationRules: Map<String, (Any, Any) -> Any> = emptyMap()): Map<String, Any> {
+    private fun MutableNode.addAggregatedAttributes(
+            aggregationRules: Map<String, (Any, Any) -> Any> = emptyMap()): Map<String, Any> {
         if (!children.isEmpty()) {
 
             if (isAggregationType(type)) {

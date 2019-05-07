@@ -35,7 +35,7 @@ import de.maibornwolff.codecharta.model.NodeType
 import java.lang.reflect.Type
 import java.util.*
 
-internal class NodeJsonDeserializer : JsonDeserializer<Node> {
+internal class NodeJsonDeserializer: JsonDeserializer<Node> {
 
     override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): Node {
         val jsonNode = json.asJsonObject

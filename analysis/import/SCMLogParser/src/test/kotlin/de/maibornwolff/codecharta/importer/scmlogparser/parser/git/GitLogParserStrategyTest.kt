@@ -9,7 +9,7 @@ import org.junit.Test
 import java.util.Arrays.asList
 import java.util.stream.Stream
 
-class GitLogParserStrategyTest : ParserStrategyContractTest() {
+class GitLogParserStrategyTest: ParserStrategyContractTest() {
 
     private var parserStrategy: GitLogParserStrategy = GitLogParserStrategy()
 
@@ -28,7 +28,6 @@ class GitLogParserStrategyTest : ParserStrategyContractTest() {
             twoCommits.add("commit")
             return twoCommits.stream()
         }
-
 
     @Test
     fun parsesFilenameFromFileMetadata() {
@@ -81,5 +80,4 @@ class GitLogParserStrategyTest : ParserStrategyContractTest() {
                 "M src/Modified.java",
                 "D src/Deleted.java")
     }
-
 }

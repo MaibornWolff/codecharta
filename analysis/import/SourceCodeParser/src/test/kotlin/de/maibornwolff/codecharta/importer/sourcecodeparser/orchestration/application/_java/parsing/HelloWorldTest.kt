@@ -30,7 +30,5 @@ class HelloWorldTest {
         val singleMetrics = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
         assertWithPrintOnFail(singleMetrics) { it.sum[OverviewMetricType.MCC] }.isEqualTo(29)
-
     }
-
 }

@@ -14,7 +14,7 @@ class CSVHeader(header: Array<String?>) {
     val pathColumn: List<Int>
         get() = headerMap.keys.filter { i ->
             headerMap[i].equals("entity", ignoreCase = true)
-                    || headerMap[i].equals("coupled", ignoreCase = true)
+            || headerMap[i].equals("coupled", ignoreCase = true)
         }
 
     init {
@@ -22,8 +22,9 @@ class CSVHeader(header: Array<String?>) {
         for (i in header.indices) {
             when {
                 header[i] == null || header[i]!!.isEmpty() -> logger.warn { "Ignoring column number $i (counting from 0) as it has no column name." }
-                headerMap.containsValue(header[i]) -> logger.warn { "Ignoring column number $i (counting from 0) with column name ${header[i]} as it duplicates a previous column." }
-                else -> headerMap[i] = header[i]!!
+                headerMap.containsValue(
+                        header[i])                         -> logger.warn { "Ignoring column number $i (counting from 0) with column name ${header[i]} as it duplicates a previous column." }
+                else                                       -> headerMap[i] = header[i]!!
             }
         }
 

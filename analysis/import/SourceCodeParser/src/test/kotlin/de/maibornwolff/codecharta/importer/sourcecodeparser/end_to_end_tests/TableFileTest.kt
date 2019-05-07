@@ -7,7 +7,6 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.retriev
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
-
 class TableFileTest {
 
     private val resource = "src/test/resources/$end2EndFolder/miniJavaProject/mini/RealLinesShort.java"
@@ -24,13 +23,12 @@ class TableFileTest {
 
     @Test
     fun `table output has correct length`() {
-        assertThat(output.lines().size).describedAs("\n" + output).isEqualTo(2 + 7)//header+each code line
+        assertThat(output.lines().size).describedAs("\n" + output).isEqualTo(2 + 7) //header+each code line
     }
 
     @Test
     fun `table output has correct metrics for line`() {
-        assertThat(elementsOf(output.lines()[7])).describedAs("\n" + output).contains("6", "5", "public", "void", "noop(){")
+        assertThat(elementsOf(output.lines()[7])).describedAs("\n" + output)
+                .contains("6", "5", "public", "void", "noop(){")
     }
-
-
 }

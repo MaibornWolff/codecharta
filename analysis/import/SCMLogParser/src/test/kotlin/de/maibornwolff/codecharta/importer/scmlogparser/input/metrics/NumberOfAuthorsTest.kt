@@ -41,7 +41,6 @@ class NumberOfAuthorsTest {
         assertThat(metric.value()).isEqualTo(1)
     }
 
-
     @Test
     fun should_increase_for_different_author() {
         // given

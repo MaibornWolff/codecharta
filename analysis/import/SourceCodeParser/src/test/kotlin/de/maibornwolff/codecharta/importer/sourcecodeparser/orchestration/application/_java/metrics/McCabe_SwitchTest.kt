@@ -67,6 +67,4 @@ public class Foo {
         }
     }
 }""".lines()
-
-
 }

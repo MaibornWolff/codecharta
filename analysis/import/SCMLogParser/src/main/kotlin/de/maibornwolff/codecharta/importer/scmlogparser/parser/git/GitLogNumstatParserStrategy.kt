@@ -11,7 +11,7 @@ import java.util.function.Predicate
 import java.util.stream.Collector
 import java.util.stream.Stream
 
-class GitLogNumstatParserStrategy : LogParserStrategy {
+class GitLogNumstatParserStrategy: LogParserStrategy {
     override fun creationCommand(): String {
         return "git log --numstat --topo-order"
     }
@@ -53,10 +53,10 @@ class GitLogNumstatParserStrategy : LogParserStrategy {
 
         internal fun isFileLine(commitLine: String): Boolean {
             return commitLine.length >= 5
-                    && (
-                    commitLine.matches(STANDARD_FILE_LINE_REGEX.toRegex())
-                            || commitLine.matches(RENAME_FILE_LINE_REGEX.toRegex())
-                    )
+                   && (
+                           commitLine.matches(STANDARD_FILE_LINE_REGEX.toRegex())
+                           || commitLine.matches(RENAME_FILE_LINE_REGEX.toRegex())
+                      )
         }
 
         internal fun parseModification(fileLine: String): Modification {
