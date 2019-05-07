@@ -6,14 +6,9 @@ import java.nio.file.Paths
 import java.util.ArrayList
 import java.util.HashMap
 
-class ProjectTraverser(root: File) {
+class ProjectTraverser(var root: File, private val exclude: Array<String>) {
     private var fileList: MutableList<File> = mutableListOf()
     private val analyzerFileLists: MutableMap<String, MutableList<String>>? = HashMap()
-    var root: File
-
-    init{
-        this.root = root
-    }
 
     fun traverse() {
         File(root.toString()).walk().forEach {
