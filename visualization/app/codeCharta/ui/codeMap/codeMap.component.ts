@@ -7,18 +7,28 @@ import {
 
 import "./codeMap.component.scss";
 
-import angular from "angular";
+import angular, {IRootScopeService, ITimeoutService} from "angular";
 import {NodeContextMenuController} from "../nodeContextMenu/nodeContextMenu.component";
+import {LoadingGifComponentSubscriber, LoadingGifController} from "../loadingGif/loadingGif.component";
 
-export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
+export class CodeMapController implements CodeMapMouseEventServiceSubscriber, LoadingGifComponentSubscriber {
+
+    private _viewModel: {
+        isLoadingFile: boolean
+    } = {
+        isLoadingFile: true
+    }
 
     /* @ngInject */
-    constructor(private threeViewerService: ThreeViewerService,
-                private $element: Element,
-                private $rootScope,
-                private codeMapMouseEventService: CodeMapMouseEventService,
+    constructor(
+        private $rootScope: IRootScopeService,
+        private $timeout: ITimeoutService,
+        private $element: Element,
+        private threeViewerService: ThreeViewerService,
+        private codeMapMouseEventService: CodeMapMouseEventService,
     ) {
-        CodeMapMouseEventService.subscribe($rootScope, this);
+        CodeMapMouseEventService.subscribe(this.$rootScope, this);
+        LoadingGifController.subscribe(this.$rootScope, this)
     }
 
     public $postLink() {
@@ -39,6 +49,18 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
     }
 
     public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+    }
+
+    public onLoadingFileStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent) {
+        this._viewModel.isLoadingFile = isLoadingFile
+        this.synchronizeAngularTwoWayBinding()
+    }
+
+    public onLoadingMapStatusChanged(isLoadingMap: boolean, event: angular.IAngularEvent) {
+    }
+
+    private synchronizeAngularTwoWayBinding() {
+        this.$timeout(() => {})
     }
 
 }
