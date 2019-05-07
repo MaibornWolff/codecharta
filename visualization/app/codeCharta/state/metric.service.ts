@@ -114,7 +114,7 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 	private getMetricDataFromHashMap(hashMap: Map<string, MaxMetricValuePair>) : MetricData[] {
 		const metricData = []
 
-		hashMap.forEach((value: {maxValue : number, availableInVisibleMaps : boolean}, key: string) => {
+		hashMap.forEach((value: MaxMetricValuePair, key: string) => {
 			metricData.push({
 				name: key,
 				maxValue: value.maxValue,
