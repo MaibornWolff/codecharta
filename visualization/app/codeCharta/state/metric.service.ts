@@ -102,7 +102,6 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 		const attributes: string[] = Object.keys(node.data.attributes)
 
 		attributes.forEach((metric: string) => {
-			//REVIEW: hashMap.get(metric) might be null => null.maxValue
 			if (!hashMap.has(metric) || hashMap.get(metric).maxValue <= node.data.attributes[metric]) {
 				hashMap.set(metric, {
 					maxValue: node.data.attributes[metric],
