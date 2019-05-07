@@ -1,15 +1,15 @@
-import {UrlExtractor} from "./util/urlExtractor"
-import {IHttpService, ILocationService, IRootScopeService, ITimeoutService} from "angular"
+import { UrlExtractor } from "./util/urlExtractor"
+import { IHttpService, ILocationService, IRootScopeService, ITimeoutService } from "angular"
 import "./codeCharta.component.scss"
-import {CodeChartaService} from "./codeCharta.service"
-import {SettingsService, SettingsServiceSubscriber} from "./state/settings.service";
-import {ScenarioHelper} from "./util/scenarioHelper";
-import {DialogService} from "./ui/dialog/dialog.service";
-import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
-import {CodeMapActionsService} from "./ui/codeMap/codeMap.actions.service";
-import {NameDataPair, RecursivePartial, Settings} from "./codeCharta.model"
-import {FileStateService} from "./state/fileState.service";
-import {LoadingGifController} from "./ui/loadingGif/loadingGif.component";
+import { CodeChartaService } from "./codeCharta.service"
+import { SettingsService, SettingsServiceSubscriber } from "./state/settings.service"
+import { ScenarioHelper } from "./util/scenarioHelper"
+import { DialogService } from "./ui/dialog/dialog.service"
+import { ThreeOrbitControlsService } from "./ui/codeMap/threeViewer/threeOrbitControlsService"
+import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
+import { NameDataPair, RecursivePartial, Settings } from "./codeCharta.model"
+import { FileStateService } from "./state/fileState.service"
+import { LoadingGifService } from "./ui/loadingGif/loadingGif.service"
 
 export class CodeChartaController implements SettingsServiceSubscriber {
 
@@ -43,7 +43,7 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 		SettingsService.subscribe(this.$rootScope, this)
 
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
-		this.$rootScope.$broadcast(LoadingGifController.LOADING_FILE_STATUS_EVENT, true)
+		this.$rootScope.$broadcast(LoadingGifService.LOADING_FILE_STATUS_EVENT, true)
 		this.loadFileOrSample()
 	}
 
@@ -64,7 +64,7 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 			.then((data: NameDataPair[]) => {
 				if (data.length > 0) {
 					this.tryLoadingFiles(data)
-					this.setRenderStateFromUrl();
+					this.setRenderStateFromUrl()
 				} else {
 					this.tryLoadingSampleFiles()
 				}
@@ -83,12 +83,12 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 			)
 		}
 		this.tryLoadingFiles([
-            { fileName: "sample1.json", content: require("./assets/sample1.json") },
-            { fileName: "sample2.json", content: require("./assets/sample2.json") }
-        ]);
-    }
-    
-    private tryLoadingFiles(values: NameDataPair[]) {
+			{ fileName: "sample1.json", content: require("./assets/sample1.json") },
+			{ fileName: "sample2.json", content: require("./assets/sample2.json") }
+		])
+	}
+
+	private tryLoadingFiles(values: NameDataPair[]) {
 		this.settingsService.updateSettings(this.settingsService.getDefaultSettings())
 
 		this.codeChartaService.loadFiles(values)
@@ -96,13 +96,13 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 				this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
 			})
 			.catch(e => {
-				this.$rootScope.$broadcast(LoadingGifController.LOADING_FILE_STATUS_EVENT, false)
-				console.error(e);
+				this.$rootScope.$broadcast(LoadingGifService.LOADING_FILE_STATUS_EVENT, false)
+				console.error(e)
 				this.printErrors(e)
 			})
-    }
+	}
 
-    private setRenderStateFromUrl() {
+	private setRenderStateFromUrl() {
 		const renderState: string = this.urlUtils.getParameterByName("mode")
 		const files = this.fileStateService.getCCFiles()
 
