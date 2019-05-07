@@ -1,4 +1,7 @@
+import "./state.module"
 import { {{properCase name}}Service } from "./{{camelCase name}}.service"
+import { instantiateModule } from "../../../mocks/ng.mockhelper"
+
 
 describe("{{properCase name}}Service", () => {
 
@@ -10,6 +13,8 @@ describe("{{properCase name}}Service", () => {
     })
 
     function restartSystem() {
+        instantiateModule("app.codeCharta.state")
+
         // initialise injected services and used variables
     }
 
