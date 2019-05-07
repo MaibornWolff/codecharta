@@ -26,11 +26,13 @@ export class FileChooserController {
     }
 
     public onImportNewFiles(element) {
-        this.$rootScope.$broadcast(CodeChartaController.LOADING_STATUS_EVENT, true)
         this.$scope.$apply(() => {
             this.fileStateService.resetMaps()
             for(let file of element.files) {
                 let reader = new FileReader()
+                reader.onloadstart = () => {
+                    this.$rootScope.$broadcast(CodeChartaController.LOADING_STATUS_EVENT, true)
+                }
                 reader.onload = (event) => {
                     this.setNewData(file.name, (<any>event.target).result)
                 };
