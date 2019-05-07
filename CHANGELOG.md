@@ -16,10 +16,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Using Sonar Plugins for Source code parser, giving the Sonar Metrics #343
 
 -   Use debounced settings update instead of throttled
+-   Filename of downloaded file now contains time #484 
 
 ### Removed
 
 ### Fixed
+-	Prevent downloaded files from having multiple Timestamps #484
+-   Do not show loadingGif when cancelling the fileChooser #498
 
 ### Chore
 
