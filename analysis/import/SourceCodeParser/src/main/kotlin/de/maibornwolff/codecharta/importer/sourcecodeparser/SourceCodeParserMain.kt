@@ -13,7 +13,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
 
-    private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/\\..*")
+    private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/\\..*")
 
     @Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -24,7 +24,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     @Option(names = ["-e", "--exclude"], description = ["exclude file/folder according to regex pattern"])
     private var exclude: Array<String> = arrayOf()
 
-    @Option(names = ["--defaultExcludes"], description = ["exclude build, target and out folders as well as files/folders starting with '.' "])
+    @Option(names = ["--defaultExcludes"], description = ["exclude build, target, dist and out folders as well as files/folders starting with '.' "])
     private var defaultExcludes = false
 
     @Option(names = ["-p", "--projectName"], description = ["project name"])
