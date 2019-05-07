@@ -8,6 +8,7 @@ import { MetricService } from "../../state/metric.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { SETTINGS } from "../../util/dataMocks"
 import { Settings, FileSelectionState, FileState } from "../../codeCharta.model"
+import { color } from "d3-color"
 
 describe("ColorSettingsPanelController", () => {
 	let colorSettingsPanelController: ColorSettingsPanelController
@@ -19,6 +20,8 @@ describe("ColorSettingsPanelController", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
+		withMockedMetricService()
+		withMockedSettingsService()
 	})
 
 	function restartSystem() {
@@ -39,105 +42,172 @@ describe("ColorSettingsPanelController", () => {
 		})()
 	}
 
+	function withMockedMetricService() {
+		metricService = colorSettingsPanelController["metricService"] = jest.fn(() => {
+			return {
+				getMetricData: jest.fn().mockReturnValue([]),
+				getMaxMetricByMetricName: jest.fn().mockReturnValue(100)
+			}
+		})()
+	}
+
 	function rebuildController() {
 		colorSettingsPanelController = new ColorSettingsPanelController($rootScope, settingsService, metricService)
 	}
 
-	it("set delta color flipped flag", () => {
-		let settings = { appSettings: { deltaColorFlipped: true }, dynamicSettings: {} } as Settings
+	describe("constructor", () => {
+		beforeEach(() => {
+			SettingsService.subscribe = jest.fn()
+			FileStateService.subscribe = jest.fn()
+			MetricService.subscribe = jest.fn()
+		})
 
-		colorSettingsPanelController.onSettingsChanged(settings, undefined,null)
+		it("should subscribe to SettingsService", () => {
+			rebuildController()
 
-		expect(colorSettingsPanelController["_viewModel"].deltaColorFlipped).toBe(true)
-	})
+			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
+		})
 
-	it("set white color buildings", () => {
-		let settings = { appSettings: { whiteColorBuildings: true }, dynamicSettings: {} } as Settings
+		it("should subscribe to FileStateService", () => {
+			rebuildController()
 
-		colorSettingsPanelController.onSettingsChanged(settings, undefined,null)
+			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
+		})
 
-		expect(colorSettingsPanelController["_viewModel"].whiteColorBuildings).toBeTruthy()
-	})
+		it("should subscribe to MetricService", () => {
+			rebuildController()
 
-	it("set neutralColorRangeFlipped", () => {
-		let settings = { dynamicSettings: { neutralColorRange: { flipped: true } }, appSettings: {} } as Settings
-
-		colorSettingsPanelController.onSettingsChanged(settings, undefined,null)
-
-		expect(colorSettingsPanelController["_viewModel"].neutralColorRangeFlipped).toBeTruthy()
-	})
-
-	it("detects delta mode selection", () => {
-		let fileStates = [
-			{ file: {}, selectedAs: FileSelectionState.Comparison },
-			{ file: {}, selectedAs: FileSelectionState.Reference }
-		] as FileState[]
-
-		colorSettingsPanelController.onFileSelectionStatesChanged(fileStates, null)
-
-		expect(colorSettingsPanelController["_viewModel"].isDeltaState).toBeTruthy()
-	})
-
-	it("detects not delta mode selection", () => {
-		let fileStates = [
-			{ file: {}, selectedAs: FileSelectionState.None },
-			{ file: {}, selectedAs: FileSelectionState.Partial }
-		] as FileState[]
-
-		colorSettingsPanelController.onFileSelectionStatesChanged(fileStates, null)
-
-		expect(colorSettingsPanelController["_viewModel"].isDeltaState).toBeFalsy()
-	})
-
-	it("apply settings calls update settings correctly", () => {
-		settingsService.updateSettings = jest.fn()
-		colorSettingsPanelController["_viewModel"].neutralColorRangeFlipped = false
-		colorSettingsPanelController["_viewModel"].deltaColorFlipped = true
-		colorSettingsPanelController["_viewModel"].whiteColorBuildings = true
-
-		colorSettingsPanelController.applySettings()
-
-		expect(settingsService.updateSettings).toHaveBeenCalledWith({
-			dynamicSettings: {
-				neutralColorRange: {
-					flipped: false
-				}
-			},
-			appSettings: {
-				deltaColorFlipped: true,
-				whiteColorBuildings: true
-			}
+			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
 		})
 	})
 
-	it("only adapt color range if color metric is not the same ", () => {
-		settingsService.updateSettings = jest.fn()
-		let settings = { dynamicSettings: { colorMetric: "foo" }, appSettings: {} } as Settings
+	describe("onSettingsChanged", () => {
+		it("should set delta color flipped flag", () => {
+			let settings = { appSettings: { deltaColorFlipped: true }, dynamicSettings: {} } as Settings
 
-		colorSettingsPanelController.onSettingsChanged(settings, undefined,null)
-		colorSettingsPanelController.onSettingsChanged(settings, undefined,null)
+			colorSettingsPanelController.onSettingsChanged(settings, undefined, null)
 
-		expect(settingsService.updateSettings).toHaveBeenCalledTimes(1)
-		expect(colorSettingsPanelController["lastColorMetric"]).toBe("foo")
+			expect(colorSettingsPanelController["_viewModel"].deltaColorFlipped).toBe(true)
+		})
+
+		it("should set white color buildings", () => {
+			let settings = { appSettings: { whiteColorBuildings: true }, dynamicSettings: {} } as Settings
+
+			colorSettingsPanelController.onSettingsChanged(settings, undefined, null)
+
+			expect(colorSettingsPanelController["_viewModel"].whiteColorBuildings).toBeTruthy()
+		})
+
+		it("should set neutralColorRangeFlipped", () => {
+			let settings = {
+				dynamicSettings: { neutralColorRange: { flipped: true }, colorMetric: "foo" },
+				appSettings: {}
+			} as Settings
+			colorSettingsPanelController["lastColorMetric"] = "foo"
+
+			colorSettingsPanelController.onSettingsChanged(settings, undefined, null)
+
+			expect(colorSettingsPanelController["_viewModel"].neutralColorRangeFlipped).toBeTruthy()
+		})
+
+		it("should only adapt color range if color metric is not the same ", () => {
+			let settings = { dynamicSettings: { colorMetric: "foo" }, appSettings: {} } as Settings
+
+			colorSettingsPanelController.onSettingsChanged(settings, undefined, null)
+
+			expect(settingsService.updateSettings).toHaveBeenCalledTimes(1)
+		})
+
+		it("should set correct metric max is retrieved for range calculation ", () => {
+			let settings = { dynamicSettings: { colorMetric: "rloc" }, appSettings: {} } as Settings
+
+			colorSettingsPanelController.onSettingsChanged(settings, undefined, null)
+
+			expect(metricService.getMaxMetricByMetricName).toHaveBeenCalledWith("rloc")
+		})
+
+		it("should set adapted ColorRange in thirds for given metricValues", () => {
+			colorSettingsPanelController.onSettingsChanged(settingsService.getSettings(), undefined, null)
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({
+				dynamicSettings: { neutralColorRange: { flipped: false, from: 33.33, to: 66.66 } }
+			})
+		})
 	})
 
-	it("correct metric max is retrieved for range calculation ", () => {
-		metricService.getMaxMetricByMetricName = jest.fn()
-		let settings = { dynamicSettings: { colorMetric: "rloc" }, appSettings: {} } as Settings
+	describe("onFileSelectionStatesChanged", () => {
+		it("should detect delta mode selection", () => {
+			let fileStates = [
+				{ file: {}, selectedAs: FileSelectionState.Comparison },
+				{ file: {}, selectedAs: FileSelectionState.Reference }
+			] as FileState[]
 
-		colorSettingsPanelController.onSettingsChanged(settings, undefined,null)
+			colorSettingsPanelController.onFileSelectionStatesChanged(fileStates, null)
 
-		expect(metricService.getMaxMetricByMetricName).toHaveBeenCalledWith("rloc")
+			expect(colorSettingsPanelController["_viewModel"].isDeltaState).toBeTruthy()
+		})
+
+		it("should detect not delta mode selection", () => {
+			let fileStates = [
+				{ file: {}, selectedAs: FileSelectionState.None },
+				{ file: {}, selectedAs: FileSelectionState.Partial }
+			] as FileState[]
+
+			colorSettingsPanelController.onFileSelectionStatesChanged(fileStates, null)
+
+			expect(colorSettingsPanelController["_viewModel"].isDeltaState).toBeFalsy()
+		})
 	})
 
-	it("set adapted ColorRange in thirds for given metricValues", () => {
-		withMockedSettingsService()
-		metricService.getMaxMetricByMetricName = jest.fn(() => 100)
+	describe("onMetricDataAdded", () => {
+		it("should set lastMaxColorMetricValue if newMaxColorMetricValue is different", () => {
+			colorSettingsPanelController.onMetricDataAdded([], undefined)
 
-		colorSettingsPanelController.onSettingsChanged(settingsService.getSettings(), undefined,null)
+			expect(colorSettingsPanelController["lastMaxColorMetricValue"]).toBe(100)
+		})
 
-		expect(settingsService.updateSettings).toHaveBeenCalledWith({
-			dynamicSettings: { neutralColorRange: { flipped: false, from: 33.33, to: 66.66 } }
+		it("should adaptColorRange if newMaxColorMetricValue is different", () => {
+			colorSettingsPanelController.onMetricDataAdded([], undefined)
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({
+				dynamicSettings: {
+					neutralColorRange: {
+						flipped: false,
+						from: 33.33,
+						to: 66.66
+					}
+				}
+			})
+		})
+
+		it("should not set lastMaxColorMetricValue if newMaxColorMetricValue is the same", () => {
+			colorSettingsPanelController["lastMaxColorMetricValue"] = 100
+
+			colorSettingsPanelController.onMetricDataAdded([], undefined)
+
+			expect(colorSettingsPanelController["lastMaxColorMetricValue"]).toBe(100)
+		})
+	})
+
+	describe("applySettings", () => {
+		it("should call update settings correctly", () => {
+			colorSettingsPanelController["_viewModel"].neutralColorRangeFlipped = false
+			colorSettingsPanelController["_viewModel"].deltaColorFlipped = true
+			colorSettingsPanelController["_viewModel"].whiteColorBuildings = true
+
+			colorSettingsPanelController.applySettings()
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({
+				dynamicSettings: {
+					neutralColorRange: {
+						flipped: false
+					}
+				},
+				appSettings: {
+					deltaColorFlipped: true,
+					whiteColorBuildings: true
+				}
+			})
 		})
 	})
 })
