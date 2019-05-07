@@ -13,7 +13,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
 
-    private val DEFAULT_EXCLUDES = arrayOf("foo")
+    private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/..*")
 
     @Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -21,10 +21,10 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     @Option(names = ["-i", "--noIssues"], description = ["do not search for sonar issues"])
     private var findNoIssues = false
 
-    @Option(names = ["-e", "--exclude"], description = ["exclude files/folders according to git ignore syntax"], arity = "0..*")
+    @Option(names = ["-e", "--exclude"], description = ["exclude files/folders according to regex pattern"], arity = "0..*")
     private var exclude: Array<String> = arrayOf()
 
-    @Option(names = ["--defaultExcludes"], description = ["exclude build, target and out folders"])
+    @Option(names = ["--defaultExcludes"], description = ["exclude build, target and out folders as well as files/folders starting with '.' "])
     private var defaultExcludes = false
 
     @Option(names = ["-p", "--projectName"], description = ["project name"])
@@ -52,7 +52,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
             return null
         }
 
-        if(defaultExcludes) exclude += DEFAULT_EXCLUDES
+        if (defaultExcludes) exclude += DEFAULT_EXCLUDES
 
         val projectParser = ProjectParser(exclude, verbose, !findNoIssues)
 
