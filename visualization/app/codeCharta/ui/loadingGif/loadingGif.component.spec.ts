@@ -38,6 +38,11 @@ describe("LoadingGifController", () => {
             rebuildController()
 
             expect(loadingGifController["_viewModel"].isLoadingFile).toBeTruthy()
+        })
+
+        it("should set attribute isLoadingMap to true", () => {
+            rebuildController()
+
             expect(loadingGifController["_viewModel"].isLoadingMap).toBeTruthy()
         })
     })
