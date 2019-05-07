@@ -61,16 +61,6 @@ export class CodeMapHelper {
         return ig.ignores(CodeMapHelper.transformPath(node.path));
     }
 
-    public static isHiddenOrExcluded(node: CodeMapNode, blacklist: Array<BlacklistItem>): boolean {
-        if (blacklist.length === 0) {
-            return false
-        }
-
-        const ig = ignore().add(blacklist
-            .map(ex => CodeMapHelper.transformPath(ex.path)));
-        return ig.ignores(CodeMapHelper.transformPath(node.path));
-    }
-
     public static getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]): string {
         let markingColor = null;
 
