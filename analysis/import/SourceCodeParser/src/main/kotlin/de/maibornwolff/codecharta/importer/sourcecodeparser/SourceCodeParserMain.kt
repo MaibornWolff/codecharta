@@ -13,7 +13,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
 
-    private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/..*")
+    private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/\\..*")
 
     @Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false

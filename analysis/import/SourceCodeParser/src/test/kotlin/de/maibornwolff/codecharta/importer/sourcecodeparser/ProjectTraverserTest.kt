@@ -8,7 +8,7 @@ class ProjectTraverserTest {
 
     @Test
     fun `should find correct number of files`() {
-        val projectTraverser = ProjectTraverser(File("src/test/resources/sampleproject").absoluteFile)
+        val projectTraverser = ProjectTraverser(File("src/test/resources/sampleproject").absoluteFile, arrayOf("/build/", "/\\..*/"))
         projectTraverser.traverse()
         val javaFiles = projectTraverser.getFileListByExtension("java")
         val pythonFiles = projectTraverser.getFileListByExtension("py")
