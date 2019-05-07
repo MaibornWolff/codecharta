@@ -2,7 +2,6 @@ import * as THREE from "three";
 import {Node, Settings} from "../../../codeCharta.model";
 import {CodeMapGeometricDescription} from "./codeMapGeometricDescription";
 import {CodeMapBuilding} from "./codeMapBuilding";
-import {RenderingUtil} from "./renderingUtil";
 import {IntermediateVertexData} from "./intermediateVertexData";
 import {BoxGeometryGenerationHelper} from "./boxGeometryGenerationHelper";
 import {ColorConverter} from "../../../util/colorConverter";
@@ -31,7 +30,7 @@ export class GeometryGenerator {
         let data: IntermediateVertexData = new IntermediateVertexData();
         let desc: CodeMapGeometricDescription = new CodeMapGeometricDescription(settings.treeMapSettings.mapSize);
 
-        this.floorGradient = this.getFloorGradient(nodes);
+        this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", this.getMaxNodeDepth(nodes));
 
         for (let i: number = 0; i < nodes.length; ++i) {
             let n: Node = nodes[i];
@@ -49,9 +48,12 @@ export class GeometryGenerator {
         };
     }
 
-    private getFloorGradient(nodes: Node[]): string[] {
-        return RenderingUtil.gradient("#333333", "#DDDDDD", RenderingUtil.getMaxNodeDepth(nodes))
-            .map(g => ColorConverter.convertNumberToHex(g));
+    private getMaxNodeDepth(nodes: Node[]): number {
+        let max = 0;
+        nodes.forEach((node) => {
+            max = Math.max(node.depth, max);
+        });
+        return max;
     }
 
     private mapNodeToLocalBox(n: Node): BoxMeasures {
@@ -182,7 +184,7 @@ export class GeometryGenerator {
             uvs[i * uvDimension + 0] = data.uvs[i].x;
             uvs[i * uvDimension + 1] = data.uvs[i].y;
 
-            let color: THREE.Vector3 = RenderingUtil.colorToVec3(data.colors[i]);
+            let color: THREE.Vector3 = ColorConverter.colorToVector3(data.colors[i]);
 
             colors[i * dimension + 0] = color.x;
             colors[i * dimension + 1] = color.y;
