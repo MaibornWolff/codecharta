@@ -90,7 +90,6 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 		fileStates.forEach((fileState: FileState) => {
 			let nodes: HierarchyNode<CodeMapNode>[] = hierarchy(fileState.file.map).leaves()
 			nodes.forEach((node: HierarchyNode<CodeMapNode>) => {
-				//REVIEW: If a building is hidden dont we want to recalculate the maxValue as well?
 				if (node.data.path && !CodeMapHelper.isBlacklisted(node.data, blacklist, BlacklistType.exclude)) {
 					this.addMaxMetricValuesToHashMap(node, hashMap, metricsFromVisibleMaps)
 				}
