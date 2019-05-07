@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+-   Excluding a building now updates the maximum value of colorRange #355
+
 ### Chore
 
 ## [1.24.0] - 2019-04-23
