@@ -17,10 +17,14 @@ or
 ```
 
 ## Parameters
+- --defaultExcludes (exclude build, target, dist and out folders as well as files/folders starting with '.')
+- -e, --exclude=\<excludePattern> (exclude file/folder from scan according to regex pattern)
 - -f, --format=\<outputFormat> (table or json)
-- -h, --help 
+- -h, --help
+- -i, --noIssues (do not search for sonar issues)
 - -o, --outputFile=\<outputFile> (file to write output to, if empty stdout is used)
 - -p, --projectName=\<projectName>
+- -v, --verbose
 
 ## Sonar Plugins
 
