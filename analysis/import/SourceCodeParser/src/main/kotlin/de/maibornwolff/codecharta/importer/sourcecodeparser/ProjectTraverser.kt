@@ -14,11 +14,11 @@ class ProjectTraverser(var root: File, private val exclude: Array<String> = arra
     private val analyzerFileLists: MutableMap<String, MutableList<String>>? = HashMap()
 
     fun traverse() {
-        val excludePatterns = exclude.joinToString(separator = "/|/", prefix = "(/", postfix = "/)").toRegex()
+        val excludePatterns = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
 
         File(root.toString()).walk().forEach {
             val standardizedPath = "/" + getRelativeFile(it.toString())
-            if(it.isFile && !excludePatterns.containsMatchIn(standardizedPath)){
+            if(it.isFile && !(exclude.isNotEmpty() && excludePatterns.containsMatchIn(standardizedPath))){
                 fileList.add(it)
             }
         }

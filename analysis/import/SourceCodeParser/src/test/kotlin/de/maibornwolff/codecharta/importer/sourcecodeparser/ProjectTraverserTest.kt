@@ -57,12 +57,30 @@ class ProjectTraverserTest {
 
     @Test
     fun `should exclude files in multiple ignored folders` () {
-        val projectTraverser = ProjectTraverser(File("src/test/resources").absoluteFile, arrayOf("bar", "sonar_issues_java"))
+        val projectTraverser = ProjectTraverser(File("src/test/resources").absoluteFile, arrayOf("/bar/", "/sonar_issues_java/"))
         projectTraverser.traverse()
         val javaFiles = projectTraverser.getFileListByExtension("java")
 
         assertThat(javaFiles).doesNotContain("sonar_issues_java/Clean.java")
         assertThat(javaFiles).doesNotContain("sampleproject/bar/foo.java")
+    }
+
+    @Test
+    fun `should exclude files where prefix matches` () {
+        val projectTraverser = ProjectTraverser(File("src/test/resources").absoluteFile, arrayOf("/sonar_.*/"))
+        projectTraverser.traverse()
+        val javaFiles = projectTraverser.getFileListByExtension("java")
+
+        assertThat(javaFiles).doesNotContain("sonar_issues_java/Clean.java")
+    }
+
+    @Test
+    fun `should exclude files where suffix matches` () {
+        val projectTraverser = ProjectTraverser(File("src/test/resources").absoluteFile, arrayOf("bar", "/.*.java"))
+        projectTraverser.traverse()
+        val javaFiles = projectTraverser.getFileListByExtension("java")
+
+        assertThat(javaFiles).isEmpty()
     }
 
 }
