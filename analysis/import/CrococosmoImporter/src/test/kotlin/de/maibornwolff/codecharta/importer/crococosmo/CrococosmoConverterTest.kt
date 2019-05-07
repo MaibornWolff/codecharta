@@ -95,7 +95,6 @@ class CrococosmoConverterTest {
         assertThat(node.attributes[attribName] == attribValue, `is`(true))
     }
 
-
     @Test
     fun shouldConvertComplexGraph() {
 
@@ -115,6 +114,4 @@ class CrococosmoConverterTest {
 
         assertThat(projects.size, `is`(2))
     }
-
-
 }

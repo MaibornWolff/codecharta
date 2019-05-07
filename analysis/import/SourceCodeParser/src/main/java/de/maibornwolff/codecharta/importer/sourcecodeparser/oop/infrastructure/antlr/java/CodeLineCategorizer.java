@@ -42,7 +42,8 @@ class CodeLineCategorizer {
     }
 
     private void addAllCommentLines(Token token) {
-        String[] commentLines = token.getText().split("\\r?\\n", -1);
+        String[] commentLines = token.getText()
+                .split("\\r?\\n", -1);
         for (int commentLine = token.getLine(); commentLine < token.getLine() + commentLines.length; commentLine++) {
             addIfItOverwritesWhitespace(commentLine, NonCodeTags.COMMENT);
         }
@@ -64,6 +65,4 @@ class CodeLineCategorizer {
         }
         lineIsCode.put(lineNumber, tags);
     }
-
-
 }

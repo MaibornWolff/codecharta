@@ -42,13 +42,15 @@ class SonarCodeURLLinkerTest {
     fun should_createUrlString() {
         // given
         val baseUrl = URL("https://sonarcloud.io")
-        val component = Component("", "com.adobe%3Aas3corelib%3Asrc%2Fcom%2Fadobe%2Fair%2Fcrypto%2FEncryptionKeyGenerator.as", "", "", Qualifier.FIL)
+        val component =
+                Component("", "com.adobe%3Aas3corelib%3Asrc%2Fcom%2Fadobe%2Fair%2Fcrypto%2FEncryptionKeyGenerator.as",
+                        "", "", Qualifier.FIL)
 
         // when
         val urlString = SonarCodeURLLinker(baseUrl).createUrlString(component)
 
         // then
-        assertThat(urlString, `is`("https://sonarcloud.io/code?id=com.adobe%3Aas3corelib%3Asrc%2Fcom%2Fadobe%2Fair%2Fcrypto%2FEncryptionKeyGenerator.as"))
+        assertThat(urlString,
+                `is`("https://sonarcloud.io/code?id=com.adobe%3Aas3corelib%3Asrc%2Fcom%2Fadobe%2Fair%2Fcrypto%2FEncryptionKeyGenerator.as"))
     }
-
 }

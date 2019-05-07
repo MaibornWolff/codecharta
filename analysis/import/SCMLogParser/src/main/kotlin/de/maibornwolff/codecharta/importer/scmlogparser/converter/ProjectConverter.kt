@@ -43,7 +43,8 @@ class ProjectConverter(private val containsAuthors: Boolean, private val project
         val attributes = extractAttributes(versionControlledFile)
         val fileName = versionControlledFile.actualFilename.substringAfterLast(PATH_SEPARATOR)
         val newNode = MutableNode(fileName, NodeType.File, attributes, "", ArrayList())
-        val path = PathFactory.fromFileSystemPath(versionControlledFile.actualFilename.substringBeforeLast(PATH_SEPARATOR, ""))
+        val path = PathFactory.fromFileSystemPath(
+                versionControlledFile.actualFilename.substringBeforeLast(PATH_SEPARATOR, ""))
         projectBuilder.insertByPath(path, newNode)
     }
 
@@ -51,7 +52,7 @@ class ProjectConverter(private val containsAuthors: Boolean, private val project
         return when {
             containsAuthors -> versionControlledFile.metricsMap
                     .plus(Pair("authors", versionControlledFile.authors))
-            else -> versionControlledFile.metricsMap
+            else            -> versionControlledFile.metricsMap
         }
     }
 

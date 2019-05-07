@@ -5,7 +5,7 @@
 
     <div class="sub-list">
         <md-list-item
-                      ng-repeat="item in $ctrl.blacklist | orderBy: [$ctrl.sortByExcludes,'path']"
+                      ng-repeat="item in $ctrl._viewModel.blacklist | orderBy: [$ctrl.sortByExcludes,'path']"
                       title="{{::item.path}}">
 
             <div class="md-icon item-type" layout="column">

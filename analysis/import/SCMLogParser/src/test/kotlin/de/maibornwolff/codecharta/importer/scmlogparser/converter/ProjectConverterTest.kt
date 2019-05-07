@@ -67,6 +67,4 @@ class ProjectConverterTest {
         //then
         assertThat(project.rootNode.children[0].attributes.containsKey("authors")).isFalse()
     }
-
-
 }

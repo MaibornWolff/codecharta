@@ -37,14 +37,15 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import java.io.InputStreamReader
 
-class ProjectMergerTest : Spek({
+class ProjectMergerTest: Spek({
 
     val TEST_EDGES_JSON_FILE = "coupling.json"
     val TEST_EDGES_JSON_FILE_2 = "coupling-empty-nodes.json"
 
 
     describe("filter edges as node attributes") {
-        val originalProject = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE)))
+        val originalProject = ProjectDeserializer.deserializeProject(
+                InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE)))
         val project = EdgeProjectBuilder(originalProject, '/').merge()
 
         val parent1 = getChildByName(project.rootNode.children, "Parent 1")
@@ -105,7 +106,8 @@ class ProjectMergerTest : Spek({
 
 
     describe("filter edges as node attributes with empty nodes list in testfile") {
-        val originalProject = ProjectDeserializer.deserializeProject(InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE_2)))
+        val originalProject = ProjectDeserializer.deserializeProject(
+                InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE_2)))
         val project = EdgeProjectBuilder(originalProject, '/').merge()
 
         val parent1 = getChildByName(project.rootNode.children, "Parent 1")

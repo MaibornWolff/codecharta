@@ -11,7 +11,7 @@ import java.util.function.Predicate
 import java.util.stream.Collector
 import java.util.stream.Stream
 
-class SVNLogParserStrategy : LogParserStrategy {
+class SVNLogParserStrategy: LogParserStrategy {
 
     override fun parseDate(commitLines: List<String>): OffsetDateTime {
         return commitLines
@@ -21,8 +21,10 @@ class SVNLogParserStrategy : LogParserStrategy {
     }
 
     private fun parseCommitDate(metadataLine: String): OffsetDateTime {
-        val splittedLine = metadataLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
-        val commitDateAsString = splittedLine[DATE_INDEX_IN_METADATA].trim({ it <= ' ' }).replace(" \\(.*\\)".toRegex(), "")
+        val splittedLine =
+                metadataLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+        val commitDateAsString =
+                splittedLine[DATE_INDEX_IN_METADATA].trim({ it <= ' ' }).replace(" \\(.*\\)".toRegex(), "")
         return OffsetDateTime.parse(commitDateAsString, DATE_TIME_FORMATTER)
     }
 
@@ -38,7 +40,8 @@ class SVNLogParserStrategy : LogParserStrategy {
     }
 
     private fun parseAuthor(authorLine: String): String {
-        val splittedLine = authorLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+        val splittedLine =
+                authorLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
         return splittedLine[AUTHOR_INDEX_IN_METADATA].trim({ it <= ' ' })
     }
 
@@ -76,7 +79,8 @@ class SVNLogParserStrategy : LogParserStrategy {
 
     companion object {
 
-        private val SVN_COMMIT_SEPARATOR_TEST = Predicate<String> { logLine -> !logLine.isEmpty() && StringUtils.containsOnly(logLine, '-') }
+        private val SVN_COMMIT_SEPARATOR_TEST =
+                Predicate<String> { logLine -> !logLine.isEmpty() && StringUtils.containsOnly(logLine, '-') }
         private val DEFAULT_REPOSITORY_FOLDER_PREFIXES = arrayOf("/branches/", "/tags/", "/trunk/")
         private val DATE_TIME_FORMATTER = DateTimeFormatterBuilder()
                 .parseCaseInsensitive()
@@ -100,9 +104,9 @@ class SVNLogParserStrategy : LogParserStrategy {
 
         private fun removeDefaultRepositoryFolderPrefix(path: String): String {
             return DEFAULT_REPOSITORY_FOLDER_PREFIXES
-                    .firstOrNull { path.startsWith(it) }
-                    ?.let { path.substring(it.length) }
-                    ?: path
+                           .firstOrNull { path.startsWith(it) }
+                           ?.let { path.substring(it.length) }
+                   ?: path
         }
 
         private fun ignoreIfRepresentsFolder(modification: Modification): Modification {
@@ -111,6 +115,4 @@ class SVNLogParserStrategy : LogParserStrategy {
             } else modification
         }
     }
-
-
 }

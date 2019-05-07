@@ -1,4 +1,4 @@
-import "./threeViewer";
+import "./threeViewer.module";
 import {NG} from "../../../../../mocks/ng.mockhelper";
 import sinon from "sinon";
 import angular from "angular";
@@ -6,7 +6,7 @@ import angular from "angular";
 /**
  * @test {ThreeUpdateCycleService}
  */
-describe("app.codeCharta.ui.codeMap.threeViewer.threeUpdateCycleService", function() {
+describe("app.codeCharta.ui.codeMap.threeViewer.threeUpdateCycleService", () => {
 
 
     //noinspection TypeScriptUnresolvedVariable
@@ -16,7 +16,7 @@ describe("app.codeCharta.ui.codeMap.threeViewer.threeUpdateCycleService", functi
     /**
      * @test {ThreeUpdateCycleService#constructor}
      */
-    it("should retrieve the angular service instance with no updatable references", NG.mock.inject(function(threeUpdateCycleService){
+    it("should retrieve the angular service instance with no updatable references", NG.mock.inject((threeUpdateCycleService) => {
         expect(threeUpdateCycleService).not.toBe(undefined);
         expect(threeUpdateCycleService.updatables.length).toBe(0);
     }));
@@ -25,7 +25,7 @@ describe("app.codeCharta.ui.codeMap.threeViewer.threeUpdateCycleService", functi
     /**
      * @test {ThreeUpdateCycleService#update}
      */
-    it("added updatable references should be updated on update call", NG.mock.inject(function(threeUpdateCycleService){
+    it("added updatable references should be updated on update call", NG.mock.inject((threeUpdateCycleService) => {
 
         let ref1 = sinon.spy();
         let ref2 = sinon.spy();

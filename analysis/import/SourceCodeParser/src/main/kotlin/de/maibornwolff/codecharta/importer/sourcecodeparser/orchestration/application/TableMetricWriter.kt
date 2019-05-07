@@ -4,8 +4,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.metrics.
 import de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.domain.metrics.OverviewMetric
 import java.io.Writer
 
-
-class TableMetricWriter(private val writer: Writer) : MetricWriter {
+class TableMetricWriter(private val writer: Writer): MetricWriter {
 
     override fun printDetails(detailedMetricTable: DetailedMetricTable) {
         writer.write(detailedMetricToTable(detailedMetricTable))
@@ -16,7 +15,5 @@ class TableMetricWriter(private val writer: Writer) : MetricWriter {
         writer.write(overviewMetricToTable(overviewMetric))
         writer.flush()
     }
-
-
 }
 

@@ -1,8 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser.git
 
-import org.junit.Test
-
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Test
 
 class AuthorParserTest {
 

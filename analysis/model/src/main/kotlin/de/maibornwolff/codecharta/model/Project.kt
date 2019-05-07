@@ -29,7 +29,6 @@
 
 package de.maibornwolff.codecharta.model
 
-
 class Project(
         val projectName: String,
         private val nodes: List<Node> = listOf(Node("root", NodeType.Folder)),
@@ -38,6 +37,7 @@ class Project(
         val attributeTypes: Map<String, List<Map<String, AttributeType>>> = mapOf(),
         var blacklist: List<BlacklistItem> = listOf()
 ) {
+
     init {
         if (nodes.size != 1) throw IllegalStateException("no root node present in project")
     }
@@ -58,7 +58,7 @@ class Project(
 
     override fun toString(): String {
         return "Project{projectName=$projectName, apiVersion=$apiVersion, nodes=$nodes, edges=$edges, " +
-                "attributeTypes=$attributeTypes, blacklist=$blacklist}"
+               "attributeTypes=$attributeTypes, blacklist=$blacklist}"
     }
 
     companion object {
@@ -71,5 +71,4 @@ class Project(
             return apiVersion_major == API_VERSION_MAJOR
         }
     }
-
 }

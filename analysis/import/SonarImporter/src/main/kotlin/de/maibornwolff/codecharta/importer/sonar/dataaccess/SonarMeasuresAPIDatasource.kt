@@ -83,12 +83,10 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
                             .filter { c -> c.qualifier == Qualifier.FIL || c.qualifier == Qualifier.UTS }
                             .forEach({ subscriber.onNext(it) })
                 }
-
             } while (page++ * PAGE_SIZE < total)
             subscriber.onComplete()
         }, BackpressureStrategy.BUFFER)
     }
-
 
     internal fun getMeasures(componentKey: String, metrics: List<String>, pageNumber: Int): Measures {
         val measureAPIRequestURI = createMeasureAPIRequestURI(componentKey, metrics, pageNumber)
@@ -102,12 +100,11 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
         }
 
         try {
-            logger.debug { "Getting measures from $measureAPIRequestURI"}
+            logger.debug { "Getting measures from $measureAPIRequestURI" }
             return request.get<Measures>(Measures::class.java)
         } catch (e: RuntimeException) {
             throw SonarImporterException("Error requesting $measureAPIRequestURI", e)
         }
-
     }
 
     internal fun createMeasureAPIRequestURI(componentKey: String, metrics: List<String>, pageNumber: Int): URI {
@@ -121,13 +118,13 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
         } catch (e: URISyntaxException) {
             throw SonarImporterException(e)
         }
-
     }
 
     companion object {
 
         private const val PAGE_SIZE = 500
         private const val MAX_METRICS_IN_ONE_SONARCALL = 15
-        private const val MEASURES_URL_PATTERN = "%s/api/measures/component_tree?baseComponentKey=%s&qualifiers=FIL,UTS&metricKeys=%s&p=%s&ps=$PAGE_SIZE"
+        private const val MEASURES_URL_PATTERN =
+                "%s/api/measures/component_tree?baseComponentKey=%s&qualifiers=FIL,UTS&metricKeys=%s&p=%s&ps=$PAGE_SIZE"
     }
 }

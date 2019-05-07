@@ -1,48 +1,120 @@
-import {SettingsService} from "../../../core/settings/settings.service";
+import "./threeViewer.module"
+import { ThreeCameraService } from "./threeCameraService"
+import { IRootScopeService } from "angular"
+import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
+import { Settings } from "../../../codeCharta.model"
+import { SETTINGS } from "../../../util/dataMocks"
+import { PerspectiveCamera, Vector3 } from "three"
+import { SettingsService } from "../../../state/settings.service"
+import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 
-jest.mock("../../../core/settings/settings.service");
+describe("ThreeCameraService", () => {
 
-import {PerspectiveCamera} from "three";
-
-jest.mock("three");
-
-import {ThreeCameraService} from "./threeCameraService";
-
-describe("threeCameraService", () => {
-
-    let sut: ThreeCameraService;
+    let threeCameraService : ThreeCameraService
+    let $rootScope : IRootScopeService
+    let settingsService : SettingsService
+    let settings : Settings
 
     beforeEach(() => {
-        SettingsService.mockClear();
-        PerspectiveCamera.mockClear();
-        sut = new ThreeCameraService();
-    });
+        restartSystem()
+        rebuildService()
+        withMockedSettingsService()
+    })
 
-    it("cameras near plane should be 100 to prevent flickering surfaces", () => {
-        sut.setPosition = jest.fn();
-        sut.init(new SettingsService(), 100, 50);
-        expect(PerspectiveCamera).toHaveBeenCalledWith(ThreeCameraService.VIEW_ANGLE, 100/50, 100, ThreeCameraService.FAR);
-    });
+    function restartSystem() {
+        instantiateModule("app.codeCharta.ui.codeMap.threeViewer")
 
-    it("init should set the camera position", () => {
-        sut.setPosition = jest.fn();
-        sut.init(new SettingsService());
-        expect(sut.setPosition).toHaveBeenCalled();
-    });
+        $rootScope = getService<IRootScopeService>("$rootScope")
+        settingsService = getService<SettingsService>("settingsService")
 
-    it("onSettingsChanged should set the camera position", () => {
-        sut.setPosition = jest.fn();
-        sut.onSettingsChanged({camera: {x: 0, y: 1, z: 2}});
-        expect(sut.setPosition).toHaveBeenCalledWith(0, 1, 2);
-    });
+        settings = JSON.parse(JSON.stringify(SETTINGS))
+    }
 
-    it("setPosition should update the camera position", () => {
-        sut.camera = new PerspectiveCamera();
-        sut.camera.position = {
-            set: jest.fn()
-        };
-        sut.setPosition(0,1,2);
-        expect(sut.camera.position.set).toHaveBeenCalledWith(0, 1, 2);
-    });
+    function rebuildService() {
+        threeCameraService = new ThreeCameraService($rootScope, settingsService)
+        threeCameraService.camera = new PerspectiveCamera()
+    }
 
-});
+    function withMockedSettingsService() {
+        settingsService = threeCameraService["settingsService"] = jest.fn().mockReturnValue({
+            updateSettings : jest.fn()
+        })()
+    }
+
+    describe ("onSettingsChanged", () => {
+        beforeEach(() => {
+            threeCameraService.setPosition = jest.fn()
+        })
+
+        it("should not call setPosition if camera and lastCameraVector are the same", () => {
+            const vector = new Vector3(0, 300, 1000)
+            threeCameraService["lastCameraVector"] = vector
+
+            threeCameraService.onSettingsChanged(settings, undefined,undefined)
+
+            expect(threeCameraService.setPosition).not.toHaveBeenCalled()
+        })
+
+        it("should call setPosition if camera and lastCameraVector are not the same", () => {
+            threeCameraService.onSettingsChanged(settings, undefined,undefined)
+
+            expect(threeCameraService.setPosition).toHaveBeenCalledWith(0, 300, 1000)
+        })
+
+        it("should set lastCameraVector if camera and lastCameraVector are not the same", () => {
+            threeCameraService.onSettingsChanged(settings, undefined,undefined)
+
+            expect(threeCameraService["lastCameraVector"]).toEqual(new Vector3(0,300,1000))
+        })
+    })
+
+    describe("onCameraChanged", () => {
+        it("should call updateSettings", () => {
+            const cameraPosition = threeCameraService.camera.position
+
+            threeCameraService.onCameraChanged(null, null);
+
+            expect(settingsService.updateSettings).toHaveBeenCalledWith({appSettings: {camera: new Vector3(cameraPosition.x, cameraPosition.y, cameraPosition.z) }}, true)
+        })
+    })
+
+    describe ("init", () => {
+        beforeEach(() => {
+            threeCameraService.setPosition = jest.fn()
+            SettingsService.subscribe = jest.fn()
+            ThreeOrbitControlsService.subscribe = jest.fn()
+        })
+
+        it("should set camera with a new aspect", () => {
+            threeCameraService.init(400, 200, 1, 2, 3)
+
+            expect(threeCameraService.camera.aspect).toBe(2)
+        })
+
+        it("should call setPosition with x, y and z", () => {
+            threeCameraService.init(400, 200, 1, 2, 3)
+
+            expect(threeCameraService.setPosition).toHaveBeenCalledWith(1, 2, 3)
+        })
+
+        it("should subscribe to SettingsService", () => {
+            threeCameraService.init(400, 200, 1, 2, 3)
+
+            expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, threeCameraService)
+        })
+
+        it("should subscribe to ThreeOrbitControlsService", () => {
+            threeCameraService.init(400, 200, 1, 2 ,3)
+
+            expect(ThreeOrbitControlsService.subscribe).toHaveBeenCalledWith($rootScope, threeCameraService)
+        })
+    })
+
+    describe ("setPosition", () => {
+        it("should set camera position correctly", () => {
+            threeCameraService.setPosition(1, 2, 3)
+
+            expect(threeCameraService.camera.position).toEqual({x: 1, y: 2, z: 3})
+        })
+    })
+})

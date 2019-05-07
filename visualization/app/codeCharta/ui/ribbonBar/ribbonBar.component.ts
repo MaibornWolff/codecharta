@@ -1,47 +1,74 @@
 import "./ribbonBar.component.scss";
 import $ from "jquery";
-import {KindOfMap, SettingsService} from "../../core/settings/settings.service";
-import { DownloadService } from "../../core/download/download.service";
+import {IRootScopeService, ITimeoutService} from "angular";
+import {FileState} from "../../codeCharta.model";
+import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
+import {FileStateHelper} from "../../util/fileStateHelper";
+import {FileDownloader} from "../../util/fileDownloader";
+import {CodeMapPreRenderService} from "../codeMap/codeMap.preRender.service";
 
-export class RibbonBarController {
+export interface RibbonBarControllerSubscriber {
+    onLoadingMapStatusChanged(isLoadingMap: boolean, event: angular.IAngularEvent)
+}
 
-    private collapsingElements = $("code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab");
-    private toggleElements = $("ribbon-bar-component .section-title");
+export class RibbonBarController implements FileStateServiceSubscriber, RibbonBarControllerSubscriber {
+
+    public static readonly LOADING_MAP_STATUS_EVENT = "loading-map-status-changed"
+
+    private collapsingElements = $("code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab")
+    private toggleElements = $("ribbon-bar-component .section-title")
     private isExpanded: boolean = false;
-    private _deltaMode = KindOfMap.Delta;
+
+    private _viewModel: {
+        isDeltaState: boolean,
+        isLoadingMap: boolean
+    } = {
+        isDeltaState: null,
+        isLoadingMap: true
+    }
 
     /* @ngInject */
     constructor(
-        private settingsService: SettingsService,
-        private downloadService: DownloadService
+        private $rootScope: IRootScopeService,
+        private $timeout: ITimeoutService,
+        private codeMapPreRenderService: CodeMapPreRenderService
     ) {
+        FileStateService.subscribe(this.$rootScope, this)
+        RibbonBarController.subscribe(this.$rootScope, this)
+    }
+
+    public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+        this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
+    }
+
+    public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+    }
+
+    public onLoadingMapStatusChanged(isLoadingMap: boolean, event: angular.IAngularEvent) {
+        this._viewModel.isLoadingMap = isLoadingMap
+        this.synchronizeAngularTwoWayBinding()
     }
 
     public downloadFile() {
-        this.downloadService.downloadCurrentMap();
-    }
-
-    public changeMargin(){
-        this.settingsService.settings.dynamicMargin = false;
-        this.settingsService.applySettings();
+        FileDownloader.downloadCurrentMap(this.codeMapPreRenderService.getRenderFile())
     }
 
     public toggle() {
         if (!this.isExpanded) {
-            this.expand();
+            this.expand()
         } else {
-            this.collapse();
+            this.collapse()
         }
     }
 
     public expand() {
         this.isExpanded = true;
-        this.collapsingElements.addClass("expanded");
+        this.collapsingElements.addClass("expanded")
     }
 
     public collapse() {
-        this.isExpanded = false;
-        this.collapsingElements.removeClass("expanded");
+        this.isExpanded = false
+        this.collapsingElements.removeClass("expanded")
     }
 
     public hoverToggle() {
@@ -52,6 +79,15 @@ export class RibbonBarController {
         this.toggleElements.removeClass("toggle-hovered")
     }
 
+    private synchronizeAngularTwoWayBinding() {
+        this.$timeout(() => {})
+    }
+
+    public static subscribe($rootScope: IRootScopeService, subscriber: RibbonBarControllerSubscriber) {
+        $rootScope.$on(RibbonBarController.LOADING_MAP_STATUS_EVENT, (event, data) => {
+            subscriber.onLoadingMapStatusChanged(data, event)
+        })
+    }
 }
 
 export const ribbonBarComponent = {

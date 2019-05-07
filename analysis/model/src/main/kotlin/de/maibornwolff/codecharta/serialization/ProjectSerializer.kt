@@ -58,7 +58,6 @@ object ProjectSerializer {
         } catch (e: IOException) {
             throw IOException("There was an Error while writing the file at $targetPath", e)
         }
-
     }
 
     /**

@@ -45,6 +45,7 @@ import javax.ws.rs.core.MediaType
  * Requests Data from Sonar Instance through REST-API
  */
 class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: URL?) {
+
     private val METRICS_URL_PATTERN = "%s/api/metrics/search?f=hidden,decimalScale&p=%s&ps=$PAGE_SIZE"
     private val TIMEOUT_MS = 5000
     private val logger = KotlinLogging.logger {}
@@ -67,7 +68,6 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
                     .map<String>({ it.key }).distinct().toSortedList().blockingGet()
         }
 
-
     val numberOfPages: Int
         get() {
             val response = getAvailableMetrics(1)
@@ -76,13 +76,13 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
 
     fun calculateNumberOfPages(total: Int): Int {
         var incrementor = 0
-        if(total % PAGE_SIZE > 0){
+        if (total % PAGE_SIZE > 0) {
             incrementor = 1
         }
         return total / PAGE_SIZE + incrementor
     }
 
-    internal constructor(baseUrl: URL) : this("", baseUrl)
+    internal constructor(baseUrl: URL): this("", baseUrl)
 
     init {
 
@@ -91,8 +91,6 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
                 .property(ClientProperties.READ_TIMEOUT, TIMEOUT_MS)
         client.register(ErrorResponseFilter::class.java)
         client.register(GsonProvider::class.java)
-
-
     }
 
     fun getAvailableMetrics(page: Int): Metrics {
@@ -104,13 +102,12 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
         }
 
         try {
-            logger.debug { "Getting measures from $url"}
+            logger.debug { "Getting measures from $url" }
 
             return request.get(Metrics::class.java)
         } catch (e: RuntimeException) {
             throw SonarImporterException("Error requesting $url", e)
         }
-
     }
 
     companion object {

@@ -32,7 +32,8 @@ class LogLineCollector private constructor(private val isCommitSeparator: Predic
         lastCommit.add(logLine)
     }
 
-    private fun combineForParallelExecution(firstList: MutableList<MutableList<String>>, secondList: MutableList<MutableList<String>>): MutableList<MutableList<String>> {
+    private fun combineForParallelExecution(firstList: MutableList<MutableList<String>>,
+                                            secondList: MutableList<MutableList<String>>): MutableList<MutableList<String>> {
         throw UnsupportedOperationException("parallel collection of log lines not supported")
     }
 
@@ -46,11 +47,16 @@ class LogLineCollector private constructor(private val isCommitSeparator: Predic
             val collector = LogLineCollector(commitSeparatorTest)
             return Collector.of<String, MutableList<MutableList<String>>, Stream<List<String>>>(
                     Supplier<MutableList<MutableList<String>>> { ArrayList() },
-                    BiConsumer<MutableList<MutableList<String>>, String> { commits, logLine -> collector.collectLogLine(commits, logLine) },
-                    BinaryOperator<MutableList<MutableList<String>>> { firstList, secondList -> collector.combineForParallelExecution(firstList, secondList) },
-                    Function<MutableList<MutableList<String>>, Stream<List<String>>> { collector.removeIncompleteCommits(it).map{ it.toList() } }
+                    BiConsumer<MutableList<MutableList<String>>, String> { commits, logLine ->
+                        collector.collectLogLine(commits, logLine)
+                    },
+                    BinaryOperator<MutableList<MutableList<String>>> { firstList, secondList ->
+                        collector.combineForParallelExecution(firstList, secondList)
+                    },
+                    Function<MutableList<MutableList<String>>, Stream<List<String>>> {
+                        collector.removeIncompleteCommits(it).map { it.toList() }
+                    }
             )
         }
     }
-
 }

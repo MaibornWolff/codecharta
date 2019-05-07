@@ -48,6 +48,7 @@ class CSVProjectBuilder(
         metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
         attributeTypes: AttributeTypes = AttributeTypes(mutableMapOf())
 ) {
+
     private val logger = KotlinLogging.logger {}
 
     private val includeRows: (Array<String>) -> Boolean = { true }
@@ -81,7 +82,6 @@ class CSVProjectBuilder(
             }
             row = parser.parseNext()
         }
-
     }
 
     private fun createParser(inStream: InputStream): CsvParser {

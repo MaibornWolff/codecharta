@@ -1,64 +1,53 @@
-import {SettingsService} from "../../core/settings/settings.service";
-import "./resetSettingsButton.component.scss";
+import { SettingsService } from "../../state/settings.service"
+import "./resetSettingsButton.component.scss"
+import {RecursivePartial, Settings} from "../../codeCharta.model";
 
 export class ResetSettingsButtonController {
+	private settingsNames: string = ""
 
-    private settingsNames: string = "";
+	/* @ngInject */
+	constructor(private settingsService: SettingsService) {}
 
-    /* @ngInject */
-    constructor(
-        private settingsService: SettingsService
-    ) {
+	public applyDefaultSettings() {
+		const tokens: string[] = this.settingsNames
+			.replace(/ /g, "")
+			.replace(/\n/g, "")
+			.split(",")
+		const defaultSettings = this.settingsService.getDefaultSettings()
+		const updatedSettings: RecursivePartial<Settings> = {}
 
-    }
+		tokens.forEach(token => {
+			let steps = token.split(".")
 
-    public onClick() {
-        this.updateSettings(this.settingsNames);
-    }
+			let defaultSettingsPointer = defaultSettings
+			let updatedSettingsPointer = updatedSettings
 
-    public updateSettings(settingsList: string = this.settingsNames) {
-        const sanitizedSettingsList = settingsList.replace(/ /g,"").replace(/\n/g,"");
-        const tokens: string[] = sanitizedSettingsList.split(",");
-        const settings = this.settingsService.settings;
-        const defaultSettings = this.settingsService.getDefaultSettings();
+			steps.forEach((step, index) => {
+				if (defaultSettingsPointer[step] !== undefined) {
+					if (!updatedSettingsPointer[step]) {
+						Object.assign(updatedSettingsPointer, {[step]: {}})
+					}
+					if (index === steps.length - 1) {
+						updatedSettingsPointer[step] = defaultSettingsPointer[step]
+					} else {
+						defaultSettingsPointer = defaultSettingsPointer[step]
+						updatedSettingsPointer = updatedSettingsPointer[step]
+					}
+				}
+			})
+		})
 
-        tokens.forEach((token) => {
-
-            let steps = token.split(".");
-
-            if (steps.length > 1) {
-
-                let writeSettingsPointer = settings;
-                let readSettingsPointer = defaultSettings;
-
-                steps.forEach((step, index) => {
-
-                    if (writeSettingsPointer[step] != null && readSettingsPointer[step] != null) {
-
-                        if (index === steps.length - 1) {
-                            writeSettingsPointer[step] = readSettingsPointer[step];
-                        } else {
-                            writeSettingsPointer = writeSettingsPointer[step];
-                            readSettingsPointer = readSettingsPointer[step];
-                        }
-                    }
-                });
-            } else {
-                this.settingsService.settings[token] = defaultSettings[token];
-            }
-        });
-        this.settingsService.applySettings();
-    }
+		if (Object.keys(updatedSettings).length > 0) {
+			this.settingsService.updateSettings(updatedSettings)
+		}
+	}
 }
 
 export const resetSettingsButtonComponent = {
-    selector: "resetSettingsButtonComponent",
-    template: require("./resetSettingsButton.component.html"),
-    controller: ResetSettingsButtonController,
-    bindings: {
-        settingsNames: "@"
-    }
-};
-
-
-
+	selector: "resetSettingsButtonComponent",
+	template: require("./resetSettingsButton.component.html"),
+	controller: ResetSettingsButtonController,
+	bindings: {
+		settingsNames: "@"
+	}
+}

@@ -31,10 +31,18 @@ package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.model.*
 
-class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
+class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy,
+                    private val projectName: String? = null) {
 
     fun extractProjectName(): String {
-        return projects.map { p -> p.projectName }.first()
+        if (projectName != null) return projectName
+
+        val projectNames = projects.map { p -> p.projectName }
+        if (!projectNames.all { p -> p == projectNames.first() }) {
+            throw MergeException(
+                    "Project Names do not match. If files with different project names should be merged, a new project name must be provided using -p.")
+        }
+        return projectNames.first()
     }
 
     fun merge(): Project {
@@ -46,7 +54,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
                     mergeAttributeTypes(),
                     mergeBlacklist()
             ).build()
-            else -> throw MergeException("API versions not supported.")
+            else                          -> throw MergeException("API versions not supported.")
         }
     }
 
@@ -73,7 +81,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
     private fun getMergedEdges(): MutableList<Edge> {
         val mergedEdges = mutableListOf<Edge>()
         projects.forEach { it.edges.forEach { mergedEdges.add(it) } }
-        return mergedEdges.distinctBy { listOf(it.fromNodeName, it.toNodeName)}.toMutableList()
+        return mergedEdges.distinctBy { listOf(it.fromNodeName, it.toNodeName) }.toMutableList()
     }
 
     private fun mergeAttributeTypes(): MutableMap<String, MutableList<Map<String, AttributeType>>> {
@@ -81,7 +89,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
 
         projects.forEach {
             it.attributeTypes.forEach {
-                val key : String = it.key
+                val key: String = it.key
                 if (mergedAttributeTypes.containsKey(key)) {
                     it.value.forEach {
                         if (!mergedAttributeTypes[key]!!.contains(it)) {
@@ -98,7 +106,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
 
     private fun mergeBlacklist(): MutableList<BlacklistItem> {
         val mergedBlacklist = mutableListOf<BlacklistItem>()
-        projects.forEach {it.blacklist.forEach { mergedBlacklist.add(it) } }
+        projects.forEach { it.blacklist.forEach { mergedBlacklist.add(it) } }
         return mergedBlacklist.distinctBy { it.toString() }.toMutableList()
     }
 }
