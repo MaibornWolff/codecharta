@@ -8,7 +8,7 @@ import { FileStateService } from "../../state/fileState.service"
 import { DialogService } from "../dialog/dialog.service"
 import { FileChooserController } from "./fileChooser.component"
 import { TEST_FILE_CONTENT } from "../../util/dataMocks"
-import {CodeChartaController} from "../../codeCharta.component";
+import { CodeChartaController } from "../../codeCharta.component"
 import _ from "lodash"
 
 describe("fileChooserController", () => {
@@ -94,9 +94,9 @@ describe("fileChooserController", () => {
 			expect($scope.$apply).toHaveBeenCalled()
 		})
 
-		it("should broadcast the loading-status-changed event", () => {
+		it("should not broadcast the loading-status-changed event if no file loaded", () => {
 			fileChooserController.onImportNewFiles({ files: [] })
-			expect($rootScope.$broadcast).toHaveBeenCalledWith(CodeChartaController.LOADING_STATUS_EVENT, true)
+			expect($rootScope.$broadcast).not.toHaveBeenCalledWith(CodeChartaController.LOADING_STATUS_EVENT, true)
 		})
 	})
 
