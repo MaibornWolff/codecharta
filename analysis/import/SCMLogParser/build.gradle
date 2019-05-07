@@ -8,7 +8,7 @@ dependencies {
     runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
     testImplementation group: 'junit', name: 'junit', version: junit4_version
-    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.12.0'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.12.2'
     testImplementation group: 'io.mockk', name: 'mockk', version: mokk_version
     testImplementation project(path: ':model', configuration: 'testOutput')
 }
