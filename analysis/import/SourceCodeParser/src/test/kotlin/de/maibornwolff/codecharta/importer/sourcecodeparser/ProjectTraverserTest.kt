@@ -44,4 +44,25 @@ class ProjectTraverserTest {
 
         assertThat(javaFiles.size).isEqualTo(1)
     }
+
+    @Test
+    fun `should exclude files in ignored folders` () {
+        val projectTraverser = ProjectTraverser(File("src/test/resources").absoluteFile, arrayOf("bar"))
+        projectTraverser.traverse()
+        val javaFiles = projectTraverser.getFileListByExtension("java")
+
+        assertThat(javaFiles).contains("ScriptShellSample.java")
+        assertThat(javaFiles).doesNotContain("sampleproject/bar/foo.java")
+    }
+
+    @Test
+    fun `should exclude files in multiple ignored folders` () {
+        val projectTraverser = ProjectTraverser(File("src/test/resources").absoluteFile, arrayOf("bar", "sonar_issues_java"))
+        projectTraverser.traverse()
+        val javaFiles = projectTraverser.getFileListByExtension("java")
+
+        assertThat(javaFiles).doesNotContain("sonar_issues_java/Clean.java")
+        assertThat(javaFiles).doesNotContain("sampleproject/bar/foo.java")
+    }
+
 }

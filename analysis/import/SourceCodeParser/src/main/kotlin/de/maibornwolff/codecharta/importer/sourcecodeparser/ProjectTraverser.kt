@@ -1,18 +1,26 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
 import org.sonar.api.internal.apachecommons.io.FilenameUtils
+import org.sonar.api.internal.apachecommons.io.filefilter.FileFilterUtils
+import org.sonar.api.internal.apachecommons.io.filefilter.IOFileFilter
 import java.io.File
+import java.io.FileFilter
 import java.nio.file.Paths
 import java.util.ArrayList
 import java.util.HashMap
 
-class ProjectTraverser(var root: File, private val exclude: Array<String>) {
+class ProjectTraverser(var root: File, private val exclude: Array<String> = arrayOf()) {
     private var fileList: MutableList<File> = mutableListOf()
     private val analyzerFileLists: MutableMap<String, MutableList<String>>? = HashMap()
 
     fun traverse() {
+        val excludePatterns = exclude.joinToString(separator = "/|/", prefix = "(/", postfix = "/)").toRegex()
+
         File(root.toString()).walk().forEach {
-            if(it.isFile) fileList.add(it)
+            val standardizedPath = "/" + getRelativeFile(it.toString())
+            if(it.isFile && !excludePatterns.containsMatchIn(standardizedPath)){
+                fileList.add(it)
+            }
         }
 
         adjustRootFolderIfRootIsFile()
