@@ -13,6 +13,7 @@ import {DeltaGenerator} from "../../util/deltaGenerator";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 import {CodeMapRenderService} from "./codeMap.render.service";
 import {LoadingGifController} from "../loadingGif/loadingGif.component";
+import { LoadingGifService } from "../loadingGif/loadingGif.service"
 
 export interface RenderData {
 	renderFile: CCFile
@@ -149,11 +150,11 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	}
 
 	private notifyLoadingFileStatus() {
-		this.$rootScope.$broadcast(LoadingGifController.LOADING_FILE_STATUS_EVENT, false)
+		this.$rootScope.$broadcast(LoadingGifService.LOADING_FILE_STATUS_EVENT, false)
 	}
 
 	private notifyLoadingMapStatus() {
-		this.$rootScope.$broadcast(LoadingGifController.LOADING_MAP_STATUS_EVENT, false)
+		this.$rootScope.$broadcast(LoadingGifService.LOADING_MAP_STATUS_EVENT, false)
 	}
 
 	private notifyFileChanged() {

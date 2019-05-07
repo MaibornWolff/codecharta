@@ -1,6 +1,7 @@
 import {CCFile, FileSelectionState, FileState} from "../codeCharta.model";
 import {IAngularEvent, IRootScopeService} from "angular";
 import {LoadingGifController} from "../ui/loadingGif/loadingGif.component";
+import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
 
 export interface FileStateServiceSubscriber {
     onFileSelectionStatesChanged(fileStates: FileState[], event: IAngularEvent)
@@ -73,7 +74,7 @@ export class FileStateService {
     }
 
     private notifySelectionChange() {
-        this.$rootScope.$broadcast(LoadingGifController.LOADING_MAP_STATUS_EVENT, true)
+        this.$rootScope.$broadcast(LoadingGifService.LOADING_MAP_STATUS_EVENT, true)
         this.$rootScope.$broadcast(FileStateService.FILE_STATE_CHANGED_EVENT, this.fileStates)
     }
 

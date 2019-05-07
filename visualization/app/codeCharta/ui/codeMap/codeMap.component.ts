@@ -9,7 +9,8 @@ import "./codeMap.component.scss";
 
 import angular, {IRootScopeService, ITimeoutService} from "angular";
 import {NodeContextMenuController} from "../nodeContextMenu/nodeContextMenu.component";
-import {LoadingGifComponentSubscriber, LoadingGifController} from "../loadingGif/loadingGif.component";
+import {LoadingGifController} from "../loadingGif/loadingGif.component";
+import { LoadingGifComponentSubscriber, LoadingGifService } from "../loadingGif/loadingGif.service"
 
 export class CodeMapController implements CodeMapMouseEventServiceSubscriber, LoadingGifComponentSubscriber {
 
@@ -28,7 +29,7 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber, Lo
         private codeMapMouseEventService: CodeMapMouseEventService,
     ) {
         CodeMapMouseEventService.subscribe(this.$rootScope, this);
-        LoadingGifController.subscribe(this.$rootScope, this)
+        LoadingGifService.subscribe(this.$rootScope, this)
     }
 
     public $postLink() {
