@@ -8,9 +8,6 @@ import { FileStateHelper } from "../../util/fileStateHelper"
 import _ from "lodash"
 
 export class ColorSettingsPanelController implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricServiceSubscriber {
-	private lastColorMetric: string = null
-	private lastMaxColorMetricValue: number = null
-
 	private _viewModel: {
 		neutralColorRangeFlipped: boolean
 		deltaColorFlipped: boolean
@@ -38,8 +35,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 		this._viewModel.deltaColorFlipped = settings.appSettings.deltaColorFlipped
 		this._viewModel.whiteColorBuildings = settings.appSettings.whiteColorBuildings
 
-		if ((this.lastColorMetric != settings.dynamicSettings.colorMetric || !this.containsColorRangeValues(settings)) && this.metricService.getMetricData()) {
-			this.lastColorMetric = settings.dynamicSettings.colorMetric
+		if ((!this.containsColorRangeValues(settings)) && this.metricService.getMetricData()) {
 			const maxMetricValue = this.metricService.getMaxMetricByMetricName(settings.dynamicSettings.colorMetric)
 			this.adaptColorRange(settings, maxMetricValue)
 		} else if (settings.dynamicSettings.neutralColorRange) {
@@ -56,10 +52,8 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 
 	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
 		const newMaxColorMetricValue: number = this.metricService.getMaxMetricByMetricName(this.settingsService.getSettings().dynamicSettings.colorMetric)
-		if (this.lastMaxColorMetricValue != newMaxColorMetricValue) {
-			this.lastMaxColorMetricValue = newMaxColorMetricValue
-			this.adaptColorRange(this.settingsService.getSettings(), newMaxColorMetricValue)
-		}
+		this.adaptColorRange(this.settingsService.getSettings(), newMaxColorMetricValue)
+
 	}
 
 	public onMetricDataRemoved(event: angular.IAngularEvent) {}
