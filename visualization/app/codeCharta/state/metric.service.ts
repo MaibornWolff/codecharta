@@ -20,6 +20,11 @@ export interface MetricServiceSubscriber {
 	onMetricDataRemoved(event: IAngularEvent)
 }
 
+interface MaxMetricValuePair {
+	maxValue: number
+	availableInVisibleMaps: boolean
+}
+
 export class MetricService implements FileStateServiceSubscriber, SettingsServiceSubscriber {
 
 	private static METRIC_DATA_ADDED_EVENT = "metric-data-added";
@@ -80,23 +85,24 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 	}
 
 	private buildHashMapFromMetrics(fileStates: FileState[], blacklist: BlacklistItem[], metricsFromVisibleMaps) {
-		const hashMap = new Map()
+		const hashMap: Map<string, MaxMetricValuePair> = new Map()
 
 		fileStates.forEach((fileState: FileState) => {
 			let nodes: HierarchyNode<CodeMapNode>[] = hierarchy(fileState.file.map).leaves()
 			nodes.forEach((node: HierarchyNode<CodeMapNode>) => {
 				if (node.data.path && !CodeMapHelper.isBlacklisted(node.data, blacklist, BlacklistType.exclude)) {
-					this.addMaxValueMetricsToHashMap(node, hashMap, metricsFromVisibleMaps)
+					this.addMaxMetricValuesToHashMap(node, hashMap, metricsFromVisibleMaps)
 				}
 			})
 		})
 		return hashMap
 	}
 
-	private addMaxValueMetricsToHashMap(node: HierarchyNode<CodeMapNode>, hashMap, metricsFromVisibleMaps) {
+	private addMaxMetricValuesToHashMap(node: HierarchyNode<CodeMapNode>, hashMap: Map<string, MaxMetricValuePair>, metricsFromVisibleMaps) {
 		const attributes: string[] = Object.keys(node.data.attributes)
 
 		attributes.forEach((metric: string) => {
+			//REVIEW: hashMap.get(metric) might be null => null.maxValue
 			if (!hashMap.has(metric) || hashMap.get(metric).maxValue <= node.data.attributes[metric]) {
 				hashMap.set(metric, {
 					maxValue: node.data.attributes[metric],
@@ -106,7 +112,7 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 		})
 	}
 
-	private getMetricDataFromHashMap(hashMap: Map<string, {maxValue : number, availableInVisibleMaps : boolean}>) : MetricData[] {
+	private getMetricDataFromHashMap(hashMap: Map<string, MaxMetricValuePair>) : MetricData[] {
 		const metricData = []
 
 		hashMap.forEach((value: {maxValue : number, availableInVisibleMaps : boolean}, key: string) => {
