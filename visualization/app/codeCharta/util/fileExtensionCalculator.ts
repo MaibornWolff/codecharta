@@ -3,9 +3,15 @@ import * as d3 from "d3"
 import { HierarchyNode } from "d3"
 import _ from "lodash"
 
+export interface Distribution {
+	fileExtension: string,
+	metricValue: number,
+	color: string
+}
+
 export interface FileExtensionDistribution {
 	metric: string
-	distribution: KeyValuePair
+	distribution: Distribution[]
 }
 
 export class FileExtensionCalculator {
@@ -22,12 +28,17 @@ export class FileExtensionCalculator {
 				const fileExtension: string = this.estimateFileExtension(node.data.name)
 				metrics.forEach((metric: string) => {
 					const metricValue: number = node.data.attributes[metric]
-					const distributionPointer: KeyValuePair = this.distribution.find(x => x.metric === metric).distribution
+					const distributionPointer: Distribution[] = this.distribution.find(x => x.metric === metric).distribution
+					const matchingItem: Distribution = distributionPointer.find(x => x.fileExtension === fileExtension)
 
-					if (_.keys(distributionPointer).includes(fileExtension)) {
-						distributionPointer[fileExtension] += metricValue
+					if (matchingItem) {
+						matchingItem.metricValue += metricValue
 					} else {
-						distributionPointer[fileExtension] = metricValue
+						distributionPointer.push({
+							fileExtension: fileExtension,
+							metricValue: metricValue,
+							color: null
+						})
 					}
 				})
 			})
@@ -40,7 +51,7 @@ export class FileExtensionCalculator {
 		metrics.forEach((metric: string) => {
 			this.distribution.push({
 				metric: metric,
-				distribution: {}
+				distribution: []
 			})
 		})
 	}

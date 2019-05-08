@@ -16,21 +16,21 @@ describe("FileExtensionCalculator", () => {
 			const expected: FileExtensionDistribution[] = [
 				{
 					metric: "RLOC",
-					distribution: {
-						jpg: 130,
-						java: 162,
-						json: 70,
-						none: 15
-					}
+					distribution: [
+						{fileExtension: "jpg", metricValue: 130, color: null},
+						{fileExtension: "java", metricValue: 162, color: null},
+						{fileExtension: "json", metricValue: 70, color: null},
+						{fileExtension: "none", metricValue: 15, color: null},
+					]
 				},
 				{
 					metric: "MCC",
-					distribution: {
-						jpg: 101,
-						java: 47,
-						json: 10,
-						none: 33
-					}
+					distribution: [
+						{fileExtension: "jpg", metricValue: 101, color: null},
+						{fileExtension: "java", metricValue: 47, color: null},
+						{fileExtension: "json", metricValue: 10, color: null},
+						{fileExtension: "none", metricValue: 33, color: null},
+					]
 				}
 			]
 			expect(result).toEqual(expected)

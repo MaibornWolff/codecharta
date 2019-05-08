@@ -1,14 +1,5 @@
 <div class="bar">
-	<div class="firstColor" ng-style="{ 'width': $ctrl.java + '%' }">
-		<p>{{ $ctrl.hey }}</p>
-	</div>
-	<div class="secondColor" ng-style="{ 'width': $ctrl.typescript + '%' }">
-		<p>TypeScript</p>
-	</div>
-	<div class="thirdColor" ng-style="{ 'width': $ctrl.kotlin + '%' }">
-		<p>Kotlin</p>
-	</div>
-	<div class="restColor" ng-style="{ 'width': $ctrl.rest + '%' }">
-		<p>Rest</p>
+	<div class="firstColor" ng-repeat="item in $ctrl._viewModel.distribution" ng-style="{ 'width': item.metricValue + '%' }">
+		<p>{{ item.fileExtension }}</p>
 	</div>
 </div>
