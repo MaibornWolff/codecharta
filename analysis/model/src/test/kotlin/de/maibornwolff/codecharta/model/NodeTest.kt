@@ -38,7 +38,7 @@ import org.spekframework.spek2.style.specification.describe
 import java.util.*
 import kotlin.test.assertFailsWith
 
-class NodeTest : Spek({
+class NodeTest: Spek({
 
     describe("root with child") {
 

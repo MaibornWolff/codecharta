@@ -61,7 +61,8 @@ class SonarComponentProjectBuilder constructor(
     fun addComponentAsNode(component: Component): SonarComponentProjectBuilder {
         val node = MutableNode(
                 createNodeName(component),
-                createNodeTypeFromQualifier(component.qualifier!!), createAttributes(component.measures!!), createLink(component))
+                createNodeTypeFromQualifier(component.qualifier!!), createAttributes(component.measures!!),
+                createLink(component))
         projectBuilder.insertByPath(createParentPath(component), node)
         return this
     }
@@ -93,17 +94,15 @@ class SonarComponentProjectBuilder constructor(
             } catch (nfe: NumberFormatException) {
                 false
             }
-
         }
 
         return false
-
     }
 
     private fun createNodeTypeFromQualifier(qualifier: Qualifier): NodeType {
         return when (qualifier) {
             Qualifier.FIL, Qualifier.UTS -> NodeType.File
-            else -> NodeType.Folder
+            else                         -> NodeType.Folder
         }
     }
 
@@ -119,7 +118,6 @@ class SonarComponentProjectBuilder constructor(
         } else if (usePath && component.path != null) {
             component.path.substring(component.path.lastIndexOf('/') + 1)
         } else component.name ?: component.id
-
     }
 
     /**

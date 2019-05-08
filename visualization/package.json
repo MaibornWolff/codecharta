@@ -1,210 +1,215 @@
 {
-  "author": "MaibornWolff GmbH <dist_intern_codecharta@maibornwolff.de>",
-  "homepage": "https://maibornwolff.github.io/codecharta/",
-  "bugs": {
-    "url": "https://github.com/MaibornWolff/codecharta/issues",
-    "email": "dist_intern_codecharta@maibornwolff.de"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/MaibornWolff/codecharta.git"
-  },
-  "name": "codecharta-visualization",
-  "version": "1.21.1",
-  "description": "MaibornWolff CodeCharta",
-  "files": [
-    "dist/webpack",
-    "app",
-    "conf",
-    "mocks",
-    "script",
-    ".babelrc",
-    "Dockerfile",
-    "Gruntfile.js",
-    "LICENSE.md",
-    "package.json",
-    "package-lock.json",
-    "README.md",
-    "tsconfig.json",
-    "tsconfig.webpack.json",
-    "cli.js"
-  ],
-  "window": {
-    "icon": "app/icon.png",
-    "toolbar": true,
-    "frame": true,
-    "width": 1024,
-    "height": 768
-  },
-  "main": "dist/webpack/index.html",
-  "build": {
-    "nwVersion": "0.27.3",
-    "output": "./dist/packages/",
-    "outputPattern": "codecharta-visualization-${VERSION}-${PLATFORM}-${ARCH}",
-    "files": "./dist/webpack/**/*",
-    "packed": true,
-    "targets": [
-      "zip"
-    ],
-    "appId": "io.github.maibornwolff.codecharta",
-    "win": {
-      "productName": "codecharta-visualization",
-      "companyName": "MaibornWolff GmbH",
-      "icon": "app/assets/icon.ico"
-    },
-    "mac": {
-      "icon": "app/assets/icon.icns",
-      "displayName": "codecharta-visualization"
-    }
-  },
-  "scripts": {
-    "start": "run --mirror https://dl.nwjs.io/ .",
-    "build": "webpack --config ./conf/webpack.config.js",
-    "test": "jest .*\\.spec\\.ts --runInBand",
-    "test:auto": "jest .*\\.spec\\.ts --watch",
-    "test:autoNoCoverage": "jest .*\\.spec\\.ts --watch --coverage false",
-    "test:updateSnaps": "jest .*\\.spec\\.ts --updateSnapshot",
-    "e2e": "jest .*\\.e2e\\.ts --runInBand --coverage false",
-    "e2e:auto": "jest .*\\.e2e\\.ts --watch --coverage false",
-    "doc": "rimraf dist/docs && typedoc --module es2015 --target ES6 --exclude **/*.spec.ts --out dist/docs/ --name CodeCharta app/**/*.ts",
-    "serve": "webpack --config ./conf/webpack.config.js --watch",
-    "package": "rimraf dist/packages && build --concurrent --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --mirror https://dl.nwjs.io/ . && bestzip ./dist/packages/codecharta-visualization-$npm_package_version-web.zip ./dist/webpack",
-    "prepare": "npm run build",
-    "g": "plop",
-    "lint": "tslint -c \"tslint.json\" \"app/**/*.ts\" --project tsconfig.json",
-    "lint:fix": "tslint -c \"tslint.json\" \"app/**/*.ts\" --fix --project tsconfig.json",
-    "format": "prettier --write \"./app/**/*.ts\""
-  },
-  "bin": {
-    "codecharta-visualization": "cli.js"
-  },
-  "license": "BSD-3-Clause",
-  "jest": {
-    "collectCoverage": true,
-    "coverageDirectory": "<rootDir>/dist/coverage",
-    "collectCoverageFrom": [
-      "<rootDir>/app/**/*.{ts,tsx}",
-      "!**/node_modules/**"
-    ],
-    "coveragePathIgnorePatterns": [
-      "(/__tests__/.*|\\.(spec|e2e))\\.(ts|tsx)$",
-      "<rootDir>/app/puppeteer.helper.ts"
-    ],
-    "snapshotSerializers": [
-      "jest-serializer-html"
-    ],
-    "transform": {
-      "\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js",
-      "\\.(html|glsl)$": "<rootDir>/mocks/fileTransformer.js"
-    },
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
-      "\\.(css|less|scss)$": "<rootDir>/mocks/styleMock.js"
-    },
-    "roots": [
-      "<rootDir>/app"
-    ],
-    "testRegex": "(/__tests__/.*|\\.(spec|e2e))\\.(ts|tsx)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "json"
-    ],
-    "moduleDirectories": [
-      "node_modules",
-      "<rootDir>/app"
-    ],
-    "globals": {
-      "ts-jest": {
-        "tsConfigFile": "tsconfig.json",
-        "skipBabel": false
-      }
-    }
-  },
-  "dependencies": {
-    "angularjs-nouislider": "^0.2.0",
-    "nouislider": "^11.1.0",
-    "nwjs-builder-phoenix": "^1.14.6",
-    "shelljs": "^0.8.1"
-  },
-  "devDependencies": {
-    "@types/angular": "^1.6.43",
-    "@types/angular-mocks": "^1.5.11",
-    "@types/d3": "^4.13.0",
-    "@types/d3-hierarchy": "^1.1.0",
-    "@types/jest": "^21.1.10",
-    "@types/node": "^8.9.5",
-    "@types/sinon": "^2.3.5",
-    "@types/three": "^0.89.12",
-    "@uirouter/angularjs": "^1.0.16",
-    "ajv": "^5.5.2",
-    "angular": "^1.6.9",
-    "angular-animate": "^1.6.9",
-    "angular-aria": "^1.6.9",
-    "angular-material": "^1.1.7",
-    "angular-material-expansion-panel": "^0.7.2",
-    "angular-messages": "^1.6.9",
-    "angular-mocks": "^1.6.9",
-    "angularjs-slider": "^6.5.0",
-    "babel-cli": "^6.18.0",
-    "babel-core": "^6.24.0",
-    "babel-loader": "^7.1.4",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
-    "babel-preset-es2015": "^6.18.0",
-    "babel-register": "^6.18.0",
-    "bestzip": "^2.1.2",
-    "browser-sync": "^2.26.3",
-    "browser-sync-webpack-plugin": "^1.2.0",
-    "clean-webpack-plugin": "^0.1.19",
-    "css-loader": "^0.28.10",
-    "d3": "^4.13.0",
-    "deepcopy": "^0.6.3",
-    "es6-shim": "^0.35.3",
-    "file-api": "^0.10.4",
-    "file-loader": "^0.11.2",
-    "font-awesome": "^4.7.0",
-    "hammerjs": "^2.0.8",
-    "html-loader": "^0.5.5",
-    "html-webpack-plugin": "^2.30.1",
-    "ignore": "^5.0.2",
-    "inquirer-directory": "^2.1.0",
-    "inquirer-file": "^1.0.1",
-    "jest": "^22.4.3",
-    "jest-serializer-html": "^5.0.0",
-    "jquery": "^3.3.1",
-    "json-loader": "^0.5.7",
-    "load-grunt-tasks": "^3.5.2",
-    "makeshift": "^1.1.0",
-    "minimatch": "^3.0.4",
-    "ng-annotate-loader": "^0.6.1",
-    "node-sass": "^4.11.0",
-    "path": "^0.12.7",
-    "plop": "^2.1.0",
-    "prettier": "^1.16.4",
-    "puppeteer": "^1.6.0",
-    "resolve-url-loader": "^2.3.0",
-    "rimraf": "^2.6.2",
-    "roboto-fontface": "^0.9.0",
-    "sass-loader": "^6.0.7",
-    "script-loader": "^0.7.0",
-    "sinon": "^4.4.10",
-    "string-loader": "0.0.1",
-    "style-loader": "^0.18.2",
-    "three": "^0.89.0",
-    "three-orbit-controls": "^82.1.0",
-    "three-text2d": "^0.3.4",
-    "ts-jest": "^21.1.3",
-    "ts-loader": "^2.3.6",
-    "tslint": "^5.12.1",
-    "typedoc": "^0.9.0",
-    "typescript": "^2.7.2",
-    "webpack": "^3.11.0",
-    "webpack-glsl-loader": "^1.0.1"
-  },
-  "optionalDependencies": {
-    "7zip-bin-mac": "^1.0.1",
-    "7zip-bin-win": "^2.1.1",
-    "7zip-bin-linux": "^1.2.0"
-  }
+	"author": "MaibornWolff GmbH <dist_intern_codecharta@maibornwolff.de>",
+	"homepage": "https://maibornwolff.github.io/codecharta/",
+	"bugs": {
+		"url": "https://github.com/MaibornWolff/codecharta/issues",
+		"email": "dist_intern_codecharta@maibornwolff.de"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/MaibornWolff/codecharta.git"
+	},
+	"name": "codecharta-visualization",
+	"version": "1.24.0",
+	"description": "MaibornWolff CodeCharta",
+	"files": [
+		"dist/webpack",
+		"app",
+		"conf",
+		"mocks",
+		"script",
+		".babelrc",
+		"Dockerfile",
+		"Gruntfile.js",
+		"LICENSE.md",
+		"package.json",
+		"package-lock.json",
+		"README.md",
+		"tsconfig.json",
+		"tsconfig.webpack.json",
+		"cli.js"
+	],
+	"codecharta": {
+		"apiVersion": "1.1"
+	},
+	"window": {
+		"icon": "app/icon.png",
+		"toolbar": true,
+		"frame": true,
+		"width": 1024,
+		"height": 768
+	},
+	"main": "dist/webpack/index.html",
+	"build": {
+		"nwVersion": "0.27.3",
+		"output": "./dist/packages/",
+		"outputPattern": "codecharta-visualization-${VERSION}-${PLATFORM}-${ARCH}",
+		"files": "./dist/webpack/**/*",
+		"packed": true,
+		"targets": [
+			"zip"
+		],
+		"appId": "io.github.maibornwolff.codecharta",
+		"win": {
+			"productName": "codecharta-visualization",
+			"companyName": "MaibornWolff GmbH",
+			"icon": "app/assets/icon.ico"
+		},
+		"mac": {
+			"icon": "app/assets/icon.icns",
+			"displayName": "codecharta-visualization"
+		}
+	},
+	"scripts": {
+		"start": "run --mirror https://dl.nwjs.io/ .",
+		"build": "webpack --config ./conf/webpack.config.js",
+		"test": "jest .*\\.spec\\.ts --runInBand",
+		"test:auto": "jest .*\\.spec\\.ts --watch",
+		"test:autoNoCoverage": "jest .*\\.spec\\.ts --watch --coverage false",
+		"test:updateSnaps": "jest .*\\.spec\\.ts --updateSnapshot",
+		"e2e": "jest .*\\.e2e\\.ts --coverage false",
+		"e2e:auto": "jest .*\\.e2e\\.ts --watch --coverage false",
+		"doc": "rimraf dist/docs && typedoc --module es2015 --target ES6 --exclude **/*.spec.ts --out dist/docs/ --name CodeCharta app/**/*.ts",
+		"serve": "webpack --config ./conf/webpack.config.js --watch",
+		"package": "rimraf dist/packages && build --concurrent --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --mirror https://dl.nwjs.io/ . && bestzip ./dist/packages/codecharta-visualization-$npm_package_version-web.zip ./dist/webpack",
+		"prepare": "npm run build",
+		"g": "plop",
+		"lint": "tslint -c \"tslint.json\" \"app/**/*.ts\" --project tsconfig.json",
+		"lint:fix": "tslint -c \"tslint.json\" \"app/**/*.ts\" --fix --project tsconfig.json",
+		"format": "prettier --write \"./app/**/*.ts\""
+	},
+	"bin": {
+		"codecharta-visualization": "cli.js"
+	},
+	"license": "BSD-3-Clause",
+	"jest": {
+		"collectCoverage": true,
+		"coverageDirectory": "<rootDir>/dist/coverage",
+		"collectCoverageFrom": [
+			"<rootDir>/app/**/*.{ts,tsx}",
+			"!**/node_modules/**"
+		],
+		"coveragePathIgnorePatterns": [
+			"(/__tests__/.*|\\.(spec|e2e))\\.(ts|tsx)$",
+			"<rootDir>/app/puppeteer.helper.ts"
+		],
+		"snapshotSerializers": [
+			"jest-serializer-html"
+		],
+		"transform": {
+			"\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js",
+			"\\.(html|glsl)$": "<rootDir>/mocks/fileTransformer.js"
+		},
+		"moduleNameMapper": {
+			"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
+			"\\.(css|less|scss)$": "<rootDir>/mocks/styleMock.js"
+		},
+		"roots": [
+			"<rootDir>/app"
+		],
+		"testRegex": "(/__tests__/.*|\\.(spec|e2e))\\.(ts|tsx)$",
+		"moduleFileExtensions": [
+			"ts",
+			"tsx",
+			"js",
+			"json"
+		],
+		"moduleDirectories": [
+			"node_modules",
+			"<rootDir>/app"
+		],
+		"globals": {
+			"ts-jest": {
+				"tsConfigFile": "tsconfig.json",
+				"skipBabel": false
+			}
+		}
+	},
+	"dependencies": {
+		"angularjs-nouislider": "^1.0.1",
+		"nouislider": "^13.1.1",
+		"nwjs-builder-phoenix": "^1.14.6",
+		"shelljs": "^0.8.1"
+	},
+	"devDependencies": {
+		"@types/angular": "^1.6.43",
+		"@types/angular-mocks": "^1.5.11",
+		"@types/d3": "^5.7.1",
+		"@types/d3-hierarchy": "^1.1.0",
+		"@types/jest": "^21.1.10",
+		"@types/lodash": "^4.14.123",
+		"@types/node": "^11.11.3",
+		"@types/sinon": "^2.3.5",
+		"@types/three": "^0.89.12",
+		"@uirouter/angularjs": "^1.0.16",
+		"ajv": "^6.10.0",
+		"angular": "^1.6.9",
+		"angular-animate": "^1.6.9",
+		"angular-aria": "^1.6.9",
+		"angular-material": "^1.1.7",
+		"angular-material-expansion-panel": "^0.7.2",
+		"angular-messages": "^1.6.9",
+		"angular-mocks": "^1.6.9",
+		"angularjs-slider": "^6.5.0",
+		"babel-cli": "^6.18.0",
+		"babel-core": "^6.24.0",
+		"babel-loader": "^7.1.4",
+		"babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+		"babel-preset-es2015": "^6.18.0",
+		"babel-register": "^6.18.0",
+		"bestzip": "^2.1.2",
+		"browser-sync": "^2.26.3",
+		"browser-sync-webpack-plugin": "^2.2.2",
+		"clean-webpack-plugin": "^0.1.19",
+		"css-loader": "^0.28.10",
+		"d3": "^5.9.2",
+		"deepcopy": "^0.6.3",
+		"es6-shim": "^0.35.3",
+		"file-api": "^0.10.4",
+		"file-loader": "^0.11.2",
+		"font-awesome": "^4.7.0",
+		"hammerjs": "^2.0.8",
+		"html-loader": "^0.5.5",
+		"html-webpack-plugin": "^3.2.0",
+		"ignore": "^5.0.2",
+		"inquirer-directory": "^2.1.0",
+		"inquirer-file": "^1.0.1",
+		"jest": "^22.4.3",
+		"jest-serializer-html": "^6.0.0",
+		"jquery": "^3.3.1",
+		"json-loader": "^0.5.7",
+		"lodash": "^4.17.11",
+		"load-grunt-tasks": "^4.0.0",
+		"makeshift": "^1.1.0",
+		"minimatch": "^3.0.4",
+		"ng-annotate-loader": "^0.6.1",
+		"node-sass": "^4.11.0",
+		"path": "^0.12.7",
+		"plop": "^2.1.0",
+		"prettier": "^1.16.4",
+		"puppeteer": "^1.6.0",
+		"resolve-url-loader": "^3.0.1",
+		"rimraf": "^2.6.2",
+		"roboto-fontface": "^0.10.0",
+		"sass-loader": "^7.1.0",
+		"script-loader": "^0.7.0",
+		"sinon": "^7.3.1",
+		"string-loader": "0.0.1",
+		"style-loader": "^0.23.1",
+		"three": "^0.89.0",
+		"three-orbit-controls": "^82.1.0",
+		"three-text2d": "^0.5.0",
+		"ts-jest": "^21.1.3",
+		"ts-loader": "^2.3.6",
+		"tslint": "^5.12.1",
+		"typedoc": "^0.14.2",
+		"typescript": "^3.3.3333",
+		"webpack": "^3.11.0",
+		"webpack-glsl-loader": "^1.0.1"
+	},
+	"optionalDependencies": {
+		"7zip-bin-mac": "^1.0.1",
+		"7zip-bin-win": "^2.1.1",
+		"7zip-bin-linux": "^1.2.0"
+	}
 }

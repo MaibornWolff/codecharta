@@ -27,7 +27,9 @@ class CommitCollectorTest {
         val secondCommit = Commit("AnotherAuthor", modificationsByFilename("src/Util.java"), commitDate)
         val commits = Stream.of(firstCommit, secondCommit).collect(CommitCollector.create(metricsFactory))
         assertThat(commits)
-                .extracting(Function<VersionControlledFile, Any> { it.filename }, Function<VersionControlledFile, Any> { f -> f.getMetricValue("number_of_commits") }, Function<VersionControlledFile, Any> { it.authors })
+                .extracting(Function<VersionControlledFile, Any> { it.filename },
+                        Function<VersionControlledFile, Any> { f -> f.getMetricValue("number_of_commits") },
+                        Function<VersionControlledFile, Any> { it.authors })
                 .containsExactly(
                         tuple("src/Main.java", 1L, setOf("TheAuthor")),
                         tuple("src/Util.java", 2L, HashSet(asList("TheAuthor", "AnotherAuthor"))))
@@ -51,9 +53,10 @@ class CommitCollectorTest {
 
     @Test
     fun doesNotSupportParallelStreams() {
-        val commit = Commit("TheAuthor", modificationsByFilename("src/Main.java", "src/Util.java"), OffsetDateTime.now())
+        val commit =
+                Commit("TheAuthor", modificationsByFilename("src/Main.java", "src/Util.java"), OffsetDateTime.now())
         val parallelCommitStream = Stream.of(commit, commit).parallel()
-        assertThatThrownBy { parallelCommitStream.collect(CommitCollector.create(metricsFactory)) }.isInstanceOf(UnsupportedOperationException::class.java)
+        assertThatThrownBy { parallelCommitStream.collect(CommitCollector.create(metricsFactory)) }.isInstanceOf(
+                UnsupportedOperationException::class.java)
     }
-
 }

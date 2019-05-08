@@ -28,7 +28,6 @@ class VersionControlledFileTest {
         assertThat(versionControlledFile.markedDeleted()).isFalse()
     }
 
-
     @Test
     fun canRegisterMetricsByMetricsFactory() {
         // given
@@ -175,5 +174,4 @@ class VersionControlledFileTest {
     private fun createCommit(author: String, modification: Modification): Commit {
         return Commit(author, Arrays.asList(modification), OffsetDateTime.now())
     }
-
 }

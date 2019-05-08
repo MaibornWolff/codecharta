@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 
-class HighlyCoupledFiles : Metric {
+class HighlyCoupledFiles: Metric {
 
     private val simultaneouslyCommitedFiles = mutableMapOf<String, Long>()
     private var numberOfCommits: Long = 0
@@ -27,7 +27,6 @@ class HighlyCoupledFiles : Metric {
         return if (numberOfCommits >= MIN_NO_COMMITS_FOR_HIGH_COUPLING) {
             `val`.toDouble() / numberOfCommits.toDouble() > HIGH_COUPLING_VALUE
         } else false
-
     }
 
     override fun registerCommit(commit: Commit) {

@@ -1,5 +1,4 @@
-import {DataServiceSubscriber, DataService, DataModel, MetricData} from "../../core/data/data.service";
-import {SettingsService} from "../../core/settings/settings.service";
+import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
 import {IAngularEvent, IRootScopeService} from "angular";
 import "./metricChooser.component.scss";
 import {
@@ -7,10 +6,14 @@ import {
     CodeMapMouseEventServiceSubscriber
 } from "../codeMap/codeMap.mouseEvent.service";
 import {CodeMapBuilding} from "../codeMap/rendering/codeMapBuilding";
+import {
+    MetricData,
+    Settings,
+    DynamicSettings, RecursivePartial
+} from "../../codeCharta.model";
+import {MetricService, MetricServiceSubscriber} from "../../state/metric.service";
 
-export class MetricChooserController implements DataServiceSubscriber, CodeMapMouseEventServiceSubscriber{
-
-    public metricData: MetricData[];
+export class MetricChooserController implements MetricServiceSubscriber, CodeMapMouseEventServiceSubscriber, SettingsServiceSubscriber {
 
     public hoveredAreaValue: number;
     public hoveredHeightValue: number;
@@ -19,55 +22,118 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
     public hoveredAreaDelta: number;
     public hoveredColorDelta: number;
     public hoveredDeltaColor: string;
-    public optionsWithoutStart;
-    public sliderPositions;
+
+    private _viewModel: {
+        metricData: MetricData[],
+        areaMetric: string,
+        colorMetric: string,
+        heightMetric: string
+    } = {
+        metricData: [],
+        areaMetric: null,
+        colorMetric: null,
+        heightMetric: null
+    }
 
 
     /* @ngInject */
     constructor(
-        private dataService: DataService,
         private settingsService: SettingsService,
         private $rootScope: IRootScopeService
 
     ) {
-        this.onDataChanged(dataService.data, null);
-        this.dataService.subscribe(this);
+        SettingsService.subscribe(this.$rootScope, this);
         CodeMapMouseEventService.subscribe(this.$rootScope, this);
-        this.optionsWithoutStart = {
-            connect: true,
-            range: {
-                min: 0,
-                max: 100,
-            },
-        };
-
-        this.sliderPositions = [20, 80];
+        MetricService.subscribe(this.$rootScope, this)
     }
 
-    public onDataChanged(data: DataModel, event: IAngularEvent) {
-        this.metricData =  data.metricData;
+    public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+        this.updateViewModel(settings)
     }
 
-    public notify() {
-        this.settingsService.applySettings();
+    public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
+        this._viewModel.metricData = metricData
+        this.potentiallyUpdateChosenMetrics(metricData)
+    }
+
+    public onMetricDataRemoved(event: angular.IAngularEvent) {
+    }
+
+    private potentiallyUpdateChosenMetrics(metricData: MetricData[]) {
+        const metricKeys: Partial<DynamicSettings> = {
+            areaMetric: "areaMetric",
+            heightMetric: "heightMetric",
+            colorMetric: "colorMetric"
+        }
+        let settingsUpdate: RecursivePartial<Settings> = this.prepareSettingsUpdateWithMetrics(metricKeys, metricData)
+        if (Object.keys(settingsUpdate.dynamicSettings).length !== 0) {
+            this.settingsService.updateSettings(settingsUpdate)
+        }
+    }
+
+    private prepareSettingsUpdateWithMetrics(metricKeys: Partial<DynamicSettings>, metricData: MetricData[]): RecursivePartial<Settings>  {
+        let settingsUpdate = {dynamicSettings: {}}
+
+        let metricSelectionIndex = 0
+        for (const metricKey in metricKeys) {
+            const metricValue: string = this.settingsService.getSettings().dynamicSettings[metricKey]
+            const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps)
+
+            if (availableMetrics.length>0 && !availableMetrics.find(x => x.name == metricValue)) { // metric value is "rloc" if not found in available, then gogogo
+                settingsUpdate.dynamicSettings[metricKey] = availableMetrics[Math.min(metricSelectionIndex, availableMetrics.length - 1)].name
+            }
+            metricSelectionIndex++
+        }
+        return settingsUpdate
+    }
+
+    private updateViewModel(settings: Settings) {
+        this._viewModel.areaMetric = settings.dynamicSettings.areaMetric
+        this._viewModel.colorMetric = settings.dynamicSettings.colorMetric
+        this._viewModel.heightMetric = settings.dynamicSettings.heightMetric
+    }
+
+    public applySettingsAreaMetric() {
+        this.settingsService.updateSettings({
+            dynamicSettings: {
+                areaMetric: this._viewModel.areaMetric,
+                margin: this.settingsService.getDefaultSettings().dynamicSettings.margin
+            }
+        })
+    }
+
+    public applySettingsColorMetric() {
+        this.settingsService.updateSettings({
+            dynamicSettings: {
+                colorMetric: this._viewModel.colorMetric,
+                neutralColorRange: this.settingsService.getDefaultSettings().dynamicSettings.neutralColorRange
+            }
+        })
+    }
+
+    public applySettingsHeightMetric() {
+        this.settingsService.updateSettings({
+            dynamicSettings: {
+                heightMetric: this._viewModel.heightMetric,
+            }
+        })
     }
 
     public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent) {
-        // unused
     }
 
     public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
 
         if(data && data.to && data.to.node && data.to.node.attributes) {
-            this.hoveredAreaValue = data.to.node.attributes[this.settingsService.settings.areaMetric];
-            this.hoveredColorValue = data.to.node.attributes[this.settingsService.settings.colorMetric];
-            this.hoveredHeightValue = data.to.node.attributes[this.settingsService.settings.heightMetric];
+            this.hoveredAreaValue = data.to.node.attributes[this._viewModel.areaMetric];
+            this.hoveredColorValue = data.to.node.attributes[this._viewModel.colorMetric];
+            this.hoveredHeightValue = data.to.node.attributes[this._viewModel.heightMetric];
 
             if(data.to.node.deltas){
 
-                this.hoveredAreaDelta = data.to.node.deltas[this.settingsService.settings.areaMetric];
-                this.hoveredColorDelta = data.to.node.deltas[this.settingsService.settings.colorMetric];
-                this.hoveredHeightDelta = data.to.node.deltas[this.settingsService.settings.heightMetric];
+                this.hoveredAreaDelta = data.to.node.deltas[this._viewModel.areaMetric];
+                this.hoveredColorDelta = data.to.node.deltas[this._viewModel.colorMetric];
+                this.hoveredHeightDelta = data.to.node.deltas[this._viewModel.heightMetric];
 
                 this.hoveredDeltaColor = this.getHoveredDeltaColor();
             }
@@ -88,7 +154,6 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
     }
 
     public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
-        // unused
     }
 
     private getHoveredDeltaColor() {
@@ -98,9 +163,9 @@ export class MetricChooserController implements DataServiceSubscriber, CodeMapMo
         };
 
         if (this.hoveredHeightDelta > 0) {
-            return colors[Number(this.settingsService.settings.deltaColorFlipped)];
+            return colors[Number(this.settingsService.getSettings().appSettings.deltaColorFlipped)];
         } else if (this.hoveredHeightDelta < 0) {
-            return colors[Number(!this.settingsService.settings.deltaColorFlipped)];
+            return colors[Number(!this.settingsService.getSettings().appSettings.deltaColorFlipped)];
         } else {
             return "inherit";
         }

@@ -35,7 +35,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
 
-class HelperFunctionsTest : Spek({
+class HelperFunctionsTest: Spek({
     data class SumTest(val a: Any, val b: Any, val result: Any)
 
     describe("sumOrFirst") {
@@ -55,12 +55,12 @@ class HelperFunctionsTest : Spek({
             val sum = getSumOrFirst().invoke(test.a, test.b)
 
             it("calculates sum of ${test.a.javaClass.simpleName} and ${test.b.javaClass.simpleName} " +
-                    "to type ${test.result.javaClass.simpleName}") {
+               "to type ${test.result.javaClass.simpleName}") {
                 expect(test.result.javaClass) { sum.javaClass }
             }
 
             it("calculates sum of ${test.a} as ${test.a.javaClass.simpleName} and ${test.b} as ${test.b.javaClass.simpleName} " +
-                    "to type ${test.result}") {
+               "to type ${test.result}") {
                 if (test.result is Double) {
                     assertThat(sum as Double, closeTo(test.result, 0.01))
                 } else {
@@ -87,12 +87,12 @@ class HelperFunctionsTest : Spek({
             val sum = getMaxValOrFirst().invoke(test.a, test.b)
 
             it("calculates max of ${test.a.javaClass.simpleName} and ${test.b.javaClass.simpleName} " +
-                    "to type ${test.result.javaClass.simpleName}") {
+               "to type ${test.result.javaClass.simpleName}") {
                 expect(test.result.javaClass) { sum.javaClass }
             }
 
             it("calculates max of ${test.a} as ${test.a.javaClass.simpleName} and ${test.b} as ${test.b.javaClass.simpleName} " +
-                    "to type ${test.result}") {
+               "to type ${test.result}") {
                 if (test.result is Double) {
                     assertThat(sum as Double, closeTo(test.result, 0.01))
                 } else {

@@ -1,8 +1,8 @@
-<md-card id="codemap-context-menu" ng-show="$ctrl.contextMenuBuilding">
+<md-card id="codemap-context-menu" ng-show="$ctrl._viewModel.contextMenuBuilding">
 
     <div ng-if="$ctrl.nodeIsFolder()">
         <div layout="row" layout-align="center center">
-            <md-button ng-repeat="color in $ctrl._markingColors"
+            <md-button ng-repeat="color in $ctrl._viewModel.markingColors"
                        ng-style="{'background-color':'{{color}}'}"
                        ng-disabled="primary === color && !isPrimary"
                        ng-click="$ctrl.clickColor(color)"
@@ -19,26 +19,26 @@
         <md-button ng-disabled="true">Node</md-button>
         <md-button ng-click="$ctrl.focusNode()" title="Only show selected nodes with children-nodes"><i class="fa fa-bullseye"></i> Focus</md-button>
 
-        <md-button ng-if="$ctrl.contextMenuBuilding.visible" ng-click="$ctrl.hideNode()" title="Hide node and children-nodes, but keep an empty space"><i class="fa fa-eye-slash"></i> Hide</md-button>
-        <md-button ng-if="!$ctrl.contextMenuBuilding.visible" ng-click="$ctrl.showNode()" title="Show node and children-nodes"><i class="fa fa-eye"></i> Show</md-button>
+        <md-button ng-if="$ctrl._viewModel.contextMenuBuilding.visible" ng-click="$ctrl.hideNode()" title="Hide node and children-nodes, but keep an empty space"><i class="fa fa-eye-slash"></i> Hide</md-button>
+        <md-button ng-if="!$ctrl._viewModel.contextMenuBuilding.visible" ng-click="$ctrl.showNode()" title="Show node and children-nodes"><i class="fa fa-eye"></i> Show</md-button>
 
         <md-button ng-click="$ctrl.excludeNode()" title="Exclude node and children-nodes and reorder the CodeMap"><i class="fa fa-ban"></i> Exclude</md-button>
     </div>
 
-    <div class="button-group" ng-if="$ctrl.amountOfDependentEdges > 0 || $ctrl.anyEdgeIsVisible">
+    <div class="button-group" ng-if="$ctrl._viewModel.amountOfDependentEdges > 0 || $ctrl._viewModel.anyEdgeIsVisible">
         <md-divider></md-divider>
         <md-button ng-disabled="true">Edges</md-button>
-        <md-button ng-if="$ctrl.amountOfDependentEdges > 0 && $ctrl.amountOfVisibleDependentEdges < $ctrl.amountOfDependentEdges"
+        <md-button ng-if="$ctrl._viewModel.amountOfDependentEdges > 0 && $ctrl._viewModel.amountOfVisibleDependentEdges < $ctrl._viewModel.amountOfDependentEdges"
                    ng-click="$ctrl.showDependentEdges()"
                    title="Show edges which are connected to this node">
             <i class="fa fa-eye"></i> Show
         </md-button>
-        <md-button ng-if="$ctrl.amountOfVisibleDependentEdges > 0"
+        <md-button ng-if="$ctrl._viewModel.amountOfVisibleDependentEdges > 0"
                    ng-click="$ctrl.hideDependentEdges()"
                    title="Hide edges which are connected to this node">
             <i class="fa fa-eye-slash"></i> Hide
         </md-button>
-        <md-button ng-if="$ctrl.anyEdgeIsVisible" ng-click="$ctrl.hideAllEdges()"
+        <md-button ng-if="$ctrl._viewModel.anyEdgeIsVisible" ng-click="$ctrl.hideAllEdges()"
                    title="Hide all visible edges">
             <i class="fa fa-eye-slash"></i> Hide all
         </md-button>

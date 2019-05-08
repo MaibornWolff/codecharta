@@ -4,7 +4,6 @@ import {
     CodeMapBuildingTransition, CodeMapMouseEventService,
     CodeMapMouseEventServiceSubscriber
 } from "./codeMap.mouseEvent.service";
-import {CodeMapRenderService} from "./codeMap.render.service";
 
 import "./codeMap.component.scss";
 
@@ -18,9 +17,6 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
                 private $element: Element,
                 private $rootScope,
                 private codeMapMouseEventService: CodeMapMouseEventService,
-                // we need to inject this service to instantiate it
-                // tslint:disable-next-line:no-unused-variable
-                private codeMapRenderService: CodeMapRenderService, 
     ) {
         CodeMapMouseEventService.subscribe($rootScope, this);
     }
@@ -40,11 +36,9 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber {
     }
 
     public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
-        // unused
     }
 
     public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
-        // unused    
     }
 
 }

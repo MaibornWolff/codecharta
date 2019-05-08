@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`mapBuilder createCodeMapFromHashMap 1`] = `
+Object {
+  "attributes": Object {},
+  "children": Array [
+    Object {
+      "attributes": Object {
+        "Functions": 10,
+        "MCC": 1,
+        "RLOC": 100,
+      },
+      "children": Array [],
+      "link": "http://www.google.de",
+      "name": "big leaf",
+      "path": "/root/big leaf",
+      "type": "File",
+    },
+    Object {
+      "attributes": Object {},
+      "children": Array [
+        Object {
+          "attributes": Object {
+            "Functions": 100,
+            "MCC": 100,
+            "RLOC": 30,
+          },
+          "children": Array [],
+          "name": "small leaf",
+          "path": "/root/Parent Leaf/small leaf",
+          "type": "File",
+        },
+        Object {
+          "attributes": Object {},
+          "children": Array [],
+          "name": "empty folder",
+          "path": "/root/Parent Leaf/empty folder",
+          "type": "Folder",
+        },
+        Object {
+          "attributes": Object {
+            "Functions": 1000,
+            "MCC": 10,
+            "RLOC": 70,
+          },
+          "children": Array [],
+          "name": "other small leaf",
+          "path": "/root/Parent Leaf/other small leaf",
+          "type": "File",
+        },
+      ],
+      "name": "Parent Leaf",
+      "path": "/root/Parent Leaf",
+      "type": "Folder",
+    },
+  ],
+  "name": "root",
+  "path": "/root",
+  "type": "Folder",
+}
+`;

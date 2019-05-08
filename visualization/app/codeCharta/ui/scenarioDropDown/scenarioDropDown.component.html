@@ -1,0 +1,7 @@
+<md-input-container>
+    <md-select placeholder="Metric Scenario" ng-model="$ctrl._viewModel.selectedName" ng-change="::$ctrl.applySettings()">
+        <md-option ng-repeat="scenario in $ctrl._viewModel.scenarios" value="{{::scenario.name}}">
+            {{::scenario.name}}
+        </md-option>
+    </md-select>
+</md-input-container>

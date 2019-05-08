@@ -6,8 +6,9 @@ import picocli.CommandLine
 import java.io.*
 import java.util.concurrent.Callable
 
-@CommandLine.Command(name = "sourcemonitorimport", description = ["generates cc.json from sourcemonitor csv"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
-class SourceMonitorImporter : Callable<Void> {
+@CommandLine.Command(name = "sourcemonitorimport", description = ["generates cc.json from sourcemonitor csv"],
+        footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
+class SourceMonitorImporter: Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -27,14 +28,14 @@ class SourceMonitorImporter : Callable<Void> {
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        val csvProjectBuilder = CSVProjectBuilder(projectName, pathSeparator, csvDelimiter, "File Name", sourceMonitorReplacement)
+        val csvProjectBuilder =
+                CSVProjectBuilder(projectName, pathSeparator, csvDelimiter, "File Name", sourceMonitorReplacement)
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
         ProjectSerializer.serializeProject(project, writer())
 
         return null
     }
-
 
     private val sourceMonitorReplacement: MetricNameTranslator
         get() {

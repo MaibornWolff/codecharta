@@ -42,5 +42,4 @@ class Foo {
     }
 }
 """.trim().lines()
-
 }

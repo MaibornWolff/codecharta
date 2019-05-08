@@ -45,7 +45,7 @@ import javax.ws.rs.ext.Provider
 
 @Provider
 @Consumes(MediaType.APPLICATION_JSON)
-class GsonProvider<T> : MessageBodyReader<T> {
+class GsonProvider<T>: MessageBodyReader<T> {
 
     private val gson: Gson
 

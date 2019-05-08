@@ -86,9 +86,7 @@ class JasomeProjectBuilder(projectName: String = "") {
         return value?.replace(',', '.', false)?.toBigDecimal() ?: BigDecimal.ZERO
     }
 
-
     fun build(): Project {
         return projectBuilder.build()
     }
-
 }

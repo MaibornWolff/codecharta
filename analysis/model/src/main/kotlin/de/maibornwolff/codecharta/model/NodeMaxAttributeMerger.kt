@@ -32,7 +32,8 @@ package de.maibornwolff.codecharta.model
 /**
  * merging multiply nodes by using max attribute and link, ignoring children
  */
-class NodeMaxAttributeMerger(var mergeChildrenList: Boolean = false) : NodeMergerStrategy {
+class NodeMaxAttributeMerger(var mergeChildrenList: Boolean = false): NodeMergerStrategy {
+
     override fun merge(tree: MutableNode, otherTrees: List<MutableNode>): MutableNode {
         val nodes = listOf(tree).plus(otherTrees)
         return MutableNode(
@@ -48,16 +49,19 @@ class NodeMaxAttributeMerger(var mergeChildrenList: Boolean = false) : NodeMerge
     private fun createLink(nodes: List<MutableNode>) = nodes.map { it.link }.firstOrNull { it != null && !it.isBlank() }
 
     private fun createAttributes(nodes: List<MutableNode>) =
-            nodes.map { it.attributes }.reduce { acc, mutableMap -> acc.mergeReduce(mutableMap) { x, y -> maxValOrFirst(x, y) } }
+            nodes.map { it.attributes }.reduce { acc, mutableMap ->
+                acc.mergeReduce(mutableMap) { x, y ->
+                    maxValOrFirst(x, y)
+                }
+            }
                     .toMutableMap()
-
 
     private fun createType(nodes: List<MutableNode>): NodeType {
         val types = nodes.mapNotNull { it.type }.distinct()
 
         return types.firstOrNull { it != NodeType.Folder && it != NodeType.Unknown }
-                ?: types.firstOrNull { it != NodeType.Unknown }
-                ?: NodeType.Unknown
+               ?: types.firstOrNull { it != NodeType.Unknown }
+               ?: NodeType.Unknown
     }
 
     private fun createName(nodes: MutableNode) = nodes.name
@@ -69,18 +73,18 @@ class NodeMaxAttributeMerger(var mergeChildrenList: Boolean = false) : NodeMerge
     private fun createChildrenList(nodes: List<MutableNode>): List<MutableNode> {
         return when {
             mergeChildrenList -> nodes.flatMap { it.children }.toList()
-            else -> listOf()
+            else              -> listOf()
         }
     }
 
     private fun maxValOrFirst(x: Any, y: Any): Any {
         return when {
             (x is Long || x is Int || x is Short || x is Byte)
-                    && (y is Long || y is Int || y is Short || y is Byte) ->
+            && (y is Long || y is Int || y is Short || y is Byte) ->
                 maxOf((x as Number).toLong(), (y as Number).toLong())
-            x is Number && y is Number -> maxOf(x.toDouble(), y.toDouble())
-            x !is Number && y is Number -> y
-            else -> x
+            x is Number && y is Number                            -> maxOf(x.toDouble(), y.toDouble())
+            x !is Number && y is Number                           -> y
+            else                                                  -> x
         }
     }
 

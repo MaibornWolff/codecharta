@@ -47,6 +47,7 @@ class CSVProjectBuilder(
         private val pathColumnName: String = "path",
         metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
 ) {
+
     private val logger = KotlinLogging.logger {}
 
     private val includeRows: (Array<String>) -> Boolean = { true }

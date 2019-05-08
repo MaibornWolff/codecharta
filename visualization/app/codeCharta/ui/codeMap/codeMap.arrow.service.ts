@@ -1,8 +1,7 @@
 import * as THREE from "three";
-import {Node} from "./rendering/node";
-import {RenderSettings} from "./rendering/renderSettings";
-import {Edge} from "../../core/data/model/CodeMap";
+import {Node} from "../../codeCharta.model";
 import {ThreeSceneService} from "./threeViewer/threeSceneService";
+import {Edge, Settings} from "../../codeCharta.model";
 
 export class CodeMapArrowService {
 
@@ -21,24 +20,25 @@ export class CodeMapArrowService {
         }
     }
 
-    public addEdgeArrowsFromOrigin(origin: Node, nodes: Node[], deps: Edge[], settings: RenderSettings) {
-        let resDeps: Edge[] = [];
+    public addEdgeArrowsFromOrigin(origin: Node, nodes: Node[], deps: Edge[], settings: Settings) {
+        let resEdges: Edge[] = [];
         let originPath = this.getPathFromNode(origin);
         for (let dep of deps) {
             if (dep.fromNodeName === originPath) {
-                resDeps.push(dep);
+                resEdges.push(dep);
             }
         }
-        this.addEdgeArrows(nodes, resDeps, settings);
+        this.addEdgeArrows(nodes, resEdges, settings);
     }
 
-    public addEdgeArrows(nodes: Node[], deps: Edge[], settings: RenderSettings) {
+    public addEdgeArrows(nodes: Node[], edges: Edge[], settings: Settings) {
 
         let map = this.getNodepathMap(nodes);
 
-        for (let dep of deps) {
-            let originNode: Node = map.get(dep.fromNodeName);
-            let targetNode: Node = map.get(dep.toNodeName);
+        for (let edge of edges) {
+            let originNode: Node = map.get(edge.fromNodeName);
+            let targetNode: Node = map.get(edge.toNodeName);
+
             if (originNode && targetNode) {
                 this.addArrow(targetNode, originNode, settings);
             }
@@ -46,21 +46,24 @@ export class CodeMapArrowService {
 
     }
 
-    public addArrow(arrowTargetNode: Node, arrowOriginNode: Node, settings: RenderSettings): void {
+    public addArrow(arrowTargetNode: Node, arrowOriginNode: Node, s: Settings): void {
 
-        if (arrowTargetNode.attributes && arrowTargetNode.attributes[settings.heightKey] && arrowOriginNode.attributes && arrowOriginNode.attributes[settings.heightKey]) {
+        if (arrowTargetNode.attributes &&
+            arrowTargetNode.attributes[s.dynamicSettings.heightMetric] &&
+            arrowOriginNode.attributes &&
+            arrowOriginNode.attributes[s.dynamicSettings.heightMetric]) {
 
-            let xTarget: number = arrowTargetNode.x0 - settings.mapSize * 0.5;
+            let xTarget: number = arrowTargetNode.x0 - s.treeMapSettings.mapSize * 0.5;
             let yTarget: number = arrowTargetNode.z0;
-            let zTarget: number = arrowTargetNode.y0 - settings.mapSize * 0.5;
+            let zTarget: number = arrowTargetNode.y0 - s.treeMapSettings.mapSize * 0.5;
 
             let wTarget: number = arrowTargetNode.width;
             let hTarget: number = arrowTargetNode.height;
             let lTarget: number = arrowTargetNode.length;
 
-            let xOrigin: number = arrowOriginNode.x0 - settings.mapSize * 0.5;
+            let xOrigin: number = arrowOriginNode.x0 - s.treeMapSettings.mapSize * 0.5;
             let yOrigin: number = arrowOriginNode.z0;
-            let zOrigin: number = arrowOriginNode.y0 - settings.mapSize * 0.5;
+            let zOrigin: number = arrowOriginNode.y0 - s.treeMapSettings.mapSize * 0.5;
 
             let wOrigin: number = arrowOriginNode.width;
             let hOrigin: number = arrowOriginNode.height;
@@ -68,8 +71,8 @@ export class CodeMapArrowService {
 
             let curve = new THREE.CubicBezierCurve3(
                 new THREE.Vector3(xOrigin + wOrigin / 2, yOrigin + hOrigin, zOrigin + lOrigin / 2),
-                new THREE.Vector3(xOrigin + wOrigin / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + settings.mapSize, zOrigin + lOrigin / 2),
-                new THREE.Vector3(xTarget + wTarget / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + settings.mapSize, zTarget + lTarget / 2),
+                new THREE.Vector3(xOrigin + wOrigin / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + s.treeMapSettings.mapSize, zOrigin + lOrigin / 2),
+                new THREE.Vector3(xTarget + wTarget / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + s.treeMapSettings.mapSize, zTarget + lTarget / 2),
                 new THREE.Vector3(xTarget + wTarget / 2, yTarget + hTarget, zTarget + lTarget / 2)
             );
 

@@ -2,24 +2,21 @@ export class LayoutSwitcherController {
 
     private static TIMEOUT_IN_MS = 200;
 
-    public viewModel = {
+    private _viewModel = {
         states: [],
         selectedState: ""
     };
 
     private layouts = "";
 
-    private stateService;
-
     /* @ngInject */
-    constructor($state, $timeout) {
-        this.stateService = $state;
+    constructor(private $state, $timeout) {
 
         $timeout(()=>{
 
-            this.viewModel.selectedState = this.stateService.$current.name;
+            this._viewModel.selectedState = this.$state.$current.name;
 
-            this.viewModel.states = this.layouts
+            this._viewModel.states = this.layouts
                 .replace(/ /g,"")
                 .replace(/\n/g,"")
                 .split(",");
@@ -29,7 +26,7 @@ export class LayoutSwitcherController {
     }
 
     public onLayoutChange(state: string) {
-        this.stateService.go(state);
+        this.$state.go(state);
     }
 
 }

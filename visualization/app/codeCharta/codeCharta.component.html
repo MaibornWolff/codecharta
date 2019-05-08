@@ -2,7 +2,7 @@
 
 <div id="actionButtons">
     <md-button
-        ng-if="$ctrl.settingsService.settings.focusedNodePath"
+        ng-if="$ctrl._viewModel.focusedNodePath.length > 0"
         class="md-fab md-primary dark_shadow_opacity long-button"
         aria-label="Remove Focus on node"
         ng-click="$ctrl.removeFocusedNode()"
@@ -19,26 +19,25 @@
     <sidenav-toggle-component></sidenav-toggle-component>
 </div>
 
-<code-map-component></code-map-component>
+<code-map-component ng-hide="$ctrl._viewModel.isLoadingFile"></code-map-component>
 
 <legend-panel-component></legend-panel-component>
 
 <detail-panel-component></detail-panel-component>
 
-<div id="loading-indicator" ng-hide="$ctrl.viewModel.numberOfLoadingTasks <= 0">
-    <md-progress-circular
-        md-mode="indeterminate"
-        md-diameter="96"
-    ></md-progress-circular>
+<div id="loading-indicator" ng-show="$ctrl._viewModel.isLoadingFile">
+    <md-progress-circular md-mode="indeterminate" md-diameter="96"></md-progress-circular>
 </div>
+
 <div id="mw-logo">
     <div class="logo">
         <a href="https://www.maibornwolff.de" target="_blank"
             ><img src="assets/logo.png" alt="MaibornWolff"
         /></a>
         <h2>
-            <span>CodeCharta {{ $ctrl.viewModel.version }}</span>
+            <span>CodeCharta {{ $ctrl._viewModel.version }}</span>
         </h2>
     </div>
 </div>
+
 <node-context-menu-component></node-context-menu-component>

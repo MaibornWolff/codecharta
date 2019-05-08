@@ -1,9 +1,8 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
-import org.junit.Test
-
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Test
 
 class AverageCodeChurnPerCommitTest {
 
@@ -29,7 +28,6 @@ class AverageCodeChurnPerCommitTest {
         // then
         assertThat(metric.value()).isEqualTo(9L)
     }
-
 
     @Test
     fun should_increase_by_multiple_modification() {

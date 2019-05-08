@@ -26,7 +26,8 @@ class InterfaceTest {
 
         val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
-        assertThat(detailedMetricTable.linesWithTag(NonCodeTags.COMMENT)).containsExactly(8, 9, 10, 11, 16, 19, 39, 48, 59)
+        assertThat(detailedMetricTable.linesWithTag(NonCodeTags.COMMENT)).containsExactly(8, 9, 10, 11, 16, 19, 39, 48,
+                59)
     }
 
     @Test
@@ -98,7 +99,8 @@ class InterfaceTest {
 
         val detailedMetricTable = calculateDetailedMetricsWithFailOnParseError(locationResolverStub)
 
-        assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.METHOD_CALL)).containsExactly(51, 53, 55, 61, 62, 63, 64)
+        assertThat(detailedMetricTable.linesWithTag(UnsortedCodeTags.METHOD_CALL)).containsExactly(51, 53, 55, 61, 62,
+                63, 64)
     }
 
     @Test
@@ -188,5 +190,4 @@ public interface SourceCodeComplexInterface
                         .thenComparing(Comparator.comparing(Card::getSuit)));
     }
 }""".lines()
-
 }

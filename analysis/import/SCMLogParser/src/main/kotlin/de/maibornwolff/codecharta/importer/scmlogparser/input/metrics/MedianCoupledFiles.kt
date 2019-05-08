@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 
-class MedianCoupledFiles : Metric {
+class MedianCoupledFiles: Metric {
     private val numberCommitedFiles = mutableListOf<Int>()
 
     private fun Iterable<Double>.median(): Double {
@@ -32,5 +32,4 @@ class MedianCoupledFiles : Metric {
     override fun registerCommit(commit: Commit) {
         numberCommitedFiles.add(commit.modifications.size - 1)
     }
-
 }

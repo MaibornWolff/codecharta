@@ -2,9 +2,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.orchestration.appli
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.core.domain.source.SourceCode
 
-
 interface DetailedSourceProvider {
 
     fun readSource(): SourceCode
-
 }
