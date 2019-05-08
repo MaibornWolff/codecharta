@@ -52,14 +52,9 @@ export class FileExtensionCalculator {
 
 		distribution.forEach((distribution: MetricDistribution) => {
 			const sumOfAllMetricValues: number = this.getSumOfAllMetrics(distribution)
-			distribution.distribution = distribution.distribution.map((x: ExtensionAttribute) => {
-				return {
-					fileExtension: x.fileExtension,
-					absoluteMetricValue: x.absoluteMetricValue,
-					relativeMetricValue: Math.round(x.absoluteMetricValue / sumOfAllMetricValues * 10000) / 100,
-					color: null
-				}
-			})
+			distribution.distribution.forEach((x: ExtensionAttribute) =>
+					x.relativeMetricValue = Math.round(x.absoluteMetricValue / sumOfAllMetricValues * 10000) / 100
+			)
 			distribution.distribution.sort((a,b) => b.absoluteMetricValue - a.absoluteMetricValue)
 		})
 

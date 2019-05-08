@@ -19,7 +19,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService
-) {
+	) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 
@@ -31,16 +31,10 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		const s: DynamicSettings = this.settingsService.getSettings().dynamicSettings
 		const metrics: string[] = [s.areaMetric]
 		const distribution: MetricDistribution[] = FileExtensionCalculator.getRelativeFileExtensionDistribution(map, metrics)
-		this._viewModel.distribution = distribution
-			.find(x => x.metric === s.areaMetric).distribution
-			.map(x => {
-				return {
-					fileExtension: x.fileExtension,
-					relativeMetricValue: x.relativeMetricValue,
-					absoluteMetricValue: x.absoluteMetricValue,
-					color: this.getColorFromFileExtension(x.fileExtension)
-				}
-			})
+		distribution.find(x => x.metric === s.areaMetric).distribution
+			.forEach(x => x.color = this.getColorFromFileExtension(x.fileExtension))
+
+		this._viewModel.distribution = distribution.find(x => x.metric === s.areaMetric).distribution
 
 		console.log(this._viewModel.distribution)
 	}
