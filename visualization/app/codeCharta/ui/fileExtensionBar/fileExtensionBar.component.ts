@@ -1,11 +1,9 @@
 import "./fileExtensionBar.component.scss"
 import {SettingsService} from "../../state/settings.service";
-import {ExtensionAttribute, FileExtensionCalculator, MetricDistribution} from "../../util/fileExtensionCalculator";
-import {CCFile, CodeMapNode, DynamicSettings, KeyValuePair} from "../../codeCharta.model";
+import {ExtensionAttribute, FileExtensionCalculator, MetricDistributionPair} from "../../util/fileExtensionCalculator";
+import {CCFile, CodeMapNode, DynamicSettings} from "../../codeCharta.model";
 import {CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber} from "../codeMap/codeMap.preRender.service";
 import {IRootScopeService} from "angular";
-
-
 
 export class FileExtensionBarController implements CodeMapPreRenderServiceSubscriber {
 
@@ -30,17 +28,12 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	public updateFileExtensionBar(map: CodeMapNode) {
 		const s: DynamicSettings = this.settingsService.getSettings().dynamicSettings
 		const metrics: string[] = [s.areaMetric]
-		const distribution: MetricDistribution[] = FileExtensionCalculator.getRelativeFileExtensionDistribution(map, metrics)
-		distribution.find(x => x.metric === s.areaMetric).distribution
-			.forEach(x => x.color = this.getColorFromFileExtension(x.fileExtension))
+		const distribution: MetricDistributionPair = FileExtensionCalculator.getRelativeFileExtensionDistribution(map, metrics)
+		distribution[s.areaMetric].forEach(x => x.color = this.numberToRGB(this.hashCode(x.fileExtension)))
 
-		this._viewModel.distribution = distribution.find(x => x.metric === s.areaMetric).distribution
+		this._viewModel.distribution = distribution[s.areaMetric]
 
 		console.log(this._viewModel.distribution)
-	}
-
-	private getColorFromFileExtension(fileExtension: string): string {
-		return this.numberToRGB(this.hashCode(fileExtension))
 	}
 
 	private hashCode(str): number {
