@@ -186,6 +186,61 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
 	}
 }
 
+export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: "Folder",
+	path: "/root",
+	children: [
+		{
+			name: "big leaf.jpg",
+			type: "File",
+			path: "/root/big leaf.jpg",
+			attributes: { RLOC: 100, Functions: 10, MCC: 1 }
+		},
+		{
+			name: "another big leaf.java",
+			type: "File",
+			path: "/root/another big leaf.java",
+			attributes: { RLOC: 120, Functions: 20, MCC: 2 }
+		},
+		{
+			name: "Parent Leaf",
+			type: "Folder",
+			attributes: {},
+			path: "/root/Parent Leaf",
+			children: [
+				{
+					name: "small leaf.jpg",
+					type: "File",
+					path: "/root/Parent Leaf/small leaf.json",
+					attributes: { RLOC: 30, Functions: 100, MCC: 100 }
+				},
+				{
+					name: "other small leaf.json",
+					type: "File",
+					path: "/root/Parent Leaf/other small leaf.json",
+					attributes: { RLOC: 70, Functions: 1000, MCC: 10 }
+				},
+				{
+					name: "another leaf.java",
+					type: "File",
+					path: "/root/Parent Leaf/another leaf.java",
+					attributes: { RLOC: 42, Functions: 330, MCC: 45 },
+					children: []
+				},
+				{
+					name: "leaf without extension",
+					type: "File",
+					path: "/root/Parent Leaf/leaf without extension",
+					attributes: { RLOC: 15, Functions: 23, MCC: 33 },
+					children: []
+				}
+			]
+		}
+	]
+}
+
 export const TEST_DELTA_MAP_A: CCFile = {
 	fileMeta: {
 		fileName: "fileA",
