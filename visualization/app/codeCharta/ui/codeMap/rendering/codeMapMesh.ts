@@ -4,8 +4,8 @@ import {CodeMapShaderStrings} from "./codeMapShaderStrings";
 import {BuildResult, GeometryGenerator} from "./geometryGenerator";
 import {CodeMapGeometricDescription, IntersectionResult} from "./codeMapGeometricDescription";
 import {CodeMapBuilding} from "./codeMapBuilding";
-import {RenderingUtil} from "./renderingUtil";
 import {Node, Settings} from "../../../codeCharta.model";
+import {ColorConverter} from "../../../util/colorConverter";
 
 interface ThreeUniform {
     type : string;
@@ -69,7 +69,7 @@ export class CodeMapMesh {
         this.material.uniforms.numHighlights.value = buildings.length;
 
         if (color) {
-            this.lightingParams.highlightColor.value = RenderingUtil.colorToVec3(color);
+            this.lightingParams.highlightColor.value = ColorConverter.colorToVector3(color);
         }
 
         this.currentlyHighlighted = buildings;
@@ -83,7 +83,7 @@ export class CodeMapMesh {
         this.material.uniforms.numSelections.value  = buildings.length;
         
         if (color) {
-            this.lightingParams.selectedColor.value = RenderingUtil.colorToVec3(color);
+            this.lightingParams.selectedColor.value = ColorConverter.colorToVector3(color);
         }
 
         this.currentlySelected = buildings;
@@ -132,15 +132,15 @@ export class CodeMapMesh {
     private initLightingParams(settings: Settings) {
         this.lightingParams = {
             numHighlights : {type : "f", value : 0.0},
-            highlightColor : {type : "v3", value : RenderingUtil.colorToVec3("#666666")},
+            highlightColor : {type : "v3", value : ColorConverter.colorToVector3("#666666")},
             highlightedIndices : {type : "fv1", value : []},
 
             numSelections : {type : "f", value : 0.0},
-            selectedColor : {type : "f", value : RenderingUtil.colorToVec3(settings.appSettings.mapColors.selected)},
+            selectedColor : {type : "f", value : ColorConverter.colorToVector3(settings.appSettings.mapColors.selected)},
             selectedIndices : {type : "fv1", value : []},
 
-            deltaColorPositive : {type : "v3", value : RenderingUtil.colorToVec3(settings.appSettings.mapColors.positiveDelta)},
-            deltaColorNegative : {type : "v3", value : RenderingUtil.colorToVec3(settings.appSettings.mapColors.negativeDelta)},
+            deltaColorPositive : {type : "v3", value : ColorConverter.colorToVector3(settings.appSettings.mapColors.positiveDelta)},
+            deltaColorNegative : {type : "v3", value : ColorConverter.colorToVector3(settings.appSettings.mapColors.negativeDelta)},
 
             emissive : {type : "v3", value : new THREE.Vector3(0.0, 0.0, 0.0)}
         };
@@ -168,14 +168,14 @@ export class CodeMapMesh {
     }
 
     private setDeltaColorsFlipped(settings: Settings) {
-        this.lightingParams.deltaColorPositive = {type : "v3", value : RenderingUtil.colorToVec3(settings.appSettings.mapColors.negativeDelta)};
-        this.lightingParams.deltaColorNegative = {type : "v3", value : RenderingUtil.colorToVec3(settings.appSettings.mapColors.positiveDelta)};
+        this.lightingParams.deltaColorPositive = {type : "v3", value : ColorConverter.colorToVector3(settings.appSettings.mapColors.negativeDelta)};
+        this.lightingParams.deltaColorNegative = {type : "v3", value : ColorConverter.colorToVector3(settings.appSettings.mapColors.positiveDelta)};
     }
 
 
     private setDeltaColorsUnflipped(settings: Settings) {
-        this.lightingParams.deltaColorPositive = {type : "v3", value : RenderingUtil.colorToVec3(settings.appSettings.mapColors.positiveDelta)};
-        this.lightingParams.deltaColorNegative = {type : "v3", value : RenderingUtil.colorToVec3(settings.appSettings.mapColors.negativeDelta)};
+        this.lightingParams.deltaColorPositive = {type : "v3", value : ColorConverter.colorToVector3(settings.appSettings.mapColors.positiveDelta)};
+        this.lightingParams.deltaColorNegative = {type : "v3", value : ColorConverter.colorToVector3(settings.appSettings.mapColors.negativeDelta)};
     }
 
     private calculatePickingRay(mouse : MousePos, camera : THREE.Camera) : THREE.Ray

@@ -1,5 +1,5 @@
-import {CCFile, CodeMapNode, Edge, MetricData, Node, Settings} from "../codeCharta.model"
-import {CodeMapBuilding} from "../ui/codeMap/rendering/codeMapBuilding"
+import { CCFile, CodeMapNode, Edge, MetricData, Node, Settings } from "../codeCharta.model"
+import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import * as THREE from "three"
 
 export const VALID_NODE: CodeMapNode = {
@@ -306,7 +306,7 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 			toNodeName: "/root/Parent Leaf/small leaf"
 		}
 	],
-	fileName: "file.14_12_2018.json",
+	fileName: "file_2018-12-14_9-39.cc.json",
 	nodes: [
 		{
 			attributes: {},
@@ -385,51 +385,50 @@ export const SETTINGS: Settings = {
 }
 
 export const DEFAULT_SETTINGS: Settings = {
-	"appSettings": {
-		"amountOfTopLabels": 1,
-		"camera": new THREE.Vector3(0, 300, 1000),
-		"deltaColorFlipped": false,
-		"dynamicMargin": true,
-		"enableEdgeArrows": true,
-		"hideFlatBuildings": true,
-		"invertHeight": false,
-		"isWhiteBackground": false,
-		"mapColors": {
-			"angularGreen": "#00BFA5",
-			"base": "#666666",
-			"defaultC": "#89ACB4",
-			"flat": "#AAAAAA",
-			"lightGrey": "#DDDDDD",
-			"markingColors": ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"],
-			"negative": "#820E0E",
-			"negativeDelta": "#ff0E0E",
-			"neutral": "#ddcc00",
-			"positive": "#69AE40",
-			"positiveDelta": "#69FF40",
-			"selected": "#EB8319"
+	appSettings: {
+		amountOfTopLabels: 1,
+		camera: new THREE.Vector3(0, 300, 1000),
+		deltaColorFlipped: false,
+		dynamicMargin: true,
+		enableEdgeArrows: true,
+		hideFlatBuildings: true,
+		invertHeight: false,
+		isWhiteBackground: false,
+		mapColors: {
+			angularGreen: "#00BFA5",
+			base: "#666666",
+			defaultC: "#89ACB4",
+			flat: "#AAAAAA",
+			lightGrey: "#DDDDDD",
+			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"],
+			negative: "#820E0E",
+			negativeDelta: "#ff0E0E",
+			neutral: "#ddcc00",
+			positive: "#69AE40",
+			positiveDelta: "#69FF40",
+			selected: "#EB8319"
 		},
-		"maximizeDetailPanel": false,
-		"scaling": new THREE.Vector3(1, 1, 1),
-		"whiteColorBuildings": false
+		maximizeDetailPanel: false,
+		scaling: new THREE.Vector3(1, 1, 1),
+		whiteColorBuildings: false
 	},
-	"dynamicSettings": {
-		"areaMetric": null,
-		"colorMetric": null,
-		"focusedNodePath": "",
-		"heightMetric": null,
-		"margin": null,
-		"neutralColorRange": {
-			"flipped": false,
-			"from": null,
-			"to": null
+	dynamicSettings: {
+		areaMetric: null,
+		colorMetric: null,
+		focusedNodePath: "",
+		heightMetric: null,
+		margin: null,
+		neutralColorRange: {
+			flipped: false,
+			from: null,
+			to: null
 		},
-		"searchPattern": "",
-		"searchedNodePaths": []
+		searchPattern: "",
+		searchedNodePaths: []
 	},
-	"fileSettings": { "attributeTypes": {}, "blacklist": [], "edges": [], "markedPackages": [] },
-	"treeMapSettings": { "mapSize": 500 }
+	fileSettings: { attributeTypes: {}, blacklist: [], edges: [], markedPackages: [] },
+	treeMapSettings: { mapSize: 500 }
 }
-
 
 export const TEST_NODE_ROOT: Node = {
 	name: "root",
@@ -477,7 +476,12 @@ export const TEST_NODE_LEAF: Node = {
 	flat: false
 }
 
-export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(1, new THREE.Box3(), TEST_NODE_ROOT, DEFAULT_SETTINGS.appSettings.mapColors.neutral)
+export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(
+	1,
+	new THREE.Box3(),
+	TEST_NODE_ROOT,
+	DEFAULT_SETTINGS.appSettings.mapColors.neutral
+)
 
 export const METRIC_DATA: MetricData[] = [
 	{ name: "mcc", maxValue: 1, availableInVisibleMaps: true },
