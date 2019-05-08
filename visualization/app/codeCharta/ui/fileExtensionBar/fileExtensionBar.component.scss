@@ -1,0 +1,39 @@
+file-extension-bar-component {
+	.bar {
+		width: 100%;
+		height: 25px;
+		border-radius: 10px;
+		background-color: #b3b3b3;
+		color: white;
+		text-align: center;
+	}
+
+	.firstColor {
+		height: 100%;
+		background-color: green;
+		float: left;
+	}
+
+	.secondColor {
+		height: 100%;
+		background-color: orange;
+		float: left;
+	}
+
+	.thirdColor {
+		height: 100%;
+		background-color: red;
+		float: left;
+	}
+
+	.restColor {
+		height: 100%;
+		background-color: blue;
+		float: left;
+	}
+
+	p {
+		font-size: 10px;
+		vertical-align: top;
+	}
+}

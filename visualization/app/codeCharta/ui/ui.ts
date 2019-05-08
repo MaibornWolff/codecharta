@@ -3,6 +3,7 @@
 import angular from "angular";
 
 // Plop: Append module import here
+import "./fileExtensionBar/fileExtensionBar.module";
 import "./areaSettingsPanel/areaSettingsPanel.module";
 import "./blacklistPanel/blacklistPanel.module";
 import "./codeMap/codeMap.module";
@@ -33,6 +34,7 @@ angular.module(
     "app.codeCharta.ui",
     [
         // Plop: Append component name here
+		"app.codeCharta.ui.fileExtensionBar",
         "app.codeCharta.ui.areaSettingsPanel",
         "app.codeCharta.ui.blacklistPanel",
         "app.codeCharta.ui.codeMap",
