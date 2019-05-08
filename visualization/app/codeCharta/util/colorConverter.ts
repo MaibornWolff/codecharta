@@ -1,3 +1,5 @@
+import {Color, Vector3} from "three";
+
 export class ColorConverter {
 
     public static convertHexToNumber(hex: string): number {
@@ -13,6 +15,41 @@ export class ColorConverter {
     public static convertHexToRgba(hex: string, opacity: number = 1) : string {
         const rgbColor: number[] = this.encodeHex(hex);
         return "rgba(" + rgbColor.join(",") + "," + opacity + ")";
+    }
+
+    public static convertHexToColorObject(hex: string) : Color {
+        const rgbColor: number[] = this.encodeHex(hex);
+        return new Color(...rgbColor)
+    }
+
+    public static convertColorToHex(colorObject: Color): string {
+        return "#" + Math.round(colorObject.r).toString(16) + '' +
+            Math.round(colorObject.g).toString(16) + '' +
+            Math.round(colorObject.b).toString(16)
+    }
+
+    public static colorToVector3(color: string): Vector3
+    {
+        const convertedColor = ColorConverter.convertHexToNumber(color);
+        return new Vector3(
+            ((convertedColor >> 16) & 0xFF) / 255.0,
+            ((convertedColor >> 8) & 0xFF) / 255.0,
+            (convertedColor & 0xFF) / 255.0
+        );
+    }
+
+    public static gradient(startColor: string, endColor: string, steps: number): string[] {
+        let start: Color = this.convertHexToColorObject(startColor)
+        let end: Color = this.convertHexToColorObject(endColor)
+        let diff: Color = end.sub(start)
+        let stepsArray = [];
+
+        for(let i = 0; i <= steps; i++) {
+            let stepDiff = diff.clone().multiplyScalar(1 / steps * i)
+            let step = start.clone().add(stepDiff)
+            stepsArray[i] = this.convertColorToHex(step)
+        }
+        return stepsArray
     }
 
     public static getImageDataUri(hex: string): string {
