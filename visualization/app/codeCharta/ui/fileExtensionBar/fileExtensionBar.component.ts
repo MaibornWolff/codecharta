@@ -29,11 +29,8 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		const s: DynamicSettings = this.settingsService.getSettings().dynamicSettings
 		const metrics: string[] = [s.areaMetric]
 		const distribution: MetricDistributionPair = FileExtensionCalculator.getRelativeFileExtensionDistribution(map, metrics)
-		distribution[s.areaMetric].forEach(x => x.color = this.numberToRGB(this.hashCode(x.fileExtension)))
-
+		distribution[s.areaMetric].forEach(x => x.color = this.numberToHsl(this.hashCode(x.fileExtension)))
 		this._viewModel.distribution = distribution[s.areaMetric]
-
-		console.log(this._viewModel.distribution)
 	}
 
 	private hashCode(str): number {
@@ -44,9 +41,9 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		return hash;
 	}
 
-	private numberToRGB(hashCode: number): string {
-		const c = hashCode.toString(16).toUpperCase();
-		return "#" + "00000".substring(0, 6 - c.length) + c;
+	private numberToHsl(hashCode: number): string {
+		let shortened = hashCode % 360;
+		return "hsla(" + shortened + ", 100%, 45%)";
 	}
 }
 
