@@ -10,7 +10,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 -   Show loading-gif in ribbonBar when rerendering map
--   Merge markedPackages in multiple or delta view #478
 
 ### Changed
 
@@ -20,7 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
--	Prevent downloaded files from having multiple Timestamps #484
+-   Prevent downloaded files from having multiple Timestamps #484
+-   Merge markedPackages in multiple or delta view #478
 
 ### Chore
 
