@@ -3,6 +3,18 @@ apply plugin: 'application'
 mainClassName = 'de.maibornwolff.codecharta.tools.ccsh.Ccsh'
 applicationName = 'ccsh'
 
+// On JDK 9+ some illegal reflection warnings are caused by cglib (a dependency of sonar-java)
+// In order to avoid this, the JVM_OPTS need to be adjusted to suppress the warning
+def UNIX_JVM_ARGS_SWITCH = '''#!/usr/bin/env sh
+if [[ java ]]; then
+    version=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}') 
+    if [[ "$version" > "1.9" ]]; then
+        DEFAULT_JVM_OPTS='"--add-opens=java.base/java.lang=ALL-UNNAMED"'
+    else
+        DEFAULT_JVM_OPTS=''
+    fi
+fi'''
+
 dependencies {
     compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
 
@@ -32,4 +44,12 @@ jar {
     }
 
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+startScripts{
+    doLast{
+        unixScript.text = unixScript.text.replaceAll('DEFAULT_JVM_OPTS=.*', '')
+        unixScript.text = unixScript.text.replaceAll('#!/usr/bin/env sh', '')
+        unixScript.text = UNIX_JVM_ARGS_SWITCH + unixScript.text
+    }
 }
