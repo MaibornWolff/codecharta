@@ -1,15 +1,28 @@
-import { {{properCase name}}Controller } from "./{{camelCase name}}.component";
+import "./{{camelCase name}}.module"
+import { {{properCase name}}Controller } from "./{{camelCase name}}.component"
+import {instantiateModule} from "../../../../mocks/ng.mockhelper"
 
 describe("{{properCase name}}Controller", () => {
 
-    let {{camelCase name}}Controller: {{properCase name}}Controller;
+    let {{camelCase name}}Controller: {{properCase name}}Controller
 
-    beforeEach(function() {
-        {{camelCase name}}Controller = new {{properCase name}}Controller();
-    });
+    beforeEach(() => {
+        restartSystem()
+        rebuildController()
+    })
 
-    it("should do something", ()=>{
-        
-    });
+    function restartSystem() {
+        instantiateModule("app.codeCharta.ui.{{camelCase name}}")
+    }
+
+    function rebuildController() {
+        {{camelCase name}}Controller = new {{properCase name}}Controller()
+    }
+
+    describe("someMethodName", () => {
+        it("should do something", () => {
+
+        })
+    })
 
 });

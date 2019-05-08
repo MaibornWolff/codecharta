@@ -10,7 +10,7 @@ import java.util.function.Predicate
 import java.util.stream.Collector
 import java.util.stream.Stream
 
-class GitLogNumstatRawParserStrategy : LogParserStrategy {
+class GitLogNumstatRawParserStrategy: LogParserStrategy {
 
     override fun creationCommand(): String {
         return "git log --numstat --raw --topo-order"
@@ -25,7 +25,6 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
                 .filter { commitLine -> commitLine.startsWith(AUTHOR_ROW_INDICATOR) }
                 .map { AuthorParser.parseAuthor(it) }
                 .first()
-
     }
 
     override fun parseModifications(commitLines: List<String>): List<Modification> {
@@ -64,7 +63,6 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
             return if (fileLine.startsWith(":")) {
                 GitLogRawParserStrategy.parseModification(fileLine)
             } else GitLogNumstatParserStrategy.parseModification(fileLine)
-
         }
 
         private fun mergeModifications(vararg a: Modification): Modification {

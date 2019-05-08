@@ -41,7 +41,7 @@ import org.hamcrest.MatcherAssert
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-class JasomeProjectBuilderTest : Spek({
+class JasomeProjectBuilderTest: Spek({
     describe("JasomeProjectBuilder adding an empty Jasome Project") {
         val projectBuilder = JasomeProjectBuilder("test")
         val jasomeProject = de.maibornwolff.codecharta.importer.jasome.model.Project(listOf())
@@ -66,7 +66,6 @@ class JasomeProjectBuilderTest : Spek({
                 metrics = listOf(Metric("PkgRCi", "2,388888889"))
         )
         val jasomeProject = Project(packages = listOf(jasomePackage))
-
 
         val project = projectBuilder
                 .add(jasomeProject)

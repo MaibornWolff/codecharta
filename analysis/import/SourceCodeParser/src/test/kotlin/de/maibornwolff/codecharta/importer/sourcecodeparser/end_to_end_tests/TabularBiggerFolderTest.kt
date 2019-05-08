@@ -7,7 +7,6 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.retriev
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
-
 class TabularBiggerFolderTest {
 
     private val resource = "src/test/resources/$end2EndFolder/biggerJavaProject"
@@ -30,5 +29,4 @@ class TabularBiggerFolderTest {
     fun tabular_output_for_bigger_folder_contains_java_real_lines_of_code() {
         assertThat(elementsOf(output.lines()[2])).describedAs("\n$output").contains("Java", "101")
     }
-
 }

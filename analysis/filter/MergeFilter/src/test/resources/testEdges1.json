@@ -1,11 +1,11 @@
 {
   "projectName": "Sample Project 1",
   "apiVersion": "1.0",
-  "nodes": [{
+  "nodes": [
+    {
       "name": "root",
       "type": "Folder",
       "attributes": {
-
       },
       "children": [
         {
@@ -23,7 +23,6 @@
           },
           "link": "",
           "children": [
-
           ]
         },
         {
@@ -42,7 +41,6 @@
           },
           "link": "",
           "children": [
-
           ]
         },
         {
@@ -68,7 +66,6 @@
               },
               "link": "",
               "children": [
-
               ]
             },
             {
@@ -87,13 +84,13 @@
               },
               "link": "",
               "children": [
-
               ]
             }
           ]
         }
       ]
-  }],
+    }
+  ],
   "edges": [
     {
       "fromNodeName": "/root/file1",
@@ -115,13 +112,23 @@
   ],
   "attributeTypes": {
     "nodes": [
-      {"attributeA": "absolute"},
-      {"attributeB": "absolute"},
-      {"attributeZ": "absolute"}
+      {
+        "attributeA": "absolute"
+      },
+      {
+        "attributeB": "absolute"
+      },
+      {
+        "attributeZ": "absolute"
+      }
     ],
     "edges": [
-      {"attributeD": "absolute"},
-      {"attributeE": "relative"}
+      {
+        "attributeD": "absolute"
+      },
+      {
+        "attributeE": "relative"
+      }
     ]
   },
   "blacklist": [

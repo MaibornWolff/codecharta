@@ -1,0 +1,54 @@
+[
+  {
+    "name": "Complexity",
+    "settings": {
+      "dynamicSettings": {
+        "neutralColorRange": {
+          "flipped": false
+        },
+        "areaMetric": "rloc",
+        "heightMetric": "mcc",
+        "colorMetric": "mcc"
+      }
+    }
+  },
+  {
+    "name": "Average Complexity*",
+    "settings": {
+      "dynamicSettings": {
+        "neutralColorRange": {
+          "flipped": false
+        },
+        "areaMetric": "unary",
+        "heightMetric": "Average Complexity*",
+        "colorMetric": "Average Complexity*"
+      }
+    }
+  },
+  {
+    "name": "Coverage",
+    "settings": {
+      "dynamicSettings": {
+        "neutralColorRange": {
+          "flipped": true
+        },
+        "areaMetric": "rloc",
+        "heightMetric": "mcc",
+        "colorMetric": "line_coverage"
+      }
+    }
+  },
+  {
+    "name": "Code Churn",
+    "settings": {
+      "dynamicSettings": {
+        "neutralColorRange": {
+          "flipped": false
+        },
+        "areaMetric": "rloc",
+        "heightMetric": "abs_code_churn",
+        "colorMetric": "weeks_with_commits"
+      }
+    }
+  }
+]

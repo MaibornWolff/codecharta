@@ -10,7 +10,7 @@ import java.util.concurrent.Callable
         description = ["generates cc.json from csv with header"],
         footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
 )
-class CSVImporter : Callable<Void> {
+class CSVImporter: Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false

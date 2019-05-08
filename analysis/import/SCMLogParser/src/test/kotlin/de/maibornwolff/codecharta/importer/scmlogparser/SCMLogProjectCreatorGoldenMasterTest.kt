@@ -19,13 +19,13 @@ import java.nio.file.Paths
 import java.util.*
 
 @RunWith(Parameterized::class)
-class SCMLogProjectCreatorGoldenMasterTest (
+class SCMLogProjectCreatorGoldenMasterTest(
         val scm: String,
         private val strategy: LogParserStrategy,
         private val containsAuthors: Boolean,
         private val logFilename: String,
         private val expectedProjectFilename: String
-){
+) {
 
     companion object {
         @JvmStatic
@@ -38,7 +38,6 @@ class SCMLogProjectCreatorGoldenMasterTest (
     }
 
     private val PROJECT_NAME = "SCMLogParser"
-
 
     private val metricsFactory = MetricsFactory(Arrays.asList(
             "number_of_authors",

@@ -38,7 +38,7 @@ import org.hamcrest.Matchers.hasSize
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-class LeafNodeMergerTest : Spek({
+class LeafNodeMergerTest: Spek({
     describe("a fitting merger") {
         val fittingMerger = LeafNodeMergerStrategy(false)
 

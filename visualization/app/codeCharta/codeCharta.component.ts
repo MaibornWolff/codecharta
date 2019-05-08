@@ -1,130 +1,151 @@
-import {DataLoadingService} from "./core/data/data.loading.service";
-import {NameDataPair, UrlService} from "./core/url/url.service";
-import {SettingsService} from "./core/settings/settings.service";
-import {ScenarioService} from "./core/scenario/scenario.service";
-import {DataService} from "./core/data/data.service";
-import {IRootScopeService} from "angular";
-import "./codeCharta.component.scss";
+import {UrlExtractor} from "./util/urlExtractor"
+import {IHttpService, ILocationService, IRootScopeService, ITimeoutService} from "angular"
+import "./codeCharta.component.scss"
+import {CodeChartaService} from "./codeCharta.service"
+import {SettingsService, SettingsServiceSubscriber} from "./state/settings.service";
+import {ScenarioHelper} from "./util/scenarioHelper";
 import {DialogService} from "./ui/dialog/dialog.service";
 import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
-import {NodeContextMenuController} from "./ui/nodeContextMenu/nodeContextMenu.component";
 import {CodeMapActionsService} from "./ui/codeMap/codeMap.actions.service";
+import {NameDataPair, RecursivePartial, Settings} from "./codeCharta.model"
+import {FileStateService} from "./state/fileState.service";
 
-/**
- * This is the main controller of the CodeCharta application
- */
-export class CodeChartaController {
 
-    public viewModel = {
-        version: require("../../package.json").version,
-        numberOfLoadingTasks: 0
-    };
+export interface CodeChartaControllerSubscriber {
+	onLoadingStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent)
+}
 
-    /* @ngInject */
-    constructor(
-        private dataLoadingService: DataLoadingService,
-        private urlService: UrlService,
-        private settingsService: SettingsService,
-        private scenarioService: ScenarioService,
-        private dataService: DataService,
-        private threeOrbitControlsService: ThreeOrbitControlsService,
-        private $rootScope: IRootScopeService,
-        private dialogService: DialogService,
-        private codeMapActionsService: CodeMapActionsService
-    ) {
-        this.subscribeToLoadingEvents($rootScope);
-        this.loadFileOrSample();
-        this.initContextMenuCloseHandler();
+export class CodeChartaController implements SettingsServiceSubscriber, CodeChartaControllerSubscriber {
+
+	public static readonly LOADING_STATUS_EVENT = "loading-status-changed"
+
+	private _viewModel: {
+		version: string,
+		isLoadingFile: boolean,
+		isLoadingMap: boolean,
+		focusedNodePath: string
+	} = {
+		version: require("../../package.json").version,
+		isLoadingFile: true,
+		isLoadingMap: true,
+		focusedNodePath: ""
+	}
+
+	private urlUtils: UrlExtractor
+
+	/* @ngInject */
+	constructor(
+		private threeOrbitControlsService: ThreeOrbitControlsService,
+		private $rootScope: IRootScopeService,
+		private dialogService: DialogService,
+		private codeMapActionsService: CodeMapActionsService,
+		private settingsService: SettingsService,
+		private codeChartaService: CodeChartaService,
+		private fileStateService: FileStateService,
+		private $location: ILocationService,
+		private $http: IHttpService,
+		private $timeout: ITimeoutService
+	) {
+		SettingsService.subscribe(this.$rootScope, this)
+		CodeChartaController.subscribe(this.$rootScope, this)
+
+		this.urlUtils = new UrlExtractor(this.$location, this.$http)
+		this.onLoadingStatusChanged(true, undefined)
+		this.loadFileOrSample()
+	}
+
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+		this._viewModel.focusedNodePath = settings.dynamicSettings.focusedNodePath
+	}
+
+	public onLoadingStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent) {
+		this._viewModel.isLoadingFile = isLoadingFile
+		this.synchronizeAngularTwoWayBinding()
+	}
+
+	public fitMapToView() {
+		this.threeOrbitControlsService.autoFitTo()
+	}
+
+	public removeFocusedNode() {
+		this.codeMapActionsService.removeFocusedNode()
+	}
+
+	public loadFileOrSample() {
+		return this.urlUtils.getFileDataFromQueryParam()
+			.then((data: NameDataPair[]) => {
+				if (data.length > 0) {
+					this.tryLoadingFiles(data)
+					this.setRenderStateFromUrl();
+				} else {
+					this.tryLoadingSampleFiles()
+				}
+			})
+			.catch(
+				() => {
+					this.tryLoadingSampleFiles()
+				}
+			)
+	}
+
+	public tryLoadingSampleFiles() {
+		if (this.urlUtils.getParameterByName("file")) {
+			this.dialogService.showErrorDialog(
+				"One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
+			)
+		}
+		this.tryLoadingFiles([
+            { fileName: "sample1.json", content: require("./assets/sample1.json") },
+            { fileName: "sample2.json", content: require("./assets/sample2.json") }
+        ]);
+    }
+    
+    private tryLoadingFiles(values: NameDataPair[]) {
+		this.settingsService.updateSettings(this.settingsService.getDefaultSettings())
+
+		this.codeChartaService.loadFiles(values)
+			.then(() => {
+				this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
+			})
+			.catch(e => {
+				this.onLoadingStatusChanged(false, undefined)
+				console.error(e);
+				this.printErrors(e)
+			})
     }
 
-    public fitMapToView() {
-        this.threeOrbitControlsService.autoFitTo();
-    }
+    private setRenderStateFromUrl() {
+		const renderState: string = this.urlUtils.getParameterByName("mode")
+		const files = this.fileStateService.getCCFiles()
 
-    public removeFocusedNode() {
-        this.codeMapActionsService.removeFocusedNode();
-    }
+		if (renderState === "Delta" && files.length >= 2) {
+			this.fileStateService.setDelta(files[0], files[1])
 
-    public loadFileOrSample() {
-        this.viewModel.numberOfLoadingTasks++;
-        return this.urlService.getFileDataFromQueryParam().then(
-            (data: NameDataPair[])=>{
-                if(data.length > 0) {
-                    this.tryLoadingFiles(data);
-                } else {
-                    this.tryLoadingSampleFiles();
-                }
-            },
-            this.tryLoadingSampleFiles.bind(this)
-        );
-    }
+		} else if (renderState === "Multiple") {
+			this.fileStateService.setMultiple(files)
 
-    public tryLoadingFiles(nameDataPairs: NameDataPair[], applyScenarioOnce = true) {
+		} else {
+			this.fileStateService.setSingle(files[0])
+		}
+	}
 
-        let tasks = [];
+	private printErrors(errors: Object) {
+		this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))
+	}
 
-        nameDataPairs.forEach((o, i)=>{
-           tasks.push(
-               this.dataLoadingService.loadMapFromFileContent(o.name, o.data, i)
-           );
-        });
+	private synchronizeAngularTwoWayBinding() {
+		this.$timeout(() => {})
+	}
 
-        return Promise.all(tasks).then(
-            () => {
-                if(applyScenarioOnce) {
-                    this.scenarioService.applyScenarioOnce(this.scenarioService.getDefaultScenario());
-                } else {
-                    this.scenarioService.applyScenario(this.scenarioService.getDefaultScenario());
-                }
-                this.dataService.setComparisonMap(0);
-                this.dataService.setReferenceMap(0);
-                this.settingsService.updateSettingsFromUrl();
-                this.viewModel.numberOfLoadingTasks--;
-            },
-            (r) => {
-                this.printErrors(r);
-                this.viewModel.numberOfLoadingTasks--;
-            }
-        );
-
-    }
-
-    public tryLoadingSampleFiles() {
-        if(this.urlService.getParam("file")){
-            this.dialogService.showErrorDialog("One or more files from the given file URL parameter could not be loaded. Loading sample files instead.");
-        }
-        return this.tryLoadingFiles([
-            { name: "sample1.json", data: require("./assets/sample1.json") },
-            { name: "sample2.json", data: require("./assets/sample2.json") },
-        ], false);
-
-    }
-
-    public printErrors(errors: Object) {
-        this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"));
-    }
-
-    private initContextMenuCloseHandler() {
-        document.body.addEventListener('click', ()=>NodeContextMenuController.broadcastHideEvent(this.$rootScope), true);
-    }
-
-    private subscribeToLoadingEvents($rootScope: angular.IRootScopeService) {
-        $rootScope.$on("add-loading-task", () => {
-            this.viewModel.numberOfLoadingTasks++;
-        });
-
-        $rootScope.$on("remove-loading-task", () => {
-            this.viewModel.numberOfLoadingTasks--;
-        });
-    }
-
+	public static subscribe($rootScope: IRootScopeService, subscriber: CodeChartaControllerSubscriber) {
+		$rootScope.$on(CodeChartaController.LOADING_STATUS_EVENT, (event, data) => {
+			subscriber.onLoadingStatusChanged(data, event)
+		})
+	}
 }
 
 export const codeChartaComponent = {
-    selector: "codeChartaComponent",
-    template: require("./codeCharta.component.html"),
-    controller: CodeChartaController
-};
-
-
-
+	selector: "codeChartaComponent",
+	template: require("./codeCharta.component.html"),
+	controller: CodeChartaController
+}

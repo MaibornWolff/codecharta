@@ -1,11 +1,9 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser.git
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
-
-import org.assertj.core.api.Assertions.assertThat
 
 class CommitDateParserTest {
     @Test

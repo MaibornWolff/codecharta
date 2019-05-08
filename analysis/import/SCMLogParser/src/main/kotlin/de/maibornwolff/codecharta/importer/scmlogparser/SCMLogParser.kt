@@ -25,7 +25,7 @@ import java.util.stream.Stream
         description = ["generates cc.json from scm log file (git or svn)"],
         footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
 )
-class SCMLogParser : Callable<Void> {
+class SCMLogParser: Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -39,10 +39,12 @@ class SCMLogParser : Callable<Void> {
     @CommandLine.Option(names = ["-p", "--projectName"], description = ["project name"])
     private var projectName = "SCMLogParser"
 
-    @CommandLine.Option(names = ["--git"], hidden= true, description = ["analysis of git log, equivalent --input-format GIT_LOG"])
+    @CommandLine.Option(names = ["--git"], hidden = true,
+            description = ["analysis of git log, equivalent --input-format GIT_LOG"])
     private var gitLog = false
 
-    @CommandLine.Option(names = ["--svn"], hidden= true, description = ["analysis of svn log, equivalent --input-format SVN_LOG"])
+    @CommandLine.Option(names = ["--svn"], hidden = true,
+            description = ["analysis of svn log, equivalent --input-format SVN_LOG"])
     private var svnLog = false
 
     @CommandLine.Option(names = ["--input-format"], description = ["input format for parsing"])
@@ -70,7 +72,7 @@ class SCMLogParser : Callable<Void> {
 
             return when (getInputFormatNames()) {
                 GIT_LOG, InputFormatNames.GIT_LOG_RAW, SVN_LOG -> MetricsFactory(nonChurnMetrics)
-                else -> MetricsFactory()
+                else                                           -> MetricsFactory()
             }
         }
 
@@ -105,14 +107,13 @@ class SCMLogParser : Callable<Void> {
 
     private fun getLogParserStrategyByInputFormat(formatName: InputFormatNames): LogParserStrategy {
         return when (formatName) {
-            GIT_LOG -> GitLogParserStrategy()
-            InputFormatNames.GIT_LOG_NUMSTAT -> GitLogNumstatParserStrategy()
-            InputFormatNames.GIT_LOG_RAW -> GitLogRawParserStrategy()
+            GIT_LOG                              -> GitLogParserStrategy()
+            InputFormatNames.GIT_LOG_NUMSTAT     -> GitLogNumstatParserStrategy()
+            InputFormatNames.GIT_LOG_RAW         -> GitLogRawParserStrategy()
             InputFormatNames.GIT_LOG_NUMSTAT_RAW -> GitLogNumstatRawParserStrategy()
-            SVN_LOG -> SVNLogParserStrategy()
+            SVN_LOG                              -> SVNLogParserStrategy()
         }
     }
-
 
     // not implemented yet.
     private fun printUsage() {
@@ -142,7 +143,8 @@ class SCMLogParser : Callable<Void> {
     private fun printMetricInfo() {
         val infoFormat = "  \t%s:\t %s"
         println("  Available metrics:")
-        metricsFactory.createMetrics().forEach { metric -> println(String.format(infoFormat, metric.metricName(), metric.description())) }
+        metricsFactory.createMetrics()
+                .forEach { metric -> println(String.format(infoFormat, metric.metricName(), metric.description())) }
     }
 
     companion object {
@@ -164,7 +166,6 @@ class SCMLogParser : Callable<Void> {
             val lines = pathToLog.readLines().stream()
             val projectConverter = ProjectConverter(containsAuthors, projectName)
             return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter).parse(lines)
-
         }
     }
 }

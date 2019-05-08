@@ -59,5 +59,4 @@ class SonarMeasuresAPIImporter @JvmOverloads constructor(
             metricsDS!!.availableMetricKeys
         } else metrics
     }
-
 }

@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser.svn
 
-
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogLineParser
@@ -11,13 +10,12 @@ import org.junit.Test
 import java.util.*
 import java.util.stream.Stream
 
-class SVNLogParserStrategyTest : ParserStrategyContractTest() {
+class SVNLogParserStrategyTest: ParserStrategyContractTest() {
 
     private var parserStrategy: SVNLogParserStrategy = SVNLogParserStrategy()
 
     override val fullCommit: List<String>
         get() = FULL_COMMIT
-
 
     override val twoCommitsAsStraem: Stream<String>
         get() {
@@ -31,7 +29,6 @@ class SVNLogParserStrategyTest : ParserStrategyContractTest() {
 
     override val logParserStrategy: LogParserStrategy
         get() = parserStrategy
-
 
     @Test
     fun parsesFilenameFromFileMetadata() {
@@ -100,7 +97,6 @@ class SVNLogParserStrategyTest : ParserStrategyContractTest() {
         assertThat(commit.filenames)
                 .containsExactlyInAnyOrder("src/Modified.java")
     }
-
 
     companion object {
 

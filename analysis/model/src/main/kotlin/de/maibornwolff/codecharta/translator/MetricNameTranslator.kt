@@ -45,7 +45,7 @@ open class MetricNameTranslator(
     open fun translate(oldMetricName: String): String {
         return when {
             translationMap.containsKey(oldMetricName) -> translationMap[oldMetricName]!!
-            else -> prefix + oldMetricName.toLowerCase().replace(' ', '_')
+            else                                      -> prefix + oldMetricName.toLowerCase().replace(' ', '_')
         }
     }
 
@@ -60,7 +60,8 @@ open class MetricNameTranslator(
 
         for (value in translationMap.values) {
             if (!value.isEmpty() && seen.contains(value)) {
-                throw IllegalArgumentException("Replacement map should not map distinct keys to equal values, e.g. $value")
+                throw IllegalArgumentException(
+                        "Replacement map should not map distinct keys to equal values, e.g. $value")
             } else {
                 seen.add(value)
             }
@@ -68,7 +69,7 @@ open class MetricNameTranslator(
     }
 
     companion object {
-        val TRIVIAL: MetricNameTranslator = object : MetricNameTranslator(emptyMap()) {
+        val TRIVIAL: MetricNameTranslator = object: MetricNameTranslator(emptyMap()) {
             override fun translate(oldMetricName: String): String {
                 return oldMetricName
             }
