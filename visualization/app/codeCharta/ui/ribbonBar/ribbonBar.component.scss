@@ -5,7 +5,6 @@ ribbon-bar-component {
     $sectionWidth: 275;
     $padding: 5;
     $animationDuration: 0.5;
-    $opacityExpanded: 0.95;
     $border: 1px solid #cdcdcd;
     $border-thin: 0px dotted #cdcdcd;
     $subsection-bg: #efefef;
@@ -149,6 +148,7 @@ ribbon-bar-component {
                 color: gray;
                 text-align: center;
                 transition: background-color 0.4s;
+                padding: 1px 0 2px 0;
 
                 .first {
                     padding-left: 8px;
@@ -194,7 +194,6 @@ ribbon-bar-component {
 
         &.expanded {
             height: $heightExpanded + px;
-            opacity: $opacityExpanded;
 
             .section {
                 .section-header {

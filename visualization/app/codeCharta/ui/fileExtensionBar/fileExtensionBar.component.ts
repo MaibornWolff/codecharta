@@ -43,7 +43,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 
 	private numberToHsl(hashCode: number): string {
 		let shortened = hashCode % 360;
-		return "hsla(" + shortened + ", 100%, 45%)";
+		return "hsla(" + shortened + ", 40%, 50%)";
 	}
 }
 
