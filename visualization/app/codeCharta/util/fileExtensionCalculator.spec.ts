@@ -1,4 +1,4 @@
-import { FileExtensionCalculator, FileExtensionDistribution } from "./fileExtensionCalculator"
+import { FileExtensionCalculator, MetricDistribution } from "./fileExtensionCalculator"
 import { CodeMapNode } from "../codeCharta.model"
 import { VALID_NODE_WITH_PATH_AND_EXTENSION } from "./dataMocks"
 
@@ -12,24 +12,41 @@ describe("FileExtensionCalculator", () => {
 	describe("getFileExtensionDistribution", () => {
 		it("should get correct distribution of file-extensions with for metric", () => {
 			const metrics = ["RLOC", "MCC"]
-			const result: FileExtensionDistribution[] = FileExtensionCalculator.getFileExtensionDistribution(map, metrics)
-			const expected: FileExtensionDistribution[] = [
+			const result: MetricDistribution[] = FileExtensionCalculator.getAbsoluteFileExtensionDistribution(map, metrics)
+			const expected: MetricDistribution[] = [
 				{
 					metric: "RLOC",
 					distribution: [
-						{fileExtension: "jpg", metricValue: 130, color: null},
-						{fileExtension: "java", metricValue: 162, color: null},
-						{fileExtension: "json", metricValue: 70, color: null},
-						{fileExtension: "none", metricValue: 15, color: null},
+						{fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: null, color: null},
+						{fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: null, color: null},
+						{fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: null, color: null},
+						{fileExtension: "none", absoluteMetricValue: 15, relativeMetricValue: null, color: null},
 					]
 				},
 				{
 					metric: "MCC",
 					distribution: [
-						{fileExtension: "jpg", metricValue: 101, color: null},
-						{fileExtension: "java", metricValue: 47, color: null},
-						{fileExtension: "json", metricValue: 10, color: null},
-						{fileExtension: "none", metricValue: 33, color: null},
+						{fileExtension: "jpg", absoluteMetricValue: 101, relativeMetricValue: null, color: null},
+						{fileExtension: "java", absoluteMetricValue: 47, relativeMetricValue: null, color: null},
+						{fileExtension: "json", absoluteMetricValue: 10, relativeMetricValue: null, color: null},
+						{fileExtension: "none", absoluteMetricValue: 33, relativeMetricValue: null, color: null},
+					]
+				}
+			]
+			expect(result).toEqual(expected)
+		})
+
+		it("should get correct distribution of file-extensions with for metric", () => {
+			const metrics = ["RLOC"]
+			const result: MetricDistribution[] = FileExtensionCalculator.getRelativeFileExtensionDistribution(map, metrics)
+			const expected: MetricDistribution[] = [
+				{
+					metric: "RLOC",
+					distribution: [
+						{fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 42.97, color: null},
+						{fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.48, color: null},
+						{fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.57, color: null},
+						{fileExtension: "none", absoluteMetricValue: 15, relativeMetricValue: 3.98, color: null},
 					]
 				}
 			]

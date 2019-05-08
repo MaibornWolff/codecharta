@@ -3,23 +3,24 @@ import * as d3 from "d3"
 import { HierarchyNode } from "d3"
 import _ from "lodash"
 
-export interface Distribution {
+export interface ExtensionAttribute {
 	fileExtension: string,
-	metricValue: number,
+	absoluteMetricValue: number,
+	relativeMetricValue: number,
 	color: string
 }
 
-export interface FileExtensionDistribution {
+export interface MetricDistribution {
 	metric: string
-	distribution: Distribution[]
+	distribution: ExtensionAttribute[]
 }
 
 export class FileExtensionCalculator {
 	private static NO_EXTENSION = "none"
-	private static distribution: FileExtensionDistribution[]
+	private static distribution: MetricDistribution[]
 
 	// TODO: this does not exclude blacklisted nodes yet
-	public static getFileExtensionDistribution(map: CodeMapNode, metrics: string[]): FileExtensionDistribution[] {
+	public static getAbsoluteFileExtensionDistribution(map: CodeMapNode, metrics: string[]): MetricDistribution[] {
 		this.initEmptyDistribution(metrics)
 
 		d3.hierarchy(map)
@@ -28,21 +29,46 @@ export class FileExtensionCalculator {
 				const fileExtension: string = this.estimateFileExtension(node.data.name)
 				metrics.forEach((metric: string) => {
 					const metricValue: number = node.data.attributes[metric]
-					const distributionPointer: Distribution[] = this.distribution.find(x => x.metric === metric).distribution
-					const matchingItem: Distribution = distributionPointer.find(x => x.fileExtension === fileExtension)
+					const extensionPointer: ExtensionAttribute[] = this.distribution.find(x => x.metric === metric).distribution
+					const matchingItem: ExtensionAttribute = extensionPointer.find(x => x.fileExtension === fileExtension)
 
 					if (matchingItem) {
-						matchingItem.metricValue += metricValue
+						matchingItem.absoluteMetricValue += metricValue
 					} else {
-						distributionPointer.push({
+						extensionPointer.push({
 							fileExtension: fileExtension,
-							metricValue: metricValue,
+							absoluteMetricValue: metricValue,
+							relativeMetricValue: null,
 							color: null
 						})
 					}
 				})
 			})
 		return this.distribution
+	}
+
+	public static getRelativeFileExtensionDistribution(map: CodeMapNode, metrics: string[]): MetricDistribution[] {
+		const distribution: MetricDistribution[] = this.getAbsoluteFileExtensionDistribution(map, metrics)
+
+		distribution.forEach((distribution: MetricDistribution) => {
+			const sumOfAllMetricValues: number = this.getSumOfAllMetrics(distribution)
+			distribution.distribution = distribution.distribution.map((x: ExtensionAttribute) => {
+				return {
+					fileExtension: x.fileExtension,
+					absoluteMetricValue: x.absoluteMetricValue,
+					relativeMetricValue: Math.round(x.absoluteMetricValue / sumOfAllMetricValues * 10000) / 100,
+					color: null
+				}
+			})
+			distribution.distribution.sort((a,b) => b.absoluteMetricValue - a.absoluteMetricValue)
+		})
+
+		return distribution
+	}
+
+	private static getSumOfAllMetrics(distribution: MetricDistribution): number {
+		return distribution.distribution.map(x => x.absoluteMetricValue)
+			.reduce((partialSum, a) => partialSum + a)
 	}
 
 	private static initEmptyDistribution(metrics: string[]) {

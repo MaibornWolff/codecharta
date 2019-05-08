@@ -1,5 +1,5 @@
 <div class="bar">
-	<div class="float-left" ng-repeat="item in $ctrl._viewModel.distribution" ng-style="{ 'width': item.metricValue + '%', 'background': item.color }">
+	<div class="float-left" ng-repeat="item in $ctrl._viewModel.distribution" ng-style="{ 'width': item.absoluteMetricValue + '%', 'background': item.color }">
 		<p>{{ item.fileExtension }}</p>
 	</div>
 </div>

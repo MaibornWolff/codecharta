@@ -1,6 +1,6 @@
 import "./fileExtensionBar.component.scss"
 import {SettingsService} from "../../state/settings.service";
-import {Distribution, FileExtensionCalculator, FileExtensionDistribution} from "../../util/fileExtensionCalculator";
+import {ExtensionAttribute, FileExtensionCalculator, MetricDistribution} from "../../util/fileExtensionCalculator";
 import {CCFile, CodeMapNode, DynamicSettings, KeyValuePair} from "../../codeCharta.model";
 import {CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber} from "../codeMap/codeMap.preRender.service";
 import {IRootScopeService} from "angular";
@@ -10,7 +10,7 @@ import {IRootScopeService} from "angular";
 export class FileExtensionBarController implements CodeMapPreRenderServiceSubscriber {
 
 	private _viewModel: {
-		distribution: Distribution[]
+		distribution: ExtensionAttribute[]
 	} = {
 		distribution: []
 	}
@@ -30,23 +30,19 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	public updateFileExtensionBar(map: CodeMapNode) {
 		const s: DynamicSettings = this.settingsService.getSettings().dynamicSettings
 		const metrics: string[] = [s.areaMetric]
-		const distribution: FileExtensionDistribution[] = FileExtensionCalculator.getFileExtensionDistribution(map, metrics)
-		const absoluteAreaDistribution: Distribution[] = distribution
+		const distribution: MetricDistribution[] = FileExtensionCalculator.getRelativeFileExtensionDistribution(map, metrics)
+		this._viewModel.distribution = distribution
 			.find(x => x.metric === s.areaMetric).distribution
-			.sort((a,b) => b.metricValue - a.metricValue)
-
-		const sumOfAllMetricValues: number = absoluteAreaDistribution
-			.map(x => x.metricValue)
-			.reduce((partialSum, a) => partialSum + a)
-
-		this._viewModel.distribution = absoluteAreaDistribution
-			.map((x: Distribution) => {
+			.map(x => {
 				return {
 					fileExtension: x.fileExtension,
-					metricValue: (x.metricValue / sumOfAllMetricValues) * 100,
+					relativeMetricValue: x.relativeMetricValue,
+					absoluteMetricValue: x.absoluteMetricValue,
 					color: this.getColorFromFileExtension(x.fileExtension)
 				}
 			})
+
+		console.log(this._viewModel.distribution)
 	}
 
 	private getColorFromFileExtension(fileExtension: string): string {
