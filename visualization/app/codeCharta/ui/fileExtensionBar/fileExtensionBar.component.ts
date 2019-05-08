@@ -50,7 +50,20 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	}
 
 	private getColorFromFileExtension(fileExtension: string): string {
-		return null
+		return this.numberToRGB(this.hashCode(fileExtension))
+	}
+
+	private hashCode(str): number {
+		let hash: number = 0;
+		for (let i = 0; i < str.length; i++) {
+			hash = str.charCodeAt(i) + ((hash << 5) - hash);
+		}
+		return hash;
+	}
+
+	private numberToRGB(hashCode: number): string {
+		const c = hashCode.toString(16).toUpperCase();
+		return "#" + "00000".substring(0, 6 - c.length) + c;
 	}
 }
 
