@@ -4,8 +4,6 @@ import {IRootScopeService, ITimeoutService} from "angular";
 import {FileState} from "../../codeCharta.model";
 import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
 import {FileStateHelper} from "../../util/fileStateHelper";
-import {FileDownloader} from "../../util/fileDownloader";
-import {CodeMapPreRenderService} from "../codeMap/codeMap.preRender.service";
 import { DialogService } from "../dialog/dialog.service";
 
 export interface RibbonBarControllerSubscriber {
@@ -32,7 +30,6 @@ export class RibbonBarController implements FileStateServiceSubscriber, RibbonBa
     constructor(
         private $rootScope: IRootScopeService,
         private $timeout: ITimeoutService,
-        private codeMapPreRenderService: CodeMapPreRenderService,
         private dialogService: DialogService
     ) {
         FileStateService.subscribe(this.$rootScope, this)
@@ -53,7 +50,6 @@ export class RibbonBarController implements FileStateServiceSubscriber, RibbonBa
 
     public downloadFile() {
         this.dialogService.showDownloadDialog()
-        //FileDownloader.downloadCurrentMap(this.codeMapPreRenderService.getRenderFile())
     }
 
     public toggle() {

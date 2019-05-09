@@ -4,20 +4,27 @@ import { CCFile, CodeMapNode } from "../codeCharta.model"
 
 export class FileDownloader {
 
-	public static downloadCurrentMap(file: CCFile, fileName: string) {
-		const data = this.getProjectDataAsCCJsonFormat(file)
+	private static allSettingsNames: string[] = ["edges", "blacklist", "markedPackages"]
+
+	public static downloadCurrentMap(file: CCFile, downloadSettingsNames: string[], fileName: string) {
+		const data = this.getProjectDataAsCCJsonFormat(file, downloadSettingsNames)
 		this.downloadData(data, fileName)
 	}
 
-	private static getProjectDataAsCCJsonFormat(file: CCFile) {
-		return {
+	private static getProjectDataAsCCJsonFormat(file: CCFile, downloadSettingsNames: string[]) {
+		let downloadObject: any = {
 			projectName: file.fileMeta.projectName,
 			apiVersion: file.fileMeta.apiVersion,
 			nodes: [this.removeJsonHashkeysAndVisibleAttribute(file.map)],
-			edges: file.settings.fileSettings.edges,
 			attributeTypes: file.settings.fileSettings.attributeTypes,
-			blacklist: file.settings.fileSettings.blacklist
 		}
+
+		this.allSettingsNames.forEach(settingsName => {
+			if(downloadSettingsNames.includes(settingsName)) {
+				downloadObject[settingsName] = file.settings.fileSettings[settingsName]
+			}
+		})
+		return downloadObject
 	}
 
 	private static removeJsonHashkeysAndVisibleAttribute(map: CodeMapNode) {

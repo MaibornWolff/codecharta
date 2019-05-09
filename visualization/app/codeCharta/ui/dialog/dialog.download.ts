@@ -36,7 +36,9 @@ export class DialogDownlodController {
         this.pushFileContent("nodes", hierarchy(file.map).descendants().length, true)
 
         _.keys(file.settings.fileSettings).forEach(settingsKey => {
-            this.pushFileContent(settingsKey, file.settings.fileSettings[settingsKey].length)
+            if (settingsKey != "attributeTypes") {
+                this.pushFileContent(settingsKey, file.settings.fileSettings[settingsKey].length)
+            }
         })
         this._viewModel.fileContent = this._viewModel.fileContent.sort()
     }
@@ -57,6 +59,7 @@ export class DialogDownlodController {
     public download() {
         FileDownloader.downloadCurrentMap(
             this.codeMapPreRenderService.getRenderFile(),
+            this._viewModel.fileContent.filter(x => x.downloadFlag == true).map(x => x.name),
             this._viewModel.fileName
         )
         this.$mdDialog.hide();
