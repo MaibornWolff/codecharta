@@ -58,7 +58,8 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		if (this.lastRender.fileStates && update.fileSettings && update.fileSettings.blacklist
 		) {
 			this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
-			this.lastRender.renderFile.settings.fileSettings = settings.fileSettings
+			this.lastRender.renderFile.settings.fileSettings.blacklist = settings.fileSettings.blacklist
+			this.lastRender.renderFile.settings.fileSettings.markedPackages = settings.fileSettings.markedPackages
 			this.decorateIfPossible()
 		}
 		this.renderIfRenderObjectIsComplete()
