@@ -1,4 +1,4 @@
-export class ErrorDialogPageObject {
+export class DialogErrorPageObject {
 
     constructor(private page) {}
 

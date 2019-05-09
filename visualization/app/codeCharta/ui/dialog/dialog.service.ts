@@ -1,4 +1,5 @@
-import {queryParamDialog} from "./queryParam.dialog";
+import { dialogUrlParameterComponent } from "./dialog.urlParameter"
+import { dialogDownlodComponent } from "./dialog.download";
 
 export class DialogService {
 
@@ -9,13 +10,15 @@ export class DialogService {
     }
 
     public showQueryParamDialog() {
-        this.showCustomDialog(queryParamDialog);
+        this.showCustomDialog(dialogUrlParameterComponent);
+    }
+
+    public showDownloadDialog() {
+        this.showCustomDialog(dialogDownlodComponent);
     }
 
     public showCustomDialog(dialog) {
-        this.$mdDialog.show(
-            dialog
-        );
+        this.$mdDialog.show(dialog);
     }
 
     public showErrorDialog(

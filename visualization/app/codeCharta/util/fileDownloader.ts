@@ -3,18 +3,14 @@ import * as d3 from "d3"
 import { CCFile, CodeMapNode } from "../codeCharta.model"
 
 export class FileDownloader {
-	private static CC_FILE_EXTENSION = ".cc.json"
 
-	public static downloadCurrentMap(file: CCFile) {
+	public static downloadCurrentMap(file: CCFile, fileName: string) {
 		const data = this.getProjectDataAsCCJsonFormat(file)
-		this.downloadData(data, this.getNewFileName(file))
+		this.downloadData(data, fileName)
 	}
 
 	private static getProjectDataAsCCJsonFormat(file: CCFile) {
-		let newFileName = this.getNewFileName(file)
-
 		return {
-			fileName: newFileName,
 			projectName: file.fileMeta.projectName,
 			apiVersion: file.fileMeta.apiVersion,
 			nodes: [this.removeJsonHashkeysAndVisibleAttribute(file.map)],
@@ -32,39 +28,7 @@ export class FileDownloader {
 		return copy
 	}
 
-	private static getNewFileName(file: CCFile): string {
-		return this.getFileNameWithoutTimestamp(file.fileMeta.fileName) +
-			this.getNewTimestamp() +
-			FileDownloader.CC_FILE_EXTENSION
-	}
-
-	private static getNewTimestamp(): string {
-		const date: Date = new Date()
-		return "_" + date.getFullYear() +
-			"-" + (date.getMonth() + 1) +
-			"-" + date.getDate() +
-			"_" + date.getHours() +
-			"-" + date.getMinutes()
-	}
-
-	private static getFileNameWithoutTimestamp(fileName: string): string {
-		const dateRegex: RegExp = /\_\d{4}\-\d{1,2}\-\d{1,2}\_\d{1,2}\-\d{1,2}\./
-
-		if (dateRegex.test(fileName)) {
-			return fileName.substring(0, dateRegex.exec(fileName).index)
-
-		} else if (fileName.includes(FileDownloader.CC_FILE_EXTENSION)) {
-			return fileName.substring(0, fileName.search(FileDownloader.CC_FILE_EXTENSION))
-
-		} else if (fileName.includes(".json")) {
-			return fileName.substring(0, fileName.search(".json"))
-
-		} else {
-			return fileName
-		}
-	}
-
-	private static downloadData(data, fileName) {
+	private static downloadData(data, fileName: string) {
 		let dataJson = data
 		if (typeof data === "object") {
 			dataJson = angular.toJson(data, 4)

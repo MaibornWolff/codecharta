@@ -6,6 +6,7 @@ import {FileStateService, FileStateServiceSubscriber} from "../../state/fileStat
 import {FileStateHelper} from "../../util/fileStateHelper";
 import {FileDownloader} from "../../util/fileDownloader";
 import {CodeMapPreRenderService} from "../codeMap/codeMap.preRender.service";
+import { DialogService } from "../dialog/dialog.service";
 
 export interface RibbonBarControllerSubscriber {
     onLoadingMapStatusChanged(isLoadingMap: boolean, event: angular.IAngularEvent)
@@ -31,7 +32,8 @@ export class RibbonBarController implements FileStateServiceSubscriber, RibbonBa
     constructor(
         private $rootScope: IRootScopeService,
         private $timeout: ITimeoutService,
-        private codeMapPreRenderService: CodeMapPreRenderService
+        private codeMapPreRenderService: CodeMapPreRenderService,
+        private dialogService: DialogService
     ) {
         FileStateService.subscribe(this.$rootScope, this)
         RibbonBarController.subscribe(this.$rootScope, this)
@@ -50,7 +52,8 @@ export class RibbonBarController implements FileStateServiceSubscriber, RibbonBa
     }
 
     public downloadFile() {
-        FileDownloader.downloadCurrentMap(this.codeMapPreRenderService.getRenderFile())
+        this.dialogService.showDownloadDialog()
+        //FileDownloader.downloadCurrentMap(this.codeMapPreRenderService.getRenderFile())
     }
 
     public toggle() {
