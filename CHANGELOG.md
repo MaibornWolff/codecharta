@@ -21,10 +21,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed
 -	Prevent downloaded files from having multiple Timestamps #484
 -   Do not show loadingGif when cancelling the fileChooser #498
-
 -   Excluding a building now updates the maximum value of colorRange #355
 
 ### Chore
+-   Bump angular-material from 1.1.9 to 1.1.14 in /visualization
+-   [Security] Bump jquery from 3.3.1 to 3.4.0 in /visualization
+
 
 ## [1.24.0] - 2019-04-23
 
