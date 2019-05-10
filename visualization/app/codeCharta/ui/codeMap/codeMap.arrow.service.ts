@@ -5,8 +5,6 @@ import {Edge, Settings} from "../../codeCharta.model";
 
 export class CodeMapArrowService {
 
-    public static SELECTOR = "codeMapArrowService";
-
     private arrows: THREE.Object3D[];
 
     constructor(private threeSceneService: ThreeSceneService) {

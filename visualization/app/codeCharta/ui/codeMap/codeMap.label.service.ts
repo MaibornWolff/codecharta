@@ -15,7 +15,6 @@ interface InternalLabel {
 }
 
 export class CodeMapLabelService implements CameraChangeSubscriber {
-	public static SELECTOR = "codeMapLabelService"
 
 	private labels: InternalLabel[]
 	private LABEL_WIDTH_DIVISOR: number = 2600 // empirically gathered

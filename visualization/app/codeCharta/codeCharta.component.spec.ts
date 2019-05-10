@@ -1,16 +1,16 @@
-import "./codeCharta"
-import { ThreeOrbitControlsService } from "./ui/codeMap/threeViewer/threeOrbitControlsService"
-import { IHttpService, ILocationService, IRootScopeService, ITimeoutService } from "angular"
-import { DialogService } from "./ui/dialog/dialog.service"
-import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
-import { SettingsService } from "./state/settings.service"
-import { CodeChartaService } from "./codeCharta.service"
-import { CodeChartaController } from "./codeCharta.component"
-import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
-import { Settings } from "./codeCharta.model"
-import { SETTINGS } from "./util/dataMocks"
-import { ScenarioHelper } from "./util/scenarioHelper"
-import { FileStateService } from "./state/fileState.service"
+import "./codeCharta.module"
+import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService"
+import {IHttpService, ILocationService, IRootScopeService, ITimeoutService} from "angular"
+import {DialogService} from "./ui/dialog/dialog.service"
+import {CodeMapActionsService} from "./ui/codeMap/codeMap.actions.service"
+import {SettingsService} from "./state/settings.service"
+import {CodeChartaService} from "./codeCharta.service"
+import {CodeChartaController} from "./codeCharta.component"
+import {getService, instantiateModule} from "../../mocks/ng.mockhelper"
+import {Settings} from "./codeCharta.model"
+import {SETTINGS} from "./util/dataMocks"
+import {ScenarioHelper} from "./util/scenarioHelper"
+import {FileStateService} from "./state/fileState.service"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
@@ -220,8 +220,8 @@ describe("codeChartaController", () => {
 
 		it("should call loadFiles with sample files", () => {
 			const expected = [
-				{ fileName: "sample1.json", content: require("./assets/sample1.json") },
-				{ fileName: "sample2.json", content: require("./assets/sample2.json") }
+				{ fileName: "sample1.cc.json", content: require("./assets/sample1.cc.json") },
+				{ fileName: "sample2.cc.json", content: require("./assets/sample2.cc.json") }
 			]
 
 			codeChartaController.tryLoadingSampleFiles()

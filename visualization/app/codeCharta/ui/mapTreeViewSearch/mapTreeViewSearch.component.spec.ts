@@ -9,6 +9,7 @@ import { IRootScopeService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service";
+import { CodeMapHelper } from "../../util/codeMapHelper";
 
 describe("MapTreeViewSearchController", () => {
 
@@ -151,6 +152,14 @@ describe("MapTreeViewSearchController", () => {
 				{path: "/root/node/path", type: BlacklistType.exclude},
 				{path: "/root/node/path", type: BlacklistType.hide}
 			]
+
+			// On Windows 'ignore' generates paths with backslashes instead of slashes when executing
+			// the unit tests, and thus the test case fails without this mock.
+			CodeMapHelper.isBlacklisted = jest.fn((node, blacklist, type) => {
+				return (type == BlacklistType.hide && node.path == "/root/node/path" ||
+								 type == BlacklistType.exclude && node.path == "/root/node/path")
+			})
+
 			mapTreeViewSearchController["updateViewModel"](searchedNodeLeaves, blacklist)
 
 			expect(mapTreeViewSearchController["_viewModel"].fileCount).toEqual(searchedNodeLeaves.length)

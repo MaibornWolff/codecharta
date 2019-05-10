@@ -1,5 +1,5 @@
 import "./codeMap.module"
-import "../../codeCharta"
+import "../../codeCharta.module"
 import { IRootScopeService, IWindowService } from "angular"
 import { CodeMapMouseEventService, CodeMapMouseEventServiceSubscriber } from "./codeMap.mouseEvent.service"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"

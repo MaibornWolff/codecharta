@@ -33,7 +33,6 @@ export class CodeMapMouseEventService
     implements
         MapTreeViewHoverEventSubscriber,
         ViewCubeEventPropagationSubscriber {
-    public static SELECTOR = "codeMapMouseEventService";
 
     private hovered = null;
     private selected = null;

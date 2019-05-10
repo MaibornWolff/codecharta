@@ -27,7 +27,7 @@ export interface CodeMapPreRenderServiceSubscriber {
 }
 
 export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricServiceSubscriber {
-	public static SELECTOR = "codeMapPreRenderService"
+
 	private static RENDER_FILE_CHANGED_EVENT = "render-file-changed";
 
 	private newFileLoaded: boolean = false

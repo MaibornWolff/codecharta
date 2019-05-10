@@ -7,7 +7,6 @@ import { CodeMapMesh } from "../rendering/codeMapMesh";
  * A service which manages the Three.js scene in an angular way.
  */
 export class ThreeSceneService {
-    public static SELECTOR = "threeSceneService";
 
     public scene: Scene;
     public labels: Group;

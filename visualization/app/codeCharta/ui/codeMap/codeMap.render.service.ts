@@ -11,7 +11,6 @@ import {FileStateHelper} from "../../util/fileStateHelper";
 import {RenderData} from "./codeMap.preRender.service";
 
 export class CodeMapRenderService {
-	public static SELECTOR = "codeMapRenderService"
 
 	private _mapMesh: CodeMapMesh = null
 
