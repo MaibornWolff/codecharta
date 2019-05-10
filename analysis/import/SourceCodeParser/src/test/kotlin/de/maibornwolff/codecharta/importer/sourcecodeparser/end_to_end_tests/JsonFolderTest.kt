@@ -6,7 +6,6 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.retriev
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
-
 class JsonFolderTest {
 
     private val resource = "src/test/../test/resources/$end2EndFolder/biggerJavaProject/."
@@ -27,14 +26,6 @@ class JsonFolderTest {
                 """"name":"test"""",
                 """"name":"resources"""",
                 """"name":"biggerJavaProject""""
-        )
-    }
-
-    @Test
-    fun `json output contains the path relative to the source path`() {
-        assertThat(output).contains(
-                """"name":"de"""",
-                """"name":"foo""""
         )
     }
 

@@ -18,7 +18,7 @@
 CodeCharta is a beautiful tool for visualizing code as cities. It visualizes multiple code metrics using 3D tree maps and consists of two parts:
 
 * [analysis](/analysis/README.md): Command-Line-Tool for generating visualization data. It includes some pre-defined importers for e.g. SonarQube, SourceMonitor, SCM log information, generic csv data, as well as a command to validate and merge multiple data files.
-* [visualization](/visualization/README.md): GUI for visualizing code metrics given in json files, specified by [cc.json](/visualization/app/codeCharta/core/data/schema.json) using [json-schema v4](https://tools.ietf.org/html/draft-zyp-json-schema-04). 
+* [visualization](/visualization/README.md): GUI for visualizing code metrics given in json files, specified by [cc.json](/visualization/app/codeCharta/util/schema.json) using [json-schema v4](https://tools.ietf.org/html/draft-zyp-json-schema-04). 
 
 ![Screenshot of visualization](screenshot.png)
 

@@ -1,246 +1,106 @@
-"use strict";
+"use strict"
 
-import {CodeMapMesh} from "./rendering/codeMapMesh";
-import {RenderSettings} from "./rendering/renderSettings";
-import {KindOfMap, Settings, SettingsService, SettingsServiceSubscriber} from "../../core/settings/settings.service";
-import {Node} from "./rendering/node";
-import {Edge} from "../../core/data/model/CodeMap";
-import {
-    CodeMapBuildingTransition,
-    CodeMapMouseEventService,
-    CodeMapMouseEventServiceSubscriber
-} from "./codeMap.mouseEvent.service";
-import {TreeMapService, TreeMapSettings} from "../../core/treemap/treemap.service";
-import {CodeMapBuilding} from "./rendering/codeMapBuilding";
-import {CodeMapUtilService} from "./codeMap.util.service";
-import {CodeMapLabelService} from "./codeMap.label.service";
-import {ThreeSceneService} from "./threeViewer/threeSceneService";
-import {CodeMapArrowService} from "./codeMap.arrow.service";
+import {CodeMapMesh} from "./rendering/codeMapMesh"
+import {TreeMapGenerator} from "../../util/treeMapGenerator"
+import {CodeMapHelper} from "../../util/codeMapHelper"
+import {CodeMapLabelService} from "./codeMap.label.service"
+import {ThreeSceneService} from "./threeViewer/threeSceneService"
+import {CodeMapArrowService} from "./codeMap.arrow.service"
+import {CodeMapNode, Edge, Settings, Node} from "../../codeCharta.model"
+import {FileStateHelper} from "../../util/fileStateHelper";
+import {RenderData} from "./codeMap.preRender.service";
 
-const MAP_SIZE = 500.0;
+export class CodeMapRenderService {
 
-/**
- * Main service to manage the state of the rendered code map
- */
-export class CodeMapRenderService implements SettingsServiceSubscriber, CodeMapMouseEventServiceSubscriber {
+	private _mapMesh: CodeMapMesh = null
 
-    get mapMesh(): CodeMapMesh {
-        return this._mapMesh;
-    }
+	constructor(
+		private threeSceneService: ThreeSceneService,
+		private codeMapLabelService: CodeMapLabelService,
+		private codeMapArrowService: CodeMapArrowService
+	) {}
 
-    public static SELECTOR = "codeMapRenderService";
+	get mapMesh(): CodeMapMesh {
+		return this._mapMesh;
+	}
 
-    public currentSortedNodes: Node[];
+	public render(renderData: RenderData) {
+		this.showAllOrOnlyFocusedNode(renderData.renderFile.map, renderData.settings)
 
-    private _mapMesh: CodeMapMesh = null;
-    private currentRenderSettings: RenderSettings;
-    private visibleEdges: Edge[];
+		const treeMapNode: Node = TreeMapGenerator.createTreemapNodes(renderData.renderFile, renderData.settings, renderData.metricData)
+		const nodes: Node[] = this.collectNodesToArray(treeMapNode)
+		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
+		const sortedNodes: Node[] = filteredNodes.sort((a, b) => b.height - a.height)
 
-    /* @ngInject */
-    constructor(
-        private threeSceneService: ThreeSceneService,
-        private treeMapService: TreeMapService,
-        private $rootScope,
-        private settingsService: SettingsService,
-        private codeMapUtilService: CodeMapUtilService,
-        private codeMapLabelService: CodeMapLabelService,
-        private codeMapArrowService: CodeMapArrowService
-    ) {
-        this.settingsService.subscribe(this);
-        CodeMapMouseEventService.subscribe(this.$rootScope, this);
-    }
+		this._mapMesh = new CodeMapMesh(sortedNodes, renderData.settings, FileStateHelper.isDeltaState(renderData.fileStates))
+		this.threeSceneService.setMapMesh(this._mapMesh, renderData.settings.treeMapSettings.mapSize)
 
-    public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
-        // unused
-    }
+		const scale = renderData.settings.appSettings.scaling
+		this.scaleMap(scale.x, scale.y, scale.z, renderData.settings.treeMapSettings.mapSize)
+		this.setLabels(sortedNodes, renderData.settings)
+		this.setArrows(sortedNodes, renderData.settings)
+	}
 
-    public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
-        // unused
-    }
+	private collectNodesToArray(node: Node): Node[] {
+		let nodes = [node]
+		for (let i = 0; i < node.children.length; i++) {
+			let collected = this.collectNodesToArray(node.children[i])
+			for (let j = 0; j < collected.length; j++) {
+				nodes.push(collected[j])
+			}
+		}
+		return nodes
+	}
 
-    public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
-        // unused
-    }
+	private scaleMap(x: number, y: number, z: number, mapSize: number) {
+		this.threeSceneService.mapGeometry.scale.set(x, y, z)
+		this.threeSceneService.mapGeometry.position.set((- mapSize / 2.0) * x, 0.0, (- mapSize / 2.0) * z)
 
-    public onSettingsChanged(settings: Settings, event: Event) {
-        this.applySettings(settings);
-    }
+		if (this.threeSceneService.getMapMesh()) {
+			this.threeSceneService.getMapMesh().setScale(x, y, z)
+		}
+		this.codeMapLabelService.scale(x, y, z)
+		this.codeMapArrowService.scale(x, y, z)
+	}
 
-    /**
-     * Applies the given settings and redraws the scene
-     * @param {Settings} s
-     * @listens {settings-changed}
-     */
-    public applySettings(s: Settings) {
+	private setLabels(sortedNodes: Node[], s: Settings) {
+		this.codeMapLabelService.clearLabels()
+		for (let i = 0, numAdded = 0; i < sortedNodes.length && numAdded < s.appSettings.amountOfTopLabels; ++i) {
+			if (sortedNodes[i].isLeaf) {
+				this.codeMapLabelService.addLabel(sortedNodes[i], s)
+				++numAdded
+			}
+		}
+	}
 
-        if (s.areaMetric && s.heightMetric && s.colorMetric && s.map && s.map.nodes && s.neutralColorRange && s.deltaColorFlipped != undefined && s.invertHeight != undefined) {
-            this.updateMapGeometry(s);
-        }
+	private setArrows(sortedNodes: Node[], s: Settings) {
+		this.codeMapArrowService.clearArrows()
+		const visibleEdges = s.fileSettings.edges.filter(x => x.visible)
+		if (visibleEdges.length > 0 && s.appSettings.enableEdgeArrows) {
+			this.showCouplingArrows(sortedNodes, visibleEdges, s)
+		}
+	}
 
-        if (s.scaling && s.scaling.x && s.scaling.y && s.scaling.z) {
-            this.scaleMap(s.scaling.x, s.scaling.y, s.scaling.z);
-        }
-    }
+	private showAllOrOnlyFocusedNode(map: CodeMapNode, s: Settings) {
+		if (s.dynamicSettings.focusedNodePath.length > 0) {
+			const focusedNode = CodeMapHelper.getAnyCodeMapNodeFromPath(s.dynamicSettings.focusedNodePath, map)
+			TreeMapGenerator.setVisibilityOfNodeAndDescendants(map, false)
+			TreeMapGenerator.setVisibilityOfNodeAndDescendants(focusedNode, true)
+		} else {
+			TreeMapGenerator.setVisibilityOfNodeAndDescendants(map, true)
+		}
+	}
 
-    public collectNodesToArray(node: Node): Node[] {
-        let nodes = [node];
-        for (let i = 0; i < node.children.length; i++) {
-            let collected = this.collectNodesToArray(node.children[i]);
-            for (let j = 0; j < collected.length; j++) {
-                nodes.push(collected[j]);
-            }
-        }
-        return nodes;
-    }
+	private showCouplingArrows(sortedNodes: Node[], edges: Edge[], s: Settings) {
+		this.codeMapArrowService.clearArrows()
 
-    public updateMapGeometry(s: Settings) {
-
-        this.visibleEdges = this.getVisibleEdges(s);
-
-        const treeMapSettings: TreeMapSettings = {
-            size: MAP_SIZE,
-            areaKey: s.areaMetric,
-            heightKey: s.heightMetric,
-            margin: s.margin,
-            invertHeight: s.invertHeight,
-            visibleEdges: this.visibleEdges,
-            searchedNodePaths: s.searchedNodePaths,
-            blacklist: s.blacklist,
-            fileName: s.map.fileName,
-            searchPattern: s.searchPattern,
-            hideFlatBuildings: s.hideFlatBuildings,
-            markedPackages: s.markedPackages,
-        };
-
-        this.showAllOrOnlyFocusedNode(s);
-
-        let nodes: Node[] = this.collectNodesToArray(
-            this.treeMapService.createTreemapNodes(s.map.nodes, treeMapSettings, s.map.edges)
-        );
-
-        let filtered = nodes.filter(
-            node => node.visible && node.length > 0 && node.width > 0
-        );
-        this.currentSortedNodes = filtered.sort((a, b) => {
-            return b.height - a.height;
-        });
-
-        this.currentRenderSettings = {
-            heightKey: s.heightMetric,
-            colorKey: s.colorMetric,
-            renderDeltas: s.mode == KindOfMap.Delta,
-            hideFlatBuildings: s.hideFlatBuildings,
-            colorRange: s.neutralColorRange,
-            mapSize: MAP_SIZE,
-            deltaColorFlipped: s.deltaColorFlipped,
-            whiteColorBuildings: s.whiteColorBuildings
-        };
-
-        this.setLabels(s);
-        this.setArrows(s);
-
-        this._mapMesh = new CodeMapMesh(
-            this.currentSortedNodes,
-            this.currentRenderSettings
-        );
-        this.threeSceneService.setMapMesh(this._mapMesh, MAP_SIZE);
-    }
-
-    /**
-     * scales the scene by the given values
-     * @param {number} x
-     * @param {number} y
-     * @param {number} z
-     */
-    public scaleMap(x, y, z) {
-        this.threeSceneService.mapGeometry.scale.x = x;
-        this.threeSceneService.mapGeometry.scale.y = y;
-        this.threeSceneService.mapGeometry.scale.z = z;
-
-        this.threeSceneService.mapGeometry.position.x = -MAP_SIZE / 2.0 * x;
-        this.threeSceneService.mapGeometry.position.y = 0.0;
-        this.threeSceneService.mapGeometry.position.z = -MAP_SIZE / 2.0 * z;
-
-        if (this.threeSceneService.getMapMesh()) {
-            this.threeSceneService.getMapMesh().setScale(x, y, z);
-        }
-
-        if (this.codeMapLabelService) {
-            this.codeMapLabelService.scale(x, y, z);
-        }
-
-        if (this.codeMapArrowService) {
-            this.codeMapArrowService.scale(x, y, z);
-        }
-    }
-
-    private setLabels(s: Settings) {
-        this.codeMapLabelService.clearLabels();
-        for (
-            let i = 0, numAdded = 0;
-            i < this.currentSortedNodes.length &&
-            numAdded < s.amountOfTopLabels;
-            ++i
-        ) {
-            if (this.currentSortedNodes[i].isLeaf) {
-                this.codeMapLabelService.addLabel(
-                    this.currentSortedNodes[i],
-                    this.currentRenderSettings
-                );
-                ++numAdded;
-            }
-        }
-    }
-
-    private setArrows(s: Settings) {
-        this.codeMapArrowService.clearArrows();
-        if (this.visibleEdges.length > 0 && s.enableEdgeArrows) {
-            this.showCouplingArrows(this.visibleEdges);
-        }
-    }
-
-    private showAllOrOnlyFocusedNode(s: Settings) {
-        if (s.focusedNodePath) {
-            const focusedNode = this.codeMapUtilService.getAnyCodeMapNodeFromPath(
-                s.focusedNodePath
-            );
-            this.treeMapService.setVisibilityOfNodeAndDescendants(
-                s.map.nodes,
-                false
-            );
-            this.treeMapService.setVisibilityOfNodeAndDescendants(
-                focusedNode,
-                true
-            );
-        } else {
-            this.treeMapService.setVisibilityOfNodeAndDescendants(
-                s.map.nodes,
-                true
-            );
-        }
-    }
-
-    private getVisibleEdges(s: Settings) {
-        return s.map && s.map.edges
-            ? s.map.edges.filter(edge => edge.visible === true)
-            : [];
-    }
-
-    private showCouplingArrows(deps: Edge[]) {
-        this.codeMapArrowService.clearArrows();
-
-        if (deps && this.currentRenderSettings) {
-            this.codeMapArrowService.addEdgeArrows(
-                this.currentSortedNodes,
-                deps,
-                this.currentRenderSettings
-            );
-            this.codeMapArrowService.scale(
-                this.threeSceneService.mapGeometry.scale.x,
-                this.threeSceneService.mapGeometry.scale.y,
-                this.threeSceneService.mapGeometry.scale.z
-            );
-        }
-    }
-
+		if (edges && s) {
+			this.codeMapArrowService.addEdgeArrows(sortedNodes, edges, s)
+			this.codeMapArrowService.scale(
+				this.threeSceneService.mapGeometry.scale.x,
+				this.threeSceneService.mapGeometry.scale.y,
+				this.threeSceneService.mapGeometry.scale.z
+			)
+		}
+	}
 }

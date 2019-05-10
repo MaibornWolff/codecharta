@@ -1,28 +1,25 @@
-import {SettingsServiceSubscriber, SettingsService, Settings} from "../../core/settings/settings.service";
-import {CodeMap} from "../../core/data/model/CodeMap";
+import { IRootScopeService } from "angular";
+import {CCFile, CodeMapNode } from "../../codeCharta.model";
+import {CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber} from "../codeMap/codeMap.preRender.service";
 
-export class MapTreeViewController implements SettingsServiceSubscriber {
+export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber {
 
-    public mapRoot = null;
+    private _viewModel: {
+        rootNode: CodeMapNode
+    } = {
+        rootNode: null
+    };
 
     /* @ngInject */
-    constructor(private settingsService: SettingsService) {
-
-        this.settingsService.subscribe(this);
-        this.updateMapRoot(this.settingsService.settings.map);
-
+    constructor(
+        private $rootScope: IRootScopeService
+    ) {
+        CodeMapPreRenderService.subscribe(this.$rootScope, this);
     }
 
-    public onSettingsChanged(s: Settings) {
-        this.updateMapRoot(this.settingsService.settings.map);
+    public onRenderFileChanged(renderFile: CCFile, event: angular.IAngularEvent) {
+        this._viewModel.rootNode = renderFile.map
     }
-
-    private updateMapRoot(map: CodeMap) {
-        if(map && map.nodes) {
-            this.mapRoot = map.nodes;
-        }
-    }
-
 }
 
 export const mapTreeViewComponent = {

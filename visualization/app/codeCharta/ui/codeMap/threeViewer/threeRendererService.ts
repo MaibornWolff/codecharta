@@ -2,15 +2,12 @@ import * as THREE from "three";
 import { WebGLRenderer } from "three";
 import {
     SettingsService,
-    Settings,
     SettingsServiceSubscriber
-} from "../../../core/settings/settings.service";
+} from "../../../state/settings.service";
+import { RecursivePartial, Settings } from "../../../codeCharta.model"
+import { IRootScopeService } from "angular"
 
-/**
- * A service which manages the Three.js renderer in an angular way.
- */
 export class ThreeRendererService implements SettingsServiceSubscriber {
-    public static SELECTOR = "threeRendererService";
 
     public static BACKGROUND_COLOR = {
         white: 0xffffff,
@@ -28,17 +25,12 @@ export class ThreeRendererService implements SettingsServiceSubscriber {
 
     public renderer: WebGLRenderer;
 
-    /* @ngInject */
-    constructor(private settingsService: SettingsService) {}
+    constructor(private settingsService: SettingsService, private $rootScope: IRootScopeService) {}
 
-    /**
-     * Inits the renderer.
-     */
     public init(containerWidth: number, containerHeight: number){
         this.renderer = new THREE.WebGLRenderer(ThreeRendererService.RENDER_OPTIONS);
-        this.settingsService.subscribe(this);
-        this.onSettingsChanged(this.settingsService.settings, null);
-        this.setCurrentClearColorFromSettings(this.settingsService.settings);
+        SettingsService.subscribe(this.$rootScope, this);
+        this.setCurrentClearColorFromSettings(this.settingsService.getSettings());
         this.renderer.setSize(containerWidth, containerHeight);
         this.renderer.setClearColor(
             ThreeRendererService.CLEAR_COLOR,
@@ -47,7 +39,7 @@ export class ThreeRendererService implements SettingsServiceSubscriber {
     }
 
     public setCurrentClearColorFromSettings(settings: Settings) {
-        if (settings.isWhiteBackground) {
+        if (settings.appSettings.isWhiteBackground) {
             ThreeRendererService.CLEAR_COLOR =
                 ThreeRendererService.BACKGROUND_COLOR.white;
         } else {
@@ -56,7 +48,7 @@ export class ThreeRendererService implements SettingsServiceSubscriber {
         }
     }
 
-    public onSettingsChanged(settings: Settings, event) {
+    public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event : angular.IAngularEvent) {
         this.setCurrentClearColorFromSettings(settings);
         this.renderer.setClearColor(
             ThreeRendererService.CLEAR_COLOR,

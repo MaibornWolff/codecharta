@@ -24,17 +24,20 @@ class MccListener extends JavaParserBaseListener {
 
     @Override
     public void enterPackageDeclaration(JavaParser.PackageDeclarationContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.PACKAGE);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.PACKAGE);
     }
 
     @Override
     public void enterImportDeclaration(JavaParser.ImportDeclarationContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.IMPORT);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.IMPORT);
     }
 
     @Override
     public void enterAnnotation(JavaParser.AnnotationContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.ANNOTATION_INVOCATION);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.ANNOTATION_INVOCATION);
     }
 
     /**
@@ -44,7 +47,8 @@ class MccListener extends JavaParserBaseListener {
      */
     @Override
     public void enterAnnotationTypeDeclaration(JavaParser.AnnotationTypeDeclarationContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.ANNOTATION);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.ANNOTATION);
     }
 
     /**
@@ -55,37 +59,44 @@ class MccListener extends JavaParserBaseListener {
      */
     @Override
     public void enterAnnotationTypeElementDeclaration(JavaParser.AnnotationTypeElementDeclarationContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.ANNOTATION_ELEMENT);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.ANNOTATION_ELEMENT);
     }
 
     @Override
     public void enterClassDeclaration(JavaParser.ClassDeclarationContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.CLASS);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.CLASS);
     }
 
     @Override
     public void enterInterfaceDeclaration(JavaParser.InterfaceDeclarationContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.INTERFACE);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.INTERFACE);
     }
 
     @Override
     public void enterEnumDeclaration(JavaParser.EnumDeclarationContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.ENUM);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.ENUM);
     }
 
     @Override
     public void enterConstructorDeclaration(JavaParser.ConstructorDeclarationContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.CONSTRUCTOR);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.CONSTRUCTOR);
     }
 
     @Override
     public void enterStatement(JavaParser.StatementContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.STATEMENT);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.STATEMENT);
     }
 
     @Override
     public void exitStatement(JavaParser.StatementContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.STATEMENT);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.STATEMENT);
     }
 
     /**
@@ -98,7 +109,8 @@ class MccListener extends JavaParserBaseListener {
      */
     @Override
     public void enterResource(JavaParser.ResourceContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.RESOURCE);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.RESOURCE);
     }
 
     /**
@@ -108,7 +120,8 @@ class MccListener extends JavaParserBaseListener {
      */
     @Override
     public void enterCatchClause(JavaParser.CatchClauseContext ctx) {
-        addTag(ctx.getStart().getLine(), BranchTags.CATCH);
+        addTag(ctx.getStart()
+                .getLine(), BranchTags.CATCH);
     }
 
     /**
@@ -118,7 +131,8 @@ class MccListener extends JavaParserBaseListener {
      */
     @Override
     public void enterFinallyBlock(JavaParser.FinallyBlockContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.FINALLY);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.FINALLY);
     }
 
     /**
@@ -127,7 +141,8 @@ class MccListener extends JavaParserBaseListener {
      */
     @Override
     public void enterQualifiedNameList(JavaParser.QualifiedNameListContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.THROWS_DECLARATION);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.THROWS_DECLARATION);
     }
 
     /**
@@ -143,7 +158,8 @@ class MccListener extends JavaParserBaseListener {
         if (ctx.DEFAULT() != null) {
             codeTag = UnsortedCodeTags.DEFAULT_CASE;
         }
-        addTag(ctx.getStart().getLine(), codeTag);
+        addTag(ctx.getStart()
+                .getLine(), codeTag);
     }
 
     /**
@@ -157,7 +173,8 @@ class MccListener extends JavaParserBaseListener {
     @Override
     public void enterParExpression(JavaParser.ParExpressionContext ctx) {
         if (isMcCabeBranchStatement(ctx)) {
-            addTag(ctx.getStart().getLine(), BranchTags.CONDITION);
+            addTag(ctx.getStart()
+                    .getLine(), BranchTags.CONDITION);
         }
     }
 
@@ -182,7 +199,8 @@ class MccListener extends JavaParserBaseListener {
      */
     @Override
     public void enterForControl(JavaParser.ForControlContext ctx) {
-        addTag(ctx.getStart().getLine(), BranchTags.CONDITION);
+        addTag(ctx.getStart()
+                .getLine(), BranchTags.CONDITION);
     }
 
     /**
@@ -190,56 +208,71 @@ class MccListener extends JavaParserBaseListener {
      **/
     @Override
     public void enterConstDeclaration(JavaParser.ConstDeclarationContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.INTERFACE_CONSTANT);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.INTERFACE_CONSTANT);
     }
 
     @Override
     public void enterLambdaExpression(JavaParser.LambdaExpressionContext ctx) {
-        addTag(ctx.getStart().getLine(), MethodTags.LAMBDA);
+        addTag(ctx.getStart()
+                .getLine(), MethodTags.LAMBDA);
     }
 
     @Override
     public void enterFieldDeclaration(JavaParser.FieldDeclarationContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.CLASS_FIELD);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.CLASS_FIELD);
     }
 
     @Override
     public void enterInterfaceMethodDeclaration(JavaParser.InterfaceMethodDeclarationContext ctx) {
-        addTag(ctx.getStart().getLine(), MethodTags.METHOD);
+        addTag(ctx.getStart()
+                .getLine(), MethodTags.METHOD);
     }
 
     @Override
     public void enterMethodDeclaration(JavaParser.MethodDeclarationContext ctx) {
-        addTag(ctx.getStart().getLine(), MethodTags.METHOD);
+        addTag(ctx.getStart()
+                .getLine(), MethodTags.METHOD);
     }
 
     @Override
     public void enterVariableDeclarator(JavaParser.VariableDeclaratorContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.VARIABLE);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.VARIABLE);
     }
 
     @Override
     public void enterEnumConstant(JavaParser.EnumConstantContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.ENUM_CONSTANT);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.ENUM_CONSTANT);
     }
 
     @Override
     public void enterExpression(JavaParser.ExpressionContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.EXPRESSION);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.EXPRESSION);
         if (ctx.bop != null) {
-            if (ctx.bop.getText().equals("||")) {
-                addTag(ctx.getStart().getLine(), BranchTags.OR_CONDITION);
-            } else if (ctx.bop.getText().equals("&&")) {
-                addTag(ctx.getStart().getLine(), BranchTags.AND_CONDITION);
-            } else if (ctx.bop.getText().equals("?")) {
-                addTag(ctx.getStart().getLine(), BranchTags.TERNARY_CONDITION);
+            if (ctx.bop.getText()
+                    .equals("||")) {
+                addTag(ctx.getStart()
+                        .getLine(), BranchTags.OR_CONDITION);
+            } else if (ctx.bop.getText()
+                    .equals("&&")) {
+                addTag(ctx.getStart()
+                        .getLine(), BranchTags.AND_CONDITION);
+            } else if (ctx.bop.getText()
+                    .equals("?")) {
+                addTag(ctx.getStart()
+                        .getLine(), BranchTags.TERNARY_CONDITION);
             }
         }
     }
 
     @Override
     public void enterMethodCall(JavaParser.MethodCallContext ctx) {
-        addTag(ctx.getStart().getLine(), UnsortedCodeTags.METHOD_CALL);
+        addTag(ctx.getStart()
+                .getLine(), UnsortedCodeTags.METHOD_CALL);
     }
 
     private void addTag(int lineNumber, CodeTags codeTag) {
@@ -250,5 +283,4 @@ class MccListener extends JavaParserBaseListener {
 
         tags.add(codeTag);
     }
-
 }

@@ -38,7 +38,8 @@ import java.util.concurrent.Callable
         description = ["validates cc.json files"],
         footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
 )
-class ValidationTool : Callable<Void?> {
+class ValidationTool: Callable<Void?> {
+
     private val schemaPath = "cc.json"
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
@@ -61,5 +62,4 @@ class ValidationTool : Callable<Void?> {
             CommandLine.call(ValidationTool(), System.out, *args)
         }
     }
-
 }

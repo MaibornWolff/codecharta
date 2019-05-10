@@ -29,10 +29,9 @@
 
 package de.maibornwolff.codecharta.importer.sonar.dataaccess
 
-import org.junit.Test
-
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
+import org.junit.Test
 
 class AuthentificationHandlerTest {
 

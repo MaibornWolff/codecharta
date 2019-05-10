@@ -31,15 +31,16 @@ package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
 import java.util.concurrent.Callable
-import mu.KotlinLogging
 
 @CommandLine.Command(name = "merge",
         description = ["merges multiple cc.json files"],
         footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
-class MergeFilter : Callable<Void?> {
+class MergeFilter: Callable<Void?> {
+
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
@@ -69,13 +70,14 @@ class MergeFilter : Callable<Void?> {
     override fun call(): Void? {
         val nodeMergerStrategy =
                 when {
-                    leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
+                    leafStrategySet                          -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
                     recursiveStrategySet && !leafStrategySet -> RecursiveNodeMergerStrategy(ignoreCase)
-                    else -> throw IllegalArgumentException("Only one merging strategy must be set")
+                    else                                     -> throw IllegalArgumentException(
+                            "Only one merging strategy must be set")
                 }
 
         val sourceFiles = mutableListOf<File>()
-        for(source in sources){
+        for (source in sources) {
             sourceFiles.addAll(getFilesInFolder(source))
         }
 
@@ -84,7 +86,7 @@ class MergeFilter : Callable<Void?> {
                     val bufferedReader = it.bufferedReader()
                     try {
                         ProjectDeserializer.deserializeProject(bufferedReader)
-                    } catch (e: Exception){
+                    } catch (e: Exception) {
                         logger.warn("${it.name} is not a valid project file and is therefore skipped.")
                         null
                     }
@@ -98,8 +100,8 @@ class MergeFilter : Callable<Void?> {
         return null
     }
 
-    private fun getFilesInFolder(folder: File): List<File>{
-        val files =  folder.walk().filter{ !it.name.startsWith(".") && !it.isDirectory}
+    private fun getFilesInFolder(folder: File): List<File> {
+        val files = folder.walk().filter { !it.name.startsWith(".") && !it.isDirectory }
         return files.toList()
     }
 

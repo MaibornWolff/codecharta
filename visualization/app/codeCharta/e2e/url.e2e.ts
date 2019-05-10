@@ -1,6 +1,6 @@
 import {CC_URL, puppeteer} from "../../puppeteer.helper";
 import {ErrorDialogPageObject} from "../ui/dialog/errorDialog.po";
-import { RevisionChooserFileDropDownPageObject } from "../ui/revisionChooser/revisionChooserFileDropdown.po";
+import {RevisionChooserFileDropDownPageObject} from "../ui/revisionChooser/revisionChooserFileDropdown.po";
 
 jest.setTimeout(15000);
 
@@ -53,13 +53,13 @@ describe("codecharta",()=>{
                 request.respond({
                     content: 'application/json',
                     headers: {"Access-Control-Allow-Origin": "*"},
-                    body: JSON.stringify(require("../assets/sample2.json"))
+                    body: JSON.stringify(require("../assets/sample2.cc.json"))
                 });
             } else if (request.url().includes("/fileTwo.json")) {
                 request.respond({
                     content: 'application/json',
                     headers: {"Access-Control-Allow-Origin": "*"},
-                    body: JSON.stringify(require("../assets/sample3.json"))
+                    body: JSON.stringify(require("../assets/sample3.cc.json"))
                 });
             }
             else {
@@ -78,8 +78,8 @@ describe("codecharta",()=>{
     it("should throw errors when file parameters in url are invalid and load sample data instead", async ()=>{
         await page.goto(CC_URL + "?file=invalid234");
         await handleErrorDialog();
-        await checkSelectedRevisionName("sample1.json");
-        await checkAllRevisionNames(["sample1.json", "sample2.json"]);
+        await checkSelectedRevisionName("sample1.cc.json");
+        await checkAllRevisionNames(["sample1.cc.json", "sample2.cc.json"]);
     });
 
 });

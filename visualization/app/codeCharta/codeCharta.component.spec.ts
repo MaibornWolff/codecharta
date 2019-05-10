@@ -1,236 +1,232 @@
-import {CodeChartaController} from "./codeCharta.component";
+import "./codeCharta.module"
+import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService"
+import {IHttpService, ILocationService, IRootScopeService, ITimeoutService} from "angular"
+import {DialogService} from "./ui/dialog/dialog.service"
+import {CodeMapActionsService} from "./ui/codeMap/codeMap.actions.service"
+import {SettingsService} from "./state/settings.service"
+import {CodeChartaService} from "./codeCharta.service"
+import {CodeChartaController} from "./codeCharta.component"
+import {getService, instantiateModule} from "../../mocks/ng.mockhelper"
+import {Settings} from "./codeCharta.model"
+import {SETTINGS} from "./util/dataMocks"
+import {ScenarioHelper} from "./util/scenarioHelper"
+import {FileStateService} from "./state/fileState.service"
 
-import {DataService} from "./core/data/data.service";
-import {DialogService} from "./ui/dialog/dialog.service";
-import {SettingsService} from "./core/settings/settings.service";
-import {ScenarioService} from "./core/scenario/scenario.service";
-import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
-import {DataLoadingService} from "./core/data/data.loading.service";
-import {NameDataPair, UrlService} from "./core/url/url.service";
-import {NodeContextMenuController} from "./ui/nodeContextMenu/nodeContextMenu.component";
+describe("codeChartaController", () => {
+	let codeChartaController: CodeChartaController
+	let threeOrbitControlsService: ThreeOrbitControlsService
+	let $rootScope: IRootScopeService
+	let dialogService: DialogService
+	let codeMapActionsService: CodeMapActionsService
+	let settingsService: SettingsService
+	let codeChartaService: CodeChartaService
+	let fileStateService: FileStateService
+	let $location: ILocationService
+	let $http: IHttpService
+	let $timeout: ITimeoutService
 
-jest.mock("./core/data/data.service");
-jest.mock("./ui/dialog/dialog.service");
-jest.mock("./core/settings/settings.service");
-jest.mock("./core/scenario/scenario.service");
-jest.mock("./ui/codeMap/threeViewer/threeOrbitControlsService");
-jest.mock("./core/data/data.loading.service");
-jest.mock("./core/url/url.service");
+	let settings : Settings
 
-describe("codecharta component", ()=>{
-   
-    let cc: CodeChartaController;
-    let dataLoadingService: DataLoadingService;
-    let urlService: UrlService;
-    let settingsService: SettingsService;
-    let scenarioService: ScenarioService;
-    let dataService: DataService;
-    let threeOrbitControlsService: ThreeOrbitControlsService;
-    let $rootScope: any;
-    let dialogService: DialogService;
+	beforeEach(() => {
+		restartSystem()
+		rebuildController()
+		withMockedThreeOrbitControlsService()
+		withMockedCodeMapActionsService()
+		withMockedUrlUtils()
+		withMockedSettingsService()
+		withMockedCodeChartaService()
+		withMockedDialogService()
+		withMockedScenarioHelper()
+	})
 
-    let tmpEventListener;
+	function restartSystem() {
+		instantiateModule("app.codeCharta")
 
-    let singleNameDataPair: NameDataPair[] = [{name: "a", data: {}}];
+        threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
+		$rootScope = getService<IRootScopeService>("$rootScope")
+		dialogService = getService<DialogService>("dialogService")
+		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
+		settingsService = getService<SettingsService>("settingsService")
+		codeChartaService = getService<CodeChartaService>("codeChartaService")
+		fileStateService = getService<FileStateService>("fileStateService")
+		$location = getService<ILocationService>("$location")
+		$http = getService<IHttpService>("$http")
+		$timeout = getService<ITimeoutService>("$timeout")
 
-    beforeEach(()=>{
-        tmpEventListener = document.body.addEventListener;
-        document.body.addEventListener = jest.fn();
+		settings = JSON.parse(JSON.stringify(SETTINGS))
+	}
 
-        dataLoadingService = new DataLoadingService();
-        urlService = new UrlService();
-        urlService.getFileDataFromQueryParam = jest.fn(() => Promise.resolve({}));
-        settingsService = new SettingsService();
-        scenarioService = new ScenarioService();
-        dataService = new DataService();
-        threeOrbitControlsService = new ThreeOrbitControlsService();
-        $rootScope = {
-            $on: jest.fn()
-        };
-        dialogService = new DialogService();
-        cc = new CodeChartaController(
-            dataLoadingService,
-            urlService,
-            settingsService,
-            scenarioService,
-            dataService,
-            threeOrbitControlsService,
-            $rootScope,
-            dialogService
-        );
-    });
+	function rebuildController() {
+		codeChartaController = new CodeChartaController(
+			threeOrbitControlsService,
+			$rootScope,
+			dialogService,
+			codeMapActionsService,
+			settingsService,
+			codeChartaService,
+			fileStateService,
+			$location,
+			$http,
+			$timeout
+		)
+	}
 
-    afterEach(()=>{
-        document.body.addEventListener = tmpEventListener;
-    });
+	afterEach(() => {
+		jest.resetAllMocks()
+	})
 
-    describe("#tryLoadingFiles",()=>{
 
-        it("should try to load file with the correct indices",async ()=>{
-            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
-            await cc.tryLoadingFiles(singleNameDataPair);
-            expect(dataLoadingService.loadMapFromFileContent).toHaveBeenCalledWith("a", expect.anything(), 0);
-        });
 
-        it("should apply scenario ONCE when map is loaded",async ()=>{
-            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
-            await cc.tryLoadingFiles(singleNameDataPair);
-            expect(scenarioService.applyScenarioOnce).toHaveBeenCalled();
-        });
+	function withMockedThreeOrbitControlsService() {
+		threeOrbitControlsService = codeChartaController["threeOrbitControlsService"] = jest.fn().mockReturnValue({
+			autoFitTo: jest.fn()
+		})()
+	}
 
-        it("should apply scenario NOT ONCE when map is loaded and flag is set",async ()=>{
-            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
-            await cc.tryLoadingFiles(singleNameDataPair, false);
-            expect(scenarioService.applyScenarioOnce).not.toHaveBeenCalled();
-            expect(scenarioService.applyScenario).toHaveBeenCalled();
-        });
+	function withMockedCodeMapActionsService() {
+		codeMapActionsService = codeChartaController["codeMapActionsService"] = jest.fn().mockReturnValue({
+			removeFocusedNode: jest.fn()
+		})()
+	}
 
-        it("should update settings by url params when map is loaded",async ()=>{
-            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
-            await cc.tryLoadingFiles(singleNameDataPair);
-            expect(settingsService.updateSettingsFromUrl).toHaveBeenCalled();
-        });
+	function withMockedUrlUtils() {
+		codeChartaController["urlUtils"] = jest.fn().mockReturnValue({
+			getFileDataFromQueryParam : jest.fn().mockReturnValue(Promise.resolve([])),
+			getParameterByName : jest.fn().mockReturnValue(true)
+		})()
+	}
 
-        it("should decrement loading tasks when map is loaded",async ()=>{
-            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
-            cc.viewModel.numberOfLoadingTasks = 99;
-            await cc.tryLoadingFiles(singleNameDataPair);
-            expect(cc.viewModel.numberOfLoadingTasks).toBe(98);
-        });
+	function withMockedSettingsService() {
+		settingsService = codeChartaController["settingsService"] = jest.fn().mockReturnValue({
+			updateSettings: jest.fn(),
+			getDefaultSettings: jest.fn().mockReturnValue(settings)
+		})()
+	}
 
-        it("should print errors when map is loaded",async ()=>{
-            cc.printErrors = jest.fn();
-            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.reject());
-            await cc.tryLoadingFiles(singleNameDataPair);
-            expect(cc.printErrors).toHaveBeenCalled();
-        });
+	function withMockedCodeChartaService() {
+		codeChartaService = codeChartaController["codeChartaService"] = jest.fn().mockReturnValue({
+			loadFiles : jest.fn().mockReturnValue(new Promise((resolve, reject) => {
+				resolve()
+			}))
+		})()
+	}
 
-        it("should decrement loading tasks when sample map is not loaded",async ()=>{
-            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.reject());
-            cc.viewModel.numberOfLoadingTasks = 99;
-            await cc.tryLoadingFiles(singleNameDataPair);
-            expect(cc.viewModel.numberOfLoadingTasks).toBe(98);
-        });
+	function withMockedDialogService() {
+		dialogService = codeChartaController["dialogService"] = jest.fn().mockReturnValue({
+			showErrorDialog : jest.fn()
+		})()
+	}
 
-        it("should set maps correctly when map is loaded",async ()=>{
-            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
-            await cc.tryLoadingFiles(singleNameDataPair);
-            expect(dataService.setComparisonMap).toHaveBeenCalledWith(0);
-            expect(dataService.setReferenceMap).toHaveBeenCalledWith(0);
-        });
-    });
+	function withMockedScenarioHelper() {
+		ScenarioHelper.getDefaultScenario = jest.fn().mockReturnValue({ settings })
+	}
 
-    describe("#tryLoadingSampleData",()=>{
+	describe("constructor", () => {
+		it("should subscribe to SettingsService", () => {
+			SettingsService.subscribe = jest.fn()
 
-        it("should try to load both sample files with the correct indices",async ()=>{
-            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
-            await cc.tryLoadingSampleFiles();
-            expect(dataLoadingService.loadMapFromFileContent).toHaveBeenCalledWith("sample1.json", expect.anything(), 0);
-            expect(dataLoadingService.loadMapFromFileContent).toHaveBeenCalledWith("sample2.json", expect.anything(), 1);
-        });
+			rebuildController()
 
-        it("should apply scenario when sample maps are loaded",async ()=>{
-            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
-            await cc.tryLoadingSampleFiles();
-            expect(scenarioService.applyScenario).toHaveBeenCalled();
-        });
+			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, codeChartaController)
+		})
 
-        it("should update settings by url params when sample maps are loaded",async ()=>{
-            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
-            await cc.tryLoadingSampleFiles();
-            expect(settingsService.updateSettingsFromUrl).toHaveBeenCalled();
-        });
+		it("should subscribe to CodeChartaController", () => {
+			CodeChartaController.subscribe = jest.fn()
 
-        it("should decrement loading tasks when sample maps are loaded",async ()=>{
-            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
-            cc.viewModel.numberOfLoadingTasks = 99;
-            await cc.tryLoadingSampleFiles();
-            expect(cc.viewModel.numberOfLoadingTasks).toBe(98);
-        });
+			rebuildController()
 
-        it("should print errors when sample maps are not loaded",async ()=>{
-            cc.printErrors = jest.fn();
-            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.reject());
-            await cc.tryLoadingSampleFiles();
-            expect(cc.printErrors).toHaveBeenCalled();
-        });
+			expect(CodeChartaController.subscribe).toHaveBeenCalledWith($rootScope, codeChartaController)
+		})
 
-        it("should decrement loading tasks when sample maps are not loaded",async ()=>{
-            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.reject());
-            cc.viewModel.numberOfLoadingTasks = 99;
-            await cc.tryLoadingSampleFiles();
-            expect(cc.viewModel.numberOfLoadingTasks).toBe(98);
-        });
+		it("should set urlUtils", () => {
+			rebuildController()
 
-        it("should set maps correctly when sample maps are loaded",async ()=>{
-            dataLoadingService.loadMapFromFileContent = jest.fn(() => Promise.resolve());
-            await cc.tryLoadingSampleFiles();
-            expect(dataService.setComparisonMap).toHaveBeenCalledWith(0);
-            expect(dataService.setReferenceMap).toHaveBeenCalledWith(0);
-        });
+			expect(codeChartaController["urlUtils"]).toBeDefined()
+		})
 
-    });
+		it("should set attribute isLoadingFile to true", () => {
+			rebuildController()
 
-    describe("#loadFileOrSample",()=>{
+			expect(codeChartaController["_viewModel"].isLoadingFile).toBeTruthy()
+		})
+	})
 
-        it("should show error dialog when url param is valid and maps cannot be loaded amd load sample data",async ()=>{
-            cc.tryLoadingFiles = jest.fn();
-            urlService.getParam = jest.fn(()=>"some file that should have been loaded");
-            urlService.getFileDataFromQueryParam = jest.fn(() => Promise.reject());
-            await cc.loadFileOrSample();
-            expect(dialogService.showErrorDialog).toHaveBeenCalled();
-            expect(cc.tryLoadingFiles).toHaveBeenCalledWith([
-                { name: "sample1.json", data: require("./assets/sample1.json") },
-                { name: "sample2.json", data: require("./assets/sample2.json") },
-            ], false);
-        });
+	describe("onSettingsChanged" , () => {
+		it("should set focusedNodePath in viewModel", () => {
+			codeChartaController.onSettingsChanged(settings, undefined,undefined)
 
-        it("should try setting given data if file in url is valid",async ()=>{
-            cc.tryLoadingFiles = jest.fn();
-            urlService.getFileDataFromQueryParam = jest.fn(() => Promise.resolve("SOME_DATA"));
-            await cc.loadFileOrSample();
-            expect(cc.tryLoadingFiles).toHaveBeenCalled();
-        });
+			expect(codeChartaController["_viewModel"].focusedNodePath).toBe("/root")
+		})
+	})
 
-        it("should increase number of loading tasks",async ()=>{
-            cc.viewModel.numberOfLoadingTasks = 0;
-            dataLoadingService.loadMapFromFileContent = jest.fn(() => {
-                expect(cc.viewModel.numberOfLoadingTasks).toBe(1);
-                return Promise.resolve();
-            });
-            await cc.loadFileOrSample();
-            expect(cc.viewModel.numberOfLoadingTasks).toBe(0);
-        });
+	describe("fitMapToView" , () => {
+		it("should call autoFitTo", () => {
+			codeChartaController.fitMapToView()
 
-    });
+			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
+		})
+	})
 
-    it("should add click listener in order to hide context menu",()=>{
-        expect(document.body.addEventListener).toHaveBeenCalledWith("click", expect.any(Function), expect.anything());
-        let oldHide = NodeContextMenuController.broadcastHideEvent;
-        NodeContextMenuController.broadcastHideEvent = jest.fn();
-        (document.body.addEventListener as any).mock.calls[0][1]();
-        expect(NodeContextMenuController.broadcastHideEvent).toHaveBeenCalledWith($rootScope);
-        NodeContextMenuController.broadcastHideEvent = oldHide;
-    });
+	describe("removeFocusedNode" , () => {
+		it("should call removeFocusedNode", () => {
+			codeChartaController.removeFocusedNode()
 
-    it("should subscribe to loading events and update view model correctly",()=>{
-        expect($rootScope.$on).toHaveBeenCalledWith("add-loading-task", expect.any(Function));
-        expect($rootScope.$on).toHaveBeenCalledWith("remove-loading-task", expect.any(Function));
-        cc.viewModel.numberOfLoadingTasks = 0;
-        $rootScope.$on.mock.calls[0][1]();
-        expect(cc.viewModel.numberOfLoadingTasks).toBe(1);
-        $rootScope.$on.mock.calls[1][1]();
-        expect(cc.viewModel.numberOfLoadingTasks).toBe(0);
-    });
+			expect(codeMapActionsService.removeFocusedNode).toHaveBeenCalled()
+		})
+	})
 
-    it("should auto fit camera when fitting scene",()=>{
-       cc.fitMapToView();
-       expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled();
-    });
+	describe("loadFileOrSample" , () => {
+		beforeEach(() => {
+			codeChartaController.tryLoadingSampleFiles = jest.fn()
+		})
 
-    it("should call error dialog on errors",()=>{
-       cc.printErrors({});
-       expect(dialogService.showErrorDialog).toHaveBeenCalled();
-    });
+		it("should call tryLoadingSampleFiles when data is an empty array", async () => {
+			await codeChartaController.loadFileOrSample()
 
-});
+			expect(codeChartaController.tryLoadingSampleFiles).toHaveBeenCalled()
+		})
+
+		it("should call loadFiles when data is not an empty array", async () => {
+			codeChartaController["urlUtils"].getFileDataFromQueryParam = jest.fn().mockReturnValue(Promise.resolve([{}]))
+
+			await codeChartaController.loadFileOrSample()
+
+			expect(codeChartaService.loadFiles).toHaveBeenCalledWith([{}])
+		})
+
+		it("should call updateSettings if loadFiles-Promise resolves", async () => {
+			codeChartaController["urlUtils"].getFileDataFromQueryParam = jest.fn().mockReturnValue(Promise.resolve([{}]))
+
+			await codeChartaController.loadFileOrSample()
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith(settings)
+		})
+	})
+
+	describe("tryLoadingSampleFiles" , () => {
+		it("should call getParameterByName with 'file'", () => {
+			codeChartaController.tryLoadingSampleFiles()
+
+			expect(codeChartaController["urlUtils"].getParameterByName).toHaveBeenCalledWith("file")
+		})
+
+		it("should call showErrorDialog when no file is found", () => {
+			const expected = "One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
+
+			codeChartaController.tryLoadingSampleFiles()
+
+			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(expected)
+		})
+
+		it("should call loadFiles with sample files", () => {
+			const expected = [
+				{ fileName: "sample1.cc.json", content: require("./assets/sample1.cc.json") },
+				{ fileName: "sample2.cc.json", content: require("./assets/sample2.cc.json") }
+			]
+
+			codeChartaController.tryLoadingSampleFiles()
+
+			expect(codeChartaService.loadFiles).toHaveBeenCalledWith(expected)
+		})
+	})
+})

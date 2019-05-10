@@ -7,7 +7,6 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.retriev
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
-
 class TableFolderTest {
 
     private val resource = "src/test/resources/$end2EndFolder/miniJavaProject"
@@ -24,7 +23,7 @@ class TableFolderTest {
 
     @Test
     fun `tabular output has header, one line for the java files, and summary`() {
-        assertThat(output.lines().size).describedAs(output).isEqualTo(2 + 1 + 2)//header+javacode+summary
+        assertThat(output.lines().size).describedAs(output).isEqualTo(2 + 1 + 2) //header+javacode+summary
     }
 
     @Test
@@ -41,6 +40,4 @@ class TableFolderTest {
     fun tabular_output_summary_for_folder_sums_rloc() {
         assertThat(elementsOf(output.lines()[4])).describedAs(output).contains("SUM:", "10")
     }
-
-
 }

@@ -5,7 +5,6 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.oop.domain.metrics.O
 import de.maibornwolff.codecharta.importer.sourcecodeparser.test_helpers.*
 import org.junit.Test
 
-
 class NoSourceCodeFoundTest {
 
     @Test
@@ -29,5 +28,4 @@ class NoSourceCodeFoundTest {
         assertWithPrintOnFail(singleMetrics) { it.metricValue(OverviewMetricType.LoC) }.isEqualTo(0)
         assertWithPrintOnFail(singleMetrics) { it.metricValue(OverviewMetricType.RLoc) }.isEqualTo(0)
     }
-
 }

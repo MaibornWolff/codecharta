@@ -2,13 +2,12 @@
 
     <div class="section">
         <div class="section-header">
-            <file-chooser-directive></file-chooser-directive>
             <revision-chooser-file-drop-down-component></revision-chooser-file-drop-down-component>
         </div>
         <span class="section-title" id="section-title" ng-click="$ctrl.toggle()">
-            <span ng-if="$ctrl.settingsService.settings.mode != 'Delta'">File</span>
-            <span ng-if="$ctrl.settingsService.settings.mode == 'Delta'" class="first">File</span> 
-            <span ng-if="$ctrl.settingsService.settings.mode == 'Delta'" class="second">Compare</span>
+            <span ng-if="!$ctrl._viewModel.isDeltaState">File</span>
+            <span ng-if="$ctrl._viewModel.isDeltaState" class="first">File</span>
+            <span ng-if="$ctrl._viewModel.isDeltaState" class="second">Compare</span>
         </span>
         <div class="section-body">
             <revision-chooser-component></revision-chooser-component>
@@ -22,20 +21,7 @@
         </div>
         <span class="section-title" ng-click="$ctrl.toggle()">Size</span>
         <div class="section-body">
-            <md-slider-container class="md-block">
-                <span>Margin</span>
-                <md-slider flex step="1" min="1" max="100" ng-model="$ctrl.settingsService.settings.margin" id="margin-slider" ng-change="$ctrl.changeMargin()" class="md-primary">
-                </md-slider>
-                <md-input-container>
-                    <input flex step="1" min="1" max="100" type="number" ng-model="$ctrl.settingsService.settings.margin" ng-change="$ctrl.changeMargin()" aria-controls="margin-slider">
-                </md-input-container>
-            </md-slider-container>
-            <md-input-container class="md-block">
-                <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.dynamicMargin" ng-change="$ctrl.settingsService.applySettings()">
-                    Dynamic Margin
-                </md-checkbox>
-            </md-input-container>
-            <reset-settings-button-component settings-names="margin, dynamicMargin"></reset-settings-button-component>
+            <area-settings-panel-component></area-settings-panel-component>
         </div>
     </div>
 
@@ -45,28 +31,7 @@
         </div>
         <span class="section-title" ng-click="$ctrl.toggle()">Height</span>
         <div class="section-body">
-            <md-slider-container class="md-block">
-                <span>Labels</span>
-                <md-slider flex step="1" min="0" max="200" ng-model="$ctrl.settingsService.settings.amountOfTopLabels" id="labels-slider" ng-change="$ctrl.settingsService.applySettings()" class="md-primary">
-                </md-slider>
-                <md-input-container>
-                    <input flex step="1" min="0" max="200" type="number" ng-model="$ctrl.settingsService.settings.amountOfTopLabels" ng-change="$ctrl.settingsService.applySettings()" aria-controls="labels-slider">
-                </md-input-container>
-            </md-slider-container>
-            <md-slider-container class="md-block">
-                <span>Height</span>
-                <md-slider flex step="0.1" min="0.1" max="5" ng-model="$ctrl.settingsService.settings.scaling.y" id="y-scale-slider" ng-change="$ctrl.settingsService.applySettings()" class="md-primary">
-                </md-slider>
-                <md-input-container>
-                    <input flex step="0.1" min="0.1" max="5" type="number" ng-model="$ctrl.settingsService.settings.scaling.y" ng-change="$ctrl.settingsService.applySettings()" aria-controls="y-scale-slider">
-                </md-input-container>
-            </md-slider-container>
-            <md-input-container class="md-block" ng-if="$ctrl.settingsService.settings.mode != $ctrl.deltaMode">
-                <md-checkbox class="md-primary" ng-model="$ctrl.settingsService.settings.invertHeight" ng-change="$ctrl.settingsService.applySettings()">
-                    Invert Height
-                </md-checkbox>
-            </md-input-container>
-            <reset-settings-button-component settings-names="amountOfTopLabels, scaling.y, invertHeight"></reset-settings-button-component>
+            <height-settings-panel-component></height-settings-panel-component>
         </div>
     </div>
 
@@ -77,14 +42,19 @@
         <span class="section-title" ng-click="$ctrl.toggle()">Color</span>
         <div class="section-body">
             <color-settings-panel-component></color-settings-panel-component>
-            <reset-settings-button-component settings-names="neutralColorRange.flipped, neutralColorRange.from, neutralColorRange.to, deltaColorFlipped, whiteColorBuildings"></reset-settings-button-component>
+        </div>
+    </div>
+
+    <div class="section loading-gif">
+        <div class="section-header">
+            <div id="small-loading-indicator" ng-show="$ctrl._viewModel.isLoadingMap">
+                <md-progress-circular md-mode="indeterminate" md-diameter="24"></md-progress-circular>
+            </div>
         </div>
     </div>
 
     <div class="file-chooser-btn">
-        <md-button class="md-fab md-primary dark_shadow_opacity" onclick="document.getElementById('input-file-id').click();">
-            <i class="fa fa-folder-open"></i>
-        </md-button>
+        <file-chooser-directive></file-chooser-directive>
     </div>
 
     <div class="save-btn">

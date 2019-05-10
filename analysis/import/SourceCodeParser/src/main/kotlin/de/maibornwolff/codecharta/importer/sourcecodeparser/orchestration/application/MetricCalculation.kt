@@ -15,7 +15,7 @@ class MetricCalculator(javaCodeTagProvider: JavaCodeTagProvider) {
         val singleSource = detailedSourceProvider.readSource()
         return when (singleSource.sourceDescriptor.language) {
             OopLanguage.JAVA -> oopEntryPoint.calculateSingleMetrics(singleSource)
-            else -> defaultEntryPoint.fileSummary(singleSource)
+            else             -> defaultEntryPoint.fileSummary(singleSource)
         }
     }
 

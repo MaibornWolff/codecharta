@@ -1,144 +1,154 @@
-import {node} from "./rendering/node";
-import {renderSettings} from "./rendering/renderSettings";
+import "../../codeCharta.module"
+import "./codeMap.module"
 import {CodeMapArrowService} from "./codeMap.arrow.service";
 import {ThreeSceneService} from "./threeViewer/threeSceneService";
+import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { Object3D } from "three"
+import { Edge, Settings } from "../../codeCharta.model"
+import { SETTINGS, TEST_NODE_LEAF, TEST_NODE_ROOT, VALID_EDGES } from "../../util/dataMocks"
+import { Node } from "../../codeCharta.model"
 
 describe("CodeMapArrowService", () => {
 
     let codeMapArrowService: CodeMapArrowService;
     let threeSceneService: ThreeSceneService;
-    let createElementOrigin;
+    let testRoot : Node
+    let testLeaf : Node
+    let testNodes : Node[]
+    let testEdges : Edge[]
+    let testSettings: Settings
 
-    let sampleRenderSettings: renderSettings;
-    let sampleLeaf: node;
-    let sampleLeaf2: node;
-    let canvasCtxMock;
+    beforeEach(() => {
+        restartSystem()
+        rebuildService()
+        withMockedThreeSceneService()
+    })
 
-    beforeEach(()=>{
+    afterEach(() => {
+        jest.resetAllMocks()
+    })
 
-        sampleRenderSettings = {
-            heightKey: "a",
-            colorKey: "b",
-            renderDeltas: false,
-            colorRange: {
-                from: 1,
-                to: 2,
-                flipped: false
-            },
-            mapSize: 500,
-            deltaColorFlipped: false
-        };
+    function restartSystem() {
+        instantiateModule("app.codeCharta.ui.codeMap")
 
-        sampleLeaf = {
-            name: "sample",
-            width: 1,
-            height: 2,
-            length: 3,
-            depth: 4,
-            x0: 5,
-            z0: 6,
-            y0: 7,
-            isLeaf: true,
-            deltas: {"a":1, "b":2},
-            attributes: {"a":20, "b":15},
-            children: [],
-            isDelta: false
-        };
+        threeSceneService = getService<ThreeSceneService>("threeSceneService")
 
-        sampleLeaf2 = {
-            name: "sample2",
-            width: 1,
-            height: 2,
-            length: 3,
-            depth: 4,
-            x0: 5,
-            z0: 6,
-            y0: 7,
-            isLeaf: true,
-            deltas: {"a":1, "b":2},
-            attributes: {"a":20, "b":15},
-            children: [],
-            isDelta: false
-        };
+        testRoot = JSON.parse(JSON.stringify(TEST_NODE_ROOT))
+        testLeaf = JSON.parse(JSON.stringify(TEST_NODE_LEAF))
+        testNodes = JSON.parse(JSON.stringify([TEST_NODE_ROOT,TEST_NODE_LEAF]))
+        testEdges = JSON.parse(JSON.stringify(VALID_EDGES))
+        testSettings = JSON.parse(JSON.stringify(SETTINGS))
+    }
 
+    function rebuildService() {
+        codeMapArrowService = new CodeMapArrowService(threeSceneService)
+    }
 
-        threeSceneService = new ThreeSceneService();
-        codeMapArrowService = new CodeMapArrowService(threeSceneService);
-
-        canvasCtxMock = {
-            font: "",
-            measureText: jest.fn(),
-            fillRect: jest.fn(),
-            fillText: jest.fn(),
-            strokeRect: jest.fn()
-        };
-
-        createElementOrigin = document.createElement;
-
-        document.createElement = ()=>{
+    function withMockedThreeSceneService() {
+        threeSceneService = codeMapArrowService["threeSceneService"] = jest.fn(() => {
             return {
-                getContext: ()=>{
-                    return canvasCtxMock;
+                edgeArrows : {
+                    children : [],
+                    add : jest.fn()
                 }
-            };
-        };
+            }
+        })()
+    }
 
-        canvasCtxMock.measureText.mockReturnValue({width: 10});
+    function setupEdgeArrowsWithChildren() {
+        const dummyObject3D = new Object3D()
+        threeSceneService.edgeArrows.children = [dummyObject3D, dummyObject3D]
+    }
 
-    });
+    function setupArrows() {
+        const dummyObject3D = new Object3D()
+        codeMapArrowService["arrows"] = [dummyObject3D, dummyObject3D]
+    }
 
-    afterEach(()=>{
-        document.createElement = createElementOrigin;
-    });
+    describe("constructor", () => {
+        it("should assign arrows an empty array", () => {
+            expect(codeMapArrowService["arrows"].length).toBe(0)
+        })
+    })
 
-    it("should have no arrows stored after construction", ()=>{
-        expect(codeMapArrowService.arrows.length).toBe(0);
-    });
+    describe("clearArrows", () => {
+        it("should remove all array entries of field arrows", () => {
+            setupEdgeArrowsWithChildren()
 
-    it("should get correct path from node", ()=>{
-        expect(codeMapArrowService.getPathFromNode(sampleLeaf)).toBe("/sample");
-        sampleLeaf.parent = sampleLeaf2;
-        expect(codeMapArrowService.getPathFromNode(sampleLeaf)).toBe("/sample2/sample");
-    });
+            codeMapArrowService.clearArrows();
 
-    it("should add no arrows when there are no edges", ()=>{
-        codeMapArrowService.addEdgeArrows([sampleLeaf], [], sampleRenderSettings);
-        expect(codeMapArrowService.arrows.length).toBe(0);
-    });
+            expect(codeMapArrowService["arrows"].length).toBe(0)
+        })
 
-    it("should add no arrows when there are no resolvable edges", ()=>{
-        codeMapArrowService.addEdgeArrows([sampleLeaf, sampleLeaf2], [{fromNodeName:"a", toNodeName: "b"}], sampleRenderSettings);
-        expect(codeMapArrowService.arrows.length).toBe(0);
-    });
+        it("should remove all array entries of threeSceneService.edgeArrows.children", () => {
+            setupEdgeArrowsWithChildren()
 
-    it("should add arrows only from origin when there are resolvable edges", ()=>{
-        codeMapArrowService.addEdgeArrowsFromOrigin(sampleLeaf, [sampleLeaf, sampleLeaf2], [{fromNodeName:"/sample", toNodeName: "/sample2"}, {fromNodeName:"/sample2", toNodeName: "/sample2"}], sampleRenderSettings);
-        expect(codeMapArrowService.arrows.length).toBe(1);
-    });
+            codeMapArrowService.clearArrows();
 
-    it("should add arrows when there are resolvable edges", ()=>{
-        codeMapArrowService.addEdgeArrows([sampleLeaf, sampleLeaf2], [{fromNodeName:"/sample", toNodeName: "/sample2"}], sampleRenderSettings);
-        expect(codeMapArrowService.arrows.length).toBe(1);
-    });
+            expect(threeSceneService.edgeArrows.children.length).toBe(0)
+        })
+    })
 
-    it("should clear all arrows", ()=>{
-        codeMapArrowService.addEdgeArrows([sampleLeaf, sampleLeaf2], [{fromNodeName:"/sample", toNodeName: "/sample2"}], sampleRenderSettings);
-        expect(codeMapArrowService.arrows.length).toBe(1);
-        codeMapArrowService.clearArrows();
-        expect(codeMapArrowService.arrows.length).toBe(0);
-    });
+    describe("addEdgeArrowsFromOrigin", () => {
+        beforeEach(() => {
+            codeMapArrowService.addEdgeArrows = jest.fn()
+        })
 
-    it("addArrow should add arrow if node has a height attribute mentioned in renderSettings", ()=>{
-        codeMapArrowService.addArrow(sampleLeaf, sampleLeaf, sampleRenderSettings);
-        expect(codeMapArrowService.arrows.length).toBe(1);
-    });
+        it("should call addEdgesArrows with empty resEdges array", () => {
+            codeMapArrowService.addEdgeArrowsFromOrigin(testRoot, testNodes, testEdges, testSettings)
 
-    it("addArrow should not add arrow if node has not a height attribute mentioned in renderSettings", ()=>{
-        sampleLeaf.attributes = {"notsome": 0};
-        sampleRenderSettings.heightKey = "some";
-        codeMapArrowService.addArrow(sampleLeaf, sampleLeaf, sampleRenderSettings);
-        expect(codeMapArrowService.arrows.length).toBe(0);
-    });
+            expect(codeMapArrowService.addEdgeArrows).toHaveBeenCalledWith(testNodes, [], testSettings)
+        })
 
+        it("should call addEdgesArrows with testLeaf in array", () => {
+            codeMapArrowService.addEdgeArrowsFromOrigin(testLeaf, testNodes, testEdges, testSettings)
 
+            expect(codeMapArrowService.addEdgeArrows).toHaveBeenCalledWith(testNodes, [testEdges[0]], testSettings)
+        })
+    })
+
+    describe("addEdgeArrows", () => {
+        beforeEach(() => {
+            codeMapArrowService.addArrow = jest.fn()
+        })
+
+        it("should call addArrow with origin and target node", () => {
+            testEdges[0].toNodeName = "/root"
+
+            codeMapArrowService.addEdgeArrows(testNodes, testEdges, testSettings)
+
+            expect(codeMapArrowService.addArrow).toHaveBeenCalledWith(testNodes[0], testNodes[1], testSettings)
+        })
+    })
+
+    describe("addArrow", () => {
+        it("addArrow should add arrow if node has a height attribute mentioned in renderSettings", () => {
+            testSettings.dynamicSettings.heightMetric = "a"
+
+            codeMapArrowService.addArrow(testNodes[0], testNodes[0], testSettings);
+
+            expect(codeMapArrowService["arrows"].length).toBe(1);
+        });
+
+        it("addArrow should not add arrow if node has not a height attribute mentioned in renderSettings", ()=>{
+            testNodes[0].attributes = {"notsome": 0};
+            testSettings.dynamicSettings.heightMetric = "some";
+
+            codeMapArrowService.addArrow(testNodes[0], testNodes[0], testSettings);
+
+            expect(codeMapArrowService["arrows"].length).toBe(0);
+        });
+    })
+
+    describe("scale", () => {
+        it("should set the scale of all arrows to x, y and z", () => {
+            setupArrows()
+
+            codeMapArrowService.scale(1, 2, 3)
+
+            expect(codeMapArrowService["arrows"][0].scale.x).toBe(1)
+            expect(codeMapArrowService["arrows"][0].scale.y).toBe(2)
+            expect(codeMapArrowService["arrows"][0].scale.z).toBe(3)
+        })
+    })
 });

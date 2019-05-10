@@ -7,7 +7,7 @@ class DetailedMetricTable(
         taggedSourceCode: TaggedSourceCode,
         private val metricCalculationStrategy: MetricCalculationStrategy,
         overviewMetricCalculationStrategy: OverviewMetricCalculationStrategy
-) : Iterable<DetailedMetricTableRow> {
+): Iterable<DetailedMetricTableRow> {
 
     // IMPORTANT: line numbers start at 1 - just like our interface, but this array starts at 0
     private val rows = toRows(taggedSourceCode)

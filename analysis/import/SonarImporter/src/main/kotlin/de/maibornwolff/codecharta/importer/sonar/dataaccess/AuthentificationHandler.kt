@@ -28,7 +28,7 @@
  */
 package de.maibornwolff.codecharta.importer.sonar.dataaccess
 
-import java.util.Base64
+import java.util.*
 
 internal object AuthentificationHandler {
 
@@ -39,4 +39,4 @@ internal object AuthentificationHandler {
     fun createAuthTxtBase64Encoded(username: String, password: String): String {
         return String(Base64.getEncoder().encode(("$username:$password").toByteArray()))
     }
-}// utility class
+} // utility class

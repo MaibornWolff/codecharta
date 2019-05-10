@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 
-class AverageCodeChurnPerCommit : Metric {
+class AverageCodeChurnPerCommit: Metric {
     private var absoluteCodeChurn: Long = 0
     private var numberOfNontrivialCommits: Long = 0
 

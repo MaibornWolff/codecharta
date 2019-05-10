@@ -1,12 +1,9 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
-
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
-
-import org.assertj.core.api.Assertions.assertThat
 
 class CalendarWeekTest {
 
@@ -62,6 +59,5 @@ class CalendarWeekTest {
         assertThat(CalendarWeek.numberOfWeeksBetween(kw1, kw2)).isEqualTo(-4)
         assertThat(CalendarWeek.numberOfWeeksBetween(kw1, kw1)).isEqualTo(0)
         assertThat(CalendarWeek.numberOfWeeksBetween(kw2, kw2)).isEqualTo(0)
-
     }
 }
