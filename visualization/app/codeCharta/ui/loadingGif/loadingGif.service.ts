@@ -14,12 +14,24 @@ export class LoadingGifService {
 	private isLoadingFile: boolean = true
 	private isLoadingMap: boolean = true
 
-	public updateLoadingFileFlag(update: boolean) {
-		this.isLoadingFile = update
+	constructor(private $rootScope: IRootScopeService){}
+
+	public updateLoadingFileFlag(isLoadingFile: boolean) {
+		this.isLoadingFile = isLoadingFile
+		this.notifyLoadingFileFlagChange()
 	}
 
-	public updateLoadingMapFlag(update: boolean) {
-		this.isLoadingMap = update
+	public updateLoadingMapFlag(isLoadingMap: boolean) {
+		this.isLoadingMap = isLoadingMap
+		this.notifyLoadingMapFlagChange()
+	}
+
+	private notifyLoadingFileFlagChange() {
+		this.$rootScope.$broadcast(LoadingGifService.LOADING_FILE_STATUS_EVENT, this.isLoadingFile)
+	}
+
+	private notifyLoadingMapFlagChange() {
+		this.$rootScope.$broadcast(LoadingGifService.LOADING_MAP_STATUS_EVENT, this.isLoadingMap)
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: LoadingGifComponentSubscriber) {
