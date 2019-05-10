@@ -9,12 +9,15 @@ import { FileStateService } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
 import { SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service";
+import { LoadingGifService } from "../loadingGif/loadingGif.service"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let $rootScope: IRootScopeService
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let codeMapRenderService: CodeMapRenderService
+	let loadingGifService: LoadingGifService
+
 	let settings: Settings
 	let file: CCFile
 
@@ -23,6 +26,7 @@ describe("codeMapPreRenderService", () => {
 		rebuildService()
 		withMockedEventMethods()
 		withMockedThreeOrbitControlsService()
+		withMockedLoadingGifService()
 	})
 
 	afterEach(() => {
@@ -41,7 +45,7 @@ describe("codeMapPreRenderService", () => {
 	}
 
 	function rebuildService() {
-		codeMapPreRenderService = new CodeMapPreRenderService($rootScope, threeOrbitControlsService, codeMapRenderService)
+		codeMapPreRenderService = new CodeMapPreRenderService($rootScope, threeOrbitControlsService, codeMapRenderService, loadingGifService)
 	}
 
 	function withMockedEventMethods() {
@@ -52,6 +56,13 @@ describe("codeMapPreRenderService", () => {
 	function withMockedThreeOrbitControlsService() {
 		threeOrbitControlsService = codeMapPreRenderService["threeOrbitControlsService"] = jest.fn().mockReturnValue({
 			autoFitTo: jest.fn()
+		})()
+	}
+
+	function withMockedLoadingGifService() {
+		loadingGifService = codeMapPreRenderService["loadingGifService"] = jest.fn().mockReturnValue({
+			updateLoadingMapFlag : jest.fn(),
+			updateLoadingFileFlag : jest.fn()
 		})()
 	}
 

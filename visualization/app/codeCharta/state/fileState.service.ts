@@ -18,7 +18,8 @@ export class FileStateService {
 
     /* @ngInject */
     constructor(
-        private $rootScope: IRootScopeService){
+        private $rootScope: IRootScopeService,
+        private loadingGifService: LoadingGifService){
     }
 
     public resetMaps() {
@@ -74,7 +75,7 @@ export class FileStateService {
     }
 
     private notifySelectionChange() {
-        this.$rootScope.$broadcast(LoadingGifService.LOADING_MAP_STATUS_EVENT, true)
+        this.loadingGifService.updateLoadingMapFlag(true)
         this.$rootScope.$broadcast(FileStateService.FILE_STATE_CHANGED_EVENT, this.fileStates)
     }
 

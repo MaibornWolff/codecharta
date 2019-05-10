@@ -9,7 +9,7 @@ import { DialogService } from "../dialog/dialog.service"
 import { FileChooserController } from "./fileChooser.component"
 import { TEST_FILE_CONTENT } from "../../util/dataMocks"
 import _ from "lodash"
-import {LoadingGifController} from "../loadingGif/loadingGif.component";
+import { LoadingGifService } from "../loadingGif/loadingGif.service"
 
 describe("fileChooserController", () => {
 	let fileChooserController: FileChooserController
@@ -19,6 +19,7 @@ describe("fileChooserController", () => {
 	let settingsService: SettingsService
 	let codeChartaService: CodeChartaService
 	let fileStateService: FileStateService
+	let loadingGifService: LoadingGifService
 
 	let fileName: string
 	let content: any
@@ -30,6 +31,7 @@ describe("fileChooserController", () => {
 		withMockedFileStateService()
 		withMockedDialogService()
 		withMockedCodeChartaService()
+		withMockedLoadingGifService()
 	})
 
 	afterEach(() => {
@@ -45,6 +47,8 @@ describe("fileChooserController", () => {
 		settingsService = getService<SettingsService>("settingsService")
 		fileStateService = getService<FileStateService>("fileStateService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
+		loadingGifService = getService<LoadingGifService>("loadingGifService")
+
 		fileName = "someFile.json"
 		content = _.cloneDeep(TEST_FILE_CONTENT)
 	}
@@ -55,7 +59,8 @@ describe("fileChooserController", () => {
 			$rootScope,
 			dialogService,
 			codeChartaService,
-			fileStateService
+			fileStateService,
+			loadingGifService
 		)
 	}
 
@@ -87,6 +92,13 @@ describe("fileChooserController", () => {
 		})()
 	}
 
+	function withMockedLoadingGifService() {
+		loadingGifService = settingsService["loadingGifService"] = jest.fn().mockReturnValue({
+			updateLoadingMapFlag : jest.fn(),
+			updateLoadingFileFlag : jest.fn()
+		})()
+	}
+
 	describe("onImportNewFiles", () => {
 		it("should call $apply", () => {
 			fileChooserController.onImportNewFiles({ files: [] })
@@ -94,9 +106,10 @@ describe("fileChooserController", () => {
 			expect($scope.$apply).toHaveBeenCalled()
 		})
 
-		it("should not broadcast the loading-status-changed event if no file loaded", () => {
+		it("should not call updateLoadingFileFlag if no file loaded", () => {
 			fileChooserController.onImportNewFiles({ files: [] })
-			expect($rootScope.$broadcast).not.toHaveBeenCalledWith(LoadingGifController.LOADING_FILE_STATUS_EVENT, true)
+
+			expect(loadingGifService.updateLoadingFileFlag).not.toHaveBeenCalled()
 		})
 	})
 

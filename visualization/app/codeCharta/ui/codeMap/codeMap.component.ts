@@ -9,7 +9,6 @@ import "./codeMap.component.scss";
 
 import angular, {IRootScopeService, ITimeoutService} from "angular";
 import {NodeContextMenuController} from "../nodeContextMenu/nodeContextMenu.component";
-import {LoadingGifController} from "../loadingGif/loadingGif.component";
 import { LoadingGifComponentSubscriber, LoadingGifService } from "../loadingGif/loadingGif.service"
 
 export class CodeMapController implements CodeMapMouseEventServiceSubscriber, LoadingGifComponentSubscriber {

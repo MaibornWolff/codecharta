@@ -7,11 +7,13 @@ import {FileSelectionState, FileState, Settings} from "../codeCharta.model"
 import {FileStateService} from "./fileState.service"
 import {FileStateHelper} from "../util/fileStateHelper"
 import {SettingsMerger} from "../util/settingsMerger"
+import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
 
 describe("settingService", () => {
 	let settingsService: SettingsService
 	let $rootScope: IRootScopeService
 	let $timeout: ITimeoutService
+	let loadingGifService: LoadingGifService
 
 	let settings: Settings
 	let fileStates: FileState[]
@@ -20,6 +22,7 @@ describe("settingService", () => {
 		restartSystem()
 		rebuildService()
 		withMockedEventMethods()
+		withMockedLoadingGifService()
 	})
 
 	function restartSystem() {
@@ -27,6 +30,7 @@ describe("settingService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		$timeout = getService<ITimeoutService>("$timeout")
+		loadingGifService = getService<LoadingGifService>("loadingGifService")
 
 		settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS))
 		fileStates = [{ file: JSON.parse(JSON.stringify(TEST_DELTA_MAP_A)), selectedAs: FileSelectionState.Comparison },
@@ -34,11 +38,18 @@ describe("settingService", () => {
 	}
 
 	function rebuildService() {
-		settingsService = new SettingsService($rootScope, $timeout)
+		settingsService = new SettingsService($rootScope, $timeout, loadingGifService)
 	}
 
 	function withMockedEventMethods() {
 		$rootScope.$on = settingsService["$rootScope"].$on = jest.fn()
+		$rootScope.	$broadcast = settingsService["$rootScope"].$on = jest.fn()
+	}
+
+	function withMockedLoadingGifService() {
+		loadingGifService = settingsService["loadingGifService"] = jest.fn().mockReturnValue({
+			updateLoadingMapFlag : jest.fn()
+		})()
 	}
 
 	describe("constructor", () => {
@@ -98,6 +109,12 @@ describe("settingService", () => {
 			settingsService.updateSettings({appSettings : { invertHeight: true }})
 
 			expect(settingsService.getSettings()).toEqual(expected)
+		})
+
+		it("should call updateLoadingMapFlag", () => {
+			settingsService.updateSettings({appSettings : { invertHeight: true }})
+
+			expect(loadingGifService.updateLoadingMapFlag).toHaveBeenCalledWith(true)
 		})
 	})
 

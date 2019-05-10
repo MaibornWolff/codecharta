@@ -38,12 +38,12 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 		private fileStateService: FileStateService,
 		private $location: ILocationService,
 		private $http: IHttpService,
-		private $timeout: ITimeoutService
+		private loadingGifService: LoadingGifService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
 
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
-		this.$rootScope.$broadcast(LoadingGifService.LOADING_FILE_STATUS_EVENT, true)
+		this.loadingGifService.updateLoadingFileFlag(true)
 		this.loadFileOrSample()
 	}
 
@@ -94,12 +94,12 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 		this.codeChartaService.loadFiles(values)
 			.then(() => {
 				this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
-			})
-			.catch(e => {
-				this.$rootScope.$broadcast(LoadingGifService.LOADING_FILE_STATUS_EVENT, false)
-				console.error(e)
-				this.printErrors(e)
-			})
+			}).catch(e => {
+			console.log("rejected")
+			this.loadingGifService.updateLoadingFileFlag(false)
+			console.error(e)
+			this.printErrors(e)
+		})
 	}
 
 	private setRenderStateFromUrl() {

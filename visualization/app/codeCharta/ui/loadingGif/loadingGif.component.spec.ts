@@ -26,7 +26,7 @@ describe("LoadingGifController", () => {
     }
 
     function rebuildController() {
-        loadingGifController = new LoadingGifController($rootScope, $timeout, loadingGifService)
+        loadingGifController = new LoadingGifController($rootScope, $timeout)
     }
 
     function withMockedLoadingGifService() {
@@ -72,12 +72,6 @@ describe("LoadingGifController", () => {
 
             expect(loadingGifController["_viewModel"].isLoadingFile).toBe(false)
         })
-
-        it("should call updateLoadingFileFlag", () => {
-            loadingGifController.onLoadingFileStatusChanged(false, undefined)
-
-            expect(loadingGifService.updateLoadingFileFlag).toHaveBeenCalledWith(false)
-        })
     })
 
     describe("onLoadingMapStatusChanged", () => {
@@ -91,12 +85,6 @@ describe("LoadingGifController", () => {
             loadingGifController.onLoadingMapStatusChanged(false, undefined)
 
             expect(loadingGifController["_viewModel"].isLoadingMap).toBe(false)
-        })
-
-        it("should call updateLoadingMapFlag", () => {
-            loadingGifController.onLoadingMapStatusChanged(true, undefined)
-
-            expect(loadingGifService.updateLoadingMapFlag).toHaveBeenCalledWith(true)
         })
     })
 

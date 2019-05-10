@@ -56,7 +56,7 @@ describe("ColorSettingsPanelController", () => {
 			expect(CodeMapMouseEventService.subscribe).toHaveBeenCalledWith($rootScope, codeMapController)
 		})
 
-		it("should subscribe to LoadingGifController", () => {
+		it("should subscribe to LoadingGifService", () => {
 			LoadingGifService.subscribe = jest.fn()
 
 			rebuildController()

@@ -1,12 +1,16 @@
+import "./state.module"
 import { FileStateService } from "./fileState.service"
-import { getService } from "../../../mocks/ng.mockhelper"
+import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { CCFile, FileSelectionState } from "../codeCharta.model"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../util/dataMocks"
+import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
 
 describe("FileStateService", () => {
 	let fileStateService: FileStateService
 	let $rootScope: IRootScopeService
+	let loadingGifService: LoadingGifService
+
 	let file1: CCFile
 	let file2: CCFile
 	let file3: CCFile
@@ -16,10 +20,14 @@ describe("FileStateService", () => {
 		restartSystem()
 		rebuildService()
 		withMockedEventMethods()
+		withMockedLoadingGifService()
 	})
 
 	function restartSystem() {
+		instantiateModule("app.codeCharta.state")
+
 		$rootScope = getService<IRootScopeService>("$rootScope")
+		loadingGifService = getService<LoadingGifService>("loadingGifService")
 
 		file1 = JSON.parse(JSON.stringify(TEST_DELTA_MAP_A))
 		file2 = JSON.parse((JSON.stringify(TEST_DELTA_MAP_B)))
@@ -28,12 +36,18 @@ describe("FileStateService", () => {
 	}
 
 	function rebuildService() {
-		fileStateService = new FileStateService($rootScope)
+		fileStateService = new FileStateService($rootScope, loadingGifService)
 	}
 
 	function withMockedEventMethods() {
 		$rootScope.$broadcast = fileStateService["$rootScope"].$broadcast = jest.fn()
 		$rootScope.$on = fileStateService["$rootScope"].$on = jest.fn()
+	}
+
+	function withMockedLoadingGifService() {
+		loadingGifService = fileStateService["loadingGifService"] = jest.fn().mockReturnValue({
+			updateLoadingMapFlag : jest.fn()
+		})()
 	}
 
 	describe("resetMaps", () => {
@@ -130,6 +144,12 @@ describe("FileStateService", () => {
 			fileStateService.setSingle(file1)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("file-selection-states-changed", fileStateService.getFileStates())
+		})
+
+		it("should call updateLoadingMapFlag", () => {
+			fileStateService.setSingle(file1)
+
+			expect(loadingGifService.updateLoadingMapFlag).toHaveBeenCalledWith(true)
 		})
 	})
 
