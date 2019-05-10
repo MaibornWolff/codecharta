@@ -11,14 +11,15 @@ describe("fileDownloader", () => {
 
 	beforeEach(() => {
 		file = TEST_FILE_DATA
-		fileName = TEST_FILE_DATA_DOWNLOADED.fileName
+		fileName = "foo_2019-04-22_18-01.cc.json"
 		downloadedFile = TEST_FILE_DATA_DOWNLOADED
 		FileDownloader["downloadData"] = jest.fn()
 	})
 
 	describe("downloadCurrentMap", () => {
 		it("should download map correctly", () => {
-			FileDownloader.downloadCurrentMap(file, fileName)
+			const downloadSettingsNames: string[] = ["edges", "blacklist"]
+			FileDownloader.downloadCurrentMap(file, downloadSettingsNames, fileName)
 
 			expect(FileDownloader["downloadData"]).toHaveBeenCalledTimes(1)
 			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(downloadedFile, fileName)
