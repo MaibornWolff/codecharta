@@ -2,8 +2,6 @@ import {queryParamDialog} from "./queryParam.dialog";
 
 export class DialogService {
 
-    public static SELECTOR = "dialogService";
-
     /* @ngInject */
     constructor(private $mdDialog) {
     }

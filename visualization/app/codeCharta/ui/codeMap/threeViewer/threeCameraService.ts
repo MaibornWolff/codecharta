@@ -9,7 +9,6 @@ import _ from "lodash"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeOrbitControlsService"
 
 export class ThreeCameraService implements SettingsServiceSubscriber, CameraChangeSubscriber {
-	public static SELECTOR = "threeCameraService"
 
 	public static VIEW_ANGLE = 45
 	public static NEAR = 100

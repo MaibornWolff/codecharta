@@ -1,6 +1,6 @@
 import "./areaSettingsPanel.module"
 import "../codeMap/codeMap.module"
-import "../../codeCharta"
+import "../../codeCharta.module"
 import { AreaSettingsPanelController } from "./areaSettingsPanel.component"
 import { SettingsService } from "../../state/settings.service"
 import { SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"

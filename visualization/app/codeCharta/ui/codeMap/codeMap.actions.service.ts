@@ -6,7 +6,6 @@ import angular from "angular";
 import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
 
 export class CodeMapActionsService {
-	public static SELECTOR = "codeMapActionsService"
 
 	constructor(
 		private settingsService: SettingsService,

@@ -10,6 +10,7 @@ import {CodeMapActionsService} from "./codeMap.actions.service";
 import {CodeMapLabelService} from "./codeMap.label.service";
 import {CodeMapArrowService} from "./codeMap.arrow.service";
 import {CodeMapPreRenderService} from "./codeMap.preRender.service";
+import _ from "lodash"
 
 angular.module("app.codeCharta.ui.codeMap", [
     "app.codeCharta.state",
@@ -20,21 +21,21 @@ angular.module("app.codeCharta.ui.codeMap", [
     codeMapComponent.selector,
     codeMapComponent
 ).service(
-    CodeMapRenderService.SELECTOR,
+    _.camelCase(CodeMapRenderService.name),
     CodeMapRenderService
 ).service(
-    CodeMapPreRenderService.SELECTOR,
+    _.camelCase(CodeMapPreRenderService.name),
     CodeMapPreRenderService
 ).service(
-    CodeMapMouseEventService.SELECTOR,
+    _.camelCase(CodeMapMouseEventService.name),
     CodeMapMouseEventService
 ).service(
-    CodeMapActionsService.SELECTOR,
+    _.camelCase(CodeMapActionsService.name),
     CodeMapActionsService
 ).service(
-    CodeMapLabelService.SELECTOR,
+    _.camelCase(CodeMapLabelService.name),
     CodeMapLabelService
 ).service(
-    CodeMapArrowService.SELECTOR,
+    _.camelCase(CodeMapArrowService.name),
     CodeMapArrowService
 );

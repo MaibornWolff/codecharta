@@ -3,8 +3,6 @@
  */
 export class ThreeUpdateCycleService {
 
-    public static SELECTOR = "threeUpdateCycleService";
-
     private updatables: Function[] = [];
 
     public register(onUpdate: Function) {

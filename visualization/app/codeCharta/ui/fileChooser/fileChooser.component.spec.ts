@@ -1,5 +1,5 @@
 import "./fileChooser.module"
-import "../../codeCharta"
+import "../../codeCharta.module"
 import { SettingsService } from "../../state/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
