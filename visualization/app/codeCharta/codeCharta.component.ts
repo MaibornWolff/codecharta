@@ -95,7 +95,6 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 			.then(() => {
 				this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
 			}).catch(e => {
-			console.log("rejected")
 			this.loadingGifService.updateLoadingFileFlag(false)
 			console.error(e)
 			this.printErrors(e)
