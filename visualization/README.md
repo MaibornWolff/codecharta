@@ -91,6 +91,6 @@ Additional parameters can be added by appending `&key2=value2`. See examples bel
 ## JSON structure
 [[Back To Top]](#jump-to-section)
 
-[Example Data](/visualization/app/codeCharta/assets/sample1.json)
+[Example Data](/visualization/app/codeCharta/assets/sample1.cc.json)
 
 [JSON Schema](/visualization/app/codeCharta/util/schema.json)

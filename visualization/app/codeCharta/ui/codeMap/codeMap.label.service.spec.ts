@@ -1,5 +1,5 @@
 import "./codeMap.module"
-import "../../codeCharta"
+import "../../codeCharta.module"
 import {CodeMapLabelService} from "./codeMap.label.service"
 import {Node, Settings} from "../../codeCharta.model"
 import {Vector3} from "three"

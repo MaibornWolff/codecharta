@@ -1,4 +1,4 @@
-import "../../codeCharta"
+import "../../codeCharta.module"
 import "./codeMap.module"
 import {CodeMapArrowService} from "./codeMap.arrow.service";
 import {ThreeSceneService} from "./threeViewer/threeSceneService";
