@@ -31,19 +31,19 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 			relativeMetricValue: 0,
 			color: "#676867"
 		}
-		const result: ExtensionAttribute[] = []
-		const array: ExtensionAttribute[] = []
+		const visibleExtensions: ExtensionAttribute[] = []
 		distribution[s.areaMetric].forEach(x => {
 			if (x.relativeMetricValue < 5) {
-				array.push(x)
+				otherExtension.relativeMetricValue += x.relativeMetricValue
 			} else {
 				x.color = this.numberToHsl(this.hashCode(x.fileExtension))
-				result.push(x)
+				visibleExtensions.push(x)
 			}
 		})
-		array.forEach(x => (otherExtension.relativeMetricValue += x.relativeMetricValue))
-		result.push(otherExtension)
-		this._viewModel.distribution = result
+		if (otherExtension.relativeMetricValue > 0) {
+			visibleExtensions.push(otherExtension)
+		}
+		this._viewModel.distribution = visibleExtensions
 	}
 
 	private hashCode(str): number {
