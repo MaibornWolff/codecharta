@@ -1,12 +1,11 @@
 import "./fileExtensionBar.component.scss"
-import {SettingsService} from "../../state/settings.service";
-import {ExtensionAttribute, FileExtensionCalculator, MetricDistributionPair} from "../../util/fileExtensionCalculator";
-import {CCFile, CodeMapNode, DynamicSettings} from "../../codeCharta.model";
-import {CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber} from "../codeMap/codeMap.preRender.service";
-import {IRootScopeService} from "angular";
+import { SettingsService } from "../../state/settings.service"
+import { ExtensionAttribute, FileExtensionCalculator, MetricDistributionPair } from "../../util/fileExtensionCalculator"
+import { CCFile, CodeMapNode, DynamicSettings } from "../../codeCharta.model"
+import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
+import { IRootScopeService } from "angular"
 
 export class FileExtensionBarController implements CodeMapPreRenderServiceSubscriber {
-
 	private _viewModel: {
 		distribution: ExtensionAttribute[]
 	} = {
@@ -14,10 +13,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	}
 
 	/* @ngInject */
-	constructor(
-		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService
-	) {
+	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 
@@ -29,21 +25,38 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		const s: DynamicSettings = this.settingsService.getSettings().dynamicSettings
 		const metrics: string[] = [s.areaMetric]
 		const distribution: MetricDistributionPair = FileExtensionCalculator.getRelativeFileExtensionDistribution(map, metrics)
-		distribution[s.areaMetric].forEach(x => x.color = this.numberToHsl(this.hashCode(x.fileExtension)))
-		this._viewModel.distribution = distribution[s.areaMetric]
+		const otherExtension: ExtensionAttribute = {
+			fileExtension: "other",
+			absoluteMetricValue: null,
+			relativeMetricValue: 0,
+			color: "#676867"
+		}
+		const result: ExtensionAttribute[] = []
+		const array: ExtensionAttribute[] = []
+		distribution[s.areaMetric].forEach(x => {
+			if (x.relativeMetricValue < 5) {
+				array.push(x)
+			} else {
+				x.color = this.numberToHsl(this.hashCode(x.fileExtension))
+				result.push(x)
+			}
+		})
+		array.forEach(x => (otherExtension.relativeMetricValue += x.relativeMetricValue))
+		result.push(otherExtension)
+		this._viewModel.distribution = result
 	}
 
 	private hashCode(str): number {
-		let hash: number = 0;
+		let hash: number = 0
 		for (let i = 0; i < str.length; i++) {
-			hash = str.charCodeAt(i) + ((hash << 5) - hash);
+			hash = str.charCodeAt(i) + ((hash << 5) - hash)
 		}
-		return hash;
+		return hash
 	}
 
 	private numberToHsl(hashCode: number): string {
-		let shortened = hashCode % 360;
-		return "hsla(" + shortened + ", 40%, 50%)";
+		let shortened = hashCode % 360
+		return "hsla(" + shortened + ", 40%, 50%)"
 	}
 }
 
