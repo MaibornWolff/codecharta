@@ -83,11 +83,11 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 			)
 		}
 		this.tryLoadingFiles([
-			{ fileName: "sample1.json", content: require("./assets/sample1.json") },
-			{ fileName: "sample2.json", content: require("./assets/sample2.json") }
-		])
+            { fileName: "sample1.cc.json", content: require("./assets/sample1.cc.json") },
+            { fileName: "sample2.cc.json", content: require("./assets/sample2.cc.json") }
+        ]);
 	}
-
+	
 	private tryLoadingFiles(values: NameDataPair[]) {
 		this.settingsService.updateSettings(this.settingsService.getDefaultSettings())
 

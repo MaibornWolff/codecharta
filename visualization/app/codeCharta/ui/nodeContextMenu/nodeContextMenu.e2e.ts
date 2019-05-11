@@ -1,4 +1,4 @@
-import { CC_URL, puppeteer } from "../../../puppeteer.helper"
+import {CC_URL, delay, puppeteer} from "../../../puppeteer.helper"
 import { NodeContextMenuPageObject } from "./nodeContextMenu.po";
 import { SettingsPanelPageObject } from "../settingsPanel/settingsPanel.po";
 
@@ -22,6 +22,7 @@ describe("app", () => {
 			const loadingIndicator = document.querySelector("#loading-gif-file")
 			loadingIndicator.parentNode.removeChild(loadingIndicator)
 		})
+		await delay(500)
         const settingsPanel = new SettingsPanelPageObject(page);
 		await settingsPanel.open();
 		await settingsPanel.toggleTreeViewSearchPanel();

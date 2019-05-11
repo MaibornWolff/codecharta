@@ -1,5 +1,5 @@
 import "./codeMap.module"
-import "../../codeCharta"
+import "../../codeCharta.module"
 import {IRootScopeService, ITimeoutService} from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import {CodeMapController} from "./codeMap.component";

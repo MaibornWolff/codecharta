@@ -1,7 +1,7 @@
 import angular from "angular"
 import "angular-messages"
 import "../../state/state.module"
-import "../../codeCharta"
+import "../../codeCharta.module"
 
 import { mapTreeViewSearchComponent } from "./mapTreeViewSearch.component"
 

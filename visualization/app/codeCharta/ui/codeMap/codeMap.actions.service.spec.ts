@@ -1,5 +1,5 @@
 import "./codeMap.module"
-import "../../codeCharta"
+import "../../codeCharta.module"
 import { CodeMapActionsService } from "./codeMap.actions.service"
 import { SettingsService } from "../../state/settings.service"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"

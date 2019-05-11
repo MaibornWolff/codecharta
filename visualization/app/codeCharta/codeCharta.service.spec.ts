@@ -1,4 +1,4 @@
-import "./codeCharta"
+import "./codeCharta.module"
 
 import { CodeChartaService } from "./codeCharta.service"
 import { IRootScopeService } from "angular"
