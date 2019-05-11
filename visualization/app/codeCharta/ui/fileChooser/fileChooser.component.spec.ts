@@ -14,7 +14,6 @@ import { LoadingGifService } from "../loadingGif/loadingGif.service"
 describe("fileChooserController", () => {
 	let fileChooserController: FileChooserController
 	let $scope: IRootScopeService
-	let $rootScope: IRootScopeService
 	let dialogService: DialogService
 	let settingsService: SettingsService
 	let codeChartaService: CodeChartaService
@@ -42,7 +41,6 @@ describe("fileChooserController", () => {
 		instantiateModule("app.codeCharta.ui.fileChooser")
 
 		$scope = getService<IRootScopeService>("$rootScope")
-		$rootScope = getService<IRootScopeService>("$rootScope")
 		dialogService = getService<DialogService>("dialogService")
 		settingsService = getService<SettingsService>("settingsService")
 		fileStateService = getService<FileStateService>("fileStateService")
@@ -56,7 +54,6 @@ describe("fileChooserController", () => {
 	function rebuildController() {
 		fileChooserController = new FileChooserController(
 			$scope,
-			$rootScope,
 			dialogService,
 			codeChartaService,
 			fileStateService,
@@ -65,9 +62,6 @@ describe("fileChooserController", () => {
 	}
 
 	function withMockedEventMethods() {
-		$rootScope.$broadcast = fileChooserController["$rootScope"].$broadcast = jest.fn()
-		$rootScope.$on = fileChooserController["$rootScope"].$on = jest.fn()
-
 		$scope.$broadcast = fileChooserController["$scope"].$broadcast = jest.fn()
 		$scope.$on = fileChooserController["$scope"].$on = jest.fn()
 		$scope.$apply = fileChooserController["$scope"].$apply = jest.fn()

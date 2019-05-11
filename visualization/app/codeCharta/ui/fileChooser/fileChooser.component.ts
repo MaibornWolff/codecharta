@@ -9,7 +9,6 @@ with the additional ones */
 import {DialogService} from "../dialog/dialog.service";
 import {CodeChartaService} from "../../codeCharta.service";
 import {FileStateService} from "../../state/fileState.service";
-import {IRootScopeService} from "angular";
 import {NameDataPair} from "../../codeCharta.model";
 import { LoadingGifService } from "../loadingGif/loadingGif.service"
 
@@ -18,7 +17,6 @@ export class FileChooserController {
     /* @ngInject */
     constructor(
         private $scope,
-        private $rootScope: IRootScopeService,
         private dialogService: DialogService,
         private codeChartaService: CodeChartaService,
         private fileStateService: FileStateService,
