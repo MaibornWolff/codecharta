@@ -3,10 +3,11 @@ import angular from "angular";
 import {FileStateService} from "./fileState.service";
 import {SettingsService} from "./settings.service";
 import {MetricService} from "./metric.service";
+import "../ui/loadingGif/loadingGif.module"
 import _ from "lodash"
 
 angular.module(
-    "app.codeCharta.state", []
+    "app.codeCharta.state", ["app.codeCharta.ui.loadingGif"]
 )
     // Plop: Append service name here
     .service(_.camelCase(FileStateService.name), FileStateService)

@@ -7,13 +7,7 @@ import {FileStateHelper} from "../../util/fileStateHelper";
 import {FileDownloader} from "../../util/fileDownloader";
 import {CodeMapPreRenderService} from "../codeMap/codeMap.preRender.service";
 
-export interface RibbonBarControllerSubscriber {
-    onLoadingMapStatusChanged(isLoadingMap: boolean, event: angular.IAngularEvent)
-}
-
-export class RibbonBarController implements FileStateServiceSubscriber, RibbonBarControllerSubscriber {
-
-    public static readonly LOADING_MAP_STATUS_EVENT = "loading-map-status-changed"
+export class RibbonBarController implements FileStateServiceSubscriber {
 
     private collapsingElements = $("code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab")
     private toggleElements = $("ribbon-bar-component .section-title")
@@ -21,10 +15,8 @@ export class RibbonBarController implements FileStateServiceSubscriber, RibbonBa
 
     private _viewModel: {
         isDeltaState: boolean,
-        isLoadingMap: boolean
     } = {
         isDeltaState: null,
-        isLoadingMap: true
     }
 
     /* @ngInject */
@@ -34,7 +26,6 @@ export class RibbonBarController implements FileStateServiceSubscriber, RibbonBa
         private codeMapPreRenderService: CodeMapPreRenderService
     ) {
         FileStateService.subscribe(this.$rootScope, this)
-        RibbonBarController.subscribe(this.$rootScope, this)
     }
 
     public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
@@ -42,11 +33,6 @@ export class RibbonBarController implements FileStateServiceSubscriber, RibbonBa
     }
 
     public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-    }
-
-    public onLoadingMapStatusChanged(isLoadingMap: boolean, event: angular.IAngularEvent) {
-        this._viewModel.isLoadingMap = isLoadingMap
-        this.synchronizeAngularTwoWayBinding()
     }
 
     public downloadFile() {
@@ -77,16 +63,6 @@ export class RibbonBarController implements FileStateServiceSubscriber, RibbonBa
 
     public unhoverToggle() {
         this.toggleElements.removeClass("toggle-hovered")
-    }
-
-    private synchronizeAngularTwoWayBinding() {
-        this.$timeout(() => {})
-    }
-
-    public static subscribe($rootScope: IRootScopeService, subscriber: RibbonBarControllerSubscriber) {
-        $rootScope.$on(RibbonBarController.LOADING_MAP_STATUS_EVENT, (event, data) => {
-            subscriber.onLoadingMapStatusChanged(data, event)
-        })
     }
 }
 

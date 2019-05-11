@@ -1,6 +1,7 @@
 import {CCFile, FileSelectionState, FileState} from "../codeCharta.model";
 import {IAngularEvent, IRootScopeService} from "angular";
-import {RibbonBarController} from "../ui/ribbonBar/ribbonBar.component";
+import {LoadingGifController} from "../ui/loadingGif/loadingGif.component";
+import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
 
 export interface FileStateServiceSubscriber {
     onFileSelectionStatesChanged(fileStates: FileState[], event: IAngularEvent)
@@ -17,7 +18,8 @@ export class FileStateService {
 
     /* @ngInject */
     constructor(
-        private $rootScope: IRootScopeService){
+        private $rootScope: IRootScopeService,
+        private loadingGifService: LoadingGifService){
     }
 
     public resetMaps() {
@@ -73,7 +75,7 @@ export class FileStateService {
     }
 
     private notifySelectionChange() {
-        this.$rootScope.$broadcast(RibbonBarController.LOADING_MAP_STATUS_EVENT, true)
+        this.loadingGifService.updateLoadingMapFlag(true)
         this.$rootScope.$broadcast(FileStateService.FILE_STATE_CHANGED_EVENT, this.fileStates)
     }
 
