@@ -52,13 +52,7 @@ describe("fileChooserController", () => {
 	}
 
 	function rebuildController() {
-		fileChooserController = new FileChooserController(
-			$scope,
-			dialogService,
-			codeChartaService,
-			fileStateService,
-			loadingGifService
-		)
+		fileChooserController = new FileChooserController($scope, dialogService, codeChartaService, fileStateService, loadingGifService)
 	}
 
 	function withMockedEventMethods() {
@@ -82,14 +76,14 @@ describe("fileChooserController", () => {
 
 	function withMockedCodeChartaService() {
 		codeChartaService = fileChooserController["codeChartaService"] = jest.fn().mockReturnValue({
-			loadFiles: jest.fn().mockReturnValue({catch : jest.fn()})
+			loadFiles: jest.fn().mockReturnValue({ catch: jest.fn() })
 		})()
 	}
 
 	function withMockedLoadingGifService() {
 		loadingGifService = settingsService["loadingGifService"] = jest.fn().mockReturnValue({
-			updateLoadingMapFlag : jest.fn(),
-			updateLoadingFileFlag : jest.fn()
+			updateLoadingMapFlag: jest.fn(),
+			updateLoadingFileFlag: jest.fn()
 		})()
 	}
 
@@ -111,10 +105,12 @@ describe("fileChooserController", () => {
 		it("should call loadFiles", () => {
 			fileChooserController.setNewData(fileName, JSON.stringify(content))
 
-			expect(codeChartaService.loadFiles).toHaveBeenCalledWith([{
-				fileName: fileName,
-				content: content
-			}])
+			expect(codeChartaService.loadFiles).toHaveBeenCalledWith([
+				{
+					fileName: fileName,
+					content: content
+				}
+			])
 		})
 
 		it("should showErrorDialog on parsing error", () => {

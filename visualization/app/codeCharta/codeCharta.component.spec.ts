@@ -26,7 +26,7 @@ describe("codeChartaController", () => {
 	let $http: IHttpService
 	let loadingGifService: LoadingGifService
 
-	let settings : Settings
+	let settings: Settings
 
 	beforeEach(() => {
 		restartSystem()
@@ -44,7 +44,7 @@ describe("codeChartaController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
 
-        threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
+		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		dialogService = getService<DialogService>("dialogService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
@@ -91,8 +91,8 @@ describe("codeChartaController", () => {
 
 	function withMockedUrlUtils() {
 		codeChartaController["urlUtils"] = jest.fn().mockReturnValue({
-			getFileDataFromQueryParam : jest.fn().mockReturnValue(Promise.resolve([])),
-			getParameterByName : jest.fn().mockReturnValue(true)
+			getFileDataFromQueryParam: jest.fn().mockReturnValue(Promise.resolve([])),
+			getParameterByName: jest.fn().mockReturnValue(true)
 		})()
 	}
 
@@ -105,13 +105,13 @@ describe("codeChartaController", () => {
 
 	function withMockedCodeChartaService() {
 		codeChartaService = codeChartaController["codeChartaService"] = jest.fn().mockReturnValue({
-			loadFiles : jest.fn().mockReturnValue(Promise.resolve())
+			loadFiles: jest.fn().mockReturnValue(Promise.resolve())
 		})()
 	}
 
 	function withMockedDialogService() {
 		dialogService = codeChartaController["dialogService"] = jest.fn().mockReturnValue({
-			showErrorDialog : jest.fn()
+			showErrorDialog: jest.fn()
 		})()
 	}
 
@@ -148,15 +148,15 @@ describe("codeChartaController", () => {
 		})
 	})
 
-	describe("onSettingsChanged" , () => {
+	describe("onSettingsChanged", () => {
 		it("should set focusedNodePath in viewModel", () => {
-			codeChartaController.onSettingsChanged(settings, undefined,undefined)
+			codeChartaController.onSettingsChanged(settings, undefined, undefined)
 
 			expect(codeChartaController["_viewModel"].focusedNodePath).toBe("/root")
 		})
 	})
 
-	describe("fitMapToView" , () => {
+	describe("fitMapToView", () => {
 		it("should call autoFitTo", () => {
 			codeChartaController.fitMapToView()
 
@@ -164,7 +164,7 @@ describe("codeChartaController", () => {
 		})
 	})
 
-	describe("removeFocusedNode" , () => {
+	describe("removeFocusedNode", () => {
 		it("should call removeFocusedNode", () => {
 			codeChartaController.removeFocusedNode()
 
@@ -172,7 +172,7 @@ describe("codeChartaController", () => {
 		})
 	})
 
-	describe("loadFileOrSample" , () => {
+	describe("loadFileOrSample", () => {
 		beforeEach(() => {
 			codeChartaController.tryLoadingSampleFiles = jest.fn()
 		})
@@ -200,7 +200,7 @@ describe("codeChartaController", () => {
 		})
 	})
 
-	describe("tryLoadingSampleFiles" , () => {
+	describe("tryLoadingSampleFiles", () => {
 		it("should call getParameterByName with 'file'", () => {
 			codeChartaController.tryLoadingSampleFiles()
 

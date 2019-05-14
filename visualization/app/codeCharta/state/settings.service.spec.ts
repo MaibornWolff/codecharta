@@ -1,12 +1,12 @@
 import "./state.module"
-import {SettingsService} from "./settings.service"
-import {IRootScopeService, ITimeoutService} from "angular"
-import {getService, instantiateModule} from "../../../mocks/ng.mockhelper"
-import {DEFAULT_SETTINGS, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B} from "../util/dataMocks"
-import {FileSelectionState, FileState, Settings} from "../codeCharta.model"
-import {FileStateService} from "./fileState.service"
-import {FileStateHelper} from "../util/fileStateHelper"
-import {SettingsMerger} from "../util/settingsMerger"
+import { SettingsService } from "./settings.service"
+import { IRootScopeService, ITimeoutService } from "angular"
+import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
+import { DEFAULT_SETTINGS, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../util/dataMocks"
+import { FileSelectionState, FileState, Settings } from "../codeCharta.model"
+import { FileStateService } from "./fileState.service"
+import { FileStateHelper } from "../util/fileStateHelper"
+import { SettingsMerger } from "../util/settingsMerger"
 import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
 
 describe("settingService", () => {
@@ -33,8 +33,10 @@ describe("settingService", () => {
 		loadingGifService = getService<LoadingGifService>("loadingGifService")
 
 		settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS))
-		fileStates = [{ file: JSON.parse(JSON.stringify(TEST_DELTA_MAP_A)), selectedAs: FileSelectionState.Comparison },
-			{ file: JSON.parse(JSON.stringify(TEST_DELTA_MAP_B)), selectedAs: FileSelectionState.Reference }]
+		fileStates = [
+			{ file: JSON.parse(JSON.stringify(TEST_DELTA_MAP_A)), selectedAs: FileSelectionState.Comparison },
+			{ file: JSON.parse(JSON.stringify(TEST_DELTA_MAP_B)), selectedAs: FileSelectionState.Reference }
+		]
 	}
 
 	function rebuildService() {
@@ -43,12 +45,12 @@ describe("settingService", () => {
 
 	function withMockedEventMethods() {
 		$rootScope.$on = settingsService["$rootScope"].$on = jest.fn()
-		$rootScope.	$broadcast = settingsService["$rootScope"].$on = jest.fn()
+		$rootScope.$broadcast = settingsService["$rootScope"].$on = jest.fn()
 	}
 
 	function withMockedLoadingGifService() {
 		loadingGifService = settingsService["loadingGifService"] = jest.fn().mockReturnValue({
-			updateLoadingMapFlag : jest.fn()
+			updateLoadingMapFlag: jest.fn()
 		})()
 	}
 
@@ -79,7 +81,7 @@ describe("settingService", () => {
 		it("should call updateSettings with newFileSettings", () => {
 			settingsService.onFileSelectionStatesChanged(fileStates, undefined)
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({fileSettings: DEFAULT_SETTINGS})
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({ fileSettings: DEFAULT_SETTINGS })
 		})
 
 		it("should call isPartialState with fileStates", () => {
@@ -104,15 +106,15 @@ describe("settingService", () => {
 
 	describe("updateSettings", () => {
 		it("should set settings correctly", () => {
-			const expected = {...DEFAULT_SETTINGS, appSettings: { ...DEFAULT_SETTINGS.appSettings, invertHeight: true } }
+			const expected = { ...DEFAULT_SETTINGS, appSettings: { ...DEFAULT_SETTINGS.appSettings, invertHeight: true } }
 
-			settingsService.updateSettings({appSettings : { invertHeight: true }})
+			settingsService.updateSettings({ appSettings: { invertHeight: true } })
 
 			expect(settingsService.getSettings()).toEqual(expected)
 		})
 
 		it("should call updateLoadingMapFlag", () => {
-			settingsService.updateSettings({appSettings : { invertHeight: true }})
+			settingsService.updateSettings({ appSettings: { invertHeight: true } })
 
 			expect(loadingGifService.updateLoadingMapFlag).toHaveBeenCalledWith(true)
 		})

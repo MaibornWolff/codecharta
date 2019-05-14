@@ -1,14 +1,9 @@
-import "./experimentalSettingsPanel.component.scss";
+import "./experimentalSettingsPanel.component.scss"
 
-export class ExperimentalSettingsPanelController {
-
-}
+export class ExperimentalSettingsPanelController {}
 
 export const experimentalSettingsPanelComponent = {
-    selector: "experimentalSettingsPanelComponent",
-    template: require("./experimentalSettingsPanel.component.html"),
-    controller: ExperimentalSettingsPanelController
-};
-
-
-
+	selector: "experimentalSettingsPanelComponent",
+	template: require("./experimentalSettingsPanel.component.html"),
+	controller: ExperimentalSettingsPanelController
+}

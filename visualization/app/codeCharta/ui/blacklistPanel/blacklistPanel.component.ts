@@ -5,17 +5,13 @@ import { Settings, BlacklistItem, BlacklistType, RecursivePartial } from "../../
 import { IRootScopeService } from "angular"
 
 export class BlacklistPanelController implements SettingsServiceSubscriber {
-
 	private _viewModel: {
 		blacklist: Array<BlacklistItem>
 	} = {
 		blacklist: []
 	}
 
-	constructor(
-		private codeMapActionsService: CodeMapActionsService,
-		$rootScope: IRootScopeService
-	) {
+	constructor(private codeMapActionsService: CodeMapActionsService, $rootScope: IRootScopeService) {
 		SettingsService.subscribe($rootScope, this)
 	}
 

@@ -48,7 +48,14 @@ describe("ThreeViewerService", () => {
 	}
 
 	function rebuildService() {
-		threeViewerService = new ThreeViewerService(threeSceneService, threeCameraService, threeOrbitControlsService, threeRendererService, threeUpdateCycleService, settingsService)
+		threeViewerService = new ThreeViewerService(
+			threeSceneService,
+			threeCameraService,
+			threeOrbitControlsService,
+			threeRendererService,
+			threeUpdateCycleService,
+			settingsService
+		)
 	}
 
 	function mockThreeJs() {
@@ -58,7 +65,7 @@ describe("ThreeViewerService", () => {
 		threeRendererService.renderer = { domElement: null } as THREE.WebGLRenderer
 		threeRendererService.renderer.setSize = jest.fn()
 		threeRendererService.renderer.render = jest.fn()
-		threeOrbitControlsService.controls = { enableKeys : null } as OrbitControls
+		threeOrbitControlsService.controls = { enableKeys: null } as OrbitControls
 		threeOrbitControlsService.controls.update = jest.fn()
 		threeUpdateCycleService.update = jest.fn()
 		threeSceneService.scene = { position: new THREE.Vector3(1, 2, 3) } as Scene
@@ -76,7 +83,9 @@ describe("ThreeViewerService", () => {
 	}
 
 	function withMockedSettingsService() {
-		settingsService = threeViewerService["settingsService"] = jest.fn().mockReturnValue({ getSettings: jest.fn().mockReturnValue(settings) })()
+		settingsService = threeViewerService["settingsService"] = jest
+			.fn()
+			.mockReturnValue({ getSettings: jest.fn().mockReturnValue(settings) })()
 	}
 
 	function withMockedThreeRendererService() {
@@ -165,7 +174,7 @@ describe("ThreeViewerService", () => {
 		it("should set camera.aspect correctly", () => {
 			threeViewerService.onWindowResize()
 
-			expect(threeCameraService.camera.aspect).toBe(1024/768)
+			expect(threeCameraService.camera.aspect).toBe(1024 / 768)
 		})
 
 		it("should call camera.updateProjectionMatrix", () => {
@@ -182,13 +191,13 @@ describe("ThreeViewerService", () => {
 		})
 
 		it("should set controls.enableKeys to true", () => {
-			threeViewerService.onFocusIn({target : { nodeName: "INPUT"}})
+			threeViewerService.onFocusIn({ target: { nodeName: "INPUT" } })
 
 			expect(threeOrbitControlsService.controls.enableKeys).toBeFalsy()
 		})
 
 		it("should not set controls.enableKeys to true", () => {
-			threeViewerService.onFocusIn({target : { nodeName: "NOT_INPUT"}})
+			threeViewerService.onFocusIn({ target: { nodeName: "NOT_INPUT" } })
 
 			expect(threeOrbitControlsService.controls.enableKeys).toBeTruthy()
 		})
@@ -201,13 +210,13 @@ describe("ThreeViewerService", () => {
 		})
 
 		it("should set controls.enableKeys to true", () => {
-			threeViewerService.onFocusOut({target : { nodeName: "INPUT"}})
+			threeViewerService.onFocusOut({ target: { nodeName: "INPUT" } })
 
 			expect(threeOrbitControlsService.controls.enableKeys).toBeTruthy()
 		})
 
 		it("should not set controls.enableKeys to true", () => {
-			threeViewerService.onFocusOut({target : { nodeName: "NOT_INPUT"}})
+			threeViewerService.onFocusOut({ target: { nodeName: "NOT_INPUT" } })
 
 			expect(threeOrbitControlsService.controls.enableKeys).toBeFalsy()
 		})
