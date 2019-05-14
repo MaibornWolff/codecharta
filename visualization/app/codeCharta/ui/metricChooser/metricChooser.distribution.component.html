@@ -7,9 +7,4 @@
 			<span class="metric-max-value">({{::metric.maxValue}})</span>
 		</md-option>
 	</md-select>
-
-	<span class="metric-value"
-		>{{ ($ctrl.hoveredDistributionValue | number) || "-" }}
-		<span ng-hide="!$ctrl.hoveredDistributionDelta">(&Delta;{{ $ctrl.hoveredDistributionDelta | number }})</span>
-	</span>
 </md-input-container>
