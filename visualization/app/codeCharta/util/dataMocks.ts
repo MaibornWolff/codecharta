@@ -403,6 +403,7 @@ export const SETTINGS: Settings = {
 		areaMetric: "rloc",
 		heightMetric: "mcc",
 		colorMetric: "mcc",
+		distributionMetric: "mcc",
 		focusedNodePath: "/root",
 		searchedNodePaths: [],
 		searchPattern: "",
@@ -472,6 +473,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		colorMetric: null,
 		focusedNodePath: "",
 		heightMetric: null,
+		distributionMetric: null,
 		margin: null,
 		neutralColorRange: {
 			flipped: false,
