@@ -1,6 +1,6 @@
 import "./ribbonBar.component.scss"
 import $ from "jquery"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService } from "angular"
 import { FileState } from "../../codeCharta.model"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
@@ -21,11 +21,7 @@ export class RibbonBarController implements FileStateServiceSubscriber {
 	}
 
 	/* @ngInject */
-	constructor(
-		private $rootScope: IRootScopeService,
-		private $timeout: ITimeoutService,
-		private codeMapPreRenderService: CodeMapPreRenderService
-	) {
+	constructor(private $rootScope: IRootScopeService, private codeMapPreRenderService: CodeMapPreRenderService) {
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
