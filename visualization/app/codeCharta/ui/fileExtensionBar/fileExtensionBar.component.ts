@@ -23,7 +23,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 
 	public updateFileExtensionBar(map: CodeMapNode) {
 		const s: DynamicSettings = this.settingsService.getSettings().dynamicSettings
-		const metrics: string[] = [s.areaMetric]
+		const metrics: string[] = [s.distributionMetric]
 		const distribution: MetricDistributionPair = FileExtensionCalculator.getRelativeFileExtensionDistribution(map, metrics)
 		const otherExtension: ExtensionAttribute = {
 			fileExtension: "other",
@@ -32,7 +32,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 			color: "#676867"
 		}
 		const visibleExtensions: ExtensionAttribute[] = []
-		distribution[s.areaMetric].forEach(x => {
+		distribution[s.distributionMetric].forEach(x => {
 			if (x.relativeMetricValue < 5) {
 				otherExtension.relativeMetricValue += x.relativeMetricValue
 			} else {
