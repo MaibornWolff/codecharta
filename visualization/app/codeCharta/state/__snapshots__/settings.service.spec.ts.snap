@@ -47,6 +47,7 @@ Object {
   "dynamicSettings": Object {
     "areaMetric": null,
     "colorMetric": null,
+    "distributionMetric": null,
     "focusedNodePath": "",
     "heightMetric": null,
     "margin": null,
