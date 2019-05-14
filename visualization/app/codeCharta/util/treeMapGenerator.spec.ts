@@ -17,28 +17,28 @@ describe("treeMapGenerator", () => {
 		metricData = METRIC_DATA
 	}
 
-	describe("create Treemap nodes", () => {})
+	describe("create Treemap nodes", () => {
+		it("only root node", () => {
+			renderFile.map.children = []
 
-	it("only root node", () => {
-		renderFile.map.children = []
+			let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
 
-		let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
+			expect(node).toMatchSnapshot()
+		})
 
-		expect(node).toMatchSnapshot()
-	})
+		it("root node with two direct children", () => {
+			renderFile.map.children[1].children = []
 
-	it("root node with two direct children", () => {
-		renderFile.map.children[1].children = []
+			let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
 
-		let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
+			expect(node).toMatchSnapshot()
+		})
 
-		expect(node).toMatchSnapshot()
-	})
+		it("root node with two direct children and some grand children", () => {
+			let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
 
-	it("root node with two direct children and some grand children", () => {
-		let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
-
-		expect(node).toMatchSnapshot()
+			expect(node).toMatchSnapshot()
+		})
 	})
 
 	describe("CodeMap value calculation", () => {
@@ -135,6 +135,14 @@ describe("treeMapGenerator", () => {
 
 			expect(result.children[0].visible).toBeFalsy()
 			expect(result.children[1].visible).toBeFalsy()
+		})
+	})
+
+	describe("calculateValue", () => {
+		it("should return 0 if node has children, not blacklisted and not only visible in comparison map", () => {
+			const actual = TreeMapGenerator["calculateValue"](codemapNode, settings)
+
+			expect(actual).toBe(0)
 		})
 	})
 })
