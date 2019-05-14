@@ -7,14 +7,13 @@ export interface LoadingGifComponentSubscriber {
 }
 
 export class LoadingGifService {
-
 	public static readonly LOADING_FILE_STATUS_EVENT = "loading-file-status-changed"
 	public static readonly LOADING_MAP_STATUS_EVENT = "loading-map-status-changed"
 
 	private isLoadingFile: boolean = true
 	private isLoadingMap: boolean = true
 
-	constructor(private $rootScope: IRootScopeService){}
+	constructor(private $rootScope: IRootScopeService) {}
 
 	public updateLoadingFileFlag(isLoadingFile: boolean) {
 		this.isLoadingFile = isLoadingFile

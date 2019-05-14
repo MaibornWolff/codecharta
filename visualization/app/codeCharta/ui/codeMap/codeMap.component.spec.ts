@@ -1,10 +1,10 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
-import {IRootScopeService, ITimeoutService} from "angular"
+import { IRootScopeService, ITimeoutService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import {CodeMapController} from "./codeMap.component";
-import {ThreeViewerService} from "./threeViewer/threeViewerService";
-import {CodeMapMouseEventService} from "./codeMap.mouseEvent.service";
+import { CodeMapController } from "./codeMap.component"
+import { ThreeViewerService } from "./threeViewer/threeViewerService"
+import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { LoadingGifService } from "../loadingGif/loadingGif.service"
 
 describe("ColorSettingsPanelController", () => {
@@ -32,14 +32,16 @@ describe("ColorSettingsPanelController", () => {
 
 	function mockElement() {
 		$element = jest.fn<Element>(() => {
-			return [{
-				children: [
-					{
-						clientWidth: 50,
-						clientHeight: 100
-					}
-				]
-			}]
+			return [
+				{
+					children: [
+						{
+							clientWidth: 50,
+							clientHeight: 100
+						}
+					]
+				}
+			]
 		})()
 	}
 
@@ -84,5 +86,4 @@ describe("ColorSettingsPanelController", () => {
 			expect(codeMapController["_viewModel"].isLoadingFile).toBe(false)
 		})
 	})
-
 })

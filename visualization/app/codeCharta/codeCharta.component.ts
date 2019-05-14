@@ -12,11 +12,10 @@ import { FileStateService } from "./state/fileState.service"
 import { LoadingGifService } from "./ui/loadingGif/loadingGif.service"
 
 export class CodeChartaController implements SettingsServiceSubscriber {
-
 	private _viewModel: {
-		version: string,
-		isLoadingFile: boolean,
-		isLoadingMap: boolean,
+		version: string
+		isLoadingFile: boolean
+		isLoadingMap: boolean
 		focusedNodePath: string
 	} = {
 		version: require("../../package.json").version,
@@ -60,7 +59,8 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 	}
 
 	public loadFileOrSample() {
-		return this.urlUtils.getFileDataFromQueryParam()
+		return this.urlUtils
+			.getFileDataFromQueryParam()
 			.then((data: NameDataPair[]) => {
 				if (data.length > 0) {
 					this.tryLoadingFiles(data)
@@ -69,11 +69,9 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 					this.tryLoadingSampleFiles()
 				}
 			})
-			.catch(
-				() => {
-					this.tryLoadingSampleFiles()
-				}
-			)
+			.catch(() => {
+				this.tryLoadingSampleFiles()
+			})
 	}
 
 	public tryLoadingSampleFiles() {
@@ -83,22 +81,24 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 			)
 		}
 		this.tryLoadingFiles([
-            { fileName: "sample1.cc.json", content: require("./assets/sample1.cc.json") },
-            { fileName: "sample2.cc.json", content: require("./assets/sample2.cc.json") }
-        ]);
+			{ fileName: "sample1.cc.json", content: require("./assets/sample1.cc.json") },
+			{ fileName: "sample2.cc.json", content: require("./assets/sample2.cc.json") }
+		])
 	}
-	
+
 	private tryLoadingFiles(values: NameDataPair[]) {
 		this.settingsService.updateSettings(this.settingsService.getDefaultSettings())
 
-		this.codeChartaService.loadFiles(values)
+		this.codeChartaService
+			.loadFiles(values)
 			.then(() => {
 				this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
-			}).catch(e => {
-			this.loadingGifService.updateLoadingFileFlag(false)
-			console.error(e)
-			this.printErrors(e)
-		})
+			})
+			.catch(e => {
+				this.loadingGifService.updateLoadingFileFlag(false)
+				console.error(e)
+				this.printErrors(e)
+			})
 	}
 
 	private setRenderStateFromUrl() {
@@ -107,10 +107,8 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 
 		if (renderState === "Delta" && files.length >= 2) {
 			this.fileStateService.setDelta(files[0], files[1])
-
 		} else if (renderState === "Multiple") {
 			this.fileStateService.setMultiple(files)
-
 		} else {
 			this.fileStateService.setSingle(files[0])
 		}
