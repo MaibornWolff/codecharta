@@ -78,6 +78,8 @@ export class TreeMapGenerator {
 	}
 
 	private static calculateValue(node: CodeMapNode, s: Settings): number {
+		let result = 0
+
 		if (CodeMapHelper.isBlacklisted(node, s.fileSettings.blacklist, BlacklistType.exclude)) {
 			return 0
 		}
@@ -88,11 +90,13 @@ export class TreeMapGenerator {
 
 		if (!node.children || node.children.length === 0) {
 			if (node.attributes && node.attributes[s.dynamicSettings.areaMetric]) {
-				return node.attributes[s.dynamicSettings.areaMetric] || 0
+				result = node.attributes[s.dynamicSettings.areaMetric] || 0
 			} else {
-				return this.getEdgeValue(node, s)
+				result = this.getEdgeValue(node, s)
 			}
 		}
+
+		return result
 	}
 
 	// TODO: For which use-case do we need this?
@@ -107,9 +111,10 @@ export class TreeMapGenerator {
 			})
 		}
 
-		if (filteredEdgeAttributes) {
+		if (filteredEdgeAttributes && filteredEdgeAttributes.length > 0) {
 			return filteredEdgeAttributes.sort().reverse()[0]
 		}
-		return 1
+
+		return 0
 	}
 }
