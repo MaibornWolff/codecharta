@@ -1,5 +1,5 @@
 import { UrlExtractor } from "./util/urlExtractor"
-import { IHttpService, ILocationService, IRootScopeService, ITimeoutService } from "angular"
+import { IHttpService, ILocationService, IRootScopeService } from "angular"
 import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
 import { SettingsService, SettingsServiceSubscriber } from "./state/settings.service"
