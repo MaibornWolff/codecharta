@@ -1,11 +1,9 @@
 export class NodeContextMenuPageObject {
+	constructor(private page) {}
 
-    constructor(private page) {}
-
-    public async hasColorButtons() {
-        return this.page.waitForSelector(".colorButton", {
+	public async hasColorButtons() {
+		return this.page.waitForSelector(".colorButton", {
 			visible: true
 		})
-    }
-
+	}
 }

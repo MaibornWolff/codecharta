@@ -6,19 +6,19 @@ import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
 import { Vector3 } from "three"
 import { RibbonBarController } from "../ui/ribbonBar/ribbonBar.component"
+import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
 
 export interface SettingsServiceSubscriber {
 	onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent)
 }
 
 export class SettingsService implements FileStateServiceSubscriber {
-	public static SELECTOR = "settingsService"
 	private static SETTINGS_CHANGED_EVENT = "settings-changed"
 
 	private settings: Settings
 	private readonly debounceBroadcast: (update: RecursivePartial<Settings>) => void
 
-	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService) {
+	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private loadingGifService: LoadingGifService) {
 		this.settings = this.getDefaultSettings()
 		this.debounceBroadcast = _.debounce(
 			(update: RecursivePartial<Settings>) =>
@@ -47,7 +47,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 		// _.merge(this.settings, update) didnt work with arrays like blacklist
 		this.settings = this.updateSettingsUsingPartialSettings(this.settings, update)
 		if (!isSilent) {
-			this.$rootScope.$broadcast(RibbonBarController.LOADING_MAP_STATUS_EVENT, true)
+			this.loadingGifService.updateLoadingMapFlag(true)
 			this.debounceBroadcast(update)
 		}
 		this.synchronizeAngularTwoWayBinding()

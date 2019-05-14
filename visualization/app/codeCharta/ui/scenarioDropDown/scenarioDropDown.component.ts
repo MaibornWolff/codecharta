@@ -1,54 +1,49 @@
-"use strict";
+"use strict"
 
-import "./scenarioDropDown.component.scss";
-import {ScenarioHelper, Scenario} from "../../util/scenarioHelper";
-import {SettingsService} from "../../state/settings.service";
-import {MetricService, MetricServiceSubscriber} from "../../state/metric.service";
-import {MetricData} from "../../codeCharta.model";
-import {IRootScopeService} from "angular";
-import {ThreeOrbitControlsService} from "../codeMap/threeViewer/threeOrbitControlsService";
+import "./scenarioDropDown.component.scss"
+import { ScenarioHelper, Scenario } from "../../util/scenarioHelper"
+import { SettingsService } from "../../state/settings.service"
+import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
+import { MetricData } from "../../codeCharta.model"
+import { IRootScopeService } from "angular"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 
 export class ScenarioDropDownController implements MetricServiceSubscriber {
+	private _viewModel: {
+		scenarios: Scenario[]
+		selectedName: string
+	} = {
+		scenarios: null,
+		selectedName: null
+	}
 
-    private _viewModel: {
-        scenarios: Scenario[],
-        selectedName: string
-    } = {
-        scenarios: null,
-        selectedName: null
-    };
+	constructor(
+		private $rootScope: IRootScopeService,
+		private settingsService: SettingsService,
+		private threeOrbitControlsService: ThreeOrbitControlsService
+	) {
+		MetricService.subscribe(this.$rootScope, this)
+	}
 
-    constructor(
-        private $rootScope: IRootScopeService,
-        private settingsService: SettingsService,
-        private threeOrbitControlsService: ThreeOrbitControlsService
-    ) {
-        MetricService.subscribe(this.$rootScope, this)
-    }
+	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
+		this.setScenarios(metricData)
+	}
 
-    public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
-        this.setScenarios(metricData);
-    }
+	public onMetricDataRemoved(event: angular.IAngularEvent) {}
 
-    public onMetricDataRemoved(event: angular.IAngularEvent) {
-    }
+	private setScenarios(metricData: MetricData[]) {
+		this._viewModel.scenarios = ScenarioHelper.getScenarios(metricData)
+	}
 
-    private setScenarios(metricData: MetricData[]) {
-        this._viewModel.scenarios = ScenarioHelper.getScenarios(metricData);
-    }
-
-    public applySettings(){
-        this.settingsService.updateSettings(ScenarioHelper.getScenarioSettingsByName(this._viewModel.selectedName));
-        this._viewModel.selectedName = null;
-        this.threeOrbitControlsService.autoFitTo()
-    }
+	public applySettings() {
+		this.settingsService.updateSettings(ScenarioHelper.getScenarioSettingsByName(this._viewModel.selectedName))
+		this._viewModel.selectedName = null
+		this.threeOrbitControlsService.autoFitTo()
+	}
 }
 
 export const scenarioDropDownComponent = {
-    selector: "scenarioDropDownComponent",
-    template: require("./scenarioDropDown.component.html"),
-    controller: ScenarioDropDownController
-};
-
-
-
+	selector: "scenarioDropDownComponent",
+	template: require("./scenarioDropDown.component.html"),
+	controller: ScenarioDropDownController
+}

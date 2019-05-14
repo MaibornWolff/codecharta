@@ -11,7 +11,7 @@ import { SettingsService } from "./settings.service"
 describe("MetricService", () => {
 	let metricService: MetricService
 	let $rootScope: IRootScopeService
-	let fileStateService : FileStateService
+	let fileStateService: FileStateService
 	let fileStates: FileState[]
 	let files: CCFile[]
 
@@ -30,7 +30,7 @@ describe("MetricService", () => {
 		files = [TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]
 		fileStates = [
 			{ file: NodeDecorator.preDecorateFile(TEST_DELTA_MAP_A), selectedAs: FileSelectionState.None },
-			{ file:  NodeDecorator.preDecorateFile(TEST_DELTA_MAP_B), selectedAs: FileSelectionState.None }
+			{ file: NodeDecorator.preDecorateFile(TEST_DELTA_MAP_B), selectedAs: FileSelectionState.None }
 		]
 	}
 
@@ -82,7 +82,7 @@ describe("MetricService", () => {
 		})
 
 		it("should trigger METRIC_DATA_ADDED_EVENT", () => {
-			const expected =  [{"availableInVisibleMaps": true, "maxValue": 1, "name": "unary"}]
+			const expected = [{ availableInVisibleMaps: true, maxValue: 1, name: "unary" }]
 
 			metricService.onFileSelectionStatesChanged(fileStates, undefined)
 
@@ -98,25 +98,25 @@ describe("MetricService", () => {
 		})
 
 		it("should not call getFileStates when update object is not a blacklist", () => {
-			metricService.onSettingsChanged(null, {fileSettings : {blacklist: null} }, null)
+			metricService.onSettingsChanged(null, { fileSettings: { blacklist: null } }, null)
 
 			expect(fileStateService.getFileStates).not.toHaveBeenCalled()
 		})
 
 		it("should call calculateMetrics", () => {
-			metricService.onSettingsChanged(null, {fileSettings : {blacklist: []} }, null)
+			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } }, null)
 
 			expect(metricService["calculateMetrics"]).toHaveBeenCalledWith(fileStates, [], [])
 		})
 
 		it("should set metricData to new calculated metricData", () => {
-			metricService.onSettingsChanged(null, {fileSettings : {blacklist: []} }, null)
+			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } }, null)
 
 			expect(metricService["metricData"]).toEqual({})
 		})
 
 		it("should broadcast a METRIC_DATA_ADDED_EVENT", () => {
-			metricService.onSettingsChanged(null, {fileSettings : {blacklist: []} }, null)
+			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } }, null)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
 		})

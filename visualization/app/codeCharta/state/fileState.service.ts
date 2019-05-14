@@ -1,92 +1,87 @@
-import {CCFile, FileSelectionState, FileState} from "../codeCharta.model";
-import {IAngularEvent, IRootScopeService} from "angular";
-import {RibbonBarController} from "../ui/ribbonBar/ribbonBar.component";
+import { CCFile, FileSelectionState, FileState } from "../codeCharta.model"
+import { IAngularEvent, IRootScopeService } from "angular"
+import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
 
 export interface FileStateServiceSubscriber {
-    onFileSelectionStatesChanged(fileStates: FileState[], event: IAngularEvent)
-    onImportedFilesChanged(fileStates: FileState[], event: IAngularEvent)
+	onFileSelectionStatesChanged(fileStates: FileState[], event: IAngularEvent)
+	onImportedFilesChanged(fileStates: FileState[], event: IAngularEvent)
 }
 
 export class FileStateService {
+	private static FILE_STATE_CHANGED_EVENT = "file-selection-states-changed"
+	private static IMPORTED_FILES_CHANGED_EVENT = "imported-files-changed"
 
-    private static FILE_STATE_CHANGED_EVENT = "file-selection-states-changed";
-    private static IMPORTED_FILES_CHANGED_EVENT = "imported-files-changed";
+	private fileStates: Array<FileState> = []
 
-    private fileStates: Array<FileState> = []
+	/* @ngInject */
+	constructor(private $rootScope: IRootScopeService, private loadingGifService: LoadingGifService) {}
 
+	public resetMaps() {
+		this.fileStates = []
+	}
 
-    /* @ngInject */
-    constructor(
-        private $rootScope: IRootScopeService){
-    }
+	public addFile(file: CCFile) {
+		this.fileStates.push({ file: file, selectedAs: FileSelectionState.None })
+		this.notifyFileImport()
+	}
 
-    public resetMaps() {
-        this.fileStates = []
-    }
+	public getCCFiles(): CCFile[] {
+		return this.fileStates.map(x => x.file)
+	}
 
-    public addFile(file: CCFile) {
-        this.fileStates.push({file: file, selectedAs: FileSelectionState.None})
-        this.notifyFileImport()
-    }
+	public getFileStates(): FileState[] {
+		return this.fileStates
+	}
 
-    public getCCFiles(): CCFile[] {
-        return this.fileStates.map(x => x.file)
-    }
+	public setSingle(file: CCFile) {
+		this.resetSelectionStates()
+		const matchedFile = this.fileStates.find(x => x.file === file)
+		if (matchedFile) {
+			matchedFile.selectedAs = FileSelectionState.Single
+		}
+		this.notifySelectionChange()
+	}
 
-    public getFileStates(): FileState[] {
-        return this.fileStates
-    }
+	public setDelta(reference: CCFile, comparison: CCFile) {
+		this.resetSelectionStates()
+		const matchedReferenceFile = this.fileStates.find(x => x.file === reference)
+		const matchedComparisonFile = this.fileStates.find(x => x.file === comparison)
 
-    public setSingle(file: CCFile) {
-        this.resetSelectionStates()
-        const matchedFile = this.fileStates.find(x => x.file === file)
-        if (matchedFile) {
-            matchedFile.selectedAs = FileSelectionState.Single
-        }
-        this.notifySelectionChange()
-    }
+		if (matchedReferenceFile) {
+			matchedReferenceFile.selectedAs = FileSelectionState.Reference
+		}
 
-    public setDelta(reference: CCFile, comparison: CCFile) {
-        this.resetSelectionStates()
-        const matchedReferenceFile = this.fileStates.find(x => x.file === reference)
-        const matchedComparisonFile = this.fileStates.find(x => x.file === comparison)
+		if (matchedComparisonFile) {
+			matchedComparisonFile.selectedAs = FileSelectionState.Comparison
+		}
+		this.notifySelectionChange()
+	}
 
-        if (matchedReferenceFile) {
-            matchedReferenceFile.selectedAs = FileSelectionState.Reference
-        }
+	public setMultiple(multipleFiles: CCFile[]) {
+		this.resetSelectionStates()
+		this.fileStates.filter(x => multipleFiles.indexOf(x.file) !== -1).forEach(x => (x.selectedAs = FileSelectionState.Partial))
+		this.notifySelectionChange()
+	}
 
-        if (matchedComparisonFile) {
-            matchedComparisonFile.selectedAs = FileSelectionState.Comparison
-        }
-        this.notifySelectionChange()
-    }
+	private resetSelectionStates() {
+		this.fileStates.forEach(file => (file.selectedAs = FileSelectionState.None))
+	}
 
-    public setMultiple(multipleFiles: CCFile[]) {
-        this.resetSelectionStates()
-        this.fileStates.filter(x => multipleFiles.indexOf(x.file) !== -1)
-            .forEach(x => x.selectedAs = FileSelectionState.Partial)
-        this.notifySelectionChange()
-    }
+	private notifySelectionChange() {
+		this.loadingGifService.updateLoadingMapFlag(true)
+		this.$rootScope.$broadcast(FileStateService.FILE_STATE_CHANGED_EVENT, this.fileStates)
+	}
 
-    private resetSelectionStates() {
-        this.fileStates.forEach(file => file.selectedAs = FileSelectionState.None)
-    }
+	private notifyFileImport() {
+		this.$rootScope.$broadcast(FileStateService.IMPORTED_FILES_CHANGED_EVENT, this.fileStates)
+	}
 
-    private notifySelectionChange() {
-        this.$rootScope.$broadcast(RibbonBarController.LOADING_MAP_STATUS_EVENT, true)
-        this.$rootScope.$broadcast(FileStateService.FILE_STATE_CHANGED_EVENT, this.fileStates)
-    }
-
-    private notifyFileImport() {
-        this.$rootScope.$broadcast(FileStateService.IMPORTED_FILES_CHANGED_EVENT, this.fileStates)
-    }
-
-    public static subscribe($rootScope: IRootScopeService, subscriber: FileStateServiceSubscriber) {
-        $rootScope.$on(FileStateService.FILE_STATE_CHANGED_EVENT, (event, data) => {
-            subscriber.onFileSelectionStatesChanged(data, event)
-        })
-        $rootScope.$on(FileStateService.IMPORTED_FILES_CHANGED_EVENT, (event, data) => {
-            subscriber.onImportedFilesChanged(data, event)
-        })
-    }
+	public static subscribe($rootScope: IRootScopeService, subscriber: FileStateServiceSubscriber) {
+		$rootScope.$on(FileStateService.FILE_STATE_CHANGED_EVENT, (event, data) => {
+			subscriber.onFileSelectionStatesChanged(data, event)
+		})
+		$rootScope.$on(FileStateService.IMPORTED_FILES_CHANGED_EVENT, (event, data) => {
+			subscriber.onImportedFilesChanged(data, event)
+		})
+	}
 }

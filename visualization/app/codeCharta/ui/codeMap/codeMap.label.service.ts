@@ -1,12 +1,12 @@
 import * as THREE from "three"
-import {PerspectiveCamera, Sprite} from "three"
-import {Node, Settings} from "../../codeCharta.model"
-import {CameraChangeSubscriber, ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService"
-import {ThreeCameraService} from "./threeViewer/threeCameraService"
-import {ThreeSceneService} from "./threeViewer/threeSceneService"
-import {ColorConverter} from "../../util/colorConverter"
-import {IRootScopeService} from "angular"
-import {SettingsService} from "../../state/settings.service";
+import { PerspectiveCamera, Sprite } from "three"
+import { Node, Settings } from "../../codeCharta.model"
+import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
+import { ThreeCameraService } from "./threeViewer/threeCameraService"
+import { ThreeSceneService } from "./threeViewer/threeSceneService"
+import { ColorConverter } from "../../util/colorConverter"
+import { IRootScopeService } from "angular"
+import { SettingsService } from "../../state/settings.service"
 
 interface InternalLabel {
 	sprite: THREE.Sprite
@@ -15,8 +15,6 @@ interface InternalLabel {
 }
 
 export class CodeMapLabelService implements CameraChangeSubscriber {
-	public static SELECTOR = "codeMapLabelService"
-
 	private labels: InternalLabel[]
 	private LABEL_WIDTH_DIVISOR: number = 2600 // empirically gathered
 	private LABEL_HEIGHT_DIVISOR: number = 50 // empirically gathered

@@ -1,13 +1,12 @@
 import "./codeMap.module"
-import "../../codeCharta"
+import "../../codeCharta.module"
 import { CodeMapActionsService } from "./codeMap.actions.service"
 import { SettingsService } from "../../state/settings.service"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CodeMapNode, Edge, BlacklistType, Settings } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
-import {SETTINGS, VALID_EDGE, VALID_NODE_WITH_PATH} from "../../util/dataMocks";
-
+import { SETTINGS, VALID_EDGE, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 
 describe("CodeMapActionService", () => {
 	let codeMapActionsService: CodeMapActionsService
@@ -15,8 +14,8 @@ describe("CodeMapActionService", () => {
 	let threeOrbitControlsService: ThreeOrbitControlsService
 
 	let nodeA: CodeMapNode
-	let settings : Settings
-	let edge : Edge
+	let settings: Settings
+	let edge: Edge
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
@@ -31,19 +30,16 @@ describe("CodeMapActionService", () => {
 	}
 
 	function rebuildService() {
-		codeMapActionsService = new CodeMapActionsService(
-			settingsService,
-			threeOrbitControlsService
-		)
+		codeMapActionsService = new CodeMapActionsService(settingsService, threeOrbitControlsService)
 	}
 
 	function withMockedSettingsService() {
 		settingsService = codeMapActionsService["settingsService"] = jest.fn(() => {
 			return {
-				getSettings : jest.fn().mockReturnValue(settings),
+				getSettings: jest.fn().mockReturnValue(settings),
 				updateSettings: jest.fn(),
-				fileSettings : {
-					markedPackage : []
+				fileSettings: {
+					markedPackage: []
 				}
 			}
 		})()
@@ -52,7 +48,7 @@ describe("CodeMapActionService", () => {
 	function withMockedThreeOrbitControlsService() {
 		threeOrbitControlsService = codeMapActionsService["threeOrbitControlsService"] = jest.fn(() => {
 			return {
-				autoFitTo : jest.fn()
+				autoFitTo: jest.fn()
 			}
 		})()
 	}
@@ -68,13 +64,13 @@ describe("CodeMapActionService", () => {
 		jest.resetAllMocks()
 	})
 
-    describe("toggleNodeVisibility", () => {
+	describe("toggleNodeVisibility", () => {
 		beforeEach(() => {
 			codeMapActionsService.showNode = jest.fn()
 			codeMapActionsService.hideNode = jest.fn()
 		})
 
-    	it("should call hideNode if node is visible", () => {
+		it("should call hideNode if node is visible", () => {
 			nodeA.visible = true
 
 			codeMapActionsService.toggleNodeVisibility(nodeA)
@@ -95,11 +91,11 @@ describe("CodeMapActionService", () => {
 
 			expect(codeMapActionsService.showNode).toHaveBeenCalled()
 		})
-    })
+	})
 
 	describe("markFolder", () => {
 		it("should mark a folder that is not marked yet and has no marked children packages", () => {
-			const expected = [{"attributes": {}, "color": "0x000000", "path": "/root"}]
+			const expected = [{ attributes: {}, color: "0x000000", path: "/root" }]
 
 			codeMapActionsService.markFolder(nodeA, "0x000000")
 
@@ -113,8 +109,8 @@ describe("CodeMapActionService", () => {
 		})
 
 		it("should remove the children of a marked package if color is the same", () => {
-			settings.fileSettings.markedPackages.push({"attributes": {}, "color": "0x000000", "path": "/root/leaf"})
-			const expected = [{"attributes": {}, "color": "0x000000", "path": "/root"}]
+			settings.fileSettings.markedPackages.push({ attributes: {}, color: "0x000000", path: "/root/leaf" })
+			const expected = [{ attributes: {}, color: "0x000000", path: "/root" }]
 
 			codeMapActionsService.markFolder(nodeA, "0x000000")
 
@@ -128,8 +124,11 @@ describe("CodeMapActionService", () => {
 		})
 
 		it("should not remove the children of a marked package if color is different", () => {
-			settings.fileSettings.markedPackages.push({"attributes": {}, "color": "0x000001", "path": "/root/leaf"})
-			const expected = [ {"attributes": {}, "color": "0x000001", "path": "/root/leaf"}, {"attributes": {}, "color": "0x000000", "path": "/root"}]
+			settings.fileSettings.markedPackages.push({ attributes: {}, color: "0x000001", path: "/root/leaf" })
+			const expected = [
+				{ attributes: {}, color: "0x000001", path: "/root/leaf" },
+				{ attributes: {}, color: "0x000000", path: "/root" }
+			]
 
 			codeMapActionsService.markFolder(nodeA, "0x000000")
 
@@ -143,14 +142,14 @@ describe("CodeMapActionService", () => {
 		})
 
 		it("should not mark with a new color if sub-nodes are already marked", () => {
-			settings.fileSettings.markedPackages.push({"attributes": {}, "color": "0x000000", "path": "/root"})
-			settings.fileSettings.markedPackages.push({"attributes": {}, "color": "0x000001", "path": "/root/big leaf"})
-			settings.fileSettings.markedPackages.push({"attributes": {}, "color": "0x000002", "path": "/root/Parent Leaf"})
-			const expected = [{"attributes": {}, "color": "0x000001", "path": "/root/big leaf"},
-				{"attributes": {}, "color": "0x000002", "path": "/root/Parent Leaf"},
-				{"attributes": {}, "color": "0x000003", "path": "/root"}]
-
-
+			settings.fileSettings.markedPackages.push({ attributes: {}, color: "0x000000", path: "/root" })
+			settings.fileSettings.markedPackages.push({ attributes: {}, color: "0x000001", path: "/root/big leaf" })
+			settings.fileSettings.markedPackages.push({ attributes: {}, color: "0x000002", path: "/root/Parent Leaf" })
+			const expected = [
+				{ attributes: {}, color: "0x000001", path: "/root/big leaf" },
+				{ attributes: {}, color: "0x000002", path: "/root/Parent Leaf" },
+				{ attributes: {}, color: "0x000003", path: "/root" }
+			]
 
 			codeMapActionsService.markFolder(nodeA, "0x000003")
 
@@ -166,7 +165,7 @@ describe("CodeMapActionService", () => {
 
 	describe("unmarkFolder", () => {
 		it("should unmark a folder that is marked and has no marked children packages", () => {
-			settings.fileSettings.markedPackages.push({"attributes": {}, "color": "0x000000", "path": "/root"})
+			settings.fileSettings.markedPackages.push({ attributes: {}, color: "0x000000", path: "/root" })
 
 			codeMapActionsService.unmarkFolder(nodeA)
 
@@ -180,8 +179,8 @@ describe("CodeMapActionService", () => {
 		})
 
 		it("should not unmark marked children nodes", () => {
-			const mp1 = {"attributes": {}, "color": "0x000000", "path": "/root/big leaf"};
-			const mp2 = {"attributes": {}, "color": "0x000000", "path": "/root/Parent Leaf"};
+			const mp1 = { attributes: {}, color: "0x000000", path: "/root/big leaf" }
+			const mp2 = { attributes: {}, color: "0x000000", path: "/root/Parent Leaf" }
 			settings.fileSettings.markedPackages.push(mp1)
 			settings.fileSettings.markedPackages.push(mp2)
 
@@ -193,7 +192,7 @@ describe("CodeMapActionService", () => {
 				}
 			})
 			expect(settings.fileSettings.markedPackages.length).toBe(2)
-			expect(settings.fileSettings.markedPackages).toEqual([mp1,mp2])
+			expect(settings.fileSettings.markedPackages).toEqual([mp1, mp2])
 		})
 	})
 
@@ -270,7 +269,7 @@ describe("CodeMapActionService", () => {
 		it("should call pushItemToBlacklist with BlacklistType exclude", () => {
 			settings.fileSettings.blacklist.push({ path: nodeA.path + "/leaf", type: BlacklistType.exclude })
 			const entry = { path: nodeA.path, type: BlacklistType.exclude }
-			const expected = {"fileSettings": {"blacklist": settings.fileSettings.blacklist}}
+			const expected = { fileSettings: { blacklist: settings.fileSettings.blacklist } }
 
 			codeMapActionsService.removeBlacklistEntry(entry)
 
@@ -298,8 +297,8 @@ describe("CodeMapActionService", () => {
 	})
 
 	describe("showDependentEdges", () => {
-		it("should change edge visibility to true on edge", () =>  {
-			const expected = {...edge, visible: true}
+		it("should change edge visibility to true on edge", () => {
+			const expected = { ...edge, visible: true }
 
 			codeMapActionsService.showDependentEdges(nodeA.children[0])
 
@@ -311,7 +310,7 @@ describe("CodeMapActionService", () => {
 			expect(settings.fileSettings.edges[0].visible).toBeTruthy()
 		})
 
-		it("should not add visible property to edge", () =>  {
+		it("should not add visible property to edge", () => {
 			codeMapActionsService.showDependentEdges(nodeA)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
@@ -324,8 +323,8 @@ describe("CodeMapActionService", () => {
 	})
 
 	describe("hideDependentEdges", () => {
-		it("should change edge visibility to false on edge", () =>  {
-			const expected = {...edge, visible: false}
+		it("should change edge visibility to false on edge", () => {
+			const expected = { ...edge, visible: false }
 
 			codeMapActionsService.hideDependentEdges(nodeA.children[0])
 
@@ -337,7 +336,7 @@ describe("CodeMapActionService", () => {
 			expect(settings.fileSettings.edges[0].visible).toBeFalsy()
 		})
 
-		it("should not add visible property to edge", () =>  {
+		it("should not add visible property to edge", () => {
 			codeMapActionsService.hideDependentEdges(nodeA)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
@@ -350,8 +349,8 @@ describe("CodeMapActionService", () => {
 	})
 
 	describe("hideAllEdges", () => {
-		it("should change edge visibility to false on all edges", () =>  {
-			const expected = {...edge, visible: false}
+		it("should change edge visibility to false on all edges", () => {
+			const expected = { ...edge, visible: false }
 
 			codeMapActionsService.hideAllEdges()
 
@@ -365,13 +364,13 @@ describe("CodeMapActionService", () => {
 	})
 
 	describe("amountOfDependentEdges", () => {
-		it("should return 0 if no edges are connected to given node", () =>  {
+		it("should return 0 if no edges are connected to given node", () => {
 			const result = codeMapActionsService.amountOfDependentEdges(nodeA)
 
 			expect(result).toBe(0)
 		})
 
-		it("should return 1 if one edges is connected to given node", () =>  {
+		it("should return 1 if one edges is connected to given node", () => {
 			const result = codeMapActionsService.amountOfDependentEdges(nodeA.children[0])
 
 			expect(result).toBe(1)
@@ -379,21 +378,21 @@ describe("CodeMapActionService", () => {
 	})
 
 	describe("amountOfVisibleDependentEdges", () => {
-		it("should return 0 if invisible edges are connected to given node", () =>  {
+		it("should return 0 if invisible edges are connected to given node", () => {
 			settings.fileSettings.edges[0].visible = false
 			const result = codeMapActionsService.amountOfVisibleDependentEdges(nodeA.children[0])
 
 			expect(result).toBe(0)
 		})
 
-		it("should return 1 if one visible edges is connected to given node", () =>  {
+		it("should return 1 if one visible edges is connected to given node", () => {
 			settings.fileSettings.edges[0].visible = true
 			const result = codeMapActionsService.amountOfVisibleDependentEdges(nodeA.children[0])
 
 			expect(result).toBe(1)
 		})
 
-		it("should return 0 if visible edges are not connected to given node", () =>  {
+		it("should return 0 if visible edges are not connected to given node", () => {
 			settings.fileSettings.edges[0].visible = true
 			const result = codeMapActionsService.amountOfVisibleDependentEdges(nodeA)
 
@@ -402,20 +401,20 @@ describe("CodeMapActionService", () => {
 	})
 
 	describe("isAnyEdgeVisible", () => {
-		it("should return false if no edge is visible", () =>  {
+		it("should return false if no edge is visible", () => {
 			settings.fileSettings.edges[0].visible = false
 			const result = codeMapActionsService.isAnyEdgeVisible()
 
 			expect(result).toBeFalsy()
 		})
 
-		it("should return false if visible property is undefined", () =>  {
+		it("should return false if visible property is undefined", () => {
 			const result = codeMapActionsService.isAnyEdgeVisible()
 
 			expect(result).toBeFalsy()
 		})
 
-		it("should return true if one edge is visible", () =>  {
+		it("should return true if one edge is visible", () => {
 			settings.fileSettings.edges[0].visible = true
 			const result = codeMapActionsService.isAnyEdgeVisible()
 
@@ -431,7 +430,7 @@ describe("CodeMapActionService", () => {
 		})
 
 		it("should return null if node is a marked package", () => {
-			settings.fileSettings.markedPackages.push({"attributes": {}, "color": "0x000000", "path": "/root"})
+			settings.fileSettings.markedPackages.push({ attributes: {}, color: "0x000000", path: "/root" })
 
 			const result = codeMapActionsService.getParentMP(nodeA.path, settings)
 
@@ -439,7 +438,7 @@ describe("CodeMapActionService", () => {
 		})
 
 		it("should return marked package of root", () => {
-			const expected = {"attributes": {}, "color": "0x000000", "path": "/root"}
+			const expected = { attributes: {}, color: "0x000000", path: "/root" }
 			settings.fileSettings.markedPackages.push(expected)
 
 			const result = codeMapActionsService.getParentMP(nodeA.children[0].path, settings)
@@ -448,16 +447,14 @@ describe("CodeMapActionService", () => {
 		})
 
 		it("should return the first marked package found in sorted list", () => {
-			const mp1 = {"attributes": {}, "color": "0x000000", "path": "/root"}
-			const mp2 = {"attributes": {}, "color": "0x000000", "path": "/root/Parent Leaf"}
+			const mp1 = { attributes: {}, color: "0x000000", path: "/root" }
+			const mp2 = { attributes: {}, color: "0x000000", path: "/root/Parent Leaf" }
 			settings.fileSettings.markedPackages.push(mp1)
 			settings.fileSettings.markedPackages.push(mp2)
 
 			const result = codeMapActionsService.getParentMP(nodeA.children[1].children[0].path, settings)
 
-			expect(result).toEqual({"attributes": {}, "color": "0x000000", "path": "/root/Parent Leaf"})
+			expect(result).toEqual({ attributes: {}, color: "0x000000", path: "/root/Parent Leaf" })
 		})
 	})
-
-
 })

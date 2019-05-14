@@ -1,12 +1,12 @@
-import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service"
-import {IRootScopeService} from "angular"
+import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { IRootScopeService } from "angular"
 import "./mapTreeViewSearch.component.scss"
-import {CodeMapHelper} from "../../util/codeMapHelper"
-import {BlacklistItem, BlacklistType, CodeMapNode, FileState, RecursivePartial, Settings} from "../../codeCharta.model"
-import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service"
-import {CodeMapActionsService} from "../codeMap/codeMap.actions.service"
+import { CodeMapHelper } from "../../util/codeMapHelper"
+import { BlacklistItem, BlacklistType, CodeMapNode, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
+import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
+import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import * as d3 from "d3"
-import {CodeMapPreRenderService} from "../codeMap/codeMap.preRender.service";
+import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 
 export class MapTreeViewSearchController implements SettingsServiceSubscriber, FileStateServiceSubscriber {
 	private _viewModel: {
@@ -79,7 +79,10 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 		if (searchPattern.length == 0) {
 			return []
 		} else {
-			const nodes = d3.hierarchy(this.codeMapPreRenderService.getRenderFile().map).descendants().map(d => d.data)
+			const nodes = d3
+				.hierarchy(this.codeMapPreRenderService.getRenderFile().map)
+				.descendants()
+				.map(d => d.data)
 			return CodeMapHelper.getNodesByGitignorePath(nodes, this._viewModel.searchPattern)
 		}
 	}
@@ -98,21 +101,17 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 	}
 
 	private isPatternBlacklisted(blacklist: BlacklistItem[], blacklistType: BlacklistType): boolean {
-		return !!blacklist.find(x =>
-			this._viewModel.searchPattern == x.path && blacklistType == x.type
-		)
+		return !!blacklist.find(x => this._viewModel.searchPattern == x.path && blacklistType == x.type)
 	}
 
 	private getBlacklistedFileCount(searchedNodeLeaves: CodeMapNode[], blacklist: BlacklistItem[], blacklistType: BlacklistType): number {
-		return searchedNodeLeaves.filter(node =>
-			CodeMapHelper.isBlacklisted(node, blacklist, blacklistType)
-		).length
+		return searchedNodeLeaves.filter(node => CodeMapHelper.isBlacklisted(node, blacklist, blacklistType)).length
 	}
 
 	private applySettingsSearchedNodePaths() {
 		this.settingsService.updateSettings({
 			dynamicSettings: {
-				searchedNodePaths: (this.searchedNodes.length == 0) ? [] : this.searchedNodes.map(x => x.path)
+				searchedNodePaths: this.searchedNodes.length == 0 ? [] : this.searchedNodes.map(x => x.path)
 			}
 		})
 	}
