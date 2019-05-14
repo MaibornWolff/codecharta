@@ -125,6 +125,11 @@
 			}
 		}
 	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "pretty-quick --staged"
+		}
+	},
 	"dependencies": {
 		"angularjs-nouislider": "^1.0.1",
 		"nouislider": "^13.1.1",
