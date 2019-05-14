@@ -42,7 +42,6 @@ describe("RevisionChooserController", () => {
 		})()
 	}
 
-
 	function withMockedEventMethods() {
 		$rootScope.$on = jest.fn()
 		$rootScope.$broadcast = jest.fn()
@@ -273,7 +272,7 @@ describe("RevisionChooserController", () => {
 
 			const expected = [TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName]
 
-			revisionChooserController.selectAllPartialFiles();
+			revisionChooserController.selectAllPartialFiles()
 
 			expect(revisionChooserController.onPartialFilesChange).toHaveBeenCalledWith(expected)
 		})
@@ -283,7 +282,7 @@ describe("RevisionChooserController", () => {
 		it("should call onPartialFilesChange with an empty array", () => {
 			revisionChooserController.onPartialFilesChange = jest.fn()
 
-			revisionChooserController.selectZeroPartialFiles();
+			revisionChooserController.selectZeroPartialFiles()
 
 			expect(revisionChooserController.onPartialFilesChange).toHaveBeenCalledWith([])
 		})
@@ -296,7 +295,7 @@ describe("RevisionChooserController", () => {
 			fileStateService.getFileStates = jest.fn().mockReturnValue(fileStates)
 
 			const expected = [fileStates[0].file.fileMeta.fileName]
-			revisionChooserController.invertPartialFileSelection();
+			revisionChooserController.invertPartialFileSelection()
 
 			expect(revisionChooserController.onPartialFilesChange).toHaveBeenCalledWith(expected)
 		})

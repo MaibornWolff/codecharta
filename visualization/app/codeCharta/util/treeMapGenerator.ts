@@ -58,9 +58,7 @@ export class TreeMapGenerator {
 		if (squaredNode.children && squaredNode.children.length > 0) {
 			const finalChildren: Node[] = []
 			squaredNode.children.forEach(child => {
-				finalChildren.push(
-					this.addHeightDimensionAndFinalize(child, s, maxHeight, heightScale, depth + 1, finalNode)
-				)
+				finalChildren.push(this.addHeightDimensionAndFinalize(child, s, maxHeight, heightScale, depth + 1, finalNode))
 			})
 			finalNode.children = finalChildren
 		}
@@ -69,18 +67,14 @@ export class TreeMapGenerator {
 
 	public static setVisibilityOfNodeAndDescendants(node: CodeMapNode, visibility: boolean) {
 		node.visible = visibility
-		hierarchy<CodeMapNode>(node).descendants()
-			.forEach(hierarchyNode => hierarchyNode.data.visible = visibility)
+		hierarchy<CodeMapNode>(node)
+			.descendants()
+			.forEach(hierarchyNode => (hierarchyNode.data.visible = visibility))
 		return node
 	}
 
 	private static isOnlyVisibleInComparisonMap(node: CodeMapNode, s: Settings): boolean {
-		return (
-			node &&
-			node.deltas &&
-			node.deltas[s.dynamicSettings.heightMetric] < 0 &&
-			node.attributes[s.dynamicSettings.areaMetric] === 0
-		)
+		return node && node.deltas && node.deltas[s.dynamicSettings.heightMetric] < 0 && node.attributes[s.dynamicSettings.areaMetric] === 0
 	}
 
 	private static calculateValue(node: CodeMapNode, s: Settings): number {

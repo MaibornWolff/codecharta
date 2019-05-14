@@ -1,99 +1,92 @@
-import {CodeMapBuilding} from "./codeMapBuilding";
-import * as THREE from "three";
+import { CodeMapBuilding } from "./codeMapBuilding"
+import * as THREE from "three"
 
 export interface IntersectionResult {
-    intersectionFound: boolean;
-    building?: CodeMapBuilding;
+	intersectionFound: boolean
+	building?: CodeMapBuilding
 }
 
 export class CodeMapGeometricDescription {
+	get buildings(): CodeMapBuilding[] {
+		return this._buildings
+	}
+	private _buildings: CodeMapBuilding[]
+	private mapSize: number
+	private scales: THREE.Vector3
 
-    get buildings(): CodeMapBuilding[] {
-        return this._buildings;
-    }
-    private _buildings: CodeMapBuilding[];
-    private mapSize: number;
-    private scales: THREE.Vector3;
+	constructor(mapSize: number) {
+		this._buildings = new Array<CodeMapBuilding>()
+		this.mapSize = mapSize
+		this.scales = new THREE.Vector3(1, 1, 1)
+	}
 
-    constructor(mapSize: number) {
-        this._buildings = new Array<CodeMapBuilding>();
-        this.mapSize = mapSize;
-        this.scales = new THREE.Vector3(1, 1, 1);
-    }
+	public add(building: CodeMapBuilding): void {
+		this._buildings.push(building)
+	}
 
-    public add(building: CodeMapBuilding): void {
-        this._buildings.push(building);
-    }
+	public setScales(scales: THREE.Vector3) {
+		this.scales = scales
+	}
 
-    public setScales(scales: THREE.Vector3) {
-        this.scales = scales;
-    }
+	public intersect(ray: THREE.Ray): IntersectionResult {
+		let intersectedBuilding: CodeMapBuilding | null = null
+		let leastIntersectedDistance: number = Infinity
 
-    public intersect(ray: THREE.Ray): IntersectionResult {
+		let boxTranslation = new THREE.Vector3(-this.mapSize * this.scales.x * 0.5, 0.0, -this.mapSize * this.scales.z * 0.5)
 
-        let intersectedBuilding: CodeMapBuilding | null = null;
-        let leastIntersectedDistance: number = Infinity;
+		for (let building of this._buildings) {
+			//Pre Transformation
+			let box: THREE.Box3 = building.boundingBox.clone()
 
-        let boxTranslation = new THREE.Vector3(-this.mapSize * this.scales.x * 0.5, 0.0, -this.mapSize * this.scales.z * 0.5);
+			box.min.x *= this.scales.x
+			box.min.y *= this.scales.y
+			box.min.z *= this.scales.z
 
-        for (let building of this._buildings) {
+			box.max.x *= this.scales.x
+			box.max.y *= this.scales.y
+			box.max.z *= this.scales.z
 
-            //Pre Transformation
-            let box: THREE.Box3 = building.boundingBox.clone();
+			box.translate(boxTranslation)
 
-            box.min.x *= this.scales.x;
-            box.min.y *= this.scales.y;
-            box.min.z *= this.scales.z;
+			if (this.rayIntersectsAxisAlignedBoundingBox(ray, box)) {
+				let intersectionPoint: THREE.Vector3 = ray.intersectBox(box)
 
-            box.max.x *= this.scales.x;
-            box.max.y *= this.scales.y;
-            box.max.z *= this.scales.z;
+				if (intersectionPoint) {
+					let intersectionDistance: number = intersectionPoint.distanceTo(ray.origin)
 
-            box.translate(boxTranslation);
+					if (intersectionDistance < leastIntersectedDistance) {
+						leastIntersectedDistance = intersectionDistance
+						intersectedBuilding = building
+					}
+				}
+			}
+		}
 
-            if (this.rayIntersectsAxisAlignedBoundingBox(ray, box)) {
+		if (intersectedBuilding) {
+			return {
+				intersectionFound: true,
+				building: intersectedBuilding
+			}
+		} else {
+			return {
+				intersectionFound: false
+			}
+		}
+	}
 
-                let intersectionPoint: THREE.Vector3 = ray.intersectBox(box);
+	private rayIntersectsAxisAlignedBoundingBox(ray: THREE.Ray, box: THREE.Box3): boolean {
+		let tx1 = (box.min.x - ray.origin.x) * (1 / ray.direction.x)
+		let tx2 = (box.max.x - ray.origin.x) * (1 / ray.direction.x)
 
-                if (intersectionPoint) {
-                    let intersectionDistance: number = intersectionPoint.distanceTo(ray.origin);
+		let tmin = Math.min(tx1, tx2)
+		let tmax = Math.max(tx1, tx2)
 
-                    if (intersectionDistance < leastIntersectedDistance) {
-                        leastIntersectedDistance = intersectionDistance;
-                        intersectedBuilding = building;
-                    }
-                }
+		let ty1 = (box.min.y - ray.origin.y) * (1 / ray.direction.y)
+		let ty2 = (box.max.y - ray.origin.y) * (1 / ray.direction.y)
 
-            }
+		tmin = Math.max(tmin, Math.min(ty1, ty2))
+		tmax = Math.min(tmax, Math.max(ty1, ty2))
 
-        }
-
-        if (intersectedBuilding) {
-            return {
-                intersectionFound: true,
-                building: intersectedBuilding
-            };
-        }
-        else {
-            return {
-                intersectionFound: false
-            };
-        }
-    }
-
-    private rayIntersectsAxisAlignedBoundingBox(ray: THREE.Ray, box: THREE.Box3): boolean {
-        let tx1 = (box.min.x - ray.origin.x) * (1 / ray.direction.x);
-        let tx2 = (box.max.x - ray.origin.x) * (1 / ray.direction.x);
-
-        let tmin = Math.min(tx1, tx2);
-        let tmax = Math.max(tx1, tx2);
-
-        let ty1 = (box.min.y - ray.origin.y) * (1 / ray.direction.y);
-        let ty2 = (box.max.y - ray.origin.y) * (1 / ray.direction.y);
-
-        tmin = Math.max(tmin, Math.min(ty1, ty2));
-        tmax = Math.min(tmax, Math.max(ty1, ty2));
-
-        return tmax >= tmin;
-    }
+		return tmax >= tmin
+	}
 }

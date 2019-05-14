@@ -1,8 +1,7 @@
-import {CodeMapNode, CCFile} from "../codeCharta.model"
-import {CodeChartaService} from "../codeCharta.service";
+import { CodeMapNode, CCFile } from "../codeCharta.model"
+import { CodeChartaService } from "../codeCharta.service"
 
 export class AggregationGenerator {
-
 	private static projectNameArray: string[] = []
 	private static fileNameArray: string[] = []
 

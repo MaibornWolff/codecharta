@@ -33,18 +33,14 @@ export class FileDownloader {
 	}
 
 	private static getNewFileName(file: CCFile): string {
-		return this.getFileNameWithoutTimestamp(file.fileMeta.fileName) +
-			this.getNewTimestamp() +
-			FileDownloader.CC_FILE_EXTENSION
+		return this.getFileNameWithoutTimestamp(file.fileMeta.fileName) + this.getNewTimestamp() + FileDownloader.CC_FILE_EXTENSION
 	}
 
 	private static getNewTimestamp(): string {
 		const date: Date = new Date()
-		return "_" + date.getFullYear() +
-			"-" + (date.getMonth() + 1) +
-			"-" + date.getDate() +
-			"_" + date.getHours() +
-			"-" + date.getMinutes()
+		return (
+			"_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "_" + date.getHours() + "-" + date.getMinutes()
+		)
 	}
 
 	private static getFileNameWithoutTimestamp(fileName: string): string {
@@ -52,13 +48,10 @@ export class FileDownloader {
 
 		if (dateRegex.test(fileName)) {
 			return fileName.substring(0, dateRegex.exec(fileName).index)
-
 		} else if (fileName.includes(FileDownloader.CC_FILE_EXTENSION)) {
 			return fileName.substring(0, fileName.search(FileDownloader.CC_FILE_EXTENSION))
-
 		} else if (fileName.includes(".json")) {
 			return fileName.substring(0, fileName.search(".json"))
-
 		} else {
 			return fileName
 		}

@@ -1,19 +1,10 @@
-import {
-	BlacklistItem,
-	BlacklistType,
-	CodeMapNode,
-	FileState,
-	MetricData,
-	RecursivePartial,
-	Settings
-} from "../codeCharta.model"
-import {hierarchy, HierarchyNode} from "d3"
-import {FileStateService, FileStateServiceSubscriber} from "./fileState.service"
-import {FileStateHelper} from "../util/fileStateHelper"
-import {IAngularEvent, IRootScopeService} from "angular"
-import {SettingsService, SettingsServiceSubscriber} from "./settings.service"
-import {CodeMapHelper} from "../util/codeMapHelper"
-
+import { BlacklistItem, BlacklistType, CodeMapNode, FileState, MetricData, RecursivePartial, Settings } from "../codeCharta.model"
+import { hierarchy, HierarchyNode } from "d3"
+import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
+import { FileStateHelper } from "../util/fileStateHelper"
+import { IAngularEvent, IRootScopeService } from "angular"
+import { SettingsService, SettingsServiceSubscriber } from "./settings.service"
+import { CodeMapHelper } from "../util/codeMapHelper"
 
 export interface MetricServiceSubscriber {
 	onMetricDataAdded(metricData: MetricData[], event: IAngularEvent)
@@ -26,17 +17,12 @@ interface MaxMetricValuePair {
 }
 
 export class MetricService implements FileStateServiceSubscriber, SettingsServiceSubscriber {
-
-	private static METRIC_DATA_ADDED_EVENT = "metric-data-added";
-	private static METRIC_DATA_REMOVED_EVENT = "metric-data-removed";
-
+	private static METRIC_DATA_ADDED_EVENT = "metric-data-added"
+	private static METRIC_DATA_REMOVED_EVENT = "metric-data-removed"
 
 	private metricData: MetricData[] = []
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private fileStateService: FileStateService
-	) {
+	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
 		FileStateService.subscribe(this.$rootScope, this)
 		SettingsService.subscribe(this.$rootScope, this)
 	}
@@ -53,9 +39,13 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-		if(update.fileSettings && update.fileSettings.blacklist) {
+		if (update.fileSettings && update.fileSettings.blacklist) {
 			const fileStates: FileState[] = this.fileStateService.getFileStates()
-			this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), update.fileSettings.blacklist)
+			this.metricData = this.calculateMetrics(
+				fileStates,
+				FileStateHelper.getVisibleFileStates(fileStates),
+				update.fileSettings.blacklist
+			)
 			this.notifyMetricDataAdded()
 		}
 	}
@@ -98,7 +88,11 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 		return hashMap
 	}
 
-	private addMaxMetricValuesToHashMap(node: HierarchyNode<CodeMapNode>, hashMap: Map<string, MaxMetricValuePair>, metricsFromVisibleMaps) {
+	private addMaxMetricValuesToHashMap(
+		node: HierarchyNode<CodeMapNode>,
+		hashMap: Map<string, MaxMetricValuePair>,
+		metricsFromVisibleMaps
+	) {
 		const attributes: string[] = Object.keys(node.data.attributes)
 
 		attributes.forEach((metric: string) => {
@@ -111,7 +105,7 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 		})
 	}
 
-	private getMetricDataFromHashMap(hashMap: Map<string, MaxMetricValuePair>) : MetricData[] {
+	private getMetricDataFromHashMap(hashMap: Map<string, MaxMetricValuePair>): MetricData[] {
 		const metricData = []
 
 		hashMap.forEach((value: MaxMetricValuePair, key: string) => {
@@ -124,7 +118,7 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 		return this.sortByAttributeName(metricData)
 	}
 
-	private isAvailableInVisibleMaps(metricsFromVisibleMaps : string[], metric: string): boolean {
+	private isAvailableInVisibleMaps(metricsFromVisibleMaps: string[], metric: string): boolean {
 		return !!metricsFromVisibleMaps.find(metricName => metricName === metric)
 	}
 
@@ -132,26 +126,26 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 		if (fileStates.length === 0) {
 			return []
 		} else {
-			let leaves: HierarchyNode<CodeMapNode>[] = [];
+			let leaves: HierarchyNode<CodeMapNode>[] = []
 			fileStates.forEach((fileState: FileState) => {
-				leaves = leaves.concat(hierarchy<CodeMapNode>(fileState.file.map).leaves());
-			});
+				leaves = leaves.concat(hierarchy<CodeMapNode>(fileState.file.map).leaves())
+			})
 			let attributeList: string[][] = leaves.map((d: HierarchyNode<CodeMapNode>) => {
-				return d.data.attributes ? Object.keys(d.data.attributes) : [];
-			});
+				return d.data.attributes ? Object.keys(d.data.attributes) : []
+			})
 			let attributes: string[] = attributeList.reduce((left: string[], right: string[]) => {
-				return left.concat(right.filter(el => left.indexOf(el) === -1));
-			});
-			return attributes.sort();
+				return left.concat(right.filter(el => left.indexOf(el) === -1))
+			})
+			return attributes.sort()
 		}
 	}
 
 	private sortByAttributeName(metricData: MetricData[]): MetricData[] {
-		return metricData.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
+		return metricData.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0))
 	}
 
 	private addUnaryMetric() {
-		if(!this.metricData.find(x => x.name === "unary")) {
+		if (!this.metricData.find(x => x.name === "unary")) {
 			this.metricData.push({
 				name: "unary",
 				maxValue: 1,
