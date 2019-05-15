@@ -21,7 +21,6 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     @Option(names = ["-i", "--noIssues"], description = ["do not search for sonar issues"])
     private var findNoIssues = false
 
-    // TODO: write in readme how to do multiple excludes
     @Option(names = ["-e", "--exclude"], description = ["exclude file/folder according to regex pattern"])
     private var exclude: Array<String> = arrayOf()
 
