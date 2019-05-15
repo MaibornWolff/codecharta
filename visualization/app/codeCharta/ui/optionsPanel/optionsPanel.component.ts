@@ -6,9 +6,9 @@ import _ from "lodash"
 
 export class OptionsPanelController implements SettingsServiceSubscriber {
 	private _viewModel: {
-		enableEdgeArrows: boolean,
-		hideFlatBuildings: boolean,
-		maximizeDetailPanel: boolean,
+		enableEdgeArrows: boolean
+		hideFlatBuildings: boolean
+		maximizeDetailPanel: boolean
 		isWhiteBackground: boolean
 	} = {
 		enableEdgeArrows: null,
@@ -17,10 +17,7 @@ export class OptionsPanelController implements SettingsServiceSubscriber {
 		isWhiteBackground: null
 	}
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService
-	) {
+	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
 		SettingsService.subscribe(this.$rootScope, this)
 	}
 

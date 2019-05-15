@@ -1,7 +1,7 @@
 import "./detailPanel.module"
 import "../codeMap/codeMap.module"
 import "../../state/state.module"
-import "../../codeCharta"
+import "../../codeCharta.module"
 
 import { SettingsService } from "../../state/settings.service"
 import { DetailPanelController } from "./detailPanel.component"
@@ -74,7 +74,7 @@ describe("detailPanelController", () => {
 	})
 
 	it("should set common attributes onSettingsChanged", () => {
-		detailPanelController.onSettingsChanged(settings, undefined, undefined,)
+		detailPanelController.onSettingsChanged(settings, undefined, undefined)
 		expect(detailPanelController["_viewModel"].details.common.areaAttributeName).toBe("rloc")
 		expect(detailPanelController["_viewModel"].details.common.colorAttributeName).toBe("mcc")
 		expect(detailPanelController["_viewModel"].details.common.heightAttributeName).toBe("mcc")
@@ -95,9 +95,7 @@ describe("detailPanelController", () => {
 	it("should clearSelectedDetails when invalid node is selected", () => {
 		const data = {
 			from: null,
-			to:
-			codeMapBuilding
-
+			to: codeMapBuilding
 		}
 		detailPanelController.clearSelectedDetails = jest.fn()
 		detailPanelController.onSelect(data)

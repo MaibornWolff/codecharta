@@ -1,28 +1,21 @@
-import {UrlExtractor} from "./util/urlExtractor"
-import {IHttpService, ILocationService, IRootScopeService, ITimeoutService} from "angular"
+import { UrlExtractor } from "./util/urlExtractor"
+import { IHttpService, ILocationService, IRootScopeService } from "angular"
 import "./codeCharta.component.scss"
-import {CodeChartaService} from "./codeCharta.service"
-import {SettingsService, SettingsServiceSubscriber} from "./state/settings.service";
-import {ScenarioHelper} from "./util/scenarioHelper";
-import {DialogService} from "./ui/dialog/dialog.service";
-import {ThreeOrbitControlsService} from "./ui/codeMap/threeViewer/threeOrbitControlsService";
-import {CodeMapActionsService} from "./ui/codeMap/codeMap.actions.service";
-import {NameDataPair, RecursivePartial, Settings} from "./codeCharta.model"
-import {FileStateService} from "./state/fileState.service";
+import { CodeChartaService } from "./codeCharta.service"
+import { SettingsService, SettingsServiceSubscriber } from "./state/settings.service"
+import { ScenarioHelper } from "./util/scenarioHelper"
+import { DialogService } from "./ui/dialog/dialog.service"
+import { ThreeOrbitControlsService } from "./ui/codeMap/threeViewer/threeOrbitControlsService"
+import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
+import { NameDataPair, RecursivePartial, Settings } from "./codeCharta.model"
+import { FileStateService } from "./state/fileState.service"
+import { LoadingGifService } from "./ui/loadingGif/loadingGif.service"
 
-
-export interface CodeChartaControllerSubscriber {
-	onLoadingStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent)
-}
-
-export class CodeChartaController implements SettingsServiceSubscriber, CodeChartaControllerSubscriber {
-
-	public static readonly LOADING_STATUS_EVENT = "loading-status-changed"
-
+export class CodeChartaController implements SettingsServiceSubscriber {
 	private _viewModel: {
-		version: string,
-		isLoadingFile: boolean,
-		isLoadingMap: boolean,
+		version: string
+		isLoadingFile: boolean
+		isLoadingMap: boolean
 		focusedNodePath: string
 	} = {
 		version: require("../../package.json").version,
@@ -44,23 +37,17 @@ export class CodeChartaController implements SettingsServiceSubscriber, CodeChar
 		private fileStateService: FileStateService,
 		private $location: ILocationService,
 		private $http: IHttpService,
-		private $timeout: ITimeoutService
+		private loadingGifService: LoadingGifService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
-		CodeChartaController.subscribe(this.$rootScope, this)
 
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
-		this.onLoadingStatusChanged(true, undefined)
+		this.loadingGifService.updateLoadingFileFlag(true)
 		this.loadFileOrSample()
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this._viewModel.focusedNodePath = settings.dynamicSettings.focusedNodePath
-	}
-
-	public onLoadingStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent) {
-		this._viewModel.isLoadingFile = isLoadingFile
-		this.synchronizeAngularTwoWayBinding()
 	}
 
 	public fitMapToView() {
@@ -72,20 +59,19 @@ export class CodeChartaController implements SettingsServiceSubscriber, CodeChar
 	}
 
 	public loadFileOrSample() {
-		return this.urlUtils.getFileDataFromQueryParam()
+		return this.urlUtils
+			.getFileDataFromQueryParam()
 			.then((data: NameDataPair[]) => {
 				if (data.length > 0) {
 					this.tryLoadingFiles(data)
-					this.setRenderStateFromUrl();
+					this.setRenderStateFromUrl()
 				} else {
 					this.tryLoadingSampleFiles()
 				}
 			})
-			.catch(
-				() => {
-					this.tryLoadingSampleFiles()
-				}
-			)
+			.catch(() => {
+				this.tryLoadingSampleFiles()
+			})
 	}
 
 	public tryLoadingSampleFiles() {
@@ -95,35 +81,34 @@ export class CodeChartaController implements SettingsServiceSubscriber, CodeChar
 			)
 		}
 		this.tryLoadingFiles([
-            { fileName: "sample1.json", content: require("./assets/sample1.json") },
-            { fileName: "sample2.json", content: require("./assets/sample2.json") }
-        ]);
-    }
-    
-    private tryLoadingFiles(values: NameDataPair[]) {
+			{ fileName: "sample1.cc.json", content: require("./assets/sample1.cc.json") },
+			{ fileName: "sample2.cc.json", content: require("./assets/sample2.cc.json") }
+		])
+	}
+
+	private tryLoadingFiles(values: NameDataPair[]) {
 		this.settingsService.updateSettings(this.settingsService.getDefaultSettings())
 
-		this.codeChartaService.loadFiles(values)
+		this.codeChartaService
+			.loadFiles(values)
 			.then(() => {
 				this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
 			})
 			.catch(e => {
-				this.onLoadingStatusChanged(false, undefined)
-				console.error(e);
+				this.loadingGifService.updateLoadingFileFlag(false)
+				console.error(e)
 				this.printErrors(e)
 			})
-    }
+	}
 
-    private setRenderStateFromUrl() {
+	private setRenderStateFromUrl() {
 		const renderState: string = this.urlUtils.getParameterByName("mode")
 		const files = this.fileStateService.getCCFiles()
 
 		if (renderState === "Delta" && files.length >= 2) {
 			this.fileStateService.setDelta(files[0], files[1])
-
 		} else if (renderState === "Multiple") {
 			this.fileStateService.setMultiple(files)
-
 		} else {
 			this.fileStateService.setSingle(files[0])
 		}
@@ -131,16 +116,6 @@ export class CodeChartaController implements SettingsServiceSubscriber, CodeChar
 
 	private printErrors(errors: Object) {
 		this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))
-	}
-
-	private synchronizeAngularTwoWayBinding() {
-		this.$timeout(() => {})
-	}
-
-	public static subscribe($rootScope: IRootScopeService, subscriber: CodeChartaControllerSubscriber) {
-		$rootScope.$on(CodeChartaController.LOADING_STATUS_EVENT, (event, data) => {
-			subscriber.onLoadingStatusChanged(data, event)
-		})
 	}
 }
 

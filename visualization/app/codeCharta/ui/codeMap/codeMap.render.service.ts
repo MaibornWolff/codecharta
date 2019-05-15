@@ -1,18 +1,16 @@
 "use strict"
 
-import {CodeMapMesh} from "./rendering/codeMapMesh"
-import {TreeMapGenerator} from "../../util/treeMapGenerator"
-import {CodeMapHelper} from "../../util/codeMapHelper"
-import {CodeMapLabelService} from "./codeMap.label.service"
-import {ThreeSceneService} from "./threeViewer/threeSceneService"
-import {CodeMapArrowService} from "./codeMap.arrow.service"
-import {CodeMapNode, Edge, Settings, Node} from "../../codeCharta.model"
-import {FileStateHelper} from "../../util/fileStateHelper";
-import {RenderData} from "./codeMap.preRender.service";
+import { CodeMapMesh } from "./rendering/codeMapMesh"
+import { TreeMapGenerator } from "../../util/treeMapGenerator"
+import { CodeMapHelper } from "../../util/codeMapHelper"
+import { CodeMapLabelService } from "./codeMap.label.service"
+import { ThreeSceneService } from "./threeViewer/threeSceneService"
+import { CodeMapArrowService } from "./codeMap.arrow.service"
+import { CodeMapNode, Edge, Settings, Node } from "../../codeCharta.model"
+import { FileStateHelper } from "../../util/fileStateHelper"
+import { RenderData } from "./codeMap.preRender.service"
 
 export class CodeMapRenderService {
-	public static SELECTOR = "codeMapRenderService"
-
 	private _mapMesh: CodeMapMesh = null
 
 	constructor(
@@ -22,7 +20,7 @@ export class CodeMapRenderService {
 	) {}
 
 	get mapMesh(): CodeMapMesh {
-		return this._mapMesh;
+		return this._mapMesh
 	}
 
 	public render(renderData: RenderData) {
@@ -55,7 +53,7 @@ export class CodeMapRenderService {
 
 	private scaleMap(x: number, y: number, z: number, mapSize: number) {
 		this.threeSceneService.mapGeometry.scale.set(x, y, z)
-		this.threeSceneService.mapGeometry.position.set((- mapSize / 2.0) * x, 0.0, (- mapSize / 2.0) * z)
+		this.threeSceneService.mapGeometry.position.set((-mapSize / 2.0) * x, 0.0, (-mapSize / 2.0) * z)
 
 		if (this.threeSceneService.getMapMesh()) {
 			this.threeSceneService.getMapMesh().setScale(x, y, z)

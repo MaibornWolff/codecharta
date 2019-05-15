@@ -45,11 +45,7 @@ describe("MapTreeViewLevelController", () => {
 	}
 
 	function rebuildController() {
-		mapTreeViewLevelController = new MapTreeViewLevelController(
-			$rootScope,
-			codeMapActionsService,
-			settingsService
-		)
+		mapTreeViewLevelController = new MapTreeViewLevelController($rootScope, codeMapActionsService, settingsService)
 	}
 
 	function withMockedEventMethods() {
@@ -127,11 +123,7 @@ describe("MapTreeViewLevelController", () => {
 
 	describe("Clicks behaviour", () => {
 		it("Right click", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf",
-				"Folder",
-				VALID_NODE_WITH_PATH
-			)
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", VALID_NODE_WITH_PATH)
 			let context = {
 				path: mapTreeViewLevelController["node"].path,
 				type: mapTreeViewLevelController["node"].type,
@@ -157,11 +149,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Label click", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf",
-				"Folder",
-				VALID_NODE_WITH_PATH
-			)
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", VALID_NODE_WITH_PATH)
 			mapTreeViewLevelController["codeMapActionsService"].focusNode = jest.fn()
 			mapTreeViewLevelController.onLabelClick()
 
@@ -169,11 +157,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Eye click", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf",
-				"Folder",
-				VALID_NODE_WITH_PATH
-			)
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", VALID_NODE_WITH_PATH)
 			mapTreeViewLevelController["codeMapActionsService"].toggleNodeVisibility = jest.fn()
 			mapTreeViewLevelController.onEyeClick()
 
@@ -192,11 +176,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Is not leaf", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf",
-				"Folder",
-				VALID_NODE_WITH_PATH
-			)
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", VALID_NODE_WITH_PATH)
 			expect(mapTreeViewLevelController.isLeaf(mapTreeViewLevelController["node"])).toBeFalsy()
 		})
 
@@ -264,11 +244,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Sort not a leaf", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf",
-				"Folder",
-				VALID_NODE_WITH_PATH
-			)
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", VALID_NODE_WITH_PATH)
 			let sortValue = mapTreeViewLevelController.sortByFolder(mapTreeViewLevelController["node"])
 			expect(sortValue).toBe(1)
 		})
