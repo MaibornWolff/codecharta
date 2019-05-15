@@ -13,11 +13,19 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
 
+    private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/\\..*")
+
     @Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
     @Option(names = ["-i", "--noIssues"], description = ["do not search for sonar issues"])
     private var findNoIssues = false
+
+    @Option(names = ["-e", "--exclude"], description = ["exclude file/folder according to regex pattern"])
+    private var exclude: Array<String> = arrayOf()
+
+    @Option(names = ["--defaultExcludes"], description = ["exclude build, target, dist and out folders as well as files/folders starting with '.' "])
+    private var defaultExcludes = false
 
     @Option(names = ["-p", "--projectName"], description = ["project name"])
     private var projectName = "DefaultProjectName"
@@ -43,7 +51,10 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
             outputStream.println("Could not find $file")
             return null
         }
-        val projectParser = ProjectParser(verbose, !findNoIssues)
+
+        if (defaultExcludes) exclude += DEFAULT_EXCLUDES
+
+        val projectParser = ProjectParser(exclude, verbose, !findNoIssues)
 
         projectParser.setUpAnalyzers()
         projectParser.scanProject(file)

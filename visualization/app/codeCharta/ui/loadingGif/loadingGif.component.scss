@@ -1,24 +1,22 @@
 loading-gif-map-component {
-
 }
 
 loading-gif-file-component {
+	#loading-gif-file {
+		position: fixed;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 2000;
+		background-color: rgba(255, 255, 255, 0.8);
+		display: block;
+		text-align: center;
 
-    #loading-gif-file {
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 2000;
-        background-color: rgba(255, 255, 255, 0.8);
-        display: block;
-        text-align: center;
-
-        md-progress-circular {
-            display: block;
-            margin: 0 auto;
-            margin-top: 22%;
-        }
-    }
+		md-progress-circular {
+			display: block;
+			margin: 0 auto;
+			margin-top: 22%;
+		}
+	}
 }

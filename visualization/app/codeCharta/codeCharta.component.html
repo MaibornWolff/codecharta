@@ -1,22 +1,18 @@
 <ribbon-bar-component></ribbon-bar-component>
 
 <div id="actionButtons">
-    <md-button
-        ng-if="$ctrl._viewModel.focusedNodePath.length > 0"
-        class="md-fab md-primary dark_shadow_opacity long-button"
-        aria-label="Remove Focus on node"
-        ng-click="$ctrl.removeFocusedNode()"
-    >
-        Show complete map
-    </md-button>
-    <md-button
-        class="md-fab md-primary dark_shadow_opacity"
-        aria-label="Fit Map to View"
-        ng-click="$ctrl.fitMapToView()"
-    >
-        <i class="fa fa-compress fa-lg"></i>
-    </md-button>
-    <sidenav-toggle-component></sidenav-toggle-component>
+	<md-button
+		ng-if="$ctrl._viewModel.focusedNodePath.length > 0"
+		class="md-fab md-primary dark_shadow_opacity long-button"
+		aria-label="Remove Focus on node"
+		ng-click="$ctrl.removeFocusedNode()"
+	>
+		Show complete map
+	</md-button>
+	<md-button class="md-fab md-primary dark_shadow_opacity" aria-label="Fit Map to View" ng-click="$ctrl.fitMapToView()">
+		<i class="fa fa-compress fa-lg"></i>
+	</md-button>
+	<sidenav-toggle-component></sidenav-toggle-component>
 </div>
 
 <code-map-component></code-map-component>
@@ -28,14 +24,12 @@
 <loading-gif-file-component></loading-gif-file-component>
 
 <div id="mw-logo">
-    <div class="logo">
-        <a href="https://www.maibornwolff.de" target="_blank"
-            ><img src="assets/logo.png" alt="MaibornWolff"
-        /></a>
-        <h2>
-            <span>CodeCharta {{ $ctrl._viewModel.version }}</span>
-        </h2>
-    </div>
+	<div class="logo">
+		<a href="https://www.maibornwolff.de" target="_blank"><img src="assets/logo.png" alt="MaibornWolff"/></a>
+		<h2>
+			<span>CodeCharta {{ $ctrl._viewModel.version }}</span>
+		</h2>
+	</div>
 </div>
 
 <node-context-menu-component></node-context-menu-component>

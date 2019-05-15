@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers.JavaS
 import de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers.SonarAnalyzer
 import java.io.File
 
-class ProjectParser(private val verbose: Boolean = false, private val findIssues: Boolean = true) {
+class ProjectParser(private val exclude: Array<String> = arrayOf(), private val verbose: Boolean = false, private val findIssues: Boolean = true) {
     var metricKinds: MutableSet<String> = HashSet()
     var projectMetrics = ProjectMetrics()
     var sonarAnalyzers: MutableList<SonarAnalyzer> = mutableListOf()
@@ -15,7 +15,7 @@ class ProjectParser(private val verbose: Boolean = false, private val findIssues
     }
 
     fun scanProject(root: File) {
-        val projectTraverser = ProjectTraverser(root)
+        val projectTraverser = ProjectTraverser(root, exclude)
         projectTraverser.traverse()
 
         for(analyzer in sonarAnalyzers){
