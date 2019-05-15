@@ -23,9 +23,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
-- Prevent downloaded files from having multiple Timestamps #484
-- Do not show loadingGif when cancelling the fileChooser #498
-- Excluding a building now updates the maximum value of colorRange #355
+-	  Fixed issue with too long line in ccsh.bat #506
+-	  Prevent downloaded files from having multiple Timestamps #484
+-   Do not show loadingGif when cancelling the fileChooser #498
+-   Excluding a building now updates the maximum value of colorRange #355
 
 ### Chore
 

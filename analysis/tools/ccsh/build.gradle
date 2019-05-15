@@ -46,7 +46,9 @@ jar {
 }
 
 startScripts{
-    doLast{
+    doLast {
+        windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*')
+
         unixScript.text = unixScript.text.replaceAll('DEFAULT_JVM_OPTS=.*', '')
         unixScript.text = unixScript.text.replaceAll('#!/usr/bin/env sh', '')
         unixScript.text = UNIX_JVM_ARGS_SWITCH + unixScript.text
