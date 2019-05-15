@@ -1,5 +1,5 @@
 import "./codeMap.module"
-import "../../codeCharta"
+import "../../codeCharta.module"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapLabelService } from "./codeMap.label.service"

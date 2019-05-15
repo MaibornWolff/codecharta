@@ -1,13 +1,13 @@
 import * as d3 from "d3"
 import { SETTINGS, TEST_DELTA_MAP_A } from "./dataMocks"
-import {CCFile, MetricData, BlacklistItem} from "../codeCharta.model"
+import { CCFile, MetricData, BlacklistItem } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 import { CodeMapHelper } from "./codeMapHelper"
 
 describe("nodeDecorator", () => {
 	let fileA: CCFile
 	let metricData: MetricData[]
-	let blacklist : BlacklistItem[]
+	let blacklist: BlacklistItem[]
 
 	beforeEach(() => {
 		fileA = JSON.parse(JSON.stringify(TEST_DELTA_MAP_A))

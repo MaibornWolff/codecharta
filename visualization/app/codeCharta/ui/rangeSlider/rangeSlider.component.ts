@@ -1,15 +1,13 @@
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import "./rangeSlider.component.scss"
-import { MapColors } from "../codeMap/rendering/renderSettings"
 import $ from "jquery"
 import { RecursivePartial, Settings } from "../../codeCharta.model"
-import { MetricService } from "../../state/metric.service";
-import {FileStateService} from "../../state/fileState.service";
-import {IRootScopeService, ITimeoutService} from "angular";
-import {FileStateHelper} from "../../util/fileStateHelper";
+import { MetricService } from "../../state/metric.service"
+import { FileStateService } from "../../state/fileState.service"
+import { IRootScopeService } from "angular"
+import { FileStateHelper } from "../../util/fileStateHelper"
 
 export class RangeSliderController implements SettingsServiceSubscriber {
-
 	private maxMetricValue: number
 	private DIGIT_WIDTH: number = 11
 	private MIN_DIGITS: number = 4
@@ -17,13 +15,13 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	private FULL_WIDTH_SLIDER: number = 235
 
 	private _viewModel: {
-		colorRangeFrom: number,
-		colorRangeTo: number,
+		colorRangeFrom: number
+		colorRangeTo: number
 		sliderOptions: any
 	} = {
 		colorRangeFrom: null,
 		colorRangeTo: null,
-		sliderOptions: {disabled : false}
+		sliderOptions: { disabled: false }
 	}
 
 	/* @ngInject */
@@ -31,21 +29,17 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		private settingsService: SettingsService,
 		private fileStateService: FileStateService,
 		private metricService: MetricService,
-		private $timeout: ITimeoutService,
 		private $rootScope: IRootScopeService
 	) {
-		SettingsService.subscribe($rootScope, this)
-
-		this.$timeout(() => {
-			this.$rootScope.$broadcast("rzSliderForceRender")
-		})
+		SettingsService.subscribe(this.$rootScope, this)
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-		this.initSliderOptions(settings)
+		if (this.metricService.getMetricData()) {
+			this.initSliderOptions(settings)
+		}
 
-		if (settings.dynamicSettings.neutralColorRange.from
-			&& settings.dynamicSettings.neutralColorRange.to) {
+		if (settings.dynamicSettings.neutralColorRange.from && settings.dynamicSettings.neutralColorRange.to) {
 			this.updateViewModel(settings)
 			this.updateSliderColors(settings)
 			this.updateInputFieldWidth(settings)
@@ -106,25 +100,25 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 
 	private updateSliderColors(s: Settings) {
 		const rangeFromPercentage = (100 / this.maxMetricValue) * this._viewModel.colorRangeFrom
-		let rangeColors = this._viewModel.sliderOptions.disabled ? this.getGreyRangeColors() : this.getColoredRangeColors(s)
+		let rangeColors = this._viewModel.sliderOptions.disabled ? this.getGreyRangeColors(s) : this.getColoredRangeColors(s)
 		this.applyCssColors(rangeColors, rangeFromPercentage)
 	}
 
-	private getGreyRangeColors() {
+	private getGreyRangeColors(s: Settings) {
 		return {
-			left: MapColors.lightGrey,
-			middle: MapColors.lightGrey,
-			right: MapColors.lightGrey
+			left: s.appSettings.mapColors.lightGrey,
+			middle: s.appSettings.mapColors.lightGrey,
+			right: s.appSettings.mapColors.lightGrey
 		}
 	}
 
 	private getColoredRangeColors(s: Settings) {
-		let mapColorPositive = s.appSettings.whiteColorBuildings ? MapColors.lightGrey : MapColors.positive
+		let mapColorPositive = s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive
 
 		let rangeColors = {
-			left: s.dynamicSettings.neutralColorRange.flipped ? MapColors.negative : mapColorPositive,
-			middle: MapColors.neutral,
-			right: s.dynamicSettings.neutralColorRange.flipped ? mapColorPositive : MapColors.negative
+			left: s.dynamicSettings.neutralColorRange.flipped ? s.appSettings.mapColors.negative : mapColorPositive,
+			middle: s.appSettings.mapColors.neutral,
+			right: s.dynamicSettings.neutralColorRange.flipped ? mapColorPositive : s.appSettings.mapColors.negative
 		}
 		return rangeColors
 	}
@@ -135,11 +129,10 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		const middleSection = slider.find(".rz-selection")
 		const rightSection = slider.find(".rz-right-out-selection .rz-bar")
 
-        leftSection.css("cssText", "background: " + rangeColors.left + " !important; width: " + rangeFromPercentage + "%;")
-        middleSection.css("cssText", "background: " + rangeColors.middle + " !important;")
-        rightSection.css("cssText", "background: " + rangeColors.right + ";")
-    }
-
+		leftSection.css("cssText", "background: " + rangeColors.left + " !important; width: " + rangeFromPercentage + "%;")
+		middleSection.css("cssText", "background: " + rangeColors.middle + " !important;")
+		rightSection.css("cssText", "background: " + rangeColors.right + ";")
+	}
 }
 
 export const rangeSliderComponent = {

@@ -8,10 +8,10 @@ import { BlacklistItem, BlacklistType, CodeMapNode } from "../../codeCharta.mode
 import { IRootScopeService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
-import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service";
+import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
+import { CodeMapHelper } from "../../util/codeMapHelper"
 
 describe("MapTreeViewSearchController", () => {
-
 	let mapTreeViewSearchController: MapTreeViewSearchController
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
@@ -28,17 +28,19 @@ describe("MapTreeViewSearchController", () => {
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.mapTreeViewSearch")
-
-		$rootScope = getService<IRootScopeService>("$rootScope"),
-		settingsService = getService<SettingsService>("settingsService"),
-		fileStateService = getService<FileStateService>("fileStateService"),
-		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService"),
-		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
+		;($rootScope = getService<IRootScopeService>("$rootScope")),
+			(settingsService = getService<SettingsService>("settingsService")),
+			(fileStateService = getService<FileStateService>("fileStateService")),
+			(codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")),
+			(codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService"))
 	}
 
 	function rebuildController() {
-		mapTreeViewSearchController = new MapTreeViewSearchController($rootScope, settingsService,
-			codeMapActionsService, codeMapPreRenderService
+		mapTreeViewSearchController = new MapTreeViewSearchController(
+			$rootScope,
+			settingsService,
+			codeMapActionsService,
+			codeMapPreRenderService
 		)
 	}
 
@@ -56,7 +58,6 @@ describe("MapTreeViewSearchController", () => {
 	function withMockedCodeMapPreRenderService() {
 		codeMapPreRenderService["lastRender"].renderFile = TEST_FILE_WITH_PATHS
 	}
-
 
 	describe("onFileSelectionStatesChanged", () => {
 		it("should set empty searchPattern", () => {
@@ -80,7 +81,7 @@ describe("MapTreeViewSearchController", () => {
 
 	describe("onClickBlacklistPattern", () => {
 		it("should add new blacklist entry and clear searchPattern", () => {
-			const blacklistItem = {path: "/root/node/path", type: BlacklistType.exclude}
+			const blacklistItem = { path: "/root/node/path", type: BlacklistType.exclude }
 			mapTreeViewSearchController["_viewModel"].searchPattern = blacklistItem.path
 
 			mapTreeViewSearchController.onClickBlacklistPattern(blacklistItem.type)
@@ -92,17 +93,17 @@ describe("MapTreeViewSearchController", () => {
 
 	describe("isSearchPatternUpdated", () => {
 		it("should return true because searchPattern was updated in settings", () => {
-			const result = mapTreeViewSearchController["isSearchPatternUpdated"]({dynamicSettings: {searchPattern: "newPattern"}})
+			const result = mapTreeViewSearchController["isSearchPatternUpdated"]({ dynamicSettings: { searchPattern: "newPattern" } })
 			expect(result).toEqual(true)
 		})
 
 		it("should return true because searchPattern was updated in settings with empty string", () => {
-			const result = mapTreeViewSearchController["isSearchPatternUpdated"]({dynamicSettings: {searchPattern: ""}})
+			const result = mapTreeViewSearchController["isSearchPatternUpdated"]({ dynamicSettings: { searchPattern: "" } })
 			expect(result).toEqual(true)
 		})
 
 		it("should return false because searchPattern was not updated in settings", () => {
-			const result = mapTreeViewSearchController["isSearchPatternUpdated"]({dynamicSettings: {margin: 42}})
+			const result = mapTreeViewSearchController["isSearchPatternUpdated"]({ dynamicSettings: { margin: 42 } })
 			expect(result).toEqual(false)
 		})
 	})
@@ -124,8 +125,8 @@ describe("MapTreeViewSearchController", () => {
 
 		it("should update ViewModel when pattern excluded", () => {
 			const blacklist: BlacklistItem[] = [
-				{path: "/root/node/path", type: BlacklistType.exclude},
-				{path: "/root/another/node/path", type: BlacklistType.exclude}
+				{ path: "/root/node/path", type: BlacklistType.exclude },
+				{ path: "/root/another/node/path", type: BlacklistType.exclude }
 			]
 			mapTreeViewSearchController["updateViewModel"]([], blacklist)
 
@@ -135,8 +136,8 @@ describe("MapTreeViewSearchController", () => {
 
 		it("should update ViewModel when pattern hidden and excluded", () => {
 			const blacklist: BlacklistItem[] = [
-				{path: "/root/node/path", type: BlacklistType.exclude},
-				{path: "/root/node/path", type: BlacklistType.hide}
+				{ path: "/root/node/path", type: BlacklistType.exclude },
+				{ path: "/root/node/path", type: BlacklistType.hide }
 			]
 			mapTreeViewSearchController["updateViewModel"]([], blacklist)
 
@@ -148,9 +149,19 @@ describe("MapTreeViewSearchController", () => {
 			searchedNodeLeaves = [rootNode]
 			searchedNodeLeaves[0].path = mapTreeViewSearchController["_viewModel"].searchPattern
 			const blacklist: BlacklistItem[] = [
-				{path: "/root/node/path", type: BlacklistType.exclude},
-				{path: "/root/node/path", type: BlacklistType.hide}
+				{ path: "/root/node/path", type: BlacklistType.exclude },
+				{ path: "/root/node/path", type: BlacklistType.hide }
 			]
+
+			// On Windows 'ignore' generates paths with backslashes instead of slashes when executing
+			// the unit tests, and thus the test case fails without this mock.
+			CodeMapHelper.isBlacklisted = jest.fn((node, blacklist, type) => {
+				return (
+					(type == BlacklistType.hide && node.path == "/root/node/path") ||
+					(type == BlacklistType.exclude && node.path == "/root/node/path")
+				)
+			})
+
 			mapTreeViewSearchController["updateViewModel"](searchedNodeLeaves, blacklist)
 
 			expect(mapTreeViewSearchController["_viewModel"].fileCount).toEqual(searchedNodeLeaves.length)
@@ -167,20 +178,17 @@ describe("MapTreeViewSearchController", () => {
 				rootNode.children[0],
 				rootNode.children[1].children[0],
 				rootNode.children[1].children[1],
-				rootNode.children[1].children[2],
+				rootNode.children[1].children[2]
 			]
 			const nodeLeaves = [
 				rootNode.children[0],
 				rootNode.children[1].children[0],
 				rootNode.children[1].children[1],
-				rootNode.children[1].children[2],
+				rootNode.children[1].children[2]
 			]
 			const result = mapTreeViewSearchController["getSearchedNodeLeaves"]()
 
 			expect(result).toEqual(nodeLeaves)
 		})
 	})
-
-
-
 })

@@ -1,5 +1,5 @@
 import "./fileChooser.module"
-import "../../codeCharta"
+import "../../codeCharta.module"
 import { SettingsService } from "../../state/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
@@ -8,16 +8,17 @@ import { FileStateService } from "../../state/fileState.service"
 import { DialogService } from "../dialog/dialog.service"
 import { FileChooserController } from "./fileChooser.component"
 import { TEST_FILE_CONTENT } from "../../util/dataMocks"
-import {CodeChartaController} from "../../codeCharta.component";
+import _ from "lodash"
+import { LoadingGifService } from "../loadingGif/loadingGif.service"
 
 describe("fileChooserController", () => {
 	let fileChooserController: FileChooserController
 	let $scope: IRootScopeService
-	let $rootScope: IRootScopeService
 	let dialogService: DialogService
 	let settingsService: SettingsService
 	let codeChartaService: CodeChartaService
 	let fileStateService: FileStateService
+	let loadingGifService: LoadingGifService
 
 	let fileName: string
 	let content: any
@@ -28,6 +29,8 @@ describe("fileChooserController", () => {
 		withMockedEventMethods()
 		withMockedFileStateService()
 		withMockedDialogService()
+		withMockedCodeChartaService()
+		withMockedLoadingGifService()
 	})
 
 	afterEach(() => {
@@ -38,29 +41,21 @@ describe("fileChooserController", () => {
 		instantiateModule("app.codeCharta.ui.fileChooser")
 
 		$scope = getService<IRootScopeService>("$rootScope")
-		$rootScope = getService<IRootScopeService>("$rootScope")
 		dialogService = getService<DialogService>("dialogService")
 		settingsService = getService<SettingsService>("settingsService")
 		fileStateService = getService<FileStateService>("fileStateService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
+		loadingGifService = getService<LoadingGifService>("loadingGifService")
+
 		fileName = "someFile.json"
-		content = JSON.parse(JSON.stringify(TEST_FILE_CONTENT))
+		content = _.cloneDeep(TEST_FILE_CONTENT)
 	}
 
 	function rebuildController() {
-		fileChooserController = new FileChooserController(
-			$scope,
-			$rootScope,
-			dialogService,
-			codeChartaService,
-			fileStateService
-		)
+		fileChooserController = new FileChooserController($scope, dialogService, codeChartaService, fileStateService, loadingGifService)
 	}
 
 	function withMockedEventMethods() {
-		$rootScope.$broadcast = fileChooserController["$rootScope"].$broadcast = jest.fn()
-		$rootScope.$on = fileChooserController["$rootScope"].$on = jest.fn()
-
 		$scope.$broadcast = fileChooserController["$scope"].$broadcast = jest.fn()
 		$scope.$on = fileChooserController["$scope"].$on = jest.fn()
 		$scope.$apply = fileChooserController["$scope"].$apply = jest.fn()
@@ -79,6 +74,19 @@ describe("fileChooserController", () => {
 		})()
 	}
 
+	function withMockedCodeChartaService() {
+		codeChartaService = fileChooserController["codeChartaService"] = jest.fn().mockReturnValue({
+			loadFiles: jest.fn().mockReturnValue({ catch: jest.fn() })
+		})()
+	}
+
+	function withMockedLoadingGifService() {
+		loadingGifService = settingsService["loadingGifService"] = jest.fn().mockReturnValue({
+			updateLoadingMapFlag: jest.fn(),
+			updateLoadingFileFlag: jest.fn()
+		})()
+	}
+
 	describe("onImportNewFiles", () => {
 		it("should call $apply", () => {
 			fileChooserController.onImportNewFiles({ files: [] })
@@ -86,30 +94,29 @@ describe("fileChooserController", () => {
 			expect($scope.$apply).toHaveBeenCalled()
 		})
 
-		it("should broadcast the loading-status-changed event", () => {
+		it("should not call updateLoadingFileFlag if no file loaded", () => {
 			fileChooserController.onImportNewFiles({ files: [] })
-			expect($rootScope.$broadcast).toHaveBeenCalledWith(CodeChartaController.LOADING_STATUS_EVENT, true)
+
+			expect(loadingGifService.updateLoadingFileFlag).not.toHaveBeenCalled()
 		})
 	})
 
-	describe("onNewFileLoaded", () => {
-		beforeEach(() => {
-			fileChooserController.setNewData = jest.fn()
-		})
+	describe("setNewData", () => {
+		it("should call loadFiles", () => {
+			fileChooserController.setNewData(fileName, JSON.stringify(content))
 
-		it("should call setNewData", () => {
-			fileChooserController.onNewFileLoaded(fileName, JSON.stringify(content))
-
-			expect(fileChooserController.setNewData).toHaveBeenCalledWith({
-				fileName,
-				content
-			})
+			expect(codeChartaService.loadFiles).toHaveBeenCalledWith([
+				{
+					fileName: fileName,
+					content: content
+				}
+			])
 		})
 
 		it("should showErrorDialog on parsing error", () => {
 			const error = "Error parsing JSON!SyntaxError: Unexpected token c in JSON at position 0"
 
-			fileChooserController.onNewFileLoaded(fileName, "content")
+			fileChooserController.setNewData(fileName, "content")
 
 			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(error)
 		})

@@ -1,13 +1,12 @@
 import * as THREE from "three"
-import { Node } from "./rendering/node"
-import { MapColors } from "./rendering/renderSettings"
-import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { PerspectiveCamera, Sprite } from "three"
+import { Node, Settings } from "../../codeCharta.model"
+import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ColorConverter } from "../../util/colorConverter"
-import { Settings } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
+import { SettingsService } from "../../state/settings.service"
 
 interface InternalLabel {
 	sprite: THREE.Sprite
@@ -16,15 +15,13 @@ interface InternalLabel {
 }
 
 export class CodeMapLabelService implements CameraChangeSubscriber {
-	public static SELECTOR = "codeMapLabelService"
-
 	private labels: InternalLabel[]
 	private LABEL_WIDTH_DIVISOR: number = 2600 // empirically gathered
 	private LABEL_HEIGHT_DIVISOR: number = 50 // empirically gathered
 
 	constructor(
 		private $rootScope: IRootScopeService,
-		private threeOrbitControlsService: ThreeOrbitControlsService,
+		private settingsService: SettingsService,
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService
 	) {
@@ -96,7 +93,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 		//bg
 		ctx!.fillStyle = "rgba(255,255,255,1)"
-		ctx!.strokeStyle = ColorConverter.convertHexToRgba(MapColors.angularGreen)
+		ctx!.strokeStyle = ColorConverter.convertHexToRgba(this.settingsService.getSettings().appSettings.mapColors.angularGreen)
 		ctx!.lineJoin = "round"
 		ctx!.lineCap = "round"
 		ctx!.lineWidth = 5
@@ -133,7 +130,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	private makeLine(x: number, y: number, z: number): THREE.Line {
 		const material = new THREE.LineBasicMaterial({
-			color: MapColors.angularGreen,
+			color: this.settingsService.getSettings().appSettings.mapColors.angularGreen,
 			linewidth: 2
 		})
 

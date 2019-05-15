@@ -4,10 +4,10 @@ import { MapTreeViewLevelController } from "./mapTreeView.level.component"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { SettingsService } from "../../state/settings.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { Node } from "../codeMap/rendering/node"
+import { Node } from "../../codeCharta.model"
 import { CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { CodeMapNode, BlacklistType, MarkedPackage } from "../../codeCharta.model"
@@ -16,7 +16,12 @@ import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
-	let $event, services
+	let $rootScope: IRootScopeService
+	let threeOrbitControlsService: ThreeOrbitControlsService
+	let codeMapActionsService: CodeMapActionsService
+	let settingsService: SettingsService
+	let fileStateService: FileStateService
+	let $event
 
 	beforeEach(() => {
 		restartSystem()
@@ -27,14 +32,11 @@ describe("MapTreeViewLevelController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.mapTreeView")
 
-		services = {
-			$rootScope: getService<IRootScopeService>("$rootScope"),
-			$timeout: getService<ITimeoutService>("$timeout"),
-			threeOrbitControlsService: getService<ThreeOrbitControlsService>("threeOrbitControlsService"),
-			codeMapActionsService: getService<CodeMapActionsService>("codeMapActionsService"),
-			settingsService: getService<SettingsService>("settingsService"),
-			fileStateService: getService<FileStateService>("fileStateService")
-		}
+		$rootScope = getService<IRootScopeService>("$rootScope")
+		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
+		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
+		settingsService = getService<SettingsService>("settingsService")
+		fileStateService = getService<FileStateService>("fileStateService")
 
 		$event = {
 			clientX: jest.fn(),
@@ -43,17 +45,13 @@ describe("MapTreeViewLevelController", () => {
 	}
 
 	function rebuildController() {
-		mapTreeViewLevelController = new MapTreeViewLevelController(
-			services.$rootScope,
-			services.codeMapActionsService,
-			services.settingsService
-		)
+		mapTreeViewLevelController = new MapTreeViewLevelController($rootScope, codeMapActionsService, settingsService)
 	}
 
 	function withMockedEventMethods() {
-		services.$rootScope.$broadcast = jest.fn()
-		services.$rootScope.$digest = jest.fn()
-		services.$rootScope.$on = jest.fn()
+		$rootScope.$broadcast = jest.fn()
+		$rootScope.$digest = jest.fn()
+		$rootScope.$on = jest.fn()
 	}
 
 	describe("Listen to code map hovering", () => {
@@ -114,22 +112,18 @@ describe("MapTreeViewLevelController", () => {
 	describe("Mouse movement", () => {
 		it("Mouse enter", () => {
 			mapTreeViewLevelController.onMouseEnter()
-			expect(services.$rootScope.$broadcast).toHaveBeenCalledWith("should-hover-node", mapTreeViewLevelController["node"])
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("should-hover-node", mapTreeViewLevelController["node"])
 		})
 
 		it("Mouse leave", () => {
 			mapTreeViewLevelController.onMouseLeave()
-			expect(services.$rootScope.$broadcast).toHaveBeenCalledWith("should-unhover-node", mapTreeViewLevelController["node"])
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("should-unhover-node", mapTreeViewLevelController["node"])
 		})
 	})
 
 	describe("Clicks behaviour", () => {
 		it("Right click", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf",
-				"Folder",
-				VALID_NODE_WITH_PATH
-			)
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", VALID_NODE_WITH_PATH)
 			let context = {
 				path: mapTreeViewLevelController["node"].path,
 				type: mapTreeViewLevelController["node"].type,
@@ -138,8 +132,8 @@ describe("MapTreeViewLevelController", () => {
 			}
 			mapTreeViewLevelController.onRightClick($event)
 
-			expect(services.$rootScope.$broadcast).toHaveBeenCalledWith("hide-node-context-menu")
-			expect(services.$rootScope.$broadcast).toHaveBeenCalledWith("show-node-context-menu", context)
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("hide-node-context-menu")
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("show-node-context-menu", context)
 		})
 
 		it("Folder click collapse", () => {
@@ -155,11 +149,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Label click", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf",
-				"Folder",
-				VALID_NODE_WITH_PATH
-			)
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", VALID_NODE_WITH_PATH)
 			mapTreeViewLevelController["codeMapActionsService"].focusNode = jest.fn()
 			mapTreeViewLevelController.onLabelClick()
 
@@ -167,11 +157,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Eye click", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf",
-				"Folder",
-				VALID_NODE_WITH_PATH
-			)
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", VALID_NODE_WITH_PATH)
 			mapTreeViewLevelController["codeMapActionsService"].toggleNodeVisibility = jest.fn()
 			mapTreeViewLevelController.onEyeClick()
 
@@ -190,11 +176,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Is not leaf", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf",
-				"Folder",
-				VALID_NODE_WITH_PATH
-			)
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", VALID_NODE_WITH_PATH)
 			expect(mapTreeViewLevelController.isLeaf(mapTreeViewLevelController["node"])).toBeFalsy()
 		})
 
@@ -210,7 +192,7 @@ describe("MapTreeViewLevelController", () => {
 
 			expect(CodeMapHelper.isBlacklisted).toHaveBeenCalledWith(
 				mapTreeViewLevelController["node"],
-				services.settingsService.settings.fileSettings.blacklist,
+				settingsService.getSettings().fileSettings.blacklist,
 				BlacklistType.exclude
 			)
 		})
@@ -262,11 +244,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("Sort not a leaf", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf",
-				"Folder",
-				VALID_NODE_WITH_PATH
-			)
+			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", VALID_NODE_WITH_PATH)
 			let sortValue = mapTreeViewLevelController.sortByFolder(mapTreeViewLevelController["node"])
 			expect(sortValue).toBe(1)
 		})
@@ -274,13 +252,13 @@ describe("MapTreeViewLevelController", () => {
 		it("Hover", () => {
 			mapTreeViewLevelController.onMouseEnter()
 
-			expect(services.$rootScope.$on).toHaveBeenCalled
+			expect($rootScope.$on).toHaveBeenCalled
 		})
 
 		it("Unhover", () => {
 			mapTreeViewLevelController.onMouseLeave()
 
-			expect(services.$rootScope.$on).toHaveBeenCalled
+			expect($rootScope.$on).toHaveBeenCalled
 		})
 	})
 })

@@ -1,23 +1,23 @@
 import "./codeMap.module"
-import "../../codeCharta"
+import "../../codeCharta.module"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CCFile, Settings } from "../../codeCharta.model"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { FileStateService } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
-import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
-import { CodeMapPreRenderService } from "./codeMap.preRender.service";
+import { CodeMapPreRenderService } from "./codeMap.preRender.service"
+import { LoadingGifService } from "../loadingGif/loadingGif.service"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let $rootScope: IRootScopeService
-	let threeSceneService: ThreeSceneService
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let codeMapRenderService: CodeMapRenderService
+	let loadingGifService: LoadingGifService
+
 	let settings: Settings
 	let file: CCFile
 
@@ -26,6 +26,7 @@ describe("codeMapPreRenderService", () => {
 		rebuildService()
 		withMockedEventMethods()
 		withMockedThreeOrbitControlsService()
+		withMockedLoadingGifService()
 	})
 
 	afterEach(() => {
@@ -36,7 +37,6 @@ describe("codeMapPreRenderService", () => {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 
@@ -45,7 +45,12 @@ describe("codeMapPreRenderService", () => {
 	}
 
 	function rebuildService() {
-		codeMapPreRenderService = new CodeMapPreRenderService($rootScope, threeSceneService, threeOrbitControlsService, codeMapRenderService)
+		codeMapPreRenderService = new CodeMapPreRenderService(
+			$rootScope,
+			threeOrbitControlsService,
+			codeMapRenderService,
+			loadingGifService
+		)
 	}
 
 	function withMockedEventMethods() {
@@ -56,6 +61,13 @@ describe("codeMapPreRenderService", () => {
 	function withMockedThreeOrbitControlsService() {
 		threeOrbitControlsService = codeMapPreRenderService["threeOrbitControlsService"] = jest.fn().mockReturnValue({
 			autoFitTo: jest.fn()
+		})()
+	}
+
+	function withMockedLoadingGifService() {
+		loadingGifService = codeMapPreRenderService["loadingGifService"] = jest.fn().mockReturnValue({
+			updateLoadingMapFlag: jest.fn(),
+			updateLoadingFileFlag: jest.fn()
 		})()
 	}
 
@@ -90,7 +102,7 @@ describe("codeMapPreRenderService", () => {
 
 	describe("onSettingsChanged", () => {
 		it("should update lastRender.settings", () => {
-			codeMapPreRenderService.onSettingsChanged(settings, undefined,undefined)
+			codeMapPreRenderService.onSettingsChanged(settings, undefined, undefined)
 
 			expect(codeMapPreRenderService["lastRender"].settings).toEqual(settings)
 		})

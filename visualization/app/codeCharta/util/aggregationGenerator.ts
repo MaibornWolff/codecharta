@@ -1,7 +1,7 @@
-import {CodeMapNode, CCFile} from "../codeCharta.model"
+import { CodeMapNode, CCFile } from "../codeCharta.model"
+import { CodeChartaService } from "../codeCharta.service"
 
 export class AggregationGenerator {
-
 	private static projectNameArray: string[] = []
 	private static fileNameArray: string[] = []
 
@@ -27,12 +27,12 @@ export class AggregationGenerator {
 				apiVersion: require("../../../package.json").codecharta.apiVersion
 			},
 			map: {
-				name: "root",
+				name: CodeChartaService.ROOT_NAME,
 				type: "Folder",
 				children: [] as CodeMapNode[],
 				attributes: {},
 				origin: "Aggregation of following files: " + this.fileNameArray.join(", "),
-				path: "/root",
+				path: CodeChartaService.ROOT_PATH,
 				visible: true
 			},
 			settings: {

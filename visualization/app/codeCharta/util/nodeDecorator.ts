@@ -1,7 +1,7 @@
 "use strict"
 import * as d3 from "d3"
 import { HierarchyNode } from "d3"
-import {BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData, Settings} from "../codeCharta.model"
+import { BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
 import { CodeMapHelper } from "./codeMapHelper"
 import _ from "lodash"
 
@@ -106,11 +106,15 @@ export class NodeDecorator {
 		}
 	}
 
-	private static decorateNodeWithChildrenSumMetrics(node: HierarchyNode<CodeMapNode>, blacklist: BlacklistItem[], metricData: MetricData[]) {
+	private static decorateNodeWithChildrenSumMetrics(
+		node: HierarchyNode<CodeMapNode>,
+		blacklist: BlacklistItem[],
+		metricData: MetricData[]
+	) {
 		const leaves = node.leaves().filter(x => !CodeMapHelper.isBlacklisted(x.data, blacklist, BlacklistType.exclude))
 
 		metricData.forEach(metric => {
-			if (!node.data.attributes.hasOwnProperty(metric.name) && node.data.children && node.data.children.length > 0) {
+			if (node.data.children && node.data.children.length > 0) {
 				node.data.attributes[metric.name] = this.getMetricSumOfLeaves(leaves, metric.name)
 			}
 		})
@@ -123,6 +127,6 @@ export class NodeDecorator {
 			return metricValues.reduce((partialSum, a) => partialSum + a)
 		}
 
-		return 0;
+		return 0
 	}
 }
