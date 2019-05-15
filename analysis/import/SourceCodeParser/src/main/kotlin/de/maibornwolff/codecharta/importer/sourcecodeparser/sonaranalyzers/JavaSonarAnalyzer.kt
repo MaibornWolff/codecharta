@@ -35,6 +35,9 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     override lateinit var baseDir: File
     val MAX_FILE_NAME_PRINT_LENGTH = 30
 
+    private val SONAR_VERSION_MAJOR = 7
+    private val SONAR_VERSION_MINOR = 3
+
     private lateinit var javaClasspath: JavaClasspath
     private lateinit var sonarComponents: SonarComponents
 
@@ -54,7 +57,7 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     }
 
     private fun createIssueRepository() {
-        val sonarRuntime = SonarRuntimeImpl.forSonarQube(Version.create(7, 3), SonarQubeSide.SERVER)
+        val sonarRuntime = SonarRuntimeImpl.forSonarQube(Version.create(SONAR_VERSION_MAJOR, SONAR_VERSION_MINOR), SonarQubeSide.SERVER)
         val definition = JavaRulesDefinition(mapSettings, sonarRuntime)
         val context = RulesDefinition.Context()
         definition.define(context)
@@ -62,7 +65,7 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     }
 
     private fun setActiveRules() {
-        val sonarRuntime = SonarRuntimeImpl.forSonarQube(Version.create(7, 3), SonarQubeSide.SERVER)
+        val sonarRuntime = SonarRuntimeImpl.forSonarQube(Version.create(SONAR_VERSION_MAJOR, SONAR_VERSION_MINOR), SonarQubeSide.SERVER)
         val profileDef = JavaSonarWayProfile(sonarRuntime)
         val context = BuiltInQualityProfilesDefinition.Context()
         profileDef.define(context)
@@ -75,22 +78,8 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
 
     override fun createContext() {
         sensorContext = SensorContextTester.create(baseDir)
-        sensorContext.setRuntime(SonarRuntimeImpl.forSonarQube(Version.create(6, 0), SonarQubeSide.SERVER))
+        sensorContext.setRuntime(SonarRuntimeImpl.forSonarQube(Version.create(SONAR_VERSION_MAJOR, SONAR_VERSION_MINOR), SonarQubeSide.SERVER))
         javaClasspath = JavaClasspath(mapSettings, sensorContext.fileSystem())
-    }
-
-    override fun buildSonarComponents() {
-        val checkFactory = CheckFactory(this.activeRules)
-        val javaTestClasspath = JavaTestClasspath(mapSettings, sensorContext.fileSystem())
-        val fileLinesContextFactory = NullFileLinesContextFactory()
-        sonarComponents = SonarComponents(
-                fileLinesContextFactory,
-                sensorContext.fileSystem(),
-                javaClasspath,
-                javaTestClasspath,
-                checkFactory
-        )
-        sonarComponents.setSensorContext(this.sensorContext)
     }
 
     override fun scanFiles(fileList: List<String>, root: File): ProjectMetrics {
@@ -115,6 +104,21 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
         System.setOut(originalOut)
         return projectMetrics
     }
+
+    override fun buildSonarComponents() {
+        val checkFactory = CheckFactory(this.activeRules)
+        val javaTestClasspath = JavaTestClasspath(mapSettings, sensorContext.fileSystem())
+        val fileLinesContextFactory = NullFileLinesContextFactory()
+        sonarComponents = SonarComponents(
+                fileLinesContextFactory,
+                sensorContext.fileSystem(),
+                javaClasspath,
+                javaTestClasspath,
+                checkFactory
+        )
+        sonarComponents.setSensorContext(this.sensorContext)
+    }
+
 
     override fun addFileToContext(fileName: String) {
         val inputFile = TestInputFileBuilder.create("moduleKey", fileName)

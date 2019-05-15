@@ -6,17 +6,12 @@ import java.nio.file.Paths
 import java.util.ArrayList
 import java.util.HashMap
 
-class ProjectTraverser(root: File) {
+class ProjectTraverser(var root: File) {
     private var fileList: MutableList<File> = mutableListOf()
     private val analyzerFileLists: MutableMap<String, MutableList<String>>? = HashMap()
-    var root: File
-
-    init{
-        this.root = root
-    }
 
     fun traverse() {
-        File(root.toString()).walk().forEach {
+        root.walk().forEach {
             if(it.isFile) fileList.add(it)
         }
 
@@ -26,7 +21,7 @@ class ProjectTraverser(root: File) {
 
     private fun assignFilesToAnalyzers() {
         for (file in this.fileList) {
-            val fileName = getRelativeFile(file.toString())
+            val fileName = getRelativeFileName(file.toString())
             val fileExtension = FilenameUtils.getExtension(fileName)
 
             if (!this.analyzerFileLists!!.containsKey(fileExtension)) {
@@ -47,7 +42,7 @@ class ProjectTraverser(root: File) {
         }
     }
 
-    private fun getRelativeFile(fileName: String): String {
+    private fun getRelativeFileName(fileName: String): String {
 
         return root.toPath()
                 .relativize(Paths.get(fileName))

@@ -20,7 +20,7 @@ class ProjectParser(private val verbose: Boolean = false, private val findIssues
 
         for(analyzer in sonarAnalyzers){
             val files = projectTraverser.getFileListByExtension(analyzer.FILE_EXTENSION)
-            val metricsForKind = analyzer.scanFiles(files, projectTraverser.root)
+            val metricsForKind: ProjectMetrics = analyzer.scanFiles(files, projectTraverser.root)
             projectMetrics.merge(metricsForKind)
             updateMetricKinds(metricsForKind)
         }
