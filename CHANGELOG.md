@@ -10,13 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 - Added SonarJava to Source code parser #343
-
+- Added exclude and defaultExclude options to SourceCodeParser #508
 - Show loading-gif in ribbonBar when rerendering map
 
 ### Changed
 
 - Using Sonar Plugins for Source code parser, giving the Sonar Metrics #343
-
 - Use debounced settings update instead of throttled
 - Filename of downloaded file now contains time #484
 
