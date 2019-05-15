@@ -1,10 +1,9 @@
-import "../../state/state.module";
+import "../../state/state.module"
 
-import angular from "angular";
+import angular from "angular"
 
-import {colorSettingsPanelComponent} from "./colorSettingsPanel.component";
+import { colorSettingsPanelComponent } from "./colorSettingsPanel.component"
 
-angular.module("app.codeCharta.ui.colorSettingsPanel", ["app.codeCharta.state"])
-    .component(colorSettingsPanelComponent.selector, colorSettingsPanelComponent);
-
-
+angular
+	.module("app.codeCharta.ui.colorSettingsPanel", ["app.codeCharta.state"])
+	.component(colorSettingsPanelComponent.selector, colorSettingsPanelComponent)

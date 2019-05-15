@@ -1,6 +1,6 @@
-import "./codeCharta"
+import "./codeCharta.module"
 import { ThreeOrbitControlsService } from "./ui/codeMap/threeViewer/threeOrbitControlsService"
-import { IHttpService, ILocationService, IRootScopeService, ITimeoutService } from "angular"
+import { IHttpService, ILocationService, IRootScopeService } from "angular"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
 import { SettingsService } from "./state/settings.service"
@@ -11,6 +11,7 @@ import { Settings } from "./codeCharta.model"
 import { SETTINGS } from "./util/dataMocks"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { FileStateService } from "./state/fileState.service"
+import { LoadingGifService } from "./ui/loadingGif/loadingGif.service"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
@@ -23,9 +24,9 @@ describe("codeChartaController", () => {
 	let fileStateService: FileStateService
 	let $location: ILocationService
 	let $http: IHttpService
-	let $timeout: ITimeoutService
+	let loadingGifService: LoadingGifService
 
-	let settings : Settings
+	let settings: Settings
 
 	beforeEach(() => {
 		restartSystem()
@@ -37,12 +38,13 @@ describe("codeChartaController", () => {
 		withMockedCodeChartaService()
 		withMockedDialogService()
 		withMockedScenarioHelper()
+		withMockedLoadingGifService()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
 
-        threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
+		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		dialogService = getService<DialogService>("dialogService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
@@ -51,7 +53,7 @@ describe("codeChartaController", () => {
 		fileStateService = getService<FileStateService>("fileStateService")
 		$location = getService<ILocationService>("$location")
 		$http = getService<IHttpService>("$http")
-		$timeout = getService<ITimeoutService>("$timeout")
+		loadingGifService = getService<LoadingGifService>("loadingGifService")
 
 		settings = JSON.parse(JSON.stringify(SETTINGS))
 	}
@@ -67,15 +69,13 @@ describe("codeChartaController", () => {
 			fileStateService,
 			$location,
 			$http,
-			$timeout
+			loadingGifService
 		)
 	}
 
 	afterEach(() => {
 		jest.resetAllMocks()
 	})
-
-
 
 	function withMockedThreeOrbitControlsService() {
 		threeOrbitControlsService = codeChartaController["threeOrbitControlsService"] = jest.fn().mockReturnValue({
@@ -91,8 +91,8 @@ describe("codeChartaController", () => {
 
 	function withMockedUrlUtils() {
 		codeChartaController["urlUtils"] = jest.fn().mockReturnValue({
-			getFileDataFromQueryParam : jest.fn().mockReturnValue(Promise.resolve([])),
-			getParameterByName : jest.fn().mockReturnValue(true)
+			getFileDataFromQueryParam: jest.fn().mockReturnValue(Promise.resolve([])),
+			getParameterByName: jest.fn().mockReturnValue(true)
 		})()
 	}
 
@@ -105,20 +105,25 @@ describe("codeChartaController", () => {
 
 	function withMockedCodeChartaService() {
 		codeChartaService = codeChartaController["codeChartaService"] = jest.fn().mockReturnValue({
-			loadFiles : jest.fn().mockReturnValue(new Promise((resolve, reject) => {
-				resolve()
-			}))
+			loadFiles: jest.fn().mockReturnValue(Promise.resolve())
 		})()
 	}
 
 	function withMockedDialogService() {
 		dialogService = codeChartaController["dialogService"] = jest.fn().mockReturnValue({
-			showErrorDialog : jest.fn()
+			showErrorDialog: jest.fn()
 		})()
 	}
 
 	function withMockedScenarioHelper() {
 		ScenarioHelper.getDefaultScenario = jest.fn().mockReturnValue({ settings })
+	}
+
+	function withMockedLoadingGifService() {
+		loadingGifService = codeChartaController["loadingGifService"] = jest.fn().mockReturnValue({
+			updateLoadingFileFlag: jest.fn(),
+			updateLoadingMapFlag: jest.fn()
+		})()
 	}
 
 	describe("constructor", () => {
@@ -130,36 +135,28 @@ describe("codeChartaController", () => {
 			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, codeChartaController)
 		})
 
-		it("should subscribe to CodeChartaController", () => {
-			CodeChartaController.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(CodeChartaController.subscribe).toHaveBeenCalledWith($rootScope, codeChartaController)
-		})
-
 		it("should set urlUtils", () => {
 			rebuildController()
 
 			expect(codeChartaController["urlUtils"]).toBeDefined()
 		})
 
-		it("should set attribute isLoadingFile to true", () => {
+		it("should call updateLoadingFileFlag with true", () => {
 			rebuildController()
 
-			expect(codeChartaController["_viewModel"].isLoadingFile).toBeTruthy()
+			expect(loadingGifService.updateLoadingFileFlag).toHaveBeenCalledWith(true)
 		})
 	})
 
-	describe("onSettingsChanged" , () => {
+	describe("onSettingsChanged", () => {
 		it("should set focusedNodePath in viewModel", () => {
-			codeChartaController.onSettingsChanged(settings, undefined,undefined)
+			codeChartaController.onSettingsChanged(settings, undefined, undefined)
 
 			expect(codeChartaController["_viewModel"].focusedNodePath).toBe("/root")
 		})
 	})
 
-	describe("fitMapToView" , () => {
+	describe("fitMapToView", () => {
 		it("should call autoFitTo", () => {
 			codeChartaController.fitMapToView()
 
@@ -167,7 +164,7 @@ describe("codeChartaController", () => {
 		})
 	})
 
-	describe("removeFocusedNode" , () => {
+	describe("removeFocusedNode", () => {
 		it("should call removeFocusedNode", () => {
 			codeChartaController.removeFocusedNode()
 
@@ -175,7 +172,7 @@ describe("codeChartaController", () => {
 		})
 	})
 
-	describe("loadFileOrSample" , () => {
+	describe("loadFileOrSample", () => {
 		beforeEach(() => {
 			codeChartaController.tryLoadingSampleFiles = jest.fn()
 		})
@@ -203,7 +200,7 @@ describe("codeChartaController", () => {
 		})
 	})
 
-	describe("tryLoadingSampleFiles" , () => {
+	describe("tryLoadingSampleFiles", () => {
 		it("should call getParameterByName with 'file'", () => {
 			codeChartaController.tryLoadingSampleFiles()
 
@@ -218,10 +215,22 @@ describe("codeChartaController", () => {
 			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(expected)
 		})
 
+		it("should update settings with default settings", () => {
+			codeChartaController.tryLoadingSampleFiles()
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith(settings)
+		})
+
+		it("should update settings from default scenario", () => {
+			codeChartaController.tryLoadingSampleFiles()
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith(settings)
+		})
+
 		it("should call loadFiles with sample files", () => {
 			const expected = [
-				{ fileName: "sample1.json", content: require("./assets/sample1.json") },
-				{ fileName: "sample2.json", content: require("./assets/sample2.json") }
+				{ fileName: "sample1.cc.json", content: require("./assets/sample1.cc.json") },
+				{ fileName: "sample2.cc.json", content: require("./assets/sample2.cc.json") }
 			]
 
 			codeChartaController.tryLoadingSampleFiles()

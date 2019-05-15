@@ -1,27 +1,27 @@
 # Source Code Parser
 
-A parser for source code like Java or JavaScript.
+A parser to generate code metrics from a source code file or a project folder. It generates either a cc.json or a csv file.
+
+## Supported languages
+- Java
 
 ## Run
 
-Run `./gradlew build` which will generate our jar. 
-Then run either 
+The SourceCodeParser can analyze either a single file or a project folder; here are some sample commands: 
 ```
-java -jar build/libs/codecharta-sourcecodeparser-x.xx.x.jar src/test/resources/ --format=table
+./ccsh sourcecodeparser src/test/resources -o foo.cc.json
 ```
 or 
 ```
-java -jar build/libs/codecharta-sourcecodeparser-x.xx.x.jar src/test/resources/ScriptShellSample.java --format=table
+./ccsh sourcecodeparser src/test/resources/foo.java -o foo.cc.json 
 ```
 
-## Grammars
+## Parameters
+- -f, --format=\<outputFormat> (table or json)
+- -h, --help 
+- -o, --outputFile=\<outputFile> (file to write output to, if empty stdout is used)
+- -p, --projectName=\<projectName>
 
-You can put new grammars into `src/main/antlr` and generate the lexer and parser with `gradlew generateGrammarSource`.
+## Sonar Plugins
 
-## Architecture
-
-This parser follows the onion/hexagonal architecture. 
-
-## Acknowledgements
-
-Inspired by the [Antlr Mega Tutorial](https://tomassetti.me/antlr-mega-tutorial/#java-setup). 
+In order to generate the code metrics, the SourceCodeParser uses Sonar plugins. New languages can be added to the Source code parser by writing a class that extends SonarAnalyzer and incorporate the respective Sonar Plugin.

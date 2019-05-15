@@ -8,10 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 
 ### Added
+-   Added SonarJava to Source code parser #343
 
 -   Show loading-gif in ribbonBar when rerendering map
 
 ### Changed
+-   Using Sonar Plugins for Source code parser, giving the Sonar Metrics #343
 
 -   Use debounced settings update instead of throttled
 -   Filename of downloaded file now contains time #484 
@@ -25,6 +27,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Excluding a building now updates the maximum value of colorRange #355
 
 ### Chore
+-   Bump angular-material from 1.1.9 to 1.1.14 in /visualization
+-   [Security] Bump jquery from 3.3.1 to 3.4.0 in /visualization
+
 
 ## [1.24.0] - 2019-04-23
 
