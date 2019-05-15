@@ -1,5 +1,5 @@
 import { FileValidator } from "./util/fileValidator"
-import {CCFile, NameDataPair} from "./codeCharta.model"
+import { CCFile, NameDataPair } from "./codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
 
 export class CodeChartaService {
@@ -7,8 +7,7 @@ export class CodeChartaService {
 	public static ROOT_PATH = "/" + CodeChartaService.ROOT_NAME
 	public static SELECTOR = "codeChartaService"
 
-	constructor(private fileStateService: FileStateService
-	) {}
+	constructor(private fileStateService: FileStateService) {}
 
 	public loadFiles(nameDataPairs: NameDataPair[]): Promise<void> {
 		return new Promise((resolve, reject) => {

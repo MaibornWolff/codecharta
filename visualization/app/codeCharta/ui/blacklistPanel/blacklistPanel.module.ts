@@ -1,11 +1,8 @@
-import "../rangeSlider/rangeSlider.module";
-import "../../state/state.module";
+import "../rangeSlider/rangeSlider.module"
+import "../../state/state.module"
 
-import angular from "angular";
+import angular from "angular"
 
-import {blacklistPanelComponent} from "./blacklistPanel.component";
+import { blacklistPanelComponent } from "./blacklistPanel.component"
 
-angular.module("app.codeCharta.ui.blacklistPanel", ["app.codeCharta.state"])
-    .component("blacklistPanelComponent", blacklistPanelComponent);
-
-
+angular.module("app.codeCharta.ui.blacklistPanel", ["app.codeCharta.state"]).component("blacklistPanelComponent", blacklistPanelComponent)

@@ -1,212 +1,201 @@
 ribbon-bar-component {
+	$heightExpanded: 195;
+	$heightCollapsed: 38;
+	$sectionWidth: 275;
+	$padding: 5;
+	$animationDuration: 0.5;
+	$opacityExpanded: 0.95;
+	$border: 1px solid #cdcdcd;
+	$border-thin: 0px dotted #cdcdcd;
+	$subsection-bg: #efefef;
+	$headerColor: #444;
+	$headerSize: 1em;
+	$bodySize: 0.9em;
+	$toggleButtonSize: 35;
 
-    $heightExpanded: 195;
-    $heightCollapsed: 38;
-    $sectionWidth: 275;
-    $padding: 5;
-    $animationDuration: 0.5;
-    $opacityExpanded: 0.95;
-    $border: 1px solid #cdcdcd;
-    $border-thin: 0px dotted #cdcdcd;
-    $subsection-bg: #efefef;
-    $headerColor: #444;
-    $headerSize: 1em;
-    $bodySize: 0.9em;
-    $toggleButtonSize: 35;
+	#toggle-ribbon-bar-fab {
+		position: absolute;
+		margin-top: (-1 * $toggleButtonSize / 2) + px;
+		right: 10px;
+		z-index: 999;
+		width: $toggleButtonSize + px;
+		height: $toggleButtonSize + px !important;
+		min-height: $toggleButtonSize + px !important;
+		line-height: $toggleButtonSize + px !important;
+		float: right;
 
-    #small-loading-indicator {
-        z-index: 1999;
-    }
+		> i:before {
+			content: "\f107";
+		}
 
-    #toggle-ribbon-bar-fab {
-        position: absolute;
-        margin-top: (-1 * $toggleButtonSize / 2) + px;
-        right: 10px;
-        z-index: 999;
-        width: $toggleButtonSize + px;
-        height:  $toggleButtonSize + px !important;
-        min-height: $toggleButtonSize + px !important;
-        line-height: $toggleButtonSize + px !important;
-        float: right;
+		&.expanded {
+			> i:before {
+				content: "\f106";
+			}
+		}
+	}
 
-        > i:before {
-            content: "\f107";
-        }
+	.file-chooser-btn {
+		left: 5px;
+	}
 
-        &.expanded {
-            > i:before {
-                content: "\f106";
-            }
-        }
-    }
+	.save-btn {
+		left: 35px;
+	}
 
-    .file-chooser-btn {
-        left: 5px;
-    }
+	.file-chooser-btn,
+	.save-btn {
+		position: absolute;
+		top: 6px;
+		margin: 0;
+		padding: 0;
+		height: 26px;
+		width: 26px;
 
-    .save-btn {
-        left: 35px;
-    }
+		* {
+			margin: 0;
+			padding: 0;
+		}
 
-    .file-chooser-btn,
-    .save-btn {
-        position: absolute;
-        top: 6px;
-        margin: 0;
-        padding: 0;
-        height: 26px;
-        width: 26px;
+		.md-fab {
+			position: relative;
+			min-height: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 0;
+			border-radius: 50%;
 
-        * {
-            margin: 0;
-            padding: 0;
-        }
+			i {
+				position: absolute;
+				top: 7px;
+				left: 7px;
+				color: white;
 
-        .md-fab {
-            position: relative;
-            min-height: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            border-radius: 50%;
+				&:hover {
+					cursor: pointer;
+					color: #eee;
+				}
+			}
+		}
+	}
 
-            i {
-                position: absolute;
-                top: 7px;
-                left: 7px;
-                color: white;
+	#header {
+		width: 100%;
+		margin: 0;
+		padding: 0;
+		display: block;
+		height: ($heightCollapsed + 8) + px;
+		overflow: hidden;
+		font-size: 0;
 
-                &:hover {
-                    cursor: pointer;
-                    color: #eee;
-                }
-            }
-        }
+		.section {
+			display: inline-block;
+			margin-left: 0;
+			height: 100%;
+			width: auto;
+			padding-top: $padding + px;
+			padding-bottom: $padding + px;
+			margin-bottom: 6px;
+			border-right: $border;
+			vertical-align: top;
+			position: relative;
+			font-size: 12pt;
 
+			&.loading-gif {
+				border-right: none;
+			}
 
-    }
+			md-input-container,
+			md-button {
+				margin: 0;
+				padding: 0;
+			}
 
+			.section-header {
+				margin-bottom: ($padding * 2) + px;
+				padding: 0;
+				height: ($heightCollapsed - 5) + px !important;
+				font-size: $headerSize;
+				color: $headerColor;
+				text-align: center;
+				overflow: hidden;
+				padding-right: $padding + px;
+				padding-left: $padding + px;
 
+				&.bordered {
+					border-bottom: $border-thin;
+					border-top: $border-thin;
+					background-color: $subsection-bg;
+				}
+			}
 
+			.section-title {
+				font-size: 8pt;
+				display: block;
+				position: absolute;
+				bottom: 0;
+				width: 100%;
+				color: gray;
+				text-align: center;
+				transition: background-color 0.4s;
 
-    #header {
+				.first {
+					padding-left: 8px;
+				}
 
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        display: block;
-        height: ($heightCollapsed + 8) + px;
-        overflow: hidden;
-        font-size: 0;
+				.second {
+					padding-left: 85px;
+				}
 
-        .section {
-            display: inline-block;
-            margin-left: 0;
-            height: 100%;
-            width: auto;
-            padding-top: $padding + px;
-            padding-bottom: $padding + px;
-            margin-bottom: 6px;
-            border-right: $border;
-            vertical-align: top;
-            position: relative;
-            font-size: 12pt;
+				&:hover,
+				&.toggle-hovered {
+					background-color: #e0e0e0;
+					cursor: pointer;
+				}
 
-            &.loading-gif {
-                border-right: none;
-            }
+				&:focus {
+					outline: none;
+				}
+			}
 
-            md-input-container,
-            md-button {
-                margin: 0;
-                padding: 0;
-            }
+			.section-body {
+				margin-top: 0;
+				height: 0;
+				padding-top: $padding + px;
+				padding-right: $padding + px;
+				padding-left: 2 * $padding + px;
+				overflow: hidden;
+				border-top: $border;
+				font-size: $bodySize;
+				text-align: left;
+				vertical-align: top;
 
-            .section-header {
-                margin-bottom: ($padding * 2) + px;
-                padding: 0;
-                height: ($heightCollapsed - 5) + px !important;
-                font-size: $headerSize;
-                color: $headerColor;
-                text-align: center;
-                overflow: hidden;
-                padding-right: $padding + px;
-                padding-left: $padding + px;
+				reset-settings-button-component .md-button {
+					top: ($heightExpanded - 45) + px;
+					right: -5px;
+				}
 
-                &.bordered {
-                    border-bottom: $border-thin;
-                    border-top: $border-thin;
-                    background-color: $subsection-bg;
-                }
-            }
+				md-checkbox .md-label {
+					margin-left: 25px;
+				}
+			}
+		}
 
-            .section-title {
-                font-size: 8pt;
-                display: block;
-                position: absolute;
-                bottom: 0;
-                width: 100%;
-                color: gray;
-                text-align: center;
-                transition: background-color 0.4s;
+		&.expanded {
+			height: $heightExpanded + px;
+			opacity: $opacityExpanded;
 
-                .first {
-                    padding-left: 8px;
-                }
-
-                .second {
-                    padding-left: 85px;
-                }
-
-                &:hover,
-                &.toggle-hovered {
-                    background-color: #E0E0E0;
-                    cursor: pointer;
-                }
-
-                &:focus{
-                    outline: none;
-                }
-            }
-
-            .section-body {
-                margin-top: 0;
-                height: 0;
-                padding-top: $padding + px;
-                padding-right: $padding + px;
-                padding-left: 2*$padding + px;
-                overflow: hidden;
-                border-top: $border;
-                font-size: $bodySize;
-                text-align: left;
-                vertical-align: top;
-                
-                reset-settings-button-component .md-button {
-                    top: ($heightExpanded - 45) + px;
-                    right: -5px;
-                }
-
-                md-checkbox .md-label {
-                    margin-left: 25px;
-                }
-            }
-        }
-
-        &.expanded {
-            height: $heightExpanded + px;
-            opacity: $opacityExpanded;
-
-            .section {
-                .section-header {
-                    margin-bottom: 0;
-                    height: ($heightCollapsed - 10) + px !important;
-                }
-                .section-body {
-                    padding-top: 15px;
-                    padding-bottom: 15px;
-                    height: ($heightExpanded - $heightCollapsed) + px;
-                }
-            }
-        }
-    }
+			.section {
+				.section-header {
+					margin-bottom: 0;
+					height: ($heightCollapsed - 10) + px !important;
+				}
+				.section-body {
+					padding-top: 15px;
+					padding-bottom: 15px;
+					height: ($heightExpanded - $heightCollapsed) + px;
+				}
+			}
+		}
+	}
 }

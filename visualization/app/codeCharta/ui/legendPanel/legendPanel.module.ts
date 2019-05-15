@@ -1,7 +1,7 @@
 import angular from "angular"
 import "../../state/state.module"
 import "../codeMap/codeMap.module"
-import "../../codeCharta"
+import "../../codeCharta.module"
 
 import { legendPanelComponent } from "./legendPanel.component"
 

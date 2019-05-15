@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
 import java.io.Writer
 
-class CSVMetricWriter(private val writer: Writer) : de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.MetricWriter {
+class CSVMetricWriter(private val writer: Writer) : MetricWriter {
 
   override fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>) {
     val csvOutput = StringBuilder()

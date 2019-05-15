@@ -1,14 +1,14 @@
 import "./codeMap.module"
-import "../../codeCharta"
-import {CodeMapLabelService} from "./codeMap.label.service"
-import {Node, Settings} from "../../codeCharta.model"
-import {Vector3} from "three"
-import {ThreeCameraService} from "./threeViewer/threeCameraService"
-import {ThreeSceneService} from "./threeViewer/threeSceneService"
-import {IRootScopeService} from "angular"
-import {getService, instantiateModule} from "../../../../mocks/ng.mockhelper"
-import {DEFAULT_SETTINGS, SETTINGS} from "../../util/dataMocks"
-import {SettingsService} from "../../state/settings.service";
+import "../../codeCharta.module"
+import { CodeMapLabelService } from "./codeMap.label.service"
+import { Node, Settings } from "../../codeCharta.model"
+import { Vector3 } from "three"
+import { ThreeCameraService } from "./threeViewer/threeCameraService"
+import { ThreeSceneService } from "./threeViewer/threeSceneService"
+import { IRootScopeService } from "angular"
+import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { DEFAULT_SETTINGS, SETTINGS } from "../../util/dataMocks"
+import { SettingsService } from "../../state/settings.service"
 
 describe("CodeMapLabelService", () => {
 	let $rootScope: IRootScopeService
@@ -41,23 +41,16 @@ describe("CodeMapLabelService", () => {
 	}
 
 	function rebuild() {
-		codeMapLabelService = new CodeMapLabelService(
-			$rootScope,
-			settingsService,
-			threeCameraService,
-			threeSceneService
-		)
+		codeMapLabelService = new CodeMapLabelService($rootScope, settingsService, threeCameraService, threeSceneService)
 	}
 
 	function withMockedEventMethods() {
-
 		$rootScope.$on = jest.fn()
 
 		$rootScope.$broadcast = jest.fn()
 	}
 
 	function withMockedThreeCameraService() {
-
 		threeCameraService = jest.fn<ThreeCameraService>(() => {
 			return {
 				camera: {
@@ -70,7 +63,6 @@ describe("CodeMapLabelService", () => {
 	}
 
 	function withMockedThreeSceneService() {
-
 		threeSceneService = jest.fn<ThreeSceneService>(() => {
 			return {
 				mapGeometry: jest.fn(),
@@ -83,7 +75,6 @@ describe("CodeMapLabelService", () => {
 	}
 
 	function withMockedSettingsService() {
-
 		settingsService = jest.fn<SettingsService>(() => {
 			return {
 				getSettings: jest.fn().mockReturnValue(DEFAULT_SETTINGS)

@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.metrics
 
-class FileMetricMap() {
+class FileMetricMap {
 
     val fileMetrics = mutableMapOf<String, Number>()
 

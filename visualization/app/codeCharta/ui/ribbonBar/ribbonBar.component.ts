@@ -1,98 +1,69 @@
-import "./ribbonBar.component.scss";
-import $ from "jquery";
-import {IRootScopeService, ITimeoutService} from "angular";
-import {FileState} from "../../codeCharta.model";
-import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
-import {FileStateHelper} from "../../util/fileStateHelper";
-import {FileDownloader} from "../../util/fileDownloader";
-import {CodeMapPreRenderService} from "../codeMap/codeMap.preRender.service";
+import "./ribbonBar.component.scss"
+import $ from "jquery"
+import { IRootScopeService } from "angular"
+import { FileState } from "../../codeCharta.model"
+import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
+import { FileStateHelper } from "../../util/fileStateHelper"
+import { FileDownloader } from "../../util/fileDownloader"
+import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 
-export interface RibbonBarControllerSubscriber {
-    onLoadingMapStatusChanged(isLoadingMap: boolean, event: angular.IAngularEvent)
-}
+export class RibbonBarController implements FileStateServiceSubscriber {
+	private collapsingElements = $(
+		"code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab"
+	)
+	private toggleElements = $("ribbon-bar-component .section-title")
+	private isExpanded: boolean = false
 
-export class RibbonBarController implements FileStateServiceSubscriber, RibbonBarControllerSubscriber {
+	private _viewModel: {
+		isDeltaState: boolean
+	} = {
+		isDeltaState: null
+	}
 
-    public static readonly LOADING_MAP_STATUS_EVENT = "loading-map-status-changed"
+	/* @ngInject */
+	constructor(private $rootScope: IRootScopeService, private codeMapPreRenderService: CodeMapPreRenderService) {
+		FileStateService.subscribe(this.$rootScope, this)
+	}
 
-    private collapsingElements = $("code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab")
-    private toggleElements = $("ribbon-bar-component .section-title")
-    private isExpanded: boolean = false;
+	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
+	}
 
-    private _viewModel: {
-        isDeltaState: boolean,
-        isLoadingMap: boolean
-    } = {
-        isDeltaState: null,
-        isLoadingMap: true
-    }
+	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
 
-    /* @ngInject */
-    constructor(
-        private $rootScope: IRootScopeService,
-        private $timeout: ITimeoutService,
-        private codeMapPreRenderService: CodeMapPreRenderService
-    ) {
-        FileStateService.subscribe(this.$rootScope, this)
-        RibbonBarController.subscribe(this.$rootScope, this)
-    }
+	public downloadFile() {
+		FileDownloader.downloadCurrentMap(this.codeMapPreRenderService.getRenderFile())
+	}
 
-    public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-        this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
-    }
+	public toggle() {
+		if (!this.isExpanded) {
+			this.expand()
+		} else {
+			this.collapse()
+		}
+	}
 
-    public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-    }
+	public expand() {
+		this.isExpanded = true
+		this.collapsingElements.addClass("expanded")
+	}
 
-    public onLoadingMapStatusChanged(isLoadingMap: boolean, event: angular.IAngularEvent) {
-        this._viewModel.isLoadingMap = isLoadingMap
-        this.synchronizeAngularTwoWayBinding()
-    }
+	public collapse() {
+		this.isExpanded = false
+		this.collapsingElements.removeClass("expanded")
+	}
 
-    public downloadFile() {
-        FileDownloader.downloadCurrentMap(this.codeMapPreRenderService.getRenderFile())
-    }
+	public hoverToggle() {
+		this.toggleElements.addClass("toggle-hovered")
+	}
 
-    public toggle() {
-        if (!this.isExpanded) {
-            this.expand()
-        } else {
-            this.collapse()
-        }
-    }
-
-    public expand() {
-        this.isExpanded = true;
-        this.collapsingElements.addClass("expanded")
-    }
-
-    public collapse() {
-        this.isExpanded = false
-        this.collapsingElements.removeClass("expanded")
-    }
-
-    public hoverToggle() {
-        this.toggleElements.addClass("toggle-hovered")
-    }
-
-    public unhoverToggle() {
-        this.toggleElements.removeClass("toggle-hovered")
-    }
-
-    private synchronizeAngularTwoWayBinding() {
-        this.$timeout(() => {})
-    }
-
-    public static subscribe($rootScope: IRootScopeService, subscriber: RibbonBarControllerSubscriber) {
-        $rootScope.$on(RibbonBarController.LOADING_MAP_STATUS_EVENT, (event, data) => {
-            subscriber.onLoadingMapStatusChanged(data, event)
-        })
-    }
+	public unhoverToggle() {
+		this.toggleElements.removeClass("toggle-hovered")
+	}
 }
 
 export const ribbonBarComponent = {
-    selector: "ribbonBarComponent",
-    template: require("./ribbonBar.component.html"),
-    controller: RibbonBarController
-};
-
+	selector: "ribbonBarComponent",
+	template: require("./ribbonBar.component.html"),
+	controller: RibbonBarController
+}

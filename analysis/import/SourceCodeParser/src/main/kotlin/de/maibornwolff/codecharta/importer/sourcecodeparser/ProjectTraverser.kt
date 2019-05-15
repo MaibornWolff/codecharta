@@ -1,10 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
 import org.sonar.api.internal.apachecommons.io.FilenameUtils
-import org.sonar.api.internal.apachecommons.io.filefilter.FileFilterUtils
-import org.sonar.api.internal.apachecommons.io.filefilter.IOFileFilter
 import java.io.File
-import java.io.FileFilter
 import java.nio.file.Paths
 import java.util.ArrayList
 import java.util.HashMap
@@ -16,8 +13,8 @@ class ProjectTraverser(var root: File, private val exclude: Array<String> = arra
     fun traverse() {
         val excludePatterns = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
 
-        File(root.toString()).walk().forEach {
-            val standardizedPath = "/" + getRelativeFile(it.toString())
+        root.walk().forEach {
+            val standardizedPath = "/" + getRelativeFileName(it.toString())
             if(it.isFile && !(exclude.isNotEmpty() && excludePatterns.containsMatchIn(standardizedPath))){
                 fileList.add(it)
             }
@@ -29,7 +26,7 @@ class ProjectTraverser(var root: File, private val exclude: Array<String> = arra
 
     private fun assignFilesToAnalyzers() {
         for (file in this.fileList) {
-            val fileName = getRelativeFile(file.toString())
+            val fileName = getRelativeFileName(file.toString())
             val fileExtension = FilenameUtils.getExtension(fileName)
 
             if (!this.analyzerFileLists!!.containsKey(fileExtension)) {
@@ -50,7 +47,7 @@ class ProjectTraverser(var root: File, private val exclude: Array<String> = arra
         }
     }
 
-    private fun getRelativeFile(fileName: String): String {
+    private fun getRelativeFileName(fileName: String): String {
 
         return root.toPath()
                 .relativize(Paths.get(fileName))
