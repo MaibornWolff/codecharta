@@ -3,7 +3,7 @@ import "./resetSettingsButton.module"
 import { ResetSettingsButtonController } from "./resetSettingsButton.component"
 import { SettingsService } from "../../state/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { RecursivePartial, Settings } from "../../codeCharta.model";
+import { RecursivePartial, Settings } from "../../codeCharta.model"
 
 describe("resetSettingsButtonController", () => {
 	let settingsService: SettingsService
@@ -30,7 +30,7 @@ describe("resetSettingsButtonController", () => {
 				updateSettings: jest.fn(),
 				getDefaultSettings: jest.fn(() => {
 					return {
-						appSettings: { maximizeDetailPanel: false, enableEdgeArrows: true },
+						appSettings: { maximizeDetailPanel: false, enableEdgeArrows: true }
 					}
 				}),
 				getSettings: jest.fn()
@@ -46,19 +46,25 @@ describe("resetSettingsButtonController", () => {
 
 			expect(settingsService.getDefaultSettings).toHaveBeenCalledTimes(1)
 			expect(settingsService.updateSettings).toHaveBeenCalledTimes(1)
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({appSettings: {enableEdgeArrows: true, maximizeDetailPanel: false}})
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({
+				appSettings: { enableEdgeArrows: true, maximizeDetailPanel: false }
+			})
 		})
 
 		it("settingsNames should allow blank-space", () => {
 			resetSettingsButtonController["settingsNames"] = "appSettings.enableEdgeArrows, appSettings.maximizeDetailPanel"
 			resetSettingsButtonController.applyDefaultSettings()
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({appSettings: {enableEdgeArrows: true, maximizeDetailPanel: false}})
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({
+				appSettings: { enableEdgeArrows: true, maximizeDetailPanel: false }
+			})
 		})
 
 		it("settingsNames should allow newline", () => {
 			resetSettingsButtonController["settingsNames"] = "appSettings.enableEdgeArrows,\nappSettings.maximizeDetailPanel"
 			resetSettingsButtonController.applyDefaultSettings()
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({appSettings: {enableEdgeArrows: true, maximizeDetailPanel: false}})
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({
+				appSettings: { enableEdgeArrows: true, maximizeDetailPanel: false }
+			})
 		})
 
 		it("should do nothing if settingsNames only contains comma characters", () => {
@@ -81,11 +87,11 @@ describe("resetSettingsButtonController", () => {
 
 		it("should update nested settings in service", () => {
 			const newSettings: RecursivePartial<Settings> = {
-				appSettings: {scaling: {x: 42, y: 42, z: 42}}
+				appSettings: { scaling: { x: 42, y: 42, z: 42 } }
 			}
 
 			settingsService.updateSettings({
-				appSettings: {scaling: {x: 1, y: 1, z: 1}}
+				appSettings: { scaling: { x: 1, y: 1, z: 1 } }
 			})
 
 			resetSettingsButtonController["settingsNames"] = "appSettings.scaling.x, appSettings.scaling.y, appSettings.scaling.z"

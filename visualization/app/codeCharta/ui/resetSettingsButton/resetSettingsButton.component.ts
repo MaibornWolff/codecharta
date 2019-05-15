@@ -1,6 +1,6 @@
 import { SettingsService } from "../../state/settings.service"
 import "./resetSettingsButton.component.scss"
-import {RecursivePartial, Settings} from "../../codeCharta.model";
+import { RecursivePartial, Settings } from "../../codeCharta.model"
 
 export class ResetSettingsButtonController {
 	private settingsNames: string = ""
@@ -25,7 +25,7 @@ export class ResetSettingsButtonController {
 			steps.forEach((step, index) => {
 				if (defaultSettingsPointer[step] !== undefined) {
 					if (!updatedSettingsPointer[step]) {
-						Object.assign(updatedSettingsPointer, {[step]: {}})
+						Object.assign(updatedSettingsPointer, { [step]: {} })
 					}
 					if (index === steps.length - 1) {
 						updatedSettingsPointer[step] = defaultSettingsPointer[step]

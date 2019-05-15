@@ -1,23 +1,23 @@
 "use strict"
 
-import {CCFile, FileSelectionState, FileState, MetricData, RecursivePartial, Settings} from "../../codeCharta.model"
-import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service";
-import {IAngularEvent, IRootScopeService} from "angular";
-import {FileStateService, FileStateServiceSubscriber} from "../../state/fileState.service";
+import { CCFile, FileSelectionState, FileState, MetricData, RecursivePartial, Settings } from "../../codeCharta.model"
+import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { IAngularEvent, IRootScopeService } from "angular"
+import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import _ from "lodash"
-import {NodeDecorator} from "../../util/nodeDecorator";
-import {AggregationGenerator} from "../../util/aggregationGenerator";
-import {MetricService, MetricServiceSubscriber} from "../../state/metric.service";
-import {FileStateHelper} from "../../util/fileStateHelper";
-import {DeltaGenerator} from "../../util/deltaGenerator";
-import {ThreeOrbitControlsService} from "./threeViewer/threeOrbitControlsService";
-import {CodeMapRenderService} from "./codeMap.render.service";
+import { NodeDecorator } from "../../util/nodeDecorator"
+import { AggregationGenerator } from "../../util/aggregationGenerator"
+import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
+import { FileStateHelper } from "../../util/fileStateHelper"
+import { DeltaGenerator } from "../../util/deltaGenerator"
+import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
+import { CodeMapRenderService } from "./codeMap.render.service"
 import { LoadingGifService } from "../loadingGif/loadingGif.service"
 
 export interface RenderData {
 	renderFile: CCFile
 	fileStates: FileState[]
-	settings: Settings,
+	settings: Settings
 	metricData: MetricData[]
 }
 
@@ -26,8 +26,7 @@ export interface CodeMapPreRenderServiceSubscriber {
 }
 
 export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricServiceSubscriber {
-
-	private static RENDER_FILE_CHANGED_EVENT = "render-file-changed";
+	private static RENDER_FILE_CHANGED_EVENT = "render-file-changed"
 
 	private newFileLoaded: boolean = false
 
@@ -53,10 +52,9 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		return this.lastRender.renderFile
 	}
 
-	public onSettingsChanged(settings: Settings, update : RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this.lastRender.settings = settings
-		if (this.lastRender.fileStates && update.fileSettings && update.fileSettings.blacklist
-		) {
+		if (this.lastRender.fileStates && update.fileSettings && update.fileSettings.blacklist) {
 			this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
 			this.lastRender.renderFile.settings.fileSettings = settings.fileSettings
 			this.decorateIfPossible()
@@ -70,8 +68,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-	}
+	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
 
 	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
 		this.lastRender.metricData = metricData
@@ -84,16 +81,18 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	}
 
 	private decorateIfPossible() {
-		if(this.lastRender.renderFile
-			&& this.lastRender.settings
-			&& this.lastRender.settings.fileSettings
-			&& this.lastRender.settings.fileSettings.blacklist
-			&& this.lastRender.metricData
+		if (
+			this.lastRender.renderFile &&
+			this.lastRender.settings &&
+			this.lastRender.settings.fileSettings &&
+			this.lastRender.settings.fileSettings.blacklist &&
+			this.lastRender.metricData
 		) {
 			this.lastRender.renderFile = NodeDecorator.decorateFile(
 				this.lastRender.renderFile,
 				this.lastRender.settings.fileSettings.blacklist,
-				this.lastRender.metricData)
+				this.lastRender.metricData
+			)
 		}
 	}
 
@@ -105,10 +104,8 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 
 		if (FileStateHelper.isSingleState(fileStates)) {
 			return visibleFileStates[0].file
-
-		} else if (FileStateHelper.isPartialState(fileStates)){
+		} else if (FileStateHelper.isPartialState(fileStates)) {
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
-
 		} else if (FileStateHelper.isDeltaState(fileStates)) {
 			return this.getDeltaFile(visibleFileStates)
 		}
@@ -134,19 +131,21 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 			this.notifyFileChanged()
 			if (this.newFileLoaded) {
 				this.notifyLoadingFileStatus()
-				this.threeOrbitControlsService.autoFitTo();
+				this.threeOrbitControlsService.autoFitTo()
 				this.newFileLoaded = false
 			}
 		}
 	}
 
 	private allNecessaryRenderDataAvailable(): boolean {
-		return this.lastRender.fileStates !== null
-			&& this.lastRender.settings !== null
-			&& this.lastRender.metricData !== null
-			&& _.values(this.lastRender.settings.dynamicSettings).every(x => {
-				return x !== null && _.values(x).every(x => (x !== null))
+		return (
+			this.lastRender.fileStates !== null &&
+			this.lastRender.settings !== null &&
+			this.lastRender.metricData !== null &&
+			_.values(this.lastRender.settings.dynamicSettings).every(x => {
+				return x !== null && _.values(x).every(x => x !== null)
 			})
+		)
 	}
 
 	private notifyLoadingFileStatus() {

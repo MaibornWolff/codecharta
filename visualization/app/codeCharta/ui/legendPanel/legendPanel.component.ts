@@ -1,12 +1,12 @@
-import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service"
+import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import $ from "jquery"
-import {IRootScopeService} from "angular"
+import { IRootScopeService } from "angular"
 import "./legendPanel.component.scss"
-import {ColorConverter} from "../../util/colorConverter"
-import {ColorRange, MarkedPackage, RecursivePartial, Settings} from "../../codeCharta.model"
-import {CodeChartaService} from "../../codeCharta.service"
-import {FileStateService} from "../../state/fileState.service"
-import {FileStateHelper} from "../../util/fileStateHelper"
+import { ColorConverter } from "../../util/colorConverter"
+import { ColorRange, MarkedPackage, RecursivePartial, Settings } from "../../codeCharta.model"
+import { CodeChartaService } from "../../codeCharta.service"
+import { FileStateService } from "../../state/fileState.service"
+import { FileStateHelper } from "../../util/fileStateHelper"
 
 export interface PackageList {
 	colorPixel: string
@@ -25,10 +25,7 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 	}
 
 	/* @ngInject */
-	constructor(
-		private $rootScope: IRootScopeService,
-		private fileStateService: FileStateService
-	) {
+	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
 		SettingsService.subscribe(this.$rootScope, this)
 		this.initAnimations()
 	}
@@ -49,7 +46,9 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 	}
 
 	private refreshNormalColors(s: Settings) {
-		const positive = ColorConverter.getImageDataUri(s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive)
+		const positive = ColorConverter.getImageDataUri(
+			s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive
+		)
 		const neutral = ColorConverter.getImageDataUri(s.appSettings.mapColors.neutral)
 		const negative = ColorConverter.getImageDataUri(s.appSettings.mapColors.negative)
 		$("#green").attr("src", positive)

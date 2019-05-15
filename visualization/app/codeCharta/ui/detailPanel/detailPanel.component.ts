@@ -7,10 +7,10 @@ import {
 	CodeMapMouseEventServiceSubscriber
 } from "../codeMap/codeMap.mouseEvent.service"
 import { Settings, KeyValuePair, MetricData, RecursivePartial } from "../../codeCharta.model"
-import {Node} from "../../codeCharta.model";
-import {MetricService, MetricServiceSubscriber} from "../../state/metric.service";
-import {FileStateService} from "../../state/fileState.service";
-import {FileStateHelper} from "../../util/fileStateHelper";
+import { Node } from "../../codeCharta.model"
+import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
+import { FileStateService } from "../../state/fileState.service"
+import { FileStateHelper } from "../../util/fileStateHelper"
 
 interface CommonDetails {
 	areaAttributeName: string
@@ -40,10 +40,9 @@ interface Details {
 }
 
 export class DetailPanelController implements SettingsServiceSubscriber, CodeMapMouseEventServiceSubscriber, MetricServiceSubscriber {
-
 	private _viewModel: {
-		maximizeDetailPanel: boolean,
-		metrics: string[],
+		maximizeDetailPanel: boolean
+		metrics: string[]
 		details: Details
 	} = {
 		maximizeDetailPanel: null,
@@ -92,18 +91,16 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 		private $timeout,
 		private fileStateService: FileStateService
 	) {
-
 		MetricService.subscribe(this.$rootScope, this)
 		SettingsService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribe(this.$rootScope, this)
 	}
 
 	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
-		this._viewModel.metrics = metricData.map(x => x.name);
+		this._viewModel.metrics = metricData.map(x => x.name)
 	}
 
-	public onMetricDataRemoved(event: angular.IAngularEvent) {
-	}
+	public onMetricDataRemoved(event: angular.IAngularEvent) {}
 
 	public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
 		this.onHover(data)
@@ -113,8 +110,7 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 		this.onSelect(data)
 	}
 
-	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
-	}
+	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this._viewModel.details.common.areaAttributeName = settings.dynamicSettings.areaMetric

@@ -2,17 +2,14 @@ import "./settingsPanel.component.scss"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import $ from "jquery"
 import { RecursivePartial, Settings } from "../../codeCharta.model"
-import {IAngularEvent, IRootScopeService, ITimeoutService} from "angular"
+import { IAngularEvent, IRootScopeService, ITimeoutService } from "angular"
 
 export class SettingsPanelController implements SettingsServiceSubscriber {
 	private _viewModel = {
 		blacklistLength: 0
 	}
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private $timeout: ITimeoutService
-	) {
+	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService) {
 		SettingsService.subscribe(this.$rootScope, this)
 	}
 
@@ -20,7 +17,7 @@ export class SettingsPanelController implements SettingsServiceSubscriber {
 		$panel.collapse()
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>,  event: IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent) {
 		if (settings.fileSettings.blacklist.length != this._viewModel.blacklistLength) {
 			this.highlightCounterIcon()
 		}

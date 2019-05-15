@@ -1,39 +1,29 @@
-import {
-	ColorRange,
-	DynamicSettings,
-	FileSettings,
-	FileState,
-	MapColors,
-	RecursivePartial,
-	Settings
-} from "../codeCharta.model"
+import { ColorRange, DynamicSettings, FileSettings, FileState, MapColors, RecursivePartial, Settings } from "../codeCharta.model"
 import _ from "lodash"
-import {IAngularEvent, IRootScopeService, ITimeoutService} from "angular"
-import {FileStateService, FileStateServiceSubscriber} from "./fileState.service";
-import {FileStateHelper} from "../util/fileStateHelper";
-import {SettingsMerger} from "../util/settingsMerger";
-import {Vector3} from "three"
+import { IAngularEvent, IRootScopeService, ITimeoutService } from "angular"
+import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
+import { FileStateHelper } from "../util/fileStateHelper"
+import { SettingsMerger } from "../util/settingsMerger"
+import { Vector3 } from "three"
 import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
 
 export interface SettingsServiceSubscriber {
-	onSettingsChanged(settings: Settings, update : RecursivePartial<Settings>, event: IAngularEvent)
+	onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent)
 }
 
 export class SettingsService implements FileStateServiceSubscriber {
-
 	private static SETTINGS_CHANGED_EVENT = "settings-changed"
 
 	private settings: Settings
-	private readonly debounceBroadcast: (update : RecursivePartial<Settings>) => void
+	private readonly debounceBroadcast: (update: RecursivePartial<Settings>) => void
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private $timeout: ITimeoutService,
-		private loadingGifService : LoadingGifService
-	) {
+	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private loadingGifService: LoadingGifService) {
 		this.settings = this.getDefaultSettings()
-		this.debounceBroadcast = _.debounce((update : RecursivePartial<Settings>) =>
-			this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, { settings: this.settings, update: update}), 400)
+		this.debounceBroadcast = _.debounce(
+			(update: RecursivePartial<Settings>) =>
+				this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, { settings: this.settings, update: update }),
+			400
+		)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
@@ -46,17 +36,16 @@ export class SettingsService implements FileStateServiceSubscriber {
 		})
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-	}
+	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
 
 	public getSettings(): Settings {
 		return this.settings
 	}
 
-	public updateSettings(update: RecursivePartial<Settings>, isSilent : boolean = false) {
+	public updateSettings(update: RecursivePartial<Settings>, isSilent: boolean = false) {
 		// _.merge(this.settings, update) didnt work with arrays like blacklist
 		this.settings = this.updateSettingsUsingPartialSettings(this.settings, update)
-		if(!isSilent) {
+		if (!isSilent) {
 			this.loadingGifService.updateLoadingMapFlag(true)
 			this.debounceBroadcast(update)
 		}
@@ -79,9 +68,9 @@ export class SettingsService implements FileStateServiceSubscriber {
 			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"]
 		}
 
-		const scaling: Vector3 = new Vector3(1,1,1)
+		const scaling: Vector3 = new Vector3(1, 1, 1)
 		const camera: Vector3 = new Vector3(0, 300, 1000)
-		const colorRange: ColorRange = {flipped: false, from: null, to: null}
+		const colorRange: ColorRange = { flipped: false, from: null, to: null }
 
 		let settings: Settings = {
 			fileSettings: {

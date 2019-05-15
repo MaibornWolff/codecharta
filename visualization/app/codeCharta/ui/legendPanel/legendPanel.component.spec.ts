@@ -30,10 +30,7 @@ describe("LegendPanelController", () => {
 	}
 
 	function rebuildController() {
-		legendPanelController = new LegendPanelController(
-			$rootScope,
-			fileStateService
-		)
+		legendPanelController = new LegendPanelController($rootScope, fileStateService)
 	}
 
 	describe("MarkingColor in Legend", () => {
@@ -50,28 +47,24 @@ describe("LegendPanelController", () => {
 				}
 			]
 
-			legendPanelController.onSettingsChanged(settings, undefined,null)
+			legendPanelController.onSettingsChanged(settings, undefined, null)
 
 			expect(legendPanelController["_viewModel"].packageLists).toEqual(expectedPackageLists)
 		})
 
 		it("shorten too long pathName in middle of the string for legendPanel", () => {
-			settings.fileSettings.markedPackages = [
-				{ color: "#FF0000", path: "/root/a/longNameToBeShortenedInLegend", attributes: {} }
-			]
+			settings.fileSettings.markedPackages = [{ color: "#FF0000", path: "/root/a/longNameToBeShortenedInLegend", attributes: {} }]
 			const shortenedPathname = "longNameToBe...enedInLegend"
 
-			legendPanelController.onSettingsChanged(settings, undefined,null)
+			legendPanelController.onSettingsChanged(settings, undefined, null)
 			expect(legendPanelController["_viewModel"].packageLists[0].markedPackages[0].attributes["name"]).toEqual(shortenedPathname)
 		})
 
 		it("shorten too long pathName at beginning of the string for legendPanel", () => {
-			settings.fileSettings.markedPackages = [
-				{ color: "#FF0000", path: "/root/a/andAnotherLongNameToShorten", attributes: {} }
-			]
+			settings.fileSettings.markedPackages = [{ color: "#FF0000", path: "/root/a/andAnotherLongNameToShorten", attributes: {} }]
 			const shortenedPathname = ".../andAnotherLongNameToShorten"
 
-			legendPanelController.onSettingsChanged(settings, undefined,null)
+			legendPanelController.onSettingsChanged(settings, undefined, null)
 			expect(legendPanelController["_viewModel"].packageLists[0].markedPackages[0].attributes["name"]).toEqual(shortenedPathname)
 		})
 	})

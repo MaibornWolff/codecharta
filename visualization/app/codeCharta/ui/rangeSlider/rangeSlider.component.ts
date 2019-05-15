@@ -1,14 +1,13 @@
-import {SettingsService, SettingsServiceSubscriber} from "../../state/settings.service"
+import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import "./rangeSlider.component.scss"
 import $ from "jquery"
-import {RecursivePartial, Settings} from "../../codeCharta.model"
-import {MetricService} from "../../state/metric.service";
-import {FileStateService} from "../../state/fileState.service";
-import {IRootScopeService} from "angular";
-import {FileStateHelper} from "../../util/fileStateHelper";
+import { RecursivePartial, Settings } from "../../codeCharta.model"
+import { MetricService } from "../../state/metric.service"
+import { FileStateService } from "../../state/fileState.service"
+import { IRootScopeService } from "angular"
+import { FileStateHelper } from "../../util/fileStateHelper"
 
 export class RangeSliderController implements SettingsServiceSubscriber {
-
 	private maxMetricValue: number
 	private DIGIT_WIDTH: number = 11
 	private MIN_DIGITS: number = 4
@@ -16,13 +15,13 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	private FULL_WIDTH_SLIDER: number = 235
 
 	private _viewModel: {
-		colorRangeFrom: number,
-		colorRangeTo: number,
+		colorRangeFrom: number
+		colorRangeTo: number
 		sliderOptions: any
 	} = {
 		colorRangeFrom: null,
 		colorRangeTo: null,
-		sliderOptions: {disabled : false}
+		sliderOptions: { disabled: false }
 	}
 
 	/* @ngInject */
@@ -36,13 +35,11 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-
 		if (this.metricService.getMetricData()) {
 			this.initSliderOptions(settings)
 		}
 
-		if (settings.dynamicSettings.neutralColorRange.from
-			&& settings.dynamicSettings.neutralColorRange.to) {
+		if (settings.dynamicSettings.neutralColorRange.from && settings.dynamicSettings.neutralColorRange.to) {
 			this.updateViewModel(settings)
 			this.updateSliderColors(settings)
 			this.updateInputFieldWidth(settings)
@@ -132,11 +129,10 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		const middleSection = slider.find(".rz-selection")
 		const rightSection = slider.find(".rz-right-out-selection .rz-bar")
 
-        leftSection.css("cssText", "background: " + rangeColors.left + " !important; width: " + rangeFromPercentage + "%;")
-        middleSection.css("cssText", "background: " + rangeColors.middle + " !important;")
-        rightSection.css("cssText", "background: " + rangeColors.right + ";")
-    }
-
+		leftSection.css("cssText", "background: " + rangeColors.left + " !important; width: " + rangeFromPercentage + "%;")
+		middleSection.css("cssText", "background: " + rangeColors.middle + " !important;")
+		rightSection.css("cssText", "background: " + rangeColors.right + ";")
+	}
 }
 
 export const rangeSliderComponent = {
