@@ -233,7 +233,7 @@ describe("MetricChooserController", () => {
 		metricChooserController["_viewModel"].heightMetric = "height"
 		metricChooserController.hoveredHeightDelta = 2
 		services.settingsService.getSettings = jest.fn(() => {
-			return { appSettings: { deltaColorFlipped: true } }
+			return { appSettings: { invertDeltaColors: true } }
 		})
 
 		metricChooserController.onBuildingHovered(dataDelta, null)

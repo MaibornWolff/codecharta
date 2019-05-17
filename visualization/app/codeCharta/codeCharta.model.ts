@@ -75,12 +75,12 @@ export interface AppSettings {
 	amountOfTopLabels: number
 	scaling: Vector3
 	camera: Vector3
-	deltaColorFlipped: boolean
 	enableEdgeArrows: boolean
 	hideFlatBuildings: boolean
 	maximizeDetailPanel: boolean
-	invertHeight: boolean
 	invertColorRange: boolean
+	invertDeltaColors: boolean
+	invertHeight: boolean
 	dynamicMargin: boolean
 	isWhiteBackground: boolean
 	mapColors: MapColors

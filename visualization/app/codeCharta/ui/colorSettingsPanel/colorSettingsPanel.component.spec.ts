@@ -83,7 +83,7 @@ describe("ColorSettingsPanelController", () => {
 
 	describe("onSettingsChanged", () => {
 		it("should set delta color flipped flag", () => {
-			let settings = { appSettings: { deltaColorFlipped: true }, dynamicSettings: {} } as Settings
+			let settings = { appSettings: { invertDeltaColors: true }, dynamicSettings: {} } as Settings
 
 			colorSettingsPanelController.onSettingsChanged(settings, undefined, null)
 
@@ -201,7 +201,7 @@ describe("ColorSettingsPanelController", () => {
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				appSettings: {
 					invertColorRange: false,
-					deltaColorFlipped: true,
+					invertDeltaColors: true,
 					whiteColorBuildings: true
 				}
 			})

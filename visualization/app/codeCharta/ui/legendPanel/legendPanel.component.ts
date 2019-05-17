@@ -61,10 +61,10 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 
 	private refreshDeltaColors(s: Settings) {
 		const positiveDeltaPixel = ColorConverter.getImageDataUri(
-			s.appSettings.deltaColorFlipped ? s.appSettings.mapColors.negativeDelta : s.appSettings.mapColors.positiveDelta
+			s.appSettings.invertDeltaColors ? s.appSettings.mapColors.negativeDelta : s.appSettings.mapColors.positiveDelta
 		)
 		const negativeDeltaPixel = ColorConverter.getImageDataUri(
-			s.appSettings.deltaColorFlipped ? s.appSettings.mapColors.positiveDelta : s.appSettings.mapColors.negativeDelta
+			s.appSettings.invertDeltaColors ? s.appSettings.mapColors.positiveDelta : s.appSettings.mapColors.negativeDelta
 		)
 		$("#positiveDelta").attr("src", positiveDeltaPixel)
 		$("#negativeDelta").attr("src", negativeDeltaPixel)

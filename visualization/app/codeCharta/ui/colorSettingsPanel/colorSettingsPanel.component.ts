@@ -31,7 +31,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-		this._viewModel.deltaColorFlipped = settings.appSettings.deltaColorFlipped
+		this._viewModel.deltaColorFlipped = settings.appSettings.invertDeltaColors
 		this._viewModel.whiteColorBuildings = settings.appSettings.whiteColorBuildings
 		this._viewModel.invertColorRange = settings.appSettings.invertColorRange
 
@@ -66,7 +66,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 	public applySettings() {
 		this.settingsService.updateSettings({
 			appSettings: {
-				deltaColorFlipped: this._viewModel.deltaColorFlipped,
+				invertDeltaColors: this._viewModel.deltaColorFlipped,
 				whiteColorBuildings: this._viewModel.whiteColorBuildings,
 				invertColorRange: this._viewModel.invertColorRange
 			}

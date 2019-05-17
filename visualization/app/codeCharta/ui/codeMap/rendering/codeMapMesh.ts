@@ -141,7 +141,7 @@ export class CodeMapMesh {
 	}
 
 	private initMaterial(settings: Settings): void {
-		if (settings.appSettings.deltaColorFlipped) {
+		if (settings.appSettings.invertDeltaColors) {
 			this.setDeltaColorsFlipped(settings)
 		} else {
 			this.setDeltaColorsUnflipped(settings)

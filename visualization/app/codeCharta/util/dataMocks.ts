@@ -358,7 +358,7 @@ export const SETTINGS: Settings = {
 		amountOfTopLabels: 31,
 		scaling: new THREE.Vector3(1, 1.8, 1),
 		camera: new THREE.Vector3(0, 300, 1000),
-		deltaColorFlipped: false,
+		invertDeltaColors: false,
 		enableEdgeArrows: true,
 		hideFlatBuildings: true,
 		maximizeDetailPanel: false,
@@ -389,7 +389,7 @@ export const DEFAULT_SETTINGS: Settings = {
 	appSettings: {
 		amountOfTopLabels: 1,
 		camera: new THREE.Vector3(0, 300, 1000),
-		deltaColorFlipped: false,
+		invertDeltaColors: false,
 		dynamicMargin: true,
 		enableEdgeArrows: true,
 		hideFlatBuildings: true,
