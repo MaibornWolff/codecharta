@@ -99,18 +99,6 @@ describe("treeMapGenerator", () => {
 			expect(node.attributes["b"]).toBe(undefined)
 		})
 
-		it("filtered Edge Attributes are obtained, giving positive width and length", () => {
-			settings.dynamicSettings.areaMetric = "pairingRate"
-			settings.dynamicSettings.heightMetric = "pairingRate"
-			settings.fileSettings.edges = VALID_EDGES
-			metricData = [{ name: "pairingRate", maxValue: 100, availableInVisibleMaps: true }]
-
-			let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
-
-			expect(node.children[1].width).toBeGreaterThan(0)
-			expect(node.children[1].length).toBeGreaterThan(0)
-		})
-
 		it("area should be zero if metric does not exist", () => {
 			settings.dynamicSettings.areaMetric = "unknown"
 			settings.dynamicSettings.heightMetric = "unknown"
