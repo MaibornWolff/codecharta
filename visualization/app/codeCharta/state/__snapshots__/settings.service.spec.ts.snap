@@ -9,11 +9,11 @@ Object {
       "y": 300,
       "z": 1000,
     },
-    "invertDeltaColors": false,
     "dynamicMargin": true,
     "enableEdgeArrows": true,
     "hideFlatBuildings": true,
     "invertColorRange": false,
+    "invertDeltaColors": false,
     "invertHeight": false,
     "isWhiteBackground": false,
     "mapColors": Object {
