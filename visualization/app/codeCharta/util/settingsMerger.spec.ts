@@ -1,294 +1,274 @@
-import {
-    AttributeType,
-    BlacklistItem,
-    BlacklistType,
-    CCFile,
-    Edge,
-    FileSettings,
-    MarkedPackage
-} from "../codeCharta.model";
-import {SettingsMerger} from "./settingsMerger";
+import { AttributeType, BlacklistItem, BlacklistType, CCFile, Edge, FileSettings, MarkedPackage } from "../codeCharta.model"
+import { SettingsMerger } from "./settingsMerger"
 
 describe("SettingsMerger", () => {
+	const file1: CCFile = {
+		fileMeta: {
+			fileName: "file1",
+			projectName: "Sample Project",
+			apiVersion: "1.1"
+		},
+		map: {
+			name: "root",
+			type: "Folder",
+			attributes: {},
+			children: []
+		},
+		settings: {
+			fileSettings: {
+				edges: [],
+				blacklist: [],
+				markedPackages: [],
+				attributeTypes: {}
+			}
+		}
+	}
 
-    const file1: CCFile = {
-        fileMeta: {
-            fileName: "file1",
-            projectName: "Sample Project",
-            apiVersion: "1.1"
-        },
-        map: {
-            name: "root",
-            type: "Folder",
-            attributes: {},
-            children: []
-        },
-        settings: {
-            fileSettings: {
-                edges: [],
-                blacklist: [],
-                markedPackages: [],
-                attributeTypes: {}
-            }
-        }
-    };
+	const file2: CCFile = {
+		fileMeta: {
+			fileName: "file2",
+			projectName: "Sample Project",
+			apiVersion: "1.1"
+		},
+		map: {
+			name: "root",
+			type: "Folder",
+			attributes: {},
+			children: []
+		},
+		settings: {
+			fileSettings: {
+				edges: [],
+				blacklist: [],
+				markedPackages: [],
+				attributeTypes: {}
+			}
+		}
+	}
 
-    const file2: CCFile = {
-        fileMeta: {
-            fileName: "file2",
-            projectName: "Sample Project",
-            apiVersion: "1.1"
-        },
-        map: {
-            name: "root",
-            type: "Folder",
-            attributes: {},
-            children: []
-        },
-        settings: {
-            fileSettings: {
-                edges: [],
-                blacklist: [],
-                markedPackages: [],
-                attributeTypes: {}
-            }
-        }
-    };
+	describe("Edges merge", () => {
+		let edge1: Edge
+		let edge2: Edge
+		let edge3: Edge
+		let edge4: Edge
 
-    describe("Edges merge", () => {
+		beforeEach(() => {
+			edge1 = {
+				fromNodeName: "/root/nodeA",
+				toNodeName: "/root/nodeB",
+				attributes: {
+					attribute1: 10,
+					attribute2: 20
+				}
+			}
 
-        let edge1: Edge
-        let edge2: Edge
-        let edge3: Edge
-        let edge4: Edge
+			edge2 = {
+				fromNodeName: "/root/nodeA",
+				toNodeName: "/root/nodeC",
+				attributes: {
+					attribute1: 10,
+					attribute2: 20
+				}
+			}
 
-        beforeEach(() => {
-            edge1 = {
-                fromNodeName: "/root/nodeA",
-                toNodeName: "/root/nodeB",
-                attributes: {
-                    attribute1: 10,
-                    attribute2: 20
-                }
-            }
+			edge3 = {
+				fromNodeName: "/root/nodeA",
+				toNodeName: "/root/nodeB",
+				attributes: {
+					attribute3: 30,
+					attribute4: 40
+				}
+			}
 
-            edge2 = {
-                fromNodeName: "/root/nodeA",
-                toNodeName: "/root/nodeC",
-                attributes: {
-                    attribute1: 10,
-                    attribute2: 20
-                }
-            }
+			edge4 = {
+				fromNodeName: "/root/nodeA",
+				toNodeName: "/root/nodeB",
+				attributes: {
+					attribute1: 70,
+					attribute2: 80
+				}
+			}
+		})
 
-            edge3 = {
-                fromNodeName: "/root/nodeA",
-                toNodeName: "/root/nodeB",
-                attributes: {
-                    attribute3: 30,
-                    attribute4: 40
-                }
-            }
+		it("should merge empty edges-arrays", () => {
+			file1.settings.fileSettings.edges = []
+			file2.settings.fileSettings.edges = []
+			let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
+			expect(fileSettings.edges).toEqual([])
+		})
 
-            edge4 = {
-                fromNodeName: "/root/nodeA",
-                toNodeName: "/root/nodeB",
-                attributes: {
-                    attribute1: 70,
-                    attribute2: 80
-                }
-            }
-        })
+		it("should merge different edges", () => {
+			file1.settings.fileSettings.edges = [edge1]
+			file2.settings.fileSettings.edges = [edge2]
+			let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
+			expect(fileSettings.edges).toMatchSnapshot()
+		})
 
+		it("should merge all edges if one file does not contain edges", () => {
+			file1.settings.fileSettings.edges = [edge1, edge2]
+			file2.settings.fileSettings.edges = null
+			let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
+			expect(fileSettings.edges).toMatchSnapshot()
+		})
 
-        it("should merge empty edges-arrays", () => {
-            file1.settings.fileSettings.edges = [];
-            file2.settings.fileSettings.edges = [];
-            let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2]);
-            expect(fileSettings.edges).toEqual([]);
-        });
+		it("should merge edge-attributes for the same edge paths", () => {
+			file1.settings.fileSettings.edges = [edge1]
+			file2.settings.fileSettings.edges = [edge3]
+			let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
+			expect(fileSettings.edges).toMatchSnapshot()
+		})
 
-        it("should merge different edges", () => {
-            file1.settings.fileSettings.edges = [edge1];
-            file2.settings.fileSettings.edges = [edge2];
-            let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2]);
-            expect(fileSettings.edges).toMatchSnapshot();
-        });
+		it("should overwrite duplicated edge-attributes for the same edge", () => {
+			file1.settings.fileSettings.edges = [edge1]
+			file2.settings.fileSettings.edges = [edge4]
+			let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
+			expect(fileSettings.edges).toMatchSnapshot()
+		})
+	})
 
-        it("should merge all edges if one file does not contain edges", () => {
-            file1.settings.fileSettings.edges = [edge1, edge2];
-            file2.settings.fileSettings.edges = null;
-            let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2]);
-            expect(fileSettings.edges).toMatchSnapshot();
-        });
+	describe("MarkedPackages merge", () => {
+		let mp1: MarkedPackage
+		let mp2: MarkedPackage
+		let mp3: MarkedPackage
+		let mp4: MarkedPackage
 
-        it("should merge edge-attributes for the same edge paths", () => {
-            file1.settings.fileSettings.edges = [edge1];
-            file2.settings.fileSettings.edges = [edge3];
-            let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2]);
-            expect(fileSettings.edges).toMatchSnapshot();
-        });
+		beforeEach(() => {
+			mp1 = {
+				path: "/root/nodeA",
+				color: "#ABABAB",
+				attributes: {
+					name: "nodeA"
+				}
+			}
 
-        it("should overwrite duplicated edge-attributes for the same edge", () => {
-            file1.settings.fileSettings.edges = [edge1];
-            file2.settings.fileSettings.edges = [edge4];
-            let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2]);
-            expect(fileSettings.edges).toMatchSnapshot();
-        });
+			mp2 = {
+				path: "/root/nodeB",
+				color: "#FFFFFF",
+				attributes: {
+					name: "nodeB"
+				}
+			}
 
-    });
+			mp3 = {
+				path: "/root/nodeA",
+				color: "#ABABAB",
+				attributes: {
+					another: "nodeA"
+				}
+			}
 
-    describe("MarkedPackages merge", () => {
+			mp4 = {
+				path: "/root/nodeA",
+				color: "#ABABAB",
+				attributes: {
+					name: "overwrite nodeA"
+				}
+			}
+		})
 
-        let mp1: MarkedPackage
-        let mp2: MarkedPackage
-        let mp3: MarkedPackage
-        let mp4: MarkedPackage
+		it("should merge empty markedPackage-arrays", () => {
+			file1.settings.fileSettings.markedPackages = []
+			file2.settings.fileSettings.markedPackages = []
+			const fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
+			expect(fileSettings.markedPackages).toEqual([])
+		})
 
-        beforeEach(() => {
-            mp1 = {
-                path: "/root/nodeA",
-                color: "#ABABAB",
-                attributes: {
-                    name: "nodeA"
-                }
-            }
+		it("should merge different markedPackages", () => {
+			file1.settings.fileSettings.markedPackages = [mp1]
+			file2.settings.fileSettings.markedPackages = [mp2]
+			const fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
+			expect(fileSettings.markedPackages).toMatchSnapshot()
+		})
 
-            mp2 = {
-                path: "/root/nodeB",
-                color: "#FFFFFF",
-                attributes: {
-                    name: "nodeB"
-                }
-            }
+		it("should merge all markedPackages if one file does not contain markedPackages", () => {
+			file1.settings.fileSettings.markedPackages = [mp1, mp2]
+			file2.settings.fileSettings.markedPackages = null
+			const fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
+			expect(fileSettings.markedPackages).toMatchSnapshot()
+		})
 
-            mp3 = {
-                path: "/root/nodeA",
-                color: "#ABABAB",
-                attributes: {
-                    another: "nodeA"
-                }
-            }
+		it("should merge markedPackage-attributes for the same markedPackage paths", () => {
+			file1.settings.fileSettings.markedPackages = [mp1]
+			file2.settings.fileSettings.markedPackages = [mp3]
+			const fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
+			expect(fileSettings.markedPackages).toMatchSnapshot()
+		})
 
-            mp4 = {
-                path: "/root/nodeA",
-                color: "#ABABAB",
-                attributes: {
-                    name: "overwrite nodeA"
-                }
-            }
-        })
+		it("should overwrite duplicated markedPackage-attributes for the same markedPackage", () => {
+			file1.settings.fileSettings.markedPackages = [mp1]
+			file2.settings.fileSettings.markedPackages = [mp4]
+			const fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
+			expect(fileSettings.markedPackages).toMatchSnapshot()
+		})
+	})
 
+	describe("AttributeTypes merge", () => {
+		const attributes1 = {
+			nodes: {
+				["attribute1"]: AttributeType.absolute
+			},
+			edges: {
+				["attribute2"]: AttributeType.relative
+			}
+		}
 
-        it("should merge empty markedPackage-arrays", () => {
-            file1.settings.fileSettings.markedPackages = [];
-            file2.settings.fileSettings.markedPackages = [];
-            const fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2]);
-            expect(fileSettings.markedPackages).toEqual([]);
-        });
+		const attributes2 = {
+			nodes: {
+				["attribute3"]: AttributeType.absolute
+			},
+			edges: {
+				["attribute4"]: AttributeType.relative
+			}
+		}
 
-        it("should merge different markedPackages", () => {
-            file1.settings.fileSettings.markedPackages = [mp1];
-            file2.settings.fileSettings.markedPackages = [mp2];
-            const fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2]);
-            expect(fileSettings.markedPackages).toMatchSnapshot();
-        });
+		const attributes3 = {
+			nodes: {
+				["attribute1"]: AttributeType.relative
+			},
+			edges: {}
+		}
 
-        it("should merge all markedPackages if one file does not contain markedPackages", () => {
-            file1.settings.fileSettings.markedPackages = [mp1, mp2];
-            file2.settings.fileSettings.markedPackages = null;
-            const fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2]);
-            expect(fileSettings.markedPackages).toMatchSnapshot();
-        });
+		it("should merge different attributeTypes", () => {
+			file1.settings.fileSettings.attributeTypes = attributes1
+			file2.settings.fileSettings.attributeTypes = attributes2
+			let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
+			expect(fileSettings.attributeTypes).toMatchSnapshot()
+		})
 
-        it("should merge markedPackage-attributes for the same markedPackage paths", () => {
-            file1.settings.fileSettings.markedPackages = [mp1];
-            file2.settings.fileSettings.markedPackages = [mp3];
-            const fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2]);
-            expect(fileSettings.markedPackages).toMatchSnapshot();
-        });
+		it("should merge attributeTypes if one file does not contain attributeTypes", () => {
+			file1.settings.fileSettings.attributeTypes = attributes1
+			file2.settings.fileSettings.attributeTypes = {}
+			let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
+			expect(fileSettings.attributeTypes).toMatchSnapshot()
+		})
 
-        it("should overwrite duplicated markedPackage-attributes for the same markedPackage", () => {
-            file1.settings.fileSettings.markedPackages = [mp1];
-            file2.settings.fileSettings.markedPackages = [mp4];
-            const fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2]);
-            expect(fileSettings.markedPackages).toMatchSnapshot();
-        });
+		it("should overwrite attributeType if the same exists", () => {
+			file1.settings.fileSettings.attributeTypes = attributes1
+			file2.settings.fileSettings.attributeTypes = attributes3
+			let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
+			expect(fileSettings.attributeTypes).toMatchSnapshot()
+		})
+	})
 
-    });
+	describe("Blacklist merge", () => {
+		const blacklistItem1: BlacklistItem = { path: "/root/nodeA", type: BlacklistType.exclude }
+		const blacklistItem2: BlacklistItem = { path: "/another/nodeB", type: BlacklistType.hide }
+		const blacklistItem3: BlacklistItem = { path: "/another/nodeC", type: BlacklistType.exclude }
+		const blacklistItem4: BlacklistItem = { path: "*prefix/nodeD", type: BlacklistType.hide }
+		const blacklistItem1Duplicate: BlacklistItem = { path: "/root/nodeA", type: BlacklistType.exclude }
 
+		it("should merge blacklist for different paths", () => {
+			file1.settings.fileSettings.blacklist = [blacklistItem1, blacklistItem2]
+			file2.settings.fileSettings.blacklist = [blacklistItem3, blacklistItem4]
+			let fileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
+			expect(fileSettings.blacklist).toMatchSnapshot()
+		})
 
-    describe("AttributeTypes merge", ()=> {
-
-        const attributes1 = {
-            nodes: {
-                ["attribute1"]: AttributeType.absolute
-            },
-            edges: {
-                ["attribute2"]: AttributeType.relative
-            }
-        };
-
-        const attributes2 = {
-            nodes: {
-                ["attribute3"]: AttributeType.absolute
-            },
-            edges: {
-                ["attribute4"]: AttributeType.relative
-            }
-        };
-
-        const attributes3 = {
-            nodes: {
-                ["attribute1"]: AttributeType.relative
-            },
-            edges: {}
-        };
-
-        it("should merge different attributeTypes", () => {
-            file1.settings.fileSettings.attributeTypes = attributes1;
-            file2.settings.fileSettings.attributeTypes = attributes2;
-            let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1,file2]);
-            expect(fileSettings.attributeTypes).toMatchSnapshot();
-        });
-
-        it("should merge attributeTypes if one file does not contain attributeTypes", () => {
-            file1.settings.fileSettings.attributeTypes = attributes1;
-            file2.settings.fileSettings.attributeTypes = {};
-            let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1,file2]);
-            expect(fileSettings.attributeTypes).toMatchSnapshot();
-        });
-
-        it("should overwrite attributeType if the same exists", () => {
-            file1.settings.fileSettings.attributeTypes = attributes1;
-            file2.settings.fileSettings.attributeTypes = attributes3;
-            let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1,file2]);
-            expect(fileSettings.attributeTypes).toMatchSnapshot();
-        });
-
-    });
-
-    describe("Blacklist merge", ()=> {
-
-        const blacklistItem1: BlacklistItem = {path: "/root/nodeA", type: BlacklistType.exclude}
-        const blacklistItem2: BlacklistItem = {path: "/another/nodeB", type: BlacklistType.hide}
-        const blacklistItem3: BlacklistItem = {path: "/another/nodeC", type: BlacklistType.exclude}
-        const blacklistItem4: BlacklistItem = {path: "*prefix/nodeD", type: BlacklistType.hide}
-        const blacklistItem1Duplicate: BlacklistItem = {path: "/root/nodeA", type: BlacklistType.exclude}
-
-
-        it("should merge blacklist for different paths", () => {
-            file1.settings.fileSettings.blacklist = [blacklistItem1, blacklistItem2];
-            file2.settings.fileSettings.blacklist = [blacklistItem3, blacklistItem4];
-            let fileSettings = SettingsMerger.getMergedFileSettings([file1,file2]);
-            expect(fileSettings.blacklist).toMatchSnapshot();
-        });
-
-        it("should only contain unique paths+type", () => {
-            file1.settings.fileSettings.blacklist = [blacklistItem1, blacklistItem2];
-            file2.settings.fileSettings.blacklist = [blacklistItem1Duplicate, blacklistItem4];
-            let fileSettings = SettingsMerger.getMergedFileSettings([file1,file2]);
-            expect(fileSettings.blacklist).toMatchSnapshot();
-        });
-    });
-});
+		it("should only contain unique paths+type", () => {
+			file1.settings.fileSettings.blacklist = [blacklistItem1, blacklistItem2]
+			file2.settings.fileSettings.blacklist = [blacklistItem1Duplicate, blacklistItem4]
+			let fileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
+			expect(fileSettings.blacklist).toMatchSnapshot()
+		})
+	})
+})

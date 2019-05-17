@@ -107,12 +107,7 @@ export class TreeMapGenerator {
 	}
 
 	private static isOnlyVisibleInComparisonMap(node: CodeMapNode, s: Settings): boolean {
-		return (
-			node &&
-			node.deltas &&
-			node.deltas[s.dynamicSettings.heightMetric] < 0 &&
-			node.attributes[s.dynamicSettings.areaMetric] === 0
-		)
+		return node && node.deltas && node.deltas[s.dynamicSettings.heightMetric] < 0 && node.attributes[s.dynamicSettings.areaMetric] === 0
 	}
 
 	private static calculateValue(node: CodeMapNode, s: Settings): number {

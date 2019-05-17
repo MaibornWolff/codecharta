@@ -1,14 +1,7 @@
-import {
-	AttributeType,
-	Edge,
-	BlacklistItem,
-	CCFile,
-	FileSettings, MarkedPackage
-} from "../codeCharta.model"
-import {CodeChartaService} from "../codeCharta.service";
+import { AttributeType, Edge, BlacklistItem, CCFile, FileSettings, MarkedPackage } from "../codeCharta.model"
+import { CodeChartaService } from "../codeCharta.service"
 
 export class SettingsMerger {
-
 	private static edges: Edge[] = []
 	private static markedPackages: MarkedPackage[] = []
 	private static blacklist: BlacklistItem[] = []
@@ -35,15 +28,17 @@ export class SettingsMerger {
 		if (inputFile.settings.fileSettings.edges) {
 			for (let oldEdge of inputFile.settings.fileSettings.edges as Edge[]) {
 				let edge: Edge = {
-					fromNodeName: withUpdatedPath ? this.getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.fromNodeName) : oldEdge.fromNodeName,
+					fromNodeName: withUpdatedPath
+						? this.getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.fromNodeName)
+						: oldEdge.fromNodeName,
 					toNodeName: withUpdatedPath ? this.getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.toNodeName) : oldEdge.toNodeName,
 					attributes: oldEdge.attributes,
 					visible: oldEdge.visible
 				}
 				const equalEdgeItem = this.edges.find(e => e.fromNodeName == edge.fromNodeName && e.toNodeName == edge.toNodeName)
 
-				if(equalEdgeItem) {
-					for(let key in edge.attributes) {
+				if (equalEdgeItem) {
+					for (let key in edge.attributes) {
 						equalEdgeItem.attributes[key] = edge.attributes[key]
 					}
 				} else {
@@ -57,14 +52,16 @@ export class SettingsMerger {
 		if (inputFile.settings.fileSettings.markedPackages) {
 			for (let oldMarkedPackages of inputFile.settings.fileSettings.markedPackages as MarkedPackage[]) {
 				let markedPackage: MarkedPackage = {
-					path: withUpdatedPath ? this.getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldMarkedPackages.path) : oldMarkedPackages.path,
+					path: withUpdatedPath
+						? this.getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldMarkedPackages.path)
+						: oldMarkedPackages.path,
 					color: oldMarkedPackages.color,
 					attributes: oldMarkedPackages.attributes
 				}
 				const equalMarkedPackages = this.markedPackages.find(x => x.path == markedPackage.path && x.color == markedPackage.color)
 
 				if (equalMarkedPackages) {
-					for(let key in markedPackage.attributes) {
+					for (let key in markedPackage.attributes) {
 						equalMarkedPackages.attributes[key] = markedPackage.attributes[key]
 					}
 				} else {
@@ -78,10 +75,12 @@ export class SettingsMerger {
 		if (inputFile.settings.fileSettings.blacklist) {
 			for (let oldBlacklistItem of inputFile.settings.fileSettings.blacklist as BlacklistItem[]) {
 				let blacklistItem: BlacklistItem = {
-					path: withUpdatedPath ? this.getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldBlacklistItem.path) : oldBlacklistItem.path,
+					path: withUpdatedPath
+						? this.getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldBlacklistItem.path)
+						: oldBlacklistItem.path,
 					type: oldBlacklistItem.type
 				}
-				const equalBlacklistItems =  this.blacklist.find(b => b.path == blacklistItem.path && b.type == blacklistItem.type)
+				const equalBlacklistItems = this.blacklist.find(b => b.path == blacklistItem.path && b.type == blacklistItem.type)
 
 				if (!equalBlacklistItems) {
 					this.blacklist.push(blacklistItem)
