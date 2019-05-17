@@ -78,8 +78,6 @@ export class TreeMapGenerator {
 	}
 
 	private static calculateValue(node: CodeMapNode, s: Settings): number {
-		let result = 0
-
 		if (CodeMapHelper.isBlacklisted(node, s.fileSettings.blacklist, BlacklistType.exclude)) {
 			return 0
 		}
@@ -88,33 +86,13 @@ export class TreeMapGenerator {
 			return Math.abs(node.deltas[s.dynamicSettings.areaMetric])
 		}
 
-		if (!node.children || node.children.length === 0) {
-			if (node.attributes && node.attributes[s.dynamicSettings.areaMetric]) {
-				result = node.attributes[s.dynamicSettings.areaMetric] || 0
-			} else {
-				result = this.getEdgeValue(node, s)
-			}
+		if (this.isNodeLeaf(node) && node.attributes && node.attributes[s.dynamicSettings.areaMetric]) {
+			return node.attributes[s.dynamicSettings.areaMetric]
 		}
-
-		return result
+		return 0
 	}
 
-	// TODO: For which use-case do we need this?
-	private static getEdgeValue(node: CodeMapNode, s: Settings) {
-		let filteredEdgeAttributes: number[] = []
-
-		if (s.fileSettings.edges) {
-			s.fileSettings.edges.forEach(edge => {
-				if (edge.fromNodeName == node.path || edge.toNodeName == node.path) {
-					filteredEdgeAttributes.push(edge.attributes[s.dynamicSettings.areaMetric])
-				}
-			})
-		}
-
-		if (filteredEdgeAttributes && filteredEdgeAttributes.length > 0) {
-			return filteredEdgeAttributes.sort().reverse()[0]
-		}
-
-		return 0
+	private static isNodeLeaf(node: CodeMapNode) {
+		return !node.children || node.children.length === 0
 	}
 }
