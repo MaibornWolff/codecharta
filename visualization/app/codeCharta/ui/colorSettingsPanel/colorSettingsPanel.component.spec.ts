@@ -100,7 +100,7 @@ describe("ColorSettingsPanelController", () => {
 
 		it("should set neutralColorRangeFlipped", () => {
 			let settings = {
-				dynamicSettings: { neutralColorRange: { flipped: true }, colorMetric: "foo" },
+				dynamicSettings: { colorRange: { flipped: true }, colorMetric: "foo" },
 				appSettings: {}
 			} as Settings
 			colorSettingsPanelController["lastColorMetric"] = "foo"
@@ -130,7 +130,7 @@ describe("ColorSettingsPanelController", () => {
 			colorSettingsPanelController.onSettingsChanged(settingsService.getSettings(), undefined, null)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				dynamicSettings: { neutralColorRange: { flipped: false, from: 33.33, to: 66.66 } }
+				dynamicSettings: { colorRange: { flipped: false, from: 33.33, to: 66.66 } }
 			})
 		})
 	})
@@ -171,7 +171,7 @@ describe("ColorSettingsPanelController", () => {
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				dynamicSettings: {
-					neutralColorRange: {
+					colorRange: {
 						flipped: false,
 						from: 33.33,
 						to: 66.66
@@ -199,7 +199,7 @@ describe("ColorSettingsPanelController", () => {
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				dynamicSettings: {
-					neutralColorRange: {
+					colorRange: {
 						flipped: false
 					}
 				},

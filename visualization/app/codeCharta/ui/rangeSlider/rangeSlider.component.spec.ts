@@ -43,11 +43,11 @@ describe("RangeSliderController", () => {
 	})
 
 	describe("onSettingsChanged", () => {
-		it("should only call initSliderOptions when settings.dynamicSettings.neutralColorRange is undefined", () => {
+		it("should only call initSliderOptions when settings.dynamicSettings.colorRange is undefined", () => {
 			rangeSliderController.initSliderOptions = jest.fn()
 			rangeSliderController["updateViewModel"] = jest.fn()
 
-			const settings = { dynamicSettings: { neutralColorRange: { flipped: false, from: null, to: null } } } as Settings
+			const settings = { dynamicSettings: { colorRange: { flipped: false, from: null, to: null } } } as Settings
 
 			rangeSliderController.onSettingsChanged(settings, undefined, undefined)
 
@@ -55,11 +55,11 @@ describe("RangeSliderController", () => {
 			expect(rangeSliderController["updateViewModel"]).not.toHaveBeenCalled()
 		})
 
-		it("should only call initSliderOptions when settings.dynamicSettings.neutralColorRange is null", () => {
+		it("should only call initSliderOptions when settings.dynamicSettings.colorRange is null", () => {
 			rangeSliderController.initSliderOptions = jest.fn()
 			rangeSliderController["updateViewModel"] = jest.fn()
 
-			const settings = { dynamicSettings: { neutralColorRange: { flipped: false, from: null, to: null } } } as Settings
+			const settings = { dynamicSettings: { colorRange: { flipped: false, from: null, to: null } } } as Settings
 
 			rangeSliderController.onSettingsChanged(settings, undefined, undefined)
 
@@ -73,8 +73,8 @@ describe("RangeSliderController", () => {
 			rangeSliderController.onSettingsChanged(SETTINGS, undefined, undefined)
 
 			expect(rangeSliderController.initSliderOptions).toHaveBeenCalledWith(SETTINGS)
-			expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(SETTINGS.dynamicSettings.neutralColorRange.from)
-			expect(rangeSliderController["_viewModel"].colorRangeTo).toBe(SETTINGS.dynamicSettings.neutralColorRange.to)
+			expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(SETTINGS.dynamicSettings.colorRange.from)
+			expect(rangeSliderController["_viewModel"].colorRangeTo).toBe(SETTINGS.dynamicSettings.colorRange.to)
 		})
 
 		it("should call initSliderOptions and update the viewModel, set grey range colors and inputfield width", () => {
@@ -84,8 +84,8 @@ describe("RangeSliderController", () => {
 			rangeSliderController.onSettingsChanged(SETTINGS, undefined, undefined)
 
 			expect(rangeSliderController.initSliderOptions).toHaveBeenCalledWith(SETTINGS)
-			expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(SETTINGS.dynamicSettings.neutralColorRange.from)
-			expect(rangeSliderController["_viewModel"].colorRangeTo).toBe(SETTINGS.dynamicSettings.neutralColorRange.to)
+			expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(SETTINGS.dynamicSettings.colorRange.from)
+			expect(rangeSliderController["_viewModel"].colorRangeTo).toBe(SETTINGS.dynamicSettings.colorRange.to)
 		})
 	})
 

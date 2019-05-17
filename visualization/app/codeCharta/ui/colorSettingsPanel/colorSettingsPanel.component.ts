@@ -41,8 +41,8 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 			this.lastColorMetric = settings.dynamicSettings.colorMetric
 			const maxMetricValue = this.metricService.getMaxMetricByMetricName(settings.dynamicSettings.colorMetric)
 			this.adaptColorRange(settings, maxMetricValue)
-		} else if (settings.dynamicSettings.neutralColorRange) {
-			this._viewModel.neutralColorRangeFlipped = settings.dynamicSettings.neutralColorRange.flipped
+		} else if (settings.dynamicSettings.colorRange) {
+			this._viewModel.neutralColorRangeFlipped = settings.dynamicSettings.colorRange.flipped
 		}
 	}
 
@@ -67,7 +67,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 	public applySettings() {
 		this.settingsService.updateSettings({
 			dynamicSettings: {
-				neutralColorRange: {
+				colorRange: {
 					flipped: this._viewModel.neutralColorRangeFlipped
 				}
 			},
@@ -79,17 +79,17 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 	}
 
 	private containsColorRangeValues(settings): boolean {
-		return _.values(settings.dynamicSettings.neutralColorRange).every(x => x != null)
+		return _.values(settings.dynamicSettings.colorRange).every(x => x != null)
 	}
 
 	private adaptColorRange(s: Settings, maxMetricValue: number) {
-		const flipped = s.dynamicSettings.neutralColorRange ? s.dynamicSettings.neutralColorRange.flipped : false
+		const flipped = s.dynamicSettings.colorRange ? s.dynamicSettings.colorRange.flipped : false
 		const firstThird = Math.round((maxMetricValue / 3) * 100) / 100
 		const secondThird = Math.round(firstThird * 2 * 100) / 100
 
 		this.settingsService.updateSettings({
 			dynamicSettings: {
-				neutralColorRange: {
+				colorRange: {
 					flipped: flipped,
 					from: firstThird,
 					to: secondThird

@@ -47,14 +47,14 @@ Object {
   "dynamicSettings": Object {
     "areaMetric": null,
     "colorMetric": null,
-    "focusedNodePath": "",
-    "heightMetric": null,
-    "margin": null,
-    "neutralColorRange": Object {
+    "colorRange": Object {
       "flipped": false,
       "from": null,
       "to": null,
     },
+    "focusedNodePath": "",
+    "heightMetric": null,
+    "margin": null,
     "searchPattern": "",
     "searchedNodePaths": Array [],
   },

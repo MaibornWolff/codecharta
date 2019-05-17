@@ -87,7 +87,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 				searchedNodePaths: [],
 				searchPattern: "",
 				margin: null,
-				neutralColorRange: colorRange
+				colorRange: colorRange
 			},
 			appSettings: {
 				amountOfTopLabels: 1,
@@ -118,7 +118,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 			searchedNodePaths: defaultSettings.dynamicSettings.searchedNodePaths,
 			searchPattern: defaultSettings.dynamicSettings.searchPattern,
 			margin: defaultSettings.dynamicSettings.margin,
-			neutralColorRange: defaultSettings.dynamicSettings.neutralColorRange
+			colorRange: defaultSettings.dynamicSettings.colorRange
 		}
 	}
 

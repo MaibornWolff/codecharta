@@ -98,7 +98,7 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 		this.settingsService.updateSettings({
 			dynamicSettings: {
 				colorMetric: this._viewModel.colorMetric,
-				neutralColorRange: this.settingsService.getDefaultSettings().dynamicSettings.neutralColorRange
+				colorRange: this.settingsService.getDefaultSettings().dynamicSettings.colorRange
 			}
 		})
 	}

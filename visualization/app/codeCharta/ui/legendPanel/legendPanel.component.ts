@@ -31,7 +31,7 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 	}
 
 	public onSettingsChanged(s: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-		this._viewModel.colorRange = s.dynamicSettings.neutralColorRange
+		this._viewModel.colorRange = s.dynamicSettings.colorRange
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 
 		const select = ColorConverter.getImageDataUri(s.appSettings.mapColors.selected)

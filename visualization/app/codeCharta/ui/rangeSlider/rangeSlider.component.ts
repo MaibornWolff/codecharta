@@ -39,7 +39,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 			this.initSliderOptions(settings)
 		}
 
-		if (settings.dynamicSettings.neutralColorRange.from && settings.dynamicSettings.neutralColorRange.to) {
+		if (settings.dynamicSettings.colorRange.from && settings.dynamicSettings.colorRange.to) {
 			this.updateViewModel(settings)
 			this.updateSliderColors(settings)
 			this.updateInputFieldWidth(settings)
@@ -47,8 +47,8 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	}
 
 	private updateViewModel(settings: Settings) {
-		this._viewModel.colorRangeFrom = settings.dynamicSettings.neutralColorRange.from
-		this._viewModel.colorRangeTo = settings.dynamicSettings.neutralColorRange.to
+		this._viewModel.colorRangeFrom = settings.dynamicSettings.colorRange.from
+		this._viewModel.colorRangeTo = settings.dynamicSettings.colorRange.to
 	}
 
 	public initSliderOptions(settings: Settings = this.settingsService.getSettings()) {
@@ -79,7 +79,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	private applySettings() {
 		this.settingsService.updateSettings({
 			dynamicSettings: {
-				neutralColorRange: {
+				colorRange: {
 					to: this._viewModel.colorRangeTo,
 					from: this._viewModel.colorRangeFrom
 				}
@@ -88,8 +88,8 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	}
 
 	private updateInputFieldWidth(s: Settings) {
-		let fromLength = s.dynamicSettings.neutralColorRange.from.toFixed().toString().length + 1
-		let toLength = s.dynamicSettings.neutralColorRange.to.toFixed().toString().length + 1
+		let fromLength = s.dynamicSettings.colorRange.from.toFixed().toString().length + 1
+		let toLength = s.dynamicSettings.colorRange.to.toFixed().toString().length + 1
 		let fromWidth = Math.min(Math.max(this.MIN_DIGITS, fromLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 		let toWidth = Math.min(Math.max(this.MIN_DIGITS, toLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 
@@ -116,9 +116,9 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		let mapColorPositive = s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive
 
 		let rangeColors = {
-			left: s.dynamicSettings.neutralColorRange.flipped ? s.appSettings.mapColors.negative : mapColorPositive,
+			left: s.dynamicSettings.colorRange.flipped ? s.appSettings.mapColors.negative : mapColorPositive,
 			middle: s.appSettings.mapColors.neutral,
-			right: s.dynamicSettings.neutralColorRange.flipped ? mapColorPositive : s.appSettings.mapColors.negative
+			right: s.dynamicSettings.colorRange.flipped ? mapColorPositive : s.appSettings.mapColors.negative
 		}
 		return rangeColors
 	}

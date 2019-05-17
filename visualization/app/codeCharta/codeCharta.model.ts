@@ -68,7 +68,7 @@ export interface DynamicSettings {
 	searchedNodePaths: Array<string>
 	searchPattern: string
 	margin: number
-	neutralColorRange: ColorRange
+	colorRange: ColorRange
 }
 
 export interface AppSettings {

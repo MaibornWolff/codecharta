@@ -352,7 +352,7 @@ export const SETTINGS: Settings = {
 		searchedNodePaths: [],
 		searchPattern: "",
 		margin: 48,
-		neutralColorRange: { flipped: false, from: 19, to: 67 }
+		colorRange: { flipped: false, from: 19, to: 67 }
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
@@ -418,7 +418,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		focusedNodePath: "",
 		heightMetric: null,
 		margin: null,
-		neutralColorRange: {
+		colorRange: {
 			flipped: false,
 			from: null,
 			to: null
