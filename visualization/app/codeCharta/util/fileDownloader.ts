@@ -3,7 +3,6 @@ import * as d3 from "d3"
 import { CCFile, CodeMapNode } from "../codeCharta.model"
 
 export class FileDownloader {
-
 	private static allSettingsNames: string[] = ["edges", "blacklist", "markedPackages"]
 
 	public static downloadCurrentMap(file: CCFile, downloadSettingsNames: string[], fileName: string) {
@@ -16,11 +15,11 @@ export class FileDownloader {
 			projectName: file.fileMeta.projectName,
 			apiVersion: file.fileMeta.apiVersion,
 			nodes: [this.removeJsonHashkeysAndVisibleAttribute(file.map)],
-			attributeTypes: file.settings.fileSettings.attributeTypes,
+			attributeTypes: file.settings.fileSettings.attributeTypes
 		}
 
 		this.allSettingsNames.forEach(settingsName => {
-			if(downloadSettingsNames.includes(settingsName)) {
+			if (downloadSettingsNames.includes(settingsName)) {
 				downloadObject[settingsName] = file.settings.fileSettings[settingsName]
 			}
 		})

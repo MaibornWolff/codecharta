@@ -1,5 +1,5 @@
 import "./codeMap.module"
-import "../../codeCharta"
+import "../../codeCharta.module"
 import { IRootScopeService, IWindowService } from "angular"
 import { CodeMapMouseEventService, CodeMapMouseEventServiceSubscriber } from "./codeMap.mouseEvent.service"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
@@ -15,7 +15,6 @@ import { TEST_FILE_WITH_PATHS, TEST_NODE_ROOT } from "../../util/dataMocks"
 import * as THREE from "three"
 
 describe("codeMapMouseEventService", () => {
-
 	let codeMapMouseEventService: CodeMapMouseEventService
 
 	let $rootScope: IRootScopeService
@@ -26,7 +25,7 @@ describe("codeMapMouseEventService", () => {
 	let threeUpdateCycleService: ThreeUpdateCycleService
 	let codeMapRenderService: CodeMapRenderService
 
-	let codeMapBuilding : CodeMapBuilding
+	let codeMapBuilding: CodeMapBuilding
 
 	beforeEach(() => {
 		restartSystem()
@@ -121,8 +120,8 @@ describe("codeMapMouseEventService", () => {
 	function withMockedCodeMapRenderService() {
 		codeMapRenderService = codeMapMouseEventService["codeMapRenderService"] = jest.fn().mockReturnValue({
 			mapMesh: {
-				getMeshDescription : jest.fn().mockReturnValue({
-					buildings : [codeMapBuilding]
+				getMeshDescription: jest.fn().mockReturnValue({
+					buildings: [codeMapBuilding]
 				})
 			}
 		})()
@@ -321,7 +320,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should not do anything if hovered.node.link is null", () => {
-			codeMapMouseEventService["hovered"] = {node: { link: null}}
+			codeMapMouseEventService["hovered"] = { node: { link: null } }
 
 			codeMapMouseEventService.onDocumentDoubleClick(undefined)
 
@@ -329,7 +328,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should call open with link if hovered.node.link is defined", () => {
-			codeMapMouseEventService["hovered"] = {node: { link: 1}}
+			codeMapMouseEventService["hovered"] = { node: { link: 1 } }
 
 			codeMapMouseEventService.onDocumentDoubleClick(undefined)
 
@@ -340,42 +339,42 @@ describe("codeMapMouseEventService", () => {
 	describe("onBuildingHovered", () => {
 		it("should broadcast a building-hovered event and clear mesh highlight", () => {
 			withMockedEventMethods()
-			threeSceneService.getMapMesh = jest.fn().mockReturnValue( {clearHighlight : jest.fn() })
+			threeSceneService.getMapMesh = jest.fn().mockReturnValue({ clearHighlight: jest.fn() })
 
-			codeMapMouseEventService.onBuildingHovered(null, null);
+			codeMapMouseEventService.onBuildingHovered(null, null)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-hovered", { to: null, from: null })
 			expect(threeSceneService.getMapMesh).toHaveBeenCalled()
 		})
 
 		it("should broadcast a building-hovered event and set mesh highlight", () => {
-			threeSceneService.getMapMesh = jest.fn().mockReturnValue({ setHighlighted : jest.fn() })
+			threeSceneService.getMapMesh = jest.fn().mockReturnValue({ setHighlighted: jest.fn() })
 
-			codeMapMouseEventService.onBuildingHovered(null, codeMapBuilding);
+			codeMapMouseEventService.onBuildingHovered(null, codeMapBuilding)
 
 			expect(threeSceneService.getMapMesh).toHaveBeenCalled()
 			expect(threeSceneService.getMapMesh().setHighlighted).toHaveBeenCalledWith([codeMapBuilding])
 		})
 
 		it("should add property node", () => {
-			threeSceneService.getMapMesh = jest.fn().mockReturnValue({ setHighlighted : jest.fn() })
+			threeSceneService.getMapMesh = jest.fn().mockReturnValue({ setHighlighted: jest.fn() })
 
 			codeMapBuilding.node = undefined
 			codeMapBuilding.parent = codeMapBuilding
 			codeMapBuilding.parent.node = TEST_NODE_ROOT
 
-			codeMapMouseEventService.onBuildingHovered(null, codeMapBuilding);
+			codeMapMouseEventService.onBuildingHovered(null, codeMapBuilding)
 
 			expect(codeMapBuilding.node).toEqual(codeMapBuilding.parent.node)
 		})
 
 		it("should not add property node if to has no parent", () => {
-			threeSceneService.getMapMesh = jest.fn().mockReturnValue({ setHighlighted : jest.fn() })
+			threeSceneService.getMapMesh = jest.fn().mockReturnValue({ setHighlighted: jest.fn() })
 
 			codeMapBuilding.node = undefined
 			codeMapBuilding.parent = undefined
 
-			codeMapMouseEventService.onBuildingHovered(null, codeMapBuilding);
+			codeMapMouseEventService.onBuildingHovered(null, codeMapBuilding)
 
 			expect(codeMapBuilding.node).not.toEqual(TEST_NODE_ROOT)
 		})
@@ -384,16 +383,15 @@ describe("codeMapMouseEventService", () => {
 	describe("onBuildingSelected", () => {
 		it("should broadcast a building-selected event", () => {
 			withMockedEventMethods()
-			threeSceneService.getMapMesh = jest.fn().mockReturnValue({ setSelected : jest.fn() })
+			threeSceneService.getMapMesh = jest.fn().mockReturnValue({ setSelected: jest.fn() })
 
 			codeMapMouseEventService.onBuildingSelected(codeMapBuilding, codeMapBuilding)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-selected", {to: codeMapBuilding, from: codeMapBuilding})
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-selected", { to: codeMapBuilding, from: codeMapBuilding })
 		})
 
 		it("should clear selection on mesh", () => {
-			threeSceneService.getMapMesh = jest.fn().mockReturnValue({ clearSelected : jest.fn() })
-
+			threeSceneService.getMapMesh = jest.fn().mockReturnValue({ clearSelected: jest.fn() })
 
 			codeMapMouseEventService.onBuildingSelected(codeMapBuilding, null)
 
@@ -402,7 +400,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should clear selection on mesh", () => {
-			threeSceneService.getMapMesh = jest.fn().mockReturnValue({ setSelected : jest.fn() })
+			threeSceneService.getMapMesh = jest.fn().mockReturnValue({ setSelected: jest.fn() })
 
 			codeMapMouseEventService.onBuildingSelected(codeMapBuilding, codeMapBuilding)
 
@@ -444,7 +442,7 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("subscribe", () => {
-		let subscriberMock : CodeMapMouseEventServiceSubscriber
+		let subscriberMock: CodeMapMouseEventServiceSubscriber
 
 		beforeEach(() => {
 			subscriberMock = new MapTreeViewLevelController($rootScope, null, null)
@@ -456,28 +454,28 @@ describe("codeMapMouseEventService", () => {
 		it("should setup three angular event listeners", () => {
 			withMockedEventMethods()
 
-			CodeMapMouseEventService.subscribe($rootScope, null);
+			CodeMapMouseEventService.subscribe($rootScope, null)
 
 			expect($rootScope.$on).toHaveBeenCalledTimes(3)
 		})
 
 		it("should call onBuildingHovered of subscriber", () => {
-			CodeMapMouseEventService.subscribe($rootScope, subscriberMock);
+			CodeMapMouseEventService.subscribe($rootScope, subscriberMock)
 			$rootScope.$broadcast("building-hovered")
 
 			expect(subscriberMock.onBuildingHovered).toHaveBeenCalled()
 		})
 
 		it("should call onBuildingSelected of subscriber", () => {
-			CodeMapMouseEventService.subscribe($rootScope, subscriberMock);
+			CodeMapMouseEventService.subscribe($rootScope, subscriberMock)
 			$rootScope.$broadcast("building-selected")
 
 			expect(subscriberMock.onBuildingSelected).toHaveBeenCalled()
 		})
 
 		it("should call onBuildingRightClicked of subscriber", () => {
-			CodeMapMouseEventService.subscribe($rootScope, subscriberMock);
-			$rootScope.$broadcast("building-right-clicked", {building : 1})
+			CodeMapMouseEventService.subscribe($rootScope, subscriberMock)
+			$rootScope.$broadcast("building-right-clicked", { building: 1 })
 
 			expect(subscriberMock.onBuildingRightClicked).toHaveBeenCalled()
 		})

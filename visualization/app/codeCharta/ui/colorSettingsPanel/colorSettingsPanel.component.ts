@@ -1,9 +1,9 @@
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import "./colorSettingsPanel.component.scss"
-import {FileState, MetricData, RecursivePartial, Settings} from "../../codeCharta.model"
+import { FileState, MetricData, RecursivePartial, Settings } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
-import {MetricService, MetricServiceSubscriber} from "../../state/metric.service"
+import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import _ from "lodash"
 
@@ -24,11 +24,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 	}
 
 	/* @ngInject */
-	constructor(
-		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
-		private metricService: MetricService
-	) {
+	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService, private metricService: MetricService) {
 		SettingsService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 		MetricService.subscribe(this.$rootScope, this)
@@ -38,7 +34,10 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 		this._viewModel.deltaColorFlipped = settings.appSettings.deltaColorFlipped
 		this._viewModel.whiteColorBuildings = settings.appSettings.whiteColorBuildings
 
-		if ((this.lastColorMetric !== settings.dynamicSettings.colorMetric || !this.containsColorRangeValues(settings)) && this.metricService.getMetricData()) {
+		if (
+			(this.lastColorMetric !== settings.dynamicSettings.colorMetric || !this.containsColorRangeValues(settings)) &&
+			this.metricService.getMetricData()
+		) {
 			this.lastColorMetric = settings.dynamicSettings.colorMetric
 			const maxMetricValue = this.metricService.getMaxMetricByMetricName(settings.dynamicSettings.colorMetric)
 			this.adaptColorRange(settings, maxMetricValue)
@@ -53,9 +52,10 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 
 	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
 
-
 	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
-		const newMaxColorMetricValue: number = this.metricService.getMaxMetricByMetricName(this.settingsService.getSettings().dynamicSettings.colorMetric)
+		const newMaxColorMetricValue: number = this.metricService.getMaxMetricByMetricName(
+			this.settingsService.getSettings().dynamicSettings.colorMetric
+		)
 		if (this.lastMaxColorMetricValue !== newMaxColorMetricValue) {
 			this.lastMaxColorMetricValue = newMaxColorMetricValue
 			this.adaptColorRange(this.settingsService.getSettings(), newMaxColorMetricValue)
