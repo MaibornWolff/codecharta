@@ -1,9 +1,12 @@
 import "./fileExtensionBar.component.scss"
 import { SettingsService } from "../../state/settings.service"
 import { ExtensionAttribute, FileExtensionCalculator, MetricDistributionPair } from "../../util/fileExtensionCalculator"
-import { CCFile, CodeMapNode, DynamicSettings } from "../../codeCharta.model"
+import { CCFile, DynamicSettings } from "../../codeCharta.model"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { IRootScopeService } from "angular"
+import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
+import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export class FileExtensionBarController implements CodeMapPreRenderServiceSubscriber {
 	private _viewModel: {
@@ -13,18 +16,52 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private settingsService: SettingsService,
+		private codeMapPreRenderService: CodeMapPreRenderService,
+		private codeMapRenderService: CodeMapRenderService,
+		private threeSceneService: ThreeSceneService
+	) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 
 	public onRenderFileChanged(renderFile: CCFile, event: angular.IAngularEvent) {
-		this.updateFileExtensionBar(renderFile.map)
+		this.updateFileExtensionBar()
 	}
 
-	public updateFileExtensionBar(map: CodeMapNode) {
+	// SUCHE HIER EINE MÖGLICHKEIT DAS ENTSPRECHENDE GEBÄUDE ZU MARKIEREN!!!
+	public highlightBarHoveredBuildings(extension: string) {
+		let buildings: CodeMapBuilding[] = this.codeMapRenderService.mapMesh.getMeshDescription().buildings
+		let toHighlightBuilding: CodeMapBuilding[] = []
+		let counter = 0
+		// d3 und hierarchy wurden importiert richtig so??
+
+		buildings.forEach(x => {
+			if (FileExtensionCalculator.estimateFileExtension(x.node.name) === extension) {
+				counter += 1
+				toHighlightBuilding.push(x)
+			}
+		})
+
+		this.threeSceneService.getMapMesh().setHighlighted(toHighlightBuilding)
+	}
+
+	public hoverIn(extension: string) {
+		this.highlightBarHoveredBuildings(extension)
+	}
+
+	public hoverOut() {
+		this.threeSceneService.getMapMesh().clearHighlight()
+	}
+
+	private updateFileExtensionBar() {
 		const s: DynamicSettings = this.settingsService.getSettings().dynamicSettings
 		const metrics: string[] = [s.distributionMetric]
-		const distribution: MetricDistributionPair = FileExtensionCalculator.getRelativeFileExtensionDistribution(map, metrics)
+		const distribution: MetricDistributionPair = FileExtensionCalculator.getRelativeFileExtensionDistribution(
+			this.codeMapPreRenderService.getRenderFile().map,
+			metrics
+		)
 		const otherExtension: ExtensionAttribute = {
 			fileExtension: "other",
 			absoluteMetricValue: null,
