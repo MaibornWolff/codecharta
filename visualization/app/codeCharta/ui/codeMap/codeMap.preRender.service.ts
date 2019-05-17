@@ -54,7 +54,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this.lastRender.settings = settings
-		if (this.lastRender.fileStates && update.fileSettings && update.fileSettings.blacklist) {
+		if (this.lastRender.fileStates && update.fileSettings && (update.fileSettings.blacklist || update.fileSettings.markedPackages)) {
 			this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
 			this.lastRender.renderFile.settings.fileSettings.blacklist = settings.fileSettings.blacklist
 			this.lastRender.renderFile.settings.fileSettings.markedPackages = settings.fileSettings.markedPackages
