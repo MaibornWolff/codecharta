@@ -63,7 +63,7 @@ export class FileExtensionCalculator {
 		return distribution.map(x => x.absoluteMetricValue).reduce((partialSum, a) => partialSum + a)
 	}
 
-	private static estimateFileExtension(fileName: string): string {
+	public static estimateFileExtension(fileName: string): string {
 		if (fileName.includes(".")) {
 			return fileName
 				.split(".")
