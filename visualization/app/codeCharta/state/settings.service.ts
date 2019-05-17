@@ -70,7 +70,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 		const scaling: Vector3 = new Vector3(1, 1, 1)
 		const camera: Vector3 = new Vector3(0, 300, 1000)
-		const colorRange: ColorRange = { flipped: false, from: null, to: null }
+		const colorRange: ColorRange = { from: null, to: null }
 
 		let settings: Settings = {
 			fileSettings: {
@@ -98,6 +98,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 				hideFlatBuildings: true,
 				maximizeDetailPanel: false,
 				invertHeight: false,
+				invertColorRange: false,
 				dynamicMargin: true,
 				isWhiteBackground: false,
 				whiteColorBuildings: false,

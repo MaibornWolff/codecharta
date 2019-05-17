@@ -149,9 +149,9 @@ export class GeometryGenerator {
 			} else if (n.flat) {
 				color = s.appSettings.mapColors.flat
 			} else if (val < s.dynamicSettings.colorRange.from) {
-				color = s.dynamicSettings.colorRange.flipped ? s.appSettings.mapColors.negative : mapColorPositive
+				color = s.appSettings.invertColorRange ? s.appSettings.mapColors.negative : mapColorPositive
 			} else if (val > s.dynamicSettings.colorRange.to) {
-				color = s.dynamicSettings.colorRange.flipped ? mapColorPositive : s.appSettings.mapColors.negative
+				color = s.appSettings.invertColorRange ? mapColorPositive : s.appSettings.mapColors.negative
 			} else {
 				color = s.appSettings.mapColors.neutral
 			}

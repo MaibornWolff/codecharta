@@ -98,16 +98,18 @@ describe("ColorSettingsPanelController", () => {
 			expect(colorSettingsPanelController["_viewModel"].whiteColorBuildings).toBeTruthy()
 		})
 
-		it("should set neutralColorRangeFlipped", () => {
+		it("should set invertColorRange", () => {
 			let settings = {
-				dynamicSettings: { colorRange: { flipped: true }, colorMetric: "foo" },
-				appSettings: {}
+				dynamicSettings: { colorMetric: "foo" },
+				appSettings: {
+					invertColorRange: true
+				}
 			} as Settings
 			colorSettingsPanelController["lastColorMetric"] = "foo"
 
 			colorSettingsPanelController.onSettingsChanged(settings, undefined, null)
 
-			expect(colorSettingsPanelController["_viewModel"].neutralColorRangeFlipped).toBeTruthy()
+			expect(colorSettingsPanelController["_viewModel"].invertColorRange).toBeTruthy()
 		})
 
 		it("should only adapt color range if color metric is not the same ", () => {
@@ -130,7 +132,7 @@ describe("ColorSettingsPanelController", () => {
 			colorSettingsPanelController.onSettingsChanged(settingsService.getSettings(), undefined, null)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				dynamicSettings: { colorRange: { flipped: false, from: 33.33, to: 66.66 } }
+				dynamicSettings: { colorRange: { from: 33.33, to: 66.66 } }
 			})
 		})
 	})
@@ -172,7 +174,6 @@ describe("ColorSettingsPanelController", () => {
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				dynamicSettings: {
 					colorRange: {
-						flipped: false,
 						from: 33.33,
 						to: 66.66
 					}
@@ -191,19 +192,15 @@ describe("ColorSettingsPanelController", () => {
 
 	describe("applySettings", () => {
 		it("should call update settings correctly", () => {
-			colorSettingsPanelController["_viewModel"].neutralColorRangeFlipped = false
+			colorSettingsPanelController["_viewModel"].invertColorRange = false
 			colorSettingsPanelController["_viewModel"].deltaColorFlipped = true
 			colorSettingsPanelController["_viewModel"].whiteColorBuildings = true
 
 			colorSettingsPanelController.applySettings()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				dynamicSettings: {
-					colorRange: {
-						flipped: false
-					}
-				},
 				appSettings: {
+					invertColorRange: false,
 					deltaColorFlipped: true,
 					whiteColorBuildings: true
 				}

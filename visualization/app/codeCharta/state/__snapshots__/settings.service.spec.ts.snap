@@ -13,6 +13,7 @@ Object {
     "dynamicMargin": true,
     "enableEdgeArrows": true,
     "hideFlatBuildings": true,
+    "invertColorRange": false,
     "invertHeight": false,
     "isWhiteBackground": false,
     "mapColors": Object {
@@ -48,7 +49,6 @@ Object {
     "areaMetric": null,
     "colorMetric": null,
     "colorRange": Object {
-      "flipped": false,
       "from": null,
       "to": null,
     },

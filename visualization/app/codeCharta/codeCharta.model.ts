@@ -80,6 +80,7 @@ export interface AppSettings {
 	hideFlatBuildings: boolean
 	maximizeDetailPanel: boolean
 	invertHeight: boolean
+	invertColorRange: boolean
 	dynamicMargin: boolean
 	isWhiteBackground: boolean
 	mapColors: MapColors
@@ -108,7 +109,6 @@ export interface MapColors {
 export interface ColorRange {
 	from: number
 	to: number
-	flipped: boolean
 }
 
 export interface AttributeTypes {

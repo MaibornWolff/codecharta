@@ -12,12 +12,12 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 	private lastMaxColorMetricValue: number = null
 
 	private _viewModel: {
-		neutralColorRangeFlipped: boolean
+		invertColorRange: boolean
 		deltaColorFlipped: boolean
 		whiteColorBuildings: boolean
 		isDeltaState: boolean
 	} = {
-		neutralColorRangeFlipped: null,
+		invertColorRange: null,
 		deltaColorFlipped: null,
 		whiteColorBuildings: null,
 		isDeltaState: null
@@ -33,6 +33,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this._viewModel.deltaColorFlipped = settings.appSettings.deltaColorFlipped
 		this._viewModel.whiteColorBuildings = settings.appSettings.whiteColorBuildings
+		this._viewModel.invertColorRange = settings.appSettings.invertColorRange
 
 		if (
 			(this.lastColorMetric !== settings.dynamicSettings.colorMetric || !this.containsColorRangeValues(settings)) &&
@@ -41,8 +42,6 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 			this.lastColorMetric = settings.dynamicSettings.colorMetric
 			const maxMetricValue = this.metricService.getMaxMetricByMetricName(settings.dynamicSettings.colorMetric)
 			this.adaptColorRange(settings, maxMetricValue)
-		} else if (settings.dynamicSettings.colorRange) {
-			this._viewModel.neutralColorRangeFlipped = settings.dynamicSettings.colorRange.flipped
 		}
 	}
 
@@ -66,14 +65,10 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 
 	public applySettings() {
 		this.settingsService.updateSettings({
-			dynamicSettings: {
-				colorRange: {
-					flipped: this._viewModel.neutralColorRangeFlipped
-				}
-			},
 			appSettings: {
 				deltaColorFlipped: this._viewModel.deltaColorFlipped,
-				whiteColorBuildings: this._viewModel.whiteColorBuildings
+				whiteColorBuildings: this._viewModel.whiteColorBuildings,
+				invertColorRange: this._viewModel.invertColorRange
 			}
 		})
 	}
@@ -83,14 +78,12 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 	}
 
 	private adaptColorRange(s: Settings, maxMetricValue: number) {
-		const flipped = s.dynamicSettings.colorRange ? s.dynamicSettings.colorRange.flipped : false
 		const firstThird = Math.round((maxMetricValue / 3) * 100) / 100
 		const secondThird = Math.round(firstThird * 2 * 100) / 100
 
 		this.settingsService.updateSettings({
 			dynamicSettings: {
 				colorRange: {
-					flipped: flipped,
 					from: firstThird,
 					to: secondThird
 				}

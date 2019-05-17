@@ -17,10 +17,12 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 	private _viewModel: {
 		isDeltaState: boolean
 		colorRange: ColorRange
+		invertColorRange: boolean
 		packageLists: PackageList[]
 	} = {
 		isDeltaState: null,
 		colorRange: null,
+		invertColorRange: null,
 		packageLists: null
 	}
 
@@ -32,6 +34,7 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 
 	public onSettingsChanged(s: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this._viewModel.colorRange = s.dynamicSettings.colorRange
+		this._viewModel.invertColorRange = s.appSettings.invertColorRange
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 
 		const select = ColorConverter.getImageDataUri(s.appSettings.mapColors.selected)

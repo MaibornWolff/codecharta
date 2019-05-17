@@ -1,7 +1,7 @@
 <range-slider-component></range-slider-component>
 
 <md-input-container class="md-block" ng-if="!$ctrl._viewModel.isDeltaState">
-    <md-checkbox class="md-primary" ng-model="$ctrl._viewModel.neutralColorRangeFlipped" ng-change="$ctrl.applySettings()">
+    <md-checkbox class="md-primary" ng-model="$ctrl._viewModel.invertColorRange" ng-change="$ctrl.applySettings()">
         Invert Colors
     </md-checkbox>
 </md-input-container>
@@ -19,5 +19,5 @@
 </md-input-container>
 
 <reset-settings-button-component
-        settings-names="appSettings.deltaColorFlipped, appSettings.whiteColorBuildings"
+        settings-names="appSettings.invertColorRange, appSettings.deltaColorFlipped, appSettings.whiteColorBuildings"
 ></reset-settings-button-component>

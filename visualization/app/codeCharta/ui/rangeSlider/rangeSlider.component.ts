@@ -116,9 +116,9 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		let mapColorPositive = s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive
 
 		let rangeColors = {
-			left: s.dynamicSettings.colorRange.flipped ? s.appSettings.mapColors.negative : mapColorPositive,
+			left: s.appSettings.invertColorRange ? s.appSettings.mapColors.negative : mapColorPositive,
 			middle: s.appSettings.mapColors.neutral,
-			right: s.dynamicSettings.colorRange.flipped ? mapColorPositive : s.appSettings.mapColors.negative
+			right: s.appSettings.invertColorRange ? mapColorPositive : s.appSettings.mapColors.negative
 		}
 		return rangeColors
 	}

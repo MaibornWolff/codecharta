@@ -143,7 +143,7 @@ describe("MetricChooserController", () => {
 		metricChooserController.applySettingsColorMetric()
 
 		expect(services.settingsService.updateSettings).toBeCalledWith({
-			dynamicSettings: { colorMetric: "c", colorRange: { flipped: false, from: null, to: null } }
+			dynamicSettings: { colorMetric: "c", colorRange: { from: null, to: null } }
 		})
 	})
 

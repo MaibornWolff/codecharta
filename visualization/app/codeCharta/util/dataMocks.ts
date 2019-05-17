@@ -352,7 +352,7 @@ export const SETTINGS: Settings = {
 		searchedNodePaths: [],
 		searchPattern: "",
 		margin: 48,
-		colorRange: { flipped: false, from: 19, to: 67 }
+		colorRange: { from: 19, to: 67 }
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
@@ -363,6 +363,7 @@ export const SETTINGS: Settings = {
 		hideFlatBuildings: true,
 		maximizeDetailPanel: false,
 		invertHeight: true,
+		invertColorRange: false,
 		dynamicMargin: true,
 		isWhiteBackground: false,
 		whiteColorBuildings: true,
@@ -393,6 +394,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		enableEdgeArrows: true,
 		hideFlatBuildings: true,
 		invertHeight: false,
+		invertColorRange: false,
 		isWhiteBackground: false,
 		mapColors: {
 			angularGreen: "#00BFA5",
@@ -419,7 +421,6 @@ export const DEFAULT_SETTINGS: Settings = {
 		heightMetric: null,
 		margin: null,
 		colorRange: {
-			flipped: false,
 			from: null,
 			to: null
 		},
