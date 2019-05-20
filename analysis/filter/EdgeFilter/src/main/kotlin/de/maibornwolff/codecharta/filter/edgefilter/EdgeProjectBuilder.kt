@@ -95,7 +95,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         nodes.forEach {
             val node = Node(it.name, it.type, getAttributes(it, parentPath), it.link)
             insertNodeInProjectBuilder(node, parentPath.toList())
-            if (!it.children.isEmpty()) {
+            if (it.children.isNotEmpty()) {
                 val newParentPath = parentPath.toMutableList() // clone object
                 newParentPath.add(it.name)
                 insertEdgeAttributesIntoNodes(it.children, newParentPath)
@@ -149,7 +149,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
             val attributeType = getAttributeTypeByKey(key)
             val filteredAttribute = filteredEdges.filter { edge: Edge -> edge.attributes.containsKey(key) }
             var aggregatedAttributeValue =
-                    filteredAttribute.sumBy { edge: Edge -> edge.attributes.get(key).toString().toFloat().toInt() }
+                    filteredAttribute.sumBy { edge: Edge -> edge.attributes[key].toString().toFloat().toInt() }
 
             if (attributeType == AttributeType.relative) aggregatedAttributeValue /= filteredAttribute.size
 
@@ -164,7 +164,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
                 println(it.toString()+ it.javaClass.name)
                 println(key)
                 if (it.containsKey(key)) {
-                    // Returning it[key] directly will cause a ClassCastException
+                    // Returning it[key] directly may cause a ClassCastException
                     when(it[key].toString()){
                         "relative" -> return AttributeType.relative
                         "absolute" -> return AttributeType.absolute
