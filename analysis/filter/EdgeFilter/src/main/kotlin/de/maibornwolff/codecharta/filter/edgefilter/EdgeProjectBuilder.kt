@@ -31,7 +31,6 @@ package de.maibornwolff.codecharta.filter.edgefilter
 
 import de.maibornwolff.codecharta.model.*
 import mu.KotlinLogging
-import javax.xml.stream.events.Attribute
 import kotlin.math.max
 
 class EdgeProjectBuilder(private val project: Project, private val pathSeparator: Char) {
@@ -161,9 +160,9 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
 
     private fun getAttributeTypeByKey(key: String): AttributeType {
         if (!project.attributeTypes.isEmpty()) {
-            project.attributeTypes["edges"]?.forEach {
-                return AttributeType.valueOf(it[key]?.toString() ?: AttributeType.absolute.toString())
-            } ?: AttributeType.absolute
+            project.attributeTypes["edges"]!!.forEach {
+                if (it.containsKey(key)) return it[key]!!
+            }
         }
         return AttributeType.absolute
     }
