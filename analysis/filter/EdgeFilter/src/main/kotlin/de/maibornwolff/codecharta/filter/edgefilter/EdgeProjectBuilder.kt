@@ -161,8 +161,6 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     private fun getAttributeTypeByKey(key: String): AttributeType {
         if (!project.attributeTypes.isEmpty()) {
             project.attributeTypes["edges"]!!.forEach {
-                println(it.toString()+ it.javaClass.name)
-                println(key)
                 if (it.containsKey(key)) {
                     // Returning it[key] directly may cause a ClassCastException
                     when(it[key].toString()){
