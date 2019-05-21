@@ -36,7 +36,6 @@ sonarqube {
         property "sonar.projectKey", "de.maibornwolff.codecharta:analysis"
         property "sonar.projectName", "CodeCharta Analysis"
         property "sonar.sourceEncoding", "UTF-8"
-
     }
 }
 
@@ -45,7 +44,13 @@ subprojects {
 
     dependencies {
         implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
+        implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
+
         testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
+        testCompile("org.junit.jupiter:junit-jupiter-api:$junit5_version")
+        testRuntime("org.junit.jupiter:junit-jupiter-engine:$junit5_version")
+        testCompile("org.junit.jupiter:junit-jupiter-params:$junit5_version")
+        testImplementation "com.natpryce:hamkrest:$hamkrest_version"
     }
 
     compileJava {

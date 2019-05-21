@@ -34,7 +34,7 @@ install:
 
 script:
   - ./visualization/script/travis-build.sh
-  - strace ./analysis/script/travis-build.sh
+  - ./analysis/script/travis-build.sh
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
