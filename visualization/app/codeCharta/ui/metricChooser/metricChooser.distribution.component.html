@@ -1,7 +1,7 @@
 <md-input-container>
 	<i class="fa fa-pie-chart"></i>
 
-	<md-select ng-model="$ctrl._viewModel.distributionMetric" ng-change="$ctrl.applySettingsDistributionMetric()">
+	<md-select class="distribution" ng-model="$ctrl._viewModel.distributionMetric" ng-change="$ctrl.applySettingsDistributionMetric()">
 		<md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
 			{{::metric.name}}
 			<span class="metric-max-value">({{::metric.maxValue}})</span>
