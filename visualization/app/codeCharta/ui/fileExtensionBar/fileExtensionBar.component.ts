@@ -1,7 +1,7 @@
 import "./fileExtensionBar.component.scss"
 import { SettingsService } from "../../state/settings.service"
 import { ExtensionAttribute, FileExtensionCalculator, MetricDistributionPair } from "../../util/fileExtensionCalculator"
-import { CCFile, DynamicSettings } from "../../codeCharta.model"
+import { DynamicSettings } from "../../codeCharta.model"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { IRootScopeService } from "angular"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
@@ -26,20 +26,15 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 
-	public onRenderFileChanged(renderFile: CCFile, event: angular.IAngularEvent) {
+	public onRenderFileChanged() {
 		this.updateFileExtensionBar()
 	}
 
-	// SUCHE HIER EINE MÖGLICHKEIT DAS ENTSPRECHENDE GEBÄUDE ZU MARKIEREN!!!
 	public highlightBarHoveredBuildings(extension: string) {
 		let buildings: CodeMapBuilding[] = this.codeMapRenderService.mapMesh.getMeshDescription().buildings
 		let toHighlightBuilding: CodeMapBuilding[] = []
-		let counter = 0
-		// d3 und hierarchy wurden importiert richtig so??
-
 		buildings.forEach(x => {
 			if (FileExtensionCalculator.estimateFileExtension(x.node.name) === extension) {
-				counter += 1
 				toHighlightBuilding.push(x)
 			}
 		})
@@ -47,11 +42,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		this.threeSceneService.getMapMesh().setHighlighted(toHighlightBuilding)
 	}
 
-	public hoverIn(extension: string) {
-		this.highlightBarHoveredBuildings(extension)
-	}
-
-	public hoverOut() {
+	public clearHighlightedBarHoveredBuildings() {
 		this.threeSceneService.getMapMesh().clearHighlight()
 	}
 
@@ -62,19 +53,20 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 			this.codeMapPreRenderService.getRenderFile().map,
 			metrics
 		)
+		const visibleExtensions: ExtensionAttribute[] = []
 		const otherExtension: ExtensionAttribute = {
 			fileExtension: "other",
 			absoluteMetricValue: null,
 			relativeMetricValue: 0,
 			color: "#676867"
 		}
-		const visibleExtensions: ExtensionAttribute[] = []
-		distribution[s.distributionMetric].forEach(x => {
-			if (x.relativeMetricValue < 5) {
-				otherExtension.relativeMetricValue += x.relativeMetricValue
+
+		distribution[s.distributionMetric].forEach(currentExtension => {
+			if (currentExtension.relativeMetricValue < 5) {
+				otherExtension.relativeMetricValue += currentExtension.relativeMetricValue
 			} else {
-				x.color = this.numberToHsl(this.hashCode(x.fileExtension))
-				visibleExtensions.push(x)
+				currentExtension.color = this.numberToHsl(this.hashCode(currentExtension.fileExtension))
+				visibleExtensions.push(currentExtension)
 			}
 		})
 		if (otherExtension.relativeMetricValue > 0) {
@@ -83,10 +75,10 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		this._viewModel.distribution = visibleExtensions
 	}
 
-	private hashCode(str): number {
+	private hashCode(fileExtension: string): number {
 		let hash: number = 0
-		for (let i = 0; i < str.length; i++) {
-			hash = str.charCodeAt(i) + ((hash << 5) - hash)
+		for (let i = 0; i < fileExtension.length; i++) {
+			hash = fileExtension.charCodeAt(i) + ((hash << 5) - hash)
 		}
 		return hash
 	}

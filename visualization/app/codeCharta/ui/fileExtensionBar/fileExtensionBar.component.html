@@ -6,8 +6,8 @@
 		ng-style="{ 'width': item.relativeMetricValue + '%', 'background': item.color, 'border-left': '1px solid #fff' }"
 	>
 		<p
-			ng-mouseover="$ctrl.hoverIn(item.fileExtension)"
-			ng-mouseleave="$ctrl.hoverOut()"
+			ng-mouseover="$ctrl.highlightBarHoveredBuildings(item.fileExtension)"
+			ng-mouseleave="$ctrl.clearHighlightedBarHoveredBuildings()"
 			title="{{ item.fileExtension }}: {{ item.relativeMetricValue.toFixed(2) }}%"
 		>
 			{{ item.fileExtension }}
@@ -15,8 +15,8 @@
 	</div>
 	<div class="float-left" ng-repeat-end ng-if="$first" ng-style="{ 'width': item.relativeMetricValue + '%', 'background': item.color}">
 		<p
-			ng-mouseover="$ctrl.hoverIn(item.fileExtension)"
-			ng-mouseleave="$ctrl.hoverOut()"
+			ng-mouseover="$ctrl.highlightBarHoveredBuildings(item.fileExtension)"
+			ng-mouseleave="$ctrl.clearHighlightedBarHoveredBuildings()"
 			title="{{ item.fileExtension }}: {{ item.relativeMetricValue.toFixed(2) }}%"
 		>
 			{{ item.fileExtension }}
