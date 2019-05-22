@@ -352,17 +352,18 @@ export const SETTINGS: Settings = {
 		searchedNodePaths: [],
 		searchPattern: "",
 		margin: 48,
-		neutralColorRange: { flipped: false, from: 19, to: 67 }
+		colorRange: { from: 19, to: 67 }
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
 		scaling: new THREE.Vector3(1, 1.8, 1),
 		camera: new THREE.Vector3(0, 300, 1000),
-		deltaColorFlipped: false,
+		invertDeltaColors: false,
 		enableEdgeArrows: true,
 		hideFlatBuildings: true,
 		maximizeDetailPanel: false,
 		invertHeight: true,
+		invertColorRange: false,
 		dynamicMargin: true,
 		isWhiteBackground: false,
 		whiteColorBuildings: true,
@@ -388,11 +389,12 @@ export const DEFAULT_SETTINGS: Settings = {
 	appSettings: {
 		amountOfTopLabels: 1,
 		camera: new THREE.Vector3(0, 300, 1000),
-		deltaColorFlipped: false,
+		invertDeltaColors: false,
 		dynamicMargin: true,
 		enableEdgeArrows: true,
 		hideFlatBuildings: true,
 		invertHeight: false,
+		invertColorRange: false,
 		isWhiteBackground: false,
 		mapColors: {
 			angularGreen: "#00BFA5",
@@ -418,8 +420,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		focusedNodePath: "",
 		heightMetric: null,
 		margin: null,
-		neutralColorRange: {
-			flipped: false,
+		colorRange: {
 			from: null,
 			to: null
 		},

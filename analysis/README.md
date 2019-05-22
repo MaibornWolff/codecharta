@@ -73,13 +73,13 @@ To run it you can call `ccsh`
 
 Via gradle:
 
-> ./gradlew :distTar
+> ./gradlew distTar
 
 ## Test
 
 - Unit tests:
 
-> ./gradlew :test
+> ./gradlew test
 
 - Integration tests:
 

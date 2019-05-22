@@ -9,10 +9,11 @@ Object {
       "y": 300,
       "z": 1000,
     },
-    "deltaColorFlipped": false,
     "dynamicMargin": true,
     "enableEdgeArrows": true,
     "hideFlatBuildings": true,
+    "invertColorRange": false,
+    "invertDeltaColors": false,
     "invertHeight": false,
     "isWhiteBackground": false,
     "mapColors": Object {
@@ -47,14 +48,13 @@ Object {
   "dynamicSettings": Object {
     "areaMetric": null,
     "colorMetric": null,
-    "focusedNodePath": "",
-    "heightMetric": null,
-    "margin": null,
-    "neutralColorRange": Object {
-      "flipped": false,
+    "colorRange": Object {
       "from": null,
       "to": null,
     },
+    "focusedNodePath": "",
+    "heightMetric": null,
+    "margin": null,
     "searchPattern": "",
     "searchedNodePaths": Array [],
   },
