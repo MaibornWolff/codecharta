@@ -26,6 +26,9 @@
 
 <div class="section-body ">
 	<div class="float-left" ng-repeat="item in $ctrl._viewModel.distribution">
-		<p class="extensionInfo">{{ item.fileExtension }} : {{ item.relativeMetricValue.toFixed(2) }}%</p>
+		<p class="extensionInfo">
+			<span class="dot" ng-style="{'background': item.color}"></span>{{ item.fileExtension }} :
+			{{ item.relativeMetricValue.toFixed(2) }}%
+		</p>
 	</div>
 </div>

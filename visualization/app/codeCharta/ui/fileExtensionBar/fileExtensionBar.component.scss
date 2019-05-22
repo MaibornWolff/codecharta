@@ -18,7 +18,16 @@ file-extension-bar-component {
 		height: 25px;
 		color: white;
 		text-align: center;
-		background-color: grey;
+		background-color: rgba(255, 249, 224, 0.815);
+	}
+
+	.dot {
+		height: 10px;
+		width: 10px;
+		background-color: #bbb;
+		border-radius: 50%;
+		display: inline-block;
+		margin-right: 15px;
 	}
 
 	p {
@@ -30,5 +39,6 @@ file-extension-bar-component {
 	p.extensionInfo {
 		font-size: 18px;
 		margin-left: 50px;
+		color: grey;
 	}
 }
