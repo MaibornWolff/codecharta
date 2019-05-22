@@ -7,6 +7,7 @@ import { IRootScopeService } from "angular"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { FaceNormalsHelper } from "three"
 
 export class FileExtensionBarController implements CodeMapPreRenderServiceSubscriber {
 	private _viewModel: {
@@ -14,6 +15,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	} = {
 		distribution: []
 	}
+	private isExtensiveMode: boolean = false
 
 	/* @ngInject */
 	constructor(
@@ -44,6 +46,18 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 
 	public clearHighlightedBarHoveredBuildings() {
 		this.threeSceneService.getMapMesh().clearHighlight()
+	}
+
+	public toggleExtensiveState() {
+		if (this.isExtensiveMode === true) {
+			this.isExtensiveMode = false
+		} else {
+			this.isExtensiveMode = true
+		}
+	}
+
+	public getIsExtensiveMode() {
+		return this.isExtensiveMode
 	}
 
 	private updateFileExtensionBar() {

@@ -4,6 +4,7 @@
 		ng-repeat-start="item in $ctrl._viewModel.distribution"
 		ng-if="!$first"
 		ng-style="{ 'width': item.relativeMetricValue + '%', 'background': item.color, 'border-left': '1px solid #fff' }"
+		ng-click="$ctrl.toggleExtensive()"
 	>
 		<p
 			ng-mouseover="$ctrl.highlightBarHoveredBuildings(item.fileExtension)"
@@ -18,17 +19,19 @@
 			ng-mouseover="$ctrl.highlightBarHoveredBuildings(item.fileExtension)"
 			ng-mouseleave="$ctrl.clearHighlightedBarHoveredBuildings()"
 			title="{{ item.relativeMetricValue.toFixed(2) }}%"
+			ng-click="$ctrl.toggleExtensiveState()"
 		>
 			{{ item.fileExtension }}
 		</p>
 	</div>
 </div>
-
-<div class="section-body ">
-	<div class="float-left" ng-repeat="item in $ctrl._viewModel.distribution">
-		<p class="extensionInfo">
-			<span class="dot" ng-style="{'background': item.color}"></span>{{ item.fileExtension }} :
-			{{ item.relativeMetricValue.toFixed(2) }}%
-		</p>
+<div>
+	<div class="section-body " ng-show="$ctrl.getIsExtensiveMode()">
+		<div class="float-left" ng-repeat="item in $ctrl._viewModel.distribution">
+			<p class="extensionInfo">
+				<span class="dot" ng-style="{'background': item.color}"></span>{{ item.fileExtension }} :
+				{{ item.relativeMetricValue.toFixed(2) }}%
+			</p>
+		</div>
 	</div>
 </div>
