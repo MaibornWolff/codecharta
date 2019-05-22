@@ -41,4 +41,11 @@ file-extension-bar-component {
 		margin-left: 50px;
 		color: grey;
 	}
+
+	.animation-show-hide {
+		transition: all linear 0.5s;
+	}
+	.animation-show-hide.ng-hide {
+		opacity: 0;
+	}
 }
