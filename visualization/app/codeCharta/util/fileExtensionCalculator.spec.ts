@@ -18,13 +18,13 @@ describe("FileExtensionCalculator", () => {
 					{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: null, color: null },
 					{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: null, color: null },
 					{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: null, color: null },
-					{ fileExtension: "none", absoluteMetricValue: 15, relativeMetricValue: null, color: null }
+					{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: null, color: null }
 				],
 				MCC: [
 					{ fileExtension: "jpg", absoluteMetricValue: 101, relativeMetricValue: null, color: null },
 					{ fileExtension: "java", absoluteMetricValue: 47, relativeMetricValue: null, color: null },
 					{ fileExtension: "json", absoluteMetricValue: 10, relativeMetricValue: null, color: null },
-					{ fileExtension: "none", absoluteMetricValue: 33, relativeMetricValue: null, color: null }
+					{ fileExtension: "None", absoluteMetricValue: 33, relativeMetricValue: null, color: null }
 				]
 			}
 			expect(result).toEqual(expected)
@@ -54,7 +54,7 @@ describe("FileExtensionCalculator", () => {
 		it("should return 'none' as extension, as there does not exist any", () => {
 			const fileName: string = "name_without_extension"
 			const result: string = FileExtensionCalculator["estimateFileExtension"](fileName)
-			expect(result).toEqual("none")
+			expect(result).toEqual("None")
 		})
 	})
 })
