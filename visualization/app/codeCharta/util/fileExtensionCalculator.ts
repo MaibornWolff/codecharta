@@ -15,7 +15,7 @@ export interface MetricDistributionPair {
 }
 
 export class FileExtensionCalculator {
-	private static NO_EXTENSION = "none"
+	private static NO_EXTENSION = "None"
 
 	// TODO: this does not exclude blacklisted nodes yet
 	public static getRelativeFileExtensionDistribution(map: CodeMapNode, metrics: string[]): MetricDistributionPair {
@@ -23,9 +23,11 @@ export class FileExtensionCalculator {
 
 		_.keys(distribution).forEach(metric => {
 			const sumOfAllMetricValues: number = this.getSumOfAllMetrics(distribution[metric])
-			distribution[metric].forEach(
-				(x: ExtensionAttribute) => (x.relativeMetricValue = (x.absoluteMetricValue / sumOfAllMetricValues) * 100)
-			)
+			distribution[metric].forEach((x: ExtensionAttribute) => {
+				if (x.absoluteMetricValue !== 0) {
+					x.relativeMetricValue = (x.absoluteMetricValue / sumOfAllMetricValues) * 100
+				}
+			})
 			distribution[metric].sort((a, b) => b.absoluteMetricValue - a.absoluteMetricValue)
 		})
 
