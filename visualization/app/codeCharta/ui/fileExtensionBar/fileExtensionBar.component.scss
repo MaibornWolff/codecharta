@@ -12,13 +12,12 @@ file-extension-bar-component {
 		float: left;
 	}
 
-	.section-body {
+	.section-info-body {
 		display: block;
 		width: 100%;
 		height: 25px;
-		color: white;
 		text-align: center;
-		background-color: rgba(255, 249, 224, 0.815);
+		background-color: white;
 	}
 
 	.dot {
@@ -36,7 +35,7 @@ file-extension-bar-component {
 		margin-top: 0;
 	}
 
-	p.extensionInfo {
+	.extensionInfo {
 		font-size: 18px;
 		margin-left: 50px;
 		color: grey;
