@@ -62,11 +62,33 @@ class SVNLogParserStrategy: LogParserStrategy {
     }
 
     internal fun parseModification(fileLine: String): Modification {
+        return when(fileLine.contains(RENAME_FILE_LINE_IDENTIFIER)) {
+            true ->  parseRenameModification(fileLine)
+            else ->  parseStandardModification(fileLine)
+        }
+    }
+
+    internal fun parseStandardModification(fileLine: String): Modification {
         val metadataWithoutWhitespacePrefix = stripWhitespacePrefix(fileLine)
         val status = Status.byCharacter(metadataWithoutWhitespacePrefix[0])
         val metadataWithoutStatusLetter = metadataWithoutWhitespacePrefix.substring(1)
-        val filePath = removeDefaultRepositoryFolderPrefix(metadataWithoutStatusLetter.trim({ it <= ' ' }))
+        val filePath = removeDefaultRepositoryFolderPrefix(metadataWithoutStatusLetter.trim{ it <= ' ' })
         return ignoreIfRepresentsFolder(Modification(filePath, status.toModificationType()))
+    }
+
+    private fun parseRenameModification(fileLine: String): Modification {
+
+        val metadataWithoutWhitespacePrefix = stripWhitespacePrefix(fileLine)
+        val metadataWithoutStatusLetter = metadataWithoutWhitespacePrefix.substring(1)
+        val filePathLine = removeDefaultRepositoryFolderPrefix(metadataWithoutStatusLetter.trim{ it <= ' ' })
+
+        val fileNames = filePathLine.split(" (from")
+        val oldFileName = fileNames.last().split(":").first()
+        val newFileName = fileNames.first()
+
+        println("Renamed $oldFileName to $newFileName")
+
+        return ignoreIfRepresentsFolder(Modification(newFileName, oldFileName, Modification.Type.RENAME))
     }
 
     override fun creationCommand(): String {
@@ -79,6 +101,7 @@ class SVNLogParserStrategy: LogParserStrategy {
 
     companion object {
 
+        private const val RENAME_FILE_LINE_IDENTIFIER =  " (from"
         private val SVN_COMMIT_SEPARATOR_TEST =
                 Predicate<String> { logLine -> !logLine.isEmpty() && StringUtils.containsOnly(logLine, '-') }
         private val DEFAULT_REPOSITORY_FOLDER_PREFIXES = arrayOf("/branches/", "/tags/", "/trunk/")
