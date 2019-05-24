@@ -22,9 +22,9 @@ class SVNLogParserStrategy: LogParserStrategy {
 
     private fun parseCommitDate(metadataLine: String): OffsetDateTime {
         val splittedLine =
-                metadataLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+                metadataLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile{ it.isEmpty() }.toTypedArray()
         val commitDateAsString =
-                splittedLine[DATE_INDEX_IN_METADATA].trim({ it <= ' ' }).replace(" \\(.*\\)".toRegex(), "")
+                splittedLine[DATE_INDEX_IN_METADATA].trim{ it <= ' ' }.replace(" \\(.*\\)".toRegex(), "")
         return OffsetDateTime.parse(commitDateAsString, DATE_TIME_FORMATTER)
     }
 
@@ -41,8 +41,8 @@ class SVNLogParserStrategy: LogParserStrategy {
 
     private fun parseAuthor(authorLine: String): String {
         val splittedLine =
-                authorLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
-        return splittedLine[AUTHOR_INDEX_IN_METADATA].trim({ it <= ' ' })
+                authorLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile{ it.isEmpty() }.toTypedArray()
+        return splittedLine[AUTHOR_INDEX_IN_METADATA].trim{ it <= ' ' }
     }
 
     override fun parseModifications(commitLines: List<String>): List<Modification> {
@@ -62,31 +62,25 @@ class SVNLogParserStrategy: LogParserStrategy {
     }
 
     internal fun parseModification(fileLine: String): Modification {
-        return when(fileLine.contains(RENAME_FILE_LINE_IDENTIFIER)) {
-            true ->  parseRenameModification(fileLine)
-            else ->  parseStandardModification(fileLine)
-        }
-    }
-
-    internal fun parseStandardModification(fileLine: String): Modification {
         val metadataWithoutWhitespacePrefix = stripWhitespacePrefix(fileLine)
         val status = Status.byCharacter(metadataWithoutWhitespacePrefix[0])
         val metadataWithoutStatusLetter = metadataWithoutWhitespacePrefix.substring(1)
-        val filePath = removeDefaultRepositoryFolderPrefix(metadataWithoutStatusLetter.trim{ it <= ' ' })
+        val trimmedFileLine = removeDefaultRepositoryFolderPrefix(metadataWithoutStatusLetter.trim{ it <= ' ' })
+
+        return when(trimmedFileLine.contains(RENAME_FILE_LINE_IDENTIFIER)) {
+            true ->  parseRenameModification(trimmedFileLine)
+            else ->  parseStandardModification(trimmedFileLine, status)
+        }
+    }
+
+    private fun parseStandardModification(filePath: String, status: Status): Modification {
         return ignoreIfRepresentsFolder(Modification(filePath, status.toModificationType()))
     }
 
-    private fun parseRenameModification(fileLine: String): Modification {
-
-        val metadataWithoutWhitespacePrefix = stripWhitespacePrefix(fileLine)
-        val metadataWithoutStatusLetter = metadataWithoutWhitespacePrefix.substring(1)
-        val filePathLine = removeDefaultRepositoryFolderPrefix(metadataWithoutStatusLetter.trim{ it <= ' ' })
-
+    private fun parseRenameModification(filePathLine: String): Modification {
         val fileNames = filePathLine.split(" (from")
         val oldFileName = fileNames.last().split(":").first()
         val newFileName = fileNames.first()
-
-        println("Renamed $oldFileName to $newFileName")
 
         return ignoreIfRepresentsFolder(Modification(newFileName, oldFileName, Modification.Type.RENAME))
     }
@@ -103,7 +97,7 @@ class SVNLogParserStrategy: LogParserStrategy {
 
         private const val RENAME_FILE_LINE_IDENTIFIER =  " (from"
         private val SVN_COMMIT_SEPARATOR_TEST =
-                Predicate<String> { logLine -> !logLine.isEmpty() && StringUtils.containsOnly(logLine, '-') }
+                Predicate<String> { logLine -> logLine.isNotEmpty() && StringUtils.containsOnly(logLine, '-') }
         private val DEFAULT_REPOSITORY_FOLDER_PREFIXES = arrayOf("/branches/", "/tags/", "/trunk/")
         private val DATE_TIME_FORMATTER = DateTimeFormatterBuilder()
                 .parseCaseInsensitive()
