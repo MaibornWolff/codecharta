@@ -81,7 +81,9 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 			color: "#000000"
 		}
 
+		// Iterating over the Extension Attributes
 		distribution[s.distributionMetric].forEach(currentExtension => {
+			//sepetating the attributes with more than 5% from those with less
 			if (currentExtension.relativeMetricValue < 5) {
 				otherExtension.relativeMetricValue += currentExtension.relativeMetricValue
 			} else {
@@ -92,12 +94,10 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		if (otherExtension.relativeMetricValue > 0) {
 			visibleExtensions.push(otherExtension)
 		}
-		if (visibleExtensions.length !== 0) {
-			this._viewModel.distribution = visibleExtensions
-		} else {
+		if (visibleExtensions.length === 0) {
 			visibleExtensions.push(noneExtension)
-			this._viewModel.distribution = visibleExtensions
 		}
+		this._viewModel.distribution = visibleExtensions
 	}
 
 	private hashCode(fileExtension: string): number {
