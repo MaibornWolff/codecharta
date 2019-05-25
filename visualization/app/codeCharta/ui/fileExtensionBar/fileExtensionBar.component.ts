@@ -10,11 +10,12 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export class FileExtensionBarController implements CodeMapPreRenderServiceSubscriber {
 	private _viewModel: {
-		distribution: ExtensionAttribute[]
+		distribution: ExtensionAttribute[],
+		isExtensiveMode: boolean
 	} = {
-		distribution: []
+		distribution: [],
+		isExtensiveMode: false
 	}
-	private isExtensiveMode: boolean = false
 
 	/* @ngInject */
 	constructor(
@@ -47,15 +48,11 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	}
 
 	public toggleExtensiveState() {
-		if (this.isExtensiveMode === true) {
-			this.isExtensiveMode = false
+		if (this._viewModel.isExtensiveMode === true) {
+			this._viewModel.isExtensiveMode = false
 		} else {
-			this.isExtensiveMode = true
+			this._viewModel.isExtensiveMode = true
 		}
-	}
-
-	public getIsExtensiveMode() {
-		return this.isExtensiveMode
 	}
 
 	private updateFileExtensionBar(map: CodeMapNode) {
