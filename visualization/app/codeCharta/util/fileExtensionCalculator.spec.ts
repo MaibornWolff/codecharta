@@ -1,4 +1,4 @@
-import { FileExtensionCalculator, MetricDistributionPair } from "./fileExtensionCalculator"
+import { FileExtensionCalculator, ExtensionAttribute } from "./fileExtensionCalculator"
 import { CodeMapNode } from "../codeCharta.model"
 import { VALID_NODE_WITH_PATH_AND_EXTENSION } from "./dataMocks"
 
@@ -10,29 +10,19 @@ describe("FileExtensionCalculator", () => {
 	})
 
 	describe("getFileExtensionDistribution", () => {
-		it("should get correct absolute distribution of file-extensions with for metric", () => {
-			const metrics = ["RLOC", "MCC"]
-			const result: MetricDistributionPair = FileExtensionCalculator["getAbsoluteFileExtensionDistribution"](map, metrics)
-			const expected: MetricDistributionPair = {
-				RLOC: [
+		it("should get correct absolute distribution of file-extensions for given metric", () => {
+			const result: ExtensionAttribute[] = FileExtensionCalculator["getAbsoluteFileExtensionDistribution"](map, "RLOC")
+			const expected: ExtensionAttribute[] = [
 					{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: null, color: null },
 					{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: null, color: null },
 					{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: null, color: null },
 					{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: null, color: null }
-				],
-				MCC: [
-					{ fileExtension: "jpg", absoluteMetricValue: 101, relativeMetricValue: null, color: null },
-					{ fileExtension: "java", absoluteMetricValue: 47, relativeMetricValue: null, color: null },
-					{ fileExtension: "json", absoluteMetricValue: 10, relativeMetricValue: null, color: null },
-					{ fileExtension: "None", absoluteMetricValue: 33, relativeMetricValue: null, color: null }
-				]
-			}
+			]
 			expect(result).toEqual(expected)
 		})
 
-		it("should get correct relative distribution of file-extensions with for metric", () => {
-			const metrics = ["RLOC"]
-			const result: MetricDistributionPair = FileExtensionCalculator.getRelativeFileExtensionDistribution(map, metrics)
+		it("should get correct relative distribution of file-extensions for given metric", () => {
+			const result: ExtensionAttribute[] = FileExtensionCalculator.getRelativeFileExtensionDistribution(map, "RLOC")
 
 			expect(result).toMatchSnapshot()
 		})

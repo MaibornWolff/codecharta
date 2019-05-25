@@ -18,46 +18,38 @@ export class FileExtensionCalculator {
 	private static NO_EXTENSION = "None"
 
 	// TODO: this does not exclude blacklisted nodes yet
-	public static getRelativeFileExtensionDistribution(map: CodeMapNode, metrics: string[]): MetricDistributionPair {
-		const distribution: MetricDistributionPair = this.getAbsoluteFileExtensionDistribution(map, metrics)
+	public static getRelativeFileExtensionDistribution(map: CodeMapNode, metric: string): ExtensionAttribute[] {
+		const distribution: ExtensionAttribute[] = this.getAbsoluteFileExtensionDistribution(map, metric)
 
-		_.keys(distribution).forEach(metric => {
-			const sumOfAllMetricValues: number = this.getSumOfAllMetrics(distribution[metric])
-			distribution[metric].forEach((x: ExtensionAttribute) => {
-				if (x.absoluteMetricValue !== 0) {
-					x.relativeMetricValue = (x.absoluteMetricValue / sumOfAllMetricValues) * 100
-				}
-			})
-			distribution[metric].sort((a, b) => b.absoluteMetricValue - a.absoluteMetricValue)
+		const sumOfAllMetricValues: number = this.getSumOfAllMetrics(distribution)
+		distribution.forEach((x: ExtensionAttribute) => {
+			if (x.absoluteMetricValue !== 0) {
+				x.relativeMetricValue = (x.absoluteMetricValue / sumOfAllMetricValues) * 100
+			}
 		})
+		distribution.sort((a, b) => b.absoluteMetricValue - a.absoluteMetricValue)
 
 		return distribution
 	}
 
-	private static getAbsoluteFileExtensionDistribution(map: CodeMapNode, metrics: string[]): MetricDistributionPair {
-		let distribution: MetricDistributionPair = {}
-		d3.hierarchy(map)
-			.leaves()
-			.forEach((node: HierarchyNode<CodeMapNode>) => {
-				const fileExtension: string = this.estimateFileExtension(node.data.name)
-				metrics.forEach((metric: string) => {
-					const metricValue: number = node.data.attributes[metric]
-					if (!_.has(distribution, metric)) {
-						distribution[metric] = []
-					}
-					const matchingFileExtensionObject = distribution[metric].find(x => x.fileExtension == fileExtension)
-					if (matchingFileExtensionObject) {
-						matchingFileExtensionObject.absoluteMetricValue += metricValue
-					} else {
-						distribution[metric].push({
-							fileExtension: fileExtension,
-							absoluteMetricValue: metricValue,
-							relativeMetricValue: null,
-							color: null
-						})
-					}
+	private static getAbsoluteFileExtensionDistribution(map: CodeMapNode, metric: string): ExtensionAttribute[] {
+		let distribution: ExtensionAttribute[] = []
+		d3.hierarchy(map).leaves().forEach((node: HierarchyNode<CodeMapNode>) => {
+			const fileExtension: string = this.estimateFileExtension(node.data.name)
+			const metricValue: number = node.data.attributes[metric]
+			const matchingFileExtensionObject = distribution.find(x => x.fileExtension == fileExtension)
+
+			if (matchingFileExtensionObject) {
+				matchingFileExtensionObject.absoluteMetricValue += metricValue
+			} else {
+				distribution.push({
+					fileExtension: fileExtension,
+					absoluteMetricValue: metricValue,
+					relativeMetricValue: null,
+					color: null
 				})
-			})
+			}
+		})
 		return distribution
 	}
 
