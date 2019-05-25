@@ -47,12 +47,8 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		this.threeSceneService.getMapMesh().clearHighlight()
 	}
 
-	public toggleExtensiveState() {
-		if (this._viewModel.isExtensiveMode === true) {
-			this._viewModel.isExtensiveMode = false
-		} else {
-			this._viewModel.isExtensiveMode = true
-		}
+	public toggleExtensiveMode() {
+		this._viewModel.isExtensiveMode = !this._viewModel.isExtensiveMode
 	}
 
 	private updateFileExtensionBar(map: CodeMapNode) {
