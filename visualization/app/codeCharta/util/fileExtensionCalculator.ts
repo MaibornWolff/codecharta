@@ -53,17 +53,17 @@ export class FileExtensionCalculator {
 	}
 
 	private static getMetricDistributionWithOthers(distribution: MetricDistribution[]): MetricDistribution[] {
-		let cummulativeSum: number = 0
+		let cummulativeRelativeSum: number = 0
 		let otherExtension: MetricDistribution = this.getOtherExtension()
 		let visibleDistributions: MetricDistribution[] = []
 
 		distribution.forEach((x: MetricDistribution) => {
-			if (cummulativeSum > FileExtensionCalculator.OTHER_GROUP_THRESHOLD_VALUE) {
+			if (cummulativeRelativeSum < FileExtensionCalculator.OTHER_GROUP_THRESHOLD_VALUE) {
+				visibleDistributions.push(x)
+				cummulativeRelativeSum += x.relativeMetricValue
+			} else {
 				otherExtension.absoluteMetricValue += x.absoluteMetricValue
 				otherExtension.relativeMetricValue += x.relativeMetricValue
-			} else {
-				visibleDistributions.push(x)
-				cummulativeSum += x.relativeMetricValue
 			}
 		})
 

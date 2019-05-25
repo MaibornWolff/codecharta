@@ -28,7 +28,9 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	}
 
 	public onRenderFileChanged(renderFile: CCFile, event: angular.IAngularEvent) {
-		this.updateFileExtensionBar(renderFile.map)
+		this.setNewDistribution(renderFile.map)
+		this.setColorForEachExtension()
+		this.potentiallyAddNoneExtension()
 	}
 
 	public highlightBarHoveredBuildings(extension: string) {
@@ -39,7 +41,6 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 				toHighlightBuilding.push(x)
 			}
 		})
-
 		this.threeSceneService.getMapMesh().setHighlighted(toHighlightBuilding)
 	}
 
@@ -51,18 +52,21 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		this._viewModel.isExtensiveMode = !this._viewModel.isExtensiveMode
 	}
 
-	private updateFileExtensionBar(map: CodeMapNode) {
+	private setNewDistribution(map: CodeMapNode) {
 		const distributionMetric: string = this.settingsService.getSettings().dynamicSettings.distributionMetric
-		const distribution: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, distributionMetric)
+		this._viewModel.distribution = FileExtensionCalculator.getMetricDistribution(map, distributionMetric)
+	}
 
-		distribution.forEach(x => {
+	private setColorForEachExtension() {
+		this._viewModel.distribution.forEach(x => {
 			x.color = x.color ? x.color : this.numberToHsl(this.hashCode(x.fileExtension))
 		})
+	}
 
-		if (distribution.length === 0) {
-			distribution.push(this.getNoneExtension())
+	private potentiallyAddNoneExtension() {
+		if (this._viewModel.distribution.length === 0) {
+			this._viewModel.distribution.push(this.getNoneExtension())
 		}
-		this._viewModel.distribution = distribution
 	}
 
 	private hashCode(fileExtension: string): number {
