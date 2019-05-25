@@ -11,13 +11,16 @@ export interface MetricDistribution {
 }
 
 export class FileExtensionCalculator {
-	private static NO_EXTENSION = "None"
+	private static readonly NO_EXTENSION = "None"
+	private static readonly OTHER_EXTENSION = "other"
+	private static OTHER_GROUP_THRESHOLD_VALUE = 90
 
 	// TODO: this does not exclude blacklisted nodes yet
 	public static getMetricDistribution(map: CodeMapNode, metric: string): MetricDistribution[] {
 		let distribution: MetricDistribution[] = this.getAbsoluteDistribution(map, metric)
 		distribution = this.decorateDistributionWithRelativeMetricValue(distribution)
 		distribution.sort((a, b) => b.absoluteMetricValue - a.absoluteMetricValue)
+		distribution = this.getMetricDistributionWithOthers(distribution)
 		return distribution
 	}
 
@@ -47,6 +50,37 @@ export class FileExtensionCalculator {
 			}
 		})
 		return distribution
+	}
+
+	private static getMetricDistributionWithOthers(distribution: MetricDistribution[]): MetricDistribution[] {
+		let cummulativeSum: number = 0
+		let otherExtension: MetricDistribution = this.getOtherExtension()
+		let visibleDistributions: MetricDistribution[] = []
+
+		distribution.forEach((x: MetricDistribution) => {
+			if (cummulativeSum > FileExtensionCalculator.OTHER_GROUP_THRESHOLD_VALUE) {
+				otherExtension.absoluteMetricValue += x.absoluteMetricValue
+				otherExtension.relativeMetricValue += x.relativeMetricValue
+			} else {
+				visibleDistributions.push(x)
+				cummulativeSum += x.relativeMetricValue
+			}
+		})
+
+		if (otherExtension.relativeMetricValue > 0) {
+			visibleDistributions.push(otherExtension)
+		}
+
+		return visibleDistributions
+	}
+
+	private static getOtherExtension() {
+		return {
+			fileExtension: FileExtensionCalculator.OTHER_EXTENSION,
+			absoluteMetricValue: null,
+			relativeMetricValue: 0,
+			color: "#676867"
+		}
 	}
 
 	private static getDistibutionObject(fileExtension: string, metricValue: number): MetricDistribution {

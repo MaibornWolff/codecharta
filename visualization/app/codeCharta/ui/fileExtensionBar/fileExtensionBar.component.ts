@@ -1,7 +1,7 @@
 import "./fileExtensionBar.component.scss"
 import { SettingsService } from "../../state/settings.service"
 import { MetricDistribution, FileExtensionCalculator } from "../../util/fileExtensionCalculator"
-import { DynamicSettings, CCFile, CodeMapNode } from "../../codeCharta.model"
+import { CCFile, CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { IRootScopeService } from "angular"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
@@ -52,37 +52,17 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	}
 
 	private updateFileExtensionBar(map: CodeMapNode) {
-		const s: DynamicSettings = this.settingsService.getSettings().dynamicSettings
-		const distribution: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, s.distributionMetric)
-		const visibleExtensions: MetricDistribution[] = []
-		const otherExtension: MetricDistribution = {
-			fileExtension: "other",
-			absoluteMetricValue: null,
-			relativeMetricValue: 0,
-			color: "#676867"
-		}
-		const noneExtension: MetricDistribution = {
-			fileExtension: "none",
-			absoluteMetricValue: null,
-			relativeMetricValue: 100,
-			color: "#000000"
-		}
+		const distributionMetric: string = this.settingsService.getSettings().dynamicSettings.distributionMetric
+		const distribution: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, distributionMetric)
 
-		distribution.forEach(currentExtension => {
-			if (currentExtension.relativeMetricValue < 5) {
-				otherExtension.relativeMetricValue += currentExtension.relativeMetricValue
-			} else {
-				currentExtension.color = this.numberToHsl(this.hashCode(currentExtension.fileExtension))
-				visibleExtensions.push(currentExtension)
-			}
+		distribution.forEach(x => {
+			x.color = x.color ? x.color : this.numberToHsl(this.hashCode(x.fileExtension))
 		})
-		if (otherExtension.relativeMetricValue > 0) {
-			visibleExtensions.push(otherExtension)
+
+		if (distribution.length === 0) {
+			distribution.push(this.getNoneExtension())
 		}
-		if (visibleExtensions.length === 0) {
-			visibleExtensions.push(noneExtension)
-		}
-		this._viewModel.distribution = visibleExtensions
+		this._viewModel.distribution = distribution
 	}
 
 	private hashCode(fileExtension: string): number {
@@ -96,6 +76,15 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	private numberToHsl(hashCode: number): string {
 		let shortened = hashCode % 360
 		return "hsla(" + shortened + ", 40%, 50%)"
+	}
+
+	private getNoneExtension(): MetricDistribution {
+		return {
+			fileExtension: "none",
+			absoluteMetricValue: null,
+			relativeMetricValue: 100,
+			color: "#000000"
+		}
 	}
 }
 
