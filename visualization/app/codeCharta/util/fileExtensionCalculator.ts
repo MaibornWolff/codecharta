@@ -10,10 +10,6 @@ export interface ExtensionAttribute {
 	color: string
 }
 
-export interface MetricDistributionPair {
-	[key: string]: ExtensionAttribute[]
-}
-
 export class FileExtensionCalculator {
 	private static NO_EXTENSION = "None"
 

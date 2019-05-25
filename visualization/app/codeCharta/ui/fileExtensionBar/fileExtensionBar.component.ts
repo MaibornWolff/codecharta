@@ -1,6 +1,6 @@
 import "./fileExtensionBar.component.scss"
 import { SettingsService } from "../../state/settings.service"
-import { ExtensionAttribute, FileExtensionCalculator, MetricDistributionPair } from "../../util/fileExtensionCalculator"
+import { ExtensionAttribute, FileExtensionCalculator } from "../../util/fileExtensionCalculator"
 import { DynamicSettings, CCFile, CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { IRootScopeService } from "angular"
