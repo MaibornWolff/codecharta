@@ -103,7 +103,7 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 		this.settingsService.updateSettings({
 			dynamicSettings: {
 				colorMetric: this._viewModel.colorMetric,
-				neutralColorRange: this.settingsService.getDefaultSettings().dynamicSettings.neutralColorRange
+				colorRange: this.settingsService.getDefaultSettings().dynamicSettings.colorRange
 			}
 		})
 	}
@@ -165,9 +165,9 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 		}
 
 		if (this.hoveredHeightDelta > 0) {
-			return colors[Number(this.settingsService.getSettings().appSettings.deltaColorFlipped)]
+			return colors[Number(this.settingsService.getSettings().appSettings.invertDeltaColors)]
 		} else if (this.hoveredHeightDelta < 0) {
-			return colors[Number(!this.settingsService.getSettings().appSettings.deltaColorFlipped)]
+			return colors[Number(!this.settingsService.getSettings().appSettings.invertDeltaColors)]
 		} else {
 			return "inherit"
 		}

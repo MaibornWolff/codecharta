@@ -1,0 +1,62 @@
+{
+  "nodes": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [],
+              "name": "bar.java",
+              "link": "",
+              "attributes": {},
+              "type": "File"
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "name": "bar2.cpp",
+                  "link": "",
+                  "attributes": {},
+                  "type": "File"
+                }
+              ],
+              "name": "foo2",
+              "link": "",
+              "attributes": {},
+              "type": "Folder"
+            }
+          ],
+          "name": "foo",
+          "link": "",
+          "attributes": {},
+          "type": "Folder"
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "name": "bar.java",
+              "link": "",
+              "attributes": {},
+              "type": "File"
+            }
+          ],
+          "name": "foo3",
+          "link": "",
+          "attributes": {},
+          "type": "Folder"
+        }
+      ],
+      "name": "root",
+      "link": "",
+      "attributes": {},
+      "type": "Folder"
+    }
+  ],
+  "apiVersion": "1.1",
+  "attributeTypes": {},
+  "edges": [],
+  "blacklist": [],
+  "projectName": ""
+}

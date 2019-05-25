@@ -17,10 +17,12 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 	private _viewModel: {
 		isDeltaState: boolean
 		colorRange: ColorRange
+		invertColorRange: boolean
 		packageLists: PackageList[]
 	} = {
 		isDeltaState: null,
 		colorRange: null,
+		invertColorRange: null,
 		packageLists: null
 	}
 
@@ -31,7 +33,8 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 	}
 
 	public onSettingsChanged(s: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-		this._viewModel.colorRange = s.dynamicSettings.neutralColorRange
+		this._viewModel.colorRange = s.dynamicSettings.colorRange
+		this._viewModel.invertColorRange = s.appSettings.invertColorRange
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 
 		const select = ColorConverter.getImageDataUri(s.appSettings.mapColors.selected)
@@ -58,10 +61,10 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 
 	private refreshDeltaColors(s: Settings) {
 		const positiveDeltaPixel = ColorConverter.getImageDataUri(
-			s.appSettings.deltaColorFlipped ? s.appSettings.mapColors.negativeDelta : s.appSettings.mapColors.positiveDelta
+			s.appSettings.invertDeltaColors ? s.appSettings.mapColors.negativeDelta : s.appSettings.mapColors.positiveDelta
 		)
 		const negativeDeltaPixel = ColorConverter.getImageDataUri(
-			s.appSettings.deltaColorFlipped ? s.appSettings.mapColors.positiveDelta : s.appSettings.mapColors.negativeDelta
+			s.appSettings.invertDeltaColors ? s.appSettings.mapColors.positiveDelta : s.appSettings.mapColors.negativeDelta
 		)
 		$("#positiveDelta").attr("src", positiveDeltaPixel)
 		$("#negativeDelta").attr("src", negativeDeltaPixel)

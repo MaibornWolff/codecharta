@@ -82,12 +82,12 @@ describe("ColorSettingsPanelController", () => {
 	})
 
 	describe("onSettingsChanged", () => {
-		it("should set delta color flipped flag", () => {
-			let settings = { appSettings: { deltaColorFlipped: true }, dynamicSettings: {} } as Settings
+		it("should set invertDeltaColors flag", () => {
+			let settings = { appSettings: { invertDeltaColors: true }, dynamicSettings: {} } as Settings
 
 			colorSettingsPanelController.onSettingsChanged(settings, undefined, null)
 
-			expect(colorSettingsPanelController["_viewModel"].deltaColorFlipped).toBe(true)
+			expect(colorSettingsPanelController["_viewModel"].invertDeltaColors).toBe(true)
 		})
 
 		it("should set white color buildings", () => {
@@ -98,16 +98,18 @@ describe("ColorSettingsPanelController", () => {
 			expect(colorSettingsPanelController["_viewModel"].whiteColorBuildings).toBeTruthy()
 		})
 
-		it("should set neutralColorRangeFlipped", () => {
+		it("should set invertColorRange", () => {
 			let settings = {
-				dynamicSettings: { neutralColorRange: { flipped: true }, colorMetric: "foo" },
-				appSettings: {}
+				dynamicSettings: { colorMetric: "foo" },
+				appSettings: {
+					invertColorRange: true
+				}
 			} as Settings
 			colorSettingsPanelController["lastColorMetric"] = "foo"
 
 			colorSettingsPanelController.onSettingsChanged(settings, undefined, null)
 
-			expect(colorSettingsPanelController["_viewModel"].neutralColorRangeFlipped).toBeTruthy()
+			expect(colorSettingsPanelController["_viewModel"].invertColorRange).toBeTruthy()
 		})
 
 		it("should only adapt color range if color metric is not the same ", () => {
@@ -130,7 +132,7 @@ describe("ColorSettingsPanelController", () => {
 			colorSettingsPanelController.onSettingsChanged(settingsService.getSettings(), undefined, null)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				dynamicSettings: { neutralColorRange: { flipped: false, from: 33.33, to: 66.66 } }
+				dynamicSettings: { colorRange: { from: 33.33, to: 66.66 } }
 			})
 		})
 	})
@@ -171,8 +173,7 @@ describe("ColorSettingsPanelController", () => {
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				dynamicSettings: {
-					neutralColorRange: {
-						flipped: false,
+					colorRange: {
 						from: 33.33,
 						to: 66.66
 					}
@@ -191,20 +192,16 @@ describe("ColorSettingsPanelController", () => {
 
 	describe("applySettings", () => {
 		it("should call update settings correctly", () => {
-			colorSettingsPanelController["_viewModel"].neutralColorRangeFlipped = false
-			colorSettingsPanelController["_viewModel"].deltaColorFlipped = true
+			colorSettingsPanelController["_viewModel"].invertColorRange = false
+			colorSettingsPanelController["_viewModel"].invertDeltaColors = true
 			colorSettingsPanelController["_viewModel"].whiteColorBuildings = true
 
 			colorSettingsPanelController.applySettings()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				dynamicSettings: {
-					neutralColorRange: {
-						flipped: false
-					}
-				},
 				appSettings: {
-					deltaColorFlipped: true,
+					invertColorRange: false,
+					invertDeltaColors: true,
 					whiteColorBuildings: true
 				}
 			})

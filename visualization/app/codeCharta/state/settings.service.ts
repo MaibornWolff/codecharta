@@ -70,7 +70,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 		const scaling: Vector3 = new Vector3(1, 1, 1)
 		const camera: Vector3 = new Vector3(0, 300, 1000)
-		const colorRange: ColorRange = { flipped: false, from: null, to: null }
+		const colorRange: ColorRange = { from: null, to: null }
 
 		let settings: Settings = {
 			fileSettings: {
@@ -88,16 +88,17 @@ export class SettingsService implements FileStateServiceSubscriber {
 				searchedNodePaths: [],
 				searchPattern: "",
 				margin: null,
-				neutralColorRange: colorRange
+				colorRange: colorRange
 			},
 			appSettings: {
 				amountOfTopLabels: 1,
 				scaling: scaling,
 				camera: camera,
-				deltaColorFlipped: false,
 				enableEdgeArrows: true,
 				hideFlatBuildings: true,
 				maximizeDetailPanel: false,
+				invertColorRange: false,
+				invertDeltaColors: false,
 				invertHeight: false,
 				dynamicMargin: true,
 				isWhiteBackground: false,
@@ -119,7 +120,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 			searchedNodePaths: defaultSettings.dynamicSettings.searchedNodePaths,
 			searchPattern: defaultSettings.dynamicSettings.searchPattern,
 			margin: defaultSettings.dynamicSettings.margin,
-			neutralColorRange: defaultSettings.dynamicSettings.neutralColorRange
+			colorRange: defaultSettings.dynamicSettings.colorRange
 		}
 	}
 

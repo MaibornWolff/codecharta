@@ -17,28 +17,28 @@ describe("treeMapGenerator", () => {
 		metricData = METRIC_DATA
 	}
 
-	describe("create Treemap nodes", () => {})
+	describe("create Treemap nodes", () => {
+		it("only root node", () => {
+			renderFile.map.children = []
 
-	it("only root node", () => {
-		renderFile.map.children = []
+			let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
 
-		let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
+			expect(node).toMatchSnapshot()
+		})
 
-		expect(node).toMatchSnapshot()
-	})
+		it("root node with two direct children", () => {
+			renderFile.map.children[1].children = []
 
-	it("root node with two direct children", () => {
-		renderFile.map.children[1].children = []
+			let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
 
-		let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
+			expect(node).toMatchSnapshot()
+		})
 
-		expect(node).toMatchSnapshot()
-	})
+		it("root node with two direct children and some grand children", () => {
+			let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
 
-	it("root node with two direct children and some grand children", () => {
-		let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
-
-		expect(node).toMatchSnapshot()
+			expect(node).toMatchSnapshot()
+		})
 	})
 
 	describe("CodeMap value calculation", () => {
@@ -99,18 +99,6 @@ describe("treeMapGenerator", () => {
 			expect(node.attributes["b"]).toBe(undefined)
 		})
 
-		it("filtered Edge Attributes are obtained, giving positive width and length", () => {
-			settings.dynamicSettings.areaMetric = "pairingRate"
-			settings.dynamicSettings.heightMetric = "pairingRate"
-			settings.fileSettings.edges = VALID_EDGES
-			metricData = [{ name: "pairingRate", maxValue: 100, availableInVisibleMaps: true }]
-
-			let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
-
-			expect(node.children[1].width).toBeGreaterThan(0)
-			expect(node.children[1].length).toBeGreaterThan(0)
-		})
-
 		it("area should be zero if metric does not exist", () => {
 			settings.dynamicSettings.areaMetric = "unknown"
 			settings.dynamicSettings.heightMetric = "unknown"
@@ -135,6 +123,14 @@ describe("treeMapGenerator", () => {
 
 			expect(result.children[0].visible).toBeFalsy()
 			expect(result.children[1].visible).toBeFalsy()
+		})
+	})
+
+	describe("calculateValue", () => {
+		it("should return 0 if node has children, not blacklisted and not only visible in comparison map", () => {
+			const actual = TreeMapGenerator["calculateValue"](codemapNode, settings)
+
+			expect(actual).toBe(0)
 		})
 	})
 })

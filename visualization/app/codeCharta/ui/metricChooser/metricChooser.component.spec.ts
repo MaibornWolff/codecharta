@@ -144,7 +144,7 @@ describe("MetricChooserController", () => {
 		metricChooserController.applySettingsColorMetric()
 
 		expect(services.settingsService.updateSettings).toBeCalledWith({
-			dynamicSettings: { colorMetric: "c", neutralColorRange: { flipped: false, from: null, to: null } }
+			dynamicSettings: { colorMetric: "c", colorRange: { from: null, to: null } }
 		})
 	})
 
@@ -234,7 +234,7 @@ describe("MetricChooserController", () => {
 		metricChooserController["_viewModel"].heightMetric = "height"
 		metricChooserController.hoveredHeightDelta = 2
 		services.settingsService.getSettings = jest.fn(() => {
-			return { appSettings: { deltaColorFlipped: true } }
+			return { appSettings: { invertDeltaColors: true } }
 		})
 
 		metricChooserController.onBuildingHovered(dataDelta, null)

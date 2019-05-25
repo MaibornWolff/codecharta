@@ -141,10 +141,10 @@ export class CodeMapMesh {
 	}
 
 	private initMaterial(settings: Settings): void {
-		if (settings.appSettings.deltaColorFlipped) {
-			this.setDeltaColorsFlipped(settings)
+		if (settings.appSettings.invertDeltaColors) {
+			this.setInvertedDeltaColors(settings)
 		} else {
-			this.setDeltaColorsUnflipped(settings)
+			this.setDefaultDeltaColors(settings)
 		}
 
 		let uniforms = THREE.UniformsUtils.merge([THREE.UniformsLib["lights"], this.lightingParams])
@@ -159,7 +159,7 @@ export class CodeMapMesh {
 		})
 	}
 
-	private setDeltaColorsFlipped(settings: Settings) {
+	private setInvertedDeltaColors(settings: Settings) {
 		this.lightingParams.deltaColorPositive = {
 			type: "v3",
 			value: ColorConverter.colorToVector3(settings.appSettings.mapColors.negativeDelta)
@@ -170,7 +170,7 @@ export class CodeMapMesh {
 		}
 	}
 
-	private setDeltaColorsUnflipped(settings: Settings) {
+	private setDefaultDeltaColors(settings: Settings) {
 		this.lightingParams.deltaColorPositive = {
 			type: "v3",
 			value: ColorConverter.colorToVector3(settings.appSettings.mapColors.positiveDelta)
