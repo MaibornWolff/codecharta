@@ -1,6 +1,6 @@
 import "./fileExtensionBar.component.scss"
 import { SettingsService } from "../../state/settings.service"
-import { ExtensionAttribute, FileExtensionCalculator } from "../../util/fileExtensionCalculator"
+import { MetricDistribution, FileExtensionCalculator } from "../../util/fileExtensionCalculator"
 import { DynamicSettings, CCFile, CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { IRootScopeService } from "angular"
@@ -10,7 +10,7 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export class FileExtensionBarController implements CodeMapPreRenderServiceSubscriber {
 	private _viewModel: {
-		distribution: ExtensionAttribute[]
+		distribution: MetricDistribution[]
 		isExtensiveMode: boolean
 	} = {
 		distribution: [],
@@ -53,15 +53,15 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 
 	private updateFileExtensionBar(map: CodeMapNode) {
 		const s: DynamicSettings = this.settingsService.getSettings().dynamicSettings
-		const distribution: ExtensionAttribute[] = FileExtensionCalculator.getRelativeFileExtensionDistribution(map, s.distributionMetric)
-		const visibleExtensions: ExtensionAttribute[] = []
-		const otherExtension: ExtensionAttribute = {
+		const distribution: MetricDistribution[] = FileExtensionCalculator.getRelativeFileExtensionDistribution(map, s.distributionMetric)
+		const visibleExtensions: MetricDistribution[] = []
+		const otherExtension: MetricDistribution = {
 			fileExtension: "other",
 			absoluteMetricValue: null,
 			relativeMetricValue: 0,
 			color: "#676867"
 		}
-		const noneExtension: ExtensionAttribute = {
+		const noneExtension: MetricDistribution = {
 			fileExtension: "none",
 			absoluteMetricValue: null,
 			relativeMetricValue: 100,
