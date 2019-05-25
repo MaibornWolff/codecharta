@@ -10,7 +10,7 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export class FileExtensionBarController implements CodeMapPreRenderServiceSubscriber {
 	private _viewModel: {
-		distribution: ExtensionAttribute[],
+		distribution: ExtensionAttribute[]
 		isExtensiveMode: boolean
 	} = {
 		distribution: [],
@@ -80,12 +80,10 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		if (otherExtension.relativeMetricValue > 0) {
 			visibleExtensions.push(otherExtension)
 		}
-		if (visibleExtensions.length !== 0) {
-			this._viewModel.distribution = visibleExtensions
-		} else {
+		if (visibleExtensions.length === 0) {
 			visibleExtensions.push(noneExtension)
-			this._viewModel.distribution = visibleExtensions
 		}
+		this._viewModel.distribution = visibleExtensions
 	}
 
 	private hashCode(fileExtension: string): number {
