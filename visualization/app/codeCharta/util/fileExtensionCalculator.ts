@@ -14,41 +14,48 @@ export class FileExtensionCalculator {
 	private static NO_EXTENSION = "None"
 
 	// TODO: this does not exclude blacklisted nodes yet
-	public static getRelativeFileExtensionDistribution(map: CodeMapNode, metric: string): MetricDistribution[] {
-		const distribution: MetricDistribution[] = this.getAbsoluteFileExtensionDistribution(map, metric)
-
-		const sumOfAllMetricValues: number = this.getSumOfAllMetrics(distribution)
-		distribution.forEach((x: MetricDistribution) => {
-			if (x.absoluteMetricValue !== 0) {
-				x.relativeMetricValue = (x.absoluteMetricValue / sumOfAllMetricValues) * 100
-			}
-		})
+	public static getMetricDistribution(map: CodeMapNode, metric: string): MetricDistribution[] {
+		let distribution: MetricDistribution[] = this.getAbsoluteDistribution(map, metric)
+		distribution = this.decorateDistributionWithRelativeMetricValue(distribution)
 		distribution.sort((a, b) => b.absoluteMetricValue - a.absoluteMetricValue)
-
 		return distribution
 	}
 
-	private static getAbsoluteFileExtensionDistribution(map: CodeMapNode, metric: string): MetricDistribution[] {
+	private static getAbsoluteDistribution(map: CodeMapNode, metric: string): MetricDistribution[] {
 		let distribution: MetricDistribution[] = []
 		d3.hierarchy(map)
 			.leaves()
 			.forEach((node: HierarchyNode<CodeMapNode>) => {
 				const fileExtension: string = this.estimateFileExtension(node.data.name)
 				const metricValue: number = node.data.attributes[metric]
-				const matchingFileExtensionObject = distribution.find(x => x.fileExtension == fileExtension)
+				const matchingFileExtensionObject = distribution.find(x => x.fileExtension === fileExtension)
 
 				if (matchingFileExtensionObject) {
 					matchingFileExtensionObject.absoluteMetricValue += metricValue
 				} else {
-					distribution.push({
-						fileExtension: fileExtension,
-						absoluteMetricValue: metricValue,
-						relativeMetricValue: null,
-						color: null
-					})
+					distribution.push(this.getDistibutionObject(fileExtension, metricValue))
 				}
 			})
 		return distribution
+	}
+
+	private static decorateDistributionWithRelativeMetricValue(distribution: MetricDistribution[]): MetricDistribution[] {
+		const sumOfAllMetricValues: number = this.getSumOfAllMetrics(distribution)
+		distribution.forEach((x: MetricDistribution) => {
+			if (x.absoluteMetricValue !== 0) {
+				x.relativeMetricValue = (x.absoluteMetricValue / sumOfAllMetricValues) * 100
+			}
+		})
+		return distribution
+	}
+
+	private static getDistibutionObject(fileExtension: string, metricValue: number): MetricDistribution {
+		return {
+			fileExtension: fileExtension,
+			absoluteMetricValue: metricValue,
+			relativeMetricValue: null,
+			color: null
+		}
 	}
 
 	private static getSumOfAllMetrics(distribution: MetricDistribution[]): number {

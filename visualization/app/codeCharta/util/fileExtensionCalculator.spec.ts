@@ -11,7 +11,7 @@ describe("FileExtensionCalculator", () => {
 
 	describe("getFileExtensionDistribution", () => {
 		it("should get correct absolute distribution of file-extensions for given metric", () => {
-			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteFileExtensionDistribution"](map, "RLOC")
+			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](map, "RLOC")
 			const expected: MetricDistribution[] = [
 				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: null, color: null },
 				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: null, color: null },
@@ -22,7 +22,7 @@ describe("FileExtensionCalculator", () => {
 		})
 
 		it("should get correct relative distribution of file-extensions for given metric", () => {
-			const result: MetricDistribution[] = FileExtensionCalculator.getRelativeFileExtensionDistribution(map, "RLOC")
+			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "RLOC")
 
 			expect(result).toMatchSnapshot()
 		})
