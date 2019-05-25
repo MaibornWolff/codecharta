@@ -1,7 +1,7 @@
 import "./fileExtensionBar.component.scss"
 import { SettingsService } from "../../state/settings.service"
 import { ExtensionAttribute, FileExtensionCalculator, MetricDistributionPair } from "../../util/fileExtensionCalculator"
-import { DynamicSettings } from "../../codeCharta.model"
+import { DynamicSettings, CCFile, CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { IRootScopeService } from "angular"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
@@ -20,15 +20,14 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
-		private codeMapPreRenderService: CodeMapPreRenderService,
 		private codeMapRenderService: CodeMapRenderService,
 		private threeSceneService: ThreeSceneService
 	) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 
-	public onRenderFileChanged() {
-		this.updateFileExtensionBar()
+	public onRenderFileChanged(renderFile: CCFile, event: angular.IAngularEvent) {
+		this.updateFileExtensionBar(renderFile.map)
 	}
 
 	public highlightBarHoveredBuildings(extension: string) {
@@ -59,13 +58,10 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		return this.isExtensiveMode
 	}
 
-	private updateFileExtensionBar() {
+	private updateFileExtensionBar(map: CodeMapNode) {
 		const s: DynamicSettings = this.settingsService.getSettings().dynamicSettings
 		const metrics: string[] = [s.distributionMetric]
-		const distribution: MetricDistributionPair = FileExtensionCalculator.getRelativeFileExtensionDistribution(
-			this.codeMapPreRenderService.getRenderFile().map,
-			metrics
-		)
+		const distribution: MetricDistributionPair = FileExtensionCalculator.getRelativeFileExtensionDistribution(map, metrics)
 		const visibleExtensions: ExtensionAttribute[] = []
 		const otherExtension: ExtensionAttribute = {
 			fileExtension: "other",
