@@ -5,7 +5,6 @@ import { FileStateService, FileStateServiceSubscriber } from "./fileState.servic
 import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
 import { Vector3 } from "three"
-import { RibbonBarController } from "../ui/ribbonBar/ribbonBar.component"
 import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
 
 export interface SettingsServiceSubscriber {

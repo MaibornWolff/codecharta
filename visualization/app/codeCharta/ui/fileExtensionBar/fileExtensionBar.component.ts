@@ -7,7 +7,6 @@ import { IRootScopeService } from "angular"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { FaceNormalsHelper } from "three"
 
 export class FileExtensionBarController implements CodeMapPreRenderServiceSubscriber {
 	private _viewModel: {
