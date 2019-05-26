@@ -2,8 +2,8 @@
     <div ng-if="!$ctrl._viewModel.isDeltaState">
         <div class="legend-block">
             <img id="green" alt="green color">
-            <span ng-if="!$ctrl._viewModel.colorRange.flipped">0 to &lt; {{$ctrl._viewModel.colorRange.from}}</span>
-            <span ng-if="$ctrl._viewModel.colorRange.flipped">&gt; {{$ctrl._viewModel.colorRange.to}} to Infinite</span>
+            <span ng-if="!$ctrl._viewModel.invertColorRange">0 to &lt; {{$ctrl._viewModel.colorRange.from}}</span>
+            <span ng-if="$ctrl._viewModel.invertColorRange">&gt; {{$ctrl._viewModel.colorRange.to}} to Infinite</span>
         </div>
         <div class="legend-block">
             <img id="yellow" alt="yellow color">
@@ -11,8 +11,8 @@
         </div>
         <div class="legend-block">
             <img id="red" alt="red color">
-            <span ng-if="!$ctrl._viewModel.colorRange.flipped">&gt; {{$ctrl._viewModel.colorRange.to}} to Infinite</span>
-            <span ng-if="$ctrl._viewModel.colorRange.flipped">0 to &lt; {{$ctrl._viewModel.colorRange.from}}</span>
+            <span ng-if="!$ctrl._viewModel.invertColorRange">&gt; {{$ctrl._viewModel.colorRange.to}} to Infinite</span>
+            <span ng-if="$ctrl._viewModel.invertColorRange">0 to &lt; {{$ctrl._viewModel.colorRange.from}}</span>
         </div>
     </div>
 

@@ -10,7 +10,7 @@ export class DialogService {
 	}
 
 	public showDownloadDialog() {
-		this.showCustomDialog(dialogDownlodComponent);
+		this.showCustomDialog(dialogDownlodComponent)
 	}
 
 	public showCustomDialog(dialog) {
