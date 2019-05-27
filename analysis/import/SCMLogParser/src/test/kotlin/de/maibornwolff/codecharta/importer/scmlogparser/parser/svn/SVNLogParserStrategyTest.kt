@@ -90,7 +90,7 @@ class SVNLogParserStrategyTest: ParserStrategyContractTest() {
         val commitString = mutableListOf("------------------------------------------------------------------------",
                 "r156657 | dpagam05 | 2017-01-02 03:12:18 +0100 (Mo, 02 Jan 2017) | 1 line",
                 "Changed paths:",
-                "    M src/Modified.java",
+                "    M /src/Modified.java",
                 "Task | Increased automaticly build number | builduser01",
                 "------------------------------------------------------------------------")
         val commit = parser.parseCommit(commitString)

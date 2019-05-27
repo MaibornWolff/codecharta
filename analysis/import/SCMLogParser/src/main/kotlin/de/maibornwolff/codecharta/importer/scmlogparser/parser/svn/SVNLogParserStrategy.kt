@@ -49,6 +49,20 @@ class SVNLogParserStrategy: LogParserStrategy {
         return commitLines
                 .filter { this.isFileLine(it) }
                 .map { this.parseModification(it) }
+        //.groupBy { it.filename }
+
+        /*
+        .groupingBy { it.filename }
+                .aggregate { _, mod1: Modification?, mod2, _ ->
+                    when (mod1) {
+                        null -> mergeModifications(mod2)
+                        else -> mergeModifications(mod1, mod2)
+                    }
+                }
+                .values
+                .filterNotNull()
+                .toList()
+         */
     }
 
     private fun isFileLine(commitLine: String): Boolean {
@@ -58,7 +72,8 @@ class SVNLogParserStrategy: LogParserStrategy {
         }
         val firstChar = commitLineWithoutWhitespacePrefix[0]
         val secondChar = commitLineWithoutWhitespacePrefix[1]
-        return isStatusLetter(firstChar) && Character.isWhitespace(secondChar)
+        val thirdChar = commitLineWithoutWhitespacePrefix[2]
+        return isStatusLetter(firstChar) && Character.isWhitespace(secondChar) && isSlash(thirdChar)
     }
 
     internal fun parseModification(fileLine: String): Modification {
@@ -81,6 +96,8 @@ class SVNLogParserStrategy: LogParserStrategy {
         val fileNames = filePathLine.split(" (from")
         val oldFileName = fileNames.last().split(":").first()
         val newFileName = fileNames.first()
+
+        println("Rename $oldFileName to $newFileName")
 
         return ignoreIfRepresentsFolder(Modification(newFileName, oldFileName, Modification.Type.RENAME))
     }
@@ -117,6 +134,10 @@ class SVNLogParserStrategy: LogParserStrategy {
 
         private fun isStatusLetter(character: Char): Boolean {
             return Status.ALL_STATUS_LETTERS.contains(character)
+        }
+
+        private fun isSlash(char: Char): Boolean {
+            return char == '/'
         }
 
         private fun removeDefaultRepositoryFolderPrefix(path: String): String {
