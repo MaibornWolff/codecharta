@@ -33,10 +33,10 @@ class GitLogNumstatRawParserStrategy: LogParserStrategy {
                 .filter { isFileLine(it) }
                 .map { parseModification(it) }
                 .groupingBy { it.filename }
-                .aggregate { _, mod1: Modification?, mod2, _ ->
-                    when (mod1) {
-                        null -> mergeModifications(mod2)
-                        else -> mergeModifications(mod1, mod2)
+                .aggregate { _, aggregatedModification: Modification?, currentModificatoin, _ ->
+                    when (aggregatedModification) {
+                        null -> mergeModifications(currentModificatoin)
+                        else -> mergeModifications(aggregatedModification, currentModificatoin)
                     }
                 }
                 .values
@@ -73,7 +73,7 @@ class GitLogNumstatRawParserStrategy: LogParserStrategy {
                     a.map { it.type }.firstOrNull { t -> t != Modification.Type.UNKNOWN } ?: Modification.Type.UNKNOWN
 
             if (type == Modification.Type.RENAME) {
-                val oldFilename = a.map { it.oldFilename }.firstOrNull { s -> !s.isEmpty() } ?: ""
+                val oldFilename = a.map { it.oldFilename }.firstOrNull { s -> s.isNotEmpty() } ?: ""
                 return Modification(filename, oldFilename, additions, deletions, type)
             }
 

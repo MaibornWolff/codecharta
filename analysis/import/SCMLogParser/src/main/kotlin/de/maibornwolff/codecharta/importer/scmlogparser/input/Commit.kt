@@ -22,6 +22,7 @@ class Commit(val author: String, modifications: List<Modification>, val commitDa
     }
 
     fun getModification(filename: String): List<Modification> {
+        // TODO: Probably only one Modification per file name, possibly refactor to return Modification
         // we assume that in one commit there is only one modification for a file.
         return modifications.filter { filename == it.filename }
     }

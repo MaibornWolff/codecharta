@@ -56,24 +56,10 @@
               "attributes": {
                 "weeks_with_commits": 1,
                 "range_of_weeks_with_commits": 1,
-                "number_of_commits": 3,
+                "number_of_commits": 4,
                 "successive_weeks_with_commits": 1,
-                "number_of_authors": 1,
-                "authors": ["MartinSc"]
-              },
-              "link": "",
-              "children": []
-            },
-            {
-              "name": "srcFolderTest1.txt",
-              "type": "File",
-              "attributes": {
-                "weeks_with_commits": 1,
-                "range_of_weeks_with_commits": 1,
-                "number_of_commits": 1,
-                "successive_weeks_with_commits": 1,
-                "number_of_authors": 1,
-                "authors": ["AlexH"]
+                "number_of_authors": 2,
+                "authors": ["MartinSc", "AlexH"]
               },
               "link": "",
               "children": []

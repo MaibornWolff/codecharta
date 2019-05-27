@@ -49,20 +49,6 @@ class SVNLogParserStrategy: LogParserStrategy {
         return commitLines
                 .filter { this.isFileLine(it) }
                 .map { this.parseModification(it) }
-        //.groupBy { it.filename }
-
-        /*
-        .groupingBy { it.filename }
-                .aggregate { _, mod1: Modification?, mod2, _ ->
-                    when (mod1) {
-                        null -> mergeModifications(mod2)
-                        else -> mergeModifications(mod1, mod2)
-                    }
-                }
-                .values
-                .filterNotNull()
-                .toList()
-         */
     }
 
     private fun isFileLine(commitLine: String): Boolean {
@@ -94,7 +80,7 @@ class SVNLogParserStrategy: LogParserStrategy {
 
     private fun parseRenameModification(filePathLine: String): Modification {
         val fileNames = filePathLine.split(" (from")
-        val oldFileName = fileNames.last().split(":").first()
+        val oldFileName = removeDefaultRepositoryFolderPrefix(fileNames.last().split(":").first().trim { it <= ' ' })
         val newFileName = fileNames.first()
 
         println("Rename $oldFileName to $newFileName")
