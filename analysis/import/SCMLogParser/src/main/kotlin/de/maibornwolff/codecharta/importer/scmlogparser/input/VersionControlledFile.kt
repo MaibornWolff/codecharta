@@ -38,13 +38,9 @@ class VersionControlledFile internal constructor(
      */
     fun registerCommit(commit: Commit) {
         val modification = commit.getModification(filename)
-
-        modification.forEach { mod ->
-            metrics.forEach { it.registerCommit(commit) }
-            authors.add(commit.author)
-
-            registerModification(mod)
-        }
+        metrics.forEach { it.registerCommit(commit) }
+        authors.add(commit.author)
+        registerModification(modification)
     }
 
     private fun registerModification(modification: Modification) {

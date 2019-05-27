@@ -21,9 +21,11 @@ class Commit(val author: String, modifications: List<Modification>, val commitDa
                 .filter { !it.filename.isEmpty() }
     }
 
-    fun getModification(filename: String): List<Modification> {
-        // TODO: Probably only one Modification per file name, possibly refactor to return Modification
-        // we assume that in one commit there is only one modification for a file.
-        return modifications.filter { filename == it.filename }
+    fun getModification(filename: String): Modification {
+        val modifications = modifications.filter { filename == it.filename }
+        if (modifications.size != 1) {
+            throw IllegalStateException("No unique file name was found in commit for $filename, ${modifications.size} files were found")
+        }
+        return modifications.first()
     }
 }

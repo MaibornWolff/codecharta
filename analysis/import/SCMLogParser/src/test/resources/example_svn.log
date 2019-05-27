@@ -37,6 +37,7 @@ Changed paths:
    A /trunk/src/innerFolder
    A /trunk/src/innerFolder/BestClassEver.java
    A /trunk/src/srcFolderTest.txt (from /trunk/src/srcFolderTest_OLDNAME.txt:123)
+   D /trunk/src/srcFolderTest_OLDNAME.txt
 
 Multiline commit message, this is long
 and even longer
