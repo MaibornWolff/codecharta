@@ -80,4 +80,22 @@ describe("FileExtensionBarController", () => {
 			expect(fileExtensionBarController["_viewModel"].distribution).toEqual(NONE_METRIC_DISTRIBUTION)
 		})
 	})
+
+	describe("toggleExtensiveMode", () => {
+		it("should set viewModel.isExtensiveMode to false", () => {
+			fileExtensionBarController["_viewModel"].isExtensiveMode = true
+
+			fileExtensionBarController.toggleExtensiveMode()
+
+			expect(fileExtensionBarController["_viewModel"].isExtensiveMode).toBeFalsy()
+		})
+
+		it("should set viewModel.isExtensiveMode to true", () => {
+			fileExtensionBarController["_viewModel"].isExtensiveMode = false
+
+			fileExtensionBarController.toggleExtensiveMode()
+
+			expect(fileExtensionBarController["_viewModel"].isExtensiveMode).toBeTruthy
+		})
+	})
 })
