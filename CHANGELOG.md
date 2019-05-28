@@ -7,12 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- SVN log parser keeps track of renaming of files for metric calculation #542
 
 ### Changed
 
 ### Removed
 
 ### Fixed
+- Entries with renaming information in SVN logs are attributed to correct file #542
 
 ### Chore
 
