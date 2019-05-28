@@ -6,11 +6,10 @@ import { hierarchy } from "d3-hierarchy"
 import _ from "lodash"
 import { FileNameHelper } from "../../util/fileNameHelper"
 
-//TODO: rename downloadFlag to isSelected
 interface FileDownloadContent {
 	name: string
 	numberOfListItems: number
-	downloadFlag: boolean
+	isSelected: boolean
 	disabled: boolean
 }
 
@@ -57,7 +56,7 @@ export class DialogDownlodController {
 		this._viewModel.fileContent.push({
 			name: name,
 			numberOfListItems: numberOfListItems,
-			downloadFlag: numberOfListItems > 0,
+			isSelected: numberOfListItems > 0,
 			disabled: disabled || !numberOfListItems || numberOfListItems == 0
 		})
 	}
@@ -69,7 +68,7 @@ export class DialogDownlodController {
 	public download() {
 		FileDownloader.downloadCurrentMap(
 			this.codeMapPreRenderService.getRenderFile(),
-			this._viewModel.fileContent.filter(x => x.downloadFlag == true).map(x => x.name),
+			this._viewModel.fileContent.filter(x => x.isSelected == true).map(x => x.name),
 			this._viewModel.fileName
 		)
 		this.$mdDialog.hide()
