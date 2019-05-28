@@ -2,7 +2,7 @@
 
     <md-toolbar>
         <div class="md-toolbar-tools">
-            <h2>Download File</h2>
+            <h2>Export File</h2>
         </div>
     </md-toolbar>
 
@@ -13,11 +13,11 @@
                 <input type="text" ng-model="$ctrl._viewModel.fileName">
             </md-input-container>
 
+            <p class="dialog-label">The file includes:</p>
+
             <md-input-container ng-repeat="item in $ctrl._viewModel.fileContent" class="md-block">
                 <md-checkbox class="md-primary" ng-disabled="::item.isDisabled" ng-model="::item.isSelected">
-                    <span ng-show="::item.numberOfListItems == 0">no</span>
-                    <span ng-show="::item.numberOfListItems > 0">{{::item.numberOfListItems}}</span>
-                    <span>{{::item.name}}</span><span ng-show="::item.numberOfListItems != 1">s</span>
+                    <span>{{::item.name}} ({{::item.numberOfListItems}})</span>
                 </md-checkbox>
             </md-input-container>
         </div>
