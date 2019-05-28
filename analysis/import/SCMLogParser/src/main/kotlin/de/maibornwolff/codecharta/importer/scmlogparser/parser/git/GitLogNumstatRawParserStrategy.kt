@@ -33,10 +33,10 @@ class GitLogNumstatRawParserStrategy: LogParserStrategy {
                 .filter { isFileLine(it) }
                 .map { parseModification(it) }
                 .groupingBy { it.filename }
-                .aggregate { _, aggregatedModification: Modification?, currentModificatoin, _ ->
+                .aggregate { _, aggregatedModification: Modification?, currentModification, _ ->
                     when (aggregatedModification) {
-                        null -> mergeModifications(currentModificatoin)
-                        else -> mergeModifications(aggregatedModification, currentModificatoin)
+                        null -> mergeModifications(currentModification)
+                        else -> mergeModifications(aggregatedModification, currentModification)
                     }
                 }
                 .values

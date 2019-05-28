@@ -79,9 +79,9 @@ class SVNLogParserStrategy: LogParserStrategy {
     }
 
     private fun parseRenameModification(filePathLine: String): Modification {
-        val fileNames = filePathLine.split(" (from")
+        val fileNames = filePathLine.split(RENAME_FILE_LINE_IDENTIFIER)
         val oldFileNameWithPrefix = fileNames.last().split(":").first()
-        val oldFileName = removeDefaultRepositoryFolderPrefix(oldFileNameWithPrefix.trim { it <= ' ' })
+        val oldFileName = removeDefaultRepositoryFolderPrefix(oldFileNameWithPrefix)
         val newFileName = fileNames.first()
 
         return ignoreIfRepresentsFolder(Modification(newFileName, oldFileName, Modification.Type.RENAME))
@@ -97,7 +97,7 @@ class SVNLogParserStrategy: LogParserStrategy {
 
     companion object {
 
-        private const val RENAME_FILE_LINE_IDENTIFIER =  " (from"
+        private const val RENAME_FILE_LINE_IDENTIFIER = " (from "
         private val SVN_COMMIT_SEPARATOR_TEST =
                 Predicate<String> { logLine -> logLine.isNotEmpty() && StringUtils.containsOnly(logLine, '-') }
         private val DEFAULT_REPOSITORY_FOLDER_PREFIXES = arrayOf("/branches/", "/tags/", "/trunk/", "/")
