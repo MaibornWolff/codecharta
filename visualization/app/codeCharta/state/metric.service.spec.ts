@@ -12,8 +12,10 @@ describe("MetricService", () => {
 	let metricService: MetricService
 	let $rootScope: IRootScopeService
 	let fileStateService: FileStateService
+
 	let fileStates: FileState[]
 	let files: CCFile[]
+	let metricData: MetricData[]
 
 	beforeEach(() => {
 		restartSystem()
@@ -32,15 +34,16 @@ describe("MetricService", () => {
 			{ file: NodeDecorator.preDecorateFile(TEST_DELTA_MAP_A), selectedAs: FileSelectionState.None },
 			{ file: NodeDecorator.preDecorateFile(TEST_DELTA_MAP_B), selectedAs: FileSelectionState.None }
 		]
-	}
-
-	function rebuildService() {
-		metricService = new MetricService($rootScope, fileStateService)
-		metricService["metricData"] = [
+		metricData = [
 			{ name: "rloc", maxValue: 999999, availableInVisibleMaps: true },
 			{ name: "functions", maxValue: 999999, availableInVisibleMaps: true },
 			{ name: "mcc", maxValue: 999999, availableInVisibleMaps: true }
 		]
+	}
+
+	function rebuildService() {
+		metricService = new MetricService($rootScope, fileStateService)
+		metricService["metricData"] = metricData
 		metricService["fileStates"] = fileStates
 	}
 
@@ -94,7 +97,7 @@ describe("MetricService", () => {
 	describe("onSettingsChanged", () => {
 		beforeEach(() => {
 			fileStateService.getFileStates = jest.fn().mockReturnValue(fileStates)
-			metricService["calculateMetrics"] = jest.fn().mockReturnValue({})
+			metricService["calculateMetrics"] = jest.fn().mockReturnValue(metricData)
 		})
 
 		it("should not call getFileStates when update object is not a blacklist", () => {
@@ -112,13 +115,19 @@ describe("MetricService", () => {
 		it("should set metricData to new calculated metricData", () => {
 			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } }, null)
 
-			expect(metricService["metricData"]).toEqual({})
+			expect(metricService["metricData"]).toEqual(metricData)
 		})
 
 		it("should broadcast a METRIC_DATA_ADDED_EVENT", () => {
 			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } }, null)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
+		})
+
+		it("should add unary metric to metricData", () => {
+			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } }, undefined)
+
+			expect(metricService.getMetricData().filter(x => x.name === "unary").length).toBeGreaterThan(0)
 		})
 	})
 
