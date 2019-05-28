@@ -241,6 +241,27 @@ export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
 	]
 }
 
+export const VALID_NODE_WITH_PATH_WITH_NO_RLOC_METRIC: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: "Folder",
+	path: "/root",
+	children: [
+		{
+			name: "big leaf.jpg",
+			type: "File",
+			path: "/root/big leaf.jpg",
+			attributes: { RLOC: 0, Functions: 10, MCC: 1 }
+		},
+		{
+			name: "another big leaf.java",
+			type: "File",
+			path: "/root/another big leaf.java",
+			attributes: { RLOC: 0, Functions: 20, MCC: 2 }
+		}
+	]
+}
+
 export const TEST_DELTA_MAP_A: CCFile = {
 	fileMeta: {
 		fileName: "fileA",
