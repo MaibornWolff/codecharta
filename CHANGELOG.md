@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed
 
 - Entries with renaming information in SVN logs are attributed to correct file #542
+- Unary metric will no longer be removed from the MetricChooser-Dropdown when a folder was excluded or hidden #548
 - Changing margin and then file or mode will no longer freeze the application #524
 
 ### Chore

@@ -46,6 +46,7 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 				FileStateHelper.getVisibleFileStates(fileStates),
 				update.fileSettings.blacklist
 			)
+			this.addUnaryMetric()
 			this.notifyMetricDataAdded()
 		}
 	}
