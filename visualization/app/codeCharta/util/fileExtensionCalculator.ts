@@ -44,11 +44,15 @@ export class FileExtensionCalculator {
 
 	private static decorateDistributionWithRelativeMetricValue(distribution: MetricDistribution[]): MetricDistribution[] {
 		const sumOfAllMetricValues: number = this.getSumOfAllMetrics(distribution)
+		if (sumOfAllMetricValues === 0) {
+			return [this.getNoneExtension()]
+		}
 		distribution.forEach((x: MetricDistribution) => {
 			if (x.absoluteMetricValue !== 0) {
 				x.relativeMetricValue = (x.absoluteMetricValue / sumOfAllMetricValues) * 100
 			}
 		})
+
 		return distribution
 	}
 
@@ -79,6 +83,15 @@ export class FileExtensionCalculator {
 			fileExtension: FileExtensionCalculator.OTHER_EXTENSION,
 			absoluteMetricValue: null,
 			relativeMetricValue: 0,
+			color: "#676867"
+		}
+	}
+
+	private static getNoneExtension() {
+		return {
+			fileExtension: FileExtensionCalculator.NO_EXTENSION,
+			absoluteMetricValue: null,
+			relativeMetricValue: 100,
 			color: "#676867"
 		}
 	}
