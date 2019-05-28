@@ -294,6 +294,7 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 	apiVersion: "1.1",
 	attributeTypes: {},
 	blacklist: [],
+	markedPackages: [],
 	edges: [
 		{
 			attributes: { avgCommits: 34, pairingRate: 89 },

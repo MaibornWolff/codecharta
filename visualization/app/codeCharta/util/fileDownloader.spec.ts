@@ -2,6 +2,7 @@ import { stubDate } from "../../../mocks/dateMock.helper"
 import { FileDownloader } from "./fileDownloader"
 import { CCFile } from "../codeCharta.model"
 import { TEST_FILE_DATA, TEST_FILE_DATA_DOWNLOADED } from "./dataMocks"
+import { DownloadCheckboxNames } from "../ui/dialog/dialog.download"
 
 describe("fileDownloader", () => {
 	let file: CCFile
@@ -18,7 +19,11 @@ describe("fileDownloader", () => {
 
 	describe("downloadCurrentMap", () => {
 		it("should download map correctly", () => {
-			const downloadSettingsNames: string[] = ["edges", "blacklist"]
+			const downloadSettingsNames: string[] = [
+				DownloadCheckboxNames.edges,
+				DownloadCheckboxNames.excludes,
+				DownloadCheckboxNames.hides
+			]
 			FileDownloader.downloadCurrentMap(file, downloadSettingsNames, fileName)
 
 			expect(FileDownloader["downloadData"]).toHaveBeenCalledTimes(1)

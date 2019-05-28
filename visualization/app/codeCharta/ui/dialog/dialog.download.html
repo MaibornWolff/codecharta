@@ -15,7 +15,7 @@
 
             <md-input-container ng-repeat="item in $ctrl._viewModel.fileContent" class="md-block">
                 <md-checkbox class="md-primary" ng-disabled="::item.disabled" ng-model="::item.downloadFlag">
-                    <span ng-show="::item.numberOfListItems == 0">empty</span>
+                    <span ng-show="::item.numberOfListItems == 0">no</span>
                     <span ng-show="::item.numberOfListItems > 0">{{::item.numberOfListItems}}</span>
                     <span>{{::item.name}}</span>
                 </md-checkbox>

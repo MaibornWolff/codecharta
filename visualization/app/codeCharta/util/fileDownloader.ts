@@ -1,29 +1,44 @@
 import angular from "angular"
 import * as d3 from "d3"
-import { CCFile, CodeMapNode } from "../codeCharta.model"
+import { CCFile, CodeMapNode, BlacklistType, BlacklistItem, FileSettings } from "../codeCharta.model"
+import { DownloadCheckboxNames } from "../ui/dialog/dialog.download"
 
 export class FileDownloader {
-	private static allSettingsNames: string[] = ["edges", "blacklist", "markedPackages"]
-
 	public static downloadCurrentMap(file: CCFile, downloadSettingsNames: string[], fileName: string) {
 		const data = this.getProjectDataAsCCJsonFormat(file, downloadSettingsNames)
 		this.downloadData(data, fileName)
 	}
 
 	private static getProjectDataAsCCJsonFormat(file: CCFile, downloadSettingsNames: string[]) {
+		const s: FileSettings = file.settings.fileSettings
+
 		let downloadObject: any = {
 			projectName: file.fileMeta.projectName,
 			apiVersion: file.fileMeta.apiVersion,
 			nodes: [this.removeJsonHashkeysAndVisibleAttribute(file.map)],
-			attributeTypes: file.settings.fileSettings.attributeTypes
+			attributeTypes: s.attributeTypes,
+			edges: downloadSettingsNames.includes(DownloadCheckboxNames.edges) ? s.edges : [],
+			markedPackages: downloadSettingsNames.includes(DownloadCheckboxNames.markedPackages) ? s.markedPackages : [],
+			blacklist: this.getBlacklistToDownload(downloadSettingsNames, file)
+		}
+		return downloadObject
+	}
+
+	private static getBlacklistToDownload(downloadSettingsNames: string[], file: CCFile): BlacklistItem[] {
+		let blacklist: BlacklistItem[] = []
+
+		if (downloadSettingsNames.includes(DownloadCheckboxNames.hides)) {
+			blacklist.push(...this.getFilteredBlacklist(file, BlacklistType.hide))
 		}
 
-		this.allSettingsNames.forEach(settingsName => {
-			if (downloadSettingsNames.includes(settingsName)) {
-				downloadObject[settingsName] = file.settings.fileSettings[settingsName]
-			}
-		})
-		return downloadObject
+		if (downloadSettingsNames.includes(DownloadCheckboxNames.excludes)) {
+			blacklist.push(...this.getFilteredBlacklist(file, BlacklistType.exclude))
+		}
+		return blacklist
+	}
+
+	private static getFilteredBlacklist(file: CCFile, type: BlacklistType): BlacklistItem[] {
+		return file.settings.fileSettings.blacklist.filter(x => x.type == type)
 	}
 
 	private static removeJsonHashkeysAndVisibleAttribute(map: CodeMapNode) {

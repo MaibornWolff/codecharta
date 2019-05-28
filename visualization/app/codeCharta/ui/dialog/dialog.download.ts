@@ -1,16 +1,25 @@
 import "./dialog.scss"
 import { FileDownloader } from "../../util/fileDownloader"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import { CCFile } from "../../codeCharta.model"
+import { CCFile, BlacklistType, FileSettings } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import _ from "lodash"
 import { FileNameHelper } from "../../util/fileNameHelper"
 
+//TODO: rename downloadFlag to isSelected
 interface FileDownloadContent {
 	name: string
 	numberOfListItems: number
 	downloadFlag: boolean
 	disabled: boolean
+}
+
+export enum DownloadCheckboxNames {
+	nodes = "Nodes",
+	edges = "Edges",
+	excludes = "Excludes",
+	hides = "Hides",
+	markedPackages = "MarkedPackages"
 }
 
 export class DialogDownlodController {
@@ -28,15 +37,20 @@ export class DialogDownlodController {
 
 	private initDialogFields() {
 		const file: CCFile = this.codeMapPreRenderService.getRenderFile()
+		const s: FileSettings = file.settings.fileSettings
 		this._viewModel.fileName = FileNameHelper.getNewFileName(file.fileMeta.fileName)
-		this.pushFileContent("nodes", hierarchy(file.map).descendants().length, true)
 
-		_.keys(file.settings.fileSettings).forEach(settingsKey => {
-			if (settingsKey != "attributeTypes") {
-				this.pushFileContent(settingsKey, file.settings.fileSettings[settingsKey].length)
-			}
-		})
+		this.pushFileContent(DownloadCheckboxNames.nodes, hierarchy(file.map).descendants().length, true)
+		this.pushFileContent(DownloadCheckboxNames.edges, s.edges.length)
+		this.pushFileContent(DownloadCheckboxNames.markedPackages, s.markedPackages.length)
+		this.pushFileContent(DownloadCheckboxNames.excludes, this.getFilteredBlacklistLength(s, BlacklistType.exclude))
+		this.pushFileContent(DownloadCheckboxNames.hides, this.getFilteredBlacklistLength(s, BlacklistType.hide))
+
 		this._viewModel.fileContent = this._viewModel.fileContent.sort()
+	}
+
+	private getFilteredBlacklistLength(s: FileSettings, blacklistType: BlacklistType) {
+		return s.blacklist.filter(x => x.type == blacklistType).length
 	}
 
 	private pushFileContent(name: string, numberOfListItems: number, disabled: boolean = false) {
