@@ -45,7 +45,7 @@ class ProjectConverterTest {
         //given
         val projectConverter = ProjectConverter(true, "ProjectWithAuthors")
         val file1 = VersionControlledFile("File 1", metricsFactory)
-        file1.registerCommit(Commit("Author", modificationsByFilename("File 1, File 2"), OffsetDateTime.now()))
+        file1.registerCommit(Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()))
 
         //when
         val project = projectConverter.convert(Arrays.asList(file1))
@@ -59,7 +59,7 @@ class ProjectConverterTest {
         //given
         val projectConverter = ProjectConverter(false, "ProjectWithoutAuthors")
         val file1 = VersionControlledFile("File 1", metricsFactory)
-        file1.registerCommit(Commit("Author", modificationsByFilename("File 1, File 2"), OffsetDateTime.now()))
+        file1.registerCommit(Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()))
 
         //when
         val project = projectConverter.convert(Arrays.asList(file1))

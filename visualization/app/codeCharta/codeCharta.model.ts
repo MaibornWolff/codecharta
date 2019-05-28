@@ -68,17 +68,18 @@ export interface DynamicSettings {
 	searchedNodePaths: Array<string>
 	searchPattern: string
 	margin: number
-	neutralColorRange: ColorRange
+	colorRange: ColorRange
 }
 
 export interface AppSettings {
 	amountOfTopLabels: number
 	scaling: Vector3
 	camera: Vector3
-	deltaColorFlipped: boolean
 	enableEdgeArrows: boolean
 	hideFlatBuildings: boolean
 	maximizeDetailPanel: boolean
+	invertColorRange: boolean
+	invertDeltaColors: boolean
 	invertHeight: boolean
 	dynamicMargin: boolean
 	isWhiteBackground: boolean
@@ -108,7 +109,6 @@ export interface MapColors {
 export interface ColorRange {
 	from: number
 	to: number
-	flipped: boolean
 }
 
 export interface AttributeTypes {

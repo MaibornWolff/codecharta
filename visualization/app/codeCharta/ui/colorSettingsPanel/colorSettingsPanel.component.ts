@@ -12,13 +12,13 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 	private lastMaxColorMetricValue: number = null
 
 	private _viewModel: {
-		neutralColorRangeFlipped: boolean
-		deltaColorFlipped: boolean
+		invertColorRange: boolean
+		invertDeltaColors: boolean
 		whiteColorBuildings: boolean
 		isDeltaState: boolean
 	} = {
-		neutralColorRangeFlipped: null,
-		deltaColorFlipped: null,
+		invertColorRange: null,
+		invertDeltaColors: null,
 		whiteColorBuildings: null,
 		isDeltaState: null
 	}
@@ -31,8 +31,9 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-		this._viewModel.deltaColorFlipped = settings.appSettings.deltaColorFlipped
+		this._viewModel.invertDeltaColors = settings.appSettings.invertDeltaColors
 		this._viewModel.whiteColorBuildings = settings.appSettings.whiteColorBuildings
+		this._viewModel.invertColorRange = settings.appSettings.invertColorRange
 
 		if (
 			(this.lastColorMetric !== settings.dynamicSettings.colorMetric || !this.containsColorRangeValues(settings)) &&
@@ -41,8 +42,6 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 			this.lastColorMetric = settings.dynamicSettings.colorMetric
 			const maxMetricValue = this.metricService.getMaxMetricByMetricName(settings.dynamicSettings.colorMetric)
 			this.adaptColorRange(settings, maxMetricValue)
-		} else if (settings.dynamicSettings.neutralColorRange) {
-			this._viewModel.neutralColorRangeFlipped = settings.dynamicSettings.neutralColorRange.flipped
 		}
 	}
 
@@ -66,31 +65,25 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 
 	public applySettings() {
 		this.settingsService.updateSettings({
-			dynamicSettings: {
-				neutralColorRange: {
-					flipped: this._viewModel.neutralColorRangeFlipped
-				}
-			},
 			appSettings: {
-				deltaColorFlipped: this._viewModel.deltaColorFlipped,
-				whiteColorBuildings: this._viewModel.whiteColorBuildings
+				invertDeltaColors: this._viewModel.invertDeltaColors,
+				whiteColorBuildings: this._viewModel.whiteColorBuildings,
+				invertColorRange: this._viewModel.invertColorRange
 			}
 		})
 	}
 
 	private containsColorRangeValues(settings): boolean {
-		return _.values(settings.dynamicSettings.neutralColorRange).every(x => x != null)
+		return _.values(settings.dynamicSettings.colorRange).every(x => x != null)
 	}
 
 	private adaptColorRange(s: Settings, maxMetricValue: number) {
-		const flipped = s.dynamicSettings.neutralColorRange ? s.dynamicSettings.neutralColorRange.flipped : false
 		const firstThird = Math.round((maxMetricValue / 3) * 100) / 100
 		const secondThird = Math.round(firstThird * 2 * 100) / 100
 
 		this.settingsService.updateSettings({
 			dynamicSettings: {
-				neutralColorRange: {
-					flipped: flipped,
+				colorRange: {
 					from: firstThird,
 					to: secondThird
 				}
