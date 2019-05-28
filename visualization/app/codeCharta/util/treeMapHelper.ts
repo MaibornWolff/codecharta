@@ -3,6 +3,10 @@ import { CodeMapHelper } from "./codeMapHelper"
 import { Settings, Node } from "../codeCharta.model"
 
 export class TreeMapHelper {
+	private static FOLDER_HEIGHT = 2
+	private static MIN_BUILDING_HEIGHT = 2
+	private static HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND = 0
+
 	public static countNodes(node: { children?: any }): number {
 		let count = 1
 		if (node.children && node.children.length > 0) {
@@ -13,41 +17,42 @@ export class TreeMapHelper {
 		return count
 	}
 
-	public static isNodeLeaf(node: { children?: any }): boolean {
-		return !(node.children && node.children.length > 0)
+	private static getHeightValue(s: Settings, squaredNode: SquarifiedValuedCodeMapNode, maxHeight: number, flattened: boolean): number {
+		let heightValue = squaredNode.data.attributes[s.dynamicSettings.heightMetric] || TreeMapHelper.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
+
+		if (flattened) {
+			return TreeMapHelper.MIN_BUILDING_HEIGHT
+		} else if (s.appSettings.invertHeight) {
+			return maxHeight - heightValue
+		} else {
+			return heightValue
+		}
 	}
 
 	public static buildNodeFrom(
 		squaredNode: SquarifiedValuedCodeMapNode,
 		heightScale: number,
-		heightValue: number,
 		maxHeight: number,
 		depth: number,
 		parent: Node,
-		s: Settings,
-		minHeight: number,
-		folderHeight: number
+		s: Settings
 	): Node {
-		let calculatedHeightValue = heightValue
-		if (s.appSettings.invertHeight) {
-			calculatedHeightValue = maxHeight - heightValue
-		}
-
-		const flattened = this.isNodeToBeFlat(squaredNode, s)
-		if (flattened) {
-			calculatedHeightValue = minHeight
-		}
+		const isNodeLeaf: boolean = !(squaredNode.children && squaredNode.children.length > 0)
+		const flattened: boolean = this.isNodeToBeFlat(squaredNode, s)
+		const heightValue: number = this.getHeightValue(s, squaredNode, maxHeight, flattened)
 
 		return {
 			name: squaredNode.data.name,
 			width: squaredNode.x1 - squaredNode.x0,
-			height: Math.abs(this.isNodeLeaf(squaredNode) ? Math.max(heightScale * calculatedHeightValue, minHeight) : folderHeight),
+			height: Math.abs(
+				isNodeLeaf ? Math.max(heightScale * heightValue, TreeMapHelper.MIN_BUILDING_HEIGHT) : TreeMapHelper.FOLDER_HEIGHT
+			),
 			length: squaredNode.y1 - squaredNode.y0,
 			depth: depth,
 			x0: squaredNode.x0,
-			z0: depth * folderHeight,
+			z0: depth * TreeMapHelper.FOLDER_HEIGHT,
 			y0: squaredNode.y0,
-			isLeaf: this.isNodeLeaf(squaredNode),
+			isLeaf: isNodeLeaf,
 			attributes: squaredNode.data.attributes,
 			deltas: squaredNode.data.deltas,
 			parent: parent,
@@ -55,7 +60,7 @@ export class TreeMapHelper {
 				squaredNode.data.deltas && squaredNode.data.deltas[s.dynamicSettings.heightMetric]
 					? heightScale * squaredNode.data.deltas[s.dynamicSettings.heightMetric]
 					: 0,
-			visible: squaredNode.data.visible && !(this.isNodeLeaf(squaredNode) && s.appSettings.hideFlatBuildings && flattened),
+			visible: squaredNode.data.visible && !(isNodeLeaf && s.appSettings.hideFlatBuildings && flattened),
 			path: squaredNode.data.path,
 			origin: squaredNode.data.origin,
 			link: squaredNode.data.link,

@@ -1,35 +1,31 @@
 import "./fileExtensionBar.module"
 import { FileExtensionBarController } from "./fileExtensionBar.component"
-import {getService, instantiateModule} from "../../../../mocks/ng.mockhelper"
-import {IRootScopeService} from "angular";
-import {SettingsService} from "../../state/settings.service";
+import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { IRootScopeService } from "angular"
+import { SettingsService } from "../../state/settings.service"
 
 describe("FileExtensionBarController", () => {
+	let fileExtensionBarController: FileExtensionBarController
+	let $rootScope: IRootScopeService
+	let settingsService: SettingsService
 
-    let fileExtensionBarController: FileExtensionBarController
-    let $rootScope: IRootScopeService
-    let settingsService: SettingsService
+	beforeEach(() => {
+		restartSystem()
+		rebuildController()
+	})
 
-    beforeEach(() => {
-        restartSystem()
-        rebuildController()
-    })
+	function restartSystem() {
+		instantiateModule("app.codeCharta.ui.fileExtensionBar")
 
-    function restartSystem() {
-        instantiateModule("app.codeCharta.ui.fileExtensionBar")
+		$rootScope = getService<IRootScopeService>("$rootScope")
+		settingsService = getService<SettingsService>("settingsService")
+	}
 
-        $rootScope = getService<IRootScopeService>("$rootScope")
-        settingsService = getService<SettingsService>("settingsService")
-    }
+	function rebuildController() {
+		fileExtensionBarController = new FileExtensionBarController($rootScope, settingsService)
+	}
 
-    function rebuildController() {
-        fileExtensionBarController = new FileExtensionBarController($rootScope, settingsService)
-    }
-
-    describe("someMethodName", () => {
-        it("should do something", () => {
-
-        })
-    })
-
-});
+	describe("someMethodName", () => {
+		it("should do something", () => {})
+	})
+})

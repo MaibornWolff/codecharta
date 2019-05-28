@@ -2,7 +2,9 @@
 
 exports[`treeMapHelper build node deltas 1`] = `
 Object {
-  "attributes": Object {},
+  "attributes": Object {
+    "theHeight": 100,
+  },
   "children": Array [],
   "deltas": Object {
     "theHeight": 33,
@@ -29,7 +31,9 @@ Object {
 
 exports[`treeMapHelper build node invertHeight 1`] = `
 Object {
-  "attributes": Object {},
+  "attributes": Object {
+    "theHeight": 100,
+  },
   "children": Array [],
   "deltas": undefined,
   "depth": 0,
@@ -52,34 +56,11 @@ Object {
 }
 `;
 
-exports[`treeMapHelper build node is leaf 1`] = `
-Object {
-  "attributes": Object {},
-  "children": Array [],
-  "deltas": undefined,
-  "depth": 0,
-  "flat": false,
-  "height": 100,
-  "heightDelta": 0,
-  "isLeaf": true,
-  "length": 400,
-  "link": undefined,
-  "markingColor": null,
-  "name": "Anode",
-  "origin": undefined,
-  "parent": null,
-  "path": "/root/Anode",
-  "visible": undefined,
-  "width": 400,
-  "x0": 0,
-  "y0": 0,
-  "z0": 0,
-}
-`;
-
 exports[`treeMapHelper build node minimal 1`] = `
 Object {
-  "attributes": Object {},
+  "attributes": Object {
+    "theHeight": 100,
+  },
   "children": Array [],
   "deltas": undefined,
   "depth": 0,
@@ -104,12 +85,14 @@ Object {
 
 exports[`treeMapHelper build node should set lowest possible height caused by other visible edge pairs 1`] = `
 Object {
-  "attributes": Object {},
+  "attributes": Object {
+    "theHeight": 100,
+  },
   "children": Array [],
   "deltas": undefined,
   "depth": 0,
   "flat": true,
-  "height": 1,
+  "height": 2,
   "heightDelta": 0,
   "isLeaf": true,
   "length": 400,
