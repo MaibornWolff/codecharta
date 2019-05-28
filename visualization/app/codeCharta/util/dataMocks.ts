@@ -1,6 +1,7 @@
 import { CCFile, CodeMapNode, Edge, MetricData, Node, Settings } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import * as THREE from "three"
+import { MetricDistribution } from "./fileExtensionCalculator"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -185,6 +186,24 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
 		}
 	}
 }
+
+export const METRIC_DISTRIBUTION: MetricDistribution[] = [
+	{
+		fileExtension: "java",
+		absoluteMetricValue: 20,
+		relativeMetricValue: 100,
+		color: null
+	}
+]
+
+export const NONE_METRIC_DISTRIBUTION: MetricDistribution[] = [
+	{
+		fileExtension: "none",
+		absoluteMetricValue: null,
+		relativeMetricValue: 100,
+		color: "#000000"
+	}
+]
 
 export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
 	name: "root",
