@@ -50,12 +50,6 @@ describe("FileExtensionBarController", () => {
 			getSettings: jest.fn().mockReturnValue(SETTINGS)
 		})()
 	}
-	/*
-	function withMockedthreeSceneService(){
-		threeSceneService = fileExtensionBarController["threeSceneService"] = jest.fn().mockReturnValue({
-			getMapMesh: jest.fn().mockReturnValue()
-		})
-	}*/
 
 	describe("onRenderFileChanged", () => {
 		beforeEach(() => {
@@ -117,7 +111,6 @@ describe("FileExtensionBarController", () => {
 	describe("clearHighlightedBarHoveredBuildings", () => {
 		it("should clear the highlighted Building Array if there are any inside", () => {
 			const mapMesh: CodeMapMesh = new CodeMapMesh([TEST_NODE_ROOT, TEST_NODE_LEAF], SETTINGS, false)
-			//threeSceneService.getMapMesh().setHighlighted(CODE_MAP_BUILDING_ARRAY)
 			threeSceneService.setMapMesh(mapMesh, 500)
 			threeSceneService.getMapMesh().setHighlighted(CODE_MAP_BUILDING_ARRAY)
 			fileExtensionBarController.clearHighlightedBarHoveredBuildings()
