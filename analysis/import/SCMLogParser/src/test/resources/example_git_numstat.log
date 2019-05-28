@@ -1,0 +1,48 @@
+commit ca2b5e43cc5a5250e556a098f077b4d0a287107e (HEAD -> bug/renaming-breaks-hierarchy-svn-scmlogparser, origin/bug/renaming-breaks-hierarchy-svn-scmlogparser)
+Author: Alex Hunziker <alexhunziker91@gmail.com>
+Date:   Fri May 24 16:36:11 2019 +0200
+
+    Refactoring of SVNLogParserStrategy #542
+
+:100644 100644 5059d980 90e7c69d M      analysis/import/SCMLogParser/src/main/kotlin/de/maibornwolff/codecharta/importer/scmlogparser/parser/svn/SVNLogParserStrategy.kt
+15      21      analysis/import/SCMLogParser/src/main/kotlin/de/maibornwolff/codecharta/importer/scmlogparser/parser/svn/SVNLogParserStrategy.kt
+
+commit ca2b5e43cc5a5250e556a098f077b4d0a287107e (HEAD -> bug/renaming-breaks-hierarchy-svn-scmlogparser, origin/bug/renaming-breaks-hierarchy-svn-scmlogparser)
+Author: Alex Hunziker <alexhunziker91@gmail.com>
+Date:   Fri May 24 16:36:11 2019 +0200
+
+    Refactoring of SVNLogParserStrategy #542
+
+:100644 100644 5059d980 90e7c69d M      analysis/import/SCMLogParser/src/main/kotlin/de/maibornwolff/codecharta/importer/scmlogparser/parser/svn/SVNLogParserStrategy.kt
+15      21      analysis/import/SCMLogParser/src/main/kotlin/de/maibornwolff/codecharta/importer/scmlogparser/parser/svn/SVNLogParserStrategy.kt
+
+commit b8b392d90099aedde9583c546f8181aa5d119259
+Author: Alex Hunziker <alexhunziker91@gmail.com>
+Date:   Fri May 24 16:35:03 2019 +0200
+
+    Improved and updated SVN test log #542
+
+:100644 100644 3836af61 146503e3 M      analysis/import/SCMLogParser/src/test/resources/example_svn.log
+:100644 100644 17573e3d e26c38e9 M      analysis/import/SCMLogParser/src/test/resources/expected_svn.json
+1       1       analysis/import/SCMLogParser/src/test/resources/example_svn.log
+22      14      analysis/import/SCMLogParser/src/test/resources/expected_svn.json
+
+commit 84858d47edc72129b6a12c93e833191570088e21
+Author: anonymous <>
+Date:   Fri Dec 15 22:30:45 2017 +0100
+
+    rename test
+
+:100644 100644 e0fd40f... a55a55d... R092	analysis/import/SCMLogParser/src/test/resources/example_svn123.log	analysis/import/SCMLogParser/src/test/resources/example_svn.log
+3	3	analysis/import/SCMLogParser/src/test/resources/{example_svn123.log => example_svn.log}
+
+commit 2649528347cf50031d8c35458a59045dd69fd466
+Author: Alex Hunziker <alexhunziker91@gmail.com>
+Date:   Fri May 24 16:06:49 2019 +0200
+
+    Added renaming methods to SVNLogParser #542
+
+:100644 100644 2a465d9a 5059d980 M      analysis/import/SCMLogParser/src/main/kotlin/de/maibornwolff/codecharta/importer/scmlogparser/parser/svn/SVNLogParserStrategy.kt
+:100644 100644 a933e3fa 3836af61 M      analysis/import/SCMLogParser/src/test/resources/example_svn123.log
+24      1       analysis/import/SCMLogParser/src/main/kotlin/de/maibornwolff/codecharta/importer/scmlogparser/parser/svn/SVNLogParserStrategy.kt
+20      0       analysis/import/SCMLogParser/src/test/resources/example_svn123.log

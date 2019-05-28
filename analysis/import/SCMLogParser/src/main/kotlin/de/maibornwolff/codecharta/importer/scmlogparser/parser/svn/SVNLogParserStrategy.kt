@@ -22,9 +22,9 @@ class SVNLogParserStrategy: LogParserStrategy {
 
     private fun parseCommitDate(metadataLine: String): OffsetDateTime {
         val splittedLine =
-                metadataLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+                metadataLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile{ it.isEmpty() }.toTypedArray()
         val commitDateAsString =
-                splittedLine[DATE_INDEX_IN_METADATA].trim({ it <= ' ' }).replace(" \\(.*\\)".toRegex(), "")
+                splittedLine[DATE_INDEX_IN_METADATA].trim{ it <= ' ' }.replace(" \\(.*\\)".toRegex(), "")
         return OffsetDateTime.parse(commitDateAsString, DATE_TIME_FORMATTER)
     }
 
@@ -41,8 +41,8 @@ class SVNLogParserStrategy: LogParserStrategy {
 
     private fun parseAuthor(authorLine: String): String {
         val splittedLine =
-                authorLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
-        return splittedLine[AUTHOR_INDEX_IN_METADATA].trim({ it <= ' ' })
+                authorLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile{ it.isEmpty() }.toTypedArray()
+        return splittedLine[AUTHOR_INDEX_IN_METADATA].trim{ it <= ' ' }
     }
 
     override fun parseModifications(commitLines: List<String>): List<Modification> {
@@ -58,15 +58,33 @@ class SVNLogParserStrategy: LogParserStrategy {
         }
         val firstChar = commitLineWithoutWhitespacePrefix[0]
         val secondChar = commitLineWithoutWhitespacePrefix[1]
-        return isStatusLetter(firstChar) && Character.isWhitespace(secondChar)
+        val thirdChar = commitLineWithoutWhitespacePrefix[2]
+        return isStatusLetter(firstChar) && Character.isWhitespace(secondChar) && isSlash(thirdChar)
     }
 
     internal fun parseModification(fileLine: String): Modification {
         val metadataWithoutWhitespacePrefix = stripWhitespacePrefix(fileLine)
         val status = Status.byCharacter(metadataWithoutWhitespacePrefix[0])
         val metadataWithoutStatusLetter = metadataWithoutWhitespacePrefix.substring(1)
-        val filePath = removeDefaultRepositoryFolderPrefix(metadataWithoutStatusLetter.trim({ it <= ' ' }))
+        val trimmedFileLine = removeDefaultRepositoryFolderPrefix(metadataWithoutStatusLetter.trim{ it <= ' ' })
+
+        return when(trimmedFileLine.contains(RENAME_FILE_LINE_IDENTIFIER)) {
+            true ->  parseRenameModification(trimmedFileLine)
+            else ->  parseStandardModification(trimmedFileLine, status)
+        }
+    }
+
+    private fun parseStandardModification(filePath: String, status: Status): Modification {
         return ignoreIfRepresentsFolder(Modification(filePath, status.toModificationType()))
+    }
+
+    private fun parseRenameModification(filePathLine: String): Modification {
+        val fileNames = filePathLine.split(RENAME_FILE_LINE_IDENTIFIER)
+        val oldFileNameWithPrefix = fileNames.last().split(":").first()
+        val oldFileName = removeDefaultRepositoryFolderPrefix(oldFileNameWithPrefix)
+        val newFileName = fileNames.first()
+
+        return ignoreIfRepresentsFolder(Modification(newFileName, oldFileName, Modification.Type.RENAME))
     }
 
     override fun creationCommand(): String {
@@ -79,9 +97,10 @@ class SVNLogParserStrategy: LogParserStrategy {
 
     companion object {
 
+        private const val RENAME_FILE_LINE_IDENTIFIER = " (from "
         private val SVN_COMMIT_SEPARATOR_TEST =
-                Predicate<String> { logLine -> !logLine.isEmpty() && StringUtils.containsOnly(logLine, '-') }
-        private val DEFAULT_REPOSITORY_FOLDER_PREFIXES = arrayOf("/branches/", "/tags/", "/trunk/")
+                Predicate<String> { logLine -> logLine.isNotEmpty() && StringUtils.containsOnly(logLine, '-') }
+        private val DEFAULT_REPOSITORY_FOLDER_PREFIXES = arrayOf("/branches/", "/tags/", "/trunk/", "/")
         private val DATE_TIME_FORMATTER = DateTimeFormatterBuilder()
                 .parseCaseInsensitive()
                 .append(DateTimeFormatter.ISO_LOCAL_DATE)
@@ -100,6 +119,10 @@ class SVNLogParserStrategy: LogParserStrategy {
 
         private fun isStatusLetter(character: Char): Boolean {
             return Status.ALL_STATUS_LETTERS.contains(character)
+        }
+
+        private fun isSlash(char: Char): Boolean {
+            return char == '/'
         }
 
         private fun removeDefaultRepositoryFolderPrefix(path: String): String {
