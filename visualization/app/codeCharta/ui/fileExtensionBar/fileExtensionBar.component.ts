@@ -33,7 +33,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		this.potentiallyAddNoneExtension()
 	}
 
-	public highlightBarHoveredBuildings(extension: string) {
+	private highlightBarHoveredBuildings(extension: string) {
 		let buildings: CodeMapBuilding[] = this.codeMapRenderService.mapMesh.getMeshDescription().buildings
 		let toHighlightBuilding: CodeMapBuilding[] = []
 		buildings.forEach(x => {
@@ -44,11 +44,11 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		this.threeSceneService.getMapMesh().setHighlighted(toHighlightBuilding)
 	}
 
-	public clearHighlightedBarHoveredBuildings() {
+	private clearHighlightedBarHoveredBuildings() {
 		this.threeSceneService.getMapMesh().clearHighlight()
 	}
 
-	public toggleExtensiveMode() {
+	private toggleExtensiveMode() {
 		this._viewModel.isExtensiveMode = !this._viewModel.isExtensiveMode
 	}
 

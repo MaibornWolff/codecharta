@@ -1,6 +1,6 @@
 import { FileExtensionCalculator, MetricDistribution } from "./fileExtensionCalculator"
 import { CodeMapNode } from "../codeCharta.model"
-import { VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITH_PATH_WITH_NO_RLOC_METRIC } from "./dataMocks"
+import { VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC } from "./dataMocks"
 
 describe("FileExtensionCalculator", () => {
 	let map: CodeMapNode
@@ -33,7 +33,7 @@ describe("FileExtensionCalculator", () => {
 		})
 
 		it("should get correct get Array with just a None Attribute, if no Extension is found for the Metric", () => {
-			map = VALID_NODE_WITH_PATH_WITH_NO_RLOC_METRIC
+			map = VALID_NODE_WITHOUT_RLOC_METRIC
 			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "RLOC")
 			const expected: MetricDistribution[] = [
 				{ fileExtension: "None", absoluteMetricValue: null, relativeMetricValue: 100, color: "#676867" }

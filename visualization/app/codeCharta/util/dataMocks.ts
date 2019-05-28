@@ -241,7 +241,7 @@ export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
 	]
 }
 
-export const VALID_NODE_WITH_PATH_WITH_NO_RLOC_METRIC: CodeMapNode = {
+export const VALID_NODE_WITHOUT_RLOC_METRIC: CodeMapNode = {
 	name: "root",
 	attributes: {},
 	type: "Folder",
