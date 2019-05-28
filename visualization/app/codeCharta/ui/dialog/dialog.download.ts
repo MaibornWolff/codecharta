@@ -10,7 +10,7 @@ interface FileDownloadContent {
 	name: string
 	numberOfListItems: number
 	isSelected: boolean
-	disabled: boolean
+	isDisabled: boolean
 }
 
 export enum DownloadCheckboxNames {
@@ -52,12 +52,12 @@ export class DialogDownlodController {
 		return s.blacklist.filter(x => x.type == blacklistType).length
 	}
 
-	private pushFileContent(name: string, numberOfListItems: number, disabled: boolean = false) {
+	private pushFileContent(name: string, numberOfListItems: number, isDisabled: boolean = false) {
 		this._viewModel.fileContent.push({
 			name: name,
 			numberOfListItems: numberOfListItems,
 			isSelected: numberOfListItems > 0,
-			disabled: disabled || !numberOfListItems || numberOfListItems == 0
+			isDisabled: isDisabled || !numberOfListItems || numberOfListItems == 0
 		})
 	}
 
