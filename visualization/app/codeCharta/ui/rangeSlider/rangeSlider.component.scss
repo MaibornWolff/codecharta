@@ -1,56 +1,55 @@
 @import "~angularjs-slider/dist/rzslider.css";
 
 range-slider-component {
+	display: block;
+	padding-top: 7px;
 
-  display: block;
-  padding-top: 7px;
+	* {
+		display: inline-block !important;
+	}
 
-  * {
-    display: inline-block !important;
-  }
+	.rzslider {
+		width: 150px;
+		margin: -10px 0 15px 0 !important;
 
-  .rzslider {
-    width: 150px;
-    margin: -10px 0 15px 0 !important;
+		.rz-bar {
+			background: #a3a3a3;
+			height: 5px;
+			margin-top: -1.5px;
+		}
 
-    .rz-bar {
-      background: #a3a3a3;
-      height: 5px;
-      margin-top: -1.5px;
-    }
+		.rz-pointer,
+		.rz-selection {
+			background: #26a69a !important;
+		}
 
-    .rz-pointer,
-    .rz-selection {
-      background: #26a69a !important;
-    }
+		.rz-pointer {
+			top: -6px;
+			width: 14px;
+			height: 14px;
+			cursor: pointer;
+			border-radius: 16px;
+		}
 
-    .rz-pointer {
-      top: -6px;
-      width: 14px;
-      height: 14px;
-      cursor: pointer;
-      border-radius: 16px;
-    }
+		.rz-bar-wrapper:nth-child(2) {
+			visibility: visible !important;
+		}
+	}
 
-    .rz-bar-wrapper:nth-child(2) {
-      visibility: visible !important;
-    }
+	.rz-bubble,
+	.rz-limit {
+		bottom: 7px !important;
+		padding: 1px 3px;
+		color: #aeaeae !important;
+		cursor: default;
+	}
 
-  }
+	.rz-active:after {
+		display: none;
+	}
 
-  .rz-bubble, .rz-limit {
-    bottom: 7px !important;
-    padding: 1px 3px;
-    color: #aeaeae !important;
-    cursor: default;
-  }
-
-  .rz-active:after {
-    display: none;
-  }
-
-  .small-input-field {
-    width: 42px;
-    text-align: center !important;
-  }
+	.small-input-field {
+		width: 42px;
+		text-align: center !important;
+	}
 }

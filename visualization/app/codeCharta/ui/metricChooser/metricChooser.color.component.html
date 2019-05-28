@@ -1,14 +1,15 @@
 <md-input-container class="md-block">
-    <i class='fa fa-paint-brush'></i>
+	<i class="fa fa-paint-brush"></i>
 
-    <md-select ng-model="$ctrl._viewModel.colorMetric" ng-change="$ctrl.applySettingsColorMetric()">
-        <md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
-            {{::metric.name}}
-            <span class="metric-max-value">({{::metric.maxValue}})</span>
-        </md-option>
-    </md-select>
+	<md-select ng-model="$ctrl._viewModel.colorMetric" ng-change="$ctrl.applySettingsColorMetric()">
+		<md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
+			{{::metric.name}}
+			<span class="metric-max-value">({{::metric.maxValue}})</span>
+		</md-option>
+	</md-select>
 
-    <span class="metric-value">{{($ctrl.hoveredColorValue | number) || "-"}}
-        <span ng-hide="!$ctrl.hoveredHeightDelta">(&Delta;{{$ctrl.hoveredColorDelta | number}})</span>
-    </span>
+	<span class="metric-value"
+		>{{ ($ctrl.hoveredColorValue | number) || "-" }}
+		<span ng-hide="!$ctrl.hoveredHeightDelta">(&Delta;{{ $ctrl.hoveredColorDelta | number }})</span>
+	</span>
 </md-input-container>

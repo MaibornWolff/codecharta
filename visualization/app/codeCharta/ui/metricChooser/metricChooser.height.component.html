@@ -1,14 +1,17 @@
 <md-input-container class="md-block">
-    <i class='fa fa-arrows-v'></i>
+	<i class="fa fa-arrows-v"></i>
 
-    <md-select ng-model="$ctrl._viewModel.heightMetric" ng-change="$ctrl.applySettingsHeightMetric()">
-        <md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
-            {{::metric.name}}
-            <span class="metric-max-value">({{::metric.maxValue}})</span>
-        </md-option>
-    </md-select>
+	<md-select ng-model="$ctrl._viewModel.heightMetric" ng-change="$ctrl.applySettingsHeightMetric()">
+		<md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
+			{{::metric.name}}
+			<span class="metric-max-value">({{::metric.maxValue}})</span>
+		</md-option>
+	</md-select>
 
-    <span class="metric-value">{{($ctrl.hoveredHeightValue | number) || "-"}}
-        <span style="color: {{$ctrl.hoveredDeltaColor}};" ng-hide="!$ctrl.hoveredHeightDelta">(&Delta;{{$ctrl.hoveredHeightDelta | number}})</span>
-    </span>
+	<span class="metric-value"
+		>{{ ($ctrl.hoveredHeightValue | number) || "-" }}
+		<span style="color: {{ $ctrl.hoveredDeltaColor }};" ng-hide="!$ctrl.hoveredHeightDelta"
+			>(&Delta;{{ $ctrl.hoveredHeightDelta | number }})</span
+		>
+	</span>
 </md-input-container>

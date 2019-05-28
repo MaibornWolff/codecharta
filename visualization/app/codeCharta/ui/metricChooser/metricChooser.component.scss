@@ -1,50 +1,49 @@
 area-metric-chooser-component,
 height-metric-chooser-component,
 color-metric-chooser-component {
-  $selectWidth: 150;
+	$selectWidth: 150;
 
-  md-input-container {
-    display: block;
-    top: -5px;
-    text-align: left;
+	md-input-container {
+		display: block;
+		top: -5px;
+		text-align: left;
 
-    md-select {
-      width: $selectWidth + px;
-    }
+		md-select {
+			width: $selectWidth + px;
+		}
 
-    > * {
-      display: inline-block;
-      margin: 0;
-      padding: 0;
-      vertical-align: middle;
-    }
-  }
+		> * {
+			display: inline-block;
+			margin: 0;
+			padding: 0;
+			vertical-align: middle;
+		}
+	}
 
-  i.fa,
-  .metric-value {
-    vertical-align: middle;
-    margin-top: 8px;
-  }
+	i.fa,
+	.metric-value {
+		vertical-align: middle;
+		margin-top: 8px;
+	}
 
-  i.fa {
-    margin-left: 5px;
-    margin-right: 10px;
-    min-width: 16px;
-  }
+	i.fa {
+		margin-left: 5px;
+		margin-right: 10px;
+		min-width: 16px;
+	}
 
-  .metric-value {
-    margin-left: 5px;
-    min-width: 40px;
-    float: right;
-  }
+	.metric-value {
+		margin-left: 5px;
+		min-width: 40px;
+		float: right;
+	}
 
-  .md-select-value .metric-max-value {
-    display: none;
-  }
-
+	.md-select-value .metric-max-value {
+		display: none;
+	}
 }
 
 .metric-max-value {
-  color: #ccc !important;
-  font-size: smaller !important;
+	color: #ccc !important;
+	font-size: smaller !important;
 }

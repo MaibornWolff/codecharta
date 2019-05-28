@@ -1,1 +1,1 @@
-module.exports = 'glsl-file-stub';
+module.exports = "glsl-file-stub"
