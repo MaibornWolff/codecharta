@@ -14,11 +14,11 @@ interface FileDownloadContent {
 }
 
 export enum DownloadCheckboxNames {
-	nodes = "Nodes",
-	edges = "Edges",
-	excludes = "Excludes",
-	hides = "Hides",
-	markedPackages = "MarkedPackages"
+	nodes = "Node",
+	edges = "Edge",
+	excludes = "Exclude",
+	hides = "Hide",
+	markedPackages = "MarkedPackage"
 }
 
 export class DialogDownlodController {
