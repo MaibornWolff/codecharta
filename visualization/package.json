@@ -76,7 +76,7 @@
 		"g": "plop",
 		"lint": "tslint -c \"tslint.json\" \"app/**/*.ts\" --project tsconfig.json",
 		"lint:fix": "tslint -c \"tslint.json\" \"app/**/*.ts\" --fix --project tsconfig.json",
-		"format": "prettier --write \"./app/**/*.ts\""
+		"format": "prettier --write \"./**/*\""
 	},
 	"bin": {
 		"codecharta-visualization": "cli.js"
