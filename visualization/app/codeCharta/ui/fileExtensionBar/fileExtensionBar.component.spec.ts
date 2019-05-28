@@ -4,9 +4,18 @@ import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settings.service"
 import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { TEST_FILE_WITH_PATHS, SETTINGS, METRIC_DISTRIBUTION, NONE_METRIC_DISTRIBUTION } from "../../util/dataMocks"
+import {
+	TEST_FILE_WITH_PATHS,
+	SETTINGS,
+	METRIC_DISTRIBUTION,
+	NONE_METRIC_DISTRIBUTION,
+	CODE_MAP_BUILDING_ARRAY,
+	TEST_NODE_ROOT,
+	TEST_NODE_LEAF
+} from "../../util/dataMocks"
 import { MetricDistribution, FileExtensionCalculator } from "../../util/fileExtensionCalculator"
 import { FileExtensionBarController } from "./fileExtensionBar.component"
+import { CodeMapMesh } from "../codeMap/rendering/codeMapMesh"
 
 describe("FileExtensionBarController", () => {
 	let fileExtensionBarController: FileExtensionBarController
@@ -41,6 +50,12 @@ describe("FileExtensionBarController", () => {
 			getSettings: jest.fn().mockReturnValue(SETTINGS)
 		})()
 	}
+	/*
+	function withMockedthreeSceneService(){
+		threeSceneService = fileExtensionBarController["threeSceneService"] = jest.fn().mockReturnValue({
+			getMapMesh: jest.fn().mockReturnValue()
+		})
+	}*/
 
 	describe("onRenderFileChanged", () => {
 		beforeEach(() => {
@@ -96,6 +111,18 @@ describe("FileExtensionBarController", () => {
 			fileExtensionBarController.toggleExtensiveMode()
 
 			expect(fileExtensionBarController["_viewModel"].isExtensiveMode).toBeTruthy
+		})
+	})
+
+	describe("clearHighlightedBarHoveredBuildings", () => {
+		it("should clear the highlighted Building Array if there are any inside", () => {
+			const mapMesh: CodeMapMesh = new CodeMapMesh([TEST_NODE_ROOT, TEST_NODE_LEAF], SETTINGS, false)
+			//threeSceneService.getMapMesh().setHighlighted(CODE_MAP_BUILDING_ARRAY)
+			threeSceneService.setMapMesh(mapMesh, 500)
+			threeSceneService.getMapMesh().setHighlighted(CODE_MAP_BUILDING_ARRAY)
+			fileExtensionBarController.clearHighlightedBarHoveredBuildings()
+
+			expect(threeSceneService.getMapMesh().getCurrentlyHighlighted()).toEqual(null)
 		})
 	})
 })

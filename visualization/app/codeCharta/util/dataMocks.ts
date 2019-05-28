@@ -581,6 +581,16 @@ export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(
 	DEFAULT_SETTINGS.appSettings.mapColors.neutral
 )
 
+export const CODE_MAP_BUILDING_ARRAY: CodeMapBuilding[] = [
+	{
+		id: 1,
+		boundingBox: new THREE.Box3(),
+		color: null,
+		node: TEST_NODE_ROOT
+	},
+	{ id: 2, boundingBox: new THREE.Box3(), color: null, node: TEST_NODE_ROOT }
+]
+
 export const METRIC_DATA: MetricData[] = [
 	{ name: "mcc", maxValue: 1, availableInVisibleMaps: true },
 	{ name: "rloc", maxValue: 2, availableInVisibleMaps: true }
