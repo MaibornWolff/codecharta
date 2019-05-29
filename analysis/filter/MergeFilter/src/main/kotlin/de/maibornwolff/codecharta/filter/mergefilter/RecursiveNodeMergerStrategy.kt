@@ -39,6 +39,9 @@ class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false): NodeMergerStrate
 
     private val mergeConditionSatisfied: (MutableNode, MutableNode) -> Boolean
 
+    private var nodesProcessed = 0
+    private var nodesMerged = 0
+
     private val logger = KotlinLogging.logger { }
 
     init {
@@ -52,6 +55,7 @@ class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false): NodeMergerStrate
 
         return nodeLists.reduce { mergedNodeList, nextNodeList ->
             nextNodeList.fold(mergedNodeList, { accumulatedNodes: List<MutableNode>, nextNode: MutableNode ->
+                nodesProcessed++
                 mergeOrAppendNode(accumulatedNodes, nextNode)
             })
 
@@ -63,6 +67,7 @@ class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false): NodeMergerStrate
             return nodeList + node
         }
 
+        nodesMerged++
         return nodeList.map {
             if (mergeConditionSatisfied(it, node)) {
                 merge(it, node)
@@ -70,6 +75,11 @@ class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false): NodeMergerStrate
                 it
             }
         }
+    }
+
+    override fun logMergeStats() {
+        logger.info("$nodesProcessed nodes were processed, ${nodesProcessed - nodesMerged} were added and $nodesMerged were merged")
+        if (nodesMerged == 0) logger.warn("No nodes were merged. Hierarchies may not match up.")
     }
 
     private fun merge(vararg nodes: MutableNode): MutableNode {
