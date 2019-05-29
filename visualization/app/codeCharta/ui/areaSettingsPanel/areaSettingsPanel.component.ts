@@ -1,11 +1,13 @@
 import "./areaSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import { CCFile, CodeMapNode, RecursivePartial, Settings } from "../../codeCharta.model"
+import { CCFile, CodeMapNode, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3-hierarchy"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
+import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 
-export class AreaSettingsPanelController implements SettingsServiceSubscriber, CodeMapPreRenderServiceSubscriber {
+export class AreaSettingsPanelController
+	implements SettingsServiceSubscriber, CodeMapPreRenderServiceSubscriber, FileStateServiceSubscriber {
 	private static MIN_MARGIN = 15
 	private static MAX_MARGIN = 100
 	private static MARGIN_FACTOR = 4
@@ -26,6 +28,7 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
+		FileStateService.subscribe(this.$rootScope, this)
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
@@ -37,6 +40,21 @@ export class AreaSettingsPanelController implements SettingsServiceSubscriber, C
 	public onRenderFileChanged(renderFile: CCFile, event: angular.IAngularEvent) {
 		this._viewModel.dynamicMargin = this.settingsService.getSettings().appSettings.dynamicMargin
 		this.potentiallyUpdateMargin(renderFile, this.settingsService.getSettings())
+	}
+
+	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+		this.resetDynamicMargin()
+		this.potentiallyUpdateMargin(this.codeMapPreRenderService.getRenderFile(), this.settingsService.getSettings())
+	}
+
+	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+		this.resetDynamicMargin()
+		this.potentiallyUpdateMargin(this.codeMapPreRenderService.getRenderFile(), this.settingsService.getSettings())
+	}
+
+	private resetDynamicMargin() {
+		this._viewModel.dynamicMargin = true
+		this.applySettingsDynamicMargin()
 	}
 
 	public onChangeMarginSlider() {
