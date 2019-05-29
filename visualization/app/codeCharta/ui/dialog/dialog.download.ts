@@ -38,7 +38,7 @@ export class DialogDownlodController {
 		const file: CCFile = this.codeMapPreRenderService.getRenderFile()
 		this.setFileContentList(file)
 		this._viewModel.fileName = FileNameHelper.getNewFileName(file.fileMeta.fileName)
-		this._viewModel.fileContent = this._viewModel.fileContent.sort()
+		this._viewModel.fileContent = this._viewModel.fileContent.sort((a,b) => this.sortByDisabled(a, b))
 	}
 
 	private setFileContentList(file: CCFile) {
@@ -61,6 +61,10 @@ export class DialogDownlodController {
 			isSelected: numberOfListItems > 0,
 			isDisabled: isDisabled || !numberOfListItems || numberOfListItems == 0
 		})
+	}
+
+	private sortByDisabled(a: FileDownloadContent, b: FileDownloadContent) {
+		return (a.isDisabled === b.isDisabled)? 0 : a.isDisabled? 1 : -1;
 	}
 
 	public hide() {
