@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore
 
+- [Security] Bump tar from 2.2.1 to 2.2.2 in /visualization
+
 ## [1.25.0] - 2019-05-17
 
 ### Added
