@@ -36,16 +36,18 @@ export class DialogDownlodController {
 
 	private initDialogFields() {
 		const file: CCFile = this.codeMapPreRenderService.getRenderFile()
-		const s: FileSettings = file.settings.fileSettings
+		this.setFileContentList(file)
 		this._viewModel.fileName = FileNameHelper.getNewFileName(file.fileMeta.fileName)
+		this._viewModel.fileContent = this._viewModel.fileContent.sort()
+	}
 
+	private setFileContentList(file: CCFile) {
+		const s: FileSettings = file.settings.fileSettings
 		this.pushFileContent(DownloadCheckboxNames.nodes, hierarchy(file.map).descendants().length, true)
 		this.pushFileContent(DownloadCheckboxNames.edges, s.edges.length)
 		this.pushFileContent(DownloadCheckboxNames.markedPackages, s.markedPackages.length)
 		this.pushFileContent(DownloadCheckboxNames.excludes, this.getFilteredBlacklistLength(s, BlacklistType.exclude))
 		this.pushFileContent(DownloadCheckboxNames.hides, this.getFilteredBlacklistLength(s, BlacklistType.hide))
-
-		this._viewModel.fileContent = this._viewModel.fileContent.sort()
 	}
 
 	private getFilteredBlacklistLength(s: FileSettings, blacklistType: BlacklistType) {
