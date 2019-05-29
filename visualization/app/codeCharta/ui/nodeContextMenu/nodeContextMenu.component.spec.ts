@@ -7,7 +7,7 @@ import { CodeMapHelper } from "../../util/codeMapHelper"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { NodeContextMenuController } from "./nodeContextMenu.component"
 import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
-import {CodeMapPreRenderService} from "../codeMap/codeMap.preRender.service";
+import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 
 describe("nodeContextMenuController", () => {
 	let element: Element
@@ -315,7 +315,7 @@ describe("nodeContextMenuController", () => {
 		it("should return true, if package is marked and matches the color", () => {
 			const markedPackages = [{ path: "/another root", color: "color" }]
 			settingsService.getSettings = jest.fn().mockReturnValue({ fileSettings: { markedPackages } })
-			codeMapActionsService.getParentMP = jest.fn().mockReturnValue({path: "/another root" , color:  "color"})
+			codeMapActionsService.getParentMP = jest.fn().mockReturnValue({ path: "/another root", color: "color" })
 
 			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH
 
@@ -338,7 +338,10 @@ describe("nodeContextMenuController", () => {
 			nodeContextMenuController.markFolder("color")
 
 			expect(nodeContextMenuController.hide).toHaveBeenCalled()
-			expect(codeMapActionsService.markFolder).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].contextMenuBuilding,"color")
+			expect(codeMapActionsService.markFolder).toHaveBeenCalledWith(
+				nodeContextMenuController["_viewModel"].contextMenuBuilding,
+				"color"
+			)
 		})
 	})
 
@@ -374,7 +377,9 @@ describe("nodeContextMenuController", () => {
 			nodeContextMenuController.showDependentEdges()
 
 			expect(nodeContextMenuController.hide).toHaveBeenCalled()
-			expect(codeMapActionsService.showDependentEdges).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].contextMenuBuilding)
+			expect(codeMapActionsService.showDependentEdges).toHaveBeenCalledWith(
+				nodeContextMenuController["_viewModel"].contextMenuBuilding
+			)
 		})
 	})
 
@@ -386,7 +391,9 @@ describe("nodeContextMenuController", () => {
 			nodeContextMenuController.hideDependentEdges()
 
 			expect(nodeContextMenuController.hide).toHaveBeenCalled()
-			expect(codeMapActionsService.hideDependentEdges).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].contextMenuBuilding)
+			expect(codeMapActionsService.hideDependentEdges).toHaveBeenCalledWith(
+				nodeContextMenuController["_viewModel"].contextMenuBuilding
+			)
 		})
 	})
 
@@ -416,39 +423,39 @@ describe("nodeContextMenuController", () => {
 
 	describe("nodeIsFolder", () => {
 		it("should return true, if contextMenuBuilding is a folder", () => {
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH;
-			const result = nodeContextMenuController.nodeIsFolder();
+			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH
+			const result = nodeContextMenuController.nodeIsFolder()
 
 			expect(result).toBeTruthy()
 		})
 
 		it("should return false, if contextMenuBuilding is null", () => {
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = null;
-			const result = nodeContextMenuController.nodeIsFolder();
+			nodeContextMenuController["_viewModel"].contextMenuBuilding = null
+			const result = nodeContextMenuController.nodeIsFolder()
 
 			expect(result).toBeFalsy()
 		})
 
 		it("should return false, if contextMenuBuilding is undefined", () => {
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = undefined;
-			const result = nodeContextMenuController.nodeIsFolder();
+			nodeContextMenuController["_viewModel"].contextMenuBuilding = undefined
+			const result = nodeContextMenuController.nodeIsFolder()
 
 			expect(result).toBeFalsy()
 		})
 
 		it("should return false, if contextMenuBuilding has no children property", () => {
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH.children[0];
-			const result = nodeContextMenuController.nodeIsFolder();
+			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH.children[0]
+			const result = nodeContextMenuController.nodeIsFolder()
 
 			expect(result).toBeFalsy()
 		})
 
 		it("should return false, if contextMenuBuilding has children property but no children", () => {
-			const VALID_NODE_WITHOUT_CHILDREN = VALID_NODE_WITH_PATH;
-			VALID_NODE_WITHOUT_CHILDREN.children[0].children = [];
+			const VALID_NODE_WITHOUT_CHILDREN = VALID_NODE_WITH_PATH
+			VALID_NODE_WITHOUT_CHILDREN.children[0].children = []
 
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITHOUT_CHILDREN[0];
-			const result = nodeContextMenuController.nodeIsFolder();
+			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITHOUT_CHILDREN[0]
+			const result = nodeContextMenuController.nodeIsFolder()
 
 			expect(result).toBeFalsy()
 		})
@@ -457,8 +464,8 @@ describe("nodeContextMenuController", () => {
 	describe("hide", () => {
 		it("should set contextMenuBuilding to null after flush", () => {
 			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH
-			nodeContextMenuController.hide();
-			$timeout.flush();
+			nodeContextMenuController.hide()
+			$timeout.flush()
 
 			expect(nodeContextMenuController["_viewModel"].contextMenuBuilding).toBe(null)
 		})

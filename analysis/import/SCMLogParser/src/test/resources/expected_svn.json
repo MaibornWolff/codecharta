@@ -1,6 +1,6 @@
 {
   "projectName": "SCMLogParser",
-  "apiVersion": "1.0",
+  "apiVersion": "1.1",
   "nodes": [
     {
       "name": "root",
@@ -26,12 +26,10 @@
                   "attributes": {
                     "weeks_with_commits": 1,
                     "range_of_weeks_with_commits": 1,
-                    "number_of_commits": 3,
+                    "number_of_commits": 5,
                     "successive_weeks_with_commits": 1,
-                    "number_of_authors": 1,
-                    "authors": [
-                      "MartinSc"
-                    ]
+                    "number_of_authors": 2,
+                    "authors": ["MartinSc", "AlexH"]
                   },
                   "link": "",
                   "children": []
@@ -45,9 +43,7 @@
                     "number_of_commits": 2,
                     "successive_weeks_with_commits": 1,
                     "number_of_authors": 1,
-                    "authors": [
-                      "MartinSc"
-                    ]
+                    "authors": ["MartinSc"]
                   },
                   "link": "",
                   "children": []
@@ -60,12 +56,10 @@
               "attributes": {
                 "weeks_with_commits": 1,
                 "range_of_weeks_with_commits": 1,
-                "number_of_commits": 2,
+                "number_of_commits": 4,
                 "successive_weeks_with_commits": 1,
-                "number_of_authors": 1,
-                "authors": [
-                  "MartinSc"
-                ]
+                "number_of_authors": 2,
+                "authors": ["MartinSc", "AlexH"]
               },
               "link": "",
               "children": []

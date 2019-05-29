@@ -67,13 +67,13 @@ describe("HeightSettingsPanelController", () => {
 		})
 
 		it("should set scalingY in viewModel", () => {
-			heightSettingsPanelController.onSettingsChanged(settings, undefined,undefined)
+			heightSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
 
 			expect(heightSettingsPanelController["_viewModel"].scalingY).toBe(1.8)
 		})
 
 		it("should set invertHeight in viewModel", () => {
-			heightSettingsPanelController.onSettingsChanged(settings, undefined,undefined)
+			heightSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
 
 			expect(heightSettingsPanelController["_viewModel"].invertHeight).toBeTruthy()
 		})

@@ -1,6 +1,6 @@
 import "./areaSettingsPanel.module"
 import "../codeMap/codeMap.module"
-import "../../codeCharta"
+import "../../codeCharta.module"
 import { AreaSettingsPanelController } from "./areaSettingsPanel.component"
 import { SettingsService } from "../../state/settings.service"
 import { SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
@@ -8,10 +8,9 @@ import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CCFile, Settings } from "../../codeCharta.model"
-import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service";
+import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 
 describe("AreaSettingsPanelController", () => {
-
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -73,6 +72,12 @@ describe("AreaSettingsPanelController", () => {
 
 			expect(CodeMapPreRenderService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
+
+		it("should subscribe to FileStateService", () => {
+			rebuildController()
+
+			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
+		})
 	})
 
 	describe("onSettingsChanged", () => {
@@ -81,7 +86,7 @@ describe("AreaSettingsPanelController", () => {
 		})
 
 		it("should set the dynamicMargin in viewModel", () => {
-			areaSettingsPanelController.onSettingsChanged(settings, undefined,undefined)
+			areaSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
 
 			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeTruthy()
 		})
@@ -89,19 +94,19 @@ describe("AreaSettingsPanelController", () => {
 		it("should set margin from settings if dynamicMargin is false", () => {
 			settings.appSettings.dynamicMargin = false
 
-			areaSettingsPanelController.onSettingsChanged(settings, undefined,undefined)
+			areaSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
 
 			expect(areaSettingsPanelController["_viewModel"].margin).toBe(48)
 		})
 
 		it("should set new calculated margin correctly", () => {
-			areaSettingsPanelController.onSettingsChanged(settings, undefined,undefined)
+			areaSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
 
 			expect(areaSettingsPanelController["_viewModel"].margin).toBe(28)
 		})
 
 		it("should call applySettings after setting new margin", () => {
-			areaSettingsPanelController.onSettingsChanged(settings, undefined,undefined)
+			areaSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
 
 			expect(areaSettingsPanelController.applySettings).toHaveBeenCalled()
 		})
@@ -109,7 +114,7 @@ describe("AreaSettingsPanelController", () => {
 		it("should not call applySettings if margin and new calculated margin are the same", () => {
 			settings.dynamicSettings.margin = 28
 
-			areaSettingsPanelController.onSettingsChanged(settings, undefined,undefined)
+			areaSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
 
 			expect(areaSettingsPanelController.applySettings).not.toHaveBeenCalled()
 		})
@@ -152,6 +157,40 @@ describe("AreaSettingsPanelController", () => {
 		})
 	})
 
+	describe("onFileSelectionStatesChanged", () => {
+		it("should set dynamicMargin in viewModel to true", () => {
+			areaSettingsPanelController.onFileSelectionStatesChanged(undefined, undefined)
+
+			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeTruthy()
+		})
+
+		it("should update margin and dynamicMargin in settingsService", () => {
+			areaSettingsPanelController.onFileSelectionStatesChanged(undefined, undefined)
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({
+				dynamicSettings: { margin: 28 },
+				appSettings: { dynamicMargin: true }
+			})
+		})
+	})
+
+	describe("onImportedFilesChanged", () => {
+		it("should set dynamicMargin in viewModel to true", () => {
+			areaSettingsPanelController.onImportedFilesChanged(undefined, undefined)
+
+			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeTruthy()
+		})
+
+		it("should update margin and dynamicMargin in settingsService", () => {
+			areaSettingsPanelController.onImportedFilesChanged(undefined, undefined)
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({
+				dynamicSettings: { margin: 28 },
+				appSettings: { dynamicMargin: true }
+			})
+		})
+	})
+
 	describe("onChangeMarginSlider", () => {
 		beforeEach(() => {
 			areaSettingsPanelController.applySettings = jest.fn()
@@ -178,7 +217,7 @@ describe("AreaSettingsPanelController", () => {
 
 			areaSettingsPanelController.applySettingsDynamicMargin()
 
-			expect(settingsService.updateSettings).toBeCalledWith({appSettings: {dynamicMargin: false}})
+			expect(settingsService.updateSettings).toBeCalledWith({ appSettings: { dynamicMargin: false } })
 		})
 	})
 

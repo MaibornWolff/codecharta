@@ -1,46 +1,47 @@
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import "./colorSettingsPanel.component.scss"
-import { FileState, RecursivePartial, Settings } from "../../codeCharta.model"
+import { FileState, MetricData, RecursivePartial, Settings } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
-import { MetricService } from "../../state/metric.service"
+import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import _ from "lodash"
 
-export class ColorSettingsPanelController implements SettingsServiceSubscriber, FileStateServiceSubscriber {
-	private lastColorMetric = null
+export class ColorSettingsPanelController implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricServiceSubscriber {
+	private lastColorMetric: string = null
+	private lastMaxColorMetricValue: number = null
 
 	private _viewModel: {
-		neutralColorRangeFlipped: boolean
-		deltaColorFlipped: boolean
+		invertColorRange: boolean
+		invertDeltaColors: boolean
 		whiteColorBuildings: boolean
 		isDeltaState: boolean
 	} = {
-		neutralColorRangeFlipped: null,
-		deltaColorFlipped: null,
+		invertColorRange: null,
+		invertDeltaColors: null,
 		whiteColorBuildings: null,
 		isDeltaState: null
 	}
 
 	/* @ngInject */
-	constructor(
-		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
-		private metricService: MetricService
-	) {
+	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService, private metricService: MetricService) {
 		SettingsService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
+		MetricService.subscribe(this.$rootScope, this)
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-		this._viewModel.deltaColorFlipped = settings.appSettings.deltaColorFlipped
+		this._viewModel.invertDeltaColors = settings.appSettings.invertDeltaColors
 		this._viewModel.whiteColorBuildings = settings.appSettings.whiteColorBuildings
+		this._viewModel.invertColorRange = settings.appSettings.invertColorRange
 
-		if ((this.lastColorMetric != settings.dynamicSettings.colorMetric || !this.containsColorRangeValues(settings)) && this.metricService.getMetricData()) {
+		if (
+			(this.lastColorMetric !== settings.dynamicSettings.colorMetric || !this.containsColorRangeValues(settings)) &&
+			this.metricService.getMetricData()
+		) {
 			this.lastColorMetric = settings.dynamicSettings.colorMetric
-			this.adaptColorRange(settings)
-		} else if (settings.dynamicSettings.neutralColorRange) {
-			this._viewModel.neutralColorRangeFlipped = settings.dynamicSettings.neutralColorRange.flipped
+			const maxMetricValue = this.metricService.getMaxMetricByMetricName(settings.dynamicSettings.colorMetric)
+			this.adaptColorRange(settings, maxMetricValue)
 		}
 	}
 
@@ -50,35 +51,39 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 
 	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
 
+	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
+		const newMaxColorMetricValue: number = this.metricService.getMaxMetricByMetricName(
+			this.settingsService.getSettings().dynamicSettings.colorMetric
+		)
+		if (this.lastMaxColorMetricValue !== newMaxColorMetricValue) {
+			this.lastMaxColorMetricValue = newMaxColorMetricValue
+			this.adaptColorRange(this.settingsService.getSettings(), newMaxColorMetricValue)
+		}
+	}
+
+	public onMetricDataRemoved(event: angular.IAngularEvent) {}
+
 	public applySettings() {
 		this.settingsService.updateSettings({
-			dynamicSettings: {
-				neutralColorRange: {
-					flipped: this._viewModel.neutralColorRangeFlipped
-				}
-			},
 			appSettings: {
-				deltaColorFlipped: this._viewModel.deltaColorFlipped,
-				whiteColorBuildings: this._viewModel.whiteColorBuildings
+				invertDeltaColors: this._viewModel.invertDeltaColors,
+				whiteColorBuildings: this._viewModel.whiteColorBuildings,
+				invertColorRange: this._viewModel.invertColorRange
 			}
 		})
 	}
 
 	private containsColorRangeValues(settings): boolean {
-		return _.values(settings.dynamicSettings.neutralColorRange).every(x => x != null)
+		return _.values(settings.dynamicSettings.colorRange).every(x => x != null)
 	}
 
-	private adaptColorRange(s: Settings) {
-		const maxMetricValue = this.metricService.getMaxMetricByMetricName(s.dynamicSettings.colorMetric)
-
-		const flipped = s.dynamicSettings.neutralColorRange ? s.dynamicSettings.neutralColorRange.flipped : false
+	private adaptColorRange(s: Settings, maxMetricValue: number) {
 		const firstThird = Math.round((maxMetricValue / 3) * 100) / 100
 		const secondThird = Math.round(firstThird * 2 * 100) / 100
 
 		this.settingsService.updateSettings({
 			dynamicSettings: {
-				neutralColorRange: {
-					flipped: flipped,
+				colorRange: {
 					from: firstThird,
 					to: secondThird
 				}

@@ -29,7 +29,7 @@
 
 package de.maibornwolff.codecharta.importer.crococosmo
 
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class CrococosmoDeserializerTest {
     private val deserializer = CrococosmoDeserializer()

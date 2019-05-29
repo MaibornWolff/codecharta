@@ -33,28 +33,28 @@ class SVNLogParserStrategyTest: ParserStrategyContractTest() {
     @Test
     fun parsesFilenameFromFileMetadata() {
         val modification = parserStrategy.parseModification("   M /src/srcFolderTest.txt")
-        assertThat(modification.filename).isEqualTo("/src/srcFolderTest.txt")
+        assertThat(modification.filename).isEqualTo("src/srcFolderTest.txt")
         assertThat(modification.type).isEqualTo(Modification.Type.MODIFY)
     }
 
     @Test
     fun parsesFilenameFromAddedFile() {
         val modification = parserStrategy.parseModification("   A /src/srcFolderTest.txt")
-        assertThat(modification.filename).isEqualTo("/src/srcFolderTest.txt")
+        assertThat(modification.filename).isEqualTo("src/srcFolderTest.txt")
         assertThat(modification.type).isEqualTo(Modification.Type.ADD)
     }
 
     @Test
     fun parsesFilenameFromDeletedFile() {
         val modification = parserStrategy.parseModification("   D  /src/srcFolderTest.txt")
-        assertThat(modification.filename).isEqualTo("/src/srcFolderTest.txt")
+        assertThat(modification.filename).isEqualTo("src/srcFolderTest.txt")
         assertThat(modification.type).isEqualTo(Modification.Type.DELETE)
     }
 
     @Test
     fun parsesFilenameFromReplacedFile() {
         val modification = parserStrategy.parseModification("   R  /src/srcFolderTest.txt")
-        assertThat(modification.filename).isEqualTo("/src/srcFolderTest.txt")
+        assertThat(modification.filename).isEqualTo("src/srcFolderTest.txt")
         assertThat(modification.type).isEqualTo(Modification.Type.UNKNOWN)
     }
 
@@ -90,7 +90,7 @@ class SVNLogParserStrategyTest: ParserStrategyContractTest() {
         val commitString = mutableListOf("------------------------------------------------------------------------",
                 "r156657 | dpagam05 | 2017-01-02 03:12:18 +0100 (Mo, 02 Jan 2017) | 1 line",
                 "Changed paths:",
-                "    M src/Modified.java",
+                "    M /src/Modified.java",
                 "Task | Increased automaticly build number | builduser01",
                 "------------------------------------------------------------------------")
         val commit = parser.parseCommit(commitString)
