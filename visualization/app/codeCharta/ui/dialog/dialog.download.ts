@@ -24,9 +24,11 @@ export enum DownloadCheckboxNames {
 export class DialogDownlodController {
 	private _viewModel: {
 		fileName: string
+		amountOfNodes: number,
 		fileContent: FileDownloadContent[]
 	} = {
 		fileName: null,
+		amountOfNodes: null,
 		fileContent: []
 	}
 
@@ -38,12 +40,12 @@ export class DialogDownlodController {
 		const file: CCFile = this.codeMapPreRenderService.getRenderFile()
 		this.setFileContentList(file)
 		this._viewModel.fileName = FileNameHelper.getNewFileName(file.fileMeta.fileName)
+		this._viewModel.amountOfNodes = hierarchy(file.map).descendants().length
 		this._viewModel.fileContent = this._viewModel.fileContent.sort((a,b) => this.sortByDisabled(a, b))
 	}
 
 	private setFileContentList(file: CCFile) {
 		const s: FileSettings = file.settings.fileSettings
-		this.pushFileContent(DownloadCheckboxNames.nodes, hierarchy(file.map).descendants().length, true)
 		this.pushFileContent(DownloadCheckboxNames.edges, s.edges.length)
 		this.pushFileContent(DownloadCheckboxNames.markedPackages, s.markedPackages.length)
 		this.pushFileContent(DownloadCheckboxNames.excludes, this.getFilteredBlacklistLength(s, BlacklistType.exclude))
@@ -54,12 +56,12 @@ export class DialogDownlodController {
 		return s.blacklist.filter(x => x.type == blacklistType).length
 	}
 
-	private pushFileContent(name: string, numberOfListItems: number, isDisabled: boolean = false) {
+	private pushFileContent(name: string, numberOfListItems: number) {
 		this._viewModel.fileContent.push({
 			name: name,
 			numberOfListItems: numberOfListItems,
 			isSelected: numberOfListItems > 0,
-			isDisabled: isDisabled || !numberOfListItems || numberOfListItems == 0
+			isDisabled: !numberOfListItems || numberOfListItems == 0
 		})
 	}
 

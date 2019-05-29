@@ -14,6 +14,7 @@
             </md-input-container>
 
             <p class="dialog-label">The file includes:</p>
+            <p class="dialog-label">Nodes ({{$ctrl._viewModel.amountOfNodes}})</p>
 
             <md-input-container ng-repeat="item in $ctrl._viewModel.fileContent" class="md-block">
                 <md-checkbox class="md-primary" ng-disabled="::item.isDisabled" ng-model="::item.isSelected">
