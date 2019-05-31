@@ -19,11 +19,11 @@ class StructureChanger : Callable<Void?> {
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["input project file"])
     private var source: File = File("")
 
-    @CommandLine.Option(arity = "1..*", names = ["-p", "--path"], description = ["path to be extracted recursively"])
+    @CommandLine.Option(arity = "1..*", names = ["-e", "--extractSubproject"], description = ["path to be extracted recursively"])
     private var paths: Array<String> = arrayOf()
 
-    @CommandLine.Option(arity = "1..*", names = ["-s", "--showStructure"], description = ["show first x layers of project hierarchy"])
-    private var showStructure: Boolean = false
+    @CommandLine.Option(arity = "1", names = ["-i", "--inspectStructure"], description = ["show first x layers of project hierarchy"])
+    private var showStructure: Int = 0
 
     @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
@@ -31,40 +31,117 @@ class StructureChanger : Callable<Void?> {
     @CommandLine.Option(names = ["-p", "--projectName"], description = ["project name of new file"])
     private var projectName: String? = null
 
+    @CommandLine.Option(names = ["-f", "--moveFrom"], description = ["move nodes in source folder..."])
+    private var moveFrom: String? = null
+
+    @CommandLine.Option(names = ["-t", "--moveTo"], description = ["... move nodes to destination folder"])
+    private var moveTo: String? = null
+
     private lateinit var srcProject: Project
+    private var toMove: List<MutableNode>? = null
     private val logger = KotlinLogging.logger {}
 
     override fun call(): Void? {
 
         srcProject = readProject() ?: return null
 
+        if (showStructure > 0) {
+            showStructure(showStructure, 0, srcProject.rootNode.toMutableNode())
+            return null
+        }
+
+        if (paths.size > 0) srcProject = extractSubproject()
+
+        when {
+            (moveFrom != null) && (moveTo != null) -> srcProject = move()
+            (moveFrom != null) || (moveTo != null) -> logger.warn("In order to move nodes, both source and destination need to be set.")
+        }
+
+        val writer = outputFile?.bufferedWriter() ?: System.out.bufferedWriter()
+        ProjectSerializer.serializeProject(srcProject, writer)
+
+        return null
+    }
+
+    private fun move(): Project {
+        return ProjectBuilder(
+                projectName ?: srcProject.projectName,
+                moveNodes(getPathSegments(moveFrom!!), getPathSegments(moveTo!!), srcProject.rootNode.toMutableNode()),
+                extractEdges(),
+                copyAttributeTypes(),
+                copyBlacklist()
+        ).build()
+    }
+
+    private fun extractSubproject(): Project {
         val pathSegments = paths.map { it.removePrefix("/").split("/") }
-        val extractedProject = ProjectBuilder(
+        return ProjectBuilder(
                 projectName ?: srcProject.projectName,
                 extractNodes(pathSegments, srcProject.rootNode.toMutableNode()),
                 extractEdges(),
                 copyAttributeTypes(),
                 copyBlacklist()
         ).build()
+    }
 
-        val writer = outputFile?.bufferedWriter() ?: System.out.bufferedWriter()
-        ProjectSerializer.serializeProject(extractedProject, writer)
+    private fun moveNodes(originPath: List<String>, destinationPath: List<String>, node: MutableNode): List<MutableNode> {
+        val newStructure = listOf(removeMovedNodeFromStructure(originPath, node)!!)
 
-        return null
+        return if (toMove == null) {
+            logger.warn("Folder $moveFrom has not been found")
+            newStructure
+        } else {
+            insertInNewStructure(destinationPath.drop(1), node)
+            newStructure
+        }
+    }
+
+    private fun insertInNewStructure(destinationPath: List<String>, node: MutableNode) {
+        if (destinationPath.isEmpty()) {
+            node.children.addAll(toMove!!)
+        } else {
+            var chosenChild: MutableNode? = node.children.filter { destinationPath.first() == it.name }.firstOrNull()
+
+            if (chosenChild == null) {
+                node.children.add(MutableNode(destinationPath.first(), type = NodeType.Folder))
+                chosenChild = node.children.firstOrNull { destinationPath.first() == it.name }
+            }
+            insertInNewStructure(destinationPath.drop(1), chosenChild!!)
+        }
+    }
+
+    private fun removeMovedNodeFromStructure(originPath: List<String>, node: MutableNode): MutableNode? {
+
+        return if (originPath.isEmpty() || originPath.first() != node.name) {
+            node
+        } else if (originPath.size == 1) {
+            toMove = node.children
+            null
+        } else {
+            node.children = node.children.mapNotNull { child -> removeMovedNodeFromStructure(originPath.drop(1), child) }.toMutableList()
+            node
+        }
+    }
+
+    private fun getPathSegments(path: String): List<String> {
+        return path.removePrefix("/").split("/")
     }
 
     private fun extractNodes(extractionPattern: List<List<String>>, node: MutableNode): MutableList<MutableNode> {
         val children: List<MutableNode> = node.children
         val extractedNodes: MutableList<MutableNode> = mutableListOf()
         extractionPattern.forEach {
-            if (node.name == it.first()) {
-                (extractedNodes + node)
+            val currentSearchPattern = it.firstOrNull()
+            if (currentSearchPattern == null) {
+                extractedNodes.addAll(node.children)
+            } else if (currentSearchPattern == node.name) {
                 children.forEach { childNode ->
-                    extractedNodes.union(extractNodes(listOf(it.drop(1)), childNode))
+                    extractedNodes.addAll(extractNodes(listOf(it.drop(1)), childNode))
                 }
             }
         }
-        return extractedNodes
+        node.children = extractedNodes
+        return mutableListOf(node)
     }
 
     private fun extractEdges(): MutableList<Edge> {
@@ -104,6 +181,13 @@ class StructureChanger : Callable<Void?> {
             logger.warn("${source.name} is not a valid project file and is therefore skipped.")
             null
         }
+    }
+
+    private fun showStructure(maxDepth: Int, currentDepth: Int, node: MutableNode) {
+        if (maxDepth < currentDepth) return
+
+        println("- ".repeat(currentDepth) + node.name)
+        node.children.forEach { showStructure(maxDepth, currentDepth + 1, it) }
     }
 
     companion object {
