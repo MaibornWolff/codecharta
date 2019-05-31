@@ -47,9 +47,8 @@ class StructureChanger : Callable<Void?> {
 
         when {
             showStructure > 0 -> ProjectStructurePrinter(srcProject).printProjectStructure(showStructure)
+            paths.isNotEmpty() -> srcProject = SubProjectExtractor(srcProject).extract(paths, projectName)
         }
-
-        if (paths.size > 0) srcProject = extractSubproject()
 
         when {
             (moveFrom != null) && (moveTo != null) -> srcProject = move()
@@ -72,16 +71,6 @@ class StructureChanger : Callable<Void?> {
         ).build()
     }
 
-    private fun extractSubproject(): Project {
-        val pathSegments = paths.map { it.removePrefix("/").split("/") }
-        return ProjectBuilder(
-                projectName ?: srcProject.projectName,
-                extractNodes(pathSegments, srcProject.rootNode.toMutableNode()),
-                extractEdges(),
-                copyAttributeTypes(),
-                copyBlacklist()
-        ).build()
-    }
 
     private fun moveNodes(originPath: List<String>, destinationPath: List<String>, node: MutableNode): List<MutableNode> {
         val newStructure = listOf(removeMovedNodeFromStructure(originPath, node)!!)
@@ -124,23 +113,6 @@ class StructureChanger : Callable<Void?> {
 
     private fun getPathSegments(path: String): List<String> {
         return path.removePrefix("/").split("/")
-    }
-
-    private fun extractNodes(extractionPattern: List<List<String>>, node: MutableNode): MutableList<MutableNode> {
-        val children: List<MutableNode> = node.children
-        val extractedNodes: MutableList<MutableNode> = mutableListOf()
-        extractionPattern.forEach {
-            val currentSearchPattern = it.firstOrNull()
-            if (currentSearchPattern == null) {
-                extractedNodes.addAll(node.children)
-            } else if (currentSearchPattern == node.name) {
-                children.forEach { childNode ->
-                    extractedNodes.addAll(extractNodes(listOf(it.drop(1)), childNode))
-                }
-            }
-        }
-        node.children = extractedNodes
-        return mutableListOf(node)
     }
 
     private fun extractEdges(): MutableList<Edge> {

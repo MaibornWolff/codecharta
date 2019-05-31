@@ -18,14 +18,14 @@
                   "name": "file1.java",
                   "type": "File",
                   "attributes": {
-                    "nloc*": 80.0
+                    "nloc": 80.0
                   }
                 },
                 {
                   "name": "file2.java",
                   "type": "File",
                   "attributes": {
-                    "nloc*": 80.0
+                    "nloc": 80.0
                   }
                 }
               ]
@@ -38,7 +38,20 @@
                   "name": "otherFile.java",
                   "type": "File",
                   "attributes": {
-                    "nloc*": 80.0
+                    "nloc": 80.0
+                  }
+                }
+              ]
+            },
+            {
+              "name": "folder3",
+              "type": "Folder",
+              "children": [
+                {
+                  "name": "otherFile2.java",
+                  "type": "File",
+                  "attributes": {
+                    "nloc": 80.0
                   }
                 }
               ]
