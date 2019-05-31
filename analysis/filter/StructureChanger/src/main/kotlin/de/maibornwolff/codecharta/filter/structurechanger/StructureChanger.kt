@@ -45,9 +45,8 @@ class StructureChanger : Callable<Void?> {
 
         srcProject = readProject() ?: return null
 
-        if (showStructure > 0) {
-            showStructure(showStructure, 0, srcProject.rootNode.toMutableNode())
-            return null
+        when {
+            showStructure > 0 -> ProjectStructurePrinter(srcProject).printProjectStructure(showStructure)
         }
 
         if (paths.size > 0) srcProject = extractSubproject()
@@ -181,13 +180,6 @@ class StructureChanger : Callable<Void?> {
             logger.warn("${source.name} is not a valid project file and is therefore skipped.")
             null
         }
-    }
-
-    private fun showStructure(maxDepth: Int, currentDepth: Int, node: MutableNode) {
-        if (maxDepth < currentDepth) return
-
-        println("- ".repeat(currentDepth) + node.name)
-        node.children.forEach { showStructure(maxDepth, currentDepth + 1, it) }
     }
 
     companion object {
