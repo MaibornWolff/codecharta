@@ -64,6 +64,6 @@ class ProjectStructurePrinterTest {
 
         projectStructurePrinter.printProjectStructure(99)
 
-        Assertions.assertThat(outContent.toString()).contains(listOf("root", "- src", "- - - - file1.java"))
+        Assertions.assertThat(outContent.toString()).contains(listOf("root", "- src", "- - - file1.java"))
     }
 }

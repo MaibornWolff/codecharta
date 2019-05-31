@@ -1,6 +1,6 @@
 {
   "projectName": "MyProject",
-  "apiVersion": "1.0",
+  "apiVersion": "1.1",
   "nodes": [
     {
       "name": "root",
