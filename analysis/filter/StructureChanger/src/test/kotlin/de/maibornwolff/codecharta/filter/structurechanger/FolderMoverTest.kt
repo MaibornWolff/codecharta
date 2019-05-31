@@ -1,0 +1,73 @@
+package de.maibornwolff.codecharta.filter.structurechanger
+
+import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import java.io.File
+
+class FolderMoverTest {
+
+    private lateinit var sampleProject: Project
+
+    @BeforeEach
+    fun serializeProject() {
+        val bufferedReader = File("src/test/resources/sample_project.cc.json").bufferedReader()
+        sampleProject = ProjectDeserializer.deserializeProject(bufferedReader)
+    }
+
+    @Test
+    fun `should remove the source node`() {
+        val folderMover = FolderMover(sampleProject)
+
+        val result = folderMover.move("/root/src/folder3", "/root/foo")
+
+        val srcChildren = result!!.rootNode.children.first().children
+        Assertions.assertThat(srcChildren.size).isEqualTo(2)
+        Assertions.assertThat(srcChildren.filter { it.name == "folder3" }).isEmpty()
+
+    }
+
+    @Test
+    fun `should move nothing if source node is not found`() {
+        val folderMover = FolderMover(sampleProject)
+
+        val result = folderMover.move("/does/not/exist", "/something")
+
+        Assertions.assertThat(result).isEqualToComparingFieldByFieldRecursively(sampleProject)
+    }
+
+    @Test
+    fun `should return nothing if destination folder is null`() {
+        val folderMover = FolderMover(sampleProject)
+
+        val result = folderMover.move("/root/src/folder3", null)
+
+        Assertions.assertThat(result).isNull()
+    }
+
+    @Test
+    fun `should merge content of source folder into existing folder, if existent`() {
+        serializeProject()
+        val folderMover = FolderMover(sampleProject)
+
+        val result = folderMover.move("/root/src/folder3", "/root/src/test")
+
+        val destinationNode = result!!.rootNode.children.first().children.filter { it.name == "test" }.first()
+        val destinationNodeChildrenName = destinationNode.children.map { it.name }
+        Assertions.assertThat(destinationNodeChildrenName).containsAll(listOf("otherFile2.java", "otherFile.java"))
+    }
+
+    @Test
+    fun `should place content in newly created node, if destination does not exist`() {
+        val folderMover = FolderMover(sampleProject)
+
+        val result = folderMover.move("/root/src/folder3", "/root/foo")
+
+        val destinationNode = result!!.rootNode.children.filter { it.name == "foo" }.first()
+        val destinationNodeChild = destinationNode.children.first()
+        Assertions.assertThat(destinationNode.name).isEqualTo("foo")
+        Assertions.assertThat(destinationNodeChild.name).isEqualTo("otherFile2.java")
+    }
+}
