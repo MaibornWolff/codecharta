@@ -1,4 +1,4 @@
-# CVSLogParser
+# SCMLogParser
 
 Generates visualisation data from repository (Git or SVN) logs. It supports the following metrics per file:
 
@@ -34,13 +34,21 @@ You can also use the bash script anongit which generates an anonymous git log wi
 
 See `ccsh -h` for help. Standard usage:
 
-> `ccsh scmlogparser <log file> --input-format [GIT_LOG|GIT_LOG_NUMSTAT|GIT_LOG_NUMSTAT_RAW|GIT_LOG_RAW|SVN_LOG]`
+> `ccsh scmlogparser <log_file> --input-format [GIT_LOG|GIT_LOG_NUMSTAT|GIT_LOG_NUMSTAT_RAW|GIT_LOG_RAW|SVN_LOG]`
 
 The result is written as JSON to standard out or into an output file (if specified by `-o` option).
 
-### Example
+### Example using Git
 
-* Install the tool
-* `git log --numstat --raw --topo-order > log.txt` (or `anongit > log.txt`)
-* `./ccsh scmlogparser log.txt --input-format GIT_LOG_NUMSTAT_RAW -o output.json`
-* load `output.json` in visualization
+* `cd <my_git_project>`
+* `git log --numstat --raw --topo-order > git.log` (or `anongit > git.log`)
+* `./ccsh scmlogparser git.log --input-format GIT_LOG_NUMSTAT_RAW -o output.cc.json`
+* load `output.cc.json` in visualization
+
+### Example using SVN
+
+* `cd <my_svn_project>`
+* `svn log --verbose > svn.log`
+* `./ccsh scmlogparser svn.log --input-format SVN_LOG -o output.cc.json`
+* load `output.cc.json` in visualization
+
