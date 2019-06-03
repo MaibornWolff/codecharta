@@ -64,18 +64,9 @@ class SubProjectExtractor(private val project: Project) {
     private fun copyAttributeTypes(): MutableMap<String, MutableList<Map<String, AttributeType>>> {
         val mergedAttributeTypes: MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf()
         project.attributeTypes.forEach {
-            val key: String = it.key
-            if (mergedAttributeTypes.containsKey(key)) {
-                it.value.forEach {
-                    if (!mergedAttributeTypes[key]!!.contains(it)) {
-                        mergedAttributeTypes[key]!!.add(it)
-                    }
-                }
-            } else {
-                mergedAttributeTypes[key] = it.value.toMutableList()
-            }
+            mergedAttributeTypes[it.key] = it.value.toMutableList()
         }
-        return mergedAttributeTypes
+        return mergedAttributeTypes.toMutableMap()
     }
 
     private fun copyBlacklist(): MutableList<BlacklistItem> {
