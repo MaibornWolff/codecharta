@@ -17,7 +17,7 @@ class FolderMover(private val project: Project) {
         return ProjectBuilder(
                 projectName,
                 moveNodes(moveFrom, moveTo),
-                extractEdges(),
+                extractEdges(moveFrom, moveTo),
                 copyAttributeTypes(),
                 copyBlacklist()
         ).build()
@@ -70,12 +70,14 @@ class FolderMover(private val project: Project) {
         }
     }
 
-    private fun extractEdges(): MutableList<Edge> {
-        return if (project.edges.size == 0) mutableListOf()
-        else {
-            logger.warn("${project.edges.size} edges were discarded because the node extractor does not support extracting edges yet")
-            mutableListOf()
-        }
+    private fun extractEdges(from: String, to: String): MutableList<Edge> {
+        val sanitizedFrom = "/" + from.removeSuffix("/").removePrefix("/")
+        val sanitizedTo = "/" + to.removeSuffix("/").removePrefix("/")
+        return project.edges.map { edge ->
+            edge.fromNodeName = edge.fromNodeName.replace(sanitizedFrom, sanitizedTo)
+            edge.toNodeName = edge.toNodeName.replace(sanitizedFrom, sanitizedTo)
+            edge
+        }.toMutableList()
     }
 
     private fun copyAttributeTypes(): MutableMap<String, MutableList<Map<String, AttributeType>>> {

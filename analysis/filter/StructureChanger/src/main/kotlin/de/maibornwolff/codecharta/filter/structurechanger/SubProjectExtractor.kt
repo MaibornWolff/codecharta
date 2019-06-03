@@ -12,7 +12,7 @@ class SubProjectExtractor(private val project: Project) {
         return ProjectBuilder(
                 projectName ?: project.projectName,
                 addRoot(extractNodes(pathSegments, project.rootNode.toMutableNode())),
-                extractEdges(),
+                extractEdges(paths),
                 copyAttributeTypes(),
                 copyBlacklist()
         ).build()
@@ -43,12 +43,22 @@ class SubProjectExtractor(private val project: Project) {
         return mutableListOf(rootNode)
     }
 
-    private fun extractEdges(): MutableList<Edge> {
-        return if (project.edges.size == 0) mutableListOf()
-        else {
-            logger.warn("${project.edges.size} edges were discarded because the node extractor does not support extracting edges yet")
-            mutableListOf()
+    private fun extractEdges(extractionPatterns: Array<String>): MutableList<Edge> {
+        val extractedEdges: MutableList<Edge> = mutableListOf()
+        extractionPatterns.forEach { extractionPattern ->
+            val trimmedExtractionPattern = "/" + extractionPattern.removeSuffix("/").removePrefix("/")
+            extractedEdges.addAll(extractRenamedEdgesForPattern(trimmedExtractionPattern))
         }
+        return extractedEdges
+    }
+
+    private fun extractRenamedEdgesForPattern(pattern: String): List<Edge> {
+        return project.edges.filter { it.fromNodeName.startsWith(pattern) && it.toNodeName.startsWith(pattern) }
+                .map { edge ->
+                    edge.fromNodeName = edge.fromNodeName.removePrefix(pattern)
+                    edge.toNodeName = edge.toNodeName.removePrefix(pattern)
+                    edge
+                }
     }
 
     private fun copyAttributeTypes(): MutableMap<String, MutableList<Map<String, AttributeType>>> {

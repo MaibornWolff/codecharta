@@ -60,5 +60,41 @@
         }
       ]
     }
+  ],
+  "edges": [
+    {
+      "fromNodeName": "/root/file1",
+      "toNodeName": "/root/foo/file2",
+      "attributes": {
+        "pairingRate": 90,
+        "avgCommits": 5,
+        "anotherMetric": 25
+      }
+    },
+    {
+      "fromNodeName": "/root/foo/file1",
+      "toNodeName": "/root/file2",
+      "attributes": {
+        "pairingRate": 90,
+        "avgCommits": 5,
+        "anotherMetric": 25
+      }
+    },
+    {
+      "fromNodeName": "/root/foo/file2",
+      "toNodeName": "/root/foo/file3",
+      "attributes": {
+        "pairingRate": 42,
+        "avgCommits": 3
+      }
+    },
+    {
+      "fromNodeName": "/root/something/file2",
+      "toNodeName": "/root/else/file3",
+      "attributes": {
+        "pairingRate": 80,
+        "avgCommits": 3
+      }
+    }
   ]
 }

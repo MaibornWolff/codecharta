@@ -77,4 +77,36 @@ class SubProjectExtractorTest {
 
         Assertions.assertThat(result.projectName).isEqualTo(sampleProject.projectName)
     }
+
+    @Test
+    fun `Only edges part of sub-project are kept`() {
+        val subProjectExtractor = SubProjectExtractor(sampleProject)
+
+        val result = subProjectExtractor.extract(arrayOf("/root/foo"), null)
+
+        val edges = result.edges
+        Assertions.assertThat(edges.size).isEqualTo(1)
+    }
+
+    @Test
+    fun `Edges of selected subproject renammed`() {
+        val subProjectExtractor = SubProjectExtractor(sampleProject)
+
+        val result = subProjectExtractor.extract(arrayOf("/root/foo"), null)
+
+        val firstEdge = result.edges.first()
+        Assertions.assertThat(firstEdge.toNodeName).isEqualTo("/file3")
+        Assertions.assertThat(firstEdge.fromNodeName).isEqualTo("/file2")
+        Assertions.assertThat(firstEdge.attributes["pairingRate"]).isEqualTo(42.0)
+    }
+
+    @Test
+    fun `Subproject with no matching edges has no edges`() {
+        val subProjectExtractor = SubProjectExtractor(sampleProject)
+
+        val result = subProjectExtractor.extract(arrayOf("/root/something"), null)
+
+        val edges = result.edges
+        Assertions.assertThat(edges).isEmpty()
+    }
 }
