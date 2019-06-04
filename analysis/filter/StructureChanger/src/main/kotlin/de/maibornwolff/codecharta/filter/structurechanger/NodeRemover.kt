@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.model.*
 class NodeRemover(private val project: Project) {
 
     fun remove(paths: Array<String>, projectName: String = project.projectName): Project {
-        val pathSegments = paths.map { it.removePrefix("/").split("/") }
+        val pathSegments = paths.map { it.removePrefix("/").removeSuffix("/").split("/") }
         return ProjectBuilder(
                 projectName,
                 removeNodes(pathSegments),
@@ -16,10 +16,8 @@ class NodeRemover(private val project: Project) {
     }
 
     private fun filterNodes(path: List<String>, node: MutableNode): MutableNode {
-        println(node.name + " is " + path.firstOrNull() + " " + (path.firstOrNull() == node.name))
-        println(node.children.filter { it.name != path.firstOrNull() })
-        node.children = node.children.filter { it.name != path.firstOrNull() }.map {
-            println(it.name)
+        val filteredChildren = node.children.filter { it.name != path.firstOrNull() || path.size > 1 }
+        node.children = filteredChildren.map {
             filterNodes(path.drop(1), it)
         }.toMutableList()
         return node
@@ -27,7 +25,7 @@ class NodeRemover(private val project: Project) {
 
     private fun removeNodes(paths: List<List<String>>): MutableList<MutableNode> {
         var root = project.rootNode.toMutableNode()
-        paths.forEach { root = filterNodes(it, root) }
+        paths.forEach { root = filterNodes(it.drop(1), root) }
         return mutableListOf(root)
     }
 

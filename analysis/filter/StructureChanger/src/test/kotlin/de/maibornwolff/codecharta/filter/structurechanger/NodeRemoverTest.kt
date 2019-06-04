@@ -37,26 +37,67 @@ class NodeRemoverTest {
 
     @Test
     fun `specified nodes are removed`() {
+        val subProjectExtractor = NodeRemover(sampleProject)
 
+        val result = subProjectExtractor.remove(arrayOf("/root/src/main"))
+
+        val srcContent = result.rootNode.children.first().children
+        Assertions.assertThat(srcContent.size).isEqualTo(2)
+        Assertions.assertThat(srcContent.map { it.name }).doesNotContain("main")
     }
 
     @Test
     fun `multiple nodes are removed`() {
+        val subProjectExtractor = NodeRemover(sampleProject)
 
+        val result = subProjectExtractor.remove(arrayOf("/root/src/main/file1.java", "root/src/folder3/"))
+
+        val srcContent = result.rootNode.children.first().children
+        val mainContent = srcContent.first().children
+        Assertions.assertThat(srcContent.map { it.name }).doesNotContain("folder3")
+        Assertions.assertThat(mainContent.map { it.name }).containsOnly("file2.java")
     }
 
     @Test
     fun `project name is set to specified name`() {
+        val subProjectExtractor = NodeRemover(sampleProject)
 
+        val result = subProjectExtractor.remove(arrayOf(), "fooBar")
+
+        Assertions.assertThat(result.projectName).isEqualTo("fooBar")
     }
 
     @Test
     fun `Affected edges are removed`() {
+        val subProjectExtractor = NodeRemover(sampleProject)
 
+        val result = subProjectExtractor.remove(arrayOf("/root/foo"))
+
+        Assertions.assertThat(result.edges.size).isEqualTo(1)
+        Assertions.assertThat(result.edges.first()).isEqualToComparingFieldByFieldRecursively(sampleProject.edges.last())
+        Assertions.assertThat(result.edges.map { it.fromNodeName }).doesNotContain("/roo/foo")
+        Assertions.assertThat(result.edges.map { it.toNodeName }).doesNotContain("/roo/foo")
+    }
+
+    @Test
+    fun `Affected edges are removed for multiple removals`() {
+        val subProjectExtractor = NodeRemover(sampleProject)
+        val toExclude = arrayOf("/root/foo/file1", "root/else/")
+
+        val result = subProjectExtractor.remove(toExclude)
+
+        val shouldBeExcluded = listOf("/root/foo/file1", "root/else/file1")
+        Assertions.assertThat(result.edges.size).isEqualTo(2)
+        Assertions.assertThat(result.edges.map { it.fromNodeName }).doesNotContainAnyElementsOf(shouldBeExcluded)
+        Assertions.assertThat(result.edges.map { it.toNodeName }).doesNotContainAnyElementsOf(shouldBeExcluded)
     }
 
     @Test
     fun `Affected blacklist items are removed`() {
+        val subProjectExtractor = NodeRemover(sampleProject)
 
+        val result = subProjectExtractor.remove(arrayOf("/root/foo"))
+
+        Assertions.assertThat(result.blacklist.map { it.path }).doesNotContainSubsequence("/root/foo")
     }
 }
