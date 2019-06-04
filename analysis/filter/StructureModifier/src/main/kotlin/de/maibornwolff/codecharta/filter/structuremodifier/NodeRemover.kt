@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.filter.structurechanger
+package de.maibornwolff.codecharta.filter.structuremodifier
 
 import de.maibornwolff.codecharta.model.*
 

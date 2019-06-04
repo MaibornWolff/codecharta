@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.filter.structurechanger
+package de.maibornwolff.codecharta.filter.structuremodifier
 
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
@@ -11,7 +11,7 @@ import java.util.concurrent.Callable
 @CommandLine.Command(name = "modify",
         description = ["changes the structure of cc.json files"],
         footer = ["Copyright(c) 2019, MaibornWolff GmbH"])
-class StructureChanger : Callable<Void?> {
+class StructureModifier : Callable<Void?> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
@@ -76,7 +76,7 @@ class StructureChanger : Callable<Void?> {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(StructureChanger(), System.out, *args)
+            CommandLine.call(StructureModifier(), System.out, *args)
         }
     }
 }
