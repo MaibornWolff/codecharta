@@ -9,7 +9,7 @@
 	</md-select>
 
 	<div>
-		<span class="sum-icon">Σ</span>
+		<metric-type-component></metric-type-component>
 		<span class="metric-value"
 			>{{ ($ctrl.hoveredColorValue | number) || "-" }}
 			<span ng-hide="!$ctrl.hoveredHeightDelta">(&Delta;{{ $ctrl.hoveredColorDelta | number }})</span>
