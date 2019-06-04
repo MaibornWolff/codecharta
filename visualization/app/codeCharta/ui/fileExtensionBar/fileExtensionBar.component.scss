@@ -12,12 +12,13 @@ file-extension-bar-component {
 		height: 100%;
 	}
 
-	.section-info-body {
+	.bar-details {
 		display: block;
 		width: 100%;
 		height: 25px;
 		text-align: center;
 		background-color: white;
+		overflow: auto;
 	}
 	.dark_shadow_opacity {
 		box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2) !important;
@@ -31,26 +32,29 @@ file-extension-bar-component {
 	.dot {
 		height: 10px;
 		width: 10px;
-		background-color: #bbb;
 		border-radius: 50%;
 		display: inline-block;
-		margin-right: 15px;
+		margin-right: 8px;
 	}
-
 	p {
 		font-size: 10px;
 		vertical-align: top;
 		margin-top: 0;
 	}
 
-	.extensionInfo {
+	p.bar-details-text {
+		font-size: 15px;
+	}
+
+	.bar-details-text {
 		font-size: 18px;
-		margin-left: 50px;
+		margin-left: 30px;
+		margin-top: 5px;
 		color: grey;
 	}
 
 	.animation-show-hide {
-		transition: all linear 0.5s;
+		transition: all linear 0.2s;
 	}
 	.animation-show-hide.ng-hide {
 		opacity: 0;
@@ -64,8 +68,5 @@ file-extension-bar-component {
 	.fill-width {
 		overflow: hidden;
 		text-overflow: ellipsis;
-	}
-	.fill-info {
-		overflow: auto;
 	}
 }

@@ -3,42 +3,27 @@
 		<distribution-metric-chooser-component></distribution-metric-chooser-component>
 	</div>
 	<div class="fill-width">
-		<div class="bar " ng-click="$ctrl.toggleExtensiveMode()">
-			<div
-				class="float-left"
-				ng-repeat-start="item in $ctrl._viewModel.distribution"
-				ng-if="!$first"
-				ng-style="{ 'width': item.relativeMetricValue + '%', 'background': item.color, 'border-left': '1px solid #fff' }"
+		<div
+			class="bar bar-section pull-left"
+			ng-click="$ctrl.toggleExtensiveMode()"
+			ng-repeat="item in $ctrl._viewModel.distribution"
+			ng-style="{ 'width': item.relativeMetricValue + '%', 'background': item.color}"
+		>
+			<p
+				class="bar-text"
+				ng-mouseover="$ctrl.highlightBarHoveredBuildings(item.fileExtension)"
+				ng-mouseleave="$ctrl.clearHighlightedBarHoveredBuildings()"
+				title="{{ item.relativeMetricValue.toFixed(2) }}%"
 			>
-				<p
-					ng-mouseover="$ctrl.highlightBarHoveredBuildings(item.fileExtension)"
-					ng-mouseleave="$ctrl.clearHighlightedBarHoveredBuildings()"
-					title="{{ item.relativeMetricValue.toFixed(2) }}%"
-				>
-					{{ item.fileExtension }}
-				</p>
-			</div>
-			<div
-				class="float-left"
-				ng-repeat-end
-				ng-if="$first"
-				ng-style="{ 'width': item.relativeMetricValue + '%', 'background': item.color}"
-			>
-				<p
-					ng-mouseover="$ctrl.highlightBarHoveredBuildings(item.fileExtension)"
-					ng-mouseleave="$ctrl.clearHighlightedBarHoveredBuildings()"
-					title="{{ item.relativeMetricValue.toFixed(2) }}%"
-				>
-					{{ item.fileExtension }}
-				</p>
-			</div>
+				{{ item.fileExtension }}
+			</p>
 		</div>
 	</div>
 </div>
 
-<div class="section-info-body dark_shadow_opacity animation-show-hide float-left fill-info" ng-show="$ctrl._viewModel.isExtensiveMode">
+<div class="bar-details dark_shadow_opacity animation-show-hide" ng-show="$ctrl._viewModel.isExtensiveMode">
 	<div class="float-left" ng-repeat="item in $ctrl._viewModel.distribution">
-		<p class="extensionInfo">
+		<p class="bar-details-text">
 			<span class="dot" ng-style="{'background': item.color}"></span>{{ item.fileExtension }} :
 			{{ item.relativeMetricValue.toFixed(2) }}%
 		</p>
