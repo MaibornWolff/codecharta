@@ -25,7 +25,7 @@
 	<div class="float-left" ng-repeat="item in $ctrl._viewModel.distribution">
 		<p class="bar-details-text">
 			<span class="dot" ng-style="{'background': item.color}"></span>{{ item.fileExtension }} :
-			{{ item.relativeMetricValue.toFixed(2) }}%
+			<span class="percentage">{{ item.relativeMetricValue.toFixed(2) }}%</span>
 		</p>
 	</div>
 </div>

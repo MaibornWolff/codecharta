@@ -24,13 +24,10 @@ file-extension-bar-component {
 		background-color: white;
 		overflow: auto;
 	}
+
 	.bottom_shadow_opacityy {
 		box-shadow: 0px 1px 5px -5px rgba(0, 0, 0, 0.2) !important;
 		opacity: 0.97;
-	}
-
-	.right-border {
-		border-right: 3px solid #cdcdcd;
 	}
 
 	.dot {
@@ -40,6 +37,7 @@ file-extension-bar-component {
 		display: inline-block;
 		margin-right: 8px;
 	}
+
 	p {
 		font-size: 10px;
 		vertical-align: top;
@@ -47,6 +45,12 @@ file-extension-bar-component {
 	}
 
 	p.bar-details-text {
+		color: black;
+		font-size: 15px;
+	}
+
+	span.percentage {
+		color: gray;
 		font-size: 15px;
 	}
 
