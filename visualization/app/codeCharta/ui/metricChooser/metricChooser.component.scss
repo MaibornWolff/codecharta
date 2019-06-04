@@ -49,14 +49,13 @@ color-metric-chooser-component {
 	font-size: smaller !important;
 }
 
-// Was moved down here to set the style individually fpr the distribution Metric
 distribution-metric-chooser-component {
 	md-input-container {
 		margin: 0;
 		padding: 0;
 		display: block;
 		text-align: left;
-		font-size: 13px;
+		font-size: 12px;
 		border-top: 0.25px solid #cdcdcd;
 		background-color: rgb(255, 255, 255);
 
