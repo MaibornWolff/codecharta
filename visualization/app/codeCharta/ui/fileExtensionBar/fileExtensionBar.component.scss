@@ -12,6 +12,10 @@ file-extension-bar-component {
 		height: 100%;
 	}
 
+	.bar-section:not(:first-child) {
+		border-left: 1px solid #fff;
+	}
+
 	.bar-details {
 		display: block;
 		width: 100%;
@@ -21,7 +25,7 @@ file-extension-bar-component {
 		overflow: auto;
 	}
 	.dark_shadow_opacity {
-		box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2) !important;
+		box-shadow: 0px 1px 5px -5px rgba(0, 0, 0, 0.2) !important;
 		opacity: 0.97;
 	}
 
