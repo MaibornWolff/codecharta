@@ -1,6 +1,5 @@
 <md-input-container>
-	<i class="fa fa-pie-chart"></i>
-
+	<i class="fa fa-pie-chart float-left"></i>
 	<md-select class="distribution" ng-model="$ctrl._viewModel.distributionMetric" ng-change="$ctrl.applySettingsDistributionMetric()">
 		<md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
 			{{::metric.name}}
