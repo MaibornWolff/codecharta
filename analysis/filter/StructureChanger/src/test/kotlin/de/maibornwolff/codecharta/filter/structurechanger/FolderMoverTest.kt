@@ -108,4 +108,16 @@ class FolderMoverTest {
         Assertions.assertThat(firstEdge.fromNodeName).isEqualTo("/root/file1")
         Assertions.assertThat(secondEdge.toNodeName).isEqualTo("/root/file2")
     }
+
+    @Test
+    fun `should change path of relevant blacklist items`() {
+        val folderMover = FolderMover(sampleProject)
+
+        val result = folderMover.move("/root/foo", "/root/bar")!!
+
+        val blacklist = result.blacklist
+        Assertions.assertThat(blacklist.size).isEqualTo(2)
+        Assertions.assertThat(blacklist[0].path).isEqualTo("/root/bar/file1")
+        Assertions.assertThat(blacklist[1].path).isEqualTo("/root/whatever/file2")
+    }
 }

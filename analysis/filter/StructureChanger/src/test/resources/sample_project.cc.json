@@ -96,5 +96,15 @@
         "avgCommits": 3
       }
     }
+  ],
+  "blacklist": [
+    {
+      "path": "/root/foo/file1",
+      "type": "hide"
+    },
+    {
+      "path": "/root/whatever/file2",
+      "type": "hide"
+    }
   ]
 }

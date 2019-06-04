@@ -19,7 +19,7 @@ class FolderMover(private val project: Project) {
                 moveNodes(moveFrom, moveTo),
                 extractEdges(moveFrom, moveTo),
                 copyAttributeTypes(),
-                copyBlacklist()
+                copyBlacklist(moveFrom, moveTo)
         ).build()
     }
 
@@ -88,7 +88,10 @@ class FolderMover(private val project: Project) {
         return mergedAttributeTypes.toMutableMap()
     }
 
-    private fun copyBlacklist(): MutableList<BlacklistItem> {
-        return project.blacklist.toMutableList()
+    private fun copyBlacklist(from: String, to: String): MutableList<BlacklistItem> {
+        return project.blacklist.map { blacklistItem ->
+            blacklistItem.path = blacklistItem.path.replace(from, to)
+            blacklistItem
+        }.toMutableList()
     }
 }
