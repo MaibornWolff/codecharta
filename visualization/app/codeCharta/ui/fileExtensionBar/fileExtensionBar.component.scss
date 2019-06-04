@@ -8,8 +8,8 @@ file-extension-bar-component {
 	}
 
 	.float-left {
-		height: 100%;
 		float: left;
+		height: 100%;
 	}
 
 	.section-info-body {
@@ -54,5 +54,18 @@ file-extension-bar-component {
 	}
 	.animation-show-hide.ng-hide {
 		opacity: 0;
+	}
+
+	.pull-left {
+		float: left;
+		height: 15px;
+	}
+
+	.fill-width {
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.fill-info {
+		overflow: auto;
 	}
 }
