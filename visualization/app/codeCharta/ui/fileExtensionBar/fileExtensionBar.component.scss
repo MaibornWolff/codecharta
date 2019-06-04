@@ -13,7 +13,7 @@ file-extension-bar-component {
 	}
 
 	.bar-section:not(:first-child) {
-		border-left: 1px solid #fff;
+		border-left: 0.5px solid #fff;
 	}
 
 	.bar-details {
@@ -24,7 +24,7 @@ file-extension-bar-component {
 		background-color: white;
 		overflow: auto;
 	}
-	.dark_shadow_opacity {
+	.bottom_shadow_opacityy {
 		box-shadow: 0px 1px 5px -5px rgba(0, 0, 0, 0.2) !important;
 		opacity: 0.97;
 	}
@@ -71,6 +71,5 @@ file-extension-bar-component {
 
 	.fill-width {
 		overflow: hidden;
-		text-overflow: ellipsis;
 	}
 }
