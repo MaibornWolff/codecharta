@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.filter.structurechanger
 
-import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -9,7 +8,7 @@ import picocli.CommandLine
 import java.io.File
 import java.util.concurrent.Callable
 
-@CommandLine.Command(name = "structurechanger",
+@CommandLine.Command(name = "modify",
         description = ["changes the structure of cc.json files"],
         footer = ["Copyright(c) 2019, MaibornWolff GmbH"])
 class StructureChanger : Callable<Void?> {
@@ -20,43 +19,46 @@ class StructureChanger : Callable<Void?> {
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["input project file"])
     private var source: File = File("")
 
-    @CommandLine.Option(arity = "1..*", names = ["-e", "--extractSubProject"], description = ["project path to be extracted"])
-    private var paths: Array<String> = arrayOf()
+    @CommandLine.Option(arity = "1..*", names = ["-s", "--setRoot"], description = ["path within project to be extracted"])
+    private var setRoot: Array<String> = arrayOf()
 
-    @CommandLine.Option(arity = "1", names = ["-i", "--inspectStructure"], description = ["show first x layers of project hierarchy"])
-    private var showStructure: Int = 0
+    @CommandLine.Option(arity = "1", names = ["-p", "--printLevels"], description = ["show first x layers of project hierarchy"])
+    private var printLevels: Int = 0
 
     @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
-    @CommandLine.Option(names = ["-p", "--projectName"], description = ["project name of new file"])
+    @CommandLine.Option(names = ["-n", "--projectName"], description = ["project name of new file"])
     private var projectName: String? = null
 
     @CommandLine.Option(names = ["-f", "--moveFrom"], description = ["move nodes in project folder..."])
     private var moveFrom: String? = null
 
+    @CommandLine.Option(arity = "1..*", names = ["-r", "--remove"], description = ["node(s) to be removed"])
+    private var remove: Array<String> = arrayOf()
+
     @CommandLine.Option(names = ["-t", "--moveTo"], description = ["... move nodes to destination folder"])
     private var moveTo: String? = null
 
-    private lateinit var srcProject: Project
-    private var toMove: List<MutableNode>? = null
+    private lateinit var project: Project
     private val logger = KotlinLogging.logger {}
 
     override fun call(): Void? {
 
-        srcProject = readProject() ?: return null
+        project = readProject() ?: return null
 
         when {
-            showStructure > 0 -> {
-                ProjectStructurePrinter(srcProject).printProjectStructure(showStructure)
+            printLevels > 0 -> {
+                ProjectStructurePrinter(project).printProjectStructure(printLevels)
                 return null
             }
-            paths.isNotEmpty() -> srcProject = SubProjectExtractor(srcProject).extract(paths, projectName)
-            moveFrom != null -> srcProject = FolderMover(srcProject).move(moveFrom, moveTo) ?: return null
+            setRoot.isNotEmpty() -> project = SubProjectExtractor(project).extract(setRoot, projectName)
+            remove.isNotEmpty() -> project = NodeRemover(project).remove(remove) // ProjectName must be nullable
+            moveFrom != null -> project = FolderMover(project).move(moveFrom, moveTo) ?: return null
         }
 
         val writer = outputFile?.bufferedWriter() ?: System.out.bufferedWriter()
-        ProjectSerializer.serializeProject(srcProject, writer)
+        ProjectSerializer.serializeProject(project, writer)
 
         return null
     }
