@@ -8,7 +8,7 @@ export class DialogUrlParameterController {
 
 export const dialogUrlParameterComponent = {
 	clickOutsideToClose: true,
-	template: require("./dialog.urlParameter.html"),
+	template: require("./dialog.urlParameter.component.html"),
 	controller: DialogUrlParameterController,
 	controllerAs: "$ctrl"
 }

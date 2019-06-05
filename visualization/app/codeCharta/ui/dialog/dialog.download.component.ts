@@ -1,4 +1,4 @@
-import "./dialog.scss"
+import "./dialog.component.scss"
 import { FileDownloader } from "../../util/fileDownloader"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { CCFile, BlacklistType, FileSettings } from "../../codeCharta.model"
@@ -24,7 +24,7 @@ export enum DownloadCheckboxNames {
 export class DialogDownlodController {
 	private _viewModel: {
 		fileName: string
-		amountOfNodes: number,
+		amountOfNodes: number
 		fileContent: FileDownloadContent[]
 	} = {
 		fileName: null,
@@ -41,7 +41,7 @@ export class DialogDownlodController {
 		this.setFileContentList(file)
 		this._viewModel.fileName = FileNameHelper.getNewFileName(file.fileMeta.fileName)
 		this._viewModel.amountOfNodes = hierarchy(file.map).descendants().length
-		this._viewModel.fileContent = this._viewModel.fileContent.sort((a,b) => this.sortByDisabled(a, b))
+		this._viewModel.fileContent = this._viewModel.fileContent.sort((a, b) => this.sortByDisabled(a, b))
 	}
 
 	private setFileContentList(file: CCFile) {
@@ -66,7 +66,7 @@ export class DialogDownlodController {
 	}
 
 	private sortByDisabled(a: FileDownloadContent, b: FileDownloadContent) {
-		return (a.isDisabled === b.isDisabled)? 0 : a.isDisabled? 1 : -1;
+		return a.isDisabled === b.isDisabled ? 0 : a.isDisabled ? 1 : -1
 	}
 
 	public hide() {
@@ -85,7 +85,7 @@ export class DialogDownlodController {
 
 export const dialogDownlodComponent = {
 	clickOutsideToClose: true,
-	template: require("./dialog.download.html"),
+	template: require("./dialog.download.component.html"),
 	controller: DialogDownlodController,
 	controllerAs: "$ctrl"
 }

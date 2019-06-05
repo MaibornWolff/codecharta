@@ -2,7 +2,7 @@ import { stubDate } from "../../../mocks/dateMock.helper"
 import { FileDownloader } from "./fileDownloader"
 import { CCFile } from "../codeCharta.model"
 import { TEST_FILE_DATA, TEST_FILE_DATA_DOWNLOADED } from "./dataMocks"
-import { DownloadCheckboxNames } from "../ui/dialog/dialog.download"
+import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 
 describe("fileDownloader", () => {
 	let file: CCFile

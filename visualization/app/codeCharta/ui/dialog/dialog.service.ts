@@ -1,5 +1,5 @@
-import { dialogUrlParameterComponent } from "./dialog.urlParameter"
-import { dialogDownlodComponent } from "./dialog.download"
+import { dialogUrlParameterComponent } from "./dialog.urlParameter.component"
+import { dialogDownlodComponent } from "./dialog.download.component"
 
 export class DialogService {
 	/* @ngInject */

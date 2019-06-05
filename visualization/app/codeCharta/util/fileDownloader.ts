@@ -1,7 +1,7 @@
 import angular from "angular"
 import * as d3 from "d3"
 import { CCFile, CodeMapNode, BlacklistType, BlacklistItem, FileSettings } from "../codeCharta.model"
-import { DownloadCheckboxNames } from "../ui/dialog/dialog.download"
+import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 
 export class FileDownloader {
 	public static downloadCurrentMap(file: CCFile, downloadSettingsNames: string[], fileName: string) {
