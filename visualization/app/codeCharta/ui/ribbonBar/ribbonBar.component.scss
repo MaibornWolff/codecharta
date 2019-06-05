@@ -14,7 +14,7 @@ ribbon-bar-component {
 
 	#toggle-ribbon-bar-fab {
 		position: absolute;
-		margin-top: (-1 * $toggleButtonSize / 2) + px;
+		margin-top: (-1 * $toggleButtonSize - 5) + px;
 		right: 10px;
 		z-index: 999;
 		width: $toggleButtonSize + px;
