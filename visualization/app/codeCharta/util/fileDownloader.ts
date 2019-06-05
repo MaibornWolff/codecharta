@@ -1,6 +1,6 @@
 import angular from "angular"
 import * as d3 from "d3"
-import { CCFile, CodeMapNode, BlacklistType, BlacklistItem, FileSettings } from "../codeCharta.model"
+import { CCFile, CodeMapNode, BlacklistType, BlacklistItem, FileSettings, ExportCCFile } from "../codeCharta.model"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 
 export class FileDownloader {
@@ -12,7 +12,7 @@ export class FileDownloader {
 	private static getProjectDataAsCCJsonFormat(file: CCFile, downloadSettingsNames: string[]) {
 		const s: FileSettings = file.settings.fileSettings
 
-		let downloadObject: any = {
+		let downloadObject: ExportCCFile = {
 			projectName: file.fileMeta.projectName,
 			apiVersion: file.fileMeta.apiVersion,
 			nodes: [this.removeJsonHashkeysAndVisibleAttribute(file.map)],
