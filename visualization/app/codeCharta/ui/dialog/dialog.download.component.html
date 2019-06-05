@@ -7,12 +7,13 @@
     </md-toolbar>
 
     <md-dialog-content>
-        <div class="md-dialog-content">            
+        <div class="md-dialog-content">
             <md-input-container class="md-block">
-                <label>FileName: </label>
-                <input type="text" ng-model="$ctrl._viewModel.fileName">
+                <label>FileName</label>
+                <input class="filename-input" type="text" ng-model="$ctrl._viewModel.fileName">
+                <span class="cc-file-extension">.cc.json</span>
             </md-input-container>
-
+                     
             <p class="dialog-label">The file includes:</p>
             <p class="dialog-label">Nodes ({{$ctrl._viewModel.amountOfNodes}})</p>
 

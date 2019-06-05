@@ -1,8 +1,9 @@
 export class FileNameHelper {
+	private static JSON_EXTENSION = ".json"
 	private static CC_FILE_EXTENSION = ".cc.json"
 
 	public static getNewFileName(fileName: string): string {
-		return this.getFileNameWithoutTimestamp(fileName) + this.getNewTimestamp() + FileNameHelper.CC_FILE_EXTENSION
+		return this.getFileNameWithoutTimestamp(fileName) + this.getNewTimestamp()
 	}
 
 	private static getNewTimestamp(): string {
@@ -19,8 +20,8 @@ export class FileNameHelper {
 			return fileName.substring(0, dateRegex.exec(fileName).index)
 		} else if (fileName.includes(FileNameHelper.CC_FILE_EXTENSION)) {
 			return fileName.substring(0, fileName.search(FileNameHelper.CC_FILE_EXTENSION))
-		} else if (fileName.includes(".json")) {
-			return fileName.substring(0, fileName.search(".json"))
+		} else if (fileName.includes(FileNameHelper.JSON_EXTENSION)) {
+			return fileName.substring(0, fileName.search(FileNameHelper.JSON_EXTENSION))
 		} else {
 			return fileName
 		}

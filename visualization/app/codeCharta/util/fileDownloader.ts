@@ -4,9 +4,12 @@ import { CCFile, CodeMapNode, BlacklistType, BlacklistItem, FileSettings, Export
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 
 export class FileDownloader {
+	private static CC_FILE_EXTENSION = ".cc.json"
+
 	public static downloadCurrentMap(file: CCFile, downloadSettingsNames: string[], fileName: string) {
-		const data = this.getProjectDataAsCCJsonFormat(file, downloadSettingsNames)
-		this.downloadData(data, fileName)
+		const exportCCFile: ExportCCFile = this.getProjectDataAsCCJsonFormat(file, downloadSettingsNames)
+		const newFileNameWithExtension: string = fileName + FileDownloader.CC_FILE_EXTENSION
+		this.downloadData(exportCCFile, newFileNameWithExtension)
 	}
 
 	private static getProjectDataAsCCJsonFormat(file: CCFile, downloadSettingsNames: string[]) {
