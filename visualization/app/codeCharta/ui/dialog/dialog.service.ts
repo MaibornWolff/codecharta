@@ -1,5 +1,5 @@
 import { dialogUrlParameterComponent } from "./dialog.urlParameter.component"
-import { dialogDownlodComponent } from "./dialog.download.component"
+import { dialogDownloadComponent } from "./dialog.download.component"
 
 export class DialogService {
 	/* @ngInject */
@@ -10,7 +10,7 @@ export class DialogService {
 	}
 
 	public showDownloadDialog() {
-		this.showCustomDialog(dialogDownlodComponent)
+		this.showCustomDialog(dialogDownloadComponent)
 	}
 
 	public showCustomDialog(dialog) {
