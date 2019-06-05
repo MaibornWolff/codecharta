@@ -18,7 +18,6 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 	public hoveredAreaDelta: number
 	public hoveredColorDelta: number
 	public hoveredDeltaColor: string
-	public hoveredDistributionValue: number
 
 	private _viewModel: {
 		metricData: MetricData[]
@@ -131,7 +130,6 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 			this.hoveredAreaValue = data.to.node.attributes[this._viewModel.areaMetric]
 			this.hoveredColorValue = data.to.node.attributes[this._viewModel.colorMetric]
 			this.hoveredHeightValue = data.to.node.attributes[this._viewModel.heightMetric]
-			this.hoveredDistributionValue = data.to.node.attributes[this._viewModel.distributionMetric]
 
 			if (data.to.node.deltas) {
 				this.hoveredAreaDelta = data.to.node.deltas[this._viewModel.areaMetric]
@@ -149,7 +147,6 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 			this.hoveredAreaValue = null
 			this.hoveredColorValue = null
 			this.hoveredHeightValue = null
-			this.hoveredDistributionValue = null
 			this.hoveredHeightDelta = null
 			this.hoveredAreaDelta = null
 			this.hoveredColorDelta = null
