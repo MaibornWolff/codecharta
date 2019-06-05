@@ -2,17 +2,7 @@ import "./fileExtensionBar.module"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settings.service"
-import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import {
-	TEST_FILE_WITH_PATHS,
-	SETTINGS,
-	METRIC_DISTRIBUTION,
-	NONE_METRIC_DISTRIBUTION,
-	CODE_MAP_BUILDING_ARRAY,
-	TEST_NODE_ROOT,
-	TEST_NODE_LEAF
-} from "../../util/dataMocks"
+import { TEST_FILE_WITH_PATHS, SETTINGS, METRIC_DISTRIBUTION, NONE_METRIC_DISTRIBUTION } from "../../util/dataMocks"
 import { MetricDistribution, FileExtensionCalculator } from "../../util/fileExtensionCalculator"
 import { FileExtensionBarController } from "./fileExtensionBar.component"
 import { CodeMapMesh } from "../codeMap/rendering/codeMapMesh"
@@ -21,8 +11,6 @@ describe("FileExtensionBarController", () => {
 	let fileExtensionBarController: FileExtensionBarController
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
-	let codeMapRenderService: CodeMapRenderService
-	let threeSceneService: ThreeSceneService
 
 	let distribution: MetricDistribution[] = METRIC_DISTRIBUTION
 
@@ -37,12 +25,10 @@ describe("FileExtensionBarController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
-		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
-		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 	}
 
 	function rebuildController() {
-		fileExtensionBarController = new FileExtensionBarController($rootScope, settingsService, codeMapRenderService, threeSceneService)
+		fileExtensionBarController = new FileExtensionBarController($rootScope, settingsService)
 	}
 
 	function withMockedSettingsService() {
@@ -105,17 +91,6 @@ describe("FileExtensionBarController", () => {
 			fileExtensionBarController.toggleExtensiveMode()
 
 			expect(fileExtensionBarController["_viewModel"].isExtensiveMode).toBeTruthy
-		})
-	})
-
-	describe("clearHighlightedBarHoveredBuildings", () => {
-		it("should clear the highlighted Building Array if there are any inside", () => {
-			const mapMesh: CodeMapMesh = new CodeMapMesh([TEST_NODE_ROOT, TEST_NODE_LEAF], SETTINGS, false)
-			threeSceneService.setMapMesh(mapMesh, 500)
-			threeSceneService.getMapMesh().setHighlighted(CODE_MAP_BUILDING_ARRAY)
-			fileExtensionBarController.clearHighlightedBarHoveredBuildings()
-
-			expect(threeSceneService.getMapMesh().getCurrentlyHighlighted()).toEqual(null)
 		})
 	})
 })

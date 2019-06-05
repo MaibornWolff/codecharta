@@ -4,9 +4,6 @@ import { MetricDistribution, FileExtensionCalculator } from "../../util/fileExte
 import { CCFile, CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { IRootScopeService } from "angular"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { CodeMapRenderService } from "../codeMap/codeMap.render.service"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export class FileExtensionBarController implements CodeMapPreRenderServiceSubscriber {
 	private _viewModel: {
@@ -18,12 +15,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	}
 
 	/* @ngInject */
-	constructor(
-		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
-		private codeMapRenderService: CodeMapRenderService,
-		private threeSceneService: ThreeSceneService
-	) {
+	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 
@@ -31,21 +23,6 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		this.setNewDistribution(renderFile.map)
 		this.setColorForEachExtension()
 		this.potentiallyAddNoneExtension()
-	}
-
-	public highlightBarHoveredBuildings(extension: string) {
-		let buildings: CodeMapBuilding[] = this.codeMapRenderService.mapMesh.getMeshDescription().buildings
-		let toHighlightBuilding: CodeMapBuilding[] = []
-		buildings.forEach(x => {
-			if (FileExtensionCalculator.estimateFileExtension(x.node.name) === extension) {
-				toHighlightBuilding.push(x)
-			}
-		})
-		this.threeSceneService.getMapMesh().setHighlighted(toHighlightBuilding)
-	}
-
-	public clearHighlightedBarHoveredBuildings() {
-		this.threeSceneService.getMapMesh().clearHighlight()
 	}
 
 	public toggleExtensiveMode() {
