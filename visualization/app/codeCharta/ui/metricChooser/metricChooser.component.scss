@@ -1,12 +1,13 @@
 area-metric-chooser-component,
 height-metric-chooser-component,
-color-metric-chooser-component {
+color-metric-chooser-component,
+distribution-metric-chooser-component {
 	$selectWidth: 150;
 
 	md-input-container {
-		margin: 0;
 		display: block;
 		top: -5px;
+		margin: 0;
 		text-align: left;
 
 		md-select {
@@ -51,33 +52,25 @@ color-metric-chooser-component {
 
 distribution-metric-chooser-component {
 	md-input-container {
-		margin: 0;
+		top: 0;
 		padding: 0;
-		display: block;
-		text-align: left;
-		font-size: 13px;
-		border-top: 0.25px solid #cdcdcd;
-		background-color: rgb(255, 255, 255);
+		font-size: 12px;
+		background-color: white;
 
 		md-select-value {
-			padding-left: 3px;
-			height: 13px;
+			min-height: 0 !important;
+			height: 15px;
 			padding: 0 !important;
-			width: 150px;
-			min-height: 12px !important;
 			border-bottom: none !important;
+
+			span {
+				margin-bottom: 2px;
+			}
 		}
 
 		i.fa {
-			margin-left: 7px;
-			margin-right: 10px;
-			margin-top: 1.5px;
-			min-width: 10px;
-			text-align: center;
+			margin-top: 2px;
+			margin-right: 5px;
 		}
-	}
-	.float-left {
-		float: left;
-		height: 13.25px;
 	}
 }

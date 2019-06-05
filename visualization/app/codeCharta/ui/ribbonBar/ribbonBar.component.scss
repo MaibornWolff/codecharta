@@ -89,12 +89,9 @@ ribbon-bar-component {
 
 		.section {
 			display: inline-block;
-			margin-left: 0;
 			height: 100%;
 			width: auto;
 			padding-top: $padding + px;
-			padding-bottom: $padding + px;
-			margin-bottom: 6px;
 			border-right: $border;
 			vertical-align: top;
 			position: relative;
