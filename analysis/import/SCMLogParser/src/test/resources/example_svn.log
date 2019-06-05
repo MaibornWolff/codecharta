@@ -29,5 +29,26 @@ Changed paths:
    A /tags
    A /trunk
 
+Rename this
+------------------------------------------------------------------------
+r1 | MartinSc | 2016-06-10 14:12:47 +0200 (Fr, 10 Jun 2016) | 1 line
+Changed paths:
+   A /trunk/src
+   A /trunk/src/innerFolder
+   A /trunk/src/innerFolder/BestClassEver.java
+   A /trunk/src/srcFolderTest.txt (from /trunk/src/srcFolderTest_OLDNAME.txt:123)
+   D /trunk/src/srcFolderTest_OLDNAME.txt
+
+Multiline commit message, this is long
+and even longer
+------------------------------------------------------------------------
+r1 | AlexH | 2016-06-10 14:10:47 +0200 (Fr, 10 Jun 2016) | 1 line
+Changed paths:
+   A /trunk/src
+   A /trunk/src/innerFolder
+   A /trunk/src/innerFolder/BestClassEver.java
+   A /trunk/src/srcFolderTest_OLDNAME.txt
+
+
 Imported folder structure
 ------------------------------------------------------------------------

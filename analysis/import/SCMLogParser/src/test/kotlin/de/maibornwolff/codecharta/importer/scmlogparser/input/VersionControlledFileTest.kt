@@ -7,6 +7,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import org.junit.jupiter.api.Assertions
 import java.time.OffsetDateTime
 import java.util.*
 
@@ -54,24 +55,19 @@ class VersionControlledFileTest {
     }
 
     @Test
-    fun ignoresCommitsForDifferentFiles() {
-        // given
-        val modificationMetric = mockk<Metric>()
-
+    fun throwsExceptionIfFileIsNotInCommit() {
         val versionControlledFile = VersionControlledFile(
                 "filename",
-                Arrays.asList(modificationMetric)
+                listOf()
         )
 
-        // when
         val modification = Modification("anotherFilename")
         val commit = createCommit("An Author", modification)
-        versionControlledFile.registerCommit(commit)
 
-        // then
-        assertThat(versionControlledFile.authors).isEmpty()
+        Assertions.assertThrows(IllegalStateException::class.java) {
+            versionControlledFile.registerCommit(commit)
+        }
 
-        verify(exactly = 0) { modificationMetric.registerModification(any()) }
     }
 
     @Test
@@ -157,8 +153,7 @@ class VersionControlledFileTest {
         val modifications = Arrays.asList(
                 Modification(filename),
                 Modification(filename, oldFilename, Modification.Type.RENAME),
-                Modification(oldFilename),
-                Modification(filename)
+                Modification(oldFilename)
         )
         modifications
                 .forEach { mod -> versionControlledFile.registerCommit(createCommit("An Author", mod)) }
