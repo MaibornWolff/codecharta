@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+
 - SVN log parser keeps track of renaming of files for metric calculation #542
+- Added pop-up-dialog before downloading file to set filename and see what data will be stored #523
 
 ### Changed
 
