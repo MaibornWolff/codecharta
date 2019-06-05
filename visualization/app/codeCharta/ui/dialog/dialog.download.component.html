@@ -14,11 +14,12 @@
                 <span class="cc-file-extension">.cc.json</span>
             </md-input-container>
                      
-            <p class="dialog-label">The file includes:</p>
-            <p class="dialog-label">Nodes ({{$ctrl._viewModel.amountOfNodes}})</p>
+            <p class="">The file includes:</p>
+            <p class="dialog-list">Nodes ({{$ctrl._viewModel.amountOfNodes}})</p>
+            <p class="dialog-list">AttributeTypes ({{$ctrl._viewModel.amountOfAttributeTypes}})</p>
 
             <md-input-container ng-repeat="item in $ctrl._viewModel.fileContent" class="md-block">
-                <md-checkbox class="md-primary" ng-disabled="::item.isDisabled" ng-model="::item.isSelected">
+                <md-checkbox class="dialog-list md-primary" ng-disabled="::item.isDisabled" ng-model="::item.isSelected">
                     <span>{{::item.name}} ({{::item.numberOfListItems}})</span>
                 </md-checkbox>
             </md-input-container>

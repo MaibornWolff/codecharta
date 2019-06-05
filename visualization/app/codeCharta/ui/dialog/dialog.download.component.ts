@@ -1,7 +1,7 @@
 import "./dialog.component.scss"
 import { FileDownloader } from "../../util/fileDownloader"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import { CCFile, BlacklistType, FileSettings } from "../../codeCharta.model"
+import { CCFile, BlacklistType, FileSettings, AttributeTypes } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import _ from "lodash"
 import { FileNameHelper } from "../../util/fileNameHelper"
@@ -14,7 +14,6 @@ interface FileDownloadContent {
 }
 
 export enum DownloadCheckboxNames {
-	nodes = "Nodes",
 	edges = "Edges",
 	excludes = "Excludes",
 	hides = "Hides",
@@ -25,10 +24,12 @@ export class DialogDownlodController {
 	private _viewModel: {
 		fileName: string
 		amountOfNodes: number
+		amountOfAttributeTypes: number
 		fileContent: FileDownloadContent[]
 	} = {
 		fileName: null,
 		amountOfNodes: null,
+		amountOfAttributeTypes: null,
 		fileContent: []
 	}
 
@@ -41,6 +42,7 @@ export class DialogDownlodController {
 		this.setFileContentList(file)
 		this._viewModel.fileName = FileNameHelper.getNewFileName(file.fileMeta.fileName)
 		this._viewModel.amountOfNodes = hierarchy(file.map).descendants().length
+		this._viewModel.amountOfAttributeTypes = this.getAmountOfAttributeTypes(file.settings.fileSettings.attributeTypes)
 		this._viewModel.fileContent = this._viewModel.fileContent.sort((a, b) => this.sortByDisabled(a, b))
 	}
 
@@ -63,6 +65,13 @@ export class DialogDownlodController {
 			isSelected: numberOfListItems > 0,
 			isDisabled: !numberOfListItems || numberOfListItems == 0
 		})
+	}
+
+	private getAmountOfAttributeTypes(attributeTypes: AttributeTypes) {
+		let sum: number = 0
+		sum += attributeTypes.nodes ? attributeTypes.nodes.length : 0
+		sum += attributeTypes.edges ? attributeTypes.edges.length : 0
+		return sum
 	}
 
 	private sortByDisabled(a: FileDownloadContent, b: FileDownloadContent) {
