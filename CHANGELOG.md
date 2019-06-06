@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+- Fix set default ColorRange when resetting color section #560
+
 ### Chore
 
 ## [1.25.1] - 2019-05-30
