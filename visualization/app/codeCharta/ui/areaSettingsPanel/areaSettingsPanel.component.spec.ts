@@ -72,6 +72,12 @@ describe("AreaSettingsPanelController", () => {
 
 			expect(CodeMapPreRenderService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
+
+		it("should subscribe to FileStateService", () => {
+			rebuildController()
+
+			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
+		})
 	})
 
 	describe("onSettingsChanged", () => {
@@ -148,6 +154,40 @@ describe("AreaSettingsPanelController", () => {
 			areaSettingsPanelController.onRenderFileChanged(file, undefined)
 
 			expect(areaSettingsPanelController.applySettings).not.toHaveBeenCalled()
+		})
+	})
+
+	describe("onFileSelectionStatesChanged", () => {
+		it("should set dynamicMargin in viewModel to true", () => {
+			areaSettingsPanelController.onFileSelectionStatesChanged(undefined, undefined)
+
+			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeTruthy()
+		})
+
+		it("should update margin and dynamicMargin in settingsService", () => {
+			areaSettingsPanelController.onFileSelectionStatesChanged(undefined, undefined)
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({
+				dynamicSettings: { margin: 28 },
+				appSettings: { dynamicMargin: true }
+			})
+		})
+	})
+
+	describe("onImportedFilesChanged", () => {
+		it("should set dynamicMargin in viewModel to true", () => {
+			areaSettingsPanelController.onImportedFilesChanged(undefined, undefined)
+
+			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeTruthy()
+		})
+
+		it("should update margin and dynamicMargin in settingsService", () => {
+			areaSettingsPanelController.onImportedFilesChanged(undefined, undefined)
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({
+				dynamicSettings: { margin: 28 },
+				appSettings: { dynamicMargin: true }
+			})
 		})
 	})
 
