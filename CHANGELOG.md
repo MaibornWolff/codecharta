@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
-- SVN log parser keeps track of renaming of files for metric calculation #542
+- FileExtensionBar to show file-distribution of chosen metric #495
 - sum icon is now displayed on the left of the metric value #364
 
 ### Changed
@@ -18,9 +18,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
-- Entries with renaming information in SVN logs are attributed to correct file #542
+- Fix set default ColorRange when resetting color section #560
 
 ### Chore
+
+## [1.25.1] - 2019-05-30
+
+### Added
+
+- SVN log parser keeps track of renaming of files for metric calculation #542
+
+### Changed
+
+### Removed
+
+### Fixed
+
+- Entries with renaming information in SVN logs are attributed to correct file #542
+- Unary metric will no longer be removed from the MetricChooser-Dropdown when a folder was excluded or hidden #548
+- Changing margin and then file or mode will no longer freeze the application #524
+
+### Chore
+
+- [Security] Bump tar from 2.2.1 to 2.2.2 in /visualization
 
 ## [1.25.0] - 2019-05-17
 

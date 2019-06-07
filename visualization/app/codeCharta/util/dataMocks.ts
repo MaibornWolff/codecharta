@@ -1,6 +1,7 @@
 import { AttributeType, CCFile, CodeMapNode, Edge, MetricData, Node, Settings } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import * as THREE from "three"
+import { MetricDistribution } from "./fileExtensionCalculator"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -186,6 +187,100 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
 	}
 }
 
+export const METRIC_DISTRIBUTION: MetricDistribution[] = [
+	{
+		fileExtension: "java",
+		absoluteMetricValue: 20,
+		relativeMetricValue: 100,
+		color: null
+	}
+]
+
+export const NONE_METRIC_DISTRIBUTION: MetricDistribution[] = [
+	{
+		fileExtension: "none",
+		absoluteMetricValue: null,
+		relativeMetricValue: 100,
+		color: "#000000"
+	}
+]
+
+export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: "Folder",
+	path: "/root",
+	children: [
+		{
+			name: "big leaf.jpg",
+			type: "File",
+			path: "/root/big leaf.jpg",
+			attributes: { RLOC: 100, Functions: 10, MCC: 1 }
+		},
+		{
+			name: "another big leaf.java",
+			type: "File",
+			path: "/root/another big leaf.java",
+			attributes: { RLOC: 120, Functions: 20, MCC: 2 }
+		},
+		{
+			name: "Parent Leaf",
+			type: "Folder",
+			attributes: {},
+			path: "/root/Parent Leaf",
+			children: [
+				{
+					name: "small leaf.jpg",
+					type: "File",
+					path: "/root/Parent Leaf/small leaf.json",
+					attributes: { RLOC: 30, Functions: 100, MCC: 100 }
+				},
+				{
+					name: "other small leaf.json",
+					type: "File",
+					path: "/root/Parent Leaf/other small leaf.json",
+					attributes: { RLOC: 70, Functions: 1000, MCC: 10 }
+				},
+				{
+					name: "another leaf.java",
+					type: "File",
+					path: "/root/Parent Leaf/another leaf.java",
+					attributes: { RLOC: 42, Functions: 330, MCC: 45 },
+					children: []
+				},
+				{
+					name: "leaf without extension",
+					type: "File",
+					path: "/root/Parent Leaf/leaf without extension",
+					attributes: { RLOC: 15, Functions: 23, MCC: 33 },
+					children: []
+				}
+			]
+		}
+	]
+}
+
+export const VALID_NODE_WITHOUT_RLOC_METRIC: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: "Folder",
+	path: "/root",
+	children: [
+		{
+			name: "big leaf.jpg",
+			type: "File",
+			path: "/root/big leaf.jpg",
+			attributes: { RLOC: 0, Functions: 10, MCC: 1 }
+		},
+		{
+			name: "another big leaf.java",
+			type: "File",
+			path: "/root/another big leaf.java",
+			attributes: { RLOC: 0, Functions: 20, MCC: 2 }
+		}
+	]
+}
+
 export const TEST_DELTA_MAP_A: CCFile = {
 	fileMeta: {
 		fileName: "fileA",
@@ -366,6 +461,7 @@ export const SETTINGS: Settings = {
 		areaMetric: "rloc",
 		heightMetric: "mcc",
 		colorMetric: "mcc",
+		distributionMetric: "mcc",
 		focusedNodePath: "/root",
 		searchedNodePaths: [],
 		searchPattern: "",
@@ -442,6 +538,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		colorMetric: null,
 		focusedNodePath: "",
 		heightMetric: null,
+		distributionMetric: null,
 		margin: null,
 		colorRange: {
 			from: null,
