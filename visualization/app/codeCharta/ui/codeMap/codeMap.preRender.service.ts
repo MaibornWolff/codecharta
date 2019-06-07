@@ -31,7 +31,7 @@ export interface RenderData {
 }
 
 export interface CodeMapPreRenderServiceSubscriber {
-	onRenderMapChanged(renderFile: CCFile, event: IAngularEvent)
+	onRenderMapChanged(map: CodeMapNode, event: IAngularEvent)
 }
 
 export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricServiceSubscriber {
@@ -58,7 +58,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	}
 
 	public getRenderMap(): CodeMapNode {
-		return this.lastRender.renderFile.map
+		return this.lastRender.renderFile ? this.lastRender.renderFile.map : null
 	}
 
 	public getRenderFileMeta(): FileMeta {
@@ -171,7 +171,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	}
 
 	private notifyFileChanged() {
-		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_FILE_CHANGED_EVENT, this.lastRender.renderFile)
+		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_FILE_CHANGED_EVENT, this.lastRender.renderFile.map)
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapPreRenderServiceSubscriber) {

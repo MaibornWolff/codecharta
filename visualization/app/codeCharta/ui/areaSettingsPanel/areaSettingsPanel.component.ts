@@ -1,7 +1,7 @@
 import "./areaSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import { CCFile, CodeMapNode, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
+import { CodeMapNode, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3-hierarchy"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
@@ -37,9 +37,9 @@ export class AreaSettingsPanelController
 		this.potentiallyUpdateMargin(this.codeMapPreRenderService.getRenderMap(), settings)
 	}
 
-	public onRenderMapChanged(renderFile: CCFile, event: angular.IAngularEvent) {
+	public onRenderMapChanged(map: CodeMapNode, event: angular.IAngularEvent) {
 		this._viewModel.dynamicMargin = this.settingsService.getSettings().appSettings.dynamicMargin
-		this.potentiallyUpdateMargin(renderFile.map, this.settingsService.getSettings())
+		this.potentiallyUpdateMargin(map, this.settingsService.getSettings())
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
