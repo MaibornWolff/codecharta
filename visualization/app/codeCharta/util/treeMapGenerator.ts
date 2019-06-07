@@ -28,7 +28,10 @@ export class TreeMapGenerator {
 
 	private static squarify(map: CodeMapNode, s: Settings): SquarifiedValuedCodeMapNode {
 		let hierarchy: HierarchyNode<CodeMapNode> = d3.hierarchy<CodeMapNode>(map)
-		const blacklisted: number = CodeMapHelper.numberOfBlacklistedNodes(hierarchy.descendants().map(d => d.data), s.fileSettings.blacklist)
+		const blacklisted: number = CodeMapHelper.numberOfBlacklistedNodes(
+			hierarchy.descendants().map(d => d.data),
+			s.fileSettings.blacklist
+		)
 		const nodesPerSide: number = 2 * Math.sqrt(hierarchy.descendants().length - blacklisted)
 		let treeMap: TreemapLayout<CodeMapNode> = d3
 			.treemap<CodeMapNode>()
