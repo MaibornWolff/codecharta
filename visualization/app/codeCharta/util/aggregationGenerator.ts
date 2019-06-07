@@ -22,8 +22,8 @@ export class AggregationGenerator {
 	private static getNewAggregatedMap(inputFiles: CCFile[]): CCFile {
 		let outputFile: CCFile = {
 			fileMeta: {
-				projectName: "Aggregation of following projects: " + this.projectNameArray.join(", "),
-				fileName: "Aggregation of following files: " + this.fileNameArray.join(", "),
+				projectName: "Project-Aggregation of " + this.projectNameArray.join(", "),
+				fileName: "File-Aggregation of " + this.fileNameArray.join(", "),
 				apiVersion: require("../../../package.json").codecharta.apiVersion
 			},
 			map: {
@@ -31,7 +31,7 @@ export class AggregationGenerator {
 				type: "Folder",
 				children: [] as CodeMapNode[],
 				attributes: {},
-				origin: "Aggregation of following files: " + this.fileNameArray.join(", "),
+				origin: "File-Aggregation of " + this.fileNameArray.join(", "),
 				path: CodeChartaService.ROOT_PATH,
 				visible: true
 			},
