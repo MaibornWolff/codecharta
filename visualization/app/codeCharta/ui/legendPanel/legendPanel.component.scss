@@ -2,7 +2,7 @@ legend-panel-component {
 
   .panel-button {
     position: fixed;
-    top: 228px;
+    top: 270px;
     left: -35px;
     transform: rotate(90deg);
     z-index: 2;
@@ -12,7 +12,7 @@ legend-panel-component {
 
     position: fixed;
     z-index: 29;
-    top: 13em;
+    top: 250px;
     left: -500px; //initial state is closed
 
     background-color: #fff;

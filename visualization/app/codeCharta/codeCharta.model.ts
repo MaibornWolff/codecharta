@@ -74,6 +74,7 @@ export interface DynamicSettings {
 	areaMetric: string
 	heightMetric: string
 	colorMetric: string
+	distributionMetric: string
 	focusedNodePath: string
 	searchedNodePaths: Array<string>
 	searchPattern: string

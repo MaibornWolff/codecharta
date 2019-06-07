@@ -9,13 +9,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
-- Added pop-up-dialog before downloading file to set filename and see what data will be stored #523
+- FileExtensionBar to show file-distribution of chosen metric #495
+- Added Pop-up dialog before downloading file to set filename and see what data will be stored #523
 
 ### Changed
 
 ### Removed
 
 ### Fixed
+
+- Fix set default ColorRange when resetting color section #560
 
 ### Chore
 
