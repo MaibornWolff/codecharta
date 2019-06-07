@@ -110,7 +110,7 @@ export class GeometryGenerator {
 		let measures: BoxMeasures = this.mapNodeToLocalBox(n)
 		measures.height = this.ensureMinHeightIfUnlessDeltaNegative(n.height, n.heightDelta)
 
-		let color: string = this.estimateColorForBuilding(n, settings, isDeltaState)
+		let color: string = this.getBuildingColor(n, settings, isDeltaState)
 
 		let renderDelta: number = 0.0
 
@@ -137,29 +137,25 @@ export class GeometryGenerator {
 		BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, idx, renderDelta)
 	}
 
-	private estimateColorForBuilding(n: Node, s: Settings, isDeltaState: boolean): string {
-		let color: string = s.appSettings.mapColors.defaultC
-
+	private getBuildingColor(n: Node, s: Settings, isDeltaState: boolean): string {
 		let mapColorPositive = s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive
-		if (!isDeltaState) {
-			const val: number = n.attributes[s.dynamicSettings.colorMetric]
-
-			if (val === undefined || val === null) {
-				color = s.appSettings.mapColors.base
-			} else if (n.flat) {
-				color = s.appSettings.mapColors.flat
-			} else if (val < s.dynamicSettings.colorRange.from) {
-				color = s.appSettings.invertColorRange ? s.appSettings.mapColors.negative : mapColorPositive
-			} else if (val > s.dynamicSettings.colorRange.to) {
-				color = s.appSettings.invertColorRange ? mapColorPositive : s.appSettings.mapColors.negative
-			} else {
-				color = s.appSettings.mapColors.neutral
-			}
+		if (isDeltaState) {
+			return s.appSettings.mapColors.base
 		} else {
-			color = s.appSettings.mapColors.base
-		}
+			const metricValue: number = n.attributes[s.dynamicSettings.colorMetric]
 
-		return color
+			if (metricValue === undefined || metricValue === null) {
+				return s.appSettings.mapColors.base
+			} else if (n.flat) {
+				return s.appSettings.mapColors.flat
+			} else if (metricValue < s.dynamicSettings.colorRange.from) {
+				return s.appSettings.invertColorRange ? s.appSettings.mapColors.negative : mapColorPositive
+			} else if (metricValue > s.dynamicSettings.colorRange.to) {
+				return s.appSettings.invertColorRange ? mapColorPositive : s.appSettings.mapColors.negative
+			} else {
+				return s.appSettings.mapColors.neutral
+			}
+		}
 	}
 
 	private buildMeshFromIntermediateVertexData(data: IntermediateVertexData, material: THREE.Material): THREE.Mesh {
