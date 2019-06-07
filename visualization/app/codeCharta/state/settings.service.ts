@@ -1,4 +1,13 @@
-import { ColorRange, DynamicSettings, FileSettings, FileState, MapColors, RecursivePartial, Settings } from "../codeCharta.model"
+import {
+	AttributeType,
+	ColorRange,
+	DynamicSettings,
+	FileSettings,
+	FileState,
+	MapColors,
+	RecursivePartial,
+	Settings
+} from "../codeCharta.model"
 import _ from "lodash"
 import { IAngularEvent, IRootScopeService, ITimeoutService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
@@ -13,41 +22,39 @@ export interface SettingsServiceSubscriber {
 
 export class SettingsService implements FileStateServiceSubscriber {
 	private static SETTINGS_CHANGED_EVENT = "settings-changed"
+	private static DEBOUNCE_TIME = 400
 
 	private settings: Settings
-	private readonly debounceBroadcast: (update: RecursivePartial<Settings>) => void
+	private update: RecursivePartial<Settings> = {}
+	private readonly debounceBroadcast: () => void
 
 	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private loadingGifService: LoadingGifService) {
 		this.settings = this.getDefaultSettings()
-		this.debounceBroadcast = _.debounce(
-			(update: RecursivePartial<Settings>) =>
-				this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, { settings: this.settings, update: update }),
-			400
-		)
+		this.debounceBroadcast = _.debounce(() => {
+			this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, { settings: this.settings, update: this.update })
+			this.update = {}
+		}, SettingsService.DEBOUNCE_TIME)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-		this.updateSettings({
-			dynamicSettings: this.getDefaultDynamicSettingsWithoutMetrics()
-		})
-		this.updateSettings({
-			fileSettings: this.getNewFileSettings(fileStates)
-		})
+		this.resetDynamicAndFileSettings(fileStates)
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
+	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+		this.resetDynamicAndFileSettings(fileStates)
+	}
 
 	public getSettings(): Settings {
 		return this.settings
 	}
 
 	public updateSettings(update: RecursivePartial<Settings>, isSilent: boolean = false) {
-		// _.merge(this.settings, update) didnt work with arrays like blacklist
-		this.settings = this.updateSettingsUsingPartialSettings(this.settings, update)
+		this.settings = this.mergePartialSettings(this.settings, update, this.settings) as Settings
 		if (!isSilent) {
 			this.loadingGifService.updateLoadingMapFlag(true)
-			this.debounceBroadcast(update)
+			this.update = this.mergePartialSettings(this.update, update, this.settings)
+			this.debounceBroadcast()
 		}
 		this.synchronizeAngularTwoWayBinding()
 	}
@@ -72,9 +79,9 @@ export class SettingsService implements FileStateServiceSubscriber {
 		const camera: Vector3 = new Vector3(0, 300, 1000)
 		const colorRange: ColorRange = { from: null, to: null }
 
-		let settings: Settings = {
+		const settings: Settings = {
 			fileSettings: {
-				attributeTypes: {},
+				attributeTypes: { nodes: [], edges: [] },
 				blacklist: [],
 				edges: [],
 				markedPackages: []
@@ -129,21 +136,27 @@ export class SettingsService implements FileStateServiceSubscriber {
 		return SettingsMerger.getMergedFileSettings(visibleFiles, withUpdatedPath)
 	}
 
-	private updateSettingsUsingPartialSettings(settings: Settings, update: RecursivePartial<Settings>): Settings {
-		for (let key of Object.keys(settings)) {
-			if (update.hasOwnProperty(key)) {
-				if (_.isObject(settings[key]) && !_.isArray(settings[key])) {
-					if (this.containsArrayObject(update[key])) {
-						settings[key] = this.updateSettingsUsingPartialSettings(settings[key], update[key])
+	private mergePartialSettings(
+		mergedSettings: RecursivePartial<Settings>,
+		newSettings: RecursivePartial<Settings>,
+		initialSettings: Settings
+	): Settings | RecursivePartial<Settings> {
+		for (let key of Object.keys(initialSettings)) {
+			if (mergedSettings.hasOwnProperty(key) && newSettings.hasOwnProperty(key)) {
+				if (_.isObject(mergedSettings[key]) && !_.isArray(mergedSettings[key])) {
+					if (this.containsArrayObject(newSettings[key])) {
+						mergedSettings[key] = this.mergePartialSettings(mergedSettings[key], newSettings[key], initialSettings[key])
 					} else {
-						settings[key] = _.merge(settings[key], update[key])
+						mergedSettings[key] = _.merge(mergedSettings[key], newSettings[key])
 					}
 				} else {
-					settings[key] = update[key]
+					mergedSettings[key] = newSettings[key]
 				}
+			} else if (newSettings.hasOwnProperty(key)) {
+				mergedSettings[key] = newSettings[key]
 			}
 		}
-		return settings
+		return mergedSettings
 	}
 
 	private containsArrayObject(obj: Object): boolean {
@@ -159,6 +172,15 @@ export class SettingsService implements FileStateServiceSubscriber {
 			}
 		}
 		return false
+	}
+
+	private resetDynamicAndFileSettings(fileStates: FileState[]) {
+		this.updateSettings({
+			dynamicSettings: this.getDefaultDynamicSettingsWithoutMetrics()
+		})
+		this.updateSettings({
+			fileSettings: this.getNewFileSettings(fileStates)
+		})
 	}
 
 	private synchronizeAngularTwoWayBinding() {
