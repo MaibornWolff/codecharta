@@ -5,16 +5,14 @@ import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
 
 export class FileDownloader {
-	public static downloadCurrentMap(file: CCFile, downloadSettingsNames: string[], fileName: string) {
-		const exportCCFile: ExportCCFile = this.getProjectDataAsCCJsonFormat(file, downloadSettingsNames)
+	public static downloadCurrentMap(file: CCFile, s: FileSettings, downloadSettingsNames: string[], fileName: string) {
+		const exportCCFile: ExportCCFile = this.getProjectDataAsCCJsonFormat(file, s, downloadSettingsNames)
 		const newFileNameWithExtension: string = fileName + CodeChartaService.CC_FILE_EXTENSION
 		this.downloadData(exportCCFile, newFileNameWithExtension)
 	}
 
-	private static getProjectDataAsCCJsonFormat(file: CCFile, downloadSettingsNames: string[]) {
-		const s: FileSettings = file.settings.fileSettings
-
-		let downloadObject: ExportCCFile = {
+	private static getProjectDataAsCCJsonFormat(file: CCFile, s: FileSettings, downloadSettingsNames: string[]): ExportCCFile {
+		return {
 			projectName: file.fileMeta.projectName,
 			apiVersion: file.fileMeta.apiVersion,
 			nodes: [this.removeJsonHashkeysAndVisibleAttribute(file.map)],
@@ -23,7 +21,6 @@ export class FileDownloader {
 			markedPackages: downloadSettingsNames.includes(DownloadCheckboxNames.markedPackages) ? s.markedPackages : [],
 			blacklist: this.getBlacklistToDownload(downloadSettingsNames, file)
 		}
-		return downloadObject
 	}
 
 	private static getBlacklistToDownload(downloadSettingsNames: string[], file: CCFile): BlacklistItem[] {

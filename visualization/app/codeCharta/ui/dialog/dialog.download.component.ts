@@ -84,9 +84,11 @@ export class DialogDownlodController {
 		this.$mdDialog.hide()
 	}
 
+	
 	public download() {
 		FileDownloader.downloadCurrentMap(
 			this.codeMapPreRenderService.getRenderFile(),
+			this.settingsService.getSettings().fileSettings,
 			this._viewModel.fileContent.filter(x => x.isSelected == true).map(x => x.name),
 			this._viewModel.fileName
 		)
