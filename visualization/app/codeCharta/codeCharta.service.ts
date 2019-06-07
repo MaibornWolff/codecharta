@@ -6,7 +6,6 @@ export class CodeChartaService {
 	public static readonly ROOT_NAME = "root"
 	public static readonly ROOT_PATH = "/" + CodeChartaService.ROOT_NAME
 	public static readonly CC_FILE_EXTENSION = ".cc.json"
-	public static SELECTOR = "codeChartaService"
 
 	constructor(private fileStateService: FileStateService) {}
 
