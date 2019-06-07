@@ -5,6 +5,7 @@ import { CCFile, BlacklistType, FileSettings, AttributeTypes } from "../../codeC
 import { hierarchy } from "d3-hierarchy"
 import _ from "lodash"
 import { FileNameHelper } from "../../util/fileNameHelper"
+import { SettingsService } from "../../state/settings.service";
 
 interface FileDownloadContent {
 	name: string
@@ -33,21 +34,22 @@ export class DialogDownlodController {
 		fileContent: []
 	}
 
-	constructor(private $mdDialog, private codeMapPreRenderService: CodeMapPreRenderService) {
+	constructor(private $mdDialog, private codeMapPreRenderService: CodeMapPreRenderService, private settingsService: SettingsService) {
 		this.initDialogFields()
 	}
 
 	private initDialogFields() {
 		const file: CCFile = this.codeMapPreRenderService.getRenderFile()
-		this.setFileContentList(file)
+		const s: FileSettings = this.settingsService.getSettings().fileSettings
+
+		this.setFileContentList(s)
 		this._viewModel.fileName = FileNameHelper.getNewFileName(file.fileMeta.fileName)
 		this._viewModel.amountOfNodes = hierarchy(file.map).descendants().length
-		this._viewModel.amountOfAttributeTypes = this.getAmountOfAttributeTypes(file.settings.fileSettings.attributeTypes)
+		this._viewModel.amountOfAttributeTypes = this.getAmountOfAttributeTypes(s.attributeTypes)
 		this._viewModel.fileContent = this._viewModel.fileContent.sort((a, b) => this.sortByDisabled(a, b))
 	}
 
-	private setFileContentList(file: CCFile) {
-		const s: FileSettings = file.settings.fileSettings
+	private setFileContentList(s: FileSettings) {
 		this.pushFileContent(DownloadCheckboxNames.edges, s.edges.length)
 		this.pushFileContent(DownloadCheckboxNames.markedPackages, s.markedPackages.length)
 		this.pushFileContent(DownloadCheckboxNames.excludes, this.getFilteredBlacklistLength(s, BlacklistType.exclude))
