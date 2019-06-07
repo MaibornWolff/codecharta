@@ -8,11 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 ### Added
 
+ - FileExtensionBar to show file-distribution of chosen metric #495
+
 ### Changed
 
 ### Removed
 
 ### Fixed
+
+- Fix set default ColorRange when resetting color section #560
 
 ### Chore
 
