@@ -1,6 +1,7 @@
+import { CodeChartaService } from "../codeCharta.service"
+
 export class FileNameHelper {
 	private static JSON_EXTENSION = ".json"
-	private static CC_FILE_EXTENSION = ".cc.json"
 
 	public static getNewFileName(fileName: string): string {
 		return this.getFileNameWithoutTimestamp(fileName) + this.getNewTimestamp()
@@ -18,8 +19,8 @@ export class FileNameHelper {
 
 		if (dateRegex.test(fileName)) {
 			return fileName.substring(0, dateRegex.exec(fileName).index)
-		} else if (fileName.includes(FileNameHelper.CC_FILE_EXTENSION)) {
-			return fileName.substring(0, fileName.search(FileNameHelper.CC_FILE_EXTENSION))
+		} else if (fileName.includes(CodeChartaService.CC_FILE_EXTENSION)) {
+			return fileName.substring(0, fileName.search(CodeChartaService.CC_FILE_EXTENSION))
 		} else if (fileName.includes(FileNameHelper.JSON_EXTENSION)) {
 			return fileName.substring(0, fileName.search(FileNameHelper.JSON_EXTENSION))
 		} else {

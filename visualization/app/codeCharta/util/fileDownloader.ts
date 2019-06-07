@@ -2,13 +2,12 @@ import angular from "angular"
 import * as d3 from "d3"
 import { CCFile, CodeMapNode, BlacklistType, BlacklistItem, FileSettings, ExportCCFile } from "../codeCharta.model"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
+import { CodeChartaService } from "../codeCharta.service"
 
 export class FileDownloader {
-	private static CC_FILE_EXTENSION = ".cc.json"
-
 	public static downloadCurrentMap(file: CCFile, downloadSettingsNames: string[], fileName: string) {
 		const exportCCFile: ExportCCFile = this.getProjectDataAsCCJsonFormat(file, downloadSettingsNames)
-		const newFileNameWithExtension: string = fileName + FileDownloader.CC_FILE_EXTENSION
+		const newFileNameWithExtension: string = fileName + CodeChartaService.CC_FILE_EXTENSION
 		this.downloadData(exportCCFile, newFileNameWithExtension)
 	}
 
