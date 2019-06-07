@@ -1,6 +1,6 @@
 import "./metricType.component.scss"
 import { MetricService } from "../../state/metric.service"
-import { AttributeType, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
+import { AttributeType, RecursivePartial, Settings } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import {
