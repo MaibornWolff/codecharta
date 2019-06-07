@@ -113,10 +113,10 @@ export interface ColorRange {
 }
 
 export interface AttributeTypes {
-	nodes?: Array<{
+	nodes: Array<{
 		[key: string]: AttributeType
 	}>
-	edges?: Array<{
+	edges: Array<{
 		[key: string]: AttributeType
 	}>
 }
