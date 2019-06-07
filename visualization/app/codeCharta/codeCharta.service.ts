@@ -3,8 +3,8 @@ import { CCFile, NameDataPair } from "./codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
 
 export class CodeChartaService {
-	public static ROOT_NAME = "root"
-	public static ROOT_PATH = "/" + CodeChartaService.ROOT_NAME
+	public static readonly ROOT_NAME = "root"
+	public static readonly ROOT_PATH = "/" + CodeChartaService.ROOT_NAME
 	public static readonly CC_FILE_EXTENSION = ".cc.json"
 	public static SELECTOR = "codeChartaService"
 
