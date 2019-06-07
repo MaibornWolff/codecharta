@@ -75,17 +75,12 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 	}
 
 	public getAttributeTypeByMetric(metricName: string, settings: Settings): AttributeType {
-		let attributeType: AttributeType = null
-		const nodeAttributeTypes = settings.fileSettings.attributeTypes.nodes
-		nodeAttributeTypes.forEach(nodeAttributeType => {
-			Object.keys(nodeAttributeType).forEach(key => {
-				if (key === metricName) {
-					attributeType = nodeAttributeType[key]
-				}
-			})
-		})
+		const attributeType = settings.fileSettings.attributeTypes.nodes.find(x => Object.keys(x)[0] === metricName)
 
-		return attributeType
+		if (attributeType) {
+			return attributeType[metricName]
+		}
+		return null
 	}
 
 	private calculateMetrics(fileStates: FileState[], visibleFileStates: FileState[], blacklist: BlacklistItem[]): MetricData[] {
