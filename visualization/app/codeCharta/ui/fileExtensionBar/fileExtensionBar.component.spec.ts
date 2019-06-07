@@ -37,24 +37,24 @@ describe("FileExtensionBarController", () => {
 		})()
 	}
 
-	describe("onRenderFileChanged", () => {
+	describe("onRenderMapChanged", () => {
 		beforeEach(() => {
 			FileExtensionCalculator.getMetricDistribution = jest.fn().mockReturnValue(distribution)
 		})
 		it("should set viewModel.distribution for given metric", () => {
-			fileExtensionBarController.onRenderFileChanged(TEST_FILE_WITH_PATHS, undefined)
+			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS, undefined)
 
 			expect(fileExtensionBarController["_viewModel"].distribution).toEqual(distribution)
 		})
 
 		it("should call getMetricDistribution with mcc", () => {
-			fileExtensionBarController.onRenderFileChanged(TEST_FILE_WITH_PATHS, undefined)
+			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS, undefined)
 
 			expect(FileExtensionCalculator.getMetricDistribution).toHaveBeenCalledWith(TEST_FILE_WITH_PATHS.map, "mcc")
 		})
 
 		it("should set the color of given extension attribute", () => {
-			fileExtensionBarController.onRenderFileChanged(TEST_FILE_WITH_PATHS, undefined)
+			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS, undefined)
 
 			expect(distribution[0].color).toEqual("hsla(58, 40%, 50%)")
 		})
@@ -62,7 +62,7 @@ describe("FileExtensionBarController", () => {
 		it("should remain the color property of the extension, if it already has one", () => {
 			distribution[0].color = "#4286f4"
 
-			fileExtensionBarController.onRenderFileChanged(TEST_FILE_WITH_PATHS, undefined)
+			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS, undefined)
 
 			expect(distribution[0].color).toEqual("#4286f4")
 		})
@@ -70,7 +70,7 @@ describe("FileExtensionBarController", () => {
 		it("should set viewModel.distribution with just the none Object, if no extension was found for the metric", () => {
 			FileExtensionCalculator.getMetricDistribution = jest.fn().mockReturnValue([])
 
-			fileExtensionBarController.onRenderFileChanged(TEST_FILE_WITH_PATHS, undefined)
+			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS, undefined)
 
 			expect(fileExtensionBarController["_viewModel"].distribution).toEqual(NONE_METRIC_DISTRIBUTION)
 		})

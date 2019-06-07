@@ -37,7 +37,7 @@ export class AreaSettingsPanelController
 		this.potentiallyUpdateMargin(this.codeMapPreRenderService.getRenderMap(), settings)
 	}
 
-	public onRenderFileChanged(renderFile: CCFile, event: angular.IAngularEvent) {
+	public onRenderMapChanged(renderFile: CCFile, event: angular.IAngularEvent) {
 		this._viewModel.dynamicMargin = this.settingsService.getSettings().appSettings.dynamicMargin
 		this.potentiallyUpdateMargin(renderFile.map, this.settingsService.getSettings())
 	}

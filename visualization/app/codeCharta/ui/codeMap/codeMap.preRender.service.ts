@@ -31,7 +31,7 @@ export interface RenderData {
 }
 
 export interface CodeMapPreRenderServiceSubscriber {
-	onRenderFileChanged(renderFile: CCFile, event: IAngularEvent)
+	onRenderMapChanged(renderFile: CCFile, event: IAngularEvent)
 }
 
 export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricServiceSubscriber {
@@ -176,7 +176,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapPreRenderServiceSubscriber) {
 		$rootScope.$on(CodeMapPreRenderService.RENDER_FILE_CHANGED_EVENT, (event, data) => {
-			subscriber.onRenderFileChanged(data, event)
+			subscriber.onRenderMapChanged(data, event)
 		})
 	}
 }
