@@ -36,7 +36,7 @@ export class CodeChartaService {
 			settings: {
 				fileSettings: {
 					edges: fileContent.edges || [],
-					attributeTypes: fileContent.attributeTypes || {},
+					attributeTypes: fileContent.attributeTypes || { nodes: [], edges: [] },
 					blacklist: fileContent.blacklist || [],
 					markedPackages: []
 				}

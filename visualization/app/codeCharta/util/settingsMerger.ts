@@ -4,8 +4,8 @@ import { CodeChartaService } from "../codeCharta.service"
 export class SettingsMerger {
 	private static edges: Edge[] = []
 	private static blacklist: BlacklistItem[] = []
-	private static attributeTypesEdge: { [key: string]: AttributeType } = {}
-	private static attributeTypesNode: { [key: string]: AttributeType } = {}
+	private static attributeTypesEdge: Array<{ [key: string]: AttributeType }> = []
+	private static attributeTypesNode: Array<{ [key: string]: AttributeType }> = []
 
 	public static getMergedFileSettings(inputFiles: CCFile[], withUpdatedPath: boolean = false): FileSettings {
 		if (inputFiles.length == 1) {
@@ -81,15 +81,14 @@ export class SettingsMerger {
 
 	private static setAttributeTypesByUniqueKey(inputFile: CCFile) {
 		const types = inputFile.settings.fileSettings.attributeTypes
-		if (types && types.nodes) {
-			for (let key in types.nodes) {
-				this.attributeTypesNode[key] = types.nodes[key]
-			}
+		for (let i = 0; i < types.nodes.length; i++) {
+			const key = Object.keys(types.nodes[i])[0]
+			this.attributeTypesNode.push({ [key]: types.nodes[i][key] })
 		}
-		if (types && types.edges) {
-			for (let key in types.edges) {
-				this.attributeTypesEdge[key] = types.edges[key]
-			}
+
+		for (let i = 0; i < types.edges.length; i++) {
+			const key = Object.keys(types.edges[i])[0]
+			this.attributeTypesEdge.push({ [key]: types.edges[i][key] })
 		}
 	}
 
@@ -114,7 +113,7 @@ export class SettingsMerger {
 	private static resetVariables() {
 		this.edges = []
 		this.blacklist = []
-		this.attributeTypesEdge = {}
-		this.attributeTypesNode = {}
+		this.attributeTypesEdge = []
+		this.attributeTypesNode = []
 	}
 }

@@ -112,17 +112,17 @@ export interface ColorRange {
 }
 
 export interface AttributeTypes {
-	nodes?: {
+	nodes?: Array<{
 		[key: string]: AttributeType
-	}
-	edges?: {
+	}>
+	edges?: Array<{
 		[key: string]: AttributeType
-	}
+	}>
 }
 
 export enum AttributeType {
-	absolute,
-	relative
+	absolute = "absolute",
+	relative = "relative"
 }
 
 export interface Edge {

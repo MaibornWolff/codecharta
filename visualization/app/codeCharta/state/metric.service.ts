@@ -1,4 +1,13 @@
-import { BlacklistItem, BlacklistType, CodeMapNode, FileState, MetricData, RecursivePartial, Settings } from "../codeCharta.model"
+import {
+	AttributeType,
+	BlacklistItem,
+	BlacklistType,
+	CodeMapNode,
+	FileState,
+	MetricData,
+	RecursivePartial,
+	Settings
+} from "../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
 import { FileStateHelper } from "../util/fileStateHelper"
@@ -20,6 +29,7 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 	private static METRIC_DATA_ADDED_EVENT = "metric-data-added"
 	private static METRIC_DATA_REMOVED_EVENT = "metric-data-removed"
 
+	//TODO MetricData should contain attributeType
 	private metricData: MetricData[] = []
 
 	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
@@ -61,6 +71,20 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 	public getMaxMetricByMetricName(metricName: string): number {
 		const metric: MetricData = this.metricData.find(x => x.name == metricName)
 		return metric ? metric.maxValue : undefined
+	}
+
+	public getAttributeTypeByMetric(metricName: string, settings: Settings): AttributeType {
+		let attributeType: AttributeType = null
+		const nodeAttributeTypes = settings.fileSettings.attributeTypes.nodes
+		nodeAttributeTypes.forEach(nodeAttributeType => {
+			Object.keys(nodeAttributeType).forEach(key => {
+				if (key === metricName) {
+					attributeType = nodeAttributeType[key]
+				}
+			})
+		})
+
+		return attributeType
 	}
 
 	private calculateMetrics(fileStates: FileState[], visibleFileStates: FileState[], blacklist: BlacklistItem[]): MetricData[] {

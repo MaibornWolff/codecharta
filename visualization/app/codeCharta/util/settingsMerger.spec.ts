@@ -1,4 +1,4 @@
-import { AttributeType, BlacklistItem, BlacklistType, CCFile, Edge, FileSettings, Settings } from "../codeCharta.model"
+import { AttributeType, BlacklistItem, BlacklistType, CCFile, Edge, FileSettings } from "../codeCharta.model"
 import { SettingsMerger } from "./settingsMerger"
 
 describe("SettingsMerger", () => {
@@ -19,7 +19,7 @@ describe("SettingsMerger", () => {
 				edges: [],
 				blacklist: [],
 				markedPackages: [],
-				attributeTypes: {}
+				attributeTypes: { nodes: [], edges: [] }
 			}
 		}
 	}
@@ -41,7 +41,7 @@ describe("SettingsMerger", () => {
 				edges: [],
 				blacklist: [],
 				markedPackages: [],
-				attributeTypes: {}
+				attributeTypes: { nodes: [], edges: [] }
 			}
 		}
 	}
@@ -128,28 +128,38 @@ describe("SettingsMerger", () => {
 
 	describe("AttributeTypes merge", () => {
 		const attributes1 = {
-			nodes: {
-				["attribute1"]: AttributeType.absolute
-			},
-			edges: {
-				["attribute2"]: AttributeType.relative
-			}
+			nodes: [
+				{
+					attribute1: AttributeType.absolute
+				}
+			],
+			edges: [
+				{
+					attribute2: AttributeType.relative
+				}
+			]
 		}
 
 		const attributes2 = {
-			nodes: {
-				["attribute3"]: AttributeType.absolute
-			},
-			edges: {
-				["attribute4"]: AttributeType.relative
-			}
+			nodes: [
+				{
+					attribute3: AttributeType.absolute
+				}
+			],
+			edges: [
+				{
+					attribute4: AttributeType.relative
+				}
+			]
 		}
 
 		const attributes3 = {
-			nodes: {
-				["attribute1"]: AttributeType.relative
-			},
-			edges: {}
+			nodes: [
+				{
+					attribute1: AttributeType.relative
+				}
+			],
+			edges: []
 		}
 
 		it("should merge different attributeTypes", () => {
@@ -161,7 +171,7 @@ describe("SettingsMerger", () => {
 
 		it("should merge attributeTypes if one file does not contain attributeTypes", () => {
 			file1.settings.fileSettings.attributeTypes = attributes1
-			file2.settings.fileSettings.attributeTypes = {}
+			file2.settings.fileSettings.attributeTypes = { nodes: [], edges: [] }
 			let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
 			expect(fileSettings.attributeTypes).toMatchSnapshot()
 		})
