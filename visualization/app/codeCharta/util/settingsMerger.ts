@@ -50,7 +50,7 @@ export class SettingsMerger {
 
 	private static setMarkedPackage(inputFile: CCFile, withUpdatedPath: boolean) {
 		if (inputFile.settings.fileSettings.markedPackages) {
-			for (let oldMarkedPackages of inputFile.settings.fileSettings.markedPackages as MarkedPackage[]) {
+			for (let oldMarkedPackages of inputFile.settings.fileSettings.markedPackages) {
 				let markedPackage: MarkedPackage = {
 					path: withUpdatedPath
 						? this.getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldMarkedPackages.path)
