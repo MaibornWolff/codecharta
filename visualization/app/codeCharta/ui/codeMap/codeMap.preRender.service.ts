@@ -1,6 +1,15 @@
 "use strict"
 
-import { CCFile, FileSelectionState, FileState, MetricData, RecursivePartial, Settings } from "../../codeCharta.model"
+import {
+	CCFile,
+	FileSelectionState,
+	FileState,
+	MetricData,
+	RecursivePartial,
+	Settings,
+	CodeMapNode,
+	FileMeta
+} from "../../codeCharta.model"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import { IAngularEvent, IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
@@ -48,8 +57,12 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		SettingsService.subscribe(this.$rootScope, this)
 	}
 
-	public getRenderFile(): CCFile {
-		return this.lastRender.renderFile
+	public getRenderMap(): CodeMapNode {
+		return this.lastRender.renderFile.map
+	}
+
+	public getRenderFileMeta(): FileMeta {
+		return this.lastRender.renderFile.fileMeta
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {

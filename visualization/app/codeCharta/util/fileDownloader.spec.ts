@@ -1,16 +1,20 @@
 import { stubDate } from "../../../mocks/dateMock.helper"
 import { FileDownloader } from "./fileDownloader"
-import { CCFile } from "../codeCharta.model"
-import { TEST_FILE_DATA, TEST_FILE_DATA_DOWNLOADED } from "./dataMocks"
+import { CCFile, FileMeta, CodeMapNode, FileSettings } from "../codeCharta.model"
+import { TEST_FILE_DATA, TEST_FILE_DATA_DOWNLOADED, SETTINGS } from "./dataMocks"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 
 describe("fileDownloader", () => {
-	let file: CCFile
+	let map: CodeMapNode
+	let fileMeta: FileMeta
+	let filesettings: FileSettings
 	let downloadedFile: any
 	stubDate(new Date("2018-12-14T09:39:59"))
 
 	beforeEach(() => {
-		file = TEST_FILE_DATA
+		map = TEST_FILE_DATA.map
+		fileMeta = TEST_FILE_DATA.fileMeta
+		filesettings = TEST_FILE_DATA.settings.fileSettings
 		downloadedFile = TEST_FILE_DATA_DOWNLOADED
 		FileDownloader["downloadData"] = jest.fn()
 	})
@@ -24,7 +28,7 @@ describe("fileDownloader", () => {
 				DownloadCheckboxNames.excludes,
 				DownloadCheckboxNames.hides
 			]
-			FileDownloader.downloadCurrentMap(file, downloadSettingsNames, fileName)
+			FileDownloader.downloadCurrentMap(map, fileMeta, filesettings, downloadSettingsNames, fileName)
 
 			expect(FileDownloader["downloadData"]).toHaveBeenCalledTimes(1)
 			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(downloadedFile, fileNameWithExtension)

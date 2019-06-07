@@ -1,43 +1,54 @@
 import angular from "angular"
 import * as d3 from "d3"
-import { CCFile, CodeMapNode, BlacklistType, BlacklistItem, FileSettings, ExportCCFile } from "../codeCharta.model"
+import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, ExportCCFile, FileMeta } from "../codeCharta.model"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
 
 export class FileDownloader {
-	public static downloadCurrentMap(file: CCFile, s: FileSettings, downloadSettingsNames: string[], fileName: string) {
-		const exportCCFile: ExportCCFile = this.getProjectDataAsCCJsonFormat(file, s, downloadSettingsNames)
+	public static downloadCurrentMap(
+		map: CodeMapNode,
+		fileMeta: FileMeta,
+		s: FileSettings,
+		downloadSettingsNames: string[],
+		fileName: string
+	) {
+		const exportCCFile: ExportCCFile = this.getProjectDataAsCCJsonFormat(map, fileMeta, s, downloadSettingsNames)
 		const newFileNameWithExtension: string = fileName + CodeChartaService.CC_FILE_EXTENSION
 		this.downloadData(exportCCFile, newFileNameWithExtension)
 	}
 
-	private static getProjectDataAsCCJsonFormat(file: CCFile, s: FileSettings, downloadSettingsNames: string[]): ExportCCFile {
+	private static getProjectDataAsCCJsonFormat(
+		map: CodeMapNode,
+		fileMeta: FileMeta,
+		s: FileSettings,
+		downloadSettingsNames: string[]
+	): ExportCCFile {
 		return {
-			projectName: file.fileMeta.projectName,
-			apiVersion: file.fileMeta.apiVersion,
-			nodes: [this.removeJsonHashkeysAndVisibleAttribute(file.map)],
+			projectName: fileMeta.projectName,
+			apiVersion: fileMeta.apiVersion,
+			nodes: [this.removeJsonHashkeysAndVisibleAttribute(map)],
 			attributeTypes: s.attributeTypes,
 			edges: downloadSettingsNames.includes(DownloadCheckboxNames.edges) ? s.edges : [],
 			markedPackages: downloadSettingsNames.includes(DownloadCheckboxNames.markedPackages) ? s.markedPackages : [],
-			blacklist: this.getBlacklistToDownload(downloadSettingsNames, file)
+			blacklist: this.getBlacklistToDownload(downloadSettingsNames, s.blacklist)
 		}
 	}
 
-	private static getBlacklistToDownload(downloadSettingsNames: string[], file: CCFile): BlacklistItem[] {
-		let blacklist: BlacklistItem[] = []
+	private static getBlacklistToDownload(downloadSettingsNames: string[], blacklist: BlacklistItem[]): BlacklistItem[] {
+		let mergedBlacklist: BlacklistItem[] = []
 
 		if (downloadSettingsNames.includes(DownloadCheckboxNames.hides)) {
-			blacklist.push(...this.getFilteredBlacklist(file, BlacklistType.hide))
+			mergedBlacklist.push(...this.getFilteredBlacklist(blacklist, BlacklistType.hide))
 		}
 
 		if (downloadSettingsNames.includes(DownloadCheckboxNames.excludes)) {
-			blacklist.push(...this.getFilteredBlacklist(file, BlacklistType.exclude))
+			mergedBlacklist.push(...this.getFilteredBlacklist(blacklist, BlacklistType.exclude))
 		}
-		return blacklist
+		return mergedBlacklist
 	}
 
-	private static getFilteredBlacklist(file: CCFile, type: BlacklistType): BlacklistItem[] {
-		return file.settings.fileSettings.blacklist.filter(x => x.type == type)
+	private static getFilteredBlacklist(blacklist: BlacklistItem[], type: BlacklistType): BlacklistItem[] {
+		return blacklist.filter(x => x.type == type)
 	}
 
 	private static removeJsonHashkeysAndVisibleAttribute(map: CodeMapNode) {

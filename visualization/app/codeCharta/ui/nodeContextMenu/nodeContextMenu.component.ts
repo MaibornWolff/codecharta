@@ -47,7 +47,7 @@ export class NodeContextMenuController {
 			this._viewModel.contextMenuBuilding = CodeMapHelper.getCodeMapNodeFromPath(
 				path,
 				nodeType,
-				this.codeMapPreRenderService.getRenderFile().map
+				this.codeMapPreRenderService.getRenderMap()
 			)
 		}, 50).then(() => {
 			this._viewModel.amountOfDependentEdges = this.codeMapActionsService.amountOfDependentEdges(this._viewModel.contextMenuBuilding)

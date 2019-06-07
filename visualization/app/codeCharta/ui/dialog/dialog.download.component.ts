@@ -1,11 +1,11 @@
 import "./dialog.component.scss"
 import { FileDownloader } from "../../util/fileDownloader"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import { CCFile, BlacklistType, FileSettings, AttributeTypes } from "../../codeCharta.model"
+import { BlacklistType, FileSettings, AttributeTypes, FileMeta, CodeMapNode } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import _ from "lodash"
 import { FileNameHelper } from "../../util/fileNameHelper"
-import { SettingsService } from "../../state/settings.service";
+import { SettingsService } from "../../state/settings.service"
 
 interface FileDownloadContent {
 	name: string
@@ -39,12 +39,13 @@ export class DialogDownlodController {
 	}
 
 	private initDialogFields() {
-		const file: CCFile = this.codeMapPreRenderService.getRenderFile()
+		const map: CodeMapNode = this.codeMapPreRenderService.getRenderMap()
+		const fileMeta: FileMeta = this.codeMapPreRenderService.getRenderFileMeta()
 		const s: FileSettings = this.settingsService.getSettings().fileSettings
 
 		this.setFileContentList(s)
-		this._viewModel.fileName = FileNameHelper.getNewFileName(file.fileMeta.fileName)
-		this._viewModel.amountOfNodes = hierarchy(file.map).descendants().length
+		this._viewModel.fileName = FileNameHelper.getNewFileName(fileMeta.fileName)
+		this._viewModel.amountOfNodes = hierarchy(map).descendants().length
 		this._viewModel.amountOfAttributeTypes = this.getAmountOfAttributeTypes(s.attributeTypes)
 		this._viewModel.fileContent = this._viewModel.fileContent.sort((a, b) => this.sortByDisabled(a, b))
 	}
@@ -84,10 +85,10 @@ export class DialogDownlodController {
 		this.$mdDialog.hide()
 	}
 
-	
 	public download() {
 		FileDownloader.downloadCurrentMap(
-			this.codeMapPreRenderService.getRenderFile(),
+			this.codeMapPreRenderService.getRenderMap(),
+			this.codeMapPreRenderService.getRenderFileMeta(),
 			this.settingsService.getSettings().fileSettings,
 			this._viewModel.fileContent.filter(x => x.isSelected == true).map(x => x.name),
 			this._viewModel.fileName

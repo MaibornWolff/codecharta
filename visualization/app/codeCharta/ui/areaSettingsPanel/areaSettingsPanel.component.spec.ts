@@ -50,7 +50,7 @@ describe("AreaSettingsPanelController", () => {
 
 	function withMockedCodeMapPreRenderService() {
 		codeMapPreRenderService = areaSettingsPanelController["codeMapPreRenderService"] = jest.fn().mockReturnValue({
-			getRenderFile: jest.fn().mockReturnValue(file)
+			getRenderMap: jest.fn().mockReturnValue(file.map)
 		})()
 	}
 
