@@ -127,7 +127,7 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 	}
 
 	public onCubeUnhovered() {
-		;(this.hoverInfo.cube.material as THREE.MeshLambertMaterial).emissive = new THREE.Color(0x000000)
+		(this.hoverInfo.cube.material as THREE.MeshLambertMaterial).emissive = new THREE.Color(0x000000)
 		this.hoverInfo.cube = null
 	}
 
