@@ -26,7 +26,7 @@ export class SettingsMerger {
 
 	private static setEdges(inputFile: CCFile, withUpdatedPath: boolean) {
 		if (inputFile.settings.fileSettings.edges) {
-			for (let oldEdge of inputFile.settings.fileSettings.edges as Edge[]) {
+			for (let oldEdge of inputFile.settings.fileSettings.edges) {
 				let edge: Edge = {
 					fromNodeName: withUpdatedPath
 						? this.getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.fromNodeName)
@@ -73,7 +73,7 @@ export class SettingsMerger {
 
 	private static setBlacklist(inputFile: CCFile, withUpdatedPath: boolean) {
 		if (inputFile.settings.fileSettings.blacklist) {
-			for (let oldBlacklistItem of inputFile.settings.fileSettings.blacklist as BlacklistItem[]) {
+			for (let oldBlacklistItem of inputFile.settings.fileSettings.blacklist) {
 				let blacklistItem: BlacklistItem = {
 					path: withUpdatedPath
 						? this.getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldBlacklistItem.path)
