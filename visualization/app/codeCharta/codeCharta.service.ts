@@ -5,7 +5,6 @@ import { FileStateService } from "./state/fileState.service"
 export class CodeChartaService {
 	public static ROOT_NAME = "root"
 	public static ROOT_PATH = "/" + CodeChartaService.ROOT_NAME
-	public static SELECTOR = "codeChartaService"
 
 	constructor(private fileStateService: FileStateService) {}
 
