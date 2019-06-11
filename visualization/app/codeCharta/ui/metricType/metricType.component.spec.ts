@@ -67,19 +67,19 @@ describe("MetricTypeController", () => {
 		it("should set the areaMetricType to absolute", () => {
 			metricTypeController.onSettingsChanged(settings, { dynamicSettings: { areaMetric: "rloc" } }, undefined)
 
-			expect(metricTypeController["_viewModel"].areaMetricType).toBe("absolute")
+			expect(metricTypeController["_viewModel"].areaMetricType).toBe(AttributeType.absolute)
 		})
 
 		it("should set the heightMetricType to absolute", () => {
 			metricTypeController.onSettingsChanged(settings, { dynamicSettings: { heightMetric: "mcc" } }, undefined)
 
-			expect(metricTypeController["_viewModel"].heightMetricType).toBe("absolute")
+			expect(metricTypeController["_viewModel"].heightMetricType).toBe(AttributeType.absolute)
 		})
 
 		it("should set the colorMetricType to relative", () => {
 			metricTypeController.onSettingsChanged(settings, { dynamicSettings: { colorMetric: "coverage" } }, undefined)
 
-			expect(metricTypeController["_viewModel"].colorMetricType).toBe("relative")
+			expect(metricTypeController["_viewModel"].colorMetricType).toBe(AttributeType.relative)
 		})
 	})
 
