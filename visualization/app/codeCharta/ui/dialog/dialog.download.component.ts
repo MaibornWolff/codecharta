@@ -5,7 +5,7 @@ import { CCFile, BlacklistType, FileSettings, AttributeTypes } from "../../codeC
 import { hierarchy } from "d3-hierarchy"
 import _ from "lodash"
 import { FileNameHelper } from "../../util/fileNameHelper"
-import { SettingsService } from "../../state/settings.service";
+import { SettingsService } from "../../state/settings.service"
 
 interface FileDownloadContent {
 	name: string
@@ -36,6 +36,19 @@ export class DialogDownlodController {
 
 	constructor(private $mdDialog, private codeMapPreRenderService: CodeMapPreRenderService, private settingsService: SettingsService) {
 		this.initDialogFields()
+	}
+
+	public hide() {
+		this.$mdDialog.hide()
+	}
+
+	public download() {
+		FileDownloader.downloadCurrentMap(
+			this.codeMapPreRenderService.getRenderFile(),
+			this._viewModel.fileContent.filter(x => x.isSelected == true).map(x => x.name),
+			this._viewModel.fileName
+		)
+		this.$mdDialog.hide()
 	}
 
 	private initDialogFields() {
@@ -78,19 +91,6 @@ export class DialogDownlodController {
 
 	private sortByDisabled(a: FileDownloadContent, b: FileDownloadContent) {
 		return a.isDisabled === b.isDisabled ? 0 : a.isDisabled ? 1 : -1
-	}
-
-	public hide() {
-		this.$mdDialog.hide()
-	}
-
-	public download() {
-		FileDownloader.downloadCurrentMap(
-			this.codeMapPreRenderService.getRenderFile(),
-			this._viewModel.fileContent.filter(x => x.isSelected == true).map(x => x.name),
-			this._viewModel.fileName
-		)
-		this.$mdDialog.hide()
 	}
 }
 

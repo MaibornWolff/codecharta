@@ -91,7 +91,7 @@ export class DeltaGenerator {
 				fileSettings: {
 					edges: [],
 					blacklist: [],
-					attributeTypes: {},
+					attributeTypes: { nodes: [], edges: [] },
 					markedPackages: []
 				}
 			}

@@ -39,7 +39,7 @@ export class AggregationGenerator {
 				fileSettings: {
 					edges: [],
 					blacklist: [],
-					attributeTypes: {},
+					attributeTypes: { nodes: [], edges: [] },
 					markedPackages: []
 				}
 			}
@@ -49,6 +49,7 @@ export class AggregationGenerator {
 			outputFile.map.children.push(this.extractNodeFromMap(inputMap))
 		}
 		this.aggregateRootAttributes(outputFile)
+
 		return outputFile
 	}
 

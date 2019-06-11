@@ -206,7 +206,10 @@ Object {
   },
   "settings": Object {
     "fileSettings": Object {
-      "attributeTypes": Object {},
+      "attributeTypes": Object {
+        "edges": Array [],
+        "nodes": Array [],
+      },
       "blacklist": Array [],
       "edges": Array [],
       "markedPackages": Array [],
@@ -330,7 +333,10 @@ Object {
   },
   "settings": Object {
     "fileSettings": Object {
-      "attributeTypes": Object {},
+      "attributeTypes": Object {
+        "edges": Array [],
+        "nodes": Array [],
+      },
       "blacklist": Array [],
       "edges": Array [],
       "markedPackages": Array [],

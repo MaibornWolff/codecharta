@@ -1,23 +1,23 @@
 <range-slider-component></range-slider-component>
 
 <md-input-container class="md-block" ng-if="!$ctrl._viewModel.isDeltaState">
-    <md-checkbox class="md-primary" ng-model="$ctrl._viewModel.invertColorRange" ng-change="$ctrl.applySettings()">
-        Invert Colors
-    </md-checkbox>
+	<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.invertColorRange" ng-change="$ctrl.applySettings()">
+		Invert Colors
+	</md-checkbox>
 </md-input-container>
 
-<md-input-container class="md-block" ng-if="$ctrl._viewModel.isDeltaState" >
-    <md-checkbox class="md-primary" ng-model="$ctrl._viewModel.invertDeltaColors" ng-change="$ctrl.applySettings()">
-        Invert Colors
-    </md-checkbox>
+<md-input-container class="md-block" ng-if="$ctrl._viewModel.isDeltaState">
+	<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.invertDeltaColors" ng-change="$ctrl.applySettings()">
+		Invert Colors
+	</md-checkbox>
 </md-input-container>
 
 <md-input-container class="md-block">
-    <md-checkbox class="md-primary" ng-model="$ctrl._viewModel.whiteColorBuildings" ng-change="$ctrl.applySettings()">
-        White Positive Buildings
-    </md-checkbox>
+	<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.whiteColorBuildings" ng-change="$ctrl.applySettings()">
+		White Positive Buildings
+	</md-checkbox>
 </md-input-container>
 
 <reset-settings-button-component
-        settings-names="dynamicSettings.colorRange, appSettings.invertColorRange, appSettings.invertDeltaColors, appSettings.whiteColorBuildings"
+	settings-names="dynamicSettings.colorRange, appSettings.invertColorRange, appSettings.invertDeltaColors, appSettings.whiteColorBuildings"
 ></reset-settings-button-component>

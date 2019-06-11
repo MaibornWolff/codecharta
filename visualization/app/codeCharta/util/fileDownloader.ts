@@ -1,6 +1,6 @@
 import angular from "angular"
 import * as d3 from "d3"
-import { CCFile, CodeMapNode, BlacklistType, BlacklistItem, FileSettings, ExportCCFile } from "../codeCharta.model"
+import { CCFile, CodeMapNode, BlacklistType, BlacklistItem, FileSettings, ExportCCFile, AttributeTypes } from "../codeCharta.model"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
 
@@ -18,7 +18,7 @@ export class FileDownloader {
 			projectName: file.fileMeta.projectName,
 			apiVersion: file.fileMeta.apiVersion,
 			nodes: [this.removeJsonHashkeysAndVisibleAttribute(file.map)],
-			attributeTypes: s.attributeTypes,
+			attributeTypes: this.getAttributeTypesForJSON(s.attributeTypes),
 			edges: downloadSettingsNames.includes(DownloadCheckboxNames.edges) ? s.edges : [],
 			markedPackages: downloadSettingsNames.includes(DownloadCheckboxNames.markedPackages) ? s.markedPackages : [],
 			blacklist: this.getBlacklistToDownload(downloadSettingsNames, file)
@@ -37,6 +37,14 @@ export class FileDownloader {
 			blacklist.push(...this.getFilteredBlacklist(file, BlacklistType.exclude))
 		}
 		return blacklist
+	}
+
+	private static getAttributeTypesForJSON(attributeTypes: AttributeTypes): AttributeTypes | {} {
+		if (attributeTypes.edges.length === 0 && attributeTypes.nodes.length === 0) {
+			return {}
+		} else {
+			return attributeTypes
+		}
 	}
 
 	private static getFilteredBlacklist(file: CCFile, type: BlacklistType): BlacklistItem[] {
