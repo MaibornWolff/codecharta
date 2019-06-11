@@ -1,9 +1,11 @@
 import { CCFile, FileSelectionState, FileState } from "../codeCharta.model"
 import { IAngularEvent, IRootScopeService } from "angular"
 import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
+import { FileStateHelper } from "../util/fileStateHelper"
 
 export interface FileStateServiceSubscriber {
 	onFileSelectionStatesChanged(fileStates: FileState[], event: IAngularEvent)
+
 	onImportedFilesChanged(fileStates: FileState[], event: IAngularEvent)
 }
 
@@ -31,6 +33,12 @@ export class FileStateService {
 
 	public getFileStates(): FileState[] {
 		return this.fileStates
+	}
+
+	public isDeltaMode(): boolean {
+		return !!FileStateHelper.getVisibleFileStates(this.fileStates).find(
+			x => x.selectedAs === FileSelectionState.Reference || x.selectedAs === FileSelectionState.Comparison
+		)
 	}
 
 	public setSingle(file: CCFile) {

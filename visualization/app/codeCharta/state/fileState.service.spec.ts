@@ -224,6 +224,35 @@ describe("FileStateService", () => {
 		})
 	})
 
+	describe("isDeltaMode", () => {
+		it("should return true if both fileStates are part of delta", () => {
+			fileStateService["fileStates"] = [
+				{ file: file3, selectedAs: FileSelectionState.Reference },
+				{ file: file4, selectedAs: FileSelectionState.Comparison }
+			]
+
+			expect(fileStateService.isDeltaMode()).toBeTruthy()
+		})
+
+		it("should return true if only one file is part of delta", () => {
+			fileStateService["fileStates"] = [
+				{ file: file3, selectedAs: FileSelectionState.Single },
+				{ file: file4, selectedAs: FileSelectionState.Comparison }
+			]
+
+			expect(fileStateService.isDeltaMode()).toBeTruthy()
+		})
+
+		it("should return false", () => {
+			fileStateService["fileStates"] = [
+				{ file: file3, selectedAs: FileSelectionState.Single },
+				{ file: file4, selectedAs: FileSelectionState.None }
+			]
+
+			expect(fileStateService.isDeltaMode()).toBeFalsy()
+		})
+	})
+
 	describe("subscribe", () => {
 		it("should setup two event listeners", () => {
 			FileStateService.subscribe($rootScope, undefined)

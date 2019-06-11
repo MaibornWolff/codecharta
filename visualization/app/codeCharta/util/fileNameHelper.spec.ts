@@ -9,7 +9,7 @@ describe("FileNameHelper", () => {
 			const fileName = "foo_2019-04-22_18-01.cc.json"
 			const newFileName = "foo_2018-12-14_9-39"
 
-			const result = FileNameHelper.getNewFileName(fileName)
+			const result = FileNameHelper.getNewFileName(fileName, false)
 
 			expect(result).toEqual(newFileName)
 		})
@@ -19,7 +19,7 @@ describe("FileNameHelper", () => {
 			"prefix.name.suffix.cc"
 			const newFileName = "prefix.name.suffix_2018-12-14_9-39"
 
-			const result = FileNameHelper.getNewFileName(fileName)
+			const result = FileNameHelper.getNewFileName(fileName, false)
 
 			expect(result).toEqual(newFileName)
 		})
@@ -28,7 +28,7 @@ describe("FileNameHelper", () => {
 			const fileName = "prefix.name.suffix.json"
 			const newFileName = "prefix.name.suffix_2018-12-14_9-39"
 
-			const result = FileNameHelper.getNewFileName(fileName)
+			const result = FileNameHelper.getNewFileName(fileName, false)
 
 			expect(result).toEqual(newFileName)
 		})
@@ -37,7 +37,7 @@ describe("FileNameHelper", () => {
 			const fileName = "prefix.name.suffix_2000-01-01_01-01.cc.json"
 			const newFileName = "prefix.name.suffix_2018-12-14_9-39"
 
-			const result = FileNameHelper.getNewFileName(fileName)
+			const result = FileNameHelper.getNewFileName(fileName, false)
 
 			expect(result).toEqual(newFileName)
 		})

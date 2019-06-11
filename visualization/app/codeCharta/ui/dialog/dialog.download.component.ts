@@ -6,6 +6,7 @@ import { hierarchy } from "d3-hierarchy"
 import _ from "lodash"
 import { FileNameHelper } from "../../util/fileNameHelper"
 import { SettingsService } from "../../state/settings.service"
+import { FileStateService } from "../../state/fileState.service"
 
 interface FileDownloadContent {
 	name: string
@@ -34,7 +35,12 @@ export class DialogDownlodController {
 		fileContent: []
 	}
 
-	constructor(private $mdDialog, private codeMapPreRenderService: CodeMapPreRenderService, private settingsService: SettingsService) {
+	constructor(
+		private $mdDialog,
+		private codeMapPreRenderService: CodeMapPreRenderService,
+		private settingsService: SettingsService,
+		private fileStateService: FileStateService
+	) {
 		this.initDialogFields()
 	}
 
@@ -56,7 +62,7 @@ export class DialogDownlodController {
 		const s: FileSettings = this.settingsService.getSettings().fileSettings
 
 		this.setFileContentList(s)
-		this._viewModel.fileName = FileNameHelper.getNewFileName(file.fileMeta.fileName)
+		this._viewModel.fileName = FileNameHelper.getNewFileName(file.fileMeta.fileName, this.fileStateService.isDeltaMode())
 		this._viewModel.amountOfNodes = hierarchy(file.map).descendants().length
 		this._viewModel.amountOfAttributeTypes = this.getAmountOfAttributeTypes(s.attributeTypes)
 		this._viewModel.fileContent = this._viewModel.fileContent.sort((a, b) => this.sortByDisabled(a, b))
