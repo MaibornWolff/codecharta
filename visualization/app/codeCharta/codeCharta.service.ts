@@ -2,7 +2,6 @@ import { FileValidator } from "./util/fileValidator"
 import { AttributeTypes, CCFile, NameDataPair } from "./codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
 import _ from "lodash"
-import { csvFormatRows } from "d3-dsv"
 
 export class CodeChartaService {
 	public static ROOT_NAME = "root"
