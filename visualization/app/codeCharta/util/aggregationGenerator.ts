@@ -1,5 +1,6 @@
 import { CodeMapNode, CCFile } from "../codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
+import { FileNameHelper } from "./fileNameHelper"
 
 export class AggregationGenerator {
 	private static projectNameArray: string[] = []
@@ -14,7 +15,7 @@ export class AggregationGenerator {
 
 		for (let inputFile of inputFiles) {
 			this.projectNameArray.push(inputFile.fileMeta.projectName)
-			this.fileNameArray.push(inputFile.fileMeta.fileName)
+			this.fileNameArray.push(FileNameHelper.withoutCCJsonExtension(inputFile.fileMeta.fileName))
 		}
 		return this.getNewAggregatedMap(inputFiles)
 	}
@@ -23,13 +24,13 @@ export class AggregationGenerator {
 		let outputFile: CCFile = {
 			fileMeta: {
 				projectName: "Project-Aggregation of " + this.projectNameArray.join(", "),
-				fileName: "File-Aggregation of " + this.fileNameArray.join(", "),
+				fileName: "File-Aggregation of " + this.fileNameArray.join(" "),
 				apiVersion: require("../../../package.json").codecharta.apiVersion
 			},
 			map: {
 				name: CodeChartaService.ROOT_NAME,
 				type: "Folder",
-				children: [] as CodeMapNode[],
+				children: [],
 				attributes: {},
 				origin: "File-Aggregation of " + this.fileNameArray.join(", "),
 				path: CodeChartaService.ROOT_PATH,

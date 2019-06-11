@@ -16,6 +16,7 @@ describe("FileNameHelper", () => {
 
 		it("should insert the valid date", () => {
 			const fileName = "prefix.name.suffix.cc.json"
+			"prefix.name.suffix.cc"
 			const newFileName = "prefix.name.suffix_2018-12-14_9-39"
 
 			const result = FileNameHelper.getNewFileName(fileName)
@@ -40,14 +41,31 @@ describe("FileNameHelper", () => {
 
 			expect(result).toEqual(newFileName)
 		})
+	})
 
-		it("should replace the date with the valid one and use .cc.json as ending instead of just .json", () => {
-			const fileName = "prefix.name.suffix_2000-01-01_01-01.json"
-			const newFileName = "prefix.name.suffix_2018-12-14_9-39"
+	describe("withoutCCJsonExtension", () => {
+		it("should remove .cc.json", () => {
+			const fileName = "prefix.name.suffix.cc.json"
 
-			const result = FileNameHelper.getNewFileName(fileName)
+			const actual = FileNameHelper.withoutCCJsonExtension(fileName)
 
-			expect(result).toEqual(newFileName)
+			expect(actual).toBe("prefix.name.suffix")
+		})
+
+		it("should remove .json", () => {
+			const fileName = "prefix.name.suffix.json"
+
+			const actual = FileNameHelper.withoutCCJsonExtension(fileName)
+
+			expect(actual).toBe("prefix.name.suffix")
+		})
+
+		it("should remove .cc", () => {
+			const fileName = "prefix.name.suffix.cc"
+
+			const actual = FileNameHelper.withoutCCJsonExtension(fileName)
+
+			expect(actual).toBe("prefix.name.suffix")
 		})
 	})
 })

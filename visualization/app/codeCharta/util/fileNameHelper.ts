@@ -27,4 +27,8 @@ export class FileNameHelper {
 			return fileName
 		}
 	}
+
+	public static withoutCCJsonExtension(fileName: string): string {
+		return fileName.replace(".cc", "").replace(this.JSON_EXTENSION, "")
+	}
 }
