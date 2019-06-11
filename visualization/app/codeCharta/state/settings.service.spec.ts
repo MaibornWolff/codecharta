@@ -104,33 +104,6 @@ describe("settingService", () => {
 				expect(SettingsMerger.getMergedFileSettings).toHaveBeenCalledWith(visibleFiles, false)
 			})
 		})
-
-		describe("onImportedFilesChanged", () => {
-			it("should call updateSettings with newFileSettings", () => {
-				settingsService.onImportedFilesChanged(fileStates, undefined)
-
-				expect(settingsService.updateSettings).toHaveBeenCalledWith({ fileSettings: DEFAULT_SETTINGS })
-			})
-
-			it("should call isPartialState with fileStates", () => {
-				settingsService.onImportedFilesChanged(fileStates, undefined)
-
-				expect(FileStateHelper.isPartialState).toHaveBeenCalledWith(fileStates)
-			})
-
-			it("should call getVisibleFileStates with fileStates", () => {
-				settingsService.onImportedFilesChanged(fileStates, undefined)
-
-				expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
-			})
-
-			it("should call getMergedFileStates with visibleFiles and withUpdatedPath", () => {
-				settingsService.onImportedFilesChanged(fileStates, undefined)
-				const visibleFiles = [fileStates[0].file, fileStates[1].file]
-
-				expect(SettingsMerger.getMergedFileSettings).toHaveBeenCalledWith(visibleFiles, false)
-			})
-		})
 	})
 
 	describe("updateSettings", () => {

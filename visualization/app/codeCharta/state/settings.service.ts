@@ -32,9 +32,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 		this.resetDynamicAndFileSettings(fileStates)
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-		this.resetDynamicAndFileSettings(fileStates)
-	}
+	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
 
 	public getSettings(): Settings {
 		return this.settings
