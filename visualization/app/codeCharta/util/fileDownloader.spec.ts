@@ -14,7 +14,7 @@ describe("fileDownloader", () => {
 	})
 
 	describe("downloadCurrentMap", () => {
-		it("should", () => {
+		it("should download a file and match snapshot", () => {
 			FileDownloader.downloadCurrentMap(file)
 
 			expect(FileDownloader["downloadData"]).toHaveBeenCalledTimes(1)
