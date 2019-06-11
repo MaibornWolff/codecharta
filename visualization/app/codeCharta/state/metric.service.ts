@@ -14,6 +14,7 @@ import { FileStateHelper } from "../util/fileStateHelper"
 import { IAngularEvent, IRootScopeService } from "angular"
 import { SettingsService, SettingsServiceSubscriber } from "./settings.service"
 import { CodeMapHelper } from "../util/codeMapHelper"
+import _ from "lodash"
 
 export interface MetricServiceSubscriber {
 	onMetricDataAdded(metricData: MetricData[], event: IAngularEvent)
@@ -75,7 +76,7 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 	}
 
 	public getAttributeTypeByMetric(metricName: string, settings: Settings): AttributeType {
-		const attributeType = settings.fileSettings.attributeTypes.nodes.find(x => Object.keys(x)[0] === metricName)
+		const attributeType = settings.fileSettings.attributeTypes.nodes.find(x => _.findKey(x) === metricName)
 
 		if (attributeType) {
 			return attributeType[metricName]
