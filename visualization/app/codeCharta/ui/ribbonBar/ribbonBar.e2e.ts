@@ -28,6 +28,8 @@ describe("RibbonBar", () => {
 		await settingsPanel.toggleTreeViewSearchPanel()
 		await settingsPanel.rightClickRootNodeInTreeViewSearchPanel()
 		const ribbonBar = new RibbonBarPageObject(page)
-		expect(await ribbonBar.getAreaMetricValue()).toBe(600)
+
+		const actual = await ribbonBar.getAreaMetricValue()
+		expect(actual).toBe("600")
 	})
 })
