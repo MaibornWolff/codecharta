@@ -203,7 +203,7 @@ describe("settingService", () => {
 			expect(settingsService["update"]).toEqual(expected)
 		})
 
-		it("should merge two objects and override arrays", done => {
+		it("should reset update after 400ms", done => {
 			settingsService["update"] = { fileSettings: { blacklist: ["entry"] } }
 			const update: RecursivePartial<Settings> = { fileSettings: { blacklist: [] } }
 

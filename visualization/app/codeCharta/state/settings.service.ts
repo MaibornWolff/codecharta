@@ -21,10 +21,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private loadingGifService: LoadingGifService) {
 		this.settings = this.getDefaultSettings()
-		this.debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, { settings: this.settings, update: this.update })
-			this.update = {}
-		}, SettingsService.DEBOUNCE_TIME)
+		this.debounceBroadcast = _.debounce(this.notifySubscribers, SettingsService.DEBOUNCE_TIME)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
@@ -171,6 +168,11 @@ export class SettingsService implements FileStateServiceSubscriber {
 		this.updateSettings({
 			fileSettings: this.getNewFileSettings(fileStates)
 		})
+	}
+
+	private notifySubscribers() {
+		this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, { settings: this.settings, update: this.update })
+		this.update = {}
 	}
 
 	private synchronizeAngularTwoWayBinding() {
