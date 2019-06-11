@@ -1,10 +1,12 @@
 import { FileValidator } from "./util/fileValidator"
-import { CCFile, NameDataPair } from "./codeCharta.model"
+import { AttributeTypes, CCFile, NameDataPair } from "./codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
+import _ from "lodash"
+import { csvFormatRows } from "d3-dsv"
 
 export class CodeChartaService {
-	public static readonly ROOT_NAME = "root"
-	public static readonly ROOT_PATH = "/" + CodeChartaService.ROOT_NAME
+	public static ROOT_NAME = "root"
+	public static ROOT_PATH = "/" + CodeChartaService.ROOT_NAME
 	public static readonly CC_FILE_EXTENSION = ".cc.json"
 
 	constructor(private fileStateService: FileStateService) {}
@@ -36,12 +38,36 @@ export class CodeChartaService {
 			settings: {
 				fileSettings: {
 					edges: fileContent.edges || [],
-					attributeTypes: fileContent.attributeTypes || {},
+					attributeTypes: this.getAttributeTypes(fileContent.attributeTypes),
 					blacklist: fileContent.blacklist || [],
 					markedPackages: []
 				}
 			},
 			map: fileContent.nodes[0]
 		}
+	}
+
+	private getAttributeTypes(attributeTypes: AttributeTypes): AttributeTypes {
+		let newAttributeTypes: any = {}
+
+		if (_.isEmpty(attributeTypes) || !attributeTypes) {
+			return {
+				nodes: [],
+				edges: []
+			}
+		} else {
+			if (!attributeTypes.nodes) {
+				newAttributeTypes.nodes = []
+			} else {
+				newAttributeTypes.nodes = attributeTypes.nodes
+			}
+
+			if (!attributeTypes.edges) {
+				newAttributeTypes.edges = []
+			} else {
+				newAttributeTypes.edges = attributeTypes.edges
+			}
+		}
+		return newAttributeTypes
 	}
 }
