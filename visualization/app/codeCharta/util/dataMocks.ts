@@ -1,4 +1,4 @@
-import { CCFile, CodeMapNode, Edge, MetricData, Node, Settings } from "../codeCharta.model"
+import { AttributeType, CCFile, CodeMapNode, Edge, MetricData, Node, Settings } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import * as THREE from "three"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -121,7 +121,7 @@ export const TEST_FILE_DATA: CCFile = {
 	map: VALID_NODE,
 	settings: {
 		fileSettings: {
-			attributeTypes: {},
+			attributeTypes: { nodes: [], edges: [] },
 			blacklist: [],
 			edges: VALID_EDGES,
 			markedPackages: []
@@ -179,7 +179,7 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
 	},
 	settings: {
 		fileSettings: {
-			attributeTypes: {},
+			attributeTypes: { nodes: [], edges: [] },
 			blacklist: [],
 			edges: VALID_EDGES,
 			markedPackages: []
@@ -319,7 +319,7 @@ export const TEST_DELTA_MAP_A: CCFile = {
 	},
 	settings: {
 		fileSettings: {
-			attributeTypes: {},
+			attributeTypes: { nodes: [], edges: [] },
 			blacklist: [],
 			edges: VALID_EDGES,
 			markedPackages: []
@@ -377,7 +377,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 	},
 	settings: {
 		fileSettings: {
-			attributeTypes: {},
+			attributeTypes: { nodes: [], edges: [] },
 			blacklist: [],
 			edges: VALID_EDGES,
 			markedPackages: []
@@ -438,7 +438,25 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 }
 
 export const SETTINGS: Settings = {
-	fileSettings: { attributeTypes: {}, blacklist: [], edges: [], markedPackages: [] },
+	fileSettings: {
+		attributeTypes: {
+			nodes: [
+				{
+					rloc: AttributeType.absolute
+				},
+				{
+					mcc: AttributeType.absolute
+				},
+				{
+					coverage: AttributeType.relative
+				}
+			],
+			edges: []
+		},
+		blacklist: [],
+		edges: [],
+		markedPackages: []
+	},
 	dynamicSettings: {
 		areaMetric: "rloc",
 		heightMetric: "mcc",
@@ -448,7 +466,10 @@ export const SETTINGS: Settings = {
 		searchedNodePaths: [],
 		searchPattern: "",
 		margin: 48,
-		colorRange: { from: 19, to: 67 }
+		colorRange: {
+			from: 19,
+			to: 67
+		}
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
@@ -478,7 +499,9 @@ export const SETTINGS: Settings = {
 			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"]
 		}
 	},
-	treeMapSettings: { mapSize: 500 }
+	treeMapSettings: {
+		mapSize: 500
+	}
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -524,7 +547,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		searchPattern: "",
 		searchedNodePaths: []
 	},
-	fileSettings: { attributeTypes: {}, blacklist: [], edges: [], markedPackages: [] },
+	fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] },
 	treeMapSettings: { mapSize: 500 }
 }
 

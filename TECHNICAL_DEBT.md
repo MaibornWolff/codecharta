@@ -21,10 +21,11 @@ _When do I create an issue on github instead?_
 # List of technical debt
 
 ### Blacklist as a class
+
 - Found By: Ben Willenbring
 - Description: We have the blacklist defined as an array of BlacklistItems.
-It would be better to move translate that into a class and hide the datastructure in it
-and export methods to operate on the datastructure for a more domain-specific language.
+  It would be better to move translate that into a class and hide the datastructure in it
+  and export methods to operate on the datastructure for a more domain-specific language.
 - Solution:
   1. Create a class BlacklistItem and collect common functionality used to operate on single entries
   2. Create a class Blacklist and collect common functionaility used to operate on the whole list

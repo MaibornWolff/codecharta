@@ -6,9 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
+
 ### Added
 
- - FileExtensionBar to show file-distribution of chosen metric #495
+- FileExtensionBar to show file-distribution of chosen metric #495
+- sum icon is now displayed on the left of the metric value #364
 
 ### Changed
 
