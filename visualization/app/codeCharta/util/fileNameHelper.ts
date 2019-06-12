@@ -3,8 +3,8 @@ import { CodeChartaService } from "../codeCharta.service"
 export class FileNameHelper {
 	private static JSON_EXTENSION = ".json"
 
-	public static getNewFileName(fileName: string, isDeltaMode: boolean): string {
-		return this.getFileNameWithoutTimestamp(fileName, isDeltaMode) + this.getNewTimestamp()
+	public static getNewFileName(fileName: string, isDeltaState: boolean): string {
+		return this.getFileNameWithoutTimestamp(fileName, isDeltaState) + this.getNewTimestamp()
 	}
 
 	private static getNewTimestamp(): string {
@@ -19,10 +19,10 @@ export class FileNameHelper {
 		)
 	}
 
-	private static getFileNameWithoutTimestamp(fileName: string, isDeltaMode: boolean): string {
+	private static getFileNameWithoutTimestamp(fileName: string, isDeltaState: boolean): string {
 		const dateRegex: RegExp = /\_\d{4}\-\d{1,2}\-\d{1,2}\_\d{1,2}\-\d{1,2}\./
 
-		if (!isDeltaMode) {
+		if (!isDeltaState) {
 			if (dateRegex.test(fileName)) {
 				return fileName.substring(0, dateRegex.exec(fileName).index)
 			} else if (fileName.includes(CodeChartaService.CC_FILE_EXTENSION)) {

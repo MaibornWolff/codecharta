@@ -7,6 +7,7 @@ import _ from "lodash"
 import { FileNameHelper } from "../../util/fileNameHelper"
 import { SettingsService } from "../../state/settings.service"
 import { FileStateService } from "../../state/fileState.service"
+import { FileStateHelper } from "../../util/fileStateHelper"
 
 interface FileDownloadContent {
 	name: string
@@ -60,9 +61,10 @@ export class DialogDownlodController {
 	private initDialogFields() {
 		const file: CCFile = this.codeMapPreRenderService.getRenderFile()
 		const s: FileSettings = this.settingsService.getSettings().fileSettings
+		const isDeltaState: boolean = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 
 		this.setFileContentList(s)
-		this._viewModel.fileName = FileNameHelper.getNewFileName(file.fileMeta.fileName, this.fileStateService.isDeltaMode())
+		this._viewModel.fileName = FileNameHelper.getNewFileName(file.fileMeta.fileName, isDeltaState)
 		this._viewModel.amountOfNodes = hierarchy(file.map).descendants().length
 		this._viewModel.amountOfAttributeTypes = this.getAmountOfAttributeTypes(s.attributeTypes)
 		this._viewModel.fileContent = this._viewModel.fileContent.sort((a, b) => this.sortByDisabled(a, b))
