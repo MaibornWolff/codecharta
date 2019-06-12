@@ -11,11 +11,6 @@ fun executeForOutput(input: String, args: Array<String> = emptyArray()) =
             mainWithInOut(inputStream, outputStream, errorStream, args)
         }
 
-fun executeForOutput(args: Array<String> = emptyArray()) =
-        outputAsString { inputStream, outputStream, errorStream ->
-            mainWithInOut(inputStream, outputStream, errorStream, args)
-        }
-
 fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
         outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
 
@@ -25,19 +20,6 @@ fun outputAsString(
         ByteArrayOutputStream().use { baOutputStream ->
             PrintStream(baOutputStream).use { outputStream ->
                 aMethod(inputStream, outputStream, System.err)
-            }
-            baOutputStream.toString()
-        }
-
-fun errorAsString(input: String, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
-        errorAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
-
-fun errorAsString(
-        inputStream: InputStream = System.`in`,
-        aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
-        ByteArrayOutputStream().use { baOutputStream ->
-            PrintStream(baOutputStream).use { errorStream ->
-                aMethod(inputStream, System.out, errorStream)
             }
             baOutputStream.toString()
         }
