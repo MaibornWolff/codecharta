@@ -10,7 +10,12 @@ export class FileNameHelper {
 	private static getNewTimestamp(): string {
 		const date: Date = new Date()
 		return (
-			"_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "_" + date.getHours() + "-" + date.getMinutes()
+			"_" +
+			date
+				.toISOString()
+				.substr(0, 16)
+				.replace("T", "_")
+				.replace(":", "-")
 		)
 	}
 
