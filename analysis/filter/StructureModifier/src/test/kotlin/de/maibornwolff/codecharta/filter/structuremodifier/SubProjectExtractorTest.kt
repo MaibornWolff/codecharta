@@ -78,7 +78,7 @@ class SubProjectExtractorTest {
     }
 
     @Test
-    fun `Edges of selected subproject renammed`() {
+    fun `Edges of selected sub-project renamed`() {
         val subProjectExtractor = SubProjectExtractor(sampleProject, null)
 
         val result = subProjectExtractor.extract("/root/foo")
