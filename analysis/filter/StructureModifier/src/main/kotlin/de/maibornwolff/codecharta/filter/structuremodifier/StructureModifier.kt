@@ -6,18 +6,22 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
+import java.io.InputStream
+import java.io.PrintStream
 import java.util.concurrent.Callable
 
 @CommandLine.Command(name = "modify",
         description = ["changes the structure of cc.json files"],
         footer = ["Copyright(c) 2019, MaibornWolff GmbH"])
-class StructureModifier : Callable<Void?> {
+class StructureModifier(private val input: InputStream,
+                        private val output: PrintStream,
+                        private val error: PrintStream) : Callable<Void?> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
-    @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["input project file"])
-    private var source: File = File("")
+    @CommandLine.Parameters(arity = "0..1", paramLabel = "FILE", description = ["input project file"])
+    private var source: File? = null
 
     @CommandLine.Option(arity = "1..*", names = ["-s", "--setRoot"], description = ["path within project to be extracted"])
     private var setRoot: Array<String> = arrayOf()
@@ -49,7 +53,7 @@ class StructureModifier : Callable<Void?> {
 
         when {
             printLevels > 0 -> {
-                ProjectStructurePrinter(project).printProjectStructure(printLevels)
+                ProjectStructurePrinter(project, output).printProjectStructure(printLevels)
                 return null
             }
             setRoot.isNotEmpty() -> project = SubProjectExtractor(project).extract(setRoot, projectName)
@@ -57,18 +61,30 @@ class StructureModifier : Callable<Void?> {
             moveFrom != null -> project = FolderMover(project).move(moveFrom, moveTo) ?: return null
         }
 
-        val writer = outputFile?.bufferedWriter() ?: System.out.bufferedWriter()
+        val writer = outputFile?.bufferedWriter() ?: output.bufferedWriter()
         ProjectSerializer.serializeProject(project, writer)
 
         return null
     }
 
     private fun readProject(): Project? {
-        val bufferedReader = source.bufferedReader()
+        val bufferedReader = source?.bufferedReader() ?: return readPipedProject()
         return try {
             ProjectDeserializer.deserializeProject(bufferedReader)
         } catch (e: Exception) {
-            logger.warn("${source.name} is not a valid project file and is therefore skipped.")
+            val input = source!!.name
+            logger.error("$input is not a valid project file and is therefore skipped.")
+            null
+        }
+    }
+
+    private fun readPipedProject(): Project? {
+        val projectString = input.mapLines { it }.joinToString(separator = "") { it }
+        logger.debug("joinded $projectString")
+        return try {
+            ProjectDeserializer.deserializeProjectString(projectString)
+        } catch (e: Exception) {
+            logger.error("The piped input is not a valid project and no input file was specified.")
             null
         }
     }
@@ -76,7 +92,14 @@ class StructureModifier : Callable<Void?> {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(StructureModifier(), System.out, *args)
+            mainWithInOut(System.`in`, System.out, System.err, args)
+        }
+
+        @JvmStatic
+        fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
+            CommandLine.call(StructureModifier(input, output, error), output, *args)
         }
     }
 }
+
+
