@@ -21,7 +21,7 @@ class SubProjectExtractorTest {
     fun `Non existent path leads to empty project`() {
         val subProjectExtractor = SubProjectExtractor(sampleProject)
 
-        val result = subProjectExtractor.extract(arrayOf("/root/somethig"), null)
+        val result = subProjectExtractor.extract("/root/somethig", null)
 
         Assertions.assertThat(result.rootNode.children.size).isEqualTo(0)
     }
@@ -30,33 +30,22 @@ class SubProjectExtractorTest {
     fun `Single path is extracted`() {
         val subProjectExtractor = SubProjectExtractor(sampleProject)
 
-        val result = subProjectExtractor.extract(arrayOf("/root/src/test"), null)
+        val result = subProjectExtractor.extract("/root/src/test", null)
+        println(result)
 
-        val extractedNode = result.rootNode.children.first()
+        val extractedNode = result.rootNode
         val extractedNodeChild = extractedNode.children.first()
-        Assertions.assertThat(extractedNode.name).isEqualTo("test")
+        Assertions.assertThat(extractedNode.name).isEqualTo("root")
         Assertions.assertThat(extractedNodeChild.name).isEqualTo("otherFile.java")
-    }
-
-    @Test
-    fun `Multiple paths are extracted`() {
-        val subProjectExtractor = SubProjectExtractor(sampleProject)
-
-        val result = subProjectExtractor.extract(arrayOf("/root/src/main", "root/src/folder3"), null)
-
-        Assertions.assertThat(result.rootNode.children.size).isEqualTo(2)
-        val firstChildrenNames = result.rootNode.children.map { it.name }
-        Assertions.assertThat(firstChildrenNames).containsAll(listOf("main", "folder3"))
     }
 
     @Test
     fun `Attributes of extracted nodes are kept`() {
         val subProjectExtractor = SubProjectExtractor(sampleProject)
 
-        val result = subProjectExtractor.extract(arrayOf("/root/src/test"), null)
+        val result = subProjectExtractor.extract("/root/src/test", null)
 
-        val extractedNode = result.rootNode.children.first()
-        val extractedNodeChild = extractedNode.children.first()
+        val extractedNodeChild = result.rootNode.children.first()
         Assertions.assertThat(extractedNodeChild.attributes).containsKey("nloc")
     }
 
@@ -64,7 +53,7 @@ class SubProjectExtractorTest {
     fun `Project name is changed if provided`() {
         val subProjectExtractor = SubProjectExtractor(sampleProject)
 
-        val result = subProjectExtractor.extract(arrayOf("/root/somethig"), "foo")
+        val result = subProjectExtractor.extract("/root/somethig", "foo")
 
         Assertions.assertThat(result.projectName).isEqualTo("foo")
     }
@@ -73,7 +62,7 @@ class SubProjectExtractorTest {
     fun `Project name is kept if not provided`() {
         val subProjectExtractor = SubProjectExtractor(sampleProject)
 
-        val result = subProjectExtractor.extract(arrayOf("/root/somethig"), null)
+        val result = subProjectExtractor.extract("/root/somethig", null)
 
         Assertions.assertThat(result.projectName).isEqualTo(sampleProject.projectName)
     }
@@ -82,7 +71,7 @@ class SubProjectExtractorTest {
     fun `Only edges part of sub-project are kept`() {
         val subProjectExtractor = SubProjectExtractor(sampleProject)
 
-        val result = subProjectExtractor.extract(arrayOf("/root/foo"), null)
+        val result = subProjectExtractor.extract("/root/foo", null)
 
         val edges = result.edges
         Assertions.assertThat(edges.size).isEqualTo(1)
@@ -92,11 +81,11 @@ class SubProjectExtractorTest {
     fun `Edges of selected subproject renammed`() {
         val subProjectExtractor = SubProjectExtractor(sampleProject)
 
-        val result = subProjectExtractor.extract(arrayOf("/root/foo"), null)
+        val result = subProjectExtractor.extract("/root/foo", null)
 
         val firstEdge = result.edges.first()
-        Assertions.assertThat(firstEdge.toNodeName).isEqualTo("/file3")
-        Assertions.assertThat(firstEdge.fromNodeName).isEqualTo("/file2")
+        Assertions.assertThat(firstEdge.toNodeName).isEqualTo("/root/file3")
+        Assertions.assertThat(firstEdge.fromNodeName).isEqualTo("/root/file2")
         Assertions.assertThat(firstEdge.attributes["pairingRate"]).isEqualTo(42.0)
     }
 
@@ -104,7 +93,7 @@ class SubProjectExtractorTest {
     fun `Subproject with no matching edges has no edges`() {
         val subProjectExtractor = SubProjectExtractor(sampleProject)
 
-        val result = subProjectExtractor.extract(arrayOf("/root/something"), null)
+        val result = subProjectExtractor.extract("/root/something", null)
 
         val edges = result.edges
         Assertions.assertThat(edges).isEmpty()

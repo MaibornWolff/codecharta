@@ -23,8 +23,8 @@ class StructureModifier(private val input: InputStream,
     @CommandLine.Parameters(arity = "0..1", paramLabel = "FILE", description = ["input project file"])
     private var source: File? = null
 
-    @CommandLine.Option(arity = "1..*", names = ["-s", "--setRoot"], description = ["path within project to be extracted"])
-    private var setRoot: Array<String> = arrayOf()
+    @CommandLine.Option(names = ["-s", "--setRoot"], description = ["path within project to be extracted"])
+    private var setRoot: String? = null
 
     @CommandLine.Option(arity = "1", names = ["-p", "--printLevels"], description = ["show first x layers of project hierarchy"])
     private var printLevels: Int = 0
@@ -56,7 +56,7 @@ class StructureModifier(private val input: InputStream,
                 ProjectStructurePrinter(project, output).printProjectStructure(printLevels)
                 return null
             }
-            setRoot.isNotEmpty() -> project = SubProjectExtractor(project).extract(setRoot, projectName)
+            setRoot != null -> project = SubProjectExtractor(project).extract(setRoot!!, projectName)
             remove.isNotEmpty() -> project = NodeRemover(project).remove(remove) // ProjectName must be nullable
             moveFrom != null -> project = FolderMover(project).move(moveFrom, moveTo) ?: return null
         }

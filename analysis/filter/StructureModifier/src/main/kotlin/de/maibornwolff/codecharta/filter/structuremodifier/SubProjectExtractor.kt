@@ -7,29 +7,27 @@ class SubProjectExtractor(private val project: Project) {
 
     val logger = KotlinLogging.logger { }
 
-    fun extract(paths: Array<String>, projectName: String?): Project {
-        val pathSegments = paths.map { it.removePrefix("/").split("/") }
+    fun extract(path: String, projectName: String?): Project {
+        val pathSegments = path.removePrefix("/").split("/")
         return ProjectBuilder(
                 projectName ?: project.projectName,
                 addRoot(extractNodes(pathSegments, project.rootNode.toMutableNode())),
-                extractEdges(paths),
+                extractEdges(path),
                 copyAttributeTypes(),
                 copyBlacklist()
         ).build()
     }
 
-    private fun extractNodes(extractionPattern: List<List<String>>, node: MutableNode): MutableList<MutableNode> {
+    private fun extractNodes(extractionPattern: List<String>, node: MutableNode): MutableList<MutableNode> {
         val children: List<MutableNode> = node.children
         val extractedNodes: MutableList<MutableNode> = mutableListOf()
 
-        extractionPattern.forEach {
-            val currentSearchPattern = it.firstOrNull()
-            if (currentSearchPattern == node.name && it.size == 1) extractedNodes.add(node)
-            else if (currentSearchPattern == node.name) {
-                children.forEach { child ->
-                    extractedNodes.addAll(extractNodes(listOf(it.drop(1)), child))
-                }
-            }
+        val currentSearchPattern = extractionPattern.firstOrNull()
+        if (currentSearchPattern == node.name && extractionPattern.size == 1) return node.children.toMutableList()
+        else if (currentSearchPattern == node.name) {
+            return children.map { child ->
+                extractNodes(extractionPattern.drop(1), child)
+            }.flatten().toMutableList()
         }
 
         return extractedNodes
@@ -43,20 +41,16 @@ class SubProjectExtractor(private val project: Project) {
         return mutableListOf(rootNode)
     }
 
-    private fun extractEdges(extractionPatterns: Array<String>): MutableList<Edge> {
-        val extractedEdges: MutableList<Edge> = mutableListOf()
-        extractionPatterns.forEach { extractionPattern ->
+    private fun extractEdges(extractionPattern: String): MutableList<Edge> {
             val trimmedExtractionPattern = "/" + extractionPattern.removeSuffix("/").removePrefix("/")
-            extractedEdges.addAll(extractRenamedEdgesForPattern(trimmedExtractionPattern))
-        }
-        return extractedEdges
+        return extractRenamedEdgesForPattern(trimmedExtractionPattern).toMutableList()
     }
 
     private fun extractRenamedEdgesForPattern(pattern: String): List<Edge> {
         return project.edges.filter { it.fromNodeName.startsWith(pattern) && it.toNodeName.startsWith(pattern) }
                 .map { edge ->
-                    edge.fromNodeName = edge.fromNodeName.removePrefix(pattern)
-                    edge.toNodeName = edge.toNodeName.removePrefix(pattern)
+                    edge.fromNodeName = "/root" + edge.fromNodeName.removePrefix(pattern)
+                    edge.toNodeName = "/root" + edge.toNodeName.removePrefix(pattern)
                     edge
                 }
     }

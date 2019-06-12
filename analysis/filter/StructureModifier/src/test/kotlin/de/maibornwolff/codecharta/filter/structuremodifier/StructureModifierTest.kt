@@ -48,7 +48,6 @@ class StructureModifierTest {
         Assertions.assertThat(errorStream.toString()).contains("The piped input is not a valid project")
     }
 
-    @Ignore
     @Test
     fun `sets root for new subproject`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-s=/root/src/folder3"))
