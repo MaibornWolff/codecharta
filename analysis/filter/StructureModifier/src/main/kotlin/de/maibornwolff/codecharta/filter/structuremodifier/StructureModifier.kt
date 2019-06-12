@@ -56,9 +56,9 @@ class StructureModifier(private val input: InputStream,
                 ProjectStructurePrinter(project, output).printProjectStructure(printLevels)
                 return null
             }
-            setRoot != null -> project = SubProjectExtractor(project).extract(setRoot!!, projectName)
-            remove.isNotEmpty() -> project = NodeRemover(project).remove(remove) // ProjectName must be nullable
-            moveFrom != null -> project = FolderMover(project).move(moveFrom, moveTo) ?: return null
+            setRoot != null -> project = SubProjectExtractor(project, projectName).extract(setRoot!!)
+            remove.isNotEmpty() -> project = NodeRemover(project, projectName).remove(remove)
+            moveFrom != null -> project = FolderMover(project, projectName).move(moveFrom, moveTo) ?: return null
         }
 
         val writer = outputFile?.bufferedWriter() ?: output.bufferedWriter()

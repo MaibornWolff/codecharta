@@ -3,11 +3,11 @@ package de.maibornwolff.codecharta.filter.structuremodifier
 import de.maibornwolff.codecharta.model.*
 import mu.KotlinLogging
 
-class SubProjectExtractor(private val project: Project) {
+class SubProjectExtractor(private val project: Project, private val projectName: String?) {
 
-    val logger = KotlinLogging.logger { }
+    private val logger = KotlinLogging.logger { }
 
-    fun extract(path: String, projectName: String?): Project {
+    fun extract(path: String): Project {
         val pathSegments = path.removePrefix("/").split("/")
         return ProjectBuilder(
                 projectName ?: project.projectName,

@@ -2,12 +2,12 @@ package de.maibornwolff.codecharta.filter.structuremodifier
 
 import de.maibornwolff.codecharta.model.*
 
-class NodeRemover(private val project: Project) {
+class NodeRemover(private val project: Project, private val projectName: String?) {
 
-    fun remove(paths: Array<String>, projectName: String = project.projectName): Project {
+    fun remove(paths: Array<String>): Project {
         val pathSegments = paths.map { it.removePrefix("/").removeSuffix("/").split("/") }
         return ProjectBuilder(
-                projectName,
+                projectName ?: project.projectName,
                 removeNodes(pathSegments),
                 removeEdges(paths),
                 copyAttributeTypes(),

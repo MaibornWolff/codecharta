@@ -3,19 +3,19 @@ package de.maibornwolff.codecharta.filter.structuremodifier
 import de.maibornwolff.codecharta.model.*
 import mu.KotlinLogging
 
-class FolderMover(private val project: Project) {
+class FolderMover(private val project: Project, private val projectName: String?) {
 
     private val logger = KotlinLogging.logger { }
     private var toMove: List<MutableNode>? = null
 
-    fun move(moveFrom: String?, moveTo: String?, projectName: String = project.projectName): Project? {
+    fun move(moveFrom: String?, moveTo: String?): Project? {
         if ((moveFrom == null) || (moveTo == null)) {
             logger.error("In order to move nodes, both source and destination need to be set.")
             return null
         }
 
         return ProjectBuilder(
-                projectName,
+                projectName ?: project.projectName,
                 moveNodes(moveFrom, moveTo),
                 extractEdges(moveFrom, moveTo),
                 copyAttributeTypes(),
