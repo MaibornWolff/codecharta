@@ -105,12 +105,16 @@ export class SettingsMerger {
 		const types = inputFile.settings.fileSettings.attributeTypes
 		for (let i = 0; i < types.nodes.length; i++) {
 			const key = _.findKey(types.nodes[i])
-			this.attributeTypesNode.push({ [key]: types.nodes[i][key] })
+			if (!this.attributeTypesNode.find(x => _.findKey(x) === key)) {
+				this.attributeTypesNode.push({ [key]: types.nodes[i][key] })
+			}
 		}
 
 		for (let i = 0; i < types.edges.length; i++) {
 			const key = _.findKey(types.edges[i])
-			this.attributeTypesEdge.push({ [key]: types.edges[i][key] })
+			if (!this.attributeTypesEdge.find(x => _.findKey(x) === key)) {
+				this.attributeTypesEdge.push({ [key]: types.edges[i][key] })
+			}
 		}
 	}
 

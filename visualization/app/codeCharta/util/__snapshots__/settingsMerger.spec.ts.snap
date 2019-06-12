@@ -36,7 +36,7 @@ Object {
 }
 `;
 
-exports[`SettingsMerger AttributeTypes merge should overwrite attributeType if the same exists 1`] = `
+exports[`SettingsMerger AttributeTypes merge should only contain unique attributeType keys 1`] = `
 Object {
   "edges": Array [
     Object {
@@ -46,9 +46,6 @@ Object {
   "nodes": Array [
     Object {
       "attribute1": "absolute",
-    },
-    Object {
-      "attribute1": "relative",
     },
   ],
 }
