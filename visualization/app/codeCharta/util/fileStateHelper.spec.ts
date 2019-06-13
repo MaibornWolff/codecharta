@@ -93,7 +93,7 @@ describe("fileStateHelper", () => {
 	})
 
 	describe("isSingleState", () => {
-		it("should return true if the first fileSelectionState is SINGLE", () => {
+		it("should return true if fileStates contains SINGLE", () => {
 			fileStates.unshift({ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.Single })
 
 			const result = FileStateHelper.isSingleState(fileStates)
@@ -101,16 +101,7 @@ describe("fileStateHelper", () => {
 			expect(result).toBeTruthy()
 		})
 
-		it("should return false if the first fileSelectionState is not SINGLE", () => {
-			const result = FileStateHelper.isSingleState(fileStates)
-
-			expect(result).toBeFalsy()
-		})
-
-		it("should return false even if a fileSelectionState is SINGLE if it's not the first found one", () => {
-			fileStates.push({ file: TEST_DELTA_MAP_B, selectedAs: FileSelectionState.Partial })
-			fileStates.push({ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.Single })
-
+		it("should return false if fileStates does not contain SINGLE", () => {
 			const result = FileStateHelper.isSingleState(fileStates)
 
 			expect(result).toBeFalsy()
@@ -118,7 +109,7 @@ describe("fileStateHelper", () => {
 	})
 
 	describe("isDeltaState", () => {
-		it("should return true if the first fileSelectionState is COMPARISON", () => {
+		it("should return true if fileStates contains COMPARISON", () => {
 			fileStates.unshift({ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.Comparison })
 
 			const result = FileStateHelper.isDeltaState(fileStates)
@@ -126,7 +117,7 @@ describe("fileStateHelper", () => {
 			expect(result).toBeTruthy()
 		})
 
-		it("should return true if the first fileSelectionState is REFERENCE", () => {
+		it("should return true if fileStates contains REFERENCE", () => {
 			fileStates.unshift({ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.Reference })
 
 			const result = FileStateHelper.isDeltaState(fileStates)
@@ -134,16 +125,7 @@ describe("fileStateHelper", () => {
 			expect(result).toBeTruthy()
 		})
 
-		it("should return false if the first fileSelectionState is not COMPARISON", () => {
-			const result = FileStateHelper.isDeltaState(fileStates)
-
-			expect(result).toBeFalsy()
-		})
-
-		it("should return false even if a fileSelectionState is DELTA if it's not the first found one", () => {
-			fileStates.push({ file: TEST_DELTA_MAP_B, selectedAs: FileSelectionState.Single })
-			fileStates.push({ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.Comparison })
-
+		it("should return false if the filerStates does not contain COMPARISON or REFERENCE", () => {
 			const result = FileStateHelper.isDeltaState(fileStates)
 
 			expect(result).toBeFalsy()
@@ -151,7 +133,7 @@ describe("fileStateHelper", () => {
 	})
 
 	describe("isPartialState", () => {
-		it("should return true if the first fileSelectionState is PARTIAL", () => {
+		it("should return true if fileStates contains PARTIAL", () => {
 			fileStates.unshift({ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.Partial })
 
 			const result = FileStateHelper.isPartialState(fileStates)
@@ -159,7 +141,7 @@ describe("fileStateHelper", () => {
 			expect(result).toBeTruthy()
 		})
 
-		it("should return true if the first fileSelectionState is undefined", () => {
+		it("should return true if fileStates do not contain any state", () => {
 			const result = FileStateHelper.isPartialState(fileStates)
 
 			expect(result).toBeTruthy()
@@ -167,15 +149,6 @@ describe("fileStateHelper", () => {
 
 		it("should return false if the first fileSelectionState is not PARTIAL or undefined", () => {
 			fileStates.unshift({ file: TEST_DELTA_MAP_B, selectedAs: FileSelectionState.Single })
-
-			const result = FileStateHelper.isPartialState(fileStates)
-
-			expect(result).toBeFalsy()
-		})
-
-		it("should return false even if a fileSelectionState is DELTA if it's not the first found one", () => {
-			fileStates.push({ file: TEST_DELTA_MAP_B, selectedAs: FileSelectionState.Single })
-			fileStates.push({ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.Partial })
 
 			const result = FileStateHelper.isPartialState(fileStates)
 
