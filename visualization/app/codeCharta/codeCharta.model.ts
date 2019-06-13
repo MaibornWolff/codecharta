@@ -18,6 +18,16 @@ export enum FileSelectionState {
 	None = "None"
 }
 
+export interface ExportCCFile {
+	projectName: string
+	apiVersion: string
+	nodes: CodeMapNode[]
+	attributeTypes: AttributeTypes | {}
+	edges: Edge[]
+	markedPackages: MarkedPackage[]
+	blacklist: BlacklistItem[]
+}
+
 export interface CCFile {
 	map: CodeMapNode
 	settings: {

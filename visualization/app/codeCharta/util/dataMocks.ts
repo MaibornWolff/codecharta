@@ -389,6 +389,7 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 	apiVersion: "1.1",
 	attributeTypes: {},
 	blacklist: [],
+	markedPackages: [],
 	edges: [
 		{
 			attributes: { avgCommits: 34, pairingRate: 89 },
@@ -401,7 +402,6 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 			toNodeName: "/root/Parent Leaf/small leaf"
 		}
 	],
-	fileName: "file_2018-12-14_9-39.cc.json",
 	nodes: [
 		{
 			attributes: {},

@@ -15,21 +15,17 @@ export class FileStateHelper {
 	}
 
 	public static isSingleState(fileStates: FileState[]): boolean {
-		const firstFoundFileState: FileSelectionState = this.getFirstFoundFileState(fileStates)
-		return firstFoundFileState === FileSelectionState.Single
+		return !!fileStates.find(x => x.selectedAs === FileSelectionState.Single)
 	}
 
 	public static isDeltaState(fileStates: FileState[]): boolean {
-		const firstFoundFileState: FileSelectionState = this.getFirstFoundFileState(fileStates)
-		return firstFoundFileState === FileSelectionState.Reference || firstFoundFileState === FileSelectionState.Comparison
+		return !!fileStates.find(x => x.selectedAs === FileSelectionState.Reference || x.selectedAs === FileSelectionState.Comparison)
 	}
 
 	public static isPartialState(fileStates: FileState[]): boolean {
-		const firstFoundFileState: FileSelectionState = this.getFirstFoundFileState(fileStates)
-		return firstFoundFileState === undefined || firstFoundFileState === FileSelectionState.Partial
-	}
-
-	private static getFirstFoundFileState(fileStates: FileState[]): FileSelectionState {
-		return fileStates.map(x => x.selectedAs).find(state => state !== FileSelectionState.None)
+		return (
+			!!fileStates.find(x => x.selectedAs === FileSelectionState.Partial) ||
+			fileStates.find(x => x.selectedAs !== FileSelectionState.None) === undefined
+		)
 	}
 }

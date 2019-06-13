@@ -1,5 +1,6 @@
 import { AttributeType, Edge, BlacklistItem, CCFile, FileSettings, MarkedPackage } from "../codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
+import _ from "lodash"
 
 export class SettingsMerger {
 	private static edges: Edge[] = []
@@ -26,7 +27,7 @@ export class SettingsMerger {
 
 	private static setEdges(inputFile: CCFile, withUpdatedPath: boolean) {
 		if (inputFile.settings.fileSettings.edges) {
-			for (let oldEdge of inputFile.settings.fileSettings.edges as Edge[]) {
+			for (let oldEdge of inputFile.settings.fileSettings.edges) {
 				let edge: Edge = {
 					fromNodeName: withUpdatedPath
 						? this.getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.fromNodeName)
@@ -50,7 +51,7 @@ export class SettingsMerger {
 
 	private static setMarkedPackage(inputFile: CCFile, withUpdatedPath: boolean) {
 		if (inputFile.settings.fileSettings.markedPackages) {
-			for (let oldMarkedPackages of inputFile.settings.fileSettings.markedPackages as MarkedPackage[]) {
+			for (let oldMarkedPackages of inputFile.settings.fileSettings.markedPackages) {
 				let markedPackage: MarkedPackage = {
 					path: withUpdatedPath
 						? this.getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldMarkedPackages.path)
@@ -73,7 +74,7 @@ export class SettingsMerger {
 
 	private static setBlacklist(inputFile: CCFile, withUpdatedPath: boolean) {
 		if (inputFile.settings.fileSettings.blacklist) {
-			for (let oldBlacklistItem of inputFile.settings.fileSettings.blacklist as BlacklistItem[]) {
+			for (let oldBlacklistItem of inputFile.settings.fileSettings.blacklist) {
 				let blacklistItem: BlacklistItem = {
 					path: withUpdatedPath
 						? this.getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldBlacklistItem.path)
@@ -103,13 +104,17 @@ export class SettingsMerger {
 	private static setAttributeTypesByUniqueKey(inputFile: CCFile) {
 		const types = inputFile.settings.fileSettings.attributeTypes
 		for (let i = 0; i < types.nodes.length; i++) {
-			const key = Object.keys(types.nodes[i])[0]
-			this.attributeTypesNode.push({ [key]: types.nodes[i][key] })
+			const key = _.findKey(types.nodes[i])
+			if (!this.attributeTypesNode.find(x => _.findKey(x) === key)) {
+				this.attributeTypesNode.push({ [key]: types.nodes[i][key] })
+			}
 		}
 
 		for (let i = 0; i < types.edges.length; i++) {
-			const key = Object.keys(types.edges[i])[0]
-			this.attributeTypesEdge.push({ [key]: types.edges[i][key] })
+			const key = _.findKey(types.edges[i])
+			if (!this.attributeTypesEdge.find(x => _.findKey(x) === key)) {
+				this.attributeTypesEdge.push({ [key]: types.edges[i][key] })
+			}
 		}
 	}
 
