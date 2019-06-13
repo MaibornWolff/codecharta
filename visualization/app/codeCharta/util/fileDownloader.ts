@@ -1,6 +1,6 @@
 import angular from "angular"
 import * as d3 from "d3"
-import { CCFile, CodeMapNode } from "../codeCharta.model"
+import { AttributeTypes, CCFile, CodeMapNode } from "../codeCharta.model"
 
 export class FileDownloader {
 	private static CC_FILE_EXTENSION = ".cc.json"
@@ -19,7 +19,7 @@ export class FileDownloader {
 			apiVersion: file.fileMeta.apiVersion,
 			nodes: [this.removeJsonHashkeysAndVisibleAttribute(file.map)],
 			edges: file.settings.fileSettings.edges,
-			attributeTypes: file.settings.fileSettings.attributeTypes,
+			attributeTypes: this.getAttributeTypesForJSON(file.settings.fileSettings.attributeTypes),
 			blacklist: file.settings.fileSettings.blacklist
 		}
 	}
@@ -30,6 +30,14 @@ export class FileDownloader {
 			delete node.data.visible
 		})
 		return copy
+	}
+
+	private static getAttributeTypesForJSON(attributeTypes: AttributeTypes): AttributeTypes | {} {
+		if (attributeTypes.edges.length === 0 && attributeTypes.nodes.length === 0) {
+			return {}
+		} else {
+			return attributeTypes
+		}
 	}
 
 	private static getNewFileName(file: CCFile): string {
