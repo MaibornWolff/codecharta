@@ -1,14 +1,18 @@
 <md-input-container>
-    <i class='fa fa-arrows-alt'></i>
+	<i class="fa fa-arrows-alt"></i>
 
-    <md-select ng-model="$ctrl._viewModel.areaMetric" ng-change="$ctrl.applySettingsAreaMetric()">
-        <md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
-            {{::metric.name}}
-            <span class="metric-max-value">({{::metric.maxValue}})</span>
-        </md-option>
-    </md-select>
+	<md-select ng-model="$ctrl._viewModel.areaMetric" ng-change="$ctrl.applySettingsAreaMetric()">
+		<md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
+			{{::metric.name}}
+			<span class="metric-max-value">({{::metric.maxValue}})</span>
+		</md-option>
+	</md-select>
 
-    <span class="metric-value">{{($ctrl.hoveredAreaValue | number) || "-"}}
-        <span ng-hide="!$ctrl.hoveredAreaDelta">(&Delta;{{$ctrl.hoveredAreaDelta | number}})</span>
-    </span>
+	<div>
+		<area-metric-type-component></area-metric-type-component>
+		<span class="metric-value"
+			>{{ ($ctrl.hoveredAreaValue | number) || "-" }}
+			<span ng-hide="!$ctrl.hoveredAreaDelta">(&Delta;{{ $ctrl.hoveredAreaDelta | number }})</span>
+		</span>
+	</div>
 </md-input-container>

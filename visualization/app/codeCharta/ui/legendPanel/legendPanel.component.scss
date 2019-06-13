@@ -1,62 +1,56 @@
 legend-panel-component {
+	.panel-button {
+		position: fixed;
+		top: 270px;
+		left: -35px;
+		transform: rotate(90deg);
+		z-index: 2;
+	}
 
-  .panel-button {
-    position: fixed;
-    top: 228px;
-    left: -35px;
-    transform: rotate(90deg);
-    z-index: 2;
-  }
+	.block-wrapper {
+		position: fixed;
+		z-index: 29;
+		top: 250px;
+		left: -500px; //initial state is closed
 
-  .block-wrapper {
+		background-color: #fff;
+		padding: 10px;
 
-    position: fixed;
-    z-index: 29;
-    top: 13em;
-    left: -500px; //initial state is closed
+		hr {
+			border-right-style: none;
+			border-left-style: none;
+			border-bottom-style: none;
+			color: #000;
+		}
 
-    background-color: #fff;
-    padding: 10px;
+		.legend-block {
+			display: block;
+			min-height: 25px;
+			margin-bottom: 5px;
+			max-width: 250px;
 
+			i,
+			img {
+				display: inline-block;
+				width: 14px;
+			}
 
-    hr {
-      border-right-style: none;
-      border-left-style: none;
-      border-bottom-style: none;
-      color: #000;
-    }
+			i {
+				margin-right: 4px;
+			}
 
-    .legend-block {
+			img {
+				padding-top: 3px;
+				height: 17px;
+			}
 
-      display: block;
-      min-height: 25px;
-      margin-bottom: 5px;
-      max-width: 250px;
+			span {
+				display: inline-block;
+			}
 
-      i, img {
-        display: inline-block;
-        width: 14px;
-      }
-
-      i {
-        margin-right: 4px;
-      }
-
-      img {
-        padding-top: 3px;
-        height: 17px;
-      }
-
-      span {
-        display: inline-block;
-      }
-
-      .set-left-margin {
-         margin-left: 18px;
-       }
-
-    }
-
-  }
-
+			.set-left-margin {
+				margin-left: 18px;
+			}
+		}
+	}
 }

@@ -24,11 +24,13 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 		areaMetric: string
 		colorMetric: string
 		heightMetric: string
+		distributionMetric: string
 	} = {
 		metricData: [],
 		areaMetric: null,
 		colorMetric: null,
-		heightMetric: null
+		heightMetric: null,
+		distributionMetric: null
 	}
 
 	/* @ngInject */
@@ -53,7 +55,8 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 		const metricKeys: Partial<DynamicSettings> = {
 			areaMetric: "areaMetric",
 			heightMetric: "heightMetric",
-			colorMetric: "colorMetric"
+			colorMetric: "colorMetric",
+			distributionMetric: "distributionMetric"
 		}
 		let settingsUpdate: RecursivePartial<Settings> = this.prepareSettingsUpdateWithMetrics(metricKeys, metricData)
 		if (Object.keys(settingsUpdate.dynamicSettings).length !== 0) {
@@ -83,6 +86,7 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 		this._viewModel.areaMetric = settings.dynamicSettings.areaMetric
 		this._viewModel.colorMetric = settings.dynamicSettings.colorMetric
 		this._viewModel.heightMetric = settings.dynamicSettings.heightMetric
+		this._viewModel.distributionMetric = settings.dynamicSettings.distributionMetric
 	}
 
 	public applySettingsAreaMetric() {
@@ -107,6 +111,14 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 		this.settingsService.updateSettings({
 			dynamicSettings: {
 				heightMetric: this._viewModel.heightMetric
+			}
+		})
+	}
+
+	public applySettingsDistributionMetric() {
+		this.settingsService.updateSettings({
+			dynamicSettings: {
+				distributionMetric: this._viewModel.distributionMetric
 			}
 		})
 	}
@@ -174,5 +186,11 @@ export const heightMetricChooserComponent = {
 export const colorMetricChooserComponent = {
 	selector: "colorMetricChooserComponent",
 	template: require("./metricChooser.color.component.html"),
+	controller: MetricChooserController
+}
+
+export const distribitionMetricChooserComponent = {
+	selector: "distributionMetricChooserComponent",
+	template: require("./metricChooser.distribution.component.html"),
 	controller: MetricChooserController
 }
