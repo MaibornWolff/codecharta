@@ -4,7 +4,7 @@ exports[`AggregationGenerator multipleService aggregation of four maps 1`] = `
 Object {
   "fileMeta": Object {
     "apiVersion": "1.1",
-    "fileName": "File-Aggregation of file1, file2, file1, file2",
+    "fileName": "File-Aggregation of file1 file2 file1 file2",
     "projectName": "Project-Aggregation of Sample Project, Sample Project, Sample Project, Sample Project",
   },
   "map": Object {
@@ -206,7 +206,10 @@ Object {
   },
   "settings": Object {
     "fileSettings": Object {
-      "attributeTypes": Object {},
+      "attributeTypes": Object {
+        "edges": Array [],
+        "nodes": Array [],
+      },
       "blacklist": Array [],
       "edges": Array [],
       "markedPackages": Array [],
@@ -219,7 +222,7 @@ exports[`AggregationGenerator multipleService aggregation of two maps 1`] = `
 Object {
   "fileMeta": Object {
     "apiVersion": "1.1",
-    "fileName": "File-Aggregation of file1, file2",
+    "fileName": "File-Aggregation of file1 file2",
     "projectName": "Project-Aggregation of Sample Project, Sample Project",
   },
   "map": Object {
@@ -330,7 +333,10 @@ Object {
   },
   "settings": Object {
     "fileSettings": Object {
-      "attributeTypes": Object {},
+      "attributeTypes": Object {
+        "edges": Array [],
+        "nodes": Array [],
+      },
       "blacklist": Array [],
       "edges": Array [],
       "markedPackages": Array [],

@@ -6,6 +6,8 @@ import { hierarchy } from "d3-hierarchy"
 import _ from "lodash"
 import { FileNameHelper } from "../../util/fileNameHelper"
 import { SettingsService } from "../../state/settings.service"
+import { FileStateService } from "../../state/fileState.service"
+import { FileStateHelper } from "../../util/fileStateHelper"
 
 interface FileDownloadContent {
 	name: string
@@ -34,17 +36,38 @@ export class DialogDownlodController {
 		fileContent: []
 	}
 
-	constructor(private $mdDialog, private codeMapPreRenderService: CodeMapPreRenderService, private settingsService: SettingsService) {
+	constructor(
+		private $mdDialog,
+		private codeMapPreRenderService: CodeMapPreRenderService,
+		private settingsService: SettingsService,
+		private fileStateService: FileStateService
+	) {
 		this.initDialogFields()
+	}
+
+	public hide() {
+		this.$mdDialog.hide()
+	}
+
+	public download() {
+		FileDownloader.downloadCurrentMap(
+			this.codeMapPreRenderService.getRenderMap(),
+			this.codeMapPreRenderService.getRenderFileMeta(),
+			this.settingsService.getSettings().fileSettings,
+			this._viewModel.fileContent.filter(x => x.isSelected == true).map(x => x.name),
+			this._viewModel.fileName
+		)
+		this.$mdDialog.hide()
 	}
 
 	private initDialogFields() {
 		const map: CodeMapNode = this.codeMapPreRenderService.getRenderMap()
 		const fileMeta: FileMeta = this.codeMapPreRenderService.getRenderFileMeta()
 		const s: FileSettings = this.settingsService.getSettings().fileSettings
+		const isDeltaState: boolean = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 
 		this.setFileContentList(s)
-		this._viewModel.fileName = FileNameHelper.getNewFileName(fileMeta.fileName)
+		this._viewModel.fileName = FileNameHelper.getNewFileName(fileMeta.fileName, isDeltaState)
 		this._viewModel.amountOfNodes = hierarchy(map).descendants().length
 		this._viewModel.amountOfAttributeTypes = this.getAmountOfAttributeTypes(s.attributeTypes)
 		this._viewModel.fileContent = this._viewModel.fileContent.sort((a, b) => this.sortByDisabled(a, b))
@@ -79,21 +102,6 @@ export class DialogDownlodController {
 
 	private sortByDisabled(a: FileDownloadContent, b: FileDownloadContent) {
 		return a.isDisabled === b.isDisabled ? 0 : a.isDisabled ? 1 : -1
-	}
-
-	public hide() {
-		this.$mdDialog.hide()
-	}
-
-	public download() {
-		FileDownloader.downloadCurrentMap(
-			this.codeMapPreRenderService.getRenderMap(),
-			this.codeMapPreRenderService.getRenderFileMeta(),
-			this.settingsService.getSettings().fileSettings,
-			this._viewModel.fileContent.filter(x => x.isSelected == true).map(x => x.name),
-			this._viewModel.fileName
-		)
-		this.$mdDialog.hide()
 	}
 }
 
