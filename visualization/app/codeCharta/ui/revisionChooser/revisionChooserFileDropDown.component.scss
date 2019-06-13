@@ -1,39 +1,39 @@
-revision-chooser-file-drop-down-component{
+revision-chooser-file-drop-down-component {
+	$selectWidth: 300;
 
-  $selectWidth: 200;
+	md-input-container {
+		display: inline-block;
+		top: -5px;
+		text-align: left;
+		margin: 0;
 
-  md-input-container {
-    display: block;
-    top: -5px;
-    text-align: left;
+		md-select {
+			width: $selectWidth + px;
+		}
 
-    md-select {
-      width: $selectWidth + px;
-    }
+		> * {
+			display: inline-block;
+		}
 
-    > * {
-      display: inline-block;
-    }
+		i.fa {
+			color: rgb(0, 150, 136);
+			vertical-align: middle;
+			margin-top: 4px;
+			margin-left: 5px;
+			margin-right: 3px;
+			min-width: 16px;
 
-    i.fa{
-      color: rgb(0, 150, 136);
-      vertical-align: middle;
-      margin-top: 4px;
-      margin-left: 5px;
-      margin-right: 3px;
-      min-width: 16px;
+			&:hover {
+				color: black;
+				cursor: pointer;
+			}
+		}
+	}
 
-      &:hover {
-        color: black;
-        cursor: pointer;
-      }
-    }
-  }
-
-  md-input-container.half {
-    display: inline-block;
-    md-select {
-      width: (($selectWidth) / 2) + px;
-    }
-  }
+	md-input-container.half {
+		display: inline-block;
+		md-select {
+			width: (($selectWidth) / 2) + px;
+		}
+	}
 }

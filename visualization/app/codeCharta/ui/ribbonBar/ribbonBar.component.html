@@ -1,17 +1,12 @@
 <md-card id="header">
 	<div class="section">
 		<div class="section-header">
-			<revision-chooser-file-drop-down-component></revision-chooser-file-drop-down-component>
-		</div>
-		<span class="section-title" id="section-title" ng-click="$ctrl.toggle()">
-			<span ng-if="!$ctrl._viewModel.isDeltaState">File</span>
-			<span ng-if="$ctrl._viewModel.isDeltaState" class="first">File</span>
-			<span ng-if="$ctrl._viewModel.isDeltaState" class="second">Compare</span>
-		</span>
-		<div class="section-body">
-			<revision-chooser-component></revision-chooser-component>
 			<scenario-drop-down-component></scenario-drop-down-component>
 		</div>
+		<span class="section-title" id="section-title" ng-click="$ctrl.toggle()">
+			Scenario
+		</span>
+		<div class="section-body"></div>
 	</div>
 
 	<div class="section">
