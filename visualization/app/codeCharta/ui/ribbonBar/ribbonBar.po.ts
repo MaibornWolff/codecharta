@@ -5,4 +5,8 @@ export class RibbonBarPageObject {
 		const selector = "#toggle-ribbon-bar-fab"
 		return this.page.click(selector)
 	}
+
+	public async getAreaMetricValue() {
+		return await this.page.evaluate(() => document.querySelector(".metric-value")["innerText"])
+	}
 }

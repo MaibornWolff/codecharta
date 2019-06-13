@@ -1,7 +1,7 @@
 import { CCFile, Settings } from "../codeCharta.model"
 import { AggregationGenerator } from "./aggregationGenerator"
 
-describe("AggregationGenerator", function() {
+describe("AggregationGenerator", () => {
 	const file1: CCFile = {
 		fileMeta: {
 			fileName: "file1",
