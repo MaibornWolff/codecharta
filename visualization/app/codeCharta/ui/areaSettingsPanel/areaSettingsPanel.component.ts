@@ -44,13 +44,9 @@ export class AreaSettingsPanelController
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 		this.resetDynamicMargin()
-		this.potentiallyUpdateMargin(this.codeMapPreRenderService.getRenderMap(), this.settingsService.getSettings())
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-		this.resetDynamicMargin()
-		this.potentiallyUpdateMargin(this.codeMapPreRenderService.getRenderMap(), this.settingsService.getSettings())
-	}
+	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
 
 	private resetDynamicMargin() {
 		this._viewModel.dynamicMargin = true
