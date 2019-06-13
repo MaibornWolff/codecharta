@@ -1,4 +1,4 @@
-import { AttributeType, BlacklistItem, BlacklistType, CCFile, Edge, FileSettings, MarkedPackage } from "../codeCharta.model"
+import { AttributeType, BlacklistItem, BlacklistType, CCFile, Edge, FileSettings, MarkedPackage, AttributeTypes } from "../codeCharta.model"
 import { SettingsMerger } from "./settingsMerger"
 
 describe("SettingsMerger", () => {
@@ -203,40 +203,46 @@ describe("SettingsMerger", () => {
 	})
 
 	describe("AttributeTypes merge", () => {
-		const attributes1 = {
-			nodes: [
-				{
-					attribute1: AttributeType.absolute
-				}
-			],
-			edges: [
-				{
-					attribute2: AttributeType.relative
-				}
-			]
-		}
+		let attributes1: AttributeTypes
+		let attributes2: AttributeTypes
+		let attributes3: AttributeTypes
 
-		const attributes2 = {
-			nodes: [
-				{
-					attribute3: AttributeType.absolute
-				}
-			],
-			edges: [
-				{
-					attribute4: AttributeType.relative
-				}
-			]
-		}
+		beforeEach(() => {
+			attributes1 = {
+				nodes: [
+					{
+						attribute1: AttributeType.absolute
+					}
+				],
+				edges: [
+					{
+						attribute2: AttributeType.relative
+					}
+				]
+			}
 
-		const attributes3 = {
-			nodes: [
-				{
-					attribute1: AttributeType.relative
-				}
-			],
-			edges: []
-		}
+			attributes2 = {
+				nodes: [
+					{
+						attribute3: AttributeType.absolute
+					}
+				],
+				edges: [
+					{
+						attribute4: AttributeType.relative
+					}
+				]
+			}
+
+			attributes3 = {
+				nodes: [
+					{
+						attribute1: AttributeType.relative
+					}
+				],
+				edges: []
+			}
+		})
 
 		it("should merge different attributeTypes", () => {
 			file1.settings.fileSettings.attributeTypes = attributes1
@@ -252,7 +258,7 @@ describe("SettingsMerger", () => {
 			expect(fileSettings.attributeTypes).toMatchSnapshot()
 		})
 
-		it("should overwrite attributeType if the same exists", () => {
+		it("should only contain unique attributeType keys", () => {
 			file1.settings.fileSettings.attributeTypes = attributes1
 			file2.settings.fileSettings.attributeTypes = attributes3
 			let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])

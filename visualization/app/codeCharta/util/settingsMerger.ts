@@ -1,5 +1,6 @@
 import { AttributeType, Edge, BlacklistItem, CCFile, FileSettings, MarkedPackage } from "../codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
+import _ from "lodash"
 
 export class SettingsMerger {
 	private static edges: Edge[] = []
@@ -103,13 +104,17 @@ export class SettingsMerger {
 	private static setAttributeTypesByUniqueKey(inputFile: CCFile) {
 		const types = inputFile.settings.fileSettings.attributeTypes
 		for (let i = 0; i < types.nodes.length; i++) {
-			const key = Object.keys(types.nodes[i])[0]
-			this.attributeTypesNode.push({ [key]: types.nodes[i][key] })
+			const key = _.findKey(types.nodes[i])
+			if (!this.attributeTypesNode.find(x => _.findKey(x) === key)) {
+				this.attributeTypesNode.push({ [key]: types.nodes[i][key] })
+			}
 		}
 
 		for (let i = 0; i < types.edges.length; i++) {
-			const key = Object.keys(types.edges[i])[0]
-			this.attributeTypesEdge.push({ [key]: types.edges[i][key] })
+			const key = _.findKey(types.edges[i])
+			if (!this.attributeTypesEdge.find(x => _.findKey(x) === key)) {
+				this.attributeTypesEdge.push({ [key]: types.edges[i][key] })
+			}
 		}
 	}
 

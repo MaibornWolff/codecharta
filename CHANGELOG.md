@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 - FileExtensionBar to show file-distribution of chosen metric #495
-- sum icon is now displayed on the left of the metric value #364
+- Added Pop-up dialog before downloading file to set filename and see what data will be stored #523
+- Sum icon is now displayed on the left of the metric value #364
 
 ### Changed
 
