@@ -1,6 +1,6 @@
 import angular from "angular"
 import * as d3 from "d3"
-import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, ExportCCFile, FileMeta, AttributeTypes} from "../codeCharta.model"
+import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, ExportCCFile, FileMeta, AttributeTypes } from "../codeCharta.model"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
 
@@ -46,7 +46,6 @@ export class FileDownloader {
 		}
 		return mergedBlacklist
 	}
-
 
 	private static getAttributeTypesForJSON(attributeTypes: AttributeTypes): AttributeTypes | {} {
 		if (attributeTypes.edges.length === 0 && attributeTypes.nodes.length === 0) {
