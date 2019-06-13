@@ -7,7 +7,7 @@ describe("CodeCharta logo", () => {
 	let browser, page, logo
 
 	beforeAll(async () => {
-		browser = await puppeteer.launch()
+		browser = await puppeteer.launch({ headless: true })
 		page = await browser.newPage()
 		await page.goto(CC_URL)
 		logo = new LogoPageObject(page)

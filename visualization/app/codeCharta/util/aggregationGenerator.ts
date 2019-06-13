@@ -39,7 +39,7 @@ export class AggregationGenerator {
 				fileSettings: {
 					edges: [],
 					blacklist: [],
-					attributeTypes: {},
+					attributeTypes: { nodes: [], edges: [] },
 					markedPackages: []
 				}
 			}

@@ -9,6 +9,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+- FileExtensionBar to show file-distribution of chosen metric #495
+- sum icon is now displayed on the left of the metric value #364
+
+### Changed
+
+### Removed
+
+### Fixed
+
+- Fix set default ColorRange when resetting color section #560
+
+### Chore
+
+## [1.25.1] - 2019-05-30
+
+### Added
+
 - SVN log parser keeps track of renaming of files for metric calculation #542
 
 ### Changed
@@ -22,6 +39,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Changing margin and then file or mode will no longer freeze the application #524
 
 ### Chore
+
+- [Security] Bump tar from 2.2.1 to 2.2.2 in /visualization
 
 ## [1.25.0] - 2019-05-17
 

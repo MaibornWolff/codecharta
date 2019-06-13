@@ -87,13 +87,14 @@ describe("MetricChooserController", () => {
 		let metricData = [
 			{ name: "a", maxValue: 1, availableInVisibleMaps: true },
 			{ name: "b", maxValue: 2, availableInVisibleMaps: true },
-			{ name: "c", maxValue: 2, availableInVisibleMaps: true }
+			{ name: "c", maxValue: 2, availableInVisibleMaps: true },
+			{ name: "d", maxValue: 2, availableInVisibleMaps: true }
 		]
 
 		metricChooserController.onMetricDataAdded(metricData, null)
 
 		expect(services.settingsService.updateSettings).toHaveBeenCalledWith({
-			dynamicSettings: { areaMetric: "a", colorMetric: "c", heightMetric: "b" }
+			dynamicSettings: { areaMetric: "a", colorMetric: "c", heightMetric: "b", distributionMetric: "d" }
 		})
 	})
 
@@ -106,7 +107,7 @@ describe("MetricChooserController", () => {
 		metricChooserController.onMetricDataAdded(metricData, null)
 
 		expect(services.settingsService.updateSettings).toHaveBeenCalledWith({
-			dynamicSettings: { areaMetric: "a", colorMetric: "a", heightMetric: "a" }
+			dynamicSettings: { areaMetric: "a", colorMetric: "a", heightMetric: "a", distributionMetric: "a" }
 		})
 	})
 
