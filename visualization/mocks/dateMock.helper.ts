@@ -1,19 +1,19 @@
 export const stubDate = fixedDate => {
-  let _originalDate;
+	let _originalDate
 
-  beforeAll(() => {
-    _originalDate = Date;
+	beforeAll(() => {
+		_originalDate = Date
 
-    global["Date"] = class extends Date {
-      constructor() {
-        super();
+		global["Date"] = class extends Date {
+			constructor() {
+				super()
 
-        return fixedDate;
-      }
-    } as DateConstructor;
-  });
+				return fixedDate
+			}
+		} as DateConstructor
+	})
 
-  afterAll(() => {
-    global["Date"] = _originalDate;
-  });
-};
+	afterAll(() => {
+		global["Date"] = _originalDate
+	})
+}
