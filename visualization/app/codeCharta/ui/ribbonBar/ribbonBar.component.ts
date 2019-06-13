@@ -4,8 +4,7 @@ import { IRootScopeService } from "angular"
 import { FileState } from "../../codeCharta.model"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
-import { FileDownloader } from "../../util/fileDownloader"
-import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
+import { DialogService } from "../dialog/dialog.service"
 
 export class RibbonBarController implements FileStateServiceSubscriber {
 	private collapsingElements = $(
@@ -21,7 +20,7 @@ export class RibbonBarController implements FileStateServiceSubscriber {
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private codeMapPreRenderService: CodeMapPreRenderService) {
+	constructor(private $rootScope: IRootScopeService, private dialogService: DialogService) {
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
@@ -32,7 +31,7 @@ export class RibbonBarController implements FileStateServiceSubscriber {
 	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
 
 	public downloadFile() {
-		FileDownloader.downloadCurrentMap(this.codeMapPreRenderService.getRenderFile())
+		this.dialogService.showDownloadDialog()
 	}
 
 	public toggle() {

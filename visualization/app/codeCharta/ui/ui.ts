@@ -4,6 +4,8 @@ import angular from "angular"
 
 // Plop: Append module import here
 import "./areaSettingsPanel/areaSettingsPanel.module"
+import "./metricType/metricType.module"
+import "./loadingGif/loadingGif.module"
 import "./blacklistPanel/blacklistPanel.module"
 import "./codeMap/codeMap.module"
 import "./colorSettingsPanel/colorSettingsPanel.module"
@@ -33,6 +35,7 @@ import "./weblinksPanel/weblinksPanel.module"
 
 angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
+	"app.codeCharta.ui.metricType",
 	"app.codeCharta.ui.areaSettingsPanel",
 	"app.codeCharta.ui.blacklistPanel",
 	"app.codeCharta.ui.codeMap",

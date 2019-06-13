@@ -4,6 +4,7 @@ import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
 
 export interface FileStateServiceSubscriber {
 	onFileSelectionStatesChanged(fileStates: FileState[], event: IAngularEvent)
+
 	onImportedFilesChanged(fileStates: FileState[], event: IAngularEvent)
 }
 

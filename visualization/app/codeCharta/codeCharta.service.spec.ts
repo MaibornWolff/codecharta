@@ -1,8 +1,6 @@
 import "./codeCharta.module"
 
 import { CodeChartaService } from "./codeCharta.service"
-import { IRootScopeService } from "angular"
-import { SettingsService } from "./state/settings.service"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { FileStateService } from "./state/fileState.service"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
@@ -48,7 +46,7 @@ describe("codeChartaService", () => {
 				name: "root",
 				type: "Folder"
 			},
-			settings: { fileSettings: { attributeTypes: {}, blacklist: [], edges: [], markedPackages: [] } }
+			settings: { fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] } }
 		}
 
 		beforeEach(() => {

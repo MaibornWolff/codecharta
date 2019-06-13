@@ -18,6 +18,16 @@ export enum FileSelectionState {
 	None = "None"
 }
 
+export interface ExportCCFile {
+	projectName: string
+	apiVersion: string
+	nodes: CodeMapNode[]
+	attributeTypes: AttributeTypes | {}
+	edges: Edge[]
+	markedPackages: MarkedPackage[]
+	blacklist: BlacklistItem[]
+}
+
 export interface CCFile {
 	map: CodeMapNode
 	settings: {
@@ -113,17 +123,17 @@ export interface ColorRange {
 }
 
 export interface AttributeTypes {
-	nodes?: {
+	nodes: Array<{
 		[key: string]: AttributeType
-	}
-	edges?: {
+	}>
+	edges: Array<{
 		[key: string]: AttributeType
-	}
+	}>
 }
 
 export enum AttributeType {
-	absolute,
-	relative
+	absolute = "absolute",
+	relative = "relative"
 }
 
 export interface Edge {

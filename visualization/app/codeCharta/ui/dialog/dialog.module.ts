@@ -5,6 +5,4 @@ import "angular-material"
 import { DialogService } from "./dialog.service"
 import _ from "lodash"
 
-angular.module("app.codeCharta.ui.dialog", ["ngMaterial"])
-
-angular.module("app.codeCharta.ui.dialog").service(_.camelCase(DialogService.name), DialogService)
+angular.module("app.codeCharta.ui.dialog", ["ngMaterial"]).service(_.camelCase(DialogService.name), DialogService)

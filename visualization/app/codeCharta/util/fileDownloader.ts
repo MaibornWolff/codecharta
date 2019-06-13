@@ -1,27 +1,54 @@
 import angular from "angular"
 import * as d3 from "d3"
-import { CCFile, CodeMapNode } from "../codeCharta.model"
+import { CCFile, CodeMapNode, BlacklistType, BlacklistItem, FileSettings, ExportCCFile, AttributeTypes } from "../codeCharta.model"
+import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
+import { CodeChartaService } from "../codeCharta.service"
 
 export class FileDownloader {
-	private static CC_FILE_EXTENSION = ".cc.json"
-
-	public static downloadCurrentMap(file: CCFile) {
-		const data = this.getProjectDataAsCCJsonFormat(file)
-		this.downloadData(data, this.getNewFileName(file))
+	public static downloadCurrentMap(file: CCFile, downloadSettingsNames: string[], fileName: string) {
+		const exportCCFile: ExportCCFile = this.getProjectDataAsCCJsonFormat(file, downloadSettingsNames)
+		const newFileNameWithExtension: string = fileName + CodeChartaService.CC_FILE_EXTENSION
+		this.downloadData(exportCCFile, newFileNameWithExtension)
 	}
 
-	private static getProjectDataAsCCJsonFormat(file: CCFile) {
-		let newFileName = this.getNewFileName(file)
+	private static getProjectDataAsCCJsonFormat(file: CCFile, downloadSettingsNames: string[]) {
+		const s: FileSettings = file.settings.fileSettings
 
-		return {
-			fileName: newFileName,
+		let downloadObject: ExportCCFile = {
 			projectName: file.fileMeta.projectName,
 			apiVersion: file.fileMeta.apiVersion,
 			nodes: [this.removeJsonHashkeysAndVisibleAttribute(file.map)],
-			edges: file.settings.fileSettings.edges,
-			attributeTypes: file.settings.fileSettings.attributeTypes,
-			blacklist: file.settings.fileSettings.blacklist
+			attributeTypes: this.getAttributeTypesForJSON(s.attributeTypes),
+			edges: downloadSettingsNames.includes(DownloadCheckboxNames.edges) ? s.edges : [],
+			markedPackages: downloadSettingsNames.includes(DownloadCheckboxNames.markedPackages) ? s.markedPackages : [],
+			blacklist: this.getBlacklistToDownload(downloadSettingsNames, file)
 		}
+		return downloadObject
+	}
+
+	private static getBlacklistToDownload(downloadSettingsNames: string[], file: CCFile): BlacklistItem[] {
+		let blacklist: BlacklistItem[] = []
+
+		if (downloadSettingsNames.includes(DownloadCheckboxNames.hides)) {
+			blacklist.push(...this.getFilteredBlacklist(file, BlacklistType.hide))
+		}
+
+		if (downloadSettingsNames.includes(DownloadCheckboxNames.excludes)) {
+			blacklist.push(...this.getFilteredBlacklist(file, BlacklistType.exclude))
+		}
+		return blacklist
+	}
+
+	private static getAttributeTypesForJSON(attributeTypes: AttributeTypes): AttributeTypes | {} {
+		if (attributeTypes.edges.length === 0 && attributeTypes.nodes.length === 0) {
+			return {}
+		} else {
+			return attributeTypes
+		}
+	}
+
+	private static getFilteredBlacklist(file: CCFile, type: BlacklistType): BlacklistItem[] {
+		return file.settings.fileSettings.blacklist.filter(x => x.type == type)
 	}
 
 	private static removeJsonHashkeysAndVisibleAttribute(map: CodeMapNode) {
@@ -32,32 +59,7 @@ export class FileDownloader {
 		return copy
 	}
 
-	private static getNewFileName(file: CCFile): string {
-		return this.getFileNameWithoutTimestamp(file.fileMeta.fileName) + this.getNewTimestamp() + FileDownloader.CC_FILE_EXTENSION
-	}
-
-	private static getNewTimestamp(): string {
-		const date: Date = new Date()
-		return (
-			"_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "_" + date.getHours() + "-" + date.getMinutes()
-		)
-	}
-
-	private static getFileNameWithoutTimestamp(fileName: string): string {
-		const dateRegex: RegExp = /\_\d{4}\-\d{1,2}\-\d{1,2}\_\d{1,2}\-\d{1,2}\./
-
-		if (dateRegex.test(fileName)) {
-			return fileName.substring(0, dateRegex.exec(fileName).index)
-		} else if (fileName.includes(FileDownloader.CC_FILE_EXTENSION)) {
-			return fileName.substring(0, fileName.search(FileDownloader.CC_FILE_EXTENSION))
-		} else if (fileName.includes(".json")) {
-			return fileName.substring(0, fileName.search(".json"))
-		} else {
-			return fileName
-		}
-	}
-
-	private static downloadData(data, fileName) {
+	private static downloadData(data, fileName: string) {
 		let dataJson = data
 		if (typeof data === "object") {
 			dataJson = angular.toJson(data, 4)
