@@ -144,7 +144,7 @@ export class GeometryGenerator {
 		} else {
 			const metricValue: number = n.attributes[s.dynamicSettings.colorMetric]
 
-			if (metricValue === undefined || metricValue === null) {
+			if (!metricValue) {
 				return s.appSettings.mapColors.base
 			} else if (n.flat) {
 				return s.appSettings.mapColors.flat
