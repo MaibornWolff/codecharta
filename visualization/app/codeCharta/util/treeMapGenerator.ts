@@ -1,5 +1,5 @@
 import * as d3 from "d3"
-import { hierarchy, HierarchyNode } from "d3"
+import { hierarchy, HierarchyNode, TreemapLayout } from "d3"
 import { TreeMapHelper } from "./treeMapHelper"
 import { CodeMapHelper } from "./codeMapHelper"
 import { CodeMapNode, BlacklistType, CCFile, Settings, MetricData, Node } from "../codeCharta.model"
@@ -20,17 +20,20 @@ export class TreeMapGenerator {
 	private static HEIGHT_DIVISOR = 1
 
 	public static createTreemapNodes(renderFile: CCFile, s: Settings, metricData: MetricData[]): Node {
-		const squaredNode: SquarifiedValuedCodeMapNode = this.squarify(renderFile, s)
+		const squaredNode: SquarifiedValuedCodeMapNode = this.squarify(renderFile.map, s)
 		const maxHeight = metricData.find(x => x.name == s.dynamicSettings.heightMetric).maxValue
 		const heightScale = s.treeMapSettings.mapSize / TreeMapGenerator.HEIGHT_DIVISOR / maxHeight
 		return this.addHeightDimensionAndFinalize(squaredNode, s, maxHeight, heightScale)
 	}
 
-	private static squarify(renderFile: CCFile, s: Settings): SquarifiedValuedCodeMapNode {
-		let map: HierarchyNode<CodeMapNode> = d3.hierarchy<CodeMapNode>(renderFile.map)
-		const blacklisted = CodeMapHelper.numberOfBlacklistedNodes(map.descendants().map(d => d.data), s.fileSettings.blacklist)
-		const nodesPerSide = 2 * Math.sqrt(map.descendants().length - blacklisted)
-		let treeMap = d3
+	private static squarify(map: CodeMapNode, s: Settings): SquarifiedValuedCodeMapNode {
+		let hierarchy: HierarchyNode<CodeMapNode> = d3.hierarchy<CodeMapNode>(map)
+		const blacklisted: number = CodeMapHelper.numberOfBlacklistedNodes(
+			hierarchy.descendants().map(d => d.data),
+			s.fileSettings.blacklist
+		)
+		const nodesPerSide: number = 2 * Math.sqrt(hierarchy.descendants().length - blacklisted)
+		let treeMap: TreemapLayout<CodeMapNode> = d3
 			.treemap<CodeMapNode>()
 			.size([
 				s.treeMapSettings.mapSize + nodesPerSide * s.dynamicSettings.margin,
@@ -39,7 +42,7 @@ export class TreeMapGenerator {
 			.paddingOuter(s.dynamicSettings.margin * TreeMapGenerator.PADDING_SCALING_FACTOR || 1)
 			.paddingInner(s.dynamicSettings.margin * TreeMapGenerator.PADDING_SCALING_FACTOR || 1)
 
-		return treeMap(map.sum(node => this.calculateValue(node, s))) as SquarifiedValuedCodeMapNode
+		return treeMap(hierarchy.sum(node => this.calculateValue(node, s))) as SquarifiedValuedCodeMapNode
 	}
 
 	private static addHeightDimensionAndFinalize(
