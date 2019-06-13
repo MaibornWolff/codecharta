@@ -1,30 +1,29 @@
 blacklist-panel-component {
-  md-input-container {
-    width: 100%;
-    height: 45px !important;
-  }
+	md-input-container {
+		width: 100%;
+		height: 45px !important;
+	}
 
-  .item-type {
-    min-width: 25px !important;
-  }
+	.item-type {
+		min-width: 25px !important;
+	}
 
-  md-list-item.md-no-proxy,
-  md-list-item .md-no-style {
-    padding: 0;
-  }
+	md-list-item.md-no-proxy,
+	md-list-item .md-no-style {
+		padding: 0;
+	}
 
-  .md-list-item-text p {
-    -webkit-touch-callout: initial;
-    -webkit-user-select: initial;
-    -khtml-user-select: initial;
-    -moz-user-select: initial;
-    -ms-user-select: initial;
-    user-select: initial;
-  }
+	.md-list-item-text p {
+		-webkit-touch-callout: initial;
+		-webkit-user-select: initial;
+		-khtml-user-select: initial;
+		-moz-user-select: initial;
+		-ms-user-select: initial;
+		user-select: initial;
+	}
 
-  md-list .sub-list {
-    max-height: 300px;
-    overflow: auto;
-  }
+	md-list .sub-list {
+		max-height: 300px;
+		overflow: auto;
+	}
 }
-
