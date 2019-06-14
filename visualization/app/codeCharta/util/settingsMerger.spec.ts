@@ -1,4 +1,13 @@
-import { AttributeTypeValue, BlacklistItem, BlacklistType, CCFile, Edge, FileSettings, MarkedPackage, AttributeTypes } from "../codeCharta.model"
+import {
+	AttributeTypeValue,
+	BlacklistItem,
+	BlacklistType,
+	CCFile,
+	Edge,
+	FileSettings,
+	MarkedPackage,
+	AttributeTypes
+} from "../codeCharta.model"
 import { SettingsMerger } from "./settingsMerger"
 
 describe("SettingsMerger", () => {

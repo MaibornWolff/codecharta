@@ -6,7 +6,9 @@ import {
 	FileState,
 	MetricData,
 	RecursivePartial,
-	Settings, AttributeType, AttributeTypeValue
+	Settings,
+	AttributeType,
+	AttributeTypeValue
 } from "../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
@@ -88,7 +90,7 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 		return null
 	}
 
-	private getMergedAttributeTypes(attributeTypes : AttributeTypes) : AttributeType[] {
+	private getMergedAttributeTypes(attributeTypes: AttributeTypes): AttributeType[] {
 		const mergedAttributeTypes = [...attributeTypes.nodes]
 
 		mergedAttributeTypes.forEach(nodeAttribute => {
