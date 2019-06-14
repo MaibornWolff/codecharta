@@ -1,6 +1,15 @@
 "use strict"
 
-import { CCFile, FileSelectionState, FileState, MetricData, RecursivePartial, Settings } from "../../codeCharta.model"
+import {
+	CCFile,
+	FileSelectionState,
+	FileState,
+	MetricData,
+	RecursivePartial,
+	Settings,
+	CodeMapNode,
+	FileMeta
+} from "../../codeCharta.model"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import { IAngularEvent, IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
@@ -22,7 +31,7 @@ export interface RenderData {
 }
 
 export interface CodeMapPreRenderServiceSubscriber {
-	onRenderFileChanged(renderFile: CCFile, event: IAngularEvent)
+	onRenderMapChanged(map: CodeMapNode, event: IAngularEvent)
 }
 
 export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricServiceSubscriber {
@@ -48,8 +57,12 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		SettingsService.subscribe(this.$rootScope, this)
 	}
 
-	public getRenderFile(): CCFile {
-		return this.lastRender.renderFile
+	public getRenderMap(): CodeMapNode {
+		return this.lastRender.renderFile ? this.lastRender.renderFile.map : null
+	}
+
+	public getRenderFileMeta(): FileMeta {
+		return this.lastRender.renderFile.fileMeta
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
@@ -158,12 +171,12 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	}
 
 	private notifyFileChanged() {
-		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_FILE_CHANGED_EVENT, this.lastRender.renderFile)
+		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_FILE_CHANGED_EVENT, this.lastRender.renderFile.map)
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapPreRenderServiceSubscriber) {
 		$rootScope.$on(CodeMapPreRenderService.RENDER_FILE_CHANGED_EVENT, (event, data) => {
-			subscriber.onRenderFileChanged(data, event)
+			subscriber.onRenderMapChanged(data, event)
 		})
 	}
 }
