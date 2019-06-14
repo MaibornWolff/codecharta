@@ -30,10 +30,6 @@ export class RibbonBarController implements FileStateServiceSubscriber {
 
 	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
 
-	public downloadFile() {
-		this.dialogService.showDownloadDialog()
-	}
-
 	public toggle() {
 		if (!this.isExpanded) {
 			this.expand()

@@ -4,6 +4,7 @@ import { CCFile, FileSelectionState, FileState } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
+import { DialogService } from "../dialog/dialog.service"
 
 interface SelectedFileNames {
 	single: string
@@ -41,7 +42,7 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
 	}
 
 	/* @ngInject */
-	constructor(private fileStateService: FileStateService, private $rootScope: IRootScopeService) {
+	constructor(private fileStateService: FileStateService, private $rootScope: IRootScopeService, private dialogService: DialogService) {
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
@@ -123,6 +124,10 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
 			this._viewModel.selectedFileNames.delta.reference = this.getLastVisibleFileName()
 			this.onDeltaComparisonFileChange(null)
 		}
+	}
+
+	public downloadFile() {
+		this.dialogService.showDownloadDialog()
 	}
 
 	public selectAllPartialFiles() {
