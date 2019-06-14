@@ -1,14 +1,12 @@
 import {
-	AttributeType,
 	AttributeTypes,
-	AttributeTypeValue,
 	BlacklistItem,
 	BlacklistType,
 	CodeMapNode,
 	FileState,
 	MetricData,
 	RecursivePartial,
-	Settings
+	Settings, AttributeType, AttributeTypeValue
 } from "../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
