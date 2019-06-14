@@ -8,10 +8,13 @@
 		</md-option>
 	</md-select>
 
+	<div>
+		<height-metric-type-component></height-metric-type-component>
 	<span class="metric-value"
 		>{{ ($ctrl.hoveredHeightValue | number) || "-" }}
 		<span style="color: {{ $ctrl.hoveredDeltaColor }};" ng-hide="!$ctrl.hoveredHeightDelta"
 			>(&Delta;{{ $ctrl.hoveredHeightDelta | number }})</span
 		>
 	</span>
+	</div>
 </md-input-container>
