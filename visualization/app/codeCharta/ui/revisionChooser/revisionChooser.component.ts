@@ -1,4 +1,3 @@
-import "./revisionChooser.component.scss"
 import "./revisionChooserFileDropDown.component.scss"
 import { CCFile, FileSelectionState, FileState } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
@@ -164,11 +163,6 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
 	}
 }
 
-export const revisionChooserComponent = {
-	selector: "revisionChooserComponent",
-	template: require("./revisionChooser.component.html"),
-	controller: RevisionChooserController
-}
 export const revisionChooserFileDropDownComponent = {
 	selector: "revisionChooserFileDropDownComponent",
 	template: require("./revisionChooserFileDropDown.component.html"),
