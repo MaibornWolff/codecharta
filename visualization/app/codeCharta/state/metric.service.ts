@@ -1,5 +1,6 @@
 import {
-	AttributeType,
+	AttributeTypes,
+	AttributeTypeValue,
 	BlacklistItem,
 	BlacklistType,
 	CodeMapNode,
@@ -75,10 +76,10 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 		return metric ? metric.maxValue : undefined
 	}
 
-	public getAttributeTypeByMetric(metricName: string, settings: Settings): AttributeType {
+	public getAttributeTypeByMetric(metricName: string, settings: Settings): AttributeTypeValue {
 		const attributeTypes = settings.fileSettings.attributeTypes
 
-		const attributeType = this.getMergedAttributeTypes(attributeTypes.nodes, attributeTypes.edges).find(x => {
+		const attributeType = this.getMergedAttributeTypes(attributeTypes).find(x => {
 			return _.findKey(x) === metricName
 		})
 
@@ -88,17 +89,11 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 		return null
 	}
 
-	private getMergedAttributeTypes(nodeAttributes: Array<{
-		[key: string]: AttributeType
-	}>, edgeAttributes: Array<{
-		[key: string]: AttributeType
-	}>): Array<{
-		[key: string]: AttributeType
-	}> {
-		const mergedAttributeTypes = [...nodeAttributes]
+	private getMergedAttributeTypes(attributeTypes : AttributeTypes) {
+		const mergedAttributeTypes = [...attributeTypes.nodes]
 
 		mergedAttributeTypes.forEach(nodeAttribute => {
-			edgeAttributes.forEach(edgeAttribute => {
+			attributeTypes.edges.forEach(edgeAttribute => {
 				if (Object.keys(nodeAttribute)[0] !== Object.keys(edgeAttribute)[0]) {
 					mergedAttributeTypes.push(edgeAttribute)
 				}

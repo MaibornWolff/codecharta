@@ -3,7 +3,7 @@ import { SettingsService } from "./settings.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { DEFAULT_SETTINGS, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../util/dataMocks"
-import { AttributeType, FileSelectionState, FileState, RecursivePartial, Settings } from "../codeCharta.model"
+import { AttributeTypeValue, FileSelectionState, FileState, RecursivePartial, Settings } from "../codeCharta.model"
 import { FileStateService } from "./fileState.service"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
@@ -126,9 +126,9 @@ describe("settingService", () => {
 
 		it("should set attributeTypes", () => {
 			const nodeAttributeTypes = [
-				{ rloc: AttributeType.absolute },
-				{ mcc: AttributeType.absolute },
-				{ coverage: AttributeType.relative }
+				{ rloc: AttributeTypeValue.absolute },
+				{ mcc: AttributeTypeValue.absolute },
+				{ coverage: AttributeTypeValue.relative }
 			]
 
 			settingsService.updateSettings({
