@@ -1,4 +1,12 @@
-import { AttributeTypeValue, Edge, BlacklistItem, CCFile, FileSettings, MarkedPackage } from "../codeCharta.model"
+import {
+	AttributeTypeValue,
+	Edge,
+	BlacklistItem,
+	CCFile,
+	FileSettings,
+	MarkedPackage,
+	AttributeType
+} from "../codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
 import _ from "lodash"
 
@@ -6,8 +14,8 @@ export class SettingsMerger {
 	private static edges: Edge[] = []
 	private static markedPackages: MarkedPackage[] = []
 	private static blacklist: BlacklistItem[] = []
-	private static attributeTypesEdge: Array<{ [key: string]: AttributeTypeValue }> = []
-	private static attributeTypesNode: Array<{ [key: string]: AttributeTypeValue }> = []
+	private static attributeTypesEdge: AttributeType[] = []
+	private static attributeTypesNode: AttributeType[] = []
 
 	public static getMergedFileSettings(inputFiles: CCFile[], withUpdatedPath: boolean = false): FileSettings {
 		if (inputFiles.length == 1) {
