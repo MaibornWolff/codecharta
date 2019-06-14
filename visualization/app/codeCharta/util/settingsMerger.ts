@@ -1,5 +1,4 @@
 import {
-	AttributeTypeValue,
 	Edge,
 	BlacklistItem,
 	CCFile,
