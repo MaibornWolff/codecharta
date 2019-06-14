@@ -1,7 +1,7 @@
 import "./state.module"
 import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { CCFile, FileState, FileSelectionState, MetricData, Settings, AttributeType } from "../codeCharta.model"
+import { CCFile, FileState, FileSelectionState, MetricData, Settings, AttributeTypeValue } from "../codeCharta.model"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, SETTINGS } from "../util/dataMocks"
 import { MetricService } from "./metric.service"
 import { FileStateService } from "./fileState.service"
@@ -137,13 +137,13 @@ describe("MetricService", () => {
 		it("should return absolute", () => {
 			const actual = metricService.getAttributeTypeByMetric("rloc", settings)
 
-			expect(actual).toBe(AttributeType.absolute)
+			expect(actual).toBe(AttributeTypeValue.absolute)
 		})
 
 		it("should return relative", () => {
 			const actual = metricService.getAttributeTypeByMetric("coverage", settings)
 
-			expect(actual).toBe(AttributeType.relative)
+			expect(actual).toBe(AttributeTypeValue.relative)
 		})
 
 		it("should return null", () => {

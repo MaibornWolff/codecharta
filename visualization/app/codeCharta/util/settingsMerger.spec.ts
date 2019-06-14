@@ -1,4 +1,4 @@
-import { AttributeType, BlacklistItem, BlacklistType, CCFile, Edge, FileSettings, MarkedPackage, AttributeTypes } from "../codeCharta.model"
+import { AttributeTypeValue, BlacklistItem, BlacklistType, CCFile, Edge, FileSettings, MarkedPackage, AttributeTypes } from "../codeCharta.model"
 import { SettingsMerger } from "./settingsMerger"
 
 describe("SettingsMerger", () => {
@@ -211,12 +211,12 @@ describe("SettingsMerger", () => {
 			attributes1 = {
 				nodes: [
 					{
-						attribute1: AttributeType.absolute
+						attribute1: AttributeTypeValue.absolute
 					}
 				],
 				edges: [
 					{
-						attribute2: AttributeType.relative
+						attribute2: AttributeTypeValue.relative
 					}
 				]
 			}
@@ -224,12 +224,12 @@ describe("SettingsMerger", () => {
 			attributes2 = {
 				nodes: [
 					{
-						attribute3: AttributeType.absolute
+						attribute3: AttributeTypeValue.absolute
 					}
 				],
 				edges: [
 					{
-						attribute4: AttributeType.relative
+						attribute4: AttributeTypeValue.relative
 					}
 				]
 			}
@@ -237,7 +237,7 @@ describe("SettingsMerger", () => {
 			attributes3 = {
 				nodes: [
 					{
-						attribute1: AttributeType.relative
+						attribute1: AttributeTypeValue.relative
 					}
 				],
 				edges: []
