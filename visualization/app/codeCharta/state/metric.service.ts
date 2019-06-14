@@ -1,4 +1,5 @@
 import {
+	AttributeType,
 	AttributeTypes,
 	AttributeTypeValue,
 	BlacklistItem,
@@ -89,7 +90,7 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 		return null
 	}
 
-	private getMergedAttributeTypes(attributeTypes : AttributeTypes) {
+	private getMergedAttributeTypes(attributeTypes : AttributeTypes) : AttributeType[] {
 		const mergedAttributeTypes = [...attributeTypes.nodes]
 
 		mergedAttributeTypes.forEach(nodeAttribute => {
