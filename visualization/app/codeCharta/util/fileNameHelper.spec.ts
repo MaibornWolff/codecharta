@@ -2,7 +2,7 @@ import { FileNameHelper } from "./fileNameHelper"
 import { stubDate } from "../../../mocks/dateMock.helper"
 
 describe("FileNameHelper", () => {
-	stubDate(new Date("2018-12-14T09:39:59"))
+	stubDate(new Date(Date.UTC(2018, 11, 14, 9, 39)))
 	const newDate: string = "2018-12-14_09-39"
 
 	describe("getNewFileName", () => {
