@@ -50,11 +50,17 @@ describe("FileSettingBarController", () => {
 		$rootScope.$broadcast = jest.fn()
 	}
 
+	function withMockedDialogService() {
+		dialogService = fileSettingBarController["dialogService"] = jest.fn().mockReturnValue({
+			showErrorDialog: jest.fn()
+		})()
+	}
+
 	beforeEach(() => {
 		restartSystem()
 		buildController()
 		withMockedFileStateService()
-		withMockedEventMethods()
+		withMockedDialogService()
 	})
 
 	afterEach(() => {
