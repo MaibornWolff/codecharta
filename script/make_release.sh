@@ -48,23 +48,23 @@ select CONFIRM in "yes" "no"; do
 done
 
 # bump version in gradle.properties
-$(perl -p -i -e "s/^currentVersion=(.*)/currentVersion=${NEW_VERSION}/g" ../analysis/gradle.properties)
+$(perl -p -i -e "s/^currentVersion=(.*)/currentVersion=${NEW_VERSION}/g" ./analysis/gradle.properties)
 echo "v${NEW_VERSION}"
-echo "incremented version in ../analysis/gradle.properties"
+echo "incremented version in ./analysis/gradle.properties"
 
 # bump version in package.jsons
-npm --prefix ../analysis/node-wrapper --no-git-tag-version version $NEW_VERSION
-echo "incremented version in ../analysis/node-wrapper/package.json + locks"
+npm --prefix ./analysis/node-wrapper --no-git-tag-version version $NEW_VERSION
+echo "incremented version in ./analysis/node-wrapper/package.json + locks"
 
-npm --prefix ../visualization --no-git-tag-version version $NEW_VERSION
-echo "incremented version in ../visualization/package.json + locks"
+npm --prefix ./visualization --no-git-tag-version version $NEW_VERSION
+echo "incremented version in ./visualization/package.json + locks"
 
 # update changelog
 DATE=`date +%Y-%m-%d`
 UNRELEASED_TPL="## [unreleased]\n### Added\n\n### Changed\n\n### Removed\n\n### Fixed\n\n### Chore\n\n"
 REPLACE="${UNRELEASED_TPL}## [${NEW_VERSION}] - ${DATE}"
-$(perl -p -i -e "s/^\#\# \[unreleased\]/${REPLACE}/g" ../CHANGELOG.md)
-echo "updated ../CHANGELOG.md"
+$(perl -p -i -e "s/^\#\# \[unreleased\]/${REPLACE}/g" ./CHANGELOG.md)
+echo "updated ./CHANGELOG.md"
 
 # confirm and make a commit and tag it correctly
 
