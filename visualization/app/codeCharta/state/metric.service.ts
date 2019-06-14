@@ -95,7 +95,7 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 
 		mergedAttributeTypes.forEach(nodeAttribute => {
 			attributeTypes.edges.forEach(edgeAttribute => {
-				if (Object.keys(nodeAttribute)[0] !== Object.keys(edgeAttribute)[0]) {
+				if (_.findKey(nodeAttribute) !== _.findKey(edgeAttribute)) {
 					mergedAttributeTypes.push(edgeAttribute)
 				}
 			})
