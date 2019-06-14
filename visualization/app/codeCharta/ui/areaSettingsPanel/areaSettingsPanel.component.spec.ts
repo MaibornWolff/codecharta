@@ -7,7 +7,7 @@ import { SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
 import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { CCFile, Settings } from "../../codeCharta.model"
+import { CCFile, Settings, CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 
 describe("AreaSettingsPanelController", () => {
@@ -17,7 +17,7 @@ describe("AreaSettingsPanelController", () => {
 	let areaSettingsPanelController: AreaSettingsPanelController
 
 	let settings: Settings
-	let file: CCFile
+	let map: CodeMapNode
 
 	beforeEach(() => {
 		restartSystem()
@@ -34,7 +34,7 @@ describe("AreaSettingsPanelController", () => {
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 
 		settings = JSON.parse(JSON.stringify(SETTINGS))
-		file = JSON.parse(JSON.stringify(TEST_FILE_WITH_PATHS))
+		map = JSON.parse(JSON.stringify(TEST_FILE_WITH_PATHS.map))
 	}
 
 	function rebuildController() {
@@ -50,7 +50,7 @@ describe("AreaSettingsPanelController", () => {
 
 	function withMockedCodeMapPreRenderService() {
 		codeMapPreRenderService = areaSettingsPanelController["codeMapPreRenderService"] = jest.fn().mockReturnValue({
-			getRenderFile: jest.fn().mockReturnValue(file)
+			getRenderMap: jest.fn().mockReturnValue(map)
 		})()
 	}
 
@@ -131,19 +131,19 @@ describe("AreaSettingsPanelController", () => {
 		it("should not call applySettings if dynamicMargin is false", () => {
 			settings.appSettings.dynamicMargin = false
 
-			areaSettingsPanelController.onRenderFileChanged(file, undefined)
+			areaSettingsPanelController.onRenderMapChanged(map, undefined)
 
 			expect(areaSettingsPanelController.applySettings).not.toHaveBeenCalled()
 		})
 
 		it("should set new calculated margin correctly", () => {
-			areaSettingsPanelController.onRenderFileChanged(file, undefined)
+			areaSettingsPanelController.onRenderMapChanged(map, undefined)
 
 			expect(areaSettingsPanelController["_viewModel"].margin).toBe(28)
 		})
 
 		it("should call applySettings after setting new margin", () => {
-			areaSettingsPanelController.onRenderFileChanged(file, undefined)
+			areaSettingsPanelController.onRenderMapChanged(map, undefined)
 
 			expect(areaSettingsPanelController.applySettings).toHaveBeenCalled()
 		})
@@ -151,7 +151,7 @@ describe("AreaSettingsPanelController", () => {
 		it("should not call applySettings if margin and new calculated margin are the same", () => {
 			areaSettingsPanelController["_viewModel"].margin = 28
 
-			areaSettingsPanelController.onRenderFileChanged(file, undefined)
+			areaSettingsPanelController.onRenderMapChanged(map, undefined)
 
 			expect(areaSettingsPanelController.applySettings).not.toHaveBeenCalled()
 		})
@@ -168,24 +168,6 @@ describe("AreaSettingsPanelController", () => {
 			areaSettingsPanelController.onFileSelectionStatesChanged(undefined, undefined)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				dynamicSettings: { margin: 28 },
-				appSettings: { dynamicMargin: true }
-			})
-		})
-	})
-
-	describe("onImportedFilesChanged", () => {
-		it("should set dynamicMargin in viewModel to true", () => {
-			areaSettingsPanelController.onImportedFilesChanged(undefined, undefined)
-
-			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeTruthy()
-		})
-
-		it("should update margin and dynamicMargin in settingsService", () => {
-			areaSettingsPanelController.onImportedFilesChanged(undefined, undefined)
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				dynamicSettings: { margin: 28 },
 				appSettings: { dynamicMargin: true }
 			})
 		})
