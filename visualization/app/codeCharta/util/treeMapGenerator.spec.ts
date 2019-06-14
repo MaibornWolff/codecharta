@@ -42,8 +42,8 @@ describe("treeMapGenerator", () => {
 	})
 
 	describe("CodeMap value calculation", () => {
-		it("if a node was deleted from previous revision it should still be visible and have positive width/length", () => {
-			// given map with one node deleted in comparison to previous revision
+		it("if a node was deleted from previous file it should still be visible and have positive width/length", () => {
+			// given map with one node deleted in comparison to previous file
 			renderFile.map.attributes = { myArea: 22, myHeight: 12 }
 			renderFile.map.deltas = {}
 			renderFile.map.children[0].attributes = { myArea: 44, myHeight: 63 }

@@ -1,14 +1,12 @@
-export class RevisionChooserFileDropDownPageObject {
+export class FileSettingBarPageObject {
 	constructor(private page) {}
 
 	public async getSelectedName() {
-		return await this.page.evaluate(
-			() => document.querySelector("revision-chooser-file-drop-down-component md-select .md-text")["innerText"]
-		)
+		return await this.page.evaluate(() => document.querySelector("file-setting-bar-component md-select .md-text")["innerText"])
 	}
 
 	public async clickChooser() {
-		return this.page.click("revision-chooser-file-drop-down-component md-select")
+		return this.page.click("file-setting-bar-component md-select")
 	}
 
 	public async getAllNames() {

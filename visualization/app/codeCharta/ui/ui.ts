@@ -25,7 +25,7 @@ import "./nodeContextMenu/nodeContextMenu.module"
 import "./optionsPanel/optionsPanel.module"
 import "./rangeSlider/rangeSlider.module"
 import "./resetSettingsButton/resetSettingsButton.module"
-import "./revisionChooser/revisionChooser.module"
+import "./fileSettingBar/fileSettingBar.module"
 import "./ribbonBar/ribbonBar.module"
 import "./scenarioDropDown/scenarioDropDown.module"
 import "./settingsPanel/settingsPanel.module"
@@ -45,6 +45,7 @@ angular.module("app.codeCharta.ui", [
 	"app.codeCharta.ui.experimentalSettingsPanel",
 	"app.codeCharta.ui.fileChooser",
 	"app.codeCharta.ui.fileExtensionBar",
+	"app.codeCharta.ui.fileSettingBar",
 	"app.codeCharta.ui.heightSettingsPanel",
 	"app.codeCharta.ui.layoutSwitcher",
 	"app.codeCharta.ui.legendPanel",
@@ -56,7 +57,6 @@ angular.module("app.codeCharta.ui", [
 	"app.codeCharta.ui.optionsPanel",
 	"app.codeCharta.ui.rangeSlider",
 	"app.codeCharta.ui.resetSettingsButton",
-	"app.codeCharta.ui.revisionChooser",
 	"app.codeCharta.ui.ribbonBar",
 	"app.codeCharta.ui.scenarioDropDown",
 	"app.codeCharta.ui.settingsPanel",
