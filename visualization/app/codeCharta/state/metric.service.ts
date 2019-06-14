@@ -1,7 +1,5 @@
 import {
 	AttributeType,
-	AttributeTypes,
-	AttributeTypeValue,
 	BlacklistItem,
 	BlacklistType,
 	CodeMapNode,
@@ -77,31 +75,13 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 		return metric ? metric.maxValue : undefined
 	}
 
-	public getAttributeTypeByMetric(metricName: string, settings: Settings): AttributeTypeValue {
-		const attributeTypes = settings.fileSettings.attributeTypes
-
-		const attributeType = this.getMergedAttributeTypes(attributeTypes).find(x => {
-			return _.findKey(x) === metricName
-		})
+	public getAttributeTypeByMetric(metricName: string, settings: Settings): AttributeType {
+		const attributeType = settings.fileSettings.attributeTypes.nodes.find(x => _.findKey(x) === metricName)
 
 		if (attributeType) {
 			return attributeType[metricName]
 		}
 		return null
-	}
-
-	private getMergedAttributeTypes(attributeTypes : AttributeTypes) : AttributeType[] {
-		const mergedAttributeTypes = [...attributeTypes.nodes]
-
-		mergedAttributeTypes.forEach(nodeAttribute => {
-			attributeTypes.edges.forEach(edgeAttribute => {
-				if (Object.keys(nodeAttribute)[0] !== Object.keys(edgeAttribute)[0]) {
-					mergedAttributeTypes.push(edgeAttribute)
-				}
-			})
-		})
-
-		return mergedAttributeTypes
 	}
 
 	private calculateMetrics(fileStates: FileState[], visibleFileStates: FileState[], blacklist: BlacklistItem[]): MetricData[] {
