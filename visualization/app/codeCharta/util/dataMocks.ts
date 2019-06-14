@@ -1,4 +1,4 @@
-import { AttributeTypeValue, CCFile, CodeMapNode, Edge, MetricData, Node, Settings } from "../codeCharta.model"
+import { AttributeType, CCFile, CodeMapNode, Edge, MetricData, Node, Settings } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import * as THREE from "three"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -442,13 +442,13 @@ export const SETTINGS: Settings = {
 		attributeTypes: {
 			nodes: [
 				{
-					rloc: AttributeTypeValue.absolute
+					rloc: AttributeType.absolute
 				},
 				{
-					mcc: AttributeTypeValue.absolute
+					mcc: AttributeType.absolute
 				},
 				{
-					coverage: AttributeTypeValue.relative
+					coverage: AttributeType.relative
 				}
 			],
 			edges: []

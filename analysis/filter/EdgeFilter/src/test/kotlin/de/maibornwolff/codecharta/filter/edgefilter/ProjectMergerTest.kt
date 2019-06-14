@@ -68,37 +68,37 @@ class ProjectMergerTest: Spek({
         }
 
         it("leaf1 should have correct pairingRate_relative value") {
-            val value: Int = getAttributeValue(leaf1.attributes, "pairingRate")
+            val value: Int = getAttributeValue(leaf1.attributes, "pairingRate_relative")
             val expectedValue = (90 + 30 + 70) / 3 // see testfile
             MatcherAssert.assertThat(value, CoreMatchers.`is`(expectedValue))
         }
 
         it("leaf1 should have correct avgCommits_absolute value") {
-            val value: Int = getAttributeValue(leaf1.attributes, "avgCommits")
+            val value: Int = getAttributeValue(leaf1.attributes, "avgCommits_absolute")
             val expectedValue = 30 + 10 + 30 // see testfile
             MatcherAssert.assertThat(value, CoreMatchers.`is`(expectedValue))
         }
 
         it("leaf3 should have correct pairingRate_relative value") {
-            val number: Int = getAttributeValue(leaf3.attributes, "pairingRate")
+            val number: Int = getAttributeValue(leaf3.attributes, "pairingRate_relative")
             val expectedValue = (90 + 60 + 70) / 3 // see testfile
             MatcherAssert.assertThat(number, CoreMatchers.`is`(expectedValue))
         }
 
         it("leaf3 should have correct avgCommits_absolute value") {
-            val number: Int = getAttributeValue(leaf3.attributes, "avgCommits")
+            val number: Int = getAttributeValue(leaf3.attributes, "avgCommits_absolute")
             val expectedValue = 30 + 40 + 30 // see testfile
             MatcherAssert.assertThat(number, CoreMatchers.`is`(expectedValue))
         }
 
         it("leaf4 should have correct pairingRate_relative value") {
-            val number: Int = getAttributeValue(leaf4.attributes, "pairingRate")
+            val number: Int = getAttributeValue(leaf4.attributes, "pairingRate_relative")
             val expectedValue = (60 + 80 + 60) / 3 // see testfile
             MatcherAssert.assertThat(number, CoreMatchers.`is`(expectedValue))
         }
 
         it("leaf4 should have correct avgCommits_absolute value") {
-            val number: Int = getAttributeValue(leaf4.attributes, "avgCommits")
+            val number: Int = getAttributeValue(leaf4.attributes, "avgCommits_absolute")
             val expectedValue = 20 + 30 + 40 // see testfile
             MatcherAssert.assertThat(number, CoreMatchers.`is`(expectedValue))
         }
@@ -127,37 +127,37 @@ class ProjectMergerTest: Spek({
         }
 
         it("leaf1 should have correct pairingRate_relative value") {
-            val value: Int = getAttributeValue(leaf1.attributes, "pairingRate")
+            val value: Int = getAttributeValue(leaf1.attributes, "pairingRate_relative")
             val expectedValue = (90 + 30 + 70) / 3 // see testfile
             MatcherAssert.assertThat(value, CoreMatchers.`is`(expectedValue))
         }
 
         it("leaf1 should have correct avgCommits_absolute value") {
-            val value: Int = getAttributeValue(leaf1.attributes, "avgCommits")
+            val value: Int = getAttributeValue(leaf1.attributes, "avgCommits_absolute")
             val expectedValue = 30 + 10 + 30 // see testfile
             MatcherAssert.assertThat(value, CoreMatchers.`is`(expectedValue))
         }
 
         it("leaf3 should have correct pairingRate_relative value") {
-            val number: Int = getAttributeValue(leaf3.attributes, "pairingRate")
+            val number: Int = getAttributeValue(leaf3.attributes, "pairingRate_relative")
             val expectedValue = (90 + 60 + 70) / 3 // see testfile
             MatcherAssert.assertThat(number, CoreMatchers.`is`(expectedValue))
         }
 
         it("leaf3 should have correct avgCommits_absolute value") {
-            val number: Int = getAttributeValue(leaf3.attributes, "avgCommits")
+            val number: Int = getAttributeValue(leaf3.attributes, "avgCommits_absolute")
             val expectedValue = 30 + 40 + 30 // see testfile
             MatcherAssert.assertThat(number, CoreMatchers.`is`(expectedValue))
         }
 
         it("leaf4 should have correct pairingRate_relative value") {
-            val number: Int = getAttributeValue(leaf4.attributes, "pairingRate")
+            val number: Int = getAttributeValue(leaf4.attributes, "pairingRate_relative")
             val expectedValue = (60 + 80 + 60) / 3 // see testfile
             MatcherAssert.assertThat(number, CoreMatchers.`is`(expectedValue))
         }
 
         it("leaf4 should have correct avgCommits_absolute value") {
-            val number: Int = getAttributeValue(leaf4.attributes, "avgCommits")
+            val number: Int = getAttributeValue(leaf4.attributes, "avgCommits_absolute")
             val expectedValue = 20 + 30 + 40 // see testfile
             MatcherAssert.assertThat(number, CoreMatchers.`is`(expectedValue))
         }
