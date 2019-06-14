@@ -17,6 +17,7 @@ describe("settingService", () => {
 
 	let settings: Settings
 	let fileStates: FileState[]
+	const SOME_EXTRA_TIME = 400
 
 	beforeEach(() => {
 		restartSystem()
@@ -212,7 +213,7 @@ describe("settingService", () => {
 			setTimeout(() => {
 				expect(settingsService["update"]).toEqual({})
 				done()
-			}, SettingsService["DEBOUNCE_TIME"])
+			}, SettingsService["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
 		})
 	})
 

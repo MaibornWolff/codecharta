@@ -1,7 +1,7 @@
 import "./dialog.component.scss"
 import { FileDownloader } from "../../util/fileDownloader"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import { CCFile, BlacklistType, FileSettings, AttributeTypes } from "../../codeCharta.model"
+import { BlacklistType, FileSettings, AttributeTypes, FileMeta, CodeMapNode } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import _ from "lodash"
 import { FileNameHelper } from "../../util/fileNameHelper"
@@ -51,7 +51,9 @@ export class DialogDownlodController {
 
 	public download() {
 		FileDownloader.downloadCurrentMap(
-			this.codeMapPreRenderService.getRenderFile(),
+			this.codeMapPreRenderService.getRenderMap(),
+			this.codeMapPreRenderService.getRenderFileMeta(),
+			this.settingsService.getSettings().fileSettings,
 			this._viewModel.fileContent.filter(x => x.isSelected == true).map(x => x.name),
 			this._viewModel.fileName
 		)
@@ -59,26 +61,27 @@ export class DialogDownlodController {
 	}
 
 	private initDialogFields() {
-		const file: CCFile = this.codeMapPreRenderService.getRenderFile()
-		const s: FileSettings = this.settingsService.getSettings().fileSettings
+		const map: CodeMapNode = this.codeMapPreRenderService.getRenderMap()
+		const fileMeta: FileMeta = this.codeMapPreRenderService.getRenderFileMeta()
+		const fileSettings: FileSettings = this.settingsService.getSettings().fileSettings
 		const isDeltaState: boolean = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 
-		this.setFileContentList(s)
-		this._viewModel.fileName = FileNameHelper.getNewFileName(file.fileMeta.fileName, isDeltaState)
-		this._viewModel.amountOfNodes = hierarchy(file.map).descendants().length
-		this._viewModel.amountOfAttributeTypes = this.getAmountOfAttributeTypes(s.attributeTypes)
+		this.setFileContentList(fileSettings)
+		this._viewModel.fileName = FileNameHelper.getNewFileName(fileMeta.fileName, isDeltaState)
+		this._viewModel.amountOfNodes = hierarchy(map).descendants().length
+		this._viewModel.amountOfAttributeTypes = this.getAmountOfAttributeTypes(fileSettings.attributeTypes)
 		this._viewModel.fileContent = this._viewModel.fileContent.sort((a, b) => this.sortByDisabled(a, b))
 	}
 
-	private setFileContentList(s: FileSettings) {
-		this.pushFileContent(DownloadCheckboxNames.edges, s.edges.length)
-		this.pushFileContent(DownloadCheckboxNames.markedPackages, s.markedPackages.length)
-		this.pushFileContent(DownloadCheckboxNames.excludes, this.getFilteredBlacklistLength(s, BlacklistType.exclude))
-		this.pushFileContent(DownloadCheckboxNames.hides, this.getFilteredBlacklistLength(s, BlacklistType.hide))
+	private setFileContentList(fileSettings: FileSettings) {
+		this.pushFileContent(DownloadCheckboxNames.edges, fileSettings.edges.length)
+		this.pushFileContent(DownloadCheckboxNames.markedPackages, fileSettings.markedPackages.length)
+		this.pushFileContent(DownloadCheckboxNames.excludes, this.getFilteredBlacklistLength(fileSettings, BlacklistType.exclude))
+		this.pushFileContent(DownloadCheckboxNames.hides, this.getFilteredBlacklistLength(fileSettings, BlacklistType.hide))
 	}
 
-	private getFilteredBlacklistLength(s: FileSettings, blacklistType: BlacklistType) {
-		return s.blacklist.filter(x => x.type == blacklistType).length
+	private getFilteredBlacklistLength(fileSettings: FileSettings, blacklistType: BlacklistType) {
+		return fileSettings.blacklist.filter(x => x.type == blacklistType).length
 	}
 
 	private pushFileContent(name: string, numberOfListItems: number) {
