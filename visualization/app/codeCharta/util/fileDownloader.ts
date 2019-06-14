@@ -8,11 +8,11 @@ export class FileDownloader {
 	public static downloadCurrentMap(
 		map: CodeMapNode,
 		fileMeta: FileMeta,
-		s: FileSettings,
+		fileSettings: FileSettings,
 		downloadSettingsNames: string[],
 		fileName: string
 	) {
-		const exportCCFile: ExportCCFile = this.getProjectDataAsCCJsonFormat(map, fileMeta, s, downloadSettingsNames)
+		const exportCCFile: ExportCCFile = this.getProjectDataAsCCJsonFormat(map, fileMeta, fileSettings, downloadSettingsNames)
 		const newFileNameWithExtension: string = fileName + CodeChartaService.CC_FILE_EXTENSION
 		this.downloadData(exportCCFile, newFileNameWithExtension)
 	}
@@ -20,17 +20,17 @@ export class FileDownloader {
 	private static getProjectDataAsCCJsonFormat(
 		map: CodeMapNode,
 		fileMeta: FileMeta,
-		s: FileSettings,
+		fileSettings: FileSettings,
 		downloadSettingsNames: string[]
 	): ExportCCFile {
 		return {
 			projectName: fileMeta.projectName,
 			apiVersion: fileMeta.apiVersion,
 			nodes: [this.removeJsonHashkeysAndVisibleAttribute(map)],
-			attributeTypes: this.getAttributeTypesForJSON(s.attributeTypes),
-			edges: downloadSettingsNames.includes(DownloadCheckboxNames.edges) ? s.edges : [],
-			markedPackages: downloadSettingsNames.includes(DownloadCheckboxNames.markedPackages) ? s.markedPackages : [],
-			blacklist: this.getBlacklistToDownload(downloadSettingsNames, s.blacklist)
+			attributeTypes: this.getAttributeTypesForJSON(fileSettings.attributeTypes),
+			edges: downloadSettingsNames.includes(DownloadCheckboxNames.edges) ? fileSettings.edges : [],
+			markedPackages: downloadSettingsNames.includes(DownloadCheckboxNames.markedPackages) ? fileSettings.markedPackages : [],
+			blacklist: this.getBlacklistToDownload(downloadSettingsNames, fileSettings.blacklist)
 		}
 	}
 

@@ -63,25 +63,25 @@ export class DialogDownlodController {
 	private initDialogFields() {
 		const map: CodeMapNode = this.codeMapPreRenderService.getRenderMap()
 		const fileMeta: FileMeta = this.codeMapPreRenderService.getRenderFileMeta()
-		const s: FileSettings = this.settingsService.getSettings().fileSettings
+		const fileSettings: FileSettings = this.settingsService.getSettings().fileSettings
 		const isDeltaState: boolean = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 
-		this.setFileContentList(s)
+		this.setFileContentList(fileSettings)
 		this._viewModel.fileName = FileNameHelper.getNewFileName(fileMeta.fileName, isDeltaState)
 		this._viewModel.amountOfNodes = hierarchy(map).descendants().length
-		this._viewModel.amountOfAttributeTypes = this.getAmountOfAttributeTypes(s.attributeTypes)
+		this._viewModel.amountOfAttributeTypes = this.getAmountOfAttributeTypes(fileSettings.attributeTypes)
 		this._viewModel.fileContent = this._viewModel.fileContent.sort((a, b) => this.sortByDisabled(a, b))
 	}
 
-	private setFileContentList(s: FileSettings) {
-		this.pushFileContent(DownloadCheckboxNames.edges, s.edges.length)
-		this.pushFileContent(DownloadCheckboxNames.markedPackages, s.markedPackages.length)
-		this.pushFileContent(DownloadCheckboxNames.excludes, this.getFilteredBlacklistLength(s, BlacklistType.exclude))
-		this.pushFileContent(DownloadCheckboxNames.hides, this.getFilteredBlacklistLength(s, BlacklistType.hide))
+	private setFileContentList(fileSettings: FileSettings) {
+		this.pushFileContent(DownloadCheckboxNames.edges, fileSettings.edges.length)
+		this.pushFileContent(DownloadCheckboxNames.markedPackages, fileSettings.markedPackages.length)
+		this.pushFileContent(DownloadCheckboxNames.excludes, this.getFilteredBlacklistLength(fileSettings, BlacklistType.exclude))
+		this.pushFileContent(DownloadCheckboxNames.hides, this.getFilteredBlacklistLength(fileSettings, BlacklistType.hide))
 	}
 
-	private getFilteredBlacklistLength(s: FileSettings, blacklistType: BlacklistType) {
-		return s.blacklist.filter(x => x.type == blacklistType).length
+	private getFilteredBlacklistLength(fileSettings: FileSettings, blacklistType: BlacklistType) {
+		return fileSettings.blacklist.filter(x => x.type == blacklistType).length
 	}
 
 	private pushFileContent(name: string, numberOfListItems: number) {
