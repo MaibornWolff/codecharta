@@ -34,13 +34,12 @@ class FolderMover(private val project: Project, private val projectName: String?
 
         val newStructure = listOf(removeMovedNodeFromStructure(originPath, rootNode)!!)
 
-        return if (toMove == null) {
+        if (toMove == null) {
             logger.warn("Path to move was not found in project. No nodes are therefore moved")
-            newStructure
         } else {
             insertInNewStructure(destinationPath.drop(1), rootNode)
-            newStructure
         }
+        return newStructure
     }
 
     private fun removeMovedNodeFromStructure(originPath: List<String>, node: MutableNode): MutableNode? {
@@ -58,7 +57,17 @@ class FolderMover(private val project: Project, private val projectName: String?
 
     private fun insertInNewStructure(destinationPath: List<String>, node: MutableNode) {
         if (destinationPath.isEmpty()) {
-            node.children.addAll(toMove!!)
+            val destinationNodeNamesAndType: HashMap<String, NodeType?> = hashMapOf()
+            node.children.forEach { destinationNodeNamesAndType[it.name] = it.type }
+
+            val filteredNodesToMove = toMove!!.filter {
+                !(destinationNodeNamesAndType.containsKey(it.name) && destinationNodeNamesAndType[it.name] == it.type)
+            }
+            if (filteredNodesToMove.size < toMove!!.size) {
+                logger.warn("Some nodes are already available in the target location, they were not moved and discarded instead.")
+            }
+            node.children.addAll(filteredNodesToMove)
+
         } else {
             var chosenChild: MutableNode? = node.children.filter { destinationPath.first() == it.name }.firstOrNull()
 
