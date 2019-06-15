@@ -41,7 +41,7 @@ class ProjectStructurePrinterTest {
     }
 
     @Test
-    fun `Nodes deeper that max hierarchy level are not printed`() {
+    fun `Nodes deeper than max hierarchy level are not printed`() {
         val projectStructurePrinter = ProjectStructurePrinter(sampleProject)
 
         projectStructurePrinter.printProjectStructure(1)

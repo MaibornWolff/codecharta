@@ -85,7 +85,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
 
     private fun getEdgesOfMasterAndWarnIfDiscards(): MutableList<Edge> {
         projects.forEachIndexed { i, project ->
-            if (project.edges.isNotEmpty() && i > 0) logger.warn("Edges of ${project.projectName} were ignored. Use recursive strtegy to merge edges.")
+            if (project.edges.isNotEmpty() && i > 0) logger.warn("Edges of ${project.projectName} were ignored. Use recursive strategy to merge edges.")
         }
         return projects.first().edges.toMutableList()
     }

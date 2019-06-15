@@ -23,9 +23,9 @@ class SubProjectExtractor(private val project: Project, private val projectName:
         val extractedNodes: MutableList<MutableNode> = mutableListOf()
 
         val currentSearchPattern = extractionPattern.firstOrNull()
-        if (currentSearchPattern == node.name && extractionPattern.size == 1) return node.children.toMutableList()
-        else if (currentSearchPattern == node.name) {
-            return children.map { child ->
+        if (currentSearchPattern == node.name) {
+            return if (extractionPattern.size == 1) node.children.toMutableList()
+            else children.map { child ->
                 extractNodes(extractionPattern.drop(1), child)
             }.flatten().toMutableList()
         }

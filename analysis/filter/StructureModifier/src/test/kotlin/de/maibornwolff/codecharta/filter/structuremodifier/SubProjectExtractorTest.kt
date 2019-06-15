@@ -21,7 +21,7 @@ class SubProjectExtractorTest {
     fun `Non existent path leads to empty project`() {
         val subProjectExtractor = SubProjectExtractor(sampleProject, null)
 
-        val result = subProjectExtractor.extract("/root/somethig")
+        val result = subProjectExtractor.extract("/root/something")
 
         Assertions.assertThat(result.rootNode.children.size).isEqualTo(0)
     }
@@ -53,7 +53,7 @@ class SubProjectExtractorTest {
     fun `Project name is changed if provided`() {
         val subProjectExtractor = SubProjectExtractor(sampleProject, "foo")
 
-        val result = subProjectExtractor.extract("/root/somethig")
+        val result = subProjectExtractor.extract("/root/something")
 
         Assertions.assertThat(result.projectName).isEqualTo("foo")
     }
@@ -62,7 +62,7 @@ class SubProjectExtractorTest {
     fun `Project name is kept if not provided`() {
         val subProjectExtractor = SubProjectExtractor(sampleProject, null)
 
-        val result = subProjectExtractor.extract("/root/somethig")
+        val result = subProjectExtractor.extract("/root/something")
 
         Assertions.assertThat(result.projectName).isEqualTo(sampleProject.projectName)
     }

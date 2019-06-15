@@ -86,7 +86,7 @@ class NodeRemoverTest {
 
         val result = subProjectExtractor.remove(toExclude)
 
-        val shouldBeExcluded = listOf("/root/foo/file1", "root/else/file1")
+        val shouldBeExcluded = listOf("/root/foo/file1", "root/else/file1", "root/else")
         Assertions.assertThat(result.edges.size).isEqualTo(2)
         Assertions.assertThat(result.edges.map { it.fromNodeName }).doesNotContainAnyElementsOf(shouldBeExcluded)
         Assertions.assertThat(result.edges.map { it.toNodeName }).doesNotContainAnyElementsOf(shouldBeExcluded)
