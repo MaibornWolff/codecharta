@@ -47,22 +47,23 @@
 		</md-select>
 	</md-input-container>
 
-	<md-input-container style="margin:0;" class="half">
-		<md-select ng-model="$ctrl._viewModel.renderState" ng-change="$ctrl.onRenderStateChange($ctrl._viewModel.renderState)">
-			<md-option value="Single">Single</md-option>
-			<md-option value="Partial">Multiple</md-option>
-			<md-option value="Comparison">Delta</md-option>
-		</md-select>
-	</md-input-container>
-
 	<section layout="row" layout-align="center align" class="mode-chooser">
-		<md-button class="file-state-seletor left" ng-class="{current: $ctrl._viewModel.isSingleState}"
+		<md-button
+			class="file-state-seletor left"
+			ng-class="{current: $ctrl._viewModel.isSingleState}"
+			ng-click="$ctrl.onRenderStateChange('Single')"
 			><span class="text">Single</span></md-button
 		>
-		<md-button class="file-state-seletor middle" ng-class="{current: $ctrl._viewModel.isPartialState}"
+		<md-button
+			class="file-state-seletor middle"
+			ng-class="{current: $ctrl._viewModel.isPartialState}"
+			ng-click="$ctrl.onRenderStateChange('Partial')"
 			><span class="text">Multiple</span></md-button
 		>
-		<md-button class="file-state-seletor right" ng-class="{current: $ctrl._viewModel.isDeltaState}"
+		<md-button
+			class="file-state-seletor right"
+			ng-class="{current: $ctrl._viewModel.isDeltaState}"
+			ng-click="$ctrl.onRenderStateChange('Comparison')"
 			><span class="text">Delta</span></md-button
 		>
 	</section>
