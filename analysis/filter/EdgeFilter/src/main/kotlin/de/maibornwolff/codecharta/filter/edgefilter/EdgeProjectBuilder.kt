@@ -153,7 +153,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
 
             if (attributeType == AttributeType.relative) aggregatedAttributeValue /= filteredAttribute.size
 
-            aggregatedAttributes[key + "_" + attributeType] = aggregatedAttributeValue
+            aggregatedAttributes[key] = aggregatedAttributeValue
         }
         return aggregatedAttributes
     }

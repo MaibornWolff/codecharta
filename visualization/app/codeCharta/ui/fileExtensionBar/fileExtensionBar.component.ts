@@ -1,7 +1,7 @@
 import "./fileExtensionBar.component.scss"
 import { SettingsService } from "../../state/settings.service"
 import { MetricDistribution, FileExtensionCalculator } from "../../util/fileExtensionCalculator"
-import { CCFile, CodeMapNode } from "../../codeCharta.model"
+import { CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { IRootScopeService } from "angular"
 
@@ -19,8 +19,8 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 
-	public onRenderFileChanged(renderFile: CCFile, event: angular.IAngularEvent) {
-		this.setNewDistribution(renderFile.map)
+	public onRenderMapChanged(map: CodeMapNode, event: angular.IAngularEvent) {
+		this.setNewDistribution(map)
 		this.setColorForEachExtension()
 		this.potentiallyAddNoneExtension()
 	}
