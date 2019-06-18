@@ -21,8 +21,6 @@ file-setting-bar-component {
 	}
 
 	.md-button {
-		display: inline-block;
-		vertical-align: middle;
 		height: 28px;
 		width: 55px;
 		min-height: 0px;
@@ -48,12 +46,9 @@ file-setting-bar-component {
 		}
 
 		.text {
-			position: relative;
-
-			margin-top: -10px !important; // TODO: These properties are ignored
-			padding-top: -5px !important;
-			vertical-align: top;
-			//background-color: red;
+			display: block;
+			margin-top: -3px;
+			padding-top: -3px;
 		}
 
 		&.current {
