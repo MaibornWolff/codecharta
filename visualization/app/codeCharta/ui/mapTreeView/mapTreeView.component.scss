@@ -1,32 +1,31 @@
 map-tree-view-component {
+	.tree-element-0 {
+		margin-left: 3px;
+	}
 
-    .tree-element-0 {
-        margin-left: 3px;
-    }
+	.tree-root {
+		overflow-y: hidden;
+	}
 
-    .tree-root {
-        overflow-y: hidden;
-    }
+	.tree-root div {
+		margin: 0;
+		padding: 0;
+	}
 
-    .tree-root div{
-        margin: 0;
-        padding: 0;
-    }
+	.tree-root .tree-element-children {
+		margin-left: 22px;
+	}
 
-    .tree-root .tree-element-children {
-        margin-left: 22px;
-    }
+	.tree-element-label:hover,
+	.tree-element-label.hovered {
+		background-color: #efefef;
+	}
 
-    .tree-element-label:hover, .tree-element-label.hovered {
-        background-color: #efefef;
-    }
+	.cursor-pointer {
+		cursor: pointer;
+	}
 
-    .cursor-pointer {
-        cursor: pointer;
-    }
-
-    .no-outline:focus {
-        outline: none;
-    }
+	.no-outline:focus {
+		outline: none;
+	}
 }
-

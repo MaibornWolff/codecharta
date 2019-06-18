@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`fileDownloader downloadCurrentMap should download a file and match snapshot 1`] = `undefined`;

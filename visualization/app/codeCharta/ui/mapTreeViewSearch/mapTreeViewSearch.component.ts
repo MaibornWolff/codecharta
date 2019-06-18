@@ -80,7 +80,7 @@ export class MapTreeViewSearchController implements SettingsServiceSubscriber, F
 			return []
 		} else {
 			const nodes = d3
-				.hierarchy(this.codeMapPreRenderService.getRenderFile().map)
+				.hierarchy(this.codeMapPreRenderService.getRenderMap())
 				.descendants()
 				.map(d => d.data)
 			return CodeMapHelper.getNodesByGitignorePath(nodes, this._viewModel.searchPattern)
