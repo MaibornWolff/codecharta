@@ -235,7 +235,7 @@ describe("FileSettingBarController", () => {
 			fileSettingBarController["lastRenderState"] = FileSelectionState.Single
 			fileSettingBarController["_viewModel"].selectedFileNames.single = "fileA"
 
-			fileSettingBarController.onRenderStateChange(FileSelectionState.Single)
+			fileSettingBarController.onSingleStateSelected()
 
 			expect(fileSettingBarController["_viewModel"].selectedFileNames.single).toEqual("fileA")
 			expect(fileSettingBarController.onSingleFileChange).toHaveBeenCalledWith("fileA")
@@ -244,7 +244,7 @@ describe("FileSettingBarController", () => {
 		it("should update the viewmodel with the last visible filename and call selectAllPartialFiles if partial mode is active", () => {
 			fileSettingBarController.selectAllPartialFiles = jest.fn()
 
-			fileSettingBarController.onRenderStateChange(FileSelectionState.Partial)
+			fileSettingBarController.onPartialStateSelected()
 
 			expect(fileSettingBarController.selectAllPartialFiles).toHaveBeenCalled()
 		})
@@ -255,22 +255,10 @@ describe("FileSettingBarController", () => {
 			fileSettingBarController["lastRenderState"] = FileSelectionState.Comparison
 			fileSettingBarController["_viewModel"].selectedFileNames.delta.reference = "fileA"
 
-			fileSettingBarController.onRenderStateChange(FileSelectionState.Comparison)
+			fileSettingBarController.onDeltaStateSelected()
 
 			expect(fileSettingBarController["_viewModel"].selectedFileNames.delta.reference).toEqual("fileA")
 			expect(fileSettingBarController.onDeltaComparisonFileChange).toHaveBeenCalledWith(null)
-		})
-
-		it("should not do anything if renderState is reference", () => {
-			fileSettingBarController.onDeltaComparisonFileChange = jest.fn()
-			fileSettingBarController.selectAllPartialFiles = jest.fn()
-			fileSettingBarController.onSingleFileChange = jest.fn()
-
-			fileSettingBarController.onRenderStateChange(FileSelectionState.Reference)
-
-			expect(fileSettingBarController.onDeltaComparisonFileChange).not.toHaveBeenCalled()
-			expect(fileSettingBarController.selectAllPartialFiles).not.toHaveBeenCalled()
-			expect(fileSettingBarController.onSingleFileChange).not.toHaveBeenCalled()
 		})
 	})
 
