@@ -91,13 +91,6 @@ file-setting-bar-component {
 		}
 	}
 
-	md-input-container.half {
-		display: inline-block;
-		md-select {
-			width: (($selectWidth) / 2) + px;
-		}
-	}
-
 	.file-button {
 		margin: 5px;
 		padding: 0;
