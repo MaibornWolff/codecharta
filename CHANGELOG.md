@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Moved File Settings from Ribbon Bar to new File Setting Bar #525
+
 ### Removed
 
 ### Fixed
