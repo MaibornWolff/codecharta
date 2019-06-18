@@ -113,16 +113,18 @@ export class FileSettingBarController implements FileStateServiceSubscriber {
 		this.fileStateService.setMultiple(partialFiles)
 	}
 
-	public onRenderStateChange(renderState: FileSelectionState) {
-		if (renderState === FileSelectionState.Single) {
-			this._viewModel.selectedFileNames.single = this.getLastVisibleFileName()
-			this.onSingleFileChange(this._viewModel.selectedFileNames.single)
-		} else if (renderState === FileSelectionState.Partial) {
-			this.selectAllPartialFiles()
-		} else if (renderState === FileSelectionState.Comparison) {
-			this._viewModel.selectedFileNames.delta.reference = this.getLastVisibleFileName()
-			this.onDeltaComparisonFileChange(null)
-		}
+	public onSingleStateSelected() {
+		this._viewModel.selectedFileNames.single = this.getLastVisibleFileName()
+		this.onSingleFileChange(this._viewModel.selectedFileNames.single)
+	}
+
+	public onPartialStateSelected() {
+		this.selectAllPartialFiles()
+	}
+
+	public onDeltaStateSelected() {
+		this._viewModel.selectedFileNames.delta.reference = this.getLastVisibleFileName()
+		this.onDeltaComparisonFileChange(null)
 	}
 
 	public downloadFile() {

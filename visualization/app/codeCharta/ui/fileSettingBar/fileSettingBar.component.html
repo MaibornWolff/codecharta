@@ -51,19 +51,19 @@
 		<md-button
 			class="file-state-seletor left"
 			ng-class="{current: $ctrl._viewModel.isSingleState}"
-			ng-click="$ctrl.onRenderStateChange('Single')"
+			ng-click="$ctrl.onSingleStateSelected()"
 			><span class="text">Single</span></md-button
 		>
 		<md-button
 			class="file-state-seletor middle"
 			ng-class="{current: $ctrl._viewModel.isPartialState}"
-			ng-click="$ctrl.onRenderStateChange('Partial')"
+			ng-click="$ctrl.onPartialStateSelected()"
 			><span class="text">Multiple</span></md-button
 		>
 		<md-button
 			class="file-state-seletor right"
 			ng-class="{current: $ctrl._viewModel.isDeltaState}"
-			ng-click="$ctrl.onRenderStateChange('Comparison')"
+			ng-click="$ctrl.onDeltaStateSelected()"
 			><span class="text">Delta</span></md-button
 		>
 	</section>
