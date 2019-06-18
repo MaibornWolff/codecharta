@@ -55,6 +55,18 @@
 		</md-select>
 	</md-input-container>
 
+	<section layout="row" layout-align="center align" class="mode-chooser">
+		<md-button class="file-state-seletor left" ng-class="{current: $ctrl._viewModel.isSingleState}"
+			><span class="text">Single</span></md-button
+		>
+		<md-button class="file-state-seletor middle" ng-class="{current: $ctrl._viewModel.isPartialState}"
+			><span class="text">Multiple</span></md-button
+		>
+		<md-button class="file-state-seletor right" ng-class="{current: $ctrl._viewModel.isDeltaState}"
+			><span class="text">Delta</span></md-button
+		>
+	</section>
+
 	<md-input-container ng-show="$ctrl._viewModel.isDeltaState">
 		<md-select
 			ng-model="$ctrl._viewModel.selectedFileNames.delta.comparison"
