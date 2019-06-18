@@ -16,12 +16,12 @@ file-setting-bar-component {
 		display: inline-block;
 		margin-left: 10px;
 		margin-right: 10px;
-		margin-top: 3px;
+		margin-top: 5px;
 		margin-bottom: 3px;
 	}
 
 	.md-button {
-		height: 28px;
+		height: 24px;
 		width: 55px;
 		min-height: 0px;
 		min-width: 0px;
@@ -47,8 +47,8 @@ file-setting-bar-component {
 
 		.text {
 			display: block;
-			margin-top: -3px;
-			padding-top: -3px;
+			margin-top: -5px;
+			padding-top: -5px;
 		}
 
 		&.current {
@@ -129,6 +129,10 @@ file-setting-bar-component {
 					color: #eee;
 				}
 			}
+		}
+
+		&.download {
+			margin-left: 0px;
 		}
 	}
 }
