@@ -24,11 +24,22 @@ class StructureModifierTest {
         Assertions.assertThat(cliResult).contains(listOf("MyProject", "otherFile.java"))
     }
 
+    @Test
+    fun `processes only valid project files`() {
+        val originalError = System.err
+        val errorStream = ByteArrayOutputStream()
+        System.setErr(PrintStream(errorStream))
+
+        executeForOutput("", arrayOf("src/test/resources/invalid_project.cc.json", "-p=2"))
+        System.setErr(originalError)
+
+        Assertions.assertThat(errorStream.toString()).contains("invalid_project.cc.json is not a valid project")
+    }
+
     @Ignore
     @Test
     fun `reads project piped input multiline`() {
         val input = File("src/test/resources/sample_project.cc.json").bufferedReader().readLines().joinToString(separator = "\n") { it }
-        println(input)
         val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
 
         Assertions.assertThat(cliResult).contains(listOf("MyProject", "otherFile.java"))

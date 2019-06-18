@@ -75,8 +75,8 @@ class NodeRemoverTest {
 
         Assertions.assertThat(result.edges.size).isEqualTo(1)
         Assertions.assertThat(result.edges.first()).isEqualToComparingFieldByFieldRecursively(sampleProject.edges.last())
-        Assertions.assertThat(result.edges.map { it.fromNodeName }).doesNotContain("/roo/foo")
-        Assertions.assertThat(result.edges.map { it.toNodeName }).doesNotContain("/roo/foo")
+        Assertions.assertThat(result.edges.map { it.fromNodeName }).doesNotContain("/root/foo")
+        Assertions.assertThat(result.edges.map { it.toNodeName }).doesNotContain("/root/foo")
     }
 
     @Test
