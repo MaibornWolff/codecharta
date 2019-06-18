@@ -18,7 +18,6 @@
 				<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
 			</md-option>
 		</md-select>
-		<div class="description">File</div>
 	</md-input-container>
 
 	<md-input-container style="margin:0;" ng-show="$ctrl._viewModel.isDeltaState">
@@ -30,7 +29,6 @@
 				<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
 			</md-option>
 		</md-select>
-		<div class="description">Reference</div>
 	</md-input-container>
 
 	<md-input-container ng-show="$ctrl._viewModel.isPartialState">
@@ -47,7 +45,6 @@
 				<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
 			</md-option>
 		</md-select>
-		<div class="description">Files</div>
 	</md-input-container>
 
 	<md-input-container style="margin:0;" class="half">
@@ -56,7 +53,6 @@
 			<md-option value="Partial">Multiple</md-option>
 			<md-option value="Comparison">Delta</md-option>
 		</md-select>
-		<div class="description">Mode</div>
 	</md-input-container>
 
 	<md-input-container ng-show="$ctrl._viewModel.isDeltaState">
@@ -68,6 +64,5 @@
 				<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
 			</md-option>
 		</md-select>
-		<div class="description">Comparison</div>
 	</md-input-container>
 </div>

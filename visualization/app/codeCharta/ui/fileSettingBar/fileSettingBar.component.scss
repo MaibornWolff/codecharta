@@ -2,8 +2,8 @@ file-setting-bar-component {
 	$selectWidth: 300;
 
 	.file-setting-bar {
-		background-color: white;
-		height: 45px;
+		background-color: #f0f0f0;
+		height: 35px;
 		display: block;
 		margin-block-end: 0;
 		padding-bottom: 0;
@@ -15,19 +15,11 @@ file-setting-bar-component {
 		display: inline-block;
 		text-align: left;
 		margin: 0;
+		font-size: 11pt;
 
 		md-select {
 			width: $selectWidth + px;
 			display: block;
-		}
-
-		.description {
-			color: grey;
-			vertical-align: middle;
-			font-size: 8pt;
-			margin-top: -8px;
-			width: 100%;
-			padding-left: 3px;
 		}
 
 		> * {
@@ -36,7 +28,6 @@ file-setting-bar-component {
 
 		i.fa {
 			color: rgb(0, 150, 136);
-			vertical-align: middle;
 			margin-top: 4px;
 			margin-left: 5px;
 			margin-right: 3px;
@@ -59,8 +50,8 @@ file-setting-bar-component {
 	.file-button {
 		margin: 5px;
 		padding: 0;
-		height: 26px;
-		width: 26px;
+		height: 24px;
+		width: 24px;
 		float: left;
 
 		* {
@@ -78,8 +69,8 @@ file-setting-bar-component {
 
 			i {
 				position: absolute;
-				top: 7px;
-				left: 7px;
+				top: 6px;
+				left: 6px;
 				color: white;
 
 				&:hover {
