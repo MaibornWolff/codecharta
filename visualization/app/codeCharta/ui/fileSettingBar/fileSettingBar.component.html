@@ -9,6 +9,27 @@
 		</md-button>
 	</div>
 
+	<section layout="row" layout-align="center center" class="mode-chooser">
+		<md-button
+			class="file-state-seletor left"
+			ng-class="{current: $ctrl._viewModel.isSingleState}"
+			ng-click="$ctrl.onSingleStateSelected()"
+			><span class="text">Single</span></md-button
+		>
+		<md-button
+			class="file-state-seletor middle"
+			ng-class="{current: $ctrl._viewModel.isPartialState}"
+			ng-click="$ctrl.onPartialStateSelected()"
+			><span class="text">Multiple</span></md-button
+		>
+		<md-button
+			class="file-state-seletor right"
+			ng-class="{current: $ctrl._viewModel.isDeltaState}"
+			ng-click="$ctrl.onDeltaStateSelected()"
+			><span class="text">Delta</span></md-button
+		>
+	</section>
+
 	<md-input-container style="margin:0;" ng-show="$ctrl._viewModel.isSingleState">
 		<md-select
 			ng-model="$ctrl._viewModel.selectedFileNames.single"
@@ -46,27 +67,6 @@
 			</md-option>
 		</md-select>
 	</md-input-container>
-
-	<section layout="row" layout-align="center center" class="mode-chooser">
-		<md-button
-			class="file-state-seletor left"
-			ng-class="{current: $ctrl._viewModel.isSingleState}"
-			ng-click="$ctrl.onSingleStateSelected()"
-			><span class="text">Single</span></md-button
-		>
-		<md-button
-			class="file-state-seletor middle"
-			ng-class="{current: $ctrl._viewModel.isPartialState}"
-			ng-click="$ctrl.onPartialStateSelected()"
-			><span class="text">Multiple</span></md-button
-		>
-		<md-button
-			class="file-state-seletor right"
-			ng-class="{current: $ctrl._viewModel.isDeltaState}"
-			ng-click="$ctrl.onDeltaStateSelected()"
-			><span class="text">Delta</span></md-button
-		>
-	</section>
 
 	<md-input-container ng-show="$ctrl._viewModel.isDeltaState">
 		<md-select
