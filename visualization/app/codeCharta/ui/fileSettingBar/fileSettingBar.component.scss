@@ -71,6 +71,19 @@ file-setting-bar-component {
 		md-select {
 			width: $selectWidth + px;
 			display: block;
+
+			.md-select-value {
+				background: white;
+				margin-right: 5px;
+				margin-top: 5px;
+				border-radius: 5px;
+				padding-left: 5px;
+				min-height: 22px;
+
+				span {
+					margin-top: -3px;
+				}
+			}
 		}
 
 		> * {
