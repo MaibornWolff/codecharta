@@ -24,7 +24,7 @@ class FolderMover(private val project: Project, private val projectName: String?
     }
 
     private fun getPathSegments(path: String): List<String> {
-        return path.removePrefix("/").split("/")
+        return path.removePrefix("/").split("/").filter { it.isNotEmpty() }
     }
 
     private fun moveNodes(moveFrom: String, moveTo: String): List<MutableNode> {
@@ -32,14 +32,16 @@ class FolderMover(private val project: Project, private val projectName: String?
         val destinationPath = getPathSegments(moveTo)
         val rootNode = project.rootNode.toMutableNode()
 
-        val newStructure = listOf(removeMovedNodeFromStructure(originPath, rootNode)!!)
+        val newStructure = removeMovedNodeFromStructure(originPath, rootNode)
+                ?: MutableNode("root", type = NodeType.Folder)
+        val newStructureList = listOfNotNull(newStructure)
 
         if (toMove == null) {
             logger.warn("Path to move was not found in project. No nodes are therefore moved")
         } else {
-            insertInNewStructure(destinationPath.drop(1), rootNode)
+            insertInNewStructure(destinationPath.drop(1), newStructure)
         }
-        return newStructure
+        return newStructureList
     }
 
     private fun removeMovedNodeFromStructure(originPath: List<String>, node: MutableNode): MutableNode? {

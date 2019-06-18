@@ -120,4 +120,28 @@ class FolderMoverTest {
         Assertions.assertThat(blacklist[0].path).isEqualTo("/root/bar/file1")
         Assertions.assertThat(blacklist[1].path).isEqualTo("/root/whatever/file2")
     }
+
+    @Test
+    fun `should be able to move from root`() {
+        val folderMover = FolderMover(sampleProject, null)
+
+        val result = folderMover.move("/root", "/root/new")
+
+        val destinationNode = result!!.rootNode.children.filter { it.name == "new" }.first()
+        val destinationNodeChild = destinationNode.children.first()
+        Assertions.assertThat(destinationNode.name).isEqualTo("new")
+        Assertions.assertThat(destinationNodeChild.name).isEqualTo("src")
+    }
+
+    @Test
+    fun `should be able to move to root`() {
+        val folderMover = FolderMover(sampleProject, null)
+
+        val result = folderMover.move("/root/src", "/root")
+
+        val destinationNode = result!!.rootNode.children.filter { it.name == "main" }.first()
+        val destinationNodeChild = destinationNode.children.first()
+        Assertions.assertThat(destinationNode.name).isEqualTo("main")
+        Assertions.assertThat(destinationNodeChild.name).isEqualTo("file1.java")
+    }
 }
