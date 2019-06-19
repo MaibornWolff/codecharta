@@ -6,9 +6,11 @@ import mu.KotlinLogging
 class SubProjectExtractor(private val project: Project, private val projectName: String?) {
 
     private val logger = KotlinLogging.logger { }
+    private lateinit var path: String
 
     fun extract(path: String): Project {
-        val pathSegments = path.removePrefix("/").split("/")
+        this.path = path
+        val pathSegments = path.removePrefix("/").split("/").filter { it.isNotEmpty() }
         return ProjectBuilder(
                 projectName ?: project.projectName,
                 addRoot(extractNodes(pathSegments, project.rootNode.toMutableNode())),
@@ -34,7 +36,7 @@ class SubProjectExtractor(private val project: Project, private val projectName:
     }
 
     private fun addRoot(nodes: MutableList<MutableNode>): List<MutableNode> {
-        if (nodes.size == 0) logger.warn("No nodes with the specified path(s) were fond. The resulting project is therefore empty")
+        if (nodes.size == 0) logger.warn("No nodes with the specified path ($path) were fond. The resulting project is therefore empty")
 
         val rootNode = project.rootNode.toMutableNode()
         rootNode.children = nodes

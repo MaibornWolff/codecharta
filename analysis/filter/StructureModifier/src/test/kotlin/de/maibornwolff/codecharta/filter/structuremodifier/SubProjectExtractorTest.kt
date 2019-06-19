@@ -30,7 +30,7 @@ class SubProjectExtractorTest {
     fun `Single path is extracted`() {
         val subProjectExtractor = SubProjectExtractor(sampleProject, null)
 
-        val result = subProjectExtractor.extract("/root/src/test")
+        val result = subProjectExtractor.extract("root/src/test")
         println(result)
 
         val extractedNode = result.rootNode
