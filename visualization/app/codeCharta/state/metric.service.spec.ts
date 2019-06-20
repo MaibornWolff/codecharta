@@ -1,8 +1,8 @@
 import "./state.module"
 import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { CCFile, FileState, FileSelectionState, MetricData } from "../codeCharta.model"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../util/dataMocks"
+import { CCFile, FileState, FileSelectionState, MetricData, Settings, AttributeTypeValue } from "../codeCharta.model"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, SETTINGS } from "../util/dataMocks"
 import { MetricService } from "./metric.service"
 import { FileStateService } from "./fileState.service"
 import { NodeDecorator } from "../util/nodeDecorator"
@@ -16,6 +16,7 @@ describe("MetricService", () => {
 	let fileStates: FileState[]
 	let files: CCFile[]
 	let metricData: MetricData[]
+	let settings: Settings
 
 	beforeEach(() => {
 		restartSystem()
@@ -39,6 +40,7 @@ describe("MetricService", () => {
 			{ name: "functions", maxValue: 999999, availableInVisibleMaps: true },
 			{ name: "mcc", maxValue: 999999, availableInVisibleMaps: true }
 		]
+		settings = JSON.parse(JSON.stringify(SETTINGS))
 	}
 
 	function rebuildService() {
@@ -128,6 +130,26 @@ describe("MetricService", () => {
 			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } }, undefined)
 
 			expect(metricService.getMetricData().filter(x => x.name === "unary").length).toBeGreaterThan(0)
+		})
+	})
+
+	describe("getAttributeTypeByMetric", () => {
+		it("should return absolute", () => {
+			const actual = metricService.getAttributeTypeByMetric("rloc", settings)
+
+			expect(actual).toBe(AttributeTypeValue.absolute)
+		})
+
+		it("should return relative", () => {
+			const actual = metricService.getAttributeTypeByMetric("coverage", settings)
+
+			expect(actual).toBe(AttributeTypeValue.relative)
+		})
+
+		it("should return null", () => {
+			const actual = metricService.getAttributeTypeByMetric("notfound", settings)
+
+			expect(actual).toBeNull()
 		})
 	})
 

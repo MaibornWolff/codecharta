@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.25.0",
+	"version": "1.26.0",
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
@@ -72,11 +72,11 @@
 		"doc": "rimraf dist/docs && typedoc --module es2015 --target ES6 --exclude **/*.spec.ts --out dist/docs/ --name CodeCharta app/**/*.ts",
 		"serve": "webpack --config ./conf/webpack.config.js --watch",
 		"package": "rimraf dist/packages && build --concurrent --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --mirror https://dl.nwjs.io/ . && bestzip ./dist/packages/codecharta-visualization-$npm_package_version-web.zip ./dist/webpack",
-		"prepare": "npm run build",
 		"g": "plop",
 		"lint": "tslint -c \"tslint.json\" \"app/**/*.ts\" --project tsconfig.json",
 		"lint:fix": "tslint -c \"tslint.json\" \"app/**/*.ts\" --fix --project tsconfig.json",
-		"format": "prettier --write \"./app/**/*.ts\""
+		"format": "prettier --write \"./**/*\"",
+		"format:quick": "pretty-quick --pattern \"./**/*\" --staged"
 	},
 	"bin": {
 		"codecharta-visualization": "cli.js"
@@ -127,7 +127,7 @@
 	},
 	"husky": {
 		"hooks": {
-			"pre-commit": "pretty-quick --staged",
+			"pre-commit": "npm run format:quick",
 			"pre-push": "npm run lint"
 		}
 	},

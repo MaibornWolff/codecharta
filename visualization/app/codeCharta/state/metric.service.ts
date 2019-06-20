@@ -1,10 +1,22 @@
-import { BlacklistItem, BlacklistType, CodeMapNode, FileState, MetricData, RecursivePartial, Settings } from "../codeCharta.model"
+import {
+	AttributeTypes,
+	BlacklistItem,
+	BlacklistType,
+	CodeMapNode,
+	FileState,
+	MetricData,
+	RecursivePartial,
+	Settings,
+	AttributeType,
+	AttributeTypeValue
+} from "../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { IAngularEvent, IRootScopeService } from "angular"
 import { SettingsService, SettingsServiceSubscriber } from "./settings.service"
 import { CodeMapHelper } from "../util/codeMapHelper"
+import _ from "lodash"
 
 export interface MetricServiceSubscriber {
 	onMetricDataAdded(metricData: MetricData[], event: IAngularEvent)
@@ -20,6 +32,7 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 	private static METRIC_DATA_ADDED_EVENT = "metric-data-added"
 	private static METRIC_DATA_REMOVED_EVENT = "metric-data-removed"
 
+	//TODO MetricData should contain attributeType
 	private metricData: MetricData[] = []
 
 	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
@@ -62,6 +75,33 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 	public getMaxMetricByMetricName(metricName: string): number {
 		const metric: MetricData = this.metricData.find(x => x.name == metricName)
 		return metric ? metric.maxValue : undefined
+	}
+
+	public getAttributeTypeByMetric(metricName: string, settings: Settings): AttributeTypeValue {
+		const attributeTypes = settings.fileSettings.attributeTypes
+
+		const attributeType = this.getMergedAttributeTypes(attributeTypes).find(x => {
+			return _.findKey(x) === metricName
+		})
+
+		if (attributeType) {
+			return attributeType[metricName]
+		}
+		return null
+	}
+
+	private getMergedAttributeTypes(attributeTypes: AttributeTypes): AttributeType[] {
+		const mergedAttributeTypes = [...attributeTypes.nodes]
+
+		mergedAttributeTypes.forEach(nodeAttribute => {
+			attributeTypes.edges.forEach(edgeAttribute => {
+				if (_.findKey(nodeAttribute) !== _.findKey(edgeAttribute)) {
+					mergedAttributeTypes.push(edgeAttribute)
+				}
+			})
+		})
+
+		return mergedAttributeTypes
 	}
 
 	private calculateMetrics(fileStates: FileState[], visibleFileStates: FileState[], blacklist: BlacklistItem[]): MetricData[] {

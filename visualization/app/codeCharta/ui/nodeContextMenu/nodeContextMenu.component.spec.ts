@@ -100,8 +100,8 @@ describe("nodeContextMenuController", () => {
 	function withMockedCodeMapPreRenderService() {
 		codeMapPreRenderService = nodeContextMenuController["codeMapPreRenderService"] = jest.fn<CodeMapPreRenderService>(() => {
 			return {
-				getRenderFile: jest.fn(() => {
-					return TEST_DELTA_MAP_A
+				getRenderMap: jest.fn(() => {
+					return TEST_DELTA_MAP_A.map
 				})
 			}
 		})()

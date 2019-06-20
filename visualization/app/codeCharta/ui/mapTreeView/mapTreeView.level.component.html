@@ -1,30 +1,46 @@
-<div ng-if="!$ctrl.isBlacklisted($ctrl.node)" class="{{::$ctrl.depth?'':'tree-root'}} tree-element-{{::$ctrl.depth?$ctrl.depth:0}} {{::$ctrl.isLeaf()?'tree-leaf':'tree-parent'}}">
+<div
+	ng-if="!$ctrl.isBlacklisted($ctrl.node)"
+	class="{{::$ctrl.depth?'':'tree-root'}} tree-element-{{::$ctrl.depth?$ctrl.depth:0}} {{::$ctrl.isLeaf()?'tree-leaf':'tree-parent'}}"
+>
+	<div
+		class="tree-element-label-{{::$ctrl.depth?$ctrl.depth:0}} tree-element-label {{
+			$ctrl._viewModel.isHoveredInCodeMap ? 'hovered' : ''
+		}}"
+		ng-mouseenter="$ctrl.onMouseEnter()"
+		ng-mouseleave="$ctrl.onMouseLeave()"
+		ng-right-click="$ctrl.onRightClick($event)"
+	>
+		<span class="no-outline" ng-click="$ctrl.onFolderClick()">
+			<span
+				role="img"
+				ng-if="!$ctrl.isLeaf() && $ctrl._viewModel.collapsed"
+				class="fa fa-folder cursor-pointer"
+				ng-style="{'color': $ctrl.getMarkingColor() }"
+				aria-hidden="true"
+			></span>
+			<span
+				role="img"
+				ng-if="!$ctrl.isLeaf() && !$ctrl._viewModel.collapsed"
+				class="fa fa-folder-open cursor-pointer"
+				ng-style="{'color': $ctrl.getMarkingColor() }"
+				aria-hidden="true"
+			></span>
+			<span role="img" ng-if="$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></span>
+		</span>
 
-    <div class="tree-element-label-{{::$ctrl.depth?$ctrl.depth:0}} tree-element-label {{$ctrl._viewModel.isHoveredInCodeMap ? 'hovered':''}}" ng-mouseenter="$ctrl.onMouseEnter()" ng-mouseleave="$ctrl.onMouseLeave()" ng-right-click="$ctrl.onRightClick($event)">
+		<span class="cursor-pointer no-outline" ng-click="$ctrl.onEyeClick()">
+			<span role="img" ng-if="$ctrl.node.visible" class="fa fa-eye" aria-hidden="true"></span>
+			<span role="img" ng-if="!$ctrl.node.visible" class="fa fa-eye-slash" aria-hidden="true"></span>
+		</span>
 
-        <span class="no-outline" ng-click="$ctrl.onFolderClick()">
-            <span role="img" ng-if="!$ctrl.isLeaf() && $ctrl._viewModel.collapsed" class="fa fa-folder cursor-pointer" ng-style="{'color': $ctrl.getMarkingColor() }" aria-hidden="true"></span>
-            <span role="img" ng-if="!$ctrl.isLeaf() && !$ctrl._viewModel.collapsed" class="fa fa-folder-open cursor-pointer" ng-style="{'color': $ctrl.getMarkingColor() }" aria-hidden="true"></span>
-            <span role="img" ng-if="$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></span>
-        </span>
+		<span class="cursor-pointer no-outline {{ $ctrl.isSearched($ctrl.node) ? 'angular-green' : '' }}" ng-click="$ctrl.onLabelClick()">
+			{{::$ctrl.node.name}}
+		</span>
+	</div>
 
-        <span class="cursor-pointer no-outline" ng-click="$ctrl.onEyeClick()">
-            <span role="img" ng-if="$ctrl.node.visible" class="fa fa-eye" aria-hidden="true"></span>
-            <span role="img" ng-if="!$ctrl.node.visible" class="fa fa-eye-slash" aria-hidden="true"></span>
-        </span>
-
-        <span class="cursor-pointer no-outline {{$ctrl.isSearched($ctrl.node)?'angular-green':''}}" ng-click="$ctrl.onLabelClick()">
-            {{::$ctrl.node.name}}
-        </span>
-    </div>
-
-    <div class="tree-element-children tree-element-children-{{::$ctr.depth?$ctrl.depth:0}}">
-
-        <div ng-if="!$ctrl._viewModel.collapsed"
-             ng-repeat="node in $ctrl.node.children | orderBy: [$ctrl.sortByFolder,'name'] ">
-            <map-tree-view-level-component node="::node" depth="::$ctrl.depth+1"></map-tree-view-level-component>
-        </div>
-
-    </div>
-
+	<div class="tree-element-children tree-element-children-{{::$ctr.depth?$ctrl.depth:0}}">
+		<div ng-if="!$ctrl._viewModel.collapsed" ng-repeat="node in $ctrl.node.children | orderBy: [$ctrl.sortByFolder,'name'] ">
+			<map-tree-view-level-component node="::node" depth="::$ctrl.depth+1"></map-tree-view-level-component>
+		</div>
+	</div>
 </div>

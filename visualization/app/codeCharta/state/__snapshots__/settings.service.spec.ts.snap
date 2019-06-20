@@ -52,6 +52,7 @@ Object {
       "from": null,
       "to": null,
     },
+    "distributionMetric": null,
     "focusedNodePath": "",
     "heightMetric": null,
     "margin": null,
@@ -59,7 +60,10 @@ Object {
     "searchedNodePaths": Array [],
   },
   "fileSettings": Object {
-    "attributeTypes": Object {},
+    "attributeTypes": Object {
+      "edges": Array [],
+      "nodes": Array [],
+    },
     "blacklist": Array [],
     "edges": Array [],
     "markedPackages": Array [],

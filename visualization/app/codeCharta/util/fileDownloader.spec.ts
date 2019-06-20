@@ -1,70 +1,35 @@
 import { stubDate } from "../../../mocks/dateMock.helper"
 import { FileDownloader } from "./fileDownloader"
-import { CCFile } from "../codeCharta.model"
+import { FileMeta, CodeMapNode, FileSettings, ExportCCFile } from "../codeCharta.model"
 import { TEST_FILE_DATA, TEST_FILE_DATA_DOWNLOADED } from "./dataMocks"
+import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 
 describe("fileDownloader", () => {
-	let file: CCFile
+	let map: CodeMapNode
+	let fileMeta: FileMeta
+	let filesettings: FileSettings
+	let fileName: string
+	let fileNameWithExtension: string
+	let downloadSettingsNames: string[]
 	stubDate(new Date("2018-12-14T09:39:59"))
 
 	beforeEach(() => {
-		file = TEST_FILE_DATA
+		map = TEST_FILE_DATA.map
+		fileMeta = TEST_FILE_DATA.fileMeta
+		filesettings = TEST_FILE_DATA.settings.fileSettings
+		fileName = "foo_2019-04-22_18-01"
+		fileNameWithExtension = "foo_2019-04-22_18-01.cc.json"
+		downloadSettingsNames = [DownloadCheckboxNames.edges, DownloadCheckboxNames.excludes, DownloadCheckboxNames.hides]
 
 		FileDownloader["downloadData"] = jest.fn()
 	})
 
 	describe("downloadCurrentMap", () => {
-		it("should", () => {
-			FileDownloader.downloadCurrentMap(file)
+		it("should call downloadData with correct parameter data", () => {
+			const downloadedMap = FileDownloader.downloadCurrentMap(map, fileMeta, filesettings, downloadSettingsNames, fileName)
 
 			expect(FileDownloader["downloadData"]).toHaveBeenCalledTimes(1)
-			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(TEST_FILE_DATA_DOWNLOADED, TEST_FILE_DATA_DOWNLOADED.fileName)
-			expect(FileDownloader.downloadCurrentMap(file)).toMatchSnapshot()
-		})
-
-		it("should not have multiple timestamps", () => {
-			file.fileMeta.fileName = "foo_2019-04-22_18-01.cc.json"
-			TEST_FILE_DATA_DOWNLOADED.fileName = "foo_2018-12-14_9-39.cc.json"
-
-			FileDownloader.downloadCurrentMap(file)
-
-			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(TEST_FILE_DATA_DOWNLOADED, TEST_FILE_DATA_DOWNLOADED.fileName)
-		})
-
-		it("should insert the valid date", () => {
-			file.fileMeta.fileName = "prefix.name.suffix.cc.json"
-			TEST_FILE_DATA_DOWNLOADED.fileName = "prefix.name.suffix_2018-12-14_9-39.cc.json"
-
-			FileDownloader.downloadCurrentMap(file)
-
-			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(TEST_FILE_DATA_DOWNLOADED, TEST_FILE_DATA_DOWNLOADED.fileName)
-		})
-
-		it("should insert the date and use .cc.json as ending instead of just .json", () => {
-			file.fileMeta.fileName = "prefix.name.suffix.json"
-			TEST_FILE_DATA_DOWNLOADED.fileName = "prefix.name.suffix_2018-12-14_9-39.cc.json"
-
-			FileDownloader.downloadCurrentMap(file)
-
-			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(TEST_FILE_DATA_DOWNLOADED, TEST_FILE_DATA_DOWNLOADED.fileName)
-		})
-
-		it("should replace the date with the valid one", () => {
-			file.fileMeta.fileName = "prefix.name.suffix_2000-01-01_01-01.cc.json"
-			TEST_FILE_DATA_DOWNLOADED.fileName = "prefix.name.suffix_2018-12-14_9-39.cc.json"
-
-			FileDownloader.downloadCurrentMap(file)
-
-			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(TEST_FILE_DATA_DOWNLOADED, TEST_FILE_DATA_DOWNLOADED.fileName)
-		})
-
-		it("should replace the date with the valid one and use .cc.json as ending instead of just .json", () => {
-			file.fileMeta.fileName = "prefix.name.suffix_2000-01-01_01-01.json"
-			TEST_FILE_DATA_DOWNLOADED.fileName = "prefix.name.suffix_2018-12-14_9-39.cc.json"
-
-			FileDownloader.downloadCurrentMap(file)
-
-			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(TEST_FILE_DATA_DOWNLOADED, TEST_FILE_DATA_DOWNLOADED.fileName)
+			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(TEST_FILE_DATA_DOWNLOADED, fileNameWithExtension)
 		})
 	})
 })

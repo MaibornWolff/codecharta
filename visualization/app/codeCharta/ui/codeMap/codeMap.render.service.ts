@@ -29,7 +29,7 @@ export class CodeMapRenderService {
 		const treeMapNode: Node = TreeMapGenerator.createTreemapNodes(renderData.renderFile, renderData.settings, renderData.metricData)
 		const nodes: Node[] = this.collectNodesToArray(treeMapNode)
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
-		const sortedNodes: Node[] = filteredNodes.sort((a, b) => b.height - a.height)
+		const sortedNodes: Node[] = filteredNodes.sort((a, b) => this.sortByNodeHeight(a, b))
 
 		this._mapMesh = new CodeMapMesh(sortedNodes, renderData.settings, FileStateHelper.isDeltaState(renderData.fileStates))
 		this.threeSceneService.setMapMesh(this._mapMesh, renderData.settings.treeMapSettings.mapSize)
@@ -49,6 +49,10 @@ export class CodeMapRenderService {
 			}
 		}
 		return nodes
+	}
+
+	private sortByNodeHeight(a: Node, b: Node) {
+		return b.height - a.height
 	}
 
 	private scaleMap(x: number, y: number, z: number, mapSize: number) {

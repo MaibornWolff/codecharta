@@ -2,26 +2,31 @@
 @import "~font-awesome/css/font-awesome.css";
 @import "~angular-material/angular-material.scss";
 
-*, *:before, *:after {
-
-  @include prefix((
-          box-sizing: border-box
-  ), webkit moz ms o);
-
+*,
+*:before,
+*:after {
+	@include prefix(
+		(
+			box-sizing: border-box
+		),
+		webkit moz ms o
+	);
 }
 
-html, body {
+html,
+body {
+	overflow-y: hidden;
+	overflow-x: hidden;
 
-  overflow-y:hidden;
-  overflow-x:hidden;
+	@include prefix(
+		(
+			user-select: none
+		),
+		webkit moz ms o
+	);
 
-  @include prefix((
-          user-select: none
-  ), webkit moz ms o);
-
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
 }

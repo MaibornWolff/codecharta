@@ -4,7 +4,6 @@ ribbon-bar-component {
 	$sectionWidth: 275;
 	$padding: 5;
 	$animationDuration: 0.5;
-	$opacityExpanded: 0.95;
 	$border: 1px solid #cdcdcd;
 	$border-thin: 0px dotted #cdcdcd;
 	$subsection-bg: #efefef;
@@ -15,7 +14,7 @@ ribbon-bar-component {
 
 	#toggle-ribbon-bar-fab {
 		position: absolute;
-		margin-top: (-1 * $toggleButtonSize / 2) + px;
+		margin-top: (-1 * $toggleButtonSize - 5) + px;
 		right: 10px;
 		z-index: 999;
 		width: $toggleButtonSize + px;
@@ -90,12 +89,9 @@ ribbon-bar-component {
 
 		.section {
 			display: inline-block;
-			margin-left: 0;
 			height: 100%;
 			width: auto;
 			padding-top: $padding + px;
-			padding-bottom: $padding + px;
-			margin-bottom: 6px;
 			border-right: $border;
 			vertical-align: top;
 			position: relative;
@@ -138,6 +134,7 @@ ribbon-bar-component {
 				color: gray;
 				text-align: center;
 				transition: background-color 0.4s;
+				padding: 1px 0 2px 0;
 
 				.first {
 					padding-left: 8px;
@@ -183,7 +180,6 @@ ribbon-bar-component {
 
 		&.expanded {
 			height: $heightExpanded + px;
-			opacity: $opacityExpanded;
 
 			.section {
 				.section-header {

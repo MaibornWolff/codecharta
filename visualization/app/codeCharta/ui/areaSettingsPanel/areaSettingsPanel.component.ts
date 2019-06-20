@@ -1,7 +1,7 @@
 import "./areaSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import { CCFile, CodeMapNode, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
+import { CodeMapNode, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3-hierarchy"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
@@ -34,23 +34,19 @@ export class AreaSettingsPanelController
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this._viewModel.dynamicMargin = settings.appSettings.dynamicMargin
 		this._viewModel.margin = settings.dynamicSettings.margin
-		this.potentiallyUpdateMargin(this.codeMapPreRenderService.getRenderFile(), settings)
+		this.potentiallyUpdateMargin(this.codeMapPreRenderService.getRenderMap(), settings)
 	}
 
-	public onRenderFileChanged(renderFile: CCFile, event: angular.IAngularEvent) {
+	public onRenderMapChanged(map: CodeMapNode, event: angular.IAngularEvent) {
 		this._viewModel.dynamicMargin = this.settingsService.getSettings().appSettings.dynamicMargin
-		this.potentiallyUpdateMargin(renderFile, this.settingsService.getSettings())
+		this.potentiallyUpdateMargin(map, this.settingsService.getSettings())
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 		this.resetDynamicMargin()
-		this.potentiallyUpdateMargin(this.codeMapPreRenderService.getRenderFile(), this.settingsService.getSettings())
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-		this.resetDynamicMargin()
-		this.potentiallyUpdateMargin(this.codeMapPreRenderService.getRenderFile(), this.settingsService.getSettings())
-	}
+	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
 
 	private resetDynamicMargin() {
 		this._viewModel.dynamicMargin = true
@@ -81,9 +77,9 @@ export class AreaSettingsPanelController
 		})
 	}
 
-	private potentiallyUpdateMargin(renderFile: CCFile, settings: Settings) {
-		if (settings.appSettings.dynamicMargin && settings.dynamicSettings.areaMetric && renderFile) {
-			const newMargin = this.computeMargin(settings.dynamicSettings.areaMetric, renderFile)
+	private potentiallyUpdateMargin(map: CodeMapNode, settings: Settings) {
+		if (settings.appSettings.dynamicMargin && settings.dynamicSettings.areaMetric && map) {
+			const newMargin = this.computeMargin(settings.dynamicSettings.areaMetric, map)
 			if (this._viewModel.margin !== newMargin) {
 				this._viewModel.margin = newMargin
 				this.applySettings()
@@ -91,8 +87,8 @@ export class AreaSettingsPanelController
 		}
 	}
 
-	private computeMargin(areaMetric: string, renderFile: CCFile): number {
-		let leaves = hierarchy<CodeMapNode>(renderFile.map).leaves()
+	private computeMargin(areaMetric: string, map: CodeMapNode): number {
+		let leaves = hierarchy<CodeMapNode>(map).leaves()
 		let numberOfBuildings = 0
 		let totalArea = 0
 

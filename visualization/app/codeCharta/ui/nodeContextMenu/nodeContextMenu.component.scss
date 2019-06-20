@@ -1,43 +1,40 @@
 node-context-menu-component {
+	#codemap-context-menu {
+		position: absolute;
+		z-index: 2000;
+	}
 
-  #codemap-context-menu {
-    position: absolute;
-    z-index: 2000;
-  }
+	.button-group {
+		display: inline-grid;
+	}
 
-  .button-group {
-    display: inline-grid;
-  }
+	.md-button:not(.colorButton) {
+		text-align: left;
+		margin-top: 0;
+		line-height: 30px;
+		min-height: 30px;
 
-  .md-button:not(.colorButton) {
-    text-align: left;
-    margin-top: 0;
-    line-height: 30px;
-    min-height: 30px;
+		i {
+			min-width: 15px;
+		}
 
-    i {
-      min-width: 15px;
-    }
+		&:not(:last-child) {
+			margin-bottom: 0;
+		}
+	}
 
-    &:not(:last-child) {
-      margin-bottom: 0;
-    }
-  }
+	.colorButton {
+		width: 32px !important;
+		height: 32px !important;
+		min-width: 32px !important;
+		min-height: 32px !important;
 
-  .colorButton {
-    width: 32px !important;
-    height: 32px !important;
-    min-width: 32px !important;
-    min-height: 32px !important;
-
-    i {
-      font-size: 25px;
-      margin-left: 0px;
-      margin-top: 3px;
-      color: red;
-      text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
-    }
-
-  }
-
+		i {
+			font-size: 25px;
+			margin-left: 0px;
+			margin-top: 3px;
+			color: red;
+			text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+		}
+	}
 }

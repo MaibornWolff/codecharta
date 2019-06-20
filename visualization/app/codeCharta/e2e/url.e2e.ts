@@ -1,5 +1,5 @@
 import { CC_URL, puppeteer } from "../../puppeteer.helper"
-import { ErrorDialogPageObject } from "../ui/dialog/errorDialog.po"
+import { DialogErrorPageObject } from "../ui/dialog/dialog.error.po"
 import { RevisionChooserFileDropDownPageObject } from "../ui/revisionChooser/revisionChooserFileDropdown.po"
 
 jest.setTimeout(15000)
@@ -20,11 +20,11 @@ describe("codecharta", () => {
 	})
 
 	async function handleErrorDialog() {
-		let errorDialog = new ErrorDialogPageObject(page)
-		let msg = await errorDialog.getMessage()
+		let dialogErrorPageObject = new DialogErrorPageObject(page)
+		let msg = await dialogErrorPageObject.getMessage()
 		expect(msg).toEqual("One or more files from the given file URL parameter could not be loaded. Loading sample files instead.")
 		await page.waitFor(1000)
-		return errorDialog.clickOk()
+		return dialogErrorPageObject.clickOk()
 	}
 
 	async function checkSelectedRevisionName(shouldBe: string) {

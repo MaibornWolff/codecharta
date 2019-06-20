@@ -1,6 +1,7 @@
-import { CCFile, CodeMapNode, Edge, MetricData, Node, Settings } from "../codeCharta.model"
+import { AttributeTypeValue, CCFile, CodeMapNode, Edge, MetricData, Node, Settings } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import * as THREE from "three"
+import { MetricDistribution } from "./fileExtensionCalculator"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -120,7 +121,7 @@ export const TEST_FILE_DATA: CCFile = {
 	map: VALID_NODE,
 	settings: {
 		fileSettings: {
-			attributeTypes: {},
+			attributeTypes: { nodes: [], edges: [] },
 			blacklist: [],
 			edges: VALID_EDGES,
 			markedPackages: []
@@ -178,12 +179,106 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
 	},
 	settings: {
 		fileSettings: {
-			attributeTypes: {},
+			attributeTypes: { nodes: [], edges: [] },
 			blacklist: [],
 			edges: VALID_EDGES,
 			markedPackages: []
 		}
 	}
+}
+
+export const METRIC_DISTRIBUTION: MetricDistribution[] = [
+	{
+		fileExtension: "java",
+		absoluteMetricValue: 20,
+		relativeMetricValue: 100,
+		color: null
+	}
+]
+
+export const NONE_METRIC_DISTRIBUTION: MetricDistribution[] = [
+	{
+		fileExtension: "none",
+		absoluteMetricValue: null,
+		relativeMetricValue: 100,
+		color: "#000000"
+	}
+]
+
+export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: "Folder",
+	path: "/root",
+	children: [
+		{
+			name: "big leaf.jpg",
+			type: "File",
+			path: "/root/big leaf.jpg",
+			attributes: { RLOC: 100, Functions: 10, MCC: 1 }
+		},
+		{
+			name: "another big leaf.java",
+			type: "File",
+			path: "/root/another big leaf.java",
+			attributes: { RLOC: 120, Functions: 20, MCC: 2 }
+		},
+		{
+			name: "Parent Leaf",
+			type: "Folder",
+			attributes: {},
+			path: "/root/Parent Leaf",
+			children: [
+				{
+					name: "small leaf.jpg",
+					type: "File",
+					path: "/root/Parent Leaf/small leaf.json",
+					attributes: { RLOC: 30, Functions: 100, MCC: 100 }
+				},
+				{
+					name: "other small leaf.json",
+					type: "File",
+					path: "/root/Parent Leaf/other small leaf.json",
+					attributes: { RLOC: 70, Functions: 1000, MCC: 10 }
+				},
+				{
+					name: "another leaf.java",
+					type: "File",
+					path: "/root/Parent Leaf/another leaf.java",
+					attributes: { RLOC: 42, Functions: 330, MCC: 45 },
+					children: []
+				},
+				{
+					name: "leaf without extension",
+					type: "File",
+					path: "/root/Parent Leaf/leaf without extension",
+					attributes: { RLOC: 15, Functions: 23, MCC: 33 },
+					children: []
+				}
+			]
+		}
+	]
+}
+
+export const VALID_NODE_WITHOUT_RLOC_METRIC: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: "Folder",
+	path: "/root",
+	children: [
+		{
+			name: "big leaf.jpg",
+			type: "File",
+			path: "/root/big leaf.jpg",
+			attributes: { RLOC: 0, Functions: 10, MCC: 1 }
+		},
+		{
+			name: "another big leaf.java",
+			type: "File",
+			path: "/root/another big leaf.java",
+			attributes: { RLOC: 0, Functions: 20, MCC: 2 }
+		}
+	]
 }
 
 export const TEST_DELTA_MAP_A: CCFile = {
@@ -224,7 +319,7 @@ export const TEST_DELTA_MAP_A: CCFile = {
 	},
 	settings: {
 		fileSettings: {
-			attributeTypes: {},
+			attributeTypes: { nodes: [], edges: [] },
 			blacklist: [],
 			edges: VALID_EDGES,
 			markedPackages: []
@@ -282,7 +377,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 	},
 	settings: {
 		fileSettings: {
-			attributeTypes: {},
+			attributeTypes: { nodes: [], edges: [] },
 			blacklist: [],
 			edges: VALID_EDGES,
 			markedPackages: []
@@ -294,6 +389,7 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 	apiVersion: "1.1",
 	attributeTypes: {},
 	blacklist: [],
+	markedPackages: [],
 	edges: [
 		{
 			attributes: { avgCommits: 34, pairingRate: 89 },
@@ -306,7 +402,6 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 			toNodeName: "/root/Parent Leaf/small leaf"
 		}
 	],
-	fileName: "file_2018-12-14_9-39.cc.json",
 	nodes: [
 		{
 			attributes: {},
@@ -343,16 +438,38 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 }
 
 export const SETTINGS: Settings = {
-	fileSettings: { attributeTypes: {}, blacklist: [], edges: [], markedPackages: [] },
+	fileSettings: {
+		attributeTypes: {
+			nodes: [
+				{
+					rloc: AttributeTypeValue.absolute
+				},
+				{
+					mcc: AttributeTypeValue.absolute
+				},
+				{
+					coverage: AttributeTypeValue.relative
+				}
+			],
+			edges: []
+		},
+		blacklist: [],
+		edges: [],
+		markedPackages: []
+	},
 	dynamicSettings: {
 		areaMetric: "rloc",
 		heightMetric: "mcc",
 		colorMetric: "mcc",
+		distributionMetric: "mcc",
 		focusedNodePath: "/root",
 		searchedNodePaths: [],
 		searchPattern: "",
 		margin: 48,
-		colorRange: { from: 19, to: 67 }
+		colorRange: {
+			from: 19,
+			to: 67
+		}
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
@@ -382,7 +499,9 @@ export const SETTINGS: Settings = {
 			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"]
 		}
 	},
-	treeMapSettings: { mapSize: 500 }
+	treeMapSettings: {
+		mapSize: 500
+	}
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -419,6 +538,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		colorMetric: null,
 		focusedNodePath: "",
 		heightMetric: null,
+		distributionMetric: null,
 		margin: null,
 		colorRange: {
 			from: null,
@@ -427,7 +547,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		searchPattern: "",
 		searchedNodePaths: []
 	},
-	fileSettings: { attributeTypes: {}, blacklist: [], edges: [], markedPackages: [] },
+	fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] },
 	treeMapSettings: { mapSize: 500 }
 }
 
