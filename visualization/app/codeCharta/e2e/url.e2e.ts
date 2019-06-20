@@ -1,6 +1,6 @@
 import { CC_URL, puppeteer } from "../../puppeteer.helper"
 import { DialogErrorPageObject } from "../ui/dialog/dialog.error.po"
-import { FileSettingBarPageObject } from "../ui/fileSettingBar/fileSettingBar.po"
+import { FilePanelPageObject } from "../ui/filePanel/filePanel.po"
 
 jest.setTimeout(15000)
 
@@ -28,18 +28,18 @@ describe("codecharta", () => {
 	}
 
 	async function checkSelectedFileName(shouldBe: string) {
-		let fileSettingBar = new FileSettingBarPageObject(page)
+		let filePanel = new FilePanelPageObject(page)
 		await page.waitFor(1000)
-		let name = await fileSettingBar.getSelectedName()
+		let name = await filePanel.getSelectedName()
 		expect(name).toEqual(shouldBe)
 	}
 
 	async function checkAllFileNames(shouldBe: string[]) {
-		let fileSettingBar = new FileSettingBarPageObject(page)
+		let filePanel = new FilePanelPageObject(page)
 		await page.waitFor(1000)
-		await fileSettingBar.clickChooser()
+		await filePanel.clickChooser()
 		await page.waitFor(1000)
-		let names = await fileSettingBar.getAllNames()
+		let names = await filePanel.getAllNames()
 		expect(names).toEqual(shouldBe)
 	}
 

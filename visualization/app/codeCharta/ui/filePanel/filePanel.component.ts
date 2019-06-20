@@ -1,4 +1,4 @@
-import "./fileSettingBar.component.scss"
+import "./filePanel.component.scss"
 import { CCFile, FileSelectionState, FileState } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
@@ -14,7 +14,7 @@ interface SelectedFileNames {
 	partial: string[]
 }
 
-export class FileSettingBarController implements FileStateServiceSubscriber {
+export class FilePanelController implements FileStateServiceSubscriber {
 	private lastRenderState: FileSelectionState
 
 	private _viewModel: {
@@ -165,8 +165,8 @@ export class FileSettingBarController implements FileStateServiceSubscriber {
 	}
 }
 
-export const fileSettingBarComponent = {
-	selector: "fileSettingBarComponent",
-	template: require("./fileSettingBar.component.html"),
-	controller: FileSettingBarController
+export const filePanelComponent = {
+	selector: "filePanelComponent",
+	template: require("./filePanel.component.html"),
+	controller: FilePanelController
 }
