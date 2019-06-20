@@ -1,6 +1,6 @@
 import "./metricType.component.scss"
 import { MetricService } from "../../state/metric.service"
-import { AttributeType, RecursivePartial, Settings } from "../../codeCharta.model"
+import { AttributeTypeValue, RecursivePartial, Settings } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import {
@@ -12,9 +12,9 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export class MetricTypeController implements SettingsServiceSubscriber, CodeMapMouseEventServiceSubscriber {
 	private _viewModel: {
-		areaMetricType: AttributeType
-		heightMetricType: AttributeType
-		colorMetricType: AttributeType
+		areaMetricType: AttributeTypeValue
+		heightMetricType: AttributeTypeValue
+		colorMetricType: AttributeTypeValue
 		isBuildingHovered: boolean
 	} = {
 		areaMetricType: null,
@@ -60,15 +60,15 @@ export class MetricTypeController implements SettingsServiceSubscriber, CodeMapM
 	public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {}
 
 	public isAreaMetricAbsolute(): boolean {
-		return this._viewModel.areaMetricType === AttributeType.absolute || !this._viewModel.areaMetricType
+		return this._viewModel.areaMetricType === AttributeTypeValue.absolute || !this._viewModel.areaMetricType
 	}
 
 	public isHeightMetricAbsolute(): boolean {
-		return this._viewModel.heightMetricType === AttributeType.absolute || !this._viewModel.heightMetricType
+		return this._viewModel.heightMetricType === AttributeTypeValue.absolute || !this._viewModel.heightMetricType
 	}
 
 	public isColorMetricAbsolute(): boolean {
-		return this._viewModel.colorMetricType === AttributeType.absolute || !this._viewModel.colorMetricType
+		return this._viewModel.colorMetricType === AttributeTypeValue.absolute || !this._viewModel.colorMetricType
 	}
 }
 

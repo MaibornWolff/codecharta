@@ -4,7 +4,7 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { MetricService } from "../../state/metric.service"
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settings.service"
-import { AttributeType, Settings } from "../../codeCharta.model"
+import { AttributeTypeValue, Settings } from "../../codeCharta.model"
 import { SETTINGS } from "../../util/dataMocks"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
@@ -67,25 +67,25 @@ describe("MetricTypeController", () => {
 		it("should set the areaMetricType to absolute", () => {
 			metricTypeController.onSettingsChanged(settings, { dynamicSettings: { areaMetric: "rloc" } }, undefined)
 
-			expect(metricTypeController["_viewModel"].areaMetricType).toBe(AttributeType.absolute)
+			expect(metricTypeController["_viewModel"].areaMetricType).toBe(AttributeTypeValue.absolute)
 		})
 
 		it("should set the heightMetricType to absolute", () => {
 			metricTypeController.onSettingsChanged(settings, { dynamicSettings: { heightMetric: "mcc" } }, undefined)
 
-			expect(metricTypeController["_viewModel"].heightMetricType).toBe(AttributeType.absolute)
+			expect(metricTypeController["_viewModel"].heightMetricType).toBe(AttributeTypeValue.absolute)
 		})
 
 		it("should set the colorMetricType to relative", () => {
 			metricTypeController.onSettingsChanged(settings, { dynamicSettings: { colorMetric: "coverage" } }, undefined)
 
-			expect(metricTypeController["_viewModel"].colorMetricType).toBe(AttributeType.relative)
+			expect(metricTypeController["_viewModel"].colorMetricType).toBe(AttributeTypeValue.relative)
 		})
 	})
 
 	describe("isAreaMetricAbsolute", () => {
 		it("should return true if areaMetric is absolute", () => {
-			metricTypeController["_viewModel"].areaMetricType = AttributeType.absolute
+			metricTypeController["_viewModel"].areaMetricType = AttributeTypeValue.absolute
 
 			const actual = metricTypeController.isAreaMetricAbsolute()
 
@@ -101,7 +101,7 @@ describe("MetricTypeController", () => {
 		})
 
 		it("should return false if areaMetric is relative", () => {
-			metricTypeController["_viewModel"].areaMetricType = AttributeType.relative
+			metricTypeController["_viewModel"].areaMetricType = AttributeTypeValue.relative
 
 			const actual = metricTypeController.isAreaMetricAbsolute()
 
@@ -111,7 +111,7 @@ describe("MetricTypeController", () => {
 
 	describe("isHeightMetricAbsolute", () => {
 		it("should return true if areaMetric is absolute", () => {
-			metricTypeController["_viewModel"].heightMetricType = AttributeType.absolute
+			metricTypeController["_viewModel"].heightMetricType = AttributeTypeValue.absolute
 
 			const actual = metricTypeController.isHeightMetricAbsolute()
 
@@ -127,7 +127,7 @@ describe("MetricTypeController", () => {
 		})
 
 		it("should return false if heightMetric is relative", () => {
-			metricTypeController["_viewModel"].heightMetricType = AttributeType.relative
+			metricTypeController["_viewModel"].heightMetricType = AttributeTypeValue.relative
 
 			const actual = metricTypeController.isHeightMetricAbsolute()
 
@@ -137,7 +137,7 @@ describe("MetricTypeController", () => {
 
 	describe("isColorMetricAbsolute", () => {
 		it("should return true if colorMetric is absolute", () => {
-			metricTypeController["_viewModel"].colorMetricType = AttributeType.absolute
+			metricTypeController["_viewModel"].colorMetricType = AttributeTypeValue.absolute
 
 			const actual = metricTypeController.isColorMetricAbsolute()
 
@@ -153,7 +153,7 @@ describe("MetricTypeController", () => {
 		})
 
 		it("should return false if colorMetric is relative", () => {
-			metricTypeController["_viewModel"].colorMetricType = AttributeType.relative
+			metricTypeController["_viewModel"].colorMetricType = AttributeTypeValue.relative
 
 			const actual = metricTypeController.isColorMetricAbsolute()
 

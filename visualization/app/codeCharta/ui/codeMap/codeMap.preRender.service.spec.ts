@@ -90,13 +90,13 @@ describe("codeMapPreRenderService", () => {
 		})
 	})
 
-	describe("getRenderFile", () => {
+	describe("getRenderMap", () => {
 		it("should return lastRender.renderFile", () => {
 			codeMapPreRenderService["lastRender"].renderFile = file
 
-			const result = codeMapPreRenderService.getRenderFile()
+			const result = codeMapPreRenderService.getRenderMap()
 
-			expect(result).toEqual(file)
+			expect(result).toEqual(file.map)
 		})
 	})
 
