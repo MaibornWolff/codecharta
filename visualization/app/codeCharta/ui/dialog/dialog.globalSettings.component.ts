@@ -1,6 +1,7 @@
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import { Settings, RecursivePartial, AppSettings } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
+import _ from "lodash"
 
 export class DialogGlobalSettingsController implements SettingsServiceSubscriber {
 	private _viewModel: {
