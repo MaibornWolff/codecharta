@@ -28,7 +28,7 @@ import "./ribbonBar/ribbonBar.module"
 import "./scenarioDropDown/scenarioDropDown.module"
 import "./settingsPanel/settingsPanel.module"
 import "./sidenav/sidenav.module"
-import "./toolBar/toolBar.module";
+import "./toolBar/toolBar.module"
 import "./viewCube/viewCube.module"
 
 angular.module("app.codeCharta.ui", [

@@ -4,46 +4,45 @@ import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { DialogService } from "../dialogService/dialogService"
 
 describe("ToolBarController", () => {
+	let toolBarController: ToolBarController
+	let dialogService: DialogService
 
-    let toolBarController: ToolBarController
-    let dialogService: DialogService
+	beforeEach(() => {
+		restartSystem()
+		rebuildController()
+		withMockedDialogService()
+	})
 
-    beforeEach(() => {
-        restartSystem()
-        rebuildController()
-        withMockedDialogService()
-    })
+	function restartSystem() {
+		instantiateModule("app.codeCharta.ui.toolBar")
 
-    function restartSystem() {
-        instantiateModule("app.codeCharta.ui.toolBar")
+		dialogService = getService<DialogService>("dialogService")
+	}
 
-        dialogService = getService<DialogService>("dialogService")
-    }
+	function rebuildController() {
+		toolBarController = new ToolBarController(dialogService)
+	}
 
-    function rebuildController() {
-        toolBarController = new ToolBarController(dialogService)
-    }
-
-    function withMockedDialogService() {
-        dialogService = toolBarController["dialogService"] = jest.fn().mockReturnValue({
+	function withMockedDialogService() {
+		dialogService = toolBarController["dialogService"] = jest.fn().mockReturnValue({
 			showDownloadDialog: jest.fn(),
-            showGlobalSettingsDialog: jest.fn()
+			showGlobalSettingsDialog: jest.fn()
 		})()
-    }
+	}
 
-    describe("downloadFile", () => {
-        it("should call showDownloadDialog", () => {
-            toolBarController.downloadFile()
+	describe("downloadFile", () => {
+		it("should call showDownloadDialog", () => {
+			toolBarController.downloadFile()
 
-            expect(dialogService.showDownloadDialog).toHaveBeenCalled()
-        })
-    })
+			expect(dialogService.showDownloadDialog).toHaveBeenCalled()
+		})
+	})
 
-    describe("showGlobalSettings", () => {
-        it("should call showGlobalSettingsDialog", () => {
-            toolBarController.showGlobalSettings()
+	describe("showGlobalSettings", () => {
+		it("should call showGlobalSettingsDialog", () => {
+			toolBarController.showGlobalSettings()
 
-            expect(dialogService.showGlobalSettingsDialog).toHaveBeenCalled()
-        })
-    })
+			expect(dialogService.showGlobalSettingsDialog).toHaveBeenCalled()
+		})
+	})
 })

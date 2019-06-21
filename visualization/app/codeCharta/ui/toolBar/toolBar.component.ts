@@ -2,11 +2,10 @@ import "./toolBar.component.scss"
 import { DialogService } from "../dialog/dialog.service"
 
 export class ToolBarController {
+	/* @ngInject */
+	constructor(private dialogService: DialogService) {}
 
-    /* @ngInject */
-    constructor(private dialogService: DialogService) {}
-
-    public downloadFile() {
+	public downloadFile() {
 		this.dialogService.showDownloadDialog()
 	}
 
@@ -16,7 +15,7 @@ export class ToolBarController {
 }
 
 export const toolBarComponent = {
-    selector: "toolBarComponent",
-    template: require("./toolBar.component.html"),
-    controller: ToolBarController
+	selector: "toolBarComponent",
+	template: require("./toolBar.component.html"),
+	controller: ToolBarController
 }

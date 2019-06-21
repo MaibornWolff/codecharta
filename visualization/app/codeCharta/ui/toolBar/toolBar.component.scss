@@ -1,4 +1,4 @@
-tool-bar-component { 
+tool-bar-component {
 	.tool-bar {
 		background-color: #f0f0f0;
 		height: 35px;
@@ -8,15 +8,16 @@ tool-bar-component {
 		margin-bottom: 0;
 		font-size: 0px;
 		border-bottom: 1px solid #cdcdcd;
-    }
-    
-    .tool-bar-button {
+	}
+
+	.tool-bar-button {
 		margin: 5px;
 		height: 24px;
 		width: 24px;
 		float: left;
 
-		*, .md-fab:active {
+		*,
+		.md-fab:active {
 			margin: 0;
 			padding: 0;
 		}
