@@ -31,7 +31,6 @@ import "./scenarioDropDown/scenarioDropDown.module"
 import "./settingsPanel/settingsPanel.module"
 import "./sidenav/sidenav.module"
 import "./viewCube/viewCube.module"
-import "./weblinksPanel/weblinksPanel.module"
 
 angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
@@ -62,5 +61,4 @@ angular.module("app.codeCharta.ui", [
 	"app.codeCharta.ui.settingsPanel",
 	"app.codeCharta.ui.sidenav",
 	"app.codeCharta.ui.viewCube",
-	"app.codeCharta.ui.weblinksPanel"
 ])
