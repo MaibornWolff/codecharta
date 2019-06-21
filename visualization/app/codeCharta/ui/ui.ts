@@ -22,7 +22,6 @@ import "./mapTreeView/mapTreeView.module"
 import "./mapTreeViewSearch/mapTreeViewSearch.module"
 import "./metricChooser/metricChooser.module"
 import "./nodeContextMenu/nodeContextMenu.module"
-import "./optionsPanel/optionsPanel.module"
 import "./rangeSlider/rangeSlider.module"
 import "./resetSettingsButton/resetSettingsButton.module"
 import "./filePanel/filePanel.module"
@@ -53,7 +52,6 @@ angular.module("app.codeCharta.ui", [
 	"app.codeCharta.ui.mapTreeViewSearch",
 	"app.codeCharta.ui.metricChooser",
 	"app.codeCharta.ui.nodeContextMenu",
-	"app.codeCharta.ui.optionsPanel",
 	"app.codeCharta.ui.rangeSlider",
 	"app.codeCharta.ui.resetSettingsButton",
 	"app.codeCharta.ui.ribbonBar",
