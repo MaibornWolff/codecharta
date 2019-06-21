@@ -4,8 +4,6 @@ import angular from "angular"
 
 // Plop: Append module import here
 import "./areaSettingsPanel/areaSettingsPanel.module"
-import "./metricType/metricType.module"
-import "./loadingGif/loadingGif.module"
 import "./blacklistPanel/blacklistPanel.module"
 import "./codeMap/codeMap.module"
 import "./colorSettingsPanel/colorSettingsPanel.module"
@@ -21,6 +19,7 @@ import "./loadingGif/loadingGif.module"
 import "./mapTreeView/mapTreeView.module"
 import "./mapTreeViewSearch/mapTreeViewSearch.module"
 import "./metricChooser/metricChooser.module"
+import "./metricType/metricType.module"
 import "./nodeContextMenu/nodeContextMenu.module"
 import "./rangeSlider/rangeSlider.module"
 import "./resetSettingsButton/resetSettingsButton.module"
@@ -33,7 +32,6 @@ import "./viewCube/viewCube.module"
 
 angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
-	"app.codeCharta.ui.metricType",
 	"app.codeCharta.ui.areaSettingsPanel",
 	"app.codeCharta.ui.blacklistPanel",
 	"app.codeCharta.ui.codeMap",
@@ -51,6 +49,7 @@ angular.module("app.codeCharta.ui", [
 	"app.codeCharta.ui.mapTreeView",
 	"app.codeCharta.ui.mapTreeViewSearch",
 	"app.codeCharta.ui.metricChooser",
+	"app.codeCharta.ui.metricType",
 	"app.codeCharta.ui.nodeContextMenu",
 	"app.codeCharta.ui.rangeSlider",
 	"app.codeCharta.ui.resetSettingsButton",
