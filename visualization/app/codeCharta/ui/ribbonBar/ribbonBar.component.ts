@@ -17,10 +17,12 @@ export class RibbonBarController {
 	}
 
 	public expand() {
+		this.isExpanded = true
 		this.collapsingElements.addClass("expanded")
 	}
 
 	public collapse() {
+		this.isExpanded = false
 		this.collapsingElements.removeClass("expanded")
 	}
 
