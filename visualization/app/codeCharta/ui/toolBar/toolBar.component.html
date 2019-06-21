@@ -1,2 +1,20 @@
-<h1>Hello ToolBarComponent!</h1>
+<div class="tool-bar">
+    <div class="tool-bar-button">
+        <file-chooser-directive></file-chooser-directive>
+    </div>
 
+    <div class="tool-bar-button download">
+        <md-button class="md-fab md-primary dark_shadow_opacity" ng-click="$ctrl.downloadFile()">
+            <i class="fa fa-download"></i>
+        </md-button>
+    </div>
+
+    <file-panel-component></file-panel-component>
+
+    <div class="tool-bar-button global-settings">
+        <md-button class="md-fab md-primary dark_shadow_opacity" ng-click="$ctrl.showGlobalSettings()">
+            <i class="fa fa-cog"></i>
+        </md-button>
+    </div>
+</div>
+    

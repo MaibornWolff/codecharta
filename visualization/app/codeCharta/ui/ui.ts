@@ -3,7 +3,6 @@
 import angular from "angular"
 
 // Plop: Append module import here
-import "./toolBar/toolBar.module";
 import "./areaSettingsPanel/areaSettingsPanel.module"
 import "./blacklistPanel/blacklistPanel.module"
 import "./codeMap/codeMap.module"
@@ -29,11 +28,11 @@ import "./ribbonBar/ribbonBar.module"
 import "./scenarioDropDown/scenarioDropDown.module"
 import "./settingsPanel/settingsPanel.module"
 import "./sidenav/sidenav.module"
+import "./toolBar/toolBar.module";
 import "./viewCube/viewCube.module"
 
 angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
-		"app.codeCharta.ui.toolBar",
 	"app.codeCharta.ui.areaSettingsPanel",
 	"app.codeCharta.ui.blacklistPanel",
 	"app.codeCharta.ui.codeMap",
@@ -59,5 +58,6 @@ angular.module("app.codeCharta.ui", [
 	"app.codeCharta.ui.scenarioDropDown",
 	"app.codeCharta.ui.settingsPanel",
 	"app.codeCharta.ui.sidenav",
+	"app.codeCharta.ui.toolBar",
 	"app.codeCharta.ui.viewCube"
 ])

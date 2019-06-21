@@ -1,12 +1,18 @@
 import "./toolBar.component.scss"
+import { DialogService } from "../dialog/dialog.service"
 
 export class ToolBarController {
 
     /* @ngInject */
-    constructor() {
+    constructor(private dialogService: DialogService) {}
 
-    }
+    public downloadFile() {
+		this.dialogService.showDownloadDialog()
+	}
 
+	public showGlobalSettings() {
+		this.dialogService.showGlobalSettingsDialog()
+	}
 }
 
 export const toolBarComponent = {

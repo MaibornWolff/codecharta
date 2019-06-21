@@ -6,19 +6,16 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { FileState, FileSelectionState } from "../../codeCharta.model"
 import { FileStateHelper } from "../../util/fileStateHelper"
-import { DialogService } from "../dialog/dialog.service"
 
 describe("filePanelController", () => {
 	let fileStateService: FileStateService
 	let $rootScope: IRootScopeService
 	let filePanelController: FilePanelController
-	let dialogService: DialogService
 	let fileStates: FileState[]
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.filePanel")
 		fileStateService = getService<FileStateService>("fileStateService")
-		dialogService = getService<DialogService>("dialogService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		fileStates = [
 			{ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.Reference },
@@ -27,7 +24,7 @@ describe("filePanelController", () => {
 	}
 
 	function buildController() {
-		filePanelController = new FilePanelController(fileStateService, $rootScope, dialogService)
+		filePanelController = new FilePanelController(fileStateService, $rootScope)
 	}
 
 	function withMockedFileStateService() {
@@ -50,17 +47,10 @@ describe("filePanelController", () => {
 		$rootScope.$broadcast = jest.fn()
 	}
 
-	function withMockedDialogService() {
-		dialogService = filePanelController["dialogService"] = jest.fn().mockReturnValue({
-			showErrorDialog: jest.fn()
-		})()
-	}
-
 	beforeEach(() => {
 		restartSystem()
 		buildController()
 		withMockedFileStateService()
-		withMockedDialogService()
 	})
 
 	afterEach(() => {
