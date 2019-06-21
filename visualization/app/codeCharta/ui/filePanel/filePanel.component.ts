@@ -131,6 +131,10 @@ export class FilePanelController implements FileStateServiceSubscriber {
 		this.dialogService.showDownloadDialog()
 	}
 
+	public showGlobalSettings() {
+		this.dialogService.showGlobalSettingsDialog()
+	}
+
 	public selectAllPartialFiles() {
 		const allFileNames = this.fileStateService.getFileStates().map(x => x.file.fileMeta.fileName)
 		this.onPartialFilesChange(allFileNames)

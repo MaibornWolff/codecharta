@@ -111,7 +111,6 @@ file-panel-component {
 
 	.file-button {
 		margin: 5px;
-		padding: 0;
 		height: 24px;
 		width: 24px;
 		float: left;
@@ -149,6 +148,15 @@ file-panel-component {
 
 		&.download {
 			margin-left: 0px;
+		}
+
+		&.global-settings {
+			float: right;
+			margin-right: 20px;
+
+			.md-fab i {
+				left: 7px;
+			}
 		}
 	}
 }
