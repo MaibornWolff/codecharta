@@ -140,6 +140,11 @@ file-panel-component {
 					color: #eee;
 				}
 			}
+
+			:active {
+				margin: 0px;
+				padding: 0px;
+			}
 		}
 
 		&.download {
