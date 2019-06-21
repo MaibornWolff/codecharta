@@ -1,4 +1,4 @@
-<md-dialog>
+<md-dialog class="global-settings">
 	<md-toolbar>
 		<div class="md-toolbar-tools">
 			<h2>Global Settings</h2>
@@ -12,19 +12,19 @@
 					Enable Edge Arrows
 				</md-checkbox>
 			</md-input-container>
-			
+
 			<md-input-container class="md-block">
 				<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.hideFlatBuildings" ng-change="$ctrl.applySettings()">
 					Hide Flattened Buildings
 				</md-checkbox>
 			</md-input-container>
-			
+
 			<md-input-container class="md-block">
 				<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.maximizeDetailPanel" ng-change="$ctrl.applySettings()">
 					Maximize Detail Panel
 				</md-checkbox>
 			</md-input-container>
-			
+
 			<md-input-container class="md-block">
 				<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.isWhiteBackground" ng-change="$ctrl.applySettings()">
 					White Background
@@ -43,14 +43,14 @@
 				<i class="fa fa-external-link"></i>Wiki
 			</a>
 
-			<reset-settings-button-component autofocus="false"
+			<reset-settings-button-component
+				autofocus="false"
 				settings-names="appSettings.enableEdgeArrows, appSettings.hideFlatBuildings, appSettings.maximizeDetailPanel, appSettings.isWhiteBackground"
 			></reset-settings-button-component>
 		</div>
 	</md-dialog-content>
 
 	<md-dialog-actions>
-		
 		<md-button ng-click="$ctrl.hide()" class="md-primary" autofocus>Close</md-button>
 	</md-dialog-actions>
 </md-dialog>

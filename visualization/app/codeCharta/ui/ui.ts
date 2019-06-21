@@ -57,5 +57,5 @@ angular.module("app.codeCharta.ui", [
 	"app.codeCharta.ui.scenarioDropDown",
 	"app.codeCharta.ui.settingsPanel",
 	"app.codeCharta.ui.sidenav",
-	"app.codeCharta.ui.viewCube",
+	"app.codeCharta.ui.viewCube"
 ])
