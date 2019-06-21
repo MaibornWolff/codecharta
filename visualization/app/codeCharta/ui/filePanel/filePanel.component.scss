@@ -1,0 +1,154 @@
+file-panel-component {
+	$selectWidth: 300;
+
+	.file-panel {
+		background-color: #f0f0f0;
+		height: 35px;
+		display: block;
+		margin-block-end: 0;
+		padding-bottom: 0;
+		margin-bottom: 0;
+		font-size: 0px;
+		border-bottom: 1px solid #cdcdcd;
+	}
+
+	.mode-chooser {
+		display: inline-block;
+		margin-left: 10px;
+		margin-right: 10px;
+		margin-top: 5px;
+		margin-bottom: 3px;
+	}
+
+	.md-button {
+		height: 24px;
+		width: 55px;
+		min-height: 0px;
+		min-width: 0px;
+		margin: 0px !important;
+		padding: 0px !important;
+		font-size: 9pt;
+		text-transform: none;
+		background-color: #ffffff;
+
+		&.left {
+			border-radius: 5px 0 0 5px;
+		}
+
+		&.middle {
+			border-radius: 0;
+			border-left: 1px solid rgba(230, 230, 230, 0.96);
+			border-right: 1px solid rgba(230, 230, 230, 0.96);
+		}
+
+		&.right {
+			border-radius: 0 5px 5px 0;
+		}
+
+		.text {
+			display: block;
+			margin-top: -5px;
+			padding-top: -5px;
+		}
+
+		&.current {
+			background-color: rgb(0, 150, 136);
+			color: #ffffff;
+		}
+
+		&.current:hover {
+			background-color: rgb(0, 150, 136);
+		}
+
+		:active {
+			padding: -5px;
+			margin: -5px;
+		}
+	}
+
+	md-input-container {
+		display: inline-block;
+		text-align: left;
+		margin: 0;
+		font-size: 11pt;
+		vertical-align: top;
+
+		md-select {
+			width: $selectWidth + px;
+			display: block;
+
+			.md-select-value {
+				background: white;
+				margin-right: 5px;
+				margin-top: 5px;
+				border-radius: 5px;
+				padding-left: 5px;
+				min-height: 22px;
+
+				span {
+					margin-top: -3px;
+				}
+			}
+		}
+
+		> * {
+			display: inline-block;
+		}
+
+		i.fa {
+			color: rgb(0, 150, 136);
+			margin-top: 4px;
+			margin-left: 5px;
+			margin-right: 3px;
+			min-width: 16px;
+
+			&:hover {
+				color: black;
+				cursor: pointer;
+			}
+		}
+	}
+
+	.file-button {
+		margin: 5px;
+		padding: 0;
+		height: 24px;
+		width: 24px;
+		float: left;
+
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		.md-fab {
+			position: relative;
+			min-height: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 0;
+			border-radius: 50%;
+
+			i {
+				position: absolute;
+				top: 6px;
+				left: 6px;
+				color: white;
+
+				&:hover {
+					cursor: pointer;
+					color: #eee;
+				}
+			}
+
+			:active {
+				margin: 0px;
+				padding: 0px;
+			}
+		}
+
+		&.download {
+			margin-left: 0px;
+		}
+	}
+}
