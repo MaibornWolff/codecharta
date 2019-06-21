@@ -8,7 +8,7 @@
 			"attributes": {},
 			"children": [
 				{
-					"name": "sample1 only leaf",
+					"name": "sample1OnlyLeaf.scss",
 					"type": "File",
 					"attributes": {
 						"rloc": 400,
@@ -20,7 +20,7 @@
 					"link": "http://www.google.de"
 				},
 				{
-					"name": "big leaf",
+					"name": "bigLeaf.ts",
 					"type": "File",
 					"attributes": {
 						"rloc": 100,
@@ -32,12 +32,12 @@
 					"link": "http://www.google.de"
 				},
 				{
-					"name": "Parent Leaf",
+					"name": "ParentLeaf",
 					"type": "Folder",
 					"attributes": {},
 					"children": [
 						{
-							"name": "small leaf",
+							"name": "smallLeaf.html",
 							"type": "File",
 							"attributes": {
 								"rloc": 30,
@@ -48,7 +48,7 @@
 							}
 						},
 						{
-							"name": "other small leaf",
+							"name": "otherSmallLeaf.ts",
 							"type": "File",
 							"attributes": {
 								"rloc": 70,
