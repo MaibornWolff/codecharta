@@ -24,9 +24,11 @@ describe("RibbonBar", () => {
 		expect(Object.values(await ribbonBar.getRibbonBarClassList())).not.toContain("expanded")
 
 		await ribbonBar.toggle()
+		await delay(500)
 		expect(Object.values(await ribbonBar.getRibbonBarClassList())).toContain("expanded")
 
 		await ribbonBar.toggle()
+		await delay(500)
 		expect(Object.values(await ribbonBar.getRibbonBarClassList())).not.toContain("expanded")
 	})
 
