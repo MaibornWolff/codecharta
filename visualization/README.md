@@ -9,7 +9,6 @@
 -   [Installation](#installation)
 -   [Tasks](#tasks)
 -   [JSON structure](#json-structure)
--   [URL Parameters](#url-parameters-used-by-the-web-application)
 -   [License](LICENSE.md)
 
 ## Installation
@@ -73,26 +72,6 @@ You can generate the following modules:
 
 -   "core module with empty service" - a core module with an empty service for business logic with all necessary files and tests
 -   "ui module with empty component" - an ui module with an empty component and all necessary files and tests
-
-## URL Parameters used by the web application
-
-[[Back To Top]](#jump-to-section)
-
-The web application allows the usage of two query parameters in the URL.
-
--   `file` parameter can be used multiple times. Each accepts a file location, which must be reachable through XHR.
-    With multiple `file` parameters you can load more than one map e.g. `http://localhost:3000/?file=firefox.json&file=firefox_comparison.json`
--   `mode` parameter can be used to set one of the three different modes: `Single`, `Delta` or `Multiple`.
-    -   `Single` will only show the first imported files
-    -   `Delta` will show the first two imported files
-    -   `Multiple` will show all imported files aggregated together in one map
-
-Query params are added by appending a `?` to the url, followed by a key value pair `key=value`.
-Additional parameters can be added by appending `&key2=value2`. See examples below:
-
--   `http://yourdomain.com/pathtocc/index.html?file=something.json`
--   `http://yourdomain.com/pathtocc/index.html?file=something.json&file=anotherFile.json&mode=Delta`
--   `http://yourdomain.com/pathtocc/index.html?file=component1.json&file=component2.json&mode=Multiple`
 
 ## JSON structure
 
