@@ -1,21 +1,12 @@
-# CodeCharta
+# CodeCharta visualization
 
 [![Build Status](https://travis-ci.org/MaibornWolff/codecharta.svg?branch=master)](https://travis-ci.org/MaibornWolff/codecharta)
 
 > CodeCharta by [MaibornWolff](https://www.maibornwolff.de)
 
-## Jump to Section
-
--   [Installation](#installation)
--   [Tasks](#tasks)
--   [JSON structure](#json-structure)
--   [License](LICENSE.md)
-
 ## Installation
 
-[[Back To Top]](#jump-to-section)
-
-change working directory `cd <projectpath>/codecharta/visualization/`
+Change working directory `cd <projectpath>/codecharta/visualization/`
 
 #### Install application for desktop usage with npm
 
@@ -40,8 +31,6 @@ Once you have installed the project, you can use all grunt tasks described in th
 -   Copy all files (dist/app or the downloaded directory) to a served directory which is accessible from the internet.
 
 ## Tasks
-
-[[Back To Top]](#jump-to-section)
 
 #### Build
 
@@ -70,12 +59,11 @@ adding ":auto" to run target will run the tests in watch mode
 
 You can generate the following modules:
 
--   "core module with empty service" - a core module with an empty service for business logic with all necessary files and tests
--   "ui module with empty component" - an ui module with an empty component and all necessary files and tests
+-   "state service" - an empty service with corresponding test file
+-   "ui module component" - an ui module with an empty component, all necessary files and tests
+-   "util static class" - an empty static class with corresponding test file
 
 ## JSON structure
-
-[[Back To Top]](#jump-to-section)
 
 [Example Data](/visualization/app/codeCharta/assets/sample1.cc.json)
 
