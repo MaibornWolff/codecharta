@@ -73,7 +73,12 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 			this.lastRender.renderFile.settings.fileSettings = settings.fileSettings
 			this.decorateIfPossible()
 		}
-		this.renderIfRenderObjectIsComplete()
+
+		if (this.settingsOnlyContainNewScaling(update)) {
+			this.scaleMapIfRenderObjectIsComplete()
+		} else {
+			this.renderIfRenderObjectIsComplete()
+		}
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
@@ -137,6 +142,10 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		}
 	}
 
+	private settingsOnlyContainNewScaling(update: RecursivePartial<Settings>): boolean {
+		return _.keys(update).length == 1 && update.appSettings && _.keys(update.appSettings).length == 1 && !!update.appSettings.scaling
+	}
+
 	private renderIfRenderObjectIsComplete() {
 		if (this.allNecessaryRenderDataAvailable()) {
 			this.codeMapRenderService.render(this.lastRender)
@@ -148,6 +157,15 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 				this.threeOrbitControlsService.autoFitTo()
 				this.newFileLoaded = false
 			}
+		}
+	}
+
+	private scaleMapIfRenderObjectIsComplete() {
+		if (this.allNecessaryRenderDataAvailable()) {
+			const s: Settings = this.lastRender.settings
+			this.codeMapRenderService.scaleMap(s.appSettings.scaling, s.treeMapSettings.mapSize)
+			this.notifyLoadingMapStatus()
+			this.notifyFileChanged()
 		}
 	}
 

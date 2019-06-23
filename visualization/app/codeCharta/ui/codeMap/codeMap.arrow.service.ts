@@ -2,6 +2,7 @@ import * as THREE from "three"
 import { Node } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { Edge, Settings } from "../../codeCharta.model"
+import { Vector3 } from "three"
 
 export class CodeMapArrowService {
 	private arrows: THREE.Object3D[]
@@ -86,11 +87,11 @@ export class CodeMapArrowService {
 		}
 	}
 
-	public scale(x: number, y: number, z: number) {
+	public scale(scale: Vector3) {
 		for (let arrow of this.arrows) {
-			arrow.scale.x = x
-			arrow.scale.y = y
-			arrow.scale.z = z
+			arrow.scale.x = scale.x
+			arrow.scale.y = scale.y
+			arrow.scale.z = scale.z
 		}
 	}
 

@@ -9,6 +9,7 @@ import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { CodeMapNode, Edge, Settings, Node } from "../../codeCharta.model"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { RenderData } from "./codeMap.preRender.service"
+import { Vector3 } from "three"
 
 export class CodeMapRenderService {
 	private mapMesh: CodeMapMesh = null
@@ -34,10 +35,17 @@ export class CodeMapRenderService {
 		this.mapMesh = new CodeMapMesh(sortedNodes, renderData.settings, FileStateHelper.isDeltaState(renderData.fileStates))
 		this.threeSceneService.setMapMesh(this.mapMesh, renderData.settings.treeMapSettings.mapSize)
 
-		const scale = renderData.settings.appSettings.scaling
-		this.scaleMap(scale.x, scale.y, scale.z, renderData.settings.treeMapSettings.mapSize)
+		this.scaleMap(renderData.settings.appSettings.scaling, renderData.settings.treeMapSettings.mapSize)
 		this.setLabels(sortedNodes, renderData.settings)
 		this.setArrows(sortedNodes, renderData.settings)
+	}
+
+	public scaleMap(scale: Vector3, mapSize: number) {
+		this.threeSceneService.mapGeometry.scale.set(scale.x, scale.y, scale.z)
+		this.threeSceneService.mapGeometry.position.set((-mapSize / 2.0) * scale.x, 0.0, (-mapSize / 2.0) * scale.z)
+		this.threeSceneService.getMapMesh().setScale(scale)
+		this.codeMapLabelService.scale(scale)
+		this.codeMapArrowService.scale(scale)
 	}
 
 	private collectNodesToArray(node: Node): Node[] {
@@ -53,17 +61,6 @@ export class CodeMapRenderService {
 
 	private sortByNodeHeight(a: Node, b: Node) {
 		return b.height - a.height
-	}
-
-	private scaleMap(x: number, y: number, z: number, mapSize: number) {
-		this.threeSceneService.mapGeometry.scale.set(x, y, z)
-		this.threeSceneService.mapGeometry.position.set((-mapSize / 2.0) * x, 0.0, (-mapSize / 2.0) * z)
-
-		if (this.threeSceneService.getMapMesh()) {
-			this.threeSceneService.getMapMesh().setScale(x, y, z)
-		}
-		this.codeMapLabelService.scale(x, y, z)
-		this.codeMapArrowService.scale(x, y, z)
 	}
 
 	private setLabels(sortedNodes: Node[], s: Settings) {
@@ -99,11 +96,7 @@ export class CodeMapRenderService {
 
 		if (edges && s) {
 			this.codeMapArrowService.addEdgeArrows(sortedNodes, edges, s)
-			this.codeMapArrowService.scale(
-				this.threeSceneService.mapGeometry.scale.x,
-				this.threeSceneService.mapGeometry.scale.y,
-				this.threeSceneService.mapGeometry.scale.z
-			)
+			this.codeMapArrowService.scale(this.threeSceneService.mapGeometry.scale)
 		}
 	}
 }
