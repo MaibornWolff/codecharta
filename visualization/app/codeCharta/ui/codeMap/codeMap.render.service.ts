@@ -11,7 +11,7 @@ import { FileStateHelper } from "../../util/fileStateHelper"
 import { RenderData } from "./codeMap.preRender.service"
 
 export class CodeMapRenderService {
-	private _mapMesh: CodeMapMesh = null
+	private mapMesh: CodeMapMesh = null
 
 	constructor(
 		private threeSceneService: ThreeSceneService,
@@ -19,8 +19,8 @@ export class CodeMapRenderService {
 		private codeMapArrowService: CodeMapArrowService
 	) {}
 
-	get mapMesh(): CodeMapMesh {
-		return this._mapMesh
+	public getMapMesh(): CodeMapMesh {
+		return this.mapMesh
 	}
 
 	public render(renderData: RenderData) {
@@ -31,8 +31,8 @@ export class CodeMapRenderService {
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		const sortedNodes: Node[] = filteredNodes.sort((a, b) => this.sortByNodeHeight(a, b))
 
-		this._mapMesh = new CodeMapMesh(sortedNodes, renderData.settings, FileStateHelper.isDeltaState(renderData.fileStates))
-		this.threeSceneService.setMapMesh(this._mapMesh, renderData.settings.treeMapSettings.mapSize)
+		this.mapMesh = new CodeMapMesh(sortedNodes, renderData.settings, FileStateHelper.isDeltaState(renderData.fileStates))
+		this.threeSceneService.setMapMesh(this.mapMesh, renderData.settings.treeMapSettings.mapSize)
 
 		const scale = renderData.settings.appSettings.scaling
 		this.scaleMap(scale.x, scale.y, scale.z, renderData.settings.treeMapSettings.mapSize)

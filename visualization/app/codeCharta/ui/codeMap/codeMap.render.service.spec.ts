@@ -49,10 +49,10 @@ describe("codeMapRenderService", () => {
 	}
 
 	describe("getMapMesh", () => {
-		it("should return _mapMesh via getter", () => {
-			codeMapRenderService["_mapMesh"] = codeMapMesh
+		it("should return mapMesh via getMapMesh method", () => {
+			codeMapRenderService["mapMesh"] = codeMapMesh
 
-			const result = codeMapRenderService.mapMesh
+			const result = codeMapRenderService.getMapMesh()
 
 			expect(result).toEqual(codeMapMesh)
 		})

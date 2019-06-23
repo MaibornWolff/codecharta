@@ -183,7 +183,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 	}
 
 	public onShouldHoverNode(node: CodeMapNode) {
-		let buildings: CodeMapBuilding[] = this.codeMapRenderService.mapMesh.getMeshDescription().buildings
+		let buildings: CodeMapBuilding[] = this.codeMapRenderService.getMapMesh().getMeshDescription().buildings
 		buildings.forEach(building => {
 			if (building.node.path === node.path) {
 				this.onBuildingHovered(this.hovered, building)

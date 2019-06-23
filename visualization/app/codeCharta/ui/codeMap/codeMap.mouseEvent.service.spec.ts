@@ -119,11 +119,11 @@ describe("codeMapMouseEventService", () => {
 
 	function withMockedCodeMapRenderService() {
 		codeMapRenderService = codeMapMouseEventService["codeMapRenderService"] = jest.fn().mockReturnValue({
-			mapMesh: {
+			getMapMesh: jest.fn().mockReturnValue({
 				getMeshDescription: jest.fn().mockReturnValue({
 					buildings: [codeMapBuilding]
 				})
-			}
+			})
 		})()
 	}
 
@@ -417,7 +417,7 @@ describe("codeMapMouseEventService", () => {
 		it("should call codeMapRenderService.getMapDescription", () => {
 			codeMapMouseEventService.onShouldHoverNode(TEST_FILE_WITH_PATHS.map)
 
-			expect(codeMapRenderService.mapMesh.getMeshDescription).toHaveBeenCalled()
+			expect(codeMapRenderService.getMapMesh().getMeshDescription).toHaveBeenCalled()
 		})
 
 		it("should call onBuildingHovered", () => {
