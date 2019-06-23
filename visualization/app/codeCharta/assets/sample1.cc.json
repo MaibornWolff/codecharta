@@ -65,24 +65,24 @@
 	],
 	"edges": [
 		{
-			"fromNodeName": "/root/big leaf",
-			"toNodeName": "/root/Parent Leaf/small leaf",
+			"fromNodeName": "/root/bigLeaf.ts",
+			"toNodeName": "/root/ParentLeaf/smallLeaf.html",
 			"attributes": {
 				"pairingRate": 89,
 				"avgCommits": 34
 			}
 		},
 		{
-			"fromNodeName": "/root/sample1 only leaf",
-			"toNodeName": "/root/Parent Leaf/small leaf",
+			"fromNodeName": "/root/sample1OnlyLeaf.scss",
+			"toNodeName": "/root/ParentLeaf/smallLeaf.html",
 			"attributes": {
 				"pairingRate": 32,
 				"avgCommits": 17
 			}
 		},
 		{
-			"fromNodeName": "/root/Parent Leaf/other small leaf",
-			"toNodeName": "/root/big leaf",
+			"fromNodeName": "/root/ParentLeaf/otherSmallLeaf.ts",
+			"toNodeName": "/root/bigLeaf.ts",
 			"attributes": {
 				"pairingRate": 65,
 				"avgCommits": 22
