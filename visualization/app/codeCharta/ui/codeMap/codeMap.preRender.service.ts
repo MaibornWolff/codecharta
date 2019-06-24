@@ -112,7 +112,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 			this.lastRender.settings.fileSettings.blacklist &&
 			this.lastRender.metricData
 		) {
-			this.lastRender.map = NodeDecorator.decorateFile(
+			this.lastRender.map = NodeDecorator.decorateMap(
 				this.lastRender.map,
 				this.lastRender.renderFile.fileMeta,
 				this.lastRender.settings.fileSettings.blacklist,

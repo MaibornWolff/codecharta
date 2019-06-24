@@ -6,7 +6,7 @@ import { CodeMapHelper } from "./codeMapHelper"
 import _ from "lodash"
 
 export class NodeDecorator {
-	public static decorateFile(map: CodeMapNode, fileMeta: FileMeta, blacklist: BlacklistItem[], metricData: MetricData[]): CodeMapNode {
+	public static decorateMap(map: CodeMapNode, fileMeta: FileMeta, blacklist: BlacklistItem[], metricData: MetricData[]): CodeMapNode {
 		let decoratedMap: CodeMapNode = _.cloneDeep(map)
 		this.decorateMapWithMissingObjects(decoratedMap, fileMeta)
 		this.decorateMapWithCompactMiddlePackages(decoratedMap)
