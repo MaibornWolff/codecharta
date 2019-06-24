@@ -36,7 +36,7 @@ export interface CodeMapPreRenderServiceSubscriber {
 }
 
 export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricServiceSubscriber {
-	private static RENDER_FILE_CHANGED_EVENT = "render-file-changed"
+	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
 	private newFileLoaded: boolean = false
 
@@ -198,11 +198,11 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	}
 
 	private notifyFileChanged() {
-		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_FILE_CHANGED_EVENT, this.lastRender.map)
+		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, this.lastRender.map)
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapPreRenderServiceSubscriber) {
-		$rootScope.$on(CodeMapPreRenderService.RENDER_FILE_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, (event, data) => {
 			subscriber.onRenderMapChanged(data, event)
 		})
 	}
