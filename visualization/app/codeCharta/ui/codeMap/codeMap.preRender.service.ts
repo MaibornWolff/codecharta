@@ -24,8 +24,8 @@ import { CodeMapRenderService } from "./codeMap.render.service"
 import { LoadingGifService } from "../loadingGif/loadingGif.service"
 
 export interface RenderData {
-	renderFile: CCFile
 	map: CodeMapNode
+	fileMeta: FileMeta
 	fileStates: FileState[]
 	settings: Settings
 	metricData: MetricData[]
@@ -41,8 +41,8 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	private newFileLoaded: boolean = false
 
 	private lastRender: RenderData = {
-		renderFile: null,
 		map: null,
+		fileMeta: null,
 		fileStates: null,
 		settings: null,
 		metricData: null
@@ -64,16 +64,14 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	}
 
 	public getRenderFileMeta(): FileMeta {
-		return this.lastRender.renderFile.fileMeta
+		return this.lastRender.fileMeta
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this.lastRender.settings = settings
 
 		if (this.lastRender.fileStates && update.fileSettings && (update.fileSettings.blacklist || update.fileSettings.markedPackages)) {
-			this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
-			this.lastRender.map = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates).map
-			this.lastRender.renderFile.settings.fileSettings = settings.fileSettings
+			this.updateRenderMapAndFileMeta()
 			this.decorateIfPossible()
 		}
 
@@ -87,8 +85,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 		this.lastRender.fileStates = fileStates
 		this.newFileLoaded = true
-		this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
-		this.lastRender.map = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates).map
+		this.updateRenderMapAndFileMeta()
 	}
 
 	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
@@ -103,10 +100,16 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		this.lastRender.metricData = null
 	}
 
+	private updateRenderMapAndFileMeta() {
+		const unifiedFile: CCFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
+		this.lastRender.map = unifiedFile.map
+		this.lastRender.fileMeta = unifiedFile.fileMeta
+	}
+
 	private decorateIfPossible() {
 		if (
-			this.lastRender.renderFile &&
 			this.lastRender.map &&
+			this.lastRender.fileMeta &&
 			this.lastRender.settings &&
 			this.lastRender.settings.fileSettings &&
 			this.lastRender.settings.fileSettings.blacklist &&
@@ -114,7 +117,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		) {
 			this.lastRender.map = NodeDecorator.decorateMap(
 				this.lastRender.map,
-				this.lastRender.renderFile.fileMeta,
+				this.lastRender.fileMeta,
 				this.lastRender.settings.fileSettings.blacklist,
 				this.lastRender.metricData
 			)
