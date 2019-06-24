@@ -25,6 +25,7 @@ import { LoadingGifService } from "../loadingGif/loadingGif.service"
 
 export interface RenderData {
 	renderFile: CCFile
+	map: CodeMapNode
 	fileStates: FileState[]
 	settings: Settings
 	metricData: MetricData[]
@@ -41,6 +42,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 
 	private lastRender: RenderData = {
 		renderFile: null,
+		map: null,
 		fileStates: null,
 		settings: null,
 		metricData: null
@@ -70,6 +72,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 
 		if (this.lastRender.fileStates && update.fileSettings && (update.fileSettings.blacklist || update.fileSettings.markedPackages)) {
 			this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
+			this.lastRender.map = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates).map
 			this.lastRender.renderFile.settings.fileSettings = settings.fileSettings
 			this.decorateIfPossible()
 		}
@@ -85,6 +88,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		this.lastRender.fileStates = fileStates
 		this.newFileLoaded = true
 		this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
+		this.lastRender.map = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates).map
 	}
 
 	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
@@ -102,6 +106,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	private decorateIfPossible() {
 		if (
 			this.lastRender.renderFile &&
+			this.lastRender.map &&
 			this.lastRender.settings &&
 			this.lastRender.settings.fileSettings &&
 			this.lastRender.settings.fileSettings.blacklist &&
@@ -112,6 +117,11 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 				this.lastRender.settings.fileSettings.blacklist,
 				this.lastRender.metricData
 			)
+			this.lastRender.map = NodeDecorator.decorateFile(
+				this.lastRender.renderFile,
+				this.lastRender.settings.fileSettings.blacklist,
+				this.lastRender.metricData
+			).map
 		}
 	}
 

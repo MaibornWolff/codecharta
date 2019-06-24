@@ -19,9 +19,9 @@ export class CodeMapRenderService {
 	) {}
 
 	public render(renderData: RenderData) {
-		this.showAllOrOnlyFocusedNode(renderData.renderFile.map, renderData.settings)
+		this.showAllOrOnlyFocusedNode(renderData.map, renderData.settings)
 
-		const treeMapNode: Node = TreeMapGenerator.createTreemapNodes(renderData.renderFile.map, renderData.settings, renderData.metricData)
+		const treeMapNode: Node = TreeMapGenerator.createTreemapNodes(renderData.map, renderData.settings, renderData.metricData)
 		const nodes: Node[] = this.collectNodesToArray(treeMapNode)
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		const sortedNodes: Node[] = filteredNodes.sort((a, b) => this.sortByNodeHeight(a, b))
