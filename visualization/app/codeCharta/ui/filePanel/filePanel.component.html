@@ -58,6 +58,7 @@
 	</md-input-container>
 
 	<md-input-container ng-show="$ctrl._viewModel.isDeltaState">
+		<span class="delta-label">old:</span>
 		<md-select
 			ng-model="$ctrl._viewModel.selectedFileNames.delta.reference"
 			ng-change="$ctrl.onDeltaReferenceFileChange($ctrl._viewModel.selectedFileNames.delta.reference)"
@@ -69,6 +70,7 @@
 	</md-input-container>
 
 	<md-input-container ng-show="$ctrl._viewModel.isDeltaState">
+		<span class="delta-label">new:</span>
 		<md-select
 			ng-model="$ctrl._viewModel.selectedFileNames.delta.comparison"
 			ng-change="$ctrl.onDeltaComparisonFileChange($ctrl._viewModel.selectedFileNames.delta.comparison)"

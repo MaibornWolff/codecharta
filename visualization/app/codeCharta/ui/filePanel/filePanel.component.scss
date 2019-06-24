@@ -91,6 +91,12 @@ file-panel-component {
 			}
 		}
 
+		.delta-label {
+			color: grey;
+			float: left;
+			margin: 9px 3px 0 0;
+		}
+
 		> * {
 			display: inline-block;
 		}
