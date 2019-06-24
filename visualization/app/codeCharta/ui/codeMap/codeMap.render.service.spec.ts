@@ -48,13 +48,7 @@ describe("codeMapRenderService", () => {
 		codeMapMesh = new CodeMapMesh([], settings, false)
 	}
 
-	describe("getMapMesh", () => {
-		it("should return mapMesh via getMapMesh method", () => {
-			codeMapRenderService["mapMesh"] = codeMapMesh
-
-			const result = codeMapRenderService.getMapMesh()
-
-			expect(result).toEqual(codeMapMesh)
-		})
+	describe("something", () => {
+		it("should do something", () => {})
 	})
 })

@@ -2,7 +2,6 @@ import { MapTreeViewHoverEventSubscriber, MapTreeViewLevelController } from "../
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { IAngularEvent, IRootScopeService, IWindowService } from "angular"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import { CodeMapRenderService } from "./codeMap.render.service"
 import $ from "jquery"
 import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapNode } from "../../codeCharta.model"
@@ -39,8 +38,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 		private threeCameraService: ThreeCameraService,
 		private threeRendererService: ThreeRendererService,
 		private threeSceneService: ThreeSceneService,
-		private threeUpdateCycleService: ThreeUpdateCycleService,
-		private codeMapRenderService: CodeMapRenderService
+		private threeUpdateCycleService: ThreeUpdateCycleService
 	) {
 		this.threeUpdateCycleService.register(this.update.bind(this))
 		MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this)
@@ -183,7 +181,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 	}
 
 	public onShouldHoverNode(node: CodeMapNode) {
-		let buildings: CodeMapBuilding[] = this.codeMapRenderService.getMapMesh().getMeshDescription().buildings
+		let buildings: CodeMapBuilding[] = this.threeSceneService.getMapMesh().getMeshDescription().buildings
 		buildings.forEach(building => {
 			if (building.node.path === node.path) {
 				this.onBuildingHovered(this.hovered, building)
