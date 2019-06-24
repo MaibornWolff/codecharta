@@ -19,8 +19,8 @@ export class TreeMapGenerator {
 	private static PADDING_SCALING_FACTOR = 0.4
 	private static HEIGHT_DIVISOR = 1
 
-	public static createTreemapNodes(renderFile: CCFile, s: Settings, metricData: MetricData[]): Node {
-		const squaredNode: SquarifiedValuedCodeMapNode = this.squarify(renderFile.map, s)
+	public static createTreemapNodes(map: CodeMapNode, s: Settings, metricData: MetricData[]): Node {
+		const squaredNode: SquarifiedValuedCodeMapNode = this.squarify(map, s)
 		const maxHeight = metricData.find(x => x.name == s.dynamicSettings.heightMetric).maxValue
 		const heightScale = s.treeMapSettings.mapSize / TreeMapGenerator.HEIGHT_DIVISOR / maxHeight
 		return this.addHeightDimensionAndFinalize(squaredNode, s, maxHeight, heightScale)
