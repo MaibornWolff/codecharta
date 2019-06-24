@@ -60,7 +60,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	}
 
 	public getRenderMap(): CodeMapNode {
-		return this.lastRender.renderFile ? this.lastRender.renderFile.map : null
+		return this.lastRender.map
 	}
 
 	public getRenderFileMeta(): FileMeta {
@@ -112,16 +112,12 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 			this.lastRender.settings.fileSettings.blacklist &&
 			this.lastRender.metricData
 		) {
-			this.lastRender.renderFile = NodeDecorator.decorateFile(
-				this.lastRender.renderFile,
+			this.lastRender.map = NodeDecorator.decorateFile(
+				this.lastRender.map,
+				this.lastRender.renderFile.fileMeta,
 				this.lastRender.settings.fileSettings.blacklist,
 				this.lastRender.metricData
 			)
-			this.lastRender.map = NodeDecorator.decorateFile(
-				this.lastRender.renderFile,
-				this.lastRender.settings.fileSettings.blacklist,
-				this.lastRender.metricData
-			).map
 		}
 	}
 
@@ -199,7 +195,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	}
 
 	private notifyFileChanged() {
-		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_FILE_CHANGED_EVENT, this.lastRender.renderFile.map)
+		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_FILE_CHANGED_EVENT, this.lastRender.map)
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapPreRenderServiceSubscriber) {
