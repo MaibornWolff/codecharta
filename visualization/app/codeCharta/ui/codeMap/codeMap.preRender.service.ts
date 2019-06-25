@@ -160,7 +160,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 			this.codeMapRenderService.render(this.lastRender)
 
 			this.notifyLoadingMapStatus()
-			this.notifyFileChanged()
+			this.notifyMapChanged()
 			if (this.newFileLoaded) {
 				this.notifyLoadingFileStatus()
 				this.threeOrbitControlsService.autoFitTo()
@@ -174,7 +174,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 			const s: Settings = this.lastRender.settings
 			this.codeMapRenderService.scaleMap(s.appSettings.scaling, s.treeMapSettings.mapSize)
 			this.notifyLoadingMapStatus()
-			this.notifyFileChanged()
+			this.notifyMapChanged()
 		}
 	}
 
@@ -197,7 +197,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		this.loadingGifService.updateLoadingMapFlag(false)
 	}
 
-	private notifyFileChanged() {
+	private notifyMapChanged() {
 		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, this.lastRender.map)
 	}
 
