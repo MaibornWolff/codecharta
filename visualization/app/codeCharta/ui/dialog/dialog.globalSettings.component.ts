@@ -1,10 +1,9 @@
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import "./optionsPanel.component.scss"
-import { IRootScopeService } from "angular"
 import { Settings, RecursivePartial, AppSettings } from "../../codeCharta.model"
+import { IRootScopeService } from "angular"
 import _ from "lodash"
 
-export class OptionsPanelController implements SettingsServiceSubscriber {
+export class DialogGlobalSettingsController implements SettingsServiceSubscriber {
 	private _viewModel: {
 		enableEdgeArrows: boolean
 		hideFlatBuildings: boolean
@@ -17,13 +16,18 @@ export class OptionsPanelController implements SettingsServiceSubscriber {
 		isWhiteBackground: null
 	}
 
-	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
+	constructor(private $mdDialog, private $rootScope: IRootScopeService, private settingsService: SettingsService) {
 		SettingsService.subscribe(this.$rootScope, this)
+		this.updateSettingsFields()
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+		this.updateSettingsFields(settings)
+	}
+
+	public updateSettingsFields(s: Settings = this.settingsService.getSettings()) {
 		const interestingKeys = _.keys(this._viewModel)
-		const viewModelUpdate = _.pick(settings.appSettings, interestingKeys)
+		const viewModelUpdate = _.pick(s.appSettings, interestingKeys)
 		_.assign(this._viewModel, viewModelUpdate)
 	}
 
@@ -32,10 +36,15 @@ export class OptionsPanelController implements SettingsServiceSubscriber {
 			appSettings: update
 		})
 	}
+
+	public hide() {
+		this.$mdDialog.hide()
+	}
 }
 
-export const optionsPanelComponent = {
-	selector: "optionsPanelComponent",
-	template: require("./optionsPanel.component.html"),
-	controller: OptionsPanelController
+export const dialogGlobalSettingsComponent = {
+	clickOutsideToClose: true,
+	template: require("./dialog.globalSettings.component.html"),
+	controller: DialogGlobalSettingsController,
+	controllerAs: "$ctrl"
 }

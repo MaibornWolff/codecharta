@@ -74,25 +74,14 @@ describe("MetricService", () => {
 
 	describe("onFileSelectionStatesChanged", () => {
 		beforeEach(() => {
-			metricService["calculateMetrics"] = jest.fn().mockReturnValue([])
-		})
-
-		it("should set unary metric into metricData", () => {
-			metricService.onFileSelectionStatesChanged(fileStates, undefined)
-
-			expect(metricService.getMetrics()).toContain("unary")
-			const unary: MetricData = metricService.getMetricData().find(x => x.name == "unary")
-			expect(unary.maxValue).toBe(1)
-			expect(unary.availableInVisibleMaps).toBe(true)
+			metricService["calculateMetrics"] = jest.fn().mockReturnValue(metricData)
 		})
 
 		it("should trigger METRIC_DATA_ADDED_EVENT", () => {
-			const expected = [{ availableInVisibleMaps: true, maxValue: 1, name: "unary" }]
-
 			metricService.onFileSelectionStatesChanged(fileStates, undefined)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledTimes(1)
-			expect($rootScope.$broadcast).toHaveBeenCalledWith(MetricService["METRIC_DATA_ADDED_EVENT"], expected)
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(MetricService["METRIC_DATA_ADDED_EVENT"], metricData)
 		})
 	})
 

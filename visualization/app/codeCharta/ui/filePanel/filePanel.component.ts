@@ -1,5 +1,4 @@
-import "./revisionChooser.component.scss"
-import "./revisionChooserFileDropDown.component.scss"
+import "./filePanel.component.scss"
 import { CCFile, FileSelectionState, FileState } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
@@ -14,7 +13,7 @@ interface SelectedFileNames {
 	partial: string[]
 }
 
-export class RevisionChooserController implements FileStateServiceSubscriber {
+export class FilePanelController implements FileStateServiceSubscriber {
 	private lastRenderState: FileSelectionState
 
 	private _viewModel: {
@@ -113,16 +112,18 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
 		this.fileStateService.setMultiple(partialFiles)
 	}
 
-	public onRenderStateChange(renderState: FileSelectionState) {
-		if (renderState === FileSelectionState.Single) {
-			this._viewModel.selectedFileNames.single = this.getLastVisibleFileName()
-			this.onSingleFileChange(this._viewModel.selectedFileNames.single)
-		} else if (renderState === FileSelectionState.Partial) {
-			this.selectAllPartialFiles()
-		} else if (renderState === FileSelectionState.Comparison) {
-			this._viewModel.selectedFileNames.delta.reference = this.getLastVisibleFileName()
-			this.onDeltaComparisonFileChange(null)
-		}
+	public onSingleStateSelected() {
+		this._viewModel.selectedFileNames.single = this.getLastVisibleFileName()
+		this.onSingleFileChange(this._viewModel.selectedFileNames.single)
+	}
+
+	public onPartialStateSelected() {
+		this.selectAllPartialFiles()
+	}
+
+	public onDeltaStateSelected() {
+		this._viewModel.selectedFileNames.delta.reference = this.getLastVisibleFileName()
+		this.onDeltaComparisonFileChange(null)
 	}
 
 	public selectAllPartialFiles() {
@@ -159,13 +160,8 @@ export class RevisionChooserController implements FileStateServiceSubscriber {
 	}
 }
 
-export const revisionChooserComponent = {
-	selector: "revisionChooserComponent",
-	template: require("./revisionChooser.component.html"),
-	controller: RevisionChooserController
-}
-export const revisionChooserFileDropDownComponent = {
-	selector: "revisionChooserFileDropDownComponent",
-	template: require("./revisionChooserFileDropDown.component.html"),
-	controller: RevisionChooserController
+export const filePanelComponent = {
+	selector: "filePanelComponent",
+	template: require("./filePanel.component.html"),
+	controller: FilePanelController
 }
