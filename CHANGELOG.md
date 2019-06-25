@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+- Margin will now be set correctly depending on whether dynamicMargin is enabled or not #602
+
+
 ### Chore
 
 ## [1.27.0] - 2019-06-25
