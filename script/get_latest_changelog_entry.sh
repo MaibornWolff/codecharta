@@ -10,7 +10,7 @@ do
     continue
   fi
 
-  if (($level2HeadingCount == 1))
+  if (($level2HeadingCount == 2))
     then
     echo "$line" >> RELEASE_NOTES.md
   fi

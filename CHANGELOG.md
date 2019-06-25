@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 ### Added
 - Automatically generates release notes from changelog and appends it to release #533
-
 - Adds global settings-menu with settings from options panel and weblinks #528
 
 ### Changed
