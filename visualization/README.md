@@ -8,7 +8,6 @@
 -   [Installation](#installation)
 -   [Tasks](#tasks)
 -   [JSON structure](#json-structure)
--   [URL Parameters](#url-parameters-used-by-the-web-application)
 -   [License](LICENSE.md)
 
 ## Installation
