@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 ### Added
 
+- Adds global settings-menu with settings from options panel and weblinks #528
+
 ### Changed
 
 - Moved File Settings from Ribbon Bar to new File Setting Bar #525
@@ -16,6 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Removed
 
+- Removes Options panel from sidebar #528
+- Removes Weblinks panel from sidebar #528
 - Removed URL-parameter info from sidebar #525
 
 ### Fixed
