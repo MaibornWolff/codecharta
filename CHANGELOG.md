@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Removed
 
+- Removed URL-parameter info from sidebar #525
+
 ### Fixed
 
 ### Chore
