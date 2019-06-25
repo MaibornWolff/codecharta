@@ -174,7 +174,6 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 			const s: Settings = this.lastRender.settings
 			this.codeMapRenderService.scaleMap(s.appSettings.scaling, s.treeMapSettings.mapSize)
 			this.notifyLoadingMapStatus()
-			this.notifyMapChanged()
 		}
 	}
 
