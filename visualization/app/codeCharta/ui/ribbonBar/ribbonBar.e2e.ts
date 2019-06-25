@@ -16,24 +16,6 @@ describe("RibbonBar", () => {
 		await browser.close()
 	})
 
-	it("should toggle ribbonBar onClick toggle button", async () => {
-		await page.goto(CC_URL)
-		await delay(500)
-
-		const ribbonBar = new RibbonBarPageObject(page)
-		console.log("before: ", Object.values(await ribbonBar.getRibbonBarClassList()))
-		expect(Object.values(await ribbonBar.getRibbonBarClassList())).not.toContain("expanded")
-
-		await ribbonBar.toggle()
-		console.log("middle: ", Object.values(await ribbonBar.getRibbonBarClassList()))
-
-		expect(Object.values(await ribbonBar.getRibbonBarClassList())).toContain("expanded")
-
-		await ribbonBar.toggle()
-		console.log("after: ", Object.values(await ribbonBar.getRibbonBarClassList()))
-
-		expect(Object.values(await ribbonBar.getRibbonBarClassList())).not.toContain("expanded")
-	})
 
 	it("hovering over a folder should display the sum of metric of all children", async () => {
 		await page.goto(CC_URL)
