@@ -21,14 +21,17 @@ describe("RibbonBar", () => {
 		await delay(500)
 
 		const ribbonBar = new RibbonBarPageObject(page)
+		console.log("before: ", Object.values(await ribbonBar.getRibbonBarClassList()))
 		expect(Object.values(await ribbonBar.getRibbonBarClassList())).not.toContain("expanded")
 
 		await ribbonBar.toggle()
-		await delay(500)
+		console.log("middle: ", Object.values(await ribbonBar.getRibbonBarClassList()))
+
 		expect(Object.values(await ribbonBar.getRibbonBarClassList())).toContain("expanded")
 
 		await ribbonBar.toggle()
-		await delay(500)
+		console.log("after: ", Object.values(await ribbonBar.getRibbonBarClassList()))
+
 		expect(Object.values(await ribbonBar.getRibbonBarClassList())).not.toContain("expanded")
 	})
 

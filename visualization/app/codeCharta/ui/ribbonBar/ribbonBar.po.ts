@@ -1,3 +1,5 @@
+import { delay } from "../../../puppeteer.helper"
+
 export class RibbonBarPageObject {
 	constructor(private page) {}
 
@@ -7,7 +9,8 @@ export class RibbonBarPageObject {
 
 	public async toggle() {
 		const selector = "#toggle-ribbon-bar-fab"
-		return this.page.click(selector)
+		this.page.click(selector)
+		await delay(1000)
 	}
 
 	public async getAreaMetricValue() {
