@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+-  Unary Metric will no longer be auto-selected when a new map is loaded #579
+
 ### Chore
 
 ## [1.26.0] - 2019-06-14
