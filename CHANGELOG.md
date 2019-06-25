@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Moved File Settings from Ribbon Bar to new File Setting Bar #525
+- Rename sample file codemap-nodes #587
+- Hide checkbox to select white-positive-buildings in delta state #345
+
 ### Removed
 
 ### Fixed

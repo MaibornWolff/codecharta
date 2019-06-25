@@ -1,6 +1,6 @@
 import { CC_URL, puppeteer } from "../../puppeteer.helper"
 import { DialogErrorPageObject } from "../ui/dialog/dialog.error.po"
-import { RevisionChooserFileDropDownPageObject } from "../ui/revisionChooser/revisionChooserFileDropdown.po"
+import { FilePanelPageObject } from "../ui/filePanel/filePanel.po"
 
 jest.setTimeout(15000)
 
@@ -27,19 +27,19 @@ describe("codecharta", () => {
 		return dialogErrorPageObject.clickOk()
 	}
 
-	async function checkSelectedRevisionName(shouldBe: string) {
-		let revisionChooser = new RevisionChooserFileDropDownPageObject(page)
+	async function checkSelectedFileName(shouldBe: string) {
+		let filePanel = new FilePanelPageObject(page)
 		await page.waitFor(1000)
-		let name = await revisionChooser.getSelectedName()
+		let name = await filePanel.getSelectedName()
 		expect(name).toEqual(shouldBe)
 	}
 
-	async function checkAllRevisionNames(shouldBe: string[]) {
-		let revisionChooser = new RevisionChooserFileDropDownPageObject(page)
+	async function checkAllFileNames(shouldBe: string[]) {
+		let filePanel = new FilePanelPageObject(page)
 		await page.waitFor(1000)
-		await revisionChooser.clickChooser()
+		await filePanel.clickChooser()
 		await page.waitFor(1000)
-		let names = await revisionChooser.getAllNames()
+		let names = await filePanel.getAllNames()
 		expect(names).toEqual(shouldBe)
 	}
 
@@ -67,14 +67,14 @@ describe("codecharta", () => {
 	it("should load data when file parameters in url are valid", async () => {
 		await mockResponses()
 		await page.goto(CC_URL + "?file=fileOne.json&file=fileTwo.json")
-		await checkSelectedRevisionName("fileOne.json")
-		await checkAllRevisionNames(["fileOne.json", "fileTwo.json"])
+		await checkSelectedFileName("fileOne.json")
+		await checkAllFileNames(["fileOne.json", "fileTwo.json"])
 	})
 
 	it("should throw errors when file parameters in url are invalid and load sample data instead", async () => {
 		await page.goto(CC_URL + "?file=invalid234")
 		await handleErrorDialog()
-		await checkSelectedRevisionName("sample1.cc.json")
-		await checkAllRevisionNames(["sample1.cc.json", "sample2.cc.json"])
+		await checkSelectedFileName("sample1.cc.json")
+		await checkAllFileNames(["sample1.cc.json", "sample2.cc.json"])
 	})
 })
