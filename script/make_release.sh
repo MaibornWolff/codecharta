@@ -4,6 +4,12 @@
 command -v perl >/dev/null 2>&1 || { echo >&2 "'perl' is required but it's not installed.  Aborting."; exit 1; }
 command -v git >/dev/null 2>&1 || { echo >&2 "'git' is required but it's not installed.  Aborting."; exit 1; }
 
+# Check if we're on project root folder
+if [ ! -d "./visualization" ] && [ ! -d "./analysis" ]; then
+  echo "Please execute this script from the project root folder. Aborting."
+  exit 1
+fi
+
 # Check if there are any uncommited changes
 if [[ -n $(git status -s) ]]
 then
