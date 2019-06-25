@@ -4,6 +4,13 @@
 
 > CodeCharta by [MaibornWolff](https://www.maibornwolff.de)
 
+## Jump to Section
+-   [Installation](#installation)
+-   [Tasks](#tasks)
+-   [JSON structure](#json-structure)
+-   [URL Parameters](#url-parameters-used-by-the-web-application)
+-   [License](LICENSE.md)
+
 ## Installation
 
 Change working directory `cd <projectpath>/codecharta/visualization/`
