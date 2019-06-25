@@ -90,12 +90,22 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 	}
 
 	public applySettingsAreaMetric() {
-		this.settingsService.updateSettings({
-			dynamicSettings: {
-				areaMetric: this._viewModel.areaMetric,
-				margin: this.settingsService.getDefaultSettings().dynamicSettings.margin
-			}
-		})
+		if(this.settingsService.getSettings().appSettings.dynamicMargin) {
+			this.settingsService.updateSettings({
+				dynamicSettings: {
+					areaMetric: this._viewModel.areaMetric,
+					margin: this.settingsService.getDefaultSettings().dynamicSettings.margin
+				}
+			})
+		} else {
+			this.settingsService.updateSettings({
+				dynamicSettings: {
+					areaMetric: this._viewModel.areaMetric,
+					margin: this.settingsService.getSettings().dynamicSettings.margin
+				}
+			})
+		}
+
 	}
 
 	public applySettingsColorMetric() {
