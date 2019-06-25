@@ -68,7 +68,14 @@ class StructureModifier(private val input: InputStream = System.`in`,
     }
 
     private fun readProject(): Project? {
-        val bufferedReader = source?.bufferedReader() ?: return readPipedProject()
+        if (source == null) {
+            return readPipedProject()
+        } else if (!source!!.isFile) {
+            logger.error("${source!!.name} has not been found.")
+            return null
+        }
+
+        val bufferedReader = source!!.bufferedReader()
         return try {
             ProjectDeserializer.deserializeProject(bufferedReader)
         } catch (e: Exception) {
@@ -80,7 +87,6 @@ class StructureModifier(private val input: InputStream = System.`in`,
 
     private fun readPipedProject(): Project? {
         val projectString = input.mapLines { it }.joinToString(separator = "") { it }
-        logger.debug("joinded $projectString")
         return try {
             ProjectDeserializer.deserializeProjectString(projectString)
         } catch (e: Exception) {

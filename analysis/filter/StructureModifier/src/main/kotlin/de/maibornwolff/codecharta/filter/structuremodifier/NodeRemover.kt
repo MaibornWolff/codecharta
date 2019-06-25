@@ -1,11 +1,19 @@
 package de.maibornwolff.codecharta.filter.structuremodifier
 
 import de.maibornwolff.codecharta.model.*
+import mu.KotlinLogging
 
 class NodeRemover(private val project: Project, private val projectName: String?) {
+    private val logger = KotlinLogging.logger {}
 
     fun remove(paths: Array<String>): Project {
-        val pathSegments = paths.map { it.removePrefix("/").removeSuffix("/").split("/") }
+        var pathSegments = paths.map { it.removePrefix("/").removeSuffix("/").split("/") }
+
+        if (pathSegments.contains(listOf("root"))) {
+            logger.warn("Root node cannot be removed")
+            pathSegments = pathSegments.filter { it != listOf("root") }
+        }
+
         return ProjectBuilder(
                 projectName ?: project.projectName,
                 removeNodes(pathSegments),
