@@ -7,15 +7,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
+- Automatically generates release notes from changelog and appends it to release #533
+
+- Adds global settings-menu with settings from options panel and weblinks #528
 
 ### Changed
 
 - Moved File Settings from Ribbon Bar to new File Setting Bar #525
 - Rename sample file codemap-nodes #587
+- Hide checkbox to select white-positive-buildings in delta state #345
 
 ### Removed
 
+- Removes Options panel from sidebar #528
+- Removes Weblinks panel from sidebar #528
+- Removed URL-parameter info from sidebar #525
+
 ### Fixed
+
+-  Unary Metric will no longer be auto-selected when a new map is loaded #579
 
 ### Chore
 
