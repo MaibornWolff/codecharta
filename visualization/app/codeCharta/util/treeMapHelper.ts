@@ -49,7 +49,6 @@ export class TreeMapHelper {
 			isLeaf: isNodeLeaf,
 			attributes: squaredNode.data.attributes,
 			deltas: squaredNode.data.deltas,
-			parent: null,
 			heightDelta:
 				squaredNode.data.deltas && squaredNode.data.deltas[s.dynamicSettings.heightMetric]
 					? heightScale * squaredNode.data.deltas[s.dynamicSettings.heightMetric]
