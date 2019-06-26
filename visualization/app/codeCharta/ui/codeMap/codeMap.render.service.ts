@@ -30,9 +30,7 @@ export class CodeMapRenderService {
 	}
 
 	public scaleMap(scale: Vector3, mapSize: number) {
-		this.threeSceneService.mapGeometry.scale.set(scale.x, scale.y, scale.z)
-		this.threeSceneService.mapGeometry.position.set((-mapSize / 2.0) * scale.x, 0.0, (-mapSize / 2.0) * scale.z)
-		this.threeSceneService.getMapMesh().setScale(scale)
+        this.threeSceneService.scale(scale, mapSize)
 		this.codeMapLabelService.scale(scale)
 		this.codeMapArrowService.scale(scale)
 	}
