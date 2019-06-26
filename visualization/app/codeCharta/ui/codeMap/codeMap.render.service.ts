@@ -30,7 +30,7 @@ export class CodeMapRenderService {
 	}
 
 	public scaleMap(scale: Vector3, mapSize: number) {
-        this.threeSceneService.scale(scale, mapSize)
+		this.threeSceneService.scale(scale, mapSize)
 		this.codeMapLabelService.scale(scale)
 		this.codeMapArrowService.scale(scale)
 	}
@@ -46,9 +46,7 @@ export class CodeMapRenderService {
 		let nodes = [node]
 		for (let i = 0; i < node.children.length; i++) {
 			let collected = this.collectNodesToArray(node.children[i])
-			for (let j = 0; j < collected.length; j++) {
-				nodes.push(collected[j])
-			}
+			nodes.push(...collected)
 		}
 		return nodes
 	}

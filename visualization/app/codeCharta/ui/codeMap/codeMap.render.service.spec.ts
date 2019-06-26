@@ -4,10 +4,12 @@ import { CodeMapRenderService } from "./codeMap.render.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { CCFile, Settings } from "../../codeCharta.model"
+import { Settings, Node, MetricData, CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { CodeMapMesh } from "./rendering/codeMapMesh"
-import { SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
+import { METRIC_DATA, SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
+import { RenderData } from "./codeMap.preRender.service"
+import _ from "lodash"
+import { NodeDecorator } from "../../util/nodeDecorator"
 
 describe("codeMapRenderService", () => {
 	let codeMapRenderService: CodeMapRenderService
@@ -15,14 +17,14 @@ describe("codeMapRenderService", () => {
 	let codeMapLabelService: CodeMapLabelService
 	let codeMapArrowService: CodeMapArrowService
 
-	let codeMapMesh: CodeMapMesh
 	let settings: Settings
-	let file: CCFile
+	let map: CodeMapNode
+	let metricData: MetricData[]
+	let fileMeta: FileMeta
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedCodeMapMesh()
 	})
 
 	afterEach(() => {
@@ -36,19 +38,27 @@ describe("codeMapRenderService", () => {
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		codeMapArrowService = getService<CodeMapArrowService>("codeMapArrowService")
 
-		settings = JSON.parse(JSON.stringify(SETTINGS))
-		file = JSON.parse(JSON.stringify(TEST_FILE_WITH_PATHS))
+		fileMeta = _.cloneDeep(TEST_FILE_WITH_PATHS.fileMeta)
+		settings = _.cloneDeep(SETTINGS)
+		metricData = _.cloneDeep(METRIC_DATA)
+		map = NodeDecorator.decorateMap(_.cloneDeep(TEST_FILE_WITH_PATHS.map), fileMeta, [], metricData)
 	}
 
 	function rebuildService() {
 		codeMapRenderService = new CodeMapRenderService(threeSceneService, codeMapLabelService, codeMapArrowService)
 	}
 
-	function withMockedCodeMapMesh() {
-		codeMapMesh = new CodeMapMesh([], settings, false)
-	}
-
-	describe("something", () => {
-		it("should do something", () => {})
+	describe("getSortedNodes", () => {
+		it("should get sorted Nodes as array", () => {
+			const renderData: RenderData = {
+				map: map,
+				settings: settings,
+				metricData: metricData,
+				fileStates: null,
+				fileMeta: null
+			}
+			const sortedNodes: Node[] = codeMapRenderService["getSortedNodes"](renderData)
+			expect(sortedNodes).toMatchSnapshot()
+		})
 	})
 })
