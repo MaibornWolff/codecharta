@@ -4,7 +4,6 @@ exports[`treeMapGenerator create Treemap nodes only root node 1`] = `
 Array [
   Object {
     "attributes": Object {},
-    "children": null,
     "deltas": undefined,
     "depth": 0,
     "flat": false,
@@ -31,7 +30,6 @@ exports[`treeMapGenerator create Treemap nodes root node with two direct childre
 Array [
   Object {
     "attributes": Object {},
-    "children": null,
     "deltas": undefined,
     "depth": 0,
     "flat": false,
@@ -57,7 +55,6 @@ Array [
       "mcc": 1,
       "rloc": 100,
     },
-    "children": null,
     "deltas": undefined,
     "depth": 1,
     "flat": false,
@@ -79,7 +76,6 @@ Array [
   },
   Object {
     "attributes": Object {},
-    "children": null,
     "deltas": undefined,
     "depth": 1,
     "flat": false,
@@ -106,7 +102,6 @@ exports[`treeMapGenerator create Treemap nodes root node with two direct childre
 Array [
   Object {
     "attributes": Object {},
-    "children": null,
     "deltas": undefined,
     "depth": 0,
     "flat": false,
@@ -132,7 +127,6 @@ Array [
       "mcc": 1,
       "rloc": 100,
     },
-    "children": null,
     "deltas": undefined,
     "depth": 1,
     "flat": false,
@@ -154,7 +148,6 @@ Array [
   },
   Object {
     "attributes": Object {},
-    "children": null,
     "deltas": undefined,
     "depth": 1,
     "flat": false,
@@ -180,7 +173,6 @@ Array [
       "mcc": 100,
       "rloc": 30,
     },
-    "children": null,
     "deltas": undefined,
     "depth": 2,
     "flat": false,
@@ -206,7 +198,6 @@ Array [
       "mcc": 10,
       "rloc": 70,
     },
-    "children": null,
     "deltas": undefined,
     "depth": 2,
     "flat": false,
@@ -228,7 +219,6 @@ Array [
   },
   Object {
     "attributes": Object {},
-    "children": null,
     "deltas": undefined,
     "depth": 2,
     "flat": false,

@@ -58,7 +58,6 @@ export class TreeMapHelper {
 			path: squaredNode.data.path,
 			origin: squaredNode.data.origin,
 			link: squaredNode.data.link,
-			children: null,
 			markingColor: CodeMapHelper.getMarkingColor(squaredNode.data, s.fileSettings.markedPackages),
 			flat: flattened
 		}

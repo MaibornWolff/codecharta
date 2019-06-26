@@ -5,7 +5,6 @@ Object {
   "attributes": Object {
     "theHeight": 100,
   },
-  "children": null,
   "deltas": Object {
     "theHeight": 33,
   },
@@ -34,7 +33,6 @@ Object {
   "attributes": Object {
     "theHeight": 100,
   },
-  "children": null,
   "deltas": undefined,
   "depth": 1,
   "flat": false,
@@ -61,7 +59,6 @@ Object {
   "attributes": Object {
     "theHeight": 100,
   },
-  "children": null,
   "deltas": undefined,
   "depth": 1,
   "flat": false,
@@ -88,7 +85,6 @@ Object {
   "attributes": Object {
     "theHeight": 100,
   },
-  "children": null,
   "deltas": undefined,
   "depth": 1,
   "flat": true,
