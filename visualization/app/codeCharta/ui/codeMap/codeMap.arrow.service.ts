@@ -18,19 +18,14 @@ export class CodeMapArrowService {
 		}
 	}
 
-	public addEdgeArrowsFromOrigin(origin: Node, nodes: Node[], deps: Edge[], settings: Settings) {
-		let resEdges: Edge[] = []
-		let originPath = this.getPathFromNode(origin)
-		for (let dep of deps) {
-			if (dep.fromNodeName === originPath) {
-				resEdges.push(dep)
-			}
-		}
+	public addEdgeArrowsFromOrigin(origin: Node, nodes: Node[], edges: Edge[], settings: Settings) {
+		let originPath = origin.path
+		let resEdges: Edge[] = edges.filter(x => x.fromNodeName === originPath)
 		this.addEdgeArrows(nodes, resEdges, settings)
 	}
 
 	public addEdgeArrows(nodes: Node[], edges: Edge[], settings: Settings) {
-		let map = this.getNodepathMap(nodes)
+		let map = this.getNodesAsMap(nodes)
 
 		for (let edge of edges) {
 			let originNode: Node = map.get(edge.fromNodeName)
@@ -95,24 +90,10 @@ export class CodeMapArrowService {
 		}
 	}
 
-	private getNodepathMap(nodes: Node[]): Map<string, Node> {
+	private getNodesAsMap(nodes: Node[]): Map<string, Node> {
 		let map = new Map<string, Node>()
-
-		for (let node of nodes) {
-			map.set(this.getPathFromNode(node), node)
-		}
-
+		nodes.forEach(node => map.set(node.path, node))
 		return map
-	}
-
-	private getPathFromNode(node: Node): string {
-		let current: Node = node
-		let path = ""
-		while (current) {
-			path = "/" + current.name + path
-			current = current.parent
-		}
-		return path
 	}
 
 	private makeArrowFromBezier(
