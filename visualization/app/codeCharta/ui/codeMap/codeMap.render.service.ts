@@ -20,12 +20,7 @@ export class CodeMapRenderService {
 
 	public render(renderData: RenderData) {
 		this.showAllOrOnlyFocusedNode(renderData.map, renderData.settings)
-
-		const treeMapNode: Node = TreeMapGenerator.createTreemapNodes(renderData.map, renderData.settings, renderData.metricData)
-		const nodes: Node[] = this.collectNodesToArray(treeMapNode)
-		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
-		const sortedNodes: Node[] = filteredNodes.sort((a, b) => this.sortByNodeHeight(a, b))
-
+		const sortedNodes: Node[] = this.getSortedNodes(renderData)
 		const mapMesh: CodeMapMesh = new CodeMapMesh(sortedNodes, renderData.settings, FileStateHelper.isDeltaState(renderData.fileStates))
 		this.threeSceneService.setMapMesh(mapMesh, renderData.settings.treeMapSettings.mapSize)
 
@@ -40,6 +35,13 @@ export class CodeMapRenderService {
 		this.threeSceneService.getMapMesh().setScale(scale)
 		this.codeMapLabelService.scale(scale)
 		this.codeMapArrowService.scale(scale)
+	}
+
+	private getSortedNodes(renderData: RenderData): Node[] {
+		const treeMapNode: Node = TreeMapGenerator.createTreemapNodes(renderData.map, renderData.settings, renderData.metricData)
+		const nodes: Node[] = this.collectNodesToArray(treeMapNode)
+		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
+		return filteredNodes.sort((a, b) => this.sortByNodeHeight(a, b))
 	}
 
 	private collectNodesToArray(node: Node): Node[] {
