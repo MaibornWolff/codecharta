@@ -36,19 +36,9 @@ export class CodeMapRenderService {
 	}
 
 	private getSortedNodes(renderData: RenderData): Node[] {
-		const treeMapNode: Node = TreeMapGenerator.createTreemapNodes(renderData.map, renderData.settings, renderData.metricData)
-		const nodes: Node[] = this.collectNodesToArray(treeMapNode)
+		const nodes: Node[] = TreeMapGenerator.createTreemapNodes(renderData.map, renderData.settings, renderData.metricData)
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		return filteredNodes.sort((a, b) => this.sortByNodeHeight(a, b))
-	}
-
-	private collectNodesToArray(node: Node): Node[] {
-		let nodes = [node]
-		for (let i = 0; i < node.children.length; i++) {
-			let collected = this.collectNodesToArray(node.children[i])
-			nodes.push(...collected)
-		}
-		return nodes
 	}
 
 	private sortByNodeHeight(a: Node, b: Node) {

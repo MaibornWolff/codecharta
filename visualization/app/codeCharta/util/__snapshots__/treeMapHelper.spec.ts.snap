@@ -5,11 +5,11 @@ Object {
   "attributes": Object {
     "theHeight": 100,
   },
-  "children": Array [],
+  "children": null,
   "deltas": Object {
     "theHeight": 33,
   },
-  "depth": 0,
+  "depth": 1,
   "flat": false,
   "height": 100,
   "heightDelta": 33,
@@ -25,7 +25,7 @@ Object {
   "width": 400,
   "x0": 0,
   "y0": 0,
-  "z0": 0,
+  "z0": 2,
 }
 `;
 
@@ -34,9 +34,9 @@ Object {
   "attributes": Object {
     "theHeight": 100,
   },
-  "children": Array [],
+  "children": null,
   "deltas": undefined,
-  "depth": 0,
+  "depth": 1,
   "flat": false,
   "height": 1900,
   "heightDelta": 0,
@@ -52,7 +52,7 @@ Object {
   "width": 400,
   "x0": 0,
   "y0": 0,
-  "z0": 0,
+  "z0": 2,
 }
 `;
 
@@ -61,9 +61,9 @@ Object {
   "attributes": Object {
     "theHeight": 100,
   },
-  "children": Array [],
+  "children": null,
   "deltas": undefined,
-  "depth": 0,
+  "depth": 1,
   "flat": false,
   "height": 100,
   "heightDelta": 0,
@@ -79,7 +79,7 @@ Object {
   "width": 400,
   "x0": 0,
   "y0": 0,
-  "z0": 0,
+  "z0": 2,
 }
 `;
 
@@ -88,9 +88,9 @@ Object {
   "attributes": Object {
     "theHeight": 100,
   },
-  "children": Array [],
+  "children": null,
   "deltas": undefined,
-  "depth": 0,
+  "depth": 1,
   "flat": true,
   "height": 2,
   "heightDelta": 0,
@@ -106,6 +106,6 @@ Object {
   "width": 400,
   "x0": 0,
   "y0": 0,
-  "z0": 0,
+  "z0": 2,
 }
 `;

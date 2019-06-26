@@ -16,7 +16,6 @@ describe("RibbonBar", () => {
 		await browser.close()
 	})
 
-
 	it("hovering over a folder should display the sum of metric of all children", async () => {
 		await page.goto(CC_URL)
 		await page.evaluate(() => {
