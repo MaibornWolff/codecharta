@@ -1,0 +1,18 @@
+{
+  "projectName": "MyProject",
+  "apiVersion": "1.1",
+  "nodes": [
+    {
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "type": "Folder",
+          "children": []
+        }
+      ]
+    }
+  ],
+  "edges": [],
+  "blacklist": []
+}
