@@ -75,8 +75,7 @@
 		"g": "plop",
 		"lint": "tslint -c \"tslint.json\" \"app/**/*.ts\" --project tsconfig.json",
 		"lint:fix": "tslint -c \"tslint.json\" \"app/**/*.ts\" --fix --project tsconfig.json",
-		"format": "prettier --write \"./**/*\"",
-		"format:quick": "pretty-quick --pattern \"./**/*\" --staged"
+		"format": "prettier --write \"./**/*\""
 	},
 	"bin": {
 		"codecharta-visualization": "cli.js"
@@ -127,7 +126,7 @@
 	},
 	"husky": {
 		"hooks": {
-			"pre-commit": "npm run format:quick",
+			"pre-commit": "npm run format",
 			"pre-push": "npm run lint"
 		}
 	},
@@ -194,7 +193,6 @@
 		"path": "^0.12.7",
 		"plop": "^2.1.0",
 		"prettier": "^1.16.4",
-		"pretty-quick": "^1.10.0",
 		"puppeteer": "^1.6.0",
 		"resolve-url-loader": "^3.0.1",
 		"rimraf": "^2.6.2",
