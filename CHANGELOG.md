@@ -7,8 +7,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 ### Added
-- Automatically generates release notes from changelog and appends it to release #533
 
+- Releasing will now remind the developer to manually add the release notes #533
+
+### Changed
+
+### Removed
+
+- Release Notes are not generated and added automatically to a release #533
+
+
+### Fixed
+
+- Margin will now be set correctly depending on whether dynamicMargin is enabled or not #602
+
+
+### Chore
+
+## [1.27.0] - 2019-06-25
+### Added
+
+- Automatically generates release notes from changelog and appends it to release #533
 - Adds global settings-menu with settings from options panel and weblinks #528
 
 ### Changed
@@ -34,10 +53,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 - FileExtensionBar to show file-distribution of chosen metric #495
+- sum icon is now displayed on the left of the metric value #364
+- StructureModifier to remove and move nodes and set root of projects #547 / #181
 - Added Pop-up dialog before downloading file to set filename and see what data will be stored #523
-- Sum icon is now displayed on the left of the metric value #364
 
 ### Changed
+- More informative log messages regarding the success of project merging #547
 
 ### Removed
 

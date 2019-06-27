@@ -33,6 +33,7 @@ Components that take visualisation data and modifies them.
 | ---                                         | ---                         |
 | [MergeFilter](filter/MergeFilter/README.md) | merges multiple json files  |
 | [EdgeFilter](filter/EdgeFilter/README.md)   | aggregates edge-attributes of each appropriate node and inserts them into the nodes attribute-list |
+| [StructureModifier](filter/StructureModifier/README.md)   | modifies the structure of .cc.json files |
 
 ### Exporter
 

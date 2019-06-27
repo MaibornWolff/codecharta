@@ -90,10 +90,13 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 	}
 
 	public applySettingsAreaMetric() {
+		const settings = this.settingsService.getSettings()
+		const margin = settings.appSettings.dynamicMargin ? null : settings.dynamicSettings.margin
+
 		this.settingsService.updateSettings({
 			dynamicSettings: {
 				areaMetric: this._viewModel.areaMetric,
-				margin: this.settingsService.getDefaultSettings().dynamicSettings.margin
+				margin
 			}
 		})
 	}
