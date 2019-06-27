@@ -49,13 +49,11 @@ cache:
 # runs the script which copies all needed ressources into the gh-pages directory
 before_deploy:
   - ./script/build_gh_pages.sh
-  - ./script/get_latest_changelog_entry.sh
 
 deploy:
   # releases the built packages on github when a commit is tagged
   - provider: releases
     api_key: $GITHUB_TOKEN
-    body: ./RELEASE_NOTES.md
     file_glob: true
     file:
       - "visualization/dist/packages/*.zip"

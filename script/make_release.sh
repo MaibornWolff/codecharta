@@ -95,3 +95,5 @@ select CONFIRM in "yes" "no"; do
 done
 
 git push --follow-tags
+
+echo "Please manually add the latest release notes, as soon as the build is successfully deployed"
