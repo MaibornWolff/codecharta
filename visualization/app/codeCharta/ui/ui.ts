@@ -34,6 +34,8 @@ import "./viewCube/viewCube.module"
 
 angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
+
+
 		"app.codeCharta.ui.centerMapButton",
 	"app.codeCharta.ui.areaSettingsPanel",
 	"app.codeCharta.ui.blacklistPanel",
