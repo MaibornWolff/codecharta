@@ -15,7 +15,6 @@ import { LoadingGifService } from "./ui/loadingGif/loadingGif.service"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
-	let threeOrbitControlsService: ThreeOrbitControlsService
 	let $rootScope: IRootScopeService
 	let dialogService: DialogService
 	let codeMapActionsService: CodeMapActionsService
@@ -31,7 +30,6 @@ describe("codeChartaController", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedThreeOrbitControlsService()
 		withMockedCodeMapActionsService()
 		withMockedUrlUtils()
 		withMockedSettingsService()
@@ -74,12 +72,6 @@ describe("codeChartaController", () => {
 	afterEach(() => {
 		jest.resetAllMocks()
 	})
-
-	function withMockedThreeOrbitControlsService() {
-		threeOrbitControlsService = codeChartaController["threeOrbitControlsService"] = jest.fn().mockReturnValue({
-			autoFitTo: jest.fn()
-		})()
-	}
 
 	function withMockedCodeMapActionsService() {
 		codeMapActionsService = codeChartaController["codeMapActionsService"] = jest.fn().mockReturnValue({

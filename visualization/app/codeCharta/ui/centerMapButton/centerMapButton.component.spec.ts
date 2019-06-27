@@ -11,16 +11,23 @@ describe("CenterMapButtonController", () => {
     beforeEach(() => {
         restartSystem()
         rebuildController()
+        withMockedThreeOrbitControlsService()
     })
 
     function restartSystem() {
         instantiateModule("app.codeCharta.ui.centerMapButton")
 
-        getService<ThreeOrbitControlsService>("threeOrbitControlsService")
+        threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
     }
 
     function rebuildController() {
         centerMapButtonController = new CenterMapButtonController(threeOrbitControlsService)
+    }
+
+    function withMockedThreeOrbitControlsService() {
+        threeOrbitControlsService = centerMapButtonController["threeOrbitControlsService"] = jest.fn().mockReturnValue({
+            autoFitTo: jest.fn()
+        })()
     }
 
     describe("fitMapToView", () => {
