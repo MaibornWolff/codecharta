@@ -1,17 +1,6 @@
 file-panel-component {
 	$selectWidth: 300;
 
-	.file-panel {
-		background-color: #f0f0f0;
-		height: 35px;
-		display: block;
-		margin-block-end: 0;
-		padding-bottom: 0;
-		margin-bottom: 0;
-		font-size: 0px;
-		border-bottom: 1px solid #cdcdcd;
-	}
-
 	.mode-chooser {
 		display: inline-block;
 		margin-left: 10px;
@@ -112,49 +101,6 @@ file-panel-component {
 				color: black;
 				cursor: pointer;
 			}
-		}
-	}
-
-	.file-button {
-		margin: 5px;
-		padding: 0;
-		height: 24px;
-		width: 24px;
-		float: left;
-
-		* {
-			margin: 0;
-			padding: 0;
-		}
-
-		.md-fab {
-			position: relative;
-			min-height: 0;
-			width: 100%;
-			height: 100%;
-			z-index: 0;
-			border-radius: 50%;
-
-			i {
-				position: absolute;
-				top: 6px;
-				left: 6px;
-				color: white;
-
-				&:hover {
-					cursor: pointer;
-					color: #eee;
-				}
-			}
-
-			:active {
-				margin: 0px;
-				padding: 0px;
-			}
-		}
-
-		&.download {
-			margin-left: 0px;
 		}
 	}
 }
