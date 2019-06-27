@@ -1,12 +1,16 @@
 import "./centerMapButton.component.scss"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 
 export class CenterMapButtonController {
 
     /* @ngInject */
-    constructor() {
+    constructor(private threeOrbitControlsService: ThreeOrbitControlsService) {
 
     }
 
+    public fitMapToView() {
+        this.threeOrbitControlsService.autoFitTo()
+    }
 }
 
 export const centerMapButtonComponent = {

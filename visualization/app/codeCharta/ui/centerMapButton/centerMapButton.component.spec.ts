@@ -1,10 +1,12 @@
 import "./centerMapButton.module"
 import { CenterMapButtonController } from "./centerMapButton.component"
-import {instantiateModule} from "../../../../mocks/ng.mockhelper"
+import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 
 describe("CenterMapButtonController", () => {
 
     let centerMapButtonController: CenterMapButtonController
+    let threeOrbitControlsService: ThreeOrbitControlsService
 
     beforeEach(() => {
         restartSystem()
@@ -13,15 +15,19 @@ describe("CenterMapButtonController", () => {
 
     function restartSystem() {
         instantiateModule("app.codeCharta.ui.centerMapButton")
+
+        getService<ThreeOrbitControlsService>("threeOrbitControlsService")
     }
 
     function rebuildController() {
-        centerMapButtonController = new CenterMapButtonController()
+        centerMapButtonController = new CenterMapButtonController(threeOrbitControlsService)
     }
 
-    describe("someMethodName", () => {
-        it("should do something", () => {
+    describe("fitMapToView", () => {
+        it("should call autoFitTo", () => {
+            centerMapButtonController.fitMapToView()
 
+            expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
         })
     })
 

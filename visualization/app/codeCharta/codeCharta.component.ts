@@ -28,7 +28,6 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 
 	/* @ngInject */
 	constructor(
-		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private $rootScope: IRootScopeService,
 		private dialogService: DialogService,
 		private codeMapActionsService: CodeMapActionsService,
@@ -48,10 +47,6 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this._viewModel.focusedNodePath = settings.dynamicSettings.focusedNodePath
-	}
-
-	public fitMapToView() {
-		this.threeOrbitControlsService.autoFitTo()
 	}
 
 	public removeFocusedNode() {

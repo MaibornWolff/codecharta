@@ -44,7 +44,6 @@ describe("codeChartaController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
 
-		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		dialogService = getService<DialogService>("dialogService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
@@ -60,7 +59,6 @@ describe("codeChartaController", () => {
 
 	function rebuildController() {
 		codeChartaController = new CodeChartaController(
-			threeOrbitControlsService,
 			$rootScope,
 			dialogService,
 			codeMapActionsService,
@@ -156,13 +154,6 @@ describe("codeChartaController", () => {
 		})
 	})
 
-	describe("fitMapToView", () => {
-		it("should call autoFitTo", () => {
-			codeChartaController.fitMapToView()
-
-			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
-		})
-	})
 
 	describe("removeFocusedNode", () => {
 		it("should call removeFocusedNode", () => {
