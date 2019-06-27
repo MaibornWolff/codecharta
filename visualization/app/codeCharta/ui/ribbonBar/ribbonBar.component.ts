@@ -1,44 +1,18 @@
 import "./ribbonBar.component.scss"
 import $ from "jquery"
-import { IRootScopeService } from "angular"
-import { FileState } from "../../codeCharta.model"
-import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
-import { FileStateHelper } from "../../util/fileStateHelper"
-import { DialogService } from "../dialog/dialog.service"
 
-export class RibbonBarController implements FileStateServiceSubscriber {
+export class RibbonBarController {
 	private collapsingElements = $(
 		"code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab"
 	)
 	private toggleElements = $("ribbon-bar-component .section-title")
 	private isExpanded: boolean = false
 
-	private _viewModel: {
-		isDeltaState: boolean
-	} = {
-		isDeltaState: null
-	}
-
-	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private dialogService: DialogService) {
-		FileStateService.subscribe(this.$rootScope, this)
-	}
-
-	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
-	}
-
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
-
-	public downloadFile() {
-		this.dialogService.showDownloadDialog()
-	}
-
 	public toggle() {
-		if (!this.isExpanded) {
-			this.expand()
-		} else {
+		if (this.isExpanded) {
 			this.collapse()
+		} else {
+			this.expand()
 		}
 	}
 

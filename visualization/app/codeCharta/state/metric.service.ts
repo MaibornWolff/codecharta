@@ -42,7 +42,6 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), [])
-		this.addUnaryMetric()
 		this.notifyMetricDataAdded()
 	}
 

@@ -30,7 +30,7 @@
 package de.maibornwolff.codecharta.model
 
 class BlacklistItem constructor(
-        val path: String,
+        var path: String,
         val type: BlacklistType
 ) {
 

@@ -1,0 +1,110 @@
+{
+  "projectName": "MyProject",
+  "apiVersion": "1.1",
+  "nodes": [
+    {
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "name": "src",
+          "type": "Folder",
+          "children": [
+            {
+              "name": "main",
+              "type": "Folder",
+              "children": [
+                {
+                  "name": "file1.java",
+                  "type": "File",
+                  "attributes": {
+                    "nloc": 80.0
+                  }
+                },
+                {
+                  "name": "file2.java",
+                  "type": "File",
+                  "attributes": {
+                    "nloc": 80.0
+                  }
+                }
+              ]
+            },
+            {
+              "name": "test",
+              "type": "Folder",
+              "children": [
+                {
+                  "name": "otherFile.java",
+                  "type": "File",
+                  "attributes": {
+                    "nloc": 80.0
+                  }
+                }
+              ]
+            },
+            {
+              "name": "folder3",
+              "type": "Folder",
+              "children": [
+                {
+                  "name": "otherFile2.java",
+                  "type": "File",
+                  "attributes": {
+                    "nloc": 80.0
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "fromNodeName": "/root/file1",
+      "toNodeName": "/root/foo/file2",
+      "attributes": {
+        "pairingRate": 90,
+        "avgCommits": 5,
+        "anotherMetric": 25
+      }
+    },
+    {
+      "fromNodeName": "/root/foo/file1",
+      "toNodeName": "/root/file2",
+      "attributes": {
+        "pairingRate": 90,
+        "avgCommits": 5,
+        "anotherMetric": 25
+      }
+    },
+    {
+      "fromNodeName": "/root/foo/file2",
+      "toNodeName": "/root/foo/file3",
+      "attributes": {
+        "pairingRate": 42,
+        "avgCommits": 3
+      }
+    },
+    {
+      "fromNodeName": "/root/something/file2",
+      "toNodeName": "/root/else/file3",
+      "attributes": {
+        "pairingRate": 80,
+        "avgCommits": 3
+      }
+    }
+  ],
+  "blacklist": [
+    {
+      "path": "/root/foo/file1",
+      "type": "hide"
+    },
+    {
+      "path": "/root/whatever/file2",
+      "type": "hide"
+    }
+  ]
+}

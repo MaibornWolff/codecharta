@@ -1,5 +1,5 @@
 include 'model'
-include 'filter:MergeFilter', 'filter:EdgeFilter'
+include 'filter:MergeFilter', 'filter:EdgeFilter', 'filter:StructureModifier'
 include 'import:CrococosmoImporter', 'import:CSVImporter', 'import:JasomeImporter', 'import:SCMLogParser', 'import:SonarImporter', 'import:UnderstandImporter', 'import:SourceCodeParser', 'import:CodeMaatImporter'
 include 'export:CSVExporter'
 include 'tools:ValidationTool', 'tools:ccsh'
