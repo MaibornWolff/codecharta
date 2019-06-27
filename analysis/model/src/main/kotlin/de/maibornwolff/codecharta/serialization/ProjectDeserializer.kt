@@ -67,4 +67,8 @@ object ProjectDeserializer {
     fun deserializeProject(reader: Reader): Project {
         return GSON.fromJson(reader, Project::class.java)
     }
+
+    fun deserializeProjectString(projectString: String): Project {
+        return GSON.fromJson(projectString, Project::class.java)
+    }
 }
