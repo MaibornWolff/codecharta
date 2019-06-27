@@ -1,17 +1,12 @@
 <md-card id="header">
 	<div class="section">
 		<div class="section-header">
-			<revision-chooser-file-drop-down-component></revision-chooser-file-drop-down-component>
-		</div>
-		<span class="section-title" id="section-title" ng-click="$ctrl.toggle()">
-			<span ng-if="!$ctrl._viewModel.isDeltaState">File</span>
-			<span ng-if="$ctrl._viewModel.isDeltaState" class="first">File</span>
-			<span ng-if="$ctrl._viewModel.isDeltaState" class="second">Compare</span>
-		</span>
-		<div class="section-body">
-			<revision-chooser-component></revision-chooser-component>
 			<scenario-drop-down-component></scenario-drop-down-component>
 		</div>
+		<span class="section-title" id="section-title" ng-click="$ctrl.toggle()">
+			Scenario
+		</span>
+		<div class="section-body"></div>
 	</div>
 
 	<div class="section">
@@ -48,16 +43,6 @@
 		<div class="section-header">
 			<loading-gif-map-component></loading-gif-map-component>
 		</div>
-	</div>
-
-	<div class="file-chooser-btn">
-		<file-chooser-directive></file-chooser-directive>
-	</div>
-
-	<div class="save-btn">
-		<md-button class="md-fab md-primary dark_shadow_opacity" ng-click="$ctrl.downloadFile()">
-			<i class="fa fa-download"></i>
-		</md-button>
 	</div>
 </md-card>
 

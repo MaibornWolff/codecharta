@@ -1,12 +1,7 @@
 import "./sidenav.component.scss"
-import { DialogService } from "../dialog/dialog.service"
 
 export class SidenavController {
-	constructor(private dialogService: DialogService, private $mdSidenav: (id: string) => { toggle: () => void }) {}
-
-	public showUrlParams() {
-		this.dialogService.showQueryParamDialog()
-	}
+	constructor(private $mdSidenav: (id: string) => { toggle: () => void }) {}
 
 	public toggleSidenav(navID) {
 		this.$mdSidenav(navID).toggle()
