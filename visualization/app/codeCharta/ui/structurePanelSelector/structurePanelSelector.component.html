@@ -1,0 +1,14 @@
+<section layout="row" layout-align="center center" class="mode-chooser">
+        <md-button class="file-state-seletor left" ng-class="{current: $ctrl._viewModel.isSingleState}" ng-click="$ctrl.onSingleStateSelected()"
+            ><i class="fa fa-sitemap"></i></md-button
+        >
+        <md-button
+            class="file-state-seletor middle"
+            ng-class="{current: $ctrl._viewModel.isPartialState}"
+            ng-click="$ctrl.onPartialStateSelected()"
+            ><i class="fa fa-eye-slash"></i></md-button
+        >
+        <md-button class="file-state-seletor right" ng-class="{current: $ctrl._viewModel.isDeltaState}" ng-click="$ctrl.onDeltaStateSelected()"
+            ><i class="fa fa-ban"></i></md-button
+        >
+</section>
