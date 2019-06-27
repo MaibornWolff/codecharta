@@ -1,6 +1,6 @@
 import "./searchBar.component.scss"
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service";
-import { BlacklistType, Settings, RecursivePartial } from "../../codeCharta.model";
+import { SettingsService } from "../../state/settings.service";
+import { BlacklistType } from "../../codeCharta.model";
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service";
 
 export class SearchBarController {
