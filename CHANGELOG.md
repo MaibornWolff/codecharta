@@ -12,10 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Moved Button to reset the map to the center next to the view-cube #606
+
 ### Removed
 
 - Release Notes are not generated and added automatically to a release #533
-
 
 ### Fixed
 
