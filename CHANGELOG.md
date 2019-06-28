@@ -8,14 +8,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 ### Added
 
-- Releasing will now remind the developer to manually add the release notes #533
-
 ### Changed
 
 ### Removed
 
-- Release Notes are not generated and added automatically to a release #533
+### Fixed
 
+### Chore
+
+## [1.28.0] - 2019-06-28
+### Added
+
+- Releasing will now remind the developer to manually add the release notes #533
+- StructureModifier to remove and move nodes and set root of projects #547 / #181
+
+### Changed
+
+- More informative log messages regarding the success of project merging #547
+
+### Removed
+
+- Release Notes are not generated and added automatically to a release #533
 
 ### Fixed
 
@@ -54,11 +67,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - FileExtensionBar to show file-distribution of chosen metric #495
 - sum icon is now displayed on the left of the metric value #364
-- StructureModifier to remove and move nodes and set root of projects #547 / #181
 - Added Pop-up dialog before downloading file to set filename and see what data will be stored #523
 
 ### Changed
-- More informative log messages regarding the success of project merging #547
 
 ### Removed
 
