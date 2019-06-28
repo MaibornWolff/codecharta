@@ -1,16 +1,19 @@
+import { Page } from "puppeteer"
+import { delay } from "../../../puppeteer.helper"
+
 export class RibbonBarPageObject {
-	constructor(private page) {}
+	constructor(private page : Page) {}
 
 	public async getRibbonBarClassList() {
-		return await this.page.evaluate(() => document.querySelector("#header").classList)
+		return await this.page.$eval("#header", el => el["className"])
 	}
 
 	public async toggle() {
-		const selector = "#toggle-ribbon-bar-fab"
-		return this.page.click(selector)
+		await this.page.click("#toggle-ribbon-bar-fab")
+		await delay(500)
 	}
 
 	public async getAreaMetricValue() {
-		return await this.page.evaluate(() => document.querySelector(".metric-value")["innerText"])
+		return await this.page.$eval(".metric-value", el => el["innerText"])
 	}
 }
