@@ -1,6 +1,6 @@
 import "./centerMapButton.component.scss"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
-import { PerspectiveCamera, Vector3 } from "three"
+import { PerspectiveCamera } from "three"
 import { IRootScopeService } from "angular"
 
 export class CenterMapButtonController implements CameraChangeSubscriber {
