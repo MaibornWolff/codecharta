@@ -3,6 +3,7 @@
 import angular from "angular"
 
 // Plop: Append module import here
+import "./floatingPanel/floatingPanel.module";
 import "./structurePanelSelector/structurePanelSelector.module";
 import "./searchBar/searchBar.module";
 import "./areaSettingsPanel/areaSettingsPanel.module"
@@ -35,6 +36,7 @@ import "./viewCube/viewCube.module"
 
 angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
+		"app.codeCharta.ui.floatingPanel",
 		"app.codeCharta.ui.structurePanelSelector",
 	"app.codeCharta.ui.searchBar",
 	"app.codeCharta.ui.metricType",

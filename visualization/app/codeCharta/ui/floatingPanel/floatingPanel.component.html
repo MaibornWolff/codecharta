@@ -1,0 +1,11 @@
+<structure-panel-selector-component></structure-panel-selector-component>
+<search-bar-component></search-bar-component>
+
+<br>
+<div style="display: block">
+    <map-tree-view-component style="position: relative; margin-top:100px; padding-top: 100px"></map-tree-view-component>
+    <blacklist-panel-component></blacklist-panel-component>
+    <blacklist-panel-component ng-show="$ctrl._viewModel.selectedView == 'hidden'"></blacklist-panel-component>
+    <blacklist-panel-component ng-show="$ctrl._viewModel.selectedView == 'excluded'"></blacklist-panel-component>
+</div>
+
