@@ -4,7 +4,7 @@ export class StructurePanelSelectorController {
 
     /* @ngInject */
     constructor() {
-
+        // TODO: to be implemented
     }
 
 }
