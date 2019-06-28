@@ -6,13 +6,29 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
-### Added
 
-- Releasing will now remind the developer to manually add the release notes #533
+### Added
 
 ### Changed
 
 - Moved Button to reset the map to the center next to the view-cube #606
+
+### Removed
+
+### Fixed
+
+### Chore
+
+## [1.28.0] - 2019-06-28
+
+### Added
+
+- Releasing will now remind the developer to manually add the release notes #533
+- StructureModifier to remove and move nodes and set root of projects #547 / #181
+
+### Changed
+
+- More informative log messages regarding the success of project merging #547
 
 ### Removed
 
@@ -22,10 +38,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Margin will now be set correctly depending on whether dynamicMargin is enabled or not #602
 
-
 ### Chore
 
 ## [1.27.0] - 2019-06-25
+
 ### Added
 
 - Automatically generates release notes from changelog and appends it to release #533
@@ -45,7 +61,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
--  Unary Metric will no longer be auto-selected when a new map is loaded #579
+- Unary Metric will no longer be auto-selected when a new map is loaded #579
 
 ### Chore
 
@@ -59,6 +75,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Added Pop-up dialog before downloading file to set filename and see what data will be stored #523
 
 ### Changed
+
 - More informative log messages regarding the success of project merging #547
 
 ### Removed
