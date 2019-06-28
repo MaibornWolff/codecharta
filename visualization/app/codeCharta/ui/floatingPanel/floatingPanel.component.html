@@ -3,9 +3,10 @@
 
 <br>
 <div style="display: block">
+    <blacklist-panel-component ng-show="$ctrl._viewModel.structureView == 'hidden'"></blacklist-panel-component>
+    <blacklist-panel-component ng-show="$ctrl._viewModel.structureView == 'excluded'"></blacklist-panel-component>
+    <map-tree-view-component ng-show="$ctrl._viewModel.structureView == 'treeView'"></map-tree-view-component>
     <map-tree-view-component style="position: relative; margin-top:100px; padding-top: 100px"></map-tree-view-component>
-    <blacklist-panel-component></blacklist-panel-component>
-    <blacklist-panel-component ng-show="$ctrl._viewModel.selectedView == 'hidden'"></blacklist-panel-component>
-    <blacklist-panel-component ng-show="$ctrl._viewModel.selectedView == 'excluded'"></blacklist-panel-component>
+
 </div>
 
