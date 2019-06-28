@@ -1,20 +1,38 @@
 import "./centerMapButton.component.scss"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
+import { CameraChangeSubscriber, ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
+import { PerspectiveCamera, Vector3 } from "three"
+import { IRootScopeService } from "angular"
 
-export class CenterMapButtonController {
+export class CenterMapButtonController implements CameraChangeSubscriber {
+	private _viewModel: {
+		isMapCentered: boolean
+	} = {
+		isMapCentered: true
+	}
 
-    /* @ngInject */
-    constructor(private threeOrbitControlsService: ThreeOrbitControlsService) {
+	/* @ngInject */
+	constructor(private $rootScope: IRootScopeService, private threeOrbitControlsService: ThreeOrbitControlsService) {
+		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
+	}
 
-    }
+	public onCameraChanged(camera: PerspectiveCamera, event: angular.IAngularEvent) {
+		this._viewModel.isMapCentered = this.isMapCentered(camera)
+	}
 
-    public fitMapToView() {
-        this.threeOrbitControlsService.autoFitTo()
-    }
+	public fitMapToView() {
+		this.threeOrbitControlsService.autoFitTo()
+	}
+
+	private isMapCentered(camera: PerspectiveCamera) {
+		return camera.position
+			.clone()
+			.floor()
+			.equals(this.threeOrbitControlsService.defaultCameraPosition.clone().floor())
+	}
 }
 
 export const centerMapButtonComponent = {
-    selector: "centerMapButtonComponent",
-    template: require("./centerMapButton.component.html"),
-    controller: CenterMapButtonController
+	selector: "centerMapButtonComponent",
+	template: require("./centerMapButton.component.html"),
+	controller: CenterMapButtonController
 }
