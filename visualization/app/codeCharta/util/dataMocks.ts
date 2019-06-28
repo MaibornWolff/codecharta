@@ -1,4 +1,14 @@
-import { AttributeTypeValue, CCFile, CodeMapNode, Edge, MetricData, Node, Settings } from "../codeCharta.model"
+import {
+	AttributeTypeValue,
+	CCFile,
+	CodeMapNode,
+	Edge,
+	FileSelectionState,
+	FileState,
+	MetricData,
+	Node,
+	Settings
+} from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import * as THREE from "three"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -437,6 +447,13 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 	projectName: "Sample Map"
 }
 
+export const FILE_STATES: FileState[] = [
+	{
+		file: TEST_FILE_DATA,
+		selectedAs: FileSelectionState.Single
+	}
+]
+
 export const SETTINGS: Settings = {
 	fileSettings: {
 		attributeTypes: {
@@ -592,6 +609,8 @@ export const TEST_NODE_LEAF: Node = {
 	markingColor: "0xFFFFFF",
 	flat: false
 }
+
+export const TEST_NODES: Node[] = [TEST_NODE_ROOT, TEST_NODE_LEAF]
 
 export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(
 	1,
