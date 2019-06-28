@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 ### Added
 
+### Changed
+
+### Removed
+
+### Fixed
+
+### Chore
+
+## [1.28.0] - 2019-06-28
+### Added
+
 - Releasing will now remind the developer to manually add the release notes #533
 
 ### Changed
