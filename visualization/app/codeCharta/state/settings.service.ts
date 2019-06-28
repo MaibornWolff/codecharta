@@ -37,7 +37,6 @@ export class SettingsService implements FileStateServiceSubscriber {
 	}
 
 	public updateSettings(update: RecursivePartial<Settings>, isSilent: boolean = false) {
-		console.log("update", update)
 		this.settings = this.mergePartialSettings(this.settings, update, this.settings) as Settings
 		if (!isSilent) {
 			this.loadingGifService.updateLoadingMapFlag(true)
