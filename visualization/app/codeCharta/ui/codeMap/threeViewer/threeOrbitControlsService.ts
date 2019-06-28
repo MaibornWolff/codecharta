@@ -1,7 +1,7 @@
 "use strict"
 import { ThreeCameraService } from "./threeCameraService"
 import { IRootScopeService, IAngularEvent } from "angular"
-import { OrbitControls, PerspectiveCamera, Vector, Vector3 } from "three"
+import { OrbitControls, PerspectiveCamera, Vector3 } from "three"
 import * as THREE from "three"
 import { ThreeSceneService } from "./threeSceneService"
 
