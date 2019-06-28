@@ -1,14 +1,16 @@
 <section layout="row" layout-align="center center" class="mode-chooser">
-        <md-button class="file-state-seletor left" ng-class="{current: $ctrl._viewModel.isSingleState}" ng-click="$ctrl.onSingleStateSelected()"
+        <md-button class="file-state-seletor left" ng-class="{current: $ctrl._viewModel.structureView == 'treeView'}" 
+        ng-click="$ctrl.onToggleStructureView('treeView')"
             ><i class="fa fa-sitemap"></i></md-button
         >
         <md-button
             class="file-state-seletor middle"
-            ng-class="{current: $ctrl._viewModel.isPartialState}"
-            ng-click="$ctrl.onPartialStateSelected()"
+            ng-class="{current: $ctrl._viewModel.structureView == 'hidden'}"
+            ng-click="$ctrl.onToggleStructureView('hidden')"
             ><i class="fa fa-eye-slash"></i></md-button
         >
-        <md-button class="file-state-seletor right" ng-class="{current: $ctrl._viewModel.isDeltaState}" ng-click="$ctrl.onDeltaStateSelected()"
+        <md-button class="file-state-seletor right" ng-class="{current: $ctrl._viewModel.structureView == 'excluded'}" 
+        ng-click="$ctrl.onToggleStructureView('excluded')"
             ><i class="fa fa-ban"></i></md-button
         >
 </section>

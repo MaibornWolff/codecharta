@@ -1,4 +1,4 @@
-import { ColorRange, DynamicSettings, FileSettings, FileState, MapColors, RecursivePartial, Settings } from "../codeCharta.model"
+import { ColorRange, DynamicSettings, FileSettings, FileState, MapColors, RecursivePartial, Settings, structureViewMode } from "../codeCharta.model"
 import _ from "lodash"
 import { IAngularEvent, IRootScopeService, ITimeoutService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
@@ -6,6 +6,7 @@ import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
 import { Vector3 } from "three"
 import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
+import { NONE_METRIC_DISTRIBUTION } from "../util/dataMocks";
 
 export interface SettingsServiceSubscriber {
 	onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent)
@@ -36,6 +37,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 	}
 
 	public updateSettings(update: RecursivePartial<Settings>, isSilent: boolean = false) {
+		console.log("update", update)
 		this.settings = this.mergePartialSettings(this.settings, update, this.settings) as Settings
 		if (!isSilent) {
 			this.loadingGifService.updateLoadingMapFlag(true)
@@ -81,7 +83,8 @@ export class SettingsService implements FileStateServiceSubscriber {
 				searchedNodePaths: [],
 				searchPattern: "",
 				margin: null,
-				colorRange: colorRange
+				colorRange: colorRange,
+				structureView: structureViewMode.None
 			},
 			appSettings: {
 				amountOfTopLabels: 1,

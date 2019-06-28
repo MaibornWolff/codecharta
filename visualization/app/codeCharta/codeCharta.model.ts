@@ -18,6 +18,13 @@ export enum FileSelectionState {
 	None = "None"
 }
 
+export enum structureViewMode {
+    None = 'none',
+    TreeView = 'treeView',
+    Hidden = 'hidden',
+    Excluded = 'excluded'
+}
+
 export interface ExportCCFile {
 	projectName: string
 	apiVersion: string
@@ -80,6 +87,7 @@ export interface DynamicSettings {
 	searchPattern: string
 	margin: number
 	colorRange: ColorRange
+	structureView: structureViewMode
 }
 
 export interface AppSettings {
