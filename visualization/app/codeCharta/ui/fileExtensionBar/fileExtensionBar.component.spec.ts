@@ -56,7 +56,7 @@ describe("FileExtensionBarController", () => {
 		it("should set the color of given extension attribute", () => {
 			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map, undefined)
 
-			expect(distribution[0].color).toEqual("hsla(58, 40%, 50%)")
+			expect(distribution[0].color).toEqual("hsl(58, 40%, 50%)")
 		})
 
 		it("should remain the color property of the extension, if it already has one", () => {
