@@ -3,8 +3,15 @@ floating-panel-component {
         z-index: 11;
         left: 20px;
         top: 110px;
+        width: 390px;
         background-color: #ffffff;
         padding: 10px;
-        box-shadow: #ff00ff;
+        box-shadow: 0px 1px 5px -5px rgba(0, 0, 0, 0.2) !important; //does not work
+        z-index: 29;
+
+        hr {
+                //border-style: none;
+                color: #000;
+        }
     
 }

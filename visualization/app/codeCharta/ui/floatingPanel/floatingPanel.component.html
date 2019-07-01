@@ -1,12 +1,11 @@
 <structure-panel-selector-component></structure-panel-selector-component>
 <search-bar-component></search-bar-component>
 
-<br>
+<br><br>
 <div style="display: block">
     <blacklist-panel-component ng-show="$ctrl._viewModel.structureView == 'hidden'"></blacklist-panel-component>
     <blacklist-panel-component ng-show="$ctrl._viewModel.structureView == 'excluded'"></blacklist-panel-component>
+    <matching-files-counter-component ng-show="$ctrl._viewModel.structureView == 'treeView'"></matching-files-counter-component>
     <map-tree-view-component ng-show="$ctrl._viewModel.structureView == 'treeView'"></map-tree-view-component>
-    <map-tree-view-component style="position: relative; margin-top:100px; padding-top: 100px"></map-tree-view-component>
-
 </div>
 
