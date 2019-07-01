@@ -1,12 +1,14 @@
 import "./structurePanelSelector.component.scss"
 import { SettingsServiceSubscriber, SettingsService } from "../../state/settings.service";
-import { Settings, RecursivePartial, structureViewMode } from "../../codeCharta.model";
+import { Settings, RecursivePartial, structureViewMode, BlacklistType } from "../../codeCharta.model";
 import { IAngularEvent, IRootScopeService } from "angular";
 
 export class StructurePanelSelectorController implements SettingsServiceSubscriber {
 
-    private _viewModel = {
-		structureView: structureViewMode.none
+    private _viewModel: {structureView: structureViewMode, hideListLength: number, excludeListLength: number} = {
+        structureView: structureViewMode.none,
+        hideListLength: 0,
+        excludeListLength: 0
     }
 
     /* @ngInject */
@@ -18,6 +20,8 @@ export class StructurePanelSelectorController implements SettingsServiceSubscrib
     public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent){
         console.log("Settings changed to", settings.dynamicSettings.structureView)
         this._viewModel.structureView = settings.dynamicSettings.structureView
+        this._viewModel.hideListLength = settings.fileSettings.blacklist.filter(x => x.type === BlacklistType.hide).length
+        this._viewModel.excludeListLength = settings.fileSettings.blacklist.filter(x => x.type === BlacklistType.exclude).length
     }
 
     public onToggleStructureView(toggleView: structureViewMode){

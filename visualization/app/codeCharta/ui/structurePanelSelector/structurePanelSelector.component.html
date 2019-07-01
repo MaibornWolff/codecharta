@@ -7,10 +7,10 @@
             class="file-state-seletor middle"
             ng-class="{current: $ctrl._viewModel.structureView == 'hidden'}"
             ng-click="$ctrl.onToggleStructureView('hidden')"
-            ><i class="fa fa-eye-slash"></i></md-button
+            ><i class="fa fa-eye-slash"></i><div class="list-length-count">{{ $ctrl._viewModel.hideListLength }}</div></md-button
         >
         <md-button class="file-state-seletor right" ng-class="{current: $ctrl._viewModel.structureView == 'excluded'}" 
         ng-click="$ctrl.onToggleStructureView('excluded')"
-            ><i class="fa fa-ban"></i></md-button
+            ><i class="fa fa-ban"></i><div class="list-length-count">{{ $ctrl._viewModel.excludeListLength }}</div></md-button
         >
 </section>
