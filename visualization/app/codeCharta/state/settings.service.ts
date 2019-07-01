@@ -83,7 +83,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 				searchPattern: "",
 				margin: null,
 				colorRange: colorRange,
-				structureView: structureViewMode.None
+				structureView: structureViewMode.none
 			},
 			appSettings: {
 				amountOfTopLabels: 1,

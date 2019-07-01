@@ -1,4 +1,4 @@
-import { AttributeTypeValue, CCFile, CodeMapNode, Edge, MetricData, Node, Settings } from "../codeCharta.model"
+import { AttributeTypeValue, CCFile, CodeMapNode, Edge, MetricData, Node, Settings, structureViewMode } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import * as THREE from "three"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -469,7 +469,8 @@ export const SETTINGS: Settings = {
 		colorRange: {
 			from: 19,
 			to: 67
-		}
+		},
+		structureView: structureViewMode.none
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
@@ -545,7 +546,8 @@ export const DEFAULT_SETTINGS: Settings = {
 			to: null
 		},
 		searchPattern: "",
-		searchedNodePaths: []
+		searchedNodePaths: [],
+		structureView: structureViewMode.none
 	},
 	fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] },
 	treeMapSettings: { mapSize: 500 }

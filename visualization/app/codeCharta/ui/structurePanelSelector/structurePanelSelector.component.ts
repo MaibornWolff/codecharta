@@ -6,7 +6,7 @@ import { IAngularEvent, IRootScopeService } from "angular";
 export class StructurePanelSelectorController implements SettingsServiceSubscriber {
 
     private _viewModel = {
-		structureView: structureViewMode.None
+		structureView: structureViewMode.none
     }
 
     /* @ngInject */
@@ -22,7 +22,7 @@ export class StructurePanelSelectorController implements SettingsServiceSubscrib
 
     public onToggleStructureView(toggleView: structureViewMode){
         if ( toggleView === this._viewModel.structureView){
-            this._viewModel.structureView = structureViewMode.None
+            this._viewModel.structureView = structureViewMode.none
         } else {
             this._viewModel.structureView = toggleView
         }

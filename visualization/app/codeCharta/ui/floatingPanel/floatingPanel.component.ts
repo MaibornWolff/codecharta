@@ -5,7 +5,7 @@ import { Settings, RecursivePartial, structureViewMode } from "../../codeCharta.
 
 export class FloatingPanelController implements SettingsServiceSubscriber{
     private _viewModel = {
-        structureView: structureViewMode.None
+        structureView: structureViewMode.none
     }
 
     /* @ngInject */

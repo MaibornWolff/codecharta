@@ -19,10 +19,10 @@ export enum FileSelectionState {
 }
 
 export enum structureViewMode {
-    None = 'none',
-    TreeView = 'treeView',
-    Hidden = 'hidden',
-    Excluded = 'excluded'
+    none = 'none',
+    treeView = 'treeView',
+    hide = 'hide',
+    exclude = 'exclude'
 }
 
 export interface ExportCCFile {
