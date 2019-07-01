@@ -1,14 +1,16 @@
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import "./blacklistPanel.component.scss"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { Settings, BlacklistItem, BlacklistType, RecursivePartial } from "../../codeCharta.model"
+import { Settings, BlacklistItem, BlacklistType, RecursivePartial, structureViewMode } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 
 export class BlacklistPanelController implements SettingsServiceSubscriber {
 	private _viewModel: {
-		blacklist: Array<BlacklistItem>
+		blacklist: Array<BlacklistItem>,
+		structureView: structureViewMode
 	} = {
-		blacklist: []
+		blacklist: [],
+		structureView: structureViewMode.hide
 	}
 
 	constructor(private codeMapActionsService: CodeMapActionsService, $rootScope: IRootScopeService) {
@@ -18,6 +20,9 @@ export class BlacklistPanelController implements SettingsServiceSubscriber {
 	public onSettingsChanged(settings: Settings, supdate: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		if (settings.fileSettings.blacklist) {
 			this._viewModel.blacklist = settings.fileSettings.blacklist
+		}
+		if (settings.dynamicSettings.structureView) {
+			this._viewModel.structureView = settings.dynamicSettings.structureView
 		}
 	}
 
