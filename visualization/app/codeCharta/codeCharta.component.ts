@@ -42,6 +42,7 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 		private loadingGifService: LoadingGifService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
+		this.nodeSearchService	// To pass linting
 
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
 		this.loadingGifService.updateLoadingFileFlag(true)

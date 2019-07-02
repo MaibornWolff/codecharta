@@ -11,9 +11,9 @@ export interface NodeSearchSubscriber {
 
 export class NodeSearchService implements SettingsServiceSubscriber {
 
-    private searchedNodes: CodeMapNode[] = []
-
     private static NODE_SEARCH_COMPLETE_EVENT = "node-search-complete"
+
+    private searchedNodes: CodeMapNode[] = []
 
     /* @ngInject */
     constructor(private $rootScope: IRootScopeService, private codeMapPreRenderService: CodeMapPreRenderService, private settingsService: SettingsService) {

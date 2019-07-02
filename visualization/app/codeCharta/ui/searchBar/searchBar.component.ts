@@ -1,14 +1,10 @@
 import "./searchBar.component.scss"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service";
-import { BlacklistType, CodeMapNode, BlacklistItem, Settings, RecursivePartial, FileState } from "../../codeCharta.model";
+import { BlacklistType, BlacklistItem, Settings, RecursivePartial, FileState } from "../../codeCharta.model";
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service";
-import { IRootScopeService, IAngularEvent } from "angular";
-import * as d3 from "d3"
-import { CodeMapHelper } from "../../util/codeMapHelper";
-import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service";
-import { NodeSearchService, NodeSearchSubscriber } from "../../state/nodeSearch.service";
+import { IRootScopeService } from "angular";
 
-export class SearchBarController implements SettingsServiceSubscriber, NodeSearchSubscriber{
+export class SearchBarController implements SettingsServiceSubscriber{
 
     private _viewModel: {
 		searchPattern: string
@@ -20,16 +16,12 @@ export class SearchBarController implements SettingsServiceSubscriber, NodeSearc
 		isPatternExcluded: true
 	}
 
-	private searchedNodes: CodeMapNode[] = []
-
     /* @ngInject */
     constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
 		private codeMapActionsService: CodeMapActionsService) {
 			SettingsService.subscribe(this.$rootScope, this)
-			NodeSearchService.subscribe(this.$rootScope, this)
-
     }
 
     public applySettingsSearchPattern() {
@@ -42,10 +34,6 @@ export class SearchBarController implements SettingsServiceSubscriber, NodeSearc
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 		this.resetSearchPattern()
-	}
-
-	public onNodeSearchComplete(searchedNodes: CodeMapNode[], event: IAngularEvent) {
-		this.searchedNodes = searchedNodes
 	}
 	
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {

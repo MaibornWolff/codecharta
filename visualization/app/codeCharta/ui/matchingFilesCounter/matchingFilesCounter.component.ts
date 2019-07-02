@@ -28,12 +28,12 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Set
 			SettingsService.subscribe($rootScope, this)
 		}
 
-	onNodeSearchComplete(searchedNodes: CodeMapNode[], event: angular.IAngularEvent){
+	public onNodeSearchComplete(searchedNodes: CodeMapNode[], event: angular.IAngularEvent){
 		this.searchedNodeLeaves = this.getSearchedNodeLeaves(searchedNodes)
 		this.updateViewModel(this.searchedNodeLeaves, this._viewModel.blacklist)
 	}
 
-	onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent){
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent){
 		this._viewModel.blacklist = settings.fileSettings.blacklist
 		this.updateViewModel(this.searchedNodeLeaves, this._viewModel.blacklist)
 	}
