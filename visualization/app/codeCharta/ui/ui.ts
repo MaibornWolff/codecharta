@@ -21,7 +21,6 @@ import "./layoutSwitcher/layoutSwitcher.module"
 import "./legendPanel/legendPanel.module"
 import "./loadingGif/loadingGif.module"
 import "./mapTreeView/mapTreeView.module"
-import "./mapTreeViewSearch/mapTreeViewSearch.module"
 import "./metricChooser/metricChooser.module"
 import "./metricType/metricType.module"
 import "./nodeContextMenu/nodeContextMenu.module"
@@ -36,9 +35,9 @@ import "./viewCube/viewCube.module"
 
 angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
-		"app.codeCharta.ui.matchingFilesCounter",
-		"app.codeCharta.ui.floatingPanel",
-		"app.codeCharta.ui.structurePanelSelector",
+	"app.codeCharta.ui.matchingFilesCounter",
+	"app.codeCharta.ui.floatingPanel",
+	"app.codeCharta.ui.structurePanelSelector",
 	"app.codeCharta.ui.searchBar",
 	"app.codeCharta.ui.metricType",
 	"app.codeCharta.ui.areaSettingsPanel",
@@ -56,7 +55,6 @@ angular.module("app.codeCharta.ui", [
 	"app.codeCharta.ui.legendPanel",
 	"app.codeCharta.ui.loadingGif",
 	"app.codeCharta.ui.mapTreeView",
-	"app.codeCharta.ui.mapTreeViewSearch",
 	"app.codeCharta.ui.metricChooser",
 	"app.codeCharta.ui.metricType",
 	"app.codeCharta.ui.nodeContextMenu",
