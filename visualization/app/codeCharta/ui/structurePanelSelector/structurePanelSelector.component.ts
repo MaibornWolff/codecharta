@@ -18,7 +18,6 @@ export class StructurePanelSelectorController implements SettingsServiceSubscrib
     }
 
     public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent){
-        console.log("Settings changed to", settings.dynamicSettings.structureView)
         this._viewModel.structureView = settings.dynamicSettings.structureView
         this._viewModel.hideListLength = settings.fileSettings.blacklist.filter(x => x.type === BlacklistType.hide).length
         this._viewModel.excludeListLength = settings.fileSettings.blacklist.filter(x => x.type === BlacklistType.exclude).length

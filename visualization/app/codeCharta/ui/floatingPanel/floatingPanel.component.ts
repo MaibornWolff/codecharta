@@ -4,7 +4,7 @@ import { IRootScopeService, IAngularEvent } from "angular";
 import { Settings, RecursivePartial, structureViewMode } from "../../codeCharta.model";
 
 export class FloatingPanelController implements SettingsServiceSubscriber{
-    private _viewModel = {
+    private _viewModel: {structureView: structureViewMode} = {
         structureView: structureViewMode.none
     }
 
@@ -14,8 +14,14 @@ export class FloatingPanelController implements SettingsServiceSubscriber{
     }
 
     public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent){
-        this._viewModel.structureView = settings.dynamicSettings.structureView
+        if(this.isStructureViewUpdated(update)){
+            this._viewModel.structureView = update.dynamicSettings.structureView
+        }
     }
+
+    private isStructureViewUpdated(update: RecursivePartial<Settings>) {
+		return update.dynamicSettings && update.dynamicSettings.structureView !== undefined
+	}
 
 }
 
