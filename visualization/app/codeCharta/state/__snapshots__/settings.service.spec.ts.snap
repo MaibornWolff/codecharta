@@ -58,6 +58,7 @@ Object {
     "margin": null,
     "searchPattern": "",
     "searchedNodePaths": Array [],
+    "structureView": "none",
   },
   "fileSettings": Object {
     "attributeTypes": Object {

@@ -7,8 +7,6 @@ import { CodeMapActionsService } from "../codeMap/codeMap.actions.service";
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service";
 import { BlacklistType, CodeMapNode, BlacklistItem } from "../../codeCharta.model";
 import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
-import { CodeMapHelper } from "../../util/codeMapHelper";
-
 
 describe("SearchBarController", () => {
 
@@ -30,6 +28,7 @@ describe("SearchBarController", () => {
         $rootScope = getService<IRootScopeService>("$rootScope")
         settingsService = getService<SettingsService>("settingsService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
+		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
     }
 
     function rebuildController() {
