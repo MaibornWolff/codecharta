@@ -30,7 +30,6 @@ import "./resetSettingsButton/resetSettingsButton.module"
 import "./filePanel/filePanel.module"
 import "./ribbonBar/ribbonBar.module"
 import "./scenarioDropDown/scenarioDropDown.module"
-import "./settingsPanel/settingsPanel.module"
 import "./sidenav/sidenav.module"
 import "./toolBar/toolBar.module"
 import "./viewCube/viewCube.module"
@@ -65,7 +64,6 @@ angular.module("app.codeCharta.ui", [
 	"app.codeCharta.ui.resetSettingsButton",
 	"app.codeCharta.ui.ribbonBar",
 	"app.codeCharta.ui.scenarioDropDown",
-	"app.codeCharta.ui.settingsPanel",
 	"app.codeCharta.ui.sidenav",
 	"app.codeCharta.ui.toolBar",
 	"app.codeCharta.ui.viewCube"
