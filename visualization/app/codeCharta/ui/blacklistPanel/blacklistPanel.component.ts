@@ -6,32 +6,34 @@ import { IRootScopeService } from "angular"
 
 export class BlacklistPanelController implements SettingsServiceSubscriber {
 	private _viewModel: {
-		blacklist: Array<BlacklistItem>,
+		hide: Array<BlacklistItem>,
+		exclude: Array<BlacklistItem>,
 		structureView: structureViewMode
 	} = {
-		blacklist: [],
-		structureView: structureViewMode.hide
+		hide: [],
+		exclude: [],
+		structureView: structureViewMode.none
 	}
 
 	constructor(private codeMapActionsService: CodeMapActionsService, $rootScope: IRootScopeService) {
 		SettingsService.subscribe($rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, supdate: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-		if (settings.fileSettings.blacklist) {
-			this._viewModel.blacklist = settings.fileSettings.blacklist
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+		if (update.fileSettings && update.fileSettings.blacklist) {
+			let blacklist = update.fileSettings.blacklist as [BlacklistItem]
+			this._viewModel.hide = blacklist.filter(x => x.type === BlacklistType.hide)
+			this._viewModel.exclude = blacklist.filter(x => x.type === BlacklistType.exclude)
+			console.log(this._viewModel.hide)
+			console.log(this._viewModel.exclude)
 		}
-		if (settings.dynamicSettings.structureView) {
-			this._viewModel.structureView = settings.dynamicSettings.structureView
+		if (update.dynamicSettings && update.dynamicSettings.structureView) {
+			this._viewModel.structureView = update.dynamicSettings.structureView
 		}
 	}
 
 	public removeBlacklistEntry(entry: BlacklistItem) {
 		this.codeMapActionsService.removeBlacklistEntry(entry)
-	}
-
-	public sortByExcludes(item: BlacklistItem) {
-		return item && item.type == BlacklistType.exclude ? 0 : 1
 	}
 }
 

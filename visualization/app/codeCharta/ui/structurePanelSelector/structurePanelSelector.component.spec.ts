@@ -65,7 +65,7 @@ describe("StructurePanelSelectorController", () => {
             expect(settingsService.updateSettings).toBeCalledWith({ dynamicSettings: { structureView: structureViewMode.treeView } })
         })
 
-        it("should unselect if not already", () => {
+        it("should unselect if already selected", () => {
             structurePanelSelectorController.onToggleStructureView(structureViewMode.treeView)
 
             structurePanelSelectorController.onToggleStructureView(structureViewMode.treeView)
