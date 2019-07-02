@@ -16,7 +16,7 @@ export class NodeSearchService implements SettingsServiceSubscriber {
     private static NODE_SEARCH_COMPLETE_EVENT = "node-search-complete"
 
     /* @ngInject */
-    constructor(private $rootScope: IRootScopeService, private codeMapPreRenderService: CodeMapPreRenderService) {
+    constructor(private $rootScope: IRootScopeService, private codeMapPreRenderService: CodeMapPreRenderService, private settingsService: SettingsService) {
         SettingsService.subscribe($rootScope, this)
     }
 
@@ -24,16 +24,13 @@ export class NodeSearchService implements SettingsServiceSubscriber {
         if(this.isSearchPatternUpdated(update)){
             this.searchedNodes = this.findSearchedNodes(update.dynamicSettings.searchPattern)
             this.notifyNodeSearchComplete()
-		}
+            this.applySettingsSearchedNodePaths()
+        } 
     }
 
     private isSearchPatternUpdated(update: RecursivePartial<Settings>) {
 		return update.dynamicSettings && update.dynamicSettings.searchPattern !== undefined
 	}
-
-    public getSearchedNodes(): CodeMapNode[] {
-        return this.searchedNodes
-    }
 
     private findSearchedNodes(searchPattern: string): CodeMapNode[] {
 		if (searchPattern.length == 0) {
@@ -46,6 +43,14 @@ export class NodeSearchService implements SettingsServiceSubscriber {
 			return CodeMapHelper.getNodesByGitignorePath(nodes, searchPattern)
 		}
     }
+
+    private applySettingsSearchedNodePaths() {
+		this.settingsService.updateSettings({
+			dynamicSettings: {
+				searchedNodePaths: this.searchedNodes.length == 0 ? [] : this.searchedNodes.map(x => x.path)
+			}
+		})
+	}
 
     private notifyNodeSearchComplete() {
 		this.$rootScope.$broadcast(NodeSearchService.NODE_SEARCH_COMPLETE_EVENT, this.searchedNodes)

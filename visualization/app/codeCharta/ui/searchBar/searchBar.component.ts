@@ -2,12 +2,13 @@ import "./searchBar.component.scss"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service";
 import { BlacklistType, CodeMapNode, BlacklistItem, Settings, RecursivePartial, FileState } from "../../codeCharta.model";
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service";
-import { IRootScopeService } from "angular";
+import { IRootScopeService, IAngularEvent } from "angular";
 import * as d3 from "d3"
 import { CodeMapHelper } from "../../util/codeMapHelper";
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service";
+import { NodeSearchService, NodeSearchSubscriber } from "../../state/nodeSearch.service";
 
-export class SearchBarController implements SettingsServiceSubscriber{
+export class SearchBarController implements SettingsServiceSubscriber, NodeSearchSubscriber{
 
     private _viewModel: {
 		searchPattern: string
@@ -25,9 +26,9 @@ export class SearchBarController implements SettingsServiceSubscriber{
     constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
-		private codeMapActionsService: CodeMapActionsService,
-		private codeMapPreRenderService: CodeMapPreRenderService) {
+		private codeMapActionsService: CodeMapActionsService) {
 			SettingsService.subscribe(this.$rootScope, this)
+			NodeSearchService.subscribe(this.$rootScope, this)
 
     }
 
@@ -42,37 +43,13 @@ export class SearchBarController implements SettingsServiceSubscriber{
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 		this.resetSearchPattern()
 	}
+
+	public onNodeSearchComplete(searchedNodes: CodeMapNode[], event: IAngularEvent) {
+		this.searchedNodes = searchedNodes
+	}
 	
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-		if (this.isSearchPatternUpdated(update)) {
-			this.searchedNodes = this.getSearchedNodes(update.dynamicSettings.searchPattern)
-			this.applySettingsSearchedNodePaths()
-		}
 		this.updateViewModel(settings.fileSettings.blacklist)
-	}
-
-	private applySettingsSearchedNodePaths() {
-		this.settingsService.updateSettings({
-			dynamicSettings: {
-				searchedNodePaths: this.searchedNodes.length == 0 ? [] : this.searchedNodes.map(x => x.path)
-			}
-		})
-	}
-
-	private getSearchedNodes(searchPattern: string): CodeMapNode[] {
-		if (searchPattern.length == 0) {
-			return []
-		} else {
-			const nodes = d3
-				.hierarchy(this.codeMapPreRenderService.getRenderMap())
-				.descendants()
-				.map(d => d.data)
-			return CodeMapHelper.getNodesByGitignorePath(nodes, this._viewModel.searchPattern)
-		}
-	}
-
-	private isSearchPatternUpdated(update: RecursivePartial<Settings>) {
-		return update.dynamicSettings && update.dynamicSettings.searchPattern !== undefined
 	}
     
     public onClickBlacklistPattern(blacklistType: BlacklistType) {
@@ -89,7 +66,6 @@ export class SearchBarController implements SettingsServiceSubscriber{
 		return !!blacklist.find(x => this._viewModel.searchPattern == x.path && blacklistType == x.type)
 	}
 
-    
     private resetSearchPattern() {
 		this._viewModel.searchPattern = ""
 		this.applySettingsSearchPattern()
