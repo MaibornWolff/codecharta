@@ -2,7 +2,7 @@
 <search-bar-component></search-bar-component>
 
 <br><br>
-<div style="display: block">
+<div class="content" ng-class="{none: $ctrl._viewModel.structureView == 'none'}">
     <blacklist-panel-component ng-show="$ctrl._viewModel.structureView == 'hidden'"></blacklist-panel-component>
     <blacklist-panel-component ng-show="$ctrl._viewModel.structureView == 'excluded'"></blacklist-panel-component>
     <matching-files-counter-component ng-show="$ctrl._viewModel.structureView == 'treeView'"></matching-files-counter-component>

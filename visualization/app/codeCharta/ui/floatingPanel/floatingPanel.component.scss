@@ -6,12 +6,18 @@ floating-panel-component {
         width: 390px;
         background-color: #ffffff;
         padding: 10px;
-        box-shadow: 0px 1px 5px -5px rgba(0, 0, 0, 0.2) !important; //does not work
-        z-index: 29;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.19), 0 2px 4px rgba(0,0,0,0.23);
 
-        hr {
-                //border-style: none;
-                color: #000;
+        .content{
+                max-height: 500px;
+                min-height: 100px;
+                transition: max-height 0.4s ease-out;
+                transition: min-height 0.4s ease-out;
+                overflow: hidden;
+                
+                &.none{
+                        max-height: 0px !important;
+                        min-height: 0px !important;
+                }
         }
-    
 }
