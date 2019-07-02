@@ -5,11 +5,13 @@ import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 import { CodeMapNode, BlacklistItem, BlacklistType } from "../../codeCharta.model";
 import { CodeMapHelper } from "../../util/codeMapHelper";
+import { IRootScopeService } from "angular";
 
 describe("MatchingFilesCounterController", () => {
 
 	let matchingFilesCounterController: MatchingFilesCounterController
 	let codeMapPreRenderService: CodeMapPreRenderService
+	let $rootScope: IRootScopeService
 
     beforeEach(() => {
         restartSystem()
@@ -18,12 +20,23 @@ describe("MatchingFilesCounterController", () => {
 
     function restartSystem() {
 		instantiateModule("app.codeCharta.ui.matchingFilesCounter")
+		$rootScope = getService<IRootScopeService>("$rootScope")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
     }
 
     function rebuildController() {
-        matchingFilesCounterController = new MatchingFilesCounterController(codeMapPreRenderService)
-    }
+        matchingFilesCounterController = new MatchingFilesCounterController($rootScope, codeMapPreRenderService)
+	}
+	
+	describe("onSettingsChanged", () => {
+		it("should update search pattern", () => {
+			let update = {dynamicSettings: {searchPattern: "foobar"}}
+
+			matchingFilesCounterController.onSettingsChanged(null, update, null)
+
+			expect(matchingFilesCounterController["_viewModel"].searchPattern).toBe("foobar")
+		})
+	})
 
     describe("updateViewModel", () => {
 		let searchedNodeLeaves: CodeMapNode[]
@@ -48,7 +61,7 @@ describe("MatchingFilesCounterController", () => {
 				)
 			})
 
-			matchingFilesCounterController["updateViewModel"](searchedNodeLeaves, blacklist, "/root/node/path")
+			matchingFilesCounterController["updateViewModel"](searchedNodeLeaves, blacklist)
 
 			expect(matchingFilesCounterController["_viewModel"].fileCount).toEqual(searchedNodeLeaves.length)
 			expect(matchingFilesCounterController["_viewModel"].hideCount).toEqual(2)

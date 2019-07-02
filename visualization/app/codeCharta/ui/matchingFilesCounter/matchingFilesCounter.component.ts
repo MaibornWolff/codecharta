@@ -1,9 +1,10 @@
 import "./matchingFilesCounter.component.scss"
 import { BlacklistType, BlacklistItem, CodeMapNode, Settings, RecursivePartial } from "../../codeCharta.model";
-import { SettingsServiceSubscriber } from "../../state/settings.service";
+import { SettingsServiceSubscriber, SettingsService } from "../../state/settings.service";
 import { CodeMapHelper } from "../../util/codeMapHelper";
 import * as d3 from "d3"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service";
+import { IRootScopeService } from "angular";
 
 export class MatchingFilesCounterController implements SettingsServiceSubscriber {
 
@@ -21,13 +22,19 @@ export class MatchingFilesCounterController implements SettingsServiceSubscriber
 
 	private searchedNodes: CodeMapNode[] = [] // TODO: geht das in die DynamicSettings oder service
 
-	constructor(private codeMapPreRenderService: CodeMapPreRenderService) {	}
+	constructor(
+		$rootScope: IRootScopeService,
+		private codeMapPreRenderService: CodeMapPreRenderService
+		) {
+			SettingsService.subscribe($rootScope, this)
+		}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		if(this.isSearchPatternUpdated(update)){
+			this._viewModel.searchPattern = update.dynamicSettings.searchPattern
 			this.searchedNodes = this.getSearchedNodes(update.dynamicSettings.searchPattern)
 			const searchedNodeLeaves: CodeMapNode[] = this.getSearchedNodeLeaves()
-			this.updateViewModel(searchedNodeLeaves, settings.fileSettings.blacklist, update.dynamicSettings.searchPattern)
+			this.updateViewModel(searchedNodeLeaves, settings.fileSettings.blacklist)
 		}	
 	}
 
@@ -47,11 +54,10 @@ export class MatchingFilesCounterController implements SettingsServiceSubscriber
 		}
 	}
 
-	private updateViewModel(searchedNodeLeaves: CodeMapNode[], blacklist: BlacklistItem[], searchPattern: string) {
+	private updateViewModel(searchedNodeLeaves: CodeMapNode[], blacklist: BlacklistItem[]) {
 		this._viewModel.fileCount = searchedNodeLeaves.length
 		this._viewModel.hideCount = this.getBlacklistedFileCount(searchedNodeLeaves, blacklist, BlacklistType.hide)
 		this._viewModel.excludeCount = this.getBlacklistedFileCount(searchedNodeLeaves, blacklist, BlacklistType.exclude)
-		this._viewModel.searchPattern = searchPattern
 	}
 
 	private getSearchedNodeLeaves(): CodeMapNode[] {
