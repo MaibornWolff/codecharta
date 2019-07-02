@@ -2,7 +2,7 @@ import "./matchingFilesCounter.module"
 import { MatchingFilesCounterController } from "./matchingFilesCounter.component"
 import {instantiateModule, getService} from "../../../../mocks/ng.mockhelper"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
+import { VALID_NODE_WITH_PATH, SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
 import { CodeMapNode, BlacklistItem, BlacklistType } from "../../codeCharta.model";
 import { CodeMapHelper } from "../../util/codeMapHelper";
 import { IRootScopeService } from "angular";
@@ -15,7 +15,8 @@ describe("MatchingFilesCounterController", () => {
 
     beforeEach(() => {
         restartSystem()
-        rebuildController()
+		rebuildController()
+		withMockedCodeMapPreRenderService()
     })
 
     function restartSystem() {
@@ -27,12 +28,16 @@ describe("MatchingFilesCounterController", () => {
     function rebuildController() {
         matchingFilesCounterController = new MatchingFilesCounterController($rootScope, codeMapPreRenderService)
 	}
+
+	function withMockedCodeMapPreRenderService() {
+		codeMapPreRenderService["lastRender"].renderFile = TEST_FILE_WITH_PATHS
+	}
 	
 	describe("onSettingsChanged", () => {
 		it("should update search pattern", () => {
 			let update = {dynamicSettings: {searchPattern: "foobar"}}
 
-			matchingFilesCounterController.onSettingsChanged(null, update, null)
+			matchingFilesCounterController.onSettingsChanged(SETTINGS, update, null)
 
 			expect(matchingFilesCounterController["_viewModel"].searchPattern).toBe("foobar")
 		})
