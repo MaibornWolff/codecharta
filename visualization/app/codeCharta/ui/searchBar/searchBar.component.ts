@@ -1,6 +1,6 @@
 import "./searchBar.component.scss"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service";
-import { BlacklistType, CodeMapNode, BlacklistItem, Settings, RecursivePartial } from "../../codeCharta.model";
+import { BlacklistType, CodeMapNode, BlacklistItem, Settings, RecursivePartial, FileState } from "../../codeCharta.model";
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service";
 import { IRootScopeService } from "angular";
 import * as d3 from "d3"
@@ -37,6 +37,10 @@ export class SearchBarController implements SettingsServiceSubscriber{
 				searchPattern: this._viewModel.searchPattern
 			}
 		})
+	}
+
+	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+		this.resetSearchPattern()
 	}
 	
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
