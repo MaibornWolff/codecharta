@@ -27,4 +27,21 @@ describe("NodeSearchService", () => {
 
         })
     })
+
+    describe("isSearchPatternUpdated", () => {
+		it("should return true because searchPattern was updated in settings", () => {
+			const result = searchBarController["isSearchPatternUpdated"]({ dynamicSettings: { searchPattern: "newPattern" } })
+			expect(result).toEqual(true)
+		})
+
+		it("should return true because searchPattern was updated in settings with empty string", () => {
+			const result = searchBarController["isSearchPatternUpdated"]({ dynamicSettings: { searchPattern: "" } })
+			expect(result).toEqual(true)
+		})
+
+		it("should return false because searchPattern was not updated in settings", () => {
+			const result = searchBarController["isSearchPatternUpdated"]({ dynamicSettings: { margin: 42 } })
+			expect(result).toEqual(false)
+		})
+	})
 });

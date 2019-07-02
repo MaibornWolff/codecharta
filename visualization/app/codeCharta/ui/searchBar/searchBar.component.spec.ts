@@ -32,7 +32,7 @@ describe("SearchBarController", () => {
     }
 
     function rebuildController() {
-        searchBarController = new SearchBarController($rootScope, settingsService, codeMapActionsService, codeMapPreRenderService)
+        searchBarController = new SearchBarController($rootScope, settingsService, codeMapActionsService)
     }
 
     describe("onFileSelectionStatesChanged", () => {
@@ -64,23 +64,6 @@ describe("SearchBarController", () => {
 
 			expect(settingsService.getSettings().fileSettings.blacklist).toContainEqual(blacklistItem)
 			expect(searchBarController["_viewModel"].searchPattern).toBe("")
-		})
-	})
-
-	describe("isSearchPatternUpdated", () => {
-		it("should return true because searchPattern was updated in settings", () => {
-			const result = searchBarController["isSearchPatternUpdated"]({ dynamicSettings: { searchPattern: "newPattern" } })
-			expect(result).toEqual(true)
-		})
-
-		it("should return true because searchPattern was updated in settings with empty string", () => {
-			const result = searchBarController["isSearchPatternUpdated"]({ dynamicSettings: { searchPattern: "" } })
-			expect(result).toEqual(true)
-		})
-
-		it("should return false because searchPattern was not updated in settings", () => {
-			const result = searchBarController["isSearchPatternUpdated"]({ dynamicSettings: { margin: 42 } })
-			expect(result).toEqual(false)
 		})
 	})
 

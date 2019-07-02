@@ -3,7 +3,7 @@ import { MatchingFilesCounterController } from "./matchingFilesCounter.component
 import {instantiateModule, getService} from "../../../../mocks/ng.mockhelper"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { VALID_NODE_WITH_PATH, SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
-import { CodeMapNode, BlacklistItem, BlacklistType } from "../../codeCharta.model";
+import { CodeMapNode, BlacklistItem, BlacklistType, RecursivePartial, Settings } from "../../codeCharta.model";
 import { CodeMapHelper } from "../../util/codeMapHelper";
 import { IRootScopeService } from "angular";
 
@@ -26,7 +26,7 @@ describe("MatchingFilesCounterController", () => {
     }
 
     function rebuildController() {
-        matchingFilesCounterController = new MatchingFilesCounterController($rootScope, codeMapPreRenderService)
+        matchingFilesCounterController = new MatchingFilesCounterController($rootScope)
 	}
 
 	function withMockedCodeMapPreRenderService() {
@@ -35,11 +35,14 @@ describe("MatchingFilesCounterController", () => {
 	
 	describe("onSettingsChanged", () => {
 		it("should update search pattern", () => {
-			let update = {dynamicSettings: {searchPattern: "foobar"}}
+			const blacklist: BlacklistItem[] = [
+				{ path: "/root/node/path", type: BlacklistType.exclude }
+			]
+			SETTINGS.fileSettings.blacklist = blacklist
 
-			matchingFilesCounterController.onSettingsChanged(SETTINGS, update, null)
+			matchingFilesCounterController.onSettingsChanged(SETTINGS, null, null)
 
-			expect(matchingFilesCounterController["_viewModel"].searchPattern).toBe("foobar")
+			expect(matchingFilesCounterController["_viewModel"].blacklist).toBe(blacklist)
 		})
 	})
 
@@ -77,7 +80,7 @@ describe("MatchingFilesCounterController", () => {
 	describe("getSearchedNodeLeaves", () => {
 		it("should return array of nodes leaves", () => {
 			const rootNode = VALID_NODE_WITH_PATH
-			matchingFilesCounterController["searchedNodes"] = [
+			const searchNodes = [
 				rootNode,
 				rootNode.children[0],
 				rootNode.children[1].children[0],
@@ -90,7 +93,7 @@ describe("MatchingFilesCounterController", () => {
 				rootNode.children[1].children[1],
 				rootNode.children[1].children[2]
 			]
-			const result = matchingFilesCounterController["getSearchedNodeLeaves"]()
+			const result = matchingFilesCounterController["getSearchedNodeLeaves"](searchNodes)
 
 			expect(result).toEqual(nodeLeaves)
 		})
