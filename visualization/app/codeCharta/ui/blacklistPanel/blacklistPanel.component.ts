@@ -24,8 +24,6 @@ export class BlacklistPanelController implements SettingsServiceSubscriber {
 			let blacklist = update.fileSettings.blacklist as [BlacklistItem]
 			this._viewModel.hide = blacklist.filter(x => x.type === BlacklistType.hide)
 			this._viewModel.exclude = blacklist.filter(x => x.type === BlacklistType.exclude)
-			console.log(this._viewModel.hide)
-			console.log(this._viewModel.exclude)
 		}
 		if (update.dynamicSettings && update.dynamicSettings.structureView) {
 			this._viewModel.structureView = update.dynamicSettings.structureView

@@ -10,6 +10,7 @@ import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
 import { NameDataPair, RecursivePartial, Settings } from "./codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
 import { LoadingGifService } from "./ui/loadingGif/loadingGif.service"
+import { NodeSearchService } from "./state/nodeSearch.service";
 
 export class CodeChartaController implements SettingsServiceSubscriber {
 	private _viewModel: {
@@ -35,6 +36,7 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 		private settingsService: SettingsService,
 		private codeChartaService: CodeChartaService,
 		private fileStateService: FileStateService,
+		private nodeSearchService: NodeSearchService, // we have to inject it somewhere
 		private $location: ILocationService,
 		private $http: IHttpService,
 		private loadingGifService: LoadingGifService
