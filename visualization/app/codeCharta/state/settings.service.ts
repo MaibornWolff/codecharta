@@ -6,7 +6,6 @@ import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
 import { Vector3 } from "three"
 import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
-import { NONE_METRIC_DISTRIBUTION } from "../util/dataMocks";
 
 export interface SettingsServiceSubscriber {
 	onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent)

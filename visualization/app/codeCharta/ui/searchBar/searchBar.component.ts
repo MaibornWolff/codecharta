@@ -2,7 +2,7 @@ import "./searchBar.component.scss"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service";
 import { BlacklistType, CodeMapNode, BlacklistItem, Settings, RecursivePartial } from "../../codeCharta.model";
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service";
-import { IAngularEvent, IRootScopeService } from "angular";
+import { IRootScopeService } from "angular";
 import * as d3 from "d3"
 import { CodeMapHelper } from "../../util/codeMapHelper";
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service";

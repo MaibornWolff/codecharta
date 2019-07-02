@@ -8,7 +8,6 @@ import { RecursivePartial, Settings, structureViewMode } from "../../codeCharta.
 describe("FloatingPanelController", () => {
 
     let floatingPanelController: FloatingPanelController
-    let settingsService: SettingsService
     let $rootScope: IRootScopeService
 
     beforeEach(() => {
@@ -18,12 +17,11 @@ describe("FloatingPanelController", () => {
 
     function restartSystem() {
         instantiateModule("app.codeCharta.ui.floatingPanel")
-        settingsService = getService<SettingsService>("fileStateService")
         $rootScope = getService<IRootScopeService>("$rootScope")
     }
 
     function rebuildController() {
-        floatingPanelController = new FloatingPanelController(settingsService, $rootScope)
+        floatingPanelController = new FloatingPanelController($rootScope)
     }
 
     describe("Show components selected", () => {

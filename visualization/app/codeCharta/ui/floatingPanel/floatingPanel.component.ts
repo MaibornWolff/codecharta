@@ -9,7 +9,7 @@ export class FloatingPanelController implements SettingsServiceSubscriber{
     }
 
     /* @ngInject */
-    constructor(private settingsService: SettingsService, private $rootScope: IRootScopeService) {
+    constructor($rootScope: IRootScopeService) {
         SettingsService.subscribe($rootScope, this)
     }
 

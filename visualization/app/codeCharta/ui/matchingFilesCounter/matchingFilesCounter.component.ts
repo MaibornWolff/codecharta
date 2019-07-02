@@ -17,9 +17,6 @@ export class MatchingFilesCounterController implements SettingsServiceSubscriber
 
 	private searchedNodes: CodeMapNode[] = []
 
-	/* @ngInject */
-	constructor() {	}
-
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		const searchedNodeLeaves: CodeMapNode[] = this.getSearchedNodeLeaves()
 		this.updateViewModel(searchedNodeLeaves, settings.fileSettings.blacklist)
