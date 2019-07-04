@@ -1,6 +1,5 @@
 import { CC_URL, delay, puppeteer } from "../../../puppeteer.helper"
 import { RibbonBarPageObject } from "./ribbonBar.po"
-import { SettingsPanelPageObject } from "../settingsPanel/settingsPanel.po"
 
 jest.setTimeout(10000)
 
@@ -17,7 +16,7 @@ describe("RibbonBar", () => {
 	})
 
 
-	it("hovering over a folder should display the sum of metric of all children", async () => {
+	xit("hovering over a folder should display the sum of metric of all children", async () => {
 		await page.goto(CC_URL)
 		await page.evaluate(() => {
 			const loadingIndicator = document.querySelector("#loading-gif-file")

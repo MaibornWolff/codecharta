@@ -1,6 +1,5 @@
 import { CC_URL, delay, puppeteer } from "../../../puppeteer.helper"
 import { NodeContextMenuPageObject } from "./nodeContextMenu.po"
-import { SettingsPanelPageObject } from "../settingsPanel/settingsPanel.po"
 
 jest.setTimeout(10000)
 
@@ -16,7 +15,7 @@ describe("app", () => {
 		await browser.close()
 	})
 
-	it("right clicking a folder should open a context menu with color options", async () => {
+	xit("right clicking a folder should open a context menu with color options", async () => {
 		await page.goto(CC_URL)
 		await page.evaluate(() => {
 			const loadingIndicator = document.querySelector("#loading-gif-file")
