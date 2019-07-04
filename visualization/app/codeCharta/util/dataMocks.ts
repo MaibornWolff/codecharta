@@ -470,7 +470,7 @@ export const SETTINGS: Settings = {
 			from: 19,
 			to: 67
 		},
-		floatingPanelMode: FloatingPanelMode.search
+		floatingPanelMode: FloatingPanelMode.minimized
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
@@ -547,7 +547,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		},
 		searchPattern: "",
 		searchedNodePaths: [],
-		floatingPanelMode: FloatingPanelMode.search
+		floatingPanelMode: FloatingPanelMode.minimized
 	},
 	fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] },
 	treeMapSettings: { mapSize: 500 }

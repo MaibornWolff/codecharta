@@ -53,12 +53,12 @@ Object {
       "to": null,
     },
     "distributionMetric": null,
+    "floatingPanelMode": "minimized",
     "focusedNodePath": "",
     "heightMetric": null,
     "margin": null,
     "searchPattern": "",
     "searchedNodePaths": Array [],
-    "floatingPanelMode": "none",
   },
   "fileSettings": Object {
     "attributeTypes": Object {

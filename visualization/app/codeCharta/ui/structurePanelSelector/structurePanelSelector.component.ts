@@ -22,7 +22,6 @@ export class StructurePanelSelectorController implements SettingsServiceSubscrib
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent) {
-		console.log(settings.dynamicSettings.floatingPanelMode)
 		this._viewModel.floatingPanelMode = settings.dynamicSettings.floatingPanelMode
 		this._viewModel.hideListLength = settings.fileSettings.blacklist.filter(x => x.type === BlacklistType.hide).length
 		this._viewModel.excludeListLength = settings.fileSettings.blacklist.filter(x => x.type === BlacklistType.exclude).length
