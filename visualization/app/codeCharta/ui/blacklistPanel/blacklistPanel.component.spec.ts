@@ -3,7 +3,7 @@ import "./blacklistPanel.module"
 import { SettingsService } from "../../state/settings.service"
 import { BlacklistPanelController } from "./blacklistPanel.component"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { BlacklistType, BlacklistItem, RecursivePartial, Settings, structureViewMode } from "../../codeCharta.model"
+import { BlacklistType, BlacklistItem, RecursivePartial, Settings,  FloatingPanelMode } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 
@@ -68,11 +68,11 @@ describe("blacklistController", () => {
 		expect(blacklistPanelController["_viewModel"].hide).toEqual([])
 	})
 
-	it("update local structureView onSettingschanged", () => {
-		let update: RecursivePartial<Settings> = {dynamicSettings: {structureView: structureViewMode.hide}}
+	it("update local floatingPanelMode onSettingschanged", () => {
+		let update: RecursivePartial<Settings> = {dynamicSettings: {floatingPanelMode: FloatingPanelMode.hide}}
 
 		blacklistPanelController.onSettingsChanged(null, update, null)
 
-		expect(blacklistPanelController["_viewModel"].structureView).toEqual(structureViewMode.hide)
+		expect(blacklistPanelController["_viewModel"].floatingPanelMode).toEqual(FloatingPanelMode.hide)
 	})
 })

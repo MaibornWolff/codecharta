@@ -3,7 +3,7 @@ import { FloatingPanelController } from "./floatingPanel.component"
 import {instantiateModule, getService} from "../../../../mocks/ng.mockhelper"
 import { SettingsService } from "../../state/settings.service";
 import { IRootScopeService } from "angular";
-import { RecursivePartial, Settings, structureViewMode } from "../../codeCharta.model";
+import { RecursivePartial, Settings, FloatingPanelMode } from "../../codeCharta.model";
 
 describe("FloatingPanelController", () => {
 
@@ -25,20 +25,20 @@ describe("FloatingPanelController", () => {
     }
 
     describe("Show components selected", () => {
-        it("should set structureView correctly", () => {
-            let update: RecursivePartial<Settings> = {dynamicSettings: {structureView: structureViewMode.treeView}} 
+        it("should set floatingPanelMode correctly", () => {
+            let update: RecursivePartial<Settings> = {dynamicSettings: {floatingPanelMode: FloatingPanelMode.treeView}} 
 
             floatingPanelController.onSettingsChanged(null, update, null)
 
-            expect(floatingPanelController["_viewModel"].structureView).toBe(structureViewMode.treeView)
+            expect(floatingPanelController["_viewModel"].floatingPanelMode).toBe(FloatingPanelMode.treeView)
         })
 
-        it("should set structureView to none", () => {
-            let update: RecursivePartial<Settings> = {dynamicSettings: {structureView: structureViewMode.none}} 
+        it("should set floatingPanelMode to none", () => {
+            let update: RecursivePartial<Settings> = {dynamicSettings: {floatingPanelMode: FloatingPanelMode.search}} 
 
             floatingPanelController.onSettingsChanged(null, update, null)
 
-            expect(floatingPanelController["_viewModel"].structureView).toBe(structureViewMode.none)
+            expect(floatingPanelController["_viewModel"].floatingPanelMode).toBe(FloatingPanelMode.search)
         })
     })
 

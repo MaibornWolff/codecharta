@@ -1,16 +1,16 @@
 <section layout="row" layout-align="center center" class="mode-chooser">
-        <md-button class="file-state-seletor left" ng-class="{current: $ctrl._viewModel.structureView == 'treeView'}" 
-        ng-click="$ctrl.onToggleStructureView('treeView')"
+        <md-button class="file-state-seletor left" ng-class="{current: $ctrl._viewModel.floatingPanelMode == 'treeView'}" 
+        ng-click="$ctrl.onToggleFloatingPanelMode('treeView')"
             ><i class="fa fa-sitemap"></i></md-button
         >
         <md-button
             class="file-state-seletor middle"
-            ng-class="{current: $ctrl._viewModel.structureView == 'hidden'}"
-            ng-click="$ctrl.onToggleStructureView('hidden')"
+            ng-class="{current: $ctrl._viewModel.floatingPanelMode == 'hidden'}"
+            ng-click="$ctrl.onToggleFloatingPanelMode('hidden')"
             ><i class="fa fa-eye-slash"></i><div class="list-length-count">{{ $ctrl._viewModel.hideListLength }}</div></md-button
         >
-        <md-button class="file-state-seletor right" ng-class="{current: $ctrl._viewModel.structureView == 'excluded'}" 
-        ng-click="$ctrl.onToggleStructureView('excluded')"
+        <md-button class="file-state-seletor right" ng-class="{current: $ctrl._viewModel.floatingPanelMode == 'excluded'}" 
+        ng-click="$ctrl.onToggleFloatingPanelMode('excluded')"
             ><i class="fa fa-ban"></i><div class="list-length-count">{{ $ctrl._viewModel.excludeListLength }}</div></md-button
         >
 </section>

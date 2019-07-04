@@ -58,7 +58,7 @@ Object {
     "margin": null,
     "searchPattern": "",
     "searchedNodePaths": Array [],
-    "structureView": "none",
+    "floatingPanelMode": "none",
   },
   "fileSettings": Object {
     "attributeTypes": Object {

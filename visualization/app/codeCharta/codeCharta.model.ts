@@ -18,11 +18,12 @@ export enum FileSelectionState {
 	None = "None"
 }
 
-export enum structureViewMode {
-    none = 'none',
-    treeView = 'treeView',
-    hide = 'hide',
-    exclude = 'exclude'
+export enum FloatingPanelMode {
+	search = "search",
+	treeView = "treeView",
+	hide = "hide",
+	exclude = "exclude",
+	minimized = "minimized"
 }
 
 export interface ExportCCFile {
@@ -87,7 +88,7 @@ export interface DynamicSettings {
 	searchPattern: string
 	margin: number
 	colorRange: ColorRange
-	structureView: structureViewMode
+	floatingPanelMode: FloatingPanelMode
 }
 
 export interface AppSettings {

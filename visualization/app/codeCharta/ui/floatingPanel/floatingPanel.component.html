@@ -1,11 +1,12 @@
-<structure-panel-selector-component></structure-panel-selector-component>
-<search-bar-component></search-bar-component>
+<div class="content" ng-class="{minimized: $ctrl._viewModel.floatingPanelMode == 'minimized'}">
+	<structure-panel-selector-component></structure-panel-selector-component>
+	<search-bar-component></search-bar-component>
 
-<br><br>
-<div class="content" ng-class="{none: $ctrl._viewModel.structureView == 'none'}">
-    <blacklist-panel-component ng-show="$ctrl._viewModel.structureView == 'hidden'"></blacklist-panel-component>
-    <blacklist-panel-component ng-show="$ctrl._viewModel.structureView == 'excluded'"></blacklist-panel-component>
-    <matching-files-counter-component ng-show="$ctrl._viewModel.structureView == 'treeView'"></matching-files-counter-component>
-    <map-tree-view-component ng-show="$ctrl._viewModel.structureView == 'treeView'"></map-tree-view-component>
+	<br /><br />
+	<div class="tabs" ng-class="{none: $ctrl._viewModel.floatingPanelMode == 'search'}">
+		<blacklist-panel-component ng-show="$ctrl._viewModel.floatingPanelMode == 'hidden'"></blacklist-panel-component>
+		<blacklist-panel-component ng-show="$ctrl._viewModel.floatingPanelMode == 'excluded'"></blacklist-panel-component>
+		<matching-files-counter-component ng-show="$ctrl._viewModel.floatingPanelMode == 'treeView'"></matching-files-counter-component>
+		<map-tree-view-component ng-show="$ctrl._viewModel.floatingPanelMode == 'treeView'"></map-tree-view-component>
+	</div>
 </div>
-
