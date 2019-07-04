@@ -1,30 +1,36 @@
 import "./searchBar.component.scss"
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service";
-import { BlacklistType, BlacklistItem, Settings, RecursivePartial, FileState } from "../../codeCharta.model";
-import { CodeMapActionsService } from "../codeMap/codeMap.actions.service";
-import { IRootScopeService } from "angular";
+import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { BlacklistType, BlacklistItem, Settings, RecursivePartial, FileState, FloatingPanelMode } from "../../codeCharta.model"
+import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
+import { IRootScopeService } from "angular"
 
-export class SearchBarController implements SettingsServiceSubscriber{
+export class SearchBarController implements SettingsServiceSubscriber {
+	private DEFAULT_INPUT_TEXT: string = "gitignore style: *.js, **/app/*"
 
-    private _viewModel: {
+	private _viewModel: {
 		searchPattern: string
 		isPatternHidden: boolean
 		isPatternExcluded: boolean
+		floatingPanelMode: FloatingPanelMode
+		placeholderText: string
 	} = {
 		searchPattern: "",
 		isPatternHidden: true,
-		isPatternExcluded: true
+		isPatternExcluded: true,
+		floatingPanelMode: FloatingPanelMode.minimized,
+		placeholderText: ""
 	}
 
-    /* @ngInject */
-    constructor(
+	/* @ngInject */
+	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
-		private codeMapActionsService: CodeMapActionsService) {
-			SettingsService.subscribe(this.$rootScope, this)
-    }
+		private codeMapActionsService: CodeMapActionsService
+	) {
+		SettingsService.subscribe(this.$rootScope, this)
+	}
 
-    public applySettingsSearchPattern() {
+	public applySettingsSearchPattern() {
 		this.settingsService.updateSettings({
 			dynamicSettings: {
 				searchPattern: this._viewModel.searchPattern
@@ -35,34 +41,48 @@ export class SearchBarController implements SettingsServiceSubscriber{
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 		this.resetSearchPattern()
 	}
-	
+
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-		this.updateViewModel(settings.fileSettings.blacklist)
+		this.updateViewModel(settings.fileSettings.blacklist, settings.dynamicSettings.floatingPanelMode)
 	}
-    
-    public onClickBlacklistPattern(blacklistType: BlacklistType) {
+
+	public onSearchFocused() {
+		if (this._viewModel.floatingPanelMode === FloatingPanelMode.minimized) {
+			this.settingsService.updateSettings({ dynamicSettings: { floatingPanelMode: FloatingPanelMode.search } })
+			this._viewModel.searchPattern = this.DEFAULT_INPUT_TEXT
+		}
+	}
+
+	public onSearchUnfocused() {
+		if (this._viewModel.floatingPanelMode === FloatingPanelMode.search && this._viewModel.searchPattern === "") {
+			this.settingsService.updateSettings({ dynamicSettings: { floatingPanelMode: FloatingPanelMode.minimized } })
+			this._viewModel.searchPattern = ""
+		}
+	}
+
+	public onClickBlacklistPattern(blacklistType: BlacklistType) {
 		this.codeMapActionsService.pushItemToBlacklist({ path: this._viewModel.searchPattern, type: blacklistType })
 		this.resetSearchPattern()
 	}
-	
-	private updateViewModel(blacklist: BlacklistItem[]) {
+
+	private updateViewModel(blacklist: BlacklistItem[], floatingPanelMode: FloatingPanelMode) {
 		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(blacklist, BlacklistType.exclude)
 		this._viewModel.isPatternHidden = this.isPatternBlacklisted(blacklist, BlacklistType.hide)
+		this._viewModel.floatingPanelMode = floatingPanelMode
 	}
 
 	private isPatternBlacklisted(blacklist: BlacklistItem[], blacklistType: BlacklistType): boolean {
 		return !!blacklist.find(x => this._viewModel.searchPattern == x.path && blacklistType == x.type)
 	}
 
-    private resetSearchPattern() {
+	private resetSearchPattern() {
 		this._viewModel.searchPattern = ""
 		this.applySettingsSearchPattern()
 	}
-
 }
 
 export const searchBarComponent = {
-    selector: "searchBarComponent",
-    template: require("./searchBar.component.html"),
-    controller: SearchBarController
+	selector: "searchBarComponent",
+	template: require("./searchBar.component.html"),
+	controller: SearchBarController
 }

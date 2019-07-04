@@ -4,10 +4,16 @@ import { Settings, RecursivePartial, FloatingPanelMode, BlacklistType } from "..
 import { IAngularEvent, IRootScopeService } from "angular"
 
 export class StructurePanelSelectorController implements SettingsServiceSubscriber {
-	private _viewModel: { floatingPanelMode: FloatingPanelMode; hideListLength: number; excludeListLength: number } = {
+	private _viewModel: {
+		floatingPanelMode: FloatingPanelMode
+		hideListLength: number
+		excludeListLength: number
+		searchFieldIsEmpty: boolean
+	} = {
 		floatingPanelMode: FloatingPanelMode.minimized,
 		hideListLength: 0,
-		excludeListLength: 0
+		excludeListLength: 0,
+		searchFieldIsEmpty: true
 	}
 
 	/* @ngInject */
@@ -20,10 +26,13 @@ export class StructurePanelSelectorController implements SettingsServiceSubscrib
 		this._viewModel.floatingPanelMode = settings.dynamicSettings.floatingPanelMode
 		this._viewModel.hideListLength = settings.fileSettings.blacklist.filter(x => x.type === BlacklistType.hide).length
 		this._viewModel.excludeListLength = settings.fileSettings.blacklist.filter(x => x.type === BlacklistType.exclude).length
+		this._viewModel.searchFieldIsEmpty = (settings.dynamicSettings.searchPattern === "")
 	}
 
 	public onToggleFloatingPanelMode(toggleView: FloatingPanelMode) {
-		if (toggleView === this._viewModel.floatingPanelMode) {
+		if (toggleView === this._viewModel.floatingPanelMode && this._viewModel.searchFieldIsEmpty) {
+			this._viewModel.floatingPanelMode = FloatingPanelMode.minimized
+		} else if (toggleView === this._viewModel.floatingPanelMode) {
 			this._viewModel.floatingPanelMode = FloatingPanelMode.search
 		} else {
 			this._viewModel.floatingPanelMode = toggleView

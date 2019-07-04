@@ -26,6 +26,10 @@ search-bar-component {
             vertical-align: middle;
             display: inline-block;
         }
+
+        &.minimized {
+            width: 40px;
+        }
     }
 
     .menu-button {
