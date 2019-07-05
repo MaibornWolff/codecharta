@@ -6,9 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
+
 ### Added
 
 ### Changed
+
+- Moved Button to reset the map to the center next to the view-cube #606
 
 ### Removed
 
@@ -19,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Chore
 
 ## [1.28.0] - 2019-06-28
+
 ### Added
 
 - Releasing will now remind the developer to manually add the release notes #533
@@ -36,10 +40,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Margin will now be set correctly depending on whether dynamicMargin is enabled or not #602
 
-
 ### Chore
 
 ## [1.27.0] - 2019-06-25
+
 ### Added
 
 - Automatically generates release notes from changelog and appends it to release #533
@@ -59,7 +63,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
--  Unary Metric will no longer be auto-selected when a new map is loaded #579
+- Unary Metric will no longer be auto-selected when a new map is loaded #579
 
 ### Chore
 

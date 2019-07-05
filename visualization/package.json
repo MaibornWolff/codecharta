@@ -76,7 +76,7 @@
 		"lint": "tslint -c \"tslint.json\" \"app/**/*.ts\" --project tsconfig.json",
 		"lint:fix": "tslint -c \"tslint.json\" \"app/**/*.ts\" --fix --project tsconfig.json",
 		"format": "prettier --write \"./**/*\"",
-		"format:quick": "pretty-quick --pattern \"./**/*\" --staged"
+		"format:quick": "pretty-quick --staged"
 	},
 	"bin": {
 		"codecharta-visualization": "cli.js"
