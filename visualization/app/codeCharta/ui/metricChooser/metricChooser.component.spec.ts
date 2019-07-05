@@ -21,10 +21,8 @@ describe("MetricChooserController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.metricChooser")
 
-
 		settingsService = getService<SettingsService>("settingsService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
-
 	}
 
 	function withMockedSettingsService() {
@@ -139,9 +137,7 @@ describe("MetricChooserController", () => {
 
 			expect(settingsService.updateSettings).not.toBeCalled()
 		})
-
 	})
-
 
 	describe("applySettingsAreaMetric", () => {
 		it("should updateSettings with areaMetric and margin null, when dynamicMargin is enabled", () => {
@@ -189,7 +185,6 @@ describe("MetricChooserController", () => {
 			})
 		})
 	})
-
 
 	describe("applySettingsHeightMetric", () => {
 		it("should update height metric settings", () => {
@@ -287,7 +282,5 @@ describe("MetricChooserController", () => {
 
 			expect(metricChooserController.hoveredDeltaColor).toBe("red")
 		})
-
 	})
-
 })

@@ -1,4 +1,4 @@
-import { CCFile, Settings, MetricData } from "../codeCharta.model"
+import { Settings, MetricData } from "../codeCharta.model"
 import { CodeMapNode, Node } from "../codeCharta.model"
 import { TreeMapGenerator } from "./treeMapGenerator"
 import { SETTINGS, METRIC_DATA, TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH, VALID_EDGES } from "./dataMocks"
@@ -21,23 +21,23 @@ describe("treeMapGenerator", () => {
 		it("only root node", () => {
 			map.children = []
 
-			let node: Node = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
 
-			expect(node).toMatchSnapshot()
+			expect(nodes).toMatchSnapshot()
 		})
 
 		it("root node with two direct children", () => {
 			map.children[1].children = []
 
-			let node: Node = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
 
-			expect(node).toMatchSnapshot()
+			expect(nodes).toMatchSnapshot()
 		})
 
 		it("root node with two direct children and some grand children", () => {
-			let node: Node = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
 
-			expect(node).toMatchSnapshot()
+			expect(nodes).toMatchSnapshot()
 		})
 	})
 
@@ -61,28 +61,28 @@ describe("treeMapGenerator", () => {
 				{ name: "myHeight", maxValue: 99, availableInVisibleMaps: true }
 			]
 
-			let node: Node = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
 
-			expect(node.children[1].name).toBe("Parent Leaf")
-			expect(node.children[1].width).toBeGreaterThan(0)
-			expect(node.children[1].length).toBeGreaterThan(0)
+			expect(nodes[2].name).toBe("Parent Leaf")
+			expect(nodes[2].width).toBeGreaterThan(0)
+			expect(nodes[2].length).toBeGreaterThan(0)
 		})
 
 		it("attribute exists, no children", () => {
 			map.children = []
 			map.attributes = { a: 100 }
 
-			let node: Node = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
 
-			expect(node.attributes["a"]).toBe(100)
+			expect(nodes[0].attributes["a"]).toBe(100)
 		})
 
 		it("attribute do not exists, no children", () => {
 			map.children = []
 
-			let node: Node = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
 
-			expect(node.attributes["b"]).toBe(undefined)
+			expect(nodes[0].attributes["b"]).toBe(undefined)
 		})
 
 		it("attribute do not exists, multiple children with non existant attributes", () => {
@@ -93,9 +93,9 @@ describe("treeMapGenerator", () => {
 				{ name: "b", maxValue: 99, availableInVisibleMaps: true }
 			]
 
-			let node: Node = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
 
-			expect(node.attributes["b"]).toBe(undefined)
+			expect(nodes[0].attributes["b"]).toBe(undefined)
 		})
 
 		it("area should be zero if metric does not exist", () => {
@@ -104,9 +104,9 @@ describe("treeMapGenerator", () => {
 			settings.fileSettings.edges = VALID_EDGES
 			metricData = [{ name: "unknown", maxValue: 100, availableInVisibleMaps: true }]
 
-			let node: Node = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
 
-			expect(node.children[1].width * node.children[1].length).toEqual(0)
+			expect(nodes[2].width * nodes[2].length).toEqual(0)
 		})
 	})
 

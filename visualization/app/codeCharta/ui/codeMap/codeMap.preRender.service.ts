@@ -75,10 +75,12 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 			this.decorateIfPossible()
 		}
 
-		if (this.settingsOnlyContainNewScaling(update)) {
-			this.scaleMapIfRenderObjectIsComplete()
-		} else {
-			this.renderIfRenderObjectIsComplete()
+		if (this.allNecessaryRenderDataAvailable()) {
+			if (this.settingsOnlyContainNewScaling(update)) {
+				this.callScaleMap()
+			} else {
+				this.callRender()
+			}
 		}
 	}
 
@@ -93,7 +95,9 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
 		this.lastRender.metricData = metricData
 		this.decorateIfPossible()
-		this.renderIfRenderObjectIsComplete()
+		if (this.allNecessaryRenderDataAvailable()) {
+			this.callRender()
+		}
 	}
 
 	public onMetricDataRemoved(event: angular.IAngularEvent) {
@@ -155,27 +159,22 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		return _.keys(update).length == 1 && update.appSettings && _.keys(update.appSettings).length == 1 && !!update.appSettings.scaling
 	}
 
-	private renderIfRenderObjectIsComplete() {
-		if (this.allNecessaryRenderDataAvailable()) {
-			this.codeMapRenderService.render(this.lastRender)
+	private callRender() {
+		this.codeMapRenderService.render(this.lastRender)
 
-			this.notifyLoadingMapStatus()
-			this.notifyFileChanged()
-			if (this.newFileLoaded) {
-				this.notifyLoadingFileStatus()
-				this.threeOrbitControlsService.autoFitTo()
-				this.newFileLoaded = false
-			}
+		this.notifyLoadingMapStatus()
+		this.notifyMapChanged()
+		if (this.newFileLoaded) {
+			this.notifyLoadingFileStatus()
+			this.threeOrbitControlsService.autoFitTo()
+			this.newFileLoaded = false
 		}
 	}
 
-	private scaleMapIfRenderObjectIsComplete() {
-		if (this.allNecessaryRenderDataAvailable()) {
-			const s: Settings = this.lastRender.settings
-			this.codeMapRenderService.scaleMap(s.appSettings.scaling, s.treeMapSettings.mapSize)
-			this.notifyLoadingMapStatus()
-			this.notifyFileChanged()
-		}
+	private callScaleMap() {
+		const s: Settings = this.lastRender.settings
+		this.codeMapRenderService.scaleMap(s.appSettings.scaling, s.treeMapSettings.mapSize)
+		this.notifyLoadingMapStatus()
 	}
 
 	private allNecessaryRenderDataAvailable(): boolean {
@@ -197,7 +196,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		this.loadingGifService.updateLoadingMapFlag(false)
 	}
 
-	private notifyFileChanged() {
+	private notifyMapChanged() {
 		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, this.lastRender.map)
 	}
 

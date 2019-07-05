@@ -6,7 +6,7 @@ import { CodeMapHelper } from "../../util/codeMapHelper"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { CodeMapNode, Edge, Settings, Node } from "../../codeCharta.model"
+import { CodeMapNode, Settings, Node, FileState } from "../../codeCharta.model"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { RenderData } from "./codeMap.preRender.service"
 import { Vector3 } from "three"
@@ -20,41 +20,28 @@ export class CodeMapRenderService {
 
 	public render(renderData: RenderData) {
 		this.showAllOrOnlyFocusedNode(renderData.map, renderData.settings)
-
-		const treeMapNode: Node = TreeMapGenerator.createTreemapNodes(renderData.map, renderData.settings, renderData.metricData)
-		const nodes: Node[] = this.collectNodesToArray(treeMapNode)
-		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
-		const sortedNodes: Node[] = filteredNodes.sort((a, b) => this.sortByNodeHeight(a, b))
-
-		const mapMesh: CodeMapMesh = new CodeMapMesh(sortedNodes, renderData.settings, FileStateHelper.isDeltaState(renderData.fileStates))
-		this.threeSceneService.setMapMesh(mapMesh, renderData.settings.treeMapSettings.mapSize)
-
-		this.scaleMap(renderData.settings.appSettings.scaling, renderData.settings.treeMapSettings.mapSize)
+		const sortedNodes: Node[] = this.getSortedNodes(renderData)
+		this.setNewMapMesh(sortedNodes, renderData.settings, renderData.fileStates)
 		this.setLabels(sortedNodes, renderData.settings)
 		this.setArrows(sortedNodes, renderData.settings)
+		this.scaleMap(renderData.settings.appSettings.scaling, renderData.settings.treeMapSettings.mapSize)
+	}
+
+	private setNewMapMesh(sortedNodes, s: Settings, fileStates: FileState[]) {
+		const mapMesh: CodeMapMesh = new CodeMapMesh(sortedNodes, s, FileStateHelper.isDeltaState(fileStates))
+		this.threeSceneService.setMapMesh(mapMesh, s.treeMapSettings.mapSize)
 	}
 
 	public scaleMap(scale: Vector3, mapSize: number) {
-		this.threeSceneService.mapGeometry.scale.set(scale.x, scale.y, scale.z)
-		this.threeSceneService.mapGeometry.position.set((-mapSize / 2.0) * scale.x, 0.0, (-mapSize / 2.0) * scale.z)
-		this.threeSceneService.getMapMesh().setScale(scale)
+		this.threeSceneService.scale(scale, mapSize)
 		this.codeMapLabelService.scale(scale)
 		this.codeMapArrowService.scale(scale)
 	}
 
-	private collectNodesToArray(node: Node): Node[] {
-		let nodes = [node]
-		for (let i = 0; i < node.children.length; i++) {
-			let collected = this.collectNodesToArray(node.children[i])
-			for (let j = 0; j < collected.length; j++) {
-				nodes.push(collected[j])
-			}
-		}
-		return nodes
-	}
-
-	private sortByNodeHeight(a: Node, b: Node) {
-		return b.height - a.height
+	private getSortedNodes(renderData: RenderData): Node[] {
+		const nodes: Node[] = TreeMapGenerator.createTreemapNodes(renderData.map, renderData.settings, renderData.metricData)
+		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
+		return filteredNodes.sort((a, b) => b.height - a.height)
 	}
 
 	private setLabels(sortedNodes: Node[], s: Settings) {
@@ -71,7 +58,7 @@ export class CodeMapRenderService {
 		this.codeMapArrowService.clearArrows()
 		const visibleEdges = s.fileSettings.edges.filter(x => x.visible)
 		if (visibleEdges.length > 0 && s.appSettings.enableEdgeArrows) {
-			this.showCouplingArrows(sortedNodes, visibleEdges, s)
+			this.codeMapArrowService.addEdgeArrows(sortedNodes, visibleEdges, s)
 		}
 	}
 
@@ -82,15 +69,6 @@ export class CodeMapRenderService {
 			TreeMapGenerator.setVisibilityOfNodeAndDescendants(focusedNode, true)
 		} else {
 			TreeMapGenerator.setVisibilityOfNodeAndDescendants(map, true)
-		}
-	}
-
-	private showCouplingArrows(sortedNodes: Node[], edges: Edge[], s: Settings) {
-		this.codeMapArrowService.clearArrows()
-
-		if (edges && s) {
-			this.codeMapArrowService.addEdgeArrows(sortedNodes, edges, s)
-			this.codeMapArrowService.scale(this.threeSceneService.mapGeometry.scale)
 		}
 	}
 }
