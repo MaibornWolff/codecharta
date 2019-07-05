@@ -1,4 +1,4 @@
-import { CC_URL, puppeteer } from "../../puppeteer.helper"
+import { CC_URL, delay, puppeteer } from "../../puppeteer.helper"
 import { LogoPageObject } from "./logo.po"
 import { Browser, Page } from "puppeteer"
 
@@ -22,6 +22,7 @@ describe("CodeCharta logo", () => {
 		logo = new LogoPageObject(page)
 
 		await page.goto(CC_URL)
+		await delay(1000)
 	})
 
 	it("should have correct version", async () => {

@@ -1,4 +1,4 @@
-import { CC_URL, puppeteer } from "../../../puppeteer.helper"
+import { CC_URL, delay, puppeteer } from "../../../puppeteer.helper"
 import { NodeContextMenuPageObject } from "./nodeContextMenu.po"
 import { SettingsPanelPageObject } from "../settingsPanel/settingsPanel.po"
 import { Browser, Page } from "puppeteer"
@@ -26,6 +26,7 @@ describe("NodeContextMenu", () => {
 		contextMenu = new NodeContextMenuPageObject(page)
 
 		await page.goto(CC_URL)
+		await delay(1000)
 	})
 
 	it("right clicking a folder should open a context menu with color options", async () => {
