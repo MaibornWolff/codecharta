@@ -10,12 +10,54 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
-- Moved File Settings from Ribbon Bar to new File Setting Bar #525
-- Rename sample file codemap-nodes #587
-
 ### Removed
 
 ### Fixed
+
+### Chore
+
+## [1.28.0] - 2019-06-28
+### Added
+
+- Releasing will now remind the developer to manually add the release notes #533
+- StructureModifier to remove and move nodes and set root of projects #547 / #181
+
+### Changed
+
+- More informative log messages regarding the success of project merging #547
+
+### Removed
+
+- Release Notes are not generated and added automatically to a release #533
+
+### Fixed
+
+- Margin will now be set correctly depending on whether dynamicMargin is enabled or not #602
+
+
+### Chore
+
+## [1.27.0] - 2019-06-25
+### Added
+
+- Automatically generates release notes from changelog and appends it to release #533
+- Adds global settings-menu with settings from options panel and weblinks #528
+
+### Changed
+
+- Moved File Settings from Ribbon Bar to new File Setting Bar #525
+- Rename sample file codemap-nodes #587
+- Hide checkbox to select white-positive-buildings in delta state #345
+
+### Removed
+
+- Removes Options panel from sidebar #528
+- Removes Weblinks panel from sidebar #528
+- Removed URL-parameter info from sidebar #525
+
+### Fixed
+
+-  Unary Metric will no longer be auto-selected when a new map is loaded #579
 
 ### Chore
 
@@ -24,8 +66,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 - FileExtensionBar to show file-distribution of chosen metric #495
+- sum icon is now displayed on the left of the metric value #364
 - Added Pop-up dialog before downloading file to set filename and see what data will be stored #523
-- Sum icon is now displayed on the left of the metric value #364
 
 ### Changed
 

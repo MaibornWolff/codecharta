@@ -41,7 +41,7 @@ class MutableNode constructor(
         @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeMaxAttributeMerger()
 ): Tree<MutableNode>() {
 
-    override val children = childrenList.toMutableList()
+    override var children = childrenList.toMutableList()
 
     override fun getPathOfChild(child: Tree<MutableNode>): Path {
         if (!children.contains(child)) {
