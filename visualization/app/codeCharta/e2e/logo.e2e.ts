@@ -1,4 +1,4 @@
-import { CC_URL, delay, goto, puppeteer } from "../../puppeteer.helper"
+import { goto, puppeteer } from "../../puppeteer.helper"
 import { LogoPageObject } from "./logo.po"
 import { Browser, Page } from "puppeteer"
 
