@@ -5,7 +5,6 @@ import { SettingsService } from "../../state/settings.service"
 import { TEST_FILE_WITH_PATHS, SETTINGS, METRIC_DISTRIBUTION, NONE_METRIC_DISTRIBUTION } from "../../util/dataMocks"
 import { MetricDistribution, FileExtensionCalculator } from "../../util/fileExtensionCalculator"
 import { FileExtensionBarController } from "./fileExtensionBar.component"
-import { CodeMapMesh } from "../codeMap/rendering/codeMapMesh"
 
 describe("FileExtensionBarController", () => {
 	let fileExtensionBarController: FileExtensionBarController
@@ -56,7 +55,7 @@ describe("FileExtensionBarController", () => {
 		it("should set the color of given extension attribute", () => {
 			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map, undefined)
 
-			expect(distribution[0].color).toEqual("hsla(58, 40%, 50%)")
+			expect(distribution[0].color).toEqual("hsl(58, 40%, 50%)")
 		})
 
 		it("should remain the color property of the extension, if it already has one", () => {

@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+- Colors in File-Extension-Bar will be displayed in MS Edge and Standlone now #584
+
 ### Chore
 
 ## [1.28.0] - 2019-06-28
