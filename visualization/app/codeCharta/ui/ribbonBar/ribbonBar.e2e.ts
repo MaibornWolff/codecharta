@@ -1,4 +1,4 @@
-import { CC_URL, delay, puppeteer } from "../../../puppeteer.helper"
+import { goto, puppeteer } from "../../../puppeteer.helper"
 import { RibbonBarPageObject } from "./ribbonBar.po"
 import { SettingsPanelPageObject } from "../settingsPanel/settingsPanel.po"
 import { Browser, Page } from "puppeteer"
@@ -26,8 +26,7 @@ describe("RibbonBar", () => {
 		settingsPanel = new SettingsPanelPageObject(page)
 		ribbonBar = new RibbonBarPageObject(page)
 
-		await page.goto(CC_URL)
-		await delay(1000)
+		await goto(page)
 	})
 
 
