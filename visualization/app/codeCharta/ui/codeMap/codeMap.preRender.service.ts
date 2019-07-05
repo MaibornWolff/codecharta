@@ -77,9 +77,9 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 
 		if (this.allNecessaryRenderDataAvailable()) {
 			if (this.settingsOnlyContainNewScaling(update)) {
-				this.callScaleMap()
+				this.scaleMapAndNotify()
 			} else {
-				this.callRender()
+				this.renderAndNotify()
 			}
 		}
 	}
@@ -96,7 +96,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		this.lastRender.metricData = metricData
 		this.decorateIfPossible()
 		if (this.allNecessaryRenderDataAvailable()) {
-			this.callRender()
+			this.renderAndNotify()
 		}
 	}
 
@@ -159,7 +159,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		return _.keys(update).length == 1 && update.appSettings && _.keys(update.appSettings).length == 1 && !!update.appSettings.scaling
 	}
 
-	private callRender() {
+	private renderAndNotify() {
 		this.codeMapRenderService.render(this.lastRender)
 
 		this.notifyLoadingMapStatus()
@@ -171,7 +171,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		}
 	}
 
-	private callScaleMap() {
+	private scaleMapAndNotify() {
 		const s: Settings = this.lastRender.settings
 		this.codeMapRenderService.scaleMap(s.appSettings.scaling, s.treeMapSettings.mapSize)
 		this.notifyLoadingMapStatus()
