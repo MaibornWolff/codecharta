@@ -102,23 +102,26 @@ code-charta-component {
 		z-index: 10;
 
 		#header,
+		#search,
 		#header .section .section-header,
+		#search .section .section-header,
 		#header .section .section-body,
+		#search .section .section-body,
 		#toggle-ribbon-bar-fab {
 			transition: all $animationDuration + s ease;
 		}
 	}
 
 	.ribbon-bar-wrapper {
-		margin-top:1px; 
-		width: 100%; 
-		min-height: 100px; 
-		height: 500px; 
-		position: fixed; 
-		z-index: 10; 
-		overflow: hidden; 
+		margin-top: 1px;
+		width: 100%;
+		min-height: 100px;
+		height: 500px;
+		position: fixed;
+		z-index: 10;
+		overflow: hidden;
 		white-space: nowrap;
-		font-size: 0px; 
+		font-size: 0px;
 		pointer-events: none;
 	}
 
