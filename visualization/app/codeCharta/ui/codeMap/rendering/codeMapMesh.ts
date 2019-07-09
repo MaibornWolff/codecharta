@@ -63,30 +63,36 @@ export class CodeMapMesh {
 	}
 
 	public highlightBuilding(building: CodeMapBuilding) {
-		const colors = this.threeMesh.geometry["attributes"].defaultColor
-
 		for (
 			let i = 0;
 			i < this.mapGeomDesc.buildings.length * CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES;
 			i += CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES
 		) {
-			const currentColor = new Vector3(colors.array[i], colors.array[i + 1], colors.array[i + 2])
+			const defaultColor = this.getDefaultColorByIndex(i)
 			const currentBuilding = this.getBuildingByIndex(i)
 			const distance = building
 				.getCenterOfBuilding(this.settings.treeMapSettings.mapSize)
 				.distanceTo(currentBuilding.getCenterOfBuilding(this.settings.treeMapSettings.mapSize))
 
-			const newColorVector = this.getFlashlightBuildingColor(currentColor, currentBuilding.id, building, distance)
-			const rgb = ColorConverter.vector3ToRGB(currentColor)
+			const newColorVector = this.removeLightnessFromColor(defaultColor, currentBuilding.id, building, distance)
+			const rgb = ColorConverter.vector3ToRGB(defaultColor)
 			this.currentlyHighlighted.push(`#${convert.rgb.hex([rgb.r, rgb.g, rgb.b])}`)
-
-			for (let j = i; j < i + CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES; j += CodeMapMesh.DIMENSIONS) {
-				this.threeMesh.geometry["attributes"].color.array[j] = newColorVector.x
-				this.threeMesh.geometry["attributes"].color.array[j + 1] = newColorVector.y
-				this.threeMesh.geometry["attributes"].color.array[j + 2] = newColorVector.z
-			}
+			this.setVertexColor(i, newColorVector)
 		}
 		this.threeMesh.geometry["attributes"].color.needsUpdate = true
+	}
+
+	private setVertexColor(i: number, newColorVector: Vector3) {
+		for (let j = i; j < i + CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES; j += CodeMapMesh.DIMENSIONS) {
+			this.threeMesh.geometry["attributes"].color.array[j] = newColorVector.x
+			this.threeMesh.geometry["attributes"].color.array[j + 1] = newColorVector.y
+			this.threeMesh.geometry["attributes"].color.array[j + 2] = newColorVector.z
+		}
+	}
+
+	private getDefaultColorByIndex(index: number) {
+		const colors = this.threeMesh.geometry["attributes"].defaultColor
+		return new Vector3(colors.array[index], colors.array[index + 1], colors.array[index + 2])
 	}
 
 	private getBuildingByIndex(index: number): CodeMapBuilding {
@@ -94,7 +100,7 @@ export class CodeMapMesh {
 		return this.mapGeomDesc.buildings[id]
 	}
 
-	private getFlashlightBuildingColor(currentColor, id, highlighted, distance): Vector3 {
+	private removeLightnessFromColor(currentColor, id, highlighted, distance): Vector3 {
 		const rgb = ColorConverter.vector3ToRGB(currentColor)
 
 		const hsl = convert.rgb.hsl([rgb.r, rgb.g, rgb.b])
@@ -149,11 +155,7 @@ export class CodeMapMesh {
 					this.currentlyHighlighted[i / (CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES)]
 				)
 
-				for (let j = i; j < i + CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES; j += CodeMapMesh.DIMENSIONS) {
-					this.threeMesh.geometry["attributes"].color.array[j] = originalColor.x
-					this.threeMesh.geometry["attributes"].color.array[j + 1] = originalColor.y
-					this.threeMesh.geometry["attributes"].color.array[j + 2] = originalColor.z
-				}
+				this.setVertexColor(i, originalColor)
 			}
 			this.threeMesh.geometry["attributes"].color.needsUpdate = true
 			this.currentlyHighlighted = []
