@@ -3,10 +3,10 @@
 import angular from "angular"
 
 // Plop: Append module import here
-import "./matchingFilesCounter/matchingFilesCounter.module";
-import "./searchPanel/searchPanel.module";
-import "./searchPanelModeSelector/searchPanelModeSelector.module";
-import "./searchBar/searchBar.module";
+import "./matchingFilesCounter/matchingFilesCounter.module"
+import "./searchPanel/searchPanel.module"
+import "./searchPanelModeSelector/searchPanelModeSelector.module"
+import "./searchBar/searchBar.module"
 import "./areaSettingsPanel/areaSettingsPanel.module"
 import "./blacklistPanel/blacklistPanel.module"
 import "./codeMap/codeMap.module"
@@ -34,6 +34,8 @@ import "./viewCube/viewCube.module"
 
 angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
+
+	"app.codeCharta.ui.centerMapButton",
 	"app.codeCharta.ui.matchingFilesCounter",
 	"app.codeCharta.ui.searchPanel",
 	"app.codeCharta.ui.searchPanelModeSelector",

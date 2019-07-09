@@ -56,7 +56,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 
 	private numberToHsl(hashCode: number): string {
 		let shortened = hashCode % 360
-		return "hsla(" + shortened + ", 40%, 50%)"
+		return "hsl(" + shortened + ", 40%, 50%)"
 	}
 
 	private getNoneExtension(): MetricDistribution {
