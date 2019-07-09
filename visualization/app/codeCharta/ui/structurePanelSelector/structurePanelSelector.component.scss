@@ -9,7 +9,8 @@ structure-panel-selector-component {
 	}
 
 	.md-button {
-		height: 24px;
+		height: 22px;
+		vertical-align: bottom;
 		width: 30px;
 		min-height: 0px;
 		min-width: 0px;
@@ -57,7 +58,6 @@ structure-panel-selector-component {
 	.list-length-count{
 		display: inline;
 		margin-left: -5px;
-		margin-top: -15px;
 		font-size: smaller;
 	}
 

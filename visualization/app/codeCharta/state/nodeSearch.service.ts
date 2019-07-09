@@ -20,14 +20,15 @@ export class NodeSearchService implements SettingsServiceSubscriber {
         SettingsService.subscribe($rootScope, this)
     }
 
+	// TODO: onSearchChanged event kreieren
     public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent) {
         if(this.isSearchPatternUpdated(update)){
             this.searchedNodes = this.findSearchedNodes(update.dynamicSettings.searchPattern)
             this.notifyNodeSearchComplete()
             this.applySettingsSearchedNodePaths()
         } 
-    }
-
+	}
+	
     private isSearchPatternUpdated(update: RecursivePartial<Settings>) {
 		return update.dynamicSettings && update.dynamicSettings.searchPattern !== undefined
 	}
