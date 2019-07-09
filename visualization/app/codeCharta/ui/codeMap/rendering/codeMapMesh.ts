@@ -91,9 +91,7 @@ export class CodeMapMesh {
 
 	private getBuildingByIndex(index: number): CodeMapBuilding {
 		const id = Math.floor(index / (CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES))
-		return this.mapGeomDesc.buildings.find(building => {
-			return building.id === id
-		})
+		return this.mapGeomDesc.buildings[id]
 	}
 
 	private getFlashlightBuildingColor(currentColor, id, highlighted, distance): Vector3 {
