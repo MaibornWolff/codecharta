@@ -15,10 +15,7 @@ interface ThreeUniform {
 }
 
 interface CodeMapLightingParams {
-	numHighlights: ThreeUniform
 	numSelections: ThreeUniform
-	highlightColor: ThreeUniform
-	highlightedIndices: ThreeUniform
 	selectedColor: ThreeUniform
 	selectedIndices: ThreeUniform
 	emissive: ThreeUniform
@@ -43,8 +40,8 @@ export class CodeMapMesh {
 
 	private nodes: Node[]
 
-	private currentlyHighlighted: CodeMapBuilding[] | null
-	private currentlySelected: CodeMapBuilding[] | null
+	private currentlyHighlighted: string[] = []
+	private currentlySelected: CodeMapBuilding[] = []
 
 	private lightingParams: CodeMapLightingParams = null
 
@@ -83,32 +80,9 @@ export class CodeMapMesh {
 				.getCenterOfBuilding(this.settings.treeMapSettings.mapSize)
 				.distanceTo(building.getCenterOfBuilding(this.settings.treeMapSettings.mapSize))
 
-			const r = Math.floor(currentColor.x * 255)
-			const g = Math.floor(currentColor.y * 255)
-			const b = Math.floor(currentColor.z * 255)
-
-			const hsl = convert.rgb.hsl([r, g, b])
-
-			if (id !== highlighted.id) {
-				if (distance > 800) {
-					hsl[2] -= 40
-				} else if (distance > 400) {
-					hsl[2] -= 30
-				} else if (distance > 250) {
-					hsl[2] -= 20
-				} else if (distance > 100) {
-					hsl[2] -= 15
-				} else if (distance > 50) {
-					hsl[2] -= 10
-				}
-
-				hsl[2] = hsl[2] < 0 ? 0 : hsl[2]
-			} else {
-				hsl[2] += 10
-			}
-
-			const hex = convert.hsl.hex([hsl[0], hsl[1], hsl[2]])
-			const newColorVector = ColorConverter.colorToVector3(`#${hex}`)
+			const newColorVector = this.getFlashlightBuildingColor(currentColor, id, highlighted, distance)
+			const rgb = ColorConverter.vector3ToRGB(currentColor)
+			this.currentlyHighlighted.push(`#${convert.rgb.hex([rgb.r, rgb.g, rgb.b])}`)
 
 			for (let j = i; j < i + CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES; j += CodeMapMesh.DIMENSIONS) {
 				this.threeMesh.geometry["attributes"].color.array[j] = newColorVector.x
@@ -116,8 +90,34 @@ export class CodeMapMesh {
 				this.threeMesh.geometry["attributes"].color.array[j + 2] = newColorVector.z
 			}
 		}
-
 		this.threeMesh.geometry["attributes"].color.needsUpdate = true
+	}
+
+	private getFlashlightBuildingColor(currentColor, id, highlighted, distance): Vector3 {
+		const rgb = ColorConverter.vector3ToRGB(currentColor)
+
+		const hsl = convert.rgb.hsl([rgb.r, rgb.g, rgb.b])
+
+		if (id !== highlighted.id) {
+			if (distance > 800) {
+				hsl[2] -= 40
+			} else if (distance > 400) {
+				hsl[2] -= 30
+			} else if (distance > 250) {
+				hsl[2] -= 20
+			} else if (distance > 100) {
+				hsl[2] -= 15
+			} else if (distance > 50) {
+				hsl[2] -= 10
+			}
+
+			hsl[2] = hsl[2] < 0 ? 0 : hsl[2]
+		} else {
+			hsl[2] += 10
+		}
+
+		const hex = convert.hsl.hex([hsl[0], hsl[1], hsl[2]])
+		return ColorConverter.colorToVector3(`#${hex}`)
 	}
 
 	public setSelected(buildings: CodeMapBuilding[], color?: string) {
@@ -133,17 +133,30 @@ export class CodeMapMesh {
 		this.currentlySelected = buildings
 	}
 
-	public getCurrentlyHighlighted(): CodeMapBuilding[] | null {
-		return this.currentlyHighlighted
-	}
-
 	public getCurrentlySelected(): CodeMapBuilding[] | null {
 		return this.currentlySelected
 	}
 
 	public clearHighlight() {
-		this.material.uniforms.numHighlights.value = 0.0
-		this.currentlyHighlighted = null
+		if (this.currentlyHighlighted.length > 1) {
+			for (
+				let i = 0;
+				i < this.mapGeomDesc.buildings.length * CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES;
+				i += CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES
+			) {
+				const originalColor = ColorConverter.colorToVector3(
+					this.currentlyHighlighted[i / (CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES)]
+				)
+
+				for (let j = i; j < i + CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES; j += CodeMapMesh.DIMENSIONS) {
+					this.threeMesh.geometry["attributes"].color.array[j] = originalColor.x
+					this.threeMesh.geometry["attributes"].color.array[j + 1] = originalColor.y
+					this.threeMesh.geometry["attributes"].color.array[j + 2] = originalColor.z
+				}
+			}
+			this.threeMesh.geometry["attributes"].color.needsUpdate = true
+			this.currentlyHighlighted = []
+		}
 	}
 
 	public clearSelected() {
@@ -166,9 +179,6 @@ export class CodeMapMesh {
 
 	private initLightingParams(settings: Settings) {
 		this.lightingParams = {
-			numHighlights: { type: "f", value: 0.0 },
-			highlightColor: { type: "v3", value: ColorConverter.colorToVector3("#666666") },
-			highlightedIndices: { type: "fv1", value: [] },
 			numSelections: { type: "f", value: 0.0 },
 			selectedColor: { type: "f", value: ColorConverter.colorToVector3(settings.appSettings.mapColors.selected) },
 			selectedIndices: { type: "fv1", value: [] },

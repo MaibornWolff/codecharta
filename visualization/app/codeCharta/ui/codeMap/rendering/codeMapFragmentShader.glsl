@@ -11,12 +11,8 @@ varying vec2 vUV;
 uniform vec3 emissive;
 uniform vec3 ambientLightColor;
 
-uniform highp float numHighlights;
 uniform highp float numSelections;
-
-uniform vec3 highlightColor;
 uniform vec3 selectedColor;
-uniform highp float highlightedIndices[MAX_NUM_HIGHLIGHTS_SELECTIONS];
 uniform highp float selectedIndices[MAX_NUM_HIGHLIGHTS_SELECTIONS];
 
 uniform vec3 deltaColorPositive;
@@ -100,16 +96,7 @@ void main() {
     const float epsilon = 0.5;
     const float minDelta = 0.001;
 
-    int highlights = int(numHighlights);
     int selections = int(numSelections);
-
-    for (int i=0; i < MAX_NUM_HIGHLIGHTS_SELECTIONS; ++i)
-    {
-        if (i < selections && abs(oSubGeomIdx - selectedIndices[i]) < epsilon)
-        {
-            diffuseColor.xyz = selectedColor;
-        }
-    }
 
     bool isTop = normalPointingUp(worldNormal);
 
@@ -136,23 +123,13 @@ void main() {
     }
 
     ReflectedLight reflectedLight = ReflectedLight(vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0));
-    vec3 totalEmissiveRadiance = emissive;
-
-    for (int i=0; i < MAX_NUM_HIGHLIGHTS_SELECTIONS; ++i)
-    {
-        if (i < highlights && abs(oSubGeomIdx - highlightedIndices[i]) < epsilon)
-        {
-            totalEmissiveRadiance = highlightColor;
-        }
-    }
-
     reflectedLight.indirectDiffuse = getAmbientLightIrradiance(ambientLightColor);
     reflectedLight.indirectDiffuse *= BRDF_Diffuse_Lambert(diffuseColor.rgb);
 
     reflectedLight.directDiffuse = vLightFront;
     reflectedLight.directDiffuse *= BRDF_Diffuse_Lambert(diffuseColor.rgb);
 
-    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + totalEmissiveRadiance;
+    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + emissive;
 
     gl_FragColor = vec4(outgoingLight, diffuseColor.a);
 }
