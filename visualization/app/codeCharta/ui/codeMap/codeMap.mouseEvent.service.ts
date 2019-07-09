@@ -167,7 +167,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
 		if (to !== null) {
 			this.threeSceneService.getMapMesh().clearHighlight()
-			this.threeSceneService.getMapMesh().setHighlighted([to])
+			this.threeSceneService.getMapMesh().highlightBuilding(to)
 		} else {
 			this.threeSceneService.getMapMesh().clearHighlight()
 		}

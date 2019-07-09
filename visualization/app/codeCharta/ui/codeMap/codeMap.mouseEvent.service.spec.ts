@@ -353,7 +353,7 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onBuildingHovered(null, codeMapBuilding)
 
 			expect(threeSceneService.getMapMesh).toHaveBeenCalled()
-			expect(threeSceneService.getMapMesh().setHighlighted).toHaveBeenCalledWith([codeMapBuilding])
+			expect(threeSceneService.getMapMesh().highlightBuilding).toHaveBeenCalledWith([codeMapBuilding])
 		})
 
 		it("should add property node", () => {

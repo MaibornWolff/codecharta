@@ -62,8 +62,7 @@ export class CodeMapMesh {
 		return this.threeMesh
 	}
 
-	public setHighlighted(buildings: CodeMapBuilding[]) {
-		const highlighted = buildings[0]
+	public highlightBuilding(building: CodeMapBuilding) {
 		const colors = this.threeMesh.geometry["attributes"].color
 
 		for (
@@ -72,12 +71,12 @@ export class CodeMapMesh {
 			i += CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES
 		) {
 			const currentColor = new Vector3(colors.array[i], colors.array[i + 1], colors.array[i + 2])
-			const building = this.getBuildingByIndex(i)
-			const distance = highlighted
+			const currentBuilding = this.getBuildingByIndex(i)
+			const distance = building
 				.getCenterOfBuilding(this.settings.treeMapSettings.mapSize)
-				.distanceTo(building.getCenterOfBuilding(this.settings.treeMapSettings.mapSize))
+				.distanceTo(currentBuilding.getCenterOfBuilding(this.settings.treeMapSettings.mapSize))
 
-			const newColorVector = this.getFlashlightBuildingColor(currentColor, building.id, highlighted, distance)
+			const newColorVector = this.getFlashlightBuildingColor(currentColor, currentBuilding.id, building, distance)
 			const rgb = ColorConverter.vector3ToRGB(currentColor)
 			this.currentlyHighlighted.push(`#${convert.rgb.hex([rgb.r, rgb.g, rgb.b])}`)
 
