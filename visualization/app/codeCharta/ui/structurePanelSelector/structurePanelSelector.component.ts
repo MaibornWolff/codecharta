@@ -4,6 +4,8 @@ import { Settings, RecursivePartial, FloatingPanelMode, BlacklistType } from "..
 import { IAngularEvent, IRootScopeService } from "angular"
 
 export class StructurePanelSelectorController implements SettingsServiceSubscriber {
+
+	// TODO: Rename to SearchPanelModeSelector
 	private _viewModel: {
 		floatingPanelMode: FloatingPanelMode
 		hideListLength: number
@@ -29,10 +31,8 @@ export class StructurePanelSelectorController implements SettingsServiceSubscrib
 	}
 
 	public onToggleFloatingPanelMode(toggleView: FloatingPanelMode) {
-		if (toggleView === this._viewModel.floatingPanelMode && this._viewModel.searchFieldIsEmpty) {
+		if (toggleView === this._viewModel.floatingPanelMode) {
 			this._viewModel.floatingPanelMode = FloatingPanelMode.minimized
-		} else if (toggleView === this._viewModel.floatingPanelMode) {
-			this._viewModel.floatingPanelMode = FloatingPanelMode.search
 		} else {
 			this._viewModel.floatingPanelMode = toggleView
 		}

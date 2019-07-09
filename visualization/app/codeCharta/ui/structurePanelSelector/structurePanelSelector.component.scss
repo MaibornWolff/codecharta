@@ -44,8 +44,8 @@ structure-panel-selector-component {
 		}
 
 		:active {
-            margin: -15px;
-            padding: -5px;
+            margin: inherit;
+            padding: inherit;
         }
         
         i {
@@ -56,9 +56,13 @@ structure-panel-selector-component {
 	}
 
 	.list-length-count{
-		display: inline;
-		margin-left: -5px;
-		font-size: smaller;
+		position: fixed;
+		margin-left: 18px;
+		margin-top: -32px;
+		border-radius: 50%;
+		background-color: red;
+		width: 5px;
+		height: 5px;
 	}
 
 }
