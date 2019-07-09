@@ -65,28 +65,16 @@ export class CodeMapMesh {
 		return this.threeMesh
 	}
 
-	public setHighlighted(buildings: CodeMapBuilding[], color?: string) {
-		/*
-		this.material.uniforms.highlightedIndices.value = buildings.map((b: CodeMapBuilding) => {
-			return b.id
-		})
-		this.material.uniforms.numHighlights.value = buildings.length
-
-		if (color) {
-			this.lightingParams.highlightColor.value = ColorConverter.colorToVector3(color)
-		}
-
-		this.currentlyHighlighted = buildings
-*/
+	public setHighlighted(buildings: CodeMapBuilding[]) {
 		const highlighted = buildings[0]
+		const colors = this.threeMesh.geometry["attributes"].color
 
 		for (
 			let i = 0;
 			i < this.mapGeomDesc.buildings.length * CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES;
-			i += CodeMapMesh.DIMENSIONS
+			i += CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES
 		) {
 			const id = Math.floor(i / (CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES))
-			const colors = this.threeMesh.geometry["attributes"].color
 			const currentColor = new Vector3(colors.array[i], colors.array[i + 1], colors.array[i + 2])
 			const building = this.mapGeomDesc.buildings.find(building => {
 				return building.id === id
@@ -122,10 +110,13 @@ export class CodeMapMesh {
 			const hex = convert.hsl.hex([hsl[0], hsl[1], hsl[2]])
 			const newColorVector = ColorConverter.colorToVector3(`#${hex}`)
 
-			this.threeMesh.geometry["attributes"].color.array[i] = newColorVector.x
-			this.threeMesh.geometry["attributes"].color.array[i + 1] = newColorVector.y
-			this.threeMesh.geometry["attributes"].color.array[i + 2] = newColorVector.z
+			for (let j = i; j < i + CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES; j += CodeMapMesh.DIMENSIONS) {
+				this.threeMesh.geometry["attributes"].color.array[j] = newColorVector.x
+				this.threeMesh.geometry["attributes"].color.array[j + 1] = newColorVector.y
+				this.threeMesh.geometry["attributes"].color.array[j + 2] = newColorVector.z
+			}
 		}
+
 		this.threeMesh.geometry["attributes"].color.needsUpdate = true
 	}
 
