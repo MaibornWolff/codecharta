@@ -12,16 +12,18 @@ ribbon-bar-component {
 	$bodySize: 0.9em;
 	$toggleButtonSize: 35;
 
+	min-height: 0px;
+
 	#toggle-ribbon-bar-fab {
-		position: absolute;
-		margin-top: (-1 * $toggleButtonSize - 5) + px;
+
+		margin-top: $toggleButtonSize - 10 + px;
 		right: 10px;
 		z-index: 999;
 		width: $toggleButtonSize + px;
 		height: $toggleButtonSize + px !important;
 		min-height: $toggleButtonSize + px !important;
 		line-height: $toggleButtonSize + px !important;
-		float: right;
+		position: fixed;
 
 		> i:before {
 			content: "\f107";
@@ -31,17 +33,22 @@ ribbon-bar-component {
 			> i:before {
 				content: "\f106";
 			}
+			margin-top: $heightExpanded - 20 + px;
 		}
 	}
 
-	#header {
-		width: 100%;
+	.header {
+		display: inline-block;
 		margin: 0;
 		padding: 0;
-		display: block;
 		height: ($heightCollapsed + 8) + px;
-		overflow: hidden;
 		font-size: 0;
+		width: 100%;
+		border-radius: 0px;
+
+		&.search{
+			width: 380px;
+		}
 
 		.section {
 			display: inline-block;
@@ -52,6 +59,7 @@ ribbon-bar-component {
 			vertical-align: top;
 			position: relative;
 			font-size: 12pt;
+			flex-grow: 100;
 
 			&.loading-gif {
 				border-right: none;
