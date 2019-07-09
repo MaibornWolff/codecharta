@@ -71,16 +71,13 @@ export class CodeMapMesh {
 			i < this.mapGeomDesc.buildings.length * CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES;
 			i += CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES
 		) {
-			const id = Math.floor(i / (CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES))
 			const currentColor = new Vector3(colors.array[i], colors.array[i + 1], colors.array[i + 2])
-			const building = this.mapGeomDesc.buildings.find(building => {
-				return building.id === id
-			})
+			const building = this.getBuildingByIndex(i)
 			const distance = highlighted
 				.getCenterOfBuilding(this.settings.treeMapSettings.mapSize)
 				.distanceTo(building.getCenterOfBuilding(this.settings.treeMapSettings.mapSize))
 
-			const newColorVector = this.getFlashlightBuildingColor(currentColor, id, highlighted, distance)
+			const newColorVector = this.getFlashlightBuildingColor(currentColor, building.id, highlighted, distance)
 			const rgb = ColorConverter.vector3ToRGB(currentColor)
 			this.currentlyHighlighted.push(`#${convert.rgb.hex([rgb.r, rgb.g, rgb.b])}`)
 
@@ -91,6 +88,13 @@ export class CodeMapMesh {
 			}
 		}
 		this.threeMesh.geometry["attributes"].color.needsUpdate = true
+	}
+
+	private getBuildingByIndex(index: number): CodeMapBuilding {
+		const id = Math.floor(index / (CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES))
+		return this.mapGeomDesc.buildings.find(building => {
+			return building.id === id
+		})
 	}
 
 	private getFlashlightBuildingColor(currentColor, id, highlighted, distance): Vector3 {
