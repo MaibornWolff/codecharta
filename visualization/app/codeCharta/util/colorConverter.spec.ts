@@ -1,5 +1,4 @@
 import { ColorConverter } from "./colorConverter"
-import * as THREE from "three"
 import { Vector3 } from "three"
 
 describe("colorConverter", () => {
@@ -115,6 +114,16 @@ describe("colorConverter", () => {
 			const expected = "data:image/gif;base64,R0lGODlhAQABAPAAABEiM////yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="
 
 			expect(result).toBe(expected)
+		})
+	})
+
+	describe("vector3ToRGB", () => {
+		it("should convert a vector to RGB", () => {
+			const result = ColorConverter.vector3ToRGB(new Vector3(0.1, 0.5, 0.6))
+
+			expect(result.r).toBe(25)
+			expect(result.g).toBe(127)
+			expect(result.b).toBe(153)
 		})
 	})
 })
