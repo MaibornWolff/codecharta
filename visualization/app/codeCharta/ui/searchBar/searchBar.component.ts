@@ -12,13 +12,11 @@ export class SearchBarController implements SettingsServiceSubscriber {
 		isPatternHidden: boolean
 		isPatternExcluded: boolean
 		floatingPanelMode: FloatingPanelMode
-		placeholderText: string
 	} = {
-		searchPattern: "",
+		searchPattern: this.DEFAULT_INPUT_TEXT,
 		isPatternHidden: true,
 		isPatternExcluded: true,
-		floatingPanelMode: FloatingPanelMode.minimized,
-		placeholderText: ""
+		floatingPanelMode: FloatingPanelMode.search,
 	}
 
 	/* @ngInject */
@@ -44,20 +42,6 @@ export class SearchBarController implements SettingsServiceSubscriber {
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this.updateViewModel(settings.fileSettings.blacklist, settings.dynamicSettings.floatingPanelMode)
-	}
-
-	public onSearchFocused() {
-		if (this._viewModel.floatingPanelMode === FloatingPanelMode.minimized) {
-			this.settingsService.updateSettings({ dynamicSettings: { floatingPanelMode: FloatingPanelMode.search } })
-			this._viewModel.searchPattern = this.DEFAULT_INPUT_TEXT
-		}
-	}
-
-	public onSearchUnfocused() {
-		if (this._viewModel.floatingPanelMode === FloatingPanelMode.search && this._viewModel.searchPattern === "") {
-			this.settingsService.updateSettings({ dynamicSettings: { floatingPanelMode: FloatingPanelMode.minimized } })
-			this._viewModel.searchPattern = ""
-		}
 	}
 
 	public onClickBlacklistPattern(blacklistType: BlacklistType) {
