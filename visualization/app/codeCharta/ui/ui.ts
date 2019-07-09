@@ -3,6 +3,7 @@
 import angular from "angular"
 
 // Plop: Append module import here
+import "./centerMapButton/centerMapButton.module"
 import "./matchingFilesCounter/matchingFilesCounter.module"
 import "./searchPanel/searchPanel.module"
 import "./searchPanelModeSelector/searchPanelModeSelector.module"
