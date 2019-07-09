@@ -3,7 +3,7 @@ import $ from "jquery"
 
 export class RibbonBarController {
 	private collapsingElements = $(
-		"code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab"
+		"code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab, reset-settings-button-component .md-button"
 	)
 	private toggleElements = $("ribbon-bar-component .section-title")
 	private isExpanded: boolean = false

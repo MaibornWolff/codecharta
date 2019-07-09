@@ -134,6 +134,12 @@ ribbon-bar-component {
 				reset-settings-button-component .md-button {
 					top: ($heightExpanded - 45) + px;
 					right: -5px;
+					opacity: 0;
+
+					&.expanded {
+						opacity: 1;
+						transition: opacity 1s ease-in;
+					}
 				}
 
 				md-checkbox .md-label {
