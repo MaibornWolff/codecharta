@@ -1,6 +1,6 @@
 import "./searchBar.component.scss"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import { BlacklistType, BlacklistItem, Settings, RecursivePartial, FileState, FloatingPanelMode } from "../../codeCharta.model"
+import { BlacklistType, BlacklistItem, Settings, RecursivePartial, FileState, SearchPanelMode } from "../../codeCharta.model"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { IRootScopeService } from "angular"
 
@@ -11,12 +11,12 @@ export class SearchBarController implements SettingsServiceSubscriber {
 		searchPattern: string
 		isPatternHidden: boolean
 		isPatternExcluded: boolean
-		floatingPanelMode: FloatingPanelMode
+		searchPanelMode: SearchPanelMode
 	} = {
 		searchPattern: this.DEFAULT_INPUT_TEXT,
 		isPatternHidden: true,
 		isPatternExcluded: true,
-		floatingPanelMode: FloatingPanelMode.search,
+		searchPanelMode: SearchPanelMode.minimized,
 	}
 
 	/* @ngInject */
@@ -41,7 +41,7 @@ export class SearchBarController implements SettingsServiceSubscriber {
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-		this.updateViewModel(settings.fileSettings.blacklist, settings.dynamicSettings.floatingPanelMode)
+		this.updateViewModel(settings.fileSettings.blacklist, settings.dynamicSettings.searchPanelMode)
 	}
 
 	public onClickBlacklistPattern(blacklistType: BlacklistType) {
@@ -49,10 +49,10 @@ export class SearchBarController implements SettingsServiceSubscriber {
 		this.resetSearchPattern()
 	}
 
-	private updateViewModel(blacklist: BlacklistItem[], floatingPanelMode: FloatingPanelMode) {
+	private updateViewModel(blacklist: BlacklistItem[], searchPanelMode: SearchPanelMode) {
 		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(blacklist, BlacklistType.exclude)
 		this._viewModel.isPatternHidden = this.isPatternBlacklisted(blacklist, BlacklistType.hide)
-		this._viewModel.floatingPanelMode = floatingPanelMode
+		this._viewModel.searchPanelMode = searchPanelMode
 	}
 
 	private isPatternBlacklisted(blacklist: BlacklistItem[], blacklistType: BlacklistType): boolean {

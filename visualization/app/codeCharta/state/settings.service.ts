@@ -6,7 +6,7 @@ import {
 	MapColors,
 	RecursivePartial,
 	Settings,
-	FloatingPanelMode
+	SearchPanelMode
 } from "../codeCharta.model"
 import _ from "lodash"
 import { IAngularEvent, IRootScopeService, ITimeoutService } from "angular"
@@ -91,7 +91,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 				searchPattern: "",
 				margin: null,
 				colorRange: colorRange,
-				floatingPanelMode: FloatingPanelMode.minimized
+				searchPanelMode: SearchPanelMode.minimized
 			},
 			appSettings: {
 				amountOfTopLabels: 1,

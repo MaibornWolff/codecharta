@@ -53,7 +53,7 @@ Object {
       "to": null,
     },
     "distributionMetric": null,
-    "floatingPanelMode": "minimized",
+    "searchPanelMode": "minimized",
     "focusedNodePath": "",
     "heightMetric": null,
     "margin": null,

@@ -18,8 +18,7 @@ export enum FileSelectionState {
 	None = "None"
 }
 
-export enum FloatingPanelMode {
-	search = "search",
+export enum SearchPanelMode {
 	treeView = "treeView",
 	hide = "hide",
 	exclude = "exclude",
@@ -88,7 +87,7 @@ export interface DynamicSettings {
 	searchPattern: string
 	margin: number
 	colorRange: ColorRange
-	floatingPanelMode: FloatingPanelMode
+	searchPanelMode: SearchPanelMode
 }
 
 export interface AppSettings {

@@ -1,18 +1,17 @@
-import "./structurePanelSelector.component.scss"
+import "./searchPanelModeSelector.component.scss"
 import { SettingsServiceSubscriber, SettingsService } from "../../state/settings.service"
-import { Settings, RecursivePartial, FloatingPanelMode, BlacklistType } from "../../codeCharta.model"
+import { Settings, RecursivePartial, SearchPanelMode, BlacklistType } from "../../codeCharta.model"
 import { IAngularEvent, IRootScopeService } from "angular"
 
-export class StructurePanelSelectorController implements SettingsServiceSubscriber {
+export class SearchPanelModeSelectorController implements SettingsServiceSubscriber {
 
-	// TODO: Rename to SearchPanelModeSelector
 	private _viewModel: {
-		floatingPanelMode: FloatingPanelMode
+		searchPanelMode: SearchPanelMode
 		hideListLength: number
 		excludeListLength: number
 		searchFieldIsEmpty: boolean
 	} = {
-		floatingPanelMode: FloatingPanelMode.minimized,
+		searchPanelMode: SearchPanelMode.minimized,
 		hideListLength: 0,
 		excludeListLength: 0,
 		searchFieldIsEmpty: true
@@ -24,29 +23,29 @@ export class StructurePanelSelectorController implements SettingsServiceSubscrib
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent) {
-		this._viewModel.floatingPanelMode = settings.dynamicSettings.floatingPanelMode
+		this._viewModel.searchPanelMode = settings.dynamicSettings.searchPanelMode
 		this._viewModel.hideListLength = settings.fileSettings.blacklist.filter(x => x.type === BlacklistType.hide).length
 		this._viewModel.excludeListLength = settings.fileSettings.blacklist.filter(x => x.type === BlacklistType.exclude).length
 		this._viewModel.searchFieldIsEmpty = (settings.dynamicSettings.searchPattern === "")
 	}
 
-	public onToggleFloatingPanelMode(toggleView: FloatingPanelMode) {
-		if (toggleView === this._viewModel.floatingPanelMode) {
-			this._viewModel.floatingPanelMode = FloatingPanelMode.minimized
+	public onToggleSearchPanelMode(toggleView: SearchPanelMode) {
+		if (toggleView === this._viewModel.searchPanelMode) {
+			this._viewModel.searchPanelMode = SearchPanelMode.minimized
 		} else {
-			this._viewModel.floatingPanelMode = toggleView
+			this._viewModel.searchPanelMode = toggleView
 		}
 
 		this.settingsService.updateSettings({
 			dynamicSettings: {
-				floatingPanelMode: this._viewModel.floatingPanelMode
+				searchPanelMode: this._viewModel.searchPanelMode
 			}
 		})
 	}
 }
 
-export const structurePanelSelectorComponent = {
-	selector: "structurePanelSelectorComponent",
-	template: require("./structurePanelSelector.component.html"),
-	controller: StructurePanelSelectorController
+export const searchPanelModeSelectorComponent = {
+	selector: "searchPanelModeSelectorComponent",
+	template: require("./searchPanelModeSelector.component.html"),
+	controller: SearchPanelModeSelectorController
 }

@@ -1,4 +1,4 @@
-import { AttributeTypeValue, CCFile, CodeMapNode, Edge, MetricData, Node, Settings, FloatingPanelMode } from "../codeCharta.model"
+import { AttributeTypeValue, CCFile, CodeMapNode, Edge, MetricData, Node, Settings, SearchPanelMode } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import * as THREE from "three"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -470,7 +470,7 @@ export const SETTINGS: Settings = {
 			from: 19,
 			to: 67
 		},
-		floatingPanelMode: FloatingPanelMode.minimized
+		searchPanelMode: SearchPanelMode.minimized
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
@@ -547,7 +547,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		},
 		searchPattern: "",
 		searchedNodePaths: [],
-		floatingPanelMode: FloatingPanelMode.minimized
+		searchPanelMode: SearchPanelMode.minimized
 	},
 	fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] },
 	treeMapSettings: { mapSize: 500 }

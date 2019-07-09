@@ -1,18 +1,18 @@
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import "./blacklistPanel.component.scss"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { Settings, BlacklistItem, BlacklistType, RecursivePartial, FloatingPanelMode } from "../../codeCharta.model"
+import { Settings, BlacklistItem, BlacklistType, RecursivePartial, SearchPanelMode } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 
 export class BlacklistPanelController implements SettingsServiceSubscriber {
 	private _viewModel: {
 		hide: Array<BlacklistItem>
 		exclude: Array<BlacklistItem>
-		floatingPanelMode: FloatingPanelMode
+		searchPanelMode: SearchPanelMode
 	} = {
 		hide: [],
 		exclude: [],
-		floatingPanelMode: FloatingPanelMode.search
+		searchPanelMode: SearchPanelMode.minimized
 	}
 
 	constructor(private codeMapActionsService: CodeMapActionsService, $rootScope: IRootScopeService) {
@@ -25,8 +25,8 @@ export class BlacklistPanelController implements SettingsServiceSubscriber {
 			this._viewModel.hide = blacklist.filter(x => x.type === BlacklistType.hide)
 			this._viewModel.exclude = blacklist.filter(x => x.type === BlacklistType.exclude)
 		}
-		if (update.dynamicSettings && update.dynamicSettings.floatingPanelMode) {
-			this._viewModel.floatingPanelMode = update.dynamicSettings.floatingPanelMode
+		if (update.dynamicSettings && update.dynamicSettings.searchPanelMode) {
+			this._viewModel.searchPanelMode = update.dynamicSettings.searchPanelMode
 		}
 	}
 
