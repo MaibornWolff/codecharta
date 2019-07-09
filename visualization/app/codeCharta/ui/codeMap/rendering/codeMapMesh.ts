@@ -63,7 +63,7 @@ export class CodeMapMesh {
 	}
 
 	public highlightBuilding(building: CodeMapBuilding) {
-		const colors = this.threeMesh.geometry["attributes"].color
+		const colors = this.threeMesh.geometry["attributes"].defaultColor
 
 		for (
 			let i = 0;

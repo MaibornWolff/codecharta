@@ -2,6 +2,7 @@
 #define saturate(a) clamp( a, 0.0, 1.0)
 
 attribute vec3 color;
+attribute vec3 defaultColor;
 attribute highp float subGeomIdx;
 attribute highp float delta;
 
