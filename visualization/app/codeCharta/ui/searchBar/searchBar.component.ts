@@ -5,7 +5,6 @@ import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { IRootScopeService } from "angular"
 
 export class SearchBarController implements SettingsServiceSubscriber {
-	private DEFAULT_INPUT_TEXT: string = "gitignore style: *.js, **/app/*"
 
 	private _viewModel: {
 		searchPattern: string
@@ -13,7 +12,7 @@ export class SearchBarController implements SettingsServiceSubscriber {
 		isPatternExcluded: boolean
 		searchPanelMode: SearchPanelMode
 	} = {
-		searchPattern: this.DEFAULT_INPUT_TEXT,
+		searchPattern: "",
 		isPatternHidden: true,
 		isPatternExcluded: true,
 		searchPanelMode: SearchPanelMode.minimized,

@@ -109,6 +109,19 @@ code-charta-component {
 		}
 	}
 
+	.ribbon-bar-wrapper {
+		margin-top:1px; 
+		width: 100%; 
+		min-height: 100px; 
+		height: 500px; 
+		position: fixed; 
+		z-index: 10; 
+		overflow: hidden; 
+		white-space: nowrap;
+		font-size: 0px; 
+		pointer-events: none;
+	}
+
 	.angular-green {
 		color: #00bfa5;
 	}

@@ -13,9 +13,9 @@ ribbon-bar-component {
 	$toggleButtonSize: 35;
 
 	min-height: 0px;
+	pointer-events: all;
 
 	#toggle-ribbon-bar-fab {
-
 		margin-top: $toggleButtonSize - 10 + px;
 		right: 10px;
 		z-index: 999;
@@ -46,7 +46,7 @@ ribbon-bar-component {
 		width: 100%;
 		border-radius: 0px;
 
-		&.search{
+		&.search {
 			width: 380px;
 		}
 
