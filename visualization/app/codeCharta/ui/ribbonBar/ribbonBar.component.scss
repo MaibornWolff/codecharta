@@ -37,6 +37,18 @@ ribbon-bar-component {
 		}
 	}
 
+	#search {
+		max-height: 50px;
+		&.expanded {
+			height: auto;
+			max-height: 500px;
+
+			.section-body {
+				height: auto;
+			}
+		}
+	}
+
 	.header {
 		display: inline-block;
 		margin: 0;

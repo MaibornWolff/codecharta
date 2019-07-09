@@ -22,7 +22,7 @@ export interface SettingsServiceSubscriber {
 
 export class SettingsService implements FileStateServiceSubscriber {
 	private static SETTINGS_CHANGED_EVENT = "settings-changed"
-	private static DEBOUNCE_TIME = 400
+	private static DEBOUNCE_TIME = 100
 
 	private settings: Settings
 	private update: RecursivePartial<Settings> = {}
