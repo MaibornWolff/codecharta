@@ -39,12 +39,15 @@ ribbon-bar-component {
 
 	#search {
 		max-height: 50px;
+		min-height: ($heightCollapsed + 8) + px;
+
 		&.expanded {
 			height: auto;
 			max-height: 500px;
 
 			.section-body {
 				height: auto;
+				min-height: ($heightExpanded - $heightCollapsed) + 5 + px;
 			}
 		}
 	}
