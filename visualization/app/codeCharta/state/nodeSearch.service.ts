@@ -1,39 +1,41 @@
-import { CodeMapNode, Settings, RecursivePartial } from "../codeCharta.model";
-import { IAngularEvent, IRootScopeService } from "angular";
+import { CodeMapNode, Settings, RecursivePartial } from "../codeCharta.model"
+import { IAngularEvent, IRootScopeService } from "angular"
 import * as d3 from "d3"
-import { CodeMapHelper } from "../util/codeMapHelper";
-import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service";
-import { SettingsService, SettingsServiceSubscriber } from "./settings.service";
+import { CodeMapHelper } from "../util/codeMapHelper"
+import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service"
+import { SettingsService, SettingsServiceSubscriber } from "./settings.service"
 
 export interface NodeSearchSubscriber {
 	onNodeSearchComplete(searchedNodes: CodeMapNode[], event: IAngularEvent)
 }
 
 export class NodeSearchService implements SettingsServiceSubscriber {
+	private static NODE_SEARCH_COMPLETE_EVENT = "node-search-complete"
 
-    private static NODE_SEARCH_COMPLETE_EVENT = "node-search-complete"
+	private searchedNodes: CodeMapNode[] = []
 
-    private searchedNodes: CodeMapNode[] = []
-
-    /* @ngInject */
-    constructor(private $rootScope: IRootScopeService, private codeMapPreRenderService: CodeMapPreRenderService, private settingsService: SettingsService) {
-        SettingsService.subscribe($rootScope, this)
-    }
-
-	// TODO: onSearchChanged event kreieren
-    public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent) {
-        if(this.isSearchPatternUpdated(update)){
-            this.searchedNodes = this.findSearchedNodes(update.dynamicSettings.searchPattern)
-            this.notifyNodeSearchComplete()
-            this.applySettingsSearchedNodePaths()
-        } 
+	/* @ngInject */
+	constructor(
+		private $rootScope: IRootScopeService,
+		private codeMapPreRenderService: CodeMapPreRenderService,
+		private settingsService: SettingsService
+	) {
+		SettingsService.subscribe($rootScope, this)
 	}
-	
-    private isSearchPatternUpdated(update: RecursivePartial<Settings>) {
+
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent) {
+		if (this.isSearchPatternUpdated(update)) {
+			this.searchedNodes = this.findSearchedNodes(update.dynamicSettings.searchPattern)
+			this.notifyNodeSearchComplete()
+			this.applySettingsSearchedNodePaths()
+		}
+	}
+
+	private isSearchPatternUpdated(update: RecursivePartial<Settings>) {
 		return update.dynamicSettings && update.dynamicSettings.searchPattern !== undefined
 	}
 
-    private findSearchedNodes(searchPattern: string): CodeMapNode[] {
+	private findSearchedNodes(searchPattern: string): CodeMapNode[] {
 		if (searchPattern.length == 0) {
 			return []
 		} else {
@@ -43,9 +45,9 @@ export class NodeSearchService implements SettingsServiceSubscriber {
 				.map(d => d.data)
 			return CodeMapHelper.getNodesByGitignorePath(nodes, searchPattern)
 		}
-    }
+	}
 
-    private applySettingsSearchedNodePaths() {
+	private applySettingsSearchedNodePaths() {
 		this.settingsService.updateSettings({
 			dynamicSettings: {
 				searchedNodePaths: this.searchedNodes.length == 0 ? [] : this.searchedNodes.map(x => x.path)
@@ -53,14 +55,13 @@ export class NodeSearchService implements SettingsServiceSubscriber {
 		})
 	}
 
-    private notifyNodeSearchComplete() {
+	private notifyNodeSearchComplete() {
 		this.$rootScope.$broadcast(NodeSearchService.NODE_SEARCH_COMPLETE_EVENT, this.searchedNodes)
-    }
-    
-    public static subscribe($rootScope: IRootScopeService, subscriber: NodeSearchSubscriber) {
+	}
+
+	public static subscribe($rootScope: IRootScopeService, subscriber: NodeSearchSubscriber) {
 		$rootScope.$on(NodeSearchService.NODE_SEARCH_COMPLETE_EVENT, (event, data) => {
 			subscriber.onNodeSearchComplete(data, event)
 		})
 	}
-
 }
