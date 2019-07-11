@@ -10,9 +10,9 @@ export class BlacklistPanelController implements SettingsServiceSubscriber {
 		exclude: Array<BlacklistItem>
 		searchPanelMode: SearchPanelMode
 	} = {
-		hide: [],
-		exclude: [],
-		searchPanelMode: SearchPanelMode.minimized
+		hide: null,
+		exclude: null,
+		searchPanelMode: null
 	}
 
 	constructor(private codeMapActionsService: CodeMapActionsService, $rootScope: IRootScopeService) {
