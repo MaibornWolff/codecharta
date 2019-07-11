@@ -15,8 +15,8 @@
 			</p>
 		</div>
 	</div>
-
-	<div class="bar-details animation-show-hide" ng-show="$ctrl._viewModel.isExtensiveMode">
+	<div class="bar-details animation-show-hide" ng-class="{expanded: $ctrl._viewModel.isExtensiveMode}">
+		<!--ng-show="$ctrl._viewModel.isExtensiveMode">-->
 		<div class="bar-details-section" ng-repeat="item in $ctrl._viewModel.distribution">
 			<p class="bar-details-text">
 				<span class="dot" ng-style="{'background': item.color}"></span>{{ item.fileExtension }} :
