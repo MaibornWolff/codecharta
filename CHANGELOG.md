@@ -8,12 +8,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 
 ### Added
+- New Search Bar #526
 
 ### Changed
 
 - Moved Button to reset the map to the center next to the view-cube #606
+- Moved FileExtensionBar #527
 
 ### Removed
+
+- Burger Menu / SideNav #526
 
 ### Fixed
 
