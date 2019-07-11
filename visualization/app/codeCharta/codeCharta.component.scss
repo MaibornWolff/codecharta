@@ -103,10 +103,8 @@ code-charta-component {
 
 		#header,
 		#search,
-		#header .section .section-header,
-		#search .section .section-header,
-		#header .section .section-body,
-		#search .section .section-body,
+		.section .section-header,
+		.section .section-body,
 		#toggle-ribbon-bar-fab {
 			transition: all $animationDuration + s ease;
 		}

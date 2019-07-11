@@ -36,6 +36,7 @@ file-extension-bar-component {
 		background-color: white;
 		height: 0px;
 		overflow: hidden;
+		transition: all linear 0.2s;
 
 		&.expanded {
 			border-top: 1px solid #cdcdcd;
@@ -67,14 +68,5 @@ file-extension-bar-component {
 				}
 			}
 		}
-	}
-
-	.animation-show-hide {
-		transition: all linear 0.2s;
-	}
-
-	.dark_bottom_shadow_opacity {
-		//box-shadow: 0px 1px 5px -5px rgba(0, 0, 0, 0.2) !important;
-		opacity: 0.97;
 	}
 }
