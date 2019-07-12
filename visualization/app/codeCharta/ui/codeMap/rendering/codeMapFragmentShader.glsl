@@ -1,7 +1,6 @@
 #define MAX_NUM_HIGHLIGHTS_SELECTIONS 10
 
 varying vec3 vColor;
-varying vec3 viewDirection;
 varying vec3 worldNormal;
 varying vec3 vLightFront;
 varying highp float oSubGeomIdx;
