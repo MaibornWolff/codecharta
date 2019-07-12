@@ -1,13 +1,10 @@
-import * as THREE from "three"
-
 import { CodeMapShaderStrings } from "./codeMapShaderStrings"
 import { BuildResult, GeometryGenerator } from "./geometryGenerator"
 import { CodeMapGeometricDescription, IntersectionResult } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { Node, Settings } from "../../../codeCharta.model"
 import { ColorConverter } from "../../../util/colorConverter"
-import { Vector3 } from "three"
-import convert from "color-convert"
+import { Camera, Mesh, Ray, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three"
 
 interface ThreeUniform {
 	type: string
@@ -30,7 +27,7 @@ export interface MousePos {
 
 export class CodeMapMesh {
 	private static readonly DIMENSIONS = 3
-	private static readonly NUM_OF_VERTICES = 24
+	private static readonly NUM_OF_VERTICES = 8 * CodeMapMesh.DIMENSIONS
 
 	public settings: Settings
 	private threeMesh: THREE.Mesh
@@ -40,7 +37,6 @@ export class CodeMapMesh {
 
 	private nodes: Node[]
 
-	private currentlyHighlighted: string[] = []
 	private currentlySelected: CodeMapBuilding[] = []
 
 	private lightingParams: CodeMapLightingParams = null
@@ -58,73 +54,52 @@ export class CodeMapMesh {
 		this.settings = settings
 	}
 
-	public getThreeMesh(): THREE.Mesh {
+	public getThreeMesh(): Mesh {
 		return this.threeMesh
 	}
 
 	public highlightBuilding(building: CodeMapBuilding) {
-		for (
-			let i = 0;
-			i < this.mapGeomDesc.buildings.length * CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES;
-			i += CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES
-		) {
-			const defaultColor = this.getDefaultColorByIndex(i)
-			const currentBuilding = this.getBuildingByIndex(i)
+		for (let i = 0; i < this.mapGeomDesc.buildings.length; i++) {
+			const currentBuilding: CodeMapBuilding = this.mapGeomDesc.buildings[i]
 			const distance = building
-				.getCenterOfBuilding(this.settings.treeMapSettings.mapSize)
-				.distanceTo(currentBuilding.getCenterOfBuilding(this.settings.treeMapSettings.mapSize))
+				.getCenterPoint(this.settings.treeMapSettings.mapSize)
+				.distanceTo(currentBuilding.getCenterPoint(this.settings.treeMapSettings.mapSize))
 
-			const newColorVector = this.removeLightnessFromColor(defaultColor, currentBuilding.id, building, distance)
-			const rgb = ColorConverter.vector3ToRGB(defaultColor)
-			this.currentlyHighlighted.push(`#${convert.rgb.hex([rgb.r, rgb.g, rgb.b])}`)
-			this.setVertexColor(i, newColorVector)
+			if (currentBuilding.id !== building.id) {
+				//currentBuilding.decreaseLightning(20)
+				if (distance > 800) {
+					currentBuilding.decreaseLightness(40)
+				} else if (distance > 400) {
+					currentBuilding.decreaseLightness(30)
+				} else if (distance > 250) {
+					currentBuilding.decreaseLightness(20)
+				} else if (distance > 100) {
+					currentBuilding.decreaseLightness(15)
+				} else if (distance > 50) {
+					currentBuilding.decreaseLightness(10)
+				}
+			} else {
+				currentBuilding.decreaseLightness(-10)
+			}
+			this.setVertexColor(currentBuilding.id, currentBuilding.getColorVector())
 		}
-		this.threeMesh.geometry["attributes"].color.needsUpdate = true
+		this.updateVertices()
 	}
 
-	private setVertexColor(i: number, newColorVector: Vector3) {
-		for (let j = i; j < i + CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES; j += CodeMapMesh.DIMENSIONS) {
+	private setVertexColor(id: number, newColorVector: Vector3) {
+		for (
+			let j = id * CodeMapMesh.NUM_OF_VERTICES * CodeMapMesh.DIMENSIONS;
+			j < id + CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES;
+			j += CodeMapMesh.DIMENSIONS
+		) {
 			this.threeMesh.geometry["attributes"].color.array[j] = newColorVector.x
 			this.threeMesh.geometry["attributes"].color.array[j + 1] = newColorVector.y
 			this.threeMesh.geometry["attributes"].color.array[j + 2] = newColorVector.z
 		}
 	}
 
-	private getDefaultColorByIndex(index: number) {
-		const colors = this.threeMesh.geometry["attributes"].defaultColor
-		return new Vector3(colors.array[index], colors.array[index + 1], colors.array[index + 2])
-	}
-
-	private getBuildingByIndex(index: number): CodeMapBuilding {
-		const id = Math.floor(index / (CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES))
-		return this.mapGeomDesc.buildings[id]
-	}
-
-	private removeLightnessFromColor(currentColor, id, highlighted, distance): Vector3 {
-		const rgb = ColorConverter.vector3ToRGB(currentColor)
-
-		const hsl = convert.rgb.hsl([rgb.r, rgb.g, rgb.b])
-
-		if (id !== highlighted.id) {
-			if (distance > 800) {
-				hsl[2] -= 40
-			} else if (distance > 400) {
-				hsl[2] -= 30
-			} else if (distance > 250) {
-				hsl[2] -= 20
-			} else if (distance > 100) {
-				hsl[2] -= 15
-			} else if (distance > 50) {
-				hsl[2] -= 10
-			}
-
-			hsl[2] = hsl[2] < 0 ? 0 : hsl[2]
-		} else {
-			hsl[2] += 10
-		}
-
-		const hex = convert.hsl.hex([hsl[0], hsl[1], hsl[2]])
-		return ColorConverter.colorToVector3(`#${hex}`)
+	private updateVertices() {
+		this.threeMesh.geometry["attributes"].color.needsUpdate = true
 	}
 
 	public setSelected(buildings: CodeMapBuilding[], color?: string) {
@@ -140,26 +115,12 @@ export class CodeMapMesh {
 		this.currentlySelected = buildings
 	}
 
-	public getCurrentlySelected(): CodeMapBuilding[] | null {
-		return this.currentlySelected
-	}
-
 	public clearHighlight() {
-		if (this.currentlyHighlighted.length > 1) {
-			for (
-				let i = 0;
-				i < this.mapGeomDesc.buildings.length * CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES;
-				i += CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES
-			) {
-				const originalColor = ColorConverter.colorToVector3(
-					this.currentlyHighlighted[i / (CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES)]
-				)
-
-				this.setVertexColor(i, originalColor)
-			}
-			this.threeMesh.geometry["attributes"].color.needsUpdate = true
-			this.currentlyHighlighted = []
+		for (let i = 0; i < this.mapGeomDesc.buildings.length; i++) {
+			const currentBuilding: CodeMapBuilding = this.mapGeomDesc.buildings[i]
+			this.setVertexColor(currentBuilding.id, currentBuilding.getDefaultColorVector())
 		}
+		this.updateVertices()
 	}
 
 	public clearSelected() {
@@ -171,13 +132,13 @@ export class CodeMapMesh {
 		return this.mapGeomDesc
 	}
 
-	public checkMouseRayMeshIntersection(mouse: MousePos, camera: THREE.Camera): IntersectionResult {
-		let ray: THREE.Ray = this.calculatePickingRay(mouse, camera)
+	public checkMouseRayMeshIntersection(mouse: MousePos, camera: Camera): IntersectionResult {
+		let ray: Ray = this.calculatePickingRay(mouse, camera)
 		return this.getMeshDescription().intersect(ray)
 	}
 
 	public setScale(x: number, y: number, z: number) {
-		this.mapGeomDesc.setScales(new THREE.Vector3(x, y, z))
+		this.mapGeomDesc.setScales(new Vector3(x, y, z))
 	}
 
 	private initLightingParams(settings: Settings) {
@@ -195,7 +156,7 @@ export class CodeMapMesh {
 				value: ColorConverter.colorToVector3(settings.appSettings.mapColors.negativeDelta)
 			},
 
-			emissive: { type: "v3", value: new THREE.Vector3(0.0, 0.0, 0.0) }
+			emissive: { type: "v3", value: new Vector3(0.0, 0.0, 0.0) }
 		}
 	}
 
@@ -206,11 +167,11 @@ export class CodeMapMesh {
 			this.setDefaultDeltaColors(settings)
 		}
 
-		let uniforms = THREE.UniformsUtils.merge([THREE.UniformsLib["lights"], this.lightingParams])
+		let uniforms = UniformsUtils.merge([UniformsLib["lights"], this.lightingParams])
 
 		let shaderCode: CodeMapShaderStrings = new CodeMapShaderStrings()
 
-		this.material = new THREE.ShaderMaterial({
+		this.material = new ShaderMaterial({
 			vertexShader: shaderCode.vertexShaderCode,
 			fragmentShader: shaderCode.fragmentShaderCode,
 			lights: true,
@@ -240,8 +201,8 @@ export class CodeMapMesh {
 		}
 	}
 
-	private calculatePickingRay(mouse: MousePos, camera: THREE.Camera): THREE.Ray {
-		let ray: THREE.Ray = new THREE.Ray()
+	private calculatePickingRay(mouse: MousePos, camera: Camera): Ray {
+		let ray: Ray = new Ray()
 		ray.origin.setFromMatrixPosition(camera.matrixWorld)
 		ray.direction
 			.set(mouse.x, mouse.y, 0.5)
