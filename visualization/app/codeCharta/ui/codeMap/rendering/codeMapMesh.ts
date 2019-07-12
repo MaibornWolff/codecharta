@@ -30,8 +30,8 @@ export class CodeMapMesh {
 	private static readonly NUM_OF_VERTICES = 8 * CodeMapMesh.DIMENSIONS
 
 	public settings: Settings
-	private threeMesh: THREE.Mesh
-	private material: THREE.ShaderMaterial
+	private threeMesh: Mesh
+	private material: ShaderMaterial
 	private geomGen: GeometryGenerator
 	private mapGeomDesc: CodeMapGeometricDescription
 
@@ -47,7 +47,7 @@ export class CodeMapMesh {
 		this.initMaterial(settings)
 
 		this.geomGen = new GeometryGenerator()
-		let buildRes: BuildResult = this.geomGen.build(this.nodes, this.material, settings, isDeltaState)
+		const buildRes: BuildResult = this.geomGen.build(this.nodes, this.material, settings, isDeltaState)
 
 		this.threeMesh = buildRes.mesh
 		this.mapGeomDesc = buildRes.desc
@@ -58,26 +58,16 @@ export class CodeMapMesh {
 		return this.threeMesh
 	}
 
-	public highlightBuilding(building: CodeMapBuilding) {
+	public highlightBuilding(highlightedBuilding: CodeMapBuilding) {
 		for (let i = 0; i < this.mapGeomDesc.buildings.length; i++) {
 			const currentBuilding: CodeMapBuilding = this.mapGeomDesc.buildings[i]
-			const distance = building
+			const distance = highlightedBuilding
 				.getCenterPoint(this.settings.treeMapSettings.mapSize)
 				.distanceTo(currentBuilding.getCenterPoint(this.settings.treeMapSettings.mapSize))
 
-			if (currentBuilding.id !== building.id) {
-				//currentBuilding.decreaseLightning(20)
-				if (distance > 800) {
-					currentBuilding.decreaseLightness(40)
-				} else if (distance > 400) {
-					currentBuilding.decreaseLightness(30)
-				} else if (distance > 250) {
-					currentBuilding.decreaseLightness(20)
-				} else if (distance > 100) {
-					currentBuilding.decreaseLightness(15)
-				} else if (distance > 50) {
-					currentBuilding.decreaseLightness(10)
-				}
+			if (currentBuilding.id !== highlightedBuilding.id) {
+				this.decreaseLightnessByDistance(currentBuilding, distance)
+				//currentBuilding.decreaseLightness(20)
 			} else {
 				currentBuilding.decreaseLightness(-10)
 			}
@@ -86,10 +76,24 @@ export class CodeMapMesh {
 		this.updateVertices()
 	}
 
+	private decreaseLightnessByDistance(building: CodeMapBuilding, distance: number) {
+		if (distance > 800) {
+			building.decreaseLightness(40)
+		} else if (distance > 400) {
+			building.decreaseLightness(30)
+		} else if (distance > 250) {
+			building.decreaseLightness(20)
+		} else if (distance > 100) {
+			building.decreaseLightness(15)
+		} else if (distance > 50) {
+			building.decreaseLightness(10)
+		}
+	}
+
 	private setVertexColor(id: number, newColorVector: Vector3) {
 		for (
 			let j = id * CodeMapMesh.NUM_OF_VERTICES * CodeMapMesh.DIMENSIONS;
-			j < id + CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES;
+			j < id * CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES + CodeMapMesh.DIMENSIONS * CodeMapMesh.NUM_OF_VERTICES;
 			j += CodeMapMesh.DIMENSIONS
 		) {
 			this.threeMesh.geometry["attributes"].color.array[j] = newColorVector.x

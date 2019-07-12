@@ -1,19 +1,18 @@
 import { Node } from "../../../codeCharta.model"
-import { Vector3 } from "three"
+import { Box3, Vector3 } from "three"
 import { ColorConverter } from "../../../util/colorConverter"
 import convert from "color-convert"
-import { HSLColor } from "d3-color"
 
 export class CodeMapBuilding {
 	public id: number
-	public boundingBox: THREE.Box3
+	public boundingBox: Box3
 	public color: string
 	public defaultColor: string
 	public node: Node
 	public parent?: CodeMapBuilding
 	public name?: string
 
-	constructor(id: number, box: THREE.Box3, node: Node, color: string) {
+	constructor(id: number, box: Box3, node: Node, color: string) {
 		this.id = id
 		this.boundingBox = box
 		this.color = color
