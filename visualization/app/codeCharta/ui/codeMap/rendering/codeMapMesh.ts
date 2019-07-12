@@ -36,6 +36,7 @@ export class CodeMapMesh {
 	private mapGeomDesc: CodeMapGeometricDescription
 
 	private nodes: Node[]
+	private isFlashlightEnabled: boolean = false
 
 	private currentlySelected: CodeMapBuilding[] = []
 
@@ -58,6 +59,10 @@ export class CodeMapMesh {
 		return this.threeMesh
 	}
 
+	public setFlashlightEnabled(isEnabled: boolean) {
+		this.isFlashlightEnabled = isEnabled
+	}
+
 	public highlightBuilding(highlightedBuilding: CodeMapBuilding) {
 		for (let i = 0; i < this.mapGeomDesc.buildings.length; i++) {
 			const currentBuilding: CodeMapBuilding = this.mapGeomDesc.buildings[i]
@@ -66,8 +71,11 @@ export class CodeMapMesh {
 				.distanceTo(currentBuilding.getCenterPoint(this.settings.treeMapSettings.mapSize))
 
 			if (currentBuilding.id !== highlightedBuilding.id) {
-				this.decreaseLightnessByDistance(currentBuilding, distance)
-				//currentBuilding.decreaseLightness(20)
+				if (this.isFlashlightEnabled) {
+					this.decreaseLightnessByDistance(currentBuilding, distance)
+				} else {
+					currentBuilding.decreaseLightness(20)
+				}
 			} else {
 				currentBuilding.decreaseLightness(-10)
 			}

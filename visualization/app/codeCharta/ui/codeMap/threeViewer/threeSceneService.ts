@@ -2,11 +2,13 @@ import * as THREE from "three"
 import { Scene } from "three"
 import { Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
+import { PresentationModeButtonController, PresentationModeSubscriber } from "../../presentationModeButton/presentationModeButton.component"
+import { IRootScopeService } from "angular"
 
 /**
  * A service which manages the Three.js scene in an angular way.
  */
-export class ThreeSceneService {
+export class ThreeSceneService implements PresentationModeSubscriber {
 	public scene: Scene
 	public labels: Group
 	public edgeArrows: Group
@@ -14,7 +16,7 @@ export class ThreeSceneService {
 	private lights: Group
 	private mapMesh: CodeMapMesh
 
-	constructor() {
+	constructor(private $rootScope: IRootScopeService) {
 		this.scene = new THREE.Scene()
 
 		this.mapGeometry = new THREE.Group()
@@ -28,6 +30,12 @@ export class ThreeSceneService {
 		this.scene.add(this.edgeArrows)
 		this.scene.add(this.labels)
 		this.scene.add(this.lights)
+
+		PresentationModeButtonController.subscribe(this.$rootScope, this)
+	}
+
+	public onPresentationModeChanged(isEnabled: boolean) {
+		this.mapMesh.setFlashlightEnabled(isEnabled)
 	}
 
 	public initLights() {
