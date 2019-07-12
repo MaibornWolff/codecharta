@@ -100,6 +100,14 @@ void main() {
 
     bool isTop = normalPointingUp(worldNormal);
 
+    for (int i=0; i < MAX_NUM_HIGHLIGHTS_SELECTIONS; ++i)
+    {
+        if (i < selections && abs(oSubGeomIdx - selectedIndices[i]) < epsilon)
+        {
+            diffuseColor.xyz = selectedColor;
+        }
+    }
+
     if (abs(vDelta) > minDelta && (vUV.y > 1.0 - abs(vDelta) || isTop))
     {
         if (vDelta > 0.0)
