@@ -11,6 +11,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+### Removed
+
+### Fixed
+
+### Chore
+
+## [1.29.0] - 2019-07-12
+
+### Added
+
+### Changed
+
 - Moved Button to reset the map to the center next to the view-cube #606
 
 ### Removed
