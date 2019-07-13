@@ -1,21 +1,18 @@
 import "./searchBar.component.scss"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import { BlacklistType, BlacklistItem, Settings, RecursivePartial, FileState, SearchPanelMode } from "../../codeCharta.model"
+import { BlacklistType, BlacklistItem, Settings, RecursivePartial, FileState } from "../../codeCharta.model"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { IRootScopeService } from "angular"
 
 export class SearchBarController implements SettingsServiceSubscriber {
-
 	private _viewModel: {
 		searchPattern: string
 		isPatternHidden: boolean
 		isPatternExcluded: boolean
-		searchPanelMode: SearchPanelMode
 	} = {
 		searchPattern: "",
 		isPatternHidden: true,
-		isPatternExcluded: true,
-		searchPanelMode: SearchPanelMode.minimized,
+		isPatternExcluded: true
 	}
 
 	/* @ngInject */
@@ -40,7 +37,7 @@ export class SearchBarController implements SettingsServiceSubscriber {
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-		this.updateViewModel(settings.fileSettings.blacklist, settings.dynamicSettings.searchPanelMode)
+		this.updateViewModel(settings.fileSettings.blacklist)
 	}
 
 	public onClickBlacklistPattern(blacklistType: BlacklistType) {
@@ -48,10 +45,9 @@ export class SearchBarController implements SettingsServiceSubscriber {
 		this.resetSearchPattern()
 	}
 
-	private updateViewModel(blacklist: BlacklistItem[], searchPanelMode: SearchPanelMode) {
+	private updateViewModel(blacklist: BlacklistItem[]) {
 		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(blacklist, BlacklistType.exclude)
 		this._viewModel.isPatternHidden = this.isPatternBlacklisted(blacklist, BlacklistType.hide)
-		this._viewModel.searchPanelMode = searchPanelMode
 	}
 
 	private isPatternBlacklisted(blacklist: BlacklistItem[], blacklistType: BlacklistType): boolean {

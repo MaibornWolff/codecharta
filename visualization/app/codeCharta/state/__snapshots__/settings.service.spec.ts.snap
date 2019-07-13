@@ -56,7 +56,6 @@ Object {
     "focusedNodePath": "",
     "heightMetric": null,
     "margin": null,
-    "searchPanelMode": "minimized",
     "searchPattern": "",
     "searchedNodePaths": Array [],
   },

@@ -1,13 +1,4 @@
-import {
-	ColorRange,
-	DynamicSettings,
-	FileSettings,
-	FileState,
-	MapColors,
-	RecursivePartial,
-	Settings,
-	SearchPanelMode
-} from "../codeCharta.model"
+import { ColorRange, DynamicSettings, FileSettings, FileState, MapColors, RecursivePartial, Settings } from "../codeCharta.model"
 import _ from "lodash"
 import { IAngularEvent, IRootScopeService, ITimeoutService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
@@ -90,8 +81,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 				searchedNodePaths: [],
 				searchPattern: "",
 				margin: null,
-				colorRange: colorRange,
-				searchPanelMode: SearchPanelMode.minimized
+				colorRange: colorRange
 			},
 			appSettings: {
 				amountOfTopLabels: 1,
