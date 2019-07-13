@@ -87,7 +87,6 @@ export interface DynamicSettings {
 	searchPattern: string
 	margin: number
 	colorRange: ColorRange
-	searchPanelMode: SearchPanelMode
 }
 
 export interface AppSettings {

@@ -1,14 +1,14 @@
 import "./searchPanel.module"
 import { SearchPanelController } from "./searchPanel.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { SettingsService } from "../../state/settings.service"
 import { IRootScopeService } from "angular"
-import { RecursivePartial, Settings, SearchPanelMode } from "../../codeCharta.model"
+import { SearchPanelMode } from "../../codeCharta.model"
+import { SearchPanelService } from "../../state/searchPanel.service"
 
 describe("SearchPanelController", () => {
 	let searchPanelModeController: SearchPanelController
 	let $rootScope: IRootScopeService
-	let settingsService: SettingsService
+	let searchPanelService: SearchPanelService
 
 	beforeEach(() => {
 		restartSystem()
@@ -18,26 +18,26 @@ describe("SearchPanelController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.searchPanel")
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		settingsService = getService<SettingsService>("settingsService")
+		searchPanelService = getService<SearchPanelService>("searchPanelService")
 	}
 
 	function rebuildController() {
-		searchPanelModeController = new SearchPanelController($rootScope, settingsService)
+		searchPanelModeController = new SearchPanelController($rootScope, searchPanelService)
 	}
 
 	describe("Show components selected", () => {
 		it("should set searchPanelMode correctly", () => {
-			let update: RecursivePartial<Settings> = { dynamicSettings: { searchPanelMode: SearchPanelMode.treeView } }
+			let searchPanelMode = SearchPanelMode.treeView
 
-			searchPanelModeController.onSettingsChanged(null, update, null)
+			searchPanelModeController.onSearchPanelModeChanged(searchPanelMode, null)
 
 			expect(searchPanelModeController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.treeView)
 		})
 
-		it("should set searchPanelMode to none", () => {
-			let update: RecursivePartial<Settings> = { dynamicSettings: { searchPanelMode: SearchPanelMode.minimized } }
+		it("should set searchPanelMode to minimized", () => {
+			let searchPanelMode = SearchPanelMode.minimized
 
-			searchPanelModeController.onSettingsChanged(null, update, null)
+			searchPanelModeController.onSearchPanelModeChanged(searchPanelMode, null)
 
 			expect(searchPanelModeController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.minimized)
 		})
@@ -45,21 +45,21 @@ describe("SearchPanelController", () => {
 
 	describe("toggle", () => {
 		beforeEach(() => {
-			searchPanelModeController["settingsService"].updateSettings, (settingsService.updateSettings = jest.fn())
+			searchPanelModeController["searchPanelService"].updateSearchPanelMode, (searchPanelService.updateSearchPanelMode = jest.fn())
 		})
 
 		it("should switch to treeView if minimized", () => {
 			searchPanelModeController.toggle()
 
-			expect(settingsService.updateSettings).toBeCalledWith({ dynamicSettings: { searchPanelMode: SearchPanelMode.treeView } })
+			expect(searchPanelService.updateSearchPanelMode).toBeCalledWith(SearchPanelMode.treeView)
 		})
 
-		it("should minimize when opened click", () => {
+		it("should minimize when opened & clicked", () => {
 			searchPanelModeController["_viewModel"].searchPanelMode = SearchPanelMode.hide
 
 			searchPanelModeController.toggle()
 
-			expect(settingsService.updateSettings).toBeCalledWith({ dynamicSettings: { searchPanelMode: SearchPanelMode.minimized } })
+			expect(searchPanelService.updateSearchPanelMode).toBeCalledWith(SearchPanelMode.minimized)
 		})
 	})
 })

@@ -5,11 +5,12 @@ import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settings.service"
 import { SETTINGS } from "../../util/dataMocks"
 import { SearchPanelMode, BlacklistType } from "../../codeCharta.model"
+import { SearchPanelService } from "../../state/searchPanel.service"
 
 describe("SearchPanelModeSelectorController", () => {
 	let searchPanelModeSelectorController: SearchPanelModeSelectorController
 	let $rootScope: IRootScopeService
-	let settingsService: SettingsService
+	let searchPanelService: SearchPanelService
 
 	beforeEach(() => {
 		restartSystem()
@@ -21,28 +22,30 @@ describe("SearchPanelModeSelectorController", () => {
 		instantiateModule("app.codeCharta.ui.searchPanelModeSelector")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		settingsService = getService<SettingsService>("settingsService")
+		searchPanelService = getService<SearchPanelService>("settingsService")
 	}
 
 	function rebuildController() {
-		searchPanelModeSelectorController = new SearchPanelModeSelectorController(settingsService, $rootScope)
+		searchPanelModeSelectorController = new SearchPanelModeSelectorController(searchPanelService, $rootScope)
 	}
 
 	function withMockedSettingsService() {
-		settingsService = searchPanelModeSelectorController["settingsService"] = jest.fn().mockReturnValue({
-			updateSettings: jest.fn()
+		searchPanelService = searchPanelModeSelectorController["searchPanelService"] = jest.fn().mockReturnValue({
+			updateSearchPanelMode: jest.fn()
 		})()
 	}
 
-	describe("onSettingsChanged", () => {
+	describe("onSearchPanelModeChanged", () => {
 		it("should update searchPanelMode", () => {
-			SETTINGS.dynamicSettings.searchPanelMode = SearchPanelMode.hide
+			let searchPanelMode = SearchPanelMode.hide
 
-			searchPanelModeSelectorController.onSettingsChanged(SETTINGS, null, null)
+			searchPanelModeSelectorController.onSearchPanelModeChanged(searchPanelMode, null)
 
 			expect(searchPanelModeSelectorController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.hide)
 		})
+	})
 
+	describe("onSettingsChanged", () => {
 		it("should update counters", () => {
 			let blacklistItem1 = { path: "/root", type: BlacklistType.hide }
 			let blacklistItem2 = { path: "/root/foo", type: BlacklistType.exclude }
@@ -61,7 +64,7 @@ describe("SearchPanelModeSelectorController", () => {
 		it("should select if not already selected", () => {
 			searchPanelModeSelectorController.onToggleSearchPanelMode(SearchPanelMode.treeView)
 
-			expect(settingsService.updateSettings).toBeCalledWith({ dynamicSettings: { searchPanelMode: SearchPanelMode.treeView } })
+			expect(searchPanelService.updateSearchPanelMode).toBeCalledWith(SearchPanelMode.treeView)
 		})
 
 		it("should unselect if already selected", () => {
@@ -69,7 +72,7 @@ describe("SearchPanelModeSelectorController", () => {
 
 			searchPanelModeSelectorController.onToggleSearchPanelMode(SearchPanelMode.treeView)
 
-			expect(settingsService.updateSettings).toBeCalledWith({ dynamicSettings: { searchPanelMode: SearchPanelMode.minimized } })
+			expect(searchPanelService.updateSearchPanelMode).toBeCalledWith(SearchPanelMode.minimized)
 		})
 	})
 })

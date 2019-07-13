@@ -1,11 +1,11 @@
 import "./searchPanel.component.scss"
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import { IRootScopeService, IAngularEvent } from "angular"
-import { Settings, RecursivePartial, SearchPanelMode } from "../../codeCharta.model"
+import { SearchPanelMode } from "../../codeCharta.model"
 import $ from "jquery"
+import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
 
-export class SearchPanelController implements SettingsServiceSubscriber {
-	private settingsService: SettingsService
+export class SearchPanelController implements SearchPanelServiceSubscriber {
+	private searchPanelService: SearchPanelService
 
 	private objectToAnimate = $("#search")
 
@@ -14,28 +14,22 @@ export class SearchPanelController implements SettingsServiceSubscriber {
 	}
 
 	/* @ngInject */
-	constructor($rootScope: IRootScopeService, settingsService: SettingsService) {
-		SettingsService.subscribe($rootScope, this)
-		this.settingsService = settingsService
+	constructor($rootScope: IRootScopeService, searchPanelService: SearchPanelService) {
+		SearchPanelService.subscribe($rootScope, this)
+		this.searchPanelService = searchPanelService
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent) {
-		if (this.isSearchPanelModeUpdated(update)) {
-			this.objectToAnimate.attr("id", "header")
-			this._viewModel.searchPanelMode = update.dynamicSettings.searchPanelMode
-			setTimeout(() => this.objectToAnimate.attr("id", "search"), 500)
-		}
-	}
-
-	private isSearchPanelModeUpdated(update: RecursivePartial<Settings>) {
-		return update.dynamicSettings && update.dynamicSettings.searchPanelMode !== undefined
+	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode, event: IAngularEvent) {
+		this.objectToAnimate.attr("id", "header")
+		this._viewModel.searchPanelMode = searchPanelMode
+		setTimeout(() => this.objectToAnimate.attr("id", "search"), 500)
 	}
 
 	public toggle() {
 		if (this._viewModel.searchPanelMode != SearchPanelMode.minimized) {
-			this.settingsService.updateSettings({ dynamicSettings: { searchPanelMode: SearchPanelMode.minimized } })
+			this.searchPanelService.updateSearchPanelMode(SearchPanelMode.minimized)
 		} else {
-			this.settingsService.updateSettings({ dynamicSettings: { searchPanelMode: SearchPanelMode.treeView } })
+			this.searchPanelService.updateSearchPanelMode(SearchPanelMode.treeView)
 		}
 	}
 }
