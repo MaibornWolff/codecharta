@@ -4,7 +4,7 @@
 
 	<div class="sub-list">
 		<md-list-item
-			ng-show="$ctrl._viewModel.searchPanelMode == 'hidden'"
+			ng-show="$ctrl._viewModel.searchPanelMode == 'hide'"
 			ng-repeat="item in $ctrl._viewModel.hide | orderBy: ['path']"
 			title="{{::item.path}}"
 		>
@@ -21,7 +21,7 @@
 		</md-list-item>
 
 		<md-list-item
-			ng-show="$ctrl._viewModel.searchPanelMode == 'excluded'"
+			ng-show="$ctrl._viewModel.searchPanelMode == 'exclude'"
 			ng-repeat="item in $ctrl._viewModel.exclude | orderBy: ['path']"
 			title="{{::item.path}}"
 		>

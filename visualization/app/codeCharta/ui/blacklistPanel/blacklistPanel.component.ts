@@ -2,9 +2,10 @@ import { SettingsService, SettingsServiceSubscriber } from "../../state/settings
 import "./blacklistPanel.component.scss"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { Settings, BlacklistItem, BlacklistType, RecursivePartial, SearchPanelMode } from "../../codeCharta.model"
-import { IRootScopeService } from "angular"
+import { IRootScopeService, IAngularEvent } from "angular"
+import { SearchPanelServiceSubscriber } from "../../state/searchPanel.service"
 
-export class BlacklistPanelController implements SettingsServiceSubscriber {
+export class BlacklistPanelController implements SettingsServiceSubscriber, SearchPanelServiceSubscriber {
 	private _viewModel: {
 		hide: Array<BlacklistItem>
 		exclude: Array<BlacklistItem>
@@ -25,9 +26,10 @@ export class BlacklistPanelController implements SettingsServiceSubscriber {
 			this._viewModel.hide = blacklist.filter(x => x.type === BlacklistType.hide)
 			this._viewModel.exclude = blacklist.filter(x => x.type === BlacklistType.exclude)
 		}
-		if (update.dynamicSettings && update.dynamicSettings.searchPanelMode) {
-			this._viewModel.searchPanelMode = update.dynamicSettings.searchPanelMode
-		}
+	}
+
+	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode, event: IAngularEvent) {
+		this._viewModel.searchPanelMode = searchPanelMode
 	}
 
 	public removeBlacklistEntry(entry: BlacklistItem) {
