@@ -3,7 +3,6 @@ import { Scene } from "three"
 import { Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
-import { Vector3 } from "three"
 import { SettingsService } from "../../../state/settings.service"
 
 /**
