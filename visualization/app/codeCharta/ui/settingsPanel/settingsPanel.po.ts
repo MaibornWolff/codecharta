@@ -1,7 +1,8 @@
 import { delay } from "../../../puppeteer.helper"
+import { Page } from "puppeteer"
 
 export class SettingsPanelPageObject {
-	constructor(private page) {}
+	constructor(private page : Page) {}
 
 	public async open() {
 		await this.page.click("#actionButtons > sidenav-toggle-component > button")
