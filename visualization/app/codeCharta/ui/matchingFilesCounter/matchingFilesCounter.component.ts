@@ -1,13 +1,12 @@
 import "./matchingFilesCounter.component.scss"
-import { BlacklistType, BlacklistItem, CodeMapNode, Settings, RecursivePartial } from "../../codeCharta.model";
-import { SettingsServiceSubscriber, SettingsService } from "../../state/settings.service";
-import { CodeMapHelper } from "../../util/codeMapHelper";
-import { IRootScopeService, IAngularEvent } from "angular";
-import { NodeSearchService, NodeSearchSubscriber } from "../../state/nodeSearch.service";
+import { BlacklistType, BlacklistItem, CodeMapNode, Settings, RecursivePartial } from "../../codeCharta.model"
+import { SettingsServiceSubscriber, SettingsService } from "../../state/settings.service"
+import { CodeMapHelper } from "../../util/codeMapHelper"
+import { IRootScopeService, IAngularEvent } from "angular"
+import { NodeSearchService, NodeSearchSubscriber } from "../../state/nodeSearch.service"
 
 export class MatchingFilesCounterController implements NodeSearchSubscriber, SettingsServiceSubscriber {
-
-    private _viewModel: {
+	private _viewModel: {
 		fileCount: number
 		hideCount: number
 		excludeCount: number
@@ -21,21 +20,23 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Set
 		blacklist: []
 	}
 
-	private searchedNodeLeaves: CodeMapNode[] = [] // TODO: geht das in die DynamicSettings oder service
+	private searchedNodeLeaves: CodeMapNode[] = []
 
 	constructor($rootScope: IRootScopeService) {
-			NodeSearchService.subscribe($rootScope, this)
-			SettingsService.subscribe($rootScope, this)
-		}
+		NodeSearchService.subscribe($rootScope, this)
+		SettingsService.subscribe($rootScope, this)
+	}
 
-	public onNodeSearchComplete(searchedNodes: CodeMapNode[], event: angular.IAngularEvent){
+	public onNodeSearchComplete(searchedNodes: CodeMapNode[], event: angular.IAngularEvent) {
 		this.searchedNodeLeaves = this.getSearchedNodeLeaves(searchedNodes)
 		this.updateViewModel(this.searchedNodeLeaves, this._viewModel.blacklist)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent){
-		this._viewModel.blacklist = settings.fileSettings.blacklist
-		this.updateViewModel(this.searchedNodeLeaves, this._viewModel.blacklist)
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent) {
+		if (update.fileSettings && update.fileSettings.blacklist) {
+			this._viewModel.blacklist = settings.fileSettings.blacklist
+			this.updateViewModel(this.searchedNodeLeaves, this._viewModel.blacklist)
+		}
 	}
 
 	private updateViewModel(searchedNodeLeaves: CodeMapNode[], blacklist: BlacklistItem[]) {
@@ -51,11 +52,10 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Set
 	private getBlacklistedFileCount(searchedNodeLeaves: CodeMapNode[], blacklist: BlacklistItem[], blacklistType: BlacklistType): number {
 		return searchedNodeLeaves.filter(node => CodeMapHelper.isBlacklisted(node, blacklist, blacklistType)).length
 	}
-
 }
 
 export const matchingFilesCounterComponent = {
-    selector: "matchingFilesCounterComponent",
-    template: require("./matchingFilesCounter.component.html"),
-    controller: MatchingFilesCounterController
+	selector: "matchingFilesCounterComponent",
+	template: require("./matchingFilesCounter.component.html"),
+	controller: MatchingFilesCounterController
 }

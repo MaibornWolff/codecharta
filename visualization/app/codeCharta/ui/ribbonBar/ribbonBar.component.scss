@@ -12,7 +12,7 @@ ribbon-bar-component {
 	$bodySize: 0.9em;
 	$toggleButtonSize: 35;
 
-	min-height: 0px;
+	min-height: 0;
 	pointer-events: all;
 
 	#toggle-ribbon-bar-fab {
@@ -59,7 +59,7 @@ ribbon-bar-component {
 		height: ($heightCollapsed + 8) + px;
 		font-size: 0;
 		width: 100%;
-		border-radius: 0px;
+		border-radius: 0;
 
 		&.search {
 			width: 380px;
@@ -150,7 +150,7 @@ ribbon-bar-component {
 					top: 0 + px;
 					right: -5px;
 					opacity: 0;
-					height: 0px;
+					height: 0;
 					pointer-events: none;
 
 					&.expanded {
