@@ -84,6 +84,65 @@ export class CodeMapMesh {
 		this.mapGeomDesc.setScales(new Vector3(x, y, z))
 	}
 
+	public highlightBuilding(highlightedBuilding: CodeMapBuilding, isPresentationMode: boolean, mapSize: number) {
+		for (let i = 0; i < this.mapGeomDesc.buildings.length; i++) {
+			const currentBuilding: CodeMapBuilding = this.mapGeomDesc.buildings[i]
+			const distance = highlightedBuilding.getCenterPoint(mapSize).distanceTo(currentBuilding.getCenterPoint(mapSize))
+
+			if (currentBuilding.id !== highlightedBuilding.id) {
+				if (isPresentationMode) {
+					this.decreaseLightnessByDistance(currentBuilding, distance)
+				} else {
+					currentBuilding.decreaseLightness(20)
+				}
+			} else {
+				currentBuilding.decreaseLightness(-10)
+			}
+			this.setVertexColor(currentBuilding.id, currentBuilding.getColorVector())
+		}
+		this.updateVertices()
+	}
+
+	public clearHighlight() {
+		for (let i = 0; i < this.mapGeomDesc.buildings.length; i++) {
+			const currentBuilding: CodeMapBuilding = this.mapGeomDesc.buildings[i]
+			this.setVertexColor(currentBuilding.id, currentBuilding.getDefaultColorVector())
+		}
+		this.updateVertices()
+	}
+
+	private decreaseLightnessByDistance(building: CodeMapBuilding, distance: number) {
+		if (distance > 800) {
+			building.decreaseLightness(40)
+		} else if (distance > 400) {
+			building.decreaseLightness(30)
+		} else if (distance > 250) {
+			building.decreaseLightness(20)
+		} else if (distance > 100) {
+			building.decreaseLightness(15)
+		} else if (distance > 50) {
+			building.decreaseLightness(10)
+		}
+	}
+
+	private setVertexColor(id: number, newColorVector: Vector3) {
+		for (
+			let j = id * CodeMapMesh.NUM_OF_VERTICES * CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS;
+			j <
+			id * CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS * CodeMapMesh.NUM_OF_VERTICES +
+				CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS * CodeMapMesh.NUM_OF_VERTICES;
+			j += CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS
+		) {
+			this.threeMesh.geometry["attributes"].color.array[j] = newColorVector.x
+			this.threeMesh.geometry["attributes"].color.array[j + 1] = newColorVector.y
+			this.threeMesh.geometry["attributes"].color.array[j + 2] = newColorVector.z
+		}
+	}
+
+	private updateVertices() {
+		this.threeMesh.geometry["attributes"].color.needsUpdate = true
+	}
+
 	private initLightingParams(settings: Settings) {
 		this.lightingParams = {
 			numSelections: { type: "f", value: 0.0 },

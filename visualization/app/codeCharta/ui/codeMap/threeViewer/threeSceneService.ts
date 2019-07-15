@@ -37,62 +37,11 @@ export class ThreeSceneService {
 		const isPresentationMode = this.settingsService.getSettings().appSettings.isPresentationMode
 		const mapSize = this.settingsService.getSettings().treeMapSettings.mapSize
 
-		for (let i = 0; i < this.mapMesh.getMeshDescription().buildings.length; i++) {
-			const currentBuilding: CodeMapBuilding = this.mapMesh.getMeshDescription().buildings[i]
-			const distance = highlightedBuilding.getCenterPoint(mapSize).distanceTo(currentBuilding.getCenterPoint(mapSize))
-
-			if (currentBuilding.id !== highlightedBuilding.id) {
-				if (isPresentationMode) {
-					this.decreaseLightnessByDistance(currentBuilding, distance)
-				} else {
-					currentBuilding.decreaseLightness(20)
-				}
-			} else {
-				currentBuilding.decreaseLightness(-10)
-			}
-			this.setVertexColor(currentBuilding.id, currentBuilding.getColorVector())
-		}
-		this.updateVertices()
+		this.getMapMesh().highlightBuilding(highlightedBuilding, isPresentationMode, mapSize)
 	}
 
 	public clearHighlight() {
-		for (let i = 0; i < this.mapMesh.getMeshDescription().buildings.length; i++) {
-			const currentBuilding: CodeMapBuilding = this.mapMesh.getMeshDescription().buildings[i]
-			this.setVertexColor(currentBuilding.id, currentBuilding.getDefaultColorVector())
-		}
-		this.updateVertices()
-	}
-
-	private decreaseLightnessByDistance(building: CodeMapBuilding, distance: number) {
-		if (distance > 800) {
-			building.decreaseLightness(40)
-		} else if (distance > 400) {
-			building.decreaseLightness(30)
-		} else if (distance > 250) {
-			building.decreaseLightness(20)
-		} else if (distance > 100) {
-			building.decreaseLightness(15)
-		} else if (distance > 50) {
-			building.decreaseLightness(10)
-		}
-	}
-
-	private setVertexColor(id: number, newColorVector: Vector3) {
-		for (
-			let j = id * CodeMapMesh.NUM_OF_VERTICES * CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS;
-			j <
-			id * CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS * CodeMapMesh.NUM_OF_VERTICES +
-				CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS * CodeMapMesh.NUM_OF_VERTICES;
-			j += CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS
-		) {
-			this.mapMesh.getThreeMesh().geometry["attributes"].color.array[j] = newColorVector.x
-			this.mapMesh.getThreeMesh().geometry["attributes"].color.array[j + 1] = newColorVector.y
-			this.mapMesh.getThreeMesh().geometry["attributes"].color.array[j + 2] = newColorVector.z
-		}
-	}
-
-	private updateVertices() {
-		this.mapMesh.getThreeMesh().geometry["attributes"].color.needsUpdate = true
+		this.getMapMesh().clearHighlight()
 	}
 
 	public initLights() {
