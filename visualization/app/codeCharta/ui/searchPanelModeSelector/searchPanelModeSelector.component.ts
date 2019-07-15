@@ -20,6 +20,7 @@ export class SearchPanelModeSelectorController implements SettingsServiceSubscri
 	/* @ngInject */
 	constructor(private searchPanelService: SearchPanelService, private $rootScope: IRootScopeService) {
 		SettingsService.subscribe(this.$rootScope, this)
+		SearchPanelService.subscribe(this.$rootScope, this)
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent) {

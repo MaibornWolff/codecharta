@@ -3,7 +3,7 @@ import "./blacklistPanel.component.scss"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { Settings, BlacklistItem, BlacklistType, RecursivePartial, SearchPanelMode } from "../../codeCharta.model"
 import { IRootScopeService, IAngularEvent } from "angular"
-import { SearchPanelServiceSubscriber } from "../../state/searchPanel.service"
+import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
 
 export class BlacklistPanelController implements SettingsServiceSubscriber, SearchPanelServiceSubscriber {
 	private _viewModel: {
@@ -18,6 +18,7 @@ export class BlacklistPanelController implements SettingsServiceSubscriber, Sear
 
 	constructor(private codeMapActionsService: CodeMapActionsService, $rootScope: IRootScopeService) {
 		SettingsService.subscribe($rootScope, this)
+		SearchPanelService.subscribe($rootScope, this)
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
