@@ -166,9 +166,9 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 		this.$rootScope.$broadcast("building-hovered", { to: to, from: from })
 
 		if (to !== null) {
-			this.threeSceneService.getMapMesh().highlightBuilding(to)
+			this.threeSceneService.highlightBuilding(to)
 		} else {
-			this.threeSceneService.getMapMesh().clearHighlight()
+			this.threeSceneService.clearHighlight()
 		}
 	}
 

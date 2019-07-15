@@ -2,13 +2,14 @@ import * as THREE from "three"
 import { Scene } from "three"
 import { Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
-import { PresentationModeButtonController, PresentationModeSubscriber } from "../../presentationModeButton/presentationModeButton.component"
-import { IRootScopeService } from "angular"
+import { CodeMapBuilding } from "../rendering/codeMapBuilding"
+import { Vector3 } from "three"
+import { SettingsService } from "../../../state/settings.service"
 
 /**
  * A service which manages the Three.js scene in an angular way.
  */
-export class ThreeSceneService implements PresentationModeSubscriber {
+export class ThreeSceneService {
 	public scene: Scene
 	public labels: Group
 	public edgeArrows: Group
@@ -16,7 +17,7 @@ export class ThreeSceneService implements PresentationModeSubscriber {
 	private lights: Group
 	private mapMesh: CodeMapMesh
 
-	constructor(private $rootScope: IRootScopeService) {
+	constructor(private settingsService: SettingsService) {
 		this.scene = new THREE.Scene()
 
 		this.mapGeometry = new THREE.Group()
@@ -30,12 +31,68 @@ export class ThreeSceneService implements PresentationModeSubscriber {
 		this.scene.add(this.edgeArrows)
 		this.scene.add(this.labels)
 		this.scene.add(this.lights)
-
-		PresentationModeButtonController.subscribe(this.$rootScope, this)
 	}
 
-	public onPresentationModeChanged(isEnabled: boolean) {
-		this.mapMesh.setFlashlightEnabled(isEnabled)
+	public highlightBuilding(highlightedBuilding: CodeMapBuilding) {
+		const isPresentationMode = this.settingsService.getSettings().appSettings.isPresentationMode
+		const mapSize = this.settingsService.getSettings().treeMapSettings.mapSize
+
+		for (let i = 0; i < this.mapMesh.getMeshDescription().buildings.length; i++) {
+			const currentBuilding: CodeMapBuilding = this.mapMesh.getMeshDescription().buildings[i]
+			const distance = highlightedBuilding.getCenterPoint(mapSize).distanceTo(currentBuilding.getCenterPoint(mapSize))
+
+			if (currentBuilding.id !== highlightedBuilding.id) {
+				if (isPresentationMode) {
+					this.decreaseLightnessByDistance(currentBuilding, distance)
+				} else {
+					currentBuilding.decreaseLightness(20)
+				}
+			} else {
+				currentBuilding.decreaseLightness(-10)
+			}
+			this.setVertexColor(currentBuilding.id, currentBuilding.getColorVector())
+		}
+		this.updateVertices()
+	}
+
+	public clearHighlight() {
+		for (let i = 0; i < this.mapMesh.getMeshDescription().buildings.length; i++) {
+			const currentBuilding: CodeMapBuilding = this.mapMesh.getMeshDescription().buildings[i]
+			this.setVertexColor(currentBuilding.id, currentBuilding.getDefaultColorVector())
+		}
+		this.updateVertices()
+	}
+
+	private decreaseLightnessByDistance(building: CodeMapBuilding, distance: number) {
+		if (distance > 800) {
+			building.decreaseLightness(40)
+		} else if (distance > 400) {
+			building.decreaseLightness(30)
+		} else if (distance > 250) {
+			building.decreaseLightness(20)
+		} else if (distance > 100) {
+			building.decreaseLightness(15)
+		} else if (distance > 50) {
+			building.decreaseLightness(10)
+		}
+	}
+
+	private setVertexColor(id: number, newColorVector: Vector3) {
+		for (
+			let j = id * CodeMapMesh.NUM_OF_VERTICES * CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS;
+			j <
+			id * CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS * CodeMapMesh.NUM_OF_VERTICES +
+				CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS * CodeMapMesh.NUM_OF_VERTICES;
+			j += CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS
+		) {
+			this.mapMesh.getThreeMesh().geometry["attributes"].color.array[j] = newColorVector.x
+			this.mapMesh.getThreeMesh().geometry["attributes"].color.array[j + 1] = newColorVector.y
+			this.mapMesh.getThreeMesh().geometry["attributes"].color.array[j + 2] = newColorVector.z
+		}
+	}
+
+	private updateVertices() {
+		this.mapMesh.getThreeMesh().geometry["attributes"].color.needsUpdate = true
 	}
 
 	public initLights() {
