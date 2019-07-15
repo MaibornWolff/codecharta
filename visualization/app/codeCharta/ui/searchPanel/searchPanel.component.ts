@@ -20,7 +20,7 @@ export class SearchPanelController implements SearchPanelServiceSubscriber {
 	}
 
 	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode, event: IAngularEvent) {
-		this.objectToAnimate.attr("id", "header")
+		this.objectToAnimate.attr("id", "")
 		this._viewModel.searchPanelMode = searchPanelMode
 		setTimeout(() => this.objectToAnimate.attr("id", "search"), 500)
 	}
