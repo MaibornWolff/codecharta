@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- toolBar now shows now cut-off controls if window is too small #582
+
 ### Removed
 
 ### Fixed
