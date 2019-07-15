@@ -1,8 +1,12 @@
 file-panel-component {
 	$selectWidth: 300;
 
+	width: 1000px;
+	display: block;
+
 	.mode-chooser {
-		display: inline-block;
+		display: block;
+		float: left;
 		margin-left: 10px;
 		margin-right: 10px;
 		margin-top: 5px;
@@ -56,11 +60,11 @@ file-panel-component {
 	}
 
 	md-input-container {
-		display: inline-block;
+		display: block;
 		text-align: left;
+		float: left;
 		margin: 0;
 		font-size: 11pt;
-		vertical-align: top;
 
 		md-select {
 			width: $selectWidth + px;
