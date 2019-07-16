@@ -116,9 +116,13 @@ describe("codeMapMouseEventService", () => {
 			getMapMesh: jest.fn().mockReturnValue({
 				clearHighlight: jest.fn(),
 				highlightBuilding: jest.fn(),
-				clearSelected: jest.fn(),
-				setSelected: jest.fn()
-			})
+				clearSelection: jest.fn(),
+				selectBuilding: jest.fn()
+			}),
+			clearHighlight: jest.fn(),
+			highlightBuilding: jest.fn(),
+			clearSelection: jest.fn(),
+			selectBuilding: jest.fn()
 		})()
 	}
 
@@ -348,14 +352,13 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onBuildingHovered(null, null)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-hovered", { to: null, from: null })
-			expect(threeSceneService.getMapMesh).toHaveBeenCalled()
+			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
 		})
 
 		it("should broadcast a building-hovered event and set mesh highlight", () => {
 			codeMapMouseEventService.onBuildingHovered(null, codeMapBuilding)
 
-			expect(threeSceneService.getMapMesh).toHaveBeenCalled()
-			expect(threeSceneService.getMapMesh().highlightBuilding).toHaveBeenCalledWith(codeMapBuilding)
+			expect(threeSceneService.highlightBuilding).toHaveBeenCalledWith(codeMapBuilding)
 		})
 
 		it("should add property node", () => {
@@ -393,15 +396,13 @@ describe("codeMapMouseEventService", () => {
 		it("should clear selection on mesh", () => {
 			codeMapMouseEventService.onBuildingSelected(codeMapBuilding, null)
 
-			expect(threeSceneService.getMapMesh).toHaveBeenCalled()
-			expect(threeSceneService.getMapMesh().clearSelection).toHaveBeenCalled()
+			expect(threeSceneService.clearSelection).toHaveBeenCalled()
 		})
 
 		it("should clear selection on mesh", () => {
 			codeMapMouseEventService.onBuildingSelected(codeMapBuilding, codeMapBuilding)
 
-			expect(threeSceneService.getMapMesh).toHaveBeenCalled()
-			expect(threeSceneService.getMapMesh().selectBuilding).toHaveBeenCalledWith([codeMapBuilding])
+			expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(codeMapBuilding)
 		})
 	})
 

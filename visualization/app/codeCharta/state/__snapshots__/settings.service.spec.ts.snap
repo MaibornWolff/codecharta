@@ -15,6 +15,7 @@ Object {
     "invertColorRange": false,
     "invertDeltaColors": false,
     "invertHeight": false,
+    "isPresentationMode": false,
     "isWhiteBackground": false,
     "mapColors": Object {
       "angularGreen": "#00BFA5",

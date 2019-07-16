@@ -51,7 +51,7 @@ describe("PresentationModeButtonController", () => {
 
 			presentationModeButtonController.toggleMode()
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: { isPresentationMode: true } })
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: { isPresentationMode: true } }, true)
 		})
 	})
 })
