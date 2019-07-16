@@ -1,5 +1,5 @@
 import "./searchPanel.component.scss"
-import { IRootScopeService, IAngularEvent } from "angular"
+import { IRootScopeService, IAngularEvent, ITimeoutService } from "angular"
 import { SearchPanelMode } from "../../codeCharta.model"
 import $ from "jquery"
 import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
@@ -14,18 +14,14 @@ export class SearchPanelController implements SearchPanelServiceSubscriber {
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private searchPanelService: SearchPanelService) {
+	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private searchPanelService: SearchPanelService) {
 		SearchPanelService.subscribe(this.$rootScope, this)
 	}
 
 	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode, event: IAngularEvent) {
 		this._viewModel.searchPanelMode = searchPanelMode
-
-		if (searchPanelMode === SearchPanelMode.minimized) {
-			this.collapsingElements.removeClass("expanded")
-		} else {
-			this.collapsingElements.addClass("expanded")
-		}
+		this.collapsingElements.attr("id", "")
+		this.$timeout(() => this.collapsingElements.attr("id", "search-panel"), 500)
 	}
 
 	public toggle() {
