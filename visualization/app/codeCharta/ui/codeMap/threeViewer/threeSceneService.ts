@@ -1,5 +1,5 @@
 import * as THREE from "three"
-import { Scene } from "three"
+import { Scene, Vector3 } from "three"
 import { Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 
@@ -73,5 +73,11 @@ export class ThreeSceneService {
 
 	public getMapMesh(): CodeMapMesh {
 		return this.mapMesh
+	}
+
+	public scale(scale: Vector3, mapSize: number) {
+		this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
+		this.mapGeometry.position.set((-mapSize / 2.0) * scale.x, 0.0, (-mapSize / 2.0) * scale.z)
+		this.mapMesh.setScale(scale)
 	}
 }
