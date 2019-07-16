@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Button to enable PresentationMode that uses Spotlight-Hovering #576
 
 ### Changed
-
+- Position of the legendPanel was moved to the bottom-right corner #633
 ### Removed
 
 ### Fixed

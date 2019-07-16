@@ -57,30 +57,6 @@ code-charta-component {
 		}
 	}
 
-	#actionButtons {
-		position: fixed;
-		bottom: 2em;
-		right: 2em;
-		z-index: 60;
-
-		i.fa-folder-open {
-			margin: 4px 0 0 2px;
-		}
-
-		.long-button {
-			width: inherit;
-			padding-left: 10px;
-			padding-right: 10px;
-			border-radius: 100px;
-		}
-
-		> * {
-			margin-left: 4px;
-			margin-right: 4px;
-			z-index: 60;
-		}
-	}
-
 	.dark_shadow_opacity {
 		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
 		opacity: 0.97;
