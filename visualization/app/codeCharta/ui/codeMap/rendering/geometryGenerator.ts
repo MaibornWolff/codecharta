@@ -167,7 +167,6 @@ export class GeometryGenerator {
 		let normals: Float32Array = new Float32Array(numVertices * dimension)
 		let uvs: Float32Array = new Float32Array(numVertices * uvDimension)
 		let colors: Float32Array = new Float32Array(numVertices * dimension)
-		let defaultColors: Float32Array = new Float32Array(numVertices * dimension)
 		let ids: Float32Array = new Float32Array(numVertices)
 		let deltas: Float32Array = new Float32Array(numVertices)
 
@@ -189,10 +188,6 @@ export class GeometryGenerator {
 			colors[i * dimension + 1] = color.y
 			colors[i * dimension + 2] = color.z
 
-			defaultColors[i * dimension + 0] = color.x
-			defaultColors[i * dimension + 1] = color.y
-			defaultColors[i * dimension + 2] = color.z
-
 			ids[i] = data.subGeometryIdx[i]
 			deltas[i] = data.deltas[i]
 		}
@@ -209,7 +204,6 @@ export class GeometryGenerator {
 		geometry.addAttribute("normal", new THREE.BufferAttribute(normals, dimension))
 		geometry.addAttribute("uv", new THREE.BufferAttribute(uvs, uvDimension))
 		geometry.addAttribute("color", new THREE.BufferAttribute(colors, dimension))
-		geometry.addAttribute("defaultColor", new THREE.BufferAttribute(defaultColors, dimension))
 		geometry.addAttribute("subGeomIdx", new THREE.BufferAttribute(ids, 1))
 		geometry.addAttribute("delta", new THREE.BufferAttribute(deltas, 1))
 

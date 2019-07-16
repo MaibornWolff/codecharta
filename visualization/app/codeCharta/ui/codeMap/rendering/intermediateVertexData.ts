@@ -5,7 +5,6 @@ export class IntermediateVertexData {
 	public normals: Vector3[]
 	public uvs: Vector2[]
 	public colors: string[]
-	public defaultColors: string[]
 	public subGeometryIdx: number[]
 	public deltas: number[]
 
@@ -16,7 +15,6 @@ export class IntermediateVertexData {
 		this.normals = new Array<Vector3>()
 		this.uvs = new Array<Vector2>()
 		this.colors = new Array<string>()
-		this.defaultColors = new Array<string>()
 		this.subGeometryIdx = new Array<number>()
 		this.deltas = new Array<number>()
 
@@ -28,7 +26,6 @@ export class IntermediateVertexData {
 		this.normals.push(normal)
 		this.uvs.push(uv)
 		this.colors.push(color)
-		this.defaultColors.push(color)
 		this.subGeometryIdx.push(subGeomIdx)
 		this.deltas.push(delta)
 

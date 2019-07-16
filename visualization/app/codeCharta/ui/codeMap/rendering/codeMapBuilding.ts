@@ -42,4 +42,16 @@ export class CodeMapBuilding {
 	public getDefaultColorVector(): Vector3 {
 		return ColorConverter.colorToVector3(this.defaultColor)
 	}
+
+	public resetColor() {
+		this.color = this.defaultColor
+	}
+
+	public setColor(color: string) {
+		this.color = color
+	}
+
+	public equals(building: CodeMapBuilding) {
+		return this.id === building.id
+	}
 }

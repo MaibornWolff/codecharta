@@ -43,6 +43,15 @@ export class ThreeSceneService {
 		this.getMapMesh().clearHighlight()
 	}
 
+	public selectBuilding(building: CodeMapBuilding) {
+		const color = this.settingsService.getSettings().appSettings.mapColors.selected
+		this.getMapMesh().selectBuilding(building, color)
+	}
+
+	public clearSelection() {
+		this.getMapMesh().clearSelection()
+	}
+
 	public initLights() {
 		const ambilight = new THREE.AmbientLight(0x707070) // soft white light
 		const light1 = new THREE.DirectionalLight(0xe0e0e0, 1)

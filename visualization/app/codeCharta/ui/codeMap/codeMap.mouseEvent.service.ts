@@ -176,9 +176,9 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 		this.$rootScope.$broadcast("building-selected", { to: to, from: from })
 
 		if (to !== null) {
-			this.threeSceneService.getMapMesh().setSelected([to])
+			this.threeSceneService.selectBuilding(to)
 		} else {
-			this.threeSceneService.getMapMesh().clearSelected()
+			this.threeSceneService.clearSelection()
 		}
 	}
 

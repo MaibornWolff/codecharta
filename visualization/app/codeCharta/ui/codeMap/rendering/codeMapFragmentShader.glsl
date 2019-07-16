@@ -3,16 +3,10 @@
 varying vec3 vColor;
 varying vec3 worldNormal;
 varying vec3 vLightFront;
-varying highp float oSubGeomIdx;
 varying highp float vDelta;
 varying vec2 vUV;
 
-uniform vec3 emissive;
 uniform vec3 ambientLightColor;
-
-uniform highp float numSelections;
-uniform vec3 selectedColor;
-uniform highp float selectedIndices[MAX_NUM_HIGHLIGHTS_SELECTIONS];
 
 uniform vec3 deltaColorPositive;
 uniform vec3 deltaColorNegative;
@@ -95,17 +89,7 @@ void main() {
     const float epsilon = 0.5;
     const float minDelta = 0.001;
 
-    int selections = int(numSelections);
-
     bool isTop = normalPointingUp(worldNormal);
-
-    for (int i=0; i < MAX_NUM_HIGHLIGHTS_SELECTIONS; ++i)
-    {
-        if (i < selections && abs(oSubGeomIdx - selectedIndices[i]) < epsilon)
-        {
-            diffuseColor.xyz = selectedColor;
-        }
-    }
 
     if (abs(vDelta) > minDelta && (vUV.y > 1.0 - abs(vDelta) || isTop))
     {
@@ -117,17 +101,7 @@ void main() {
         {
             diffuseColor.xyz = deltaColorNegative;
         }
-        
-        /* comment in to enable rendering of +/- symbols on top
-        if (isTop)
-        {
-            if ((vDelta > 0.0 && pixelInProceduralPlusArea(vUV)) || (vDelta < 0.0 && pixelInProceduralMinusArea(vUV)))
-            {
-                diffuseColor.xyz = vec3(1, 1, 1);
-            }
-        }
-        */
-    }
+      }
 
     ReflectedLight reflectedLight = ReflectedLight(vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0));
     reflectedLight.indirectDiffuse = getAmbientLightIrradiance(ambientLightColor);
@@ -136,7 +110,7 @@ void main() {
     reflectedLight.directDiffuse = vLightFront;
     reflectedLight.directDiffuse *= BRDF_Diffuse_Lambert(diffuseColor.rgb);
 
-    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + emissive;
+    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse;
 
     gl_FragColor = vec4(outgoingLight, diffuseColor.a);
 }

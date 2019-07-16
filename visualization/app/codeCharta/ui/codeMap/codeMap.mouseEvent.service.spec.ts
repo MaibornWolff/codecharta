@@ -394,14 +394,14 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onBuildingSelected(codeMapBuilding, null)
 
 			expect(threeSceneService.getMapMesh).toHaveBeenCalled()
-			expect(threeSceneService.getMapMesh().clearSelected).toHaveBeenCalled()
+			expect(threeSceneService.getMapMesh().clearSelection).toHaveBeenCalled()
 		})
 
 		it("should clear selection on mesh", () => {
 			codeMapMouseEventService.onBuildingSelected(codeMapBuilding, codeMapBuilding)
 
 			expect(threeSceneService.getMapMesh).toHaveBeenCalled()
-			expect(threeSceneService.getMapMesh().setSelected).toHaveBeenCalledWith([codeMapBuilding])
+			expect(threeSceneService.getMapMesh().selectBuilding).toHaveBeenCalledWith([codeMapBuilding])
 		})
 	})
 

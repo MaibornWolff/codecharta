@@ -9,7 +9,6 @@ attribute highp float delta;
 varying vec3 vColor;
 varying vec3 worldNormal;
 varying vec3 vLightFront;
-varying highp float oSubGeomIdx;
 varying highp float vDelta;
 varying vec2 vUV;
 
@@ -52,7 +51,6 @@ void main()
 	gl_Position = projectionMatrix * modelViewPosition;
 
     worldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
-    oSubGeomIdx = float(subGeomIdx);
 
     vec3 diffuse = vec3(1.0);
     

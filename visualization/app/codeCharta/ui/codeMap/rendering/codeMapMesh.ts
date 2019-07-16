@@ -15,7 +15,6 @@ interface CodeMapLightingParams {
 	numSelections: ThreeUniform
 	selectedColor: ThreeUniform
 	selectedIndices: ThreeUniform
-	emissive: ThreeUniform
 	deltaColorPositive: ThreeUniform
 	deltaColorNegative: ThreeUniform
 }
@@ -36,6 +35,7 @@ export class CodeMapMesh {
 	private mapGeomDesc: CodeMapGeometricDescription
 
 	private nodes: Node[]
+	private selected: CodeMapBuilding
 
 	private lightingParams: CodeMapLightingParams = null
 
@@ -56,19 +56,18 @@ export class CodeMapMesh {
 		return this.threeMesh
 	}
 
-	public setSelected(buildings: CodeMapBuilding[], color?: string) {
-		this.material.uniforms.selectedIndices.value = buildings.map((b: CodeMapBuilding) => {
-			return b.id
-		})
-		this.material.uniforms.numSelections.value = buildings.length
-
-		if (color) {
-			this.lightingParams.selectedColor.value = ColorConverter.colorToVector3(color)
-		}
+	public selectBuilding(building: CodeMapBuilding, color: string) {
+		building.setColor(color)
+		this.setVertexColor(building.id, building.getColorVector())
+		this.updateVertices()
+		this.selected = building
 	}
 
-	public clearSelected() {
-		this.material.uniforms.numSelections.value = 0.0
+	public clearSelection() {
+		this.selected.resetColor()
+		this.setVertexColor(this.selected.id, this.selected.getDefaultColorVector())
+		this.updateVertices()
+		this.selected = null
 	}
 
 	public getMeshDescription(): CodeMapGeometricDescription {
@@ -89,14 +88,16 @@ export class CodeMapMesh {
 			const currentBuilding: CodeMapBuilding = this.mapGeomDesc.buildings[i]
 			const distance = highlightedBuilding.getCenterPoint(mapSize).distanceTo(currentBuilding.getCenterPoint(mapSize))
 
-			if (currentBuilding.id !== highlightedBuilding.id) {
-				if (isPresentationMode) {
-					this.decreaseLightnessByDistance(currentBuilding, distance)
+			if (!this.isBuildingSelected(currentBuilding)) {
+				if (!currentBuilding.equals(highlightedBuilding)) {
+					if (isPresentationMode) {
+						this.decreaseLightnessByDistance(currentBuilding, distance)
+					} else {
+						currentBuilding.decreaseLightness(20)
+					}
 				} else {
-					currentBuilding.decreaseLightness(20)
+					currentBuilding.decreaseLightness(-10)
 				}
-			} else {
-				currentBuilding.decreaseLightness(-10)
 			}
 			this.setVertexColor(currentBuilding.id, currentBuilding.getColorVector())
 		}
@@ -106,9 +107,15 @@ export class CodeMapMesh {
 	public clearHighlight() {
 		for (let i = 0; i < this.mapGeomDesc.buildings.length; i++) {
 			const currentBuilding: CodeMapBuilding = this.mapGeomDesc.buildings[i]
-			this.setVertexColor(currentBuilding.id, currentBuilding.getDefaultColorVector())
+			if (!this.isBuildingSelected(currentBuilding)) {
+				this.setVertexColor(currentBuilding.id, currentBuilding.getDefaultColorVector())
+			}
 		}
 		this.updateVertices()
+	}
+
+	private isBuildingSelected(building: CodeMapBuilding) {
+		return this.selected && building.equals(this.selected)
 	}
 
 	private decreaseLightnessByDistance(building: CodeMapBuilding, distance: number) {
@@ -156,9 +163,7 @@ export class CodeMapMesh {
 			deltaColorNegative: {
 				type: "v3",
 				value: ColorConverter.colorToVector3(settings.appSettings.mapColors.negativeDelta)
-			},
-
-			emissive: { type: "v3", value: new Vector3(0.0, 0.0, 0.0) }
+			}
 		}
 	}
 
