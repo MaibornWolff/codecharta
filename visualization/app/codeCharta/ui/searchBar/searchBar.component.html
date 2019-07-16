@@ -1,13 +1,13 @@
-<md-input-container class="md-block">
-	<label>Search by gitignore style: *.js or **/service/*</label>
-	<input type="text" ng-model="$ctrl._viewModel.searchPattern" ng-change="$ctrl.applySettingsSearchPattern()" />
-</md-input-container>
+<i class="fa fa-search search-icon"></i>
 
-<div class="found-nodes angular-green">
-	<span class="box-rounded node-count">{{ $ctrl._viewModel.fileCount }}<i class="fa fa-file"></i></span>
-	<span class="box-rounded node-count">{{ $ctrl._viewModel.hideCount }}<i class="fa fa-eye-slash"></i></span>
-	<span class="box-rounded node-count">{{ $ctrl._viewModel.excludeCount }}<i class="fa fa-ban"></i></span>
-</div>
+<md-input-container class="md-block" md-no-float="">
+	<input
+		type="text"
+		placeholder="gitignore style: *.js, **/app/*"
+		ng-model="$ctrl._viewModel.searchPattern"
+		ng-change="$ctrl.applySettingsSearchPattern()"
+	/>
+</md-input-container>
 
 <md-menu>
 	<md-button class="menu-button round-button" ng-click="$mdMenu.open($event)" title="Add to Blacklist...">
@@ -16,7 +16,7 @@
 	<md-menu-content width="2">
 		<md-menu-item style="min-height: 20px; height: 20px;">
 			<md-button style="min-height: 20px; height: 20px; line-height: 20px; font-size: 9pt; text-align: center;" ng-disabled="true"
-				>Blacklist</md-button
+				>Add Pattern to Blacklist</md-button
 			>
 		</md-menu-item>
 		<md-divider></md-divider>
@@ -36,5 +36,3 @@
 		</md-menu-item>
 	</md-menu-content>
 </md-menu>
-
-<br />
