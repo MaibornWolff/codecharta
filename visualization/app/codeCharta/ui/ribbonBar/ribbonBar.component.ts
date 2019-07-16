@@ -3,7 +3,7 @@ import $ from "jquery"
 
 export class RibbonBarController {
 	private collapsingElements = $("ribbon-bar-component .element-to-toggle")
-	private toggleElements = $("ribbon-bar-component .section-title")
+	private toggleElements = $("ribbon-bar-component .element-to-toggle .section-title")
 	private isExpanded: boolean = false
 
 	public toggle() {
