@@ -125,4 +125,37 @@ code-charta-component {
 	.angular-green {
 		color: #00bfa5;
 	}
+
+	.small-action-button {
+		height: 24px;
+		width: 24px;
+		float: left;
+
+		*,
+		.md-fab:active {
+			margin: 0;
+			padding: 0;
+		}
+
+		.md-fab {
+			position: relative;
+			min-height: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 0;
+			border-radius: 50%;
+
+			i {
+				position: absolute;
+				top: 5px;
+				left: 6px;
+				color: white;
+
+				&:hover {
+					cursor: pointer;
+					color: #eee;
+				}
+			}
+		}
+	}
 }
