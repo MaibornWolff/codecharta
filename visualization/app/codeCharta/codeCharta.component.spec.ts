@@ -15,7 +15,6 @@ import { LoadingGifService } from "./ui/loadingGif/loadingGif.service"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
-	let threeOrbitControlsService: ThreeOrbitControlsService
 	let $rootScope: IRootScopeService
 	let dialogService: DialogService
 	let codeMapActionsService: CodeMapActionsService
@@ -31,7 +30,6 @@ describe("codeChartaController", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedThreeOrbitControlsService()
 		withMockedCodeMapActionsService()
 		withMockedUrlUtils()
 		withMockedSettingsService()
@@ -44,7 +42,6 @@ describe("codeChartaController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
 
-		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		dialogService = getService<DialogService>("dialogService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
@@ -60,7 +57,6 @@ describe("codeChartaController", () => {
 
 	function rebuildController() {
 		codeChartaController = new CodeChartaController(
-			threeOrbitControlsService,
 			$rootScope,
 			dialogService,
 			codeMapActionsService,
@@ -76,12 +72,6 @@ describe("codeChartaController", () => {
 	afterEach(() => {
 		jest.resetAllMocks()
 	})
-
-	function withMockedThreeOrbitControlsService() {
-		threeOrbitControlsService = codeChartaController["threeOrbitControlsService"] = jest.fn().mockReturnValue({
-			autoFitTo: jest.fn()
-		})()
-	}
 
 	function withMockedCodeMapActionsService() {
 		codeMapActionsService = codeChartaController["codeMapActionsService"] = jest.fn().mockReturnValue({
@@ -156,13 +146,6 @@ describe("codeChartaController", () => {
 		})
 	})
 
-	describe("fitMapToView", () => {
-		it("should call autoFitTo", () => {
-			codeChartaController.fitMapToView()
-
-			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
-		})
-	})
 
 	describe("removeFocusedNode", () => {
 		it("should call removeFocusedNode", () => {

@@ -25,13 +25,9 @@ export class ThreeViewerService {
 	 * @param {Object} element DOM Element which should be the canvas
 	 */
 	public init(element: Element) {
-		this.threeCameraService.init(
-			window.innerWidth,
-			window.innerHeight,
-			this.settingsService.getSettings().appSettings.camera.x,
-			this.settingsService.getSettings().appSettings.camera.y,
-			this.settingsService.getSettings().appSettings.camera.z
-		)
+		const camera = this.settingsService.getSettings().appSettings.camera
+
+		this.threeCameraService.init(window.innerWidth, window.innerHeight, camera.x, camera.y, camera.z)
 
 		this.threeCameraService.camera.lookAt(this.threeSceneService.scene.position)
 

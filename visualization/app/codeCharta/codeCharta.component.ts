@@ -5,7 +5,6 @@ import { CodeChartaService } from "./codeCharta.service"
 import { SettingsService, SettingsServiceSubscriber } from "./state/settings.service"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { ThreeOrbitControlsService } from "./ui/codeMap/threeViewer/threeOrbitControlsService"
 import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
 import { NameDataPair, RecursivePartial, Settings } from "./codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
@@ -28,7 +27,6 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 
 	/* @ngInject */
 	constructor(
-		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private $rootScope: IRootScopeService,
 		private dialogService: DialogService,
 		private codeMapActionsService: CodeMapActionsService,
@@ -48,10 +46,6 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this._viewModel.focusedNodePath = settings.dynamicSettings.focusedNodePath
-	}
-
-	public fitMapToView() {
-		this.threeOrbitControlsService.autoFitTo()
 	}
 
 	public removeFocusedNode() {
