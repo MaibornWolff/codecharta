@@ -1,0 +1,24 @@
+matching-files-counter-component {
+	.node-count {
+		background: #eee;
+		color: black;
+		padding: 4px 8px !important;
+		margin-right: 4px;
+	}
+
+	.node-count i {
+		margin-left: 6px;
+	}
+
+	.box-rounded {
+		display: inline-block;
+		font-weight: normal;
+		line-height: 17px;
+		font-size: 10pt;
+		margin-top: 2px;
+		padding: 0 2px 0 2px;
+		min-width: 20px;
+		border-radius: 4px;
+		text-align: center;
+	}
+}

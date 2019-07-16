@@ -53,7 +53,6 @@ describe("codeMapMouseEventService", () => {
 		threeRendererService = getService<ThreeRendererService>("threeRendererService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
-		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 
 		codeMapBuilding = new CodeMapBuilding(1, new THREE.Box3(), TEST_NODE_ROOT, undefined)
 	}
@@ -65,8 +64,7 @@ describe("codeMapMouseEventService", () => {
 			threeCameraService,
 			threeRendererService,
 			threeSceneService,
-			threeUpdateCycleService,
-			codeMapRenderService
+			threeUpdateCycleService
 		)
 	}
 
@@ -117,7 +115,10 @@ describe("codeMapMouseEventService", () => {
 				clearHighlight: jest.fn(),
 				highlightBuilding: jest.fn(),
 				clearSelection: jest.fn(),
-				selectBuilding: jest.fn()
+				selectBuilding: jest.fn(),
+				getMeshDescription: jest.fn().mockReturnValue({
+					buildings: [codeMapBuilding]
+				})
 			}),
 			clearHighlight: jest.fn(),
 			highlightBuilding: jest.fn(),
@@ -362,9 +363,9 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should add property node", () => {
-			codeMapBuilding.node = undefined
+			codeMapBuilding.setNode(undefined)
 			codeMapBuilding.parent = codeMapBuilding
-			codeMapBuilding.parent.node = TEST_NODE_ROOT
+			codeMapBuilding.parent.setNode(TEST_NODE_ROOT)
 
 			codeMapMouseEventService.onBuildingHovered(null, codeMapBuilding)
 
@@ -372,7 +373,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should not add property node if to has no parent", () => {
-			codeMapBuilding.node = undefined
+			codeMapBuilding.setNode(undefined)
 			codeMapBuilding.parent = undefined
 
 			codeMapMouseEventService.onBuildingHovered(null, codeMapBuilding)
@@ -411,10 +412,10 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onBuildingHovered = jest.fn()
 		})
 
-		it("should call codeMapRenderService.getMapDescription", () => {
+		it("should call threeSceneService.getMapDescription", () => {
 			codeMapMouseEventService.onShouldHoverNode(TEST_FILE_WITH_PATHS.map)
 
-			expect(codeMapRenderService.mapMesh.getMeshDescription).toHaveBeenCalled()
+			expect(threeSceneService.getMapMesh().getMeshDescription).toHaveBeenCalled()
 		})
 
 		it("should call onBuildingHovered", () => {

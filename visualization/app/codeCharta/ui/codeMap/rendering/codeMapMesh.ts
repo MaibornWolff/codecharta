@@ -79,8 +79,8 @@ export class CodeMapMesh {
 		return this.getMeshDescription().intersect(ray)
 	}
 
-	public setScale(x: number, y: number, z: number) {
-		this.mapGeomDesc.setScales(new Vector3(x, y, z))
+	public setScale(scale: Vector3) {
+		this.mapGeomDesc.setScales(scale)
 	}
 
 	public highlightBuilding(highlightedBuilding: CodeMapBuilding, isPresentationMode: boolean, mapSize: number) {

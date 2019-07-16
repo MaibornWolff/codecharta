@@ -5,10 +5,11 @@ import convert from "color-convert"
 
 export class CodeMapBuilding {
 	private readonly _id: number
-	private readonly _boundingBox: Box3
+	private _boundingBox: Box3
 	private _color: string
-	private readonly _defaultColor: string
-	private readonly _node: Node
+	private _defaultColor: string
+	private _node: Node
+	public parent: CodeMapBuilding
 
 	constructor(id: number, box: Box3, node: Node, color: string) {
 		this._id = id
@@ -67,5 +68,9 @@ export class CodeMapBuilding {
 
 	public setColor(color: string) {
 		this._color = color
+	}
+
+	public setNode(node: Node) {
+		this._node = node
 	}
 }
