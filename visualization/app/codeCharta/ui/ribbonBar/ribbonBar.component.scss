@@ -14,7 +14,7 @@ ribbon-bar-component {
 
 	min-height: 0;
 	pointer-events: all;
-	display: inline-block;
+	display: flex;
 	width: 100%;
 
 	#toggle-ribbon-bar-fab {
@@ -97,6 +97,10 @@ ribbon-bar-component {
 					border-bottom: $border-thin;
 					border-top: $border-thin;
 					background-color: $subsection-bg;
+				}
+
+				&.space {
+					width: 1000px;
 				}
 			}
 
