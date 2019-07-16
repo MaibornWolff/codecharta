@@ -4,7 +4,7 @@ export class RibbonBarPageObject {
 	constructor(private page: Page) {}
 
 	public async getRibbonBarClassList() {
-		return await this.page.$eval("#metrics-panel", el => el["className"])
+		return await this.page.$eval("ribbon-bar-component md-card:first-child", el => el["className"])
 	}
 
 	public async toggle() {
