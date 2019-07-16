@@ -18,6 +18,13 @@ export enum FileSelectionState {
 	None = "None"
 }
 
+export enum SearchPanelMode {
+	treeView = "treeView",
+	hide = "hide",
+	exclude = "exclude",
+	minimized = "minimized"
+}
+
 export interface ExportCCFile {
 	projectName: string
 	apiVersion: string

@@ -46,14 +46,13 @@ code-charta-component {
 	#codeMap {
 		position: fixed;
 		z-index: 0;
-		top: 46px;
+		top: 90px;
 		left: 0;
 		width: 100%;
 		height: 100%;
 		transition: all $animationDuration + s ease;
 
 		&.expanded {
-			top: 195px;
 			height: calc(100% - 170px);
 		}
 	}
@@ -99,17 +98,28 @@ code-charta-component {
 		border-radius: 50%;
 	}
 
-	ribbon-bar-component {
-		position: fixed;
+	.ribbon-bar-component {
 		z-index: 10;
-		width: 100%;
 
-		#header,
-		#header .section .section-header,
-		#header .section .section-body,
+		.header,
+		.section .section-header,
+		.section .section-body,
 		#toggle-ribbon-bar-fab {
 			transition: all $animationDuration + s ease;
 		}
+	}
+
+	.ribbon-bar-wrapper {
+		margin-top: 1px;
+		width: 100%;
+		min-height: 100px;
+		height: 500px;
+		position: fixed;
+		z-index: 10;
+		overflow: hidden;
+		white-space: nowrap;
+		font-size: 0px;
+		pointer-events: none;
 	}
 
 	.angular-green {
