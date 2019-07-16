@@ -195,8 +195,6 @@ export interface Node {
 	isLeaf: boolean
 	deltas: KeyValuePair
 	attributes: KeyValuePair
-	children: Node[]
-	parent: Node
 	heightDelta: number
 	visible: boolean
 	path: string
