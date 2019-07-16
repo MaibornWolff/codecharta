@@ -12,6 +12,7 @@ import { FileStateService } from "../../state/fileState.service"
 import { Settings } from "../../codeCharta.model"
 import { CODE_MAP_BUILDING, SETTINGS } from "../../util/dataMocks"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import _ from "lodash"
 
 describe("detailPanelController", () => {
 	let services, detailPanelController: DetailPanelController
@@ -35,8 +36,8 @@ describe("detailPanelController", () => {
 			fileStateService: getService<FileStateService>("fileStateService")
 		}
 
-		settings = JSON.parse(JSON.stringify(SETTINGS))
-		codeMapBuilding = JSON.parse(JSON.stringify(CODE_MAP_BUILDING))
+		settings = _.cloneDeep(SETTINGS)
+		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 	}
 
 	function rebuildController() {
