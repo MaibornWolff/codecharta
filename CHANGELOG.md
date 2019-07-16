@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
-- toolBar now shows now cut-off controls if window is too small #582
+- toolBar now shows partially cut-off controls if the window is too small #582
+- Position of the legendPanel was moved to the bottom-right corner #633
 
 ### Removed
 
