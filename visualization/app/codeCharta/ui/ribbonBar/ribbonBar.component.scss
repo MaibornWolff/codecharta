@@ -14,6 +14,8 @@ ribbon-bar-component {
 
 	min-height: 0;
 	pointer-events: all;
+	display: inline-block;
+	width: 100%;
 
 	#toggle-ribbon-bar-fab {
 		margin-top: $toggleButtonSize - 10 + px;
@@ -37,24 +39,15 @@ ribbon-bar-component {
 		}
 	}
 
-	#search {
-		max-height: 50px;
-		min-height: ($heightCollapsed + 8) + px;
-		float: left;
+	search-panel-component md-card.expanded {
+		height: auto;
+		max-height: 500px;
 
-		&.expanded {
+		.section-body {
 			height: auto;
-			max-height: 500px;
-
-			.section-body {
-				height: auto;
-				min-height: ($heightExpanded - $heightCollapsed) + 5 + px;
-			}
+			min-height: ($heightExpanded - $heightCollapsed) + 5 + px;
 		}
 	}
-
-	display: inline-block;
-	width: 100%;
 
 	md-card {
 		margin: 0;
@@ -155,14 +148,6 @@ ribbon-bar-component {
 					opacity: 0;
 					height: 0;
 					pointer-events: none;
-
-					&.expanded {
-						top: ($heightExpanded - 45) + px;
-						opacity: 1;
-						height: 20px;
-						transition: all 0.5s ease;
-						pointer-events: all;
-					}
 				}
 
 				md-checkbox .md-label {
@@ -170,6 +155,7 @@ ribbon-bar-component {
 				}
 			}
 		}
+
 		&.expanded {
 			height: $heightExpanded + px;
 
@@ -183,6 +169,14 @@ ribbon-bar-component {
 					padding-bottom: 15px;
 					height: ($heightExpanded - $heightCollapsed) + px;
 					border-top: $border;
+
+					reset-settings-button-component .md-button {
+						top: ($heightExpanded - 45) + px;
+						opacity: 1;
+						height: 20px;
+						transition: all 0.5s ease;
+						pointer-events: all;
+					}
 				}
 			}
 		}

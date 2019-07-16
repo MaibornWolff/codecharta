@@ -2,9 +2,7 @@ import "./ribbonBar.component.scss"
 import $ from "jquery"
 
 export class RibbonBarController {
-	private collapsingElements = $(
-		"code-map-component #codeMap, ribbon-bar-component #metrics-panel, #toggle-ribbon-bar-fab, reset-settings-button-component .md-button"
-	)
+	private collapsingElements = $("ribbon-bar-component .element-to-toggle")
 	private toggleElements = $("ribbon-bar-component .section-title")
 	private isExpanded: boolean = false
 
