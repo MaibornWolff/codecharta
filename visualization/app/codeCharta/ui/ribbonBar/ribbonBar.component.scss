@@ -40,6 +40,7 @@ ribbon-bar-component {
 	#search {
 		max-height: 50px;
 		min-height: ($heightCollapsed + 8) + px;
+		float: left;
 
 		&.expanded {
 			height: auto;
@@ -52,14 +53,16 @@ ribbon-bar-component {
 		}
 	}
 
-	.header {
-		display: inline-block;
+	display: inline-block;
+	width: 100%;
+
+	md-card {
 		margin: 0;
 		padding: 0;
 		height: ($heightCollapsed + 8) + px;
 		font-size: 0;
-		width: 100%;
 		border-radius: 0;
+		float: left;
 
 		&.search {
 			width: 380px;
@@ -167,7 +170,6 @@ ribbon-bar-component {
 				}
 			}
 		}
-
 		&.expanded {
 			height: $heightExpanded + px;
 
