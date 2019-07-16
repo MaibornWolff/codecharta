@@ -1,6 +1,6 @@
 import { goto, puppeteer } from "../../../puppeteer.helper"
 import { RibbonBarPageObject } from "./ribbonBar.po"
-import { SettingsPanelPageObject } from "../settingsPanel/settingsPanel.po"
+import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 import { Browser, Page } from "puppeteer"
 
 jest.setTimeout(10000)
@@ -9,7 +9,7 @@ describe("RibbonBar", () => {
 	let browser: Browser
 	let page: Page
 
-	let settingsPanel: SettingsPanelPageObject
+	let settingsPanel: SearchPanelPageObject
 	let ribbonBar: RibbonBarPageObject
 
 	beforeAll(async () => {
@@ -23,16 +23,14 @@ describe("RibbonBar", () => {
 	beforeEach(async () => {
 		page = await browser.newPage()
 
-		settingsPanel = new SettingsPanelPageObject(page)
+		settingsPanel = new SearchPanelPageObject(page)
 		ribbonBar = new RibbonBarPageObject(page)
 
 		await goto(page)
 	})
 
-
 	it("hovering over a folder should display the sum of metric of all children", async () => {
-		await settingsPanel.open()
-		await settingsPanel.toggleTreeViewSearchPanel()
+		await settingsPanel.toggleTreeViewMode()
 		await settingsPanel.rightClickRootNodeInTreeViewSearchPanel()
 
 		const actual = await ribbonBar.getAreaMetricValue()
