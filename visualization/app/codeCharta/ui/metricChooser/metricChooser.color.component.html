@@ -2,9 +2,10 @@
 	<i class="fa fa-paint-brush"></i>
 
 	<md-select ng-model="$ctrl._viewModel.colorMetric" ng-change="$ctrl.applySettingsColorMetric()">
+		<span class="option-pattern">metric (highest value)</span>
 		<md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
 			{{::metric.name}}
-			<span class="metric-max-value">(highest value: {{::metric.maxValue}})</span>
+			<span class="metric-max-value">({{::metric.maxValue}})</span>
 		</md-option>
 	</md-select>
 
