@@ -6,6 +6,7 @@ import { CodeMapGeometricDescription, IntersectionResult } from "./codeMapGeomet
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { Node, Settings } from "../../../codeCharta.model"
 import { ColorConverter } from "../../../util/colorConverter"
+import { Vector3 } from "three"
 
 interface ThreeUniform {
 	type: string
@@ -119,8 +120,8 @@ export class CodeMapMesh {
 		return this.getMeshDescription().intersect(ray)
 	}
 
-	public setScale(x: number, y: number, z: number) {
-		this.mapGeomDesc.setScales(new THREE.Vector3(x, y, z))
+	public setScale(scale: Vector3) {
+		this.mapGeomDesc.setScales(scale)
 	}
 
 	private initLightingParams(settings: Settings) {
