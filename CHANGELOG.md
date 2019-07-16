@@ -8,9 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 
 ### Added
+
 - New Search Bar #526
 
 ### Changed
+
+- Position of the legendPanel was moved to the bottom-right corner #633
 
 ### Removed
 
