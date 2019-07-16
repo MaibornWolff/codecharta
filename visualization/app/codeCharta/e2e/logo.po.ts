@@ -1,7 +1,7 @@
 import { Page } from "puppeteer"
 
 export class LogoPageObject {
-	constructor(private page : Page) {}
+	constructor(private page: Page) {}
 
 	public async getVersion() {
 		const versionString = await this.page.$eval("#mw-logo > div > h2 > span", el => el["innerText"])
