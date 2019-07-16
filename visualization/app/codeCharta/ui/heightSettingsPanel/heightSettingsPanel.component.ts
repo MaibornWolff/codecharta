@@ -36,11 +36,25 @@ export class HeightSettingsPanelController implements SettingsServiceSubscriber,
 
 	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
 
-	public applySettings() {
+	public applySettingsAmountOfTopLabels() {
 		this.settingsService.updateSettings({
 			appSettings: {
-				amountOfTopLabels: this._viewModel.amountOfTopLabels,
-				invertHeight: this._viewModel.invertHeight,
+				amountOfTopLabels: this._viewModel.amountOfTopLabels
+			}
+		})
+	}
+
+	public applySettingsInvertHeight() {
+		this.settingsService.updateSettings({
+			appSettings: {
+				invertHeight: this._viewModel.invertHeight
+			}
+		})
+	}
+
+	public applySettingsScaling() {
+		this.settingsService.updateSettings({
+			appSettings: {
 				scaling: {
 					y: this._viewModel.scalingY
 				}
