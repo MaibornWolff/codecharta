@@ -16,24 +16,18 @@ ribbon-bar-component {
 	display: flex;
 
 	#toggle-ribbon-bar-fab {
-		margin-top: $toggleButtonSize - 10 + px;
-		right: 10px;
-		z-index: 999;
-		width: $toggleButtonSize + px;
-		height: $toggleButtonSize + px !important;
-		min-height: $toggleButtonSize + px !important;
-		line-height: $toggleButtonSize + px !important;
 		position: fixed;
-
-		> i:before {
-			content: "\f107";
+		right: 25px;
+		margin-top: 32px;
+		i {
+			left: 7px;
+			&:before {
+				content: "\f107";
+			}
 		}
 
-		&.expanded {
-			> i:before {
-				content: "\f106";
-			}
-			margin-top: $heightExpanded - 20 + px;
+		&.expanded i:before {
+			content: "\f106";
 		}
 	}
 
