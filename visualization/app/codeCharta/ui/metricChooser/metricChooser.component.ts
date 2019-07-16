@@ -49,8 +49,7 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 		this.potentiallyUpdateChosenMetrics(metricData)
 	}
 
-	public onMetricDataRemoved(event: angular.IAngularEvent) {
-	}
+	public onMetricDataRemoved(event: angular.IAngularEvent) {}
 
 	private potentiallyUpdateChosenMetrics(metricData: MetricData[]) {
 		const metricKeys: Partial<DynamicSettings> = {
@@ -127,8 +126,7 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 		})
 	}
 
-	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent) {
-	}
+	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent) {}
 
 	public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
 		if (data && data.to && data.to.node && data.to.node.attributes) {
@@ -158,8 +156,7 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 		}
 	}
 
-	public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
-	}
+	public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {}
 
 	private getHoveredDeltaColor() {
 		let colors = {

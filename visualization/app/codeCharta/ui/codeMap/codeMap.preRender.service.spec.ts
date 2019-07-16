@@ -91,8 +91,8 @@ describe("codeMapPreRenderService", () => {
 	})
 
 	describe("getRenderMap", () => {
-		it("should return lastRender.renderFile", () => {
-			codeMapPreRenderService["lastRender"].renderFile = file
+		it("should return lastRender.map", () => {
+			codeMapPreRenderService["lastRender"].map = file.map
 
 			const result = codeMapPreRenderService.getRenderMap()
 
