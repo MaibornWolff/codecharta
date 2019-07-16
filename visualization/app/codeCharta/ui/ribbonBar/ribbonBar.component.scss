@@ -141,7 +141,7 @@ ribbon-bar-component {
 				padding-right: $padding + px;
 				padding-left: 2 * $padding + px;
 				overflow: hidden;
-				border-top: $border;
+				border-top: 1px solid transparent;
 				font-size: $bodySize;
 				text-align: left;
 				vertical-align: top;
@@ -180,6 +180,7 @@ ribbon-bar-component {
 					padding-top: 15px;
 					padding-bottom: 15px;
 					height: ($heightExpanded - $heightCollapsed) + px;
+					border-top: $border;
 				}
 			}
 		}
