@@ -53,6 +53,7 @@ ribbon-bar-component {
 		height: ($heightCollapsed + 8) + px;
 		font-size: 0;
 		border-radius: 0;
+		border-top: $border;
 		float: left;
 
 		&.search {

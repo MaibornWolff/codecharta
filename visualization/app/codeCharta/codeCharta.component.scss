@@ -32,17 +32,6 @@ code-charta-component {
 		}
 	}
 
-	#title {
-		position: fixed;
-		z-index: 2;
-		width: 100%;
-	}
-
-	.small-info {
-		color: rgba(0, 0, 0, 0.38);
-		font-size: 9pt;
-	}
-
 	#codeMap {
 		position: fixed;
 		z-index: 0;
@@ -57,63 +46,25 @@ code-charta-component {
 		}
 	}
 
-	#actionButtons {
-		position: fixed;
-		bottom: 2em;
-		right: 2em;
-		z-index: 60;
-
-		i.fa-folder-open {
-			margin: 4px 0 0 2px;
-		}
-
-		.long-button {
-			width: inherit;
-			padding-left: 10px;
-			padding-right: 10px;
-			border-radius: 100px;
-		}
-
-		> * {
-			margin-left: 4px;
-			margin-right: 4px;
-			z-index: 60;
-		}
-	}
-
 	.dark_shadow_opacity {
 		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
-		opacity: 0.97;
-	}
-
-	.bottom_shadow {
-		box-shadow: 0 4px 4px -2px rgba(0, 0, 0, 0.2) !important;
-	}
-
-	.md-button.round-button {
-		margin-right: 0 !important;
-		float: right;
-		min-width: 36px;
-		width: 36px;
-		border-radius: 50%;
-	}
-
-	.ribbon-bar-component {
-		md-card,
-		.section .section-header,
-		.section .section-body,
-		#toggle-ribbon-bar-fab {
-			transition: all $animationDuration + s ease;
-		}
 	}
 
 	.ribbon-bar-wrapper {
-		margin-top: 1px;
 		height: 500px;
 		position: fixed;
 		z-index: 10;
 		white-space: nowrap;
 		pointer-events: none;
+
+		.ribbon-bar-component {
+			md-card,
+			.section .section-header,
+			.section .section-body,
+			#toggle-ribbon-bar-fab {
+				transition: all $animationDuration + s ease;
+			}
+		}
 	}
 
 	.angular-green {
@@ -136,6 +87,34 @@ code-charta-component {
 				top: 5px;
 				left: 6px;
 			}
+		}
+	}
+
+	.md-button.round-button {
+		margin-right: 0 !important;
+		float: right;
+		min-width: 36px;
+		width: 36px;
+		border-radius: 50%;
+	}
+
+	.action-buttons {
+		position: fixed;
+		bottom: 2em;
+		right: 2em;
+		z-index: 60;
+
+		.long-button {
+			width: inherit;
+			padding-left: 10px;
+			padding-right: 10px;
+			border-radius: 100px;
+		}
+
+		> * {
+			margin-left: 4px;
+			margin-right: 4px;
+			z-index: 60;
 		}
 	}
 }
