@@ -40,24 +40,26 @@
 	</md-select>
 </md-input-container>
 
-<md-input-container ng-show="$ctrl._viewModel.isDeltaState">
-	<md-select
-		ng-model="$ctrl._viewModel.selectedFileNames.delta.reference"
-		ng-change="$ctrl.onDeltaReferenceFileChange($ctrl._viewModel.selectedFileNames.delta.reference)"
-	>
-		<md-option ng-repeat="fileState in $ctrl._viewModel.fileStates" value="{{::fileState.file.fileMeta.fileName}}">
-			<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
-		</md-option>
-	</md-select>
-</md-input-container>
+<div class="delta-chooser" ng-show="$ctrl._viewModel.isDeltaState">
+	<md-input-container class="delta-select">
+		<md-select
+			ng-model="$ctrl._viewModel.selectedFileNames.delta.reference"
+			ng-change="$ctrl.onDeltaReferenceFileChange($ctrl._viewModel.selectedFileNames.delta.reference)"
+		>
+			<md-option ng-repeat="fileState in $ctrl._viewModel.fileStates" value="{{::fileState.file.fileMeta.fileName}}">
+				<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
+			</md-option>
+		</md-select>
+	</md-input-container>
 
-<md-input-container ng-show="$ctrl._viewModel.isDeltaState">
-	<md-select
-		ng-model="$ctrl._viewModel.selectedFileNames.delta.comparison"
-		ng-change="$ctrl.onDeltaComparisonFileChange($ctrl._viewModel.selectedFileNames.delta.comparison)"
-	>
-		<md-option ng-repeat="fileState in $ctrl._viewModel.fileStates" value="{{::fileState.file.fileMeta.fileName}}">
-			<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
-		</md-option>
-	</md-select>
-</md-input-container>
+	<md-input-container class="delta-select">
+		<md-select
+			ng-model="$ctrl._viewModel.selectedFileNames.delta.comparison"
+			ng-change="$ctrl.onDeltaComparisonFileChange($ctrl._viewModel.selectedFileNames.delta.comparison)"
+		>
+			<md-option ng-repeat="fileState in $ctrl._viewModel.fileStates" value="{{::fileState.file.fileMeta.fileName}}">
+				<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
+			</md-option>
+		</md-select>
+	</md-input-container>
+</div>

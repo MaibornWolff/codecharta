@@ -1,8 +1,11 @@
 file-panel-component {
-	$selectWidth: 300;
-
-	width: 1000px;
+	width: calc(100% - 100px);
+	min-width: 400px;
 	display: block;
+
+	.delta-chooser {
+		min-width: 600px;
+	}
 
 	.mode-chooser {
 		display: block;
@@ -65,9 +68,15 @@ file-panel-component {
 		float: left;
 		margin: 0;
 		font-size: 11pt;
+		width: calc(100% - 250px);
+		max-width: 300px;
+		min-width: 150px;
+
+		&.delta-select {
+			width: calc((100% - 250px) / 2);
+		}
 
 		md-select {
-			width: $selectWidth + px;
 			display: block;
 
 			.md-select-value {
