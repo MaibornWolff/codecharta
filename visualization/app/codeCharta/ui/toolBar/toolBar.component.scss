@@ -47,8 +47,8 @@ tool-bar-component {
 		}
 
 		&.global-settings {
-			float: right;
-			margin-right: 20px;
+			right: 20px;
+			position: fixed;
 
 			.md-fab i {
 				top: 5px;
