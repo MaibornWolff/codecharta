@@ -1,7 +1,7 @@
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { TEST_NODE_ROOT } from "../../../util/dataMocks"
 import { Vector3 } from "three"
-import { ColorConverter } from "../../../util/colorConverter"
+import { ColorConverter } from "../../../util/color/colorConverter"
 
 describe("CodeMapBuilding", () => {
 	let building: CodeMapBuilding
@@ -13,13 +13,12 @@ describe("CodeMapBuilding", () => {
 	beforeEach(() => {
 		mockColorConverter()
 
-		building = new CodeMapBuilding(0, null, TEST_NODE_ROOT, "#69AE40")
+		building = new CodeMapBuilding(0, null, TEST_NODE_ROOT, "#00BFFF")
 		building1 = new CodeMapBuilding(0, null, TEST_NODE_ROOT, "#DDCC00")
 		building2 = new CodeMapBuilding(1, null, TEST_NODE_ROOT, "#820E0E")
 	})
 
 	function mockColorConverter() {
-		ColorConverter.convertNumberToHex = jest.fn().mockReturnValue("#0F0F0F")
 		ColorConverter.colorToVector3 = jest.fn().mockReturnValue(new Vector3(0, 1, 2))
 	}
 
@@ -36,17 +35,15 @@ describe("CodeMapBuilding", () => {
 
 	describe("decreaseLightness", () => {
 		it("should set color correctly", () => {
-			building2.decreaseLightness(5)
+			building.decreaseLightness(5)
 
-			expect(ColorConverter.convertNumberToHex).toHaveBeenCalledWith("6A0B0B")
-			expect(building.color).toEqual("#69AE40")
+			expect(building.color).toEqual("#00ACE6")
 		})
 
 		it("should set color correctly and not keep lightness at 10", () => {
-			building2.decreaseLightness(100)
+			building.decreaseLightness(100)
 
-			expect(ColorConverter.convertNumberToHex).toHaveBeenCalledWith("2E0505")
-			expect(building.color).toEqual("#69AE40")
+			expect(building.color).toEqual("#002633")
 		})
 	})
 
@@ -69,7 +66,7 @@ describe("CodeMapBuilding", () => {
 			expect(result.x).toBe(0)
 			expect(result.y).toBe(1)
 			expect(result.z).toBe(2)
-			expect(ColorConverter.colorToVector3).toHaveBeenCalledWith("#69AE40")
+			expect(ColorConverter.colorToVector3).toHaveBeenCalledWith("#00BFFF")
 		})
 	})
 
@@ -78,7 +75,7 @@ describe("CodeMapBuilding", () => {
 			building.setColor("#ABCDEF")
 			building.resetColor()
 
-			expect(building.color).toEqual("#69AE40")
+			expect(building.color).toEqual("#00BFFF")
 		})
 	})
 
