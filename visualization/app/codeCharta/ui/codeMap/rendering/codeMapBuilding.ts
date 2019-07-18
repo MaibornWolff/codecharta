@@ -31,7 +31,7 @@ export class CodeMapBuilding {
 		const hsl = convert.hex.hsl(this._defaultColor)
 		hsl[2] -= value
 		hsl[2] = hsl[2] < 10 ? 10 : hsl[2]
-		this._color = ColorConverter.convertNumberToHex(convert.hsl.hex([hsl[0], hsl[1], hsl[2]]))
+		this._color = `#${convert.hsl.hex([hsl[0], hsl[1], hsl[2]])}`
 	}
 
 	public getColorVector(): Vector3 {
