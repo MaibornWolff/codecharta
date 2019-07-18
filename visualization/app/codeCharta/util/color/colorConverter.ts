@@ -1,4 +1,6 @@
 import { Color, Vector3 } from "three"
+import convert from "color-convert"
+import { HSL } from "./hsl"
 
 export class ColorConverter {
 	public static convertHexToNumber(hex: string): number {
@@ -30,6 +32,11 @@ export class ColorConverter {
 			"" +
 			Math.round(colorObject.b).toString(16)
 		)
+	}
+
+	public static hexToHSL(hex: string): HSL {
+		const hsl = convert.hex.hsl(hex)
+		return new HSL(hsl[0], hsl[1], hsl[2])
 	}
 
 	public static colorToVector3(color: string): Vector3 {

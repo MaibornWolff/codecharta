@@ -4,7 +4,7 @@ import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { IntermediateVertexData } from "./intermediateVertexData"
 import { BoxGeometryGenerationHelper } from "./boxGeometryGenerationHelper"
-import { ColorConverter } from "../../../util/colorConverter"
+import { ColorConverter } from "../../../util/color/colorConverter"
 
 export interface BoxMeasures {
 	x: number

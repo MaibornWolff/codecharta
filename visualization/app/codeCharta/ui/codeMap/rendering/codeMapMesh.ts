@@ -3,8 +3,8 @@ import { BuildResult, GeometryGenerator } from "./geometryGenerator"
 import { CodeMapGeometricDescription, IntersectionResult } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { Node, Settings } from "../../../codeCharta.model"
-import { ColorConverter } from "../../../util/colorConverter"
 import { Camera, Mesh, Ray, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three"
+import { ColorConverter } from "../../../util/color/colorConverter"
 
 interface ThreeUniform {
 	type: string

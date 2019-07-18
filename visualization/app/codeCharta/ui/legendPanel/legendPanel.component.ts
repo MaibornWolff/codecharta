@@ -2,11 +2,11 @@ import { SettingsService, SettingsServiceSubscriber } from "../../state/settings
 import $ from "jquery"
 import { IRootScopeService } from "angular"
 import "./legendPanel.component.scss"
-import { ColorConverter } from "../../util/colorConverter"
 import { ColorRange, MarkedPackage, RecursivePartial, Settings } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { FileStateService } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
+import { ColorConverter } from "../../util/color/colorConverter"
 
 export interface PackageList {
 	colorPixel: string

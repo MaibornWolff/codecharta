@@ -1,7 +1,6 @@
 import { Node } from "../../../codeCharta.model"
 import { Box3, Vector3 } from "three"
-import { ColorConverter } from "../../../util/colorConverter"
-import convert from "color-convert"
+import { ColorConverter } from "../../../util/color/colorConverter"
 
 export class CodeMapBuilding {
 	private readonly _id: number
@@ -28,10 +27,11 @@ export class CodeMapBuilding {
 	}
 
 	public decreaseLightness(value: number) {
-		const hsl = convert.hex.hsl(this._defaultColor)
-		hsl[2] -= value
-		hsl[2] = hsl[2] < 10 ? 10 : hsl[2]
-		this._color = `#${convert.hsl.hex([hsl[0], hsl[1], hsl[2]])}`
+		const hsl = ColorConverter.hexToHSL(this._defaultColor)
+		hsl.decreaseLightness(value)
+		hsl.getLightness() < 10 ? hsl.setLightness(10) : hsl.setLightness(hsl.getLightness())
+
+		this._color = hsl.toHex()
 	}
 
 	public getColorVector(): Vector3 {
