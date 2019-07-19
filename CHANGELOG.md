@@ -15,8 +15,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - ToolBar now shows partially cut-off controls if the window is too small #582
 - Position of the legendPanel was moved to the bottom-right corner #633
+- RibbonBar only opens the three metric section
+- Moved Scenario-select to the right in order to use less space
+- Moved loading-gif from ribbonBar to toolBar
 
 ### Removed
+
+- Removed RibbonBar toggle button
 
 ### Fixed
 
