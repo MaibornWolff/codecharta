@@ -32,7 +32,8 @@ export interface BuildingRightClickedEventSubscriber {
 	onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent)
 }
 
-export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateServiceSubscriber {
+export class CodeMapMouseEventService
+	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateServiceSubscriber {
 	private static BUILDING_HOVERED_EVENT = "building-hovered"
 	private static BUILDING_SELECTED_EVENT = "building-selected"
 	private static BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
@@ -82,12 +83,11 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-		this.hovered = null;
-		this.selected = null;
+		this.hovered = null
+		this.selected = null
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-	}
+	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
 
 	public update() {
 		this.threeCameraService.camera.updateMatrixWorld(false)
@@ -122,7 +122,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
 	public onDocumentMouseUp() {
 		if (this.dragOrClickFlag === 0) {
-					if (this.hovered) {
+			if (this.hovered) {
 				this.onBuildingSelected(null, this.hovered)
 			}
 
