@@ -39,6 +39,7 @@ export class CodeMapMouseEventService
 	private static BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
 
 	private hovered: CodeMapBuilding = null
+	private hoveredInTreeView: CodeMapBuilding = null
 	private selected: CodeMapBuilding = null
 	private mouse: Coordinates = { x: 0, y: 0 }
 	private dragOrClickFlag = 0
@@ -93,20 +94,18 @@ export class CodeMapMouseEventService
 		this.threeCameraService.camera.updateMatrixWorld(false)
 
 		if (this.threeSceneService.getMapMesh() != null) {
-			let intersectionResult = this.threeSceneService
+			const intersectionResult = this.threeSceneService
 				.getMapMesh()
 				.checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera)
 
-			let from = this.hovered
+			const from = this.hovered
 			let to = null
 
 			if (intersectionResult.intersectionFound) {
 				to = intersectionResult.building
-			} else {
-				to = null
 			}
 
-			if (from !== to) {
+			if (from !== to && !this.hoveredInTreeView) {
 				this.onBuildingHovered(from, to)
 				this.hovered = to
 			}
@@ -204,16 +203,18 @@ export class CodeMapMouseEventService
 	}
 
 	public onShouldHoverNode(node: CodeMapNode) {
-		let buildings: CodeMapBuilding[] = this.threeSceneService.getMapMesh().getMeshDescription().buildings
+		const buildings: CodeMapBuilding[] = this.threeSceneService.getMapMesh().getMeshDescription().buildings
 		buildings.forEach(building => {
 			if (building.node.path === node.path) {
 				this.onBuildingHovered(this.hovered, building)
+				this.hoveredInTreeView = building
 			}
 		})
 	}
 
 	public onShouldUnhoverNode(node: CodeMapNode) {
 		this.onBuildingHovered(this.hovered, null)
+		this.hoveredInTreeView = null
 	}
 
 	public static subscribeToBuildingHoveredEvents($rootScope: IRootScopeService, subscriber: BuildingHoveredEventSubscriber) {
