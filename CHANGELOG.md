@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 - New Search Bar #526
-- Button to enable PresentationMode that uses Spotlight-Hovering #576
+- Button to enable PresentationMode that uses Flashlight-Hovering #576
 
 ### Changed
 
