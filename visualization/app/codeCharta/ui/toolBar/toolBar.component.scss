@@ -17,19 +17,11 @@ tool-bar-component {
 	}
 
 	.right-aligned {
-		float: right;
+		right: 20px;
+		position: fixed;
 
 		> * {
 			float: left;
-		}
-
-		&.global-settings {
-			right: 20px;
-			position: fixed;
-
-			.md-fab i {
-				top: 5px;
-			}
 		}
 	}
 
