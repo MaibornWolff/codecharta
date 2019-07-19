@@ -12,6 +12,9 @@ export interface MapTreeViewHoverEventSubscriber {
 }
 
 export class MapTreeViewLevelController implements BuildingHoveredEventSubscriber {
+	private static MAP_TREE_VIEW_HOVER_NODE_EVENT = "should-hover-node"
+	private static MAP_TREE_VIEW_UNHOVER_NODE_EVENT = "should-unhover-node"
+
 	private node: CodeMapNode = null
 
 	private _viewModel: {
@@ -47,11 +50,11 @@ export class MapTreeViewLevelController implements BuildingHoveredEventSubscribe
 	}
 
 	public onMouseEnter() {
-		this.$rootScope.$broadcast("should-hover-node", this.node)
+		this.$rootScope.$broadcast(MapTreeViewLevelController.MAP_TREE_VIEW_HOVER_NODE_EVENT, this.node)
 	}
 
 	public onMouseLeave() {
-		this.$rootScope.$broadcast("should-unhover-node", this.node)
+		this.$rootScope.$broadcast(MapTreeViewLevelController.MAP_TREE_VIEW_UNHOVER_NODE_EVENT, this.node)
 	}
 
 	public onRightClick($event) {
