@@ -79,10 +79,10 @@ export class FileStateService {
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: FileStateServiceSubscriber) {
 		$rootScope.$on(FileStateService.FILE_STATE_CHANGED_EVENT, (event, data) => {
-			subscriber.onFileSelectionStatesChanged(data, event)
+			subscriber.onFileSelectionStatesChanged(data)
 		})
 		$rootScope.$on(FileStateService.IMPORTED_FILES_CHANGED_EVENT, (event, data) => {
-			subscriber.onImportedFilesChanged(data, event)
+			subscriber.onImportedFilesChanged(data)
 		})
 	}
 }

@@ -204,11 +204,11 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: MetricServiceSubscriber) {
 		$rootScope.$on(MetricService.METRIC_DATA_ADDED_EVENT, (event, data) => {
-			subscriber.onMetricDataAdded(data, event)
+			subscriber.onMetricDataAdded(data)
 		})
 
 		$rootScope.$on(MetricService.METRIC_DATA_REMOVED_EVENT, (event, data) => {
-			subscriber.onMetricDataRemoved(event)
+			subscriber.onMetricDataRemoved()
 		})
 	}
 }

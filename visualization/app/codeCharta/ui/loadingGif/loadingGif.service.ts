@@ -35,10 +35,10 @@ export class LoadingGifService {
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: LoadingGifComponentSubscriber) {
 		$rootScope.$on(LoadingGifService.LOADING_FILE_STATUS_EVENT, (event, data) => {
-			subscriber.onLoadingFileStatusChanged(data, event)
+			subscriber.onLoadingFileStatusChanged(data)
 		})
 		$rootScope.$on(LoadingGifService.LOADING_MAP_STATUS_EVENT, (event, data) => {
-			subscriber.onLoadingMapStatusChanged(data, event)
+			subscriber.onLoadingMapStatusChanged(data)
 		})
 	}
 }

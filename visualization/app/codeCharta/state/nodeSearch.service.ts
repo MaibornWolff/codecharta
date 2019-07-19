@@ -61,7 +61,7 @@ export class NodeSearchService implements SettingsServiceSubscriber {
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: NodeSearchSubscriber) {
 		$rootScope.$on(NodeSearchService.NODE_SEARCH_COMPLETE_EVENT, (event, data) => {
-			subscriber.onNodeSearchComplete(data, event)
+			subscriber.onNodeSearchComplete(data)
 		})
 	}
 }

@@ -24,7 +24,7 @@ export class SearchPanelService {
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: SearchPanelServiceSubscriber) {
 		$rootScope.$on(SearchPanelService.SEARCH_PANEL_MODE_EVENT, (event, data) => {
-			subscriber.onSearchPanelModeChanged(data, event)
+			subscriber.onSearchPanelModeChanged(data)
 		})
 	}
 }

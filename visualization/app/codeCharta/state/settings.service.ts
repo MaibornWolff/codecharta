@@ -182,7 +182,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: SettingsServiceSubscriber) {
 		$rootScope.$on(SettingsService.SETTINGS_CHANGED_EVENT, (event, data) => {
-			subscriber.onSettingsChanged(data.settings, data.update, event)
+			subscriber.onSettingsChanged(data.settings, data.update)
 		})
 	}
 }
