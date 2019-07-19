@@ -61,4 +61,11 @@ presentation-mode-button-component {
 	.slider.round:before {
 		border-radius: 50%;
 	}
+
+	.presentation-mode-icon {
+		float: right;
+		font-size: 18px;
+		margin-top: 5px;
+		margin-right: 8px;
+	}
 }
