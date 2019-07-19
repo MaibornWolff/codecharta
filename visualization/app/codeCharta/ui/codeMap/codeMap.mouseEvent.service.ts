@@ -1,6 +1,6 @@
 import { MapTreeViewHoverEventSubscriber, MapTreeViewLevelController } from "../mapTreeView/mapTreeView.level.component"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
-import { IAngularEvent, IRootScopeService, IWindowService } from "angular"
+import { IRootScopeService, IWindowService } from "angular"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import $ from "jquery"
 import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"

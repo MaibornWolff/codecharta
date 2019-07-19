@@ -1,5 +1,5 @@
 import { CodeMapNode, Settings, RecursivePartial } from "../codeCharta.model"
-import { IAngularEvent, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 import * as d3 from "d3"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service"

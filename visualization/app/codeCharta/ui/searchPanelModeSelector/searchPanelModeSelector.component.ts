@@ -1,7 +1,7 @@
 import "./searchPanelModeSelector.component.scss"
 import { SettingsServiceSubscriber, SettingsService } from "../../state/settings.service"
 import { Settings, RecursivePartial, SearchPanelMode, BlacklistType } from "../../codeCharta.model"
-import { IAngularEvent, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
 
 export class SearchPanelModeSelectorController implements SettingsServiceSubscriber, SearchPanelServiceSubscriber {

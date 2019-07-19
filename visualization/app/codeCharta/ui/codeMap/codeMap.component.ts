@@ -4,7 +4,7 @@ import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from ".
 
 import "./codeMap.component.scss"
 
-import angular, { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService, ITimeoutService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { LoadingGifComponentSubscriber, LoadingGifService } from "../loadingGif/loadingGif.service"
 

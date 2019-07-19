@@ -13,7 +13,7 @@ import {
 import { hierarchy, HierarchyNode } from "d3"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
 import { FileStateHelper } from "../util/fileStateHelper"
-import { IAngularEvent, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 import { SettingsService, SettingsServiceSubscriber } from "./settings.service"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import _ from "lodash"

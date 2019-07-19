@@ -1,5 +1,5 @@
 import { CCFile, FileSelectionState, FileState } from "../codeCharta.model"
-import { IAngularEvent, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
 
 export interface FileStateServiceSubscriber {

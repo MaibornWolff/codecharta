@@ -2,7 +2,7 @@ import { SettingsService, SettingsServiceSubscriber } from "../../state/settings
 import "./blacklistPanel.component.scss"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { Settings, BlacklistItem, BlacklistType, RecursivePartial, SearchPanelMode } from "../../codeCharta.model"
-import { IRootScopeService, IAngularEvent } from "angular"
+import { IRootScopeService } from "angular"
 import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
 
 export class BlacklistPanelController implements SettingsServiceSubscriber, SearchPanelServiceSubscriber {

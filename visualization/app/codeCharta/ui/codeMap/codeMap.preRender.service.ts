@@ -11,7 +11,7 @@ import {
 	FileMeta
 } from "../../codeCharta.model"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import { IAngularEvent, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import _ from "lodash"
 import { NodeDecorator } from "../../util/nodeDecorator"
