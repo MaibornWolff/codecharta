@@ -112,15 +112,13 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
 	public onDocumentMouseUp() {
 		if (this.dragOrClickFlag === 0) {
-			let from = this.selected
-
 			if (this.hovered) {
-				this.onBuildingSelected(from, this.hovered)
+				this.onBuildingSelected(null, this.hovered)
 			}
 
 			if (!this.hovered && this.selected) {
 				this.selected = null
-				this.onBuildingSelected(from, null)
+				this.onBuildingSelected(null, null)
 			}
 		}
 	}
@@ -174,8 +172,10 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
 		if (to !== null) {
 			this.threeSceneService.highlightBuilding(to)
+			this.hovered = to
 		} else {
 			this.threeSceneService.clearHighlight()
+			this.hovered = null
 		}
 	}
 
@@ -184,10 +184,10 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
 		if (to !== null) {
 			if (this.selected) {
-				console.log("CLEAR", this.selected)
 				this.threeSceneService.clearSelection()
 			}
 			this.threeSceneService.selectBuilding(to)
+			this.selected = to
 		} else {
 			this.threeSceneService.clearSelection()
 		}
