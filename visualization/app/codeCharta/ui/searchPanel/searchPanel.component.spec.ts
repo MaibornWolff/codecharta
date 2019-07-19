@@ -1,13 +1,14 @@
 import "./searchPanel.module"
 import { SearchPanelController } from "./searchPanel.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService } from "angular"
+import { IRootScopeService, ITimeoutService } from "angular"
 import { SearchPanelMode } from "../../codeCharta.model"
 import { SearchPanelService } from "../../state/searchPanel.service"
 
 describe("SearchPanelController", () => {
 	let searchPanelModeController: SearchPanelController
 	let $rootScope: IRootScopeService
+	let $timeout: ITimeoutService
 	let searchPanelService: SearchPanelService
 
 	beforeEach(() => {
@@ -18,11 +19,20 @@ describe("SearchPanelController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.searchPanel")
 		$rootScope = getService<IRootScopeService>("$rootScope")
+		$timeout = getService<ITimeoutService>("$timeout")
 		searchPanelService = getService<SearchPanelService>("searchPanelService")
 	}
 
 	function rebuildController() {
-		searchPanelModeController = new SearchPanelController($rootScope, searchPanelService)
+		searchPanelModeController = new SearchPanelController($rootScope, $timeout, searchPanelService)
+	}
+
+	function withMockedSearchPanelService() {
+		searchPanelService = searchPanelModeController["searchPanelService"] = jest.fn(() => {
+			return {
+				updateSearchPanelMode: jest.fn()
+			}
+		})()
 	}
 
 	describe("Show components selected", () => {
@@ -45,7 +55,7 @@ describe("SearchPanelController", () => {
 
 	describe("toggle", () => {
 		beforeEach(() => {
-			searchPanelModeController["searchPanelService"].updateSearchPanelMode, (searchPanelService.updateSearchPanelMode = jest.fn())
+			withMockedSearchPanelService()
 		})
 
 		it("should switch to treeView if minimized", () => {
