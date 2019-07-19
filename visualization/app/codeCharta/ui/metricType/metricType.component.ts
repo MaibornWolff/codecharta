@@ -4,7 +4,6 @@ import { AttributeTypeValue, RecursivePartial, Settings } from "../../codeCharta
 import { IRootScopeService } from "angular"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export class MetricTypeController implements SettingsServiceSubscriber, BuildingHoveredEventSubscriber {
 	private _viewModel: {

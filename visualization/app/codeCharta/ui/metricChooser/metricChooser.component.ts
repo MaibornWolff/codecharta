@@ -1,5 +1,5 @@
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import { IAngularEvent, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 import "./metricChooser.component.scss"
 import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { MetricData, Settings, DynamicSettings, RecursivePartial } from "../../codeCharta.model"
