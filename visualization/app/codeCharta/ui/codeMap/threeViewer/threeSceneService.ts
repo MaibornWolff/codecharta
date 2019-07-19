@@ -33,10 +33,8 @@ export class ThreeSceneService {
 	}
 
 	public highlightBuilding(highlightedBuilding: CodeMapBuilding) {
-		const isPresentationMode = this.settingsService.getSettings().appSettings.isPresentationMode
-		const mapSize = this.settingsService.getSettings().treeMapSettings.mapSize
-
-		this.getMapMesh().highlightBuilding(highlightedBuilding, isPresentationMode, mapSize)
+		const settings = this.settingsService.getSettings()
+		this.getMapMesh().highlightBuilding(highlightedBuilding, settings.appSettings.isPresentationMode, settings.treeMapSettings.mapSize)
 	}
 
 	public clearHighlight() {
