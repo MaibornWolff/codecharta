@@ -134,7 +134,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 	}
 
 	public onRightClick(event) {
-		this.$rootScope.$broadcast("building-right-clicked", {
+		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_RIGHT_CLICKED_EVENT, {
 			building: this.hovered,
 			x: event.clientX,
 			y: event.clientY,
@@ -170,7 +170,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 			}
 		}
 
-		this.$rootScope.$broadcast("building-hovered", { to: to, from: from })
+		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { to: to, from: from })
 
 		if (to !== null) {
 			this.threeSceneService.highlightBuilding(to)
@@ -180,7 +180,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 	}
 
 	public onBuildingSelected(from: CodeMapBuilding, to: CodeMapBuilding) {
-		this.$rootScope.$broadcast("building-selected", { to: to, from: from })
+		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_SELECTED_EVENT, { to: to, from: from })
 
 		if (to !== null) {
 			if (this.selected) {
