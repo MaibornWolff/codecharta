@@ -1,28 +1,27 @@
 import "./searchPanel.component.scss"
-import { IRootScopeService, IAngularEvent } from "angular"
+import { IRootScopeService, IAngularEvent, ITimeoutService } from "angular"
 import { SearchPanelMode } from "../../codeCharta.model"
 import $ from "jquery"
 import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
 
 export class SearchPanelController implements SearchPanelServiceSubscriber {
-	private searchPanelService: SearchPanelService
+	private collapsingElements = $("search-panel-component md-card")
 
-	private objectToAnimate = $("#search")
-
-	private _viewModel: { searchPanelMode: SearchPanelMode } = {
+	private _viewModel: {
+		searchPanelMode: SearchPanelMode
+	} = {
 		searchPanelMode: SearchPanelMode.minimized
 	}
 
 	/* @ngInject */
-	constructor($rootScope: IRootScopeService, searchPanelService: SearchPanelService) {
-		SearchPanelService.subscribe($rootScope, this)
-		this.searchPanelService = searchPanelService
+	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private searchPanelService: SearchPanelService) {
+		SearchPanelService.subscribe(this.$rootScope, this)
 	}
 
 	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode, event: IAngularEvent) {
-		this.objectToAnimate.attr("id", "")
 		this._viewModel.searchPanelMode = searchPanelMode
-		setTimeout(() => this.objectToAnimate.attr("id", "search"), 500)
+		this.collapsingElements.attr("id", "")
+		this.$timeout(() => this.collapsingElements.attr("id", "search-panel"), 500)
 	}
 
 	public toggle() {

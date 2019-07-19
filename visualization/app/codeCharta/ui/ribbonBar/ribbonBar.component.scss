@@ -12,54 +12,27 @@ ribbon-bar-component {
 	$bodySize: 0.9em;
 	$toggleButtonSize: 35;
 
-	min-height: 0;
 	pointer-events: all;
+	display: flex;
 
-	#toggle-ribbon-bar-fab {
-		margin-top: $toggleButtonSize - 10 + px;
-		right: 10px;
-		z-index: 999;
-		width: $toggleButtonSize + px;
-		height: $toggleButtonSize + px !important;
-		min-height: $toggleButtonSize + px !important;
-		line-height: $toggleButtonSize + px !important;
-		position: fixed;
+	search-panel-component #search-panel.expanded {
+		height: auto;
+		max-height: 500px;
 
-		> i:before {
-			content: "\f107";
-		}
-
-		&.expanded {
-			> i:before {
-				content: "\f106";
-			}
-			margin-top: $heightExpanded - 20 + px;
-		}
-	}
-
-	#search {
-		max-height: 50px;
-		min-height: ($heightCollapsed + 8) + px;
-
-		&.expanded {
+		.section-body {
 			height: auto;
-			max-height: 500px;
-
-			.section-body {
-				height: auto;
-				min-height: ($heightExpanded - $heightCollapsed) + 5 + px;
-			}
+			min-height: ($heightExpanded - $heightCollapsed) + 5 + px;
 		}
 	}
 
-	.header {
-		display: inline-block;
+	md-card {
 		margin: 0;
 		padding: 0;
 		height: ($heightCollapsed + 8) + px;
 		font-size: 0;
-		width: 100%;
 		border-radius: 0;
+		border-top: $border;
+		float: left;
 
 		&.search {
 			width: 380px;
@@ -101,6 +74,10 @@ ribbon-bar-component {
 					border-bottom: $border-thin;
 					border-top: $border-thin;
 					background-color: $subsection-bg;
+				}
+
+				&.space {
+					width: 1000px;
 				}
 			}
 
@@ -152,14 +129,6 @@ ribbon-bar-component {
 					opacity: 0;
 					height: 0;
 					pointer-events: none;
-
-					&.expanded {
-						top: ($heightExpanded - 45) + px;
-						opacity: 1;
-						height: 20px;
-						transition: all 0.5s ease;
-						pointer-events: all;
-					}
 				}
 
 				md-checkbox .md-label {
@@ -181,6 +150,14 @@ ribbon-bar-component {
 					padding-bottom: 15px;
 					height: ($heightExpanded - $heightCollapsed) + px;
 					border-top: $border;
+
+					reset-settings-button-component .md-button {
+						top: ($heightExpanded - 45) + px;
+						opacity: 1;
+						height: 20px;
+						transition: all 0.5s ease;
+						pointer-events: all;
+					}
 				}
 			}
 		}

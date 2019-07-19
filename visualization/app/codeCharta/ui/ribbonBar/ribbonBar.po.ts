@@ -3,15 +3,15 @@ import { Page } from "puppeteer"
 export class RibbonBarPageObject {
 	constructor(private page: Page) {}
 
-	public async getRibbonBarClassList() {
-		return await this.page.$eval("#metrics-panel", el => el["className"])
+	public async getRibbonBarClassList(): Promise<string> {
+		return await this.page.$eval("ribbon-bar-component md-card:last-child", el => el["className"])
 	}
 
 	public async toggle() {
-		await this.page.click("#toggle-ribbon-bar-fab")
+		await this.page.click("ribbon-bar-component md-card:last-child .section-title")
 	}
 
-	public async getAreaMetricValue() {
+	public async getAreaMetricValue(): Promise<number> {
 		return await this.page.$eval(".metric-value", el => el["innerText"])
 	}
 }
