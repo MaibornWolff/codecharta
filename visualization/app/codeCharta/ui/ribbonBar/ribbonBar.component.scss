@@ -15,22 +15,6 @@ ribbon-bar-component {
 	pointer-events: all;
 	display: flex;
 
-	#toggle-ribbon-bar-fab {
-		position: fixed;
-		right: 25px;
-		margin-top: 32px;
-		i {
-			left: 7px;
-			&:before {
-				content: "\f107";
-			}
-		}
-
-		&.expanded i:before {
-			content: "\f106";
-		}
-	}
-
 	search-panel-component #search-panel.expanded {
 		height: auto;
 		max-height: 500px;

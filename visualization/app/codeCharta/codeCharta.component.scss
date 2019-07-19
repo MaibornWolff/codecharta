@@ -60,8 +60,7 @@ code-charta-component {
 		.ribbon-bar-component {
 			md-card,
 			.section .section-header,
-			.section .section-body,
-			#toggle-ribbon-bar-fab {
+			.section .section-body {
 				transition: all $animationDuration + s ease;
 			}
 		}

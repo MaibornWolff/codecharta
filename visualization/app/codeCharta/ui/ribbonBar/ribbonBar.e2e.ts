@@ -38,14 +38,14 @@ describe("RibbonBar", () => {
 	})
 
 	it("should toggle ribbonBar onClick toggle button", async () => {
-		expect(await ribbonBar.getRibbonBarClassList()).not.toContain("expanded")
+		expect((await ribbonBar.getRibbonBarClassList()).split(" ")).not.toContain("expanded")
 
 		await ribbonBar.toggle()
 
-		expect(await ribbonBar.getRibbonBarClassList()).toContain("expanded")
+		expect((await ribbonBar.getRibbonBarClassList()).split(" ")).toContain("expanded")
 
 		await ribbonBar.toggle()
 
-		expect(await ribbonBar.getRibbonBarClassList()).not.toContain("expanded")
+		expect((await ribbonBar.getRibbonBarClassList()).split(" ")).not.toContain("expanded")
 	})
 })

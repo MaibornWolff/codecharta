@@ -3,7 +3,6 @@ import $ from "jquery"
 
 export class RibbonBarController {
 	private collapsingElements = $("ribbon-bar-component .element-to-toggle")
-	private toggleElements = $("ribbon-bar-component .element-to-toggle .section-title")
 	private isExpanded: boolean = false
 
 	public toggle() {
@@ -22,14 +21,6 @@ export class RibbonBarController {
 	public collapse() {
 		this.isExpanded = false
 		this.collapsingElements.removeClass("expanded")
-	}
-
-	public hoverToggle() {
-		this.toggleElements.addClass("toggle-hovered")
-	}
-
-	public unhoverToggle() {
-		this.toggleElements.removeClass("toggle-hovered")
 	}
 }
 
