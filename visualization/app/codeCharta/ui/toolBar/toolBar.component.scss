@@ -2,7 +2,6 @@ tool-bar-component {
 	.tool-bar {
 		background-color: #f0f0f0;
 		height: 35px;
-		display: block;
 		margin-block-end: 0;
 		padding-bottom: 0;
 		margin-bottom: 0;
@@ -24,8 +23,13 @@ tool-bar-component {
 			float: left;
 		}
 
-		&:last-child {
-			margin-right: 20px;
+		&.global-settings {
+			right: 20px;
+			position: fixed;
+
+			.md-fab i {
+				top: 5px;
+			}
 		}
 	}
 
