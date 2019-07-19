@@ -87,6 +87,15 @@ code-charta-component {
 				left: 6px;
 			}
 		}
+
+		&.transparent .md-fab {
+			background-color: transparent !important;
+			box-shadow: none;
+
+			&:hover {
+				background-color: #ddd !important;
+			}
+		}
 	}
 
 	.md-button.round-button {
