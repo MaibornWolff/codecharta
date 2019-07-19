@@ -1,7 +1,7 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
 import { IRootScopeService, IWindowService } from "angular"
-import { CodeMapMouseEventService, CodeMapMouseEventServiceSubscriber } from "./codeMap.mouseEvent.service"
+import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
@@ -11,8 +11,9 @@ import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { MapTreeViewLevelController } from "../mapTreeView/mapTreeView.level.component"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import { TEST_FILE_WITH_PATHS, TEST_NODE_ROOT } from "../../util/dataMocks"
-import * as THREE from "three"
+import { CODE_MAP_BUILDING, TEST_FILE_WITH_PATHS, TEST_NODE_ROOT } from "../../util/dataMocks"
+import _ from "lodash"
+import { Node } from "../../codeCharta.model"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -54,7 +55,7 @@ describe("codeMapMouseEventService", () => {
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
 
-		codeMapBuilding = new CodeMapBuilding(1, new THREE.Box3(), TEST_NODE_ROOT, undefined)
+		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 	}
 
 	function rebuildService() {
@@ -209,7 +210,7 @@ describe("codeMapMouseEventService", () => {
 				})
 			})
 
-			codeMapMouseEventService["hovered"] = 2
+			codeMapMouseEventService["hovered"] = CODE_MAP_BUILDING
 		})
 
 		it("should call updateMatrixWorld", () => {
@@ -218,10 +219,10 @@ describe("codeMapMouseEventService", () => {
 			expect(threeCameraService.camera.updateMatrixWorld).toHaveBeenCalledWith(false)
 		})
 
-		it("should call onBuildingHovered with 2 and null", () => {
+		it("should call onBuildingHovered with CODE_MAP_BUILDING and null", () => {
 			codeMapMouseEventService.update()
 
-			expect(codeMapMouseEventService.onBuildingHovered).toHaveBeenCalledWith(2, null)
+			expect(codeMapMouseEventService.onBuildingHovered).toHaveBeenCalledWith(codeMapBuilding, null)
 		})
 
 		it("should not call onBuildingHovered", () => {
@@ -242,7 +243,7 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.update()
 
-			expect(codeMapMouseEventService.onBuildingHovered).toHaveBeenCalledWith(2, 1)
+			expect(codeMapMouseEventService.onBuildingHovered).toHaveBeenCalledWith(codeMapBuilding, 1)
 		})
 
 		it("should set hovered to null", () => {
@@ -258,19 +259,19 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should call onBuildingSelected", () => {
-			codeMapMouseEventService["hovered"] = 1
+			codeMapMouseEventService["hovered"] = codeMapBuilding
 
 			codeMapMouseEventService.onDocumentMouseUp()
 
-			expect(codeMapMouseEventService.onBuildingSelected).toHaveBeenCalledWith(null, 1)
+			expect(codeMapMouseEventService.onBuildingSelected).toHaveBeenCalledWith(null, codeMapBuilding)
 		})
 
 		it("should call onBuildingSelected", () => {
-			codeMapMouseEventService["selected"] = 1
+			codeMapMouseEventService["selected"] = codeMapBuilding
 
 			codeMapMouseEventService.onDocumentMouseUp()
 
-			expect(codeMapMouseEventService.onBuildingSelected).toHaveBeenCalledWith(1, null)
+			expect(codeMapMouseEventService.onBuildingSelected).toHaveBeenCalledWith(codeMapBuilding, null)
 		})
 	})
 
@@ -330,7 +331,9 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should not do anything if hovered.node.link is null", () => {
-			codeMapMouseEventService["hovered"] = { node: { link: null } }
+			codeMapBuilding.setNode({ link: null } as Node)
+
+			codeMapMouseEventService["hovered"] = codeMapBuilding
 
 			codeMapMouseEventService.onDocumentDoubleClick(undefined)
 
@@ -338,11 +341,11 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should call open with link if hovered.node.link is defined", () => {
-			codeMapMouseEventService["hovered"] = { node: { link: 1 } }
+			codeMapMouseEventService["hovered"] = codeMapBuilding
 
 			codeMapMouseEventService.onDocumentDoubleClick(undefined)
 
-			expect($window.open).toHaveBeenCalledWith(1, "_blank")
+			expect($window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
 		})
 	})
 
@@ -431,51 +434,11 @@ describe("codeMapMouseEventService", () => {
 		it("should call onBuildingHovered", () => {
 			codeMapMouseEventService.onBuildingHovered = jest.fn()
 
-			codeMapMouseEventService["hovered"] = 1
+			codeMapMouseEventService["hovered"] = codeMapBuilding
 
 			codeMapMouseEventService.onShouldUnhoverNode(null)
 
-			expect(codeMapMouseEventService.onBuildingHovered).toHaveBeenCalledWith(1, null)
-		})
-	})
-
-	describe("subscribe", () => {
-		let subscriberMock: CodeMapMouseEventServiceSubscriber
-
-		beforeEach(() => {
-			subscriberMock = new MapTreeViewLevelController($rootScope, null, null)
-			subscriberMock.onBuildingHovered = jest.fn()
-			subscriberMock.onBuildingSelected = jest.fn()
-			subscriberMock.onBuildingRightClicked = jest.fn()
-		})
-
-		it("should setup three angular event listeners", () => {
-			withMockedEventMethods()
-
-			CodeMapMouseEventService.subscribe($rootScope, null)
-
-			expect($rootScope.$on).toHaveBeenCalledTimes(3)
-		})
-
-		it("should call onBuildingHovered of subscriber", () => {
-			CodeMapMouseEventService.subscribe($rootScope, subscriberMock)
-			$rootScope.$broadcast("building-hovered")
-
-			expect(subscriberMock.onBuildingHovered).toHaveBeenCalled()
-		})
-
-		it("should call onBuildingSelected of subscriber", () => {
-			CodeMapMouseEventService.subscribe($rootScope, subscriberMock)
-			$rootScope.$broadcast("building-selected")
-
-			expect(subscriberMock.onBuildingSelected).toHaveBeenCalled()
-		})
-
-		it("should call onBuildingRightClicked of subscriber", () => {
-			CodeMapMouseEventService.subscribe($rootScope, subscriberMock)
-			$rootScope.$broadcast("building-right-clicked", { building: 1 })
-
-			expect(subscriberMock.onBuildingRightClicked).toHaveBeenCalled()
+			expect(codeMapMouseEventService.onBuildingHovered).toHaveBeenCalledWith(codeMapBuilding, null)
 		})
 	})
 })

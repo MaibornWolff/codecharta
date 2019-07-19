@@ -3,12 +3,7 @@ import { IRootScopeService, IAngularEvent } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
-import {
-	CodeMapMouseEventServiceSubscriber,
-	CodeMapBuildingTransition,
-	CodeMapMouseEventService
-} from "../codeMap/codeMap.mouseEvent.service"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapNode, BlacklistType } from "../../codeCharta.model"
 
 export interface MapTreeViewHoverEventSubscriber {
@@ -16,7 +11,7 @@ export interface MapTreeViewHoverEventSubscriber {
 	onShouldUnhoverNode(node: CodeMapNode)
 }
 
-export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubscriber {
+export class MapTreeViewLevelController implements BuildingHoveredEventSubscriber {
 	private node: CodeMapNode = null
 
 	private _viewModel: {
@@ -33,7 +28,7 @@ export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubsc
 		private codeMapActionsService: CodeMapActionsService,
 		private settingsService: SettingsService
 	) {
-		CodeMapMouseEventService.subscribe(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
 	}
 
 	public getMarkingColor() {
@@ -50,10 +45,6 @@ export class MapTreeViewLevelController implements CodeMapMouseEventServiceSubsc
 			this._viewModel.isHoveredInCodeMap = false
 		}
 	}
-
-	public onBuildingSelected(data: CodeMapBuildingTransition, event: IAngularEvent) {}
-
-	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent) {}
 
 	public onMouseEnter() {
 		this.$rootScope.$broadcast("should-hover-node", this.node)

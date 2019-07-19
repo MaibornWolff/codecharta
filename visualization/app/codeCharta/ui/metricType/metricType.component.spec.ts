@@ -46,7 +46,7 @@ describe("MetricTypeController", () => {
 	describe("constructor", () => {
 		beforeEach(() => {
 			SettingsService.subscribe = jest.fn()
-			CodeMapMouseEventService.subscribe = jest.fn()
+			CodeMapMouseEventService.subscribeToBuildingHoveredEvents = jest.fn()
 			FileStateService.subscribe = jest.fn()
 		})
 
@@ -59,7 +59,7 @@ describe("MetricTypeController", () => {
 		it("should subscribe to CodeMapMouseEventService", () => {
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribe).toHaveBeenCalledWith($rootScope, metricTypeController)
+			expect(CodeMapMouseEventService.subscribeToBuildingHoveredEvents).toHaveBeenCalledWith($rootScope, metricTypeController)
 		})
 	})
 
